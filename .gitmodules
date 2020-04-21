@@ -1,0 +1,3 @@
+[submodule "zephyr-rust"]
+	path = zephyr-rust
+	url = https://github.com/tylerwhall/zephyr-rust.git
