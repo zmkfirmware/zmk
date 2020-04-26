@@ -1,0 +1,19 @@
+identifier: planck_rev6
+name: PLANKREV6
+type: keyboard
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 40
+supported:
+  - gpio
+  - i2c
+  - counter
+  - spi
+  - usb_device
+  - lsm303dlhc
+  - nvs
+  - can
+  - kscan
