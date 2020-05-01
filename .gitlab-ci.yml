@@ -6,6 +6,7 @@ build:
     - west init -l .
     - west update
     - west config --global zephyr.base-prefer configfile
+    - west zephyr-export
 
   script:
     - west build -b nucelo_wb55rg -- -DSHIELD=petejohanson_handwire
