@@ -1,0 +1,6 @@
+# Copyright (c) 2019 Linaro Limited
+# SPDX-License-Identifier: Apache-2.0
+
+config SHIELD_PETEJOHANSON_HANDWIRE
+	def_bool $(shields_list_contains,petejohanson_handwire)
+

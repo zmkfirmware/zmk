@@ -1,0 +1,12 @@
+
+/ {
+	kscan {
+		compatible = "gpio-kscan";
+		label = "Handwired GPIO KSCAN matrix";
+
+		row-gpios = <&arduino_header 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+		            <&arduino_header 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		col-gpios = <&arduino_header 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+		            <&arduino_header 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	};
+};
