@@ -1,0 +1,13 @@
+manifest:
+  remotes:
+    - name: zephyrproject-rtos
+      url-base: https://github.com/zephyrproject-rtos
+    - name: petejohanson
+      url-base: https://github.com/petejohanson
+  projects:
+    - name: zephyr
+      remote: petejohanson
+      revision: driver-kscan-gpio-matrix-first-pass
+      import: true
+  self:
+    path: zmk
