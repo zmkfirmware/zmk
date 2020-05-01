@@ -3,7 +3,8 @@ build:
   image: zephyrprojectrtos/zephyr-build
 
   before_script:
-    - west init
+    - cd ../
+    - west init zmk
 
   script:
     - west build -b nucelo_wb55rg -- -DSHIELD=petejohanson_handwire
