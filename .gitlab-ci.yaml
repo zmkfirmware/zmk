@@ -1,0 +1,6 @@
+
+build:
+  image: zephyrprojectrtos/zephyr-build
+
+  script:
+    - west build -b nucelo_wb55rg -- -DSHIELD=petejohanson_handwire
