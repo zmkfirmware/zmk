@@ -2,5 +2,8 @@
 build:
   image: zephyrprojectrtos/zephyr-build
 
+  before_script:
+    - west init -m https://github.com/petejohanson/zephyr -mr driver-kscan-gpio-matrix-first-pass
+
   script:
     - west build -b nucelo_wb55rg -- -DSHIELD=petejohanson_handwire
