@@ -9,4 +9,4 @@ build:
     - west zephyr-export
 
   script:
-    - west build -b nucelo_wb55rg -- -DSHIELD=petejohanson_handwire
+    - west build -b nucleo_wb55rg -- -DSHIELD=petejohanson_handwire
