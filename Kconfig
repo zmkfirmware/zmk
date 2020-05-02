@@ -1,0 +1,7 @@
+mainmenu "ZMK Firmware"
+
+config ZMK_KSCAN_EVENT_QUEUE_SIZE
+	int "Size of the event queue for KSCAN events to buffer events"
+	default 4
+
+source "Kconfig.zephyr"
