@@ -11,6 +11,8 @@
 
 LOG_MODULE_REGISTER(zmk_kscan, CONFIG_ZMK_KSCAN_LOG_LEVEL);
 
+#include "keymap.h"
+
 #define ZMK_KSCAN_EVENT_STATE_PRESSED 0
 #define ZMK_KSCAN_EVENT_STATE_RELEASED 1
 
@@ -45,6 +47,8 @@ void zmk_kscan_process_msgq(struct k_work *item)
 
 	while(k_msgq_get(&zmk_kscan_msgq, &ev, K_NO_WAIT) == 0) {
 		bool pressed = (ev.state == ZMK_KSCAN_EVENT_STATE_PRESSED);
+		// TODO: More than basic mapping, layers, etc.
+		enum hid_kbd_code code = zmk_keymap_keycode_from_position(ev.row, ev.column);
 		printk("Row: %d, col: %d, pressed: %s\n", ev.row, ev.column, (pressed ? "true" : "false"));
 	}
 }
