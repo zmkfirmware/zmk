@@ -5,17 +5,12 @@
 #include <usb/usb_device.h>
 #include <usb/class/usb_hid.h>
 
-// TODO: Pull these in fro a kscan_gpio.h file from Zephyr!
-//
-#define MATRIX_NODE_ID DT_PATH(kscan)
-#define MATRIX_ROWS DT_PROP_LEN(MATRIX_NODE_ID,row_gpios)
-#define MATRIX_COLS DT_PROP_LEN(MATRIX_NODE_ID,col_gpios)
+#include "zmk.h"
 
-enum hid_kbd_code keymap[MATRIX_ROWS][MATRIX_COLS] = {
-	{ HID_KEY_A, HID_KEY_B },
-	{ HID_KEY_C, HID_KEY_D }
-};
+#define ZMK_KEYMAP_NODE DT_CHOSEN(zmk_keymap)
+#define ZMK_KEYMAP_LAYERS_LEN DT_PROP_LEN(ZMK_KEYMAP_NODE,layers)
 
-#define zmk_keymap_keycode_from_position(row, column) keymap[row][column]
+
+enum hid_kbd_code zmk_keymap_keycode_from_position(u32_t row, u32_t column);
 
 #endif

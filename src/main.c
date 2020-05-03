@@ -14,5 +14,8 @@ void main(void)
 {
 	printk("Welcome to ZMK!\n");
 
-	zmk_kscan_init(CONFIG_KSCAN_MATRIX_DEV_NAME);
+	if (zmk_kscan_init(CONFIG_KSCAN_MATRIX_DEV_NAME) != 0) {
+		printk("Keyboard Scan Init Failed\n");
+		return;
+	}
 }

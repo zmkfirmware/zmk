@@ -1,5 +1,35 @@
 
 / {
+	chosen {
+		zmk,keymap = &keymap0;
+	};
+
+	layers {
+		compatible = "zmk,layers";
+
+		default: layer_0 {
+			label = "Default";
+			keys = <10 2 3 8>;
+		};
+
+		lower: layer_1 {
+			label = "Default";
+			keys = <9 2 3 5>;
+		};
+
+		raise: layer_2 {
+			label = "Default";
+			keys = <8 1 2 3>;
+		};
+	};
+
+	keymap0: keymap {
+		compatible = "zmk,keymap";
+
+		label ="Default keymap";
+		layers = <&default &lower &raise>;
+	};
+
 	kscan {
 		compatible = "gpio-kscan";
 		label = "Handwired GPIO KSCAN matrix";

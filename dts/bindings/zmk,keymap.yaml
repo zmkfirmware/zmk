@@ -1,0 +1,13 @@
+description: |
+  Allows defining a keymap composed of multiple layers
+
+compatible: "zmk,keymap"
+
+properties:
+  label:
+    type: string
+    required: true
+
+  layers:
+    type: phandles
+    required: true

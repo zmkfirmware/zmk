@@ -35,6 +35,7 @@ static void zmk_kscan_callback(struct device *dev, u32_t row, u32_t column, bool
 		.column = column,
 		.state = (pressed ? ZMK_KSCAN_EVENT_STATE_PRESSED : ZMK_KSCAN_EVENT_STATE_RELEASED)
 	};
+	printk("Row: %d, col: %d, pressed: %s\n", ev.row, ev.column, (pressed ? "true" : "false"));
 
 	k_msgq_put(&zmk_kscan_msgq, &ev, K_NO_WAIT);
 	k_work_submit(&msg_processor.work);
@@ -49,7 +50,7 @@ void zmk_kscan_process_msgq(struct k_work *item)
 		bool pressed = (ev.state == ZMK_KSCAN_EVENT_STATE_PRESSED);
 		// TODO: More than basic mapping, layers, etc.
 		enum hid_kbd_code code = zmk_keymap_keycode_from_position(ev.row, ev.column);
-		printk("Row: %d, col: %d, pressed: %s\n", ev.row, ev.column, (pressed ? "true" : "false"));
+		printk("Row: %d, col: %d, code: %d, pressed: %s\n", ev.row, ev.column, code, (pressed ? "true" : "false"));
 	}
 }
 
@@ -61,10 +62,11 @@ int zmk_kscan_init(char* name)
 		return -EINVAL;
 	}
 
-	return 0;
 
 	k_work_init(&msg_processor.work, zmk_kscan_process_msgq);
 
 	kscan_config(dev, zmk_kscan_callback);
 	kscan_enable_callback(dev);
+
+	return 0;
 }
