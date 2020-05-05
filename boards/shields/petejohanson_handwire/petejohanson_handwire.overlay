@@ -1,3 +1,4 @@
+#include <dt-bindings/zmk/keys.h>
 
 / {
 	chosen {
@@ -9,17 +10,17 @@
 
 		default: layer_0 {
 			label = "Default";
-			keys = <10 2 3 8>;
+			keys = <KC_A KC_B KC_C KC_D>;
 		};
 
 		lower: layer_1 {
-			label = "Default";
-			keys = <9 2 3 5>;
+			label = "Lower";
+			keys = <KC_D KC_C KC_B KC_A>;
 		};
 
 		raise: layer_2 {
-			label = "Default";
-			keys = <8 1 2 3>;
+			label = "Raise";
+			keys = <KC_C KC_D KC_A KC_B>;
 		};
 	};
 
@@ -34,6 +35,7 @@
 		compatible = "gpio-kscan";
 		label = "Handwired GPIO KSCAN matrix";
 
+		diode-direction = "row2col";
 		row-gpios = <&arduino_header 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
 		            <&arduino_header 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 		col-gpios = <&arduino_header 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,

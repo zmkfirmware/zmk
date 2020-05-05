@@ -2,6 +2,7 @@
 cmake_minimum_required(VERSION 3.13.1)
 
 list(APPEND BOARD_ROOT ${CMAKE_SOURCE_DIR})
+list(APPEND DTS_ROOT ${CMAKE_SOURCE_DIR})
 
 find_package(Zephyr)
 project(zmk)
@@ -10,5 +11,6 @@ project(zmk)
 # find_package(Zephyr) which defines the target.
 target_sources(app PRIVATE src/kscan.c)
 target_sources(app PRIVATE src/keymap.c)
+target_sources(app PRIVATE src/usb_hid.c)
 target_sources(app PRIVATE src/main.c)
 
