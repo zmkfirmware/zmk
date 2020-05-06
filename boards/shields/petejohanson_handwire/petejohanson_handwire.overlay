@@ -3,6 +3,7 @@
 / {
 	chosen {
 		zmk,keymap = &keymap0;
+		zmk,kscan = &kscan0;
 	};
 
 	layers {
@@ -10,7 +11,11 @@
 
 		default: layer_0 {
 			label = "Default";
-			keys = <KC_A KC_B KC_C KC_D>;
+			keys =
+	<
+	KC_A KC_B
+	KC_C KC_D
+	>;
 		};
 
 		lower: layer_1 {
@@ -31,9 +36,9 @@
 		layers = <&default &lower &raise>;
 	};
 
-	kscan {
+	kscan0: kscan {
 		compatible = "gpio-kscan";
-		label = "Handwired GPIO KSCAN matrix";
+		label = "KSCAN";
 
 		diode-direction = "row2col";
 		row-gpios = <&arduino_header 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,

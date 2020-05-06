@@ -8,14 +8,16 @@
 #include <device.h>
 #include <devicetree.h>
 
+#include "zmk.h"
 #include "kscan.h"
 #include "usb_hid.h"
 
+#define ZMK_KSCAN_DEV DT_LABEL(ZMK_MATRIX_NODE_ID)
 void main(void)
 {
 	printk("Welcome to ZMK!\n");
 
-	if (zmk_kscan_init(CONFIG_KSCAN_MATRIX_DEV_NAME) != 0) {
+	if (zmk_kscan_init(ZMK_KSCAN_DEV) != 0) {
 		printk("Keyboard Scan Init Failed\n");
 		return;
 	}
