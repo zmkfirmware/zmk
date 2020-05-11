@@ -67,6 +67,7 @@ RUN wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/s
 	pip3 install sh
 
 RUN groupadd -g $GID -o user
+RUN useradd -u $UID -m -g user -G user
 
 # Set the locale
 ENV ZEPHYR_TOOLCHAIN_VARIANT=zephyr
