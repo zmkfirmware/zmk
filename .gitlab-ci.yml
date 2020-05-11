@@ -7,6 +7,13 @@ build:
       when: never
     - when: on_success
 
+  cache:
+    paths:
+      - modules
+      - tools
+      - zephyr
+      - bootloader
+
   image: $CI_BUILD_IMAGE:v0.1.1
 
   variables:
