@@ -2,6 +2,11 @@ variables:
   CI_BUILD_IMAGE: $CI_REGISTRY_IMAGE/zmk-build
 
 build:
+  rules:
+    - if: '$CI_COMMIT_REF_SLUG =~ /^docker/'
+      when: never
+    - when: on_success
+
   image: $CI_BUILD_IMAGE
 
   variables:
