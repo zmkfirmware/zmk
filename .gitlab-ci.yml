@@ -20,7 +20,7 @@ build:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/zmk
 
   before_script:
-    - mkdir ci-workspace && ln -s ./ ci-workspace/zmk
+    - mkdir ci-workspace && ln -s $(pwd) ci-workspace/zmk
     - cd ci-workspace/zmk
     - west init -l .
     - west update
