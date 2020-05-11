@@ -5,7 +5,7 @@ build:
   image: $CI_BUILD_IMAGE
 
   variables:
-    GIT_CLONE_PATH: $CI_PROJECT_DIR/zmk
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/zmk
 
   before_script:
     - west init -l .
