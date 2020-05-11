@@ -11,3 +11,12 @@ build:
 
   script:
     - west build -b nucleo_wb55rg -- -DSHIELD=petejohanson_handwire
+
+build:dockerimage:
+  services:
+    - docker:stable-dind
+
+  image: docker:stable
+
+  script:
+    - docker build .
