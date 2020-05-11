@@ -18,5 +18,14 @@ build:dockerimage:
 
   image: docker:stable
 
+  variables:
+    CI_BUILD_IMAGE: CI_REGISTRY_IMAGE/zmk-build
+
+  before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+
   script:
-    - docker build .
+    - docker pull $CI_BUILD_IMAGE:latest || true
+    - docker build --cache-from $CI_BUILD_IMAGE:latest -t $CI_BUILD_IMAGE:latest .
+    - docker push $CI_BUILD_IMAGE:latest
