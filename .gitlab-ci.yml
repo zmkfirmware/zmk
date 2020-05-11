@@ -22,11 +22,16 @@ build:dockerimage:
 
   image: docker:stable
 
+  rules:
+    - if: '$CI_COMMIT_REF_SLUG =~ /^docker/'
+      when: always
 
   before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
   script:
     - docker pull $CI_BUILD_IMAGE:latest || true
-    - docker build --cache-from $CI_BUILD_IMAGE:latest -t $CI_BUILD_IMAGE:latest .
-    - docker push $CI_BUILD_IMAGE:latest
+    - docker build --cache-from $CI_BUILD_IMAGE:latest -t $CI_BUILD_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_BUILD_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker tag $CI_BUILD_IMAGE:$CI_COMMIT_SHORT_SHA $CI_BUILD_IMAGE:latest && git push $CI_BUILD_IMAGE:latest
+    - if [ -n "$CI_COMMIT_TAG" ]; then docker tag $CI_BUILD_IMAGE:$CI_COMMIT_SHORT_SHA $CI_BUILD_IMAGE:$CI_COMMIT_TAG && docker push $CI_BUILD_IMAGE:$CI_COMMIT_TAG; fi
