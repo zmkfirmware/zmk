@@ -1,5 +1,10 @@
 FROM debian:stable-slim
 
+RUN apt-get -y update && \
+	apt-get -y upgrade && \
+	apt-get install --no-install-recommends -y \
+	wget
+
 ARG ZSDK_VERSION=0.11.2
 RUN wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-sdk-${ZSDK_VERSION}-setup.run" && \
 	sh "zephyr-sdk-${ZSDK_VERSION}-setup.run" --quiet -- -d /opt/toolchains/zephyr-sdk-${ZSDK_VERSION} && \
@@ -16,9 +21,7 @@ ARG GID=1000
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get -y update && \
-	apt-get -y upgrade && \
-	apt-get install --no-install-recommends -y \
+RUN apt-get install --no-install-recommends -y \
 	gnupg \
 	ca-certificates \
 	autoconf \
@@ -46,7 +49,6 @@ RUN apt-get -y update && \
 	python3-ply \
 	python3-setuptools \
 	python-xdg \
-	wget \
 	xz-utils && \
 	rm -rf /var/lib/apt/lists/*
 
