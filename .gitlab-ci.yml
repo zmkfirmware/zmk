@@ -9,10 +9,10 @@ build:
 
   cache:
     paths:
-      - modules
-      - tools
-      - zephyr
-      - bootloader
+      - $CI_BUILDS_DIR/modules
+      - $CI_BUILDS_DIR/tools
+      - $CI_BUILDS_DIR/zephyr
+      - $CI_BUILDS_DIR/bootloader
 
   image: $CI_BUILD_IMAGE:v0.1.1
 
