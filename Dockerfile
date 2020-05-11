@@ -19,7 +19,6 @@ RUN apt-get -y update && \
 	iproute2 \
 	libpcap-dev \
 	libtool \
-	locales \
 	make \
 	ninja-build \
 	python3-dev \
@@ -41,11 +40,6 @@ RUN wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
 RUN wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements.txt && \
 	wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements-base.txt && \
 	wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/scripts/requirements-build-test.txt && \
@@ -57,7 +51,6 @@ RUN wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/s
 	pip3 install west && \
 	pip3 install sh
 
-# Set the locale
 ENV ZEPHYR_TOOLCHAIN_VARIANT=zephyr
 ENV ZEPHYR_SDK_INSTALL_DIR=/opt/toolchains/zephyr-sdk-${ZSDK_VERSION}
 
