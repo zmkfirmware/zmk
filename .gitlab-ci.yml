@@ -1,13 +1,17 @@
+variables:
+  CI_BUILD_IMAGE: $CI_REGISTRY_IMAGE/zmk-build
 
 build:
-  image: zephyrprojectrtos/zephyr-build
+  image: $CI_BUILD_IMAGE
+
+  variables:
+    GIT_CLONE_PATH: $CI_BUILD_DIR/zmk
 
   before_script:
     - west init -l .
     - west update
     - west config --global zephyr.base-prefer configfile
     - west zephyr-export
-    - pip3 install --user -r ../zephyr/scripts/requirements.txt
 
   script:
     - west build -b nucleo_wb55rg -- -DSHIELD=petejohanson_handwire
@@ -18,12 +22,9 @@ build:dockerimage:
 
   image: docker:stable
 
-  variables:
-    CI_BUILD_IMAGE: $CI_REGISTRY_IMAGE/zmk-build
 
   before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-
 
   script:
     - docker pull $CI_BUILD_IMAGE:latest || true
