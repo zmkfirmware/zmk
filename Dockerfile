@@ -3,25 +3,7 @@ FROM debian:stable-slim
 RUN apt-get -y update && \
 	apt-get -y upgrade && \
 	apt-get install --no-install-recommends -y \
-	wget
-
-ARG ZSDK_VERSION=0.11.2
-RUN wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-sdk-${ZSDK_VERSION}-setup.run" && \
-	sh "zephyr-sdk-${ZSDK_VERSION}-setup.run" --quiet -- -d /opt/toolchains/zephyr-sdk-${ZSDK_VERSION} && \
-	rm "zephyr-sdk-${ZSDK_VERSION}-setup.run"
-
-ARG CMAKE_VERSION=3.16.2
-RUN wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh && \
-	chmod +x cmake-${CMAKE_VERSION}-Linux-x86_64.sh && \
-	./cmake-${CMAKE_VERSION}-Linux-x86_64.sh --skip-license --prefix=/usr/local && \
-	rm -f ./cmake-${CMAKE_VERSION}-Linux-x86_64.sh
-
-ARG UID=1000
-ARG GID=1000
-
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get install --no-install-recommends -y \
+	wget \
 	gnupg \
 	ca-certificates \
 	autoconf \
@@ -51,6 +33,22 @@ RUN apt-get install --no-install-recommends -y \
 	python-xdg \
 	xz-utils && \
 	rm -rf /var/lib/apt/lists/*
+
+ARG ZSDK_VERSION=0.11.2
+RUN wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-sdk-${ZSDK_VERSION}-setup.run" && \
+	sh "zephyr-sdk-${ZSDK_VERSION}-setup.run" --quiet -- -d /opt/toolchains/zephyr-sdk-${ZSDK_VERSION} && \
+	rm "zephyr-sdk-${ZSDK_VERSION}-setup.run"
+
+ARG CMAKE_VERSION=3.16.2
+RUN wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh && \
+	chmod +x cmake-${CMAKE_VERSION}-Linux-x86_64.sh && \
+	./cmake-${CMAKE_VERSION}-Linux-x86_64.sh --skip-license --prefix=/usr/local && \
+	rm -f ./cmake-${CMAKE_VERSION}-Linux-x86_64.sh
+
+ARG UID=1000
+ARG GID=1000
+
+ENV DEBIAN_FRONTEND noninteractive
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
