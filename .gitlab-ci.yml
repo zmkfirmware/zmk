@@ -38,5 +38,5 @@ build:dockerimage:
     - docker pull $CI_BUILD_IMAGE:latest || true
     - docker build --cache-from $CI_BUILD_IMAGE:latest -t $CI_BUILD_IMAGE:$CI_COMMIT_SHORT_SHA .
     - docker push $CI_BUILD_IMAGE:$CI_COMMIT_SHORT_SHA
-    - docker tag $CI_BUILD_IMAGE:$CI_COMMIT_SHORT_SHA $CI_BUILD_IMAGE:latest && git push $CI_BUILD_IMAGE:latest
+    - docker tag $CI_BUILD_IMAGE:$CI_COMMIT_SHORT_SHA $CI_BUILD_IMAGE:latest && docker push $CI_BUILD_IMAGE:latest
     - if [ -n "$CI_COMMIT_TAG" ]; then docker tag $CI_BUILD_IMAGE:$CI_COMMIT_SHORT_SHA $CI_BUILD_IMAGE:$CI_COMMIT_TAG && docker push $CI_BUILD_IMAGE:$CI_COMMIT_TAG; fi
