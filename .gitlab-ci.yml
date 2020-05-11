@@ -16,13 +16,9 @@ build:
 
   image: $CI_BUILD_IMAGE:v0.1.1
 
-  variables:
-    GIT_CLONE_PATH: $CI_BUILDS_DIR/zmk
-
   before_script:
     - mkdir -p workspace/zmk
     - mv * workspace/zmk || true
-    - mv .* workspace/zmk || true
     - cd workspace/zmk
     - west init -l .
     - west update
