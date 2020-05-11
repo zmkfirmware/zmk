@@ -35,9 +35,9 @@ RUN apt-get -y update && \
 	rm -rf /var/lib/apt/lists/*
 
 ARG ZSDK_VERSION=0.11.2
-RUN wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-sdk-${ZSDK_VERSION}-setup.run" && \
-	sh "zephyr-sdk-${ZSDK_VERSION}-setup.run" --quiet -- -d /opt/toolchains/zephyr-sdk-${ZSDK_VERSION} && \
-	rm "zephyr-sdk-${ZSDK_VERSION}-setup.run"
+RUN wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
+	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d /opt/toolchains/zephyr-sdk-${ZSDK_VERSION} && \
+	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run"
 
 ARG CMAKE_VERSION=3.16.2
 RUN wget -q https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh && \
