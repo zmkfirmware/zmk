@@ -19,7 +19,7 @@ build:dockerimage:
   image: docker:stable
 
   variables:
-    CI_BUILD_IMAGE: CI_REGISTRY_IMAGE/zmk-build
+    CI_BUILD_IMAGE: $CI_REGISTRY_IMAGE/zmk-build
 
   before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
