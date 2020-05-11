@@ -7,7 +7,7 @@ build:
       when: never
     - when: on_success
 
-  image: $CI_BUILD_IMAGE
+  image: $CI_BUILD_IMAGE:v0.1.1
 
   variables:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/zmk
