@@ -9,10 +9,10 @@ build:
 
   cache:
     paths:
-      - ci-workspace/modules
-      - ci-workspace/tools
-      - ci-workspace/zephyr
-      - ci-workspace/bootloader
+      - workspace/modules
+      - workspace/tools
+      - workspace/zephyr
+      - workspace/bootloader
 
   image: $CI_BUILD_IMAGE:v0.1.1
 
@@ -20,15 +20,17 @@ build:
     GIT_CLONE_PATH: $CI_BUILDS_DIR/zmk
 
   before_script:
-    - mkdir ci-workspace && ln -s $(pwd) ci-workspace/zmk
-    - cd ci-workspace/zmk
+    - mkdir -p workspace/zmk
+    - mv * workspace/zmk || true
+    - mv .* workspace/zmk || true
+    - cd workspace/zmk
     - west init -l .
     - west update
     - west config --global zephyr.base-prefer configfile
     - west zephyr-export
 
   script:
-    - cd ci-workspace/zmk
+    - cd workspace/zmk
     - west build -b nucleo_wb55rg -- -DSHIELD=petejohanson_handwire
 
 build:dockerimage:
