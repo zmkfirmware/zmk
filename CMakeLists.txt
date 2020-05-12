@@ -13,6 +13,7 @@ target_include_directories(app PRIVATE include)
 target_sources(app PRIVATE src/kscan.c)
 target_sources(app PRIVATE src/keymap.c)
 target_sources(app PRIVATE src/usb_hid.c)
+target_sources(app PRIVATE src/endpoints.c)
 target_sources(app PRIVATE src/main.c)
 target_sources(app PRIVATE src/handlers.c)
 

@@ -1,7 +1,7 @@
 
 #include "handlers.h"
 
-#include "usb_hid.h"
+#include "endpoints.h"
 
 __attribute__((weak)) bool zmk_handle_key_user(struct zmk_key_event *key_event)
 {
@@ -15,12 +15,5 @@ void zmk_handle_key(struct zmk_key_event key_event)
 		return;
 	}
 
-	if (key_event.pressed)
-	{
-		zmk_usb_hid_press_key(key_event.key);
-	}
-	else
-	{
-		zmk_usb_hid_release_key(key_event.key);
-	}
+	zmk_endpoints_send_key_event(key_event);
 };
