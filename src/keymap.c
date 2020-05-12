@@ -2,7 +2,7 @@
 #include "keymap.h"
 
 static u32_t zmk_keymap_layer_state = 0;
-static u32_t zmk_keymap_layer_default = 0;
+static u8_t zmk_keymap_layer_default = 0;
 
 static zmk_key zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_MATRIX_ROWS * ZMK_MATRIX_COLS] = {
 #if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 0)
@@ -53,7 +53,7 @@ zmk_key zmk_keymap_keycode_from_position(u32_t row, u32_t column)
 {
 	for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--)
 	{
-		if ((zmk_keymap_layer_state & BIT(layer)) == BIT(layer))
+		if ((zmk_keymap_layer_state & BIT(layer)) == BIT(layer) || layer == zmk_keymap_layer_default)
 		{
 			zmk_key key = zmk_keymap[layer][(row * ZMK_MATRIX_ROWS) + column];
 			if (key == ZC_TRNS)

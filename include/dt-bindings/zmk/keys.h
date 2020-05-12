@@ -60,6 +60,8 @@
 
 #define KC_APP 0x65
 
+#define KC_RGUI 0xE7
+
 #define MD_SHFT 0x01
 #define KC_ALT 0x02
 #define KC_CTRL 0x03

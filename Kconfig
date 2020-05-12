@@ -4,4 +4,14 @@ config ZMK_KSCAN_EVENT_QUEUE_SIZE
 	int "Size of the event queue for KSCAN events to buffer events"
 	default 4
 
+
+module = ZMK_KSCAN
+module-str = zmk_kscan
+source "subsys/logging/Kconfig.template.log_config"
+
+module = ZMK_USB_HID
+module-str = zmk_usb_hid
+source "subsys/logging/Kconfig.template.log_config"
+
+
 source "Kconfig.zephyr"
