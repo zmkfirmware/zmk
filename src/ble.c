@@ -20,10 +20,10 @@ static void connected(struct bt_conn *conn, u8_t err)
 
     printk("Connected %s\n", addr);
 
-    // if (bt_conn_set_security(conn, BT_SECURITY_L0))
-    // {
-    //     printk("Failed to set security\n");
-    // }
+    if (bt_conn_set_security(conn, BT_SECURITY_L2))
+    {
+        printk("Failed to set security\n");
+    }
 }
 
 static void disconnected(struct bt_conn *conn, u8_t reason)
@@ -68,6 +68,16 @@ static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
     printk("Passkey for %s: %06u\n", addr, passkey);
 }
 
+static void auth_passkey_entry(struct bt_conn *conn)
+{
+    char addr[BT_ADDR_LE_STR_LEN];
+
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+    printk("Passkey entry requested for %s\n", addr);
+    // bt_conn_auth_passkey_entry(conn, 1234);
+}
+
 static void auth_cancel(struct bt_conn *conn)
 {
     char addr[BT_ADDR_LE_STR_LEN];
@@ -78,8 +88,8 @@ static void auth_cancel(struct bt_conn *conn)
 }
 
 static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
-    .passkey_display = auth_passkey_display,
-    .passkey_entry = NULL,
+    // .passkey_display = auth_passkey_display,
+    // .passkey_entry = auth_passkey_entry,
     .cancel = auth_cancel,
 };
 

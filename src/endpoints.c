@@ -28,6 +28,8 @@ int zmk_endpoints_init()
 int zmk_endpoints_send_key_event(struct zmk_key_event key_event)
 {
     struct zmk_hid_report *report;
+    int err;
+
     if (key_event.pressed)
     {
         zmk_hid_press_key(key_event.key);
@@ -44,8 +46,10 @@ int zmk_endpoints_send_key_event(struct zmk_key_event key_event)
     //     // LOG_DBG("USB Send Failed");
     // }
 
-    if (zmk_hog_send_report(report) != 0)
+    err = zmk_hog_send_report(report);
+    if (err)
     {
+        printk("FAILED TO SEND OVER HOG: %d\n", err);
         // LOG_DBG("HID Over GATTP Send Failed");
     }
 
