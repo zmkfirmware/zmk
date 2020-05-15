@@ -5,12 +5,10 @@
 #include <usb/class/usb_hid.h>
 
 #include "keys.h"
+#include "hid.h"
 
 int zmk_usb_hid_init();
 
-// TODO: Modifiers!
-
-int zmk_usb_hid_press_key(zmk_key key);
-int zmk_usb_hid_release_key(zmk_key key);
+int zmk_usb_hid_send_report(const struct zmk_hid_report *report);
 
 #endif
