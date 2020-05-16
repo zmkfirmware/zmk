@@ -15,6 +15,8 @@ with a less restritive license and better BLE support, built on top of the [Zeph
 - Display support, including displaying BLE SC auth numbers for "numeric comparison" mode if we have the screen.
 - Fix BT settings to work w/ Zephyr. Do we really need them?
 - Tests?
+- Update the kscan GPIO driver to use interrupts.
+  - Try disabling callbacks for the read pins temporarily when scanning, then re-enabling them.
 
 ## Long Term
 
