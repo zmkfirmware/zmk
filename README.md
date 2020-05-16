@@ -6,7 +6,8 @@ with a less restritive license and better BLE support, built on top of the [Zeph
 ## TODO
 
 - Debouncing in the kscan driver itself? Only some GPIO drivers in Zephyr support it "natively"
-- Better DTS overlay setup for _keymaps_. Current use of SHIELDs works, but perhaps would be better with something more integrated.
+- Document boards/shields/keymaps usage.
+- Custom keymap code via `zephyr_library()`>
 - Move most Kconfig setings to the board/keymap defconfigs and out of the toplevel `prj.conf` file.
 - Merge the Kscan GPIO driver upstream, or integrate it locally, to avoid use of Zephyr branch.
 - BLE SC by typing in the # prompted on the host.

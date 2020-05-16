@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.13.1)
 list(APPEND BOARD_ROOT ${CMAKE_SOURCE_DIR})
 list(APPEND DTS_ROOT ${CMAKE_SOURCE_DIR})
 
+include(cmake/keymap.cmake)
+
 find_package(Zephyr)
 project(zmk)
 

@@ -1,0 +1,35 @@
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+	chosen {
+		zmk,keymap = &keymap0;
+	};
+	keymap0: keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+		layers = <&default &lower &raise>;
+	};
+
+	layers {
+		compatible = "zmk,layers";
+
+		default: layer_0 {
+			label = "Default";
+			keys =
+	<
+	KC_A KC_B
+	KC_C ZC_CSTM(1)
+	>;
+		};
+
+		lower: layer_1 {
+			label = "Lower";
+			keys = <KC_D KC_C KC_B KC_A>;
+		};
+
+		raise: layer_2 {
+			label = "Raise";
+			keys = <KC_C KC_D KC_A KC_B>;
+		};
+	};
+};
