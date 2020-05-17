@@ -19,6 +19,14 @@ with a less restritive license and better BLE support, built on top of the [Zeph
 - Update the kscan GPIO driver to use interrupts.
   - Try disabling callbacks for the read pins temporarily when scanning, then re-enabling them.
 
+# Missing Features
+
+- Mod Tap
+- One Shot
+- Shell over BLE?
+- Split support
+  - custom kscan driver? that recieves events from other side over serial/BLE notifications?
+
 ## Long Term
 
 - Tool to convert keymap `info.json` files into a DTS keymap file?

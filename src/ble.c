@@ -1,10 +1,18 @@
 
+#include <math.h>
+
 #include <settings/settings.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/conn.h>
 #include <bluetooth/hci.h>
 #include <bluetooth/uuid.h>
 #include <bluetooth/gatt.h>
+
+#include "keys.h"
+
+static struct bt_conn *auth_passkey_entry_conn;
+static u8_t passkey_entries[6] = {0, 0, 0, 0, 0, 0};
+static u8_t passkey_digit = 0;
 
 static void connected(struct bt_conn *conn, u8_t err)
 {
@@ -75,7 +83,7 @@ static void auth_passkey_entry(struct bt_conn *conn)
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
     printk("Passkey entry requested for %s\n", addr);
-    // bt_conn_auth_passkey_entry(conn, 1234);
+    auth_passkey_entry_conn = bt_conn_ref(conn);
 }
 
 static void auth_cancel(struct bt_conn *conn)
@@ -83,6 +91,14 @@ static void auth_cancel(struct bt_conn *conn)
     char addr[BT_ADDR_LE_STR_LEN];
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+    if (auth_passkey_entry_conn)
+    {
+        bt_conn_unref(auth_passkey_entry_conn);
+        auth_passkey_entry_conn = NULL;
+    }
+
+    passkey_digit = 0;
 
     printk("Pairing cancelled: %s\n", addr);
 }
@@ -132,15 +148,41 @@ int zmk_ble_init()
         return err;
     }
 
-    // err = bt_passkey_set(1234);
-    if (err)
-    {
-        printk("Set passkey failed: %d\n", err);
-        return err;
-    }
-
     bt_conn_cb_register(&conn_callbacks);
     bt_conn_auth_cb_register(&zmk_ble_auth_cb_display);
 
     return 0;
+}
+
+bool zmk_ble_handle_key_user(struct zmk_key_event *key_event)
+{
+    zmk_key key = key_event->key;
+
+    if (!auth_passkey_entry_conn)
+    {
+        return true;
+    }
+
+    if (key < KC_1 || key > KC_0)
+    {
+        return true;
+    }
+
+    u32_t val = (key == KC_0) ? 0 : (key - KC_1 + 1);
+
+    passkey_entries[passkey_digit++] = val;
+
+    if (passkey_digit == 6)
+    {
+        u32_t passkey = 0;
+        for (int i = 5; i >= 0; i--)
+        {
+            passkey = (passkey * 10) + val;
+        }
+        bt_conn_auth_passkey_entry(auth_passkey_entry_conn, passkey);
+        bt_conn_unref(auth_passkey_entry_conn);
+        auth_passkey_entry_conn = NULL;
+    }
+
+    return false;
 }
