@@ -76,16 +76,13 @@ foreach(root ${BOARD_ROOT})
 	endif()
 endforeach()
 
-foreach(keymap_root ${KEYMAP_DIRS})
-	find_path(KEYMAP_DIR
-		NAMES ${KEYMAP}
-		PATHS ${keymap_root}/*/*
-		NO_DEFAULT_PATH
-	)
+find_path(KEYMAP_DIR
+	NAMES ${KEYMAP}/keymap.overlay
+	PATHS ${KEYMAP_DIRS}
+	NO_DEFAULT_PATH
+)
 
-	if (KEYMAP_DIR)
-		message(STATUS "Using keymap directory: ${KEYMAP_DIR}/${KEYMAP}/")
-		set(DTC_OVERLAY_FILE ${KEYMAP_DIR}/${KEYMAP}/keymap.overlay)
-		break()
-	endif()
-endforeach()
+if (KEYMAP_DIR)
+	message(STATUS "Using keymap directory: ${KEYMAP_DIR}/${KEYMAP}/")
+	set(DTC_OVERLAY_FILE ${KEYMAP_DIR}/${KEYMAP}/keymap.overlay)
+endif()
