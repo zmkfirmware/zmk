@@ -17,6 +17,7 @@ with a less restritive license and better BLE support, built on top of the [Zeph
 
 # Missing Features
 
+- Consumer Key Support (play/pause, etc)
 - Mod Tap
 - One Shot
 - Shell over BLE?
@@ -24,6 +25,7 @@ with a less restritive license and better BLE support, built on top of the [Zeph
   - custom kscan driver? that recieves events from other side over BLE notifications?
   - Need to figure out how to do "custom" GATT services. Custom UUID?
   - Do we need to send any state updates over from primary to secondary side?
+- Encoders
 
 ## Long Term
 
