@@ -11,15 +11,15 @@
 #define ZMK_KEYMAP_NODE DT_CHOSEN(zmk_keymap)
 #define ZMK_KEYMAP_LAYERS_LEN DT_PROP_LEN(ZMK_KEYMAP_NODE, layers)
 
-#define _ZMK_LAYER_ENUM_ITEM(label) DT_CAT(label, _layer)
-
+/* TODO: Need to actually be able to get a NODELABEL from a node id
 #define _ZMK_KEYMAP_GENERATE_LAYER_CONST(node_id) \
-    _ZMK_LAYER_ENUM_ITEM(DT_NODELABEL(node_id)),
+    DT_NODELABEL_FOR_NODE(node_id)_layer,
 
 enum zmk_keymap_layer
 {
     DT_FOREACH_CHILD(DT_INST(0, zmk_layers), _ZMK_KEYMAP_GENERATE_LAYER_CONST)
 };
+*/
 
 bool zmk_keymap_layer_activate(u8_t layer);
 bool zmk_keymap_layer_deactivate(u8_t layer);
