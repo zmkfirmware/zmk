@@ -31,12 +31,12 @@ static zmk_key zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_MATRIX_ROWS * ZMK_MATRIX_CO
 #endif
 };
 
-#define SET_LAYER_STATE(layer, state)               \
-	if (layer >= 32)                                \
-	{                                               \
-		return false;                               \
-	}                                               \
-	WRITE_BIT(zmk_keymap_layer_state, layer, true); \
+#define SET_LAYER_STATE(layer, state)                \
+	if (layer >= 32)                                 \
+	{                                                \
+		return false;                                \
+	}                                                \
+	WRITE_BIT(zmk_keymap_layer_state, layer, state); \
 	return true;
 
 bool zmk_keymap_layer_activate(u8_t layer)

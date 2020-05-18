@@ -1,4 +1,5 @@
 #include <dt-bindings/zmk/keys.h>
+#include <keymap.h>
 
 / {
 	chosen {
@@ -14,22 +15,22 @@
 		compatible = "zmk,layers";
 
 		default: layer_0 {
-			label = "Default";
+			label = "DEFAULT";
 			keys =
 	<
 	KC_A KC_B
-	KC_C ZC_CSTM(1)
+	CC_RAIS CC_LOWR
 	>;
 		};
 
 		lower: layer_1 {
-			label = "Lower";
-			keys = <KC_D KC_C KC_B KC_A>;
+			label = "LOWER";
+			keys = <KC_D KC_C ZC_TRNS ZC_TRNS>;
 		};
 
 		raise: layer_2 {
-			label = "Raise";
-			keys = <KC_C KC_D KC_A KC_B>;
+			label = "RAISE";
+			keys = <KC_C KC_D ZC_TRNS ZC_TRNS>;
 		};
 	};
 };

@@ -66,9 +66,7 @@
 #define KC_ALT 0x02
 #define KC_CTRL 0x03
 
-#define ZC_RAIS 0xF0
-#define ZC_LOWR 0xF1
-#define ZC_TRNS 0xF2
-#define ZC_NOOP 0xF3
+#define ZC_TRNS 0xF0
+#define ZC_NOOP 0xF1
 
 #define ZC_CSTM(n) (0xFF + n)

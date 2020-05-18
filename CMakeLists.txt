@@ -9,9 +9,9 @@ include(cmake/keymap.cmake)
 find_package(Zephyr)
 project(zmk)
 
-if(EXISTS ${KEYMAP_DIR}/${KEYMAP}/keymap.c)
+if(EXISTS ${KEYMAP_DIR}/keymap.c)
 	message(STATUS "ADDING THE KEYMAP SOURCE")
-	target_sources(app PRIVATE ${KEYMAP_DIR}/${KEYMAP}/keymap.c)
+	target_sources(app PRIVATE ${KEYMAP_DIR}/keymap.c)
 endif()
 
 

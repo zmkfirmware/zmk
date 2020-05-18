@@ -76,13 +76,19 @@ foreach(root ${BOARD_ROOT})
 	endif()
 endforeach()
 
-find_path(KEYMAP_DIR
+find_path(BASE_KEYMAPS_DIR
 	NAMES ${KEYMAP}/keymap.overlay
 	PATHS ${KEYMAP_DIRS}
 	NO_DEFAULT_PATH
 )
 
-if (KEYMAP_DIR)
-	message(STATUS "Using keymap directory: ${KEYMAP_DIR}/${KEYMAP}/")
-	set(DTC_OVERLAY_FILE ${KEYMAP_DIR}/${KEYMAP}/keymap.overlay)
+if (BASE_KEYMAPS_DIR)
+	set(KEYMAP_DIR "${BASE_KEYMAPS_DIR}/${KEYMAP}" CACHE STRING "Selected keymap directory")
+	message(STATUS "Using keymap directory: ${KEYMAP_DIR}/")
+	# Used to let local imports of custom keycodes work as expected
+	list(APPEND DTS_ROOT ${KEYMAP_DIR})
+	if (EXISTS "${KEYMAP_DIR}/include")
+		include_directories("${KEYMAP_DIR}/include")
+	endif()
+	set(DTC_OVERLAY_FILE ${KEYMAP_DIR}/keymap.overlay)
 endif()
