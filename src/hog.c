@@ -3,9 +3,9 @@
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/gatt.h>
 
-#include "ble.h"
-#include "hog.h"
-#include "hid.h"
+#include <zmk/ble.h>
+#include <zmk/hog.h>
+#include <zmk/hid.h>
 
 int zmk_hog_init()
 {

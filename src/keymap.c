@@ -1,5 +1,5 @@
 
-#include "keymap.h"
+#include <zmk/keymap.h>
 
 static u32_t zmk_keymap_layer_state = 0;
 static u8_t zmk_keymap_layer_default = 0;

@@ -5,7 +5,7 @@
 
 #include <dt-bindings/zmk/keys.h>
 
-#include "keys.h"
+#include <zmk/keys.h>
 
 #define ZMK_HID_MAX_KEYCODE KC_APP
 

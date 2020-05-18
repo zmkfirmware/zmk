@@ -4,6 +4,14 @@ config ZMK_KSCAN_EVENT_QUEUE_SIZE
 	int "Size of the event queue for KSCAN events to buffer events"
 	default 4
 
+config ZMK_BLE
+	bool "Enable low energy bluetooth support"
+	select BT
+	select BT_SMP
+	select BT_SMP_SC_PAIR_ONLY
+	select BT_PERIPHERAL
+	select BT_GATT_DIS
+	select BT_GATT_BAS
 
 module = ZMK_KSCAN
 module-str = zmk_kscan

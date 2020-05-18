@@ -11,9 +11,8 @@
 
 LOG_MODULE_REGISTER(zmk_kscan, CONFIG_ZMK_KSCAN_LOG_LEVEL);
 
-#include "keymap.h"
-#include "usb_hid.h"
-#include "handlers.h"
+#include <zmk/keymap.h>
+#include <zmk/handlers.h>
 
 #define ZMK_KSCAN_EVENT_STATE_PRESSED 0
 #define ZMK_KSCAN_EVENT_STATE_RELEASED 1

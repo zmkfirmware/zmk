@@ -1,4 +1,4 @@
-#include "hid.h"
+#include <zmk/hid.h>
 
 static struct zmk_hid_report report = {
     .modifiers = 0,

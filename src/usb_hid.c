@@ -5,8 +5,8 @@
 #include <usb/class/usb_hid.h>
 #include <dt-bindings/zmk/keys.h>
 
-#include "hid.h"
-#include "keymap.h"
+#include <zmk/hid.h>
+#include <zmk/keymap.h>
 
 LOG_MODULE_REGISTER(zmk_usb_hid, CONFIG_ZMK_USB_HID_LOG_LEVEL);
 

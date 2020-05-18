@@ -8,9 +8,9 @@
 #include <device.h>
 #include <devicetree.h>
 
-#include "zmk.h"
-#include "kscan.h"
-#include "endpoints.h"
+#include <zmk/matrix.h>
+#include <zmk/kscan.h>
+#include <zmk/endpoints.h>
 
 #define ZMK_KSCAN_DEV DT_LABEL(ZMK_MATRIX_NODE_ID)
 
