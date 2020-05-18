@@ -76,6 +76,8 @@ static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
     printk("Passkey for %s: %06u\n", addr, passkey);
 }
 
+#ifdef CONFIG_ZMK_BLE_PASSKEY_ENTRY
+
 static void auth_passkey_entry(struct bt_conn *conn)
 {
     char addr[BT_ADDR_LE_STR_LEN];
@@ -85,6 +87,8 @@ static void auth_passkey_entry(struct bt_conn *conn)
     printk("Passkey entry requested for %s\n", addr);
     auth_passkey_entry_conn = bt_conn_ref(conn);
 }
+
+#endif
 
 static void auth_cancel(struct bt_conn *conn)
 {
@@ -104,8 +108,11 @@ static void auth_cancel(struct bt_conn *conn)
 }
 
 static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
-    // .passkey_display = auth_passkey_display,
-    // .passkey_entry = auth_passkey_entry,
+// .passkey_display = auth_passkey_display,
+
+#ifdef CONFIG_ZMK_BLE_PASSKEY_ENTRY
+    .passkey_entry = auth_passkey_entry,
+#endif
     .cancel = auth_cancel,
 };
 

@@ -13,6 +13,14 @@ config ZMK_BLE
 	select BT_GATT_DIS
 	select BT_GATT_BAS
 
+if ZMK_BLE
+
+config ZMK_BLE_PASSKEY_ENTRY
+	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
+	default n
+
+endif
+
 module = ZMK_KSCAN
 module-str = zmk_kscan
 source "subsys/logging/Kconfig.template.log_config"
