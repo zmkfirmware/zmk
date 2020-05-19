@@ -4,6 +4,22 @@ static struct zmk_hid_report report = {
     .modifiers = 0,
     .keys = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
+#define _TOGGLE_MOD(mod, state) \
+    if (modifier > MOD_RGUI)    \
+    {                           \
+        return -EINVAL;         \
+    }                           \
+    WRITE_BIT(report.modifiers, mod, state);
+
+int zmk_hid_register_mod(zmk_mod modifier)
+{
+    _TOGGLE_MOD(modifier, true);
+}
+int zmk_hid_unregister_mod(zmk_mod modifier)
+{
+    _TOGGLE_MOD(modifier, false);
+}
+
 #define KEY_OFFSET 0x02
 #define MAX_KEYS 6
 
@@ -24,6 +40,11 @@ static struct zmk_hid_report report = {
 
 int zmk_hid_press_key(zmk_key code)
 {
+    if (code >= KC_LCTL && code <= KC_RGUI)
+    {
+        return zmk_hid_register_mod(code - KC_LCTL);
+    }
+
     if (code > ZMK_HID_MAX_KEYCODE)
     {
         return -EINVAL;
@@ -38,6 +59,11 @@ int zmk_hid_press_key(zmk_key code)
 
 int zmk_hid_release_key(zmk_key code)
 {
+    if (code >= KC_LCTL && code <= KC_RGUI)
+    {
+        return zmk_hid_unregister_mod(code - KC_LCTL);
+    }
+
     if (code > ZMK_HID_MAX_KEYCODE)
     {
         return -EINVAL;

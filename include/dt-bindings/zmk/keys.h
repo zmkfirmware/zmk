@@ -60,13 +60,25 @@
 
 #define KC_APP 0x65
 
+#define KC_LCTL 0xE0
+#define KC_LSFT 0xE1
+#define KC_LALT 0xE2
+#define KC_LGUI 0xE3
+#define KC_RCTL 0xE4
+#define KC_RSFT 0xE5
+#define KC_RALT 0xE6
 #define KC_RGUI 0xE7
-
-#define MD_SHFT 0x01
-#define KC_ALT 0x02
-#define KC_CTRL 0x03
 
 #define ZC_TRNS 0xF0
 #define ZC_NOOP 0xF1
 
 #define ZC_CSTM(n) (0xFF + n)
+
+#define MOD_LCTL 0x00
+#define MOD_LSFT 0x01
+#define MOD_LALT 0x02
+#define MOD_LGUI 0x03
+#define MOD_RCTL 0x04
+#define MOD_RSFT 0x05
+#define MOD_RALT 0x06
+#define MOD_RGUI 0x07

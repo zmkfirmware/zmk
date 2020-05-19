@@ -101,6 +101,8 @@ struct zmk_hid_report
     u8_t keys[13];
 } __packed;
 
+int zmk_hid_register_mod(zmk_mod modifier);
+int zmk_hid_unregister_mod(zmk_mod modifier);
 int zmk_hid_press_key(zmk_key key);
 int zmk_hid_release_key(zmk_key key);
 

@@ -33,6 +33,7 @@ int zmk_endpoints_send_key_event(struct zmk_key_event key_event)
     struct zmk_hid_report *report;
     int err;
 
+
     if (key_event.pressed)
     {
         zmk_hid_press_key(key_event.key);
