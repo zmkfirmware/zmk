@@ -26,6 +26,8 @@ with a less restritive license and better BLE support, built on top of the [Zeph
   - Need to figure out how to do "custom" GATT services. Custom UUID?
   - Do we need to send any state updates over from primary to secondary side?
 - Encoders
+- Battery reporting.
+- Low power mode, with wakeup from interrupt?
 
 ## Long Term
 
