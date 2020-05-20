@@ -4,12 +4,13 @@ static struct zmk_hid_report report = {
     .modifiers = 0,
     .keys = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 
-#define _TOGGLE_MOD(mod, state) \
-    if (modifier > MOD_RGUI)    \
-    {                           \
-        return -EINVAL;         \
-    }                           \
-    WRITE_BIT(report.modifiers, mod, state);
+#define _TOGGLE_MOD(mod, state)              \
+    if (modifier > MOD_RGUI)                 \
+    {                                        \
+        return -EINVAL;                      \
+    }                                        \
+    WRITE_BIT(report.modifiers, mod, state); \
+    return 0;
 
 int zmk_hid_register_mod(zmk_mod modifier)
 {
