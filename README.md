@@ -5,15 +5,12 @@ with a less restritive license and better BLE support, built on top of the [Zeph
 
 ## TODO
 
-- Debouncing in the kscan driver itself? Only some GPIO drivers in Zephyr support it "natively"
 - Document boards/shields/keymaps usage.
 - Move most Kconfig setings to the board/keymap defconfigs and out of the toplevel `prj.conf` file.
 - Merge the Kscan GPIO driver upstream, or integrate it locally, to avoid use of Zephyr branch.
 - Display support, including displaying BLE SC auth numbers for "numeric comparison" mode if we have the screen.
 - Fix BT settings to work w/ Zephyr. Do we really need them?
 - Tests?
-- Update the kscan GPIO driver to use interrupts.
-  - Try disabling callbacks for the read pins temporarily when scanning, then re-enabling them.
 
 # Missing Features
 
