@@ -7,6 +7,7 @@
 #include <zephyr.h>
 #include <device.h>
 #include <devicetree.h>
+#include <settings/settings.h>
 
 #include <zmk/matrix.h>
 #include <zmk/kscan.h>
@@ -25,6 +26,11 @@ void main(void)
 
 	if (zmk_endpoints_init())
 	{
+		printk("ENDPOINT INIT FAILED\n");
 		return;
 	}
+
+#ifdef CONFIG_SETTINGS
+	settings_load();
+#endif
 }
