@@ -55,7 +55,7 @@ zmk_key zmk_keymap_keycode_from_position(u32_t row, u32_t column)
 	{
 		if ((zmk_keymap_layer_state & BIT(layer)) == BIT(layer) || layer == zmk_keymap_layer_default)
 		{
-			zmk_key key = zmk_keymap[layer][(row * ZMK_MATRIX_ROWS) + column];
+			zmk_key key = zmk_keymap[layer][(row * ZMK_MATRIX_COLS) + column];
 			if (key == ZC_TRNS)
 			{
 				continue;
