@@ -25,6 +25,14 @@ config ZMK_KSCAN_MOCK_DRIVER
 	bool "Enable mock kscan driver to simulate key presses"
 	default n
 
+menu "ZMK Actions"
+
+config ZMK_ACTION_MOD_TAP
+	bool "Enable the Mod-Tap Action"
+	default true
+	
+endmenu
+
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"

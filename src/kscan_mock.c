@@ -68,7 +68,7 @@ static void kscan_mock_work_handler(struct k_work *work)
     struct kscan_mock_config *cfg = data->dev->config_info;
 
     u32_t ev = cfg->events[data->event_index++];
-    LOG_DBG("Triggering ev %d\n", ev);
+    LOG_DBG("ev %u row %d column %d state %d\n", ev, ZMK_MOCK_ROW(ev), ZMK_MOCK_COL(ev), ZMK_MOCK_IS_PRESS(ev));
     data->callback(data->dev, ZMK_MOCK_ROW(ev), ZMK_MOCK_COL(ev), ZMK_MOCK_IS_PRESS(ev));
     kscan_mock_schedule_next_event(data->dev);
 }
@@ -92,10 +92,6 @@ static int kscan_mock_init(struct device *dev)
 {
     struct kscan_mock_data *data = dev->driver_data;
     const struct kscan_mock_config *cfg = dev->config_info;
-
-    printk("Init first event: %d\n", cfg->events[0]);
-
-    int err;
 
     data->dev = dev;
     k_delayed_work_init(&data->work, kscan_mock_work_handler);

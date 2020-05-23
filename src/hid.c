@@ -21,6 +21,18 @@ int zmk_hid_unregister_mod(zmk_mod modifier)
     _TOGGLE_MOD(modifier, false);
 }
 
+int zmk_hid_register_mods(zmk_mod_flags modifiers)
+{
+    report.modifiers |= modifiers;
+    printk("After register mods %d have %d\n", modifiers, report.modifiers);
+}
+
+int zmk_hid_unregister_mods(zmk_mod_flags modifiers)
+{
+    report.modifiers &= ~modifiers;
+    printk("After unregister mods %d have %d\n", modifiers, report.modifiers);
+}
+
 #define KEY_OFFSET 0x02
 #define MAX_KEYS 6
 
