@@ -21,13 +21,12 @@ config ZMK_BLE_PASSKEY_ENTRY
 
 endif
 
-module = ZMK_KSCAN
-module-str = zmk_kscan
-source "subsys/logging/Kconfig.template.log_config"
+config ZMK_KSCAN_MOCK_DRIVER
+	bool "Enable mock kscan driver to simulate key presses"
+	default n
 
-module = ZMK_USB_HID
-module-str = zmk_usb_hid
+module = ZMK
+module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
-
 
 source "Kconfig.zephyr"

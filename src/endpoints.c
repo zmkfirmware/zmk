@@ -4,14 +4,19 @@
 #include <zmk/usb_hid.h>
 #include <zmk/hog.h>
 
+#include <logging/log.h>
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
 int zmk_endpoints_init()
 {
     int err;
 
+    LOG_DBG("");
+
     err = zmk_usb_hid_init();
     if (err)
     {
-        printk("USB HID Init Failed\n");
+        LOG_ERR("USB HID Init Failed\n");
         return err;
     }
 
@@ -19,7 +24,7 @@ int zmk_endpoints_init()
     err = zmk_hog_init();
     if (err)
     {
-        printk("HOG Init Failed\n");
+        LOG_ERR("HOG Init Failed\n");
         return err;
     }
 
@@ -32,6 +37,8 @@ int zmk_endpoints_send_key_event(struct zmk_key_event key_event)
 {
     struct zmk_hid_report *report;
     int err;
+
+    LOG_DBG("key %lld, state %d\n", key_event.key, key_event.pressed);
 
 
     if (key_event.pressed)
@@ -54,8 +61,7 @@ int zmk_endpoints_send_key_event(struct zmk_key_event key_event)
     err = zmk_hog_send_report(report);
     if (err)
     {
-        printk("FAILED TO SEND OVER HOG: %d\n", err);
-        // LOG_DBG("HID Over GATTP Send Failed");
+        LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
     }
 #endif /* CONFIG_ZMK_BLE */
 

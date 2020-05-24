@@ -9,7 +9,7 @@
 #include <drivers/kscan.h>
 #include <logging/log.h>
 
-LOG_MODULE_REGISTER(zmk_kscan, CONFIG_ZMK_KSCAN_LOG_LEVEL);
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/keymap.h>
 #include <zmk/handlers.h>

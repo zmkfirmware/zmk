@@ -1,0 +1,17 @@
+description: |
+  Allows defining a mock keyboard scan driver that simulates periodic events.
+
+compatible: "zmk,kscan-mock"
+
+properties:
+  label:
+    type: string
+  event-period:
+    type: int
+    description: Milliseconds between each generated event
+  events:
+    type: array
+  rows:
+    type: int
+  columns:
+    type: int

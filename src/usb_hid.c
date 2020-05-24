@@ -8,7 +8,7 @@
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
 
-LOG_MODULE_REGISTER(zmk_usb_hid, CONFIG_ZMK_USB_HID_LOG_LEVEL);
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static enum usb_dc_status_code usb_status;
 

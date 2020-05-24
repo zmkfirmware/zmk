@@ -9,6 +9,9 @@
 #include <devicetree.h>
 #include <settings/settings.h>
 
+#include <logging/log.h>
+LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
+
 #include <zmk/matrix.h>
 #include <zmk/kscan.h>
 #include <zmk/endpoints.h>
