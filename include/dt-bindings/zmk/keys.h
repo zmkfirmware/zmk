@@ -74,11 +74,23 @@
 
 #define ZC_CSTM(n) (0xFF + n)
 
-#define MOD_LCTL 0x00
-#define MOD_LSFT 0x01
-#define MOD_LALT 0x02
-#define MOD_LGUI 0x03
-#define MOD_RCTL 0x04
-#define MOD_RSFT 0x05
-#define MOD_RALT 0x06
-#define MOD_RGUI 0x07
+#define MOD_LCTL (1 << 0x00)
+#define MOD_LSFT (1 << 0x01)
+#define MOD_LALT (1 << 0x02)
+#define MOD_LGUI (1 << 0x03)
+#define MOD_RCTL (1 << 0x04)
+#define MOD_RSFT (1 << 0x05)
+#define MOD_RALT (1 << 0x06)
+#define MOD_RGUI (1 << 0x07)
+
+#define ZK_ACTION(k) (k >> 24)
+#define _ACTION(a) (a << 24)
+#define _ACTION_MODS(m) (m << 16)
+#define ZK_KEY(a) (a & 0xFFFF)
+#define ZK_MODS(a) ((a >> 16) & 0xFF)
+
+#define ZMK_ACTION_KEY 0x01
+#define ZMK_ACTION_MOD_TAP 0x01
+#define ZMK_ACTION_ONE_SHOT 0x02
+
+#define MT(mods, kc) (_ACTION(ZMK_ACTION_MOD_TAP) + _ACTION_MODS(mods) + kc)

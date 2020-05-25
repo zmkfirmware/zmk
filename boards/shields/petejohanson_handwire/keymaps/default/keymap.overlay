@@ -18,7 +18,7 @@
 			label = "DEFAULT";
 			keys =
 	<
-	KC_A KC_B
+	KC_A MT(MOD_LSFT, KC_B)
 	CC_RAIS CC_LOWR
 	>;
 		};

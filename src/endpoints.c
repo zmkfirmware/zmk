@@ -33,24 +33,10 @@ int zmk_endpoints_init()
     return 0;
 }
 
-int zmk_endpoints_send_key_event(struct zmk_key_event key_event)
+int zmk_endpoints_send_report()
 {
-    struct zmk_hid_report *report;
     int err;
-
-    LOG_DBG("key %lld, state %d\n", key_event.key, key_event.pressed);
-
-
-    if (key_event.pressed)
-    {
-        zmk_hid_press_key(key_event.key);
-    }
-    else
-    {
-        zmk_hid_release_key(key_event.key);
-    }
-
-    report = zmk_hid_get_report();
+    struct zmk_hid_report *report = zmk_hid_get_report();
 
     // if (zmk_usb_hid_send_report(report) != 0)
     // {
@@ -66,4 +52,20 @@ int zmk_endpoints_send_key_event(struct zmk_key_event key_event)
 #endif /* CONFIG_ZMK_BLE */
 
     return 0;
+}
+
+int zmk_endpoints_send_key_event(struct zmk_key_event key_event)
+{
+    LOG_DBG("key %d, state %d\n", key_event.key, key_event.pressed);
+
+    if (key_event.pressed)
+    {
+        zmk_hid_press_key(key_event.key);
+    }
+    else
+    {
+        zmk_hid_release_key(key_event.key);
+    }
+
+    return zmk_endpoints_send_report();
 }
