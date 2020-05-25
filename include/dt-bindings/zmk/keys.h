@@ -86,6 +86,7 @@
 #define ZK_ACTION(k) (k >> 24)
 #define _ACTION(a) (a << 24)
 #define _ACTION_MODS(m) (m << 16)
+#define ZK_KEY(a) (a & 0xFFFF)
 #define ZK_MODS(a) ((a >> 16) & 0xFF)
 
 #define ZMK_ACTION_KEY 0x01

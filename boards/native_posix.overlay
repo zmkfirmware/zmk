@@ -13,7 +13,8 @@
 
 		rows = <2>;
 		columns = <2>;
-		events = <ZMK_MOCK_PRESS(0,0,800) ZMK_MOCK_RELEASE(0,0,800)>;
+		events = <ZMK_MOCK_PRESS(0,1,300) ZMK_MOCK_PRESS(0,0,300) ZMK_MOCK_RELEASE(0,0,300) ZMK_MOCK_RELEASE(0,1,300)>;
+		// events = <ZMK_MOCK_PRESS(0,0,800) ZMK_MOCK_RELEASE(0,0,800) ZMK_MOCK_PRESS(0,1,800) ZMK_MOCK_RELEASE(0,1,800)>;
 	};
 
 	keymap0: keymap {
@@ -29,7 +30,7 @@
 			label = "DEFAULT";
 			keys =
 	<
-	KC_A KC_B
+	KC_A MT(MOD_LSFT, KC_B)
 	KC_C KC_D
 	>;
 		};

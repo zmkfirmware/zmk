@@ -56,9 +56,6 @@ int zmk_endpoints_send_report()
 
 int zmk_endpoints_send_key_event(struct zmk_key_event key_event)
 {
-    struct zmk_hid_report *report;
-    int err;
-
     LOG_DBG("key %d, state %d\n", key_event.key, key_event.pressed);
 
     if (key_event.pressed)

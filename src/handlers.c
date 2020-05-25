@@ -32,8 +32,16 @@ bool zmk_handle_action(zmk_action action, struct zmk_key_event *key_event)
 			zmk_hid_unregister_mods(mods);
 			if (action_effect_pending & BIT(flattened_index))
 			{
-				// Allow baseline keycode to flow to the endpoints!
-				return true;
+				struct zmk_key_event non_mod_event =
+					{
+						.row = key_event->row,
+						.column = key_event->column,
+						.key = ZK_KEY(key_event->key),
+						.pressed = true};
+
+				zmk_handle_key(non_mod_event);
+				non_mod_event.pressed = false;
+				zmk_handle_key(non_mod_event);
 			}
 			else
 			{
