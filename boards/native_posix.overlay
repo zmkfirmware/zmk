@@ -7,14 +7,39 @@
 		zmk,keymap = &keymap0;
 	};
 
-	kscan0: kscan {
+	kscan0: kscan_0 {
+		compatible = "zmk,kscan-composite";
+		label = "KSCAN_COMP";
+		rows = <2>;
+		columns = <4>;
+
+		left: left {
+			kscan = <&left_hand>;
+		};
+
+		right: right {
+			kscan = <&right_hand>;
+			column-offset = <2>;
+		};
+	};
+
+	left_hand: kscan_1 {
 		compatible = "zmk,kscan-mock";
-		label = "KSCAN_MOCK0";
+		label = "KSCAN_LEFT";
 
 		rows = <2>;
 		columns = <2>;
 		events = <ZMK_MOCK_PRESS(0,1,300) ZMK_MOCK_PRESS(0,0,300) ZMK_MOCK_RELEASE(0,0,300) ZMK_MOCK_RELEASE(0,1,300)>;
 		// events = <ZMK_MOCK_PRESS(0,0,800) ZMK_MOCK_RELEASE(0,0,800) ZMK_MOCK_PRESS(0,1,800) ZMK_MOCK_RELEASE(0,1,800)>;
+	};
+
+	right_hand: kscan_2 {
+		compatible = "zmk,kscan-mock";
+		label = "KSCAN_RIGHT";
+
+		rows = <2>;
+		columns = <2>;
+		events = <ZMK_MOCK_PRESS(1,1,800) ZMK_MOCK_RELEASE(1,1,100) ZMK_MOCK_PRESS(0,1,800) ZMK_MOCK_RELEASE(0,1,100)>;
 	};
 
 	keymap0: keymap {
@@ -29,20 +54,26 @@
 		default: layer_0 {
 			label = "DEFAULT";
 			keys =
-	<
-	KC_A MT(MOD_LSFT, KC_B)
-	KC_C KC_D
-	>;
+			<
+				KC_A MT(MOD_LSFT, KC_B) KC_C KC_D
+				KC_E KC_F KC_G KC_H
+			>;
 		};
 
 		lower: layer_1 {
 			label = "LOWER";
-			keys = <KC_D KC_C ZC_TRNS ZC_TRNS>;
+			keys = <
+				KC_A KC_B KC_C KC_D
+				KC_E KC_F KC_G KC_H
+			>;
 		};
 
 		raise: layer_2 {
 			label = "RAISE";
-			keys = <KC_C KC_D ZC_TRNS ZC_TRNS>;
+			keys = <
+				KC_E KC_F KC_G KC_H 
+				KC_A KC_B KC_C KC_D
+			>;
 		};
 	};
 };

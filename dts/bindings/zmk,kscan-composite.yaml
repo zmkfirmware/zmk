@@ -1,0 +1,27 @@
+description: |
+  Allows composing multiple KSCAN devices into one virtual device
+
+compatible: "zmk,kscan-composite"
+
+properties:
+  label:
+    type: string
+  rows:
+    type: int
+  columns:
+    type: int
+
+child-binding:
+  description: "Details of an included KSCAN devices"
+
+  properties:
+    label:
+      type: string
+    kscan:
+      type: phandle
+    row-offset:
+      type: int
+      default: 0
+    column-offset:
+      type: int
+      default: 0

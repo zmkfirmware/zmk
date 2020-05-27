@@ -25,6 +25,11 @@ config ZMK_KSCAN_MOCK_DRIVER
 	bool "Enable mock kscan driver to simulate key presses"
 	default n
 
+
+config ZMK_KSCAN_COMPOSITE_DRIVER
+	bool "Enable composite kscan driver to combine kscan devices"
+	default n
+
 menu "ZMK Actions"
 
 config ZMK_ACTION_MOD_TAP
