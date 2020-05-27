@@ -131,8 +131,6 @@ static void zmk_ble_ready(int err)
         return;
     }
 
-    printk("Bluetooth initialized\n");
-
     err = bt_le_adv_start(BT_LE_ADV_CONN_NAME, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
     if (err)
     {
