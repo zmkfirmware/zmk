@@ -6,8 +6,8 @@ manifest:
       url-base: https://github.com/petejohanson
   projects:
     - name: zephyr
-      remote: petejohanson
-      revision: driver-kscan-gpio-matrix-first-pass
+      remote: zephyrproject-rtos
+      revision: master
       import: true
   self:
     path: zmk

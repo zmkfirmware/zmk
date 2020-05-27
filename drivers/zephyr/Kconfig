@@ -1,0 +1,11 @@
+config ZMK_KSCAN_GPIO_DRIVER
+	bool "Enable GPIO kscan driver to simulate key presses"
+	default y
+	select GPIO
+
+config ZMK_KSCAN_INIT_PRIORITY
+	int "Keyboard scan driver init priority"
+	default 40
+	help
+	  Keyboard scan device driver initialization priority.
+

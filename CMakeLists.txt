@@ -4,13 +4,21 @@ cmake_minimum_required(VERSION 3.13.1)
 list(APPEND BOARD_ROOT ${CMAKE_SOURCE_DIR})
 list(APPEND DTS_ROOT ${CMAKE_SOURCE_DIR})
 
+# Add our custom Zephyr module for drivers w/ syscalls, etc.
+list(APPEND DTS_ROOT ${CMAKE_SOURCE_DIR}/drivers/zephyr)
+
+list(APPEND ZEPHYR_EXTRA_MODULES
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
+)
+list(APPEND SYSCALL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/drivers/zephyr)
+
 include(cmake/keymap.cmake)
 
 find_package(Zephyr)
 project(zmk)
 
+
 if(EXISTS ${KEYMAP_DIR}/keymap.c)
-	message(STATUS "ADDING THE KEYMAP SOURCE")
 	target_sources(app PRIVATE ${KEYMAP_DIR}/keymap.c)
 endif()
 
