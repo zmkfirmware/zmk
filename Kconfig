@@ -42,4 +42,8 @@ module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
 
+rsource "boards/Kconfig"
+rsource "boards/shields/*/Kconfig.defconfig"
+
 source "Kconfig.zephyr"
+
