@@ -24,13 +24,13 @@ int zmk_hid_unregister_mod(zmk_mod modifier)
 int zmk_hid_register_mods(zmk_mod_flags modifiers)
 {
     report.modifiers |= modifiers;
-    printk("After register mods %d have %d\n", modifiers, report.modifiers);
+    return 0;
 }
 
 int zmk_hid_unregister_mods(zmk_mod_flags modifiers)
 {
     report.modifiers &= ~modifiers;
-    printk("After unregister mods %d have %d\n", modifiers, report.modifiers);
+    return 0;
 }
 
 #define KEY_OFFSET 0x02
