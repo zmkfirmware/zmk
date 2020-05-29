@@ -11,7 +11,6 @@ Basic WIP website to learn more: https://zmk.netlify.app/
 
 - Document boards/shields/keymaps usage.
 - Move most Kconfig setings to the board/keymap defconfigs and out of the toplevel `prj.conf` file.
-- Merge the Kscan GPIO driver upstream, or integrate it locally, to avoid use of Zephyr branch.
 - Display support, including displaying BLE SC auth numbers for "numeric comparison" mode if we have the screen.
 - Fix BT settings to work w/ Zephyr. Do we really need them?
 - Tests?
