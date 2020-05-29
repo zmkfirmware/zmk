@@ -13,12 +13,14 @@ int zmk_endpoints_init()
 
     LOG_DBG("");
 
+#ifdef CONFIG_ZMK_USB
     err = zmk_usb_hid_init();
     if (err)
     {
         LOG_ERR("USB HID Init Failed\n");
         return err;
     }
+#endif /* CONFIG_ZMK_USB */
 
 #ifdef CONFIG_ZMK_BLE
     err = zmk_hog_init();
@@ -38,10 +40,12 @@ int zmk_endpoints_send_report()
     int err;
     struct zmk_hid_report *report = zmk_hid_get_report();
 
-    // if (zmk_usb_hid_send_report(report) != 0)
-    // {
-    //     // LOG_DBG("USB Send Failed");
-    // }
+#ifdef CONFIG_ZMK_USB
+    if (zmk_usb_hid_send_report(report) != 0)
+    {
+        LOG_DBG("USB Send Failed");
+    }
+#endif /* CONFIG_ZMK_USB */
 
 #ifdef CONFIG_ZMK_BLE
     err = zmk_hog_send_report(report);

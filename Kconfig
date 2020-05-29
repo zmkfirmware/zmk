@@ -1,11 +1,28 @@
 mainmenu "ZMK Firmware"
 
+config ZMK_KEYBOARD_NAME
+	string "Keyboard Name"
+
+config USB_DEVICE_PRODUCT
+	default ZMK_KEYBOARD_NAME
+
+config BT_DEVICE_NAME
+	default ZMK_KEYBOARD_NAME
+
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
 	int "Size of the event queue for KSCAN events to buffer events"
 	default 4
 
-config ZMK_BLE
-	bool "Enable low energy bluetooth support"
+menu "HID Output Types"
+
+config ZMK_USB
+	bool "USB"
+	select USB
+	select USB_DEVICE_STACK
+	select USB_DEVICE_HID
+
+menuconfig ZMK_BLE
+	bool "BLE (HID over GATT)"
 	select BT
 	select BT_SMP
 	select BT_SMP_SC_PAIR_ONLY
@@ -15,11 +32,30 @@ config ZMK_BLE
 
 if ZMK_BLE
 
+# HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
+config BT_GATT_NOTIFY_MULTIPLE
+	default n
+
+config BT_DEVICE_APPEARANCE
+	default 961
+
 config ZMK_BLE_PASSKEY_ENTRY
 	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
 	default n
 
+# Incresed stack due to settings API usage
+# CONFIG_SYSTEM_WORKQUEUE_STACK_SIZE=2048
+# 
+# CONFIG_BT_SETTINGS=y
+# CONFIG_FLASH=y
+# CONFIG_FLASH_PAGE_LAYOUT=y
+# CONFIG_FLASH_MAP=y
+# CONFIG_NVS=y
+# CONFIG_SETTINGS=y
+
 endif
+
+endmenu
 
 config ZMK_KSCAN_MOCK_DRIVER
 	bool "Enable mock kscan driver to simulate key presses"
@@ -34,7 +70,6 @@ menu "ZMK Actions"
 
 config ZMK_ACTION_MOD_TAP
 	bool "Enable the Mod-Tap Action"
-	default true
 	
 endmenu
 

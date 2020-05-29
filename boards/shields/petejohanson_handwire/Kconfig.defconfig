@@ -1,4 +1,13 @@
 
 if SHIELD_PETEJOHANSON_HANDWIRE
 
+config ZMK_KEYBOARD_NAME
+	default "Pete's Handwire Breadboard"
+
+config ZMK_BLE
+	default y
+
+config ZMK_ACTION_MOD_TAP
+	default y
+
 endif

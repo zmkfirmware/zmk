@@ -10,7 +10,6 @@ Basic WIP website to learn more: https://zmk.netlify.app/
 ## TODO
 
 - Document boards/shields/keymaps usage.
-- Move most Kconfig setings to the board/keymap defconfigs and out of the toplevel `prj.conf` file.
 - Display support, including displaying BLE SC auth numbers for "numeric comparison" mode if we have the screen.
 - Fix BT settings to work w/ Zephyr. Do we really need them?
 - Tests?
