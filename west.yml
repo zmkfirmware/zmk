@@ -6,8 +6,8 @@ manifest:
       url-base: https://github.com/petejohanson
   projects:
     - name: zephyr
-      remote: zephyrproject-rtos
-      revision: master
+      remote: petejohanson
+      revision: kconfig/external-sheilds-shields-as-list-fix
       import: true
   self:
     path: zmk
