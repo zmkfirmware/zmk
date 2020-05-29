@@ -27,6 +27,7 @@ Basic WIP website to learn more: https://zmk.netlify.app/
 - Encoders
 - Battery reporting.
 - Low power mode, with wakeup from interrupt?
+- Better keymaps to avoid needing extra KC_NO for locations in the matrix that don't even exist!
 
 ## Long Term
 
