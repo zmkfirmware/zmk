@@ -2,5 +2,4 @@
 # SPDX-License-Identifier: Apache-2.0
 
 config SHIELD_PETEJOHANSON_HANDWIRE
-	prompt "Pete Johanson Handwire"
 	def_bool $(shields_list_contains,petejohanson_handwire)
