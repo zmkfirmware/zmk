@@ -40,6 +40,7 @@
 #define KC_RET 0x28
 #define KC_ESC 0x29
 #define KC_DEL 0x2A
+#define KC_BKSP KC_DEL
 #define KC_TAB 0x2B
 #define KC_SPC 0x2C
 #define KC_MIN 0x2D
