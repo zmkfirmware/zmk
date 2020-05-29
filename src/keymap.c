@@ -65,5 +65,5 @@ zmk_key zmk_keymap_keycode_from_position(u32_t row, u32_t column)
 		}
 	}
 
-	return ZC_NOOP;
+	return ZC_NO;
 }

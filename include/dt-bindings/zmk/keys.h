@@ -70,7 +70,7 @@
 #define KC_RGUI 0xE7
 
 #define ZC_TRNS 0xF0
-#define ZC_NOOP 0xF1
+#define ZC_NO 0xF1
 
 #define ZC_CSTM(n) (0xFF + n)
 
