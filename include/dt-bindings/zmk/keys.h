@@ -59,7 +59,36 @@
 #define KC_F1 0x3A
 #define KC_F2 0x3B
 
+#define KC_RARW 0x4F
+#define KC_LARW 0x50
+#define KC_DARW 0x51
+#define KC_UARW 0x52
+
+#define KC_KDIV 0x54
+#define KC_KMLT 0x55
+#define KC_KMIN 0x56
+#define KC_KPLS 0x57
+
 #define KC_APP 0x65
+
+#define KC_CURU 0xB4
+
+#define KC_LPRN 0xB6
+#define KC_RPRN 0xB7
+#define KC_LCUR 0xB8
+#define KC_RCUR 0xB9
+
+#define KC_CRRT 0xC3
+#define KC_PRCT 0xC4
+#define KC_LABT 0xC5
+#define KC_RABT 0xC6
+#define KC_AMPS 0xC7
+#define KC_PIPE 0xC9
+#define KC_COLN 0xCB
+#define KC_HASH 0xCC
+#define KC_KSPC 0xCD
+#define KC_ATSN 0xCE
+#define KC_BANG 0xCF
 
 #define KC_LCTL 0xE0
 #define KC_LSFT 0xE1
