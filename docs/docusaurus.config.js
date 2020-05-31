@@ -35,31 +35,31 @@ module.exports = {
           title: "Docs",
           items: [
             {
-              label: "Style Guide",
+              label: "Getting Started",
               to: "docs/",
             },
             {
-              label: "Second Doc",
-              to: "docs/doc2/",
+              label: "Development",
+              to: "docs/dev-setup/",
             },
           ],
         },
         {
-          title: "Community",
-          items: [
-            {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
-            {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus",
-            },
-          ],
+          // title: "Community",
+          // items: [
+          //   {
+          //     label: "Stack Overflow",
+          //     href: "https://stackoverflow.com/questions/tagged/docusaurus",
+          //   },
+          //   {
+          //     label: "Discord",
+          //     href: "https://discordapp.com/invite/docusaurus",
+          //   },
+          //   {
+          //     label: "Twitter",
+          //     href: "https://twitter.com/docusaurus",
+          //   },
+          // ],
         },
         {
           title: "More",
@@ -69,13 +69,13 @@ module.exports = {
               to: "blog",
             },
             {
-              label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              label: "GitLab",
+              href: "https://gitlab.com/zmkproject/zmk",
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} ZMK Project Contributors, Built with Docusaurus.`,
     },
   },
   presets: [
