@@ -40,6 +40,9 @@ bool zmk_handle_action(zmk_action action, struct zmk_key_event *key_event)
 						.pressed = true};
 
 				zmk_handle_key(non_mod_event);
+				// A small sleep is needed to ensure device layer sends initial
+				// key, before we send the release.
+				k_msleep(10);
 				non_mod_event.pressed = false;
 				zmk_handle_key(non_mod_event);
 			}
