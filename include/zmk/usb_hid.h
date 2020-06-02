@@ -9,6 +9,6 @@
 
 int zmk_usb_hid_init();
 
-int zmk_usb_hid_send_report(const struct zmk_hid_report *report);
+int zmk_usb_hid_send_report(u8_t *report, size_t len);
 
 #endif

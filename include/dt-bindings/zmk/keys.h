@@ -99,10 +99,24 @@
 #define KC_RALT 0xE6
 #define KC_RGUI 0xE7
 
-#define ZC_TRNS 0xF0
-#define ZC_NO 0xF1
+#define KC_VOLU 0x80
+#define KC_VOLD 0x81
 
-#define ZC_CSTM(n) (0xFF + n)
+/* The following are select consumer page usages */
+
+#define KC_MNXT 0x100
+#define KC_MPRV 0x101
+#define KC_MSTP 0x102
+#define KC_MJCT 0x103
+#define KC_MPLY 0x104
+#define KC_MMUT 0x105
+#define KC_MVLU 0x106
+#define KC_MVLD 0x107
+
+#define ZC_TRNS (0xFFFF)
+#define ZC_NO (0xFFFF - 1)
+
+#define ZC_CSTM(n) (0xFFF + n)
 
 #define MOD_LCTL (1 << 0x00)
 #define MOD_LSFT (1 << 0x01)
@@ -118,6 +132,8 @@
 #define _ACTION_MODS(m) (m << 16)
 #define ZK_KEY(a) (a & 0xFFFF)
 #define ZK_MODS(a) ((a >> 16) & 0xFF)
+
+#define ZK_IS_CONSUMER(k) (ZK_KEY(k) >= 0x100)
 
 #define ZMK_ACTION_KEY 0x01
 #define ZMK_ACTION_MOD_TAP 0x01

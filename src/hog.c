@@ -49,6 +49,11 @@ static struct hids_report input = {
     .type = HIDS_INPUT,
 };
 
+static struct hids_report consumer_input = {
+    .id = 0x02,
+    .type = HIDS_INPUT,
+};
+
 static bool host_requests_notification = false;
 static u8_t ctrl_point;
 // static u8_t proto_mode;
@@ -70,8 +75,14 @@ static ssize_t read_hids_report_map(struct bt_conn *conn, const struct bt_gatt_a
 
 static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
 {
-    struct zmk_hid_report *report = zmk_hid_get_report();
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, report, sizeof(struct zmk_hid_report));
+    struct zmk_hid_keypad_report_body *report_body = &zmk_hid_get_keypad_report()->body;
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body, sizeof(struct zmk_hid_keypad_report_body));
+}
+
+static ssize_t read_hids_consumer_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
+{
+    struct zmk_hid_consumer_report_body *report_body = &zmk_hid_get_consumer_report()->body;
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body, sizeof(struct zmk_hid_consumer_report_body));
 }
 
 // static ssize_t write_proto_mode(struct bt_conn *conn,
@@ -123,12 +134,25 @@ BT_GATT_SERVICE_DEFINE(hog_svc,
                                    BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
                        BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ,
                                           read_hids_report_ref, NULL, &input),
+                       BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT,
+                                              BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                                              BT_GATT_PERM_READ_ENCRYPT,
+                                              read_hids_consumer_input_report, NULL, NULL),
+                       BT_GATT_CCC(input_ccc_changed,
+                                   BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
+                       BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ,
+                                          read_hids_report_ref, NULL, &consumer_input),
                        BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_CTRL_POINT,
                                               BT_GATT_CHRC_WRITE_WITHOUT_RESP,
                                               BT_GATT_PERM_WRITE,
                                               NULL, write_ctrl_point, &ctrl_point));
 
-int zmk_hog_send_report(struct zmk_hid_report *report)
+int zmk_hog_send_keypad_report(struct zmk_hid_keypad_report_body *report)
 {
-    return bt_gatt_notify(NULL, &hog_svc.attrs[5], report, sizeof(struct zmk_hid_report));
+    return bt_gatt_notify(NULL, &hog_svc.attrs[5], report, sizeof(struct zmk_hid_keypad_report_body));
+};
+
+int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report)
+{
+    return bt_gatt_notify(NULL, &hog_svc.attrs[10], report, sizeof(struct zmk_hid_consumer_report_body));
 };

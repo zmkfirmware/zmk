@@ -16,8 +16,7 @@ Basic WIP website to learn more: https://zmk.netlify.app/
 
 # Missing Features
 
-- Consumer Key Support (play/pause, etc)
-- Mod Tap
+- Layer Tap
 - One Shot
 - Shell over BLE?
 - Split support

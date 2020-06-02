@@ -1,15 +1,25 @@
+#include <logging/log.h>
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
 #include <zmk/hid.h>
 
-static struct zmk_hid_report report = {
-    .modifiers = 0,
-    .keys = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+static struct zmk_hid_keypad_report kp_report = {
+    .report_id = 1,
+    .body = {
+        .modifiers = 0,
+        .keys = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}};
 
-#define _TOGGLE_MOD(mod, state)              \
-    if (modifier > MOD_RGUI)                 \
-    {                                        \
-        return -EINVAL;                      \
-    }                                        \
-    WRITE_BIT(report.modifiers, mod, state); \
+static struct zmk_hid_consumer_report consumer_report = {
+    .report_id = 2,
+    .body = {
+        .keys = 0x00}};
+
+#define _TOGGLE_MOD(mod, state)                      \
+    if (modifier > MOD_RGUI)                         \
+    {                                                \
+        return -EINVAL;                              \
+    }                                                \
+    WRITE_BIT(kp_report.body.modifiers, mod, state); \
     return 0;
 
 int zmk_hid_register_mod(zmk_mod modifier)
@@ -23,13 +33,13 @@ int zmk_hid_unregister_mod(zmk_mod modifier)
 
 int zmk_hid_register_mods(zmk_mod_flags modifiers)
 {
-    report.modifiers |= modifiers;
+    kp_report.body.modifiers |= modifiers;
     return 0;
 }
 
 int zmk_hid_unregister_mods(zmk_mod_flags modifiers)
 {
-    report.modifiers &= ~modifiers;
+    kp_report.body.modifiers &= ~modifiers;
     return 0;
 }
 
@@ -40,56 +50,81 @@ int zmk_hid_unregister_mods(zmk_mod_flags modifiers)
 #define TOGGLE_BOOT_KEY(match, val)                      \
     for (int idx = 0; idx < MAX_KEYS; idx++)             \
     {                                                    \
-        if (report.boot.keys[idx + KEY_OFFSET] != match) \
+        if (kp_report.boot.keys[idx + KEY_OFFSET] != match) \
         {                                                \
             continue;                                    \
         }                                                \
-        report.boot.keys[idx + KEY_OFFSET] = val;        \
+        kp_report.boot.keys[idx + KEY_OFFSET] = val;        \
         break;                                           \
     }
 */
 
-#define TOGGLE_KEY(code, val) WRITE_BIT(report.keys[code / 8], code % 8, val)
+#define TOGGLE_KEY(code, val) WRITE_BIT(kp_report.body.keys[code / 8], code % 8, val)
 
-int zmk_hid_press_key(zmk_key code)
+#define TOGGLE_CONSUMER(key, state) \
+    WRITE_BIT(consumer_report.body.keys, (key - 0x100), state);
+
+enum zmk_hid_report_changes zmk_hid_press_key(zmk_key code)
 {
     if (code >= KC_LCTL && code <= KC_RGUI)
     {
         return zmk_hid_register_mod(code - KC_LCTL);
     }
 
-    if (code > ZMK_HID_MAX_KEYCODE)
+    if (ZK_IS_CONSUMER(code))
     {
-        return -EINVAL;
+        LOG_DBG("Toggling a consumer key!");
+        TOGGLE_CONSUMER(code, true);
+        return Consumer;
     }
+    else
+    {
+        if (code > ZMK_HID_MAX_KEYCODE)
+        {
+            return -EINVAL;
+        }
 
-    // TOGGLE_BOOT_KEY(0U, code);
+        // TOGGLE_BOOT_KEY(0U, code);
 
-    TOGGLE_KEY(code, true);
+        TOGGLE_KEY(code, true);
 
-    return 0;
+        return Keypad;
+    }
 };
 
-int zmk_hid_release_key(zmk_key code)
+enum zmk_hid_report_changes zmk_hid_release_key(zmk_key code)
 {
     if (code >= KC_LCTL && code <= KC_RGUI)
     {
         return zmk_hid_unregister_mod(code - KC_LCTL);
     }
 
-    if (code > ZMK_HID_MAX_KEYCODE)
+    if (ZK_IS_CONSUMER(code))
     {
-        return -EINVAL;
+        TOGGLE_CONSUMER(code, false);
+        return Consumer;
     }
+    else
+    {
+        if (code > ZMK_HID_MAX_KEYCODE)
+        {
+            return -EINVAL;
+        }
 
-    // TOGGLE_BOOT_KEY(code, 0U);
+        // TOGGLE_BOOT_KEY(0U, code);
 
-    TOGGLE_KEY(code, false);
+        TOGGLE_KEY(code, false);
 
-    return 0;
+        return Keypad;
+    }
 };
 
-struct zmk_hid_report *zmk_hid_get_report()
+struct zmk_hid_keypad_report *zmk_hid_get_keypad_report()
 {
-    return &report;
+    return &kp_report;
+}
+
+struct zmk_hid_consumer_report *zmk_hid_get_consumer_report()
+{
+    return &consumer_report;
 }

@@ -46,7 +46,7 @@ bool zmk_handle_action(zmk_action action, struct zmk_key_event *key_event)
 			else
 			{
 				// Since not sending a keycode, at least send the report w/ the mod removed
-				zmk_endpoints_send_report();
+				zmk_endpoints_send_report(Keypad);
 			}
 		}
 		break;

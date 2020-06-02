@@ -1,4 +1,6 @@
 
+#include <logging/log.h>
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/keymap.h>
 
 static u32_t zmk_keymap_layer_state = 0;
@@ -55,7 +57,10 @@ zmk_key zmk_keymap_keycode_from_position(u32_t row, u32_t column)
 	{
 		if ((zmk_keymap_layer_state & BIT(layer)) == BIT(layer) || layer == zmk_keymap_layer_default)
 		{
-			zmk_key key = zmk_keymap[layer][(row * ZMK_MATRIX_COLS) + column];
+			u8_t key_index = (row * ZMK_MATRIX_COLS) + column;
+			LOG_DBG("Getting key at index %d", key_index);
+
+			zmk_key key = zmk_keymap[layer][key_index];
 			if (key == ZC_TRNS)
 			{
 				continue;

@@ -14,14 +14,14 @@ static enum usb_dc_status_code usb_status;
 
 static struct device *hid_dev;
 
-int zmk_usb_hid_send_report(const struct zmk_hid_report *report)
+int zmk_usb_hid_send_report(const u8_t *report, size_t len)
 {
 	if (usb_status == USB_DC_SUSPEND)
 	{
 		return usb_wakeup_request();
 	}
 
-	return hid_int_ep_write(hid_dev, (u8_t *)report, sizeof(struct zmk_hid_report), NULL);
+	return hid_int_ep_write(hid_dev, report, len, NULL);
 }
 
 void usb_hid_status_cb(enum usb_dc_status_code status, const u8_t *params)

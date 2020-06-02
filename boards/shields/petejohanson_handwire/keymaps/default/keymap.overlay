@@ -18,19 +18,24 @@
 			label = "DEFAULT";
 			keys =
 	<
-	KC_A MT(MOD_LSFT, KC_B)
-	CC_RAIS CC_LOWR
+	KC_A MT(MOD_LSFT, KC_B)    ZC_NO ZC_NO
+	CC_RAIS CC_LOWR            ZC_NO ZC_NO
 	>;
 		};
 
 		lower: layer_1 {
 			label = "LOWER";
-			keys = <KC_D KC_C ZC_TRNS ZC_TRNS>;
+			keys = <
+			KC_MPLY KC_MNXT    ZC_NO ZC_NO
+			ZC_TRNS ZC_TRNS    ZC_NO ZC_NO
+			>;
 		};
 
 		raise: layer_2 {
 			label = "RAISE";
-			keys = <KC_C KC_D ZC_TRNS ZC_TRNS>;
+			keys = <
+			KC_C KC_D          ZC_NO ZC_NO
+			ZC_TRNS ZC_TRNS    ZC_NO ZC_NO>;
 		};
 	};
 };
