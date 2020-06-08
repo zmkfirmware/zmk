@@ -33,7 +33,7 @@ jobs:
           command: 'zephyr-export'
       - name: West Build
         uses: ./.github/actions/zephyr-west # Uses an action in the root directory
-        id: west-zephyr-export
+        id: west-build
         with:
           command: 'build'
           command-args: '-b nucleo_wb55rg -- -DSHIELD=petejohanson_handwire'
