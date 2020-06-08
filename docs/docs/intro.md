@@ -18,7 +18,7 @@ include:
 
 - HID Over GATT (HOG) - This is the official term for Bluetooth Low Energy HID devices.
 - Keymaps and layers with basic keycodes.
-- Somem initial work on one "action", Mod-Tap.
+- Some initial work on one "action", Mod-Tap.
 - Basic HID over USB - This somehow _conflicts_ with BLE at least on the stm32wb55rg dev kit, so investigation needed.
 
 ## Missing Features
