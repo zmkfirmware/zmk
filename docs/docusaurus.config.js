@@ -8,10 +8,10 @@ module.exports = {
   projectName: "zmk", // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: "ZMK",
+      title: "ZMK Firmware",
       logo: {
         alt: "ZMK Logo",
-        src: "img/logo.svg",
+        src: "img/zmk_logo.png",
       },
       links: [
         {
