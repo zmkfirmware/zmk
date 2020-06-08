@@ -54,4 +54,7 @@ RUN wget -q https://raw.githubusercontent.com/zephyrproject-rtos/zephyr/master/s
 ENV ZEPHYR_TOOLCHAIN_VARIANT=zephyr
 ENV ZEPHYR_SDK_INSTALL_DIR=/opt/toolchains/zephyr-sdk-${ZSDK_VERSION}
 
-ENTRYPOINT ["west"]
+COPY ./entrypoint.sh ./
+RUN chmod +x ./entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
