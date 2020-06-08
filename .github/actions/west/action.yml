@@ -1,0 +1,16 @@
+name: "Zephyr West"
+description: 'Action incorporating Zephyr dependencies and West build tool'
+inputs:
+  command:  # id of input
+    description: 'Which west command to execute'
+    required: true
+    default: 'build'
+  command-args:  # id of input
+    description: 'Extra arguments for the west command'
+    required: false
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.command }}
+    - ${{ inputs.command-args }}

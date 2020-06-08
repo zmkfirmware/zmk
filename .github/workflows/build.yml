@@ -1,0 +1,39 @@
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Basic build of the ZMK firmware
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: West Init
+        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        id: west-init
+        with:
+          command: 'init'
+          command-args: '-l .'
+      - name: West Update
+        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        id: west-update
+        with:
+          command: 'update'
+      - name: West Config Zephyr Base
+        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        id: west-config
+        with:
+          command: 'config'
+          command-args: '--global zephyr.base-prefer configfile'
+      - name: West Zephyr Export
+        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        id: west-zephyr-export
+        with:
+          command: 'zephyr-export'
+      - name: West Build
+        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        id: west-zephyr-export
+        with:
+          command: 'build'
+          command-args: '-b nucleo_wb55rg -- -DSHIELD=petejohanson_handwire'
