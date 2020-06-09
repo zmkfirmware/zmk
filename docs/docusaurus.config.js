@@ -1,10 +1,10 @@
 module.exports = {
   title: "ZMK Keyboard Firmware",
-  tagline: "Modern, open source keyboard firmware ",
-  url: "https://your-docusaurus-test-site.com",
+  tagline: "Modern, open source keyboard firmware",
+  url: "https://zmkfirmware.dev",
   baseUrl: "/",
   favicon: "img/favicon.ico",
-  organizationName: "zmkproject", // Usually your GitHub org/user name.
+  organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
   themeConfig: {
     navbar: {
@@ -22,8 +22,8 @@ module.exports = {
         },
         { to: "blog", label: "Blog", position: "left" },
         {
-          href: "https://gitlab.com/zmkproject/zmk",
-          label: "GitLab",
+          href: "https://github.com/zmkfirmware/zmk",
+          label: "GitHub",
           position: "right",
         },
       ],
@@ -45,21 +45,21 @@ module.exports = {
           ],
         },
         {
-          // title: "Community",
-          // items: [
+          title: "Community",
+          items: [
           //   {
           //     label: "Stack Overflow",
           //     href: "https://stackoverflow.com/questions/tagged/docusaurus",
           //   },
-          //   {
-          //     label: "Discord",
-          //     href: "https://discordapp.com/invite/docusaurus",
-          //   },
+             {
+               label: "Discord",
+               href: "https://discord.gg/VJnx9kr",
+             },
           //   {
           //     label: "Twitter",
           //     href: "https://twitter.com/docusaurus",
           //   },
-          // ],
+          ],
         },
         {
           title: "More",
@@ -69,8 +69,8 @@ module.exports = {
               to: "blog",
             },
             {
-              label: "GitLab",
-              href: "https://gitlab.com/zmkproject/zmk",
+              label: "GitHub",
+              href: "https://github.com/zmkfirmware/zmk",
             },
           ],
         },
