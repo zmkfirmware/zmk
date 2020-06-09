@@ -36,4 +36,4 @@ jobs:
         id: west-build
         with:
           command: 'build'
-          command-args: '-b nucleo_wb55rg -- -DSHIELD=petejohanson_handwire'
+          command-args: '-s app -b nucleo_wb55rg -- -DSHIELD=petejohanson_handwire'
