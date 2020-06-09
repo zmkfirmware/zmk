@@ -1,6 +1,6 @@
 # Zephyr Mechanical Keyboard (ZMK) Firmware
 
-![Build Test](https://github.com/zmkfirmware/zmk/workflows/Build%20Test/badge.svg)
+![Build](https://github.com/zmkfirmware/zmk/workflows/Build/badge.svg)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/942d61a9-87c0-4c23-9b51-f5ed0bce495d/deploy-status)](https://app.netlify.com/sites/zmk/deploys)
 
