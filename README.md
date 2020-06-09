@@ -18,6 +18,8 @@ Basic WIP website to learn more: https://zmk.netlify.app/
 
 - Layer Tap
 - One Shot
+- Combos
+- Tap Dance
 - Shell over BLE?
 - Split support
   - custom kscan driver? that recieves events from other side over BLE notifications?
