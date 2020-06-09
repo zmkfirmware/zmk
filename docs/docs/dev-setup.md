@@ -12,7 +12,7 @@ A unix-like environment with Python 3 installed. So far this has been tested on 
 
 ### West Build Command
 
-`west` is the [Zephyr meta-tool](https://docs.zephyrproject.org/latest/guides/west/index.html) used to configure and build Zephyr applications. It can be installed by using the `pip` python package manager:
+`west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/latest/guides/west/index.html) used to configure and build Zephyr™ applications. It can be installed by using the `pip` python package manager:
 
 ```bash
 pip install --user west
@@ -23,9 +23,9 @@ If you don't already have it configured, you may need to update your
 `PATH` to include the pip install path. See [User Installs](https://pip.pypa.io/en/stable/user_guide/#user-installs) and (Stack Overflow)[https://stackoverflow.com/questions/38112756/how-do-i-access-packages-installed-by-pip-user] for more details.
 :::
 
-### Zephyr ARM SDK
+### Zephyr™ ARM SDK
 
-To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr ARM SDK to your system:
+To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
 export ZSDK_VERSION=0.11.3
@@ -44,9 +44,9 @@ git clone https://github.com/zmkfirmware/zmk.git
 
 ### Initialize & Update Zephy Workspace
 
-Since ZMK is build as a Zephyr application, the next step is
+Since ZMK is built as a Zephyr™ application, the next step is
 to use `west` to initialize and update your workspace. The ZMK
-Zephyr application is in the `app/` source directory:
+Zephyr™ application is in the `app/` source directory:
 
 #### Initialize West
 
@@ -60,7 +60,7 @@ west init -l app/
 west update
 ```
 
-#### Export Zephyr Core
+#### Export Zephyr™ Core
 
 ```bash
 west zephyr-export
@@ -89,7 +89,7 @@ west build -b proton_c -- -DSHIELD=kyria -DKEYMAP=default
 
 ### Keyboard With Onboard MCU
 
-Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/latest/guides/porting/board_porting.html) as far as Zephyr is concerned.
+Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/latest/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
 
 Given the following:
 
