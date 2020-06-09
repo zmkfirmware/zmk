@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 
 board_runner_args(jlink "--device=STM32F303VC" "--speed=4000")
 

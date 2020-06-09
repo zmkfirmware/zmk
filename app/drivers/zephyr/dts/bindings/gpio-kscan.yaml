@@ -1,5 +1,5 @@
 # Copyright (c) 2020, Pete Johanson
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 
 description: GPIO keyboard matrix controller
 
@@ -8,18 +8,18 @@ compatible: "gpio-kscan"
 include: kscan.yaml
 
 properties:
-    row-gpios:
-        type: phandle-array
-        required: true
-    col-gpios:
-        type: phandle-array
-        required: true
-    debounce-period:
-        type: int
-        default: 5
-    diode-direction:
-        type: string
-        default: row2col
-        enum:
-          - row2col
-          - col2row
+  row-gpios:
+    type: phandle-array
+    required: true
+  col-gpios:
+    type: phandle-array
+    required: true
+  debounce-period:
+    type: int
+    default: 5
+  diode-direction:
+    type: string
+    default: row2col
+    enum:
+      - row2col
+      - col2row
