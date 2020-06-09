@@ -25,29 +25,29 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: West Init
-        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        uses: zmkfirmware/zephyr-west-action@v0.1.0
         id: west-init
         with:
           command: 'init'
           command-args: '-l app'
       - name: West Update
-        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        uses: zmkfirmware/zephyr-west-action@v0.1.0
         id: west-update
         with:
           command: 'update'
       - name: West Config Zephyr Base
-        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        uses: zmkfirmware/zephyr-west-action@v0.1.0
         id: west-config
         with:
           command: 'config'
           command-args: '--global zephyr.base-prefer configfile'
       - name: West Zephyr Export
-        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        uses: zmkfirmware/zephyr-west-action@v0.1.0
         id: west-zephyr-export
         with:
           command: 'zephyr-export'
       - name: West Build
-        uses: ./.github/actions/zephyr-west # Uses an action in the root directory
+        uses: zmkfirmware/zephyr-west-action@v0.1.0
         id: west-build
         with:
           command: 'build'
