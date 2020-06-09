@@ -9,33 +9,39 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Move files into workspace subdirectory
+        run: |
+          mkdir -p workspace/zmk
+          mv * workspace/zmk || true
       - name: West Init
         uses: ./.github/actions/zephyr-west # Uses an action in the root directory
         id: west-init
         with:
           command: 'init'
-          command-args: '-l .'
-      - name: list files
-        run: 'ls ../'
+          command-args: '-l workspace/zmk'
       - name: West Update
         uses: ./.github/actions/zephyr-west # Uses an action in the root directory
         id: west-update
+        working-directory: 'workspace/zmk'
         with:
           command: 'update'
       - name: West Config Zephyr Base
         uses: ./.github/actions/zephyr-west # Uses an action in the root directory
         id: west-config
+        working-directory: 'workspace/zmk'
         with:
           command: 'config'
           command-args: '--global zephyr.base-prefer configfile'
       - name: West Zephyr Export
         uses: ./.github/actions/zephyr-west # Uses an action in the root directory
         id: west-zephyr-export
+        working-directory: 'workspace/zmk'
         with:
           command: 'zephyr-export'
       - name: West Build
         uses: ./.github/actions/zephyr-west # Uses an action in the root directory
         id: west-build
+        working-directory: 'workspace/zmk'
         with:
           command: 'build'
           command-args: '-b nucleo_wb55rg -- -DSHIELD=petejohanson_handwire'
