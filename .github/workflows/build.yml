@@ -3,7 +3,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Basic build of the ZMK firmware
+    name: Build Test
     steps:
       # To use this repository's private action,
       # you must check out the repository
