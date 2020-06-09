@@ -4,7 +4,7 @@ title: Introduction to ZMK
 sidebar_label: Introduction
 ---
 
-ZMK Firmware is an open source (Apache 2.0) keyboard
+ZMK Firmware is an open source (MIT) keyboard
 firmware built on the [Zephyr Project](https://zephyrproject.com/) RTOS.
 
 The goal is to provider a powerful, featureful keyboard firmware that is free

@@ -47,18 +47,18 @@ module.exports = {
         {
           title: "Community",
           items: [
-          //   {
-          //     label: "Stack Overflow",
-          //     href: "https://stackoverflow.com/questions/tagged/docusaurus",
-          //   },
-             {
-               label: "Discord",
-               href: "https://discord.gg/VJnx9kr",
-             },
-          //   {
-          //     label: "Twitter",
-          //     href: "https://twitter.com/docusaurus",
-          //   },
+            //   {
+            //     label: "Stack Overflow",
+            //     href: "https://stackoverflow.com/questions/tagged/docusaurus",
+            //   },
+            {
+              label: "Discord",
+              href: "https://discord.gg/VJnx9kr",
+            },
+            //   {
+            //     label: "Twitter",
+            //     href: "https://twitter.com/docusaurus",
+            //   },
           ],
         },
         {
