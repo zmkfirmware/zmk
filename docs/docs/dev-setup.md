@@ -85,7 +85,7 @@ To build firmwares for the ARM architecture (all supported MCUs/keyboards at thi
 ```
 export ZSDK_VERSION=0.11.2
 wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
-	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d /opt/toolchains/zephyr-sdk-${ZSDK_VERSION} && \
+	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
 	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run"
 ```
 
@@ -167,8 +167,13 @@ cat ~/.zephyrrc >> ~/.zshrc
 
 ## Build
 
-Actually building the ZMK firmware occurs within the `app/` subdirectory
-of the ZMK repository. To build for your particular keyboard, the behaviour varies slightly depending on if you are building for a keyboard with
+From here on, building and flashing ZMK should all be done from the `app/` subdirectory of the ZMK checkout:
+
+```bash
+cd app
+```
+
+To build for your particular keyboard, the behaviour varies slightly depending on if you are building for a keyboard with
 an onboard MCU, or one that uses a MCU board addon.
 
 ### Keyboard (Shield) + MCU Board
