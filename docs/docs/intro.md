@@ -19,11 +19,11 @@ include:
 - HID Over GATT (HOG) - This is the official term for BLE HID devices.
 - Keymaps and layers with basic keycodes.
 - Some initial work on one "action", Mod-Tap.
-- Basic HID over USB - This somehow _conflicts_ with BLE at least on the stm32wb55rg dev kit, so investigation needed.
+- Basic HID over USB
+- Basic consumer (media) keycodes.
 
 ## Missing Features
 
-- Consumer Key Support (play/pause, etc)
 - One Shot
 - Layer Tap
 - Split support
