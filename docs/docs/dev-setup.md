@@ -6,7 +6,52 @@ sidebar_label: Basic Setup
 
 ## Preprequisites
 
-A unix-like environment with Python 3 installed. So far this has been tested on Fedora and Debian. Further testing is required for macOS and WSL.
+A unix-like environment with the following base packages installed:
+
+- Python 3
+- `pip`
+- `wget`
+- devicetree compiler
+- CMake
+- `dfu-util`
+- Various build essentials, e.g. gcc, automake, autoconf
+
+### Debian/Ubuntu
+
+On Debian and Ubuntu, this can be accomplished with:
+
+```bash
+apt-get install -y \
+    autoconf \
+	automake \
+	build-essential \
+	ccache \
+	device-tree-compiler \
+	dfu-util \
+	g++ \
+	gcc \
+	gcc-multilib \
+	libtool \
+	make \
+    cmake \
+	ninja-build \
+	python3-dev \
+	python3-pip \
+	python3-setuptools \
+	xz-utils
+```
+
+### Fedora
+
+TODO
+
+### macOS
+
+TODO
+
+### WSL
+
+TODO
 
 ## Setup
 
@@ -15,7 +60,7 @@ A unix-like environment with Python 3 installed. So far this has been tested on 
 `west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/latest/guides/west/index.html) used to configure and build Zephyr™ applications. It can be installed by using the `pip` python package manager:
 
 ```bash
-pip install --user west
+pip3 install --user west
 ```
 
 :::note
@@ -33,6 +78,8 @@ wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_
 	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d /opt/toolchains/zephyr-sdk-${ZSDK_VERSION} && \
 	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run"
 ```
+
+The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults shouldn normally work as expected.
 
 ### Source Code
 
@@ -68,7 +115,8 @@ west zephyr-export
 
 ## Build
 
-To build for your particular keyboard, the behaviour varies slightly depending on if you are building for a keyboard with
+Actually building the ZMK firmware occurs within the `app/` subdirectory
+of the ZMK repository. To build for your particular keyboard, the behaviour varies slightly depending on if you are building for a keyboard with
 an onboard MCU, or one that uses a MCU board addon.
 
 ### Keyboard (Shield) + MCU Board
