@@ -1,5 +1,5 @@
 module.exports = {
-  title: "ZMK Keyboard Firmware",
+  title: "ZMK Firmware",
   tagline: "Modern, open source keyboard firmware",
   url: "https://zmkfirmware.dev",
   baseUrl: "/",
