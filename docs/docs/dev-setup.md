@@ -105,7 +105,7 @@ Since ZMK is built as a Zephyr™ application, the next step is
 to use `west` to initialize and update your workspace. The ZMK
 Zephyr™ application is in the `app/` source directory:
 
-### Step into the repository
+#### Step into the repository
 
 ```bash
 cd zmk
