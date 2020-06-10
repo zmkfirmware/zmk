@@ -117,6 +117,12 @@ cd zmk
 west init -l app/
 ```
 
+:::note
+If you encounter errors like `command not found: west` then your `PATH` environment variable is likely
+missing the Python 3 user packages directory. See the [West Build Command](#west-build-command)
+section again for links to how to do this
+:::
+
 #### Update To Fetch Modules
 
 ```bash
