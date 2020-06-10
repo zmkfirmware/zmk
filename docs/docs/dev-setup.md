@@ -36,6 +36,7 @@ apt-get install -y \
 	gcc-multilib \
 	libtool \
 	make \
+    ninja-build \
     cmake \
 	python3-dev \
 	python3-pip \
@@ -115,6 +116,12 @@ west update
 west zephyr-export
 ```
 
+#### Install Zephyr Python Dependencies
+
+```bash
+pip3 install --user -r zephyr/scripts/requirements.txt
+```
+
 ### Environment Variables
 
 By default, the Zephyr™ SDK will create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
@@ -131,7 +138,7 @@ source zmk/zephyr/zephyr-env.sh
 #### All Shells
 
 To load the environment variables for your shell every time,
-append the existing `~/.zephyrrc` file to your shell's RC file, e.g.
+append the existing `~/.zephyrrc` file to your shell's RC file and then start a new shell.
 
 ##### Bash
 
