@@ -104,6 +104,7 @@ git clone https://github.com/zmkfirmware/zmk.git
 Since ZMK is built as a Zephyr™ application, the next step is
 to use `west` to initialize and update your workspace. The ZMK
 Zephyr™ application is in the `app/` source directory:
+
 ### Step into the repository
 
 ```bash
@@ -155,13 +156,13 @@ append the existing `~/.zephyrrc` file to your shell's RC file and then start a 
 ##### Bash
 
 ```
-cat ~/.zephyrc >> ~/.bashrc
+cat ~/.zephyrrc >> ~/.bashrc
 ```
 
 ##### ZSH
 
 ```
-cat ~/.zephyrc >> ~/.zshrc
+cat ~/.zephyrrc >> ~/.zshrc
 ```
 
 ## Build
