@@ -22,7 +22,8 @@ A unix-like environment with the following base packages installed:
 On Debian and Ubuntu, this can be accomplished with:
 
 ```bash
-apt-get install -y \
+sudo apt update
+sudo apt install -y \
     git \
     wget \
     autoconf \
@@ -54,7 +55,13 @@ TODO
 
 ### WSL
 
-TODO
+Windows Subsystem for Linux can use various Linux distributions. Find a WSL installation on the [Windows Store](https://aka.ms/wslstore).
+
+After installing your preferred flavor, follow the directions above on [Debian/Ubuntu](#debianubuntu) or [Fedora](#fedora).
+
+:::note
+On WSL2 don't put the project files into `/mnt/c/` as file I/O speeds are extremely slow. Instead, run everything in the Linux system and use `cp` to move files over to `/mnt/c/` as needed.
+:::
 
 ## Setup
 
@@ -92,11 +99,16 @@ Next, you'll need to clone the ZMK source repository if you haven't already:
 git clone https://github.com/zmkfirmware/zmk.git
 ```
 
-### Initialize & Update Zephy Workspace
+### Initialize & Update Zephyr Workspace
 
 Since ZMK is built as a Zephyr™ application, the next step is
 to use `west` to initialize and update your workspace. The ZMK
 Zephyr™ application is in the `app/` source directory:
+### Step into the repository
+
+```bash
+cd zmk
+```
 
 #### Initialize West
 
