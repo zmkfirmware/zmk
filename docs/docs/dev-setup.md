@@ -142,10 +142,10 @@ We suggest two main [options](https://docs.zephyrproject.org/latest/guides/env_v
 
 #### Per Shell
 
-To load the Zephyr environment properly for just one transient shell, run:
+To load the Zephyr environment properly for just one transient shell, run the following from your ZMK checkout directory:
 
 ```
-source zmk/zephyr/zephyr-env.sh
+source zephyr/zephyr-env.sh
 ```
 
 #### All Shells
