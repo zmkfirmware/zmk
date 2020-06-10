@@ -11,7 +11,7 @@ module.exports = {
       title: "ZMK Firmware",
       logo: {
         alt: "ZMK Logo",
-        src: "img/zmk_logo.png",
+        src: "img/zmk_logo.svg",
       },
       links: [
         {
