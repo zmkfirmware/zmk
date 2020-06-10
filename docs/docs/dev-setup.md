@@ -4,10 +4,11 @@ title: Basic Setup
 sidebar_label: Basic Setup
 ---
 
-## Preprequisites
+## Prerequisites
 
 A unix-like environment with the following base packages installed:
 
+- Git
 - Python 3
 - `pip`
 - `wget`
@@ -22,6 +23,8 @@ On Debian and Ubuntu, this can be accomplished with:
 
 ```bash
 apt-get install -y \
+    git \
+    wget \
     autoconf \
 	automake \
 	build-essential \
@@ -34,7 +37,6 @@ apt-get install -y \
 	libtool \
 	make \
     cmake \
-	ninja-build \
 	python3-dev \
 	python3-pip \
 	python3-setuptools \
@@ -65,7 +67,7 @@ pip3 install --user west
 
 :::note
 If you don't already have it configured, you may need to update your
-`PATH` to include the pip install path. See [User Installs](https://pip.pypa.io/en/stable/user_guide/#user-installs) and (Stack Overflow)[https://stackoverflow.com/questions/38112756/how-do-i-access-packages-installed-by-pip-user] for more details.
+`PATH` to include the pip install path. See [User Installs](https://pip.pypa.io/en/stable/user_guide/#user-installs) and [Stack Overflow](https://stackoverflow.com/questions/38112756/how-do-i-access-packages-installed-by-pip-user) for more details.
 :::
 
 ### Zephyr™ ARM SDK
@@ -73,7 +75,7 @@ If you don't already have it configured, you may need to update your
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
-export ZSDK_VERSION=0.11.3
+export ZSDK_VERSION=0.11.2
 wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
 	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d /opt/toolchains/zephyr-sdk-${ZSDK_VERSION} && \
 	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run"
@@ -111,6 +113,36 @@ west update
 
 ```bash
 west zephyr-export
+```
+
+### Environment Variables
+
+By default, the Zephyr™ SDK will create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
+We suggest two main [options](https://docs.zephyrproject.org/latest/guides/env_vars.html?highlight=zephyrrc) for how to load those settings.
+
+#### Per Shell
+
+To load the Zephyr environment properly for just one transient shell, run:
+
+```
+source zmk/zephyr/zephyr-env.sh
+```
+
+#### All Shells
+
+To load the environment variables for your shell every time,
+append the existing `~/.zephyrrc` file to your shell's RC file, e.g.
+
+##### Bash
+
+```
+cat ~/.zephyrc >> ~/.bashrc
+```
+
+##### ZSH
+
+```
+cat ~/.zephyrc >> ~/.zshrc
 ```
 
 ## Build
