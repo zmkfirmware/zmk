@@ -10,12 +10,24 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(150deg, #026fc5, #7929d2);
+  color: #fff;
 }
 
 @media screen and (max-width: 966px) {
   .heroBanner {
     padding: 2rem;
   }
+}
+
+.getStarted {
+  color: #fff;
+}
+
+.getStarted:hover {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
 }
 
 .buttons {
