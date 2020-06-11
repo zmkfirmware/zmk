@@ -23,6 +23,7 @@
 .getStarted {
   color: #fff;
   border-color: #fff;
+  border: solid 1px;
 }
 
 .getStarted:hover {
