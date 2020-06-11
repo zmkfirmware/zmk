@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/zmkfirmware/zmk/workflows/Build/badge.svg)](https://github.com/zmkfirmware/zmk/actions)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/942d61a9-87c0-4c23-9b51-f5ed0bce495d/deploy-status)](https://app.netlify.com/sites/zmk/deploys)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](code_of_conduct.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 This project is a complete work in progress, with absolutely nothing functioning yet. The goal is to explore a new MK firmware
 with a less restritive license and better BLE support, built on top of the [Zephyr™ Project](https://www.zephyrproject.org/)
