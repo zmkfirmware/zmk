@@ -19,10 +19,22 @@ A unix-like environment with the following base packages installed:
 
 ### Debian/Ubuntu
 
-On Debian and Ubuntu, this can be accomplished with:
+On Debian and Ubuntu, we'll use apt to install our base dependencies:
+
+#### Apt Update
+
+First, if you haven't updated recently, or if this is a new install from WSL,
+you should update to get the latest package information:
 
 ```bash
 sudo apt update
+```
+
+#### Install Dependencies
+
+With the latest package information, you can now install the base dependencies:
+
+```bash
 sudo apt install -y \
     git \
     wget \
