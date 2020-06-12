@@ -8,6 +8,16 @@ manifest:
     - name: zephyr
       remote: petejohanson
       revision: kconfig/external-sheilds-shields-as-list-fix
-      import: true
+      import:
+        # TODO: Rename once upstream offers option like `exclude` or `denylist`
+        name-blacklist:
+          - ci-tools
+          - hal_atmel
+          - hal_altera
+          - hal_cypress
+          - hal_infineon
+          - hal_microchip
+          - hal_nxp
+          - hal_openisa
   self:
     path: zmk
