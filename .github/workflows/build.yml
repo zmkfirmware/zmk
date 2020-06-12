@@ -30,7 +30,7 @@ jobs:
         uses: 'docker://zmkfirmware/zephyr-west-action:latest'
         id: west-init
         with:
-          args: "'init' '-l app'"
+          args: "init -l app"
       - name: West Update
         uses: zmkfirmware/zephyr-west-action@v0.1.0
         id: west-update
