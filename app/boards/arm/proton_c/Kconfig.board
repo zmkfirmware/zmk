@@ -1,0 +1,8 @@
+# QMK Proton-C board configuration
+
+# Copyright (c) 2020 Pete Johanson
+# SPDX-License-Identifier: MIT
+
+config BOARD_QMK_PROTON_C
+	bool "QMK Proton-C"
+	depends on SOC_STM32F303XC
