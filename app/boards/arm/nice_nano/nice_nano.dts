@@ -10,6 +10,7 @@
 
 / {
 	model = "nice!nano";
+	compatible = "nice,nano";
 
 	chosen {
 		zephyr,code-partition = &code_partition;
