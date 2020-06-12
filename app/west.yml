@@ -11,7 +11,6 @@ manifest:
       import:
         # TODO: Rename once upstream offers option like `exclude` or `denylist`
         name-blacklist:
-          - cmsis
           - ci-tools
           - hal_atmel
           - hal_altera
