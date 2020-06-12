@@ -27,7 +27,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: West Init
-        uses: 'docker://zmkfirmware/zephyr-west-action:latest'
+        uses: 'docker://zmkfirmware/zephyr-west-action-arm:latest'
         id: west-init
         with:
           args: "init -l app"
@@ -35,21 +35,19 @@ jobs:
         uses: zmkfirmware/zephyr-west-action@v0.1.0
         id: west-update
         with:
-          command: 'update'
+          args: 'update'
       - name: West Config Zephyr Base
-        uses: zmkfirmware/zephyr-west-action@v0.1.0
+        uses: 'docker://zmkfirmware/zephyr-west-action-arm:latest'
         id: west-config
         with:
-          command: 'config'
-          command-args: '--global zephyr.base-prefer configfile'
+          args: 'config --global zephyr.base-prefer configfile'
       - name: West Zephyr Export
-        uses: zmkfirmware/zephyr-west-action@v0.1.0
+        uses: 'docker://zmkfirmware/zephyr-west-action-arm:latest'
         id: west-zephyr-export
         with:
-          command: 'zephyr-export'
+          args: 'zephyr-export'
       - name: West Build
-        uses: zmkfirmware/zephyr-west-action@v0.1.0
+        uses: 'docker://zmkfirmware/zephyr-west-action-arm:latest'
         id: west-build
         with:
-          command: 'build'
-          command-args: '-s app -b proton_c -- -DSHIELD=petejohanson_proton_handwire'
+          args: 'build -s app -b proton_c -- -DSHIELD=petejohanson_proton_handwire'
