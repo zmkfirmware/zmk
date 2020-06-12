@@ -1,6 +1,6 @@
 module.exports = {
   someSidebar: {
-    Basics: ["intro", "hardware"],
+    'Getting Started': ["intro", "hardware"],
     Development: ["dev-setup", "dev-clean-room", "dev-posix-board"],
   },
 };
