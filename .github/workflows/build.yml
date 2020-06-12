@@ -26,6 +26,8 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: West Init
         uses: 'docker://docker.pkg.github.com/zmkfirmware/zephyr-west-action/zephyr-west-action:latest'
         id: west-init
