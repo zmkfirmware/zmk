@@ -27,11 +27,10 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: West Init
-        uses: zmkfirmware/zephyr-west-action@v0.1.0
+        uses: docker://docker.pkg.github.com/zmkfirmware/zephyr-west-action/zephyr-west-action:latest
         id: west-init
         with:
-          command: 'init'
-          command-args: '-l app'
+          args: 'init' '-l app'
       - name: West Update
         uses: zmkfirmware/zephyr-west-action@v0.1.0
         id: west-update
