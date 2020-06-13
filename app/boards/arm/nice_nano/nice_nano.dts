@@ -56,9 +56,9 @@
 	compatible = "nordic,nrf-spi";
 	/* Cannot be used together with i2c0. */
 	/* status = "okay"; */
-	sck-pin = <13>;
+	sck-pin = <45>;
 	mosi-pin = <10>;
-	miso-pin = <11>;
+	miso-pin = <43>;
 };
 
 &flash0 {
@@ -95,4 +95,3 @@
 		};
 	};
 };
-
