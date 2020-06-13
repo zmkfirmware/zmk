@@ -60,6 +60,10 @@ In ZMK, a *shield* is a *PCB* or *hardwired set of components* that when combine
 
 ### Why *boards* and *shields*?  Why not just “keyboard”?
 
+If you haven't already done so, please read these FAQs first:
+- [What is a “board”?](#what-is-a-board)
+- [What is a "shield"?](#what-is-a-shield)
+
 When a keyboard accepts a small “PCB MCU module” (e.g. *Arduino Pro Micro*) for its “brains”, then it's important to conceptually separate the hardware into a *board* PCB and a *shield* PCB.
 
 The *shield* is a brainless shell containing all the keys, RGB LEDs, encoders etc.  It maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
