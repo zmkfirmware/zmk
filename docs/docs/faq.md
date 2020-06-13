@@ -56,7 +56,7 @@ For keyboards, this is one of two options:
 
 ### What is a “shield”?
 
-In ZMK, a *shield* is a *PCB* or *hardwired set of components* that when combined with a MCU only board like the Proton-C or nice!nano, results in a complete usable keyboard. Examples would be keyboard PCBs like the Kyria or Corne.  The shield is usually the big PCB containing all the keys.
+In ZMK, a *shield* is a *PCB* or *hardwired set of components* that when combined with a MCU only [board](#what-is-a-board) like the Proton-C or nice!nano, results in a complete usable keyboard. Examples would be keyboard PCBs like the Kyria or Corne.  The *shield* is usually the big PCB containing all the keys.
 
 ### Why *boards* and *shields*?  Why not just “keyboard”?
 
@@ -64,15 +64,15 @@ If you haven't already done so, please read these FAQs first:
 - [What is a “board”?](#what-is-a-board)
 - [What is a "shield"?](#what-is-a-shield)
 
-When a keyboard accepts a small “PCB MCU module” (e.g. *Arduino Pro Micro*) for its “brains”, then it's important to conceptually separate the hardware into a *board* PCB and a *shield* PCB.
+When a keyboard accepts a small “PCB MCU module” (e.g. *Arduino Pro Micro*) for its “brains”, then it's important to conceptually separate the hardware into a [board](#what-is-a-board) PCB and a [shield](#what-is-a-shield) PCB.
 
-The *shield* is a brainless shell containing all the keys, RGB LEDs, encoders etc.  It maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
+The [shield](#what-is-a-shield) is a brainless shell containing all the keys, RGB LEDs, encoders etc.  It maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
 
-To bring this brainless *shield* to life, you attach any MCU *board* matching the footprint.  For instance, the *nice!nano* is *pin-compatible* with the *Arduino Pro Micro*, so you can substitute either *board* onto the *shield*.  But each *board* comes with its own features (MCU, flash, BLE, etc.) which must also be handled.
+To bring this brainless [shield](#what-is-a-shield) to life, you attach any MCU [board](#what-is-a-board) matching the footprint.  For instance, the *nice!nano* is *pin-compatible* with the *Arduino Pro Micro*, so you can substitute either [board](#what-is-a-board) onto the [shield](#what-is-a-shield).  But each [board](#what-is-a-board) comes with its own features (MCU, flash, BLE, etc.) which must also be handled.
 
-Therefore in ZMK, *board* and *shield* are considered two different (but related) entities so that it’s easier to mix and match them.  They are combined during a ZMK build.
+Therefore in ZMK, [board](#what-is-a-board) and [shield](#what-is-a-shield) are considered two different (but related) entities so that it’s easier to mix and match them.  They are combined during a ZMK build.
 
-Please note, many keyboards only have a single PCB which includes the “brains” (MCU) onboard.  In ZMK, these have no *shield*, only a *board*.
+Please note, many keyboards only have a single PCB which includes the “brains” (MCU) onboard.  In ZMK, these have no [shield](#what-is-a-shield), only a [board](#what-is-a-board).
 
 ### What bootloader does ZMK use?
 
