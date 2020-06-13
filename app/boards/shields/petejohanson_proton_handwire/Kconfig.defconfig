@@ -7,6 +7,9 @@ config ZMK_KEYBOARD_NAME
 config ZMK_USB
 	default y
 
+config ZMK_BLE
+	default y
+
 config ZMK_ACTION_MOD_TAP
 	default y
 
