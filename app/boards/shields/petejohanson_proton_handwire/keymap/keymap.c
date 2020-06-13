@@ -10,22 +10,22 @@ bool zmk_handle_key_user(struct zmk_key_event *key_event)
 	case CC_LOWR:
 		if (key_event->pressed)
 		{
-			zmk_keymap_layer_activate(1);
+			zmk_keymap_layer_activate(LOWER);
 		}
 		else
 		{
-			zmk_keymap_layer_deactivate(1);
+			zmk_keymap_layer_deactivate(LOWER);
 		}
 
 		return false;
 	case CC_RAIS:
 		if (key_event->pressed)
 		{
-			zmk_keymap_layer_activate(2);
+			zmk_keymap_layer_activate(RAISE);
 		}
 		else
 		{
-			zmk_keymap_layer_deactivate(2);
+			zmk_keymap_layer_deactivate(RAISE);
 		}
 		return false;
 	}

@@ -12,9 +12,9 @@ list(APPEND ZEPHYR_EXTRA_MODULES
 )
 list(APPEND SYSCALL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/drivers/zephyr)
 
-include(cmake/keymap.cmake)
+include(cmake/zmk_config.cmake)
 
-find_package(Zephyr)
+find_package(Zephyr REQUIRED HINTS ../zephyr)
 project(zmk)
 
 
