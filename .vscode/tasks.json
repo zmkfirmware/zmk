@@ -6,7 +6,7 @@
     {
       "label": "Build",
       "type": "shell",
-      "command": "west build",
+      "command": "cd app && west build",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -15,13 +15,13 @@
     {
       "label": "Flash",
       "type": "shell",
-      "command": "west flash",
+      "command": "cd app && west flash",
       "group": "test"
     },
     {
       "label": "Debug",
       "type": "shell",
-      "command": "west debug",
+      "command": "cd app && west debug",
       "group": "test"
     }
   ]
