@@ -1,0 +1,9 @@
+description: |
+  Defines a mapping from keymap logical positions to matrix physical positions
+
+compatible: "zmk,keymap-transform"
+
+properties:
+  map:
+    type: array
+    required: true

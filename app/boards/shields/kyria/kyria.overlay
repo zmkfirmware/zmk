@@ -1,0 +1,75 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	chosen {
+		zmk,kscan = &kscan0;
+	};
+
+	kscan0: kscan_comp {
+		compatible = "zmk,kscan-composite";
+
+		label = "KSCAN_COMP";
+		rows = <4>;
+		columns = <16>;
+
+		left {
+			kscan = <&kscan_left>;
+		};
+
+		right {
+			kscan = <&kscan_right>;
+			 // TODO: Actually put this in the kscan driver, so it can report
+			 // HID events directly to host if plugged in directly.
+			column-offset = <8>;
+		};
+	};
+
+	kscan_left: kscan_left {
+		compatible = "gpio-kscan";
+		label = "KSCAN_LEFT";
+
+		diode-direction = "row2col";
+		row-gpios = <&pro_micro_pins 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+		            <&pro_micro_pins 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+		col-gpios = <&pro_micro_pins 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+		            <&pro_micro_pins 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	};
+
+	kscan_right: kscan_right {
+		compatible = "gpio-kscan";
+		label = "KSCAN_RIGHT";
+
+		diode-direction = "row2col";
+		row-gpios = <&pro_micro_pins 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+		            <&pro_micro_pins 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+		col-gpios = <&pro_micro_pins 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+		            <&pro_micro_pins 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+					<&pro_micro_pins 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	};
+
+	// TODO: Encoder node(s)
+	// TODO: OLED node
+	// TODO: RGB node(s)
+};
+
