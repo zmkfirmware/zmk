@@ -155,7 +155,7 @@ west zephyr-export
 #### Install Zephyr Python Dependencies
 
 ```bash
-pip3 install --user -r zephyr/scripts/requirements.txt
+pip3 install --user -r zephyr/scripts/requirements-base.txt
 ```
 
 ### Environment Variables
