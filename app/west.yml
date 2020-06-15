@@ -7,7 +7,7 @@ manifest:
   projects:
     - name: zephyr
       remote: petejohanson
-      revision: kconfig/external-sheilds-shields-as-list-fix
+      revision: zmk-v2.3.0-with-fixes
       import:
         # TODO: Rename once upstream offers option like `exclude` or `denylist`
         name-blacklist:
