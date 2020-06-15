@@ -11,6 +11,7 @@
 		gpio-map-mask = <0xffffffff 0xffffffc0>;
 		gpio-map-pass-thru = <0 0x3f>;
 		gpio-map =
+			/* Down the front left side */
 			<1 0 &gpioa 9 0>,	/* D1 */
 			<0 0 &gpioa 10 0>,	/* D0 */
 			<2 0 &gpiob 7 0>,	/* D2 */
@@ -21,6 +22,8 @@
 			<7 0 &gpiob 2 0>,	/* D7 */
 			<8 0 &gpiob 1 0>,	/* D8/A8 */
 			<9 0 &gpiob 0 0>,	/* D9/A9 */
+
+			/* Back up the front right side */
 			<10 0 &gpiob 9 0>,	/* D10/A10 */
 			<16 0 &gpiob 15 0>,	/* D16 */
 			<14 0 &gpiob 14 0>,	/* D14 */
