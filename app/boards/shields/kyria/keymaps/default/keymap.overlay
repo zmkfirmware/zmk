@@ -16,21 +16,29 @@
 
 	default_transform: keymap_transform_0 {
 		compatible = "zmk,keymap-transform";
+// | MX6  | MX5  | MX4  | MX3  | MX2  | MX1  |                               | MX1  | MX2  | MX3  | MX4  | MX5  | MX6  |
+// | MX12 | MX11 | MX10 | MX9  | MX8  | MX7  |                               | MX7  | MX8  | MX9  | MX10 | MX11 | MX12 |
+// | MX20 | MX19 | MX18 | MX17 | MX16 | MX15 | MX14 | MX13 |   | MX13 | MX14 | MX15 | MX16 | MX17 | MX18 | MX19 | MX20 |
+//                    | MX25 | MX24 | MX23 | MX22 | MX21 |       | MX21 | MX22 | MX23 | MX24 | MX25 |
 		map = <
-			IDENTITY_ROW(0, 6)       OFFSET_ROW(6, 0, 6)
-			IDENTITY_ROW(1, 6)       OFFSET_ROW(6, 1, 6)
-			IDENTITY_ROW(2, 8)       OFFSET_ROW(8, 2, 8)
-			OFFSET_ROW(3, 3, 5)      OFFSET_ROW(8, 3, 5)
+			KT_ID_ROW(0, 6)           KT_OFFSET_ROW(6, 0, 6)
+			KT_ID_ROW(1, 6)           KT_OFFSET_ROW(6, 1, 6)
+			KT_ID_ROW(2, 8)           KT_OFFSET_ROW(8, 2, 8)
+			KT_OFFSET_ROW(3, 3, 5)    KT_OFFSET_ROW(8, 3, 5)
 		>;
 	};
 
+// | MX5  | MX4  | MX3  | MX2  | MX1  |                               | MX1  | MX2  | MX3  | MX4  | MX5  |
+// | MX11 | MX10 | MX9  | MX8  | MX7  |                               | MX7  | MX8  | MX9  | MX10 | MX11 |
+// | MX19 | MX18 | MX17 | MX16 | MX15 | MX14 | MX13 |   | MX13 | MX14 | MX15 | MX16 | MX17 | MX18 | MX19 |
+//             | MX25 | MX24 | MX23 | MX22 | MX21 |       | MX21 | MX22 | MX23 | MX24 | MX25 |
 	five_column_transform: keymap_transform_1 {
 		compatible = "zmk,keymap-transform";
 		map = <
-			IDENTITY_ROW(0, 5)       OFFSET_ROW(5, 0, 5)
-			IDENTITY_ROW(1, 5)       OFFSET_ROW(6, 1, 5)
-			IDENTITY_ROW(2, 7)       OFFSET_ROW(7, 2, 7)
-			OFFSET_ROW(2, 3, 5)      OFFSET_ROW(7, 3, 5)
+			KT_ID_ROW(0, 5)          KT_OFFSET_ROW(5, 0, 5)
+			KT_ID_ROW(1, 5)          KT_OFFSET_ROW(6, 1, 5)
+			KT_ID_ROW(2, 7)          KT_OFFSET_ROW(7, 2, 7)
+			KT_OFFSET_ROW(2, 3, 5)   KT_OFFSET_ROW(7, 3, 5)
 		>;
 	};
 
@@ -39,11 +47,16 @@
 
 		default: layer_0 {
 			label = "DEFAULT";
+// ---------------------------------------------------------------------------------------------------------------------------------
+// |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   | "|" |
+// |  <-   |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |  '  |
+// | SHIFT |  Z  |  X  |  C   |  V   |  B   | L SHIFT | L SHIFT |  | L SHIFT | L SHIFT |  N   |  M    |  ,    |  .   |   /   |  -  |
+//                     | GUI  | DEL  | RET  |  SPACE  |   ESC   |  |   RET   |  SPACE  | TAB  | BSPC  | R-ALT |
 			keys = <
-	KC_ESC KC_Q KC_W KC_E KC_R KC_T                                   KC_Y KC_U KC_I KC_O KC_P KC_PIPE
-	KC_BKSP KC_A KC_S KC_D KC_F KC_G                                  KC_H KC_J KC_K KC_L KC_SCLN KC_QUOT
-	KC_LSFT KC_Z KC_X KC_C KC_V KC_B KC_LSFT KC_LSFT         KC_LSFT KC_LSFT  KC_N KC_M KC_CMMA KC_DOT KC_BSLH KC_MIN
-	                   KC_LGUI KC_DEL KC_RET KC_SPC KC_ESC  KC_RET  KC_SPC KC_TAB KC_BKSP KC_RALT
+	KC_ESC  KC_Q   KC_W KC_E    KC_R   KC_T                                             KC_Y   KC_U    KC_I    KC_O   KC_P    KC_PIPE
+	KC_BKSP KC_A   KC_S KC_D    KC_F   KC_G                                             KC_H   KC_J    KC_K    KC_L   KC_SCLN KC_QUOT
+	KC_LSFT KC_Z   KC_X KC_C    KC_V   KC_B    KC_LSFT KC_LSFT      KC_LSFT   KC_LSFT   KC_N   KC_M    KC_CMMA KC_DOT KC_BSLH KC_MIN
+	                    KC_LGUI KC_DEL KC_RET  KC_SPC  KC_ESC       KC_RET    KC_SPC    KC_TAB KC_BKSP KC_RALT
 	>;
 		};
 	};
