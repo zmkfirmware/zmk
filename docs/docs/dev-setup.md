@@ -36,9 +36,9 @@ With the latest package information, you can now install the base dependencies:
 
 ```bash
 sudo apt install -y \
-    git \
-    wget \
-    autoconf \
+	git \
+	wget \
+	autoconf \
 	automake \
 	build-essential \
 	ccache \
@@ -49,8 +49,8 @@ sudo apt install -y \
 	gcc-multilib \
 	libtool \
 	make \
-    ninja-build \
-    cmake \
+	ninja-build \
+	cmake \
 	python3-dev \
 	python3-pip \
 	python3-setuptools \
