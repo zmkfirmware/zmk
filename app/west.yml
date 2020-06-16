@@ -4,6 +4,8 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: petejohanson
       url-base: https://github.com/petejohanson
+    - name: microsoft
+      url-base: https://github.com/microsoft
   projects:
     - name: zephyr
       remote: petejohanson
@@ -19,5 +21,8 @@ manifest:
           - hal_microchip
           - hal_nxp
           - hal_openisa
+    - name: uf2
+      remote: microsoft
+      path: tools/uf2
   self:
     path: zmk

@@ -77,7 +77,7 @@
 		};
 		code_partition: partition@26000 {
 			label = "code_partition";
-			reg = <0x00026000 0x0001e000>;
+			reg = <0x00026000 0x0002e000>;
 		};
 
 		/*
