@@ -8,6 +8,19 @@ be helpful to build and run the firmware on your local
 workstation, with generated virtual press/release events
 flowing into the handler functions.
 
+## Prerequisites
+
+In order to build targetting the `native_posix` board, you need to setup your system
+with a compiler that can target 32-bit POSIX.
+
+On Debian, you can do this with:
+
+```
+apt install -y gcc-multilib
+```
+
+## Building
+
 To do this, you can build ZMK targetting the
 `native_posix` board.
 

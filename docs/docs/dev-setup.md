@@ -46,7 +46,6 @@ sudo apt install -y \
 	dfu-util \
 	g++ \
 	gcc \
-	gcc-multilib \
 	libtool \
 	make \
 	ninja-build \
