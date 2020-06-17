@@ -2,7 +2,7 @@
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/keymap.h>
-#include <dt-bindings/zmk/keymap-transform.h>
+#include <dt-bindings/zmk/matrix-transform.h>
 #include <sys/util.h>
 
 static u32_t zmk_keymap_layer_state = 0;

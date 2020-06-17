@@ -1,6 +1,4 @@
 
-#include <zmk/util.h>
-
 #define KT_ROW(item) (item >> 8)
 #define KT_COL(item) (item & 0xFF)
 
