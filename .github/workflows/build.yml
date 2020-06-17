@@ -54,3 +54,9 @@ jobs:
         id: west-build
         with:
           args: 'build "-s app -b ${{ matrix.board }} -- -DSHIELD=petejohanson_proton_handwire"'
+      - name: Archive Build
+        uses: actions/upload-artifact@v2
+        if: ${{ matrix.board == "nice_nano "}}
+        with:
+          name: zmk-uf2
+          path: build/zephyr/zmk.uf2
