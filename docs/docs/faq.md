@@ -23,7 +23,7 @@ That’s an excellent question!  There are already great keyboard firmwares avai
 - Zephyr™
   - See [Why Zephyr™?](#why-zephyr)
 - Licensing
-  - Just like other open source firmware, ZMK is all about the free and the sharing.  However, some other projects use the GPL licence which prevents integration of libraries and drivers whose licenses are not GPL-compatible (such as some embedded BLE drivers).  ZMK uses the permissive [MIT](https://github.com/zmkfirmware/zmk/blob/master/LICENSE) license which doesn’t have this limitation.
+  - Just like other open source firmware, ZMK is all about the free and the sharing.  However, some other projects use the GPL licence which prevents integration of libraries and drivers whose licenses are not GPL-compatible (such as some embedded BLE drivers).  ZMK uses the permissive [MIT](https://github.com/zmkfirmware/zmk/blob/main/LICENSE) license which doesn’t have this limitation.
 - Wireless First
   - ZMK is designed for the future, and we believe the future is wireless.  So power efficiency plays a critical role in every design decision, just like in Zephyr™.
 
@@ -31,7 +31,7 @@ The ZMK contributors firmly believe that a keyboard firmware built on Zephyr™ 
 
 ### What license does ZMK use?
 
-ZMK uses the MIT [license](https://github.com/zmkfirmware/zmk/blob/master/LICENSE).
+ZMK uses the MIT [license](https://github.com/zmkfirmware/zmk/blob/main/LICENSE).
 
 ### What hardware/platforms does ZMK support?
 
@@ -92,7 +92,7 @@ The exact process for the management of all the possible hardware is still being
 
 ### Does ZMK have a Code of Conduct?
 
-Yes, it does have a [Code of Conduct](https://github.com/zmkfirmware/zmk/blob/master/CODE_OF_CONDUCT.md)!  Please give it a read!
+Yes, it does have a [Code of Conduct](https://github.com/zmkfirmware/zmk/blob/main/CODE_OF_CONDUCT.md)!  Please give it a read!
 
 ### What does “ZMK” mean?
 
