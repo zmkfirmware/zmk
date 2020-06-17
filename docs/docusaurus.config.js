@@ -88,12 +88,12 @@ module.exports = {
           homePageId: "intro",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl: "https://githlab.com/zmkproject/zmk/edit/master/docs/",
+          editUrl: "https://githlab.com/zmkproject/zmk/edit/main/docs/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: "https://gitlab.com/zmkproject/zmk/edit/master/docs/blog/",
+          editUrl: "https://gitlab.com/zmkproject/zmk/edit/main/docs/blog/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
