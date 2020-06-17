@@ -1,7 +1,7 @@
 # Electronut Labs Papyr board configuration
 
-# Copyright (c) 2018 Electronut Labs
-# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2020 Pete Johanson
+# SPDX-License-Identifier: MIT
 
 if BOARD_NICE_NANO
 
@@ -18,11 +18,10 @@ config USB_DEVICE_STACK
 
 endif # USB
 
-config IEEE802154_NRF5
-	default y
-	depends on IEEE802154
-
 config BT_CTLR
 	default BT
+
+config ZMK_BLE
+	default y
 
 endif # BOARD_NICE_NANO
