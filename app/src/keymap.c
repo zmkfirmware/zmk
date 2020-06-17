@@ -2,9 +2,56 @@
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/keymap.h>
+#include <dt-bindings/zmk/matrix-transform.h>
+#include <sys/util.h>
 
 static u32_t zmk_keymap_layer_state = 0;
 static u8_t zmk_keymap_layer_default = 0;
+
+#if DT_NODE_HAS_PROP(ZMK_KEYMAP_NODE, transform)
+#define ZMK_KEYMAP_TRANSFORM_NODE DT_PHANDLE(ZMK_KEYMAP_NODE, transform)
+#define ZMK_KEYMAP_LEN DT_PROP_LEN(ZMK_KEYMAP_TRANSFORM_NODE, map)
+
+#define _TRANSFORM_ENTRY(i, l) \
+	[(KT_ROW(DT_PROP_BY_IDX(ZMK_KEYMAP_TRANSFORM_NODE, map, i)) * ZMK_MATRIX_COLS) + KT_COL(DT_PROP_BY_IDX(ZMK_KEYMAP_TRANSFORM_NODE, map, i))] = DT_PROP_BY_IDX(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, l), keys, i),
+
+#define TRANSFORMED_LAYER(idx) \
+  { UTIL_LISTIFY(ZMK_KEYMAP_LEN, _TRANSFORM_ENTRY, idx) }
+
+static zmk_key zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_MATRIX_ROWS * ZMK_MATRIX_COLS] = {
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 0)
+	TRANSFORMED_LAYER(0),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 1)
+	TRANSFORMED_LAYER(1),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 2)
+	TRANSFORMED_LAYER(2),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 3)
+	TRANSFORMED_LAYER(3),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 4)
+	TRANSFORMED_LAYER(4),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 5)
+	TRANSFORMED_LAYER(5),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 6)
+	TRANSFORMED_LAYER(6),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 7)
+	TRANSFORMED_LAYER(7),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 8)
+	TRANSFORMED_LAYER(8),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 9)
+	TRANSFORMED_LAYER(9),
+#endif
+};
+
+#else
 
 static zmk_key zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_MATRIX_ROWS * ZMK_MATRIX_COLS] = {
 #if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 0)
@@ -32,6 +79,8 @@ static zmk_key zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_MATRIX_ROWS * ZMK_MATRIX_CO
 	DT_PROP_BY_PHANDLE_IDX(ZMK_KEYMAP_NODE, layers, 7, keys),
 #endif
 };
+
+#endif
 
 #define SET_LAYER_STATE(layer, state)                \
 	if (layer >= 32)                                 \

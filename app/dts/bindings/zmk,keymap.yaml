@@ -4,6 +4,10 @@ description: |
 compatible: "zmk,keymap"
 
 properties:
+  transform:
+    type: phandle
+    required: false
+
   label:
     type: string
     required: true
