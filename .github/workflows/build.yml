@@ -6,6 +6,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Build Test
+    strategy:
+      matrix:
+        board: [proton_c, nice_nano]
     steps:
       # To use this repository's private action,
       # you must check out the repository
@@ -27,27 +30,33 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: West Init
-        uses: 'docker://zmkfirmware/zephyr-west-action-arm:latest'
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
         id: west-init
         with:
           args: 'init "-l app"'
       - name: West Update
-        uses: 'docker://zmkfirmware/zephyr-west-action-arm:latest'
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
         id: west-update
         with:
-          args: 'update'
+          args: "update"
       - name: West Config Zephyr Base
-        uses: 'docker://zmkfirmware/zephyr-west-action-arm:latest'
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
         id: west-config
         with:
           args: 'config "--global zephyr.base-prefer configfile"'
       - name: West Zephyr Export
-        uses: 'docker://zmkfirmware/zephyr-west-action-arm:latest'
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
         id: west-zephyr-export
         with:
-          args: 'zephyr-export'
+          args: "zephyr-export"
       - name: West Build
-        uses: 'docker://zmkfirmware/zephyr-west-action-arm:latest'
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
         id: west-build
         with:
-          args: 'build "-s app -b proton_c -- -DSHIELD=petejohanson_proton_handwire"'
+          args: 'build "-s app -b ${{ matrix.board }} -- -DSHIELD=petejohanson_proton_handwire"'
+      - name: Archive Build
+        uses: actions/upload-artifact@v2
+        if: ${{ matrix.board == 'nice_nano' }}
+        with:
+          name: "${{ matrix.board }}-zmk-uf2"
+          path: build/zephyr/zmk.uf2
