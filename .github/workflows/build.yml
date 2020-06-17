@@ -58,5 +58,5 @@ jobs:
         uses: actions/upload-artifact@v2
         if: ${{ matrix.board == 'nice_nano' }}
         with:
-          name: zmk-uf2
+          name: "${{ matrix.board }}-zmk-uf2"
           path: build/zephyr/zmk.uf2
