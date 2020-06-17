@@ -13,7 +13,7 @@ Check out the website to learn more: https://zmkfirmware.dev/
 - Document boards/shields/keymaps usage.
 - Display support, including displaying BLE SC auth numbers for "numeric comparison" mode if we have the screen.
 - Fix BT settings to work w/ Zephyr. Do we really need them?
-- Tests?
+- Tests
 
 # Missing Features
 
@@ -21,15 +21,11 @@ Check out the website to learn more: https://zmkfirmware.dev/
 - One Shot
 - Combos
 - Tap Dance
-- Shell over BLE?
+- Shell over BLE/USB
 - Split support
-  - custom kscan driver? that recieves events from other side over BLE notifications?
-  - Need to figure out how to do "custom" GATT services. Custom UUID?
-  - Do we need to send any state updates over from primary to secondary side?
 - Encoders
 - Battery reporting.
-- Low power mode, with wakeup from interrupt?
-- Better keymaps to avoid needing extra KC_NO for locations in the matrix that don't even exist!
+- Low power mode, with wakeup from interrupt(s)
 
 ## Long Term
 
