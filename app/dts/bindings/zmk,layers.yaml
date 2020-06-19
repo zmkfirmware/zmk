@@ -11,4 +11,5 @@ child-binding:
       type: string
     keys:
       type: array
-
+    bindings:
+      type: phandle-array

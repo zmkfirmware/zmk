@@ -21,6 +21,9 @@
 	KC_A MT(MOD_LSFT, KC_B)
 	CC_RAIS CC_LOWR
 	>;
+			bindings = <
+				&reset &kp 0
+				&kp 1  &kp 2>;
 		};
 
 		lower: layer_1 {
@@ -29,6 +32,9 @@
 			KC_MPLY KC_MNXT
 			ZC_TRNS ZC_TRNS
 			>;
+			bindings = <
+				&reset &kp 0
+				&kp 1  &kp 2>;
 		};
 
 		raise: layer_2 {
@@ -37,6 +43,9 @@
 			KC_C KC_D
 			ZC_TRNS ZC_TRNS
 			>;
+			bindings = <
+				&reset &kp 0
+				&kp 1  &kp 2>;
 		};
 	};
 };

@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		reset: behavior_reset {
+			compatible = "zmk,behavior-reset";
+			label = "RESET";
+			#binding-cells = <0>;
+		};
+	};
+};

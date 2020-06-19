@@ -49,11 +49,12 @@ void zmk_kscan_process_msgq(struct k_work *item)
 	while (k_msgq_get(&zmk_kscan_msgq, &ev, K_NO_WAIT) == 0)
 	{
 		bool pressed = (ev.state == ZMK_KSCAN_EVENT_STATE_PRESSED);
-		zmk_key key = zmk_keymap_keycode_from_position(ev.row, ev.column);
-		struct zmk_key_event kev = (struct zmk_key_event){.row = ev.row, .column = ev.column, .key = key, .pressed = pressed};
+		zmk_keymap_position_state_changed(ev.row, ev.column, pressed);
+		// zmk_key key = zmk_keymap_keycode_from_position(ev.row, ev.column);
+		// struct zmk_key_event kev = (struct zmk_key_event){.row = ev.row, .column = ev.column, .key = key, .pressed = pressed};
 
-		LOG_DBG("Row: %d, col: %d, key: %d, pressed: %s\n", ev.row, ev.column, key, (pressed ? "true" : "false"));
-		zmk_handle_key(kev);
+		// LOG_DBG("Row: %d, col: %d, key: %d, pressed: %s\n", ev.row, ev.column, key, (pressed ? "true" : "false"));
+		// zmk_handle_key(kev);
 	}
 }
 

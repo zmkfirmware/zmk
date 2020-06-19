@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		kp: behavior_key_press {
+			compatible = "zmk,behavior-key-press";
+			label = "KEY_PRESS";
+			#binding-cells = <1>;
+		};
+	};
+};

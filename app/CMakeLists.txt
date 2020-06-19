@@ -1,6 +1,7 @@
 # Find Zephyr. This also loads Zephyr's build system.
 cmake_minimum_required(VERSION 3.13.1)
 
+set(CONFIG_APPLICATION_DEFINED_SYSCALL true)
 list(APPEND BOARD_ROOT ${CMAKE_SOURCE_DIR})
 list(APPEND DTS_ROOT ${CMAKE_SOURCE_DIR})
 
@@ -29,6 +30,8 @@ target_include_directories(app PRIVATE include)
 target_sources(app PRIVATE src/kscan.c)
 target_sources(app PRIVATE src/keymap.c)
 target_sources(app PRIVATE src/hid.c)
+target_sources(app PRIVATE src/behaviors/behavior_key_press.c)
+target_sources(app PRIVATE src/behaviors/behavior_reset.c)
 target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/ble.c)
 target_sources_ifdef(CONFIG_ZMK_KSCAN_MOCK_DRIVER app PRIVATE src/kscan_mock.c)
 target_sources_ifdef(CONFIG_ZMK_KSCAN_COMPOSITE_DRIVER app PRIVATE src/kscan_composite.c)

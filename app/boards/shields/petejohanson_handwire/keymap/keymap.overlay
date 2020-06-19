@@ -1,4 +1,6 @@
 #include <dt-bindings/zmk/keys.h>
+#include <behaviors/key_press.dtsi>
+#include <behaviors/reset.dtsi>
 #include <keymap.h>
 
 / {
@@ -21,6 +23,9 @@
 	KC_A MT(MOD_LSFT, KC_B)    ZC_NO ZC_NO
 	CC_RAIS CC_LOWR            ZC_NO ZC_NO
 	>;
+			bindings = <
+				&reset &kp 0
+				&kp 1  &kp 2>;
 		};
 
 		lower: layer_1 {
@@ -29,6 +34,10 @@
 			KC_MPLY KC_MNXT    ZC_NO ZC_NO
 			ZC_TRNS ZC_TRNS    ZC_NO ZC_NO
 			>;
+
+			bindings = <
+				&reset &kp 0
+				&kp 1  &kp 2>;
 		};
 
 		raise: layer_2 {
@@ -36,6 +45,10 @@
 			keys = <
 			KC_C KC_D          ZC_NO ZC_NO
 			ZC_TRNS ZC_TRNS    ZC_NO ZC_NO>;
+
+			bindings = <
+				&reset &kp 0
+				&kp 1  &kp 2>;
 		};
 	};
 };
