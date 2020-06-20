@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		keymap_behavior: behavior_keymap {
+			compatible = "zmk,behavior-keymap";
+			label = "KEYMAP";
+			#binding-cells = <0>;
+		};
+	};
+};

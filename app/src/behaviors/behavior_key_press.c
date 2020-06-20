@@ -10,6 +10,8 @@
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
+#include <zmk/events.h>
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct behavior_key_press_config { };
@@ -29,19 +31,16 @@ static int behavior_key_press_init(struct device *dev)
 //  * < 0 - Indicate error processing, report and halt further propagation.
 static int on_position_pressed(struct device *dev, u32_t keycode, u32_t _)
 {
-  // Invoking this triggers a *new* event, that can be linked to other behaviours.
-  //return zmk_key_state_press(u32_t keycode);
-  return 0;
+  LOG_DBG("pressing: %d", keycode);
+  return zmk_events_keycode_pressed(keycode);
 }
 
 
 // They keycode is passed by the "keymap" based on the parameter created as part of the assignment.
 static int on_position_released(struct device *dev, u32_t keycode, u32_t _)
 {
-  // Invoking this triggers a *new* event, that can will be handled by other behaviors
-  // This is the "command" piece. Which could be better/richer, but captures essence here.
-  // return zmk_key_state_release(u32_t keycode);
-  return 0;
+  LOG_DBG("releasing: %d", keycode);
+  return zmk_events_keycode_released(keycode);
 }
 
 static const struct behavior_driver_api behavior_key_press_driver_api = {

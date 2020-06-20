@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		hid_behavior: behavior_hid {
+			compatible = "zmk,behavior-hid";
+			label = "HID";
+			#binding-cells = <0>;
+		};
+	};
+};

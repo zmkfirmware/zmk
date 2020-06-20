@@ -22,12 +22,14 @@ extern "C" {
  * (Internal use only.)
  */
 
-typedef int (*behavior_position_pressed_t)(struct device *dev, u32_t param1, u32_t param2);
-typedef int (*behavior_position_released_t)(struct device *dev, u32_t param1, u32_t param2);
+typedef int (*behavior_position_callback_t)(struct device *dev, u32_t param1, u32_t param2);
+typedef int (*behavior_keycode_callback_t)(struct device *dev, u32_t keycode);
 
 __subsystem struct behavior_driver_api {
-	behavior_position_pressed_t position_pressed;
-	behavior_position_released_t position_released;
+	behavior_position_callback_t position_pressed;
+	behavior_position_callback_t position_released;
+	behavior_keycode_callback_t keycode_pressed;
+	behavior_keycode_callback_t keycode_released;
 };
 /**
  * @endcond
@@ -75,6 +77,51 @@ static inline int z_impl_behavior_position_released(struct device *dev, u32_t pa
 	}
 
 	return api->position_released(dev, param1, param2);
+}
+
+/**
+ * @brief Handle the keycode being pressed
+ * @param dev Pointer to the device structure for the driver instance.
+ * @param keycode The keycode that is being pressed.
+ *
+ * @retval 0 If successful.
+ * @retval Negative errno code if failure.
+ */
+__syscall int behavior_keycode_pressed(struct device *dev, u32_t keycode);
+
+static inline int z_impl_behavior_keycode_pressed(struct device *dev, u32_t keycode)
+{
+	const struct behavior_driver_api *api =
+			(const struct behavior_driver_api *)dev->driver_api;
+
+	if (api->keycode_pressed == NULL) {
+		return -ENOTSUP;
+	}
+
+	return api->keycode_pressed(dev, keycode);
+}
+
+
+/**
+ * @brief Handle the keycode being released
+ * @param dev Pointer to the device structure for the driver instance.
+ * @param keycode The keycode that is being pressed.
+ *
+ * @retval 0 If successful.
+ * @retval Negative errno code if failure.
+ */
+__syscall int behavior_keycode_released(struct device *dev, u32_t keycode);
+
+static inline int z_impl_behavior_keycode_released(struct device *dev, u32_t keycode)
+{
+	const struct behavior_driver_api *api =
+			(const struct behavior_driver_api *)dev->driver_api;
+
+	if (api->keycode_released == NULL) {
+		return -ENOTSUP;
+	}
+
+	return api->keycode_released(dev, keycode);
 }
 
 #ifdef __cplusplus

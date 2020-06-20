@@ -1,0 +1,9 @@
+description: |
+  Specify the the global behaviors bound to state changes
+
+compatible: "zmk,global-bindings"
+
+properties:
+  bindings:
+    type: phandles
+    required: true

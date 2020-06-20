@@ -9,6 +9,7 @@
 #include <device.h>
 #include <drivers/kscan.h>
 #include <logging/log.h>
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/kscan-mock.h>

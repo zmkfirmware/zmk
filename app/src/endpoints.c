@@ -40,6 +40,7 @@ int zmk_endpoints_send_report(enum zmk_hid_report_changes report_type)
     int err;
     struct zmk_hid_keypad_report *keypad_report;
     struct zmk_hid_consumer_report *consumer_report;
+    LOG_DBG("");
     switch (report_type)
     {
     case Keypad:
