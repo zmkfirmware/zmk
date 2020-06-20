@@ -23,14 +23,14 @@ static int behavior_keymap_init(struct device *dev)
 	return 0;
 };
 
-static int on_position_pressed(struct device *dev, u32_t row, u32_t column)
+static int on_position_pressed(struct device *dev, u32_t position, u32_t _)
 {
-  return zmk_keymap_position_state_changed(row, column, true);
+  return zmk_keymap_position_state_changed(position, true);
 }
 
-static int on_position_released(struct device *dev, u32_t row, u32_t column)
+static int on_position_released(struct device *dev, u32_t position, u32_t _)
 {
-  return zmk_keymap_position_state_changed(row, column, false);
+  return zmk_keymap_position_state_changed(position, false);
 }
 
 static const struct behavior_driver_api behavior_keymap_driver_api = {

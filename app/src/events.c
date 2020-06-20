@@ -17,22 +17,22 @@
 static const struct zmk_behavior_binding bindings[] =
     { UTIL_LISTIFY(BINDING_COUNT, BINDING_GEN, 0) };
 
-int zmk_events_position_pressed(u32_t row, u32_t column)
+int zmk_events_position_pressed(u32_t position)
 {
     for (int i = 0; i < BINDING_COUNT; i++) {
         const struct zmk_behavior_binding *b = &bindings[i];
         struct device *dev = device_get_binding(b->behavior_dev);
-        behavior_position_pressed(dev, row, column);
+        behavior_position_pressed(dev, position, 0);
     }
     return 0;
 };
 
-int zmk_events_position_released(u32_t row, u32_t column)
+int zmk_events_position_released(u32_t position)
 {
     for (int i = 0; i < BINDING_COUNT; i++) {
         const struct zmk_behavior_binding *b = &bindings[i];
         struct device *dev = device_get_binding(b->behavior_dev);
-        behavior_position_released(dev, row, column);
+        behavior_position_released(dev, position, 0);
     }
     return 0;
 }

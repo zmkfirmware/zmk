@@ -28,6 +28,7 @@ endif()
 # find_package(Zephyr) which defines the target.
 target_include_directories(app PRIVATE include)
 target_sources(app PRIVATE src/kscan.c)
+target_sources(app PRIVATE src/matrix_transform.c)
 target_sources(app PRIVATE src/events.c)
 target_sources(app PRIVATE src/keymap.c)
 target_sources(app PRIVATE src/hid.c)
