@@ -19,24 +19,24 @@
 			label = "DEFAULT";
 
 			bindings = <
-				&reset &kp A
-				&kp B  &kp C>;
+				&to 1 &kp A
+				&to 2 &kp C>;
 		};
 
 		lower: layer_1 {
 			label = "LOWER";
 
 			bindings = <
-				&reset &kp D
-				&kp F  &kp E>;
+				&trans &kp D
+				&trans &kp E>;
 		};
 
 		raise: layer_2 {
 			label = "RAISE";
 
 			bindings = <
-				&reset &kp I
-				&kp G  &kp H>;
+				&trans &kp I
+				&trans &kp H>;
 		};
 	};
 };
