@@ -18,8 +18,8 @@
 			label = "DEFAULT";
 
 			bindings = <
-				&to 1 &kp A
-				&to 2 &kp C>;
+				&mo 1 &kp A
+				&mo 2 &kp C>;
 		};
 
 		lower: layer_1 {
