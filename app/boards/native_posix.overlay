@@ -1,11 +1,5 @@
 #include <dt-bindings/zmk/keys.h>
-#include <behaviors/key_press.dtsi>
-#include <behaviors/transparent.dtsi>
-#include <behaviors/mod_tap.dtsi>
-#include <behaviors/momentary_layer.dtsi>
-#include <behaviors/reset.dtsi>
-#include <behaviors/keymap.dtsi>
-#include <behaviors/hid.dtsi>
+#include <behaviors.dtsi>
 #include <zmk/kscan-mock.h>
 
 / {

@@ -1,7 +1,5 @@
 #include <dt-bindings/zmk/keys.h>
-#include <behaviors/key_press.dtsi>
-#include <behaviors/reset.dtsi>
-#include <behaviors/keymap.dtsi>
+#include <behaviors.dtsi>
 #include <keymap.h>
 
 / {
