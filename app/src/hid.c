@@ -12,7 +12,7 @@ static struct zmk_hid_keypad_report kp_report = {
 static struct zmk_hid_consumer_report consumer_report = {
     .report_id = 2,
     .body = {
-        .keys = 0x00}};
+        .keys = {0,0,0,0,0,0}}};
 
 #define _TOGGLE_MOD(mod, state)                      \
     if (modifier > MOD_RGUI)                         \
@@ -61,62 +61,68 @@ int zmk_hid_unregister_mods(zmk_mod_flags modifiers)
 
 #define TOGGLE_KEY(code, val) WRITE_BIT(kp_report.body.keys[code / 8], code % 8, val)
 
-#define TOGGLE_CONSUMER(key, state) \
-    WRITE_BIT(consumer_report.body.keys, (key - 0x100), state);
+#define TOGGLE_CONSUMER(match, val)                  \
+    for (int idx = 0; idx < MAX_KEYS; idx++)         \
+    {                                                \
+        if (consumer_report.body.keys[idx] != match) \
+        {                                            \
+            continue;                                \
+        }                                            \
+        consumer_report.body.keys[idx] = val;        \
+        break;                                       \
+    }
 
-enum zmk_hid_report_changes zmk_hid_press_key(zmk_key code)
+
+int zmk_hid_keypad_press(zmk_key code)
 {
     if (code >= LCTL && code <= RGUI)
     {
         return zmk_hid_register_mod(code - LCTL);
     }
 
-    // if (ZK_IS_CONSUMER(code))
-    // {
-    //     LOG_DBG("Toggling a consumer key!");
-    //     TOGGLE_CONSUMER(code, true);
-    //     return Consumer;
-    // }
-    // else
-    // {
-        if (code > ZMK_HID_MAX_KEYCODE)
-        {
-            return -EINVAL;
-        }
+   
+    if (code > ZMK_HID_MAX_KEYCODE)
+    {
+        return -EINVAL;
+    }
 
-        // TOGGLE_BOOT_KEY(0U, code);
+    // TOGGLE_BOOT_KEY(0U, code);
 
-        TOGGLE_KEY(code, true);
+    TOGGLE_KEY(code, true);
 
-        return Keypad;
-    // }
+    return 0;
 };
 
-enum zmk_hid_report_changes zmk_hid_release_key(zmk_key code)
+int zmk_hid_keypad_release(zmk_key code)
 {
     if (code >= LCTL && code <= RGUI)
     {
         return zmk_hid_unregister_mod(code - LCTL);
     }
 
-    // if (ZK_IS_CONSUMER(code))
-    // {
-    //     TOGGLE_CONSUMER(code, false);
-    //     return Consumer;
-    // }
-    // else
-    // {
-        if (code > ZMK_HID_MAX_KEYCODE)
-        {
-            return -EINVAL;
-        }
+    if (code > ZMK_HID_MAX_KEYCODE)
+    {
+        return -EINVAL;
+    }
 
-        // TOGGLE_BOOT_KEY(0U, code);
+    // TOGGLE_BOOT_KEY(0U, code);
 
-        TOGGLE_KEY(code, false);
+    TOGGLE_KEY(code, false);
 
-        return Keypad;
-    // }
+    return 0;
+};
+
+int zmk_hid_consumer_press(zmk_key code)
+{
+    TOGGLE_CONSUMER(0U, code);
+    return 0;
+};
+
+
+int zmk_hid_consumer_release(zmk_key code)
+{
+    TOGGLE_CONSUMER(code, 0U);
+    return 0;
 };
 
 struct zmk_hid_keypad_report *zmk_hid_get_keypad_report()

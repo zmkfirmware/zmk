@@ -62,17 +62,17 @@ static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_MATRIX_
 #define SET_LAYER_STATE(layer, state)                \
 	if (layer >= 32)                                 \
 	{                                                \
-		return false;                                \
+		return -EINVAL;                              \
 	}                                                \
 	WRITE_BIT(zmk_keymap_layer_state, layer, state); \
-	return true;
+	return 0;
 
-bool zmk_keymap_layer_activate(u8_t layer)
+int zmk_keymap_layer_activate(u8_t layer)
 {
 	SET_LAYER_STATE(layer, true);
 };
 
-bool zmk_keymap_layer_deactivate(u8_t layer)
+int zmk_keymap_layer_deactivate(u8_t layer)
 {
 	SET_LAYER_STATE(layer, false);
 };
@@ -87,7 +87,7 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 			struct device *behavior;
 			int ret;
 
-			LOG_DBG("position: %d, binding name: %s", position, binding->behavior_dev);
+			LOG_DBG("layer: %d position: %d, binding name: %s", layer, position, binding->behavior_dev);
 
 			behavior = device_get_binding(binding->behavior_dev);
 

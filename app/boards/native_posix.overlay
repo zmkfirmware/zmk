@@ -56,7 +56,7 @@
 			label = "DEFAULT";
 
 			bindings = <
-				&kp B &mo A &kp C &kp E
+				&kp B &mo 1 &kp C &kp E
 				&kp D &kp G &kp F &kp Q>;
 		};
 
@@ -64,7 +64,7 @@
 			label = "LOWER";
 
 			bindings = <
-				&kp N &trans &kp O &kp Q
+				&cp M_NEXT &trans &kp O &kp Q
 				&kp L  &kp J &kp P &kp K>;
 		};
 

@@ -24,14 +24,14 @@ static int behavior_mo_init(struct device *dev)
 };
 
 
-static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t layer, u32_t _)
+static int mo_keymap_binding_pressed(struct device *dev, u32_t position, u32_t layer, u32_t _)
 {
   LOG_DBG("position %d layer %d", position, layer);
 
   return zmk_keymap_layer_activate(layer);
 }
 
-static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t layer, u32_t _)
+static int mo_keymap_binding_released(struct device *dev, u32_t position, u32_t layer, u32_t _)
 {
   LOG_DBG("position %d layer %d", position, layer);
 
@@ -39,8 +39,8 @@ static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t 
 }
 
 static const struct behavior_driver_api behavior_mo_driver_api = {
-  .binding_pressed = on_keymap_binding_pressed,
-  .binding_released = on_keymap_binding_released
+  .binding_pressed = mo_keymap_binding_pressed,
+  .binding_released = mo_keymap_binding_released
 };
 
 

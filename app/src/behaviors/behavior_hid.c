@@ -24,22 +24,53 @@ static int behavior_hid_init(struct device *dev)
 	return 0;
 };
 
-static int on_keycode_pressed(struct device *dev, u32_t keycode)
+static int on_keycode_pressed(struct device *dev, u8_t usage_page, u32_t keycode)
 {
-  enum zmk_hid_report_changes changes;
+  int err;
   LOG_DBG("keycode %d", keycode);
   
-  changes = zmk_hid_press_key(keycode);
-  return zmk_endpoints_send_report(changes);
+  switch (usage_page) {
+  case USAGE_KEYPAD:
+    err = zmk_hid_keypad_press(keycode);
+    if (err) {
+      LOG_ERR("Unable to press keycode");
+      return err;
+    }
+    break;
+  case USAGE_CONSUMER:
+    err = zmk_hid_consumer_press(keycode);
+    if (err) {
+      LOG_ERR("Unable to press keycode");
+      return err;
+    }
+    break;
+  }
+
+  return zmk_endpoints_send_report(usage_page);
 }
 
-static int on_keycode_released(struct device *dev, u32_t keycode)
+static int on_keycode_released(struct device *dev, u8_t usage_page, u32_t keycode)
 {
-  enum zmk_hid_report_changes changes;
+  int err;
   LOG_DBG("keycode %d", keycode);
   
-  changes = zmk_hid_release_key(keycode);
-  return zmk_endpoints_send_report(changes);
+  switch (usage_page) {
+  case USAGE_KEYPAD:
+    err = zmk_hid_keypad_release(keycode);
+    if (err) {
+      LOG_ERR("Unable to press keycode");
+      return err;
+    }
+    break;
+  case USAGE_CONSUMER:
+    err = zmk_hid_consumer_release(keycode);
+    if (err) {
+      LOG_ERR("Unable to press keycode");
+      return err;
+    }
+    break;
+  }
+  return zmk_endpoints_send_report(usage_page);
 }
 
 static int on_modifiers_pressed(struct device *dev, zmk_mod_flags modifiers)
@@ -47,7 +78,7 @@ static int on_modifiers_pressed(struct device *dev, zmk_mod_flags modifiers)
   LOG_DBG("modifiers %d", modifiers);
   
   zmk_hid_register_mods(modifiers);
-  return zmk_endpoints_send_report(Keypad);
+  return zmk_endpoints_send_report(USAGE_KEYPAD);
 }
 
 static int on_modifiers_released(struct device *dev, zmk_mod_flags modifiers)
@@ -55,7 +86,7 @@ static int on_modifiers_released(struct device *dev, zmk_mod_flags modifiers)
   LOG_DBG("modifiers %d", modifiers);
   
   zmk_hid_unregister_mods(modifiers);
-  return zmk_endpoints_send_report(Keypad);
+  return zmk_endpoints_send_report(USAGE_KEYPAD);
 }
 
 static const struct behavior_driver_api behavior_hid_driver_api = {

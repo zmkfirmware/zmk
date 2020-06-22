@@ -33,22 +33,22 @@ int zmk_events_position_released(u32_t position)
     return 0;
 };
 
-int zmk_events_keycode_pressed(u32_t keycode)
+int zmk_events_keycode_pressed(u8_t usage_page, u32_t keycode)
 {
     for (int i = 0; i < GLOBAL_BEHAVIOR_LEN; i++) {
         const char* label = global_behaviors[i];
         struct device *dev = device_get_binding(label);
-        behavior_keycode_pressed(dev, keycode);
+        behavior_keycode_pressed(dev, usage_page, keycode);
     }
     return 0;
 };
 
-int zmk_events_keycode_released(u32_t keycode)
+int zmk_events_keycode_released(u8_t usage_page, u32_t keycode)
 {
     for (int i = 0; i < GLOBAL_BEHAVIOR_LEN; i++) {
         const char* label = global_behaviors[i];
         struct device *dev = device_get_binding(label);
-        behavior_keycode_released(dev, keycode);
+        behavior_keycode_released(dev, usage_page, keycode);
     }
     return 0;
 };

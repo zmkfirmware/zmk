@@ -40,17 +40,17 @@ static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t 
   struct behavior_mod_tap_data *data = dev->driver_data;
   LOG_DBG("mods: %d, keycode: %d", mods, keycode);
   
-  zmk_events_modifiers_released(mods);
+zmk_events_modifiers_released(mods);
   if (data->pending_press_positions & BIT(position)) {
-    zmk_events_keycode_pressed(keycode);
+    zmk_events_keycode_pressed(USAGE_KEYPAD, keycode);
     k_msleep(10);
-    zmk_events_keycode_released(keycode);
+    zmk_events_keycode_released(USAGE_KEYPAD, keycode);
   }
 
   return 0;
 }
 
-static int on_keycode_pressed(struct device *dev, u32_t keycode)
+static int on_keycode_pressed(struct device *dev, u8_t usage_page, u32_t keycode)
 {
   struct behavior_mod_tap_data *data = dev->driver_data;
   data->pending_press_positions = 0;
@@ -58,8 +58,7 @@ static int on_keycode_pressed(struct device *dev, u32_t keycode)
   return 0;
 }
 
-
-static int on_keycode_released(struct device *dev, u32_t keycode)
+static int on_keycode_released(struct device *dev, u8_t usage_page, u32_t keycode)
 {
   LOG_DBG("releasing: %d", keycode);
   return 0;

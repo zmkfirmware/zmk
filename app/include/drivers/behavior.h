@@ -25,7 +25,7 @@ extern "C" {
 
 typedef int (*behavior_position_callback_t)(struct device *dev, u32_t position);
 typedef int (*behavior_keymap_binding_callback_t)(struct device *dev, u32_t position, u32_t param1, u32_t param2);
-typedef int (*behavior_keycode_callback_t)(struct device *dev, u32_t keycode);
+typedef int (*behavior_keycode_callback_t)(struct device *dev, u8_t usage_page, u32_t keycode);
 typedef int (*behavior_modifiers_callback_t)(struct device *dev, zmk_mod_flags modifiers);
 
 __subsystem struct behavior_driver_api {
@@ -135,14 +135,15 @@ static inline int z_impl_behavior_keymap_binding_released(struct device *dev, u3
 /**
  * @brief Handle the keycode being pressed
  * @param dev Pointer to the device structure for the driver instance.
+ * @param usage_page The usage page for the keycode.
  * @param keycode The keycode that is being pressed.
  *
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_keycode_pressed(struct device *dev, u32_t keycode);
+__syscall int behavior_keycode_pressed(struct device *dev, u8_t usage_page, u32_t keycode);
 
-static inline int z_impl_behavior_keycode_pressed(struct device *dev, u32_t keycode)
+static inline int z_impl_behavior_keycode_pressed(struct device *dev, u8_t usage_page, u32_t keycode)
 {
 	const struct behavior_driver_api *api =
 			(const struct behavior_driver_api *)dev->driver_api;
@@ -151,21 +152,22 @@ static inline int z_impl_behavior_keycode_pressed(struct device *dev, u32_t keyc
 		return -ENOTSUP;
 	}
 
-	return api->keycode_pressed(dev, keycode);
+	return api->keycode_pressed(dev, usage_page, keycode);
 }
 
 
 /**
  * @brief Handle the keycode being released
  * @param dev Pointer to the device structure for the driver instance.
+ * @param usage_page The usage page for the keycode.
  * @param keycode The keycode that is being pressed.
  *
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_keycode_released(struct device *dev, u32_t keycode);
+__syscall int behavior_keycode_released(struct device *dev, u8_t usage_page, u32_t keycode);
 
-static inline int z_impl_behavior_keycode_released(struct device *dev, u32_t keycode)
+static inline int z_impl_behavior_keycode_released(struct device *dev, u8_t usage_page, u32_t keycode)
 {
 	const struct behavior_driver_api *api =
 			(const struct behavior_driver_api *)dev->driver_api;
@@ -174,7 +176,7 @@ static inline int z_impl_behavior_keycode_released(struct device *dev, u32_t key
 		return -ENOTSUP;
 	}
 
-	return api->keycode_released(dev, keycode);
+	return api->keycode_released(dev, usage_page, keycode);
 }
 
 

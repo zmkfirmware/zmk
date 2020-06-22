@@ -1,6 +1,9 @@
 
 #pragma once
 
+#define USAGE_KEYPAD 0x07
+#define USAGE_CONSUMER 0x0C
+
 #define A 0x04
 #define B 0x05
 #define C 0x06
@@ -104,14 +107,14 @@
 
 /* The following are select consumer page usages */
 
-#define MNXT 0x100
-#define MPRV 0x101
-#define MSTP 0x102
-#define MJCT 0x103
-#define MPLY 0x104
-#define MMUT 0x105
-#define MVLU 0x106
-#define MVLD 0x107
+#define M_NEXT 0xB5
+#define M_PREV 0xB6
+#define M_STOP 0xB7
+#define M_EJCT 0xB8
+#define M_PLAY 0xCD
+#define M_MUTE 0xE2
+#define M_VOLU 0xE9
+#define M_VOLD 0xEA
 
 #define MOD_LCTL (1 << 0x00)
 #define MOD_LSFT (1 << 0x01)
