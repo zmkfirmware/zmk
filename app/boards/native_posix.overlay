@@ -1,6 +1,8 @@
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors/key_press.dtsi>
+#include <behaviors/transparent.dtsi>
 #include <behaviors/mod_tap.dtsi>
+#include <behaviors/momentary_layer.dtsi>
 #include <behaviors/reset.dtsi>
 #include <behaviors/keymap.dtsi>
 #include <behaviors/hid.dtsi>
@@ -65,7 +67,7 @@
 			>;
 
 			bindings = <
-				&kp 5 &mt MOD_LSFT KC_B &kp 10 &kp 11
+				&kp 5 &mo 1 &kp 10 &kp 11
 				&kp 1  &kp 2 &kp 4 &kp 89>;
 		};
 
@@ -77,8 +79,8 @@
 			>;
 
 			bindings = <
-				&kp 5 &kp 0 &kp 10 &kp 11
-				&kp 1  &kp 2 &kp 4 &kp 89>;
+				&kp 20 &trans &kp 18 &kp 19
+				&kp 21  &kp 22 &kp 24 &kp 49>;
 		};
 
 		raise: layer_2 {

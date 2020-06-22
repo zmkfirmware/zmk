@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		mo: behavior_momentary_layer {
+			compatible = "zmk,behavior-momentary-layer";
+			label = "MO";
+			#binding-cells = <1>;
+		};
+	};
+};
