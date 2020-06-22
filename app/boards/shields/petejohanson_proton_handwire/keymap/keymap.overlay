@@ -17,36 +17,26 @@
 
 		default: layer_0 {
 			label = "DEFAULT";
-			keys =
-	<
-	KC_A MT(MOD_LSFT, KC_B)
-	CC_RAIS CC_LOWR
-	>;
+
 			bindings = <
-				&reset &kp 0
-				&kp 1  &kp 2>;
+				&reset &kp A
+				&kp B  &kp C>;
 		};
 
 		lower: layer_1 {
 			label = "LOWER";
-			keys = <
-			KC_MPLY KC_MNXT
-			ZC_TRNS ZC_TRNS
-			>;
+
 			bindings = <
-				&reset &kp 0
-				&kp 1  &kp 2>;
+				&reset &kp D
+				&kp F  &kp E>;
 		};
 
 		raise: layer_2 {
 			label = "RAISE";
-			keys = <
-			KC_C KC_D
-			ZC_TRNS ZC_TRNS
-			>;
+
 			bindings = <
-				&reset &kp 0
-				&kp 1  &kp 2>;
+				&reset &kp I
+				&kp G  &kp H>;
 		};
 	};
 };

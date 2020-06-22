@@ -9,7 +9,7 @@
 
 #define COLLECTION_REPORT 0x03
 
-#define ZMK_HID_MAX_KEYCODE KC_APP
+#define ZMK_HID_MAX_KEYCODE GUI
 
 static const u8_t zmk_hid_report_desc[] = {
     /* USAGE_PAGE (Generic Desktop) */

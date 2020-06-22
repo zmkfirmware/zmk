@@ -168,12 +168,12 @@ bool zmk_ble_handle_key_user(struct zmk_key_event *key_event)
         return true;
     }
 
-    if (key < KC_1 || key > KC_0)
+    if (key < NUM_1 || key > NUM_0)
     {
         return true;
     }
 
-    u32_t val = (key == KC_0) ? 0 : (key - KC_1 + 1);
+    u32_t val = (key == NUM_0) ? 0 : (key - NUM_1 + 1);
 
     passkey_entries[passkey_digit++] = val;
 

@@ -54,39 +54,26 @@
 
 		default: layer_0 {
 			label = "DEFAULT";
-			keys =
-			<
-				KC_A MT(MOD_LSFT, KC_B) KC_C KC_D
-				KC_E KC_F KC_G KC_H
-			>;
 
 			bindings = <
-				&kp 5 &mo 1 &kp 10 &kp 11
-				&kp 1  &kp 2 &kp 4 &kp 89>;
+				&kp B &mo A &kp C &kp E
+				&kp D &kp G &kp F &kp Q>;
 		};
 
 		lower: layer_1 {
 			label = "LOWER";
-			keys = <
-				KC_A KC_B KC_C KC_D
-				KC_E KC_F KC_G KC_H
-			>;
 
 			bindings = <
-				&kp 20 &trans &kp 18 &kp 19
-				&kp 21  &kp 22 &kp 24 &kp 49>;
+				&kp N &trans &kp O &kp Q
+				&kp L  &kp J &kp P &kp K>;
 		};
 
 		raise: layer_2 {
 			label = "RAISE";
-			keys = <
-				KC_E KC_F KC_G KC_H 
-				KC_A KC_B KC_C KC_D
-			>;
 
 			bindings = <
-				&kp 5 &kp 0 &kp 10 &kp 11
-				&kp 1  &kp 2 &kp 4 &kp 89>;
+				&kp W &kp U &kp I &kp N
+				&kp X  &kp M &kp C &kp B>;
 		};
 	};
 };

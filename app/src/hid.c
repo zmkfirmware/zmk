@@ -66,19 +66,19 @@ int zmk_hid_unregister_mods(zmk_mod_flags modifiers)
 
 enum zmk_hid_report_changes zmk_hid_press_key(zmk_key code)
 {
-    if (code >= KC_LCTL && code <= KC_RGUI)
+    if (code >= LCTL && code <= RGUI)
     {
-        return zmk_hid_register_mod(code - KC_LCTL);
+        return zmk_hid_register_mod(code - LCTL);
     }
 
-    if (ZK_IS_CONSUMER(code))
-    {
-        LOG_DBG("Toggling a consumer key!");
-        TOGGLE_CONSUMER(code, true);
-        return Consumer;
-    }
-    else
-    {
+    // if (ZK_IS_CONSUMER(code))
+    // {
+    //     LOG_DBG("Toggling a consumer key!");
+    //     TOGGLE_CONSUMER(code, true);
+    //     return Consumer;
+    // }
+    // else
+    // {
         if (code > ZMK_HID_MAX_KEYCODE)
         {
             return -EINVAL;
@@ -89,23 +89,23 @@ enum zmk_hid_report_changes zmk_hid_press_key(zmk_key code)
         TOGGLE_KEY(code, true);
 
         return Keypad;
-    }
+    // }
 };
 
 enum zmk_hid_report_changes zmk_hid_release_key(zmk_key code)
 {
-    if (code >= KC_LCTL && code <= KC_RGUI)
+    if (code >= LCTL && code <= RGUI)
     {
-        return zmk_hid_unregister_mod(code - KC_LCTL);
+        return zmk_hid_unregister_mod(code - LCTL);
     }
 
-    if (ZK_IS_CONSUMER(code))
-    {
-        TOGGLE_CONSUMER(code, false);
-        return Consumer;
-    }
-    else
-    {
+    // if (ZK_IS_CONSUMER(code))
+    // {
+    //     TOGGLE_CONSUMER(code, false);
+    //     return Consumer;
+    // }
+    // else
+    // {
         if (code > ZMK_HID_MAX_KEYCODE)
         {
             return -EINVAL;
@@ -116,7 +116,7 @@ enum zmk_hid_report_changes zmk_hid_release_key(zmk_key code)
         TOGGLE_KEY(code, false);
 
         return Keypad;
-    }
+    // }
 };
 
 struct zmk_hid_keypad_report *zmk_hid_get_keypad_report()

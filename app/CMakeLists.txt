@@ -46,5 +46,4 @@ target_sources_ifdef(CONFIG_ZMK_USB app PRIVATE src/usb_hid.c)
 target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/hog.c)
 target_sources(app PRIVATE src/endpoints.c)
 target_sources(app PRIVATE src/main.c)
-target_sources(app PRIVATE src/handlers.c)
 
