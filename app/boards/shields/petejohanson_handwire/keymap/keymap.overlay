@@ -7,13 +7,8 @@
 / {
 	chosen {
 		zmk,keymap = &keymap0;
-		zmk,global_bindings = &bindings;
 	};
 
-	bindings: global_bindings {
-		compatible = "zmk,global-bindings";
-		bindings = <&reset>;
-	};
 	keymap0: keymap {
 		compatible = "zmk,keymap";
 		label ="Default keymap";

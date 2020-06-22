@@ -5,63 +5,74 @@
 #include <zmk/events.h>
 #include <sys/util.h>
 
-#define BINDINGS_NODE DT_CHOSEN(zmk_global_bindings)
-#define BINDING_COUNT DT_PROP_LEN(BINDINGS_NODE, bindings)
+#define DT_DRV_COMPAT zmk_behavior_global
+#define GLOBAL_BEHAVIOR_LEN DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT)
 
-#define BINDING_GEN(idx,_) \
-    { .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(BINDINGS_NODE, bindings, idx)), \
-	  .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(BINDINGS_NODE, bindings, idx, param1), (0), (DT_PHA_BY_IDX(BINDINGS_NODE, bindings, idx, param1))), \
-	  .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(BINDINGS_NODE, bindings, idx, param2), (0), (DT_PHA_BY_IDX(BINDINGS_NODE, bindings, idx, param2))), \
-	},
-
-static const struct zmk_behavior_binding bindings[] =
-    { UTIL_LISTIFY(BINDING_COUNT, BINDING_GEN, 0) };
+#define LABEL_ENTRY(i) DT_INST_LABEL(i),
+static const char *global_behaviors[] = {
+    DT_INST_FOREACH_STATUS_OKAY(LABEL_ENTRY)
+};
 
 int zmk_events_position_pressed(u32_t position)
 {
-    for (int i = 0; i < BINDING_COUNT; i++) {
-        const struct zmk_behavior_binding *b = &bindings[i];
-        struct device *dev = device_get_binding(b->behavior_dev);
-        behavior_position_pressed(dev, position, 0);
+    for (int i = 0; i < GLOBAL_BEHAVIOR_LEN; i++) {
+        const char* label = global_behaviors[i];
+        struct device *dev = device_get_binding(label);
+        behavior_position_pressed(dev, position);
     }
     return 0;
 };
 
 int zmk_events_position_released(u32_t position)
 {
-    for (int i = 0; i < BINDING_COUNT; i++) {
-        const struct zmk_behavior_binding *b = &bindings[i];
-        struct device *dev = device_get_binding(b->behavior_dev);
-        behavior_position_released(dev, position, 0);
+    for (int i = 0; i < GLOBAL_BEHAVIOR_LEN; i++) {
+        const char* label = global_behaviors[i];
+        struct device *dev = device_get_binding(label);
+        behavior_position_released(dev, position);
     }
     return 0;
-}
+};
+
 int zmk_events_keycode_pressed(u32_t keycode)
 {
-    for (int i = 0; i < BINDING_COUNT; i++) {
-        const struct zmk_behavior_binding *b = &bindings[i];
-        struct device *dev = device_get_binding(b->behavior_dev);
+    for (int i = 0; i < GLOBAL_BEHAVIOR_LEN; i++) {
+        const char* label = global_behaviors[i];
+        struct device *dev = device_get_binding(label);
         behavior_keycode_pressed(dev, keycode);
     }
     return 0;
-}
+};
+
 int zmk_events_keycode_released(u32_t keycode)
 {
-    for (int i = 0; i < BINDING_COUNT; i++) {
-        const struct zmk_behavior_binding *b = &bindings[i];
-        struct device *dev = device_get_binding(b->behavior_dev);
+    for (int i = 0; i < GLOBAL_BEHAVIOR_LEN; i++) {
+        const char* label = global_behaviors[i];
+        struct device *dev = device_get_binding(label);
         behavior_keycode_released(dev, keycode);
     }
     return 0;
 };
-int zmk_events_mod_pressed(u32_t modifier)
+
+int zmk_events_modifiers_pressed(zmk_mod_flags modifiers)
 {
+    for (int i = 0; i < GLOBAL_BEHAVIOR_LEN; i++) {
+        const char* label = global_behaviors[i];
+        struct device *dev = device_get_binding(label);
+        behavior_modifiers_pressed(dev, modifiers);
+    }
     return 0;
 };
-int zmk_events_mod_released(u32_t modifier)
+
+int zmk_events_modifiers_released(zmk_mod_flags modifiers)
 {
+    for (int i = 0; i < GLOBAL_BEHAVIOR_LEN; i++) {
+        const char* label = global_behaviors[i];
+        struct device *dev = device_get_binding(label);
+        behavior_modifiers_released(dev, modifiers);
+    }
     return 0;
 };
+
 int zmk_events_consumer_key_pressed(u32_t usage)
 {
     return 0;

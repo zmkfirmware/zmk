@@ -1,7 +1,7 @@
 / {
 	behaviors {
 		keymap_behavior: behavior_keymap {
-			compatible = "zmk,behavior-keymap";
+			compatible = "zmk,behavior-keymap", "zmk,behavior-global";
 			label = "KEYMAP";
 			#binding-cells = <0>;
 		};

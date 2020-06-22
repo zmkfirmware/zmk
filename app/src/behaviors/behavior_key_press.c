@@ -29,25 +29,25 @@ static int behavior_key_press_init(struct device *dev)
 //  * > 0 -  indicate successful processing, and halt further handling,
 //  * 0 - Indicate successful processing, and continue propagation.
 //  * < 0 - Indicate error processing, report and halt further propagation.
-static int on_position_pressed(struct device *dev, u32_t keycode, u32_t _)
+static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t keycode, u32_t _)
 {
-  LOG_DBG("pressing: %d", keycode);
+  LOG_DBG("position %d keycode %d", position, keycode);
   return zmk_events_keycode_pressed(keycode);
 }
 
 
 // They keycode is passed by the "keymap" based on the parameter created as part of the assignment.
-static int on_position_released(struct device *dev, u32_t keycode, u32_t _)
+static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t keycode, u32_t _)
 {
-  LOG_DBG("releasing: %d", keycode);
+  LOG_DBG("position %d keycode %d", position, keycode);
   return zmk_events_keycode_released(keycode);
 }
 
 static const struct behavior_driver_api behavior_key_press_driver_api = {
   // These callbacks are all optional, and define which kinds of events the behavior can handle.
   // They can reference local functions defined here, or shared event handlers.
-  .position_pressed = on_position_pressed,
-  .position_released = on_position_released
+  .binding_pressed = on_keymap_binding_pressed,
+  .binding_released = on_keymap_binding_released
   // Other optional callbacks a behavior can implement
   // .on_mouse_moved
   // .on_sensor_data - Any behaviour that wants to be linked to a censor can implement this behavior

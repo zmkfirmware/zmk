@@ -1,11 +1,13 @@
 
+#include <sys/util.h>
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
+#include <zmk/matrix.h>
 #include <zmk/keymap.h>
 #include <dt-bindings/zmk/matrix-transform.h>
 #include <drivers/behavior.h>
 #include <zmk/behavior.h>
-#include <sys/util.h>
 
 static u32_t zmk_keymap_layer_state = 0;
 static u8_t zmk_keymap_layer_default = 0;
@@ -88,10 +90,15 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 			LOG_DBG("position: %d, binding name: %s", position, binding->behavior_dev);
 
 			behavior = device_get_binding(binding->behavior_dev);
+
+			if (!behavior) {
+				LOG_DBG("No behavior assigned to %d on layer %d", position, layer);
+				continue;
+			}
 			if (pressed) {
-				ret = behavior_position_pressed(behavior, binding->param1, binding->param2);
+				ret = behavior_keymap_binding_pressed(behavior, position, binding->param1, binding->param2);
 			} else {
-				ret = behavior_position_released(behavior, binding->param1, binding->param2);
+				ret = behavior_keymap_binding_released(behavior, position, binding->param1, binding->param2);
 			}
 			
 

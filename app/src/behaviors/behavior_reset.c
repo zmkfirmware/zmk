@@ -21,7 +21,7 @@ static int behavior_reset_init(struct device *dev)
 	return 0;
 };
 
-static int on_position_pressed(struct device *dev, u32_t _param1, u32_t _param2)
+static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _param1, u32_t _param2)
 {
   // TODO: Correct magic code for going into DFU?
   // See https://github.com/adafruit/Adafruit_nRF52_Bootloader/blob/d6b28e66053eea467166f44875e3c7ec741cb471/src/main.c#L107
@@ -29,14 +29,8 @@ static int on_position_pressed(struct device *dev, u32_t _param1, u32_t _param2)
   return 0;
 }
 
-static int on_position_released(struct device *dev, u32_t _param1, u32_t _param2)
-{
-  return 0;
-}
-
 static const struct behavior_driver_api behavior_reset_driver_api = {
-  .position_pressed = on_position_pressed,
-  .position_released = on_position_released
+  .binding_pressed = on_keymap_binding_pressed,
 };
 
 

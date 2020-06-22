@@ -1,5 +1,7 @@
 #pragma once
 
+#include <devicetree.h>
+
 #define ZMK_MATRIX_NODE_ID DT_CHOSEN(zmk_kscan)
 
 #if DT_NODE_HAS_PROP(ZMK_MATRIX_NODE_ID,row_gpios)

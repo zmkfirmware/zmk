@@ -1,5 +1,6 @@
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors/key_press.dtsi>
+#include <behaviors/mod_tap.dtsi>
 #include <behaviors/reset.dtsi>
 #include <behaviors/keymap.dtsi>
 #include <behaviors/hid.dtsi>
@@ -9,12 +10,6 @@
 	chosen {
 		zmk,kscan = &kscan0;
 		zmk,keymap = &keymap0;
-		zmk,global_bindings = &bindings;
-	};
-
-	bindings: global_bindings {
-		compatible = "zmk,global-bindings";
-		bindings = <&keymap_behavior &hid_behavior>;
 	};
 
 	kscan0: kscan_0 {
@@ -70,7 +65,7 @@
 			>;
 
 			bindings = <
-				&kp 5 &kp 0 &kp 10 &kp 11
+				&kp 5 &mt MOD_LSFT KC_B &kp 10 &kp 11
 				&kp 1  &kp 2 &kp 4 &kp 89>;
 		};
 

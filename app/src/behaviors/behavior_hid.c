@@ -42,9 +42,27 @@ static int on_keycode_released(struct device *dev, u32_t keycode)
   return zmk_endpoints_send_report(changes);
 }
 
+static int on_modifiers_pressed(struct device *dev, zmk_mod_flags modifiers)
+{
+  LOG_DBG("modifiers %d", modifiers);
+  
+  zmk_hid_register_mods(modifiers);
+  return zmk_endpoints_send_report(Keypad);
+}
+
+static int on_modifiers_released(struct device *dev, zmk_mod_flags modifiers)
+{
+  LOG_DBG("modifiers %d", modifiers);
+  
+  zmk_hid_unregister_mods(modifiers);
+  return zmk_endpoints_send_report(Keypad);
+}
+
 static const struct behavior_driver_api behavior_hid_driver_api = {
   .keycode_pressed = on_keycode_pressed,
-  .keycode_released = on_keycode_released
+  .keycode_released = on_keycode_released,
+  .modifiers_pressed = on_modifiers_pressed,
+  .modifiers_released = on_modifiers_released
 };
 
 

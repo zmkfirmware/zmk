@@ -12,12 +12,6 @@
 	chosen {
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
-		zmk,global_bindings = &bindings;
-	};
-
-	bindings: global_bindings {
-		compatible = "zmk,global-bindings";
-		bindings = <&keymap_behavior &hid_behavior>;
 	};
 
 	kscan0: kscan_comp {
