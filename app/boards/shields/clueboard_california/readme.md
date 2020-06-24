@@ -1,14 +1,14 @@
-# Clueboard California Macropad
+# [Clueboard California Macropad](https://clueboard.co/parts/clueboard-california-macropad-kit)
 
-A small 10-key macropad in the shape of the US state of California,
+A small 10-key macropad in the shape of the US state of California.
 
 ## Features
 
-* Per key LED.
-* Proton-C compatible, including space for the piezo speaker.
-* Direct GPIO wiring, no GPIO matrix at all.
+- Per key LED.
+- Proton-C only, including space for the piezo speaker.
+- Direct GPIO wiring, no GPIO matrix at all.
 
-Will need to set them to be PULL HIGH, and ACTIVE LOW
+## Hardware Notes
 
 | Switch       | Switch Pin | LED Pin |
 | ------------ | ---------- | ------- |
