@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define DT_DRV_COMPAT gpio_kscan
+#define DT_DRV_COMPAT zmk_kscan_gpio_matrix
 
 #include <device.h>
 #include <drivers/kscan.h>
@@ -12,6 +12,8 @@
 #include <logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
 struct kscan_gpio_item_config
 {
@@ -254,3 +256,5 @@ static int kscan_gpio_config_interrupts(struct device **devices,
 						&gpio_driver_api_##n);
 
 DT_INST_FOREACH_STATUS_OKAY(GPIO_INST_INIT)
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

@@ -3,7 +3,7 @@
 
 description: GPIO keyboard matrix controller
 
-compatible: "gpio-kscan"
+compatible: "zmk,kscan-gpio-matrix"
 
 include: kscan.yaml
 

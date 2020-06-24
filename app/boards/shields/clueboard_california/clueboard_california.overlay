@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	chosen {
+		zmk,kscan = &kscan0;
+	};
+
+	kscan0: kscan_0 {
+		compatible = "zmk,kscan-gpio-direct";
+
+		label = "KSCAN";
+
+		input-gpios
+			= <&gpioa 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpioa 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpioa 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpioa 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpioa 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			;
+
+	};
+
+	// TODO: Per-key LED node(s)
+};
+
