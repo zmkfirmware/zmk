@@ -29,7 +29,7 @@
 	};
 
 	kscan_left: kscan_left {
-		compatible = "gpio-kscan";
+		compatible = "zmk,kscan-gpio-matrix";
 		label = "KSCAN_LEFT";
 
 		diode-direction = "row2col";
@@ -49,7 +49,7 @@
 	};
 
 	kscan_right: kscan_right {
-		compatible = "gpio-kscan";
+		compatible = "zmk,kscan-gpio-matrix";
 		label = "KSCAN_RIGHT";
 
 		diode-direction = "row2col";

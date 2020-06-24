@@ -1,6 +1,6 @@
-.west/
-bootloader/
-modules/
-tools/
-zephyr/
-build/
+/.west
+/bootloader
+/modules
+/tools
+/zephyr
+/build

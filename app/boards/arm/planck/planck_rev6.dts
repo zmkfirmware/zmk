@@ -55,7 +55,7 @@
 	};
 
 	kscan {
-		compatible = "gpio-kscan";
+		compatible = "zmk,kscan-gpio-matrix";
 		label = "Keyscan Matrix";
 		row-gpios = <&gpioa 10 GPIO_ACTIVE_HIGH>,
 			       <&gpioa 9 GPIO_ACTIVE_HIGH>,
