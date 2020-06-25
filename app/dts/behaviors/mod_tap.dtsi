@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		mt: behavior_mod_tap {
+			compatible = "zmk,behavior-mod-tap", "zmk,behavior-global";
+			label = "MOD_TAP";
+			#binding-cells = <2>;
+		};
+	};
+};

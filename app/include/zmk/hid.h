@@ -9,7 +9,7 @@
 
 #define COLLECTION_REPORT 0x03
 
-#define ZMK_HID_MAX_KEYCODE KC_APP
+#define ZMK_HID_MAX_KEYCODE GUI
 
 static const u8_t zmk_hid_report_desc[] = {
     /* USAGE_PAGE (Generic Desktop) */
@@ -108,40 +108,21 @@ static const u8_t zmk_hid_report_desc[] = {
     0x00,
     /* LOGICAL_MAXIMUM (1) */
     HID_GI_LOGICAL_MAX(1),
-    0x01,
-    /* USAGE (Scan Next Track) */
-    HID_LI_USAGE,
-    0xB5,
-    /* USAGE (Scan Previous Track) */
-    HID_LI_USAGE,
-    0xB6,
-    /* USAGE (Stop) */
-    HID_LI_USAGE,
-    0xB7,
-    /* USAGE (Eject) */
-    HID_LI_USAGE,
-    0xB8,
-    /* USAGE (Media Play/Pause) */
-    HID_LI_USAGE,
-    0xCD,
-    /* USAGE (Mute) */
-    HID_LI_USAGE,
-    0xE2,
-    /* USAGE (Volume Increment) */
-    HID_LI_USAGE,
-    0xE9,
-    /* USAGE (Volume Decrement) */
-    HID_LI_USAGE,
-    0xEA,
+    0xFF,
+    HID_LI_USAGE_MIN(1),
+    0x00,
+    /* USAGE_MAXIMUM (Keyboard Application) */
+    HID_LI_USAGE_MAX(1),
+    0xFF,
     /* INPUT (Data,Ary,Abs) */
-    /* REPORT_SIZE (1) */
+    /* REPORT_SIZE (8) */
     HID_GI_REPORT_SIZE,
-    0x01,
+    0x08,
     /* REPORT_COUNT (8) */
     HID_GI_REPORT_COUNT,
-    0x08,
+    0x06,
     HID_MI_INPUT,
-    0x02,
+    0x00,
     /* END COLLECTION */
     HID_MI_COLLECTION_END,
 };
@@ -167,7 +148,7 @@ struct zmk_hid_keypad_report
 
 struct zmk_hid_consumer_report_body
 {
-    u8_t keys;
+    u8_t keys[6];
 } __packed;
 
 struct zmk_hid_consumer_report
@@ -176,19 +157,15 @@ struct zmk_hid_consumer_report
     struct zmk_hid_consumer_report_body body;
 } __packed;
 
-enum zmk_hid_report_changes
-{
-    None = 0x00,
-    Keypad = (0x01 << 0x00),
-    Consumer = (0x01 << 0x01)
-};
-
 int zmk_hid_register_mod(zmk_mod modifier);
 int zmk_hid_unregister_mod(zmk_mod modifier);
 int zmk_hid_register_mods(zmk_mod_flags modifiers);
 int zmk_hid_unregister_mods(zmk_mod_flags modifiers);
-enum zmk_hid_report_changes zmk_hid_press_key(zmk_key key);
-enum zmk_hid_report_changes zmk_hid_release_key(zmk_key key);
+int zmk_hid_keypad_press(zmk_key key);
+int zmk_hid_keypad_release(zmk_key key);
+
+int zmk_hid_consumer_press(zmk_key key);
+int zmk_hid_consumer_release(zmk_key key);
 
 struct zmk_hid_keypad_report *zmk_hid_get_keypad_report();
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();

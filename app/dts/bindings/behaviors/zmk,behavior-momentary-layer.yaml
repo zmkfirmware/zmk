@@ -1,0 +1,8 @@
+# Copyright (c) 2020, Pete Johanson
+# SPDX-License-Identifier: MIT
+
+description: Momentary layer on press/release behavior
+
+compatible: "zmk,behavior-momentary-layer"
+
+include: one_param.yaml

@@ -1,4 +1,5 @@
 #include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
 #include <zmk/kscan-mock.h>
 
 / {
@@ -53,27 +54,26 @@
 
 		default: layer_0 {
 			label = "DEFAULT";
-			keys =
-			<
-				KC_A MT(MOD_LSFT, KC_B) KC_C KC_D
-				KC_E KC_F KC_G KC_H
-			>;
+
+			bindings = <
+				&kp B &mo 1 &kp C &kp E
+				&kp D &kp G &kp F &kp Q>;
 		};
 
 		lower: layer_1 {
 			label = "LOWER";
-			keys = <
-				KC_A KC_B KC_C KC_D
-				KC_E KC_F KC_G KC_H
-			>;
+
+			bindings = <
+				&cp M_NEXT &trans &kp O &kp Q
+				&kp L  &kp J &kp P &kp K>;
 		};
 
 		raise: layer_2 {
 			label = "RAISE";
-			keys = <
-				KC_E KC_F KC_G KC_H 
-				KC_A KC_B KC_C KC_D
-			>;
+
+			bindings = <
+				&kp W &kp U &kp I &kp N
+				&kp X  &kp M &kp C &kp B>;
 		};
 	};
 };

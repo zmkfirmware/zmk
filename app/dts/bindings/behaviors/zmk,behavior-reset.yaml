@@ -1,0 +1,8 @@
+# Copyright (c) 2020, Pete Johanson
+# SPDX-License-Identifier: MIT
+
+description: Keyboard Reset Behavior
+
+compatible: "zmk,behavior-reset"
+
+include: zero_param.yaml

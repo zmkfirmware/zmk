@@ -9,6 +9,7 @@ child-binding:
   properties:
     label:
       type: string
-    keys:
-      type: array
-
+      required: true
+    bindings:
+      type: phandle-array
+      required: true

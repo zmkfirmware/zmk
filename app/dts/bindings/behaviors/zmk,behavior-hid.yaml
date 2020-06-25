@@ -1,0 +1,8 @@
+# Copyright (c) 2020, Pete Johanson
+# SPDX-License-Identifier: MIT
+
+description: HID Report Behavior
+
+compatible: "zmk,behavior-hid"
+
+include: zero_param.yaml

@@ -11,8 +11,8 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <zmk/keymap.h>
-#include <zmk/handlers.h>
+#include <zmk/matrix_transform.h>
+#include <zmk/events.h>
 
 #define ZMK_KSCAN_EVENT_STATE_PRESSED 0
 #define ZMK_KSCAN_EVENT_STATE_RELEASED 1
@@ -49,11 +49,13 @@ void zmk_kscan_process_msgq(struct k_work *item)
 	while (k_msgq_get(&zmk_kscan_msgq, &ev, K_NO_WAIT) == 0)
 	{
 		bool pressed = (ev.state == ZMK_KSCAN_EVENT_STATE_PRESSED);
-		zmk_key key = zmk_keymap_keycode_from_position(ev.row, ev.column);
-		struct zmk_key_event kev = (struct zmk_key_event){.row = ev.row, .column = ev.column, .key = key, .pressed = pressed};
-
-		LOG_DBG("Row: %d, col: %d, key: %d, pressed: %s\n", ev.row, ev.column, key, (pressed ? "true" : "false"));
-		zmk_handle_key(kev);
+		u32_t position = zmk_matrix_transform_row_column_to_position(ev.row, ev.column);
+		LOG_DBG("Row: %d, col: %d, position: %d, pressed: %s\n", ev.row, ev.column, position, (pressed ? "true" : "false"));
+		if (pressed) {
+			zmk_events_position_pressed(position);
+		} else {
+			zmk_events_position_released(position);
+		}
 	}
 }
 
