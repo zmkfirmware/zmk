@@ -1,6 +1,6 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/matrix-transform.h>
-#include <keymap.h>
+#include <behaviors.dtsi>
 
 / {
 	chosen {
@@ -18,7 +18,14 @@
 
 		default: layer_0 {
 			label = "DEFAULT";
-			keys = <KC_9 KC_8 KC_7 KC_6 KC_5 KC_4 KC_3 KC_2 KC_1 KC_0>;
+			bindings = <
+				&kp NUM_9 &kp NUM_8
+				&kp NUM_7 &kp NUM_6
+				          &kp NUM_5
+				           &kp NUM_4 &kp NUM_3
+				                 &kp NUM_2 &kp NUM_1
+				                              &kp NUM_0
+				>;
 		};
 	};
 };
