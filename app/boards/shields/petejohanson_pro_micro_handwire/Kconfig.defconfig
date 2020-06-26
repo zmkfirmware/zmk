@@ -1,8 +1,8 @@
 
-if SHIELD_PETEJOHANSON_PROTON_HANDWIRE
+if SHIELD_PETEJOHANSON_PRO_MICRO_HANDWIRE
 
 config ZMK_KEYBOARD_NAME
-	default "Pete's Proton Handwire"
+	default "Pete's ProMicro Compat Handwire"
 
 config ZMK_USB
 	default y

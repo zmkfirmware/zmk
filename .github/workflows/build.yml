@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         board: [proton_c, nice_nano]
-        shield: [clueboard_california, kyria]
+        shield: [kyria, petejohanson_pro_micro_handwire]
     steps:
       # To use this repository's private action,
       # you must check out the repository
