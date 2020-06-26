@@ -22,6 +22,7 @@ struct kscan_gpio_item_config
 	gpio_flags_t flags;
 };
 
+
 #define _KSCAN_GPIO_ITEM_CFG_INIT(n, prop, idx)           \
 	{                                                     \
 		.label = DT_INST_GPIO_LABEL_BY_IDX(n, prop, idx), \
@@ -29,6 +30,9 @@ struct kscan_gpio_item_config
 		.flags = DT_INST_GPIO_FLAGS_BY_IDX(n, prop, idx), \
 	},
 
+#define _KSCAN_GPIO_ROW_CFG_INIT(idx, n) _KSCAN_GPIO_ITEM_CFG_INIT(n, row_gpios, idx)
+#define _KSCAN_GPIO_COL_CFG_INIT(idx, n) _KSCAN_GPIO_ITEM_CFG_INIT(n, col_gpios, idx)
+	
 static int kscan_gpio_config_interrupts(struct device **devices,
 										const struct kscan_gpio_item_config *configs,
 										size_t len, gpio_flags_t flags)
@@ -51,8 +55,8 @@ static int kscan_gpio_config_interrupts(struct device **devices,
 }
 #define INST_MATRIX_ROWS(n) DT_INST_PROP_LEN(n, row_gpios)
 #define INST_MATRIX_COLS(n) DT_INST_PROP_LEN(n, col_gpios)
-#define INST_OUTPUT_LEN(n) COND_CODE_0(DT_ENUM_IDX(DT_DRV_INST(n), diode_direction), (INST_MATRIX_COLS(n)), (INST_MATRIX_ROWS(n)))
-#define INST_INPUT_LEN(n) COND_CODE_0(DT_ENUM_IDX(DT_DRV_INST(n), diode_direction), (INST_MATRIX_ROWS(n)), (INST_MATRIX_COLS(n)))
+#define INST_OUTPUT_LEN(n) COND_CODE_0(DT_ENUM_IDX(DT_DRV_INST(n), diode_direction), (INST_MATRIX_ROWS(n)), (INST_MATRIX_COLS(n)))
+#define INST_INPUT_LEN(n) COND_CODE_0(DT_ENUM_IDX(DT_DRV_INST(n), diode_direction), (INST_MATRIX_COLS(n)), (INST_MATRIX_ROWS(n)))
 
 #define GPIO_INST_INIT(n)                                                                                                                                                                                                                   \
 	struct kscan_gpio_irq_callback_##n                                                                                                                                                                                                      \
@@ -179,7 +183,10 @@ static int kscan_gpio_config_interrupts(struct device **devices,
 						k_delayed_work_cancel(data->work);                                                                                                                                                                                                                                               \
 						k_delayed_work_submit(data->work, K_MSEC(DT_INST_PROP(n, debounce_period))); }))                                                                                                                                                                                                                  \
 	}                                                                                                                                                                                                                                       \
-	static struct kscan_gpio_data_##n kscan_gpio_data_##n;                                                                                                                                                                                  \
+	static struct kscan_gpio_data_##n kscan_gpio_data_##n = { \
+		.rows = { [INST_MATRIX_ROWS(n)-1] = NULL}, \
+		.cols = { [INST_MATRIX_COLS(n)-1] = NULL }\
+	};                                                                                                                                                                                  \
 	static int kscan_gpio_configure_##n(struct device *dev, kscan_callback_t callback)                                                                                                                                                      \
 	{                                                                                                                                                                                                                                       \
 		struct kscan_gpio_data_##n *data = dev->driver_data;                                                                                                                                                                                \
@@ -246,10 +253,9 @@ static int kscan_gpio_config_interrupts(struct device **devices,
 		.disable_callback = kscan_gpio_disable_interrupts_##n,                                                                                                                                                                              \
 	};                                                                                                                                                                                                                                      \
 	static const struct kscan_gpio_config_##n kscan_gpio_config_##n = {                                                                                                                                                                     \
-		.rows = {                                                                                                                                                                                                                           \
-			IF_ENABLED(DT_INST_PHA_HAS_CELL_AT_IDX(n, row_gpios, 0, pin), (_KSCAN_GPIO_ITEM_CFG_INIT(n, row_gpios, 0)))                                                                                                                     \
-				IF_ENABLED(DT_INST_PHA_HAS_CELL_AT_IDX(n, row_gpios, 1, pin), (_KSCAN_GPIO_ITEM_CFG_INIT(n, row_gpios, 1)))},                                                                                                               \
-		.cols = {IF_ENABLED(DT_INST_PHA_HAS_CELL_AT_IDX(n, col_gpios, 0, pin), (_KSCAN_GPIO_ITEM_CFG_INIT(n, col_gpios, 0))) IF_ENABLED(DT_INST_PHA_HAS_CELL_AT_IDX(n, col_gpios, 1, pin), (_KSCAN_GPIO_ITEM_CFG_INIT(n, col_gpios, 1)))}}; \
+		.rows = { UTIL_LISTIFY(INST_MATRIX_ROWS(n), _KSCAN_GPIO_ROW_CFG_INIT, n) },                                                                                                                                                                                                                          \
+		.cols = { UTIL_LISTIFY(INST_MATRIX_COLS(n), _KSCAN_GPIO_COL_CFG_INIT, n) },                                                                                                                                                                                                                          \
+	}; \
 	DEVICE_AND_API_INIT(kscan_gpio_##n, DT_INST_LABEL(n), kscan_gpio_init_##n,                                                                                                                                                              \
 						&kscan_gpio_data_##n, &kscan_gpio_config_##n,                                                                                                                                                                       \
 						POST_KERNEL, CONFIG_ZMK_KSCAN_INIT_PRIORITY,                                                                                                                                                                        \
