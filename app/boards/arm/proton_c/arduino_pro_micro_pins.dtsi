@@ -25,6 +25,7 @@
 			, <16 0 &gpiob 15 0>	/* D16 */
 			, <14 0 &gpiob 14 0>	/* D14 */
 			, <15 0 &gpiob 13 0>	/* D15 */
+			;
 	};
 
 	pro_micro_a: connector_a {
