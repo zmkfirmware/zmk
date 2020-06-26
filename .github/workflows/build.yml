@@ -9,6 +9,7 @@ jobs:
     strategy:
       matrix:
         board: [proton_c, nice_nano]
+        shield: [clueboard_california, kyria]
     steps:
       # To use this repository's private action,
       # you must check out the repository
@@ -53,7 +54,7 @@ jobs:
         uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
         id: west-build
         with:
-          args: 'build "-s app -b ${{ matrix.board }} -- -DSHIELD=petejohanson_proton_handwire"'
+          args: 'build "-s app -b ${{ matrix.board }} -- -DSHIELD=${{ matrix.shield }}"'
       - name: Archive Build
         uses: actions/upload-artifact@v2
         if: ${{ matrix.board == 'nice_nano' }}
