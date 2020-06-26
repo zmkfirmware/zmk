@@ -10,7 +10,7 @@
 
 / {
 	chosen {
-		zmk,kscan = &kscan0;
+		zmk,kscan = &kscan_left;
 		zmk,matrix_transform = &default_transform;
 	};
 
@@ -25,12 +25,12 @@
 			kscan = <&kscan_left>;
 		};
 
-		right {
-			kscan = <&kscan_right>;
-			 // TODO: Actually put this in the kscan driver, so it can report
-			 // HID events directly to host if plugged in directly.
-			column-offset = <8>;
-		};
+		// right {
+		// 	kscan = <&kscan_right>;
+		// 	 // TODO: Actually put this in the kscan driver, so it can report
+		// 	 // HID events directly to host if plugged in directly.
+		// 	column-offset = <8>;
+		// };
 	};
 
 	default_transform: keymap_transform_0 {
@@ -65,41 +65,49 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(2,6) RC(2,7) RC(2,8) RC(2,9) 
 		compatible = "zmk,kscan-gpio-matrix";
 		label = "KSCAN_LEFT";
 
-		diode-direction = "row2col";
-		row-gpios = <&pro_micro_pins 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-		            <&pro_micro_pins 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		diode-direction = "col2row";
+		row-gpios
+			= <&pro_micro_d 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			;
 
-		col-gpios = <&pro_micro_pins 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-		            <&pro_micro_pins 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		col-gpios
+			= <&pro_micro_a 3 (GPIO_ACTIVE_HIGH)>
+			, <&pro_micro_a 2 (GPIO_ACTIVE_HIGH)>
+			, <&pro_micro_a 1 (GPIO_ACTIVE_HIGH)>
+			, <&pro_micro_a 0 (GPIO_ACTIVE_HIGH)>
+			, <&pro_micro_d 15 (GPIO_ACTIVE_HIGH)>
+			, <&pro_micro_d 14 (GPIO_ACTIVE_HIGH)>
+			, <&pro_micro_d 16 (GPIO_ACTIVE_HIGH)>
+			, <&pro_micro_d 10 (GPIO_ACTIVE_HIGH)>
+			;
+		
 	};
 
-	kscan_right: kscan_right {
-		compatible = "zmk,kscan-gpio-matrix";
-		label = "KSCAN_RIGHT";
+	// kscan_right: kscan_right {
+	// 	compatible = "zmk,kscan-gpio-matrix";
+	// 	label = "KSCAN_RIGHT";
 
-		diode-direction = "row2col";
-		row-gpios = <&pro_micro_pins 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-		            <&pro_micro_pins 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-
-		col-gpios = <&pro_micro_pins 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-		            <&pro_micro_pins 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
-					<&pro_micro_pins 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-	};
+	// 	diode-direction = "col2row";
+	// 	row-gpios
+	// 		= <&pro_micro_d 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+	// 		, <&pro_micro_d 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+	// 		, <&pro_micro_d 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+	// 		, <&pro_micro_d 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+	// 		;
+		// col-gpios
+		// 	= <&pro_micro_d 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		// 	, <&pro_micro_d 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		// 	, <&pro_micro_d 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		// 	, <&pro_micro_d 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		// 	, <&pro_micro_a 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		// 	, <&pro_micro_a 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		// 	, <&pro_micro_a 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		// 	, <&pro_micro_a 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		// 	;
+	// };
 
 	// TODO: Encoder node(s)
 	// TODO: OLED node
