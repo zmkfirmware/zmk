@@ -24,4 +24,7 @@ config BT_CTLR
 config ZMK_BLE
 	default y
 
+config ZMK_USB
+	default y
+
 endif # BOARD_NICE_NANO
