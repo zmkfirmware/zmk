@@ -26,7 +26,7 @@ static u8_t zmk_keymap_layer_default = 0;
 #define TRANSFORMED_LAYER(idx) \
   { UTIL_LISTIFY(DT_PROP_LEN(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, idx), bindings), _TRANSFORM_ENTRY, idx) }
 
-static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_MATRIX_ROWS * ZMK_MATRIX_COLS] = {
+static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_LEN] = {
 #if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 0)
 	TRANSFORMED_LAYER(0),
 #endif
