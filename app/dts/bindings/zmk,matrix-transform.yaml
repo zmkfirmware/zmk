@@ -4,6 +4,15 @@ description: |
 compatible: "zmk,matrix-transform"
 
 properties:
+  columns:
+    type: int
+    required: true
+  rows:
+    type: int
+    required: true
+  col-offset:
+    type: int
+    default: 0
   map:
     type: array
     required: true
