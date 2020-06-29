@@ -12,6 +12,7 @@
 #include <bluetooth/gatt.h>
 
 #include <zmk/keys.h>
+#include <zmk/split/bluetooth/service.h>
 
 static struct bt_conn *auth_passkey_entry_conn;
 static u8_t passkey_entries[6] = {0, 0, 0, 0, 0, 0};
@@ -121,9 +122,13 @@ static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
 
 static const struct bt_data zmk_ble_ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
-    BT_DATA_BYTES(BT_DATA_UUID16_ALL,
+    BT_DATA_BYTES(BT_DATA_UUID16_SOME,
                   0x12, 0x18,  /* HID Service */
                   0x0f, 0x18), /* Battery Service */
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
+    BT_DATA_BYTES(BT_DATA_UUID128_SOME,
+                  ZMK_SPLIT_BT_SERVICE_UUID)
+#endif
 };
 
 static void zmk_ble_ready(int err)

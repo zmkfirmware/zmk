@@ -72,6 +72,25 @@ endif
 
 endmenu
 
+
+menu "Split Support"
+
+config ZMK_SPLIT
+	bool "Split keyboard support"
+	default n
+
+if ZMK_SPLIT
+
+config ZMK_SPLIT_BLE
+	bool "Split keyboard support via BLE transport"
+	depends on ZMK_BLE
+	default y
+
+endif 
+
+endmenu
+
+
 config ZMK_KSCAN_MOCK_DRIVER
 	bool "Enable mock kscan driver to simulate key presses"
 	default n

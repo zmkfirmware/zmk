@@ -1,0 +1,8 @@
+# Copyright (c) 2020, Pete Johanson
+# SPDX-License-Identifier: MIT
+
+description: Split Bluetooth Behavior
+
+compatible: "zmk,behavior-split-bt"
+
+include: zero_param.yaml
