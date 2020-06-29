@@ -78,6 +78,10 @@ module.exports = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} ZMK Project Contributors, Built with Docusaurus.`,
     },
+    algolia: {
+      apiKey: "75325855fc90356828fe212d38e5ca34",
+      indexName: "zmkfirmware",
+    },
   },
   presets: [
     [
