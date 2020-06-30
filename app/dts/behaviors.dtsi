@@ -3,4 +3,3 @@
 #include <behaviors/mod_tap.dtsi>
 #include <behaviors/momentary_layer.dtsi>
 #include <behaviors/reset.dtsi>
-#include <behaviors/hid.dtsi>

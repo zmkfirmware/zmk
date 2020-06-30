@@ -13,7 +13,6 @@
 #include <zmk/event-manager.h>
 #include <zmk/events/keycode-state-changed.h>
 #include <zmk/events/modifiers-state-changed.h>
-#include <zmk/events.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
