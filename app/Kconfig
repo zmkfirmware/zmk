@@ -73,6 +73,9 @@ config ZMK_ACTION_MOD_TAP
 	
 endmenu
 
+config HEAP_MEM_POOL_SIZE
+	default 200
+
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"

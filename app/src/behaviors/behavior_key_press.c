@@ -10,7 +10,8 @@
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
-#include <zmk/events.h>
+#include <zmk/event-manager.h>
+#include <zmk/events/keycode-state-changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -27,15 +28,27 @@ static int behavior_key_press_init(struct device *dev)
 static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t keycode, u32_t _)
 {
   const struct behavior_key_press_config *cfg = dev->config_info;
+  struct keycode_state_changed *ev;
   LOG_DBG("position %d usage_page 0x%02X keycode 0x%02X", position, cfg->usage_page, keycode);
-  return zmk_events_keycode_pressed(cfg->usage_page, keycode);
+
+  ev = new_keycode_state_changed();
+  ev->usage_page = cfg->usage_page;
+  ev->keycode = keycode;
+  ev->state = true;
+  return ZMK_EVENT_RAISE(ev);
 }
 
 static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t keycode, u32_t _)
 {
   const struct behavior_key_press_config *cfg = dev->config_info;
+  struct keycode_state_changed *ev;
   LOG_DBG("position %d usage_page 0x%02X keycode 0x%02X", position, cfg->usage_page, keycode);
-  return zmk_events_keycode_released(cfg->usage_page, keycode);
+
+  ev = new_keycode_state_changed();
+  ev->usage_page = cfg->usage_page;
+  ev->keycode = keycode;
+  ev->state = false;
+  return ZMK_EVENT_RAISE(ev);
 }
 
 static const struct behavior_driver_api behavior_key_press_driver_api = {

@@ -9,6 +9,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <drivers/behavior.h>
 #include <zmk/behavior.h>
 
+#include <zmk/event-manager.h>
+#include <zmk/events/position-state-changed.h>
+
 static u32_t zmk_keymap_layer_state = 0;
 static u8_t zmk_keymap_layer_default = 0;
 
@@ -116,3 +119,16 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 
 	return -ENOTSUP;
 }
+
+int keymap_listener(const struct zmk_event_header *eh)
+{
+  	if (is_position_state_changed(eh)) {
+    	const struct position_state_changed *ev = cast_position_state_changed(eh);
+		zmk_keymap_position_state_changed(ev->position, ev->state);
+  	}
+  	return 0;
+}
+
+ZMK_LISTENER(keymap, keymap_listener);
+ZMK_SUBSCRIPTION(keymap, position_state_changed);
+
