@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Peter Johanson <peter@peterjohanson.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+ 
 #include <linker/linker-defs.h>
 
         	__event_type_start = .; \
