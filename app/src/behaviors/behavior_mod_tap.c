@@ -12,6 +12,7 @@
 
 #include <zmk/event-manager.h>
 #include <zmk/events/keycode-state-changed.h>
+#include <zmk/events/modifiers-state-changed.h>
 #include <zmk/events.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -48,21 +49,20 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t m
   struct behavior_mod_tap_data *data = dev->driver_data;
   LOG_DBG("mods: %d, keycode: %d", mods, keycode);
   WRITE_BIT(data->pending_press_positions, position, true);
-  return zmk_events_modifiers_pressed(mods);
+  return ZMK_EVENT_RAISE(create_modifiers_state_changed(mods, true));
 }
 
-
-// They keycode is passed by the "keymap" based on the parameter created as part of the assignment.
 static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t mods, u32_t keycode)
 {
   struct behavior_mod_tap_data *data = dev->driver_data;
   LOG_DBG("mods: %d, keycode: %d", mods, keycode);
   
-  zmk_events_modifiers_released(mods);
+  ZMK_EVENT_RAISE(create_modifiers_state_changed(mods, false));
+  k_msleep(10); // TODO: Better approach than k_msleep to avoid USB send failures? Retries in the USB endpoint layer?
   if (data->pending_press_positions & BIT(position)) {
-    zmk_events_keycode_pressed(USAGE_KEYPAD, keycode);
+    ZMK_EVENT_RAISE(create_keycode_state_changed(USAGE_KEYPAD, keycode, true));
     k_msleep(10);
-    zmk_events_keycode_released(USAGE_KEYPAD, keycode);
+    ZMK_EVENT_RAISE(create_keycode_state_changed(USAGE_KEYPAD, keycode, false));
   }
 
   return 0;
@@ -72,7 +72,6 @@ static const struct behavior_driver_api behavior_mod_tap_driver_api = {
   .binding_pressed = on_keymap_binding_pressed,
   .binding_released = on_keymap_binding_released,
 };
-
 
 static const struct behavior_mod_tap_config behavior_mod_tap_config = {};
 

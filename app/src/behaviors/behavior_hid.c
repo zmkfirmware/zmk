@@ -15,6 +15,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/event-manager.h>
 #include <zmk/events/keycode-state-changed.h>
+#include <zmk/events/modifiers-state-changed.h>
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
 
@@ -56,14 +57,14 @@ static int behaviour_hid_keycode_released(u8_t usage_page, u32_t keycode)
   case USAGE_KEYPAD:
     err = zmk_hid_keypad_release(keycode);
     if (err) {
-      LOG_ERR("Unable to press keycode");
+      LOG_ERR("Unable to release keycode");
       return err;
     }
     break;
   case USAGE_CONSUMER:
     err = zmk_hid_consumer_release(keycode);
     if (err) {
-      LOG_ERR("Unable to press keycode");
+      LOG_ERR("Unable to release keycode");
       return err;
     }
     break;
@@ -71,6 +72,21 @@ static int behaviour_hid_keycode_released(u8_t usage_page, u32_t keycode)
   return zmk_endpoints_send_report(usage_page);
 }
 
+static int behavior_hid_modifiers_pressed(zmk_mod_flags modifiers)
+{
+  LOG_DBG("modifiers %d", modifiers);
+  
+  zmk_hid_register_mods(modifiers);
+  return zmk_endpoints_send_report(USAGE_KEYPAD);
+}
+
+static int behavior_hid_modifiers_released(zmk_mod_flags modifiers)
+{
+  LOG_DBG("modifiers %d", modifiers);
+  
+  zmk_hid_unregister_mods(modifiers);
+  return zmk_endpoints_send_report(USAGE_KEYPAD);
+}
 
 int behavior_hid_listener(const struct zmk_event_header *eh)
 {
@@ -81,37 +97,27 @@ int behavior_hid_listener(const struct zmk_event_header *eh)
     } else {
       behaviour_hid_keycode_released(ev->usage_page, ev->keycode);
     }
+  } else if (is_modifiers_state_changed(eh)) {
+    const struct modifiers_state_changed *ev = cast_modifiers_state_changed(eh);
+    if (ev->state) {
+      behavior_hid_modifiers_pressed(ev->modifiers);
+    } else {
+      behavior_hid_modifiers_released(ev->modifiers);
+    }
   }
   return 0;
 }
 
 ZMK_LISTENER(behavior_hid, behavior_hid_listener);
 ZMK_SUBSCRIPTION(behavior_hid, keycode_state_changed);
+ZMK_SUBSCRIPTION(behavior_hid, modifiers_state_changed);
 
 static int behavior_hid_init(struct device *dev)
 {
 	return 0;
 };
 
-static int on_modifiers_pressed(struct device *dev, zmk_mod_flags modifiers)
-{
-  LOG_DBG("modifiers %d", modifiers);
-  
-  zmk_hid_register_mods(modifiers);
-  return zmk_endpoints_send_report(USAGE_KEYPAD);
-}
-
-static int on_modifiers_released(struct device *dev, zmk_mod_flags modifiers)
-{
-  LOG_DBG("modifiers %d", modifiers);
-  
-  zmk_hid_unregister_mods(modifiers);
-  return zmk_endpoints_send_report(USAGE_KEYPAD);
-}
-
 static const struct behavior_driver_api behavior_hid_driver_api = {
-  .modifiers_pressed = on_modifiers_pressed,
-  .modifiers_released = on_modifiers_released
 };
 
 static const struct behavior_hid_config behavior_hid_config = {};
