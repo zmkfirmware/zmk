@@ -10,7 +10,6 @@
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
-#include <zmk/events.h>
 #include <zmk/keymap.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);

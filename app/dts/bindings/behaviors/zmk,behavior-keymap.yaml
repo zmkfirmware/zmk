@@ -1,8 +1,0 @@
-# Copyright (c) 2020, Pete Johanson
-# SPDX-License-Identifier: MIT
-
-description: Keymap Behavior
-
-compatible: "zmk,behavior-keymap"
-
-include: zero_param.yaml

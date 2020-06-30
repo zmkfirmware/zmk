@@ -18,22 +18,24 @@ include(cmake/zmk_config.cmake)
 find_package(Zephyr REQUIRED HINTS ../zephyr)
 project(zmk)
 
-
 if(EXISTS ${KEYMAP_DIR}/keymap.c)
-	target_sources(app PRIVATE ${KEYMAP_DIR}/keymap.c)
+  target_sources(app PRIVATE ${KEYMAP_DIR}/keymap.c)
 endif()
 
+zephyr_linker_sources(RODATA include/linker/zmk-events.ld)
 
 # Add your source file to the "app" target. This must come after
 # find_package(Zephyr) which defines the target.
 target_include_directories(app PRIVATE include)
 target_sources(app PRIVATE src/kscan.c)
 target_sources(app PRIVATE src/matrix_transform.c)
-target_sources(app PRIVATE src/events.c)
 target_sources(app PRIVATE src/keymap.c)
+target_sources(app PRIVATE src/hid_listener.c)
 target_sources(app PRIVATE src/hid.c)
-target_sources(app PRIVATE src/behaviors/behavior_keymap.c)
-target_sources(app PRIVATE src/behaviors/behavior_hid.c)
+target_sources(app PRIVATE src/event_manager.c)
+target_sources(app PRIVATE src/events/position_state_changed.c)
+target_sources(app PRIVATE src/events/keycode_state_changed.c)
+target_sources(app PRIVATE src/events/modifiers_state_changed.c)
 target_sources(app PRIVATE src/behaviors/behavior_key_press.c)
 target_sources(app PRIVATE src/behaviors/behavior_reset.c)
 target_sources(app PRIVATE src/behaviors/behavior_mod_tap.c)
