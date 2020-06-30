@@ -122,11 +122,11 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 
 int keymap_listener(const struct zmk_event_header *eh)
 {
-  	if (is_position_state_changed(eh)) {
-    	const struct position_state_changed *ev = cast_position_state_changed(eh);
+	if (is_position_state_changed(eh)) {
+		const struct position_state_changed *ev = cast_position_state_changed(eh);
 		zmk_keymap_position_state_changed(ev->position, ev->state);
-  	}
-  	return 0;
+	}
+	return 0;
 }
 
 ZMK_LISTENER(keymap, keymap_listener);
