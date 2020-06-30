@@ -50,14 +50,14 @@
 #define EQL 0x2E
 #define LBKT 0x2F
 #define RBKT 0x30
-#define FSLH 0x31
+#define BSLH 0x31
 
 #define SCLN 0x33
 #define QUOT 0x34
 #define GRAV 0x35
 #define CMMA 0x36
 #define DOT 0x37
-#define BSLH 0x38
+#define FSLH 0x38
 #define CLCK 0x39
 #define F1 0x3A
 #define F2 0x3B
