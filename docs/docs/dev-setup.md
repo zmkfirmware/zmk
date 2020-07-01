@@ -69,9 +69,24 @@ TODO
 
 TODO
 
+### Windows
+
+Use `cmd.exe` with these instructions rather than PowerShell.
+
+Chocolatey is recommended and used for the following instructions. You can manually install each of these applications and add them to your `PATH` if you don't want to use Chocolatey.
+
+1. [Install Chocolatey](https://chocolatey.org/install)
+2. Open `cmd.exe` as **Administrator**
+3. Run the following `choco` commands:
+	```shell
+	choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+	choco install ninja gperf python git
+	```
+4. Close your `cmd.exe` session and open a new non-administrator session for the rest of the setup.
+
 ### WSL
 
-Windows Subsystem for Linux can use various Linux distributions. Find a WSL installation on the [Windows Store](https://aka.ms/wslstore).
+Windows Subsystem for Linux can use various Linux distributions. Find a WSL installation on the [Windows Store](https://aka.ms/wslstore). **Note that flashing from WSL is not supported at the moment.**
 
 After installing your preferred flavor, follow the directions above on [Debian/Ubuntu](#debianubuntu) or [Fedora](#fedora).
 
@@ -166,14 +181,22 @@ We suggest two main [options](https://docs.zephyrproject.org/latest/guides/env_v
 
 To load the Zephyr environment properly for just one transient shell, run the following from your ZMK checkout directory:
 
+Unix:
 ```
 source zephyr/zephyr-env.sh
+```
+
+Windows:
+```
+source zephyr/zephyr-env.cmd
 ```
 
 #### All Shells
 
 To load the environment variables for your shell every time,
 append the existing `~/.zephyrrc` file to your shell's RC file and then start a new shell.
+
+*Skip on Windows*
 
 ##### Bash
 
