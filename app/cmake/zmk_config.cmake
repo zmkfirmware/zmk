@@ -44,6 +44,9 @@ endif()
 set(CACHED_ZMK_CONFIG ${ZMK_CONFIG} CACHE STRING "Selected user ZMK config")
 
 foreach(root ${BOARD_ROOT})
+	if (EXISTS "${root}/boards/${BOARD}.overlay")
+		list(APPEND ZMK_DTC_FILES "${root}/boards/${BOARD}.overlay")
+	endif()
 	find_path(BOARD_DIR
 	    NAMES ${BOARD}_defconfig
 	    PATHS ${root}/boards/*/*
