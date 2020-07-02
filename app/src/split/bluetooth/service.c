@@ -4,6 +4,7 @@
 #include <bluetooth/gatt.h>
 
 #include <zmk/matrix.h>
+#include <zmk/split/bluetooth/uuid.h>
 #include <zmk/split/bluetooth/service.h>
 
 static u8_t num_of_positions = ZMK_KEYMAP_LEN;

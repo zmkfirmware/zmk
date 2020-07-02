@@ -12,7 +12,7 @@
 #include <bluetooth/gatt.h>
 
 #include <zmk/keys.h>
-#include <zmk/split/bluetooth/service.h>
+#include <zmk/split/bluetooth/uuid.h>
 
 static struct bt_conn *auth_passkey_entry_conn;
 static u8_t passkey_entries[6] = {0, 0, 0, 0, 0, 0};
