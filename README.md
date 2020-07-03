@@ -1,6 +1,6 @@
 # Zephyr™ Mechanical Keyboard (ZMK) Firmware
 
-![Discord](https://img.shields.io/discord/719497620560543766)
+[![Discord](https://img.shields.io/discord/719497620560543766)](https://zmkfirmware.dev/community/discord/invite)
 [![Build](https://github.com/zmkfirmware/zmk/workflows/Build/badge.svg)](https://github.com/zmkfirmware/zmk/actions)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
