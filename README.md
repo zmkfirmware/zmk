@@ -8,6 +8,8 @@ with a less restritive license and better BLE support, built on top of the [Zeph
 
 Check out the website to learn more: https://zmkfirmware.dev/
 
+You can also come join our [ZMK Discord Server](https://zmkfirmware.dev/community/discord/invite)
+
 ## TODO
 
 - Document boards/shields/keymaps usage.
