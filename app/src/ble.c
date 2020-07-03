@@ -11,6 +11,11 @@
 #include <bluetooth/uuid.h>
 #include <bluetooth/gatt.h>
 
+
+#include <logging/log.h>
+
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
 #include <zmk/keys.h>
 #include <zmk/split/bluetooth/uuid.h>
 
@@ -126,13 +131,14 @@ static const struct bt_data zmk_ble_ad[] = {
                   0x12, 0x18,  /* HID Service */
                   0x0f, 0x18), /* Battery Service */
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
-    BT_DATA_BYTES(BT_DATA_UUID128_SOME,
+    BT_DATA_BYTES(BT_DATA_UUID128_ALL,
                   ZMK_SPLIT_BT_SERVICE_UUID)
 #endif
 };
 
 static void zmk_ble_ready(int err)
 {
+    LOG_DBG("ready? %d", err);
     if (err)
     {
         printk("Bluetooth init failed (err %d)\n", err);
@@ -153,7 +159,7 @@ static int zmk_ble_init(struct device *_arg)
     {
         settings_load();
     }
-    int err = bt_enable(zmk_ble_ready);
+    int err = bt_enable(NULL);
 
     if (err)
     {
@@ -163,6 +169,8 @@ static int zmk_ble_init(struct device *_arg)
 
     bt_conn_cb_register(&conn_callbacks);
     bt_conn_auth_cb_register(&zmk_ble_auth_cb_display);
+
+    zmk_ble_ready(0);
 
     return 0;
 }

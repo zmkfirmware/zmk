@@ -55,8 +55,8 @@ static u8_t discover_func(struct bt_conn *conn,
 
 	LOG_DBG("[ATTRIBUTE] handle %u", attr->handle);
 
-	if (!bt_uuid_cmp(discover_params.uuid, ZMK_BT_UUID_SPLIT)) {
-		memcpy(&uuid, ZMK_BT_UUID_SPLIT_POS_STATE, sizeof(uuid));
+	if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID))) {
+		memcpy(&uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID), sizeof(uuid));
 		discover_params.uuid = &uuid.uuid;
 		discover_params.start_handle = attr->handle + 1;
 		discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
@@ -66,7 +66,7 @@ static u8_t discover_func(struct bt_conn *conn,
 			LOG_ERR("Discover failed (err %d)", err);
 		}
 	} else if (!bt_uuid_cmp(discover_params.uuid,
-				ZMK_BT_UUID_SPLIT_POS_STATE)) {
+				BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID))) {
 		memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
 		discover_params.uuid = &uuid.uuid;
 		discover_params.start_handle = attr->handle + 2;
@@ -113,6 +113,7 @@ static bool eir_found(struct bt_data *data, void *user_data)
 		for (i = 0; i < data->data_len; i += 16) {
 			struct bt_le_conn_param *param;
 			struct bt_uuid uuid;
+			char uuid_str[BT_UUID_STR_LEN];
 			int err;
 
             if (!bt_uuid_create(&uuid, &data->data[i], 16)) {
@@ -120,7 +121,9 @@ static bool eir_found(struct bt_data *data, void *user_data)
                 continue;
             }
 
-			if (bt_uuid_cmp(&uuid, ZMK_BT_UUID_SPLIT)) {
+			if (bt_uuid_cmp(&uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID))) {
+				bt_uuid_to_str(&uuid, uuid_str, sizeof(uuid_str));
+				LOG_DBG("UUID does not match split UUID: %s", log_strdup(uuid_str));
 				continue;
 			}
 
@@ -152,7 +155,7 @@ static void device_found(const bt_addr_le_t *addr, s8_t rssi, u8_t type,
 
 	bt_addr_le_to_str(addr, dev, sizeof(dev));
 	LOG_DBG("[DEVICE]: %s, AD evt type %u, AD data len %u, RSSI %i",
-	       dev, type, ad->len, rssi);
+	       log_strdup(dev), type, ad->len, rssi);
 
 	/* We're only interested in connectable events */
 	if (type == BT_GAP_ADV_TYPE_ADV_IND ||

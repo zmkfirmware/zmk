@@ -2,6 +2,7 @@
 #include <zephyr/types.h>
 #include <sys/util.h>
 #include <bluetooth/gatt.h>
+#include <bluetooth/uuid.h>
 
 #include <zmk/matrix.h>
 #include <zmk/split/bluetooth/uuid.h>
@@ -26,8 +27,8 @@ static void split_svc_pos_state_ccc(const struct bt_gatt_attr *attr, u16_t value
 
 
 BT_GATT_SERVICE_DEFINE(split_svc,
-                       BT_GATT_PRIMARY_SERVICE(ZMK_BT_UUID_SPLIT),
-                       BT_GATT_CHARACTERISTIC(ZMK_BT_UUID_SPLIT_POS_STATE, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                       BT_GATT_PRIMARY_SERVICE(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID)),
+                       BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID), BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                                               BT_GATT_PERM_READ_ENCRYPT,
                                               split_svc_pos_state, NULL, &position_state),
                        BT_GATT_CCC(split_svc_pos_state_ccc,
@@ -45,6 +46,5 @@ int zmk_split_bt_position_pressed(u8_t position)
 int zmk_split_bt_position_released(u8_t position)
 {
     WRITE_BIT(position_state[position / 8], position % 8, false);
-    // WRITE_BIT(position_state, position, false);
     return bt_gatt_notify(NULL, &split_svc.attrs[1], &position_state, sizeof(position_state));
 }

@@ -86,6 +86,22 @@ config ZMK_SPLIT_BLE
 	depends on ZMK_BLE
 	default y
 
+if ZMK_SPLIT_BLE
+
+choice ZMK_SPLIT_BLE_ROLE
+	bool "BLE Role For Split Communication"
+	default ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	bool "Central"
+
+config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
+	bool "Peripheral"
+
+endchoice
+
+endif
+
 endif 
 
 endmenu
