@@ -1,6 +1,11 @@
 module.exports = {
   someSidebar: {
-    'Getting Started': ["intro", "faq", "hardware"],
-    Development: ["dev-setup", "dev-clean-room", "dev-posix-board"],
+    "Getting Started": ["intro", "faq", "hardware"],
+    Development: [
+      "dev-clean-room",
+      "dev-setup",
+      "dev-boards-shields-keymaps",
+      "dev-posix-board",
+    ],
   },
 };
