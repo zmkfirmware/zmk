@@ -42,6 +42,10 @@
 
 };
 
+&usb {
+	status = "okay";
+};
+
 &flash0 {
 	/*
 	 * For more information, see:

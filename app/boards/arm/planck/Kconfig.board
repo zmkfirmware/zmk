@@ -1,8 +1,8 @@
-# STM32F3DISCOVERY board configuration
+# Planck V6 board configuration
 
-# Copyright (c) 2017 I-SENSE group of ICCS
+# Copyright (c) 2020 Peter Johanson
 # SPDX-License-Identifier: MIT
 
-config BOARD_STM32F3_DISCO
-	bool "STM32F3DISCOVERY Development Board"
+config BOARD_PLANCK_REV6
+	bool "Planck V6 Keyboard"
 	depends on SOC_STM32F303XC
