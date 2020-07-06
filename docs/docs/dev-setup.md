@@ -4,6 +4,21 @@ title: Basic Setup
 sidebar_label: Basic Setup
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+export const OsTabs = (props) => (<Tabs
+groupId="operating-systems"
+defaultValue="linux"
+values={[
+{label: 'Debian/Ubuntu', value: 'debian'},
+{label: 'Raspberry OS', value: 'raspberryos'},
+{label: 'Fedora', value: 'fedora'},
+{label: 'Windows', value: 'win'},
+{label: 'macOS', value: 'mac'},
+]
+}>{props.children}</Tabs>);
+
 ## Prerequisites
 
 A unix-like environment with the following base packages installed:
@@ -17,13 +32,13 @@ A unix-like environment with the following base packages installed:
 - `dfu-util`
 - Various build essentials, e.g. gcc, automake, autoconf
 
-### Debian/Ubuntu
-
+<OsTabs>
+<TabItem value="debian">
 On Debian and Ubuntu, we'll use apt to install our base dependencies:
 
 #### Apt Update
 
-First, if you haven't updated recently, or if this is a new install from WSL,
+First, if you haven't updated recently, or if this is a new install,
 you should update to get the latest package information:
 
 ```bash
@@ -60,41 +75,146 @@ sudo apt install -y \
 Ubuntu 18.04 LTS release packages a version of CMake that is too old. Please upgrade to Ubuntu 20.04 LTS
 or download and install CMake version 3.13.1 or newer manually.
 :::
+</TabItem>
+<TabItem value="raspberryos">
+On Raspberry OS, we'll use apt to install our base dependencies:
 
-### Fedora
+#### Apt Update
 
-TODO
+First, if you haven't updated recently, or if this is a new install,
+you should update to get the latest package information:
 
-### macOS
+```bash
+sudo apt update
+```
 
-TODO
+#### Install Dependencies
 
-### WSL
+With the latest package information, you can now install the base dependencies:
 
-Windows Subsystem for Linux can use various Linux distributions. Find a WSL installation on the [Windows Store](https://aka.ms/wslstore).
+```bash
+sudo apt install -y \
+	git \
+	wget \
+	autoconf \
+	automake \
+	build-essential \
+	ccache \
+	device-tree-compiler \
+	dfu-util \
+	g++ \
+	gcc \
+	libtool \
+	make \
+	ninja-build \
+	cmake \
+	python3-dev \
+	python3-pip \
+	python3-setuptools \
+	xz-utils
+```
 
-After installing your preferred flavor, follow the directions above on [Debian/Ubuntu](#debianubuntu) or [Fedora](#fedora).
+</TabItem>
+<TabItem value="fedora">
+
+On Fedora, we'll use `dnf` to install our base dependencies:
+
+#### DNF Update
+
+First, if you haven't updated recently, or if this is a new install,
+you should update to get the latest package information:
+
+```bash
+sudo dnf update
+```
+
+#### Install Dependencies
+
+With the latest package information, you can now install the base dependencies:
+
+```bash
+sudo dnf install -y \
+	git \
+	wget \
+	autoconf \
+	automake \
+	ccache \
+	dtc \
+	dfu-util \
+	g++ \
+	gcc \
+	libtool \
+	make \
+	ninja-build \
+	cmake \
+	python3-devel \
+	python3-pip \
+	python3-setuptools \
+	xz
+```
+
+</TabItem>
+<TabItem value="win">
 
 :::note
-On WSL2 don't put the project files into `/mnt/c/` as file I/O speeds are extremely slow. Instead, run everything in the Linux system and use `cp` to move files over to `/mnt/c/` as needed.
+Use `cmd.exe` with these instructions rather than PowerShell.
 :::
+
+Chocolatey is recommended and used for the following instructions. You can manually install each of these applications and add them to your `PATH` if you don't want to use Chocolatey.
+
+1. [Install Chocolatey](https://chocolatey.org/install)
+2. Open `cmd.exe` as **Administrator**
+3. Run the following `choco` commands:
+   ```shell
+   choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+   choco install ninja gperf python git
+   ```
+
+</TabItem>
+<TabItem value="mac">
+
+#### Homebrew
+
+Homebrew is required to install the system dependencies. If you haven't done so, visit [Homebrew](https://brew.sh/) for instructions. Once installed, use it to install the base dependencies:
+
+```
+brew install cmake ninja python3 ccache dtc git wget
+```
+
+</TabItem>
+</OsTabs>
 
 ## Setup
 
 ### West Build Command
 
-`west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/latest/guides/west/index.html) used to configure and build Zephyr™ applications. It can be installed by using the `pip` python package manager:
+`west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/latest/guides/west/index.html) used to configure and build Zephyr™ applications.
+
+West can be installed by using the `pip` python package manager.
 
 ```bash
-pip3 install --user west
+pip3 install --user -U west
 ```
 
-:::note
-If you don't already have it configured, you may need to update your
-`PATH` to include the pip install path. See [User Installs](https://pip.pypa.io/en/stable/user_guide/#user-installs) and [Stack Overflow](https://stackoverflow.com/questions/38112756/how-do-i-access-packages-installed-by-pip-user) for more details.
+:::tip pip user packages
+If you haven't done so yet, you may need to add the Python Pip user package directory to your `PATH`, e.g.:
+
+```
+echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
 :::
 
-### Zephyr™ ARM SDK
+### Toolchain Installation
+
+The toolchain provides the compiler, linker, etc necessary to build for the target
+platform.
+
+<OsTabs>
+<TabItem value="debian">
+
+#### Zephyr™ ARM SDK
 
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
@@ -106,6 +226,50 @@ wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_
 ```
 
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults shouldn normally work as expected.
+
+</TabItem>
+<TabItem value="raspberryos">
+
+Because Raspberry OS (Raspbian) runs on the same architecture (but different ABI) as the keyboard MCUs,
+the operating system's installed [cross compilers](https://docs.zephyrproject.org/latest/getting_started/toolchain_other_x_compilers.html) can be used to target the different ABI.
+
+First, the cross compiler should be installed:
+
+```bash
+sudo apt install gcc-arm-none-eabi
+```
+
+Next, we'll configure Zephyr™ with some extra environment variables needed to find the cross compiler by adding the following to `~/.zephyrrc`:
+
+```bash
+export ZEPHYR_TOOLCHAIN_VARIANT=cross-compile
+export CROSS_COMPILE=/usr/bin/arm-none-eabi-
+```
+
+</TabItem>
+<TabItem value="fedora">
+
+#### Zephyr™ ARM SDK
+
+To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
+
+```
+export ZSDK_VERSION=0.11.2
+wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
+ sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
+ rm "zephyr-toolchain-arm-\${ZSDK_VERSION}-setup.run"
+```
+
+The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults shouldn normally work as expected.
+
+</TabItem>
+<TabItem value="win">Windows instructions are coming soon!</TabItem>
+<TabItem value="mac">
+
+Instructions for macOS coming soon.
+
+</TabItem>
+</OsTabs>
 
 ### Source Code
 
