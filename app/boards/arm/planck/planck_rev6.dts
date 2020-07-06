@@ -5,142 +5,41 @@
  */
 
 /dts-v1/;
-#include <st/f3/stm32f303.dtsi>
+#include <st/f3/stm32f303Xc.dtsi>
 
 / {
 	model = "Plack PCD, rev6";
 	compatible = "planck,rev6", "st,stm32f303";
 
 	chosen {
-		zephyr,console = &usart1;
-		zephyr,shell-uart = &usart1;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
+		zmk,kscan = &kscan0;
 	};
 
-	leds {
-		compatible = "gpio-leds";
-		red_led_3: led_3 {
-			gpios = <&gpioe 9 GPIO_ACTIVE_HIGH>;
-			label = "User LD3";
-		};
-		blue_led_4: led_4 {
-			gpios = <&gpioe 8 GPIO_ACTIVE_HIGH>;
-			label = "User LD4";
-		};
-		orange_led_5: led_5 {
-			gpios = <&gpioe 10 GPIO_ACTIVE_HIGH>;
-			label = "User LD5";
-		};
-		green_led_6: led_6 {
-			gpios = <&gpioe 15 GPIO_ACTIVE_HIGH>;
-			label = "User LD6";
-		};
-		green_led_7: led_7 {
-			gpios = <&gpioe 11 GPIO_ACTIVE_HIGH>;
-			label = "User LD7";
-		};
-		orange_led_8: led_8 {
-			gpios = <&gpioe 14 GPIO_ACTIVE_HIGH>;
-			label = "User LD8";
-		};
-		blue_led_9: led_9 {
-			gpios = <&gpioe 12 GPIO_ACTIVE_HIGH>;
-			label = "User LD9";
-		};
-		red_led_10: led_10 {
-			gpios = <&gpioe 13 GPIO_ACTIVE_HIGH>;
-			label = "User LD10";
-		};
-	};
-
-	kscan {
+	kscan0: kscan {
 		compatible = "zmk,kscan-gpio-matrix";
-		label = "Keyscan Matrix";
-		row-gpios = <&gpioa 10 GPIO_ACTIVE_HIGH>,
-			       <&gpioa 9 GPIO_ACTIVE_HIGH>,
-			       <&gpioa 8 GPIO_ACTIVE_HIGH>,
-			       <&gpiob 15 GPIO_ACTIVE_HIGH>,
-			       <&gpioc 13 GPIO_ACTIVE_HIGH>,
-			       <&gpioc 14 GPIO_ACTIVE_HIGH>,
-			       <&gpioc 15 GPIO_ACTIVE_HIGH>,
-			       <&gpioa 2 GPIO_ACTIVE_HIGH>;
-		col-gpios = <&gpiob 11 GPIO_ACTIVE_HIGH>,
-				<&gpiob 10 GPIO_ACTIVE_HIGH>,
-				<&gpiob 2 GPIO_ACTIVE_HIGH>,
-				<&gpiob 1 GPIO_ACTIVE_HIGH>,
-				<&gpioa 7 GPIO_ACTIVE_HIGH>,
-				<&gpiob 0 GPIO_ACTIVE_HIGH>;
+		label = "KSCAN";
+		row-gpios
+			= <&gpioa 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpioa 9  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpioa 8  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpiob 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpioc 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpioc 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpioc 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpioa 2  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			;
+		col-gpios
+			= <&gpiob 11 GPIO_ACTIVE_HIGH>
+			, <&gpiob 10 GPIO_ACTIVE_HIGH>
+			, <&gpiob 2  GPIO_ACTIVE_HIGH>
+			, <&gpiob 1  GPIO_ACTIVE_HIGH>
+			, <&gpioa 7  GPIO_ACTIVE_HIGH>
+			, <&gpiob 0  GPIO_ACTIVE_HIGH>
+			;
 	};
 
-	gpio_keys {
-		compatible = "gpio-keys";
-		user_button: button {
-			label = "User";
-			gpios = <&gpioa 0 GPIO_ACTIVE_LOW>;
-		};
-	};
-
-	aliases {
-		led0 = &green_led_6;
-		led1 = &green_led_7;
-		sw0 = &user_button;
-		can-primary = &can1;
-	};
-};
-
-&usart1 {
-	current-speed = <115200>;
-	status = "okay";
-};
-
-&usart2 {
-	current-speed = <115200>;
-	status = "okay";
-};
-
-&i2c1 {
-	status = "okay";
-	clock-frequency = <I2C_BITRATE_FAST>;
-
-	lsm303dlhc-magn@1e {
-		compatible = "st,lsm303dlhc-magn";
-		reg = <0x1e>;
-		label = "LSM303DLHC-MAGN";
-	};
-
-	lsm303dlhc-accel@19 {
-		compatible = "st,lis2dh", "st,lsm303dlhc-accel";
-		reg = <0x19>;
-		irq-gpios = <&gpioe 4 GPIO_ACTIVE_HIGH>,
-			  <&gpioe 5 GPIO_ACTIVE_HIGH>;
-		label = "LSM303DLHC-ACCEL";
-	};
-};
-
-&i2c2 {
-	status = "okay";
-	clock-frequency = <I2C_BITRATE_FAST>;
-};
-
-&spi1 {
-	status = "okay";
-};
-
-&spi2 {
-	status = "okay";
-};
-
-&usb {
-	status = "okay";
-};
-
-&rtc {
-	status = "okay";
-};
-
-&can1 {
-	status = "okay";
 };
 
 &flash0 {

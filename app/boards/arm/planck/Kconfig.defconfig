@@ -1,39 +1,11 @@
 # Planck keyboard configuration
 
-# Copyright (c) 2017 I-SENSE group of ICCS
+# Copyright (c) 2020 Peter Johanson
 # SPDX-License-Identifier: MIT
 
 if BOARD_PLANCK_REV6
 
-config BOARD
-	default "planck_rev6"
-
-config UART_1
-	default y
-	depends on UART_CONSOLE
-
-if I2C
-
-config I2C_1
-	default y
-
-config I2C_2
-	default y
-
-endif # I2C
-
-if SPI
-
-config SPI_1
-	default y
-
-config SPI_2
-	default y
-
-endif # SPI
-
-config CAN_1
-	default y
-	depends on CAN
+config ZMK_KEYBOARD_NAME
+	default "Planck V6"
 
 endif # BOARD_PLANCK_REV6
