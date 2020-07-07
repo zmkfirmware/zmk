@@ -7,5 +7,8 @@ module.exports = {
       "dev-boards-shields-keymaps",
       "dev-posix-board",
     ],
+    "Dev Guides": [
+      "dev-guide-new-shield",
+    ],
   },
 };
