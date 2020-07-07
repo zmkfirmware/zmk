@@ -1,4 +1,5 @@
 ---
+id: dev-guide-new-shield
 title: New Keyboard Shield
 ---
 
