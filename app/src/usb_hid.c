@@ -1,5 +1,6 @@
 
 #include <device.h>
+#include <init.h>
 
 #include <usb/usb_device.h>
 #include <usb/class/usb_hid.h>
@@ -29,7 +30,7 @@ void usb_hid_status_cb(enum usb_dc_status_code status, const u8_t *params)
 	usb_status = status;
 };
 
-int zmk_usb_hid_init()
+static int zmk_usb_hid_init(struct device *_arg)
 {
 	int usb_enable_ret;
 
@@ -56,3 +57,7 @@ int zmk_usb_hid_init()
 
 	return 0;
 }
+
+SYS_INIT(zmk_usb_hid_init,
+         APPLICATION,
+		 CONFIG_ZMK_USB_INIT_PRIORITY);

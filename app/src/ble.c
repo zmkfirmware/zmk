@@ -1,4 +1,7 @@
 
+#include <device.h>
+#include <init.h>
+
 #include <math.h>
 
 #include <settings/settings.h>
@@ -139,7 +142,7 @@ static void zmk_ble_ready(int err)
     }
 }
 
-int zmk_ble_init()
+static int zmk_ble_init(struct device *_arg)
 {
     if (IS_ENABLED(CONFIG_SETTINGS))
     {
@@ -191,3 +194,7 @@ bool zmk_ble_handle_key_user(struct zmk_key_event *key_event)
 
     return false;
 }
+
+SYS_INIT(zmk_ble_init,
+        APPLICATION,
+        CONFIG_ZMK_BLE_INIT_PRIORITY);

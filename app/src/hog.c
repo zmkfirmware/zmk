@@ -7,11 +7,6 @@
 #include <zmk/hog.h>
 #include <zmk/hid.h>
 
-int zmk_hog_init()
-{
-    return zmk_ble_init();
-}
-
 enum
 {
     HIDS_REMOTE_WAKE = BIT(0),

@@ -27,11 +27,6 @@ void main(void)
 		return;
 	}
 
-	if (zmk_endpoints_init())
-	{
-		printk("ENDPOINT INIT FAILED\n");
-		return;
-	}
 
 #ifdef CONFIG_SETTINGS
 	settings_load();

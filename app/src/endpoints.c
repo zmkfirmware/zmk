@@ -8,34 +8,6 @@
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-int zmk_endpoints_init()
-{
-    int err;
-
-    LOG_DBG("");
-
-#ifdef CONFIG_ZMK_USB
-    err = zmk_usb_hid_init();
-    if (err)
-    {
-        LOG_ERR("USB HID Init Failed\n");
-        return err;
-    }
-#endif /* CONFIG_ZMK_USB */
-
-#ifdef CONFIG_ZMK_BLE
-    err = zmk_hog_init();
-    if (err)
-    {
-        LOG_ERR("HOG Init Failed\n");
-        return err;
-    }
-
-#endif /* CONFIG_ZMK_BLE */
-
-    return 0;
-}
-
 int zmk_endpoints_send_report(u8_t usage_page)
 {
     int err;

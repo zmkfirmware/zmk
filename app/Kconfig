@@ -15,11 +15,19 @@ config ZMK_KSCAN_EVENT_QUEUE_SIZE
 
 menu "HID Output Types"
 
-config ZMK_USB
+menuconfig ZMK_USB
 	bool "USB"
 	select USB
 	select USB_DEVICE_STACK
 	select USB_DEVICE_HID
+
+if ZMK_USB
+
+config ZMK_USB_INIT_PRIORITY
+	int "Init Priority"
+	default 50
+
+endif
 
 menuconfig ZMK_BLE
 	bool "BLE (HID over GATT)"
@@ -31,6 +39,10 @@ menuconfig ZMK_BLE
 	select BT_GATT_BAS
 
 if ZMK_BLE
+
+config ZMK_BLE_INIT_PRIORITY
+	int "Init Priority"
+	default 50
 
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
