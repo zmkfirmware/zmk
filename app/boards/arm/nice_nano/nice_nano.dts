@@ -66,10 +66,10 @@
 	compatible = "nordic,nrf-uarte";
 	status = "okay";
 	current-speed = <115200>;
-	tx-pin = <20>;
-	rx-pin = <24>;
-	rts-pin = <17>;
-	cts-pin = <22>;
+	tx-pin = <39>;
+	rx-pin = <34>;
+	rts-pin = <33>;
+	cts-pin = <12>;
 };
 
 &usbd {
