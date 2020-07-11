@@ -128,7 +128,6 @@ static int kscan_gpio_config_interrupts(struct device **devices,
 		bool submit_follow_up_read = false;                                                                                                                                                                                                   \
 		struct kscan_gpio_data_##n *data = dev->driver_data;                                                                                                                                                                                \
 		static bool read_state[INST_MATRIX_ROWS(n)][INST_MATRIX_COLS(n)];                                                                                                                                                                   \
-		LOG_DBG("Scanning the matrix for updated state");                                                                                                                                                                                   \
 		/* Disable our interrupts temporarily while we scan, to avoid       */                                                                                                                                                              \
 		/* re-entry while we iterate columns and set them active one by one */                                                                                                                                                              \
 		/* to get pressed state for each matrix cell.                       */                                                                                                                                                              \
@@ -268,7 +267,7 @@ static int kscan_gpio_config_interrupts(struct device **devices,
 	}; \
 	DEVICE_AND_API_INIT(kscan_gpio_##n, DT_INST_LABEL(n), kscan_gpio_init_##n,                                                                                                                                                              \
 						&kscan_gpio_data_##n, &kscan_gpio_config_##n,                                                                                                                                                                       \
-						POST_KERNEL, CONFIG_ZMK_KSCAN_INIT_PRIORITY,                                                                                                                                                                        \
+						APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY,                                                                                                                                                                        \
 						&gpio_driver_api_##n);
 
 DT_INST_FOREACH_STATUS_OKAY(GPIO_INST_INIT)
