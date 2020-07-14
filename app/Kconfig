@@ -27,6 +27,9 @@ config ZMK_USB_INIT_PRIORITY
 	int "Init Priority"
 	default 50
 
+config USB_NUMOF_EP_WRITE_RETRIES
+	default 10
+
 endif
 
 menuconfig ZMK_BLE
