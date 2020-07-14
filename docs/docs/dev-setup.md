@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 export const OsTabs = (props) => (<Tabs
 groupId="operating-systems"
-defaultValue="linux"
+defaultValue="debian"
 values={[
 {label: 'Debian/Ubuntu', value: 'debian'},
 {label: 'Raspberry OS', value: 'raspberryos'},
