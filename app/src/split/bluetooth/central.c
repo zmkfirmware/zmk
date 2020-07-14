@@ -17,6 +17,7 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/split/bluetooth/uuid.h>
+#include <init.h>
 
 static int start_scan(void);
 
@@ -236,9 +237,13 @@ static struct bt_conn_cb conn_callbacks = {
 	.disconnected = disconnected,
 };
 
-int zmk_split_bt_central_init()
+int zmk_split_bt_central_init(struct device *_arg)
 {
 	bt_conn_cb_register(&conn_callbacks);
 
 	return start_scan();
 }
+
+SYS_INIT(zmk_split_bt_central_init,
+         APPLICATION,
+		 CONFIG_APPLICATION_INIT_PRIORITY);
