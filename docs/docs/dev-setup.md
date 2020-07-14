@@ -36,20 +36,16 @@ A unix-like environment with the following base packages installed:
 <TabItem value="debian">
 On Debian and Ubuntu, we'll use apt to install our base dependencies:
 
-#### Apt Update
-
 First, if you haven't updated recently, or if this is a new install,
 you should update to get the latest package information:
 
-```bash
+```sh
 sudo apt update
 ```
 
-#### Install Dependencies
-
 With the latest package information, you can now install the base dependencies:
 
-```bash
+```sh
 sudo apt install -y \
 	git \
 	wget \
@@ -79,20 +75,16 @@ or download and install CMake version 3.13.1 or newer manually.
 <TabItem value="raspberryos">
 On Raspberry OS, we'll use apt to install our base dependencies:
 
-#### Apt Update
-
 First, if you haven't updated recently, or if this is a new install,
 you should update to get the latest package information:
 
-```bash
+```sh
 sudo apt update
 ```
 
-#### Install Dependencies
-
 With the latest package information, you can now install the base dependencies:
 
-```bash
+```sh
 sudo apt install -y \
 	git \
 	wget \
@@ -124,7 +116,7 @@ On Fedora, we'll use `dnf` to install our base dependencies:
 First, if you haven't updated recently, or if this is a new install,
 you should update to get the latest package information:
 
-```bash
+```sh
 sudo dnf update
 ```
 
@@ -132,7 +124,7 @@ sudo dnf update
 
 With the latest package information, you can now install the base dependencies:
 
-```bash
+```sh
 sudo dnf install -y \
 	git \
 	wget \
@@ -192,7 +184,7 @@ brew install cmake ninja python3 ccache dtc git wget
 
 West can be installed by using the `pip` python package manager.
 
-```bash
+```sh
 pip3 install --user -U west
 ```
 
@@ -235,13 +227,13 @@ the operating system's installed [cross compilers](https://docs.zephyrproject.or
 
 First, the cross compiler should be installed:
 
-```bash
+```sh
 sudo apt install gcc-arm-none-eabi
 ```
 
 Next, we'll configure Zephyr™ with some extra environment variables needed to find the cross compiler by adding the following to `~/.zephyrrc`:
 
-```bash
+```sh
 export ZEPHYR_TOOLCHAIN_VARIANT=cross-compile
 export CROSS_COMPILE=/usr/bin/arm-none-eabi-
 ```
@@ -304,13 +296,13 @@ Zephyr™ application is in the `app/` source directory:
 
 #### Step into the repository
 
-```bash
+```sh
 cd zmk
 ```
 
 #### Initialize West
 
-```bash
+```sh
 west init -l app/
 ```
 
@@ -322,19 +314,19 @@ section again for links to how to do this
 
 #### Update To Fetch Modules
 
-```bash
+```sh
 west update
 ```
 
 #### Export Zephyr™ Core
 
-```bash
+```sh
 west zephyr-export
 ```
 
 #### Install Zephyr Python Dependencies
 
-```bash
+```sh
 pip3 install --user -r zephyr/scripts/requirements-base.txt
 ```
 
@@ -432,7 +424,7 @@ cat ~/.zephyrrc >> ~/.zshrc
 
 From here on, building and flashing ZMK should all be done from the `app/` subdirectory of the ZMK checkout:
 
-```bash
+```sh
 cd app
 ```
 
@@ -451,7 +443,7 @@ Given the following:
 
 You can build ZMK with the following:
 
-```bash
+```sh
 west build -b proton_c -- -DSHIELD=kyria -DKEYMAP=default
 ```
 
@@ -466,7 +458,7 @@ Given the following:
 
 you can build ZMK with the following:
 
-```bash
+```sh
 west build -b planck -- -DKEYMAP=default
 ```
 
