@@ -94,6 +94,8 @@ choice ZMK_SPLIT_BLE_ROLE
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	bool "Central"
+	select BT_CENTRAL
+	select BT_GATT_CLIENT
 
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 	bool "Peripheral"
