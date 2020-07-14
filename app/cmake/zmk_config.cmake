@@ -86,7 +86,7 @@ if (BASE_KEYMAPS_DIR)
 	if (EXISTS "${KEYMAP_DIR}/include")
 		include_directories("${KEYMAP_DIR}/include")
 	endif()
-	list(APPEND ZMK_DTC_FILES "${KEYMAP_DIR}/keymap.overlay")
+	list(APPEND ZMK_DTC_FILES "${KEYMAP_DIR}keymap.overlay")
 endif()
 
 if (ZMK_CONFIG)
