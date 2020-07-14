@@ -263,10 +263,27 @@ wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults shouldn normally work as expected.
 
 </TabItem>
-<TabItem value="win">Windows instructions are coming soon!</TabItem>
+<TabItem value="win">
+
+#### GNU ARM Embedded
+
+Since the Zephyr™ SDK is not available for Windows, we recommending following the steps to install the [GNU ARM Embedded](https://docs.zephyrproject.org/latest/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded).
+
+</TabItem>
 <TabItem value="mac">
 
-Instructions for macOS coming soon.
+#### Zephyr™ ARM SDK
+
+To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
+
+```
+export ZSDK_VERSION=0.11.2
+wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
+ sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
+ rm "zephyr-toolchain-arm-\${ZSDK_VERSION}-setup.run"
+```
+
+The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults shouldn normally work as expected.
 
 </TabItem>
 </OsTabs>
@@ -330,26 +347,86 @@ We suggest two main [options](https://docs.zephyrproject.org/latest/guides/env_v
 
 To load the Zephyr environment properly for just one transient shell, run the following from your ZMK checkout directory:
 
+<OsTabs>
+<TabItem value="debian">
+
 ```
 source zephyr/zephyr-env.sh
 ```
+
+</TabItem>
+
+<TabItem value="raspberryos">
+
+```
+source zephyr/zephyr-env.sh
+```
+
+</TabItem>
+
+<TabItem value="fedora">
+
+```
+source zephyr/zephyr-env.sh
+```
+
+</TabItem>
+
+<TabItem value="mac">
+
+```
+source zephyr/zephyr-env.sh
+```
+
+</TabItem>
+
+<TabItem value="win">
+
+```
+source zephyr/zephyr-env.cmd
+```
+
+</TabItem>
+</OsTabs>
 
 #### All Shells
 
 To load the environment variables for your shell every time,
 append the existing `~/.zephyrrc` file to your shell's RC file and then start a new shell.
 
-##### Bash
+<Tabs
+groupId="shell"
+defaultValue="bash"
+values={[
+{label: 'bash', value: 'bash'},
+{label: 'zsh', value: 'zsh'},
+{label: 'cmd.exe', value: 'cmd'},
+]
+}>
+
+<TabItem value="bash">
 
 ```
 cat ~/.zephyrrc >> ~/.bashrc
 ```
 
-##### ZSH
+</TabItem>
+
+<TabItem value="zsh">
 
 ```
 cat ~/.zephyrrc >> ~/.zshrc
 ```
+
+</TabItem>
+
+<TabItem value="cmd">
+
+`cmd.exe` instructions coming soon!
+
+</TabItem>
+
+</Tabs>
 
 ## Build
 
