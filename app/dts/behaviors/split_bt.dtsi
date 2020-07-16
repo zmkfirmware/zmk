@@ -1,9 +1,0 @@
-/ {
-	behaviors {
-		split_behavior: behavior_split_bt {
-			compatible = "zmk,behavior-split-bt", "zmk,behavior-global";
-			label = "SPLIT_BT";
-			#binding-cells = <0>;
-		};
-	};
-};
