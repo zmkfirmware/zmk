@@ -17,13 +17,15 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/split/bluetooth/uuid.h>
+#include <zmk/event-manager.h>
+#include <zmk/events/position-state-changed.h>
 #include <init.h>
 
 static int start_scan(void);
 
 static struct bt_conn *default_conn;
 
-static struct bt_uuid_16 uuid = BT_UUID_INIT_16(0);
+static struct bt_uuid_128 uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
 static struct bt_gatt_discover_params discover_params;
 static struct bt_gatt_subscribe_params subscribe_params;
 
@@ -31,6 +33,10 @@ static u8_t notify_func(struct bt_conn *conn,
 			   struct bt_gatt_subscribe_params *params,
 			   const void *data, u16_t length)
 {
+	static u8_t position_state[16];
+
+	u8_t changed_positions[16];
+
 	if (!data) {
 		LOG_DBG("[UNSUBSCRIBED]");
 		params->value_handle = 0U;
@@ -38,6 +44,27 @@ static u8_t notify_func(struct bt_conn *conn,
 	}
 
 	LOG_DBG("[NOTIFICATION] data %p length %u", data, length);
+
+	for (int i = 0; i < 16; i++) {
+		changed_positions[i] = ((u8_t *)data)[i] ^ position_state[i];
+		position_state[i] = ((u8_t *)data)[i];
+	}
+
+	for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (changed_positions[i] & BIT(j)) {
+				u32_t position = (i * 8) + j;
+				bool pressed = position_state[i] & BIT(j);
+				struct position_state_changed *pos_ev = new_position_state_changed();
+				pos_ev->position = position;
+				pos_ev->state = pressed;
+
+				LOG_DBG("Trigger key position state change for %d", position);
+				ZMK_EVENT_RAISE(pos_ev);
+			}
+		}
+	}
+
 
 	return BT_GATT_ITER_CONTINUE;
 }
@@ -96,6 +123,32 @@ static u8_t discover_func(struct bt_conn *conn,
 	return BT_GATT_ITER_STOP;
 }
 
+static void split_central_process_connection(struct bt_conn *conn) {
+	int err;
+
+	LOG_DBG("Current security for connection: %d", bt_conn_get_security(conn));
+	
+	err = bt_conn_set_security(conn, BT_SECURITY_L2);
+	if (err) {
+		LOG_ERR("Failed to set security (reason %d)", err);
+		return;
+	}
+
+	if (conn == default_conn) {
+		discover_params.uuid = &uuid.uuid;
+		discover_params.func = discover_func;
+		discover_params.start_handle = 0x0001;
+		discover_params.end_handle = 0xffff;
+		discover_params.type = BT_GATT_DISCOVER_PRIMARY;
+
+		err = bt_gatt_discover(default_conn, &discover_params);
+		if (err) {
+			LOG_ERR("Discover failed(err %d)", err);
+			return;
+		}
+	}
+}
+
 static bool eir_found(struct bt_data *data, void *user_data)
 {
 	bt_addr_le_t *addr = user_data;
@@ -114,7 +167,6 @@ static bool eir_found(struct bt_data *data, void *user_data)
 		for (i = 0; i < data->data_len; i += 16) {
 			struct bt_le_conn_param *param;
 			struct bt_uuid uuid;
-			char uuid_str[BT_UUID_STR_LEN];
 			int err;
 
             if (!bt_uuid_create(&uuid, &data->data[i], 16)) {
@@ -122,11 +174,17 @@ static bool eir_found(struct bt_data *data, void *user_data)
                 continue;
             }
 
-			if (bt_uuid_cmp(&uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID))) {
+			if (!bt_uuid_cmp(&uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID))) {
+				char uuid_str[BT_UUID_STR_LEN];
+				char service_uuid_str[BT_UUID_STR_LEN];
+
 				bt_uuid_to_str(&uuid, uuid_str, sizeof(uuid_str));
-				LOG_DBG("UUID does not match split UUID: %s", log_strdup(uuid_str));
+				bt_uuid_to_str(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID), service_uuid_str, sizeof(service_uuid_str));
+				LOG_DBG("UUID %s does not match split UUID: %s", log_strdup(uuid_str), log_strdup(service_uuid_str));
 				continue;
 			}
+
+			LOG_DBG("Found the split service");
 
 			err = bt_le_scan_stop();
 			if (err) {
@@ -134,12 +192,18 @@ static bool eir_found(struct bt_data *data, void *user_data)
 				continue;
 			}
 
-			param = BT_LE_CONN_PARAM_DEFAULT;
-			err = bt_conn_le_create(addr, BT_CONN_LE_CREATE_CONN,
-						param, &default_conn);
-			if (err) {
-				LOG_ERR("Create conn failed (err %d)", err);
-				start_scan();
+			default_conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr);
+			if (default_conn) {
+				LOG_DBG("Found existing connection");
+				split_central_process_connection(default_conn);
+			} else {
+				param = BT_LE_CONN_PARAM_DEFAULT;
+				err = bt_conn_le_create(addr, BT_CONN_LE_CREATE_CONN,
+							param, &default_conn);
+				if (err) {
+					LOG_ERR("Create conn failed (err %d)", err);
+					start_scan();
+				}
 			}
 
 			return false;
@@ -179,7 +243,7 @@ static int start_scan(void)
     return 0;
 }
 
-static void connected(struct bt_conn *conn, u8_t conn_err)
+static void split_central_connected(struct bt_conn *conn, u8_t conn_err)
 {
 	char addr[BT_ADDR_LE_STR_LEN];
 	int err;
@@ -196,31 +260,20 @@ static void connected(struct bt_conn *conn, u8_t conn_err)
 		return;
 	}
 
-	LOG_DBG("Connected: %s", addr);
+	LOG_DBG("Connected: %s", log_strdup(addr));
 
-	if (conn == default_conn) {
-		memcpy(&uuid, BT_UUID_HRS, sizeof(uuid));
-		discover_params.uuid = &uuid.uuid;
-		discover_params.func = discover_func;
-		discover_params.start_handle = 0x0001;
-		discover_params.end_handle = 0xffff;
-		discover_params.type = BT_GATT_DISCOVER_PRIMARY;
+	
 
-		err = bt_gatt_discover(default_conn, &discover_params);
-		if (err) {
-			LOG_ERR("Discover failed(err %d)", err);
-			return;
-		}
-	}
+	split_central_process_connection(conn);
 }
 
-static void disconnected(struct bt_conn *conn, u8_t reason)
+static void split_central_disconnected(struct bt_conn *conn, u8_t reason)
 {
 	char addr[BT_ADDR_LE_STR_LEN];
 
 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-	LOG_DBG("Disconnected: %s (reason 0x%02x)", addr, reason);
+	LOG_DBG("Disconnected: %s (reason %d)", log_strdup(addr), reason);
 
 	if (default_conn != conn) {
 		return;
@@ -233,8 +286,8 @@ static void disconnected(struct bt_conn *conn, u8_t reason)
 }
 
 static struct bt_conn_cb conn_callbacks = {
-	.connected = connected,
-	.disconnected = disconnected,
+	.connected = split_central_connected,
+	.disconnected = split_central_disconnected,
 };
 
 int zmk_split_bt_central_init(struct device *_arg)
@@ -246,4 +299,4 @@ int zmk_split_bt_central_init(struct device *_arg)
 
 SYS_INIT(zmk_split_bt_central_init,
          APPLICATION,
-		 CONFIG_APPLICATION_INIT_PRIORITY);
+		 CONFIG_ZMK_BLE_INIT_PRIORITY);

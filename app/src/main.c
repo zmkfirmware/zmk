@@ -31,14 +31,6 @@ void main(void)
 		return;
 	}
 
-
-#ifdef CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL
-	if (zmk_split_bt_central_init()) {
-		LOG_ERR("Failed to start BLE split central");
-		return;
-	}
-#endif /* CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL */
-
 #ifdef CONFIG_SETTINGS
 	settings_load();
 #endif

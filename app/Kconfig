@@ -126,7 +126,7 @@ config ZMK_ACTION_MOD_TAP
 endmenu
 
 config HEAP_MEM_POOL_SIZE
-	default 200
+	default 1024
 
 module = ZMK
 module-str = zmk
