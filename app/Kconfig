@@ -40,12 +40,17 @@ menuconfig ZMK_BLE
 	select BT_PERIPHERAL
 	select BT_GATT_DIS
 	select BT_GATT_BAS
+	select SETTINGS
+	select BT_SETTINGS
 
 if ZMK_BLE
 
 config ZMK_BLE_INIT_PRIORITY
 	int "Init Priority"
 	default 50
+
+config SYSTEM_WORKQUEUE_STACK_SIZE
+	default 2048
 
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
@@ -57,16 +62,6 @@ config BT_DEVICE_APPEARANCE
 config ZMK_BLE_PASSKEY_ENTRY
 	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
 	default n
-
-# Incresed stack due to settings API usage
-# CONFIG_SYSTEM_WORKQUEUE_STACK_SIZE=2048
-# 
-# CONFIG_BT_SETTINGS=y
-# CONFIG_FLASH=y
-# CONFIG_FLASH_PAGE_LAYOUT=y
-# CONFIG_FLASH_MAP=y
-# CONFIG_NVS=y
-# CONFIG_SETTINGS=y
 
 endif
 
@@ -96,6 +91,13 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	bool "Central"
 	select BT_CENTRAL
 	select BT_GATT_CLIENT
+
+if ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config BT_MAX_CONN
+	default 2
+
+endif
 
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 	bool "Peripheral"

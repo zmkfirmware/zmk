@@ -16,10 +16,6 @@ LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/kscan.h>
 #include <zmk/endpoints.h>
 
-#ifdef CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL
-#include <zmk/split/bluetooth/central.h>
-#endif /* CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL */
-
 #define ZMK_KSCAN_DEV DT_LABEL(ZMK_MATRIX_NODE_ID)
 
 void main(void)
@@ -30,8 +26,4 @@ void main(void)
 	{
 		return;
 	}
-
-#ifdef CONFIG_SETTINGS
-	settings_load();
-#endif
 }
