@@ -102,6 +102,13 @@ endif
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 	bool "Peripheral"
 
+if ZMK_SPLIT_BLE_ROLE_PERIPHERAL
+
+config ZMK_USB
+	default n
+
+endif
+
 endchoice
 
 endif
