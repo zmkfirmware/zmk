@@ -1,0 +1,17 @@
+description: |
+  Sensor driver for the Alps en11 rotary encoder
+
+compatible: "alps,en11"
+
+properties:
+  label:
+    type: string
+    required: true
+  a-gpios:
+    type: phandle-array
+    required: true
+    description: A pin for the encoder
+  b-gpios:
+    type: phandle-array
+    required: true
+    description: A pin for the encoder

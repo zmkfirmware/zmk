@@ -1,21 +1,7 @@
-config ZMK_KSCAN_GPIO_DRIVER
-	bool "Enable GPIO kscan driver to simulate key presses"
-	default y
-	select GPIO
+# EN11 incremental encoder sensor configuration options
 
-if ZMK_KSCAN_GPIO_DRIVER
-
-config ZMK_KSCAN_GPIO_POLLING
-	bool "Poll for key event triggers instead of using interrupts"
-	default n
-
-endif
-
-config ZMK_KSCAN_INIT_PRIORITY
-	int "Keyboard scan driver init priority"
-	default 40
-	help
-	  Keyboard scan device driver initialization priority.
+# Copyright (c) 2020 Peter Johanson
+# SPDX-License-Identifier: MIT
 
 menuconfig EN11
 	bool "EN11 Incremental Encoder Sensor"
