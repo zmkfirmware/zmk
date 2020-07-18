@@ -95,7 +95,7 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 if ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 config BT_MAX_CONN
-	default 2
+	default 5
 
 endif
 
@@ -106,6 +106,10 @@ if ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 
 config ZMK_USB
 	default n
+
+
+config BT_MAX_CONN
+	default 5
 
 endif
 
