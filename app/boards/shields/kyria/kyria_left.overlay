@@ -7,15 +7,12 @@
 #include "kyria.dtsi"
 
 / {
-	sensors {
 		encoder: encoder0 {
 			compatible = "alps,en11";
 			label = "Rotary Encoder";
-			a-gpios = <&pro_micro_d 5 GPIO_ACTIVE_HIGH>;
-			b-gpios = <&pro_micro_d 9 GPIO_ACTIVE_HIGH>;
+			a-gpios = <&pro_micro_d 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+			b-gpios = <&pro_micro_d 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 		};
-	};
-
 };
 
 &kscan0 {

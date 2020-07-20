@@ -152,16 +152,15 @@ int en11_init_interrupt(struct device *dev)
 	struct en11_data *drv_data = dev->driver_data;
 	const struct en11_config *drv_cfg = dev->config_info;
 
+	drv_data->dev = dev;
 	/* setup gpio interrupt */
 
 	LOG_DBG("A: %s %d B: %s %d", drv_cfg->a_label, drv_cfg->a_pin, drv_cfg->b_label, drv_cfg->b_pin);
 	
-	gpio_pin_configure(drv_data->a, drv_cfg->a_pin,
+	if (gpio_pin_configure(drv_data->a, drv_cfg->a_pin,
 			   drv_cfg->a_flags
-			   | GPIO_INPUT);
-
-	if (gpio_pin_set(drv_data->a, drv_cfg->a_pin, 1)) {
-		LOG_DBG("Failed to set A active!");
+			   | GPIO_INPUT)) {
+		LOG_DBG("Failed to configure B pin");
 		return -EIO;
 	}
 
@@ -174,12 +173,10 @@ int en11_init_interrupt(struct device *dev)
 		return -EIO;
 	}
 
-	gpio_pin_configure(drv_data->b, drv_cfg->b_pin,
+	if (gpio_pin_configure(drv_data->b, drv_cfg->b_pin,
 			   drv_cfg->b_flags
-			   | GPIO_INPUT);
-
-	if (gpio_pin_set(drv_data->b, drv_cfg->b_pin, 1)) {
-		LOG_DBG("Failed to set B active!");
+			   | GPIO_INPUT)) {
+		LOG_DBG("Failed to configure B pin");
 		return -EIO;
 	}
 
