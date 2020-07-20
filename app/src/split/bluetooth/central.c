@@ -197,7 +197,7 @@ static bool eir_found(struct bt_data *data, void *user_data)
 				LOG_DBG("Found existing connection");
 				split_central_process_connection(default_conn);
 			} else {
-				param = BT_LE_CONN_PARAM(0x0005, 0x000a, 5, 400);
+				param = BT_LE_CONN_PARAM(0x0006, 0x000c, 5, 400);
 				err = bt_conn_le_create(addr, BT_CONN_LE_CREATE_CONN,
 							param, &default_conn);
 				if (err) {
