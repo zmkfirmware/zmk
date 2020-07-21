@@ -82,25 +82,8 @@ static void ec11_thread_cb(void *arg)
 {
 	struct device *dev = arg;
 	struct ec11_data *drv_data = dev->driver_data;
-	const struct ec11_config *cfg = dev->config_info;
-	u16_t status;
 
 	drv_data->handler(dev, &drv_data->trigger);
-	// gpio_pin_get(drv_data->a, cfg->a_pin)
-
-	// if (ec11_reg_read(drv_data, EC11_REG_STATUS, &status) < 0) {
-	// 	return;
-	// }
-
-	// if (status & EC11_DATA_READY_INT_BIT &&
-	//     drv_data->drdy_handler != NULL) {
-	// 	drv_data->drdy_handler(dev, &drv_data->drdy_trigger);
-	// }
-
-	// if (status & EC11_TOBJ_TH_INT_BITS &&
-	//     drv_data->th_handler != NULL) {
-	// 	drv_data->th_handler(dev, &drv_data->th_trigger);
-	// }
 
 	setup_int(dev, true);
 }
