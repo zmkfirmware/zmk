@@ -54,12 +54,12 @@ module.exports = {
             //   },
             {
               label: "Discord",
-              href: "community/discord/invite",
+              href: "/community/discord/invite",
             },
-            //   {
-            //     label: "Twitter",
-            //     href: "https://twitter.com/docusaurus",
-            //   },
+            {
+              label: "Twitter",
+              href: "https://twitter.com/ZMKFirmware",
+            },
           ],
         },
         {
