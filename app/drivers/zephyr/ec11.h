@@ -31,8 +31,9 @@ struct ec11_data {
 	struct device *a;
 	struct device *b;
 	u8_t ab_state;
-	s16_t pulse_state;
-	s16_t tick_state;
+	s8_t pulses;
+	s8_t ticks;
+	s8_t delta;
 
 #ifdef CONFIG_EC11_TRIGGER
 	struct device *gpio;

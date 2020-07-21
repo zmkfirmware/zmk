@@ -24,7 +24,7 @@ static int ec11_sample_fetch(struct device *dev, enum sensor_channel chan)
 	struct ec11_data *drv_data = dev->driver_data;
 	const struct ec11_config *drv_cfg = dev->config_info;
 	u8_t val;
-	u8_t delta;
+	s8_t delta;
 
 	__ASSERT_NO_MSG(chan == SENSOR_CHAN_ALL || chan == SENSOR_CHAN_ROTATION);
 
@@ -33,28 +33,26 @@ static int ec11_sample_fetch(struct device *dev, enum sensor_channel chan)
 	LOG_DBG("prev: %d, new: %d", drv_data->ab_state, val);
 
 	switch(val | (drv_data->ab_state << 2)) {
-		case 0b0001: case 0b0111: case 0b1110:
-			LOG_DBG("+1");
+		case 0b0001: case 0b0111: case 0b1110: case 0b1000:
 			delta = 1;
 			break;
+		case 0b0010: case 0b0100: case 0b1101: case 0b1011:
+			delta = -1;
+			break;
 		default:
-			LOG_DBG("FIGURE IT OUT!");
+			delta = 0;
 			break;
 	}
 
 	LOG_DBG("Delta: %d", delta);
 
+	drv_data->pulses += delta;
+	drv_data->ab_state = val;
 
-	// if (ec11_reg_read(drv_data, EC11_REG_TOBJ, &val) < 0) {
-	// 	return -EIO;
-	// }
-
-	// if (val & EC11_DATA_INVALID_BIT) {
-	// 	return -EIO;
-	// }
-
-	// drv_data->sample = arithmetic_shift_right((s16_t)val, 2);
-
+	drv_data->ticks = drv_data->pulses / drv_cfg->resolution;
+	drv_data->delta = delta;
+	drv_data->pulses %= drv_cfg->resolution;
+	
 	return 0;
 }
 
@@ -63,17 +61,14 @@ static int ec11_channel_get(struct device *dev,
 			       struct sensor_value *val)
 {
 	struct ec11_data *drv_data = dev->driver_data;
+	
+	if (chan != SENSOR_CHAN_ROTATION) {
+		return -ENOTSUP;
+	}
 
-	// s32_t uval;
-
-	// if (chan != SENSOR_CHAN_AMBIENT_TEMP) {
-	// 	return -ENOTSUP;
-	// }
-
-	// uval = (s32_t)drv_data->sample * EC11_TEMP_SCALE;
-	// val->val1 = uval / 1000000;
-	// val->val2 = uval % 1000000;
-
+	val->val1 = drv_data->ticks;
+	val->val2 = drv_data->delta;
+	
 	return 0;
 }
 
