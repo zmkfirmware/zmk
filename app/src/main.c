@@ -27,6 +27,7 @@ void main(void)
 		return;
 	}
 
+
 #ifdef CONFIG_SETTINGS
 	settings_load();
 #endif
