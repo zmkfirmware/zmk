@@ -41,10 +41,10 @@ static int ec11_sample_fetch(struct device *dev, enum sensor_channel chan)
 
 	switch(val | (drv_data->ab_state << 2)) {
 		case 0b0010: case 0b0100: case 0b1101: case 0b1011:
-			delta = 1;
+			delta = -1;
 			break;
 		case 0b0001: case 0b0111: case 0b1110: case 0b1000:
-			delta = -1;
+			delta = 1;
 			break;
 		default:
 			delta = 0;
