@@ -6,16 +6,6 @@
 
 #include "kyria.dtsi"
 
-/ {
-		encoder: encoder0 {
-			compatible = "alps,ec11";
-			label = "Rotary Encoder";
-			a-gpios = <&pro_micro_d 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-			b-gpios = <&pro_micro_d 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-			resolution = <4>;
-		};
-};
-
 &kscan0 {
 	col-gpios
 		= <&pro_micro_a  3 GPIO_ACTIVE_HIGH>
@@ -29,3 +19,6 @@
 		;
 };
 
+&left_encoder {
+	status = "okay";
+};
