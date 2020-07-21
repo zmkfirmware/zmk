@@ -134,19 +134,20 @@ int ec11_init(struct device *dev)
 	return 0;
 }
 
-struct ec11_data ec11_data;
+#define EC11_INST(n) \
+	struct ec11_data ec11_data_##n;                                                            \
+	const struct ec11_config ec11_cfg_##n = {                                                  \
+		.a_label = DT_INST_GPIO_LABEL(n, a_gpios),                                             \
+		.a_pin = DT_INST_GPIO_PIN(n, a_gpios),                                                 \
+		.a_flags = DT_INST_GPIO_FLAGS(n, a_gpios),                                             \
+		.b_label = DT_INST_GPIO_LABEL(n, b_gpios),                                             \
+		.b_pin = DT_INST_GPIO_PIN(n, b_gpios),                                                 \
+		.b_flags = DT_INST_GPIO_FLAGS(n, b_gpios),                                             \
+		COND_CODE_0(DT_INST_NODE_HAS_PROP(n, resolution), (1), (DT_INST_PROP(n, resolution))), \
+	};                                                                                         \
+	DEVICE_AND_API_INIT(ec11, DT_INST_LABEL(n), ec11_init,                                     \
+				&ec11_data_##n,                                                                \
+				&ec11_cfg_##n, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY,                       \
+				&ec11_driver_api);
 
-const struct ec11_config ec11_cfg = {
-	.a_label = DT_INST_GPIO_LABEL(0, a_gpios),
-	.a_pin = DT_INST_GPIO_PIN(0, a_gpios),
-	.a_flags = DT_INST_GPIO_FLAGS(0, a_gpios),
-	.b_label = DT_INST_GPIO_LABEL(0, b_gpios),
-	.b_pin = DT_INST_GPIO_PIN(0, b_gpios),
-	.b_flags = DT_INST_GPIO_FLAGS(0, b_gpios),
-	COND_CODE_0(DT_INST_NODE_HAS_PROP(0, resolution), (1), (DT_INST_PROP(0, resolution))),
-};
-
-DEVICE_AND_API_INIT(ec11, DT_INST_LABEL(0), ec11_init,
-		    &ec11_data,
-		    &ec11_cfg, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY,
-		    &ec11_driver_api);
+DT_INST_FOREACH_STATUS_OKAY(EC11_INST)
