@@ -31,7 +31,7 @@ static struct bt_uuid_128 uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
 static struct bt_gatt_discover_params discover_params;
 static struct bt_gatt_subscribe_params subscribe_params;
 
-static u8_t notify_func(struct bt_conn *conn,
+static u8_t split_central_notify_func(struct bt_conn *conn,
 			   struct bt_gatt_subscribe_params *params,
 			   const void *data, u16_t length)
 {
@@ -71,7 +71,7 @@ static u8_t notify_func(struct bt_conn *conn,
 	return BT_GATT_ITER_CONTINUE;
 }
 
-static u8_t discover_func(struct bt_conn *conn,
+static u8_t split_central_discovery_func(struct bt_conn *conn,
 			     const struct bt_gatt_attr *attr,
 			     struct bt_gatt_discover_params *params)
 {
@@ -108,7 +108,7 @@ static u8_t discover_func(struct bt_conn *conn,
 			LOG_ERR("Discover failed (err %d)", err);
 		}
 	} else {
-		subscribe_params.notify = notify_func;
+		subscribe_params.notify = split_central_notify_func;
 		subscribe_params.value = BT_GATT_CCC_NOTIFY;
 		subscribe_params.ccc_handle = attr->handle;
 
@@ -138,7 +138,7 @@ static void split_central_process_connection(struct bt_conn *conn) {
 
 	if (conn == default_conn) {
 		discover_params.uuid = &uuid.uuid;
-		discover_params.func = discover_func;
+		discover_params.func = split_central_discovery_func;
 		discover_params.start_handle = 0x0001;
 		discover_params.end_handle = 0xffff;
 		discover_params.type = BT_GATT_DISCOVER_PRIMARY;
@@ -151,7 +151,7 @@ static void split_central_process_connection(struct bt_conn *conn) {
 	}
 }
 
-static bool eir_found(struct bt_data *data, void *user_data)
+static bool split_central_eir_found(struct bt_data *data, void *user_data)
 {
 	bt_addr_le_t *addr = user_data;
 	int i;
@@ -215,7 +215,7 @@ static bool eir_found(struct bt_data *data, void *user_data)
 	return true;
 }
 
-static void device_found(const bt_addr_le_t *addr, s8_t rssi, u8_t type,
+static void split_central_device_found(const bt_addr_le_t *addr, s8_t rssi, u8_t type,
 			 struct net_buf_simple *ad)
 {
 	char dev[BT_ADDR_LE_STR_LEN];
@@ -227,7 +227,7 @@ static void device_found(const bt_addr_le_t *addr, s8_t rssi, u8_t type,
 	/* We're only interested in connectable events */
 	if (type == BT_GAP_ADV_TYPE_ADV_IND ||
 	    type == BT_GAP_ADV_TYPE_ADV_DIRECT_IND) {
-		bt_data_parse(ad, eir_found, (void *)addr);
+		bt_data_parse(ad, split_central_eir_found, (void *)addr);
 	}
 }
 
@@ -235,7 +235,7 @@ static int start_scan(void)
 {
 	int err;
 
-	err = bt_le_scan_start(BT_LE_SCAN_PASSIVE, device_found);
+	err = bt_le_scan_start(BT_LE_SCAN_PASSIVE, split_central_device_found);
 	if (err) {
 		LOG_ERR("Scanning failed to start (err %d)", err);
 		return err;
@@ -248,7 +248,6 @@ static int start_scan(void)
 static void split_central_connected(struct bt_conn *conn, u8_t conn_err)
 {
 	char addr[BT_ADDR_LE_STR_LEN];
-	int err;
 
 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
@@ -262,9 +261,7 @@ static void split_central_connected(struct bt_conn *conn, u8_t conn_err)
 		return;
 	}
 
-	LOG_DBG("Connected: %s", log_strdup(addr));
-
-	
+	LOG_DBG("Connected: %s", log_strdup(addr));	
 
 	split_central_process_connection(conn);
 }
