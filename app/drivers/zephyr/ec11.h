@@ -22,11 +22,6 @@ struct ec11_config {
 	const u8_t resolution;
 };
 
-enum ec11_pin_state {
-	EC11_A_PIN_STATE,
-	EC11_B_PIN_STATE
-};
-
 struct ec11_data {
 	struct device *a;
 	struct device *b;
@@ -36,7 +31,6 @@ struct ec11_data {
 	s8_t delta;
 
 #ifdef CONFIG_EC11_TRIGGER
-	struct device *gpio;
 	struct gpio_callback a_gpio_cb;
 	struct gpio_callback b_gpio_cb;
 	struct device *dev;

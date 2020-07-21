@@ -141,14 +141,6 @@ int ec11_init_interrupt(struct device *dev)
 	drv_data->dev = dev;
 	/* setup gpio interrupt */
 
-	LOG_DBG("A: %s %d B: %s %d", drv_cfg->a_label, drv_cfg->a_pin, drv_cfg->b_label, drv_cfg->b_pin);
-	
-	if (gpio_pin_configure(drv_data->a, drv_cfg->a_pin,
-			   drv_cfg->a_flags
-			   | GPIO_INPUT)) {
-		LOG_DBG("Failed to configure B pin");
-		return -EIO;
-	}
 
 	gpio_init_callback(&drv_data->a_gpio_cb,
 			   ec11_a_gpio_callback,
@@ -156,13 +148,6 @@ int ec11_init_interrupt(struct device *dev)
 
 	if (gpio_add_callback(drv_data->a, &drv_data->a_gpio_cb) < 0) {
 		LOG_DBG("Failed to set A callback!");
-		return -EIO;
-	}
-
-	if (gpio_pin_configure(drv_data->b, drv_cfg->b_pin,
-			   drv_cfg->b_flags
-			   | GPIO_INPUT)) {
-		LOG_DBG("Failed to configure B pin");
 		return -EIO;
 	}
 
@@ -174,8 +159,6 @@ int ec11_init_interrupt(struct device *dev)
 		LOG_DBG("Failed to set B callback!");
 		return -EIO;
 	}
-
-	LOG_DBG("A Pin? %d, B Pin? %d", gpio_pin_get(drv_data->a, drv_cfg->a_pin), gpio_pin_get(drv_data->b, drv_cfg->b_pin));
 
 #if defined(CONFIG_EC11_TRIGGER_OWN_THREAD)
 	k_sem_init(&drv_data->gpio_sem, 0, UINT_MAX);

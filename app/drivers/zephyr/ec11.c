@@ -92,7 +92,7 @@ int ec11_init(struct device *dev)
 	struct ec11_data *drv_data = dev->driver_data;
 	const struct ec11_config *drv_cfg = dev->config_info;
 
-	LOG_DBG("resolution %d", drv_cfg->resolution);
+	LOG_DBG("A: %s %d B: %s %d resolution %d", drv_cfg->a_label, drv_cfg->a_pin, drv_cfg->b_label, drv_cfg->b_pin, drv_cfg->resolution);	
 
 	drv_data->a = device_get_binding(drv_cfg->a_label);
 	if (drv_data->a == NULL) {
@@ -105,6 +105,22 @@ int ec11_init(struct device *dev)
 		LOG_ERR("Failed to get pointer to B GPIO device");
 		return -EINVAL;
 	}
+
+	if (gpio_pin_configure(drv_data->a, drv_cfg->a_pin,
+			   drv_cfg->a_flags
+			   | GPIO_INPUT)) {
+		LOG_DBG("Failed to configure A pin");
+		return -EIO;
+	}
+
+	if (gpio_pin_configure(drv_data->b, drv_cfg->b_pin,
+			   drv_cfg->b_flags
+			   | GPIO_INPUT)) {
+		LOG_DBG("Failed to configure B pin");
+		return -EIO;
+	}
+
+
 
 #ifdef CONFIG_EC11_TRIGGER
 	if (ec11_init_interrupt(dev) < 0) {
