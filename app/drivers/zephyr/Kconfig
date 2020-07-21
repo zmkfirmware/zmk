@@ -17,50 +17,50 @@ config ZMK_KSCAN_INIT_PRIORITY
 	help
 	  Keyboard scan device driver initialization priority.
 
-menuconfig EN11
-	bool "EN11 Incremental Encoder Sensor"
+menuconfig EC11
+	bool "EC11 Incremental Encoder Sensor"
 	depends on GPIO
 	help
-	  Enable driver for EN11 incremental encoder sensors.
+	  Enable driver for EC11 incremental encoder sensors.
 
-if EN11
+if EC11
 
 choice
 	prompt "Trigger mode"
-	default EN11_TRIGGER_NONE
+	default EC11_TRIGGER_NONE
 	help
 	  Specify the type of triggering to be used by the driver.
 
-config EN11_TRIGGER_NONE
+config EC11_TRIGGER_NONE
 	bool "No trigger"
 
-config EN11_TRIGGER_GLOBAL_THREAD
+config EC11_TRIGGER_GLOBAL_THREAD
 	bool "Use global thread"
 	depends on GPIO
-	select EN11_TRIGGER
+	select EC11_TRIGGER
 
-config EN11_TRIGGER_OWN_THREAD
+config EC11_TRIGGER_OWN_THREAD
 	bool "Use own thread"
 	depends on GPIO
-	select EN11_TRIGGER
+	select EC11_TRIGGER
 
 endchoice
 
-config EN11_TRIGGER
+config EC11_TRIGGER
 	bool
 
-config EN11_THREAD_PRIORITY
+config EC11_THREAD_PRIORITY
 	int "Thread priority"
-	depends on EN11_TRIGGER_OWN_THREAD
+	depends on EC11_TRIGGER_OWN_THREAD
 	default 10
 	help
 	  Priority of thread used by the driver to handle interrupts.
 
-config EN11_THREAD_STACK_SIZE
+config EC11_THREAD_STACK_SIZE
 	int "Thread stack size"
-	depends on EN11_TRIGGER_OWN_THREAD
+	depends on EC11_TRIGGER_OWN_THREAD
 	default 1024
 	help
 	  Stack size of thread used by the driver to handle interrupts.
 
-endif # EN11
+endif # EC11

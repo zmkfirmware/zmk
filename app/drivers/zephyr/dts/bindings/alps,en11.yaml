@@ -1,7 +1,7 @@
 description: |
-  Sensor driver for the Alps en11 rotary encoder
+  Sensor driver for the Alps EC11 rotary encoder
 
-compatible: "alps,en11"
+compatible: "alps,ec11"
 
 properties:
   label:
@@ -15,3 +15,7 @@ properties:
     type: phandle-array
     required: true
     description: A pin for the encoder
+  resolution:
+    type: int
+    description: Number of pulses per tick
+    required: false

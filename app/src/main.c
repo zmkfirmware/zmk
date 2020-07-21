@@ -23,7 +23,22 @@ static struct sensor_trigger trigger;
 
 void encoder_change(struct device *dev, struct sensor_trigger *trigger)
 {
+	int err;
+	struct sensor_value value;
+
 	LOG_DBG("");
+
+	err = sensor_sample_fetch(dev);
+	if (err) {
+		LOG_ERR("Failed to fetch new EC11 sample");
+		return;
+	}
+
+	err = sensor_channel_get(dev, SENSOR_CHAN_ROTATION, &value);
+	if (err) {
+		LOG_DBG("Failed to get the sample for EC11 %d", err);
+		return;
+	}
 }
 
 void init_sensor()
