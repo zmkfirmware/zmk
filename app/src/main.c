@@ -39,6 +39,8 @@ void encoder_change(struct device *dev, struct sensor_trigger *trigger)
 		LOG_DBG("Failed to get the sample for EC11 %d", err);
 		return;
 	}
+
+	LOG_DBG("val1 %d val2 %d", value.val1, value.val2);
 }
 
 void init_sensor()

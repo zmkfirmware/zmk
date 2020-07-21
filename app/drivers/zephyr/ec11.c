@@ -18,6 +18,13 @@
 
 LOG_MODULE_REGISTER(EC11, CONFIG_SENSOR_LOG_LEVEL);
 
+static int ec11_get_ab_state(struct device *dev)
+{
+	struct ec11_data *drv_data = dev->driver_data;
+	const struct ec11_config *drv_cfg = dev->config_info;
+
+	return (gpio_pin_get(drv_data->a, drv_cfg->a_pin) << 1) | gpio_pin_get(drv_data->b, drv_cfg->b_pin);
+}
 
 static int ec11_sample_fetch(struct device *dev, enum sensor_channel chan)
 {
@@ -28,15 +35,15 @@ static int ec11_sample_fetch(struct device *dev, enum sensor_channel chan)
 
 	__ASSERT_NO_MSG(chan == SENSOR_CHAN_ALL || chan == SENSOR_CHAN_ROTATION);
 
-	val = (gpio_pin_get(drv_data->a, drv_cfg->a_pin) << 1) | gpio_pin_get(drv_data->b, drv_cfg->b_pin);
+	val = ec11_get_ab_state(dev);
 
 	LOG_DBG("prev: %d, new: %d", drv_data->ab_state, val);
 
 	switch(val | (drv_data->ab_state << 2)) {
-		case 0b0001: case 0b0111: case 0b1110: case 0b1000:
+		case 0b0010: case 0b0100: case 0b1101: case 0b1011:
 			delta = 1;
 			break;
-		case 0b0010: case 0b0100: case 0b1101: case 0b1011:
+		case 0b0001: case 0b0111: case 0b1110: case 0b1000:
 			delta = -1;
 			break;
 		default:
@@ -105,6 +112,8 @@ int ec11_init(struct device *dev)
 		return -EIO;
 	}
 #endif
+
+	drv_data->ab_state = ec11_get_ab_state(dev);
 
 	return 0;
 }
