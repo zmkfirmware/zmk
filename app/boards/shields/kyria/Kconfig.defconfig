@@ -1,7 +1,22 @@
 
-if SHIELD_KYRIA_LEFT || SHIELD_KYRIA_RIGHT
+if SHIELD_KYRIA_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "Kyria"
+	default "Kyria Left"
+
+endif
+
+
+if SHIELD_KYRIA_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Kyria Right"
+
+endif
+
+if SHIELD_KYRIA_LEFT || SHIELD_KYRIA_RIGHT
+
+config ZMK_SPLIT
+	default y
 
 endif

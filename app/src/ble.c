@@ -11,7 +11,13 @@
 #include <bluetooth/uuid.h>
 #include <bluetooth/gatt.h>
 
+
+#include <logging/log.h>
+
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
 #include <zmk/keys.h>
+#include <zmk/split/bluetooth/uuid.h>
 
 static struct bt_conn *auth_passkey_entry_conn;
 static u8_t passkey_entries[6] = {0, 0, 0, 0, 0, 0};
@@ -30,6 +36,8 @@ static void connected(struct bt_conn *conn, u8_t err)
     }
 
     printk("Connected %s\n", addr);
+
+    bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 5, 400));
 
     if (bt_conn_set_security(conn, BT_SECURITY_L2))
     {
@@ -121,13 +129,21 @@ static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
 
 static const struct bt_data zmk_ble_ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
-    BT_DATA_BYTES(BT_DATA_UUID16_ALL,
+    BT_DATA_BYTES(BT_DATA_UUID16_SOME,
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
                   0x12, 0x18,  /* HID Service */
-                  0x0f, 0x18), /* Battery Service */
+#endif
+                  0x0f, 0x18 /* Battery Service */
+    ),
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
+    BT_DATA_BYTES(BT_DATA_UUID128_ALL,
+                  ZMK_SPLIT_BT_SERVICE_UUID)
+#endif
 };
 
 static void zmk_ble_ready(int err)
 {
+    LOG_DBG("ready? %d", err);
     if (err)
     {
         printk("Bluetooth init failed (err %d)\n", err);
@@ -144,11 +160,7 @@ static void zmk_ble_ready(int err)
 
 static int zmk_ble_init(struct device *_arg)
 {
-    if (IS_ENABLED(CONFIG_SETTINGS))
-    {
-        settings_load();
-    }
-    int err = bt_enable(zmk_ble_ready);
+    int err = bt_enable(NULL);
 
     if (err)
     {
@@ -156,8 +168,15 @@ static int zmk_ble_init(struct device *_arg)
         return err;
     }
 
+    if (IS_ENABLED(CONFIG_BT_SETTINGS))
+    {
+        settings_load();
+    }
+
     bt_conn_cb_register(&conn_callbacks);
     bt_conn_auth_cb_register(&zmk_ble_auth_cb_display);
+
+    zmk_ble_ready(0);
 
     return 0;
 }

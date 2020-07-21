@@ -1,7 +1,14 @@
 
-if SHIELD_LILY58_LEFT || SHIELD_LILY58_RIGHT
+if SHIELD_LILY58_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "Lily58"
+	default "Lily58 Left"
+
+endif
+
+if SHIELD_LILY58_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Lily58 Right"
 
 endif
