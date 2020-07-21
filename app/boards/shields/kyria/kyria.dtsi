@@ -10,7 +10,6 @@
 	chosen {
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
-		zmk,sensors = <&left_encoder &right_encoder>;
 	};
 
 	default_transform: keymap_transform_0 {
