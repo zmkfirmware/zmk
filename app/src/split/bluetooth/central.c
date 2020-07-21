@@ -23,6 +23,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int start_scan(void);
 
+#define POSITION_STATE_DATA_LEN 16
+
 static struct bt_conn *default_conn;
 
 static struct bt_uuid_128 uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
@@ -33,9 +35,9 @@ static u8_t notify_func(struct bt_conn *conn,
 			   struct bt_gatt_subscribe_params *params,
 			   const void *data, u16_t length)
 {
-	static u8_t position_state[16];
+	static u8_t position_state[POSITION_STATE_DATA_LEN];
 
-	u8_t changed_positions[16];
+	u8_t changed_positions[POSITION_STATE_DATA_LEN];
 
 	if (!data) {
 		LOG_DBG("[UNSUBSCRIBED]");
@@ -45,12 +47,12 @@ static u8_t notify_func(struct bt_conn *conn,
 
 	LOG_DBG("[NOTIFICATION] data %p length %u", data, length);
 
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
 		changed_positions[i] = ((u8_t *)data)[i] ^ position_state[i];
 		position_state[i] = ((u8_t *)data)[i];
 	}
 
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (changed_positions[i] & BIT(j)) {
 				u32_t position = (i * 8) + j;
