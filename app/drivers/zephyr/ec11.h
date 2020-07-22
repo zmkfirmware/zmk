@@ -36,7 +36,7 @@ struct ec11_data {
 	struct device *dev;
 
 	sensor_trigger_handler_t handler;
-	struct sensor_trigger trigger;
+	const struct sensor_trigger *trigger;
 
 #if defined(CONFIG_EC11_TRIGGER_OWN_THREAD)
 	K_THREAD_STACK_MEMBER(thread_stack, CONFIG_EC11_THREAD_STACK_SIZE);

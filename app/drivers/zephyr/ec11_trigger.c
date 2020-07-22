@@ -83,7 +83,7 @@ static void ec11_thread_cb(void *arg)
 	struct device *dev = arg;
 	struct ec11_data *drv_data = dev->driver_data;
 
-	drv_data->handler(dev, &drv_data->trigger);
+	drv_data->handler(dev, drv_data->trigger);
 
 	setup_int(dev, true);
 }
@@ -125,7 +125,7 @@ int ec11_trigger_set(struct device *dev,
 
 	k_msleep(5);
 
-	drv_data->trigger = *trig;
+	drv_data->trigger = trig;
 	drv_data->handler = handler;
 
 	setup_int(dev, true);
