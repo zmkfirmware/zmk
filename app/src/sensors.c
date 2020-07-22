@@ -23,7 +23,7 @@ struct sensors_data_item {
 };
 
 #define _SENSOR_ITEM(node) {.dev = NULL, .trigger = { .type = SENSOR_TRIG_DELTA, .chan = SENSOR_CHAN_ROTATION } },
-#define SENSOR_ITEM(node, _) COND_CODE_1(DT_NODE_HAS_STATUS(node,okay), (_SENSOR_ITEM(node)),())
+#define SENSOR_ITEM(idx, _) COND_CODE_1(DT_NODE_HAS_STATUS(ZMK_KEYMAP_SENSORS_BY_IDX(idx),okay), (_SENSOR_ITEM(ZMK_KEYMAP_SENSORS_BY_IDX(idx))),())
 
 static struct sensors_data_item sensors[] = {
     UTIL_LISTIFY(ZMK_KEYMAP_SENSORS_LEN, SENSOR_ITEM, 0)
@@ -32,7 +32,6 @@ static struct sensors_data_item sensors[] = {
 static void zmk_sensors_trigger_handler(struct device *dev, struct sensor_trigger *trigger)
 {
     int err;
-    struct sensor_value val;
     struct sensors_data_item * item = CONTAINER_OF(trigger, struct sensors_data_item, trigger);
     struct sensor_event *event;
     
@@ -46,14 +45,7 @@ static void zmk_sensors_trigger_handler(struct device *dev, struct sensor_trigge
 
     event = new_sensor_event();
     event->sensor_number = item->sensor_number;
-
-    err = sensor_channel_get(dev, SENSOR_CHAN_ROTATION, &event->value);
-    if (err) {
-        k_free(event);
-        LOG_WRN("Failed to get the value for the rotation channel: %d", err);
-    }
-
-    LOG_DBG("val1 %d val2 %d", val.val1, val.val2);
+    event->sensor = dev;
 
     ZMK_EVENT_RAISE(event);
 }
@@ -73,7 +65,7 @@ static void zmk_sensors_init_item(const char *node, u8_t i, u8_t abs_i)
 }
 
 #define _SENSOR_INIT(node) zmk_sensors_init_item(DT_LABEL(node), local_index++, absolute_index++);
-#define SENSOR_INIT(node, _i) COND_CODE_1(DT_NODE_HAS_STATUS(node,okay), (_SENSOR_INIT(node)),(absolute_index++;))
+#define SENSOR_INIT(idx, _i) COND_CODE_1(DT_NODE_HAS_STATUS(ZMK_KEYMAP_SENSORS_BY_IDX(idx),okay), (_SENSOR_INIT(ZMK_KEYMAP_SENSORS_BY_IDX(idx))),(absolute_index++;))
 
 static int zmk_sensors_init(struct device *_arg)
 {

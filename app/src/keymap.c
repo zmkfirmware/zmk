@@ -137,7 +137,7 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 			struct device *behavior;
 			int ret;
 
-			LOG_DBG("layer: %d position: %d, binding name: %s", layer, position, binding->behavior_dev);
+			LOG_DBG("layer: %d position: %d, binding name: %s", layer, position, log_strdup(binding->behavior_dev));
 
 			behavior = device_get_binding(binding->behavior_dev);
 
@@ -167,17 +167,53 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 	return -ENOTSUP;
 }
 
+int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor)
+{
+	for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--)
+	{
+		if (((zmk_keymap_layer_state & BIT(layer)) == BIT(layer) || layer == zmk_keymap_layer_default) && zmk_sensor_keymap[layer] != NULL)
+		{
+			struct zmk_behavior_binding *binding = &zmk_sensor_keymap[layer][sensor_number];
+			struct device *behavior;
+			int ret;
+
+			LOG_DBG("layer: %d sensor_number: %d, binding name: %s", layer, sensor_number, log_strdup(binding->behavior_dev));
+
+			behavior = device_get_binding(binding->behavior_dev);
+
+			if (!behavior) {
+				LOG_DBG("No behavior assigned to %d on layer %d", sensor_number, layer);
+				continue;
+			}
+			
+			ret = behavior_sensor_keymap_binding_triggered(behavior, sensor, binding->param1, binding->param2);
+
+			if (ret > 0) {
+				LOG_DBG("behavior processing to continue to next layer");
+				continue;
+			} else if (ret < 0) {
+				LOG_DBG("Behavior returned error: %d", ret);
+				return ret; 
+			} else {
+				return ret;
+			}
+		}
+	}
+
+	return -ENOTSUP;
+}
+
 int keymap_listener(const struct zmk_event_header *eh)
 {
 	if (is_position_state_changed(eh)) {
 		const struct position_state_changed *ev = cast_position_state_changed(eh);
-		zmk_keymap_position_state_changed(ev->position, ev->state);
+		return zmk_keymap_position_state_changed(ev->position, ev->state);
 	} else if (is_sensor_event(eh)) {
 		const struct sensor_event *ev = cast_sensor_event(eh);
-		// TODO: DO SOMETHING WITH IT!
+		return zmk_keymap_sensor_triggered(ev->sensor_number, ev->sensor);
 	}
 
-	return 0;
+	return -ENOTSUP;
 }
 
 ZMK_LISTENER(keymap, keymap_listener);
