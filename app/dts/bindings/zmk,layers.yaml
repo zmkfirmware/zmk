@@ -13,3 +13,6 @@ child-binding:
     bindings:
       type: phandle-array
       required: true
+    sensor-bindings:
+      type: phandle-array
+      required: false

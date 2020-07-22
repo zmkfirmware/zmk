@@ -4,6 +4,7 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/matrix.h>
+#include <zmk/sensors.h>
 #include <zmk/keymap.h>
 #include <dt-bindings/zmk/matrix-transform.h>
 #include <drivers/behavior.h>
@@ -11,6 +12,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/event-manager.h>
 #include <zmk/events/position-state-changed.h>
+#include <zmk/events/sensor-event.h>
 
 static u32_t zmk_keymap_layer_state = 0;
 static u8_t zmk_keymap_layer_default = 0;
@@ -59,6 +61,51 @@ static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_
 #endif
 #if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 9)
 	TRANSFORMED_LAYER(9),
+#endif
+};
+
+
+#define _TRANSFORM_SENSOR_ENTRY(idx, layer) \
+	{ .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, layer), sensor_bindings, idx)), \
+	  .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(LAYER_NODE(layer), sensor_bindings, idx, param1), (0), (DT_PHA_BY_IDX(LAYER_NODE(layer), sensor_bindings, idx, param1))), \
+	  .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(LAYER_NODE(layer), sensor_bindings, idx, param2), (0), (DT_PHA_BY_IDX(LAYER_NODE(layer), sensor_bindings, idx, param2))), \
+	},
+
+#define SENSOR_LAYER(idx) \
+	COND_CODE_1(DT_NODE_HAS_PROP(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, idx), sensor_bindings), \
+		({ UTIL_LISTIFY(DT_PROP_LEN(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, idx), sensor_bindings), _TRANSFORM_SENSOR_ENTRY, idx) }), \
+		(NULL))
+
+static struct zmk_behavior_binding zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_SENSORS_LEN] = {
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 0)
+	SENSOR_LAYER(0),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 1)
+	SENSOR_LAYER(1),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 2)
+	SENSOR_LAYER(2),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 3)
+	SENSOR_LAYER(3),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 4)
+	SENSOR_LAYER(4),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 5)
+	SENSOR_LAYER(5),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 6)
+	SENSOR_LAYER(6),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 7)
+	SENSOR_LAYER(7),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 8)
+	SENSOR_LAYER(8),
+#endif
+#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 9)
+	SENSOR_LAYER(9),
 #endif
 };
 
@@ -125,10 +172,15 @@ int keymap_listener(const struct zmk_event_header *eh)
 	if (is_position_state_changed(eh)) {
 		const struct position_state_changed *ev = cast_position_state_changed(eh);
 		zmk_keymap_position_state_changed(ev->position, ev->state);
+	} else if (is_sensor_event(eh)) {
+		const struct sensor_event *ev = cast_sensor_event(eh);
+		// TODO: DO SOMETHING WITH IT!
 	}
+
 	return 0;
 }
 
 ZMK_LISTENER(keymap, keymap_listener);
 ZMK_SUBSCRIPTION(keymap, position_state_changed);
+ZMK_SUBSCRIPTION(keymap, sensor_event);
 

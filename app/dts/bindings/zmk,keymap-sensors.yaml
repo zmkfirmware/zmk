@@ -1,0 +1,9 @@
+description: |
+  Allows defining the collection of sensors bound in the keymap layers
+
+compatible: "zmk,keymap-sensors"
+
+properties:
+  sensors:
+    type: phandles
+    required: true
