@@ -2,14 +2,14 @@
 
 / {
 	behaviors {
-		enckp: behavior_sensor_rotate_key_press {
+		inc_dec_kp: behavior_sensor_rotate_key_press {
 			compatible = "zmk,behavior-sensor-rotate-key-press";
 			label = "ENC_KEY_PRESS";
 			usage_page = <USAGE_KEYPAD>;
 			#sensor-binding-cells = <2>;
 		};
 
-		enccp: behavior_sensor_rotate_consumer_press {
+		inc_dec_cp: behavior_sensor_rotate_consumer_press {
 			compatible = "zmk,behavior-sensor-rotate-key-press";
 			label = "ENC_CONSUMER_PRESS";
 			usage_page = <USAGE_CONSUMER>;
