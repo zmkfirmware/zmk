@@ -89,7 +89,7 @@ static inline int z_impl_behavior_keymap_binding_released(struct device *dev, u3
  */
 __syscall int behavior_sensor_keymap_binding_triggered(struct device *dev, struct device *sensor, u32_t param1, u32_t param2);
 
-static inline int behavior_sensor_keymap_binding_triggered(struct device *dev, struct device *sensor, u32_t param1, u32_t param2)
+static inline int z_impl_behavior_sensor_keymap_binding_triggered(struct device *dev, struct device *sensor, u32_t param1, u32_t param2)
 {
 	const struct behavior_driver_api *api =
 			(const struct behavior_driver_api *)dev->driver_api;

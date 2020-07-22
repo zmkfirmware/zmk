@@ -16,6 +16,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event-manager.h>
 #include <zmk/events/sensor-event.h>
 
+#if ZMK_KEYMAP_HAS_SENSORS
+
 struct sensors_data_item {
     u8_t sensor_number;
     struct device *dev;
@@ -79,3 +81,5 @@ static int zmk_sensors_init(struct device *_arg)
 SYS_INIT(zmk_sensors_init,
         APPLICATION,
         CONFIG_APPLICATION_INIT_PRIORITY);
+
+#endif /* ZMK_KEYMAP_HAS_SENSORS */

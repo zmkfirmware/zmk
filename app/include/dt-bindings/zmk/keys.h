@@ -42,8 +42,7 @@
 #define NUM_0 0x27
 #define RET 0x28
 #define ESC 0x29
-#define DEL 0x2A
-#define BKSP DEL
+#define BKSP 0x2A
 #define TAB 0x2B
 #define SPC 0x2C
 #define MINUS 0x2D
@@ -62,6 +61,11 @@
 #define F1 0x3A
 #define F2 0x3B
 
+#define HOME 0x4A
+#define PGUP 0x4B
+#define DEL  0x4C
+#define END  0x4D
+#define PGDN 0x4E
 #define RARW 0x4F
 #define LARW 0x50
 #define DARW 0x51

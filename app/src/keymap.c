@@ -64,7 +64,7 @@ static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_
 #endif
 };
 
-
+#if ZMK_KEYMAP_HAS_SENSORS
 #define _TRANSFORM_SENSOR_ENTRY(idx, layer) \
 	{ .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, layer), sensor_bindings, idx)), \
 	  .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(LAYER_NODE(layer), sensor_bindings, idx, param1), (0), (DT_PHA_BY_IDX(LAYER_NODE(layer), sensor_bindings, idx, param1))), \
@@ -108,6 +108,8 @@ static struct zmk_behavior_binding zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_
 	SENSOR_LAYER(9),
 #endif
 };
+
+#endif /* ZMK_KEYMAP_HAS_SENSORS */
 
 #define SET_LAYER_STATE(layer, state)                \
 	if (layer >= 32)                                 \
@@ -167,6 +169,7 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 	return -ENOTSUP;
 }
 
+#if ZMK_KEYMAP_HAS_SENSORS
 int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor)
 {
 	for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--)
@@ -203,14 +206,18 @@ int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor)
 	return -ENOTSUP;
 }
 
+#endif /* ZMK_KEYMAP_HAS_SENSORS */
+
 int keymap_listener(const struct zmk_event_header *eh)
 {
 	if (is_position_state_changed(eh)) {
 		const struct position_state_changed *ev = cast_position_state_changed(eh);
 		return zmk_keymap_position_state_changed(ev->position, ev->state);
+#if ZMK_KEYMAP_HAS_SENSORS
 	} else if (is_sensor_event(eh)) {
 		const struct sensor_event *ev = cast_sensor_event(eh);
 		return zmk_keymap_sensor_triggered(ev->sensor_number, ev->sensor);
+#endif /* ZMK_KEYMAP_HAS_SENSORS */
 	}
 
 	return -ENOTSUP;
@@ -218,5 +225,8 @@ int keymap_listener(const struct zmk_event_header *eh)
 
 ZMK_LISTENER(keymap, keymap_listener);
 ZMK_SUBSCRIPTION(keymap, position_state_changed);
+
+#if ZMK_KEYMAP_HAS_SENSORS
 ZMK_SUBSCRIPTION(keymap, sensor_event);
+#endif /* ZMK_KEYMAP_HAS_SENSORS */
 
