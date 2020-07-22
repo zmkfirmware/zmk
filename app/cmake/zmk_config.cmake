@@ -43,6 +43,15 @@ endif()
 # Store the selected user_config in the cache
 set(CACHED_ZMK_CONFIG ${ZMK_CONFIG} CACHE STRING "Selected user ZMK config")
 
+if (ZMK_CONFIG)
+	if(EXISTS "${ZMK_CONFIG}/boards")
+		list(APPEND BOARD_ROOT "${ZMK_CONFIG}")
+	endif()
+	if(EXISTS "${ZMK_CONFIG}/dts")
+		list(APPEND DTS_ROOT "${ZMK_CONFIG}")
+	endif()
+endif()
+
 foreach(root ${BOARD_ROOT})
 	if (EXISTS "${root}/boards/${BOARD}.overlay")
 		list(APPEND ZMK_DTC_FILES "${root}/boards/${BOARD}.overlay")
