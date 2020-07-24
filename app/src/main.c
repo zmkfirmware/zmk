@@ -20,7 +20,7 @@ LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 void main(void)
 {
-	printk("Welcome to ZMK!\n");
+	LOG_INF("Welcome to ZMK!\n");
 
 	if (zmk_kscan_init(ZMK_KSCAN_DEV) != 0)
 	{
