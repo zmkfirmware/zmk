@@ -52,6 +52,8 @@ target_sources_ifdef(CONFIG_ZMK_KSCAN_MOCK_DRIVER app PRIVATE src/kscan_mock.c)
 target_sources_ifdef(CONFIG_ZMK_KSCAN_COMPOSITE_DRIVER app PRIVATE src/kscan_composite.c)
 target_sources_ifdef(CONFIG_ZMK_USB app PRIVATE src/usb_hid.c)
 target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/hog.c)
+target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/rgb_underglow.c)
+target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/behaviors/behavior_rgb_underglow.c)
 target_sources(app PRIVATE src/endpoints.c)
 target_sources(app PRIVATE src/main.c)
 
