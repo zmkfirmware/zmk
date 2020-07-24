@@ -19,4 +19,48 @@ if SHIELD_KYRIA_LEFT || SHIELD_KYRIA_RIGHT
 config ZMK_SPLIT
 	default y
 
+config EC11
+	default y
+
+if EC11
+
+choice EC11_TRIGGER
+	default EC11_TRIGGER_GLOBAL_THREAD
+endchoice
+
+endif
+
+if ZMK_DISPLAY
+
+config I2C
+	default y
+
+config SSD1306
+	default y
+
+endif # ZMK_DISPLAY
+
+if LVGL
+
+config LVGL_HOR_RES
+	default 128
+
+config LVGL_VER_RES
+	default 64
+
+config LVGL_VDB_SIZE
+	default 64
+
+config LVGL_DPI
+	default 148
+
+config LVGL_BITS_PER_PIXEL
+	default 1
+
+choice LVGL_COLOR_DEPTH
+	default LVGL_COLOR_DEPTH_1
+endchoice
+
+endif # LVGL
+
 endif

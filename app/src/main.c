@@ -14,7 +14,7 @@ LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/matrix.h>
 #include <zmk/kscan.h>
-#include <zmk/endpoints.h>
+#include <zmk/display.h>
 
 #define ZMK_KSCAN_DEV DT_LABEL(ZMK_MATRIX_NODE_ID)
 
@@ -26,4 +26,12 @@ void main(void)
 	{
 		return;
 	}
+
+#ifdef CONFIG_ZMK_DISPLAY
+	zmk_display_init();
+
+	while (1) {
+		zmk_display_task_handler();
+	}
+#endif /* CONFIG_ZMK_DISPLAY */
 }
