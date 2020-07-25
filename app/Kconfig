@@ -141,6 +141,12 @@ endmenu
 config HEAP_MEM_POOL_SIZE
 	default 1024
 
+config KERNEL_BIN_NAME
+	default "zmk"
+
+config REBOOT
+	default y
+
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
