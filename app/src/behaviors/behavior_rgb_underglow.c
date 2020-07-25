@@ -35,7 +35,7 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t a
     case RGB_SAD:
       return zmk_rgb_underglow_change_sat(-1);
     case RGB_BRI:
-      zmk_rgb_underglow_change_brt(1);
+      return zmk_rgb_underglow_change_brt(1);
     case RGB_BRD:
       return zmk_rgb_underglow_change_brt(-1);
     case RGB_SPI:
