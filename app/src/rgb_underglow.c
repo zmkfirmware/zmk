@@ -15,12 +15,11 @@
 
 #include <drivers/led_strip.h>
 #include <device.h>
-#include <drivers/spi.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#define STRIP_LABEL		    DT_LABEL(DT_ALIAS(led_strip))
-#define STRIP_NUM_PIXELS	DT_PROP(DT_ALIAS(led_strip), chain_length)
+#define STRIP_LABEL		    DT_LABEL(DT_CHOSEN(zmk_underglow))
+#define STRIP_NUM_PIXELS	DT_PROP(DT_CHOSEN(zmk_underglow), chain_length)
 
 enum rgb_underglow_effect {
     UNDERGLOW_EFFECT_SOLID,
@@ -184,7 +183,7 @@ static int zmk_rgb_underglow_init(struct device *_arg)
 		LOG_INF("Found LED strip device %s", STRIP_LABEL);
 	} else {
 		LOG_ERR("LED strip device %s not found", STRIP_LABEL);
-		return 1;
+		return -EINVAL;
 	}
 
     state = (struct rgb_underglow_state){
@@ -202,22 +201,25 @@ static int zmk_rgb_underglow_init(struct device *_arg)
     return 0;
 }
 
-void zmk_rgb_underglow_cycle_effect(int direction)
+int zmk_rgb_underglow_cycle_effect(int direction)
 {
     if (state.current_effect == 0 && direction < 0) {
         state.current_effect = UNDERGLOW_EFFECT_NUMBER - 1;
-    } else {
-        state.current_effect += direction;
+        return 0;
+    }
 
-        if (state.current_effect >= UNDERGLOW_EFFECT_NUMBER) {
-            state.current_effect = 0;
-        }
+    state.current_effect += direction;
+
+    if (state.current_effect >= UNDERGLOW_EFFECT_NUMBER) {
+        state.current_effect = 0;
     }
     
     state.animation_step = 0;
+
+    return 0;
 }
 
-void zmk_rgb_underglow_toggle()
+int zmk_rgb_underglow_toggle()
 {
     state.on = !state.on;
 
@@ -235,13 +237,15 @@ void zmk_rgb_underglow_toggle()
 
         k_timer_stop(&underglow_tick);
     }
+
+    return 0;
 }
 
-void zmk_rgb_underglow_change_hue(int direction)
+int zmk_rgb_underglow_change_hue(int direction)
 {
     if (state.hue == 0 && direction < 0) {
         state.hue = 350;
-        return;
+        return 0;
     }
     
     state.hue += direction * CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP;
@@ -249,12 +253,14 @@ void zmk_rgb_underglow_change_hue(int direction)
     if (state.hue > 350) {
         state.hue = 0;
     }
+
+    return 0;
 }
 
-void zmk_rgb_underglow_change_sat(int direction)
+int zmk_rgb_underglow_change_sat(int direction)
 {
     if (state.saturation == 0 && direction < 0) {
-        return;
+        return 0;
     }
 
     state.saturation += direction * CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP;
@@ -262,12 +268,14 @@ void zmk_rgb_underglow_change_sat(int direction)
     if (state.saturation > 100) {
         state.saturation = 100;
     }
+
+    return 0;
 }
 
-void zmk_rgb_underglow_change_brt(int direction)
+int zmk_rgb_underglow_change_brt(int direction)
 {
     if (state.brightness == 0 && direction < 0) {
-        return;
+        return 0;
     }
 
     state.brightness += direction * CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP;
@@ -275,12 +283,14 @@ void zmk_rgb_underglow_change_brt(int direction)
     if (state.brightness > 100) {
         state.brightness = 100;
     }
+
+    return 0;
 }
 
-void zmk_rgb_underglow_change_spd(int direction)
+int zmk_rgb_underglow_change_spd(int direction)
 {
     if (state.animation_speed == 1 && direction < 0) {
-        return;
+        return 0;
     }
 
     state.animation_speed += direction;
@@ -288,6 +298,8 @@ void zmk_rgb_underglow_change_spd(int direction)
     if (state.animation_speed > 5) {
         state.animation_speed = 5;
     }
+
+    return 0;
 }
 
 SYS_INIT(zmk_rgb_underglow_init,
