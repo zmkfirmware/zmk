@@ -18,18 +18,7 @@ if SHIELD_KYRIA_LEFT || SHIELD_KYRIA_RIGHT
 
 config ZMK_SPLIT
 	default y
-
-config EC11
-	default y
-
-if EC11
-
-choice EC11_TRIGGER
-	default EC11_TRIGGER_GLOBAL_THREAD
-endchoice
-
-endif
-
+ 
 if ZMK_DISPLAY
 
 config I2C

@@ -60,7 +60,8 @@ static void zmk_sensors_init_item(const char *node, u8_t i, u8_t abs_i)
     sensors[i].sensor_number = abs_i;
 
     if (!sensors[i].dev) {
-        LOG_ERR("Failed to find device for %s", node);
+        LOG_WRN("Failed to find device for %s", node);
+        return;
     }
 
     sensor_trigger_set(sensors[i].dev, &sensors[i].trigger, zmk_sensors_trigger_handler);
