@@ -12,3 +12,40 @@ config ZMK_KEYBOARD_NAME
 	default "Lily58 Right"
 
 endif
+
+if SHIELD_LILY58_LEFT || SHIELD_LILY58_RIGHT
+
+if ZMK_DISPLAY
+
+config I2C
+	default y
+
+config SSD1306
+	default y
+
+endif # ZMK_DISPLAY
+
+if LVGL
+
+config LVGL_HOR_RES
+	default 128
+
+config LVGL_VER_RES
+	default 32
+
+config LVGL_VDB_SIZE
+	default 64
+
+config LVGL_DPI
+	default 148
+
+config LVGL_BITS_PER_PIXEL
+	default 1
+
+choice LVGL_COLOR_DEPTH
+	default LVGL_COLOR_DEPTH_1
+endchoice
+
+endif # LVGL
+
+endif
