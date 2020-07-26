@@ -3,7 +3,6 @@
 #include <zmk/hid.h>
 #include <zmk/usb_hid.h>
 #include <zmk/hog.h>
-#
 
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
