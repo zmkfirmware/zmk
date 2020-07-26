@@ -203,6 +203,8 @@ static int zmk_rgb_underglow_init(struct device *_arg)
 
 int zmk_rgb_underglow_cycle_effect(int direction)
 {
+    if (!led_strip) return -ENODEV;
+
     if (state.current_effect == 0 && direction < 0) {
         state.current_effect = UNDERGLOW_EFFECT_NUMBER - 1;
         return 0;
@@ -221,6 +223,8 @@ int zmk_rgb_underglow_cycle_effect(int direction)
 
 int zmk_rgb_underglow_toggle()
 {
+    if (!led_strip) return -ENODEV;
+
     state.on = !state.on;
 
     if (state.on) {
@@ -243,6 +247,8 @@ int zmk_rgb_underglow_toggle()
 
 int zmk_rgb_underglow_change_hue(int direction)
 {
+    if (!led_strip) return -ENODEV;
+
     if (state.hue == 0 && direction < 0) {
         state.hue = 350;
         return 0;
@@ -259,6 +265,8 @@ int zmk_rgb_underglow_change_hue(int direction)
 
 int zmk_rgb_underglow_change_sat(int direction)
 {
+    if (!led_strip) return -ENODEV;
+
     if (state.saturation == 0 && direction < 0) {
         return 0;
     }
@@ -274,6 +282,8 @@ int zmk_rgb_underglow_change_sat(int direction)
 
 int zmk_rgb_underglow_change_brt(int direction)
 {
+    if (!led_strip) return -ENODEV;
+
     if (state.brightness == 0 && direction < 0) {
         return 0;
     }
@@ -289,6 +299,8 @@ int zmk_rgb_underglow_change_brt(int direction)
 
 int zmk_rgb_underglow_change_spd(int direction)
 {
+    if (!led_strip) return -ENODEV;
+
     if (state.animation_speed == 1 && direction < 0) {
         return 0;
     }
