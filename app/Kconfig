@@ -67,6 +67,14 @@ endif
 
 endmenu
 
+config ZMK_DISPLAY
+	bool "ZMK display support"
+	default n
+	select DISPLAY
+	select LVGL
+	select LVGL_THEMES
+	select LVGL_THEME_MONO
+	select LVGL_OBJ_LABEL
 
 menu "Split Support"
 
@@ -139,7 +147,7 @@ config ZMK_ACTION_MOD_TAP
 endmenu
 
 config HEAP_MEM_POOL_SIZE
-	default 1024
+	default 8192
 
 config KERNEL_BIN_NAME
 	default "zmk"
