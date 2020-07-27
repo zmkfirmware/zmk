@@ -70,8 +70,11 @@
 #define F10 0x43
 #define F11 0x44
 #define F12 0x45
-#define PRSC 0x46
 
+#define PRSC 0x46
+#define SCLK 0x47
+#define PAUS 0x48
+#define INS 0x49
 #define HOME 0x4A
 #define PGUP 0x4B
 #define DEL  0x4C
