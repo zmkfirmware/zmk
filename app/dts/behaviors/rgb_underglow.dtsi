@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		rgb_ug: behavior_rgb_underglow {
+			compatible = "zmk,behavior-rgb-underglow";
+			label = "RGB_UNDERGLOW";
+			#binding-cells = <1>;
+		};
+	};
+};
