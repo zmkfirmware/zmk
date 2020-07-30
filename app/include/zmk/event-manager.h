@@ -17,7 +17,11 @@ struct zmk_event_type
 
 struct zmk_event_header {
     const struct zmk_event_type* event;
+    u8_t last_listener_index;
 };
+
+#define ZMK_EV_EVENT_HANDLED 1
+#define ZMK_EV_EVENT_CAPTURED 2
 
 typedef int (*zmk_listener_callback_t)(const struct zmk_event_header *eh);
 struct zmk_listener
@@ -33,7 +37,7 @@ struct zmk_event_subscription {
 #define ZMK_EVENT_DECLARE(event_type) \
     struct event_type* new_##event_type(); \
     bool is_##event_type(const struct zmk_event_header *eh); \
-    const struct event_type* cast_##event_type(const struct zmk_event_header *eh); \
+    struct event_type* cast_##event_type(const struct zmk_event_header *eh); \
     extern const struct zmk_event_type zmk_event_##event_type;
 
 #define ZMK_EVENT_IMPL(event_type) \
@@ -49,8 +53,8 @@ struct zmk_event_subscription {
     bool is_##event_type(const struct zmk_event_header *eh) { \
         return eh->event == &zmk_event_##event_type; \
     }; \
-    const struct event_type* cast_##event_type(const struct zmk_event_header *eh) {\
-        return (const struct event_type*)eh; \
+    struct event_type* cast_##event_type(const struct zmk_event_header *eh) {\
+        return (struct event_type*)eh; \
     };
     
 
@@ -68,4 +72,8 @@ struct zmk_event_subscription {
 #define ZMK_EVENT_RAISE(ev) \
     zmk_event_manager_raise((struct zmk_event_header *)ev);
 
+#define ZMK_EVENT_RELEASE(ev) \
+    zmk_event_manager_release((struct zmk_event_header *)ev);
+
 int zmk_event_manager_raise(struct zmk_event_header *event);
+int zmk_event_manager_release(struct zmk_event_header *event);
