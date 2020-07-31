@@ -40,8 +40,8 @@ menuconfig ZMK_BLE
 	select BT_PERIPHERAL
 	select BT_GATT_DIS
 	select BT_GATT_BAS
-	select SETTINGS
-	select BT_SETTINGS
+	# select SETTINGS
+	# select BT_SETTINGS
 
 if ZMK_BLE
 
