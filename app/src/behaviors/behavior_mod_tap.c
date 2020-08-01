@@ -22,17 +22,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define ZMK_BHV_MOD_TAP_MAX_HELD 4
 #define ZMK_BHV_MOD_TAP_MAX_PENDING_KC 4
 
-#define TOGGLE_FIRST(arr, len, match, val) \
-    for (int idx = 0; idx < len; idx++)    \
-    {                                      \
-        if (arr[idx] != match)             \
-        {                                  \
-            continue;                      \
-        }                                  \
-        arr[idx] = val;                    \
-        break;                             \
-    }
-
 struct active_mod_tap_item {
   u32_t keycode;
   u8_t mods;
@@ -128,10 +117,8 @@ int behavior_mod_tap_listener(const struct zmk_event_header *eh)
       behavior_mod_tap_capture_keycode_event(data, ev);
       return ZMK_EV_EVENT_CAPTURED;
     } else if ((pending_keycode = find_pending_keycode(data, ev->keycode)) != NULL) {
-      LOG_DBG("Key released, going to activate mods then send pending key presses");
-
-
-      LOG_DBG("Setting mods: %d", pending_keycode->active_mods);
+      LOG_DBG("Key released, going to activate mods 0x%02X then send pending key press for keycode 0x%02X",
+              pending_keycode->active_mods, pending_keycode->event->keycode);
 
       zmk_hid_register_mods(pending_keycode->active_mods);
       behavior_mod_tap_update_active_mods_state(data, pending_keycode->active_mods);
