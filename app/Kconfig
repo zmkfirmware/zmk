@@ -88,6 +88,7 @@ config ZMK_SPLIT_BLE
 	bool "Split keyboard support via BLE transport"
 	depends on ZMK_BLE
 	default y
+	select BT_USER_PHY_UPDATE
 
 if ZMK_SPLIT_BLE
 

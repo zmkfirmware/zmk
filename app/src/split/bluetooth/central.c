@@ -67,6 +67,13 @@ static u8_t split_central_notify_func(struct bt_conn *conn,
 		}
 	}
 
+	bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x0006, 30, 400));
+
+	struct bt_conn_info info;
+
+	bt_conn_get_info(conn, &info);
+
+	LOG_DBG("Interval: %d, Latency: %d, PHY: %d", info.le.interval, info.le.latency, info.le.phy->rx_phy);
 
 	return BT_GATT_ITER_CONTINUE;
 }
@@ -149,6 +156,12 @@ static void split_central_process_connection(struct bt_conn *conn) {
 			return;
 		}
 	}
+
+	struct bt_conn_info info;
+
+	bt_conn_get_info(conn, &info);
+
+	LOG_DBG("New connection params: Interval: %d, Latency: %d, PHY: %d", info.le.interval, info.le.latency, info.le.phy->rx_phy);
 }
 
 static bool split_central_eir_found(struct bt_data *data, void *user_data)
@@ -199,11 +212,17 @@ static bool split_central_eir_found(struct bt_data *data, void *user_data)
 				LOG_DBG("Found existing connection");
 				split_central_process_connection(default_conn);
 			} else {
-				param = BT_LE_CONN_PARAM(0x0006, 0x000c, 5, 400);
+				param = BT_LE_CONN_PARAM(0x0006, 0x0006, 30, 400);
 				err = bt_conn_le_create(addr, BT_CONN_LE_CREATE_CONN,
 							param, &default_conn);
 				if (err) {
 					LOG_ERR("Create conn failed (err %d)", err);
+					start_scan();
+				}
+
+				err = bt_conn_le_phy_update(default_conn, BT_CONN_LE_PHY_PARAM_2M);
+				if (err) {
+					LOG_ERR("Update phy conn failed (err %d)", err);
 					start_scan();
 				}
 			}
