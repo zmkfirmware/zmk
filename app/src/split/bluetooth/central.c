@@ -67,13 +67,6 @@ static u8_t split_central_notify_func(struct bt_conn *conn,
 		}
 	}
 
-	bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x0006, 30, 400));
-
-	struct bt_conn_info info;
-
-	bt_conn_get_info(conn, &info);
-
-	LOG_DBG("Interval: %d, Latency: %d, PHY: %d", info.le.interval, info.le.latency, info.le.phy->rx_phy);
 
 	return BT_GATT_ITER_CONTINUE;
 }
