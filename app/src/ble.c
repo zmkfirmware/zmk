@@ -40,7 +40,7 @@ static void connected(struct bt_conn *conn, u8_t err)
     bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
-    bt_conn_le_phy_update(default_conn, BT_CONN_LE_PHY_PARAM_2M);
+    bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
 #endif
 
     if (bt_conn_set_security(conn, BT_SECURITY_L2))
