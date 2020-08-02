@@ -22,7 +22,7 @@ int zmk_event_manager_handle_from(struct zmk_event_header *event, u8_t start_ind
 {
     int ret = 0;
     u8_t len = __event_subscriptions_end - __event_subscriptions_start;
-    for (int i = start_index + 1; i < len; i++) {
+    for (int i = start_index; i < len; i++) {
         struct zmk_event_subscription *ev_sub = __event_subscriptions_start + i;
         if (ev_sub->event_type == event->event) {
             ret = ev_sub->listener->callback(event);
