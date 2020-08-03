@@ -88,26 +88,12 @@ static bool le_param_req(struct bt_conn *conn, struct bt_le_conn_param *param) {
     return true;
 }
 
-static void le_param_updated(struct bt_conn *conn, u16_t interval,
-				 u16_t latency, u16_t timeout) {
-    static struct bt_conn_info info;
-
-    bt_conn_get_info(conn, &info);
-
-    if (info.role == BT_CONN_ROLE_MASTER && (interval != 6 || latency != 30)) {
-        bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x0006, 30, 400));
-    }
-
-    LOG_DBG("Params updated: Interval: %d, Latency: %d", interval, latency);
-};
-
 static struct bt_conn_cb conn_callbacks = {
     .connected = connected,
     .disconnected = disconnected,
     .security_changed = security_changed,
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
     .le_param_req = le_param_req,
-    .le_param_updated = le_param_updated,
 #endif
 };
 
