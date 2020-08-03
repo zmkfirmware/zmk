@@ -50,7 +50,7 @@
 #define LBKT 0x2F
 #define RBKT 0x30
 #define BSLH 0x31
-
+#define TILD 0x32
 #define SCLN 0x33
 #define QUOT 0x34
 #define GRAV 0x35
