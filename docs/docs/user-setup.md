@@ -7,7 +7,7 @@ sidebar_label: Installing ZMK
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Unless other keyboard firmwares, ZMK Firmware has been built from the ground up to allow users to manage
+Unlike other keyboard firmwares, ZMK Firmware has been built from the ground up to allow users to manage
 their own keyboard configurations, including keymaps, specific hardware details, etc. all outside of the
 core ZMK Firmware source repository.
 
