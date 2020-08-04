@@ -39,6 +39,8 @@ prompt="Pick an keyboard:"
 options=("Kyria" "Lily58")
 
 PS3="$prompt "
+# TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
+# select opt in "${options[@]}" "Other" "Quit"; do 
 select opt in "${options[@]}" "Other" "Quit"; do 
 
     case "$REPLY" in
@@ -47,8 +49,8 @@ select opt in "${options[@]}" "Other" "Quit"; do
     2 ) shield_title="Lily58" shield="lily58"; split="y"; break;;
 
     # Add link to docs on adding your own custom shield in your ZMK config!
-    $(( ${#options[@]}+1 )) ) echo "Other!"; break;; 
-    $(( ${#options[@]}+2 )) ) echo "Goodbye!"; exit;;
+    # $(( ${#options[@]}+1 )) ) echo "Other!"; break;; 
+    $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit;;
     *) echo "Invalid option. Try another one.";continue;;
 
     esac
@@ -101,4 +103,9 @@ git commit -m "Initial User Config."
 if [ -n "$github_repo" ]; then
 	git remote add origin "$github_repo"
 	git push --set-upstream origin $(git branch --show-current)
+
+    # TODO: Support determing the actions URL when non-https:// repo URL is used.
+    if [ "${github_repo}" != "${github_repo#https://}" ]; then
+        echo "Your firmware should be available from the GitHub Actions shortly: ${github_url%.git}/actions"
+    fi
 fi
