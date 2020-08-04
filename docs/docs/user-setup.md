@@ -11,8 +11,8 @@ Unless other keyboard firmwares, ZMK Firmware has been built from the ground up 
 their own keyboard configurations, including keymaps, specific hardware details, etc. all outside of the
 core ZMK Firmware source repository.
 
-In addition to this, a focus has been made on avoiding requiring end users who don't intend to develop
-new ZMK features from having to install a plethora of complicated dependencies just to use ZMK.
+In addition to this, most users do not need to install any complicated toolchains or tools to build ZMK,
+instead using GitHub Actions to automatically build the user's configured firmware for them.
 
 ## Summary
 
