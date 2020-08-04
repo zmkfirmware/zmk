@@ -6,8 +6,34 @@ sidebar_label: Supported Hardware
 
 :::warning
 
-ZMK Firmware is still _completely_ untested on real KB hardware. It is pre-pre-pre-alpha quality.
+ZMK Firmware is still an early stage project. Many features are still waiting to be implemented, and only a select few keyboards
+have had their hardware details codified in boards/shields for ZMK.
 
 :::
 
-Current development of ZMK is focused on ARM, in particular stm32, MCUs, including the stm32wb for BLE support.
+Being built on a solid technical foundation of the Zephyr™ RTOS, it's possible to make ZMK support a wide diversity of hardware targets.
+That being said, there are currently only a few specific [boards](/docs/faq#what-is-a-board)/[shields](/docs/faq#what-is-a-shield) that have been written and tested by the ZMK contributors.
+
+## Boards
+
+- [nice!nano](https://docs.nicekeyboards.com/#/nice!nano/) (`nice_nano`)
+- [QMK Proton-C](https://qmk.fm/proton-c/) (`proton_c`)
+
+## Keyboard Shields
+
+- [Kyria](https://splitkb.com/products/kyria-pcb-kit) (`kyria_left` and `kyria_right`)
+- [Lily58](https://github.com/kata0510/Lily58) (`lily58_left` and `lily58_right`)
+
+## Other Hardware
+
+In addition to the basic keyboard functionality, there is some initial support for additional keyboard hardware:
+
+- Encoders
+- OLEDs
+- RGB Underglow
+
+Until detailed documentation is available, feel free to ask questions about how these are supported in the [Discord server](/community/discord/invite).
+
+## Contributing
+
+If you'd like to add support for a new keyboard shield, head over to the [New Keyboard Shield](/docs/dev-guide-new-shield) documentation.
