@@ -54,7 +54,9 @@ module.exports = {
             //   },
             {
               label: "Discord",
-              href: "https://zmkfirmware.dev/community/discord/invite",
+              href:
+                (process.env.DEPLOY_URL || "https://zmkfirmware.dev") +
+                "/community/discord/invite",
             },
             {
               label: "Twitter",
