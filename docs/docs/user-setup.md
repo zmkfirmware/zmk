@@ -61,20 +61,20 @@ values={[
 {label: 'Using curl', value: 'curl'},
 {label: 'Using wget', value: 'wget'},
 ]}>
-<Tab value="curl">
+<TabItem value="curl">
 
 ```
 sh -c "$(curl -fsSL https://zmkfirmware.dev/setup.sh)"
 ```
 
-</Tab>
-<Tab value="wget">
+</TabItem>
+<TabItem value="wget">
 
 ```
 sh -c "$(wget https://zmkfirmware.dev/setup.sh -O -)"
 ```
 
-</Tab>
+</TabItem>
 </Tabs>
 
 ### MCU Board Selection
