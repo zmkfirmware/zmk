@@ -1,6 +1,8 @@
 module.exports = {
   someSidebar: {
     "Getting Started": ["intro", "hardware", "user-setup", "faq"],
+    Features: ["keymaps", "displays", "encoders", "underglow"],
+    Behaviors: ["behavior/key-press"],
     Development: [
       "dev-clean-room",
       "dev-setup",
