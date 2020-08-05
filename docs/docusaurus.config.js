@@ -14,7 +14,7 @@ module.exports = {
         alt: "ZMK Logo",
         src: "img/zmk_logo.svg",
       },
-      links: [
+      items: [
         {
           to: "docs/",
           activeBasePath: "docs",
@@ -54,7 +54,7 @@ module.exports = {
             //   },
             {
               label: "Discord",
-              href: "/community/discord/invite",
+              href: "https://zmkfirmware.dev/community/discord/invite",
             },
             {
               label: "Twitter",
