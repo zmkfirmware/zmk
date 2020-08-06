@@ -64,6 +64,7 @@ static int kscan_gpio_config_interrupts(struct device **devices,
     struct kscan_gpio_irq_callback_##n {                                                           \
         struct COND_CODE_0(DT_INST_PROP(n, debounce_period), (k_work), (k_delayed_work)) * work;   \
         struct gpio_callback callback;                                                             \
+        struct device *dev;                                                                        \
     };                                                                                             \
     static struct kscan_gpio_irq_callback_##n irq_callbacks_##n[INST_INPUT_LEN(n)];                \
     struct kscan_gpio_config_##n {                                                                 \
@@ -105,7 +106,7 @@ static int kscan_gpio_config_interrupts(struct device **devices,
                     static int kscan_gpio_enable_interrupts_##n(struct device *dev) {              \
                         return kscan_gpio_config_interrupts(                                       \
                             kscan_gpio_input_devices_##n(dev), kscan_gpio_input_configs_##n(dev),  \
-                            INST_INPUT_LEN(n), GPIO_INT_DEBOUNCE | GPIO_INT_EDGE_BOTH);            \
+                            INST_INPUT_LEN(n), GPIO_INT_LEVEL_ACTIVE);                             \
                     } static int kscan_gpio_disable_interrupts_##n(struct device *dev) {           \
                         return kscan_gpio_config_interrupts(kscan_gpio_input_devices_##n(dev),     \
                                                             kscan_gpio_input_configs_##n(dev),     \
@@ -113,10 +114,13 @@ static int kscan_gpio_config_interrupts(struct device **devices,
                     }),                                                                            \
                 ())                                                                                \
     static void kscan_gpio_set_output_state_##n(struct device *dev, int value) {                   \
+        int err;                                                                                   \
         for (int i = 0; i < INST_OUTPUT_LEN(n); i++) {                                             \
             struct device *in_dev = kscan_gpio_output_devices_##n(dev)[i];                         \
             const struct kscan_gpio_item_config *cfg = &kscan_gpio_output_configs_##n(dev)[i];     \
-            gpio_pin_set(in_dev, cfg->pin, value);                                                 \
+            if ((err = gpio_pin_set(in_dev, cfg->pin, value))) {                                   \
+                LOG_DBG("FAILED TO SET OUTPUT %d to %d", cfg->pin, err);                           \
+            }                                                                                      \
         }                                                                                          \
     }                                                                                              \
     static void kscan_gpio_set_matrix_state_##n(                                                   \
@@ -134,8 +138,6 @@ static int kscan_gpio_config_interrupts(struct device **devices,
         /* Disable our interrupts temporarily while we scan, to avoid       */                     \
         /* re-entry while we iterate columns and set them active one by one */                     \
         /* to get pressed state for each matrix cell.                       */                     \
-        COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING, (kscan_gpio_disable_interrupts_##n(dev);),    \
-                    ())                                                                            \
         kscan_gpio_set_output_state_##n(dev, 0);                                                   \
         for (int o = 0; o < INST_OUTPUT_LEN(n); o++) {                                             \
             struct device *out_dev = kscan_gpio_output_devices_##n(dev)[o];                        \
@@ -152,8 +154,6 @@ static int kscan_gpio_config_interrupts(struct device **devices,
         }                                                                                          \
         /* Set all our outputs as active again. */                                                 \
         kscan_gpio_set_output_state_##n(dev, 1);                                                   \
-        /*Re-enable interrupts so that they can be triggered again for future press/release*/      \
-        COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING, (kscan_gpio_enable_interrupts_##n(dev);), ()) \
         for (int r = 0; r < INST_MATRIX_ROWS(n); r++) {                                            \
             for (int c = 0; c < INST_MATRIX_COLS(n); c++) {                                        \
                 bool pressed = read_state[r][c];                                                   \
@@ -172,6 +172,8 @@ static int kscan_gpio_config_interrupts(struct device **devices,
                             k_delayed_work_cancel(&data->work);                                    \
                             k_delayed_work_submit(&data->work, K_MSEC(5));                         \
                         }))                                                                        \
+        } else {                                                                                   \
+            kscan_gpio_enable_interrupts_##n(dev);                                                 \
         }                                                                                          \
         return 0;                                                                                  \
     }                                                                                              \
@@ -183,6 +185,7 @@ static int kscan_gpio_config_interrupts(struct device **devices,
                                                     gpio_port_pins_t pin) {                        \
         struct kscan_gpio_irq_callback_##n *data =                                                 \
             CONTAINER_OF(cb, struct kscan_gpio_irq_callback_##n, callback);                        \
+        kscan_gpio_disable_interrupts_##n(data->dev);                                              \
         COND_CODE_0(DT_INST_PROP(n, debounce_period), ({ k_work_submit(data->work); }), ({         \
                         k_delayed_work_cancel(data->work);                                         \
                         k_delayed_work_submit(data->work,                                          \
@@ -238,6 +241,7 @@ static int kscan_gpio_config_interrupts(struct device **devices,
                 LOG_DBG("Configured pin %d on %s for input", in_cfg->pin, in_cfg->label);          \
             }                                                                                      \
             irq_callbacks_##n[i].work = &data->work;                                               \
+            irq_callbacks_##n[i].dev = dev;                                                        \
             gpio_init_callback(&irq_callbacks_##n[i].callback,                                     \
                                kscan_gpio_irq_callback_handler_##n, BIT(in_cfg->pin));             \
             err = gpio_add_callback(input_devices[i], &irq_callbacks_##n[i].callback);             \
