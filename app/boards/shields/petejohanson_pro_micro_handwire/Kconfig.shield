@@ -1,5 +1,0 @@
-# Copyright (c) 2020 Pete Johanson
-# SPDX-License-Identifier: MIT
-
-config SHIELD_PETEJOHANSON_PRO_MICRO_HANDWIRE
-	def_bool $(shields_list_contains,petejohanson_pro_micro_handwire)
