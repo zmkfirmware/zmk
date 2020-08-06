@@ -76,17 +76,21 @@ static void security_changed(struct bt_conn *conn, bt_security_t level,
     }
 }
 
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
 static bool le_param_req(struct bt_conn *conn, struct bt_le_conn_param *param) {
     static struct bt_conn_info info;
 
     bt_conn_get_info(conn, &info);
 
+    /* This captures a param change from central half of a split board connection
+       to stop default params from getting set over the top of our preferred ones */
     if (info.role == BT_CONN_ROLE_MASTER && (param->interval_min != 6 || param->latency != 30)) {
         return false;
     }
 
     return true;
 }
+#endif
 
 static struct bt_conn_cb conn_callbacks = {
     .connected = connected,
