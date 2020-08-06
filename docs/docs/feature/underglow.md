@@ -1,5 +1,4 @@
 ---
-id: underglow
 title: RGB Underglow
 ---
 

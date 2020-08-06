@@ -7,7 +7,7 @@ module.exports = {
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
   themeConfig: {
-    sidebarCollapsible: false,
+    // sidebarCollapsible: false,
     navbar: {
       title: "ZMK Firmware",
       logo: {

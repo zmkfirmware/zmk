@@ -1,5 +1,4 @@
 ---
-id: displays
 title: OLED Displays
 sidebar_label: OLED Displays
 ---

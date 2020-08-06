@@ -1,5 +1,4 @@
 ---
-id: encoders
 title: Encoders
 sidebar_label: Encoders
 ---
