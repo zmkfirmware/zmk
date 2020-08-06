@@ -37,7 +37,11 @@ static void connected(struct bt_conn *conn, u8_t err)
 
     printk("Connected %s\n", addr);
 
-    bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 5, 400));
+    bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
+    bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
+#endif
 
     if (bt_conn_set_security(conn, BT_SECURITY_L2))
     {
@@ -72,10 +76,29 @@ static void security_changed(struct bt_conn *conn, bt_security_t level,
     }
 }
 
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
+static bool le_param_req(struct bt_conn *conn, struct bt_le_conn_param *param) {
+    static struct bt_conn_info info;
+
+    bt_conn_get_info(conn, &info);
+
+    /* This captures a param change from central half of a split board connection
+       to stop default params from getting set over the top of our preferred ones */
+    if (info.role == BT_CONN_ROLE_MASTER && (param->interval_min != 6 || param->latency != 30)) {
+        return false;
+    }
+
+    return true;
+}
+#endif
+
 static struct bt_conn_cb conn_callbacks = {
     .connected = connected,
     .disconnected = disconnected,
     .security_changed = security_changed,
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
+    .le_param_req = le_param_req,
+#endif
 };
 
 static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
