@@ -18,10 +18,6 @@ include(cmake/zmk_config.cmake)
 find_package(Zephyr REQUIRED HINTS ../zephyr)
 project(zmk)
 
-if(EXISTS ${KEYMAP_DIR}/keymap.c)
-  target_sources(app PRIVATE ${KEYMAP_DIR}/keymap.c)
-endif()
-
 zephyr_linker_sources(RODATA include/linker/zmk-events.ld)
 
 # Add your source file to the "app" target. This must come after
