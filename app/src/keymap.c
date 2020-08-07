@@ -17,96 +17,41 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static u32_t zmk_keymap_layer_state = 0;
 static u8_t zmk_keymap_layer_default = 0;
 
-#define ZMK_KEYMAP_NODE DT_CHOSEN(zmk_keymap)
-#define ZMK_KEYMAP_LAYERS_LEN DT_PROP_LEN(ZMK_KEYMAP_NODE, layers)
+#define DT_DRV_COMPAT zmk_keymap
+
+#define LAYER_CHILD_LEN(node) 1+
+#define ZMK_KEYMAP_NODE DT_DRV_INST(0)
+#define ZMK_KEYMAP_LAYERS_LEN (DT_INST_FOREACH_CHILD(0, LAYER_CHILD_LEN) 0) 
 
 #define LAYER_NODE(l) DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, l)
 
 #define _TRANSFORM_ENTRY(idx, layer) \
-	{ .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, layer), bindings, idx)), \
-	  .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(LAYER_NODE(layer), bindings, idx, param1), (0), (DT_PHA_BY_IDX(LAYER_NODE(layer), bindings, idx, param1))), \
-	  .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(LAYER_NODE(layer), bindings, idx, param2), (0), (DT_PHA_BY_IDX(LAYER_NODE(layer), bindings, idx, param2))), \
+	{ .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(layer, bindings, idx)), \
+	  .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(layer, bindings, idx, param1), (0), (DT_PHA_BY_IDX(layer, bindings, idx, param1))), \
+	  .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(layer, bindings, idx, param2), (0), (DT_PHA_BY_IDX(layer, bindings, idx, param2))), \
 	},
 
-#define TRANSFORMED_LAYER(idx) \
-  { UTIL_LISTIFY(DT_PROP_LEN(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, idx), bindings), _TRANSFORM_ENTRY, idx) }
+#define TRANSFORMED_LAYER(node) \
+  { UTIL_LISTIFY(DT_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, node) },
 
 static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_LEN] = {
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 0)
-	TRANSFORMED_LAYER(0),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 1)
-	TRANSFORMED_LAYER(1),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 2)
-	TRANSFORMED_LAYER(2),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 3)
-	TRANSFORMED_LAYER(3),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 4)
-	TRANSFORMED_LAYER(4),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 5)
-	TRANSFORMED_LAYER(5),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 6)
-	TRANSFORMED_LAYER(6),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 7)
-	TRANSFORMED_LAYER(7),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 8)
-	TRANSFORMED_LAYER(8),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 9)
-	TRANSFORMED_LAYER(9),
-#endif
+	DT_INST_FOREACH_CHILD(0, TRANSFORMED_LAYER)
 };
 
 #if ZMK_KEYMAP_HAS_SENSORS
 #define _TRANSFORM_SENSOR_ENTRY(idx, layer) \
-	{ .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, layer), sensor_bindings, idx)), \
-	  .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(LAYER_NODE(layer), sensor_bindings, idx, param1), (0), (DT_PHA_BY_IDX(LAYER_NODE(layer), sensor_bindings, idx, param1))), \
-	  .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(LAYER_NODE(layer), sensor_bindings, idx, param2), (0), (DT_PHA_BY_IDX(LAYER_NODE(layer), sensor_bindings, idx, param2))), \
+	{ .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(layer, sensor_bindings, idx)), \
+	  .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(layer, sensor_bindings, idx, param1), (0), (DT_PHA_BY_IDX(layer, sensor_bindings, idx, param1))), \
+	  .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(layer, sensor_bindings, idx, param2), (0), (DT_PHA_BY_IDX(layer, sensor_bindings, idx, param2))), \
 	},
 
-#define SENSOR_LAYER(idx) \
-	COND_CODE_1(DT_NODE_HAS_PROP(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, idx), sensor_bindings), \
-		({ UTIL_LISTIFY(DT_PROP_LEN(DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, idx), sensor_bindings), _TRANSFORM_SENSOR_ENTRY, idx) }), \
-		(NULL))
+#define SENSOR_LAYER(node) \
+	COND_CODE_1(DT_NODE_HAS_PROP(node, sensor_bindings), \
+		({ UTIL_LISTIFY(DT_PROP_LEN(node, sensor_bindings), _TRANSFORM_SENSOR_ENTRY, node) }), \
+		({})),
 
 static struct zmk_behavior_binding zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_SENSORS_LEN] = {
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 0)
-	SENSOR_LAYER(0),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 1)
-	SENSOR_LAYER(1),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 2)
-	SENSOR_LAYER(2),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 3)
-	SENSOR_LAYER(3),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 4)
-	SENSOR_LAYER(4),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 5)
-	SENSOR_LAYER(5),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 6)
-	SENSOR_LAYER(6),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 7)
-	SENSOR_LAYER(7),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 8)
-	SENSOR_LAYER(8),
-#endif
-#if DT_PROP_HAS_IDX(ZMK_KEYMAP_NODE, layers, 9)
-	SENSOR_LAYER(9),
-#endif
+	DT_INST_FOREACH_CHILD(0, SENSOR_LAYER)
 };
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
@@ -131,6 +76,7 @@ int zmk_keymap_layer_deactivate(u8_t layer)
 
 int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 {
+	LOG_DBG("Searching %d layers for a binding", ZMK_KEYMAP_LAYERS_LEN);
 	for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--)
 	{
 		if ((zmk_keymap_layer_state & BIT(layer)) == BIT(layer) || layer == zmk_keymap_layer_default)
