@@ -76,7 +76,6 @@ int zmk_keymap_layer_deactivate(u8_t layer)
 
 int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 {
-	LOG_DBG("Searching %d layers for a binding", ZMK_KEYMAP_LAYERS_LEN);
 	for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--)
 	{
 		if ((zmk_keymap_layer_state & BIT(layer)) == BIT(layer) || layer == zmk_keymap_layer_default)
