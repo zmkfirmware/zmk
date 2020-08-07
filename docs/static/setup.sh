@@ -7,6 +7,7 @@ title="ZMK Config Setup:"
 
 
 # TODO: Check for git being installed
+# TODO: Check for curl being installed
 # TODO: Check for user.name and user.email git configs being set
 
 prompt="Pick an MCU board:"
@@ -41,7 +42,7 @@ options=("Kyria" "Lily58")
 PS3="$prompt "
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
 # select opt in "${options[@]}" "Other" "Quit"; do 
-select opt in "${options[@]}" "Other" "Quit"; do 
+select opt in "${options[@]}" "Quit"; do 
 
     case "$REPLY" in
 
@@ -56,12 +57,16 @@ select opt in "${options[@]}" "Other" "Quit"; do
     esac
 done
 
-read -p "GitHub Username (leave empty to skip GitHub repo creation): " github_user
+read -e -p "Copy in the stock keymap for customization? [Yn]: " copy_keymap
+
+if [ -z "$copy_keymap" ] || [ "$copy_keymap" == "Y" ] || [ "$copy_keymap" == "y" ]; then copy_keymap="yes"; fi
+
+read -e -p "GitHub Username (leave empty to skip GitHub repo creation): " github_user
 if [ -n "$github_user" ]; then
-	read -p "GitHub Repo Name [zmk-config]: " repo_name
+	read -e -i "zmk-config" -p "GitHub Repo Name: " repo_name
 	if [ -z "$repo_name" ]; then repo_name="zmk-config"; fi
 
-	read -p "GitHub Repo [https://github.com/${github_user}/${repo_name}.git]: " github_repo
+	read -e -i "https://github.com/${github_user}/${repo_name}.git" -p "GitHub Repo: " github_repo
 
 	if [ -z "$github_repo" ]; then github_repo="https://github.com/${github_user}/${repo_name}.git"; fi
 else
@@ -72,6 +77,11 @@ echo ""
 echo "Preparing a user config for:"
 echo "* MCU Board: ${board}"
 echo "* Shield: ${shield}"
+if [ "$copy_keymap" == "yes" ]; then
+    echo "* Copy Keymap?: ✓"
+else
+    echo "* Copy Keymap?: ❌"
+fi
 if [ -n "$github_repo" ]; then
 	echo "* GitHub Repo To Push (please create this in GH first!): ${github_repo}"
 fi
@@ -87,13 +97,21 @@ fi
 git clone --single-branch $repo_path ${repo_name}
 cd ${repo_name}
 
+pushd config
+
+curl -O "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.conf"
+
+if [ "$copy_keymap" == "yes" ]; then
+    curl -O "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.keymap"
+fi
+
+popd
+
 sed -i \
 	-e "s/BOARD_NAME/$board/" \
 	-e "s/SHIELD_NAME/$shield/" \
 	-e "s/KEYBOARD_TITLE/$shield_title/" \
 	.github/workflows/build.yml
-
-mv config/prj.conf "config/${shield}.conf"
 
 rm -rf .git
 git init .
