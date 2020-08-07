@@ -438,13 +438,13 @@ ZMK treats keyboards that take a MCU addon board as [shields](https://docs.zephy
 Given the following:
 
 - MCU Board: Proton-C
-- Keyboard PCB: kyria
+- Keyboard PCB: kyria_left
 - Keymap: default
 
 You can build ZMK with the following:
 
 ```sh
-west build -b proton_c -- -DSHIELD=kyria -DKEYMAP=default
+west build -b proton_c -- -DSHIELD=kyria_left -DKEYMAP=default
 ```
 
 ### Keyboard With Onboard MCU
@@ -453,13 +453,13 @@ Keyboards with onboard MCU chips are simply treated as the [board](https://docs.
 
 Given the following:
 
-- Keyboard: Planck
+- Keyboard: Planck (rev6)
 - Keymap: default
 
 you can build ZMK with the following:
 
 ```sh
-west build -b planck -- -DKEYMAP=default
+west build -b planck_rev6 -- -DKEYMAP=default
 ```
 
 ## Flashing
