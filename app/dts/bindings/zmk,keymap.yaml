@@ -3,15 +3,13 @@ description: |
 
 compatible: "zmk,keymap"
 
-properties:
-  transform:
-    type: phandle
-    required: false
+child-binding:
+  description: "A layer to be used in a keymap"
 
-  label:
-    type: string
-    required: true
-
-  layers:
-    type: phandles
-    required: true
+  properties:
+    bindings:
+      type: phandle-array
+      required: true
+    sensor-bindings:
+      type: phandle-array
+      required: false

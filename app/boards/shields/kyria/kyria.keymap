@@ -2,21 +2,10 @@
 #include <dt-bindings/zmk/keys.h>
 
 / {
-	chosen {
-		zmk,keymap = &keymap0;
-	};
-	
-	keymap0: keymap {
+	keymap {
 		compatible = "zmk,keymap";
-		label ="Default Kyria Keymap";
-		layers = <&default>;
-	};
 
-	layers {
-		compatible = "zmk,layers";
-
-		default: layer_0 {
-			label = "DEFAULT";
+		default_layer {
 // ---------------------------------------------------------------------------------------------------------------------------------
 // |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   |   \  |
 // |  TAB  |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |   '  |
