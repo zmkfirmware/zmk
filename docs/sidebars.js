@@ -7,7 +7,7 @@ module.exports = {
       "feature/encoders",
       "feature/underglow",
     ],
-    Behaviors: ["behavior/key-press"],
+    Behaviors: ["behavior/key-press", "behavior/layers"],
     Development: [
       "dev-clean-room",
       "dev-setup",
