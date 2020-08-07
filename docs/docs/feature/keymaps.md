@@ -102,24 +102,39 @@ ALl the remaining keymap nodes will be nested inside of the root devicetree node
 };
 ```
 
-### Layers
+### Keymap Node
+
+Nested under the devicetree root, is the keymap node. The node _name_ itself is not critical, but the node **MUST** have a property
+`compatible = "zmk,keymap"` in order to be used by ZMK.
 
 ```
-	layers {
-		compatible = "zmk,layers";
+    keymap {
+		compatible = "zmk,keymap";
 
-		default: layer_0 {
-			label = "DEFAULT";
+        // Layer nodes go here!
+	};
+```
+
+### Layers
+
+Each layer of your keymap will be nested under the keymap node. Here is a sample
+that defines just one layer for this keymap:
+
+```
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
 // ---------------------------------------------------------------------------------------------------------------------------------
 // |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   |   \  |
 // |  TAB  |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |   '  |
 // | SHIFT |  Z  |  X  |  C   |  V   |  B   | L SHIFT | L SHIFT |  | L SHIFT | L SHIFT |  N   |  M    |  ,    |  .   |   /   | CTRL |
 //                     | GUI  | DEL  | RET  |  SPACE  |   ESC   |  |   RET   |  SPACE  | TAB  | BSPC  | R-ALT |
 			bindings = <
-	&kp ESC  &kp Q &kp W &kp E        &kp R        &kp T                                            &kp Y &kp U        &kp I        &kp O   &kp P    &kp BSLH
-	&kp TAB  &kp A &kp S &mt MOD_LCTL D &mt MOD_LSFT F &kp G                                            &kp H &mt MOD_LSFT J &mt MOD_LCTL K &kp L   &kp SCLN &kp QUOT
-	&kp LSFT &kp Z &kp X &kp C        &kp V        &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M        &kp CMMA     &kp DOT &kp FSLH &kp RCTL
-	              &kp LGUI &kp DEL       &kp RET &kp SPC &mo 1            &mo 2  &kp SPC  &kp RET &kp BKSP &kp RALT
+	&kp ESC  &kp Q &kp W &kp E &kp R &kp T                                            &kp Y &kp U  &kp I    &kp O   &kp P    &kp BSLH
+	&kp TAB  &kp A &kp S &kp D &kp F &kp G                                            &kp H &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
+	&kp LSFT &kp Z &kp X &kp C &kp V &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M  &kp CMMA &kp DOT &kp FSLH &kp RCTL
+	              &kp LGUI &kp DEL &kp RET &kp SPC &kp ESC            &kp RET  &kp SPC  &kp TAB &kp BKSP &kp RALT
 			>;
 
 			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
@@ -127,23 +142,12 @@ ALl the remaining keymap nodes will be nested inside of the root devicetree node
     };
 ```
 
-### Keymap
+Each layer should have:
 
-```
-    keymap0: keymap {
-		compatible = "zmk,keymap";
-		label ="Default Kyria Keymap";
-		layers = <&default>;
-	};
-```
+1. A `bindings` property this will be a list of behaviour bindings, one for each key position for the keyboard.
+1. (Optional) A `sensor-bindings` property that will be a list of behavior bindings for each sensor on the keyboard. (Currently, only encoders are supported as sensor hardware, but in the future devices like trackpoints would be supported the same way)
 
-### Chosen Keymap
-
-```
-	chosen {
-		zmk,keymap = &keymap0;
-	};
-```
+For the full set of possible behaviors, start at the [Key Press](/docs/behavior/key-press) behavior.
 
 ### Complete Example
 
