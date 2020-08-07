@@ -69,14 +69,14 @@ values={[
 <TabItem value="curl">
 
 ```
-sh -c "$(curl -fsSL https://zmkfirmware.dev/setup.sh)"
+bash -c "$(curl -fsSL https://zmkfirmware.dev/setup.sh)"
 ```
 
 </TabItem>
 <TabItem value="wget">
 
 ```
-sh -c "$(wget https://zmkfirmware.dev/setup.sh -O -)"
+bash -c "$(wget https://zmkfirmware.dev/setup.sh -O -)"
 ```
 
 </TabItem>
