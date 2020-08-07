@@ -6,6 +6,7 @@ sidebar_label: Installing ZMK
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import Image from '@theme/IdealImage';
 
 Unlike other keyboard firmwares, ZMK Firmware has been built from the ground up to allow users to manage
 their own keyboard configurations, including keymaps, specific hardware details, etc. all outside of the
@@ -40,6 +41,10 @@ The remainder of this guide assumes the following prequisites:
 
 1. You have an active, working [GitHub](https://github.com/) account.
 1. You have installed and configured the [`git`](https://git-scm.com/) version control tool.
+
+:::note
+If you need to, a quick read of [Learn The Basics Of Git In Under 10 Minutes](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/) will help you get started.
+:::
 
 ## GitHub Repo
 
@@ -101,6 +106,18 @@ Keyboard Shield Selection:
 Pick an keyboard:
 ```
 
+### Keymap Customization
+
+At the next prompt, you have an opportunity to decide if you want the stock keymap file copied in
+for further customization:
+
+```
+Copy in the stock keymap for customization? [Yn]:
+```
+
+Hit `Enter` or type `yes`/`y` to accept this. If you want to keep the stock keymap, or write a keymap
+from scratch, type in `no`/`n`.
+
 ### GitHub Details
 
 In order to have your new configuration automatically pushed, and then built using GitHub Actions, enter
@@ -108,8 +125,8 @@ some information about your particular GitHub info:
 
 ```
 GitHub Username (leave empty to skip GitHub repo creation): petejohanson
-GitHub Repo Name [zmk-config]:
-GitHub Repo [https://github.com/petejohanson/zmk-config.git]:
+GitHub Repo Name: zmk-config
+GitHub Repo: https://github.com/petejohanson/zmk-config.git
 ```
 
 Only the GitHub username is required; if you are happy with the defaults offered in the square brackets, you can simply hit `Enter`.
@@ -137,11 +154,49 @@ push the initial commit.
 
 :::
 
-## Accessing Built Firmware
+## Installing The Firmware
+
+### Download The Archive
 
 Once the setup script is complete and the new user config repository has been pushed, GitHub will automatically run the action
 to build your keyboard firmware files. You can view the actions by clicking on the "Actions" tab on your GitHub repository.
 
-## Keymap Changes
+![](./assets/user-setup/github-actions-link.png)
 
-TODO: Document how to add your own keymap!
+Once you have loaded the Actions tab, select the top build from the list. Once you load it, the right side panel will include
+a link to download the `firmware` upload:
+
+![](./assets/user-setup/firmware-archive.png)
+
+Once downloaded, extract the zip and you can verify it should contain one or more `uf2` files, which will be copied to
+your keyboard.
+
+### Installing UF2 Files
+
+To flash the firmware, first put your board into bootloader mode by double clicking the reset button (either on the MCU board itself,
+or the one that is part of your keyboard). The controller should appear in your OS as a new USB storage device.
+
+Once this happens, copy the correct UF2 file (e.g. left or right if working on a split), and paste it onto the root of that USB mass
+storage device. One the flash is complete, the controller should automatically restart, and load your newfly flashed firmware.
+
+## Customization
+
+### Configuration Changes
+
+The setup script creates a `config/<shield>.conf` file that allows you to add additional configuration options to
+control what features and options are built into your firmware. Opening that file with your text editor you should see
+various config settings that can be commented/uncommented to modify how your firmware is built.
+
+### Keymap
+
+Once you have the basic user config completed, you can find the file in `config/<shield>.keymap` and customize from there.
+Refer to the [Keymap](/docs/feature/keymaps) documentation to learn more.
+
+### Publishing
+
+After making any changes you want, you should commit the changes and then push them to GitHub. That will trigger a new
+GitHub Actions job to build your firmware which you can download once it completes.
+
+:::note
+If you need to, a review of [Learn The Basics Of Git In Under 10 Minutes](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/) will help you get these steps right.
+:::
