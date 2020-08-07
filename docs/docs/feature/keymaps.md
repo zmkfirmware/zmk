@@ -39,10 +39,12 @@ Like many mechanical keyboard firmwares, ZMK keymaps are composed of a collectio
 minimum of at least one layer that is the default, usually near the bottom of the "stack". Each layer
 in ZMK contains a set of bindings that bind a certain behavior to a certain key position in that layer.
 
+|                                                   ![Diagram of three layers](../assets/features/keymaps/layer-diagram.png)                                                    |
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| _A simplified diagram showing three layers. The layout of each layer is the same (they all contain four keys), but the behavior bindings within each layer can be different._ |
+
 In addition to the base default layer (which can be changed), certain bound behaviors may also
 enable/disable additional layers "on top" of the default layer.
-
-**TODO**: A diagram to help visualize layers
 
 When a key location is pressed/released, the stack of all active layers from "top to bottom" is used,
 and the event is sent to the behavior bound at that position in each layer, for it to perform whatever
