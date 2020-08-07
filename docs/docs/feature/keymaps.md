@@ -151,4 +151,31 @@ For the full set of possible behaviors, start at the [Key Press](/docs/behavior/
 
 ### Complete Example
 
-You can see a complete example if you see the [stock Kyria keymap](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/kyria.keymap).
+Putting this all together, a complete [`kyria.keymap`](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/kyria.keymap) looks like:
+
+```
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+// ---------------------------------------------------------------------------------------------------------------------------------
+// |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   |   \  |
+// |  TAB  |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |   '  |
+// | SHIFT |  Z  |  X  |  C   |  V   |  B   | L SHIFT | L SHIFT |  | L SHIFT | L SHIFT |  N   |  M    |  ,    |  .   |   /   | CTRL |
+//                     | GUI  | DEL  | RET  |  SPACE  |   ESC   |  |   RET   |  SPACE  | TAB  | BSPC  | R-ALT |
+			bindings = <
+	&kp ESC  &kp Q &kp W &kp E &kp R &kp T                                            &kp Y &kp U  &kp I    &kp O   &kp P    &kp BSLH
+	&kp TAB  &kp A &kp S &kp D &kp F &kp G                                            &kp H &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
+	&kp LSFT &kp Z &kp X &kp C &kp V &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M  &kp CMMA &kp DOT &kp FSLH &kp RCTL
+	              &kp LGUI &kp DEL &kp RET &kp SPC &kp ESC            &kp RET  &kp SPC  &kp TAB &kp BKSP &kp RALT
+			>;
+
+			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
+		};
+	};
+};
+```
