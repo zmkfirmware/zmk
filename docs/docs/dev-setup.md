@@ -188,7 +188,7 @@ West can be installed by using the `pip` python package manager.
 pip3 install --user -U west
 ```
 
-:::tip pip user packages
+:::danger pip user packages
 If you haven't done so yet, you may need to add the Python Pip user package directory to your `PATH`, e.g.:
 
 ```
@@ -306,7 +306,7 @@ cd zmk
 west init -l app/
 ```
 
-:::note
+:::caution Command Not Found?
 If you encounter errors like `command not found: west` then your `PATH` environment variable is likely
 missing the Python 3 user packages directory. See the [West Build Command](#west-build-command)
 section again for links to how to do this
