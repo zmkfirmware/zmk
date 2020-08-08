@@ -120,7 +120,7 @@ git commit -m "Initial User Config."
 
 if [ -n "$github_repo" ]; then
 	git remote add origin "$github_repo"
-	git push --set-upstream origin $(git branch --show-current)
+	git push --set-upstream origin $(git symbolic-ref --short HEAD)
 
     # TODO: Support determing the actions URL when non-https:// repo URL is used.
     if [ "${github_repo}" != "${github_repo#https://}" ]; then
