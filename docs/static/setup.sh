@@ -113,6 +113,11 @@ sed -i \
 	-e "s/KEYBOARD_TITLE/$shield_title/" \
 	.github/workflows/build.yml
 
+if [ "$board" == "proton_c" ]; then
+    # Proton-C board still fa
+    sed -i -e "s/uf2/hex/g" .github/workflows/build.yml
+fi
+
 rm -rf .git
 git init .
 git add .
