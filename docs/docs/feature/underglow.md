@@ -15,7 +15,9 @@ Of the compatible types, the WS2812 LED family is by far the most popular type. 
 
 Here you can see the RGB underglow feature in action using WS2812 LEDs.
 
-<iframe src="//www.youtube.com/embed/2KJkq8ssDU0" frameborder="0" allowfullscreen width="100%"></iframe>
+<figure class="video-container">
+  <iframe src="//www.youtube.com/embed/2KJkq8ssDU0" frameborder="0" allowfullscreen width="100%"></iframe>
+</figure>
 
 ## Enabling RGB Underglow
 
