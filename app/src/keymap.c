@@ -34,9 +34,6 @@ static u8_t zmk_keymap_layer_default = 0;
 #define TRANSFORMED_LAYER(node) \
   { UTIL_LISTIFY(DT_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, node) },
 
-static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_LEN] = {
-	DT_INST_FOREACH_CHILD(0, TRANSFORMED_LAYER)
-};
 
 #if ZMK_KEYMAP_HAS_SENSORS
 #define _TRANSFORM_SENSOR_ENTRY(idx, layer) \
@@ -49,6 +46,21 @@ static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_
 	COND_CODE_1(DT_NODE_HAS_PROP(node, sensor_bindings), \
 		({ UTIL_LISTIFY(DT_PROP_LEN(node, sensor_bindings), _TRANSFORM_SENSOR_ENTRY, node) }), \
 		({})),
+
+#endif /* ZMK_KEYMAP_HAS_SENSORS */
+
+// State
+
+// When a behavior handles a key position "down" event, we record that layer
+// here so that even if that layer is deactivated before the "up", event, we
+// still send the release event to the behavior in that layer also.
+static u8_t zmk_keymap_active_behavior_layer[ZMK_KEYMAP_LEN];
+
+static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_LEN] = {
+	DT_INST_FOREACH_CHILD(0, TRANSFORMED_LAYER)
+};
+
+#if ZMK_KEYMAP_HAS_SENSORS
 
 static struct zmk_behavior_binding zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_SENSORS_LEN] = {
 	DT_INST_FOREACH_CHILD(0, SENSOR_LAYER)
@@ -74,11 +86,18 @@ int zmk_keymap_layer_deactivate(u8_t layer)
 	SET_LAYER_STATE(layer, false);
 };
 
+bool is_active_position(u32_t position, u8_t layer)
+{
+	return (zmk_keymap_layer_state & BIT(layer)) == BIT(layer)
+		|| layer == zmk_keymap_layer_default
+		|| zmk_keymap_active_behavior_layer[position] == layer;
+}
+
 int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 {
 	for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--)
 	{
-		if ((zmk_keymap_layer_state & BIT(layer)) == BIT(layer) || layer == zmk_keymap_layer_default)
+		if (is_active_position(position, layer))
 		{
 			struct zmk_behavior_binding *binding = &zmk_keymap[layer][position];
 			struct device *behavior;
@@ -104,8 +123,10 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 				continue;
 			} else if (ret < 0) {
 				LOG_DBG("Behavior returned error: %d", ret);
+				zmk_keymap_active_behavior_layer[position] = 0;
 				return ret; 
 			} else {
+				zmk_keymap_active_behavior_layer[position] = pressed ? layer : 0;
 				return ret;
 			}
 		}
