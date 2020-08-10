@@ -36,7 +36,7 @@ Following the steps in this guide, you will:
 
 ## Prerequisites
 
-The remainder of this guide assumes the following prequisites:
+The remainder of this guide assumes the following prerequisites:
 
 1. You have an active, working [GitHub](https://github.com/) account.
 1. You have installed and configured the [`git`](https://git-scm.com/) version control tool.

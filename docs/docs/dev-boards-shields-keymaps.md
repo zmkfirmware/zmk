@@ -8,11 +8,11 @@ title: Boards, Shields, and Keymaps
 The foundational elements needed to get a specific keyboard working with ZMK can be broken down into:
 
 - A [KSCAN driver](https://docs.zephyrproject.org/2.3.0/reference/peripherals/kscan.html), which uses `compatible="zmk,kscan-gpio-matrix"` for GPIO matrix based keyboards, or uses `compatible="zmk,kscan-gpio-direct"` for small direct wires.
-- An optional matrix transform, which defines how the KSCAN row/column events are translated into logical "key positions". This is required for non-rectangular keyboards/matrixes, where the key positions don't naturally follow the row/columns from the GPIO matrix.
+- An optional matrix transform, which defines how the KSCAN row/column events are translated into logical "key positions". This is required for non-rectangular keyboards/matrices, where the key positions don't naturally follow the row/columns from the GPIO matrix.
 - A keymap, which binds each key position to a behavior, e.g. key press, mod-tap, momentary layer, in a set of layers.
 
-These three core architectural elements are defined per-keyboard, and _where_ they are defined depeneds on the specifics of how that
-keyboard works. For an overview on the general concepts of boards and shields, please see the [FAQs on boards and sheilds](/docs/faq#why-boards-and-shields--why-not-just-keyboard).
+These three core architectural elements are defined per-keyboard, and _where_ they are defined depends on the specifics of how that
+keyboard works. For an overview on the general concepts of boards and shields, please see the [FAQs on boards and shields](/docs/faq#why-boards-and-shields--why-not-just-keyboard).
 
 ## Self-Contained Keyboard
 

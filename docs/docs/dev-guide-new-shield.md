@@ -11,14 +11,14 @@ The high level steps are:
 - Create a new shield directory.
 - Add the base Kconfig files.
 - Add the shield overlay file to define the [KSCAN driver]() for detecting key press/release.
-- (Optional) Add the mateix transform for mapping KSCAN row/coluk values to sane key positions. This is needed for non-rectangular keyboards, or where the underlying row/column pin arrangement does not map one to one with logical locations on the keyboard.
+- (Optional) Add the matrix transform for mapping KSCAN row/column values to sane key positions. This is needed for non-rectangular keyboards, or where the underlying row/column pin arrangement does not map one to one with logical locations on the keyboard.
 - Add a default keymap, which users can override in their own configs as needed.
 
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
 ## New Shield Directory
 
-Shields for Zephyr applications go into the `boards/shields/` directory; since ZMK's Zephyr appliction linves in the `app/` subdirectory of the repository, that means the new shield directory should be:
+Shields for Zephyr applications go into the `boards/shields/` directory; since ZMK's Zephyr application lives in the `app/` subdirectory of the repository, that means the new shield directory should be:
 
 ```bash
 mkdir app/boards/shields/<keyboard_name>
@@ -60,7 +60,7 @@ endif
 
 ## Shield Overlay
 
-The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minumum should include the [chosen]() node named `zmk,kscan` that refernces a KSCAN driver instance. For a simple 3x3 macropad matrix,
+The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the [chosen]() node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
 this might look something like:
 
 ```
@@ -97,7 +97,7 @@ Internally ZMK translates all row/column events into "key position" events to ma
 1. For non rectangular keyboards with thumb clusters, non `1u` locations, etc.
 
 A "key position" is the numeric index (zero-based) of a given key, which identifies
-the logical key location as percieved by the end user. All _keymap_ mappings actually bind behaviors to _key positions_, not to row/column values.
+the logical key location as perceived by the end user. All _keymap_ mappings actually bind behaviors to _key positions_, not to row/column values.
 
 _Without_ a matrix transform, that intentionally map each key position to the row/column pair that position corresponds to, the default equation to determine that is:
 
@@ -141,13 +141,13 @@ RC(7,0)    RC(7,1)   RC(7,2)                     RC(7,3)                    RC(7
 
 Some important things to note:
 
-- The `#include <dt-bindings/zmk/matrix-transform.h>` is critical. The `RC` macro is used to generate the interanl storage in the matrix transform, and is actually replaced by a C preprocessor before the final devicetree is compiled into ZMK.
+- The `#include <dt-bindings/zmk/matrix-transform.h>` is critical. The `RC` macro is used to generate the internal storage in the matrix transform, and is actually replaced by a C preprocessor before the final devicetree is compiled into ZMK.
 - `RC(row, column)` is placed sequentially to define what row and column values that position corresponds to.
 - If you have a keyboard with options for `2u` keys in certain positions, or break away portions, it is a good idea to set the chosen `zmk,matrix_transform` to the default arrangement, and include _other_ possible matrix transform nodes in the devicetree that users can select in their user config by overriding the chosen node.
 
 ## Default Keymap
 
-Each keyboard should provide an OOTB default keymap to be used when building the firmware, which can be overriden and customized by user configs. For "shield keyboards", this should be placed in the `app/boards/shields/<shield_name>/keymap/keymap.overlay` file. The keymap is configured as an additional devicetree overlay that includes the following:
+Each keyboard should provide an OOTB default keymap to be used when building the firmware, which can be overridden and customized by user configs. For "shield keyboards", this should be placed in the `app/boards/shields/<shield_name>/keymap/keymap.overlay` file. The keymap is configured as an additional devicetree overlay that includes the following:
 
 - A node with `compatible="zmk,layers"` where each child node is a layer with a `bindings` array that binds each key position to a given behavior (e.g. key press, momentarily layer, etc).
 - A node with `compatible="zmk,keymap"` that references the layers with a `layers` phandle-array property.
