@@ -10,7 +10,7 @@ flowing into the handler functions.
 
 ## Prerequisites
 
-In order to build targetting the `native_posix` board, you need to setup your system
+In order to build targeting the `native_posix` board, you need to setup your system
 with a compiler that can target 32-bit POSIX.
 
 On Debian, you can do this with:
@@ -21,7 +21,7 @@ apt install -y gcc-multilib
 
 ## Building
 
-To do this, you can build ZMK targetting the
+To do this, you can build ZMK targeting the
 `native_posix` board.
 
 ```
@@ -36,4 +36,4 @@ Once built, you can run the firmware locally:
 
 ## Virtual Key Events
 
-The virtual key presses are hardcoded in `boards/native_posix.overlay` file. should you want to change the sequence to test various actions like Mod-Tap, etc.
+The virtual key presses are hardcoded in `boards/native_posix.overlay` file, should you want to change the sequence to test various actions like Mod-Tap, etc.
