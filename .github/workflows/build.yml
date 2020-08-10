@@ -10,10 +10,15 @@ jobs:
       matrix:
         board: [proton_c, nice_nano]
         shield:
+          - corne_left
+          - corne_right
           - kyria_left
           - kyria_right
           - lily58_left
           - lily58_right
+        include:
+          - board: proton_c
+            shield: clueboard_california
     steps:
       # To use this repository's private action,
       # you must check out the repository
