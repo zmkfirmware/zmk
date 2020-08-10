@@ -257,15 +257,6 @@ The installation will prompt with several questions about installation location,
 </TabItem>
 <TabItem value="win">
 
-:::note
-If you intend to build firmware straight away, make sure to correctly setup the current shell.
-
-Notes on setting this up can be found in the [Environment Variables](#environment-variables) section.
-The transient instructions can be used to setup the current shell, and the automatic instructions can setup any newly made shells automatically.
-
-The transient instructions must be run to build firmware using the current shell.
-:::
-
 #### GNU ARM Embedded
 
 Since the Zephyr™ SDK is not available for Windows, we recommending following the steps to install the [GNU ARM Embedded](https://docs.zephyrproject.org/latest/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded).
@@ -288,6 +279,15 @@ The installation will prompt with several questions about installation location,
 
 </TabItem>
 </OsTabs>
+
+:::note
+If you intend to build firmware straight away, make sure to correctly setup the current shell.
+
+Notes on setting this up can be found in the [Environment Variables](#environment-variables) section.
+The transient instructions can be used to setup the current shell, and the automatic instructions can setup any newly made shells automatically.
+
+The transient instructions must be run to build firmware using the current shell.
+:::
 
 ### Source Code
 
