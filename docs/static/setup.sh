@@ -64,10 +64,10 @@ if [ -z "$copy_keymap" ] || [ "$copy_keymap" == "Y" ] || [ "$copy_keymap" == "y"
 
 read -e -p "GitHub Username (leave empty to skip GitHub repo creation): " github_user
 if [ -n "$github_user" ]; then
-	read -e -i "zmk-config" -p "GitHub Repo Name: " repo_name
+	read -p "GitHub Repo Name [zmk-config]: " repo_name
 	if [ -z "$repo_name" ]; then repo_name="zmk-config"; fi
 
-	read -e -i "https://github.com/${github_user}/${repo_name}.git" -p "GitHub Repo: " github_repo
+	read -p "GitHub Repo [https://github.com/${github_user}/${repo_name}.git]: " github_repo
 
 	if [ -z "$github_repo" ]; then github_repo="https://github.com/${github_user}/${repo_name}.git"; fi
 else
