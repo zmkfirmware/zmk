@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2017 I-SENSE group of ICCS
  *
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 #include <kernel.h>

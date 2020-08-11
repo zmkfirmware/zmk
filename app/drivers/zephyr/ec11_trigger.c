@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2016 Intel Corporation
  *
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: MIT
  */
 
 #define DT_DRV_COMPAT alps_ec11
