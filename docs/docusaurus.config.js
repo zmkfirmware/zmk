@@ -7,6 +7,10 @@ module.exports = {
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
   themeConfig: {
+    googleAnalytics: {
+      trackingID: "UA-145201102-2",
+      anonymizeIP: true,
+    },
     // sidebarCollapsible: false,
     navbar: {
       title: "ZMK Firmware",
