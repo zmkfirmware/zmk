@@ -64,10 +64,10 @@ if [ -z "$copy_keymap" ] || [ "$copy_keymap" == "Y" ] || [ "$copy_keymap" == "y"
 
 read -e -p "GitHub Username (leave empty to skip GitHub repo creation): " github_user
 if [ -n "$github_user" ]; then
-	read -e -i "zmk-config" -p "GitHub Repo Name: " repo_name
+	read -p "GitHub Repo Name [zmk-config]: " repo_name
 	if [ -z "$repo_name" ]; then repo_name="zmk-config"; fi
 
-	read -e -i "https://github.com/${github_user}/${repo_name}.git" -p "GitHub Repo: " github_repo
+	read -p "GitHub Repo [https://github.com/${github_user}/${repo_name}.git]: " github_repo
 
 	if [ -z "$github_repo" ]; then github_repo="https://github.com/${github_user}/${repo_name}.git"; fi
 else
@@ -90,7 +90,7 @@ fi
 echo ""
 read -p "Continue? [Yn]: " do_it
 
-if [ -n "$do_it" ] && [ "$do_it" != "y" ]; then
+if [ -n "$do_it" ] && [ "$do_it" != "y" ] && [ "$do_it" != "Y" ]; then
 	echo "Aborting..."
 	exit
 fi
@@ -108,7 +108,7 @@ fi
 
 popd
 
-sed -i \
+sed -i'.orig' \
 	-e "s/BOARD_NAME/$board/" \
 	-e "s/SHIELD_NAME/$shield/" \
 	-e "s/KEYBOARD_TITLE/$shield_title/" \
@@ -116,8 +116,10 @@ sed -i \
 
 if [ "$board" == "proton_c" ]; then
     # Proton-C board still fa
-    sed -i -e "s/uf2/hex/g" .github/workflows/build.yml
+    sed -i'.orig' -e "s/uf2/hex/g" .github/workflows/build.yml
 fi
+
+rm .github/workflows/*.yml.orig
 
 rm -rf .git
 git init .
