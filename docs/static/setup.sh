@@ -11,7 +11,7 @@ title="ZMK Config Setup:"
 # TODO: Check for user.name and user.email git configs being set
 
 prompt="Pick an MCU board:"
-options=("nice!nano" "QMK Proton-C")
+options=("nice!nano" "QMK Proton-C" "bluemicro52840_v1")
 
 echo "$title"
 echo ""
@@ -37,7 +37,7 @@ echo ""
 echo "Keyboard Shield Selection:"
 
 prompt="Pick an keyboard:"
-options=("Kyria" "Lily58" "Corne")
+options=("Kyria" "Lily58" "Corne" "splitreus62")
 
 PS3="$prompt "
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
