@@ -16,6 +16,10 @@ jobs:
           - kyria_right
           - lily58_left
           - lily58_right
+<<<<<<< HEAD
+
+=======
+>>>>>>> parent of c3164f4... Updated build.yaml
         include:
           - board: proton_c
             shield: clueboard_california
