@@ -1,0 +1,30 @@
+# Electronut Labs Papyr board configuration
+
+# Copyright (c) 2020 Pete Johanson, Derek Schmell
+# SPDX-License-Identifier: MIT
+
+if BOARD_BLUEMICRO52840_V1
+
+config BOARD
+	default "bluemicro52840_v1"
+
+if USB
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+endif # USB
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+endif # BOARD_BLUEMICRO52840_V1
