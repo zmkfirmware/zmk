@@ -8,7 +8,7 @@ jobs:
     name: Build Test
     strategy:
       matrix:
-        board: [proton_c, nice_nano]
+        board: [proton_c, nice_nano, bluemicro52840_v1]
         shield:
           - corne_left
           - corne_right
@@ -16,6 +16,8 @@ jobs:
           - kyria_right
           - lily58_left
           - lily58_right
+          - splitreus62_left
+          - splitreus62_right
         include:
           - board: proton_c
             shield: clueboard_california
