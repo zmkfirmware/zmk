@@ -21,11 +21,11 @@ Here you can see the RGB underglow feature in action using WS2812 LEDs.
 
 ## Enabling RGB Underglow
 
-To enable RGB underglow on your board or shield, simply enable the `ZMK_RGB_UNDERGLOW` and `CONFIG_X_STRIP` configuration values in the `.conf` file of your user config directory as such:
+To enable RGB underglow on your board or shield, simply enable the `ZMK_RGB_UNDERGLOW` and `X_STRIP` configuration values in the `.conf` file of your user config directory as such:
 
 ```
 CONFIG_ZMK_RGB_UNDERGLOW=y
-# Use the STRIP config specific tot he LEDs you're using
+# Use the STRIP config specific to the LEDs you're using
 CONFIG_WS2812_STRIP=y
 ```
 
@@ -116,10 +116,10 @@ Once you have your `led_strip` properly defined you need to add it to the root d
 };
 ```
 
-Finally you need to enable the `ZMK_RGB_UNDERGLOW` and `CONFIG_X_STRIP` STRIP configuration values in the `.conf` file of your board (or set a default in the `Kconfig.defconfig`):
+Finally you need to enable the `ZMK_RGB_UNDERGLOW` and `X_STRIP` configuration values in the `.conf` file of your board (or set a default in the `Kconfig.defconfig`):
 
 ```
 CONFIG_ZMK_RGB_UNDERGLOW=y
-# Use the STRIP config specific tot he LEDs you're using
+# Use the STRIP config specific to the LEDs you're using
 CONFIG_WS2812_STRIP=y
 ```
