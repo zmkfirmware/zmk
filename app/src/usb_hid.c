@@ -1,5 +1,4 @@
 
-#include <zephyr.h>
 #include <device.h>
 #include <init.h>
 
