@@ -44,22 +44,23 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5)                 RC(3,6)  RC(3,7)
 			;
 	};
 
-	// TODO: Check these pins!
+	// TODO: Check these pins and resolution!
+
 	left_encoder: encoder_left {
 		compatible = "alps,ec11";
 		label = "LEFT_ENCODER";
-		a-gpios = <&pro_micro_d 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-		b-gpios = <&pro_micro_d 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-		resolution = <4>;
+		a-gpios = <&pro_micro_a 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		b-gpios = <&pro_micro_a 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		resolution = <2>;
 		status = "disabled";
 	};
 
 	right_encoder: encoder_right {
 		compatible = "alps,ec11";
 		label = "RIGHT_ENCODER";
-		a-gpios = <&pro_micro_d 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-		b-gpios = <&pro_micro_d 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-		resolution = <4>;
+		a-gpios = <&pro_micro_a 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		b-gpios = <&pro_micro_a 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		resolution = <2>;
 		status = "disabled";
 	};
 
