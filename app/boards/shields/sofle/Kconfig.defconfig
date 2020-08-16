@@ -3,14 +3,12 @@ if SHIELD_SOFLE_LEFT
 
 config ZMK_KEYBOARD_NAME
 	default "Sofle Left"
-
 endif
 
 if SHIELD_SOFLE_RIGHT
 
 config ZMK_KEYBOARD_NAME
 	default "Sofle Right"
-
 endif
 
 if SHIELD_SOFLE_LEFT || SHIELD_SOFLE_RIGHT
