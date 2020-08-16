@@ -81,9 +81,9 @@ this might look something like:
             ;
 
 		row-gpios
-			= <&pro_micro_a 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&pro_micro_a 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&pro_micro_a 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			= <&pro_micro_a 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_a 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_a 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
 	};
 };
