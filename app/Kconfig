@@ -106,6 +106,10 @@ if ZMK_SPLIT_BLE_ROLE_CENTRAL
 config BT_MAX_CONN
 	default 5
 
+config BT_MAX_PAIRED
+	# Bump this everywhere once we support switching active connections!
+	default 2
+
 endif
 
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL

@@ -81,9 +81,9 @@ this might look something like:
             ;
 
 		row-gpios
-			= <&pro_micro_a 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&pro_micro_a 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&pro_micro_a 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			= <&pro_micro_a 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_a 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_a 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
 	};
 };
@@ -147,51 +147,38 @@ Some important things to note:
 
 ## Default Keymap
 
-Each keyboard should provide an OOTB default keymap to be used when building the firmware, which can be overridden and customized by user configs. For "shield keyboards", this should be placed in the `app/boards/shields/<shield_name>/keymap/keymap.overlay` file. The keymap is configured as an additional devicetree overlay that includes the following:
+Each keyboard should provide an OOTB default keymap to be used when building the firmware, which can be overridden and customized by user configs. For "shield keyboards", this should be placed in the `app/boards/shields/<shield_name>/<shield_name>.keymap` file. The keymap is configured as an additional devicetree overlay that includes the following:
 
-- A node with `compatible="zmk,layers"` where each child node is a layer with a `bindings` array that binds each key position to a given behavior (e.g. key press, momentarily layer, etc).
-- A node with `compatible="zmk,keymap"` that references the layers with a `layers` phandle-array property.
-- A chosen node named `zmk,keymap` that references the defined keymap.
+- A node with `compatible="zmk,keymap"` where each child node is a layer with a `bindings` array that binds each key position to a given behavior (e.g. key press, momentarily layer, etc).
 
-Here is an example simple keymap for the nice60, with only one layer:
+Here is an example simple keymap for the Kyria, with only one layer:
 
 ```
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 
 / {
-	chosen {
-		zmk,keymap = &keymap0;
-	};
-
-	keymap0: keymap {
+	keymap {
 		compatible = "zmk,keymap";
-		label ="Default nice!60 Keymap";
-		layers = <&default>;
-	};
 
-	layers {
-		compatible = "zmk,layers";
-
-		default: layer_0 {
-			label = "DEFAULT";
-// ------------------------------------------------------------------------------------------
-// | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   |
-// | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   "|"   |
-// | CAPS  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |
-// |  SHIFT  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |      SHIFT       |
-// |  CTL  |  WIN  |  ALT  |            SPACE              |  ALT  |  WIN  |  MENU  |  CTL  |
-// ------------------------------------------------------------------------------------------
+		default_layer {
+// ---------------------------------------------------------------------------------------------------------------------------------
+// |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   |   \  |
+// |  TAB  |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |   '  |
+// | SHIFT |  Z  |  X  |  C   |  V   |  B   | L SHIFT | L SHIFT |  | L SHIFT | L SHIFT |  N   |  M    |  ,    |  .   |   /   | CTRL |
+//                     | GUI  | DEL  | RET  |  SPACE  |   ESC   |  |   RET   |  SPACE  | TAB  | BSPC  | R-ALT |
 			bindings = <
-	&kp ESC &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 &kp MINUS &kp EQL  &kp BKSP
-	&kp TAB  &kp   Q   &kp   W   &kp   E   &kp   R   &kp   T   &kp   Y   &kp   U   &kp   I   &kp   O   &kp   P   &kp LBKT &kp RBKT &kp BSLH
-	&kp CLCK  &kp   A   &kp   S   &kp   D   &kp   F   &kp   G   &kp   H   &kp   J   &kp   K   &kp   L   &kp  SCLN  &kp  QUOT        &kp RET
-	&kp LSFT   &kp   Z   &kp   X   &kp   C   &kp   V   &kp   B   &kp   N   &kp   M   &kp   CMMA   &kp   DOT   &kp   FSLH           &kp RSFT
-	&kp LCTL &kp   LGUI   &kp   LALT                     &kp SPC                         &kp   RALT    &kp   RGUI    &kp   GUI   &kp   RCTL
+	&kp ESC  &kp Q &kp W &kp E &kp R &kp T                                            &kp Y &kp U  &kp I    &kp O   &kp P    &kp BSLH
+	&kp TAB  &kp A &kp S &kp D &kp F &kp G                                            &kp H &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
+	&kp LSFT &kp Z &kp X &kp C &kp V &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M  &kp CMMA &kp DOT &kp FSLH &kp RCTL
+	              &kp LGUI &kp DEL &kp RET &kp SPC &kp ESC            &kp RET  &kp SPC  &kp TAB &kp BKSP &kp RALT
 			>;
+
+			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
 		};
 	};
 };
+
 ```
 
 :::note

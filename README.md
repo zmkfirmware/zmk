@@ -11,4 +11,4 @@ Check out the website to learn more: https://zmkfirmware.dev/
 
 You can also come join our [ZMK Discord Server](https://zmkfirmware.dev/community/discord/invite)
 
-To review planned features, check out the [enhancement label](https://github.com/zmkfirmware/zmk/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) in GitHub.
+To review planned features, check out the [enhancement label](https://github.com/zmkfirmware/zmk/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) in GitHub. Please feel free to add 👍 to the issue description of any requests to upvote the feature.
