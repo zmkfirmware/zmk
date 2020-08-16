@@ -124,6 +124,9 @@ config ZMK_USB
 config BT_MAX_CONN
 	default 5
 
+config BT_GAP_AUTO_UPDATE_CONN_PARAMS
+	default n
+
 endif
 
 endchoice
