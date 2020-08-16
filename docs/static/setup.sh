@@ -11,7 +11,7 @@ title="ZMK Config Setup:"
 # TODO: Check for user.name and user.email git configs being set
 
 prompt="Pick an MCU board:"
-options=("nice!nano" "QMK Proton-C" "bluemicro52840_v1")
+options=("nice!nano" "QMK Proton-C" "BlueMicro52840 (v1)")
 
 echo "$title"
 echo ""
