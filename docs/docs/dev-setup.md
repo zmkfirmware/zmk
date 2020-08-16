@@ -34,7 +34,7 @@ A unix-like environment with the following base packages installed:
 
 <OsTabs>
 <TabItem value="debian">
-On Debian and Ubuntu, we'll use apt to install our base dependencies:
+On Debian and Ubuntu, we'll use `apt` to install our base dependencies:
 
 First, if you haven't updated recently, or if this is a new install,
 you should update to get the latest package information:
@@ -188,7 +188,7 @@ West can be installed by using the `pip` python package manager.
 pip3 install --user -U west
 ```
 
-:::tip pip user packages
+:::danger pip user packages
 If you haven't done so yet, you may need to add the Python Pip user package directory to your `PATH`, e.g.:
 
 ```
@@ -200,7 +200,7 @@ source ~/.bashrc
 
 ### Toolchain Installation
 
-The toolchain provides the compiler, linker, etc necessary to build for the target
+The toolchain provides the compiler, linker, etc., necessary to build for the target
 platform.
 
 <OsTabs>
@@ -217,7 +217,7 @@ wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_
 	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run"
 ```
 
-The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults shouldn normally work as expected.
+The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
 
 </TabItem>
 <TabItem value="raspberryos">
@@ -252,7 +252,7 @@ wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_
  rm "zephyr-toolchain-arm-\${ZSDK_VERSION}-setup.run"
 ```
 
-The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults shouldn normally work as expected.
+The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
 
 </TabItem>
 <TabItem value="win">
@@ -275,10 +275,19 @@ wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_
  rm "zephyr-toolchain-arm-\${ZSDK_VERSION}-setup.run"
 ```
 
-The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults shouldn normally work as expected.
+The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
 
 </TabItem>
 </OsTabs>
+
+:::note
+If you intend to build firmware straight away, make sure to correctly setup the current shell.
+
+Notes on setting this up can be found in the [Environment Variables](#environment-variables) section.
+The transient instructions can be used to setup the current shell, and the automatic instructions can setup any newly made shells automatically.
+
+The transient instructions must be run to build firmware using the current shell.
+:::
 
 ### Source Code
 
@@ -306,7 +315,7 @@ cd zmk
 west init -l app/
 ```
 
-:::note
+:::caution Command Not Found?
 If you encounter errors like `command not found: west` then your `PATH` environment variable is likely
 missing the Python 3 user packages directory. See the [West Build Command](#west-build-command)
 section again for links to how to do this

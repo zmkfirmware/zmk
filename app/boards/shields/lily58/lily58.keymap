@@ -1,23 +1,11 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/matrix-transform.h>
 
 / {
-	chosen {
-		zmk,keymap = &keymap0;
-	};
-	
-	keymap0: keymap {
+	keymap {
 		compatible = "zmk,keymap";
-		label ="Default Lily58 Keymap";
-		layers = <&default &lower &raise>;
-	};
 
-	layers {
-		compatible = "zmk,layers";
-
-		default: layer_0 {
-			label = "DEFAULT";
+		default_layer {
 // ------------------------------------------------------------------------------------------------------------
 // |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   `   |
 // |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
@@ -33,8 +21,7 @@
 			>;
 		};
 
-		lower: layer_1 {
-			label = "LOWER";
+		lower_layer {
 // ------------------------------------------------------------------------------------------------------------
 // |       |     |     |      |      |      |                   |      |       |       |      |       |       |
 // |  F1   |  F2 |  F3 |  F4  |  F5  |  F6  |                   |  F7  |  F8   |  F9   |  F10 |  F11  |  F12  |
@@ -50,8 +37,7 @@
 			>;
 		};
 
-		raise: layer_3 {
-			label = "RAISE";
+		raise_layer {
 // ------------------------------------------------------------------------------------------------------------
 // |       |     |     |      |      |      |                   |      |       |       |      |       |       |
 // |   `   |  1  |  2  |  3   |  4   |  5   |                   |  6   |   7   |   8   |  9   |   0   |       |

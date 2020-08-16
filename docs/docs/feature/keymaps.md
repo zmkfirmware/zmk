@@ -39,10 +39,12 @@ Like many mechanical keyboard firmwares, ZMK keymaps are composed of a collectio
 minimum of at least one layer that is the default, usually near the bottom of the "stack". Each layer
 in ZMK contains a set of bindings that bind a certain behavior to a certain key position in that layer.
 
+|                                                   ![Diagram of three layers](../assets/features/keymaps/layer-diagram.png)                                                    |
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| _A simplified diagram showing three layers. The layout of each layer is the same (they all contain four keys), but the behavior bindings within each layer can be different._ |
+
 In addition to the base default layer (which can be changed), certain bound behaviors may also
 enable/disable additional layers "on top" of the default layer.
-
-**TODO**: A diagram to help visualize layers
 
 When a key location is pressed/released, the stack of all active layers from "top to bottom" is used,
 and the event is sent to the behavior bound at that position in each layer, for it to perform whatever
@@ -102,24 +104,39 @@ ALl the remaining keymap nodes will be nested inside of the root devicetree node
 };
 ```
 
-### Layers
+### Keymap Node
+
+Nested under the devicetree root, is the keymap node. The node _name_ itself is not critical, but the node **MUST** have a property
+`compatible = "zmk,keymap"` in order to be used by ZMK.
 
 ```
-	layers {
-		compatible = "zmk,layers";
+    keymap {
+		compatible = "zmk,keymap";
 
-		default: layer_0 {
-			label = "DEFAULT";
+        // Layer nodes go here!
+	};
+```
+
+### Layers
+
+Each layer of your keymap will be nested under the keymap node. Here is a sample
+that defines just one layer for this keymap:
+
+```
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
 // ---------------------------------------------------------------------------------------------------------------------------------
 // |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   |   \  |
 // |  TAB  |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |   '  |
 // | SHIFT |  Z  |  X  |  C   |  V   |  B   | L SHIFT | L SHIFT |  | L SHIFT | L SHIFT |  N   |  M    |  ,    |  .   |   /   | CTRL |
 //                     | GUI  | DEL  | RET  |  SPACE  |   ESC   |  |   RET   |  SPACE  | TAB  | BSPC  | R-ALT |
 			bindings = <
-	&kp ESC  &kp Q &kp W &kp E        &kp R        &kp T                                            &kp Y &kp U        &kp I        &kp O   &kp P    &kp BSLH
-	&kp TAB  &kp A &kp S &mt MOD_LCTL D &mt MOD_LSFT F &kp G                                            &kp H &mt MOD_LSFT J &mt MOD_LCTL K &kp L   &kp SCLN &kp QUOT
-	&kp LSFT &kp Z &kp X &kp C        &kp V        &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M        &kp CMMA     &kp DOT &kp FSLH &kp RCTL
-	              &kp LGUI &kp DEL       &kp RET &kp SPC &mo 1            &mo 2  &kp SPC  &kp RET &kp BKSP &kp RALT
+	&kp ESC  &kp Q &kp W &kp E &kp R &kp T                                            &kp Y &kp U  &kp I    &kp O   &kp P    &kp BSLH
+	&kp TAB  &kp A &kp S &kp D &kp F &kp G                                            &kp H &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
+	&kp LSFT &kp Z &kp X &kp C &kp V &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M  &kp CMMA &kp DOT &kp FSLH &kp RCTL
+	              &kp LGUI &kp DEL &kp RET &kp SPC &kp ESC            &kp RET  &kp SPC  &kp TAB &kp BKSP &kp RALT
 			>;
 
 			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
@@ -127,24 +144,40 @@ ALl the remaining keymap nodes will be nested inside of the root devicetree node
     };
 ```
 
-### Keymap
+Each layer should have:
 
-```
-    keymap0: keymap {
-		compatible = "zmk,keymap";
-		label ="Default Kyria Keymap";
-		layers = <&default>;
-	};
-```
+1. A `bindings` property this will be a list of behaviour bindings, one for each key position for the keyboard.
+1. (Optional) A `sensor-bindings` property that will be a list of behavior bindings for each sensor on the keyboard. (Currently, only encoders are supported as sensor hardware, but in the future devices like trackpoints would be supported the same way)
 
-### Chosen Keymap
-
-```
-	chosen {
-		zmk,keymap = &keymap0;
-	};
-```
+For the full set of possible behaviors, start at the [Key Press](/docs/behavior/key-press) behavior.
 
 ### Complete Example
 
-You can see a complete example if you see the [stock Kyria keymap](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/kyria.keymap).
+Putting this all together, a complete [`kyria.keymap`](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/kyria.keymap) looks like:
+
+```
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+// ---------------------------------------------------------------------------------------------------------------------------------
+// |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   |   \  |
+// |  TAB  |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |   '  |
+// | SHIFT |  Z  |  X  |  C   |  V   |  B   | L SHIFT | L SHIFT |  | L SHIFT | L SHIFT |  N   |  M    |  ,    |  .   |   /   | CTRL |
+//                     | GUI  | DEL  | RET  |  SPACE  |   ESC   |  |   RET   |  SPACE  | TAB  | BSPC  | R-ALT |
+			bindings = <
+	&kp ESC  &kp Q &kp W &kp E &kp R &kp T                                            &kp Y &kp U  &kp I    &kp O   &kp P    &kp BSLH
+	&kp TAB  &kp A &kp S &kp D &kp F &kp G                                            &kp H &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
+	&kp LSFT &kp Z &kp X &kp C &kp V &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M  &kp CMMA &kp DOT &kp FSLH &kp RCTL
+	              &kp LGUI &kp DEL &kp RET &kp SPC &kp ESC            &kp RET  &kp SPC  &kp TAB &kp BKSP &kp RALT
+			>;
+
+			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
+		};
+	};
+};
+```
