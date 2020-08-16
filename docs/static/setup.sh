@@ -37,7 +37,7 @@ echo ""
 echo "Keyboard Shield Selection:"
 
 prompt="Pick an keyboard:"
-options=("Kyria" "Lily58" "Corne")
+options=("Kyria" "Lily58" "Corne" "Splitreus62")
 
 PS3="$prompt "
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
