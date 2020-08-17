@@ -15,6 +15,18 @@ static enum usb_dc_status_code usb_status;
 
 static struct device *hid_dev;
 
+static K_SEM_DEFINE(hid_sem, 1, 1);
+
+static void in_ready_cb(void)
+{
+	k_sem_give(&hid_sem);
+}
+
+static const struct hid_ops ops = 
+{
+	.int_in_ready = in_ready_cb,
+};
+
 int zmk_usb_hid_send_report(const u8_t *report, size_t len)
 {
 	if (usb_status == USB_DC_SUSPEND)
@@ -22,6 +34,7 @@ int zmk_usb_hid_send_report(const u8_t *report, size_t len)
 		return usb_wakeup_request();
 	}
 
+	k_sem_take(&hid_sem, K_FOREVER);
 	return hid_int_ep_write(hid_dev, report, len, NULL);
 }
 
@@ -43,7 +56,7 @@ static int zmk_usb_hid_init(struct device *_arg)
 
 	usb_hid_register_device(hid_dev,
 							zmk_hid_report_desc, sizeof(zmk_hid_report_desc),
-							NULL);
+							&ops);
 
 	usb_hid_init(hid_dev);
 
