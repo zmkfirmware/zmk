@@ -21,6 +21,18 @@ manifest:
           - hal_microchip
           - hal_nxp
           - hal_openisa
+          - hal_silabs
+          - hal_xtensa
+          - hal_st
+          - hal_ti
+          - loramac-node
+          - mcuboot
+          - mcumgr
+          - net-tools
+          - segger
+          - openthread
+          - edtt
+          - trusted-firmware-m
     - name: uf2
       remote: microsoft
       path: tools/uf2
