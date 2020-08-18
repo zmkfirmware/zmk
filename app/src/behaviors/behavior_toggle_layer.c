@@ -25,12 +25,7 @@ static int behavior_tog_init(struct device *dev)
 
 static int tog_keymap_binding_pressed(struct device *dev, u32_t position, u32_t layer, u32_t _)
 {
-  LOG_DBG("position %d layer %d current %d", position, layer, zmk_keymap_layer_active(layer));
-
-  if (zmk_keymap_layer_active(layer))
-    return zmk_keymap_layer_deactivate(layer);
-
-  return zmk_keymap_layer_activate(layer);
+  return zmk_keymap_layer_toggle(layer);
 }
 
 static int tog_keymap_binding_released(struct device *dev, u32_t position, u32_t layer, u32_t _)
