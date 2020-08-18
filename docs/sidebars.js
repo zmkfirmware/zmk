@@ -10,6 +10,7 @@ module.exports = {
     Behaviors: [
       "behavior/key-press",
       "behavior/layers",
+      "behavior/misc",
       "behavior/lighting",
     ],
     Development: [

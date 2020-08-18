@@ -1,0 +1,8 @@
+# Copyright (c) 2020, Pete Johanson
+# SPDX-License-Identifier: MIT
+
+description: None Binding Behavior
+
+compatible: "zmk,behavior-none"
+
+include: zero_param.yaml
