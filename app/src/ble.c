@@ -190,6 +190,12 @@ static int zmk_ble_init(struct device *_arg)
     return 0;
 }
 
+int zmk_ble_unpair_all()
+{
+    LOG_DBG("");
+    return bt_unpair(BT_ID_DEFAULT, NULL);
+};
+
 bool zmk_ble_handle_key_user(struct zmk_key_event *key_event)
 {
     zmk_key key = key_event->key;

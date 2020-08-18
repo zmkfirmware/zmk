@@ -205,7 +205,13 @@ static int kscan_gpio_config_interrupts(struct device **devices,
 		}                                                                                                                                                                                                                                   \
 		data->callback = callback;                                                                                                                                                                                                          \
 		return 0;                                                                                                                                                                                                                           \
-	}                                                                                                                                                                                                                                       \
+	};                                                                                                                                                                                                                                      \
+	static int kscan_gpio_enable_##n(struct device *dev) \
+	{ \
+		int err = kscan_gpio_enable_interrupts_##n(dev); \
+		if (err) { return err; } \
+		return kscan_gpio_read_##n(dev); \
+	}; \
 	static int kscan_gpio_init_##n(struct device *dev)                                                                                                                                                                                      \
 	{                                                                                                                                                                                                                                       \
 		struct kscan_gpio_data_##n *data = dev->driver_data;                                                                                                                                                                                \
@@ -258,7 +264,7 @@ static int kscan_gpio_config_interrupts(struct device **devices,
 	}                                                                                                                                                                                                                                       \
 	static const struct kscan_driver_api gpio_driver_api_##n = {                                                                                                                                                                            \
 		.config = kscan_gpio_configure_##n,                                                                                                                                                                                                 \
-		.enable_callback = kscan_gpio_enable_interrupts_##n,                                                                                                                                                                                \
+		.enable_callback = kscan_gpio_enable_##n,                                                                                                                                                                                \
 		.disable_callback = kscan_gpio_disable_interrupts_##n,                                                                                                                                                                              \
 	};                                                                                                                                                                                                                                      \
 	static const struct kscan_gpio_config_##n kscan_gpio_config_##n = {                                                                                                                                                                     \
