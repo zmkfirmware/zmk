@@ -39,3 +39,18 @@ Example:
 ```
 &mo LOWER
 ```
+
+## Toggle Layer
+
+The "toggle layer" behavior allows you to enable a layer until the layer is manually disabled.
+
+### Behavior Binding
+
+- Reference: `&tog`
+- Parameter: The layer number to enable/disable, e.g. `1`
+
+Example:
+
+```
+&tog LOWER
+```
