@@ -54,3 +54,39 @@ Example:
 ```
 &tog LOWER
 ```
+
+"Toggle layer" for a :
+```
+#define DEFAULT 0
+#define NAVI    1
+
+#define NONE 0
+ 
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+			bindings = <
+                &tog NAVI &kp KDIV  &kp KMLT  &kp KMIN
+                &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp KPLS
+                &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp KPLS
+                &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp RET
+                &kp NUM_0 &kp NUM_0 &kp DOT   &kp RET
+			>;
+		};
+
+		nav_layer {
+			bindings = <
+                &tog NAVI &kp KDIV  &kp KMLT  &kp KMIN
+                &kp HOME  &kp UARW  &kp PGUP  &kp KPLS
+                &kp LARW  &none     &kp RARW  &kp KPLS
+                &kp END   &kp DARW  &kp PGDN  &kp RET
+                &kp INS   &kp INS   &kp DEL   &kp RET
+            >;
+		};
+	};
+};
+```
+
+It is possible to use "toggle layer" to have keys that raise and lower the layers as well.
