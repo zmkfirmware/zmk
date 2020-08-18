@@ -76,6 +76,11 @@ static struct zmk_behavior_binding zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_
 	WRITE_BIT(zmk_keymap_layer_state, layer, state); \
 	return 0;
 
+bool zmk_keymap_layer_active(u8_t layer)
+{
+	return (zmk_keymap_layer_state & (BIT(layer))) == (BIT(layer));
+};
+
 int zmk_keymap_layer_activate(u8_t layer)
 {
 	SET_LAYER_STATE(layer, true);
