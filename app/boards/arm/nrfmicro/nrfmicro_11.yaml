@@ -1,0 +1,15 @@
+identifier: nrfmicro_11
+name: nrfmicro_11
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - watchdog
