@@ -4,7 +4,7 @@ title: Key Presses
 
 ## Summary
 
-The most basic of behaiors, is the ability to send certain keycode presses and releases in response to activating
+The most basic of behaviors, is the ability to send certain keycode presses and releases in response to activating
 a certain key.
 
 For reference on keycode values, see the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12).
