@@ -17,3 +17,6 @@
 		;
 };
 
+&bt_unpair_combo {
+	key-positions = <0 42>;
+};
