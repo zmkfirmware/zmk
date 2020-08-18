@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 Peter Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include <device.h>
 #include <init.h>
