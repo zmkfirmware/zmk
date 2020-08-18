@@ -94,7 +94,9 @@ int zmk_keymap_layer_deactivate(u8_t layer)
 int zmk_keymap_layer_toggle(u8_t layer)
 {
 	if (zmk_keymap_layer_active(layer))
-    	return zmk_keymap_layer_deactivate(layer);
+	{
+		return zmk_keymap_layer_deactivate(layer);
+	}
 
   	return zmk_keymap_layer_activate(layer);
 };
