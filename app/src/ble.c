@@ -28,6 +28,16 @@ static struct bt_conn *auth_passkey_entry_conn;
 static u8_t passkey_entries[6] = {0, 0, 0, 0, 0, 0};
 static u8_t passkey_digit = 0;
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
+#define ZMK_ADV_PARAMS BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | \
+                                        BT_LE_ADV_OPT_USE_NAME | \
+                                        BT_LE_ADV_OPT_ONE_TIME, \
+                                        BT_GAP_ADV_FAST_INT_MIN_2, \
+                                        BT_GAP_ADV_FAST_INT_MAX_2, NULL)
+#else
+#define ZMK_ADV_PARAMS BT_LE_ADV_CONN_NAME
+#endif
+
 static void connected(struct bt_conn *conn, u8_t err)
 {
     char addr[BT_ADDR_LE_STR_LEN];
@@ -159,7 +169,7 @@ static void zmk_ble_ready(int err)
         return;
     }
 
-    err = bt_le_adv_start(BT_LE_ADV_CONN_NAME, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
+    err = bt_le_adv_start(ZMK_ADV_PARAMS, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
     if (err)
     {
         LOG_ERR("Advertising failed to start (err %d)", err);
