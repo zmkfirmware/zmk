@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 
 config BOARD_ENABLE_DCDC
 	bool "Enable DCDC mode"
