@@ -25,9 +25,10 @@ their user config directory, and customize the keymap to their liking.
 ZMK implements the concept of "behaviors". Each can be bound to a specific key position, sensor (encoder), or
 layer. The "behavior" will perform particular actions when events occur for that binding.
 
-For example, the simplest behavior in ZMK is the "key press" behavior. It responds to one key on the keyboard.
-When pressed, it will send a keycode to the [host](/docs/terms#host), and when the key is
-released, it updates the host notifying the release of the keycode.
+For example, the simplest behavior in ZMK is the "key press" behavior, which responds to key position (a
+certain spot on the keyboard), and when that position is pressed, send a keycode to the
+[host](/docs/terms#host), and when the key position is released, updates the host to notify of the keycode
+being released.
 
 For the full set of possible behaviors, start at the [Key Press](/docs/behavior/key-press) behavior.
 
@@ -63,7 +64,7 @@ be used for that key position.
 
 In this case, the `A` is actually a define for the raw HID keycode, to make keymaps easier to read and write.
 
-For an example of a binding that uses two parameters, you can see how "mod-tap" (`mt`) is bound:
+For an example of a binding that uses two parameters, you can see how "[mod-tap](/docs/behavior/mod-tap)" (`mt`) is bound:
 
 ```
 &mt MOD_LSFT D
