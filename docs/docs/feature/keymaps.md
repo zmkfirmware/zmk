@@ -4,9 +4,9 @@ title: Keymaps & Behaviors
 sidebar_label: Keymaps
 ---
 
-ZMK uses an declarative approach to keymaps, instead of using C code for all keymap configuration.
+ZMK uses a declarative approach to keymaps, instead of using C code for all keymap configuration.
 Right now, ZMK uses the devicetree syntax to declare those keymaps; future work is envisioned for
-supporting dynamic loading of declarative keymaps, e.g. over USB Mass Storage or via a custom BLE
+supporting dynamic loading of declarative keymaps, e.g., over USB Mass Storage or via a custom BLE
 service.
 
 :::note
@@ -16,20 +16,20 @@ in the future by allowing user configs to add to the CMake application built by 
 
 ## Big Picture
 
-All keyboard definitions (complete boards or shields) include the _default_ keymap for that keyboard,
-so ZMK can produce a "stock" firmware for that keyboard without any further modifications. For users
-looking to customize their keyboard's behavior, they can copy the stock `.keymap` file into their
-user config directory, and customize the keymap to their liking.
+All keyboard definitions (complete boards or shields) include the _default_ keymap for that keyboard
+so that ZMK can produce a "stock" firmware for that keyboard without any further modifications. For
+users looking to customize their keyboard's behavior, they can copy the stock `.keymap` file into
+their user config directory, and customize the keymap to their liking.
 
 ## Behaviors
 
-ZMK implements the concept of "behaviors", which can be bound to a certain key position, sensor (encoder),
-or layer, to perform certain actions when events occur for that binding (e.g. when a certain key position
+ZMK implements the concept of "behaviors", which can be bound to a specific key position, sensor (encoder),
+or layer, to perform particular actions when events occur for that binding (e.g. when a specific key position
 is pressed or released, or an encoder triggers a rotation event).
 
-For example, the simplest behavior in ZMK is the "key press" behavior, which responds to key position
+For example, the simplest behavior in ZMK is the "key press" behavior, which responds to a key position
 (a certain spot on the keyboard), and when that position is pressed, send a keycode to the host, and
-when the key position is released, updates the host to notify of the keycode being released.
+when the key position is released, updates the host notifying of the keycode being released.
 
 For the full set of possible behaviors, start at the [Key Press](/docs/behavior/key-press) behavior.
 
@@ -146,7 +146,7 @@ that defines just one layer for this keymap:
 
 Each layer should have:
 
-1. A `bindings` property this will be a list of behaviour bindings, one for each key position for the keyboard.
+1. A `bindings` property that will be a list of behaviour bindings, one for each key position for the keyboard.
 1. (Optional) A `sensor-bindings` property that will be a list of behavior bindings for each sensor on the keyboard. (Currently, only encoders are supported as sensor hardware, but in the future devices like trackpoints would be supported the same way)
 
 For the full set of possible behaviors, start at the [Key Press](/docs/behavior/key-press) behavior.
