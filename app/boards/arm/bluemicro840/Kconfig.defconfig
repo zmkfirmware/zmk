@@ -1,12 +1,12 @@
-# BlueMicro52840 board configuration
+# BlueMicro840 board configuration
 
 # Copyright (c) 2020 Pete Johanson, Derek Schmell
 # SPDX-License-Identifier: MIT
 
-if BOARD_BLUEMICRO52840_V1
+if BOARD_BLUEMICRO840_V1
 
 config BOARD
-	default "bluemicro52840_v1"
+	default "bluemicro840_v1"
 
 if USB
 
@@ -27,4 +27,4 @@ config ZMK_BLE
 config ZMK_USB
 	default y
 
-endif # BOARD_BLUEMICRO52840_V1
+endif # BOARD_BLUEMICRO840_V1

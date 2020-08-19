@@ -9,8 +9,8 @@
 #include "arduino_pro_micro_pins.dtsi"
 
 / {
-	model = "BlueMicro52840_V1";
-	compatible = "bluemicro52840,v1";
+	model = "BlueMicro840_V1";
+	compatible = "bluemicro840,v1";
 
 	chosen {
 		zephyr,code-partition = &code_partition;
