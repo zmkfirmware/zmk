@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 Peter Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include <device.h>
 #include <init.h>
@@ -22,6 +27,16 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static struct bt_conn *auth_passkey_entry_conn;
 static u8_t passkey_entries[6] = {0, 0, 0, 0, 0, 0};
 static u8_t passkey_digit = 0;
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
+#define ZMK_ADV_PARAMS BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | \
+                                        BT_LE_ADV_OPT_USE_NAME | \
+                                        BT_LE_ADV_OPT_ONE_TIME, \
+                                        BT_GAP_ADV_FAST_INT_MIN_2, \
+                                        BT_GAP_ADV_FAST_INT_MAX_2, NULL)
+#else
+#define ZMK_ADV_PARAMS BT_LE_ADV_CONN_NAME
+#endif
 
 static void connected(struct bt_conn *conn, u8_t err)
 {
@@ -76,29 +91,10 @@ static void security_changed(struct bt_conn *conn, bt_security_t level,
     }
 }
 
-#if !IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
-static bool le_param_req(struct bt_conn *conn, struct bt_le_conn_param *param) {
-    static struct bt_conn_info info;
-
-    bt_conn_get_info(conn, &info);
-
-    /* This captures a param change from central half of a split board connection
-       to stop default params from getting set over the top of our preferred ones */
-    if (info.role == BT_CONN_ROLE_MASTER && (param->interval_min != 6 || param->latency != 30)) {
-        return false;
-    }
-
-    return true;
-}
-#endif
-
 static struct bt_conn_cb conn_callbacks = {
     .connected = connected,
     .disconnected = disconnected,
     .security_changed = security_changed,
-#if !IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
-    .le_param_req = le_param_req,
-#endif
 };
 
 static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
@@ -173,7 +169,7 @@ static void zmk_ble_ready(int err)
         return;
     }
 
-    err = bt_le_adv_start(BT_LE_ADV_CONN_NAME, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
+    err = bt_le_adv_start(ZMK_ADV_PARAMS, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
     if (err)
     {
         LOG_ERR("Advertising failed to start (err %d)", err);
@@ -203,6 +199,12 @@ static int zmk_ble_init(struct device *_arg)
 
     return 0;
 }
+
+int zmk_ble_unpair_all()
+{
+    LOG_DBG("");
+    return bt_unpair(BT_ID_DEFAULT, NULL);
+};
 
 bool zmk_ble_handle_key_user(struct zmk_key_event *key_event)
 {

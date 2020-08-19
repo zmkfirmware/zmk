@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Pete Johanson
+ * Copyright (c) 2020 Pete Johanson, Derek Schmell
  *
  * SPDX-License-Identifier: MIT
  */
@@ -9,8 +9,8 @@
 #include "arduino_pro_micro_pins.dtsi"
 
 / {
-	model = "nice!nano";
-	compatible = "nice,nano";
+	model = "BlueMicro52840_V1";
+	compatible = "bluemicro52840,v1";
 
 	chosen {
 		zephyr,code-partition = &code_partition;
@@ -24,7 +24,7 @@
 	leds {
 		compatible = "gpio-leds";
 		blue_led: led_0 {
-			gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio0 42 GPIO_ACTIVE_HIGH>;
 			label = "Blue LED";
 		};
 	};
@@ -41,8 +41,8 @@
 
 &i2c0 {
 	compatible = "nordic,nrf-twi";
-	sda-pin = <17>;
-	scl-pin = <20>;
+	sda-pin = <15>;
+	scl-pin = <17>;
 };
 
 &uart0 {
