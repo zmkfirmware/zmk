@@ -1,5 +1,5 @@
-identifier: bluemicro52840_v1
-name: BlueMicro52840_V1
+identifier: bluemicro840_v1
+name: BlueMicro840_V1
 type: mcu
 arch: arm
 toolchain:
