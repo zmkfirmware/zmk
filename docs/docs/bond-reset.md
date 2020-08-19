@@ -5,7 +5,8 @@ sidebar_label: BLE Reset
 ---
 
 Known as a 'bond reset', a special key combination, that is not related to the user defined key map, which
-clears all wireless connection configurations.
+clears all wireless connection configurations. The keys must be held for 3 to 5 seconds after the device is
+reset.
 
 :::warning
 Currently, ZMK only supports a single BLE host. If you remove the keyboard from the host's bluetooth devices
