@@ -4,10 +4,9 @@ title: Keymaps & Behaviors
 sidebar_label: Keymaps
 ---
 
-ZMK uses a declarative approach to keymaps, instead of using C code for all keymap configuration.
-Right now, ZMK uses the devicetree syntax to declare those keymaps; future work is envisioned for
-supporting dynamic loading of declarative keymaps, e.g., over USB Mass Storage or via a custom BLE
-service.
+ZMK uses a declarative approach to keymaps, instead of using C code for all keymap configuration. Right now,
+ZMK uses the devicetree syntax to declare those keymaps. In the future, we hope to support loading keymaps
+dynamically over USB Mass Storage, or a custom BLE service.
 
 :::note
 For advanced users looking to implement custom behaviors for their keymaps, this will be possible
@@ -23,13 +22,12 @@ their user config directory, and customize the keymap to their liking.
 
 ## Behaviors
 
-ZMK implements the concept of "behaviors", which can be bound to a specific key position, sensor (encoder),
-or layer, to perform particular actions when events occur for that binding (e.g. when a specific key position
-is pressed or released, or an encoder triggers a rotation event).
+ZMK implements the concept of "behaviors". Each can be bound to a specific key position, sensor (encoder), or
+layer. The "behavior" will perform particular actions when events occur for that binding.
 
-For example, the simplest behavior in ZMK is the "key press" behavior, which responds to a key position
-(a certain spot on the keyboard), and when that position is pressed, send a keycode to the host, and
-when the key position is released, updates the host notifying of the keycode being released.
+For example, the simplest behavior in ZMK is the "key press" behavior. It responds to one key on the keyboard.
+When pressed, it will send a keycode to the [host](/docs/terms#host), and when the key is
+released, it updates the host notifying the release of the keycode.
 
 For the full set of possible behaviors, start at the [Key Press](/docs/behavior/key-press) behavior.
 
@@ -46,11 +44,11 @@ in ZMK contains a set of bindings that bind a certain behavior to a certain key 
 In addition to the base default layer (which can be changed), certain bound behaviors may also
 enable/disable additional layers "on top" of the default layer.
 
-When a key location is pressed/released, the stack of all active layers from "top to bottom" is used,
-and the event is sent to the behavior bound at that position in each layer, for it to perform whatever
-actions it wants to in reaction to the event. Those behaviors can choose to "handle" the event, and stop
-it from being passed to any lower layers, or may choose to "pass it along", and let the next layer
-in the stack _also_ get the event.
+When a key location is pressed or released, the stack of all active [layers](/docs/terms#layer) from "top to
+bottom" is used. The event is sent to the [behavior](/docs/terms#behavior) bound at that position in each
+layer. Those [behaviors](/docs/terms#behavior) can "handle" the event, stop it from being passed to any lower
+[layers](/docs/terms#layer), or choose to "pass it along" and let the [layer](/docs/terms#layer) below handle
+the event.
 
 ## Behavior Bindings
 
@@ -65,7 +63,7 @@ be used for that key position.
 
 In this case, the `A` is actually a define for the raw HID keycode, to make keymaps easier to read and write.
 
-For example of a binding that uses two parameters, you can see how "mod-tap" (`mt`) is bound:
+For an example of a binding that uses two parameters, you can see how "mod-tap" (`mt`) is bound:
 
 ```
 &mt MOD_LSFT D
@@ -80,8 +78,9 @@ A keymap file is composed of several sections, that together make up a valid dev
 
 ### Includes
 
-The devicetree files are actually preprocessed before being finally leveraged by Zephyr. This allows using standard C defines to create meaningful placeholders
-for what would otherwise be cryptic integer keycodes, etc. This also allows bringing in _other_ devicetree nodes from separate files.
+The devicetree files are actually preprocessed before being finally leveraged by Zephyr. This allows
+using standard C defines to create meaningful placeholders for what would otherwise be cryptic
+integer keycodes, etc. This also allows bringing in _other_ devicetree nodes from separate files.
 
 The top two lines of most keymaps should include:
 
@@ -146,7 +145,7 @@ that defines just one layer for this keymap:
 
 Each layer should have:
 
-1. A `bindings` property that will be a list of behaviour bindings, one for each key position for the keyboard.
+1. A `bindings` property that will be a list of behavior bindings, one for each key position for the keyboard.
 1. (Optional) A `sensor-bindings` property that will be a list of behavior bindings for each sensor on the keyboard. (Currently, only encoders are supported as sensor hardware, but in the future devices like trackpoints would be supported the same way)
 
 For the full set of possible behaviors, start at the [Key Press](/docs/behavior/key-press) behavior.
