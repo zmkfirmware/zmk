@@ -46,7 +46,7 @@ enable/disable additional layers "on top" of the default layer.
 
 When a key location is pressed or released, the stack of all active [layers](/docs/terms#layer) from "top to
 bottom" is used. The event is sent to the [behavior](/docs/terms#behavior) bound at that position in each
-layer. Those [behaviors](/docs/terms#behavior) can "handle" the event, stop it from being passed to any lower
+layer. These [behaviors](/docs/terms#behavior) can "handle" the event, stopping it from being passed to any lower
 [layers](/docs/terms#layer), or choose to "pass it along" and let the [layer](/docs/terms#layer) below handle
 the event.
 
