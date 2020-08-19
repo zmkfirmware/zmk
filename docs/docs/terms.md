@@ -8,13 +8,17 @@ sidebar_label: Terms
 
 The device that will receive the key strokes from the keyboard
 
-### Central
+## Host Peripheral
 
-The part of the keyboard that communicates with the host
+A device that connects to a host.
 
-### Peripheral
+### Split Central
 
-The other wireless parts of the keyboard. (e.g., other half of a split keyboard)
+The half of a split keyboard that talks to the host
+
+### Split Peripheral
+
+The half of a split keyboard that will not work on its own
 
 ### BLE
 
