@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Cache west modules
         timeout-minutes: 2
+        continue-on-error: true
         uses: actions/cache@v2
         env:
           cache-name: cache-zephyr-modules
