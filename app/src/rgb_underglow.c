@@ -7,6 +7,7 @@
 #include <device.h>
 #include <init.h>
 #include <kernel.h>
+#include <settings/settings.h>
 
 #include <math.h>
 #include <stdlib.h>
@@ -45,11 +46,38 @@ struct rgb_underglow_state {
     bool  on;
 };
 
-struct rgb_underglow_state state;
-
 struct device *led_strip;
 
 struct led_rgb pixels[STRIP_NUM_PIXELS];
+
+struct rgb_underglow_state state;
+
+static int rgb_settings_set(const char *name, size_t len,
+                            settings_read_cb read_cb, void *cb_arg)
+{
+    const char *next;
+    int rc;
+
+    if (settings_name_steq(name, "state", &next) && !next) {
+        if (len != sizeof(state)) {
+            return -EINVAL;
+        }
+
+        rc = read_cb(cb_arg, &state, sizeof(state));
+        if (rc >= 0) {
+            return 0;
+        }
+
+        return rc;
+    }
+
+    return -ENOENT;
+}
+
+struct settings_handler rgb_conf = {
+    .name = "rgb",
+    .h_set = rgb_settings_set
+};
 
 static struct led_rgb hsb_to_rgb(struct led_hsb hsb)
 {
@@ -187,18 +215,33 @@ static int zmk_rgb_underglow_init(struct device *_arg)
 	}
 
     state = (struct rgb_underglow_state){
-        hue: 0,
-        saturation: 100,
-        brightness: 100,
-        animation_speed: 3,
-        current_effect: 0,
+        hue: CONFIG_ZMK_RGB_UNDERGLOW_HUE_START,
+        saturation: CONFIG_ZMK_RGB_UNDERGLOW_SAT_START,
+        brightness: CONFIG_ZMK_RGB_UNDERGLOW_BRT_START,
+        animation_speed: CONFIG_ZMK_RGB_UNDERGLOW_SPD_START,
+        current_effect: CONFIG_ZMK_RGB_UNDERGLOW_EFF_START,
         animation_step: 0,
+#ifdef CONFIG_ZMK_RGB_UNDERGLOW_ON_START
         on: true
+#else
+        on: false
+#endif
     };
 
-    k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
+    settings_subsys_init();
+    settings_register(&rgb_conf);
+    settings_load();
+
+    if (state.on) {
+        k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
+    }
 
     return 0;
+}
+
+int zmk_rgb_underglow_save_state()
+{
+    return settings_save_one("rgb/state", &state, sizeof(state));
 }
 
 int zmk_rgb_underglow_cycle_effect(int direction)
@@ -218,7 +261,7 @@ int zmk_rgb_underglow_cycle_effect(int direction)
     
     state.animation_step = 0;
 
-    return 0;
+    return zmk_rgb_underglow_save_state();
 }
 
 int zmk_rgb_underglow_toggle()
@@ -242,7 +285,7 @@ int zmk_rgb_underglow_toggle()
         k_timer_stop(&underglow_tick);
     }
 
-    return 0;
+    return zmk_rgb_underglow_save_state();
 }
 
 int zmk_rgb_underglow_change_hue(int direction)
@@ -250,17 +293,15 @@ int zmk_rgb_underglow_change_hue(int direction)
     if (!led_strip) return -ENODEV;
 
     if (state.hue == 0 && direction < 0) {
-        state.hue = 350;
+        state.hue = 360 - CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP;
         return 0;
     }
     
     state.hue += direction * CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP;
 
-    if (state.hue > 350) {
-        state.hue = 0;
-    }
+    state.hue = state.hue % 360;
 
-    return 0;
+    return zmk_rgb_underglow_save_state();
 }
 
 int zmk_rgb_underglow_change_sat(int direction)
@@ -277,7 +318,7 @@ int zmk_rgb_underglow_change_sat(int direction)
         state.saturation = 100;
     }
 
-    return 0;
+    return zmk_rgb_underglow_save_state();
 }
 
 int zmk_rgb_underglow_change_brt(int direction)
@@ -294,7 +335,7 @@ int zmk_rgb_underglow_change_brt(int direction)
         state.brightness = 100;
     }
 
-    return 0;
+    return zmk_rgb_underglow_save_state();
 }
 
 int zmk_rgb_underglow_change_spd(int direction)
@@ -311,7 +352,7 @@ int zmk_rgb_underglow_change_spd(int direction)
         state.animation_speed = 5;
     }
 
-    return 0;
+    return zmk_rgb_underglow_save_state();
 }
 
 SYS_INIT(zmk_rgb_underglow_init,
