@@ -1,0 +1,15 @@
+# Copyright (c) 2020, Cody McGinnis
+# SPDX-License-Identifier: MIT
+
+description: Hold or Tap behavior
+
+compatible: "zmk,behavior-tap-hold"
+
+include: zero_param.yaml
+
+properties:
+  bindings:
+    type: phandle-array
+    required: true
+  hold_ms:
+    type: int
