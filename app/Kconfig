@@ -45,12 +45,6 @@ menuconfig ZMK_BLE
 
 if ZMK_BLE
 
-config ZMK_BLE_UNPAIR_COMBO
-	bool "Enable BT unpair combo"
-	help
-		Adds a magic key combo that can be held on startup to remove all paired devices
-	default n
-
 config ZMK_BLE_INIT_PRIORITY
 	int "Init Priority"
 	default 50
