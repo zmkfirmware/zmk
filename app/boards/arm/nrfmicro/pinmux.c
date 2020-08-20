@@ -17,7 +17,7 @@ static int pinmux_nrfmicro_init(struct device *port)
 
 	struct device *p1 = device_get_binding("GPIO_1");
 
-#if defined(BOARD_NRFMICRO_13)
+#if CONFIG_BOARD_NRFMICRO_13
 	struct device *p0 = device_get_binding("GPIO_0");
 	// enable EXT_VCC (use 0 for nRFMicro 1.3, use 1 for nRFMicro 1.1)
 	gpio_pin_configure(p1, 9, GPIO_OUTPUT);

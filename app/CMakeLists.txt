@@ -1,4 +1,3 @@
-# Find Zephyr. This also loads Zephyr's build system.
 cmake_minimum_required(VERSION 3.13.1)
 
 set(CONFIG_APPLICATION_DEFINED_SYSCALL true)
@@ -15,6 +14,7 @@ list(APPEND SYSCALL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/drivers/zephyr)
 
 include(cmake/zmk_config.cmake)
 
+# Find Zephyr. This also loads Zephyr's build system.
 find_package(Zephyr REQUIRED HINTS ../zephyr)
 project(zmk)
 
