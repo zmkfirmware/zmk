@@ -23,9 +23,13 @@ static int pinmux_nrfmicro_init(struct device *port)
 	gpio_pin_configure(p1, 9, GPIO_OUTPUT);
 	gpio_pin_set(p1, 9, 0);
 
-	// enable charger (nRFMicro 1.3 only)
+#if CONFIG_BOARD_ENABLE_CHARGER
 	gpio_pin_configure(p0, 5, GPIO_OUTPUT);
 	gpio_pin_set(p0, 5, 0);
+#else
+	gpio_pin_configure(p0, 5, GPIO_INPUT);
+#endif
+
 #else
     // enable EXT_VCC (use 0 for nRFMicro 1.3, use 1 for nRFMicro 1.1)
 	gpio_pin_configure(p1, 9, GPIO_OUTPUT);

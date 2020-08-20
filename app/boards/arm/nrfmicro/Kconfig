@@ -3,3 +3,8 @@ config BOARD_ENABLE_DCDC
 	select SOC_DCDC_NRF52X
 	default y
 	depends on (BOARD_NRFMICRO_11 || BOARD_NRFMICRO_11_FLIPPED || BOARD_NRFMICRO_13)
+
+config BOARD_ENABLE_CHARGER
+	bool "Enable battery charger"
+	default y
+	depends on (BOARD_NRFMICRO_13)
