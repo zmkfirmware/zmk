@@ -92,6 +92,11 @@
 
 #define GUI 0x65
 
+#define UNDO 0x7A
+#define CUT 0x7B
+#define COPY 0x7C
+#define PSTE 0x7D
+
 #define CURU 0xB4
 
 #define LPRN 0xB6

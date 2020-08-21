@@ -52,7 +52,7 @@
 &trans   &trans   &trans   &trans   &trans   &trans                   &trans   &trans    &trans   &trans   &trans    &trans
 &trans   &kp INS  &kp PRSC &kp GUI  &trans   &trans                   &kp PGUP &trans    &kp UARW &trans   &kp NUM_0 &trans
 &trans   &kp LALT &kp LCTL &kp LSFT &trans   &kp CLCK                 &kp PGDN &kp LARW  &kp DARW &kp RARW &kp DEL   &kp BKSP
-&trans   &kp 0x7A &kp 0x7B &kp 0x7C &kp 0x7D &trans  &trans   &trans  &trans   &trans    &trans   &trans   &trans    &trans
+&trans   &kp UNDO &kp CUT  &kp COPY &kp PSTE &trans  &trans   &trans  &trans   &trans    &trans   &trans   &trans    &trans
                   &trans   &trans   &trans   &trans  &trans   &trans  &trans   &trans    &trans   &trans
             >;
         };
