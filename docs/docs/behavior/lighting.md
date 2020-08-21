@@ -1,15 +1,16 @@
 ---
-title: Lighting
+title: Lighting Behavior
+sidebar_label: Lighting
 ---
 
 ## Summary
 
-Lighting is often used for either aesthetics or for the practical purposes of lighting up keys in the dark. 
+Lighting is often used for either aesthetics or for the practical purposes of lighting up keys in the dark.
 Currently ZMK supports RGB underglow, which can be changed and configured using its behavior.
 
 ## RGB Action Defines
 
-RGB actions defines are provided through the [`dt-bindings/zmk/rgb.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/rgb.h) header, 
+RGB actions defines are provided through the [`dt-bindings/zmk/rgb.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/rgb.h) header,
 which is added at the top of the keymap file:
 
 ```
@@ -21,7 +22,7 @@ This will allow you to reference the actions defined in this header such as `RGB
 Here is a table describing the action for each define:
 
 | Define    | Action                                                    |
-|-----------|-----------------------------------------------------------|
+| --------- | --------------------------------------------------------- |
 | `RGB_TOG` | Toggles the RGB feature on and off                        |
 | `RGB_HUI` | Increases the hue of the RGB feature                      |
 | `RGB_HUD` | Decreases the hue of the RGB feature                      |
