@@ -180,7 +180,7 @@ brew install cmake ninja python3 ccache dtc git wget
 
 ### West Build Command
 
-`west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/latest/guides/west/index.html) used to configure and build Zephyr™ applications.
+`west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/2.3.0/guides/west/index.html) used to configure and build Zephyr™ applications.
 
 West can be installed by using the `pip` python package manager.
 
@@ -223,7 +223,7 @@ The installation will prompt with several questions about installation location,
 <TabItem value="raspberryos">
 
 Because Raspberry OS (Raspbian) runs on the same architecture (but different ABI) as the keyboard MCUs,
-the operating system's installed [cross compilers](https://docs.zephyrproject.org/latest/getting_started/toolchain_other_x_compilers.html) can be used to target the different ABI.
+the operating system's installed [cross compilers](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_other_x_compilers.html) can be used to target the different ABI.
 
 First, the cross compiler should be installed:
 
@@ -259,23 +259,20 @@ The installation will prompt with several questions about installation location,
 
 #### GNU ARM Embedded
 
-Since the Zephyr™ SDK is not available for Windows, we recommending following the steps to install the [GNU ARM Embedded](https://docs.zephyrproject.org/latest/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded).
+Since the Zephyr™ SDK is not available for Windows, we recommending following the steps to install the [GNU ARM Embedded](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded).
 
 </TabItem>
 <TabItem value="mac">
 
-#### Zephyr™ ARM SDK
+#### GNU ARM Embedded
 
-To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
+Since the Zephyr™ SDK is not available for macOS, we recommending following the steps to install the [GNU ARM Embedded](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded).
 
-```
-export ZSDK_VERSION=0.11.2
-wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
- sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
- rm "zephyr-toolchain-arm-\${ZSDK_VERSION}-setup.run"
-```
+:::warning Security Controls Workaround
 
-The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
+Please be sure to read the [additional setup instructions](https://docs.zephyrproject.org/2.3.0/getting_started/installation_mac.html#mac-gatekeeper) needed to address security controls found in macOS 10.15 Catalina and newer
+
+:::
 
 </TabItem>
 </OsTabs>
@@ -342,7 +339,7 @@ pip3 install --user -r zephyr/scripts/requirements-base.txt
 ### Environment Variables
 
 By default, the Zephyr™ SDK will create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
-We suggest two main [options](https://docs.zephyrproject.org/latest/guides/env_vars.html?highlight=zephyrrc) for how to load those settings.
+We suggest two main [options](https://docs.zephyrproject.org/2.3.0/guides/env_vars.html?highlight=zephyrrc) for how to load those settings.
 
 #### Per Shell
 
@@ -442,7 +439,7 @@ an onboard MCU, or one that uses a MCU board addon.
 
 ### Keyboard (Shield) + MCU Board
 
-ZMK treats keyboards that take a MCU addon board as [shields](https://docs.zephyrproject.org/latest/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/latest/guides/porting/board_porting.html)
+ZMK treats keyboards that take a MCU addon board as [shields](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html)
 
 Given the following:
 
@@ -458,7 +455,7 @@ west build -b proton_c -- -DSHIELD=kyria_left -DKEYMAP=default
 
 ### Keyboard With Onboard MCU
 
-Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/latest/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
+Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
 
 Given the following:
 

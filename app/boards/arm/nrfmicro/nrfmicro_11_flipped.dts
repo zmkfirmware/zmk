@@ -1,22 +1,19 @@
 /*
- * Copyright (c) 2020 Pete Johanson, Derek Schmell
+ * Copyright (c) 2020 Okke Formsma, joric
  *
  * SPDX-License-Identifier: MIT
  */
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
-#include "arduino_pro_micro_pins.dtsi"
+#include "arduino_pro_micro_pins_flipped.dtsi"
 
 / {
-	model = "BlueMicro52840_V1";
-	compatible = "bluemicro52840,v1";
+	model = "nrfmicro";
+	compatible = "joric,nrfmicro";
 
 	chosen {
 		zephyr,code-partition = &code_partition;
-		// zephyr,console = &uart0;
-		//zephyr,bt-mon-uart = &uart0;
-		//zephyr,bt-c2h-uart = &uart0;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
 	};
@@ -24,7 +21,7 @@
 	leds {
 		compatible = "gpio-leds";
 		blue_led: led_0 {
-			gpios = <&gpio0 42 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
 			label = "Blue LED";
 		};
 	};
@@ -41,8 +38,8 @@
 
 &i2c0 {
 	compatible = "nordic,nrf-twi";
-	sda-pin = <15>;
-	scl-pin = <17>;
+	sda-pin = <30>;
+	scl-pin = <31>;
 };
 
 &uart0 {

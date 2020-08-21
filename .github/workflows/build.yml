@@ -8,7 +8,7 @@ jobs:
     name: Build Test
     strategy:
       matrix:
-        board: [proton_c, nice_nano, bluemicro52840_v1]
+        board: [proton_c, nice_nano, bluemicro840_v1, nrfmicro_13]
         shield:
           - corne_left
           - corne_right
@@ -25,6 +25,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cache west modules
+        timeout-minutes: 2
+        continue-on-error: true
         uses: actions/cache@v2
         env:
           cache-name: cache-zephyr-modules

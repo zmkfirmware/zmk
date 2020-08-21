@@ -7,10 +7,11 @@
 #include <device.h>
 #include <init.h>
 
-#include <logging/log.h>
-
 #define DT_DRV_COMPAT zmk_bt_unpair_combo
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+#include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/ble.h>
@@ -78,3 +79,5 @@ ZMK_SUBSCRIPTION(zmk_ble_unpair_combo, position_state_changed);
 SYS_INIT(zmk_ble_unpair_combo_init,
         APPLICATION,
         CONFIG_APPLICATION_INIT_PRIORITY);
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

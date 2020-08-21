@@ -1,6 +1,6 @@
 module.exports = {
   someSidebar: {
-    "Getting Started": ["intro", "hardware", "faq", "user-setup"],
+    "Getting Started": ["intro", "hardware", "faq", "user-setup", "bond-reset"],
     Features: [
       "feature/keymaps",
       "feature/displays",
@@ -12,6 +12,7 @@ module.exports = {
       "behavior/layers",
       "behavior/misc",
       "behavior/mod-tap",
+      "behavior/reset",
       "behavior/lighting",
     ],
     Development: [

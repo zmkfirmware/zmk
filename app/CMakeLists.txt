@@ -1,4 +1,3 @@
-# Find Zephyr. This also loads Zephyr's build system.
 cmake_minimum_required(VERSION 3.13.1)
 
 set(CONFIG_APPLICATION_DEFINED_SYSCALL true)
@@ -15,6 +14,7 @@ list(APPEND SYSCALL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/drivers/zephyr)
 
 include(cmake/zmk_config.cmake)
 
+# Find Zephyr. This also loads Zephyr's build system.
 find_package(Zephyr REQUIRED HINTS ../zephyr)
 project(zmk)
 
@@ -44,7 +44,7 @@ target_sources(app PRIVATE src/behaviors/behavior_none.c)
 target_sources(app PRIVATE src/behaviors/behavior_sensor_rotate_key_press.c)
 target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/behaviors/behavior_rgb_underglow.c)
 target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/ble.c)
-target_sources_ifdef(CONFIG_ZMK_BLE_UNPAIR_COMBO app PRIVATE src/ble_unpair_combo.c)
+target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/ble_unpair_combo.c)
 target_sources_ifdef(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL app PRIVATE src/split_listener.c)
 target_sources_ifdef(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL app PRIVATE src/split/bluetooth/service.c)
 target_sources_ifdef(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL app PRIVATE src/split/bluetooth/central.c)

@@ -41,15 +41,9 @@ menuconfig ZMK_BLE
 	select BT_GATT_DIS
 	select BT_GATT_BAS
 	select SETTINGS
-	select BT_SETTINGS
+	# select BT_SETTINGS
 
 if ZMK_BLE
-
-config ZMK_BLE_UNPAIR_COMBO
-	bool "Enable BT unpair combo"
-	help
-		Adds a magic key combo that can be held on startup to remove all paired devices
-	default n
 
 config ZMK_BLE_INIT_PRIORITY
 	int "Init Priority"
@@ -199,6 +193,10 @@ source "subsys/logging/Kconfig.template.log_config"
 
 rsource "boards/Kconfig"
 rsource "boards/shields/*/Kconfig.defconfig"
+rsource "boards/shields/*/Kconfig.shield"
+
+osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
+osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
 source "Kconfig.zephyr"
 
