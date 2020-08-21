@@ -1,2 +1,0 @@
-config SHIELD_MY_BOARD
-    def_bool $(shields_list_contains,qaz)
