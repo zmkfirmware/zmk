@@ -193,6 +193,10 @@ source "subsys/logging/Kconfig.template.log_config"
 
 rsource "boards/Kconfig"
 rsource "boards/shields/*/Kconfig.defconfig"
+rsource "boards/shields/*/Kconfig.shield"
+
+osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
+osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
 source "Kconfig.zephyr"
 

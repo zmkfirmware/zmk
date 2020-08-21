@@ -1,5 +1,6 @@
 ---
-title: Mod-Tap
+title: Mod-Tap Behavior
+sidebar_label: Mod-Tap
 ---
 
 ## Summary

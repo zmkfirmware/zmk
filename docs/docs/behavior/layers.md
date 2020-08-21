@@ -1,5 +1,6 @@
 ---
-title: Layers
+title: Layer Behaviors
+sidebar_label: Layers
 ---
 
 ## Summary
@@ -56,12 +57,13 @@ Example:
 ```
 
 "Toggle layer" for a :
+
 ```
 #define DEFAULT 0
 #define NAVI    1
 
 #define NONE 0
- 
+
 / {
 	keymap {
 		compatible = "zmk,keymap";

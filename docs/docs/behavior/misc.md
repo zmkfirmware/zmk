@@ -1,5 +1,6 @@
 ---
-title: Miscellaneous
+title: Miscellaneous Behaviors
+sidebar_label: Miscellaneous
 ---
 
 ## Summary
