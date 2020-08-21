@@ -75,7 +75,7 @@ static int rgb_settings_set(const char *name, size_t len,
 }
 
 struct settings_handler rgb_conf = {
-    .name = "rgb",
+    .name = "rgb/underglow",
     .h_set = rgb_settings_set
 };
 
@@ -241,7 +241,7 @@ static int zmk_rgb_underglow_init(struct device *_arg)
 
 int zmk_rgb_underglow_save_state()
 {
-    return settings_save_one("rgb/state", &state, sizeof(state));
+    return settings_save_one("rgb/underglow/state", &state, sizeof(state));
 }
 
 int zmk_rgb_underglow_cycle_effect(int direction)
