@@ -35,7 +35,7 @@
 &kp GRAV &kp 1    &kp 2     &kp 3     &kp 4    &kp 5                    &kp 6    &kp 7    &kp 8    &kp 9    &kp 0    &kp F12
 &trans   &kp BANG &kp ATSN  &kp HASH  &kp CURU &kp PRCT                 &kp CRRT &kp AMPS &kp KMLT &kp LPRN &kp RPRN &kp PIPE
 &trans   &kp EQL  &kp MINUS &kp KPLS  &kp LCUR &kp RCUR &trans   &trans &kp LBKT &kp RKBT &kp SCLN &kp COLN &kp BSLH &trans
-                  &trans    &trans    &trans   &trans   &trans   &trans &trans   &trans   &trans   &trans   &trans
+                  &trans    &trans    &trans   &trans   &trans   &trans &trans   &trans   &trans   &trans
             >;
 
             sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
@@ -55,8 +55,8 @@
 &trans   &kp UNDO &kp CUT  &kp COPY &kp PSTE &trans  &trans   &trans  &trans   &trans    &trans   &trans   &trans    &trans
                   &trans   &trans   &trans   &trans  &trans   &trans  &trans   &trans    &trans   &trans
             >;
-        };
 
             sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
+        };
     };
 };
