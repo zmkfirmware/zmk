@@ -12,6 +12,7 @@ module.exports = {
       "behavior/layers",
       "behavior/misc",
       "behavior/mod-tap",
+      "behavior/reset",
       "behavior/lighting",
     ],
     Development: [
