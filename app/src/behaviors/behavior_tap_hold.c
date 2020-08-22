@@ -26,17 +26,17 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
     .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))), \
   },
 
-typedef struct behavior_tap_hold_behaviors {
+struct behavior_tap_hold_behaviors {
   struct zmk_behavior_binding tap;
   struct zmk_behavior_binding hold;
-} behavior_tap_hold_behaviors;
+};
 
 typedef k_timeout_t (*timer_func)();
 
-typedef struct behavior_tap_hold_config {
+struct behavior_tap_hold_config {
   timer_func hold_ms;
   struct behavior_tap_hold_behaviors* behaviors;
-} behavior_tap_hold_config;
+};
 
 struct behavior_tap_hold_data {
   struct k_timer timer;
@@ -52,8 +52,8 @@ ZMK_SUBSCRIPTION(behavior_tap_hold, keycode_state_changed);
 
 static void timer_handler(struct k_timer *timer)
 {
-  const behavior_tap_hold_config *cfg = k_timer_user_data_get(timer);
-  const behavior_tap_hold_behaviors *behaviors = cfg->behaviors;
+  const struct behavior_tap_hold_config *cfg = k_timer_user_data_get(timer);
+  const struct behavior_tap_hold_behaviors *behaviors = cfg->behaviors;
 
   if (k_timer_status_get(timer) == 0) {
     LOG_DBG("timer %p up: tap binding name: %s", timer, log_strdup(behaviors->tap.behavior_dev));
@@ -83,7 +83,7 @@ static int behavior_tap_hold_init(struct device *dev)
 static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _, u32_t __)
 {
   struct behavior_tap_hold_data *data = dev->driver_data;
-  const behavior_tap_hold_config *cfg = dev->config_info;
+  const struct behavior_tap_hold_config *cfg = dev->config_info;
 
   LOG_DBG("timer %p started", &data->timer);
   k_timer_start(&data->timer, cfg->hold_ms(), K_NO_WAIT);
@@ -94,8 +94,8 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _
 static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t _, u32_t __)
 {
   struct behavior_tap_hold_data *data = dev->driver_data;
-  const behavior_tap_hold_config *cfg = dev->config_info;
-  const behavior_tap_hold_behaviors *behaviors = cfg->behaviors;
+  const struct behavior_tap_hold_config *cfg = dev->config_info;
+  const struct behavior_tap_hold_behaviors *behaviors = cfg->behaviors;
 
   uint32_t ticks_left = k_timer_remaining_ticks(&data->timer);
   
@@ -122,9 +122,6 @@ static const struct behavior_driver_api behavior_tap_hold_driver_api = {
   .binding_pressed = on_keymap_binding_pressed,
   .binding_released = on_keymap_binding_released,
 };
-
-#define LAYER_CHILD_LEN(node) 1+
-#define ZMK_tap_hold_COUNT (DT_INST_FOREACH_STATUS_OKAY(LAYER_CHILD_LEN) 0) 
 
 #define KP_INST(n) \
   static k_timeout_t behavior_tap_hold_config_##n##_gettime() { return K_MSEC(DT_INST_PROP(n, hold_ms)); } \
