@@ -13,7 +13,7 @@ Usage:
 / {
 	behaviors {
 		rst: behavior_tap_hold {
-			compatible = "zmk,behavior-hold-tap";
+			compatible = "zmk,behavior-tap-hold";
 			label = "Reset Tap - Bootloader Hold";
 			#binding-cells = <0>;
 			hold_ms = <3000>;
@@ -21,7 +21,7 @@ Usage:
 		};
 
 		mup: behavior_music_up {
-			compatible = "zmk,behavior-hold-tap";
+			compatible = "zmk,behavior-tap-hold";
 			label = "Reset Tap - Bootloader Hold";
 			#binding-cells = <0>;
 			hold_ms = <3000>;
@@ -29,7 +29,7 @@ Usage:
 		};
 		
 		mdwn: behavior_music_down {
-			compatible = "zmk,behavior-hold-tap";
+			compatible = "zmk,behavior-tap-hold";
 			label = "Reset Tap - Bootloader Hold";
 			#binding-cells = <0>;
 			hold_ms = <3000>;
