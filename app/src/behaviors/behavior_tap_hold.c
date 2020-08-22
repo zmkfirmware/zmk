@@ -21,10 +21,10 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define _TRANSFORM_ENTRY(idx, node) \
-	{ .behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)), \
-	  .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))), \
-	  .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))), \
-	},
+  { .behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)), \
+    .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))), \
+    .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))), \
+  },
 
 typedef struct behavior_tap_hold_behaviors {
   struct zmk_behavior_binding tap;
@@ -56,13 +56,13 @@ static void timer_handler(struct k_timer *timer)
   const behavior_tap_hold_behaviors *behaviors = cfg->behaviors;
 
   if (k_timer_status_get(timer) == 0) {
-	  LOG_DBG("timer %p up: tap binding name: %s", timer, log_strdup(behaviors->tap.behavior_dev));
-		struct device *behavior = device_get_binding(behaviors->tap.behavior_dev);
+    LOG_DBG("timer %p up: tap binding name: %s", timer, log_strdup(behaviors->tap.behavior_dev));
+    struct device *behavior = device_get_binding(behaviors->tap.behavior_dev);
     if (behavior) {
       behavior_keymap_binding_pressed(behavior, 0, behaviors->tap.param1, behaviors->tap.param2);
     }
   } else {
-	  LOG_DBG("timer %p up: hold binding name: %s", timer, log_strdup(behaviors->hold.behavior_dev));
+    LOG_DBG("timer %p up: hold binding name: %s", timer, log_strdup(behaviors->hold.behavior_dev));
     struct device *behavior = device_get_binding(behaviors->hold.behavior_dev);
     if (behavior) {
       behavior_keymap_binding_pressed(behavior, 0, behaviors->hold.param1, behaviors->hold.param2);
@@ -77,7 +77,7 @@ static int behavior_tap_hold_init(struct device *dev)
   k_timer_init(&data->timer, timer_handler, timer_handler);
   k_timer_user_data_set(&data->timer, (void*)dev->config_info);
 
-	return 0;
+  return 0;
 }
 
 static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _, u32_t __)
@@ -85,7 +85,7 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _
   struct behavior_tap_hold_data *data = dev->driver_data;
   const behavior_tap_hold_config *cfg = dev->config_info;
 
-	LOG_DBG("timer %p started", &data->timer);
+  LOG_DBG("timer %p started", &data->timer);
   k_timer_start(&data->timer, cfg->hold_ms(), K_NO_WAIT);
 
   return 0;
@@ -102,13 +102,13 @@ static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t 
   k_timer_stop(&data->timer);
 
   if (ticks_left > 0) {
-	  LOG_DBG("key release: tap binding name: %s", log_strdup(behaviors->tap.behavior_dev));
-		struct device *behavior = device_get_binding(behaviors->tap.behavior_dev);
+    LOG_DBG("key release: tap binding name: %s", log_strdup(behaviors->tap.behavior_dev));
+    struct device *behavior = device_get_binding(behaviors->tap.behavior_dev);
     if (behavior) {
       return behavior_keymap_binding_released(behavior, position, behaviors->tap.param1, behaviors->tap.param2);
     }
   } else {
-	  LOG_DBG("key release: hold binding name: %s", log_strdup(behaviors->hold.behavior_dev));
+    LOG_DBG("key release: hold binding name: %s", log_strdup(behaviors->hold.behavior_dev));
     struct device *behavior = device_get_binding(behaviors->hold.behavior_dev);
     if (behavior) {
       return behavior_keymap_binding_released(behavior, position, behaviors->hold.param1, behaviors->hold.param2);
