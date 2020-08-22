@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2020 Pete Johansen, Richard Jones
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix-transform.h>
+
+/ {
+	chosen {
+		zmk,kscan = &kscan0;
+		zmk,matrix_transform = &default_transform;
+	};
+
+	default_transform: keymap_transform_0 {
+		compatible = "zmk,matrix-transform";
+		columns = <3>;
+		rows = <4>;
+// | SW1  | SW2  | SW3  |
+// | SW4  | SW5  | SW6  |
+// | SW7  | SW8  | SW9  |
+// | SW10 | SW11 | SW12 |
+		map = <
+RC(0,0) RC(0,1) RC(0,2)
+RC(1,0) RC(1,1) RC(1,2)
+RC(2,0) RC(2,1) RC(2,2)
+RC(3,0) RC(3,1) RC(3,2)
+		>;
+	};
+
+	kscan0: kscan {
+		compatible = "zmk,kscan-gpio-matrix";
+		label = "KSCAN";
+
+		diode-direction = "col2row";
+		row-gpios
+			= <&pro_micro_d 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			;
+
+	};
+
+	bt_unpair_combo: bt_unpair_combo {
+		compatible = "zmk,bt-unpair-combo";
+	};
+
+};
+
