@@ -26,6 +26,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
     .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))), \
   },
 
+#if DT_NODE_EXISTS(DT_DRV_INST(0))
 struct behavior_tap_hold_behaviors {
   struct zmk_behavior_binding tap;
   struct zmk_behavior_binding hold;
@@ -41,14 +42,6 @@ struct behavior_tap_hold_config {
 struct behavior_tap_hold_data {
   struct k_timer timer;
 };
-
-int behavior_tap_hold_listener(const struct zmk_event_header *eh)
-{
-  return 0;
-}
-
-ZMK_LISTENER(behavior_tap_hold, behavior_tap_hold_listener);
-ZMK_SUBSCRIPTION(behavior_tap_hold, keycode_state_changed);
 
 static void timer_handler(struct k_timer *timer)
 {
@@ -122,6 +115,7 @@ static const struct behavior_driver_api behavior_tap_hold_driver_api = {
   .binding_pressed = on_keymap_binding_pressed,
   .binding_released = on_keymap_binding_released,
 };
+#endif
 
 #define KP_INST(n) \
   static k_timeout_t behavior_tap_hold_config_##n##_gettime() { return K_MSEC(DT_INST_PROP(n, hold_ms)); } \
