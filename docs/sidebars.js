@@ -12,11 +12,8 @@ module.exports = {
       "behavior/layers",
       "behavior/misc",
       "behavior/mod-tap",
-<<<<<<< HEAD
       "behavior/reset",
-=======
       "behavior/tap-hold",
->>>>>>> 9a06bdb... feat(docs): add tap hold documentation
       "behavior/lighting",
     ],
     Development: [
