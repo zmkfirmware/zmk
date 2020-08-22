@@ -12,17 +12,9 @@ Usage:
 
 / {
 	behaviors {
-		rst: behavior_tap_hold {
-			compatible = "zmk,behavior-tap-hold";
-			label = "Reset Tap - Bootloader Hold";
-			#binding-cells = <0>;
-			hold_ms = <3000>;
-			bindings = <&bootloader>, <&reset>;
-		};
-
 		mup: behavior_music_up {
 			compatible = "zmk,behavior-tap-hold";
-			label = "Reset Tap - Bootloader Hold";
+			label = "Music Up";
 			#binding-cells = <0>;
 			hold_ms = <3000>;
 			bindings = <&cp M_NEXT>, <&cp M_VOLU>;
@@ -30,9 +22,9 @@ Usage:
 		
 		mdwn: behavior_music_down {
 			compatible = "zmk,behavior-tap-hold";
-			label = "Reset Tap - Bootloader Hold";
+			label = "Music Down";
 			#binding-cells = <0>;
-			hold_ms = <3000>;
+			hold_ms = <150>;
 			bindings = <&cp M_NEXT>, <&cp M_VOLU>;
 		};
 	};
@@ -42,7 +34,7 @@ Usage:
 
 		default_layer {
 			bindings = <
-	            &rst &mup &mdwn
+	            &mup &mdwn
 			>;
 		};
 	};
