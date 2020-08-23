@@ -51,6 +51,7 @@ struct led_rgb pixels[STRIP_NUM_PIXELS];
 
 struct rgb_underglow_state state;
 
+#if IS_ENABLED(CONFIG_SETTINGS)
 static int rgb_settings_set(const char *name, size_t len,
                             settings_read_cb read_cb, void *cb_arg)
 {
@@ -77,6 +78,7 @@ struct settings_handler rgb_conf = {
     .name = "rgb/underglow",
     .h_set = rgb_settings_set
 };
+#endif
 
 static struct led_rgb hsb_to_rgb(struct led_hsb hsb)
 {
@@ -242,7 +244,9 @@ static int zmk_rgb_underglow_init(struct device *_arg)
         on: IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_ON_START)
     };
 
+#if IS_ENABLED(CONFIG_SETTINGS)
     settings_register(&rgb_conf);
+#endif
 
     k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
 
@@ -251,7 +255,11 @@ static int zmk_rgb_underglow_init(struct device *_arg)
 
 int zmk_rgb_underglow_save_state()
 {
+#if IS_ENABLED(CONFIG_SETTINGS)
     return settings_save_one("rgb/underglow/state", &state, sizeof(state));
+#else
+    return 0;
+#endif
 }
 
 int zmk_rgb_underglow_cycle_effect(int direction)
