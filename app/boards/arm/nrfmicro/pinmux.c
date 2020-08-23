@@ -23,7 +23,7 @@ static int pinmux_nrfmicro_init(struct device *port)
 	gpio_pin_configure(p1, 9, GPIO_OUTPUT);
 	gpio_pin_set(p1, 9, 0);
 
-#if CONFIG_BOARD_ENABLE_CHARGER
+#if CONFIG_BOARD_NRFMICRO_CHARGER
 	gpio_pin_configure(p0, 5, GPIO_OUTPUT);
 	gpio_pin_set(p0, 5, 0);
 #else

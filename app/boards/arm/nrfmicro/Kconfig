@@ -4,7 +4,7 @@ config BOARD_ENABLE_DCDC
 	default y
 	depends on (BOARD_NRFMICRO_11 || BOARD_NRFMICRO_11_FLIPPED || BOARD_NRFMICRO_13)
 
-config BOARD_ENABLE_CHARGER
+config BOARD_NRFMICRO_CHARGER
 	bool "Enable battery charger"
 	default y
 	depends on (BOARD_NRFMICRO_13)
