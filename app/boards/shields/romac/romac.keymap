@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 Pete Johansen, Richard Jones
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 

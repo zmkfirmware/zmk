@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 Pete Johansen, Richard Jones
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 if SHIELD_ROMAC
 
