@@ -1,0 +1,48 @@
+
+if SHIELD_HELIX_4_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Helix"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+endif
+
+
+if SHIELD_HELIX_4_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Helix Right"
+
+endif
+
+if SHIELD_HELIX_4_LEFT || SHIELD_HELIX_4_RIGHT
+
+config ZMK_SPLIT
+  default y
+
+config DEVICE_POWER_MANAGEMENT
+	default y
+
+if ZMK_RGB_UNDERGLOW
+
+config WS2812_STRIP
+	default y
+
+endif # ZMK_RGB_UNDERGLOW
+
+if ZMK_DISPLAY
+
+config I2C
+	default y
+
+config SSD1306
+	default y
+
+config SSD1306_REVERSE_MODE
+	default y
+
+endif # ZMK_DISPLAY
+
+endif

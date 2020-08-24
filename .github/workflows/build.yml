@@ -3,12 +3,12 @@ name: Build
 on:
   push:
     paths:
-      - ".github/workflows/build.yml"
-      - "app/**"
+      - '.github/workflows/build.yml'
+      - 'app/**'
   pull_request:
     paths:
-      - ".github/workflows/build.yml"
-      - "app/**"
+      - '.github/workflows/build.yml'
+      - 'app/**'
 
 jobs:
   build:
@@ -60,7 +60,9 @@ jobs:
           - splitreus62_right
           - tg4x
           - tidbit
-        cmake-args: [""]
+          - helix_4_left
+          - helix_4_right
+        cmake-args: ['']
         include:
           - board: bdn9_rev2
           - board: dz60rgb_rev1
@@ -124,7 +126,7 @@ jobs:
         if: ${{ !matrix.skip-archive }}
         uses: actions/upload-artifact@v2
         with:
-          name: "${{ steps.variables.outputs.artifact-name }}"
+          name: '${{ steps.variables.outputs.artifact-name }}'
           path: |
             build/zephyr/zmk.hex
             build/zephyr/zmk.uf2
