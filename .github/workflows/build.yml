@@ -16,6 +16,7 @@ jobs:
           - kyria_right
           - lily58_left
           - lily58_right
+          - romac
         include:
           - board: proton_c
             shield: clueboard_california
