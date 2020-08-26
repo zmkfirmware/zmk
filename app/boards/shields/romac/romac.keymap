@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2020 Pete Johansen, Richard Jones
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        
+        default_layer {
+// -------------------
+// | 7      |  8  |  9  |
+// | 4      |  5  |  6  |
+// | 1      |  2  |  3  |
+// | MO(1)  |  0  |  .  |
+// ----------------------
+            bindings = <
+    &kp NUM_7 &kp NUM_8 &kp NUM_9 
+    &kp NUM_4 &kp NUM_5 &kp NUM_6 
+    &kp NUM_1 &kp NUM_2 &kp NUM_3 
+    &mo 1     &kp NUM_0 &kp DOT 
+            >;
+        };
+
+        nav_layer {
+// -----------------------
+// | _ |  HOME  |  PGUP  |
+// | _ |  END   |  PGDN  |
+// | _ |  _     |  _     |
+// | _ |  _     |  RET   |
+// -----------------------
+            bindings = <
+    &trans &kp HOME &kp PGUP 
+    &trans &kp END  &kp PGDN 
+    &trans &trans   &trans 
+    &trans &trans   &kp RET
+            >;
+        };
+    };
+};
+
+
