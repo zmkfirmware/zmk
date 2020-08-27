@@ -15,6 +15,7 @@ LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/matrix.h>
 #include <zmk/kscan.h>
 #include <zmk/display.h>
+#include <zmk/battery.h>
 
 #define ZMK_KSCAN_DEV DT_LABEL(ZMK_MATRIX_NODE_ID)
 
@@ -34,4 +35,14 @@ void main(void)
 		zmk_display_task_handler();
 	}
 #endif /* CONFIG_ZMK_DISPLAY */
+
+#ifdef CONFIG_ZMK_BATTERY
+    if (zmk_log_battery_enable() != 0)
+    {
+        LOG_ERR("Could not enable battery logging\n");
+        return;
+    }
+    zmk_log_battery_sample();
+    zmk_log_battery_disable();
+#endif /* CONFIG_ZMK_BATTERY */
 }

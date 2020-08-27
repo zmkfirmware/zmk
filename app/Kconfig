@@ -76,6 +76,11 @@ config ZMK_DISPLAY
 	select LVGL_THEME_MONO
 	select LVGL_OBJ_LABEL
 
+config ZMK_BATTERY
+    bool "ZMK battery level logging"
+    default n
+    select BATTERY
+
 menu "Split Support"
 
 config ZMK_SPLIT
