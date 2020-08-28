@@ -40,8 +40,6 @@ menuconfig ZMK_BLE
 	select BT_PERIPHERAL
 	select BT_GATT_DIS
 	select BT_GATT_BAS
-	select SETTINGS
-	# select BT_SETTINGS
 
 if ZMK_BLE
 
@@ -49,6 +47,12 @@ config ZMK_BLE_INIT_PRIORITY
 	int "Init Priority"
 	default 50
 
+config SETTINGS
+	default y
+
+config BT_SETTINGS
+	default y
+	
 config SYSTEM_WORKQUEUE_STACK_SIZE
 	default 2048
 
@@ -103,8 +107,11 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 if ZMK_SPLIT_BLE_ROLE_CENTRAL
 
+config BT_MAX_PAIRED
+	default 2
+
 config BT_MAX_CONN
-	default 5
+	default 2
 
 config BT_MAX_PAIRED
 	# Bump this everywhere once we support switching active connections!
@@ -120,14 +127,17 @@ if ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 config ZMK_USB
 	default n
 
+config BT_MAX_PAIRED
+	default 1
 
 config BT_MAX_CONN
-	default 5
+	default 2
 
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
 	default n
 
 endif
+
 
 endchoice
 
@@ -137,6 +147,17 @@ endif
 
 endmenu
 
+
+if ZMK_BLE && !ZMK_SPLIT_BLE
+
+config BT_ID_MAX
+	default 5
+
+# Used to update the name to include the identity used
+config BT_DEVICE_NAME_DYNAMIC
+	default y
+
+endif
 
 config ZMK_KSCAN_MOCK_DRIVER
 	bool "Enable mock kscan driver to simulate key presses"
