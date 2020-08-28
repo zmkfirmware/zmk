@@ -23,12 +23,12 @@ static int behavior_none_init(struct device *dev)
 
 static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _param1, u32_t _param2)
 {
-  return 1;
+  return 0;
 }
 
 static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t _param1, u32_t _param2)
 {
-  return 1;
+  return 0;
 }
 
 static const struct behavior_driver_api behavior_none_driver_api = {
