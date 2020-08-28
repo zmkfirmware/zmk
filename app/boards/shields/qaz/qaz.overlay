@@ -1,10 +1,15 @@
+/*
+ * Copyright (c) 2020 TJ Campie
+ * 
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <dt-bindings/zmk/matrix-transform.h>
 
 / {
     chosen {
         zmk,kscan = &kscan0;
         zmk,matrix_transform = &default_transform;
-        zmk,underglow = &led_strip;
     };
 
     default_transform: keymap_transform_0 {

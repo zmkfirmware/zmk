@@ -1,46 +1,9 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/rgb.h>
 
 #define DEFAULT 0
 #define NUM_SYM 1
 #define NAV     2
-
-/ {
-	behaviors {
-		rst: behavior_tap_hold1 {
-			compatible = "zmk,behavior-tap-hold";
-			label = "Bootloader Tap - Reset Hold";
-			#binding-cells = <0>;
-			hold_ms = <200>;
-			bindings = <&bootloader>, <&reset>, <&kp BKSP>;
-        };
-
-        num_spc: behavior_tap_hold2 {
-			compatible = "zmk,behavior-tap-hold";
-			label = "Space Tap - Num/Sym Hold";
-			#binding-cells = <0>;
-			hold_ms = <300>;
-			bindings = <&kp SPC>, <&mo NUM_SYM>;
-        };
-
-        ent_nav: behavior_tap_hold{
-			compatible = "zmk,behavior-tap-hold";
-			label = "Return Tap - Nav Hold";
-			#binding-cells = <0>;
-			hold_ms = <100>;
-			bindings = <&kp RET>, <&mo NAV>;
-        };
-
-        com_col: behavior_tap_hold10 {
-			compatible = "zmk,behavior-tap-hold";
-			label = ", tap,  hold";
-			#binding-cells = <0>;
-			hold_ms = <200>;
-			bindings = <&kp CMMA>, <&kp SCLN>, <&kp BKSP>;
-	    	};
-    	};
-    };
  
 / {
     keymap {
@@ -48,10 +11,10 @@
 
         default_layer {
             bindings = <
-    &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp QUOT    
-    &kp A &kp R &kp S &kp T &kp D &kp H &kp N &kp E &kp I &kp O
-    &kp Z &kp X &kp C &kp V &kp B &kp K &kp M &com_col &kp DOT
-    &kp LSFT &kp LGUI &kp TAB &ent_nav &num_spc &kp LCTL &kp LALT &kp FSLH
+    &kp Q &kp W &kp E &kp R &kp T &kp Y &kp U &kp I &kp O &kp P    
+    &kp A &kp S &kp D &kp F &kp G &kp H &kp J &kp K &kp L &kp RET
+    &kp Z &kp X &kp C &kp V &kp B &kp N &kp M &kp CMMA &kp DOT
+    &kp LSFT &kp LGUI &kp LALT &mo NAV &kp SPC &mo NUM_SYM &kp QUOT &kp FSLH
             >;
         };
         num_sym {
@@ -59,7 +22,7 @@
     &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0    
     &trans &trans &trans &trans &trans &trans &trans &trans &kp EQL &kp MINUS       
     &kp DEL &none &none &none &none &none &none &none &kp DOT
-    &rst &none &none &trans &trans &kp RET &trans &kp FSLH
+    &bootloader &reset &none &trans &trans &kp RET &trans &kp FSLH
             >;
         };
 
@@ -68,7 +31,7 @@
     &none &none &none &none &none &none &none &kp UARW &none &kp BKSP    
     &trans &trans &trans &trans &none &none &kp LARW &kp DARW &kp RARW &none       
     &none &none &none &none &none &none &none &none &none
-    &rgb_ug RGB_TOG &rgb_ug RGB_EFF &none &trans &trans &kp RET &trans &kp FSLH
+    &none &none &none &none &none &trans &trans &kp RET &trans &kp FSLH
             >;
         };
     };
