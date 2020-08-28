@@ -72,12 +72,13 @@ static int kscan_mock_configure(struct device *dev, kscan_callback_t callback)
         struct kscan_mock_data *data =                                             \
             CONTAINER_OF(work, struct kscan_mock_data, work);                      \
         const struct kscan_mock_config_##n *cfg = data->dev->config_info;          \
-        u32_t ev = cfg->events[data->event_index++];                               \
+        u32_t ev = cfg->events[data->event_index];                                 \
         LOG_DBG("ev %u row %d column %d state %d\n", ev,                           \
                 ZMK_MOCK_ROW(ev), ZMK_MOCK_COL(ev), ZMK_MOCK_IS_PRESS(ev));        \
         data->callback(data->dev,                                                  \
                        ZMK_MOCK_ROW(ev), ZMK_MOCK_COL(ev), ZMK_MOCK_IS_PRESS(ev)); \
         kscan_mock_schedule_next_event_##n(data->dev);                             \
+        data->event_index++;                                                       \
     }                                                                              \
     static int kscan_mock_init_##n(struct device *dev)                             \
     {                                                                              \
