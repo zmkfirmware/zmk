@@ -26,8 +26,15 @@ else
 	./build/$testcase/zephyr/zmk.exe | sed -e "s/.*> //" | tee build/$testcase/keycode_events_full.log | sed -n -f $testcase/events.patterns > build/$testcase/keycode_events.log
 	diff -au $testcase/keycode_events.snapshot build/$testcase/keycode_events.log
 	if [ $? -gt 0 ]; then
-		echo "FAIL: $testcase" >> ./build/tests/pass-fail.log
+		if [ -f $testcase/pending ]; then
+			echo "PEND: $testcase" >> ./build/tests/pass-fail.log
+			exit 0
+		else
+			echo "FAIL: $testcase" >> ./build/tests/pass-fail.log
+			exit 1
+		fi
 	else
 		echo "PASS: $testcase" >> ./build/tests/pass-fail.log
+		exit 0
 	fi
 fi
