@@ -1,6 +1,6 @@
 # Basics
-Any folder under `/app/tests` containing `native_posix.keymap` will be selected when running
-`./run-test.sh all`.
+Running tests requires native [posix support](./dev-posix-board). Any folder under `/app/tests`
+containing `native_posix.keymap` will be selected when running `./run-test.sh all`.
 
 `test_case/events.patterns` contains sed patterns that will select the interesting output from the
 application
