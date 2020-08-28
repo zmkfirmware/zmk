@@ -1,15 +1,11 @@
-# Basics
-Running tests requires native [posix support](./dev-posix-board). Any folder under `/app/tests`
+---
+id: dev-tests
+title: Tests
+sidebar_label: Tests
+---
+
+Running tests requires [native posix support](./dev-posix-board). Any folder under `/app/tests`
 containing `native_posix.keymap` will be selected when running `./run-test.sh all`.
-
-`test_case/events.patterns` contains sed patterns that will select the interesting output from the
-application
-
-`test_case/keycode_events.snapshot` contains the expected output after applying `events.pattern` to
-the output
-
-`test_case/native_posix.keymap` defines the keys and the mock key presses. Most tests include a
-common keymap for their test set
 
 ## Creating a New Test Set
 1. Copy the test set that most closely resembles the tests you will be creating.
@@ -20,4 +16,5 @@ common keymap for their test set
     - See: [sed manual](https://www.gnu.org/software/sed/manual/sed.html) and
     [tutorial](https://www.digitalocean.com/community/tutorials/the-basics-of-using-the-sed-stream-editor-to-manipulate-text-in-linux)
 6. Modify `test_case/keycode_events.snapshot` for to include the expected output
-7. Repeat steps 4 to 6 for every test case
+7. Rename the `test_case` folder to describe the test.
+8. Repeat steps 4 to 7 for every test case
