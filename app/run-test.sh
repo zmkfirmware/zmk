@@ -1,4 +1,9 @@
 #!/bin/sh
+#
+# Copyright (c) 2020 Peter Johanson; Cody McGinnis
+#
+# SPDX-License-Identifier: MIT
+#
 
 if [ -z "$1" ]; then
 	echo "Usage: ./run-test.sh <path to testcase>"
