@@ -17,6 +17,10 @@
 		;
 };
 
+&left_encoder {
+	status = "okay";
+};
+
 &bt_unpair_combo {
-	key-positions = <0 42>;
+	key-positions = <0 53>;
 };
