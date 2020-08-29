@@ -1,1 +1,0 @@
-west build -p -- -DSHIELD=lily58_left
