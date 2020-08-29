@@ -1,0 +1,56 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+// ------------------------------------------------------------------------------------------------------------
+// |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   `   |
+// |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
+// |  CTRL |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
+// | SHIFT |  Z  |  X  |  C   |  V   |  B   |   "["  |  |  "]"  |  N   |  M    |  ,    |  .   |   /   | SHIFT |
+//                     | ALT  | GUI  | LOWER|  SPACE |  | ENTER | RAISE| BSPC  | GUI   |
+			bindings = <
+&kp ESC  &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5                    &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 &kp GRAV
+&kp TAB  &kp Q     &kp W     &kp E     &kp R     &kp T                        &kp Y     &kp U     &kp I     &kp O     &kp P     &kp MINUS
+&kp LCTL &kp A     &kp S     &kp D     &kp F     &kp G                        &kp H     &kp J     &kp K     &kp L     &kp SCLN  &kp QUOT
+&kp LSFT &kp Z     &kp X     &kp C     &kp V     &kp B   &kp LBKT  &kp RBKT   &kp N     &kp M     &kp CMMA  &kp DOT   &kp FSLH  &kp RSFT
+                   &kp LALT  &kp LGUI  &mo 1     &kp SPC                      &kp RET   &mo 2     &kp BKSP  &kp RGUI
+			>;
+		};
+
+		lower_layer {
+// ------------------------------------------------------------------------------------------------------------
+// |       |     |     |      |      |      |                   |      |       |       |      |       |       |
+// |  F1   |  F2 |  F3 |  F4  |  F5  |  F6  |                   |  F7  |  F8   |  F9   |  F10 |  F11  |  F12  |
+// |   `   |  !  |  @  |  #   |  $   |  %   |                   |  ^   |  &    |  *    |  (   |   )   |   ~   |
+// |       |     |     |      |      |      |        |  |       |      |  _    |  +    |  {   |   }   |  "|"  |
+//                     |      |      |      |        |  |       |      |       |       |
+			bindings = <
+&trans   &trans    &trans    &trans    &trans    &trans                       &trans    &trans    &trans    &trans    &trans    &trans
+&kp F1   &kp F2    &kp F3    &kp F4    &kp F5    &kp F6                       &kp F7    &kp F8    &kp F9    &kp F10   &kp F11   &kp F12
+&kp GRAV &kp BANG  &kp ATSN  &kp HASH  &kp CURU  &kp PRCT                     &kp CRRT  &kp AMPS  &kp KMLT  &kp LPRN  &kp RPRN  &kp TILD
+&trans   &trans    &trans    &trans    &trans    &trans    &trans   &trans    &trans    &kp MINUS &kp KPLS  &kp LCUR  &kp RCUR  &kp PIPE
+                   &trans    &trans    &trans    &trans                       &trans    &trans    &trans    &trans
+			>;
+		};
+
+		raise_layer {
+// ------------------------------------------------------------------------------------------------------------
+// |       |     |     |      |      |      |                   |      |       |       |      |       |       |
+// |   `   |  1  |  2  |  3   |  4   |  5   |                   |  6   |   7   |   8   |  9   |   0   |       |
+// |   F1  |  F2 |  F3 |  F4  |  F5  |  F6  |                   |      |   <-  |   ^   |  v   |  ->   |       |
+// |   F7  |  F8 |  F9 |  F10 |  F11 |  F12 |        |  |       |  +   |   -   |   =   |  [   |   ]   |   \   |
+//                     |      |      |      |        |  |       |      |       |       |
+			bindings = <
+&trans   &trans    &trans    &trans    &trans    &trans                       &trans    &trans    &trans    &trans    &trans    &trans
+&kp GRAV &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5                    &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 &trans
+&kp F1   &kp F2    &kp F3    &kp F4    &kp F5    &kp F6                       &trans    &kp LARW  &kp DARW  &kp UARW  &kp RARW  &trans
+&kp F7   &kp F8    &kp F9    &kp F10   &kp F11   &kp F12   &trans   &trans    &kp KPLS  &kp MINUS &kp EQL   &kp LBKT  &kp RBKT  &kp BSLH
+                   &trans    &trans    &trans    &trans                       &trans    &trans    &trans    &trans
+			>;
+		};
+	};
+};
