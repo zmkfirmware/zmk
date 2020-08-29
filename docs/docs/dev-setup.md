@@ -181,7 +181,7 @@ brew install cmake ninja python3 ccache dtc git wget
 
 ## Setup
 
-### West Build Command
+### West Installation
 
 `west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/2.3.0/guides/west/index.html) used to configure and build Zephyr™ applications.
 
@@ -192,14 +192,32 @@ pip3 install --user -U west
 ```
 
 :::danger pip user packages
-If you haven't done so yet, you may need to add the Python Pip user package directory to your `PATH`, e.g.:
+If you haven't done so yet, you may need to add the Python Pip user package directory to your `PATH` otherwise your computer will not be able to find the `west` command.
+:::
 
-```
+<Tabs
+defaultValue="linux"
+values={[
+{label: 'Linux', value: 'linux'},
+{label: 'Windows', value: 'win'},
+]}>
+<TabItem value = 'linux'>
+Run the following commands:
+
+```sh
 echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-:::
+</TabItem>
+<TabItem value = 'win'>
+
+1. Go to the Start Menu and type "environment variables" to find and open the "Edit the system environment variables" option.
+2. Click "Environment Variables...", and select the "Path" variable under System variables.
+3. Click "Edit..." and then "New" to add the directory where your west.exe is located. By default this should be something like `C:\Python38\Scripts`.
+
+</TabItem>
+</Tabs>
 
 ### Toolchain Installation
 
@@ -428,54 +446,3 @@ cat ~/.zephyrrc >> ~/.zshrc
 </TabItem>
 
 </Tabs>
-
-## Build
-
-From here on, building and flashing ZMK should all be done from the `app/` subdirectory of the ZMK checkout:
-
-```sh
-cd app
-```
-
-To build for your particular keyboard, the behaviour varies slightly depending on if you are building for a keyboard with
-an onboard MCU, or one that uses a MCU board addon.
-
-### Keyboard (Shield) + MCU Board
-
-ZMK treats keyboards that take a MCU addon board as [shields](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html)
-
-Given the following:
-
-- MCU Board: Proton-C
-- Keyboard PCB: kyria_left
-- Keymap: default
-
-You can build ZMK with the following:
-
-```sh
-west build -b proton_c -- -DSHIELD=kyria_left -DKEYMAP=default
-```
-
-### Keyboard With Onboard MCU
-
-Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
-
-Given the following:
-
-- Keyboard: Planck (rev6)
-- Keymap: default
-
-you can build ZMK with the following:
-
-```sh
-west build -b planck_rev6 -- -DKEYMAP=default
-```
-
-## Flashing
-
-Once built, the previously supplied parameters will be remember, so you can simply run the following to flash your
-board, with it in bootloader mode:
-
-```
-west flash
-```

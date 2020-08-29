@@ -51,7 +51,7 @@ After flashing the updated ZMK image, the board should expose a USB CDC ACM devi
 defaultValue="linux"
 values={[
 {label: 'Linux', value: 'linux'},
-{label: 'Windows', value: 'windows'},
+{label: 'Windows', value: 'win'},
 ]}>
 <TabItem value="linux">
 
@@ -60,7 +60,7 @@ On Linux, this should be a device like `/dev/ttyACM0` and you can connect with `
 sudo tio /dev/ttyACM0
 ```
 </TabItem>
-<TabItem value="windows">
+<TabItem value="win">
 
 On Windows, you can use the Arduino IDE which contains a built-in Serial Monitor. Download and install it from [their website](https://www.arduino.cc/en/main/software), then connect your board and under Tools select "Serial Monitor".
 

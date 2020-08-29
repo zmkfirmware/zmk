@@ -18,6 +18,7 @@ module.exports = {
     Development: [
       "dev-clean-room",
       "dev-setup",
+      "dev-build-flash",
       "dev-boards-shields-keymaps",
       "dev-posix-board",
       "dev-tests",
