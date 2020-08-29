@@ -20,7 +20,7 @@
                    &kp LGUI  &kp LALT  &kp BKSP  &mo 1                        &mo 2     &kp SPC   &kp RET  &kp RGUI
 			>;
 
-			sensor-bindings = <&inc_dec_cp LBKT RBKT>;
+			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD>;
 		};
 
 		lower_layer {
