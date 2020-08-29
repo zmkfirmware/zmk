@@ -1,0 +1,10 @@
+# Copyright (c) 2020 Pete Johanson, Richard Jones
+# SPDX-License-Identifier: MIT
+
+if SHIELD_ROMAC
+
+config ZMK_KEYBOARD_NAME
+	default "RoMac"
+
+endif
+

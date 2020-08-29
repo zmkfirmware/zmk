@@ -193,8 +193,8 @@ static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t 
           }
 
           struct keycode_state_changed *ev = data->captured_keycode_events[j].event;
-          data->captured_keycode_events[i].event = NULL;
-          data->captured_keycode_events[i].active_mods = 0;
+          data->captured_keycode_events[j].event = NULL;
+          data->captured_keycode_events[j].active_mods = 0;
           LOG_DBG("Re-sending latched key press for usage page 0x%02X keycode 0x%02X state %s", ev->usage_page, ev->keycode, (ev->state ? "pressed" : "released"));
           ZMK_EVENT_RELEASE(ev);
           k_msleep(10);

@@ -1,0 +1,9 @@
+ # Copyright (c) 2020 TJ Campie
+ # SPDX-License-Identifier: MIT
+
+if SHIELD_QAZ
+
+config ZMK_KEYBOARD_NAME
+    default "QAZ"
+
+endif

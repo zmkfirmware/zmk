@@ -29,5 +29,12 @@ config ZMK_USB
 
 config PINMUX
 	default y
-	
+
+if BOARD_NRFMICRO_13
+
+config BOARD_NRFMICRO_CHARGER
+	default y
+
+endif # BOARD_NRFMICRO_13
+
 endif # BOARD_NRFMICRO_11 || BOARD_NRFMICRO_11_FLIPPED || BOARD_NRFMICRO_13

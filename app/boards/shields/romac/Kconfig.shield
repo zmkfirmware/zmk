@@ -1,0 +1,5 @@
+# Copyright (c) 2020 Pete Johanson, Richard Jones
+# SPDX-License-Identifier: MIT
+
+config SHIELD_ROMAC
+	def_bool $(shields_list_contains,romac)

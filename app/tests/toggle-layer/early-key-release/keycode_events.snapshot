@@ -1,0 +1,6 @@
+kp_pressed: usage_page 0x07 keycode 0x05
+tog_pressed: position 1 layer 1
+kp_released: usage_page 0x07 keycode 0x05
+tog_released: position 1 layer 1
+kp_pressed: usage_page 0x0c keycode 0xb5
+kp_released: usage_page 0x0c keycode 0xb5

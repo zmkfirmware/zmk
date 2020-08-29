@@ -1,79 +1,18 @@
-#include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
-#include <zmk/kscan-mock.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan-mock.h>
 
 / {
 	chosen {
-		zmk,kscan = &kscan0;
-		zmk,keymap = &keymap0;
+		zmk,kscan = &kscan;
 	};
 
-	kscan0: kscan_0 {
-		compatible = "zmk,kscan-composite";
-		label = "KSCAN_COMP";
-		rows = <2>;
-		columns = <4>;
-
-		left: left {
-			kscan = <&left_hand>;
-		};
-
-		right: right {
-			kscan = <&right_hand>;
-			column-offset = <2>;
-		};
-	};
-
-	left_hand: kscan_1 {
+	kscan: kscan {
 		compatible = "zmk,kscan-mock";
-		label = "KSCAN_LEFT";
+		label = "KSCAN_MOCK";
 
 		rows = <2>;
 		columns = <2>;
-		events = <ZMK_MOCK_PRESS(0,1,300) ZMK_MOCK_PRESS(0,0,300) ZMK_MOCK_RELEASE(0,0,300) ZMK_MOCK_RELEASE(0,1,300)>;
-		// events = <ZMK_MOCK_PRESS(0,0,800) ZMK_MOCK_RELEASE(0,0,800) ZMK_MOCK_PRESS(0,1,800) ZMK_MOCK_RELEASE(0,1,800)>;
-	};
-
-	right_hand: kscan_2 {
-		compatible = "zmk,kscan-mock";
-		label = "KSCAN_RIGHT";
-
-		rows = <2>;
-		columns = <2>;
-		events = <ZMK_MOCK_PRESS(1,1,800) ZMK_MOCK_RELEASE(1,1,100) ZMK_MOCK_PRESS(0,1,800) ZMK_MOCK_RELEASE(0,1,100)>;
-	};
-
-	keymap0: keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
-		layers = <&default &lower &raise>;
-	};
-
-	layers {
-		compatible = "zmk,layers";
-
-		default: layer_0 {
-			label = "DEFAULT";
-
-			bindings = <
-				&kp B &mo 1 &kp C &kp E
-				&kp D &kp G &kp F &kp Q>;
-		};
-
-		lower: layer_1 {
-			label = "LOWER";
-
-			bindings = <
-				&cp M_NEXT &trans &kp O &kp Q
-				&kp L  &kp J &kp P &kp K>;
-		};
-
-		raise: layer_2 {
-			label = "RAISE";
-
-			bindings = <
-				&kp W &kp U &kp I &kp N
-				&kp X  &kp M &kp C &kp B>;
-		};
+		exit-after;
 	};
 };
