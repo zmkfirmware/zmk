@@ -20,6 +20,7 @@ module.exports = {
       "dev-setup",
       "dev-boards-shields-keymaps",
       "dev-posix-board",
+      "dev-tests",
     ],
     "Dev Guides": ["dev-guide-new-shield", "dev-guide-usb-logging"],
   },

@@ -1,0 +1,4 @@
+kp_pressed: usage_page 0x07 keycode 0x05
+mo_pressed: position 1 layer 1
+kp_released: usage_page 0x07 keycode 0x05
+mo_released: position 1 layer 1
