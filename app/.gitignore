@@ -1,1 +1,4 @@
 build/
+build_left.bat
+flash.bat
+prj.conf
