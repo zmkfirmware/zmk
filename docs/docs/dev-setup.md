@@ -358,7 +358,7 @@ pip3 install --user -r zephyr/scripts/requirements-base.txt
 
 ### Environment Variables
 
-#### GNU ARM Embedded on Windows
+#### For GNU ARM Embedded on Windows
 
 On Windows, you will have to set two environment variables for ZMK to build properly: `ZEPHYR_TOOLCHAIN_VARIANT` and `GNUARMEMB_TOOLCHAIN_PATH`.
 
