@@ -45,6 +45,19 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
 		
 	};
 
+	left_encoder: encoder_left {
+		compatible = "alps,ec11";
+		label = "LEFT_ENCODER";
+		a-gpios = <&pro_micro_a 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		b-gpios = <&pro_micro_a 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		resolution = <4>;
+	};
+
+	sensors {
+		compatible = "zmk,keymap-sensors";
+		sensors = <&left_encoder>;
+	};
+
 	bt_unpair_combo: bt_unpair_combo {
 		compatible = "zmk,bt-unpair-combo";
 	};
