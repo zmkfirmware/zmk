@@ -93,5 +93,4 @@ board with it in bootloader mode:
 west flash
 ```
 
-For boards that have drag and drop .uf2 flashing capability, the .uf2 file to flash can be found in `build\zephyr` (or `build\left|right\zephyr` if you followed the instructions for splits) and is by default named `zmk.uf2`.
-
+For boards that have drag and drop .uf2 flashing capability, the .uf2 file to flash can be found in `build/zephyr` (or `build/left|right/zephyr` if you followed the instructions for splits) and is by default named `zmk.uf2`.
