@@ -66,7 +66,7 @@ On Windows, you can use [PuTTY](https://www.putty.org/). Once installed, use Dev
 
 ![Controller COM port](./assets/usb-logging/com.jpg)
 
-![PuTTY settings](assets/usb-logging/putty.png)
+![PuTTY settings](assets/usb-logging/putty.jpg)
 
 If you already have the Ardunio IDE installed you can also use its built-in Serial Monitor.
 
