@@ -17,9 +17,23 @@ in the future by allowing user configs to add to the CMake application built by 
 ## Big Picture
 
 All keyboard definitions (complete boards or shields) include the _default_ keymap for that keyboard,
-so ZMK can produce a "stock" firmware for that keyboard without any further modifications. For users
-looking to customize their keyboard's behavior, they can copy the stock `.keymap` file into their
-user config directory, and customize the keymap to their liking.
+so ZMK can produce a "stock" firmware for that keyboard without any further modifications. 
+
+For users looking to customize their keyboard's behavior, they can copy the stock `.keymap` file into their
+local [ZMK config directory](docs/feature/keymaps.md#ZMK-Configuration-Directories), and customize the keymap to their liking.
+
+## ZMK Configuration Directories
+
+A ZMK Configuration Directory, as mentioned in [Installing ZMK](/docs/docs/user-setup.md), is separate from the ZMK Firmware and allows 
+for full customization of keymaps without altering the default keymaps provided in the shield directory. This is especially useful for users iterating 
+upon their keymaps to best suit their needs, as it does not require forking ZMK and/or constant merging of upstream ZMK.
+
+ZMK Configuration Repositories contain:
+* Top level shield/board config and keymap overrides.
+* A boards/ directory structure for out of tree boards and shields.
+
+To learn more about build locally using your ZMK Configuration Directory, click [here](/docs/docs/user-setup.md#customization)
+
 
 ## Behaviors
 
