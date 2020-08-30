@@ -17,9 +17,9 @@ in the future by allowing user configs to add to the CMake application built by 
 ## Big Picture
 
 All keyboard definitions (complete boards or shields) include the _default_ keymap for that keyboard,
-so ZMK can produce a "stock" firmware for that keyboard without any further modifications. For users
-looking to customize their keyboard's behavior, they can copy the stock `.keymap` file into their
-user config directory, and customize the keymap to their liking.
+so ZMK can produce a "stock" firmware for that keyboard without any further modifications. 
+For users looking to customize their keyboard's behavior, they can copy the stock `.keymap` file into their
+local ZMK config directory, and customize the keymap to their liking.
 
 ## Behaviors
 
