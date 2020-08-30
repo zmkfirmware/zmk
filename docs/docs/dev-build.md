@@ -43,7 +43,7 @@ Given the following:
 You can build ZMK with the following:
 
 ```sh
-west build -b proton_c -- -DSHIELD=kyria_left -DKEYMAP=default
+west build -b proton_c -- -DSHIELD=kyria_left
 ```
 
 ### Keyboard With Onboard MCU
@@ -58,14 +58,29 @@ Given the following:
 you can build ZMK with the following:
 
 ```sh
-west build -b planck_rev6 -- -DKEYMAP=default
+west build -b planck_rev6
 ```
 
 ### Pristine Building
 When building for a new board and/or shield after having built one previously, you may need to enable the pristine build option. This option removes all existing files in the build directory and regenerates them, and can be enabled by adding either --pristine or -p to the command:
 
 ```sh
-west build -p -b proton_c -- -DSHIELD=kyria_left -DKEYMAP=default
+west build -p -b proton_c -- -DSHIELD=kyria_left
+```
+### Split Keyboards
+
+:::note
+For split keyboards, you will have to build and flash each side separately the first time you install ZMK.
+:::
+
+By default, the `build` command outputs a single .uf2 file named `zmk.uf2` so building left and then right immediately after will overwrite your left firmware. In addition, you will need to pristine build each side to ensure the correct files are used. To avoid having to pristine build each time and separate the left and right build files, we recommend setting up separate build directories for each half. You can do this by first building left into `build\left`:
+
+```
+west build -d build/left -b nice_nano -- -DSHIELD=kyria_left
+```
+and then building right into `build\right`:
+```
+west build -d build/right -b nice_nano -- -DSHIELD=kyria_right
 ```
 
 ## Flashing
@@ -79,10 +94,3 @@ west flash
 
 For boards that have drag and drop .uf2 flashing capability, the .uf2 file to flash can be found in `build\zephyr` and is by default named `zmk.uf2`.
 
-:::note
-For split keyboards, you will have to build and flash each side separately the first time you install ZMK. By default the `build` command outputs a single .uf2 file named `zmk.uf2`, so you will have to
-1. Build the left side with the `build` command provided above
-2. Flash `zmk.uf2` to the left side
-3. Replace DSHIELD with the right side (for the above example, this would be `kyria_right`) and build again
-4. Flash `zmk.uf2` the right side
-:::
