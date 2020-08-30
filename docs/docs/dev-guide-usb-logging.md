@@ -64,7 +64,7 @@ sudo tio /dev/ttyACM0
 
 On Windows, you can use [PuTTY](https://www.putty.org/). Once installed, use Device Manager to figure out which COM port your controller is communicating on (listed under 'Ports (COM & LPT)') and specify that as the 'Serial line' in PuTTY.
 
-![Controller COM port](assets/usb-logging/com_port.png)
+![Controller COM port](assets/usb-logging/com-port.png)
 
 ![PuTTY settings](assets/usb-logging/putty.png)
 
