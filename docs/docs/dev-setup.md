@@ -367,23 +367,23 @@ On Windows, you will have to set two environment variables for ZMK to build prop
 
 1. Open Start Menu and type 'env' to find the 'Edit the system environment variables' option. Open it.
 
-![start menu](assets/env-var/start_menu.png)
+![Environment variables in Start Menu](assets/env-var/start_menu.png)
 
 2. Click 'Environment Variables...'.
 
-![start menu](assets/env-var/env_var.png)
+![Environment variables button](assets/env-var/env_var.png)
 
 3. Click "New..." under System variables to create a new system variable.
 
-![start menu](assets/env-var/new_variable.png)
+![Environment variables menu](assets/env-var/new_variable.png)
 
 4. Set the variable name to 'ZEPHYR_TOOLCHAIN_VARIANT' and value to 'gnuarmemb'. Click OK to save.
 
-![start menu](assets/env-var/zephyr_toolchain.png)
+![Adding Zephyr toolchain variable](assets/env-var/zephyr_toolchain.png)
 
 5. Create another variable with variable name 'GNUARMEMB_TOOLCHAIN_PATH' and value set to wherever you installed your toolchain. Click OK to save.
 
-![start menu](assets/env-var/gnuarmemb.png)
+![Adding GNUARMEMB variable](assets/env-var/gnuarmemb.png)
 
 </details>
 
