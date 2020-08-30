@@ -11,8 +11,7 @@ Unlike other keyboard firmwares, ZMK Firmware has been built from the ground up 
 their own keyboard configurations, including keymaps, specific hardware details, etc. all outside of the
 core ZMK Firmware source repository.
 
-In addition to this, most users do not need to install any complicated toolchains or tools to build ZMK,
-instead using GitHub Actions to automatically build the user's configured firmware for them.
+In addition to this, most users will not need to install any complicated toolchains or tools to build ZMK. GitHub Actions is used instead to automatically build the user's configured firmware for them.
 
 ## Summary
 
@@ -170,7 +169,7 @@ a link to download the `firmware` upload:
 Once downloaded, extract the zip and you can verify it should contain one or more `uf2` files, which will be copied to
 your keyboard.
 
-### Installing UF2 Files
+### Flashing UF2 Files
 
 To flash the firmware, first put your board into bootloader mode by double clicking the reset button (either on the MCU board itself,
 or the one that is part of your keyboard). The controller should appear in your OS as a new USB storage device.
@@ -178,24 +177,10 @@ or the one that is part of your keyboard). The controller should appear in your 
 Once this happens, copy the correct UF2 file (e.g. left or right if working on a split), and paste it onto the root of that USB mass
 storage device. Once the flash is complete, the controller should automatically restart, and load your newfly flashed firmware.
 
-## Customization
+## Wirelessly Connecting Your Keyboard
 
-### Configuration Changes
+Connecting your keyboard wirelessly is the same as adding other Bluetooth devides: press the reset button and scan for devices. However, pairing and bonding is still currently being worked on to increase relability and ease of use. In addition, users have in general reported that Bluetooth pairing with computers tends to be quite finnicky. Try out the connection with your tablet or phone first, as those devices seem to work much more consistently. See [BLE Reset](./bond-reset.md) for help on resetting your MCUs if you're experiencing connection issues.
 
-The setup script creates a `config/<shield>.conf` file that allows you to add additional configuration options to
-control what features and options are built into your firmware. Opening that file with your text editor you should see
-various config settings that can be commented/uncommented to modify how your firmware is built.
+### Connecting Split Keyboard Halves
 
-### Keymap
-
-Once you have the basic user config completed, you can find the file in `config/<shield>.keymap` and customize from there.
-Refer to the [Keymap](/docs/feature/keymaps) documentation to learn more.
-
-### Publishing
-
-After making any changes you want, you should commit the changes and then push them to GitHub. That will trigger a new
-GitHub Actions job to build your firmware which you can download once it completes.
-
-:::note
-If you need to, a review of [Learn The Basics Of Git In Under 10 Minutes](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/) will help you get these steps right.
-:::
+For split keyboards, after flashing each half individually you can connect them together by resetting them at the same time. Within a few seconds of resetting, both halves should automatically connect to each other.

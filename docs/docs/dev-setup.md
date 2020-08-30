@@ -181,7 +181,7 @@ brew install cmake ninja python3 ccache dtc git wget
 
 ## Setup
 
-### West Build Command
+### West Installation
 
 `west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/2.3.0/guides/west/index.html) used to configure and build Zephyr™ applications.
 
@@ -192,14 +192,31 @@ pip3 install --user -U west
 ```
 
 :::danger pip user packages
-If you haven't done so yet, you may need to add the Python Pip user package directory to your `PATH`, e.g.:
+If you haven't done so yet, you may need to add the Python Pip user package directory to your `PATH` otherwise your computer will not be able to find the `west` command.
+:::
 
-```
+<Tabs
+defaultValue="linux"
+values={[
+{label: 'Linux', value: 'linux'},
+{label: 'Windows', value: 'win'},
+]}>
+<TabItem value = 'linux'>
+Run the following commands:
+
+```sh
 echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-:::
+</TabItem>
+<TabItem value = 'win'>
+
+1. See the [Environment Variables](#environment-variables) section on how to get to the Environment Variables page.
+3. Click "Edit..." and then "New" to add the directory where your west.exe is located. By default this should be something like `C:\Python38\Scripts`.
+
+</TabItem>
+</Tabs>
 
 ### Toolchain Installation
 
@@ -341,10 +358,41 @@ pip3 install --user -r zephyr/scripts/requirements-base.txt
 
 ### Environment Variables
 
+#### For GNU ARM Embedded on Windows
+
+On Windows, you will have to set two environment variables for ZMK to build properly: `ZEPHYR_TOOLCHAIN_VARIANT` and `GNUARMEMB_TOOLCHAIN_PATH`.
+
+<details>
+<summary> Steps to Update Environment Variables </summary>
+
+1. Open Start Menu and type 'env' to find the 'Edit the system environment variables' option. Open it.
+
+![Environment variables in Start Menu](assets/env-var/start_menu.png)
+
+2. Click 'Environment Variables...'.
+
+![Environment variables button](assets/env-var/env_var.png)
+
+3. Click "New..." under System variables to create a new system variable.
+
+![Environment variables menu](assets/env-var/new_variable.png)
+
+4. Set the variable name to 'ZEPHYR_TOOLCHAIN_VARIANT' and value to 'gnuarmemb'. Click OK to save.
+
+![Adding Zephyr toolchain variable](assets/env-var/zephyr_toolchain.png)
+
+5. Create another variable with variable name 'GNUARMEMB_TOOLCHAIN_PATH' and value set to wherever you installed your toolchain. Click OK to save.
+
+![Adding GNUARMEMB variable](assets/env-var/gnuarmemb.png)
+
+</details>
+
+#### For Zephyr
+
 By default, the Zephyr™ SDK will create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
 We suggest two main [options](https://docs.zephyrproject.org/2.3.0/guides/env_vars.html?highlight=zephyrrc) for how to load those settings.
 
-#### Per Shell
+##### Per Shell
 
 To load the Zephyr environment properly for just one transient shell, run the following from your ZMK checkout directory:
 
@@ -390,7 +438,7 @@ source zephyr/zephyr-env.cmd
 </TabItem>
 </OsTabs>
 
-#### All Shells
+##### All Shells
 
 To load the environment variables for your shell every time,
 append the existing `~/.zephyrrc` file to your shell's RC file and then start a new shell.
@@ -401,7 +449,6 @@ defaultValue="bash"
 values={[
 {label: 'bash', value: 'bash'},
 {label: 'zsh', value: 'zsh'},
-{label: 'cmd.exe', value: 'cmd'},
 ]
 }>
 
@@ -421,61 +468,4 @@ cat ~/.zephyrrc >> ~/.zshrc
 
 </TabItem>
 
-<TabItem value="cmd">
-
-`cmd.exe` instructions coming soon!
-
-</TabItem>
-
 </Tabs>
-
-## Build
-
-From here on, building and flashing ZMK should all be done from the `app/` subdirectory of the ZMK checkout:
-
-```sh
-cd app
-```
-
-To build for your particular keyboard, the behaviour varies slightly depending on if you are building for a keyboard with
-an onboard MCU, or one that uses a MCU board addon.
-
-### Keyboard (Shield) + MCU Board
-
-ZMK treats keyboards that take a MCU addon board as [shields](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html)
-
-Given the following:
-
-- MCU Board: Proton-C
-- Keyboard PCB: kyria_left
-- Keymap: default
-
-You can build ZMK with the following:
-
-```sh
-west build -b proton_c -- -DSHIELD=kyria_left -DKEYMAP=default
-```
-
-### Keyboard With Onboard MCU
-
-Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
-
-Given the following:
-
-- Keyboard: Planck (rev6)
-- Keymap: default
-
-you can build ZMK with the following:
-
-```sh
-west build -b planck_rev6 -- -DKEYMAP=default
-```
-
-## Flashing
-
-Once built, the previously supplied parameters will be remember, so you can simply run the following to flash your
-board, with it in bootloader mode:
-
-```
-west flash
-```
