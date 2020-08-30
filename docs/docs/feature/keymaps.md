@@ -4,7 +4,7 @@ title: Keymaps & Behaviors
 sidebar_label: Keymaps
 ---
 
-ZMK uses an declarative approach to keymaps, instead of using C code for all keymap configuration.
+ZMK uses a declarative approach to keymaps instead of using C code for all keymap configuration.
 Right now, ZMK uses the devicetree syntax to declare those keymaps; future work is envisioned for
 supporting dynamic loading of declarative keymaps, e.g. over USB Mass Storage or via a custom BLE
 service.

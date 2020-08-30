@@ -5,7 +5,7 @@ sidebar_label: Introduction
 ---
 
 ZMK Firmware is an open source (MIT) keyboard
-firmware built on the [Zephyr™ Project](https://zephyrproject.com/) RTOS.
+firmware built on the [Zephyr™ Project](https://zephyrproject.com/) Real Time Operating System (RTOS).
 
 The goal is to provider a powerful, featureful keyboard firmware that is free
 of licensing issues that prevent upstream BLE support as a first-class
