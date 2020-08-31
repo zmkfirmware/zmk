@@ -8,7 +8,7 @@ sidebar_label: Key Press
 The most basic of behaviors, is the ability to send certain keycode presses and releases in response to activating
 a certain key.
 
-For reference on keycode values, see the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12).
+For reference on keycode values, see pages 83-89 of the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12).
 
 ## Keycode Defines
 
