@@ -107,9 +107,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 if ZMK_SPLIT_BLE_ROLE_CENTRAL
 
-config BT_MAX_PAIRED
-	default 2
-
 config BT_MAX_CONN
 	default 2
 
@@ -151,6 +148,9 @@ endmenu
 if ZMK_BLE && !ZMK_SPLIT_BLE
 
 config BT_ID_MAX
+	default 5
+
+config BT_MAX_PAIRED
 	default 5
 
 # Used to update the name to include the identity used
