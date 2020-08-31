@@ -14,7 +14,9 @@ int zmk_ble_prof_next();
 int zmk_ble_prof_prev();
 int zmk_ble_prof_select(u8_t index);
 
+int zmk_ble_active_profile_index();
 bt_addr_le_t *zmk_ble_active_profile_addr();
+bool zmk_ble_active_profile_is_open();
 bool zmk_ble_active_profile_is_connected();
 char *zmk_ble_active_profile_name();
 
