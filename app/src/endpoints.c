@@ -47,6 +47,8 @@ int zmk_endpoints_select(enum zmk_endpoint endpoint) {
     return 0;
 }
 
+enum zmk_endpoint zmk_endpoints_selected() { return current_endpoint; }
+
 int zmk_endpoints_toggle() {
     enum zmk_endpoint new_endpoint =
         (preferred_endpoint == ZMK_ENDPOINT_USB) ? ZMK_ENDPOINT_BLE : ZMK_ENDPOINT_USB;

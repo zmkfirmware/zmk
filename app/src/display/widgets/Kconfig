@@ -1,0 +1,18 @@
+
+menu "ZMK Display Widgets"
+
+config ZMK_WIDGET_BATTERY_STATUS
+    bool "Widget for battery charge information, using small icons"
+    depends on BT
+    default y if BT
+    select LVGL_OBJ_LABEL
+    select LVGL_BUILD_IN_FONT_ROBOTO_16
+
+config ZMK_WIDGET_OUTPUT_STATUS
+    bool "Widget for keyboard output status icons"
+    depends on BT
+    default y if BT
+    select LVGL_OBJ_LABEL
+    select LVGL_BUILD_IN_FONT_ROBOTO_16
+    
+endmenu

@@ -168,14 +168,7 @@ endmenu
 
 menu "Display/LED Options"
 
-config ZMK_DISPLAY
-	bool "ZMK display support"
-	default n
-	select DISPLAY
-	select LVGL
-	select LVGL_THEMES
-	select LVGL_THEME_MONO
-	select LVGL_OBJ_LABEL
+rsource "src/display/Kconfig"
 
 config ZMK_RGB_UNDERGLOW
 	bool "RGB Adressable LED Underglow"
@@ -329,6 +322,7 @@ rsource "boards/shields/*/Kconfig.shield"
 
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
+
 
 source "Kconfig.zephyr"
 

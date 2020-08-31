@@ -7,6 +7,9 @@ child-binding:
   description: "A layer to be used in a keymap"
 
   properties:
+    label:
+      type: string
+      required: false
     bindings:
       type: phandle-array
       required: true

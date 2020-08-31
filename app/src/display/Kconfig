@@ -1,0 +1,32 @@
+
+menuconfig ZMK_DISPLAY
+    bool "Enable ZMK Display"
+    default n
+    select DISPLAY
+    select LVGL
+	select LVGL_THEMES
+	select LVGL_THEME_MONO
+
+if ZMK_DISPLAY
+
+choice LVGL_TXT_ENC
+    default LVGL_TXT_ENC_UTF8
+
+endchoice
+
+choice ZMK_DISPLAY_STATUS_SCREEN
+    prompt "Default status screen for displays"
+    default ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
+
+config ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
+    bool "Built in status screen"
+    select LVGL_OBJ_LABEL
+
+config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+    bool "Custom status screen"
+
+endchoice
+
+rsource "widgets/Kconfig"
+
+endif
