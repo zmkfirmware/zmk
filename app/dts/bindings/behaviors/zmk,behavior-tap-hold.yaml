@@ -5,11 +5,11 @@ description: Hold or Tap behavior
 
 compatible: "zmk,behavior-tap-hold"
 
-include: zero_param.yaml
+include: two_param.yaml
 
 properties:
   bindings:
-    type: phandle-array
+    type: phandles
     required: true
   tapping_term_ms:
     type: int 

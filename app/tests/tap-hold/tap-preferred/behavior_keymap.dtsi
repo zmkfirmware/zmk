@@ -4,22 +4,13 @@
 
 / {
 	behaviors {
-		fsf: behavior_f_shift {
+		tp: behavior_tap_preferred {
 			compatible = "zmk,behavior-tap-hold";
-			label = "f-shift";
-			#binding-cells = <0>;
-			tapping_term_ms = <300>;
-			bindings = <&kp F>, <&kp LSFT>;
+			label = "MOD_TAP";
+			#binding-cells = <2>;
 			flavor = "tap-preferred";
-		};
-		
-		jct: behavior_j_ctrl {
-			compatible = "zmk,behavior-tap-hold";
-			label = "j-ctrl";
-			#binding-cells = <0>;
-			tapping_term_ms = <300>;
-			bindings = <&kp J>, <&kp LCTL>;
-			flavor = "tap-preferred";
+			tapping_term_ms = <200>;
+			bindings = <&kp>, <&kp>;
 		};
 	};
 
@@ -29,20 +20,8 @@
 
 		default_layer {
 			bindings = <
-				&fsf &jct
+				&mt LSFT F &mt LCTL J
 				&kp D &kp RCTL>;
-		};
-
-		lower_layer {
-			bindings = <
-				&cp M_NEXT &trans
-				&kp L  &kp J>;
-		};
-
-		raise_layer {
-			bindings = <
-				&kp W &kp U
-				&kp X  &kp M>;
 		};
 	};
 };

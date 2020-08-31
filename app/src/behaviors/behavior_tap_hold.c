@@ -46,6 +46,8 @@ struct behavior_tap_hold_config {
 // this data is specific for each tap-hold
 struct active_tap_hold {
 	s32_t position;
+	u32_t param_hold;
+	u32_t param_tap;
 	bool is_decided;
 	bool is_hold;
 	const struct behavior_tap_hold_config *config;
@@ -158,7 +160,7 @@ static struct active_tap_hold *find_tap_hold(u32_t position)
 	return NULL;
 }
 
-static struct active_tap_hold *store_tap_hold(u32_t position, const struct behavior_tap_hold_config *config)
+static struct active_tap_hold *store_tap_hold(u32_t position, u32_t param_hold, u32_t param_tap, const struct behavior_tap_hold_config *config)
 {
 	for (int i = 0; i < ZMK_BHV_TAP_HOLD_MAX_HELD; i++) {
 		if (active_tap_holds[i].position != ZMK_BHV_TAP_HOLD_POSITION_NOT_USED) {
@@ -168,6 +170,8 @@ static struct active_tap_hold *store_tap_hold(u32_t position, const struct behav
 		active_tap_holds[i].is_decided = false;
 		active_tap_holds[i].is_hold = false;
 		active_tap_holds[i].config = config;
+		active_tap_holds[i].param_hold = param_hold;
+		active_tap_holds[i].param_tap = param_tap;
 		return &active_tap_holds[i];
 	}
 	return NULL;
@@ -271,16 +275,18 @@ static void decide_tap_hold(struct active_tap_hold *tap_hold, enum decision_mome
 	struct zmk_behavior_binding *behavior;
 	if (tap_hold->is_hold) {
 		behavior = &tap_hold->config->behaviors->hold;
+		struct device *behavior_device = device_get_binding(behavior->behavior_dev);
+		behavior_keymap_binding_pressed(behavior_device, tap_hold->position, tap_hold->param_hold, 0);
 	} else {
 		behavior = &tap_hold->config->behaviors->tap;
+		struct device *behavior_device = device_get_binding(behavior->behavior_dev);
+		behavior_keymap_binding_pressed(behavior_device, tap_hold->position, tap_hold->param_tap, 0);
 	}
-	struct device *behavior_device = device_get_binding(behavior->behavior_dev);
-	behavior_keymap_binding_pressed(behavior_device, tap_hold->position, behavior->param1, behavior->param2);
 	release_captured_events();
 }
 
 /************************************************************ tap_hold_binding and key handlers */
-static int on_tap_hold_binding_pressed(struct device *dev, u32_t position, u32_t _, u32_t __)
+static int on_tap_hold_binding_pressed(struct device *dev, u32_t position, u32_t param_hold, u32_t param_tap)
 {
 	const struct behavior_tap_hold_config *cfg = dev->config_info;
 
@@ -290,7 +296,7 @@ static int on_tap_hold_binding_pressed(struct device *dev, u32_t position, u32_t
 		return 0;
 	}
 
-	struct active_tap_hold *tap_hold = store_tap_hold(position, cfg);
+	struct active_tap_hold *tap_hold = store_tap_hold(position, param_hold, param_tap, cfg);
 	if (tap_hold == NULL) {
 		LOG_ERR("unable to store tap-hold info, did you press more than %d tap-holds?", ZMK_BHV_TAP_HOLD_MAX_HELD);
 		return 0;
@@ -321,12 +327,14 @@ static int on_tap_hold_binding_released(struct device *dev, u32_t position, u32_
 	struct zmk_behavior_binding *behavior;
 	if (tap_hold->is_hold) {
 		behavior = &tap_hold->config->behaviors->hold;
+		struct device *behavior_device = device_get_binding(behavior->behavior_dev);
+		behavior_keymap_binding_released(behavior_device, tap_hold->position, tap_hold->param_hold, 0);
 	} else {
 		behavior = &tap_hold->config->behaviors->tap;
+		struct device *behavior_device = device_get_binding(behavior->behavior_dev);
+		behavior_keymap_binding_released(behavior_device, tap_hold->position, tap_hold->param_tap, 0);
 	}
 
-	struct device *behavior_device = device_get_binding(behavior->behavior_dev);
-	behavior_keymap_binding_released(behavior_device, tap_hold->position, behavior->param1, behavior->param2);
 
 	if (work_cancel_result == -EINPROGRESS) {
 		// let the timer handler clean up
@@ -455,15 +463,15 @@ static struct behavior_tap_hold_data behavior_tap_hold_data;
 #define _TRANSFORM_ENTRY(idx, node)														   \
 	{  \
 		.behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),								   \
-	  .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))), \
-	  .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))), \
+	    .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))), \
+	    .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0), (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))), \
 	},
 
 #define KP_INST(n)													 \
 	static k_timeout_t behavior_tap_hold_config_##n##_gettime() { return K_MSEC(DT_INST_PROP(n, tapping_term_ms)); } \
 	static struct behavior_tap_hold_behaviors behavior_tap_hold_behaviors_##n = {					 \
-		.tap = _TRANSFORM_ENTRY(0, n)										 \
-		       .hold = _TRANSFORM_ENTRY(1, n)									 \
+		.hold = _TRANSFORM_ENTRY(0, n)										 \
+	  	.tap = _TRANSFORM_ENTRY(1, n)									 \
 	};														 \
 	static struct behavior_tap_hold_config behavior_tap_hold_config_##n = {						 \
 		.behaviors = &behavior_tap_hold_behaviors_##n,								 \
