@@ -1,6 +1,6 @@
-kp_pressed: usage_page 0x07 keycode 0xe4
+kp_pressed: usage_page 0x07 keycode 0x07
 th_binding_pressed: 0 new undecided tap_hold
-kp_released: usage_page 0x07 keycode 0xe4
+kp_released: usage_page 0x07 keycode 0x07
 th_decide: 0 decided tap (balanced event 0)
 kp_pressed: usage_page 0x07 keycode 0x09
 kp_released: usage_page 0x07 keycode 0x09
