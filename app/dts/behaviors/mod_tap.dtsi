@@ -1,7 +1,7 @@
 / {
 	behaviors {
 		mt: behavior_mod_tap {
-			compatible = "zmk,behavior-tap-hold";
+			compatible = "zmk,behavior-hold-tap";
 			label = "MOD_TAP";
 			#binding-cells = <2>;
 			flavor = "hold-preferred";

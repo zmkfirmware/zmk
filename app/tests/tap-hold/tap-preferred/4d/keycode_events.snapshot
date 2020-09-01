@@ -1,7 +1,0 @@
-th_binding_pressed: 0 new undecided tap_hold
-th_decide: 0 decided tap (tap-preferred event 0)
-kp_pressed: usage_page 0x07 keycode 0x09
-kp_pressed: usage_page 0x07 keycode 0x07
-kp_released: usage_page 0x07 keycode 0x09
-th_binding_released: 0 cleaning up tap-hold
-kp_released: usage_page 0x07 keycode 0x07

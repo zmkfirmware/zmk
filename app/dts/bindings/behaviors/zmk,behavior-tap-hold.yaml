@@ -3,7 +3,7 @@
 
 description: Hold or Tap behavior
 
-compatible: "zmk,behavior-tap-hold"
+compatible: "zmk,behavior-hold-tap"
 
 include: two_param.yaml
 
