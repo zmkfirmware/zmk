@@ -51,10 +51,10 @@ static u8_t zmk_keymap_layer_default = 0;
 
 // State
 
-// When a behavior handles a key position "down" event, we record that layer
+// When a behavior handles a key position "down" event, we record the layer state
 // here so that even if that layer is deactivated before the "up", event, we
 // still send the release event to the behavior in that layer also.
-static u8_t zmk_keymap_active_behavior_layer[ZMK_KEYMAP_LEN];
+static u32_t zmk_keymap_active_behavior_layer[ZMK_KEYMAP_LEN];
 
 static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_LEN] = {
 	DT_INST_FOREACH_CHILD(0, TRANSFORMED_LAYER)
@@ -101,47 +101,51 @@ int zmk_keymap_layer_toggle(u8_t layer)
   	return zmk_keymap_layer_activate(layer);
 };
 
-bool is_active_position(u32_t position, u8_t layer)
+bool is_active_layer(u8_t layer, u32_t layer_state)
 {
-	return (zmk_keymap_layer_state & BIT(layer)) == BIT(layer)
-		|| layer == zmk_keymap_layer_default
-		|| zmk_keymap_active_behavior_layer[position] == layer;
+	return (layer_state & BIT(layer)) == BIT(layer)
+		|| layer == zmk_keymap_layer_default;
 }
 
+int zmk_keymap_apply_position_state(int layer, u32_t position, bool pressed)
+{
+	struct zmk_behavior_binding *binding = &zmk_keymap[layer][position];
+	struct device *behavior;
+
+	LOG_DBG("layer: %d position: %d, binding name: %s", layer, position, log_strdup(binding->behavior_dev));
+
+	behavior = device_get_binding(binding->behavior_dev);
+
+	if (!behavior) {
+		LOG_DBG("No behavior assigned to %d on layer %d", position, layer);
+		return 1;
+	}
+
+	if (pressed) {
+		return behavior_keymap_binding_pressed(behavior, position, binding->param1, binding->param2);
+	} else {
+		return behavior_keymap_binding_released(behavior, position, binding->param1, binding->param2);
+	}
+}
+			
 int zmk_keymap_position_state_changed(u32_t position, bool pressed)
 {
 	for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--)
 	{
-		if (is_active_position(position, layer))
+		u32_t layer_state = pressed ? zmk_keymap_layer_state : zmk_keymap_active_behavior_layer[position];
+		if (is_active_layer(layer, layer_state))
 		{
-			struct zmk_behavior_binding *binding = &zmk_keymap[layer][position];
-			struct device *behavior;
-			int ret;
+			int ret = zmk_keymap_apply_position_state(layer, position, pressed);
 
-			LOG_DBG("layer: %d position: %d, binding name: %s", layer, position, log_strdup(binding->behavior_dev));
-
-			behavior = device_get_binding(binding->behavior_dev);
-
-			if (!behavior) {
-				LOG_DBG("No behavior assigned to %d on layer %d", position, layer);
-				continue;
-			}
-			if (pressed) {
-				ret = behavior_keymap_binding_pressed(behavior, position, binding->param1, binding->param2);
-			} else {
-				ret = behavior_keymap_binding_released(behavior, position, binding->param1, binding->param2);
-			}
-			
+			zmk_keymap_active_behavior_layer[position] = zmk_keymap_layer_state;
 
 			if (ret > 0) {
 				LOG_DBG("behavior processing to continue to next layer");
 				continue;
 			} else if (ret < 0) {
 				LOG_DBG("Behavior returned error: %d", ret);
-				zmk_keymap_active_behavior_layer[position] = 0;
 				return ret; 
 			} else {
-				zmk_keymap_active_behavior_layer[position] = pressed ? layer : 0;
 				return ret;
 			}
 		}

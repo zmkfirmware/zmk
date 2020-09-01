@@ -4,7 +4,7 @@ title: Keymaps & Behaviors
 sidebar_label: Keymaps
 ---
 
-ZMK uses an declarative approach to keymaps, instead of using C code for all keymap configuration.
+ZMK uses a declarative approach to keymaps instead of using C code for all keymap configuration.
 Right now, ZMK uses the devicetree syntax to declare those keymaps; future work is envisioned for
 supporting dynamic loading of declarative keymaps, e.g. over USB Mass Storage or via a custom BLE
 service.
@@ -80,7 +80,7 @@ A keymap file is composed of several sections, that together make up a valid dev
 
 ### Includes
 
-THe devicetree files are actually preprocessed before being finally leveraged by Zephyr. This allows using standard C defines to create meaningful placeholders
+The devicetree files are actually preprocessed before being finally leveraged by Zephyr. This allows using standard C defines to create meaningful placeholders
 for what would otherwise be cryptic integer keycodes, etc. This also allows bringing in _other_ devicetree nodes from separate files.
 
 The top two lines of most keymaps should include:

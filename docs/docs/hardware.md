@@ -11,7 +11,7 @@ have had their hardware details codified in boards/shields for ZMK.
 
 :::
 
-Being built on a solid technical foundation of the Zephyr™ RTOS, it's possible to make ZMK support a wide diversity of hardware targets.
+With the solid technical foundation of Zephyr™ RTOS, ZMK can support a wide diversity of hardware targets.
 That being said, there are currently only a few specific [boards](/docs/faq#what-is-a-board)/[shields](/docs/faq#what-is-a-shield) that have been written and tested by the ZMK contributors.
 
 ## Boards
