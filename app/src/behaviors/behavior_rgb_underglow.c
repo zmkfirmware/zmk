@@ -17,7 +17,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int behavior_rgb_underglow_init(struct device *dev) { return 0; }
 
-static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t action, u32_t _) {
+static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t action, u32_t _,
+                                     s64_t _timestamp) {
     switch (action) {
     case RGB_TOG:
         return zmk_rgb_underglow_toggle();

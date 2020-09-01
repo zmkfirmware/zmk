@@ -19,12 +19,12 @@ struct behavior_none_data {};
 static int behavior_none_init(struct device *dev) { return 0; };
 
 static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _param1,
-                                     u32_t _param2) {
+                                     u32_t _param2, s64_t _timestamp) {
     return 0;
 }
 
 static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t _param1,
-                                      u32_t _param2) {
+                                      u32_t _param2, s64_t _timestamp) {
     return 0;
 }
 

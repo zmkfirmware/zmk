@@ -19,12 +19,12 @@ struct behavior_transparent_data {};
 static int behavior_transparent_init(struct device *dev) { return 0; };
 
 static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _param1,
-                                     u32_t _param2) {
+                                     u32_t _param2, s64_t _timestamp) {
     return 1;
 }
 
 static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t _param1,
-                                      u32_t _param2) {
+                                      u32_t _param2, s64_t _timestamp) {
     return 1;
 }
 

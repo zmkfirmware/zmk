@@ -20,7 +20,7 @@ struct behavior_reset_config {
 static int behavior_reset_init(struct device *dev) { return 0; };
 
 static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _param1,
-                                     u32_t _param2) {
+                                     u32_t _param2, s64_t _timestamp) {
     const struct behavior_reset_config *cfg = dev->config_info;
 
     // TODO: Correct magic code for going into DFU?

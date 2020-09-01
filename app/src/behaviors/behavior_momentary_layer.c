@@ -19,15 +19,15 @@ struct behavior_mo_data {};
 
 static int behavior_mo_init(struct device *dev) { return 0; };
 
-static int mo_keymap_binding_pressed(struct device *dev, u32_t position, u32_t layer, u32_t _) {
+static int mo_keymap_binding_pressed(struct device *dev, u32_t position, u32_t layer, u32_t _,
+                                     s64_t _timestamp) {
     LOG_DBG("position %d layer %d", position, layer);
-
     return zmk_keymap_layer_activate(layer);
 }
 
-static int mo_keymap_binding_released(struct device *dev, u32_t position, u32_t layer, u32_t _) {
+static int mo_keymap_binding_released(struct device *dev, u32_t position, u32_t layer, u32_t _,
+                                      s64_t _timestamp) {
     LOG_DBG("position %d layer %d", position, layer);
-
     return zmk_keymap_layer_deactivate(layer);
 }
 

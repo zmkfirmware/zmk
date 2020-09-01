@@ -14,16 +14,20 @@ struct keycode_state_changed {
     u8_t usage_page;
     u32_t keycode;
     bool state;
+    u32_t position;
+    s32_t timestamp;
 };
 
 ZMK_EVENT_DECLARE(keycode_state_changed);
 
 inline struct keycode_state_changed *create_keycode_state_changed(u8_t usage_page, u32_t keycode,
-                                                                  bool state) {
+                                                                  bool state, s32_t position,
+                                                                  s32_t timestamp) {
     struct keycode_state_changed *ev = new_keycode_state_changed();
     ev->usage_page = usage_page;
     ev->keycode = keycode;
     ev->state = state;
-
+    ev->position = position;
+    ev->timestamp = timestamp;
     return ev;
 }
