@@ -75,3 +75,9 @@ int zmk_event_manager_release(struct zmk_event_header *event)
 {
     return zmk_event_manager_handle_from(event, event->last_listener_index + 1);
 }
+
+
+int zmk_event_manager_release_again(struct zmk_event_header *event)
+{
+    return zmk_event_manager_handle_from(event, event->last_listener_index);
+}
