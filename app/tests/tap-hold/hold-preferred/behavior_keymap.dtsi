@@ -2,14 +2,27 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/kscan-mock.h>
 
+
+
 / {
+	behaviors {
+		th_hold: behavior_tap_hold_hold {
+			compatible = "zmk,behavior-tap-hold";
+			label = "TAP_HOLD_HOLD";
+			#binding-cells = <2>;
+			flavor = "hold-preferred";
+			tapping_term_ms = <300>;
+			bindings = <&kp>, <&kp>;
+		};
+	};
+
 	keymap {
 		compatible = "zmk,keymap";
 		label ="Default keymap";
 
 		default_layer {
 			bindings = <
-				&mt LSFT F &mt LCTL J
+				&th_hold LSFT F &th_hold LCTL J
 				&kp D &kp RCTL>;
 		};
 	};

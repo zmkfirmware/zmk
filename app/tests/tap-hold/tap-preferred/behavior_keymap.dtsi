@@ -9,7 +9,7 @@
 			label = "MOD_TAP";
 			#binding-cells = <2>;
 			flavor = "tap-preferred";
-			tapping_term_ms = <200>;
+			tapping_term_ms = <300>;
 			bindings = <&kp>, <&kp>;
 		};
 	};
@@ -20,7 +20,7 @@
 
 		default_layer {
 			bindings = <
-				&mt LSFT F &mt LCTL J
+				&tp LSFT F &tp LCTL J
 				&kp D &kp RCTL>;
 		};
 	};
