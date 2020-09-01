@@ -22,18 +22,22 @@ struct behavior_key_press_data {};
 
 static int behavior_key_press_init(struct device *dev) { return 0; };
 
-static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t keycode, u32_t _) {
+static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t keycode, u32_t _,
+                                     s64_t timestamp) {
     const struct behavior_key_press_config *cfg = dev->config_info;
     LOG_DBG("position %d usage_page 0x%02X keycode 0x%02X", position, cfg->usage_page, keycode);
 
-    return ZMK_EVENT_RAISE(create_keycode_state_changed(cfg->usage_page, keycode, true));
+    return ZMK_EVENT_RAISE(
+        create_keycode_state_changed(cfg->usage_page, keycode, true, position, timestamp));
 }
 
-static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t keycode, u32_t _) {
+static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t keycode, u32_t _,
+                                      s64_t timestamp) {
     const struct behavior_key_press_config *cfg = dev->config_info;
     LOG_DBG("position %d usage_page 0x%02X keycode 0x%02X", position, cfg->usage_page, keycode);
 
-    return ZMK_EVENT_RAISE(create_keycode_state_changed(cfg->usage_page, keycode, false));
+    return ZMK_EVENT_RAISE(
+        create_keycode_state_changed(cfg->usage_page, keycode, false, position, timestamp));
 }
 
 static const struct behavior_driver_api behavior_key_press_driver_api = {

@@ -104,7 +104,7 @@ bool is_active_layer(u8_t layer, u32_t layer_state) {
     return (layer_state & BIT(layer)) == BIT(layer) || layer == zmk_keymap_layer_default;
 }
 
-int zmk_keymap_apply_position_state(int layer, u32_t position, bool pressed) {
+int zmk_keymap_apply_position_state(int layer, u32_t position, bool pressed, s64_t timestamp) {
     struct zmk_behavior_binding *binding = &zmk_keymap[layer][position];
     struct device *behavior;
 
@@ -119,20 +119,20 @@ int zmk_keymap_apply_position_state(int layer, u32_t position, bool pressed) {
     }
 
     if (pressed) {
-        return behavior_keymap_binding_pressed(behavior, position, binding->param1,
-                                               binding->param2);
+        return behavior_keymap_binding_pressed(behavior, position, binding->param1, binding->param2,
+                                               timestamp);
     } else {
         return behavior_keymap_binding_released(behavior, position, binding->param1,
-                                                binding->param2);
+                                                binding->param2, timestamp);
     }
 }
 
-int zmk_keymap_position_state_changed(u32_t position, bool pressed) {
+int zmk_keymap_position_state_changed(u32_t position, bool pressed, s64_t timestamp) {
     for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--) {
         u32_t layer_state =
             pressed ? zmk_keymap_layer_state : zmk_keymap_active_behavior_layer[position];
         if (is_active_layer(layer, layer_state)) {
-            int ret = zmk_keymap_apply_position_state(layer, position, pressed);
+            int ret = zmk_keymap_apply_position_state(layer, position, pressed, timestamp);
 
             zmk_keymap_active_behavior_layer[position] = zmk_keymap_layer_state;
 
@@ -194,7 +194,7 @@ int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor) {
 int keymap_listener(const struct zmk_event_header *eh) {
     if (is_position_state_changed(eh)) {
         const struct position_state_changed *ev = cast_position_state_changed(eh);
-        return zmk_keymap_position_state_changed(ev->position, ev->state);
+        return zmk_keymap_position_state_changed(ev->position, ev->state, ev->timestamp);
 #if ZMK_KEYMAP_HAS_SENSORS
     } else if (is_sensor_event(eh)) {
         const struct sensor_event *ev = cast_sensor_event(eh);

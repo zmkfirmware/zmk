@@ -18,7 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/ble.h>
 
-static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t command, u32_t arg) {
+static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t command, u32_t arg, s64_t timestamp) {
     switch (command) {
     case BT_CLR_CMD:
         return zmk_ble_clear_bonds();
@@ -38,7 +38,7 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t c
 static int behavior_bt_init(struct device *dev) { return 0; };
 
 static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t command,
-                                      u32_t arg) {
+                                      u32_t arg, s64_t timestamp) {
     return 0;
 }
 

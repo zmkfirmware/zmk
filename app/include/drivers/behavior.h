@@ -20,7 +20,7 @@
  */
 
 typedef int (*behavior_keymap_binding_callback_t)(struct device *dev, u32_t position, u32_t param1,
-                                                  u32_t param2);
+                                                  u32_t param2, s64_t timestamp);
 typedef int (*behavior_sensor_keymap_binding_callback_t)(struct device *dev, struct device *sensor,
                                                          u32_t param1, u32_t param2);
 
@@ -43,17 +43,18 @@ __subsystem struct behavior_driver_api {
  * @retval Negative errno code if failure.
  */
 __syscall int behavior_keymap_binding_pressed(struct device *dev, u32_t position, u32_t param1,
-                                              u32_t param2);
+                                              u32_t param2, s64_t timestamp);
 
 static inline int z_impl_behavior_keymap_binding_pressed(struct device *dev, u32_t position,
-                                                         u32_t param1, u32_t param2) {
+                                                         u32_t param1, u32_t param2,
+                                                         s64_t timestamp) {
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->driver_api;
 
     if (api->binding_pressed == NULL) {
         return -ENOTSUP;
     }
 
-    return api->binding_pressed(dev, position, param1, param2);
+    return api->binding_pressed(dev, position, param1, param2, timestamp);
 }
 
 /**
@@ -65,17 +66,18 @@ static inline int z_impl_behavior_keymap_binding_pressed(struct device *dev, u32
  * @retval Negative errno code if failure.
  */
 __syscall int behavior_keymap_binding_released(struct device *dev, u32_t position, u32_t param1,
-                                               u32_t param2);
+                                               u32_t param2, s64_t timestamp);
 
 static inline int z_impl_behavior_keymap_binding_released(struct device *dev, u32_t position,
-                                                          u32_t param1, u32_t param2) {
+                                                          u32_t param1, u32_t param2,
+                                                          s64_t timestamp) {
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->driver_api;
 
     if (api->binding_released == NULL) {
         return -ENOTSUP;
     }
 
-    return api->binding_released(dev, position, param1, param2);
+    return api->binding_released(dev, position, param1, param2, timestamp);
 }
 
 /**
