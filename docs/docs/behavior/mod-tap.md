@@ -22,7 +22,7 @@ The Mod-Tap behavior either acts as a held modifier, or as a tapped keycode.
 Example:
 
 ```
-&mt MOD_LSFT A
+&mt LSFT A
 ```
 
 ### Configuration
