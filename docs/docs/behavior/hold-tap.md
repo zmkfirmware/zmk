@@ -31,9 +31,9 @@ A code example which configures a mod-tap setting that works with homerow mods:
 
 / {
 	behaviors {
-		&hm: homerow_mods {
+		hm: homerow_mods {
 			compatible = "zmk,behavior-hold-tap";
-			label = "homerow_mods";
+			label = "HOMEROW_MODS";
 			#binding-cells = <2>;
 			tapping_term_ms = <175>;
 			flavor = "balanced";

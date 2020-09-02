@@ -29,6 +29,13 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 // increase if you have keyboard with more keys.
 #define ZMK_BHV_HOLD_TAP_POSITION_NOT_USED 9999
 
+
+enum flavor {
+	ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED = 0,
+	ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED = 1,
+	ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED = 2,
+};
+
 struct behavior_hold_tap_behaviors {
 	struct zmk_behavior_binding tap;
 	struct zmk_behavior_binding hold;
@@ -39,7 +46,7 @@ typedef k_timeout_t (*timer_func)();
 struct behavior_hold_tap_config {
 	timer_func tapping_term_ms;
 	struct behavior_hold_tap_behaviors *behaviors;
-	int flavor;
+	enum flavor flavor;
 };
 
 // this data is specific for each hold-tap
@@ -197,9 +204,6 @@ static void decide_balanced(struct active_hold_tap *hold_tap, enum decision_mome
 		hold_tap->is_decided = true;
 		break;
 	case HT_OTHER_KEY_UP:
-		hold_tap->is_hold = 1;
-		hold_tap->is_decided = true;
-		break;
 	case HT_TIMER_EVENT:
 		hold_tap->is_hold = 1;
 		hold_tap->is_decided = true;
@@ -231,15 +235,24 @@ static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decisio
 		hold_tap->is_decided = true;
 		break;
 	case HT_OTHER_KEY_DOWN:
-		hold_tap->is_hold = 1;
-		hold_tap->is_decided = true;
-		break;
 	case HT_TIMER_EVENT:
 		hold_tap->is_hold = 1;
 		hold_tap->is_decided = true;
 		break;
 	default: return;
 	}
+}
+
+static inline char* flavor_str(enum flavor flavor) {
+	switch(flavor) {
+	case ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED:
+		return "hold-preferred";
+	case ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED:
+		return "balanced";
+	case ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED:
+		return "tap-preferred";
+	}
+	return "UNKNOWN FLAVOR";
 }
 
 static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_moment event)
@@ -253,13 +266,13 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
 		return;
 	}
 
-	int flavor = hold_tap->config->flavor;
-	if (flavor == 1) {
-		decide_balanced(hold_tap, event);
-	} else if (flavor == 2) {
-		decide_tap_preferred(hold_tap, event);
-	} else if (flavor == 0) {
+	switch(hold_tap->config->flavor) {
+	case ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED:
 		decide_hold_preferred(hold_tap, event);
+	case ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED:
+		decide_balanced(hold_tap, event);
+	case ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED:
+		decide_tap_preferred(hold_tap, event);
 	}
 
 	if (!hold_tap->is_decided) {
@@ -269,7 +282,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
 	LOG_DBG("%d decided %s (%s event %d)", 
 		hold_tap->position, 
 		hold_tap->is_hold ? "hold" : "tap", 
-		flavor == 0 ? "hold-preferred" : flavor == 1 ? "balanced": "tap-preferred",
+		flavor_str(hold_tap->config->flavor),
 		event);
 	undecided_hold_tap = NULL;
 
