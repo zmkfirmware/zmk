@@ -75,9 +75,14 @@ struct zmk_event_subscription {
 #define ZMK_EVENT_RAISE_AFTER(ev, mod) \
     zmk_event_manager_raise_after((struct zmk_event_header *)ev, &zmk_listener_##mod);
 
+
+#define ZMK_EVENT_RAISE_AT(ev, mod) \
+    zmk_event_manager_raise_at((struct zmk_event_header *)ev, &zmk_listener_##mod);
+
 #define ZMK_EVENT_RELEASE(ev) \
     zmk_event_manager_release((struct zmk_event_header *)ev);
 
 int zmk_event_manager_raise(struct zmk_event_header *event);
 int zmk_event_manager_raise_after(struct zmk_event_header *event, const struct zmk_listener *listener);
+int zmk_event_manager_raise_at(struct zmk_event_header *event, const struct zmk_listener *listener);
 int zmk_event_manager_release(struct zmk_event_header *event);
