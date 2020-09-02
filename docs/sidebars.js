@@ -24,5 +24,7 @@ module.exports = {
       "dev-tests",
     ],
     "Dev Guides": ["dev-guide-new-shield", "dev-guide-usb-logging"],
+
+    Troubleshooting:["troubleshooting"],
   },
 };
