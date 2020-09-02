@@ -82,16 +82,12 @@ static const struct bt_data zmk_ble_ad[] = {
 #endif
 };
 
-#define IDENTITY_COUNT CONFIG_BT_ID_MAX
-
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
 
 static bt_addr_le_t peripheral_addr;
 
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
 
-
-static u8_t active_identity = 0;
 
 int zmk_ble_adv_pause()
 {
@@ -106,7 +102,7 @@ int zmk_ble_adv_pause()
 
 int zmk_ble_adv_resume()
 {
-    struct bt_le_adv_param *adv_params = ZMK_ADV_PARAMS(active_identity);
+    struct bt_le_adv_param *adv_params = ZMK_ADV_PARAMS(BT_ID_DEFAULT);
 
     LOG_DBG("");
     int err = bt_le_adv_start(adv_params, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
@@ -131,62 +127,6 @@ static void disconnect_host_connection(struct bt_conn *conn, void *arg)
     bt_conn_disconnect(conn, BT_HCI_ERR_LOCALHOST_TERM_CONN);
 };
 
-static int activate_profile(u8_t index)
-{
-    int err;
-    
-    if (index >= IDENTITY_COUNT) {
-        return -EINVAL;
-    }
-
-    if (active_identity != index) {
-        LOG_DBG("Persisting new active identity");
-        active_identity = index;
-
-#if IS_ENABLED(CONFIG_SETTINGS)
-        err = settings_save_one("ble/active_identity", &active_identity, sizeof(u8_t));
-        if (err) {
-            LOG_WRN("Failed to persist active_identity (err %d)", err);
-        }
-#endif
-
-#if IS_ENABLED(CONFIG_BT_DEVICE_NAME_DYNAMIC)
-        char name[CONFIG_BT_DEVICE_NAME_MAX];
-        snprintf(name, sizeof(name), "%s (Profile %d)", CONFIG_ZMK_KEYBOARD_NAME, active_identity + 1);
-        bt_set_name(name);
-#endif /* IS_ENABLED(CONFIG_BT_DEVICE_NAME_DYNAMIC) */
-    }
-
-    return zmk_ble_adv_resume();
-};
-
-static int deactivate_profile(u8_t index)
-{
-    int err = zmk_ble_adv_pause();
-    if (err) {
-        LOG_WRN("Failed to pause advertising %d", err);
-    }
-
-    bt_conn_foreach(BT_CONN_TYPE_ALL, disconnect_host_connection, NULL);
-
-    return 0;
-};
-
-int zmk_ble_identity_select(u8_t index)
-{
-    LOG_DBG("index %d", index);
-    if (index >= IDENTITY_COUNT) {
-        return -EINVAL;
-    }
-
-    int err = deactivate_profile(active_identity);
-    if (err) {
-        LOG_WRN("Failed to deactivate profile");
-        return err;
-    }
-
-    return activate_profile(index);
-};
 
 static void unpair_non_peripheral_bonds(const struct bt_bond_info *info, void *user_data) {
     char addr[BT_ADDR_LE_STR_LEN];
@@ -200,33 +140,18 @@ static void unpair_non_peripheral_bonds(const struct bt_bond_info *info, void *u
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
 
     LOG_DBG("Unpairing %s", log_strdup(addr));
-    bt_unpair(active_identity, &info->addr);
+    bt_unpair(BT_ID_DEFAULT, &info->addr);
 }
 
-int zmk_ble_identity_clear()
+int zmk_ble_clear_bonds()
 {
     LOG_DBG("");
-    int err = deactivate_profile(active_identity);
-    if (err) {
-        return err;
-    }
+    
+    bt_conn_foreach(BT_ID_DEFAULT, disconnect_host_connection, NULL);
+    bt_foreach_bond(BT_ID_DEFAULT, unpair_non_peripheral_bonds, NULL);
 
-    bt_foreach_bond(active_identity, unpair_non_peripheral_bonds, NULL);
-
-    return activate_profile(active_identity);
+    return 0;
 };
-
-int zmk_ble_identity_next()
-{
-    LOG_DBG("active_identity %d IDENTITY_COUNT %d", active_identity, IDENTITY_COUNT);
-    return zmk_ble_identity_select((active_identity + 1) % IDENTITY_COUNT);
-}
-
-int zmk_ble_identity_prev()
-{
-    LOG_DBG("");
-    return zmk_ble_identity_select((active_identity + IDENTITY_COUNT - 1) % IDENTITY_COUNT);
-}
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
 
@@ -246,19 +171,8 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
 
     LOG_DBG("Setting BLE value %s", log_strdup(name));
 
-    if (settings_name_steq(name, "active_identity", &next) && !next) {
-        if (len != sizeof(active_identity)) {
-            return -EINVAL;
-        }
-
-        int err = read_cb(cb_arg, &active_identity, sizeof(active_identity));
-        if (err <= 0) {
-            LOG_ERR("Failed to handle profile from settings (err %d)", err);
-            return err;
-        }
-        LOG_DBG("Loaded active identity %d", active_identity);
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
-    } else if (settings_name_steq(name, "peripheral_address", &next) && !next) {
+    if (settings_name_steq(name, "peripheral_address", &next) && !next) {
         if (len != sizeof(bt_addr_le_t)) {
             return -EINVAL;
         }
@@ -268,8 +182,8 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
             LOG_ERR("Failed to handle peripheral address from settings (err %d)", err);
             return err;
         }
-#endif
     }
+#endif
 
     return 0;
 };
@@ -318,6 +232,8 @@ static void disconnected(struct bt_conn *conn, u8_t reason)
     if (bt_addr_le_cmp(&peripheral_addr, BT_ADDR_LE_ANY) && bt_addr_le_cmp(&peripheral_addr, bt_conn_get_dst(conn))) {
         zmk_ble_adv_resume();
     }
+#else 
+    zmk_ble_adv_resume();
 #endif
 }
 
@@ -404,42 +320,12 @@ static void zmk_ble_ready(int err)
         return;
     }
 
-    zmk_ble_identity_select(active_identity);
+    zmk_ble_adv_resume();
 }
-
-#if CONFIG_BT_ID_MAX != 1
-static int initialize_identities()
-{
-    bt_addr_le_t addrs[CONFIG_BT_ID_MAX];
-    size_t count = CONFIG_BT_ID_MAX;
-
-    LOG_DBG("");
-    bt_id_get(addrs, &count);
-
-    for (int i = 0; i < count; i++) {
-        char addr[BT_ADDR_LE_STR_LEN];
-        bt_addr_le_to_str(&addrs[i], addr, sizeof(addr));
-        LOG_DBG("Existing identity %s", log_strdup(addr));
-    }
-
-    for (int i = count; i < CONFIG_BT_ID_MAX; i++) {
-        LOG_DBG("Initializing identity %d", i);
-        int id = bt_id_create(NULL, NULL);
-        if (id < 0) {
-            LOG_ERR("Failed to create new identity with id %d", i);
-            return id;
-        }
-    }
-
-    return 0;
-};
-#endif /* CONFIG_BT_ID_MAX != 1 */
 
 static int zmk_ble_init(struct device *_arg)
 {
-    int err;
-
-    err = bt_enable(NULL);
+    int err = bt_enable(NULL);
 
     if (err)
     {
@@ -460,10 +346,6 @@ static int zmk_ble_init(struct device *_arg)
 
 #endif
 
-#if CONFIG_BT_ID_MAX != 1
-    initialize_identities();
-#endif /* CONFIG_BT_ID_MAX != 1 */
-
     bt_conn_cb_register(&conn_callbacks);
     bt_conn_auth_cb_register(&zmk_ble_auth_cb_display);
 
@@ -474,13 +356,17 @@ static int zmk_ble_init(struct device *_arg)
 
 int zmk_ble_unpair_all()
 {
-    LOG_DBG("");
-    int err = bt_unpair(BT_ID_DEFAULT, NULL);
-    if (err) {
-        LOG_ERR("Failed to unpair devices (err %d)", err);
+    int resp = 0;
+    for (int i = BT_ID_DEFAULT; i < CONFIG_BT_ID_MAX; i++) {
+
+        int err = bt_unpair(BT_ID_DEFAULT, NULL);
+        if (err) {
+            resp = err;
+            LOG_ERR("Failed to unpair devices (err %d)", err);
+        }
     }
 
-    return err;
+    return resp;
 };
 
 bool zmk_ble_handle_key_user(struct zmk_key_event *key_event)

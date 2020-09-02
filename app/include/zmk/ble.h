@@ -9,13 +9,8 @@
 #include <bluetooth/addr.h>
 #include <zmk/keys.h>
 
-int zmk_ble_adv_pause();
-int zmk_ble_adv_resume();
 
-int zmk_ble_identity_clear();
-int zmk_ble_identity_next();
-int zmk_ble_identity_prev();
-int zmk_ble_identity_select(u8_t index);
+int zmk_ble_clear_bonds();
 
 int zmk_ble_unpair_all();
 bool zmk_ble_handle_key_user(struct zmk_key_event *key_event);

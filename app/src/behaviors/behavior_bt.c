@@ -22,18 +22,10 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t c
 {
     switch (command)
     {
-    case BT_RST_CMD:
-        return zmk_ble_unpair_all();
-    case BT_IDENT_CLR_CMD:
-        return zmk_ble_identity_clear();
-#if CONFIG_BT_ID_MAX != 1
-    case BT_IDENT_NEXT_CMD:
-        return zmk_ble_identity_next();
-    case BT_IDENT_PREV_CMD:
-        return zmk_ble_identity_prev();
-    case BT_IDENT_SEL_CMD:
-        return zmk_ble_identity_select(arg);
-#endif /* BT_ID_MAX != 1 */
+    case BT_CLEAR_BONDS_CMD:
+        return zmk_ble_clear_bonds();
+    default:
+        LOG_ERR("Unknown BT command: %d", command);
     }
 
     return -ENOTSUP;
