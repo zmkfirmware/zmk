@@ -3,6 +3,7 @@ id: troubleshooting
 title: Troubleshooting
 sidebar_title: Troubleshooting
 ---
+### Summary
 
 The following page provides suggestions for common errors that may occur during firmware compilation. If the information provided is insufficient to resolve the issue, feel free to seek out help from the [ZMK Discord](https://discord.gg/VJnx9kr).
 
