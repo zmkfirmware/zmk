@@ -1,7 +1,7 @@
-kp_pressed: usage_page 0x07 keycode 0xe4
+kp_pressed: usage_page 0x07 keycode 0xe4 mods 0x00
 ht_binding_pressed: 0 new undecided hold_tap
 ht_decide: 0 decided tap (hold-preferred event 0)
-kp_pressed: usage_page 0x07 keycode 0x09
-kp_released: usage_page 0x07 keycode 0xe4
-kp_released: usage_page 0x07 keycode 0x09
+kp_pressed: usage_page 0x07 keycode 0x09 mods 0x00
+kp_released: usage_page 0x07 keycode 0xe4 mods 0x00
+kp_released: usage_page 0x07 keycode 0x09 mods 0x00
 ht_binding_released: 0 cleaning up hold-tap

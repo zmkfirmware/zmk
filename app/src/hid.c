@@ -8,29 +8,44 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/hid.h>
+#include <dt-bindings/zmk/keys.h>
 
 static struct zmk_hid_keypad_report kp_report = {
     .report_id = 1, .body = {.modifiers = 0, ._reserved = 0, .keys = {0}}};
 
 static struct zmk_hid_consumer_report consumer_report = {.report_id = 2, .body = {.keys = {0}}};
 
-#define _TOGGLE_MOD(mod, state)                                                                    \
-    if (modifier > MOD_RGUI) {                                                                     \
-        return -EINVAL;                                                                            \
-    }                                                                                              \
-    WRITE_BIT(kp_report.body.modifiers, mod, state);                                               \
-    return 0;
+// Keep track of how often a modifier was pressed.
+// Only release the modifier if the count is 0.
+static int explicit_modifier_counts[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+static zmk_mod_flags explicit_modifiers = 0;
 
-int zmk_hid_register_mod(zmk_mod modifier) { _TOGGLE_MOD(modifier, true); }
-int zmk_hid_unregister_mod(zmk_mod modifier) { _TOGGLE_MOD(modifier, false); }
+#define SET_MODIFIERS(mods)                                                                        \
+    {                                                                                              \
+        kp_report.body.modifiers = mods;                                                           \
+        LOG_DBG("Modifiers set to 0x%02X", kp_report.body.modifiers);                              \
+    }
 
-int zmk_hid_register_mods(zmk_mod_flags modifiers) {
-    kp_report.body.modifiers |= modifiers;
+int zmk_hid_register_mod(zmk_mod modifier) {
+    explicit_modifier_counts[modifier]++;
+    LOG_DBG("Modifier %d count %d", modifier, explicit_modifier_counts[modifier]);
+    WRITE_BIT(explicit_modifiers, modifier, true);
+    SET_MODIFIERS(explicit_modifiers);
     return 0;
 }
 
-int zmk_hid_unregister_mods(zmk_mod_flags modifiers) {
-    kp_report.body.modifiers &= ~modifiers;
+int zmk_hid_unregister_mod(zmk_mod modifier) {
+    if (explicit_modifier_counts[modifier] <= 0) {
+        LOG_ERR("Tried to unregister modifier %d too often", modifier);
+        return -EINVAL;
+    }
+    explicit_modifier_counts[modifier]--;
+    LOG_DBG("Modifier %d count: %d", modifier, explicit_modifier_counts[modifier]);
+    if (explicit_modifier_counts[modifier] == 0) {
+        LOG_DBG("Modifier %d released", modifier);
+        WRITE_BIT(explicit_modifiers, modifier, false);
+    }
+    SET_MODIFIERS(explicit_modifiers);
     return 0;
 }
 
@@ -51,6 +66,16 @@ int zmk_hid_unregister_mods(zmk_mod_flags modifiers) {
         consumer_report.body.keys[idx] = val;                                                      \
         break;                                                                                     \
     }
+
+int zmk_hid_implicit_modifiers_press(zmk_mod_flags implicit_modifiers) {
+    SET_MODIFIERS(explicit_modifiers | implicit_modifiers);
+    return 0;
+}
+
+int zmk_hid_implicit_modifiers_release() {
+    SET_MODIFIERS(explicit_modifiers);
+    return 0;
+}
 
 int zmk_hid_keypad_press(zmk_key code) {
     if (code >= LCTL && code <= RGUI) {

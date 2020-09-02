@@ -1,0 +1,8 @@
+pressed: usage_page 0x07 keycode 0x04 mods 0x01
+mods: Modifiers set to 0x01
+pressed: usage_page 0x07 keycode 0x05 mods 0x02
+mods: Modifiers set to 0x02
+released: usage_page 0x07 keycode 0x05 mods 0x02
+mods: Modifiers set to 0x00
+released: usage_page 0x07 keycode 0x04 mods 0x01
+mods: Modifiers set to 0x00

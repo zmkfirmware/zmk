@@ -11,7 +11,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/matrix.h>
 #include <zmk/sensors.h>
 #include <zmk/keymap.h>
-#include <dt-bindings/zmk/matrix-transform.h>
 #include <drivers/behavior.h>
 #include <zmk/behavior.h>
 
