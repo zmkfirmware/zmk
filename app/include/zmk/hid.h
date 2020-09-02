@@ -164,8 +164,8 @@ struct zmk_hid_consumer_report {
 
 int zmk_hid_register_mod(zmk_mod modifier);
 int zmk_hid_unregister_mod(zmk_mod modifier);
-int zmk_hid_register_mods(zmk_mod_flags modifiers);
-int zmk_hid_unregister_mods(zmk_mod_flags modifiers);
+int zmk_hid_implicit_modifiers_press(zmk_mod_flags implicit_modifiers);
+int zmk_hid_implicit_modifiers_release();
 int zmk_hid_keypad_press(zmk_key key);
 int zmk_hid_keypad_release(zmk_key key);
 void zmk_hid_keypad_clear();

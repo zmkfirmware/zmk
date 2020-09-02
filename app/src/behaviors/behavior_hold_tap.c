@@ -8,6 +8,7 @@
 
 #include <device.h>
 #include <drivers/behavior.h>
+#include <dt-bindings/zmk/keys.h>
 #include <logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/matrix.h>
@@ -16,7 +17,6 @@
 #include <zmk/events/position-state-changed.h>
 #include <zmk/events/keycode-state-changed.h>
 #include <zmk/events/modifiers-state-changed.h>
-#include <zmk/hid.h>
 #include <zmk/behavior.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -427,7 +427,7 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
     return ZMK_EV_EVENT_CAPTURED;
 }
 
-static bool is_mod(struct keycode_state_changed *ev) {
+static inline bool only_mods(struct keycode_state_changed *ev) {
     return ev->usage_page == USAGE_KEYPAD && ev->keycode >= LCTL && ev->keycode <= RGUI;
 }
 
@@ -440,7 +440,7 @@ static int keycode_state_changed_listener(const struct zmk_event_header *eh) {
         return 0;
     }
 
-    if (!is_mod(ev)) {
+    if (!only_mods(ev)) {
         // LOG_DBG("0x%02X bubble (not a mod)", ev->keycode);
         return 0;
     }
