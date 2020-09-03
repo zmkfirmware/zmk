@@ -52,6 +52,7 @@ select opt in "${options[@]}" "Quit"; do
     3 ) shield_title="Corne" shield="corne"; split="y"; break;;
     4 ) shield_title="Splitreus62" shield="splitreus62"; split="y"; break;;
     5 ) shield_title="Sofle" shield="sofle"; split="y"; break;;
+    6 ) shield_title="Iris" shield="iris"; split="y"; break;;
 
     # Add link to docs on adding your own custom shield in your ZMK config!
     # $(( ${#options[@]}+1 )) ) echo "Other!"; break;; 
