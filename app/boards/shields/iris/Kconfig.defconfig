@@ -1,0 +1,16 @@
+# Copyright (c) 2020 Pete Johanson, Kurtis Lew
+# SPDX-License-Identifier: MIT
+
+if SHIELD_IRIS_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Iris Left"
+
+endif
+
+if SHIELD_IRIS_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Iris Right"
+
+endif

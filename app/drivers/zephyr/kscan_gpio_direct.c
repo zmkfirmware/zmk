@@ -156,7 +156,6 @@ static int kscan_gpio_read(struct device *dev)
 	struct kscan_gpio_data *data = dev->driver_data;
 	const struct kscan_gpio_config *cfg = dev->config_info;
 	u32_t read_state = data->pin_state;
-	LOG_DBG("Scanning the pins for updated state");
 	for (int i = 0; i < cfg->num_of_inputs; i++)
 	{
 		struct device *in_dev = kscan_gpio_input_devices(dev)[i];
@@ -165,8 +164,9 @@ static int kscan_gpio_read(struct device *dev)
 	}
 	for (int i = 0; i < cfg->num_of_inputs; i++)
 	{
+		bool prev_pressed = BIT(i) & data->pin_state;
 		bool pressed = BIT(i) & read_state;
-		if (pressed != (BIT(i) & data->pin_state))
+		if (pressed != prev_pressed)
 		{
 			LOG_DBG("Sending event at %d,%d state %s",
 					0, i, (pressed ? "on" : "off"));
