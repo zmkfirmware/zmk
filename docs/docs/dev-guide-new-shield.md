@@ -203,7 +203,7 @@ Further documentation on behaviors and bindings is forthcoming, but a summary of
 
 ### Encoders
 
-EC11 encoder support can be added to your board or shield by adding the appropriate lines to your board/shield's configuration (.conf), device tree (.dtsi), and overlay (.overlay) files.
+EC11 encoder support can be added to your board or shield by adding the appropriate lines to your board/shield's configuration (.conf), device tree (.dtsi), overlay (.overlay), and keymap (.keymap) files.
 
 <Tabs
 defaultValue="conf"
@@ -211,6 +211,7 @@ values={[
 {label: '.conf', value: 'conf'},
 {label: '.dtsi', value: 'dtsi'},
 {label: '.overlay', value: 'overlay'},
+{label: '.keymap', value: 'keymap'},
 ]}>
 <TabItem value="conf">
 
@@ -270,6 +271,15 @@ Add the following lines to your overlay file(s) to enable the encoder:
 :::note
 For split keyboards, make sure to add left hand encoders to the left .overlay file and right hand encoders to the right .overlay file.
 :::
+
+</TabItem>
+<TabItem value = "keymap">
+Add the following line to your keymap file to add default encoder behavior bindings:   
+
+```
+sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD>;
+```
+Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](/docs/feature/encoders) and [Keymap](/docs/feature/keymaps) feature documentation for more details.
 
 </TabItem>
 </Tabs>
