@@ -3,7 +3,7 @@ title: Encoders
 sidebar_label: Encoders
 ---
 
-Existing support for encoders in ZMK is focused around the EC11 rotary encoder with push button design used in the majority of current keyboard and macropad designs.
+Existing support for encoders in ZMK is focused around the five pin EC11 rotary encoder with push button design used in the majority of current keyboard and macropad designs.
 
 ## Enabling EC11 Encoders
 
@@ -19,7 +19,7 @@ Keyboards and macropads with encoder support will typically take the two EC11 pi
 
 ### Rotation
 
-Rotation is handled separately as a type of sensor. The behavior for this is set by defining `sensor-bindings` within a layer but below the `bindings` for the regular keys in the following format:
+Rotation is handled separately as a type of sensor. The behavior for this is set in `sensor-bindings`, which is defined in each keymap layer in the following format:
 
 ```
 sensor-bindings = <BINDING CW_KEY CCW_KEY>;
@@ -29,12 +29,16 @@ sensor-bindings = <BINDING CW_KEY CCW_KEY>;
 - `CW_KEY` is the keycode activated by a clockwise turn.
 - `CCW_KEY` is the keycode activated by a counter-clockwise turn.
 
-Behaviors for additional encoders can be configured by adding more `BINDING CW_KEY CCW_KEY` sets immediately after the first.
+Additional encoders can be configured by adding more `BINDING CW_KEY CCW_KEY` sets immediately after the first.
 
-As an example, a complete `sensor-bindings` for a Kyria would look like:
+As an example, a complete `sensor-bindings` for a Kyria with two encoders could look like:
 
 ```
 sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
 ```
 
-In this example, the left encoder is configured to control volume up and down while the right encoder sends either Page Up or Page Down.
+Here, the left encoder is configured to control volume up and down while the right encoder sends either Page Up or Page Down.
+
+## Adding Encoder Support
+
+See the [New Keyboard Shield](docs/dev-guide-new-shield) documentation for how to add or modify additional encoders to your shield.

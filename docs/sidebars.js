@@ -25,7 +25,6 @@ module.exports = {
     ],
     "Dev Guides": [
       "dev-guide-new-shield",
-      "dev-guide-add-encoders",
       "dev-guide-usb-logging"],
   },
 };
