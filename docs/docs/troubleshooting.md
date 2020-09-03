@@ -10,7 +10,7 @@ The following page provides suggestions for common errors that may occur during 
 ### Environment Variables not Defined
 
 An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
-For more information, click [here](../docs/dev-setup#environment-variables).
+For more information, click [here](/docs/dev-setup#environment-variables).
 
 ### Improperly defined keymap
 
