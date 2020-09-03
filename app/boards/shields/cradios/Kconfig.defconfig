@@ -1,5 +1,5 @@
 
-if SHIELD_CRADIOS
+
 
 config ZMK_KEYBOARD_NAME
 	default "cradios"
@@ -11,4 +11,4 @@ config ZMK_KEYBOARD_NAME
 config ZMK_KSCAN_GPIO_POLLING
 	default y
 
-endif
+
