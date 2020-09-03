@@ -71,6 +71,22 @@ int zmk_event_manager_raise_after(struct zmk_event_header *event, const struct z
     return -EINVAL;
 }
 
+int zmk_event_manager_raise_at(struct zmk_event_header *event, const struct zmk_listener *listener)
+{
+    u8_t len = __event_subscriptions_end - __event_subscriptions_start;
+    for (int i = 0; i < len; i++) {
+        struct zmk_event_subscription *ev_sub = __event_subscriptions_start + i;
+
+        if (ev_sub->event_type == event->event && ev_sub->listener == listener) {
+            return zmk_event_manager_handle_from(event, i);
+        }
+    }
+
+    LOG_WRN("Unable to find where to raise this event");
+
+    return -EINVAL;
+}
+
 int zmk_event_manager_release(struct zmk_event_header *event)
 {
     return zmk_event_manager_handle_from(event, event->last_listener_index + 1);
