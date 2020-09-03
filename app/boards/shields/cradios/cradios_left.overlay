@@ -5,7 +5,8 @@
  */
 #include "cradios.dtsi"
 
-kscan_0 {
+
+&kscan0 {
 
 		input-gpios
 		        = <&pro_micro_d 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
@@ -28,7 +29,5 @@ kscan_0 {
 			;
 };
 
-&bt_unpair_combo {
-	key-positions = <0 38>;
-};
+
 

@@ -6,12 +6,11 @@
 #include "cradios.dtsi"
 
 &default_transform {
-	col-offset = <5>;
+	col-offset = <17>;
 };
 
- &kscan0 {
+&kscan0 {
 		input-gpios
-		
 			= <&pro_micro_d 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 			, <&pro_micro_a 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 			, <&pro_micro_a 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
@@ -32,7 +31,5 @@
 			;
 };
 
-&bt_unpair_combo {
-	key-positions = <0 38>;
-};
+
 
