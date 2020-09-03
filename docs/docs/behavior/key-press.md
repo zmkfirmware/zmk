@@ -27,6 +27,11 @@ There is an [open issue](https://github.com/zmkfirmware/zmk/issues/21) to provid
 complete set of defines for the full keypad and consumer usage pages in the future for ZMK.
 :::
 
+### Improperly defined keymap - `dtlib.DTError: <board>.dts.pre.tmp:<line number>`
+
+When compiling firmware from a keymap, it may be common to encounter an error in the form of a`dtlib.DTError: <board>.dts.pre.tmp:<line number>`.
+For instructions to resolve such an error, click [here](../troubleshooting###Improperly-defined-keymap)
+
 ## Keypad Key Press
 
 The "keypad key press" behavior sends standard keypad keycodes on press/release.
