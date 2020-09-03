@@ -25,7 +25,7 @@ Rotation is handled separately as a type of sensor. The behavior for this is set
 sensor-bindings = <BINDING CW_KEY CCW_KEY>;
 ```
 
-- `BINDING` is one of two rotation bindings that are currently defined, `&inc_dec_cp` for consumer key presses or `&inc_dec_kp` for normal key presses (see [Key Press](<(/docs/behavior/key-press)>) for the difference between the two).
+- `BINDING` is one of two rotation bindings that are currently defined, `&inc_dec_cp` for consumer key presses or `&inc_dec_kp` for normal key presses (see [Key Press](/docs/behavior/key-press) for the difference between the two).
 - `CW_KEY` is the keycode activated by a clockwise turn.
 - `CCW_KEY` is the keycode activated by a counter-clockwise turn.
 
@@ -41,4 +41,4 @@ Here, the left encoder is configured to control volume up and down while the rig
 
 ## Adding Encoder Support
 
-See the [New Keyboard Shield](docs/dev-guide-new-shield) documentation for how to add or modify additional encoders to your shield.
+See the [New Keyboard Shield](/docs/dev-guide-new-shield) documentation for how to add or modify additional encoders to your shield.
