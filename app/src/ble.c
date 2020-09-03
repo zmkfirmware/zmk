@@ -346,6 +346,12 @@ static int zmk_ble_init(struct device *_arg)
 
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START)
+    for (int i = 0; i < 10; i++) {
+        bt_unpair(i, NULL);
+    }
+#endif
+
     bt_conn_cb_register(&conn_callbacks);
     bt_conn_auth_cb_register(&zmk_ble_auth_cb_display);
 
