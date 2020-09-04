@@ -32,7 +32,7 @@ include:
 - One Shot
 - Complete split support
 - Battery reporting
-- Low power mode
+- Low power sleep states
 - Shell over BLE
 - Macros
 
