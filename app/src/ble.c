@@ -347,6 +347,7 @@ static int zmk_ble_init(struct device *_arg)
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START)
+    LOG_WRN("Clearing all existing BLE bond information from the keyboard");
     settings_delete("bt/name");
 
     for (int i = 0; i < 10; i++) {
