@@ -147,7 +147,7 @@
 #define M_PREV 0xB6 // Media Previous
 #define M_STOP 0xB7 // Media Stop
 #define M_EJCT 0xB8 // Media Eject
-#define M_PLAY 0xCD // Media Play
+#define M_PLAY 0xCD // Media Play/Pause
 #define M_MUTE 0xE2 // Media Mute
 #define M_VOLU 0xE9 // Media Volume Up
 #define M_VOLD 0xEA // Media Volume Down
