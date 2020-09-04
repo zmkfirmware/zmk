@@ -7,31 +7,36 @@ sidebar_label: Introduction
 ZMK Firmware is an open source (MIT) keyboard
 firmware built on the [Zephyr™ Project](https://zephyrproject.org/) Real Time Operating System (RTOS).
 
-The goal is to provider a powerful, featureful keyboard firmware that is free
+The goal is to provide a powerful, featureful keyboard firmware that is free
 of licensing issues that prevent upstream BLE support as a first-class
 feature.
 
 ## Features
 
-At this point, ZMK is _missing_ more features than it has. Currently, the mostly working bits
+At this point, ZMK is still missing many features. Currently, the working bits
 include:
 
-- HID Over GATT (HOG) - This is the official term for BLE HID devices
-- Keymaps and layers with basic keycodes
-- Some initial work on one "behavior", Mod-Tap
-- Basic HID over USB
-- Basic consumer (media) keycodes.
-- Basic OLED display logic
-- Basic Split support
-- Encoders
+- Wireless connectivity via BLE HID Over GATT (HOG)
+- USB connectivity
+- Low active power usage
+- Split keyboard support
+- [Keymaps and layers](behavior/layers)
+- [Hold-tap](behavior/hold-tap) (which includes [mod-tap](behavior/mod-tap), [layer-tap](behavior/layers))
+- [Basic HID over USB](behavior/key-press)
+- [Basic consumer (media) keycodes](behavior/key-press#consumer-key-press)
+- [Encoders](feature/encoders)
+- Basic [OLED display support](feature/displays)
+- [RGB Underglow](feature/underglow)
 
 ## Missing Features
 
-- One Shot
-- Layer Tap
-- Complete split support
+- One Shot Keys
+- Combo keys
+- Macros
+- Complete split support (encoders and RGB are not supported on the 'peripheral' side)
 - Battery reporting
-- Low power mode
+- Low power sleep states
+- Low power mode (to toggle LEDs and screen off)
 - Shell over BLE
 
 ## Code Of Conduct
