@@ -127,8 +127,6 @@
 #define P6  0x60    // Keypad 8 and Up Arrow
 #define P7  0x61    // Keypad 9 and Page Up
 #define P0  0x62    // Keypad 0 and Insert
-#define P00 0xB0    // Keypad 00
-#define P000 0xB1   // Keypad 000
 #define PDOT 0x63   // Keypad . and Delete
 
 #define LCTL 0xE0   // Keyboard Left Control
