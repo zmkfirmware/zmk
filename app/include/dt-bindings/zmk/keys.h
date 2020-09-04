@@ -116,6 +116,21 @@
 #define ATSN 0xCE   // Keypad @ (At Sign)
 #define BANG 0xCF   // Keypad ! (Exclamation)
 
+#define PENT 0x58   // Keypad Enter
+#define P1  0x59    // Keypad 1 and End
+#define P2  0x5A    // Keypad 2 and Down Arrow
+#define P3  0x5B    // Keypad 3 and Page Down
+#define P4  0x5C    // Keypad 4 and Left Arrow
+#define P5  0x5D    // Keypad 5
+#define P6  0x5E    // Keypad 6 and Right Arrow
+#define P6  0x5F    // Keypad 7 and Home
+#define P6  0x60    // Keypad 8 and Up Arrow
+#define P7  0x61    // Keypad 9 and Page Up
+#define P0  0x62    // Keypad 0 and Insert
+#define P00 0xB0    // Keypad 00
+#define P000 0xB1   // Keypad 000
+#define PDOT 0x63   // Keypad . and Delete
+
 #define LCTL 0xE0   // Keyboard Left Control
 #define LSFT 0xE1   // Keyboard Left Shift
 #define LALT 0xE2   // Keyboard Left Alt
