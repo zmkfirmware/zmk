@@ -31,6 +31,8 @@ module.exports = {
       "dev-posix-board",
       "dev-tests",
     ],
-    "Dev Guides": ["dev-guide-new-shield", "dev-guide-usb-logging"],
+    "Dev Guides": [
+      "dev-guide-new-shield",
+      "dev-guide-usb-logging"],
   },
 };
