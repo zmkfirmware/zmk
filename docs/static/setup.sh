@@ -64,7 +64,7 @@ select opt in "${options[@]}" "Quit"; do
 done
 
 if [ "$split" == "n" ]; then
-    repo_path="https://github.com/bmcgavin/zmk-config-template.git"
+    repo_path="https://github.com/zmkfirmware/zmk-config-template.git"
 fi
 
 read -e -p "Copy in the stock keymap for customization? [Yn]: " copy_keymap
