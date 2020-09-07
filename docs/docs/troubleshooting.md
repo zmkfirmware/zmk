@@ -7,12 +7,12 @@ sidebar_title: Troubleshooting
 
 The following page provides suggestions for common errors that may occur during firmware compilation. If the information provided is insufficient to resolve the issue, feel free to seek out help from the [ZMK Discord](https://zmkfirmware.dev/community/discord/invite).
 
-### Environment Variables not Defined
+### CMake Error
 
 An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
 For more information, click [here](../docs/dev-setup#environment-variables).
 
-### Improperly defined keymap
+### dtlib.DTError
 
 An error along the lines of `dtlib.DTError: <board>.dts.pre.tmp:<line number>` during firmware compilation indicates an issue within the `<shield>.keymap` file.
 This can be verified by checking the file in question, found in `mkdir/app/build`.
