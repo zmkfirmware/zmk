@@ -1,0 +1,15 @@
+identifier: nrfmicro_11_flipped
+name: nrfmicro_11_flipped
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - watchdog

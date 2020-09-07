@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	behaviors {
+		none: behavior_none {
+			compatible = "zmk,behavior-none";
+			label = "NONE";
+			#binding-cells = <0>;
+		};
+	};
+};

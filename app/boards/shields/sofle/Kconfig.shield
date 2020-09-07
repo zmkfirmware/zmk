@@ -1,0 +1,8 @@
+# Copyright (c) 2020 Ryan Cross
+# SPDX-License-Identifier: MIT
+
+config SHIELD_SOFLE_LEFT
+	def_bool $(shields_list_contains,sofle_left)
+
+config SHIELD_SOFLE_RIGHT
+	def_bool $(shields_list_contains,sofle_right)

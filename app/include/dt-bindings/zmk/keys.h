@@ -50,12 +50,12 @@
 #define LBKT 0x2F
 #define RBKT 0x30
 #define BSLH 0x31
-
+#define TILD 0x32
 #define SCLN 0x33
 #define QUOT 0x34
 #define GRAV 0x35
 #define CMMA 0x36
-#define DOT 0x37
+#define DOT  0x37
 #define FSLH 0x38
 #define CLCK 0x39
 #define F1 0x3A
@@ -91,6 +91,11 @@
 #define KPLS 0x57
 
 #define GUI 0x65
+
+#define UNDO 0x7A
+#define CUT 0x7B
+#define COPY 0x7C
+#define PSTE 0x7D
 
 #define CURU 0xB4
 
@@ -142,5 +147,3 @@
 #define MOD_RSFT (1 << 0x05)
 #define MOD_RALT (1 << 0x06)
 #define MOD_RGUI (1 << 0x07)
-
-#define ZK_IS_CONSUMER(k) (ZK_KEY(k) >= 0x100)

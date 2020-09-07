@@ -7,14 +7,18 @@ module.exports = {
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
   themeConfig: {
-    sidebarCollapsible: false,
+    googleAnalytics: {
+      trackingID: "UA-145201102-2",
+      anonymizeIP: true,
+    },
+    // sidebarCollapsible: false,
     navbar: {
       title: "ZMK Firmware",
       logo: {
         alt: "ZMK Logo",
         src: "img/zmk_logo.svg",
       },
-      links: [
+      items: [
         {
           to: "docs/",
           activeBasePath: "docs",
@@ -54,7 +58,9 @@ module.exports = {
             //   },
             {
               label: "Discord",
-              href: "/community/discord/invite",
+              href:
+                (process.env.URL || "https://zmkfirmware.dev") +
+                "/community/discord/invite",
             },
             {
               label: "Twitter",
@@ -99,12 +105,12 @@ module.exports = {
           homePageId: "intro",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl: "https://githlab.com/zmkproject/zmk/edit/main/docs/",
+          editUrl: "https://github.com/zmkfirmware/zmk/edit/main/docs/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: "https://gitlab.com/zmkproject/zmk/edit/main/docs/blog/",
+          editUrl: "https://github.com/zmkfirmware/zmk/edit/main/docs/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),

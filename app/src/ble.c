@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 Peter Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include <device.h>
 #include <init.h>
@@ -23,6 +28,16 @@ static struct bt_conn *auth_passkey_entry_conn;
 static u8_t passkey_entries[6] = {0, 0, 0, 0, 0, 0};
 static u8_t passkey_digit = 0;
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
+#define ZMK_ADV_PARAMS BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | \
+                                        BT_LE_ADV_OPT_USE_NAME | \
+                                        BT_LE_ADV_OPT_ONE_TIME, \
+                                        BT_GAP_ADV_FAST_INT_MIN_2, \
+                                        BT_GAP_ADV_FAST_INT_MAX_2, NULL)
+#else
+#define ZMK_ADV_PARAMS BT_LE_ADV_CONN_NAME
+#endif
+
 static void connected(struct bt_conn *conn, u8_t err)
 {
     char addr[BT_ADDR_LE_STR_LEN];
@@ -31,17 +46,21 @@ static void connected(struct bt_conn *conn, u8_t err)
 
     if (err)
     {
-        printk("Failed to connect to %s (%u)\n", addr, err);
+        LOG_WRN("Failed to connect to %s (%u)", log_strdup(addr), err);
         return;
     }
 
-    printk("Connected %s\n", addr);
+    LOG_DBG("Connected %s", log_strdup(addr));
 
-    bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 5, 400));
+    bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL)
+    bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
+#endif
 
     if (bt_conn_set_security(conn, BT_SECURITY_L2))
     {
-        printk("Failed to set security\n");
+        LOG_ERR("Failed to set security");
     }
 }
 
@@ -51,7 +70,7 @@ static void disconnected(struct bt_conn *conn, u8_t reason)
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    printk("Disconnected from %s (reason 0x%02x)\n", addr, reason);
+    LOG_DBG("Disconnected from %s (reason 0x%02x)", log_strdup(addr), reason);
 }
 
 static void security_changed(struct bt_conn *conn, bt_security_t level,
@@ -63,11 +82,11 @@ static void security_changed(struct bt_conn *conn, bt_security_t level,
 
     if (!err)
     {
-        printk("Security changed: %s level %u\n", addr, level);
+        LOG_DBG("Security changed: %s level %u", log_strdup(addr), level);
     }
     else
     {
-        printk("Security failed: %s level %u err %d\n", addr, level,
+        LOG_ERR("Security failed: %s level %u err %d", log_strdup(addr), level,
                err);
     }
 }
@@ -84,7 +103,7 @@ static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey)
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    printk("Passkey for %s: %06u\n", addr, passkey);
+    LOG_DBG("Passkey for %s: %06u", log_strdup(addr), passkey);
 }
 
 #ifdef CONFIG_ZMK_BLE_PASSKEY_ENTRY
@@ -95,7 +114,7 @@ static void auth_passkey_entry(struct bt_conn *conn)
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    printk("Passkey entry requested for %s\n", addr);
+    LOG_DBG("Passkey entry requested for %s", log_strdup(addr));
     auth_passkey_entry_conn = bt_conn_ref(conn);
 }
 
@@ -115,7 +134,7 @@ static void auth_cancel(struct bt_conn *conn)
 
     passkey_digit = 0;
 
-    printk("Pairing cancelled: %s\n", addr);
+    LOG_DBG("Pairing cancelled: %s", log_strdup(addr));
 }
 
 static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
@@ -146,14 +165,14 @@ static void zmk_ble_ready(int err)
     LOG_DBG("ready? %d", err);
     if (err)
     {
-        printk("Bluetooth init failed (err %d)\n", err);
+        LOG_ERR("Bluetooth init failed (err %d)", err);
         return;
     }
 
-    err = bt_le_adv_start(BT_LE_ADV_CONN_NAME, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
+    err = bt_le_adv_start(ZMK_ADV_PARAMS, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
     if (err)
     {
-        printk("Advertising failed to start (err %d)\n", err);
+        LOG_ERR("Advertising failed to start (err %d)", err);
         return;
     }
 }
@@ -164,7 +183,7 @@ static int zmk_ble_init(struct device *_arg)
 
     if (err)
     {
-        printk("BLUETOOTH FAILED");
+        LOG_ERR("BLUETOOTH FAILED (%d)", err);
         return err;
     }
 
@@ -180,6 +199,12 @@ static int zmk_ble_init(struct device *_arg)
 
     return 0;
 }
+
+int zmk_ble_unpair_all()
+{
+    LOG_DBG("");
+    return bt_unpair(BT_ID_DEFAULT, NULL);
+};
 
 bool zmk_ble_handle_key_user(struct zmk_key_event *key_event)
 {

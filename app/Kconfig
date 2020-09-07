@@ -41,7 +41,7 @@ menuconfig ZMK_BLE
 	select BT_GATT_DIS
 	select BT_GATT_BAS
 	select SETTINGS
-	select BT_SETTINGS
+	# select BT_SETTINGS
 
 if ZMK_BLE
 
@@ -88,6 +88,7 @@ config ZMK_SPLIT_BLE
 	bool "Split keyboard support via BLE transport"
 	depends on ZMK_BLE
 	default y
+	select BT_USER_PHY_UPDATE
 
 if ZMK_SPLIT_BLE
 
@@ -105,6 +106,10 @@ if ZMK_SPLIT_BLE_ROLE_CENTRAL
 config BT_MAX_CONN
 	default 5
 
+config BT_MAX_PAIRED
+	# Bump this everywhere once we support switching active connections!
+	default 2
+
 endif
 
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
@@ -118,6 +123,9 @@ config ZMK_USB
 
 config BT_MAX_CONN
 	default 5
+
+config BT_GAP_AUTO_UPDATE_CONN_PARAMS
+	default n
 
 endif
 
@@ -185,6 +193,10 @@ source "subsys/logging/Kconfig.template.log_config"
 
 rsource "boards/Kconfig"
 rsource "boards/shields/*/Kconfig.defconfig"
+rsource "boards/shields/*/Kconfig.shield"
+
+osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
+osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
 source "Kconfig.zephyr"
 

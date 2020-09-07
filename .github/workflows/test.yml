@@ -1,0 +1,70 @@
+on:
+  push:
+    paths:
+      - "app/tests/**"
+      - "app/src/**"
+  pull_request:
+    paths:
+      - "app/tests/**"
+      - "app/src/**"
+
+name: Test
+
+jobs:
+  integration_test:
+    runs-on: ubuntu-latest
+    name: Integration Tests
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache west modules
+        timeout-minutes: 2
+        continue-on-error: true
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-zephyr-modules
+        with:
+          path: |
+            modules/
+            tools/
+            zephyr/
+            bootloader/
+          key: 2-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          restore-keys: |
+            2-${{ runner.os }}-build-${{ env.cache-name }}-
+            2-${{ runner.os }}-build-
+            2-${{ runner.os }}-
+      - name: West Init
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
+        id: west-init
+        with:
+          args: 'init "-l app"'
+      - name: West Update
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
+        id: west-update
+        with:
+          args: "update"
+      - name: West Config Zephyr Base
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
+        id: west-config
+        with:
+          args: 'config "--global zephyr.base-prefer configfile"'
+      - name: West Zephyr Export
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
+        id: west-zephyr-export
+        with:
+          args: "zephyr-export"
+      - name: Test All
+        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
+        id: west-build
+        with:
+          entrypoint: /bin/bash
+          args: '-c "cd app && ./run-test.sh all"'
+      - name: Archive Build
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: "log-files"
+          path: app/build/**/*.log

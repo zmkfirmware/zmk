@@ -6,3 +6,8 @@ description: Keyboard Reset Behavior
 compatible: "zmk,behavior-reset"
 
 include: zero_param.yaml
+
+properties:
+  type:
+    type: int
+    default: 0

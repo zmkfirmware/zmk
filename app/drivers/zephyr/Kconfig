@@ -25,7 +25,7 @@ menuconfig EC11
 
 if EC11
 
-choice EC11_TRIGGER
+choice
 	prompt "Trigger mode"
 	default EC11_TRIGGER_NONE
 	help
@@ -45,6 +45,9 @@ config EC11_TRIGGER_OWN_THREAD
 	select EC11_TRIGGER
 
 endchoice
+
+config EC11_TRIGGER
+	bool
 
 config EC11_THREAD_PRIORITY
 	int "Thread priority"

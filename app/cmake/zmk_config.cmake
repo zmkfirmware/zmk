@@ -44,6 +44,7 @@ endif()
 set(CACHED_ZMK_CONFIG ${ZMK_CONFIG} CACHE STRING "Selected user ZMK config")
 
 if (ZMK_CONFIG)
+	set(ENV{ZMK_CONFIG} "${ZMK_CONFIG}")
 	if(EXISTS ${ZMK_CONFIG}/boards)
 		message(STATUS "Adding ZMK config directory as board root: ${ZMK_CONFIG}")
 		list(APPEND BOARD_ROOT ${ZMK_CONFIG})
@@ -62,11 +63,9 @@ foreach(root ${BOARD_ROOT})
 	    NAMES ${BOARD}_defconfig
 	    PATHS ${root}/boards/*/*
 	    NO_DEFAULT_PATH
-	    )
-    	if(BOARD_DIR)
-		if (EXISTS "${BOARD_DIR}/keymap")
-			list(APPEND KEYMAP_DIRS ${BOARD_DIR}/keymap)
-		endif()
+		)
+	if(BOARD_DIR)
+		list(APPEND KEYMAP_DIRS ${BOARD_DIR})
 	endif()
 
 	if(DEFINED SHIELD)
@@ -77,37 +76,16 @@ foreach(root ${BOARD_ROOT})
 		    )
 		foreach(shield_path ${shields_refs_list})
 			get_filename_component(SHIELD_DIR ${shield_path} NAME)
-			if (EXISTS "${shield_path}/keymap")
-				list(APPEND KEYMAP_DIRS ${shield_path}/keymap)
-			endif()
+			list(APPEND KEYMAP_DIRS ${shield_path})
 		endforeach()
 	endif()
 endforeach()
-
-find_path(BASE_KEYMAPS_DIR
-	NAMES ${KEYMAP}/keymap.overlay
-	PATHS ${KEYMAP_DIRS}
-	NO_DEFAULT_PATH
-)
-
-if (BASE_KEYMAPS_DIR)
-	set(KEYMAP_DIR "${BASE_KEYMAPS_DIR}/${KEYMAP}" CACHE STRING "Selected keymap directory")
-	message(STATUS "Keyboard Base Keymap: ${KEYMAP_DIR}/")
-	# Used to let local imports of custom keycodes work as expected
-	list(APPEND DTS_ROOT ${KEYMAP_DIR})
-	if (EXISTS "${KEYMAP_DIR}/include")
-		include_directories("${KEYMAP_DIR}/include")
-	endif()
-	list(APPEND ZMK_DTC_FILES "${KEYMAP_DIR}keymap.overlay")
-endif()
 
 if (ZMK_CONFIG)
 	if (EXISTS ${ZMK_CONFIG})
 		message(STATUS "ZMK Config directory: ${ZMK_CONFIG}")
 		list(APPEND DTS_ROOT ${ZMK_CONFIG})
-		if (EXISTS "${ZMK_CONFIG}/include")
-			include_directories("${ZMK_CONFIG}/include")
-		endif()
+		list(PREPEND KEYMAP_DIRS "${ZMK_CONFIG}")
 
 		if (SHIELD)
 			message(STATUS "Board: ${BOARD}, ${BOARD_DIR}, ${SHIELD}, ${SHIELD_DIR}")
@@ -137,7 +115,7 @@ if (ZMK_CONFIG)
 
 		foreach(conf ${config_candidates})
 			if (EXISTS "${conf}")
-				message(STATUS "ZMK Config Kconfig: ${overlay}")
+				message(STATUS "ZMK Config Kconfig: ${conf}")
 				set(CONF_FILE "${conf}")
 				break()
 			endif()
@@ -146,6 +124,25 @@ if (ZMK_CONFIG)
 		message(WARNING "Unable to locate ZMK config at: ${ZMK_CONFIG}")
 	endif()
 endif()
+
+
+if(NOT KEYMAP_FILE)
+	foreach(keymap_dir ${KEYMAP_DIRS})
+		foreach(keymap_prefix ${SHIELD} ${SHIELD_DIR} ${BOARD} ${BOARD_DIR})
+			if (EXISTS ${keymap_dir}/${keymap_prefix}.keymap)
+				set(KEYMAP_FILE "${keymap_dir}/${keymap_prefix}.keymap" CACHE STRING "Selected keymap file")
+				message(STATUS "Using keymap file: ${KEYMAP_FILE}")
+				break()
+			endif()
+		endforeach()
+	endforeach()
+endif()
+
+if (NOT KEYMAP_FILE)
+	message(FATAL_ERROR "Failed to locate keymap file!")
+endif()
+
+list(APPEND ZMK_DTC_FILES ${KEYMAP_FILE})
 
 if (ZMK_DTC_FILES)
 	string(REPLACE ";" " " DTC_OVERLAY_FILE "${ZMK_DTC_FILES}")

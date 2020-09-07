@@ -1,6 +1,5 @@
 &spi1 {
 	compatible = "nordic,nrf-spi";
-	/* Cannot be used together with i2c0. */
 	status = "okay";
 	mosi-pin = <6>;
 	// Unused pins, needed for SPI definition, but not used by the ws2812 driver itself.

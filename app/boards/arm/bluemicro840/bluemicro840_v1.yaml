@@ -1,0 +1,15 @@
+identifier: bluemicro840_v1
+name: BlueMicro840_V1
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - watchdog

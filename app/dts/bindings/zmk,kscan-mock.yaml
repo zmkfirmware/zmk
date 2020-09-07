@@ -15,3 +15,5 @@ properties:
     type: int
   columns:
     type: int
+  exit-after:
+    type: boolean
