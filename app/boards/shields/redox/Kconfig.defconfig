@@ -1,0 +1,16 @@
+# Copyright (c) 2020 Pete Johanson, Kurtis Lew
+# SPDX-License-Identifier: MIT
+
+if SHIELD_REDOX_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Redox Left"
+
+endif
+
+if SHIELD_REDOX_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Redox Right"
+
+endif

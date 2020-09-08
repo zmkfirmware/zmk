@@ -1,0 +1,60 @@
+# Copyright (c) 2020 Pete Johanson, Kurtis Lew
+# SPDX-License-Identifier: MIT
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+
+	keymap {
+		compatible = "zmk,keymap";
+		default_layer {
+// -------------------------------------------------------------------------------------------------------------------------------
+// |   `   |  1  |  2  |  3   |  4   |  5   |                                      |  6   |  7    |  8    |  9   |   0   |   -   |
+// |  TAB  |  Q  |  W  |  E   |  R   |  T   |  LOWER |                    |  LOWER |  Y   |  U    |  I    |  O   |   P   |   =   |
+// |  ESC  |  A  |  S  |  D   |  F   |  G   |   "["  |                    |  "]"   |  H   |  J    |  K    |  L   |   ;   |   '   |
+// | SHIFT |  Z  |  X  |  C   |  V   |  B   |  PGUP  |  PGDN |    | HOME  |  END   |  N   |  M    |  ,    |  .   |   /   | SHIFT |
+// |  GUI  |  +  |  -  |  ALT |   | CTRL |  |  BSPC  |  DEL  |    | ENTER |  SPACE |   |  ALT  |  |  <-   |  v   |   ^   |  ->   |
+			bindings = <
+&kp GRAV &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5                                          &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 &kp MINUS
+&kp TAB  &kp Q     &kp W     &kp E     &kp R     &kp T     &mo 1                          &mo 1     &kp Y     &kp U     &kp I     &kp O     &kp P     &kp EQL
+&kp ESC  &kp A     &kp S     &kp D     &kp F     &kp G     &kp LBKT                       &kp RBKT  &kp H     &kp J     &kp K     &kp L     &kp SCLN  &kp QUOT
+&kp LSFT &kp Z     &kp X     &kp C     &kp V     &kp B     &kp PGUP  &kp PGDN    &kp HOME &kp END   &kp N     &kp M     &kp CMMA  &kp DOT   &kp FSLH  &kp RSFT
+&kp LGUI &kp KPLS  &kp MINUS &kp LALT     &kp LCTL         &kp BKSP  &kp DEL     &kp RET  &kp SPC       &kp RALT        &kp LARW  &kp DARW  &kp UAWR  &kp RARW
+			>;
+		};
+
+		lower_layer {
+// ----------------------------------------------------------------------------------------------------------------------
+// |      |  F1 |  F2 |  F3  |  F4  |  F5  |                                |  F6  |  F7   |  F8  |  F9  |  F10  |      |
+// |      |  !  |  @  |  {   |  }   | "|"  |      |                  |      |  /   |  7    |  8   |  9   |   -   |      |
+// |      |  #  |  $  | "["  | "]"  |  `   |      |                  |      |  *   |  4    |  5   |  6   |   +   |      |
+// |      |  %  |  ^  |  (   |  )   |  ~   |      |      |    |      |      |      |  1    |  2   |  3   | ENTER |      |
+// |      |     |     |      |   |      |  |      |      |    |      |      |   |  0   |   |  0   |  .   | ENTER |      |
+			bindings = <
+&trans  &kp F1    &kp F2    &kp F3    &kp F4    &kp F5                                       &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &trans
+&trans  &kp BANG  &kp ATSN  &kp LCUR  &kp RCUR  &kp PIPE  &trans                     &trans  &kp FSLH   &kp NUM_7  &kp NUM_8  &kp NUM_9  &kp MINUS  &trans
+&trans  &kp HASH  &kp CURU  &kp LBKT  &kp RBKT  &kp GRAV  &trans                     &trans  &kp KMLT   &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp KPLS   &trans
+&trans  &kp PRCT  &kp CRRT  &kp LPRN  &kp RPRN  &kp TILD  &trans  &trans     &trans  &trans  &trans     &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp RET    &trans
+&trans  &trans    &trans    &trans        &trans          &trans  &trans     &trans  &trans       &kp NUM_0        &kp NUM_0  &kp DOT    &kp RET    &trans
+			>;
+		};
+
+// TODO: raise_layer layout
+		raise_layer {
+// ----------------------------------------------------------------------------------------------------------------------
+// |      |  F1 |  F2 |  F3  |  F4  |  F5  |                                |  F6  |  F7   |  F8  |  F9  |  F10  |      |
+// |      |  !  |  @  |  {   |  }   | "|"  |      |                  |      |  /   |  7    |  8   |  9   |   -   |      |
+// |      |  #  |  $  | "["  | "]"  |  `   |      |                  |      |  *   |  4    |  5   |  6   |   +   |      |
+// |      |  %  |  ^  |  (   |  )   |  ~   |      |      |    |      |      |      |  1    |  2   |  3   | ENTER |      |
+// |      |     |     |      |   |      |  |      |      |    |      |      |   |  0   |   |  0   |  .   | ENTER |      |
+			bindings = <
+&trans  &kp F1    &kp F2    &kp F3    &kp F4    &kp F5                                       &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &trans
+&trans  &kp BANG  &kp ATSN  &kp LCUR  &kp RCUR  &kp PIPE  &trans                     &trans  &kp FSLH   &kp NUM_7  &kp NUM_8  &kp NUM_9  &kp MINUS  &trans
+&trans  &kp HASH  &kp CURU  &kp LBKT  &kp RBKT  &kp GRAV  &trans                     &trans  &kp KMLT   &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp KPLS   &trans
+&trans  &kp PRCT  &kp CRRT  &kp LPRN  &kp RPRN  &kp TILD  &trans  &trans     &trans  &trans  &trans     &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp RET    &trans
+&trans  &trans    &trans    &trans        &trans          &trans  &trans     &trans  &trans       &kp NUM_0        &kp NUM_0  &kp DOT    &kp RET    &trans
+			>;
+		};
+	};
+};

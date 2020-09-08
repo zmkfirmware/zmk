@@ -1,0 +1,8 @@
+# Copyright (c) 2020 Pete Johanson, Kurtis Lew
+# SPDX-License-Identifier: MIT
+
+config SHIELD_REDOX_LEFT
+	def_bool $(shields_list_contains,redox_left)
+
+config SHIELD_REDOX_RIGHT
+	def_bool $(shields_list_contains,redox_right)
