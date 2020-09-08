@@ -52,5 +52,11 @@ void zmk_display_task_handler()
 {
     lv_tick_inc(10);
     lv_task_handler();
-    k_sleep(K_MSEC(10));
+    k_sleep(K_MSEC(1000));
+    display = device_get_binding(ZMK_DISPLAY_NAME);
+    if (display == NULL) {
+        LOG_ERR("Failed to find display device");
+        return -EINVAL;
+    }
+    display_blanking_on(display);
 }
