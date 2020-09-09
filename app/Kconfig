@@ -128,6 +128,10 @@ endif
 
 endchoice
 
+endif
+
+endif 
+
 if ZMK_BLE && (!ZMK_SPLIT_BLE || ZMK_SPLIT_BLE_ROLE_CENTRAL)
 
 config BT_MAX_CONN
@@ -137,10 +141,6 @@ config BT_MAX_PAIRED
 	default 5
 
 endif
-
-endif
-
-endif 
 
 endmenu
 
