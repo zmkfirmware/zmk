@@ -76,10 +76,19 @@ static u8_t split_central_notify_func(struct bt_conn *conn,
 static int split_central_subscribe(struct bt_conn *conn)
 {
 	int err = bt_gatt_subscribe(conn, &subscribe_params);
-	if (err && err != -EALREADY) {
-		LOG_ERR("Subscribe failed (err %d)", err);
-	} else {
+	switch (err) {
+	case -EALREADY:
+		LOG_DBG("[ALREADY SUBSCRIBED]");
+		break;
+		// break;
+		// bt_gatt_unsubscribe(conn, &subscribe_params);
+		// return split_central_subscribe(conn);
+	case 0:
 		LOG_DBG("[SUBSCRIBED]");
+		break;
+	default:
+		LOG_ERR("Subscribe failed (err %d)", err);
+		break;
 	}
 
 	return 0;
@@ -145,21 +154,17 @@ static void split_central_process_connection(struct bt_conn *conn) {
 		return;
 	}
 
-	if (conn == default_conn) {
-		if (subscribe_params.value) {
-			split_central_subscribe(conn);
-		} else {
-			discover_params.uuid = &uuid.uuid;
-			discover_params.func = split_central_discovery_func;
-			discover_params.start_handle = 0x0001;
-			discover_params.end_handle = 0xffff;
-			discover_params.type = BT_GATT_DISCOVER_PRIMARY;
+	if (conn == default_conn && !subscribe_params.value) {
+		discover_params.uuid = &uuid.uuid;
+		discover_params.func = split_central_discovery_func;
+		discover_params.start_handle = 0x0001;
+		discover_params.end_handle = 0xffff;
+		discover_params.type = BT_GATT_DISCOVER_PRIMARY;
 
-			err = bt_gatt_discover(default_conn, &discover_params);
-			if (err) {
-				LOG_ERR("Discover failed(err %d)", err);
-				return;
-			}
+		err = bt_gatt_discover(default_conn, &discover_params);
+		if (err) {
+			LOG_ERR("Discover failed(err %d)", err);
+			return;
 		}
 	}
 
@@ -281,7 +286,7 @@ static void split_central_connected(struct bt_conn *conn, u8_t conn_err)
 
 
 	if (conn_err) {
-		LOG_ERR("Failed to connect to %s (%u)", addr, conn_err);
+		LOG_ERR("Failed to connect to %s (%u)", log_strdup(addr), conn_err);
 
 		bt_conn_unref(default_conn);
 		default_conn = NULL;

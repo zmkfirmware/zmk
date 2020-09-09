@@ -6,6 +6,11 @@
 
 #include <zephyr/types.h>
 #include <sys/util.h>
+
+#include <logging/log.h>
+
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
 #include <bluetooth/gatt.h>
 #include <bluetooth/uuid.h>
 
@@ -28,6 +33,7 @@ static ssize_t split_svc_num_of_positions(struct bt_conn *conn, const struct bt_
 
 static void split_svc_pos_state_ccc(const struct bt_gatt_attr *attr, u16_t value)
 {
+    LOG_DBG("value %d", value);
 }
 
 

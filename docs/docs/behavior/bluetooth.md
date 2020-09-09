@@ -6,8 +6,8 @@ sidebar_label: Bluetooth
 ## Summary
 
 The bluetooth behavior allows management of various settings and states related to the bluetooth connection(s)
-between the keyboard and the host. As of right now, there is only one such action support, but in the future
-more will be added.
+between the keyboard and the host. By default, ZMK supports five "profiles" for selecting which bonded host
+computer/laptop/keyboard should receive the keyboard input; many of the commands here operation on those profiles.
 
 ## Bluetooth Command Defines
 
@@ -22,16 +22,22 @@ This will allow you to reference the actions defined in this header such as `BT_
 
 Here is a table describing the command for each define:
 
-| Define               | Action                                                    |
-| -------------------- | --------------------------------------------------------- |
-| `BT_CLEAR_BONDS_CMD` | Clear bond information between the keyboard and host [^1] |
+| Define               | Action                                                                                         |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| `BT_CLEAR_BONDS_CMD` | Clear bond information between the keyboard and host for the selected profile [^1]             |
+| `BT_PROF_NEXT_CMD`   | Switch to the next profile, cycling through to the first one when the end is reached.          |
+| `BT_PROF_PREV_CMD`   | Switch to the previous profile, cycling through to the last one when the beginning is reached. |
+| `BT_PROF_SEL_CMD`    | Select the 0-indexed profile by number.                                                        |
 
-Because future bluetooth commands will take an additional parameter, it is recommended to use
-the following alias in your keymap to avoid having to change it later.
+Because at least one bluetooth commands takes an additional parameter, it is recommended to use
+the following aliases in your keymap to avoid having to specify an ignored second parameter:
 
-| Define           | Action                                                                 |
-| ---------------- | ---------------------------------------------------------------------- |
-| `BT_CLEAR_BONDS` | Alias for `BT_CLEAR_BONDS_CMD 0` to clear the bond to the current host |
+| Define           | Action                                                                                   |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| `BT_CLEAR_BONDS` | Alias for `BT_CLEAR_BONDS_CMD 0` to clear the current profile's bond to the current host |
+| `BT_PROF_NEXT`   | Alias for `BT_PROF_NEXT_CMD 0` to select the next profile                                |
+| `BT_PROF_PREV`   | Alias for `BT_PROF_PREV_CMD 0` to select the previous profile                            |
+| `BT_PROF_SEL`    | Alias for `BT_PROF_SEL_CMD` to select the given profile, e.g. `&bt BT_PROF_SEL 1`        |
 
 ## Bluetooth Behavior
 
@@ -45,8 +51,26 @@ The bluetooth behavior completes an bluetooth action given on press.
 
 ### Examples
 
-1. Behavior to clear the paired host:
+1. Behavior binding to clear the paired host for the selected profile:
 
    ```
    &bt BT_CLEAR_BONDS
+   ```
+
+1. Behavior binding to select the next profile:
+
+   ```
+   &bt BT_PROF_NEXT
+   ```
+
+1. Behavior binding to select the previous profile:
+
+   ```
+   &bt BT_PROF_NEXT
+   ```
+
+1. Behavior binding to select the 2nd profile (passed parameters are [zero based](https://en.wikipedia.org/wiki/Zero-based_numbering)):
+
+   ```
+   &bt BT_PROF_SEL 1
    ```

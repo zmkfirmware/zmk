@@ -37,6 +37,7 @@ menuconfig ZMK_BLE
 	select BT
 	select BT_SMP
 	select BT_SMP_SC_PAIR_ONLY
+	select BT_SMP_APP_PAIRING_ACCEPT
 	select BT_PERIPHERAL
 	select BT_GATT_DIS
 	select BT_GATT_BAS
@@ -105,19 +106,9 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	select BT_CENTRAL
 	select BT_GATT_CLIENT
 
-if ZMK_SPLIT_BLE_ROLE_CENTRAL
-
-config BT_MAX_CONN
-	default 2
-
-config BT_MAX_PAIRED
-	# Bump this everywhere once we support switching active connections!
-	default 2
-
-endif
-
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 	bool "Peripheral"
+	select BT_KEYS_OVERWRITE_OLDEST
 
 if ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 
@@ -128,15 +119,24 @@ config BT_MAX_PAIRED
 	default 1
 
 config BT_MAX_CONN
-	default 2
+	default 1
 
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
 	default n
 
 endif
 
-
 endchoice
+
+if ZMK_BLE && (!ZMK_SPLIT_BLE || ZMK_SPLIT_BLE_ROLE_CENTRAL)
+
+config BT_MAX_CONN
+	default 6
+
+config BT_MAX_PAIRED
+	default 5
+
+endif
 
 endif
 

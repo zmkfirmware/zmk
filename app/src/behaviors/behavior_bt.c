@@ -24,6 +24,12 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t c
     {
     case BT_CLEAR_BONDS_CMD:
         return zmk_ble_clear_bonds();
+    case BT_PROF_NEXT_CMD:
+        return zmk_ble_prof_next();
+    case BT_PROF_PREV_CMD:
+        return zmk_ble_prof_prev();
+    case BT_PROF_SEL_CMD:
+        return zmk_ble_prof_select(arg);
     default:
         LOG_ERR("Unknown BT command: %d", command);
     }
