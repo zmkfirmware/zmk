@@ -1,0 +1,20 @@
+/ {
+	behaviors {
+		osk: behavior_one_shot_key {
+			compatible = "zmk,behavior-one-shot";
+			label = "ONE_SHOT_KEY";
+			#binding-cells = <1>;
+			release-after-ms = <1000>;
+			bindings = <&kp>;
+		};
+		osl: behavior_one_shot_layer {
+			compatible = "zmk,behavior-one-shot";
+			label = "ONE_SHOT_LAYER";
+			#binding-cells = <1>;
+			release-after-ms = <1000>;
+			bindings = <&mo>;
+		};
+	};
+
+};
+

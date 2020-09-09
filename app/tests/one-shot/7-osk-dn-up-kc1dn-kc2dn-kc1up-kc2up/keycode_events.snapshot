@@ -1,0 +1,6 @@
+pressed: usage_page 0x07 keycode 0x08
+pressed: usage_page 0x07 keycode 0x04
+pressed: usage_page 0x07 keycode 0x05
+released: usage_page 0x07 keycode 0x08
+released: usage_page 0x07 keycode 0x04
+released: usage_page 0x07 keycode 0x05

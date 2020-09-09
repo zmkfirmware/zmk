@@ -1,0 +1,15 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: One Shot behavior
+
+compatible: "zmk,behavior-one-shot"
+
+include: one_param.yaml
+
+properties:
+  bindings:
+    type: phandles
+    required: true
+  release-after-ms:
+    type: int 
