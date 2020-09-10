@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2020 Peter Johanson; Cody McGinnis
+# Copyright (c) 2020 The ZMK Contributors
 #
 # SPDX-License-Identifier: MIT
 #

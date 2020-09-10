@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
