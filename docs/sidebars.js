@@ -7,6 +7,7 @@ module.exports = {
       "user-setup",
       "customization",
       "bond-reset",
+      "troubleshooting"
     ],
     Features: [
       "feature/keymaps",
