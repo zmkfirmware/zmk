@@ -1,5 +1,10 @@
-#ifndef ZMK_USB_HID
-#define ZMK_USB_HID
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#pragma once
 
 #include <usb/usb_device.h>
 #include <usb/class/usb_hid.h>
@@ -10,5 +15,3 @@
 int zmk_usb_hid_init();
 
 int zmk_usb_hid_send_report(u8_t *report, size_t len);
-
-#endif

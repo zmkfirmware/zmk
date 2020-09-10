@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include <zephyr.h>
 #include <zmk/matrix_transform.h>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Cody McGinnis <brainwart@gmail.com>
+ * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
