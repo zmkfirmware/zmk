@@ -66,6 +66,8 @@ endif
 
 ![Labelled Pro Micro pins](assets/pro-micro/pro-micro-pins-labelled.jpg)
 
+ZMK uses the green color coded pin names to generate devicetree node references. For example, to refer to the node `D0` in the devicetree files, use `&pro_micro_d 0` or to refer to `A1`, use `&pro_micro_a 1`.
+
 The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the [chosen]() node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
 this might look something like:
 
