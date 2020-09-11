@@ -64,7 +64,7 @@ endif
 
 ## Shield Overlay
 
-![Labelled Pro Micro pins](pro-micro-labelled-image.jpg)
+![Labelled Pro Micro pins](assets/pro-micro/pro-micro-pins-labelled.jpg)
 
 The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the [chosen]() node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
 this might look something like:
