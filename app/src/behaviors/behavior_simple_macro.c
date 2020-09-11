@@ -30,8 +30,15 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
   { UTIL_LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, node) }
 
 #if 1 || DT_NODE_EXISTS(DT_DRV_INST(0))
+
+enum mode {
+	ZMK_BHV_SIMPLE_MACRO_MODE_KEY_UP = 0,
+	ZMK_BHV_SIMPLE_MACRO_MODE_KEY_DOWN = 1,
+	ZMK_BHV_SIMPLE_MACRO_MODE_HOLD = 2,
+};
+
 struct behavior_simple_macro_config {
-  bool tap;
+  int mode;
   int behavior_count;
   struct zmk_behavior_binding* behaviors;
 };
@@ -47,11 +54,22 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _
 {
   const struct behavior_simple_macro_config *cfg = dev->config_info;
 
-  if (cfg->tap)
+  if (cfg->mode == ZMK_BHV_SIMPLE_MACRO_MODE_KEY_UP)
   {
-    // do nothing. tap is handled in release
+    LOG_DBG("tapping on key up");
+    for (int index = 0; index < cfg->behavior_count; index++)
+    {
+      struct device *behavior = device_get_binding(cfg->behaviors[index].behavior_dev);
+      if (behavior) {
+        LOG_DBG("tapping: binding name: %s", log_strdup(cfg->behaviors[index].behavior_dev));
+        k_msleep(10);
+        behavior_keymap_binding_pressed(behavior, position, cfg->behaviors[index].param1, cfg->behaviors[index].param2);
+        k_msleep(10);
+        behavior_keymap_binding_released(behavior, position, cfg->behaviors[index].param1, cfg->behaviors[index].param2);
   }
-  else
+    }
+  }
+  else if (cfg->mode == ZMK_BHV_SIMPLE_MACRO_MODE_HOLD)
   {
     for (int index = 0; index < cfg->behavior_count; index++)
     {
@@ -70,8 +88,9 @@ static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t 
 {
   const struct behavior_simple_macro_config *cfg = dev->config_info;
   
-  if (cfg->tap)
+  if (cfg->mode == ZMK_BHV_SIMPLE_MACRO_MODE_KEY_DOWN)
   {
+    LOG_DBG("tapping on key down");
     for (int index = 0; index < cfg->behavior_count; index++)
     {
       struct device *behavior = device_get_binding(cfg->behaviors[index].behavior_dev);
@@ -84,7 +103,7 @@ static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t 
       }
     }
   }
-  else
+  else if (cfg->mode == ZMK_BHV_SIMPLE_MACRO_MODE_HOLD)
   {
     for (int index = cfg->behavior_count - 1; index >= 0; index--)
     {
@@ -103,14 +122,13 @@ static const struct behavior_driver_api behavior_simple_macro_driver_api = {
   .binding_pressed = on_keymap_binding_pressed,
   .binding_released = on_keymap_binding_released,
 };
-#endif
 
 #define KP_INST(n) \
   static struct zmk_behavior_binding behavior_simple_macro_config_##n##_bindings[DT_INST_PROP_LEN(n, bindings)] = TRANSFORMED_BINDINGS(n); \
   static struct behavior_simple_macro_config behavior_simple_macro_config_##n = { \
-    .behaviors = &behavior_simple_macro_config_##n##_bindings, \
+    .behaviors = behavior_simple_macro_config_##n##_bindings, \
     .behavior_count = DT_INST_PROP_LEN(n, bindings), \
-    .tap = DT_INST_PROP(n, tap), \
+    .mode = DT_ENUM_IDX(DT_DRV_INST(n), mode), \
   }; \
   static struct behavior_simple_macro_data behavior_simple_macro_data_##n; \
   DEVICE_AND_API_INIT(behavior_simple_macro_##n, DT_INST_LABEL(n), behavior_simple_macro_init, \
@@ -120,3 +138,4 @@ static const struct behavior_driver_api behavior_simple_macro_driver_api = {
                       &behavior_simple_macro_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
+#endif

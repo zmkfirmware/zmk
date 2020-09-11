@@ -11,5 +11,10 @@ properties:
   bindings:
     type: phandle-array
     required: true
-  tap:
-    type: boolean
+  mode:
+    type: string
+    default: "key-down"
+    enum:
+      - "key-up"
+      - "key-down"
+      - "hold"
