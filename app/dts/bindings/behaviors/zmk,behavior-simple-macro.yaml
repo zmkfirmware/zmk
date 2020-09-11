@@ -11,6 +11,9 @@ properties:
   bindings:
     type: phandle-array
     required: true
+  sleep:
+    type: int
+    default: 10
   mode:
     type: string
     default: "key-down"

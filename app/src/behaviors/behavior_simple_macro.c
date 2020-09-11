@@ -39,6 +39,7 @@ enum mode {
 
 struct behavior_simple_macro_config {
   int mode;
+  int sleep;
   int behavior_count;
   struct zmk_behavior_binding* behaviors;
 };
@@ -62,11 +63,11 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _
       struct device *behavior = device_get_binding(cfg->behaviors[index].behavior_dev);
       if (behavior) {
         LOG_DBG("tapping: binding name: %s", log_strdup(cfg->behaviors[index].behavior_dev));
-        k_msleep(10);
+        k_msleep(cfg->sleep);
         behavior_keymap_binding_pressed(behavior, position, cfg->behaviors[index].param1, cfg->behaviors[index].param2);
-        k_msleep(10);
+        k_msleep(cfg->sleep);
         behavior_keymap_binding_released(behavior, position, cfg->behaviors[index].param1, cfg->behaviors[index].param2);
-  }
+      }
     }
   }
   else if (cfg->mode == ZMK_BHV_SIMPLE_MACRO_MODE_HOLD)
@@ -96,9 +97,9 @@ static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t 
       struct device *behavior = device_get_binding(cfg->behaviors[index].behavior_dev);
       if (behavior) {
         LOG_DBG("tapping: binding name: %s", log_strdup(cfg->behaviors[index].behavior_dev));
-        k_msleep(10);
+        k_msleep(cfg->sleep);
         behavior_keymap_binding_pressed(behavior, position, cfg->behaviors[index].param1, cfg->behaviors[index].param2);
-        k_msleep(10);
+        k_msleep(cfg->sleep);
         behavior_keymap_binding_released(behavior, position, cfg->behaviors[index].param1, cfg->behaviors[index].param2);
       }
     }
@@ -128,6 +129,7 @@ static const struct behavior_driver_api behavior_simple_macro_driver_api = {
   static struct behavior_simple_macro_config behavior_simple_macro_config_##n = { \
     .behaviors = behavior_simple_macro_config_##n##_bindings, \
     .behavior_count = DT_INST_PROP_LEN(n, bindings), \
+    .sleep = DT_INST_PROP(n, sleep), \
     .mode = DT_ENUM_IDX(DT_DRV_INST(n), mode), \
   }; \
   static struct behavior_simple_macro_data behavior_simple_macro_data_##n; \
