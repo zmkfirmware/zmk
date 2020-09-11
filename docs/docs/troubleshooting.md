@@ -9,7 +9,7 @@ The following page provides suggestions for common errors that may occur during 
 
 ### File Transfer Error
 
-Variations of the warnings shown below occur when flashing the `<firmware>.uf2` onto the microcontroller. This is because the microcontroller resets itself before the OS receives confirmation that the file transfer is complete. Errors like this are normal and can generally be ignored. Verification of a functional board can be done by attempting to pair your computer to your newly flashed keyboard via Bluetooth or plugging in a USB cable if `ZMK_USB` is enabled in your Kconfig.defconfig.
+Variations of the warnings shown below occur when flashing the `<firmware>.uf2` onto the microcontroller. This is because the microcontroller resets itself before the OS receives confirmation that the file transfer is complete. Errors like this are normal and can generally be ignored. Verification of a functional board can be done by attempting to pair your newly flashed keyboard to your computer via Bluetooth or plugging in a USB cable if `ZMK_USB` is enabled in your Kconfig.defconfig.
 
 |       ![Example Error Screen](../docs/assets/troubleshooting/filetransfer/windows.png)      |
 | :-------------------------------------------------------------------------------:           |
