@@ -11,7 +11,7 @@ Anyone wanting to contribute code to ZMK _must_ read this, and adhere to the ste
 :::
 
 ZMK Firmware is a [clean room design](https://en.wikipedia.org/wiki/Clean_room_design) keyboard firmware, that
-borrows/implements a lot of the features found in popular keyboard firmware projects like [QMK](https://qmk.fm)
+borrows/implements a lot of the features found in popular keyboard firmwares projects like [QMK](https://qmk.fm)
 and [TMK](https://github.com/tmk/tmk_keyboard). However, in order for ZMK to use the MIT, it _must_ not
 incorporate any of the GPL licensed code from those projects.
 
