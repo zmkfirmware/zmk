@@ -17,6 +17,7 @@ jobs:
           - lily58_left
           - lily58_right
           - romac
+          - settings_reset
         include:
           - board: proton_c
             shield: clueboard_california
