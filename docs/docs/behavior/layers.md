@@ -26,7 +26,7 @@ This allows you to use those defines, e.g. `LOWER` later in your keymap.
 
 ## Momentary Layer
 
-The "momentary layer" behavior allows you to enable a layer while a certain key is pressed. Immediately upon
+The "momentary layer" behavior enables a layer while a certain key is pressed. Immediately upon
 activation of the key, the layer is enabled, and immediately open release of the key, the layer is disabled
 again.
 
@@ -41,9 +41,25 @@ Example:
 &mo LOWER
 ```
 
+## Layer-tap
+
+The "layer-tap" behavior enables a layer when a key is held, and output another key when the key is only tapped for a short time. For more information on the inner workings of layer-tap, see [hold-tap](./hold-tap.md).
+
+### Behavior Binding
+- Reference: `&lt`
+- Parameter: The layer number to enable when held, e.g. `1`
+- Parameter: The keycode to send when tapped, e.g. `A`
+
+Example:
+
+```
+&lt LOWER SPC
+```
+
+
 ## Toggle Layer
 
-The "toggle layer" behavior allows you to enable a layer until the layer is manually disabled.
+The "toggle layer" behavior enables a layer until the layer is manually disabled.
 
 ### Behavior Binding
 
