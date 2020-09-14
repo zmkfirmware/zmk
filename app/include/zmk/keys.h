@@ -14,8 +14,7 @@ typedef u8_t zmk_action;
 typedef u8_t zmk_mod;
 typedef u8_t zmk_mod_flags;
 
-struct zmk_key_event
-{
+struct zmk_key_event {
     u32_t column;
     u32_t row;
     zmk_key key;

@@ -17,21 +17,18 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/hog.h>
 #include <zmk/hid.h>
 
-enum
-{
+enum {
     HIDS_REMOTE_WAKE = BIT(0),
     HIDS_NORMALLY_CONNECTABLE = BIT(1),
 };
 
-struct hids_info
-{
+struct hids_info {
     u16_t version; /* version number of base USB HID Specification */
     u8_t code;     /* country HID Device hardware is localized for. */
     u8_t flags;
 } __packed;
 
-struct hids_report
-{
+struct hids_report {
     u8_t id;   /* report id */
     u8_t type; /* report type */
 } __packed;
@@ -42,8 +39,7 @@ static struct hids_info info = {
     .flags = HIDS_NORMALLY_CONNECTABLE & HIDS_REMOTE_WAKE,
 };
 
-enum
-{
+enum {
     HIDS_INPUT = 0x01,
     HIDS_OUTPUT = 0x02,
     HIDS_FEATURE = 0x03,
@@ -63,31 +59,37 @@ static bool host_requests_notification = false;
 static u8_t ctrl_point;
 // static u8_t proto_mode;
 
-static ssize_t read_hids_info(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
-{
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, attr->user_data, sizeof(struct hids_info));
+static ssize_t read_hids_info(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf,
+                              u16_t len, u16_t offset) {
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, attr->user_data,
+                             sizeof(struct hids_info));
 }
 
-static ssize_t read_hids_report_ref(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
-{
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, attr->user_data, sizeof(struct hids_report));
+static ssize_t read_hids_report_ref(struct bt_conn *conn, const struct bt_gatt_attr *attr,
+                                    void *buf, u16_t len, u16_t offset) {
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, attr->user_data,
+                             sizeof(struct hids_report));
 }
 
-static ssize_t read_hids_report_map(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
-{
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, zmk_hid_report_desc, sizeof(zmk_hid_report_desc));
+static ssize_t read_hids_report_map(struct bt_conn *conn, const struct bt_gatt_attr *attr,
+                                    void *buf, u16_t len, u16_t offset) {
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, zmk_hid_report_desc,
+                             sizeof(zmk_hid_report_desc));
 }
 
-static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
-{
+static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
+                                      void *buf, u16_t len, u16_t offset) {
     struct zmk_hid_keypad_report_body *report_body = &zmk_hid_get_keypad_report()->body;
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body, sizeof(struct zmk_hid_keypad_report_body));
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
+                             sizeof(struct zmk_hid_keypad_report_body));
 }
 
-static ssize_t read_hids_consumer_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf, u16_t len, u16_t offset)
-{
+static ssize_t read_hids_consumer_input_report(struct bt_conn *conn,
+                                               const struct bt_gatt_attr *attr, void *buf,
+                                               u16_t len, u16_t offset) {
     struct zmk_hid_consumer_report_body *report_body = &zmk_hid_get_consumer_report()->body;
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body, sizeof(struct zmk_hid_consumer_report_body));
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
+                             sizeof(struct zmk_hid_consumer_report_body));
 }
 
 // static ssize_t write_proto_mode(struct bt_conn *conn,
@@ -99,20 +101,15 @@ static ssize_t read_hids_consumer_input_report(struct bt_conn *conn, const struc
 //     return 0;
 // }
 
-static void input_ccc_changed(const struct bt_gatt_attr *attr, u16_t value)
-{
+static void input_ccc_changed(const struct bt_gatt_attr *attr, u16_t value) {
     host_requests_notification = (value == BT_GATT_CCC_NOTIFY) ? 1 : 0;
 }
 
-static ssize_t write_ctrl_point(struct bt_conn *conn,
-                                const struct bt_gatt_attr *attr,
-                                const void *buf, u16_t len, u16_t offset,
-                                u8_t flags)
-{
+static ssize_t write_ctrl_point(struct bt_conn *conn, const struct bt_gatt_attr *attr,
+                                const void *buf, u16_t len, u16_t offset, u8_t flags) {
     u8_t *value = attr->user_data;
 
-    if (offset + len > sizeof(ctrl_point))
-    {
+    if (offset + len > sizeof(ctrl_point)) {
         return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
     }
 
@@ -122,35 +119,27 @@ static ssize_t write_ctrl_point(struct bt_conn *conn,
 }
 
 /* HID Service Declaration */
-BT_GATT_SERVICE_DEFINE(hog_svc,
-                       BT_GATT_PRIMARY_SERVICE(BT_UUID_HIDS),
-                       //    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_PROTOCOL_MODE, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
-                       //                           BT_GATT_PERM_WRITE, NULL, write_proto_mode, &proto_mode),
-                       BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_INFO, BT_GATT_CHRC_READ,
-                                              BT_GATT_PERM_READ, read_hids_info, NULL, &info),
-                       BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT_MAP, BT_GATT_CHRC_READ,
-                                              BT_GATT_PERM_READ, read_hids_report_map, NULL, NULL),
+BT_GATT_SERVICE_DEFINE(
+    hog_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_HIDS),
+    //    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_PROTOCOL_MODE, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
+    //                           BT_GATT_PERM_WRITE, NULL, write_proto_mode, &proto_mode),
+    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_INFO, BT_GATT_CHRC_READ, BT_GATT_PERM_READ, read_hids_info,
+                           NULL, &info),
+    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT_MAP, BT_GATT_CHRC_READ, BT_GATT_PERM_READ,
+                           read_hids_report_map, NULL, NULL),
 
-                       BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT,
-                                              BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
-                                              BT_GATT_PERM_READ_ENCRYPT,
-                                              read_hids_input_report, NULL, NULL),
-                       BT_GATT_CCC(input_ccc_changed,
-                                   BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
-                       BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ,
-                                          read_hids_report_ref, NULL, &input),
-                       BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT,
-                                              BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
-                                              BT_GATT_PERM_READ_ENCRYPT,
-                                              read_hids_consumer_input_report, NULL, NULL),
-                       BT_GATT_CCC(input_ccc_changed,
-                                   BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
-                       BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ,
-                                          read_hids_report_ref, NULL, &consumer_input),
-                       BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_CTRL_POINT,
-                                              BT_GATT_CHRC_WRITE_WITHOUT_RESP,
-                                              BT_GATT_PERM_WRITE,
-                                              NULL, write_ctrl_point, &ctrl_point));
+    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                           BT_GATT_PERM_READ_ENCRYPT, read_hids_input_report, NULL, NULL),
+    BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
+    BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ, read_hids_report_ref, NULL,
+                       &input),
+    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                           BT_GATT_PERM_READ_ENCRYPT, read_hids_consumer_input_report, NULL, NULL),
+    BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
+    BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ, read_hids_report_ref, NULL,
+                       &consumer_input),
+    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_CTRL_POINT, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
+                           BT_GATT_PERM_WRITE, NULL, write_ctrl_point, &ctrl_point));
 
 struct bt_conn *destination_connection() {
     struct bt_conn *conn;
@@ -165,11 +154,9 @@ struct bt_conn *destination_connection() {
     }
 
     return conn;
-
 }
 
-int zmk_hog_send_keypad_report(struct zmk_hid_keypad_report_body *report)
-{
+int zmk_hog_send_keypad_report(struct zmk_hid_keypad_report_body *report) {
     struct bt_conn *conn = destination_connection();
     if (conn == NULL) {
         return -ENOTCONN;
@@ -177,15 +164,16 @@ int zmk_hog_send_keypad_report(struct zmk_hid_keypad_report_body *report)
 
     LOG_DBG("Sending to NULL? %s", conn == NULL ? "yes" : "no");
 
-    return bt_gatt_notify(conn, &hog_svc.attrs[5], report, sizeof(struct zmk_hid_keypad_report_body));
+    return bt_gatt_notify(conn, &hog_svc.attrs[5], report,
+                          sizeof(struct zmk_hid_keypad_report_body));
 };
 
-int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report)
-{
+int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
     struct bt_conn *conn = destination_connection();
     if (conn == NULL) {
         return -ENOTCONN;
     }
-    
-    return bt_gatt_notify(conn, &hog_svc.attrs[10], report, sizeof(struct zmk_hid_consumer_report_body));
+
+    return bt_gatt_notify(conn, &hog_svc.attrs[10], report,
+                          sizeof(struct zmk_hid_consumer_report_body));
 };
