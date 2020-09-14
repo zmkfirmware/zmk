@@ -52,7 +52,7 @@
     &bt BT_CLR &bt BT_NXT &bt BT_PRV &none &none &none &none &kp UARW &none &kp BKSP    
     &trans &trans &trans &trans &none &none &kp LARW &kp DARW &kp RARW &none       
     &none &none &none &none &none &none &none &none &none
-    &bt BT_CLR &bt BT_NXT &none &trans &trans &kp RET &trans &kp FSLH
+    &none &none &none &trans &trans &kp RET &trans &kp FSLH
             >;
         };
     };
