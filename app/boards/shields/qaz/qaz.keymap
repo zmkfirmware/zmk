@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2020 TJ Campie
- * 
+ * Copyright (c) 2020 The ZMK Contributors
+ *
  * SPDX-License-Identifier: MIT
  */
 
@@ -14,13 +14,13 @@
 
 / {
     behaviors {
-    hm: homerow_mods {
-			compatible = "zmk,behavior-hold-tap";
-			label = "homerow mods";
-			#binding-cells = <2>;
-			tapping_term_ms = <225>;
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "homerow mods";
+            #binding-cells = <2>;
+            tapping_term_ms = <225>;
             flavor = "tap-preferred";
-			bindings = <&kp>, <&kp>;
+            bindings = <&kp>, <&kp>;
         };
     };
 };
