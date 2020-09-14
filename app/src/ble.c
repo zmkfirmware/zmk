@@ -366,7 +366,7 @@ static enum bt_security_err auth_pairing_accept(struct bt_conn *conn, const stru
     bt_conn_get_info(conn, &info);
 
     LOG_DBG("role %d, open? %s", info.role, active_profile_is_open() ? "yes" : "no");
-    if (info.role != BT_CONN_ROLE_SLAVE && !active_profile_is_open()) {
+    if (info.role == BT_CONN_ROLE_SLAVE && !active_profile_is_open()) {
         LOG_WRN("Rejecting pairing request to taken profile %d", active_profile);
         return BT_SECURITY_ERR_PAIR_NOT_ALLOWED;
     }
