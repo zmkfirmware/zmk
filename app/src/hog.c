@@ -6,6 +6,10 @@
 
 #include <settings/settings.h>
 
+#include <logging/log.h>
+
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/gatt.h>
 
@@ -148,12 +152,40 @@ BT_GATT_SERVICE_DEFINE(hog_svc,
                                               BT_GATT_PERM_WRITE,
                                               NULL, write_ctrl_point, &ctrl_point));
 
+struct bt_conn *destination_connection() {
+    struct bt_conn *conn;
+    bt_addr_le_t *addr = zmk_ble_active_profile_addr();
+    LOG_DBG("Address pointer %p", addr);
+    if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
+        LOG_WRN("Not sending, no active address for current profile");
+        return NULL;
+    } else if ((conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr)) == NULL) {
+        LOG_WRN("Not sending, not connected to active profile");
+        return NULL;
+    }
+
+    return conn;
+
+}
+
 int zmk_hog_send_keypad_report(struct zmk_hid_keypad_report_body *report)
 {
-    return bt_gatt_notify(NULL, &hog_svc.attrs[5], report, sizeof(struct zmk_hid_keypad_report_body));
+    struct bt_conn *conn = destination_connection();
+    if (conn == NULL) {
+        return -ENOTCONN;
+    }
+
+    LOG_DBG("Sending to NULL? %s", conn == NULL ? "yes" : "no");
+
+    return bt_gatt_notify(conn, &hog_svc.attrs[5], report, sizeof(struct zmk_hid_keypad_report_body));
 };
 
 int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report)
 {
-    return bt_gatt_notify(NULL, &hog_svc.attrs[10], report, sizeof(struct zmk_hid_consumer_report_body));
+    struct bt_conn *conn = destination_connection();
+    if (conn == NULL) {
+        return -ENOTCONN;
+    }
+    
+    return bt_gatt_notify(conn, &hog_svc.attrs[10], report, sizeof(struct zmk_hid_consumer_report_body));
 };

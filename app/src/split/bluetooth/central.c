@@ -10,12 +10,14 @@
 #include <bluetooth/conn.h>
 #include <bluetooth/uuid.h>
 #include <bluetooth/gatt.h>
+#include <bluetooth/hci.h>
 #include <sys/byteorder.h>
 
 #include <logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#include <zmk/ble.h>
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/event-manager.h>
 #include <zmk/events/position-state-changed.h>
@@ -71,6 +73,27 @@ static u8_t split_central_notify_func(struct bt_conn *conn,
 	return BT_GATT_ITER_CONTINUE;
 }
 
+static int split_central_subscribe(struct bt_conn *conn)
+{
+	int err = bt_gatt_subscribe(conn, &subscribe_params);
+	switch (err) {
+	case -EALREADY:
+		LOG_DBG("[ALREADY SUBSCRIBED]");
+		break;
+		// break;
+		// bt_gatt_unsubscribe(conn, &subscribe_params);
+		// return split_central_subscribe(conn);
+	case 0:
+		LOG_DBG("[SUBSCRIBED]");
+		break;
+	default:
+		LOG_ERR("Subscribe failed (err %d)", err);
+		break;
+	}
+
+	return 0;
+}
+
 static u8_t split_central_discovery_func(struct bt_conn *conn,
 			     const struct bt_gatt_attr *attr,
 			     struct bt_gatt_discover_params *params)
@@ -112,12 +135,7 @@ static u8_t split_central_discovery_func(struct bt_conn *conn,
 		subscribe_params.value = BT_GATT_CCC_NOTIFY;
 		subscribe_params.ccc_handle = attr->handle;
 
-		err = bt_gatt_subscribe(conn, &subscribe_params);
-		if (err && err != -EALREADY) {
-			LOG_ERR("Subscribe failed (err %d)", err);
-		} else {
-			LOG_DBG("[SUBSCRIBED]");
-		}
+		split_central_subscribe(conn);
 
 		return BT_GATT_ITER_STOP;
 	}
@@ -136,7 +154,7 @@ static void split_central_process_connection(struct bt_conn *conn) {
 		return;
 	}
 
-	if (conn == default_conn) {
+	if (conn == default_conn && !subscribe_params.value) {
 		discover_params.uuid = &uuid.uuid;
 		discover_params.func = split_central_discovery_func;
 		discover_params.start_handle = 0x0001;
@@ -194,6 +212,8 @@ static bool split_central_eir_found(struct bt_data *data, void *user_data)
 
 			LOG_DBG("Found the split service");
 
+			zmk_ble_set_peripheral_addr(addr);
+
 			err = bt_le_scan_stop();
 			if (err) {
 				LOG_ERR("Stop LE scan failed (err %d)", err);
@@ -206,10 +226,11 @@ static bool split_central_eir_found(struct bt_data *data, void *user_data)
 				split_central_process_connection(default_conn);
 			} else {
 				param = BT_LE_CONN_PARAM(0x0006, 0x0006, 30, 400);
+
 				err = bt_conn_le_create(addr, BT_CONN_LE_CREATE_CONN,
 							param, &default_conn);
 				if (err) {
-					LOG_ERR("Create conn failed (err %d)", err);
+					LOG_ERR("Create conn failed (err %d) (create conn? 0x%04x)", err, BT_HCI_OP_LE_CREATE_CONN);
 					start_scan();
 				}
 
@@ -263,8 +284,9 @@ static void split_central_connected(struct bt_conn *conn, u8_t conn_err)
 
 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
+
 	if (conn_err) {
-		LOG_ERR("Failed to connect to %s (%u)", addr, conn_err);
+		LOG_ERR("Failed to connect to %s (%u)", log_strdup(addr), conn_err);
 
 		bt_conn_unref(default_conn);
 		default_conn = NULL;

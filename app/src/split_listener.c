@@ -21,12 +21,13 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 int split_listener(const struct zmk_event_header *eh)
 {
+  LOG_DBG("");
   if (is_position_state_changed(eh)) {
     const struct position_state_changed *ev = cast_position_state_changed(eh);
     if (ev->state) {
-      zmk_split_bt_position_pressed(ev->position);
+      return zmk_split_bt_position_pressed(ev->position);
     } else {
-      zmk_split_bt_position_released(ev->position);
+      return zmk_split_bt_position_released(ev->position);
     }
   }
   return 0;
