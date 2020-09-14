@@ -55,7 +55,7 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _
     const struct behavior_simple_macro_config *cfg = dev->config_info;
 
     if (cfg->mode == ZMK_BHV_SIMPLE_MACRO_MODE_KEY_DOWN) {
-        LOG_DBG("tapping on key up");
+        LOG_DBG("tapping on key down");
         for (int index = 0; index < cfg->behavior_count; index++) {
             struct device *behavior = device_get_binding(cfg->behaviors[index].behavior_dev);
             if (behavior) {
@@ -88,7 +88,7 @@ static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t 
     const struct behavior_simple_macro_config *cfg = dev->config_info;
 
     if (cfg->mode == ZMK_BHV_SIMPLE_MACRO_MODE_KEY_UP) {
-        LOG_DBG("tapping on key down");
+        LOG_DBG("tapping on key up");
         for (int index = 0; index < cfg->behavior_count; index++) {
             struct device *behavior = device_get_binding(cfg->behaviors[index].behavior_dev);
             if (behavior) {
