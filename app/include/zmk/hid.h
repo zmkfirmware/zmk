@@ -140,25 +140,21 @@ static const u8_t zmk_hid_report_desc[] = {
 //     u8_t keys[6];
 // } __packed;
 
-struct zmk_hid_keypad_report_body
-{
+struct zmk_hid_keypad_report_body {
     zmk_mod_flags modifiers;
     u8_t keys[13];
 } __packed;
 
-struct zmk_hid_keypad_report
-{
+struct zmk_hid_keypad_report {
     u8_t report_id;
     struct zmk_hid_keypad_report_body body;
 } __packed;
 
-struct zmk_hid_consumer_report_body
-{
+struct zmk_hid_consumer_report_body {
     u8_t keys[6];
 } __packed;
 
-struct zmk_hid_consumer_report
-{
+struct zmk_hid_consumer_report {
     u8_t report_id;
     struct zmk_hid_consumer_report_body body;
 } __packed;

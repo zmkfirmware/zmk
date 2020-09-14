@@ -55,7 +55,7 @@
 #define QUOT 0x34
 #define GRAV 0x35
 #define CMMA 0x36
-#define DOT  0x37
+#define DOT 0x37
 #define FSLH 0x38
 #define CLCK 0x39
 #define F1 0x3A
@@ -77,8 +77,8 @@
 #define INS 0x49
 #define HOME 0x4A
 #define PGUP 0x4B
-#define DEL  0x4C
-#define END  0x4D
+#define DEL 0x4C
+#define END 0x4D
 #define PGDN 0x4E
 #define RARW 0x4F
 #define LARW 0x50
