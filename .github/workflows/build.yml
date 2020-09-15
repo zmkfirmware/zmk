@@ -16,6 +16,8 @@ jobs:
           - kyria_right
           - lily58_left
           - lily58_right
+          - iris_left
+          - iris_right
           - romac
         include:
           - board: proton_c
