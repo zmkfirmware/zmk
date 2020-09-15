@@ -326,9 +326,9 @@ jobs:
           - iris_left
           - iris_right
           - romac
-		  - <MY_BOARD>
-		  - <MY_SPLIT_BOARD_left>
-		  - <MY_SPLIT_BOARD_right>
+	  - <MY_BOARD>
+	  - <MY_SPLIT_BOARD_left>
+	  - <MY_SPLIT_BOARD_right>
         include:
           - board: proton_c
             shield: clueboard_california
