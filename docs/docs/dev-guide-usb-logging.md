@@ -3,6 +3,9 @@ id: dev-guide-usb-logging
 title: USB Logging
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ## Overview
 
 If you are developing ZMK on a device that does not have a built in UART for debugging and log/console output,
@@ -11,7 +14,7 @@ messages to that device instead.
 
 ## Kconfig
 
-The following KConfig values need to be set, either by copy and paste into the `app/prj.conf` file, or by running
+The following KConfig values need to be set, either by copy and pasting into the `app/prj.conf` file, or by running
 `west build -t menuconfig` and manually enabling the various settings in that UI.
 
 ```
@@ -42,12 +45,32 @@ CONFIG_USB_UART_DTR_WAIT=n
 
 ## Viewing Logs
 
-After flashing the updated ZMK image, the board should expose a USB CDC ACM device, that you can connect to and view the logs.
+After flashing the updated ZMK image, the board should expose a USB CDC ACM device that you can connect to and view the logs.
+
+<Tabs
+defaultValue="linux"
+values={[
+{label: 'Linux', value: 'linux'},
+{label: 'Windows', value: 'win'},
+]}>
+<TabItem value="linux">
 
 On Linux, this should be a device like `/dev/ttyACM0` and you can connect with `minicom` or `tio` as usual, e.g.:
-
 ```
 sudo tio /dev/ttyACM0
 ```
+</TabItem>
+<TabItem value="win">
+
+On Windows, you can use [PuTTY](https://www.putty.org/). Once installed, use Device Manager to figure out which COM port your controller is communicating on (listed under 'Ports (COM & LPT)') and specify that as the 'Serial line' in PuTTY.
+
+![Controller COM port](./assets/usb-logging/com.jpg)
+
+![PuTTY settings](assets/usb-logging/putty.jpg)
+
+If you already have the Ardunio IDE installed you can also use its built-in Serial Monitor.
+
+</TabItem>
+</Tabs>
 
 From there, you should see the various log messages from ZMK and Zephyr, depending on which systems you have set to what log levels.

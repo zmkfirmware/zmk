@@ -1,6 +1,6 @@
 # Electronut Labs Papyr board configuration
 
-# Copyright (c) 2020 Okke Formsma, joric
+# Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 if BOARD_NRFMICRO_11 || BOARD_NRFMICRO_11_FLIPPED || BOARD_NRFMICRO_13
@@ -29,5 +29,12 @@ config ZMK_USB
 
 config PINMUX
 	default y
-	
+
+if BOARD_NRFMICRO_13
+
+config BOARD_NRFMICRO_CHARGER
+	default y
+
+endif # BOARD_NRFMICRO_13
+
 endif # BOARD_NRFMICRO_11 || BOARD_NRFMICRO_11_FLIPPED || BOARD_NRFMICRO_13

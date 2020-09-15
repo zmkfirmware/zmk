@@ -1,5 +1,6 @@
 ---
-title: Key Presses
+title: Key Press Behaviors
+sidebar_label: Key Press
 ---
 
 ## Summary
@@ -7,7 +8,7 @@ title: Key Presses
 The most basic of behaviors, is the ability to send certain keycode presses and releases in response to activating
 a certain key.
 
-For reference on keycode values, see the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12).
+For reference on keycode values, see pages 83-89 of the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12).
 
 ## Keycode Defines
 
@@ -25,6 +26,11 @@ Doing so makes a set of defines such as `A`, `NUM_1`, etc. available for use wit
 There is an [open issue](https://github.com/zmkfirmware/zmk/issues/21) to provide a more comprehensive, and
 complete set of defines for the full keypad and consumer usage pages in the future for ZMK.
 :::
+
+### Improperly defined keymap - `dtlib.DTError: <board>.dts.pre.tmp:<line number>`
+
+When compiling firmware from a keymap, it may be common to encounter an error in the form of a`dtlib.DTError: <board>.dts.pre.tmp:<line number>`.
+For instructions to resolve such an error, click [here](../troubleshooting###Improperly-defined-keymap)
 
 ## Keypad Key Press
 

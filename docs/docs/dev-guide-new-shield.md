@@ -3,6 +3,9 @@ id: dev-guide-new-shield
 title: New Keyboard Shield
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ## Overview
 
 This guide will walk through the steps necessary to add ZMK support for a keyboard the uses a (Pro Micro compatible) addon MCU board to provide the microprocessor.
@@ -13,6 +16,7 @@ The high level steps are:
 - Add the shield overlay file to define the [KSCAN driver]() for detecting key press/release.
 - (Optional) Add the matrix transform for mapping KSCAN row/column values to sane key positions. This is needed for non-rectangular keyboards, or where the underlying row/column pin arrangement does not map one to one with logical locations on the keyboard.
 - Add a default keymap, which users can override in their own configs as needed.
+- Add support for features such as encoders, OLED displays, or RGB underglow.
 
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
@@ -59,6 +63,10 @@ endif
 ```
 
 ## Shield Overlay
+
+![Labelled Pro Micro pins](assets/pro-micro/pro-micro-pins-labelled.jpg)
+
+ZMK uses the green color coded pin names to generate devicetree node references. For example, to refer to the node `D0` in the devicetree files, use `&pro_micro_d 0` or to refer to `A1`, use `&pro_micro_a 1`.
 
 The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the [chosen]() node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
 this might look something like:
@@ -194,6 +202,91 @@ Further documentation on behaviors and bindings is forthcoming, but a summary of
 - `mo` is the "momentary layer" behaviour, and takes a single binding argument of the numeric ID of the layer to momentarily enable when that key is held.
 - `trans` is the "transparent" behavior, useful to be place in higher layers above `mo` bindings to be sure the key release is handled by the lower layer. No binding arguments are required.
 - `mt` is the "mod-tap" behavior, and takes two binding arguments, the modifier to use if held, and the keycode to send if tapped.
+
+## Adding Features
+
+### Encoders
+
+EC11 encoder support can be added to your board or shield by adding the appropriate lines to your board/shield's configuration (.conf), device tree (.dtsi), overlay (.overlay), and keymap (.keymap) files.
+
+<Tabs
+defaultValue="conf"
+values={[
+{label: '.conf', value: 'conf'},
+{label: '.dtsi', value: 'dtsi'},
+{label: '.overlay', value: 'overlay'},
+{label: '.keymap', value: 'keymap'},
+]}>
+<TabItem value="conf">
+
+In your configuration file you will need to add the following lines so that the encoders can be enabled/disabled:
+
+```
+# Uncomment to enable encoder
+# CONFIG_EC11=y
+# CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y
+```
+
+These should be commented by default for encoders that are optional/can be swapped with switches, but can be uncommented if encoders are part of the default design.
+
+:::note
+If building locally for split boards, you may need to add these lines to the specific half's configuration file as well as the combined configuration file.
+:::
+
+</TabItem>
+<TabItem value = "dtsi">
+In your device tree file you will need to add the following lines to define the encoder sensor:
+
+  
+```
+left_encoder: encoder_left {
+		compatible = "alps,ec11";
+		label = "LEFT_ENCODER";
+		a-gpios = <PIN_A (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		b-gpios = <PIN_B (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		resolution = <4>;
+	};
+```
+Here you will have to replace PIN_A and PIN_B with the appropriate pins that your PCB utilizes for the encoder(s). For keyboards that use the Pro Micro or any of the Pro Micro replacements, Sparkfun's [Pro Micro Hookup Guide](https://learn.sparkfun.com/tutorials/pro-micro--fio-v3-hookup-guide/hardware-overview-pro-micro) has a pinout diagram that can be useful to determine the right pins. Reference either the blue numbers labeled "Arduino" (digital pins) or the green numbers labeled "Analog" (analog pins). For pins that are labeled as both digital and analog, refer to your specific board's .dtsi file to determine how you should refer to that pin.
+
+Add additional encoders as necessary by duplicating the above lines, replacing `left` with whatever you would like to call your encoder, and updating the pins. Note that support for peripheral (right) side sensors over BLE is still in progress.
+
+Once you have defined the encoder sensors, you will have to add them to the list of sensors:
+
+```
+sensors {
+		compatible = "zmk,keymap-sensors";
+		sensors = <&left_encoder &right_encoder>;
+	};
+```
+
+In this example, a left_encoder and right_encoder are both added. Additional encoders can be added with spaces separating each, and the order they are added here determines the order in which you define their behavior in your keymap.
+
+</TabItem>
+<TabItem value = "overlay">
+Add the following lines to your overlay file(s) to enable the encoder:
+
+```
+&left_encoder {
+	status = "okay";
+};
+```
+
+:::note
+For split keyboards, make sure to add left hand encoders to the left .overlay file and right hand encoders to the right .overlay file.
+:::
+
+</TabItem>
+<TabItem value = "keymap">
+Add the following line to your keymap file to add default encoder behavior bindings:   
+
+```
+sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD>;
+```
+Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](/docs/feature/encoders) and [Keymap](/docs/feature/keymaps) feature documentation for more details.
+
+</TabItem>
+</Tabs>
 
 ## Testing
 

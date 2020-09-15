@@ -1,0 +1,23 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Hold or Tap behavior
+
+compatible: "zmk,behavior-hold-tap"
+
+include: two_param.yaml
+
+properties:
+  bindings:
+    type: phandles
+    required: true
+  tapping_term_ms:
+    type: int
+  flavor:
+    type: string
+    required: false
+    default: "hold-preferred"
+    enum:
+      - "hold-preferred"
+      - "balanced"
+      - "tap-preferred"

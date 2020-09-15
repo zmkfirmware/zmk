@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define DEFAULT 0
+#define NUM_SYM 1
+#define NAV     2
+
+/ {
+    behaviors {
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "homerow mods";
+            #binding-cells = <2>;
+            tapping_term_ms = <225>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+    &kp Q &kp W &kp E &kp R &kp T &kp Y &kp U &kp I &kp O &kp P    
+    &hm LGUI A &hm LALT S &hm LCTL D &hm LSFT F &kp G &kp H &hm RSFT J &hm RCTL K &hm RALT L &hm RGUI RET
+    &kp Z &kp X &kp C &kp V &kp B &kp N &kp M &kp CMMA &kp DOT
+    &kp LSFT &kp LGUI &kp LALT &lt NAV RET &lt NUM_SYM SPC &kp COLN &kp QUOT &kp FSLH
+            >;
+        };
+        num_sym {
+            bindings = <
+    &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0    
+    &trans &trans &trans &trans &trans &trans &trans &trans &kp EQL &kp MINUS       
+    &kp DEL &none &none &none &none &none &none &none &kp DOT
+    &bootloader &reset &none &trans &trans &kp RET &trans &kp FSLH
+            >;
+        };
+
+    nav {
+            bindings = <
+    &bt BT_CLR &bt BT_NXT &bt BT_PRV &none &none &none &none &kp UARW &none &kp BKSP    
+    &trans &trans &trans &trans &none &none &kp LARW &kp DARW &kp RARW &none       
+    &none &none &none &none &none &none &none &none &none
+    &none &none &none &trans &trans &kp RET &trans &kp FSLH
+            >;
+        };
+    };
+};

@@ -44,6 +44,7 @@ endif()
 set(CACHED_ZMK_CONFIG ${ZMK_CONFIG} CACHE STRING "Selected user ZMK config")
 
 if (ZMK_CONFIG)
+	set(ENV{ZMK_CONFIG} "${ZMK_CONFIG}")
 	if(EXISTS ${ZMK_CONFIG}/boards)
 		message(STATUS "Adding ZMK config directory as board root: ${ZMK_CONFIG}")
 		list(APPEND BOARD_ROOT ${ZMK_CONFIG})

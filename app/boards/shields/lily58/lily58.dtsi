@@ -15,7 +15,7 @@
 	default_transform: keymap_transform_0 {
 		compatible = "zmk,matrix-transform";
 		columns = <16>;
-		rows = <4>;
+		rows = <5>;
 // | SW6  | SW5  | SW4  | SW3  | SW2  | SW1  |                 | SW1  | SW2  | SW3  | SW4  | SW5  | SW6  |
 // | SW12 | SW11 | SW10 | SW9  | SW8  | SW7  |                 | SW7  | SW8  | SW9  | SW10 | SW11 | SW12 |
 // | SW18 | SW17 | SW16 | SW15 | SW14 | SW13 |                 | SW13 | SW14 | SW15 | SW16 | SW17 | SW18 |
@@ -43,6 +43,19 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
 			, <&pro_micro_d 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
 		
+	};
+
+	left_encoder: encoder_left {
+		compatible = "alps,ec11";
+		label = "LEFT_ENCODER";
+		a-gpios = <&pro_micro_a 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		b-gpios = <&pro_micro_a 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		resolution = <4>;
+	};
+
+	sensors {
+		compatible = "zmk,keymap-sensors";
+		sensors = <&left_encoder>;
 	};
 
 	bt_unpair_combo: bt_unpair_combo {

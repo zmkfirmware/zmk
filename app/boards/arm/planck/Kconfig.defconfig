@@ -1,6 +1,6 @@
 # Planck keyboard configuration
 
-# Copyright (c) 2020 Peter Johanson
+# Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 if BOARD_PLANCK_REV6

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Peter Johanson <peter@peterjohanson.com>
+ * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -18,9 +18,9 @@ struct keycode_state_changed {
 
 ZMK_EVENT_DECLARE(keycode_state_changed);
 
-inline struct keycode_state_changed* create_keycode_state_changed(u8_t usage_page, u32_t keycode, bool state)
-{
-    struct keycode_state_changed* ev = new_keycode_state_changed();
+inline struct keycode_state_changed *create_keycode_state_changed(u8_t usage_page, u32_t keycode,
+                                                                  bool state) {
+    struct keycode_state_changed *ev = new_keycode_state_changed();
     ev->usage_page = usage_page;
     ev->keycode = keycode;
     ev->state = state;

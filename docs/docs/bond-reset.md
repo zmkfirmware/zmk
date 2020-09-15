@@ -4,8 +4,8 @@ title: Reset BLE Connections
 sidebar_label: BLE Reset
 ---
 
-Known as a 'bond reset', a special key combination, that is not related to the user defined key map, which
-clears all wireless connection configurations. The keys must be held for 3 to 5 seconds after the device is
+Known as a 'bond reset', each keyboard has a special key combination independent of the user defined key map which will
+clear all wireless connection configurations. The keys must be held for 3 to 5 seconds after the device is
 reset.
 
 :::warning
@@ -13,15 +13,19 @@ Currently, ZMK only supports a single BLE host. If you remove the keyboard from 
 list, you will need to clear the bonds.
 :::
 
-### Split Keyboards
+## Split Keyboards
 
 Split keyboards will need to be cleared on both halves. For best results try to reset them at the same time.
 
 
-## Kyria
+### Kyria
 
 ![Kyria bond-reset combo](assets/bond-clearing/kyria.jpg)
 
-## Corne
+### Corne
 
 ![Corne bond-reset combo](assets/bond-clearing/corne.jpg)
+
+### Lily58
+
+![Lily58 bond-reset combo](assets/bond-clearing/lily58.jpg)

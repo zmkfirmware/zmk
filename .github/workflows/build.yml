@@ -16,6 +16,8 @@ jobs:
           - kyria_right
           - lily58_left
           - lily58_right
+          - romac
+          - settings_reset
         include:
           - board: proton_c
             shield: clueboard_california
@@ -25,6 +27,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cache west modules
+        timeout-minutes: 2
+        continue-on-error: true
         uses: actions/cache@v2
         env:
           cache-name: cache-zephyr-modules

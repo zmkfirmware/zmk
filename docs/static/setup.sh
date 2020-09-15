@@ -38,7 +38,7 @@ echo ""
 echo "Keyboard Shield Selection:"
 
 prompt="Pick an keyboard:"
-options=("Kyria" "Lily58" "Corne")
+options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "RoMac")
 
 PS3="$prompt "
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
@@ -50,6 +50,10 @@ select opt in "${options[@]}" "Quit"; do
     1 ) shield_title="Kyria" shield="kyria"; split="y"; break;;
     2 ) shield_title="Lily58" shield="lily58"; split="y"; break;;
     3 ) shield_title="Corne" shield="corne"; split="y"; break;;
+    4 ) shield_title="Splitreus62" shield="splitreus62"; split="y"; break;;
+    5 ) shield_title="Sofle" shield="sofle"; split="y"; break;;
+    6 ) shield_title="Iris" shield="iris"; split="y"; break;;
+    7 ) shield_title="RoMac" shield="romac"; split="n"; break;;
 
     # Add link to docs on adding your own custom shield in your ZMK config!
     # $(( ${#options[@]}+1 )) ) echo "Other!"; break;; 
@@ -58,6 +62,10 @@ select opt in "${options[@]}" "Quit"; do
 
     esac
 done
+
+if [ "$split" == "n" ]; then
+    repo_path="https://github.com/zmkfirmware/zmk-config-template.git"
+fi
 
 read -e -p "Copy in the stock keymap for customization? [Yn]: " copy_keymap
 
