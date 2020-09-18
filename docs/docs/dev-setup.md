@@ -213,7 +213,7 @@ source ~/.bashrc
 <TabItem value = 'win'>
 
 1. See the [Environment Variables](#environment-variables) section on how to get to the Environment Variables page.
-3. Click "Edit..." and then "New" to add the directory where your west.exe is located. By default this should be something like `C:\Python38\Scripts`.
+3. Click "Edit..." and then "New" to add the directory where your west.exe is located. By default this should be something like `%USERPROFILE%\AppData\Roaming\Python\Python38\Scripts`.
 
 </TabItem>
 </Tabs>
