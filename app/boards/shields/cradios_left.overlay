@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+#include "cradios.dtsi"
+
+
+
+
+
+
+&bt_unpair_combo {
+	key-positions = <0 16>;
+};

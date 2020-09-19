@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+#include "cradios.dtsi"
+
+&default_transform {
+	col-offset = <17>;
+};
+
+
+
+
+&bt_unpair_combo {
+	key-positions = <21 32>;
+};
