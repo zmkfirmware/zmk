@@ -7,3 +7,8 @@
 /build
 *.DS_Store
 __pycache__
+
+/.vscode/**
+!/.vscode/extensions.json
+!/.vscode/settings.json
+!/.vscode/tasks.json
