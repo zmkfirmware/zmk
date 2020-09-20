@@ -17,6 +17,7 @@ The high level steps are:
 - (Optional) Add the matrix transform for mapping KSCAN row/column values to sane key positions. This is needed for non-rectangular keyboards, or where the underlying row/column pin arrangement does not map one to one with logical locations on the keyboard.
 - Add a default keymap, which users can override in their own configs as needed.
 - Add support for features such as encoders, OLED displays, or RGB underglow.
+- Update build.yml
 
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
@@ -302,3 +303,36 @@ and then flash with:
 ```
 west flash
 ```
+
+## Updating `build.yml`
+
+Before publishing your shield to the public via a PR, navigate to `build.yml` found in `.github/workflows` and add your shield to the appropriate list. An example edit to `build.yml` is shown below.
+
+```
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Test
+    strategy:
+      matrix:
+        board: [proton_c, nice_nano, bluemicro840_v1, nrfmicro_13]
+        shield:
+          - corne_left
+          - corne_right
+          - kyria_left
+          - kyria_right
+          - lily58_left
+          - lily58_right
+          - iris_left
+          - iris_right
+          - romac
+	  - <MY_BOARD>
+	  - <MY_SPLIT_BOARD_left>
+	  - <MY_SPLIT_BOARD_right>
+        include:
+          - board: proton_c
+            shield: clueboard_california
+```
+:::note
+Notice that both the left and right halves of a split board need to be added to the list of shields for proper error checking.
+:::note
