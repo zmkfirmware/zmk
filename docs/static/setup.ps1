@@ -16,7 +16,7 @@ function Get-Choice-From-Options {
 
         if ($selection -eq $Options.length + 1) {
             Write-Host "Goodbye!"
-            exit
+            exit 1
         }
         elseif ($selection -le $Options.length) {
             $choice = $($selection - 1)
@@ -40,7 +40,7 @@ function Test-Git-Config {
 
     if ($lastExitCode -ne 0) {
         Write-Host $ErrMsg
-        exit
+        exit 1
     }
 }
 
@@ -49,7 +49,7 @@ try {
 }
 catch [System.Management.Automation.CommandNotFoundException] {
     Write-Host "Git is not installed, and is required for this script!"
-    exit
+    exit 1
 }
 
 Test-Git-Config -Option "user.name" -ErrMsg "Git username not set!`nRun: git config --global user.name 'My Name'"
@@ -134,7 +134,7 @@ $do_it = Read-Host "Continue? [Yn]"
 
 if ($do_it -ne "" -and $do_it -ne "Y" -and $do_it -ne "y") {
     Write-Host "Aborting..."
-    exit
+    exit 1
 }
 
 git clone --single-branch "$repo_path" "$repo_name"
@@ -167,10 +167,23 @@ git commit -m "Initial User Config."
 
 if ($github_repo -ne "") {
     git remote add origin "$github_repo"
+
     git push --set-upstream origin $(git symbolic-ref --short HEAD)
+
+    # If push failed, assume that the origin was incorrect and give instructions on fixing.
+    if ($lastExitCode -ne 0) {
+        Write-Host "Remote repository $github_repo not found..."
+        Write-Host "Check GitHub URL, and try adding again."
+        Write-Host "Run the following: "
+        Write-Host "    git remote rm origin"
+        Write-Host "    git remote add origin FIXED_URL"
+        Write-Host "    git push --set-upstream origin $(git symbolic-ref --short HEAD)"
+        Write-Host "Once pushed, your firmware should be availalbe from GitHub Actions at: $actions"
+        exit 1
+    }
 
     if ($github_repo -imatch "https") {
         $actions = "$($github_repo.substring(0, $github_repo.length - 4))/actions"
-        Write-Host "Your firmware should be availalbe from the GitHub Actions shortly: $actions"
+        Write-Host "Your firmware should be availalbe from GitHub Actions shortly: $actions"
     }
 }

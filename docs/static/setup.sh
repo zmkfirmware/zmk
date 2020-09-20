@@ -2,21 +2,21 @@
 
 set -e
 
-CheckExists() {
+check_exists() {
     command_to_run=$1
     error_message=$2
         
     if ! eval "$command_to_run" &> /dev/null; then
         printf "%s\n" "$error_message"
-        exit
+        exit 1
     fi
 }
 
-CheckExists "command -v git" "git is not installed, and is required for this script!"
-CheckExists "command -v curl" "curl is not installed, and is required for this script!"
+check_exists "command -v git" "git is not installed, and is required for this script!"
+check_exists "command -v curl" "curl is not installed, and is required for this script!"
 
-CheckExists "git config user.name" "Git username not set!\nRun: git config --global user.name 'My Name'"
-CheckExists "git config user.email" "Git email not set!\nRun: git config --global user.email 'example@myemail.com'"
+check_exists "git config user.name" "Git username not set!\nRun: git config --global user.name 'My Name'"
+check_exists "git config user.email" "Git email not set!\nRun: git config --global user.email 'example@myemail.com'"
 
 repo_path="https://github.com/zmkfirmware/zmk-config-split-template.git"
 title="ZMK Config Setup:"
@@ -36,8 +36,8 @@ select opt in "${options[@]}" "Quit"; do
     2 ) board="proton_c"; break;;
     3 ) board="bluemicro840_v1"; break;;
 
-    $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit;;
-    *) echo "Invalid option. Try another one.";continue;;
+    $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
+    *) echo "Invalid option. Try another one."; continue;;
 
     esac
 done
@@ -65,7 +65,7 @@ select opt in "${options[@]}" "Quit"; do
 
     # Add link to docs on adding your own custom shield in your ZMK config!
     # $(( ${#options[@]}+1 )) ) echo "Other!"; break;; 
-    $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit;;
+    $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
     *) echo "Invalid option. Try another one.";continue;;
 
     esac
@@ -111,7 +111,7 @@ read -r -p "Continue? [Yn]: " do_it
 
 if [ -n "$do_it" ] && [ "$do_it" != "y" ] && [ "$do_it" != "Y" ]; then
     echo "Aborting..."
-    exit
+    exit 1
 fi
 
 git clone --single-branch $repo_path ${repo_name}
@@ -149,8 +149,20 @@ if [ -n "$github_repo" ]; then
     git remote add origin "$github_repo"
     git push --set-upstream origin "$(git symbolic-ref --short HEAD)"
 
+    # If push failed, assume that the origin was incorrect and give instructions on fixing.
+    if [ $? -ne 0 ] {
+        echo "Remote repository $github_repo not found..."
+        echo "Check GitHub URL, and try adding again."
+        echo "Run the following: "
+        echo "    git remote rm origin"
+        echo "    git remote add origin FIXED_URL"
+        echo "    git push --set-upstream origin $(git symbolic-ref --short HEAD)"
+        echo "Once pushed, your firmware should be availalbe from GitHub Actions at: ${github_repo%.git}/actions"
+        exit 1
+    }
+
     # TODO: Support determing the actions URL when non-https:// repo URL is used.
     if [ "${github_repo}" != "${github_repo#https://}" ]; then
-        echo "Your firmware should be available from the GitHub Actions shortly: ${github_repo%.git}/actions"
+        echo "Your firmware should be available from GitHub Actions shortly: ${github_repo%.git}/actions"
     fi
 fi
