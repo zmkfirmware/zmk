@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Cody McGinnis <brainwart@gmail.com>
+ * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -14,30 +14,21 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-struct behavior_tog_config
-{
-};
-struct behavior_tog_data
-{
-};
+struct behavior_tog_config {};
+struct behavior_tog_data {};
 
-static int behavior_tog_init(struct device *dev)
-{
-  return 0;
-};
+static int behavior_tog_init(struct device *dev) { return 0; };
 
-static int tog_keymap_binding_pressed(struct device *dev, u32_t position, u32_t layer, u32_t _)
-{
-  LOG_DBG("position %d layer %d", position, layer);
+static int tog_keymap_binding_pressed(struct device *dev, u32_t position, u32_t layer, u32_t _) {
+    LOG_DBG("position %d layer %d", position, layer);
 
-  return zmk_keymap_layer_toggle(layer);
+    return zmk_keymap_layer_toggle(layer);
 }
 
-static int tog_keymap_binding_released(struct device *dev, u32_t position, u32_t layer, u32_t _)
-{
-  LOG_DBG("position %d layer %d", position, layer);
+static int tog_keymap_binding_released(struct device *dev, u32_t position, u32_t layer, u32_t _) {
+    LOG_DBG("position %d layer %d", position, layer);
 
-  return 0;
+    return 0;
 }
 
 static const struct behavior_driver_api behavior_tog_driver_api = {
@@ -49,8 +40,6 @@ static const struct behavior_tog_config behavior_tog_config = {};
 
 static struct behavior_tog_data behavior_tog_data;
 
-DEVICE_AND_API_INIT(behavior_tog, DT_INST_LABEL(0), behavior_tog_init,
-                    &behavior_tog_data,
-                    &behavior_tog_config,
-                    APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+DEVICE_AND_API_INIT(behavior_tog, DT_INST_LABEL(0), behavior_tog_init, &behavior_tog_data,
+                    &behavior_tog_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
                     &behavior_tog_driver_api);

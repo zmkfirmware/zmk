@@ -37,20 +37,25 @@ menuconfig ZMK_BLE
 	select BT
 	select BT_SMP
 	select BT_SMP_SC_PAIR_ONLY
+	select BT_SMP_APP_PAIRING_ACCEPT
 	select BT_PERIPHERAL
 	select BT_GATT_DIS
 	select BT_GATT_BAS
+	select BT_SETTINGS
 	select SETTINGS
-	# select BT_SETTINGS
 
 if ZMK_BLE
 
 config ZMK_BLE_INIT_PRIORITY
 	int "Init Priority"
 	default 50
-
+	
 config SYSTEM_WORKQUEUE_STACK_SIZE
 	default 2048
+
+config ZMK_BLE_CLEAR_BONDS_ON_START
+	bool "Configuration that clears all bond information from the keyboard on startup."
+	default n
 
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
@@ -101,28 +106,20 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	select BT_CENTRAL
 	select BT_GATT_CLIENT
 
-if ZMK_SPLIT_BLE_ROLE_CENTRAL
-
-config BT_MAX_CONN
-	default 5
-
-config BT_MAX_PAIRED
-	# Bump this everywhere once we support switching active connections!
-	default 2
-
-endif
-
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 	bool "Peripheral"
+	select BT_KEYS_OVERWRITE_OLDEST
 
 if ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 
 config ZMK_USB
 	default n
 
+config BT_MAX_PAIRED
+	default 1
 
 config BT_MAX_CONN
-	default 5
+	default 1
 
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
 	default n
@@ -135,8 +132,17 @@ endif
 
 endif 
 
-endmenu
+if ZMK_BLE && (!ZMK_SPLIT_BLE || ZMK_SPLIT_BLE_ROLE_CENTRAL)
 
+config BT_MAX_CONN
+	default 6
+
+config BT_MAX_PAIRED
+	default 5
+
+endif
+
+endmenu
 
 config ZMK_KSCAN_MOCK_DRIVER
 	bool "Enable mock kscan driver to simulate key presses"

@@ -31,8 +31,8 @@ You can configure a different tapping term in your keymap:
 
 ```
 &mt {
-    tapping_term_ms: <400>;
-} 
+    tapping_term_ms = <400>;
+};
 
 / {
     keymap {

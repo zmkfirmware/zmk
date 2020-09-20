@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Peter Johanson
+ * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -18,20 +18,18 @@ LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define ZMK_KSCAN_DEV DT_LABEL(ZMK_MATRIX_NODE_ID)
 
-void main(void)
-{
-	LOG_INF("Welcome to ZMK!\n");
+void main(void) {
+    LOG_INF("Welcome to ZMK!\n");
 
-	if (zmk_kscan_init(ZMK_KSCAN_DEV) != 0)
-	{
-		return;
-	}
+    if (zmk_kscan_init(ZMK_KSCAN_DEV) != 0) {
+        return;
+    }
 
 #ifdef CONFIG_ZMK_DISPLAY
-	zmk_display_init();
+    zmk_display_init();
 
-	while (1) {
-		zmk_display_task_handler();
-	}
+    while (1) {
+        zmk_display_task_handler();
+    }
 #endif /* CONFIG_ZMK_DISPLAY */
 }

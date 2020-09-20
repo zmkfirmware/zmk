@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Nick Winans <nick@winans.codes>
+ * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */

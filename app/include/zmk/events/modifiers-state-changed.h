@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2020 Peter Johanson <peter@peterjohanson.com>
+ * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
- 
+
 #pragma once
 
 #include <zephyr.h>
@@ -18,9 +18,9 @@ struct modifiers_state_changed {
 
 ZMK_EVENT_DECLARE(modifiers_state_changed);
 
-inline struct modifiers_state_changed* create_modifiers_state_changed(zmk_mod_flags modifiers, bool state)
-{
-    struct modifiers_state_changed* ev = new_modifiers_state_changed();
+inline struct modifiers_state_changed *create_modifiers_state_changed(zmk_mod_flags modifiers,
+                                                                      bool state) {
+    struct modifiers_state_changed *ev = new_modifiers_state_changed();
     ev->modifiers = modifiers;
     ev->state = state;
 
