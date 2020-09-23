@@ -36,7 +36,6 @@ RC(3,0) RC(3,1) RC(3,2)
 			, <&pro_micro_d 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			, <&pro_micro_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
-		
 	};
 
 	left_encoder: encoder_left {
@@ -52,7 +51,6 @@ RC(3,0) RC(3,1) RC(3,2)
 		compatible = "zmk,keymap-sensors";
 		sensors = <&left_encoder>;
 	};
-	
 
 	// TODO: per-key RGB node(s)?
 };
