@@ -1,3 +1,7 @@
+# Copyright (c) 2020 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+
 $ErrorActionPreference = "Stop"
 
 function Get-Choice-From-Options {
@@ -10,7 +14,7 @@ function Get-Choice-From-Options {
         for ($i = 0; $i -lt $Options.length; $i++) {
             Write-Host "$($i + 1)) $($Options[$i])"
         }
-        
+
         Write-Host "$($Options.length + 1)) Quit"
         $selection = Read-Host $Prompt
 
@@ -103,7 +107,7 @@ if ($github_user -ne "") {
     }
 
     $github_repo = Read-Host "GitHub Repo [https://github.com/$github_user/$repo_name.git]"
-    
+
     if ($github_repo -eq "") {
         $github_repo = "https://github.com/$github_user/$repo_name.git"
     }

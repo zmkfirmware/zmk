@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# Copyright (c) 2020 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+
 set -e
 
 check_exists() {
     command_to_run=$1
     error_message=$2
-        
+
     if ! eval "$command_to_run" &> /dev/null; then
         printf "%s\n" "$error_message"
         exit 1
@@ -28,7 +32,7 @@ echo "$title"
 echo ""
 echo "MCU Board Selection:"
 PS3="$prompt "
-select opt in "${options[@]}" "Quit"; do 
+select opt in "${options[@]}" "Quit"; do
 
     case "$REPLY" in
 
@@ -50,8 +54,8 @@ options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "RoMac")
 
 PS3="$prompt "
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
-# select opt in "${options[@]}" "Other" "Quit"; do 
-select opt in "${options[@]}" "Quit"; do 
+# select opt in "${options[@]}" "Other" "Quit"; do
+select opt in "${options[@]}" "Quit"; do
 
     case "$REPLY" in
 
@@ -64,7 +68,7 @@ select opt in "${options[@]}" "Quit"; do
     7 ) shield_title="RoMac" shield="romac"; split="n"; break;;
 
     # Add link to docs on adding your own custom shield in your ZMK config!
-    # $(( ${#options[@]}+1 )) ) echo "Other!"; break;; 
+    # $(( ${#options[@]}+1 )) ) echo "Other!"; break;;
     $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
     *) echo "Invalid option. Try another one.";continue;;
 
@@ -148,9 +152,10 @@ git commit -m "Initial User Config."
 if [ -n "$github_repo" ]; then
     git remote add origin "$github_repo"
     git push --set-upstream origin "$(git symbolic-ref --short HEAD)"
+    push_return_code=$?
 
     # If push failed, assume that the origin was incorrect and give instructions on fixing.
-    if [ $? -ne 0 ] {
+    if [ ${push_return_code} -ne 0 ]; then
         echo "Remote repository $github_repo not found..."
         echo "Check GitHub URL, and try adding again."
         echo "Run the following: "
@@ -159,7 +164,7 @@ if [ -n "$github_repo" ]; then
         echo "    git push --set-upstream origin $(git symbolic-ref --short HEAD)"
         echo "Once pushed, your firmware should be availalbe from GitHub Actions at: ${github_repo%.git}/actions"
         exit 1
-    }
+    fi
 
     # TODO: Support determing the actions URL when non-https:// repo URL is used.
     if [ "${github_repo}" != "${github_repo#https://}" ]; then
