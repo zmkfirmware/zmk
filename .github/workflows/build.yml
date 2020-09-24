@@ -19,6 +19,7 @@ jobs:
           - iris_left
           - iris_right
           - romac
+          - romac_plus
           - settings_reset
         include:
           - board: proton_c

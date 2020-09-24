@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "romac_plus.dtsi"
+
+/ {
+	chosen {
+		zmk,kscan = &kscan0;
+	};
+
+	kscan0: kscan {
+		compatible = "zmk,kscan-gpio-matrix";
+		label = "KSCAN";
+
+		diode-direction = "col2row";
+
+		col-gpios
+			= <&pro_micro_a 1 GPIO_ACTIVE_HIGH>
+			, <&pro_micro_a 2 GPIO_ACTIVE_HIGH>
+			, <&pro_micro_a 3 GPIO_ACTIVE_HIGH>
+			;
+
+	};
+
+	bt_unpair_combo: bt_unpair_combo {
+		compatible = "zmk,bt-unpair-combo";
+		key-positions = <0 11>;
+	};
+
+};
+
+&left_encoder {
+    status = "okay";
+};
