@@ -1,0 +1,6 @@
+{
+  "name": "ZMK Development",
+  "dockerFile": "Dockerfile",
+  "extensions": ["ms-vscode.cpptools"]
+}
+
