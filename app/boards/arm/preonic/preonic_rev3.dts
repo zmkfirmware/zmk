@@ -73,7 +73,6 @@ RC(8,0) RC(8,1) RC(8,2) RC(9,3) RC(9,4) RC(9,5) RC(9,0) RC(9,1) RC(9,2) RC(8,3) 
 			, <&gpioa 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			, <&gpioa 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			, <&gpioa 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-
 			;
 		col-gpios
 			= <&gpiob 11 GPIO_ACTIVE_HIGH>
