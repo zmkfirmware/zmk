@@ -196,6 +196,7 @@ COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
             return -EINVAL;                                                                        \
         }                                                                                          \
         data->callback = callback;                                                                 \
+        LOG_DBG("Configured GPIO %d", n);                                                          \
         return 0;                                                                                  \
     };                                                                                             \
     static int kscan_gpio_enable_##n(struct device *dev) {                                         \
