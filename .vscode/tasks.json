@@ -10,7 +10,13 @@
       "group": {
         "kind": "build",
         "isDefault": true
-      }
+      },
+      "problemMatcher": [
+        {
+          "base": "$gcc",
+          "fileLocation": ["autoDetect", "${workspaceFolder}/app/build"]
+        }
+      ]
     },
     {
       "label": "Flash",
