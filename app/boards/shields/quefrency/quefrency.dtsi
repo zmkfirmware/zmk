@@ -13,6 +13,10 @@
 	    zmk,matrix_transform = &default_transform;
 	};
 
+	/* 
+	 * This transform correspondsto the 60% left without macro keypad and 65% right, even this
+	 * combination of PCBs can have keys in different locations based on configuration.
+	 */
 	default_transform: keymap_transform_0 {
 		compatible = "zmk,matrix-transform";
 		columns = <15>;

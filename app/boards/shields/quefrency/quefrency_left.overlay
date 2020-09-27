@@ -7,6 +7,9 @@
 #include "quefrency.dtsi"
 
 / {
+    /* This kscan is for the 60% left half without macro keys the
+     * macro pad layout may require different column and row pins
+     */
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         label = "KSCAN";
