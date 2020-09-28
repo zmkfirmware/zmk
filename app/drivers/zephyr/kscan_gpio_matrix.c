@@ -31,7 +31,7 @@ struct kscan_gpio_item_config {
 #define _KSCAN_GPIO_ROW_CFG_INIT(idx, n) _KSCAN_GPIO_ITEM_CFG_INIT(n, row_gpios, idx)
 #define _KSCAN_GPIO_COL_CFG_INIT(idx, n) _KSCAN_GPIO_ITEM_CFG_INIT(n, col_gpios, idx)
 
-#ifdef CONFIG_ZMK_KSCAN_MATRIX_POLLING
+#if !defined(CONFIG_ZMK_KSCAN_MATRIX_POLLING)
 static int kscan_gpio_config_interrupts(struct device **devices,
                                         const struct kscan_gpio_item_config *configs, size_t len,
                                         gpio_flags_t flags) {
