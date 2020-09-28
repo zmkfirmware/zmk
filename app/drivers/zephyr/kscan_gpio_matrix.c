@@ -31,8 +31,8 @@ struct kscan_gpio_item_config {
 #define _KSCAN_GPIO_ROW_CFG_INIT(idx, n) _KSCAN_GPIO_ITEM_CFG_INIT(n, row_gpios, idx)
 #define _KSCAN_GPIO_COL_CFG_INIT(idx, n) _KSCAN_GPIO_ITEM_CFG_INIT(n, col_gpios, idx)
 
-COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
-(static int kscan_gpio_config_interrupts(struct device **devices,
+#ifdef CONFIG_ZMK_KSCAN_MATRIX_POLLING
+static int kscan_gpio_config_interrupts(struct device **devices,
                                         const struct kscan_gpio_item_config *configs, size_t len,
                                         gpio_flags_t flags) {
     for (int i = 0; i < len; i++) {
@@ -48,7 +48,8 @@ COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
     }
 
     return 0;
-}), ())
+}
+#endif
 
 #define INST_MATRIX_ROWS(n) DT_INST_PROP_LEN(n, row_gpios)
 #define INST_MATRIX_COLS(n) DT_INST_PROP_LEN(n, col_gpios)
@@ -71,7 +72,7 @@ COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
     };                                                                                             \
     struct kscan_gpio_data_##n {                                                                   \
         kscan_callback_t callback;                                                                 \
-        COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING, (), (struct k_timer poll_timer;))                    \
+        COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING, (), (struct k_timer poll_timer;))                    \
         struct COND_CODE_0(DT_INST_PROP(n, debounce_period), (k_work), (k_delayed_work)) work;     \
         bool matrix_state[INST_MATRIX_ROWS(n)][INST_MATRIX_COLS(n)];                               \
         struct device *rows[INST_MATRIX_ROWS(n)];                                                  \
@@ -99,7 +100,7 @@ COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
         return (                                                                                   \
             COND_CODE_0(DT_ENUM_IDX(DT_DRV_INST(n), diode_direction), (cfg->rows), (cfg->cols)));  \
     }                                                                                              \
-    COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,                                                          \
+    COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING,                                                          \
         (static int kscan_gpio_enable_interrupts_##n(struct device *dev) {                         \
             return kscan_gpio_config_interrupts(kscan_gpio_input_devices_##n(dev),                 \
                                             kscan_gpio_input_configs_##n(dev), INST_INPUT_LEN(n),  \
@@ -132,7 +133,7 @@ COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
         /* Disable our interrupts temporarily while we scan, to avoid       */                     \
         /* re-entry while we iterate columns and set them active one by one */                     \
         /* to get pressed state for each matrix cell.                       */                     \
-        COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,                                                      \
+        COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING,                                                      \
             (kscan_gpio_disable_interrupts_##n(dev);),())                                          \
         kscan_gpio_set_output_state_##n(dev, 0);                                                   \
         for (int o = 0; o < INST_OUTPUT_LEN(n); o++) {                                             \
@@ -151,7 +152,7 @@ COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
         /* Set all our outputs as active again. */                                                 \
         kscan_gpio_set_output_state_##n(dev, 1);                                                   \
         /*Re-enable interrupts so that they can be triggered again for future press/release*/      \
-        COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,                                                      \
+        COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING,                                                      \
             (kscan_gpio_enable_interrupts_##n(dev);), ())                                         \
         for (int r = 0; r < INST_MATRIX_ROWS(n); r++) {                                            \
             for (int c = 0; c < INST_MATRIX_COLS(n); c++) {                                        \
@@ -200,7 +201,7 @@ COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
         return 0;                                                                                  \
     };                                                                                             \
     static int kscan_gpio_enable_##n(struct device *dev) {                                         \
-        COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,                                                      \
+        COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING,                                                      \
         (int err = kscan_gpio_enable_interrupts_##n(dev);                                          \
          if (err) {                                                                                \
              return err;                                                                           \
@@ -211,13 +212,13 @@ COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
          return 0;))                                                                               \
     };                                                                                             \
     static int kscan_gpio_disable_##n(struct device *dev) {                                        \
-        COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,                                                      \
+        COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING,                                                      \
             (return kscan_gpio_disable_interrupts_##n(dev);),                                      \
             (struct kscan_gpio_data_##n *data = dev->driver_data;                                  \
              k_timer_stop(&data->poll_timer);                                                      \
              return 0;))                                                                           \
     };                                                                                             \
-    COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING, (),                                                      \
+    COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING, (),                                                      \
         (static void kscan_gpio_timer_handler(struct k_timer *timer) {                             \
              struct kscan_gpio_data_##n *data =                                                    \
                          CONTAINER_OF(timer, struct kscan_gpio_data_##n, poll_timer);              \
@@ -267,7 +268,7 @@ COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING,
             }                                                                                      \
         }                                                                                          \
         data->dev = dev;                                                                           \
-        COND_CODE_0(ZMK_KSCAN_MATRIX_POLLING, (),                                                  \
+        COND_CODE_0(CONFIG_ZMK_KSCAN_MATRIX_POLLING, (),                                                  \
                     (k_timer_init(&data->poll_timer, kscan_gpio_timer_handler, NULL);))            \
         (COND_CODE_0(DT_INST_PROP(n, debounce_period), (k_work_init), (k_delayed_work_init)))(     \
             &data->work, kscan_gpio_work_handler_##n);                                             \
