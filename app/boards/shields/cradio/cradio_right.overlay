@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: MIT
  */
-#include "cradios.dtsi"
+#include "cradio.dtsi"
 
-
-
-
-
+&default_transform {
+	col-offset = <17>;
+};
 
 &bt_unpair_combo {
-	key-positions = <0 16>;
+	key-positions = <21 32>;
 };

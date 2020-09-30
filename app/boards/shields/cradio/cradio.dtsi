@@ -22,7 +22,6 @@ RC(0,10)RC(0,11) RC(0,12) RC(0,13) RC(0,14) 		RC(0,31) RC(0,30) RC(0,29) RC(0,28
 RC(0,15)  RC(0,16) 					RC(0,33) RC(0,32)  
 >;
 
-
 	};	
 	
 	kscan0: kscan {
@@ -37,10 +36,7 @@ RC(0,15)  RC(0,16) 					RC(0,33) RC(0,32)
 		compatible = "zmk,bt-unpair-combo";
 	};
 	
-	
-	
 		};
-		
 		
 		&kscan0 {
 		input-gpios
