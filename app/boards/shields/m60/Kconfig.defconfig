@@ -1,0 +1,10 @@
+
+if SHIELD_M60
+
+config ZMK_KEYBOARD_NAME
+	default "m60"
+
+config ZMK_KSCAN_MATRIX_POLLING
+	default y
+
+endif
