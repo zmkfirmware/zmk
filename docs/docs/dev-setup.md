@@ -16,6 +16,7 @@ values={[
 {label: 'macOS', value: 'mac'},
 {label: 'Raspberry OS', value: 'raspberryos'},
 {label: 'Fedora', value: 'fedora'},
+{label: 'VS Code & Docker', value: 'docker'},
 ]
 }>{props.children}</Tabs>);
 
@@ -179,6 +180,20 @@ brew install cmake ninja python3 ccache dtc git wget
 ```
 
 </TabItem>
+<TabItem value="docker">
+
+This setup leverages the same [image which is used by the GitHub action](https://github.com/zmkfirmware/zephyr-west-action) for local development. Beyond the benefits of [dev/prod parity](https://12factor.net/dev-prod-parity), this approach is also the easiest to set up. No toolchain or dependencies are necessary when using Docker; the container image you'll be using already has the toolchain installed and set up to use.
+
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your operating system.
+2. Install [VS Code](https://code.visualstudio.com/)
+3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+:::info
+The docker container includes `west` and the compilation toolchain. If you're using docker and VS Code, you can skip right to [Source Code](#source-code).
+:::
+
+</TabItem>
 </OsTabs>
 
 ## Setup
@@ -322,6 +337,11 @@ Since the Zephyr™ SDK is not available for macOS, we recommending following th
 Please be sure to read the [additional setup instructions](https://docs.zephyrproject.org/2.3.0/getting_started/installation_mac.html#mac-gatekeeper) needed to address security controls found in macOS 10.15 Catalina and newer
 
 :::
+
+</TabItem>
+<TabItem value="docker">
+
+You're already set up: the toolchain is installed and configured inside the docker container.
 
 </TabItem>
 </OsTabs>
