@@ -19,7 +19,10 @@ jobs:
           - iris_left
           - iris_right
           - romac
+          - romac_plus
           - settings_reset
+          - quefrency_left
+          - quefrency_right
         include:
           - board: proton_c
             shield: clueboard_california

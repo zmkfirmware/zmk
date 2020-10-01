@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "quefrency.dtsi"
+
+/ {
+    /* This kscan is for the 60% left half without macro keys the
+     * macro pad layout may require different column and row pins
+     */
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";
+
+
+        col-gpios
+            = <&pro_micro_a  2 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_a  1 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_a  0 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_d 15 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_d 14 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_d 16 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_d 10 GPIO_ACTIVE_HIGH>
+            ;
+
+        row-gpios
+            = <&pro_micro_a 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_a 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_a 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_d 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_a 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+};

@@ -26,6 +26,11 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [Kyria](https://splitkb.com/products/kyria-pcb-kit) (`kyria_left` and `kyria_right`)
 - [Corne](https://github.com/foostan/crkbd) (`corne_left` and `corne_right`)
 - [Lily58](https://github.com/kata0510/Lily58) (`lily58_left` and `lily58_right`)
+- [Sofle](https://github.com/josefadamcik/SofleKeyboard) (`sofle_left` and `sofle_right`)
+- [Splitreus62](https://github.com/Na-Cly/splitreus62) (`splitreus62_left` and `splitreus62_right`)
+- [RoMac+ v4](https://www.littlekeyboards.com/products/romac) (`romac_plus`)
+- [RoMac v2](https://mechboards.co.uk/shop/kits/romac-macro-pad/) (`romac')
+- [QAZ](https://www.cbkbd.com/product/qaz-keyboard-kit) (`qaz`)
 
 ## Other Hardware
 

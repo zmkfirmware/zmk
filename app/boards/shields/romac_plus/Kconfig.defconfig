@@ -1,0 +1,9 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_ROMAC_PLUS
+
+config ZMK_KEYBOARD_NAME
+	default "RoMac+ v4"
+
+endif
