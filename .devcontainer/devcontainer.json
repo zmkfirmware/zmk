@@ -1,6 +1,7 @@
 {
   "name": "ZMK Development",
-  "dockerFile": "Dockerfile",
-  "extensions": ["ms-vscode.cpptools"]
+  "image": "zmkfirmware/zephyr-west-action-arm",
+  "extensions": ["ms-vscode.cpptools"],
+  "runArgs": ["--security-opt", "label=disable"]
 }
 

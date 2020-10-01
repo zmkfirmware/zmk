@@ -1,1 +1,0 @@
-FROM zmkfirmware/zephyr-west-action-arm
