@@ -14,4 +14,6 @@
 
 int zmk_usb_hid_init();
 
+enum usb_dc_status_code zmk_usb_hid_get_status();
+
 int zmk_usb_hid_send_report(u8_t *report, size_t len);
