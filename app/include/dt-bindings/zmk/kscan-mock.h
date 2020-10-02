@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #pragma once
 
 #define ZMK_MOCK_IS_PRESS(v) ((v & (0x01 << 31)) != 0)
