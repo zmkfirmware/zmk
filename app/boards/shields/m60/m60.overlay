@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
+
 #include <dt-bindings/zmk/matrix-transform.h>
 
 / {
