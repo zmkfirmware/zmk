@@ -2,5 +2,8 @@
   "files.associations": {
     "*.overlay": "dts",
     "*.keymap": "dts"
+  },
+  "[c]": {
+    "editor.formatOnSave": true
   }
 }
