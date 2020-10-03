@@ -5,6 +5,7 @@
 /zephyr
 /zmk-config
 /build
+*.code-workspace
 *.DS_Store
 __pycache__
 
