@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #define RGB_TOG 0
 #define RGB_HUI 1
