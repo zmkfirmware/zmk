@@ -72,8 +72,6 @@ static void zmk_sensors_init_item(const char *node, u8_t i, u8_t abs_i) {
                 (_SENSOR_INIT(ZMK_KEYMAP_SENSORS_BY_IDX(idx))), (absolute_index++;))
 
 static int zmk_sensors_init(struct device *_arg) {
-    int local_index = 0;
-    int absolute_index = 0;
 
     UTIL_LISTIFY(ZMK_KEYMAP_SENSORS_LEN, SENSOR_INIT, 0)
     return 0;
