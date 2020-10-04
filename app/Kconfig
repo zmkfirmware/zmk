@@ -21,11 +21,15 @@ menuconfig ZMK_USB
 	select USB_DEVICE_STACK
 	select USB_DEVICE_HID
 
-if ZMK_USB
+if USB
 
 config ZMK_USB_INIT_PRIORITY
 	int "Init Priority"
 	default 50
+
+endif
+
+if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10

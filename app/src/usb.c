@@ -18,6 +18,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static enum usb_dc_status_code usb_status = USB_DC_UNKNOWN;
 
+#ifdef CONFIG_ZMK_USB
+
 static struct device *hid_dev;
 
 static K_SEM_DEFINE(hid_sem, 1, 1);
@@ -27,8 +29,6 @@ static void in_ready_cb(void) { k_sem_give(&hid_sem); }
 static const struct hid_ops ops = {
     .int_in_ready = in_ready_cb,
 };
-
-enum usb_dc_status_code zmk_usb_hid_get_status() { return usb_status; }
 
 int zmk_usb_hid_send_report(const u8_t *report, size_t len) {
     switch (usb_status) {
@@ -51,11 +51,16 @@ int zmk_usb_hid_send_report(const u8_t *report, size_t len) {
     }
 }
 
-void usb_hid_status_cb(enum usb_dc_status_code status, const u8_t *params) { usb_status = status; };
+#endif /* CONFIG_ZMK_USB */
 
-static int zmk_usb_hid_init(struct device *_arg) {
+enum usb_dc_status_code zmk_usb_get_status() { return usb_status; }
+
+void usb_status_cb(enum usb_dc_status_code status, const u8_t *params) { usb_status = status; };
+
+static int zmk_usb_init(struct device *_arg) {
     int usb_enable_ret;
 
+#ifdef CONFIG_ZMK_USB
     hid_dev = device_get_binding("HID_0");
     if (hid_dev == NULL) {
         LOG_ERR("Unable to locate HID device");
@@ -66,7 +71,9 @@ static int zmk_usb_hid_init(struct device *_arg) {
 
     usb_hid_init(hid_dev);
 
-    usb_enable_ret = usb_enable(usb_hid_status_cb);
+#endif /* CONFIG_ZMK_USB */
+
+    usb_enable_ret = usb_enable(usb_status_cb);
 
     if (usb_enable_ret != 0) {
         LOG_ERR("Unable to enable USB");
@@ -76,4 +83,4 @@ static int zmk_usb_hid_init(struct device *_arg) {
     return 0;
 }
 
-SYS_INIT(zmk_usb_hid_init, APPLICATION, CONFIG_ZMK_USB_INIT_PRIORITY);
+SYS_INIT(zmk_usb_init, APPLICATION, CONFIG_ZMK_USB_INIT_PRIORITY);
