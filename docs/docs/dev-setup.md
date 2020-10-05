@@ -210,10 +210,11 @@ In `cmd.exe` as **Administrator**:
 pip3 install -U west
 ```
 
-Once `west` is installed, close Command Prompt and open a new session as a **user** for the remainder of the instructions.
 :::note
 **For Windows, do not use the `--user` argument** that Linux uses otherwise `west` will be installed in a different location and the below instructions for adding Python `pip` will no longer apply.
 :::
+
+Once `west` is installed, close Command Prompt and open a new session as a **user** for the remainder of the instructions.
 
 </TabItem>
 </Tabs>
