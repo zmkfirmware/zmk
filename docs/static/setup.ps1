@@ -63,8 +63,8 @@ $repo_path = "https://github.com/zmkfirmware/zmk-config-split-template.git"
 
 $title = "ZMK Config Setup:"
 $prompt = "Pick an MCU board"
-$options = "nice!nano", "QMK Proton-C", "BlueMicro840 (v1)"
-$boards = "nice_nano", "proton_c", "bluemicro840_v1"
+$options = "nice!nano", "QMK Proton-C", "BlueMicro840 (v1)", "makerdiary nRF52840 M.2"
+$boards = "nice_nano", "proton_c", "bluemicro840_v1", "nrf52840_m2"
 
 Write-Host "$title"
 Write-Host ""
@@ -78,9 +78,9 @@ Write-Host "Keyboard Shield Selection:"
 $prompt = "Pick a keyboard"
 
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
-$options = "Kyria", "Lily58", "Corne", "Splitreus62", "Sofle", "Iris", "RoMac"
-$names = "kyria", "lily58", "corne", "splitreus62", "sofle", "iris", "romac"
-$splits = "y", "y", "y", "y", "y", "y", "n"
+$options = "Kyria", "Lily58", "Corne", "Splitreus62", "Sofle", "Iris", "RoMac", "makerdiary M60"
+$names = "kyria", "lily58", "corne", "splitreus62", "sofle", "iris", "romac", "m60"
+$splits = "y", "y", "y", "y", "y", "y", "n", "n"
 
 $choice = Get-Choice-From-Options -Options $options -Prompt $prompt
 $shield_title = $($options[$choice])

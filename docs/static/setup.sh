@@ -26,7 +26,7 @@ repo_path="https://github.com/zmkfirmware/zmk-config-split-template.git"
 title="ZMK Config Setup:"
 
 prompt="Pick an MCU board:"
-options=("nice!nano" "QMK Proton-C" "BlueMicro840 (v1)")
+options=("nice!nano" "QMK Proton-C" "BlueMicro840 (v1)" "makerdiary nRF52840 M.2")
 
 echo "$title"
 echo ""
@@ -39,6 +39,7 @@ select opt in "${options[@]}" "Quit"; do
     1 ) board="nice_nano"; break;;
     2 ) board="proton_c"; break;;
     3 ) board="bluemicro840_v1"; break;;
+    3 ) board="nrf52840_m2"; break;;
 
     $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
     *) echo "Invalid option. Try another one."; continue;;
@@ -50,7 +51,7 @@ echo ""
 echo "Keyboard Shield Selection:"
 
 prompt="Pick an keyboard:"
-options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "RoMac")
+options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "RoMac" "makerdiary M60")
 
 PS3="$prompt "
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
@@ -66,6 +67,7 @@ select opt in "${options[@]}" "Quit"; do
     5 ) shield_title="Sofle" shield="sofle"; split="y"; break;;
     6 ) shield_title="Iris" shield="iris"; split="y"; break;;
     7 ) shield_title="RoMac" shield="romac"; split="n"; break;;
+    7 ) shield_title="M60" shield="m60"; split="n"; break;;
 
     # Add link to docs on adding your own custom shield in your ZMK config!
     # $(( ${#options[@]}+1 )) ) echo "Other!"; break;;
