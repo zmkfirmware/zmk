@@ -1,3 +1,8 @@
+#
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+#
+
 description: |
   Allows defining the collection of sensors bound in the keymap layers
 

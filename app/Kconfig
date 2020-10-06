@@ -95,6 +95,10 @@ config ZMK_IDLE_SLEEP_TIMEOUT
 
 endif
 
+config ZMK_EXT_POWER
+	bool "Enable support to control external power output"
+	default y
+
 config ZMK_DISPLAY
 	bool "ZMK display support"
 	default n
