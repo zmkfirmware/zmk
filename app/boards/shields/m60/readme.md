@@ -1,7 +1,7 @@
 # [Makerdiary M60](https://wiki.makerdiary.com/m60)
 
 A 60% ANSI keyboard designed and manufactured by Makerdiary.
-http://makerdairy.com
+http://makerdiary.com
 
 ## Features
 
@@ -12,4 +12,3 @@ http://makerdairy.com
 ## Hardware Notes
 
 https://wiki.makerdiary.com/m60/developer_guide/hardware/
-
