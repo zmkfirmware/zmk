@@ -76,6 +76,25 @@ endif
 
 endmenu
 
+menuconfig ZMK_SLEEP
+	bool "Enable deep sleep support"
+	imply USB
+
+if ZMK_SLEEP
+
+config SYS_POWER_DEEP_SLEEP_STATES
+	default y
+
+choice SYS_PM_POLICY
+	default SYS_PM_POLICY_APP
+endchoice
+
+config ZMK_IDLE_SLEEP_TIMEOUT
+	int "Milliseconds to wait to sleep when going idle"
+	default 900000
+
+endif
+
 config ZMK_DISPLAY
 	bool "ZMK display support"
 	default n
@@ -112,7 +131,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 	bool "Peripheral"
-	select BT_KEYS_OVERWRITE_OLDEST
 
 if ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 
