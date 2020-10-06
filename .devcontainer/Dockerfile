@@ -1,4 +1,4 @@
-from zmkfirmware/zephyr-west-action-arm
+FROM zmkfirmware/zephyr-west-action-arm
 
 RUN apt-get -y update && \
     apt-get -y upgrade && \
