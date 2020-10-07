@@ -66,7 +66,7 @@ The bluetooth behavior completes an bluetooth action given on press.
 1. Behavior binding to select the previous profile:
 
    ```
-   &bt BT_NXT
+   &bt BT_PRV
    ```
 
 1. Behavior binding to select the 2nd profile (passed parameters are [zero based](https://en.wikipedia.org/wiki/Zero-based_numbering)):
