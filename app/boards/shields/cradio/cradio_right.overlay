@@ -9,7 +9,3 @@
 &default_transform {
 	col-offset = <17>;
 };
-
-&bt_unpair_combo {
-	key-positions = <21 32>;
-};
