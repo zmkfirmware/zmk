@@ -19,6 +19,10 @@ Variations of the warnings shown below occur when flashing the `<firmware>.uf2` 
 | :-------------------------------------------------------------------------------:           |
 |           An example of the file transfer error on Linux                                    |
 
+|       ![Example Error Screen](../docs/assets/troubleshooting/filetransfer/mac.png)          |
+| :-------------------------------------------------------------------------------:           |
+|           An example of the file transfer error on MacOS                                    |
+
 
 ### CMake Error
 
