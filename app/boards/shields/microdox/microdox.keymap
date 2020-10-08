@@ -14,42 +14,56 @@
 
                 default_layer {
 // -----------------------------------------------------------------------------------------
-// |  TAB |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  | BKSP |
-// | CTRL |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  |  '   |
-// | SHFT |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | SHFT |
-//                    | GUI | LWR | SPC |   | ENT | RSE  | ALT |
+// |  Q  |  W  |  E  |  R  |  T   |   |  Y  |  U   |  I  |  O  |  P  |
+// |  A  |  S  |  D  |  F  |  G   |   |  H  |  J   |  K  |  L  |  ;  |
+// |  Z  |  X  |  C  |  V  |  B   |   |  N  |  M   |  ,  |  .  |  /  |
+//             | GUI | NAV | SHFT |   | SPC | SYM  | ALT |
                         bindings = <
    &kp Q &kp W &kp E &kp R &kp T   &kp Y &kp U  &kp I    &kp O   &kp P
    &kp A &kp S &kp D &kp F &kp G   &kp H &kp J  &kp K    &kp L   &kp SCLN
    &kp Z &kp X &kp C &kp V &kp B   &kp N &kp M  &kp CMMA &kp DOT &kp FSLH
-          &kp LGUI &mo 1 &kp SPC   &kp RET &mo 2 &kp RALT
+          &kp LGUI &mo 1 &kp LSFT   &kp SPC &mo 2 &kp RALT
                         >;
                 };
-                lower_layer {
+                nav_layer {
 // -----------------------------------------------------------------------------------------
-// |  ESC |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  | BKSP |
-// | BTCLR| BT1 | BT2 | BT3 | BT4 | BT5 |   | LFT | DWN |  UP | RGT |     |      |
-// | SHFT |     |     |     |     |     |   |     |     |     |     |     |      |
-//                    | GUI |     | SPC |   | ENT |     | ALT |
+// |     |     | ESC |  ~   |     |   | TAB | HOME |  UP  | END | DEL  |
+// |     | GUI | ALT | CTRL | NUM |   |  /  | LEFT | DOWN | RGT | BKSP |
+// |     |     |     |      |     |   |  \  | ENT  |      |     |      |
+//             |     |      |     |   |     |      |      |
                         bindings = <
-   &kp NUM_1    &kp NUM_2    &kp NUM_3    &kp NUM_4    &kp NUM_5         &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0
-   &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4      &kp LARW  &kp DARW  &kp UARW  &kp RARW  &trans
-   &trans       &trans       &trans       &trans       &trans            &trans    &trans    &trans    &trans    &trans
-                             &kp LGUI     &trans       &kp SPC           &kp RET   &trans    &kp RALT
+   &trans &trans  &kp ESC  &kp TILD &trans     &kp TAB  &kp HOME &kp UARW &kp END  &kp DEL
+   &trans &kp GUI &kp RALT &kp LCTL &mo 3      &kp FSLH &kp LARW &kp DARW &kp RARW &kp BKSP
+   &trans &trans  &trans   &trans   &trans     &kp BSLH &kp RET  &trans   &trans    &trans
+                  &trans   &trans   &trans     &trans   &trans   &trans
                         >;
                 };
 
-                raise_layer {
+                sym_layer {
 // -----------------------------------------------------------------------------------------
-// |  ESC |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BKSP |
-// | CTRL |     |     |     |     |     |   |  -  |  =  |  {  |  }  | "|" |  `   |
-// | SHFT |     |     |     |     |     |   |  _  |  +  |  [  |  ]  |  \  |  ~   | // TODO: Fix this row when &mkp is committed
-//                    | GUI |     | SPC |   | ENT |     | ALT |
+// |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  |
+// |     |     |     |     |     |   |  -  |  =  |  {  |  }  | "|" |
+// |     |     |     |     |     |   |  _  |  +  |  [  |  ]  |  \  |
+//             | GUI |     | SPC |   | ENT |     | ALT |
                         bindings = <
    &kp BANG  &kp ATSN  &kp HASH  &kp CURU  &kp PRCT    &kp CRRT  &kp AMPS &kp KMLT &kp LPRN &kp RPRN
    &trans    &trans    &trans    &trans    &trans      &kp MINUS &kp EQL  &kp LBKT &kp RBKT &kp PIPE
    &trans    &trans    &trans    &trans    &trans      &trans    &trans   &trans   &trans   &kp BSLH
                        &kp LGUI  &trans    &kp SPC     &kp RET   &trans   &kp RALT
+                        >;
+                };
+
+                num_layer {
+// -----------------------------------------------------------------------------------------
+// |     |     |     |     |     |   |  A  |  7  |  8  |  9  |  D  |
+// |     |     |     |     |     |   |  B  |  4  |  5  |  6  |  E  |
+// |     |     |     |     |     |   |  C  |  1  |  2  |  3  |  F  |
+//             |     |     |     |   |  0  |  .  |     |
+                        bindings = <
+   &trans &trans &trans &trans &trans    &kp A     &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp D
+   &trans &trans &trans &trans &trans    &kp B     &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp E
+   &trans &trans &trans &trans &trans    &kp C     &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp F
+                 &trans &trans &trans    &kp NUM_0 &kp DOT   &trans
                         >;
                 };
         };
