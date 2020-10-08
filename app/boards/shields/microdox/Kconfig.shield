@@ -1,0 +1,9 @@
+# Copyright (c) 2020 Pete Johanson
+# Copyright (c) 2020 Kellen Carey
+# SPDX-License-Identifier: MIT
+
+config SHIELD_MICRODOX_LEFT
+	def_bool $(shields_list_contains,microdox_left)
+
+config SHIELD_MICRODOX_RIGHT
+	def_bool $(shields_list_contains,microdox_right)
