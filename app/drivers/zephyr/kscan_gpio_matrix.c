@@ -51,7 +51,6 @@ static int kscan_gpio_config_interrupts(struct device **devices,
 }
 #endif
 
-
 #define INST_MATRIX_ROWS(n) DT_INST_PROP_LEN(n, row_gpios)
 #define INST_MATRIX_COLS(n) DT_INST_PROP_LEN(n, col_gpios)
 #define INST_OUTPUT_LEN(n)                                                                         \
