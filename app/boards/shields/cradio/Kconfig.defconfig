@@ -4,7 +4,7 @@
 config ZMK_KEYBOARD_NAME
 	default "cradio"
 
-config ZMK_KSCAN_GPIO_POLLING
+config ZMK_KSCAN_DIRECT_POLLING
 	default y
 
 
