@@ -13,32 +13,35 @@ feature.
 
 ## Features
 
-At this point, ZMK is still missing many features compared to more developed firmware such as QMK. Here is a table comparing supported ZMK and QMK features:
+At this point, ZMK is still missing many features compared to popular firmware such as QMK. Here is a table comparing supported ZMK and QMK features:
  
 |   **Feature**                                                                                          |   &nbsp  ZMK    &nbsp |    &nbsp  QMK   &nbsp   |
 |----------------------------------------------------------------------------------------------------------|:---------:|:-----------:|
-| Wireless Connectivity via BLE                                                                            |     ✅     |             |
+| Multi-Device BLE Support                                                                                 |     ✅     |              |
 | USB Connectivity                                                                                         |     ✅     |      ✅      |
-| Low Active Power Usage                                                                                   |     ✅     |             |
+| Low Active Power Usage                                                                                   |     ✅     |              |
 | Split Keyboard Support                                                                                   |     ✅     |      ✅      |
 | [Keymaps and Layers](behavior/layers)                                                                    |     ✅     |      ✅      |
-| [Hold-tap](behavior/hold-tap) (which includes [mod-tap](behavior/mod-tap), [layer-tap](behavior/layers)) |     ✅     |      ✅      |
-| [Basic HID over USB](behavior/key-press)                                                                 |     ✅     |      ✅      |
+| [Hold-tap](behavior/hold-tap) (which includes [mod-tap](behavior/mod-tap), [layer-tap](behavior/layers/#layer-tap)) |     ✅     |      ✅      |
+| [Basic Keycodes](behavior/key-press)                                                                     |     ✅     |      ✅      |
 | [Basic consumer (media) keycodes](behavior/key-press#consumer-key-press)                                 |     ✅     |      ✅      |
-| [Encoders](feature/encoders)                                                                             |     ✅     |      ✅      |
-| Basic [OLED display support](feature/displays)                                                           |     ✅     |      ✅      |
+| [Encoders](feature/encoders)[^1]                                                                            |     ✅     |      ✅      |
+| Proof of Concept [OLED display support](feature/displays)                                                |     ✅     |      ✅      |
 | [RGB Underglow](feature/underglow)                                                                       |     ✅     |      ✅      |
 | One Shot Keys                                                                                            |  In Dev         |      ✅      |
 | Combo Keys                                                                                               |  In Dev         |      ✅      |
 | Macros                                                                                                   |  In Dev         |      ✅      |
-| Mouse Keys                                                                                               |           |      ✅      |
+| Mouse Keys                                                                                               |                 |      ✅      |
 | Battery Reporting                                                                                        | In Dev          |             |
-| Low Power Sleep States                                                                                   |  In Dev         |             |
+| Low Power Sleep States                                                                                   | In Dev          |             |
 | Low Power Mode (VCC Shutoff)                                                                             | In Dev          |             |
-| Shell over BLE                                                                                           |           |             |
-| Realtime Keymap Updating                                                                                 |     In Dev    |      ✅       |
-| AVR/8 Bit                                                                                                |           |      ✅      |
-| Wide Range of ARM Chips Supported                                                                        |    ✅     |              |
+| Shell over BLE                                                                                           |                 |             |
+| Realtime Keymap Updating                                                                                 |     Planned    |      ✅       |
+| AVR/8 Bit                                                                                                |                |      ✅      |
+| Wide Range of ARM Chips Supported                                                                        |    ✅         |              |
+[^1]:Note: Encoders are not currently supported on peripheral side splits.
+
+
 ## Code Of Conduct
 
 Please note that this project is released with a
