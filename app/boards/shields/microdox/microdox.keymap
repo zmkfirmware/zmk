@@ -27,15 +27,15 @@
                 };
                 nav_layer {
 // -----------------------------------------------------------------------------------------
-// |     |     | ESC |  ~   |     |   | TAB | HOME |  UP  | END | DEL  |
-// |     | GUI | ALT | CTRL | NUM |   |  /  | LEFT | DOWN | RGT | BKSP |
-// |     |     |     |      |     |   |  \  | ENT  |      |     |      |
+// |BTCLR|     | ESC |  ~   |     |   | TAB | HOME |  UP  | END | DEL  |
+// | BT1 | GUI | ALT | CTRL | NUM |   |  /  | LEFT | DOWN | RGT | BKSP |
+// | BT2 |     |     |      |     |   |  \  | ENT  |      |     |      |
 //             |     |      |     |   |     |      |      |
                         bindings = <
-   &trans &trans  &kp ESC  &kp TILD &trans     &kp TAB  &kp HOME &kp UARW &kp END  &kp DEL
-   &trans &kp GUI &kp RALT &kp LCTL &mo 3      &kp FSLH &kp LARW &kp DARW &kp RARW &kp BKSP
-   &trans &trans  &trans   &trans   &trans     &kp BSLH &kp RET  &trans   &trans    &trans
-                  &trans   &trans   &trans     &trans   &trans   &trans
+   &bt BT_CLR   &trans  &kp ESC  &kp TILD &trans     &kp TAB  &kp HOME &kp UARW &kp END  &kp DEL
+   &bt BT_SEL 0 &kp GUI &kp RALT &kp LCTL &mo 3      &kp FSLH &kp LARW &kp DARW &kp RARW &kp BKSP
+   &bt BT_SEL 1 &trans  &trans   &trans   &trans     &kp BSLH &kp RET  &trans   &trans    &trans
+                        &trans   &trans   &trans     &trans   &trans   &trans
                         >;
                 };
 
@@ -53,6 +53,8 @@
                         >;
                 };
 
+// This layer is unreachable until "tri layer state" is sorted out.
+// Leaving it here for completeness.
                 num_layer {
 // -----------------------------------------------------------------------------------------
 // |     |     |     |     |     |   |  A  |  7  |  8  |  9  |  D  |
