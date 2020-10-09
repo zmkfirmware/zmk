@@ -13,31 +13,30 @@ feature.
 
 ## Features
 
-At this point, ZMK is still missing many features. Currently, the working bits
-include:
-
-- Wireless connectivity via BLE HID Over GATT (HOG)
-- USB connectivity
-- Low active power usage
-- Split keyboard support
-- [Keymaps and layers](behavior/layers)
-- [Hold-tap](behavior/hold-tap) (which includes [mod-tap](behavior/mod-tap), [layer-tap](behavior/layers))
-- [Basic HID over USB](behavior/key-press)
-- [Basic consumer (media) keycodes](behavior/key-press#consumer-key-press)
-- [Encoders](feature/encoders)
-- Basic [OLED display support](feature/displays)
-- [RGB Underglow](feature/underglow)
-
-## Missing Features
-
-- One Shot Keys
-- Combo keys
-- Macros
-- Complete split support (encoders and RGB are not supported on the 'peripheral' side)
-- Battery reporting
-- Low power sleep states
-- Low power mode (to toggle LEDs and screen off)
-- Shell over BLE
+At this point, ZMK is still missing many features compared to more developed firmwares such as QMK. Here is a table comparing supported ZMK and QMK features:
+ 
+|                                                                                             |    ZMK    |     QMK     |
+|----------------------------------------------------------------------------------------------------------|:---------:|:-----------:|
+| Wireless Connectivity via BLE                                                                            |     ✅     |             |
+| USB Connectivity                                                                                         |     ✅     |      ✅      |
+| Low Active Power Usage                                                                                   |     ✅     |             |
+| Split Keyboard Support                                                                                   |     ✅     |      ✅      |
+| [Keymaps and Layers](behavior/layers)                                                                    |     ✅     |      ✅      |
+| [Hold-tap](behavior/hold-tap) (which includes [mod-tap](behavior/mod-tap), [layer-tap](behavior/layers)) |     ✅     |      ✅      |
+| [Basic HID over USB](behavior/key-press)                                                                 |     ✅     |      ✅      |
+| [Basic consumer (media) keycodes](behavior/key-press#consumer-key-press)                                 |     ✅     |      ✅      |
+| [Encoders](feature/encoders)                                                                             |     ✅     |      ✅      |
+| Basic [OLED display support](feature/displays)                                                           |     ✅     |      ✅      |
+| [RGB Underglow](feature/underglow)                                                                       |     ✅     |      ✅      |
+| One Shot Keys                                                                                            |           |      ✅      |
+| Combo Keys                                                                                               |           |      ✅      |
+| Macros                                                                                                   |           |      ✅      |
+| Mouse Keys                                                                                               |           |      ✅      |
+| Battery Reporting                                                                                        |           |             |
+| Low Power Sleep States                                                                                   |           |             |
+| Low Power Mode (VCC Shutoff)                                                                             |           |             |
+| Shell over BLE                                                                                           |           |             |
+| AVR/8 Bit                                                                                                |           |      ✅      |
 
 ## Code Of Conduct
 
