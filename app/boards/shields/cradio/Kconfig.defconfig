@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 config ZMK_KEYBOARD_NAME
-	default "Cradio"
+	default "cradio"
 
 config ZMK_KSCAN_DIRECT_POLLING
 	default y
