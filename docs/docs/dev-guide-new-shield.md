@@ -238,7 +238,6 @@ If building locally for split boards, you may need to add these lines to the spe
 <TabItem value = "dtsi">
 In your device tree file you will need to add the following lines to define the encoder sensor:
 
-  
 ```
 left_encoder: encoder_left {
 		compatible = "alps,ec11";
@@ -248,6 +247,7 @@ left_encoder: encoder_left {
 		resolution = <4>;
 	};
 ```
+
 Here you will have to replace PIN_A and PIN_B with the appropriate pins that your PCB utilizes for the encoder(s). For keyboards that use the Pro Micro or any of the Pro Micro replacements, Sparkfun's [Pro Micro Hookup Guide](https://learn.sparkfun.com/tutorials/pro-micro--fio-v3-hookup-guide/hardware-overview-pro-micro) has a pinout diagram that can be useful to determine the right pins. Reference either the blue numbers labeled "Arduino" (digital pins) or the green numbers labeled "Analog" (analog pins). For pins that are labeled as both digital and analog, refer to your specific board's .dtsi file to determine how you should refer to that pin.
 
 Add additional encoders as necessary by duplicating the above lines, replacing `left` with whatever you would like to call your encoder, and updating the pins. Note that support for peripheral (right) side sensors over BLE is still in progress.
@@ -279,12 +279,15 @@ For split keyboards, make sure to add left hand encoders to the left .overlay fi
 
 </TabItem>
 <TabItem value = "keymap">
-Add the following line to your keymap file to add default encoder behavior bindings:   
+Add the following line to each layer of your keymap file to add default encoder behavior bindings:
 
 ```
 sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD>;
 ```
-Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](/docs/feature/encoders) and [Keymap](/docs/feature/keymaps) feature documentation for more details.
+
+This should be placed after the regular key bindings but within the layer (see the [Default Keymap section](/docs/dev-guide-new-shield#default-keymap) above for an example of where).
+
+Add additional bindings as necessary to match the default number of encoders on your board. Details on the syntax can be found in the [Encoders](/docs/feature/encoders) and [Keymap](/docs/feature/keymaps) feature documentation.
 
 </TabItem>
 </Tabs>
@@ -333,6 +336,7 @@ jobs:
           - board: proton_c
             shield: clueboard_california
 ```
+
 :::note
 Notice that both the left and right halves of a split board need to be added to the list of shields for proper error checking.
 :::note
