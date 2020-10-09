@@ -15,7 +15,7 @@ feature.
 
 At this point, ZMK is still missing many features compared to more developed firmware such as QMK. Here is a table comparing supported ZMK and QMK features:
  
-|   **Feature**                                                                                          |    ZMK    |     QMK     |
+|   **Feature**                                                                                          |   &nbsp  ZMK    &nbsp |    &nbsp  QMK   &nbsp   |
 |----------------------------------------------------------------------------------------------------------|:---------:|:-----------:|
 | Wireless Connectivity via BLE                                                                            |     ✅     |             |
 | USB Connectivity                                                                                         |     ✅     |      ✅      |
