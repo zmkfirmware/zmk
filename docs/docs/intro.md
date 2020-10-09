@@ -13,9 +13,9 @@ feature.
 
 ## Features
 
-At this point, ZMK is still missing many features compared to more developed firmwares such as QMK. Here is a table comparing supported ZMK and QMK features:
+At this point, ZMK is still missing many features compared to more developed firmware such as QMK. Here is a table comparing supported ZMK and QMK features:
  
-|                                                                                             |    ZMK    |     QMK     |
+|   **Feature**                                                                                          |    ZMK    |     QMK     |
 |----------------------------------------------------------------------------------------------------------|:---------:|:-----------:|
 | Wireless Connectivity via BLE                                                                            |     ✅     |             |
 | USB Connectivity                                                                                         |     ✅     |      ✅      |
@@ -28,16 +28,17 @@ At this point, ZMK is still missing many features compared to more developed fir
 | [Encoders](feature/encoders)                                                                             |     ✅     |      ✅      |
 | Basic [OLED display support](feature/displays)                                                           |     ✅     |      ✅      |
 | [RGB Underglow](feature/underglow)                                                                       |     ✅     |      ✅      |
-| One Shot Keys                                                                                            |           |      ✅      |
-| Combo Keys                                                                                               |           |      ✅      |
-| Macros                                                                                                   |           |      ✅      |
+| One Shot Keys                                                                                            |  In Dev         |      ✅      |
+| Combo Keys                                                                                               |  In Dev         |      ✅      |
+| Macros                                                                                                   |  In Dev         |      ✅      |
 | Mouse Keys                                                                                               |           |      ✅      |
-| Battery Reporting                                                                                        |           |             |
-| Low Power Sleep States                                                                                   |           |             |
-| Low Power Mode (VCC Shutoff)                                                                             |           |             |
+| Battery Reporting                                                                                        | In Dev          |             |
+| Low Power Sleep States                                                                                   |  In Dev         |             |
+| Low Power Mode (VCC Shutoff)                                                                             | In Dev          |             |
 | Shell over BLE                                                                                           |           |             |
+| Realtime Keymap Updating                                                                                 |     In Dev    |      ✅       |
 | AVR/8 Bit                                                                                                |           |      ✅      |
-
+| Wide Range of ARM Chips Supported                                                                        |    ✅     |              |
 ## Code Of Conduct
 
 Please note that this project is released with a
