@@ -107,6 +107,11 @@ bool is_active_layer(u8_t layer, u32_t layer_state) {
 int zmk_keymap_apply_position_state(int layer, u32_t position, bool pressed, s64_t timestamp) {
     struct zmk_behavior_binding *binding = &zmk_keymap[layer][position];
     struct device *behavior;
+    struct zmk_behavior_binding_event event = {
+        .layer = layer,
+        .position = position,
+        .timestamp = timestamp,
+    };
 
     LOG_DBG("layer: %d position: %d, binding name: %s", layer, position,
             log_strdup(binding->behavior_dev));
@@ -119,11 +124,9 @@ int zmk_keymap_apply_position_state(int layer, u32_t position, bool pressed, s64
     }
 
     if (pressed) {
-        return behavior_keymap_binding_pressed(behavior, position, binding->param1, binding->param2,
-                                               timestamp);
+        return behavior_keymap_binding_pressed(binding, event);
     } else {
-        return behavior_keymap_binding_released(behavior, position, binding->param1,
-                                                binding->param2, timestamp);
+        return behavior_keymap_binding_released(binding, event);
     }
 }
 
@@ -171,8 +174,7 @@ int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor) {
                 continue;
             }
 
-            ret = behavior_sensor_keymap_binding_triggered(behavior, sensor, binding->param1,
-                                                           binding->param2);
+            ret = behavior_sensor_keymap_binding_triggered(binding, sensor);
 
             if (ret > 0) {
                 LOG_DBG("behavior processing to continue to next layer");
