@@ -403,14 +403,14 @@ with different scopes. For example, a split board called `my_awesome_split_board
 The discrete .conf files for each half allows the user to define the central and peripheral sides of the split, like so:
 
 ```
-// Central Half
+// Central Half (Usually the left side: my_awesome_split_board_left.conf)
 
 CONFIG_ZMK_SPLIT=y
 CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL=y
 ```
 
 ```
-// Peripheral Half
+// Peripheral Half (Usually the right side: my_awesome_split_board_right.conf)
 
 CONFIG_ZMK_SPLIT=y
 CONFIG_ZMK_SPLIT_BLE_ROLE_Peripheral=y
@@ -419,7 +419,7 @@ CONFIG_ZMK_SPLIT_BLE_ROLE_Peripheral=y
 Using the .conf file that affects both halves of a split board would be for circumstances like deep-sleep or _.
 
 ```
-// Global .conf
+// my_awesome_split_board.conf
 
 CONFIG_ZMK_SLEEP=y
 ```
