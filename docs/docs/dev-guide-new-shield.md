@@ -416,7 +416,7 @@ CONFIG_ZMK_SPLIT=y
 CONFIG_ZMK_SPLIT_BLE_ROLE_Peripheral=y
 ```
 
-Using the .conf file that affects both halves of a split board would be for circumstances like deep-sleep.
+Using the .conf file that affects both halves of a split board would be for circumstances like deep-sleep or _.
 
 ```
 // my_awesome_split_board.conf
