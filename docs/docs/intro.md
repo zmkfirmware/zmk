@@ -22,11 +22,11 @@ At this point, ZMK is still missing many features compared to popular firmware s
 | Low Active Power Usage                                                                                   |     ✅     |              |
 | Split Keyboard Support                                                                                   |     ✅     |      ✅      |
 | [Keymaps and Layers](behavior/layers)                                                                    |     ✅     |      ✅      |
-| [Hold-tap](behavior/hold-tap) (which includes [mod-tap](behavior/mod-tap), [layer-tap](behavior/layers/#layer-tap)) |     ✅     |      ✅      |
+| [Hold-Tap](behavior/hold-tap) (Which Includes [Mod-Tap](behavior/mod-tap) and [Layer-Tap](behavior/layers/#layer-tap)) |     ✅     |      ✅      |
 | [Basic Keycodes](behavior/key-press)                                                                     |     ✅     |      ✅      |
-| [Basic consumer (media) keycodes](behavior/key-press#consumer-key-press)                                 |     ✅     |      ✅      |
+| [Basic consumer (Media) Keycodes](behavior/key-press#consumer-key-press)                                 |     ✅     |      ✅      |
 | [Encoders](feature/encoders)[^1]                                                                            |     ✅     |      ✅      |
-| Proof of Concept [OLED display support](feature/displays)                                                |     ✅     |      ✅      |
+| [OLED Display Support](feature/displays)[^2]                                                |     In Dev    ✅      |
 | [RGB Underglow](feature/underglow)                                                                       |     ✅     |      ✅      |
 | One Shot Keys                                                                                            |  In Dev         |      ✅      |
 | Combo Keys                                                                                               |  In Dev         |      ✅      |
@@ -39,8 +39,8 @@ At this point, ZMK is still missing many features compared to popular firmware s
 | Realtime Keymap Updating                                                                                 |     Planned    |      ✅       |
 | AVR/8 Bit                                                                                                |                |      ✅      |
 | Wide Range of ARM Chips Supported                                                                        |    ✅         |              |
-[^1]:Note: Encoders are not currently supported on peripheral side splits.
-
+[^1]: Encoders are not currently supported on peripheral side splits.
+[2^]: Oleds are currently proof of concept in ZMK.
 
 ## Code Of Conduct
 
