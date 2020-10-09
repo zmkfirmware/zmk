@@ -21,6 +21,10 @@ The high level steps are:
 
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
+:::note
+ZMK support for split keyboards requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
+:::
+
 ## New Shield Directory
 
 Shields for Zephyr applications go into the `boards/shields/` directory; since ZMK's Zephyr application lives in the `app/` subdirectory of the repository, that means the new shield directory should be:
@@ -45,6 +49,16 @@ config SHIELD_MY_BOARD
 
 This will make sure the new configuration `SHIELD_MY_BOARD` is set to true whenever `my_board` is added as a shield in your build.
 
+
+**For split boards**, you will need to add configurations for the left and right sides.
+```
+config SHIELD_MY_BOARD_LEFT
+	def_bool $(shields_list_contains,my_board_left)
+
+config SHIELD_MY_BOARD_RIGHT
+	def_bool $(shields_list_contains,my_board_right)
+```
+
 ### Kconfig.defconfig
 
 The `Kconfig.defconfig` file is where overrides for various configuration settings
@@ -62,6 +76,26 @@ config ZMK_KEYBOARD_NAME
 
 endif
 ```
+
+
+Similarly to defining the halves of a split board in `Kconfig.shield` it is important to set the `ZMK_KEYBOARD_NAME` for each half of a split keyboard.
+
+```
+if SHIELD_MY_BOARD_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "My Awesome Keyboard Left"
+
+endif
+
+if SHIELD_MY_BOARD_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "My Awesome Keyboard Right"
+
+endif
+```
+
 
 ## Shield Overlay
 
@@ -97,6 +131,74 @@ this might look something like:
 	};
 };
 ```
+
+:::note
+For split keyboards, it is preferred to define only the `col-gpios` or `row-gpios` in the common shield .dtsi, depending on the diode-direction.
+For `col2row` directed boards like the iris, a sample kscan in the .dtsi folder would look like this:
+
+```
+kscan0: kscan {
+		compatible = "zmk,kscan-gpio-matrix";
+		label = "KSCAN";
+
+		diode-direction = "col2row";
+		row-gpios
+			= <&pro_micro_d 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&pro_micro_d 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			;
+		
+	};
+```
+
+The missing `col-gpios` would be defined in your `<boardname>_left.overlay` and `<boardname>_right.overlay` files.
+Keep in mind that the mirrored position of the GPIOs means that the `col-gpios` will appear reversed when the .overlay files are compared to one another.
+This is exemplified with the iris .overlay files.
+
+```
+// iris_left.overlay
+
+#include "iris.dtsi" // Notice that the main dtsi files are included in the overlay.
+
+&kscan0 {
+	col-gpios
+		= <&pro_micro_a 1 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_a 0 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_d 15 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_d 14 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_d 16 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_d 10 GPIO_ACTIVE_HIGH>
+		;
+};
+```
+
+```
+// iris_right.overlay
+
+#include "iris.dtsi" 
+
+&default_transform { // The matrix transform for this board is 6 columns over because the matrix on the left side is 6 columns wide.
+	col-offset = <6>;
+};
+
+&kscan0 {
+	col-gpios
+		= <&pro_micro_d 10 GPIO_ACTIVE_HIGH> //&pro_micro_a 1 in the left side
+		, <&pro_micro_d 16 GPIO_ACTIVE_HIGH> //&pro_micro_a 0 in the left side
+		, <&pro_micro_d 14 GPIO_ACTIVE_HIGH> //&pro_micro_d 15 in the left side
+		, <&pro_micro_d 15 GPIO_ACTIVE_HIGH> //&pro_micro_d 14 in the left side
+		, <&pro_micro_a 0 GPIO_ACTIVE_HIGH>  //&pro_micro_d 16 in the left side
+		, <&pro_micro_a 1 GPIO_ACTIVE_HIGH>  //&pro_micro_d 10 in the left side
+		;
+};
+
+```
+
+Split keyboards, will often use [Matrix Transform](#optional-matrix-transform) to account for their thumb clusters and other oddities.
+
+:::
 
 ## (Optional) Matrix Transform
 
@@ -288,6 +390,39 @@ Add additional bindings as necessary to match the default number of encoders on 
 
 </TabItem>
 </Tabs>
+
+## (Split Keyboards Only) .conf files
+
+While normal boards only have one .conf file that applies configuration characteristics to the entire board, split keyboards are unique in that they contain multiple .conf files
+with different scopes. For example, a split board called `my_awesome_split_board` would have the following files:
+
+* `my_awesome_split_board.conf` - Configuration elements affect both halves
+* `my_awesome_split_board_left.conf` - Configuration elements only affect left half
+* `my_awesome_split_board_right.conf` - Configuration elements only affect right half
+
+The discrete .conf files for each half allows the user to define the central and peripheral sides of the split, like so:
+
+```
+// Central Half
+
+CONFIG_ZMK_SPLIT=y
+CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL=y
+```
+
+```
+// Peripheral Half
+
+CONFIG_ZMK_SPLIT=y
+CONFIG_ZMK_SPLIT_BLE_ROLE_Peripheral=y
+```
+
+Using the .conf file that affects both halves of a split board would be for circumstances like deep-sleep or _.
+
+```
+// Global .conf
+
+CONFIG_ZMK_SLEEP=y
+```
 
 ## Testing
 
