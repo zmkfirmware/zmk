@@ -59,3 +59,16 @@ After opening the `<board>.dts.pre.tmp:<line number>` and scrolling down to the 
 |  ![Healthy Keymap Temp](../docs/assets/troubleshooting/keymaps/healthyEDIT.png)  |
 | :-------------------------------------------------------------------------------: |
 |  A properly defined keymap with successful compilation. As shown in red, the corrected keycode (`&kp SPC`) references the proper Usage ID defined in the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12)|
+
+### Split Keyboard Halves Unable to Pair
+
+The previous method of pairing split keyboard halves involved a **BLE Reset** with a specific combination of held keys that would remove all bluetooth profile information from the keyboard.
+Since then, a much simpler procedure of performing a bluetooth reset for split keyboards has come about, without the need for any file modification:
+
+1. Log into Github and download the "settings clear" UF2 image from latest GH actions from the `main` of ZMK
+1. Put both sides into bootloader mode
+1. Flash both sides with the "settings clear" UF2 images from step 1. After, put both sides into bootloader mode again.
+1. Flash the actual image for each half of the split keyboard
+
+After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins
+for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.

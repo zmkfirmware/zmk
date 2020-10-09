@@ -6,7 +6,6 @@ module.exports = {
       "faq",
       "user-setup",
       "customization",
-      "bond-reset",
       "troubleshooting"
     ],
     Features: [

@@ -1,7 +1,7 @@
 ---
 id: bond-reset
-title: Reset BLE Connections
-sidebar_label: BLE Reset
+title: Reset BLE Connections (DEPRECATED)
+sidebar_label: BLE Reset (DEPRECATED)
 ---
 
 Known as a 'bond reset', each keyboard has a special key combination independent of the user defined key map which will
