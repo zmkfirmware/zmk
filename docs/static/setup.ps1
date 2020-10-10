@@ -59,6 +59,19 @@ catch [System.Management.Automation.CommandNotFoundException] {
 Test-Git-Config -Option "user.name" -ErrMsg "Git username not set!`nRun: git config --global user.name 'My Name'"
 Test-Git-Config -Option "user.email" -ErrMsg "Git email not set!`nRun: git config --global user.name 'example@myemail.com'"
 
+$permission = (Get-Acl $PSScriptRoot).Access | 
+?{$_.IdentityReference -match $env:UserName `
+	-and $_.FileSystemRights -match "Read" `
+		-or $_.FileSystemRights -match "Write"	} | 
+			
+		Select IdentityReference,FileSystemRights
+
+If (-Not $permission){
+    Write-Host "Sorry, you do not have write permissions in this directory."
+    Write-Host "Please try running this script again from a directory that you do have write permissions for."
+    exit 1
+}
+
 $repo_path = "https://github.com/zmkfirmware/zmk-config-split-template.git"
 
 $title = "ZMK Config Setup:"
