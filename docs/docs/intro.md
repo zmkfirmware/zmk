@@ -15,11 +15,11 @@ feature.
 
 At this point, ZMK is still missing many features compared to popular firmware such as QMK. Here is a table comparing supported ZMK and QMK features:
  
-|   **Feature**                                                                                          |   &nbsp  ZMK    &nbsp |    &nbsp  QMK   &nbsp   |
+|   **Feature**                                                                                          |     ZMK     |QMK          |
 |----------------------------------------------------------------------------------------------------------|:---------:|:-----------:|
 | Multi-Device BLE Support                                                                                 |     ✅     |              |
 | USB Connectivity                                                                                         |     ✅     |      ✅      |
-| Low Active Power Usage                                                                                   |     ✅     |              |
+| User Configuration Repositories                                                       |     ✅     |               | 
 | Split Keyboard Support                                                                                   |     ✅     |      ✅      |
 | [Keymaps and Layers](behavior/layers)                                                                    |     ✅     |      ✅      |
 | [Hold-Tap](behavior/hold-tap) (Which Includes [Mod-Tap](behavior/mod-tap) and [Layer-Tap](behavior/layers/#layer-tap)) |     ✅     |      ✅      |
@@ -32,15 +32,16 @@ At this point, ZMK is still missing many features compared to popular firmware s
 | Combo Keys                                                                                               |  In Dev         |      ✅      |
 | Macros                                                                                                   |  In Dev         |      ✅      |
 | Mouse Keys                                                                                               |                 |      ✅      |
-| Battery Reporting                                                                                        | In Dev          |             |
+| Low Active Power Usage                                                                                   |     ✅     |              |
 | Low Power Sleep States                                                                                   | In Dev          |             |
 | Low Power Mode (VCC Shutoff)                                                                             | In Dev          |             |
+| Battery Reporting                                                                                        | In Dev          |             |
 | Shell over BLE                                                                                           |                 |             |
 | Realtime Keymap Updating                                                                                 |     Planned    |      ✅       |
 | AVR/8 Bit                                                                                                |                |      ✅      |
 | Wide Range of ARM Chips Supported                                                                        |    ✅         |              |
-[^1]: Encoders are not currently supported on peripheral side splits.
-[2^]: Oleds are currently proof of concept in ZMK.
+[^2]: Encoders are not currently supported on peripheral side splits.  
+[^1]: OLEDs are currently proof of concept in ZMK.  
 
 ## Code Of Conduct
 
