@@ -2,6 +2,7 @@
   "name": "ZMK Development",
   "dockerFile": "Dockerfile",
   "extensions": ["ms-vscode.cpptools"],
-  "runArgs": ["--security-opt", "label=disable"]
+  "runArgs": ["--security-opt", "label=disable"],
+  "containerEnv": {"WORKSPACE_DIR": "${containerWorkspaceFolder}"}
 }
 
