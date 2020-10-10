@@ -9,11 +9,12 @@ firmware built on the [Zephyr™ Project](https://zephyrproject.org/) Real Time 
 
 ## Features
 
-At this point, ZMK is still missing many features compared to popular firmware such as QMK. Here is a table comparing supported ZMK and QMK features:
+At this point, ZMK is still missing many features compared to popular firmware such as QMK. Here is a table comparing supported ZMK, BlueMicro, and QMK features:
  
 |   **Feature**                                                                                          |     ZMK     |   BlueMicro  |     QMK     |
 |--------------------------------------------------------------------------------------------------------|:-----------:|:------------:|:-----------:|
-| Multi-Device BLE Support                                                                               |     ✅      |     ✅      |             | 
+| Low Latency BLE Support                                                                                |     ✅      |       ✅    |             | 
+| Multi-Device BLE Support                                                                               |     ✅      |              |             |
 | USB Connectivity                                                                                       |     ✅      |              |      ✅     |
 | User Configuration Repositories                                                                        |     ✅      |              |             |
 | Split Keyboard Support                                                                                 |     ✅      |      ✅      |     ✅     |   
