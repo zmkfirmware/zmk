@@ -19,7 +19,7 @@ At this point, ZMK is still missing many features compared to popular firmware s
 |----------------------------------------------------------------------------------------------------------|:---------:|:-----------:|
 | Multi-Device BLE Support                                                                                 |     ✅     |              |
 | USB Connectivity                                                                                         |     ✅     |      ✅      |
-| User Configuration Repositories                                                       |     ✅     |               | 
+| User Configuration Repositories                                                                          |     ✅     |               | 
 | Split Keyboard Support                                                                                   |     ✅     |      ✅      |
 | [Keymaps and Layers](behavior/layers)                                                                    |     ✅     |      ✅      |
 | [Hold-Tap](behavior/hold-tap) (Which Includes [Mod-Tap](behavior/mod-tap) and [Layer-Tap](behavior/layers/#layer-tap)) |     ✅     |      ✅      |
