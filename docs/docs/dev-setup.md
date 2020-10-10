@@ -168,6 +168,10 @@ Chocolatey is recommended and used for the following instructions. You can manua
    choco install ninja gperf python git
    ```
 
+It is recommended to install `dfu-util` to avoid any later confusion while flashing devices. You can do this by running this command with chocolatey:
+``` shell
+choco install dfu-util
+```
 </TabItem>
 <TabItem value="mac">
 
@@ -176,7 +180,7 @@ Chocolatey is recommended and used for the following instructions. You can manua
 Homebrew is required to install the system dependencies. If you haven't done so, visit [Homebrew](https://brew.sh/) for instructions. Once installed, use it to install the base dependencies:
 
 ```
-brew install cmake ninja python3 ccache dtc git wget
+brew install cmake ninja python3 ccache dtc git wget dfu-util
 ```
 
 </TabItem>
