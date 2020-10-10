@@ -6,3 +6,6 @@ RUN apt-get -y update && \
     ssh \
     gpg && \
     rm -rf /var/lib/apt/lists/*
+
+COPY .bashrc tmp
+RUN mv /tmp/.bashrc ~/.bashrc
