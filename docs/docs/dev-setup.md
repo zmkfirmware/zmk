@@ -339,11 +339,6 @@ Please be sure to read the [additional setup instructions](https://docs.zephyrpr
 :::
 
 </TabItem>
-<TabItem value="docker">
-
-You're already set up: the toolchain is installed and configured inside the docker container.
-
-</TabItem>
 </OsTabs>
 
 :::note
