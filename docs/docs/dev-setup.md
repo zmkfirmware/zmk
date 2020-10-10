@@ -369,11 +369,62 @@ Since ZMK is built as a Zephyr™ application, the next step is
 to use `west` to initialize and update your workspace. The ZMK
 Zephyr™ application is in the `app/` source directory:
 
+
 #### Step into the repository
+
+<OsTabs>
+<TabItem value="debian">
 
 ```sh
 cd zmk
 ```
+
+</TabItem>
+<TabItem value="raspberryos">
+
+```sh
+cd zmk
+```
+
+</TabItem>
+<TabItem value="fedora">
+
+```sh
+cd zmk
+```
+
+</TabItem>
+<TabItem value="mac">
+
+```sh
+cd zmk
+```
+
+</TabItem>
+<TabItem value="win">
+
+```sh
+cd zmk
+```
+
+</TabItem>
+
+<TabItem value="docker">
+
+Open the `zmk` checkout folder in VS Code. The repository includes a configuration for containerized development, so an alert will pop up:
+
+![VS Code Dev Container Configuration Alert](assets/dev-setup/vscode_devcontainer.png)
+
+Click `Reopen in Container` in order to reopen the VS Code with the running container.
+
+The first time you do this on your machine, it will pull the docker image down from the registry and build the container. Subsequent launches are much faster!
+
+:::caution
+All subsequent steps must be performed from the VS Code terminal _inside_ the container. 
+:::
+
+</TabItem>
+</OsTabs>
 
 #### Initialize West
 
@@ -392,6 +443,17 @@ section again for links to how to do this
 ```sh
 west update
 ```
+
+:::tip
+This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
+:::
+
+:::info
+If you're using Docker, you're done with setup! You must restart the container at this point. The easiest way to do so is to close the VS Code window, verify that the container has stopped in Docker Dashboard, and reopen the container with VS Code.
+
+Once your container is restarted, proceed to [Building and Flashing](./dev-build.md).
+:::
+
 
 #### Export Zephyr™ Core
 
