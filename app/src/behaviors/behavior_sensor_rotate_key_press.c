@@ -23,15 +23,16 @@ struct behavior_sensor_rotate_key_press_data {};
 
 static int behavior_sensor_rotate_key_press_init(struct device *dev) { return 0; };
 
-static int on_sensor_binding_triggered(struct device *dev, struct device *sensor,
-                                       u32_t increment_keycode, u32_t decrement_keycode) {
+static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
+                                       struct device *sensor) {
+    struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_sensor_rotate_key_press_config *cfg = dev->config_info;
     struct sensor_value value;
     int err;
     u32_t keycode;
     struct keycode_state_changed *ev;
     LOG_DBG("usage_page 0x%02X inc keycode 0x%02X dec keycode 0x%02X", cfg->usage_page,
-            increment_keycode, decrement_keycode);
+            binding->param1, binding->param2);
 
     err = sensor_channel_get(sensor, SENSOR_CHAN_ROTATION, &value);
 
@@ -42,10 +43,10 @@ static int on_sensor_binding_triggered(struct device *dev, struct device *sensor
 
     switch (value.val1) {
     case 1:
-        keycode = increment_keycode;
+        keycode = binding->param1;
         break;
     case -1:
-        keycode = decrement_keycode;
+        keycode = binding->param2;
         break;
     default:
         return -ENOTSUP;

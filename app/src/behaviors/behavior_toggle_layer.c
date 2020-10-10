@@ -11,6 +11,7 @@
 #include <logging/log.h>
 
 #include <zmk/keymap.h>
+#include <zmk/behavior.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -19,15 +20,15 @@ struct behavior_tog_data {};
 
 static int behavior_tog_init(struct device *dev) { return 0; };
 
-static int tog_keymap_binding_pressed(struct device *dev, u32_t position, u32_t layer, u32_t _) {
-    LOG_DBG("position %d layer %d", position, layer);
-
-    return zmk_keymap_layer_toggle(layer);
+static int tog_keymap_binding_pressed(struct zmk_behavior_binding *binding,
+                                      struct zmk_behavior_binding_event event) {
+    LOG_DBG("position %d layer %d", event.position, binding->param1);
+    return zmk_keymap_layer_toggle(binding->param1);
 }
 
-static int tog_keymap_binding_released(struct device *dev, u32_t position, u32_t layer, u32_t _) {
-    LOG_DBG("position %d layer %d", position, layer);
-
+static int tog_keymap_binding_released(struct zmk_behavior_binding *binding,
+                                       struct zmk_behavior_binding_event event) {
+    LOG_DBG("position %d layer %d", event.position, binding->param1);
     return 0;
 }
 

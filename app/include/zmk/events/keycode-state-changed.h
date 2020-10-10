@@ -24,6 +24,5 @@ inline struct keycode_state_changed *create_keycode_state_changed(u8_t usage_pag
     ev->usage_page = usage_page;
     ev->keycode = keycode;
     ev->state = state;
-
     return ev;
 }

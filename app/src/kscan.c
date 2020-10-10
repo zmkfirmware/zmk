@@ -52,6 +52,7 @@ void zmk_kscan_process_msgq(struct k_work *item) {
         pos_ev = new_position_state_changed();
         pos_ev->state = pressed;
         pos_ev->position = position;
+        pos_ev->timestamp = k_uptime_get();
         ZMK_EVENT_RAISE(pos_ev);
     }
 }
