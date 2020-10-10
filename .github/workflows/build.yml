@@ -75,7 +75,7 @@ jobs:
           args: 'build "-s app -b ${{ matrix.board }} -- -DSHIELD=${{ matrix.shield }}"'
       - name: Archive Build
         uses: actions/upload-artifact@v2
-        if: ${{ matrix.board == 'nice_nano' }}
+        if: ${{ matrix.board != 'proton_c' }}
         with:
           name: "${{ matrix.board }}-${{ matrix.shield }}-zmk-uf2"
           path: build/zephyr/zmk.uf2

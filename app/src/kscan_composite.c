@@ -38,8 +38,7 @@ struct kscan_composite_data {
 };
 
 static int kscan_composite_enable_callback(struct device *dev) {
-    for (int i = 0; i < sizeof(kscan_composite_children) / sizeof(kscan_composite_children[0]);
-         i++) {
+    for (int i = 0; i < ARRAY_SIZE(kscan_composite_children); i++) {
         const struct kscan_composite_child_config *cfg = &kscan_composite_children[i];
 
         kscan_enable_callback(device_get_binding(cfg->label));
@@ -48,8 +47,7 @@ static int kscan_composite_enable_callback(struct device *dev) {
 }
 
 static int kscan_composite_disable_callback(struct device *dev) {
-    for (int i = 0; i < sizeof(kscan_composite_children) / sizeof(kscan_composite_children[0]);
-         i++) {
+    for (int i = 0; i < ARRAY_SIZE(kscan_composite_children); i++) {
         const struct kscan_composite_child_config *cfg = &kscan_composite_children[i];
 
         kscan_disable_callback(device_get_binding(cfg->label));
@@ -63,8 +61,7 @@ static void kscan_composite_child_callback(struct device *child_dev, u32_t row, 
     struct device *dev = device_get_binding(DT_INST_LABEL(0));
     struct kscan_composite_data *data = dev->driver_data;
 
-    for (int i = 0; i < sizeof(kscan_composite_children) / sizeof(kscan_composite_children[0]);
-         i++) {
+    for (int i = 0; i < ARRAY_SIZE(kscan_composite_children); i++) {
         const struct kscan_composite_child_config *cfg = &kscan_composite_children[i];
 
         if (device_get_binding(cfg->label) != child_dev) {
@@ -82,8 +79,7 @@ static int kscan_composite_configure(struct device *dev, kscan_callback_t callba
         return -EINVAL;
     }
 
-    for (int i = 0; i < sizeof(kscan_composite_children) / sizeof(kscan_composite_children[0]);
-         i++) {
+    for (int i = 0; i < ARRAY_SIZE(kscan_composite_children); i++) {
         const struct kscan_composite_child_config *cfg = &kscan_composite_children[i];
 
         kscan_config(device_get_binding(cfg->label), &kscan_composite_child_callback);

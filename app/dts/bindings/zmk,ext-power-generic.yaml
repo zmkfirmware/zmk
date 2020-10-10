@@ -1,0 +1,20 @@
+#
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+#
+
+description: |
+  Generic driver for controlling the external power output
+  by toggling the control-gpio pin status
+  (Only in supported hardware)
+
+compatible: "zmk,ext-power-generic"
+
+properties:
+  control-gpios:
+    type: phandle-array
+    required: true
+  label:
+    type: string
+    required: true
+

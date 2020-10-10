@@ -6,7 +6,7 @@
 
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
-#include <zmk/usb_hid.h>
+#include <zmk/usb.h>
 #include <zmk/hog.h>
 
 #include <logging/log.h>

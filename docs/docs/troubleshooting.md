@@ -19,6 +19,10 @@ Variations of the warnings shown below occur when flashing the `<firmware>.uf2` 
 | :-------------------------------------------------------------------------------:           |
 |           An example of the file transfer error on Linux                                    |
 
+|       ![Example Error Screen](../docs/assets/troubleshooting/filetransfer/mac.png)          |
+| :-------------------------------------------------------------------------------:           |
+|           An example of the file transfer error on MacOS                                    |
+
 
 ### CMake Error
 
@@ -59,3 +63,20 @@ After opening the `<board>.dts.pre.tmp:<line number>` and scrolling down to the 
 |  ![Healthy Keymap Temp](../docs/assets/troubleshooting/keymaps/healthyEDIT.png)  |
 | :-------------------------------------------------------------------------------: |
 |  A properly defined keymap with successful compilation. As shown in red, the corrected keycode (`&kp SPC`) references the proper Usage ID defined in the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12)|
+
+### Split Keyboard Halves Unable to Pair
+
+Previously, pairing split keyboard halves involved a **BLE Reset** via a combination of held keys that removed all bluetooth profile information from the keyboard.
+Since then, a much simpler procedure of performing a bluetooth reset for split keyboards has come about, without the need for any file modification:
+
+**New Procedure:**
+
+1. Log into Github and download the "settings clear" UF2 image from the [latest build in Github Actions](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain)
+1. Put each half of the split keyboard into bootloader mode
+1. Flash one of the halves of the split with the "settings clear" UF2 image from step 1. Immediately after flashing "settings clear" to the chosen half, immediately put it into bootloader mode
+to avoid accidental bonding between the halves.
+1. Repeat step 3 with the other half of the split keyboard
+1. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half)
+
+After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins
+for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.
