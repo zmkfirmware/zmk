@@ -1,0 +1,6 @@
+* text=auto
+
+# Always use Unix-style line endings for Bash scripts so they work in
+# Docker on Windows.
+.bashrc text eol=lf
+*.sh text eol=lf
