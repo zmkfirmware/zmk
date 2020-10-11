@@ -31,13 +31,13 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | Macros                                                                                                   |  🚧        |      ✅     |     ✅     |
 | Mouse Keys                                                                                               |             |     ✅      |     ✅     |
 | Low Active Power Usage                                                                                   |     ✅     |              |            |
-| Low Power Sleep States                                                                                   | 🚧         |      ✅      |            |
-| Low Power Mode (VCC Shutoff)                                                                             | 🚧         |               |           |
-| Battery Reporting                                                                                        | 🚧         |      ✅      |            |
+| [Low Power Sleep States](https://github.com/zmkfirmware/zmk/pull/211)                                    | 🚧         |      ✅      |            |
+| [Low Power Mode (VCC Shutoff)](https://github.com/zmkfirmware/zmk/pull/242)                              | 🚧         |               |           |
+| [Battery Reporting](https://github.com/zmkfirmware/zmk/issues/47)                                        | 🚧         |      ✅      |            |
 | Shell over BLE                                                                                           |            |              |             |   
 | Realtime Keymap Updating                                                                                 |     💡      |             |   ✅        |
 | AVR/8 Bit                                                                                                |             |             |    ✅       |
-| Wide Range of ARM Chips Supported                                                                        |    ✅       |             |             |
+| [Wide Range of ARM Chips Supported](https://docs.zephyrproject.org/latest/boards/index.html)             |    ✅       |             |             |
 [^2]: Encoders are not currently supported on peripheral side splits.  
 [^1]: OLEDs are currently proof of concept in ZMK.  
 
