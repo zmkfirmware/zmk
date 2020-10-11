@@ -39,21 +39,21 @@ if [ ! -w `pwd` ]; then
     exit 1
 fi
 
+# Parse all commandline options
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -w|--wget) force_wget="true"; break;;
+        *) echo "Unknown parameter: $1"; exit 1;;
+    esac
+    shift
+done
+
 if [[ $curl_exists == "true" && $wget_exists == "true" ]]; then
-    prompt="Detected both curl and wget, which one would you like to use? [default is curl]"
-    options=("curl" "wget")
-    PS3="$prompt "
-    select opt in "${options[@]}" "Quit"; do
-        case "$REPLY" in
-        
-        1 ) download_command="curl -O "; break;;
-        2 ) download_command="wget "; break;;
-
-        $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
-        *) download_command="curl -O "; break;;
-
-        esac
-    done
+    if [[ $force_wget == "true" ]]; then
+        download_command="wget "
+    else
+        download_command="curl -O "
+    fi
 elif [[ $curl_exists == "true" ]]; then
     download_command="curl -O "
 elif [[ $wget_exists == "true" ]]; then
