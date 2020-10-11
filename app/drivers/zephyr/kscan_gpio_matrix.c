@@ -181,19 +181,19 @@ static int kscan_gpio_config_interrupts(struct device **devices,
         struct kscan_gpio_data_##n *data = CONTAINER_OF(work, struct kscan_gpio_data_##n, work);   \
         kscan_gpio_read_##n(data->dev);                                                            \
     }                                                                                              \
-    COND_CODE_1(CONFIG_ZMK_KSCAN_MATRIX_POLLING, (),                                               \
-                (static void kscan_gpio_irq_callback_handler_##n(                                  \
-                    struct device *dev, struct gpio_callback *cb, gpio_port_pins_t pin) {          \
-                    struct kscan_gpio_irq_callback_##n *data =                                     \
-                        CONTAINER_OF(cb, struct kscan_gpio_irq_callback_##n, callback);            \
-                    kscan_gpio_disable_interrupts_##n(data->dev);                                  \
-                    COND_CODE_0(DT_INST_PROP(n, debounce_period),                                  \
-                                ({ k_work_submit(data->work); }), ({                               \
-                                    k_delayed_work_cancel(data->work);                             \
-                                    k_delayed_work_submit(                                         \
-                                        data->work, K_MSEC(DT_INST_PROP(n, debounce_period)));     \
-                                }))                                                                \
-                }))                                                                                \
+    static void kscan_gpio_irq_callback_handler_##n(                                               \
+        struct device *dev, struct gpio_callback *cb, gpio_port_pins_t pin) {                      \
+        struct kscan_gpio_irq_callback_##n *data =                                                 \
+            CONTAINER_OF(cb, struct kscan_gpio_irq_callback_##n, callback);                        \
+        COND_CODE_1(CONFIG_ZMK_KSCAN_MATRIX_POLLING, (),                                           \
+                    (kscan_gpio_disable_interrupts_##n(data->dev);))                               \
+        COND_CODE_0(DT_INST_PROP(n, debounce_period),                                              \
+                    ({ k_work_submit(data->work); }), ({                                           \
+                        k_delayed_work_cancel(data->work);                                         \
+                        k_delayed_work_submit(                                                     \
+                            data->work, K_MSEC(DT_INST_PROP(n, debounce_period)));                 \
+                    }))                                                                            \
+    }                                                                                              \
                                                                                                    \
     static struct kscan_gpio_data_##n kscan_gpio_data_##n = {                                      \
         .rows = {[INST_MATRIX_ROWS(n) - 1] = NULL}, .cols = {[INST_MATRIX_COLS(n) - 1] = NULL}};   \
