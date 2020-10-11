@@ -22,6 +22,13 @@ check_exists "command -v curl" "curl is not installed, and is required for this 
 check_exists "git config user.name" "Git username not set!\nRun: git config --global user.name 'My Name'"
 check_exists "git config user.email" "Git email not set!\nRun: git config --global user.email 'example@myemail.com'"
 
+# Check to see if the user has write permissions in this directory to prevent a cryptic error later on
+if [ ! -w `pwd` ]; then
+    echo 'Sorry, you do not have write permissions in this directory.';
+    echo 'Please try running this script again from a directory that you do have write permissions for.';
+    exit 1
+fi
+
 repo_path="https://github.com/zmkfirmware/zmk-config-split-template.git"
 title="ZMK Config Setup:"
 
