@@ -23,14 +23,7 @@ static u32_t power_last_uptime;
 
 bool is_usb_power_present() {
 #ifdef CONFIG_USB
-    enum usb_dc_status_code usb_status = zmk_usb_get_status();
-    switch (usb_status) {
-    case USB_DC_DISCONNECTED:
-    case USB_DC_UNKNOWN:
-        return false;
-    default:
-        return true;
-    }
+    return zmk_usb_is_powered();
 #else
     return false;
 #endif /* CONFIG_USB */
