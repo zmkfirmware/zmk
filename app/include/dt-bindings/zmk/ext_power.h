@@ -6,11 +6,8 @@
 
 #define EXT_POWER_OFF_CMD 0
 #define EXT_POWER_ON_CMD 1
+#define EXT_POWER_TOGGLE_CMD 2
 
-/*
- * Note: Some future commands might include additional parameters, so we
- * defines these aliases up front.
- */
-
-#define EP_ON EXT_POWER_ON_CMD 0
-#define EP_OFF EXT_POWER_OFF_CMD 0
+#define EP_ON EXT_POWER_ON_CMD
+#define EP_OFF EXT_POWER_OFF_CMD
+#define EP_TOG EXT_POWER_TOGGLE_CMD

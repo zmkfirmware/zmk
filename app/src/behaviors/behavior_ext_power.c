@@ -30,6 +30,11 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t c
         return ext_power_api->disable(ext_power);
     case EXT_POWER_ON_CMD:
         return ext_power_api->enable(ext_power);
+    case EXT_POWER_TOGGLE_CMD:
+        if(ext_power_api->get(ext_power) > 0)
+            return ext_power_api->disable(ext_power);
+        else
+            return ext_power_api->enable(ext_power);
     default:
         LOG_ERR("Unknown ext_power command: %d", command);
     }
