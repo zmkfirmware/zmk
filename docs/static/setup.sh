@@ -9,15 +9,25 @@ set -e
 check_exists() {
     command_to_run=$1
     error_message=$2
+    local __resultvar=$3
 
     if ! eval "$command_to_run" &> /dev/null; then
-        printf "%s\n" "$error_message"
-        exit 1
+        if [[ "$__resultvar" != "" ]]; then
+            eval $__resultvar="'false'"
+        else
+            printf "%s\n" "$error_message"
+            exit 1
+        fi
+    else
+        if [[ "$__resultvar" != "" ]]; then
+            eval $__resultvar="'true'"
+        fi
     fi
 }
 
 check_exists "command -v git" "git is not installed, and is required for this script!"
-check_exists "command -v curl" "curl is not installed, and is required for this script!"
+check_exists "command -v curl" "curl is not installed, and is required for this script!" curl_exists
+check_exists "command -v wget" "wget is not installed, and is required for this script!" wget_exists
 
 check_exists "git config user.name" "Git username not set!\nRun: git config --global user.name 'My Name'"
 check_exists "git config user.email" "Git email not set!\nRun: git config --global user.email 'example@myemail.com'"
@@ -26,6 +36,30 @@ check_exists "git config user.email" "Git email not set!\nRun: git config --glob
 if [ ! -w `pwd` ]; then
     echo 'Sorry, you do not have write permissions in this directory.';
     echo 'Please try running this script again from a directory that you do have write permissions for.';
+    exit 1
+fi
+
+if [[ $curl_exists == "true" && $wget_exists == "true" ]]; then
+    prompt="Detected both curl and wget, which one would you like to use? [default is curl]"
+    options=("curl" "wget")
+    PS3="$prompt "
+    select opt in "${options[@]}" "Quit"; do
+        case "$REPLY" in
+        
+        1 ) download_command="curl -O "; break;;
+        2 ) download_command="wget "; break;;
+
+        $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
+        *) download_command="curl -O "; break;;
+
+        esac
+    done
+elif [[ $curl_exists == "true" ]]; then
+    download_command="curl -O "
+elif [[ $wget_exists == "true" ]]; then
+    download_command="wget "
+else
+    echo 'Neither curl nor wget are installed. One of the two is required for this script!'
     exit 1
 fi
 
@@ -133,10 +167,10 @@ cd ${repo_name}
 
 pushd config
 
-curl -O "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.conf"
+$download_command "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.conf"
 
 if [ "$copy_keymap" == "yes" ]; then
-    curl -O "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.keymap"
+    $download_command "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.keymap"
 fi
 
 popd
