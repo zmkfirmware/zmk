@@ -57,11 +57,11 @@ catch [System.Management.Automation.CommandNotFoundException] {
 }
 
 Test-Git-Config -Option "user.name" -ErrMsg "Git username not set!`nRun: git config --global user.name 'My Name'"
-Test-Git-Config -Option "user.email" -ErrMsg "Git email not set!`nRun: git config --global user.name 'example@myemail.com'"
+Test-Git-Config -Option "user.email" -ErrMsg "Git email not set!`nRun: git config --global user.email 'example@myemail.com'"
 
-$permission = (Get-Acl $PSScriptRoot).Access | 
+$permission = (Get-Acl $pwd).Access | 
 ?{$_.IdentityReference -match $env:UserName `
-	-and $_.FileSystemRights -match "Read" `
+	-and $_.FileSystemRights -match "FullControl" `
 		-or $_.FileSystemRights -match "Write"	} | 
 			
 		Select IdentityReference,FileSystemRights
