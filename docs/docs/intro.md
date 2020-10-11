@@ -9,7 +9,8 @@ firmware built on the [Zephyr™ Project](https://zephyrproject.org/) Real Time 
 
 ## Features
 
-At this point, ZMK is still missing many features compared to popular firmware such as QMK. Here is a table comparing supported ZMK, BlueMicro, and QMK features:
+ZMK is currently missing some features found in other popular firmware. This table compares the features supported by ZMK, BlueMicro and QMK:
+
  
 |   **Feature**                                                                                          |     ZMK     |   BlueMicro  |     QMK     |
 |--------------------------------------------------------------------------------------------------------|:-----------:|:------------:|:-----------:|
@@ -19,24 +20,24 @@ At this point, ZMK is still missing many features compared to popular firmware s
 | User Configuration Repositories                                                                        |     ✅      |              |             |
 | Split Keyboard Support                                                                                 |     ✅      |      ✅      |     ✅     |   
 | [Keymaps and Layers](behavior/layers)                                                                  |     ✅      |      ✅      |     ✅     |
-| [Hold-Tap](behavior/hold-tap) (Which Includes [Mod-Tap](behavior/mod-tap) and [Layer-Tap](behavior/layers/#layer-tap)) |     ✅      |     ✅    |    ✅   | 
+| [Hold-Tap](behavior/hold-tap) (which includes [Mod-Tap](behavior/mod-tap) and [Layer-Tap](behavior/layers/#layer-tap)) |     ✅      |     ✅    |    ✅   | 
 | [Basic Keycodes](behavior/key-press)                                                                     |     ✅     |      ✅      |    ✅     |
 | [Basic consumer (Media) Keycodes](behavior/key-press#consumer-key-press)                                 |     ✅     |      ✅      |    ✅     |
 | [Encoders](feature/encoders)[^1]                                                                         |     ✅     |              |     ✅    |
-| [OLED Display Support](feature/displays)[^2]                                                             |  In Dev    |    In  Dev    |    ✅     |
+| [OLED Display Support](feature/displays)[^2]                                                             |  🚧        |    🚧        |    ✅     |
 | [RGB Underglow](feature/underglow)                                                                       |     ✅     |      ✅      |     ✅    |
-| One Shot Keys                                                                                            |  In Dev     |    ✅        |     ✅    |
-| Combo Keys                                                                                               |  In Dev     |              |     ✅    |   
-| Macros                                                                                                   |  In Dev     |      ✅     |     ✅     |
+| One Shot Keys                                                                                            |  🚧        |    ✅        |     ✅    |
+| Combo Keys                                                                                               |  🚧        |              |     ✅    |   
+| Macros                                                                                                   |  🚧        |      ✅     |     ✅     |
 | Mouse Keys                                                                                               |             |     ✅      |     ✅     |
 | Low Active Power Usage                                                                                   |     ✅     |              |            |
-| Low Power Sleep States                                                                                   | In Dev     |      ✅      |            |
-| Low Power Mode (VCC Shutoff)                                                                             | In Dev     |               |           |
-| Battery Reporting                                                                                        | In Dev     |      ✅      |            |
-| Shell over BLE                                                                                           |                 |          |           |   
-| Realtime Keymap Updating                                                                                 |     Planned    |              |   ✅    |
-| AVR/8 Bit                                                                                                |                |              |    ✅   |
-| Wide Range of ARM Chips Supported                                                                        |    ✅         |              |          |
+| Low Power Sleep States                                                                                   | 🚧         |      ✅      |            |
+| Low Power Mode (VCC Shutoff)                                                                             | 🚧         |               |           |
+| Battery Reporting                                                                                        | 🚧         |      ✅      |            |
+| Shell over BLE                                                                                           |            |              |             |   
+| Realtime Keymap Updating                                                                                 |     💡      |             |   ✅        |
+| AVR/8 Bit                                                                                                |             |             |    ✅       |
+| Wide Range of ARM Chips Supported                                                                        |    ✅       |             |             |
 [^2]: Encoders are not currently supported on peripheral side splits.  
 [^1]: OLEDs are currently proof of concept in ZMK.  
 
