@@ -126,11 +126,21 @@ static enum endpoint get_selected_endpoint() {
     return ENDPOINT_USB;
 }
 
+static void disconnect_current_endpoint() {
+    zmk_hid_keypad_clear();
+    zmk_hid_consumer_clear();
+
+    zmk_endpoints_send_report(USAGE_KEYPAD);
+    zmk_endpoints_send_report(USAGE_CONSUMER);
+}
+
 static int endpoint_listener(const struct zmk_event_header *eh) {
     enum endpoint new_endpoint = get_selected_endpoint();
 
     if (new_endpoint != current_endpoint) {
-        // TODO: send null report on previous endpoint
+        /* Cancel all current keypresses so keys don't stay held on the old endpoint. */
+        disconnect_current_endpoint();
+
         current_endpoint = new_endpoint;
         LOG_INF("Endpoint changed: %d", current_endpoint);
     }
