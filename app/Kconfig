@@ -1,5 +1,8 @@
 mainmenu "ZMK Firmware"
 
+menu "ZMK"
+
+menu "Basic Keyboard Setup"
 config ZMK_KEYBOARD_NAME
 	string "Keyboard Name"
 
@@ -8,10 +11,6 @@ config USB_DEVICE_PRODUCT
 
 config BT_DEVICE_NAME
 	default ZMK_KEYBOARD_NAME
-
-config ZMK_KSCAN_EVENT_QUEUE_SIZE
-	int "Size of the event queue for KSCAN events to buffer events"
-	default 4
 
 menu "HID Output Types"
 
@@ -27,13 +26,16 @@ config ZMK_USB_INIT_PRIORITY
 	int "Init Priority"
 	default 50
 
+#USB
 endif
 
+#Where does this get set?
 if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
 
+#ZMK_USB
 endif
 
 menuconfig ZMK_BLE
@@ -72,41 +74,11 @@ config ZMK_BLE_PASSKEY_ENTRY
 	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
 	default n
 
+#ZMK_BLE
 endif
 
+#ZMK_BLE
 endmenu
-
-menuconfig ZMK_SLEEP
-	bool "Enable deep sleep support"
-	imply USB
-
-if ZMK_SLEEP
-
-config SYS_POWER_DEEP_SLEEP_STATES
-	default y
-
-choice SYS_PM_POLICY
-	default SYS_PM_POLICY_APP
-endchoice
-
-config ZMK_IDLE_SLEEP_TIMEOUT
-	int "Milliseconds to wait to sleep when going idle"
-	default 900000
-
-endif
-
-config ZMK_EXT_POWER
-	bool "Enable support to control external power output"
-	default y
-
-config ZMK_DISPLAY
-	bool "ZMK display support"
-	default n
-	select DISPLAY
-	select LVGL
-	select LVGL_THEMES
-	select LVGL_THEME_MONO
-	select LVGL_OBJ_LABEL
 
 menu "Split Support"
 
@@ -184,23 +156,19 @@ endif
 
 endmenu
 
-config ZMK_KSCAN_MOCK_DRIVER
-	bool "Enable mock kscan driver to simulate key presses"
-	default n
-
-
-config ZMK_KSCAN_COMPOSITE_DRIVER
-	bool "Enable composite kscan driver to combine kscan devices"
-	default n
-
-menu "ZMK Actions"
-
-config ZMK_ACTION_MOD_TAP
-	bool "Enable the Mod-Tap Action"
-	
+#ZMK basic keyboard setup
 endmenu
 
-menu "ZMK Lighting"
+menu "Display/LED Options"
+
+config ZMK_DISPLAY
+	bool "ZMK display support"
+	default n
+	select DISPLAY
+	select LVGL
+	select LVGL_THEMES
+	select LVGL_THEME_MONO
+	select LVGL_OBJ_LABEL
 
 menuconfig ZMK_RGB_UNDERGLOW
 	bool "RGB Adressable LED Underglow"
@@ -221,6 +189,57 @@ config ZMK_RGB_UNDERGLOW_BRT_STEP
 	default 10
 
 endif
+
+#ZMK display/led options
+endmenu
+
+menu "Power Management"
+
+menuconfig ZMK_SLEEP
+	bool "Enable deep sleep support"
+	imply USB
+
+if ZMK_SLEEP
+
+config SYS_POWER_DEEP_SLEEP_STATES
+	default y
+
+choice SYS_PM_POLICY
+	default SYS_PM_POLICY_APP
+endchoice
+
+config ZMK_IDLE_SLEEP_TIMEOUT
+	int "Milliseconds to wait to sleep when going idle"
+	default 900000
+
+#ZMK_SLEEP
+endif
+
+config ZMK_EXT_POWER
+	bool "Enable support to control external power output"
+	default y
+
+#Power management
+endmenu
+
+menu "KSCAN Settings (Advanced)"
+
+config ZMK_KSCAN_EVENT_QUEUE_SIZE
+	int "Size of the event queue for KSCAN events to buffer events"
+	default 4
+
+config ZMK_KSCAN_MOCK_DRIVER
+	bool "Enable mock kscan driver to simulate key presses"
+	default n
+
+config ZMK_KSCAN_COMPOSITE_DRIVER
+	bool "Enable composite kscan driver to combine kscan devices"
+	default n
+
+#kscan settings
+endmenu
+
+#ZMK ugly
 
 endmenu
 
