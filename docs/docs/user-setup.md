@@ -63,6 +63,7 @@ defaultValue="curl"
 values={[
 {label: 'Using curl', value: 'curl'},
 {label: 'Using wget', value: 'wget'},
+{label: 'Using PowerShell', value: 'PowerShell'},
 ]}>
 <TabItem value="curl">
 
@@ -77,6 +78,12 @@ bash -c "$(curl -fsSL https://zmkfirmware.dev/setup.sh)"
 bash -c "$(wget https://zmkfirmware.dev/setup.sh -O -)"
 ```
 
+</TabItem>
+<TabItem value="PowerShell">
+
+```
+iex ((New-Object System.Net.WebClient).DownloadString('https://zmkfirmware.dev/setup.ps1'))"
+```
 </TabItem>
 </Tabs>
 
