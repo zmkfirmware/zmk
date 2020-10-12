@@ -8,7 +8,7 @@ jobs:
     name: Build Test
     strategy:
       matrix:
-        board: [proton_c, nice_nano, bluemicro840_v1, nrfmicro_13]
+        board: [nice_nano, bluemicro840_v1, nrfmicro_13]
         shield:
           - corne_left
           - corne_right
@@ -26,6 +26,12 @@ jobs:
         include:
           - board: proton_c
             shield: clueboard_california
+          - board: proton_c
+            shield: romac
+          - board: proton_c
+            shield: romac_plus
+          - board: proton_c
+            shield: settings_reset
     steps:
       # To use this repository's private action,
       # you must check out the repository
