@@ -3,6 +3,7 @@ mainmenu "ZMK Firmware"
 menu "ZMK"
 
 menu "Basic Keyboard Setup"
+
 config ZMK_KEYBOARD_NAME
 	string "Keyboard Name"
 
@@ -14,23 +15,17 @@ config BT_DEVICE_NAME
 
 menu "HID Output Types"
 
-menuconfig ZMK_USB
+config ZMK_USB
 	bool "USB"
 	select USB
 	select USB_DEVICE_STACK
 	select USB_DEVICE_HID
 
-if USB
+if ZMK_USB
 
 config ZMK_USB_INIT_PRIORITY
-	int "Init Priority"
+	int "USB Init Priority"
 	default 50
-
-#USB
-endif
-
-#Where does this get set?
-if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
@@ -38,7 +33,7 @@ config USB_NUMOF_EP_WRITE_RETRIES
 #ZMK_USB
 endif
 
-menuconfig ZMK_BLE
+config ZMK_BLE
 	bool "BLE (HID over GATT)"
 	select BT
 	select BT_SMP
@@ -53,7 +48,7 @@ menuconfig ZMK_BLE
 if ZMK_BLE
 
 config ZMK_BLE_INIT_PRIORITY
-	int "Init Priority"
+	int "BLE Init Priority"
 	default 50
 	
 config SYSTEM_WORKQUEUE_STACK_SIZE
@@ -77,7 +72,7 @@ config ZMK_BLE_PASSKEY_ENTRY
 #ZMK_BLE
 endif
 
-#ZMK_BLE
+#HID Output Types
 endmenu
 
 menu "Split Support"
@@ -122,12 +117,16 @@ config BT_MAX_CONN
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
 	default n
 
+#ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 endif
 
+#ZMK_SPLIT_BLE_ROLE
 endchoice
 
+#ZMK_SPLIT_BLE
 endif
 
+#ZMK_SPLIT
 endif 
 
 if ZMK_BLE
@@ -140,6 +139,7 @@ config BT_MAX_CONN
 config BT_MAX_PAIRED
 	default 6
 
+#ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
 endif
 
 if !ZMK_SPLIT_BLE
@@ -150,13 +150,16 @@ config BT_MAX_CONN
 config BT_MAX_PAIRED
 	default 5
 
+#!ZMK_SPLIT_BLE
 endif
 
+#ZMK_BLE
 endif
 
+#Split Support
 endmenu
 
-#ZMK basic keyboard setup
+#Basic Keyboard Setup
 endmenu
 
 menu "Display/LED Options"
@@ -170,7 +173,7 @@ config ZMK_DISPLAY
 	select LVGL_THEME_MONO
 	select LVGL_OBJ_LABEL
 
-menuconfig ZMK_RGB_UNDERGLOW
+config ZMK_RGB_UNDERGLOW
 	bool "RGB Adressable LED Underglow"
 	select LED_STRIP
 
@@ -188,14 +191,15 @@ config ZMK_RGB_UNDERGLOW_BRT_STEP
 	int "RGB underglow brightness step in percent"
 	default 10
 
+#ZMK_RGB_UNDERGLOW
 endif
 
-#ZMK display/led options
+#Display/LED Options
 endmenu
 
 menu "Power Management"
 
-menuconfig ZMK_SLEEP
+config ZMK_SLEEP
 	bool "Enable deep sleep support"
 	imply USB
 
@@ -219,7 +223,7 @@ config ZMK_EXT_POWER
 	bool "Enable support to control external power output"
 	default y
 
-#Power management
+#Power Management
 endmenu
 
 menu "KSCAN Settings (Advanced)"
@@ -236,11 +240,10 @@ config ZMK_KSCAN_COMPOSITE_DRIVER
 	bool "Enable composite kscan driver to combine kscan devices"
 	default n
 
-#kscan settings
+#KSCAN Settings (Advanced)
 endmenu
 
-#ZMK ugly
-
+#ZMK
 endmenu
 
 config HEAP_MEM_POOL_SIZE
