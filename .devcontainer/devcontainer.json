@@ -3,6 +3,9 @@
   "dockerFile": "Dockerfile",
   "extensions": ["ms-vscode.cpptools"],
   "runArgs": ["--security-opt", "label=disable"],
-  "containerEnv": {"WORKSPACE_DIR": "${containerWorkspaceFolder}"}
+  "containerEnv": {"WORKSPACE_DIR": "${containerWorkspaceFolder}"},
+  "settings": { 
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
 }
 
