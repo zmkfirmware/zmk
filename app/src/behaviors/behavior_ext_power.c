@@ -9,32 +9,29 @@
 #include <device.h>
 #include <devicetree.h>
 #include <drivers/behavior.h>
-
-#include <dt-bindings/zmk/ext_power.h>
+#include <drivers/ext_power.h>
 
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <drivers/ext_power.h>
-
-static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t command, u32_t arg) {
+static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
+                                     struct zmk_behavior_binding_event event) {
     const struct device *ext_power = device_get_binding("EXT_POWER");
     if (ext_power == NULL) {
         LOG_ERR("Unable to retrieve ext_power device: %d", command);
         return -EIO;
     }
-    const struct ext_power_api *ext_power_api = ext_power->driver_api;
 
-    switch (command) {
+    switch (binding->param1) {
     case EXT_POWER_OFF_CMD:
-        return ext_power_api->disable(ext_power);
+        return ext_power_disable(ext_power);
     case EXT_POWER_ON_CMD:
-        return ext_power_api->enable(ext_power);
+        return ext_power_enable(ext_power);
     case EXT_POWER_TOGGLE_CMD:
-        if(ext_power_api->get(ext_power) > 0)
-            return ext_power_api->disable(ext_power);
+        if (ext_power_get(ext_power) > 0)
+            return ext_power_disable(ext_power);
         else
-            return ext_power_api->enable(ext_power);
+            return ext_power_enable(ext_power);
     default:
         LOG_ERR("Unknown ext_power command: %d", command);
     }
@@ -42,12 +39,12 @@ static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t c
     return -ENOTSUP;
 }
 
-static int behavior_ext_power_init(struct device *dev) { return 0; };
-
-static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t command,
-                                      u32_t arg) {
+static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
+                                      struct zmk_behavior_binding_event event) {
     return 0;
 }
+
+static int behavior_ext_power_init(struct device *dev) { return 0; };
 
 static const struct behavior_driver_api behavior_ext_power_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
@@ -55,5 +52,4 @@ static const struct behavior_driver_api behavior_ext_power_driver_api = {
 };
 
 DEVICE_AND_API_INIT(behavior_ext_power, DT_INST_LABEL(0), behavior_ext_power_init, NULL, NULL,
-                    APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
-                    &behavior_ext_power_driver_api);
+                    APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY, &behavior_ext_power_driver_api);
