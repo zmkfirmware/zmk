@@ -12,6 +12,7 @@
 
 #include <zmk/event-manager.h>
 #include <zmk/events/keycode-state-changed.h>
+#include <zmk/behavior.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -22,18 +23,24 @@ struct behavior_key_press_data {};
 
 static int behavior_key_press_init(struct device *dev) { return 0; };
 
-static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t keycode, u32_t _) {
+static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
+                                     struct zmk_behavior_binding_event event) {
+    struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_key_press_config *cfg = dev->config_info;
-    LOG_DBG("position %d usage_page 0x%02X keycode 0x%02X", position, cfg->usage_page, keycode);
+    LOG_DBG("position %d usage_page 0x%02X keycode 0x%02X", event.position, cfg->usage_page,
+            binding->param1);
 
-    return ZMK_EVENT_RAISE(create_keycode_state_changed(cfg->usage_page, keycode, true));
+    return ZMK_EVENT_RAISE(create_keycode_state_changed(cfg->usage_page, binding->param1, true));
 }
 
-static int on_keymap_binding_released(struct device *dev, u32_t position, u32_t keycode, u32_t _) {
+static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
+                                      struct zmk_behavior_binding_event event) {
+    struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_key_press_config *cfg = dev->config_info;
-    LOG_DBG("position %d usage_page 0x%02X keycode 0x%02X", position, cfg->usage_page, keycode);
+    LOG_DBG("position %d usage_page 0x%02X keycode 0x%02X", event.position, cfg->usage_page,
+            binding->param1);
 
-    return ZMK_EVENT_RAISE(create_keycode_state_changed(cfg->usage_page, keycode, false));
+    return ZMK_EVENT_RAISE(create_keycode_state_changed(cfg->usage_page, binding->param1, false));
 }
 
 static const struct behavior_driver_api behavior_key_press_driver_api = {
