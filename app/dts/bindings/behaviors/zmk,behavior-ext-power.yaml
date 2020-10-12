@@ -7,4 +7,4 @@ description: External power control Behavior
 
 compatible: "zmk,behavior-ext-power"
 
-include: two_param.yaml
+include: one_param.yaml

@@ -11,14 +11,16 @@
 #include <drivers/behavior.h>
 #include <drivers/ext_power.h>
 
+#include <dt-bindings/zmk/ext_power.h>
+
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
-    const struct device *ext_power = device_get_binding("EXT_POWER");
+    struct device *ext_power = device_get_binding("EXT_POWER");
     if (ext_power == NULL) {
-        LOG_ERR("Unable to retrieve ext_power device: %d", command);
+        LOG_ERR("Unable to retrieve ext_power device: %d", binding->param1);
         return -EIO;
     }
 
@@ -33,7 +35,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         else
             return ext_power_enable(ext_power);
     default:
-        LOG_ERR("Unknown ext_power command: %d", command);
+        LOG_ERR("Unknown ext_power command: %d", binding->param1);
     }
 
     return -ENOTSUP;
