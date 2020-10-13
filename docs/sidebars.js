@@ -23,6 +23,7 @@ module.exports = {
       "behavior/reset",
       "behavior/bluetooth",
       "behavior/lighting",
+      "behavior/power",
     ],
     Development: [
       "dev-clean-room",
