@@ -39,7 +39,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | AVR/8 Bit                                                                                                |             |             |    ✅       |
 | [Wide Range of ARM Chips Supported](https://docs.zephyrproject.org/latest/boards/index.html)             |    ✅       |             |             |
 [^2]: Encoders are not currently supported on peripheral side splits.  
-[^1]: OLEDs are currently a proof of concept in ZMK.  
+[^1]: OLEDs are currently proof of concept in ZMK.  
 
 ## Code Of Conduct
 
