@@ -80,3 +80,13 @@ to avoid accidental bonding between the halves.
 
 After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins
 for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.
+
+### Connectivity Issues ###
+
+Some users may experience poor connection from their keyboard to their host device, whether it be from a bad Bluetooth card, a metal enclosure on the keyboard or host, or distance to the host device. Increasing the transmit power of your board may solve this problem. To do this, simply enable the `CONFIG_BT_CTLR_TX_PWR_PLUS_8`  configuration value in the `.conf` file of your user config directory as such:
+
+```
+CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
+``` 
+
+On the `NRF52840`, the value `PLUS_8` can be set to any multiple of four between `MINUS_20` and `PLUS_8`. The default value for this config is `0`, but if you are having connection issues it is recommended to set it to `PLUS_8` because the power consumption difference is negligible.
