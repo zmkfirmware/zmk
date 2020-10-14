@@ -15,3 +15,8 @@
 		control-gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;
 	};
 };
+
+&i2c0 {
+	sda-pin = <30>;
+	scl-pin = <31>;
+};
