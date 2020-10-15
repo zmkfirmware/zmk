@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define DEFAULT 0
+#define NAV     1
+#define FUNC    2
+
+/ {
+    behaviors {
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "homerow mods";
+            #binding-cells = <2>;
+            tapping_term_ms = <180>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp Q &kp W &kp E &kp R &kp T &kp Y &kp U &kp I &kp O &kp P
+                &hm LCTL A &hm LALT S &hm LGUI D &kp F &kp G &kp H &kp J &hm RGUI K &hm RALT L &hm RCTL SCLN
+                &hm LSFT Z &kp X &kp C &kp V &kp B &kp N &kp M &kp CMMA &kp DOT &hm RSFT FSLH
+                &lt FUNC TAB &lt NAV SPC &lt FUNC RET
+            >;
+        };
+
+        nav_layer {
+            bindings = <
+                &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0
+                &trans &trans &trans &trans &trans &kp LARW &kp DARW &kp UARW &kp RARW &kp QUOT
+                &trans &kp LBKT &kp RBKT &kp ESC &kp BKSP &kp RET &kp BSLH &kp MINUS &kp EQL &trans
+                &reset &trans &trans
+            >;
+        };
+
+        func_layer {
+            bindings = <
+                &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp F7 &kp F8 &kp F9 &kp F10
+                &kp F11 &kp F12 &trans &trans &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_PRV &bt BT_NXT
+                &trans &trans &trans &trans &bootloader &trans &trans &cp M_VOLD &cp M_VOLU &trans
+                &trans &reset &trans
+            >;
+        };
+    };
+};
