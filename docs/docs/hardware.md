@@ -31,6 +31,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [RoMac+ v4](https://www.littlekeyboards.com/products/romac) (`romac_plus`)
 - [RoMac v2](https://mechboards.co.uk/shop/kits/romac-macro-pad/) (`romac`)
 - [QAZ](https://www.cbkbd.com/product/qaz-keyboard-kit) (`qaz`)
+- [lodash33](https://github.com/makenova/lodash33) (`lodash`)
 
 ## Other Hardware
 

@@ -23,6 +23,7 @@ jobs:
           - settings_reset
           - quefrency_left
           - quefrency_right
+          - lodash33
         include:
           - board: proton_c
             shield: clueboard_california
