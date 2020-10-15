@@ -1,0 +1,14 @@
+
+
+
+config ZMK_KEYBOARD_NAME
+	default "cradios"
+
+# Unable to use interrupts as the same pin number is used
+# across A & B controllers, and STM32F303CCT6 can't enable
+# interrutps for multiple controllers for the same "line"
+# for the external interrupts.
+config ZMK_KSCAN_GPIO_POLLING
+	default y
+
+
