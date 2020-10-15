@@ -45,6 +45,18 @@ static u8_t passkey_digit = 0;
 #define PROFILE_COUNT CONFIG_BT_MAX_PAIRED
 #endif
 
+enum advertising_type {
+    ZMK_ADV_NONE,
+    ZMK_ADV_DIR,
+    ZMK_ADV_CONN,
+} advertising_status;
+
+#define CURR_ADV(adv) (adv << 4)
+
+#define ZMK_ADV_CONN_NAME                                                                          \
+    BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_ONE_TIME | BT_LE_ADV_OPT_USE_NAME,   \
+                    BT_GAP_ADV_FAST_INT_MIN_2, BT_GAP_ADV_FAST_INT_MAX_2, NULL)
+
 static struct zmk_ble_profile profiles[PROFILE_COUNT];
 static u8_t active_profile;
 
@@ -92,28 +104,96 @@ void set_profile_address(u8_t index, const bt_addr_le_t *addr) {
     raise_profile_changed_event();
 }
 
-int zmk_ble_adv_pause() {
-    int err = bt_le_adv_stop();
-    if (err) {
-        LOG_ERR("Failed to stop advertising (err %d)", err);
-        return err;
+bool active_profile_is_connected() {
+    struct bt_conn *conn;
+    bt_addr_le_t *addr = zmk_ble_active_profile_addr();
+    if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
+        return false;
+    } else if ((conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr)) == NULL) {
+        return false;
+    }
+
+    bt_conn_unref(conn);
+
+    return true;
+}
+
+#define CHECKED_ADV_STOP()                                                                         \
+    err = bt_le_adv_stop();                                                                        \
+    advertising_status = ZMK_ADV_NONE;                                                             \
+    if (err) {                                                                                     \
+        LOG_ERR("Failed to stop advertising (err %d)", err);                                       \
+        return err;                                                                                \
+    }
+
+#define CHECKED_DIR_ADV()                                                                          \
+    addr = zmk_ble_active_profile_addr();                                                          \
+    conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr);                                            \
+    if (conn != NULL) { /* TODO: Check status of connection */                                     \
+        LOG_DBG("Skipping advertising, profile host is already connected");                        \
+        bt_conn_unref(conn);                                                                       \
+        return 0;                                                                                  \
+    }                                                                                              \
+    err = bt_le_adv_start(BT_LE_ADV_CONN_DIR_LOW_DUTY(addr), zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad),   \
+                          NULL, 0);                                                                \
+    if (err) {                                                                                     \
+        LOG_ERR("Advertising failed to start (err %d)", err);                                      \
+        return err;                                                                                \
+    }                                                                                              \
+    advertising_status = ZMK_ADV_DIR;
+
+#define CHECKED_OPEN_ADV()                                                                         \
+    err = bt_le_adv_start(ZMK_ADV_CONN_NAME, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);         \
+    if (err) {                                                                                     \
+        LOG_ERR("Advertising failed to start (err %d)", err);                                      \
+        return err;                                                                                \
+    }                                                                                              \
+    advertising_status = ZMK_ADV_CONN;
+
+int update_advertising() {
+    int err = 0;
+    bt_addr_le_t *addr;
+    struct bt_conn *conn;
+    enum advertising_type desired_adv = ZMK_ADV_NONE;
+
+    if (active_profile_is_open() || !active_profile_is_connected()) {
+        desired_adv = ZMK_ADV_CONN;
+    } else if (!active_profile_is_connected()) {
+        desired_adv = ZMK_ADV_CONN;
+        // Need to fix directed advertising for privacy centrals. See
+        // https://github.com/zephyrproject-rtos/zephyr/pull/14984 char
+        // addr_str[BT_ADDR_LE_STR_LEN]; bt_addr_le_to_str(zmk_ble_active_profile_addr(), addr_str,
+        // sizeof(addr_str));
+
+        // LOG_DBG("Directed advertising to %s", log_strdup(addr_str));
+        // desired_adv = ZMK_ADV_DIR;
+    }
+    LOG_DBG("advertising from %d to %d", advertising_status, desired_adv);
+
+    switch (desired_adv + CURR_ADV(advertising_status)) {
+    case ZMK_ADV_DIR + CURR_ADV(ZMK_ADV_DIR):
+    case ZMK_ADV_DIR + CURR_ADV(ZMK_ADV_CONN):
+        CHECKED_ADV_STOP();
+        CHECKED_DIR_ADV();
+        break;
+    case ZMK_ADV_DIR + CURR_ADV(ZMK_ADV_NONE):
+        CHECKED_DIR_ADV();
+        break;
+    case ZMK_ADV_CONN + CURR_ADV(ZMK_ADV_DIR):
+        CHECKED_ADV_STOP();
+        CHECKED_OPEN_ADV();
+        break;
+    case ZMK_ADV_CONN + CURR_ADV(ZMK_ADV_NONE):
+        CHECKED_OPEN_ADV();
+        break;
     }
 
     return 0;
 };
 
-int zmk_ble_adv_resume() {
-    LOG_DBG("active_profile %d, directed? %s", active_profile,
-            active_profile_is_open() ? "no" : "yes");
+static void update_advertising_callback(struct k_work *work) { update_advertising(); }
 
-    int err = bt_le_adv_start(BT_LE_ADV_CONN_NAME, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
-    if (err) {
-        LOG_ERR("Advertising failed to start (err %d)", err);
-        return err;
-    }
-
-    return 0;
-};
+K_WORK_DEFINE(update_advertising_work, update_advertising_callback);
 
 int zmk_ble_clear_bonds() {
     LOG_DBG("");
@@ -123,6 +203,8 @@ int zmk_ble_clear_bonds() {
         bt_unpair(BT_ID_DEFAULT, &profiles[active_profile].peer);
         set_profile_address(active_profile, BT_ADDR_LE_ANY);
     }
+
+    update_advertising();
 
     return 0;
 };
@@ -134,9 +216,13 @@ int zmk_ble_prof_select(u8_t index) {
     }
 
     active_profile = index;
-    return settings_save_one("ble/active_profile", &active_profile, sizeof(active_profile));
+    settings_save_one("ble/active_profile", &active_profile, sizeof(active_profile));
+
+    update_advertising();
 
     raise_profile_changed_event();
+
+    return 0;
 };
 
 int zmk_ble_prof_next() {
@@ -234,8 +320,11 @@ static void connected(struct bt_conn *conn, u8_t err) {
     char addr[BT_ADDR_LE_STR_LEN];
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
+    advertising_status = ZMK_ADV_NONE;
+
     if (err) {
         LOG_WRN("Failed to connect to %s (%u)", log_strdup(addr), err);
+        update_advertising();
         return;
     }
 
@@ -250,6 +339,8 @@ static void connected(struct bt_conn *conn, u8_t err) {
     if (bt_conn_set_security(conn, BT_SECURITY_L2)) {
         LOG_ERR("Failed to set security");
     }
+
+    update_advertising();
 }
 
 static void disconnected(struct bt_conn *conn, u8_t reason) {
@@ -259,14 +350,9 @@ static void disconnected(struct bt_conn *conn, u8_t reason) {
 
     LOG_DBG("Disconnected from %s (reason 0x%02x)", log_strdup(addr), reason);
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
-    // if (bt_addr_le_cmp(&peripheral_addr, BT_ADDR_LE_ANY) && bt_addr_le_cmp(&peripheral_addr,
-    // bt_conn_get_dst(conn))) {
-    //     zmk_ble_adv_resume();
-    // }
-#else
-    // zmk_ble_adv_resume();
-#endif
+    // We need to do this in a work callback, otherwise the advertising update will still see the
+    // connection for a profile as active, and not start advertising yet.
+    k_work_submit(&update_advertising_work);
 }
 
 static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_security_err err) {
@@ -361,6 +447,7 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
 #endif /* !IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_PERIPHERAL) */
 
     set_profile_address(active_profile, dst);
+    update_advertising();
 };
 
 static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
@@ -383,7 +470,7 @@ static void zmk_ble_ready(int err) {
         return;
     }
 
-    zmk_ble_adv_resume();
+    update_advertising();
 }
 
 static int zmk_ble_init(struct device *_arg) {
