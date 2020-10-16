@@ -41,7 +41,7 @@
         nav_layer {
             bindings = <
                 &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0
-                &trans &trans &trans &trans &trans &kp LARW &kp DARW &kp UARW &kp RARW &kp QUOT
+                &kp GRAV &trans &trans &trans &trans &kp LARW &kp DARW &kp UARW &kp RARW &kp QUOT
                 &trans &kp LBKT &kp RBKT &kp ESC &kp BKSP &kp RET &kp BSLH &kp MINUS &kp EQL &trans
                 &reset &trans &trans
             >;
@@ -50,7 +50,7 @@
         func_layer {
             bindings = <
                 &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp F7 &kp F8 &kp F9 &kp F10
-                &kp F11 &kp F12 &trans &trans &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_PRV &bt BT_NXT
+                &kp F11 &kp F12 &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &bt BT_PRV &bt BT_NXT
                 &trans &trans &trans &trans &bootloader &trans &trans &cp M_VOLD &cp M_VOLU &trans
                 &trans &reset &trans
             >;
