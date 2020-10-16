@@ -176,6 +176,10 @@ int update_advertising() {
     LOG_DBG("advertising from %d to %d", advertising_status, desired_adv);
 
     switch (desired_adv + CURR_ADV(advertising_status)) {
+    case ZMK_ADV_NONE + CURR_ADV(ZMK_ADV_DIR):
+    case ZMK_ADV_NONE + CURR_ADV(ZMK_ADV_CONN):
+        CHECKED_ADV_STOP();
+        break;
     case ZMK_ADV_DIR + CURR_ADV(ZMK_ADV_DIR):
     case ZMK_ADV_DIR + CURR_ADV(ZMK_ADV_CONN):
         CHECKED_ADV_STOP();
