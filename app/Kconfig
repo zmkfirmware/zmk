@@ -9,6 +9,15 @@ config USB_DEVICE_PRODUCT
 config BT_DEVICE_NAME
 	default ZMK_KEYBOARD_NAME
 
+config USB_DEVICE_VID
+	default 0x1D50
+
+config USB_DEVICE_PID
+	default 0x615E
+
+config USB_DEVICE_MANUFACTURER
+	default "ZMK Project"
+
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
 	int "Size of the event queue for KSCAN events to buffer events"
 	default 4
