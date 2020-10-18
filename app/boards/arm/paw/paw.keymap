@@ -10,7 +10,8 @@
 // -----------------------------------------------------------------------------------------
 // TODO: Add diagram for keymap
       bindings = <
-            &bt BT_CLR &bt BT_SEL 1 &kp DARW &bootloader
+                 &kp UARW
+        &kp LARW &kp DARW &kp RARW
       >;
     };
   };
