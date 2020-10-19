@@ -217,6 +217,10 @@ menuconfig ZMK_RGB_UNDERGLOW
 
 if ZMK_RGB_UNDERGLOW
 
+# This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
+config SPI
+	default y
+
 config ZMK_RGB_UNDERGLOW_HUE_STEP
 	int "RGB underglow hue step in degrees of 360"
 	default 10
@@ -228,6 +232,30 @@ config ZMK_RGB_UNDERGLOW_SAT_STEP
 config ZMK_RGB_UNDERGLOW_BRT_STEP
 	int "RGB underglow brightness step in percent"
 	default 10
+
+config ZMK_RGB_UNDERGLOW_HUE_START
+	int "RGB underglow start hue value from 0-359"
+	default 0
+
+config ZMK_RGB_UNDERGLOW_SAT_START
+	int "RGB underglow start saturations value from 0-100"
+	default 100
+
+config ZMK_RGB_UNDERGLOW_BRT_START
+	int "RGB underglow start brightness value from 0-100"
+	default 100
+
+config ZMK_RGB_UNDERGLOW_SPD_START
+	int "RGB underglow start animation speed value from 1-5"
+	default 3
+
+config ZMK_RGB_UNDERGLOW_EFF_START
+	int "RGB underglow start effect int value related to the effect enum list"
+	default 0
+
+config ZMK_RGB_UNDERGLOW_ON_START
+	bool "Whether RGB underglow starts on by default"
+	default y
 
 endif
 
