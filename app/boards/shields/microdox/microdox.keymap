@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+// -----------------------------------------------------------------------------------------
+// |  Q  |  W  |  E  |  R  |  T   |   |  Y  |  U   |  I  |  O  |  P  |
+// |  A  |  S  |  D  |  F  |  G   |   |  H  |  J   |  K  |  L  |  ;  |
+// |  Z  |  X  |  C  |  V  |  B   |   |  N  |  M   |  ,  |  .  |  /  |
+//             | GUI | NAV | SHFT |   | SPC | SYM  | ALT |
+                        bindings = <
+   &kp Q &kp W &kp E &kp R &kp T   &kp Y &kp U  &kp I    &kp O   &kp P
+   &kp A &kp S &kp D &kp F &kp G   &kp H &kp J  &kp K    &kp L   &kp SCLN
+   &kp Z &kp X &kp C &kp V &kp B   &kp N &kp M  &kp CMMA &kp DOT &kp FSLH
+          &kp LGUI &mo 1 &kp LSFT   &kp SPC &mo 2 &kp RALT
+                        >;
+                };
+                nav_layer {
+// -----------------------------------------------------------------------------------------
+// |BTCLR|     | ESC |  ~   |     |   | TAB | HOME |  UP  | END | DEL  |
+// | BT1 | GUI | ALT | CTRL | NUM |   |  /  | LEFT | DOWN | RGT | BKSP |
+// | BT2 |     |     |      |     |   |  \  | ENT  |      |     |      |
+//             |     |      |     |   |     |      |      |
+                        bindings = <
+   &bt BT_CLR   &trans  &kp ESC  &kp TILD &trans     &kp TAB  &kp HOME &kp UARW &kp END  &kp DEL
+   &bt BT_SEL 0 &kp GUI &kp RALT &kp LCTL &mo 3      &kp FSLH &kp LARW &kp DARW &kp RARW &kp BKSP
+   &bt BT_SEL 1 &trans  &trans   &trans   &trans     &kp BSLH &kp RET  &trans   &trans    &trans
+                        &trans   &trans   &trans     &trans   &trans   &trans
+                        >;
+                };
+
+                sym_layer {
+// -----------------------------------------------------------------------------------------
+// |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  |
+// |     |     |     |     |     |   |  -  |  =  |  {  |  }  | "|" |
+// |     |     |     |     |     |   |  _  |  +  |  [  |  ]  |  \  |
+//             | GUI |     | SPC |   | ENT |     | ALT |
+                        bindings = <
+   &kp BANG  &kp ATSN  &kp HASH  &kp CURU  &kp PRCT    &kp CRRT  &kp AMPS &kp KMLT &kp LPRN &kp RPRN
+   &trans    &trans    &trans    &trans    &trans      &kp MINUS &kp EQL  &kp LBKT &kp RBKT &kp PIPE
+   &trans    &trans    &trans    &trans    &trans      &trans    &trans   &trans   &trans   &kp BSLH
+                       &kp LGUI  &trans    &kp SPC     &kp RET   &trans   &kp RALT
+                        >;
+                };
+
+// This layer is unreachable until "tri layer state" is sorted out.
+// Leaving it here for completeness.
+                num_layer {
+// -----------------------------------------------------------------------------------------
+// |     |     |     |     |     |   |  A  |  7  |  8  |  9  |  D  |
+// |     |     |     |     |     |   |  B  |  4  |  5  |  6  |  E  |
+// |     |     |     |     |     |   |  C  |  1  |  2  |  3  |  F  |
+//             |     |     |     |   |  0  |  .  |     |
+                        bindings = <
+   &trans &trans &trans &trans &trans    &kp A     &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp D
+   &trans &trans &trans &trans &trans    &kp B     &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp E
+   &trans &trans &trans &trans &trans    &kp C     &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp F
+                 &trans &trans &trans    &kp NUM_0 &kp DOT   &trans
+                        >;
+                };
+        };
+};
+

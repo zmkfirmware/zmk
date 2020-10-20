@@ -1,0 +1,23 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_CRADIO_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "cradio left"
+
+endif
+
+if SHIELD_CRADIO_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "cradio right"
+
+endif
+
+if SHIELD_CRADIO_RIGHT || SHIELD_CRADIO_LEFT
+
+config ZMK_KSCAN_DIRECT_POLLING
+	default y
+
+endif

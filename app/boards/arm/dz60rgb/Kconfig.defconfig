@@ -1,0 +1,14 @@
+# DZ60RGB keyboard configuration
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_DZ60RGB_REV1
+
+config ZMK_KEYBOARD_NAME
+	default "DZ60RGB Rev 1"
+
+config ZMK_USB
+	default y
+
+endif # BOARD_DZ60RGB_REV1

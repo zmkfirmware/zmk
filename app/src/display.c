@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Peter Johanson
+ * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -20,8 +20,7 @@ static struct device *display;
 
 static lv_obj_t *screen;
 
-int zmk_display_init()
-{
+int zmk_display_init() {
     lv_obj_t *hello_world_label;
     lv_obj_t *count_label;
 
@@ -48,8 +47,7 @@ int zmk_display_init()
     return 0;
 }
 
-void zmk_display_task_handler()
-{
+void zmk_display_task_handler() {
     lv_tick_inc(10);
     lv_task_handler();
     k_sleep(K_MSEC(10));

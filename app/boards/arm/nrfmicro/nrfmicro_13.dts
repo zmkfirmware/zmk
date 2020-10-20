@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Okke Formsma, joric
+ * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -26,6 +26,11 @@
 		};
 	};
 
+	ext-power {
+		compatible = "zmk,ext-power-generic";
+		label = "EXT_POWER";
+		control-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+	};
 };
 
 &gpio0 {

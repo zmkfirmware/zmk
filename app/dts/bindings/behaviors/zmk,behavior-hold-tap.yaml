@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Cody McGinnis; Okke Formsma
+# Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 description: Hold or Tap behavior
@@ -12,12 +12,12 @@ properties:
     type: phandles
     required: true
   tapping_term_ms:
-    type: int 
+    type: int
   flavor:
     type: string
     required: false
     default: "hold-preferred"
     enum:
-    - "hold-preferred"
-    - "balanced"
-    - "tap-preferred"
+      - "hold-preferred"
+      - "balanced"
+      - "tap-preferred"
