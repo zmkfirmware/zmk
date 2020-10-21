@@ -2,6 +2,7 @@
 id: intro
 title: Introduction to ZMK
 sidebar_label: Introduction
+slug: /
 ---
 
 ZMK Firmware is an open source (MIT) keyboard

@@ -13,7 +13,7 @@ The high level steps are:
 
 - Create a new shield directory.
 - Add the base Kconfig files.
-- Add the shield overlay file to define the [KSCAN driver]() for detecting key press/release.
+- Add the shield overlay file to define the KSCAN driver for detecting key press/release.
 - (Optional) Add the matrix transform for mapping KSCAN row/column values to sane key positions. This is needed for non-rectangular keyboards, or where the underlying row/column pin arrangement does not map one to one with logical locations on the keyboard.
 - Add a default keymap, which users can override in their own configs as needed.
 - Add support for features such as encoders, OLED displays, or RGB underglow.
@@ -112,7 +112,7 @@ values={[
 
 <TabItem value="unibody">
 
-The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the [chosen]() node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
+The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the chosen node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
 this might look something like:
 
 ```
