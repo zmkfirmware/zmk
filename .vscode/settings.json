@@ -2,5 +2,7 @@
   "files.associations": {
     "*.overlay": "dts",
     "*.keymap": "dts"
-  }
+  },
+  "C_Cpp.dimInactiveRegions": false,
+  "C_Cpp.errorSquiggles": "Disabled"
 }
