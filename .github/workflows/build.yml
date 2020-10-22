@@ -24,6 +24,7 @@ jobs:
           - settings_reset
           - quefrency_left
           - quefrency_right
+          - nibble
         include:
           - board: proton_c
             shield: clueboard_california
