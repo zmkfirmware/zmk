@@ -25,8 +25,8 @@
 			label = "Blue LED";
 		};
 	};
-  
-  ext-power {
+
+	ext-power {
 		compatible = "zmk,ext-power-generic";
 		label = "EXT_POWER";
 		control-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
