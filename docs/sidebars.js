@@ -6,7 +6,6 @@ module.exports = {
       "faq",
       "user-setup",
       "customization",
-      "bond-reset",
       "troubleshooting"
     ],
     Features: [
@@ -24,6 +23,7 @@ module.exports = {
       "behavior/reset",
       "behavior/bluetooth",
       "behavior/lighting",
+      "behavior/power",
     ],
     Development: [
       "dev-clean-room",

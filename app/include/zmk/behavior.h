@@ -11,3 +11,9 @@ struct zmk_behavior_binding {
     u32_t param1;
     u32_t param2;
 };
+
+struct zmk_behavior_binding_event {
+    int layer;
+    u32_t position;
+    s64_t timestamp;
+};

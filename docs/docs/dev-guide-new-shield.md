@@ -13,12 +13,17 @@ The high level steps are:
 
 - Create a new shield directory.
 - Add the base Kconfig files.
-- Add the shield overlay file to define the [KSCAN driver]() for detecting key press/release.
+- Add the shield overlay file to define the KSCAN driver for detecting key press/release.
 - (Optional) Add the matrix transform for mapping KSCAN row/column values to sane key positions. This is needed for non-rectangular keyboards, or where the underlying row/column pin arrangement does not map one to one with logical locations on the keyboard.
 - Add a default keymap, which users can override in their own configs as needed.
 - Add support for features such as encoders, OLED displays, or RGB underglow.
+- Update build.yml
 
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
+
+:::note
+ZMK support for split keyboards requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
+:::
 
 ## New Shield Directory
 
@@ -44,6 +49,16 @@ config SHIELD_MY_BOARD
 
 This will make sure the new configuration `SHIELD_MY_BOARD` is set to true whenever `my_board` is added as a shield in your build.
 
+
+**For split boards**, you will need to add configurations for the left and right sides.
+```
+config SHIELD_MY_BOARD_LEFT
+	def_bool $(shields_list_contains,my_board_left)
+
+config SHIELD_MY_BOARD_RIGHT
+	def_bool $(shields_list_contains,my_board_right)
+```
+
 ### Kconfig.defconfig
 
 The `Kconfig.defconfig` file is where overrides for various configuration settings
@@ -62,13 +77,42 @@ config ZMK_KEYBOARD_NAME
 endif
 ```
 
-## Shield Overlay
+
+Similarly to defining the halves of a split board in `Kconfig.shield` it is important to set the `ZMK_KEYBOARD_NAME` for each half of a split keyboard.
+
+```
+if SHIELD_MY_BOARD_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "My Awesome Keyboard Left"
+
+endif
+
+if SHIELD_MY_BOARD_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "My Awesome Keyboard Right"
+
+endif
+```
+
+## Shield Overlays
 
 ![Labelled Pro Micro pins](assets/pro-micro/pro-micro-pins-labelled.jpg)
 
+
 ZMK uses the green color coded pin names to generate devicetree node references. For example, to refer to the node `D0` in the devicetree files, use `&pro_micro_d 0` or to refer to `A1`, use `&pro_micro_a 1`.
 
-The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the [chosen]() node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
+<Tabs
+defaultValue="unibody"
+values={[
+{label: 'Unibody Shields', value: 'unibody'},
+{label: 'Split Shields', value: 'split'},
+]}>
+
+<TabItem value="unibody">
+
+The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the chosen node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
 this might look something like:
 
 ```
@@ -96,6 +140,146 @@ this might look something like:
 	};
 };
 ```
+
+</TabItem>
+
+<TabItem value="split">
+
+### .dtsi files and Shield Overlays (Split Shields)
+
+Unlike unibody keyboards, split keyboards have a core .dtsi file with shield overlays for each half of the keyboard.
+It is preferred to define only the `col-gpios` or `row-gpios` in the common shield .dtsi, depending on the `diode-direction` value.
+For `col2row` directed boards like the iris, the shared .dtsi file may look like this:
+
+```
+#include <dt-bindings/zmk/matrix-transform.h>
+
+/ {
+	chosen {
+		zmk,kscan = &kscan0;
+		zmk,matrix_transform = &default_transform;
+	};
+
+	default_transform: keymap_transform_0 {
+		compatible = "zmk,matrix-transform";
+		columns = <16>;
+		rows = <4>;
+// | SW6  | SW5  | SW4  | SW3  | SW2  | SW1  |                 | SW1  | SW2  | SW3  | SW4  | SW5  | SW6  |
+// | SW12 | SW11 | SW10 | SW9  | SW8  | SW7  |                 | SW7  | SW8  | SW9  | SW10 | SW11 | SW12 |
+// | SW18 | SW17 | SW16 | SW15 | SW14 | SW13 |                 | SW13 | SW14 | SW15 | SW16 | SW17 | SW18 |
+// | SW24 | SW23 | SW22 | SW21 | SW20 | SW19 | SW25 |   | SW25 | SW19 | SW20 | SW21 | SW22 | SW23 | SW24 |
+//                      | SW29 | SW28 | SW27 | SW26 |   | SW26 | SW27 | SW28 | SW29 |
+		map = <
+RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5)                 RC(0,6) RC(0,7) RC(0,8) RC(0,9) RC(0,10) RC(0,11)
+RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5)                 RC(1,6) RC(1,7) RC(1,8) RC(1,9) RC(1,10) RC(1,11)
+RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)                 RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10) RC(2,11)
+RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,2) RC(4,9) RC(3,6) RC(3,7) RC(3,8) RC(3,9) RC(3,10) RC(3,11)
+                        		RC(4,3) RC(4,4) RC(4,5) RC(4,6) RC(4,7) RC(4,8)
+		>;
+	};
+
+	kscan0: kscan {
+		compatible = "zmk,kscan-gpio-matrix";
+		label = "KSCAN";
+
+		diode-direction = "col2row";
+		row-gpios
+			= <&pro_micro_d 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row A from the schematic file
+			, <&pro_micro_d 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row B from the schematic file
+			, <&pro_micro_d 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row C from the schematic file
+			, <&pro_micro_d 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row D from the schematic file
+			, <&pro_micro_d 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row E from the schematic file
+			;
+		
+	};
+```
+
+:::note
+Notice that in addition to the common `row-gpios` that are declared in the kscan, the [matrix transform](#optional-matrix-transform) is defined in the .dtsi.
+:::
+
+The missing `col-gpios` would be defined in your `<boardname>_left.overlay` and `<boardname>_right.overlay` files.
+Keep in mind that the mirrored position of the GPIOs means that the `col-gpios` will appear reversed when the .overlay files are compared to one another.
+Furthermore, the column offset for the [matrix transform](#optional-matrix-transform) should be added to the right half of the keyboard's overlay
+because the keyboard's switch matrix is read from left to right, top to bottom.
+This is exemplified with the iris .overlay files.
+
+```
+// iris_left.overlay
+
+#include "iris.dtsi" // Notice that the main dtsi files are included in the overlay.
+
+&kscan0 {
+	col-gpios
+		= <&pro_micro_a 1 GPIO_ACTIVE_HIGH> // col1 in the schematic
+		, <&pro_micro_a 0 GPIO_ACTIVE_HIGH> // col2 in the schematic
+		, <&pro_micro_d 15 GPIO_ACTIVE_HIGH> // col3 in the schematic
+		, <&pro_micro_d 14 GPIO_ACTIVE_HIGH> // col4 in the schematic
+		, <&pro_micro_d 16 GPIO_ACTIVE_HIGH> // col5 in the schematic
+		, <&pro_micro_d 10 GPIO_ACTIVE_HIGH> // col6 in the schematic
+		;
+};
+```
+
+```
+// iris_right.overlay
+
+#include "iris.dtsi" 
+
+&default_transform { // The matrix transform for this board is 6 columns over because the left half is 6 columns wide according to the matrix.
+	col-offset = <6>;
+};
+
+&kscan0 {
+	col-gpios
+		= <&pro_micro_d 10 GPIO_ACTIVE_HIGH> // col6 in the schematic
+		, <&pro_micro_d 16 GPIO_ACTIVE_HIGH> // col5 in the schematic
+		, <&pro_micro_d 14 GPIO_ACTIVE_HIGH> // col4 in the schematic
+		, <&pro_micro_d 15 GPIO_ACTIVE_HIGH> // col3 in the schematic
+		, <&pro_micro_a 0 GPIO_ACTIVE_HIGH>  // col2 in the schematic
+		, <&pro_micro_a 1 GPIO_ACTIVE_HIGH>  // col1 in the schematic
+		;
+};
+
+```
+
+### .conf files (Split Shields)
+
+While unibody boards only have one .conf file that applies configuration characteristics to the entire keyboard, 
+split keyboards are unique in that they contain multiple .conf files with different scopes. 
+For example, a split board called `my_awesome_split_board` would have the following files:
+
+* `my_awesome_split_board.conf` - Configuration elements affect both halves
+* `my_awesome_split_board_left.conf` - Configuration elements only affect left half
+* `my_awesome_split_board_right.conf` - Configuration elements only affect right half
+
+For proper communication between keyboard halves and that between the central half and the computer,
+the **the central and peripheral halves of the keyboard must be defined**. This can be seen below.
+
+```
+// Central Half (Usually the left side: my_awesome_split_board_left.conf)
+
+CONFIG_ZMK_SPLIT=y
+CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL=y
+```
+
+```
+// Peripheral Half (Usually the right side: my_awesome_split_board_right.conf)
+
+CONFIG_ZMK_SPLIT=y
+CONFIG_ZMK_SPLIT_BLE_ROLE_Peripheral=y
+```
+
+Using the .conf file that affects both halves of a split board would be for adding features like deep-sleep or rotary encoders.
+
+```
+// my_awesome_split_board.conf
+
+CONFIG_ZMK_SLEEP=y
+```
+
+</TabItem>
+</Tabs>
 
 ## (Optional) Matrix Transform
 
@@ -302,3 +486,41 @@ and then flash with:
 ```
 west flash
 ```
+
+:::note
+Further testing your keyboard shield without altering the root keymap file can be done with the use of `-DZMK_CONFIG` in your `west build` command,
+shown [here](dev-build-flash#building-from-zmk-config-folder)
+:::
+
+## Updating `build.yml`
+
+Before publishing your shield to the public via a PR, navigate to `build.yml` found in `.github/workflows` and add your shield to the appropriate list. An example edit to `build.yml` is shown below.
+
+```
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Test
+    strategy:
+      matrix:
+        board: [proton_c, nice_nano, bluemicro840_v1, nrfmicro_13]
+        shield:
+          - corne_left
+          - corne_right
+          - kyria_left
+          - kyria_right
+          - lily58_left
+          - lily58_right
+          - iris_left
+          - iris_right
+          - romac
+	  - <MY_BOARD>
+	  - <MY_SPLIT_BOARD_left>
+	  - <MY_SPLIT_BOARD_right>
+        include:
+          - board: proton_c
+            shield: clueboard_california
+```
+:::note
+Notice that both the left and right halves of a split board need to be added to the list of shields for proper error checking.
+:::note

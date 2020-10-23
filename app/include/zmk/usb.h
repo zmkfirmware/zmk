@@ -12,6 +12,8 @@
 #include <zmk/keys.h>
 #include <zmk/hid.h>
 
-int zmk_usb_hid_init();
+enum usb_dc_status_code zmk_usb_get_status();
 
+#ifdef CONFIG_ZMK_USB
 int zmk_usb_hid_send_report(u8_t *report, size_t len);
+#endif /* CONFIG_ZMK_USB */

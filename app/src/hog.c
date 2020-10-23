@@ -164,8 +164,10 @@ int zmk_hog_send_keypad_report(struct zmk_hid_keypad_report_body *report) {
 
     LOG_DBG("Sending to NULL? %s", conn == NULL ? "yes" : "no");
 
-    return bt_gatt_notify(conn, &hog_svc.attrs[5], report,
-                          sizeof(struct zmk_hid_keypad_report_body));
+    int err =
+        bt_gatt_notify(conn, &hog_svc.attrs[5], report, sizeof(struct zmk_hid_keypad_report_body));
+    bt_conn_unref(conn);
+    return err;
 };
 
 int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
@@ -174,6 +176,8 @@ int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
         return -ENOTCONN;
     }
 
-    return bt_gatt_notify(conn, &hog_svc.attrs[10], report,
-                          sizeof(struct zmk_hid_consumer_report_body));
+    int err = bt_gatt_notify(conn, &hog_svc.attrs[10], report,
+                             sizeof(struct zmk_hid_consumer_report_body));
+    bt_conn_unref(conn);
+    return err;
 };

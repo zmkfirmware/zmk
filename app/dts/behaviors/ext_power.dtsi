@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		ext_power: behavior_ext_power {
+			compatible = "zmk,behavior-ext-power";
+			label = "EXT_POWER_BEHAVIOR";
+			#binding-cells = <1>;
+		};
+	};
+};

@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <device.h>
 #include <zmk/keys.h>
+#include <zmk/behavior.h>
 
 /**
  * @cond INTERNAL_HIDDEN
@@ -19,10 +20,10 @@
  * (Internal use only.)
  */
 
-typedef int (*behavior_keymap_binding_callback_t)(struct device *dev, u32_t position, u32_t param1,
-                                                  u32_t param2);
-typedef int (*behavior_sensor_keymap_binding_callback_t)(struct device *dev, struct device *sensor,
-                                                         u32_t param1, u32_t param2);
+typedef int (*behavior_keymap_binding_callback_t)(struct zmk_behavior_binding *binding,
+                                                  struct zmk_behavior_binding_event event);
+typedef int (*behavior_sensor_keymap_binding_callback_t)(struct zmk_behavior_binding *binding,
+                                                         struct device *sensor);
 
 __subsystem struct behavior_driver_api {
     behavior_keymap_binding_callback_t binding_pressed;
@@ -42,18 +43,19 @@ __subsystem struct behavior_driver_api {
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_keymap_binding_pressed(struct device *dev, u32_t position, u32_t param1,
-                                              u32_t param2);
+__syscall int behavior_keymap_binding_pressed(struct zmk_behavior_binding *binding,
+                                              struct zmk_behavior_binding_event event);
 
-static inline int z_impl_behavior_keymap_binding_pressed(struct device *dev, u32_t position,
-                                                         u32_t param1, u32_t param2) {
+static inline int z_impl_behavior_keymap_binding_pressed(struct zmk_behavior_binding *binding,
+                                                         struct zmk_behavior_binding_event event) {
+    struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->driver_api;
 
     if (api->binding_pressed == NULL) {
         return -ENOTSUP;
     }
 
-    return api->binding_pressed(dev, position, param1, param2);
+    return api->binding_pressed(binding, event);
 }
 
 /**
@@ -64,18 +66,19 @@ static inline int z_impl_behavior_keymap_binding_pressed(struct device *dev, u32
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_keymap_binding_released(struct device *dev, u32_t position, u32_t param1,
-                                               u32_t param2);
+__syscall int behavior_keymap_binding_released(struct zmk_behavior_binding *binding,
+                                               struct zmk_behavior_binding_event event);
 
-static inline int z_impl_behavior_keymap_binding_released(struct device *dev, u32_t position,
-                                                          u32_t param1, u32_t param2) {
+static inline int z_impl_behavior_keymap_binding_released(struct zmk_behavior_binding *binding,
+                                                          struct zmk_behavior_binding_event event) {
+    struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->driver_api;
 
     if (api->binding_released == NULL) {
         return -ENOTSUP;
     }
 
-    return api->binding_released(dev, position, param1, param2);
+    return api->binding_released(binding, event);
 }
 
 /**
@@ -88,19 +91,20 @@ static inline int z_impl_behavior_keymap_binding_released(struct device *dev, u3
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_sensor_keymap_binding_triggered(struct device *dev, struct device *sensor,
-                                                       u32_t param1, u32_t param2);
+__syscall int behavior_sensor_keymap_binding_triggered(struct zmk_behavior_binding *binding,
+                                                       struct device *sensor);
 
-static inline int z_impl_behavior_sensor_keymap_binding_triggered(struct device *dev,
-                                                                  struct device *sensor,
-                                                                  u32_t param1, u32_t param2) {
+static inline int
+z_impl_behavior_sensor_keymap_binding_triggered(struct zmk_behavior_binding *binding,
+                                                struct device *sensor) {
+    struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->driver_api;
 
     if (api->sensor_binding_triggered == NULL) {
         return -ENOTSUP;
     }
 
-    return api->sensor_binding_triggered(dev, sensor, param1, param2);
+    return api->sensor_binding_triggered(binding, sensor);
 }
 
 /**

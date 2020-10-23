@@ -24,7 +24,7 @@ Here is a table describing the command for each define:
 
 | Define       | Action                                                                                         |
 | ------------ | ---------------------------------------------------------------------------------------------- |
-| `BT_CLR_CMD` | Clear bond information between the keyboard and host for the selected profile [^1]             |
+| `BT_CLR_CMD` | Clear bond information between the keyboard and host for the selected profile.                 |
 | `BT_NXT_CMD` | Switch to the next profile, cycling through to the first one when the end is reached.          |
 | `BT_PRV_CMD` | Switch to the previous profile, cycling through to the last one when the beginning is reached. |
 | `BT_SEL_CMD` | Select the 0-indexed profile by number.                                                        |
@@ -66,7 +66,7 @@ The bluetooth behavior completes an bluetooth action given on press.
 1. Behavior binding to select the previous profile:
 
    ```
-   &bt BT_NXT
+   &bt BT_PRV
    ```
 
 1. Behavior binding to select the 2nd profile (passed parameters are [zero based](https://en.wikipedia.org/wiki/Zero-based_numbering)):

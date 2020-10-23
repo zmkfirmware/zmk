@@ -16,8 +16,13 @@ jobs:
           - kyria_right
           - lily58_left
           - lily58_right
+          - iris_left
+          - iris_right
           - romac
+          - romac_plus
           - settings_reset
+          - quefrency_left
+          - quefrency_right
         include:
           - board: proton_c
             shield: clueboard_california
@@ -70,7 +75,7 @@ jobs:
           args: 'build "-s app -b ${{ matrix.board }} -- -DSHIELD=${{ matrix.shield }}"'
       - name: Archive Build
         uses: actions/upload-artifact@v2
-        if: ${{ matrix.board == 'nice_nano' }}
+        if: ${{ matrix.board != 'proton_c' }}
         with:
           name: "${{ matrix.board }}-${{ matrix.shield }}-zmk-uf2"
           path: build/zephyr/zmk.uf2

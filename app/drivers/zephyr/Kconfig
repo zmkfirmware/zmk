@@ -5,9 +5,13 @@ config ZMK_KSCAN_GPIO_DRIVER
 
 if ZMK_KSCAN_GPIO_DRIVER
 
-config ZMK_KSCAN_GPIO_POLLING
-	bool "Poll for key event triggers instead of using interrupts"
+config ZMK_KSCAN_MATRIX_POLLING
+	bool "Poll for key event triggers instead of using interrupts on matrix boards."
 	default n
+
+config ZMK_KSCAN_DIRECT_POLLING
+	bool "Poll for key event triggers instead of using interrupts on direct wired boards."
+    default n
 
 endif
 

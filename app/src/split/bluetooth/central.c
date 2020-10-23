@@ -60,6 +60,7 @@ static u8_t split_central_notify_func(struct bt_conn *conn, struct bt_gatt_subsc
                 struct position_state_changed *pos_ev = new_position_state_changed();
                 pos_ev->position = position;
                 pos_ev->state = pressed;
+                pos_ev->timestamp = k_uptime_get();
 
                 LOG_DBG("Trigger key position state change for %d", position);
                 ZMK_EVENT_RAISE(pos_ev);

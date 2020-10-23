@@ -11,6 +11,8 @@
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
+#include <zmk/behavior.h>
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct behavior_reset_config {
@@ -19,8 +21,9 @@ struct behavior_reset_config {
 
 static int behavior_reset_init(struct device *dev) { return 0; };
 
-static int on_keymap_binding_pressed(struct device *dev, u32_t position, u32_t _param1,
-                                     u32_t _param2) {
+static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
+                                     struct zmk_behavior_binding_event event) {
+    struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_reset_config *cfg = dev->config_info;
 
     // TODO: Correct magic code for going into DFU?

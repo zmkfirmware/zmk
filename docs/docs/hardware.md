@@ -16,7 +16,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 
 ## Boards
 
-- [nice!nano](https://docs.nicekeyboards.com/#/nice!nano/) (`nice_nano`)
+- [nice!nano](https://nicekeyboards.com/products/nice-nano-v1-0) (`nice_nano`)
 - [nrfMicro](https://github.com/joric/nrfmicro) (`nrfmicro_13`, `nrfmicro_11`, `nrfmicro_11_flipped`)
 - [BlueMicro840](https://store.jpconstantineau.com/#/group/bluemicro) (`bluemicro840_v1`)
 - [QMK Proton-C](https://qmk.fm/proton-c/) (`proton_c`)
@@ -26,6 +26,11 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [Kyria](https://splitkb.com/products/kyria-pcb-kit) (`kyria_left` and `kyria_right`)
 - [Corne](https://github.com/foostan/crkbd) (`corne_left` and `corne_right`)
 - [Lily58](https://github.com/kata0510/Lily58) (`lily58_left` and `lily58_right`)
+- [Sofle](https://github.com/josefadamcik/SofleKeyboard) (`sofle_left` and `sofle_right`)
+- [Splitreus62](https://github.com/Na-Cly/splitreus62) (`splitreus62_left` and `splitreus62_right`)
+- [RoMac+ v4](https://www.littlekeyboards.com/products/romac) (`romac_plus`)
+- [RoMac v2](https://mechboards.co.uk/shop/kits/romac-macro-pad/) (`romac`)
+- [QAZ](https://www.cbkbd.com/product/qaz-keyboard-kit) (`qaz`)
 
 ## Other Hardware
 

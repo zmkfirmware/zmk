@@ -9,6 +9,15 @@ config USB_DEVICE_PRODUCT
 config BT_DEVICE_NAME
 	default ZMK_KEYBOARD_NAME
 
+config USB_DEVICE_VID
+	default 0x1D50
+
+config USB_DEVICE_PID
+	default 0x615E
+
+config USB_DEVICE_MANUFACTURER
+	default "ZMK Project"
+
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
 	int "Size of the event queue for KSCAN events to buffer events"
 	default 4
@@ -21,11 +30,15 @@ menuconfig ZMK_USB
 	select USB_DEVICE_STACK
 	select USB_DEVICE_HID
 
-if ZMK_USB
+if USB
 
 config ZMK_USB_INIT_PRIORITY
 	int "Init Priority"
 	default 50
+
+endif
+
+if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
@@ -72,6 +85,29 @@ endif
 
 endmenu
 
+menuconfig ZMK_SLEEP
+	bool "Enable deep sleep support"
+	imply USB
+
+if ZMK_SLEEP
+
+config SYS_POWER_DEEP_SLEEP_STATES
+	default y
+
+choice SYS_PM_POLICY
+	default SYS_PM_POLICY_APP
+endchoice
+
+config ZMK_IDLE_SLEEP_TIMEOUT
+	int "Milliseconds to wait to sleep when going idle"
+	default 900000
+
+endif
+
+config ZMK_EXT_POWER
+	bool "Enable support to control external power output"
+	default y
+
 config ZMK_DISPLAY
 	bool "ZMK display support"
 	default n
@@ -108,7 +144,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 	bool "Peripheral"
-	select BT_KEYS_OVERWRITE_OLDEST
 
 if ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 
@@ -132,13 +167,27 @@ endif
 
 endif 
 
-if ZMK_BLE && (!ZMK_SPLIT_BLE || ZMK_SPLIT_BLE_ROLE_CENTRAL)
+if ZMK_BLE
+
+if ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 config BT_MAX_CONN
 	default 6
 
 config BT_MAX_PAIRED
+	default 6
+
+endif
+
+if !ZMK_SPLIT_BLE
+
+config BT_MAX_CONN
 	default 5
+
+config BT_MAX_PAIRED
+	default 5
+
+endif
 
 endif
 
@@ -168,6 +217,10 @@ menuconfig ZMK_RGB_UNDERGLOW
 
 if ZMK_RGB_UNDERGLOW
 
+# This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
+config SPI
+	default y
+
 config ZMK_RGB_UNDERGLOW_HUE_STEP
 	int "RGB underglow hue step in degrees of 360"
 	default 10
@@ -179,6 +232,30 @@ config ZMK_RGB_UNDERGLOW_SAT_STEP
 config ZMK_RGB_UNDERGLOW_BRT_STEP
 	int "RGB underglow brightness step in percent"
 	default 10
+
+config ZMK_RGB_UNDERGLOW_HUE_START
+	int "RGB underglow start hue value from 0-359"
+	default 0
+
+config ZMK_RGB_UNDERGLOW_SAT_START
+	int "RGB underglow start saturations value from 0-100"
+	default 100
+
+config ZMK_RGB_UNDERGLOW_BRT_START
+	int "RGB underglow start brightness value from 0-100"
+	default 100
+
+config ZMK_RGB_UNDERGLOW_SPD_START
+	int "RGB underglow start animation speed value from 1-5"
+	default 3
+
+config ZMK_RGB_UNDERGLOW_EFF_START
+	int "RGB underglow start effect int value related to the effect enum list"
+	default 0
+
+config ZMK_RGB_UNDERGLOW_ON_START
+	bool "Whether RGB underglow starts on by default"
+	default y
 
 endif
 

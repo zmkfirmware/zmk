@@ -6,7 +6,7 @@ sidebar_label: Clean Room
 
 :::warning
 
-Anyone wanting to contribute code to ZMK _must_ read this, and adhere to the steps outlines in order to not violate any licenses/copyright of other projects
+Anyone wanting to contribute code to ZMK _MUST_ read this, and adhere to the steps outlines in order to not violate any licenses/copyright of other projects
 
 :::
 
@@ -22,8 +22,8 @@ or duplicating any of the GPL code found in those other projects, even though th
 
 Contributors to ZMK must adhere to the following standard.
 
-- Implementations of features for ZMK _MUST_ not reuse any existing code from any projects not licensed with the MIT license.
-- Contributors _MUST_ not study or refer to any GPL licensed source code while working on ZMK.
+- Implementations of features for ZMK _MUST NOT_ reuse any existing code from any projects not licensed with the MIT license.
+- Contributors _MUST NOT_ study or refer to any GPL licensed source code while working on ZMK.
 - Contributors _MAY_ read the documentation from other GPL licensed projects, to gain a broad understanding of the behavior of certain features in order to implement equivalent features for ZMK.
 - Contributors _MAY_ refer to the [QMK Configurator](https://config.qmk.fm/) to inspect existing layouts/keymaps for
   keyboards, and re-implement them for ZMK.
