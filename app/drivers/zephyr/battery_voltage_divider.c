@@ -17,21 +17,21 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct io_channel_config {
-	const char *label;
-	uint8_t channel;
+    const char *label;
+    uint8_t channel;
 };
 
 struct gpio_channel_config {
-	const char *label;
-	uint8_t pin;
-	uint8_t flags;
+    const char *label;
+    uint8_t pin;
+    uint8_t flags;
 };
 
 struct bvd_config {
-	struct io_channel_config io_channel;
-	struct gpio_channel_config power_gpios;
-	uint32_t output_ohm;
-	uint32_t full_ohm;
+    struct io_channel_config io_channel;
+    struct gpio_channel_config power_gpios;
+    uint32_t output_ohm;
+    uint32_t full_ohm;
 };
 
 struct bvd_data {
@@ -75,7 +75,8 @@ static int bvd_sample_fetch(struct device *dev, enum sensor_channel chan) {
     if (rc == 0) {
         int32_t val = drv_data->adc_raw;
 
-        adc_raw_to_millivolts(adc_ref_internal(drv_data->adc), drv_data->acc.gain, as->resolution, &val);
+        adc_raw_to_millivolts(adc_ref_internal(drv_data->adc), drv_data->acc.gain, as->resolution,
+                              &val);
 
         uint16_t millivolts = val * (uint64_t)drv_cfg->full_ohm / drv_cfg->output_ohm;
         LOG_DBG("ADC raw %d ~ %d mV => %d mV\n", drv_data->adc_raw, val, millivolts);
@@ -94,17 +95,16 @@ static int bvd_sample_fetch(struct device *dev, enum sensor_channel chan) {
 
         if (rc != 0) {
             LOG_DBG("Failed to disable ADC power GPIO: %d", rc);
-        }  
+        }
     }
 
     return rc;
 }
 
-static int bvd_channel_get(struct device *dev, enum sensor_channel chan,
-                            struct sensor_value *val) {
+static int bvd_channel_get(struct device *dev, enum sensor_channel chan, struct sensor_value *val) {
     struct bvd_data *drv_data = dev->driver_data;
 
-    switch(chan) {
+    switch (chan) {
     case SENSOR_CHAN_GAUGE_VOLTAGE:
         val->val1 = drv_data->voltage / 1000;
         val->val2 = (drv_data->voltage % 1000) * 1000U;
@@ -119,14 +119,13 @@ static int bvd_channel_get(struct device *dev, enum sensor_channel chan,
         return -ENOTSUP;
     }
 
-    return 0;    
+    return 0;
 }
 
 static const struct sensor_driver_api bvd_api = {
     .sample_fetch = bvd_sample_fetch,
     .channel_get = bvd_channel_get,
 };
-
 
 static int bvd_init(struct device *dev) {
     struct bvd_data *drv_data = dev->driver_data;
@@ -142,19 +141,19 @@ static int bvd_init(struct device *dev) {
     int rc = 0;
 
     if (drv_cfg->power_gpios.label) {
-		drv_data->gpio = device_get_binding(drv_cfg->power_gpios.label);
-		if (drv_data->gpio == NULL) {
-			LOG_ERR("Failed to get GPIO %s", drv_cfg->power_gpios.label);
-			return -ENOENT;
-		}
-		rc = gpio_pin_configure(drv_data->gpio, drv_cfg->power_gpios.pin,
-					GPIO_OUTPUT_INACTIVE | drv_cfg->power_gpios.flags);
-		if (rc != 0) {
-			LOG_ERR("Failed to control feed %s.%u: %d",
-				drv_cfg->power_gpios.label, drv_cfg->power_gpios.pin, rc);
-			return rc;
-		}
-	}
+        drv_data->gpio = device_get_binding(drv_cfg->power_gpios.label);
+        if (drv_data->gpio == NULL) {
+            LOG_ERR("Failed to get GPIO %s", drv_cfg->power_gpios.label);
+            return -ENOENT;
+        }
+        rc = gpio_pin_configure(drv_data->gpio, drv_cfg->power_gpios.pin,
+                                GPIO_OUTPUT_INACTIVE | drv_cfg->power_gpios.flags);
+        if (rc != 0) {
+            LOG_ERR("Failed to control feed %s.%u: %d", drv_cfg->power_gpios.label,
+                    drv_cfg->power_gpios.pin, rc);
+            return rc;
+        }
+    }
 
     drv_data->as = (struct adc_sequence){
         .channels = BIT(0),
@@ -185,21 +184,22 @@ static int bvd_init(struct device *dev) {
 
 static struct bvd_data bvd_data;
 static const struct bvd_config bvd_cfg = {
-	.io_channel = {
-		DT_INST_IO_CHANNELS_LABEL(0),
-		DT_INST_IO_CHANNELS_INPUT(0),
-	},
+    .io_channel =
+        {
+            DT_INST_IO_CHANNELS_LABEL(0),
+            DT_INST_IO_CHANNELS_INPUT(0),
+        },
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
-	.power_gpios = {
-		DT_INST_GPIO_LABEL(0, power_gpios),
-		DT_INST_PIN(0, power_gpios),
-		DT_INST_FLAGS(0, power_gpios),
-	},
+    .power_gpios =
+        {
+            DT_INST_GPIO_LABEL(0, power_gpios),
+            DT_INST_PIN(0, power_gpios),
+            DT_INST_FLAGS(0, power_gpios),
+        },
 #endif
-	.output_ohm = DT_INST_PROP(0, output_ohms),
-	.full_ohm = DT_INST_PROP(0, full_ohms),
+    .output_ohm = DT_INST_PROP(0, output_ohms),
+    .full_ohm = DT_INST_PROP(0, full_ohms),
 };
 
-DEVICE_AND_API_INIT(bvd_dev, DT_INST_LABEL(0), &bvd_init,
-		&bvd_data, &bvd_cfg, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY,
-		&bvd_api);
+DEVICE_AND_API_INIT(bvd_dev, DT_INST_LABEL(0), &bvd_init, &bvd_data, &bvd_cfg, POST_KERNEL,
+                    CONFIG_SENSOR_INIT_PRIORITY, &bvd_api);
