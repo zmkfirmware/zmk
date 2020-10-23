@@ -16,6 +16,8 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
 struct io_channel_config {
     const char *label;
     uint8_t channel;
@@ -203,3 +205,5 @@ static const struct bvd_config bvd_cfg = {
 
 DEVICE_AND_API_INIT(bvd_dev, DT_INST_LABEL(0), &bvd_init, &bvd_data, &bvd_cfg, POST_KERNEL,
                     CONFIG_SENSOR_INIT_PRIORITY, &bvd_api);
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
