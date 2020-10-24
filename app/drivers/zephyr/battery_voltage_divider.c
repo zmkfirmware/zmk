@@ -58,6 +58,11 @@ static int bvd_sample_fetch(struct device *dev, enum sensor_channel chan) {
     const struct bvd_config *drv_cfg = dev->config_info;
     struct adc_sequence *as = &drv_data->as;
 
+    // Make sure selected channel is supported
+    if (chan != SENSOR_CHAN_GAUGE_VOLTAGE && chan != SENSOR_CHAN_GAUGE_STATE_OF_CHARGE) {
+        return -ENOTSUP;
+    }
+
     int rc = 0;
 
     // Enable power GPIO if present
