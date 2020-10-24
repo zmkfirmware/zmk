@@ -7,12 +7,10 @@
 #define DT_DRV_COMPAT zmk_battery_voltage_divider
 
 #include <device.h>
-#include <drivers/kscan.h>
 #include <drivers/gpio.h>
 #include <drivers/adc.h>
 #include <drivers/sensor.h>
 #include <logging/log.h>
-#include <math.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -47,10 +45,16 @@ struct bvd_data {
 };
 
 static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
-    // Magic function that maps mV to this discharge graph from adafruit:
+    // Simple linear approximation of a battery based off adafruit's discharge graph:
     // https://learn.adafruit.com/li-ion-and-lipoly-batteries/voltages
-    return round(106.818 +
-                 (-0.032685 - 106.818) / pow(1 + pow(bat_mv / 3679.35, 58.979), 0.347386));
+    
+    if (bat_mv >= 4200) {
+        return 100;
+    } else if (bat_mv <= 3450) {
+        return 0;
+    }
+
+    return bat_mv * 2 / 15 - 459;
 }
 
 static int bvd_sample_fetch(struct device *dev, enum sensor_channel chan) {
@@ -142,7 +146,7 @@ static int bvd_init(struct device *dev) {
 
     if (drv_data->adc == NULL) {
         LOG_ERR("ADC %s failed to retrieve", drv_cfg->io_channel.label);
-        return -ENOENT;
+        return -ENODEV;
     }
 
     int rc = 0;
@@ -151,7 +155,7 @@ static int bvd_init(struct device *dev) {
         drv_data->gpio = device_get_binding(drv_cfg->power_gpios.label);
         if (drv_data->gpio == NULL) {
             LOG_ERR("Failed to get GPIO %s", drv_cfg->power_gpios.label);
-            return -ENOENT;
+            return -ENODEV;
         }
         rc = gpio_pin_configure(drv_data->gpio, drv_cfg->power_gpios.pin,
                                 GPIO_OUTPUT_INACTIVE | drv_cfg->power_gpios.flags);
