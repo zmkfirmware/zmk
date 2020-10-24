@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
 #include <zmk/usb.h>
 #include <zmk/hog.h>
 #include <zmk/event-manager.h>
+#include <zmk/events/ble-active-profile-changed.h>
 #include <zmk/events/usb-conn-state-changed.h>
 
 #include <logging/log.h>
@@ -19,8 +21,9 @@ enum endpoint {
     ENDPOINT_BLE,
 };
 
-static enum endpoint current_endpoint =
-    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_BLE), (ENDPOINT_BLE), (ENDPOINT_USB));
+#define DEFAULT_ENDPOINT COND_CODE_1(IS_ENABLED(CONFIG_ZMK_BLE), (ENDPOINT_BLE), (ENDPOINT_USB))
+
+static enum endpoint current_endpoint = DEFAULT_ENDPOINT;
 
 static int send_keypad_report() {
     struct zmk_hid_keypad_report *keypad_report = zmk_hid_get_keypad_report();
@@ -115,15 +118,22 @@ static bool is_ble_ready() {
 static enum endpoint get_selected_endpoint() {
     if (is_ble_ready()) {
         if (is_usb_ready()) {
-            LOG_DBG("Both endpoints ready. Selecting USB");
+            LOG_DBG("Both endpoints are ready.");
             // TODO: add user setting to control this
             return ENDPOINT_USB;
         }
 
+        LOG_DBG("Only BLE is ready.");
         return ENDPOINT_BLE;
     }
 
-    return ENDPOINT_USB;
+    if (is_usb_ready()) {
+        LOG_DBG("Only USB is ready.");
+        return ENDPOINT_USB;
+    }
+
+    LOG_DBG("No endpoints are ready.");
+    return DEFAULT_ENDPOINT;
 }
 
 static void disconnect_current_endpoint() {
@@ -149,7 +159,9 @@ static int endpoint_listener(const struct zmk_event_header *eh) {
 }
 
 ZMK_LISTENER(endpoint_listener, endpoint_listener);
-#if IS_ENABLED(CONFIG_USB)
+#if IS_ENABLED(CONFIG_ZMK_USB)
 ZMK_SUBSCRIPTION(endpoint_listener, usb_conn_state_changed);
 #endif
-// TODO: add BLE state subscription
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+ZMK_SUBSCRIPTION(endpoint_listener, ble_active_profile_changed);
+#endif
