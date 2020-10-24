@@ -1,0 +1,9 @@
+/ {
+    behaviors {
+        end: behavior_endpoints {
+            compatible = "zmk,behavior-endpoints";
+            label = "ENDPOINTS";
+            #binding-cells = <1>;
+        };
+    };
+};
