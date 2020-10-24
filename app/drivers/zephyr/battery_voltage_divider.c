@@ -47,7 +47,7 @@ struct bvd_data {
 static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
     // Simple linear approximation of a battery based off adafruit's discharge graph:
     // https://learn.adafruit.com/li-ion-and-lipoly-batteries/voltages
-    
+
     if (bat_mv >= 4200) {
         return 100;
     } else if (bat_mv <= 3450) {
