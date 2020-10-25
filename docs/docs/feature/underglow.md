@@ -36,7 +36,7 @@ If your board or shield does not have RGB underglow configured, refer to [Adding
 There are various Kconfig options used to configure the RGB underglow feature. These can all be set in the `.conf` file.
 
 | Option                        | Description                                    | Default |
-|-------------------------------|------------------------------------------------|---------|
+| ----------------------------- | ---------------------------------------------- | ------- |
 | `ZMK_RGB_UNDERGLOW_HUE_STEP`  | Hue step in degrees of 360 used by RGB actions | 10      |
 | `ZMK_RGB_UNDERGLOW_SAT_STEP`  | Saturation step in percent used by RGB actions | 10      |
 | `ZMK_RGB_UNDERGLOW_BRT_STEP`  | Brightness step in percent used by RGB actions | 10      |

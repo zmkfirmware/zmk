@@ -12,7 +12,8 @@ const features = [
     imageUrl: "img/undraw_zephyr.svg",
     description: (
       <>
-        With a wide range of architecture support, ZMK is ready for many existing keyboards.
+        With a wide range of architecture support, ZMK is ready for many
+        existing keyboards.
       </>
     ),
   },
@@ -20,19 +21,13 @@ const features = [
     title: <>Permissive Licensing</>,
     imageUrl: "img/undraw_open_source.svg",
     description: (
-      <>
-        MIT licensed to remove any future limitations in innovation.
-      </>
+      <>MIT licensed to remove any future limitations in innovation.</>
     ),
   },
   {
     title: <>Wireless First</>,
     imageUrl: "img/undraw_wireless.svg",
-    description: (
-      <>
-        Designed for the future, including wireless support.
-      </>
-    ),
+    description: <>Designed for the future, including wireless support.</>,
   },
 ];
 
