@@ -78,16 +78,16 @@ int zmk_hid_implicit_modifiers_release() {
 }
 
 int zmk_hid_keypad_press(zmk_key code) {
-    if (code >= LCTL && code <= RGUI) {
-        return zmk_hid_register_mod(code - LCTL);
+    if (code >= LEFT_CONTROL && code <= RIGHT_GUI) {
+        return zmk_hid_register_mod(code - LEFT_CONTROL);
     }
     TOGGLE_KEYPAD(0U, code);
     return 0;
 };
 
 int zmk_hid_keypad_release(zmk_key code) {
-    if (code >= LCTL && code <= RGUI) {
-        return zmk_hid_unregister_mod(code - LCTL);
+    if (code >= LEFT_CONTROL && code <= RIGHT_GUI) {
+        return zmk_hid_unregister_mod(code - LEFT_CONTROL);
     }
     TOGGLE_KEYPAD(code, 0U);
     return 0;
