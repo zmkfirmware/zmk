@@ -5,8 +5,10 @@
   "scripts": {
     "start": "docusaurus start",
     "build": "docusaurus build",
+    "serve": "docusaurus serve",
     "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy"
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear"
   },
   "dependencies": {
     "@docusaurus/core": "^2.0.0-alpha.66",
