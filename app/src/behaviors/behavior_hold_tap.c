@@ -429,7 +429,8 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
 }
 
 static inline bool only_mods(struct keycode_state_changed *ev) {
-    return ev->usage_page == HID_USAGE_KEY && ev->keycode >= LCTL && ev->keycode <= RGUI;
+    return ev->usage_page == HID_USAGE_KEY && ev->keycode >= LEFT_CONTROL &&
+           ev->keycode <= RIGHT_GUI;
 }
 
 static int keycode_state_changed_listener(const struct zmk_event_header *eh) {
