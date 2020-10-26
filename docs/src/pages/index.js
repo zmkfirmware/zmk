@@ -5,6 +5,7 @@ import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
+import PropTypes from "prop-types";
 
 const features = [
   {
@@ -45,6 +46,12 @@ function Feature({ imageUrl, title, description }) {
     </div>
   );
 }
+
+Feature.propTypes = {
+  imageUrl: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+};
 
 function Home() {
   const context = useDocusaurusContext();
