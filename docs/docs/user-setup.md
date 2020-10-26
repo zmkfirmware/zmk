@@ -75,7 +75,7 @@ bash -c "$(curl -fsSL https://zmkfirmware.dev/setup.sh)"
 <TabItem value="wget">
 
 ```
-bash -c "$(wget https://zmkfirmware.dev/setup.sh -O -)"
+bash -c "$(wget https://zmkfirmware.dev/setup.sh -O -)" '' --wget
 ```
 
 </TabItem>
