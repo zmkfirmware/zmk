@@ -6,8 +6,3 @@ description: Key press/release behavior
 compatible: "zmk,behavior-key-press"
 
 include: one_param.yaml
-
-properties:
-  usage_page:
-    type: int
-    default: 0

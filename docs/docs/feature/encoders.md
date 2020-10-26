@@ -25,7 +25,7 @@ Rotation is handled separately as a type of sensor. The behavior for this is set
 sensor-bindings = <BINDING CW_KEY CCW_KEY>;
 ```
 
-- `BINDING` is one of two rotation bindings that are currently defined, `&inc_dec_cp` for consumer key presses or `&inc_dec_kp` for normal key presses (see [Key Press](/docs/behavior/key-press) for the difference between the two).
+- `BINDING`, for now, has only one behavior available; `&inc_dec_kp` for key presses (see [Key Press](/docs/behavior/key-press) for details on available keycodes).
 - `CW_KEY` is the keycode activated by a clockwise turn.
 - `CCW_KEY` is the keycode activated by a counter-clockwise turn.
 
@@ -34,7 +34,7 @@ Additional encoders can be configured by adding more `BINDING CW_KEY CCW_KEY` se
 As an example, a complete `sensor-bindings` for a Kyria with two encoders could look like:
 
 ```
-sensor-bindings = <&inc_dec_cp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
 ```
 
 Here, the left encoder is configured to control volume up and down while the right encoder sends either Page Up or Page Down.

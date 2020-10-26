@@ -377,7 +377,7 @@ Here is an example simple keymap for the Kyria, with only one layer:
                                  &kp LGUI  &kp DEL   &kp RET    &kp SPACE &kp ESC      &kp RET   &kp SPACE &kp TAB   &kp BSPC  &kp RALT
 			>;
 
-			sensor-bindings = <&inc_dec_cp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
 		};
 	};
 };
@@ -385,15 +385,14 @@ Here is an example simple keymap for the Kyria, with only one layer:
 ```
 
 :::note
-The two `#include` lines at the top of the keymap are required in order to bring in the default set of behaviors to make them available to bind, and to import a set of defines for the HID keycodes, so keymaps can use parameters like `N2` or `K` instead of the raw keycode numeric values.
+The two `#include` lines at the top of the keymap are required in order to bring in the default set of behaviors to make them available to bind, and to import a set of defines for the key codes, so keymaps can use parameters like `N2` or `K` instead of the raw keycode numeric values.
 :::
 
 ### Keymap Behaviors
 
 Further documentation on behaviors and bindings is forthcoming, but a summary of the current behaviors you can bind to key positions is as follows:
 
-- `kp` is the "key press" behavior, and takes a single binding argument of the HID keycode from the 'keyboard/keypad" HID usage table.
-- `cp` is the "consumer key press" behavior, and takes a single binding argument of the HID keycode from the "consumer page" HID usage table. This is mostly useful for media keys.
+- `kp` is the "key press" behavior, and takes a single binding argument of the key code from the 'keyboard/keypad" HID usage table.
 - `mo` is the "momentary layer" behaviour, and takes a single binding argument of the numeric ID of the layer to momentarily enable when that key is held.
 - `trans` is the "transparent" behavior, useful to be place in higher layers above `mo` bindings to be sure the key release is handled by the lower layer. No binding arguments are required.
 - `mt` is the "mod-tap" behavior, and takes two binding arguments, the modifier to use if held, and the keycode to send if tapped.
@@ -476,7 +475,7 @@ For split keyboards, make sure to add left hand encoders to the left .overlay fi
 Add the following line to your keymap file to add default encoder behavior bindings:
 
 ```
-sensor-bindings = <&inc_dec_cp C_VOL_UP C_VOL_DN>;
+sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 ```
 
 Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](/docs/feature/encoders) and [Keymap](/docs/feature/keymaps) feature documentation for more details.
