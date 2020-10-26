@@ -9,6 +9,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/hid.h>
 #include <dt-bindings/zmk/modifiers.h>
+#include <dt-bindings/zmk/hid_usage_pages.h>
 
 static struct zmk_hid_keypad_report kp_report = {
     .report_id = 1, .body = {.modifiers = 0, ._reserved = 0, .keys = {0}}};
@@ -78,16 +79,16 @@ int zmk_hid_implicit_modifiers_release() {
 }
 
 int zmk_hid_keypad_press(zmk_key code) {
-    if (code >= LEFT_CONTROL && code <= RIGHT_GUI) {
-        return zmk_hid_register_mod(code - LEFT_CONTROL);
+    if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
+        return zmk_hid_register_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
     }
     TOGGLE_KEYPAD(0U, code);
     return 0;
 };
 
 int zmk_hid_keypad_release(zmk_key code) {
-    if (code >= LEFT_CONTROL && code <= RIGHT_GUI) {
-        return zmk_hid_unregister_mod(code - LEFT_CONTROL);
+    if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
+        return zmk_hid_unregister_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
     }
     TOGGLE_KEYPAD(code, 0U);
     return 0;

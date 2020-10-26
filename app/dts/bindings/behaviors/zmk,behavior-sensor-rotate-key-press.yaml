@@ -13,9 +13,6 @@ properties:
     type: int
     required: true
     const: 2
-  usage_page:
-    type: int
-    default: 0
 
 sensor-binding-cells:
   - param1
