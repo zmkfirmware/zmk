@@ -15,6 +15,8 @@
 
 #define ZMK_HID_KEYPAD_NKRO_SIZE 6
 
+#define ZMK_HID_CONSUMER_NKRO_SIZE 6
+
 static const u8_t zmk_hid_report_desc[] = {
     /* USAGE_PAGE (Generic Desktop) */
     HID_GI_USAGE_PAGE,
@@ -111,9 +113,9 @@ static const u8_t zmk_hid_report_desc[] = {
     /* REPORT_SIZE (8) */
     HID_GI_REPORT_SIZE,
     0x08,
-    /* REPORT_COUNT (8) */
+    /* REPORT_COUNT (ZMK_HID_CONSUMER_NKRO_SIZE) */
     HID_GI_REPORT_COUNT,
-    0x06,
+    ZMK_HID_CONSUMER_NKRO_SIZE,
     HID_MI_INPUT,
     0x00,
     /* END COLLECTION */
@@ -138,7 +140,7 @@ struct zmk_hid_keypad_report {
 } __packed;
 
 struct zmk_hid_consumer_report_body {
-    u8_t keys[6];
+    u8_t keys[ZMK_HID_CONSUMER_NKRO_SIZE];
 } __packed;
 
 struct zmk_hid_consumer_report {

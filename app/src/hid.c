@@ -12,8 +12,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static struct zmk_hid_keypad_report kp_report = {.report_id = 1,
                                                  .body = {.modifiers = 0, .keys = {0}}};
 
-static struct zmk_hid_consumer_report consumer_report = {.report_id = 2,
-                                                         .body = {.keys = {0, 0, 0, 0, 0, 0}}};
+static struct zmk_hid_consumer_report consumer_report = {.report_id = 2, .body = {.keys = {0}}};
 
 #define _TOGGLE_MOD(mod, state)                                                                    \
     if (modifier > MOD_RGUI) {                                                                     \
@@ -35,8 +34,6 @@ int zmk_hid_unregister_mods(zmk_mod_flags modifiers) {
     return 0;
 }
 
-#define MAX_KEYS 6
-
 #define TOGGLE_KEYPAD(match, val)                                                                  \
     for (int idx = 0; idx < ZMK_HID_KEYPAD_NKRO_SIZE; idx++) {                                     \
         if (kp_report.body.keys[idx] != match) {                                                   \
@@ -47,7 +44,7 @@ int zmk_hid_unregister_mods(zmk_mod_flags modifiers) {
     }
 
 #define TOGGLE_CONSUMER(match, val)                                                                \
-    for (int idx = 0; idx < MAX_KEYS; idx++) {                                                     \
+    for (int idx = 0; idx < ZMK_HID_CONSUMER_NKRO_SIZE; idx++) {                                   \
         if (consumer_report.body.keys[idx] != match) {                                             \
             continue;                                                                              \
         }                                                                                          \
