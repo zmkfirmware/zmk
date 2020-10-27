@@ -21,6 +21,12 @@ config ZMK_KSCAN_INIT_PRIORITY
 	help
 	  Keyboard scan device driver initialization priority.
 
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+	bool "ZMK battery voltage divider"
+	select ADC
+	help
+		Enable ZMK battery voltage divider driver for battery monitoring.
+
 menuconfig EC11
 	bool "EC11 Incremental Encoder Sensor"
 	depends on GPIO
