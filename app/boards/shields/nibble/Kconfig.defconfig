@@ -4,7 +4,7 @@
 if SHIELD_NIBBLE
 
 config ZMK_KEYBOARD_NAME
-	default "NIBBLE_BLE"
+	default "NIBBLE"
 
 config ZMK_USB
 	default y
