@@ -1,0 +1,22 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: GPIO keyboard demux controller
+
+compatible: "zmk,kscan-gpio-demux"
+
+include: kscan.yaml
+
+properties:
+  input-gpios:
+    type: phandle-array
+    required: true
+  output-gpios:
+    type: phandle-array
+    required: true
+  debounce-period:
+    type: int
+    default: 5
+  polling-interval-msec:
+    type: int
+    default: 25

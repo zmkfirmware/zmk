@@ -5,6 +5,7 @@ if(CONFIG_ZMK_KSCAN_GPIO_DRIVER)
   zephyr_library_sources(
     kscan_gpio_matrix.c
     kscan_gpio_direct.c
+    kscan_gpio_demux.c
     )
 
   zephyr_library_sources_ifdef(CONFIG_EC11 ec11.c)
