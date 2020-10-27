@@ -18,7 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 struct kscan_mock_data {
     kscan_callback_t callback;
 
-    u8_t event_index;
+    u32_t event_index;
     struct k_delayed_work work;
     struct device *dev;
 };
