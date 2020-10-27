@@ -59,6 +59,19 @@ static const u8_t zmk_hid_report_desc[] = {
     /* USAGE_PAGE (Keypad) */
     HID_GI_USAGE_PAGE,
     USAGE_GEN_DESKTOP_KEYPAD,
+    /* REPORT_SIZE (8) */
+    HID_GI_REPORT_SIZE,
+    0x08,
+    /* REPORT_COUNT (1) */
+    HID_GI_REPORT_COUNT,
+    0x01,
+    /* INPUT (Cnst,Var,Abs) */
+    HID_MI_INPUT,
+    0x03,
+
+    /* USAGE_PAGE (Keypad) */
+    HID_GI_USAGE_PAGE,
+    USAGE_GEN_DESKTOP_KEYPAD,
     /* LOGICAL_MINIMUM (0) */
     HID_GI_LOGICAL_MIN(1),
     0x00,
@@ -131,6 +144,7 @@ static const u8_t zmk_hid_report_desc[] = {
 
 struct zmk_hid_keypad_report_body {
     zmk_mod_flags modifiers;
+    u8_t _reserved;
     u8_t keys[ZMK_HID_KEYPAD_NKRO_SIZE];
 } __packed;
 

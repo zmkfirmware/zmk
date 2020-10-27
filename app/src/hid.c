@@ -9,8 +9,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/hid.h>
 
-static struct zmk_hid_keypad_report kp_report = {.report_id = 1,
-                                                 .body = {.modifiers = 0, .keys = {0}}};
+static struct zmk_hid_keypad_report kp_report = {
+    .report_id = 1, .body = {.modifiers = 0, ._reserved = 0, .keys = {0}}};
 
 static struct zmk_hid_consumer_report consumer_report = {.report_id = 2, .body = {.keys = {0}}};
 
