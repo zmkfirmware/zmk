@@ -2,6 +2,10 @@
 
 This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
 
+## License
+
+The ZMK Documentation is licensed [CC-BY-NC-SA](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+
 ### Installation
 
 ```
