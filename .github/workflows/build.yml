@@ -18,6 +18,7 @@ jobs:
           - lily58_right
           - iris_left
           - iris_right
+          - reviung41
           - romac
           - romac_plus
           - settings_reset

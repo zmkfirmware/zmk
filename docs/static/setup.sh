@@ -92,7 +92,7 @@ echo ""
 echo "Keyboard Shield Selection:"
 
 prompt="Pick an keyboard:"
-options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "RoMac" "RoMac+" "makerdiary M60" "Microdox" "TG4X" "QAZ")
+options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "Reviung41" "RoMac" "RoMac+" "makerdiary M60" "Microdox" "TG4X" "QAZ")
 
 PS3="$prompt "
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
@@ -107,12 +107,13 @@ select opt in "${options[@]}" "Quit"; do
     4 ) shield_title="Splitreus62" shield="splitreus62"; split="y"; break;;
     5 ) shield_title="Sofle" shield="sofle"; split="y"; break;;
     6 ) shield_title="Iris" shield="iris"; split="y"; break;;
-    7 ) shield_title="RoMac" shield="romac"; split="n"; break;;
-    8 ) shield_title="RoMac+" shield="romac_plus"; split="n"; break;;
-    9 ) shield_title="M60" shield="m60"; split="n"; break;;
-    10 ) shield_title="Microdox" shield="microdox"; split="y"; break;;
-    11 ) shield_title="TG4X" shield="tg4x"; split="n"; break;;
-    12 ) shield_title="QAZ" shield="qaz"; split="n"; break;;
+    7 ) shield_title="Reviung41" shield="reviung41"; split="n"; break;;
+    8 ) shield_title="RoMac" shield="romac"; split="n"; break;;
+    9 ) shield_title="RoMac+" shield="romac_plus"; split="n"; break;;
+    10 ) shield_title="M60" shield="m60"; split="n"; break;;
+    11 ) shield_title="Microdox" shield="microdox"; split="y"; break;;
+    12 ) shield_title="TG4X" shield="tg4x"; split="n"; break;;
+    13 ) shield_title="QAZ" shield="qaz"; split="n"; break;;
 
     # Add link to docs on adding your own custom shield in your ZMK config!
     # $(( ${#options[@]}+1 )) ) echo "Other!"; break;;
