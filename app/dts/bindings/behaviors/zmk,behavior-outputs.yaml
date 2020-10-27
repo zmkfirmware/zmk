@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: MIT
 #
 
-description: Endpoints Behavior
+description: Output Selection Behavior
 
-compatible: "zmk,behavior-endpoints"
+compatible: "zmk,behavior-outputs"
 
 include: one_param.yaml
