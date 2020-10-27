@@ -24,9 +24,9 @@
 
         num_layer {
             bindings = <
-    &tog 1       &kp NUM_7 &kp NUM_8 &kp NUM_9
-    &mo 2        &kp NUM_4 &kp NUM_5 &kp NUM_6
-    &lt 3 NUM_0  &kp NUM_1 &kp NUM_2 &kp NUM_3
+    &trans      &kp NUM_7 &kp NUM_8 &kp NUM_9
+    &trans      &kp NUM_4 &kp NUM_5 &kp NUM_6
+    &lt 3 NUM_0 &kp NUM_1 &kp NUM_2 &kp NUM_3
             >;
         };
 
