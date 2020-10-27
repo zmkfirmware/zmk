@@ -61,7 +61,9 @@ static int bvd_sample_fetch(struct device *dev, enum sensor_channel chan) {
     struct adc_sequence *as = &drv_data->as;
 
     // Make sure selected channel is supported
-    if (chan != SENSOR_CHAN_GAUGE_VOLTAGE && chan != SENSOR_CHAN_GAUGE_STATE_OF_CHARGE) {
+    if (chan != SENSOR_CHAN_GAUGE_VOLTAGE && chan != SENSOR_CHAN_GAUGE_STATE_OF_CHARGE &&
+        chan != SENSOR_CHAN_ALL) {
+        LOG_DBG("Selected channel is not supported: %d.", chan);
         return -ENOTSUP;
     }
 
