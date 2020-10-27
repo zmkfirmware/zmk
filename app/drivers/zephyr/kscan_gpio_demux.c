@@ -52,8 +52,6 @@ struct kscan_gpio_item_config {
         struct device *dev;                                                                        \
     };                                                                                             \
                                                                                                    \
-    static struct kscan_gpio_irq_callback_##n irq_callbacks_##n[INST_MATRIX_INPUTS(n)];            \
-                                                                                                   \
     struct kscan_gpio_config_##n {                                                                 \
         struct kscan_gpio_item_config rows[INST_MATRIX_INPUTS(n)];                                 \
         struct kscan_gpio_item_config cols[INST_DEMUX_GPIOS(n)];                                   \
@@ -149,17 +147,6 @@ struct kscan_gpio_item_config {
         kscan_gpio_read_##n(data->dev);                                                            \
     }                                                                                              \
                                                                                                    \
-    static void kscan_gpio_irq_callback_handler_##n(struct device *dev, struct gpio_callback *cb,  \
-                                                    gpio_port_pins_t pin) {                        \
-        struct kscan_gpio_irq_callback_##n *data =                                                 \
-            CONTAINER_OF(cb, struct kscan_gpio_irq_callback_##n, callback);                        \
-        CHECK_DEBOUNCE_CFG(n, ({ k_work_submit(data->work); }), ({                                 \
-                               k_delayed_work_cancel(data->work);                                  \
-                               k_delayed_work_submit(data->work,                                   \
-                                                     K_MSEC(DT_INST_PROP(n, debounce_period)));    \
-                           }))                                                                     \
-    }                                                                                              \
-                                                                                                   \
     static struct kscan_gpio_data_##n kscan_gpio_data_##n = {                                      \
         .rows = {[INST_MATRIX_INPUTS(n) - 1] = NULL}, .cols = {[INST_DEMUX_GPIOS(n) - 1] = NULL}}; \
                                                                                                    \
@@ -179,6 +166,8 @@ struct kscan_gpio_item_config {
     static int kscan_gpio_enable_##n(struct device *dev) {                                         \
         LOG_DBG("KSCAN API enable");                                                               \
         struct kscan_gpio_data_##n *data = dev->driver_data;                                       \
+        /* TODO: we might want a follow up to hook into the sleep state hooks in Zephyr, */        \
+        /* and disable this timer when we enter a sleep state */                                   \
         k_timer_start(&data->poll_timer, K_MSEC(POLL_INTERVAL(n)), K_MSEC(POLL_INTERVAL(n)));      \
         return 0;                                                                                  \
     };                                                                                             \
@@ -212,11 +201,6 @@ struct kscan_gpio_item_config {
             } else {                                                                               \
                 LOG_DBG("Configured pin %d on %s for input", in_cfg->pin, in_cfg->label);          \
             }                                                                                      \
-            irq_callbacks_##n[i].work = &data->work;                                               \
-            irq_callbacks_##n[i].dev = dev;                                                        \
-            gpio_init_callback(&irq_callbacks_##n[i].callback,                                     \
-                               kscan_gpio_irq_callback_handler_##n, BIT(in_cfg->pin));             \
-            err = gpio_add_callback(input_devices[i], &irq_callbacks_##n[i].callback);             \
             if (err) {                                                                             \
                 LOG_ERR("Error adding the callback to the column device");                         \
                 return err;                                                                        \
