@@ -17,7 +17,6 @@ list, you will need to clear the bonds.
 
 Split keyboards will need to be cleared on both halves. For best results try to reset them at the same time.
 
-
 ### Kyria
 
 ![Kyria bond-reset combo](assets/bond-clearing/kyria.jpg)

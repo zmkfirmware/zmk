@@ -49,8 +49,8 @@ config SHIELD_MY_BOARD
 
 This will make sure the new configuration `SHIELD_MY_BOARD` is set to true whenever `my_board` is added as a shield in your build.
 
-
 **For split boards**, you will need to add configurations for the left and right sides.
+
 ```
 config SHIELD_MY_BOARD_LEFT
 	def_bool $(shields_list_contains,my_board_left)
@@ -77,7 +77,6 @@ config ZMK_KEYBOARD_NAME
 endif
 ```
 
-
 Similarly to defining the halves of a split board in `Kconfig.shield` it is important to set the `ZMK_KEYBOARD_NAME` for each half of a split keyboard.
 
 ```
@@ -99,7 +98,6 @@ endif
 ## Shield Overlays
 
 ![Labelled Pro Micro pins](assets/pro-micro/pro-micro-pins-labelled.jpg)
-
 
 ZMK uses the green color coded pin names to generate devicetree node references. For example, to refer to the node `D0` in the devicetree files, use `&pro_micro_d 0` or to refer to `A1`, use `&pro_micro_a 1`.
 
@@ -190,7 +188,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,2) RC(4,9) RC(3,6) RC(3,7) 
 			, <&pro_micro_d 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row D from the schematic file
 			, <&pro_micro_d 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row E from the schematic file
 			;
-		
+
 	};
 ```
 
@@ -224,7 +222,7 @@ This is exemplified with the iris .overlay files.
 ```
 // iris_right.overlay
 
-#include "iris.dtsi" 
+#include "iris.dtsi"
 
 &default_transform { // The matrix transform for this board is 6 columns over because the left half is 6 columns wide according to the matrix.
 	col-offset = <6>;
@@ -245,13 +243,13 @@ This is exemplified with the iris .overlay files.
 
 ### .conf files (Split Shields)
 
-While unibody boards only have one .conf file that applies configuration characteristics to the entire keyboard, 
-split keyboards are unique in that they contain multiple .conf files with different scopes. 
+While unibody boards only have one .conf file that applies configuration characteristics to the entire keyboard,
+split keyboards are unique in that they contain multiple .conf files with different scopes.
 For example, a split board called `my_awesome_split_board` would have the following files:
 
-* `my_awesome_split_board.conf` - Configuration elements affect both halves
-* `my_awesome_split_board_left.conf` - Configuration elements only affect left half
-* `my_awesome_split_board_right.conf` - Configuration elements only affect right half
+- `my_awesome_split_board.conf` - Configuration elements affect both halves
+- `my_awesome_split_board_left.conf` - Configuration elements only affect left half
+- `my_awesome_split_board_right.conf` - Configuration elements only affect right half
 
 For proper communication between keyboard halves and that between the central half and the computer,
 the **the central and peripheral halves of the keyboard must be defined**. This can be seen below.
@@ -421,7 +419,6 @@ If building locally for split boards, you may need to add these lines to the spe
 <TabItem value = "dtsi">
 In your device tree file you will need to add the following lines to define the encoder sensor:
 
-  
 ```
 left_encoder: encoder_left {
 		compatible = "alps,ec11";
@@ -431,6 +428,7 @@ left_encoder: encoder_left {
 		resolution = <4>;
 	};
 ```
+
 Here you will have to replace PIN_A and PIN_B with the appropriate pins that your PCB utilizes for the encoder(s). For keyboards that use the Pro Micro or any of the Pro Micro replacements, Sparkfun's [Pro Micro Hookup Guide](https://learn.sparkfun.com/tutorials/pro-micro--fio-v3-hookup-guide/hardware-overview-pro-micro) has a pinout diagram that can be useful to determine the right pins. Reference either the blue numbers labeled "Arduino" (digital pins) or the green numbers labeled "Analog" (analog pins). For pins that are labeled as both digital and analog, refer to your specific board's .dtsi file to determine how you should refer to that pin.
 
 Add additional encoders as necessary by duplicating the above lines, replacing `left` with whatever you would like to call your encoder, and updating the pins. Note that support for peripheral (right) side sensors over BLE is still in progress.
@@ -462,11 +460,12 @@ For split keyboards, make sure to add left hand encoders to the left .overlay fi
 
 </TabItem>
 <TabItem value = "keymap">
-Add the following line to your keymap file to add default encoder behavior bindings:   
+Add the following line to your keymap file to add default encoder behavior bindings:
 
 ```
 sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD>;
 ```
+
 Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](/docs/feature/encoders) and [Keymap](/docs/feature/keymaps) feature documentation for more details.
 
 </TabItem>
@@ -521,6 +520,7 @@ jobs:
           - board: proton_c
             shield: clueboard_california
 ```
+
 :::note
 Notice that both the left and right halves of a split board need to be added to the list of shields for proper error checking.
 :::note

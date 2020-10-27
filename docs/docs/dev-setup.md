@@ -169,9 +169,11 @@ Chocolatey is recommended and used for the following instructions. You can manua
    ```
 
 It is recommended to install `dfu-util` to avoid any later confusion while flashing devices. You can do this by running this command with chocolatey:
-``` shell
+
+```shell
 choco install dfu-util
 ```
+
 </TabItem>
 <TabItem value="mac">
 
@@ -187,7 +189,6 @@ brew install cmake ninja python3 ccache dtc git wget dfu-util
 <TabItem value="docker">
 
 This setup leverages the same [image which is used by the GitHub action](https://github.com/zmkfirmware/zephyr-west-action) for local development. Beyond the benefits of [dev/prod parity](https://12factor.net/dev-prod-parity), this approach is also the easiest to set up. No toolchain or dependencies are necessary when using Docker; the container image you'll be using already has the toolchain installed and set up to use.
-
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your operating system.
 2. Install [VS Code](https://code.visualstudio.com/)
@@ -368,7 +369,6 @@ Since ZMK is built as a Zephyr™ application, the next step is
 to use `west` to initialize and update your workspace. The ZMK
 Zephyr™ application is in the `app/` source directory:
 
-
 #### Step into the repository
 
 <OsTabs>
@@ -419,7 +419,7 @@ Click `Reopen in Container` in order to reopen the VS Code with the running cont
 The first time you do this on your machine, it will pull the docker image down from the registry and build the container. Subsequent launches are much faster!
 
 :::caution
-All subsequent steps must be performed from the VS Code terminal _inside_ the container. 
+All subsequent steps must be performed from the VS Code terminal _inside_ the container.
 :::
 
 </TabItem>
@@ -452,7 +452,6 @@ If you're using Docker, you're done with setup! You must restart the container a
 
 Once your container is restarted, proceed to [Building and Flashing](./dev-build.md).
 :::
-
 
 #### Export Zephyr™ Core
 

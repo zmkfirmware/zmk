@@ -10,11 +10,12 @@ These page contains some of the power management behaviors currently supported b
 ## External Power Control
 
 The External power control behavior allows enabling or disabling the VCC power output
-to save power. Some of the LEDs will consume power even in OFF state. To preserve 
+to save power. Some of the LEDs will consume power even in OFF state. To preserve
 battery life in this scenario, some controller boards have support to disable the
 external power completely.
 
 The following boards currently support this feature:
+
 - nRFMicro
 - nice!nano
 
@@ -31,11 +32,11 @@ This will allow you to reference the actions defined in this header such as `EXT
 
 Here is a table describing the command for each define:
 
-| Define                 | Action                                 | Alias    |
-| ------------           | -------------------------------------- | -------- |
-| `EXT_POWER_OFF_CMD`    | Disable the external power.            | `EP_OFF` |
-| `EXT_POWER_ON_CMD`     | Enable the external power.             | `EP_ON`  |
-| `EXT_POWER_TOGGLE_CMD` | Toggle the external power.             | `EP_TOG` |
+| Define                 | Action                      | Alias    |
+| ---------------------- | --------------------------- | -------- |
+| `EXT_POWER_OFF_CMD`    | Disable the external power. | `EP_OFF` |
+| `EXT_POWER_ON_CMD`     | Enable the external power.  | `EP_ON`  |
+| `EXT_POWER_TOGGLE_CMD` | Toggle the external power.  | `EP_TOG` |
 
 ### Behavior Binding
 
@@ -46,19 +47,18 @@ Here is a table describing the command for each define:
 
 1. Behavior binding to enable the external power
 
-    ```
-    &ext_power EP_ON
-    ```
+   ```
+   &ext_power EP_ON
+   ```
 
 1. Behavior binding to disable the external power
 
-    ```
-    &ext_power EP_OFF
-    ```
+   ```
+   &ext_power EP_OFF
+   ```
 
 1. Behavior binding to toggle the external power
 
-    ```
-    &ext_power EP_TOG
-    ```
-
+   ```
+   &ext_power EP_TOG
+   ```

@@ -56,9 +56,11 @@ values={[
 <TabItem value="linux">
 
 On Linux, this should be a device like `/dev/ttyACM0` and you can connect with `minicom` or `tio` as usual, e.g.:
+
 ```
 sudo tio /dev/ttyACM0
 ```
+
 </TabItem>
 <TabItem value="win">
 

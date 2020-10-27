@@ -62,11 +62,13 @@ west build -b planck_rev6
 ```
 
 ### Pristine Building
+
 When building for a new board and/or shield after having built one previously, you may need to enable the pristine build option. This option removes all existing files in the build directory before regenerating them, and can be enabled by adding either --pristine or -p to the command:
 
 ```sh
 west build -p -b proton_c -- -DSHIELD=kyria_left
 ```
+
 ### Building For Split Keyboards
 
 :::note
@@ -78,24 +80,25 @@ By default, the `build` command outputs a single .uf2 file named `zmk.uf2` so bu
 ```
 west build -d build/left -b nice_nano -- -DSHIELD=kyria_left
 ```
+
 and then building right into `build/right`:
+
 ```
 west build -d build/right -b nice_nano -- -DSHIELD=kyria_right
 ```
+
 This produces `left` and `right` subfolders under the `build` directory and two separate .uf2 files. For future work on a specific half, use the `-d` parameter again to ensure you are building into the correct location.
 
 ### Building from `zmk-config` Folder
 
-Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](user-setup#github-repo) by adding 
+Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](user-setup#github-repo) by adding
 `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build` command. **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
-
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
 
 ```
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
-
 
 ## Flashing
 

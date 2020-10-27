@@ -5,14 +5,15 @@ sidebar_label: Customizing ZMK
 ---
 
 After verifying you can successfully flash the default firmware, you will probably want to begin customizing your keymap and other keyboard options.
-[In the initial setup tutorial](user-setup), you created a Github repository called `zmk-config`. This repository is a discrete filesystem which works 
-with the main `zmk` firmware repository to build your desired firmware. The main advantage of a discrete configuration folder is ensuring that the 
-working components of ZMK are kept separate from your personal keyboard settings, reducing the amount of file manipulation in the configuration process. 
+[In the initial setup tutorial](user-setup), you created a Github repository called `zmk-config`. This repository is a discrete filesystem which works
+with the main `zmk` firmware repository to build your desired firmware. The main advantage of a discrete configuration folder is ensuring that the
+working components of ZMK are kept separate from your personal keyboard settings, reducing the amount of file manipulation in the configuration process.
 This makes flashing ZMK to your keyboard much easier, especially because you don't need to keep an up-to-date copy of zmk on your computer at all times.
 
 On default `zmk-config` folder should contain two files:
-* `<shield>.conf`
-* `<shield>`.keymap
+
+- `<shield>.conf`
+- `<shield>`.keymap
 
 However, your config folder can also be modified to include a `boards/` directory for keymaps and configurations for multiple boards/shields
 outside of the default keyboard setting definitions.
@@ -39,11 +40,10 @@ If you need to, a review of [Learn The Basics Of Git In Under 10 Minutes](https:
 
 ## Building from a local `zmk` fork using `zmk-config`
 
-[As outlined here](dev-build-flash), firmware comes in the form of .uf2 files, which can be built locally using the command `west build`. Normally, 
+[As outlined here](dev-build-flash), firmware comes in the form of .uf2 files, which can be built locally using the command `west build`. Normally,
 `west build` will default to using the in-tree .keymap and .conf files found in your local copy of the `zmk` repository. However, you can append the command, `-DZMK_CONFIG="C:/the/absolute/path/config"` to `west build` in order to use the contents of your `zmk-config` folder instead of the
 default keyboard settings.
- **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
-
+**Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
 

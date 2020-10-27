@@ -40,4 +40,3 @@ You can configure a different tapping term in your keymap:
     }
 }
 ```
-

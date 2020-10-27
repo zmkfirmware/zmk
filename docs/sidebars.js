@@ -6,7 +6,7 @@ module.exports = {
       "faq",
       "user-setup",
       "customization",
-      "troubleshooting"
+      "troubleshooting",
     ],
     Features: [
       "feature/keymaps",
@@ -33,8 +33,6 @@ module.exports = {
       "dev-posix-board",
       "dev-tests",
     ],
-    "Dev Guides": [
-      "dev-guide-new-shield",
-      "dev-guide-usb-logging"],
+    "Dev Guides": ["dev-guide-new-shield", "dev-guide-usb-logging"],
   },
 };
