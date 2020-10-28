@@ -6,7 +6,7 @@ module.exports = {
       "faq",
       "user-setup",
       "customization",
-      "troubleshooting"
+      "troubleshooting",
     ],
     Features: [
       "feature/keymaps",
@@ -23,6 +23,7 @@ module.exports = {
       "behavior/reset",
       "behavior/bluetooth",
       "behavior/lighting",
+      "behavior/power",
     ],
     Development: [
       "dev-clean-room",
@@ -32,8 +33,6 @@ module.exports = {
       "dev-posix-board",
       "dev-tests",
     ],
-    "Dev Guides": [
-      "dev-guide-new-shield",
-      "dev-guide-usb-logging"],
+    "Dev Guides": ["dev-guide-new-shield", "dev-guide-usb-logging"],
   },
 };

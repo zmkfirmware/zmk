@@ -29,6 +29,18 @@
 		};
 	};
 
+	vbatt {
+		compatible = "zmk,battery-voltage-divider";
+		label = "VOLTAGE_DIVIDER";
+		io-channels = <&adc 7>;
+		output-ohms = <2000000>;
+		full-ohms = <(2000000 + 806000)>;
+	};
+
+};
+
+&adc {
+	status = "okay";
 };
 
 &gpio0 {

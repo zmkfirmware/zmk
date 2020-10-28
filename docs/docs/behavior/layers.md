@@ -46,6 +46,7 @@ Example:
 The "layer-tap" behavior enables a layer when a key is held, and output another key when the key is only tapped for a short time. For more information on the inner workings of layer-tap, see [hold-tap](./hold-tap.md).
 
 ### Behavior Binding
+
 - Reference: `&lt`
 - Parameter: The layer number to enable when held, e.g. `1`
 - Parameter: The keycode to send when tapped, e.g. `A`
@@ -55,7 +56,6 @@ Example:
 ```
 &lt LOWER SPC
 ```
-
 
 ## Toggle Layer
 

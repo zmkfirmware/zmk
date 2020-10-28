@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+
+            bindings = <
+    &tog 1 &cp M_PREV &cp M_PLAY &cp M_NEXT
+    &mo 2  &cp M_VOLD &kp UARW   &cp M_VOLU
+    &mo 3  &kp LARW   &kp DARW   &kp RARW
+            >;
+
+        };
+
+        num_layer {
+            bindings = <
+    &trans      &kp NUM_7 &kp NUM_8 &kp NUM_9
+    &trans      &kp NUM_4 &kp NUM_5 &kp NUM_6
+    &lt 3 NUM_0 &kp NUM_1 &kp NUM_2 &kp NUM_3
+            >;
+        };
+
+        lower_layer {
+            bindings = <
+    &bt BT_CLR &none        &reset       &bootloader
+    &trans     &bt BT_SEL 3 &bt BT_SEL 4 &none
+    &none      &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2
+            >;
+        };
+
+        raise_layer {
+            bindings = <
+    &kp 0x68 &kp 0x69 &kp 0x6A &kp 0x6B
+    &kp 0x6C &kp 0x6D &kp 0x6E &kp 0x6F
+    &trans   &kp 0x70 &kp 0x71 &kp 0x72
+            >;
+        };
+    };
+};

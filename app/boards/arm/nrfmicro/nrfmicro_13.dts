@@ -31,6 +31,18 @@
 		label = "EXT_POWER";
 		control-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
 	};
+
+	vbatt {
+		compatible = "zmk,battery-voltage-divider";
+		label = "VOLTAGE_DIVIDER";
+		io-channels = <&adc 2>;
+		output-ohms = <2000000>;
+		full-ohms = <(2000000 + 820000)>;
+	};
+};
+
+&adc {
+	status = "okay";
 };
 
 &gpio0 {
