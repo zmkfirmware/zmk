@@ -169,7 +169,7 @@ int update_advertising() {
     struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
-    if (active_profile_is_open() || !zmk_ble_active_profile_is_connected()) {
+    if (active_profile_is_open()) {
         desired_adv = ZMK_ADV_CONN;
     } else if (!zmk_ble_active_profile_is_connected()) {
         desired_adv = ZMK_ADV_CONN;
