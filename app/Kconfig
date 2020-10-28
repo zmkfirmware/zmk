@@ -30,16 +30,12 @@ config ZMK_USB
 	select USB_DEVICE_STACK
 	select USB_DEVICE_HID
 
-if ZMK_USB
-
-config ZMK_USB_INIT_PRIORITY
-	int "USB Init Priority"
-	default 50
+if USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
 
-#ZMK_USB
+#USB
 endif
 
 config ZMK_BLE
@@ -56,10 +52,6 @@ config ZMK_BLE
 
 if ZMK_BLE
 
-config ZMK_BLE_INIT_PRIORITY
-	int "BLE Init Priority"
-	default 50
-	
 config SYSTEM_WORKQUEUE_STACK_SIZE
 	default 2048
 
@@ -271,7 +263,32 @@ config ZMK_EXT_POWER
 #Power Management
 endmenu
 
-menu "KSCAN Settings (Advanced)"
+menu "Advanced"
+
+menu "Initialization Priorities"
+
+if USB
+
+config ZMK_USB_INIT_PRIORITY
+	int "USB Init Priority"
+	default 50
+
+#USB
+endif
+
+if ZMK_BLE || ZMK_SPLIT_BLE
+
+config ZMK_BLE_INIT_PRIORITY
+	int "BLE Init Priority"
+	default 50
+
+#ZMK_BLE || ZMK_SPLIT_BLE
+endif
+
+#Initialization Priorities
+endmenu
+
+menu "KSCAN Settings"
 
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
 	int "Size of the event queue for KSCAN events to buffer events"
@@ -285,7 +302,10 @@ config ZMK_KSCAN_COMPOSITE_DRIVER
 	bool "Enable composite kscan driver to combine kscan devices"
 	default n
 
-#KSCAN Settings (Advanced)
+#KSCAN Settings
+endmenu
+
+#Advanced
 endmenu
 
 #ZMK
