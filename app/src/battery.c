@@ -55,9 +55,7 @@ K_TIMER_DEFINE(battery_timer, zmk_battery_timer, NULL);
 static int zmk_battery_init(struct device *_arg) {
     battery = device_get_binding("BATTERY");
 
-    if (battery) {
-        LOG_DBG("Found battery reporting device.");
-    } else {
+    if (battery == NULL) {
         LOG_DBG("No battery device labelled BATTERY found.");
         return -ENODEV;
     }
