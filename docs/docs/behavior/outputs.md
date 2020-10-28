@@ -42,18 +42,18 @@ The output selection behavior changes the preferred output on press.
 
 1. Behavior binding to prefer sending keyboard output to USB
 
-    ```
-    &out OUT_USB
-    ```
+   ```
+   &out OUT_USB
+   ```
 
 1. Behavior binding to prefer sending keyboard output to the current bluetooth profile
 
-    ```
-    &out OUT_BLE
-    ```
+   ```
+   &out OUT_BLE
+   ```
 
 1. Behavior binding to toggle between preferring USB and BLE
 
-    ```
-    &out OUT_TOG
-    ```
+   ```
+   &out OUT_TOG
+   ```
