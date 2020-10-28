@@ -31,6 +31,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [Reviung41](https://github.com/gtips/reviung/tree/master/reviung41) (`reviung41`)
 - [RoMac+ v4](https://www.littlekeyboards.com/products/romac) (`romac_plus`)
 - [RoMac v2](https://mechboards.co.uk/shop/kits/romac-macro-pad/) (`romac`)
+- [Boardsource 3x4 Macro](https://boardsource.xyz/store/5ecc2008eee64242946c98c1) (`boardsource3x4`)
 - [QAZ](https://www.cbkbd.com/product/qaz-keyboard-kit) (`qaz`)
 
 ## Other Hardware
