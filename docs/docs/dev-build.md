@@ -100,6 +100,12 @@ For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
 
+:::note VSCode Remote Container Setup
+In order to make your `zmk-config` folder available when building within the VSCode Remote Container, first set the `ZMK_CONFIG_DIR` environment variable in your host to point to the full path of your config directory, e.g. `export ZMK_CONFIG_DIR=/home/peter/git/zmk-config`, and then restart VSCode.
+
+Once VSCode is launched using the container environment, the config directory will be mounted and available at `/workspaces/zmk-config` in the container.
+:::
+
 ## Flashing
 
 Once built, the previously supplied parameters will be remembered so you can run the following to flash your
