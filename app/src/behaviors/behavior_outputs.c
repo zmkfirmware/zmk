@@ -21,11 +21,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
-    case OUTPUT_TOGGLE_CMD:
+    case OUT_TOG:
         return zmk_endpoints_toggle();
-    case OUTPUT_USB_CMD:
+    case OUT_USB:
         return zmk_endpoints_select(ZMK_ENDPOINT_USB);
-    case OUTPUT_BLE_CMD:
+    case OUT_BLE:
         return zmk_endpoints_select(ZMK_ENDPOINT_BLE);
     default:
         LOG_ERR("Unknown output command: %d", binding->param1);
