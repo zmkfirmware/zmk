@@ -30,12 +30,12 @@ config ZMK_USB
 	select USB_DEVICE_STACK
 	select USB_DEVICE_HID
 
-if USB
+if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
 
-#USB
+#ZMK_USB
 endif
 
 config ZMK_BLE
@@ -86,17 +86,9 @@ if ZMK_SPLIT
 
 config ZMK_SPLIT_BLE
 	bool "Split keyboard support via BLE transport"
+	depends on ZMK_BLE
 	default y
 	select BT_USER_PHY_UPDATE
-	select BT
-	select BT_SMP
-	select BT_SMP_SC_PAIR_ONLY
-	select BT_SMP_APP_PAIRING_ACCEPT
-	select BT_PERIPHERAL
-	select BT_GATT_DIS
-	select BT_GATT_BAS
-	select BT_SETTINGS
-	select SETTINGS
 
 if ZMK_SPLIT_BLE
 
@@ -138,7 +130,7 @@ endif
 #ZMK_SPLIT
 endif 
 
-if ZMK_BLE || ZMK_SPLIT_BLE
+if ZMK_BLE
 
 if ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
 
@@ -162,7 +154,7 @@ config BT_MAX_PAIRED
 #!ZMK_SPLIT_BLE
 endif
 
-#ZMK_BLE || ZMK_SPLIT_BLE
+#ZMK_BLE
 endif
 
 #Split Support
