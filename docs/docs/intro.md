@@ -16,7 +16,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | ---------------------------------------------------------------------------------------------------------------------- | :-: | :-------: | :-: |
 | Low Latency BLE Support                                                                                                | ✅  |    ✅     |     |
 | Multi-Device BLE Support                                                                                               | ✅  |           |     |
-| USB Connectivity                                                                                                       | ✅  |           | ✅  |
+| [USB Connectivity](behavior/outputs)                                                                                   | ✅  |           | ✅  |
 | User Configuration Repositories                                                                                        | ✅  |           |     |
 | Split Keyboard Support                                                                                                 | ✅  |    ✅     | ✅  |
 | [Keymaps and Layers](behavior/layers)                                                                                  | ✅  |    ✅     | ✅  |
