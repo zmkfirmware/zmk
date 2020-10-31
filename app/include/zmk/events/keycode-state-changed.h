@@ -20,11 +20,12 @@ struct keycode_state_changed {
 
 ZMK_EVENT_DECLARE(keycode_state_changed);
 
-static inline struct keycode_state_changed *create_keycode_state_changed(u8_t usage_page, u32_t keycode, bool state) {
+static inline struct keycode_state_changed *
+create_keycode_state_changed(u8_t usage_page, u32_t keycode, bool state) {
     struct keycode_state_changed *ev = new_keycode_state_changed();
     ev->usage_page = usage_page;
     ev->keycode = STRIP_MODS(keycode);
-    ev->implicit_modifiers = SELECT_MODS(keycode); 
+    ev->implicit_modifiers = SELECT_MODS(keycode);
     ev->state = state;
     return ev;
 }
