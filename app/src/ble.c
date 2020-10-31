@@ -94,6 +94,12 @@ static void raise_profile_changed_event() {
     ZMK_EVENT_RAISE(ev);
 }
 
+static void raise_profile_changed_event_callback(struct k_work *work) {
+    raise_profile_changed_event();
+}
+
+K_WORK_DEFINE(raise_profile_changed_event_work, raise_profile_changed_event_callback);
+
 static bool active_profile_is_open() {
     return !bt_addr_le_cmp(&profiles[active_profile].peer, BT_ADDR_LE_ANY);
 }
@@ -111,7 +117,7 @@ void set_profile_address(u8_t index, const bt_addr_le_t *addr) {
     raise_profile_changed_event();
 }
 
-bool active_profile_is_connected() {
+bool zmk_ble_active_profile_is_connected() {
     struct bt_conn *conn;
     bt_addr_le_t *addr = zmk_ble_active_profile_addr();
     if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
@@ -163,9 +169,9 @@ int update_advertising() {
     struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
-    if (active_profile_is_open() || !active_profile_is_connected()) {
+    if (active_profile_is_open()) {
         desired_adv = ZMK_ADV_CONN;
-    } else if (!active_profile_is_connected()) {
+    } else if (!zmk_ble_active_profile_is_connected()) {
         desired_adv = ZMK_ADV_CONN;
         // Need to fix directed advertising for privacy centrals. See
         // https://github.com/zephyrproject-rtos/zephyr/pull/14984 char
@@ -327,6 +333,10 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
 struct settings_handler profiles_handler = {.name = "ble", .h_set = ble_profiles_handle_set};
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
+static bool is_conn_active_profile(const struct bt_conn *conn) {
+    return bt_addr_le_cmp(bt_conn_get_dst(conn), &profiles[active_profile].peer) == 0;
+}
+
 static void connected(struct bt_conn *conn, u8_t err) {
     char addr[BT_ADDR_LE_STR_LEN];
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
@@ -352,6 +362,11 @@ static void connected(struct bt_conn *conn, u8_t err) {
     }
 
     update_advertising();
+
+    if (is_conn_active_profile(conn)) {
+        LOG_DBG("Active profile connected");
+        raise_profile_changed_event();
+    }
 }
 
 static void disconnected(struct bt_conn *conn, u8_t reason) {
@@ -364,6 +379,11 @@ static void disconnected(struct bt_conn *conn, u8_t reason) {
     // We need to do this in a work callback, otherwise the advertising update will still see the
     // connection for a profile as active, and not start advertising yet.
     k_work_submit(&update_advertising_work);
+
+    if (is_conn_active_profile(conn)) {
+        LOG_DBG("Active profile disconnected");
+        k_work_submit(&raise_profile_changed_event_work);
+    }
 }
 
 static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_security_err err) {

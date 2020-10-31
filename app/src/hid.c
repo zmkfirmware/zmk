@@ -68,6 +68,8 @@ int zmk_hid_keypad_release(zmk_key code) {
     return 0;
 };
 
+void zmk_hid_keypad_clear() { memset(&kp_report.body, 0, sizeof(kp_report.body)); }
+
 int zmk_hid_consumer_press(zmk_key code) {
     TOGGLE_CONSUMER(0U, code);
     return 0;
@@ -77,6 +79,8 @@ int zmk_hid_consumer_release(zmk_key code) {
     TOGGLE_CONSUMER(code, 0U);
     return 0;
 };
+
+void zmk_hid_consumer_clear() { memset(&consumer_report.body, 0, sizeof(consumer_report.body)); }
 
 struct zmk_hid_keypad_report *zmk_hid_get_keypad_report() {
     return &kp_report;

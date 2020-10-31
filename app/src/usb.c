@@ -13,6 +13,8 @@
 
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
+#include <zmk/event-manager.h>
+#include <zmk/events/usb-conn-state-changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -53,9 +55,34 @@ int zmk_usb_hid_send_report(const u8_t *report, size_t len) {
 
 #endif /* CONFIG_ZMK_USB */
 
+static void raise_usb_status_changed_event() {
+    struct usb_conn_state_changed *ev = new_usb_conn_state_changed();
+    ev->conn_state = zmk_usb_get_conn_state();
+
+    ZMK_EVENT_RAISE(ev);
+}
+
 enum usb_dc_status_code zmk_usb_get_status() { return usb_status; }
 
-void usb_status_cb(enum usb_dc_status_code status, const u8_t *params) { usb_status = status; };
+enum zmk_usb_conn_state zmk_usb_get_conn_state() {
+    switch (usb_status) {
+    case USB_DC_DISCONNECTED:
+    case USB_DC_UNKNOWN:
+        return ZMK_USB_CONN_NONE;
+
+    case USB_DC_ERROR:
+    case USB_DC_RESET:
+        return ZMK_USB_CONN_POWERED;
+
+    default:
+        return ZMK_USB_CONN_HID;
+    }
+}
+
+void usb_status_cb(enum usb_dc_status_code status, const u8_t *params) {
+    usb_status = status;
+    raise_usb_status_changed_event();
+};
 
 static int zmk_usb_init(struct device *_arg) {
     int usb_enable_ret;

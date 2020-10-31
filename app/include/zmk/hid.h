@@ -168,9 +168,11 @@ int zmk_hid_register_mods(zmk_mod_flags modifiers);
 int zmk_hid_unregister_mods(zmk_mod_flags modifiers);
 int zmk_hid_keypad_press(zmk_key key);
 int zmk_hid_keypad_release(zmk_key key);
+void zmk_hid_keypad_clear();
 
 int zmk_hid_consumer_press(zmk_key key);
 int zmk_hid_consumer_release(zmk_key key);
+void zmk_hid_consumer_clear();
 
 struct zmk_hid_keypad_report *zmk_hid_get_keypad_report();
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();

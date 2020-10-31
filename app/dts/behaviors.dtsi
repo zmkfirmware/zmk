@@ -10,3 +10,4 @@
 #include <behaviors/rgb_underglow.dtsi>
 #include <behaviors/bluetooth.dtsi>
 #include <behaviors/ext_power.dtsi>
+#include <behaviors/outputs.dtsi>

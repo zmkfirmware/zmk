@@ -22,6 +22,7 @@ module.exports = {
       "behavior/mod-tap",
       "behavior/reset",
       "behavior/bluetooth",
+      "behavior/outputs",
       "behavior/lighting",
       "behavior/power",
     ],
