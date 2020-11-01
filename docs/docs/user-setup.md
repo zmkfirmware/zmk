@@ -33,12 +33,6 @@ Following the steps in this guide, you will:
 1. Update the configuration flags for your user config, to enable/disable any ZMK features you would like to include.
 1. Commit and push the updates to trigger a new GitHub Action run.
 
-:::note
-If you are building firmware for a new keyboard shield that is not included in the built-in
-list of shields, you can choose any shield from the list that is similar to yours to generate the repository, 
-and edit / add necessary files according to the [guide for adding new keyboard shield](./dev-guide-new-shield.md).
-:::
-
 ## Prerequisites
 
 The remainder of this guide assumes the following prerequisites:
@@ -108,6 +102,12 @@ Pick an MCU board:
 ```
 
 ### Keyboard Shield Selection
+
+:::note
+If you are building firmware for a new keyboard shield that is not included in the built-in
+list of shields, you can choose any shield from the list that is similar to yours to generate the repository, 
+and edit / add necessary files according to the [guide for adding new keyboard shield](./dev-guide-new-shield.md).
+:::
 
 When prompted, enter the number for the corresponding keyboard shield you would like to target:
 

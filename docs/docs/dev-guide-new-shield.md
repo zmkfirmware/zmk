@@ -32,7 +32,7 @@ This guide describes how to add shield to the ZMK main repository. If you are bu
 own prototype or handwired keyboard, it is recommended to use your own user config repository. Follow the
 [user setup guide](./user-setup.md) to create your user config repository first. When following the rest
 of this guide, replace the `app/` directory in the ZMK main repository with the `config/` directory in your
-user config repository. Form example, `app/boards/shields/<keyboard_name>` should now be 
+user config repository. For example, `app/boards/shields/<keyboard_name>` should now be 
 `config/boards/shields/<keyboard_name>`.
 :::
 
