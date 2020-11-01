@@ -24,6 +24,13 @@ It is recommended to only enable logging when needed, and not leaving it on by d
 The following KConfig values need to be set, either by copy and pasting into the `app/prj.conf` file, or by running
 `west build -t menuconfig` and manually enabling the various settings in that UI.
 
+:::note
+If you are debugging your own keyboard in your [user config repository](./user-setup.md), use
+`config/boards/shields/<your_keyboard>/<your_keyboard>.conf` instead of `app/prj.conf`. In Github
+Actions, you can search the `Kconfig file` build log to verify the options above have been enabled 
+for you successfully.
+:::
+
 ```
 # Turn on logging, and set ZMK logging to debug output
 CONFIG_LOG=y
@@ -49,13 +56,6 @@ CONFIG_USB_UART_CONSOLE=y
 CONFIG_UART_CONSOLE_ON_DEV_NAME="CDC_ACM_0"
 CONFIG_USB_UART_DTR_WAIT=n
 ```
-
-:::note
-If you are debugging your own keyboard in your [user config repository](./user-setup.md), use
-`config/boards/shields/<your_keyboard>/<your_keyboard>.conf` instead of `app/prj.conf`. In Github
-Actions, you can search the `Kconfig file` build log to verify the options above have been enabled 
-for you successfully.
-:::
 
 ## Viewing Logs
 
