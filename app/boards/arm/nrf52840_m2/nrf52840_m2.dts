@@ -71,27 +71,32 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 
-		boot_partition: partition@0 {
-			label = "adafruit_boot";
-			reg = <0x000000000 0x0000C000>;
+		sd_partition: partition@0 {
+			label = "softdevice";
+			reg = <0x00000000 0x00026000>;
 		};
 		code_partition: partition@26000 {
 			label = "code_partition";
-			reg = <0x00026000 0x000d2000>;
+			reg = <0x00026000 0x000c6000>;
 		};
 
 		/*
-		 * The flash starting at 0x000f8000 and ending at
-		 * 0x000fffff is reserved for use by the application.
+		 * The flash starting at 0x000ec000 and ending at
+		 * 0x000f3fff is reserved for use by the application.
 		 */
 
 		/*
 		 * Storage partition will be used by FCB/LittleFS/NVS
 		 * if enabled.
 		 */
-		storage_partition: partition@f8000 {
+		storage_partition: partition@ec000 {
 			label = "storage";
-			reg = <0x000f8000 0x00008000>;
+			reg = <0x000ec000 0x00008000>;
+		};
+
+		boot_partition: partition@f4000 {
+			label = "adafruit_boot";
+			reg = <0x000f4000 0x0000c000>;
 		};
 	};
 };
