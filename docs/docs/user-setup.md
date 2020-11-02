@@ -39,6 +39,7 @@ The remainder of this guide assumes the following prerequisites:
 
 1. You have an active, working [GitHub](https://github.com/) account.
 1. You have installed and configured the [`git`](https://git-scm.com/) version control tool.
+1. You have locally configured git to access your github account. If using [personal access tokens](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token), please be sure it was created with the "workflow" scope option selected.
 
 :::note
 If you need to, a quick read of [Learn The Basics Of Git In Under 10 Minutes](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/) will help you get started.
