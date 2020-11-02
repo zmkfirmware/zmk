@@ -227,6 +227,14 @@ static void zmk_rgb_underglow_tick_handler(struct k_timer *timer) {
 
 K_TIMER_DEFINE(underglow_tick, zmk_rgb_underglow_tick_handler, NULL);
 
+#if IS_ENABLED(CONFIG_SETTINGS)
+static void zmk_rgb_underglow_save_state_work() {
+    settings_save_one("rgb/underglow/state", &state, sizeof(state));
+}
+
+static struct k_delayed_work underglow_save_work;
+#endif
+
 static int zmk_rgb_underglow_init(struct device *_arg) {
     led_strip = device_get_binding(STRIP_LABEL);
     if (led_strip) {
@@ -248,6 +256,7 @@ static int zmk_rgb_underglow_init(struct device *_arg) {
 
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_register(&rgb_conf);
+    k_delayed_work_init(&underglow_save_work, zmk_rgb_underglow_save_state_work);
 #endif
 
     k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
@@ -257,7 +266,8 @@ static int zmk_rgb_underglow_init(struct device *_arg) {
 
 int zmk_rgb_underglow_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    return settings_save_one("rgb/underglow/state", &state, sizeof(state));
+    k_delayed_work_cancel(&underglow_save_work);
+    return k_delayed_work_submit(&underglow_save_work, K_MINUTES(1));
 #else
     return 0;
 #endif
