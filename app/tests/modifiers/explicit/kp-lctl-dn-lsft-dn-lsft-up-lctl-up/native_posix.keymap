@@ -20,8 +20,8 @@
 
 		default_layer {
 			bindings = <
-				&kp LCTL &kp LCTL
-				&kp LSFT &none
+				&kp LEFT_CONTROL &kp LEFT_CONTROL
+				&kp LEFT_SHIFT &none
 			>;
 		};
 	};
