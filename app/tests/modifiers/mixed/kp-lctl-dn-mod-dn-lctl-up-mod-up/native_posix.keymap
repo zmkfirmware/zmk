@@ -20,7 +20,7 @@
 		default_layer {
 			bindings = <
 				&kp LC(A) &kp LS(B)
-				&kp LCTL &none
+				&kp LEFT_CONTROL &none
 			>;
 		};
 	};

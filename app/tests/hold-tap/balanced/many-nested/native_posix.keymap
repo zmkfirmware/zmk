@@ -20,8 +20,8 @@
 
 		default_layer {
 			bindings = <
-				&ht_bal LSFT F &ht_bal LCTL J 
-				&ht_bal LGUI H &ht_bal LALT L
+				&ht_bal LEFT_SHIFT F &ht_bal LEFT_CONTROL J 
+				&ht_bal LEFT_GUI H &ht_bal LEFT_ALT L
 			>;
 		};
 	};
