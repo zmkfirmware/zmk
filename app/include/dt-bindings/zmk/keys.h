@@ -6,10 +6,6 @@
 #pragma once
 
 #include <dt-bindings/zmk/modifiers.h>
-
-#define USAGE_KEYPAD 0x07
-#define USAGE_CONSUMER 0x0C
-
 #define A 0x04
 #define B 0x05
 #define C 0x06

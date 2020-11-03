@@ -1,18 +1,19 @@
-#include <dt-bindings/zmk/keys.h>
+
+#include <dt-bindings/zmk/hid_usage_pages.h>
 
 / {
 	behaviors {
 		inc_dec_kp: behavior_sensor_rotate_key_press {
 			compatible = "zmk,behavior-sensor-rotate-key-press";
 			label = "ENC_KEY_PRESS";
-			usage_page = <USAGE_KEYPAD>;
+			usage_page = <HID_USAGE_KEY>;
 			#sensor-binding-cells = <2>;
 		};
 
 		inc_dec_cp: behavior_sensor_rotate_consumer_press {
 			compatible = "zmk,behavior-sensor-rotate-key-press";
 			label = "ENC_CONSUMER_PRESS";
-			usage_page = <USAGE_CONSUMER>;
+			usage_page = <HID_USAGE_CONSUMER>;
 			#sensor-binding-cells = <2>;
 		};
 	};
