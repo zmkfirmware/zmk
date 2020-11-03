@@ -52,7 +52,7 @@ A code example which configures a mod-tap setting that works with homerow mods:
 
 		default_layer {
 			bindings = <
-	            &hm LCTL A &hm LGUI S &hm LALT D &hm LSFT F
+	            &hm LCTRL A &hm LGUI S &hm LALT D &hm LSHFT F
 			>;
 		};
 	};

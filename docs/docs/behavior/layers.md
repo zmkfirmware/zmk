@@ -54,7 +54,7 @@ The "layer-tap" behavior enables a layer when a key is held, and output another 
 Example:
 
 ```
-&lt LOWER SPC
+&lt LOWER SPACE
 ```
 
 ## Toggle Layer
@@ -86,21 +86,21 @@ Example:
 
 		default_layer {
 			bindings = <
-                &tog NAVI &kp KDIV  &kp KMLT  &kp KMIN
-                &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp KPLS
-                &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp KPLS
-                &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp RET
-                &kp NUM_0 &kp NUM_0 &kp DOT   &kp RET
+                &tog NAVI &kp KP_DIVIDE  &kp KP_MULTIPLY  &kp KP_MINUS
+                &kp NUMBER_7 &kp NUMBER_8 &kp NUMBER_9 &kp KP_PLUS
+                &kp NUMBER_4 &kp NUMBER_5 &kp NUMBER_6 &kp KP_PLUS
+                &kp NUMBER_1 &kp NUMBER_2 &kp NUMBER_3 &kp RETURN
+                &kp NUMBER_0 &kp NUMBER_0 &kp DOT   &kp RETURN
 			>;
 		};
 
 		nav_layer {
 			bindings = <
-                &tog NAVI &kp KDIV  &kp KMLT  &kp KMIN
-                &kp HOME  &kp UARW  &kp PGUP  &kp KPLS
-                &kp LARW  &none     &kp RARW  &kp KPLS
-                &kp END   &kp DARW  &kp PGDN  &kp RET
-                &kp INS   &kp INS   &kp DEL   &kp RET
+                &tog NAVI &kp KP_DIVIDE  &kp KP_MULTIPLY  &kp KP_MINUS
+                &kp HOME  &kp UP  &kp PAGE_UP  &kp KP_PLUS
+                &kp LEFT  &none     &kp RIGHT  &kp KP_PLUS
+                &kp END   &kp DOWN  &kp PAGE_DOWN  &kp RETURN
+                &kp INSERT   &kp INSERT   &kp DEL   &kp RETURN
             >;
 		};
 	};
