@@ -372,12 +372,12 @@ Here is an example simple keymap for the Kyria, with only one layer:
 //                     | GUI  | DEL  | RET  |  SPACE  |   ESC   |  |   RET   |  SPACE  | TAB  | BSPC  | R-ALT |
 			bindings = <
 	&kp ESC  &kp Q &kp W &kp E &kp R &kp T                                            &kp Y &kp U  &kp I    &kp O   &kp P    &kp BSLH
-	&kp TAB  &kp A &kp S &kp D &kp F &kp G                                            &kp H &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
-	&kp LSFT &kp Z &kp X &kp C &kp V &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M  &kp CMMA &kp DOT &kp FSLH &kp RCTL
-	              &kp LGUI &kp DEL &kp RET &kp SPC &kp ESC            &kp RET  &kp SPC  &kp TAB &kp BKSP &kp RALT
+	&kp TAB  &kp A &kp S &kp D &kp F &kp G                                            &kp H &kp J  &kp K    &kp L   &kp SEMI &kp QUOTE
+	&kp LSHFT &kp Z &kp X &kp C &kp V &kp B &kp LSHFT &kp LSHFT        &kp LSHFT &kp LSHFT &kp N &kp M  &kp COMMA &kp DOT &kp FSLH &kp RCTRL
+	              &kp LGUI &kp DEL &kp RET &kp SPACE &kp ESC            &kp RET  &kp SPACE  &kp TAB &kp BSPC &kp RALT
 			>;
 
-			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
+			sensor-bindings = <&inc_dec_cp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
 		};
 	};
 };
@@ -385,7 +385,7 @@ Here is an example simple keymap for the Kyria, with only one layer:
 ```
 
 :::note
-The two `#include` lines at the top of the keymap are required in order to bring in the default set of behaviors to make them available to bind, and to import a set of defines for the HID keycodes, so keymaps can use parameters like `NUM_2` or `K` instead of the raw keycode numeric values.
+The two `#include` lines at the top of the keymap are required in order to bring in the default set of behaviors to make them available to bind, and to import a set of defines for the HID keycodes, so keymaps can use parameters like `N2` or `K` instead of the raw keycode numeric values.
 :::
 
 ### Keymap Behaviors
@@ -476,7 +476,7 @@ For split keyboards, make sure to add left hand encoders to the left .overlay fi
 Add the following line to your keymap file to add default encoder behavior bindings:
 
 ```
-sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD>;
+sensor-bindings = <&inc_dec_cp C_VOL_UP C_VOL_DN>;
 ```
 
 Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](/docs/feature/encoders) and [Keymap](/docs/feature/keymaps) feature documentation for more details.
