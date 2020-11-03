@@ -75,7 +75,11 @@ that make sense to have different defaults when this shield is used. One main it
 that usually has a new default value set here is the `ZMK_KEYBOARD_NAME` value,
 which controls the display name of the device over USB and BLE.
 
-The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file. Here's the simplest example file. Note: do not make the keyboard name too long, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your laptop / tablet.
+The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file. Here's the simplest example file. 
+
+:::warning
+Do not make the keyboard name too long, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your laptop / tablet.
+:::
 
 ```
 if SHIELD_MY_BOARD
