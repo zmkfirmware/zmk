@@ -105,7 +105,7 @@ Pick an MCU board:
 
 :::note
 If you are building firmware for a new keyboard shield that is not included in the built-in
-list of shields, you can choose any shield from the list that is similar to yours to generate the repository, 
+list of shields, you can choose any shield from the list that is similar to yours to generate the repository,
 and edit / add necessary files according to the [guide for adding new keyboard shield](./dev-guide-new-shield.md).
 :::
 

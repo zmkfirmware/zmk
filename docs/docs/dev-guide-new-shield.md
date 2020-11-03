@@ -28,11 +28,11 @@ ZMK support for split keyboards requires a few more files than single boards to 
 ## New Shield Directory
 
 :::note
-This guide describes how to add shield to the ZMK main repository. If you are building firmware for your 
+This guide describes how to add shield to the ZMK main repository. If you are building firmware for your
 own prototype or handwired keyboard, it is recommended to use your own user config repository. Follow the
 [user setup guide](./user-setup.md) to create your user config repository first. When following the rest
 of this guide, replace the `app/` directory in the ZMK main repository with the `config/` directory in your
-user config repository. For example, `app/boards/shields/<keyboard_name>` should now be 
+user config repository. For example, `app/boards/shields/<keyboard_name>` should now be
 `config/boards/shields/<keyboard_name>`.
 :::
 
@@ -75,7 +75,7 @@ that make sense to have different defaults when this shield is used. One main it
 that usually has a new default value set here is the `ZMK_KEYBOARD_NAME` value,
 which controls the display name of the device over USB and BLE.
 
-The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file. Here's the simplest example file. 
+The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file. Here's the simplest example file.
 
 :::warning
 Do not make the keyboard name too long, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your laptop / tablet.

@@ -27,7 +27,7 @@ The following KConfig values need to be set, either by copy and pasting into the
 :::note
 If you are debugging your own keyboard in your [user config repository](./user-setup.md), use
 `config/boards/shields/<your_keyboard>/<your_keyboard>.conf` instead of `app/prj.conf`. In Github
-Actions, you can search the `Kconfig file` build log to verify the options above have been enabled 
+Actions, you can search the `Kconfig file` build log to verify the options above have been enabled
 for you successfully.
 :::
 
@@ -90,14 +90,14 @@ If you already have the Ardunio IDE installed you can also use its built-in Seri
 </TabItem>
 <TabItem value="macos">
 
-On MacOS, the device name is something like `/dev/tty.usbmodemXXXXX` where `XXXXX` is some numerical ID. 
+On MacOS, the device name is something like `/dev/tty.usbmodemXXXXX` where `XXXXX` is some numerical ID.
 You can connect to the device with [tio](https://tio.github.io/) (can be installed via [Homebrew](https://formulae.brew.sh/formula/tio)):
 
 ```
 sudo tio /dev/tty.usbmodem14401
 ```
 
-You should see tio printing `Disconnected` or `Connected` when you disconnect or reconnect the USB cable. 
+You should see tio printing `Disconnected` or `Connected` when you disconnect or reconnect the USB cable.
 </TabItem>
 </Tabs>
 
