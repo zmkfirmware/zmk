@@ -1,4 +1,10 @@
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "app/**"
+  pull_request:
+    paths:
+      - "app/**"
 
 name: Build
 
