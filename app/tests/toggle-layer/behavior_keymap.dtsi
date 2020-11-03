@@ -15,7 +15,7 @@
 
 		lower_layer {
 			bindings = <
-				&cp M_NEXT &trans
+				&cp C_NEXT &trans
 				&kp L  &kp J>;
 		};
 
