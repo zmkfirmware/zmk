@@ -10,6 +10,7 @@
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
+#include <dt-bindings/zmk/hid_usage_pages.h>
 #include <zmk/usb.h>
 #include <zmk/hog.h>
 #include <zmk/event-manager.h>
@@ -116,9 +117,9 @@ int zmk_endpoints_send_report(u8_t usage_page) {
 
     LOG_DBG("usage page 0x%02X", usage_page);
     switch (usage_page) {
-    case USAGE_KEYPAD:
+    case HID_USAGE_KEY:
         return send_keypad_report();
-    case USAGE_CONSUMER:
+    case HID_USAGE_CONSUMER:
         return send_consumer_report();
     default:
         LOG_ERR("Unsupported usage page %d", usage_page);
@@ -209,8 +210,8 @@ static void disconnect_current_endpoint() {
     zmk_hid_keypad_clear();
     zmk_hid_consumer_clear();
 
-    zmk_endpoints_send_report(USAGE_KEYPAD);
-    zmk_endpoints_send_report(USAGE_CONSUMER);
+    zmk_endpoints_send_report(HID_USAGE_KEY);
+    zmk_endpoints_send_report(HID_USAGE_CONSUMER);
 }
 
 static void update_current_endpoint() {
