@@ -7,7 +7,7 @@
 #pragma once
 
 #include <zephyr.h>
-#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/modifiers.h>
 #include <zmk/event-manager.h>
 
 struct keycode_state_changed {

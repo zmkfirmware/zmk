@@ -9,7 +9,6 @@
 
 #include <usb/usb_device.h>
 #include <usb/class/usb_hid.h>
-#include <dt-bindings/zmk/keys.h>
 
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
