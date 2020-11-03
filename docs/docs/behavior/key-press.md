@@ -53,15 +53,15 @@ The "consumer key press" behavior allows you to send "consumer" usage page keyco
 These are mostly used for media and power related keycodes, such as sending "Pause", "Scan Track Next",
 "Scan Track Previous", etc.
 
-There are a subset of the full consumer usage IDs found in the `keys.h` include, prefixed with `M_`, e.g. `M_PREV`.
+There are a subset of the full consumer usage IDs found in the `keys.h` include, prefixed with `C_`, e.g. `C_PREV`.
 
 ### Behavior Binding
 
 - Reference: `&cp`
-- Parameter: The keycode usage ID from the consumer usage page, e.g. `M_PREV` or `M_EJCT`
+- Parameter: The keycode usage ID from the consumer usage page, e.g. `C_PREV` or `C_EJECT`
 
 Example:
 
 ```
-&cp M_PREV
+&cp C_PREV
 ```

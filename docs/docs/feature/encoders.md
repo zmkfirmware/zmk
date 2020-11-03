@@ -34,7 +34,7 @@ Additional encoders can be configured by adding more `BINDING CW_KEY CCW_KEY` se
 As an example, a complete `sensor-bindings` for a Kyria with two encoders could look like:
 
 ```
-sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
+sensor-bindings = <&inc_dec_cp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
 ```
 
 Here, the left encoder is configured to control volume up and down while the right encoder sends either Page Up or Page Down.
