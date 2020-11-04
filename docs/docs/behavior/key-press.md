@@ -8,7 +8,18 @@ sidebar_label: Key Press
 The most basic of behaviors, is the ability to send certain keycode presses and releases in response to activating
 a certain key.
 
-For reference on keycode values, see pages 83-89 of the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12).
+The categories of supported codes are:
+
+- [Keyboard & Keypad](../codes/keyboard-keypad)
+- [Editing](../codes/editing)
+- [Media](../codes/media)
+- [Applications](../codes/applications)
+- [Input Assist](../codes/input-assist)
+- [Power](../codes/power)
+
+Please visit the [codes](../codes) section for a comprehensive list.
+
+For advanced users, user-defined HID codes are also supported but must be encoded, please see [`dt-bindings/zmk/keys.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/keys.h) for further insight.
 
 ## Keycode Defines
 
