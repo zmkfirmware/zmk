@@ -1,5 +1,9 @@
 mainmenu "ZMK Firmware"
 
+menu "ZMK"
+
+menu "Basic Keyboard Setup"
+
 config ZMK_KEYBOARD_NAME
 	string "Keyboard Name"
 
@@ -18,34 +22,23 @@ config USB_DEVICE_PID
 config USB_DEVICE_MANUFACTURER
 	default "ZMK Project"
 
-config ZMK_KSCAN_EVENT_QUEUE_SIZE
-	int "Size of the event queue for KSCAN events to buffer events"
-	default 4
-
 menu "HID Output Types"
 
-menuconfig ZMK_USB
+config ZMK_USB
 	bool "USB"
 	select USB
 	select USB_DEVICE_STACK
 	select USB_DEVICE_HID
-
-if USB
-
-config ZMK_USB_INIT_PRIORITY
-	int "Init Priority"
-	default 50
-
-endif
 
 if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
 
+#ZMK_USB
 endif
 
-menuconfig ZMK_BLE
+config ZMK_BLE
 	bool "BLE (HID over GATT)"
 	select BT
 	select BT_SMP
@@ -59,10 +52,6 @@ menuconfig ZMK_BLE
 
 if ZMK_BLE
 
-config ZMK_BLE_INIT_PRIORITY
-	int "Init Priority"
-	default 50
-	
 config SYSTEM_WORKQUEUE_STACK_SIZE
 	default 2048
 
@@ -81,41 +70,11 @@ config ZMK_BLE_PASSKEY_ENTRY
 	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
 	default n
 
+#ZMK_BLE
 endif
 
+#HID Output Types
 endmenu
-
-menuconfig ZMK_SLEEP
-	bool "Enable deep sleep support"
-	imply USB
-
-if ZMK_SLEEP
-
-config SYS_POWER_DEEP_SLEEP_STATES
-	default y
-
-choice SYS_PM_POLICY
-	default SYS_PM_POLICY_APP
-endchoice
-
-config ZMK_IDLE_SLEEP_TIMEOUT
-	int "Milliseconds to wait to sleep when going idle"
-	default 900000
-
-endif
-
-config ZMK_EXT_POWER
-	bool "Enable support to control external power output"
-	default y
-
-config ZMK_DISPLAY
-	bool "ZMK display support"
-	default n
-	select DISPLAY
-	select LVGL
-	select LVGL_THEMES
-	select LVGL_THEME_MONO
-	select LVGL_OBJ_LABEL
 
 menu "Split Support"
 
@@ -159,12 +118,16 @@ config BT_MAX_CONN
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
 	default n
 
+#ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 endif
 
+#ZMK_SPLIT_BLE_ROLE
 endchoice
 
+#ZMK_SPLIT_BLE
 endif
 
+#ZMK_SPLIT
 endif 
 
 if ZMK_BLE
@@ -177,6 +140,7 @@ config BT_MAX_CONN
 config BT_MAX_PAIRED
 	default 6
 
+#ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
 endif
 
 if !ZMK_SPLIT_BLE
@@ -187,31 +151,30 @@ config BT_MAX_CONN
 config BT_MAX_PAIRED
 	default 5
 
+#!ZMK_SPLIT_BLE
 endif
 
+#ZMK_BLE
 endif
 
+#Split Support
 endmenu
 
-config ZMK_KSCAN_MOCK_DRIVER
-	bool "Enable mock kscan driver to simulate key presses"
-	default n
-
-
-config ZMK_KSCAN_COMPOSITE_DRIVER
-	bool "Enable composite kscan driver to combine kscan devices"
-	default n
-
-menu "ZMK Actions"
-
-config ZMK_ACTION_MOD_TAP
-	bool "Enable the Mod-Tap Action"
-	
+#Basic Keyboard Setup
 endmenu
 
-menu "ZMK Lighting"
+menu "Display/LED Options"
 
-menuconfig ZMK_RGB_UNDERGLOW
+config ZMK_DISPLAY
+	bool "ZMK display support"
+	default n
+	select DISPLAY
+	select LVGL
+	select LVGL_THEMES
+	select LVGL_THEME_MONO
+	select LVGL_OBJ_LABEL
+
+config ZMK_RGB_UNDERGLOW
 	bool "RGB Adressable LED Underglow"
 	select LED_STRIP
 
@@ -257,8 +220,87 @@ config ZMK_RGB_UNDERGLOW_ON_START
 	bool "Whether RGB underglow starts on by default"
 	default y
 
+#ZMK_RGB_UNDERGLOW
 endif
 
+#Display/LED Options
+endmenu
+
+menu "Power Management"
+
+config ZMK_SLEEP
+	bool "Enable deep sleep support"
+	imply USB
+
+if ZMK_SLEEP
+
+config SYS_POWER_DEEP_SLEEP_STATES
+	default y
+
+choice SYS_PM_POLICY
+	default SYS_PM_POLICY_APP
+endchoice
+
+config ZMK_IDLE_SLEEP_TIMEOUT
+	int "Milliseconds to wait to sleep when going idle"
+	default 900000
+
+#ZMK_SLEEP
+endif
+
+config ZMK_EXT_POWER
+	bool "Enable support to control external power output"
+	default y
+
+#Power Management
+endmenu
+
+menu "Advanced"
+
+menu "Initialization Priorities"
+
+if USB
+
+config ZMK_USB_INIT_PRIORITY
+	int "USB Init Priority"
+	default 50
+
+#USB
+endif
+
+if ZMK_BLE || ZMK_SPLIT_BLE
+
+config ZMK_BLE_INIT_PRIORITY
+	int "BLE Init Priority"
+	default 50
+
+#ZMK_BLE || ZMK_SPLIT_BLE
+endif
+
+#Initialization Priorities
+endmenu
+
+menu "KSCAN Settings"
+
+config ZMK_KSCAN_EVENT_QUEUE_SIZE
+	int "Size of the event queue for KSCAN events to buffer events"
+	default 4
+
+config ZMK_KSCAN_MOCK_DRIVER
+	bool "Enable mock kscan driver to simulate key presses"
+	default n
+
+config ZMK_KSCAN_COMPOSITE_DRIVER
+	bool "Enable composite kscan driver to combine kscan devices"
+	default n
+
+#KSCAN Settings
+endmenu
+
+#Advanced
+endmenu
+
+#ZMK
 endmenu
 
 config HEAP_MEM_POOL_SIZE
