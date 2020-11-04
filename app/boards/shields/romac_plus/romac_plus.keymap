@@ -23,10 +23,10 @@
     &kp NUM_7 &kp NUM_8 &kp NUM_9 
     &kp NUM_4 &kp NUM_5 &kp NUM_6 
     &kp NUM_1 &kp NUM_2 &kp NUM_3 
-    &cp M_PLAY &kp NUM_0 &mo 1 
+    &kp M_PLAY &kp NUM_0 &mo 1 
             >;
 
-            sensor-bindings = <&inc_dec_cp M_NEXT M_PREV>;
+            sensor-bindings = <&inc_dec_kp M_NEXT M_PREV>;
         };
 
          nav_layer {

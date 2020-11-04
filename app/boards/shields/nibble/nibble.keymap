@@ -18,8 +18,8 @@
         default_layer {
             bindings = <
            &kp ESC  &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 &kp MINUS &kp EQL  &kp BKSP &kp HOME
-&cp M_VOLU &kp TAB  &kp Q     &kp W     &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O     &kp P     &kp LBKT  &kp RBKT &kp BSLH &kp DEL  
-&cp M_VOLD &kp CLCK &kp A     &kp S     &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L     &kp SCLN  &kp QUOT           &kp RET  &kp PGUP  
+&kp M_VOLU &kp TAB  &kp Q     &kp W     &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O     &kp P     &kp LBKT  &kp RBKT &kp BSLH &kp DEL  
+&kp M_VOLD &kp CLCK &kp A     &kp S     &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L     &kp SCLN  &kp QUOT           &kp RET  &kp PGUP  
 &trans     &kp LSFT &kp Z     &kp X     &kp C     &kp V     &kp B     &kp N     &kp M     &kp CMMA  &kp DOT   &kp FSLH  &kp RSFT           &kp UARW &kp PGDN
 &trans     &kp LCTL &kp LGUI  &kp LALT                      &kp SPC                       &mo FUNC  &kp RALT  &kp RCTL  &kp LARW           &kp DARW &kp RARW
             >;
@@ -30,7 +30,7 @@
 &bt BT_CLR  &trans      &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans  &trans      &bootloader   
 &trans      &trans      &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans            &trans      &trans   
 &bt BT_PRV  &trans      &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans            &trans      &trans
-&bt BT_NXT  &trans      &trans    &trans                        &trans                        &trans    &trans    &trans    &cp M_PREV        &cp M_PLAY  &cp M_NEXT
+&bt BT_NXT  &trans      &trans    &trans                        &trans                        &trans    &trans    &trans    &kp M_PREV        &kp M_PLAY  &kp M_NEXT
             >;
         };
     };

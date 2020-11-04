@@ -15,8 +15,8 @@
         default_layer {
 
             bindings = <
-    &tog 1 &cp M_PREV &cp M_PLAY &cp M_NEXT
-    &mo 2  &cp M_VOLD &kp UARW   &cp M_VOLU
+    &tog 1 &kp M_PREV &kp M_PLAY &kp M_NEXT
+    &mo 2  &kp M_VOLD &kp UARW   &kp M_VOLU
     &mo 3  &kp LARW   &kp DARW   &kp RARW
             >;
 
