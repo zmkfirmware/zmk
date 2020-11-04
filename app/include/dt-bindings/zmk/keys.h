@@ -493,12 +493,12 @@
 /* Keyboard Pipe */
 #define PIPE2 (LS(HID_USAGE_KEY_KEYBOARD_NON_US_BACKSLASH_AND_PIPE))
 
-/* Keyboard GUI (Windows / Command / Meta) */
-#define GUI (HID_USAGE_KEY_KEYBOARD_APPLICATION)
-#define WIN (GUI)
-#define COMMAND (GUI)
-#define CMD (GUI)
-#define META (GUI)
+/* Keyboard Application (Context Menu) */
+#define K_APPLICATION (HID_USAGE_KEY_KEYBOARD_APPLICATION)
+#define K_APP (K_APPLICATION)
+#define K_CONTEXT_MENU (K_APPLICATION)
+#define K_CMENU (K_APPLICATION)
+#define GUI (K_APPLICATION) // WARNING: DEPRECATED (DO NOT USE)
 
 /* Keyboard Power */
 #define K_POWER (HID_USAGE_KEY_KEYBOARD_POWER)
