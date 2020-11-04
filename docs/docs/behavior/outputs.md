@@ -23,11 +23,11 @@ header, which is added at the top of the keymap file:
 
 This allows you to reference the actions defined in this header:
 
-| Define              | Action                                          | Alias     |
-| ------------------- | ----------------------------------------------- | --------- |
-| `OUTPUT_USB_CMD`    | Prefer sending to USB                           | `OUT_USB` |
-| `OUTPUT_BLE_CMD`    | Prefer sending to the current bluetooth profile | `OUT_BLE` |
-| `OUTPUT_TOGGLE_CMD` | Toggle between USB and BLE                      | `OUT_TOG` |
+| Define    | Action                                          |
+| --------- | ----------------------------------------------- |
+| `OUT_USB` | Prefer sending to USB                           |
+| `OUT_BLE` | Prefer sending to the current bluetooth profile |
+| `OUT_TOG` | Toggle between USB and BLE                      |
 
 ## Output Selection Behavior
 
@@ -38,7 +38,7 @@ The output selection behavior changes the preferred output on press.
 - Reference: `&out`
 - Parameter #1: Command, e.g. `OUT_BLE`
 
-### Example:
+### Examples
 
 1. Behavior binding to prefer sending keyboard output to USB
 
