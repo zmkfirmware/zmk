@@ -21,8 +21,8 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | Split Keyboard Support                                                                                                 | ✅  |    ✅     | ✅  |
 | [Keymaps and Layers](behavior/layers)                                                                                  | ✅  |    ✅     | ✅  |
 | [Hold-Tap](behavior/hold-tap) (which includes [Mod-Tap](behavior/mod-tap) and [Layer-Tap](behavior/layers/#layer-tap)) | ✅  |    ✅     | ✅  |
-| [Basic Keycodes](behavior/key-press)                                                                                   | ✅  |    ✅     | ✅  |
-| [Basic consumer (Media) Keycodes](behavior/key-press)                                                                  | ✅  |    ✅     | ✅  |
+| [Keyboard Codes](codes/#keyboard)                                                                                      | ✅  |    ✅     | ✅  |
+| [Media](codes/#media-controls) & [Consumer](codes/#consumer-controls) Codes                                            | ✅  |    ✅     | ✅  |
 | [Encoders](feature/encoders)[^1]                                                                                       | ✅  |           | ✅  |
 | [OLED Display Support](feature/displays)[^2]                                                                           | 🚧  |    🚧     | ✅  |
 | [RGB Underglow](feature/underglow)                                                                                     | ✅  |    ✅     | ✅  |
