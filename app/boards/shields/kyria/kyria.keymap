@@ -24,7 +24,7 @@
 	              &kp LGUI &kp DEL &kp RET &kp SPC &kp ESC            &kp RET  &kp SPC  &kp TAB &kp BKSP &kp RALT
 			>;
 
-			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
+			sensor-bindings = <&inc_dec_kp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
 		};
 	};
 };
