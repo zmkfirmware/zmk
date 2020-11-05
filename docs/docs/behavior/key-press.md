@@ -20,7 +20,7 @@ provided by ZMK near the top:
 #include <dt-bindings/zmk/keys.h>
 ```
 
-Doing so makes a set of defines such as `A`, `NUM_1`, etc. available for use with these behaviors
+Doing so makes a set of defines such as `A`, `N1`, etc. available for use with these behaviors
 
 :::note
 There is an [open issue](https://github.com/zmkfirmware/zmk/issues/21) to provide a more comprehensive, and
