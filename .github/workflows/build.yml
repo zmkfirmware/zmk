@@ -25,6 +25,8 @@ jobs:
           - lily58_right
           - iris_left
           - iris_right
+          - jorne_left
+          - jorne_right
           - reviung41
           - romac
           - romac_plus

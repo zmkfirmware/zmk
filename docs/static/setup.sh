@@ -92,7 +92,7 @@ echo ""
 echo "Keyboard Shield Selection:"
 
 prompt="Pick an keyboard:"
-options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "Reviung41" "RoMac" "RoMac+" "makerdiary M60" "Microdox" "TG4X" "QAZ")
+options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "Reviung41" "RoMac" "RoMac+" "makerdiary M60" "Microdox" "TG4X" "QAZ" "Jorne")
 
 PS3="$prompt "
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
@@ -115,6 +115,7 @@ select opt in "${options[@]}" "Quit"; do
     12 ) shield_title="TG4X" shield="tg4x"; split="n"; break;;
     13 ) shield_title="QAZ" shield="qaz"; split="n"; break;;
     14 ) shield_title="NIBBLE" shield="nibble"; split="n"; break;;
+    15 ) shield_title="Jorne" shield="jorne"; split="y"; break;;
 
     # Add link to docs on adding your own custom shield in your ZMK config!
     # $(( ${#options[@]}+1 )) ) echo "Other!"; break;;
