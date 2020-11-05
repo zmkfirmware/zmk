@@ -1,0 +1,31 @@
+# Copyright (c) 2020 Stefan Sundin (4pplet)
+# SPDX-License-Identifier: MIT
+
+if BOARD_CYBER60_A
+
+config BOARD
+	default "cyber60 Rev A"
+
+if USB
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+endif # USB
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+	
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+	default y
+
+endif # BOARD_CYBER60_A
