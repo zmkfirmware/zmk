@@ -103,7 +103,7 @@ static const u8_t zmk_hid_report_desc[] = {
     HID_USAGE_CONSUMER,
     /* USAGE (Consumer Control) */
     HID_LI_USAGE,
-    0x01,
+    HID_USAGE_CONSUMER_CONSUMER_CONTROL,
     /* Consumer Page */
     HID_MI_COLLECTION,
     COLLECTION_APPLICATION,
