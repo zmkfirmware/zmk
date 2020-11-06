@@ -5,7 +5,10 @@ sidebar_label: Mod-Tap
 
 ## Summary
 
-The Mod-Tap sends a different keypress, if it's tapped or held. When you tap the key shortly, the first keycode is sent. If you hold the key for longer than 200ms, the second keycode is sent.
+The Mod-Tap behavior sends a different keypress, depending on whether it's held or tapped.
+
+- If you hold the key for longer than 200ms, the first keycode ("mod") is sent.
+- If you tap the key (release before 200ms), the second keycode ("tap") is sent.
 
 If you press another key within the 200ms, the 'mod' behavior is also activated.
 
@@ -40,3 +43,7 @@ You can configure a different tapping term in your keymap:
     }
 }
 ```
+
+### Additional information
+
+The mod-tap is a [hold-tap](./hold-tap.md) under the hood with the "balanced" flavor and tapping_term_ms 200.
