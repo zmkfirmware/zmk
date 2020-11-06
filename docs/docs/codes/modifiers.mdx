@@ -1,0 +1,42 @@
+---
+title: Modifiers
+sidebar_label: Modifiers
+hide_title: true
+---
+
+import OsLegend from "@site/src/components/codes/OsLegend";
+import ToastyContainer from "@site/src/components/codes/ToastyContainer";
+import Table from "@site/src/components/codes/Table";
+
+<OsLegend />
+<ToastyContainer />
+
+## Modifiers
+
+Modifiers are the special keyboard keys: _shift_, _alt_, _control_ & _GUI_.
+
+Modifiers can be used in two forms within ZMK:
+
+- Modifier [Keys](#modifier-keys) → `LEFT_SHIFT`
+- Modifier [Functions](#modifier-functions) → `LS(code)`
+
+<Table group="keyboard-modifiers" />
+
+### Modifier Keys
+
+These act like any other key code.
+
+- e.g. `&kp LEFT_GUI` pushes and releases the left GUI key.
+
+### Modifier Functions
+
+These functions take the form: `XX(code)`
+
+- They _apply_ the modifier to another _code_.
+  - e.g. `&kp LS(A)` = `LEFT_SHIFT`+`A`
+    - aka a _shifted_ (capitalized) **A**.
+  - The _code_ and the _modifier_ are handled _as one_.
+- They can be _combined_:
+  - e.g. `&kp LC(RA(B))` = `LEFT_CONTROL`+`RIGHT_ALT`+`B`
+- Some codes _include_ modifiers in their definition.
+  - e.g. `DOLLAR` = `LS(N4)`
