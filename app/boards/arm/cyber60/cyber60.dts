@@ -12,11 +12,35 @@
 	compatible = "cyber60", "Rev A";
 
 	chosen {
-		//zephyr,code-partition = &code_partition;
+		zephyr,code-partition = &code_partition;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		red_led: led_0 {
+			gpios = <&gpio1 13 GPIO_ACTIVE_HIGH>;
+			label = "Red LED";
+		};
+		green_led: led_1 {
+			gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
+			label = "Green LED";
+		};
+		blue_led: led_2 {
+			gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+			label = "Blue LED";
+		};
+	};
+
+	vbatt {
+		compatible = "zmk,battery-voltage-divider";
+		label = "BATTERY";
+		io-channels = <&adc 1>;
+		output-ohms = <2000000>;
+		full-ohms = <(2000000 + 806000)>;
 	};
 
 	default_transform: keymap_transform_0 {
