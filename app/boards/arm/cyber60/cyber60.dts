@@ -6,36 +6,17 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
-
+#include <dt-bindings/zmk/matrix-transform.h>
 / {
 	model = "CYBER60_A";
-	compatible = "cyber60,A";
+	compatible = "cyber60", "Rev A";
 
 	chosen {
-		zephyr,code-partition = &code_partition;
-		// zephyr,console = &uart0;
-		//zephyr,bt-mon-uart = &uart0;
-		//zephyr,bt-c2h-uart = &uart0;
+		//zephyr,code-partition = &code_partition;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
-	};
-
-	leds {
-		compatible = "gpio-leds";
-		red_led: led_0 {
-			gpios = <&gpio0 42 GPIO_ACTIVE_HIGH>;
-			label = "Red LED";
-		};
-		green_led: led_1 {
-			gpios = <&gpio0 42 GPIO_ACTIVE_HIGH>;
-			label = "Green LED";
-		};
-		blue_led: led_2 {
-			gpios = <&gpio0 42 GPIO_ACTIVE_HIGH>;
-			label = "Blue LED";
-		};
 	};
 
 	default_transform: keymap_transform_0 {
@@ -57,65 +38,29 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                     RC(
 
 		diode-direction = "col2row";
 		row-gpios
-			= <&gpioa 9  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpiob 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpiob 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpiob 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpiob 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			= <&gpio0 9  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio1 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio1 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio1 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
 		col-gpios
-			= <&gpioa 6  GPIO_ACTIVE_HIGH>
-			, <&gpioa 7  GPIO_ACTIVE_HIGH>
-			, <&gpiob 0  GPIO_ACTIVE_HIGH>
-			, <&gpiob 13 GPIO_ACTIVE_HIGH>
-			, <&gpiob 15 GPIO_ACTIVE_HIGH>
-			, <&gpioa 8  GPIO_ACTIVE_HIGH>
-			, <&gpioa 15 GPIO_ACTIVE_HIGH>
-			, <&gpiob 3  GPIO_ACTIVE_HIGH>
-			, <&gpiob 4  GPIO_ACTIVE_HIGH>
-			, <&gpiob 5  GPIO_ACTIVE_HIGH>
-			, <&gpiob 8  GPIO_ACTIVE_HIGH>
-			, <&gpiob 9  GPIO_ACTIVE_HIGH>
-			, <&gpioc 13 GPIO_ACTIVE_HIGH>
-			, <&gpioc 14 GPIO_ACTIVE_HIGH>
+			= <&gpio0 6  GPIO_ACTIVE_HIGH>
+			, <&gpio0 7  GPIO_ACTIVE_HIGH>
+			, <&gpio1 0  GPIO_ACTIVE_HIGH>
+			, <&gpio1 13 GPIO_ACTIVE_HIGH>
+			, <&gpio1 15 GPIO_ACTIVE_HIGH>
+			, <&gpio1 8  GPIO_ACTIVE_HIGH>
+			, <&gpio1 15 GPIO_ACTIVE_HIGH>
+			, <&gpio1 3  GPIO_ACTIVE_HIGH>
+			, <&gpio1 4  GPIO_ACTIVE_HIGH>
+			, <&gpio1 5  GPIO_ACTIVE_HIGH>
+			, <&gpio1 8  GPIO_ACTIVE_HIGH>
+			, <&gpio1 9  GPIO_ACTIVE_HIGH>
+			, <&gpio1 13 GPIO_ACTIVE_HIGH>
+			, <&gpio1 14 GPIO_ACTIVE_HIGH>
 			;
 	};
-	vbatt {
-		compatible = "zmk,battery-voltage-divider";
-		label = "BATTERY";
-		io-channels = <&adc 7>;
-		output-ohms = <2000000>;
-		full-ohms = <(2000000 + 806000)>;
-	};
-
-};
-
-&adc {
-	status = "okay";
-};
-
-&gpio0 {
-	status = "okay";
-};
-
-&gpio1 {
-	status = "okay";
-};
-
-&i2c0 {
-	compatible = "nordic,nrf-twi";
-	sda-pin = <15>;
-	scl-pin = <17>;
-};
-
-&uart0 {
-	compatible = "nordic,nrf-uarte";
-	status = "okay";
-	current-speed = <115200>;
-	tx-pin = <39>;
-	rx-pin = <34>;
-	rts-pin = <33>;
-	cts-pin = <12>;
 };
 
 &usbd {
