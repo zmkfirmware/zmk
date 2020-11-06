@@ -1,0 +1,33 @@
+---
+title: Modifiers
+sidebar_label: Modifiers
+---
+
+import Table from "@site/src/components/codes/Table";
+
+To add a modifier key like 'Control' to your board, use one of the codes from the following table.
+
+If you want to send a modified key like ctrl+a, see the Modified keys section below.
+
+### Modifier keys
+
+<Table group="keyboard-modifiers" />
+
+### Modified keys
+
+To send a shifted key such as capital A (`LEFT_SHIFT` + `A`) use the `LS` macro: `&kp LS(A)`. You can also use the "right-hand" version of this macro, `RS`.
+
+Control (`LC`, `RC`), Alt (`LA`,`RA`) and GUI (`LG`,`RG`) can be used in the same way. For example, to send ctrl+c, use `&kp LC(C)` or `&kp RC(C)`.
+
+It's possible to combine modifiers: `&kp LC(RA(A))` will result in `LEFT_CONTROL` + `RIGHT_ALT` + `A` being pressed.
+
+| Macro | Corresponding keycode |
+| ----- | --------------------- |
+| `LS`  | `LEFT_SHIFT`          |
+| `RS`  | `RIGHT_SHIFT`         |
+| `LC`  | `LEFT_CONTROL`        |
+| `RC`  | `RIGHT_CONTROL`       |
+| `LA`  | `LEFT_ALT`            |
+| `RA`  | `RIGHT_ALT`           |
+| `LG`  | `LEFT_GUI`            |
+| `RG`  | `RIGHT_GUI`           |
