@@ -29,6 +29,7 @@ module.exports = {
     Codes: [
       "codes/index",
       "codes/keyboard-keypad",
+      "codes/modifiers",
       "codes/editing",
       "codes/media",
       "codes/applications",
