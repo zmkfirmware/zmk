@@ -1,0 +1,220 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+.codes.os.legend {
+  position: sticky;
+  z-index: 1;
+  top: var(--ifm-navbar-height);
+  width: 100%;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  background: var(--ifm-background-color);
+  display: flex;
+  justify-content: space-between;
+}
+
+html[data-theme="light"] .codes.os.legend {
+  background: white;
+}
+
+.codes.os.legend .os {
+  flex: 1;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+  padding: 0.1em;
+  border: 1px var(--ifm-table-border-color) solid;
+  border-radius: 0.5em;
+  text-align: center;
+}
+
+.codes.os.legend .os .heading {
+  font-weight: bold;
+}
+
+.codes.os.legend .os .heading::after {
+  content: " : ";
+  font-weight: normal;
+}
+
+.codes .name {
+  cursor: copy;
+}
+
+.codes .name:hover {
+  opacity: 0.8;
+}
+
+.codes .name:active {
+  color: var(--ifm-font-color-base-inverse);
+  background: var(--ifm-font-color-base);
+}
+
+.codes.os.legend,
+.codes table {
+  font-size: 0.8em;
+}
+
+.codes table {
+  display: table;
+  font-size: 0.8em;
+  margin-bottom: 0;
+}
+
+.codes th,
+.codes td {
+  padding: 0.2rem;
+}
+
+.codes td {
+  position: relative;
+}
+
+.codes th.names,
+.codes th.description {
+  text-align: left;
+}
+
+.codes td.names code {
+  display: block;
+  float: left;
+  clear: both;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  font-size: 0.85em;
+}
+
+.codes .context {
+  display: inline;
+  margin: 0 0 0 0.5em;
+  font-size: 0.85em;
+}
+
+.codes .context::before {
+  content: "(";
+}
+
+.codes .context::after {
+  content: ")";
+}
+
+.codes .symbol {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.codes .symbol code {
+  align-self: flex-start;
+  width: auto;
+}
+
+.codes .symbol .meaning {
+  flex: 1;
+  font-size: 0.8em;
+  text-transform: uppercase;
+}
+
+.codes td.documentation,
+.codes td.os {
+  width: 0.1%;
+  min-width: 1.9rem;
+  text-align: center;
+}
+
+.codes td.documentation {
+  font-size: 0.8em;
+}
+
+.codes td.documentation a {
+  cursor: help;
+}
+
+.codes .os {
+  color: black;
+}
+
+.codes td.os {
+  font-size: 0.8em;
+}
+
+.codes .not-tested {
+  font-weight: bold;
+}
+
+.codes .os.windows {
+  background: #caedfd;
+}
+
+.codes .os.linux {
+  background: #fff2ca;
+}
+
+.codes .os.android {
+  background: #d8eed9;
+}
+
+.codes .os.macos {
+  background: #ececec;
+}
+
+.codes .os.ios {
+  background: #ffffff;
+}
+
+.codes .footnotes {
+  display: flex;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+  border: var(--ifm-table-border-width) dashed var(--ifm-table-border-color);
+  border-top: 0;
+  font-size: 0.8em;
+}
+
+.codes .footnotes .label {
+  display: block;
+  margin-right: 1em;
+  font-style: italic;
+}
+
+.codes .footnotes .label::after {
+  content: ":";
+}
+
+.codes .footnotes .anchor {
+  display: block;
+  position: relative;
+  top: calc(var(--ifm-navbar-height) * -1 - 6em);
+  visibility: hidden;
+}
+
+.codes .footnote {
+  flex: 1;
+  display: flex;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.codes .footnote .symbol {
+  flex: 0;
+  float: left;
+  margin-right: 0.4em;
+  font-size: 0.8em;
+}
+
+.codes .footnote .content p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.codes .footnoteRefs {
+  float: right;
+  font-size: 0.8em;
+}
+
+.codes .footnoteRefs a {
+  color: black;
+}

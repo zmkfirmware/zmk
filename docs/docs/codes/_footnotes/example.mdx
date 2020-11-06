@@ -1,0 +1,13 @@
+This is an _example_ footnote for **code** tables.
+
+- Footnotes are supported per row by each operating system column.
+- Footnotes support MDX syntax.
+- A footnote's `id` is its filename by convention (i.e. `example`).
+- Footnotes must be included and listed in `src/data/footnotes.js` because they're statically compiled.
+- Footnotes are assigned within `src/data/hid.js` using `column-id: footnote-id(s)` `K`:`V` pairs (case-sensitive), where:
+  - `K` is the column's `id`.
+  - `V` is the footnote's `id`.
+  - `V` can also be an array of footnote ids (_optional_).
+- The footnote system aims to prevent duplication of _sources_ (mdx).
+- Footnotes are listed under each table, so try to avoid multiline notes unless it's necessary!
+- Footnotes are automatically numbered.
