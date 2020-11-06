@@ -26,6 +26,15 @@ module.exports = {
       "behavior/lighting",
       "behavior/power",
     ],
+    Codes: [
+      "codes/index",
+      "codes/keyboard-keypad",
+      "codes/editing",
+      "codes/media",
+      "codes/applications",
+      "codes/input-assist",
+      "codes/power",
+    ],
     Development: [
       "dev-clean-room",
       "dev-setup",

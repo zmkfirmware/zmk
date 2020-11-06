@@ -1,0 +1,33 @@
+---
+title: Codes
+sidebar_label: Full List
+hide_title: true
+slug: ./
+---
+
+import OsLegend from "@site/src/components/codes/OsLegend";
+import ToastyContainer from "@site/src/components/codes/ToastyContainer";
+import Key, { rightToc as keyToc } from "./_keyboard-keypad.mdx";
+import Editing, { rightToc as editingToc } from "./_editing.mdx";
+import Media, { rightToc as mediaToc } from "./_media.mdx";
+import Applications, { rightToc as applicationsToc } from "./_applications.mdx";
+import InputAssist, { rightToc as inputAssistToc } from "./_input-assist.mdx";
+import Power, { rightToc as powerToc } from "./_power.mdx";
+
+export const rightToc = [
+  ...keyToc,
+  ...editingToc,
+  ...mediaToc,
+  ...applicationsToc,
+  ...inputAssistToc,
+  ...powerToc,
+];
+
+<OsLegend />
+<ToastyContainer />
+<Key />
+<Editing />
+<Media />
+<Applications />
+<InputAssist />
+<Power />
