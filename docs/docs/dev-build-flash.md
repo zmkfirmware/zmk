@@ -99,6 +99,23 @@ For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
 
+In order to make your `zmk-config` folder available when building within the VSCode Remote Container, you need to create a docker volume named `zmk-config`
+by binding it to the full path of your config directory. If you have run the VSCode Remote Container before, it is likely that docker has created this
+volume automatically -- we need to delete the default volume before binding it to the correct path. Follow the following steps:
+
+1. Stop the container by exiting VSCode. You can verify no container is running via the command `docker ps`.
+1. Remove all the containers that are not running via the command `docker container prune`. We need to remove the ZMK container before we can delete the default `zmk-config` volume referenced by it. If you do not want to delete all the containers that are not running, you can find the id of the ZMK container and use `docker rm` to delete that one only.
+1. Remove the default volume via the command `docker volume rm zmk-config`.
+
+Then you can bind the `zmk-config` volume to the correct path pointing to your local [zmk-config](./customization.md) folder:
+
+```
+docker volume create --driver local -o o=bind -o type=none -o \
+    device="/full/path/to/your/zmk-config/" zmk-config
+```
+
+Now start VSCode and rebuild the container after being prompted. You should be able to see your zmk-config mounted to `/workspaces/zmk-config` inside the container. So you can build your custom firmware with `-DZMK_CONFIG="/workspaces/zmk-config/config"`.
+
 ## Flashing
 
 Once built, the previously supplied parameters will be remembered so you can run the following to flash your
