@@ -1,6 +1,4 @@
 
-#include <dt-bindings/zmk/hid_usage_pages.h>
-
 / {
 	behaviors {
 		/* DEPRECATED: `inc_dec_cp` will be removed in the future */
