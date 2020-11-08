@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = {
   title: "ZMK Firmware",
   tagline: "Modern, open source keyboard firmware",
@@ -6,6 +8,7 @@ module.exports = {
   favicon: "img/favicon.ico",
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
+  plugins: [path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin")],
   themeConfig: {
     googleAnalytics: {
       trackingID: "UA-145201102-2",
