@@ -9,7 +9,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/hid.h>
 #include <dt-bindings/zmk/modifiers.h>
-#include <dt-bindings/zmk/hid_usage_pages.h>
 
 static struct zmk_hid_keypad_report kp_report = {
     .report_id = 1, .body = {.modifiers = 0, ._reserved = 0, .keys = {0}}};
