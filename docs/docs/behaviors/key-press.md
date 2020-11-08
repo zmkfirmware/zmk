@@ -33,11 +33,6 @@ provided by ZMK near the top:
 
 Doing so makes a set of defines such as `A`, `N1`, etc. available for use with these behaviors
 
-:::note
-There is an [open issue](https://github.com/zmkfirmware/zmk/issues/21) to provide a more comprehensive, and
-complete set of defines for the full keypad and consumer usage pages in the future for ZMK.
-:::
-
 ### Improperly defined keymap - `dtlib.DTError: <board>.dts.pre.tmp:<line number>`
 
 When compiling firmware from a keymap, it may be common to encounter an error in the form of a`dtlib.DTError: <board>.dts.pre.tmp:<line number>`.
