@@ -35,6 +35,7 @@ module.exports = {
       "codes/applications",
       "codes/input-assist",
       "codes/power",
+      "codes/keymap-upgrader",
     ],
     Development: [
       "development/clean-room",
