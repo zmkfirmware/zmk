@@ -10,56 +10,49 @@
 
 #define DEFAULT 0
 
-
-
 / {
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
-            bindings = <
-    &kp Q    &kp W    &kp E    &kp R    &kp T    &kp Y    &kp U    &kp I    &kp O    &kp P
-    &kp A    &kp S    &kp D    &kp F    &kp G    &kp H    &kp J    &kp K    &kp L    &kp ESC
-    &mt LSFT Z   &mt LALT X   &lt 3 C   &lt 4 V   &lt 2 BSPC &lt 1 SPACE &kp B    &mt RALT N  &mt RCTL M  &mt LSFT RET
- >;
-      
+            bindings = <&kp Q &kp W &kp E &kp R &kp T &kp Y &kp U &kp I &kp O &kp P 
+                        &kp A &kp S &kp D &kp F &kp G &kp H &kp J &kp K &kp L &kp ESC 
+                        &mt LSFT Z &mt LALT X &lt 3 C &lt 4 V &lt 2 BSPC &lt 1 SPACE &kp B &mt RALT N &mt RCTL M &mt LSFT RET
+                        >;
         };
 
-
         first_layer {
-		bindings = <
-	&kp N1  &kp N2   &kp N3   &kp N4   &kp N5	&kp N6   &kp N7   &kp N8   &kp N9   &kp N0 
-    &kp F1  &kp F2   &kp F3   &kp F4   &kp F5   &kp F6   &kp F7   &kp F8   &kp F9   &kp F10
-    &trans  &trans   &trans   &trans   &kp DEL  &trans   &trans   &trans   &trans   &trans
->;
-		};
+            bindings =
+                <&kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp N8 &kp N9 &kp N0
+                 &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp F7 &kp F8 &kp F9 &kp F10
+                 &trans &trans &trans &trans &kp DEL &trans &trans &trans &trans &trans
+                 >;
+        };
 
- second_layer {
-		bindings = <
-	  &kp BANG  &kp ATSN &kp HASH  &kp DLLR  &kp PRCT  &kp CRRT  &kp AMPS &kp KMLT &kp LPRN &kp RPRN 
-      &kp F11   &kp F12  &trans    &trans    &trans    &trans    &trans   &trans   &trans   &kp GRAVE
-      &trans    &trans   &trans    &trans    &kp DEL   &trans    &trans   &trans   &trans   &trans
->;
-		};
+        second_layer {
+            bindings = <&kp BANG &kp ATSN &kp HASH &kp DLLR &kp PRCT &kp CRRT &kp AMPS 
+                        &kp KMLT &kp LPRN &kp RPRN &kp F11 &kp F12 &trans &trans &trans 
+                        &trans &trans &trans &trans &kp GRAVE &trans &trans &trans &trans 
+                        &kp DEL &trans &trans &trans &trans &trans
+                        >;
+        };
 
+        third_layer {
+            bindings =
+                <&trans &trans &trans &trans &trans &kp MINUS &kp EQL &kp LBRC &kp RBRC
+                 &kp BSLH &kp TAB &trans &trans &trans &trans &kp COMMA &kp DOT &kp SLASH
+                 &kp SCLN &kp APOS &trans &trans &trans &trans &trans &trans &kp LEFT_ARROW
+                 &kp DOWN_ARROW &kp UP_ARROW &kp RIGHT_ARROW
+                 >;
+        };
 
-  third_layer {
-		bindings = <
-		 &trans   &trans &trans &trans &trans &kp MINUS &kp EQL  &kp LBRC &kp RBRC &kp BSLH
-         &kp TAB  &trans &trans &trans &trans &kp COMMA &kp DOT  &kp SLASH &kp SCLN &kp APOS
-         &trans   &trans &trans &trans &trans &trans    &kp LEFT_ARROW &kp DOWN_ARROW &kp UP_ARROW &kp RIGHT_ARROW
-					>;
-		};
+        fourth_layer {
+            bindings = <&trans &trans &trans &trans &trans &kp UNDERSCORE &kp PLUS &kp LBRC
+                        &kp RBRC &kp PIPE &kp TAB &bt BT_CLR &bt BT_NXT &bt BT_PRV &trans
+                        &kp LT &kp GT &kp QMARK &kp COLON &kp DQT &trans &trans &trans
+                        &trans &trans &trans &kp HOME &kp PG_DN &kp PG_UP &kp END
 
-fourth_layer {
-		bindings = <
-		 &trans   &trans      &trans     &trans     &trans &kp UNDERSCORE &kp PLUS &kp LBRC  &kp RBRC  &kp PIPE
-         &kp TAB  &bt BT_CLR  &bt BT_NXT &bt BT_PRV &trans &kp LT         &kp GT   &kp QMARK &kp COLON &kp DQT
-         &trans   &trans      &trans     &trans     &trans &trans         &kp HOME &kp PG_DN &kp PG_UP &kp END
-		
-
-					>;
-		};
-
+                        >;
+        };
     };
 };
