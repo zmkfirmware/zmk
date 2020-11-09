@@ -24,6 +24,14 @@
 		control-gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
 	};
 
+	vbatt { // need to figure out the resistances
+		compatible = "zmk,battery-voltage-divider";
+		label = "BATTERY";
+		io-channels = <&adc 1>;
+		output-ohms = <2000000>;
+		full-ohms = <(2000000 + 806000)>;
+	};
+
 	leds {
 		compatible = "gpio-leds";
 		red_led: led_3 {
@@ -88,6 +96,10 @@ RC(5,0)   RC(5,1)   RC(5,2)  RC(5,3)                    RC(5,4)                 
 			, <&gpio1 0  GPIO_ACTIVE_HIGH>
 			;
 	};
+};
+
+&adc {
+	status = "okay";
 };
 
 &usbd {
