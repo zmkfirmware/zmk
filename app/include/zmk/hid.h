@@ -11,7 +11,6 @@
 
 #include <zmk/keys.h>
 #include <dt-bindings/zmk/hid_usage.h>
-#include <dt-bindings/zmk/hid_usage_pages.h>
 
 #define COLLECTION_REPORT 0x03
 

@@ -8,7 +8,7 @@
 
 #include <zephyr.h>
 #include <dt-bindings/zmk/modifiers.h>
-#include <dt-bindings/zmk/hid_usage_pages.h>
+#include <dt-bindings/zmk/hid_usage.h>
 #include <zmk/event-manager.h>
 #include <zmk/keys.h>
 
