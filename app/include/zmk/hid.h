@@ -24,7 +24,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_GD,
     /* USAGE (Keyboard) */
     HID_LI_USAGE,
-    HID_USAGE_GD_KEYBOARD,
+    HID_USAGE_ID(HID_USAGE_GD_KEYBOARD),
     /* COLLECTION (Application) */
     HID_MI_COLLECTION,
     COLLECTION_APPLICATION,
@@ -36,10 +36,10 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_KEY,
     /* USAGE_MINIMUM (Keyboard LeftControl) */
     HID_LI_USAGE_MIN(1),
-    HID_USAGE_KEY_KEYBOARD_LEFTCONTROL,
+    HID_USAGE_ID(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),
     /* USAGE_MAXIMUM (Keyboard Right GUI) */
     HID_LI_USAGE_MAX(1),
-    HID_USAGE_KEY_KEYBOARD_RIGHT_GUI,
+    HID_USAGE_ID(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI),
     /* LOGICAL_MINIMUM (0) */
     HID_GI_LOGICAL_MIN(1),
     0x00,
@@ -102,7 +102,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_CONSUMER,
     /* USAGE (Consumer Control) */
     HID_LI_USAGE,
-    HID_USAGE_CONSUMER_CONSUMER_CONTROL,
+    HID_USAGE_ID(HID_USAGE_CONSUMER_CONSUMER_CONTROL),
     /* Consumer Page */
     HID_MI_COLLECTION,
     COLLECTION_APPLICATION,

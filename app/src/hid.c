@@ -78,16 +78,18 @@ int zmk_hid_implicit_modifiers_release() {
 }
 
 int zmk_hid_keyboard_press(zmk_key code) {
-    if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
-        return zmk_hid_register_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
+    if (code >= HID_USAGE_ID(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL) &&
+        code <= HID_USAGE_ID(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI)) {
+        return zmk_hid_register_mod(code - HID_USAGE_ID(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL));
     }
     TOGGLE_KEYBOARD(0U, code);
     return 0;
 };
 
 int zmk_hid_keyboard_release(zmk_key code) {
-    if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
-        return zmk_hid_unregister_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
+    if (code >= HID_USAGE_ID(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL) &&
+        code <= HID_USAGE_ID(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI)) {
+        return zmk_hid_unregister_mod(code - HID_USAGE_ID(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL));
     }
     TOGGLE_KEYBOARD(code, 0U);
     return 0;
