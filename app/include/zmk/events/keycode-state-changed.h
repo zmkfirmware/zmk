@@ -24,8 +24,8 @@ ZMK_EVENT_DECLARE(keycode_state_changed);
 
 static inline struct keycode_state_changed *keycode_state_changed_from_encoded(u32_t encoded,
                                                                                bool pressed) {
-    u16_t page = HID_EXT_USAGE_PAGE(encoded) & 0xFF;
-    u16_t id = HID_EXT_USAGE_ID(encoded);
+    u16_t page = HID_USAGE_PAGE(encoded) & 0xFF;
+    u16_t id = HID_USAGE_ID(encoded);
     zmk_mod_flags implicit_mods = SELECT_MODS(encoded);
 
     if (!page) {
