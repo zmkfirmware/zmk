@@ -21,7 +21,7 @@ Here you can see the RGB underglow feature in action using WS2812 LEDs.
 
 ## Enabling RGB Underglow
 
-To enable RGB underglow on your board or shield, simply enable the `ZMK_RGB_UNDERGLOW` and `X_STRIP` configuration values in the `.conf` file of your user config directory as such:
+To enable RGB underglow on your board or shield, simply enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `X_STRIP` configuration values in the `.conf` file of your user config directory as such:
 
 ```
 CONFIG_ZMK_RGB_UNDERGLOW=y
@@ -35,17 +35,17 @@ If your board or shield does not have RGB underglow configured, refer to [Adding
 
 There are various Kconfig options used to configure the RGB underglow feature. These can all be set in the `.conf` file.
 
-| Option                        | Description                                    | Default |
-| ----------------------------- | ---------------------------------------------- | ------- |
-| `ZMK_RGB_UNDERGLOW_HUE_STEP`  | Hue step in degrees of 360 used by RGB actions | 10      |
-| `ZMK_RGB_UNDERGLOW_SAT_STEP`  | Saturation step in percent used by RGB actions | 10      |
-| `ZMK_RGB_UNDERGLOW_BRT_STEP`  | Brightness step in percent used by RGB actions | 10      |
-| `ZMK_RGB_UNDERGLOW_HUE_START` | Default hue 0-359 in degrees                   | 0       |
-| `ZMK_RGB_UNDERGLOW_SAT_START` | Default saturation 0-100 in percent            | 100     |
-| `ZMK_RGB_UNDERGLOW_BRT_START` | Default brightness 0-100 in percent            | 100     |
-| `ZMK_RGB_UNDERGLOW_SPD_START` | Default effect speed 1-5                       | 3       |
-| `ZMK_RGB_UNDERGLOW_EFF_START` | Default effect integer from the effect enum    | 0       |
-| `ZMK_RGB_UNDERGLOW_ON_START`  | Default on state                               | y       |
+| Option                               | Description                                    | Default |
+| ------------------------------------ | ---------------------------------------------- | ------- |
+| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP`  | Hue step in degrees of 360 used by RGB actions | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP`  | Saturation step in percent used by RGB actions | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP`  | Brightness step in percent used by RGB actions | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_START` | Default hue 0-359 in degrees                   | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_START` | Default saturation 0-100 in percent            | 100     |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_START` | Default brightness 0-100 in percent            | 100     |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SPD_START` | Default effect speed 1-5                       | 3       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START` | Default effect integer from the effect enum    | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_ON_START`  | Default on state                               | y       |
 
 ## Adding RGB Underglow to a Board
 
@@ -122,7 +122,7 @@ Once you have your `led_strip` properly defined you need to add it to the root d
 };
 ```
 
-Finally you need to enable the `ZMK_RGB_UNDERGLOW` and `X_STRIP` configuration values in the `.conf` file of your board (or set a default in the `Kconfig.defconfig`):
+Finally you need to enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `X_STRIP` configuration values in the `.conf` file of your board (or set a default in the `Kconfig.defconfig`):
 
 ```
 CONFIG_ZMK_RGB_UNDERGLOW=y
