@@ -44,8 +44,4 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,2) RC(4,9) RC(3,6) RC(3,7) 
 			;
 		
 	};
-
-	bt_unpair_combo: bt_unpair_combo {
-		compatible = "zmk,bt-unpair-combo";
-	};
 };

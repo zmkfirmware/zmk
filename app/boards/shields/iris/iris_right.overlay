@@ -20,7 +20,3 @@
 		, <&pro_micro_a 1 GPIO_ACTIVE_HIGH>
 		;
 };
-
-&bt_unpair_combo {
-	key-positions = <11 43>;
-};
