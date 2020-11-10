@@ -53,9 +53,19 @@ static const struct kscan_gpio_item_config *kscan_gpio_input_configs(struct devi
     return cfg->inputs;
 }
 
+static void kscan_gpio_direct_queue_read(union work_reference *work, u8_t debounce_period) {
+    if (debounce_period > 0) {
+        k_delayed_work_cancel(&work->delayed);
+        k_delayed_work_submit(&work->delayed, K_MSEC(debounce_period));
+    } else {
+        k_work_submit(&work->direct);
+    }
+}
+
 #if !defined(CONFIG_ZMK_KSCAN_DIRECT_POLLING)
 
 struct kscan_gpio_irq_callback {
+    struct device *dev;
     union work_reference *work;
     u8_t debounce_period;
     struct gpio_callback callback;
@@ -82,7 +92,7 @@ static int kscan_gpio_config_interrupts(struct device *dev, gpio_flags_t flags) 
 }
 
 static int kscan_gpio_direct_enable(struct device *dev) {
-    return kscan_gpio_config_interrupts(dev, GPIO_INT_DEBOUNCE | GPIO_INT_EDGE_BOTH);
+    return kscan_gpio_config_interrupts(dev, GPIO_INT_LEVEL_ACTIVE);
 }
 static int kscan_gpio_direct_disable(struct device *dev) {
     return kscan_gpio_config_interrupts(dev, GPIO_INT_DISABLE);
@@ -93,12 +103,8 @@ static void kscan_gpio_irq_callback_handler(struct device *dev, struct gpio_call
     struct kscan_gpio_irq_callback *data =
         CONTAINER_OF(cb, struct kscan_gpio_irq_callback, callback);
 
-    if (data->debounce_period > 0) {
-        k_delayed_work_cancel(&data->work->delayed);
-        k_delayed_work_submit(&data->work->delayed, K_MSEC(data->debounce_period));
-    } else {
-        k_work_submit(&data->work->direct);
-    }
+    kscan_gpio_direct_disable(data->dev);
+    kscan_gpio_direct_queue_read(data->work, data->debounce_period);
 }
 
 #else /* !defined(CONFIG_ZMK_KSCAN_DIRECT_POLLING) */
@@ -106,7 +112,7 @@ static void kscan_gpio_irq_callback_handler(struct device *dev, struct gpio_call
 static void kscan_gpio_timer_handler(struct k_timer *timer) {
     struct kscan_gpio_data *data = CONTAINER_OF(timer, struct kscan_gpio_data, poll_timer);
 
-    k_work_submit(&data->work.direct);
+    kscan_gpio_direct_queue_read(&data->work, 0);
 }
 
 static int kscan_gpio_direct_enable(struct device *dev) {
@@ -135,6 +141,7 @@ static int kscan_gpio_read(struct device *dev) {
     struct kscan_gpio_data *data = dev->driver_data;
     const struct kscan_gpio_config *cfg = dev->config_info;
     u32_t read_state = data->pin_state;
+    bool submit_follow_up_read = false;
     for (int i = 0; i < cfg->num_of_inputs; i++) {
         struct device *in_dev = kscan_gpio_input_devices(dev)[i];
         const struct kscan_gpio_item_config *in_cfg = &kscan_gpio_input_configs(dev)[i];
@@ -142,13 +149,23 @@ static int kscan_gpio_read(struct device *dev) {
     }
     for (int i = 0; i < cfg->num_of_inputs; i++) {
         bool prev_pressed = BIT(i) & data->pin_state;
-        bool pressed = BIT(i) & read_state;
+        bool pressed = (BIT(i) & read_state) != 0;
+        submit_follow_up_read = (submit_follow_up_read || pressed);
         if (pressed != prev_pressed) {
             LOG_DBG("Sending event at %d,%d state %s", 0, i, (pressed ? "on" : "off"));
             WRITE_BIT(data->pin_state, i, pressed);
             data->callback(dev, 0, i, pressed);
         }
     }
+
+#if !defined(CONFIG_ZMK_KSCAN_DIRECT_POLLING)
+    if (submit_follow_up_read) {
+        kscan_gpio_direct_queue_read(&data->work, cfg->debounce_period);
+    } else {
+        kscan_gpio_direct_enable(dev);
+    }
+#endif
+
     return 0;
 }
 
@@ -196,7 +213,7 @@ static const struct kscan_driver_api gpio_driver_api = {
             }                                                                                      \
             COND_CODE_0(                                                                           \
                 IS_ENABLED(CONFIG_ZMK_KSCAN_DIRECT_POLLING),                                       \
-                (irq_callbacks_##n[i].work = &data->work;                                          \
+                (irq_callbacks_##n[i].work = &data->work; irq_callbacks_##n[i].dev = dev;          \
                  irq_callbacks_##n[i].debounce_period = cfg->debounce_period;                      \
                  gpio_init_callback(&irq_callbacks_##n[i].callback,                                \
                                     kscan_gpio_irq_callback_handler, BIT(in_cfg->pin));            \
