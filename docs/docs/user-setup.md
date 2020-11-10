@@ -194,7 +194,7 @@ storage device. Once the flash is complete, the controller should automatically 
 
 ## Wirelessly Connecting Your Keyboard
 
-Connecting your keyboard wirelessly is the same as adding other Bluetooth devides: press the reset button and scan for devices. However, pairing and bonding is still currently being worked on to increase relability and ease of use. In addition, users have in general reported that Bluetooth pairing with computers tends to be quite finnicky. Try out the connection with your tablet or phone first, as those devices seem to work much more consistently. See [BLE Reset](./bond-reset.md) for help on resetting your MCUs if you're experiencing connection issues.
+Connecting your keyboard wirelessly is the same as adding other Bluetooth devides: press the reset button and scan for devices. However, pairing and bonding is still currently being worked on to increase relability and ease of use. In addition, users have in general reported that Bluetooth pairing with computers tends to be quite finnicky. Try out the connection with your tablet or phone first, as those devices seem to work much more consistently.
 
 ### Connecting Split Keyboard Halves
 

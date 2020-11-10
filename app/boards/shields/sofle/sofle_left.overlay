@@ -20,7 +20,3 @@
 &left_encoder {
 	status = "okay";
 };
-
-&bt_unpair_combo {
-	key-positions = <0 54>;
-};
