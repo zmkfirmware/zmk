@@ -52,8 +52,8 @@
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 1>;
-		output-ohms = <2000000>;
-		full-ohms = <(2000000 + 806000)>;
+		output-ohms = <100000>;
+		full-ohms = <(100000 + 100000)>;
 	};
 
 	default_transform: keymap_transform_0 {
