@@ -37,10 +37,10 @@ static const u8_t zmk_hid_report_desc[] = {
     HID_USAGE_KEY,
     /* USAGE_MINIMUM (Keyboard LeftControl) */
     HID_LI_USAGE_MIN(1),
-    0xE0,
+    HID_USAGE_KEY_KEYBOARD_LEFTCONTROL,
     /* USAGE_MAXIMUM (Keyboard Right GUI) */
     HID_LI_USAGE_MAX(1),
-    0xE7,
+    HID_USAGE_KEY_KEYBOARD_RIGHT_GUI,
     /* LOGICAL_MINIMUM (0) */
     HID_GI_LOGICAL_MIN(1),
     0x00,
