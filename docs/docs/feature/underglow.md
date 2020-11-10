@@ -61,7 +61,7 @@ Here's an example of an nRF52 SPI definition:
 
 ```
 &spi1 {
-  compatible = "nordic,nrf-spi";
+  compatible = "nordic,nrf-spim";
   status = "okay";
   mosi-pin = <6>;
   // Unused pins, needed for SPI definition, but not used by the ws2812 driver itself.
