@@ -1,5 +1,4 @@
 ---
-id: dev-tests
 title: Tests
 sidebar_label: Tests
 ---

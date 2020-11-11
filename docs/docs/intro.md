@@ -1,5 +1,4 @@
 ---
-id: intro
 title: Introduction to ZMK
 sidebar_label: Introduction
 slug: /

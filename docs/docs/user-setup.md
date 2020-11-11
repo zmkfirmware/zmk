@@ -1,5 +1,4 @@
 ---
-id: user-setup
 title: Installing ZMK
 sidebar_label: Installing ZMK
 ---

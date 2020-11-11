@@ -1,5 +1,4 @@
 ---
-id: hardware
 title: Supported Hardware
 sidebar_label: Supported Hardware
 ---
