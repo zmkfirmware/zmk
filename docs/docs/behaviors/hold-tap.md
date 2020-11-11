@@ -21,6 +21,14 @@ By default, the hold-tap is configured to also select the 'hold' functionality i
 
 We call this the 'hold-preferred' flavor of hold-taps. While this flavor may work very well for a ctrl/escape key, it's not very well suited for home-row mods or layer-taps. That's why there are two more flavors to choose from: 'tap-preferred' and 'balanced'.
 
+#### Flavors
+
+- The 'hold-preferred' flavor triggers the hold behavior when the tapping_term_ms has expired or another key is pressed.
+- The 'balanced' flavor will trigger the hold behavior when the tapping_term_ms has expired or another key is pressed and released.
+- The 'tap-preferred' flavor triggers the hold behavior when the tapping_term_ms has expired. It triggers the tap behavior when another key is pressed.
+
+When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
+
 ![Hold-tap comparison](../assets/hold-tap/comparison.png)
 
 ### Basic usage
@@ -29,7 +37,7 @@ For basic usage, please see [mod-tap](./mod-tap.md) and [layer-tap](./layers.md)
 
 ### Advanced Configuration
 
-A code example which configures a mod-tap setting that works with homerow mods:
+This example configures a hold-tap that works well for homerow mods:
 
 ```
 #include <behaviors.dtsi>
@@ -41,8 +49,8 @@ A code example which configures a mod-tap setting that works with homerow mods:
 			compatible = "zmk,behavior-hold-tap";
 			label = "HOMEROW_MODS";
 			#binding-cells = <2>;
-			tapping_term_ms = <175>;
-			flavor = "balanced";
+			tapping_term_ms = <150>;
+			flavor = "tap-preferred";
 			bindings = <&kp>, <&kp>;
 		};
 	};
@@ -60,9 +68,7 @@ A code example which configures a mod-tap setting that works with homerow mods:
 
 ```
 
-If this config does not work for you, try the flavor "tap-preferred" and a short tapping_term_ms such as 120ms.
-
-If you want to use a tap-hold with a keycode from a different code page, you have to define another behavior with another "bindings" parameter.For example, if you want to use SHIFT and volume up, define the bindings like `bindings = <&kp>, <&kp>;`. Only single-argument behaviors are supported at the moment.
+If this config does not work for you, try the flavor "balanced" with a medium tapping_term_ms such as 200ms.
 
 #### Comparison to QMK
 
