@@ -45,6 +45,7 @@ struct behavior_hold_tap_config {
     int tapping_term_ms;
     struct behavior_hold_tap_behaviors *behaviors;
     enum flavor flavor;
+    bool ignore_timer;
 };
 
 // this data is specific for each hold-tap
@@ -234,8 +235,8 @@ static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decisio
         hold_tap->is_hold = 0;
         hold_tap->is_decided = true;
         break;
-    case HT_OTHER_KEY_DOWN:
     case HT_TIMER_EVENT:
+    case HT_OTHER_KEY_DOWN:
         hold_tap->is_hold = 1;
         hold_tap->is_decided = true;
         break;
@@ -345,7 +346,8 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     // If these events were queued, the timer event may be queued too late or not at all.
     // We insert a timer event before the TH_KEY_UP event to verify.
     int work_cancel_result = k_delayed_work_cancel(&hold_tap->work);
-    if (event.timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
+    if (hold_tap->config->tapping_term_ms > 0 &&
+        event.timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(hold_tap, HT_TIMER_EVENT);
     }
 
@@ -408,8 +410,9 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
     // If these events were queued, the timer event may be queued too late or not at all.
     // We make a timer decision before the other key events are handled if the timer would
     // have run out.
-    if (ev->timestamp >
-        (undecided_hold_tap->timestamp + undecided_hold_tap->config->tapping_term_ms)) {
+    if (undecided_hold_tap->config->tapping_term_ms > 0 &&
+        ev->timestamp >
+            (undecided_hold_tap->timestamp + undecided_hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT);
     }
 

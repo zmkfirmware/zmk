@@ -21,6 +21,14 @@ By default, the hold-tap is configured to also select the 'hold' functionality i
 
 We call this the 'hold-preferred' flavor of hold-taps. While this flavor may work very well for a ctrl/escape key, it's not very well suited for home-row mods or layer-taps. That's why there are two more flavors to choose from: 'tap-preferred' and 'balanced'.
 
+#### Flavors
+
+- The 'hold-preferred' flavor triggers the hold behavior when the tapping_term_ms has expired or another key is pressed.
+- The 'balanced' flavor will trigger the hold behavior when the tapping_term_ms has expired or another key is pressed and released.
+- The 'tap-preferred' flavor triggers the hold behavior when the tapping_term_ms has expired. It triggers the tap behavior when another key is pressed.
+
+When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
+
 ![Hold-tap comparison](../assets/hold-tap/comparison.png)
 
 ### Basic usage
@@ -29,7 +37,7 @@ For basic usage, please see [mod-tap](./mod-tap.md) and [layer-tap](./layers.md)
 
 ### Advanced Configuration
 
-A code example which configures a mod-tap setting that works with homerow mods:
+This example configures a hold-tap setting that works well with homerow mods:
 
 ```
 #include <behaviors.dtsi>
@@ -62,8 +70,16 @@ A code example which configures a mod-tap setting that works with homerow mods:
 
 If this config does not work for you, try the flavor "tap-preferred" and a short tapping_term_ms such as 120ms.
 
-If you want to use a tap-hold with a keycode from a different code page, you have to define another behavior with another "bindings" parameter.For example, if you want to use SHIFT and volume up, define the bindings like `bindings = <&kp>, <&kp>;`. Only single-argument behaviors are supported at the moment.
+#### Disabling the timer
+
+If you set the tapping_term_ms to `0`, the timer is disabled for this hold-tap:
+
+- The 'hold-preferred' flavor with tapping_term_ms `0` triggers the hold behavior when another key is pressed.
+- The 'balanced' flavor with tapping_term_ms `0` triggers the hold behavior when another key is pressed and released.
+- The 'tap-preferred' flavor with tapping_term_ms `0` never triggers the hold behavior (so don't set the tapping_term for these to 0)!
 
 #### Comparison to QMK
 
 The hold-preferred flavor works similar to the `HOLD_ON_OTHER_KEY_PRESS` setting in QMK. The 'balanced' flavor is similar to the `PERMISSIVE_HOLD` setting, and the `tap-preferred` flavor is similar to `IGNORE_MOD_TAP_INTERRUPT`.
+
+Setting the `tapping_term_ms` to `0` is equivalent to `RETRO_TAPPING` in QMK.
