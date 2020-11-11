@@ -2,6 +2,10 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/kscan-mock.h>
 
+/*
+this test verifies that the correct key is released when a layer is enabled "on top"
+and the original key is "covered".
+*/
 / {
 	keymap {
 		compatible = "zmk,keymap";
@@ -9,14 +13,21 @@
 
 		default_layer {
 			bindings = <
-				&kp B &mo 1
+				&trans &mo 1
 				&trans &trans>;
 		};
 
 		layer_1 {
 			bindings = <
-				&kp C_NEXT &trans
+				&trans &kp A
 				&trans &trans>;
 		};
 	};
+};
+
+&kscan {
+	events = <
+		ZMK_MOCK_PRESS(0,1,10) 
+		ZMK_MOCK_RELEASE(0,1,10)
+	>;
 };
