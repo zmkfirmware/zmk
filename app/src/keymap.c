@@ -152,7 +152,7 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed, s64_t timest
 }
 
 #if ZMK_KEYMAP_HAS_SENSORS
-int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor) {
+int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor, s64_t timestamp) {
     for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--) {
         if (((zmk_keymap_layer_state & BIT(layer)) == BIT(layer) ||
              layer == zmk_keymap_layer_default) &&
@@ -171,7 +171,7 @@ int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor) {
                 continue;
             }
 
-            ret = behavior_sensor_keymap_binding_triggered(binding, sensor);
+            ret = behavior_sensor_keymap_binding_triggered(binding, sensor, timestamp);
 
             if (ret > 0) {
                 LOG_DBG("behavior processing to continue to next layer");
@@ -197,7 +197,7 @@ int keymap_listener(const struct zmk_event_header *eh) {
 #if ZMK_KEYMAP_HAS_SENSORS
     } else if (is_sensor_event(eh)) {
         const struct sensor_event *ev = cast_sensor_event(eh);
-        return zmk_keymap_sensor_triggered(ev->sensor_number, ev->sensor);
+        return zmk_keymap_sensor_triggered(ev->sensor_number, ev->sensor, ev->timestamp);
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
     }
 
