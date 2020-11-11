@@ -1,5 +1,4 @@
 ---
-id: dev-clean-room
 title: Clean Room Implementation
 sidebar_label: Clean Room
 ---

@@ -1,5 +1,4 @@
 ---
-id: dev-boards-shields-keymaps
 title: Boards, Shields, and Keymaps
 ---
 

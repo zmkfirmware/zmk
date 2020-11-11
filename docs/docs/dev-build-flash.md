@@ -1,5 +1,4 @@
 ---
-id: dev-build-flash
 title: Building and Flashing
 sidebar_label: Building and Flashing
 ---

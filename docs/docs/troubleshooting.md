@@ -1,5 +1,4 @@
 ---
-id: troubleshooting
 title: Troubleshooting
 sidebar_title: Troubleshooting
 ---

@@ -1,5 +1,4 @@
 ---
-id: dev-guide-usb-logging
 title: USB Logging
 ---
 
