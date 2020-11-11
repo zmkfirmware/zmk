@@ -477,7 +477,7 @@ Add the following line to your keymap file to add default encoder behavior bindi
 sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 ```
 
-Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](/docs/feature/encoders) and [Keymap](/docs/feature/keymaps) feature documentation for more details.
+Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](/docs/features/encoders) and [Keymap](/docs/features/keymaps) feature documentation for more details.
 
 </TabItem>
 </Tabs>

@@ -26,7 +26,7 @@ various config settings that can be commented/uncommented to modify how your fir
 ## Keymap
 
 Once you have the basic user config completed, you can find the keymap file in `config/<shield>.keymap` and customize from there.
-Refer to the [Keymap](/docs/feature/keymaps) documentation to learn more.
+Refer to the [Keymap](/docs/features/keymaps) documentation to learn more.
 
 ## Publishing
 

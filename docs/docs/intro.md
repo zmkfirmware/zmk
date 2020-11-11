@@ -22,9 +22,9 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | [Hold-Tap](behavior/hold-tap) (which includes [Mod-Tap](behavior/mod-tap) and [Layer-Tap](behavior/layers/#layer-tap)) | ✅  |    ✅     | ✅  |
 | [Keyboard Codes](codes/#keyboard)                                                                                      | ✅  |    ✅     | ✅  |
 | [Media](codes/#media-controls) & [Consumer](codes/#consumer-controls) Codes                                            | ✅  |    ✅     | ✅  |
-| [Encoders](feature/encoders)[^1]                                                                                       | ✅  |           | ✅  |
-| [OLED Display Support](feature/displays)[^2]                                                                           | 🚧  |    🚧     | ✅  |
-| [RGB Underglow](feature/underglow)                                                                                     | ✅  |    ✅     | ✅  |
+| [Encoders](features/encoders)[^1]                                                                                      | ✅  |           | ✅  |
+| [OLED Display Support](features/displays)[^2]                                                                          | 🚧  |    🚧     | ✅  |
+| [RGB Underglow](features/underglow)                                                                                    | ✅  |    ✅     | ✅  |
 | One Shot Keys                                                                                                          | 🚧  |    ✅     | ✅  |
 | Combo Keys                                                                                                             | 🚧  |           | ✅  |
 | Macros                                                                                                                 | 🚧  |    ✅     | ✅  |

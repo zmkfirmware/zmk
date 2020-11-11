@@ -9,10 +9,10 @@ module.exports = {
       "troubleshooting",
     ],
     Features: [
-      "feature/keymaps",
-      "feature/displays",
-      "feature/encoders",
-      "feature/underglow",
+      "features/keymaps",
+      "features/displays",
+      "features/encoders",
+      "features/underglow",
     ],
     Behaviors: [
       "behavior/key-press",
