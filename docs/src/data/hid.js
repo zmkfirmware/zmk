@@ -4702,7 +4702,7 @@ export default [
       windows: null,
       linux: true,
       android: false,
-      macos: null,
+      macos: true,
       ios: null,
     },
     footnotes: {},
