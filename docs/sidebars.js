@@ -1,5 +1,5 @@
 module.exports = {
-  someSidebar: {
+  docs: {
     "Getting Started": [
       "intro",
       "hardware",
