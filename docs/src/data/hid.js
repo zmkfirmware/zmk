@@ -3234,7 +3234,7 @@ export default [
       windows: null,
       linux: true,
       android: true,
-      macos: macos: false,
+      macos: false,
       ios: null,
     },
     footnotes: {},
