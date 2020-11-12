@@ -44,7 +44,12 @@ module.exports = {
       "development/posix-board",
       "development/tests",
       "development/usb-logging",
+      {
+        type: "category",
+        label: "Guides",
+        collapsed: false,
+        items: ["development/new-shield"],
+      },
     ],
-    "Dev Guides": ["development/guide-new-shield"],
   },
 };
