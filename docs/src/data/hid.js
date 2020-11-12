@@ -1694,7 +1694,7 @@ export default [
       linux: true,
       android: true,
       macos: true,
-      ios: false,
+      ios: true,
     },
     footnotes: {},
   },
