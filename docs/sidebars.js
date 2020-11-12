@@ -43,10 +43,8 @@ module.exports = {
       "development/boards-shields-keymaps",
       "development/posix-board",
       "development/tests",
+      "development/usb-logging",
     ],
-    "Dev Guides": [
-      "development/guide-new-shield",
-      "development/guide-usb-logging",
-    ],
+    "Dev Guides": ["development/guide-new-shield"],
   },
 };
