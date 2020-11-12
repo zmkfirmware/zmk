@@ -3,7 +3,7 @@ title: Tests
 sidebar_label: Tests
 ---
 
-Running tests requires [native posix support](./dev-posix-board). Any folder under `/app/tests`
+Running tests requires [native posix support](posix-board). Any folder under `/app/tests`
 containing `native_posix.keymap` will be selected when running `./run-test.sh all`.
 
 ## Creating a New Test Set

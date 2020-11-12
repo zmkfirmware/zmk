@@ -80,9 +80,9 @@ sudo tio /dev/ttyACM0
 
 On Windows, you can use [PuTTY](https://www.putty.org/). Once installed, use Device Manager to figure out which COM port your controller is communicating on (listed under 'Ports (COM & LPT)') and specify that as the 'Serial line' in PuTTY.
 
-![Controller COM port](./assets/usb-logging/com.jpg)
+![Controller COM port](../assets/usb-logging/com.jpg)
 
-![PuTTY settings](assets/usb-logging/putty.jpg)
+![PuTTY settings](../assets/usb-logging/putty.jpg)
 
 If you already have the Ardunio IDE installed you can also use its built-in Serial Monitor.
 
