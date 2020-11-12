@@ -47,4 +47,4 @@ Until detailed documentation is available, feel free to ask questions about how 
 
 ## Contributing
 
-If you'd like to add support for a new keyboard shield, head over to the [New Keyboard Shield](development/guide-new-shield) documentation.
+If you'd like to add support for a new keyboard shield, head over to the [New Keyboard Shield](development/new-shield) documentation.
