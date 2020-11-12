@@ -45,7 +45,7 @@ module.exports = {
             },
             {
               label: "Development",
-              to: "docs/dev-setup/",
+              to: "docs/development/setup/",
             },
           ],
         },

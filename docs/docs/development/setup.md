@@ -411,7 +411,7 @@ cd zmk
 
 Open the `zmk` checkout folder in VS Code. The repository includes a configuration for containerized development, so an alert will pop up:
 
-![VS Code Dev Container Configuration Alert](assets/dev-setup/vscode_devcontainer.png)
+![VS Code Dev Container Configuration Alert](../assets/dev-setup/vscode_devcontainer.png)
 
 Click `Reopen in Container` in order to reopen the VS Code with the running container.
 
@@ -449,7 +449,7 @@ This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can tak
 :::info
 If you're using Docker, you're done with setup! You must restart the container at this point. The easiest way to do so is to close the VS Code window, verify that the container has stopped in Docker Dashboard, and reopen the container with VS Code.
 
-Once your container is restarted, proceed to [Building and Flashing](./dev-build-flash.md).
+Once your container is restarted, proceed to [Building and Flashing](./development/build-flash.md).
 :::
 
 #### Export Zephyr™ Core
@@ -480,23 +480,23 @@ On Windows, only two environment variables need to be set for ZMK to build prope
 
 1. Open Start Menu and type 'env' to find the 'Edit the system environment variables' option. Open it.
 
-![Environment variables in Start Menu](assets/env-var/start_menu.png)
+![Environment variables in Start Menu](../assets/env-var/start_menu.png)
 
 2. Click 'Environment Variables...'.
 
-![Environment variables button](assets/env-var/env_var.png)
+![Environment variables button](../assets/env-var/env_var.png)
 
 3. Click "New..." under System variables to create a new system variable.
 
-![Environment variables menu](assets/env-var/new_variable.png)
+![Environment variables menu](../assets/env-var/new_variable.png)
 
 4. Set the variable name to 'ZEPHYR_TOOLCHAIN_VARIANT' and value to 'gnuarmemb'. Click OK to save.
 
-![Adding Zephyr toolchain variable](assets/env-var/zephyr_toolchain.png)
+![Adding Zephyr toolchain variable](../assets/env-var/zephyr_toolchain.png)
 
 5. Create another variable with variable name 'GNUARMEMB_TOOLCHAIN_PATH' and value set to wherever you installed your toolchain. **Make sure this path does not contain any spaces.** If it does, rename the folder and update here. Click OK to save.
 
-![Adding GNUARMEMB variable](assets/env-var/gnuarmemb.png)
+![Adding GNUARMEMB variable](../assets/env-var/gnuarmemb.png)
 
 6. Close Command Prompt and reopen, or run `refreshenv` to apply the changes.
 

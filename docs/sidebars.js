@@ -37,13 +37,16 @@ module.exports = {
       "codes/power",
     ],
     Development: [
-      "dev-clean-room",
-      "dev-setup",
-      "dev-build-flash",
-      "dev-boards-shields-keymaps",
-      "dev-posix-board",
-      "dev-tests",
+      "development/clean-room",
+      "development/setup",
+      "development/build-flash",
+      "development/boards-shields-keymaps",
+      "development/posix-board",
+      "development/tests",
     ],
-    "Dev Guides": ["dev-guide-new-shield", "dev-guide-usb-logging"],
+    "Dev Guides": [
+      "development/guide-new-shield",
+      "development/guide-usb-logging",
+    ],
   },
 };

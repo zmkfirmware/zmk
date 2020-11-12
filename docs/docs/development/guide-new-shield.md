@@ -4,7 +4,7 @@ title: New Keyboard Shield
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import KeymapExampleFile from './keymap-example-file.md';
+import KeymapExampleFile from '../keymap-example-file.md';
 
 ## Overview
 
@@ -110,7 +110,7 @@ endif
 
 ## Shield Overlays
 
-![Labelled Pro Micro pins](assets/pro-micro/pro-micro-pins-labelled.jpg)
+![Labelled Pro Micro pins](../assets/pro-micro/pro-micro-pins-labelled.jpg)
 
 ZMK uses the green color coded pin names to generate devicetree node references. For example, to refer to the node `D0` in the devicetree files, use `&pro_micro_d 0` or to refer to `A1`, use `&pro_micro_a 1`.
 
@@ -474,7 +474,7 @@ west flash
 
 :::note
 Further testing your keyboard shield without altering the root keymap file can be done with the use of `-DZMK_CONFIG` in your `west build` command,
-shown [here](dev-build-flash#building-from-zmk-config-folder)
+shown [here](build-flash#building-from-zmk-config-folder)
 :::
 
 ## Updating `build.yml`
