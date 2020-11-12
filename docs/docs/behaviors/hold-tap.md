@@ -1,5 +1,5 @@
 ---
-title: Hold-tap behavior
+title: Hold-Tap Behavior
 sidebar_label: Hold-Tap
 ---
 
