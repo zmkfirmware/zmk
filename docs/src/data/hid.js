@@ -2689,7 +2689,7 @@ export default [
       linux: false,
       android: true,
       macos: true,
-      ios: false,
+      ios: true,
     },
     footnotes: {
       macos: ["macosPower"],
