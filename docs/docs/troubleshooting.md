@@ -25,22 +25,7 @@ Variations of the warnings shown below occur when flashing the `<firmware>.uf2` 
 
 ### CMake Error
 
-```
-CMake Warning at C:/zmk/zephyr/subsys/usb/CMakeLists.txt:28 (message):
-  CONFIG_USB_DEVICE_VID has default value 0x2FE3.
-
-  This value is only for testing and MUST be configured for USB products.
-
-
-CMake Warning at C:/zmk/zephyr/subsys/usb/CMakeLists.txt:34 (message):
-  CONFIG_USB_DEVICE_PID has default value 0x100.
-
-  This value is only for testing and MUST be configured for USB products.
-```
-
-CMake Warnings shown above during `west build` are normal occurrences. They should not negatively affect the firmware's ability to function as normal.
-
-On the other hand, an error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
+An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
 For more information, click [here](../docs/dev-setup#environment-variables).
 
 ### dtlib.DTError
