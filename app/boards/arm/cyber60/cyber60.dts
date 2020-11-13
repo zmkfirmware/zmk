@@ -18,20 +18,16 @@
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
 	};
-/*
-	vbat-sense-en {
-		label = "VBAT_SENSE_EN";
-		control-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
-	};
-*/
+
 	vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 1>;
 		output-ohms = <100000>;
 		full-ohms = <(100000 + 100000)>;
+		power-gpios = <&gpio1 15 1>; // the 1 indicates active high?
 	};
-
+	
 	leds {
 		compatible = "gpio-leds";
 		red_led: led_3 {

@@ -205,8 +205,8 @@ static const struct bvd_config bvd_cfg = {
     .power_gpios =
         {
             DT_INST_GPIO_LABEL(0, power_gpios),
-            DT_INST_PIN(0, power_gpios),
-            DT_INST_FLAGS(0, power_gpios),
+            DT_INST_GPIO_PIN(0, power_gpios),
+            DT_INST_GPIO_FLAGS(0, power_gpios),
         },
 #endif
     .output_ohm = DT_INST_PROP(0, output_ohms),
