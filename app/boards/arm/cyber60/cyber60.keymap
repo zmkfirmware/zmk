@@ -11,25 +11,24 @@
 // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  | "|" |  ~ |
 // | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   BKSP  |
 // | CAPS  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |
-// | SHIFT |iso| Z |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |    Shift    | FN |
-// |  CTL  |  WIN  |  ALT  |        SPACE  |  SPACE   | SPACE |  ALT |  WIN |  MENU  | CTRL |
+// | SHIFT |none| Z |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |    Shift   | FN |
+// |  LCTL  |  LWIN  |  LALT  |  RALT  | FN |     SPACE     |  RALT |  RWIN | RMENU | RCTRL |
 // ------------------------------------------------------------------------------------------
 			bindings = <
-	&kp ESC &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 &kp MINUS &kp EQL  &kp BSLH &kp GRAV
-	&kp TAB  &kp   Q   &kp   W   &kp   E   &kp   R   &kp   T   &kp   Y   &kp   U   &kp   I   &kp   O   &kp   P   &kp LBKT &kp RBKT &kp BKSP
-	&kp CLCK &kp   A   &kp   S   &kp   D   &kp   F   &kp   G   &kp   H   &kp   J   &kp   K   &kp   L   &kp  SCLN  &kp  QUOT        &kp RET
-	&kp LSFT &kp   Z   &kp   Z   &kp   X   &kp   C   &kp   V   &kp   B   &kp   N   &kp   M   &kp  CMMA &kp  DOT  &kp  FSLH &kp RSFT &mo 1
-	&kp LCTL &kp   LGUI   &kp   LALT             &kp SPC     &kp SPC       &kp  SPC  &kp  RALT  &kp  RGUI &kp 2  &kp  RCTL		
+	&kp ESC		&kp NUM_1 	&kp NUM_2	&kp NUM_3 	&kp NUM_4 &kp NUM_5 &kp NUM_6 	&kp NUM_7 	&kp NUM_8 &kp NUM_9	&kp NUM_0	&kp MINUS	&kp EQL  	&kp BSLH	&kp GRAV
+	&kp TAB  	&kp   Q   	&kp   W   	&kp   E   	&kp   R   &kp   T   &kp   Y   	&kp   U   	&kp   I   &kp   O   &kp   P   	&kp LBKT 	&kp RBKT	&kp BKSP
+	&kp LGUI 	&kp   A   	&kp   S   	&kp   D   	&kp   F   &kp   G   &kp   H   	&kp   J   	&kp   K   &kp   L   &kp  SCLN  	&kp  QUOT   &kp RET
+	&kp LSFT 	&none		&kp   Z   	&kp   X   	&kp   C   &kp   V   &kp   B   	&kp   N   	&kp   M   &kp  CMMA &kp  DOT  	&kp  FSLH	&kp RSFT 	&mo 1
+	&kp LCTL 	&kp   LGUI  &kp   LALT				&kp RALT				&mo 1				&kp  SPC  &kp  RALT	&kp  RGUI 	&kp K_APP	&kp  RCTL		
 			>;
 		};
-
-				fn_layer {
+			fn_layer {
 			bindings = <
-	&kp GRAV &kp F1			&kp F2 	 		&kp F3			&kp F4			&kp F5	&kp F6	&kp F7	&kp F8	&kp F9	&kp F10	&kp F11	&kp F12	&bootloader	&reset
-	&trans &bt BT_CLR   	&trans   		&trans   		&trans  		&trans	&trans	&trans	&trans	&trans	&trans	&trans	&trans	&trans
-	&trans &bt BT_SEL 0   	&bt BT_SEL 1	&bt BT_SEL 2	&bt BT_SEL 3	&bt BT_SEL 4	&trans	&trans	&trans	&trans	&trans	&trans			&trans
-	&trans &trans   		&trans   		&trans   		&trans  		&trans	&trans	&trans	&trans	&trans	&trans	&trans	&trans	&trans
-	&trans &trans   		&trans             				&trans			&trans	&trans  				&trans  &trans	&trans	&trans		
+	&kp GRAV 	&kp F1		&kp F2 	 		&kp F3			&kp F4			&kp F5			&kp F6	&kp F7	&kp F8			&kp F9		&kp F10		&kp F11		&kp F12		&bootloader	&reset
+	&kp CLCK	&trans   	&kp UP   		&trans   		&trans  		&trans			&trans	&trans	&trans			&trans		&trans		&kp UP		&trans		&trans
+	&trans 		&kp LEFT   	&kp DOWN		&kp RIGHT		&trans			&trans			&trans	&trans	&trans			&trans		&kp LEFT	&kp RIGHT	&trans
+	&trans 		&trans   	&bt BT_CLR   	&bt BT_SEL 0   	&bt BT_SEL 1  	&bt BT_SEL 2	&bt BT_SEL 3	&bt BT_SEL 4	&trans		&trans		&trans		&kp DOWN	&trans		&trans
+	&trans 		&trans   	&trans             				&trans			&trans			&trans  		&trans  		&trans		&trans		&trans		
 			>;
 		};
 	};
