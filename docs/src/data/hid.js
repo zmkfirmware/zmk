@@ -2693,6 +2693,7 @@ export default [
     },
     footnotes: {
       macos: ["macosPower"],
+      ios: ["iosPower"],
     },
   },
   {
@@ -4709,6 +4710,7 @@ export default [
     },
     footnotes: {
       macos: ["macosPower"],
+      ios: ["iosPower"],
     },
   },
   {
