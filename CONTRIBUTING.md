@@ -81,6 +81,11 @@ documentation to areas not currently covered are greatly appreciated.
 - To get started, from the `docs/` directory, run `npm ci` and then `npm start`.
 - Enhancements should be submitted as pull requests to the `main` branch of ZMK.
 
+### Formatting
+
+ZMK uses `prettier` to format documentation files. You can run prettier with `npm run prettier:format`.
+You can setup git to run prettier automatically when you commit by installing the pre-commit hooks: `pip3 install pre-commit`, `pre-commit install`.
+
 ## Code Contributions
 
 ### Development Setup
@@ -94,6 +99,8 @@ your own locally built firmware.
 ZMK uses `clang-format` to ensure consist formatting for our source code. Before submitting your
 changes, make sure you've manually run `clang-format`, or have your IDE configured to auto-format
 on save.
+
+You can setup git to run `clang-format` automatically when you commit by installing the pre-commit hooks: `pip3 install pre-commit`, `pre-commit install`.
 
 ### Commit Messages
 
