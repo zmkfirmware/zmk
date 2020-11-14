@@ -25,7 +25,7 @@
 		io-channels = <&adc 1>;
 		output-ohms = <100000>;
 		full-ohms = <(100000 + 100000)>;
-		power-gpios = <&gpio1 15 1>; // the 1 indicates active high?
+		power-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
 	};
 	
 	leds {
