@@ -61,7 +61,7 @@ jobs:
         id: west-build
         with:
           entrypoint: /bin/bash
-          args: '-c "cd app && ./run-test.sh all"'
+          args: '-c "west test"'
       - name: Archive Build
         if: ${{ always() }}
         uses: actions/upload-artifact@v2

@@ -37,4 +37,4 @@ manifest:
       remote: microsoft
       path: tools/uf2
   self:
-    path: zmk
+    west-commands: scripts/west-commands.yml
