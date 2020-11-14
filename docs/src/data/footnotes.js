@@ -5,7 +5,9 @@
  */
 
 import example from "@site/docs/codes/_footnotes/example.mdx";
+import macos-power from "@site/docs/codes/_footnotes/macos-power.mdx";
 
 export default {
   example,
+  macos-power,
 };
