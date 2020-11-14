@@ -2691,7 +2691,9 @@ export default [
       macos: true,
       ios: null,
     },
-    footnotes: {"macos-power"},
+    footnotes: {
+      macos: ["macos-power"],
+    },
   },
   {
     names: ["KP_EQUAL"],
@@ -4705,7 +4707,9 @@ export default [
       macos: true,
       ios: null,
     },
-    footnotes: {"macos-power"},
+    footnotes: {
+      macos: ["macos-power"],
+    },
   },
   {
     names: ["C_RESET"],
