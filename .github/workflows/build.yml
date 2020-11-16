@@ -19,6 +19,7 @@ jobs:
           - boardsource3x4
           - corne_left
           - corne_right
+          - gherkin
           - kyria_left
           - kyria_right
           - lily58_left
