@@ -1,18 +1,10 @@
-#include <dt-bindings/zmk/keys.h>
 
 / {
 	behaviors {
-		kp: behavior_key_press {
+		/* DEPRECATED: `cp` will be removed in the future */
+		cp: kp: behavior_key_press {
 			compatible = "zmk,behavior-key-press";
 			label = "KEY_PRESS";
-			usage_page = <USAGE_KEYPAD>;
-			#binding-cells = <1>;
-		};
-
-		cp: behavior_consumer_press {
-			compatible = "zmk,behavior-key-press";
-			label = "CONSUMER_PRESS";
-			usage_page = <USAGE_CONSUMER>;
 			#binding-cells = <1>;
 		};
 	};

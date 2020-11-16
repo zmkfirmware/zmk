@@ -1,5 +1,9 @@
 mainmenu "ZMK Firmware"
 
+menu "ZMK"
+
+menu "Basic Keyboard Setup"
+
 config ZMK_KEYBOARD_NAME
 	string "Keyboard Name"
 
@@ -9,13 +13,18 @@ config USB_DEVICE_PRODUCT
 config BT_DEVICE_NAME
 	default ZMK_KEYBOARD_NAME
 
-config ZMK_KSCAN_EVENT_QUEUE_SIZE
-	int "Size of the event queue for KSCAN events to buffer events"
-	default 4
+config USB_DEVICE_VID
+	default 0x1D50
+
+config USB_DEVICE_PID
+	default 0x615E
+
+config USB_DEVICE_MANUFACTURER
+	default "ZMK Project"
 
 menu "HID Output Types"
 
-menuconfig ZMK_USB
+config ZMK_USB
 	bool "USB"
 	select USB
 	select USB_DEVICE_STACK
@@ -23,34 +32,32 @@ menuconfig ZMK_USB
 
 if ZMK_USB
 
-config ZMK_USB_INIT_PRIORITY
-	int "Init Priority"
-	default 50
-
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
 
+#ZMK_USB
 endif
 
-menuconfig ZMK_BLE
+config ZMK_BLE
 	bool "BLE (HID over GATT)"
 	select BT
 	select BT_SMP
 	select BT_SMP_SC_PAIR_ONLY
+	select BT_SMP_APP_PAIRING_ACCEPT
 	select BT_PERIPHERAL
 	select BT_GATT_DIS
 	select BT_GATT_BAS
+	select BT_SETTINGS
 	select SETTINGS
-	# select BT_SETTINGS
 
 if ZMK_BLE
 
-config ZMK_BLE_INIT_PRIORITY
-	int "Init Priority"
-	default 50
-
 config SYSTEM_WORKQUEUE_STACK_SIZE
 	default 2048
+
+config ZMK_BLE_CLEAR_BONDS_ON_START
+	bool "Configuration that clears all bond information from the keyboard on startup."
+	default n
 
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
@@ -63,18 +70,11 @@ config ZMK_BLE_PASSKEY_ENTRY
 	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
 	default n
 
+#ZMK_BLE
 endif
 
+#HID Output Types
 endmenu
-
-config ZMK_DISPLAY
-	bool "ZMK display support"
-	default n
-	select DISPLAY
-	select LVGL
-	select LVGL_THEMES
-	select LVGL_THEME_MONO
-	select LVGL_OBJ_LABEL
 
 menu "Split Support"
 
@@ -101,17 +101,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	select BT_CENTRAL
 	select BT_GATT_CLIENT
 
-if ZMK_SPLIT_BLE_ROLE_CENTRAL
-
-config BT_MAX_CONN
-	default 5
-
-config BT_MAX_PAIRED
-	# Bump this everywhere once we support switching active connections!
-	default 2
-
-endif
-
 config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 	bool "Peripheral"
 
@@ -120,47 +109,80 @@ if ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 config ZMK_USB
 	default n
 
+config BT_MAX_PAIRED
+	default 1
 
 config BT_MAX_CONN
-	default 5
+	default 1
 
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
 	default n
 
+#ZMK_SPLIT_BLE_ROLE_PERIPHERAL
 endif
 
+#ZMK_SPLIT_BLE_ROLE
 endchoice
 
+#ZMK_SPLIT_BLE
 endif
 
+#ZMK_SPLIT
 endif 
 
+if ZMK_BLE
+
+if ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config BT_MAX_CONN
+	default 6
+
+config BT_MAX_PAIRED
+	default 6
+
+#ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
+endif
+
+if !ZMK_SPLIT_BLE
+
+config BT_MAX_CONN
+	default 5
+
+config BT_MAX_PAIRED
+	default 5
+
+#!ZMK_SPLIT_BLE
+endif
+
+#ZMK_BLE
+endif
+
+#Split Support
 endmenu
 
-
-config ZMK_KSCAN_MOCK_DRIVER
-	bool "Enable mock kscan driver to simulate key presses"
-	default n
-
-
-config ZMK_KSCAN_COMPOSITE_DRIVER
-	bool "Enable composite kscan driver to combine kscan devices"
-	default n
-
-menu "ZMK Actions"
-
-config ZMK_ACTION_MOD_TAP
-	bool "Enable the Mod-Tap Action"
-	
+#Basic Keyboard Setup
 endmenu
 
-menu "ZMK Lighting"
+menu "Display/LED Options"
 
-menuconfig ZMK_RGB_UNDERGLOW
+config ZMK_DISPLAY
+	bool "ZMK display support"
+	default n
+	select DISPLAY
+	select LVGL
+	select LVGL_THEMES
+	select LVGL_THEME_MONO
+	select LVGL_OBJ_LABEL
+
+config ZMK_RGB_UNDERGLOW
 	bool "RGB Adressable LED Underglow"
 	select LED_STRIP
 
 if ZMK_RGB_UNDERGLOW
+
+# This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
+config SPI
+	default y
 
 config ZMK_RGB_UNDERGLOW_HUE_STEP
 	int "RGB underglow hue step in degrees of 360"
@@ -174,8 +196,111 @@ config ZMK_RGB_UNDERGLOW_BRT_STEP
 	int "RGB underglow brightness step in percent"
 	default 10
 
+config ZMK_RGB_UNDERGLOW_HUE_START
+	int "RGB underglow start hue value from 0-359"
+	default 0
+
+config ZMK_RGB_UNDERGLOW_SAT_START
+	int "RGB underglow start saturations value from 0-100"
+	default 100
+
+config ZMK_RGB_UNDERGLOW_BRT_START
+	int "RGB underglow start brightness value from 0-100"
+	default 100
+
+config ZMK_RGB_UNDERGLOW_SPD_START
+	int "RGB underglow start animation speed value from 1-5"
+	default 3
+
+config ZMK_RGB_UNDERGLOW_EFF_START
+	int "RGB underglow start effect int value related to the effect enum list"
+	default 0
+
+config ZMK_RGB_UNDERGLOW_ON_START
+	bool "Whether RGB underglow starts on by default"
+	default y
+
+#ZMK_RGB_UNDERGLOW
 endif
 
+#Display/LED Options
+endmenu
+
+menu "Power Management"
+
+config ZMK_SLEEP
+	bool "Enable deep sleep support"
+	imply USB
+
+if ZMK_SLEEP
+
+config SYS_POWER_DEEP_SLEEP_STATES
+	default y
+
+choice SYS_PM_POLICY
+	default SYS_PM_POLICY_APP
+endchoice
+
+config ZMK_IDLE_SLEEP_TIMEOUT
+	int "Milliseconds to wait to sleep when going idle"
+	default 900000
+
+#ZMK_SLEEP
+endif
+
+config ZMK_EXT_POWER
+	bool "Enable support to control external power output"
+	default y
+
+#Power Management
+endmenu
+
+menu "Advanced"
+
+menu "Initialization Priorities"
+
+if USB
+
+config ZMK_USB_INIT_PRIORITY
+	int "USB Init Priority"
+	default 50
+
+#USB
+endif
+
+if ZMK_BLE || ZMK_SPLIT_BLE
+
+config ZMK_BLE_INIT_PRIORITY
+	int "BLE Init Priority"
+	default 50
+
+#ZMK_BLE || ZMK_SPLIT_BLE
+endif
+
+#Initialization Priorities
+endmenu
+
+menu "KSCAN Settings"
+
+config ZMK_KSCAN_EVENT_QUEUE_SIZE
+	int "Size of the event queue for KSCAN events to buffer events"
+	default 4
+
+config ZMK_KSCAN_MOCK_DRIVER
+	bool "Enable mock kscan driver to simulate key presses"
+	default n
+
+config ZMK_KSCAN_COMPOSITE_DRIVER
+	bool "Enable composite kscan driver to combine kscan devices"
+	default n
+
+#KSCAN Settings
+endmenu
+
+#Advanced
+endmenu
+
+#ZMK
 endmenu
 
 config HEAP_MEM_POOL_SIZE

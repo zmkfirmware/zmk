@@ -1,5 +1,4 @@
 ---
-id: dev-posix-board
 title: Native Posix board target
 ---
 

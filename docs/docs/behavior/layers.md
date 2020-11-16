@@ -26,7 +26,7 @@ This allows you to use those defines, e.g. `LOWER` later in your keymap.
 
 ## Momentary Layer
 
-The "momentary layer" behavior allows you to enable a layer while a certain key is pressed. Immediately upon
+The "momentary layer" behavior enables a layer while a certain key is pressed. Immediately upon
 activation of the key, the layer is enabled, and immediately open release of the key, the layer is disabled
 again.
 
@@ -41,9 +41,25 @@ Example:
 &mo LOWER
 ```
 
+## Layer-tap
+
+The "layer-tap" behavior enables a layer when a key is held, and output another key when the key is only tapped for a short time. For more information on the inner workings of layer-tap, see [hold-tap](./hold-tap.md).
+
+### Behavior Binding
+
+- Reference: `&lt`
+- Parameter: The layer number to enable when held, e.g. `1`
+- Parameter: The keycode to send when tapped, e.g. `A`
+
+Example:
+
+```
+&lt LOWER SPACE
+```
+
 ## Toggle Layer
 
-The "toggle layer" behavior allows you to enable a layer until the layer is manually disabled.
+The "toggle layer" behavior enables a layer until the layer is manually disabled.
 
 ### Behavior Binding
 
@@ -70,21 +86,21 @@ Example:
 
 		default_layer {
 			bindings = <
-                &tog NAVI &kp KDIV  &kp KMLT  &kp KMIN
-                &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp KPLS
-                &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp KPLS
-                &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp RET
-                &kp NUM_0 &kp NUM_0 &kp DOT   &kp RET
+                &tog NAVI       &kp KP_DIVIDE   &kp KP_MULTIPLY &kp KP_MINUS
+                &kp NUMBER_7    &kp NUMBER_8    &kp NUMBER_9    &kp KP_PLUS
+                &kp NUMBER_4    &kp NUMBER_5    &kp NUMBER_6    &kp KP_PLUS
+                &kp NUMBER_1    &kp NUMBER_2    &kp NUMBER_3    &kp RETURN
+                &kp NUMBER_0    &kp NUMBER_0    &kp DOT         &kp RETURN
 			>;
 		};
 
 		nav_layer {
 			bindings = <
-                &tog NAVI &kp KDIV  &kp KMLT  &kp KMIN
-                &kp HOME  &kp UARW  &kp PGUP  &kp KPLS
-                &kp LARW  &none     &kp RARW  &kp KPLS
-                &kp END   &kp DARW  &kp PGDN  &kp RET
-                &kp INS   &kp INS   &kp DEL   &kp RET
+                &tog NAVI       &kp KP_DIVIDE   &kp KP_MULTIPLY &kp KP_MINUS
+                &kp HOME        &kp UP          &kp PAGE_UP     &kp KP_PLUS
+                &kp LEFT        &none           &kp RIGHT       &kp KP_PLUS
+                &kp END         &kp DOWN        &kp PAGE_DOWN   &kp RETURN
+                &kp INSERT      &kp INSERT      &kp DEL         &kp RETURN
             >;
 		};
 	};

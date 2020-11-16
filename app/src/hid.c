@@ -1,136 +1,116 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/hid.h>
+#include <dt-bindings/zmk/modifiers.h>
 
 static struct zmk_hid_keypad_report kp_report = {
-    .report_id = 1,
-    .body = {
-        .modifiers = 0,
-        .keys = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}};
+    .report_id = 1, .body = {.modifiers = 0, ._reserved = 0, .keys = {0}}};
 
-static struct zmk_hid_consumer_report consumer_report = {
-    .report_id = 2,
-    .body = {
-        .keys = {0,0,0,0,0,0}}};
+static struct zmk_hid_consumer_report consumer_report = {.report_id = 2, .body = {.keys = {0}}};
 
-#define _TOGGLE_MOD(mod, state)                      \
-    if (modifier > MOD_RGUI)                         \
-    {                                                \
-        return -EINVAL;                              \
-    }                                                \
-    WRITE_BIT(kp_report.body.modifiers, mod, state); \
-    return 0;
+// Keep track of how often a modifier was pressed.
+// Only release the modifier if the count is 0.
+static int explicit_modifier_counts[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+static zmk_mod_flags explicit_modifiers = 0;
 
-int zmk_hid_register_mod(zmk_mod modifier)
-{
-    _TOGGLE_MOD(modifier, true);
-}
-int zmk_hid_unregister_mod(zmk_mod modifier)
-{
-    _TOGGLE_MOD(modifier, false);
-}
+#define SET_MODIFIERS(mods)                                                                        \
+    {                                                                                              \
+        kp_report.body.modifiers = mods;                                                           \
+        LOG_DBG("Modifiers set to 0x%02X", kp_report.body.modifiers);                              \
+    }
 
-int zmk_hid_register_mods(zmk_mod_flags modifiers)
-{
-    kp_report.body.modifiers |= modifiers;
+int zmk_hid_register_mod(zmk_mod modifier) {
+    explicit_modifier_counts[modifier]++;
+    LOG_DBG("Modifier %d count %d", modifier, explicit_modifier_counts[modifier]);
+    WRITE_BIT(explicit_modifiers, modifier, true);
+    SET_MODIFIERS(explicit_modifiers);
     return 0;
 }
 
-int zmk_hid_unregister_mods(zmk_mod_flags modifiers)
-{
-    kp_report.body.modifiers &= ~modifiers;
-    return 0;
-}
-
-#define KEY_OFFSET 0x02
-#define MAX_KEYS 6
-
-/*
-#define TOGGLE_BOOT_KEY(match, val)                      \
-    for (int idx = 0; idx < MAX_KEYS; idx++)             \
-    {                                                    \
-        if (kp_report.boot.keys[idx + KEY_OFFSET] != match) \
-        {                                                \
-            continue;                                    \
-        }                                                \
-        kp_report.boot.keys[idx + KEY_OFFSET] = val;        \
-        break;                                           \
-    }
-*/
-
-#define TOGGLE_KEY(code, val) WRITE_BIT(kp_report.body.keys[code / 8], code % 8, val)
-
-#define TOGGLE_CONSUMER(match, val)                  \
-    for (int idx = 0; idx < MAX_KEYS; idx++)         \
-    {                                                \
-        if (consumer_report.body.keys[idx] != match) \
-        {                                            \
-            continue;                                \
-        }                                            \
-        consumer_report.body.keys[idx] = val;        \
-        break;                                       \
-    }
-
-
-int zmk_hid_keypad_press(zmk_key code)
-{
-    if (code >= LCTL && code <= RGUI)
-    {
-        return zmk_hid_register_mod(code - LCTL);
-    }
-
-   
-    if (code > ZMK_HID_MAX_KEYCODE)
-    {
+int zmk_hid_unregister_mod(zmk_mod modifier) {
+    if (explicit_modifier_counts[modifier] <= 0) {
+        LOG_ERR("Tried to unregister modifier %d too often", modifier);
         return -EINVAL;
     }
+    explicit_modifier_counts[modifier]--;
+    LOG_DBG("Modifier %d count: %d", modifier, explicit_modifier_counts[modifier]);
+    if (explicit_modifier_counts[modifier] == 0) {
+        LOG_DBG("Modifier %d released", modifier);
+        WRITE_BIT(explicit_modifiers, modifier, false);
+    }
+    SET_MODIFIERS(explicit_modifiers);
+    return 0;
+}
 
-    // TOGGLE_BOOT_KEY(0U, code);
+#define TOGGLE_KEYPAD(match, val)                                                                  \
+    for (int idx = 0; idx < ZMK_HID_KEYPAD_NKRO_SIZE; idx++) {                                     \
+        if (kp_report.body.keys[idx] != match) {                                                   \
+            continue;                                                                              \
+        }                                                                                          \
+        kp_report.body.keys[idx] = val;                                                            \
+        break;                                                                                     \
+    }
 
-    TOGGLE_KEY(code, true);
+#define TOGGLE_CONSUMER(match, val)                                                                \
+    for (int idx = 0; idx < ZMK_HID_CONSUMER_NKRO_SIZE; idx++) {                                   \
+        if (consumer_report.body.keys[idx] != match) {                                             \
+            continue;                                                                              \
+        }                                                                                          \
+        consumer_report.body.keys[idx] = val;                                                      \
+        break;                                                                                     \
+    }
 
+int zmk_hid_implicit_modifiers_press(zmk_mod_flags implicit_modifiers) {
+    SET_MODIFIERS(explicit_modifiers | implicit_modifiers);
+    return 0;
+}
+
+int zmk_hid_implicit_modifiers_release() {
+    SET_MODIFIERS(explicit_modifiers);
+    return 0;
+}
+
+int zmk_hid_keypad_press(zmk_key code) {
+    if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
+        return zmk_hid_register_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
+    }
+    TOGGLE_KEYPAD(0U, code);
     return 0;
 };
 
-int zmk_hid_keypad_release(zmk_key code)
-{
-    if (code >= LCTL && code <= RGUI)
-    {
-        return zmk_hid_unregister_mod(code - LCTL);
+int zmk_hid_keypad_release(zmk_key code) {
+    if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
+        return zmk_hid_unregister_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
     }
-
-    if (code > ZMK_HID_MAX_KEYCODE)
-    {
-        return -EINVAL;
-    }
-
-    // TOGGLE_BOOT_KEY(0U, code);
-
-    TOGGLE_KEY(code, false);
-
+    TOGGLE_KEYPAD(code, 0U);
     return 0;
 };
 
-int zmk_hid_consumer_press(zmk_key code)
-{
+void zmk_hid_keypad_clear() { memset(&kp_report.body, 0, sizeof(kp_report.body)); }
+
+int zmk_hid_consumer_press(zmk_key code) {
     TOGGLE_CONSUMER(0U, code);
     return 0;
 };
 
-
-int zmk_hid_consumer_release(zmk_key code)
-{
+int zmk_hid_consumer_release(zmk_key code) {
     TOGGLE_CONSUMER(code, 0U);
     return 0;
 };
 
-struct zmk_hid_keypad_report *zmk_hid_get_keypad_report()
-{
+void zmk_hid_consumer_clear() { memset(&consumer_report.body, 0, sizeof(consumer_report.body)); }
+
+struct zmk_hid_keypad_report *zmk_hid_get_keypad_report() {
     return &kp_report;
 }
 
-struct zmk_hid_consumer_report *zmk_hid_get_consumer_report()
-{
+struct zmk_hid_consumer_report *zmk_hid_get_consumer_report() {
     return &consumer_report;
 }

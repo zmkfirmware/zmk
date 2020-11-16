@@ -1,5 +1,4 @@
 ---
-id: dev-boards-shields-keymaps
 title: Boards, Shields, and Keymaps
 ---
 
@@ -34,6 +33,8 @@ in the `app/boards/${arch}/${board_name}` directory, e.g. `app/boards/arm/planck
 - A `keymap/keymap.overlay` file that includes the default keymap for that keyboard. Users will be able to override this keymap in their user configs.
 
 ## Pro Micro Compatible Keyboard
+
+![Labelled Pro Micro pins](assets/pro-micro/pro-micro-pins-labelled.jpg)
 
 For keyboards that require a (usually Pro Micro compatible) add-on board to operate, the ZMK integration pieces are places
 in the _shield_ definition for that keyboard, allowing users to

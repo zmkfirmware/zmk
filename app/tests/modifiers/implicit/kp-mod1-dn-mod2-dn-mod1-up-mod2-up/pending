@@ -1,0 +1,9 @@
+This test fails because the hid_listener_keycode_released function 
+releases implicit modifiers always, even if they were not set by the
+key that's going up. Also see the comment in that function:
+
+    If LC(A) is pressed, then LS(B), then LC(A) is released, the shift for B will be released
+    prematurely. This causes if LS(B) to repeat like Bbbbbbbb when pressed for a long time.
+    Solving this would require keeping track of which key's implicit modifiers are currently
+    active and only releasing modifiers at that time. 
+

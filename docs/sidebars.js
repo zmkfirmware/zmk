@@ -1,6 +1,13 @@
 module.exports = {
   someSidebar: {
-    "Getting Started": ["intro", "hardware", "faq", "user-setup","customization", "bond-reset"],
+    "Getting Started": [
+      "intro",
+      "hardware",
+      "faq",
+      "user-setup",
+      "customization",
+      "troubleshooting",
+    ],
     Features: [
       "feature/keymaps",
       "feature/displays",
@@ -11,9 +18,23 @@ module.exports = {
       "behavior/key-press",
       "behavior/layers",
       "behavior/misc",
+      "behavior/hold-tap",
       "behavior/mod-tap",
       "behavior/reset",
+      "behavior/bluetooth",
+      "behavior/outputs",
       "behavior/lighting",
+      "behavior/power",
+    ],
+    Codes: [
+      "codes/index",
+      "codes/keyboard-keypad",
+      "codes/modifiers",
+      "codes/editing",
+      "codes/media",
+      "codes/applications",
+      "codes/input-assist",
+      "codes/power",
     ],
     Development: [
       "dev-clean-room",

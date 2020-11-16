@@ -1,5 +1,4 @@
 ---
-id: keymaps
 title: Keymaps & Behaviors
 sidebar_label: Keymaps
 ---
@@ -55,7 +54,7 @@ in the stack _also_ get the event.
 ## Behavior Bindings
 
 Binding a behavior at a certain key position may include up to two extra parameters that are used to
-alter the behavior when that specific key position is activated/deactived. For example, when binding
+alter the behavior when that specific key position is activated/deactivated. For example, when binding
 the "key press" (`kp`) behavior at a certain key position, you must specific _which_ keycode should
 be used for that key position.
 
@@ -68,7 +67,7 @@ In this case, the `A` is actually a define for the raw HID keycode, to make keym
 For example of a binding that uses two parameters, you can see how "mod-tap" (`mt`) is bound:
 
 ```
-&mt MOD_LSFT D
+&mt LSHFT D
 ```
 
 Here, the first parameter is the set of modifiers that should be used for the "hold" behavior, and the second
@@ -92,7 +91,7 @@ The top two lines of most keymaps should include:
 
 The first defines the nodes for all the available behaviors in ZMK, which will be referenced in the behavior bindings. This is how bindings like `&kp` can reference the key press behavior defined with an anchor name of `kp`.
 
-The second include brings in the defines for all the keycodes (e.g. `A`, `NUM_1`, `M_PLAY`) and the modifiers (e.g. `MOD_LSFT`) used for various behavior bindings.
+The second include brings in the defines for all the keycodes (e.g. `A`, `N1`, `C_PLAY`) and the modifiers (e.g. `LSHFT`) used for various behavior bindings.
 
 ### Root devicetree Node
 
@@ -127,21 +126,21 @@ that defines just one layer for this keymap:
 		compatible = "zmk,keymap";
 
 		default_layer {
-// ---------------------------------------------------------------------------------------------------------------------------------
-// |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   |   \  |
-// |  TAB  |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |   '  |
-// | SHIFT |  Z  |  X  |  C   |  V   |  B   | L SHIFT | L SHIFT |  | L SHIFT | L SHIFT |  N   |  M    |  ,    |  .   |   /   | CTRL |
-//                     | GUI  | DEL  | RET  |  SPACE  |   ESC   |  |   RET   |  SPACE  | TAB  | BSPC  | R-ALT |
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// |   ESC   |    Q    |    W    |    E    |    R    |    T    |                                          |    Y    |    U    |    I    |    O    |    P    |    \    |
+// |   TAB   |    A    |    S    |    D    |    F    |    G    |                                          |    H    |    J    |    K    |    L    |    ;    |    '    |
+// |  SHIFT  |    Z    |    X    |    C    |    V    |    B    | CTRL+A  | CTRL+C  |  |  CTRL+V |  CTRL+X |    N    |    M    |    ,    |    .    |    /    |  R CTRL |
+//                               |   GUI   |   DEL   | RETURN  |  SPACE  | ESCAPE  |  |  RETURN |  SPACE  |   TAB   |   BSPC  |  R ALT  |
 			bindings = <
-	&kp ESC  &kp Q &kp W &kp E &kp R &kp T                                            &kp Y &kp U  &kp I    &kp O   &kp P    &kp BSLH
-	&kp TAB  &kp A &kp S &kp D &kp F &kp G                                            &kp H &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
-	&kp LSFT &kp Z &kp X &kp C &kp V &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M  &kp CMMA &kp DOT &kp FSLH &kp RCTL
-	              &kp LGUI &kp DEL &kp RET &kp SPC &kp ESC            &kp RET  &kp SPC  &kp TAB &kp BKSP &kp RALT
+    &kp ESC   &kp Q     &kp W    &kp E     &kp R     &kp T                                                 &kp Y     &kp U     &kp I     &kp O     &kp P    &kp BSLH
+    &kp TAB   &kp A     &kp S    &kp D     &kp F     &kp G                                                 &kp H     &kp J     &kp K     &kp L     &kp SEMI &kp QUOTE
+    &kp LSHFT &kp Z     &kp X    &kp C     &kp V     &kp B      &kp LC(A) &kp LC(C)    &kp LC(V) &kp LC(X) &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH &kp RCTRL
+                                 &kp LGUI  &kp DEL   &kp RET    &kp SPACE &kp ESC      &kp RET   &kp SPACE &kp TAB   &kp BSPC  &kp RALT
 			>;
 
-			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
+			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
 		};
-    };
+	};
 ```
 
 Each layer should have:
@@ -164,19 +163,19 @@ Putting this all together, a complete [`kyria.keymap`](https://github.com/zmkfir
 		compatible = "zmk,keymap";
 
 		default_layer {
-// ---------------------------------------------------------------------------------------------------------------------------------
-// |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   |   \  |
-// |  TAB  |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |   '  |
-// | SHIFT |  Z  |  X  |  C   |  V   |  B   | L SHIFT | L SHIFT |  | L SHIFT | L SHIFT |  N   |  M    |  ,    |  .   |   /   | CTRL |
-//                     | GUI  | DEL  | RET  |  SPACE  |   ESC   |  |   RET   |  SPACE  | TAB  | BSPC  | R-ALT |
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// |   ESC   |    Q    |    W    |    E    |    R    |    T    |                                          |    Y    |    U    |    I    |    O    |    P    |    \    |
+// |   TAB   |    A    |    S    |    D    |    F    |    G    |                                          |    H    |    J    |    K    |    L    |    ;    |    '    |
+// |  SHIFT  |    Z    |    X    |    C    |    V    |    B    | CTRL+A  | CTRL+C  |  |  CTRL+V |  CTRL+X |    N    |    M    |    ,    |    .    |    /    |  R CTRL |
+//                               |   GUI   |   DEL   | RETURN  |  SPACE  | ESCAPE  |  |  RETURN |  SPACE  |   TAB   |   BSPC  |  R ALT  |
 			bindings = <
-	&kp ESC  &kp Q &kp W &kp E &kp R &kp T                                            &kp Y &kp U  &kp I    &kp O   &kp P    &kp BSLH
-	&kp TAB  &kp A &kp S &kp D &kp F &kp G                                            &kp H &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
-	&kp LSFT &kp Z &kp X &kp C &kp V &kp B &kp LSFT &kp LSFT        &kp LSFT &kp LSFT &kp N &kp M  &kp CMMA &kp DOT &kp FSLH &kp RCTL
-	              &kp LGUI &kp DEL &kp RET &kp SPC &kp ESC            &kp RET  &kp SPC  &kp TAB &kp BKSP &kp RALT
+    &kp ESC   &kp Q     &kp W    &kp E     &kp R     &kp T                                                 &kp Y     &kp U     &kp I     &kp O     &kp P    &kp BSLH
+    &kp TAB   &kp A     &kp S    &kp D     &kp F     &kp G                                                 &kp H     &kp J     &kp K     &kp L     &kp SEMI &kp QUOTE
+    &kp LSHFT &kp Z     &kp X    &kp C     &kp V     &kp B      &kp LC(A) &kp LC(C)    &kp LC(V) &kp LC(X) &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH &kp RCTRL
+                                 &kp LGUI  &kp DEL   &kp RET    &kp SPACE &kp ESC      &kp RET   &kp SPACE &kp TAB   &kp BSPC  &kp RALT
 			>;
 
-			sensor-bindings = <&inc_dec_cp M_VOLU M_VOLD &inc_dec_kp PGUP PGDN>;
+			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
 		};
 	};
 };

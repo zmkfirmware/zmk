@@ -1,6 +1,10 @@
-#pragma once
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
-#include <dt-bindings/zmk/keys.h>
+#pragma once
 
 #include <zmk/keymap.h>
 #include <zmk/keys.h>

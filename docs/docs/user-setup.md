@@ -1,5 +1,4 @@
 ---
-id: user-setup
 title: Installing ZMK
 sidebar_label: Installing ZMK
 ---
@@ -39,6 +38,7 @@ The remainder of this guide assumes the following prerequisites:
 
 1. You have an active, working [GitHub](https://github.com/) account.
 1. You have installed and configured the [`git`](https://git-scm.com/) version control tool.
+1. You have locally configured git to access your github account. If using [personal access tokens](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token), please be sure it was created with the "workflow" scope option selected.
 
 :::note
 If you need to, a quick read of [Learn The Basics Of Git In Under 10 Minutes](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/) will help you get started.
@@ -63,6 +63,7 @@ defaultValue="curl"
 values={[
 {label: 'Using curl', value: 'curl'},
 {label: 'Using wget', value: 'wget'},
+{label: 'Using PowerShell', value: 'PowerShell'},
 ]}>
 <TabItem value="curl">
 
@@ -74,7 +75,14 @@ bash -c "$(curl -fsSL https://zmkfirmware.dev/setup.sh)"
 <TabItem value="wget">
 
 ```
-bash -c "$(wget https://zmkfirmware.dev/setup.sh -O -)"
+bash -c "$(wget https://zmkfirmware.dev/setup.sh -O -)" '' --wget
+```
+
+</TabItem>
+<TabItem value="PowerShell">
+
+```
+iex ((New-Object System.Net.WebClient).DownloadString('https://zmkfirmware.dev/setup.ps1'))"
 ```
 
 </TabItem>
@@ -93,6 +101,12 @@ Pick an MCU board:
 ```
 
 ### Keyboard Shield Selection
+
+:::note
+If you are building firmware for a new keyboard shield that is not included in the built-in
+list of shields, you can choose any shield from the list that is similar to yours to generate the repository,
+and edit / add necessary files according to the [guide for adding new keyboard shield](./dev-guide-new-shield.md).
+:::
 
 When prompted, enter the number for the corresponding keyboard shield you would like to target:
 
@@ -179,7 +193,7 @@ storage device. Once the flash is complete, the controller should automatically 
 
 ## Wirelessly Connecting Your Keyboard
 
-Connecting your keyboard wirelessly is the same as adding other Bluetooth devides: press the reset button and scan for devices. However, pairing and bonding is still currently being worked on to increase relability and ease of use. In addition, users have in general reported that Bluetooth pairing with computers tends to be quite finnicky. Try out the connection with your tablet or phone first, as those devices seem to work much more consistently. See [BLE Reset](./bond-reset.md) for help on resetting your MCUs if you're experiencing connection issues.
+Connecting your keyboard wirelessly is the same as adding other Bluetooth devides: press the reset button and scan for devices. However, pairing and bonding is still currently being worked on to increase relability and ease of use. In addition, users have in general reported that Bluetooth pairing with computers tends to be quite finnicky. Try out the connection with your tablet or phone first, as those devices seem to work much more consistently.
 
 ### Connecting Split Keyboard Halves
 

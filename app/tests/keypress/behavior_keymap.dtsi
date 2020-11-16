@@ -9,20 +9,8 @@
 
 		default_layer {
 			bindings = <
-				&kp B &mo 1
-				&kp D &kp G>;
-		};
-
-		lower_layer {
-			bindings = <
-				&cp M_NEXT &trans
-				&kp L  &kp J>;
-		};
-
-		raise_layer {
-			bindings = <
-				&kp W &kp U
-				&kp X  &kp M>;
+				&kp B &none
+				&kp C_NEXT &none>;
 		};
 	};
 };

@@ -4,17 +4,18 @@ sidebar_label: Hold-Tap
 ---
 
 ## Summary
-Hold-tap is the basis for other behaviors such as layer-tap and mod-tap. 
+
+Hold-tap is the basis for other behaviors such as layer-tap and mod-tap.
 
 Simply put, the hold-tap key will output the 'hold' behavior if it's held for a while, and output the 'tap' behavior when it's tapped quickly.
 
-
 ### Hold-Tap
+
 The `tapping_term_ms` parameter decides between a 'tap' and a 'hold'.
 
 ![Simple behavior](../assets/hold-tap/case1_2.png)
 
-By default, the hold-tap is configured to also select the 'hold' functionality if another key is tapped while it's active: 
+By default, the hold-tap is configured to also select the 'hold' functionality if another key is tapped while it's active:
 
 ![Hold preferred behavior](../assets/hold-tap/case1_2.png)
 
@@ -22,7 +23,12 @@ We call this the 'hold-preferred' flavor of hold-taps. While this flavor may wor
 
 ![Hold-tap comparison](../assets/hold-tap/comparison.png)
 
-### Configuration
+### Basic usage
+
+For basic usage, please see [mod-tap](./mod-tap.md) and [layer-tap](./layers.md) pages.
+
+### Advanced Configuration
+
 A code example which configures a mod-tap setting that works with homerow mods:
 
 ```
@@ -40,13 +46,13 @@ A code example which configures a mod-tap setting that works with homerow mods:
 			bindings = <&kp>, <&kp>;
 		};
 	};
-		
+
 	keymap {
 		compatible = "zmk,keymap";
 
 		default_layer {
 			bindings = <
-	            &hm LCTL A &hm LGUI S &hm LALT D &hm LSFT F
+	            &hm LCTRL A &hm LGUI S &hm LALT D &hm LSHFT F
 			>;
 		};
 	};
@@ -56,7 +62,8 @@ A code example which configures a mod-tap setting that works with homerow mods:
 
 If this config does not work for you, try the flavor "tap-preferred" and a short tapping_term_ms such as 120ms.
 
-If you want to use a tap-hold with a keycode from a different code page, you have to define another behavior with another "bindings" parameter.For example, if you want to use SHIFT and volume up, define the bindings like `bindings = <&kp>, <&cp>;`. Only single-argument behaviors are supported at the moment.
+If you want to use a tap-hold with a keycode from a different code page, you have to define another behavior with another "bindings" parameter.For example, if you want to use SHIFT and volume up, define the bindings like `bindings = <&kp>, <&kp>;`. Only single-argument behaviors are supported at the moment.
 
-#### Note
-Astute readers may notice similarities between the possible behaviors in ZMK and other firmware, such as QMK. The hold-preferred flavor works similar to the `HOLD_ON_OTHER_KEY_PRESS` setting. The 'balanced' flavor is similar to the `PERMISSIVE_HOLD` setting, and the `tap-preferred` flavor is similar to `IGNORE_MOD_TAP_INTERRUPT`.
+#### Comparison to QMK
+
+The hold-preferred flavor works similar to the `HOLD_ON_OTHER_KEY_PRESS` setting in QMK. The 'balanced' flavor is similar to the `PERMISSIVE_HOLD` setting, and the `tap-preferred` flavor is similar to `IGNORE_MOD_TAP_INTERRUPT`.

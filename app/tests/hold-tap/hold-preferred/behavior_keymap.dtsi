@@ -22,8 +22,8 @@
 
 		default_layer {
 			bindings = <
-				&ht_hold LSFT F &ht_hold LCTL J
-				&kp D &kp RCTL>;
+				&ht_hold LEFT_SHIFT F &ht_hold LEFT_CONTROL J
+				&kp D &kp RIGHT_CONTROL>;
 		};
 	};
 };

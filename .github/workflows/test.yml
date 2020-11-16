@@ -1,4 +1,12 @@
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "app/tests/**"
+      - "app/src/**"
+  pull_request:
+    paths:
+      - "app/tests/**"
+      - "app/src/**"
 
 name: Test
 
