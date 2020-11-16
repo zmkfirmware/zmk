@@ -13,6 +13,10 @@ computer/laptop/keyboard should receive the keyboard input; many of the commands
 Please note there are only five available Bluetooth profiles by default. If you need to increase the number of available profiles you can set `CONFIG_BT_MAX_CONN` in your `zmk-config` `.conf` file.
 :::
 
+:::note Connection Management
+As an implementation detail, a ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
+:::
+
 ## Bluetooth Command Defines
 
 Bluetooth command defines are provided through the [`dt-bindings/zmk/bt.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/bt.h) header,
