@@ -115,6 +115,8 @@ select opt in "${options[@]}" "Quit"; do
     12 ) shield_title="TG4X" shield="tg4x"; split="n"; break;;
     13 ) shield_title="QAZ" shield="qaz"; split="n"; break;;
     14 ) shield_title="NIBBLE" shield="nibble"; split="n"; break;;
+    15 ) shield_title="Gherkin" shield="gerkin"; split="n"; break;;
+
 
     # Add link to docs on adding your own custom shield in your ZMK config!
     # $(( ${#options[@]}+1 )) ) echo "Other!"; break;;
