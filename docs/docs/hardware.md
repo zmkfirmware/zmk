@@ -32,6 +32,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [RoMac v2](https://mechboards.co.uk/shop/kits/romac-macro-pad/) (`romac`)
 - [Boardsource 3x4 Macro](https://boardsource.xyz/store/5ecc2008eee64242946c98c1) (`boardsource3x4`)
 - [QAZ](https://www.cbkbd.com/product/qaz-keyboard-kit) (`qaz`)
+- [Gherkin](http://www.40percent.club/2016/11/gherkin.html) (`gherkin`)
 
 ## Other Hardware
 
