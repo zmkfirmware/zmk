@@ -76,6 +76,10 @@ Therefore in ZMK, [board](#what-is-a-board) and [shield](#what-is-a-shield) are 
 
 Please note, many keyboards only have a single PCB which includes the “brains” (MCU) onboard. In ZMK, these have no [shield](#what-is-a-shield), only a [board](#what-is-a-board).
 
+### Does ZMK support wired split?
+
+Currently, ZMK only supports wireless split, but wired split is possible and we welcome contributions!
+
 ### What bootloader does ZMK use?
 
 ZMK isn’t designed for any particular bootloader, and supports flashing different boards with different flash utilities (e.g. OpenOCD, nrfjprog, etc.). So if you have any difficulties, please let us know on [Discord](https://zmkfirmware.dev/community/discord/invite)!
