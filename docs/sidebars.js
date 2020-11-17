@@ -7,6 +7,7 @@ module.exports = {
       "user-setup",
       "customization",
       "troubleshooting",
+      "contributing",
     ],
     Features: [
       "features/keymaps",
