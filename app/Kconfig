@@ -48,8 +48,8 @@ config ZMK_BLE
 	select BT_SMP_SC_PAIR_ONLY
 	select BT_SMP_APP_PAIRING_ACCEPT
 	select BT_PERIPHERAL
-	select BT_GATT_DIS
-	select BT_GATT_BAS
+	select BT_DIS
+	select BT_BAS
 	select BT_SETTINGS
 	select SETTINGS
 
