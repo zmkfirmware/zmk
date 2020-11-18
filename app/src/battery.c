@@ -53,7 +53,7 @@ static void zmk_battery_timer(struct k_timer *timer) { k_work_submit(&battery_wo
 K_TIMER_DEFINE(battery_timer, zmk_battery_timer, NULL);
 
 static int zmk_battery_init(struct device *_arg) {
-    battery = device_get_binding("BATTERY");
+    struct device *battery = device_get_binding("BATTERY");
 
     if (battery == NULL) {
         LOG_DBG("No battery device labelled BATTERY found.");
