@@ -33,7 +33,7 @@ if LVGL
 config LVGL_HOR_RES_MAX
 	default 128
 
-config LVGL_VER_RES
+config LVGL_VER_RES_MAX
 	default 32
 
 config LVGL_VDB_SIZE
