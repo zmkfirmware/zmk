@@ -38,7 +38,7 @@ static int zmk_battery_update(const struct device *battery) {
 
     LOG_DBG("Setting BAS GATT battery level to %d.", state_of_charge.val1);
 
-    rc = bt_gatt_bas_set_battery_level(state_of_charge.val1);
+    rc = bt_bas_set_battery_level(state_of_charge.val1);
 
     if (rc != 0) {
         LOG_WRN("Failed to set BAS GATT battery level (err %d)", rc);
