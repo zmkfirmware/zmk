@@ -1,1 +1,4 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
 rsource "shields/*/Kconfig.shield"
