@@ -49,7 +49,7 @@ __syscall int behavior_keymap_binding_pressed(struct zmk_behavior_binding *bindi
 static inline int z_impl_behavior_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                                          struct zmk_behavior_binding_event event) {
     struct device *dev = device_get_binding(binding->behavior_dev);
-    const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->driver_api;
+    const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
 
     if (api->binding_pressed == NULL) {
         return -ENOTSUP;
@@ -72,7 +72,7 @@ __syscall int behavior_keymap_binding_released(struct zmk_behavior_binding *bind
 static inline int z_impl_behavior_keymap_binding_released(struct zmk_behavior_binding *binding,
                                                           struct zmk_behavior_binding_event event) {
     struct device *dev = device_get_binding(binding->behavior_dev);
-    const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->driver_api;
+    const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
 
     if (api->binding_released == NULL) {
         return -ENOTSUP;
@@ -98,7 +98,7 @@ static inline int
 z_impl_behavior_sensor_keymap_binding_triggered(struct zmk_behavior_binding *binding,
                                                 struct device *sensor, int64_t timestamp) {
     struct device *dev = device_get_binding(binding->behavior_dev);
-    const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->driver_api;
+    const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
 
     if (api->sensor_binding_triggered == NULL) {
         return -ENOTSUP;

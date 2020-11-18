@@ -45,7 +45,7 @@ __subsystem struct ext_power_api {
 __syscall int ext_power_enable(struct device *dev);
 
 static inline int z_impl_ext_power_enable(struct device *dev) {
-    const struct ext_power_api *api = (const struct ext_power_api *)dev->driver_api;
+    const struct ext_power_api *api = (const struct ext_power_api *)dev->api;
 
     if (api->enable == NULL) {
         return -ENOTSUP;
@@ -64,7 +64,7 @@ static inline int z_impl_ext_power_enable(struct device *dev) {
 __syscall int ext_power_disable(struct device *dev);
 
 static inline int z_impl_ext_power_disable(struct device *dev) {
-    const struct ext_power_api *api = (const struct ext_power_api *)dev->driver_api;
+    const struct ext_power_api *api = (const struct ext_power_api *)dev->api;
 
     if (api->disable == NULL) {
         return -ENOTSUP;
@@ -84,7 +84,7 @@ static inline int z_impl_ext_power_disable(struct device *dev) {
 __syscall int ext_power_get(struct device *dev);
 
 static inline int z_impl_ext_power_get(struct device *dev) {
-    const struct ext_power_api *api = (const struct ext_power_api *)dev->driver_api;
+    const struct ext_power_api *api = (const struct ext_power_api *)dev->api;
 
     if (api->get == NULL) {
         return -ENOTSUP;
