@@ -10,7 +10,6 @@ list(APPEND DTS_ROOT ${CMAKE_SOURCE_DIR}/drivers/zephyr)
 list(APPEND ZEPHYR_EXTRA_MODULES
   ${CMAKE_CURRENT_SOURCE_DIR}/drivers
 )
-list(APPEND SYSCALL_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/drivers/zephyr)
 
 include(cmake/zmk_config.cmake)
 
