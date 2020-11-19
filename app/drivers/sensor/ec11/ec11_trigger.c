@@ -66,8 +66,7 @@ static void ec11_b_gpio_callback(const struct device *dev, struct gpio_callback 
 #endif
 }
 
-static void ec11_thread_cb(void *arg) {
-    const struct device *dev = arg;
+static void ec11_thread_cb(const struct device *dev) {
     struct ec11_data *drv_data = dev->data;
 
     drv_data->handler(dev, drv_data->trigger);
