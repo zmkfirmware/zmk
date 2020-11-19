@@ -13,12 +13,12 @@
 
 		default_layer {
 			bindings = <
-				&kp NUM_9 &kp NUM_8
-				&kp NUM_7 &kp NUM_6
-				          &kp NUM_5
-				           &kp NUM_4 &kp NUM_3
-				                 &kp NUM_2 &kp NUM_1
-				                              &kp NUM_0
+				&kp N9 &kp N8
+				&kp N7 &kp N6
+				       &kp N5
+				        &kp N4 &kp N3
+				              &kp N2 &kp N1
+				                        &kp N0
 				>;
 		};
 	};

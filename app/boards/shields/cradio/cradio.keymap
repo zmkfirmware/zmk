@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
- 
+
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
@@ -12,32 +12,32 @@
 / {
         keymap {
                 compatible = "zmk,keymap";
-                
+
        default_layer {
 		bindings = <
-		&kp Q &kp W &kp E &kp R &kp T 		&kp Y &kp U  &kp I    &kp O   &kp P 
-		&kp A &kp S &kp D &kp F &kp G 		&kp H &kp J  &kp K    &kp L   &kp SCLN 
-		&kp Z &kp X &kp C &kp V &kp B		&kp N &kp M  &kp CMMA &kp DOT &kp FSLH
-			 &mo 1 &kp LCTL  		&kp SPC  &mo 2 
+		&kp Q &kp W &kp E &kp R &kp T 		&kp Y &kp U  &kp I     &kp O   &kp P
+		&kp A &kp S &kp D &kp F &kp G 		&kp H &kp J  &kp K     &kp L   &kp SEMI
+		&kp Z &kp X &kp C &kp V &kp B		&kp N &kp M  &kp COMMA &kp DOT &kp FSLH
+			 &mo 1 &kp LCTRL  		&kp SPACE  &mo 2
 		>;
 		};
        upper_layer {
 		bindings = <
-		&kp NUM_1    &kp NUM_2    &kp NUM_3    &kp NUM_4    &kp NUM_5         &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 
-		&bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4	&kp H &kp J  &kp K    &kp L   &kp SCLN 
-		&kp LSFT   &trans       &trans       &trans       &trans       &trans            &trans    &trans    &trans    &trans  
-			 &mo 1 &kp LCTL  		&kp SPC  &mo 2 
+		&kp N1       &kp N2       &kp N3       &kp N4       &kp N5          &kp N6 &kp N7 &kp N8 &kp N9 &kp N0
+		&bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4    &kp H  &kp J  &kp K  &kp L  &kp SEMI
+		&kp LSHFT    &trans       &trans       &trans       &trans          &trans &trans &trans &trans &trans
+			 &mo 1 &kp LCTRL  		&kp SPACE  &mo 2
 		>;
 		};
-		
+
 	lower_layer {
 		bindings = <
-		&kp BANG  &kp ATSN  &kp HASH  &kp CURU  &kp PRCT    &kp CRRT  &kp AMPS &kp KMLT &kp LPRN &kp RPRN 
-		&trans    &trans    &trans    &trans    &trans      &kp MINUS &kp EQL  &kp LBKT &kp RBKT &kp PIPE 
-		&trans    &trans    &trans    &trans      &trans    &trans   &trans   &trans   &kp BSLH &kp TILD
-			 &mo 1 &kp LCTL  		&kp SPC  &mo 2 
+		&kp EXCL  &kp AT  &kp HASH  &kp DOLLAR &kp PRCNT   &kp CARET &kp AMPS  &kp KP_MULTIPLY &kp LPAR &kp RPAR
+		&trans    &trans  &trans    &trans     &trans      &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp PIPE
+		&trans    &trans  &trans    &trans     &trans      &trans    &trans    &trans          &kp BSLH &kp TILDE
+			 &mo 1 &kp LCTRL  		&kp SPACE  &mo 2
 		>;
-		};	
-        
+		};
+
 	};
 };

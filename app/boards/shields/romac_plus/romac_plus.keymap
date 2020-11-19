@@ -11,7 +11,7 @@
 / {
     keymap {
         compatible = "zmk,keymap";
-        
+
         default_layer {
 // --------------------------
 // | 7      |  8  |  9      |
@@ -20,13 +20,13 @@
 // | M_PLAY |  0  |  MO(1)  |
 // --------------------------
             bindings = <
-    &kp NUM_7 &kp NUM_8 &kp NUM_9 
-    &kp NUM_4 &kp NUM_5 &kp NUM_6 
-    &kp NUM_1 &kp NUM_2 &kp NUM_3 
-    &kp M_PLAY &kp NUM_0 &mo 1 
+    &kp N7   &kp N8 &kp N9
+    &kp N4   &kp N5 &kp N6
+    &kp N1   &kp N2 &kp N3
+    &kp C_PP &kp N0 &mo 1
             >;
 
-            sensor-bindings = <&inc_dec_kp M_NEXT M_PREV>;
+            sensor-bindings = <&inc_dec_kp C_NEXT C_PREV>;
         };
 
          nav_layer {
@@ -37,10 +37,10 @@
 // | _      |  _    |  _    |
 // --------------------------
              bindings = <
-     &bt BT_CLR &kp HOME &kp PGUP 
-     &trans &kp END  &kp PGDN 
-     &trans &trans   &trans
-     &trans &trans   &trans
+     &bt BT_CLR &kp HOME &kp PG_UP
+     &trans     &kp END  &kp PG_DN
+     &trans     &trans   &trans
+     &trans     &trans   &trans
              >;
 
              sensor-bindings = <&inc_dec_kp A B>;

@@ -25,9 +25,9 @@
 //                           | RSE | SPC | LWR |   | LWR | BKSP | RSE |
                         bindings = <
    &kp LWIN &kp GRAVE &kp Q &kp W &kp E &kp R &kp T &kp Y         &kp U  &kp I     &kp O   &kp P    &kp LBKT &mt RWIN RBKT
-            &kp LCTRL &kp A &kp S &kp D &kp F &kp G &kp H         &kp J  &kp K     &kp L   &kp SCLN &mt RCTRL QUOT
+            &kp LCTRL &kp A &kp S &kp D &kp F &kp G &kp H         &kp J  &kp K     &kp L   &kp SEMI &mt RCTRL SQT
             &kp LALT  &kp Z &kp X &kp C &kp V &kp B &kp N         &kp M  &kp COMMA &kp DOT &kp FSLH &kp BSLH
-                         &lt RSE TAB &mt LSHFT SPC &lt LWR RET  &lt LWR ESC &mt RSHFT BSPC &lt RSE DEL
+                         &lt RSE TAB &mt LSHFT SPACE &lt LWR RET &lt LWR ESC &mt RSHFT BSPC &lt RSE DEL
                         >;
                 };
                 lower_layer {
@@ -37,9 +37,9 @@
 //       |  =  |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  |     |
 //                    | GUI |     | SPC |   | ENT |     | ALT |
                         bindings = <
-   &trans &kp UNDER      &kp F1   &kp F2 &kp F3   &kp F4   &kp F5           &kp F6   &kp F7   &kp F8   &kp F9   &kp F10  &kp F11 &mt RGUI F12
-          &mt LCTRL PLUS &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT        &kp CRRT &kp AMPS &kp STAR &kp LPAR &kp RPAR &mt RCTRL MINUS
-          &mt LALT EQUAL &kp N1   &kp N2 &kp N3   &kp N4   &kp N5           &kp N6   &kp N7   &kp N8   &kp N9   &kp N0   &trans
+   &trans &kp UNDER      &kp F1   &kp F2 &kp F3   &kp F4   &kp F5           &kp F6    &kp F7   &kp F8   &kp F9   &kp F10  &kp F11 &mt RGUI F12
+          &mt LCTRL PLUS &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT        &kp CARET &kp AMPS &kp STAR &kp LPAR &kp RPAR &mt RCTRL MINUS
+          &mt LALT EQUAL &kp N1   &kp N2 &kp N3   &kp N4   &kp N5           &kp N6    &kp N7   &kp N8   &kp N9   &kp N0   &trans
                                               &lt ADJ TAB &trans &trans   &trans &trans &lt ADJ DEL
                         >;
                 };
@@ -51,9 +51,9 @@
 //       |      |  0  |  1  |  2  |  3  |  .  |   | VOLD| END | DOWN| PGDN| PAUS|     |
 //                          |     |     | ADJ |   | ADJ |     |     |
                         bindings = <
-   &trans &kp KP_NUM    &kp KP_SLASH    &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_MINUS        &kp C_VOL_UP &kp HOME &kp PSCRN &kp PG_UP &kp SLCK &kp CAPS &trans
-          &mt LCTRL EQL &kp KP_MULTIPLY &kp KP_N4 &kp KP_N5 &kp KP_N6 &kp KP_PLUS         &kp C_MUTE   &kp LEFT &kp UP    &kp RIGHT &kp INS  &mt RCTRL K_APP
-          &trans        &kp KP_N0       &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_DOT          &kp C_VOL_DN &kp END  &kp DOWN  &kp PG_DN &kp PAUS &trans
+   &trans &kp KP_NUM      &kp KP_SLASH    &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_MINUS        &kp C_VOL_UP &kp HOME &kp PSCRN &kp PG_UP &kp SLCK &kp CAPS &trans
+          &mt LCTRL EQUAL &kp KP_MULTIPLY &kp KP_N4 &kp KP_N5 &kp KP_N6 &kp KP_PLUS         &kp C_MUTE   &kp LEFT &kp UP    &kp RIGHT &kp INS  &mt RCTRL K_APP
+          &trans          &kp KP_N0       &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_DOT          &kp C_VOL_DN &kp END  &kp DOWN  &kp PG_DN &kp PAUSE_BREAK &trans
                                                            &trans &trans &lt ADJ RET   &lt ADJ ESC &trans &trans
                         >;
                 };
