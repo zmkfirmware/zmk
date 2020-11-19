@@ -1,0 +1,25 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config ZMK_KSCAN_GPIO_DRIVER
+	bool "Enable GPIO kscan driver to simulate key presses"
+	default y
+	select GPIO
+
+if ZMK_KSCAN_GPIO_DRIVER
+
+config ZMK_KSCAN_MATRIX_POLLING
+	bool "Poll for key event triggers instead of using interrupts on matrix boards."
+	default n
+
+config ZMK_KSCAN_DIRECT_POLLING
+	bool "Poll for key event triggers instead of using interrupts on direct wired boards."
+    default n
+
+endif
+
+config ZMK_KSCAN_INIT_PRIORITY
+	int "Keyboard scan driver init priority"
+	default 40
+	help
+	  Keyboard scan device driver initialization priority.
