@@ -11,7 +11,7 @@
 / {
     keymap {
         compatible = "zmk,keymap";
-        
+
         default_layer {
 // -------------------
 // | 7      |  8  |  9  |
@@ -20,10 +20,10 @@
 // | MO(1)  |  0  |  .  |
 // ----------------------
             bindings = <
-    &kp NUM_7 &kp NUM_8 &kp NUM_9 
-    &kp NUM_4 &kp NUM_5 &kp NUM_6 
-    &kp NUM_1 &kp NUM_2 &kp NUM_3 
-    &mo 1     &kp NUM_0 &kp DOT 
+    &kp N7 &kp N8 &kp N9
+    &kp N4 &kp N5 &kp N6
+    &kp N1 &kp N2 &kp N3
+    &mo 1  &kp N0 &kp DOT
             >;
         };
 
@@ -35,13 +35,12 @@
 // | _     |  _     |  RET   |
 // -----------------------
             bindings = <
-    &bt BT_NXT &kp HOME &kp PGUP 
-    &bt BT_PRV &kp END  &kp PGDN 
-    &bt BT_CLR &trans   &trans 
+    &bt BT_NXT &kp HOME &kp PG_UP
+    &bt BT_PRV &kp END  &kp PG_DN
+    &bt BT_CLR &trans   &trans
     &trans     &trans   &kp RET
             >;
         };
     };
 };
-
 

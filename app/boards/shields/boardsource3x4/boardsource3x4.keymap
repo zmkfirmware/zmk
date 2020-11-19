@@ -15,18 +15,18 @@
         default_layer {
 
             bindings = <
-    &tog 1 &kp M_PREV &kp M_PLAY &kp M_NEXT
-    &mo 2  &kp M_VOLD &kp UARW   &kp M_VOLU
-    &mo 3  &kp LARW   &kp DARW   &kp RARW
+    &tog 1 &kp C_PREV   &kp C_PP &kp C_NEXT
+    &mo 2  &kp C_VOL_DN &kp UP   &kp C_VOL_UP
+    &mo 3  &kp LEFT     &kp DOWN &kp RIGHT
             >;
 
         };
 
         num_layer {
             bindings = <
-    &trans      &kp NUM_7 &kp NUM_8 &kp NUM_9
-    &trans      &kp NUM_4 &kp NUM_5 &kp NUM_6
-    &lt 3 NUM_0 &kp NUM_1 &kp NUM_2 &kp NUM_3
+    &trans   &kp N7 &kp N8 &kp N9
+    &trans   &kp N4 &kp N5 &kp N6
+    &lt 3 N0 &kp N1 &kp N2 &kp N3
             >;
         };
 

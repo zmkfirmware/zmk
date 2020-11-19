@@ -31,27 +31,27 @@
 
         default_layer {
             bindings = <
-    &kp ESC   &kp Q       &kp W       &kp E       &kp R       &kp T     &kp Y     &kp U       &kp I       &kp O       &kp P          &kp BKSP   
-    &kp TAB   &hm LGUI A  &hm LALT S  &hm LCTL D  &hm LSFT F  &kp G     &kp H     &hm RSFT J  &hm RCTL K  &hm RALT L  &hm RGUI SCLN  &kp RET
-    &kp LSFT  &kp Z       &kp X       &kp C       &kp V       &kp B     &kp N     &kp M       &kp CMMA    &kp DOT     &kp FSLH       &kp QUOT
-    &kp LCTL  &kp LALT    &kp LGUI    &lt 1 BKSP  &lt 2 SPC   &kp LARW  &kp DARW  &kp UARW    &kp RARW
+    &kp ESC   &kp Q       &kp W       &kp E       &kp R       &kp T     &kp Y     &kp U       &kp I        &kp O       &kp P          &kp BSPC
+    &kp TAB   &hm LGUI A  &hm LALT S  &hm LCTRL D &hm LSHFT F &kp G     &kp H     &hm RSHFT J &hm RCTRL K  &hm RALT L  &hm RGUI SEMI &kp RET
+    &kp LSHFT &kp Z       &kp X       &kp C       &kp V       &kp B     &kp N     &kp M       &kp COMMA    &kp DOT     &kp FSLH      &kp SQT
+    &kp LCTRL &kp LALT    &kp LGUI    &lt 1 BSPC  &lt 2 SPACE &kp LEFT  &kp DOWN  &kp UP      &kp RIGHT
             >;
         };
         lower {
             bindings = <
-    &kp GRAV     &kp F1  &kp F2    &kp F3  &kp F4  &kp F5  &kp F6        &kp F7        &kp F8        &kp F9       &kp F10     &kp F11     &kp F12  &kp PRSC   
-    &kp DEL      &trans  &kp VOLU  &trans  &trans  &trans  &trans        &kp LARW      &kp DARW      &kp UARW     &kp RARW    &trans       
-    &trans       &trans  &kp VOLD  &trans  &trans  &trans  &trans        &trans        &trans        &bt BT_PRV   &bt BT_NXT  &bt BT_CLR
-    &bootloader  &reset  &trans    &trans  &trans  &trans  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3
+    &kp GRAVE    &kp F1  &kp F2       &kp F3  &kp F4  &kp F5  &kp F6        &kp F7        &kp F8        &kp F9       &kp F10     &kp F11     &kp F12  &kp PSCRN
+    &kp DEL      &trans  &kp K_VOL_UP &trans  &trans  &trans  &trans        &kp LEFT      &kp DOWN      &kp UP       &kp RIGHT   &trans
+    &trans       &trans  &kp K_VOL_DN &trans  &trans  &trans  &trans        &trans        &trans        &bt BT_PRV   &bt BT_NXT  &bt BT_CLR
+    &bootloader  &reset  &trans       &trans  &trans  &trans  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3
             >;
         };
 
     raise {
             bindings = <
-    &kp GRAV  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp NUM_4  &kp NUM_5  &kp NUM_6   &kp NUM_7   &kp NUM_8   &kp NUM_9   &kp NUM_0  &kp PRSC   
-    &kp DEL   &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6      &kp MINUS   &kp EQL     &kp LBKT    &kp RBKT   &kp BSLH
-    &trans    &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12     &kp TILD    &kp HOME    &kp PGUP    &kp PGDN   &kp END
-    &trans    &trans     &trans     &trans     &trans     &trans     &kp M_NEXT  &kp M_VOLD  &kp M_VOLU  &kp M_PLAY
+    &kp GRAVE &kp N1     &kp N2     &kp N3     &kp N4     &kp N5     &kp N6      &kp N7       &kp N8       &kp N9     &kp N0     &kp PSCRN
+    &kp DEL   &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6      &kp MINUS    &kp EQUAL    &kp LBKT   &kp RBKT   &kp BSLH
+    &trans    &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12     &kp TILDE    &kp HOME     &kp PG_UP  &kp PG_DN  &kp END
+    &trans    &trans     &trans     &trans     &trans     &trans     &kp C_NEXT  &kp C_VOL_DN &kp C_VOL_UP &kp C_PP
             >;
         };
     };
