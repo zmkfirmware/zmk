@@ -25,7 +25,7 @@ static const struct device *hid_dev;
 
 static K_SEM_DEFINE(hid_sem, 1, 1);
 
-static void in_ready_cb(void) { k_sem_give(&hid_sem); }
+static void in_ready_cb(const struct device *dev) { k_sem_give(&hid_sem); }
 
 static const struct hid_ops ops = {
     .int_in_ready = in_ready_cb,
