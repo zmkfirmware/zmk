@@ -5,6 +5,8 @@
 #    * single overlay,
 #    * or per board/shield.
 
+cmake_minimum_required(VERSION 3.15)
+
 get_property(cached_user_config_value CACHE ZMK_CONFIG PROPERTY VALUE)
 
 set(user_config_cli_argument ${cached_user_config_value}) # Either new or old
