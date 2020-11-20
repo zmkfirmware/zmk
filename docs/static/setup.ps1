@@ -16,13 +16,13 @@ function Get-Choice-From-Options {
         }
 
         Write-Host "$($Options.length + 1)) Quit"
-        $selection = Read-Host $Prompt
+        $selection = (Read-Host $Prompt) -as [int]
 
         if ($selection -eq $Options.length + 1) {
             Write-Host "Goodbye!"
             exit 1
         }
-        elseif ($selection -le $Options.length) {
+        elseif ($selection -le $Options.length -and $selection -gt 0) {
             $choice = $($selection - 1)
             break
         }
