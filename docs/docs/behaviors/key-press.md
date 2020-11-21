@@ -38,14 +38,14 @@ Doing so makes a set of defines such as `A`, `N1`, etc. available for use with t
 When compiling firmware from a keymap, it may be common to encounter an error in the form of a`dtlib.DTError: <board>.dts.pre.tmp:<line number>`.
 For instructions to resolve such an error, click [here](../troubleshooting###Improperly-defined-keymap)
 
-## Keypad Key Press
+## Key Press
 
-The "keypad key press" behavior sends standard keypad keycodes on press/release.
+The "key press" behavior sends standard keycodes on press/release.
 
 ### Behavior Binding
 
 - Reference: `&kp`
-- Parameter: The keycode usage ID from the keypad usage page, e.g. `4` or `A`
+- Parameter: The keycode usage ID from the usage page, e.g. `4` or `A`
 
 Example:
 
