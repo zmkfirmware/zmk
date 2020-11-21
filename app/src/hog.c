@@ -79,9 +79,9 @@ static ssize_t read_hids_report_map(struct bt_conn *conn, const struct bt_gatt_a
 
 static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                       void *buf, u16_t len, u16_t offset) {
-    struct zmk_hid_keypad_report_body *report_body = &zmk_hid_get_keypad_report()->body;
+    struct zmk_hid_keyboard_report_body *report_body = &zmk_hid_get_keyboard_report()->body;
     return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
-                             sizeof(struct zmk_hid_keypad_report_body));
+                             sizeof(struct zmk_hid_keyboard_report_body));
 }
 
 static ssize_t read_hids_consumer_input_report(struct bt_conn *conn,
@@ -156,7 +156,7 @@ struct bt_conn *destination_connection() {
     return conn;
 }
 
-int zmk_hog_send_keypad_report(struct zmk_hid_keypad_report_body *report) {
+int zmk_hog_send_keyboard_report(struct zmk_hid_keyboard_report_body *report) {
     struct bt_conn *conn = destination_connection();
     if (conn == NULL) {
         return -ENOTCONN;
@@ -164,8 +164,8 @@ int zmk_hog_send_keypad_report(struct zmk_hid_keypad_report_body *report) {
 
     LOG_DBG("Sending to NULL? %s", conn == NULL ? "yes" : "no");
 
-    int err =
-        bt_gatt_notify(conn, &hog_svc.attrs[5], report, sizeof(struct zmk_hid_keypad_report_body));
+    int err = bt_gatt_notify(conn, &hog_svc.attrs[5], report,
+                             sizeof(struct zmk_hid_keyboard_report_body));
     bt_conn_unref(conn);
     return err;
 };

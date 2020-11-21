@@ -10,7 +10,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/hid.h>
 #include <dt-bindings/zmk/modifiers.h>
 
-static struct zmk_hid_keypad_report kp_report = {
+static struct zmk_hid_keyboard_report kp_report = {
     .report_id = 1, .body = {.modifiers = 0, ._reserved = 0, .keys = {0}}};
 
 static struct zmk_hid_consumer_report consumer_report = {.report_id = 2, .body = {.keys = {0}}};
@@ -49,8 +49,8 @@ int zmk_hid_unregister_mod(zmk_mod modifier) {
     return 0;
 }
 
-#define TOGGLE_KEYPAD(match, val)                                                                  \
-    for (int idx = 0; idx < ZMK_HID_KEYPAD_NKRO_SIZE; idx++) {                                     \
+#define TOGGLE_KEYBOARD(match, val)                                                                \
+    for (int idx = 0; idx < ZMK_HID_KEYBOARD_NKRO_SIZE; idx++) {                                   \
         if (kp_report.body.keys[idx] != match) {                                                   \
             continue;                                                                              \
         }                                                                                          \
@@ -77,23 +77,23 @@ int zmk_hid_implicit_modifiers_release() {
     return 0;
 }
 
-int zmk_hid_keypad_press(zmk_key code) {
+int zmk_hid_keyboard_press(zmk_key code) {
     if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
         return zmk_hid_register_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
     }
-    TOGGLE_KEYPAD(0U, code);
+    TOGGLE_KEYBOARD(0U, code);
     return 0;
 };
 
-int zmk_hid_keypad_release(zmk_key code) {
+int zmk_hid_keyboard_release(zmk_key code) {
     if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
         return zmk_hid_unregister_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
     }
-    TOGGLE_KEYPAD(code, 0U);
+    TOGGLE_KEYBOARD(code, 0U);
     return 0;
 };
 
-void zmk_hid_keypad_clear() { memset(&kp_report.body, 0, sizeof(kp_report.body)); }
+void zmk_hid_keyboard_clear() { memset(&kp_report.body, 0, sizeof(kp_report.body)); }
 
 int zmk_hid_consumer_press(zmk_key code) {
     TOGGLE_CONSUMER(0U, code);
@@ -107,7 +107,7 @@ int zmk_hid_consumer_release(zmk_key code) {
 
 void zmk_hid_consumer_clear() { memset(&consumer_report.body, 0, sizeof(consumer_report.body)); }
 
-struct zmk_hid_keypad_report *zmk_hid_get_keypad_report() {
+struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report() {
     return &kp_report;
 }
 
