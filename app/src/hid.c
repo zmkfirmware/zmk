@@ -10,7 +10,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/hid.h>
 #include <dt-bindings/zmk/modifiers.h>
 
-static struct zmk_hid_keyboard_report kp_report = {
+static struct zmk_hid_keyboard_report keyboard_report = {
     .report_id = 1, .body = {.modifiers = 0, ._reserved = 0, .keys = {0}}};
 
 static struct zmk_hid_consumer_report consumer_report = {.report_id = 2, .body = {.keys = {0}}};
@@ -22,8 +22,8 @@ static zmk_mod_flags explicit_modifiers = 0;
 
 #define SET_MODIFIERS(mods)                                                                        \
     {                                                                                              \
-        kp_report.body.modifiers = mods;                                                           \
-        LOG_DBG("Modifiers set to 0x%02X", kp_report.body.modifiers);                              \
+        keyboard_report.body.modifiers = mods;                                                     \
+        LOG_DBG("Modifiers set to 0x%02X", keyboard_report.body.modifiers);                        \
     }
 
 int zmk_hid_register_mod(zmk_mod modifier) {
@@ -51,10 +51,10 @@ int zmk_hid_unregister_mod(zmk_mod modifier) {
 
 #define TOGGLE_KEYBOARD(match, val)                                                                \
     for (int idx = 0; idx < ZMK_HID_KEYBOARD_NKRO_SIZE; idx++) {                                   \
-        if (kp_report.body.keys[idx] != match) {                                                   \
+        if (keyboard_report.body.keys[idx] != match) {                                             \
             continue;                                                                              \
         }                                                                                          \
-        kp_report.body.keys[idx] = val;                                                            \
+        keyboard_report.body.keys[idx] = val;                                                      \
         break;                                                                                     \
     }
 
@@ -93,7 +93,7 @@ int zmk_hid_keyboard_release(zmk_key code) {
     return 0;
 };
 
-void zmk_hid_keyboard_clear() { memset(&kp_report.body, 0, sizeof(kp_report.body)); }
+void zmk_hid_keyboard_clear() { memset(&keyboard_report.body, 0, sizeof(keyboard_report.body)); }
 
 int zmk_hid_consumer_press(zmk_key code) {
     TOGGLE_CONSUMER(0U, code);
@@ -108,7 +108,7 @@ int zmk_hid_consumer_release(zmk_key code) {
 void zmk_hid_consumer_clear() { memset(&consumer_report.body, 0, sizeof(consumer_report.body)); }
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report() {
-    return &kp_report;
+    return &keyboard_report;
 }
 
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report() {
