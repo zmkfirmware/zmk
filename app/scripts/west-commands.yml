@@ -6,4 +6,4 @@ west-commands:
     commands:
       - name: test
         class: Test
-        help: run zmk testsuite
+        help: run ZMK testsuite

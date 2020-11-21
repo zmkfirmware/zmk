@@ -14,9 +14,9 @@ class Test(WestCommand):
     def __init__(self):
         super().__init__(
             'test',  # gets stored as self.name
-            'run zmk testsuite',  # self.help
+            'run ZMK testsuite',  # self.help
             # self.description:
-            dedent('''Run the zmk testsuite.'''))
+            dedent('''Run the ZMK testsuite.'''))
 
     def do_add_parser(self, parser_adder):
         parser = parser_adder.add_parser(self.name,
