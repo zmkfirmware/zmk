@@ -15,7 +15,7 @@
 
 #define COLLECTION_REPORT 0x03
 
-#define ZMK_HID_KEYPAD_NKRO_SIZE 6
+#define ZMK_HID_KEYBOARD_NKRO_SIZE 6
 
 #define ZMK_HID_CONSUMER_NKRO_SIZE 6
 
@@ -89,9 +89,9 @@ static const u8_t zmk_hid_report_desc[] = {
     /* REPORT_SIZE (1) */
     HID_GI_REPORT_SIZE,
     0x08,
-    /* REPORT_COUNT (ZMK_HID_KEYPAD_NKRO_SIZE) */
+    /* REPORT_COUNT (ZMK_HID_KEYBOARD_NKRO_SIZE) */
     HID_GI_REPORT_COUNT,
-    ZMK_HID_KEYPAD_NKRO_SIZE,
+    ZMK_HID_KEYBOARD_NKRO_SIZE,
     /* INPUT (Data,Ary,Abs) */
     HID_MI_INPUT,
     0x00,
@@ -146,15 +146,15 @@ static const u8_t zmk_hid_report_desc[] = {
 //     u8_t keys[6];
 // } __packed;
 
-struct zmk_hid_keypad_report_body {
+struct zmk_hid_keyboard_report_body {
     zmk_mod_flags modifiers;
     u8_t _reserved;
-    u8_t keys[ZMK_HID_KEYPAD_NKRO_SIZE];
+    u8_t keys[ZMK_HID_KEYBOARD_NKRO_SIZE];
 } __packed;
 
-struct zmk_hid_keypad_report {
+struct zmk_hid_keyboard_report {
     u8_t report_id;
-    struct zmk_hid_keypad_report_body body;
+    struct zmk_hid_keyboard_report_body body;
 } __packed;
 
 struct zmk_hid_consumer_report_body {
@@ -170,13 +170,13 @@ int zmk_hid_register_mod(zmk_mod modifier);
 int zmk_hid_unregister_mod(zmk_mod modifier);
 int zmk_hid_implicit_modifiers_press(zmk_mod_flags implicit_modifiers);
 int zmk_hid_implicit_modifiers_release();
-int zmk_hid_keypad_press(zmk_key key);
-int zmk_hid_keypad_release(zmk_key key);
-void zmk_hid_keypad_clear();
+int zmk_hid_keyboard_press(zmk_key key);
+int zmk_hid_keyboard_release(zmk_key key);
+void zmk_hid_keyboard_clear();
 
 int zmk_hid_consumer_press(zmk_key key);
 int zmk_hid_consumer_release(zmk_key key);
 void zmk_hid_consumer_clear();
 
-struct zmk_hid_keypad_report *zmk_hid_get_keypad_report();
+struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();

@@ -53,13 +53,13 @@ int zmk_endpoints_toggle() {
     return zmk_endpoints_select(new_endpoint);
 }
 
-static int send_keypad_report() {
-    struct zmk_hid_keypad_report *keypad_report = zmk_hid_get_keypad_report();
+static int send_keyboard_report() {
+    struct zmk_hid_keyboard_report *keyboard_report = zmk_hid_get_keyboard_report();
 
     switch (current_endpoint) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
     case ZMK_ENDPOINT_USB: {
-        int err = zmk_usb_hid_send_report((u8_t *)keypad_report, sizeof(*keypad_report));
+        int err = zmk_usb_hid_send_report((u8_t *)keyboard_report, sizeof(*keyboard_report));
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
         }
@@ -69,7 +69,7 @@ static int send_keypad_report() {
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
     case ZMK_ENDPOINT_BLE: {
-        int err = zmk_hog_send_keypad_report(&keypad_report->body);
+        int err = zmk_hog_send_keyboard_report(&keyboard_report->body);
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
         }
@@ -118,7 +118,7 @@ int zmk_endpoints_send_report(u8_t usage_page) {
     LOG_DBG("usage page 0x%02X", usage_page);
     switch (usage_page) {
     case HID_USAGE_KEY:
-        return send_keypad_report();
+        return send_keyboard_report();
     case HID_USAGE_CONSUMER:
         return send_consumer_report();
     default:
@@ -207,7 +207,7 @@ static enum zmk_endpoint get_selected_endpoint() {
 }
 
 static void disconnect_current_endpoint() {
-    zmk_hid_keypad_clear();
+    zmk_hid_keyboard_clear();
     zmk_hid_consumer_clear();
 
     zmk_endpoints_send_report(HID_USAGE_KEY);
