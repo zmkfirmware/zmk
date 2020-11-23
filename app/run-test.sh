@@ -4,15 +4,14 @@
 #
 # SPDX-License-Identifier: MIT
 #
-
 if [ -z "$1" ]; then
 	echo "Usage: ./run-test.sh <path to testcase>"
 	exit 1
 fi
 
 path="$1"
-if [ path = "all" ]; then
-	path = "tests"
+if [ $path = "all" ]; then
+	path="tests"
 fi
 
 testcases=$(find $path -name native_posix.keymap -exec dirname \{\} \;)
