@@ -35,17 +35,18 @@ If your board or shield does not have RGB underglow configured, refer to [Adding
 
 There are various Kconfig options used to configure the RGB underglow feature. These can all be set in the `.conf` file.
 
-| Option                               | Description                                    | Default |
-| ------------------------------------ | ---------------------------------------------- | ------- |
-| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP`  | Hue step in degrees of 360 used by RGB actions | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP`  | Saturation step in percent used by RGB actions | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP`  | Brightness step in percent used by RGB actions | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_START` | Default hue 0-359 in degrees                   | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_START` | Default saturation 0-100 in percent            | 100     |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_START` | Default brightness 0-100 in percent            | 100     |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SPD_START` | Default effect speed 1-5                       | 3       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START` | Default effect integer from the effect enum    | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_ON_START`  | Default on state                               | y       |
+| Option                               | Description                                     | Default |
+| ------------------------------------ | ----------------------------------------------- | ------- |
+| `CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER` | Underglow toggling also controls external power | y       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP`  | Hue step in degrees of 360 used by RGB actions  | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP`  | Saturation step in percent used by RGB actions  | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP`  | Brightness step in percent used by RGB actions  | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_START` | Default hue 0-359 in degrees                    | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_START` | Default saturation 0-100 in percent             | 100     |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_START` | Default brightness 0-100 in percent             | 100     |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SPD_START` | Default effect speed 1-5                        | 3       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START` | Default effect integer from the effect enum     | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_ON_START`  | Default on state                                | y       |
 
 ## Adding RGB Underglow to a Board
 
