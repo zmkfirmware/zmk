@@ -220,7 +220,6 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
 
         rc = read_cb(cb_arg, &state, sizeof(state));
         if (rc >= 0) {
-            k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
             return 0;
         }
 
@@ -268,9 +267,11 @@ static int zmk_rgb_underglow_init(struct device *_arg) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_register(&rgb_conf);
     k_delayed_work_init(&underglow_save_work, zmk_rgb_underglow_save_state_work);
-#else
-    k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
+
+    settings_load_subtree("rgb/underglow");
 #endif
+
+    k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
 
     return 0;
 }
