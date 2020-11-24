@@ -32,6 +32,7 @@ jobs:
           - quefrency_left
           - quefrency_right
           - nibble
+          - crbn
         include:
           - board: proton_c
             shield: clueboard_california

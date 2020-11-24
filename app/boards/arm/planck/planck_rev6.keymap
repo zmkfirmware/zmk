@@ -6,41 +6,43 @@
 		compatible = "zmk,keymap";
 
 		default_layer {
-// -----------------------------------------------------------------------------------------
-// |  TAB  |  Q   |  W   |  E   |  R   |  T   |   Y   |  U    |  I   |  O   |   P   | BSPC  |
-// |  ESC  |  A   |  S   |  D   |  F   |  G   |   H   |  J    |  K   |  L   |   ;   |  '    |
-// | SHIFT |  Z   |  X   |  C   |  V   |  B   |   N   |  M    |  ,   |  .   |   /   |  RET  |
-// | FN    | LGUI | LALT | LCTL | LOWR |     SPACE    |  RAIS | LARW | DARW | UARW  |  RARW |
+				// -----------------------------------------------------------------------------------------
+				// |  TAB  |  Q   |  W   |  E   |  R   |  T   |   Y   |  U    |  I   |  O   |   P   | BSPC  |
+				// |  ESC  |  A   |  S   |  D   |  F   |  G   |   H   |  J    |  K   |  L   |   ;   |  '    |
+				// | SHIFT |  Z   |  X   |  C   |  V   |  B   |   N   |  M    |  ,   |  .   |   /   |  RET  |
+				// | FN    | LGUI | LALT | LCTL | LOWR |     SPACE    |  RAIS | LARW | DARW | UARW  |  RARW |
 			bindings = <
-	&kp TAB  &kp Q    &kp W &kp E &kp R &kp T  &kp Y   &kp U  &kp I    &kp O   &kp P    &kp BSPC
-	&kp ESC  &kp A    &kp S &kp D &kp F &kp G  &kp H   &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
-	&kp LSFT &kp Z    &kp X &kp C &kp V &kp B  &kp N   &kp M  &kp CMMA &kp DOT &kp BSLH &kp RET
-	&trans   &kp LGUI &kp LALT &kp LCTL &mo 1 &trans &kp SPC &mo 2 &kp LARW &kp DARW &kp UARW &kp RARW
+				&kp TAB  &kp Q    &kp W &kp E &kp R &kp T  &kp Y   &kp U  &kp I    &kp O   &kp P    &kp BSPC
+				&kp ESC  &kp A    &kp S &kp D &kp F &kp G  &kp H   &kp J  &kp K    &kp L   &kp SCLN &kp QUOT
+				&kp LSFT &kp Z    &kp X &kp C &kp V &kp B  &kp N   &kp M  &kp CMMA &kp DOT &kp BSLH &kp RET
+				&trans   &kp LGUI &kp LALT &kp LCTL &mo 1 &trans &kp SPC &mo 2 &kp LARW &kp DARW &kp UARW &kp RARW
 			>;
 		};
 
-    lower { bindings = <
-		&kp LS(GRAV) &kp LS(NUM_1) &kp LS(NUM_2) &kp LS(NUM_3) &kp LS(NUM_4) &kp LS(NUM_5) &kp LS(NUM_6) &kp LS(NUM_7) &kp LS(NUM_8) &kp LS(NUM_9) &kp LS(NUM_0) &kp DEL
-    &kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp UNDS &kp PLUS &kp LABT &kp RABT &kp PIPE
-    &trans &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp LS(HASH) &kp LS(BSLH) &kp HOME &kp END &trans
-    &trans &trans &trans &trans &trans &trans &trans &mo 3 &kp M_NXT &kp M_VOLD &kp M_VOLU &kp M_PLY
-    >;
+    lower {
+			bindings = <
+				&kp LS(GRAV) &kp LS(NUM_1) &kp LS(NUM_2) &kp LS(NUM_3) &kp LS(NUM_4) &kp LS(NUM_5) &kp LS(NUM_6) &kp LS(NUM_7) &kp LS(NUM_8) &kp LS(NUM_9) &kp LS(NUM_0) &kp DEL
+				&kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp UNDS &kp PLUS &kp LABT &kp RABT &kp PIPE
+				&trans &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp LS(HASH) &kp LS(BSLH) &kp HOME &kp END &trans
+				&trans &trans &trans &trans &trans &trans &trans &mo 3 &kp M_NXT &kp M_VOLD &kp M_VOLU &kp M_PLY
+			>;
     };
 
-    raise { bindings = <
-       &kp GRAV &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 &kp BKSP
-       &kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp MINUS &kp EQL &kp LBKY &kp RBKT &kp BSLH
-       &trans &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp HASH &kp BSLH &kp PGUP &kp PGDN &trans
-       &trans &trans &trans &trans &mo 3 &trans &trans &trans &cp M_NXT &cp M_VOLD &cp M_VOLU &cp M_PLY
-    >;
+    raise {
+			bindings = <
+				&kp GRAV &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 &kp BKSP
+				&kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp MINUS &kp EQL &kp LBKY &kp RBKT &kp BSLH
+				&trans &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp HASH &kp BSLH &kp PGUP &kp PGDN &trans
+				&trans &trans &trans &trans &mo 3 &trans &trans &trans &cp M_NXT &cp M_VOLD &cp M_VOLU &cp M_PLY
+    	>;
     };
-		control { bindings = <
-       &reset &bootloader &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-			 &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-			 &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-       &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-    >;
+		control {
+			bindings = <
+				&reset &bootloader &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
+				&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
+				&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
+				&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
+    	>;
     };
   };
-
 };

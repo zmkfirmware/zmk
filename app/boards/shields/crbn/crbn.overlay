@@ -39,12 +39,4 @@
           , <&pro_micro_a 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
           ;
   };
-
-
-
-	bt_unpair_combo: bt_unpair_combo {
-		compatible = "zmk,bt-unpair-combo";
-		key-positions = <0 53>;
-	};
-
 };
