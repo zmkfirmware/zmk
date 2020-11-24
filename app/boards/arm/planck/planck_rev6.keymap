@@ -22,18 +22,18 @@
     lower {
 			bindings = <
 				&kp LS(GRAV) &kp LS(NUM_1) &kp LS(NUM_2) &kp LS(NUM_3) &kp LS(NUM_4) &kp LS(NUM_5) &kp LS(NUM_6) &kp LS(NUM_7) &kp LS(NUM_8) &kp LS(NUM_9) &kp LS(NUM_0) &kp DEL
-				&kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp UNDS &kp PLUS &kp LABT &kp RABT &kp PIPE
+				&kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp UNDER &kp PLUS &kp LABT &kp RABT &kp PIPE
 				&trans &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp LS(HASH) &kp LS(BSLH) &kp HOME &kp END &trans
-				&trans &trans &trans &trans &trans &trans &trans &mo 3 &kp M_NXT &kp M_VOLD &kp M_VOLU &kp M_PLY
+				&trans &trans &trans &trans &trans &trans &trans &mo 3 &kp M_NEXT &kp M_VOLD &kp M_VOLU &kp M_PLAY
 			>;
     };
 
     raise {
 			bindings = <
 				&kp GRAV &kp NUM_1 &kp NUM_2 &kp NUM_3 &kp NUM_4 &kp NUM_5 &kp NUM_6 &kp NUM_7 &kp NUM_8 &kp NUM_9 &kp NUM_0 &kp BKSP
-				&kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp MINUS &kp EQL &kp LBKY &kp RBKT &kp BSLH
+				&kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp MINUS &kp EQL &kp LBKT &kp RBKT &kp BSLH
 				&trans &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp HASH &kp BSLH &kp PGUP &kp PGDN &trans
-				&trans &trans &trans &trans &mo 3 &trans &trans &trans &cp M_NXT &cp M_VOLD &cp M_VOLU &cp M_PLY
+				&trans &trans &trans &trans &mo 3 &trans &trans &trans &cp M_NEXT &cp M_VOLD &cp M_VOLU &cp M_PLAY
     	>;
     };
 		control {
