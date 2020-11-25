@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/keys.h>
+
+&encoder_1_top_row {
+	status = "okay";
+};
+
+/ {
+	sensors {
+		compatible = "zmk,keymap-sensors";
+		sensors = <&encoder_1_top_row>;
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		
+		default_layer {
+			bindings = <
+								&kp KP_NUMLOCK  &kp KP_ASTERISK &kp KP_MINUS
+				&kp KP_NUMBER_7 &kp KP_NUMBER_8 &kp KP_NUMBER_9 &kp KP_PLUS
+				&kp KP_NUMBER_4 &kp KP_NUMBER_5 &kp KP_NUMBER_6 &kp &none
+				&kp KP_NUMBER_1 &kp KP_NUMBER_2 &kp KP_NUMBER_3 &lt 1 KP_ENTER
+				&none           &kp KP_NUMBER_0 &kp KP_DOT      &none
+			>;
+
+			sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
+		};
+
+		 func_layer {
+			 bindings = <
+								&none           &reset          &bootloader
+				&out OUT_TOG    &out OUT_USB    &out OUT_BLE    &none
+				&bt BT_SEL 0    &bt BT_PRV      &bt BT_NXT      &bt BT_CLR
+				&bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &tog 0
+				&kp C_MUTE      &none           &none           &none
+			 >;
+
+			 sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
+		 };
+	};
+};
