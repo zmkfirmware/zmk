@@ -54,6 +54,7 @@ jobs:
           - splitreus62_left
           - splitreus62_right
           - tg4x
+          - tidbit
         include:
           - board: dz60rgb_rev1
           - board: nrf52840_m2

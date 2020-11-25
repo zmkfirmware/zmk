@@ -35,6 +35,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [Boardsource 3x4 Macro](https://boardsource.xyz/store/5ecc2008eee64242946c98c1) (`boardsource3x4`)
 - [QAZ](https://www.cbkbd.com/product/qaz-keyboard-kit) (`qaz`)
 - [CRBN](https://keygem.store/collections/group-buys/products/group-buy-featherlight-40-kit) (`crbn`)
+- [tidbit](https://nullbits.co/tidbit/) (`tidbit`)
 
 ## Other Hardware
 
