@@ -153,25 +153,9 @@ sudo dnf install -y \
 </TabItem>
 <TabItem value="win">
 
-:::note
-Use `cmd.exe` with these instructions rather than PowerShell.
+:::danger
+Windows Users: Please use the VS Code & Docker development environment for developing ZMK on Windows.
 :::
-
-Chocolatey is recommended and used for the following instructions. You can manually install each of these applications and add them to your `PATH` if you don't want to use Chocolatey.
-
-1. [Install Chocolatey](https://chocolatey.org/install)
-2. Open `cmd.exe` as **Administrator**
-3. Run the following `choco` commands:
-   ```shell
-   choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
-   choco install ninja gperf python git
-   ```
-
-It is recommended to install `dfu-util` to avoid any later confusion while flashing devices. You can do this by running this command with chocolatey:
-
-```shell
-choco install dfu-util
-```
 
 </TabItem>
 <TabItem value="mac">
@@ -197,6 +181,10 @@ This setup leverages the same [image which is used by the GitHub action](https:/
 The docker container includes `west` and the compilation toolchain. If you're using docker and VS Code, you can skip right to [Source Code](#source-code).
 :::
 
+:::info
+If you're using the Docker container on Windows you can open a WSL2 environment and clone the zmk sources within WSL2 for a faster build process. The files will be available outside of the WSL2 enviornment at `\\wsl$` in explorer.
+:::
+
 </TabItem>
 </OsTabs>
 
@@ -212,28 +200,12 @@ West can be installed by using the `pip` python package manager. The [Zephyr™ 
 defaultValue="linux"
 values={[
 {label: 'Linux', value: 'linux'},
-{label: 'Windows', value: 'win'},
 ]}>
 <TabItem value = 'linux'>
 
 ```sh
 pip3 install --user -U west
 ```
-
-</TabItem>
-<TabItem value = 'win'>
-
-In `cmd.exe` as **Administrator**:
-
-```sh
-pip3 install -U west
-```
-
-:::note
-**For Windows, do not use the `--user` argument** that Linux uses otherwise `west` will be installed in a different location and the below instructions for adding Python `pip` will no longer apply.
-:::
-
-Once `west` is installed, close Command Prompt and open a new session as a **user** for the remainder of the instructions.
 
 </TabItem>
 </Tabs>
@@ -246,7 +218,6 @@ If you haven't done so yet, you may need to add the Python `pip` package directo
 defaultValue="linux"
 values={[
 {label: 'Linux', value: 'linux'},
-{label: 'Windows', value: 'win'},
 ]}>
 <TabItem value = 'linux'>
 Run the following commands:
@@ -255,13 +226,6 @@ Run the following commands:
 echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
-
-</TabItem>
-<TabItem value = 'win'>
-
-1. See the [Environment Variables](#environment-variables) section on how to get to the Environment Variables page.
-2. Under "System variables" select the "Path" variable. Click "Edit..." and then "New" to add the directory where your `west.exe` is located. By default this should be `C:\Python##\Scripts` where ## is your Python version number.
-3. Close Command Prompt and open a new session for the changes to take effect, or run `refreshenv`.
 
 </TabItem>
 </Tabs>
@@ -321,13 +285,6 @@ wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_
 ```
 
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
-
-</TabItem>
-<TabItem value="win">
-
-#### GNU ARM Embedded
-
-Since the Zephyr™ SDK is not available for Windows, we recommending following the [Zephyr documentation](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded) to install a GNU ARM Embedded build. Note the warnings regarding installing the toolchain into a path with spaces, and make sure to follow the steps to add the environment variables which are also summarized with screenshots in the [Environment Variables](#environment-variables) section below.
 
 </TabItem>
 <TabItem value="mac">
@@ -399,13 +356,6 @@ cd zmk
 ```
 
 </TabItem>
-<TabItem value="win">
-
-```sh
-cd zmk
-```
-
-</TabItem>
 
 <TabItem value="docker">
 
@@ -467,41 +417,10 @@ pip3 install --user -r zephyr/scripts/requirements-base.txt
 ### Environment Variables
 
 <Tabs
-defaultValue="win"
+defaultValue="other"
 values={[
-{label: 'Windows', value: 'win'},
 {label: 'Other OS', value: 'other'},
 ]}>
-<TabItem value = 'win'>
-
-#### For GNU ARM Embedded on Windows
-
-On Windows, only two environment variables need to be set for ZMK to build properly: `ZEPHYR_TOOLCHAIN_VARIANT` and `GNUARMEMB_TOOLCHAIN_PATH`.
-
-1. Open Start Menu and type 'env' to find the 'Edit the system environment variables' option. Open it.
-
-![Environment variables in Start Menu](../assets/env-var/start_menu.png)
-
-2. Click 'Environment Variables...'.
-
-![Environment variables button](../assets/env-var/env_var.png)
-
-3. Click "New..." under System variables to create a new system variable.
-
-![Environment variables menu](../assets/env-var/new_variable.png)
-
-4. Set the variable name to 'ZEPHYR_TOOLCHAIN_VARIANT' and value to 'gnuarmemb'. Click OK to save.
-
-![Adding Zephyr toolchain variable](../assets/env-var/zephyr_toolchain.png)
-
-5. Create another variable with variable name 'GNUARMEMB_TOOLCHAIN_PATH' and value set to wherever you installed your toolchain. **Make sure this path does not contain any spaces.** If it does, rename the folder and update here. Click OK to save.
-
-![Adding GNUARMEMB variable](../assets/env-var/gnuarmemb.png)
-
-6. Close Command Prompt and reopen, or run `refreshenv` to apply the changes.
-
-</TabItem>
-
 <TabItem value = 'other'>
 
 #### For Zephyr
