@@ -1,0 +1,16 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_HELIX_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Helix Left"
+
+endif
+
+if SHIELD_HELIX_RIGHT
+
+config ZMK_KEYBOARD_NAME
+    default "Helix Right"
+
+endif
