@@ -1,6 +1,6 @@
 ---
-title: Basic Setup
-sidebar_label: Basic Setup
+title: Native OS Setup
+sidebar_label: Native OS
 ---
 
 import Tabs from '@theme/Tabs';
@@ -15,7 +15,6 @@ values={[
 {label: 'macOS', value: 'mac'},
 {label: 'Raspberry OS', value: 'raspberryos'},
 {label: 'Fedora', value: 'fedora'},
-{label: 'VS Code & Docker', value: 'docker'},
 ]
 }>{props.children}</Tabs>);
 
@@ -186,19 +185,6 @@ brew install cmake ninja python3 ccache dtc git wget dfu-util
 ```
 
 </TabItem>
-<TabItem value="docker">
-
-This setup leverages the same [image which is used by the GitHub action](https://github.com/zmkfirmware/zephyr-west-action) for local development. Beyond the benefits of [dev/prod parity](https://12factor.net/dev-prod-parity), this approach is also the easiest to set up. No toolchain or dependencies are necessary when using Docker; the container image you'll be using already has the toolchain installed and set up to use.
-
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your operating system.
-2. Install [VS Code](https://code.visualstudio.com/)
-3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-
-:::info
-The docker container includes `west` and the compilation toolchain. If you're using docker and VS Code, you can skip right to [Source Code](#source-code).
-:::
-
-</TabItem>
 </OsTabs>
 
 ## Setup
@@ -355,116 +341,6 @@ The transient instructions can be used to setup the current shell, and the autom
 The transient instructions must be run to build firmware using the current shell.
 :::
 
-### Source Code
-
-Next, you'll need to clone the ZMK source repository if you haven't already. Navigate to the folder you would like to place your `zmk` directory in and run the following command:
-
-```
-git clone https://github.com/zmkfirmware/zmk.git
-```
-
-### Initialize & Update Zephyr Workspace
-
-Since ZMK is built as a Zephyr™ application, the next step is
-to use `west` to initialize and update your workspace. The ZMK
-Zephyr™ application is in the `app/` source directory:
-
-#### Step into the repository
-
-<OsTabs>
-<TabItem value="debian">
-
-```sh
-cd zmk
-```
-
-</TabItem>
-<TabItem value="raspberryos">
-
-```sh
-cd zmk
-```
-
-</TabItem>
-<TabItem value="fedora">
-
-```sh
-cd zmk
-```
-
-</TabItem>
-<TabItem value="mac">
-
-```sh
-cd zmk
-```
-
-</TabItem>
-<TabItem value="win">
-
-```sh
-cd zmk
-```
-
-</TabItem>
-
-<TabItem value="docker">
-
-Open the `zmk` checkout folder in VS Code. The repository includes a configuration for containerized development, so an alert will pop up:
-
-![VS Code Dev Container Configuration Alert](../assets/dev-setup/vscode_devcontainer.png)
-
-Click `Reopen in Container` in order to reopen the VS Code with the running container.
-
-The first time you do this on your machine, it will pull the docker image down from the registry and build the container. Subsequent launches are much faster!
-
-:::caution
-All subsequent steps must be performed from the VS Code terminal _inside_ the container.
-:::
-
-</TabItem>
-</OsTabs>
-
-#### Initialize West
-
-```sh
-west init -l app/
-```
-
-:::caution Command Not Found?
-If you encounter errors like `command not found: west` then your `PATH` environment variable is likely
-missing the Python 3 user packages directory. See the [West Build Command](#west-build-command)
-section again for links to how to do this
-:::
-
-#### Update To Fetch Modules
-
-```sh
-west update
-```
-
-:::tip
-This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
-:::
-
-:::info
-If you're using Docker, you're done with setup! You must restart the container at this point. The easiest way to do so is to close the VS Code window, verify that the container has stopped in Docker Dashboard, and reopen the container with VS Code.
-
-Once your container is restarted, proceed to [Building and Flashing](./development/build-flash.md).
-:::
-
-#### Export Zephyr™ Core
-
-```sh
-west zephyr-export
-```
-
-#### Install Zephyr Python Dependencies
-
-```sh
-pip3 install --user -r zephyr/scripts/requirements-base.txt
-```
-
 ### Environment Variables
 
 <Tabs
@@ -481,23 +357,23 @@ On Windows, only two environment variables need to be set for ZMK to build prope
 
 1. Open Start Menu and type 'env' to find the 'Edit the system environment variables' option. Open it.
 
-![Environment variables in Start Menu](../assets/env-var/start_menu.png)
+![Environment variables in Start Menu](../../assets/env-var/start_menu.png)
 
 2. Click 'Environment Variables...'.
 
-![Environment variables button](../assets/env-var/env_var.png)
+![Environment variables button](../../assets/env-var/env_var.png)
 
 3. Click "New..." under System variables to create a new system variable.
 
-![Environment variables menu](../assets/env-var/new_variable.png)
+![Environment variables menu](../../assets/env-var/new_variable.png)
 
 4. Set the variable name to 'ZEPHYR_TOOLCHAIN_VARIANT' and value to 'gnuarmemb'. Click OK to save.
 
-![Adding Zephyr toolchain variable](../assets/env-var/zephyr_toolchain.png)
+![Adding Zephyr toolchain variable](../../assets/env-var/zephyr_toolchain.png)
 
 5. Create another variable with variable name 'GNUARMEMB_TOOLCHAIN_PATH' and value set to wherever you installed your toolchain. **Make sure this path does not contain any spaces.** If it does, rename the folder and update here. Click OK to save.
 
-![Adding GNUARMEMB variable](../assets/env-var/gnuarmemb.png)
+![Adding GNUARMEMB variable](../../assets/env-var/gnuarmemb.png)
 
 6. Close Command Prompt and reopen, or run `refreshenv` to apply the changes.
 
@@ -553,3 +429,7 @@ cat ~/.zephyrrc >> ~/.zshrc
 </TabItem>
 
 </Tabs>
+
+:::info
+Once the above is setup you're ready to setup the ZMK sources as defined [here](/docs/development/setup/zmk)
+:::
