@@ -56,11 +56,11 @@ jobs:
             tools/
             zephyr/
             bootloader/
-          key: 2-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
           restore-keys: |
-            2-${{ runner.os }}-build-${{ env.cache-name }}-
-            2-${{ runner.os }}-build-
-            2-${{ runner.os }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: West Init
         uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
         id: west-init
