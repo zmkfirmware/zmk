@@ -42,6 +42,7 @@ module.exports = {
     ],
     Development: [
       "development/clean-room",
+      "development/documentation",
       "development/setup",
       "development/build-flash",
       "development/boards-shields-keymaps",
