@@ -1,10 +1,12 @@
 on:
   push:
     paths:
+      - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
   pull_request:
     paths:
+      - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
 
