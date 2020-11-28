@@ -20,7 +20,7 @@ extern struct ec11_data ec11_driver;
 LOG_MODULE_DECLARE(EC11, CONFIG_SENSOR_LOG_LEVEL);
 
 static inline void setup_int(struct device *dev, bool enable) {
-    struct ec11_data *data = dev->driver_data;
+    struct ec11_data *data = dev->data;
     const struct ec11_config *cfg = dev->config;
 
     LOG_DBG("enabled %s", (enable ? "true" : "false"));
@@ -66,7 +66,7 @@ static void ec11_b_gpio_callback(struct device *dev, struct gpio_callback *cb, u
 
 static void ec11_thread_cb(void *arg) {
     struct device *dev = arg;
-    struct ec11_data *drv_data = dev->driver_data;
+    struct ec11_data *drv_data = dev->data;
 
     drv_data->handler(dev, drv_data->trigger);
 
@@ -76,7 +76,7 @@ static void ec11_thread_cb(void *arg) {
 #ifdef CONFIG_EC11_TRIGGER_OWN_THREAD
 static void ec11_thread(int dev_ptr, int unused) {
     struct device *dev = INT_TO_POINTER(dev_ptr);
-    struct ec11_data *drv_data = dev->driver_data;
+    struct ec11_data *drv_data = dev->data;
 
     ARG_UNUSED(unused);
 
@@ -99,7 +99,7 @@ static void ec11_work_cb(struct k_work *work) {
 
 int ec11_trigger_set(struct device *dev, const struct sensor_trigger *trig,
                      sensor_trigger_handler_t handler) {
-    struct ec11_data *drv_data = dev->driver_data;
+    struct ec11_data *drv_data = dev->data;
 
     setup_int(dev, false);
 
@@ -114,7 +114,7 @@ int ec11_trigger_set(struct device *dev, const struct sensor_trigger *trig,
 }
 
 int ec11_init_interrupt(struct device *dev) {
-    struct ec11_data *drv_data = dev->driver_data;
+    struct ec11_data *drv_data = dev->data;
     const struct ec11_config *drv_cfg = dev->config;
 
     drv_data->dev = dev;
