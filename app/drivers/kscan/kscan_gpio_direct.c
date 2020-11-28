@@ -44,7 +44,7 @@ struct kscan_gpio_data {
 };
 
 static struct device **kscan_gpio_input_devices(struct device *dev) {
-    struct kscan_gpio_data *data = dev->driver_data;
+    struct kscan_gpio_data *data = dev->data;
     return data->inputs;
 }
 
@@ -116,12 +116,12 @@ static void kscan_gpio_timer_handler(struct k_timer *timer) {
 }
 
 static int kscan_gpio_direct_enable(struct device *dev) {
-    struct kscan_gpio_data *data = dev->driver_data;
+    struct kscan_gpio_data *data = dev->data;
     k_timer_start(&data->poll_timer, K_MSEC(10), K_MSEC(10));
     return 0;
 }
 static int kscan_gpio_direct_disable(struct device *dev) {
-    struct kscan_gpio_data *data = dev->driver_data;
+    struct kscan_gpio_data *data = dev->data;
     k_timer_stop(&data->poll_timer);
     return 0;
 }
@@ -129,7 +129,7 @@ static int kscan_gpio_direct_disable(struct device *dev) {
 #endif /* defined(CONFIG_ZMK_KSCAN_DIRECT_POLLING) */
 
 static int kscan_gpio_direct_configure(struct device *dev, kscan_callback_t callback) {
-    struct kscan_gpio_data *data = dev->driver_data;
+    struct kscan_gpio_data *data = dev->data;
     if (!callback) {
         return -EINVAL;
     }
@@ -138,7 +138,7 @@ static int kscan_gpio_direct_configure(struct device *dev, kscan_callback_t call
 }
 
 static int kscan_gpio_read(struct device *dev) {
-    struct kscan_gpio_data *data = dev->driver_data;
+    struct kscan_gpio_data *data = dev->data;
     const struct kscan_gpio_config *cfg = dev->config;
     uint32_t read_state = data->pin_state;
     bool submit_follow_up_read = false;
@@ -195,7 +195,7 @@ static const struct kscan_driver_api gpio_driver_api = {
     static struct kscan_gpio_data kscan_gpio_data_##n = {                                          \
         .inputs = {[INST_INPUT_LEN(n) - 1] = NULL}};                                               \
     static int kscan_gpio_init_##n(struct device *dev) {                                           \
-        struct kscan_gpio_data *data = dev->driver_data;                                           \
+        struct kscan_gpio_data *data = dev->data;                                                  \
         const struct kscan_gpio_config *cfg = dev->config;                                         \
         int err;                                                                                   \
         struct device **input_devices = kscan_gpio_input_devices(dev);                             \

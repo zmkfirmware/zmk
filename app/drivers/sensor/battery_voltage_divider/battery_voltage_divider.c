@@ -56,7 +56,7 @@ static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
 }
 
 static int bvd_sample_fetch(struct device *dev, enum sensor_channel chan) {
-    struct bvd_data *drv_data = dev->driver_data;
+    struct bvd_data *drv_data = dev->data;
     const struct bvd_config *drv_cfg = dev->config;
     struct adc_sequence *as = &drv_data->as;
 
@@ -114,7 +114,7 @@ static int bvd_sample_fetch(struct device *dev, enum sensor_channel chan) {
 }
 
 static int bvd_channel_get(struct device *dev, enum sensor_channel chan, struct sensor_value *val) {
-    struct bvd_data *drv_data = dev->driver_data;
+    struct bvd_data *drv_data = dev->data;
 
     switch (chan) {
     case SENSOR_CHAN_GAUGE_VOLTAGE:
@@ -140,7 +140,7 @@ static const struct sensor_driver_api bvd_api = {
 };
 
 static int bvd_init(struct device *dev) {
-    struct bvd_data *drv_data = dev->driver_data;
+    struct bvd_data *drv_data = dev->data;
     const struct bvd_config *drv_cfg = dev->config;
 
     drv_data->adc = device_get_binding(drv_cfg->io_channel.label);

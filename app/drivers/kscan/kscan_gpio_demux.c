@@ -69,7 +69,7 @@ struct kscan_gpio_item_config {
     /* IO/GPIO SETUP */                                                                            \
     /* gpio_input_devices are PHYSICAL IO devices */                                               \
     static struct device **kscan_gpio_input_devices_##n(struct device *dev) {                      \
-        struct kscan_gpio_data_##n *data = dev->driver_data;                                       \
+        struct kscan_gpio_data_##n *data = dev->data;                                              \
         return data->rows;                                                                         \
     }                                                                                              \
                                                                                                    \
@@ -80,7 +80,7 @@ struct kscan_gpio_item_config {
                                                                                                    \
     /* gpio_output_devices are PHYSICAL IO devices */                                              \
     static struct device **kscan_gpio_output_devices_##n(struct device *dev) {                     \
-        struct kscan_gpio_data_##n *data = dev->driver_data;                                       \
+        struct kscan_gpio_data_##n *data = dev->data;                                              \
         return data->cols;                                                                         \
     }                                                                                              \
                                                                                                    \
@@ -101,7 +101,7 @@ struct kscan_gpio_item_config {
     /* This is the core matrix_scan func */                                                        \
     static int kscan_gpio_read_##n(struct device *dev) {                                           \
         bool submit_follow_up_read = false;                                                        \
-        struct kscan_gpio_data_##n *data = dev->driver_data;                                       \
+        struct kscan_gpio_data_##n *data = dev->data;                                              \
         static bool read_state[INST_MATRIX_INPUTS(n)][INST_MATRIX_OUTPUTS(n)];                     \
         for (int o = 0; o < INST_MATRIX_OUTPUTS(n); o++) {                                         \
             /* Iterate over bits and set GPIOs accordingly */                                      \
@@ -153,7 +153,7 @@ struct kscan_gpio_item_config {
     /* KSCAN API configure function */                                                             \
     static int kscan_gpio_configure_##n(struct device *dev, kscan_callback_t callback) {           \
         LOG_DBG("KSCAN API configure");                                                            \
-        struct kscan_gpio_data_##n *data = dev->driver_data;                                       \
+        struct kscan_gpio_data_##n *data = dev->data;                                              \
         if (!callback) {                                                                           \
             return -EINVAL;                                                                        \
         }                                                                                          \
@@ -165,7 +165,7 @@ struct kscan_gpio_item_config {
     /* KSCAN API enable function */                                                                \
     static int kscan_gpio_enable_##n(struct device *dev) {                                         \
         LOG_DBG("KSCAN API enable");                                                               \
-        struct kscan_gpio_data_##n *data = dev->driver_data;                                       \
+        struct kscan_gpio_data_##n *data = dev->data;                                              \
         /* TODO: we might want a follow up to hook into the sleep state hooks in Zephyr, */        \
         /* and disable this timer when we enter a sleep state */                                   \
         k_timer_start(&data->poll_timer, K_MSEC(POLL_INTERVAL(n)), K_MSEC(POLL_INTERVAL(n)));      \
@@ -175,7 +175,7 @@ struct kscan_gpio_item_config {
     /* KSCAN API disable function */                                                               \
     static int kscan_gpio_disable_##n(struct device *dev) {                                        \
         LOG_DBG("KSCAN API disable");                                                              \
-        struct kscan_gpio_data_##n *data = dev->driver_data;                                       \
+        struct kscan_gpio_data_##n *data = dev->data;                                              \
         k_timer_stop(&data->poll_timer);                                                           \
         return 0;                                                                                  \
     };                                                                                             \
@@ -183,7 +183,7 @@ struct kscan_gpio_item_config {
     /* GPIO init function*/                                                                        \
     static int kscan_gpio_init_##n(struct device *dev) {                                           \
         LOG_DBG("KSCAN GPIO init");                                                                \
-        struct kscan_gpio_data_##n *data = dev->driver_data;                                       \
+        struct kscan_gpio_data_##n *data = dev->data;                                              \
         int err;                                                                                   \
         /* configure input devices*/                                                               \
         struct device **input_devices = kscan_gpio_input_devices_##n(dev);                         \
