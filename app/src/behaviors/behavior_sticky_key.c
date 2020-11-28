@@ -128,7 +128,7 @@ static int stop_timer(struct active_sticky_key *sticky_key) {
 static int on_sticky_key_binding_pressed(struct zmk_behavior_binding *binding,
                                          struct zmk_behavior_binding_event event) {
     struct device *dev = device_get_binding(binding->behavior_dev);
-    const struct behavior_sticky_key_config *cfg = dev->config_info;
+    const struct behavior_sticky_key_config *cfg = dev->config;
     struct active_sticky_key *sticky_key;
     sticky_key = find_sticky_key(event.position);
     if (sticky_key != NULL) {

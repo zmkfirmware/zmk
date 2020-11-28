@@ -86,7 +86,7 @@ static int kscan_gpio_config_interrupts(struct device **devices,
                             (data->rows)));                                                        \
     }                                                                                              \
     static const struct kscan_gpio_item_config *kscan_gpio_input_configs_##n(struct device *dev) { \
-        const struct kscan_gpio_config_##n *cfg = dev->config_info;                                \
+        const struct kscan_gpio_config_##n *cfg = dev->config;                                     \
         return ((                                                                                  \
             COND_CODE_0(DT_ENUM_IDX(DT_DRV_INST(n), diode_direction), (cfg->cols), (cfg->rows)))); \
     }                                                                                              \
@@ -97,7 +97,7 @@ static int kscan_gpio_config_interrupts(struct device **devices,
     }                                                                                              \
     static const struct kscan_gpio_item_config *kscan_gpio_output_configs_##n(                     \
         struct device *dev) {                                                                      \
-        const struct kscan_gpio_config_##n *cfg = dev->config_info;                                \
+        const struct kscan_gpio_config_##n *cfg = dev->config;                                     \
         return (                                                                                   \
             COND_CODE_0(DT_ENUM_IDX(DT_DRV_INST(n), diode_direction), (cfg->rows), (cfg->cols)));  \
     }                                                                                              \
