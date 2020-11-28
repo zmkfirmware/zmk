@@ -49,7 +49,7 @@ static struct device **kscan_gpio_input_devices(struct device *dev) {
 }
 
 static const struct kscan_gpio_item_config *kscan_gpio_input_configs(struct device *dev) {
-    const struct kscan_gpio_config *cfg = dev->config_info;
+    const struct kscan_gpio_config *cfg = dev->config;
     return cfg->inputs;
 }
 
@@ -72,7 +72,7 @@ struct kscan_gpio_irq_callback {
 };
 
 static int kscan_gpio_config_interrupts(struct device *dev, gpio_flags_t flags) {
-    const struct kscan_gpio_config *cfg = dev->config_info;
+    const struct kscan_gpio_config *cfg = dev->config;
     struct device **devices = kscan_gpio_input_devices(dev);
     const struct kscan_gpio_item_config *configs = kscan_gpio_input_configs(dev);
 
@@ -139,7 +139,7 @@ static int kscan_gpio_direct_configure(struct device *dev, kscan_callback_t call
 
 static int kscan_gpio_read(struct device *dev) {
     struct kscan_gpio_data *data = dev->driver_data;
-    const struct kscan_gpio_config *cfg = dev->config_info;
+    const struct kscan_gpio_config *cfg = dev->config;
     uint32_t read_state = data->pin_state;
     bool submit_follow_up_read = false;
     for (int i = 0; i < cfg->num_of_inputs; i++) {
@@ -196,7 +196,7 @@ static const struct kscan_driver_api gpio_driver_api = {
         .inputs = {[INST_INPUT_LEN(n) - 1] = NULL}};                                               \
     static int kscan_gpio_init_##n(struct device *dev) {                                           \
         struct kscan_gpio_data *data = dev->driver_data;                                           \
-        const struct kscan_gpio_config *cfg = dev->config_info;                                    \
+        const struct kscan_gpio_config *cfg = dev->config;                                         \
         int err;                                                                                   \
         struct device **input_devices = kscan_gpio_input_devices(dev);                             \
         for (int i = 0; i < cfg->num_of_inputs; i++) {                                             \

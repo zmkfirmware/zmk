@@ -21,7 +21,7 @@ LOG_MODULE_DECLARE(EC11, CONFIG_SENSOR_LOG_LEVEL);
 
 static inline void setup_int(struct device *dev, bool enable) {
     struct ec11_data *data = dev->driver_data;
-    const struct ec11_config *cfg = dev->config_info;
+    const struct ec11_config *cfg = dev->config;
 
     LOG_DBG("enabled %s", (enable ? "true" : "false"));
 
@@ -115,7 +115,7 @@ int ec11_trigger_set(struct device *dev, const struct sensor_trigger *trig,
 
 int ec11_init_interrupt(struct device *dev) {
     struct ec11_data *drv_data = dev->driver_data;
-    const struct ec11_config *drv_cfg = dev->config_info;
+    const struct ec11_config *drv_cfg = dev->config;
 
     drv_data->dev = dev;
     /* setup gpio interrupt */

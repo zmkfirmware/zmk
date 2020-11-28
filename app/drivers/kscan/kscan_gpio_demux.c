@@ -74,7 +74,7 @@ struct kscan_gpio_item_config {
     }                                                                                              \
                                                                                                    \
     static const struct kscan_gpio_item_config *kscan_gpio_input_configs_##n(struct device *dev) { \
-        const struct kscan_gpio_config_##n *cfg = dev->config_info;                                \
+        const struct kscan_gpio_config_##n *cfg = dev->config;                                     \
         return cfg->rows;                                                                          \
     }                                                                                              \
                                                                                                    \
@@ -86,7 +86,7 @@ struct kscan_gpio_item_config {
                                                                                                    \
     static const struct kscan_gpio_item_config *kscan_gpio_output_configs_##n(                     \
         struct device *dev) {                                                                      \
-        const struct kscan_gpio_config_##n *cfg = dev->config_info;                                \
+        const struct kscan_gpio_config_##n *cfg = dev->config;                                     \
         /* If row2col, rows = outputs & cols = inputs */                                           \
         return cfg->cols;                                                                          \
     }                                                                                              \
