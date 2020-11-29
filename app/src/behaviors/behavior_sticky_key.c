@@ -213,6 +213,8 @@ static int sticky_key_keycode_state_changed_listener(const struct zmk_event_head
                 sticky_key->modified_key_usage_page == ev->usage_page &&
                 sticky_key->modified_key_keycode == ev->keycode) {
                 release_sticky_key_behavior(sticky_key, ev->timestamp);
+                stop_timer(sticky_key);
+                clear_sticky_key(sticky_key);
             }
         }
     }
