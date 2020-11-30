@@ -127,9 +127,13 @@ static int on_sticky_key_binding_pressed(struct zmk_behavior_binding *binding,
                                          struct zmk_behavior_binding_event event) {
     struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_sticky_key_config *cfg = dev->config_info;
-
-    struct active_sticky_key *sticky_key =
-        store_sticky_key(event.position, binding->param1, binding->param2, cfg);
+    struct active_sticky_key *sticky_key;
+    sticky_key = find_sticky_key(event.position);
+    if (sticky_key != NULL) {
+        stop_timer(sticky_key);
+        release_sticky_key_behavior(sticky_key, event.timestamp);
+    }
+    sticky_key = store_sticky_key(event.position, binding->param1, binding->param2, cfg);
     if (sticky_key == NULL) {
         LOG_ERR("unable to store sticky key, did you press more than %d sticky_key?",
                 ZMK_BHV_STICKY_KEY_MAX_HELD);
