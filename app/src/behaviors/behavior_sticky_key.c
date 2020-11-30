@@ -53,7 +53,8 @@ struct active_sticky_key active_sticky_keys[ZMK_BHV_STICKY_KEY_MAX_HELD] = {};
 static struct active_sticky_key *store_sticky_key(u32_t position, u32_t param1, u32_t param2,
                                                   const struct behavior_sticky_key_config *config) {
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
-        if (active_sticky_keys[i].position != ZMK_BHV_STICKY_KEY_POSITION_NOT_USED) {
+        if (active_sticky_keys[i].position != ZMK_BHV_STICKY_KEY_POSITION_NOT_USED ||
+            active_sticky_keys[i].timer_is_cancelled) {
             continue;
         }
         active_sticky_keys[i].position = position;
@@ -76,7 +77,8 @@ static void clear_sticky_key(struct active_sticky_key *sticky_key) {
 
 static struct active_sticky_key *find_sticky_key(u32_t position) {
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
-        if (active_sticky_keys[i].position == position) {
+        if (active_sticky_keys[i].position == position &&
+            !active_sticky_keys[i].timer_is_cancelled) {
             return &active_sticky_keys[i];
         }
     }
@@ -191,9 +193,8 @@ static int sticky_key_keycode_state_changed_listener(const struct zmk_event_head
         // Release the sticky key if the timer should've run out in the meantime.
         if (sticky_key->release_at != 0 && ev->timestamp > sticky_key->release_at) {
             release_sticky_key_behavior(sticky_key, sticky_key->release_at);
-            if (stop_timer(sticky_key)) {
-                clear_sticky_key(sticky_key);
-            }
+            stop_timer(sticky_key);
+            clear_sticky_key(sticky_key);
             continue;
         }
 
@@ -230,10 +231,12 @@ void behavior_sticky_key_timer_handler(struct k_work *item) {
     if (sticky_key->position == ZMK_BHV_STICKY_KEY_POSITION_NOT_USED) {
         return;
     }
-    if (!sticky_key->timer_is_cancelled) {
+    if (sticky_key->timer_is_cancelled) {
+        sticky_key->timer_is_cancelled = false;
+    } else {
         release_sticky_key_behavior(sticky_key, k_uptime_get());
+        clear_sticky_key(sticky_key);
     }
-    clear_sticky_key(sticky_key);
 }
 
 static int behavior_sticky_key_init(struct device *dev) {
