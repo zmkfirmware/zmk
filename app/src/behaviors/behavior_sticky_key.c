@@ -234,7 +234,7 @@ void behavior_sticky_key_timer_handler(struct k_work *item) {
     if (sticky_key->timer_is_cancelled) {
         sticky_key->timer_is_cancelled = false;
     } else {
-        release_sticky_key_behavior(sticky_key, k_uptime_get());
+        release_sticky_key_behavior(sticky_key, sticky_key->release_at);
         clear_sticky_key(sticky_key);
     }
 }
