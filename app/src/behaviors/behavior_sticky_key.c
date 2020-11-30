@@ -53,21 +53,21 @@ static struct active_sticky_key *store_sticky_key(uint32_t position, uint32_t pa
                                                   uint32_t param2,
                                                   const struct behavior_sticky_key_config *config) {
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
-        if (active_sticky_keys[i].position != ZMK_BHV_STICKY_KEY_POSITION_NOT_USED ||
-        if (active_sticky_keys[i].position != ZMK_BHV_STICKY_KEY_POSITION_FREE ||
-            active_sticky_keys[i].timer_cancelled) {
+        struct active_sticky_key *const sticky_key = &active_sticky_keys[i];
+        if (sticky_key->position != ZMK_BHV_STICKY_KEY_POSITION_FREE ||
+            sticky_key->timer_cancelled) {
             continue;
         }
-        active_sticky_keys[i].position = position;
-        active_sticky_keys[i].param1 = param1;
-        active_sticky_keys[i].param2 = param2;
-        active_sticky_keys[i].config = config;
-        active_sticky_keys[i].release_at = 0;
-        active_sticky_keys[i].timer_cancelled = false;
-        active_sticky_keys[i].timer_started = false;
-        active_sticky_keys[i].modified_key_usage_page = 0;
-        active_sticky_keys[i].modified_key_keycode = 0;
-        return &active_sticky_keys[i];
+        sticky_key->position = position;
+        sticky_key->param1 = param1;
+        sticky_key->param2 = param2;
+        sticky_key->config = config;
+        sticky_key->release_at = 0;
+        sticky_key->timer_cancelled = false;
+        sticky_key->timer_started = false;
+        sticky_key->modified_key_usage_page = 0;
+        sticky_key->modified_key_keycode = 0;
+        return sticky_key;
     }
     return NULL;
 }
