@@ -1,19 +1,28 @@
 ---
-title: General Info
-sidebar_label: General Information
+title: Getting Started
+sidebar_label: Getting Started
 ---
 
 ## Environment Setup
 
-There are 2 ways to setup the zmk development environment: Docker+VSCode and Native OS. The Docker+VSCode approach is a self-contained development environment while Native OS approach will setup your local operating system for development.
+There are 2 ways to setup the zmk development environment: Docker+VS Code (Docker in the rest of the documentation) and using the operating system directly (native in the rest of the documentation). The Docker approach is a self-contained development environment while the native approach will setup your local operating system for development. The Docker approach is great for getting going quickly while the native approach is a bit faster but more difficult to setup initially.
 
-The Docker+VSCode approach is very straight forward to setup. The Native approach requires more up-front work but doesn't require installing Docker/VSCode and can be faster for development depending on your computer's hardware.
+Please see the [Docker](/docs/development/setup/docker-vscode) instructions or [native](/docs/development/setup/native) instructions to continue setup.
 
-The links in the navigation bar will outline the necessary steps for setting up both of these approaches.
-
-:::danger The Docker+VSCode environment will **NOT** run on arm CPUs. You must use the Native OS environment if using an arm CPU.
+:::danger
+The Docker environment will **NOT** run on arm CPUs like the Raspberry Pi. You must use the native environment if using an arm CPU.
 :::
 
 ## ZMK Sources Setup
 
-Once you've setup either the Docker+VSCode environment or Native OS environment you will need to setup the ZMK sources. Please see the [ZMK Sources](/docs/development/setup/zmk) section once you've setup your chosen environment.
+Once you've setup either the Docker environment or native environment you will need to setup the ZMK sources. Please see the [ZMK Sources](/docs/development/setup/zmk) section once you've setup your chosen environment.
+
+## Standard Conventions
+
+Throughout this documentation you will see commands like
+
+```
+sudo apt update
+```
+
+These commands should be run in a terminal such as Bash (Linux/macOS/Docker), PowerShell, or Command Prompt (Windows).

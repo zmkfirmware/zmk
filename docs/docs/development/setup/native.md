@@ -1,6 +1,6 @@
 ---
-title: Native OS Setup
-sidebar_label: Native OS
+title: Native Setup
+sidebar_label: Native
 ---
 
 import Tabs from '@theme/Tabs';

@@ -19,17 +19,19 @@ values={[
 ]
 }>{props.children}</Tabs>);
 
+:::caution Windows Users
+If you're using the Docker environment on Windows, you _must_ checkout the sources to a folder within `C:\Users\[your_user_here]` to avoid a potential permissions issue.
+
+If you're using the WSL2 native filesystem the sources should go under `~/` to avoid potential permissions issues.
+:::
+
 ### Source Code
 
-Next, you'll need to clone the ZMK source repository if you haven't already. Navigate to the folder you would like to place your `zmk` directory in and run the following command:
+Next, you'll need to clone the ZMK source repository if you haven't already. Open a terminal and navigate to the folder you would like to place your `zmk` directory in, then run the following command:
 
 ```
 git clone https://github.com/zmkfirmware/zmk.git
 ```
-
-:::caution
-If you're using the Docker+VSCode environment on Windows, you _must_ checkout the sources to a folder within `C:\Users\[your_user_here]` to avoid a potential permissions issue.
-:::
 
 ### Initialize & Update Zephyr Workspace
 
