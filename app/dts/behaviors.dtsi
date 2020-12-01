@@ -3,6 +3,7 @@
 #include <behaviors/none.dtsi>
 #include <behaviors/mod_tap.dtsi>
 #include <behaviors/layer_tap.dtsi>
+#include <behaviors/sticky_key.dtsi>
 #include <behaviors/momentary_layer.dtsi>
 #include <behaviors/toggle_layer.dtsi>
 #include <behaviors/reset.dtsi>

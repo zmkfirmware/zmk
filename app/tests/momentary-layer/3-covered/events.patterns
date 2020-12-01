@@ -1,0 +1,3 @@
+s/.*hid_listener_keycode/kp/p
+s/.*mo_keymap_binding/mo/p
+s/.*keymap_position_state_changed/kp_st/p

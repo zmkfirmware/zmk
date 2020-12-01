@@ -23,7 +23,7 @@ static int hid_listener_keycode_pressed(u8_t usage_page, u32_t keycode,
             implicit_modifiers);
     switch (usage_page) {
     case HID_USAGE_KEY:
-        err = zmk_hid_keypad_press(keycode);
+        err = zmk_hid_keyboard_press(keycode);
         if (err) {
             LOG_ERR("Unable to press keycode");
             return err;
@@ -48,7 +48,7 @@ static int hid_listener_keycode_released(u8_t usage_page, u32_t keycode,
             implicit_modifiers);
     switch (usage_page) {
     case HID_USAGE_KEY:
-        err = zmk_hid_keypad_release(keycode);
+        err = zmk_hid_keyboard_release(keycode);
         if (err) {
             LOG_ERR("Unable to release keycode");
             return err;

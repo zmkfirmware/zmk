@@ -1,5 +1,4 @@
 ---
-id: user-setup
 title: Installing ZMK
 sidebar_label: Installing ZMK
 ---
@@ -83,7 +82,7 @@ bash -c "$(wget https://zmkfirmware.dev/setup.sh -O -)" '' --wget
 <TabItem value="PowerShell">
 
 ```
-iex ((New-Object System.Net.WebClient).DownloadString('https://zmkfirmware.dev/setup.ps1'))"
+iex ((New-Object System.Net.WebClient).DownloadString('https://zmkfirmware.dev/setup.ps1'))
 ```
 
 </TabItem>
@@ -106,7 +105,7 @@ Pick an MCU board:
 :::note
 If you are building firmware for a new keyboard shield that is not included in the built-in
 list of shields, you can choose any shield from the list that is similar to yours to generate the repository,
-and edit / add necessary files according to the [guide for adding new keyboard shield](./dev-guide-new-shield.md).
+and edit / add necessary files according to the [guide for adding new keyboard shield](./development/new-shield).
 :::
 
 When prompted, enter the number for the corresponding keyboard shield you would like to target:
@@ -194,7 +193,7 @@ storage device. Once the flash is complete, the controller should automatically 
 
 ## Wirelessly Connecting Your Keyboard
 
-Connecting your keyboard wirelessly is the same as adding other Bluetooth devides: press the reset button and scan for devices. However, pairing and bonding is still currently being worked on to increase relability and ease of use. In addition, users have in general reported that Bluetooth pairing with computers tends to be quite finnicky. Try out the connection with your tablet or phone first, as those devices seem to work much more consistently. See [BLE Reset](./bond-reset.md) for help on resetting your MCUs if you're experiencing connection issues.
+Connecting your keyboard wirelessly is the same as adding other Bluetooth devides: press the reset button and scan for devices. However, pairing and bonding is still currently being worked on to increase relability and ease of use. In addition, users have in general reported that Bluetooth pairing with computers tends to be quite finnicky. Try out the connection with your tablet or phone first, as those devices seem to work much more consistently.
 
 ### Connecting Split Keyboard Halves
 

@@ -20,18 +20,10 @@ LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define ZMK_KSCAN_DEV DT_LABEL(ZMK_MATRIX_NODE_ID)
 
 void main(void) {
-    struct device *ext_power;
     LOG_INF("Welcome to ZMK!\n");
 
     if (zmk_kscan_init(ZMK_KSCAN_DEV) != 0) {
         return;
-    }
-
-    // Enable the external VCC output
-    ext_power = device_get_binding("EXT_POWER");
-    if (ext_power != NULL) {
-        const struct ext_power_api *ext_power_api = ext_power->driver_api;
-        ext_power_api->enable(ext_power);
     }
 
 #ifdef CONFIG_ZMK_DISPLAY

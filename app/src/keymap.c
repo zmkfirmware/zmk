@@ -130,14 +130,12 @@ int zmk_keymap_apply_position_state(int layer, u32_t position, bool pressed, s64
 }
 
 int zmk_keymap_position_state_changed(u32_t position, bool pressed, s64_t timestamp) {
+    if (pressed) {
+        zmk_keymap_active_behavior_layer[position] = zmk_keymap_layer_state;
+    }
     for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--) {
-        u32_t layer_state =
-            pressed ? zmk_keymap_layer_state : zmk_keymap_active_behavior_layer[position];
-        if (is_active_layer(layer, layer_state)) {
+        if (is_active_layer(layer, zmk_keymap_active_behavior_layer[position])) {
             int ret = zmk_keymap_apply_position_state(layer, position, pressed, timestamp);
-
-            zmk_keymap_active_behavior_layer[position] = zmk_keymap_layer_state;
-
             if (ret > 0) {
                 LOG_DBG("behavior processing to continue to next layer");
                 continue;
@@ -154,7 +152,7 @@ int zmk_keymap_position_state_changed(u32_t position, bool pressed, s64_t timest
 }
 
 #if ZMK_KEYMAP_HAS_SENSORS
-int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor) {
+int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor, s64_t timestamp) {
     for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= zmk_keymap_layer_default; layer--) {
         if (((zmk_keymap_layer_state & BIT(layer)) == BIT(layer) ||
              layer == zmk_keymap_layer_default) &&
@@ -173,7 +171,7 @@ int zmk_keymap_sensor_triggered(u8_t sensor_number, struct device *sensor) {
                 continue;
             }
 
-            ret = behavior_sensor_keymap_binding_triggered(binding, sensor);
+            ret = behavior_sensor_keymap_binding_triggered(binding, sensor, timestamp);
 
             if (ret > 0) {
                 LOG_DBG("behavior processing to continue to next layer");
@@ -199,7 +197,7 @@ int keymap_listener(const struct zmk_event_header *eh) {
 #if ZMK_KEYMAP_HAS_SENSORS
     } else if (is_sensor_event(eh)) {
         const struct sensor_event *ev = cast_sensor_event(eh);
-        return zmk_keymap_sensor_triggered(ev->sensor_number, ev->sensor);
+        return zmk_keymap_sensor_triggered(ev->sensor_number, ev->sensor, ev->timestamp);
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
     }
 

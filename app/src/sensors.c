@@ -48,6 +48,7 @@ static void zmk_sensors_trigger_handler(struct device *dev, struct sensor_trigge
     event = new_sensor_event();
     event->sensor_number = item->sensor_number;
     event->sensor = dev;
+    event->timestamp = k_uptime_get();
 
     ZMK_EVENT_RAISE(event);
 }

@@ -1,5 +1,4 @@
 ---
-id: faq
 title: FAQs
 sidebar_label: FAQs
 ---
@@ -76,6 +75,10 @@ To bring this brainless [shield](#what-is-a-shield) to life, you attach any MCU 
 Therefore in ZMK, [board](#what-is-a-board) and [shield](#what-is-a-shield) are considered two different (but related) entities so that it’s easier to mix and match them. They are combined during a ZMK build.
 
 Please note, many keyboards only have a single PCB which includes the “brains” (MCU) onboard. In ZMK, these have no [shield](#what-is-a-shield), only a [board](#what-is-a-board).
+
+### Does ZMK support wired split?
+
+Currently, ZMK only supports wireless split, but wired split is possible and we welcome contributions!
 
 ### What bootloader does ZMK use?
 

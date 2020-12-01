@@ -1,3 +1,6 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
 config ZMK_KSCAN_GPIO_DRIVER
 	bool "Enable GPIO kscan driver to simulate key presses"
 	default y

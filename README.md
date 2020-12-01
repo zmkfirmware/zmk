@@ -4,11 +4,10 @@
 [![Build](https://github.com/zmkfirmware/zmk/workflows/Build/badge.svg)](https://github.com/zmkfirmware/zmk/actions)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
-This project is a complete work in progress, with only basic things functioning. The goal is to explore a new MK firmware
-with a less restrictive license and better BLE support, built on top of the [Zephyr™ Project](https://www.zephyrproject.org/)
+[ZMK Firmware](https://zmkfirmware.dev/) is an open source (MIT) keyboard firmware built on the [Zephyr™ Project](https://www.zephyrproject.org/) Real Time Operating System (RTOS). ZMK's goal is to provide a modern, wireless, and powerful firmware free of licensing issues.
 
 Check out the website to learn more: https://zmkfirmware.dev/
 
 You can also come join our [ZMK Discord Server](https://zmkfirmware.dev/community/discord/invite)
 
-To review planned features, check out the [enhancement label](https://github.com/zmkfirmware/zmk/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) in GitHub. Please feel free to add 👍 to the issue description of any requests to upvote the feature.
+To review features, check out the [feature overview](https://zmkfirmware.dev/docs/). ZMK is under active development, and new features are listed with the [enhancement label](https://github.com/zmkfirmware/zmk/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) in GitHub. Please feel free to add 👍 to the issue description of any requests to upvote the feature.

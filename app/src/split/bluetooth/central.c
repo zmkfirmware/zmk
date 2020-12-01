@@ -187,19 +187,19 @@ static bool split_central_eir_found(struct bt_data *data, void *user_data) {
 
         for (i = 0; i < data->data_len; i += 16) {
             struct bt_le_conn_param *param;
-            struct bt_uuid uuid;
+            struct bt_uuid_128 uuid;
             int err;
 
-            if (!bt_uuid_create(&uuid, &data->data[i], 16)) {
+            if (!bt_uuid_create(&uuid.uuid, &data->data[i], 16)) {
                 LOG_ERR("Unable to load UUID");
                 continue;
             }
 
-            if (!bt_uuid_cmp(&uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID))) {
+            if (bt_uuid_cmp(&uuid.uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID))) {
                 char uuid_str[BT_UUID_STR_LEN];
                 char service_uuid_str[BT_UUID_STR_LEN];
 
-                bt_uuid_to_str(&uuid, uuid_str, sizeof(uuid_str));
+                bt_uuid_to_str(&uuid.uuid, uuid_str, sizeof(uuid_str));
                 bt_uuid_to_str(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID), service_uuid_str,
                                sizeof(service_uuid_str));
                 LOG_DBG("UUID %s does not match split UUID: %s", log_strdup(uuid_str),
