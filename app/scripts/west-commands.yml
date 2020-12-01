@@ -1,0 +1,9 @@
+# Copyright (c) 2020, ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+west-commands:
+  - file: scripts/west_commands/test.py
+    commands:
+      - name: test
+        class: Test
+        help: run ZMK testsuite

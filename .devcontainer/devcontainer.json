@@ -6,6 +6,9 @@
   "containerEnv": {"WORKSPACE_DIR": "${containerWorkspaceFolder}"},
   "settings": { 
 		"terminal.integrated.shell.linux": "/bin/bash"
-	},
+  },
+  "mounts": [
+    "type=volume,source=zmk-config,target=/workspaces/zmk-config"
+  ]
 }
 

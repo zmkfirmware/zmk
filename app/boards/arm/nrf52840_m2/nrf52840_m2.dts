@@ -12,9 +12,6 @@
 
 	chosen {
 		zephyr,code-partition = &code_partition;
-		//zephyr,console = &uart0;
-		//zephyr,bt-mon-uart = &uart0;
-		//zephyr,bt-c2h-uart = &uart0;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
 	};
@@ -37,6 +34,14 @@
 
 };
 
+&adc {
+	status = "okay";
+};
+
+&gpiote {
+	status = "okay";
+};
+
 &gpio0 {
 	status = "okay";
 };
@@ -46,13 +51,13 @@
 };
 
 &uart0 {
-	compatible = "nordic,nrf-uart";
+	compatible = "nordic,nrf-uarte";
 	status = "okay";
 	current-speed = <115200>;
-	tx-pin = <16>;
-	rx-pin = <15>;
-	rts-pin = <14>;
-	cts-pin = <13>;
+	tx-pin = <19>;
+	rx-pin = <21>;
+	rts-pin = <23>;
+	cts-pin = <25>;
 };
 
 &usbd {

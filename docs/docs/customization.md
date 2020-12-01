@@ -1,5 +1,4 @@
 ---
-id: customization
 title: Customizing ZMK/`zmk-config` folders
 sidebar_label: Customizing ZMK
 ---
@@ -27,7 +26,7 @@ various config settings that can be commented/uncommented to modify how your fir
 ## Keymap
 
 Once you have the basic user config completed, you can find the keymap file in `config/<shield>.keymap` and customize from there.
-Refer to the [Keymap](/docs/feature/keymaps) documentation to learn more.
+Refer to the [Keymap](/docs/features/keymaps) documentation to learn more.
 
 ## Publishing
 
@@ -40,7 +39,7 @@ If you need to, a review of [Learn The Basics Of Git In Under 10 Minutes](https:
 
 ## Building from a local `zmk` fork using `zmk-config`
 
-[As outlined here](dev-build-flash), firmware comes in the form of .uf2 files, which can be built locally using the command `west build`. Normally,
+[As outlined here](development/build-flash), firmware comes in the form of .uf2 files, which can be built locally using the command `west build`. Normally,
 `west build` will default to using the in-tree .keymap and .conf files found in your local copy of the `zmk` repository. However, you can append the command, `-DZMK_CONFIG="C:/the/absolute/path/config"` to `west build` in order to use the contents of your `zmk-config` folder instead of the
 default keyboard settings.
 **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**

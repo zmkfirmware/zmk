@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "jian.dtsi"
+
+&kscan0 {
+	col-gpios
+		= <&pro_micro_d  1 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_d  0 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_d  8 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_a  1 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_a  0 GPIO_ACTIVE_HIGH>
+		, <&pro_micro_d 16 GPIO_ACTIVE_HIGH>
+		;
+};

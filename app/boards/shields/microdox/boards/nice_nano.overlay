@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 &spi1 {
-	compatible = "nordic,nrf-spi";
+	compatible = "nordic,nrf-spim";
 	/* Cannot be used together with i2c0. */
 	status = "okay";
 	mosi-pin = <6>;

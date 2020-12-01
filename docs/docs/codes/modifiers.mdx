@@ -1,0 +1,46 @@
+---
+title: Modifiers
+sidebar_label: Modifiers
+hide_title: true
+---
+
+import OsLegend from "@site/src/components/codes/OsLegend";
+import ToastyContainer from "@site/src/components/codes/ToastyContainer";
+import Table from "@site/src/components/codes/Table";
+
+<OsLegend />
+<ToastyContainer />
+
+## Modifiers
+
+Modifiers are the special keyboard keys: _shift_, _alt_, _control_ & _GUI_.
+
+Modifiers can be used in two forms within ZMK:
+
+- Modifier [Keys](#modifier-keys) → `LEFT_SHIFT`
+- Modifier [Functions](#modifier-functions) → `LS(code)`
+
+<Table group="keyboard-modifiers" />
+
+### Modifier Keys
+
+These act like any other key code.
+
+- e.g. `&kp LEFT_GUI` pushes and releases the left GUI key.
+
+### Modifier Functions
+
+Modifier functions add one or more modifiers to a code.
+
+These functions take the form: `XX(code)`
+
+- Modifier functions apply a modifier to a code:
+  - `&kp LS(A)` = `LEFT_SHIFT`+`A` (a capitalized **A**).
+- They can be combined:
+  - `&kp LC(RA(B))` = `LEFT_CONTROL`+`RIGHT_ALT`+`B`
+- Some basic codes already include a modifier function in their definition:
+  - `DOLLAR` = `LS(NUMBER_4)`
+- There are left- and right-handed versions of each modifier (also see table above):
+  - `LS`, `LC`, `LA`, `LG`, `RS`, `RC`, `RA`, `RG`
+- Modified keys can safely be rolled-over. Modifier functions are released when another key is pressed.
+  - Press `&kp LS(A)`, then press `&kp B`, release `&kp LS(A)` and release `&kp B` results in **Ab**. Only the A is capitalized.

@@ -1,5 +1,8 @@
-
-#include <dt-bindings/zmk/hid_usage_pages.h>
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 / {
 	behaviors {

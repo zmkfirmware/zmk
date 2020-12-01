@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	behaviors {
+		sk: behavior_sticky_key {
+			compatible = "zmk,behavior-sticky-key";
+			label = "STICKY_KEY";
+			#binding-cells = <1>;
+			release-after-ms = <1000>;
+			bindings = <&kp>;
+		};
+		sl: behavior_sticky_layer {
+			compatible = "zmk,behavior-sticky-key";
+			label = "STICKY_LAYER";
+			#binding-cells = <1>;
+			release-after-ms = <1000>;
+			bindings = <&mo>;
+		};
+	};
+
+};
+

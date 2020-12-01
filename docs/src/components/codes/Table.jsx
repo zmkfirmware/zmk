@@ -19,7 +19,7 @@ function extractFootnoteIds(codes) {
     new Set(
       codes
         .flatMap(({ footnotes }) => Object.values(footnotes))
-        .map((refs) => (Array.isArray(refs) ? refs.flat() : refs))
+        .flatMap((refs) => (Array.isArray(refs) ? refs.flat() : refs))
     )
   );
 }

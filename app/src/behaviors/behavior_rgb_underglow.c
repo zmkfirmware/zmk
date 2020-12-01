@@ -48,8 +48,14 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     return -ENOTSUP;
 }
 
+static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
+                                      struct zmk_behavior_binding_event event) {
+    return 0;
+}
+
 static const struct behavior_driver_api behavior_rgb_underglow_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
+    .binding_released = on_keymap_binding_released,
 };
 
 DEVICE_AND_API_INIT(behavior_rgb_underglow, DT_INST_LABEL(0), behavior_rgb_underglow_init, NULL,

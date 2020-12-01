@@ -14,9 +14,6 @@
 
 	chosen {
 		zephyr,code-partition = &code_partition;
-		// zephyr,console = &uart0;
-		//zephyr,bt-mon-uart = &uart0;
-		//zephyr,bt-c2h-uart = &uart0;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
 	};
@@ -27,6 +24,12 @@
 			gpios = <&gpio0 42 GPIO_ACTIVE_HIGH>;
 			label = "Blue LED";
 		};
+	};
+
+	ext-power {
+		compatible = "zmk,ext-power-generic";
+		label = "EXT_POWER";
+		control-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
 	};
 
 	vbatt {
@@ -40,6 +43,10 @@
 };
 
 &adc {
+	status = "okay";
+};
+
+&gpiote {
 	status = "okay";
 };
 
@@ -61,10 +68,10 @@
 	compatible = "nordic,nrf-uarte";
 	status = "okay";
 	current-speed = <115200>;
-	tx-pin = <39>;
-	rx-pin = <34>;
-	rts-pin = <33>;
-	cts-pin = <12>;
+	tx-pin = <19>;
+	rx-pin = <21>;
+	rts-pin = <23>;
+	cts-pin = <25>;
 };
 
 &usbd {
