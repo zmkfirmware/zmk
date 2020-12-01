@@ -4,27 +4,19 @@
 #
 # SPDX-License-Identifier: MIT
 #
+
 if [ -z "$1" ]; then
 	echo "Usage: ./run-test.sh <path to testcase>"
 	exit 1
-fi
-
-path="$1"
-if [ $path = "all" ]; then
-	path="tests"
-fi
-
-testcases=$(find $path -name native_posix.keymap -exec dirname \{\} \;)
-num_cases=$(echo "$testcases" | wc -l)
-if [ $num_cases -gt 1 ]; then
+elif [ "$1" = "all" ]; then
 	echo "" > ./build/tests/pass-fail.log
-	echo "$testcases" | xargs -l -P 4 ./run-test.sh
+	find tests -name native_posix.keymap -exec dirname \{\} \; | xargs -l -P 4 ./run-test.sh
 	err=$?
 	sort -k2 ./build/tests/pass-fail.log
 	exit $err
 fi
 
-testcase="$path"
+testcase="$1"
 echo "Running $testcase:"
 
 west build -d build/$testcase -b native_posix -- -DZMK_CONFIG=$testcase > /dev/null 2>&1

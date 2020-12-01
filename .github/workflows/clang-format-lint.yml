@@ -1,9 +1,8 @@
-name: Clang Format
+name: clang-format-lint
 
 on:
   push:
     paths:
-      - ".github/workflows/clang-format-lint.yml"
       - "app/boards/**/*.c"
       - "app/include/**/*.h"
       - "app/src/**"
@@ -11,7 +10,6 @@ on:
       - "app/drivers/**/*.h"
   pull_request:
     paths:
-      - ".github/workflows/clang-format-lint.yml"
       - "app/boards/**/*.c"
       - "app/include/**/*.h"
       - "app/src/**"
@@ -21,6 +19,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: clang-format lint
+
     steps:
       - uses: actions/checkout@v2
       - uses: DoozyX/clang-format-lint-action@v0.9

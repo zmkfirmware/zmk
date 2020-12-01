@@ -30,5 +30,11 @@
 			;
 
 	};
+
+	bt_unpair_combo: bt_unpair_combo {
+		compatible = "zmk,bt-unpair-combo";
+		key-positions = <0 11>;
+	};
+
 };
 

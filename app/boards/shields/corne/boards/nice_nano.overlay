@@ -1,5 +1,5 @@
 &spi1 {
-	compatible = "nordic,nrf-spim";
+	compatible = "nordic,nrf-spi";
 	/* Cannot be used together with i2c0. */
 	status = "okay";
 	mosi-pin = <6>;

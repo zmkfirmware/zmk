@@ -404,7 +404,6 @@ static struct bt_conn_cb conn_callbacks = {
     .security_changed = security_changed,
 };
 
-/*
 static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey) {
     char addr[BT_ADDR_LE_STR_LEN];
 
@@ -412,7 +411,6 @@ static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey) {
 
     LOG_DBG("Passkey for %s: %06u", log_strdup(addr), passkey);
 }
-*/
 
 #ifdef CONFIG_ZMK_BLE_PASSKEY_ENTRY
 

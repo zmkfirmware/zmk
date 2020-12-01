@@ -1,6 +1,3 @@
-# Copyright (c) 2020 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
 mainmenu "ZMK Firmware"
 
 menu "ZMK"
@@ -187,10 +184,6 @@ if ZMK_RGB_UNDERGLOW
 config SPI
 	default y
 
-config ZMK_RGB_UNDERGLOW_EXT_POWER
-	bool "RGB underglow toggling also controls external power"
-	default y
-
 config ZMK_RGB_UNDERGLOW_HUE_STEP
 	int "RGB underglow hue step in degrees of 360"
 	default 10
@@ -224,7 +217,7 @@ config ZMK_RGB_UNDERGLOW_EFF_START
 	default 0
 
 config ZMK_RGB_UNDERGLOW_ON_START
-	bool "RGB underglow starts on by default"
+	bool "Whether RGB underglow starts on by default"
 	default y
 
 #ZMK_RGB_UNDERGLOW

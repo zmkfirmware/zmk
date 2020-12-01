@@ -10,13 +10,19 @@
 		default_layer {
 			bindings = <
 				&kp B &mo 1
-				&trans &trans>;
+				&kp D &kp G>;
 		};
 
-		layer_1 {
+		lower_layer {
 			bindings = <
 				&kp C_NEXT &trans
-				&trans &trans>;
+				&kp L  &kp J>;
+		};
+
+		raise_layer {
+			bindings = <
+				&kp W &kp U
+				&kp X  &kp M>;
 		};
 	};
 };

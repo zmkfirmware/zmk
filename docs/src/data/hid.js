@@ -4059,7 +4059,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["LEFT_CONTROL", "LCTRL", "LC(code)"],
+    names: ["LEFT_CONTROL", "LCTRL"],
     description: "Left Control",
     context: "Keyboard",
     clarify: false,
@@ -4080,7 +4080,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["LEFT_SHIFT", "LSHFT", "LS(code)"],
+    names: ["LEFT_SHIFT", "LSHFT"],
     description: "Left Shift ⇧",
     context: "Keyboard",
     clarify: false,
@@ -4101,7 +4101,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["LEFT_ALT", "LALT", "LA(code)"],
+    names: ["LEFT_ALT", "LALT"],
     description: "Left Alt",
     context: "Keyboard",
     clarify: false,
@@ -4125,7 +4125,6 @@ export default [
     names: [
       "LEFT_GUI",
       "LGUI",
-      "LG(code)",
       "LEFT_WIN",
       "LWIN",
       "LEFT_COMMAND",
@@ -4153,7 +4152,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["RIGHT_CONTROL", "RCTRL", "RC(code)"],
+    names: ["RIGHT_CONTROL", "RCTRL"],
     description: "Right Control",
     context: "Keyboard",
     clarify: false,
@@ -4174,7 +4173,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["RIGHT_SHIFT", "RSHFT", "RS(code)"],
+    names: ["RIGHT_SHIFT", "RSHFT"],
     description: "Right Shift ⇧",
     context: "Keyboard",
     clarify: false,
@@ -4195,7 +4194,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["RIGHT_ALT", "RALT", "RA(code)"],
+    names: ["RIGHT_ALT", "RALT"],
     description: "Right Alt",
     context: "Keyboard",
     clarify: false,
@@ -4219,7 +4218,6 @@ export default [
     names: [
       "RIGHT_GUI",
       "RGUI",
-      "RG(code)",
       "RIGHT_WIN",
       "RWIN",
       "RIGHT_COMMAND",

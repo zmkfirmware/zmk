@@ -15,7 +15,6 @@
 #include <logging/log.h>
 
 #include <drivers/led_strip.h>
-#include <drivers/ext_power.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -46,14 +45,34 @@ struct rgb_underglow_state {
     bool on;
 };
 
-static struct device *led_strip;
+struct device *led_strip;
 
-static struct led_rgb pixels[STRIP_NUM_PIXELS];
+struct led_rgb pixels[STRIP_NUM_PIXELS];
 
-static struct rgb_underglow_state state;
+struct rgb_underglow_state state;
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
-static struct device *ext_power;
+#if IS_ENABLED(CONFIG_SETTINGS)
+static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_cb, void *cb_arg) {
+    const char *next;
+    int rc;
+
+    if (settings_name_steq(name, "state", &next) && !next) {
+        if (len != sizeof(state)) {
+            return -EINVAL;
+        }
+
+        rc = read_cb(cb_arg, &state, sizeof(state));
+        if (rc >= 0) {
+            return 0;
+        }
+
+        return rc;
+    }
+
+    return -ENOENT;
+}
+
+struct settings_handler rgb_conf = {.name = "rgb/underglow", .h_set = rgb_settings_set};
 #endif
 
 static struct led_rgb hsb_to_rgb(struct led_hsb hsb) {
@@ -209,28 +228,6 @@ static void zmk_rgb_underglow_tick_handler(struct k_timer *timer) {
 K_TIMER_DEFINE(underglow_tick, zmk_rgb_underglow_tick_handler, NULL);
 
 #if IS_ENABLED(CONFIG_SETTINGS)
-static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_cb, void *cb_arg) {
-    const char *next;
-    int rc;
-
-    if (settings_name_steq(name, "state", &next) && !next) {
-        if (len != sizeof(state)) {
-            return -EINVAL;
-        }
-
-        rc = read_cb(cb_arg, &state, sizeof(state));
-        if (rc >= 0) {
-            return 0;
-        }
-
-        return rc;
-    }
-
-    return -ENOENT;
-}
-
-struct settings_handler rgb_conf = {.name = "rgb/underglow", .h_set = rgb_settings_set};
-
 static void zmk_rgb_underglow_save_state_work() {
     settings_save_one("rgb/underglow/state", &state, sizeof(state));
 }
@@ -247,13 +244,6 @@ static int zmk_rgb_underglow_init(struct device *_arg) {
         return -EINVAL;
     }
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
-    ext_power = device_get_binding("EXT_POWER");
-    if (ext_power == NULL) {
-        LOG_ERR("Unable to retrieve ext_power device: EXT_POWER");
-    }
-#endif
-
     state = (struct rgb_underglow_state){
         hue : CONFIG_ZMK_RGB_UNDERGLOW_HUE_START,
         saturation : CONFIG_ZMK_RGB_UNDERGLOW_SAT_START,
@@ -267,8 +257,6 @@ static int zmk_rgb_underglow_init(struct device *_arg) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_register(&rgb_conf);
     k_delayed_work_init(&underglow_save_work, zmk_rgb_underglow_save_state_work);
-
-    settings_load_subtree("rgb/underglow");
 #endif
 
     k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
@@ -310,22 +298,6 @@ int zmk_rgb_underglow_toggle() {
         return -ENODEV;
 
     state.on = !state.on;
-
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
-    if (ext_power != NULL) {
-        int rc;
-
-        if (state.on) {
-            rc = ext_power_enable(ext_power);
-        } else {
-            rc = ext_power_disable(ext_power);
-        }
-
-        if (rc != 0) {
-            LOG_ERR("Unable to toggle EXT_POWER: %d", rc);
-        }
-    }
-#endif
 
     if (state.on) {
         state.animation_step = 0;

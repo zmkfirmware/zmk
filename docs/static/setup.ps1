@@ -16,13 +16,13 @@ function Get-Choice-From-Options {
         }
 
         Write-Host "$($Options.length + 1)) Quit"
-        $selection = (Read-Host $Prompt) -as [int]
+        $selection = Read-Host $Prompt
 
         if ($selection -eq $Options.length + 1) {
             Write-Host "Goodbye!"
             exit 1
         }
-        elseif ($selection -le $Options.length -and $selection -gt 0) {
+        elseif ($selection -le $Options.length) {
             $choice = $($selection - 1)
             break
         }
@@ -91,11 +91,9 @@ Write-Host "Keyboard Shield Selection:"
 $prompt = "Pick a keyboard"
 
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
-
-$options = "Kyria", "Lily58", "Corne", "Splitreus62", "Sofle", "Iris", "Reviung41", "RoMac", "RoMac+", "makerdiary M60", "Microdox", "TG4X", "QAZ", "NIBBLE", "CRBN", "Jorne", "Jian"
-$names = "kyria", "lily58", "corne", "splitreus62", "sofle", "iris", "reviung41", "romac", "romac_plus", "m60", "microdox", "tg4x", "qaz", "nibble", "crbn", "jorne", "jian"
-$splits = "y", "y", "y", "y", "y", "y", "n", "n", "n", "n", "y", "n", "n", "n", "n", "y", "y"
-
+$options = "Kyria", "Lily58", "Corne", "Splitreus62", "Sofle", "Iris", "Reviung41", "RoMac", "RoMac+", "makerdiary M60", "Microdox", "TG4X", "QAZ", "NIBBLE", "CRBN"
+$names = "kyria", "lily58", "corne", "splitreus62", "sofle", "iris", "reviung41", "romac", "romac_plus", "m60", "microdox", "tg4x", "qaz", "nibble", "crbn"
+$splits = "y", "y", "y", "y", "y", "y", "n", "n", "n", "n", "y", "n", "n", "n", "n"
 
 $choice = Get-Choice-From-Options -Options $options -Prompt $prompt
 $shield_title = $($options[$choice])
