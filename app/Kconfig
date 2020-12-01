@@ -228,6 +228,10 @@ endmenu
 
 menu "Power Management"
 
+config ZMK_IDLE_TIMEOUT
+	int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
+	default 30000
+
 config ZMK_SLEEP
 	bool "Enable deep sleep support"
 	imply USB
@@ -242,7 +246,7 @@ choice SYS_PM_POLICY
 endchoice
 
 config ZMK_IDLE_SLEEP_TIMEOUT
-	int "Milliseconds to wait to sleep when going idle"
+	int "Milliseconds of inactivity before entering deep sleep"
 	default 900000
 
 #ZMK_SLEEP
