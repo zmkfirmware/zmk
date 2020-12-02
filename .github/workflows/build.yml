@@ -126,4 +126,5 @@ jobs:
         with:
           name: "${{ steps.variables.outputs.artifact-name }}-uf2"
           path: |
+            build/zephyr/zmk.hex
             build/zephyr/zmk.uf2
