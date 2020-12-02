@@ -91,5 +91,5 @@ jobs:
         uses: actions/upload-artifact@v2
         if: ${{ matrix.board != 'proton_c' }}
         with:
-          name: "${{ matrix.board }}-${{ matrix.shield }}-zmk-uf2"
+          name: "${{ matrix.board }}-${{ matrix.shield }}-zmk.uf2"
           path: build/zephyr/zmk.uf2
