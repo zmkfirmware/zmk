@@ -23,14 +23,14 @@ enum {
 };
 
 struct hids_info {
-    u16_t version; /* version number of base USB HID Specification */
-    u8_t code;     /* country HID Device hardware is localized for. */
-    u8_t flags;
+    uint16_t version; /* version number of base USB HID Specification */
+    uint8_t code;     /* country HID Device hardware is localized for. */
+    uint8_t flags;
 } __packed;
 
 struct hids_report {
-    u8_t id;   /* report id */
-    u8_t type; /* report type */
+    uint8_t id;   /* report id */
+    uint8_t type; /* report type */
 } __packed;
 
 static struct hids_info info = {
@@ -56,29 +56,29 @@ static struct hids_report consumer_input = {
 };
 
 static bool host_requests_notification = false;
-static u8_t ctrl_point;
-// static u8_t proto_mode;
+static uint8_t ctrl_point;
+// static uint8_t proto_mode;
 
 static ssize_t read_hids_info(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf,
-                              u16_t len, u16_t offset) {
+                              uint16_t len, uint16_t offset) {
     return bt_gatt_attr_read(conn, attr, buf, len, offset, attr->user_data,
                              sizeof(struct hids_info));
 }
 
 static ssize_t read_hids_report_ref(struct bt_conn *conn, const struct bt_gatt_attr *attr,
-                                    void *buf, u16_t len, u16_t offset) {
+                                    void *buf, uint16_t len, uint16_t offset) {
     return bt_gatt_attr_read(conn, attr, buf, len, offset, attr->user_data,
                              sizeof(struct hids_report));
 }
 
 static ssize_t read_hids_report_map(struct bt_conn *conn, const struct bt_gatt_attr *attr,
-                                    void *buf, u16_t len, u16_t offset) {
+                                    void *buf, uint16_t len, uint16_t offset) {
     return bt_gatt_attr_read(conn, attr, buf, len, offset, zmk_hid_report_desc,
                              sizeof(zmk_hid_report_desc));
 }
 
 static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
-                                      void *buf, u16_t len, u16_t offset) {
+                                      void *buf, uint16_t len, uint16_t offset) {
     struct zmk_hid_keyboard_report_body *report_body = &zmk_hid_get_keyboard_report()->body;
     return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
                              sizeof(struct zmk_hid_keyboard_report_body));
@@ -86,7 +86,7 @@ static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt
 
 static ssize_t read_hids_consumer_input_report(struct bt_conn *conn,
                                                const struct bt_gatt_attr *attr, void *buf,
-                                               u16_t len, u16_t offset) {
+                                               uint16_t len, uint16_t offset) {
     struct zmk_hid_consumer_report_body *report_body = &zmk_hid_get_consumer_report()->body;
     return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
                              sizeof(struct zmk_hid_consumer_report_body));
@@ -94,20 +94,20 @@ static ssize_t read_hids_consumer_input_report(struct bt_conn *conn,
 
 // static ssize_t write_proto_mode(struct bt_conn *conn,
 //                                 const struct bt_gatt_attr *attr,
-//                                 const void *buf, u16_t len, u16_t offset,
-//                                 u8_t flags)
+//                                 const void *buf, uint16_t len, uint16_t offset,
+//                                 uint8_t flags)
 // {
 //     printk("PROTO CHANGED\n");
 //     return 0;
 // }
 
-static void input_ccc_changed(const struct bt_gatt_attr *attr, u16_t value) {
+static void input_ccc_changed(const struct bt_gatt_attr *attr, uint16_t value) {
     host_requests_notification = (value == BT_GATT_CCC_NOTIFY) ? 1 : 0;
 }
 
 static ssize_t write_ctrl_point(struct bt_conn *conn, const struct bt_gatt_attr *attr,
-                                const void *buf, u16_t len, u16_t offset, u8_t flags) {
-    u8_t *value = attr->user_data;
+                                const void *buf, uint16_t len, uint16_t offset, uint8_t flags) {
+    uint8_t *value = attr->user_data;
 
     if (offset + len > sizeof(ctrl_point)) {
         return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);

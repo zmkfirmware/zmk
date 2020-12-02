@@ -16,7 +16,7 @@ struct zmk_event_type {
 
 struct zmk_event_header {
     const struct zmk_event_type *event;
-    u8_t last_listener_index;
+    uint8_t last_listener_index;
 };
 
 #define ZMK_EV_EVENT_HANDLED 1

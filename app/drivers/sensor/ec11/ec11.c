@@ -29,8 +29,8 @@ static int ec11_get_ab_state(struct device *dev) {
 static int ec11_sample_fetch(struct device *dev, enum sensor_channel chan) {
     struct ec11_data *drv_data = dev->driver_data;
     const struct ec11_config *drv_cfg = dev->config_info;
-    u8_t val;
-    s8_t delta;
+    uint8_t val;
+    int8_t delta;
 
     __ASSERT_NO_MSG(chan == SENSOR_CHAN_ALL || chan == SENSOR_CHAN_ROTATION);
 

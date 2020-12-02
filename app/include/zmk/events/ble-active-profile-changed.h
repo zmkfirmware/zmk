@@ -14,7 +14,7 @@
 
 struct ble_active_profile_changed {
     struct zmk_event_header header;
-    u8_t index;
+    uint8_t index;
     struct zmk_ble_profile *profile;
 };
 

@@ -12,23 +12,23 @@
 
 struct ec11_config {
     const char *a_label;
-    const u8_t a_pin;
-    const u8_t a_flags;
+    const uint8_t a_pin;
+    const uint8_t a_flags;
 
     const char *b_label;
-    const u8_t b_pin;
-    const u8_t b_flags;
+    const uint8_t b_pin;
+    const uint8_t b_flags;
 
-    const u8_t resolution;
+    const uint8_t resolution;
 };
 
 struct ec11_data {
     struct device *a;
     struct device *b;
-    u8_t ab_state;
-    s8_t pulses;
-    s8_t ticks;
-    s8_t delta;
+    uint8_t ab_state;
+    int8_t pulses;
+    int8_t ticks;
+    int8_t delta;
 
 #ifdef CONFIG_EC11_TRIGGER
     struct gpio_callback a_gpio_cb;

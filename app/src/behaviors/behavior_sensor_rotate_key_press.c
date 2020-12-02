@@ -19,10 +19,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static int behavior_sensor_rotate_key_press_init(struct device *dev) { return 0; };
 
 static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding, struct device *sensor,
-                                       s64_t timestamp) {
+                                       int64_t timestamp) {
     struct sensor_value value;
     int err;
-    u32_t keycode;
+    uint32_t keycode;
     LOG_DBG("inc keycode 0x%02X dec keycode 0x%02X", binding->param1, binding->param2);
 
     err = sensor_channel_get(sensor, SENSOR_CHAN_ROTATION, &value);

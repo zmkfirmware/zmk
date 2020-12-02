@@ -105,8 +105,8 @@ struct kscan_gpio_item_config {
         static bool read_state[INST_MATRIX_INPUTS(n)][INST_MATRIX_OUTPUTS(n)];                     \
         for (int o = 0; o < INST_MATRIX_OUTPUTS(n); o++) {                                         \
             /* Iterate over bits and set GPIOs accordingly */                                      \
-            for (u8_t bit = 0; bit < INST_DEMUX_GPIOS(n); bit++) {                                 \
-                u8_t state = (o & (0b1 << bit)) >> bit;                                            \
+            for (uint8_t bit = 0; bit < INST_DEMUX_GPIOS(n); bit++) {                              \
+                uint8_t state = (o & (0b1 << bit)) >> bit;                                         \
                 struct device *out_dev = kscan_gpio_output_devices_##n(dev)[bit];                  \
                 const struct kscan_gpio_item_config *out_cfg =                                     \
                     &kscan_gpio_output_configs_##n(dev)[bit];                                      \

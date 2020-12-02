@@ -123,8 +123,8 @@ static int kscan_gpio_config_interrupts(struct device **devices,
         }                                                                                          \
     }                                                                                              \
     static void kscan_gpio_set_matrix_state_##n(                                                   \
-        bool state[INST_MATRIX_ROWS(n)][INST_MATRIX_COLS(n)], u32_t input_index,                   \
-        u32_t output_index, bool value) {                                                          \
+        bool state[INST_MATRIX_ROWS(n)][INST_MATRIX_COLS(n)], uint32_t input_index,                \
+        uint32_t output_index, bool value) {                                                       \
         state[COND_CODE_0(DT_ENUM_IDX(DT_DRV_INST(n), diode_direction), (output_index),            \
                           (input_index))]                                                          \
              [COND_CODE_0(DT_ENUM_IDX(DT_DRV_INST(n), diode_direction), (input_index),             \

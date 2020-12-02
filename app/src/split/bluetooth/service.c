@@ -18,21 +18,21 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/split/bluetooth/service.h>
 
-static u8_t num_of_positions = ZMK_KEYMAP_LEN;
-static u8_t position_state[16];
+static uint8_t num_of_positions = ZMK_KEYMAP_LEN;
+static uint8_t position_state[16];
 
 static ssize_t split_svc_pos_state(struct bt_conn *conn, const struct bt_gatt_attr *attrs,
-                                   void *buf, u16_t len, u16_t offset) {
+                                   void *buf, uint16_t len, uint16_t offset) {
     return bt_gatt_attr_read(conn, attrs, buf, len, offset, &position_state,
                              sizeof(position_state));
 }
 
 static ssize_t split_svc_num_of_positions(struct bt_conn *conn, const struct bt_gatt_attr *attrs,
-                                          void *buf, u16_t len, u16_t offset) {
-    return bt_gatt_attr_read(conn, attrs, buf, len, offset, attrs->user_data, sizeof(u8_t));
+                                          void *buf, uint16_t len, uint16_t offset) {
+    return bt_gatt_attr_read(conn, attrs, buf, len, offset, attrs->user_data, sizeof(uint8_t));
 }
 
-static void split_svc_pos_state_ccc(const struct bt_gatt_attr *attr, u16_t value) {
+static void split_svc_pos_state_ccc(const struct bt_gatt_attr *attr, uint16_t value) {
     LOG_DBG("value %d", value);
 }
 
@@ -45,12 +45,12 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_DESCRIPTOR(BT_UUID_NUM_OF_DIGITALS, BT_GATT_PERM_READ, split_svc_num_of_positions, NULL,
                        &num_of_positions), );
 
-int zmk_split_bt_position_pressed(u8_t position) {
+int zmk_split_bt_position_pressed(uint8_t position) {
     WRITE_BIT(position_state[position / 8], position % 8, true);
     return bt_gatt_notify(NULL, &split_svc.attrs[1], &position_state, sizeof(position_state));
 }
 
-int zmk_split_bt_position_released(u8_t position) {
+int zmk_split_bt_position_released(uint8_t position) {
     WRITE_BIT(position_state[position / 8], position % 8, false);
     return bt_gatt_notify(NULL, &split_svc.attrs[1], &position_state, sizeof(position_state));
 }

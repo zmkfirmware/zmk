@@ -11,14 +11,14 @@
 
 struct layer_state_changed {
     struct zmk_event_header header;
-    u8_t layer;
+    uint8_t layer;
     bool state;
-    s64_t timestamp;
+    int64_t timestamp;
 };
 
 ZMK_EVENT_DECLARE(layer_state_changed);
 
-static inline struct layer_state_changed *create_layer_state_changed(u8_t layer, bool state) {
+static inline struct layer_state_changed *create_layer_state_changed(uint8_t layer, bool state) {
     struct layer_state_changed *ev = new_layer_state_changed();
     ev->layer = layer;
     ev->state = state;

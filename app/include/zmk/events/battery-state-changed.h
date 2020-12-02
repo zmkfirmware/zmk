@@ -12,7 +12,7 @@
 struct battery_state_changed {
     struct zmk_event_header header;
     // TODO: Other battery channels
-    u8_t state_of_charge;
+    uint8_t state_of_charge;
 };
 
 ZMK_EVENT_DECLARE(battery_state_changed);

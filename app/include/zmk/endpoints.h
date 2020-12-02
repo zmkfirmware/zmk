@@ -18,4 +18,4 @@ int zmk_endpoints_select(enum zmk_endpoint endpoint);
 int zmk_endpoints_toggle();
 enum zmk_endpoint zmk_endpoints_selected();
 
-int zmk_endpoints_send_report(u8_t usage_report);
+int zmk_endpoints_send_report(uint8_t usage_report);

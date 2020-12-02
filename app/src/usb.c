@@ -31,7 +31,7 @@ static const struct hid_ops ops = {
     .int_in_ready = in_ready_cb,
 };
 
-int zmk_usb_hid_send_report(const u8_t *report, size_t len) {
+int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
     switch (usb_status) {
     case USB_DC_SUSPEND:
         return usb_wakeup_request();
@@ -78,7 +78,7 @@ enum zmk_usb_conn_state zmk_usb_get_conn_state() {
     }
 }
 
-void usb_status_cb(enum usb_dc_status_code status, const u8_t *params) {
+void usb_status_cb(enum usb_dc_status_code status, const uint8_t *params) {
     usb_status = status;
     raise_usb_status_changed_event();
 };

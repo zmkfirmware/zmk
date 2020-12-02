@@ -19,7 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #if ZMK_KEYMAP_HAS_SENSORS
 
 struct sensors_data_item {
-    u8_t sensor_number;
+    uint8_t sensor_number;
     struct device *dev;
     struct sensor_trigger trigger;
 };
@@ -53,7 +53,7 @@ static void zmk_sensors_trigger_handler(struct device *dev, struct sensor_trigge
     ZMK_EVENT_RAISE(event);
 }
 
-static void zmk_sensors_init_item(const char *node, u8_t i, u8_t abs_i) {
+static void zmk_sensors_init_item(const char *node, uint8_t i, uint8_t abs_i) {
     LOG_DBG("Init %s at index %d with sensor_number %d", node, i, abs_i);
 
     sensors[i].dev = device_get_binding(node);
