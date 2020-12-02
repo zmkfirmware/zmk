@@ -29,6 +29,23 @@ static enum zmk_endpoint preferred_endpoint =
 
 static void update_current_endpoint();
 
+#if IS_ENABLED(CONFIG_SETTINGS)
+static void endpoints_save_preferred_work(struct k_work *work) {
+    settings_save_one("endpoints/preferred", &preferred_endpoint, sizeof(preferred_endpoint));
+}
+
+static struct k_delayed_work endpoints_save_work;
+#endif
+
+static int endpoints_save_preferred() {
+#if IS_ENABLED(CONFIG_SETTINGS)
+    k_delayed_work_cancel(&endpoints_save_work);
+    return k_delayed_work_submit(&endpoints_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+#else
+    return 0;
+#endif
+}
+
 int zmk_endpoints_select(enum zmk_endpoint endpoint) {
     LOG_DBG("Selected endpoint %d", endpoint);
 
@@ -38,9 +55,7 @@ int zmk_endpoints_select(enum zmk_endpoint endpoint) {
 
     preferred_endpoint = endpoint;
 
-#if IS_ENABLED(CONFIG_SETTINGS)
-    settings_save_one("endpoints/preferred", &preferred_endpoint, sizeof(preferred_endpoint));
-#endif
+    endpoints_save_preferred();
 
     update_current_endpoint();
 
@@ -165,6 +180,8 @@ static int zmk_endpoints_init(const struct device *_arg) {
         LOG_ERR("Failed to register the endpoints settings handler (err %d)", err);
         return err;
     }
+
+    k_delayed_work_init(&endpoints_save_work, endpoints_save_preferred_work);
 
     settings_load_subtree("endpoints");
 #endif
