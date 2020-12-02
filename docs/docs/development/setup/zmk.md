@@ -11,18 +11,14 @@ groupId="operating-systems"
 defaultValue="docker"
 values={[
 {label: 'VS Code & Docker', value: 'docker'},
-{label: 'Debian/Ubuntu', value: 'debian'},
-{label: 'macOS', value: 'mac'},
-{label: 'Windows', value: 'win'},
-{label: 'Raspberry OS', value: 'raspberryos'},
-{label: 'Fedora', value: 'fedora'},
+{label: 'Native', value: 'native'},
 ]
 }>{props.children}</Tabs>);
 
 :::caution Windows Users
 If you're using the Docker environment on Windows, you _must_ checkout the sources to a folder within `C:\Users\[your_user_here]` to avoid a potential permissions issue.
 
-If you're using the WSL2 native filesystem the sources should go under `~/` to avoid potential permissions issues.
+If you're using the WSL2 filesystem the sources should go under `~/` to avoid potential permissions issues.
 :::
 
 ### Source Code
@@ -58,35 +54,7 @@ All subsequent steps must be performed from the VS Code terminal _inside_ the co
 
 </TabItem>
 
-<TabItem value="debian">
-
-```sh
-cd zmk
-```
-
-</TabItem>
-<TabItem value="raspberryos">
-
-```sh
-cd zmk
-```
-
-</TabItem>
-<TabItem value="fedora">
-
-```sh
-cd zmk
-```
-
-</TabItem>
-<TabItem value="mac">
-
-```sh
-cd zmk
-```
-
-</TabItem>
-<TabItem value="win">
+<TabItem value="native">
 
 ```sh
 cd zmk
@@ -101,9 +69,9 @@ cd zmk
 west init -l app/
 ```
 
-:::caution Command Not Found? (Native OS)
+:::caution Command Not Found?
 If you encounter errors like `command not found: west` then your `PATH` environment variable is likely
-missing the Python 3 user packages directory. See the [West Build Command](#west-build-command)
+missing the Python 3 user packages directory. See the [Native setup](native/)
 section again for links to how to do this
 :::
 
@@ -124,6 +92,10 @@ west zephyr-export
 ```
 
 #### Install Zephyr Python Dependencies
+
+:::note
+This only need to be run when using the Native setup.
+:::
 
 ```sh
 pip3 install --user -r zephyr/scripts/requirements-base.txt

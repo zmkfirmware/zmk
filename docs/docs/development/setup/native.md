@@ -430,6 +430,6 @@ cat ~/.zephyrrc >> ~/.zshrc
 
 </Tabs>
 
-:::info
-Once the above is setup you're ready to setup the ZMK sources as defined [here](/docs/development/setup/zmk)
-:::
+## ZMK Sources Setup
+
+Once the above is setup you're ready to [set up the ZMK sources](/docs/development/setup/zmk).

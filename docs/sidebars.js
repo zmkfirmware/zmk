@@ -48,7 +48,7 @@ module.exports = {
         label: "Setup",
         collapsed: false,
         items: [
-          "development/setup/setup",
+          "development/setup/getting-started",
           "development/setup/docker-vscode",
           "development/setup/native",
           "development/setup/zmk",
