@@ -24,6 +24,8 @@ jobs:
           - boardsource3x4
           - corne_left
           - corne_right
+          - cradio_left
+          - cradio_right
           - iris_left
           - iris_right
           - jian_left
@@ -34,13 +36,21 @@ jobs:
           - kyria_right
           - lily58_left
           - lily58_right
+          - microdox_left
+          - microdox_right
           - nibble
+          - qaz
           - quefrency_left
           - quefrency_right
           - reviung41
           - romac
           - romac_plus
           - settings_reset
+          - sofle_left
+          - sofle_right
+          - splitreus62_left
+          - splitreus62_right
+          - tg4x
         include:
           - board: proton_c
             shield: clueboard_california
