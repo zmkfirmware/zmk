@@ -279,7 +279,7 @@ static int zmk_rgb_underglow_init(struct device *_arg) {
 int zmk_rgb_underglow_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
     k_delayed_work_cancel(&underglow_save_work);
-    return k_delayed_work_submit(&underglow_save_work, K_MINUTES(1));
+    return k_delayed_work_submit(&underglow_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
     return 0;
 #endif

@@ -297,6 +297,15 @@ config ZMK_KSCAN_COMPOSITE_DRIVER
 #KSCAN Settings
 endmenu
 
+if SETTINGS
+
+config ZMK_SETTINGS_SAVE_DEBOUNCE
+	int "Milliseconds to debounce settings saves"
+	default 60000
+
+#SETTINGS
+endif
+
 #Advanced
 endmenu
 
