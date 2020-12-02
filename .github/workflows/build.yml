@@ -76,11 +76,11 @@ jobs:
             tools/
             zephyr/
             bootloader/
-          key: 3-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          key: 4-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
           restore-keys: |
-            3-${{ runner.os }}-build-${{ env.cache-name }}-
-            3-${{ runner.os }}-build-
-            3-${{ runner.os }}-
+            4-${{ runner.os }}-build-${{ env.cache-name }}-
+            4-${{ runner.os }}-build-
+            4-${{ runner.os }}-
         timeout-minutes: 2
         continue-on-error: true
       - name: West init
