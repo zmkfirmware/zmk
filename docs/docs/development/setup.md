@@ -70,8 +70,7 @@ sudo apt install -y \
 ```
 
 :::note
-Ubuntu 18.04 LTS release packages a version of CMake that is too old. Please upgrade to Ubuntu 20.04 LTS
-or download and install CMake version 3.13.1 or newer manually.
+Recent LTS releases of Debian and Ubuntu may include outdated CMake versions. If the output of `cmake --version` is older than 3.15, upgrade your distribution (e.g., from Ubuntu 18.04 LTS to Ubuntu 20.04 LTS), or else install CMake version 3.15 or newer manually (e.g, from Debian backports or by building from source).
 :::
 </TabItem>
 <TabItem value="raspberryos">
