@@ -19,9 +19,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define ZMK_KSCAN_EVENT_STATE_RELEASED 1
 
 struct zmk_kscan_event {
-    u32_t row;
-    u32_t column;
-    u32_t state;
+    uint32_t row;
+    uint32_t column;
+    uint32_t state;
 };
 
 struct zmk_kscan_msg_processor {
@@ -30,7 +30,7 @@ struct zmk_kscan_msg_processor {
 
 K_MSGQ_DEFINE(zmk_kscan_msgq, sizeof(struct zmk_kscan_event), CONFIG_ZMK_KSCAN_EVENT_QUEUE_SIZE, 4);
 
-static void zmk_kscan_callback(struct device *dev, u32_t row, u32_t column, bool pressed) {
+static void zmk_kscan_callback(struct device *dev, uint32_t row, uint32_t column, bool pressed) {
     struct zmk_kscan_event ev = {
         .row = row,
         .column = column,
@@ -45,7 +45,7 @@ void zmk_kscan_process_msgq(struct k_work *item) {
 
     while (k_msgq_get(&zmk_kscan_msgq, &ev, K_NO_WAIT) == 0) {
         bool pressed = (ev.state == ZMK_KSCAN_EVENT_STATE_PRESSED);
-        u32_t position = zmk_matrix_transform_row_column_to_position(ev.row, ev.column);
+        uint32_t position = zmk_matrix_transform_row_column_to_position(ev.row, ev.column);
         struct position_state_changed *pos_ev;
         LOG_DBG("Row: %d, col: %d, position: %d, pressed: %s\n", ev.row, ev.column, position,
                 (pressed ? "true" : "false"));

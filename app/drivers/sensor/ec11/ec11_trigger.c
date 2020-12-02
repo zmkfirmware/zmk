@@ -36,7 +36,7 @@ static inline void setup_int(struct device *dev, bool enable) {
     }
 }
 
-static void ec11_a_gpio_callback(struct device *dev, struct gpio_callback *cb, u32_t pins) {
+static void ec11_a_gpio_callback(struct device *dev, struct gpio_callback *cb, uint32_t pins) {
     struct ec11_data *drv_data = CONTAINER_OF(cb, struct ec11_data, a_gpio_cb);
 
     LOG_DBG("");
@@ -50,7 +50,7 @@ static void ec11_a_gpio_callback(struct device *dev, struct gpio_callback *cb, u
 #endif
 }
 
-static void ec11_b_gpio_callback(struct device *dev, struct gpio_callback *cb, u32_t pins) {
+static void ec11_b_gpio_callback(struct device *dev, struct gpio_callback *cb, uint32_t pins) {
     struct ec11_data *drv_data = CONTAINER_OF(cb, struct ec11_data, b_gpio_cb);
 
     LOG_DBG("");

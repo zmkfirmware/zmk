@@ -29,28 +29,29 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define ZMK_BHV_STICKY_KEY_POSITION_NOT_USED ULONG_MAX
 
 struct behavior_sticky_key_config {
-    u32_t release_after_ms;
+    uint32_t release_after_ms;
     struct zmk_behavior_binding behavior;
 };
 
 struct active_sticky_key {
-    u32_t position;
-    u32_t param1;
-    u32_t param2;
+    uint32_t position;
+    uint32_t param1;
+    uint32_t param2;
     const struct behavior_sticky_key_config *config;
     // timer data.
     bool timer_started;
-    s64_t release_at;
+    int64_t release_at;
     struct k_delayed_work release_timer;
     bool timer_is_cancelled;
     // usage page and keycode for the key that is being modified by this sticky key
-    u8_t modified_key_usage_page;
-    u32_t modified_key_keycode;
+    uint8_t modified_key_usage_page;
+    uint32_t modified_key_keycode;
 };
 
 struct active_sticky_key active_sticky_keys[ZMK_BHV_STICKY_KEY_MAX_HELD] = {};
 
-static struct active_sticky_key *store_sticky_key(u32_t position, u32_t param1, u32_t param2,
+static struct active_sticky_key *store_sticky_key(uint32_t position, uint32_t param1,
+                                                  uint32_t param2,
                                                   const struct behavior_sticky_key_config *config) {
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
         if (active_sticky_keys[i].position != ZMK_BHV_STICKY_KEY_POSITION_NOT_USED ||
@@ -75,7 +76,7 @@ static void clear_sticky_key(struct active_sticky_key *sticky_key) {
     sticky_key->position = ZMK_BHV_STICKY_KEY_POSITION_NOT_USED;
 }
 
-static struct active_sticky_key *find_sticky_key(u32_t position) {
+static struct active_sticky_key *find_sticky_key(uint32_t position) {
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
         if (active_sticky_keys[i].position == position &&
             !active_sticky_keys[i].timer_is_cancelled) {
@@ -85,7 +86,8 @@ static struct active_sticky_key *find_sticky_key(u32_t position) {
     return NULL;
 }
 
-static inline int press_sticky_key_behavior(struct active_sticky_key *sticky_key, s64_t timestamp) {
+static inline int press_sticky_key_behavior(struct active_sticky_key *sticky_key,
+                                            int64_t timestamp) {
     struct zmk_behavior_binding binding = {
         .behavior_dev = sticky_key->config->behavior.behavior_dev,
         .param1 = sticky_key->param1,
@@ -99,7 +101,7 @@ static inline int press_sticky_key_behavior(struct active_sticky_key *sticky_key
 }
 
 static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_key,
-                                              s64_t timestamp) {
+                                              int64_t timestamp) {
     struct zmk_behavior_binding binding = {
         .behavior_dev = sticky_key->config->behavior.behavior_dev,
         .param1 = sticky_key->param1,
@@ -162,7 +164,7 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
     sticky_key->timer_started = true;
     sticky_key->release_at = event.timestamp + sticky_key->config->release_after_ms;
     // adjust timer in case this behavior was queued by a hold-tap
-    s32_t ms_left = sticky_key->release_at - k_uptime_get();
+    int32_t ms_left = sticky_key->release_at - k_uptime_get();
     if (ms_left > 0) {
         k_delayed_work_submit(&sticky_key->release_timer, K_MSEC(ms_left));
     }

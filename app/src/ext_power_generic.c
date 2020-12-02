@@ -21,8 +21,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct ext_power_generic_config {
     const char *label;
-    const u8_t pin;
-    const u8_t flags;
+    const uint8_t pin;
+    const uint8_t flags;
 };
 
 struct ext_power_generic_data {

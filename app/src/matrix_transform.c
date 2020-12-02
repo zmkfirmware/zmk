@@ -15,12 +15,12 @@
     [(KT_ROW(DT_PROP_BY_IDX(ZMK_KEYMAP_TRANSFORM_NODE, map, i)) * ZMK_MATRIX_COLS) +               \
         KT_COL(DT_PROP_BY_IDX(ZMK_KEYMAP_TRANSFORM_NODE, map, i))] = i,
 
-static u32_t transform[] = {UTIL_LISTIFY(ZMK_KEYMAP_LEN, _TRANSFORM_ENTRY, 0)};
+static uint32_t transform[] = {UTIL_LISTIFY(ZMK_KEYMAP_LEN, _TRANSFORM_ENTRY, 0)};
 
 #endif
 
-u32_t zmk_matrix_transform_row_column_to_position(u32_t row, u32_t column) {
-    u32_t matrix_index;
+uint32_t zmk_matrix_transform_row_column_to_position(uint32_t row, uint32_t column) {
+    uint32_t matrix_index;
 
 #if DT_NODE_HAS_PROP(ZMK_KEYMAP_TRANSFORM_NODE, col_offset)
     column += DT_PROP(ZMK_KEYMAP_TRANSFORM_NODE, col_offset);

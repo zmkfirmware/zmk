@@ -36,7 +36,7 @@ void set_status_symbol(lv_obj_t *label) {
     enum zmk_endpoint selected_endpoint = zmk_endpoints_selected();
     bool active_profile_connected = zmk_ble_active_profile_is_connected();
     bool active_profie_bonded = !zmk_ble_active_profile_is_open();
-    u8_t active_profile_index = zmk_ble_active_profile_index();
+    uint8_t active_profile_index = zmk_ble_active_profile_index();
     char text[6] = {};
 
     switch (selected_endpoint) {

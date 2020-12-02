@@ -61,7 +61,7 @@ static int send_keyboard_report() {
     switch (current_endpoint) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
     case ZMK_ENDPOINT_USB: {
-        int err = zmk_usb_hid_send_report((u8_t *)keyboard_report, sizeof(*keyboard_report));
+        int err = zmk_usb_hid_send_report((uint8_t *)keyboard_report, sizeof(*keyboard_report));
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
         }
@@ -91,7 +91,7 @@ static int send_consumer_report() {
     switch (current_endpoint) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
     case ZMK_ENDPOINT_USB: {
-        int err = zmk_usb_hid_send_report((u8_t *)consumer_report, sizeof(*consumer_report));
+        int err = zmk_usb_hid_send_report((uint8_t *)consumer_report, sizeof(*consumer_report));
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
         }
@@ -115,7 +115,7 @@ static int send_consumer_report() {
     }
 }
 
-int zmk_endpoints_send_report(u8_t usage_page) {
+int zmk_endpoints_send_report(uint8_t usage_page) {
 
     LOG_DBG("usage page 0x%02X", usage_page);
     switch (usage_page) {

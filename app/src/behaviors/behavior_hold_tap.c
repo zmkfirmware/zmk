@@ -49,11 +49,11 @@ struct behavior_hold_tap_config {
 
 // this data is specific for each hold-tap
 struct active_hold_tap {
-    s32_t position;
+    int32_t position;
     // todo: move these params into the config->behaviors->tap and
-    u32_t param_hold;
-    u32_t param_tap;
-    s64_t timestamp;
+    uint32_t param_hold;
+    uint32_t param_tap;
+    int64_t timestamp;
     bool is_decided;
     bool is_hold;
     const struct behavior_hold_tap_config *config;
@@ -81,7 +81,7 @@ static int capture_event(const struct zmk_event_header *event) {
     return -ENOMEM;
 }
 
-static struct position_state_changed *find_captured_keydown_event(u32_t position) {
+static struct position_state_changed *find_captured_keydown_event(uint32_t position) {
     struct position_state_changed *last_match = NULL;
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
         const struct zmk_event_header *eh = captured_events[i];
@@ -155,7 +155,7 @@ static void release_captured_events() {
     }
 }
 
-static struct active_hold_tap *find_hold_tap(u32_t position) {
+static struct active_hold_tap *find_hold_tap(uint32_t position) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
         if (active_hold_taps[i].position == position) {
             return &active_hold_taps[i];
@@ -164,8 +164,8 @@ static struct active_hold_tap *find_hold_tap(u32_t position) {
     return NULL;
 }
 
-static struct active_hold_tap *store_hold_tap(u32_t position, u32_t param_hold, u32_t param_tap,
-                                              s64_t timestamp,
+static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_hold,
+                                              uint32_t param_tap, int64_t timestamp,
                                               const struct behavior_hold_tap_config *config) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
         if (active_hold_taps[i].position != ZMK_BHV_HOLD_TAP_POSITION_NOT_USED) {
@@ -326,7 +326,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
 
     // if this behavior was queued we have to adjust the timer to only
     // wait for the remaining time.
-    s32_t tapping_term_ms_left = (hold_tap->timestamp + cfg->tapping_term_ms) - k_uptime_get();
+    int32_t tapping_term_ms_left = (hold_tap->timestamp + cfg->tapping_term_ms) - k_uptime_get();
     if (tapping_term_ms_left > 0) {
         k_delayed_work_submit(&hold_tap->work, K_MSEC(tapping_term_ms_left));
     }

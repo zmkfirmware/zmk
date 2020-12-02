@@ -11,9 +11,9 @@
 
 struct position_state_changed {
     struct zmk_event_header header;
-    u32_t position;
+    uint32_t position;
     bool state;
-    s64_t timestamp;
+    int64_t timestamp;
 };
 
 ZMK_EVENT_DECLARE(position_state_changed);

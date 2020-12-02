@@ -18,7 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 struct kscan_mock_data {
     kscan_callback_t callback;
 
-    u32_t event_index;
+    uint32_t event_index;
     struct k_delayed_work work;
     struct device *dev;
 };
@@ -45,14 +45,14 @@ static int kscan_mock_configure(struct device *dev, kscan_callback_t callback) {
 
 #define MOCK_INST_INIT(n)                                                                          \
     struct kscan_mock_config_##n {                                                                 \
-        u32_t events[DT_INST_PROP_LEN(n, events)];                                                 \
+        uint32_t events[DT_INST_PROP_LEN(n, events)];                                              \
         bool exit_after;                                                                           \
     };                                                                                             \
     static void kscan_mock_schedule_next_event_##n(struct device *dev) {                           \
         struct kscan_mock_data *data = dev->driver_data;                                           \
         const struct kscan_mock_config_##n *cfg = dev->config_info;                                \
         if (data->event_index < DT_INST_PROP_LEN(n, events)) {                                     \
-            u32_t ev = cfg->events[data->event_index];                                             \
+            uint32_t ev = cfg->events[data->event_index];                                          \
             LOG_DBG("delaying next keypress: %d", ZMK_MOCK_MSEC(ev));                              \
             k_delayed_work_submit(&data->work, K_MSEC(ZMK_MOCK_MSEC(ev)));                         \
         } else if (cfg->exit_after) {                                                              \
@@ -63,7 +63,7 @@ static int kscan_mock_configure(struct device *dev, kscan_callback_t callback) {
     static void kscan_mock_work_handler_##n(struct k_work *work) {                                 \
         struct kscan_mock_data *data = CONTAINER_OF(work, struct kscan_mock_data, work);           \
         const struct kscan_mock_config_##n *cfg = data->dev->config_info;                          \
-        u32_t ev = cfg->events[data->event_index];                                                 \
+        uint32_t ev = cfg->events[data->event_index];                                              \
         LOG_DBG("ev %u row %d column %d state %d\n", ev, ZMK_MOCK_ROW(ev), ZMK_MOCK_COL(ev),       \
                 ZMK_MOCK_IS_PRESS(ev));                                                            \
         data->callback(data->dev, ZMK_MOCK_ROW(ev), ZMK_MOCK_COL(ev), ZMK_MOCK_IS_PRESS(ev));      \

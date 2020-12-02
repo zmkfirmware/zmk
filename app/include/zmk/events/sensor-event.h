@@ -12,9 +12,9 @@
 
 struct sensor_event {
     struct zmk_event_header header;
-    u8_t sensor_number;
+    uint8_t sensor_number;
     struct device *sensor;
-    s64_t timestamp;
+    int64_t timestamp;
 };
 
 ZMK_EVENT_DECLARE(sensor_event);

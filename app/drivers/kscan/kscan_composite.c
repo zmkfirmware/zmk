@@ -17,8 +17,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct kscan_composite_child_config {
     char *label;
-    u8_t row_offset;
-    u8_t column_offset;
+    uint8_t row_offset;
+    uint8_t column_offset;
 };
 
 #define CHILD_CONFIG(inst)                                                                         \
@@ -55,7 +55,7 @@ static int kscan_composite_disable_callback(struct device *dev) {
     return 0;
 }
 
-static void kscan_composite_child_callback(struct device *child_dev, u32_t row, u32_t column,
+static void kscan_composite_child_callback(struct device *child_dev, uint32_t row, uint32_t column,
                                            bool pressed) {
     // TODO: Ideally we can get this passed into our callback!
     struct device *dev = device_get_binding(DT_INST_LABEL(0));
