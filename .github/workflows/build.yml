@@ -91,9 +91,17 @@ jobs:
         id: west-build
         with:
           args: 'build "-s app -b ${{ matrix.board }} -- -DSHIELD=${{ matrix.shield }}"'
+      - name: Check for uf2
+        id: uf2-guard
+        run: |
+          UF2_FILE_EXISTS=
+          if [ -e "build/zephyr/zmk.uf2" ]; then
+            UF2_FILE_EXISTS=true
+          fi
+          echo ::set-output name=exists::${UF2_FILE_EXISTS}
       - name: Archive build
         uses: actions/upload-artifact@v2
-        if: ${{ matrix.board != 'proton_c' }}
+        if: ${{ steps.uf2-guard.outputs.exists }}
         with:
           name: "${{ matrix.board }}-${{ matrix.shield }}-zmk-uf2"
           path: build/zephyr/zmk.uf2
