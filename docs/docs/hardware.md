@@ -34,6 +34,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [RoMac v2](https://mechboards.co.uk/shop/kits/romac-macro-pad/) (`romac`)
 - [Boardsource 3x4 Macro](https://boardsource.xyz/store/5ecc2008eee64242946c98c1) (`boardsource3x4`)
 - [QAZ](https://www.cbkbd.com/product/qaz-keyboard-kit) (`qaz`)
+- [CRBN](https://keygem.store/collections/group-buys/products/group-buy-featherlight-40-kit) (`crbn`)
 
 ## Other Hardware
 
