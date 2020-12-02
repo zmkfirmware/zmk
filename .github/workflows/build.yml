@@ -16,31 +16,31 @@ jobs:
     strategy:
       matrix:
         board:
-          - proton_c
-          - nice_nano
           - bluemicro840_v1
+          - nice_nano
           - nrfmicro_13
+          - proton_c
         shield:
           - boardsource3x4
           - corne_left
           - corne_right
+          - iris_left
+          - iris_right
+          - jian_left
+          - jian_right
+          - jorne_left
+          - jorne_right
           - kyria_left
           - kyria_right
           - lily58_left
           - lily58_right
-          - iris_left
-          - iris_right
-          - jorne_left
-          - jorne_right
-          - jian_left
-          - jian_right
+          - nibble
+          - quefrency_left
+          - quefrency_right
           - reviung41
           - romac
           - romac_plus
           - settings_reset
-          - quefrency_left
-          - quefrency_right
-          - nibble
         include:
           - board: proton_c
             shield: clueboard_california
