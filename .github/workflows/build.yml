@@ -125,4 +125,5 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: "${{ steps.variables.outputs.artifact-name }}-uf2"
-          path: build/zephyr/zmk.uf2
+          path: |
+            build/zephyr/zmk.uf2
