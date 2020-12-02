@@ -228,6 +228,23 @@ int zmk_ble_clear_bonds() {
 
 int zmk_ble_active_profile_index() { return active_profile; }
 
+#if IS_ENABLED(CONFIG_SETTINGS)
+static void ble_save_profile_work(struct k_work *work) {
+    settings_save_one("ble/active_profile", &active_profile, sizeof(active_profile));
+}
+
+static struct k_delayed_work ble_save_work;
+#endif
+
+static int ble_save_profile() {
+#if IS_ENABLED(CONFIG_SETTINGS)
+    k_delayed_work_cancel(&ble_save_work);
+    return k_delayed_work_submit(&ble_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+#else
+    return 0;
+#endif
+}
+
 int zmk_ble_prof_select(uint8_t index) {
     LOG_DBG("profile %d", index);
     if (active_profile == index) {
@@ -235,7 +252,7 @@ int zmk_ble_prof_select(uint8_t index) {
     }
 
     active_profile = index;
-    settings_save_one("ble/active_profile", &active_profile, sizeof(active_profile));
+    ble_save_profile();
 
     update_advertising();
 
@@ -525,6 +542,8 @@ static int zmk_ble_init(const struct device *_arg) {
         LOG_ERR("Failed to setup the profile settings handler (err %d)", err);
         return err;
     }
+
+    k_delayed_work_init(&ble_save_work, ble_save_profile_work);
 
     settings_load_subtree("ble");
     settings_load_subtree("bt");
