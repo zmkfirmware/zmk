@@ -49,7 +49,7 @@ static struct k_delayed_work ext_power_save_work;
 int ext_power_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
     k_delayed_work_cancel(&ext_power_save_work);
-    return k_delayed_work_submit(&ext_power_save_work, K_MINUTES(1));
+    return k_delayed_work_submit(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
     return 0;
 #endif
