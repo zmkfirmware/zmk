@@ -142,7 +142,12 @@ static int ext_power_generic_init(const struct device *dev) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_subsys_init();
 
-    settings_register(&ext_power_conf);
+    int err = settings_register(&ext_power_conf);
+    if (err) {
+        LOG_ERR("Failed to register the ext_power settings handler (err %d)", err);
+        return err;
+    }
+
     k_delayed_work_init(&ext_power_save_work, ext_power_save_state_work);
 
     // Set default value (on) if settings isn't set

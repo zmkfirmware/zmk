@@ -267,7 +267,12 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_subsys_init();
 
-    settings_register(&rgb_conf);
+    int err = settings_register(&rgb_conf);
+    if (err) {
+        LOG_ERR("Failed to register the ext_power settings handler (err %d)", err);
+        return err;
+    }
+
     k_delayed_work_init(&underglow_save_work, zmk_rgb_underglow_save_state_work);
 
     settings_load_subtree("rgb/underglow");
