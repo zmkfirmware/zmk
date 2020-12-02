@@ -53,6 +53,10 @@ jobs:
           - splitreus62_right
           - tg4x
         include:
+          - board: dz60rgb_rev1
+          - board: nrf52840_m2
+            shield: m60
+          - board: planck_rev6
           - board: proton_c
             shield: clueboard_california
     steps:
