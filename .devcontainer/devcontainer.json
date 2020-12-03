@@ -3,12 +3,9 @@
   "dockerFile": "Dockerfile",
   "extensions": ["ms-vscode.cpptools"],
   "runArgs": ["--security-opt", "label=disable"],
-  "containerEnv": {"WORKSPACE_DIR": "${containerWorkspaceFolder}"},
-  "settings": { 
-		"terminal.integrated.shell.linux": "/bin/bash"
+  "containerEnv": { "WORKSPACE_DIR": "${containerWorkspaceFolder}" },
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
   },
-  "mounts": [
-    "type=volume,source=zmk-config,target=/workspaces/zmk-config"
-  ]
+  "mounts": ["type=volume,source=zmk-config,target=/workspaces/zmk-config"]
 }
-
