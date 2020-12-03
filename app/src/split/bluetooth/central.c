@@ -57,8 +57,9 @@ void peripheral_event_work_callback(struct k_work *work) {
 
 K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
 
-static uint8_t split_central_notify_func(struct bt_conn *conn, struct bt_gatt_subscribe_params *params,
-                                      const void *data, uint16_t length) {
+static uint8_t split_central_notify_func(struct bt_conn *conn,
+                                         struct bt_gatt_subscribe_params *params, const void *data,
+                                         uint16_t length) {
     static uint8_t position_state[POSITION_STATE_DATA_LEN];
 
     uint8_t changed_positions[POSITION_STATE_DATA_LEN];

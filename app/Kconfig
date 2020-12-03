@@ -41,7 +41,7 @@ config USB_NUMOF_EP_WRITE_RETRIES
 #ZMK_USB
 endif
 
-config ZMK_BLE
+menuconfig ZMK_BLE
 	bool "BLE (HID over GATT)"
 	select BT
 	select BT_SMP
@@ -57,6 +57,22 @@ if ZMK_BLE
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
 	default 2048
+
+config ZMK_BLE_THREAD_STACK_SIZE
+	int "BLE notify thread stack size"
+	default 512
+
+config ZMK_BLE_THREAD_PRIORITY
+	int "BLE notify thread priority"
+	default 5
+
+config ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE
+	int "Max number of keyboard HID reports to queue for sending over BLE"
+	default 20
+
+config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
+	int "Max number of consumer HID reports to queue for sending over BLE"
+	default 5
 
 config ZMK_BLE_CLEAR_BONDS_ON_START
 	bool "Configuration that clears all bond information from the keyboard on startup."
