@@ -16,7 +16,7 @@ jobs:
   integration_test:
     runs-on: ubuntu-latest
     container:
-      image: zmkfirmware/zmk-build-arm:2.3
+      image: zmkfirmware/zmk-build-arm:2.4
     steps:
       # To use this repository's private action,
       # you must check out the repository
