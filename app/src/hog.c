@@ -156,6 +156,23 @@ struct bt_conn *destination_connection() {
     return conn;
 }
 
+static K_SEM_DEFINE(hog_sem, 1, 1);
+
+void hog_notify_complete(struct bt_conn *conn, void *user_data) { k_sem_give(&hog_sem); }
+
+int send_notify(struct bt_conn *conn, struct bt_gatt_notify_params notify_params) {
+    notify_params.func = hog_notify_complete;
+
+    k_sem_take(&hog_sem, K_MSEC(30));
+
+    int err = bt_gatt_notify_cb(conn, &notify_params);
+    if (err) {
+        k_sem_give(&hog_sem);
+    }
+    bt_conn_unref(conn);
+    return err;
+}
+
 int zmk_hog_send_keyboard_report(struct zmk_hid_keyboard_report_body *report) {
     struct bt_conn *conn = destination_connection();
     if (conn == NULL) {
@@ -164,10 +181,10 @@ int zmk_hog_send_keyboard_report(struct zmk_hid_keyboard_report_body *report) {
 
     LOG_DBG("Sending to NULL? %s", conn == NULL ? "yes" : "no");
 
-    int err = bt_gatt_notify(conn, &hog_svc.attrs[5], report,
-                             sizeof(struct zmk_hid_keyboard_report_body));
-    bt_conn_unref(conn);
-    return err;
+    return send_notify(
+        conn, ((struct bt_gatt_notify_params){.attr = &hog_svc.attrs[5],
+                                              .data = report,
+                                              .len = sizeof(struct zmk_hid_keyboard_report_body)}));
 };
 
 int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
@@ -176,8 +193,8 @@ int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
         return -ENOTCONN;
     }
 
-    int err = bt_gatt_notify(conn, &hog_svc.attrs[10], report,
-                             sizeof(struct zmk_hid_consumer_report_body));
-    bt_conn_unref(conn);
-    return err;
+    return send_notify(
+        conn, ((struct bt_gatt_notify_params){.attr = &hog_svc.attrs[10],
+                                              .data = report,
+                                              .len = sizeof(struct zmk_hid_consumer_report_body)}));
 };
