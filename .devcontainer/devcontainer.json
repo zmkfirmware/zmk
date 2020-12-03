@@ -2,7 +2,7 @@
   "name": "ZMK Development",
   "dockerFile": "Dockerfile",
   "extensions": ["ms-vscode.cpptools"],
-  "runArgs": ["--security-opt", "label=disable"],
+  "runArgs": ["--security-opt", "label=disable", "--publish", "3000"],
   "containerEnv": {"WORKSPACE_DIR": "${containerWorkspaceFolder}"},
   "settings": { 
 		"terminal.integrated.shell.linux": "/bin/bash"
