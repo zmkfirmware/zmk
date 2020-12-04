@@ -28,9 +28,5 @@ void main(void) {
 
 #ifdef CONFIG_ZMK_DISPLAY
     zmk_display_init();
-
-    while (1) {
-        zmk_display_task_handler();
-    }
 #endif /* CONFIG_ZMK_DISPLAY */
 }
