@@ -9,6 +9,10 @@ The bluetooth behavior allows management of various settings and states related 
 between the keyboard and the host. By default, ZMK supports five "profiles" for selecting which bonded host
 computer/laptop/keyboard should receive the keyboard input; many of the commands here operation on those profiles.
 
+:::note Number of Profiles
+Please note there are only five available Bluetooth profiles by default. If you need to increase the number of available profiles you can set `CONFIG_BT_MAX_CONN` in your `zmk-config` `.conf` file.
+:::
+
 ## Bluetooth Command Defines
 
 Bluetooth command defines are provided through the [`dt-bindings/zmk/bt.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/bt.h) header,
