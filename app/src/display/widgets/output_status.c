@@ -41,20 +41,16 @@ void set_status_symbol(lv_obj_t *label) {
 
     switch (selected_endpoint) {
     case ZMK_ENDPOINT_USB:
-        LOG_DBG("USB, BOY!");
         strcat(text, LV_SYMBOL_USB "   ");
         break;
     case ZMK_ENDPOINT_BLE:
         if (active_profie_bonded) {
             if (active_profile_connected) {
-                LOG_DBG("Bonded & connected!");
                 sprintf(text, LV_SYMBOL_WIFI "%i " LV_SYMBOL_OK, active_profile_index);
             } else {
-                LOG_DBG("Bonded but not connected!");
                 sprintf(text, LV_SYMBOL_WIFI "%i " LV_SYMBOL_CLOSE, active_profile_index);
             }
         } else {
-            LOG_DBG("NOT Bonded!");
             sprintf(text, LV_SYMBOL_WIFI "%i " LV_SYMBOL_SETTINGS, active_profile_index);
         }
         break;
