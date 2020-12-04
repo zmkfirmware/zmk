@@ -114,7 +114,7 @@ void set_profile_address(u8_t index, const bt_addr_le_t *addr) {
     sprintf(setting_name, "ble/profiles/%d", index);
     LOG_DBG("Setting profile addr for %s to %s", log_strdup(setting_name), log_strdup(addr_str));
     settings_save_one(setting_name, &profiles[index], sizeof(struct zmk_ble_profile));
-    raise_profile_changed_event();
+    k_work_submit(&raise_profile_changed_event_work);
 }
 
 bool zmk_ble_active_profile_is_connected() {
@@ -342,6 +342,7 @@ static bool is_conn_active_profile(const struct bt_conn *conn) {
 static void connected(struct bt_conn *conn, u8_t err) {
     char addr[BT_ADDR_LE_STR_LEN];
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+    LOG_DBG("Connected thread: %p", k_current_get());
 
     advertising_status = ZMK_ADV_NONE;
 
@@ -367,7 +368,7 @@ static void connected(struct bt_conn *conn, u8_t err) {
 
     if (is_conn_active_profile(conn)) {
         LOG_DBG("Active profile connected");
-        raise_profile_changed_event();
+        k_work_submit(&raise_profile_changed_event_work);
     }
 }
 
