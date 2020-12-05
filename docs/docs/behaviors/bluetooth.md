@@ -68,3 +68,17 @@ The bluetooth behavior completes an bluetooth action given on press.
    ```
    &bt BT_SEL 1
    ```
+
+## Bluetooth Pairing and Profiles
+
+ZMK support bluetooth “profiles” which allows connection to multiple devices (5 by default, or 4 if you are using split keyboards). Each profile stores the bluetooth MAC address of a peer, which can be empty if a profile has not been paired with a device yet. Upon switching to a profile, ZMK does the following:
+
+- If a profile has not been paired with a peer yet, ZMK automatically advertise itself as connectable. You can discover you keyboard from bluetooth scanning on your laptop / tablet. If you try to connect, it will trigger the _pairing_ procedure. After pairing, the bluetooth MAC address of the peer device will be stored in the current profile. Pairing also negotiate a random key for secure communication between the device and the keyboard.
+- If a profile has been paired but the peer is not connected yet, ZMK will also advertise itself as connectable. In the future, the behavior might change to _direct advertising_ which only target the peer with the stored bluetooth MAC address. In this state, if the peer is powered on and moved within the distance of bluetooth signal coverage, it should automatically connect to the keyboard.
+- If a profile has been paired and is currently connected, ZMK will not advertise it as connectable.
+
+The bluetooth MAC address and negotiated keys during pairing are stored in the permanent storage on your chip and can be reused even after reflashing the firmware. If for some reason you want to delete the stored information, you can bind the `BT_CLR` behavior described above to a key and use it to clear the _current_ profile.
+
+:::note
+If you clear bond of a paired profile, make sure you do the same thing on the peer device as well (typically achieved by _removing_ or _forgetting_ the bluetooth connection). Otherwise the peer will try to connect to your keyboard whenever it discovers it. But while the MAC address of both devices could remain the same, the security key no longer match: the peer device still possess the old key negotiated in the previous pairing procedure, but our keyboard firmware has deleted that key. So the connection will fail. If you [enabled USB logging](../development/usb-logging), you might see a lot of failed connection attempts due to the reason of “Security failed”.
+:::

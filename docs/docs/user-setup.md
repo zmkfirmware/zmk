@@ -193,7 +193,9 @@ storage device. Once the flash is complete, the controller should automatically 
 
 ## Wirelessly Connecting Your Keyboard
 
-Connecting your keyboard wirelessly is the same as adding other Bluetooth devides: press the reset button and scan for devices. However, pairing and bonding is still currently being worked on to increase relability and ease of use. In addition, users have in general reported that Bluetooth pairing with computers tends to be quite finnicky. Try out the connection with your tablet or phone first, as those devices seem to work much more consistently.
+ZMK will automatically advertise itself as connectable if it is not currently connected to a device. You should be able to see your keyboard from the bluetooth scanning view of your laptop or phone / tablet. It is reported by some users that the connections with Android / iOS devices are generally smoother than with laptops, so if you have trouble connecting, you could try to connect from your phone or tablet first to eliminate any potential hardware issues.
+
+ZMK support multiple BLE “profiles”, which allows you to connect to and switch among multiple devices. Please refer to the [Bluetooth behavior](behaviors/bluetooth) section for detailed explanations of how to use them.
 
 ### Connecting Split Keyboard Halves
 
