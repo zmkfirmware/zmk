@@ -91,9 +91,9 @@ Write-Host "Keyboard Shield Selection:"
 $prompt = "Pick a keyboard"
 
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
-$options = "Kyria", "Lily58", "Corne", "Splitreus62", "Sofle", "Iris", "Reviung41", "RoMac", "RoMac+", "makerdiary M60", "Microdox", "TG4X", "QAZ", "NIBBLE", "Jorne", "Jian"
-$names = "kyria", "lily58", "corne", "splitreus62", "sofle", "iris", "reviung41", "romac", "romac_plus", "m60", "microdox", "tg4x", "qaz", "nibble", "jorne", "jian"
-$splits = "y", "y", "y", "y", "y", "y", "n", "n", "n", "n", "y", "n", "n", "n", "y", "y"
+$options = "Kyria", "Lily58", "Corne", "Splitreus62", "Sofle", "Iris", "Reviung41", "RoMac", "RoMac+", "makerdiary M60", "Microdox", "TG4X", "QAZ", "NIBBLE", "Jorne", "Jian", "CRBN"
+$names = "kyria", "lily58", "corne", "splitreus62", "sofle", "iris", "reviung41", "romac", "romac_plus", "m60", "microdox", "tg4x", "qaz", "nibble", "jorne", "jian", "crbn"
+$splits = "y", "y", "y", "y", "y", "y", "n", "n", "n", "n", "y", "n", "n", "n", "y", "y", "n"
 
 $choice = Get-Choice-From-Options -Options $options -Prompt $prompt
 $shield_title = $($options[$choice])

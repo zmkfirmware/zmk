@@ -26,6 +26,7 @@ jobs:
           - corne_right
           - cradio_left
           - cradio_right
+          - crbn
           - iris_left
           - iris_right
           - jian_left
