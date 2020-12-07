@@ -57,6 +57,21 @@ Example:
 &lt LOWER SPACE
 ```
 
+## To Layer
+
+The "to layer" behavior enables a layer and disables _all_ other layers _except_ the default layer.
+
+### Behavior Binding
+
+- Reference: `&to`
+- Parameter: The layer number to enable, e.g. `1`
+
+Example:
+
+```
+&to 3
+```
+
 ## Toggle Layer
 
 The "toggle layer" behavior enables a layer until the layer is manually disabled.
