@@ -19,7 +19,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/layer-state-changed.h>
 #include <zmk/events/sensor-event.h>
 
-static u32_t zmk_keymap_layer_state = 0;
+typedef u32_t zmk_layers_state;
+static zmk_layers_state zmk_keymap_layer_state = 0;
 static u8_t zmk_keymap_layer_default = 0;
 
 #define DT_DRV_COMPAT zmk_keymap
@@ -77,20 +78,19 @@ static struct zmk_behavior_binding zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN]
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
-#define SET_LAYER_STATE(new_layer, new_state)                                                      \
-    if (new_layer >= 32) {                                                                         \
-        return -EINVAL;                                                                            \
-    }                                                                                              \
-    WRITE_BIT(zmk_keymap_layer_state, new_layer, new_state);                                       \
-    struct layer_state_changed *ev = new_layer_state_changed();                                    \
-    ev->layer = new_layer;                                                                         \
-    ev->state = new_state;                                                                         \
-    ZMK_EVENT_RAISE(ev);                                                                           \
+static inline int set_layer_state(u8_t layer, bool state) {
+    if (layer >= 32) {
+        return -EINVAL;
+    }
+    WRITE_BIT(zmk_keymap_layer_state, layer, state);
+    ZMK_EVENT_RAISE(create_layer_state_changed(layer, state));
     return 0;
+}
+
 
 u8_t zmk_layer_default() { return zmk_keymap_layer_default; }
 
-u32_t zmk_layer_state() { return zmk_keymap_layer_state; }
+zmk_layers_state zmk_layer_state() { return zmk_keymap_layer_state; }
 
 bool zmk_keymap_layer_active(u8_t layer) {
     return (zmk_keymap_layer_state & (BIT(layer))) == (BIT(layer));
@@ -105,9 +105,9 @@ u8_t zmk_highest_layer_active() {
     return zmk_layer_default();
 }
 
-int zmk_keymap_layer_activate(u8_t layer) { SET_LAYER_STATE(layer, true); };
+int zmk_keymap_layer_activate(u8_t layer) { return set_layer_state(layer, true); };
 
-int zmk_keymap_layer_deactivate(u8_t layer) { SET_LAYER_STATE(layer, false); };
+int zmk_keymap_layer_deactivate(u8_t layer) { return set_layer_state(layer, false); };
 
 int zmk_keymap_layer_toggle(u8_t layer) {
     if (zmk_keymap_layer_active(layer)) {
@@ -117,7 +117,7 @@ int zmk_keymap_layer_toggle(u8_t layer) {
     return zmk_keymap_layer_activate(layer);
 };
 
-bool is_active_layer(u8_t layer, u32_t layer_state) {
+bool is_active_layer(u8_t layer, zmk_layers_state layer_state) {
     return (layer_state & BIT(layer)) == BIT(layer) || layer == zmk_keymap_layer_default;
 }
 
