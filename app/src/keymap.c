@@ -87,7 +87,6 @@ static inline int set_layer_state(u8_t layer, bool state) {
     return 0;
 }
 
-
 u8_t zmk_layer_default() { return zmk_keymap_layer_default; }
 
 zmk_layers_state zmk_layer_state() { return zmk_keymap_layer_state; }
