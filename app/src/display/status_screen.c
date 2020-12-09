@@ -6,6 +6,7 @@
 
 #include <zmk/display/widgets/output_status.h>
 #include <zmk/display/widgets/battery_status.h>
+#include <zmk/display/widgets/layer_status.h>
 #include <zmk/display/status_screen.h>
 
 #include <logging/log.h>
@@ -18,6 +19,8 @@ static struct zmk_widget_battery_status battery_status_widget;
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_OUTPUT_STATUS)
 static struct zmk_widget_output_status output_status_widget;
 #endif
+
+static struct zmk_widget_layer_status layer_status_widget;
 
 lv_obj_t *zmk_display_status_screen() {
     lv_obj_t *screen;
@@ -39,8 +42,12 @@ lv_obj_t *zmk_display_status_screen() {
                  0);
 #endif
 
+    zmk_widget_layer_status_init(&layer_status_widget, screen);
+    lv_obj_align(zmk_widget_layer_status_obj(&layer_status_widget), NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0,
+                 0);
+
     lv_label_set_text(zmk_version_label, "ZMK v0.1.0");
-    lv_obj_align(zmk_version_label, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
+    lv_obj_align(zmk_version_label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
 
     return screen;
 }
