@@ -94,7 +94,7 @@ bool zmk_keymap_layer_active(u8_t layer) {
     return (_zmk_keymap_layer_state & (BIT(layer))) == (BIT(layer));
 };
 
-u8_t zmk_highest_layer_active() {
+u8_t zmk_keymap_highest_layer_active() {
     for (u8_t layer = 31; layer > 0; layer--) {
         if (zmk_keymap_layer_active(layer)) {
             return layer;
