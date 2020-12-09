@@ -4,6 +4,7 @@
 '''Test runner for ZMK.'''
 
 import os
+import subprocess
 from textwrap import dedent            # just for nicer code indentation
 
 from west.commands import WestCommand
@@ -30,4 +31,6 @@ class Test(WestCommand):
     def do_run(self, args, unknown_args):
         # the run-test script assumes the app directory is the current dir.
         os.chdir(f'{self.topdir}/app')
-        exit(os.system(f'{self.topdir}/app/run-test.sh {args.test_path}'))
+        completed_process = subprocess.run(
+            [f'{self.topdir}/app/run-test.sh', args.test_path])
+        exit(completed_process.returncode)
