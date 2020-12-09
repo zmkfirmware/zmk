@@ -43,8 +43,8 @@ lv_obj_t *zmk_display_status_screen() {
 #endif
 
     zmk_widget_layer_status_init(&layer_status_widget, screen);
-    lv_obj_align(zmk_widget_layer_status_obj(&layer_status_widget), NULL, LV_ALIGN_IN_BOTTOM_LEFT, 0,
-                 0);
+    lv_obj_align(zmk_widget_layer_status_obj(&layer_status_widget), NULL, LV_ALIGN_IN_BOTTOM_LEFT,
+                 0, 0);
 
     lv_label_set_text(zmk_version_label, "ZMK v0.1.0");
     lv_obj_align(zmk_version_label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
