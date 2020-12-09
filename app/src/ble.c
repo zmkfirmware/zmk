@@ -526,7 +526,8 @@ static int zmk_ble_init(const struct device *_arg) {
         return err;
     }
 
-    settings_load();
+    settings_load_subtree("ble");
+    settings_load_subtree("bt");
 
 #endif
 

@@ -65,7 +65,6 @@ target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/hog.c)
 target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/rgb_underglow.c)
 target_sources(app PRIVATE src/endpoints.c)
 target_sources(app PRIVATE src/hid_listener.c)
-target_sources_ifdef(CONFIG_SETTINGS app PRIVATE src/settings.c)
 target_sources(app PRIVATE src/main.c)
 
 add_subdirectory(src/display/)

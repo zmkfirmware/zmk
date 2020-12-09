@@ -265,6 +265,8 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
     };
 
 #if IS_ENABLED(CONFIG_SETTINGS)
+    settings_subsys_init();
+
     settings_register(&rgb_conf);
     k_delayed_work_init(&underglow_save_work, zmk_rgb_underglow_save_state_work);
 
