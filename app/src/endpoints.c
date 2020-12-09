@@ -166,7 +166,7 @@ static int zmk_endpoints_init(const struct device *_arg) {
         return err;
     }
 
-    settings_load();
+    settings_load_subtree("endpoints");
 #endif
 
     return 0;

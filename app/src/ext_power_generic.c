@@ -140,6 +140,8 @@ static int ext_power_generic_init(const struct device *dev) {
     }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
+    settings_subsys_init();
+
     settings_register(&ext_power_conf);
     k_delayed_work_init(&ext_power_save_work, ext_power_save_state_work);
 
