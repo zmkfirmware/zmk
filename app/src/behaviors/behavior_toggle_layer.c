@@ -18,7 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 struct behavior_tog_config {};
 struct behavior_tog_data {};
 
-static int behavior_tog_init(struct device *dev) { return 0; };
+static int behavior_tog_init(const struct device *dev) { return 0; };
 
 static int tog_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {

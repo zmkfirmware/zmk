@@ -21,7 +21,7 @@ static enum usb_dc_status_code usb_status = USB_DC_UNKNOWN;
 
 #ifdef CONFIG_ZMK_USB
 
-static struct device *hid_dev;
+static const struct device *hid_dev;
 
 static K_SEM_DEFINE(hid_sem, 1, 1);
 
@@ -83,7 +83,7 @@ void usb_status_cb(enum usb_dc_status_code status, const uint8_t *params) {
     raise_usb_status_changed_event();
 };
 
-static int zmk_usb_init(struct device *_arg) {
+static int zmk_usb_init(const struct device *_arg) {
     int usb_enable_ret;
 
 #ifdef CONFIG_ZMK_USB

@@ -30,7 +30,8 @@ struct zmk_kscan_msg_processor {
 
 K_MSGQ_DEFINE(zmk_kscan_msgq, sizeof(struct zmk_kscan_event), CONFIG_ZMK_KSCAN_EVENT_QUEUE_SIZE, 4);
 
-static void zmk_kscan_callback(struct device *dev, uint32_t row, uint32_t column, bool pressed) {
+static void zmk_kscan_callback(const struct device *dev, uint32_t row, uint32_t column,
+                               bool pressed) {
     struct zmk_kscan_event ev = {
         .row = row,
         .column = column,
@@ -58,7 +59,7 @@ void zmk_kscan_process_msgq(struct k_work *item) {
 }
 
 int zmk_kscan_init(char *name) {
-    struct device *dev = device_get_binding(name);
+    const struct device *dev = device_get_binding(name);
     if (dev == NULL) {
         LOG_ERR("Failed to get the KSCAN device");
         return -EINVAL;

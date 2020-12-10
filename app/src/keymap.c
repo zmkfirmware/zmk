@@ -121,7 +121,7 @@ bool is_active_layer(uint8_t layer, zmk_keymap_layers_state layer_state) {
 
 int zmk_keymap_apply_position_state(int layer, uint32_t position, bool pressed, int64_t timestamp) {
     struct zmk_behavior_binding *binding = &zmk_keymap[layer][position];
-    struct device *behavior;
+    const struct device *behavior;
     struct zmk_behavior_binding_event event = {
         .layer = layer,
         .position = position,
@@ -168,13 +168,14 @@ int zmk_keymap_position_state_changed(uint32_t position, bool pressed, int64_t t
 }
 
 #if ZMK_KEYMAP_HAS_SENSORS
-int zmk_keymap_sensor_triggered(uint8_t sensor_number, struct device *sensor, int64_t timestamp) {
+int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sensor,
+                                int64_t timestamp) {
     for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= _zmk_keymap_layer_default; layer--) {
         if (((_zmk_keymap_layer_state & BIT(layer)) == BIT(layer) ||
              layer == _zmk_keymap_layer_default) &&
             zmk_sensor_keymap[layer] != NULL) {
             struct zmk_behavior_binding *binding = &zmk_sensor_keymap[layer][sensor_number];
-            struct device *behavior;
+            const struct device *behavior;
             int ret;
 
             LOG_DBG("layer: %d sensor_number: %d, binding name: %s", layer, sensor_number,

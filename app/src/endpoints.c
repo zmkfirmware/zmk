@@ -156,7 +156,7 @@ static int endpoints_handle_set(const char *name, size_t len, settings_read_cb r
 struct settings_handler endpoints_handler = {.name = "endpoints", .h_set = endpoints_handle_set};
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
-static int zmk_endpoints_init(struct device *_arg) {
+static int zmk_endpoints_init(const struct device *_arg) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_subsys_init();
 

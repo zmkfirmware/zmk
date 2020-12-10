@@ -315,7 +315,7 @@ static struct bt_conn_cb conn_callbacks = {
     .disconnected = split_central_disconnected,
 };
 
-int zmk_split_bt_central_init(struct device *_arg) {
+int zmk_split_bt_central_init(const struct device *_arg) {
     bt_conn_cb_register(&conn_callbacks);
 
     return start_scan();

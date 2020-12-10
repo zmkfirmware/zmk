@@ -18,7 +18,7 @@
 
 LOG_MODULE_REGISTER(EC11, CONFIG_SENSOR_LOG_LEVEL);
 
-static int ec11_get_ab_state(struct device *dev) {
+static int ec11_get_ab_state(const struct device *dev) {
     struct ec11_data *drv_data = dev->data;
     const struct ec11_config *drv_cfg = dev->config;
 
@@ -26,7 +26,7 @@ static int ec11_get_ab_state(struct device *dev) {
            gpio_pin_get(drv_data->b, drv_cfg->b_pin);
 }
 
-static int ec11_sample_fetch(struct device *dev, enum sensor_channel chan) {
+static int ec11_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     struct ec11_data *drv_data = dev->data;
     const struct ec11_config *drv_cfg = dev->config;
     uint8_t val;
@@ -68,7 +68,7 @@ static int ec11_sample_fetch(struct device *dev, enum sensor_channel chan) {
     return 0;
 }
 
-static int ec11_channel_get(struct device *dev, enum sensor_channel chan,
+static int ec11_channel_get(const struct device *dev, enum sensor_channel chan,
                             struct sensor_value *val) {
     struct ec11_data *drv_data = dev->data;
 
@@ -90,7 +90,7 @@ static const struct sensor_driver_api ec11_driver_api = {
     .channel_get = ec11_channel_get,
 };
 
-int ec11_init(struct device *dev) {
+int ec11_init(const struct device *dev) {
     struct ec11_data *drv_data = dev->data;
     const struct ec11_config *drv_cfg = dev->config;
 

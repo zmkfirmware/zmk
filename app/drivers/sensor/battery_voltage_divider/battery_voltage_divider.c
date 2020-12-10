@@ -33,8 +33,8 @@ struct bvd_config {
 };
 
 struct bvd_data {
-    struct device *adc;
-    struct device *gpio;
+    const struct device *adc;
+    const struct device *gpio;
     struct adc_channel_cfg acc;
     struct adc_sequence as;
     uint16_t adc_raw;
@@ -55,7 +55,7 @@ static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
     return bat_mv * 2 / 15 - 459;
 }
 
-static int bvd_sample_fetch(struct device *dev, enum sensor_channel chan) {
+static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     struct bvd_data *drv_data = dev->data;
     const struct bvd_config *drv_cfg = dev->config;
     struct adc_sequence *as = &drv_data->as;
@@ -113,7 +113,8 @@ static int bvd_sample_fetch(struct device *dev, enum sensor_channel chan) {
     return rc;
 }
 
-static int bvd_channel_get(struct device *dev, enum sensor_channel chan, struct sensor_value *val) {
+static int bvd_channel_get(const struct device *dev, enum sensor_channel chan,
+                           struct sensor_value *val) {
     struct bvd_data *drv_data = dev->data;
 
     switch (chan) {
@@ -139,7 +140,7 @@ static const struct sensor_driver_api bvd_api = {
     .channel_get = bvd_channel_get,
 };
 
-static int bvd_init(struct device *dev) {
+static int bvd_init(const struct device *dev) {
     struct bvd_data *drv_data = dev->data;
     const struct bvd_config *drv_cfg = dev->config;
 

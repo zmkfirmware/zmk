@@ -16,7 +16,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-static int behavior_key_press_init(struct device *dev) { return 0; };
+static int behavior_key_press_init(const struct device *dev) { return 0; };
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {

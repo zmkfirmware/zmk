@@ -46,14 +46,14 @@ struct rgb_underglow_state {
     bool on;
 };
 
-static struct device *led_strip;
+static const struct device *led_strip;
 
 static struct led_rgb pixels[STRIP_NUM_PIXELS];
 
 static struct rgb_underglow_state state;
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
-static struct device *ext_power;
+static const struct device *ext_power;
 #endif
 
 static struct led_rgb hsb_to_rgb(struct led_hsb hsb) {
@@ -238,7 +238,7 @@ static void zmk_rgb_underglow_save_state_work() {
 static struct k_delayed_work underglow_save_work;
 #endif
 
-static int zmk_rgb_underglow_init(struct device *_arg) {
+static int zmk_rgb_underglow_init(const struct device *_arg) {
     led_strip = device_get_binding(STRIP_LABEL);
     if (led_strip) {
         LOG_INF("Found LED strip device %s", STRIP_LABEL);
