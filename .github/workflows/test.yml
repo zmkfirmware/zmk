@@ -15,6 +15,8 @@ on:
 jobs:
   integration_test:
     runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-build-arm:2.3
     steps:
       # To use this repository's private action,
       # you must check out the repository
@@ -38,31 +40,15 @@ jobs:
         timeout-minutes: 2
         continue-on-error: true
       - name: West init
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-init
-        with:
-          args: 'init "-l app"'
+        run: west init -l app
       - name: West update
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-update
-        with:
-          args: "update"
+        run: west update
       - name: West config Zephyr base
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-config
-        with:
-          args: 'config "--global zephyr.base-prefer configfile"'
+        run: west config --global zephyr.base-prefer configfile
       - name: West Zephyr export
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-zephyr-export
-        with:
-          args: "zephyr-export"
+        run: west zephyr-export
       - name: Test all
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-build
-        with:
-          entrypoint: /bin/bash
-          args: '-c "west test"'
+        run: west test
       - name: Archive build
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
