@@ -20,16 +20,19 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 static lv_style_t label_style;
 
+static bool style_initialized = false;
+
 void output_status_init() {
-    if (label_style.text.font != NULL) {
+    if (style_initialized) {
         return;
     }
 
-    lv_style_copy(&label_style, &lv_style_plain);
-    label_style.text.color = LV_COLOR_BLACK;
-    label_style.text.font = &lv_font_roboto_16;
-    label_style.text.letter_space = 1;
-    label_style.text.line_space = 1;
+    style_initialized = true;
+    lv_style_init(&label_style);
+    lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+    lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &lv_font_montserrat_16);
+    lv_style_set_text_letter_space(&label_style, LV_STATE_DEFAULT, 1);
+    lv_style_set_text_line_space(&label_style, LV_STATE_DEFAULT, 1);
 }
 
 void set_status_symbol(lv_obj_t *label) {
@@ -62,7 +65,7 @@ void set_status_symbol(lv_obj_t *label) {
 int zmk_widget_output_status_init(struct zmk_widget_output_status *widget, lv_obj_t *parent) {
     output_status_init();
     widget->obj = lv_label_create(parent, NULL);
-    lv_label_set_style(widget->obj, LV_LABEL_STYLE_MAIN, &label_style);
+    lv_obj_add_style(widget->obj, LV_LABEL_PART_MAIN, &label_style);
 
     lv_obj_set_size(widget->obj, 40, 15);
     set_status_symbol(widget->obj);
