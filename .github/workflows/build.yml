@@ -111,7 +111,7 @@ jobs:
       - name: Archive build
         uses: actions/upload-artifact@v2
         with:
-          name: "${{ steps.variables.outputs.artifact-name }}-uf2"
+          name: "${{ steps.variables.outputs.artifact-name }}"
           path: |
             build/zephyr/zmk.hex
             build/zephyr/zmk.uf2
