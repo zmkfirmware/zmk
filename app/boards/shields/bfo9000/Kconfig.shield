@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Pete Johanson, Kurtis Lew
+# Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 config SHIELD_BFO9000_LEFT
