@@ -304,7 +304,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
 
 static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
                                        struct zmk_behavior_binding_event event) {
-    struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_hold_tap_config *cfg = dev->config;
 
     if (undecided_hold_tap != NULL) {
@@ -479,7 +479,7 @@ void behavior_hold_tap_timer_work_handler(struct k_work *item) {
     }
 }
 
-static int behavior_hold_tap_init(struct device *dev) {
+static int behavior_hold_tap_init(const struct device *dev) {
     static bool init_first_run = true;
 
     if (init_first_run) {

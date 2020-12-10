@@ -18,7 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
-    struct device *ext_power = device_get_binding("EXT_POWER");
+    const struct device *ext_power = device_get_binding("EXT_POWER");
     if (ext_power == NULL) {
         LOG_ERR("Unable to retrieve ext_power device: %d", binding->param1);
         return -EIO;
@@ -46,7 +46,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
     return 0;
 }
 
-static int behavior_ext_power_init(struct device *dev) { return 0; };
+static int behavior_ext_power_init(const struct device *dev) { return 0; };
 
 static const struct behavior_driver_api behavior_ext_power_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,

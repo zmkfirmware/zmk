@@ -18,7 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define ZMK_DISPLAY_NAME CONFIG_LVGL_DISPLAY_DEV_NAME
 
-static struct device *display;
+static const struct device *display;
 
 static lv_obj_t *screen;
 

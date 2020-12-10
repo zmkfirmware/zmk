@@ -49,7 +49,7 @@ struct kscan_gpio_item_config {
     struct kscan_gpio_irq_callback_##n {                                                           \
         struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_delayed_work)) * work;                           \
         struct gpio_callback callback;                                                             \
-        struct device *dev;                                                                        \
+        const struct device *dev;                                                                  \
     };                                                                                             \
                                                                                                    \
     struct kscan_gpio_config_##n {                                                                 \
@@ -62,30 +62,31 @@ struct kscan_gpio_item_config {
         struct k_timer poll_timer;                                                                 \
         struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_delayed_work)) work;                             \
         bool matrix_state[INST_MATRIX_INPUTS(n)][INST_MATRIX_OUTPUTS(n)];                          \
-        struct device *rows[INST_MATRIX_INPUTS(n)];                                                \
-        struct device *cols[INST_MATRIX_OUTPUTS(n)];                                               \
-        struct device *dev;                                                                        \
+        const struct device *rows[INST_MATRIX_INPUTS(n)];                                          \
+        const struct device *cols[INST_MATRIX_OUTPUTS(n)];                                         \
+        const struct device *dev;                                                                  \
     };                                                                                             \
     /* IO/GPIO SETUP */                                                                            \
     /* gpio_input_devices are PHYSICAL IO devices */                                               \
-    static struct device **kscan_gpio_input_devices_##n(struct device *dev) {                      \
+    static const struct device **kscan_gpio_input_devices_##n(const struct device *dev) {          \
         struct kscan_gpio_data_##n *data = dev->data;                                              \
         return data->rows;                                                                         \
     }                                                                                              \
                                                                                                    \
-    static const struct kscan_gpio_item_config *kscan_gpio_input_configs_##n(struct device *dev) { \
+    static const struct kscan_gpio_item_config *kscan_gpio_input_configs_##n(                      \
+        const struct device *dev) {                                                                \
         const struct kscan_gpio_config_##n *cfg = dev->config;                                     \
         return cfg->rows;                                                                          \
     }                                                                                              \
                                                                                                    \
     /* gpio_output_devices are PHYSICAL IO devices */                                              \
-    static struct device **kscan_gpio_output_devices_##n(struct device *dev) {                     \
+    static const struct device **kscan_gpio_output_devices_##n(const struct device *dev) {         \
         struct kscan_gpio_data_##n *data = dev->data;                                              \
         return data->cols;                                                                         \
     }                                                                                              \
                                                                                                    \
     static const struct kscan_gpio_item_config *kscan_gpio_output_configs_##n(                     \
-        struct device *dev) {                                                                      \
+        const struct device *dev) {                                                                \
         const struct kscan_gpio_config_##n *cfg = dev->config;                                     \
         /* If row2col, rows = outputs & cols = inputs */                                           \
         return cfg->cols;                                                                          \
@@ -99,7 +100,7 @@ struct kscan_gpio_item_config {
                                                                                                    \
     /* Read the state of the input GPIOs */                                                        \
     /* This is the core matrix_scan func */                                                        \
-    static int kscan_gpio_read_##n(struct device *dev) {                                           \
+    static int kscan_gpio_read_##n(const struct device *dev) {                                     \
         bool submit_follow_up_read = false;                                                        \
         struct kscan_gpio_data_##n *data = dev->data;                                              \
         static bool read_state[INST_MATRIX_INPUTS(n)][INST_MATRIX_OUTPUTS(n)];                     \
@@ -107,7 +108,7 @@ struct kscan_gpio_item_config {
             /* Iterate over bits and set GPIOs accordingly */                                      \
             for (uint8_t bit = 0; bit < INST_DEMUX_GPIOS(n); bit++) {                              \
                 uint8_t state = (o & (0b1 << bit)) >> bit;                                         \
-                struct device *out_dev = kscan_gpio_output_devices_##n(dev)[bit];                  \
+                const struct device *out_dev = kscan_gpio_output_devices_##n(dev)[bit];            \
                 const struct kscan_gpio_item_config *out_cfg =                                     \
                     &kscan_gpio_output_configs_##n(dev)[bit];                                      \
                 gpio_pin_set(out_dev, out_cfg->pin, state);                                        \
@@ -115,7 +116,7 @@ struct kscan_gpio_item_config {
                                                                                                    \
             for (int i = 0; i < INST_MATRIX_INPUTS(n); i++) {                                      \
                 /* Get the input device (port) */                                                  \
-                struct device *in_dev = kscan_gpio_input_devices_##n(dev)[i];                      \
+                const struct device *in_dev = kscan_gpio_input_devices_##n(dev)[i];                \
                 /* Get the input device config (pin) */                                            \
                 const struct kscan_gpio_item_config *in_cfg =                                      \
                     &kscan_gpio_input_configs_##n(dev)[i];                                         \
@@ -151,7 +152,7 @@ struct kscan_gpio_item_config {
         .rows = {[INST_MATRIX_INPUTS(n) - 1] = NULL}, .cols = {[INST_DEMUX_GPIOS(n) - 1] = NULL}}; \
                                                                                                    \
     /* KSCAN API configure function */                                                             \
-    static int kscan_gpio_configure_##n(struct device *dev, kscan_callback_t callback) {           \
+    static int kscan_gpio_configure_##n(const struct device *dev, kscan_callback_t callback) {     \
         LOG_DBG("KSCAN API configure");                                                            \
         struct kscan_gpio_data_##n *data = dev->data;                                              \
         if (!callback) {                                                                           \
@@ -163,7 +164,7 @@ struct kscan_gpio_item_config {
     };                                                                                             \
                                                                                                    \
     /* KSCAN API enable function */                                                                \
-    static int kscan_gpio_enable_##n(struct device *dev) {                                         \
+    static int kscan_gpio_enable_##n(const struct device *dev) {                                   \
         LOG_DBG("KSCAN API enable");                                                               \
         struct kscan_gpio_data_##n *data = dev->data;                                              \
         /* TODO: we might want a follow up to hook into the sleep state hooks in Zephyr, */        \
@@ -173,7 +174,7 @@ struct kscan_gpio_item_config {
     };                                                                                             \
                                                                                                    \
     /* KSCAN API disable function */                                                               \
-    static int kscan_gpio_disable_##n(struct device *dev) {                                        \
+    static int kscan_gpio_disable_##n(const struct device *dev) {                                  \
         LOG_DBG("KSCAN API disable");                                                              \
         struct kscan_gpio_data_##n *data = dev->data;                                              \
         k_timer_stop(&data->poll_timer);                                                           \
@@ -181,12 +182,12 @@ struct kscan_gpio_item_config {
     };                                                                                             \
                                                                                                    \
     /* GPIO init function*/                                                                        \
-    static int kscan_gpio_init_##n(struct device *dev) {                                           \
+    static int kscan_gpio_init_##n(const struct device *dev) {                                     \
         LOG_DBG("KSCAN GPIO init");                                                                \
         struct kscan_gpio_data_##n *data = dev->data;                                              \
         int err;                                                                                   \
         /* configure input devices*/                                                               \
-        struct device **input_devices = kscan_gpio_input_devices_##n(dev);                         \
+        const struct device **input_devices = kscan_gpio_input_devices_##n(dev);                   \
         for (int i = 0; i < INST_MATRIX_INPUTS(n); i++) {                                          \
             const struct kscan_gpio_item_config *in_cfg = &kscan_gpio_input_configs_##n(dev)[i];   \
             input_devices[i] = device_get_binding(in_cfg->label);                                  \
@@ -207,7 +208,7 @@ struct kscan_gpio_item_config {
             }                                                                                      \
         }                                                                                          \
         /* configure output devices*/                                                              \
-        struct device **output_devices = kscan_gpio_output_devices_##n(dev);                       \
+        const struct device **output_devices = kscan_gpio_output_devices_##n(dev);                 \
         for (int o = 0; o < INST_DEMUX_GPIOS(n); o++) {                                            \
             const struct kscan_gpio_item_config *out_cfg = &kscan_gpio_output_configs_##n(dev)[o]; \
             output_devices[o] = device_get_binding(out_cfg->label);                                \

@@ -509,7 +509,7 @@ static void zmk_ble_ready(int err) {
     update_advertising();
 }
 
-static int zmk_ble_init(struct device *_arg) {
+static int zmk_ble_init(const struct device *_arg) {
     int err = bt_enable(NULL);
 
     if (err) {

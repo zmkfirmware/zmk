@@ -18,7 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 struct behavior_none_config {};
 struct behavior_none_data {};
 
-static int behavior_none_init(struct device *dev) { return 0; };
+static int behavior_none_init(const struct device *dev) { return 0; };
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {

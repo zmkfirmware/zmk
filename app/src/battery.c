@@ -17,9 +17,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event-manager.h>
 #include <zmk/events/battery-state-changed.h>
 
-struct device *battery;
+const struct device *battery;
 
-static int zmk_battery_update(struct device *battery) {
+static int zmk_battery_update(const struct device *battery) {
     struct sensor_value state_of_charge;
 
     int rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE);
@@ -64,7 +64,7 @@ static void zmk_battery_timer(struct k_timer *timer) { k_work_submit(&battery_wo
 
 K_TIMER_DEFINE(battery_timer, zmk_battery_timer, NULL);
 
-static int zmk_battery_init(struct device *_arg) {
+static int zmk_battery_init(const struct device *_arg) {
     battery = device_get_binding("BATTERY");
 
     if (battery == NULL) {

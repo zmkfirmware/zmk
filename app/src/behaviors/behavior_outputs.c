@@ -34,7 +34,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     return -ENOTSUP;
 }
 
-static int behavior_out_init(struct device *dev) { return 0; }
+static int behavior_out_init(const struct device *dev) { return 0; }
 
 static const struct behavior_driver_api behavior_outputs_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,

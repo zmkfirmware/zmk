@@ -23,8 +23,8 @@ struct ec11_config {
 };
 
 struct ec11_data {
-    struct device *a;
-    struct device *b;
+    const struct device *a;
+    const struct device *b;
     uint8_t ab_state;
     int8_t pulses;
     int8_t ticks;
@@ -33,7 +33,7 @@ struct ec11_data {
 #ifdef CONFIG_EC11_TRIGGER
     struct gpio_callback a_gpio_cb;
     struct gpio_callback b_gpio_cb;
-    struct device *dev;
+    const struct device *dev;
 
     sensor_trigger_handler_t handler;
     const struct sensor_trigger *trigger;
@@ -51,8 +51,8 @@ struct ec11_data {
 
 #ifdef CONFIG_EC11_TRIGGER
 
-int ec11_trigger_set(struct device *dev, const struct sensor_trigger *trig,
+int ec11_trigger_set(const struct device *dev, const struct sensor_trigger *trig,
                      sensor_trigger_handler_t handler);
 
-int ec11_init_interrupt(struct device *dev);
+int ec11_init_interrupt(const struct device *dev);
 #endif
