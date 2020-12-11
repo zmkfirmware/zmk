@@ -87,8 +87,6 @@ jobs:
         run: west init -l app
       - name: West update
         run: west update
-      - name: West config Zephyr base
-        run: west config --global zephyr.base-prefer configfile
       - name: West Zephyr export
         run: west zephyr-export
       - name: Prepare variables
