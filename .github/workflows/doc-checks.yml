@@ -23,7 +23,6 @@ jobs:
         working-directory: docs
   prettier:
     runs-on: ubuntu-latest
-    name: Prettier
     steps:
       - uses: actions/checkout@v2
       - uses: bahmutov/npm-install@v1
