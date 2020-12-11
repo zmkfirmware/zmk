@@ -82,11 +82,11 @@ jobs:
             4-${{ runner.os }}-
         timeout-minutes: 2
         continue-on-error: true
-      - name: West init
+      - name: Initialize workspace (west init)
         run: west init -l app
-      - name: West update
+      - name: Update modules (west update)
         run: west update
-      - name: West Zephyr export
+      - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
       - name: Prepare variables
         id: variables
@@ -103,9 +103,9 @@ jobs:
 
           echo ::set-output name=shield-arg::${SHIELD_ARG}
           echo ::set-output name=artifact-name::${ARTIFACT_NAME}
-      - name: West build
+      - name: Build (west build)
         run: west build -s app -b ${{ matrix.board }} -- ${{ steps.variables.outputs.shield-arg }}
-      - name: Archive build
+      - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
           name: "${{ steps.variables.outputs.artifact-name }}"
