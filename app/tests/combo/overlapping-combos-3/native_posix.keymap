@@ -1,0 +1,53 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan-mock.h>
+
+/* 
+    combo 12 timeout 100
+    combo 0123 timeout 100
+    press 012, release 2
+    expected: key pos 0 followed by combo 12
+ */
+/ {
+	combos {
+		compatible = "zmk,combos";
+		combo_two {
+			timeout-ms = <100>;
+			key-positions = <1 2>;
+			bindings = <&kp Y>;
+		};
+
+
+		combo_four {
+			timeout-ms = <100>;
+			key-positions = <0 1 2 3>;
+			bindings = <&kp W>;
+		};
+
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&kp A &kp B
+				&kp C &none
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		/* if you're debugging these, remember that the timer can be triggered between 
+		  events while stepping through code. */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,1,10) 
+		ZMK_MOCK_PRESS(0,2,100) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(0,1,10) 
+		ZMK_MOCK_RELEASE(0,2,100)
+	>;
+};
