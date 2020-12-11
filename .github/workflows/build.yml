@@ -62,8 +62,6 @@ jobs:
           - board: proton_c
             shield: clueboard_california
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cache west modules

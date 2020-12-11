@@ -18,8 +18,6 @@ jobs:
     container:
       image: zmkfirmware/zmk-build-arm:2.4
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cache west modules
