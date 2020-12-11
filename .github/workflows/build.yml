@@ -55,6 +55,7 @@ jobs:
           - splitreus62_right
           - tg4x
           - tidbit
+        cmake-args: [""]
         include:
           - board: dz60rgb_rev1
           - board: nrf52840_m2
@@ -62,6 +63,14 @@ jobs:
           - board: planck_rev6
           - board: proton_c
             shield: clueboard_california
+          - board: nice_nano
+            shield: kyria_left
+            cmake-args: -DCONFIG_ZMK_DISPLAY=y
+            skip-archive: true
+          - board: nice_nano
+            shield: kyria_right
+            cmake-args: -DCONFIG_ZMK_DISPLAY=y
+            skip-archive: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -104,8 +113,9 @@ jobs:
           echo ::set-output name=shield-arg::${SHIELD_ARG}
           echo ::set-output name=artifact-name::${ARTIFACT_NAME}
       - name: Build (west build)
-        run: west build -s app -b ${{ matrix.board }} -- ${{ steps.variables.outputs.shield-arg }}
+        run: west build -s app -b ${{ matrix.board }} -- ${{ steps.variables.outputs.shield-arg }} ${{ matrix.cmake-args }}
       - name: Archive artifacts
+        if: ${{ !matrix.skip-archive }}
         uses: actions/upload-artifact@v2
         with:
           name: "${{ steps.variables.outputs.artifact-name }}"
