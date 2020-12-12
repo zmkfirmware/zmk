@@ -19,6 +19,7 @@
 			#binding-cells = <1>;
 			release-after-ms = <1000>;
 			bindings = <&mo>;
+			quick-release;
 		};
 	};
 
