@@ -18,6 +18,7 @@
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/behavior.h>
+#include <zmk/keymap.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -35,14 +36,10 @@ enum flavor {
     ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED = 2,
 };
 
-struct behavior_hold_tap_behaviors {
-    struct zmk_behavior_binding tap;
-    struct zmk_behavior_binding hold;
-};
-
 struct behavior_hold_tap_config {
     int tapping_term_ms;
-    struct behavior_hold_tap_behaviors *behaviors;
+    char *hold_behavior_dev;
+    char *tap_behavior_dev;
     enum flavor flavor;
 };
 
@@ -289,11 +286,11 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
 
     struct zmk_behavior_binding binding;
     if (hold_tap->is_hold) {
-        binding.behavior_dev = hold_tap->config->behaviors->hold.behavior_dev;
+        binding.behavior_dev = hold_tap->config->hold_behavior_dev;
         binding.param1 = hold_tap->param_hold;
         binding.param2 = 0;
     } else {
-        binding.behavior_dev = hold_tap->config->behaviors->tap.behavior_dev;
+        binding.behavior_dev = hold_tap->config->tap_behavior_dev;
         binding.param1 = hold_tap->param_tap;
         binding.param2 = 0;
     }
@@ -350,7 +347,8 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
 
     decide_hold_tap(hold_tap, HT_KEY_UP);
 
-    // todo: set up the binding and data items inside of the active_hold_tap struct
+    // todo: set up the binding and data items inside of the
+    // active_hhold_tap->config->behaviors->tap.behavior_dev;old_tap struct
     struct zmk_behavior_binding_event sub_behavior_data = {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
@@ -358,11 +356,11 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
 
     struct zmk_behavior_binding sub_behavior_binding;
     if (hold_tap->is_hold) {
-        sub_behavior_binding.behavior_dev = hold_tap->config->behaviors->hold.behavior_dev;
+        sub_behavior_binding.behavior_dev = hold_tap->config->hold_behavior_dev;
         sub_behavior_binding.param1 = hold_tap->param_hold;
         sub_behavior_binding.param2 = 0;
     } else {
-        sub_behavior_binding.behavior_dev = hold_tap->config->behaviors->tap.behavior_dev;
+        sub_behavior_binding.behavior_dev = hold_tap->config->tap_behavior_dev;
         sub_behavior_binding.param1 = hold_tap->param_tap;
         sub_behavior_binding.param2 = 0;
     }
@@ -489,22 +487,11 @@ static int behavior_hold_tap_init(const struct device *dev) {
 struct behavior_hold_tap_data {};
 static struct behavior_hold_tap_data behavior_hold_tap_data;
 
-/* todo: get rid of unused param1 and param2. */
-#define _TRANSFORM_ENTRY(idx, node)                                                                \
-    {                                                                                              \
-        .behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),                     \
-        .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))),                  \
-        .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))),                  \
-    },
-
 #define KP_INST(n)                                                                                 \
-    static struct behavior_hold_tap_behaviors behavior_hold_tap_behaviors_##n = {                  \
-        .hold = _TRANSFORM_ENTRY(0, n).tap = _TRANSFORM_ENTRY(1, n)};                              \
     static struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                        \
-        .behaviors = &behavior_hold_tap_behaviors_##n,                                             \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
+        .hold_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 0)),                     \
+        .tap_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 1)),                      \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
     };                                                                                             \
     DEVICE_AND_API_INIT(behavior_hold_tap_##n, DT_INST_LABEL(n), behavior_hold_tap_init,           \
