@@ -29,6 +29,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct behavior_sticky_key_config {
     uint32_t release_after_ms;
+    bool quick_release;
     struct zmk_behavior_binding behavior;
 };
 
@@ -209,10 +210,12 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
             }
             if (sticky_key->timer_started) {
                 stop_timer(sticky_key);
+                if (sticky_key->config->quick_release) {
+                    release_sticky_key_behavior(sticky_key, ev->timestamp);
+                }
             }
             sticky_key->modified_key_usage_page = ev->usage_page;
             sticky_key->modified_key_keycode = ev->keycode;
-
         } else { // key up
             if (sticky_key->timer_started &&
                 sticky_key->modified_key_usage_page == ev->usage_page &&
@@ -269,6 +272,7 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
 #define KP_INST(n)                                                                                 \
     static struct behavior_sticky_key_config behavior_sticky_key_config_##n = {                    \
         .behavior = _TRANSFORM_ENTRY(0, n).release_after_ms = DT_INST_PROP(n, release_after_ms),   \
+        .quick_release = DT_INST_PROP(n, quick_release),                                           \
     };                                                                                             \
     DEVICE_AND_API_INIT(behavior_sticky_key_##n, DT_INST_LABEL(n), behavior_sticky_key_init,       \
                         &behavior_sticky_key_data, &behavior_sticky_key_config_##n, APPLICATION,   \
