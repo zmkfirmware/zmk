@@ -6,6 +6,9 @@ if SHIELD_MICRODOX_LEFT
 config ZMK_KEYBOARD_NAME
 	default "Microdox Left"
 
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
 endif
 
 

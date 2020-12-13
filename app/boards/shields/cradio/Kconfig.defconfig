@@ -6,6 +6,9 @@ if SHIELD_CRADIO_LEFT
 config ZMK_KEYBOARD_NAME
 	default "cradio left"
 
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
 endif
 
 if SHIELD_CRADIO_RIGHT
@@ -13,4 +16,11 @@ if SHIELD_CRADIO_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "cradio right"
 
+endif
+
+if SHIELD_CRADIO_LEFT || SHIELD_CRADIO_RIGHT
+
+config ZMK_SPLIT
+	default y
+	
 endif
