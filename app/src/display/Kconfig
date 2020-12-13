@@ -8,7 +8,6 @@ menuconfig ZMK_DISPLAY
     select LVGL
 	select LVGL_THEMES
 	select LVGL_THEME_MONO
-    select LVGL_BUILD_IN_FONT_ROBOTO_12
 
 if ZMK_DISPLAY
 
