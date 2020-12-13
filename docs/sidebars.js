@@ -21,6 +21,8 @@ module.exports = {
       "behaviors/misc",
       "behaviors/hold-tap",
       "behaviors/mod-tap",
+      "behaviors/sticky-key",
+      "behaviors/sticky-layer",
       "behaviors/reset",
       "behaviors/bluetooth",
       "behaviors/outputs",
