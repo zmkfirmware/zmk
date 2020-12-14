@@ -54,7 +54,9 @@ Since then, a much simpler procedure of performing a bluetooth reset for split k
 
 **New Procedure:**
 
-1. Log into Github and download the "settings clear" UF2 image from the [latest build in Github Actions](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain)
+1. Open [latest build in Github Actions](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain) and open the first 'result' on that page.
+1. From the next page under "Artifacts", download the `$boardname-settings_reset-zmk` zip file.
+1. Unzip the downloaded file
 1. Put each half of the split keyboard into bootloader mode
 1. Flash one of the halves of the split with the "settings clear" UF2 image from step 1. Immediately after flashing "settings clear" to the chosen half, immediately put it into bootloader mode
    to avoid accidental bonding between the halves.
