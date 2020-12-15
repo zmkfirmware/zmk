@@ -21,28 +21,31 @@ static int behavior_rgb_underglow_init(const struct device *dev) { return 0; }
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
-    case RGB_TOG:
+    case RGB_TOG_CMD:
         return zmk_rgb_underglow_toggle();
-    case RGB_HUI:
+    case RGB_HUI_CMD:
         return zmk_rgb_underglow_change_hue(1);
-    case RGB_HUD:
+    case RGB_HUD_CMD:
         return zmk_rgb_underglow_change_hue(-1);
-    case RGB_SAI:
+    case RGB_SAI_CMD:
         return zmk_rgb_underglow_change_sat(1);
-    case RGB_SAD:
+    case RGB_SAD_CMD:
         return zmk_rgb_underglow_change_sat(-1);
-    case RGB_BRI:
+    case RGB_BRI_CMD:
         return zmk_rgb_underglow_change_brt(1);
-    case RGB_BRD:
+    case RGB_BRD_CMD:
         return zmk_rgb_underglow_change_brt(-1);
-    case RGB_SPI:
+    case RGB_SPI_CMD:
         return zmk_rgb_underglow_change_spd(1);
-    case RGB_SPD:
+    case RGB_SPD_CMD:
         return zmk_rgb_underglow_change_spd(-1);
-    case RGB_EFF:
+    case RGB_EFF_CMD:
         return zmk_rgb_underglow_cycle_effect(1);
-    case RGB_EFR:
+    case RGB_EFR_CMD:
         return zmk_rgb_underglow_cycle_effect(-1);
+    case RGB_COLOR_HSB_CMD:
+        return zmk_rgb_underglow_set_hsb((binding->param2 >> 16) & 0xFFFF,
+                                         (binding->param2 >> 8) & 0xFF, binding->param2 & 0xFF);
     }
 
     return -ENOTSUP;
