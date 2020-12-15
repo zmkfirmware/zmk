@@ -280,7 +280,7 @@ platform.
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
-export ZSDK_VERSION=0.11.2
+export ZSDK_VERSION=0.11.4
 wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
 	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
 	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run"
@@ -315,7 +315,7 @@ export CROSS_COMPILE=/usr/bin/arm-none-eabi-
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
-export ZSDK_VERSION=0.11.2
+export ZSDK_VERSION=0.11.4
 wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
  sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
  rm "zephyr-toolchain-arm-\${ZSDK_VERSION}-setup.run"
