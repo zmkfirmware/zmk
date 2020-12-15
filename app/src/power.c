@@ -34,3 +34,7 @@ enum power_states sys_pm_policy_next_state(int32_t ticks) {
 
     return SYS_POWER_STATE_ACTIVE;
 }
+
+bool sys_pm_policy_low_power_devices(enum power_states pm_state) {
+    return sys_pm_is_sleep_state(pm_state);
+}
