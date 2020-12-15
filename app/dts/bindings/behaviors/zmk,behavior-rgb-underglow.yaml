@@ -5,4 +5,4 @@ description: RGB Underglow Action
 
 compatible: "zmk,behavior-rgb-underglow"
 
-include: one_param.yaml
+include: two_param.yaml

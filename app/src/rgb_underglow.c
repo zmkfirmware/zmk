@@ -346,6 +346,19 @@ int zmk_rgb_underglow_toggle() {
     return zmk_rgb_underglow_save_state();
 }
 
+int zmk_rgb_underglow_set_hsb(uint16_t hue, uint8_t saturation, uint8_t brightness) {
+    if (hue > 360 || saturation > 100 || brightness > 100) {
+        return -ENOTSUP;
+    }
+
+    state.hue = hue;
+    state.saturation = saturation;
+    state.brightness = brightness;
+    state.current_effect = UNDERGLOW_EFFECT_SOLID;
+
+    return 0;
+}
+
 int zmk_rgb_underglow_change_hue(int direction) {
     if (!led_strip)
         return -ENODEV;

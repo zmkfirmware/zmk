@@ -4,14 +4,29 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define RGB_TOG 0
-#define RGB_HUI 1
-#define RGB_HUD 2
-#define RGB_SAI 3
-#define RGB_SAD 4
-#define RGB_BRI 5
-#define RGB_BRD 6
-#define RGB_SPI 7
-#define RGB_SPD 8
-#define RGB_EFF 9
-#define RGB_EFR 10
+#define RGB_TOG_CMD 0
+#define RGB_HUI_CMD 1
+#define RGB_HUD_CMD 2
+#define RGB_SAI_CMD 3
+#define RGB_SAD_CMD 4
+#define RGB_BRI_CMD 5
+#define RGB_BRD_CMD 6
+#define RGB_SPI_CMD 7
+#define RGB_SPD_CMD 8
+#define RGB_EFF_CMD 9
+#define RGB_EFR_CMD 10
+#define RGB_COLOR_HSB_CMD 11
+
+#define RGB_TOG RGB_TOG_CMD 0
+#define RGB_HUI RGB_HUI_CMD 0
+#define RGB_HUD RGB_HUD_CMD 0
+#define RGB_SAI RGB_SAI_CMD 0
+#define RGB_SAD RGB_SAD_CMD 0
+#define RGB_BRI RGB_BRI_CMD 0
+#define RGB_BRD RGB_BRD_CMD 0
+#define RGB_SPI RGB_SPI_CMD 0
+#define RGB_SPD RGB_SPD_CMD 0
+#define RGB_EFF RGB_EFF_CMD 0
+#define RGB_EFR RGB_EFR_CMD 0
+#define RGB_COLOR_HSB(h, s, v) RGB_COLOR_HSB_CMD(((h) << 16) + ((s) << 8) + (v))
+#define RGB_COLOR_HSV RGB_COLOR_HSB
