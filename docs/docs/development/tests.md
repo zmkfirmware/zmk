@@ -1,14 +1,16 @@
 ---
-title: Tests
-sidebar_label: Tests
+title: Testing
+sidebar_label: Testing
 ---
+
+## General Tests
 
 Running tests requires [native posix support](posix-board). Any folder under `/app/tests`
 containing `native_posix.keymap` will be selected when running `west test`.
 
 Run a single test with `west test <testname>`, like `west test tests/toggle-layer/normal`.
 
-## Creating a New Test Set
+### Creating a New Test Set
 
 1. Copy the test set that most closely resembles the tests you will be creating.
 2. Rename the newly created test set to the behavior you're testing e.g, toggle-layer
@@ -20,3 +22,30 @@ Run a single test with `west test <testname>`, like `west test tests/toggle-laye
 6. Modify `test_case/keycode_events.snapshot` for to include the expected output
 7. Rename the `test_case` folder to describe the test.
 8. Repeat steps 4 to 7 for every test case
+
+## Docker Container Tests
+
+When updating the Docker container, please be sure to run the following commands to ensure all existing features work correctly.
+
+```sh
+
+cd /workspaces/zmk
+west --help
+git status
+nano --help
+cd docs
+npm ci
+npm run prettier:format
+npm run prettier:check
+npm run lint
+npm run build
+npm run start # Verify this works with http://localhost:3000
+cd ../app
+clang-format -i **/*.c
+clang-format -i **/*.h
+west build --board nice_nano -- -DSHIELD=romac_plus
+west build -t menuconfig
+west build -d build/ -t rom_report
+west build -d build/ -t ram_report
+
+```
