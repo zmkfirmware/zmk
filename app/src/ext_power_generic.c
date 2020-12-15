@@ -58,7 +58,7 @@ int ext_power_save_state() {
 #endif
 }
 
-static int ext_power_generic_enable(const struct device *dev) {
+static int ext_power_generic_enable(const struct device *dev, bool saveState) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
@@ -67,10 +67,13 @@ static int ext_power_generic_enable(const struct device *dev) {
         return -EIO;
     }
     data->status = true;
-    return ext_power_save_state();
+    if (saveState) {
+        return ext_power_save_state();
+    }
+    return 0;
 }
 
-static int ext_power_generic_disable(const struct device *dev) {
+static int ext_power_generic_disable(const struct device *dev, bool saveState) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
@@ -79,7 +82,10 @@ static int ext_power_generic_disable(const struct device *dev) {
         return -EIO;
     }
     data->status = false;
-    return ext_power_save_state();
+    if (saveState) {
+        return ext_power_save_state();
+    }
+    return 0;
 }
 
 static int ext_power_generic_get(const struct device *dev) {
@@ -111,9 +117,9 @@ static int ext_power_settings_set(const char *name, size_t len, settings_read_cb
             }
 
             if (data->status) {
-                ext_power_generic_enable(ext_power);
+                ext_power_generic_enable(ext_power, true);
             } else {
-                ext_power_generic_disable(ext_power);
+                ext_power_generic_disable(ext_power, true);
             }
 
             return 0;
@@ -164,7 +170,7 @@ static int ext_power_generic_init(const struct device *dev) {
         data->status = true;
         k_delayed_work_submit(&ext_power_save_work, K_NO_WAIT);
 
-        ext_power_enable(dev);
+        ext_power_enable(dev, true);
     }
 #else
     // Default to the ext_power being open when no settings
@@ -186,7 +192,7 @@ static int ext_power_generic_pm_control(const struct device *dev, uint32_t ctrl_
             data->pm_state = DEVICE_PM_ACTIVE_STATE;
             rc = 0;
         } else {
-            ext_power_generic_disable(dev);
+            ext_power_generic_disable(dev, false);
             data->pm_state = DEVICE_PM_LOW_POWER_STATE;
             rc = 0;
         }

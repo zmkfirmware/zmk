@@ -17,10 +17,16 @@
 #include <drivers/led_strip.h>
 #include <drivers/ext_power.h>
 
+#include <zmk/event_manager.h>
+#include <zmk/events/activity_state_changed.h>
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define STRIP_LABEL DT_LABEL(DT_CHOSEN(zmk_underglow))
 #define STRIP_NUM_PIXELS DT_PROP(DT_CHOSEN(zmk_underglow), chain_length)
+
+int zmk_rgb_underglow_off(bool saveState);
+int zmk_rgb_underglow_on(bool saveState);
 
 enum rgb_underglow_effect {
     UNDERGLOW_EFFECT_SOLID,
@@ -103,14 +109,6 @@ static struct led_rgb hsb_to_rgb(struct led_hsb hsb) {
     struct led_rgb rgb = {r : r * 255, g : g * 255, b : b * 255};
 
     return rgb;
-}
-
-static void zmk_rgb_underglow_off() {
-    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
-        pixels[i] = (struct led_rgb){r : 0, g : 0, b : 0};
-    }
-
-    led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
 }
 
 static void zmk_rgb_underglow_effect_solid() {
@@ -196,7 +194,7 @@ K_WORK_DEFINE(underglow_work, zmk_rgb_underglow_tick);
 
 static void zmk_rgb_underglow_tick_handler(struct k_timer *timer) {
     if (!state.on) {
-        zmk_rgb_underglow_off();
+        zmk_rgb_underglow_off(true);
 
         k_timer_stop(timer);
 
@@ -261,7 +259,7 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
         animation_speed : CONFIG_ZMK_RGB_UNDERGLOW_SPD_START,
         current_effect : CONFIG_ZMK_RGB_UNDERGLOW_EFF_START,
         animation_step : 0,
-        on : IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_ON_START)
+        on : IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_ON_START),
     };
 
 #if IS_ENABLED(CONFIG_SETTINGS)
@@ -282,6 +280,31 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
 
     return 0;
 }
+
+int underglow_event_handler(const zmk_event_t *eh) {
+    struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
+    switch (ev->state) {
+    case ZMK_ACTIVITY_ACTIVE:
+        // Reload settings to get state prior to idle/sleep
+        settings_load_subtree("rgb/underglow");
+        // Don't auto on underglow unless it was on before the board went to sleep
+        if (state.on) {
+            zmk_rgb_underglow_on(false);
+        }
+        break;
+    case ZMK_ACTIVITY_IDLE:
+    case ZMK_ACTIVITY_SLEEP:
+        zmk_rgb_underglow_off(false);
+        break;
+    default:
+        LOG_WRN("Unhandled activity state: %d", ev->state);
+        return -EINVAL;
+    }
+    return 0;
+}
+
+ZMK_LISTENER(led_strip, underglow_event_handler);
+ZMK_SUBSCRIPTION(led_strip, zmk_activity_state_changed);
 
 int zmk_rgb_underglow_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
@@ -312,21 +335,34 @@ int zmk_rgb_underglow_cycle_effect(int direction) {
     return zmk_rgb_underglow_save_state();
 }
 
-int zmk_rgb_underglow_toggle() {
+int zmk_rgb_underglow_toggle(bool saveState) {
     if (!led_strip)
         return -ENODEV;
 
-    state.on = !state.on;
+    if (state.on) {
+        return zmk_rgb_underglow_off(saveState);
+    } else {
+        return zmk_rgb_underglow_on(saveState);
+    }
+
+    return -ENOENT;
+}
+
+int zmk_rgb_underglow_off(bool saveState) {
+    if (!led_strip)
+        return -ENODEV;
+
+    state.on = false;
+
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        pixels[i] = (struct led_rgb){r : 0, g : 0, b : 0};
+    }
+
+    led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
     if (ext_power != NULL) {
-        int rc;
-
-        if (state.on) {
-            rc = ext_power_enable(ext_power);
-        } else {
-            rc = ext_power_disable(ext_power);
-        }
+        int rc = ext_power_disable(ext_power, saveState);
 
         if (rc != 0) {
             LOG_ERR("Unable to toggle EXT_POWER: %d", rc);
@@ -334,16 +370,37 @@ int zmk_rgb_underglow_toggle() {
     }
 #endif
 
-    if (state.on) {
-        state.animation_step = 0;
-        k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
-    } else {
-        zmk_rgb_underglow_off();
+    k_timer_stop(&underglow_tick);
 
-        k_timer_stop(&underglow_tick);
+    if (saveState) {
+        return zmk_rgb_underglow_save_state();
     }
 
-    return zmk_rgb_underglow_save_state();
+    return 0;
+}
+
+int zmk_rgb_underglow_on(bool saveState) {
+    if (!led_strip)
+        return -ENODEV;
+
+    state.on = true;
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
+    if (ext_power != NULL) {
+        int rc = ext_power_enable(ext_power, saveState);
+        if (rc != 0) {
+            LOG_ERR("Unable to toggle EXT_POWER: %d", rc);
+        }
+    }
+#endif
+
+    state.animation_step = 0;
+    k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
+
+    if (saveState) {
+        return zmk_rgb_underglow_save_state();
+    }
+    return 0;
 }
 
 int zmk_rgb_underglow_set_hsb(uint16_t hue, uint8_t saturation, uint8_t brightness) {
