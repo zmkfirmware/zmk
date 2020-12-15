@@ -234,6 +234,9 @@ choice SYS_PM_POLICY
 	default SYS_PM_POLICY_APP
 endchoice
 
+config DEVICE_POWER_MANAGEMENT
+	default y
+
 config ZMK_IDLE_SLEEP_TIMEOUT
 	int "Milliseconds of inactivity before entering deep sleep"
 	default 900000
