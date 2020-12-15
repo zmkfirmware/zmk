@@ -2670,7 +2670,9 @@ export default [
       macos: true,
       ios: true,
     },
-    footnotes: {},
+    footnotes: {
+      ios: ["iosApplication"],
+    },
   },
   {
     names: ["K_POWER", "K_PWR"],
