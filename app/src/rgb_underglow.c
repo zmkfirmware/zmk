@@ -354,7 +354,6 @@ int zmk_rgb_underglow_set_hsb(uint16_t hue, uint8_t saturation, uint8_t brightne
     state.hue = hue;
     state.saturation = saturation;
     state.brightness = brightness;
-    state.current_effect = UNDERGLOW_EFFECT_SOLID;
 
     return 0;
 }
