@@ -19,6 +19,7 @@ struct zmk_event_header {
     uint8_t last_listener_index;
 };
 
+#define ZMK_EV_EVENT_BUBBLE 0
 #define ZMK_EV_EVENT_HANDLED 1
 #define ZMK_EV_EVENT_CAPTURED 2
 
