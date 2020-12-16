@@ -177,7 +177,7 @@ static const struct behavior_driver_api behavior_sticky_key_driver_api = {
 
 static int sticky_key_keycode_state_changed_listener(const struct zmk_event_header *eh) {
     if (!is_keycode_state_changed(eh)) {
-        return 0;
+        return ZMK_EV_EVENT_BUBBLE;
     }
     struct keycode_state_changed *ev = cast_keycode_state_changed(eh);
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
@@ -222,7 +222,7 @@ static int sticky_key_keycode_state_changed_listener(const struct zmk_event_head
             }
         }
     }
-    return 0;
+    return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(behavior_sticky_key, sticky_key_keycode_state_changed_listener);

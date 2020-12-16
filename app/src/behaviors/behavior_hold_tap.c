@@ -392,16 +392,16 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
 
     if (undecided_hold_tap == NULL) {
         LOG_DBG("%d bubble (no undecided hold_tap active)", ev->position);
-        return 0;
+        return ZMK_EV_EVENT_BUBBLE;
     }
 
     if (undecided_hold_tap->position == ev->position) {
         if (ev->state) { // keydown
             LOG_ERR("hold-tap listener should be called before before most other listeners!");
-            return 0;
+            return ZMK_EV_EVENT_BUBBLE;
         } else { // keyup
             LOG_DBG("%d bubble undecided hold-tap keyrelease event", undecided_hold_tap->position);
-            return 0;
+            return ZMK_EV_EVENT_BUBBLE;
         }
     }
 
@@ -418,7 +418,7 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
         // we'll catch modifiers later in modifier_state_changed_listener
         LOG_DBG("%d bubbling %d %s event", undecided_hold_tap->position, ev->position,
                 ev->state ? "down" : "up");
-        return 0;
+        return ZMK_EV_EVENT_BUBBLE;
     }
 
     LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->position,
@@ -439,12 +439,12 @@ static int keycode_state_changed_listener(const struct zmk_event_header *eh) {
 
     if (undecided_hold_tap == NULL) {
         // LOG_DBG("0x%02X bubble (no undecided hold_tap active)", ev->keycode);
-        return 0;
+        return ZMK_EV_EVENT_BUBBLE;
     }
 
     if (!only_mods(ev)) {
         // LOG_DBG("0x%02X bubble (not a mod)", ev->keycode);
-        return 0;
+        return ZMK_EV_EVENT_BUBBLE;
     }
 
     // only key-up events will bubble through position_state_changed_listener
@@ -461,7 +461,7 @@ int behavior_hold_tap_listener(const struct zmk_event_header *eh) {
     } else if (is_keycode_state_changed(eh)) {
         return keycode_state_changed_listener(eh);
     }
-    return 0;
+    return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(behavior_hold_tap, behavior_hold_tap_listener);
