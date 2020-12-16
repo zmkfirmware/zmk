@@ -11,7 +11,7 @@ import macosPower from "@site/docs/codes/_footnotes/macos-power.mdx";
 
 export default {
   example,
+  iosApplication,
   iosPower,
   macosPower,
-  iosApplication,
 };
