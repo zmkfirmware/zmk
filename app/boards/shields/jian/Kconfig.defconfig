@@ -15,6 +15,9 @@ if SHIELD_JIAN_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "Jian Right"
 
+config USB
+	default y
+	
 endif
 
 if SHIELD_JIAN_LEFT || SHIELD_JIAN_RIGHT

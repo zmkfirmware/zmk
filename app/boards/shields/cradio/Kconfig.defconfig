@@ -16,6 +16,9 @@ if SHIELD_CRADIO_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "cradio right"
 
+config USB
+	default y
+
 endif
 
 if SHIELD_CRADIO_LEFT || SHIELD_CRADIO_RIGHT
