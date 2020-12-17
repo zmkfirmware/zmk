@@ -10,7 +10,7 @@
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
-#include <dt-bindings/zmk/hid_usage_pages.h>
+#include <dt-bindings/zmk/hid_usage.h>
 #include <zmk/usb.h>
 #include <zmk/hog.h>
 #include <zmk/event-manager.h>
