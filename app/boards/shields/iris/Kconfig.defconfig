@@ -16,6 +16,9 @@ if SHIELD_IRIS_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "Iris Right"
 
+config USB
+	default y
+
 endif
 
 if SHIELD_IRIS_LEFT || SHIELD_IRIS_RIGHT
