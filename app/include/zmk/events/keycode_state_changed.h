@@ -14,7 +14,7 @@
 
 struct keycode_state_changed {
     struct zmk_event_header header;
-    uint8_t usage_page;
+    uint16_t usage_page;
     uint32_t keycode;
     uint8_t implicit_modifiers;
     bool state;
