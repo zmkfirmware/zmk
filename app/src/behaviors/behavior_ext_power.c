@@ -43,7 +43,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static int behavior_ext_power_init(const struct device *dev) { return 0; };

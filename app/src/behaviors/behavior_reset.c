@@ -30,7 +30,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     // See
     // https://github.com/adafruit/Adafruit_nRF52_Bootloader/blob/d6b28e66053eea467166f44875e3c7ec741cb471/src/main.c#L107
     sys_reboot(cfg->type);
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static const struct behavior_driver_api behavior_reset_driver_api = {

@@ -138,12 +138,12 @@ static int on_sticky_key_binding_pressed(struct zmk_behavior_binding *binding,
     if (sticky_key == NULL) {
         LOG_ERR("unable to store sticky key, did you press more than %d sticky_key?",
                 ZMK_BHV_STICKY_KEY_MAX_HELD);
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     }
 
     press_sticky_key_behavior(sticky_key, event.timestamp);
     LOG_DBG("%d new sticky_key", event.position);
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
@@ -151,7 +151,7 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
     struct active_sticky_key *sticky_key = find_sticky_key(event.position);
     if (sticky_key == NULL) {
         LOG_ERR("ACTIVE STICKY KEY CLEARED TOO EARLY");
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     }
 
     if (sticky_key->modified_key_usage_page != 0 && sticky_key->modified_key_keycode != 0) {
@@ -167,7 +167,7 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
     if (ms_left > 0) {
         k_delayed_work_submit(&sticky_key->release_timer, K_MSEC(ms_left));
     }
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static const struct behavior_driver_api behavior_sticky_key_driver_api = {
