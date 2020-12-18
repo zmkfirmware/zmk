@@ -310,7 +310,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     if (undecided_hold_tap != NULL) {
         LOG_DBG("ERROR another hold-tap behavior is undecided.");
         // if this happens, make sure the behavior events occur AFTER other position events.
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     }
 
     struct active_hold_tap *hold_tap =
@@ -318,7 +318,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     if (hold_tap == NULL) {
         LOG_ERR("unable to store hold-tap info, did you press more than %d hold-taps?",
                 ZMK_BHV_HOLD_TAP_MAX_HELD);
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     }
 
     LOG_DBG("%d new undecided hold_tap", event.position);
@@ -331,7 +331,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
         k_delayed_work_submit(&hold_tap->work, K_MSEC(tapping_term_ms_left));
     }
 
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
@@ -339,7 +339,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     struct active_hold_tap *hold_tap = find_hold_tap(event.position);
     if (hold_tap == NULL) {
         LOG_ERR("ACTIVE_HOLD_TAP_CLEANED_UP_TOO_EARLY");
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     }
 
     // If these events were queued, the timer event may be queued too late or not at all.
@@ -379,7 +379,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
         clear_hold_tap(hold_tap);
     }
 
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static const struct behavior_driver_api behavior_hold_tap_driver_api = {
