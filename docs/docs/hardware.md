@@ -22,6 +22,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [BDN9 Rev2](https://keeb.io/products/bdn9-rev-2-3x3-9-key-macropad-rotary-encoder-and-rgb) (`bdn9_rev2`)
 
 ## Keyboard Shields
+
 - [Kyria](https://splitkb.com/products/kyria-pcb-kit) (`kyria_left` and `kyria_right`)
 - [Corne](https://github.com/foostan/crkbd) (`corne_left` and `corne_right`)
 - [Helix](https://github.com/mcmadhatter/helix) (`helix_left` and `helix_right`)
