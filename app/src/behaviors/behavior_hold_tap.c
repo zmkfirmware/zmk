@@ -283,28 +283,23 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
             flavor_str(hold_tap->config->flavor), event_type);
     undecided_hold_tap = NULL;
 
-    struct zmk_behavior_binding_event event = {
-        .position = hold_tap->position,
-        .timestamp = hold_tap->timestamp,
-    };
-
-    struct zmk_behavior_binding binding;
+    // todo: store layer properly
+    int layer = 0;
     if (hold_tap->is_hold) {
-        binding.behavior_dev = hold_tap->config->behaviors->hold.behavior_dev;
-        binding.param1 = hold_tap->param_hold;
-        binding.param2 = 0;
+        ZMK_EVENT_RAISE(create_behavior_state_changed(
+            hold_tap->config->behaviors->hold.behavior_dev, hold_tap->param_hold, 0, true, layer,
+            hold_tap->position, hold_tap->timestamp));
     } else {
-        binding.behavior_dev = hold_tap->config->behaviors->tap.behavior_dev;
-        binding.param1 = hold_tap->param_tap;
-        binding.param2 = 0;
+        ZMK_EVENT_RAISE(create_behavior_state_changed(hold_tap->config->behaviors->tap.behavior_dev,
+                                                      hold_tap->param_tap, 0, true, layer,
+                                                      hold_tap->position, hold_tap->timestamp));
     }
-    behavior_keymap_binding_pressed(&binding, event);
+
     release_captured_events();
 }
 
-static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
-                                       struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+static int on_hold_tap_binding_pressed(const struct behavior_state_changed *event) {
+    const struct device *dev = device_get_binding(event->behavior_dev);
     const struct behavior_hold_tap_config *cfg = dev->config;
 
     if (undecided_hold_tap != NULL) {
@@ -314,14 +309,14 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     }
 
     struct active_hold_tap *hold_tap =
-        store_hold_tap(event.position, binding->param1, binding->param2, event.timestamp, cfg);
+        store_hold_tap(event->position, event->param1, event->param2, event->timestamp, cfg);
     if (hold_tap == NULL) {
         LOG_ERR("unable to store hold-tap info, did you press more than %d hold-taps?",
                 ZMK_BHV_HOLD_TAP_MAX_HELD);
         return ZMK_BEHAVIOR_OPAQUE;
     }
 
-    LOG_DBG("%d new undecided hold_tap", event.position);
+    LOG_DBG("%d new undecided hold_tap", event->position);
     undecided_hold_tap = hold_tap;
 
     // if this behavior was queued we have to adjust the timer to only
@@ -334,9 +329,8 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
-static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
-                                        struct zmk_behavior_binding_event event) {
-    struct active_hold_tap *hold_tap = find_hold_tap(event.position);
+static int on_hold_tap_binding_released(const struct behavior_state_changed *event) {
+    struct active_hold_tap *hold_tap = find_hold_tap(event->position);
     if (hold_tap == NULL) {
         LOG_ERR("ACTIVE_HOLD_TAP_CLEANED_UP_TOO_EARLY");
         return ZMK_BEHAVIOR_OPAQUE;
@@ -345,40 +339,38 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     // If these events were queued, the timer event may be queued too late or not at all.
     // We insert a timer event before the TH_KEY_UP event to verify.
     int work_cancel_result = k_delayed_work_cancel(&hold_tap->work);
-    if (event.timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
+    if (event->timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(hold_tap, HT_TIMER_EVENT);
     }
 
     decide_hold_tap(hold_tap, HT_KEY_UP);
 
-    // todo: set up the binding and data items inside of the active_hold_tap struct
-    struct zmk_behavior_binding_event sub_behavior_data = {
-        .position = hold_tap->position,
-        .timestamp = hold_tap->timestamp,
-    };
-
-    struct zmk_behavior_binding sub_behavior_binding;
+    // todo: store layer properly
+    int ret;
+    int layer = 0;
     if (hold_tap->is_hold) {
-        sub_behavior_binding.behavior_dev = hold_tap->config->behaviors->hold.behavior_dev;
-        sub_behavior_binding.param1 = hold_tap->param_hold;
-        sub_behavior_binding.param2 = 0;
+        ret = ZMK_EVENT_RAISE(create_behavior_state_changed(
+            hold_tap->config->behaviors->hold.behavior_dev, hold_tap->param_hold, 0, false, layer,
+            hold_tap->position, hold_tap->timestamp));
     } else {
-        sub_behavior_binding.behavior_dev = hold_tap->config->behaviors->tap.behavior_dev;
-        sub_behavior_binding.param1 = hold_tap->param_tap;
-        sub_behavior_binding.param2 = 0;
+        ret = ZMK_EVENT_RAISE(create_behavior_state_changed(
+            hold_tap->config->behaviors->tap.behavior_dev, hold_tap->param_tap, 0, false, layer,
+            hold_tap->position, hold_tap->timestamp));
     }
-    behavior_keymap_binding_released(&sub_behavior_binding, sub_behavior_data);
 
     if (work_cancel_result == -EINPROGRESS) {
         // let the timer handler clean up
         // if we'd clear now, the timer may call back for an uninitialized active_hold_tap.
-        LOG_DBG("%d hold-tap timer work in event queue", event.position);
+        LOG_DBG("%d hold-tap timer work in event queue", event->position);
         hold_tap->work_is_cancelled = true;
     } else {
-        LOG_DBG("%d cleaning up hold-tap", event.position);
+        LOG_DBG("%d cleaning up hold-tap", event->position);
         clear_hold_tap(hold_tap);
     }
 
+    if (ret < 0) {
+        return ret;
+    }
     return ZMK_BEHAVIOR_OPAQUE;
 }
 

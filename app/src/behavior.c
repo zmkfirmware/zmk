@@ -20,21 +20,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/sensor_event.h>
 
 int zmk_behavior_state_changed(const struct behavior_state_changed *ev) {
-    struct zmk_behavior_binding binding = {
-        .behavior_dev = ev->behavior_dev,
-        .param1 = ev->param1,
-        .param2 = ev->param2,
-    };
-    const struct zmk_behavior_binding_event event = {
-        .layer = ev->layer,
-        .position = ev->position,
-        .timestamp = ev->timestamp,
-    };
     int ret;
     if (ev->pressed) {
-        ret = behavior_keymap_binding_pressed(&binding, event);
+        ret = behavior_keymap_binding_pressed(ev);
     } else {
-        ret = behavior_keymap_binding_released(&binding, event);
+        ret = behavior_keymap_binding_released(ev);
     }
     if (ret < 0) {
         return ret;
@@ -51,9 +41,10 @@ int zmk_behavior_state_changed(const struct behavior_state_changed *ev) {
 
 int behavior_listener(const struct zmk_event_header *eh) {
     if (is_behavior_state_changed(eh)) {
-        const struct behavior_state_changed *ev = cast_position_state_changed(eh);
+        const struct behavior_state_changed *ev = cast_behavior_state_changed(eh);
         return zmk_behavior_state_changed(ev);
     }
+    return 0;
 }
 
 ZMK_LISTENER(behavior, behavior_listener);

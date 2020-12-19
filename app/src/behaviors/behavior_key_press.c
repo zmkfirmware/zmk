@@ -18,18 +18,16 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int behavior_key_press_init(const struct device *dev) { return 0; };
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
+static int on_keymap_binding_pressed(const struct behavior_state_changed *event) {
+    LOG_DBG("position %d keycode 0x%02X", event->position, event->param1);
     return ZMK_EVENT_RAISE(
-        keycode_state_changed_from_encoded(binding->param1, true, event.timestamp));
+        keycode_state_changed_from_encoded(event->param1, true, event->timestamp));
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
+static int on_keymap_binding_released(const struct behavior_state_changed *event) {
+    LOG_DBG("position %d keycode 0x%02X", event->position, event->param1);
     return ZMK_EVENT_RAISE(
-        keycode_state_changed_from_encoded(binding->param1, false, event.timestamp));
+        keycode_state_changed_from_encoded(event->param1, false, event->timestamp));
 }
 
 static const struct behavior_driver_api behavior_key_press_driver_api = {

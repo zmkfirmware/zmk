@@ -21,9 +21,8 @@ struct behavior_reset_config {
 
 static int behavior_reset_init(const struct device *dev) { return 0; };
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+static int on_keymap_binding_pressed(const struct behavior_state_changed *event) {
+    const struct device *dev = device_get_binding(event->behavior_dev);
     const struct behavior_reset_config *cfg = dev->config;
 
     // TODO: Correct magic code for going into DFU?

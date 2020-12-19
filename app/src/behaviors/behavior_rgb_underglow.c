@@ -18,9 +18,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int behavior_rgb_underglow_init(const struct device *dev) { return 0; }
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    switch (binding->param1) {
+static int on_keymap_binding_pressed(const struct behavior_state_changed *event) {
+    switch (event->param1) {
     case RGB_TOG:
         return zmk_rgb_underglow_toggle();
     case RGB_HUI:
@@ -48,8 +47,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     return -ENOTSUP;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_released(const struct behavior_state_changed *event) {
     return ZMK_BEHAVIOR_OPAQUE;
 }
 

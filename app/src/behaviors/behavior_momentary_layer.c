@@ -20,16 +20,14 @@ struct behavior_mo_data {};
 
 static int behavior_mo_init(const struct device *dev) { return 0; };
 
-static int mo_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d layer %d", event.position, binding->param1);
-    return zmk_keymap_layer_activate(binding->param1);
+static int mo_keymap_binding_pressed(const struct behavior_state_changed *event) {
+    LOG_DBG("position %d layer %d", event->position, event->param1);
+    return zmk_keymap_layer_activate(event->param1);
 }
 
-static int mo_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d layer %d", event.position, binding->param1);
-    return zmk_keymap_layer_deactivate(binding->param1);
+static int mo_keymap_binding_released(const struct behavior_state_changed *event) {
+    LOG_DBG("position %d layer %d", event->position, event->param1);
+    return zmk_keymap_layer_deactivate(event->param1);
 }
 
 static const struct behavior_driver_api behavior_mo_driver_api = {

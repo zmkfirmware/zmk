@@ -20,13 +20,11 @@ struct behavior_transparent_data {};
 
 static int behavior_transparent_init(const struct device *dev) { return 0; };
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_pressed(const struct behavior_state_changed *event) {
     return ZMK_BEHAVIOR_TRANSPARENT;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_released(const struct behavior_state_changed *event) {
     return ZMK_BEHAVIOR_TRANSPARENT;
 }
 

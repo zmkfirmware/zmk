@@ -12,14 +12,14 @@
 #include <bluetooth/conn.h>
 #include <logging/log.h>
 #include <zmk/behavior.h>
+#include <zmk/events/behavior_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/ble.h>
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    switch (binding->param1) {
+static int on_keymap_binding_pressed(const struct behavior_state_changed *event) {
+    switch (event->param1) {
     case BT_CLR_CMD:
         return zmk_ble_clear_bonds();
     case BT_NXT_CMD:
@@ -27,9 +27,9 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     case BT_PRV_CMD:
         return zmk_ble_prof_prev();
     case BT_SEL_CMD:
-        return zmk_ble_prof_select(binding->param2);
+        return zmk_ble_prof_select(event->param2);
     default:
-        LOG_ERR("Unknown BT command: %d", binding->param1);
+        LOG_ERR("Unknown BT command: %d", event->param1);
     }
 
     return -ENOTSUP;
@@ -37,8 +37,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 
 static int behavior_bt_init(const struct device *dev) { return 0; };
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_released(const struct behavior_state_changed *event) {
     return ZMK_BEHAVIOR_OPAQUE;
 }
 

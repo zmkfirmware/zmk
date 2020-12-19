@@ -18,9 +18,8 @@
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    switch (binding->param1) {
+static int on_keymap_binding_pressed(const struct behavior_state_changed *event) {
+    switch (event->param1) {
     case OUT_TOG:
         return zmk_endpoints_toggle();
     case OUT_USB:
@@ -28,7 +27,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     case OUT_BLE:
         return zmk_endpoints_select(ZMK_ENDPOINT_BLE);
     default:
-        LOG_ERR("Unknown output command: %d", binding->param1);
+        LOG_ERR("Unknown output command: %d", event->param1);
     }
 
     return -ENOTSUP;

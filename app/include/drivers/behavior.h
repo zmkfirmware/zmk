@@ -11,6 +11,7 @@
 #include <device.h>
 #include <zmk/keys.h>
 #include <zmk/behavior.h>
+#include <zmk/events/behavior_state_changed.h>
 
 /**
  * @cond INTERNAL_HIDDEN
@@ -20,8 +21,7 @@
  * (Internal use only.)
  */
 
-typedef int (*behavior_keymap_binding_callback_t)(struct zmk_behavior_binding *binding,
-                                                  struct zmk_behavior_binding_event event);
+typedef int (*behavior_keymap_binding_callback_t)(const struct behavior_state_changed *ev);
 typedef int (*behavior_sensor_keymap_binding_callback_t)(struct zmk_behavior_binding *binding,
                                                          const struct device *sensor,
                                                          int64_t timestamp);
@@ -44,19 +44,18 @@ __subsystem struct behavior_driver_api {
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                              struct zmk_behavior_binding_event event);
+__syscall int behavior_keymap_binding_pressed(const struct behavior_state_changed *ev);
 
-static inline int z_impl_behavior_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                                         struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+static inline int
+z_impl_behavior_keymap_binding_pressed(const struct behavior_state_changed *event) {
+    const struct device *dev = device_get_binding(event->behavior_dev);
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
 
     if (api->binding_pressed == NULL) {
         return -ENOTSUP;
     }
 
-    return api->binding_pressed(binding, event);
+    return api->binding_pressed(event);
 }
 
 /**
@@ -67,19 +66,18 @@ static inline int z_impl_behavior_keymap_binding_pressed(struct zmk_behavior_bin
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                               struct zmk_behavior_binding_event event);
+__syscall int behavior_keymap_binding_released(const struct behavior_state_changed *ev);
 
-static inline int z_impl_behavior_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                                          struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+static inline int
+z_impl_behavior_keymap_binding_released(const struct behavior_state_changed *event) {
+    const struct device *dev = device_get_binding(event->behavior_dev);
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
 
     if (api->binding_released == NULL) {
         return -ENOTSUP;
     }
 
-    return api->binding_released(binding, event);
+    return api->binding_released(event);
 }
 
 /**
