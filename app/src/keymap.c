@@ -19,7 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/layer_state_changed.h>
 #include <zmk/events/sensor_event.h>
 
-static zmk_keymap_layers_state _zmk_keymap_layer_state = 0;
+static zmk_keymap_layers_state_t _zmk_keymap_layer_state = 0;
 static uint8_t _zmk_keymap_layer_default = 0;
 
 #define DT_DRV_COMPAT zmk_keymap
@@ -88,7 +88,7 @@ static inline int set_layer_state(uint8_t layer, bool state) {
 
 uint8_t zmk_keymap_layer_default() { return _zmk_keymap_layer_default; }
 
-zmk_keymap_layers_state zmk_keymap_layer_state() { return _zmk_keymap_layer_state; }
+zmk_keymap_layers_state_t zmk_keymap_layer_state() { return _zmk_keymap_layer_state; }
 
 bool zmk_keymap_layer_active(uint8_t layer) {
     return (_zmk_keymap_layer_state & (BIT(layer))) == (BIT(layer));
@@ -115,7 +115,7 @@ int zmk_keymap_layer_toggle(uint8_t layer) {
     return zmk_keymap_layer_activate(layer);
 };
 
-bool is_active_layer(uint8_t layer, zmk_keymap_layers_state layer_state) {
+bool is_active_layer(uint8_t layer, zmk_keymap_layers_state_t layer_state) {
     return (layer_state & BIT(layer)) == BIT(layer) || layer == _zmk_keymap_layer_default;
 }
 
