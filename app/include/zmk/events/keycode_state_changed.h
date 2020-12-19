@@ -27,7 +27,7 @@ static inline struct keycode_state_changed *
 keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t timestamp) {
     uint16_t page = HID_USAGE_PAGE(encoded) & 0xFF;
     uint16_t id = HID_USAGE_ID(encoded);
-    zmk_mod_flags implicit_mods = SELECT_MODS(encoded);
+    zmk_mod_flags_t implicit_mods = SELECT_MODS(encoded);
 
     if (!page) {
         page = HID_USAGE_KEY;

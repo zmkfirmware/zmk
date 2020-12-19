@@ -11,7 +11,7 @@
 
 typedef uint32_t zmk_key_t;
 typedef uint8_t zmk_mod_t;
-typedef uint8_t zmk_mod_flags;
+typedef uint8_t zmk_mod_flags_t;
 
 struct zmk_key_event {
     uint32_t column;
