@@ -27,9 +27,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define ZMK_BHV_HOLD_TAP_MAX_HELD 10
 #define ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS 40
 
-// increase if you have keyboard with more keys.
-#define ZMK_BHV_HOLD_TAP_POSITION_NOT_USED 9999
-
 enum flavor {
     ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED = 0,
     ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED = 1,
@@ -49,14 +46,10 @@ struct behavior_hold_tap_config {
 
 // this data is specific for each hold-tap
 struct active_hold_tap {
-    int32_t position;
-    // todo: move these params into the config->behaviors->tap and
-    uint32_t param_hold;
-    uint32_t param_tap;
-    int64_t timestamp;
+    const struct behavior_state_changed *event;
+    const struct behavior_hold_tap_config *config;
     bool is_decided;
     bool is_hold;
-    const struct behavior_hold_tap_config *config;
     struct k_delayed_work work;
     bool work_is_cancelled;
 };
@@ -157,34 +150,31 @@ static void release_captured_events() {
 
 static struct active_hold_tap *find_hold_tap(uint32_t position) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
-        if (active_hold_taps[i].position == position) {
+        if (active_hold_taps[i].event != NULL && active_hold_taps[i].event->position == position) {
             return &active_hold_taps[i];
         }
     }
     return NULL;
 }
 
-static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_hold,
-                                              uint32_t param_tap, int64_t timestamp,
+static struct active_hold_tap *store_hold_tap(const struct behavior_state_changed *event,
                                               const struct behavior_hold_tap_config *config) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
-        if (active_hold_taps[i].position != ZMK_BHV_HOLD_TAP_POSITION_NOT_USED) {
+        if (active_hold_taps[i].event != NULL) {
             continue;
         }
-        active_hold_taps[i].position = position;
+        active_hold_taps[i].event = event;
         active_hold_taps[i].is_decided = false;
         active_hold_taps[i].is_hold = false;
         active_hold_taps[i].config = config;
-        active_hold_taps[i].param_hold = param_hold;
-        active_hold_taps[i].param_tap = param_tap;
-        active_hold_taps[i].timestamp = timestamp;
         return &active_hold_taps[i];
     }
     return NULL;
 }
 
 static void clear_hold_tap(struct active_hold_tap *hold_tap) {
-    hold_tap->position = ZMK_BHV_HOLD_TAP_POSITION_NOT_USED;
+    k_free((void *)hold_tap->event);
+    hold_tap->event = NULL;
     hold_tap->is_decided = false;
     hold_tap->is_hold = false;
     hold_tap->work_is_cancelled = false;
@@ -279,20 +269,18 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
         return;
     }
 
-    LOG_DBG("%d decided %s (%s event %d)", hold_tap->position, hold_tap->is_hold ? "hold" : "tap",
-            flavor_str(hold_tap->config->flavor), event_type);
+    LOG_DBG("%d decided %s (%s event %d)", hold_tap->event->position,
+            hold_tap->is_hold ? "hold" : "tap", flavor_str(hold_tap->config->flavor), event_type);
     undecided_hold_tap = NULL;
 
-    // todo: store layer properly
-    int layer = 0;
     if (hold_tap->is_hold) {
         ZMK_EVENT_RAISE(create_behavior_state_changed(
-            hold_tap->config->behaviors->hold.behavior_dev, hold_tap->param_hold, 0, true, layer,
-            hold_tap->position, hold_tap->timestamp));
+            hold_tap->config->behaviors->hold.behavior_dev, hold_tap->event->param1, 0, true,
+            hold_tap->event->layer, hold_tap->event->position, hold_tap->event->timestamp));
     } else {
-        ZMK_EVENT_RAISE(create_behavior_state_changed(hold_tap->config->behaviors->tap.behavior_dev,
-                                                      hold_tap->param_tap, 0, true, layer,
-                                                      hold_tap->position, hold_tap->timestamp));
+        ZMK_EVENT_RAISE(create_behavior_state_changed(
+            hold_tap->config->behaviors->tap.behavior_dev, hold_tap->event->param2, 0, true,
+            hold_tap->event->layer, hold_tap->event->position, hold_tap->event->timestamp));
     }
 
     release_captured_events();
@@ -308,8 +296,7 @@ static int on_hold_tap_binding_pressed(const struct behavior_state_changed *even
         return ZMK_BEHAVIOR_OPAQUE;
     }
 
-    struct active_hold_tap *hold_tap =
-        store_hold_tap(event->position, event->param1, event->param2, event->timestamp, cfg);
+    struct active_hold_tap *hold_tap = store_hold_tap(event, cfg);
     if (hold_tap == NULL) {
         LOG_ERR("unable to store hold-tap info, did you press more than %d hold-taps?",
                 ZMK_BHV_HOLD_TAP_MAX_HELD);
@@ -321,41 +308,40 @@ static int on_hold_tap_binding_pressed(const struct behavior_state_changed *even
 
     // if this behavior was queued we have to adjust the timer to only
     // wait for the remaining time.
-    int32_t tapping_term_ms_left = (hold_tap->timestamp + cfg->tapping_term_ms) - k_uptime_get();
+    int32_t tapping_term_ms_left =
+        (hold_tap->event->timestamp + cfg->tapping_term_ms) - k_uptime_get();
     if (tapping_term_ms_left > 0) {
         k_delayed_work_submit(&hold_tap->work, K_MSEC(tapping_term_ms_left));
     }
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return ZMK_BEHAVIOR_CAPTURED;
 }
 
 static int on_hold_tap_binding_released(const struct behavior_state_changed *event) {
     struct active_hold_tap *hold_tap = find_hold_tap(event->position);
     if (hold_tap == NULL) {
-        LOG_ERR("ACTIVE_HOLD_TAP_CLEANED_UP_TOO_EARLY");
+        LOG_ERR("ACTIVE HOLD TAP CLEANED UP TOO EARLY");
         return ZMK_BEHAVIOR_OPAQUE;
     }
 
     // If these events were queued, the timer event may be queued too late or not at all.
     // We insert a timer event before the TH_KEY_UP event to verify.
     int work_cancel_result = k_delayed_work_cancel(&hold_tap->work);
-    if (event->timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
+    if (event->timestamp > (hold_tap->event->timestamp + hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(hold_tap, HT_TIMER_EVENT);
     }
 
     decide_hold_tap(hold_tap, HT_KEY_UP);
 
-    // todo: store layer properly
     int ret;
-    int layer = 0;
     if (hold_tap->is_hold) {
         ret = ZMK_EVENT_RAISE(create_behavior_state_changed(
-            hold_tap->config->behaviors->hold.behavior_dev, hold_tap->param_hold, 0, false, layer,
-            hold_tap->position, hold_tap->timestamp));
+            hold_tap->config->behaviors->hold.behavior_dev, hold_tap->event->param1, 0, false,
+            hold_tap->event->layer, hold_tap->event->position, hold_tap->event->timestamp));
     } else {
         ret = ZMK_EVENT_RAISE(create_behavior_state_changed(
-            hold_tap->config->behaviors->tap.behavior_dev, hold_tap->param_tap, 0, false, layer,
-            hold_tap->position, hold_tap->timestamp));
+            hold_tap->config->behaviors->tap.behavior_dev, hold_tap->event->param2, 0, false,
+            hold_tap->event->layer, hold_tap->event->position, hold_tap->event->timestamp));
     }
 
     if (work_cancel_result == -EINPROGRESS) {
@@ -387,12 +373,13 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    if (undecided_hold_tap->position == ev->position) {
+    if (undecided_hold_tap->event->position == ev->position) {
         if (ev->state) { // keydown
             LOG_ERR("hold-tap listener should be called before before most other listeners!");
             return ZMK_EV_EVENT_BUBBLE;
         } else { // keyup
-            LOG_DBG("%d bubble undecided hold-tap keyrelease event", undecided_hold_tap->position);
+            LOG_DBG("%d bubble undecided hold-tap keyrelease event",
+                    undecided_hold_tap->event->position);
             return ZMK_EV_EVENT_BUBBLE;
         }
     }
@@ -401,19 +388,19 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
     // We make a timer decision before the other key events are handled if the timer would
     // have run out.
     if (ev->timestamp >
-        (undecided_hold_tap->timestamp + undecided_hold_tap->config->tapping_term_ms)) {
+        (undecided_hold_tap->event->timestamp + undecided_hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT);
     }
 
     if (!ev->state && find_captured_keydown_event(ev->position) == NULL) {
         // no keydown event has been captured, let it bubble.
         // we'll catch modifiers later in modifier_state_changed_listener
-        LOG_DBG("%d bubbling %d %s event", undecided_hold_tap->position, ev->position,
+        LOG_DBG("%d bubbling %d %s event", undecided_hold_tap->event->position, ev->position,
                 ev->state ? "down" : "up");
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->position,
+    LOG_DBG("%d capturing %d %s event", undecided_hold_tap->event->position, ev->position,
             ev->state ? "down" : "up");
     capture_event(eh);
     decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP);
@@ -441,7 +428,7 @@ static int keycode_state_changed_listener(const struct zmk_event_header *eh) {
 
     // only key-up events will bubble through position_state_changed_listener
     // if a undecided_hold_tap is active.
-    LOG_DBG("%d capturing 0x%02X %s event", undecided_hold_tap->position, ev->keycode,
+    LOG_DBG("%d capturing 0x%02X %s event", undecided_hold_tap->event->position, ev->keycode,
             ev->state ? "down" : "up");
     capture_event(eh);
     return ZMK_EV_EVENT_CAPTURED;
@@ -477,7 +464,6 @@ static int behavior_hold_tap_init(const struct device *dev) {
     if (init_first_run) {
         for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
             k_delayed_work_init(&active_hold_taps[i].work, behavior_hold_tap_timer_work_handler);
-            active_hold_taps[i].position = ZMK_BHV_HOLD_TAP_POSITION_NOT_USED;
         }
     }
     init_first_run = false;
