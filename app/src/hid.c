@@ -77,7 +77,7 @@ int zmk_hid_implicit_modifiers_release() {
     return 0;
 }
 
-int zmk_hid_keyboard_press(zmk_key code) {
+int zmk_hid_keyboard_press(zmk_key_t code) {
     if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
         return zmk_hid_register_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
     }
@@ -85,7 +85,7 @@ int zmk_hid_keyboard_press(zmk_key code) {
     return 0;
 };
 
-int zmk_hid_keyboard_release(zmk_key code) {
+int zmk_hid_keyboard_release(zmk_key_t code) {
     if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
         return zmk_hid_unregister_mod(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
     }
@@ -95,12 +95,12 @@ int zmk_hid_keyboard_release(zmk_key code) {
 
 void zmk_hid_keyboard_clear() { memset(&keyboard_report.body, 0, sizeof(keyboard_report.body)); }
 
-int zmk_hid_consumer_press(zmk_key code) {
+int zmk_hid_consumer_press(zmk_key_t code) {
     TOGGLE_CONSUMER(0U, code);
     return 0;
 };
 
-int zmk_hid_consumer_release(zmk_key code) {
+int zmk_hid_consumer_release(zmk_key_t code) {
     TOGGLE_CONSUMER(code, 0U);
     return 0;
 };
