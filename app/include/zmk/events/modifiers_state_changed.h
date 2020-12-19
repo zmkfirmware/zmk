@@ -12,13 +12,13 @@
 
 struct modifiers_state_changed {
     struct zmk_event_header header;
-    zmk_mod_flags modifiers;
+    zmk_mod_flags_t modifiers;
     bool state;
 };
 
 ZMK_EVENT_DECLARE(modifiers_state_changed);
 
-inline struct modifiers_state_changed *create_modifiers_state_changed(zmk_mod_flags modifiers,
+inline struct modifiers_state_changed *create_modifiers_state_changed(zmk_mod_flags_t modifiers,
                                                                       bool state) {
     struct modifiers_state_changed *ev = new_modifiers_state_changed();
     ev->modifiers = modifiers;

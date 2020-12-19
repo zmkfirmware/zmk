@@ -18,7 +18,7 @@ static struct zmk_hid_consumer_report consumer_report = {.report_id = 2, .body =
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
 static int explicit_modifier_counts[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-static zmk_mod_flags explicit_modifiers = 0;
+static zmk_mod_flags_t explicit_modifiers = 0;
 
 #define SET_MODIFIERS(mods)                                                                        \
     {                                                                                              \
@@ -67,7 +67,7 @@ int zmk_hid_unregister_mod(zmk_mod_t modifier) {
         break;                                                                                     \
     }
 
-int zmk_hid_implicit_modifiers_press(zmk_mod_flags implicit_modifiers) {
+int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t implicit_modifiers) {
     SET_MODIFIERS(explicit_modifiers | implicit_modifiers);
     return 0;
 }
