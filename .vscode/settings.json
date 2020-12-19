@@ -1,8 +1,6 @@
 {
   "C_Cpp.autoAddFileAssociations": false,
   "files.associations": {
-    "*.overlay": "dts",
-    "*.keymap": "dts",
     "*.h": "c"
   },
   "[c]": {
