@@ -8,6 +8,7 @@
 
 #define ZMK_BEHAVIOR_OPAQUE 0
 #define ZMK_BEHAVIOR_TRANSPARENT 1
+#define ZMK_BEHAVIOR_CAPTURED 2
 
 struct zmk_behavior_binding {
     char *behavior_dev;

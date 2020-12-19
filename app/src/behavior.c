@@ -34,6 +34,8 @@ int zmk_behavior_state_changed(const struct behavior_state_changed *ev) {
         return ZMK_EV_EVENT_BUBBLE;
     case ZMK_BEHAVIOR_OPAQUE:
         return ZMK_EV_EVENT_HANDLED;
+    case ZMK_BEHAVIOR_CAPTURED:
+        return ZMK_EV_EVENT_CAPTURED;
     default:
         return -ENOTSUP;
     }
