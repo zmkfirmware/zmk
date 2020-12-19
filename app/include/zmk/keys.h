@@ -10,7 +10,6 @@
 #include <dt-bindings/zmk/keys.h>
 
 typedef uint32_t zmk_key;
-typedef uint8_t zmk_action;
 typedef uint8_t zmk_mod;
 typedef uint8_t zmk_mod_flags;
 
