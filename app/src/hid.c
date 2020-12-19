@@ -26,7 +26,7 @@ static zmk_mod_flags explicit_modifiers = 0;
         LOG_DBG("Modifiers set to 0x%02X", keyboard_report.body.modifiers);                        \
     }
 
-int zmk_hid_register_mod(zmk_mod modifier) {
+int zmk_hid_register_mod(zmk_mod_t modifier) {
     explicit_modifier_counts[modifier]++;
     LOG_DBG("Modifier %d count %d", modifier, explicit_modifier_counts[modifier]);
     WRITE_BIT(explicit_modifiers, modifier, true);
@@ -34,7 +34,7 @@ int zmk_hid_register_mod(zmk_mod modifier) {
     return 0;
 }
 
-int zmk_hid_unregister_mod(zmk_mod modifier) {
+int zmk_hid_unregister_mod(zmk_mod_t modifier) {
     if (explicit_modifier_counts[modifier] <= 0) {
         LOG_ERR("Tried to unregister modifier %d too often", modifier);
         return -EINVAL;
