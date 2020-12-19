@@ -16,6 +16,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
+#include <zmk/events/behavior_state_changed.h>
 #include <zmk/events/layer_state_changed.h>
 #include <zmk/events/sensor_event.h>
 
@@ -146,11 +147,6 @@ int zmk_keymap_layer_to(uint8_t layer) {
 int zmk_keymap_apply_position_state(int layer, uint32_t position, bool pressed, int64_t timestamp) {
     struct zmk_behavior_binding *binding = &zmk_keymap[layer][position];
     const struct device *behavior;
-    struct zmk_behavior_binding_event event = {
-        .layer = layer,
-        .position = position,
-        .timestamp = timestamp,
-    };
 
     LOG_DBG("layer: %d position: %d, binding name: %s", layer, position,
             log_strdup(binding->behavior_dev));
@@ -159,14 +155,11 @@ int zmk_keymap_apply_position_state(int layer, uint32_t position, bool pressed, 
 
     if (!behavior) {
         LOG_DBG("No behavior assigned to %d on layer %d", position, layer);
-        return 1;
+        return ZMK_EV_EVENT_HANDLED;
     }
 
-    if (pressed) {
-        return behavior_keymap_binding_pressed(binding, event);
-    } else {
-        return behavior_keymap_binding_released(binding, event);
-    }
+    return ZMK_EVENT_RAISE(
+        create_behavior_state_changed_from_binding(binding, pressed, layer, position, timestamp));
 }
 
 int zmk_keymap_position_state_changed(uint32_t position, bool pressed, int64_t timestamp) {
@@ -176,7 +169,7 @@ int zmk_keymap_position_state_changed(uint32_t position, bool pressed, int64_t t
     for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= _zmk_keymap_layer_default; layer--) {
         if (zmk_keymap_layer_active_with_state(layer, zmk_keymap_active_behavior_layer[position])) {
             int ret = zmk_keymap_apply_position_state(layer, position, pressed, timestamp);
-            if (ret > 0) {
+            if (ret == ZMK_EV_EVENT_BUBBLE) {
                 LOG_DBG("behavior processing to continue to next layer");
                 continue;
             } else if (ret < 0) {

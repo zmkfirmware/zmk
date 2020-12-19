@@ -17,6 +17,12 @@ extern struct zmk_event_type *__event_type_end[];
 extern struct zmk_event_subscription __event_subscriptions_start[];
 extern struct zmk_event_subscription __event_subscriptions_end[];
 
+/*
+ * Returns negative values for errors.
+ * Returns ZMK_EV_EVENT_HANDLED if the event was handled
+ * Returns ZMK_EV_EVENT_CAPTURED if the event was captured
+ * Returns ZMK_EV_EVENT_BUBBLE if no handler handled the event
+ */
 int zmk_event_manager_handle_from(struct zmk_event_header *event, uint8_t start_index) {
     int ret = 0;
     uint8_t len = __event_subscriptions_end - __event_subscriptions_start;
@@ -31,13 +37,12 @@ int zmk_event_manager_handle_from(struct zmk_event_header *event, uint8_t start_
                 switch (ret) {
                 case ZMK_EV_EVENT_HANDLED:
                     LOG_DBG("Listener handled the event");
-                    ret = 0;
                     goto release;
                 case ZMK_EV_EVENT_CAPTURED:
                     LOG_DBG("Listener captured the event");
                     event->last_listener_index = i;
                     // Listeners are expected to free events they capture
-                    return 0;
+                    return ret;
                 }
             }
         }
