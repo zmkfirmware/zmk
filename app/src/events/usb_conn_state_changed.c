@@ -5,6 +5,6 @@
  */
 
 #include <kernel.h>
-#include <zmk/events/usb-conn-state-changed.h>
+#include <zmk/events/usb_conn_state_changed.h>
 
 ZMK_EVENT_IMPL(usb_conn_state_changed);

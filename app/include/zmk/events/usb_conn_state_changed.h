@@ -9,7 +9,7 @@
 #include <zephyr.h>
 #include <usb/usb_device.h>
 
-#include <zmk/event-manager.h>
+#include <zmk/event_manager.h>
 #include <zmk/usb.h>
 
 struct usb_conn_state_changed {

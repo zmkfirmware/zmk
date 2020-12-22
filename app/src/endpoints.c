@@ -13,9 +13,9 @@
 #include <dt-bindings/zmk/hid_usage_pages.h>
 #include <zmk/usb.h>
 #include <zmk/hog.h>
-#include <zmk/event-manager.h>
-#include <zmk/events/ble-active-profile-changed.h>
-#include <zmk/events/usb-conn-state-changed.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/ble_active_profile_changed.h>
+#include <zmk/events/usb_conn_state_changed.h>
 
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
