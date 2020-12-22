@@ -9,7 +9,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <zmk/event-manager.h>
+#include <zmk/event_manager.h>
 
 extern struct zmk_event_type *__event_type_start[];
 extern struct zmk_event_type *__event_type_end[];

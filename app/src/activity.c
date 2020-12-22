@@ -12,10 +12,10 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <zmk/event-manager.h>
-#include <zmk/events/activity-state-changed.h>
-#include <zmk/events/position-state-changed.h>
-#include <zmk/events/sensor-event.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/activity_state_changed.h>
+#include <zmk/events/position_state_changed.h>
+#include <zmk/events/sensor_event.h>
 
 #include <zmk/activity.h>
 

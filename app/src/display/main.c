@@ -14,8 +14,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <drivers/display.h>
 #include <lvgl.h>
 
-#include <zmk/event-manager.h>
-#include <zmk/events/activity-state-changed.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/activity_state_changed.h>
 #include <zmk/display/status_screen.h>
 
 #define ZMK_DISPLAY_NAME CONFIG_LVGL_DISPLAY_DEV_NAME

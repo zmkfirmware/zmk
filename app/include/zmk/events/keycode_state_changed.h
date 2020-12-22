@@ -9,7 +9,7 @@
 #include <zephyr.h>
 #include <dt-bindings/zmk/modifiers.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
-#include <zmk/event-manager.h>
+#include <zmk/event_manager.h>
 #include <zmk/keys.h>
 
 struct keycode_state_changed {
