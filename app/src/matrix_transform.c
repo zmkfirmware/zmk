@@ -7,7 +7,7 @@
 #include <zephyr.h>
 #include <zmk/matrix_transform.h>
 #include <zmk/matrix.h>
-#include <dt-bindings/zmk/matrix-transform.h>
+#include <dt-bindings/zmk/matrix_transform.h>
 
 #ifdef ZMK_KEYMAP_TRANSFORM_NODE
 

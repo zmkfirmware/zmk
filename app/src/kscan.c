@@ -12,8 +12,8 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/matrix_transform.h>
-#include <zmk/event-manager.h>
-#include <zmk/events/position-state-changed.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/position_state_changed.h>
 
 #define ZMK_KSCAN_EVENT_STATE_PRESSED 0
 #define ZMK_KSCAN_EVENT_STATE_RELEASED 1

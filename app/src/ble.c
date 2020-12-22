@@ -32,8 +32,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/ble.h>
 #include <zmk/keys.h>
 #include <zmk/split/bluetooth/uuid.h>
-#include <zmk/event-manager.h>
-#include <zmk/events/ble-active-profile-changed.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/ble_active_profile_changed.h>
 
 static struct bt_conn *auth_passkey_entry_conn;
 static uint8_t passkey_entries[6] = {0, 0, 0, 0, 0, 0};

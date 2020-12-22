@@ -5,6 +5,6 @@
  */
 
 #include <kernel.h>
-#include <zmk/events/activity-state-changed.h>
+#include <zmk/events/activity_state_changed.h>
 
 ZMK_EVENT_IMPL(activity_state_changed);
