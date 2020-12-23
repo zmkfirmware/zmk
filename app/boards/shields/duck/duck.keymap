@@ -1,0 +1,56 @@
+/* Copyright (c) 2020 The ZMK Contributors
+ * SPDX-License-Identifier: MIT
+ *
+ * Author: Jack Hartstein
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+
+#define DEFAULT 0
+#define FUNC 1
+#define RGB_BT 2
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+		
+		default_layer {
+			bindings = <
+							&tog FUNC	&kp KP_SLASH	&kp KP_ASTERISK		&kp KP_MINUS
+							&kp KP_NUMBER_7 &kp KP_NUMBER_8 &kp KP_NUMBER_9		&kp KP_PLUS
+							&kp KP_NUMBER_4 &kp KP_NUMBER_5 &kp KP_NUMBER_6 	&none
+				&kp K_MUTE		&kp KP_NUMBER_1 &kp KP_NUMBER_2 &kp KP_NUMBER_3 	&kp KP_ENTER
+				&ext_power EP_TOG	&none 		&kp KP_NUMBER_0 &kp KP_DOT      	&none
+			>;
+
+			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+		};
+
+		 func_layer {
+			 bindings = <
+						&tog RGB_BT	&trans     	&trans 		&trans
+						&kp HOME    	&kp UP    	&kp PG_UP    	&trans
+						&kp LEFT    	&none      	&kp RIGHT      	&none
+				&trans		&kp END    	&kp DOWN    	&kp PG_DN    	&trans
+				&trans  	&none	 	&kp INS         &kp DEL		&none
+			 >;
+
+			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+		 };
+
+		 rgb_bt_layer {
+                         bindings = <
+                                                &tog DEFAULT    &rgb_ug RGB_TOG &rgb_ug RGB_EFF         &none
+                                        	&rgb_ug RGB_HUI &rgb_ug RGB_SAI &rgb_ug RGB_BRI         &none
+                             		        &rgb_ug RGB_HUD &rgb_ug RGB_SAD &rgb_ug RGB_BRD         &none
+                                &bootloader     &none  	 	&bt BT_CLR 	&bt BT_NXT         	&none
+                                &trans		&none           &none    	&bt BT_PRV              &none
+                         >;
+			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+                 };
+	};
+};
