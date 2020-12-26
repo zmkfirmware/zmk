@@ -17,4 +17,4 @@ further flashing instructions in the [nice!nano docs](https://docs.nicekeyboards
 
 | Layer 0 (Default) | Layer 1 (Nav) | Layer 2 (RGB+BT) |
   ------  | ------ | ------
- ![](img/layer0.jpg) | ![](img/layer1.jpg) | ![](img/layer2.jpg)
+ ![](img/layer0.JPG) | ![](img/layer1.JPG) | ![](img/layer2.JPG)
