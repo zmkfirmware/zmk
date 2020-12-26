@@ -11,7 +11,7 @@ Hardware credit for the nice!nano to Nicell of [nice keyboards](https://nicekeyb
 Join the [ZMK Discord Server](https://zmkfirmware.dev/community/discord/invite) and the [doodboard Discord Server](https://discord.gg/UCEnxWk)
 
 flash with the duck.uf2 file  
-further flashing instructions in the [nice!nano docs]("https://docs.nicekeyboards.com/#/nice!nano/getting_started?id=flashing-firmware-and-bootloaders")
+further flashing instructions in the [nice!nano docs]("https://docs.nicekeyboards.com/#/nice!nano/getting_started?id=flashing-firmware-and-bootloaders") 
 
 *Default Layout:*
 
