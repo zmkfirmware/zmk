@@ -12,8 +12,13 @@ Hardware credit for the nice!nano to Nicell of [nice keyboards](https://nicekeyb
 
 Join the [ZMK Discord Server](https://zmkfirmware.dev/community/discord/invite) and the [doodboard Discord Server](https://discord.gg/UCEnxWk)
 
-**Default Layout:**
+*Default Layout:*
 
+| Layer 0 (Default) | Layer 1 (Nav) | Layer 2 (RGB+BT) |
+  ------  | ------ | ------
+ ![](img/layer0.jpg) | ![](img/layer1.jpg) | ![](img/layer2.jpg)
+
+/**
 **Layer 0 (Default)**
 <br />
 ![layer0](img/layer0.jpg)
@@ -27,4 +32,4 @@ Join the [ZMK Discord Server](https://zmkfirmware.dev/community/discord/invite) 
 **Layer 2 (RGB and BT)**
 <br />
 ![layer2](img/layer2.jpg)
-
+**/
