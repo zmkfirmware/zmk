@@ -15,12 +15,16 @@ Join the [ZMK Discord Server](https://zmkfirmware.dev/community/discord/invite) 
 **Default Layout:**
 
 **Layer 0 (Default)**
-<br/>
+<br />
 ![layer0](img/layer0.jpg)
-<br/>
+
+
 **Layer 1 (Navigation)**
+<br />
 ![layer1](img/layer1.jpg)
-<br/>
+
+
 **Layer 2 (RGB and BT)**
+<br />
 ![layer2](img/layer2.jpg)
 
