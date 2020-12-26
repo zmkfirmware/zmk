@@ -1,4 +1,4 @@
-ZMK Firmware adapted for the [doodboard duckpad](https://doodboard.xyz/)] running on the [![nice!nano](https://nicekeyboards.com/)
+# ZMK Firmware adapted for the [doodboard duckpad](https://doodboard.xyz/)] running on the [![nice!nano](https://nicekeyboards.com/)
 
 Last Updated 25 Dec 2020
 
@@ -8,10 +8,14 @@ Join the [ZMK Discord Server](https://zmkfirmware.dev/community/discord/invite) 
 
 Default Layout is below
 
-Layer 0 (Default) [![layer0](img/layer0.jpg)]
+![layer0](img/layer0.jpg)
 
-Layer 1 (Navigation) [![layer1](img/layer1.jpg)]
+Layer 0 (Default)
 
-Layer 2 (RGB and Bluetooth)[![layer2](img/layer2.jpg)]
+![layer1](img/layer1.jpg)
+Layer 1 (Navigation)
+
+![layer2](img/layer2.jpg)
+Layer 2 (RGB and BT)
 
 
