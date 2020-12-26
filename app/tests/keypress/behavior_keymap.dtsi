@@ -10,7 +10,8 @@
 		default_layer {
 			bindings = <
 				&kp B &none
-				&kp C_NEXT &none>;
+				&none &none
+			>;
 		};
 	};
 };
