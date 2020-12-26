@@ -1,10 +1,8 @@
 ## ZMK Firmware adapted for duckboard/nice!nano combo
 
-<br/>
+Last Updated: 25 Dec 2020
 
 Please message me on [discord](https://discord.gg/K3SJrtN5PJ) if you find any bugs
-
-Last Updated: 25 Dec 2020
 
 Credit for the ZMK Firmware to [The ZMK Contributors](https://zmkfirmware.dev/)  
 Hardware credit for the duckboard to [doodboard](https://doodboard.xyz/)  
