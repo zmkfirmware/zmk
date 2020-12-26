@@ -1,6 +1,7 @@
 ## ZMK Firmware adapted for duckboard/nice!nano combo
 
 Last Updated: 25 Dec 2020
+
 *_warning:_* this is beta firmware that is in its very early stages, many functions still need to be tested
 Please message me on [discord](https://discord.gg/K3SJrtN5PJ) if you find any bugs
 
