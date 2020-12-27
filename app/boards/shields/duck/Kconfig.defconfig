@@ -8,4 +8,10 @@ if SHIELD_DUCK
 config ZMK_KEYBOARD_NAME
 	default "duck"
 
+config ZMK_USB
+	default y
+
+config ZMK_BLE
+	default y
+
 endif

@@ -4,4 +4,4 @@
  # Author: Jack Hartstein
 
 config SHIELD_DUCK
-	def_bool $(shields_list_contains, duck)
+	def_bool $(shields_list_contains,duck)
