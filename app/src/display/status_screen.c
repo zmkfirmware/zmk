@@ -26,11 +26,8 @@ static struct zmk_widget_layer_status layer_status_widget;
 
 lv_obj_t *zmk_display_status_screen() {
     lv_obj_t *screen;
-    lv_obj_t *zmk_version_label;
-
+    
     screen = lv_obj_create(NULL, NULL);
-
-    zmk_version_label = lv_label_create(screen, NULL);
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS)
     zmk_widget_battery_status_init(&battery_status_widget, screen);
@@ -48,9 +45,6 @@ lv_obj_t *zmk_display_status_screen() {
     zmk_widget_layer_status_init(&layer_status_widget, screen);
     lv_obj_align(zmk_widget_layer_status_obj(&layer_status_widget), NULL, LV_ALIGN_IN_BOTTOM_LEFT,
                  0, 0);
-
-    lv_label_set_text(zmk_version_label, "ZMK v0.1.0");
-    lv_obj_align(zmk_version_label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
 #endif
 
     return screen;
