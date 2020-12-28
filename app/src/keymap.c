@@ -88,7 +88,7 @@ static inline int set_layer_state(uint8_t layer, bool state) {
         return 0;
     }
 
-    zmk_keymap_layers_state old_state = _zmk_keymap_layer_state;
+    zmk_keymap_layers_state_t old_state = _zmk_keymap_layer_state;
     WRITE_BIT(_zmk_keymap_layer_state, layer, state);
     // Don't send state changes unless there was an actual change
     if (old_state != _zmk_keymap_layer_state) {
@@ -107,7 +107,7 @@ bool zmk_keymap_layer_active(uint8_t layer) {
     return zmk_keymap_layer_active_with_state(layer, _zmk_keymap_layer_state);
 };
 
-bool zmk_keymap_layer_active_with_state(uint8_t layer, zmk_keymap_layers_state state_to_test) {
+bool zmk_keymap_layer_active_with_state(uint8_t layer, zmk_keymap_layers_state_t state_to_test) {
     // The default layer is assumed to be ALWAYS ACTIVE so we include an || here to ensure nobody
     // breaks up that assumption by accident
     return (state_to_test & (BIT(layer))) == (BIT(layer)) || layer == _zmk_keymap_layer_default;
@@ -134,10 +134,6 @@ int zmk_keymap_layer_toggle(uint8_t layer) {
     return zmk_keymap_layer_activate(layer);
 };
 
-<<<<<<< HEAD
-bool is_active_layer(uint8_t layer, zmk_keymap_layers_state_t layer_state) {
-    return (layer_state & BIT(layer)) == BIT(layer) || layer == _zmk_keymap_layer_default;
-=======
 int zmk_keymap_layer_to(uint8_t layer) {
     for (int i = MAX_LAYERS - 1; i >= 0; i--) {
         zmk_keymap_layer_deactivate(i);
@@ -146,7 +142,6 @@ int zmk_keymap_layer_to(uint8_t layer) {
     zmk_keymap_layer_activate(layer);
 
     return 0;
->>>>>>> Add TO() style key code ; toggles the specified layer ON and all others OFF
 }
 
 int zmk_keymap_apply_position_state(int layer, uint32_t position, bool pressed, int64_t timestamp) {

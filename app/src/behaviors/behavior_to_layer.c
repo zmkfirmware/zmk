@@ -15,9 +15,6 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-struct behavior_to_config {};
-struct behavior_to_data {};
-
 static int behavior_to_init(const struct device *dev) { return 0; };
 
 static int to_keymap_binding_pressed(struct zmk_behavior_binding *binding,
@@ -37,10 +34,6 @@ static const struct behavior_driver_api behavior_to_driver_api = {
     .binding_released = to_keymap_binding_released,
 };
 
-static const struct behavior_to_config behavior_to_config = {};
-
-static struct behavior_to_data behavior_to_data;
-
-DEVICE_AND_API_INIT(behavior_to, DT_INST_LABEL(0), behavior_to_init, &behavior_to_data,
-                    &behavior_to_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+DEVICE_AND_API_INIT(behavior_to, DT_INST_LABEL(0), behavior_to_init, NULL,
+                    NULL, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
                     &behavior_to_driver_api);
