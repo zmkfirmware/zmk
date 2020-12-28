@@ -26,7 +26,7 @@ static struct zmk_widget_layer_status layer_status_widget;
 
 lv_obj_t *zmk_display_status_screen() {
     lv_obj_t *screen;
-    
+
     screen = lv_obj_create(NULL, NULL);
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS)
