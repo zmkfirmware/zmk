@@ -51,9 +51,6 @@ lv_obj_t *zmk_display_status_screen() {
 
     lv_label_set_text(zmk_version_label, "ZMK v0.1.0");
     lv_obj_align(zmk_version_label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
-#else
-    lv_label_set_text(zmk_version_label, "ZMK v0.1.0");
-    lv_obj_align(zmk_version_label, NULL, LV_ALIGN_IN_BOTTOM_MID, 0, 0);
 #endif
 
     return screen;
