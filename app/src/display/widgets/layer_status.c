@@ -8,8 +8,8 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/display/widgets/layer_status.h>
-#include <zmk/events/layer-state-changed.h>
-#include <zmk/event-manager.h>
+#include <zmk/events/layer_state_changed.h>
+#include <zmk/event_manager.h>
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
 
