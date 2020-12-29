@@ -1,0 +1,29 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan-mock.h>
+#include "../behavior_keymap.dtsi"
+
+// Press key A
+// To layer 1
+// Press key J
+// To layer 0
+// Press key S
+// To layer 0 -- does nothing
+
+&kscan {
+	events = <ZMK_MOCK_PRESS(1,1,10)
+			  ZMK_MOCK_RELEASE(1,1,10)
+			  ZMK_MOCK_PRESS(0,1,10)
+			  ZMK_MOCK_RELEASE(0,1,10)
+			  ZMK_MOCK_PRESS(1,1,10)
+			  ZMK_MOCK_RELEASE(1,1,10)
+			  ZMK_MOCK_PRESS(0,0,10)
+			  ZMK_MOCK_RELEASE(0,0,10)
+			  ZMK_MOCK_PRESS(1,1,10)
+			  ZMK_MOCK_RELEASE(1,1,10)
+			  ZMK_MOCK_PRESS(0,0,10)
+			  ZMK_MOCK_RELEASE(0,0,10)
+			  ZMK_MOCK_PRESS(0,1,10)
+			  ZMK_MOCK_RELEASE(0,1,10)
+			>;
+};
