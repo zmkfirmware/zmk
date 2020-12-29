@@ -59,6 +59,8 @@ static uint8_t _zmk_keymap_layer_default = 0;
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
+#define LAYER_LABEL(node) COND_CODE_0(DT_NODE_HAS_PROP(node, label), (NULL), (DT_LABEL(node))),
+
 // State
 
 // When a behavior handles a key position "down" event, we record the layer state
@@ -68,6 +70,9 @@ static uint32_t zmk_keymap_active_behavior_layer[ZMK_KEYMAP_LEN];
 
 static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_LEN] = {
     DT_INST_FOREACH_CHILD(0, TRANSFORMED_LAYER)};
+
+static const char *zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN] = {
+    DT_INST_FOREACH_CHILD(0, LAYER_LABEL)};
 
 #if ZMK_KEYMAP_HAS_SENSORS
 
@@ -141,6 +146,18 @@ int zmk_keymap_layer_to(uint8_t layer) {
     zmk_keymap_layer_activate(layer);
 
     return 0;
+}
+
+bool is_active_layer(uint8_t layer, zmk_keymap_layers_state_t layer_state) {
+    return (layer_state & BIT(layer)) == BIT(layer) || layer == _zmk_keymap_layer_default;
+}
+
+const char *zmk_keymap_layer_label(uint8_t layer) {
+    if (layer >= ZMK_KEYMAP_LAYERS_LEN) {
+        return NULL;
+    }
+
+    return zmk_keymap_layer_names[layer];
 }
 
 int zmk_keymap_apply_position_state(int layer, uint32_t position, bool pressed, int64_t timestamp) {
