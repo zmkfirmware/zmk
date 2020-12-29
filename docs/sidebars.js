@@ -45,6 +45,7 @@ module.exports = {
       "development/posix-board",
       "development/tests",
       "development/usb-logging",
+      "development/events",
       {
         type: "category",
         label: "Guides",
