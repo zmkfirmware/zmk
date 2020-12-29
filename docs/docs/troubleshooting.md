@@ -91,24 +91,26 @@ The workaround for this limitation is as follows:
 1. Now open the terminal app (Applications/Utilities/Terminal.app) and paste the following command and enter your root password. 
 
    <Tabs
-   defaultValue="HS"
-   values={[
-    {label: 'macOS High Sierra (10.13) and newer', value: 'high_sierra'},
-    {label: 'macOS Sierra (10.12) and older', value: 'sierra'},
-  ]}>
+      defaultValue="HS"
+      values={[
+      {label: 'macOS High Sierra (10.13) and newer', value: 'high_sierra'},
+      {label: 'macOS Sierra (10.12) and older', value: 'sierra'},
+   ]}>
    <TabItem value="high_sierra"> 
 
    ```
    sudo defaults read /private/var/root/Library/Preferences/com.apple.bluetoothd.plist
    ```
+
    </TabItem>
    <TabItem value="sierra">
 
    ```
    sudo defaults read /private/var/root/Library/Preferences/blued.plist
    ```
+   
    </TabItem>
-   </Tabs>;
+   </Tabs>
 
    This will print the contents of the bluetooth plist file containing the pairing keys for your bluetooth devices.
 
@@ -138,7 +140,7 @@ The workaround for this limitation is as follows:
    ```
 
 1. Inside "Keys", select the address of your host bluetooth device. It should be the same as it was in macOS (`65-FD-3B-1A-DB-48` in this example).
-1. Below that, find the address that matches your keyboard's from macOS (`6-24-54-08-BC-A3` in this example).
+1. Below that, find the address that matches your keyboard's from macOS (`6E-24-54-08-BC-A3` in this example).
 
    | ![Registry Key](../docs/assets/troubleshooting/dualboot/Registry1.png) |
    | :--------------------------------------------------------------------: |
