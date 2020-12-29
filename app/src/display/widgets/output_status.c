@@ -49,12 +49,12 @@ void set_status_symbol(lv_obj_t *label) {
     case ZMK_ENDPOINT_BLE:
         if (active_profie_bonded) {
             if (active_profile_connected) {
-                sprintf(text, LV_SYMBOL_WIFI "%i " LV_SYMBOL_OK, active_profile_index);
+                sprintf(text, LV_SYMBOL_BLUETOOTH "%i " LV_SYMBOL_OK, active_profile_index);
             } else {
-                sprintf(text, LV_SYMBOL_WIFI "%i " LV_SYMBOL_CLOSE, active_profile_index);
+                sprintf(text, LV_SYMBOL_BLUETOOTH "%i " LV_SYMBOL_CLOSE, active_profile_index);
             }
         } else {
-            sprintf(text, LV_SYMBOL_WIFI "%i " LV_SYMBOL_SETTINGS, active_profile_index);
+            sprintf(text, LV_SYMBOL_BLUETOOTH "%i " LV_SYMBOL_SETTINGS, active_profile_index);
         }
         break;
     }
