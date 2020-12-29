@@ -73,3 +73,15 @@ CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
 ```
 
 For the `nRF52840`, the value `PLUS_8` can be set to any multiple of four between `MINUS_20` and `PLUS_8`. The default value for this config is `0`, but if you are having connection issues it is recommended to set it to `PLUS_8` because the power consumption difference is negligible. For more information on changing the transmit power of your BLE device, please refer to [the Zephyr docs.](https://docs.zephyrproject.org/latest/reference/kconfig/CONFIG_BT_CTLR_TX_PWR_PLUS_8.html)
+
+### Settings Reset
+
+If you are trying to reset your keyboard settings you can use a "reset image" to fully wipe all stored settings. Pre-built settings reset images can be found [here](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild) under the latest build results. You'll want to search for `reset` images generated for your micro controller board. Once the reset image is downloaded it can be flashed to your keyboard to reset your settings. You'll need to re-flash your standard keyboard firmware after the settings are reset.
+
+If you'd like to build your own settings reset image you can run a standard ZMK build with `settings_reset` as the shield and flash the resulting image. Once the settings are reset, you'll need to re-flash your standard keyboard firmware.
+
+Example build command:
+
+```sh
+west build --board nice_nano -d build/settings_reset -- -DSHIELD=settings_reset
+```
