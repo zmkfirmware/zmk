@@ -6,6 +6,7 @@
 #include <behaviors/sticky_key.dtsi>
 #include <behaviors/momentary_layer.dtsi>
 #include <behaviors/toggle_layer.dtsi>
+#include <behaviors/to_layer.dtsi>
 #include <behaviors/reset.dtsi>
 #include <behaviors/sensor_rotate_key_press.dtsi>
 #include <behaviors/rgb_underglow.dtsi>
