@@ -1,0 +1,9 @@
+description: |
+  Driver for the is31fl3733 LED driver
+
+compatible: "issi,is31fl3733"
+
+properties:
+  label:
+    required: true
+    type: string
