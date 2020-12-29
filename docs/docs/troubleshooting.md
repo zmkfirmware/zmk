@@ -85,8 +85,8 @@ The workaround for this limitation is as follows:
 1. Once paired, hold Option + Control + Shift and click on the bluetooth icon in your menubar. Take note of the "Address" of your computer's bluetooth device (`65-FD-3B-1A-DB-48` here), as well as the address of the connected device (`E6-24-54-08-BC-A3` here).
 
 | ![BT Contextual Menu](../docs/assets/troubleshooting/dualboot/bt_addresses.png) |
-| :--------------------------------------------------------------------------: |
-|                Bluetooth Context Menu                |
+| :-----------------------------------------------------------------------------: |
+|                            Bluetooth Context Menu                               |
 
 1. Now open the terminal app (Applications/Utilities/Terminal.app) and paste the following command and enter your root password. 
 
@@ -102,10 +102,10 @@ sudo defaults read /private/var/root/Library/Preferences/blued.plist
  This will print the contents of the bluetooth plist file containing the pairing keys for your bluetooth devices.
 
 | ![BT Plist](../docs/assets/troubleshooting/dualboot/plist.png) |
-| :--------------------------------------------------------------------------: |
-|                Bluetooth .plist                |
+| :------------------------------------------------------------: |
+|                         Bluetooth .plist                       |
  
- 1. Look for the section that starts with `SMPDistributionKeys =`. Below this, find your host's bluetooth address (`65-FD-3B-1A-DB-48` in this example) and then look for the address of your keyboard (`6-24-54-08-BC-A3` in this example).
+ 1. Look for the section that starts with `SMPDistributionKeys =`. Below this, find your host's bluetooth address (`65-FD-3B-1A-DB-48` in this example) and then look for the address of your keyboard (`6E-24-54-08-BC-A3` in this example).
  1. Under your keyboard address, find the value labeled LocalLTK (in the screenshot above it is `0x8968239e350b2cb7df16d8f47c774e2c`). Copy this value into a text file that you can access from Windows, this is the value we will need to enter into the registry later on.
  1. Reboot into Windows
  1. Once logged in, turn off bluetooth. 
@@ -129,14 +129,14 @@ sudo defaults read /private/var/root/Library/Preferences/blued.plist
 1. Below that, find the address that matches your keyboard's from macOS (`6-24-54-08-BC-A3` in this example).
 
 | ![Registry Key](../docs/assets/troubleshooting/dualboot/Registry1.png) |
-| :--------------------------------------------------------------------------: |
-|                Registry Key                |
+| :--------------------------------------------------------------------: |
+|                              Registry Key                              |
 
 1. Under that, there should be a registry entry called "LTK". Double click on this entry to modify it. Regedit will pop up a hex editing window. Delete the contents to start with a blank value. Refer to the LocalLTK value you saved from macOS and enter it into this dialog box, omitting the "0x" at the beginning. Regedit will automatically advance you through the hex pairs. When you're done the window should look something like this:
 
 | ![Registry Key Edit](../docs/assets/troubleshooting/dualboot/Registry2.png) |
-| :--------------------------------------------------------------------------: |
-|                Registry Key Editor                |
+| :-------------------------------------------------------------------------: |
+|                             Registry Key Editor                             |
 
 1. Select OK, exit Regedit, and reboot into Windows.
 1. Once rebooted, turn bluetooth back on, and make sure your keyboard is on the same profile you had selected in macOS. Your keyboard should connect and start working!
