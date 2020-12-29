@@ -80,6 +80,20 @@ Please note, many keyboards only have a single PCB which includes the “brains�
 
 Currently, ZMK only supports wireless split, but wired split is possible and we welcome contributions!
 
+### Pairing Split Keyboards
+
+Only the primary half of a keyboard should be paired to a computer or device. The non-primary half will auto-connect to the primary half via BLE and should _not_ be paired directly to a computer or device.
+
+### Powering Split Keyboards
+
+Keyboard halves should be powered _independently_ of each other.
+
+:::warning
+
+Do _NOT_ use TRRS cables with keyboards that provide power via TRRS when the non-primary keyboard half is running on battery power. The power provided by TRRS cables can cause batteries on the non-primary keyboard half to fail and in the worst case catch fire.
+
+:::
+
 ### What bootloader does ZMK use?
 
 ZMK isn’t designed for any particular bootloader, and supports flashing different boards with different flash utilities (e.g. OpenOCD, nrfjprog, etc.). So if you have any difficulties, please let us know on [Discord](https://zmkfirmware.dev/community/discord/invite)!
