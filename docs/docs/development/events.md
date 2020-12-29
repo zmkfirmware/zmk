@@ -52,12 +52,19 @@ todo
 
 todo
 
+### `position_state_changed`
+
+Fired whenever there is a change in state of any key after a matrix scan.
+
+The column/row data coming from the matrix is converted into an integer key `position` representing the 0 based index of the key that was pressed. Positions go from left to right, top to bottom, starting from 0.
+
+That `state` bool represents whether the key is pressed or not.
+
+`keymap` subscribes to these events, processes them against the configured keymap configuration and raises `keycode_state_changed` with the parsed keycodes.
+
 ### `keycode_state_changed`
 
-todo
-
-That's for the state of a specific hid usage (keycode) being pressed/released.
-Those events would be what you would feed into a WPM calculation.
+Fired in response to processing a `position_state_changed` event which is processed against the keymap configuration and raises `keycode_state_changed` events with the parsed keycode and pressed state.
 
 ### `layer_state_changed`
 
@@ -66,16 +73,6 @@ todo
 ### `modifiers_state_changed`
 
 todo
-
-### `position_state_changed`
-
-todo
-A "key position" is a logical identifier for a physical key.
-We transform from row/column to single integer position early on.
-So the position is the 0-indexed value in the array of physical switches, normally if you started counting from top left corner and went left ttomright, top to bottom.
-A keymap is a set of layers, where each layer is an array of bindings for each logical key position.
-So, the "earliest event when a key is pressed" is the position state changed. The state being pressed or released.
-Once that gets processed by the keymap, mostly the behaviors then generate keycode state changes.
 
 ### `sensor_event`
 
