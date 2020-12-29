@@ -1,7 +1,9 @@
 ---
 title: Events
 ---
+
 ## Overview
+
 ZMK uses events to decouple behaviours and to allow new functionality to be added to existing events.
 
 ## Subscribing to events
@@ -54,6 +56,9 @@ todo
 
 todo
 
+That's for the state of a specific hid usage (keycode) being pressed/released.
+Those events would be what you would feed into a WPM calculation.
+
 ### `layer_state_changed`
 
 todo
@@ -65,10 +70,17 @@ todo
 ### `position_state_changed`
 
 todo
+A "key position" is a logical identifier for a physical key.
+We transform from row/column to single integer position early on.
+So the position is the 0-indexed value in the array of physical switches, normally if you started counting from top left corner and went left ttomright, top to bottom.
+A keymap is a set of layers, where each layer is an array of bindings for each logical key position.
+So, the "earliest event when a key is pressed" is the position state changed. The state being pressed or released.
+Once that gets processed by the keymap, mostly the behaviors then generate keycode state changes.
 
-## `sensor_event`
+### `sensor_event`
+
 todo
 
 ### `usb_conn_state_changed`
-todo
 
+todo
