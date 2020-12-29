@@ -82,7 +82,7 @@ Currently, ZMK only supports wireless split, but wired split is possible and we 
 
 ### Pairing Split Keyboards
 
-Only the primary half of a keyboard should be paired to a computer or device. The non-primary half will auto-connect to the primary half via BLE and should _not_ be paired directly to a computer or device.
+Only the central half of a keyboard should be paired to a computer or device. The peripheral half will auto-connect to the central half via BLE and should _not_ be paired directly to a computer or device.
 
 ### Powering Split Keyboards
 
@@ -90,7 +90,7 @@ Keyboard halves should be powered _independently_ of each other.
 
 :::warning
 
-Do _NOT_ use TRRS cables with keyboards that provide power via TRRS when the non-primary keyboard half is running on battery power. The power provided by TRRS cables can cause batteries on the non-primary keyboard half to fail and in the worst case catch fire.
+Do _NOT_ use TRRS cables with keyboards that provide power via TRRS when the peripheral keyboard half is running on battery power. The power provided by TRRS cables can cause batteries on the peripheral keyboard half to fail and in the worst case catch fire.
 
 :::
 
