@@ -20,7 +20,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/sensor_event.h>
 
 static zmk_keymap_layers_state_t _zmk_keymap_layer_state = 0;
-#define MAX_LAYERS (sizeof(_zmk_keymap_layer_state) * 8)
 static uint8_t _zmk_keymap_layer_default = 0;
 
 #define DT_DRV_COMPAT zmk_keymap
@@ -79,7 +78,7 @@ static struct zmk_behavior_binding zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN]
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
 static inline int set_layer_state(uint8_t layer, bool state) {
-    if (layer >= MAX_LAYERS) {
+    if (layer >= ZMK_KEYMAP_LAYERS_LEN) {
         return -EINVAL;
     }
 
@@ -114,7 +113,7 @@ bool zmk_keymap_layer_active_with_state(uint8_t layer, zmk_keymap_layers_state_t
 };
 
 uint8_t zmk_keymap_highest_layer_active() {
-    for (uint8_t layer = MAX_LAYERS - 1; layer > 0; layer--) {
+    for (uint8_t layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer > 0; layer--) {
         if (zmk_keymap_layer_active(layer)) {
             return layer;
         }
@@ -135,7 +134,7 @@ int zmk_keymap_layer_toggle(uint8_t layer) {
 };
 
 int zmk_keymap_layer_to(uint8_t layer) {
-    for (int i = MAX_LAYERS - 1; i >= 0; i--) {
+    for (int i = ZMK_KEYMAP_LAYERS_LEN - 1; i >= 0; i--) {
         zmk_keymap_layer_deactivate(i);
     }
 
