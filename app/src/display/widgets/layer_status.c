@@ -33,12 +33,23 @@ void layer_status_init() {
 
 void set_layer_symbol(lv_obj_t *label) {
     int active_layer_index = zmk_keymap_highest_layer_active();
-    char text[6] = {};
 
     LOG_DBG("Layer changed to %i", active_layer_index);
-    sprintf(text, LV_SYMBOL_KEYBOARD "%i ", active_layer_index);
 
-    lv_label_set_text(label, text);
+    const char *layer_label = zmk_keymap_layer_label(active_layer_index);
+    if (layer_label == NULL) {
+        char text[6] = {};
+
+        sprintf(text, LV_SYMBOL_KEYBOARD "%i", active_layer_index);
+
+        lv_label_set_text(label, text);
+    } else {
+        char text[12] = {};
+
+        snprintf(text, 12, LV_SYMBOL_KEYBOARD "%s", layer_label);
+
+        lv_label_set_text(label, text);
+    }
 }
 
 int zmk_widget_layer_status_init(struct zmk_widget_layer_status *widget, lv_obj_t *parent) {
