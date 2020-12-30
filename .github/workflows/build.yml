@@ -24,6 +24,8 @@ jobs:
           - proton_c
         shield:
           - boardsource3x4
+          - bfo9000_left
+          - bfo9000_right
           - corne_left
           - corne_right
           - cradio_left
