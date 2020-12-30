@@ -20,7 +20,7 @@
  *	#define blue 255
  *	#define led 1
  *  uint8_t RGB[3] = (red, green, blue);
- *	set_color(device, led, 3, RGB);
+ *	set_color(dev, led, 3, RGB);
  *	
  *	This would set the led in position (SW1,CS1) to the value 
  *	of red, the led in position (SW2,CS1) to the value of
