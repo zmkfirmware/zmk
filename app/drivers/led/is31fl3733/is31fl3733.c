@@ -25,9 +25,9 @@
  *	This would set the led in position (SW1,CS1) to the value
  *	of red, the led in position (SW2,CS1) to the value of
  *	green, and the led in position (SW3,CS1) to the value of
- *	blue. Before this will show any result the 3 corresponding
- *	leds needto be turned on with the led_on call.
- */
+ *	blue. Before this is ran the 3 corresponding leds need
+ *	to be turned on first with the led_on call.
+ */ 
 
 #include <drivers/i2c.h>
 #include <drivers/led.h>
