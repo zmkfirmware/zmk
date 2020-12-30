@@ -1,0 +1,8 @@
+# keeb.io BDN9 board configuration
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_BDN9
+	bool "BDN9 rev2"
+	depends on SOC_STM32F072XB
