@@ -5,8 +5,29 @@
 #define DT_DRV_COMPAT issi_is31fl3733
 
 /*
- *  "SUMMARY"
- */
+ *  LED driver for the issi is31fl3733 IC
+ * 	led_on sets the leds state to on
+ * 	led_off sets the leds state to off
+ * 	set_brightness sets thepwm value for the specific led
+ * 	set_color will set leds based upon a led number and 3 
+ * 	values representing RGB this is applicable for uses
+ * 	where the leds are wired as shown in the datasheet 
+ *	in "Figure 2 Typical Application Circuit (RGB)".
+ *
+ *	struct device *dev = device_get_binding("IS31FL3733A");
+ *	#define red 255
+ *	#define green 255
+ *	#define blue 255
+ *	#define led 1
+ *  uint8_t RGB[3] = (red, green, blue);
+ *	set_color(device, led, 3, RGB);
+ *	
+ *	This would set the led in position (SW1,CS1) to the value 
+ *	of red, the led in position (SW2,CS1) to the value of
+ *	green, and the led in position (SW3,CS1) to the value of 
+ *	blue. Before this is ran the 3 corresponding leds need
+ *	to be turned on first with the led_on call. 
+ */ 
 
 #include <drivers/i2c.h>
 #include <drivers/led.h>
