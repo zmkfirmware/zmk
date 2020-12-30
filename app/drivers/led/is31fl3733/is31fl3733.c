@@ -14,7 +14,7 @@
  * 	where the leds are wired as shown in the datasheet
  *	in "Figure 2 Typical Application Circuit (RGB)".
  *
- *	struct device *dev = device_get_binding("IS31FL3733A");
+ *	struct device *dev = device_get_binding("IS31FL3733");
  *	#define red 255
  *	#define green 255
  *	#define blue 255
