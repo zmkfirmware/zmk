@@ -1,0 +1,17 @@
+ # Copyright (c) 2020 The ZMK Contributors
+ # SPDX-License-Identifier: MIT
+ #
+ # Author: Jack Hartstein
+
+if SHIELD_DUCKBOARD
+
+config ZMK_KEYBOARD_NAME
+	default "duckboard"
+
+config ZMK_USB
+	default y
+
+config ZMK_BLE
+	default y
+
+endif
