@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Cameron Banna.
+ * Copyright (c) 2020 The ZMK Contributors
  */
 
 #define DT_DRV_COMPAT issi_is31fl3733
