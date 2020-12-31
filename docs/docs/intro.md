@@ -23,16 +23,16 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | [Keyboard Codes](codes/#keyboard)                                                                                         | ✅  |    ✅     | ✅  |
 | [Media](codes/#media-controls) & [Consumer](codes/#consumer-controls) Codes                                               | ✅  |    ✅     | ✅  |
 | [Encoders](features/encoders)[^1]                                                                                         | ✅  |           | ✅  |
-| [OLED Display Support](features/displays)[^2]                                                                             | 🚧  |    🚧     | ✅  |
+| [Display Support](features/displays)[^2]                                                                                  | 🚧  |    🚧     | ✅  |
 | [RGB Underglow](features/underglow)                                                                                       | ✅  |    ✅     | ✅  |
-| One Shot Keys                                                                                                             | 🚧  |    ✅     | ✅  |
-| Combo Keys                                                                                                                | 🚧  |           | ✅  |
+| One Shot Keys                                                                                                             | ✅  |    ✅     | ✅  |
+| [Combo Keys](https://github.com/zmkfirmware/zmk/pull/504)                                                                 | 🚧  |           | ✅  |
 | Macros                                                                                                                    | 🚧  |    ✅     | ✅  |
 | Mouse Keys                                                                                                                |     |    ✅     | ✅  |
 | Low Active Power Usage                                                                                                    | ✅  |           |     |
-| [Low Power Sleep States](https://github.com/zmkfirmware/zmk/pull/211)                                                     | 🚧  |    ✅     |     |
-| [Low Power Mode (VCC Shutoff)](https://github.com/zmkfirmware/zmk/pull/242)                                               | 🚧  |           |     |
-| [Battery Reporting](https://github.com/zmkfirmware/zmk/issues/47)                                                         | 🚧  |    ✅     |     |
+| Low Power Sleep States                                                                                                    | ✅  |    ✅     |     |
+| [Low Power Mode (VCC Shutoff)](behaviors/power)                                                                           | ✅  |           |     |
+| Battery Reporting                                                                                                         | ✅  |    ✅     |     |
 | Shell over BLE                                                                                                            |     |           |     |
 | Realtime Keymap Updating                                                                                                  | 💡  |           | ✅  |
 | AVR/8 Bit                                                                                                                 |     |           | ✅  |
