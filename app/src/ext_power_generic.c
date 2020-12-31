@@ -31,6 +31,9 @@ struct ext_power_generic_data {
 #if IS_ENABLED(CONFIG_SETTINGS)
     bool settings_init;
 #endif
+#ifdef CONFIG_DEVICE_POWER_MANAGEMENT
+    uint32_t pm_state;
+#endif
 };
 
 #if IS_ENABLED(CONFIG_SETTINGS)
@@ -139,6 +142,10 @@ static int ext_power_generic_init(const struct device *dev) {
         return -EIO;
     }
 
+#ifdef CONFIG_DEVICE_POWER_MANAGEMENT
+    data->pm_state = DEVICE_PM_ACTIVE_STATE;
+#endif
+
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_subsys_init();
 
@@ -167,6 +174,39 @@ static int ext_power_generic_init(const struct device *dev) {
     return 0;
 }
 
+#ifdef CONFIG_DEVICE_POWER_MANAGEMENT
+static int ext_power_generic_pm_control(const struct device *dev, uint32_t ctrl_command,
+                                        void *context, device_pm_cb cb, void *arg) {
+    int rc;
+    struct ext_power_generic_data *data = dev->data;
+
+    switch (ctrl_command) {
+    case DEVICE_PM_SET_POWER_STATE:
+        if (*((uint32_t *)context) == DEVICE_PM_ACTIVE_STATE) {
+            data->pm_state = DEVICE_PM_ACTIVE_STATE;
+            rc = 0;
+        } else {
+            ext_power_generic_disable(dev);
+            data->pm_state = DEVICE_PM_LOW_POWER_STATE;
+            rc = 0;
+        }
+        break;
+    case DEVICE_PM_GET_POWER_STATE:
+        *((uint32_t *)context) = data->pm_state;
+        rc = 0;
+        break;
+    default:
+        rc = -EINVAL;
+    }
+
+    if (cb != NULL) {
+        cb(dev, rc, context, arg);
+    }
+
+    return rc;
+}
+#endif /* CONFIG_DEVICE_POWER_MANAGEMENT */
+
 static const struct ext_power_generic_config config = {
     .label = DT_INST_GPIO_LABEL(0, control_gpios),
     .pin = DT_INST_GPIO_PIN(0, control_gpios),
@@ -183,7 +223,13 @@ static const struct ext_power_api api = {.enable = ext_power_generic_enable,
                                          .disable = ext_power_generic_disable,
                                          .get = ext_power_generic_get};
 
+#ifdef CONFIG_DEVICE_POWER_MANAGEMENT
+DEVICE_DEFINE(ext_power_generic, DT_INST_LABEL(0), ext_power_generic_init,
+              &ext_power_generic_pm_control, &data, &config, APPLICATION,
+              CONFIG_APPLICATION_INIT_PRIORITY, &api);
+#else
 DEVICE_AND_API_INIT(ext_power_generic, DT_INST_LABEL(0), ext_power_generic_init, &data, &config,
                     APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY, &api);
+#endif /* CONFIG_DEVICE_POWER_MANAGEMENT */
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

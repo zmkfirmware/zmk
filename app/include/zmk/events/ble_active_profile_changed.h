@@ -7,7 +7,7 @@
 #pragma once
 
 #include <zephyr.h>
-#include <zmk/event-manager.h>
+#include <zmk/event_manager.h>
 #include <device.h>
 
 #include <zmk/ble/profile.h>

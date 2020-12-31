@@ -163,7 +163,7 @@ It is preferred to define only the `col-gpios` or `row-gpios` in the common shie
 For `col2row` directed boards like the iris, the shared .dtsi file may look like this:
 
 ```
-#include <dt-bindings/zmk/matrix-transform.h>
+#include <dt-bindings/zmk/matrix_transform.h>
 
 / {
 	chosen {
@@ -315,7 +315,7 @@ Whenever that default key position mapping is insufficient, the `<shield_name>.o
 Here is an example for the [nice60](https://github.com/Nicell/nice60), which uses an efficient 8x8 GPIO matrix, and uses a transform:
 
 ```
-#include <dt-bindings/zmk/matrix-transform.h>
+#include <dt-bindings/zmk/matrix_transform.h>
 
 / {
 	chosen {
@@ -344,7 +344,7 @@ RC(7,0)    RC(7,1)   RC(7,2)                     RC(7,3)                    RC(7
 
 Some important things to note:
 
-- The `#include <dt-bindings/zmk/matrix-transform.h>` is critical. The `RC` macro is used to generate the internal storage in the matrix transform, and is actually replaced by a C preprocessor before the final devicetree is compiled into ZMK.
+- The `#include <dt-bindings/zmk/matrix_transform.h>` is critical. The `RC` macro is used to generate the internal storage in the matrix transform, and is actually replaced by a C preprocessor before the final devicetree is compiled into ZMK.
 - `RC(row, column)` is placed sequentially to define what row and column values that position corresponds to.
 - If you have a keyboard with options for `2u` keys in certain positions, or break away portions, it is a good idea to set the chosen `zmk,matrix_transform` to the default arrangement, and include _other_ possible matrix transform nodes in the devicetree that users can select in their user config by overriding the chosen node.
 

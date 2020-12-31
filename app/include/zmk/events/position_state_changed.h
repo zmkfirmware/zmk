@@ -7,14 +7,13 @@
 #pragma once
 
 #include <zephyr.h>
-#include <zmk/event-manager.h>
-#include <device.h>
+#include <zmk/event_manager.h>
 
-struct sensor_event {
+struct position_state_changed {
     struct zmk_event_header header;
-    uint8_t sensor_number;
-    const struct device *sensor;
+    uint32_t position;
+    bool state;
     int64_t timestamp;
 };
 
-ZMK_EVENT_DECLARE(sensor_event);
+ZMK_EVENT_DECLARE(position_state_changed);

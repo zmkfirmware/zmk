@@ -11,9 +11,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/display/widgets/battery_status.h>
 #include <zmk/usb.h>
-#include <zmk/events/usb-conn-state-changed.h>
-#include <zmk/event-manager.h>
-#include <zmk/events/battery-state-changed.h>
+#include <zmk/events/usb_conn_state_changed.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/battery_state_changed.h>
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 static lv_style_t label_style;

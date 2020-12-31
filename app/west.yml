@@ -15,7 +15,6 @@ manifest:
         # TODO: Rename once upstream offers option like `exclude` or `denylist`
         name-blacklist:
           - ci-tools
-          - hal_atmel
           - hal_altera
           - hal_cypress
           - hal_infineon

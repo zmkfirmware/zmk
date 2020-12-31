@@ -5,6 +5,6 @@
  */
 
 #include <kernel.h>
-#include <zmk/events/modifiers-state-changed.h>
+#include <zmk/events/modifiers_state_changed.h>
 
 ZMK_EVENT_IMPL(modifiers_state_changed);

@@ -9,15 +9,15 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <zmk/event-manager.h>
-#include <zmk/events/keycode-state-changed.h>
-#include <zmk/events/modifiers-state-changed.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/keycode_state_changed.h>
+#include <zmk/events/modifiers_state_changed.h>
 #include <zmk/hid.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
 #include <zmk/endpoints.h>
 
 static int hid_listener_keycode_pressed(uint8_t usage_page, uint32_t keycode,
-                                        zmk_mod_flags implicit_modifiers) {
+                                        zmk_mod_flags_t implicit_modifiers) {
     int err;
     LOG_DBG("usage_page 0x%02X keycode 0x%02X mods 0x%02X", usage_page, keycode,
             implicit_modifiers);
@@ -42,7 +42,7 @@ static int hid_listener_keycode_pressed(uint8_t usage_page, uint32_t keycode,
 }
 
 static int hid_listener_keycode_released(uint8_t usage_page, uint32_t keycode,
-                                         zmk_mod_flags implicit_modifiers) {
+                                         zmk_mod_flags_t implicit_modifiers) {
     int err;
     LOG_DBG("usage_page 0x%02X keycode 0x%02X mods 0x%02X", usage_page, keycode,
             implicit_modifiers);

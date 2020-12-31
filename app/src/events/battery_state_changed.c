@@ -5,6 +5,6 @@
  */
 
 #include <kernel.h>
-#include <zmk/events/battery-state-changed.h>
+#include <zmk/events/battery_state_changed.h>
 
 ZMK_EVENT_IMPL(battery_state_changed);

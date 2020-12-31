@@ -13,8 +13,8 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/sensors.h>
-#include <zmk/event-manager.h>
-#include <zmk/events/sensor-event.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/sensor_event.h>
 
 #if ZMK_KEYMAP_HAS_SENSORS
 

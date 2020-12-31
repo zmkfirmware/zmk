@@ -4,6 +4,9 @@ if SHIELD_JORNE_LEFT
 config ZMK_KEYBOARD_NAME
 	default "Jorne Left"
 
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
 endif
 
 
@@ -12,6 +15,9 @@ if SHIELD_JORNE_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "Jorne Right"
 
+config USB
+	default y
+	
 endif
 
 if SHIELD_JORNE_LEFT || SHIELD_JORNE_RIGHT

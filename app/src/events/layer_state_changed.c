@@ -5,6 +5,6 @@
  */
 
 #include <kernel.h>
-#include <zmk/events/layer-state-changed.h>
+#include <zmk/events/layer_state_changed.h>
 
 ZMK_EVENT_IMPL(layer_state_changed);

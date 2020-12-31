@@ -147,7 +147,7 @@ static const uint8_t zmk_hid_report_desc[] = {
 // } __packed;
 
 struct zmk_hid_keyboard_report_body {
-    zmk_mod_flags modifiers;
+    zmk_mod_flags_t modifiers;
     uint8_t _reserved;
     uint8_t keys[ZMK_HID_KEYBOARD_NKRO_SIZE];
 } __packed;
@@ -166,16 +166,16 @@ struct zmk_hid_consumer_report {
     struct zmk_hid_consumer_report_body body;
 } __packed;
 
-int zmk_hid_register_mod(zmk_mod modifier);
-int zmk_hid_unregister_mod(zmk_mod modifier);
-int zmk_hid_implicit_modifiers_press(zmk_mod_flags implicit_modifiers);
+int zmk_hid_register_mod(zmk_mod_t modifier);
+int zmk_hid_unregister_mod(zmk_mod_t modifier);
+int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t implicit_modifiers);
 int zmk_hid_implicit_modifiers_release();
-int zmk_hid_keyboard_press(zmk_key key);
-int zmk_hid_keyboard_release(zmk_key key);
+int zmk_hid_keyboard_press(zmk_key_t key);
+int zmk_hid_keyboard_release(zmk_key_t key);
 void zmk_hid_keyboard_clear();
 
-int zmk_hid_consumer_press(zmk_key key);
-int zmk_hid_consumer_release(zmk_key key);
+int zmk_hid_consumer_press(zmk_key_t key);
+int zmk_hid_consumer_release(zmk_key_t key);
 void zmk_hid_consumer_clear();
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();

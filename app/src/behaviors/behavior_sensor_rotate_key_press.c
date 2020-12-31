@@ -11,8 +11,8 @@
 #include <logging/log.h>
 
 #include <drivers/sensor.h>
-#include <zmk/event-manager.h>
-#include <zmk/events/keycode-state-changed.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/keycode_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 

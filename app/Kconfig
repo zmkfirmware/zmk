@@ -83,7 +83,6 @@ menu "Split Support"
 
 config ZMK_SPLIT
 	bool "Split keyboard support"
-	default n
 
 if ZMK_SPLIT
 
@@ -95,19 +94,12 @@ config ZMK_SPLIT_BLE
 
 if ZMK_SPLIT_BLE
 
-choice ZMK_SPLIT_BLE_ROLE
-	bool "BLE Role For Split Communication"
-	default ZMK_SPLIT_BLE_ROLE_CENTRAL
-
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	bool "Central"
 	select BT_CENTRAL
 	select BT_GATT_CLIENT
 
-config ZMK_SPLIT_BLE_ROLE_PERIPHERAL
-	bool "Peripheral"
-
-if ZMK_SPLIT_BLE_ROLE_PERIPHERAL
+if !ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 config ZMK_USB
 	default n
@@ -121,11 +113,8 @@ config BT_MAX_CONN
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
 	default n
 
-#ZMK_SPLIT_BLE_ROLE_PERIPHERAL
+#!ZMK_SPLIT_BLE_ROLE_CENTRAL
 endif
-
-#ZMK_SPLIT_BLE_ROLE
-endchoice
 
 #ZMK_SPLIT_BLE
 endif
@@ -244,6 +233,9 @@ config SYS_POWER_DEEP_SLEEP_STATES
 choice SYS_PM_POLICY
 	default SYS_PM_POLICY_APP
 endchoice
+
+config DEVICE_POWER_MANAGEMENT
+	default y
 
 config ZMK_IDLE_SLEEP_TIMEOUT
 	int "Milliseconds of inactivity before entering deep sleep"

@@ -7,7 +7,7 @@
 #pragma once
 
 #include <zephyr.h>
-#include <zmk/event-manager.h>
+#include <zmk/event_manager.h>
 #include <zmk/activity.h>
 
 struct activity_state_changed {

@@ -13,7 +13,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <dt-bindings/zmk/kscan-mock.h>
+#include <dt-bindings/zmk/kscan_mock.h>
 
 struct kscan_mock_data {
     kscan_callback_t callback;

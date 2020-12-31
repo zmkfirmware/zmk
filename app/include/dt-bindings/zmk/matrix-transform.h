@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define KT_ROW(item) (item >> 8)
-#define KT_COL(item) (item & 0xFF)
+#warning "matrix-transform.h has been deprecated and superseded by matrix_transform.h"
 
-#define RC(row, col) (((row) << 8) + (col))
+#include "matrix_transform.h"
