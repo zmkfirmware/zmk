@@ -2,3 +2,11 @@
 # SPDX-License-Identifier: MIT
 
 rsource "is31fl3733/Kconfig"
+
+
+config LED_INIT_PRIORITY
+	int "LED initialization priority"
+	default 90
+	help
+	  System initialization priority for LED drivers.
+	  

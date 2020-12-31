@@ -11,10 +11,3 @@ config IS31FL3733
 		programmed via an I2C compatible interface. Each
 		LED can be dimmed individually with 8-bit PWM data
 		which allowing 256 steps of linear dimming
-
-config LED_INIT_PRIORITY
-	int "LED initialization priority"
-	default 90
-	help
-	  System initialization priority for LED drivers.
-	  
