@@ -20,8 +20,8 @@ It is recommended to only enable logging when needed, and not leaving it on by d
 
 ## Kconfig
 
-The following KConfig values need to be set, either by copy and pasting into the `app/prj.conf` file, or by running
-`west build -t menuconfig` and manually enabling the various settings in that UI.
+The `CONFIG_ZMK_USB_LOGGING` KConfig value needs to be set, either by copy and pasting into the `app/prj.conf` file, or by running
+`west build -t menuconfig` and manually enabling the setting in that UI at `ZMK -> Advanced -> USB Logging`.
 
 :::note
 If you are debugging your own keyboard in your [user config repository](./user-setup.md), use
@@ -32,27 +32,7 @@ for you successfully.
 
 ```
 # Turn on logging, and set ZMK logging to debug output
-CONFIG_LOG=y
-CONFIG_ZMK_LOG_LEVEL_DBG=y
-
-# Turn on USB CDC ACM device
-CONFIG_USB=y
-CONFIG_USB_DEVICE_STACK=y
-CONFIG_USB_CDC_ACM=y
-CONFIG_USB_CDC_ACM_RINGBUF_SIZE=1024
-CONFIG_USB_CDC_ACM_DEVICE_NAME="CDC_ACM"
-CONFIG_USB_CDC_ACM_DEVICE_COUNT=1
-
-# Enable serial console
-CONFIG_SERIAL=y
-CONFIG_CONSOLE=y
-CONFIG_UART_INTERRUPT_DRIVEN=y
-CONFIG_UART_LINE_CTRL=y
-
-# Enable USB UART, and set the console device
-CONFIG_UART_CONSOLE=y
-CONFIG_USB_UART_CONSOLE=y
-CONFIG_UART_CONSOLE_ON_DEV_NAME="CDC_ACM_0"
+CONFIG_ZMK_USB_LOGGING=y
 ```
 
 ## Viewing Logs
