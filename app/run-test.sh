@@ -1,9 +1,8 @@
 #!/bin/sh
-#
+
 # Copyright (c) 2020 The ZMK Contributors
-#
 # SPDX-License-Identifier: MIT
-#
+
 if [ -z "$1" ]; then
 	echo "Usage: ./run-test.sh <path to testcase>"
 	exit 1
