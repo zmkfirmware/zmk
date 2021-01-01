@@ -1,7 +1,5 @@
-#
-# Copyright (c) 2020, The ZMK Contributors
+# Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
-#
 
 description: |
   Generic driver for controlling the external power output
