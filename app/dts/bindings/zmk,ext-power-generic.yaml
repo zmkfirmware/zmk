@@ -17,4 +17,3 @@ properties:
   label:
     type: string
     required: true
-
