@@ -20,10 +20,10 @@
 		
 		default_layer {
 			bindings = <
-						&tog FUNC	&kp KP_SLASH	&kp KP_ASTERISK	&kp KP_MINUS
-						&kp KP_NUMBER_7 &kp KP_NUMBER_8 &kp KP_NUMBER_9 
-						&kp KP_NUMBER_4 &kp KP_NUMBER_5 &kp KP_NUMBER_6 &kp KP_PLUS
-				&kp K_MUTE	&kp KP_NUMBER_1 &kp KP_NUMBER_2 &kp KP_NUMBER_3 
+				&none		&tog FUNC	&kp KP_SLASH	&kp KP_ASTERISK	&kp KP_MINUS
+				&none		&kp KP_NUMBER_7 &kp KP_NUMBER_8 &kp KP_NUMBER_9 &none
+				&none		&kp KP_NUMBER_4 &kp KP_NUMBER_5 &kp KP_NUMBER_6 &kp KP_PLUS
+				&kp K_MUTE	&kp KP_NUMBER_1 &kp KP_NUMBER_2 &kp KP_NUMBER_3 &none
 				&kp BACKSPACE	&none 		&kp KP_NUMBER_0 &kp KP_DOT      &kp KP_ENTER
 			>;
 
@@ -32,10 +32,10 @@
 
 		 func_layer {
 			 bindings = <
-							&tog RGB_BT	&trans     	&trans 		&trans
-							&kp HOME    	&kp UP    	&kp PG_UP    	
-							&kp LEFT    	&none      	&kp RIGHT      	&trans
-				&ext_power EP_TOG	&kp END    	&kp DOWN    	&kp PG_DN    	
+				&none			&tog RGB_BT	&trans     	&trans 		&trans
+				&none			&kp HOME    	&kp UP    	&kp PG_UP    	&none
+				&none			&kp LEFT    	&none      	&kp RIGHT      	&trans
+				&ext_power EP_TOG	&kp END    	&kp DOWN    	&kp PG_DN    	&none
 				&none			&none	 	&kp INS         &kp DEL		&trans
 			 >;
 
@@ -44,11 +44,11 @@
 
 		 rgb_bt_layer {
                          bindings = <
-                                           	&tog DEFAULT    &rgb_ug RGB_TOG &rgb_ug RGB_EFF         &none
-                                        	&rgb_ug RGB_HUI &rgb_ug RGB_SAI &rgb_ug RGB_BRI         
-                             		        &rgb_ug RGB_HUD &rgb_ug RGB_SAD &rgb_ug RGB_BRD         &none
-                                &bootloader     &none  	 	&bt BT_CLR 	&bt BT_NXT         	
-                                &none		&none           &none    	&bt BT_PRV              &none
+                                &none          	&tog 0    	&rgb_ug RGB_TOG &rgb_ug RGB_EFF	&none
+                                &none  	   	&rgb_ug RGB_HUI &rgb_ug RGB_SAI &rgb_ug RGB_BRI &none
+                             	&none	        &rgb_ug RGB_HUD &rgb_ug RGB_SAD &rgb_ug RGB_BRD &none
+                                &bootloader     &none  	 	&bt BT_CLR 	&bt BT_NXT      &none
+                                &none		&none           &none    	&bt BT_PRV      &none
                          >;
 			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
                  };
