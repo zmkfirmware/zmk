@@ -37,6 +37,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [QAZ](https://www.cbkbd.com/product/qaz-keyboard-kit) (`qaz`)
 - [CRBN](https://keygem.store/collections/group-buys/products/group-buy-featherlight-40-kit) (`crbn`)
 - [tidbit](https://nullbits.co/tidbit/) (`tidbit`)
+- [Eek!](https://www.cbkbd.com/product/eek-keyboard) (`eek`)
 
 ## Other Hardware
 
