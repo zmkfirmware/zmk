@@ -376,7 +376,10 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
     LOG_DBG("Connected %s", log_strdup(addr));
 
-    bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
+    err = bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
+    if (err) {
+        LOG_WRN("Failed to update LE parameters (err %d)", err);
+    }
 
 #if IS_SPLIT_PERIPHERAL
     bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
@@ -423,10 +426,20 @@ static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_
     }
 }
 
+static void le_param_updated(struct bt_conn *conn, uint16_t interval, uint16_t latency,
+                             uint16_t timeout) {
+    char addr[BT_ADDR_LE_STR_LEN];
+
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+    LOG_DBG("%s: interval %d latency %d timeout %d", addr, interval, latency, timeout);
+}
+
 static struct bt_conn_cb conn_callbacks = {
     .connected = connected,
     .disconnected = disconnected,
     .security_changed = security_changed,
+    .le_param_updated = le_param_updated,
 };
 
 /*
