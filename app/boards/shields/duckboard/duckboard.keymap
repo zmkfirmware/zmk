@@ -48,7 +48,7 @@
                                 &none          	&to DEFAULT    	&rgb_ug RGB_TOG &rgb_ug RGB_EFF	&none
                                 &none  	   	&rgb_ug RGB_HUI &rgb_ug RGB_SAI &rgb_ug RGB_BRI &none
                              	&none	        &rgb_ug RGB_HUD &rgb_ug RGB_SAD &rgb_ug RGB_BRD &none
-                                &bootloader     &out OUT_BLE	&bt BT_CLR 	&bt BT_NXT      &none
+                                &bootloader    	&none		&bt BT_CLR 	&bt BT_NXT      &none
                                 &none		&none           &none    	&bt BT_PRV      &none
                          >;
 			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
