@@ -20,13 +20,14 @@ static int behavior_to_init(const struct device *dev) { return 0; };
 static int to_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
-    return zmk_keymap_layer_to(binding->param1);
+    zmk_keymap_layer_to(binding->param1);
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static int to_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static const struct behavior_driver_api behavior_to_driver_api = {
