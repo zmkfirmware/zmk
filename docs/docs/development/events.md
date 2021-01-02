@@ -46,11 +46,11 @@ Fired by the activity monitor when the state changes. The monitor subscribes to 
 
 ### `battery_state_changed`
 
-todo
+Fired every minute with an update of the battery charge status. Event contains the battery percentage.
 
 ### `ble_active_profile_changed`
 
-todo
+Fired whenever the current Bluetooth profile changes. Event contains the index of the new profile.
 
 ### `position_state_changed`
 
@@ -68,16 +68,18 @@ Fired in response to processing a `position_state_changed` event which is proces
 
 ### `layer_state_changed`
 
-todo
+Fired whenever the a layer activates or deactivates. Event contains the layer index and it's boolean activation state.
 
 ### `modifiers_state_changed`
 
 todo
 
+<!-- Seems to be a work in progress,  I can see definitions but no usages -->
+
 ### `sensor_event`
 
-todo
+Fired when a sensor (e.g. an EC11 encoder) reports a change (e.g. rotation). Event contains the sensor, sensor number and timestamp.
 
 ### `usb_conn_state_changed`
 
-todo
+Fired when the USB status changes e.g. on connected/disconnected. Event contains the USB status.
