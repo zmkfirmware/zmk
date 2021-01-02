@@ -23,6 +23,8 @@ jobs:
           - nrfmicro_13
           - proton_c
         shield:
+          - bfo9000_left
+          - bfo9000_right
           - boardsource3x4
           - corne_left
           - corne_right
