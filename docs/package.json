@@ -9,9 +9,7 @@
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
-    "lint": "eslint . --ext js,jsx,md,mdx",
-    "prettier:check": "prettier --check .",
-    "prettier:format": "prettier --write ."
+    "lint": "eslint . --ext js,jsx,md,mdx"
   },
   "dependencies": {
     "@docusaurus/core": "^2.0.0-alpha.66",
@@ -45,7 +43,6 @@
     "eslint-plugin-mdx": "^1.8.2",
     "eslint-plugin-react": "^7.21.5",
     "null-loader": "^3.0.0",
-    "prettier": "2.1.2",
     "string-replace-loader": "2.3"
   }
 }

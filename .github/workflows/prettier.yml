@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - ".github/workflows/prettier.yml"
-      - "docs/**"
+      - "**"
   pull_request:
     paths:
       - ".github/workflows/prettier.yml"
-      - "docs/**"
+      - "**"
 
 jobs:
   prettier:
@@ -16,8 +16,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: docs
       - name: Prettier check
         run: npm run prettier:check
-        working-directory: docs

@@ -1,0 +1,6 @@
+build
+node_modules
+docs/.docusaurus
+/modules
+/tools
+/zephyr
