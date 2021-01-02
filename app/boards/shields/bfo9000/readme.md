@@ -4,9 +4,9 @@ Customizable full-size split ortholinear.
 
 ## Features
 
-* Compatible with MX-compatible, Alps-compatible, and Kailh Low-Profile Choc switches.
-* Breakoff pieces to allow for 4 to 6 rows and 7 to 9 columns.
-* RGB LED connections
+- Compatible with MX-compatible, Alps-compatible, and Kailh Low-Profile Choc switches.
+- Breakoff pieces to allow for 4 to 6 rows and 7 to 9 columns.
+- RGB LED connections
 
 ## Hardware Notes
 
