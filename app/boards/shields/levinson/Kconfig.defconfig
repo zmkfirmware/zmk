@@ -1,0 +1,17 @@
+#Copyright (c) 2020 Morgan Allison
+#SPDX-License-Identifier: MIT
+ 
+ 
+if SHIELD_LEVINSON_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Levinson Left"
+
+endif
+
+if SHIELD_LEVINSON_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Levinson Right"
+
+endif
