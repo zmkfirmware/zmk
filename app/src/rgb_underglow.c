@@ -249,6 +249,11 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
     k_delayed_work_init(&underglow_save_work, zmk_rgb_underglow_save_state_work);
 
     settings_load_subtree("rgb/underglow");
+    if (state.color.b < CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) {
+        state.color.b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN;
+    } else if (state.color.b > CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX) {
+        state.color.b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX;
+    }
 #endif
 
     k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
@@ -335,7 +340,8 @@ int zmk_rgb_underglow_toggle() {
 }
 
 int zmk_rgb_underglow_set_hsb(struct zmk_led_hsb color) {
-    if (color.h > HUE_MAX || color.s > SAT_MAX || color.b > BRT_MAX) {
+    if (color.h > HUE_MAX || color.s > SAT_MAX || color.b < CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN ||
+        color.b > CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX) {
         return -ENOTSUP;
     }
 
@@ -369,15 +375,18 @@ struct zmk_led_hsb zmk_rgb_underglow_calc_sat(int direction) {
 
 struct zmk_led_hsb zmk_rgb_underglow_calc_brt(int direction) {
     struct zmk_led_hsb color = state.color;
-
-    int b = color.b + (direction * CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP);
-    if (b < 0) {
+    int b = color.b;
+    if (direction > 0 && b < CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) {
+        b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN;
+    } else {
+        b += (direction * CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP);
+    }
+    if (b < CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) {
         b = 0;
-    } else if (b > BRT_MAX) {
-        b = BRT_MAX;
+    } else if (b > CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX) {
+        b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX;
     }
     color.b = b;
-
     return color;
 }
 
