@@ -2,7 +2,7 @@
 
 Last Updated: 1 Jan 2021
 
-**_warning:_** this is beta firmware, certain functions may not work fully
+**_warning:_** this is beta firmware, some features may have bugs
 
 Please message me on [discord](https://discord.gg/K3SJrtN5PJ) if you find any bugs
 
