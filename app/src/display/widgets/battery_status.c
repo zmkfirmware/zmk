@@ -78,7 +78,7 @@ lv_obj_t *zmk_widget_battery_status_obj(struct zmk_widget_battery_status *widget
 int battery_status_listener(const struct zmk_event_header *eh) {
     struct zmk_widget_battery_status *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_battery_symbol(widget->obj); }
-    return 0;
+    return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(widget_battery_status, battery_status_listener)

@@ -310,7 +310,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     if (undecided_hold_tap != NULL) {
         LOG_DBG("ERROR another hold-tap behavior is undecided.");
         // if this happens, make sure the behavior events occur AFTER other position events.
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     }
 
     struct active_hold_tap *hold_tap =
@@ -318,7 +318,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     if (hold_tap == NULL) {
         LOG_ERR("unable to store hold-tap info, did you press more than %d hold-taps?",
                 ZMK_BHV_HOLD_TAP_MAX_HELD);
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     }
 
     LOG_DBG("%d new undecided hold_tap", event.position);
@@ -331,7 +331,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
         k_delayed_work_submit(&hold_tap->work, K_MSEC(tapping_term_ms_left));
     }
 
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
@@ -339,7 +339,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     struct active_hold_tap *hold_tap = find_hold_tap(event.position);
     if (hold_tap == NULL) {
         LOG_ERR("ACTIVE_HOLD_TAP_CLEANED_UP_TOO_EARLY");
-        return 0;
+        return ZMK_BEHAVIOR_OPAQUE;
     }
 
     // If these events were queued, the timer event may be queued too late or not at all.
@@ -379,7 +379,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
         clear_hold_tap(hold_tap);
     }
 
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static const struct behavior_driver_api behavior_hold_tap_driver_api = {
@@ -392,16 +392,16 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
 
     if (undecided_hold_tap == NULL) {
         LOG_DBG("%d bubble (no undecided hold_tap active)", ev->position);
-        return 0;
+        return ZMK_EV_EVENT_BUBBLE;
     }
 
     if (undecided_hold_tap->position == ev->position) {
         if (ev->state) { // keydown
             LOG_ERR("hold-tap listener should be called before before most other listeners!");
-            return 0;
+            return ZMK_EV_EVENT_BUBBLE;
         } else { // keyup
             LOG_DBG("%d bubble undecided hold-tap keyrelease event", undecided_hold_tap->position);
-            return 0;
+            return ZMK_EV_EVENT_BUBBLE;
         }
     }
 
@@ -418,7 +418,7 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
         // we'll catch modifiers later in modifier_state_changed_listener
         LOG_DBG("%d bubbling %d %s event", undecided_hold_tap->position, ev->position,
                 ev->state ? "down" : "up");
-        return 0;
+        return ZMK_EV_EVENT_BUBBLE;
     }
 
     LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->position,
@@ -439,12 +439,12 @@ static int keycode_state_changed_listener(const struct zmk_event_header *eh) {
 
     if (undecided_hold_tap == NULL) {
         // LOG_DBG("0x%02X bubble (no undecided hold_tap active)", ev->keycode);
-        return 0;
+        return ZMK_EV_EVENT_BUBBLE;
     }
 
     if (!only_mods(ev)) {
         // LOG_DBG("0x%02X bubble (not a mod)", ev->keycode);
-        return 0;
+        return ZMK_EV_EVENT_BUBBLE;
     }
 
     // only key-up events will bubble through position_state_changed_listener
@@ -461,7 +461,7 @@ int behavior_hold_tap_listener(const struct zmk_event_header *eh) {
     } else if (is_keycode_state_changed(eh)) {
         return keycode_state_changed_listener(eh);
     }
-    return 0;
+    return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(behavior_hold_tap, behavior_hold_tap_listener);

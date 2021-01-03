@@ -1,0 +1,26 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_BFO9000_LEFT
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+config ZMK_KEYBOARD_NAME
+	default "BFO9000 Left"
+
+endif
+
+if SHIELD_BFO9000_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "BFO9000 Right"
+
+endif
+
+if SHIELD_BFO9000_LEFT || SHIELD_BFO9000_RIGHT
+
+config ZMK_SPLIT
+	default y
+
+endif

@@ -38,6 +38,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [CRBN](https://keygem.store/collections/group-buys/products/group-buy-featherlight-40-kit) (`crbn`)
 - [tidbit](https://nullbits.co/tidbit/) (`tidbit`)
 - [Eek!](https://www.cbkbd.com/product/eek-keyboard) (`eek`)
+- [BFO-9000](https://keeb.io/products/bfo-9000-keyboard-customizable-full-size-split-ortholinear) (`bfo9000_left` and `bfo9000_right`)
 
 ## Other Hardware
 
