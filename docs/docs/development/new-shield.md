@@ -278,7 +278,6 @@ CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL=y
 // Peripheral Half (Usually the right side: my_awesome_split_board_right.conf)
 
 CONFIG_ZMK_SPLIT=y
-CONFIG_ZMK_SPLIT_BLE_ROLE_Peripheral=y
 ```
 
 Using the .conf file that affects both halves of a split board would be for adding features like deep-sleep or rotary encoders.
