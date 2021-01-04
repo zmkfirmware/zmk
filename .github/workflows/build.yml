@@ -38,6 +38,8 @@ jobs:
           - jorne_right
           - kyria_left
           - kyria_right
+          - levinson_left
+          - levinson_right
           - lily58_left
           - lily58_right
           - microdox_left

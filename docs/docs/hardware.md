@@ -38,6 +38,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [CRBN](https://keygem.store/collections/group-buys/products/group-buy-featherlight-40-kit) (`crbn`)
 - [tidbit](https://nullbits.co/tidbit/) (`tidbit`)
 - [Eek!](https://www.cbkbd.com/product/eek-keyboard) (`eek`)
+- [Levinson](https://keeb.io/products/levinson-lets-split-w-led-backlight) (`levinson_left` and `levinson_right`)
 
 ## Other Hardware
 
