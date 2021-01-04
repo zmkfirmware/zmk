@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <dt-bindings/zmk/matrix-transform.h>
-
 / {
     chosen {
         zmk,kscan = &kscan0;

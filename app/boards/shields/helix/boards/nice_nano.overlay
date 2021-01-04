@@ -24,11 +24,11 @@
     chain-length = <32>; /* number of LEDs */
     spi-one-frame = <0x70>;
     spi-zero-frame = <0x40>;
-	};
+  };
 };
 
 / {
-	chosen {
-		zmk,underglow = &led_strip;
-	};
+  chosen {
+    zmk,underglow = &led_strip;
+  };
 };
