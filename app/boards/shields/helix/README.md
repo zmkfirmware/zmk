@@ -6,6 +6,7 @@
 * 'KANA' and 'EISUU' input is currently utilized under the 'LANG1' and 'LANG2' keycodes respectively.
 
 ________
-<p>Thanks to Nicell, KemoNine, PeteJohanson, TJ "Chormbo The Great", Joelspadin/Rinh, Wofiel, Okke, Innovaker,<br>
-and the rest of the ZMK contributors for their support in constructing this shield. I appreciate your assistance greatly.<br>
-This has been a valuable learning experience for me. May this contribution serve the community well.</p>
+
+Thanks to Nicell, KemoNine, petejohanson, TJ "Chormbo The Great", joelspadin/Rinh, Wofiel, Okke, innovaker,
+and the rest of the ZMK contributors for their support in constructing this shield. I appreciate your assistance greatly.
+This has been a valuable learning experience for me. May this contribution serve the community well.
