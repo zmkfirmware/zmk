@@ -4,3 +4,4 @@ docs/.docusaurus
 /modules
 /tools
 /zephyr
+app/build
