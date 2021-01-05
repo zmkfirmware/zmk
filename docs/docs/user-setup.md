@@ -200,3 +200,7 @@ ZMK support multiple BLE “profiles”, which allows you to connect to and swit
 ### Connecting Split Keyboard Halves
 
 For split keyboards, after flashing each half individually you can connect them together by resetting them at the same time. Within a few seconds of resetting, both halves should automatically connect to each other.
+
+#### Pairing Split Keyboards
+
+Only the central half of a keyboard should be paired to a computer or device. The peripheral half will auto-connect to the central half via BLE and should _not_ be paired directly to a computer or device.

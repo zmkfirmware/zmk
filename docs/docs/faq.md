@@ -80,10 +80,6 @@ Please note, many keyboards only have a single PCB which includes the â€œbrainsâ
 
 Currently, ZMK only supports wireless split, but wired split is possible and we welcome contributions!
 
-### Pairing Split Keyboards
-
-Only the central half of a keyboard should be paired to a computer or device. The peripheral half will auto-connect to the central half via BLE and should _not_ be paired directly to a computer or device.
-
 ### Powering Split Keyboards
 
 Keyboard halves should be powered _independently_ of each other.
