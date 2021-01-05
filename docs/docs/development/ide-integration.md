@@ -65,6 +65,8 @@ Change these options:
 | IntelliSense mode                     | gcc-arm                                              |
 | Advanced Settings > Compiler commands | `${workspaceFolder}/app/build/compile_commands.json` |
 
+#### Compiler Path
+
 <OsTabs>
 <TabItem value="debian">
 
@@ -137,3 +139,21 @@ ${env:ZEPHYR_SDK_INSTALL_DIR}/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
 
 </TabItem>
 </OsTabs>
+
+#### Compiler Commands Path
+
+When building with all default options, the path to the compilation database file
+is `${workspaceFolder}/app/build/compile_commands.json` as shown in the table above,
+however some arguments to `west build` can change this path.
+
+The `-d` or `--build-dir` option lets you change the build directory to something
+other than `build`. Replace `build` in the above path with what you set this to.
+For example, if you build with `-d build/my_shield`, the path is
+`${workspaceFolder}/app/build/my_shield/compile_commands.json`. If you use this
+to keep builds for multiple keyboards separate, you may want to create a separate
+C/C++ configuration for each one in VS Code.
+
+You can also build from the root folder of the project instead of the `app`
+folder by adding `-S app` to your CMake arguments. In this case, simply remove
+`app` from the path to `compile_commands.json`, for example,
+`${workspaceFolder}/build/compile_commands.json`.
