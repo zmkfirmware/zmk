@@ -1,0 +1,12 @@
+{
+  "name": "zmk",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "prettier:check": "prettier --check .",
+    "prettier:format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "2.2.1"
+  }
+}

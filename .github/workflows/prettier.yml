@@ -1,0 +1,20 @@
+name: Prettier
+
+on:
+  push:
+    paths:
+      - ".github/workflows/prettier.yml"
+      - "**"
+  pull_request:
+    paths:
+      - ".github/workflows/prettier.yml"
+      - "**"
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+      - name: Prettier check
+        run: npm run prettier:check
