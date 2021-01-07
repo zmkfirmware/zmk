@@ -1,3 +1,5 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
 
 if SHIELD_HELIX_4_LEFT
 
@@ -24,8 +26,8 @@ if SHIELD_HELIX_4_LEFT || SHIELD_HELIX_4_RIGHT
 config ZMK_SPLIT
   default y
 
-config DEVICE_POWER_MANAGEMENT
-	default y
+# config DEVICE_POWER_MANAGEMENT
+# 	default y
 
 if ZMK_RGB_UNDERGLOW
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2021 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -20,9 +20,5 @@
     , <&pro_micro_a  2 GPIO_ACTIVE_HIGH>
     , <&pro_micro_a  3 GPIO_ACTIVE_HIGH>
     ;
-};
-
-&bt_unpair_combo {
-  key-positions = <43 45>;
 };
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2021 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -36,10 +36,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(3,6) RC(3,7) RC(3,8) RC(3,9) 
 			, <&pro_micro_d 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			, <&pro_micro_d 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
-	};
-
-	bt_unpair_combo: bt_unpair_combo {
-		compatible = "zmk,bt-unpair-combo";
 	};
 };
 
