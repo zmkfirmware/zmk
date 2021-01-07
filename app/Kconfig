@@ -293,6 +293,50 @@ config ZMK_KSCAN_COMPOSITE_DRIVER
 #KSCAN Settings
 endmenu
 
+menu "USB Logging"
+
+config ZMK_USB_LOGGING
+	bool "Enable USB CDC ACM logging to help debug"
+	select LOG
+	select USB
+	select USB_DEVICE_STACK
+	select USB_CDC_ACM
+	select SERIAL
+	select CONSOLE
+	select UART_INTERRUPT_DRIVEN
+	select UART_LINE_CTRL
+	select UART_CONSOLE
+	select USB_UART_CONSOLE
+
+if ZMK_USB_LOGGING
+
+config ZMK_LOG_LEVEL
+	default 4
+
+config USB_CDC_ACM_RINGBUF_SIZE
+	default 1024
+
+config USB_CDC_ACM_DEVICE_NAME
+	default "CDC_ACM"
+
+config USB_CDC_ACM_DEVICE_COUNT
+	default 1
+
+config UART_CONSOLE_ON_DEV_NAME
+	default "CDC_ACM_0"
+
+config LOG_BUFFER_SIZE
+	default 8192
+
+config LOG_STRDUP_BUF_COUNT
+	default 16
+
+#ZMK_USB_LOGGING
+endif
+
+#USB Logging
+endmenu
+
 if SETTINGS
 
 config ZMK_SETTINGS_SAVE_DEBOUNCE
