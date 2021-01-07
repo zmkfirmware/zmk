@@ -39,7 +39,7 @@ static int behavior_bt_init(const struct device *dev) { return 0; };
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static const struct behavior_driver_api behavior_bt_driver_api = {

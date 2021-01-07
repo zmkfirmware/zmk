@@ -23,12 +23,17 @@ jobs:
           - nrfmicro_13
           - proton_c
         shield:
+          - bfo9000_left
+          - bfo9000_right
           - boardsource3x4
           - corne_left
           - corne_right
           - cradio_left
           - cradio_right
           - crbn
+          - eek
+          - helix_left
+          - helix_right
           - iris_left
           - iris_right
           - jian_left
@@ -57,6 +62,7 @@ jobs:
           - tidbit
         cmake-args: [""]
         include:
+          - board: bdn9_rev2
           - board: dz60rgb_rev1
           - board: nrf52840_m2
             shield: m60

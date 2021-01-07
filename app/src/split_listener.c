@@ -29,7 +29,7 @@ int split_listener(const struct zmk_event_header *eh) {
             return zmk_split_bt_position_released(ev->position);
         }
     }
-    return 0;
+    return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(split_listener, split_listener);

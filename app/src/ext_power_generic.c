@@ -178,7 +178,7 @@ static int ext_power_generic_init(const struct device *dev) {
 static int ext_power_generic_pm_control(const struct device *dev, uint32_t ctrl_command,
                                         void *context, device_pm_cb cb, void *arg) {
     int rc;
-    struct ext_power_generic_data *data = dev->driver_data;
+    struct ext_power_generic_data *data = dev->data;
 
     switch (ctrl_command) {
     case DEVICE_PM_SET_POWER_STATE:

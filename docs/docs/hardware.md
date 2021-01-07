@@ -19,11 +19,13 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [nrfMicro](https://github.com/joric/nrfmicro) (`nrfmicro_13`, `nrfmicro_11`, `nrfmicro_11_flipped`)
 - [BlueMicro840](https://store.jpconstantineau.com/#/group/bluemicro) (`bluemicro840_v1`)
 - [QMK Proton-C](https://qmk.fm/proton-c/) (`proton_c`)
+- [BDN9 Rev2](https://keeb.io/products/bdn9-rev-2-3x3-9-key-macropad-rotary-encoder-and-rgb) (`bdn9_rev2`)
 
 ## Keyboard Shields
 
 - [Kyria](https://splitkb.com/products/kyria-pcb-kit) (`kyria_left` and `kyria_right`)
 - [Corne](https://github.com/foostan/crkbd) (`corne_left` and `corne_right`)
+- [Helix](https://github.com/mcmadhatter/helix) (`helix_left` and `helix_right`)
 - [Lily58](https://github.com/kata0510/Lily58) (`lily58_left` and `lily58_right`)
 - [Sofle](https://github.com/josefadamcik/SofleKeyboard) (`sofle_left` and `sofle_right`)
 - [Splitreus62](https://github.com/Na-Cly/splitreus62) (`splitreus62_left` and `splitreus62_right`)
@@ -36,6 +38,8 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [QAZ](https://www.cbkbd.com/product/qaz-keyboard-kit) (`qaz`)
 - [CRBN](https://keygem.store/collections/group-buys/products/group-buy-featherlight-40-kit) (`crbn`)
 - [tidbit](https://nullbits.co/tidbit/) (`tidbit`)
+- [Eek!](https://www.cbkbd.com/product/eek-keyboard) (`eek`)
+- [BFO-9000](https://keeb.io/products/bfo-9000-keyboard-customizable-full-size-split-ortholinear) (`bfo9000_left` and `bfo9000_right`)
 
 ## Other Hardware
 

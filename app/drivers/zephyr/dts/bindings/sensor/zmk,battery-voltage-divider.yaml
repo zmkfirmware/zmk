@@ -11,4 +11,3 @@ properties:
   label:
     required: true
     type: string
-  
