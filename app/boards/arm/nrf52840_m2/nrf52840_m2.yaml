@@ -13,3 +13,8 @@ supported:
   - ieee802154
   - pwm
   - watchdog
+  - counter
+  - i2c
+  - spi
+  - usb_cdc
+  - usb_device
