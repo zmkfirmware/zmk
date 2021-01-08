@@ -90,6 +90,7 @@ struct ma730_data {
 	const struct device *bus;
 	struct spi_cs_control cs_ctrl;
 
+	uint16_t oldangle;
 	uint16_t angle;
 	int8_t velocity;
 	bool direction;

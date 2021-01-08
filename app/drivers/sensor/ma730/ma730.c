@@ -103,8 +103,8 @@ static int ma730_sample_fetch(const struct device *dev, enum sensor_channel chan
 		if (ma730_spi_read_data(dev, &val)) {
 				return -EIO
 		}
+		data->oldangle = data->angle;
 		data->angle = val;
-
 }
 
 static int ma730_channel_get(const struct device *dev, enum sensor_channel chan,
@@ -115,7 +115,8 @@ static int ma730_channel_get(const struct device *dev, enum sensor_channel chan,
         return -ENOTSUP;
     }
 		else if (chan == SENSOR_CHAN_ROTATION) {
-				val->val1 = int(data->angle / (65536*resolution));
+				float absang = data->angle / (65536*(cfg->resolution)/2.5)
+				val->val1 = int(absang);
 		}
 		else {
 				//velocity code
