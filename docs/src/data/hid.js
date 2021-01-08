@@ -3590,7 +3590,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: false,
+      android: true,
       macos: null,
       ios: null,
     },
@@ -5016,7 +5016,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: true,
       macos: null,
       ios: null,
     },
@@ -5142,7 +5142,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -5163,7 +5163,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: true,
       macos: null,
       ios: null,
     },
@@ -5184,7 +5184,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -5205,7 +5205,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -5226,7 +5226,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -5247,7 +5247,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -5268,7 +5268,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -6003,7 +6003,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -6171,7 +6171,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
