@@ -14,9 +14,6 @@ if SHIELD_LILY58_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "Lily58 Right"
 
-config USB
-	default y
-
 endif
 
 if SHIELD_LILY58_LEFT || SHIELD_LILY58_RIGHT

@@ -16,9 +16,6 @@ if SHIELD_BFO9000_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "BFO9000 Right"
 
-config USB
-	default y
-
 endif
 
 if SHIELD_BFO9000_LEFT || SHIELD_BFO9000_RIGHT

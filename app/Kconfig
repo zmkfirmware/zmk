@@ -361,6 +361,9 @@ config KERNEL_BIN_NAME
 config REBOOT
 	default y
 
+config USB
+	default y if HAS_HW_NRF_USBD
+
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"

@@ -16,9 +16,6 @@ if SHIELD_SOFLE_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "Sofle Right"
 
-config USB
-	default y
-
 endif
 
 if SHIELD_SOFLE_LEFT || SHIELD_SOFLE_RIGHT
