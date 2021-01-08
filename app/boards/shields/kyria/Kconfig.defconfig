@@ -15,9 +15,6 @@ if SHIELD_KYRIA_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "Kyria Right"
 
-config USB
-	default y
-
 endif
 
 if SHIELD_KYRIA_LEFT || SHIELD_KYRIA_RIGHT
