@@ -3,3 +3,4 @@
 
 add_subdirectory_ifdef(CONFIG_ZMK_BATTERY_VOLTAGE_DIVIDER battery_voltage_divider)
 add_subdirectory_ifdef(CONFIG_EC11 ec11)
+add_subdirectory_ifdef(CONFIG_MA730 ma730)
