@@ -1,4 +1,5 @@
-# Copyright (c) 2020 Cameron Banna
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
 
 config IS31FL3733
 	bool "IS31FL3733 LED driver"
