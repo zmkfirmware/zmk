@@ -19,17 +19,41 @@
 
 	leds {
 		compatible = "gpio-leds";
-		red_led: led_0 {
-			gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+		red_led: led_1 {
+			gpios = <&gpio0 30 GPIO_ACTIVE_LOW>;
 			label = "Red LED";
 		};
-		green_led: led_1 {
-			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+		green_led: led_2 {
+			gpios = <&gpio0 29 GPIO_ACTIVE_LOW>;
 			label = "Green LED";
 		};
-		blue_led: led_2 {
-			gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
+		blue_led: led_3 {
+			gpios = <&gpio0 31 GPIO_ACTIVE_LOW>;
 			label = "Blue LED";
+		};
+	};
+
+	pwmleds {
+		compatible = "pwm-leds";
+		red_led_pwm: pwm_led_0 {
+			pwms = <&pwm0 30>;
+			label = "Red PWM LED";
+		};
+		green_led_pwm: pwm_led_1 {
+			pwms = <&pwm0 29>;
+			label = "Green PWM LED";
+		};
+		blue_led_pwm: pwm_led_2 {
+			pwms = <&pwm0 31>;
+			label = "Blue PWM LED";
+		};
+	};
+
+	buttons {
+		compatible = "gpio-keys";
+		button0: button_0 {
+			gpios = <&gpio0 19 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Push button";
 		};
 	};
 
@@ -51,9 +75,57 @@
 	status = "okay";
 };
 
+&i2c1 {
+	compatible = "nordic,nrf-twi";
+	/* status = "okay"; */
+	sda-pin = <26>;
+	scl-pin = <27>;
+};
+
+&pwm0 {
+	status = "okay";
+	ch0-pin = <30>;
+	ch0-inverted;
+	ch1-pin = <29>;
+	ch1-inverted;
+	ch2-pin = <31>;
+	ch2-inverted;
+	ch3-pin = <20>;
+};
+
+&spi2 {
+	compatible = "nordic,nrf-spi";
+	/* Cannot be used together with i2c1. */
+	status = "okay";
+	sck-pin = <27>;
+	mosi-pin = <26>;
+	miso-pin = <28>;
+};
+
 &usbd {
 	compatible = "nordic,nrf-usbd";
 	status = "okay";
+};
+
+&qspi {
+	status = "okay";
+	sck-pin = <43>;
+	io-pins = <42>, <46>, <47>, <44>;
+	csn-pins = <45>;
+	mx25r64: mx25r6435f@0 {
+		compatible = "nordic,qspi-nor";
+		reg = <0>;
+		writeoc = "pp4io";
+		readoc = "read4io";
+		sck-frequency = <8000000>;
+		label = "MX25R64";
+		jedec-id = [c2 28 17];
+		size = <67108864>;
+		has-be32k;
+		has-dpd;
+		t-enter-dpd = <10000>;
+		t-exit-dpd = <35000>;
+	};
 };
 
 
