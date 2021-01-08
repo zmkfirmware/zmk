@@ -14,9 +14,6 @@ if SHIELD_JORNE_RIGHT
 
 config ZMK_KEYBOARD_NAME
 	default "Jorne Right"
-
-config USB
-	default y
 	
 endif
 

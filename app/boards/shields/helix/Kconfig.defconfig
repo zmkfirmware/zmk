@@ -16,9 +16,6 @@ if SHIELD_HELIX_RIGHT
 config ZMK_KEYBOARD_NAME
     default "Helix Right"
 
-config USB
-    default y
-
 endif
 
 if SHIELD_HELIX_LEFT || SHIELD_HELIX_RIGHT
