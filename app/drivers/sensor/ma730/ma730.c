@@ -50,87 +50,7 @@ static int ma730_raw_read(const struct device *dev,
 	if (spi_transceive(data->bus, spi_cfg, &tx, &rx)) {
 		return -EIO;
 	}
-
-	return 0;
-}
-
-static int ma730_reg_read(const struct device *dev, uint8_t reg_addr,
-			    uint8_t *value, uint8_t len)
-{
-	struct ma730_data *data = dev->data;
-	const struct ma730_config *cfg = dev->config;
-	const struct spi_config *spi_cfg = &cfg->bus_cfg.spi_cfg->spi_conf;
-	uint8_t buffer_tx[2] = { reg_addr | 1 << 6 | , 0, 0, 0};
-	const struct spi_buf tx_buf = {
-			.buf = buffer_tx,
-			.len = 4,
-	};
-	const struct spi_buf_set tx = {
-		.buffers = &tx_buf,
-		.count = 1
-	};
-	const struct spi_buf rx_buf[2] = {
-		{
-			.buf = NULL,
-			.len = 2,
-		},
-		{
-			.buf = value,
-			.len = 1,
-		},
-		{
-			.buf = NULL,
-			.len = 1,
-		}
-	};
-	const struct spi_buf_set rx = {
-		.buffers = rx_buf,
-		.count = 3
-	};
-
-
-	if (len > 64) {
-		return -EIO;
-	}
-
-	if (spi_transceive(data->bus, spi_cfg, &tx, &rx)) {
-		return -EIO;
-	}
-
-	return 0;
-}
-
-static int ma730_raw_write(const struct device *dev, uint8_t reg_addr,
-			     uint8_t *value, uint8_t len)
-{
-	struct ma730_data *data = dev->data;
-	const struct ma730_config *cfg = dev->config;
-	const struct spi_config *spi_cfg = &cfg->bus_cfg.spi_cfg->spi_conf;
-	uint8_t buffer_tx[1] = { reg_addr | 1 << 7 };
-	const struct spi_buf tx_buf[2] = {
-		{
-			.buf = buffer_tx,
-			.len = 1,
-		},
-		{
-			.buf = value,
-			.len = len,
-		}
-	};
-	const struct spi_buf_set tx = {
-		.buffers = tx_buf,
-		.count = 2
-	};
-
-
-	if (len > 64) {
-		return -EIO;
-	}
-
-	if (spi_write(data->bus, spi_cfg, &tx)) {
-		return -EIO;
-	}
-
+	LOG_DBG("MA730 angle value", value);
 	return 0;
 }
 
@@ -140,23 +60,12 @@ static int ma730_spi_read_data(const struct device *dev,
 	return ma730_raw_read(dev, value);
 }
 
-static int ma730_spi_write_data(const struct device *dev, uint8_t reg_addr,
-				  uint8_t *value, uint8_t len)
-{
-	return ma730_raw_write(dev, reg_addr, value, len);
-}
 
-static int ma730_spi_read_reg(const struct device *dev, uint8_t reg_addr,
-				uint8_t *value)
-{
-	return ma730_reg_read(dev, reg_addr, value, 1);
-}
 
 
 static const struct ma730_transfer_function ma730_spi_transfer_fn = {
 	.read_data = ma730_spi_read_data,
-	.read_reg  = ma730_spi_read_reg,
-	.update_reg = ma730_spi_update_reg,
+
 };
 
 int ma730_spi_init(const struct device *dev)
@@ -185,28 +94,32 @@ int ma730_spi_init(const struct device *dev)
 }
 
 static int ma730_sample_fetch(const struct device *dev, enum sensor_channel chan) {
-    struct ma730_data *drv_data = dev->data;
-    const struct ma730_config *drv_cfg = dev->config;
+    struct ma730_data *data = dev->data;
+    const struct ma730_config *cfg = dev->config;
     uint16_t val;
-    int8_t delta;
+    int8_t velocity;
 
-    __ASSERT_NO_MSG(chan == SENSOR_CHAN_ALL || chan == SENSOR_CHAN_ROTATION);
-		if (ma730_spi_read_data(dev, &value)) {
+    __ASSERT_NO_MSG(chan == SENSOR_CHAN_ALL || chan == SENSOR_CHAN_ROTATION || chan == SENSOR_CHAN_RPM);
+		if (ma730_spi_read_data(dev, &val)) {
 				return -EIO
 		}
-		
+		data->angle = val;
+
 }
 
 static int ma730_channel_get(const struct device *dev, enum sensor_channel chan,
                             struct sensor_value *val) {
     struct ma730_data *drv_data = dev->data;
 
-    if (chan != SENSOR_CHAN_ROTATION) {
+    if (chan != (SENSOR_CHAN_ROTATION || SENSOR_CHAN_RPM)) {
         return -ENOTSUP;
     }
-
-    val->val1 = drv_data->ticks;
-    val->val2 = drv_data->delta;
+		else if (chan == SENSOR_CHAN_ROTATION) {
+				val->val1 = int(data->angle / (65536*resolution));
+		}
+		else {
+				//velocity code
+		}
 
     return 0;
 }

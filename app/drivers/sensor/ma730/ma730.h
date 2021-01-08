@@ -83,18 +83,16 @@ struct ma730_data;
 struct ma730_transfer_function {
 	int (*read_data)(const struct device *dev,
 			 uint16_t *value);
-	int (*read_reg)(const struct device *dev, uint8_t reg_addr,
-			uint8_t *value);
-	int (*update_reg)(const struct device *dev, uint8_t reg_addr,
-			  uint8_t mask, uint8_t value);
+
 };
 
 struct ma730_data {
 	const struct device *bus;
 	struct spi_cs_control cs_ctrl;
 
-	float angle;
-	float velocity;
+	uint16_t angle;
+	int8_t velocity;
+	bool direction;
 
 	const struct ma730_transfer_function *hw_tf;
 
