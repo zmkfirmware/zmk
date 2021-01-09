@@ -1,5 +1,5 @@
-#Copyright (c) 2020 The ZMK Contributors
-#SPDX-License-Identifier: MIT
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
  
  
 if SHIELD_QUEFRENCY_LEFT
@@ -16,9 +16,6 @@ if SHIELD_QUEFRENCY_RIGHT
 
 config ZMK_KEYBOARD_NAME
 	default "Quefrency Right"
-
-config USB
-	default y
 
 endif
 

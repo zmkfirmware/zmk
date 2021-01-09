@@ -25,6 +25,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 
 - [Kyria](https://splitkb.com/products/kyria-pcb-kit) (`kyria_left` and `kyria_right`)
 - [Corne](https://github.com/foostan/crkbd) (`corne_left` and `corne_right`)
+- [Helix](https://github.com/mcmadhatter/helix) (`helix_left` and `helix_right`)
 - [Lily58](https://github.com/kata0510/Lily58) (`lily58_left` and `lily58_right`)
 - [Sofle](https://github.com/josefadamcik/SofleKeyboard) (`sofle_left` and `sofle_right`)
 - [Splitreus62](https://github.com/Na-Cly/splitreus62) (`splitreus62_left` and `splitreus62_right`)
