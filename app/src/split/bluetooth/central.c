@@ -129,31 +129,18 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
         subscribe_params.disc_params = &sub_discover_params;
         subscribe_params.end_handle = discover_params.end_handle;
         subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
-
-        err = bt_gatt_discover(conn, &discover_params);
-        if (err) {
-            LOG_ERR("Discover failed (err %d)", err);
-        }
-    } else if (!bt_uuid_cmp(discover_params.uuid,
-                            BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_RUN_BEHAVIOR_UUID))) {
-        run_behavior_handle = bt_gatt_attr_value_handle(attr);
-    } else {
         subscribe_params.notify = split_central_notify_func;
         subscribe_params.value = BT_GATT_CCC_NOTIFY;
         split_central_subscribe(conn);
-
-        memcpy(&uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_RUN_BEHAVIOR_UUID), sizeof(uuid));
-        discover_params.uuid = &uuid.uuid;
-        discover_params.start_handle = attr->handle + 1;
-        discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
-
-        err = bt_gatt_discover(conn, &discover_params);
-        if (err) {
-            LOG_ERR("Discover failed (err %d)", err);
-        }
+    } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                            BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_RUN_BEHAVIOR_UUID))) {
+        LOG_DBG("Found run behavior handle");
+        run_behavior_handle = bt_gatt_attr_value_handle(attr);
     }
 
-    return subscribe_params.value_handle ? BT_GATT_ITER_STOP : BT_GATT_ITER_CONTINUE;
+    bool subscribed = (run_behavior_handle && subscribe_params.value_handle);
+
+    return subscribed ? BT_GATT_ITER_STOP : BT_GATT_ITER_CONTINUE;
 }
 
 static uint8_t split_central_service_discovery_func(struct bt_conn *conn,
@@ -355,6 +342,7 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
 
     // Clean up previously discovered handles;
     subscribe_params.value_handle = 0;
+    run_behavior_handle = 0;
 
     start_scan();
 }
