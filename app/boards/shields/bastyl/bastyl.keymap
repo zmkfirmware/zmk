@@ -15,10 +15,10 @@
 
 		default_layer {
 // ------------------------------------------------------------------------------------------------------------
-// |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |  BKSP    |
+// |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |  BKSP |
 // |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
 // | SHIFT |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
-// | CTRL  |  Z  |  X  |  C   |  V   |  B   |                   |  N   |  M    |  ,    |  .   |   /   | \     |
+// | CTRL  |  Z  |  X  |  C   |  V   |  B   |                   |  N   |  M    |  ,    |  .   |   /   |   \   |
 //                     | CTRL | SPCE | LOWER|                   | RAISE| ENTR  | RGUI|
 //                            | HOME | BKSP |                   | DEL  | ALT | 
 			bindings = <
@@ -33,11 +33,13 @@
         
 		lower_layer {
 // ------------------------------------------------------------------------------------------------------------
-// | BTCLR | BT1 | BT2 |  BT3 |  BT4 |  BT5 |                   |      |       |       |      |       |       |
-// |  F1   |  F2 |  F3 |  F4  |  F5  |  F6  |                   |  F7  |  F8   |  F9   |  F10 |  F11  |  F12  |
-// |   `   |  !  |  @  |  #   |  $   |  %   |                   |  ^   |  &    |  *    |  (   |   )   |   ~   |
-// |       |     |     |      |      |      |        |  |       |      |  _    |  +    |  {   |   }   |  "|"  |
-//                     |      |      |      |        |  |       |      |       |       |
+// | TILDE |  !   |  @    |  #    |  $   |  %   |                   |  ^   |  &    |  *    |  (   |   )   |  DEL  |
+// | RESET |      |       |       |      |  [   |                   |  ]   |  7    |  8    |  9   |       |   +   |
+// |       | HOME | PG UP | PG DN | END  |  (   |                   |  )   |  4    |  5    |  6   |   -   |  "|"  |
+// |       |      |       |       |      |      |        |  |       |      |  1    |  2    |  3   |   =   |   _   |
+//                        |  CTRL | SPCE |      |                   |      | ENTR  | RGUI|
+//                                | HOME | BKSP |                   | DEL  | ALT | 
+
 			bindings = <
 &kp TILDE &kp EXCL  &kp AT    &kp HASH  &kp DLLR  &kp PRCNT                 &kp CARET &kp AMPS   &kp STAR  &kp LPAR  &kp RPAR     &kp DEL
 &reset    &trans    &trans    &trans    &trans    &kp LBKT                  &kp RBKT  &kp KP_N7  &kp KP_N8 &kp N9    &trans       &kp PLUS
@@ -50,12 +52,14 @@
 
 		raise_layer {
 // ------------------------------------------------------------------------------------------------------------
-// | BTCLR | BT1 | BT2 |  BT3 |  BT4 |  BT5 |                   |      |       |       |      |       |       |
-// |  F1   |  F2 |  F3 |  F4  |  F5  |  F6  |                   |  F7  |  F8   |  F9   |  F10 |  F11  |  F12  |
-// |   `   |  !  |  @  |  #   |  $   |  %   |                   |  ^   |  &    |  *    |  (   |   )   |   ~   |
-// |       |     |     |      |      |      |        |  |       |      |  _    |  +    |  {   |   }   |  "|"  |
-//                     |      |      |      |        |  |       |      |       |       |
-			bindings = <
+// | F12    |  F1      |  F2       |   F3     |  F4      |  F5      |                    |  F6  |  F7  |     F8   |  F9   |   F10    |  F11   | 
+// |        |          |           |          |          |  [       |                    |  ]   |      | NUM LOCK |  INS  | SCL LOCK |  MUTE  |
+// |        | LEFT     |  UP       | DOWN     | RIGHT    |  (       |                    |  )   | PREV | PLAY     | NEXT  |          | VOL UP |
+// | BT CLR | BT SEL 0 | BT SEL 1  | BT SEL 2 | BT SEL 3 | BT SEL 4 |        |  |        |      |      |          |       |          | VOL DN |
+//                                 |  CTRL    | SPCE     |          |                    |      | ENTR | RGUI     |
+//                                            | HOME     | BKSP     |                    | DEL  | ALT | 
+          
+bindings = <
 &kp F12    &kp F1       &kp F2       &kp F3       &kp F4       &kp F5                    &kp F6    &kp F7     &kp F8     &kp F9     &kp F10   &kp F11
 &trans     &trans       &trans       &trans       &trans       &kp LBKT                  &kp RBKT  &trans     &kp LNLCK  &kp INS    &kp SLCK  &kp K_MUTE
 &trans     &kp LEFT     &kp UP       &kp DOWN     &kp RIGHT    &kp LPAR                  &kp RPAR  &kp K_PREV &kp C_PLAY &kp K_NEXT &trans    &kp K_VOL_UP 
