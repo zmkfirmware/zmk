@@ -17,9 +17,6 @@ if SHIELD_MICRODOX_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "Microdox Right"
 
-config USB
-	default y
-
 endif
 
 if SHIELD_MICRODOX_LEFT || SHIELD_MICRODOX_RIGHT

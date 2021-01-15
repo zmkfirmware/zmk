@@ -20,6 +20,7 @@ module.exports = {
       "behaviors/misc",
       "behaviors/hold-tap",
       "behaviors/mod-tap",
+      "behaviors/combos",
       "behaviors/reset",
       "behaviors/bluetooth",
       "behaviors/outputs",

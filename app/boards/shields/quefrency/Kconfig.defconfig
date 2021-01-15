@@ -17,9 +17,6 @@ if SHIELD_QUEFRENCY_RIGHT
 config ZMK_KEYBOARD_NAME
 	default "Quefrency Right"
 
-config USB
-	default y
-
 endif
 
 if SHIELD_QUEFRENCY_LEFT || SHIELD_QUEFRENCY_RIGHT
