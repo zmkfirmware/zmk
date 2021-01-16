@@ -52,8 +52,7 @@ struct charge_level charge_level_lut[BATTERY_CHARGE_LEVEL_LUT_COUNT] = {
     {3434, 0},  {3457, 4},  {3487, 8},  {3520, 12}, {3545, 15}, {3577, 19}, {3595, 23},
     {3609, 27}, {3618, 31}, {3625, 35}, {3633, 38}, {3643, 42}, {3656, 46}, {3672, 50},
     {3696, 54}, {3733, 58}, {3767, 62}, {3796, 65}, {3825, 69}, {3862, 73}, {3899, 77},
-    {3936, 81}, {3976, 85}, {4023, 88}, {4068, 92}, {4120, 96}, {4177, 100}
-};
+    {3936, 81}, {3976, 85}, {4023, 88}, {4068, 92}, {4120, 96}, {4177, 100}};
 
 /**
  * @brief Converts LiIon battery voltage to percentage.
@@ -65,7 +64,7 @@ static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
     uint8_t charge_state = 0;
 
     // If battery voltage exceeds LUT maximum voltage, assume fully charged state
-    if (bat_mv >= charge_level_lut[BATTERY_CHARGE_LEVEL_LUT_COUNT-1].mv) {
+    if (bat_mv >= charge_level_lut[BATTERY_CHARGE_LEVEL_LUT_COUNT - 1].mv) {
         charge_state = 100;
     } else {
         // Otherwise, traverse LUT and interpolate
