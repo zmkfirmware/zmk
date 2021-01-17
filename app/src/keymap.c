@@ -249,7 +249,8 @@ int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sens
 int keymap_listener(const struct zmk_event_header *eh) {
     if (is_position_state_changed(eh)) {
         const struct position_state_changed *ev = cast_position_state_changed(eh);
-        return zmk_keymap_position_state_changed(ev->position, ev->state, ev->timestamp);
+        return zmk_keymap_position_state_changed(ev->data.position, ev->data.state,
+                                                 ev->data.timestamp);
 #if ZMK_KEYMAP_HAS_SENSORS
     } else if (is_sensor_event(eh)) {
         const struct sensor_event *ev = cast_sensor_event(eh);
