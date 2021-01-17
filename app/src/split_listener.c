@@ -23,10 +23,10 @@ int split_listener(const struct zmk_event_header *eh) {
     LOG_DBG("");
     if (is_position_state_changed(eh)) {
         const struct position_state_changed *ev = cast_position_state_changed(eh);
-        if (ev->state) {
-            return zmk_split_bt_position_pressed(ev->position);
+        if (ev->data.state) {
+            return zmk_split_bt_position_pressed(ev->data.position);
         } else {
-            return zmk_split_bt_position_released(ev->position);
+            return zmk_split_bt_position_released(ev->data.position);
         }
     }
     return ZMK_EV_EVENT_BUBBLE;

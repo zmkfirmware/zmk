@@ -92,7 +92,7 @@ static struct position_state_changed *find_captured_keydown_event(uint32_t posit
             continue;
         }
         struct position_state_changed *position_event = cast_position_state_changed(eh);
-        if (position_event->position == position && position_event->state) {
+        if (position_event->data.position == position && position_event->data.state) {
             last_match = position_event;
         }
     }
@@ -143,8 +143,9 @@ static void release_captured_events() {
         if (is_position_state_changed(captured_event)) {
             struct position_state_changed *position_event =
                 cast_position_state_changed(captured_event);
-            LOG_DBG("Releasing key position event for position %d %s", position_event->position,
-                    (position_event->state ? "pressed" : "released"));
+            LOG_DBG("Releasing key position event for position %d %s",
+                    position_event->data.position,
+                    (position_event->data.state ? "pressed" : "released"));
         } else {
             struct keycode_state_changed *modifier_event =
                 cast_keycode_state_changed(captured_event);
@@ -391,12 +392,12 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
     struct position_state_changed *ev = cast_position_state_changed(eh);
 
     if (undecided_hold_tap == NULL) {
-        LOG_DBG("%d bubble (no undecided hold_tap active)", ev->position);
+        LOG_DBG("%d bubble (no undecided hold_tap active)", ev->data.position);
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    if (undecided_hold_tap->position == ev->position) {
-        if (ev->state) { // keydown
+    if (undecided_hold_tap->position == ev->data.position) {
+        if (ev->data.state) { // keydown
             LOG_ERR("hold-tap listener should be called before before most other listeners!");
             return ZMK_EV_EVENT_BUBBLE;
         } else { // keyup
@@ -408,23 +409,23 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
     // If these events were queued, the timer event may be queued too late or not at all.
     // We make a timer decision before the other key events are handled if the timer would
     // have run out.
-    if (ev->timestamp >
+    if (ev->data.timestamp >
         (undecided_hold_tap->timestamp + undecided_hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT);
     }
 
-    if (!ev->state && find_captured_keydown_event(ev->position) == NULL) {
+    if (!ev->data.state && find_captured_keydown_event(ev->data.position) == NULL) {
         // no keydown event has been captured, let it bubble.
         // we'll catch modifiers later in modifier_state_changed_listener
-        LOG_DBG("%d bubbling %d %s event", undecided_hold_tap->position, ev->position,
-                ev->state ? "down" : "up");
+        LOG_DBG("%d bubbling %d %s event", undecided_hold_tap->position, ev->data.position,
+                ev->data.state ? "down" : "up");
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->position,
-            ev->state ? "down" : "up");
+    LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->data.position,
+            ev->data.state ? "down" : "up");
     capture_event(eh);
-    decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP);
+    decide_hold_tap(undecided_hold_tap, ev->data.state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP);
     return ZMK_EV_EVENT_CAPTURED;
 }
 
