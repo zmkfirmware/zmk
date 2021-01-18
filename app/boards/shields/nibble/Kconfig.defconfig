@@ -10,4 +10,3 @@ config ZMK_USB
 	default y
 
 endif
-

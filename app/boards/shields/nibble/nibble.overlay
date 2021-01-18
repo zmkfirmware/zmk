@@ -12,6 +12,15 @@
 		zmk,matrix_transform = &default_transform;
 	};
 
+	encoder_1: encoder_1 {
+		compatible = "alps,ec11";
+		label = "Encoder 1";
+		a-gpios = <&pro_micro_d 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		b-gpios = <&pro_micro_d 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		resolution = <4>;
+		status = "okay";
+	};
+
 	kscan0: kscan {
 		compatible = "zmk,kscan-gpio-demux";
 		label = "KSCAN";
@@ -35,8 +44,6 @@
 		compatible = "zmk,matrix-transform";
 		columns = <16>;
 		rows = <5>;
-
-		//TODO: Add a keymap graphic here
 
 		map = <
 		RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(0,6) RC(0,7) RC(0,8) RC(0,9) RC(0,10) RC(0,11) RC(0,12) RC(0,13) RC(0,14) RC(0,15)
