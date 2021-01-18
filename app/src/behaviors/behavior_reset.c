@@ -15,6 +15,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 struct behavior_reset_config {
     int type;
 };
@@ -45,3 +46,5 @@ static const struct behavior_driver_api behavior_reset_driver_api = {
                         CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_reset_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(RST_INST)
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

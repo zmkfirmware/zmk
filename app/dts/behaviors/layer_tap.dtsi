@@ -6,7 +6,7 @@
 
 / {
 	behaviors {
-		lt: behavior_layer_tap {
+		/omit-if-no-ref/ lt: behavior_layer_tap {
 			compatible = "zmk,behavior-hold-tap";
 			label = "LAYER_TAP";
 			#binding-cells = <2>;

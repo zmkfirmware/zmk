@@ -6,7 +6,7 @@
 
 / {
 	behaviors {
-		trans: behavior_transparent {
+		/omit-if-no-ref/ trans: behavior_transparent {
 			compatible = "zmk,behavior-transparent";
 			label = "TRANS";
 			#binding-cells = <0>;
