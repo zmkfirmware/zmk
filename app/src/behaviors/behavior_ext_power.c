@@ -16,6 +16,8 @@
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     const struct device *ext_power = device_get_binding("EXT_POWER");
@@ -55,3 +57,5 @@ static const struct behavior_driver_api behavior_ext_power_driver_api = {
 
 DEVICE_AND_API_INIT(behavior_ext_power, DT_INST_LABEL(0), behavior_ext_power_init, NULL, NULL,
                     APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY, &behavior_ext_power_driver_api);
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

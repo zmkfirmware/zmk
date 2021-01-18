@@ -8,13 +8,13 @@
 
 / {
 	behaviors {
-		reset: behavior_reset {
+		/omit-if-no-ref/ reset: behavior_reset {
 			compatible = "zmk,behavior-reset";
 			label = "RESET";
 			#binding-cells = <0>;
 		};
 
-		bootloader: behavior_reset_dfu {
+		/omit-if-no-ref/ bootloader: behavior_reset_dfu {
 			compatible = "zmk,behavior-reset";
 			label = "BOOTLOADER_RESET";
 			type = <RST_UF2>;
