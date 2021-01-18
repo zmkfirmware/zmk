@@ -594,6 +594,23 @@ static int zmk_ble_init(const struct device *_arg) {
     return 0;
 }
 
+int zmk_ble_disconnect() {
+    LOG_DBG("");
+
+    for (uint8_t profile_index = 0; profile_index < PROFILE_COUNT; profile_index++) {
+        struct zmk_ble_profile *profile = &profiles[profile_index];
+
+        if (bt_addr_le_cmp(&(profile->peer), BT_ADDR_LE_ANY)) {
+            LOG_DBG("Disconnecting profile %d!", profile_index);
+
+            struct bt_conn *conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, &(profile->peer));
+            bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
+        }
+    }
+
+    return 0;
+}
+
 int zmk_ble_unpair_all() {
     int resp = 0;
     for (int i = BT_ID_DEFAULT; i < CONFIG_BT_ID_MAX; i++) {

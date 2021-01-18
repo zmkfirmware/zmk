@@ -32,6 +32,7 @@ Here is a table describing the command for each define:
 | `BT_NXT` | Switch to the next profile, cycling through to the first one when the end is reached.                                                                     |
 | `BT_PRV` | Switch to the previous profile, cycling through to the last one when the beginning is reached.                                                            |
 | `BT_SEL` | Select the 0-indexed profile by number. Please note: this definition must include a number as an argument in the keymap to work correctly. eg. `BT_SEL 0` |
+| `BT_DIS` | Disconnects all bluetooth profiles. This command disables bluetooth advertising until a board reset is issued.                                            |
 
 ## Bluetooth Behavior
 
@@ -67,6 +68,12 @@ The bluetooth behavior completes an bluetooth action given on press.
 
    ```
    &bt BT_SEL 1
+   ```
+
+1. Behavior binding to disconnect bluetooth:
+
+   ```
+   &bt BT_DIS
    ```
 
 ## Bluetooth Pairing and Profiles
