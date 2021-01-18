@@ -86,6 +86,7 @@ static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
 
                 // Resolve linear equation
                 charge_state = charge_level_lut[lut_idx].pct + slope * distLower;
+                break;
             }
         }
     }
