@@ -22,7 +22,9 @@
 	RC(0,10) RC(0,11) RC(0,12) RC(0,13) RC(0,14) 		RC(0,31) RC(0,30) RC(0,29) RC(0,28) RC(0,27) 
 	RC(0,15)  RC(0,16) 					RC(0,33) RC(0,32)  
 	>;
-
+	};
+	};
+		
 	kscan0: kscan {
 		compatible = "zmk,kscan-gpio-direct";
 		label = "KSCAN";
@@ -45,6 +47,6 @@
 			, <&pro_micro_d 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 			, <&pro_micro_d 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 			;
-	};
-	};	
+
+	
 	};
