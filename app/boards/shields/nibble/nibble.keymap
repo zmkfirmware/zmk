@@ -21,6 +21,8 @@
         compatible = "zmk,keymap";
 
         default_layer {
+            label = "Default";
+
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
 
             bindings = <
@@ -32,6 +34,8 @@
             >;
         };
         function_layer {
+            label = "Function";
+            
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
 
             bindings = <
