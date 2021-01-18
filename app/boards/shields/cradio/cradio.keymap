@@ -9,7 +9,12 @@
 #include <dt-bindings/zmk/bt.h>
 
 
-/ {
+&mt {
+  //  flavor = "tap-preferred";
+   // tapping_term_ms = <200>;
+};
+
+/ { 
 
     combos {
         compatible = "zmk,combos";
@@ -54,10 +59,9 @@
         
     };
 
-
         keymap {
                 compatible = "zmk,keymap";
-
+                
        		default_layer {
 		bindings = <
 		&kp Q &kp W &kp E &kp R &kp T 						&kp Y &kp U  &kp I    &kp O   &kp P 
@@ -94,6 +98,5 @@
 		>;
 		};	
         
-
 	};
 };
