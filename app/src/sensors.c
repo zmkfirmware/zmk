@@ -35,7 +35,6 @@ static struct sensors_data_item sensors[] = {UTIL_LISTIFY(ZMK_KEYMAP_SENSORS_LEN
 static void zmk_sensors_trigger_handler(const struct device *dev, struct sensor_trigger *trigger) {
     int err;
     struct sensors_data_item *item = CONTAINER_OF(trigger, struct sensors_data_item, trigger);
-    struct sensor_event *event;
 
     LOG_DBG("sensor %d", item->sensor_number);
 
@@ -45,12 +44,8 @@ static void zmk_sensors_trigger_handler(const struct device *dev, struct sensor_
         return;
     }
 
-    event = new_sensor_event();
-    event->sensor_number = item->sensor_number;
-    event->sensor = dev;
-    event->timestamp = k_uptime_get();
-
-    ZMK_EVENT_RAISE(event);
+    ZMK_EVENT_RAISE(new_zmk_sensor_event((struct zmk_sensor_event){
+        .sensor_number = item->sensor_number, .sensor = dev, .timestamp = k_uptime_get()}));
 }
 
 static void zmk_sensors_init_item(const char *node, uint8_t i, uint8_t abs_i) {

@@ -69,9 +69,9 @@ struct active_hold_tap {
 struct active_hold_tap *undecided_hold_tap = NULL;
 struct active_hold_tap active_hold_taps[ZMK_BHV_HOLD_TAP_MAX_HELD] = {};
 // We capture most position_state_changed events and some modifiers_state_changed events.
-const struct zmk_event_header *captured_events[ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS] = {};
+const zmk_event_t *captured_events[ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS] = {};
 
-static int capture_event(const struct zmk_event_header *event) {
+static int capture_event(const zmk_event_t *event) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
         if (captured_events[i] == NULL) {
             captured_events[i] = event;
@@ -81,18 +81,18 @@ static int capture_event(const struct zmk_event_header *event) {
     return -ENOMEM;
 }
 
-static struct position_state_changed *find_captured_keydown_event(uint32_t position) {
-    struct position_state_changed *last_match = NULL;
+static struct zmk_position_state_changed *find_captured_keydown_event(uint32_t position) {
+    struct zmk_position_state_changed *last_match = NULL;
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
-        const struct zmk_event_header *eh = captured_events[i];
+        const zmk_event_t *eh = captured_events[i];
         if (eh == NULL) {
             return last_match;
         }
-        if (!is_position_state_changed(eh)) {
+        if (!is_zmk_position_state_changed(eh)) {
             continue;
         }
-        struct position_state_changed *position_event = cast_position_state_changed(eh);
-        if (position_event->data.position == position && position_event->data.state) {
+        struct zmk_position_state_changed *position_event = cast_zmk_position_state_changed(eh);
+        if (position_event->position == position && position_event->state) {
             last_match = position_event;
         }
     }
@@ -132,7 +132,7 @@ static void release_captured_events() {
     // [k1_down, k1_up, null, null, null, ...]
     // now mt2 will start releasing it's own captured positions.
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
-        const struct zmk_event_header *captured_event = captured_events[i];
+        const zmk_event_t *captured_event = captured_events[i];
         if (captured_event == NULL) {
             return;
         }
@@ -140,15 +140,14 @@ static void release_captured_events() {
         if (undecided_hold_tap != NULL) {
             k_msleep(10);
         }
-        if (is_position_state_changed(captured_event)) {
-            struct position_state_changed *position_event =
-                cast_position_state_changed(captured_event);
-            LOG_DBG("Releasing key position event for position %d %s",
-                    position_event->data.position,
-                    (position_event->data.state ? "pressed" : "released"));
+        if (is_zmk_position_state_changed(captured_event)) {
+            struct zmk_position_state_changed *position_event =
+                cast_zmk_position_state_changed(captured_event);
+            LOG_DBG("Releasing key position event for position %d %s", position_event->position,
+                    (position_event->state ? "pressed" : "released"));
         } else {
-            struct keycode_state_changed *modifier_event =
-                cast_keycode_state_changed(captured_event);
+            struct zmk_keycode_state_changed *modifier_event =
+                cast_zmk_keycode_state_changed(captured_event);
             LOG_DBG("Releasing mods changed event 0x%02X %s", modifier_event->keycode,
                     (modifier_event->state ? "pressed" : "released"));
         }
@@ -388,16 +387,16 @@ static const struct behavior_driver_api behavior_hold_tap_driver_api = {
     .binding_released = on_hold_tap_binding_released,
 };
 
-static int position_state_changed_listener(const struct zmk_event_header *eh) {
-    struct position_state_changed *ev = cast_position_state_changed(eh);
+static int position_state_changed_listener(const zmk_event_t *eh) {
+    struct zmk_position_state_changed *ev = cast_zmk_position_state_changed(eh);
 
     if (undecided_hold_tap == NULL) {
-        LOG_DBG("%d bubble (no undecided hold_tap active)", ev->data.position);
+        LOG_DBG("%d bubble (no undecided hold_tap active)", ev->position);
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    if (undecided_hold_tap->position == ev->data.position) {
-        if (ev->data.state) { // keydown
+    if (undecided_hold_tap->position == ev->position) {
+        if (ev->state) { // keydown
             LOG_ERR("hold-tap listener should be called before before most other listeners!");
             return ZMK_EV_EVENT_BUBBLE;
         } else { // keyup
@@ -409,34 +408,34 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
     // If these events were queued, the timer event may be queued too late or not at all.
     // We make a timer decision before the other key events are handled if the timer would
     // have run out.
-    if (ev->data.timestamp >
+    if (ev->timestamp >
         (undecided_hold_tap->timestamp + undecided_hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT);
     }
 
-    if (!ev->data.state && find_captured_keydown_event(ev->data.position) == NULL) {
+    if (!ev->state && find_captured_keydown_event(ev->position) == NULL) {
         // no keydown event has been captured, let it bubble.
         // we'll catch modifiers later in modifier_state_changed_listener
-        LOG_DBG("%d bubbling %d %s event", undecided_hold_tap->position, ev->data.position,
-                ev->data.state ? "down" : "up");
+        LOG_DBG("%d bubbling %d %s event", undecided_hold_tap->position, ev->position,
+                ev->state ? "down" : "up");
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->data.position,
-            ev->data.state ? "down" : "up");
+    LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->position,
+            ev->state ? "down" : "up");
     capture_event(eh);
-    decide_hold_tap(undecided_hold_tap, ev->data.state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP);
+    decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP);
     return ZMK_EV_EVENT_CAPTURED;
 }
 
-static inline bool only_mods(struct keycode_state_changed *ev) {
+static inline bool only_mods(struct zmk_keycode_state_changed *ev) {
     return ev->usage_page == HID_USAGE_KEY && ev->keycode >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL &&
            ev->keycode <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI;
 }
 
-static int keycode_state_changed_listener(const struct zmk_event_header *eh) {
+static int keycode_state_changed_listener(const zmk_event_t *eh) {
     // we want to catch layer-up events too... how?
-    struct keycode_state_changed *ev = cast_keycode_state_changed(eh);
+    struct zmk_keycode_state_changed *ev = cast_zmk_keycode_state_changed(eh);
 
     if (undecided_hold_tap == NULL) {
         // LOG_DBG("0x%02X bubble (no undecided hold_tap active)", ev->keycode);
@@ -456,19 +455,19 @@ static int keycode_state_changed_listener(const struct zmk_event_header *eh) {
     return ZMK_EV_EVENT_CAPTURED;
 }
 
-int behavior_hold_tap_listener(const struct zmk_event_header *eh) {
-    if (is_position_state_changed(eh)) {
+int behavior_hold_tap_listener(const zmk_event_t *eh) {
+    if (is_zmk_position_state_changed(eh)) {
         return position_state_changed_listener(eh);
-    } else if (is_keycode_state_changed(eh)) {
+    } else if (is_zmk_keycode_state_changed(eh)) {
         return keycode_state_changed_listener(eh);
     }
     return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(behavior_hold_tap, behavior_hold_tap_listener);
-ZMK_SUBSCRIPTION(behavior_hold_tap, position_state_changed);
+ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_position_state_changed);
 // this should be modifiers_state_changed, but unfrotunately that's not implemented yet.
-ZMK_SUBSCRIPTION(behavior_hold_tap, keycode_state_changed);
+ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_keycode_state_changed);
 
 void behavior_hold_tap_timer_work_handler(struct k_work *item) {
     struct active_hold_tap *hold_tap = CONTAINER_OF(item, struct active_hold_tap, work);

@@ -70,9 +70,9 @@ static int hid_listener_keycode_released(uint16_t usage_page, uint32_t keycode,
     return zmk_endpoints_send_report(usage_page);
 }
 
-int hid_listener(const struct zmk_event_header *eh) {
-    if (is_keycode_state_changed(eh)) {
-        const struct keycode_state_changed *ev = cast_keycode_state_changed(eh);
+int hid_listener(const zmk_event_t *eh) {
+    if (is_zmk_keycode_state_changed(eh)) {
+        const struct zmk_keycode_state_changed *ev = cast_zmk_keycode_state_changed(eh);
         if (ev->state) {
             hid_listener_keycode_pressed(ev->usage_page, ev->keycode, ev->implicit_modifiers);
         } else {
@@ -83,4 +83,4 @@ int hid_listener(const struct zmk_event_header *eh) {
 }
 
 ZMK_LISTENER(hid_listener, hid_listener);
-ZMK_SUBSCRIPTION(hid_listener, keycode_state_changed);
+ZMK_SUBSCRIPTION(hid_listener, zmk_keycode_state_changed);

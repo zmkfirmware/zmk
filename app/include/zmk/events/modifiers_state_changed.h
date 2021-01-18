@@ -10,19 +10,9 @@
 #include <zmk/keys.h>
 #include <zmk/event_manager.h>
 
-struct modifiers_state_changed {
-    struct zmk_event_header header;
+struct zmk_modifiers_state_changed {
     zmk_mod_flags_t modifiers;
     bool state;
 };
 
-ZMK_EVENT_DECLARE(modifiers_state_changed);
-
-inline struct modifiers_state_changed *create_modifiers_state_changed(zmk_mod_flags_t modifiers,
-                                                                      bool state) {
-    struct modifiers_state_changed *ev = new_modifiers_state_changed();
-    ev->modifiers = modifiers;
-    ev->state = state;
-
-    return ev;
-}
+ZMK_EVENT_DECLARE(zmk_modifiers_state_changed);

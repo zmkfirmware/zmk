@@ -246,14 +246,13 @@ int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sens
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
-int keymap_listener(const struct zmk_event_header *eh) {
-    if (is_position_state_changed(eh)) {
-        const struct position_state_changed *ev = cast_position_state_changed(eh);
-        return zmk_keymap_position_state_changed(ev->data.position, ev->data.state,
-                                                 ev->data.timestamp);
+int keymap_listener(const zmk_event_t *eh) {
+    if (is_zmk_position_state_changed(eh)) {
+        const struct zmk_position_state_changed *ev = cast_zmk_position_state_changed(eh);
+        return zmk_keymap_position_state_changed(ev->position, ev->state, ev->timestamp);
 #if ZMK_KEYMAP_HAS_SENSORS
-    } else if (is_sensor_event(eh)) {
-        const struct sensor_event *ev = cast_sensor_event(eh);
+    } else if (is_zmk_sensor_event(eh)) {
+        const struct zmk_sensor_event *ev = cast_zmk_sensor_event(eh);
         return zmk_keymap_sensor_triggered(ev->sensor_number, ev->sensor, ev->timestamp);
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
     }
@@ -262,8 +261,8 @@ int keymap_listener(const struct zmk_event_header *eh) {
 }
 
 ZMK_LISTENER(keymap, keymap_listener);
-ZMK_SUBSCRIPTION(keymap, position_state_changed);
+ZMK_SUBSCRIPTION(keymap, zmk_position_state_changed);
 
 #if ZMK_KEYMAP_HAS_SENSORS
-ZMK_SUBSCRIPTION(keymap, sensor_event);
+ZMK_SUBSCRIPTION(keymap, zmk_sensor_event);
 #endif /* ZMK_KEYMAP_HAS_SENSORS */

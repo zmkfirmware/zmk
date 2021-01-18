@@ -7,4 +7,4 @@
 #include <kernel.h>
 #include <zmk/events/layer_state_changed.h>
 
-ZMK_EVENT_IMPL(layer_state_changed);
+ZMK_EVENT_IMPL(zmk_layer_state_changed);
