@@ -55,10 +55,8 @@ int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
 #endif /* CONFIG_ZMK_USB */
 
 static void raise_usb_status_changed_event() {
-    struct usb_conn_state_changed *ev = new_usb_conn_state_changed();
-    ev->conn_state = zmk_usb_get_conn_state();
-
-    ZMK_EVENT_RAISE(ev);
+    ZMK_EVENT_RAISE(new_zmk_usb_conn_state_changed(
+        (struct zmk_usb_conn_state_changed){.conn_state = zmk_usb_get_conn_state()}));
 }
 
 enum usb_dc_status_code zmk_usb_get_status() { return usb_status; }

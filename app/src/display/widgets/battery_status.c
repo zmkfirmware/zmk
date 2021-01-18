@@ -75,14 +75,14 @@ lv_obj_t *zmk_widget_battery_status_obj(struct zmk_widget_battery_status *widget
     return widget->obj;
 }
 
-int battery_status_listener(const struct zmk_event_header *eh) {
+int battery_status_listener(const zmk_event_t *eh) {
     struct zmk_widget_battery_status *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_battery_symbol(widget->obj); }
     return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(widget_battery_status, battery_status_listener)
-ZMK_SUBSCRIPTION(widget_battery_status, battery_state_changed);
+ZMK_SUBSCRIPTION(widget_battery_status, zmk_battery_state_changed);
 #if IS_ENABLED(CONFIG_USB)
-ZMK_SUBSCRIPTION(widget_battery_status, usb_conn_state_changed);
+ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 #endif /* IS_ENABLED(CONFIG_USB) */

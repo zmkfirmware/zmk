@@ -9,10 +9,9 @@
 #include <zephyr.h>
 #include <zmk/event_manager.h>
 
-struct battery_state_changed {
-    struct zmk_event_header header;
+struct zmk_battery_state_changed {
     // TODO: Other battery channels
     uint8_t state_of_charge;
 };
 
-ZMK_EVENT_DECLARE(battery_state_changed);
+ZMK_EVENT_DECLARE(zmk_battery_state_changed);

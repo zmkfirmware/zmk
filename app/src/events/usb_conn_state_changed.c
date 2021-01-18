@@ -7,4 +7,4 @@
 #include <kernel.h>
 #include <zmk/events/usb_conn_state_changed.h>
 
-ZMK_EVENT_IMPL(usb_conn_state_changed);
+ZMK_EVENT_IMPL(zmk_usb_conn_state_changed);
