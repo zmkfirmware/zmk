@@ -68,8 +68,6 @@ RC(4,0) RC(4,1) RC(4,2) RC(4,3)                 RC(4,6)                 RC(4,9) 
 		page-offset = <0>;
 		display-offset = <0>;
 		multiplex-ratio = <31>;
-		segment-remap;
-		com-invdir;
 		com-sequential;
 		prechargep = <0x22>;
 	};
