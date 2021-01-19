@@ -76,7 +76,11 @@ int zmk_display_init() {
 }
 
 int display_event_handler(const zmk_event_t *eh) {
-    struct zmk_activity_state_changed *ev = cast_zmk_activity_state_changed(eh);
+    struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
+    if (ev == NULL) {
+        return -ENOTSUP;
+    }
+
     switch (ev->state) {
     case ZMK_ACTIVITY_ACTIVE:
         start_display_updates();
