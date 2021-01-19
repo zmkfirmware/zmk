@@ -291,7 +291,7 @@ static void activate_combo(struct combo_cfg *combo) {
     }
     move_pressed_keys_to_active_combo(active_combo);
     press_combo_behavior(
-        combo, cast_zmk_position_state_changed(active_combo->key_positions_pressed[0])->timestamp);
+        combo, as_zmk_position_state_changed(active_combo->key_positions_pressed[0])->timestamp);
 }
 
 static void deactivate_combo(int active_combo_index) {
@@ -315,7 +315,7 @@ static bool release_combo_key(int32_t position, int64_t timestamp) {
         for (int i = 0; i < active_combo->combo->key_position_len; i++) {
             if (active_combo->key_positions_pressed[i] == NULL) {
                 all_keys_pressed = false;
-            } else if (cast_zmk_position_state_changed(active_combo->key_positions_pressed[i])
+            } else if (as_zmk_position_state_changed(active_combo->key_positions_pressed[i])
                            ->position != position) {
                 all_keys_released = false;
             } else { // not null and position matches
@@ -418,11 +418,11 @@ static void combo_timeout_handler(struct k_work *item) {
 }
 
 static int position_state_changed_listener(const zmk_event_t *ev) {
-    if (!is_zmk_position_state_changed(ev)) {
+    struct zmk_position_state_changed *data = as_zmk_position_state_changed(ev);
+    if (data == NULL) {
         return 0;
     }
 
-    struct zmk_position_state_changed *data = cast_zmk_position_state_changed(ev);
     if (data->state) { // keydown
         return position_state_down(ev, data);
     } else { // keyup

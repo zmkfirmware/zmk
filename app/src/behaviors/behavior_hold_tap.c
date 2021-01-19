@@ -88,10 +88,11 @@ static struct zmk_position_state_changed *find_captured_keydown_event(uint32_t p
         if (eh == NULL) {
             return last_match;
         }
-        if (!is_zmk_position_state_changed(eh)) {
+        struct zmk_position_state_changed *position_event = as_zmk_position_state_changed(eh);
+        if (position_event == NULL) {
             continue;
         }
-        struct zmk_position_state_changed *position_event = cast_zmk_position_state_changed(eh);
+
         if (position_event->position == position && position_event->state) {
             last_match = position_event;
         }
@@ -140,14 +141,13 @@ static void release_captured_events() {
         if (undecided_hold_tap != NULL) {
             k_msleep(10);
         }
-        if (is_zmk_position_state_changed(captured_event)) {
-            struct zmk_position_state_changed *position_event =
-                cast_zmk_position_state_changed(captured_event);
+
+        struct zmk_position_state_changed *position_event;
+        struct zmk_keycode_state_changed *modifier_event;
+        if ((position_event = as_zmk_position_state_changed(captured_event)) != NULL) {
             LOG_DBG("Releasing key position event for position %d %s", position_event->position,
                     (position_event->state ? "pressed" : "released"));
-        } else {
-            struct zmk_keycode_state_changed *modifier_event =
-                cast_zmk_keycode_state_changed(captured_event);
+        } else if ((modifier_event = as_zmk_keycode_state_changed(captured_event)) != NULL) {
             LOG_DBG("Releasing mods changed event 0x%02X %s", modifier_event->keycode,
                     (modifier_event->state ? "pressed" : "released"));
         }
@@ -388,7 +388,7 @@ static const struct behavior_driver_api behavior_hold_tap_driver_api = {
 };
 
 static int position_state_changed_listener(const zmk_event_t *eh) {
-    struct zmk_position_state_changed *ev = cast_zmk_position_state_changed(eh);
+    struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
 
     if (undecided_hold_tap == NULL) {
         LOG_DBG("%d bubble (no undecided hold_tap active)", ev->position);
@@ -435,7 +435,7 @@ static inline bool only_mods(struct zmk_keycode_state_changed *ev) {
 
 static int keycode_state_changed_listener(const zmk_event_t *eh) {
     // we want to catch layer-up events too... how?
-    struct zmk_keycode_state_changed *ev = cast_zmk_keycode_state_changed(eh);
+    struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
 
     if (undecided_hold_tap == NULL) {
         // LOG_DBG("0x%02X bubble (no undecided hold_tap active)", ev->keycode);
@@ -456,9 +456,9 @@ static int keycode_state_changed_listener(const zmk_event_t *eh) {
 }
 
 int behavior_hold_tap_listener(const zmk_event_t *eh) {
-    if (is_zmk_position_state_changed(eh)) {
+    if (as_zmk_position_state_changed(eh) != NULL) {
         return position_state_changed_listener(eh);
-    } else if (is_zmk_keycode_state_changed(eh)) {
+    } else if (as_zmk_keycode_state_changed(eh) != NULL) {
         return keycode_state_changed_listener(eh);
     }
     return ZMK_EV_EVENT_BUBBLE;

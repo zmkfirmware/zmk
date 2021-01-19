@@ -71,8 +71,8 @@ static int hid_listener_keycode_released(uint16_t usage_page, uint32_t keycode,
 }
 
 int hid_listener(const zmk_event_t *eh) {
-    if (is_zmk_keycode_state_changed(eh)) {
-        const struct zmk_keycode_state_changed *ev = cast_zmk_keycode_state_changed(eh);
+    const struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
+    if (ev) {
         if (ev->state) {
             hid_listener_keycode_pressed(ev->usage_page, ev->keycode, ev->implicit_modifiers);
         } else {

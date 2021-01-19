@@ -39,8 +39,7 @@ struct zmk_event_subscription {
         struct event_type data;                                                                    \
     };                                                                                             \
     struct event_type##_event *new_##event_type(struct event_type);                                \
-    bool is_##event_type(const zmk_event_t *eh);                                                   \
-    struct event_type *cast_##event_type(const zmk_event_t *eh);                                   \
+    struct event_type *as_##event_type(const zmk_event_t *eh);                                     \
     extern const struct zmk_event_type zmk_event_##event_type;
 
 #define ZMK_EVENT_IMPL(event_type)                                                                 \
@@ -54,9 +53,9 @@ struct zmk_event_subscription {
         ev->data = data;                                                                           \
         return ev;                                                                                 \
     };                                                                                             \
-    bool is_##event_type(const zmk_event_t *eh) { return eh->event == &zmk_event_##event_type; };  \
-    struct event_type *cast_##event_type(const zmk_event_t *eh) {                                  \
-        return &((struct event_type##_event *)eh)->data;                                           \
+    struct event_type *as_##event_type(const zmk_event_t *eh) {                                    \
+        return (eh->event == &zmk_event_##event_type) ? &((struct event_type##_event *)eh)->data   \
+                                                      : NULL;                                      \
     };
 
 #define ZMK_LISTENER(mod, cb) const struct zmk_listener zmk_listener_##mod = {.callback = cb};

@@ -247,15 +247,19 @@ int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sens
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
 int keymap_listener(const zmk_event_t *eh) {
-    if (is_zmk_position_state_changed(eh)) {
-        const struct zmk_position_state_changed *ev = cast_zmk_position_state_changed(eh);
-        return zmk_keymap_position_state_changed(ev->position, ev->state, ev->timestamp);
-#if ZMK_KEYMAP_HAS_SENSORS
-    } else if (is_zmk_sensor_event(eh)) {
-        const struct zmk_sensor_event *ev = cast_zmk_sensor_event(eh);
-        return zmk_keymap_sensor_triggered(ev->sensor_number, ev->sensor, ev->timestamp);
-#endif /* ZMK_KEYMAP_HAS_SENSORS */
+    const struct zmk_position_state_changed *pos_ev;
+    if ((pos_ev = as_zmk_position_state_changed(eh)) != NULL) {
+        return zmk_keymap_position_state_changed(pos_ev->position, pos_ev->state,
+                                                 pos_ev->timestamp);
     }
+
+#if ZMK_KEYMAP_HAS_SENSORS
+    const struct zmk_sensor_event *sensor_ev;
+    if ((sensor_ev = as_zmk_sensor_event(eh)) != NULL) {
+        return zmk_keymap_sensor_triggered(sensor_ev->sensor_number, sensor_ev->sensor,
+                                           sensor_ev->timestamp);
+    }
+#endif /* ZMK_KEYMAP_HAS_SENSORS */
 
     return -ENOTSUP;
 }
