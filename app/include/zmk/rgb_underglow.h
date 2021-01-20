@@ -7,6 +7,9 @@
 #pragma once
 
 int zmk_rgb_underglow_toggle();
+int zmk_rgb_underglow_get_state(bool *state);
+int zmk_rgb_underglow_on();
+int zmk_rgb_underglow_off();
 int zmk_rgb_underglow_cycle_effect(int direction);
 int zmk_rgb_underglow_change_hue(int direction);
 int zmk_rgb_underglow_change_sat(int direction);
