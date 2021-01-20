@@ -153,7 +153,9 @@ const char *zmk_keymap_layer_label(uint8_t layer) {
 }
 
 int zmk_keymap_apply_position_state(int layer, uint32_t position, bool pressed, int64_t timestamp) {
-    struct zmk_behavior_binding *binding = &zmk_keymap[layer][position];
+    // We want to make a copy of this, since it may be converted from
+    // relative to absolute before being invoked
+    struct zmk_behavior_binding binding = zmk_keymap[layer][position];
     const struct device *behavior;
     struct zmk_behavior_binding_event event = {
         .layer = layer,
@@ -162,19 +164,25 @@ int zmk_keymap_apply_position_state(int layer, uint32_t position, bool pressed, 
     };
 
     LOG_DBG("layer: %d position: %d, binding name: %s", layer, position,
-            log_strdup(binding->behavior_dev));
+            log_strdup(binding.behavior_dev));
 
-    behavior = device_get_binding(binding->behavior_dev);
+    behavior = device_get_binding(binding.behavior_dev);
 
     if (!behavior) {
         LOG_DBG("No behavior assigned to %d on layer %d", position, layer);
         return 1;
     }
 
+    int err = behavior_keymap_binding_convert_central_state_dependent_params(&binding, event);
+    if (err) {
+        LOG_ERR("Failed to convert relative to absolute behavior binding (err %d)", err);
+        return err;
+    }
+
     if (pressed) {
-        return behavior_keymap_binding_pressed(binding, event);
+        return behavior_keymap_binding_pressed(&binding, event);
     } else {
-        return behavior_keymap_binding_released(binding, event);
+        return behavior_keymap_binding_released(&binding, event);
     }
 }
 

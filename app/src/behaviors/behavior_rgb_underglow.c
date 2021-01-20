@@ -20,6 +20,27 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int behavior_rgb_underglow_init(const struct device *dev) { return 0; }
 
+static int
+on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_binding *binding,
+                                                         struct zmk_behavior_binding_event event) {
+    switch (binding->param1) {
+    case RGB_TOG_CMD: {
+        bool state;
+        int err = zmk_rgb_underglow_get_state(&state);
+        if (err) {
+            LOG_ERR("Failed to get RGB underglow state (err %d)", err);
+            return err;
+        }
+
+        binding->param1 = state ? RGB_OFF_CMD : RGB_ON_CMD;
+        LOG_DBG("RGB relative toggle convert to absolute %s", state ? "OFF" : "ON");
+        return 0;
+    }
+    default:
+        return 0;
+    }
+};
+
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
@@ -63,6 +84,8 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
 }
 
 static const struct behavior_driver_api behavior_rgb_underglow_driver_api = {
+    .binding_convert_central_state_dependent_params =
+        on_keymap_binding_convert_central_state_dependent_params,
     .binding_pressed = on_keymap_binding_pressed,
     .binding_released = on_keymap_binding_released,
 };
