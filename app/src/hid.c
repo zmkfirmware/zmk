@@ -55,7 +55,9 @@ int zmk_hid_unregister_mod(zmk_mod_t modifier) {
             continue;                                                                              \
         }                                                                                          \
         keyboard_report.body.keys[idx] = val;                                                      \
-        break;                                                                                     \
+        if (val) {                                                                                 \
+            break;                                                                                 \
+        }                                                                                          \
     }
 
 #define TOGGLE_CONSUMER(match, val)                                                                \
@@ -64,7 +66,9 @@ int zmk_hid_unregister_mod(zmk_mod_t modifier) {
             continue;                                                                              \
         }                                                                                          \
         consumer_report.body.keys[idx] = val;                                                      \
-        break;                                                                                     \
+        if (val) {                                                                                 \
+            break;                                                                                 \
+        }                                                                                          \
     }
 
 int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t implicit_modifiers) {

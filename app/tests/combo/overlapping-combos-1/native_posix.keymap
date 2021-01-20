@@ -1,0 +1,65 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan-mock.h>
+
+/*
+    combo 01 timeout 50
+    combo 012 timeout 100
+    AB is pressed within 50ms, C is never pressed.
+    expected outcome: AB after 100ms
+*/
+/ {
+	combos {
+		compatible = "zmk,combos";
+		combo_two {
+			timeout-ms = <50>;
+			key-positions = <0 1>;
+			bindings = <&kp Y>;
+		};
+
+		combo_three {
+			timeout-ms = <100>;
+			key-positions = <0 1 2>;
+			bindings = <&kp X>;
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&kp A &kp B
+				&kp C &none
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		/* if you're debugging these, remember that the timer can be triggered between 
+		  events while stepping through code. */
+		/* all permutations of combo two press and release, combo triggered by timeout */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,1,100) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(0,1,10)
+
+		ZMK_MOCK_PRESS(0,1,10) 
+		ZMK_MOCK_PRESS(0,0,100) 
+		ZMK_MOCK_RELEASE(0,1,10)
+		ZMK_MOCK_RELEASE(0,0,10) 
+
+		ZMK_MOCK_PRESS(0,1,10) 
+		ZMK_MOCK_PRESS(0,0,100) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(0,1,10)
+
+		ZMK_MOCK_PRESS(0,0,10)  
+		ZMK_MOCK_PRESS(0,1,100) 
+		ZMK_MOCK_RELEASE(0,1,10)
+		ZMK_MOCK_RELEASE(0,0,10)
+	>;
+};

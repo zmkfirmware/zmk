@@ -1,0 +1,45 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan-mock.h>
+
+&mt {
+	flavor = "hold-preferred";
+};
+
+/* This test verifies that hold-tap keys can observe
+ * events which were released from combos.
+ */
+/ {
+	combos {
+		compatible = "zmk,combos";
+		combo_one {
+			timeout-ms = <100>;
+			key-positions = <0 2>;
+			bindings = <&kp Y>;
+		};
+		combo_two {
+			timeout-ms = <100>;
+			key-positions = <1 3>;
+			bindings = <&kp Z>;
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&mt LEFT_CONTROL A &mt RIGHT_CONTROL B
+				&none &none
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		ZMK_MOCK_PRESS(0,0,0) 
+		ZMK_MOCK_PRESS(0,1,300)
+	>;
+};

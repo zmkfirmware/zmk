@@ -51,16 +51,6 @@
 	status = "okay";
 };
 
-&uart0 {
-	compatible = "nordic,nrf-uarte";
-	status = "okay";
-	current-speed = <115200>;
-	tx-pin = <19>;
-	rx-pin = <21>;
-	rts-pin = <23>;
-	cts-pin = <25>;
-};
-
 &usbd {
 	compatible = "nordic,nrf-usbd";
 	status = "okay";
