@@ -16,10 +16,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <dt-bindings/zmk/hid_usage_pages.h>
 #include <zmk/endpoints.h>
 
-static int hid_listener_keycode_pressed(const struct keycode_state_changed *ev) {
+static int hid_listener_keycode_pressed(const struct zmk_keycode_state_changed *ev) {
     int err;
-    LOG_DBG("usage_page 0x%02X keycode 0x%02X mods 0x%02X", ev->usage_page, ev->keycode,
-            ev->implicit_modifiers);
+    LOG_DBG("usage_page 0x%02X keycode 0x%02X implicit_mods 0x%02X explicit_mods 0x%02X",
+            ev->usage_page, ev->keycode, ev->implicit_modifiers, ev->explicit_modifiers);
     switch (ev->usage_page) {
     case HID_USAGE_KEY:
         err = zmk_hid_keyboard_press(ev->keycode);
@@ -36,14 +36,15 @@ static int hid_listener_keycode_pressed(const struct keycode_state_changed *ev) 
         }
         break;
     }
+    zmk_hid_register_mods(ev->explicit_modifiers);
     zmk_hid_implicit_modifiers_press(ev->implicit_modifiers);
     return zmk_endpoints_send_report(ev->usage_page);
 }
 
-static int hid_listener_keycode_released(const struct keycode_state_changed *ev) {
+static int hid_listener_keycode_released(const struct zmk_keycode_state_changed *ev) {
     int err;
-    LOG_DBG("usage_page 0x%02X keycode 0x%02X mods 0x%02X", ev->usage_page, ev->keycode,
-            ev->implicit_modifiers);
+    LOG_DBG("usage_page 0x%02X keycode 0x%02X implicit_mods 0x%02X explicit_mods 0x%02X",
+            ev->usage_page, ev->keycode, ev->implicit_modifiers, ev->explicit_modifiers);
     switch (ev->usage_page) {
     case HID_USAGE_KEY:
         err = zmk_hid_keyboard_release(ev->keycode);
@@ -59,6 +60,7 @@ static int hid_listener_keycode_released(const struct keycode_state_changed *ev)
             return err;
         }
     }
+    zmk_hid_unregister_mods(ev->explicit_modifiers);
     // There is a minor issue with this code.
     // If LC(A) is pressed, then LS(B), then LC(A) is released, the shift for B will be released
     // prematurely. This causes if LS(B) to repeat like Bbbbbbbb when pressed for a long time.
