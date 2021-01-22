@@ -8,8 +8,8 @@
 
 #include <device.h>
 #include <drivers/behavior.h>
+#include <zmk/keys.h>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/hid_usage_pages.h>
 #include <logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/matrix.h>
@@ -17,7 +17,6 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
-#include <zmk/events/modifiers_state_changed.h>
 #include <zmk/behavior.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -428,11 +427,6 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_CAPTURED;
 }
 
-static inline bool only_mods(struct zmk_keycode_state_changed *ev) {
-    return ev->usage_page == HID_USAGE_KEY && ev->keycode >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL &&
-           ev->keycode <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI;
-}
-
 static int keycode_state_changed_listener(const zmk_event_t *eh) {
     // we want to catch layer-up events too... how?
     struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
@@ -442,7 +436,7 @@ static int keycode_state_changed_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    if (!only_mods(ev)) {
+    if (!is_mod(ev->usage_page, ev->keycode)) {
         // LOG_DBG("0x%02X bubble (not a mod)", ev->keycode);
         return ZMK_EV_EVENT_BUBBLE;
     }
