@@ -1,0 +1,10 @@
+#include "../behavior_keymap.dtsi"
+
+&kscan {
+	events = <
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10)
+		/* Wait for the worker to trigger and reset after 5 seconds, followed by a 0 at 6 seconds */
+		ZMK_MOCK_PRESS(0,0,6000) 
+	>;
+};
