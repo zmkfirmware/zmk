@@ -1,0 +1,39 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+#define DEFAULT  0
+#define NUM_MODS 1
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// |   ESC   |    Q    |    W    |    E    |    R    |    T    |    Y    |    U    |    I    |    O    |    P    |    \    |
+// |   TAB   |    A    |    S    |    D    |    F    |    G    |    H    |    J    |    K    |    L    |    ;    |    '    |
+// |  SHIFT  |    Z    |    X    |    C    |    V    |    B    |    N    |    M    |    ,    |    .    |    /    |  ENTER  |
+// |  CTRL   |    GUI  |    ALT  |    \    |    LOWER|    SPACE          |    RAISE|    LEFT |  RIGHT  |   UP    |  DOWN   |
+            bindings = <
+    &kp ESC   &kp Q     &kp W    &kp E     &kp R     &kp T      &kp Y     &kp U     &kp I     &kp O     &kp P    &kp BSPC
+    &kp TAB   &kp A     &kp S    &kp D     &kp F     &kp G      &kp H     &kp J     &kp K     &kp L     &kp SEMI &kp QUOTE
+    &kp LSHFT &kp Z     &kp X    &kp C     &kp V     &kp B      &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH &kp ENTER
+    &kp LCTRL &kp LGUI  &kp LALT &kp BSLH  &to DEFAULT &trans   &kp SPACE &to NUM_MODS &kp LEFT &kp RIGHT &kp UP &kp DOWN
+            >;
+        };
+
+        num_mods {
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// |   `     |    1    |    2    |    3    |    4    |    5    |    6    |    7    |    8    |    9    |    0    |    DEL  |
+// |   TAB   |    F1   |   F2    |   F3    |   F4    |   F5    |   F6    |    -    |   PG_UP |    [    |    ]    |    \    |
+// |  SHIFT  |    F7   |   F8    |   F9    |   F10   |   F11   |   F12   |    =    |  PG_DOWN|  HOME   |   END   |  ENTER  |
+// |  CTRL   |    GUI  |    ALT  |  RESET  |    LOWER|    SPACE          |    RAISE|    LEFT |  RIGHT  |   UP    |  DOWN   |
+            bindings = <
+    &kp GRAVE &kp 1     &kp 2    &kp 3     &kp 4     &kp 5      &kp 6     &kp 7     &kp 8     &kp 9     &kp 0    &kp DEL
+    &kp TAB   &kp F1    &kp F2   &kp F3    &kp F4    &kp F5     &kp F6    &kp MINUS &kp PG_UP &kp LBKT  &kp RBKT &kp QUOTE
+    &kp LSHFT &kp F7    &kp F8   &kp F9    &kp F10   &kp F11    &kp F12   &kp EQUAL &kp PG_DOWN &kp HOME &kp END &kp ENTER
+    &kp LCTRL &kp LGUI  &kp LALT &reset  &to DEFAULT &trans   &kp SPACE &to NUM_MODS &kp LEFT &kp RIGHT &kp UP &kp DOWN
+            >;
+        };
+    };
+};
