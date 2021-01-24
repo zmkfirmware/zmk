@@ -1,8 +1,10 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
 
 #define DEFAULT  0
 #define NUM_MODS 1
+#define BT_CTRL  2
 
 / {
     keymap {
@@ -16,9 +18,9 @@
 // |  CTRL   |    GUI  |    ALT  |    \    |    LOWER|    SPACE          |    RAISE|    LEFT |  RIGHT  |   UP    |  DOWN   |
             bindings = <
     &kp ESC   &kp Q     &kp W    &kp E     &kp R     &kp T      &kp Y     &kp U     &kp I     &kp O     &kp P    &kp BSPC
-    &kp TAB   &kp A     &kp S    &kp D     &kp F     &kp G      &kp H     &kp J     &kp K     &kp L     &kp SEMI &kp QUOTE
+    &kp TAB   &kp A     &kp S    &kp D     &kp F     &kp G      &kp H     &kp J     &kp K     &kp L     &kp SEMI &kp SQT
     &kp LSHFT &kp Z     &kp X    &kp C     &kp V     &kp B      &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH &kp ENTER
-    &kp LCTRL &kp LGUI  &kp LALT &kp BSLH  &to DEFAULT &trans   &kp SPACE &to NUM_MODS &kp LEFT &kp RIGHT &kp UP &kp DOWN
+    &kp LCTRL &kp LGUI  &kp LALT &kp BSLH  &to DEFAULT &kp SPACE &trans &to NUM_MODS &kp LEFT &kp RIGHT &kp UP &kp DOWN
             >;
         };
 
@@ -29,10 +31,19 @@
 // |  SHIFT  |    F7   |   F8    |   F9    |   F10   |   F11   |   F12   |    =    |  PG_DOWN|  HOME   |   END   |  ENTER  |
 // |  CTRL   |    GUI  |    ALT  |  RESET  |    LOWER|    SPACE          |    RAISE|    LEFT |  RIGHT  |   UP    |  DOWN   |
             bindings = <
-    &kp GRAVE &kp 1     &kp 2    &kp 3     &kp 4     &kp 5      &kp 6     &kp 7     &kp 8     &kp 9     &kp 0    &kp DEL
-    &kp TAB   &kp F1    &kp F2   &kp F3    &kp F4    &kp F5     &kp F6    &kp MINUS &kp PG_UP &kp LBKT  &kp RBKT &kp QUOTE
-    &kp LSHFT &kp F7    &kp F8   &kp F9    &kp F10   &kp F11    &kp F12   &kp EQUAL &kp PG_DOWN &kp HOME &kp END &kp ENTER
-    &kp LCTRL &kp LGUI  &kp LALT &reset  &to DEFAULT &trans   &kp SPACE &to NUM_MODS &kp LEFT &kp RIGHT &kp UP &kp DOWN
+    &kp GRAVE &kp N1    &kp N2   &kp N3    &kp N4    &kp N5     &kp N6    &kp N7    &kp N8    &kp N9    &kp N0   &kp DEL
+    &kp TAB   &kp F1    &kp F2   &kp F3    &kp F4    &kp F5     &kp F6    &kp MINUS &kp PG_UP &kp LBKT  &kp RBKT &kp BSLH
+    &kp LSHFT &kp F7    &kp F8   &kp F9    &kp F10   &kp F11    &kp F12   &kp EQUAL &kp PG_DN &kp HOME  &kp END  &kp ENTER
+    &kp LCTRL &kp LGUI  &kp LALT &reset  &to DEFAULT &kp SPACE  &trans &mo BT_CTRL &kp LEFT &kp RIGHT &kp UP   &kp DOWN
+            >;
+        };
+
+        bt_control {
+            bindings = <
+    &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &trans    &trans    &trans    &trans    &trans   &trans
+    &trans    &trans    &trans   &trans    &trans    &trans     &trans    &trans    &trans    &trans    &trans   &trans
+    &trans    &trans    &trans   &trans    &trans    &trans     &trans    &trans    &trans    &trans    &trans   &trans
+    &trans    &trans    &trans   &trans    &trans    &trans     &trans    &trans    &bt BT_PRV &bt BT_NXT &trans   &trans
             >;
         };
     };
