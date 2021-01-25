@@ -1,6 +1,5 @@
 ---
-title: Combo Behavior
-sidebar_label: Combos
+title: Combos
 ---
 
 ## Summary
@@ -9,7 +8,7 @@ Combo keys are a way to combine multiple keypresses to output a different key. F
 
 ### Configuration
 
-Combos are specified like this:
+Combos configured in your `.keymap` file, but are separate from the `keymap` node found there, since they are processed before the normal keymap. They are specified like this:
 
 ```
 / {

@@ -26,7 +26,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | [Display Support](features/displays)[^2]                                                                                  | 🚧  |    🚧     | ✅  |
 | [RGB Underglow](features/underglow)                                                                                       | ✅  |    ✅     | ✅  |
 | One Shot Keys                                                                                                             | ✅  |    ✅     | ✅  |
-| [Combo Keys](behaviors/combos)                                                                                            | ✅  |           | ✅  |
+| [Combo Keys](features/combos)                                                                                             | ✅  |           | ✅  |
 | Macros                                                                                                                    | 🚧  |    ✅     | ✅  |
 | Mouse Keys                                                                                                                | 💡  |    ✅     | ✅  |
 | Low Active Power Usage                                                                                                    | ✅  |           |     |

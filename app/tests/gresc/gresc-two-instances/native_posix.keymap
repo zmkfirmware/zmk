@@ -1,0 +1,43 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan-mock.h>
+
+/*
+This test checks nothing breaks if two grave-escapes are pressed at the same time.
+If someone ever really needs two, they can make a second behavior definition.
+
+The second gresc that is pressed is ignored.
+The first gresc that is released releases the key.
+*/
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&gresc         &gresc
+				&kp LEFT_SHIFT &kp LEFT_GUI
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		/* esc */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,1,10) /* the second gresc is ignored */
+		ZMK_MOCK_RELEASE(0,0,10)
+		ZMK_MOCK_RELEASE(0,1,10) /* the second gresc is ignored */
+
+		/* ~ */
+		ZMK_MOCK_PRESS(1,0,10) 
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_PRESS(0,0,10)  /* the second gresc is ignored */ 
+		ZMK_MOCK_RELEASE(1,0,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+		ZMK_MOCK_RELEASE(0,0,10)  /* the second gresc is ignored */
+	>;
+};

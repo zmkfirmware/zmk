@@ -7,4 +7,4 @@
 #include <kernel.h>
 #include <zmk/events/keycode_state_changed.h>
 
-ZMK_EVENT_IMPL(keycode_state_changed);
+ZMK_EVENT_IMPL(zmk_keycode_state_changed);

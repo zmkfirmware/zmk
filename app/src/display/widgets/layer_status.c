@@ -69,11 +69,11 @@ lv_obj_t *zmk_widget_layer_status_obj(struct zmk_widget_layer_status *widget) {
     return widget->obj;
 }
 
-int layer_status_listener(const struct zmk_event_header *eh) {
+int layer_status_listener(const zmk_event_t *eh) {
     struct zmk_widget_layer_status *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_layer_symbol(widget->obj); }
     return 0;
 }
 
 ZMK_LISTENER(widget_layer_status, layer_status_listener)
-ZMK_SUBSCRIPTION(widget_layer_status, layer_state_changed);
+ZMK_SUBSCRIPTION(widget_layer_status, zmk_layer_state_changed);
