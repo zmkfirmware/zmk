@@ -429,7 +429,7 @@ static void le_param_updated(struct bt_conn *conn, uint16_t interval, uint16_t l
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_DBG("%s: interval %d latency %d timeout %d", addr, interval, latency, timeout);
+    LOG_DBG("%s: interval %d latency %d timeout %d", log_strdup(addr), interval, latency, timeout);
 }
 
 static struct bt_conn_cb conn_callbacks = {
