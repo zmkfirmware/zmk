@@ -7,3 +7,5 @@
 /build
 *.DS_Store
 __pycache__
+app/prj.conf
+app/boards/arm/nice_nano/arduino_pro_micro_pins.dtsi

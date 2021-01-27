@@ -1,0 +1,9 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_UT47
+
+config ZMK_KEYBOARD_NAME
+    default "UT47 keyboard"
+
+endif
