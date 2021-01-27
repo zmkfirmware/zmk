@@ -27,3 +27,11 @@ If using an OLED screen, you'll need to change the following in your local nibbl
 ```
 CONFIG_ZMK_DISPLAY=y
 ```
+
+You'll also need to add the following to your keymap to ensure the OLED device is activated by the firmware.
+
+```
+&pro_micro_i2c {
+	status = "okay";
+}
+```
