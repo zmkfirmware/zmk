@@ -18,48 +18,48 @@ jobs:
     strategy:
       matrix:
         board:
-          - bluemicro840_v1
+#          - bluemicro840_v1
           - nice_nano
-          - nrfmicro_13
-          - proton_c
+#          - nrfmicro_13
+#          - proton_c
         shield:
-          - bfo9000_left
-          - bfo9000_right
-          - boardsource3x4
-          - corne_left
-          - corne_right
-          - cradio_left
-          - cradio_right
-          - crbn
-          - eek
-          - helix_left
-          - helix_right
-          - iris_left
-          - iris_right
-          - jian_left
-          - jian_right
-          - jorne_left
-          - jorne_right
-          - kyria_left
-          - kyria_right
-          - lily58_left
-          - lily58_right
-          - microdox_left
-          - microdox_right
-          - nibble
-          - qaz
-          - quefrency_left
-          - quefrency_right
-          - reviung41
-          - romac
-          - romac_plus
-          - settings_reset
-          - sofle_left
-          - sofle_right
-          - splitreus62_left
-          - splitreus62_right
-          - tg4x
-          - tidbit
+#          - bfo9000_left
+#          - bfo9000_right
+#          - boardsource3x4
+#          - corne_left
+#          - corne_right
+#          - cradio_left
+#          - cradio_right
+#          - crbn
+#          - eek
+#          - helix_left
+#          - helix_right
+#          - iris_left
+#          - iris_right
+#          - jian_left
+#          - jian_right
+#          - jorne_left
+#          - jorne_right
+#          - kyria_left
+#          - kyria_right
+#          - lily58_left
+#          - lily58_right
+#          - microdox_left
+#          - microdox_right
+#          - nibble
+#          - qaz
+#          - quefrency_left
+#          - quefrency_right
+#          - reviung41
+#          - romac
+#          - romac_plus
+#          - settings_reset
+#          - sofle_left
+#          - sofle_right
+#          - splitreus62_left
+#          - splitreus62_right
+#          - tg4x
+#          - tidbit
           - ut47
         cmake-args: [""]
         include:
