@@ -21,7 +21,7 @@
     &kp ESC      &kp Q      &kp W      &kp E       &kp R       &kp T       &kp Y       &kp U       &kp I       &kp O      &kp P     &kp BSPC
     &kp TAB      &kp A      &kp S      &kp D       &kp F       &kp G       &kp H       &kp J       &kp K       &kp L      &kp SEMI  &kp RET
     &kp LSHFT    &kp Z      &kp X      &kp C       &kp V       &kp B       &kp N       &kp M       &kp COMMA   &kp DOT    &kp UP    &kp FSLH
-    &kp LCTRL    &kp LGUI   &kp LALT   &mo NAV     &mo NUM_SYM &kp SPACE   &none       &mo NUM_SYM &mo NAV     &kp LEFT   &kp DOWN  &kp RIGHT
+    &kp LCTRL    &kp LGUI   &kp LALT   &mo NAV     &mo NUM_SYM &kp SPACE               &mo NUM_SYM &mo NAV     &kp LEFT   &kp DOWN  &kp RIGHT
             >;
         };
 
@@ -30,7 +30,7 @@
     &trans       &kp N1     &kp N2     &kp N3     &kp N4     &kp N5     &kp N6     &kp N7     &kp N8      &kp N9    &kp N0    &trans
     &trans       &trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp EQUAL   &kp MINUS &trans    &trans
     &trans       &none      &none      &none      &none      &none      &none      &none      &kp DOT     &none     &trans    &none
-    &bootloader  &reset     &trans     &trans     &trans     &trans     &trans     &trans     &none       &trans    &trans    &trans
+    &bootloader  &reset     &trans     &trans     &trans     &trans                &trans     &none       &trans    &trans    &trans
             >;
         };
 
@@ -39,7 +39,7 @@
     &bt BT_CLR   &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none   &none   &none   &none   &none   &none
     &bt BT_NXT   &trans       &none        &none        &none        &none        &none   &none   &none   &none   &none   &none
     &bt BT_PRV   &none        &none        &none        &none        &none        &none   &none   &none   &none   &none   &none
-    &bootloader  &reset       &none        &none        &none        &none        &none   &none   &none   &none   &none   &none
+    &bootloader  &reset       &none        &none        &none        &none                &none   &none   &none   &none   &none
             >;
         };
     };
