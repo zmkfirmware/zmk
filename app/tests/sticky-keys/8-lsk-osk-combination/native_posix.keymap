@@ -29,7 +29,7 @@
 		/* tap sk LEFT_CONTROL */
 		ZMK_MOCK_PRESS(0,0,10)
 		ZMK_MOCK_RELEASE(0,0,10)
-		/* tap Y */
+		/* tap A */
 		ZMK_MOCK_PRESS(1,0,10) 
 		ZMK_MOCK_RELEASE(1,0,10) 
 		
@@ -40,7 +40,7 @@
 		/* tap sk */
 		ZMK_MOCK_PRESS(0,0,10)
 		ZMK_MOCK_RELEASE(0,0,10)
-		/* tap Y */
+		/* tap A */
 		ZMK_MOCK_PRESS(1,0,10) 
 		ZMK_MOCK_RELEASE(1,0,10) 
 	>;
