@@ -51,7 +51,9 @@ static void zmk_sensors_trigger_handler(const struct device *dev, struct sensor_
         LOG_WRN("Failed to get sensor rotation value: %d", err);
         return;
     }
-
+    if (value.val1 == 0) {
+        return;
+    }
     ZMK_EVENT_RAISE(
         new_zmk_sensor_event((struct zmk_sensor_event){.sensor_number = item->sensor_number,
                                                        .sensor = dev,
