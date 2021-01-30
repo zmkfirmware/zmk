@@ -27,5 +27,3 @@ If using an OLED screen, you'll need to change the following in your local nibbl
 ```
 CONFIG_ZMK_DISPLAY=y
 ```
-
-```
