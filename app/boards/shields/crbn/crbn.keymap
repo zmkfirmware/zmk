@@ -24,6 +24,8 @@
 				&kp LSHFT &kp Z    &kp X &kp C &kp V &kp B  &kp N   &kp M  &kp COMMA &kp DOT &kp BSLH &kp RET
 				&trans   &kp LGUI &kp LALT &kp LCTRL &mo 1 &kp SPACE &trans &mo 2 &kp LEFT &kp DOWN &kp UP &kp RIGHT
 			>;
+
+			sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
 		};
 
 		lower {
@@ -33,6 +35,8 @@
 				&trans &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp LS(HASH) &kp LS(BSLH) &kp HOME &kp END &trans
 				&trans &trans &trans &trans &trans &trans &trans &mo 3 &kp C_NEXT &kp C_VOL_DN &kp C_VOL_UP &kp C_PP
 			>;
+
+			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 		};
 
 		raise {
@@ -43,6 +47,7 @@
 				&trans &trans &trans &trans &mo 3 &trans &trans &trans &kp C_NEXT &kp C_VOL_DN &kp C_VOL_UP &kp C_PP
 			>;
 		};
+		
 		control {
 			bindings = <
 				&reset &bootloader &bt BT_CLR &bt BT_PRV &bt BT_NXT &trans &trans &trans &trans &trans &trans &trans

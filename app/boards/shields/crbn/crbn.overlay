@@ -38,4 +38,18 @@
 			, <&pro_micro_a 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
 			;
 	};
+
+	encoder: encoder {
+		compatible = "alps,ec11";
+		label = "ENCODER";
+		a-gpios = <&pro_micro_a 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		b-gpios = <&pro_micro_a 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		resolution = <2>;
+		status = "okay";
+	};
+
+	sensors {
+		compatible = "zmk,keymap-sensors";
+		sensors = <&encoder>;
+	};
 };
