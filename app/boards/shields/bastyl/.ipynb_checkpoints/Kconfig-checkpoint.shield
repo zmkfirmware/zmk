@@ -1,8 +1,0 @@
-# Copyright (c) 2020 ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-config SHIELD_BASTYL_LEFT
-	def_bool $(shields_list_contains,bastyl_left)
-
-config SHIELD_BASTYL_RIGHT
-	def_bool $(shields_list_contains,bastyl_right)
