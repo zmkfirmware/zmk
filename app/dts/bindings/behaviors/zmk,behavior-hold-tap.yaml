@@ -13,6 +13,9 @@ properties:
     required: true
   tapping_term_ms:
     type: int
+  quick_tap_ms:
+    type: int
+    default: -1
   flavor:
     type: string
     required: false

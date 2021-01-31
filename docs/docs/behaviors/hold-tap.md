@@ -11,7 +11,7 @@ Simply put, the hold-tap key will output the 'hold' behavior if it's held for a 
 
 ### Hold-Tap
 
-The `tapping_term_ms` parameter decides between a 'tap' and a 'hold'.
+The graph below shows how the hold-tap decides between a 'tap' and a 'hold'.
 
 ![Simple behavior](../assets/hold-tap/case1_2.png)
 
@@ -37,6 +37,18 @@ For basic usage, please see [mod-tap](./mod-tap.md) and [layer-tap](./layers.md)
 
 ### Advanced Configuration
 
+#### `tapping_term_ms`
+
+Defines how long a key must be pressed to trigger Hold behavior.
+
+#### `quick_tap_ms`
+
+If you press a tapped hold-tap again within `quick_tap_ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
+
+In QMK, unlike ZMK, this functionality is enabled by default, and you turn it off using `TAPPING_FORCE_HOLD`.
+
+#### Home row mods
+
 This example configures a hold-tap that works well for homerow mods:
 
 ```
@@ -50,6 +62,7 @@ This example configures a hold-tap that works well for homerow mods:
 			label = "HOMEROW_MODS";
 			#binding-cells = <2>;
 			tapping_term_ms = <150>;
+			quick_tap_ms = <0>;
 			flavor = "tap-preferred";
 			bindings = <&kp>, <&kp>;
 		};
