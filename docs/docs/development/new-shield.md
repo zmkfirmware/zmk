@@ -98,17 +98,10 @@ Finally, you'll want to turn on the split option for both sides. This can all be
 if SHIELD_MY_BOARD_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "My Awesome Keyboard Left"
+	default "My Awesome Keyboard"
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
-
-endif
-
-if SHIELD_MY_BOARD_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "My Awesome Keyboard Right"
 
 endif
 
