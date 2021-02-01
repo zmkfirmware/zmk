@@ -12,13 +12,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 endif
 
-if SHIELD_QUEFRENCY_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "Quefrency Right"
-
-endif
-
 if SHIELD_QUEFRENCY_LEFT || SHIELD_QUEFRENCY_RIGHT
 
 config ZMK_SPLIT
