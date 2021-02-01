@@ -463,13 +463,13 @@ you should be able to test with a build command like:
 west build --pristine -b proton_c -- -DSHIELD=my_board
 ```
 
-The above build command generates `build/zephyr/zmk.uf2`.  If your board
+The above build command generates `build/zephyr/zmk.uf2`. If your board
 supports USB Flashing Format (UF2), copy that file onto the root of the USB mass
-storage device for your board.  The controller should flash your built firmware
+storage device for your board. The controller should flash your built firmware
 and automatically restart once flashing is complete.
 
 Alternatively, if your board supports flashing and you're not developing from
-within a Dockerized environment, then you can test your build with:  
+within a Dockerized environment, then you can test your build with:
 
 ```
 west flash
