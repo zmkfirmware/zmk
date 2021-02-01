@@ -27,6 +27,10 @@
 
 	leds {
 		compatible = "gpio-leds";
+		pwr_led: led_0 {
+			gpios = <&gpio1 04 GPIO_ACTIVE_HIGH>;
+			label = "Power LED";
+		};
 		red_led: led_1 {
 			gpios = <&gpio0 30 GPIO_ACTIVE_LOW>;
 			label = "Red LED";
