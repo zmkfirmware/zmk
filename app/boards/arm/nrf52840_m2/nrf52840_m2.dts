@@ -17,6 +17,14 @@
 		zephyr,flash = &flash0;
 	};
 
+	vbatt {
+		compatible = "zmk,battery-voltage-divider";
+		label = "BATTERY";
+		io-channels = <&adc 0>; 
+		output-ohms = <1000000>;
+		full-ohms = <(1000000 + 1000000)>;
+	};
+
 	leds {
 		compatible = "gpio-leds";
 		red_led: led_1 {
@@ -118,7 +126,6 @@
 		t-exit-dpd = <35000>;
 	};
 };
-
 
 &flash0 {
 	/*
