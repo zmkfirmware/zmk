@@ -9,14 +9,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 endif
 
-
-if SHIELD_JORNE_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "Jorne Right"
-	
-endif
-
 if SHIELD_JORNE_LEFT || SHIELD_JORNE_RIGHT
 
 config ZMK_SPLIT

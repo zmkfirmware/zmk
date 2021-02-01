@@ -11,13 +11,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 endif
 
-if SHIELD_HELIX_RIGHT
-
-config ZMK_KEYBOARD_NAME
-    default "Helix Right"
-
-endif
-
 if SHIELD_HELIX_LEFT || SHIELD_HELIX_RIGHT
 
 config ZMK_SPLIT

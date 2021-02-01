@@ -11,14 +11,7 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 endif
 
-if SHIELD_CRADIO_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "Cradio_Right"
-
-endif
-
-if SHIELD_CRADIO_RIGHT || SHIELD_CRADIO_LEFT
+if SHIELD_CRADIO_LEFT || SHIELD_CRADIO_RIGHT
 
 config ZMK_SPLIT
 	default y

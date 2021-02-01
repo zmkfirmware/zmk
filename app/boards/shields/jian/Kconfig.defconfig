@@ -9,14 +9,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 endif
 
-
-if SHIELD_JIAN_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "Jian Right"
-	
-endif
-
 if SHIELD_JIAN_LEFT || SHIELD_JIAN_RIGHT
 
 config ZMK_SPLIT

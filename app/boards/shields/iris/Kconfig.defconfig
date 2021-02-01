@@ -11,13 +11,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 endif
 
-if SHIELD_IRIS_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "Iris Right"
-
-endif
-
 if SHIELD_IRIS_LEFT || SHIELD_IRIS_RIGHT
 
 config ZMK_SPLIT
