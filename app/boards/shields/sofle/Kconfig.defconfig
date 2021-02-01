@@ -11,13 +11,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	
 endif
 
-if SHIELD_SOFLE_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "Sofle Right"
-
-endif
-
 if SHIELD_SOFLE_LEFT || SHIELD_SOFLE_RIGHT
 
 config ZMK_SPLIT
