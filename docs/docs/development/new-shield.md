@@ -469,7 +469,8 @@ storage device for your board. The controller should flash your built firmware
 and automatically restart once flashing is complete.
 
 Alternatively, if your board supports flashing and you're not developing from
-within a Dockerized environment, then you can test your build with:
+within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on
+your board and run the following command to test your build:
 
 ```
 west flash
