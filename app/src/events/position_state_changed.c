@@ -7,4 +7,4 @@
 #include <kernel.h>
 #include <zmk/events/position_state_changed.h>
 
-ZMK_EVENT_IMPL(position_state_changed);
+ZMK_EVENT_IMPL(zmk_position_state_changed);

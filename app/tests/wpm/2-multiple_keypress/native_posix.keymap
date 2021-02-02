@@ -1,0 +1,15 @@
+#include "../behavior_keymap.dtsi"
+
+&kscan {
+	events = <
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10)
+		//1st WPM worker call - 12wpm - 1 key press in 1 second
+		ZMK_MOCK_PRESS(0,0,1000) 
+		ZMK_MOCK_RELEASE(0,0,10)
+		// 2nd WPM worker call - 12wpm - 2 key press in 2 second
+		// note there is no event for this as WPM hasn't changed
+		// 3rd WPM worker call - 8wpm - 2 key press in 3 seconds
+		ZMK_MOCK_PRESS(0,0,2000) 
+	>;
+};

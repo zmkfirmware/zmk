@@ -63,6 +63,8 @@ static uint8_t active_profile;
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
+BUILD_ASSERT(DEVICE_NAME_LEN <= 16, "ERROR: BLE device name is too long. Max length: 16");
+
 #define IS_HOST_PERIPHERAL                                                                         \
     (!IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL))
 #define IS_SPLIT_PERIPHERAL                                                                        \
@@ -92,11 +94,8 @@ static bt_addr_le_t peripheral_addr;
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
 
 static void raise_profile_changed_event() {
-    struct ble_active_profile_changed *ev = new_ble_active_profile_changed();
-    ev->index = active_profile;
-    ev->profile = &profiles[active_profile];
-
-    ZMK_EVENT_RAISE(ev);
+    ZMK_EVENT_RAISE(new_zmk_ble_active_profile_changed((struct zmk_ble_active_profile_changed){
+        .index = active_profile, .profile = &profiles[active_profile]}));
 }
 
 static void raise_profile_changed_event_callback(struct k_work *work) {
@@ -376,7 +375,10 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
     LOG_DBG("Connected %s", log_strdup(addr));
 
-    bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
+    err = bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
+    if (err) {
+        LOG_WRN("Failed to update LE parameters (err %d)", err);
+    }
 
 #if IS_SPLIT_PERIPHERAL
     bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
@@ -423,10 +425,20 @@ static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_
     }
 }
 
+static void le_param_updated(struct bt_conn *conn, uint16_t interval, uint16_t latency,
+                             uint16_t timeout) {
+    char addr[BT_ADDR_LE_STR_LEN];
+
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+    LOG_DBG("%s: interval %d latency %d timeout %d", log_strdup(addr), interval, latency, timeout);
+}
+
 static struct bt_conn_cb conn_callbacks = {
     .connected = connected,
     .disconnected = disconnected,
     .security_changed = security_changed,
+    .le_param_updated = le_param_updated,
 };
 
 /*

@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+	behaviors {
+		/omit-if-no-ref/ gresc: grave_escape {
+			compatible = "zmk,behavior-mod-morph";
+			label = "GRAVE_ESCAPE";
+			#binding-cells = <0>;
+			bindings = <&kp ESC>, <&kp GRAVE>;
+            mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
+		};
+	};
+};

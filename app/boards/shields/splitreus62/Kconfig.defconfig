@@ -16,7 +16,7 @@ endif
 if SHIELD_SPLITREUS62_RIGHT
 
 config ZMK_KEYBOARD_NAME
-	default "Splitreus62 Right"
+	default "Splitreus62 Rt"
 
 endif
 

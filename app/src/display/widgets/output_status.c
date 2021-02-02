@@ -79,7 +79,7 @@ lv_obj_t *zmk_widget_output_status_obj(struct zmk_widget_output_status *widget) 
     return widget->obj;
 }
 
-int output_status_listener(const struct zmk_event_header *eh) {
+int output_status_listener(const zmk_event_t *eh) {
     struct zmk_widget_output_status *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_status_symbol(widget->obj); }
     return ZMK_EV_EVENT_BUBBLE;
@@ -87,8 +87,8 @@ int output_status_listener(const struct zmk_event_header *eh) {
 
 ZMK_LISTENER(widget_output_status, output_status_listener)
 #if defined(CONFIG_USB)
-ZMK_SUBSCRIPTION(widget_output_status, usb_conn_state_changed);
+ZMK_SUBSCRIPTION(widget_output_status, zmk_usb_conn_state_changed);
 #endif
 #if defined(CONFIG_ZMK_BLE)
-ZMK_SUBSCRIPTION(widget_output_status, ble_active_profile_changed);
+ZMK_SUBSCRIPTION(widget_output_status, zmk_ble_active_profile_changed);
 #endif

@@ -41,7 +41,7 @@ config USB_NUMOF_EP_WRITE_RETRIES
 #ZMK_USB
 endif
 
-config ZMK_BLE
+menuconfig ZMK_BLE
 	bool "BLE (HID over GATT)"
 	select BT
 	select BT_SMP
@@ -57,6 +57,22 @@ if ZMK_BLE
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
 	default 2048
+
+config ZMK_BLE_THREAD_STACK_SIZE
+	int "BLE notify thread stack size"
+	default 512
+
+config ZMK_BLE_THREAD_PRIORITY
+	int "BLE notify thread priority"
+	default 5
+
+config ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE
+	int "Max number of keyboard HID reports to queue for sending over BLE"
+	default 20
+
+config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
+	int "Max number of consumer HID reports to queue for sending over BLE"
+	default 5
 
 config ZMK_BLE_CLEAR_BONDS_ON_START
 	bool "Configuration that clears all bond information from the keyboard on startup."
@@ -86,7 +102,7 @@ config ZMK_SPLIT
 
 if ZMK_SPLIT
 
-config ZMK_SPLIT_BLE
+menuconfig ZMK_SPLIT_BLE
 	bool "Split keyboard support via BLE transport"
 	depends on ZMK_BLE
 	default y
@@ -94,12 +110,32 @@ config ZMK_SPLIT_BLE
 
 if ZMK_SPLIT_BLE
 
-config ZMK_SPLIT_BLE_ROLE_CENTRAL
+menuconfig ZMK_SPLIT_BLE_ROLE_CENTRAL
 	bool "Central"
 	select BT_CENTRAL
 	select BT_GATT_CLIENT
 
+if ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue when received from peripherals"
+	default 5
+
+endif
+
 if !ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE
+	int "BLE split peripheral notify thread stack size"
+	default 512
+
+config ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY
+	int "BLE split peripheral notify thread priority"
+	default 5
+
+config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue to send to the central"
+	default 10
 
 config ZMK_USB
 	default n
@@ -301,11 +337,9 @@ config ZMK_KSCAN_EVENT_QUEUE_SIZE
 
 config ZMK_KSCAN_MOCK_DRIVER
 	bool "Enable mock kscan driver to simulate key presses"
-	default n
 
 config ZMK_KSCAN_COMPOSITE_DRIVER
 	bool "Enable composite kscan driver to combine kscan devices"
-	default n
 
 #KSCAN Settings
 endmenu
@@ -380,6 +414,10 @@ config REBOOT
 
 config USB
 	default y if HAS_HW_NRF_USBD
+
+config ZMK_WPM
+	bool "Calculate WPM"
+	default n
 
 module = ZMK
 module-str = zmk

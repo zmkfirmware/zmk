@@ -18,6 +18,7 @@
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/events/modifiers_state_changed.h>
 #include <zmk/hid.h>
+#include <zmk/keymap.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -29,6 +30,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct behavior_sticky_key_config {
     uint32_t release_after_ms;
+    bool quick_release;
     struct zmk_behavior_binding behavior;
 };
 
@@ -175,11 +177,11 @@ static const struct behavior_driver_api behavior_sticky_key_driver_api = {
     .binding_released = on_sticky_key_binding_released,
 };
 
-static int sticky_key_keycode_state_changed_listener(const struct zmk_event_header *eh) {
-    if (!is_keycode_state_changed(eh)) {
+static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
+    struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
+    if (ev == NULL) {
         return ZMK_EV_EVENT_BUBBLE;
     }
-    struct keycode_state_changed *ev = cast_keycode_state_changed(eh);
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
         struct active_sticky_key *sticky_key = &active_sticky_keys[i];
         if (sticky_key->position == ZMK_BHV_STICKY_KEY_POSITION_FREE) {
@@ -209,10 +211,12 @@ static int sticky_key_keycode_state_changed_listener(const struct zmk_event_head
             }
             if (sticky_key->timer_started) {
                 stop_timer(sticky_key);
+                if (sticky_key->config->quick_release) {
+                    release_sticky_key_behavior(sticky_key, ev->timestamp);
+                }
             }
             sticky_key->modified_key_usage_page = ev->usage_page;
             sticky_key->modified_key_keycode = ev->keycode;
-
         } else { // key up
             if (sticky_key->timer_started &&
                 sticky_key->modified_key_usage_page == ev->usage_page &&
@@ -226,7 +230,7 @@ static int sticky_key_keycode_state_changed_listener(const struct zmk_event_head
 }
 
 ZMK_LISTENER(behavior_sticky_key, sticky_key_keycode_state_changed_listener);
-ZMK_SUBSCRIPTION(behavior_sticky_key, keycode_state_changed);
+ZMK_SUBSCRIPTION(behavior_sticky_key, zmk_keycode_state_changed);
 
 void behavior_sticky_key_timer_handler(struct k_work *item) {
     struct active_sticky_key *sticky_key =
@@ -257,18 +261,11 @@ static int behavior_sticky_key_init(const struct device *dev) {
 struct behavior_sticky_key_data {};
 static struct behavior_sticky_key_data behavior_sticky_key_data;
 
-#define _TRANSFORM_ENTRY(idx, node)                                                                \
-    {                                                                                              \
-        .behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),                     \
-        .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))),                  \
-        .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))),                  \
-    },
-
 #define KP_INST(n)                                                                                 \
     static struct behavior_sticky_key_config behavior_sticky_key_config_##n = {                    \
-        .behavior = _TRANSFORM_ENTRY(0, n).release_after_ms = DT_INST_PROP(n, release_after_ms),   \
+        .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, DT_DRV_INST(n)),                                 \
+        .release_after_ms = DT_INST_PROP(n, release_after_ms),                                     \
+        .quick_release = DT_INST_PROP(n, quick_release),                                           \
     };                                                                                             \
     DEVICE_AND_API_INIT(behavior_sticky_key_##n, DT_INST_LABEL(n), behavior_sticky_key_init,       \
                         &behavior_sticky_key_data, &behavior_sticky_key_config_##n, APPLICATION,   \

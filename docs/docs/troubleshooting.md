@@ -54,7 +54,7 @@ Since then, a much simpler procedure of performing a bluetooth reset for split k
 
 **New Procedure:**
 
-1. [Open the GitHub `Actions` tab and select the `Build` workflow](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain).
+1. [Open the GitHub `Actions` tab and select the `Build` workflow](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain+event%3Apush).
 1. Select the top 'result' on that page.
 1. From the next page under "Artifacts", download the `$boardname-settings_reset-zmk` zip file.
 1. Unzip the downloaded file.
