@@ -28,14 +28,14 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 
     switch (binding->param1) {
     case EXT_POWER_OFF_CMD:
-        return ext_power_disable(ext_power);
+        return ext_power_disable(ext_power, true);
     case EXT_POWER_ON_CMD:
-        return ext_power_enable(ext_power);
+        return ext_power_enable(ext_power, true);
     case EXT_POWER_TOGGLE_CMD:
         if (ext_power_get(ext_power) > 0)
-            return ext_power_disable(ext_power);
+            return ext_power_disable(ext_power, true);
         else
-            return ext_power_enable(ext_power);
+            return ext_power_enable(ext_power, true);
     default:
         LOG_ERR("Unknown ext_power command: %d", binding->param1);
     }

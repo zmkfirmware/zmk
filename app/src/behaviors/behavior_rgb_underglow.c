@@ -24,7 +24,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
     case RGB_TOG_CMD:
-        return zmk_rgb_underglow_toggle();
+        return zmk_rgb_underglow_toggle(true);
     case RGB_HUI_CMD:
         return zmk_rgb_underglow_change_hue(1);
     case RGB_HUD_CMD:
