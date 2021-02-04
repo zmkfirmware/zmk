@@ -419,6 +419,9 @@ config ZMK_WPM
 	bool "Calculate WPM"
 	default n
 
+config SENSOR
+	default y
+
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
