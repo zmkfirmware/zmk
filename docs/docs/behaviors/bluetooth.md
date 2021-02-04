@@ -14,7 +14,7 @@ Please note there are only five available Bluetooth profiles by default. If you 
 :::
 
 :::note Connection Management
-As an implementation detail, a ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
+A ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
 :::
 
 ## Bluetooth Command Defines
