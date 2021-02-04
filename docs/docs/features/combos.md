@@ -51,4 +51,3 @@ There are three global combo parameters which are set through KConfig. You can s
 - `CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS` is the number of combos that can be active at the same time. Default 4.
 - `CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY` is the maximum number of combos that can be active on a key position. Defaults to 5. (So you can have 5 separate combos that use position `3` for example)
 - `CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO` is the maximum number of keys that need to be pressed to activate a combo. Default 4. If you want a combo that triggers when pressing 5 keys, you'd set this to 5 for example.
-- `ZMK_COMBO_MAX_LAYER_FILTERS_PER_COMBO` is the maximum number of layer filters that can be specified. Default 4. If you want use layer filters with a combo that spans more than 4 layers, you'll need to change this value.
