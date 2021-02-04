@@ -34,15 +34,12 @@ static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
         return err;
     }
 
-    switch (value.val1) {
-    case 1:
+    if (value.val1 > 0) {
         keycode = binding->param1;
-        break;
-    case -1:
+    } else if (value.val1 < 0) {
         keycode = binding->param2;
-        break;
-    default:
-        return -ENOTSUP;
+    } else {
+        return ZMK_BEHAVIOR_OPAQUE;
     }
 
     LOG_DBG("SEND %d", keycode);
