@@ -34,8 +34,8 @@ struct combo_cfg {
     // the virtual key position is a key position outside the range used by the keyboard.
     // it is necessary so hold-taps can uniquely identify a behavior.
     int32_t virtual_key_position;
-    int8_t layers[CONFIG_ZMK_COMBO_MAX_LAYER_FILTERS_PER_COMBO];
     int32_t layers_len;
+    int8_t layers[];
 };
 
 struct active_combo {
