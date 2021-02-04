@@ -36,6 +36,12 @@ enum flavor {
     FLAVOR_TAP_PREFERRED,
 };
 
+enum status {
+    STATUS_UNDECIDED,
+    STATUS_TAP,
+    STATUS_HOLD,
+};
+
 struct behavior_hold_tap_config {
     int tapping_term_ms;
     char *hold_behavior_dev;
@@ -50,8 +56,7 @@ struct active_hold_tap {
     uint32_t param_hold;
     uint32_t param_tap;
     int64_t timestamp;
-    bool is_decided;
-    bool is_hold;
+    enum status status;
     const struct behavior_hold_tap_config *config;
     struct k_delayed_work work;
     bool work_is_cancelled;
@@ -186,8 +191,7 @@ static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_
             continue;
         }
         active_hold_taps[i].position = position;
-        active_hold_taps[i].is_decided = false;
-        active_hold_taps[i].is_hold = false;
+        active_hold_taps[i].status = STATUS_UNDECIDED;
         active_hold_taps[i].config = config;
         active_hold_taps[i].param_hold = param_hold;
         active_hold_taps[i].param_tap = param_tap;
@@ -199,8 +203,7 @@ static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_
 
 static void clear_hold_tap(struct active_hold_tap *hold_tap) {
     hold_tap->position = ZMK_BHV_HOLD_TAP_POSITION_NOT_USED;
-    hold_tap->is_decided = false;
-    hold_tap->is_hold = false;
+    hold_tap->status = STATUS_UNDECIDED;
     hold_tap->work_is_cancelled = false;
 }
 
@@ -215,18 +218,15 @@ enum decision_moment {
 static void decide_balanced(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
-        hold_tap->is_hold = 0;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_TAP;
+        return;
     case HT_OTHER_KEY_UP:
     case HT_TIMER_EVENT:
-        hold_tap->is_hold = 1;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_HOLD;
+        return;
     case HT_QUICK_TAP:
-        hold_tap->is_hold = 0;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_TAP;
+        return;
     default:
         return;
     }
@@ -235,17 +235,14 @@ static void decide_balanced(struct active_hold_tap *hold_tap, enum decision_mome
 static void decide_tap_preferred(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
-        hold_tap->is_hold = 0;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_TAP;
+        return;
     case HT_TIMER_EVENT:
-        hold_tap->is_hold = 1;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_HOLD;
+        return;
     case HT_QUICK_TAP:
-        hold_tap->is_hold = 0;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_TAP;
+        return;
     default:
         return;
     }
@@ -254,24 +251,21 @@ static void decide_tap_preferred(struct active_hold_tap *hold_tap, enum decision
 static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
-        hold_tap->is_hold = 0;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_TAP;
+        return;
     case HT_OTHER_KEY_DOWN:
     case HT_TIMER_EVENT:
-        hold_tap->is_hold = 1;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_HOLD;
+        return;
     case HT_QUICK_TAP:
-        hold_tap->is_hold = 0;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_TAP;
+        return;
     default:
         return;
     }
 }
 
-static inline char *flavor_str(enum flavor flavor) {
+static inline const char *flavor_str(enum flavor flavor) {
     switch (flavor) {
     case FLAVOR_HOLD_PREFERRED:
         return "hold-preferred";
@@ -283,8 +277,20 @@ static inline char *flavor_str(enum flavor flavor) {
     return "UNKNOWN FLAVOR";
 }
 
+static inline const char *status_str(enum status status) {
+    switch (status) {
+    case STATUS_UNDECIDED:
+        return "undecided";
+    case STATUS_HOLD:
+        return "hold";
+    case STATUS_TAP:
+        return "tap";
+    }
+    return "UNKNOWN STATUS";
+}
+
 static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_moment event_type) {
-    if (hold_tap->is_decided) {
+    if (hold_tap->status != STATUS_UNDECIDED) {
         return;
     }
 
@@ -302,11 +308,11 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
         decide_tap_preferred(hold_tap, event_type);
     }
 
-    if (!hold_tap->is_decided) {
+    if (hold_tap->status == STATUS_UNDECIDED) {
         return;
     }
 
-    LOG_DBG("%d decided %s (%s event %d)", hold_tap->position, hold_tap->is_hold ? "hold" : "tap",
+    LOG_DBG("%d decided %s (%s event %d)", hold_tap->position, status_str(hold_tap->status),
             flavor_str(hold_tap->config->flavor), event_type);
     undecided_hold_tap = NULL;
 
@@ -316,7 +322,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
     };
 
     struct zmk_behavior_binding binding;
-    if (hold_tap->is_hold) {
+    if (hold_tap->status == STATUS_HOLD) {
         binding.behavior_dev = hold_tap->config->hold_behavior_dev;
         binding.param1 = hold_tap->param_hold;
         binding.param2 = 0;
@@ -391,7 +397,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     };
 
     struct zmk_behavior_binding sub_behavior_binding;
-    if (hold_tap->is_hold) {
+    if (hold_tap->status == STATUS_HOLD) {
         sub_behavior_binding.behavior_dev = hold_tap->config->hold_behavior_dev;
         sub_behavior_binding.param1 = hold_tap->param_hold;
         sub_behavior_binding.param2 = 0;
