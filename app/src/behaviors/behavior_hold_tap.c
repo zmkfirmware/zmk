@@ -39,7 +39,8 @@ enum flavor {
 enum status {
     STATUS_UNDECIDED,
     STATUS_TAP,
-    STATUS_HOLD,
+    STATUS_HOLD_INTERRUPT,
+    STATUS_HOLD_TIMER,
 };
 
 struct behavior_hold_tap_config {
@@ -222,8 +223,10 @@ static void decide_balanced(struct active_hold_tap *hold_tap, enum decision_mome
         hold_tap->status = STATUS_TAP;
         return;
     case HT_OTHER_KEY_UP:
+        hold_tap->status = STATUS_HOLD_INTERRUPT;
+        return;
     case HT_TIMER_EVENT:
-        hold_tap->status = STATUS_HOLD;
+        hold_tap->status = STATUS_HOLD_TIMER;
         return;
     case HT_QUICK_TAP:
         hold_tap->status = STATUS_TAP;
@@ -239,7 +242,7 @@ static void decide_tap_preferred(struct active_hold_tap *hold_tap, enum decision
         hold_tap->status = STATUS_TAP;
         return;
     case HT_TIMER_EVENT:
-        hold_tap->status = STATUS_HOLD;
+        hold_tap->status = STATUS_HOLD_TIMER;
         return;
     case HT_QUICK_TAP:
         hold_tap->status = STATUS_TAP;
@@ -255,8 +258,10 @@ static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decisio
         hold_tap->status = STATUS_TAP;
         return;
     case HT_OTHER_KEY_DOWN:
+        hold_tap->status = STATUS_HOLD_INTERRUPT;
+        return;
     case HT_TIMER_EVENT:
-        hold_tap->status = STATUS_HOLD;
+        hold_tap->status = STATUS_HOLD_TIMER;
         return;
     case HT_QUICK_TAP:
         hold_tap->status = STATUS_TAP;
@@ -282,8 +287,10 @@ static inline const char *status_str(enum status status) {
     switch (status) {
     case STATUS_UNDECIDED:
         return "undecided";
-    case STATUS_HOLD:
-        return "hold";
+    case STATUS_HOLD_TIMER:
+        return "hold-timer";
+    case STATUS_HOLD_INTERRUPT:
+        return "hold-interrupt";
     case STATUS_TAP:
         return "tap";
     }
@@ -323,7 +330,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
     };
 
     struct zmk_behavior_binding binding;
-    if (hold_tap->status == STATUS_HOLD) {
+    if (hold_tap->status & STATUS_HOLD) {
         binding.behavior_dev = hold_tap->config->hold_behavior_dev;
         binding.param1 = hold_tap->param_hold;
         binding.param2 = 0;
@@ -398,7 +405,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     };
 
     struct zmk_behavior_binding sub_behavior_binding;
-    if (hold_tap->status == STATUS_HOLD) {
+    if (hold_tap->status & STATUS_HOLD) {
         sub_behavior_binding.behavior_dev = hold_tap->config->hold_behavior_dev;
         sub_behavior_binding.param1 = hold_tap->param_hold;
         sub_behavior_binding.param2 = 0;
