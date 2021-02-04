@@ -43,6 +43,14 @@ enum status {
     STATUS_HOLD_TIMER,
 };
 
+enum decision_moment {
+    HT_KEY_UP,
+    HT_OTHER_KEY_DOWN,
+    HT_OTHER_KEY_UP,
+    HT_TIMER_EVENT,
+    HT_QUICK_TAP,
+};
+
 struct behavior_hold_tap_config {
     int tapping_term_ms;
     char *hold_behavior_dev;
@@ -208,14 +216,6 @@ static void clear_hold_tap(struct active_hold_tap *hold_tap) {
     hold_tap->work_is_cancelled = false;
 }
 
-enum decision_moment {
-    HT_KEY_UP = 0,
-    HT_OTHER_KEY_DOWN = 1,
-    HT_OTHER_KEY_UP = 2,
-    HT_TIMER_EVENT = 3,
-    HT_QUICK_TAP = 4,
-};
-
 static void decide_balanced(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
@@ -296,6 +296,22 @@ static inline const char *status_str(enum status status) {
     return "UNKNOWN STATUS";
 }
 
+static inline const char *decision_moment_str(enum decision_moment decision_moment) {
+    switch (decision_moment) {
+    case HT_KEY_UP:
+        return "key-up";
+    case HT_OTHER_KEY_DOWN:
+        return "other-key-down";
+    case HT_OTHER_KEY_UP:
+        return "other-key-up";
+    case HT_QUICK_TAP:
+        return "quick-tap";
+    case HT_TIMER_EVENT:
+        return "timer";
+    }
+    return "UNKNOWN STATUS";
+}
+
 static int press_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding_event event = {
         .position = hold_tap->position,
@@ -331,7 +347,8 @@ static int release_binding(struct active_hold_tap *hold_tap) {
     return behavior_keymap_binding_released(&binding, event);
 }
 
-static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_moment event_type) {
+static void decide_hold_tap(struct active_hold_tap *hold_tap,
+                            enum decision_moment decision_moment) {
     if (hold_tap->status != STATUS_UNDECIDED) {
         return;
     }
@@ -343,19 +360,20 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
 
     switch (hold_tap->config->flavor) {
     case FLAVOR_HOLD_PREFERRED:
-        decide_hold_preferred(hold_tap, event_type);
+        decide_hold_preferred(hold_tap, decision_moment);
     case FLAVOR_BALANCED:
-        decide_balanced(hold_tap, event_type);
+        decide_balanced(hold_tap, decision_moment);
     case FLAVOR_TAP_PREFERRED:
-        decide_tap_preferred(hold_tap, event_type);
+        decide_tap_preferred(hold_tap, decision_moment);
     }
 
     if (hold_tap->status == STATUS_UNDECIDED) {
         return;
     }
 
-    LOG_DBG("%d decided %s (%s event %d)", hold_tap->position, status_str(hold_tap->status),
-            flavor_str(hold_tap->config->flavor), event_type);
+    LOG_DBG("%d decided %s (%s decision moment %s)", hold_tap->position,
+            status_str(hold_tap->status), flavor_str(hold_tap->config->flavor),
+            decision_moment_str(decision_moment));
     undecided_hold_tap = NULL;
     press_binding(hold_tap);
     release_captured_events();
