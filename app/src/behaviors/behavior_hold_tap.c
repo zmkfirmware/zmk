@@ -296,6 +296,41 @@ static inline const char *status_str(enum status status) {
     return "UNKNOWN STATUS";
 }
 
+static int press_binding(struct active_hold_tap *hold_tap) {
+    struct zmk_behavior_binding_event event = {
+        .position = hold_tap->position,
+        .timestamp = hold_tap->timestamp,
+    };
+
+    struct zmk_behavior_binding binding = {0};
+    if (hold_tap->status == STATUS_HOLD_TIMER || hold_tap->status == STATUS_HOLD_INTERRUPT) {
+        binding.behavior_dev = hold_tap->config->hold_behavior_dev;
+        binding.param1 = hold_tap->param_hold;
+    } else {
+        binding.behavior_dev = hold_tap->config->tap_behavior_dev;
+        binding.param1 = hold_tap->param_tap;
+        store_last_tapped(hold_tap);
+    }
+    return behavior_keymap_binding_pressed(&binding, event);
+}
+
+static int release_binding(struct active_hold_tap *hold_tap) {
+    struct zmk_behavior_binding_event event = {
+        .position = hold_tap->position,
+        .timestamp = hold_tap->timestamp,
+    };
+
+    struct zmk_behavior_binding binding = {0};
+    if (hold_tap->status == STATUS_HOLD_TIMER || hold_tap->status == STATUS_HOLD_INTERRUPT) {
+        binding.behavior_dev = hold_tap->config->hold_behavior_dev;
+        binding.param1 = hold_tap->param_hold;
+    } else {
+        binding.behavior_dev = hold_tap->config->tap_behavior_dev;
+        binding.param1 = hold_tap->param_tap;
+    }
+    return behavior_keymap_binding_released(&binding, event);
+}
+
 static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_moment event_type) {
     if (hold_tap->status != STATUS_UNDECIDED) {
         return;
@@ -322,24 +357,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
     LOG_DBG("%d decided %s (%s event %d)", hold_tap->position, status_str(hold_tap->status),
             flavor_str(hold_tap->config->flavor), event_type);
     undecided_hold_tap = NULL;
-
-    struct zmk_behavior_binding_event event = {
-        .position = hold_tap->position,
-        .timestamp = hold_tap->timestamp,
-    };
-
-    struct zmk_behavior_binding binding;
-    if (hold_tap->status & STATUS_HOLD) {
-        binding.behavior_dev = hold_tap->config->hold_behavior_dev;
-        binding.param1 = hold_tap->param_hold;
-        binding.param2 = 0;
-    } else {
-        binding.behavior_dev = hold_tap->config->tap_behavior_dev;
-        binding.param1 = hold_tap->param_tap;
-        binding.param2 = 0;
-        store_last_tapped(hold_tap);
-    }
-    behavior_keymap_binding_pressed(&binding, event);
+    press_binding(hold_tap);
     release_captured_events();
 }
 
@@ -395,25 +413,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     }
 
     decide_hold_tap(hold_tap, HT_KEY_UP);
-
-    // todo: set up the binding and data items inside of the
-    // active_hhold_tap->config->behaviors->tap.behavior_dev;old_tap struct
-    struct zmk_behavior_binding_event sub_behavior_data = {
-        .position = hold_tap->position,
-        .timestamp = hold_tap->timestamp,
-    };
-
-    struct zmk_behavior_binding sub_behavior_binding;
-    if (hold_tap->status & STATUS_HOLD) {
-        sub_behavior_binding.behavior_dev = hold_tap->config->hold_behavior_dev;
-        sub_behavior_binding.param1 = hold_tap->param_hold;
-        sub_behavior_binding.param2 = 0;
-    } else {
-        sub_behavior_binding.behavior_dev = hold_tap->config->tap_behavior_dev;
-        sub_behavior_binding.param1 = hold_tap->param_tap;
-        sub_behavior_binding.param2 = 0;
-    }
-    behavior_keymap_binding_released(&sub_behavior_binding, sub_behavior_data);
+    release_binding(hold_tap);
 
     if (work_cancel_result == -EINPROGRESS) {
         // let the timer handler clean up
