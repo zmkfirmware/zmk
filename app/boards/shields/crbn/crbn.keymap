@@ -46,6 +46,7 @@
 				&trans &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp HASH &kp BSLH &kp PG_UP &kp PG_DN &trans
 				&trans &trans &trans &trans &mo 3 &trans &trans &trans &kp C_NEXT &kp C_VOL_DN &kp C_VOL_UP &kp C_PP
 			>;
+
 			sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
 		};
 
