@@ -23,7 +23,7 @@
 				&kp LSHFT &kp Z    &kp X &kp C &kp V &kp B  &kp N   &kp M  &kp COMMA &kp DOT &kp SLASH &kp RET
 				&trans   &kp LCTL &kp LALT &kp LGUI &mo 1 &trans &kp SPACE &mo 2 &kp LEFT &kp DOWN &kp UP &kp RIGHT
 			>;
-	 };
+		};
 
 		lower {
 			bindings = <
