@@ -3,6 +3,9 @@ title: Troubleshooting
 sidebar_title: Troubleshooting
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ### Summary
 
 The following page provides suggestions for common errors that may occur during firmware compilation. If the information provided is insufficient to resolve the issue, feel free to seek out help from the [ZMK Discord](https://zmkfirmware.dev/community/discord/invite).
@@ -76,19 +79,20 @@ For the `nRF52840`, the value `PLUS_8` can be set to any multiple of four betwee
 
 ### MacOS/Windows Dual Booting
 
-If you are utiizing Apple's BootCamp feature or running a hackintosh that allows you to easily dual-boot your system between macOS and Windows, you will find that you can only use your bluetooth devices on one OS or the other without re-pairing. This is because ZMK stores the host address and keys in the profiles only one time. This means that a host can only pair with exactly one ZMK profile. 
+If you are utiizing Apple's BootCamp feature or running a hackintosh that allows you to easily dual-boot your system between macOS and Windows, you will find that you can only use your bluetooth devices on one OS or the other without re-pairing. This is because ZMK stores the host address and keys in the profiles only one time. This means that a host can only pair with exactly one ZMK profile.
 
 The workaround for this limitation is as follows:
+
 1. First, boot into Windows and pair your device. This creates the registry entry we will need to edit later on.
 1. Reboot into macOS
-1. In macOS, clear the profile on your keyboard and pair with your computer. 
+1. In macOS, clear the profile on your keyboard and pair with your computer.
 1. Once paired, hold Option + Control + Shift and click on the bluetooth icon in your menubar. Take note of the "Address" of your computer's bluetooth device (`65-FD-3B-1A-DB-48` here), as well as the address of the connected device (`E6-24-54-08-BC-A3` here).
 
-    | ![BT Contextual Menu](../docs/assets/troubleshooting/dualboot/bt_addresses.png) |
-    | :-----------------------------------------------------------------------------: |
-    |                            Bluetooth Context Menu                               |
+   | ![BT Contextual Menu](../docs/assets/troubleshooting/dualboot/bt_addresses.png) |
+   | :-----------------------------------------------------------------------------: |
+   |                             Bluetooth Context Menu                              |
 
-1. Now open the terminal app (Applications/Utilities/Terminal.app) and paste the following command and enter your root password. 
+1. Now open the terminal app (Applications/Utilities/Terminal.app) and paste the following command and enter your root password.
 
    <Tabs
       defaultValue="HS"
@@ -134,7 +138,7 @@ The workaround for this limitation is as follows:
     Regedit will launch. Be careful in here as certain registry edits can cause your system to become unstable or unbootable! Edit only the entry shown in this guide.
 
 1. Navigate in the registry to this key
-   
+
    ```
    HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\BTHPORT\Parameters\Keys\
    ```
@@ -154,6 +158,6 @@ The workaround for this limitation is as follows:
 
 1. Select OK, exit Regedit, and reboot into Windows.
 1. Once rebooted, turn bluetooth back on, and make sure your keyboard is on the same profile you had selected in macOS. Your keyboard should connect and start working!
-1. Finally reboot into macOS and verify that your keyboard still works on the same profile here as well. 
+1. Finally reboot into macOS and verify that your keyboard still works on the same profile here as well.
 
 If your board still does not work in one OS or the other, start over at the beginning with a clean pairing in each OS.
