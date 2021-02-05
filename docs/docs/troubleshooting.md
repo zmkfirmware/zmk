@@ -122,7 +122,7 @@ The workaround for this limitation is as follows:
  1. Under your keyboard address, find the value labeled LocalLTK (in the screenshot above it is `0x8968239e350b2cb7df16d8f47c774e2c`). Copy this value into a text file that you can access from Windows, this is the value we will need to enter into the registry later on.
  1. Reboot into Windows
  1. Once logged in, turn off bluetooth. 
- 1. Grab a piece of software called psexec (google) and copy the .exe to the desktop. This will allow us to easily open Regedit with elevated privelages.
+ 1. Grab a piece of software called psexec (https://docs.microsoft.com/en-us/sysinternals/downloads/psexec), extract, and copy psexec.exe to the desktop. This will allow us to easily open Regedit with elevated privelages.
  1. Open the Start Menu, type `cmd` and hit control + shift + enter to launch an elevated command prompt.
  1. Enter the following, one at a time:
 
