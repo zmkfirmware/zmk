@@ -95,23 +95,23 @@ The workaround for this limitation is as follows:
 1. Now open the terminal app (Applications/Utilities/Terminal.app) and paste the following command and enter your root password.
 
    <Tabs
-      defaultValue="HS"
-      values={[
-      {label: 'macOS High Sierra (10.13) and newer', value: 'high_sierra'},
-      {label: 'macOS Sierra (10.12) and older', value: 'sierra'},
-      ]}>
-      <TabItem value="high_sierra"> 
+   defaultValue="HS"
+   values={[
+   {label: 'macOS High Sierra (10.13) and newer', value: 'high_sierra'},
+   {label: 'macOS Sierra (10.12) and older', value: 'sierra'},
+   ]}>
+   <TabItem value="high_sierra">
 
-      ```
-      sudo defaults read /private/var/root/Library/Preferences/com.apple.bluetoothd.plist
-      ```
+   ```
+   sudo defaults read /private/var/root/Library/Preferences/com.apple.bluetoothd.plist
+   ```
 
       </TabItem>
       <TabItem value="sierra">
 
-      ```
-      sudo defaults read /private/var/root/Library/Preferences/blued.plist
-      ```
+   ```
+   sudo defaults read /private/var/root/Library/Preferences/blued.plist
+   ```
 
    </TabItem>
    </Tabs>
@@ -120,22 +120,22 @@ The workaround for this limitation is as follows:
 
    | ![BT Plist](../docs/assets/troubleshooting/dualboot/plist.png) |
    | :------------------------------------------------------------: |
-   |                         Bluetooth .plist                       |
- 
- 1. Look for the section that starts with `SMPDistributionKeys =`. Below this, find your host's bluetooth address (`65-FD-3B-1A-DB-48` in this example) and then look for the address of your keyboard (`E6-24-54-08-BC-A3` in this example).
- 1. Under your keyboard address, find the value labeled LocalLTK (in the screenshot above it is `0x8968239e350b2cb7df16d8f47c774e2c`). Copy this value into a text file that you can access from Windows, this is the value we will need to enter into the registry later on.
- 1. Reboot into Windows
- 1. Once logged in, turn off bluetooth. 
- 1. Grab a piece of software called psexec (https://docs.microsoft.com/en-us/sysinternals/downloads/psexec), extract, and copy psexec.exe to the desktop. This will allow us to easily open Regedit with elevated privelages.
- 1. Open the Start Menu, type `cmd` and hit control + shift + enter to launch an elevated command prompt.
- 1. Enter the following, one at a time:
+   |                        Bluetooth .plist                        |
 
-    ```
-    cd c:\Users\<username>\Desktop
-    psexec -s -i regedit
-    ```
+1. Look for the section that starts with `SMPDistributionKeys =`. Below this, find your host's bluetooth address (`65-FD-3B-1A-DB-48` in this example) and then look for the address of your keyboard (`E6-24-54-08-BC-A3` in this example).
+1. Under your keyboard address, find the value labeled LocalLTK (in the screenshot above it is `0x8968239e350b2cb7df16d8f47c774e2c`). Copy this value into a text file that you can access from Windows, this is the value we will need to enter into the registry later on.
+1. Reboot into Windows
+1. Once logged in, turn off bluetooth.
+1. Grab a piece of software called psexec (https://docs.microsoft.com/en-us/sysinternals/downloads/psexec), extract, and copy psexec.exe to the desktop. This will allow us to easily open Regedit with elevated privelages.
+1. Open the Start Menu, type `cmd` and hit control + shift + enter to launch an elevated command prompt.
+1. Enter the following, one at a time:
 
-    Regedit will launch. Be careful in here as certain registry edits can cause your system to become unstable or unbootable! Edit only the entry shown in this guide.
+   ```
+   cd c:\Users\<username>\Desktop
+   psexec -s -i regedit
+   ```
+
+   Regedit will launch. Be careful in here as certain registry edits can cause your system to become unstable or unbootable! Edit only the entry shown in this guide.
 
 1. Navigate in the registry to this key
 
