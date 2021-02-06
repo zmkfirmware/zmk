@@ -1,0 +1,20 @@
+# Polilla wireless board configuration
+#
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_POLILLA_W
+	bool "Polilla"
+	depends on SOC_NRF52840_QIAA
+
+config BOARD_ENABLE_DCDC
+	bool "Enable DCDC mode"
+	select SOC_DCDC_NRF52X
+	default y
+	depends on BOARD_POLILLA_W
+	
+config BOARD_POLILLA_CHARGER
+	bool "Enable battery charger"
+	default y
+	depends on BOARD_POLILLA_W
+	

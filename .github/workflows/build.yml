@@ -77,6 +77,7 @@ jobs:
             shield: kyria_right
             cmake-args: -DCONFIG_ZMK_DISPLAY=y
             skip-archive: true
+          - board: polilla_w
     steps:
       - name: Checkout
         uses: actions/checkout@v2
