@@ -9,7 +9,7 @@
 			label = "HOLD_TAP_BALANCED";
 			#binding-cells = <2>;
 			flavor = "balanced";
-			tapping_term_ms = <300>;
+			tapping-term-ms = <300>;
 			bindings = <&kp>, <&kp>;
 		};
 	};
