@@ -278,8 +278,9 @@ static inline const char *flavor_str(enum flavor flavor) {
         return "balanced";
     case FLAVOR_TAP_PREFERRED:
         return "tap-preferred";
+    default:
+        return "UNKNOWN FLAVOR";
     }
-    return "UNKNOWN FLAVOR";
 }
 
 static inline const char *status_str(enum status status) {
@@ -292,8 +293,9 @@ static inline const char *status_str(enum status status) {
         return "hold-interrupt";
     case STATUS_TAP:
         return "tap";
+    default:
+        return "UNKNOWN STATUS";
     }
-    return "UNKNOWN STATUS";
 }
 
 static inline const char *decision_moment_str(enum decision_moment decision_moment) {
@@ -308,8 +310,9 @@ static inline const char *decision_moment_str(enum decision_moment decision_mome
         return "quick-tap";
     case HT_TIMER_EVENT:
         return "timer";
+    default:
+        return "UNKNOWN STATUS";
     }
-    return "UNKNOWN STATUS";
 }
 
 static int press_binding(struct active_hold_tap *hold_tap) {
