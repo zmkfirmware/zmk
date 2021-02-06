@@ -57,6 +57,7 @@ struct behavior_hold_tap_config {
     char *tap_behavior_dev;
     int quick_tap_ms;
     enum flavor flavor;
+    bool retro_tap;
 };
 
 // this data is specific for each hold-tap
@@ -382,6 +383,29 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap,
     release_captured_events();
 }
 
+static void decide_retro_tap(struct active_hold_tap *hold_tap) {
+    if (!hold_tap->config->retro_tap) {
+        return;
+    }
+    if (hold_tap->status == STATUS_HOLD_TIMER) {
+        release_binding(hold_tap);
+        LOG_DBG("%d retro tap", hold_tap->position);
+        hold_tap->status = STATUS_TAP;
+        press_binding(hold_tap);
+        return;
+    }
+}
+
+static void update_hold_status_for_retro_tap(uint32_t position) {
+    for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
+        struct active_hold_tap *hold_tap = &active_hold_taps[i];
+        if (hold_tap->position != position && hold_tap->status == STATUS_HOLD_TIMER) {
+            LOG_DBG("Update hold tap %d status to hold-interrupt", hold_tap->position);
+            hold_tap->status = STATUS_HOLD_INTERRUPT;
+        }
+    }
+}
+
 static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
                                        struct zmk_behavior_binding_event event) {
     const struct device *dev = device_get_binding(binding->behavior_dev);
@@ -434,6 +458,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     }
 
     decide_hold_tap(hold_tap, HT_KEY_UP);
+    decide_retro_tap(hold_tap);
     release_binding(hold_tap);
 
     if (work_cancel_result == -EINPROGRESS) {
@@ -456,6 +481,8 @@ static const struct behavior_driver_api behavior_hold_tap_driver_api = {
 
 static int position_state_changed_listener(const zmk_event_t *eh) {
     struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
+
+    update_hold_status_for_retro_tap(ev->position);
 
     if (undecided_hold_tap == NULL) {
         LOG_DBG("%d bubble (no undecided hold_tap active)", ev->position);
@@ -564,6 +591,7 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
         .tap_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 1)),                      \
         .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
+        .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
     };                                                                                             \
     DEVICE_AND_API_INIT(behavior_hold_tap_##n, DT_INST_LABEL(n), behavior_hold_tap_init,           \
                         &behavior_hold_tap_data, &behavior_hold_tap_config_##n, APPLICATION,       \

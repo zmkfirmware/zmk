@@ -47,6 +47,18 @@ If you press a tapped hold-tap again within `quick_tap_ms` milliseconds, it will
 
 In QMK, unlike ZMK, this functionality is enabled by default, and you turn it off using `TAPPING_FORCE_HOLD`.
 
+#### `retro-tap`
+
+If retro tap is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime.
+
+For example, if you press `&mt LEFT_SHIFT A` for a long time and then release it without pressing another key in the meantime, it will output `a`. (Actually, `LEFT_SHIFT` will be pressed when the tapping term expires, which is released just before the `a` is tapped.
+
+```
+&mt {
+	retro-tap;
+}
+```
+
 #### Home row mods
 
 This example configures a hold-tap that works well for homerow mods:
