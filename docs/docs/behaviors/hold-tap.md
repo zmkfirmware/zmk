@@ -23,9 +23,9 @@ We call this the 'hold-preferred' flavor of hold-taps. While this flavor may wor
 
 #### Flavors
 
-- The 'hold-preferred' flavor triggers the hold behavior when the `tapping_term_ms` has expired or another key is pressed.
-- The 'balanced' flavor will trigger the hold behavior when the `tapping_term_ms` has expired or another key is pressed and released.
-- The 'tap-preferred' flavor triggers the hold behavior when the `tapping_term_ms` has expired. It triggers the tap behavior when another key is pressed.
+- The 'hold-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired or another key is pressed.
+- The 'balanced' flavor will trigger the hold behavior when the `tapping-term-ms` has expired or another key is pressed and released.
+- The 'tap-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired. It triggers the tap behavior when another key is pressed.
 
 When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
 
@@ -37,7 +37,7 @@ For basic usage, please see [mod-tap](./mod-tap.md) and [layer-tap](./layers.md)
 
 ### Advanced Configuration
 
-#### `tapping_term_ms`
+#### `tapping-term-ms`
 
 Defines how long a key must be pressed to trigger Hold behavior.
 
@@ -61,7 +61,7 @@ This example configures a hold-tap that works well for homerow mods:
 			compatible = "zmk,behavior-hold-tap";
 			label = "HOMEROW_MODS";
 			#binding-cells = <2>;
-			tapping_term_ms = <150>;
+			tapping-term-ms = <150>;
 			quick_tap_ms = <0>;
 			flavor = "tap-preferred";
 			bindings = <&kp>, <&kp>;
@@ -81,7 +81,7 @@ This example configures a hold-tap that works well for homerow mods:
 
 ```
 
-If this config does not work for you, try the flavor "balanced" with a medium `tapping_term_ms` such as 200ms.
+If this config does not work for you, try the flavor "balanced" with a medium `tapping-term-ms` such as 200ms.
 
 #### Comparison to QMK
 

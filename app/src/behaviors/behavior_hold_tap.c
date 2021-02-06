@@ -47,7 +47,6 @@ struct behavior_hold_tap_config {
 // this data is specific for each hold-tap
 struct active_hold_tap {
     int32_t position;
-    // todo: move these params into the config->behaviors->tap and
     uint32_t param_hold;
     uint32_t param_tap;
     int64_t timestamp;
