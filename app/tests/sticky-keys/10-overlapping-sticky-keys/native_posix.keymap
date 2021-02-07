@@ -1,0 +1,41 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&sk LEFT_SHIFT &mo 1
+				&none &none
+			>;
+		};
+
+		layer_one {
+			bindings = <
+				&sk LEFT_CONTROL &none
+				&kp A &none
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		/* sticky shift */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		/* layer 1 */
+		ZMK_MOCK_PRESS(0,1,10) 
+		/* sticky ctrl */
+		ZMK_MOCK_PRESS(0,0,10)
+		ZMK_MOCK_RELEASE(0,0,10) 
+		/* A */
+		ZMK_MOCK_PRESS(1,0,10)
+		ZMK_MOCK_RELEASE(1,0,10)
+		ZMK_MOCK_RELEASE(0,1,1200)
+	>;
+};

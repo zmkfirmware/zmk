@@ -20,7 +20,7 @@
 	events = <
 		ZMK_MOCK_PRESS(0,0,10) 
 		ZMK_MOCK_RELEASE(0,0,10) 
-		/* the sticky key is pressed again, so the previous one must be cancelled */
+		/* the sticky key is pressed again. Now it's active twice! */
 		ZMK_MOCK_PRESS(0,0,10) 
 		ZMK_MOCK_RELEASE(0,0,1200)
 	>;
