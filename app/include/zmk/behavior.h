@@ -19,4 +19,5 @@ struct zmk_behavior_binding_event {
     int layer;
     uint32_t position;
     int64_t timestamp;
+    uint32_t trace_id;
 };

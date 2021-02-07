@@ -47,12 +47,12 @@ static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
 
     LOG_DBG("SEND %d", keycode);
 
-    ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(keycode, true, timestamp));
+    ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(keycode, true, timestamp, 0));
 
     // TODO: Better way to do this?
     k_msleep(5);
 
-    return ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(keycode, false, timestamp));
+    return ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(keycode, false, timestamp, 0));
 }
 
 static const struct behavior_driver_api behavior_sensor_rotate_key_press_driver_api = {

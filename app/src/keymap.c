@@ -161,6 +161,7 @@ int zmk_keymap_apply_position_state(const struct zmk_position_state_changed *pos
         .layer = layer,
         .position = pos_ev->position,
         .timestamp = pos_ev->timestamp,
+        .trace_id = pos_ev->trace_id,
     };
 
     LOG_DBG("layer: %d position: %d, binding name: %s", event.layer, event.position,

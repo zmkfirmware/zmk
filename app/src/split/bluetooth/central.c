@@ -72,7 +72,11 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
                 uint32_t position = (i * 8) + j;
                 bool pressed = position_state[i] & BIT(j);
                 struct zmk_position_state_changed ev = {
-                    .position = position, .state = pressed, .timestamp = k_uptime_get()};
+                    .position = position,
+                    .state = pressed,
+                    .timestamp = k_uptime_get(),
+                    .trace_id = zmk_get_event_trace_id(position, pressed),
+                };
 
                 k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
                 k_work_submit(&peripheral_event_work);

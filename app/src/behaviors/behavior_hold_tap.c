@@ -313,6 +313,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
     struct zmk_behavior_binding_event event = {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .trace_id = hold_tap->trace_id,
     };
 
     struct zmk_behavior_binding binding;
@@ -388,6 +389,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     struct zmk_behavior_binding_event sub_behavior_data = {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .trace_id = hold_tap->trace_id,
     };
 
     struct zmk_behavior_binding sub_behavior_binding;

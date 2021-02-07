@@ -17,12 +17,14 @@ struct zmk_keycode_state_changed {
     uint8_t explicit_modifiers;
     bool state;
     int64_t timestamp;
+    uint32_t trace_id;
 };
 
 ZMK_EVENT_DECLARE(zmk_keycode_state_changed);
 
 static inline struct zmk_keycode_state_changed_event *
-zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t timestamp) {
+zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t timestamp,
+                                       uint32_t trace_id) {
     uint16_t page = HID_USAGE_PAGE(encoded) & 0xFF;
     uint16_t id = HID_USAGE_ID(encoded);
     uint8_t implicit_modifiers = 0x00;
@@ -38,11 +40,13 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
         implicit_modifiers = SELECT_MODS(encoded);
     }
 
-    return new_zmk_keycode_state_changed(
-        (struct zmk_keycode_state_changed){.usage_page = page,
-                                           .keycode = id,
-                                           .implicit_modifiers = implicit_modifiers,
-                                           .explicit_modifiers = explicit_modifiers,
-                                           .state = pressed,
-                                           .timestamp = timestamp});
+    return new_zmk_keycode_state_changed((struct zmk_keycode_state_changed){
+        .usage_page = page,
+        .keycode = id,
+        .implicit_modifiers = implicit_modifiers,
+        .explicit_modifiers = explicit_modifiers,
+        .state = pressed,
+        .timestamp = timestamp,
+        .trace_id = trace_id,
+    });
 }

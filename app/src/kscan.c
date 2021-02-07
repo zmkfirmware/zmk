@@ -50,7 +50,11 @@ void zmk_kscan_process_msgq(struct k_work *item) {
         LOG_DBG("Row: %d, col: %d, position: %d, pressed: %s\n", ev.row, ev.column, position,
                 (pressed ? "true" : "false"));
         ZMK_EVENT_RAISE(new_zmk_position_state_changed((struct zmk_position_state_changed){
-            .state = pressed, .position = position, .timestamp = k_uptime_get()}));
+            .state = pressed,
+            .position = position,
+            .timestamp = k_uptime_get(),
+            .trace_id = zmk_get_event_trace_id(position, pressed),
+        }));
     }
 }
 
