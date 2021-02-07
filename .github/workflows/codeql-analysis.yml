@@ -1,0 +1,61 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
+  schedule:
+    - cron: '40 19 * * 4'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-build-arm:2.4
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'cpp']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Cache west modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-zephyr-modules
+      with:
+        path: |
+          modules/
+          tools/
+          zephyr/
+          bootloader/
+        key: codeql-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+        restore-keys: |
+          codeql-${{ runner.os }}-build-${{ env.cache-name }}-
+          codeql-${{ runner.os }}-build-
+          codeql-${{ nrunner.os }}-
+      timeout-minutes: 2
+      continue-on-error: true
+    - name: Initialize workspace (west init)
+      run: west init -l app
+    - name: Update modules (west update)
+      run: west update
+    - name: Build (west build)
+      run: west build -s app -b nice_nano -- -DSHIELD=qaz
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
