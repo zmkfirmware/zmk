@@ -17,6 +17,7 @@
 #include <zmk/events/position_state_changed.h>
 #include <zmk/hid.h>
 #include <zmk/matrix.h>
+#include <zmk/keymap.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -33,6 +34,8 @@ struct combo_cfg {
     // the virtual key position is a key position outside the range used by the keyboard.
     // it is necessary so hold-taps can uniquely identify a behavior.
     int32_t virtual_key_position;
+    int32_t layers_len;
+    int8_t layers[];
 };
 
 struct active_combo {
@@ -104,17 +107,35 @@ static int initialize_combo(struct combo_cfg *new_combo) {
     return 0;
 }
 
+static bool combo_active_on_layer(struct combo_cfg *combo, uint8_t layer) {
+    if (combo->layers[0] == -1) {
+        // -1 in the first layer position is global layer scope
+        return true;
+    }
+    for (int j = 0; j < combo->layers_len; j++) {
+        if (combo->layers[j] == layer) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static int setup_candidates_for_first_keypress(int32_t position, int64_t timestamp) {
+    int number_of_combo_candidates = 0;
+    uint8_t highest_active_layer = zmk_keymap_highest_layer_active();
     for (int i = 0; i < CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY; i++) {
         struct combo_cfg *combo = combo_lookup[position][i];
         if (combo == NULL) {
-            return i;
+            return number_of_combo_candidates;
         }
-        candidates[i].combo = combo;
-        candidates[i].timeout_at = timestamp + combo->timeout_ms;
+        if (combo_active_on_layer(combo, highest_active_layer)) {
+            candidates[number_of_combo_candidates].combo = combo;
+            candidates[number_of_combo_candidates].timeout_at = timestamp + combo->timeout_ms;
+            number_of_combo_candidates++;
+        }
         // LOG_DBG("combo timeout %d %d %d", position, i, candidates[i].timeout_at);
     }
-    return CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY;
+    return number_of_combo_candidates;
 }
 
 static int filter_candidates(int32_t position) {
@@ -451,6 +472,8 @@ ZMK_SUBSCRIPTION(combo, zmk_position_state_changed);
         .behavior = KEY_BINDING_TO_STRUCT(0, n),                                                   \
         .virtual_key_position = ZMK_KEYMAP_LEN + __COUNTER__,                                      \
         .slow_release = DT_PROP(n, slow_release),                                                  \
+        .layers = DT_PROP(n, layers),                                                              \
+        .layers_len = DT_PROP_LEN(n, layers),                                                      \
     };
 
 #define INITIALIZE_COMBO(n) initialize_combo(&combo_config_##n);

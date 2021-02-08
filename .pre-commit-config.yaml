@@ -1,0 +1,12 @@
+fail_fast: false
+repos:
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: master
+    hooks:
+      - id: clang-format
+        args:
+          - -i
+  - repo: https://github.com/prettier/prettier
+    rev: master
+    hooks:
+      - id: prettier

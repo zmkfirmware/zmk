@@ -1,0 +1,40 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan-mock.h>
+
+/* it is useful to set timeout to a large value when attaching a debugger. */
+#define TIMEOUT (60*60*1000)
+
+/ {
+	combos {
+		compatible = "zmk,combos";
+		combo_one {
+			timeout-ms = <TIMEOUT>;
+			key-positions = <0 1>;
+			bindings = <&kp X>;
+			layers = <1>;
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&kp A &kp B
+				&kp C &tog 1
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		/* Combo One */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,1,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(0,1,10)
+	>;
+};

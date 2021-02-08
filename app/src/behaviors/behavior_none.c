@@ -15,8 +15,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-struct behavior_none_config {};
-struct behavior_none_data {};
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
 static int behavior_none_init(const struct device *dev) { return 0; };
 
@@ -35,10 +34,7 @@ static const struct behavior_driver_api behavior_none_driver_api = {
     .binding_released = on_keymap_binding_released,
 };
 
-static const struct behavior_none_config behavior_none_config = {};
+DEVICE_AND_API_INIT(behavior_none, DT_INST_LABEL(0), behavior_none_init, NULL, NULL, APPLICATION,
+                    CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_none_driver_api);
 
-static struct behavior_none_data behavior_none_data;
-
-DEVICE_AND_API_INIT(behavior_none, DT_INST_LABEL(0), behavior_none_init, &behavior_none_data,
-                    &behavior_none_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
-                    &behavior_none_driver_api);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

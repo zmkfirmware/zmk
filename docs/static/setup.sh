@@ -79,7 +79,7 @@ select opt in "${options[@]}" "Quit"; do
     1 ) board="nice_nano"; break;;
     2 ) board="proton_c"; break;;
     3 ) board="bluemicro840_v1"; break;;
-    3 ) board="nrf52840_m2"; break;;
+    4 ) board="nrf52840_m2"; break;;
 
     $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
     *) echo "Invalid option. Try another one."; continue;;

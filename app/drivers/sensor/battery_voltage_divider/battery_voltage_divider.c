@@ -77,6 +77,9 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
             LOG_DBG("Failed to enable ADC power GPIO: %d", rc);
             return rc;
         }
+
+        // wait for any capacitance to charge up
+        k_sleep(K_MSEC(10));
     }
 
     // Read ADC

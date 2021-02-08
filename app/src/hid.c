@@ -51,6 +51,24 @@ int zmk_hid_unregister_mod(zmk_mod_t modifier) {
     return 0;
 }
 
+int zmk_hid_register_mods(zmk_mod_flags_t modifiers) {
+    for (zmk_mod_t i = 0; i < 8; i++) {
+        if (modifiers & (1 << i)) {
+            zmk_hid_register_mod(i);
+        }
+    }
+    return 0;
+}
+
+int zmk_hid_unregister_mods(zmk_mod_flags_t modifiers) {
+    for (zmk_mod_t i = 0; i < 8; i++) {
+        if (modifiers & (1 << i)) {
+            zmk_hid_unregister_mod(i);
+        }
+    }
+    return 0;
+}
+
 #define TOGGLE_KEYBOARD(match, val)                                                                \
     for (int idx = 0; idx < ZMK_HID_KEYBOARD_NKRO_SIZE; idx++) {                                   \
         if (keyboard_report.body.keys[idx] != match) {                                             \

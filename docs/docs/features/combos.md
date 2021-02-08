@@ -18,6 +18,7 @@ Combos configured in your `.keymap` file, but are separate from the `keymap` nod
 			timeout-ms = <50>;
 			key-positions = <0 1>;
 			bindings = <&kp ESC>;
+			layers = <-1>;
 		};
 	};
 };
@@ -27,6 +28,7 @@ Combos configured in your `.keymap` file, but are separate from the `keymap` nod
 - The `compatible` property should always be `"zmk,combos"` for combos.
 - `timeout-ms` is the number of milliseconds that all keys of the combo must be pressed.
 - `key-positions` is an array of key positions. See the info section below about how to figure out the positions on your board.
+- `layers = <0 1...>` will allow limiting a combo to specific layers. this is an _optional_ parameter and defaults to `-1` which is global scope.
 - `bindings` is the behavior that is activated when the behavior is pressed.
 - (advanced) you can specify `slow-release` if you want the combo binding to be released when all key-positions are released. The default is to release the combo as soon as any of the keys in the combo is released.
 
