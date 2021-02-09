@@ -51,7 +51,7 @@ In QMK, unlike ZMK, this functionality is enabled by default, and you turn it of
 
 If retro tap is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime.
 
-For example, if you press `&mt LEFT_SHIFT A` for a long time and then release it without pressing another key in the meantime, it will output `a`. (Actually, `LEFT_SHIFT` will be pressed when the tapping term expires, which is released just before the `a` is tapped.
+For example, if you press `&mt LEFT_SHIFT A` and then release it without pressing another key, it will output `a`.
 
 ```
 &mt {
