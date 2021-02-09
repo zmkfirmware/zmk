@@ -18,21 +18,21 @@
 /* A build error here means your board isn't set up to blink an LED. */
 #error "Unsupported board: pwr_led devicetree alias is not defined"
 #define PWR_LED ""
-#define PIN	0
+#define PIN 0
 #define FLAGS 0
 #endif
 
 static int pwr_led_init(const struct device *dev) {
-	dev = device_get_binding(PWR_LED);
-	if (dev == NULL) {
-		return -EIO;
-	}
+    dev = device_get_binding(PWR_LED);
+    if (dev == NULL) {
+        return -EIO;
+    }
 
-	if (gpio_pin_configure(dev, PWR_LED_PIN, GPIO_OUTPUT) < 0) {
-		return -EIO;
-	}
+    if (gpio_pin_configure(dev, PWR_LED_PIN, GPIO_OUTPUT) < 0) {
+        return -EIO;
+    }
 
-	return gpio_pin_set(dev, PIN, (int)true);
+    return gpio_pin_set(dev, PIN, (int)true);
 }
 
 SYS_INIT(pwr_led_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
