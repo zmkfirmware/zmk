@@ -18,6 +18,7 @@
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/events/modifiers_state_changed.h>
 #include <zmk/hid.h>
+#include <zmk/keymap.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -260,18 +261,10 @@ static int behavior_sticky_key_init(const struct device *dev) {
 struct behavior_sticky_key_data {};
 static struct behavior_sticky_key_data behavior_sticky_key_data;
 
-#define _TRANSFORM_ENTRY(idx, node)                                                                \
-    {                                                                                              \
-        .behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),                     \
-        .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))),                  \
-        .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))),                  \
-    },
-
 #define KP_INST(n)                                                                                 \
     static struct behavior_sticky_key_config behavior_sticky_key_config_##n = {                    \
-        .behavior = _TRANSFORM_ENTRY(0, n).release_after_ms = DT_INST_PROP(n, release_after_ms),   \
+        .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, DT_DRV_INST(n)),                                 \
+        .release_after_ms = DT_INST_PROP(n, release_after_ms),                                     \
         .quick_release = DT_INST_PROP(n, quick_release),                                           \
     };                                                                                             \
     DEVICE_AND_API_INIT(behavior_sticky_key_##n, DT_INST_LABEL(n), behavior_sticky_key_init,       \

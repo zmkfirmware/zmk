@@ -6,7 +6,7 @@
 
 / {
 	behaviors {
-		rgb_ug: behavior_rgb_underglow {
+		/omit-if-no-ref/ rgb_ug: behavior_rgb_underglow {
 			compatible = "zmk,behavior-rgb-underglow";
 			label = "RGB_UNDERGLOW";
 			#binding-cells = <2>;

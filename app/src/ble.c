@@ -63,6 +63,8 @@ static uint8_t active_profile;
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
+BUILD_ASSERT(DEVICE_NAME_LEN <= 16, "ERROR: BLE device name is too long. Max length: 16");
+
 #define IS_HOST_PERIPHERAL                                                                         \
     (!IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL))
 #define IS_SPLIT_PERIPHERAL                                                                        \
@@ -429,7 +431,7 @@ static void le_param_updated(struct bt_conn *conn, uint16_t interval, uint16_t l
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_DBG("%s: interval %d latency %d timeout %d", addr, interval, latency, timeout);
+    LOG_DBG("%s: interval %d latency %d timeout %d", log_strdup(addr), interval, latency, timeout);
 }
 
 static struct bt_conn_cb conn_callbacks = {

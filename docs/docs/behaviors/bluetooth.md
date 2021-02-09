@@ -13,6 +13,10 @@ computer/laptop/keyboard should receive the keyboard input; many of the commands
 Please note there are only five available Bluetooth profiles by default. If you need to increase the number of available profiles you can set `CONFIG_BT_MAX_CONN` in your `zmk-config` `.conf` file.
 :::
 
+:::note Connection Management
+A ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
+:::
+
 ## Bluetooth Command Defines
 
 Bluetooth command defines are provided through the [`dt-bindings/zmk/bt.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/bt.h) header,
@@ -71,7 +75,7 @@ The bluetooth behavior completes an bluetooth action given on press.
 
 ## Bluetooth Pairing and Profiles
 
-ZMK support bluetooth “profiles” which allows connection to multiple devices (5 by default, or 4 if you are using split keyboards). Each profile stores the bluetooth MAC address of a peer, which can be empty if a profile has not been paired with a device yet. Upon switching to a profile, ZMK does the following:
+ZMK support bluetooth “profiles” which allows connection to multiple devices (5 by default). Each profile stores the bluetooth MAC address of a peer, which can be empty if a profile has not been paired with a device yet. Upon switching to a profile, ZMK does the following:
 
 - If a profile has not been paired with a peer yet, ZMK automatically advertise itself as connectable. You can discover you keyboard from bluetooth scanning on your laptop / tablet. If you try to connect, it will trigger the _pairing_ procedure. After pairing, the bluetooth MAC address of the peer device will be stored in the current profile. Pairing also negotiate a random key for secure communication between the device and the keyboard.
 - If a profile has been paired but the peer is not connected yet, ZMK will also advertise itself as connectable. In the future, the behavior might change to _direct advertising_ which only target the peer with the stored bluetooth MAC address. In this state, if the peer is powered on and moved within the distance of bluetooth signal coverage, it should automatically connect to the keyboard.

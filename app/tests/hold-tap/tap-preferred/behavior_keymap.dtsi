@@ -10,6 +10,7 @@
 			#binding-cells = <2>;
 			flavor = "tap-preferred";
 			tapping_term_ms = <300>;
+			quick_tap_ms = <200>;
 			bindings = <&kp>, <&kp>;
 		};
 	};

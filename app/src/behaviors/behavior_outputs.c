@@ -18,6 +18,8 @@
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
@@ -42,3 +44,5 @@ static const struct behavior_driver_api behavior_outputs_driver_api = {
 
 DEVICE_AND_API_INIT(behavior_out, DT_INST_LABEL(0), behavior_out_init, NULL, NULL, APPLICATION,
                     CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_outputs_driver_api);
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
