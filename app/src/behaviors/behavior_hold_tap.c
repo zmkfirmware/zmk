@@ -317,6 +317,10 @@ static inline const char *decision_moment_str(enum decision_moment decision_mome
 }
 
 static int press_binding(struct active_hold_tap *hold_tap) {
+    if (hold_tap->config->retro_tap && hold_tap->status == STATUS_HOLD_TIMER) {
+        return 0;
+    }
+
     struct zmk_behavior_binding_event event = {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
@@ -335,6 +339,10 @@ static int press_binding(struct active_hold_tap *hold_tap) {
 }
 
 static int release_binding(struct active_hold_tap *hold_tap) {
+    if (hold_tap->config->retro_tap && hold_tap->status == STATUS_HOLD_TIMER) {
+        return 0;
+    }
+
     struct zmk_behavior_binding_event event = {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
@@ -396,12 +404,18 @@ static void decide_retro_tap(struct active_hold_tap *hold_tap) {
     }
 }
 
-static void update_hold_status_for_retro_tap(uint32_t position) {
+static void update_hold_status_for_retro_tap(uint32_t ignore_position) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
         struct active_hold_tap *hold_tap = &active_hold_taps[i];
-        if (hold_tap->position != position && hold_tap->status == STATUS_HOLD_TIMER) {
+        if (hold_tap->position == ignore_position ||
+            hold_tap->position == ZMK_BHV_HOLD_TAP_POSITION_NOT_USED ||
+            hold_tap->config->retro_tap == false) {
+            continue;
+        }
+        if (hold_tap->status == STATUS_HOLD_TIMER) {
             LOG_DBG("Update hold tap %d status to hold-interrupt", hold_tap->position);
             hold_tap->status = STATUS_HOLD_INTERRUPT;
+            press_binding(hold_tap);
         }
     }
 }
