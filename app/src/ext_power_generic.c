@@ -223,13 +223,15 @@ static const struct ext_power_api api = {.enable = ext_power_generic_enable,
                                          .disable = ext_power_generic_disable,
                                          .get = ext_power_generic_get};
 
+#define ZMK_EXT_POWER_INIT_PRIORITY 81
+
 #ifdef CONFIG_DEVICE_POWER_MANAGEMENT
 DEVICE_DEFINE(ext_power_generic, DT_INST_LABEL(0), ext_power_generic_init,
-              &ext_power_generic_pm_control, &data, &config, APPLICATION,
-              CONFIG_APPLICATION_INIT_PRIORITY, &api);
+              &ext_power_generic_pm_control, &data, &config, POST_KERNEL,
+              ZMK_EXT_POWER_INIT_PRIORITY, &api);
 #else
 DEVICE_AND_API_INIT(ext_power_generic, DT_INST_LABEL(0), ext_power_generic_init, &data, &config,
-                    APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY, &api);
+                    POST_KERNEL, ZMK_EXT_POWER_INIT_PRIORITY, &api);
 #endif /* CONFIG_DEVICE_POWER_MANAGEMENT */
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
