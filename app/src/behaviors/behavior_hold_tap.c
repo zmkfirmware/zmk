@@ -31,9 +31,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define ZMK_BHV_HOLD_TAP_POSITION_NOT_USED 9999
 
 enum flavor {
-    ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED = 0,
-    ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED = 1,
-    ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED = 2,
+    FLAVOR_HOLD_PREFERRED,
+    FLAVOR_BALANCED,
+    FLAVOR_TAP_PREFERRED,
 };
 
 struct behavior_hold_tap_config {
@@ -273,11 +273,11 @@ static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decisio
 
 static inline char *flavor_str(enum flavor flavor) {
     switch (flavor) {
-    case ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED:
+    case FLAVOR_HOLD_PREFERRED:
         return "hold-preferred";
-    case ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED:
+    case FLAVOR_BALANCED:
         return "balanced";
-    case ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED:
+    case FLAVOR_TAP_PREFERRED:
         return "tap-preferred";
     }
     return "UNKNOWN FLAVOR";
@@ -294,11 +294,11 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
     }
 
     switch (hold_tap->config->flavor) {
-    case ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED:
+    case FLAVOR_HOLD_PREFERRED:
         decide_hold_preferred(hold_tap, event_type);
-    case ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED:
+    case FLAVOR_BALANCED:
         decide_balanced(hold_tap, event_type);
-    case ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED:
+    case FLAVOR_TAP_PREFERRED:
         decide_tap_preferred(hold_tap, event_type);
     }
 
