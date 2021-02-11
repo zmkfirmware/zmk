@@ -23,7 +23,7 @@
         default_layer {
             bindings = <
     &kp ESC       &kp Q      &kp W       &kp E       &kp R       &kp T       &kp Y       &kp U       &kp I       &kp O       &kp P        &kp BSPC
-    &kp TAB       &kp A      &mt LCTRL S &lt NAV D   &mt LSHFT F &kp G       &kp H       &kp J       &kp K       &kp L       &kp IT_SCLN  &mt RSHFT RET
+    &mt LCTRL TAB &kp A      &mt LCTRL S &lt NAV D   &mt LSHFT F &kp G       &kp H       &kp J       &kp K       &kp L       &kp IT_SCLN  &mt RSHFT RET
     &lt SFT DEL   &kp Z      &kp X       &kp C       &kp V       &kp B       &kp N       &kp M       &kp IT_COMM &kp IT_FULL &kp UP       &lt SFT IT_SLSH
     &kp LCTRL     &mo NAV    &kp LALT    &kp LGUI    &mo NUM     &lt ACC SPACE   &mo SYM     &kp IT_QUOT     &kp LEFT    &kp DOWN    &kp RIGHT
             >;
@@ -32,7 +32,7 @@
         sft {
             bindings = <
     &kp LS(ESC)       &kp LS(Q)      &kp LS(W)      &kp LS(E)       &kp LS(R)       &kp LS(T)       &kp LS(Y)       &kp LS(U)       &kp LS(I)       &kp LS(O)       &kp LS(P)     &kp LS(BSPC)
-    &kp LS(TAB)       &kp LS(A)      &mt LCTRL LS(S) &lt NAV LS(D)  &mt LSHFT LS(F) &kp LS(G)       &kp LS(H)       &kp LS(J)       &kp LS(K)       &kp LS(L)       &kp IT_COLN   &kp LS(RET)
+    &mt LCTRL LS(TAB) &kp LS(A)      &mt LCTRL LS(S) &lt NAV LS(D)  &mt LSHFT LS(F) &kp LS(G)       &kp LS(H)       &kp LS(J)       &kp LS(K)       &kp LS(L)       &kp IT_COLN   &kp LS(RET)
     &mt LSHFT DEL     &kp LS(Z)      &kp LS(X)      &kp LS(C)       &kp LS(V)       &kp LS(B)       &kp LS(N)       &kp LS(M)       &kp IT_MINO     &kp IT_MAJO     &kp LS(UP)    &mt RSHFT IT_QSTN
     &kp LS(LCTRL)     &mo NAV        &kp LS(LALT)   &kp LS(LGUI)    &mo NUM         &kp LS(SPACE)   &mo SYM         &kp IT_DQUO     &kp LS(LEFT)    &kp LS(DOWN)     &kp LS(RIGHT)
             >;
