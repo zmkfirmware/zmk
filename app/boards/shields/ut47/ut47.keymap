@@ -7,12 +7,14 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#include "ansi_italian_remapping.h"
 
 #define DEFAULT 0
-#define NUM     1
-#define SYM     2
-#define ACC     3
-#define NAV     4
+#define SFT     1
+#define NUM     2
+#define SYM     3
+#define ACC     4
+#define NAV     5
 
 / {
     keymap {
@@ -20,46 +22,55 @@
 
         default_layer {
             bindings = <
-    &kp ESC      &kp Q      &kp W      &kp E       &kp R       &kp T       &kp Y       &kp U       &kp I       &kp O      &kp P     &kp BSPC
-    &kp TAB      &kp A      &kp S      &kp D       &kp F       &kp G       &kp H       &kp J       &kp K       &kp L      &kp SEMI  &kp RET
-    &mt LSHFT DEL &kp Z      &kp X      &kp C       &kp V       &kp B       &kp N       &kp M       &kp COMMA   &kp DOT    &kp UP    &mt RSHFT FSLH
-    &kp LCTRL    &mo NAV    &kp LALT   &kp LGUI    &mo NUM     &kp SPACE   &mo SYM     &mo NAV     &kp LEFT   &kp DOWN  &kp RIGHT
+    &kp ESC       &kp Q      &kp W      &kp E       &kp R       &kp T       &kp Y       &kp U       &kp I       &kp O       &kp P        &kp BSPC
+    &kp TAB       &kp A      &kp S      &lt NAV D   &kp F       &kp G       &kp H       &kp J       &kp K       &kp L       &kp IT_SCLN  &mt RSHFT RET
+    &lt SFT DEL   &kp Z      &kp X      &kp C       &kp V       &kp B       &kp N       &kp M       &kp IT_COMM &kp IT_FULL &kp UP       &lt SFT IT_SLSH
+    &kp LCTRL     &mo NAV    &kp LALT   &kp LGUI    &mo NUM     &kp SPACE   &mo SYM     &mo NAV     &kp LEFT    &kp DOWN    &kp RIGHT
+            >;
+        };
+
+        sft {
+            bindings = <
+    &kp LS(ESC)       &kp LS(Q)      &kp LS(W)      &kp LS(E)       &kp LS(R)       &kp LS(T)       &kp LS(Y)       &kp LS(U)       &kp LS(I)       &kp LS(O)       &kp LS(P)     &kp LS(BSPC)
+    &kp LS(TAB)       &kp LS(A)      &kp LS(S)      &lt NAV LS(D)   &kp LS(F)       &kp LS(G)       &kp LS(H)       &kp LS(J)       &kp LS(K)       &kp LS(L)       &kp IT_COLN   &kp LS(RET)
+    &mt LSHFT DEL     &kp LS(Z)      &kp LS(X)      &kp LS(C)       &kp LS(V)       &kp LS(B)       &kp LS(N)       &kp LS(M)       &kp IT_MINO     &kp IT_MAJO     &kp LS(UP)    &mt RSHFT IT_QSTN
+    &kp LS(LCTRL)     &mo NAV        &kp LS(LALT)   &kp LS(LGUI)    &mo NUM         &kp LS(SPACE)   &mo SYM         &mo NAV         &kp LS(LEFT)    &kp LS(DOWN)     &kp LS(RIGHT)
             >;
         };
 
     num {
             bindings = <
-    &trans       &kp N1     &kp N2     &kp N3     &kp N4     &kp N5     &kp N6     &kp N7     &kp N8      &kp N9    &kp N0    &trans
-    &trans       &trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp EQUAL   &kp MINUS &trans    &trans
-    &trans       &none      &none      &none      &none      &none      &none      &none      &kp DOT     &none     &trans    &none
-    &bootloader  &reset     &trans     &trans     &trans          &trans           &trans     &none       &trans    &trans    &trans
+    &trans       &kp N1      &kp N2      &kp N3      &kp N4      &kp N5     &kp N6     &kp N7     &kp N8      &kp N9      &kp N0      &trans
+    &trans       &kp IT_PLUS &kp IT_MINU &kp IT_SLSH &kp IT_STAR &trans     &trans     &trans     &kp EQUAL   &kp IT_LSQR &kp IT_RSQR &kp RET
+    &trans       &kp IT_EQAL &kp IT_BSLS &none       &none       &none      &none      &none      &trans      &trans      &trans      &trans
+    &trans       &trans      &trans      &trans      &trans           &trans           &trans     &none       &trans      &trans      &trans
             >;
         };
 
     sym {
             bindings = <
-    &trans       &kp N1     &kp N2     &kp N3     &kp N4     &kp N5     &kp N6     &kp N7     &kp N8      &kp N9    &kp N0    &trans
-    &trans       &trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp EQUAL   &kp MINUS &trans    &trans
-    &trans       &none      &none      &none      &none      &none      &none      &none      &kp DOT     &none     &trans    &none
-    &bootloader  &reset     &trans     &trans     &trans          &trans           &trans     &none       &trans    &trans    &trans
+    &trans       &kp IT_EXCL &kp IT_AT   &kp IT_SHRP &kp IT_DOLL &kp IT_PERC &kp IT_POWE &kp IT_ECOM &kp IT_STAR &kp IT_LPAR &kp IT_RPAR &trans
+    &trans       &kp IT_EQAL &kp IT_UNDS &kp IT_SLSH &kp IT_STAR &none       &none       &none       &kp EQUAL   &kp IT_LBRK &kp IT_RBRK &kp RET
+    &trans       &kp IT_EQAL &kp IT_PIPE &none       &none       &none       &none       &none       &trans      &trans      &trans      &trans
+    &trans       &trans      &trans      &trans      &trans             &trans           &trans      &none       &trans      &trans      &trans
             >;
         };
 
     acc {
             bindings = <
-    &trans       &kp N1     &kp N2     &kp N3     &kp N4     &kp N5     &kp N6     &kp N7     &kp N8      &kp N9    &kp N0    &trans
-    &trans       &trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp EQUAL   &kp MINUS &trans    &trans
-    &trans       &none      &none      &none      &none      &none      &none      &none      &kp DOT     &none     &trans    &none
-    &bootloader  &reset     &trans     &trans     &trans          &trans           &trans     &none       &trans    &trans    &trans
+    &trans       &none        &none        &kp IT_EGRV  &none        &none        &none   &kp IT_UGRV &kp IT_IGRV &kp IT_OGRV &none    &trans
+    &trans       &kp IT_AGRV  &none        &none        &none        &none        &none   &none       &none       &none       &none    &trans
+    &trans       &none        &none        &none        &none        &none        &none   &none       &none       &none       &none    &trans
+    &trans       &trans       &trans       &trans       &trans           &trans              &trans      &none       &trans      &trans   &trans
             >;
         };
 
     nav {
             bindings = <
-    &bt BT_CLR   &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none   &none   &none   &none   &none   &none
-    &bt BT_NXT   &trans       &none        &none        &none        &none        &none   &none   &none   &none   &none   &none
-    &bt BT_PRV   &none        &none        &none        &none        &none        &none   &none   &none   &none   &none   &none
-    &bootloader  &reset       &none        &none        &none               &none         &none   &none   &none   &none   &none
+    &bt BT_CLR   &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &none   &none      &kp UP     &none       &none   &none
+    &bt BT_NXT   &trans       &kp LCTRL    &none        &kp LSHFT    &none        &none   &kp LEFT   &kp DOWN   &kp RIGHT   &none   &none
+    &bt BT_PRV   &none        &none        &none        &none        &none        &none   &none      &none      &none       &none   &none
+    &bootloader  &reset       &none        &none        &none               &none         &none      &none      &none       &none   &none
             >;
         };
     };
