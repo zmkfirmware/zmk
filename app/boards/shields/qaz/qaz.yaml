@@ -1,0 +1,7 @@
+identifier: qaz
+name: QAZ
+type: shield
+manufacturer: cbkbd
+compatible:
+   - pro_micro
+url: https://www.cbkbd.com/product/qaz-keyboard-kit

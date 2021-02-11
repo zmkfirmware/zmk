@@ -1,0 +1,10 @@
+identifier: jian
+name: Jian
+type: shield
+manufacturer: KgOfHedgehogs
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://github.com/KGOH/Jian-Info

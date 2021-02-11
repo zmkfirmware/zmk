@@ -1,0 +1,10 @@
+identifier: jorne
+name: Jorne
+type: shield
+manufacturer: Joric
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://github.com/joric/jorne

@@ -1,6 +1,6 @@
 identifier: planck_rev6
-name: PLANKREV6
-type: keyboard
+name: Planck Rev6
+type: mcu
 arch: arm
 toolchain:
   - zephyr
@@ -17,3 +17,6 @@ supported:
   - nvs
   - can
   - kscan
+manufacturer: OLKB
+standalone: true
+url: https://olkb.com/collections/planck

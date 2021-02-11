@@ -1,0 +1,7 @@
+identifier: eek
+name: eek!
+type: shield
+manufacturer: Klackygears
+compatible:
+   - pro_micro
+url: https://github.com/Klackygears/eek_doc

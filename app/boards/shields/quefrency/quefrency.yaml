@@ -1,0 +1,10 @@
+identifier: quefrency
+name: Quefrency Rev1
+type: shield
+manufacturer: keeb.io
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://keeb.io/products/quefrency-60-65-split-staggered-keyboard

@@ -1,0 +1,7 @@
+identifier: boardsource3x4
+name: Boardsource 3x4
+type: shield
+manufacturer: Boardsource.xyz
+compatible:
+   - pro_micro
+url: https://boardsource.xyz/store/5ecc2008eee64242946c98c1

@@ -1,5 +1,5 @@
 identifier: proton_c
-name: QMK Proton-C
+name: Proton-C
 type: mcu
 arch: arm
 toolchain:
@@ -16,3 +16,7 @@ supported:
   - lsm303dlhc
   - nvs
   - can
+manufacturer: QMK
+compatible:
+   - pro_micro
+url: https://qmk.fm/proton-c/

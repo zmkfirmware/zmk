@@ -1,0 +1,7 @@
+identifier: romac
+name: Romac
+type: shield
+manufacturer: The Royal
+compatible:
+   - pro_micro
+url: https://github.com/The-Royal/The_Royal_Open-Source-Projects/tree/master/01%20-%20Complete%20Kits/The_RoMac_rev2.1

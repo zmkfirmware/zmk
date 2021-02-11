@@ -1,0 +1,10 @@
+identifier: cradio
+name: Cradio
+type: shield
+manufacturer: davidphilipbarr
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://github.com/davidphilipbarr/36keys/tree/master/34Keys/Cradio

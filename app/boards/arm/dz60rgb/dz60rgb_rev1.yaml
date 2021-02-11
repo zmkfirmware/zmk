@@ -1,6 +1,6 @@
-identifier: DZ60RGB_rev1
-name: DZ60RGBREV1
-type: keyboard
+identifier: dz60rgb_rev1
+name: DZ60RGB Rev1
+type: mcu
 arch: arm
 toolchain:
   - zephyr
@@ -17,3 +17,6 @@ supported:
   - nvs
   - can
   - kscan
+manufacturer: dztech
+standalone: true
+url: https://candykeys.com/product/dz60-rgb-hotswap-pcb-ansi

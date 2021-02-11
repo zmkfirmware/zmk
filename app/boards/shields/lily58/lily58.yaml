@@ -1,0 +1,10 @@
+identifier: lily58
+name: Lily58
+type: shield
+manufacturer: kata0510
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://github.com/kata0510/Lily58

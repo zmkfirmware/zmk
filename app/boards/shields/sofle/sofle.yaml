@@ -1,0 +1,10 @@
+identifier: sofle
+name: Sofle
+type: shield
+manufacturer: josefadamcik
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://github.com/josefadamcik/SofleKeyboard

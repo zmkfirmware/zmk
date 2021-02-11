@@ -1,0 +1,10 @@
+identifier: helix
+name: Helix
+type: shield
+manufacturer: MakotoKurauchi
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://github.com/MakotoKurauchi/helix

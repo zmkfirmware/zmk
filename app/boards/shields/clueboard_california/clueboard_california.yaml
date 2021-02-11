@@ -1,0 +1,7 @@
+identifier: clueboard_california
+name: Clueboard California
+type: shield
+manufacturer: Clueboard
+compatible:
+   - proton_c
+url: https://nicekeyboards.com

@@ -13,3 +13,7 @@ supported:
   - ieee802154
   - pwm
   - watchdog
+manufacturer: Nice Keyboards
+compatible:
+   - pro_micro
+url: https://nicekeyboards.com/products/nice-nano-v1-0

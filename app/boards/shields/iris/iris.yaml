@@ -1,0 +1,10 @@
+identifier: iris
+name: Iris Rev2
+type: shield
+manufacturer: keeb.io
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://docs-gitbook.keeb.io/docs/iris-rev2-build-guide

@@ -1,0 +1,10 @@
+identifier: splitreus62
+name: Splitreus62
+type: shield
+manufacturer: NaCly
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://github.com/Na-Cly/splitreus62

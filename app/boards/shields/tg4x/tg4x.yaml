@@ -1,0 +1,7 @@
+identifier: tg4x
+name: TG4x
+type: shield
+manufacturer: MythosMann
+compatible:
+   - pro_micro
+url: https://github.com/MythosMann/tg4x
