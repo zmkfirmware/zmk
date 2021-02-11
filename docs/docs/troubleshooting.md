@@ -130,7 +130,7 @@ The workaround for this limitation is as follows:
 
    :::warning Registry Edits Can Brick Your Computer
 
-   While this procedure has been tested and verified, any time edits are made to the registry, irreprable damage to your system is possible. Proceed with caution.
+   While this procedure has been tested and verified, any time edits are made to the registry, irreparable damage to your system is possible. Proceed with caution.
 
    :::
 
