@@ -79,7 +79,7 @@ For the `nRF52840`, the value `PLUS_8` can be set to any multiple of four betwee
 
 ### MacOS/Windows Dual Booting
 
-If you are utiizing Apple's BootCamp feature or running a hackintosh that allows you to easily dual-boot your system between macOS and Windows, you will find that you can only use your bluetooth devices on one OS or the other without re-pairing. This is because ZMK stores the host address and keys in the profiles only one time. This means that a host can only pair with exactly one ZMK profile.
+If you are utilizing Apple's BootCamp feature or running a hackintosh that allows you to easily dual-boot your system between macOS and Windows, you will find that you can only use your bluetooth devices on one OS or the other without re-pairing. This is because ZMK stores the host address and keys in the profiles only one time. This means that a host can only pair with exactly one ZMK profile.
 
 The workaround for this limitation is as follows:
 
@@ -126,7 +126,7 @@ The workaround for this limitation is as follows:
 1. Under your keyboard address, find the value labeled LocalLTK (in the screenshot above it is `0x8968239e350b2cb7df16d8f47c774e2c`). Copy this value into a text file that you can access from Windows, this is the value we will need to enter into the registry later on.
 1. Reboot into Windows
 1. Once logged in, turn off bluetooth.
-1. Grab a piece of software called psexec (https://docs.microsoft.com/en-us/sysinternals/downloads/psexec), extract, and copy psexec.exe to the desktop. This will allow us to easily open Regedit with elevated privelages.
+1. Grab a piece of software called psexec (https://docs.microsoft.com/en-us/sysinternals/downloads/psexec), extract, and copy psexec.exe to the desktop. This will allow us to easily open Regedit with elevated privileges.
 
    :::warning Registry Edits Can Brick Your Computer
 
