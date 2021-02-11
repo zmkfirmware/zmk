@@ -127,6 +127,13 @@ The workaround for this limitation is as follows:
 1. Reboot into Windows
 1. Once logged in, turn off bluetooth.
 1. Grab a piece of software called psexec (https://docs.microsoft.com/en-us/sysinternals/downloads/psexec), extract, and copy psexec.exe to the desktop. This will allow us to easily open Regedit with elevated privelages.
+
+   :::warning Registry Edits Can Brick Your Computer
+
+   While this procedure has been tested and verified, any time edits are made to the registry, irreprable damage to your system is possible. Proceed with caution.
+
+   :::
+
 1. Open the Start Menu, type `cmd` and hit control + shift + enter to launch an elevated command prompt.
 1. Enter the following, one at a time:
 
@@ -161,3 +168,4 @@ The workaround for this limitation is as follows:
 1. Finally reboot into macOS and verify that your keyboard still works on the same profile here as well.
 
 If your board still does not work in one OS or the other, start over at the beginning with a clean pairing in each OS.
+git e
