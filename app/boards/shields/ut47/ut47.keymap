@@ -23,7 +23,7 @@
         default_layer {
             bindings = <
     &kp ESC       &kp Q      &kp W       &kp E       &kp R       &kp T       &kp Y       &kp U       &kp I       &kp O       &kp P        &kp BSPC
-    &mt LCTRL TAB &kp A      &mt LCTRL S &lt NAV D   &mt LSHFT F &kp G       &kp H       &kp J       &kp K       &kp L       &kp IT_SCLN  &mt RSHFT RET
+    &mt LCTRL TAB &kp A      &kp S       &lt NAV D   &mt LSHFT F &kp G       &kp H       &kp J       &kp K       &kp L       &kp IT_SCLN  &mt RSHFT RET
     &lt SFT DEL   &kp Z      &kp X       &kp C       &kp V       &kp B       &kp N       &kp M       &kp IT_COMM &kp IT_FULL &kp UP       &lt SFT IT_SLSH
     &kp LCTRL     &mo NAV    &kp LALT    &kp LGUI    &mo NUM     &lt ACC SPACE   &mo SYM     &kp IT_QUOT     &kp LEFT    &kp DOWN    &kp RIGHT
             >;
@@ -32,7 +32,7 @@
         sft {
             bindings = <
     &kp LS(ESC)       &kp LS(Q)      &kp LS(W)      &kp LS(E)       &kp LS(R)       &kp LS(T)       &kp LS(Y)       &kp LS(U)       &kp LS(I)       &kp LS(O)       &kp LS(P)     &kp LS(BSPC)
-    &mt LCTRL LS(TAB) &kp LS(A)      &mt LCTRL LS(S) &lt NAV LS(D)  &mt LSHFT LS(F) &kp LS(G)       &kp LS(H)       &kp LS(J)       &kp LS(K)       &kp LS(L)       &kp IT_COLN   &kp LS(RET)
+    &mt LCTRL LS(TAB) &kp LS(A)      &kp LS(S)      &lt NAV LS(D)   &mt LSHFT LS(F) &kp LS(G)       &kp LS(H)       &kp LS(J)       &kp LS(K)       &kp LS(L)       &kp IT_COLN   &kp LS(RET)
     &mt LSHFT DEL     &kp LS(Z)      &kp LS(X)      &kp LS(C)       &kp LS(V)       &kp LS(B)       &kp LS(N)       &kp LS(M)       &kp IT_MINO     &kp IT_MAJO     &kp LS(UP)    &mt RSHFT IT_QSTN
     &kp LS(LCTRL)     &mo NAV        &kp LS(LALT)   &kp LS(LGUI)    &mo NUM         &kp LS(SPACE)   &mo SYM         &kp IT_DQUO     &kp LS(LEFT)    &kp LS(DOWN)     &kp LS(RIGHT)
             >;
@@ -40,28 +40,28 @@
 
     num {
             bindings = <
-    &trans       &kp N1      &kp N2      &kp N3      &kp N4      &kp N5     &kp N6     &kp N7     &kp N8      &kp N9      &kp N0      &trans
-    &trans       &kp IT_PLUS &kp IT_MINU &kp IT_SLSH &kp IT_STAR &trans     &trans     &trans     &kp EQUAL   &kp IT_LSQR &kp IT_RSQR &mt RSHFT RET
-    &lt SYM DEL  &kp IT_EQAL &kp IT_BSLS &none       &none       &none      &none      &none      &trans      &trans      &trans      &lt SYM DEL
-    &trans       &trans      &trans      &trans      &trans           &trans           &trans     &none       &trans      &trans      &trans
+    &trans        &kp N1      &kp N2      &kp N3      &kp N4      &kp N5     &kp N6     &kp N7     &kp N8      &kp N9      &kp N0      &trans
+    &mt LCTRL TAB &kp IT_PLUS &kp IT_MINU &kp IT_SLSH &kp IT_STAR &trans     &trans     &trans     &kp EQUAL   &kp IT_LSQR &kp IT_RSQR &mt RSHFT RET
+    &lt SYM DEL   &kp IT_EQAL &kp IT_BSLS &none       &none       &none      &none      &none      &trans      &trans      &trans      &lt SYM DEL
+    &trans        &trans      &trans      &trans      &trans           &trans           &trans     &none       &trans      &trans      &trans
             >;
         };
 
     sym {
             bindings = <
-    &trans       &kp IT_EXCL &kp IT_AT   &kp IT_SHRP &kp IT_DOLL &kp IT_PERC &kp IT_POWE &kp IT_ECOM &kp IT_STAR &kp IT_LPAR &kp IT_RPAR &trans
-    &trans       &kp IT_EQAL &kp IT_UNDS &kp IT_SLSH &kp IT_STAR &none       &none       &none       &kp EQUAL   &kp IT_LBRK &kp IT_RBRK &mt RSHFT RET
-    &kp LSHFT    &kp IT_EQAL &kp IT_PIPE &none       &none       &none       &none       &none       &trans      &trans      &trans      &kp RSHFT
-    &trans       &trans      &trans      &trans      &trans             &trans           &trans      &none       &trans      &trans      &trans
+    &trans        &kp IT_EXCL &kp IT_AT   &kp IT_SHRP &kp IT_DOLL &kp IT_PERC &kp IT_POWE &kp IT_ECOM &kp IT_STAR &kp IT_LPAR &kp IT_RPAR &trans
+    &mt LCTRL TAB &kp IT_EQAL &kp IT_UNDS &kp IT_SLSH &kp IT_STAR &none       &none       &none       &kp EQUAL   &kp IT_LBRK &kp IT_RBRK &mt RSHFT RET
+    &kp LSHFT     &kp IT_EQAL &kp IT_PIPE &none       &none       &none       &none       &none       &trans      &trans      &trans      &kp RSHFT
+    &trans        &trans      &trans      &trans      &trans             &trans           &trans      &none       &trans      &trans      &trans
             >;
         };
 
     acc {
             bindings = <
-    &trans       &none        &none        &kp IT_EGRV  &none        &none        &none   &kp IT_UGRV &kp IT_IGRV &kp IT_OGRV &none    &trans
-    &trans       &kp IT_AGRV  &none        &none        &none        &none        &none   &none       &none       &none       &none    &trans
-    &kp LSHFT    &none        &none        &none        &none        &none        &none   &none       &none       &none       &none    &kp RSHFT
-    &trans       &trans       &trans       &trans       &trans           &trans              &trans      &none       &trans      &trans   &trans
+    &trans        &kp IT_EURO  &none        &kp IT_EGRV  &none        &none        &none   &kp IT_UGRV &kp IT_IGRV &kp IT_OGRV &none    &trans
+    &mt LCTRL TAB &kp IT_AGRV  &none        &none        &none        &none        &none   &none       &none       &none       &none    &trans
+    &kp LSHFT     &none        &none        &none        &none        &none        &none   &none       &none       &none       &none    &kp RSHFT
+    &trans        &trans       &trans       &trans       &trans           &trans              &trans      &none       &trans      &trans   &trans
             >;
         };
 
