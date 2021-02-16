@@ -30,6 +30,11 @@ module.exports = {
         },
         { to: "blog", label: "Blog", position: "left" },
         {
+          to: "power-profiler",
+          label: "Power Profiler",
+          position: "left",
+        },
+        {
           href: "https://github.com/zmkfirmware/zmk",
           label: "GitHub",
           position: "right",
