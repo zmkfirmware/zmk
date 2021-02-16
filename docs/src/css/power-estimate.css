@@ -1,0 +1,81 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+.powerEstimate {
+  margin: 20px 0;
+}
+
+.powerEstimate > h3 > span {
+  text-transform: capitalize;
+}
+
+.powerEstimateBar {
+  height: 64px;
+  width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
+    rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
+  border-radius: 64px;
+  display: flex;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.powerEstimateBarSection {
+  transition: all 0.2s ease;
+  flex-grow: 1;
+}
+
+.powerEstimateBarSection.rightSection {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.powerEstimateTooltipWrap {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(calc(-100% - 8px));
+  transition: opacity 0.2s ease;
+}
+
+.powerEstimateBarSection:hover .powerEstimateTooltipWrap {
+  visibility: visible;
+  opacity: 1;
+}
+
+.powerEstimateTooltip {
+  display: block;
+  position: relative;
+  box-shadow: var(--ifm-global-shadow-tl);
+  width: 260px;
+  padding: 10px;
+  border-radius: 4px;
+  background: var(--ifm-background-surface-color);
+  transform: translateX(-15px);
+}
+
+.rightSection .powerEstimateTooltip {
+  transform: translateX(15px);
+}
+
+.powerEstimateTooltip:after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 27px;
+  margin-left: -8px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid var(--ifm-background-surface-color);
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+}
+
+.rightSection .powerEstimateTooltip:after {
+  left: unset;
+  right: 27px;
+  margin-right: -8px;
+}
