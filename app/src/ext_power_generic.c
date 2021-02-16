@@ -23,6 +23,7 @@ struct ext_power_generic_config {
     const char *label;
     const uint8_t pin;
     const uint8_t flags;
+    const uint16_t init_delay_ms;
 };
 
 struct ext_power_generic_data {
@@ -171,6 +172,10 @@ static int ext_power_generic_init(const struct device *dev) {
     ext_power_enable(dev);
 #endif
 
+    if (config->init_delay_ms) {
+        k_msleep(config->init_delay_ms);
+    }
+
     return 0;
 }
 
@@ -210,7 +215,8 @@ static int ext_power_generic_pm_control(const struct device *dev, uint32_t ctrl_
 static const struct ext_power_generic_config config = {
     .label = DT_INST_GPIO_LABEL(0, control_gpios),
     .pin = DT_INST_GPIO_PIN(0, control_gpios),
-    .flags = DT_INST_GPIO_FLAGS(0, control_gpios)};
+    .flags = DT_INST_GPIO_FLAGS(0, control_gpios),
+    .init_delay_ms = DT_INST_PROP_OR(0, init_delay_ms, 0)};
 
 static struct ext_power_generic_data data = {
     .status = false,
