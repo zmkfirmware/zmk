@@ -45,6 +45,27 @@ Defines how long a key must be pressed to trigger Hold behavior.
 
 If you press a tapped hold-tap again within `quick_tap_ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
 
+The simplest way to enable this functionality would be to set the value to a positive integer at the root of your personal keymap definition (not nested under any `/` node).
+
+```
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+&lt { quick_tap_ms = <200>; };
+
+/ {
+    keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+			bindings = <
+	            &lt 1 BKSP &lt 1 SPC
+			>;
+		};
+	};
+};
+```
+
 In QMK, unlike ZMK, this functionality is enabled by default, and you turn it off using `TAPPING_FORCE_HOLD`.
 
 #### Home row mods
