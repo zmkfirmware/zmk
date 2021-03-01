@@ -1,12 +1,12 @@
-# BlueMicro840 board configuration
+# BlueMacro840 board configuration
 
-# Copyright (c) 2020 Pete Johanson, Derek Schmell
+# Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if BOARD_BLUEMICRO840_V1
+if BOARD_BLUEMACRO840_V1
 
 config BOARD
-	default "bluemicro840_v1"
+	default "bluemacro840_v1"
 
 if USB
 
@@ -30,4 +30,4 @@ config ZMK_USB
 config ZMK_BATTERY_VOLTAGE_DIVIDER
 	default y
 
-endif # BOARD_BLUEMICRO840_V1
+endif # BOARD_BLUEMACRO840_V1
