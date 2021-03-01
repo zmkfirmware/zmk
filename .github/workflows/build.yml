@@ -18,6 +18,7 @@ jobs:
     strategy:
       matrix:
         board:
+          - bluemacro840_v1
           - bluemicro840_v1
           - nice_nano
           - nrfmicro_13
