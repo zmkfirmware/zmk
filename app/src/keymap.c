@@ -79,7 +79,7 @@ static struct zmk_behavior_binding zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN]
 static void raise_layer_event(zmk_keymap_layers_state_t prior_state) {
     LOG_DBG("layer_changed: layer %d, old state %x, state %x", zmk_keymap_highest_layer_active(),
             prior_state, zmk_keymap_layer_state());
-    ZMK_EVENT_RAISE(create_layer_state_changed(prior_state));
+    ZMK_EVENT_RAISE(create_layer_state_changed(prior_state, zmk_keymap_layer_state()));
 }
 
 static inline int set_layer_state(uint8_t layer, bool state) {
