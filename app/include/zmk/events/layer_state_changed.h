@@ -8,17 +8,18 @@
 
 #include <zephyr.h>
 #include <zmk/event_manager.h>
+#include <zmk/keymap.h>
 
 struct zmk_layer_state_changed {
-    uint8_t layer;
-    bool state;
+    zmk_keymap_layers_state_t prior_state;
     int64_t timestamp;
 };
 
 ZMK_EVENT_DECLARE(zmk_layer_state_changed);
 
-static inline struct zmk_layer_state_changed_event *create_layer_state_changed(uint8_t layer,
-                                                                               bool state) {
-    return new_zmk_layer_state_changed((struct zmk_layer_state_changed){
-        .layer = layer, .state = state, .timestamp = k_uptime_get()});
+static inline struct zmk_layer_state_changed_event *
+create_layer_state_changed(zmk_keymap_layers_state_t prior_state) {
+
+    return new_zmk_layer_state_changed(
+        (struct zmk_layer_state_changed){.prior_state = prior_state, .timestamp = k_uptime_get()});
 }
