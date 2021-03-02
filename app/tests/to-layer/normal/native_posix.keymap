@@ -3,9 +3,9 @@
 #include <dt-bindings/zmk/kscan-mock.h>
 #include "../behavior_keymap.dtsi"
 
-// Press key A
+// Press key S
 // To layer 1
-// Press key J
+// Press key K
 // To layer 0
 // Press key S
 // To layer 0 -- does nothing
