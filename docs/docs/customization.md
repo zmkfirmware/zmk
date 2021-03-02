@@ -3,9 +3,6 @@ title: Customizing ZMK/`zmk-config` folders
 sidebar_label: Customizing ZMK
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 After verifying you can successfully flash the default firmware, you will probably want to begin customizing your keymap and other keyboard options.
 [In the initial setup tutorial](user-setup), you created a Github repository called `zmk-config`. This repository is a discrete filesystem which works
 with the main `zmk` firmware repository to build your desired firmware. The main advantage of a discrete configuration folder is ensuring that the
@@ -30,75 +27,6 @@ various config settings that can be commented/uncommented to modify how your fir
 
 Once you have the basic user config completed, you can find the keymap file in `config/<shield>.keymap` and customize from there.
 Refer to the [Keymap](/docs/features/keymaps) documentation to learn more.
-
-## Testing features
-
-Testing features will require you to modify the `west.yml` file. You will need to add a new remote for the pull request you would like to test,
-and change the selected remote and revision for the `zmk` project.
-
-<Tabs
-defaultValue="zmk"
-values={[
-{label: 'Default', value: 'zmk'},
-{label: 'PR685: Macros', value: 'macros'},
-{label: 'PR649: Add &sleep behavior', value: 'sleep'},
-]}>
-<TabItem value="zmk">
-
-```
-manifest:
-  remotes:
-    - name: zmkfirmware
-      url-base: https://github.com/zmkfirmware
-  projects:
-    - name: zmk
-      remote: zmkfirmware
-      revision: main
-      import: app/west.yml
-  self:
-    path: config
-```
-
-</TabItem>
-<TabItem value="macros">
-
-```
-manifest:
-  remotes:
-    - name: zmkfirmware
-      url-base: https://github.com/zmkfirmware
-    - name: okke-formsma
-      url-base: https://github.com/okke-formsma
-  projects:
-    - name: zmk
-      remote: okke-formsma
-      revision: macros
-      import: app/west.yml
-  self:
-    path: config
-```
-
-</TabItem>
-<TabItem value="sleep">
-
-```
-manifest:
-  remotes:
-    - name: zmkfirmware
-      url-base: https://github.com/zmkfirmware
-    - name: mcrosson
-      url-base: https://github.com/mcrosson
-  projects:
-    - name: zmk
-      remote: mcrosson
-      revision: feat-behavior-sleep
-      import: app/west.yml
-  self:
-    path: config
-```
-
-</TabItem>
-</Tabs>
 
 ## Publishing
 
