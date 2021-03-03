@@ -55,10 +55,16 @@ If you have a shield with RGB underglow, you must add a `boards/` directory with
 Inside the `boards/` folder, you define a `<board>.overlay` for each different board.
 For example, the Kyria shield has a `boards/nice_nano.overlay` file that defines the RGB underglow for the `nice_nano` board specifically.
 
-The first step to adding support for underglow is to select you SPI output. With nRF52 boards, you can just use `&spi1` and define the pins you want to use.
-For other boards, you must select an SPI definition that has the `MOSI` pin as your data pin going to your LED strip.
+### nRF52-based boards
 
-Here's an example of an nRF52 SPI definition:
+With nRF52 boards, you can just use `&spi1` and define the pins you want to use.
+
+To identify which pin number you need to put in the config you need do to a bit of math. You need the hardware port and run it through a function.
+**32 \* X + Y** = `<Pin number>` where X is first part of the hardware port "PX.01" and Y is the second part of the hardware port "P1.Y".
+
+(_P1.13_ would give you _32 \* 1 + 13_ = `<45>` and P0.15 would give you _32 \* 0 + 15_ = `<15>`)
+
+Here's an example on a definition that uses P0.06:
 
 ```
 &spi1 {
@@ -87,10 +93,14 @@ Here's an example of an nRF52 SPI definition:
 
 :::info
 
-If you are configuring SPI for an nRF52840 (or other nRF52) based board, double check that you are using pins that aren't restricted to low frequency I/O.
-Ignoring these restrictions may result in poor wireless performance. You can find the list of low frequency I/O pins [here](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fps_nrf52840%2Fpin.html&cp=4_0_0_6_0).
+If you are configuring SPI for an nRF52 based board, double check that you are using pins that aren't restricted to low frequency I/O.
+Ignoring these restrictions may result in poor wireless performance. You can find the list of low frequency I/O pins for the nRF52840 [here](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fps_nrf52840%2Fpin.html&cp=4_0_0_6_0).
 
 :::
+
+### Other boards
+
+For other boards, you must select an SPI definition that has the `MOSI` pin as your data pin going to your LED strip.
 
 Here's another example for a non-nRF52 board on `spi1`:
 
