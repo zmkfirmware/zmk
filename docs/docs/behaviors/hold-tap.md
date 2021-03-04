@@ -73,7 +73,7 @@ This example configures a hold-tap that works well for homerow mods:
 			compatible = "zmk,behavior-hold-tap";
 			label = "HOMEROW_MODS";
 			#binding-cells = <2>;
-			tapping-term-ms = <150>;
+			tapping_term_ms = <150>;
 			quick_tap_ms = <0>;
 			flavor = "tap-preferred";
 			bindings = <&kp>, <&kp>;
