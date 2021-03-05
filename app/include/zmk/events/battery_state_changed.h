@@ -14,4 +14,6 @@ struct zmk_battery_state_changed {
     uint8_t state_of_charge;
 };
 
+int32_t zmk_battery_state_of_charge();
+
 ZMK_EVENT_DECLARE(zmk_battery_state_changed);
