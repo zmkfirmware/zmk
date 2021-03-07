@@ -1,6 +1,6 @@
 ---
-title: Under Development
-sidebar_label: Under Development
+title: Beta Testing
+sidebar_label: Beta Testing
 ---
 
 import Tabs from '@theme/Tabs';
@@ -18,20 +18,20 @@ branch and create the pull request.
 
 ### Finding the Repository Page from the Pull Request
 
-![PR Repository](../assets/features/under-development/pr-repo-branch.png)
+![PR Repository](../assets/features/beta-testing/pr-repo-branch.png)
 
 ### Finding the Repository URL
 
-![Repository URL](../assets/features/under-development/repo-url.png)
+![Repository URL](../assets/features/beta-testing/repo-url.png)
 
 ### Finding the Repository Branch
 
-![Repository URL](../assets/features/under-development/repo-branch.png)
+![Repository URL](../assets/features/beta-testing/repo-branch.png)
 
 ## Testing features
 
 Testing features will require you to modify the `west.yml` file. You will need to add a new remote for the pull request you
-would like to test, and change the selected remote (or repository) and revision (or branch) for the `zmk` project.
+would like to test, and change the selected remote and revision (or branch) for the `zmk` project.
 
 ### Examples
 
