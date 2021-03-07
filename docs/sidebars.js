@@ -14,7 +14,7 @@ module.exports = {
       "features/displays",
       "features/encoders",
       "features/underglow",
-      "features/under-development",
+      "features/beta-testing",
     ],
     Behaviors: [
       "behaviors/key-press",
