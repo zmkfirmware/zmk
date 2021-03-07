@@ -52,6 +52,18 @@ module.exports = {
       "codes/power",
       "codes/keymap-upgrader",
     ],
+    Configuration: [
+      "config/index",
+      "config/behaviors",
+      "config/combos",
+      "config/displays",
+      "config/encoders",
+      "config/keymap",
+      "config/kscan",
+      "config/power",
+      "config/system",
+      "config/underglow",
+    ],
     Development: [
       "development/clean-room",
       "development/documentation",
