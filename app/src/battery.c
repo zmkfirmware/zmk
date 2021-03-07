@@ -41,6 +41,8 @@ static int zmk_battery_update(const struct device *battery) {
     }
 
     if (last_state_of_charge != state_of_charge.val1) {
+        last_state_of_charge = state_of_charge.val1;
+
         LOG_DBG("Setting BAS GATT battery level to %d.", state_of_charge.val1);
 
         rc = bt_bas_set_battery_level(state_of_charge.val1);
@@ -52,8 +54,6 @@ static int zmk_battery_update(const struct device *battery) {
 
         rc = ZMK_EVENT_RAISE(new_zmk_battery_state_changed(
             (struct zmk_battery_state_changed){.state_of_charge = state_of_charge.val1}));
-
-        last_state_of_charge = state_of_charge.val1;
     }
 
     return rc;
