@@ -449,11 +449,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     // if this behavior was queued we have to adjust the timer to only
     // wait for the remaining time.
     int32_t tapping_term_ms_left = (hold_tap->timestamp + cfg->tapping_term_ms) - k_uptime_get();
-    if (tapping_term_ms_left > 0) {
-        k_delayed_work_submit(&hold_tap->work, K_MSEC(tapping_term_ms_left));
-    } else {
-        decide_hold_tap(hold_tap, HT_TIMER_EVENT);
-    }
+    k_delayed_work_submit(&hold_tap->work, K_MSEC(tapping_term_ms_left));
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
