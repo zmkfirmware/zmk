@@ -25,4 +25,10 @@ config ZMK_BLE
 config ZMK_USB
 	default y
 
+config ZMK_RGB_UNDERGLOW
+  default y
+
+config WS2812_STRIP
+  default y
+
 endif # BOARD_PAW
