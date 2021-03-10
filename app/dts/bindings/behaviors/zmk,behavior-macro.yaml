@@ -1,0 +1,16 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Macro
+
+compatible: "zmk,behavior-macro"
+
+include: zero_param.yaml
+
+properties:
+  bindings:
+    type: phandle-array
+    required: true
+  sleep:
+    type: int
+    default: 10
