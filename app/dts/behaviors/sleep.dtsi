@@ -6,7 +6,7 @@
 
 / {
 	behaviors {
-		sleep: behavior_sleep {
+		/omit-if-no-ref/ sleep: behavior_sleep {
 			compatible = "zmk,behavior-sleep";
 			label = "SLEEP";
 			#binding-cells = <0>;
