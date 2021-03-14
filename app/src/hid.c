@@ -176,6 +176,26 @@ int zmk_hid_consumer_release(zmk_key_t code) {
     return 0;
 };
 
+int zmk_hid_press(uint32_t usage) {
+    switch (ZMK_HID_USAGE_PAGE(usage)) {
+    case HID_USAGE_KEY:
+        return zmk_hid_keyboard_press(ZMK_HID_USAGE_ID(usage));
+    case HID_USAGE_CONSUMER:
+        return zmk_hid_consumer_press(ZMK_HID_USAGE_ID(usage));
+    }
+    return -EINVAL;
+}
+
+int zmk_hid_release(uint32_t usage) {
+    switch (ZMK_HID_USAGE_PAGE(usage)) {
+    case HID_USAGE_KEY:
+        return zmk_hid_keyboard_release(ZMK_HID_USAGE_ID(usage));
+    case HID_USAGE_CONSUMER:
+        return zmk_hid_consumer_release(ZMK_HID_USAGE_ID(usage));
+    }
+    return -EINVAL;
+}
+
 void zmk_hid_consumer_clear() { memset(&consumer_report.body, 0, sizeof(consumer_report.body)); }
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report() {
