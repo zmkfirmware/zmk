@@ -20,21 +20,10 @@ static int hid_listener_keycode_pressed(const struct zmk_keycode_state_changed *
     int err;
     LOG_DBG("usage_page 0x%02X keycode 0x%02X implicit_mods 0x%02X explicit_mods 0x%02X",
             ev->usage_page, ev->keycode, ev->implicit_modifiers, ev->explicit_modifiers);
-    switch (ev->usage_page) {
-    case HID_USAGE_KEY:
-        err = zmk_hid_keyboard_press(ev->keycode);
-        if (err) {
-            LOG_ERR("Unable to press keycode");
-            return err;
-        }
-        break;
-    case HID_USAGE_CONSUMER:
-        err = zmk_hid_consumer_press(ev->keycode);
-        if (err) {
-            LOG_ERR("Unable to press keycode");
-            return err;
-        }
-        break;
+    err = zmk_hid_press(ev->usage_page, ev->keycode);
+    if (err) {
+        LOG_DBG("Unable to press keycode");
+        return err;
     }
     zmk_hid_register_mods(ev->explicit_modifiers);
     zmk_hid_implicit_modifiers_press(ev->implicit_modifiers);
@@ -45,20 +34,10 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
     int err;
     LOG_DBG("usage_page 0x%02X keycode 0x%02X implicit_mods 0x%02X explicit_mods 0x%02X",
             ev->usage_page, ev->keycode, ev->implicit_modifiers, ev->explicit_modifiers);
-    switch (ev->usage_page) {
-    case HID_USAGE_KEY:
-        err = zmk_hid_keyboard_release(ev->keycode);
-        if (err) {
-            LOG_ERR("Unable to release keycode");
-            return err;
-        }
-        break;
-    case HID_USAGE_CONSUMER:
-        err = zmk_hid_consumer_release(ev->keycode);
-        if (err) {
-            LOG_ERR("Unable to release keycode");
-            return err;
-        }
+    err = zmk_hid_release(ev->usage_page, ev->keycode);
+    if (err) {
+        LOG_DBG("Unable to release keycode");
+        return err;
     }
     zmk_hid_unregister_mods(ev->explicit_modifiers);
     // There is a minor issue with this code.
