@@ -133,6 +133,7 @@ int zmk_hid_register_mods(zmk_mod_flags_t explicit_modifiers);
 int zmk_hid_unregister_mods(zmk_mod_flags_t explicit_modifiers);
 int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t implicit_modifiers);
 int zmk_hid_implicit_modifiers_release();
+
 int zmk_hid_keyboard_press(zmk_key_t key);
 int zmk_hid_keyboard_release(zmk_key_t key);
 void zmk_hid_keyboard_clear();
@@ -140,6 +141,9 @@ void zmk_hid_keyboard_clear();
 int zmk_hid_consumer_press(zmk_key_t key);
 int zmk_hid_consumer_release(zmk_key_t key);
 void zmk_hid_consumer_clear();
+
+int zmk_hid_press(uint32_t usage);
+int zmk_hid_release(uint32_t usage);
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();
