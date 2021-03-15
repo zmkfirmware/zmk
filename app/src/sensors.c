@@ -29,7 +29,7 @@ struct sensors_item_cfg {
     {                                                                                              \
         .dev = DEVICE_DT_GET_OR_NULL(node),                                                        \
         .trigger = {.type = SENSOR_TRIG_DATA_READY, .chan = SENSOR_CHAN_ROTATION},                 \
-        .config = &configs[idx]                                                                    \
+        .config = &configs[idx], .sensor_index = idx                                               \
     }
 #define SENSOR_ITEM(idx, _i) _SENSOR_ITEM(idx, ZMK_KEYMAP_SENSORS_BY_IDX(idx))
 
@@ -112,7 +112,7 @@ static void zmk_sensors_trigger_handler(const struct device *dev,
     int sensor_index = test_item - sensors;
 
     if (sensor_index < 0 || sensor_index >= ARRAY_SIZE(sensors)) {
-        LOG_ERR("Invalid sensor item triggered our callback");
+        LOG_ERR("Invalid sensor item triggered our callback (%d)", sensor_index);
         return;
     }
 
@@ -126,8 +126,6 @@ static void zmk_sensors_trigger_handler(const struct device *dev,
 
 static void zmk_sensors_init_item(uint8_t i) {
     LOG_DBG("Init sensor at index %d", i);
-
-    sensors[i].sensor_index = i;
 
     if (!sensors[i].dev) {
         LOG_DBG("No local device for %d", i);
