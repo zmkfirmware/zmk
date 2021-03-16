@@ -162,7 +162,7 @@ static int behavior_caps_word_init(const struct device *dev) {
 #define CAPS_WORD_LABEL(i, _n) DT_INST_LABEL(i)
 
 #define PARSE_BREAK(i)                                                                             \
-    {.page = (ZMK_HID_USAGE_PAGE(i) & 0xFF),                                                       \
+    {.page = ZMK_HID_USAGE_PAGE(i),                                                                \
      .id = ZMK_HID_USAGE_ID(i),                                                                    \
      .implicit_modifiers = SELECT_MODS(i)},
 
