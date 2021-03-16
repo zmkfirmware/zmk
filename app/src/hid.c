@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "zmk/keys.h"
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -49,6 +50,11 @@ int zmk_hid_unregister_mod(zmk_mod_t modifier) {
     }
     SET_MODIFIERS(explicit_modifiers);
     return 0;
+}
+
+bool zmk_hid_mod_is_pressed(zmk_mod_t modifier) {
+    zmk_mod_flags_t mod_flag = 1 << modifier;
+    return (zmk_hid_get_explicit_mods() & mod_flag) == mod_flag;
 }
 
 int zmk_hid_register_mods(zmk_mod_flags_t modifiers) {
@@ -117,6 +123,18 @@ int zmk_hid_keyboard_release(zmk_key_t code) {
     return 0;
 };
 
+bool zmk_hid_keyboard_is_pressed(zmk_key_t code) {
+    if (code >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL && code <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
+        return zmk_hid_mod_is_pressed(code - HID_USAGE_KEY_KEYBOARD_LEFTCONTROL);
+    }
+    for (int idx = 0; idx < ZMK_HID_KEYBOARD_NKRO_SIZE; idx++) {
+        if (keyboard_report.body.keys[idx] == code) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void zmk_hid_keyboard_clear() { memset(&keyboard_report.body, 0, sizeof(keyboard_report.body)); }
 
 int zmk_hid_consumer_press(zmk_key_t code) {
@@ -128,6 +146,17 @@ int zmk_hid_consumer_release(zmk_key_t code) {
     TOGGLE_CONSUMER(code, 0U);
     return 0;
 };
+
+void zmk_hid_consumer_clear() { memset(&consumer_report.body, 0, sizeof(consumer_report.body)); }
+
+bool zmk_hid_consumer_is_pressed(zmk_key_t key) {
+    for (int idx = 0; idx < ZMK_HID_CONSUMER_NKRO_SIZE; idx++) {
+        if (consumer_report.body.keys[idx] == key) {
+            return true;
+        }
+    }
+    return false;
+}
 
 int zmk_hid_press(uint8_t usage_page, zmk_key_t code) {
     switch (usage_page) {
@@ -149,7 +178,15 @@ int zmk_hid_release(uint8_t usage_page, zmk_key_t code) {
     return -EINVAL;
 }
 
-void zmk_hid_consumer_clear() { memset(&consumer_report.body, 0, sizeof(consumer_report.body)); }
+bool zmk_hid_is_pressed(uint8_t usage_page, zmk_key_t code) {
+    switch (usage_page) {
+    case HID_USAGE_KEY:
+        return zmk_hid_keyboard_is_pressed(code);
+    case HID_USAGE_CONSUMER:
+        return zmk_hid_consumer_is_pressed(code);
+    }
+    return false;
+}
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report() {
     return &keyboard_report;

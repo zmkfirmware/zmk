@@ -43,6 +43,7 @@ target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/events/battery_state_changed
 target_sources_ifdef(CONFIG_USB app PRIVATE src/events/usb_conn_state_changed.c)
 if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
   target_sources(app PRIVATE src/behaviors/behavior_key_press.c)
+  target_sources(app PRIVATE src/behaviors/behavior_key_toggle.c)
   target_sources(app PRIVATE src/behaviors/behavior_reset.c)
   target_sources(app PRIVATE src/behaviors/behavior_hold_tap.c)
   target_sources(app PRIVATE src/behaviors/behavior_sticky_key.c)
