@@ -2,4 +2,5 @@
 # SPDX-License-Identifier: MIT
 
 rsource "kscan/Kconfig"
+rsource "led_strip/Kconfig"
 rsource "sensor/Kconfig"

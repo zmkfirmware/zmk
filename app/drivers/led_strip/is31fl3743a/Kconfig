@@ -1,0 +1,20 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config IS31FL3743A
+	bool "IS31FL3743A LED Matrix driver"
+	depends on I2C
+	help
+		Enable an IS31FL3743A LED Matrix driver.
+
+			The IS31FL3743A is a general purpose 18xn(n=1-11) LED Matrix
+			programmed via 1MHz I2C compatible interface. Each LED can be
+			dimmed individually with 8-bit PWM data and 8-bit DC scaling data
+			which allows 256 steps of linear PWM dimming and 256 steps of DC
+			current adjustable levels.
+
+config LED_STRIP_INIT_PRIORITY
+	int "LED strip initialization priority"
+	default 90
+	help
+		System initialization priority for LED strip drivers.

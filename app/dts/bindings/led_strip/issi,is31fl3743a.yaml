@@ -1,0 +1,65 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: ISSI IS31FL3743A LED Matrix driver
+
+compatible: "issi,is31fl3743a"
+
+include: i2c-device.yaml
+
+properties:
+  sw-setting:
+    type: int
+    required: false
+    enum:
+      - 0x00
+      - 0x01
+      - 0x02
+      - 0x03
+      - 0x04
+      - 0x05
+      - 0x06
+      - 0x07
+      - 0x08
+      - 0x09
+      - 0x0a
+    default: 0x00
+    description: |
+      SW setting used to control the matrix size by turning off SWx pins
+      as described in the datasheet.
+
+  cs-order:
+    type: uint8-array
+    required: false
+    default: [0x02, 0x01, 0x00, 0x05, 0x04, 0x03, 0x08, 0x07, 0x06, 0x0B, 0x0A, 0x09, 0x0E, 0x0D, 0x0C, 0x11, 0x10, 0x0F]
+    description: |
+      Stores the configuration of CS* pins.
+      Each 3 consecutive numbers must be R, G and B pins for a single LED.
+      Matches the reference design from the datasheet by default.
+
+  riset:
+    type: int
+    required: true
+    description: Riset resistor value in kiloohms.
+
+  led-max-current:
+    type: int
+    required: true
+    description: Maximum allowed LED current in mAh. The maximum allowed by the chip is 34.
+
+  sync:
+    type: int
+    enum:
+      - 0x00
+      - 0x10
+      - 0x11
+    required: false
+    default: 0x00
+    description: |
+      Controls the SYNC function. Set to 0x11 to set the device as main or 0x10 for secondary.
+
+  sdb-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      GPIO pin for hardware shutdown functionality.
