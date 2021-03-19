@@ -338,6 +338,7 @@ Since the Zephyr™ SDK is not available for Windows, we recommending following 
 Since the Zephyr™ SDK is not available for macOS, we recommending following the steps to install the [GNU ARM Embedded](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded).
 
 The install command is:
+
 ```
 brew install --cask gcc-arm-embedded
 ```
