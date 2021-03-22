@@ -605,9 +605,9 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
         .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
     };                                                                                             \
-    DEVICE_AND_API_INIT(behavior_hold_tap_##n, DT_INST_LABEL(n), behavior_hold_tap_init,           \
-                        &behavior_hold_tap_data, &behavior_hold_tap_config_##n, APPLICATION,       \
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_hold_tap_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, device_pm_control_nop,                        \
+                          &behavior_hold_tap_data, &behavior_hold_tap_config_##n, APPLICATION,     \
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

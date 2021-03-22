@@ -36,8 +36,8 @@ static const struct behavior_driver_api behavior_key_press_driver_api = {
     .binding_pressed = on_keymap_binding_pressed, .binding_released = on_keymap_binding_released};
 
 #define KP_INST(n)                                                                                 \
-    DEVICE_AND_API_INIT(behavior_key_press_##n, DT_INST_LABEL(n), behavior_key_press_init, NULL,   \
-                        NULL, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                    \
-                        &behavior_key_press_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_key_press_init, device_pm_control_nop, NULL, NULL,           \
+                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
+                          &behavior_key_press_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)

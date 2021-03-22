@@ -298,9 +298,9 @@ static int kscan_gpio_config_interrupts(const struct device **devices,
         .rows = {UTIL_LISTIFY(INST_MATRIX_ROWS(n), _KSCAN_GPIO_ROW_CFG_INIT, n)},                  \
         .cols = {UTIL_LISTIFY(INST_MATRIX_COLS(n), _KSCAN_GPIO_COL_CFG_INIT, n)},                  \
     };                                                                                             \
-    DEVICE_AND_API_INIT(kscan_gpio_##n, DT_INST_LABEL(n), kscan_gpio_init_##n,                     \
-                        &kscan_gpio_data_##n, &kscan_gpio_config_##n, APPLICATION,                 \
-                        CONFIG_APPLICATION_INIT_PRIORITY, &gpio_driver_api_##n);
+    DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, device_pm_control_nop, &kscan_gpio_data_##n,     \
+                          &kscan_gpio_config_##n, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY,   \
+                          &gpio_driver_api_##n);
 
 DT_INST_FOREACH_STATUS_OKAY(GPIO_INST_INIT)
 

@@ -272,9 +272,9 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
         .release_after_ms = DT_INST_PROP(n, release_after_ms),                                     \
         .quick_release = DT_INST_PROP(n, quick_release),                                           \
     };                                                                                             \
-    DEVICE_AND_API_INIT(behavior_sticky_key_##n, DT_INST_LABEL(n), behavior_sticky_key_init,       \
-                        &behavior_sticky_key_data, &behavior_sticky_key_config_##n, APPLICATION,   \
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sticky_key_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_sticky_key_init, device_pm_control_nop,                      \
+                          &behavior_sticky_key_data, &behavior_sticky_key_config_##n, APPLICATION, \
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sticky_key_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 
