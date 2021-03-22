@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+// -----------------------------------------------------------------------------------------
+// |  TAB |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  | BKSP |
+// | CTRL |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  |  '   |
+// | SHFT |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | SHFT |
+//                    | GUI | LWR | SPC |   | ENT | RSE  | ALT |
+                        bindings = <
+           &kp ESC  &kp N1 &kp N2 &kp N3 &kp N4 &kp N5    &kp N6 &kp N7  &kp N8   &kp N9  &kp N0   &kp MINUS
+  &kp LWIN &kp TAB  &kp Q  &kp W  &kp E  &kp R  &kp T     &kp Y  &kp U   &kp I    &kp O   &kp P    &kp LBKT      &mt RWIN RBKT
+           &kp LSFT &kp A  &kp S  &kp D  &kp F  &kp G     &kp H  &kp J   &kp K    &kp L   &kp SCLN &mt RSFT SQT
+           &kp LCTL &kp Z  &kp X  &kp C  &kp V  &kp B     &kp N  &kp M   &kp CMMA &kp DOT &kp FSLH &mt RCTL BSLH
+                                 &mo 1 &kp SPC  &kp LALT &mt RALT RET &kp BSPC &mo 1
+                        >;
+                };
+                lower_layer {
+// -----------------------------------------------------------------------------------------
+// |  ESC |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  | BKSP |
+// | BTCLR| BT1 | BT2 | BT3 | BT4 | BT5 |   | LFT | DWN |  UP | RGT |     |      |
+// | SHFT |     |     |     |     |     |   |     |     |     |     |     |      |
+//                    | GUI |     | SPC |   | ENT |     | ALT |
+                       bindings = <
+          &kp GRAVE &kp F1 &kp F2   &kp F3   &kp F4    &kp F5      &kp F6       &kp F7    &kp F8   &kp F9    &kp F10         &kp EQUAL
+ &kp F11  &kp TAB   &none  &kp HOME &reset   &none     &none       &kp C_VOL_UP &kp PG_UP &reset   &kp HOME  &kp INS         &kp DEL       &kp F12
+          &kp LSFT  &none  &kp LEFT &kp UP   &kp RIGHT &none       &kp C_MUTE   &kp LEFT  &kp UP   &kp RIGHT &kp PSCRN       &mt RSFT SLCK
+          &kp LCTL  &none  &kp END  &kp DOWN &none     &none       &kp C_VOL_DN &kp PG_DN &kp DOWN &kp END   &kp PAUSE_BREAK &kp RCTL
+                                         &trans &trans  &trans    &trans &trans &trans
+                       >;
+               };
+        };
+};
