@@ -11,6 +11,9 @@ firmware built on the [Zephyr™ Project](https://zephyrproject.org/) Real Time 
 
 ZMK is currently missing some features found in other popular firmware. This table compares the features supported by ZMK, BlueMicro and QMK:
 
+| Legend: | ✅ Done | 🚧 Under Development | 💡 Planning stage |
+| :------ | :-------- | :-------- | :-------- |
+
 | **Feature**                                                                                                               | ZMK | BlueMicro | QMK |
 | ------------------------------------------------------------------------------------------------------------------------- | :-: | :-------: | :-: |
 | Low Latency BLE Support                                                                                                   | ✅  |    ✅     |     |
