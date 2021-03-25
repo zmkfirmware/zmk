@@ -26,14 +26,16 @@ static lv_obj_t *screen;
 
 __attribute__((weak)) lv_obj_t *zmk_display_status_screen() { return NULL; }
 
-void display_tick_cb(struct k_work *work) {
-    lv_tick_inc(10);
-    lv_task_handler();
-}
+void display_tick_cb(struct k_work *work) { lv_task_handler(); }
+
+#define TICK_MS 10
 
 K_WORK_DEFINE(display_tick_work, display_tick_cb);
 
-void display_timer_cb() { k_work_submit(&display_tick_work); }
+void display_timer_cb() {
+    lv_tick_inc(TICK_MS);
+    k_work_submit(&display_tick_work);
+}
 
 K_TIMER_DEFINE(display_timer, display_timer_cb, NULL);
 
@@ -44,7 +46,7 @@ static void start_display_updates() {
 
     display_blanking_off(display);
 
-    k_timer_start(&display_timer, K_MSEC(10), K_MSEC(10));
+    k_timer_start(&display_timer, K_MSEC(TICK_MS), K_MSEC(TICK_MS));
 }
 
 static void stop_display_updates() {
@@ -74,8 +76,6 @@ int zmk_display_init() {
     }
 
     lv_scr_load(screen);
-
-    lv_task_handler();
 
     start_display_updates();
 
