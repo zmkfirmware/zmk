@@ -4,7 +4,7 @@
 if SHIELD_IRIS_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "Iris Left"
+	default "Iris"
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
