@@ -2,7 +2,7 @@
 if SHIELD_JORNE_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "Jorne Left"
+	default "Jorne"
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
