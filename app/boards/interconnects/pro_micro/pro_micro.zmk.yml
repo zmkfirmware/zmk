@@ -1,0 +1,10 @@
+file_format: "1"
+id: pro_micro
+name: Pro Micro
+type: interconnect
+url: https://www.sparkfun.com/products/12640
+manufacturer: SparkFun
+description: |
+  The SparkFun Pro Micro grew popular as a low cost ATmega32U4 board with sufficient GPIO and peripherals
+  to work for many keyboard needs. Since the original Pro Micro, many pin compatible boards have appeared,
+  with various changes or improvements, such as the Elite-C w/ USB-C, nice!nano with nRF52840 wireless.
