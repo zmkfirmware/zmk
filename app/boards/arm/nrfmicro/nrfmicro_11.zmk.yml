@@ -1,0 +1,10 @@
+file_format: "1"
+id: nrfmicro_11
+name: nRFMicro 1.1/1.2
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://github.com/joric/nrfmicro/
+exposes: [pro_micro]
