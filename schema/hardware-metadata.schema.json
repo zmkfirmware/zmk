@@ -1,0 +1,261 @@
+{
+  "$id": "https://zmkfirmware.dev/zmk.metadata.json",
+  "title": "HardwareMetadata",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/board"
+    },
+    {
+      "$ref": "#/$defs/shield"
+    },
+    {
+      "$ref": "#/$defs/interconnect"
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "keyboard_siblings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "variant": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "features"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            },
+            "features": {
+              "$ref": "#/$defs/features"
+            }
+          }
+        }
+      ]
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "keys",
+          "display",
+          "encoder",
+          "underglow",
+          "pointer"
+        ]
+      }
+    },
+    "interconnects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "sibling_details": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "features": {
+          "$ref": "#/$defs/features"
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/variant"
+          }
+        }
+      }
+    },
+    "interconnect": {
+      "title": "Interconnect",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file_format",
+        "id",
+        "name",
+        "url",
+        "type"
+      ],
+      "properties": {
+        "file_format": {
+          "type": "string",
+          "const": "1"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "description": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "const": "interconnect"
+        }
+      }
+    },
+    "board": {
+      "title": "Board",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file_format",
+        "id",
+        "name",
+        "url",
+        "arch",
+        "type",
+        "outputs"
+      ],
+      "properties": {
+        "file_format": {
+          "type": "string",
+          "const": "1"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "description": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "arch": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "type": {
+          "type": "string",
+          "const": "board"
+        },
+        "siblings": {
+          "$ref": "#/$defs/keyboard_siblings"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "usb",
+              "ble"
+            ]
+          }
+        },
+        "features": {
+          "$ref": "#/$defs/features"
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/variant"
+          }
+        },
+        "exposes": {
+          "$ref": "#/$defs/interconnects"
+        }
+      }
+    },
+    "shield": {
+      "title": "Shield",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file_format",
+        "id",
+        "name",
+        "url",
+        "type",
+        "requires"
+      ],
+      "properties": {
+        "file_format": {
+          "type": "string",
+          "const": "1"
+        },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "description": {
+          "type": "string"
+        },
+        "manufacturer": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "const": "shield"
+        },
+        "features": {
+          "$ref": "#/$defs/features"
+        },
+        "variants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/variant"
+          }
+        },
+        "siblings": {
+          "$ref": "#/$defs/keyboard_siblings"
+        },
+        "requires": {
+          "$ref": "#/$defs/interconnects"
+        },
+        "exposes": {
+          "$ref": "#/$defs/interconnects"
+        }
+      }
+    }
+  }
+}
