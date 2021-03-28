@@ -19,7 +19,6 @@
 
           zmk,kscan = &kscan0;
           zmk,matrix_transform = &default_transform;
-      };
 
       default_transform: keymap_transform_0 {
           compatible = "zmk,matrix-transform";
@@ -58,25 +57,19 @@
 
         row-gpios
             = <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio1 00 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio1 03 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio1 01 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio1 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio1 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio1 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
     };
 
 };
 
-	ext-power {
-		compatible = "zmk,ext-power-generic";
-		label = "EXT_POWER";
-		control-gpios = <&gpio0 7 GPIO_ACTIVE_LOW>;
-	};
-
 	vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 2>;
-		output-ohms = <2000000>;
+    output-ohms = <2000000>;
 		full-ohms = <(2000000 + 806000)>;
 	};
 };

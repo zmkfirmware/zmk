@@ -3,6 +3,9 @@
 
 if BOARD_AHOKORE
 
+config ZMK_KEYBOARD_NAME
+    default "Ahokore V2"
+
 config BOARD
 	default "ahokore"
 
