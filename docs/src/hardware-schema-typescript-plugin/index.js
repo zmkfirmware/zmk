@@ -6,7 +6,7 @@
 
 var PrebuildPlugin = require("prebuild-webpack-plugin");
 const fs = require("fs");
-const { compileFromFile } = require('json-schema-to-typescript');
+const { compileFromFile } = require("json-schema-to-typescript");
 
 async function generateHardwareMetadataTypescript() {
   const ts = await compileFromFile("../schema/hardware-metadata.schema.json");
