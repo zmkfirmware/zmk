@@ -31,3 +31,16 @@ jobs:
       - name: Prettier check
         run: npm run prettier:check
         working-directory: docs
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: docs
+      - name: Build
+        run: npm run build
+        working-directory: docs
+      - name: TypeScript check
+        run: npm run typecheck
+        working-directory: docs
