@@ -8,12 +8,16 @@ var PrebuildPlugin = require("prebuild-webpack-plugin");
 const fs = require("fs");
 const yaml = require("js-yaml");
 const glob = require("glob");
-const { compile, compileFromFile } = require('json-schema-to-typescript');
 
 function generateHardwareMetadataAggregate() {
   glob("../app/boards/**/*.zmk.yml", (error, files) => {
-    const aggregated = files.flatMap(f => yaml.safeLoadAll(fs.readFileSync(f, "utf8")));
-    fs.writeFileSync("src/data/hardware-metadata.json", JSON.stringify(aggregated));
+    const aggregated = files.flatMap((f) =>
+      yaml.safeLoadAll(fs.readFileSync(f, "utf8"))
+    );
+    fs.writeFileSync(
+      "src/data/hardware-metadata.json",
+      JSON.stringify(aggregated)
+    );
   });
 }
 

@@ -11,7 +11,7 @@ module.exports = {
   plugins: [
     path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin"),
     path.resolve(__dirname, "src/hardware-metadata-collection-plugin"),
-    path.resolve(__dirname, "src/hardware-schema-typescript-plugin")
+    path.resolve(__dirname, "src/hardware-schema-typescript-plugin"),
   ],
   themeConfig: {
     colorMode: {
