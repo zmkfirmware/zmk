@@ -1,0 +1,8 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_LETS_SPLIT_LEFT
+    def_bool $(shields_list_contains,lets_split_left)
+
+config SHIELD_LETS_SPLIT_RIGHT
+    def_bool $(shields_list_contains,lets_split_right)
