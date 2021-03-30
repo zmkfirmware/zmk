@@ -32,6 +32,7 @@ jobs:
           - cradio_right
           - crbn
           - eek
+          - gherkin
           - helix_left
           - helix_right
           - iris_left
