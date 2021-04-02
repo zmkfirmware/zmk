@@ -52,7 +52,7 @@ Example:
 
 ### Mods
 
-This is where you determine what modifiers will activate the morphed version of the keycode.
+This is how you determine what modifiers will activate the morphed version of the keycode.
 
 Available Modifiers:
 
