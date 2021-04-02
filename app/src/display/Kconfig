@@ -18,16 +18,31 @@ endchoice
 
 choice ZMK_DISPLAY_STATUS_SCREEN
     prompt "Default status screen for displays"
-    default ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
 config ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
     bool "Built in status screen"
+    select LVGL_FONT_MONTSERRAT_12
+    select LVGL_FONT_MONTSERRAT_16
     select LVGL_OBJ_LABEL
 
 config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
     bool "Custom status screen"
 
 endchoice
+
+if ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
+
+choice LVGL_THEME_DEFAULT_FONT_NORMAL
+    default LVGL_THEME_DEFAULT_FONT_NORMAL_MONTSERRAT_16
+
+endchoice
+
+choice LVGL_THEME_DEFAULT_FONT_SMALL
+    default LVGL_THEME_DEFAULT_FONT_SMALL_MONTSERRAT_12
+
+endchoice
+
+endif # ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
 rsource "widgets/Kconfig"
 
