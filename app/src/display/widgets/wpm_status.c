@@ -15,26 +15,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/wpm.h>
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
-static lv_style_t label_style;
-
-static bool style_initialized = false;
 
 struct wpm_status_state {
     uint8_t wpm;
 };
-
-void wpm_status_init() {
-    if (style_initialized) {
-        return;
-    }
-
-    style_initialized = true;
-    lv_style_init(&label_style);
-    lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &lv_font_montserrat_12);
-    lv_style_set_text_letter_space(&label_style, LV_STATE_DEFAULT, 1);
-    lv_style_set_text_line_space(&label_style, LV_STATE_DEFAULT, 1);
-}
 
 struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
     return (struct wpm_status_state){.wpm = zmk_wpm_get_state()};
@@ -59,10 +43,7 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state, wpm_stat
 ZMK_SUBSCRIPTION(widget_wpm_status, zmk_wpm_state_changed);
 
 int zmk_widget_wpm_status_init(struct zmk_widget_wpm_status *widget, lv_obj_t *parent) {
-    wpm_status_init();
-
     widget->obj = lv_label_create(parent, NULL);
-    lv_obj_add_style(widget->obj, LV_LABEL_PART_MAIN, &label_style);
     lv_label_set_align(widget->obj, LV_LABEL_ALIGN_RIGHT);
 
     lv_obj_set_size(widget->obj, 40, 15);

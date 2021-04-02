@@ -21,9 +21,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/endpoints.h>
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
-static lv_style_t label_style;
-
-static bool style_initialized = false;
 
 struct output_status_state {
     enum zmk_endpoint selected_endpoint;
@@ -31,19 +28,6 @@ struct output_status_state {
     bool active_profile_bonded;
     uint8_t active_profile_index;
 };
-
-static void output_status_init() {
-    if (style_initialized) {
-        return;
-    }
-
-    style_initialized = true;
-    lv_style_init(&label_style);
-    lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &lv_font_montserrat_16);
-    lv_style_set_text_letter_space(&label_style, LV_STATE_DEFAULT, 1);
-    lv_style_set_text_line_space(&label_style, LV_STATE_DEFAULT, 1);
-}
 
 static struct output_status_state get_state(const zmk_event_t *_eh) {
     return (struct output_status_state){.selected_endpoint = zmk_endpoints_selected(),
@@ -97,10 +81,7 @@ ZMK_SUBSCRIPTION(widget_output_status, zmk_ble_active_profile_changed);
 #endif
 
 int zmk_widget_output_status_init(struct zmk_widget_output_status *widget, lv_obj_t *parent) {
-    output_status_init();
-
     widget->obj = lv_label_create(parent, NULL);
-    lv_obj_add_style(widget->obj, LV_LABEL_PART_MAIN, &label_style);
 
     lv_obj_set_size(widget->obj, 40, 15);
 
