@@ -23,6 +23,7 @@ struct ext_power_generic_config {
     const char *label;
     const uint8_t pin;
     const uint8_t flags;
+    const uint16_t init_delay_ms;
 };
 
 struct ext_power_generic_data {
@@ -171,6 +172,10 @@ static int ext_power_generic_init(const struct device *dev) {
     ext_power_enable(dev);
 #endif
 
+    if (config->init_delay_ms) {
+        k_msleep(config->init_delay_ms);
+    }
+
     return 0;
 }
 
@@ -210,7 +215,8 @@ static int ext_power_generic_pm_control(const struct device *dev, uint32_t ctrl_
 static const struct ext_power_generic_config config = {
     .label = DT_INST_GPIO_LABEL(0, control_gpios),
     .pin = DT_INST_GPIO_PIN(0, control_gpios),
-    .flags = DT_INST_GPIO_FLAGS(0, control_gpios)};
+    .flags = DT_INST_GPIO_FLAGS(0, control_gpios),
+    .init_delay_ms = DT_INST_PROP_OR(0, init_delay_ms, 0)};
 
 static struct ext_power_generic_data data = {
     .status = false,
@@ -223,13 +229,15 @@ static const struct ext_power_api api = {.enable = ext_power_generic_enable,
                                          .disable = ext_power_generic_disable,
                                          .get = ext_power_generic_get};
 
+#define ZMK_EXT_POWER_INIT_PRIORITY 81
+
 #ifdef CONFIG_DEVICE_POWER_MANAGEMENT
 DEVICE_DEFINE(ext_power_generic, DT_INST_LABEL(0), ext_power_generic_init,
-              &ext_power_generic_pm_control, &data, &config, APPLICATION,
-              CONFIG_APPLICATION_INIT_PRIORITY, &api);
+              &ext_power_generic_pm_control, &data, &config, POST_KERNEL,
+              ZMK_EXT_POWER_INIT_PRIORITY, &api);
 #else
 DEVICE_AND_API_INIT(ext_power_generic, DT_INST_LABEL(0), ext_power_generic_init, &data, &config,
-                    APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY, &api);
+                    POST_KERNEL, ZMK_EXT_POWER_INIT_PRIORITY, &api);
 #endif /* CONFIG_DEVICE_POWER_MANAGEMENT */
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

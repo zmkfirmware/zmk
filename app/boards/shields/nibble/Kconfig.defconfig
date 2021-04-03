@@ -9,7 +9,6 @@ config ZMK_KEYBOARD_NAME
 config ZMK_USB
 	default y
 
-endif
 
 if ZMK_DISPLAY
 
@@ -46,3 +45,5 @@ choice LVGL_COLOR_DEPTH
 endchoice
 
 endif # LVGL
+
+endif

@@ -192,7 +192,7 @@ static inline bool candidate_is_completely_pressed(struct combo_cfg *candidate) 
     return pressed_keys[candidate->key_position_len - 1] != NULL;
 }
 
-static void cleanup();
+static int cleanup();
 
 static int filter_timed_out_candidates(int64_t timestamp) {
     int num_candidates = 0;
@@ -224,7 +224,7 @@ static int clear_candidates() {
 }
 
 static int capture_pressed_key(const zmk_event_t *ev) {
-    for (int i = 0; i < CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY; i++) {
+    for (int i = 0; i < CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO; i++) {
         if (pressed_keys[i] != NULL) {
             continue;
         }
@@ -236,23 +236,25 @@ static int capture_pressed_key(const zmk_event_t *ev) {
 
 const struct zmk_listener zmk_listener_combo;
 
-static void release_pressed_keys() {
-    // release the first key that was pressed
-    if (pressed_keys[0] == NULL) {
-        return;
-    }
-    ZMK_EVENT_RELEASE(pressed_keys[0])
-    pressed_keys[0] = NULL;
-
-    // reprocess events (see tests/combo/fully-overlapping-combos-3 for why this is needed)
-    for (int i = 1; i < CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY; i++) {
-        if (pressed_keys[i] == NULL) {
-            return;
-        }
+static int release_pressed_keys() {
+    for (int i = 0; i < CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO; i++) {
         const zmk_event_t *captured_event = pressed_keys[i];
+        if (pressed_keys[i] == NULL) {
+            return i;
+        }
         pressed_keys[i] = NULL;
-        ZMK_EVENT_RAISE(captured_event);
+        if (i == 0) {
+            LOG_DBG("combo: releasing position event %d",
+                    as_zmk_position_state_changed(captured_event)->position);
+            ZMK_EVENT_RELEASE(captured_event)
+        } else {
+            // reprocess events (see tests/combo/fully-overlapping-combos-3 for why this is needed)
+            LOG_DBG("combo: reraising position event %d",
+                    as_zmk_position_state_changed(captured_event)->position);
+            ZMK_EVENT_RAISE(captured_event);
+        }
     }
+    return CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO;
 }
 
 static inline int press_combo_behavior(struct combo_cfg *combo, int32_t timestamp) {
@@ -360,14 +362,14 @@ static bool release_combo_key(int32_t position, int64_t timestamp) {
     return false;
 }
 
-static void cleanup() {
+static int cleanup() {
     k_delayed_work_cancel(&timeout_task);
     clear_candidates();
     if (fully_pressed_combo != NULL) {
         activate_combo(fully_pressed_combo);
         fully_pressed_combo = NULL;
     }
-    release_pressed_keys();
+    return release_pressed_keys();
 }
 
 static void update_timeout_task() {
@@ -399,6 +401,7 @@ static int position_state_down(const zmk_event_t *ev, struct zmk_position_state_
     update_timeout_task();
 
     struct combo_cfg *candidate_combo = candidates[0].combo;
+    LOG_DBG("combo: capturing position event %d", data->position);
     int ret = capture_pressed_key(ev);
     switch (num_candidates) {
     case 0:
@@ -418,13 +421,18 @@ static int position_state_down(const zmk_event_t *ev, struct zmk_position_state_
     }
 }
 
-static int position_state_up(struct zmk_position_state_changed *ev) {
-    cleanup();
-    if (release_combo_key(ev->position, ev->timestamp)) {
+static int position_state_up(const zmk_event_t *ev, struct zmk_position_state_changed *data) {
+    int released_keys = cleanup();
+    if (release_combo_key(data->position, data->timestamp)) {
         return ZMK_EV_EVENT_HANDLED;
-    } else {
-        return 0;
     }
+    if (released_keys > 1) {
+        // The second and further key down events are re-raised. To preserve
+        // correct order for e.g. hold-taps, reraise the key up event too.
+        ZMK_EVENT_RAISE(ev);
+        return ZMK_EV_EVENT_CAPTURED;
+    }
+    return 0;
 }
 
 static void combo_timeout_handler(struct k_work *item) {
@@ -447,7 +455,7 @@ static int position_state_changed_listener(const zmk_event_t *ev) {
     if (data->state) { // keydown
         return position_state_down(ev, data);
     } else { // keyup
-        return position_state_up(data);
+        return position_state_up(ev, data);
     }
 }
 

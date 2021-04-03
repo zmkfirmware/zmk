@@ -14,6 +14,7 @@ module.exports = {
       "features/displays",
       "features/encoders",
       "features/underglow",
+      "features/beta-testing",
     ],
     Behaviors: [
       "behaviors/key-press",
@@ -49,6 +50,7 @@ module.exports = {
       "development/posix-board",
       "development/tests",
       "development/usb-logging",
+      "development/ide-integration",
       {
         type: "category",
         label: "Guides",
