@@ -12,9 +12,10 @@ The Mod-Morph behavior sends a different keypress, depending on whether a specif
 
 ## Mod-Morph
 
-The Mod-Morph behavior acts as one of two keycodes, depending on if the required modifier is being held during the keypress. 
+The Mod-Morph behavior acts as one of two keycodes, depending on if the required modifier is being held during the keypress.
 
 When the modifier is being held it is sent along with the morphed keycode. This can cause problems when the morphed keycode and modifier have an existing relationship (such as `shift-delete` or `ctrl-v` on many operating systems).
+
 ### Configuration
 
 An example of how to implement the mod-morph "Grave Escape":
