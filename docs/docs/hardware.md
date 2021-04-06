@@ -40,6 +40,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 - [tidbit](https://nullbits.co/tidbit/) (`tidbit`)
 - [Eek!](https://www.cbkbd.com/product/eek-keyboard) (`eek`)
 - [BFO-9000](https://keeb.io/products/bfo-9000-keyboard-customizable-full-size-split-ortholinear) (`bfo9000_left` and `bfo9000_right`)
+- [Bluehand](http://nrf52.jpconstantineau.com/docs/macropad/bluehand/) (`bluehand`)
 
 ## Other Hardware
 

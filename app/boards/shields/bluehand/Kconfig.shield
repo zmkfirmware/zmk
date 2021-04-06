@@ -1,0 +1,5 @@
+# Copyright (c) 2021 Mike "KemoNine" Crosson
+# SPDX-License-Identifier: MIT
+
+config SHIELD_BLUEHAND
+	def_bool $(shields_list_contains,bluehand)

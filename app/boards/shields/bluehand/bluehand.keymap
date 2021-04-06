@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+// -------------------
+// |  F13  |  F14  |  F15  |  F16  |
+// |  MO(1)  |  F17  |  F18  |  F19  |
+// ----------------------
+            bindings = <
+    &kp F13 &kp F14 &kp F15 &kp F16
+    &mo 1  &kp F17 &kp F18 &kp F19
+            >;
+        };
+
+        nav_layer {
+// -----------------------
+// | F20 |  F21  |  F22  |  F23 |
+// | _     |  F24     |  -  |  -  |
+// -----------------------
+            bindings = <
+    &kp F20 &kp F21 &kp F22 &kp F23
+    &trans   &kp F24  &trans   &trans
+            >;
+        };
+    };
+};

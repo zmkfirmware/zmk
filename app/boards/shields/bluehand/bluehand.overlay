@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2021 Mike "KemoNine" Crosson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+	chosen {
+		zmk,kscan = &kscan0;
+	};
+
+	kscan0: kscan_0 {
+		compatible = "zmk,kscan-gpio-direct";
+
+		label = "KSCAN";
+
+		input-gpios
+			= <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 2  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 28 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 3  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			;
+
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		actled: led_a {
+			gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+			label = "ACT LED";
+		};
+		powerled: led_p {
+			gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+			label = "PWR LED";
+		};
+	};
+};

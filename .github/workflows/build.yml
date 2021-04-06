@@ -60,6 +60,7 @@ jobs:
           - splitreus62_right
           - tg4x
           - tidbit
+          - bluehand
         cmake-args: [""]
         include:
           - board: bdn9_rev2
