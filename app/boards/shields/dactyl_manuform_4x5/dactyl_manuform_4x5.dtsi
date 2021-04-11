@@ -35,11 +35,11 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4)                 RC(2,5) RC(2,6) RC(2,7) 
 
         diode-direction = "col2row";
         row-gpios
-            = <&pro_micro_a 0  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row A from the schematic file
-            , <&pro_micro_d 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row B from the schematic file
-            , <&pro_micro_d 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row C from the schematic file
-            , <&pro_micro_d 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row D from the schematic file
-            , <&pro_micro_d 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row E from the schematic file
+            = <&pro_micro_a 0  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_d 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_d 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_d 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_d 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
 
     };
