@@ -31,6 +31,8 @@ jobs:
           - cradio_left
           - cradio_right
           - crbn
+          - dactyl_manuform_4x5_left
+          - dactyl_manuform_4x5_right
           - eek
           - helix_left
           - helix_right
