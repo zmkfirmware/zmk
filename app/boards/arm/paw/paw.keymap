@@ -10,8 +10,15 @@
 // -----------------------------------------------------------------------------------------
 // TODO: Add diagram for keymap
       bindings = <
-                 &kp UARW
+                 &lt 1 UARW
         &kp LARW &kp DARW &kp RARW
+      >;
+    };
+
+    lower_layer {
+      bindings = <
+              &trans
+        &bt BT_CLR &bt BT_SEL 0 &bt BT_NXT
       >;
     };
   };
