@@ -121,7 +121,7 @@ select opt in "${options[@]}" "Quit"; do
     19 ) shield_title="Eek!" shield="eek"; split="n" break;;
     20 ) shield_title="BFO-9000" shield="bfo9000"; split="y"; break;;
     21 ) shield_title="Helix" shield="helix"; split="y"; break;;
-    21 ) shield_title="Dactyl Manuform 4x5" shield="dactyl_manuform_4x5"; split="y"; break;;
+    22 ) shield_title="Dactyl Manuform 4x5" shield="dactyl_manuform_4x5"; split="y"; break;;
 
     # Add link to docs on adding your own custom shield in your ZMK config!
     # $(( ${#options[@]}+1 )) ) echo "Other!"; break;;
