@@ -2,7 +2,7 @@
 
 Last Updated: 19 April 2021
 
-**_notice:_** This firmware has been tested and validated, but continues to be updated on a regular basis. If you encounter any issues, please message me on [discord](https://discord.gg/K3SJrtN5PJ) to report any bugs.  
+**_Notice:_** This firmware has been tested and validated, but continues to be updated on a regular basis. If you encounter any issues, please message me on [discord](https://discord.gg/K3SJrtN5PJ) to report any bugs.  
 
 Credit for the ZMK Firmware to [The ZMK Contributors](https://zmkfirmware.dev/)  
 Hardware credit for the duckboard to [doodboard](https://doodboard.xyz/)  
@@ -14,7 +14,7 @@ Join the [ZMK Discord Server](https://zmkfirmware.dev/community/discord/invite) 
 Flashing Instructions:
 * download the duckboard.uf2 file
 * connect the nice!nano to your computer and put it in bootloader mode (short gnd+rst twice)
-* the n!n should appear as a storage device on your computer once in bootloader mode
+* once in bootloader mode, the n!n should appear as a storage device on your computer
 * drag the duckboard.uf2 file into the n!n storage and it should flash automatically
 
 further flashing instructions in the [nice!nano docs](https://docs.nicekeyboards.com/#/nice!nano/getting_started?id=flashing-firmware-and-bootloaders) 
