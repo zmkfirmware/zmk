@@ -22,6 +22,7 @@ module.exports = {
       "behaviors/misc",
       "behaviors/hold-tap",
       "behaviors/mod-tap",
+      "behaviors/mod-morph",
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
       "behaviors/reset",
