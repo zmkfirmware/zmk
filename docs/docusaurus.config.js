@@ -8,7 +8,10 @@ module.exports = {
   favicon: "img/favicon.ico",
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
-  plugins: [path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin")],
+  plugins: [
+    path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin"),
+    path.resolve(__dirname, "src/zmk-hardware-metadata-plugin"),
+  ],
   themeConfig: {
     googleAnalytics: {
       trackingID: "UA-145201102-2",

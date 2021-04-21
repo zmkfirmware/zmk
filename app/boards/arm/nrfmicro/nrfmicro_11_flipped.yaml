@@ -1,5 +1,5 @@
 identifier: nrfmicro_11_flipped
-name: nrfmicro_11_flipped
+name: nRFMicro v1.1 Flipped
 type: mcu
 arch: arm
 toolchain:
@@ -13,3 +13,7 @@ supported:
   - ieee802154
   - pwm
   - watchdog
+manufacturer: Joric
+compatible:
+   - pro_micro
+url: https://github.com/joric/nrfmicro

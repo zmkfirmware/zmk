@@ -1,0 +1,10 @@
+identifier: kyria
+name: Kyria
+type: shield
+manufacturer: splitkb.com
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://splitkb.com/products/kyria-pcb-kit

@@ -1,5 +1,5 @@
 identifier: bluemicro840_v1
-name: BlueMicro840_V1
+name: BlueMicro840 v1
 type: mcu
 arch: arm
 toolchain:
@@ -13,3 +13,7 @@ supported:
   - ieee802154
   - pwm
   - watchdog
+manufacturer: BlueMicro
+compatible:
+   - pro_micro
+url: https://store.jpconstantineau.com/#/group/bluemicro

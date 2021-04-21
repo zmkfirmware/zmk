@@ -1,0 +1,7 @@
+identifier: m60
+name: M60
+type: shield
+manufacturer: makerdiary
+compatible:
+   - makerdiary_m2
+url: https://makerdiary.com/pages/m60-mechanical-keyboard

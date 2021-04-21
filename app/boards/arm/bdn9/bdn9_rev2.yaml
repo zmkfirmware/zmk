@@ -1,5 +1,5 @@
-identifier: bdn9
-name: keeb.io BDN9
+identifier: bdn9_rev2
+name: BDN9 Rev2
 type: mcu
 arch: arm
 toolchain:
@@ -12,3 +12,6 @@ supported:
   - switches
   - underglow
   - per_key
+manufacturer: keeb.io
+standalone: true
+url: https://keeb.io/products/bdn9-rev-2-3x3-9-key-macropad-rotary-encoder-and-rgb

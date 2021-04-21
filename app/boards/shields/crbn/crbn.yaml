@@ -1,0 +1,7 @@
+identifier: crbn
+name: CRBN
+type: shield
+manufacturer: Polarity Works
+compatible:
+   - pro_micro
+url: https://keygem.store/products/group-buy-featherlight-40-kit

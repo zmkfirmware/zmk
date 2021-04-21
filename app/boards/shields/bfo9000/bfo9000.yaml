@@ -1,0 +1,10 @@
+identifier: bfo9000
+name: BFO-9000
+type: shield
+manufacturer: keeb.io
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://keeb.io/products/bfo-9000-keyboard-customizable-full-size-split-ortholinear

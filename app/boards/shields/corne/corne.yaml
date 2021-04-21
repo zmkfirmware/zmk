@@ -1,0 +1,10 @@
+identifier: corne
+name: Corne
+type: shield
+manufacturer: foostan
+compatible:
+   - pro_micro
+components:
+   - left
+   - right
+url: https://github.com/foostan/crkbd

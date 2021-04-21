@@ -1,0 +1,7 @@
+identifier: romac_plus
+name: Romac Plus
+type: shield
+manufacturer: Kingly-Keys
+compatible:
+   - pro_micro
+url: https://kingly-keys.xyz/products/in-stock-the-romac?variant=30592757989479

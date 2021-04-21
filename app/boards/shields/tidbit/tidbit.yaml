@@ -1,0 +1,7 @@
+identifier: tidbit
+name: TIDBIT
+type: shield
+manufacturer: nullbits
+compatible:
+   - pro_micro
+url: https://nullbits.co/tidbit/

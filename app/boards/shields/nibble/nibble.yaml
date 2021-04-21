@@ -1,0 +1,7 @@
+identifier: nibble
+name: NIBBLE
+type: shield
+manufacturer: nullbits
+compatible:
+   - pro_micro
+url: https://nullbits.co/nibble/

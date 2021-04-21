@@ -1,0 +1,7 @@
+identifier: reviung41
+name: Reviung41
+type: shield
+manufacturer: gtips
+compatible:
+   - pro_micro
+url: https://github.com/gtips/reviung/tree/master/reviung41
