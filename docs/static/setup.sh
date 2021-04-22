@@ -91,7 +91,7 @@ echo ""
 echo "Keyboard Shield Selection:"
 
 prompt="Pick an keyboard:"
-options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "Reviung41" "RoMac" "RoMac+" "makerdiary M60" "Microdox" "TG4X" "QAZ" "NIBBLE" "Jorne" "Jian" "CRBN" "Tidbit" "Eek!" "BFO-9000" "Helix")
+options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "Reviung41" "RoMac" "RoMac+" "makerdiary M60" "Microdox" "TG4X" "QAZ" "NIBBLE" "Jorne" "Jian" "CRBN" "Tidbit" "Eek!" "BFO-9000" "Helix" "Boardsource 3x4" "Cradio" "Clueboard California Macropad" "Quefrency")
 
 PS3="$prompt "
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
@@ -121,6 +121,10 @@ select opt in "${options[@]}" "Quit"; do
     19 ) shield_title="Eek!" shield="eek"; split="n" break;;
     20 ) shield_title="BFO-9000" shield="bfo9000"; split="y"; break;;
     21 ) shield_title="Helix" shield="helix"; split="y"; break;;
+    22 ) shield_title="Boardsource 3x4" shield="boardsource3x4"; split="n"; break;;
+    23 ) shield_title="Cradio" shield="cradio"; split="y"; break;;
+    24 ) shield_title="Clueboard California Macropad" shield="clueboard_california"; split="n"; break;;
+    25 ) shield_title="Quefrency" shield="quefrency"; split="y"; break;;
 
     # Add link to docs on adding your own custom shield in your ZMK config!
     # $(( ${#options[@]}+1 )) ) echo "Other!"; break;;
