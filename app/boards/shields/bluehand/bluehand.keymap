@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2021 DonPavlov
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+// -------------------
+// |  F13    |  F14  |  F15  |  LCTRL+ALT+A  |
+// |  MO(1)  |  F16  |  F17  |  F18          |
+// ----------------------
+            bindings = <
+    &kp F13 &kp F14 &kp F15 &kp LC(LA(A))
+    &mo 1  &kp F16 &kp F17 &kp F18
+            >;
+        };
+
+        nav_layer {
+// -----------------------
+// | F19 |  F20  |  F21  |  F22 |
+// |  -  |  F23  |  F24  |  -   |
+// -----------------------
+            bindings = <
+    &kp F19 &kp F20 &kp F21 &kp F22
+    &trans   &kp F23  &kp F24   &trans
+            >;
+        };
+    };
+};

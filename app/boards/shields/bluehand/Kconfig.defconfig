@@ -1,0 +1,6 @@
+if SHIELD_BLUEHAND
+
+config ZMK_KEYBOARD_NAME
+	default "BlueHand"
+
+endif
