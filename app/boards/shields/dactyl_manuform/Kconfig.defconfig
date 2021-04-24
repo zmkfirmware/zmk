@@ -1,0 +1,36 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_DACTYLMANUFORM
+
+config ZMK_KEYBOARD_NAME
+    default "dactyl_manuform"
+
+# TODO: MOVE TO PARTICLE BOARD
+config BUILD_OUTPUT_UF2
+	default y
+
+# TODO: MOVE TO PARTICLE BOARD
+config FLASH_LOAD_OFFSET 
+ 	default 0x26000
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+# TODO: ADD SUPPORT FOR ZMK
+# config ZMK_BATTERY_VOLTAGE_DIVIDER
+# 	default y
+
+endif # SHIELD_DACTYLMANUFORM
