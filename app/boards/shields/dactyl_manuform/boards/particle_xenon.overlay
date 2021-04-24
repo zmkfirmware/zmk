@@ -1,10 +1,17 @@
+/*
+ * Copyright (c) 2020-2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+// remove duplicated partition from zephyr particle configuration
 /delete-node/ &storage_partition;
 /delete-node/ &boot_partition;
 
 adafriut_flash: &flash0 {
 	/*
 	 * For more information, see:
-	 * http://docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
+	 * https://docs.zephyrproject.org/latest/reference/storage/flash_map/flash_map.html
 	 */
 	partitions {
 		compatible = "fixed-partitions";
