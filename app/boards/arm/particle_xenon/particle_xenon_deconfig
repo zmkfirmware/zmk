@@ -1,6 +1,8 @@
 # Copyright (c) 2020-2021 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+CONFIG_BOARD_PARTICLE_XENON=y
+
 # Enable MPU
 CONFIG_ARM_MPU=y
 
