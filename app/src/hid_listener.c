@@ -36,6 +36,13 @@ static int hid_listener_keycode_pressed(const struct zmk_keycode_state_changed *
             return err;
         }
         break;
+    case HID_USAGE_GD:
+        err = zmk_hid_mouse_buttons_press(ev->keycode);
+        if (err) {
+            LOG_ERR("Unable to press button");
+            return err;
+        }
+        break;
     }
     explicit_mods_changed = zmk_hid_register_mods(ev->explicit_modifiers);
     implicit_mods_changed = zmk_hid_implicit_modifiers_press(ev->implicit_modifiers);
@@ -70,6 +77,14 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
             LOG_ERR("Unable to release keycode");
             return err;
         }
+        break;
+    case HID_USAGE_GD:
+        err = zmk_hid_mouse_buttons_release(ev->keycode);
+        if (err) {
+            LOG_ERR("Unable to release button");
+            return err;
+        }
+        break;
     }
 
     explicit_mods_changed = zmk_hid_unregister_mods(ev->explicit_modifiers);

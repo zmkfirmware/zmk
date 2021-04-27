@@ -56,6 +56,11 @@ static struct hids_report consumer_input = {
     .type = HIDS_INPUT,
 };
 
+static struct hids_report mouse_input = {
+    .id = 0x03,
+    .type = HIDS_INPUT,
+};
+
 static bool host_requests_notification = false;
 static uint8_t ctrl_point;
 // static uint8_t proto_mode;
@@ -91,6 +96,14 @@ static ssize_t read_hids_consumer_input_report(struct bt_conn *conn,
     struct zmk_hid_consumer_report_body *report_body = &zmk_hid_get_consumer_report()->body;
     return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
                              sizeof(struct zmk_hid_consumer_report_body));
+}
+
+static ssize_t read_hids_mouse_input_report(struct bt_conn *conn,
+                                               const struct bt_gatt_attr *attr, void *buf,
+                                               uint16_t len, uint16_t offset) {
+    struct zmk_hid_mouse_report_body *report_body = &zmk_hid_get_mouse_report()->body;
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
+                             sizeof(struct zmk_hid_mouse_report_body));
 }
 
 // static ssize_t write_proto_mode(struct bt_conn *conn,
@@ -139,6 +152,13 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
     BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
                        NULL, &consumer_input),
+
+    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                            BT_GATT_PERM_READ_ENCRYPT, read_hids_mouse_input_report, NULL, NULL),
+    BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
+    BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
+                       NULL, &mouse_input),
+
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_CTRL_POINT, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
                            BT_GATT_PERM_WRITE, NULL, write_ctrl_point, &ctrl_point));
 
@@ -257,6 +277,57 @@ int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
     }
 
     k_work_submit_to_queue(&hog_work_q, &hog_consumer_work);
+
+    return 0;
+};
+
+K_MSGQ_DEFINE(zmk_hog_mouse_msgq, sizeof(struct zmk_hid_mouse_report_body),
+CONFIG_ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE, 4);
+
+
+void send_mouse_report_callback(struct k_work *work) {
+    struct zmk_hid_mouse_report_body report;
+
+    while (k_msgq_get(&zmk_hog_mouse_msgq, &report, K_NO_WAIT) == 0) {
+        struct bt_conn *conn = destination_connection();
+        if (conn == NULL) {
+            return;
+        }
+
+        struct bt_gatt_notify_params notify_params = {
+            .attr = &hog_svc.attrs[10],
+            .data = &report,
+            .len = sizeof(report),
+        };
+
+        int err = bt_gatt_notify_cb(conn, &notify_params);
+        if (err) {
+            LOG_DBG("Error notifying %d", err);
+        }
+
+        bt_conn_unref(conn);
+    }
+};
+
+K_WORK_DEFINE(hog_mouse_work, send_mouse_report_callback);
+
+int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *report) {
+    int err = k_msgq_put(&zmk_hog_mouse_msgq, report, K_MSEC(100));
+    if (err) {
+        switch (err) {
+        case -EAGAIN: {
+            LOG_WRN("Mouse message queue full, popping first message and queueing again");
+            struct zmk_hid_mouse_report_body discarded_report;
+            k_msgq_get(&zmk_hog_mouse_msgq, &discarded_report, K_NO_WAIT);
+            return zmk_hog_send_mouse_report(report);
+        }
+        default:
+            LOG_WRN("Failed to queue mouse report to send (%d)", err);
+            return err;
+        }
+    }
+
+    k_work_submit_to_queue(&hog_work_q, &hog_mouse_work);
 
     return 0;
 };
