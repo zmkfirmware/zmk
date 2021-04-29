@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		/omit-if-no-ref/ mwh: behavior_mouse_wheel {
+			compatible = "zmk,behavior-mouse-wheel";
+			label = "MOUSE_WHEEL";
+			#binding-cells = <1>;
+		};
+	};
+};
