@@ -85,6 +85,28 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
     return zmk_endpoints_send_report(ev->usage_page);
 }
 
+static int hid_listener_mouse_pressed(const struct zmk_mouse_state_changed *ev) {
+    int err;
+    LOG_DBG("x: 0x%02X, y: 0x%02X", ev->x, ev->y);
+    err = zmk_hid_mouse_movement_press(ev->x, ev->y);
+    if (err) {
+        LOG_ERR("Unable press button");
+        return err;
+    }
+    return zmk_endpoints_send_mouse_report();
+}
+
+static int hid_listener_mouse_released(const struct zmk_mouse_state_changed *ev) {
+    int err;
+    LOG_DBG("x: 0x%02X, y: 0x%02X", ev->x, ev->y);
+    err = zmk_hid_mouse_movement_release(ev->x, ev->y);
+    if (err) {
+        LOG_ERR("Unable to release button");
+        return err;
+    }
+    return zmk_endpoints_send_mouse_report();
+}
+
 int hid_listener(const zmk_event_t *eh) {
     const struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
     if (ev) {
@@ -93,9 +115,19 @@ int hid_listener(const zmk_event_t *eh) {
         } else {
             hid_listener_keycode_released(ev);
         }
+    } else {
+      const struct zmk_mouse_state_changed *ev = as_zmk_mouse_state_changed(eh);
+      if (ev) {
+        if (ev->state) {
+          hid_listener_mouse_pressed(ev);
+        } else {
+          hid_listener_mouse_released(ev);
+        }
+      }
     }
     return 0;
 }
 
 ZMK_LISTENER(hid_listener, hid_listener);
 ZMK_SUBSCRIPTION(hid_listener, zmk_keycode_state_changed);
+ZMK_SUBSCRIPTION(hid_listener, zmk_mouse_state_changed);
