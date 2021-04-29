@@ -131,7 +131,22 @@ static int send_consumer_report() {
     }
 }
 
-static int send_mouse_report() {
+int zmk_endpoints_send_report(uint16_t usage_page) {
+
+    LOG_DBG("usage page 0x%02X", usage_page);
+    switch (usage_page) {
+    case HID_USAGE_KEY:
+        return send_keyboard_report();
+    case HID_USAGE_CONSUMER:
+        return send_consumer_report();
+    default:
+        LOG_ERR("Unsupported usage page %d", usage_page);
+        return -ENOTSUP;
+    }
+}
+
+int zmk_endpoints_send_mouse_report() {
+    LOG_ERR("SENDING MOUSE REPORT");
     struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
 
     switch (current_endpoint) {
@@ -157,22 +172,6 @@ static int send_mouse_report() {
 
     default:
         LOG_ERR("Unsupported endpoint %d", current_endpoint);
-        return -ENOTSUP;
-    }
-}
-
-int zmk_endpoints_send_report(uint16_t usage_page) {
-
-    LOG_DBG("usage page 0x%02X", usage_page);
-    switch (usage_page) {
-    case HID_USAGE_KEY:
-        return send_keyboard_report();
-    case HID_USAGE_CONSUMER:
-        return send_consumer_report();
-    case HID_USAGE_GD:
-        return send_mouse_report();
-    default:
-        LOG_ERR("Unsupported usage page %d", usage_page);
         return -ENOTSUP;
     }
 }

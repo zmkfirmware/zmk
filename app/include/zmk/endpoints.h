@@ -13,3 +13,4 @@ int zmk_endpoints_toggle();
 enum zmk_endpoint zmk_endpoints_selected();
 
 int zmk_endpoints_send_report(uint16_t usage_page);
+int zmk_endpoints_send_mouse_report();
