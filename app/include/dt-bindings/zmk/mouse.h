@@ -5,6 +5,7 @@
  */
 #pragma once
 
+/* Mouse press behavior */
 /* Left click */
 #define MB1 (0x01)
 #define LCLK (MB1)
@@ -27,6 +28,8 @@
 
 #define MB8 (0x80)
 
+/* Mouse move behavior */
+
 #define MOVE_UP (0x0000FFFF)
 
 #define MOVE_DOWN (0x00000001)
@@ -34,6 +37,8 @@
 #define MOVE_LEFT (0xFFFF0000)
 
 #define MOVE_RIGHT (0x00010000)
+
+/* Mouse wheel behavior */
 
 #define WHEEL_UP (0x0001)
 
