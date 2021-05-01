@@ -22,5 +22,12 @@ config ZMK_WIDGET_OUTPUT_STATUS
     default y if BT
     select LVGL_USE_LABEL
     select LVGL_FONT_MONTSERRAT_16
+    
+config ZMK_WIDGET_WPM_STATUS
+    bool "Widget for displaying typed words per minute"
+    depends on !ZMK_SPLIT || ZMK_SPLIT_BLE_ROLE_CENTRAL
+    select LVGL_USE_LABEL
+    select LVGL_FONT_MONTSERRAT_16
+    select ZMK_WPM
 
 endmenu

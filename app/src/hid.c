@@ -26,6 +26,8 @@ static zmk_mod_flags_t explicit_modifiers = 0;
         LOG_DBG("Modifiers set to 0x%02X", keyboard_report.body.modifiers);                        \
     }
 
+zmk_mod_flags_t zmk_hid_get_explicit_mods() { return explicit_modifiers; }
+
 int zmk_hid_register_mod(zmk_mod_t modifier) {
     explicit_modifier_counts[modifier]++;
     LOG_DBG("Modifier %d count %d", modifier, explicit_modifier_counts[modifier]);
@@ -49,13 +51,33 @@ int zmk_hid_unregister_mod(zmk_mod_t modifier) {
     return 0;
 }
 
+int zmk_hid_register_mods(zmk_mod_flags_t modifiers) {
+    for (zmk_mod_t i = 0; i < 8; i++) {
+        if (modifiers & (1 << i)) {
+            zmk_hid_register_mod(i);
+        }
+    }
+    return 0;
+}
+
+int zmk_hid_unregister_mods(zmk_mod_flags_t modifiers) {
+    for (zmk_mod_t i = 0; i < 8; i++) {
+        if (modifiers & (1 << i)) {
+            zmk_hid_unregister_mod(i);
+        }
+    }
+    return 0;
+}
+
 #define TOGGLE_KEYBOARD(match, val)                                                                \
     for (int idx = 0; idx < ZMK_HID_KEYBOARD_NKRO_SIZE; idx++) {                                   \
         if (keyboard_report.body.keys[idx] != match) {                                             \
             continue;                                                                              \
         }                                                                                          \
         keyboard_report.body.keys[idx] = val;                                                      \
-        break;                                                                                     \
+        if (val) {                                                                                 \
+            break;                                                                                 \
+        }                                                                                          \
     }
 
 #define TOGGLE_CONSUMER(match, val)                                                                \
@@ -64,7 +86,9 @@ int zmk_hid_unregister_mod(zmk_mod_t modifier) {
             continue;                                                                              \
         }                                                                                          \
         consumer_report.body.keys[idx] = val;                                                      \
-        break;                                                                                     \
+        if (val) {                                                                                 \
+            break;                                                                                 \
+        }                                                                                          \
     }
 
 int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t implicit_modifiers) {

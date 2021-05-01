@@ -1,0 +1,78 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan-mock.h>
+
+/* it is useful to set timeout to a large value when attaching a debugger. */
+#define TIMEOUT (60*60*1000)
+
+/ {
+	combos {
+		compatible = "zmk,combos";
+		combo_one {
+			timeout-ms = <TIMEOUT>;
+			key-positions = <0 1>;
+			bindings = <&kp X>;
+			layers = <0>;
+		};
+
+		combo_two {
+			timeout-ms = <TIMEOUT>;
+			key-positions = <0 1>;
+			bindings = <&kp Y>;
+			layers = <1>;
+		};
+
+		combo_three {
+			timeout-ms = <TIMEOUT>;
+			key-positions = <0 2>;
+			bindings = <&kp Z>;
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&kp A &kp B
+				&kp C &tog 1
+			>;
+		};
+
+		filtered_layer {
+			bindings = <
+				&kp A &kp B
+				&kp C &tog 0
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		/* Combo One */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,1,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(0,1,10)
+		/* Combo Three */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(1,1,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(1,1,10)
+		/* Toggle Layer */
+		ZMK_MOCK_PRESS(1,1,10) 
+		ZMK_MOCK_RELEASE(1,1,10)
+		/* Combo Two */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,1,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(0,1,10)
+		/* Combo Three */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(1,1,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(1,1,10)
+	>;
+};

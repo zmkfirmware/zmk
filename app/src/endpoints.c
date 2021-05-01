@@ -130,7 +130,7 @@ static int send_consumer_report() {
     }
 }
 
-int zmk_endpoints_send_report(uint8_t usage_page) {
+int zmk_endpoints_send_report(uint16_t usage_page) {
 
     LOG_DBG("usage page 0x%02X", usage_page);
     switch (usage_page) {
@@ -245,17 +245,17 @@ static void update_current_endpoint() {
     }
 }
 
-static int endpoint_listener(const struct zmk_event_header *eh) {
+static int endpoint_listener(const zmk_event_t *eh) {
     update_current_endpoint();
     return 0;
 }
 
 ZMK_LISTENER(endpoint_listener, endpoint_listener);
 #if IS_ENABLED(CONFIG_ZMK_USB)
-ZMK_SUBSCRIPTION(endpoint_listener, usb_conn_state_changed);
+ZMK_SUBSCRIPTION(endpoint_listener, zmk_usb_conn_state_changed);
 #endif
 #if IS_ENABLED(CONFIG_ZMK_BLE)
-ZMK_SUBSCRIPTION(endpoint_listener, ble_active_profile_changed);
+ZMK_SUBSCRIPTION(endpoint_listener, zmk_ble_active_profile_changed);
 #endif
 
 SYS_INIT(zmk_endpoints_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

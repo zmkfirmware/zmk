@@ -77,6 +77,9 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
             LOG_DBG("Failed to enable ADC power GPIO: %d", rc);
             return rc;
         }
+
+        // wait for any capacitance to charge up
+        k_sleep(K_MSEC(10));
     }
 
     // Read ADC
@@ -90,7 +93,7 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
                               &val);
 
         uint16_t millivolts = val * (uint64_t)drv_cfg->full_ohm / drv_cfg->output_ohm;
-        LOG_DBG("ADC raw %d ~ %d mV => %d mV\n", drv_data->adc_raw, val, millivolts);
+        LOG_DBG("ADC raw %d ~ %d mV => %d mV", drv_data->adc_raw, val, millivolts);
         uint8_t percent = lithium_ion_mv_to_pct(millivolts);
         LOG_DBG("Percent: %d", percent);
 

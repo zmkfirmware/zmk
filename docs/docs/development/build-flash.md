@@ -118,11 +118,17 @@ Now start VSCode and rebuild the container after being prompted. You should be a
 
 ## Flashing
 
-Once built, the previously supplied parameters will be remembered so you can run the following to flash your
-board with it in bootloader mode:
+The above build commands generate a UF2 file in `build/zephyr` (or
+`build/left|right/zephyr` if you followed the instructions for splits) and is by
+default named `zmk.uf2`. If your board supports USB Flashing Format (UF2), copy
+that file onto the root of the USB mass storage device for your board. The
+controller should flash your built firmware and automatically restart once
+flashing is complete.
+
+Alternatively, if your board supports flashing and you're not developing from
+within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on
+your board and run the following command to flash:
 
 ```
 west flash
 ```
-
-For boards that have drag and drop .uf2 flashing capability, the .uf2 file to flash can be found in `build/zephyr` (or `build/left|right/zephyr` if you followed the instructions for splits) and is by default named `zmk.uf2`.

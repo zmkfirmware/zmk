@@ -8,8 +8,8 @@
 
 #include <device.h>
 #include <drivers/behavior.h>
+#include <zmk/keys.h>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/hid_usage_pages.h>
 #include <logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/matrix.h>
@@ -17,12 +17,12 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
-#include <zmk/events/modifiers_state_changed.h>
 #include <zmk/behavior.h>
+#include <zmk/keymap.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#if DT_NODE_EXISTS(DT_DRV_INST(0))
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
 #define ZMK_BHV_HOLD_TAP_MAX_HELD 10
 #define ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS 40
@@ -31,31 +31,42 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define ZMK_BHV_HOLD_TAP_POSITION_NOT_USED 9999
 
 enum flavor {
-    ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED = 0,
-    ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED = 1,
-    ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED = 2,
+    FLAVOR_HOLD_PREFERRED,
+    FLAVOR_BALANCED,
+    FLAVOR_TAP_PREFERRED,
 };
 
-struct behavior_hold_tap_behaviors {
-    struct zmk_behavior_binding tap;
-    struct zmk_behavior_binding hold;
+enum status {
+    STATUS_UNDECIDED,
+    STATUS_TAP,
+    STATUS_HOLD_INTERRUPT,
+    STATUS_HOLD_TIMER,
+};
+
+enum decision_moment {
+    HT_KEY_UP,
+    HT_OTHER_KEY_DOWN,
+    HT_OTHER_KEY_UP,
+    HT_TIMER_EVENT,
+    HT_QUICK_TAP,
 };
 
 struct behavior_hold_tap_config {
     int tapping_term_ms;
-    struct behavior_hold_tap_behaviors *behaviors;
+    char *hold_behavior_dev;
+    char *tap_behavior_dev;
+    int quick_tap_ms;
     enum flavor flavor;
+    bool retro_tap;
 };
 
 // this data is specific for each hold-tap
 struct active_hold_tap {
     int32_t position;
-    // todo: move these params into the config->behaviors->tap and
     uint32_t param_hold;
     uint32_t param_tap;
     int64_t timestamp;
-    bool is_decided;
-    bool is_hold;
+    enum status status;
     const struct behavior_hold_tap_config *config;
     struct k_delayed_work work;
     bool work_is_cancelled;
@@ -69,9 +80,27 @@ struct active_hold_tap {
 struct active_hold_tap *undecided_hold_tap = NULL;
 struct active_hold_tap active_hold_taps[ZMK_BHV_HOLD_TAP_MAX_HELD] = {};
 // We capture most position_state_changed events and some modifiers_state_changed events.
-const struct zmk_event_header *captured_events[ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS] = {};
+const zmk_event_t *captured_events[ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS] = {};
 
-static int capture_event(const struct zmk_event_header *event) {
+// Keep track of which key was tapped most recently for 'quick_tap_ms'
+struct last_tapped {
+    int32_t position;
+    int64_t tap_deadline;
+};
+
+struct last_tapped last_tapped;
+
+static void store_last_tapped(struct active_hold_tap *hold_tap) {
+    last_tapped.position = hold_tap->position;
+    last_tapped.tap_deadline = hold_tap->timestamp + hold_tap->config->quick_tap_ms;
+}
+
+static bool is_quick_tap(struct active_hold_tap *hold_tap) {
+    return last_tapped.position == hold_tap->position &&
+           last_tapped.tap_deadline > hold_tap->timestamp;
+}
+
+static int capture_event(const zmk_event_t *event) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
         if (captured_events[i] == NULL) {
             captured_events[i] = event;
@@ -81,17 +110,18 @@ static int capture_event(const struct zmk_event_header *event) {
     return -ENOMEM;
 }
 
-static struct position_state_changed *find_captured_keydown_event(uint32_t position) {
-    struct position_state_changed *last_match = NULL;
+static struct zmk_position_state_changed *find_captured_keydown_event(uint32_t position) {
+    struct zmk_position_state_changed *last_match = NULL;
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
-        const struct zmk_event_header *eh = captured_events[i];
+        const zmk_event_t *eh = captured_events[i];
         if (eh == NULL) {
             return last_match;
         }
-        if (!is_position_state_changed(eh)) {
+        struct zmk_position_state_changed *position_event = as_zmk_position_state_changed(eh);
+        if (position_event == NULL) {
             continue;
         }
-        struct position_state_changed *position_event = cast_position_state_changed(eh);
+
         if (position_event->position == position && position_event->state) {
             last_match = position_event;
         }
@@ -132,7 +162,7 @@ static void release_captured_events() {
     // [k1_down, k1_up, null, null, null, ...]
     // now mt2 will start releasing it's own captured positions.
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
-        const struct zmk_event_header *captured_event = captured_events[i];
+        const zmk_event_t *captured_event = captured_events[i];
         if (captured_event == NULL) {
             return;
         }
@@ -140,14 +170,13 @@ static void release_captured_events() {
         if (undecided_hold_tap != NULL) {
             k_msleep(10);
         }
-        if (is_position_state_changed(captured_event)) {
-            struct position_state_changed *position_event =
-                cast_position_state_changed(captured_event);
+
+        struct zmk_position_state_changed *position_event;
+        struct zmk_keycode_state_changed *modifier_event;
+        if ((position_event = as_zmk_position_state_changed(captured_event)) != NULL) {
             LOG_DBG("Releasing key position event for position %d %s", position_event->position,
                     (position_event->state ? "pressed" : "released"));
-        } else {
-            struct keycode_state_changed *modifier_event =
-                cast_keycode_state_changed(captured_event);
+        } else if ((modifier_event = as_zmk_keycode_state_changed(captured_event)) != NULL) {
             LOG_DBG("Releasing mods changed event 0x%02X %s", modifier_event->keycode,
                     (modifier_event->state ? "pressed" : "released"));
         }
@@ -172,8 +201,7 @@ static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_
             continue;
         }
         active_hold_taps[i].position = position;
-        active_hold_taps[i].is_decided = false;
-        active_hold_taps[i].is_hold = false;
+        active_hold_taps[i].status = STATUS_UNDECIDED;
         active_hold_taps[i].config = config;
         active_hold_taps[i].param_hold = param_hold;
         active_hold_taps[i].param_tap = param_tap;
@@ -185,29 +213,24 @@ static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_
 
 static void clear_hold_tap(struct active_hold_tap *hold_tap) {
     hold_tap->position = ZMK_BHV_HOLD_TAP_POSITION_NOT_USED;
-    hold_tap->is_decided = false;
-    hold_tap->is_hold = false;
+    hold_tap->status = STATUS_UNDECIDED;
     hold_tap->work_is_cancelled = false;
 }
-
-enum decision_moment {
-    HT_KEY_UP = 0,
-    HT_OTHER_KEY_DOWN = 1,
-    HT_OTHER_KEY_UP = 2,
-    HT_TIMER_EVENT = 3,
-};
 
 static void decide_balanced(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
-        hold_tap->is_hold = 0;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_TAP;
+        return;
     case HT_OTHER_KEY_UP:
+        hold_tap->status = STATUS_HOLD_INTERRUPT;
+        return;
     case HT_TIMER_EVENT:
-        hold_tap->is_hold = 1;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_HOLD_TIMER;
+        return;
+    case HT_QUICK_TAP:
+        hold_tap->status = STATUS_TAP;
+        return;
     default:
         return;
     }
@@ -216,13 +239,14 @@ static void decide_balanced(struct active_hold_tap *hold_tap, enum decision_mome
 static void decide_tap_preferred(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
-        hold_tap->is_hold = 0;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_TAP;
+        return;
     case HT_TIMER_EVENT:
-        hold_tap->is_hold = 1;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_HOLD_TIMER;
+        return;
+    case HT_QUICK_TAP:
+        hold_tap->status = STATUS_TAP;
+        return;
     default:
         return;
     }
@@ -231,33 +255,113 @@ static void decide_tap_preferred(struct active_hold_tap *hold_tap, enum decision
 static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
-        hold_tap->is_hold = 0;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_TAP;
+        return;
     case HT_OTHER_KEY_DOWN:
+        hold_tap->status = STATUS_HOLD_INTERRUPT;
+        return;
     case HT_TIMER_EVENT:
-        hold_tap->is_hold = 1;
-        hold_tap->is_decided = true;
-        break;
+        hold_tap->status = STATUS_HOLD_TIMER;
+        return;
+    case HT_QUICK_TAP:
+        hold_tap->status = STATUS_TAP;
+        return;
     default:
         return;
     }
 }
 
-static inline char *flavor_str(enum flavor flavor) {
+static inline const char *flavor_str(enum flavor flavor) {
     switch (flavor) {
-    case ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED:
+    case FLAVOR_HOLD_PREFERRED:
         return "hold-preferred";
-    case ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED:
+    case FLAVOR_BALANCED:
         return "balanced";
-    case ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED:
+    case FLAVOR_TAP_PREFERRED:
         return "tap-preferred";
+    default:
+        return "UNKNOWN FLAVOR";
     }
-    return "UNKNOWN FLAVOR";
 }
 
-static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_moment event_type) {
-    if (hold_tap->is_decided) {
+static inline const char *status_str(enum status status) {
+    switch (status) {
+    case STATUS_UNDECIDED:
+        return "undecided";
+    case STATUS_HOLD_TIMER:
+        return "hold-timer";
+    case STATUS_HOLD_INTERRUPT:
+        return "hold-interrupt";
+    case STATUS_TAP:
+        return "tap";
+    default:
+        return "UNKNOWN STATUS";
+    }
+}
+
+static inline const char *decision_moment_str(enum decision_moment decision_moment) {
+    switch (decision_moment) {
+    case HT_KEY_UP:
+        return "key-up";
+    case HT_OTHER_KEY_DOWN:
+        return "other-key-down";
+    case HT_OTHER_KEY_UP:
+        return "other-key-up";
+    case HT_QUICK_TAP:
+        return "quick-tap";
+    case HT_TIMER_EVENT:
+        return "timer";
+    default:
+        return "UNKNOWN STATUS";
+    }
+}
+
+static int press_binding(struct active_hold_tap *hold_tap) {
+    if (hold_tap->config->retro_tap && hold_tap->status == STATUS_HOLD_TIMER) {
+        return 0;
+    }
+
+    struct zmk_behavior_binding_event event = {
+        .position = hold_tap->position,
+        .timestamp = hold_tap->timestamp,
+    };
+
+    struct zmk_behavior_binding binding = {0};
+    if (hold_tap->status == STATUS_HOLD_TIMER || hold_tap->status == STATUS_HOLD_INTERRUPT) {
+        binding.behavior_dev = hold_tap->config->hold_behavior_dev;
+        binding.param1 = hold_tap->param_hold;
+    } else {
+        binding.behavior_dev = hold_tap->config->tap_behavior_dev;
+        binding.param1 = hold_tap->param_tap;
+        store_last_tapped(hold_tap);
+    }
+    return behavior_keymap_binding_pressed(&binding, event);
+}
+
+static int release_binding(struct active_hold_tap *hold_tap) {
+    if (hold_tap->config->retro_tap && hold_tap->status == STATUS_HOLD_TIMER) {
+        return 0;
+    }
+
+    struct zmk_behavior_binding_event event = {
+        .position = hold_tap->position,
+        .timestamp = hold_tap->timestamp,
+    };
+
+    struct zmk_behavior_binding binding = {0};
+    if (hold_tap->status == STATUS_HOLD_TIMER || hold_tap->status == STATUS_HOLD_INTERRUPT) {
+        binding.behavior_dev = hold_tap->config->hold_behavior_dev;
+        binding.param1 = hold_tap->param_hold;
+    } else {
+        binding.behavior_dev = hold_tap->config->tap_behavior_dev;
+        binding.param1 = hold_tap->param_tap;
+    }
+    return behavior_keymap_binding_released(&binding, event);
+}
+
+static void decide_hold_tap(struct active_hold_tap *hold_tap,
+                            enum decision_moment decision_moment) {
+    if (hold_tap->status != STATUS_UNDECIDED) {
         return;
     }
 
@@ -267,39 +371,53 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
     }
 
     switch (hold_tap->config->flavor) {
-    case ZMK_BHV_HOLD_TAP_FLAVOR_HOLD_PREFERRED:
-        decide_hold_preferred(hold_tap, event_type);
-    case ZMK_BHV_HOLD_TAP_FLAVOR_BALANCED:
-        decide_balanced(hold_tap, event_type);
-    case ZMK_BHV_HOLD_TAP_FLAVOR_TAP_PREFERRED:
-        decide_tap_preferred(hold_tap, event_type);
+    case FLAVOR_HOLD_PREFERRED:
+        decide_hold_preferred(hold_tap, decision_moment);
+    case FLAVOR_BALANCED:
+        decide_balanced(hold_tap, decision_moment);
+    case FLAVOR_TAP_PREFERRED:
+        decide_tap_preferred(hold_tap, decision_moment);
     }
 
-    if (!hold_tap->is_decided) {
+    if (hold_tap->status == STATUS_UNDECIDED) {
         return;
     }
 
-    LOG_DBG("%d decided %s (%s event %d)", hold_tap->position, hold_tap->is_hold ? "hold" : "tap",
-            flavor_str(hold_tap->config->flavor), event_type);
+    LOG_DBG("%d decided %s (%s decision moment %s)", hold_tap->position,
+            status_str(hold_tap->status), flavor_str(hold_tap->config->flavor),
+            decision_moment_str(decision_moment));
     undecided_hold_tap = NULL;
-
-    struct zmk_behavior_binding_event event = {
-        .position = hold_tap->position,
-        .timestamp = hold_tap->timestamp,
-    };
-
-    struct zmk_behavior_binding binding;
-    if (hold_tap->is_hold) {
-        binding.behavior_dev = hold_tap->config->behaviors->hold.behavior_dev;
-        binding.param1 = hold_tap->param_hold;
-        binding.param2 = 0;
-    } else {
-        binding.behavior_dev = hold_tap->config->behaviors->tap.behavior_dev;
-        binding.param1 = hold_tap->param_tap;
-        binding.param2 = 0;
-    }
-    behavior_keymap_binding_pressed(&binding, event);
+    press_binding(hold_tap);
     release_captured_events();
+}
+
+static void decide_retro_tap(struct active_hold_tap *hold_tap) {
+    if (!hold_tap->config->retro_tap) {
+        return;
+    }
+    if (hold_tap->status == STATUS_HOLD_TIMER) {
+        release_binding(hold_tap);
+        LOG_DBG("%d retro tap", hold_tap->position);
+        hold_tap->status = STATUS_TAP;
+        press_binding(hold_tap);
+        return;
+    }
+}
+
+static void update_hold_status_for_retro_tap(uint32_t ignore_position) {
+    for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
+        struct active_hold_tap *hold_tap = &active_hold_taps[i];
+        if (hold_tap->position == ignore_position ||
+            hold_tap->position == ZMK_BHV_HOLD_TAP_POSITION_NOT_USED ||
+            hold_tap->config->retro_tap == false) {
+            continue;
+        }
+        if (hold_tap->status == STATUS_HOLD_TIMER) {
+            LOG_DBG("Update hold tap %d status to hold-interrupt", hold_tap->position);
+            hold_tap->status = STATUS_HOLD_INTERRUPT;
+            press_binding(hold_tap);
+        }
+    }
 }
 
 static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
@@ -324,11 +442,17 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     LOG_DBG("%d new undecided hold_tap", event.position);
     undecided_hold_tap = hold_tap;
 
+    if (is_quick_tap(hold_tap)) {
+        decide_hold_tap(hold_tap, HT_QUICK_TAP);
+    }
+
     // if this behavior was queued we have to adjust the timer to only
     // wait for the remaining time.
     int32_t tapping_term_ms_left = (hold_tap->timestamp + cfg->tapping_term_ms) - k_uptime_get();
     if (tapping_term_ms_left > 0) {
         k_delayed_work_submit(&hold_tap->work, K_MSEC(tapping_term_ms_left));
+    } else {
+        decide_hold_tap(hold_tap, HT_TIMER_EVENT);
     }
 
     return ZMK_BEHAVIOR_OPAQUE;
@@ -350,24 +474,8 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     }
 
     decide_hold_tap(hold_tap, HT_KEY_UP);
-
-    // todo: set up the binding and data items inside of the active_hold_tap struct
-    struct zmk_behavior_binding_event sub_behavior_data = {
-        .position = hold_tap->position,
-        .timestamp = hold_tap->timestamp,
-    };
-
-    struct zmk_behavior_binding sub_behavior_binding;
-    if (hold_tap->is_hold) {
-        sub_behavior_binding.behavior_dev = hold_tap->config->behaviors->hold.behavior_dev;
-        sub_behavior_binding.param1 = hold_tap->param_hold;
-        sub_behavior_binding.param2 = 0;
-    } else {
-        sub_behavior_binding.behavior_dev = hold_tap->config->behaviors->tap.behavior_dev;
-        sub_behavior_binding.param1 = hold_tap->param_tap;
-        sub_behavior_binding.param2 = 0;
-    }
-    behavior_keymap_binding_released(&sub_behavior_binding, sub_behavior_data);
+    decide_retro_tap(hold_tap);
+    release_binding(hold_tap);
 
     if (work_cancel_result == -EINPROGRESS) {
         // let the timer handler clean up
@@ -387,8 +495,10 @@ static const struct behavior_driver_api behavior_hold_tap_driver_api = {
     .binding_released = on_hold_tap_binding_released,
 };
 
-static int position_state_changed_listener(const struct zmk_event_header *eh) {
-    struct position_state_changed *ev = cast_position_state_changed(eh);
+static int position_state_changed_listener(const zmk_event_t *eh) {
+    struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
+
+    update_hold_status_for_retro_tap(ev->position);
 
     if (undecided_hold_tap == NULL) {
         LOG_DBG("%d bubble (no undecided hold_tap active)", ev->position);
@@ -428,21 +538,16 @@ static int position_state_changed_listener(const struct zmk_event_header *eh) {
     return ZMK_EV_EVENT_CAPTURED;
 }
 
-static inline bool only_mods(struct keycode_state_changed *ev) {
-    return ev->usage_page == HID_USAGE_KEY && ev->keycode >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL &&
-           ev->keycode <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI;
-}
-
-static int keycode_state_changed_listener(const struct zmk_event_header *eh) {
+static int keycode_state_changed_listener(const zmk_event_t *eh) {
     // we want to catch layer-up events too... how?
-    struct keycode_state_changed *ev = cast_keycode_state_changed(eh);
+    struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
 
     if (undecided_hold_tap == NULL) {
         // LOG_DBG("0x%02X bubble (no undecided hold_tap active)", ev->keycode);
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    if (!only_mods(ev)) {
+    if (!is_mod(ev->usage_page, ev->keycode)) {
         // LOG_DBG("0x%02X bubble (not a mod)", ev->keycode);
         return ZMK_EV_EVENT_BUBBLE;
     }
@@ -455,19 +560,19 @@ static int keycode_state_changed_listener(const struct zmk_event_header *eh) {
     return ZMK_EV_EVENT_CAPTURED;
 }
 
-int behavior_hold_tap_listener(const struct zmk_event_header *eh) {
-    if (is_position_state_changed(eh)) {
+int behavior_hold_tap_listener(const zmk_event_t *eh) {
+    if (as_zmk_position_state_changed(eh) != NULL) {
         return position_state_changed_listener(eh);
-    } else if (is_keycode_state_changed(eh)) {
+    } else if (as_zmk_keycode_state_changed(eh) != NULL) {
         return keycode_state_changed_listener(eh);
     }
     return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(behavior_hold_tap, behavior_hold_tap_listener);
-ZMK_SUBSCRIPTION(behavior_hold_tap, position_state_changed);
+ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_position_state_changed);
 // this should be modifiers_state_changed, but unfrotunately that's not implemented yet.
-ZMK_SUBSCRIPTION(behavior_hold_tap, keycode_state_changed);
+ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_keycode_state_changed);
 
 void behavior_hold_tap_timer_work_handler(struct k_work *item) {
     struct active_hold_tap *hold_tap = CONTAINER_OF(item, struct active_hold_tap, work);
@@ -495,23 +600,14 @@ static int behavior_hold_tap_init(const struct device *dev) {
 struct behavior_hold_tap_data {};
 static struct behavior_hold_tap_data behavior_hold_tap_data;
 
-/* todo: get rid of unused param1 and param2. */
-#define _TRANSFORM_ENTRY(idx, node)                                                                \
-    {                                                                                              \
-        .behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),                     \
-        .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))),                  \
-        .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),       \
-                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))),                  \
-    },
-
 #define KP_INST(n)                                                                                 \
-    static struct behavior_hold_tap_behaviors behavior_hold_tap_behaviors_##n = {                  \
-        .hold = _TRANSFORM_ENTRY(0, n).tap = _TRANSFORM_ENTRY(1, n)};                              \
     static struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                        \
-        .behaviors = &behavior_hold_tap_behaviors_##n,                                             \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
+        .hold_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 0)),                     \
+        .tap_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 1)),                      \
+        .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
+        .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
     };                                                                                             \
     DEVICE_AND_API_INIT(behavior_hold_tap_##n, DT_INST_LABEL(n), behavior_hold_tap_init,           \
                         &behavior_hold_tap_data, &behavior_hold_tap_config_##n, APPLICATION,       \
@@ -519,4 +615,4 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 
-#endif
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

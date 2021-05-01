@@ -38,12 +38,20 @@ void display_timer_cb() { k_work_submit(&display_tick_work); }
 K_TIMER_DEFINE(display_timer, display_timer_cb, NULL);
 
 static void start_display_updates() {
+    if (display == NULL) {
+        return;
+    }
+
     display_blanking_off(display);
 
     k_timer_start(&display_timer, K_MSEC(10), K_MSEC(10));
 }
 
 static void stop_display_updates() {
+    if (display == NULL) {
+        return;
+    }
+
     display_blanking_on(display);
 
     k_timer_stop(&display_timer);
@@ -75,8 +83,12 @@ int zmk_display_init() {
     return 0;
 }
 
-int display_event_handler(const struct zmk_event_header *eh) {
-    struct activity_state_changed *ev = cast_activity_state_changed(eh);
+int display_event_handler(const zmk_event_t *eh) {
+    struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
+    if (ev == NULL) {
+        return -ENOTSUP;
+    }
+
     switch (ev->state) {
     case ZMK_ACTIVITY_ACTIVE:
         start_display_updates();
@@ -93,4 +105,4 @@ int display_event_handler(const struct zmk_event_header *eh) {
 }
 
 ZMK_LISTENER(display, display_event_handler);
-ZMK_SUBSCRIPTION(display, activity_state_changed);
+ZMK_SUBSCRIPTION(display, zmk_activity_state_changed);

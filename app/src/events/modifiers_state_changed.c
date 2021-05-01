@@ -7,4 +7,4 @@
 #include <kernel.h>
 #include <zmk/events/modifiers_state_changed.h>
 
-ZMK_EVENT_IMPL(modifiers_state_changed);
+ZMK_EVENT_IMPL(zmk_modifiers_state_changed);

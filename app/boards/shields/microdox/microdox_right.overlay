@@ -10,6 +10,11 @@
 	col-offset = <5>;
 };
 
+&oled {
+	segment-remap;
+	com-invdir;
+};
+
 &kscan0 {
 	col-gpios
 		= <&pro_micro_d 15 GPIO_ACTIVE_HIGH>

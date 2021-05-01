@@ -7,37 +7,42 @@
 #pragma once
 
 #include <zephyr.h>
-#include <dt-bindings/zmk/modifiers.h>
-#include <dt-bindings/zmk/hid_usage_pages.h>
 #include <zmk/event_manager.h>
 #include <zmk/keys.h>
 
-struct keycode_state_changed {
-    struct zmk_event_header header;
-    uint8_t usage_page;
+struct zmk_keycode_state_changed {
+    uint16_t usage_page;
     uint32_t keycode;
     uint8_t implicit_modifiers;
+    uint8_t explicit_modifiers;
     bool state;
     int64_t timestamp;
 };
 
-ZMK_EVENT_DECLARE(keycode_state_changed);
+ZMK_EVENT_DECLARE(zmk_keycode_state_changed);
 
-static inline struct keycode_state_changed *
-keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t timestamp) {
+static inline struct zmk_keycode_state_changed_event *
+zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t timestamp) {
     uint16_t page = HID_USAGE_PAGE(encoded) & 0xFF;
     uint16_t id = HID_USAGE_ID(encoded);
-    zmk_mod_flags_t implicit_mods = SELECT_MODS(encoded);
+    uint8_t implicit_modifiers = 0x00;
+    uint8_t explicit_modifiers = 0x00;
 
     if (!page) {
         page = HID_USAGE_KEY;
     }
 
-    struct keycode_state_changed *ev = new_keycode_state_changed();
-    ev->usage_page = page;
-    ev->keycode = id;
-    ev->implicit_modifiers = implicit_mods;
-    ev->state = pressed;
-    ev->timestamp = timestamp;
-    return ev;
+    if (is_mod(page, id)) {
+        explicit_modifiers = SELECT_MODS(encoded);
+    } else {
+        implicit_modifiers = SELECT_MODS(encoded);
+    }
+
+    return new_zmk_keycode_state_changed(
+        (struct zmk_keycode_state_changed){.usage_page = page,
+                                           .keycode = id,
+                                           .implicit_modifiers = implicit_modifiers,
+                                           .explicit_modifiers = explicit_modifiers,
+                                           .state = pressed,
+                                           .timestamp = timestamp});
 }

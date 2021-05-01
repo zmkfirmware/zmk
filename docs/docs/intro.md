@@ -15,27 +15,31 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | ------------------------------------------------------------------------------------------------------------------------- | :-: | :-------: | :-: |
 | Low Latency BLE Support                                                                                                   | ✅  |    ✅     |     |
 | Multi-Device BLE Support                                                                                                  | ✅  |           |     |
-| [USB Connectivity](behaviors/outputs)                                                                                     | ✅  |           | ✅  |
+| [USB Connectivity](behaviors/outputs)                                                                                     | ✅  |    ✅     | ✅  |
 | User Configuration Repositories                                                                                           | ✅  |           |     |
 | Split Keyboard Support                                                                                                    | ✅  |    ✅     | ✅  |
 | [Keymaps and Layers](behaviors/layers)                                                                                    | ✅  |    ✅     | ✅  |
 | [Hold-Tap](behaviors/hold-tap) (which includes [Mod-Tap](behaviors/mod-tap) and [Layer-Tap](behaviors/layers/#layer-tap)) | ✅  |    ✅     | ✅  |
 | [Keyboard Codes](codes/#keyboard)                                                                                         | ✅  |    ✅     | ✅  |
 | [Media](codes/#media-controls) & [Consumer](codes/#consumer-controls) Codes                                               | ✅  |    ✅     | ✅  |
-| [Encoders](features/encoders)[^1]                                                                                         | ✅  |           | ✅  |
+| [Encoders](features/encoders)[^1]                                                                                         | ✅  |    ✅     | ✅  |
 | [Display Support](features/displays)[^2]                                                                                  | 🚧  |    🚧     | ✅  |
 | [RGB Underglow](features/underglow)                                                                                       | ✅  |    ✅     | ✅  |
 | One Shot Keys                                                                                                             | ✅  |    ✅     | ✅  |
+<<<<<<< HEAD
 <<<<<<< HEAD
 | [Combo Keys](https://github.com/zmkfirmware/zmk/pull/504)                                                                 | 🚧  |           | ✅  |
 =======
 | [Combo Keys](behaviors/combos)                                                                                            | ✅  |           | ✅  |
 >>>>>>> feb0d5b90cbbb1a1026bf356afd788c860824ccf
+=======
+| [Combo Keys](features/combos)                                                                                             | ✅  |           | ✅  |
+>>>>>>> refs/remotes/origin/main
 | Macros                                                                                                                    | 🚧  |    ✅     | ✅  |
 | Mouse Keys                                                                                                                | 💡  |    ✅     | ✅  |
 | Low Active Power Usage                                                                                                    | ✅  |           |     |
 | Low Power Sleep States                                                                                                    | ✅  |    ✅     |     |
-| [Low Power Mode (VCC Shutoff)](behaviors/power)                                                                           | ✅  |           |     |
+| [Low Power Mode (VCC Shutoff)](behaviors/power)                                                                           | ✅  |    ✅     |     |
 | Battery Reporting                                                                                                         | ✅  |    ✅     |     |
 | Shell over BLE                                                                                                            | 💡  |           |     |
 | Realtime Keymap Updating                                                                                                  | 💡  |           | ✅  |

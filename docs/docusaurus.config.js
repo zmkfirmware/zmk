@@ -23,12 +23,17 @@ module.exports = {
       },
       items: [
         {
-          to: "docs/",
+          to: "docs",
           activeBasePath: "docs",
           label: "Docs",
           position: "left",
         },
         { to: "blog", label: "Blog", position: "left" },
+        {
+          to: "power-profiler",
+          label: "Power Profiler",
+          position: "left",
+        },
         {
           href: "https://github.com/zmkfirmware/zmk",
           label: "GitHub",
