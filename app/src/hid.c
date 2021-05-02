@@ -15,8 +15,8 @@ static struct zmk_hid_keyboard_report keyboard_report = {
 
 static struct zmk_hid_consumer_report consumer_report = {.report_id = 2, .body = {.keys = {0}}};
 
-static struct zmk_hid_mouse_report mouse_report = {.report_id = 4, .body = {
-    .buttons = 0, .x = 0, .y = 0, .wheel_vert = 0, .wheel_hor = 0}};
+static struct zmk_hid_mouse_report mouse_report = {
+    .report_id = 4, .body = {.buttons = 0, .x = 0, .y = 0, .wheel_vert = 0, .wheel_hor = 0}};
 
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
@@ -172,7 +172,6 @@ int zmk_hid_consumer_release(zmk_key_t code) {
 
 void zmk_hid_consumer_clear() { memset(&consumer_report.body, 0, sizeof(consumer_report.body)); }
 
-
 // Keep track of how often a button was pressed.
 // Only release the button if the count is 0.
 static int explicit_button_counts[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -182,10 +181,10 @@ static int16_t curr_y = 0;
 static int8_t curr_hor = 0;
 static int8_t curr_vert = 0;
 
-#define SET_MOUSE_BUTTONS(butts)                                                               \
-    {                                                                                            \
-        mouse_report.body.buttons = butts;                                                     \
-        LOG_DBG("Mouse buttons set to 0x%02X", mouse_report.body.buttons);                       \
+#define SET_MOUSE_BUTTONS(butts)                                                                   \
+    {                                                                                              \
+        mouse_report.body.buttons = butts;                                                         \
+        LOG_DBG("Mouse buttons set to 0x%02X", mouse_report.body.buttons);                         \
     }
 
 int zmk_hid_mouse_button_press(zmk_mouse_button_t button) {
@@ -229,12 +228,12 @@ int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons) {
     return 0;
 }
 
-#define SET_MOUSE_MOVEMENT(coor_x, coor_y)                                                       \
-    {                                                                                            \
-        mouse_report.body.x = coor_x;                                                     \
-        LOG_DBG("Mouse movement x set to 0x%02X", mouse_report.body.x);                      \
-        mouse_report.body.y = coor_y;                                                     \
-        LOG_DBG("Mouse movement y set to 0x%02X", mouse_report.body.y);                      \
+#define SET_MOUSE_MOVEMENT(coor_x, coor_y)                                                         \
+    {                                                                                              \
+        mouse_report.body.x = coor_x;                                                              \
+        LOG_DBG("Mouse movement x set to 0x%02X", mouse_report.body.x);                            \
+        mouse_report.body.y = coor_y;                                                              \
+        LOG_DBG("Mouse movement y set to 0x%02X", mouse_report.body.y);                            \
     }
 
 int zmk_hid_mouse_movement_press(uint16_t x, uint16_t y) {
@@ -251,12 +250,12 @@ int zmk_hid_mouse_movement_release(uint16_t x, uint16_t y) {
     return 0;
 }
 
-#define SET_MOUSE_WHEEL(horiz, vertic)                                                       \
-    {                                                                                            \
-        mouse_report.body.wheel_hor = horiz;                                                     \
-        LOG_DBG("Mouse wheel hor set to 0x%02X", mouse_report.body.wheel_hor);                      \
+#define SET_MOUSE_WHEEL(horiz, vertic)                                                             \
+    {                                                                                              \
+        mouse_report.body.wheel_hor = horiz;                                                       \
+        LOG_DBG("Mouse wheel hor set to 0x%02X", mouse_report.body.wheel_hor);                     \
         mouse_report.body.wheel_vert = vertic;                                                     \
-        LOG_DBG("Mouse wheel vert set to 0x%02X", mouse_report.body.wheel_vert);                      \
+        LOG_DBG("Mouse wheel vert set to 0x%02X", mouse_report.body.wheel_vert);                   \
     }
 
 int zmk_hid_mouse_wheel_press(uint8_t hor, uint8_t vert) {

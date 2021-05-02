@@ -77,8 +77,7 @@ void mouse_timer_cb(struct k_timer *dummy);
 
 K_TIMER_DEFINE(mouse_timer, mouse_timer_cb, NULL);
 
-void mouse_timer_cb(struct k_timer *dummy)
-{
+void mouse_timer_cb(struct k_timer *dummy) {
     if (mouse_is_moving_counter != 0) {
         zmk_endpoints_send_mouse_report();
         k_timer_start(&mouse_timer, K_MSEC(10), K_NO_WAIT);
@@ -121,14 +120,14 @@ int hid_listener(const zmk_event_t *eh) {
             hid_listener_keycode_released(ev);
         }
     } else {
-      const struct zmk_mouse_state_changed *ev = as_zmk_mouse_state_changed(eh);
-      if (ev) {
-        if (ev->state) {
-          hid_listener_mouse_pressed(ev);
-        } else {
-          hid_listener_mouse_released(ev);
+        const struct zmk_mouse_state_changed *ev = as_zmk_mouse_state_changed(eh);
+        if (ev) {
+            if (ev->state) {
+                hid_listener_mouse_pressed(ev);
+            } else {
+                hid_listener_mouse_released(ev);
+            }
         }
-      }
     }
     return 0;
 }
