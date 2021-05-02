@@ -71,16 +71,32 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
     return zmk_endpoints_send_report(ev->usage_page);
 }
 
-static int mouse_is_moving_counter = 0;
+static void zmk_mouse_work(struct k_work *work) {
+    int rc = zmk_endpoints_send_mouse_report();
+    if (rc != 0) {
+        LOG_ERR("Failed to send mouse report, error: %d", rc);
+    }
+}
 
-void mouse_timer_cb(struct k_timer *dummy);
+K_WORK_DEFINE(mouse_work, &zmk_mouse_work);
 
-K_TIMER_DEFINE(mouse_timer, mouse_timer_cb, NULL);
+void mouse_timer_cb(struct k_timer *dummy) { k_work_submit(&mouse_work); }
 
-void mouse_timer_cb(struct k_timer *dummy) {
-    if (mouse_is_moving_counter != 0) {
-        zmk_endpoints_send_mouse_report();
-        k_timer_start(&mouse_timer, K_MSEC(10), K_NO_WAIT);
+K_TIMER_DEFINE(mouse_timer, mouse_timer_cb, mouse_timer_cb);
+
+static int mouse_timer_ref_count = 0;
+
+void mouse_timer_ref() {
+    if (mouse_timer_ref_count == 0) {
+        k_timer_start(&mouse_timer, K_NO_WAIT, K_MSEC(10));
+    }
+    mouse_timer_ref_count += 1;
+}
+
+void mouse_timer_unref() {
+    mouse_timer_ref_count -= 1;
+    if (mouse_timer_ref_count == 0) {
+        k_timer_stop(&mouse_timer);
     }
 }
 
@@ -92,10 +108,8 @@ static int hid_listener_mouse_pressed(const struct zmk_mouse_state_changed *ev) 
         LOG_ERR("Unable to press button");
         return err;
     }
-    // race condition?
-    mouse_is_moving_counter += 1;
-    k_timer_start(&mouse_timer, K_MSEC(10), K_NO_WAIT);
-    return zmk_endpoints_send_mouse_report();
+    mouse_timer_ref();
+    return 0;
 }
 
 static int hid_listener_mouse_released(const struct zmk_mouse_state_changed *ev) {
@@ -106,9 +120,8 @@ static int hid_listener_mouse_released(const struct zmk_mouse_state_changed *ev)
         LOG_ERR("Unable to release button");
         return err;
     }
-    // race condition?
-    mouse_is_moving_counter -= 1;
-    return zmk_endpoints_send_mouse_report();
+    mouse_timer_unref();
+    return 0;
 }
 
 int hid_listener(const zmk_event_t *eh) {
