@@ -19,12 +19,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int behavior_mouse_move_init(const struct device *dev) { return 0; };
 
-
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-    int res = ZMK_EVENT_RAISE(zmk_mouse_state_changed_from_encoded(binding->param1, true,
-                                                                event.timestamp));
+    int res = ZMK_EVENT_RAISE(
+        zmk_mouse_state_changed_from_encoded(binding->param1, true, event.timestamp));
     return res;
 }
 
@@ -32,8 +31,8 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
 
-    return ZMK_EVENT_RAISE(zmk_mouse_state_changed_from_encoded(binding->param1, false,
-                                                                event.timestamp));
+    return ZMK_EVENT_RAISE(
+        zmk_mouse_state_changed_from_encoded(binding->param1, false, event.timestamp));
 }
 
 static const struct behavior_driver_api behavior_mouse_move_driver_api = {
