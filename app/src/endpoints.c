@@ -106,7 +106,7 @@ static int send_consumer_report() {
 
     switch (current_endpoint) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
-        case ZMK_ENDPOINT_USB: {
+    case ZMK_ENDPOINT_USB: {
         int err = zmk_usb_hid_send_report((uint8_t *)consumer_report, sizeof(*consumer_report));
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
@@ -116,7 +116,7 @@ static int send_consumer_report() {
 #endif /* IS_ENABLED(CONFIG_ZMK_USB) */
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
-        case ZMK_ENDPOINT_BLE: {
+    case ZMK_ENDPOINT_BLE: {
         int err = zmk_hog_send_consumer_report(&consumer_report->body);
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
@@ -264,7 +264,6 @@ static void disconnect_current_endpoint() {
 
     zmk_endpoints_send_report(HID_USAGE_KEY);
     zmk_endpoints_send_report(HID_USAGE_CONSUMER);
-    zmk_endpoints_send_report(HID_USAGE_GD);
 }
 
 static void update_current_endpoint() {
