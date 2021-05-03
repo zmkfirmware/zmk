@@ -181,9 +181,9 @@ static int16_t curr_y = 0;
 static int8_t curr_hor = 0;
 static int8_t curr_vert = 0;
 
-#define SET_MOUSE_BUTTONS(butts)                                                                   \
+#define SET_MOUSE_BUTTONS(btns)                                                                    \
     {                                                                                              \
-        mouse_report.body.buttons = butts;                                                         \
+        mouse_report.body.buttons = btns;                                                          \
         LOG_DBG("Mouse buttons set to 0x%02X", mouse_report.body.buttons);                         \
     }
 

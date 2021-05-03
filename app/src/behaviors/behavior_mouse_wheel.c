@@ -18,13 +18,16 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#define WHEEL_HORIZONTAL(encoded) (((encoded)&0xFF00) >> 8)
+#define WHEEL_VERTICAL(encoded) ((encoded)&0x00FF)
+
 static int behavior_mouse_wheel_init(const struct device *dev) { return 0; };
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-    int32_t x = (binding->param1 & 0xFF00) >> 8;
-    int32_t y = binding->param1 & 0x00FF;
+    int32_t x = WHEEL_HORIZONTAL(binding->param1);
+    int32_t y = WHEEL_VERTICAL(binding->param1);
     zmk_hid_mouse_wheel_press(x, y);
     return zmk_endpoints_send_mouse_report();
 }
@@ -32,8 +35,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-    int32_t x = (binding->param1 & 0xFF00) >> 8;
-    int32_t y = binding->param1 & 0x00FF;
+    int32_t x = WHEEL_HORIZONTAL(binding->param1);
+    int32_t y = WHEEL_VERTICAL(binding->param1);
     zmk_hid_mouse_wheel_release(x, y);
     return zmk_endpoints_send_mouse_report();
 }

@@ -125,22 +125,23 @@ static int hid_listener_mouse_released(const struct zmk_mouse_state_changed *ev)
 }
 
 int hid_listener(const zmk_event_t *eh) {
-    const struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
-    if (ev) {
-        if (ev->state) {
-            hid_listener_keycode_pressed(ev);
+    const struct zmk_keycode_state_changed *kc_ev = as_zmk_keycode_state_changed(eh);
+    if (kc_ev) {
+        if (kc_ev->state) {
+            hid_listener_keycode_pressed(kc_ev);
         } else {
-            hid_listener_keycode_released(ev);
+            hid_listener_keycode_released(kc_ev);
         }
-    } else {
-        const struct zmk_mouse_state_changed *ev = as_zmk_mouse_state_changed(eh);
-        if (ev) {
-            if (ev->state) {
-                hid_listener_mouse_pressed(ev);
-            } else {
-                hid_listener_mouse_released(ev);
-            }
+        return 0;
+    }
+    const struct zmk_mouse_state_changed *ms_ev = as_zmk_mouse_state_changed(eh);
+    if (ms_ev) {
+        if (ms_ev->state) {
+            hid_listener_mouse_pressed(ms_ev);
+        } else {
+            hid_listener_mouse_released(ms_ev);
         }
+        return 0;
     }
     return 0;
 }
