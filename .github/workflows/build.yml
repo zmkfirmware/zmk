@@ -51,6 +51,8 @@ jobs:
           - quefrency_left
           - quefrency_right
           - reviung41
+          - redox_left
+          - redox_right
           - romac
           - romac_plus
           - settings_reset
