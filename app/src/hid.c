@@ -236,14 +236,14 @@ int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons) {
         LOG_DBG("Mouse movement y set to 0x%02X", mouse_report.body.y);                            \
     }
 
-int zmk_hid_mouse_movement_press(uint16_t x, uint16_t y) {
+int zmk_hid_mouse_movement_press(int16_t x, int16_t y) {
     curr_x += x;
     curr_y += y;
     SET_MOUSE_MOVEMENT(curr_x, curr_y);
     return 0;
 }
 
-int zmk_hid_mouse_movement_release(uint16_t x, uint16_t y) {
+int zmk_hid_mouse_movement_release(int16_t x, int16_t y) {
     curr_x -= x;
     curr_y -= y;
     SET_MOUSE_MOVEMENT(curr_x, curr_y);
@@ -258,14 +258,14 @@ int zmk_hid_mouse_movement_release(uint16_t x, uint16_t y) {
         LOG_DBG("Mouse wheel vert set to 0x%02X", mouse_report.body.wheel_vert);                   \
     }
 
-int zmk_hid_mouse_wheel_press(uint8_t hor, uint8_t vert) {
+int zmk_hid_mouse_wheel_press(int8_t hor, int8_t vert) {
     curr_hor += hor;
     curr_vert += vert;
     SET_MOUSE_WHEEL(curr_hor, curr_vert);
     return 0;
 }
 
-int zmk_hid_mouse_wheel_release(uint8_t hor, uint8_t vert) {
+int zmk_hid_mouse_wheel_release(int8_t hor, int8_t vert) {
     curr_hor -= hor;
     curr_vert -= vert;
     SET_MOUSE_WHEEL(curr_hor, curr_vert);
