@@ -25,7 +25,7 @@
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.4",
     "react-toastify": "^6.0.9",
-    "web-tree-sitter": "^0.17.1"
+    "web-tree-sitter": "^0.19.1"
   },
   "browserslist": {
     "production": [
