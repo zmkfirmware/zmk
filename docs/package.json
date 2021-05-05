@@ -18,7 +18,7 @@
     "@docusaurus/preset-classic": "^2.0.0-alpha.66",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
-    "@fortawesome/react-fontawesome": "^0.1.12",
+    "@fortawesome/react-fontawesome": "^0.1.14",
     "classnames": "^2.2.6",
     "react": "^16.14.0",
     "react-async": "^10.0.1",
