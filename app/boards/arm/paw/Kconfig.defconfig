@@ -6,6 +6,9 @@ if BOARD_PAW
 config BOARD
 	default "paw"
 
+config ZMK_KEYBOARD_NAME
+  default "Paw"
+
 if USB
 
 config USB_NRFX
