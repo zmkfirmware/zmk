@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+// --------------------------
+// | 7      |  8  |  9      |
+// | 4      |  5  |  6      |
+// | 1      |  2  |  3      |
+// | M_PLAY |  0  |  MO(1)  |
+// --------------------------
+            bindings = <
+    &kp N7   &kp N8 &kp N9    &kp HOME
+    &kp N4   &kp N5 &kp N6    &kp END
+    &kp N1   &kp N2 &kp N3    &kp DEL
+    &kp C_PP &kp N0 &mo 1     &kp PG_DN
+    &none    &none  &none     &kp INS
+            >;
+
+            sensor-bindings = <&inc_dec_kp INS PG_UP>;
+        };
+
+         nav_layer {
+// --------------------------
+// | BT_CLR |  HOME |  PGUP |
+// | _      |  END  |  PGDN |
+// | _      |  _    |  _    |
+// | _      |  _    |  _    |
+// --------------------------
+             bindings = <
+     &bt BT_CLR       &trans          &kp PG_UP &kp UP
+     &out OUT_TOG     &out OUT_USB    &out OUT_BLE &kp DOWN
+     &reset           &trans     &trans    &kp LEFT
+     &bootloader     &trans   &trans       &kp RIGHT
+     &trans     &trans   &trans            &kp INS
+             >;
+
+             sensor-bindings = <&inc_dec_kp A B>;
+         };
+    };
+};
