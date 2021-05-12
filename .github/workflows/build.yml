@@ -81,7 +81,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cache west modules
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.5
         env:
           cache-name: cache-zephyr-modules
         with:
