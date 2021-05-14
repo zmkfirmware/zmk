@@ -94,7 +94,9 @@ void mouse_timer_ref() {
 }
 
 void mouse_timer_unref() {
-    mouse_timer_ref_count -= 1;
+    if (mouse_timer_ref_count > 0) {
+        mouse_timer_ref_count -= 1;
+    }
     if (mouse_timer_ref_count == 0) {
         k_timer_stop(&mouse_timer);
     }
@@ -118,6 +120,7 @@ static int hid_listener_mouse_released(const struct zmk_mouse_state_changed *ev)
     err = zmk_hid_mouse_movement_release(ev->x, ev->y);
     if (err) {
         LOG_ERR("Unable to release button");
+        mouse_timer_unref();
         return err;
     }
     mouse_timer_unref();
