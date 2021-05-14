@@ -50,8 +50,8 @@ jobs:
           - qaz
           - quefrency_left
           - quefrency_right
-          - reviung41
           - reviung39
+          - reviung41
           - romac
           - romac_plus
           - settings_reset
