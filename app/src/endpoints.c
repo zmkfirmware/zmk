@@ -146,7 +146,7 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
 }
 
 int zmk_endpoints_send_mouse_report() {
-    LOG_ERR("SENDING MOUSE REPORT");
+    LOG_DBG("SENDING MOUSE REPORT");
     struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
 
     switch (current_endpoint) {
