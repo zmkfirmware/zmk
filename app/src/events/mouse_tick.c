@@ -5,6 +5,6 @@
  */
 
 #include <kernel.h>
-#include <zmk/events/mouse_state_changed.h>
+#include <zmk/events/mouse_tick.h>
 
-ZMK_EVENT_IMPL(zmk_mouse_state_changed);
+ZMK_EVENT_IMPL(zmk_mouse_tick);

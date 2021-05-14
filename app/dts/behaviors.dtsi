@@ -17,4 +17,4 @@
 #include <behaviors/caps_word.dtsi>
 #include <behaviors/mouse_key_press.dtsi>
 #include <behaviors/mouse_move.dtsi>
-#include <behaviors/mouse_wheel.dtsi>
+#include <behaviors/mouse_scroll.dtsi>

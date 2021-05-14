@@ -5,7 +5,7 @@ sidebar_label: Mouse Emulation
 
 ## Summary
 
-Mouse emulation behaviors send mouse movements, button presses or wheel actions.
+Mouse emulation behaviors send mouse movements, button presses or scroll actions.
 
 Please view [`dt-bindings/zmk/mouse.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/mouse.h) for a comprehensive list of signals.
 
@@ -19,7 +19,7 @@ provided by ZMK near the top:
 #include <dt-bindings/zmk/mouse.h>
 ```
 
-Doing so allows using a set of defines such as `MOVE_UP`, `MOVE_DOWN`, `LCLK` and `WHEEL_UP` with these behaviors.
+Doing so allows using a set of defines such as `MOVE_UP`, `MOVE_DOWN`, `LCLK` and `SCROLL_UP` with these behaviors.
 
 ## Mouse Button Press
 
@@ -65,5 +65,5 @@ This behaviour is used to scroll, both horizontally and vertically.
 Example:
 
 ```
-&mwh WHEEL_UP
+&mwh SCROLL_UP
 ```

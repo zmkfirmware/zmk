@@ -244,7 +244,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* REPORT_COUNT (2) */
     HID_GI_REPORT_COUNT,
     0x02,
-    /* USAGE (X) */
+    /* USAGE (X) */ // Vertical scroll
     HID_LI_USAGE,
     HID_USAGE_GD_X,
     /* USAGE (Y) */
@@ -271,7 +271,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* Input (Data,Var,Rel) */
     HID_MI_INPUT,
     0x06,
-    /* USAGE_PAGE (Consumer) */ // Horizontal wheel
+    /* USAGE_PAGE (Consumer) */ // Horizontal scroll
     HID_GI_USAGE_PAGE,
     HID_USAGE_CONSUMER,
     /* USAGE (AC Pan) */
@@ -335,8 +335,8 @@ struct zmk_hid_mouse_report_body {
     zmk_mouse_button_flags_t buttons;
     int16_t x;
     int16_t y;
-    int8_t wheel_vert;
-    int8_t wheel_hor;
+    int8_t scroll_y;
+    int8_t scroll_x;
 } __packed;
 
 struct zmk_hid_mouse_report {
@@ -363,10 +363,10 @@ int zmk_hid_mouse_button_press(zmk_mouse_button_t button);
 int zmk_hid_mouse_button_release(zmk_mouse_button_t button);
 int zmk_hid_mouse_buttons_press(zmk_mouse_button_flags_t buttons);
 int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons);
-int zmk_hid_mouse_movement_press(int16_t x, int16_t y);
-int zmk_hid_mouse_movement_release(int16_t x, int16_t y);
-int zmk_hid_mouse_wheel_press(int8_t hor, int8_t vert);
-int zmk_hid_mouse_wheel_release(int8_t hor, int8_t vert);
+void zmk_hid_mouse_movement_set(int16_t x, int16_t y);
+void zmk_hid_mouse_scroll_set(int8_t x, int8_t y);
+void zmk_hid_mouse_movement_update(int16_t x, int16_t y);
+void zmk_hid_mouse_scroll_update(int8_t x, int8_t y);
 void zmk_hid_mouse_clear();
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();

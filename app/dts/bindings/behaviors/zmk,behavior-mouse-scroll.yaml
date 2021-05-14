@@ -1,6 +1,6 @@
-description: Mouse move
+description: Mouse scroll
 
-compatible: "zmk,behavior-mouse-move"
+compatible: "zmk,behavior-mouse-scroll"
 
 include: one_param.yaml
 

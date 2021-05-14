@@ -29,35 +29,27 @@
 #define MB8 (0x80)
 
 /* Mouse move behavior */
-
-#define MOVE_UP MOVE_VERT(1)
-
-#define MOVE_DOWN MOVE_VERT(-1)
-
-#define MOVE_LEFT MOVE_HOR(-1)
-
-#define MOVE_RIGHT MOVE_HOR(1)
-
-/* -32767 to 32767, barely usable beyond about 50 (probably depends on screen resolution) */
-#define MOVE_VERT(vert) ((-(vert)) & 0xFFFF)
-
+#define MOVE_VERT(vert) ((vert)&0xFFFF)
+#define MOVE_VERT_DECODE(encoded) (int16_t)((encoded)&0x0000FFFF)
 #define MOVE_HOR(hor) (((hor)&0xFFFF) << 16)
+#define MOVE_HOR_DECODE(encoded) (int16_t)(((encoded)&0xFFFF0000) >> 16)
 
 #define MOVE(hor, vert) (MOVE_HOR(hor) + MOVE_VERT(vert))
 
-/* Mouse wheel behavior */
+#define MOVE_UP MOVE_VERT(-600)
+#define MOVE_DOWN MOVE_VERT(600)
+#define MOVE_LEFT MOVE_HOR(-600)
+#define MOVE_RIGHT MOVE_HOR(600)
 
-#define WHEEL_UP WHEEL_VERT(1)
+/* Mouse scroll behavior */
+#define SCROLL_VERT(vert) ((vert)&0xFFFF)
+#define SCROLL_VERT_DECODE(encoded) (int16_t)((encoded)&0x0000FFFF)
+#define SCROLL_HOR(hor) (((hor)&0xFFFF) << 16)
+#define SCROLL_HOR_DECODE(encoded) (int16_t)(((encoded)&0xFFFF0000) >> 16)
 
-#define WHEEL_DOWN WHEEL_VERT(-1)
+#define SCROLL(hor, vert) (SCROLL_HOR(hor) + SCROLL_VERT(vert))
 
-#define WHEEL_LEFT WHEEL_HOR(-1)
-
-#define WHEEL_RIGHT WHEEL_HOR(1)
-
-/* -127 to 127, barely usable beyond about 10 */
-#define WHEEL_VERT(vert) ((vert)&0xFF)
-
-#define WHEEL_HOR(hor) (((hor)&0xFF) << 8)
-
-#define WHEEL(hor, vert) (WHEEL_HOR(hor) + WHEEL_VERT(vert))
+#define SCROLL_UP SCROLL_VERT(10)
+#define SCROLL_DOWN SCROLL_VERT(-10)
+#define SCROLL_LEFT SCROLL_HOR(-10)
+#define SCROLL_RIGHT SCROLL_HOR(10)
