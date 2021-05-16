@@ -37,7 +37,7 @@
    &trans &kp N1    &kp N2    &kp N3    &kp N4    &kp N5        &kp N6    &kp N7    &kp N8    &kp N9    &kp N0    &kp DEL
    &trans &none     &kp HOME  &kp PG_UP &kp PG_DN &kp END       &kp GRAVE &kp MINUS &kp EQUAL &kp LBKT  &kp RBKT  &kp RGUI
    &trans &kp LGUI  &kp LALT  &kp LCTRL &none     &none         &kp BSLH  &kp UNDER &kp PLUS  &kp LBRC  &kp RBRC  &kp RALT
-                                            &mo 3       &kp BSPC        &trans
+                                             &trans       &kp BKSP        &mo 3
                         >;
                 };
                 
@@ -51,7 +51,7 @@
    &trans &kp EXCL  &kp AT      &kp HASH &kp DLLR &kp PRCNT      &kp CARET &kp AMPS &kp STAR  &kp LPAR  &kp RPAR  &kp DEL
    &trans &none     &none       &none    &none    &none          &kp LEFT  &kp DOWN &kp UP    &kp RIGHT &none     &none
    &trans &none     &none       &none    &none    &none          &none     &none    &kp RCTRL &kp RALT  &kp RGUI  &none
-                                             &trans       &kp RET        &mo 3
+                                            &mo 3       &kp RET         &trans
                         >;
                 };
 
