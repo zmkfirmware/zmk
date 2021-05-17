@@ -23,7 +23,7 @@
     "react": "^16.14.0",
     "react-async": "^10.0.1",
     "react-copy-to-clipboard": "^5.0.2",
-    "react-dom": "^16.8.4",
+    "react-dom": "^16.14.0",
     "react-toastify": "^6.0.9",
     "web-tree-sitter": "^0.17.1"
   },
