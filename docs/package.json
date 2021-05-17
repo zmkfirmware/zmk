@@ -42,7 +42,7 @@
   "devDependencies": {
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-mdx": "^1.8.2",
+    "eslint-plugin-mdx": "^1.13.0",
     "eslint-plugin-react": "^7.23.2",
     "null-loader": "^3.0.0",
     "prettier": "2.1.2",
