@@ -56,7 +56,7 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 ```
 &mt {
 	retro-tap;
-}
+};
 ```
 
 #### Home row mods

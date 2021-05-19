@@ -22,21 +22,20 @@ An example of how to implement the mod-morph "Grave Escape":
 
 ```
 / {
-behaviors {
-    gresc: grave_escape {
-        compatible = "zmk,behavior-mod-morph";
-        label = "GRAVE_ESCAPE";
-        #binding-cells = <0>;
-        bindings = <&kp ESC>, <&kp GRAVE>;
-        mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
-    }
-
-};
+    behaviors {
+        gresc: grave_escape {
+            compatible = "zmk,behavior-mod-morph";
+            label = "GRAVE_ESCAPE";
+            #binding-cells = <0>;
+            bindings = <&kp ESC>, <&kp GRAVE>;
+            mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
+        };
+    };
 
     keymap {
         ...
-    }
-}
+    };
+};
 ```
 
 Note that this specific mod-morph exists in ZMK by default using code `&gresc`.
