@@ -125,7 +125,7 @@
 	&kp LS(LBKT)		&kp LS(N7)	&kp LS(N8)	&kp LS(N9)	&kp LS(RBKT)					&trans	&trans	&trans	&trans	&trans	
 	&kp LS(SEMICOLON)	&kp LS(N4)	&kp LS(N5)	&kp LS(N6)	&kp LS(EQUAL)					&trans	&trans	&trans	&trans	&trans	
 	&kp LS(GRAVE)		&kp LS(N1)	&kp LS(N2)	&kp LS(N3)	&kp LS(BSLH)	            	&trans	&trans	&trans	&trans	&trans	
-                    				&kp LS(DOT)	&kp LS(N0)	&kp LS(MINUS)	&trans	&trans	&trans	&trans	
+                    				&kp LS(DOT)	&kp LS(N0)	&kp LS(MINUS)	&trans	&trans	&trans		
 			>;
 
 			
@@ -148,3 +148,7 @@
 
 			
 		};
+
+	};
+
+};
