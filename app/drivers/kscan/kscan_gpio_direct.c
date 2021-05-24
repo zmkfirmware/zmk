@@ -83,7 +83,7 @@ static int kscan_gpio_config_interrupts(const struct device *dev, gpio_flags_t f
         int err = gpio_pin_interrupt_configure(dev, cfg->pin, flags);
 
         if (err) {
-            LOG_ERR("Unable to enable matrix GPIO interrupt");
+            LOG_ERR("Unable to enable direct GPIO interrupt");
             return err;
         }
     }

@@ -22,24 +22,25 @@ int zmk_event_manager_handle_from(zmk_event_t *event, uint8_t start_index) {
     uint8_t len = __event_subscriptions_end - __event_subscriptions_start;
     for (int i = start_index; i < len; i++) {
         struct zmk_event_subscription *ev_sub = __event_subscriptions_start + i;
-        if (ev_sub->event_type == event->event) {
-            ret = ev_sub->listener->callback(event);
-            if (ret < 0) {
-                LOG_DBG("Listener returned an error: %d", ret);
-                goto release;
-            } else if (ret > 0) {
-                switch (ret) {
-                case ZMK_EV_EVENT_HANDLED:
-                    LOG_DBG("Listener handled the event");
-                    ret = 0;
-                    goto release;
-                case ZMK_EV_EVENT_CAPTURED:
-                    LOG_DBG("Listener captured the event");
-                    event->last_listener_index = i;
-                    // Listeners are expected to free events they capture
-                    return 0;
-                }
-            }
+        if (ev_sub->event_type != event->event) {
+            continue;
+        }
+        ret = ev_sub->listener->callback(event);
+        switch (ret) {
+        case ZMK_EV_EVENT_BUBBLE:
+            continue;
+        case ZMK_EV_EVENT_HANDLED:
+            LOG_DBG("Listener handled the event");
+            ret = 0;
+            goto release;
+        case ZMK_EV_EVENT_CAPTURED:
+            LOG_DBG("Listener captured the event");
+            event->last_listener_index = i;
+            // Listeners are expected to free events they capture
+            return 0;
+        default:
+            LOG_DBG("Listener returned an error: %d", ret);
+            goto release;
         }
     }
 

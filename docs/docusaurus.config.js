@@ -10,6 +10,9 @@ module.exports = {
   projectName: "zmk", // Usually your repo name.
   plugins: [path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin")],
   themeConfig: {
+    colorMode: {
+      respectPrefersColorScheme: true,
+    },
     googleAnalytics: {
       trackingID: "UA-145201102-2",
       anonymizeIP: true,
@@ -29,6 +32,11 @@ module.exports = {
           position: "left",
         },
         { to: "blog", label: "Blog", position: "left" },
+        {
+          to: "power-profiler",
+          label: "Power Profiler",
+          position: "left",
+        },
         {
           href: "https://github.com/zmkfirmware/zmk",
           label: "GitHub",

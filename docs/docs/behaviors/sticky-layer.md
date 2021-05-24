@@ -32,8 +32,8 @@ You can configure a different `release-after-ms` in your keymap:
 / {
     keymap {
         ...
-    }
-}
+    };
+};
 ```
 
 ### Advanced usage

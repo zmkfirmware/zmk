@@ -40,8 +40,8 @@ You can configure a different tapping term in your keymap:
 / {
     keymap {
         ...
-    }
-}
+    };
+};
 ```
 
 ### Additional information
