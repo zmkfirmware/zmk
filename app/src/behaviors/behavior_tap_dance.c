@@ -29,7 +29,7 @@ struct behavior_tap_dance_config {
 
 struct active_tap_dance {
     // tap dance data
-    int tap_counter;
+    int counter;
     uint32_t position;
     const struct behavior_tap_dance_config *config;
     // timer data
@@ -41,24 +41,12 @@ struct active_tap_dance {
 
 struct active_tap_dance the_tap_dance;
 
-static struct active_tap_dance *store_tap_dance(uint32_t position,
-                                                const struct behavior_tap_dance_config *config) {
-    struct active_tap_dance *const tap_dance = &the_tap_dance;
-    tap_dance->tap_counter = 0;
-    tap_dance->position = position;
-    tap_dance->config = config;
-    tap_dance->release_at = 0;
-    tap_dance->timer_cancelled = false;
-    tap_dance->timer_started = false;
-    return tap_dance;
-    return NULL;
-}
- 
-
 static void clear_tap_dance(struct active_tap_dance *tap_dance) {
     LOG_DBG("Clearing Tap Dance");
     tap_dance-> position = ZMK_BHV_TAP_DANCE_POSITION_FREE;
 }
+
+
 
 static inline int press_tap_dance_behavior(struct active_tap_dance *tap_dance,
                                             int64_t timestamp) {
@@ -90,33 +78,40 @@ static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
     //return behavior_keymap_binding_released(&binding, event);
 }
 
-static int stop_timer(struct active_tap_dance *tap_dance) {
+/*static int stop_timer(struct active_tap_dance *tap_dance) {
     LOG_DBG("Stop Timer");
     int timer_cancel_result = k_delayed_work_cancel(&tap_dance->release_timer);
     if (timer_cancel_result == -EINPROGRESS) {
         tap_dance->timer_cancelled = true;
     }
     return timer_cancel_result;
-}
+
+    static struct active_tap_dance  *tap_dance
+}*/
+
+
 
 static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,
                                         struct zmk_behavior_binding_event event) {
     LOG_DBG("On Binding Pressed");
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_tap_dance_config *cfg = dev->config;
-    struct active_tap_dance *tap_dance = &the_tap_dance;
-    if (tap_dance != NULL) {
-        stop_timer(tap_dance);
-        release_tap_dance_behavior(tap_dance, event.timestamp);
-    }
-    tap_dance = store_tap_dance(event.position, cfg);
-    if (tap_dance == NULL) {
-        LOG_ERR("unable to store tap dance");
-        return ZMK_BEHAVIOR_OPAQUE;
-    }
 
-    press_tap_dance_behavior(tap_dance, event.timestamp);
-    LOG_DBG("%d new tap_dance", event.position);
+    if (!the_tap_dance.timer_started){
+        LOG_DBG("Initializing Tap Dance");
+        the_tap_dance.timer_started = true;
+        the_tap_dance.counter = 1;
+        the_tap_dance.position = event.position;
+        the_tap_dance.config = cfg;
+        the_tap_dance.release_at = 0;
+        the_tap_dance.timer_cancelled = false;
+        the_tap_dance.timer_started = false;
+    }
+    else {
+        LOG_DBG("Incrementing Tap Dance");
+        the_tap_dance.counter ++;
+    }
+    LOG_DBG("Counter is now at value: %d", the_tap_dance.counter);
     return ZMK_BEHAVIOR_OPAQUE;    
 }
 
@@ -124,11 +119,6 @@ static int on_tap_dance_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("On Binding Released");
     struct active_tap_dance *tap_dance = &the_tap_dance;
-    if (tap_dance == NULL) {
-        LOG_ERR("ACTIVE STICKY KEY CLEARED TOO EARLY");
-        return ZMK_BEHAVIOR_OPAQUE;
-    }
-
     // No other key was pressed. Start the timer.
     tap_dance->timer_started = true;
     tap_dance->release_at = event.timestamp + tap_dance->config->tapping_term_ms;
@@ -148,7 +138,6 @@ static const struct behavior_driver_api behavior_tap_dance_driver_api = {
 
 void behavior_tap_dance_timer_handler(struct k_work *item) {
     LOG_DBG("Timer Handler Called");
-    LOG_DBG("Counter reached: %d", the_tap_dance.tap_counter);
     struct active_tap_dance *tap_dance =
         CONTAINER_OF(item, struct active_tap_dance, release_timer);
     if (tap_dance->position == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
@@ -159,6 +148,8 @@ void behavior_tap_dance_timer_handler(struct k_work *item) {
     } else {
         release_tap_dance_behavior(tap_dance, tap_dance->release_at);
     }
+    the_tap_dance.counter = 0;
+    the_tap_dance.timer_started = false;
 }
 
 static int behavior_tap_dance_init(const struct device *dev) { 
