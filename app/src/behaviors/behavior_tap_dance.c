@@ -20,9 +20,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+#define ZMK_BHV_TAP_DANCE_MAX_HELD 10
+
 #define ZMK_BHV_TAP_DANCE_POSITION_FREE ULONG_MAX
 
-struct behavior_tap_dance_config {    
+struct behavior_tap_dance_config {
     uint32_t tapping_term_ms;
     int behavior_count;
     struct zmk_behavior_binding *behaviors;
@@ -31,6 +33,7 @@ struct behavior_tap_dance_config {
 struct active_tap_dance {
     // tap dance data
     int counter;
+    bool dance_begun;
     uint32_t position;
     const struct behavior_tap_dance_config *config;
     // timer data
@@ -41,11 +44,69 @@ struct active_tap_dance {
     struct zmk_behavior_binding_event event;
 };
 
-struct active_tap_dance the_tap_dance;
+struct active_tap_dance active_tap_dances[ZMK_BHV_TAP_DANCE_MAX_HELD] = {};
+
+static struct active_tap_dance *store_tap_dance(uint32_t position,
+                                                const struct behavior_tap_dance_config *config) {
+    LOG_DBG("Position Detected at %d", position);
+    for (int i = 0; i < ZMK_BHV_TAP_DANCE_MAX_HELD; i++) {
+        struct active_tap_dance *const tap_dance = &active_tap_dances[i];
+        if (tap_dance->position != ZMK_BHV_TAP_DANCE_POSITION_FREE || tap_dance->timer_cancelled) {
+            tap_dance->counter++;
+            LOG_DBG("Counter balue currently at: %d", tap_dance->counter);
+            continue;
+        }
+        tap_dance->counter = 1;
+        tap_dance->position = position;
+        tap_dance->config = config;
+        tap_dance->release_at = 0;
+        tap_dance->timer_started = false;
+        tap_dance->timer_cancelled = false;
+        return tap_dance;
+    }
+    return NULL;
+}
+
+static struct active_tap_dance *find_tap_dance(uint32_t position) {
+    for (int i = 0; i < ZMK_BHV_TAP_DANCE_MAX_HELD; i++) {
+        if (active_tap_dances[i].position == position && !active_tap_dances[i].timer_cancelled) {
+            return &active_tap_dances[i];
+        }
+    }
+    return NULL;
+}
 
 static void clear_tap_dance(struct active_tap_dance *tap_dance) {
     LOG_DBG("Clearing Tap Dance");
-    tap_dance-> position = ZMK_BHV_TAP_DANCE_POSITION_FREE;
+    tap_dance->position = ZMK_BHV_TAP_DANCE_POSITION_FREE;
+}
+
+static int stop_timer(struct active_tap_dance *tap_dance) {
+    int timer_cancel_result = k_delayed_work_cancel(&tap_dance->release_timer);
+    if (timer_cancel_result == -EINPROGRESS) {
+        // too late to cancel, we'll let the timer handler clear up.
+        tap_dance->timer_cancelled = true;
+    }
+    return timer_cancel_result;
+}
+
+static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
+                                             int64_t timestamp) {
+    LOG_DBG("Release Tap Dance Behavior");
+    LOG_DBG("Counter finally value: %d", tap_dance->counter);
+    struct zmk_behavior_binding binding = tap_dance->config->behaviors[(tap_dance->counter) - 1];
+    struct zmk_behavior_binding_event event = {
+        .position = tap_dance->position,
+        .timestamp = timestamp,
+    };
+    if (tap_dance->counter <= tap_dance->config->behavior_count) {
+        behavior_keymap_binding_pressed(&binding, event);
+        behavior_keymap_binding_released(&binding, event);
+    } else {
+        LOG_DBG("Counter exceeded number of keybinds");
+    }
+    clear_tap_dance(tap_dance);
+    return 0;
 }
 
 static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,
@@ -53,31 +114,35 @@ static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,
     LOG_DBG("On Binding Pressed");
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_tap_dance_config *cfg = dev->config;
-
-    if (!the_tap_dance.timer_started){
-        LOG_DBG("Initializing Tap Dance");
-        the_tap_dance.timer_started = true;
-        the_tap_dance.counter = 0;
-        the_tap_dance.position = event.position;
-        the_tap_dance.config = cfg;
-        the_tap_dance.release_at = 0;
-        the_tap_dance.timer_cancelled = false;
-        the_tap_dance.timer_started = false;
-        
+    struct active_tap_dance *tap_dance;
+    tap_dance = find_tap_dance(event.position);
+    if (tap_dance != NULL) {
+        stop_timer(tap_dance);
+        // release_tap_dance_behavior(tap_dance, event.timestamp);
     }
-    else {
-        LOG_DBG("Incrementing Tap Dance");
+    tap_dance = store_tap_dance(event.position, cfg);
+    if (tap_dance == NULL) {
+        LOG_ERR("unable to store tap dance, did you press more than %d tap_dance?",
+                ZMK_BHV_TAP_DANCE_MAX_HELD);
+        return ZMK_BEHAVIOR_OPAQUE;
     }
-    the_tap_dance.counter ++;
-    the_tap_dance.event = event;
-    LOG_DBG("Counter is now at value: %d", the_tap_dance.counter);
-    return ZMK_BEHAVIOR_OPAQUE;    
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static int on_tap_dance_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
+                                         struct zmk_behavior_binding_event event) {
     LOG_DBG("On Binding Released");
-    struct active_tap_dance *tap_dance = &the_tap_dance;
+    struct active_tap_dance *tap_dance = find_tap_dance(event.position);
+    if (tap_dance == NULL) {
+        LOG_ERR("ACTIVE TAP DANCE CLEARED TOO EARLY");
+        return ZMK_BEHAVIOR_OPAQUE;
+    }
+
+    /*if (tap_dance->position != 0 && tap_dance->modified_key_keycode != 0) {
+        LOG_DBG("Another key was pressed while the sticky key was pressed. Act like a normal key.");
+        return release_sticky_key_behavior(tap_dance, event.timestamp);
+    }*/
+
     // No other key was pressed. Start the timer.
     tap_dance->timer_started = true;
     tap_dance->release_at = event.timestamp + tap_dance->config->tapping_term_ms;
@@ -92,25 +157,15 @@ static int on_tap_dance_binding_released(struct zmk_behavior_binding *binding,
 
 void behavior_tap_dance_timer_handler(struct k_work *item) {
     LOG_DBG("Timer Handler Called");
-    struct active_tap_dance *tap_dance = 
-        CONTAINER_OF(item, struct active_tap_dance, release_timer);
+    struct active_tap_dance *tap_dance = CONTAINER_OF(item, struct active_tap_dance, release_timer);
     if (tap_dance->position == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
         return;
     }
     if (tap_dance->timer_cancelled) {
         tap_dance->timer_cancelled = false;
     } else {
-        if (the_tap_dance.counter <= the_tap_dance.config->behavior_count) {
-            behavior_keymap_binding_pressed(&the_tap_dance.config->behaviors[the_tap_dance.counter-1], the_tap_dance.event);
-            behavior_keymap_binding_released(&the_tap_dance.config->behaviors[the_tap_dance.counter-1], the_tap_dance.event);
-        }
-        else{
-            LOG_DBG("Counter exceeded number of keybinds");
-        }
-        clear_tap_dance(tap_dance);
+        release_tap_dance_behavior(tap_dance, tap_dance->release_at);
     }
-    the_tap_dance.counter = 0;
-    the_tap_dance.timer_started = false;
 }
 
 static const struct behavior_driver_api behavior_tap_dance_driver_api = {
@@ -130,12 +185,14 @@ static const struct behavior_driver_api behavior_tap_dance_driver_api = {
 #define TRANSFORMED_BINDINGS(node)                                                                 \
     { UTIL_LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, node) }
 
-static int behavior_tap_dance_init(const struct device *dev) { 
+static int behavior_tap_dance_init(const struct device *dev) {
     static bool init_first_run = true;
     if (init_first_run) {
-        k_delayed_work_init(&the_tap_dance.release_timer,
-                            behavior_tap_dance_timer_handler);
-        the_tap_dance.position = ZMK_BHV_TAP_DANCE_POSITION_FREE;
+        for (int i = 0; i < ZMK_BHV_TAP_DANCE_MAX_HELD; i++) {
+            k_delayed_work_init(&active_tap_dances[i].release_timer,
+                                behavior_tap_dance_timer_handler);
+            active_tap_dances[i].position = ZMK_BHV_TAP_DANCE_POSITION_FREE;
+        }
     }
     init_first_run = false;
     return 0;
@@ -144,19 +201,18 @@ static int behavior_tap_dance_init(const struct device *dev) {
 struct behavior_tap_dance_data {};
 static struct behavior_tap_dance_data behavior_tap_dance_data;
 
-#define KP_INST(n)                                                                                                         \
-    static struct zmk_behavior_binding                                                                                     \
-        behavior_tap_dance_config_##n##_bindings[DT_INST_PROP_LEN(n, bindings)] =                                          \
-            TRANSFORMED_BINDINGS(n);                                                                                       \
-    static struct behavior_tap_dance_config behavior_tap_dance_config_##n = {                                              \
-        .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                                               \
-        .behaviors = behavior_tap_dance_config_##n##_bindings,                                                             \
-        .behavior_count = DT_INST_PROP_LEN(n, bindings)                                                                    \
-    };                                                                                                                     \
-    DEVICE_AND_API_INIT(behavior_tap_dance_##n, DT_INST_LABEL(n), behavior_tap_dance_init, &behavior_tap_dance_data,       \
-                        &behavior_tap_dance_config_##n, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                  \
-                        &behavior_tap_dance_driver_api);
-    
+#define KP_INST(n)                                                                                 \
+    static struct zmk_behavior_binding                                                             \
+        behavior_tap_dance_config_##n##_bindings[DT_INST_PROP_LEN(n, bindings)] =                  \
+            TRANSFORMED_BINDINGS(n);                                                               \
+    static struct behavior_tap_dance_config behavior_tap_dance_config_##n = {                      \
+        .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
+        .behaviors = behavior_tap_dance_config_##n##_bindings,                                     \
+        .behavior_count = DT_INST_PROP_LEN(n, bindings)};                                          \
+    DEVICE_AND_API_INIT(behavior_tap_dance_##n, DT_INST_LABEL(n), behavior_tap_dance_init,         \
+                        &behavior_tap_dance_data, &behavior_tap_dance_config_##n, APPLICATION,     \
+                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_tap_dance_driver_api);
+
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 
 #endif
