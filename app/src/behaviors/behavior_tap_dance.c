@@ -46,14 +46,14 @@ struct active_tap_dance {
 
 struct active_tap_dance active_tap_dances[ZMK_BHV_TAP_DANCE_MAX_HELD] = {};
 
+static int stop_timer(struct active_tap_dance *tap_dance);
+
 static struct active_tap_dance *store_tap_dance(uint32_t position,
                                                 const struct behavior_tap_dance_config *config) {
     LOG_DBG("Position Detected at %d", position);
     for (int i = 0; i < ZMK_BHV_TAP_DANCE_MAX_HELD; i++) {
         struct active_tap_dance *const tap_dance = &active_tap_dances[i];
         if (tap_dance->position != ZMK_BHV_TAP_DANCE_POSITION_FREE || tap_dance->timer_cancelled) {
-            tap_dance->counter++;
-            LOG_DBG("Counter balue currently at: %d", tap_dance->counter);
             continue;
         }
         tap_dance->counter = 1;
@@ -93,7 +93,6 @@ static int stop_timer(struct active_tap_dance *tap_dance) {
 static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
                                              int64_t timestamp) {
     LOG_DBG("Release Tap Dance Behavior");
-    LOG_DBG("Counter finally value: %d", tap_dance->counter);
     struct zmk_behavior_binding binding = tap_dance->config->behaviors[(tap_dance->counter) - 1];
     struct zmk_behavior_binding_event event = {
         .position = tap_dance->position,
@@ -109,6 +108,7 @@ static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
     return 0;
 }
 
+
 static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,
                                         struct zmk_behavior_binding_event event) {
     LOG_DBG("On Binding Pressed");
@@ -118,13 +118,17 @@ static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,
     tap_dance = find_tap_dance(event.position);
     if (tap_dance != NULL) {
         stop_timer(tap_dance);
-        // release_tap_dance_behavior(tap_dance, event.timestamp);
+        if (++tap_dance->counter >= cfg->behavior_count){
+            release_tap_dance_behavior(tap_dance, event.timestamp);
+        }
     }
-    tap_dance = store_tap_dance(event.position, cfg);
-    if (tap_dance == NULL) {
-        LOG_ERR("unable to store tap dance, did you press more than %d tap_dance?",
-                ZMK_BHV_TAP_DANCE_MAX_HELD);
-        return ZMK_BEHAVIOR_OPAQUE;
+    else{
+        tap_dance = store_tap_dance(event.position, cfg);
+        if (tap_dance == NULL) {
+            LOG_ERR("unable to store tap dance, did you press more than %d tap_dance?",
+                    ZMK_BHV_TAP_DANCE_MAX_HELD);
+            return ZMK_BEHAVIOR_OPAQUE;
+        }
     }
     return ZMK_BEHAVIOR_OPAQUE;
 }
