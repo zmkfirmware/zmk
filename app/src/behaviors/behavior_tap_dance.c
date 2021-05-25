@@ -33,15 +33,19 @@ struct behavior_tap_dance_config {
 struct active_tap_dance {
     // tap dance data
     int counter;
-    bool dance_begun;
     uint32_t position;
+    uint32_t param1;
+    uint32_t param2;
     const struct behavior_tap_dance_config *config;
     // timer data
     bool timer_started;
     bool timer_cancelled;
     int64_t release_at;
     struct k_delayed_work release_timer;
-    struct zmk_behavior_binding_event event;
+    // usage page and keycode for the key that is being modified by this sticky key
+    uint8_t modified_key_usage_page;
+    uint32_t modified_key_keycode;
+
 };
 
 struct active_tap_dance active_tap_dances[ZMK_BHV_TAP_DANCE_MAX_HELD] = {};
@@ -62,6 +66,8 @@ static struct active_tap_dance *store_tap_dance(uint32_t position,
         tap_dance->release_at = 0;
         tap_dance->timer_started = false;
         tap_dance->timer_cancelled = false;
+        tap_dance->modified_key_usage_page = 0;
+        tap_dance->modified_key_keycode = 0;
         return tap_dance;
     }
     return NULL;
@@ -90,6 +96,23 @@ static int stop_timer(struct active_tap_dance *tap_dance) {
     return timer_cancel_result;
 }
 
+static inline int press_tap_dance_behavior(struct active_tap_dance *tap_dance,
+                                             int64_t timestamp) {
+    LOG_DBG("Press Tap Dance Behavior");
+    struct zmk_behavior_binding binding = tap_dance->config->behaviors[(tap_dance->counter) - 1];
+    struct zmk_behavior_binding_event event = {
+        .position = tap_dance->position,
+        .timestamp = timestamp,
+    };
+    if (tap_dance->counter <= tap_dance->config->behavior_count) {
+        behavior_keymap_binding_pressed(&binding, event);
+    } else {
+        LOG_DBG("Counter exceeded number of keybinds");
+    }
+    clear_tap_dance(tap_dance);
+    return 0;
+}
+
 static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
                                              int64_t timestamp) {
     LOG_DBG("Release Tap Dance Behavior");
@@ -99,7 +122,6 @@ static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
         .timestamp = timestamp,
     };
     if (tap_dance->counter <= tap_dance->config->behavior_count) {
-        behavior_keymap_binding_pressed(&binding, event);
         behavior_keymap_binding_released(&binding, event);
     } else {
         LOG_DBG("Counter exceeded number of keybinds");
@@ -119,6 +141,7 @@ static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,
     if (tap_dance != NULL) {
         stop_timer(tap_dance);
         if (++tap_dance->counter >= cfg->behavior_count){
+            press_tap_dance_behavior(tap_dance, event.timestamp);
             release_tap_dance_behavior(tap_dance, event.timestamp);
         }
     }
@@ -142,10 +165,11 @@ static int on_tap_dance_binding_released(struct zmk_behavior_binding *binding,
         return ZMK_BEHAVIOR_OPAQUE;
     }
 
-    /*if (tap_dance->position != 0 && tap_dance->modified_key_keycode != 0) {
+    if (tap_dance->position != 0 && tap_dance->modified_key_keycode != 0) {
         LOG_DBG("Another key was pressed while the sticky key was pressed. Act like a normal key.");
-        return release_sticky_key_behavior(tap_dance, event.timestamp);
-    }*/
+        press_tap_dance_behavior(tap_dance, event.timestamp);
+        return release_tap_dance_behavior(tap_dance, event.timestamp);
+    }
 
     // No other key was pressed. Start the timer.
     tap_dance->timer_started = true;
@@ -168,6 +192,7 @@ void behavior_tap_dance_timer_handler(struct k_work *item) {
     if (tap_dance->timer_cancelled) {
         tap_dance->timer_cancelled = false;
     } else {
+        press_tap_dance_behavior(tap_dance, tap_dance->release_at);
         release_tap_dance_behavior(tap_dance, tap_dance->release_at);
     }
 }
@@ -176,6 +201,59 @@ static const struct behavior_driver_api behavior_tap_dance_driver_api = {
     .binding_pressed = on_tap_dance_binding_pressed,
     .binding_released = on_tap_dance_binding_released,
 };
+
+static int tap_dance_keycode_state_changed_listener(const zmk_event_t *eh);
+
+ZMK_LISTENER(behavior_tap_dance, tap_dance_keycode_state_changed_listener);
+ZMK_SUBSCRIPTION(behavior_tap_dance, zmk_keycode_state_changed);
+
+static int tap_dance_keycode_state_changed_listener(const zmk_event_t *eh) {
+    struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
+    if (ev == NULL) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+    for (int i = 0; i < ZMK_BHV_TAP_DANCE_MAX_HELD; i++) {
+        struct active_tap_dance *tap_dance = &active_tap_dances[i];
+        if (tap_dance->position == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
+            continue;
+        }
+
+        if (strcmp(tap_dance->config->behaviors->behavior_dev, "KEY_PRESS") == 0 &&
+            HID_USAGE_ID(tap_dance->param1) == ev->keycode &&
+            HID_USAGE_PAGE(tap_dance->param1) == ev->usage_page &&
+            SELECT_MODS(tap_dance->param1) == ev->implicit_modifiers) {
+            // don't catch key down events generated by the sticky key behavior itself
+            continue;
+        }
+
+        // If events were queued, the timer event may be queued late or not at all.
+        // Release the sticky key if the timer should've run out in the meantime.
+        if (tap_dance->release_at != 0 && ev->timestamp > tap_dance->release_at) {
+            stop_timer(tap_dance);
+            release_tap_dance_behavior(tap_dance, tap_dance->release_at);
+            continue;
+        }
+        if (ev->state) { // key down
+            if (tap_dance->modified_key_usage_page != 0 || tap_dance->modified_key_keycode != 0) {
+                // this sticky key is already in use for a keycode
+                continue;
+            }
+            if (tap_dance->timer_started) {
+                stop_timer(tap_dance);
+            }
+            tap_dance->modified_key_usage_page = ev->usage_page;
+            tap_dance->modified_key_keycode = ev->keycode;
+        } else { // key up
+            if (tap_dance->timer_started &&
+                tap_dance->modified_key_usage_page == ev->usage_page &&
+                tap_dance->modified_key_keycode == ev->keycode) {
+                stop_timer(tap_dance);
+                release_tap_dance_behavior(tap_dance, ev->timestamp);
+            }
+        }
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
 
 #define _TRANSFORM_ENTRY(idx, node)                                                                \
     {                                                                                              \
