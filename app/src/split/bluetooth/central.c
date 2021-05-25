@@ -127,7 +127,7 @@ static uint8_t split_central_discovery_func(struct bt_conn *conn, const struct b
         }
     } else if (!bt_uuid_cmp(discover_params.uuid,
                             BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID))) {
-        memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
+        memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(struct bt_uuid_16));
         discover_params.uuid = &uuid.uuid;
         discover_params.start_handle = attr->handle + 2;
         discover_params.type = BT_GATT_DISCOVER_DESCRIPTOR;
