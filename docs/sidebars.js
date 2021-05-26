@@ -25,6 +25,7 @@ module.exports = {
       "behaviors/mod-morph",
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
+      "behaviors/tap-dance",
       "behaviors/reset",
       "behaviors/bluetooth",
       "behaviors/outputs",
