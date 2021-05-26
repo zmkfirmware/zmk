@@ -18,11 +18,6 @@ Defines how much time in milliseconds after the tap dance is pressed before a ke
 #### `bindings`
 
 A list of one or more keybinds. This list can include [any keycode in ZMK](../codes/) and keybinds for ZMK behaviors.
-
-:::warning
-Tap dances currently do not support hold-taps.
-:::
-
 #### Example Usage
 
 This example configures a tap dance that outputs the number of keypresses from 1-5:
