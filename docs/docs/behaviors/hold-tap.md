@@ -85,7 +85,7 @@ This example configures a hold-tap that works well for homerow mods:
 
 		default_layer {
 			bindings = <
-	            &hm LCTRL A &hm LGUI S &hm LALT D &hm LSHFT F
+	            &hm LCTRL A &hm LGUI S &hm LALT D &hm LSHIFT F
 			>;
 		};
 	};

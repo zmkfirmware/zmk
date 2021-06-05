@@ -19,13 +19,13 @@ The Mod-Tap behavior either acts as a held modifier, or as a tapped keycode.
 ### Behavior Binding
 
 - Reference: `&mt`
-- Parameter #1: The keycode to be sent when activating as a modifier, e.g. `LSHFT`
+- Parameter #1: The keycode to be sent when activating as a modifier, e.g. `LSHIFT`
 - Parameter #2: The keycode to sent when used as a tap, e.g. `A`, `B`.
 
 Example:
 
 ```
-&mt LSHFT A
+&mt LSHIFT A
 ```
 
 ### Configuration
