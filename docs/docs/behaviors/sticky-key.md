@@ -12,12 +12,12 @@ By default, sticky keys stay pressed for a second if you don't press any other k
 ### Behavior Binding
 
 - Reference: `&sk`
-- Parameter #1: The keycode , e.g. `LSHFT`
+- Parameter #1: The keycode , e.g. `LSHIFT`
 
 Example:
 
 ```
-&sk LSHFT
+&sk LSHIFT
 ```
 
 You can use any keycode that works for `&kp` as parameter to `&sk`:
@@ -44,7 +44,7 @@ You can configure a different `release-after-ms` in your keymap:
 
 ### Advanced usage
 
-Sticky keys can be combined; if you tap `&sk LCTRL` and then `&sk LSHFT` and then `&kp A`, the output will be ctrl+shift+a.
+Sticky keys can be combined; if you tap `&sk LCTRL` and then `&sk LSHIFT` and then `&kp A`, the output will be ctrl+shift+a.
 
 ### Comparison to QMK
 

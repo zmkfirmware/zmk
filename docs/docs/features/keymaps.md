@@ -70,7 +70,7 @@ In this case, the `A` is actually a define for the raw HID keycode, to make keym
 For example of a binding that uses two parameters, you can see how "mod-tap" (`mt`) is bound:
 
 ```
-&mt LSHFT D
+&mt LSHIFT D
 ```
 
 Here, the first parameter is the set of modifiers that should be used for the "hold" behavior, and the second
@@ -94,7 +94,7 @@ The top two lines of most keymaps should include:
 
 The first defines the nodes for all the available behaviors in ZMK, which will be referenced in the behavior bindings. This is how bindings like `&kp` can reference the key press behavior defined with an anchor name of `kp`.
 
-The second include brings in the defines for all the keycodes (e.g. `A`, `N1`, `C_PLAY`) and the modifiers (e.g. `LSHFT`) used for various behavior bindings.
+The second include brings in the defines for all the keycodes (e.g. `A`, `N1`, `C_PLAY`) and the modifiers (e.g. `LSHIFT`) used for various behavior bindings.
 
 ### Root devicetree Node
 
