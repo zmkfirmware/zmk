@@ -82,7 +82,7 @@ Currently, ZMK only supports wireless split, but wired split is possible and we 
 
 ### What bootloader does ZMK use?
 
-ZMK isn’t designed for any particular bootloader, and supports flashing different boards with different flash utilities (e.g. OpenOCD, nrfjprog, etc.). So if you have any difficulties, please let us know on [Discord](https://zmkfirmware.dev/community/discord/invite)!
+ZMK isn’t designed for any particular bootloader, and supports flashing different boards with different flash utilities (e.g. OpenOCD, nrfjprog, etc.). So if you have any difficulties, please let us know on [Discord](https://zmk.dev/community/discord/invite)!
 
 ### Can I contribute?
 
@@ -90,11 +90,11 @@ Of course! Please use the developer [documentation](/docs) to get started!
 
 ### I have an idea! What should I do?
 
-Please join us on [Discord](https://zmkfirmware.dev/community/discord/invite) and discuss it with us!
+Please join us on [Discord](https://zmk.dev/community/discord/invite) and discuss it with us!
 
 ### I want to add a new keyboard! What should I do?
 
-The exact process for the management of all the possible hardware is still being finalized, but any developer looking to contribute new keyboard definitions should chat with us on [Discord](https://zmkfirmware.dev/community/discord/invite) to get started.
+The exact process for the management of all the possible hardware is still being finalized, but any developer looking to contribute new keyboard definitions should chat with us on [Discord](https://zmk.dev/community/discord/invite) to get started.
 
 ### Does ZMK have a Code of Conduct?
 

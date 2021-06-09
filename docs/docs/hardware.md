@@ -49,7 +49,7 @@ In addition to the basic keyboard functionality, there is some initial support f
 - OLEDs
 - RGB Underglow
 
-Until detailed documentation is available, feel free to ask questions about how these are supported in the [Discord server](https://zmkfirmware.dev/community/discord/invite).
+Until detailed documentation is available, feel free to ask questions about how these are supported in the [Discord server](https://zmk.dev/community/discord/invite).
 
 ## Contributing
 
