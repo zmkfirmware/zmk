@@ -42,17 +42,57 @@ struct bvd_data {
     uint8_t state_of_charge;
 };
 
-static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
-    // Simple linear approximation of a battery based off adafruit's discharge graph:
-    // https://learn.adafruit.com/li-ion-and-lipoly-batteries/voltages
+struct charge_level {
+    int16_t mv;
+    uint8_t pct;
+};
 
-    if (bat_mv >= 4200) {
-        return 100;
-    } else if (bat_mv <= 3450) {
-        return 0;
+#define BATTERY_CHARGE_LEVEL_LUT_COUNT 27
+struct charge_level charge_level_lut[BATTERY_CHARGE_LEVEL_LUT_COUNT] = {
+    {3434, 0},  {3457, 4},  {3487, 8},  {3520, 12}, {3545, 15}, {3577, 19}, {3595, 23},
+    {3609, 27}, {3618, 31}, {3625, 35}, {3633, 38}, {3643, 42}, {3656, 46}, {3672, 50},
+    {3696, 54}, {3733, 58}, {3767, 62}, {3796, 65}, {3825, 69}, {3862, 73}, {3899, 77},
+    {3936, 81}, {3976, 85}, {4023, 88}, {4068, 92}, {4120, 96}, {4177, 100}};
+
+/**
+ * @brief Converts LiIon battery voltage to percentage.
+ * @details The function uses a LUT and linear interpolation for estimating charge status
+ *          based on the battery voltage. The LUT contains the discharge curve of the battery.
+ */
+static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
+
+    uint8_t charge_state = 0;
+
+    // If battery voltage exceeds LUT maximum voltage, assume fully charged state
+    if (bat_mv >= charge_level_lut[BATTERY_CHARGE_LEVEL_LUT_COUNT - 1].mv) {
+        charge_state = 100;
+    } else {
+        // Otherwise, traverse LUT and interpolate
+        for (uint8_t lut_idx = 0; lut_idx < BATTERY_CHARGE_LEVEL_LUT_COUNT - 1; lut_idx++) {
+            if (charge_level_lut[lut_idx].mv <= bat_mv &&
+                bat_mv <= charge_level_lut[lut_idx + 1].mv) {
+                // Look for a voltage that lies between two adjacent LUT indices
+
+                // Calculate the distance to the next lower voltage in the LUT
+                double distLower = bat_mv - charge_level_lut[lut_idx].mv;
+
+                // Calculate the distance between the voltages of the adjacent LUT indices
+                double distAdjacent =
+                    charge_level_lut[lut_idx + 1].mv - charge_level_lut[lut_idx].mv;
+
+                // Calculate the linear slope within the chosen bracket
+                double slope = (charge_level_lut[lut_idx + 1].pct - charge_level_lut[lut_idx].pct) /
+                               distAdjacent;
+
+                // Resolve linear equation
+                charge_state = charge_level_lut[lut_idx].pct + slope * distLower;
+                break;
+            }
+        }
     }
 
-    return bat_mv * 2 / 15 - 459;
+    // If not in range of the LUT, this returns 0
+    return charge_state;
 }
 
 static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) {
