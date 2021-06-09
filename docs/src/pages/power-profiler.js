@@ -30,10 +30,8 @@ function PowerProfiler() {
   const { value: psuType, bind: bindPsuType } = useInput("");
   const { value: outputV, bind: bindOutputV } = useInput(3.3);
   const { value: quiescentMicroA, bind: bindQuiescentMicroA } = useInput(55);
-  const {
-    value: otherQuiescentMicroA,
-    bind: bindOtherQuiescentMicroA,
-  } = useInput(0);
+  const { value: otherQuiescentMicroA, bind: bindOtherQuiescentMicroA } =
+    useInput(0);
   const { value: efficiency, bind: bindEfficiency } = useInput(0.9);
 
   const { value: bondedQty, bind: bindBondedQty } = useInput(1);
