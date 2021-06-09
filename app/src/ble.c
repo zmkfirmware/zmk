@@ -548,6 +548,28 @@ static void zmk_ble_ready(int err) {
     update_advertising();
 }
 
+int zmk_ble_reset_clear_all_bonds() {
+    LOG_WRN("Clearing all existing BLE bond information from the keyboard");
+
+    for (int i = 0; i < 10; i++) {
+        bt_unpair(i, NULL);
+    }
+    int ret = 0;
+    for (int i = 0; i < PROFILE_COUNT; i++) {
+        char setting_name[15];
+        sprintf(setting_name, "ble/profiles/%d", i);
+
+        int err = settings_delete(setting_name);
+        if (err) {
+            LOG_ERR("Failed to delete setting: %d", err);
+            ret -= 1;
+        }
+    }
+
+    update_advertising();
+    return ret;
+}
+
 static int zmk_ble_init(const struct device *_arg) {
     int err = bt_enable(NULL);
 
@@ -573,21 +595,7 @@ static int zmk_ble_init(const struct device *_arg) {
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START)
-    LOG_WRN("Clearing all existing BLE bond information from the keyboard");
-
-    for (int i = 0; i < 10; i++) {
-        bt_unpair(i, NULL);
-    }
-
-    for (int i = 0; i < PROFILE_COUNT; i++) {
-        char setting_name[15];
-        sprintf(setting_name, "ble/profiles/%d", i);
-
-        err = settings_delete(setting_name);
-        if (err) {
-            LOG_ERR("Failed to delete setting: %d", err);
-        }
-    }
+    zmk_ble_reset_clear_all_bonds();
 #endif
 
     bt_conn_cb_register(&conn_callbacks);

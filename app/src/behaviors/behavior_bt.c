@@ -24,6 +24,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     switch (binding->param1) {
     case BT_CLR_CMD:
         return zmk_ble_clear_bonds();
+    case BT_RST_CMD:
+        return zmk_ble_reset_clear_all_bonds();
     case BT_NXT_CMD:
         return zmk_ble_prof_next();
     case BT_PRV_CMD:
