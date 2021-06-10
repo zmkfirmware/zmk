@@ -5,7 +5,7 @@ sidebar_label: Tap Dance
 
 ## Summary
 
-A tap dance key outputs a keycode or behavior corresponding to how many times it is pressed.
+A tap dance key outputs a keycode or behavior corresponding to how many times it is pressed. 
 Tap dances are completely custom, so for every unique tap dance key, a new tap dance must be defined in your keymap's
 `behaviors`.
 
@@ -18,7 +18,6 @@ Defines how much time in milliseconds after the tap dance is pressed before a ke
 #### `bindings`
 
 A list of one or more keybinds. This list can include [any keycode in ZMK](../codes/) and keybinds for ZMK behaviors.
-
 #### Example Usage
 
 This example configures a tap dance that outputs the number of keypresses from 1-5:
