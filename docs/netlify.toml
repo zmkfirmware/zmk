@@ -2,3 +2,13 @@
   from = "/community/discord/invite"
   to = "https://discord.gg/sycytVQ"
   status = 302
+
+[[redirects]]
+  from = "https://zmkfirmware.dev/*"
+  to = "https://zmk.dev/:splat"
+  force = true
+
+[[redirects]]
+  from = "https://www.zmkfirmware.dev/*"
+  to = "https://www.zmk.dev/:splat"
+  force = true
