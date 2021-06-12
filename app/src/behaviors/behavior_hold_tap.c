@@ -58,6 +58,8 @@ struct behavior_hold_tap_config {
     int quick_tap_ms;
     enum flavor flavor;
     bool retro_tap;
+    int32_t hold_enabler_keys[ZMK_KEYMAP_LEN];
+    int32_t hold_enabler_keys_len;
 };
 
 // this data is specific for each hold-tap
@@ -89,6 +91,8 @@ struct last_tapped {
 };
 
 struct last_tapped last_tapped;
+
+bool is_key_position_pressed[ZMK_KEYMAP_LEN] = {0};
 
 static void store_last_tapped(struct active_hold_tap *hold_tap) {
     last_tapped.position = hold_tap->position;
@@ -217,16 +221,38 @@ static void clear_hold_tap(struct active_hold_tap *hold_tap) {
     hold_tap->work_is_cancelled = false;
 }
 
+static bool
+are_any_hold_enabler_keys_pressed(const struct behavior_hold_tap_config *hold_tap_config) {
+    struct behavior_hold_tap_config config = *hold_tap_config;
+    if (hold_tap_config->hold_enabler_keys_len == 0) {
+        return true;
+    }
+    for (int i = 0; i < hold_tap_config->hold_enabler_keys_len; i++) {
+        if (is_key_position_pressed[config.hold_enabler_keys[i]]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static void decide_balanced(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
         hold_tap->status = STATUS_TAP;
         return;
     case HT_OTHER_KEY_UP:
-        hold_tap->status = STATUS_HOLD_INTERRUPT;
+        if (are_any_hold_enabler_keys_pressed(hold_tap->config)) {
+            hold_tap->status = STATUS_HOLD_INTERRUPT;
+        } else {
+            hold_tap->status = STATUS_TAP;
+        }
         return;
     case HT_TIMER_EVENT:
-        hold_tap->status = STATUS_HOLD_TIMER;
+        if (are_any_hold_enabler_keys_pressed(hold_tap->config)) {
+            hold_tap->status = STATUS_HOLD_TIMER;
+        } else {
+            hold_tap->status = STATUS_TAP;
+        }
         return;
     case HT_QUICK_TAP:
         hold_tap->status = STATUS_TAP;
@@ -242,7 +268,11 @@ static void decide_tap_preferred(struct active_hold_tap *hold_tap, enum decision
         hold_tap->status = STATUS_TAP;
         return;
     case HT_TIMER_EVENT:
-        hold_tap->status = STATUS_HOLD_TIMER;
+        if (are_any_hold_enabler_keys_pressed(hold_tap->config)) {
+            hold_tap->status = STATUS_HOLD_TIMER;
+        } else {
+            hold_tap->status = STATUS_TAP;
+        }
         return;
     case HT_QUICK_TAP:
         hold_tap->status = STATUS_TAP;
@@ -258,10 +288,18 @@ static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decisio
         hold_tap->status = STATUS_TAP;
         return;
     case HT_OTHER_KEY_DOWN:
-        hold_tap->status = STATUS_HOLD_INTERRUPT;
+        if (are_any_hold_enabler_keys_pressed(hold_tap->config)) {
+            hold_tap->status = STATUS_HOLD_INTERRUPT;
+        } else {
+            hold_tap->status = STATUS_TAP;
+        }
         return;
     case HT_TIMER_EVENT:
-        hold_tap->status = STATUS_HOLD_TIMER;
+        if (are_any_hold_enabler_keys_pressed(hold_tap->config)) {
+            hold_tap->status = STATUS_HOLD_TIMER;
+        } else {
+            hold_tap->status = STATUS_TAP;
+        }
         return;
     case HT_QUICK_TAP:
         hold_tap->status = STATUS_TAP;
@@ -498,6 +536,9 @@ static const struct behavior_driver_api behavior_hold_tap_driver_api = {
 static int position_state_changed_listener(const zmk_event_t *eh) {
     struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
 
+    // Update key position state.
+    is_key_position_pressed[ev->position] = ev->state;
+
     update_hold_status_for_retro_tap(ev->position);
 
     if (undecided_hold_tap == NULL) {
@@ -608,6 +649,8 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
         .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
         .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
+        .hold_enabler_keys = DT_INST_PROP(n, hold_enabler_keys),                                   \
+        .hold_enabler_keys_len = DT_INST_PROP_LEN(n, hold_enabler_keys),                           \
     };                                                                                             \
     DEVICE_AND_API_INIT(behavior_hold_tap_##n, DT_INST_LABEL(n), behavior_hold_tap_init,           \
                         &behavior_hold_tap_data, &behavior_hold_tap_config_##n, APPLICATION,       \
