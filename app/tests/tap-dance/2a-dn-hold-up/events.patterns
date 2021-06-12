@@ -1,0 +1,4 @@
+s/.*hid_listener_keycode/kp/p
+s/.*on_tap_dance_binding/td_binding/p
+s/.*behavior_tap_dance_timer/td_timer/p
+s/.*tap_dance_position_state_changed_listener/position_changed/p

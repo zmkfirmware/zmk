@@ -1,0 +1,27 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+	behaviors {
+
+        tdb: tap_dance_basic {
+            compatible = "zmk,behavior-tap-dance";
+            label = "TAP_DANCE_BASIC";
+            #binding-cells = <0>;
+            tapping_term_ms = <200>;
+            bindings = <&kp N1>, <&kp N2>, <&kp N3>;
+        };
+    };
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&tdb   &kp N0
+				&kp N0 &kp N0>;
+		};
+	};
+};
