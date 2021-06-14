@@ -53,7 +53,7 @@ sudo apt install -y \
 	autoconf \
 	automake \
 	build-essential \
-        bzip2 \
+	bzip2 \
 	ccache \
 	device-tree-compiler \
 	dfu-util \
@@ -95,7 +95,7 @@ sudo apt install -y \
 	autoconf \
 	automake \
 	build-essential \
-        bzip2 \
+	bzip2 \
 	ccache \
 	device-tree-compiler \
 	dfu-util \
@@ -135,7 +135,7 @@ sudo dnf install -y \
 	wget \
 	autoconf \
 	automake \
-        bzip2 \
+	bzip2 \
 	ccache \
 	dtc \
 	dfu-util \
