@@ -48,24 +48,24 @@ With the latest package information, you can now install the base dependencies:
 
 ```sh
 sudo apt install -y \
-	git \
-	wget \
 	autoconf \
 	automake \
 	build-essential \
 	bzip2 \
 	ccache \
+	cmake \
 	device-tree-compiler \
 	dfu-util \
 	g++ \
 	gcc \
+	git \
 	libtool \
 	make \
 	ninja-build \
-	cmake \
 	python3-dev \
 	python3-pip \
 	python3-setuptools \
+	wget \
 	xz-utils
 ```
 
@@ -90,24 +90,24 @@ With the latest package information, you can now install the base dependencies:
 
 ```sh
 sudo apt install -y \
-	git \
-	wget \
 	autoconf \
 	automake \
 	build-essential \
 	bzip2 \
 	ccache \
+	cmake \
 	device-tree-compiler \
 	dfu-util \
 	g++ \
 	gcc \
+	git \
 	libtool \
 	make \
 	ninja-build \
-	cmake \
 	python3-dev \
 	python3-pip \
 	python3-setuptools \
+	wget \
 	xz-utils
 ```
 
@@ -131,23 +131,23 @@ With the latest package information, you can now install the base dependencies:
 
 ```sh
 sudo dnf install -y \
-	git \
-	wget \
 	autoconf \
 	automake \
 	bzip2 \
 	ccache \
-	dtc \
+	cmake \
 	dfu-util \
+	dtc \
 	g++ \
 	gcc \
+	git \
 	libtool \
 	make \
 	ninja-build \
-	cmake \
 	python3-devel \
 	python3-pip \
 	python3-setuptools \
+	wget \
 	xz
 ```
 
