@@ -25,6 +25,7 @@ jobs:
         shield:
           - bfo9000_left
           - bfo9000_right
+          - boardsource5x12
           - boardsource3x4
           - corne_left
           - corne_right
