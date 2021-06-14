@@ -48,23 +48,24 @@ With the latest package information, you can now install the base dependencies:
 
 ```sh
 sudo apt install -y \
-	autoconf \
-	automake \
-	build-essential \
-	bzip2 \
 	ccache \
 	cmake \
 	device-tree-compiler \
 	dfu-util \
-	g++ \
+	file \
+	g++-multilib \
 	gcc \
+	gcc-multilib \
 	git \
-	libtool \
+	gperf \
+	libsdl2-dev \
 	make \
 	ninja-build \
 	python3-dev \
 	python3-pip \
 	python3-setuptools \
+	python3-tk \
+	python3-wheel \
 	wget \
 	xz-utils
 ```
@@ -90,23 +91,24 @@ With the latest package information, you can now install the base dependencies:
 
 ```sh
 sudo apt install -y \
-	autoconf \
-	automake \
-	build-essential \
-	bzip2 \
 	ccache \
 	cmake \
 	device-tree-compiler \
 	dfu-util \
-	g++ \
+	file \
+	g++-multilib \
 	gcc \
+	gcc-multilib \
 	git \
-	libtool \
+	gperf \
+	libsdl2-dev \
 	make \
 	ninja-build \
 	python3-dev \
 	python3-pip \
 	python3-setuptools \
+	python3-tk \
+	python3-wheel \
 	wget \
 	xz-utils
 ```
@@ -130,23 +132,23 @@ sudo dnf update
 With the latest package information, you can now install the base dependencies:
 
 ```sh
+sudo dnf group install -y \
+"Development Tools" \
+"C Development Tools and Libraries"
 sudo dnf install -y \
-	autoconf \
-	automake \
-	bzip2 \
+	SDL2-devel \
 	ccache \
 	cmake \
 	dfu-util \
 	dtc \
-	g++ \
-	gcc \
+	file \
 	git \
-	libtool \
-	make \
+	glibc-devel.i686 \
+	gperf \
+	libstdc++-devel.i686 \
 	ninja-build \
-	python3-devel \
 	python3-pip \
-	python3-setuptools \
+	python3-tkinter \
 	wget \
 	xz
 ```
