@@ -317,8 +317,8 @@ To build firmwares for the ARM architecture (all supported MCUs/keyboards at thi
 ```
 export ZSDK_VERSION=0.11.4
 wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
- sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
- rm "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run"
+	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
+	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run"
 ```
 
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
