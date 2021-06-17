@@ -60,6 +60,8 @@ jobs:
           - splitreus62_right
           - tg4x
           - tidbit
+          - viterbi_left
+          - viterbi_right
         cmake-args: [""]
         include:
           - board: bdn9_rev2
