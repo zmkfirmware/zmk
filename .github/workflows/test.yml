@@ -16,7 +16,7 @@ jobs:
   integration_test:
     runs-on: ubuntu-latest
     container:
-      image: zmkfirmware/zmk-build-arm:2.4
+      image: zmkfirmware/zmk-build-arm:2.5
     steps:
       - name: Checkout
         uses: actions/checkout@v2
