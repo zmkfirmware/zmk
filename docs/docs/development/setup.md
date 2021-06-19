@@ -205,9 +205,9 @@ The docker container includes `west` and the compilation toolchain. If you're us
 
 ### West Installation
 
-`west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/2.3.0/guides/west/index.html) used to configure and build Zephyr™ applications.
+`west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/2.5.0/guides/west/index.html) used to configure and build Zephyr™ applications.
 
-West can be installed by using the `pip` python package manager. The [Zephyr™ instructions](https://docs.zephyrproject.org/latest/guides/west/install.html#installing-west) are summarized here:
+West can be installed by using the `pip` python package manager. The [Zephyr™ instructions](https://docs.zephyrproject.org/2.5.0/guides/west/install.html#installing-west) are summarized here:
 
 <Tabs
 defaultValue="linux"
@@ -292,7 +292,7 @@ The installation will prompt with several questions about installation location,
 <TabItem value="raspberryos">
 
 Because Raspberry OS (Raspbian) runs on the same architecture (but different ABI) as the keyboard MCUs,
-the operating system's installed [cross compilers](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_other_x_compilers.html) can be used to target the different ABI.
+the operating system's installed [cross compilers](https://docs.zephyrproject.org/2.5.0/getting_started/toolchain_other_x_compilers.html) can be used to target the different ABI.
 
 First, the cross compiler should be installed:
 
@@ -328,14 +328,14 @@ The installation will prompt with several questions about installation location,
 
 #### GNU ARM Embedded
 
-Since the Zephyr™ SDK is not available for Windows, we recommending following the [Zephyr documentation](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded) to install a GNU ARM Embedded build. Note the warnings regarding installing the toolchain into a path with spaces, and make sure to follow the steps to add the environment variables which are also summarized with screenshots in the [Environment Variables](#environment-variables) section below.
+Since the Zephyr™ SDK is not available for Windows, we recommending following the [Zephyr documentation](https://docs.zephyrproject.org/2.5.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded) to install a GNU ARM Embedded build. Note the warnings regarding installing the toolchain into a path with spaces, and make sure to follow the steps to add the environment variables which are also summarized with screenshots in the [Environment Variables](#environment-variables) section below.
 
 </TabItem>
 <TabItem value="mac">
 
 #### GNU ARM Embedded
 
-Since the Zephyr™ SDK is not available for macOS, we recommending following the steps to install the [GNU ARM Embedded](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded).
+Since the Zephyr™ SDK is not available for macOS, we recommending following the steps to install the [GNU ARM Embedded](https://docs.zephyrproject.org/2.5.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded).
 
 The install command is:
 
@@ -345,7 +345,7 @@ brew install --cask gcc-arm-embedded
 
 :::warning Security Controls Workaround
 
-Please be sure to read the [additional setup instructions](https://docs.zephyrproject.org/2.3.0/getting_started/installation_mac.html#mac-gatekeeper) needed to address security controls found in macOS 10.15 Catalina and newer
+Please be sure to read the [additional setup instructions](https://docs.zephyrproject.org/2.5.0/getting_started/installation_mac.html#mac-gatekeeper) needed to address security controls found in macOS 10.15 Catalina and newer
 
 :::
 
@@ -514,7 +514,7 @@ On Windows, only two environment variables need to be set for ZMK to build prope
 #### For Zephyr
 
 By default, the Zephyr™ SDK will create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
-We suggest two main [options](https://docs.zephyrproject.org/2.3.0/guides/env_vars.html?highlight=zephyrrc) for how to load those settings.
+We suggest two main [options](https://docs.zephyrproject.org/2.5.0/guides/env_vars.html#option-3-using-zephyrrc-files) for how to load those settings.
 
 ##### Per Shell
 
