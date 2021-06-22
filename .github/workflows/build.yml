@@ -42,6 +42,8 @@ jobs:
           - jorne_right
           - kyria_left
           - kyria_right
+          - lets_split_left
+          - lets_split_right
           - lily58_left
           - lily58_right
           - microdox_left
