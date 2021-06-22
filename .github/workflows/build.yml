@@ -31,6 +31,8 @@ jobs:
           - cradio_left
           - cradio_right
           - crbn
+          - dumbo_left
+          - dumbo_right
           - eek
           - helix_left
           - helix_right
