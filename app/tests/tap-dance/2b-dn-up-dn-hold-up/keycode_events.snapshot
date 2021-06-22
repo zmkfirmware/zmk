@@ -1,0 +1,8 @@
+td_binding_pressed: 0 creating new tap dance
+td_binding_released: 0 tap dance keybind released
+td_binding_pressed: 0 tap dance re-pressed
+td_timer_handler: Timer Handler executes
+kp_pressed: usage_page 0x07 keycode 0x1f implicit_mods 0x00 explicit_mods 0x00
+td_binding_released: 0 tap dance keybind released
+td_binding_released: Maximum count reached and/or key is held! Counter reached: 2
+kp_released: usage_page 0x07 keycode 0x1f implicit_mods 0x00 explicit_mods 0x00
