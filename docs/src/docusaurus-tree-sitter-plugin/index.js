@@ -29,8 +29,11 @@ module.exports = function () {
       return {
         // web-tree-sitter tries to import "fs", which can be ignored.
         // https://github.com/tree-sitter/tree-sitter/issues/466
-        node: {
-          fs: "empty",
+        resolve: {
+          fallback: {
+            fs: false,
+            path: false,
+          },
         },
         module: { rules },
       };

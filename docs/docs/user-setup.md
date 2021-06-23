@@ -68,21 +68,21 @@ values={[
 <TabItem value="curl">
 
 ```
-bash -c "$(curl -fsSL https://zmkfirmware.dev/setup.sh)"
+bash -c "$(curl -fsSL https://zmk.dev/setup.sh)"
 ```
 
 </TabItem>
 <TabItem value="wget">
 
 ```
-bash -c "$(wget https://zmkfirmware.dev/setup.sh -O -)" '' --wget
+bash -c "$(wget https://zmk.dev/setup.sh -O -)" '' --wget
 ```
 
 </TabItem>
 <TabItem value="PowerShell">
 
 ```
-iex ((New-Object System.Net.WebClient).DownloadString('https://zmkfirmware.dev/setup.ps1'))
+iex ((New-Object System.Net.WebClient).DownloadString('https://zmk.dev/setup.ps1'))
 ```
 
 </TabItem>

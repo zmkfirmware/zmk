@@ -38,12 +38,20 @@ void display_timer_cb() { k_work_submit(&display_tick_work); }
 K_TIMER_DEFINE(display_timer, display_timer_cb, NULL);
 
 static void start_display_updates() {
+    if (display == NULL) {
+        return;
+    }
+
     display_blanking_off(display);
 
     k_timer_start(&display_timer, K_MSEC(10), K_MSEC(10));
 }
 
 static void stop_display_updates() {
+    if (display == NULL) {
+        return;
+    }
+
     display_blanking_on(display);
 
     k_timer_stop(&display_timer);

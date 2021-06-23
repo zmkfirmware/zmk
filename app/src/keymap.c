@@ -28,18 +28,10 @@ static uint8_t _zmk_keymap_layer_default = 0;
 #define ZMK_KEYMAP_NODE DT_DRV_INST(0)
 #define ZMK_KEYMAP_LAYERS_LEN (DT_INST_FOREACH_CHILD(0, LAYER_CHILD_LEN) 0)
 
-#define LAYER_NODE(l) DT_PHANDLE_BY_IDX(ZMK_KEYMAP_NODE, layers, l)
+#define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst),
 
-#define _TRANSFORM_ENTRY(idx, layer)                                                               \
-    {                                                                                              \
-        .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(layer, bindings, idx)),                         \
-        .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(layer, bindings, idx, param1), (0),           \
-                              (DT_PHA_BY_IDX(layer, bindings, idx, param1))),                      \
-        .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(layer, bindings, idx, param2), (0),           \
-                              (DT_PHA_BY_IDX(layer, bindings, idx, param2))),                      \
-    },
-
-#define TRANSFORMED_LAYER(node) {UTIL_LISTIFY(DT_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, node)},
+#define TRANSFORMED_LAYER(node)                                                                    \
+    {UTIL_LISTIFY(DT_PROP_LEN(node, bindings), BINDING_WITH_COMMA, node)},
 
 #if ZMK_KEYMAP_HAS_SENSORS
 #define _TRANSFORM_SENSOR_ENTRY(idx, layer)                                                        \
@@ -161,7 +153,9 @@ const char *zmk_keymap_layer_label(uint8_t layer) {
 }
 
 int zmk_keymap_apply_position_state(int layer, uint32_t position, bool pressed, int64_t timestamp) {
-    struct zmk_behavior_binding *binding = &zmk_keymap[layer][position];
+    // We want to make a copy of this, since it may be converted from
+    // relative to absolute before being invoked
+    struct zmk_behavior_binding binding = zmk_keymap[layer][position];
     const struct device *behavior;
     struct zmk_behavior_binding_event event = {
         .layer = layer,
@@ -170,19 +164,25 @@ int zmk_keymap_apply_position_state(int layer, uint32_t position, bool pressed, 
     };
 
     LOG_DBG("layer: %d position: %d, binding name: %s", layer, position,
-            log_strdup(binding->behavior_dev));
+            log_strdup(binding.behavior_dev));
 
-    behavior = device_get_binding(binding->behavior_dev);
+    behavior = device_get_binding(binding.behavior_dev);
 
     if (!behavior) {
         LOG_DBG("No behavior assigned to %d on layer %d", position, layer);
         return 1;
     }
 
+    int err = behavior_keymap_binding_convert_central_state_dependent_params(&binding, event);
+    if (err) {
+        LOG_ERR("Failed to convert relative to absolute behavior binding (err %d)", err);
+        return err;
+    }
+
     if (pressed) {
-        return behavior_keymap_binding_pressed(binding, event);
+        return behavior_keymap_binding_pressed(&binding, event);
     } else {
-        return behavior_keymap_binding_released(binding, event);
+        return behavior_keymap_binding_released(&binding, event);
     }
 }
 

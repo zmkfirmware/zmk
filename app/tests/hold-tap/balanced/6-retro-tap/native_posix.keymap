@@ -1,0 +1,45 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+	behaviors {
+		ht_bal: behavior_balanced {
+			compatible = "zmk,behavior-hold-tap";
+			label = "MOD_TAP";
+			#binding-cells = <2>;
+			flavor = "balanced";
+			tapping_term_ms = <300>;
+			bindings = <&kp>, <&kp>;
+			retro-tap;
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&ht_bal LEFT_SHIFT F &none
+				&kp D &none>;
+		};
+	};
+};
+
+
+&kscan {
+	events = <
+		/* tap */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		/* retro tap */
+		ZMK_MOCK_PRESS(0,0,400)
+		ZMK_MOCK_RELEASE(0,0,10) 
+		/* hold  */
+		ZMK_MOCK_PRESS(0,0,400)
+		ZMK_MOCK_PRESS(1,0,10)
+		ZMK_MOCK_RELEASE(1,0,10)
+		ZMK_MOCK_RELEASE(0,0,10) 
+	>;
+};

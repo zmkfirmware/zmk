@@ -4085,7 +4085,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["LEFT_SHIFT", "LSHFT", "LS(code)"],
+    names: ["LEFT_SHIFT", "LSHIFT", "LSHFT", "LS(code)"],
     description: "Left Shift ⇧",
     context: "Keyboard",
     clarify: false,
@@ -4179,7 +4179,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["RIGHT_SHIFT", "RSHFT", "RS(code)"],
+    names: ["RIGHT_SHIFT", "RSHIFT", "RSHFT", "RS(code)"],
     description: "Right Shift ⇧",
     context: "Keyboard",
     clarify: false,

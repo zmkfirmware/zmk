@@ -14,17 +14,17 @@
     "prettier:format": "prettier --write ."
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-alpha.66",
-    "@docusaurus/preset-classic": "^2.0.0-alpha.66",
+    "@docusaurus/core": "^2.0.0-beta.1",
+    "@docusaurus/preset-classic": "^2.0.0-beta.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
-    "@fortawesome/free-solid-svg-icons": "^5.15.1",
-    "@fortawesome/react-fontawesome": "^0.1.12",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
     "classnames": "^2.2.6",
-    "react": "^16.8.4",
+    "react": "^17.0.2",
     "react-async": "^10.0.1",
-    "react-copy-to-clipboard": "^5.0.2",
-    "react-dom": "^16.8.4",
-    "react-toastify": "^6.0.9",
+    "react-copy-to-clipboard": "^5.0.3",
+    "react-dom": "^17.0.2",
+    "react-toastify": "^7.0.4",
     "web-tree-sitter": "^0.17.1"
   },
   "browserslist": {
@@ -40,12 +40,12 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^7.12.0",
-    "eslint-config-prettier": "^6.14.0",
-    "eslint-plugin-mdx": "^1.8.2",
-    "eslint-plugin-react": "^7.21.5",
-    "null-loader": "^3.0.0",
-    "prettier": "2.1.2",
-    "string-replace-loader": "2.3"
+    "eslint": "^7.29.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-mdx": "^1.13.0",
+    "eslint-plugin-react": "^7.23.2",
+    "null-loader": "^4.0.0",
+    "prettier": "2.3.1",
+    "string-replace-loader": "^3.0.0"
   }
 }
