@@ -20,21 +20,13 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int behavior_sensor_rotate_key_press_init(const struct device *dev) { return 0; };
 
-static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
-                                       const struct device *sensor, int64_t timestamp) {
-    struct sensor_value value;
-    int err;
+static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding, int32_t value,
+                                       int64_t timestamp) {
     uint32_t keycode;
-    LOG_DBG("inc keycode 0x%02X dec keycode 0x%02X", binding->param1, binding->param2);
+    LOG_DBG("inc keycode 0x%02X dec keycode 0x%02X sensor value: %d", binding->param1,
+            binding->param2, value);
 
-    err = sensor_channel_get(sensor, SENSOR_CHAN_ROTATION, &value);
-
-    if (err) {
-        LOG_WRN("Failed to ge sensor rotation value: %d", err);
-        return err;
-    }
-
-    switch (value.val1) {
+    switch (value) {
     case 1:
         keycode = binding->param1;
         break;

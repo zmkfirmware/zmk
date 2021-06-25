@@ -13,6 +13,7 @@ struct zmk_sensor_event {
     uint8_t sensor_number;
     const struct device *sensor;
     int64_t timestamp;
+    int32_t value;
 };
 
 ZMK_EVENT_DECLARE(zmk_sensor_event);

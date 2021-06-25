@@ -23,8 +23,7 @@
 typedef int (*behavior_keymap_binding_callback_t)(struct zmk_behavior_binding *binding,
                                                   struct zmk_behavior_binding_event event);
 typedef int (*behavior_sensor_keymap_binding_callback_t)(struct zmk_behavior_binding *binding,
-                                                         const struct device *sensor,
-                                                         int64_t timestamp);
+                                                         int32_t value, int64_t timestamp);
 
 __subsystem struct behavior_driver_api {
     behavior_keymap_binding_callback_t binding_convert_central_state_dependent_params;
@@ -118,12 +117,11 @@ static inline int z_impl_behavior_keymap_binding_released(struct zmk_behavior_bi
  * @retval Negative errno code if failure.
  */
 __syscall int behavior_sensor_keymap_binding_triggered(struct zmk_behavior_binding *binding,
-                                                       const struct device *sensor,
-                                                       int64_t timestamp);
+                                                       int32_t value, int64_t timestamp);
 
 static inline int
-z_impl_behavior_sensor_keymap_binding_triggered(struct zmk_behavior_binding *binding,
-                                                const struct device *sensor, int64_t timestamp) {
+z_impl_behavior_sensor_keymap_binding_triggered(struct zmk_behavior_binding *binding, int32_t value,
+                                                int64_t timestamp) {
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
 
@@ -131,7 +129,7 @@ z_impl_behavior_sensor_keymap_binding_triggered(struct zmk_behavior_binding *bin
         return -ENOTSUP;
     }
 
-    return api->sensor_binding_triggered(binding, sensor, timestamp);
+    return api->sensor_binding_triggered(binding, value, timestamp);
 }
 
 /**
