@@ -249,6 +249,7 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
     k_delayed_work_init(&underglow_save_work, zmk_rgb_underglow_save_state_work);
 
     settings_load_subtree("rgb/underglow");
+
     if (state.color.b < CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) {
         state.color.b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN;
     } else if (state.color.b > CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX) {
