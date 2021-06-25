@@ -1,0 +1,97 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define DEFAULT 0
+#define RAISE   1
+#define LOWER   2
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+// -------------------------------------------------------------------------------------------------------------------------
+// |    Q    |    W    |    E    |    R    |    T    |                   |    Y    |    U    |    I    |    O    |    P    |
+// |    A    |    S    |    D    |    F    |    G    |                   |    H    |    J    |    K    |    L    |    ;    |
+// |    Z    |    X    |    C    |    V    |    B    |                   |    N    |    M    |    ,    |    .    |    /    |
+//           |    [    |    ]    |                                                           |    -    |    =    |
+//                               |ESC+SHFT |BS + CTRL|                   |SPC + ALT|ENTR+SHFT|
+//                                         |   TAB   |   HOME  |   END   |   DEL   |
+//                                         |  Raise  |    ~    |   GUI   |  Lower  |
+            bindings = <
+    &kp Q     &kp W    &kp E     &kp R     &kp T                          &kp Y     &kp U     &kp I     &kp O     &kp P
+    &kp A     &kp S    &kp D     &kp F     &kp G                          &kp H     &kp J     &kp K     &kp L     &kp SEMI
+    &kp Z     &kp X    &kp C     &kp V     &kp B                          &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH
+              &kp LBKT &kp RBKT                                                               &kp MINUS  &kp EQUAL
+                                 &mt LSHFT ESC &mt LCTRL BSPC                   &mt LALT SPACE &mt LSHFT ENTER
+                                            &kp TAB  &kp HOME  &kp END    &kp DEL
+                                           &mo RAISE &kp GRAVE &kp LGUI   &mo LOWER
+            >;
+        };
+
+        raise {
+// ZMK doesn't support mouse behaviors, so unlike QMK, this default keymap
+// exchanges that behavior for Bluetooth behavior
+// -------------------------------------------------------------------------------------------------------------------------
+// |         |         |         |         |         |                   |  Vol +  |         |    up   |         |   PgUp  |
+// |   BT1   |   BT2   |   BT3   |   BT4   |   BT5   |                   |  Mute   |   left  |   down  |  right  |   PgDn  |
+// |         |         |  BTCLR  |  BTNXT  |  BTPRV  |                   |  Vol -  |    /    |    \    |    ?    |    |    |
+//           |         |         |                                                           |    -    |    +    |
+//                               |         |         |                   |         |         |
+//                                         |         |         |         |         |
+//                                         |         |         |         |         |
+            bindings = <
+    &trans    &trans    &trans    &trans    &trans                        &kp C_VOL_UP &trans &kp UP    &trans    &kp PG_UP
+    &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4      &kp C_MUTE &kp LEFT &kp DOWN  &kp RIGHT &kp PG_DN
+    &trans    &trans    &bt BT_CLR &bt BT_NXT &bt BT_PRV                  &kp C_VOL_DN &kp KP_SLASH &kp BSLH &kp QMARK &kp PIPE
+              &trans    &trans                                                                &kp MINUS &kp PLUS
+                                  &trans    &trans                        &trans     &trans
+                                            &trans    &trans    &trans    &trans
+                                            &trans    &trans    &trans    &trans
+            >;
+        };
+
+        lower {
+// -------------------------------------------------------------------------------------------------------------------------
+// |   F1    |   F2    |   F3    |   F4    |   F5    |                   |   F6    |   F7    |   F8    |   F9    |   F10   |
+// |    1    |    2    |    3    |    4    |    5    |                   |    6    |    7    |    8    |    9    |    0    |
+// |    !    |    @    |    #    |    $    |    %    |                   |    ^    |    &    |    *    |    (    |    )    |
+//           |         |   F11   |   F12                                                     |    -    |    =    |
+//                               |         |         |                   |         |         |
+//                                         |         |         |         |         |
+//                                         |         |         |         |         |
+            bindings = <
+    &kp F1    &kp F2   &kp F3    &kp F4    &kp F5                         &kp F6    &kp F7    &kp F8    &kp F9    &kp F10
+    &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_N4 &kp KP_N5                     &kp KP_N6 &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_N0
+    &kp EXCL  &kp AT   &kp HASH  &kp DLLR  &kp PRCNT                      &kp CARET &kp AMPS  &kp STAR  &kp LPAR  &kp RPAR
+              &kp F11  &kp F12                                                                &kp MINUS &kp EQUAL
+                                 &trans    &trans                        &trans     &trans
+                                           &trans    &trans    &trans    &trans
+                                           &trans    &trans    &trans    &trans
+            >;
+        };
+
+        // This layer is for easier copy/paste when creating new keymaps, so you have transparent keys already added
+        trans {
+// -------------------------------------------------------------------------------------------------------------------------
+// |         |         |         |         |         |                   |         |         |         |         |         |
+// |         |         |         |         |         |                   |         |         |         |         |         |
+// |         |         |         |         |         |                   |         |         |         |         |         |
+//           |         |         |                                                           |         |         |
+//                               |         |         |                   |         |         |
+//                                         |         |         |         |         |
+//                                         |         |         |         |         |
+// I added a zero key because Zephyr won't compile with a only-transparent layer
+            bindings = <
+    &kp KP_N0 &trans    &trans    &trans    &trans                        &trans    &trans    &trans    &trans    &trans
+    &trans    &trans    &trans    &trans    &trans                        &trans    &trans    &trans    &trans    &trans
+    &trans    &trans    &trans    &trans    &trans                        &trans    &trans    &trans    &trans    &trans
+              &trans    &trans                                                                &trans    &trans
+                                  &trans    &trans                        &trans    &trans
+                                            &trans    &trans    &trans    &trans
+                                            &trans    &trans    &trans    &trans
+            >;
+        };
+    };
+};
