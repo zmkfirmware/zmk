@@ -341,11 +341,14 @@ int zmk_rgb_underglow_toggle() {
 }
 
 int zmk_rgb_underglow_set_hsb(struct zmk_led_hsb color) {
-    if (color.h > HUE_MAX || color.s > SAT_MAX || color.b < CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN ||
-        color.b > CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX) {
+    if (color.h > HUE_MAX || color.s > SAT_MAX || color.b > BRT_MAX) {
         return -ENOTSUP;
     }
 
+    color.b =
+        (uint8_t)((float)(CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX - CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) *
+                  (float)color.b / 100.0F) +
+        CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN;
     state.color = color;
 
     return 0;
