@@ -58,7 +58,11 @@ static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
     double r, g, b;
 
     uint8_t i = hsb.h / 60;
-    double v = hsb.b / ((float)BRT_MAX);
+    double v = ((float)hsb.b *
+                    (float)(CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX - CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) /
+                    (float)BRT_MAX +
+                (float)CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) /
+               (float)BRT_MAX;
     double s = hsb.s / ((float)SAT_MAX);
     double f = hsb.h / ((float)HUE_MAX) * 6 - i;
     double p = v * (1 - s);
@@ -250,11 +254,6 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
 
     settings_load_subtree("rgb/underglow");
 
-    if (state.color.b < CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) {
-        state.color.b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN;
-    } else if (state.color.b > CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX) {
-        state.color.b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX;
-    }
 #endif
 
     k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
@@ -345,10 +344,6 @@ int zmk_rgb_underglow_set_hsb(struct zmk_led_hsb color) {
         return -ENOTSUP;
     }
 
-    color.b =
-        (uint8_t)((float)(CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX - CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) *
-                  (float)color.b / 100.0F) +
-        CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN;
     state.color = color;
 
     return 0;
@@ -380,15 +375,9 @@ struct zmk_led_hsb zmk_rgb_underglow_calc_sat(int direction) {
 struct zmk_led_hsb zmk_rgb_underglow_calc_brt(int direction) {
     struct zmk_led_hsb color = state.color;
     int b = color.b;
-    if (direction > 0 && b < CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) {
-        b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN;
-    } else {
-        b += (direction * CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP);
-    }
-    if (b < CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) {
-        b = 0;
-    } else if (b > CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX) {
-        b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX;
+    b += (direction * CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP);
+    if (b > BRT_MAX) {
+        b = BRT_MAX;
     }
     color.b = b;
     return color;
