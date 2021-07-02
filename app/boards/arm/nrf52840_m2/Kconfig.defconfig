@@ -25,4 +25,7 @@ config ZMK_BLE
 config ZMK_USB
 	default y
 
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+	default y
+
 endif # BOARD_NRF52840_M2
