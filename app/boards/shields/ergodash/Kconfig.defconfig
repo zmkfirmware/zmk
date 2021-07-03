@@ -1,0 +1,30 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_ERGODASH_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Ergodash Left"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+endif
+
+
+if SHIELD_ERGODASH_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Ergodash Right"
+
+config USB
+	default y
+
+endif
+
+if SHIELD_ERGODASH_LEFT || SHIELD_ERGODASH_RIGHT
+
+config ZMK_SPLIT
+	default y
+ 
+endif

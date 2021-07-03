@@ -32,6 +32,8 @@ jobs:
           - cradio_right
           - crbn
           - eek
+          - ergodash_left
+          - ergodash_right
           - helix_left
           - helix_right
           - iris_left
