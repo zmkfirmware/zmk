@@ -1,0 +1,10 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+rsource "is31fl3741/Kconfig"
+
+config LEG_STRIP_INIT_PRIORITY
+	int "LED strip initialization priority"
+	default 90
+	help
+		System initialization priority for LED strip drivers.
