@@ -1,0 +1,12 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_LAUNCHPAD
+
+config ZMK_KEYBOARD_NAME
+    default "LaunchPad"
+
+config ZMK_USB
+    default y
+
+endif
