@@ -1,0 +1,39 @@
+/* Copyright (c) 2020 The ZMK Contributors
+ * SPDX-License-Identitfier: MIT
+ *
+ * Author: Jack Hartstein
+ */
+/ {
+	left_encoder: encoder_left {
+        	compatible = "alps,ec11";
+   	     	label = "LEFT_ENCODER";
+       		a-gpios = <&pro_micro_a 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        	b-gpios = <&pro_micro_a 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        	resolution = <2>;
+    	};
+
+	sensors {
+        	compatible = "zmk,keymap-sensors";
+        	sensors = <&left_encoder>;
+    	};
+};
+
+&pro_micro_i2c {
+	status = "okay";
+
+	oled: ssd1306@3c {
+		compatible = "solomon,ssd1306fb";
+		reg = <0x3c>;
+		label = "DISPLAY";
+		width = <128>;
+		height = <32>;
+		segment-offset = <0>;
+		page-offset = <0>;
+		display-offset = <0>;
+		multiplex-ratio = <31>;
+		segment-remap;
+		com-invdir;
+		com-sequential;
+		prechargep = <0x22>;
+	};
+};
