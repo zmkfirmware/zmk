@@ -29,7 +29,7 @@ static int start_scan(void);
 
 static struct bt_conn *default_conn;
 
-static struct bt_uuid_128 uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
+static struct bt_uuid uuid = {.type = BT_UUID_TYPE_128};
 static struct bt_gatt_discover_params discover_params;
 static struct bt_gatt_subscribe_params subscribe_params;
 
@@ -116,8 +116,8 @@ static uint8_t split_central_discovery_func(struct bt_conn *conn, const struct b
     LOG_DBG("[ATTRIBUTE] handle %u", attr->handle);
 
     if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID))) {
-        memcpy(&uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID), sizeof(uuid));
-        discover_params.uuid = &uuid.uuid;
+        uuid.type = BT_UUID_TYPE_128;
+        discover_params.uuid = &uuid;
         discover_params.start_handle = attr->handle + 1;
         discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
 
@@ -127,8 +127,8 @@ static uint8_t split_central_discovery_func(struct bt_conn *conn, const struct b
         }
     } else if (!bt_uuid_cmp(discover_params.uuid,
                             BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID))) {
-        memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
-        discover_params.uuid = &uuid.uuid;
+        uuid.type = BT_UUID_TYPE_16;
+        discover_params.uuid = &uuid;
         discover_params.start_handle = attr->handle + 2;
         discover_params.type = BT_GATT_DISCOVER_DESCRIPTOR;
         subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
@@ -162,7 +162,7 @@ static void split_central_process_connection(struct bt_conn *conn) {
     }
 
     if (conn == default_conn && !subscribe_params.value) {
-        discover_params.uuid = &uuid.uuid;
+        discover_params.uuid = &uuid;
         discover_params.func = split_central_discovery_func;
         discover_params.start_handle = 0x0001;
         discover_params.end_handle = 0xffff;
