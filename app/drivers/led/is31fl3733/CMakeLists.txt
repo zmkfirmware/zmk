@@ -1,6 +1,6 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-add_subdirectory(kscan)
-add_subdirectory(sensor)
-add_subdirectory(led)
+zephyr_library()
+
+zephyr_library_sources(is31fl3733.c)

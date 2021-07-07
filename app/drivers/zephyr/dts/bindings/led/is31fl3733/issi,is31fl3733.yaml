@@ -1,0 +1,6 @@
+description: |
+  Driver for the is31fl3733 LED driver
+
+compatible: "issi,is31fl3733"
+
+include: i2c-device.yaml
