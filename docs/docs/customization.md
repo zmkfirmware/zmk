@@ -50,6 +50,10 @@ For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
 
+:::note
+You can install `west` using `pip3 install -U west`. Take a look [here](https://docs.zephyrproject.org/latest/guides/west/install.html) for more info.
+:::
+
 ## Flashing Your Changes
 
 For normal keyboards, follow the same flashing instructions as before to flash your updated firmware.
