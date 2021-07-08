@@ -113,6 +113,8 @@ struct kscan_gpio_item_config {
                     &kscan_gpio_output_configs_##n(dev)[bit];                                      \
                 gpio_pin_set(out_dev, out_cfg->pin, state);                                        \
             }                                                                                      \
+            /* Let the col settle before reading the rows */                                       \
+            k_usleep(1);                                                                           \
                                                                                                    \
             for (int i = 0; i < INST_MATRIX_INPUTS(n); i++) {                                      \
                 /* Get the input device (port) */                                                  \

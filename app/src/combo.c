@@ -188,8 +188,15 @@ static int64_t first_candidate_timeout() {
 static inline bool candidate_is_completely_pressed(struct combo_cfg *candidate) {
     // this code assumes set(pressed_keys) <= set(candidate->key_positions)
     // this invariant is enforced by filter_candidates
-    // the only thing we need to do is check if len(pressed_keys) == len(combo->key_positions)
-    return pressed_keys[candidate->key_position_len - 1] != NULL;
+    // since events may have been reraised after clearing one or more slots at
+    // the start of pressed_keys (see: release_pressed_keys), we have to check
+    // that each key needed to trigger the combo was pressed, not just the last.
+    for (int i = 0; i < candidate->key_position_len; i++) {
+        if (pressed_keys[i] == NULL) {
+            return false;
+        }
+    }
+    return true;
 }
 
 static int cleanup();
