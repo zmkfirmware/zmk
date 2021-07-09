@@ -128,8 +128,7 @@ static int is31fl3741_strip_update_channels(const struct device *dev, uint8_t *c
 }
 
 /*
- * Updates the RGB LED matrix using cs-order devicetree property
- * to assign correct R,G,B channels.
+ * Updates the RGB LED matrix according to devicetree's map property.
  */
 static int is31fl3741_strip_update_rgb(const struct device *dev, struct led_rgb *pixels,
                                         size_t num_pixels) {
