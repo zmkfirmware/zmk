@@ -1,0 +1,7 @@
+config MA730
+	bool "MA730 Angular position sensor"
+	depends on SPI
+	help
+	  Enable angular encoder sensor
+
+		The MA730 is a 16-bit contactless magnetic encoder, communicating over spi
