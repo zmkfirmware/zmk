@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   title: "ZMK Firmware",
   tagline: "Modern, open source keyboard firmware",
-  url: "https://zmkfirmware.dev",
+  url: "https://zmk.dev",
   baseUrl: "/",
   favicon: "img/favicon.ico",
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
@@ -70,7 +70,7 @@ module.exports = {
             {
               label: "Discord",
               href:
-                (process.env.URL || "https://zmkfirmware.dev") +
+                (process.env.URL || "https://zmk.dev") +
                 "/community/discord/invite",
             },
             {
