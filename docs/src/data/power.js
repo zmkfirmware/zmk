@@ -37,13 +37,22 @@ export const zmkBase = {
  */
 export const zmkBoards = {
   "nice!nano": {
-    name: "nice!nano",
+    name: "nice!nano v1",
     powerSupply: {
       type: "LDO",
       outputVoltage: 3.3,
       quiescentMicroA: 55,
     },
     otherQuiescentMicroA: 4,
+  },
+  "nice!nano v2": {
+    name: "nice!nano v2",
+    powerSupply: {
+      type: "LDO",
+      outputVoltage: 3.3,
+      quiescentMicroA: 15,
+    },
+    otherQuiescentMicroA: 3,
   },
   "nice!60": {
     powerSupply: {
