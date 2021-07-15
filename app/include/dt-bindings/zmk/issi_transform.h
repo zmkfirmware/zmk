@@ -5,12 +5,12 @@
  */
 
 /**
- * Maps a 39x9 matrix cell index to the appropriate IS31FL3741 register indexes.
+ * Maps a 39x9 matrix cell index to a 1D array matching IS31FL3741's PWM registers order.
  */
-#define PIXEL(n) (                                  \
-	((0 <= ((n) % 39)) && (((n) % 39) < 30))            \
-		? ((((n) / 39) * 30) + ((n) % 39))              \
-		: (210 + (((n) / 39) * 9) + (((n) % 39) - 31)))
+#define PIXEL(n) (                                    \
+    (((n) % 39) < 30)                                 \
+        ? ((((n) / 39) * 30) + ((n) % 39))            \
+        : (270 + (((n) / 39) * 9) + ((n) % 39) - 30))
 
 #define RGB(com, r, g, b) PIXEL(com + r) PIXEL(com + g) PIXEL(com + b)
 
