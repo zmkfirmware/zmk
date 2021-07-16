@@ -14,3 +14,4 @@
 #include <behaviors/bluetooth.dtsi>
 #include <behaviors/ext_power.dtsi>
 #include <behaviors/outputs.dtsi>
+#include <behaviors/sleep.dtsi>

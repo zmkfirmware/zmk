@@ -40,3 +40,22 @@ Example:
 ```
 &none
 ```
+
+## Sleep
+
+The sleep behavior simply puts your keyboard to sleep. This behavior has the same effect as letting the sleep timer expire.
+
+:::note
+You'll need to enable `CONFIG_ZMK_SLEEP` in your boards config for this keycode to work.
+:::
+
+### Behavior Binding
+
+- Reference: `&sleep`
+- Parameters: None
+
+Example:
+
+```
+&sleep
+```

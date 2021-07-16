@@ -34,7 +34,8 @@ int raise_event() {
         (struct zmk_activity_state_changed){.state = activity_state}));
 }
 
-int set_state(enum zmk_activity_state state) {
+int activity_set_state(enum zmk_activity_state state) {
+    LOG_DBG("Setting activity state: %i", state);
     if (activity_state == state)
         return 0;
 
@@ -47,19 +48,21 @@ enum zmk_activity_state zmk_activity_get_state() { return activity_state; }
 int activity_event_listener(const zmk_event_t *eh) {
     activity_last_uptime = k_uptime_get();
 
-    return set_state(ZMK_ACTIVITY_ACTIVE);
+    return activity_set_state(ZMK_ACTIVITY_ACTIVE);
 }
 
 void activity_work_handler(struct k_work *work) {
     int32_t current = k_uptime_get();
     int32_t inactive_time = current - activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
-    if (inactive_time > MAX_SLEEP_MS) {
-        set_state(ZMK_ACTIVITY_SLEEP);
+    // Second half of || statement is to ensure a user using &sleep doesn't lose sleep state when
+    // the idle or sleep timers expire
+    if (inactive_time > MAX_SLEEP_MS || activity_state == ZMK_ACTIVITY_SLEEP) {
+        activity_set_state(ZMK_ACTIVITY_SLEEP);
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
-        set_state(ZMK_ACTIVITY_IDLE);
+        activity_set_state(ZMK_ACTIVITY_IDLE);
     }
 }
 
