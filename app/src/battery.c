@@ -5,6 +5,7 @@
  */
 
 #include <device.h>
+#include <devicetree.h>
 #include <init.h>
 #include <kernel.h>
 #include <drivers/sensor.h>
@@ -18,16 +19,20 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/battery.h>
 #include <zmk/events/battery_state_changed.h>
 
-const struct device *battery;
-
 static uint8_t last_state_of_charge = 0;
 
 uint8_t zmk_battery_state_of_charge() { return last_state_of_charge; }
 
+#if DT_HAS_CHOSEN(zmk_battery)
+
+#define BATTERY_DEV_LABEL DT_LABEL(DT_CHOSEN(zmk_battery))
+
+static const struct device *const battery = DEVICE_DT_GET(DT_CHOSEN(zmk_battery));
+
 static int zmk_battery_update(const struct device *battery) {
     struct sensor_value state_of_charge;
 
-    int rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE);
+    int rc = sensor_sample_fetch(battery);
 
     if (rc != 0) {
         LOG_DBG("Failed to fetch battery values: %d", rc);
@@ -75,10 +80,8 @@ static void zmk_battery_timer(struct k_timer *timer) { k_work_submit(&battery_wo
 K_TIMER_DEFINE(battery_timer, zmk_battery_timer, NULL);
 
 static int zmk_battery_init(const struct device *_arg) {
-    battery = device_get_binding("BATTERY");
-
-    if (battery == NULL) {
-        LOG_DBG("No battery device labelled BATTERY found.");
+    if (!device_is_ready(battery)) {
+        LOG_ERR("Battery device is not ready %s", battery->name);
         return -ENODEV;
     }
 
@@ -95,3 +98,5 @@ static int zmk_battery_init(const struct device *_arg) {
 }
 
 SYS_INIT(zmk_battery_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
+
+#endif /* DT_HAS_CHOSEN(zmk_battery) */

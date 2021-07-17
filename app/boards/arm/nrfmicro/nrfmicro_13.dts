@@ -16,6 +16,7 @@
 		zephyr,code-partition = &code_partition;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
+		zmk,battery = &vbatt;
 	};
 
 	leds {
@@ -32,7 +33,7 @@
 		control-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
 	};
 
-	vbatt {
+	vbatt: vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 2>;
