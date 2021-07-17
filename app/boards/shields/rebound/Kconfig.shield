@@ -1,0 +1,5 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_REBOUND_V4
+    def_bool $(shields_list_contains,rebound_v4)
