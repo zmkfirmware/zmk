@@ -1,0 +1,52 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: ISSI IS31FL3741 LED Matrix driver
+
+compatible: "issi,is31fl3741"
+
+include: i2c-device.yaml
+
+properties:
+  sw-setting:
+    type: int
+    required: false
+    enum:
+      - 0x00
+      - 0x01
+      - 0x02
+      - 0x03
+      - 0x04
+      - 0x05
+      - 0x06
+      - 0x07
+      - 0x08
+    default: 0x00
+    description: |
+      SW setting used to control the matrix size by turning off SWx pins
+      as described in the datasheet.
+
+  map:
+    type: array
+    required: true
+    description: |
+      Configure how RGB pixels are mapped to individual pixel registers.
+
+  r-ext:
+    type: int
+    required: true
+    description: Rext resistor value in kiloohms.
+
+  led-max-current:
+    type: int
+    required: true
+    description: Maximum allowed LED current in mAh. The maximum allowed by the chip is 38.
+
+  sdb-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      GPIO pin for hardware shutdown functionality.
+
+  chain-length:
+    type: int

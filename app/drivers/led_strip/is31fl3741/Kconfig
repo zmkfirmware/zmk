@@ -1,0 +1,15 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config IS31FL3741
+	bool "IS31FL3741 LED Matrix driver"
+	depends on I2C
+	depends on LED_STRIP
+	help
+		Enable an IS31FL3741 LED Matrix driver.
+
+			The IS31FL3741 is a general purpose 39x9 LED Matrix programmed
+			via an I2C compatible interface. Each LED can be dimmed
+			individually with 8-bit PWM data and 8-bit scaling data which
+			allows 256 steps of linear PWM dimming and 256 steps of DC current
+			adjustable level.

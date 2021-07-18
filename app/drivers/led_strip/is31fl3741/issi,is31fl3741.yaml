@@ -1,0 +1,6 @@
+description: |
+  Driver for the IS31FL3741 LED matrix driver
+
+compatible: "issi,issi_is31fl3741"
+
+include: i2c-device.yaml
