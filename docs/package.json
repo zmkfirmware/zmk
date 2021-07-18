@@ -46,6 +46,6 @@
     "eslint-plugin-react": "^7.23.2",
     "null-loader": "^4.0.0",
     "prettier": "2.3.1",
-    "string-replace-loader": "^3.0.0"
+    "string-replace-loader": "^3.0.3"
   }
 }
