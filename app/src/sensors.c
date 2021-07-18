@@ -44,8 +44,15 @@ static void zmk_sensors_trigger_handler(const struct device *dev, struct sensor_
         return;
     }
 
+    struct sensor_value value;
+    err = sensor_channel_get(dev, SENSOR_CHAN_ROTATION, &value);
+    if (err) {
+        LOG_WRN("Failed to get sensor rotation value: %d", err);
+        return;
+    }
+
     ZMK_EVENT_RAISE(new_zmk_sensor_event((struct zmk_sensor_event){
-        .sensor_number = item->sensor_number, .sensor = dev, .timestamp = k_uptime_get()}));
+        .sensor_number = item->sensor_number, .value = value, .timestamp = k_uptime_get()}));
 }
 
 static void zmk_sensors_init_item(const char *node, uint8_t i, uint8_t abs_i) {
