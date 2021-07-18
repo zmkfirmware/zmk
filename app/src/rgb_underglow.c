@@ -58,7 +58,11 @@ static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
     double r, g, b;
 
     uint8_t i = hsb.h / 60;
-    double v = hsb.b / ((float)BRT_MAX);
+    double v = ((float)hsb.b *
+                    (float)(CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX - CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) /
+                    (float)BRT_MAX +
+                (float)CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) /
+               (float)BRT_MAX;
     double s = hsb.s / ((float)SAT_MAX);
     double f = hsb.h / ((float)HUE_MAX) * 6 - i;
     double p = v * (1 - s);
@@ -249,6 +253,7 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
     k_delayed_work_init(&underglow_save_work, zmk_rgb_underglow_save_state_work);
 
     settings_load_subtree("rgb/underglow");
+
 #endif
 
     k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
@@ -369,15 +374,12 @@ struct zmk_led_hsb zmk_rgb_underglow_calc_sat(int direction) {
 
 struct zmk_led_hsb zmk_rgb_underglow_calc_brt(int direction) {
     struct zmk_led_hsb color = state.color;
-
-    int b = color.b + (direction * CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP);
-    if (b < 0) {
-        b = 0;
-    } else if (b > BRT_MAX) {
+    int b = color.b;
+    b += (direction * CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP);
+    if (b > BRT_MAX) {
         b = BRT_MAX;
     }
     color.b = b;
-
     return color;
 }
 

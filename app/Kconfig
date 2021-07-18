@@ -210,35 +210,53 @@ config ZMK_RGB_UNDERGLOW_EXT_POWER
 	default y
 
 config ZMK_RGB_UNDERGLOW_HUE_STEP
-	int "RGB underglow hue step in degrees of 360"
+	int "RGB underglow hue step in degrees"
+	range 0 359
 	default 10
 
 config ZMK_RGB_UNDERGLOW_SAT_STEP
-	int "RGB underglow sturation step in percent"
+	int "RGB underglow saturation step in percent"
+	range 0 100
 	default 10
 
 config ZMK_RGB_UNDERGLOW_BRT_STEP
 	int "RGB underglow brightness step in percent"
+	range 0 100
 	default 10
 
 config ZMK_RGB_UNDERGLOW_HUE_START
-	int "RGB underglow start hue value from 0-359"
+	int "RGB underglow start hue value in degrees"
+	range 0 359
 	default 0
 
 config ZMK_RGB_UNDERGLOW_SAT_START
-	int "RGB underglow start saturations value from 0-100"
+	int "RGB underglow start saturations value in percent"
+	range 0 100
 	default 100
 
 config ZMK_RGB_UNDERGLOW_BRT_START
-	int "RGB underglow start brightness value from 0-100"
+	int "RGB underglow start brightness value in percent"
+	range ZMK_RGB_UNDERGLOW_BRT_MIN ZMK_RGB_UNDERGLOW_BRT_MAX
+	default ZMK_RGB_UNDERGLOW_BRT_MAX
+
+config ZMK_RGB_UNDERGLOW_BRT_MIN
+	int "RGB underglow minimum brightness value in percent"
+	range 0 100 
+	default 0
+
+config ZMK_RGB_UNDERGLOW_BRT_MAX
+	int "RGB underglow maximum brightness value in percent"
+	range ZMK_RGB_UNDERGLOW_BRT_MIN 100
 	default 100
 
 config ZMK_RGB_UNDERGLOW_SPD_START
-	int "RGB underglow start animation speed value from 1-5"
+	int "RGB underglow start animation speed value"
+	range 1 5
 	default 3
 
 config ZMK_RGB_UNDERGLOW_EFF_START
 	int "RGB underglow start effect int value related to the effect enum list"
+	range 0 3
 	default 0
 
 config ZMK_RGB_UNDERGLOW_ON_START
