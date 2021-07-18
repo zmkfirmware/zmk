@@ -16,22 +16,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/battery_state_changed.h>
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
-static lv_style_t label_style;
-
-static bool style_initialized = false;
-
-void battery_status_init() {
-    if (style_initialized) {
-        return;
-    }
-
-    style_initialized = true;
-    lv_style_init(&label_style);
-    lv_style_set_text_color(&label_style, LV_STATE_DEFAULT, LV_COLOR_BLACK);
-    lv_style_set_text_font(&label_style, LV_STATE_DEFAULT, &lv_font_montserrat_16);
-    lv_style_set_text_letter_space(&label_style, LV_STATE_DEFAULT, 1);
-    lv_style_set_text_line_space(&label_style, LV_STATE_DEFAULT, 1);
-}
 
 void set_battery_symbol(lv_obj_t *label) {
     char text[2] = "  ";
@@ -58,9 +42,7 @@ void set_battery_symbol(lv_obj_t *label) {
 }
 
 int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_obj_t *parent) {
-    battery_status_init();
     widget->obj = lv_label_create(parent, NULL);
-    lv_obj_add_style(widget->obj, LV_LABEL_PART_MAIN, &label_style);
 
     lv_obj_set_size(widget->obj, 40, 15);
     set_battery_symbol(widget->obj);
