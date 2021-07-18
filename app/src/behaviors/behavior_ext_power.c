@@ -71,6 +71,7 @@ static const struct behavior_driver_api behavior_ext_power_driver_api = {
         on_keymap_binding_convert_central_state_dependent_params,
     .binding_pressed = on_keymap_binding_pressed,
     .binding_released = on_keymap_binding_released,
+    .locality = BEHAVIOR_LOCALITY_GLOBAL,
 };
 
 DEVICE_DT_INST_DEFINE(0, behavior_ext_power_init, device_pm_control_nop, NULL, NULL, APPLICATION,

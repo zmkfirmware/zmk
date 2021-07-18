@@ -18,7 +18,9 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/ble.h>
+#include <zmk/behavior.h>
 #include <zmk/split/bluetooth/uuid.h>
+#include <zmk/split/bluetooth/service.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <init.h>
@@ -29,9 +31,11 @@ static int start_scan(void);
 
 static struct bt_conn *default_conn;
 
-static struct bt_uuid_128 uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
+static const struct bt_uuid_128 split_service_uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
 static struct bt_gatt_discover_params discover_params;
 static struct bt_gatt_subscribe_params subscribe_params;
+static struct bt_gatt_discover_params sub_discover_params;
+static uint16_t run_behavior_handle;
 
 K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
               CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
@@ -71,8 +75,10 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
             if (changed_positions[i] & BIT(j)) {
                 uint32_t position = (i * 8) + j;
                 bool pressed = position_state[i] & BIT(j);
-                struct zmk_position_state_changed ev = {
-                    .position = position, .state = pressed, .timestamp = k_uptime_get()};
+                struct zmk_position_state_changed ev = {.source = bt_conn_get_dst(conn),
+                                                        .position = position,
+                                                        .state = pressed,
+                                                        .timestamp = k_uptime_get()};
 
                 k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
                 k_work_submit(&peripheral_event_work);
@@ -83,15 +89,12 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
     return BT_GATT_ITER_CONTINUE;
 }
 
-static int split_central_subscribe(struct bt_conn *conn) {
+static void split_central_subscribe(struct bt_conn *conn) {
     int err = bt_gatt_subscribe(conn, &subscribe_params);
     switch (err) {
     case -EALREADY:
         LOG_DBG("[ALREADY SUBSCRIBED]");
         break;
-        // break;
-        // bt_gatt_unsubscribe(conn, &subscribe_params);
-        // return split_central_subscribe(conn);
     case 0:
         LOG_DBG("[SUBSCRIBED]");
         break;
@@ -99,14 +102,50 @@ static int split_central_subscribe(struct bt_conn *conn) {
         LOG_ERR("Subscribe failed (err %d)", err);
         break;
     }
-
-    return 0;
 }
 
-static uint8_t split_central_discovery_func(struct bt_conn *conn, const struct bt_gatt_attr *attr,
-                                            struct bt_gatt_discover_params *params) {
-    int err;
+static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
+                                                 const struct bt_gatt_attr *attr,
+                                                 struct bt_gatt_discover_params *params) {
+    if (!attr) {
+        LOG_DBG("Discover complete");
+        return BT_GATT_ITER_STOP;
+    }
 
+    if (!attr->user_data) {
+        LOG_ERR("Required user data not passed to discovery");
+        return BT_GATT_ITER_STOP;
+    }
+
+    LOG_DBG("[ATTRIBUTE] handle %u", attr->handle);
+
+    if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                     BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID))) {
+        LOG_DBG("Found position state characteristic");
+        discover_params.uuid = NULL;
+        discover_params.start_handle = attr->handle + 2;
+        discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
+
+        subscribe_params.disc_params = &sub_discover_params;
+        subscribe_params.end_handle = discover_params.end_handle;
+        subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
+        subscribe_params.notify = split_central_notify_func;
+        subscribe_params.value = BT_GATT_CCC_NOTIFY;
+        split_central_subscribe(conn);
+    } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                            BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_RUN_BEHAVIOR_UUID))) {
+        LOG_DBG("Found run behavior handle");
+        run_behavior_handle = bt_gatt_attr_value_handle(attr);
+    }
+
+    bool subscribed = (run_behavior_handle && subscribe_params.value_handle);
+
+    return subscribed ? BT_GATT_ITER_STOP : BT_GATT_ITER_CONTINUE;
+}
+
+static uint8_t split_central_service_discovery_func(struct bt_conn *conn,
+                                                    const struct bt_gatt_attr *attr,
+                                                    struct bt_gatt_discover_params *params) {
     if (!attr) {
         LOG_DBG("Discover complete");
         (void)memset(params, 0, sizeof(*params));
@@ -115,38 +154,21 @@ static uint8_t split_central_discovery_func(struct bt_conn *conn, const struct b
 
     LOG_DBG("[ATTRIBUTE] handle %u", attr->handle);
 
-    if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID))) {
-        memcpy(&uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID), sizeof(uuid));
-        discover_params.uuid = &uuid.uuid;
-        discover_params.start_handle = attr->handle + 1;
-        discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
-
-        err = bt_gatt_discover(conn, &discover_params);
-        if (err) {
-            LOG_ERR("Discover failed (err %d)", err);
-        }
-    } else if (!bt_uuid_cmp(discover_params.uuid,
-                            BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID))) {
-        memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
-        discover_params.uuid = &uuid.uuid;
-        discover_params.start_handle = attr->handle + 2;
-        discover_params.type = BT_GATT_DISCOVER_DESCRIPTOR;
-        subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
-
-        err = bt_gatt_discover(conn, &discover_params);
-        if (err) {
-            LOG_ERR("Discover failed (err %d)", err);
-        }
-    } else {
-        subscribe_params.notify = split_central_notify_func;
-        subscribe_params.value = BT_GATT_CCC_NOTIFY;
-        subscribe_params.ccc_handle = attr->handle;
-
-        split_central_subscribe(conn);
-
-        return BT_GATT_ITER_STOP;
+    if (bt_uuid_cmp(discover_params.uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID))) {
+        LOG_DBG("Found other service");
+        return BT_GATT_ITER_CONTINUE;
     }
 
+    LOG_DBG("Found split service");
+    discover_params.uuid = NULL;
+    discover_params.func = split_central_chrc_discovery_func;
+    discover_params.start_handle = attr->handle + 1;
+    discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
+
+    int err = bt_gatt_discover(conn, &discover_params);
+    if (err) {
+        LOG_ERR("Failed to start discovering split service characteristics (err %d)", err);
+    }
     return BT_GATT_ITER_STOP;
 }
 
@@ -161,9 +183,9 @@ static void split_central_process_connection(struct bt_conn *conn) {
         return;
     }
 
-    if (conn == default_conn && !subscribe_params.value) {
-        discover_params.uuid = &uuid.uuid;
-        discover_params.func = split_central_discovery_func;
+    if (conn == default_conn && !subscribe_params.value_handle) {
+        discover_params.uuid = &split_service_uuid.uuid;
+        discover_params.func = split_central_service_discovery_func;
         discover_params.start_handle = 0x0001;
         discover_params.end_handle = 0xffff;
         discover_params.type = BT_GATT_DISCOVER_PRIMARY;
@@ -318,12 +340,37 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
     bt_conn_unref(default_conn);
     default_conn = NULL;
 
+    // Clean up previously discovered handles;
+    subscribe_params.value_handle = 0;
+    run_behavior_handle = 0;
+
     start_scan();
 }
 
 static struct bt_conn_cb conn_callbacks = {
     .connected = split_central_connected,
     .disconnected = split_central_disconnected,
+};
+
+int zmk_split_bt_invoke_behavior(const bt_addr_le_t *source, struct zmk_behavior_binding *binding,
+                                 struct zmk_behavior_binding_event event, bool state) {
+    struct zmk_split_run_behavior_payload payload = {.data = {
+                                                         .param1 = binding->param1,
+                                                         .param2 = binding->param2,
+                                                         .position = event.position,
+                                                         .state = state,
+                                                     }};
+    strncpy(payload.behavior_dev, binding->behavior_dev, ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN - 1);
+    payload.behavior_dev[ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN - 1] = '\0';
+
+    int err = bt_gatt_write_without_response(default_conn, run_behavior_handle, &payload,
+                                             sizeof(struct zmk_split_run_behavior_payload), true);
+
+    if (err) {
+        LOG_ERR("Failed to write the behavior characteristic (err %d)", err);
+    }
+
+    return err;
 };
 
 int zmk_split_bt_central_init(const struct device *_arg) {
