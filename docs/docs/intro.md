@@ -31,7 +31,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | One Shot Keys                                                                                                             | ✅  |    ✅     | ✅  |
 | [Combo Keys](features/combos)                                                                                             | ✅  |           | ✅  |
 | Macros                                                                                                                    | 🚧  |    ✅     | ✅  |
-| Mouse Keys                                                                                                                | 💡  |    ✅     | ✅  |
+| Mouse Keys                                                                                                                | ✅  |    ✅     | ✅  |
 | Low Active Power Usage                                                                                                    | ✅  |           |     |
 | Low Power Sleep States                                                                                                    | ✅  |    ✅     |     |
 | [Low Power Mode (VCC Shutoff)](behaviors/power)                                                                           | ✅  |    ✅     |     |

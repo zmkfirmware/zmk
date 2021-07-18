@@ -1,0 +1,5 @@
+description: Mouse wheel
+
+compatible: "zmk,behavior-mouse-wheel"
+
+include: one_param.yaml
