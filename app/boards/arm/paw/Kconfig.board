@@ -1,0 +1,9 @@
+# Paw board configuration
+
+# Copyright (c) 2020 Taylor Glaeser
+# SPDX-License-Identifier: MIT
+
+config BOARD_PAW
+	bool "Paw"
+	depends on SOC_NRF52840_QIAA
+

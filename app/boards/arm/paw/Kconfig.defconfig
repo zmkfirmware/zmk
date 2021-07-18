@@ -1,0 +1,37 @@
+# Copyright (c) 2020 Taylor Glaeser
+# SPDX-License-Identifier: MIT
+
+if BOARD_PAW
+
+config BOARD
+	default "paw"
+
+config ZMK_KEYBOARD_NAME
+  default "Paw"
+
+if USB
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+endif # USB
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+config ZMK_RGB_UNDERGLOW
+  default y
+
+config WS2812_STRIP
+  default y
+
+endif # BOARD_PAW
