@@ -188,7 +188,7 @@ brew install cmake ninja python3 ccache dtc git wget dfu-util
 </TabItem>
 <TabItem value="docker">
 
-This setup leverages the same [image which is used by the GitHub action](https://github.com/zmkfirmware/zephyr-west-action) for local development. Beyond the benefits of [dev/prod parity](https://12factor.net/dev-prod-parity), this approach is also the easiest to set up. No toolchain or dependencies are necessary when using Docker; the container image you'll be using already has the toolchain installed and set up to use.
+This setup leverages the same [image which is used by the GitHub action](https://github.com/zmkfirmware/zmk-docker) for local development. Beyond the benefits of [dev/prod parity](https://12factor.net/dev-prod-parity), this approach is also the easiest to set up. No toolchain or dependencies are necessary when using Docker; the container image you'll be using already has the toolchain installed and set up to use.
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your operating system.
 2. Install [VS Code](https://code.visualstudio.com/)
