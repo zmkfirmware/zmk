@@ -78,6 +78,7 @@ jobs:
             shield: kyria_right
             cmake-args: -DCONFIG_ZMK_DISPLAY=y
             skip-archive: true
+          - board: bluemacro840_v1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
