@@ -75,8 +75,8 @@ $repo_path = "https://github.com/zmkfirmware/zmk-config-split-template.git"
 
 $title = "ZMK Config Setup:"
 $prompt = "Pick an MCU board"
-$options = "nice!nano", "QMK Proton-C", "BlueMicro840 (v1)", "makerdiary nRF52840 M.2"
-$boards = "nice_nano", "proton_c", "bluemicro840_v1", "nrf52840_m2"
+$options = "nice!nano v1", "nice!nano v2", "QMK Proton-C", "BlueMicro840 (v1)", "makerdiary nRF52840 M.2"
+$boards = "nice_nano", "nice_nano_v2", "proton_c", "bluemicro840_v1", "nrf52840_m2"
 
 Write-Host "$title"
 Write-Host ""

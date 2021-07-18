@@ -15,7 +15,7 @@ That being said, there are currently only a few specific [boards](/docs/faq#what
 
 ## Boards
 
-- [nice!nano](https://nicekeyboards.com/products/nice-nano-v1-0) (`nice_nano`)
+- [nice!nano](https://nicekeyboards.com/nice-nano) (`nice_nano`, `nice_nano_v2`)
 - [nrfMicro](https://github.com/joric/nrfmicro) (`nrfmicro_13`, `nrfmicro_11`, `nrfmicro_11_flipped`)
 - [BlueMicro840](https://store.jpconstantineau.com/#/group/bluemicro) (`bluemicro840_v1`)
 - [QMK Proton-C](https://qmk.fm/proton-c/) (`proton_c`)

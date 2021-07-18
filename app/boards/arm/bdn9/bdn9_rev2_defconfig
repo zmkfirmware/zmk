@@ -11,6 +11,9 @@ CONFIG_FPU=y
 # enable GPIO
 CONFIG_GPIO=y
 
+# Enable pinmux
+CONFIG_PINMUX=y
+
 # Needed to reduce this to size that will fit on F072
 CONFIG_HEAP_MEM_POOL_SIZE=1024
 

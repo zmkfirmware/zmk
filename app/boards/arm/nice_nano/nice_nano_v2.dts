@@ -11,14 +11,16 @@
 	ext-power {
 		compatible = "zmk,ext-power-generic";
 		label = "EXT_POWER";
-		control-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
+		control-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+		init-delay-ms = <10>;
 	};
 
 	vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
-		io-channels = <&adc 2>;
-		output-ohms = <2000000>;
-		full-ohms = <(2000000 + 806000)>;
+		io-channels = <&adc (0x0D - 1)>;
+		// Multiply ADC result by 5
+		full-ohms = <5>;
+		output-ohms = <1>;
 	};
 };

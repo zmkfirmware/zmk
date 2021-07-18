@@ -34,7 +34,7 @@ static const struct behavior_driver_api behavior_none_driver_api = {
     .binding_released = on_keymap_binding_released,
 };
 
-DEVICE_AND_API_INIT(behavior_none, DT_INST_LABEL(0), behavior_none_init, NULL, NULL, APPLICATION,
-                    CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_none_driver_api);
+DEVICE_DT_INST_DEFINE(0, behavior_none_init, device_pm_control_nop, NULL, NULL, APPLICATION,
+                      CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_none_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
