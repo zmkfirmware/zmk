@@ -65,6 +65,7 @@ jobs:
         include:
           - board: bdn9_rev2
           - board: dz60rgb_rev1
+          - board: ferris_rev02
           - board: nrf52840_m2
             shield: m60
           - board: planck_rev6

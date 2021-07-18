@@ -1,0 +1,21 @@
+# MCP23017 GPIO configuration options
+
+# Copyright (c) 2021 Pete Johanson
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig GPIO_MCP23017
+	bool "MCP23017 I2C-based GPIO chip"
+	depends on I2C
+	select HAS_DTS_GPIO
+	help
+	  Enable driver for MCP23017 I2C-based GPIO chip.
+
+if GPIO_MCP23017
+
+config GPIO_MCP23017_INIT_PRIORITY
+	int "Init priority"
+	default 75
+	help
+	  Device driver initialization priority.
+
+endif #GPIO_MCP23017
