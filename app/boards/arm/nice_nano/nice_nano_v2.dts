@@ -15,7 +15,7 @@
 		init-delay-ms = <10>;
 	};
 
-	vbatt {
+	vbatt: vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc (0x0D - 1)>;

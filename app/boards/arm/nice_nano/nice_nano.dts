@@ -14,7 +14,7 @@
 		control-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
 	};
 
-	vbatt {
+	vbatt: vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 2>;
