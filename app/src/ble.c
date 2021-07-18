@@ -41,7 +41,7 @@ static uint8_t passkey_entries[6] = {0, 0, 0, 0, 0, 0};
 static uint8_t passkey_digit = 0;
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
-#define PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - 1)
+#define PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS)
 #else
 #define PROFILE_COUNT CONFIG_BT_MAX_PAIRED
 #endif
@@ -90,7 +90,7 @@ static const struct bt_data zmk_ble_ad[] = {
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
 
-static bt_addr_le_t peripheral_addr;
+static bt_addr_le_t peripheral_addrs[CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS];
 
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
 
@@ -286,9 +286,34 @@ char *zmk_ble_active_profile_name() { return profiles[active_profile].name; }
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
 
-void zmk_ble_set_peripheral_addr(bt_addr_le_t *addr) {
-    memcpy(&peripheral_addr, addr, sizeof(bt_addr_le_t));
-    settings_save_one("ble/peripheral_address", addr, sizeof(bt_addr_le_t));
+int zmk_ble_put_peripheral_addr(bt_addr_le_t *addr) {
+    for (int i = 0; i < CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS; i++) {
+        // If the address is recognized and already stored in settings, return
+        // index and no additional action is necessary.
+        if (!bt_addr_le_cmp(&peripheral_addrs[i], addr)) {
+            return i;
+        }
+
+        // If the peripheral address slot is open, store new peripheral in the
+        // slot and return index. This compares against BT_ADDR_LE_ANY as that
+        // is the zero value.
+        if (!bt_addr_le_cmp(&peripheral_addrs[i], BT_ADDR_LE_ANY)) {
+            char addr_str[BT_ADDR_LE_STR_LEN];
+            bt_addr_le_to_str(addr, addr_str, sizeof(addr_str));
+            LOG_DBG("Storing peripheral %s in slot %d", log_strdup(addr_str), i);
+
+            bt_addr_le_copy(&peripheral_addrs[i], addr);
+
+            char setting_name[32];
+            sprintf(setting_name, "ble/peripheral_addresses/%d", i);
+            settings_save_one(setting_name, addr, sizeof(bt_addr_le_t));
+
+            return i;
+        }
+    }
+
+    // The peripheral in question does not match any of the known peripherals.
+    return -1;
 }
 
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
@@ -342,15 +367,20 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
         }
     }
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
-    else if (settings_name_steq(name, "peripheral_address", &next) && !next) {
+    else if (settings_name_steq(name, "peripheral_addresses", &next) && next) {
         if (len != sizeof(bt_addr_le_t)) {
             return -EINVAL;
         }
 
-        int err = read_cb(cb_arg, &peripheral_addr, sizeof(bt_addr_le_t));
-        if (err <= 0) {
-            LOG_ERR("Failed to handle peripheral address from settings (err %d)", err);
-            return err;
+        int i = atoi(next);
+        if (i >= CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS) {
+            LOG_ERR("Failed to store peripheral address");
+        } else {
+            int err = read_cb(cb_arg, &peripheral_addrs[i], sizeof(bt_addr_le_t));
+            if (err <= 0) {
+                LOG_ERR("Failed to handle peripheral address from settings (err %d)", err);
+                return err;
+            }
         }
     }
 #endif
@@ -366,19 +396,29 @@ static bool is_conn_active_profile(const struct bt_conn *conn) {
 }
 
 static void connected(struct bt_conn *conn, uint8_t err) {
-    char addr[BT_ADDR_LE_STR_LEN];
-    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+    // Skip if MAC address if it matches a peripheral.
+    char addr_str[BT_ADDR_LE_STR_LEN];
+    const bt_addr_le_t *addr = bt_conn_get_dst(conn);
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
+    for (int i = 0; i < CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS; i++) {
+        if (!bt_addr_le_cmp(&peripheral_addrs[i], addr)) {
+            return;
+        }
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
+    bt_addr_le_to_str(addr, addr_str, sizeof(addr_str));
+
     LOG_DBG("Connected thread: %p", k_current_get());
 
     advertising_status = ZMK_ADV_NONE;
 
     if (err) {
-        LOG_WRN("Failed to connect to %s (%u)", log_strdup(addr), err);
+        LOG_WRN("Failed to connect to %s (%u)", log_strdup(addr_str), err);
         update_advertising();
         return;
     }
 
-    LOG_DBG("Connected %s", log_strdup(addr));
+    LOG_DBG("Connected %s", log_strdup(addr_str));
 
     err = bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
     if (err) {
@@ -402,11 +442,19 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 }
 
 static void disconnected(struct bt_conn *conn, uint8_t reason) {
-    char addr[BT_ADDR_LE_STR_LEN];
+    // Skip if MAC address if it matches a peripheral.
+    char addr_str[BT_ADDR_LE_STR_LEN];
+    const bt_addr_le_t *addr = bt_conn_get_dst(conn);
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
+    for (int i = 0; i < CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS; i++) {
+        if (!bt_addr_le_cmp(&peripheral_addrs[i], addr)) {
+            return;
+        }
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
+    bt_addr_le_to_str(addr, addr_str, sizeof(addr_str));
 
-    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
-
-    LOG_DBG("Disconnected from %s (reason 0x%02x)", log_strdup(addr), reason);
+    LOG_DBG("Disconnected from %s (reason 0x%02x)", log_strdup(addr_str), reason);
 
     // We need to do this in a work callback, otherwise the advertising update will still see the
     // connection for a profile as active, and not start advertising yet.

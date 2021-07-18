@@ -121,6 +121,10 @@ config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
 	int "Max number of key position state events to queue when received from peripherals"
 	default 5
 
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+	int "The number of peripherals the central should connect to"
+	default 1
+
 endif
 
 if !ZMK_SPLIT_BLE_ROLE_CENTRAL
