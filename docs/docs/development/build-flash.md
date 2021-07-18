@@ -31,7 +31,7 @@ an onboard MCU, or one that uses an MCU board addon.
 
 ### Keyboard (Shield) + MCU Board
 
-ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html)
+ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/2.5.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/2.5.0/guides/porting/board_porting.html)
 
 Given the following:
 
@@ -47,7 +47,7 @@ west build -b proton_c -- -DSHIELD=kyria_left
 
 ### Keyboard With Onboard MCU
 
-Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
+Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/2.5.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
 
 Given the following:
 

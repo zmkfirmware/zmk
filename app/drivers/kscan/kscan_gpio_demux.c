@@ -113,6 +113,8 @@ struct kscan_gpio_item_config {
                     &kscan_gpio_output_configs_##n(dev)[bit];                                      \
                 gpio_pin_set(out_dev, out_cfg->pin, state);                                        \
             }                                                                                      \
+            /* Let the col settle before reading the rows */                                       \
+            k_usleep(1);                                                                           \
                                                                                                    \
             for (int i = 0; i < INST_MATRIX_INPUTS(n); i++) {                                      \
                 /* Get the input device (port) */                                                  \
@@ -246,9 +248,9 @@ struct kscan_gpio_item_config {
         .cols = {UTIL_LISTIFY(INST_DEMUX_GPIOS(n), _KSCAN_GPIO_OUTPUT_CFG_INIT, n)},               \
     };                                                                                             \
                                                                                                    \
-    DEVICE_AND_API_INIT(kscan_gpio_##n, DT_INST_LABEL(n), kscan_gpio_init_##n,                     \
-                        &kscan_gpio_data_##n, &kscan_gpio_config_##n, APPLICATION,                 \
-                        CONFIG_APPLICATION_INIT_PRIORITY, &gpio_driver_api_##n);
+    DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, device_pm_control_nop, &kscan_gpio_data_##n,     \
+                          &kscan_gpio_config_##n, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY,   \
+                          &gpio_driver_api_##n);
 
 DT_INST_FOREACH_STATUS_OKAY(GPIO_INST_INIT)
 

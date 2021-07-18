@@ -7,7 +7,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const specialCharactersRegex = /(?:^|\s)((?:&(?:(?:\w+)|(?:#\d+));)|[_]|[^\w\s])(?:\s*\[([^[\]]+?)\])/g;
+const specialCharactersRegex =
+  /(?:^|\s)((?:&(?:(?:\w+)|(?:#\d+));)|[_]|[^\w\s])(?:\s*\[([^[\]]+?)\])/g;
 
 function renderSpecialCharacters(description) {
   const matches = Array.from(description.matchAll(specialCharactersRegex));

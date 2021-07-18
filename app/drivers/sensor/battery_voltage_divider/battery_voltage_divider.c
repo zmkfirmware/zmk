@@ -93,7 +93,7 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
                               &val);
 
         uint16_t millivolts = val * (uint64_t)drv_cfg->full_ohm / drv_cfg->output_ohm;
-        LOG_DBG("ADC raw %d ~ %d mV => %d mV\n", drv_data->adc_raw, val, millivolts);
+        LOG_DBG("ADC raw %d ~ %d mV => %d mV", drv_data->adc_raw, val, millivolts);
         uint8_t percent = lithium_ion_mv_to_pct(millivolts);
         LOG_DBG("Percent: %d", percent);
 
@@ -217,5 +217,5 @@ static const struct bvd_config bvd_cfg = {
     .full_ohm = DT_INST_PROP(0, full_ohms),
 };
 
-DEVICE_AND_API_INIT(bvd_dev, DT_INST_LABEL(0), &bvd_init, &bvd_data, &bvd_cfg, POST_KERNEL,
-                    CONFIG_SENSOR_INIT_PRIORITY, &bvd_api);
+DEVICE_DT_INST_DEFINE(0, &bvd_init, device_pm_control_nop, &bvd_data, &bvd_cfg, POST_KERNEL,
+                      CONFIG_SENSOR_INIT_PRIORITY, &bvd_api);
