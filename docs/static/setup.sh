@@ -77,7 +77,7 @@ select opt in "${options[@]}" "Quit"; do
     case "$REPLY" in
 
     1 ) board="nice_nano"; break;;
-    2 ) board="nice_nano_v2" break;;
+    2 ) board="nice_nano_v2"; break;;
     3 ) board="proton_c"; break;;
     4 ) board="bluemicro840_v1"; break;;
     5 ) board="nrf52840_m2"; break;;
