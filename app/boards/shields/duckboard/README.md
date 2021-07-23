@@ -1,10 +1,10 @@
 ## ZMK Firmware adapted for duckboard/nice!nano combo
 
-Last Updated: 19 April 2021
+Last Updated: 22 July 2021
 
 **_Notice:_** This firmware has been tested and validated, but continues to be updated on a regular basis. If you encounter any issues, please message me on [discord](https://discord.gg/K3SJrtN5PJ) to report any bugs.  
 
-**_note on OLED support:_** ZMK firmware documentation is still in progress, and as of now does not provide any guidance for programming OLEDs. By default on this firmware, the OLED is enabled and will show the status of the battery, BT connectivity, and USB connectivity. Once the ZMK firmware is updated to include descriptions on how to edit the OLED readout, the firmware will be updated to have the same default readout as the QMK default firmware.
+**_Note on OLED support:_** ZMK firmware documentation is still in progress, and as of now does not provide any guidance for programming OLEDs. By default on this firmware, the OLED is enabled and will show the status of the battery, BT connectivity, and USB connectivity. Once the ZMK firmware is updated to include descriptions on how to edit the OLED readout, the firmware will be updated to have the same default readout as the QMK default firmware.
 
 Credit for the ZMK Firmware to [The ZMK Contributors](https://zmkfirmware.dev/)  
 Hardware credit for the duckboard to [doodboard](https://doodboard.xyz/)  
