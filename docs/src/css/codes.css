@@ -4,6 +4,24 @@
  * SPDX-License-Identifier: CC-BY-NC-SA-4.0
  */
 
+:root {
+  --codes-os-fg: black;
+  --codes-os-windows-bg: #caedfd;
+  --codes-os-linux-bg: #fff2ca;
+  --codes-os-android-bg: #d8eed9;
+  --codes-os-macos-bg: #ececec;
+  --codes-os-ios-bg: #ffffff;
+}
+
+html[data-theme="dark"] {
+  --codes-os-fg: #f5f6f7;
+  --codes-os-windows-bg: #032535;
+  --codes-os-linux-bg: #332600;
+  --codes-os-android-bg: #112712;
+  --codes-os-macos-bg: #121212;
+  --codes-os-ios-bg: #000000;
+}
+
 .codes.os.legend {
   position: sticky;
   z-index: 1;
@@ -132,7 +150,7 @@ html[data-theme="light"] .codes.os.legend {
 }
 
 .codes .os {
-  color: black;
+  color: var(--codes-os-fg);
 }
 
 .codes td.os {
@@ -144,23 +162,23 @@ html[data-theme="light"] .codes.os.legend {
 }
 
 .codes .os.windows {
-  background: #caedfd;
+  background: var(--codes-os-windows-bg);
 }
 
 .codes .os.linux {
-  background: #fff2ca;
+  background: var(--codes-os-linux-bg);
 }
 
 .codes .os.android {
-  background: #d8eed9;
+  background: var(--codes-os-android-bg);
 }
 
 .codes .os.macos {
-  background: #ececec;
+  background: var(--codes-os-macos-bg);
 }
 
 .codes .os.ios {
-  background: #ffffff;
+  background: var(--codes-os-ios-bg);
 }
 
 .codes .footnotes {

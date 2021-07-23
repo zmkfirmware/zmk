@@ -39,6 +39,6 @@ static const struct behavior_mo_config behavior_mo_config = {};
 
 static struct behavior_mo_data behavior_mo_data;
 
-DEVICE_AND_API_INIT(behavior_mo, DT_INST_LABEL(0), behavior_mo_init, &behavior_mo_data,
-                    &behavior_mo_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
-                    &behavior_mo_driver_api);
+DEVICE_DT_INST_DEFINE(0, behavior_mo_init, device_pm_control_nop, &behavior_mo_data,
+                      &behavior_mo_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+                      &behavior_mo_driver_api);

@@ -217,5 +217,5 @@ static const struct bvd_config bvd_cfg = {
     .full_ohm = DT_INST_PROP(0, full_ohms),
 };
 
-DEVICE_AND_API_INIT(bvd_dev, DT_INST_LABEL(0), &bvd_init, &bvd_data, &bvd_cfg, POST_KERNEL,
-                    CONFIG_SENSOR_INIT_PRIORITY, &bvd_api);
+DEVICE_DT_INST_DEFINE(0, &bvd_init, device_pm_control_nop, &bvd_data, &bvd_cfg, POST_KERNEL,
+                      CONFIG_SENSOR_INIT_PRIORITY, &bvd_api);
