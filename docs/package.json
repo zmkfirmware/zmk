@@ -25,7 +25,7 @@
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.2",
     "react-toastify": "^7.0.4",
-    "web-tree-sitter": "^0.17.1"
+    "web-tree-sitter": "^0.19.4"
   },
   "browserslist": {
     "production": [
@@ -46,6 +46,6 @@
     "eslint-plugin-react": "^7.23.2",
     "null-loader": "^4.0.0",
     "prettier": "2.3.1",
-    "string-replace-loader": "^3.0.0"
+    "string-replace-loader": "^3.0.3"
   }
 }
