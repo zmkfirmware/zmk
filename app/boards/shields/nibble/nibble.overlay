@@ -15,8 +15,8 @@
 	encoder_1: encoder_1 {
 		compatible = "alps,ec11";
 		label = "Encoder 1";
-		a-gpios = <&pro_micro_d 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-		b-gpios = <&pro_micro_d 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		a-gpios = <&pro_micro 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		b-gpios = <&pro_micro 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 		resolution = <4>;
 		status = "okay";
 	};
@@ -26,17 +26,17 @@
 		label = "KSCAN";
 		polling-interval-msec = <25>;
 		input-gpios
-			= <&pro_micro_d 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&pro_micro_d 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&pro_micro_d 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&pro_micro_d 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&pro_micro_d 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			= <&pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&pro_micro 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 			;
 		output-gpios
-			= <&pro_micro_a 3 GPIO_ACTIVE_HIGH>
-			, <&pro_micro_a 2 GPIO_ACTIVE_HIGH>
-			, <&pro_micro_a 1 GPIO_ACTIVE_HIGH>
-			, <&pro_micro_a 0 GPIO_ACTIVE_HIGH>
+			= <&pro_micro 21 GPIO_ACTIVE_HIGH>
+			, <&pro_micro 20 GPIO_ACTIVE_HIGH>
+			, <&pro_micro 19 GPIO_ACTIVE_HIGH>
+			, <&pro_micro 18 GPIO_ACTIVE_HIGH>
 			;
 	};
 
