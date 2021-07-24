@@ -38,12 +38,12 @@ RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5)                 RC(4,6) RC(4,7) 
 
 		diode-direction = "row2col";
 		row-gpios
-			= <&pro_micro_d 1 GPIO_ACTIVE_HIGH >
-			, <&pro_micro_d 0 GPIO_ACTIVE_HIGH>
-			, <&pro_micro_d 2 GPIO_ACTIVE_HIGH>
-			, <&pro_micro_d 4 GPIO_ACTIVE_HIGH>
-			, <&pro_micro_d 5 GPIO_ACTIVE_HIGH>
-			, <&pro_micro_d 6 GPIO_ACTIVE_HIGH>
+			= <&pro_micro 1 GPIO_ACTIVE_HIGH >
+			, <&pro_micro 0 GPIO_ACTIVE_HIGH>
+			, <&pro_micro 2 GPIO_ACTIVE_HIGH>
+			, <&pro_micro 4 GPIO_ACTIVE_HIGH>
+			, <&pro_micro 5 GPIO_ACTIVE_HIGH>
+			, <&pro_micro 6 GPIO_ACTIVE_HIGH>
 			;
 		
 	};
