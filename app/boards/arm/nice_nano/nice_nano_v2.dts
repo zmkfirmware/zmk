@@ -16,11 +16,7 @@
 	};
 
 	vbatt {
-		compatible = "zmk,battery-voltage-divider";
+		compatible = "zmk,battery-nrf-vddh";
 		label = "BATTERY";
-		io-channels = <&adc (0x0D - 1)>;
-		// Multiply ADC result by 5
-		full-ohms = <5>;
-		output-ohms = <1>;
 	};
 };
