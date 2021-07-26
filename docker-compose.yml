@@ -1,0 +1,21 @@
+---
+version: "3.9"
+services:
+    shell:
+        ports:
+            - 3000
+        build:
+            context: .devcontainer/
+            dockerfile: Dockerfile
+        volumes:
+            - $PWD:/workspace
+            - zmk-root-user:/root
+            - zmk-zephyr:/workspace/zephyr
+            - zmk-zephyr-modules:/workspace/modules
+            - zmk-zephyr-tools:/workspace/tools
+
+volumes:
+    zmk-root-user:
+    zmk-zephyr:
+    zmk-zephyr-modules:
+    zmk-zephyr-tools:

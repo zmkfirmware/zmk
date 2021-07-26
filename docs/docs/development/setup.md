@@ -16,6 +16,7 @@ values={[
 {label: 'Raspberry OS', value: 'raspberryos'},
 {label: 'Fedora', value: 'fedora'},
 {label: 'VS Code & Docker', value: 'docker'},
+{label: 'docker compose', value: 'dockercompose'},
 ]
 }>{props.children}</Tabs>);
 
@@ -195,7 +196,7 @@ This setup leverages the same [image which is used by the GitHub action](https:/
 3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
 :::info
-The docker container includes `west` and the compilation toolchain. If you're using docker and VS Code, you can skip right to [Source Code](#source-code).
+The docker container includes `west` and the compilation toolchain. If you're using docker and VS Code, or `docker compose`, you can skip right to [Source Code](#source-code).
 :::
 
 </TabItem>
@@ -421,6 +422,20 @@ All subsequent steps must be performed from the VS Code terminal _inside_ the co
 :::
 
 </TabItem>
+
+<TabItem value="dockercompose">
+
+Open a terminal and `cd` into your `zmk` repository.
+
+Run `docker compose up -d`.
+
+To enter the build environment container, run `docker compose run --rm shell bash`. The zmk repo will be mounted into the `/workspace` directory.
+
+:::caution
+All subsequent steps must be performed _inside_ the container.
+:::
+</TabItem>
+
 </OsTabs>
 
 #### Initialize West

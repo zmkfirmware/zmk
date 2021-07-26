@@ -90,7 +90,11 @@ This produces `left` and `right` subfolders under the `build` directory and two 
 
 ### Building from `zmk-config` Folder
 
-Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup.md#github-repo) by adding
+Getting your `zmk-config` to be used by your build environment differs based on what type of build environment you are using.
+
+#### non-containerized environment
+
+Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup#github-repo) by adding
 `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build` command. **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
@@ -98,6 +102,8 @@ For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder
 ```
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
+
+#### VSCode Remote Container environnment
 
 In order to make your `zmk-config` folder available when building within the VSCode Remote Container, you need to create a docker volume named `zmk-config`
 by binding it to the full path of your config directory. If you have run the VSCode Remote Container before, it is likely that docker has created this
@@ -115,6 +121,16 @@ docker volume create --driver local -o o=bind -o type=none -o \
 ```
 
 Now start VSCode and rebuild the container after being prompted. You should be able to see your zmk-config mounted to `/workspaces/zmk-config` inside the container. So you can build your custom firmware with `-DZMK_CONFIG="/workspaces/zmk-config/config"`.
+
+#### docker compose build environment
+
+Attaching your `zmk-config` to your docker-compose build environment is done by specifying a volume mount when running the service:
+
+```
+docker compose run --rm -v /full/path/to/your/zmk-config:/workspace/zmk-config shell bash
+```
+
+Now you can build your custom firmware with `-DZMK_CONFIG=/workspace/zmk-config/config".`
 
 ## Flashing
 
