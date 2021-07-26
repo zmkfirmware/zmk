@@ -65,71 +65,70 @@ fi
 repo_path="https://github.com/zmkfirmware/zmk-config-split-template.git"
 title="ZMK Config Setup:"
 
-prompt="Pick an MCU board:"
-options=("nice!nano v1" "nice!nano v2" "QMK Proton-C" "BlueMicro840 (v1)" "makerdiary nRF52840 M.2")
-
-echo "$title"
 echo ""
-echo "MCU Board Selection:"
-PS3="$prompt "
+echo "Keyboard Selection:"
+PS3="Pick a keyboard: "
+options=({{#keyboards}}"{{{name}}}" {{/keyboards}})
+keyboards_id=({{#keyboards}}"{{id}}" {{/keyboards}})
+keyboards_type=({{#keyboards}}"{{type}}" {{/keyboards}})
+keyboards_split=({{#keyboards}}"{{#split}}y{{/split}}{{^split}}n{{/split}}" {{/keyboards}})
+keyboards_shield=({{#keyboards}}"{{#compatible}}y{{/compatible}}{{^compatible}}n{{/compatible}}" {{/keyboards}})
 select opt in "${options[@]}" "Quit"; do
-
     case "$REPLY" in
+        ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
 
-    1 ) board="nice_nano"; break;;
-    2 ) board="nice_nano_v2"; break;;
-    3 ) board="proton_c"; break;;
-    4 ) board="bluemicro840_v1"; break;;
-    5 ) board="nrf52840_m2"; break;;
-
-    $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
-    *) echo "Invalid option. Try another one."; continue;;
+        $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
+        *)
+            if [ $REPLY -gt $(( ${#options[@]}+1 )) ] || [ $REPLY -lt 0 ]; then
+                echo "Invalid option. Try another one."
+                continue
+            fi
+            keyboard_index=$(( $REPLY-1 ))
+            keyboard=${keyboards_id[$keyboard_index]}
+            keyboard_title=${options[$keyboard_index]}
+            split=${keyboards_split[$keyboard_index]}
+            type=${keyboards_type[$keyboard_index]}
+            keyboard_shield=${keyboards_shield[$keyboard_index]}
+            break
+        ;;
 
     esac
 done
 
-echo ""
-echo "Keyboard Shield Selection:"
+if [ "$keyboard_shield" == "y" ]; then
+    shield=${keyboard}
+    shield_title=${keyboard_title}
 
-prompt="Pick an keyboard:"
-options=("Kyria" "Lily58" "Corne" "Splitreus62" "Sofle" "Iris" "Reviung41" "RoMac" "RoMac+" "makerdiary M60" "Microdox" "TG4X" "QAZ" "NIBBLE" "Jorne" "Jian" "CRBN" "Tidbit" "Eek!" "BFO-9000" "Helix")
+    prompt="Pick an MCU board:"
+    options=({{#boards}}"{{{name}}}" {{/boards}})
+    board_ids=({{#boards}}"{{id}}" {{/boards}})
 
-PS3="$prompt "
-# TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
-# select opt in "${options[@]}" "Other" "Quit"; do
-select opt in "${options[@]}" "Quit"; do
+    echo ""
+    echo "MCU Board Selection:"
+    PS3="$prompt "
+    select opt in "${options[@]}" "Quit"; do
+        case "$REPLY" in
+            ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
 
-    case "$REPLY" in
+            $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
+            *)
+                if [ $REPLY -gt $(( ${#options[@]}+1 )) ] || [ $REPLY -lt 0 ]; then
+                    echo "Invalid option. Try another one."
+                    continue
+                fi
+                board_index=$(( $REPLY-1 ))
+                board=${board_ids[$board_index]}
+                board_title=${options[$board_index]}
+                break
+            ;;
 
-    1 ) shield_title="Kyria" shield="kyria"; split="y"; break;;
-    2 ) shield_title="Lily58" shield="lily58"; split="y"; break;;
-    3 ) shield_title="Corne" shield="corne"; split="y"; break;;
-    4 ) shield_title="Splitreus62" shield="splitreus62"; split="y"; break;;
-    5 ) shield_title="Sofle" shield="sofle"; split="y"; break;;
-    6 ) shield_title="Iris" shield="iris"; split="y"; break;;
-    7 ) shield_title="Reviung41" shield="reviung41"; split="n"; break;;
-    8 ) shield_title="RoMac" shield="romac"; split="n"; break;;
-    9 ) shield_title="RoMac+" shield="romac_plus"; split="n"; break;;
-    10 ) shield_title="M60" shield="m60"; split="n"; break;;
-    11 ) shield_title="Microdox" shield="microdox"; split="y"; break;;
-    12 ) shield_title="TG4X" shield="tg4x"; split="n"; break;;
-    13 ) shield_title="QAZ" shield="qaz"; split="n"; break;;
-    14 ) shield_title="NIBBLE" shield="nibble"; split="n"; break;;
-    15 ) shield_title="Jorne" shield="jorne"; split="y"; break;;
-    16 ) shield_title="Jian" shield="jian"; split="y"; break;;
-    17 ) shield_title="CRBN" shield="crbn"; split="n"; break;;
-    18 ) shield_title="Tidbit" shield="tidbit"; split="n"; break;;
-    19 ) shield_title="Eek!" shield="eek"; split="n"; break;;
-    20 ) shield_title="BFO-9000" shield="bfo9000"; split="y"; break;;
-    21 ) shield_title="Helix" shield="helix"; split="y"; break;;
-
-    # Add link to docs on adding your own custom shield in your ZMK config!
-    # $(( ${#options[@]}+1 )) ) echo "Other!"; break;;
-    $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
-    *) echo "Invalid option. Try another one.";continue;;
-
-    esac
-done
+        esac
+    done
+else
+    board=${keyboard}
+    echo "Support for onboard microcontroller keyboards is still a work in progress."
+    exit 1
+fi
 
 if [ "$split" == "n" ]; then
     repo_path="https://github.com/zmkfirmware/zmk-config-template.git"
