@@ -267,7 +267,7 @@ choice SYS_PM_POLICY
 	default PM_POLICY_APP
 endchoice
 
-config DEVICE_POWER_MANAGEMENT
+config PM_DEVICE
 	default y
 
 config ZMK_IDLE_SLEEP_TIMEOUT
