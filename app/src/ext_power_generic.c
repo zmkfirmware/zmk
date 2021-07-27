@@ -32,7 +32,7 @@ struct ext_power_generic_data {
 #if IS_ENABLED(CONFIG_SETTINGS)
     bool settings_init;
 #endif
-#ifdef CONFIG_DEVICE_POWER_MANAGEMENT
+#ifdef CONFIG_PM_DEVICE
     uint32_t pm_state;
 #endif
 };
@@ -143,7 +143,7 @@ static int ext_power_generic_init(const struct device *dev) {
         return -EIO;
     }
 
-#ifdef CONFIG_DEVICE_POWER_MANAGEMENT
+#ifdef CONFIG_PM_DEVICE
     data->pm_state = DEVICE_PM_ACTIVE_STATE;
 #endif
 
@@ -179,7 +179,7 @@ static int ext_power_generic_init(const struct device *dev) {
     return 0;
 }
 
-#ifdef CONFIG_DEVICE_POWER_MANAGEMENT
+#ifdef CONFIG_PM_DEVICE
 static int ext_power_generic_pm_control(const struct device *dev, uint32_t ctrl_command,
                                         void *context, device_pm_cb cb, void *arg) {
     int rc;
@@ -210,7 +210,7 @@ static int ext_power_generic_pm_control(const struct device *dev, uint32_t ctrl_
 
     return rc;
 }
-#endif /* CONFIG_DEVICE_POWER_MANAGEMENT */
+#endif /* CONFIG_PM_DEVICE */
 
 static const struct ext_power_generic_config config = {
     .label = DT_INST_GPIO_LABEL(0, control_gpios),
