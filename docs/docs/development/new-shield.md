@@ -368,6 +368,32 @@ Further documentation on behaviors and bindings is forthcoming, but a summary of
 - `trans` is the "transparent" behavior, useful to be place in higher layers above `mo` bindings to be sure the key release is handled by the lower layer. No binding arguments are required.
 - `mt` is the "mod-tap" behavior, and takes two binding arguments, the modifier to use if held, and the keycode to send if tapped.
 
+## Metadata
+
+ZMK makes use of an additional metadata YAML file for all boards and shields to provide high level information about the hardware to be incorporated into setup scripts/utilities, website hardware list, etc.
+
+The naming convention for metadata files is `{item_id}.zmk.yml`, where the `item_id` is the board/shield identifier, including version information but excluding any optional split `_left`/`_right` suffix, e.g. `corne.zmk.yml` or `nrfmicro_11.zmk.yml`.
+
+Here is a sample `corne.zmk.yml` file from the repository:
+
+```yaml
+file_format: "1"
+id: corne
+name: Corne
+type: shield
+url: https://github.com/foostan/crkbd/
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+siblings:
+  - corne_left
+  - corne_right
+```
+
+You should place a properly named `foo.zmk.yml` file in the directory next to your other shield values, and fill it out completely and accurately. See [Hardware Metadata Files](/docs/development/hardware-metadata-files) for the full details.
+
 ## Adding Features
 
 ### Encoders
