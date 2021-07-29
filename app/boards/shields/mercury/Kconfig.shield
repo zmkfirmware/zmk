@@ -1,0 +1,5 @@
+config SHIELD_MERCURY_LEFT
+	def_bool $(shields_list_contains,mercury_left)
+
+config SHIELD_MERCURY_RIGHT
+	def_bool $(shields_list_contains,mercury_right)

@@ -1,0 +1,25 @@
+if SHIELD_MERCURY_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Mercury-L"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+endif
+
+
+if SHIELD_MERCURY_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "Mercury-R"
+
+endif
+
+
+if SHIELD_MERCURY_LEFT || SHIELD_MERCURY_RIGHT
+
+config ZMK_SPLIT
+	default y
+
+endif
