@@ -16,6 +16,10 @@ The Mod-Morph behavior acts as one of two keycodes, depending on if the required
 
 When the modifier is being held it is sent along with the morphed keycode. This can cause problems when the morphed keycode and modifier have an existing relationship (such as `shift-delete` or `ctrl-v` on many operating systems).
 
+As a remedy, you can add the optional attribute `masked_mods`, containing
+the bitwise or of the modifiers that should be disabled while the key is held,
+so that they are not included in the report sent to the host.
+
 ### Configuration
 
 An example of how to implement the mod-morph "Grave Escape":
