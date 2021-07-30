@@ -48,10 +48,10 @@
 	scl-pin = <11>;
 };
 
-&uart1 {
+&uart0 {
 	compatible = "nordic,nrf-uarte";
-	tx-pin = <14>;
-	rx-pin = <12>;
+	tx-pin = <46>;
+	rx-pin = <44>;
 };
 
 &usbd {
