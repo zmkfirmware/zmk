@@ -11,6 +11,7 @@ module.exports = {
     Features: [
       "features/keymaps",
       "features/combos",
+      "features/debouncing",
       "features/displays",
       "features/encoders",
       "features/underglow",
