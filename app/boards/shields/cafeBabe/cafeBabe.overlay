@@ -1,0 +1,89 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+		zmk,matrix_transform = &default_transform;
+    };
+
+    kscan0: kscan_0 {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";
+
+        col-gpios
+            = <&gpio0 13 GPIO_ACTIVE_HIGH> // 0
+            , <&gpio1 2 GPIO_ACTIVE_HIGH>  // 1
+            , <&gpio0 30 GPIO_ACTIVE_HIGH> // 2
+		    , <&gpio0 31 GPIO_ACTIVE_HIGH> // 3
+		    , <&gpio0 29 GPIO_ACTIVE_HIGH> // 4
+		    , <&gpio0 2 GPIO_ACTIVE_HIGH>  // 5
+		    , <&gpio1 13 GPIO_ACTIVE_HIGH> // 6
+            ;
+
+        row-gpios
+            = <&gpio0 24 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // 0
+            , <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // 1
+            , <&gpio1 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // 2
+            , <&gpio1 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // 3
+            , <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // 4
+            , <&gpio1 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // 5
+            , <&gpio0 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // 6
+            , <&gpio0 28 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // 7
+            ;
+    };
+
+	default_transform: keymap_transform_0 {
+		compatible = "zmk,matrix-transform";
+		columns = <7>;
+		rows = <8>;
+
+        map = <
+RC(0,0) 
+RC(1,1)  
+RC(2,2)                 RC(2,5) RC(2,6)
+RC(3,2)                 RC(3,5) RC(3,6)
+RC(4,2) RC(4,3) RC(4,4) RC(4,5) RC(4,6)
+RC(5,2) RC(5,3) RC(5,4) RC(5,5) RC(5,6)
+RC(6,2) RC(6,3) RC(6,4) RC(6,5) RC(6,6)
+RC(7,2) RC(7,3) RC(7,4) RC(7,5)
+        >;
+	};
+
+    left_encoder: encoder_left {
+        compatible = "alps,ec11";
+        label = "LEFT_ENCODER";
+        a-gpios = <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio1 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        resolution = <4>;
+        status = "okay";
+    };
+
+	sensors {
+		compatible = "zmk,keymap-sensors";
+		sensors = <&left_encoder>;
+	};
+};
+
+&pro_micro_i2c {
+	status = "okay";
+
+	ssd1306@3c {
+		compatible = "solomon,ssd1306fb";
+		reg = <0x3c>;
+		label = "DISPLAY";
+		width = <128>;
+		height = <64>;
+		segment-offset = <0>;
+		page-offset = <0>;
+		display-offset = <0>;
+		multiplex-ratio = <63>;
+		prechargep = <0x22>;
+	};
+};
