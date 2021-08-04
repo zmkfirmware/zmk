@@ -1,6 +1,4 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-rsource "kscan/Kconfig"
-rsource "sensor/Kconfig"
-rsource "display/Kconfig"
+zephyr_sources_ifdef(CONFIG_IL0323		il0323.c)
