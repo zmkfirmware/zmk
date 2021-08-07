@@ -38,6 +38,22 @@ static const struct hid_ops ops = {
     .int_in_ready = in_ready_cb,
 };
 
+#ifdef CONFIG_ZMK_USB_REPORT_LEDS
+
+int zmk_usb_hid_receive_report(uint8_t *report, size_t len) {
+    k_sem_take(&hid_sem, K_MSEC(30));
+    int err = hid_int_ep_read(hid_dev, report, len, NULL);
+
+    if (err) {
+        k_sem_give(&hid_sem);
+        LOG_ERR("Error receive report %d", err);
+    }
+
+    return err;
+}
+
+#endif /* CONFIG_ZMK_USB_REPORT_LEDS */
+
 int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
     switch (usb_status) {
     case USB_DC_SUSPEND:

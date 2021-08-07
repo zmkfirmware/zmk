@@ -26,4 +26,7 @@ static inline bool zmk_usb_is_hid_ready() { return zmk_usb_get_conn_state() == Z
 
 #ifdef CONFIG_ZMK_USB
 int zmk_usb_hid_send_report(const uint8_t *report, size_t len);
+#ifdef CONFIG_ZMK_USB_REPORT_LEDS
+int zmk_usb_hid_receive_report(uint8_t *report, size_t len);
+#endif /* CONFIG_ZMK_USB_REPORT_LEDS */
 #endif /* CONFIG_ZMK_USB */
