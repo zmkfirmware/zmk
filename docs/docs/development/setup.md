@@ -456,7 +456,7 @@ This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can tak
 :::info
 If you're using Docker, you're done with setup! You must restart the container at this point. The easiest way to do so is to close the VS Code window, verify that the container has stopped in Docker Dashboard, and reopen the container with VS Code.
 
-Once your container is restarted, proceed to [Building and Flashing](./development/build-flash.md).
+Once your container is restarted, proceed to [Building and Flashing](development/build-flash.md).
 :::
 
 #### Export Zephyr™ Core

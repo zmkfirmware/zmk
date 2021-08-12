@@ -11,7 +11,7 @@ have had their hardware details codified in boards/shields for ZMK.
 :::
 
 With the solid technical foundation of Zephyr™ RTOS, ZMK can support a wide diversity of hardware targets.
-That being said, there are currently only a few specific [boards](/docs/faq#what-is-a-board)/[shields](/docs/faq#what-is-a-shield) that have been written and tested by the ZMK contributors.
+That being said, there are currently only a few specific [boards](faq.md#what-is-a-board)/[shields](faq.md#what-is-a-shield) that have been written and tested by the ZMK contributors.
 
 ## Boards
 
@@ -53,4 +53,4 @@ Until detailed documentation is available, feel free to ask questions about how 
 
 ## Contributing
 
-If you'd like to add support for a new keyboard shield, head over to the [New Keyboard Shield](development/new-shield) documentation.
+If you'd like to add support for a new keyboard shield, head over to the [New Keyboard Shield](development/new-shield.md) documentation.
