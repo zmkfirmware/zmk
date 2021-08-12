@@ -30,7 +30,7 @@ ZMK support for split keyboards requires a few more files than single boards to 
 :::note
 This guide describes how to add shield to the ZMK main repository. If you are building firmware for your
 own prototype or handwired keyboard, it is recommended to use your own user config repository. Follow the
-[user setup guide](./user-setup.md) to create your user config repository first. When following the rest
+[user setup guide](user-setup.md) to create your user config repository first. When following the rest
 of this guide, replace the `app/` directory in the ZMK main repository with the `config/` directory in your
 user config repository. For example, `app/boards/shields/<keyboard_name>` should now be
 `config/boards/shields/<keyboard_name>`.
@@ -449,7 +449,7 @@ Add the following line to your keymap file to add default encoder behavior bindi
 sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 ```
 
-Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](/docs/features/encoders) and [Keymap](/docs/features/keymaps) feature documentation for more details.
+Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](../features/encoders.md) and [Keymap](../features/keymaps.md) feature documentation for more details.
 
 </TabItem>
 </Tabs>
@@ -477,11 +477,11 @@ west flash
 ```
 
 Please have a look at documentation specific to
-[building and flashing](build-flash) for additional information.
+[building and flashing](build-flash.md) for additional information.
 
 :::note
 Further testing your keyboard shield without altering the root keymap file can be done with the use of `-DZMK_CONFIG` in your `west build` command,
-shown [here](build-flash#building-from-zmk-config-folder)
+shown [here](build-flash.md#building-from-zmk-config-folder)
 :::
 
 ## Updating `build.yml`

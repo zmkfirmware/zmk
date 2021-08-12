@@ -90,7 +90,7 @@ This produces `left` and `right` subfolders under the `build` directory and two 
 
 ### Building from `zmk-config` Folder
 
-Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup#github-repo) by adding
+Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup.md#github-repo) by adding
 `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build` command. **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
@@ -107,7 +107,7 @@ volume automatically -- we need to delete the default volume before binding it t
 1. Remove all the containers that are not running via the command `docker container prune`. We need to remove the ZMK container before we can delete the default `zmk-config` volume referenced by it. If you do not want to delete all the containers that are not running, you can find the id of the ZMK container and use `docker rm` to delete that one only.
 1. Remove the default volume via the command `docker volume rm zmk-config`.
 
-Then you can bind the `zmk-config` volume to the correct path pointing to your local [zmk-config](./customization.md) folder:
+Then you can bind the `zmk-config` volume to the correct path pointing to your local [zmk-config](customization.md) folder:
 
 ```
 docker volume create --driver local -o o=bind -o type=none -o \

@@ -33,7 +33,7 @@ When the hold-tap key is released and the hold behavior has not been triggered, 
 
 ### Basic usage
 
-For basic usage, please see [mod-tap](./mod-tap.md) and [layer-tap](./layers.md) pages.
+For basic usage, please see [mod-tap](mod-tap.md) and [layer-tap](layers.md) pages.
 
 ### Advanced Configuration
 
