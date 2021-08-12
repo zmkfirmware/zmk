@@ -6,4 +6,6 @@
 
 #pragma once
 
+struct k_work_q *zmk_display_work_q();
+
 int zmk_display_init();
