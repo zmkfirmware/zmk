@@ -22,6 +22,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define ZMK_DISPLAY_NAME CONFIG_LVGL_DISPLAY_DEV_NAME
 
 static const struct device *display;
+static bool initialized = false;
 
 static lv_obj_t *screen;
 
@@ -82,6 +83,8 @@ static void stop_display_updates() {
     k_timer_stop(&display_timer);
 }
 
+int zmk_display_is_initialized() { return initialized; }
+
 int zmk_display_init() {
     LOG_DBG("");
 
@@ -107,6 +110,8 @@ int zmk_display_init() {
     lv_scr_load(screen);
 
     start_display_updates();
+
+    initialized = true;
 
     LOG_DBG("");
     return 0;
