@@ -105,7 +105,7 @@ Pick an MCU board:
 :::note
 If you are building firmware for a new keyboard shield that is not included in the built-in
 list of shields, you can choose any shield from the list that is similar to yours to generate the repository,
-and edit / add necessary files according to the [guide for adding new keyboard shield](./development/new-shield).
+and edit / add necessary files according to the [guide for adding new keyboard shield](development/new-shield.md).
 :::
 
 When prompted, enter the number for the corresponding keyboard shield you would like to target:
@@ -195,7 +195,7 @@ storage device. Once the flash is complete, the controller should automatically 
 
 ZMK will automatically advertise itself as connectable if it is not currently connected to a device. You should be able to see your keyboard from the bluetooth scanning view of your laptop or phone / tablet. It is reported by some users that the connections with Android / iOS devices are generally smoother than with laptops, so if you have trouble connecting, you could try to connect from your phone or tablet first to eliminate any potential hardware issues.
 
-ZMK support multiple BLE “profiles”, which allows you to connect to and switch among multiple devices. Please refer to the [Bluetooth behavior](behaviors/bluetooth) section for detailed explanations of how to use them.
+ZMK support multiple BLE “profiles”, which allows you to connect to and switch among multiple devices. Please refer to the [Bluetooth behavior](behaviors/bluetooth.md) section for detailed explanations of how to use them.
 
 ### Connecting Split Keyboard Halves
 
