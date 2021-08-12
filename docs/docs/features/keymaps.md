@@ -98,7 +98,7 @@ The second include brings in the defines for all the keycodes (e.g. `A`, `N1`, `
 
 ### Root devicetree Node
 
-ALl the remaining keymap nodes will be nested inside of the root devicetree node, like so:
+All the remaining keymap nodes will be nested inside of the root devicetree node, like so:
 
 ```devicetree
 / {
