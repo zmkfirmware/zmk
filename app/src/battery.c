@@ -42,7 +42,7 @@ static int zmk_battery_update(const struct device *battery) {
     int status = 0;
     int rv = 0;
     
-    status = sensor_sample_fetch(battery);
+    //status = sensor_sample_fetch(battery);
 
     if (status < 0) {
         LOG_ERR("Failed to fetch battery data from configured sensor. error: %d\n", status);
@@ -52,7 +52,7 @@ static int zmk_battery_update(const struct device *battery) {
     struct zmk_battery_state_changed bat_state_data;
 
     /* ---------- get channel data for State of Charge ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE, &state_of_charge);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_WRN("Failed to get battery state of charge: %d", rc);
@@ -63,6 +63,7 @@ static int zmk_battery_update(const struct device *battery) {
         LOG_DBG("The battery sensor does not support the channel: State of Charge");
     } else {
         /* channel is supported by sensor */
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE, &state_of_charge);
         /* ensure channel value has actually changed before updating it */
         if (last_state_of_charge != state_of_charge.val1) {
             last_state_of_charge = state_of_charge.val1;
@@ -85,7 +86,7 @@ static int zmk_battery_update(const struct device *battery) {
     }
 
     /* ---------- get channel data for State of Health ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_STATE_OF_HEALTH, &state_of_health);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_STATE_OF_HEALTH);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery State of Health: %d", status);
@@ -94,13 +95,14 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The configured battery sensor does not support the channel: State of Health");
     } else {
+         status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_STATE_OF_HEALTH, &state_of_health);
         /* append this value to the battery state changed event */
         bat_state_data.state_of_health = state_of_health.val1;
         LOG_DBG("-----> battery State of Health: %d%%", state_of_health.val1);
     }
 
     /* ---------- get channel data for Voltage ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_VOLTAGE, &voltage);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_VOLTAGE);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery voltage: %d", status);
@@ -109,13 +111,14 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The configured battery sensor does not support the channel: Voltage");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_VOLTAGE, &voltage);
         /* append this value to the battery state changed event */
         bat_state_data.voltage = voltage.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery voltage: %d.%dV", voltage.val1, voltage.val2);
     }
 
     /* ---------- get channel data for Average Current ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_AVG_CURRENT, &current);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_AVG_CURRENT);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery Average Current: %d", status);
@@ -124,13 +127,14 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The battery sensor does not support the channel: Average Current");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_AVG_CURRENT, &current);
         /* append this value to the battery state changed event */
         bat_state_data.current = current.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery Average Current: %d.%dA", current.val1, current.val2);
     }
 
     /* ---------- get channel data for Standby Current ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_STDBY_CURRENT, &current_standby);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_STDBY_CURRENT);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery Standby Current: %d", status);
@@ -139,6 +143,7 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The battery sensor does not support the channel: Standby Current");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_STDBY_CURRENT, &current_standby);
         /* append this value to the battery state changed event */
         bat_state_data.current_standby = current_standby.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery Standby Current: %d.%dA", current_standby.val1,
@@ -146,7 +151,7 @@ static int zmk_battery_update(const struct device *battery) {
     }
 
     /* ---------- get channel data for Maximum Load Current ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_MAX_LOAD_CURRENT, &current_max_load);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_MAX_LOAD_CURRENT);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery Maximum Load Current: %d", status);
@@ -155,6 +160,7 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The battery sensor does not support the channel: Maximum Load Current");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_MAX_LOAD_CURRENT, &current_max_load);
         /* append this value to the battery state changed event */
         bat_state_data.current_max_load = current_max_load.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery Maximum Load Current: %d.%dA", current_max_load.val1,
@@ -162,7 +168,7 @@ static int zmk_battery_update(const struct device *battery) {
     }
 
     /* ---------- get channel data for Full Charge Capacity ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_FULL_CHARGE_CAPACITY, &full_charge_capacity);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_FULL_CHARGE_CAPACITY);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery Full Charge Capacity: %d", status);
@@ -171,6 +177,7 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The battery sensor does not support the channel: Full Charge Capacity");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_FULL_CHARGE_CAPACITY, &full_charge_capacity);
         /* append this value to the battery state changed event */
         bat_state_data.full_charge_capacity = full_charge_capacity.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery Full Charge Capacity: %d.%dmAh", full_charge_capacity.val1,
@@ -178,7 +185,7 @@ static int zmk_battery_update(const struct device *battery) {
     }
 
     /* ---------- get channel data for Remaining Charge Capacity ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_REMAINING_CHARGE_CAPACITY, &remaining_charge_capacity);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_REMAINING_CHARGE_CAPACITY);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery Remaining Charge Capacity: %d", status);
@@ -187,6 +194,7 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The battery sensor does not support the channel: Remaining Charge Capacity");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_REMAINING_CHARGE_CAPACITY, &remaining_charge_capacity);
         /* append this value to the battery state changed event */
         bat_state_data.remaining_charge_capacity = remaining_charge_capacity.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery Remaining Charge Capacity: %d.%dmAh", remaining_charge_capacity.val1,
@@ -194,7 +202,7 @@ static int zmk_battery_update(const struct device *battery) {
     }
 
     /* ---------- get channel data for Nominal Available Capacity ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_NOM_AVAIL_CAPACITY, &nominal_available_capacity);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_NOM_AVAIL_CAPACITY);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery Nominal Available Capacity: %d", status);
@@ -203,6 +211,7 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The battery sensor does not support the channel: Nominal Available Capacity");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_NOM_AVAIL_CAPACITY, &nominal_available_capacity);
         /* append this value to the battery state changed event */
         bat_state_data.nominal_available_capacity = nominal_available_capacity.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery Nominal Available Capacity: %d.%dmAh", nominal_available_capacity.val1,
@@ -210,7 +219,7 @@ static int zmk_battery_update(const struct device *battery) {
     }
 
     /* ---------- get channel data for Full Available Capacity ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_FULL_AVAIL_CAPACITY, &full_available_capacity);;
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_FULL_AVAIL_CAPACITY);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery Full Available Capacity: %d", status);
@@ -219,6 +228,7 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The battery sensor does not support the channel: Full Available Capacity");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_FULL_AVAIL_CAPACITY, &full_available_capacity);
         /* append this value to the battery state changed event */
         bat_state_data.full_available_capacity = full_available_capacity.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery Full Available Capacity: %d.%dmAh", full_available_capacity.val1,
@@ -226,7 +236,7 @@ static int zmk_battery_update(const struct device *battery) {
     }
 
     /* ---------- get channel data for Average Power Usage ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_AVG_POWER, &avg_power);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_FULL_AVAIL_CAPACITY);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get battery Average Power Usage: %d", status);
@@ -235,13 +245,14 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The battery sensor does not support the channel: Average Power Usage");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_AVG_POWER, &avg_power);
         /* append this value to the battery state changed event */
         bat_state_data.avg_power = avg_power.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery Average Power Usage: %d.%dmW", avg_power.val1, avg_power.val2);
     }
 
     /* ---------- get channel data for Internal IC Temperature ---------- */
-    status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_TEMP, &int_temp);
+    status = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_TEMP);
 
     if (status != 0 && status != -ENOTSUP) {
         LOG_DBG("Failed to get Internal IC Temperature: %d", status);
@@ -250,6 +261,7 @@ static int zmk_battery_update(const struct device *battery) {
     if (status == -ENOTSUP) {
         LOG_DBG("The battery sensor does not support the channel: Internal IC Temperature");
     } else {
+        status = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_TEMP, &int_temp);
         /* append this value to the battery state changed event */
         bat_state_data.int_temp = int_temp.val1; /*combine val1 and val2 here*/
         LOG_DBG("-----> battery Internal IC Temperature: %d.%d C", int_temp.val1, int_temp.val2);
