@@ -7,7 +7,7 @@ sidebar_label: Bluetooth
 
 The bluetooth behavior allows management of various settings and states related to the bluetooth connection(s)
 between the keyboard and the host. By default, ZMK supports five "profiles" for selecting which bonded host
-computer/laptop/keyboard should receive the keyboard input; many of the commands here operation on those profiles.
+computer/laptop/keyboard should receive the keyboard input; many of the commands here operate on those profiles.
 
 :::note Connection Management
 When pairing to a host device ZMK saves bond information to the selected profile. It will not replace this when you initiate pairing with another device. To pair with a new device select an unused profile with `BT_SEL`, `BT_NXT` or by clearing an existing profile using `BT_CLR`.
