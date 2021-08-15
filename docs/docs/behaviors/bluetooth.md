@@ -13,8 +13,6 @@ computer/laptop/keyboard should receive the keyboard input; many of the commands
 When pairing to a host device ZMK saves bond information to the selected profile. It will not replace this when you initiate pairing with another device. To pair with a new device select an unused profile with `BT_SEL`, `BT_NXT` or by clearing an existing profile using `BT_CLR`.
 
 A ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
-
-Please note there are only five available Bluetooth profiles by default. If you need to increase the number of available profiles you can set `CONFIG_BT_MAX_CONN` in your `zmk-config` `.conf` file.
 :::
 
 ## Bluetooth Command Defines
@@ -82,6 +80,10 @@ ZMK support bluetooth “profiles” which allows connection to multiple devices
 - If a profile has been paired and is currently connected, ZMK will not advertise it as connectable.
 
 The bluetooth MAC address and negotiated keys during pairing are stored in the permanent storage on your chip and can be reused even after reflashing the firmware. If for some reason you want to delete the stored information, you can bind the `BT_CLR` behavior described above to a key and use it to clear the _current_ profile.
+
+:::note Number of Profiles
+Please note there are only five available Bluetooth profiles by default. If you need to increase the number of available profiles you can set `CONFIG_BT_MAX_CONN` in your `zmk-config` `.conf` file.
+:::
 
 :::note
 If you clear bond of a paired profile, make sure you do the same thing on the peer device as well (typically achieved by _removing_ or _forgetting_ the bluetooth connection). Otherwise the peer will try to connect to your keyboard whenever it discovers it. But while the MAC address of both devices could remain the same, the security key no longer match: the peer device still possess the old key negotiated in the previous pairing procedure, but our keyboard firmware has deleted that key. So the connection will fail. If you [enabled USB logging](../development/usb-logging.md), you might see a lot of failed connection attempts due to the reason of “Security failed”.
