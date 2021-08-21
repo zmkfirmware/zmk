@@ -27,6 +27,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define HUE_MAX 360
 #define SAT_MAX 100
 #define BRT_MAX 100
+#define RGB_MAX 255
+#define NUM_SEG 6                   // Number of segments on color wheel
+#define DEG_SEG (HUE_MAX / NUM_SEG) // degrees per color wheel segment
 
 enum rgb_underglow_effect {
     UNDERGLOW_EFFECT_SOLID,
@@ -55,50 +58,46 @@ static const struct device *ext_power;
 #endif
 
 static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
-    double r, g, b;
+    uint32_t i = hsb.h / DEG_SEG;
+    uint32_t f = hsb.h % DEG_SEG;
+    uint32_t v = hsb.b * RGB_MAX / BRT_MAX;
+    uint32_t p = v * (SAT_MAX - hsb.s) / SAT_MAX;
+    uint32_t q = v * (SAT_MAX * DEG_SEG - f * hsb.s) / SAT_MAX / DEG_SEG;
+    uint32_t t = v * (SAT_MAX * DEG_SEG - (DEG_SEG - f) * hsb.s) / SAT_MAX / DEG_SEG;
+    struct led_rgb rgb;
 
-    uint8_t i = hsb.h / 60;
-    double v = hsb.b / ((float)BRT_MAX);
-    double s = hsb.s / ((float)SAT_MAX);
-    double f = hsb.h / ((float)HUE_MAX) * 6 - i;
-    double p = v * (1 - s);
-    double q = v * (1 - f * s);
-    double t = v * (1 - (1 - f) * s);
-
-    switch (i % 6) {
+    switch (i) {
     case 0:
-        r = v;
-        g = t;
-        b = p;
+        rgb.r = (uint8_t)v;
+        rgb.g = (uint8_t)t;
+        rgb.b = (uint8_t)p;
         break;
     case 1:
-        r = q;
-        g = v;
-        b = p;
+        rgb.r = (uint8_t)q;
+        rgb.g = (uint8_t)v;
+        rgb.b = (uint8_t)p;
         break;
     case 2:
-        r = p;
-        g = v;
-        b = t;
+        rgb.r = (uint8_t)p;
+        rgb.g = (uint8_t)v;
+        rgb.b = (uint8_t)t;
         break;
     case 3:
-        r = p;
-        g = q;
-        b = v;
+        rgb.r = (uint8_t)p;
+        rgb.g = (uint8_t)q;
+        rgb.b = (uint8_t)v;
         break;
     case 4:
-        r = t;
-        g = p;
-        b = v;
+        rgb.r = (uint8_t)t;
+        rgb.g = (uint8_t)p;
+        rgb.b = (uint8_t)v;
         break;
     case 5:
-        r = v;
-        g = p;
-        b = q;
+        rgb.r = (uint8_t)v;
+        rgb.g = (uint8_t)p;
+        rgb.b = (uint8_t)q;
         break;
     }
-
-    struct led_rgb rgb = {r : r * 255, g : g * 255, b : b * 255};
 
     return rgb;
 }
