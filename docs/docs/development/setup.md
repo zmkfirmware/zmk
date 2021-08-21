@@ -343,6 +343,13 @@ The install command is:
 brew install --cask gcc-arm-embedded
 ```
 
+And you'll need to set the following environment variables:
+
+```
+export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb
+export GNUARMEMB_TOOLCHAIN_PATH=$(brew --prefix)
+```
+
 :::warning Security Controls Workaround
 
 Please be sure to read the [additional setup instructions](https://docs.zephyrproject.org/2.5.0/getting_started/installation_mac.html#mac-gatekeeper) needed to address security controls found in macOS 10.15 Catalina and newer
@@ -513,8 +520,19 @@ On Windows, only two environment variables need to be set for ZMK to build prope
 
 #### For Zephyr
 
-By default, the Zephyr™ SDK will create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
+By default, the Zephyr™ SDK _should_ create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
 We suggest two main [options](https://docs.zephyrproject.org/2.5.0/guides/env_vars.html#option-3-using-zephyrrc-files) for how to load those settings.
+
+:::note `.zephyrrc` on OSX
+
+In case you don't have `~/.zephyrrc`, these are the two environment variables you will need:
+
+```
+export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb
+export GNUARMEMB_TOOLCHAIN_PATH=$(brew --prefix)
+```
+
+:::
 
 ##### Per Shell
 

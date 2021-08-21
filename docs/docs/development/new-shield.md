@@ -34,6 +34,8 @@ own prototype or handwired keyboard, it is recommended to use your own user conf
 of this guide, replace the `app/` directory in the ZMK main repository with the `config/` directory in your
 user config repository. For example, `app/boards/shields/<keyboard_name>` should now be
 `config/boards/shields/<keyboard_name>`.
+
+If you are compiling locally, you will still compile from within `zmk/app`, and you will need to provide the `DZMK_CONFIG` parameter to `west`, e.g., `-DZMK_CONFIG=/path/to/zmk-config/config`, where `/path/to` is the absolute path to your `zmk_config` directory.
 :::
 
 Shields for Zephyr applications go into the `boards/shields/` directory; since ZMK's Zephyr application lives in the `app/` subdirectory of the repository, that means the new shield directory should be:
@@ -78,7 +80,7 @@ which controls the display name of the device over USB and BLE.
 The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file. Here's the simplest example file.
 
 :::warning
-Do not make the keyboard name too long, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your laptop / tablet.
+Do not make the keyboard name too long, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your laptop / tablet. The recommended length is 16 characters or less.
 :::
 
 ```
@@ -94,6 +96,12 @@ Similarly to defining the halves of a split board in `Kconfig.shield` it is impo
 You'll also want to set which half is the central side. Most boards set it to the left.
 Then on the peripheral half, you'll want to turn USB on so that it shows USB status on displays properly.
 Finally, you'll want to turn on the split option for both sides. This can all be seen below.
+
+:::note Reminder About Split Pairing
+
+Only the central side will pair with the OS. The non-central side will pair with the central side.
+
+:::
 
 ```
 if SHIELD_MY_BOARD_LEFT

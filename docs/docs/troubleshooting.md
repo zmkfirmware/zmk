@@ -5,7 +5,7 @@ sidebar_title: Troubleshooting
 
 ### Summary
 
-The following page provides suggestions for common errors that may occur during firmware compilation. If the information provided is insufficient to resolve the issue, feel free to seek out help from the [ZMK Discord](https://zmk.dev/community/discord/invite).
+The following page provides suggestions for common errors that may occur during firmware compilation or the pairing process. If the information provided is insufficient to resolve the issue, feel free to seek out help from the [ZMK Discord](https://zmk.dev/community/discord/invite).
 
 ### File Transfer Error
 
@@ -66,6 +66,12 @@ Since then, a much simpler procedure of performing a bluetooth reset for split k
 
 After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins
 for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.
+
+### OSX Pairing Issues
+
+Sometimes, OSX will _say_ your board is connected, but no keypresses will be sent. Double check that everything else is working by plugging the main side in via USB; if both sides register keypresses, i.e., they are connected to each other, you may be affected by the trash stack.
+
+**See [this issue](https://github.com/zmkfirmware/zmk/issues/278) for more details on the error and how to resolve it.**
 
 ### Connectivity Issues
 
