@@ -53,10 +53,11 @@ Before running the setup script, you will first need to create a new GitHub repo
 1. The repository can be public or private
 1. Do **not** check any of the options to initialize the repository with a README or other files.
 1. Click "Create repository"
+1. Checkout the new project on your local system
 
 ## User Config Setup Script
 
-To start the setup process, run the following from your command line prompt:
+To start the setup process, run the following from your command line prompt in the directory where you checked out your new repository:
 
 <Tabs
 defaultValue="curl"
