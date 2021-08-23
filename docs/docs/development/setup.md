@@ -523,7 +523,7 @@ On Windows, only two environment variables need to be set for ZMK to build prope
 By default, the Zephyr™ SDK _should_ create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
 We suggest two main [options](https://docs.zephyrproject.org/2.5.0/guides/env_vars.html#option-3-using-zephyrrc-files) for how to load those settings.
 
-:::note `.zephyrrc` on OSX
+:::note `.zephyrrc` on macOS
 
 In case you don't have `~/.zephyrrc`, these are the two environment variables you will need:
 
