@@ -61,6 +61,7 @@ enum advertising_type {
 static struct zmk_ble_profile profiles[PROFILE_COUNT];
 static uint8_t active_profile;
 
+#define DEVICE_SECURITY_LEVEL BT_SECURITY_L2
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
@@ -380,18 +381,14 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
     LOG_DBG("Connected %s", log_strdup(addr));
 
-    err = bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
-    if (err) {
-        LOG_WRN("Failed to update LE parameters (err %d)", err);
+    uint8_t set_security_err = bt_conn_set_security(conn, DEVICE_SECURITY_LEVEL);
+    if (set_security_err) {
+        LOG_ERR("Failed to set security %d", set_security_err);
     }
 
 #if IS_SPLIT_PERIPHERAL
     bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
 #endif
-
-    if (bt_conn_set_security(conn, BT_SECURITY_L2)) {
-        LOG_ERR("Failed to set security");
-    }
 
     update_advertising();
 
