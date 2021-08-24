@@ -120,11 +120,17 @@ int zmk_hid_keyboard_release(zmk_key_t code) {
 void zmk_hid_keyboard_clear() { memset(&keyboard_report.body, 0, sizeof(keyboard_report.body)); }
 
 int zmk_hid_consumer_press(zmk_key_t code) {
+    if (code >= 0xFF) {
+        return -EINVAL;
+    }
     TOGGLE_CONSUMER(0U, code);
     return 0;
 };
 
 int zmk_hid_consumer_release(zmk_key_t code) {
+    if (code >= 0xFF) {
+        return -EINVAL;
+    }
     TOGGLE_CONSUMER(code, 0U);
     return 0;
 };
