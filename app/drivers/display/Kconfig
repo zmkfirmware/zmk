@@ -1,4 +1,4 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-source "Kconfig.il0323"
+rsource "Kconfig.il0323"
