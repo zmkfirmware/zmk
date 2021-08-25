@@ -1,0 +1,10 @@
+oopen docker desktop
+run folder in vscode container
+## west init -l app/  ##only needed once
+west update
+cd app
+
+restart vscode and container
+cd app
+
+west build -p -b bluemicro840_v1 -- -DSHIELD=bluehand
