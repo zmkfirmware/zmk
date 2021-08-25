@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 PHYTEC Messtechnik GmbH
+ * Copyright (c) 2020 PHYTEC Messtechnik GmbHH, Peter Johanson
  *
  * SPDX-License-Identifier: Apache-2.0
  */
