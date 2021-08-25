@@ -263,14 +263,11 @@ config ZMK_SLEEP
 
 if ZMK_SLEEP
 
-config SYS_POWER_DEEP_SLEEP_STATES
-	default y
-
 choice SYS_PM_POLICY
-	default SYS_PM_POLICY_APP
+	default PM_POLICY_APP
 endchoice
 
-config DEVICE_POWER_MANAGEMENT
+config PM_DEVICE
 	default y
 
 config ZMK_IDLE_SLEEP_TIMEOUT
@@ -421,6 +418,11 @@ config ZMK_WPM
 
 config SENSOR
 	default y
+
+choice CBPRINTF_IMPLEMENTATION
+	default CBPRINTF_NANO
+
+endchoice
 
 module = ZMK
 module-str = zmk

@@ -66,7 +66,7 @@ repo_path="https://github.com/zmkfirmware/zmk-config-split-template.git"
 title="ZMK Config Setup:"
 
 prompt="Pick an MCU board:"
-options=("nice!nano" "QMK Proton-C" "BlueMicro840 (v1)" "makerdiary nRF52840 M.2")
+options=("nice!nano v1" "nice!nano v2" "QMK Proton-C" "BlueMicro840 (v1)" "makerdiary nRF52840 M.2")
 
 echo "$title"
 echo ""
@@ -77,9 +77,10 @@ select opt in "${options[@]}" "Quit"; do
     case "$REPLY" in
 
     1 ) board="nice_nano"; break;;
-    2 ) board="proton_c"; break;;
-    3 ) board="bluemicro840_v1"; break;;
-    4 ) board="nrf52840_m2"; break;;
+    2 ) board="nice_nano_v2"; break;;
+    3 ) board="proton_c"; break;;
+    4 ) board="bluemicro840_v1"; break;;
+    5 ) board="nrf52840_m2"; break;;
 
     $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
     *) echo "Invalid option. Try another one."; continue;;

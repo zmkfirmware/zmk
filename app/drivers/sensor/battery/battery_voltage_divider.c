@@ -7,10 +7,13 @@
 #define DT_DRV_COMPAT zmk_battery_voltage_divider
 
 #include <device.h>
+#include <devicetree.h>
 #include <drivers/gpio.h>
 #include <drivers/adc.h>
 #include <drivers/sensor.h>
 #include <logging/log.h>
+
+#include "battery_common.h"
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -37,23 +40,8 @@ struct bvd_data {
     const struct device *gpio;
     struct adc_channel_cfg acc;
     struct adc_sequence as;
-    uint16_t adc_raw;
-    uint16_t voltage;
-    uint8_t state_of_charge;
+    struct battery_value value;
 };
-
-static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
-    // Simple linear approximation of a battery based off adafruit's discharge graph:
-    // https://learn.adafruit.com/li-ion-and-lipoly-batteries/voltages
-
-    if (bat_mv >= 4200) {
-        return 100;
-    } else if (bat_mv <= 3450) {
-        return 0;
-    }
-
-    return bat_mv * 2 / 15 - 459;
-}
 
 static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     struct bvd_data *drv_data = dev->data;
@@ -87,18 +75,18 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
     as->calibrate = false;
 
     if (rc == 0) {
-        int32_t val = drv_data->adc_raw;
+        int32_t val = drv_data->value.adc_raw;
 
         adc_raw_to_millivolts(adc_ref_internal(drv_data->adc), drv_data->acc.gain, as->resolution,
                               &val);
 
         uint16_t millivolts = val * (uint64_t)drv_cfg->full_ohm / drv_cfg->output_ohm;
-        LOG_DBG("ADC raw %d ~ %d mV => %d mV", drv_data->adc_raw, val, millivolts);
+        LOG_DBG("ADC raw %d ~ %d mV => %d mV", drv_data->value.adc_raw, val, millivolts);
         uint8_t percent = lithium_ion_mv_to_pct(millivolts);
         LOG_DBG("Percent: %d", percent);
 
-        drv_data->voltage = millivolts;
-        drv_data->state_of_charge = percent;
+        drv_data->value.millivolts = millivolts;
+        drv_data->value.state_of_charge = percent;
     } else {
         LOG_DBG("Failed to read ADC: %d", rc);
     }
@@ -119,23 +107,7 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
 static int bvd_channel_get(const struct device *dev, enum sensor_channel chan,
                            struct sensor_value *val) {
     struct bvd_data *drv_data = dev->data;
-
-    switch (chan) {
-    case SENSOR_CHAN_GAUGE_VOLTAGE:
-        val->val1 = drv_data->voltage / 1000;
-        val->val2 = (drv_data->voltage % 1000) * 1000U;
-        break;
-
-    case SENSOR_CHAN_GAUGE_STATE_OF_CHARGE:
-        val->val1 = drv_data->state_of_charge;
-        val->val2 = 0;
-        break;
-
-    default:
-        return -ENOTSUP;
-    }
-
-    return 0;
+    return battery_channel_get(&drv_data->value, chan, val);
 }
 
 static const struct sensor_driver_api bvd_api = {
@@ -173,8 +145,8 @@ static int bvd_init(const struct device *dev) {
 
     drv_data->as = (struct adc_sequence){
         .channels = BIT(0),
-        .buffer = &drv_data->adc_raw,
-        .buffer_size = sizeof(drv_data->adc_raw),
+        .buffer = &drv_data->value.adc_raw,
+        .buffer_size = sizeof(drv_data->value.adc_raw),
         .oversampling = 4,
         .calibrate = true,
     };
@@ -217,5 +189,5 @@ static const struct bvd_config bvd_cfg = {
     .full_ohm = DT_INST_PROP(0, full_ohms),
 };
 
-DEVICE_AND_API_INIT(bvd_dev, DT_INST_LABEL(0), &bvd_init, &bvd_data, &bvd_cfg, POST_KERNEL,
-                    CONFIG_SENSOR_INIT_PRIORITY, &bvd_api);
+DEVICE_DT_INST_DEFINE(0, &bvd_init, device_pm_control_nop, &bvd_data, &bvd_cfg, POST_KERNEL,
+                      CONFIG_SENSOR_INIT_PRIORITY, &bvd_api);

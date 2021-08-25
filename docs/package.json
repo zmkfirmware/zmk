@@ -14,8 +14,8 @@
     "prettier:format": "prettier --write ."
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.1",
-    "@docusaurus/preset-classic": "^2.0.0-beta.1",
+    "@docusaurus/core": "^2.0.0-beta.3",
+    "@docusaurus/preset-classic": "^2.0.0-beta.3",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
@@ -25,7 +25,7 @@
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.2",
     "react-toastify": "^7.0.4",
-    "web-tree-sitter": "^0.17.1"
+    "web-tree-sitter": "^0.19.4"
   },
   "browserslist": {
     "production": [
@@ -40,12 +40,12 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^7.29.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-mdx": "^1.13.0",
     "eslint-plugin-react": "^7.23.2",
     "null-loader": "^4.0.0",
     "prettier": "2.3.1",
-    "string-replace-loader": "^3.0.0"
+    "string-replace-loader": "^3.0.3"
   }
 }

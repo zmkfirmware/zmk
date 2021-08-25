@@ -1,8 +1,0 @@
-# Copyright (c) 2020 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-config ZMK_BATTERY_VOLTAGE_DIVIDER
-	bool "ZMK battery voltage divider"
-	select ADC
-	help
-		Enable ZMK battery voltage divider driver for battery monitoring.

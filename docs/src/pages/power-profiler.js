@@ -16,9 +16,9 @@ import "../css/power-profiler.css";
 
 const Disclaimer = `This profiler makes many assumptions about typing
               activity, battery characteristics, hardware behavior, and
-              doesn't account for error of user inputs. For example battery 
+              doesn't account for error of user inputs. For example battery
               mAh, which is often incorrectly advertised higher than it's actual capacity.
-              While it tries to estimate power usage using real power readings of ZMK, 
+              While it tries to estimate power usage using real power readings of ZMK,
               every person will have different results that may be worse or even
               better than the estimation given here.`;
 
