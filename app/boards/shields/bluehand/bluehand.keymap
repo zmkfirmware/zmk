@@ -26,11 +26,11 @@
         nav_layer {
 // -----------------------
 // | F19 |  F20  |  F21  |  F22 |
-// |  -  |  F23  |  F24  |  -   |
+// |  -  |  F23  |  BT_SEL 0  |  BT_SEL 1 |
 // -----------------------
             bindings = <
     &kp F19 &kp F20 &kp F21 &kp F22
-    &trans   &kp F23  &kp F24   &trans
+    &trans   &kp F23  &bt BT_SEL 0  &bt BT_SEL 1
             >;
         };
     };
