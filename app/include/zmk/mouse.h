@@ -25,3 +25,6 @@ struct vector2d {
     float x;
     float y;
 };
+
+struct k_work_q *zmk_mouse_work_q();
+int zmk_mouse_init();

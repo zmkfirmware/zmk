@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2021 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -37,7 +37,9 @@ static void mouse_tick_timer_handler(struct k_work *work) {
 
 K_WORK_DEFINE(mouse_tick, &mouse_tick_timer_handler);
 
-void mouse_timer_cb(struct k_timer *dummy) { k_work_submit(&mouse_tick); }
+void mouse_timer_cb(struct k_timer *dummy) {
+    k_work_submit_to_queue(zmk_mouse_work_q(), &mouse_tick);
+}
 
 K_TIMER_DEFINE(mouse_timer, mouse_timer_cb, mouse_timer_cb);
 
