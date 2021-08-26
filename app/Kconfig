@@ -327,6 +327,13 @@ endif
 #Display/LED Options
 endmenu
 
+menu "Mouse Options"
+
+rsource "src/mouse/Kconfig"
+
+#Mouse Options
+endmenu
+
 menu "Power Management"
 
 config ZMK_IDLE_TIMEOUT
