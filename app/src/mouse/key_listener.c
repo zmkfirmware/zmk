@@ -47,7 +47,7 @@ static int mouse_timer_ref_count = 0;
 
 void mouse_timer_ref() {
     if (mouse_timer_ref_count == 0) {
-        k_timer_start(&mouse_timer, K_NO_WAIT, K_MSEC(10));
+        k_timer_start(&mouse_timer, K_NO_WAIT, K_MSEC(CONFIG_ZMK_MOUSE_TICK_DURATION));
     }
     mouse_timer_ref_count += 1;
     // trigger the first mouse tick event immediately

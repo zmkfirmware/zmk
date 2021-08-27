@@ -7,6 +7,10 @@ menuconfig ZMK_MOUSE
 
 if ZMK_MOUSE
 
+config ZMK_MOUSE_TICK_DURATION
+    int "Mouse tick duration in ms"
+    default 8
+
 choice ZMK_MOUSE_WORK_QUEUE
     prompt "Work queue selection for mouse events"
     default ZMK_MOUSE_WORK_QUEUE_DEDICATED
