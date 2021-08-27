@@ -34,7 +34,6 @@ static float powf(float base, float exponent) {
 
 struct movement_state {
     int64_t start;
-    int64_t last_tick;
     struct vector2d fractional_remainder;
 };
 
@@ -51,8 +50,6 @@ static struct mouse_config scroll_config = (struct mouse_config){
     .time_to_max_speed_ms = 300,
     .acceleration_exponent = 2.0,
 };
-
-static int64_t ms_since_last_tick(int64_t last_tick, int64_t now) { return now - last_tick; }
 
 static int64_t ms_since_start(int64_t start, int64_t now) {
     int64_t move_duration = now - start;
@@ -88,20 +85,17 @@ static struct vector2d update_movement(struct movement_state *state, struct mous
     }
     if (state->start == 0) {
         state->start = now + config->delay_ms;
-        state->last_tick = now;
     }
 
-    int64_t tick_duration = ms_since_last_tick(state->last_tick, now);
     int64_t move_duration = ms_since_start(state->start, now);
     move = (struct vector2d){
-        .x = speed(config, max_speed.x, move_duration) * tick_duration / 1000,
-        .y = speed(config, max_speed.y, move_duration) * tick_duration / 1000,
+        .x = speed(config, max_speed.x, move_duration) * CONFIG_ZMK_MOUSE_TICK_DURATION / 1000,
+        .y = speed(config, max_speed.y, move_duration) * CONFIG_ZMK_MOUSE_TICK_DURATION / 1000,
     };
 
     track_remainder(&(move.x), &state->fractional_remainder.x);
     track_remainder(&(move.y), &state->fractional_remainder.y);
 
-    state->last_tick = now;
     return move;
 }
 

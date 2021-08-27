@@ -5,9 +5,6 @@
  */
 
 #include <kernel.h>
-#include <init.h>
-#include <device.h>
-#include <devicetree.h>
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE_WORK_QUEUE_DEDICATED)
 
