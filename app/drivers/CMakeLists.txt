@@ -3,3 +3,4 @@
 
 add_subdirectory(kscan)
 add_subdirectory(sensor)
+add_subdirectory(display)
