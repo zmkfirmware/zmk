@@ -25,8 +25,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define STRIP_NUM_PIXELS DT_PROP(DT_CHOSEN(zmk_underglow), chain_length)
 
 #define HUE_MAX 360
-#define SAT_MAX 100
-#define BRT_MAX 100
+#define SAT_MAX 101
+#define BRT_MAX 101
 #define RGB_MAX 255
 #define NUM_SEG 6                   // Number of segments on color wheel
 #define DEG_SEG (HUE_MAX / NUM_SEG) // degrees per color wheel segment
@@ -58,44 +58,45 @@ static const struct device *ext_power;
 #endif
 
 static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
-    uint32_t i = hsb.h / DEG_SEG;
-    uint32_t f = hsb.h % DEG_SEG;
-    uint32_t v = hsb.b * RGB_MAX / BRT_MAX;
-    uint32_t p = v * (SAT_MAX - hsb.s) / SAT_MAX;
-    uint32_t q = v * (SAT_MAX * DEG_SEG - f * hsb.s) / SAT_MAX / DEG_SEG;
-    uint32_t t = v * (SAT_MAX * DEG_SEG - (DEG_SEG - f) * hsb.s) / SAT_MAX / DEG_SEG;
+    uint8_t i = hsb.h / DEG_SEG;
+    uint8_t f = hsb.h % DEG_SEG;
+    uint8_t v = hsb.b * RGB_MAX / BRT_MAX;
+    uint8_t p = hsb.b * RGB_MAX * (SAT_MAX - hsb.s) / SAT_MAX / BRT_MAX;
+    uint8_t q = hsb.b * RGB_MAX * (SAT_MAX * DEG_SEG - f * hsb.s) / SAT_MAX / DEG_SEG / BRT_MAX;
+    uint8_t t =
+        hsb.b * RGB_MAX * (SAT_MAX * DEG_SEG - (DEG_SEG - f) * hsb.s) / SAT_MAX / DEG_SEG / BRT_MAX;
     struct led_rgb rgb;
 
     switch (i) {
     case 0:
-        rgb.r = (uint8_t)v;
-        rgb.g = (uint8_t)t;
-        rgb.b = (uint8_t)p;
+        rgb.r = v;
+        rgb.g = t;
+        rgb.b = p;
         break;
     case 1:
-        rgb.r = (uint8_t)q;
-        rgb.g = (uint8_t)v;
-        rgb.b = (uint8_t)p;
+        rgb.r = q;
+        rgb.g = v;
+        rgb.b = p;
         break;
     case 2:
-        rgb.r = (uint8_t)p;
-        rgb.g = (uint8_t)v;
-        rgb.b = (uint8_t)t;
+        rgb.r = p;
+        rgb.g = v;
+        rgb.b = t;
         break;
     case 3:
-        rgb.r = (uint8_t)p;
-        rgb.g = (uint8_t)q;
-        rgb.b = (uint8_t)v;
+        rgb.r = p;
+        rgb.g = q;
+        rgb.b = v;
         break;
     case 4:
-        rgb.r = (uint8_t)t;
-        rgb.g = (uint8_t)p;
-        rgb.b = (uint8_t)v;
+        rgb.r = t;
+        rgb.g = p;
+        rgb.b = v;
         break;
     case 5:
-        rgb.r = (uint8_t)v;
-        rgb.g = (uint8_t)p;
-        rgb.b = (uint8_t)q;
+        rgb.r = v;
+        rgb.g = p;
+        rgb.b = q;
         break;
     }
 
