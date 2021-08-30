@@ -41,7 +41,7 @@ void mouse_timer_cb(struct k_timer *dummy) {
     k_work_submit_to_queue(zmk_mouse_work_q(), &mouse_tick);
 }
 
-K_TIMER_DEFINE(mouse_timer, mouse_timer_cb, mouse_timer_cb);
+K_TIMER_DEFINE(mouse_timer, mouse_timer_cb, NULL);
 
 static int mouse_timer_ref_count = 0;
 
@@ -50,8 +50,6 @@ void mouse_timer_ref() {
         k_timer_start(&mouse_timer, K_NO_WAIT, K_MSEC(CONFIG_ZMK_MOUSE_TICK_DURATION));
     }
     mouse_timer_ref_count += 1;
-    // trigger the first mouse tick event immediately
-    mouse_tick_timer_handler(NULL);
 }
 
 void mouse_timer_unref() {
