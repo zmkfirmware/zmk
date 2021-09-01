@@ -194,6 +194,18 @@ rsource "src/split/Kconfig"
 #Basic Keyboard Setup
 endmenu
 
+menu "Encoders"
+
+config ZMK_ENCODERS_DEFAULT_TRIGGERS_PER_ROTATION
+    int "Default behavior triggers per rotation"
+    help
+      Unless overridden for a specific behavior in the keymap/devicetree, this value
+      determines how many times to trigger the bound behavior per full rotation.
+      For tactile encoders with detents, this usually should match the number of
+      detents per rotation of the encoder.
+    default 30
+
+endmenu
 menu "Display/LED Options"
 
 rsource "src/display/Kconfig"
@@ -522,6 +534,14 @@ config ZMK_WPM
 
 config SENSOR
     default y
+
+if ZMK_KEYMAP_SENSORS
+
+config ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION
+    int "Default triggers per rotation"
+    default 20
+
+endif # ZMK_KEYMAP_SENSORS
 
 choice CBPRINTF_IMPLEMENTATION
     default CBPRINTF_NANO
