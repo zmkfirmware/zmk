@@ -47,11 +47,11 @@ static const struct behavior_driver_api behavior_mouse_scroll_driver_api = {
     static struct mouse_config behavior_mouse_scroll_config_##n = {                                \
         .delay_ms = DT_INST_PROP(n, delay_ms),                                                     \
         .time_to_max_speed_ms = DT_INST_PROP(n, time_to_max_speed_ms),                             \
-        .acceleration_exponent = (float)DT_INST_PROP(n, acceleration_exponent) / 1000.0f,          \
+        .acceleration_exponent = DT_INST_PROP(n, acceleration_exponent),                           \
     };                                                                                             \
-    DEVICE_AND_API_INIT(behavior_mouse_scroll_##n, DT_INST_LABEL(n), behavior_mouse_scroll_init,   \
-                        NULL, &behavior_mouse_scroll_config_##n, APPLICATION,                      \
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mouse_scroll_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_mouse_scroll_init, device_pm_control_nop, NULL,              \
+                          &behavior_mouse_scroll_config_##n, APPLICATION,                          \
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mouse_scroll_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

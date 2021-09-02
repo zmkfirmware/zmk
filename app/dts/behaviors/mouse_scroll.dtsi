@@ -5,7 +5,7 @@
 			label = "MOUSE_SCROLL";
 			#binding-cells = <1>;
 			delay-ms = <0>;
-			time-to-max-speed-ms = <1000>;
+			time-to-max-speed-ms = <300>;
 			acceleration-exponent = <0>;
 		};
 	};
