@@ -20,18 +20,36 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static struct vector2d move_speed = {0};
 static struct vector2d scroll_speed = {0};
-static struct mouse_config move_config = {0};
-static struct mouse_config scroll_config = {0};
+static struct mouse_config move_config = (struct mouse_config){0};
+static struct mouse_config scroll_config = (struct mouse_config){0};
+static int64_t start_time = 0;
 
-static void clear_mouse_state() {
+bool equals(const struct mouse_config *one, const struct mouse_config *other) {
+    return one->delay_ms == other->delay_ms &&
+           one->time_to_max_speed_ms == other->time_to_max_speed_ms &&
+           one->acceleration_exponent == other->acceleration_exponent;
+}
+
+static void clear_mouse_state(struct k_work *work) {
     move_speed = (struct vector2d){0};
     scroll_speed = (struct vector2d){0};
+    start_time = 0;
+    zmk_hid_mouse_movement_set(0, 0);
+    zmk_hid_mouse_scroll_set(0, 0);
+    LOG_DBG("Clearing state");
+}
+
+K_WORK_DEFINE(mouse_clear, &clear_mouse_state);
+
+void mouse_clear_cb(struct k_timer *dummy) {
+    k_work_submit_to_queue(zmk_mouse_work_q(), &mouse_clear);
 }
 
 static void mouse_tick_timer_handler(struct k_work *work) {
     zmk_hid_mouse_movement_set(0, 0);
     zmk_hid_mouse_scroll_set(0, 0);
-    ZMK_EVENT_RAISE(zmk_mouse_tick(move_speed, scroll_speed, move_config, scroll_config));
+    LOG_DBG("Raising mouse tick event");
+    ZMK_EVENT_RAISE(zmk_mouse_tick(move_speed, scroll_speed, move_config, scroll_config, &start_time));
     zmk_endpoints_send_mouse_report();
 }
 
@@ -41,12 +59,13 @@ void mouse_timer_cb(struct k_timer *dummy) {
     k_work_submit_to_queue(zmk_mouse_work_q(), &mouse_tick);
 }
 
-K_TIMER_DEFINE(mouse_timer, mouse_timer_cb, NULL);
+K_TIMER_DEFINE(mouse_timer, mouse_timer_cb, mouse_clear_cb);
 
 static int mouse_timer_ref_count = 0;
 
 void mouse_timer_ref() {
     if (mouse_timer_ref_count == 0) {
+        start_time = k_uptime_get();
         k_timer_start(&mouse_timer, K_NO_WAIT, K_MSEC(CONFIG_ZMK_MOUSE_TICK_DURATION));
     }
     mouse_timer_ref_count += 1;
@@ -58,7 +77,6 @@ void mouse_timer_unref() {
     }
     if (mouse_timer_ref_count == 0) {
         k_timer_stop(&mouse_timer);
-        clear_mouse_state();
     }
 }
 
@@ -101,6 +119,9 @@ static void listener_mouse_button_released(const struct zmk_mouse_button_state_c
 int mouse_listener(const zmk_event_t *eh) {
     const struct zmk_mouse_move_state_changed *mmv_ev = as_zmk_mouse_move_state_changed(eh);
     if (mmv_ev) {
+        if (!equals(&move_config, &(mmv_ev->config)))
+            move_config = mmv_ev->config;
+
         if (mmv_ev->state) {
             listener_mouse_move_pressed(mmv_ev);
         } else {
@@ -110,6 +131,8 @@ int mouse_listener(const zmk_event_t *eh) {
     }
     const struct zmk_mouse_scroll_state_changed *msc_ev = as_zmk_mouse_scroll_state_changed(eh);
     if (msc_ev) {
+        if (!equals(&scroll_config, &(msc_ev->config)))
+            scroll_config = msc_ev->config;
         if (msc_ev->state) {
             listener_mouse_scroll_pressed(msc_ev);
         } else {
