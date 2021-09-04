@@ -118,8 +118,8 @@ select opt in "${options[@]}" "Quit"; do
     15 ) shield_title="Jorne" shield="jorne"; split="y"; break;;
     16 ) shield_title="Jian" shield="jian"; split="y"; break;;
     17 ) shield_title="CRBN" shield="crbn"; split="n"; break;;
-    18 ) shield_title="Tidbit" shield="tidbit"; split="n" break;;
-    19 ) shield_title="Eek!" shield="eek"; split="n" break;;
+    18 ) shield_title="Tidbit" shield="tidbit"; split="n"; break;;
+    19 ) shield_title="Eek!" shield="eek"; split="n"; break;;
     20 ) shield_title="BFO-9000" shield="bfo9000"; split="y"; break;;
     21 ) shield_title="Helix" shield="helix"; split="y"; break;;
 
