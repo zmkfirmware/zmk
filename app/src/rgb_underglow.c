@@ -12,6 +12,8 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <bluetooth/services/bas.h>
+
 #include <logging/log.h>
 
 #include <drivers/led_strip.h>
@@ -33,6 +35,7 @@ enum rgb_underglow_effect {
     UNDERGLOW_EFFECT_BREATHE,
     UNDERGLOW_EFFECT_SPECTRUM,
     UNDERGLOW_EFFECT_SWIRL,
+    UNDERGLOW_EFFECT_BATTERY_SOC,
     UNDERGLOW_EFFECT_NUMBER // Used to track number of underglow effects
 };
 
@@ -148,6 +151,24 @@ static void zmk_rgb_underglow_effect_swirl() {
     state.animation_step = state.animation_step % HUE_MAX;
 }
 
+static void zmk_rgb_underglow_battery_soc() {
+    double r = 0.0f, g = 0.0f, b = 0.0f;
+
+    if (device_get_binding("BATTERY") == NULL) {
+        b = 1.0f;
+    } else {
+        uint8_t soc = bt_bas_get_battery_level();
+
+        g = soc / 100.0;
+        r = (100 - soc) / 100.0;
+    }
+
+    struct led_rgb rgb = {r : r * 255, g : g * 255, b : b * 255};
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        pixels[i] = rgb;
+    }
+}
+
 static void zmk_rgb_underglow_tick(struct k_work *work) {
     switch (state.current_effect) {
     case UNDERGLOW_EFFECT_SOLID:
@@ -161,6 +182,9 @@ static void zmk_rgb_underglow_tick(struct k_work *work) {
         break;
     case UNDERGLOW_EFFECT_SWIRL:
         zmk_rgb_underglow_effect_swirl();
+        break;
+    case UNDERGLOW_EFFECT_BATTERY_SOC:
+        zmk_rgb_underglow_battery_soc();
         break;
     }
 
