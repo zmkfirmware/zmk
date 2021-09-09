@@ -90,9 +90,10 @@ static int behavior_mod_morph_init(const struct device *dev) { return 0; }
         .mods = DT_INST_PROP(n, mods),                                                             \
     };                                                                                             \
     static struct behavior_mod_morph_data behavior_mod_morph_data_##n = {};                        \
-    DEVICE_AND_API_INIT(behavior_mod_morph_##n, DT_INST_LABEL(n), behavior_mod_morph_init,         \
-                        &behavior_mod_morph_data_##n, &behavior_mod_morph_config_##n, APPLICATION, \
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mod_morph_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_mod_morph_init, device_pm_control_nop,                       \
+                          &behavior_mod_morph_data_##n, &behavior_mod_morph_config_##n,            \
+                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
+                          &behavior_mod_morph_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

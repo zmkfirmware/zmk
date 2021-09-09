@@ -14,12 +14,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: zmkfirmware/zmk-build-arm:2.4
+      image: zmkfirmware/zmk-build-arm:2.5
     strategy:
       matrix:
         board:
           - bluemicro840_v1
           - nice_nano
+          - nice_nano_v2
           - nrfmicro_13
           - proton_c
         shield:
@@ -69,11 +70,11 @@ jobs:
           - board: planck_rev6
           - board: proton_c
             shield: clueboard_california
-          - board: nice_nano
+          - board: nice_nano_v2
             shield: kyria_left
             cmake-args: -DCONFIG_ZMK_DISPLAY=y
             skip-archive: true
-          - board: nice_nano
+          - board: nice_nano_v2
             shield: kyria_right
             cmake-args: -DCONFIG_ZMK_DISPLAY=y
             skip-archive: true
