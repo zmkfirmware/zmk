@@ -1,0 +1,10 @@
+file_format: "1"
+id: zephirum
+name: Zephirum
+type: shield
+url: http://zephirum.tuxfamily.org/
+requires: [nucleo_wb55cg_dongle]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display

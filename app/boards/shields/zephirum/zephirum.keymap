@@ -1,0 +1,56 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+
+#define BASE        0
+#define SYMBOLS     1
+#define NUM_NAV     2
+
+#define COMPOSE CAPS
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+			label = "Base";
+
+			bindings = <
+&kp COMPOSE &kp Q &kp W &kp E &kp R &kp T   &kp Y &kp U &kp I     &kp O   &kp P     &kp SQT
+&kp TAB     &kp A &kp S &kp D &kp F &kp G   &kp H &kp J &kp K     &kp L   &kp SEMI  &kp ENTER
+&sk LGUI    &kp Z &kp X &kp C &kp V &kp B   &kp N &kp M &kp COMMA &kp DOT &kp SLASH &kp MINUS
+&sl SYMBOLS &kp BSPC &sk LCTRL &sl NUM_NAV
+&none       &sk LALT &kp SPACE &sk RSHIFT
+			>;
+		};
+
+		symbols_layer {
+			label = "Symbols";
+			bindings = <
+&kp ESC &none     &kp LT    &kp EQUAL &kp GT   &kp MINUS  &kp TILDE &kp LBKT  &kp UNDER &kp RBKT &none     &none
+&none   &kp HASH  &kp LPAR  &kp DLLR  &kp RPAR &kp EXCL	  &kp AT    &kp LBRC  &kp STAR  &kp RBRC &kp COLON &trans
+&trans  &kp CARET &kp PRCNT &kp PIPE  &kp BSLH &kp PLUS	  &kp AMPS  &kp GRAVE &kp DQT   &kp SQT  &kp QMARK &none
+&trans      &kp DEL  &trans    &none
+&none       &trans   &none     &trans
+			>;
+		};
+
+		num_nav_layer {
+			label = "Num/Nav";
+			bindings = <
+&kp ESC &kp N1 &kp N2   &kp N3    &kp N4  &kp N5  &kp N6 &kp N7   &kp N8   &kp N9    &kp N0 &none
+&none   &none  &kp HOME &kp PG_UP &kp END &none   &none  &kp LEFT &kp UP   &kp RIGHT &none  &trans
+&trans  &none  &none    &kp PG_DN &none   &none   &none  &none    &kp DOWN &trans     &none  &none
+&none       &none    &trans    &trans
+&none       &trans   &trans     &trans
+			>;
+		};
+	};
+};
