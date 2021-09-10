@@ -15,6 +15,17 @@ on:
       - "app/scripts/west_commands/metadata.py"
 
 jobs:
+  check-metadata-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: app
+      - name: Prettier Check
+        run: npm run prettier:check
+        working-directory: app
   validate-metadata:
     runs-on: ubuntu-latest
     container:
@@ -30,6 +41,5 @@ jobs:
       - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
       - name: Validate Hardware Metadata
-        run: |
-          cd app
-          west metadata check
+        working-directory: app
+        run: west metadata check
