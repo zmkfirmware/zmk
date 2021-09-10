@@ -1,8 +1,8 @@
 file_format: "1"
-id: corne
-name: Corne
+id: jorne
+name: Jorne
 type: shield
-url: https://github.com/foostan/crkbd/
+url: https://github.com/joric/jorne
 requires: [pro_micro]
 exposes: [i2c_oled]
 features:
@@ -10,5 +10,5 @@ features:
   - display
   - underglow
 siblings:
-  - corne_left
-  - corne_right
+  - jorne_left
+  - jorne_right
