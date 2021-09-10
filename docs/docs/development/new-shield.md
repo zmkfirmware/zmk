@@ -509,37 +509,3 @@ Please have a look at documentation specific to
 Further testing your keyboard shield without altering the root keymap file can be done with the use of `-DZMK_CONFIG` in your `west build` command,
 shown [here](build-flash.md#building-from-zmk-config-folder)
 :::
-
-## Updating `build.yml`
-
-Before publishing your shield to the public via a PR, navigate to `build.yml` found in `.github/workflows` and add your shield to the appropriate list. An example edit to `build.yml` is shown below.
-
-```
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    name: Build Test
-    strategy:
-      matrix:
-        board: [proton_c, nice_nano, bluemicro840_v1, nrfmicro_13]
-        shield:
-          - corne_left
-          - corne_right
-          - kyria_left
-          - kyria_right
-          - lily58_left
-          - lily58_right
-          - iris_left
-          - iris_right
-          - romac
-	  - <MY_BOARD>
-	  - <MY_SPLIT_BOARD_left>
-	  - <MY_SPLIT_BOARD_right>
-        include:
-          - board: proton_c
-            shield: clueboard_california
-```
-
-:::note
-Notice that both the left and right halves of a split board need to be added to the list of shields for proper error checking.
-:::note
