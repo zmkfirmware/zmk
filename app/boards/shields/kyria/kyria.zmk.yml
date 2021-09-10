@@ -1,14 +1,15 @@
 file_format: "1"
-id: corne
-name: Corne
+id: kyria
+name: Kyria
 type: shield
-url: https://github.com/foostan/crkbd/
+url: https://splitkb.com/products/kyria-pcb-kit
 requires: [pro_micro]
 exposes: [i2c_oled]
 features:
   - keys
   - display
+  - encoder
   - underglow
 siblings:
-  - corne_left
-  - corne_right
+  - kyria_left
+  - kyria_right

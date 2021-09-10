@@ -1,0 +1,14 @@
+file_format: "1"
+id: iris
+name: Iris
+type: shield
+url: https://keeb.io/products/iris-keyboard-split-ergonomic-keyboard
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+siblings:
+  - iris_left
+  - iris_right
