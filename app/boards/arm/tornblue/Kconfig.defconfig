@@ -1,0 +1,45 @@
+if BOARD_TORNBLUE_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Tornblue Left"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+    default y
+
+endif
+
+if BOARD_TORNBLUE_RIGHT
+
+config ZMK_KEYBOARD_NAME
+    default "Tornblue Right"
+
+endif
+
+if BOARD_TORNBLUE_LEFT || BOARD_TORNBLUE_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+if USB
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+endif # USB
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+	default y
+
+endif
