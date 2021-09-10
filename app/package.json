@@ -1,0 +1,23 @@
+{
+  "name": "zmkfirmware",
+  "version": "1.0.0",
+  "description": "ZMK Firmware tooling",
+  "private": "true",
+  "scripts": {
+    "prettier:check": "prettier --check boards/**/*.yml",
+    "prettier:format": "prettier --write boards/**/*.yml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zmkfirware/zmk.git"
+  },
+  "author": "ZMK Contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zmkfirware/zmk/issues"
+  },
+  "homepage": "https://zmk.dev/",
+  "devDependencies": {
+    "prettier": "^2.4.0"
+  }
+}
