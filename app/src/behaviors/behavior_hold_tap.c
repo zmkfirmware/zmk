@@ -230,16 +230,14 @@ static void clear_hold_tap(struct active_hold_tap *hold_tap) {
     hold_tap->work_is_cancelled = false;
 }
 
-static bool does_position_of_first_other_keypress_permit_hold_behavior(
-    struct active_hold_tap *hold_tap
-) {
-    //nocommit
-    LOG_DBG("stuff %d", hold_tap->position_of_first_other_key_pressed);
+static bool
+does_position_of_first_other_keypress_permit_hold_behavior(struct active_hold_tap *hold_tap) {
     if (hold_tap->config->hold_enabler_keys_len == 0) {
         return true;
     }
     for (int i = 0; i < hold_tap->config->hold_enabler_keys_len; i++) {
-        if (hold_tap->config->hold_enabler_keys[i] == hold_tap->position_of_first_other_key_pressed) {
+        if (hold_tap->config->hold_enabler_keys[i] ==
+            hold_tap->position_of_first_other_key_pressed) {
             return true;
         }
     }
@@ -248,8 +246,7 @@ static bool does_position_of_first_other_keypress_permit_hold_behavior(
 
 static void store_position_if_is_first_other_key_pressed(
     struct active_hold_tap *active_hold_tap,
-    struct decision_trigger_event *decision_trigger_event
-) {
+    struct decision_trigger_event *decision_trigger_event) {
     // The value of position_of_first_other_key_pressed is initialized to -1 when
     // on_hold_tap_binding_pressed calls store_hold_tap.
     // If position_of_first_other_key_pressed is >= 0, then this is not the first
@@ -270,7 +267,8 @@ static void store_position_if_is_first_other_key_pressed(
     }
 
     // All checks passed. Store the position of the other key in the active_hold_tap.
-    active_hold_tap->position_of_first_other_key_pressed = decision_trigger_event->other_key_position;
+    active_hold_tap->position_of_first_other_key_pressed =
+        decision_trigger_event->other_key_position;
     return;
 }
 
@@ -303,8 +301,7 @@ static void decide_balanced(struct active_hold_tap *hold_tap,
 }
 
 static void decide_tap_preferred(struct active_hold_tap *hold_tap,
-                                 struct decision_trigger_event *decision_trigger_event
-) {
+                                 struct decision_trigger_event *decision_trigger_event) {
     switch (decision_trigger_event->decision_moment) {
     case HT_KEY_UP:
         hold_tap->status = STATUS_TAP;
