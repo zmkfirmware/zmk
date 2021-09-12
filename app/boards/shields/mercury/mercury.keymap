@@ -11,8 +11,11 @@
 #define MED 5
 #define SYS 6
 
-/ {
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//      Last committed: September 12, 2021, 9:49 am
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+/ {
     behaviors {
         hlt: hold_preferred_layer_tap {
             compatible = "zmk,behavior-hold-tap";
@@ -23,18 +26,9 @@
             bindings = <&mo>, <&kp>;
         };
 
-        tmt: tap_preferred_mod_tap {
-            compatible = "zmk,behavior-hold-tap";
-            label = "TAP_PREFERRED_MOD_TAP";
-            #binding-cells = <2>;
-            flavor = "tap-preferred";
-            // Longer tapping term (default=200ms), tap is strongly preferred!
-            tapping-term-ms = <300>;
-            bindings = <&kp>, <&kp>;
-        };
-
-        // Short tapping term, required_keys_for_hold is the primary mechanism
-        // to prevent unintentional HOLD behaviors.
+        // Short tapping term results in preference for hold over tap behaviors.
+        // To counteract this, use conditional hold-tap (hold-enabler-keys)
+        // to prevent unintentional hold behaviors.
         cmt: c_mod_tap {
             compatible = "zmk,behavior-hold-tap";
             label = "CONDITIONAL_HOLD_TAP";
@@ -51,10 +45,10 @@
 
         apple_layer {
             bindings = <
-    &hlt FUN TAB  &cmt LSFT Q  &kp W    &kp E    &kp R     &kp T    /**/   &kp Y      &kp U          &kp I      &kp O       &kp P         &kp BKSP
-    &hlt NUM ESC  &cmt LSFT A  &kp S    &kp D    &kp F     &kp G    /**/   &kp H      &kp J          &kp K      &kp L     &kp SCLN        &kp QUOT
-      &kp LSFT       &kp Z     &kp X    &kp C    &kp V     &kp B    /**/   &kp N      &kp M        &kp CMMA    &kp DOT  &tmt RALT FSLH  &mt RSFT BSLH
-                                      &kp LCTL  &kp LALT  &kp LGUI  /**/  &kp SPC  &hlt NAV RET  &hlt MED DEL
+    &hlt FUN TAB  &cmt LSFT Q  &kp W    &kp E    &kp R         &kp T        /**/   &kp Y      &kp U          &kp I      &kp O    &kp P    &kp BKSP
+    &hlt NUM ESC  &cmt LSFT A  &kp S    &kp D    &kp F         &kp G        /**/   &kp H      &kp J          &kp K      &kp L   &kp SCLN  &kp QUOT
+      &kp LSFT       &kp Z     &kp X    &kp C    &kp V         &kp B        /**/   &kp N      &kp M        &kp CMMA    &kp DOT  &kp FSLH  &kp RSFT
+                                      &kp LCTL  &kp LALT  &mt LGUI K_CMENU  /**/  &kp SPC  &hlt NAV RET  &hlt MED DEL
             >;
         };
 
@@ -71,8 +65,8 @@
             bindings = <
     &mo SYS   &trans   &trans   &trans    &trans    &trans  /**/   &trans    &kp NUM_7  &kp NUM_8  &kp NUM_9   &trans    &trans
     &trans   &kp LSFT  &trans  &kp GRAV  &kp TILDE  &trans  /**/   &kp EQL   &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp LBKT  &kp RBKT
-    &trans    &trans   &trans   &trans    &trans    &trans  /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3   &trans    &trans
-                                &trans    &trans    &trans  /**/   &trans    &kp NUM_0  &trans
+    &trans    &trans   &trans   &trans    &trans    &trans  /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp BSLH   &trans
+                                &trans   &kp RALT    &trans  /**/   &trans   &kp NUM_0  &trans
             >;
         };
 
@@ -105,10 +99,10 @@
 
         system_layer {
             bindings = <
-    &trans  &trans      &to WIN      &trans      &reset       &trans      /**/  &trans  &trans  &trans  &trans  &trans  &trans
-    &trans  &to APL  &out OUT_USB    &trans      &trans       &trans      /**/  &trans  &trans  &trans  &trans  &trans  &trans
-    &trans  &trans      &trans     &bt BT_CLR    &trans     &out OUT_BLE  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                                &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  /**/  &trans  &trans  &trans
+    &trans  &trans      &to WIN       &trans       &reset        &trans      /**/  &trans  &trans  &trans  &trans  &trans  &trans
+    &trans  &to APL  &out OUT_USB     &trans       &trans        &trans      /**/  &trans  &trans  &trans  &trans  &trans  &trans
+    &trans  &trans      &trans     &bt BT_CLR      &trans      &out OUT_BLE  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                                   &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  /**/  &trans  &trans  &trans
             >;
         };
     };
