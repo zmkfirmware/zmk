@@ -219,9 +219,8 @@ static void clear_hold_tap(struct active_hold_tap *hold_tap) {
     hold_tap->work_is_cancelled = false;
 }
 
-static void decide_balanced(struct active_hold_tap *hold_tap,
-                            enum decision_moment decision_moment) {
-    switch (decision_moment) {
+static void decide_balanced(struct active_hold_tap *hold_tap, enum decision_moment event) {
+    switch (event) {
     case HT_KEY_UP:
         hold_tap->status = STATUS_TAP;
         return;
@@ -239,9 +238,8 @@ static void decide_balanced(struct active_hold_tap *hold_tap,
     }
 }
 
-static void decide_tap_preferred(struct active_hold_tap *hold_tap,
-                                 enum decision_moment decision_moment) {
-    switch (decision_moment) {
+static void decide_tap_preferred(struct active_hold_tap *hold_tap, enum decision_moment event) {
+    switch (event) {
     case HT_KEY_UP:
         hold_tap->status = STATUS_TAP;
         return;
@@ -256,9 +254,8 @@ static void decide_tap_preferred(struct active_hold_tap *hold_tap,
     }
 }
 
-static void decide_hold_preferred(struct active_hold_tap *hold_tap,
-                                  enum decision_moment decision_moment) {
-    switch (decision_moment) {
+static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decision_moment event) {
+    switch (event) {
     case HT_KEY_UP:
         hold_tap->status = STATUS_TAP;
         return;
@@ -390,7 +387,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
         }
     }
 
-    // Attempt to decide the hold-tap behavior.
+    // If the hold-tap behavior is still undecided, attempt to decide it.
     if (hold_tap->status == STATUS_UNDECIDED) {
         switch (hold_tap->config->flavor) {
         case FLAVOR_HOLD_PREFERRED:
@@ -402,7 +399,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
         }
     }
 
-    // If still undecided, nothing more to do.
+    // If the hold-tap behavior is still undecided, exit out.
     if (hold_tap->status == STATUS_UNDECIDED) {
         return;
     }
@@ -557,7 +554,7 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
             ev->state ? "down" : "up");
     capture_event(eh);
     decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP,
-                    ev->position);
+                    ev->state ? ev->position : NULL);
     return ZMK_EV_EVENT_CAPTURED;
 }
 
