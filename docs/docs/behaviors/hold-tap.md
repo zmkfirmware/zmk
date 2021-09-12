@@ -33,7 +33,7 @@ When the hold-tap key is released and the hold behavior has not been triggered, 
 
 ### Basic usage
 
-For basic usage, please see [mod-tap](./mod-tap.md) and [layer-tap](./layers.md) pages.
+For basic usage, please see [mod-tap](mod-tap.md) and [layer-tap](layers.md) pages.
 
 ### Advanced Configuration
 
@@ -94,6 +94,46 @@ This example configures a hold-tap that works well for homerow mods:
 ```
 
 If this config does not work for you, try the flavor "balanced" with a medium `tapping-term-ms` such as 200ms.
+
+#### Conditional hold-tap and `hold-enabler-keys`
+
+Including `hold-enabler-keys` in your hold-tap behavior definition turns on conditional hold-tap. This causes the hold-tap behavior to only be allowed to produce a hold behavior if the next key pressed is one of the `hold-enabler-keys`. For example, with the following configuration:
+
+```
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+
+/ {
+	behaviors {
+		cht: conditional_hold_tap {
+			compatible = "zmk,behavior-hold-tap";
+			label = "CONDITIONAL_HOLD_TAP";
+			#binding-cells = <2>;
+			flavor = "hold-preferred";
+			tapping-term-ms = <400>;
+			quick-tap-ms = <200>;
+			bindings = <&kp>, <&kp>;
+			hold-enabler-keys = <1>;    // <---[[the W key]]
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+		default_layer {
+			bindings = <
+				&cht LEFT_SHIFT Q        &kp W        &kp E
+			>;
+		};
+	};
+};
+```
+
+The sequence `(cht_down, W_down, W_up, E_down, E_up, cht_up)` produces `WE`, because the conditional hold-tap **IS** permitted to produce a hold behavior, because the next key pressed (the W key in position 1) **IS** one of the hold-enabler-keys.
+
+Meanwhile, the sequence `(cht_down, E_down, E_up, W_down, W_up cht_up)` produces `qew`, because the conditional hold-tap is **NOT** permitted to produce a hold behavior, because the next key pressed (the E key in position 2) is **NOT** one of the hold-enabler-keys.
+
+Conditional hold-taps can be useful with home-row modifiers for example. By setting `hold-enabler-keys` to include only the keys controlled by the opposite hand, conditional hold-taps can prevent one-handed "rolls" from accidentally triggering hold behaviors.
 
 #### Comparison to QMK
 

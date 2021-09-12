@@ -3,3 +3,4 @@
 
 rsource "kscan/Kconfig"
 rsource "sensor/Kconfig"
+rsource "display/Kconfig"

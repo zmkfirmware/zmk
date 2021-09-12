@@ -66,7 +66,7 @@ repo_path="https://github.com/zmkfirmware/zmk-config-split-template.git"
 title="ZMK Config Setup:"
 
 prompt="Pick an MCU board:"
-options=("nice!nano" "QMK Proton-C" "BlueMicro840 (v1)" "makerdiary nRF52840 M.2")
+options=("nice!nano v1" "nice!nano v2" "QMK Proton-C" "BlueMicro840 (v1)" "makerdiary nRF52840 M.2")
 
 echo "$title"
 echo ""
@@ -77,9 +77,10 @@ select opt in "${options[@]}" "Quit"; do
     case "$REPLY" in
 
     1 ) board="nice_nano"; break;;
-    2 ) board="proton_c"; break;;
-    3 ) board="bluemicro840_v1"; break;;
-    4 ) board="nrf52840_m2"; break;;
+    2 ) board="nice_nano_v2"; break;;
+    3 ) board="proton_c"; break;;
+    4 ) board="bluemicro840_v1"; break;;
+    5 ) board="nrf52840_m2"; break;;
 
     $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
     *) echo "Invalid option. Try another one."; continue;;
@@ -117,8 +118,8 @@ select opt in "${options[@]}" "Quit"; do
     15 ) shield_title="Jorne" shield="jorne"; split="y"; break;;
     16 ) shield_title="Jian" shield="jian"; split="y"; break;;
     17 ) shield_title="CRBN" shield="crbn"; split="n"; break;;
-    18 ) shield_title="Tidbit" shield="tidbit"; split="n" break;;
-    19 ) shield_title="Eek!" shield="eek"; split="n" break;;
+    18 ) shield_title="Tidbit" shield="tidbit"; split="n"; break;;
+    19 ) shield_title="Eek!" shield="eek"; split="n"; break;;
     20 ) shield_title="BFO-9000" shield="bfo9000"; split="y"; break;;
     21 ) shield_title="Helix" shield="helix"; split="y"; break;;
 

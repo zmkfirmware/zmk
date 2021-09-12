@@ -238,9 +238,9 @@ static const struct kscan_driver_api gpio_driver_api = {
         .inputs = {UTIL_LISTIFY(INST_INPUT_LEN(n), KSCAN_DIRECT_INPUT_ITEM, n)},                   \
         .num_of_inputs = INST_INPUT_LEN(n),                                                        \
         .debounce_period = DT_INST_PROP(n, debounce_period)};                                      \
-    DEVICE_AND_API_INIT(kscan_gpio_##n, DT_INST_LABEL(n), kscan_gpio_init_##n,                     \
-                        &kscan_gpio_data_##n, &kscan_gpio_config_##n, POST_KERNEL,                 \
-                        CONFIG_ZMK_KSCAN_INIT_PRIORITY, &gpio_driver_api);
+    DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, device_pm_control_nop, &kscan_gpio_data_##n,     \
+                          &kscan_gpio_config_##n, POST_KERNEL, CONFIG_ZMK_KSCAN_INIT_PRIORITY,     \
+                          &gpio_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(GPIO_INST_INIT)
 
