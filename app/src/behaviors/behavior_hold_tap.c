@@ -466,7 +466,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     undecided_hold_tap = hold_tap;
 
     if (is_quick_tap(hold_tap)) {
-        decide_hold_tap(hold_tap, HT_QUICK_TAP, NULL);
+        decide_hold_tap(hold_tap, HT_QUICK_TAP, -1);
     }
 
     // if this behavior was queued we have to adjust the timer to only
@@ -489,10 +489,10 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     // We insert a timer event before the TH_KEY_UP event to verify.
     int work_cancel_result = k_delayed_work_cancel(&hold_tap->work);
     if (event.timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
-        decide_hold_tap(hold_tap, HT_TIMER_EVENT, NULL);
+        decide_hold_tap(hold_tap, HT_TIMER_EVENT, -1);
     }
 
-    decide_hold_tap(hold_tap, HT_KEY_UP, NULL);
+    decide_hold_tap(hold_tap, HT_KEY_UP, -1);
     decide_retro_tap(hold_tap);
     release_binding(hold_tap);
 
@@ -539,7 +539,7 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     // have run out.
     if (ev->timestamp >
         (undecided_hold_tap->timestamp + undecided_hold_tap->config->tapping_term_ms)) {
-        decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT, NULL);
+        decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT, -1);
     }
 
     if (!ev->state && find_captured_keydown_event(ev->position) == NULL) {
@@ -554,7 +554,7 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
             ev->state ? "down" : "up");
     capture_event(eh);
     decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP,
-                    ev->state ? ev->position : NULL);
+                    ev->state ? ev->position : -1);
     return ZMK_EV_EVENT_CAPTURED;
 }
 
@@ -600,7 +600,7 @@ void behavior_hold_tap_timer_work_handler(struct k_work *item) {
     if (hold_tap->work_is_cancelled) {
         clear_hold_tap(hold_tap);
     } else {
-        decide_hold_tap(hold_tap, HT_TIMER_EVENT, NULL);
+        decide_hold_tap(hold_tap, HT_TIMER_EVENT, -1);
     }
 }
 
