@@ -4,15 +4,15 @@
 
 / {
 	behaviors {
-		cht_h: conditional_hold_tap_hold_preferred {
+		ht_bal: behavior_hold_tap_balanced {
 			compatible = "zmk,behavior-hold-tap";
-			label = "CONDITIONAL_HOLD_TAP";
+			label = "HOLD_TAP_BALANCED";
 			#binding-cells = <2>;
-			flavor = "hold-preferred";
-			tapping-term-ms = <1000>;
+			flavor = "balanced";
+			tapping-term-ms = <300>;
 			quick-tap-ms = <200>;
 			bindings = <&kp>, <&kp>;
-			hold-enabler-keys = <1>;
+			hold-enabler-keys = <1 2 3>;
 		};
 	};
 
@@ -22,9 +22,8 @@
 
 		default_layer {
 			bindings = <
-				&cht_h LEFT_SHIFT F &kp D
-				&kp G
-			>;
+				&ht_bal LEFT_SHIFT F &kp J
+				&kp D &kp RIGHT_CONTROL>;
 		};
 	};
 };
