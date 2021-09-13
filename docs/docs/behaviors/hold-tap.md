@@ -135,6 +135,8 @@ Meanwhile, the sequence `(cht_down, E_down, E_up, W_down, W_up cht_up)` produces
 
 Conditional hold-taps can be useful with home-row modifiers for example. By setting `hold-enabler-keys` to include only the keys controlled by the opposite hand, conditional hold-taps can prevent one-handed "rolls" from accidentally triggering hold behaviors.
 
+Note that while for regular hold-tap behaviors a shorter `tapping-term` encourages hold decisions, the opposite is true for conditional hold-tap behaviors. For conditional hold-taps, a shorter `tapping-term` actually encourages tap decisions. This is because when the `tapping-term` expires, this triggers the behavior to decide as either a tap or a hold. But if the user has not yet had time to press one of the `hold-enabler-keys`, then the behavior will decide as a tap. Shortening the `tapping-term` thus gives the user less time to press one of the `hold-enabler-keys` to produce a hold behavior.
+
 #### Comparison to QMK
 
 The hold-preferred flavor works similar to the `HOLD_ON_OTHER_KEY_PRESS` setting in QMK. The 'balanced' flavor is similar to the `PERMISSIVE_HOLD` setting, and the `tap-preferred` flavor is similar to `IGNORE_MOD_TAP_INTERRUPT`.
