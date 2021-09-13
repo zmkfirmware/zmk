@@ -12,7 +12,7 @@
 #define SYS 6
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//      Last committed: September 12, 2021, 9:49 am
+//      Last committed: September 12, 2021, 6:48 pm
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 / {
@@ -26,15 +26,23 @@
             bindings = <&mo>, <&kp>;
         };
 
-        // Short tapping term results in preference for hold over tap behaviors.
-        // To counteract this, use conditional hold-tap (hold-enabler-keys)
-        // to prevent unintentional hold behaviors.
+        // For regular, hold-preferred, hold-tap behaviors, a shorter tapping term
+        // encourages hold-decisions. This is because an expiring tapping term forces
+        // the behavior to decide as a hold.
+        // 
+        // However, for conditional, hold-preferred, hold-tap behaviors, a shorter
+        // tapping term actually encourages tap-decisions. This is because a shorter
+        // tapping term gives the user less time to press one of the conditional
+        // hold-enabler-keys that are required to enable a hold-decision.
+        // Furthermore, if the tapping-term expires before the user manages to press
+        // a hold-enabler-key, the expiring tapping-term timer also directly triggers
+        // the behavior to decide as a tap.
         cmt: c_mod_tap {
             compatible = "zmk,behavior-hold-tap";
             label = "CONDITIONAL_HOLD_TAP";
             #binding-cells = <2>;
             flavor = "hold-preferred";
-            tapping-term-ms = <100>;
+            tapping-term-ms = <300>;
             bindings = <&kp>, <&kp>;
             hold-enabler-keys = <0 12>;
         };
@@ -57,7 +65,7 @@
 &trans   &trans   &trans    &trans     &trans       &trans          /**/  &trans  &trans  &trans  &trans  &trans  &trans
 &trans   &trans   &trans    &trans     &trans       &trans          /**/  &trans  &trans  &trans  &trans  &trans  &trans
 &trans   &trans   &trans    &trans     &trans       &trans          /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                            &kp LGUI   &kp LALT   &mt LCTL K_CMENU   /**/  &trans  &trans  &trans
+                            &kp LGUI   &kp LALT   &mt LCTL K_CMENU  /**/  &trans  &trans  &trans
             >;
         };
 
@@ -66,7 +74,7 @@
 &mo SYS   &trans   &trans   &trans    &trans    &trans  /**/   &trans    &kp NUM_7  &kp NUM_8  &kp NUM_9   &trans    &trans
 &trans   &kp LSFT  &trans  &kp GRAV  &kp TILDE  &trans  /**/   &kp EQL   &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp LBKT  &kp RBKT
 &trans    &trans   &trans   &trans    &trans    &trans  /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp BSLH   &trans
-                            &trans   &kp RALT    &trans  /**/   &trans   &kp NUM_0  &trans
+                            &trans   &kp RALT   &trans  /**/   &trans    &kp NUM_0  &trans
             >;
         };
 
