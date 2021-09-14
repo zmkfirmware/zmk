@@ -95,9 +95,9 @@ This example configures a hold-tap that works well for homerow mods:
 
 If this config does not work for you, try the flavor "balanced" with a medium `tapping-term-ms` such as 200ms.
 
-#### Conditional hold-tap and `hold-enabler-keys`
+#### Positional hold-tap and `hold-enabler-keys`
 
-Including `hold-enabler-keys` in your hold-tap behavior definition turns on conditional hold-tap. This causes the hold-tap behavior to only be allowed to produce a hold behavior if the next key pressed is one of the `hold-enabler-keys`. For example, with the following configuration:
+Including `hold-enabler-keys` in your hold-tap behavior definition turns on positional hold-tap. This causes the hold-tap behavior to only be allowed to produce a hold behavior if the next key pressed is one of the `hold-enabler-keys`. For example, with the following configuration:
 
 ```
 #include <dt-bindings/zmk/keys.h>
@@ -105,9 +105,9 @@ Including `hold-enabler-keys` in your hold-tap behavior definition turns on cond
 
 / {
 	behaviors {
-		cht: conditional_hold_tap {
+		pht: positional_hold_tap {
 			compatible = "zmk,behavior-hold-tap";
-			label = "CONDITIONAL_HOLD_TAP";
+			label = "POSITIONAL_HOLD_TAP";
 			#binding-cells = <2>;
 			flavor = "hold-preferred";
 			tapping-term-ms = <400>;
@@ -129,13 +129,13 @@ Including `hold-enabler-keys` in your hold-tap behavior definition turns on cond
 };
 ```
 
-The sequence `(cht_down, W_down, W_up, E_down, E_up, cht_up)` produces `WE`, because the conditional hold-tap **IS** permitted to produce a hold behavior, because the next key pressed (the W key in position 1) **IS** one of the hold-enabler-keys.
+The sequence `(cht_down, W_down, W_up, E_down, E_up, cht_up)` produces `WE`, because the positional hold-tap **IS** permitted to produce a hold behavior, because the next key pressed (the W key in position 1) **IS** one of the hold-enabler-keys.
 
-Meanwhile, the sequence `(cht_down, E_down, E_up, W_down, W_up cht_up)` produces `qew`, because the conditional hold-tap is **NOT** permitted to produce a hold behavior, because the next key pressed (the E key in position 2) is **NOT** one of the hold-enabler-keys.
+Meanwhile, the sequence `(cht_down, E_down, E_up, W_down, W_up cht_up)` produces `qew`, because the positional hold-tap is **NOT** permitted to produce a hold behavior, because the next key pressed (the E key in position 2) is **NOT** one of the hold-enabler-keys.
 
-Conditional hold-taps can be useful with home-row modifiers for example. By setting `hold-enabler-keys` to include only the keys controlled by the opposite hand, conditional hold-taps can prevent one-handed "rolls" from accidentally triggering hold behaviors.
+Positional hold-taps can be useful with home-row modifiers for example. By setting `hold-enabler-keys` to include only the keys controlled by the opposite hand, positional hold-taps can prevent one-handed "rolls" from accidentally triggering hold behaviors.
 
-Note that while for regular hold-tap behaviors a shorter `tapping-term` encourages hold decisions, the opposite is true for conditional hold-tap behaviors. For conditional hold-taps, a shorter `tapping-term` actually encourages tap decisions. This is because when the `tapping-term` expires, this triggers the behavior to decide as either a tap or a hold. But if the user has not yet had time to press one of the `hold-enabler-keys`, then the behavior will decide as a tap. Shortening the `tapping-term` thus gives the user less time to press one of the `hold-enabler-keys` to produce a hold behavior.
+Note that while for regular hold-tap behaviors a shorter `tapping-term` encourages hold decisions, the opposite is true for positional hold-tap behaviors. For positional hold-taps, a shorter `tapping-term` actually encourages tap decisions. This is because when the `tapping-term` expires, this triggers the behavior to decide as either a tap or a hold. But if the user has not yet had time to press one of the `hold-enabler-keys`, then the behavior will decide as a tap. Shortening the `tapping-term` thus gives the user less time to press one of the `hold-enabler-keys` to produce a hold behavior.
 
 #### Comparison to QMK
 
