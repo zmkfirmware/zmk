@@ -371,15 +371,16 @@ static bool is_positional_hold_tap_enabled(struct active_hold_tap *hold_tap) {
 
 static bool passes_positional_hold_conditions(struct active_hold_tap *hold_tap) {
     for (int i = 0; i < hold_tap->config->hold_enabler_keys_len; i++) {
-        if (hold_tap->config->hold_enabler_keys[i] == hold_tap->position_of_first_other_key_pressed) {
+        if (hold_tap->config->hold_enabler_keys[i] ==
+            hold_tap->position_of_first_other_key_pressed) {
             return true;
         }
     }
     return false;
 }
 
-static void
-decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_moment decision_moment) {
+static void decide_hold_tap(struct active_hold_tap *hold_tap,
+                            enum decision_moment decision_moment) {
     if (hold_tap->status != STATUS_UNDECIDED) {
         return;
     }
@@ -401,16 +402,13 @@ decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_moment decision_
         }
     }
 
-    // If the hold-tap behavior is still undecided, something went wrong. Gracefully fail by exiting.
     if (hold_tap->status == STATUS_UNDECIDED) {
         return;
     }
 
     // If positional hold-tap is enabled, force a decision if the positional conditiosn for
     // a hold decision are not met.
-    if (
-        is_positional_hold_tap_enabled(hold_tap) &&
-        !passes_positional_hold_conditions(hold_tap)) {
+    if (is_positional_hold_tap_enabled(hold_tap) && !passes_positional_hold_conditions(hold_tap)) {
         hold_tap->status = STATUS_TAP;
     }
 
@@ -535,9 +533,9 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     }
 
     // Store the position of pressed key for positional hold-tap purposes.
-    if (
-        (ev->state) // i.e. key pressed (not released)
-        && (undecided_hold_tap->position_of_first_other_key_pressed == -1) // i.e. no other key has been pressed yet
+    if ((ev->state) // i.e. key pressed (not released)
+        && (undecided_hold_tap->position_of_first_other_key_pressed ==
+            -1) // i.e. no other key has been pressed yet
     ) {
         undecided_hold_tap->position_of_first_other_key_pressed = ev->position;
     }

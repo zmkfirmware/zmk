@@ -97,7 +97,7 @@ If this config does not work for you, try the flavor "balanced" with a medium `t
 
 #### Positional hold-tap and `hold-enabler-keys`
 
-Including `hold-enabler-keys` in your hold-tap behavior definition turns on positional hold-tap. This causes the hold-tap behavior to only be allowed to produce a hold behavior if the next key pressed is one of the `hold-enabler-keys`. For example, with the following configuration:
+Including `hold-enabler-keys` in your hold-tap behavior definition enables the positional hold-tap feature. With positional hold-tap enabled, your hold-tap behavior will only produce a hold behavior if while the hold-tap key is still pressed, the first other key to be pressed is one of the `hold-enabler-keys`. For example, with the following hold-tap behavior definiton:
 
 ```
 #include <dt-bindings/zmk/keys.h>
@@ -129,13 +129,13 @@ Including `hold-enabler-keys` in your hold-tap behavior definition turns on posi
 };
 ```
 
-The sequence `(cht_down, W_down, W_up, E_down, E_up, cht_up)` produces `WE`, because the positional hold-tap **IS** permitted to produce a hold behavior, because the next key pressed (the W key in position 1) **IS** one of the hold-enabler-keys.
+The sequence `(cht_down, W_down, W_up, E_down, E_up, cht_up)` produces `WE`. The positional hold-tap **IS** permitted to produce a hold behavior, because the first key pressed after the hold-tap key (i.e. the W key, in position 1) **IS** one of the `hold-enabler-keys`.
 
-Meanwhile, the sequence `(cht_down, E_down, E_up, W_down, W_up cht_up)` produces `qew`, because the positional hold-tap is **NOT** permitted to produce a hold behavior, because the next key pressed (the E key in position 2) is **NOT** one of the hold-enabler-keys.
+Meanwhile, the sequence `(cht_down, E_down, E_up, W_down, W_up cht_up)` produces `qew`. The positional hold-tap is **NOT** permitted to produce a hold behavior, because the first key pressed after the hold-tap key (i.e. the E key, in position 2) is **NOT** one of the `hold-enabler-keys`.
 
-Positional hold-taps can be useful with home-row modifiers for example. By setting `hold-enabler-keys` to include only the keys controlled by the opposite hand, positional hold-taps can prevent one-handed "rolls" from accidentally triggering hold behaviors.
+Positional hold-taps can be useful with home-row modifiers. By using a positional hold-tap behavior for home-row modifiers on the left hand, and setting `hold-enabler-keys` to the keys under the right hand, positional hold-tap will only allow hold behaviors to occur with cross-hand keypresses.
 
-Note that while for regular hold-tap behaviors a shorter `tapping-term` encourages hold decisions, the opposite is true for positional hold-tap behaviors. For positional hold-taps, a shorter `tapping-term` actually encourages tap decisions. This is because when the `tapping-term` expires, this triggers the behavior to decide as either a tap or a hold. But if the user has not yet had time to press one of the `hold-enabler-keys`, then the behavior will decide as a tap. Shortening the `tapping-term` thus gives the user less time to press one of the `hold-enabler-keys` to produce a hold behavior.
+Note that for regular hold-tap behaviors a shorter `tapping-term` encourages hold decisions. However the opposite is true for positional hold-tap behaviors, where a shorter `tapping-term` actually encourages tap decisions. This is because when the `tapping-term` expires, this triggers the behavior to decide as either a tap or a hold. But if the user has not yet had time to press one of the `hold-enabler-keys`, then with positional hold-tap the behavior will decide as a tap.
 
 #### Comparison to QMK
 
