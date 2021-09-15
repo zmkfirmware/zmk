@@ -1,0 +1,14 @@
+identifier: choconum
+name: keeb.io Choconum
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 40
+supported:
+  - encoders
+  - switches
+  - underglow
+  - per_key

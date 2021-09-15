@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "choconum_base.dtsi"
+
+/ {
+	chosen {
+		zmk,kscan = &kscan;
+	};
+	
+	kscan: kscan {
+		compatible = "zmk,kscan-gpio-direct";
+		label = "KSCAN";
+
+		input-gpios
+			= <&gpiob 2  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 3  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+
+			, <&gpiob 1  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpioa 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 5  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+
+			, <&gpiob 0  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpioa 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 7  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+
+			, <&gpioa 7  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpioa 5  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 8  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 6  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+
+			, <&gpioa 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			;
+	};
+
+};

@@ -1,0 +1,10 @@
+file_format: "1"
+id: choconum
+name: Choconum
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+url: https://keeb.io/products/choconum-kailh-choc-numpad

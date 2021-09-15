@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+#include <st/f0/stm32f072Xb.dtsi>
+
+/ {
+	model = "Keeb.io Choconum";
+	compatible = "keebio,choconum", "st,stm32f072";
+
+	chosen {
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+	};
+};
+
+&usb {
+	status = "okay";
+};
+
+&rtc {
+	status = "okay";
+};
+
+&flash0 {
+	/*
+	 * For more information, see:
+	 * http://docs.zephyrproject.org/latest/guides/dts/index.html#flash-partitions
+	 */
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		/* Set 6Kb of storage at the end of the 128Kb of flash */
+		storage_partition: partition@3e800 {
+			label = "storage";
+			reg = <0x0001e800 0x00001800>;
+		};
+	};
+};

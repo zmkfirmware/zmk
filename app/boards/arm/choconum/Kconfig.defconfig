@@ -1,0 +1,17 @@
+# keeb.io Choconum board configuration
+
+# Copyright (c) 2020 Pete Johanson
+# SPDX-License-Identifier: MIT
+
+if BOARD_CHOCONUM
+
+config BOARD
+	default "choconum"
+
+config ZMK_KEYBOARD_NAME
+	default "Choconum"
+
+config ZMK_USB
+	default y
+
+endif # BOARD_CHOCONUM
