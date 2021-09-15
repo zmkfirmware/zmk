@@ -286,6 +286,10 @@ In most case you'll only need to use the .conf file that affects both halves of 
 CONFIG_ZMK_SLEEP=y
 ```
 
+:::note
+The shared configuration in `my_awesome_split_board.conf` is only applied when you are building with a [`zmk-config` folder](build-flash#building-from-zmk-config-folder) and when it is present at `config/my_awesome_split_board.conf`. If you are not using a `zmk-config` folder, you will need to include the shared configuration in both `my_awesome_split_board_left.conf` and `my_awesome_split_board_right.conf` files.
+:::
+
 </TabItem>
 </Tabs>
 
