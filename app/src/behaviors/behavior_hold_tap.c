@@ -72,6 +72,9 @@ struct active_hold_tap {
     const struct behavior_hold_tap_config *config;
     struct k_delayed_work work;
     bool work_is_cancelled;
+
+    // initialized to -1, which is to be interpreted as "no other key has been pressed yet"
+    int32_t position_of_first_other_key_pressed;
 };
 
 // The undecided hold tap is the hold tap that needs to be decided before
@@ -208,6 +211,7 @@ static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_
         active_hold_taps[i].param_hold = param_hold;
         active_hold_taps[i].param_tap = param_tap;
         active_hold_taps[i].timestamp = timestamp;
+        active_hold_taps[i].position_of_first_other_key_pressed = -1;
         return &active_hold_taps[i];
     }
     return NULL;
@@ -361,8 +365,22 @@ static int release_binding(struct active_hold_tap *hold_tap) {
     return behavior_keymap_binding_released(&binding, event);
 }
 
-static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_moment decision_moment,
-                            int32_t other_key_down_position) {
+static bool is_positional_hold_tap_enabled(struct active_hold_tap *hold_tap) {
+    return (hold_tap->config->hold_enabler_keys_len > 0);
+}
+
+static bool passes_positional_hold_conditions(struct active_hold_tap *hold_tap) {
+    for (int i = 0; i < hold_tap->config->hold_enabler_keys_len; i++) {
+        if (hold_tap->config->hold_enabler_keys[i] ==
+            hold_tap->position_of_first_other_key_pressed) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void decide_hold_tap(struct active_hold_tap *hold_tap,
+                            enum decision_moment decision_moment) {
     if (hold_tap->status != STATUS_UNDECIDED) {
         return;
     }
@@ -370,21 +388,6 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
     if (hold_tap != undecided_hold_tap) {
         LOG_DBG("ERROR found undecided tap hold that is not the active tap hold");
         return;
-    }
-
-    // For conditional hold-tap behaviors that have failed to meet the required prerequisites
-    // for a hold decision, force a tap decision.
-    if (decision_moment == HT_OTHER_KEY_DOWN && hold_tap->config->hold_enabler_keys_len > 0) {
-        bool does_other_key_down_enable_hold_behavior = false;
-        for (int i = 0; i < hold_tap->config->hold_enabler_keys_len; i++) {
-            does_other_key_down_enable_hold_behavior =
-                does_other_key_down_enable_hold_behavior ||
-                (hold_tap->config->hold_enabler_keys[i] == other_key_down_position);
-        }
-
-        if (!does_other_key_down_enable_hold_behavior) {
-            hold_tap->status = STATUS_TAP;
-        }
     }
 
     // If the hold-tap behavior is still undecided, attempt to decide it.
@@ -399,9 +402,14 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
         }
     }
 
-    // If the hold-tap behavior is still undecided, exit out.
     if (hold_tap->status == STATUS_UNDECIDED) {
         return;
+    }
+
+    // If positional hold-tap is enabled, force a decision if the positional conditiosn for
+    // a hold decision are not met.
+    if (is_positional_hold_tap_enabled(hold_tap) && !passes_positional_hold_conditions(hold_tap)) {
+        hold_tap->status = STATUS_TAP;
     }
 
     // Since the hold-tap has been decided, clean up undecided_hold_tap and
@@ -466,7 +474,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     undecided_hold_tap = hold_tap;
 
     if (is_quick_tap(hold_tap)) {
-        decide_hold_tap(hold_tap, HT_QUICK_TAP, -1);
+        decide_hold_tap(hold_tap, HT_QUICK_TAP);
     }
 
     // if this behavior was queued we have to adjust the timer to only
@@ -489,10 +497,10 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     // We insert a timer event before the TH_KEY_UP event to verify.
     int work_cancel_result = k_delayed_work_cancel(&hold_tap->work);
     if (event.timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
-        decide_hold_tap(hold_tap, HT_TIMER_EVENT, -1);
+        decide_hold_tap(hold_tap, HT_TIMER_EVENT);
     }
 
-    decide_hold_tap(hold_tap, HT_KEY_UP, -1);
+    decide_hold_tap(hold_tap, HT_KEY_UP);
     decide_retro_tap(hold_tap);
     release_binding(hold_tap);
 
@@ -524,6 +532,14 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
+    // Store the position of pressed key for positional hold-tap purposes.
+    if ((ev->state) // i.e. key pressed (not released)
+        && (undecided_hold_tap->position_of_first_other_key_pressed ==
+            -1) // i.e. no other key has been pressed yet
+    ) {
+        undecided_hold_tap->position_of_first_other_key_pressed = ev->position;
+    }
+
     if (undecided_hold_tap->position == ev->position) {
         if (ev->state) { // keydown
             LOG_ERR("hold-tap listener should be called before before most other listeners!");
@@ -539,7 +555,7 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     // have run out.
     if (ev->timestamp >
         (undecided_hold_tap->timestamp + undecided_hold_tap->config->tapping_term_ms)) {
-        decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT, -1);
+        decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT);
     }
 
     if (!ev->state && find_captured_keydown_event(ev->position) == NULL) {
@@ -553,8 +569,7 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->position,
             ev->state ? "down" : "up");
     capture_event(eh);
-    decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP,
-                    ev->state ? ev->position : -1);
+    decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP);
     return ZMK_EV_EVENT_CAPTURED;
 }
 
@@ -600,7 +615,7 @@ void behavior_hold_tap_timer_work_handler(struct k_work *item) {
     if (hold_tap->work_is_cancelled) {
         clear_hold_tap(hold_tap);
     } else {
-        decide_hold_tap(hold_tap, HT_TIMER_EVENT, -1);
+        decide_hold_tap(hold_tap, HT_TIMER_EVENT);
     }
 }
 
