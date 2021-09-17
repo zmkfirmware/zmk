@@ -62,7 +62,7 @@ function Test-CommandExists {
     param ($command)
 
     $oldPreference = $ErrorActionPreference
-    $ErrorActionPreference = ‘stop’
+    $ErrorActionPreference = "stop"
 
     try {
         if(Get-Command $command){ return $true }
