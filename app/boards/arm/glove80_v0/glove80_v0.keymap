@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/outputs.h> 
+#include <dt-bindings/zmk/rgb.h>
+
+#define HYPER LC(LS(LG(LALT)))
+
+// layers
+#define DEFAULT 0
+#define LOWER 1
+
+/ {
+    keymap {
+      compatible = "zmk,keymap";
+
+      default_layer {
+        // ---------------------------------------------------------------------------------------------------------------------------------
+        // |  F1   |  F2 |  F3 |  F4  |  F5  |                                                               |  F6   |  F7   |  F8  |   F9  |  F10 |
+        // |  =    |  1  |  2  |  3   |  4   |  5   |                                                 |  6   |   7   |   8   |  9   |   0   |   -  |
+        // |  TAB  |  Q  |  W  |  E   |  R   |  T   |                                                 |  Y   |   U   |   I   |  O   |   P   |   \  |
+        // |  ESC  |  A  |  S  |  D   |  F   |  G   |                                                 |  H   |   J   |   K   |  L   |   ;   |   '  |
+        // |   `   |  Z  |  X  |  C   |  V   |  B   | LSHFT | LCTRL | LOWER | | LGUI  | RCTRL | RSHFT |  N   |   M   |   ,   |  .   |   /   | PGUP |
+        // | MAGIC | HOME| END | LEFT | RIGHT|      | BSPC  | DEL   | LALT  | | RALT  | RET   | SPACE |      |  UP   | DOWN  |  [   |   ]   | PGDN |
+
+
+        // MAGIC is currently bound to the same as LAYER - these will be fixed later
+        bindings = <
+          &kp F1      &kp F2      &kp F3      &kp F4      &kp F5                                                                                         &kp F6  &kp F7      &kp F8      &kp F9      &kp F10
+          &kp EQUAL   &kp N1      &kp N2      &kp N3      &kp N4      &kp N5                                                                     &kp N6  &kp N7  &kp N8      &kp N9      &kp N0      &kp MINUS
+          &kp TAB     &kp Q       &kp W       &kp E       &kp R       &kp T                                                                      &kp Y   &kp U   &kp I       &kp O       &kp P       &kp BSLH
+          &kp ESC     &kp A       &kp S       &kp D       &kp F       &kp G                                                                      &kp H   &kp J   &kp K       &kp L       &kp SEMI    &kp SQT
+          &kp GRAVE   &kp Z       &kp X       &kp C       &kp V       &kp B   &kp LSHFT   &kp LCTRL   &mo LOWER  &kp LGUI  &kp RCTRL &kp RSHFT   &kp N   &kp M   &kp COMMA   &kp DOT     &kp FSLH    &kp PG_UP
+          &mo LOWER   &kp HOME    &kp END     &kp LEFT    &kp RIGHT           &kp BSPC    &kp DEL     &kp LALT   &kp RALT  &kp RET  &kp SPACE            &kp UP  &kp DOWN    &kp LBKT    &kp RBKT    &kp PG_DN
+          >;
+      };
+
+      lower_layer {
+        bindings = <
+          &bt BT_SEL 0      &bt BT_SEL 1        &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4                                                                                                         &none        &none        &none        &kp F11      &kp F12
+          &bt BT_CLR        &bt BT_CLR          &out OUT_USB    &out OUT_BLE    &out OUT_TOG    &none                                                                                   &none        &none        &none        &none        &none        &none
+          &bootloader       &rgb_ug RGB_TOG     &rgb_ug RGB_EFF &rgb_ug RGB_BRI &rgb_ug RGB_BRD &kp K_VOL_UP                                                                            &none        &none        &none        &none        &none        &bootloader
+          &reset            &none               &none           &none           &none           &kp K_VOL_DN                                                                            &none        &none        &none        &none        &none        &reset
+          &ext_power EP_ON  &ext_power EP_OFF   &none           &none           &none           &kp K_MUTE      &none       &kp HYPER   &none       &none       &none       &none       &none        &none        &none        &none        &none        &none
+          &none             &kp CAPS            &kp INS         &none           &none                           &none       &none       &none       &none       &none       &none                    &none        &none        &none        &none        &none
+          >;
+      };
+    };
+};
+

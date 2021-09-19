@@ -1,0 +1,10 @@
+file_format: "1"
+id: glove80_v0_rh
+name: Glove80_V0_RH
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://www.moergo.com
+exposes:

@@ -1,0 +1,15 @@
+identifier: glove80_v0_rh
+name: Glove80_V0_RH
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - watchdog

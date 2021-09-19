@@ -1,0 +1,116 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+#include <nordic/nrf52840_qiaa.dtsi>
+#include <dt-bindings/led/led.h>
+#include "glove80.dtsi"
+
+/ {
+	model = "glove80_rh";
+	compatible = "glove80_rh";
+
+	chosen {
+		zmk,underglow = &led_strip;
+        zmk,backlight = &back_led_backlight;
+		zmk,battery   = &vbatt;
+	};
+
+	back_led_backlight: pwmleds {
+		compatible = "pwm-leds";
+		label = "BACK LED";
+		pwm_led_0 {
+			pwms = <&pwm0 16>; 
+			label = "Back LED configured as backlight";
+		};
+	};
+
+	ext-power {
+		compatible = "zmk,ext-power-generic";
+		label = "EXT_POWER";
+		control-gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>; /* WS2812_CE */
+		init-delay-ms = <100>;
+	};
+
+	vbatt: vbatt-divider {
+		compatible = "zmk,battery-voltage-divider";
+		label = "BATTERY";
+		io-channels = <&adc 5>;
+		output-ohms = <820000>; 
+		full-ohms = <(1500000 + 820000)>;
+	};
+
+	vbatt-vddh {
+		compatible = "zmk,battery-nrf-vddh";
+		label = "BATTERY-VDDH";
+	};
+};
+
+&spi1 {
+	compatible = "nordic,nrf-spim";
+	/* Cannot be used together with i2c0. */
+	status = "okay";
+	mosi-pin = <13>; /* WS2812_VEXT_DATA */
+	// Unused pins, needed for SPI definition, but not used by the ws2812 driver itself.
+	sck-pin = <27>; /* Must select a not connected pin */
+	miso-pin = <14>; /* Must select a not connected pin */
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+		label = "WS2812C-2020";
+
+		/* SPI */
+		reg = <0>; /* ignored, but necessary for SPI bindings */
+		spi-max-frequency = <4000000>;
+
+		/* WS2812 */
+		chain-length = <40>; /* 40 keys have underglow at the moment */
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+
+		color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+	};
+};
+
+&pwm0 {
+	status = "okay";
+	ch0-pin = <16>; 
+};
+
+
+/* [SC] Pretty sure this is not required
+&uart0 {
+	compatible = "nordic,nrf-uarte";
+	tx-pin = <6>;
+	rx-pin = <8>;
+};
+*/
+
+/* For right hand, the columns are offset by 7 */ 
+&default_transform {
+	col-offset = <7>;
+};
+
+&kscan0 {
+	row-gpios
+		= <&gpio0 26 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // RH ROW1
+		, <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // RH ROW2
+		, <&gpio0 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // RH ROW3
+		, <&gpio1 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // RH ROW4
+		, <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // RH ROW5
+		, <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // RH ROW6
+		;
+	col-gpios
+		= <&gpio1 6 GPIO_ACTIVE_HIGH> // RH Thumb
+		, <&gpio1 4 GPIO_ACTIVE_HIGH> // RH COL1
+		, <&gpio0 2 GPIO_ACTIVE_HIGH> // RH COL2
+		, <&gpio1 7 GPIO_ACTIVE_HIGH> // RH COL3
+		, <&gpio1 5 GPIO_ACTIVE_HIGH> // RH COL4
+		, <&gpio1 3 GPIO_ACTIVE_HIGH> // RH COL5
+		, <&gpio1 1 GPIO_ACTIVE_HIGH> // RH COL6
+		;
+};
+

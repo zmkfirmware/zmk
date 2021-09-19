@@ -1,0 +1,66 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_GLOVE80_LH
+config BOARD
+	default "glove80 lh"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+config ZMK_KEYBOARD_NAME
+	default "Glove80 Left"
+endif # BOARD_GLOVE80_LH
+
+if BOARD_GLOVE80_RH
+config BOARD
+	default "glove80 rh"
+
+config ZMK_KEYBOARD_NAME
+	default "Glove80 Right"
+endif # BOARD_GLOVE80_RH
+
+if BOARD_GLOVE80_LH || BOARD_GLOVE80_RH
+
+config ZMK_SPLIT
+	default y
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+	default y
+
+config ZMK_BATTERY_NRF_VDDH
+	default y
+
+config ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS
+    default 5
+
+if USB
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+endif # USB
+
+if ZMK_BACKLIGHT
+
+config PWM
+    default y
+
+config LED_PWM
+    default y
+
+endif # ZMK_BACKLIGHT
+
+endif # BOARD_GLOVE80_LH || BOARD_GLOVE80_RH

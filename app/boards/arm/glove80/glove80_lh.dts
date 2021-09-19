@@ -1,0 +1,138 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+#include <nordic/nrf52840_qiaa.dtsi>
+#include <dt-bindings/led/led.h>
+#include "glove80.dtsi"
+
+/ {
+	model = "glove80_lh";
+	compatible = "glove80_lh";
+
+	chosen {
+		zmk,underglow = &led_strip;
+        zmk,backlight = &back_led_backlight;
+		zmk,battery   = &vbatt;
+		zmk,underglow-indicators = &underglow_indicators;
+	};
+
+	back_led_backlight: pwmleds {
+		compatible = "pwm-leds";
+		label = "BACK LED";
+		pwm_led_0 {
+			pwms = <&pwm0 47>; 
+			label = "Back LED configured as backlight";
+		};
+	};
+
+	ext-power {
+		compatible = "zmk,ext-power-generic";
+		label = "EXT_POWER";
+		control-gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>; /* WS2812_CE */
+		init-delay-ms = <100>;
+	};
+
+	vbatt: vbatt-divider {
+		compatible = "zmk,battery-voltage-divider";
+		label = "BATTERY";
+		io-channels = <&adc 5>;
+		output-ohms = <820000>; 
+		full-ohms = <(1500000 + 820000)>;
+	};
+
+	vbatt-vddh {
+		compatible = "zmk,battery-nrf-vddh";
+		label = "BATTERY-VDDH";
+	};
+
+/*
+  MoErgo 40 LEDs
+
+  34 28 22 16 10
+  35 29 23 17 11 6
+  36 30 24 18 12 7
+  37 31 25 19 13 8
+  38 32 26 20 14 9
+  39 33 27 21 15
+                0 1 2
+                3 4 5
+*/
+
+	underglow_indicators: underglow-indicators {
+		compatible  = "zmk,underglow-indicators";
+		layer-state = <35 29 23 17 11 6>;
+		bat-lhs     = <36 30 24 18 12 7>;
+		bat-rhs     = <37 31 25 19 13 8>;
+		capslock    = <22>;
+		numlock     = <16>;
+		scrolllock  = <10>;
+		ble-state   = <3 4 0 1>;
+		usb-state   = <5>;
+		output-fallback = <15>;
+	};
+};
+
+&spi1 {
+	compatible = "nordic,nrf-spim";
+	/* Cannot be used together with i2c0. */
+	status = "okay";
+	mosi-pin = <27>; /* WS2812_VEXT_DATA */
+	// Unused pins, needed for SPI definition, but not used by the ws2812 driver itself.
+	sck-pin = <13>; /* Must select a not connected pin */
+	miso-pin = <14>; /* Must select a not connected pin */
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+		label = "WS2812C-2020";
+
+		/* SPI */
+		reg = <0>; /* ignored, but necessary for SPI bindings */
+		spi-max-frequency = <4000000>;
+
+		/* WS2812 */
+		chain-length = <40>; /* 40 keys have underglow at the moment */
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+
+		color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+	};
+};
+
+&pwm0 {
+	status = "okay";
+	ch0-pin = <47>; 
+};
+
+
+/* [SC] Pretty sure this is not required
+&uart0 {
+	compatible = "nordic,nrf-uarte";
+	tx-pin = <6>;
+	rx-pin = <8>;
+};
+*/
+
+&kscan0 {
+	row-gpios
+		= <&gpio0 26 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // LH ROW1
+		, <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // LH ROW2
+		, <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // LH ROW3
+		, <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // LH ROW4
+		, <&gpio0 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // LH ROW5
+		, <&gpio1 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // LH ROW6
+		;
+	col-gpios
+		= <&gpio1 8 GPIO_ACTIVE_HIGH> // LH COL6
+		, <&gpio1 4 GPIO_ACTIVE_HIGH> // LH COL5
+		, <&gpio1 6 GPIO_ACTIVE_HIGH> // LH COL4
+		, <&gpio1 7 GPIO_ACTIVE_HIGH> // LH COL3
+		, <&gpio1 5 GPIO_ACTIVE_HIGH> // LH COL2
+		, <&gpio1 3 GPIO_ACTIVE_HIGH> // LH COL1
+		, <&gpio1 1 GPIO_ACTIVE_HIGH> // LH Thumb
+		;
+};
+
