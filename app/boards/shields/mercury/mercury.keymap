@@ -12,11 +12,24 @@
 #define SYS 6
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-//      Last committed: September 12, 2021, 6:48 pm
+//      Last committed: September 21, 2021, 10:49 am
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 / {
     behaviors {
+        m_ht: menu_key_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MENU_KEY_HOLD_TAP";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            // Long tapping term.
+            // Quick tap => tap. Long hold => tap. Combination => hold.
+            tapping-term-ms = <1000>;
+            bindings = <&kp>, <&kp>;
+            // All except 38, the position of the K_CMENU hold-tap behavior
+            hold-enabler-keys = <0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 39 40 41>;
+        };
+
         hlt: hold_preferred_layer_tap {
             compatible = "zmk,behavior-hold-tap";
             label = "HOLD_PREFERRED_LAYER_TAP";
@@ -53,19 +66,19 @@
 
         apple_layer {
             bindings = <
-&hlt FUN TAB  &cmt LSFT Q  &kp W    &kp E    &kp R         &kp T        /**/   &kp Y      &kp U         &kp I       &kp O    &kp P    &kp BKSP
-&hlt NUM ESC  &cmt LSFT A  &kp S    &kp D    &kp F         &kp G        /**/   &kp H      &kp J         &kp K       &kp L   &kp SCLN  &kp QUOT
-  &kp LSFT       &kp Z     &kp X    &kp C    &kp V         &kp B        /**/   &kp N      &kp M       &kp CMMA     &kp DOT  &kp FSLH  &kp RSFT
-                                  &kp LCTL  &kp LALT  &mt LGUI K_CMENU  /**/  &kp SPC  &hlt NAV RET  &hlt MED DEL
+&hlt FUN TAB  &cmt LSFT Q  &kp W    &kp E    &kp R        &kp T           /**/   &kp Y      &kp U        &kp I    &kp O    &kp P    &kp BKSP
+&hlt NUM ESC  &cmt LSFT A  &kp S    &kp D    &kp F        &kp G           /**/   &kp H      &kp J        &kp K    &kp L   &kp SCLN  &kp QUOT
+  &kp LSFT       &kp Z     &kp X    &kp C    &kp V        &kp B           /**/   &kp N      &kp M      &kp CMMA  &kp DOT  &kp FSLH  &kp RSFT
+                                  &kp LCTL  &kp LALT  &m_ht LGUI K_CMENU  /**/  &kp SPC  &hlt NAV RET   &mo MED
             >;
         };
 
         windows_layer {
             bindings = <
-&trans   &trans   &trans    &trans     &trans       &trans          /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans   &trans    &trans     &trans       &trans          /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans   &trans   &trans    &trans     &trans       &trans          /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                            &kp LGUI   &kp LALT   &mt LCTL K_CMENU  /**/  &trans  &trans  &trans
+&trans   &trans   &trans    &trans     &trans        &trans           /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans   &trans    &trans     &trans        &trans           /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans   &trans   &trans    &trans     &trans        &trans           /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                           &kp LGUI   &kp LALT   &m_ht LCTL K_CMENU   /**/  &trans  &trans  &trans
             >;
         };
 
@@ -74,7 +87,7 @@
 &mo SYS   &trans   &trans   &trans    &trans    &trans  /**/   &trans    &kp NUM_7  &kp NUM_8  &kp NUM_9   &trans    &trans
 &trans   &kp LSFT  &trans  &kp GRAV  &kp TILDE  &trans  /**/   &kp EQL   &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp LBKT  &kp RBKT
 &trans    &trans   &trans   &trans    &trans    &trans  /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp BSLH   &trans
-                            &trans   &kp RALT   &trans  /**/   &trans    &kp NUM_0  &trans
+                            &trans    &trans    &trans  /**/   &trans    &kp NUM_0  &trans
             >;
         };
 
@@ -89,10 +102,10 @@
 
         nav_layer {
             bindings = <
-&trans  &trans  &trans    &trans    &trans     &trans        /**/  &trans   &trans    &kp UARW  &kp PGUP  &kp PRSC  &trans
-&trans  &trans  &kp SLCK  &trans    &trans     &trans        /**/  &trans   &kp LARW  &kp DARW  &kp RARW   &trans   &trans
-&trans  &trans  &trans    &kp CLCK  &trans  &kp PAUSE_BREAK  /**/  &kp INS  &kp PGDN  &kp HOME  &kp END    &trans   &trans
-                          &trans    &trans     &trans        /**/  &trans   &trans    &trans
+&trans  &trans  &trans    &trans     &trans      &trans        /**/  &trans   &trans    &kp UARW  &kp PGUP  &kp PRSC  &kp DEL
+&trans  &trans  &kp SLCK  &trans     &trans      &trans        /**/  &trans   &kp LARW  &kp DARW  &kp RARW   &trans   &trans
+&trans  &trans  &trans    &kp CLCK   &trans   &kp PAUSE_BREAK  /**/  &kp INS  &kp PGDN  &kp HOME  &kp END    &trans   &trans
+                          &trans    &kp RALT     &trans        /**/  &trans   &trans    &trans
             >;
         };
 
