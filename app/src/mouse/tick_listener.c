@@ -43,9 +43,8 @@ static int64_t ms_since_start(int64_t start, int64_t now, int64_t delay) {
 static float speed(const struct mouse_config *config, float max_speed, int64_t duration_ms) {
     // Calculate the speed based on MouseKeysAccel
     // See https://en.wikipedia.org/wiki/Mouse_keys
-    if (duration_ms > config->time_to_max_speed_ms
-        || config->time_to_max_speed_ms == 0
-        || config->acceleration_exponent == 0) {
+    if (duration_ms > config->time_to_max_speed_ms || config->time_to_max_speed_ms == 0 ||
+        config->acceleration_exponent == 0) {
         return max_speed;
     }
     float time_fraction = (float)duration_ms / config->time_to_max_speed_ms;
@@ -80,12 +79,12 @@ static struct vector2d update_movement(struct vector2d *remainder,
 }
 
 static void mouse_tick_handler(const struct zmk_mouse_tick *tick) {
-    struct vector2d move =
-        update_movement(&move_remainder, &(tick->move_config), tick->max_move, tick->timestamp, tick->start_time);
+    struct vector2d move = update_movement(&move_remainder, &(tick->move_config), tick->max_move,
+                                           tick->timestamp, tick->start_time);
     zmk_hid_mouse_movement_update((int16_t)CLAMP(move.x, INT16_MIN, INT16_MAX),
                                   (int16_t)CLAMP(move.y, INT16_MIN, INT16_MAX));
-    struct vector2d scroll =
-        update_movement(&scroll_remainder, &(tick->scroll_config), tick->max_scroll, tick->timestamp, tick->start_time);
+    struct vector2d scroll = update_movement(&scroll_remainder, &(tick->scroll_config),
+                                             tick->max_scroll, tick->timestamp, tick->start_time);
     zmk_hid_mouse_scroll_update((int8_t)CLAMP(scroll.x, INT8_MIN, INT8_MAX),
                                 (int8_t)CLAMP(scroll.y, INT8_MIN, INT8_MAX));
 }

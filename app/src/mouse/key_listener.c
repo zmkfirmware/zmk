@@ -49,13 +49,15 @@ static void mouse_tick_timer_handler(struct k_work *work) {
     zmk_hid_mouse_movement_set(0, 0);
     zmk_hid_mouse_scroll_set(0, 0);
     LOG_DBG("Raising mouse tick event");
-    ZMK_EVENT_RAISE(zmk_mouse_tick(move_speed, scroll_speed, move_config, scroll_config, &start_time));
+    ZMK_EVENT_RAISE(
+        zmk_mouse_tick(move_speed, scroll_speed, move_config, scroll_config, &start_time));
     zmk_endpoints_send_mouse_report();
 }
 
 K_WORK_DEFINE(mouse_tick, &mouse_tick_timer_handler);
 
 void mouse_timer_cb(struct k_timer *dummy) {
+    LOG_DBG("Submitting mouse work to queue");
     k_work_submit_to_queue(zmk_mouse_work_q(), &mouse_tick);
 }
 

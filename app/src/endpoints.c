@@ -161,7 +161,11 @@ int zmk_endpoints_send_mouse_report() {
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
     case ZMK_ENDPOINT_BLE: {
+#if IS_ENABLED(CONFIG_ZMK_MOUSE_WORK_QUEUE_DEDICATED)
+        int err = zmk_hog_send_mouse_report_direct(&mouse_report->body);
+#else
         int err = zmk_hog_send_mouse_report(&mouse_report->body);
+#endif
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
         }

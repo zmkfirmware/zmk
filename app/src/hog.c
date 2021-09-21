@@ -327,6 +327,29 @@ int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *report) {
     return 0;
 };
 
+int zmk_hog_send_mouse_report_direct(struct zmk_hid_mouse_report_body *report) {
+    struct bt_conn *conn = destination_connection();
+    if (conn == NULL) {
+        return 1;
+    }
+
+    struct bt_gatt_notify_params notify_params = {
+        .attr = &hog_svc.attrs[13],
+        .data = report,
+        .len = sizeof(*report),
+    };
+
+    int err = bt_gatt_notify_cb(conn, &notify_params);
+    if (err) {
+        LOG_DBG("Error notifying %d", err);
+        return err;
+    }
+
+    bt_conn_unref(conn);
+
+    return 0;
+};
+
 int zmk_hog_init(const struct device *_arg) {
     k_work_q_start(&hog_work_q, hog_q_stack, K_THREAD_STACK_SIZEOF(hog_q_stack),
                    CONFIG_ZMK_BLE_THREAD_PRIORITY);
