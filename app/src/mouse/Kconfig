@@ -31,7 +31,7 @@ config ZMK_MOUSE_DEDICATED_THREAD_STACK_SIZE
 
 config ZMK_MOUSE_DEDICATED_THREAD_PRIORITY
     int "Thread priority for dedicated mouse thread/queue"
-    default 5
+    default 3
 
 endif # ZMK_MOUSE_WORK_QUEUE_DEDICATED
 
