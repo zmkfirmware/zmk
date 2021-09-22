@@ -1,0 +1,8 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_ARCHITEUTHIS_DUX_LEFT
+	def_bool $(shields_list_contains,architeuthis_dux_left)
+
+config SHIELD_ARCHITEUTHIS_DUX_RIGHT
+	def_bool $(shields_list_contains,architeuthis_dux_right)
