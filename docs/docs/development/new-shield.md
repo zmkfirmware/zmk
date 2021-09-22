@@ -17,7 +17,6 @@ The high level steps are:
 - (Optional) Add the matrix transform for mapping KSCAN row/column values to sane key positions. This is needed for non-rectangular keyboards, or where the underlying row/column pin arrangement does not map one to one with logical locations on the keyboard.
 - Add a default keymap, which users can override in their own configs as needed.
 - Add support for features such as encoders, OLED displays, or RGB underglow.
-- Update build.yml
 
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/2.5.0/guides/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
