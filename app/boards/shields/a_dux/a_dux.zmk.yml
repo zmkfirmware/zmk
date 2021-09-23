@@ -1,11 +1,11 @@
 file_format: "1"
-id: architeuthis_dux
-name: Architeuthis Dux
+id: a_dux
+name: A. Dux
 type: shield
 url: https://github.com/tapioki/cephalopoda/
 requires: [pro_micro]
 features:
   - keys
 siblings:
-  - architeuthis_dux_left
-  - architeuthis_dux_right
+  - a_dux_left
+  - a_dux_right
