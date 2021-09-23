@@ -5,11 +5,11 @@ menuconfig ZMK_MOUSE
     bool "Enable ZMK mouse emulation"
     default n
 
-if ZMK_MOUSE
-
 config ZMK_MOUSE_TICK_DURATION
     int "Mouse tick duration in ms"
     default 8
+
+if ZMK_MOUSE
 
 choice ZMK_MOUSE_WORK_QUEUE
     prompt "Work queue selection for mouse events"
