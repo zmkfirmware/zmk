@@ -1,6 +1,6 @@
-# Architeuthis Dux
+# A. Dux
 
-Shield configuration for [Architeuthis Dux by Tapi][1].
+Shield configuration for [Architeuthis Dux by Tapi][1] (aka A. Dux, A.D., "Giant Squid").
 
 ![Wireless Architeuthis Dux with nice!nano controllers][2]
 

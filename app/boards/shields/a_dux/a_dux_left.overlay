@@ -4,8 +4,4 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "architeuthis_dux.dtsi"
-
-&default_transform {
-	col-offset = <17>;
-};
+#include "a_dux.dtsi"
