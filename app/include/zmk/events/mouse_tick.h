@@ -17,7 +17,7 @@ struct zmk_mouse_tick {
     struct vector2d max_scroll;
     struct mouse_config move_config;
     struct mouse_config scroll_config;
-    int64_t* start_time;
+    int64_t *start_time;
     int64_t timestamp;
 };
 
@@ -27,7 +27,7 @@ static inline struct zmk_mouse_tick_event *zmk_mouse_tick(struct vector2d max_mo
                                                           struct vector2d max_scroll,
                                                           struct mouse_config move_config,
                                                           struct mouse_config scroll_config,
-                                                                  int64_t* movement_start) {
+                                                          int64_t *movement_start) {
     return new_zmk_mouse_tick((struct zmk_mouse_tick){
         .max_move = max_move,
         .max_scroll = max_scroll,
