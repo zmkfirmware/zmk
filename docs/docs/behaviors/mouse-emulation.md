@@ -12,16 +12,20 @@ Please view [`dt-bindings/zmk/mouse.h`](https://github.com/zmkfirmware/zmk/blob/
 ## Configuration options
 
 This feature should be enabled via a config option:
+
 ```
 CONFIG_ZMK_MOUSE=y
 ```
+
 This option enables several others.
 
 ### Dedicated thread processing
+
 `CONFIG_ZMK_MOUSE_WORK_QUEUE_DEDICATED` is enabled by default and separates the processing of mouse signals into a dedicated thread, significantly improving performance.
 
 ### Tick rate configuration
-`CONFIG_ZMK_MOUSE_TICK_DURATION` sets the tick rate for mouse polling. It is set to 8 ms. by default. 
+
+`CONFIG_ZMK_MOUSE_TICK_DURATION` sets the tick rate for mouse polling. It is set to 8 ms. by default.
 
 ## Keycode Defines
 
