@@ -37,7 +37,7 @@ struct hids_report {
 static struct hids_info info = {
     .version = 0x0000,
     .code = 0x00,
-    .flags = HIDS_NORMALLY_CONNECTABLE & HIDS_REMOTE_WAKE,
+    .flags = HIDS_NORMALLY_CONNECTABLE | HIDS_REMOTE_WAKE,
 };
 
 enum {
