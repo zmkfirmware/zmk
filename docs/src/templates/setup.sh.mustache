@@ -189,7 +189,7 @@ popd
 sed -i'.orig' \
     -e "s/BOARD_NAME/$board/" \
     -e "s/SHIELD_NAME/$shield/" \
-    -e "s/KEYBOARD_TITLE/$shield_title/" \
+    -e "s|KEYBOARD_TITLE|$shield_title|" \
     .github/workflows/build.yml
 
 if [ "$board" == "proton_c" ]; then
