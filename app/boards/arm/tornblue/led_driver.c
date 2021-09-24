@@ -41,16 +41,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #endif
 
 int led_event_handler(const zmk_event_t *eh) {
-    const struct zmk_layer_state_changed *ev = as_zmk_layer_state_changed(eh);
-    if (ev == NULL) {
-        return -ENOTSUP;
-    }
-
     const struct device *dev = device_get_binding(LED1);
-    gpio_pin_configure(dev, PIN1, GPIO_OUTPUT_ACTIVE | FLAGS1);
-    gpio_pin_configure(dev, PIN2, GPIO_OUTPUT_ACTIVE | FLAGS2);
-    gpio_pin_configure(dev, PIN3, GPIO_OUTPUT_ACTIVE | FLAGS3);
-
     const uint8_t layer_active = zmk_keymap_highest_layer_active();
     gpio_pin_set(dev, PIN3, layer_active == 3 /* Nav */);
     gpio_pin_set(dev, PIN2, layer_active == 7 /* Symbol */);
@@ -59,5 +50,20 @@ int led_event_handler(const zmk_event_t *eh) {
     return 0;
 }
 
-ZMK_LISTENER(led_foo, led_event_handler);
-ZMK_SUBSCRIPTION(led_foo, zmk_layer_state_changed);
+static int led_init(const struct device *port) {
+    const struct device *dev = device_get_binding(LED1);
+    gpio_pin_configure(dev, PIN1, GPIO_OUTPUT_ACTIVE | FLAGS1);
+    gpio_pin_configure(dev, PIN2, GPIO_OUTPUT_ACTIVE | FLAGS2);
+    gpio_pin_configure(dev, PIN3, GPIO_OUTPUT_ACTIVE | FLAGS3);
+
+    gpio_pin_set(dev, PIN3, 0);
+    gpio_pin_set(dev, PIN2, 0);
+    gpio_pin_set(dev, PIN1, 0);
+
+    return 0;
+}
+
+ZMK_LISTENER(led, led_event_handler);
+ZMK_SUBSCRIPTION(led, zmk_layer_state_changed);
+
+SYS_INIT(led_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
