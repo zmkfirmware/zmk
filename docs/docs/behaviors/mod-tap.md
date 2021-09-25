@@ -46,4 +46,4 @@ You can configure a different tapping term in your keymap:
 
 ### Additional information
 
-The mod-tap is a [hold-tap](./hold-tap.md) under the hood with the "balanced" flavor and tapping-term-ms 200.
+The mod-tap is a [hold-tap](hold-tap.md) under the hood with the "balanced" flavor and tapping-term-ms 200.
