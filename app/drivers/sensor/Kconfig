@@ -3,3 +3,4 @@
 
 rsource "battery/Kconfig"
 rsource "ec11/Kconfig"
+rsource "trackball_pim447/Kconfig"
