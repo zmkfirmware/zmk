@@ -11,13 +11,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 endif
 
-if SHIELD_A_DUX_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "A. Dux Right"
-
-endif
-
 if SHIELD_A_DUX_LEFT || SHIELD_A_DUX_RIGHT
 
 config ZMK_SPLIT
