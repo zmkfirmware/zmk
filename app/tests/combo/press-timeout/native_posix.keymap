@@ -1,0 +1,35 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan-mock.h>
+
+/ {
+	combos {
+		compatible = "zmk,combos";
+		combo_one {
+			timeout-ms = <30>;
+			key-positions = <0 1>;
+			bindings = <&kp C>;
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&kp A &kp B
+				&none &none
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		ZMK_MOCK_PRESS(0,0,100) 
+		ZMK_MOCK_PRESS(0,1,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(0,1,10)
+	>;
+};

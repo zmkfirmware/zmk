@@ -1,0 +1,6 @@
+pressed: usage_page 0x07 keycode 0x29 implicit_mods 0x00 explicit_mods 0x00
+released: usage_page 0x07 keycode 0x29 implicit_mods 0x00 explicit_mods 0x00
+pressed: usage_page 0x07 keycode 0xe1 implicit_mods 0x00 explicit_mods 0x00
+pressed: usage_page 0x07 keycode 0x35 implicit_mods 0x00 explicit_mods 0x00
+released: usage_page 0x07 keycode 0xe1 implicit_mods 0x00 explicit_mods 0x00
+released: usage_page 0x07 keycode 0x35 implicit_mods 0x00 explicit_mods 0x00

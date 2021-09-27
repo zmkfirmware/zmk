@@ -6,6 +6,7 @@
 
 /dts-v1/;
 #include <st/f3/stm32f303Xc.dtsi>
+#include <st/f3/stm32f303c(b-c)tx-pinctrl.dtsi>
 #include "arduino_pro_micro_pins.dtsi"
 
 / {
@@ -24,6 +25,18 @@
 			label = "User LED";
 		};
 	};
+};
+
+&usart1 {
+	pinctrl-0 = <&usart1_tx_pa9 &usart1_rx_pa10>;
+};
+
+&spi2 {
+	pinctrl-0 = <&spi2_sck_pb13 &spi2_miso_pb14 &spi2_mosi_pb15>;
+};
+
+&i2c1 {
+	pinctrl-0 = <&i2c1_scl_pb6 &i2c1_sda_pb7>;
 };
 
 &usb {

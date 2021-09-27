@@ -1,0 +1,10 @@
+file_format: "1"
+id: planck_rev6
+name: Planck Rev6
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+url: https://olkb.com/collections/planck

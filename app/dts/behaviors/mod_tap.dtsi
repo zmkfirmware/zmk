@@ -6,12 +6,12 @@
 
 / {
 	behaviors {
-		mt: behavior_mod_tap {
+		/omit-if-no-ref/ mt: behavior_mod_tap {
 			compatible = "zmk,behavior-hold-tap";
 			label = "MOD_TAP";
 			#binding-cells = <2>;
 			flavor = "hold-preferred";
-			tapping_term_ms = <200>;
+			tapping-term-ms = <200>;
 			bindings = <&kp>, <&kp>;
 		};
 	};

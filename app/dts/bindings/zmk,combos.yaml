@@ -1,0 +1,25 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Combos container
+
+compatible: "zmk,combos"
+
+child-binding:
+  description: "A combo"
+
+  properties:
+    bindings:
+      type: phandle-array
+      required: true
+    key-positions:
+      type: array
+      required: true
+    timeout-ms:
+      type: int
+      default: 50
+    slow-release:
+      type: boolean
+    layers:
+      type: array
+      default: [-1]

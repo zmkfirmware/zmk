@@ -15,9 +15,14 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/event_manager.h>
+#include <zmk/battery.h>
 #include <zmk/events/battery_state_changed.h>
 
 const struct device *battery;
+
+static uint8_t last_state_of_charge = 0;
+
+uint8_t zmk_battery_state_of_charge() { return last_state_of_charge; }
 
 static int zmk_battery_update(const struct device *battery) {
     struct sensor_value state_of_charge;
@@ -36,18 +41,23 @@ static int zmk_battery_update(const struct device *battery) {
         return rc;
     }
 
-    LOG_DBG("Setting BAS GATT battery level to %d.", state_of_charge.val1);
+    if (last_state_of_charge != state_of_charge.val1) {
+        last_state_of_charge = state_of_charge.val1;
 
-    rc = bt_bas_set_battery_level(state_of_charge.val1);
+        LOG_DBG("Setting BAS GATT battery level to %d.", last_state_of_charge);
 
-    if (rc != 0) {
-        LOG_WRN("Failed to set BAS GATT battery level (err %d)", rc);
-        return rc;
+        rc = bt_bas_set_battery_level(last_state_of_charge);
+
+        if (rc != 0) {
+            LOG_WRN("Failed to set BAS GATT battery level (err %d)", rc);
+            return rc;
+        }
+
+        rc = ZMK_EVENT_RAISE(new_zmk_battery_state_changed(
+            (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge}));
     }
 
-    struct battery_state_changed *ev = new_battery_state_changed();
-    ev->state_of_charge = state_of_charge.val1;
-    return ZMK_EVENT_RAISE(ev);
+    return rc;
 }
 
 static void zmk_battery_work(struct k_work *work) {

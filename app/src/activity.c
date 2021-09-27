@@ -7,6 +7,7 @@
 #include <device.h>
 #include <init.h>
 #include <kernel.h>
+#include <power/power.h>
 
 #include <logging/log.h>
 
@@ -29,7 +30,10 @@ static uint32_t activity_last_uptime;
 #define MAX_SLEEP_MS CONFIG_ZMK_IDLE_SLEEP_TIMEOUT
 #endif
 
-int raise_event() { return ZMK_EVENT_RAISE(create_activity_state_changed(activity_state)); }
+int raise_event() {
+    return ZMK_EVENT_RAISE(new_zmk_activity_state_changed(
+        (struct zmk_activity_state_changed){.state = activity_state}));
+}
 
 int set_state(enum zmk_activity_state state) {
     if (activity_state == state)
@@ -41,7 +45,7 @@ int set_state(enum zmk_activity_state state) {
 
 enum zmk_activity_state zmk_activity_get_state() { return activity_state; }
 
-int activity_event_listener(const struct zmk_event_header *eh) {
+int activity_event_listener(const zmk_event_t *eh) {
     activity_last_uptime = k_uptime_get();
 
     return set_state(ZMK_ACTIVITY_ACTIVE);
@@ -52,6 +56,8 @@ void activity_work_handler(struct k_work *work) {
     int32_t inactive_time = current - activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
     if (inactive_time > MAX_SLEEP_MS) {
+        // Put devices in low power mode before sleeping
+        pm_power_state_force((struct pm_state_info){PM_STATE_STANDBY, 0, 0});
         set_state(ZMK_ACTIVITY_SLEEP);
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
@@ -74,7 +80,7 @@ int activity_init() {
 }
 
 ZMK_LISTENER(activity, activity_event_listener);
-ZMK_SUBSCRIPTION(activity, position_state_changed);
-ZMK_SUBSCRIPTION(activity, sensor_event);
+ZMK_SUBSCRIPTION(activity, zmk_position_state_changed);
+ZMK_SUBSCRIPTION(activity, zmk_sensor_event);
 
 SYS_INIT(activity_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

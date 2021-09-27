@@ -15,3 +15,7 @@ properties:
   label:
     type: string
     required: true
+  init-delay-ms:
+    type: int
+    description: Number of milliseconds to delay after initializing driver
+    required: false

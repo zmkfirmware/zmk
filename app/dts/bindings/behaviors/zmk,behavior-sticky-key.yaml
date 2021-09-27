@@ -13,3 +13,5 @@ properties:
     required: true
   release-after-ms:
     type: int
+  quick-release:
+    type: boolean

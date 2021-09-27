@@ -6,7 +6,6 @@ if SHIELD_TIDBIT
 config ZMK_KEYBOARD_NAME
 	default "tidbit"
 
-endif
 
 if ZMK_DISPLAY
 
@@ -43,3 +42,5 @@ choice LVGL_COLOR_DEPTH
 endchoice
 
 endif # LVGL
+
+endif

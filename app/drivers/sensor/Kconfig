@@ -1,5 +1,5 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-rsource "battery_voltage_divider/Kconfig"
+rsource "battery/Kconfig"
 rsource "ec11/Kconfig"

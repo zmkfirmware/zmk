@@ -33,6 +33,19 @@ static struct bt_uuid_128 uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
 static struct bt_gatt_discover_params discover_params;
 static struct bt_gatt_subscribe_params subscribe_params;
 
+K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
+              CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
+
+void peripheral_event_work_callback(struct k_work *work) {
+    struct zmk_position_state_changed ev;
+    while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
+        LOG_DBG("Trigger key position state change for %d", ev.position);
+        ZMK_EVENT_RAISE(new_zmk_position_state_changed(ev));
+    }
+}
+
+K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
+
 static uint8_t split_central_notify_func(struct bt_conn *conn,
                                          struct bt_gatt_subscribe_params *params, const void *data,
                                          uint16_t length) {
@@ -58,13 +71,11 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
             if (changed_positions[i] & BIT(j)) {
                 uint32_t position = (i * 8) + j;
                 bool pressed = position_state[i] & BIT(j);
-                struct position_state_changed *pos_ev = new_position_state_changed();
-                pos_ev->position = position;
-                pos_ev->state = pressed;
-                pos_ev->timestamp = k_uptime_get();
+                struct zmk_position_state_changed ev = {
+                    .position = position, .state = pressed, .timestamp = k_uptime_get()};
 
-                LOG_DBG("Trigger key position state change for %d", position);
-                ZMK_EVENT_RAISE(pos_ev);
+                k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
+                k_work_submit(&peripheral_event_work);
             }
         }
     }

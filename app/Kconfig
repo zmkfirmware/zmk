@@ -41,7 +41,7 @@ config USB_NUMOF_EP_WRITE_RETRIES
 #ZMK_USB
 endif
 
-config ZMK_BLE
+menuconfig ZMK_BLE
 	bool "BLE (HID over GATT)"
 	select BT
 	select BT_SMP
@@ -57,6 +57,22 @@ if ZMK_BLE
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
 	default 2048
+
+config ZMK_BLE_THREAD_STACK_SIZE
+	int "BLE notify thread stack size"
+	default 512
+
+config ZMK_BLE_THREAD_PRIORITY
+	int "BLE notify thread priority"
+	default 5
+
+config ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE
+	int "Max number of keyboard HID reports to queue for sending over BLE"
+	default 20
+
+config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
+	int "Max number of consumer HID reports to queue for sending over BLE"
+	default 5
 
 config ZMK_BLE_CLEAR_BONDS_ON_START
 	bool "Configuration that clears all bond information from the keyboard on startup."
@@ -86,7 +102,7 @@ config ZMK_SPLIT
 
 if ZMK_SPLIT
 
-config ZMK_SPLIT_BLE
+menuconfig ZMK_SPLIT_BLE
 	bool "Split keyboard support via BLE transport"
 	depends on ZMK_BLE
 	default y
@@ -94,12 +110,32 @@ config ZMK_SPLIT_BLE
 
 if ZMK_SPLIT_BLE
 
-config ZMK_SPLIT_BLE_ROLE_CENTRAL
+menuconfig ZMK_SPLIT_BLE_ROLE_CENTRAL
 	bool "Central"
 	select BT_CENTRAL
 	select BT_GATT_CLIENT
 
+if ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue when received from peripherals"
+	default 5
+
+endif
+
 if !ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE
+	int "BLE split peripheral notify thread stack size"
+	default 512
+
+config ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY
+	int "BLE split peripheral notify thread priority"
+	default 5
+
+config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue to send to the central"
+	default 10
 
 config ZMK_USB
 	default n
@@ -227,14 +263,11 @@ config ZMK_SLEEP
 
 if ZMK_SLEEP
 
-config SYS_POWER_DEEP_SLEEP_STATES
-	default y
-
 choice SYS_PM_POLICY
-	default SYS_PM_POLICY_APP
+	default PM_POLICY_APP
 endchoice
 
-config DEVICE_POWER_MANAGEMENT
+config PM_DEVICE
 	default y
 
 config ZMK_IDLE_SLEEP_TIMEOUT
@@ -249,6 +282,23 @@ config ZMK_EXT_POWER
 	default y
 
 #Power Management
+endmenu
+
+menu "Combo options"
+
+config ZMK_COMBO_MAX_PRESSED_COMBOS
+	int "Maximum number of currently pressed combos"
+	default 4
+
+config ZMK_COMBO_MAX_COMBOS_PER_KEY
+	int "Maximum number of combos per key"
+	default 5
+
+config ZMK_COMBO_MAX_KEYS_PER_COMBO
+	int "Maximum number of keys per combo"
+	default 4
+
+#Display/LED Options
 endmenu
 
 menu "Advanced"
@@ -284,13 +334,55 @@ config ZMK_KSCAN_EVENT_QUEUE_SIZE
 
 config ZMK_KSCAN_MOCK_DRIVER
 	bool "Enable mock kscan driver to simulate key presses"
-	default n
 
 config ZMK_KSCAN_COMPOSITE_DRIVER
 	bool "Enable composite kscan driver to combine kscan devices"
-	default n
 
 #KSCAN Settings
+endmenu
+
+menu "USB Logging"
+
+config ZMK_USB_LOGGING
+	bool "Enable USB CDC ACM logging to help debug"
+	select LOG
+	select USB
+	select USB_DEVICE_STACK
+	select USB_CDC_ACM
+	select SERIAL
+	select CONSOLE
+	select UART_INTERRUPT_DRIVEN
+	select UART_LINE_CTRL
+	select UART_CONSOLE
+	select USB_UART_CONSOLE
+
+if ZMK_USB_LOGGING
+
+config ZMK_LOG_LEVEL
+	default 4
+
+config USB_CDC_ACM_RINGBUF_SIZE
+	default 1024
+
+config USB_CDC_ACM_DEVICE_NAME
+	default "CDC_ACM"
+
+config USB_CDC_ACM_DEVICE_COUNT
+	default 1
+
+config UART_CONSOLE_ON_DEV_NAME
+	default "CDC_ACM_0"
+
+config LOG_BUFFER_SIZE
+	default 8192
+
+config LOG_STRDUP_BUF_COUNT
+	default 16
+
+#ZMK_USB_LOGGING
+endif
+
+#USB Logging
 endmenu
 
 if SETTINGS
@@ -316,6 +408,21 @@ config KERNEL_BIN_NAME
 
 config REBOOT
 	default y
+
+config USB
+	default y if HAS_HW_NRF_USBD
+
+config ZMK_WPM
+	bool "Calculate WPM"
+	default n
+
+config SENSOR
+	default y
+
+choice CBPRINTF_IMPLEMENTATION
+	default CBPRINTF_NANO
+
+endchoice
 
 module = ZMK
 module-str = zmk

@@ -31,7 +31,7 @@ an onboard MCU, or one that uses an MCU board addon.
 
 ### Keyboard (Shield) + MCU Board
 
-ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/2.3.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html)
+ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/2.5.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/2.5.0/guides/porting/board_porting.html)
 
 Given the following:
 
@@ -47,7 +47,7 @@ west build -b proton_c -- -DSHIELD=kyria_left
 
 ### Keyboard With Onboard MCU
 
-Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/2.3.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
+Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/2.5.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
 
 Given the following:
 
@@ -90,7 +90,7 @@ This produces `left` and `right` subfolders under the `build` directory and two 
 
 ### Building from `zmk-config` Folder
 
-Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup#github-repo) by adding
+Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup.md#github-repo) by adding
 `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build` command. **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
@@ -107,7 +107,7 @@ volume automatically -- we need to delete the default volume before binding it t
 1. Remove all the containers that are not running via the command `docker container prune`. We need to remove the ZMK container before we can delete the default `zmk-config` volume referenced by it. If you do not want to delete all the containers that are not running, you can find the id of the ZMK container and use `docker rm` to delete that one only.
 1. Remove the default volume via the command `docker volume rm zmk-config`.
 
-Then you can bind the `zmk-config` volume to the correct path pointing to your local [zmk-config](./customization.md) folder:
+Then you can bind the `zmk-config` volume to the correct path pointing to your local [zmk-config](customization.md) folder:
 
 ```
 docker volume create --driver local -o o=bind -o type=none -o \
@@ -118,11 +118,17 @@ Now start VSCode and rebuild the container after being prompted. You should be a
 
 ## Flashing
 
-Once built, the previously supplied parameters will be remembered so you can run the following to flash your
-board with it in bootloader mode:
+The above build commands generate a UF2 file in `build/zephyr` (or
+`build/left|right/zephyr` if you followed the instructions for splits) and is by
+default named `zmk.uf2`. If your board supports USB Flashing Format (UF2), copy
+that file onto the root of the USB mass storage device for your board. The
+controller should flash your built firmware and automatically restart once
+flashing is complete.
+
+Alternatively, if your board supports flashing and you're not developing from
+within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on
+your board and run the following command to flash:
 
 ```
 west flash
 ```
-
-For boards that have drag and drop .uf2 flashing capability, the .uf2 file to flash can be found in `build/zephyr` (or `build/left|right/zephyr` if you followed the instructions for splits) and is by default named `zmk.uf2`.
