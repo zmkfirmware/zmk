@@ -2,6 +2,12 @@
 # SPDX-License-Identifier: MIT
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+#zephyr_library()
+
+#zephyr_library_sources(led.c)
+>>>>>>> Stashed changes
 =======
 #zephyr_library()
 
