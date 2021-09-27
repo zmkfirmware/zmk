@@ -1,0 +1,16 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Keyboard Reset Behavior
+
+compatible: "zmk,behavior-mod-morph"
+
+include: zero_param.yaml
+
+properties:
+  bindings:
+    type: phandle-array
+    required: true
+  mods:
+    type: int
+    required: true

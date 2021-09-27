@@ -18,7 +18,6 @@ endchoice
 
 choice ZMK_DISPLAY_STATUS_SCREEN
     prompt "Default status screen for displays"
-    default ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
 config ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
     bool "Built in status screen"
@@ -28,6 +27,49 @@ config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
     bool "Custom status screen"
 
 endchoice
+
+choice ZMK_DISPLAY_WORK_QUEUE
+    prompt "Work queue selection for UI updates"
+
+config ZMK_DISPLAY_WORK_QUEUE_SYSTEM
+    bool "Use default system work queue for UI updates"
+
+config ZMK_DISPLAY_WORK_QUEUE_DEDICATED
+    bool "Use dedicated work queue for UI updates"
+
+endchoice
+
+if ZMK_DISPLAY_WORK_QUEUE_DEDICATED
+
+config ZMK_DISPLAY_DEDICATED_THREAD_STACK_SIZE
+    int "Stack size for dedicated UI thread/queue"
+    default 2048
+
+config ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY
+    int "Thread priority for dedicated UI thread/queue"
+    default 5
+
+endif # ZMK_DISPLAY_WORK_QUEUE_DEDICATED
+
+if ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
+
+config LVGL_FONT_MONTSERRAT_16
+    default y
+
+choice LVGL_THEME_DEFAULT_FONT_NORMAL
+    default LVGL_THEME_DEFAULT_FONT_NORMAL_MONTSERRAT_16
+
+endchoice
+
+config LVGL_FONT_MONTSERRAT_12
+    default y
+    
+choice LVGL_THEME_DEFAULT_FONT_SMALL
+    default LVGL_THEME_DEFAULT_FONT_SMALL_MONTSERRAT_12
+
+endchoice
+
+endif # ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
 rsource "widgets/Kconfig"
 

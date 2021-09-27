@@ -17,6 +17,11 @@ properties:
   debounce-period:
     type: int
     default: 5
+    description: Debounce time in milliseconds
+  poll-period-ms:
+    type: int
+    default: 10
+    description: Time between reads in milliseconds when polling is enabled
   diode-direction:
     type: string
     default: row2col

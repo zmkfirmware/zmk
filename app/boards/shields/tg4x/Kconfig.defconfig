@@ -4,6 +4,6 @@
 if SHIELD_TG4X
 
 config ZMK_KEYBOARD_NAME
-    default "TG4X"
+    default "TG4x"
 
 endif

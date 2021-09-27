@@ -1,0 +1,15 @@
+file_format: "1"
+id: kyria
+name: Kyria
+type: shield
+url: https://splitkb.com/products/kyria-pcb-kit
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+  - underglow
+siblings:
+  - kyria_left
+  - kyria_right

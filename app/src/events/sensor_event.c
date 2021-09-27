@@ -7,4 +7,4 @@
 #include <kernel.h>
 #include <zmk/events/sensor_event.h>
 
-ZMK_EVENT_IMPL(sensor_event);
+ZMK_EVENT_IMPL(zmk_sensor_event);

@@ -19,3 +19,12 @@ int zmk_keymap_layer_to(uint8_t layer);
 const char *zmk_keymap_layer_label(uint8_t layer);
 
 int zmk_keymap_position_state_changed(uint32_t position, bool pressed, int64_t timestamp);
+
+#define ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst)                                                  \
+    {                                                                                              \
+        .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(drv_inst, bindings, idx)),                      \
+        .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(drv_inst, bindings, idx, param1), (0),        \
+                              (DT_PHA_BY_IDX(drv_inst, bindings, idx, param1))),                   \
+        .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(drv_inst, bindings, idx, param2), (0),        \
+                              (DT_PHA_BY_IDX(drv_inst, bindings, idx, param2))),                   \
+    }

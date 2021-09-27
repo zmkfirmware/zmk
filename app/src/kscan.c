@@ -47,14 +47,10 @@ void zmk_kscan_process_msgq(struct k_work *item) {
     while (k_msgq_get(&zmk_kscan_msgq, &ev, K_NO_WAIT) == 0) {
         bool pressed = (ev.state == ZMK_KSCAN_EVENT_STATE_PRESSED);
         uint32_t position = zmk_matrix_transform_row_column_to_position(ev.row, ev.column);
-        struct position_state_changed *pos_ev;
-        LOG_DBG("Row: %d, col: %d, position: %d, pressed: %s\n", ev.row, ev.column, position,
+        LOG_DBG("Row: %d, col: %d, position: %d, pressed: %s", ev.row, ev.column, position,
                 (pressed ? "true" : "false"));
-        pos_ev = new_position_state_changed();
-        pos_ev->state = pressed;
-        pos_ev->position = position;
-        pos_ev->timestamp = k_uptime_get();
-        ZMK_EVENT_RAISE(pos_ev);
+        ZMK_EVENT_RAISE(new_zmk_position_state_changed((struct zmk_position_state_changed){
+            .state = pressed, .position = position, .timestamp = k_uptime_get()}));
     }
 }
 

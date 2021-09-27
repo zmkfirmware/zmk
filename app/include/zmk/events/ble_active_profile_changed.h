@@ -12,10 +12,9 @@
 
 #include <zmk/ble/profile.h>
 
-struct ble_active_profile_changed {
-    struct zmk_event_header header;
+struct zmk_ble_active_profile_changed {
     uint8_t index;
     struct zmk_ble_profile *profile;
 };
 
-ZMK_EVENT_DECLARE(ble_active_profile_changed);
+ZMK_EVENT_DECLARE(zmk_ble_active_profile_changed);

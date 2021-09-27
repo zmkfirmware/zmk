@@ -1,0 +1,228 @@
+#!/bin/bash
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+set -e
+
+check_exists() {
+    command_to_run=$1
+    error_message=$2
+    local __resultvar=$3
+
+    if ! eval "$command_to_run" &> /dev/null; then
+        if [[ "$__resultvar" != "" ]]; then
+            eval $__resultvar="'false'"
+        else
+            printf "%s\n" "$error_message"
+            exit 1
+        fi
+    else
+        if [[ "$__resultvar" != "" ]]; then
+            eval $__resultvar="'true'"
+        fi
+    fi
+}
+
+check_exists "command -v git" "git is not installed, and is required for this script!"
+check_exists "command -v curl" "curl is not installed, and is required for this script!" curl_exists
+check_exists "command -v wget" "wget is not installed, and is required for this script!" wget_exists
+
+check_exists "git config user.name" "Git username not set!\nRun: git config --global user.name 'My Name'"
+check_exists "git config user.email" "Git email not set!\nRun: git config --global user.email 'example@myemail.com'"
+
+# Check to see if the user has write permissions in this directory to prevent a cryptic error later on
+if [ ! -w `pwd` ]; then
+    echo 'Sorry, you do not have write permissions in this directory.';
+    echo 'Please try running this script again from a directory that you do have write permissions for.';
+    exit 1
+fi
+
+# Parse all commandline options
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -w|--wget) force_wget="true"; break;;
+        *) echo "Unknown parameter: $1"; exit 1;;
+    esac
+    shift
+done
+
+if [[ $curl_exists == "true" && $wget_exists == "true" ]]; then
+    if [[ $force_wget == "true" ]]; then
+        download_command="wget "
+    else
+        download_command="curl -O "
+    fi
+elif [[ $curl_exists == "true" ]]; then
+    download_command="curl -O "
+elif [[ $wget_exists == "true" ]]; then
+    download_command="wget "
+else
+    echo 'Neither curl nor wget are installed. One of the two is required for this script!'
+    exit 1
+fi
+
+repo_path="https://github.com/zmkfirmware/zmk-config-split-template.git"
+title="ZMK Config Setup:"
+
+echo ""
+echo "Keyboard Selection:"
+PS3="Pick a keyboard: "
+options=({{#keyboards}}"{{{name}}}" {{/keyboards}})
+keyboards_id=({{#keyboards}}"{{id}}" {{/keyboards}})
+keyboards_type=({{#keyboards}}"{{type}}" {{/keyboards}})
+keyboards_split=({{#keyboards}}"{{#split}}y{{/split}}{{^split}}n{{/split}}" {{/keyboards}})
+keyboards_shield=({{#keyboards}}"{{#compatible}}y{{/compatible}}{{^compatible}}n{{/compatible}}" {{/keyboards}})
+select opt in "${options[@]}" "Quit"; do
+    case "$REPLY" in
+        ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
+
+        $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
+        *)
+            if [ $REPLY -gt $(( ${#options[@]}+1 )) ] || [ $REPLY -lt 0 ]; then
+                echo "Invalid option. Try another one."
+                continue
+            fi
+            keyboard_index=$(( $REPLY-1 ))
+            keyboard=${keyboards_id[$keyboard_index]}
+            keyboard_title=${options[$keyboard_index]}
+            split=${keyboards_split[$keyboard_index]}
+            type=${keyboards_type[$keyboard_index]}
+            keyboard_shield=${keyboards_shield[$keyboard_index]}
+            break
+        ;;
+
+    esac
+done
+
+if [ "$keyboard_shield" == "y" ]; then
+    shield=${keyboard}
+    shield_title=${keyboard_title}
+
+    prompt="Pick an MCU board:"
+    options=({{#boards}}"{{{name}}}" {{/boards}})
+    board_ids=({{#boards}}"{{id}}" {{/boards}})
+
+    echo ""
+    echo "MCU Board Selection:"
+    PS3="$prompt "
+    select opt in "${options[@]}" "Quit"; do
+        case "$REPLY" in
+            ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
+
+            $(( ${#options[@]}+1 )) ) echo "Goodbye!"; exit 1;;
+            *)
+                if [ $REPLY -gt $(( ${#options[@]}+1 )) ] || [ $REPLY -lt 0 ]; then
+                    echo "Invalid option. Try another one."
+                    continue
+                fi
+                board_index=$(( $REPLY-1 ))
+                board=${board_ids[$board_index]}
+                board_title=${options[$board_index]}
+                break
+            ;;
+
+        esac
+    done
+else
+    board=${keyboard}
+    echo "Support for onboard microcontroller keyboards is still a work in progress."
+    exit 1
+fi
+
+if [ "$split" == "n" ]; then
+    repo_path="https://github.com/zmkfirmware/zmk-config-template.git"
+fi
+
+read -r -e -p "Copy in the stock keymap for customization? [Yn]: " copy_keymap
+
+if [ -z "$copy_keymap" ] || [ "$copy_keymap" == "Y" ] || [ "$copy_keymap" == "y" ]; then copy_keymap="yes"; fi
+
+read -r -e -p "GitHub Username (leave empty to skip GitHub repo creation): " github_user
+if [ -n "$github_user" ]; then
+    read -r -p "GitHub Repo Name [zmk-config]: " repo_name
+    if [ -z "$repo_name" ]; then repo_name="zmk-config"; fi
+
+    read -r -p "GitHub Repo [https://github.com/${github_user}/${repo_name}.git]: " github_repo
+
+    if [ -z "$github_repo" ]; then github_repo="https://github.com/${github_user}/${repo_name}.git"; fi
+else
+    repo_name="zmk-config"
+fi
+
+echo ""
+echo "Preparing a user config for:"
+echo "* MCU Board: ${board}"
+echo "* Shield: ${shield}"
+
+if [ "$copy_keymap" == "yes" ]; then
+    echo "* Copy Keymap?: ✓"
+else
+    echo "* Copy Keymap?: ❌"
+fi
+
+if [ -n "$github_repo" ]; then
+    echo "* GitHub Repo To Push (please create this in GH first!): ${github_repo}"
+fi
+
+echo ""
+read -r -p "Continue? [Yn]: " do_it
+
+if [ -n "$do_it" ] && [ "$do_it" != "y" ] && [ "$do_it" != "Y" ]; then
+    echo "Aborting..."
+    exit 1
+fi
+
+git clone --single-branch $repo_path ${repo_name}
+cd ${repo_name}
+
+pushd config
+
+$download_command "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.conf"
+
+if [ "$copy_keymap" == "yes" ]; then
+    $download_command "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.keymap"
+fi
+
+popd
+
+sed -i'.orig' \
+    -e "s/BOARD_NAME/$board/" \
+    -e "s/SHIELD_NAME/$shield/" \
+    -e "s|KEYBOARD_TITLE|$shield_title|" \
+    .github/workflows/build.yml
+
+if [ "$board" == "proton_c" ]; then
+    # Proton-C board still fa
+    sed -i'.orig' -e "s/uf2/hex/g" .github/workflows/build.yml
+fi
+
+rm .github/workflows/*.yml.orig
+
+rm -rf .git
+git init .
+git add .
+git commit -m "Initial User Config."
+
+if [ -n "$github_repo" ]; then
+    git remote add origin "$github_repo"
+    git push --set-upstream origin "$(git symbolic-ref --short HEAD)"
+    push_return_code=$?
+
+    # If push failed, assume that the origin was incorrect and give instructions on fixing.
+    if [ ${push_return_code} -ne 0 ]; then
+        echo "Remote repository $github_repo not found..."
+        echo "Check GitHub URL, and try adding again."
+        echo "Run the following: "
+        echo "    git remote rm origin"
+        echo "    git remote add origin FIXED_URL"
+        echo "    git push --set-upstream origin $(git symbolic-ref --short HEAD)"
+        echo "Once pushed, your firmware should be availalbe from GitHub Actions at: ${github_repo%.git}/actions"
+        exit 1
+    fi
+
+    # TODO: Support determing the actions URL when non-https:// repo URL is used.
+    if [ "${github_repo}" != "${github_repo#https://}" ]; then
+        echo "Your firmware should be available from GitHub Actions shortly: ${github_repo%.git}/actions"
+    fi
+fi

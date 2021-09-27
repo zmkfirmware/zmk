@@ -19,10 +19,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
 
-int split_listener(const struct zmk_event_header *eh) {
+int split_listener(const zmk_event_t *eh) {
     LOG_DBG("");
-    if (is_position_state_changed(eh)) {
-        const struct position_state_changed *ev = cast_position_state_changed(eh);
+    const struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
+    if (ev != NULL) {
         if (ev->state) {
             return zmk_split_bt_position_pressed(ev->position);
         } else {
@@ -33,4 +33,4 @@ int split_listener(const struct zmk_event_header *eh) {
 }
 
 ZMK_LISTENER(split_listener, split_listener);
-ZMK_SUBSCRIPTION(split_listener, position_state_changed);
+ZMK_SUBSCRIPTION(split_listener, zmk_position_state_changed);

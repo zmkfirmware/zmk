@@ -41,7 +41,12 @@ static int kscan_composite_enable_callback(const struct device *dev) {
     for (int i = 0; i < ARRAY_SIZE(kscan_composite_children); i++) {
         const struct kscan_composite_child_config *cfg = &kscan_composite_children[i];
 
-        kscan_enable_callback(device_get_binding(cfg->label));
+        const struct device *dev = device_get_binding(cfg->label);
+        if (!dev) {
+            LOG_WRN("Failed to load child kscan device %s", log_strdup(cfg->label));
+            continue;
+        }
+        kscan_enable_callback(dev);
     }
     return 0;
 }
@@ -50,7 +55,12 @@ static int kscan_composite_disable_callback(const struct device *dev) {
     for (int i = 0; i < ARRAY_SIZE(kscan_composite_children); i++) {
         const struct kscan_composite_child_config *cfg = &kscan_composite_children[i];
 
-        kscan_disable_callback(device_get_binding(cfg->label));
+        const struct device *dev = device_get_binding(cfg->label);
+        if (!dev) {
+            LOG_WRN("Failed to load child kscan device %s", log_strdup(cfg->label));
+            continue;
+        }
+        kscan_disable_callback(dev);
     }
     return 0;
 }
@@ -108,6 +118,6 @@ static const struct kscan_composite_config kscan_composite_config = {};
 
 static struct kscan_composite_data kscan_composite_data;
 
-DEVICE_AND_API_INIT(kscan_composite, DT_INST_LABEL(0), kscan_composite_init, &kscan_composite_data,
-                    &kscan_composite_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
-                    &mock_driver_api);
+DEVICE_DT_INST_DEFINE(0, kscan_composite_init, device_pm_control_nop, &kscan_composite_data,
+                      &kscan_composite_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+                      &mock_driver_api);

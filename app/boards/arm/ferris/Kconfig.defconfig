@@ -1,0 +1,23 @@
+# Ferris board configuration
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_FERRIS
+
+config BOARD
+	default "ferris_rev02"
+
+config ZMK_KEYBOARD_NAME
+	default "Ferris rev 0.2"
+
+config ZMK_USB
+	default y
+
+config ZMK_KSCAN_MATRIX_POLLING
+	default y
+
+config ZMK_KSCAN_COMPOSITE_DRIVER
+	default y
+
+endif # BOARD_FERRIS

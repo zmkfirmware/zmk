@@ -13,6 +13,9 @@
 #define RSE 2
 #define ADJ 3
 
+&lt { quick_tap_ms = <200>; };
+&mt { quick_tap_ms = <200>; };
+
 / {
         keymap {
                 compatible = "zmk,keymap";
@@ -26,7 +29,7 @@
                         bindings = <
    &kp LWIN &kp GRAVE &kp Q &kp W &kp E &kp R &kp T &kp Y         &kp U  &kp I     &kp O   &kp P    &kp LBKT &mt RWIN RBKT
             &kp LCTRL &kp A &kp S &kp D &kp F &kp G &kp H         &kp J  &kp K     &kp L   &kp SEMI &mt RCTRL SQT
-            &kp LALT  &kp Z &kp X &kp C &kp V &kp B &kp N         &kp M  &kp COMMA &kp DOT &kp FSLH &kp BSLH
+            &kp LALT  &kp Z &kp X &kp C &kp V &kp B &kp N         &kp M  &kp COMMA &kp DOT &kp FSLH &mt RALT BSLH
                          &lt RSE TAB &mt LSHFT SPACE &lt LWR RET &lt LWR ESC &mt RSHFT BSPC &lt RSE DEL
                         >;
                 };

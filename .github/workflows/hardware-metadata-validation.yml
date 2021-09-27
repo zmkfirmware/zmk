@@ -1,0 +1,45 @@
+name: Hardware Metadata Validation
+
+on:
+  push:
+    paths:
+      - ".github/workflows/hardware-metadata-validation.yml"
+      - "schema/hardware-metadata.schema.json"
+      - "app/boards/**/*.zmk.yml"
+      - "app/scripts/west_commands/metadata.py"
+  pull_request:
+    paths:
+      - ".github/workflows/hardware-metadata-validation.yml"
+      - "schema/hardware-metadata.schema.json"
+      - "app/boards/**/*.zmk.yml"
+      - "app/scripts/west_commands/metadata.py"
+
+jobs:
+  check-metadata-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: app
+      - name: Prettier Check
+        run: npm run prettier:check
+        working-directory: app
+  validate-metadata:
+    runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-dev-arm:2.5
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pip install -r app/scripts/requirements.txt
+      - name: West init
+        run: west init -l app
+      - name: Update modules (west update)
+        run: west update
+      - name: Export Zephyr CMake package (west zephyr-export)
+        run: west zephyr-export
+      - name: Validate Hardware Metadata
+        working-directory: app
+        run: west metadata check

@@ -16,6 +16,8 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
 static int behavior_sensor_rotate_key_press_init(const struct device *dev) { return 0; };
 
 static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
@@ -45,21 +47,22 @@ static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
 
     LOG_DBG("SEND %d", keycode);
 
-    ZMK_EVENT_RAISE(keycode_state_changed_from_encoded(keycode, true, timestamp));
+    ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(keycode, true, timestamp));
 
     // TODO: Better way to do this?
     k_msleep(5);
 
-    return ZMK_EVENT_RAISE(keycode_state_changed_from_encoded(keycode, false, timestamp));
+    return ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(keycode, false, timestamp));
 }
 
 static const struct behavior_driver_api behavior_sensor_rotate_key_press_driver_api = {
     .sensor_binding_triggered = on_sensor_binding_triggered};
 
 #define KP_INST(n)                                                                                 \
-    DEVICE_AND_API_INIT(behavior_sensor_rotate_key_press_##n, DT_INST_LABEL(n),                    \
-                        behavior_sensor_rotate_key_press_init, NULL, NULL, APPLICATION,            \
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                       \
-                        &behavior_sensor_rotate_key_press_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_sensor_rotate_key_press_init, device_pm_control_nop, NULL,   \
+                          NULL, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                  \
+                          &behavior_sensor_rotate_key_press_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
