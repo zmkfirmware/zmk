@@ -169,6 +169,7 @@ static int is31fl3733_led_reset(const struct device *dev) {
 static int is31fl3733_led_init(const struct device *dev) {
     const struct is31fl3733_config *dev_cfg = dev->config;
     struct is31fl3733_data *dev_data = dev->data;
+    k_busy_wait(1000);
     dev_data->i2c = device_get_binding(dev_cfg->bus_name);
     if (dev_data->i2c == NULL) {
         LOG_DBG("Failed to get I2C device");

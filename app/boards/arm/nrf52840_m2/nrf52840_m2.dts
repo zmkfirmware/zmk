@@ -16,7 +16,11 @@
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
 	};
-
+	ext-power {
+		compatible = "zmk,ext-power-generic";
+		label = "EXT_POWER";
+		control-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+	};
 	leds {
 		compatible = "gpio-leds";
 		red_led: led_0 {
@@ -32,9 +36,19 @@
 			label = "Blue LED";
 		};
 	};
-
 };
-
+&i2c0 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	sda-pin = <36>;   
+	scl-pin = <37>;
+	clock-frequency = < I2C_BITRATE_STANDARD >;
+	is31fl3733a: is31fl3733@50 {
+		compatible = "issi,is31fl3733";
+		label = "IS31FL3733A";
+		reg = <0x50>;
+	};
+};
 &adc {
 	status = "okay";
 };
