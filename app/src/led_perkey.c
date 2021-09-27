@@ -80,11 +80,8 @@ void zmk_kscan_process_msgxq(struct k_work *item) {
         else{ 
             set_led_rgb(led_lookup_matrix[position], led_base_color);
         }
-        pos_evx = new_position_state_changed();
-        pos_evx->state = pressed;
-        pos_evx->position = position;
-        pos_evx->timestamp = k_uptime_get();
-        ZMK_EVENT_RAISE(pos_evx);
+                ZMK_EVENT_RAISE(new_zmk_position_state_changed((struct zmk_position_state_changed){
+            .state = pressed, .position = position, .timestamp = k_uptime_get()}));
     }
 }
 void set_all_on(const struct device *dev){
