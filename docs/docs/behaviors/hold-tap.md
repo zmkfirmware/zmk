@@ -33,7 +33,7 @@ When the hold-tap key is released and the hold behavior has not been triggered, 
 
 ### Basic usage
 
-For basic usage, please see [mod-tap](./mod-tap.md) and [layer-tap](./layers.md) pages.
+For basic usage, please see [mod-tap](mod-tap.md) and [layer-tap](layers.md) pages.
 
 ### Advanced Configuration
 
@@ -46,6 +46,18 @@ Defines how long a key must be pressed to trigger Hold behavior.
 If you press a tapped hold-tap again within `quick_tap_ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
 
 In QMK, unlike ZMK, this functionality is enabled by default, and you turn it off using `TAPPING_FORCE_HOLD`.
+
+#### `retro-tap`
+
+If retro tap is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime.
+
+For example, if you press `&mt LEFT_SHIFT A` and then release it without pressing another key, it will output `a`.
+
+```
+&mt {
+	retro-tap;
+};
+```
 
 #### Home row mods
 
@@ -73,7 +85,7 @@ This example configures a hold-tap that works well for homerow mods:
 
 		default_layer {
 			bindings = <
-	            &hm LCTRL A &hm LGUI S &hm LALT D &hm LSHFT F
+	            &hm LCTRL A &hm LGUI S &hm LALT D &hm LSHIFT F
 			>;
 		};
 	};

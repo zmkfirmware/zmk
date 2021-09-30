@@ -7,6 +7,7 @@
 #include <device.h>
 #include <init.h>
 #include <kernel.h>
+#include <power/power.h>
 
 #include <logging/log.h>
 
@@ -55,6 +56,8 @@ void activity_work_handler(struct k_work *work) {
     int32_t inactive_time = current - activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
     if (inactive_time > MAX_SLEEP_MS) {
+        // Put devices in low power mode before sleeping
+        pm_power_state_force((struct pm_state_info){PM_STATE_STANDBY, 0, 0});
         set_state(ZMK_ACTIVITY_SLEEP);
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */

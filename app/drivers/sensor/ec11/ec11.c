@@ -142,7 +142,7 @@ int ec11_init(const struct device *dev) {
         .b_flags = DT_INST_GPIO_FLAGS(n, b_gpios),                                                 \
         COND_CODE_0(DT_INST_NODE_HAS_PROP(n, resolution), (1), (DT_INST_PROP(n, resolution))),     \
     };                                                                                             \
-    DEVICE_AND_API_INIT(ec11_##n, DT_INST_LABEL(n), ec11_init, &ec11_data_##n, &ec11_cfg_##n,      \
-                        POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &ec11_driver_api);
+    DEVICE_DT_INST_DEFINE(n, ec11_init, device_pm_control_nop, &ec11_data_##n, &ec11_cfg_##n,      \
+                          POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &ec11_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(EC11_INST)

@@ -43,8 +43,8 @@ static const struct behavior_tog_config behavior_tog_config = {};
 
 static struct behavior_tog_data behavior_tog_data;
 
-DEVICE_AND_API_INIT(behavior_tog, DT_INST_LABEL(0), behavior_tog_init, &behavior_tog_data,
-                    &behavior_tog_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
-                    &behavior_tog_driver_api);
+DEVICE_DT_INST_DEFINE(0, behavior_tog_init, device_pm_control_nop, &behavior_tog_data,
+                      &behavior_tog_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+                      &behavior_tog_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

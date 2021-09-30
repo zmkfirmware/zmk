@@ -4,17 +4,10 @@
 if SHIELD_HELIX_LEFT
 
 config ZMK_KEYBOARD_NAME
-    default "Helix Left"
+    default "Helix"
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
     default y
-
-endif
-
-if SHIELD_HELIX_RIGHT
-
-config ZMK_KEYBOARD_NAME
-    default "Helix Right"
 
 endif
 

@@ -1,0 +1,195 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+.profilerSection {
+  margin: 10px 0;
+  padding: 10px 20px;
+  background: var(--ifm-background-surface-color);
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
+    rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
+}
+
+.profilerInput {
+  margin-bottom: 12px;
+}
+
+.profilerInput label {
+  display: block;
+}
+
+.profilerDisclaimer {
+  padding: 20px 0;
+  font-size: 14px;
+}
+
+span[tooltip] {
+  position: relative;
+}
+
+span[tooltip]::before {
+  content: attr(tooltip);
+  font-size: 13px;
+  padding: 5px 10px;
+  position: absolute;
+  width: 220px;
+  border-radius: 4px;
+  background: var(--ifm-background-surface-color);
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
+    rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
+  transition: opacity 0.2s ease;
+  transform: translate(-50%, -100%);
+  left: 50%;
+}
+
+span[tooltip]::after {
+  content: "";
+  position: absolute;
+  border-top: 8px solid var(--ifm-background-surface-color);
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+  transform: translateX(-50%);
+  left: 50%;
+}
+
+span[tooltip]:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+span[tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+input[type="checkbox"].toggleInput {
+  display: none;
+}
+
+input[type="checkbox"] + .toggle {
+  margin: 6px 2px;
+  height: 20px;
+  width: 48px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+input[type="checkbox"] + .toggle > .toggleThumb {
+  height: 16px;
+  border-radius: 20px;
+  transform: translate(2px, 2px);
+  width: 16px;
+  background: var(--ifm-color-white);
+  box-shadow: var(--ifm-global-shadow-lw);
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked + .toggle {
+  background: var(--ifm-color-primary);
+}
+
+input[type="checkbox"]:checked + .toggle > .toggleThumb {
+  transform: translate(30px, 2px);
+}
+
+select {
+  border: solid 1px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  display: flex;
+  height: 34px;
+  width: 200px;
+
+  background: inherit;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 3px 5px;
+  outline: none;
+}
+
+select > option {
+  background: var(--ifm-background-surface-color);
+}
+
+.inputBox {
+  border: solid 1px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  display: flex;
+  width: 200px;
+}
+
+.inputBox > input {
+  background: inherit;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 3px 10px;
+  border: none;
+  width: 100%;
+  min-width: 0;
+  text-align: right;
+  outline: none;
+}
+
+.inputBox > span {
+  background: rgba(0, 0, 0, 0.05);
+  border-left: solid 1px rgba(0, 0, 0, 0.5);
+  padding: 3px 10px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.inputBox > input::-webkit-outer-spin-button,
+.inputBox > input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.inputBox > input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.disclaimerHolder {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.disclaimer {
+  padding: 20px 20px;
+  background: var(--ifm-background-surface-color);
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
+    rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
+  width: 500px;
+}
+
+.disclaimer > button {
+  border: none;
+  background: var(--ifm-color-primary);
+  color: var(--ifm-color-white);
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 5px 15px;
+}

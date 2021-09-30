@@ -17,7 +17,7 @@ testcases=$(find $path -name native_posix.keymap -exec dirname \{\} \;)
 num_cases=$(echo "$testcases" | wc -l)
 if [ $num_cases -gt 1 ]; then
 	echo "" > ./build/tests/pass-fail.log
-	echo "$testcases" | xargs -L 1 -P 4 ./run-test.sh
+	echo "$testcases" | xargs -L 1 -P ${J:-4} ./run-test.sh
 	err=$?
 	sort -k2 ./build/tests/pass-fail.log
 	exit $err

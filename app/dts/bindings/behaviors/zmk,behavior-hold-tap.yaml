@@ -28,3 +28,5 @@ properties:
       - "hold-preferred"
       - "balanced"
       - "tap-preferred"
+  retro-tap:
+    type: boolean

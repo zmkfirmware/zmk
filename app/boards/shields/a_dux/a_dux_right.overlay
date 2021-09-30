@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "a_dux.dtsi"
+
+&default_transform {
+	col-offset = <17>;
+};

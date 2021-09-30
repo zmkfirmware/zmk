@@ -14,6 +14,7 @@ module.exports = {
       "features/displays",
       "features/encoders",
       "features/underglow",
+      "features/beta-testing",
     ],
     Behaviors: [
       "behaviors/key-press",
@@ -21,6 +22,7 @@ module.exports = {
       "behaviors/misc",
       "behaviors/hold-tap",
       "behaviors/mod-tap",
+      "behaviors/mod-morph",
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
       "behaviors/reset",
@@ -54,7 +56,10 @@ module.exports = {
         type: "category",
         label: "Guides",
         collapsed: false,
-        items: ["development/new-shield"],
+        items: [
+          "development/new-shield",
+          "development/hardware-metadata-files",
+        ],
       },
     ],
   },

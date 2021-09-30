@@ -1,0 +1,11 @@
+file_format: "1"
+id: a_dux
+name: A. Dux
+type: shield
+url: https://github.com/tapioki/cephalopoda/tree/main/Architeuthis%20dux
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - a_dux_left
+  - a_dux_right

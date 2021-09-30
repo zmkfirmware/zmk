@@ -177,6 +177,11 @@ static const struct behavior_driver_api behavior_sticky_key_driver_api = {
     .binding_released = on_sticky_key_binding_released,
 };
 
+static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh);
+
+ZMK_LISTENER(behavior_sticky_key, sticky_key_keycode_state_changed_listener);
+ZMK_SUBSCRIPTION(behavior_sticky_key, zmk_keycode_state_changed);
+
 static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
     struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
     if (ev == NULL) {
@@ -212,7 +217,10 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
             if (sticky_key->timer_started) {
                 stop_timer(sticky_key);
                 if (sticky_key->config->quick_release) {
+                    // continue processing the event. Release the sticky key afterwards.
+                    ZMK_EVENT_RAISE_AFTER(eh, behavior_sticky_key);
                     release_sticky_key_behavior(sticky_key, ev->timestamp);
+                    return ZMK_EV_EVENT_CAPTURED;
                 }
             }
             sticky_key->modified_key_usage_page = ev->usage_page;
@@ -228,9 +236,6 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
     }
     return ZMK_EV_EVENT_BUBBLE;
 }
-
-ZMK_LISTENER(behavior_sticky_key, sticky_key_keycode_state_changed_listener);
-ZMK_SUBSCRIPTION(behavior_sticky_key, zmk_keycode_state_changed);
 
 void behavior_sticky_key_timer_handler(struct k_work *item) {
     struct active_sticky_key *sticky_key =
@@ -267,9 +272,9 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
         .release_after_ms = DT_INST_PROP(n, release_after_ms),                                     \
         .quick_release = DT_INST_PROP(n, quick_release),                                           \
     };                                                                                             \
-    DEVICE_AND_API_INIT(behavior_sticky_key_##n, DT_INST_LABEL(n), behavior_sticky_key_init,       \
-                        &behavior_sticky_key_data, &behavior_sticky_key_config_##n, APPLICATION,   \
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sticky_key_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_sticky_key_init, device_pm_control_nop,                      \
+                          &behavior_sticky_key_data, &behavior_sticky_key_config_##n, APPLICATION, \
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sticky_key_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

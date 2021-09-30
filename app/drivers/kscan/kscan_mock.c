@@ -88,8 +88,8 @@ static int kscan_mock_configure(const struct device *dev, kscan_callback_t callb
     static struct kscan_mock_data kscan_mock_data_##n;                                             \
     static const struct kscan_mock_config_##n kscan_mock_config_##n = {                            \
         .events = DT_INST_PROP(n, events), .exit_after = DT_INST_PROP(n, exit_after)};             \
-    DEVICE_AND_API_INIT(kscan_mock_##n, DT_INST_LABEL(n), kscan_mock_init_##n,                     \
-                        &kscan_mock_data_##n, &kscan_mock_config_##n, APPLICATION,                 \
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &mock_driver_api_##n);
+    DEVICE_DT_INST_DEFINE(n, kscan_mock_init_##n, device_pm_control_nop, &kscan_mock_data_##n,     \
+                          &kscan_mock_config_##n, APPLICATION,                                     \
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &mock_driver_api_##n);
 
 DT_INST_FOREACH_STATUS_OKAY(MOCK_INST_INIT)
