@@ -1,0 +1,10 @@
+file_format: "1"
+id: j46k
+name: J46K
+type: shield
+url: none
+requires: [pro_micro]
+features:
+  - keys
+
+

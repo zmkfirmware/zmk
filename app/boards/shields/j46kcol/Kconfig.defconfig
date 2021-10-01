@@ -1,0 +1,10 @@
+# Copyright (c) 2020 Pete Johanson, Richard Jones
+# SPDX-License-Identifier: MIT
+
+if SHIELD_j46kcol
+
+config ZMK_KEYBOARD_NAME
+	default "J46KCol"
+
+endif
+
