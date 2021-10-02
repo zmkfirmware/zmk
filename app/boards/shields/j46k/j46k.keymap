@@ -8,18 +8,56 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+
+#define DEFAULT 0
+#define NUMBS   1
+#define FUNC    2
+#define MOUSE   3
+
 / {
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             bindings = <
-    &kp TAB    &kp Q    &kp W    &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O    &kp   P  &kp BSPC
-    &kp CLCK   &kp A    &kp S    &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L    &kp SEMI &kp RET
-    &kp LSHIFT &kp Z    &kp X    &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
-    &kp LCTRL  &kp LGUI &kp LALT &kp SPACE &kp SPACE &kp SPACE &kp SPACE &kp SPACE &kp SPACE &kp RALT &kp RGUI &kp RCTRL
+        &kp TAB    &kp Q    &kp W    &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O    &kp   P  &kp BSPC
+        &kp CLCK   &kp A    &kp S    &kp D     &kp F     &kp G     &kp H     &out OUT_TOG    &kp K     &kp L    &kp SEMI &kp RET
+        &kp LSHIFT &kp Z    &kp X    &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
+        &kp LCTRL  &kp LGUI &kp LALT &mo MOUSE &mo NUMBS &mo NUMBS &kp SPACE &kp SPACE &mo FUNC &bt BT_CLR &kp RGUI &kp RCTRL
+            >;
+        };
+
+        numbers_layer {
+            bindings = <
+        &kp TAB    &kp Q    &kp W    &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O    &kp   P  &kp BSPC
+        &kp CLCK   &kp 1    &kp 2    &kp 3     &kp 4     &kp 5     &kp 6     &kp 7     &kp 8     &kp 9    &kp   0  &kp RET
+        &kp LSHIFT &kp !    &kp @    &kp #     &kp $     &kp %     &kp ^     &kp &     &kp *     &kp (    &kp   )  &kp RSHFT
+        &kp LCTRL  &kp LGUI &kp LALT &mo MOUSE &mo NUMBS &mo NUMBS &kp SPACE &kp SPACE &mo FUNC  &bt BT_CLR &kp RGUI &kp RCTRL
+            >;
+        };
+
+        func_layer {
+            bindings = <
+        &kp TAB    &kp Q    &kp W    &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O    &kp   P  &kp BSPC
+        &kp CLCK   &kp A    &kp S    &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L    &kp SEMI &kp RET
+        &kp LSHIFT &kp Z    &kp X    &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
+        &kp LCTRL  &kp LGUI &kp LALT &trans    &trans    &trans    &kp SPACE &kp SPACE &trans    &bt BT_CLR &kp RGUI &kp RCTRL
+            >;
+        };
+
+        mouse_layer {
+            bindings = <
+        &kp TAB    &kp Q    &kp W    &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O    &kp   P  &kp BSPC
+        &kp CLCK   &kp A    &kp S    &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L    &kp SEMI &kp RET
+        &kp LSHIFT &kp Z    &kp X    &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
+        &kp LCTRL  &kp LGUI &kp LALT &trans    &trans    &trans    &kp SPACE &kp SPACE &trans    &bt BT_CLR &kp RGUI &kp RCTRL
             >;
         };
     };
 };
+
 
