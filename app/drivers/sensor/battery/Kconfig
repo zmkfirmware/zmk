@@ -3,19 +3,20 @@
 
 config ZMK_BATTERY
 	bool "ZMK battery monitoring"
+	depends on ADC
 	help
 		Enable battery monitoring
 
 config ZMK_BATTERY_NRF_VDDH
 	bool "ZMK nRF VDDH battery monitoring"
-	select ADC
+	depends on ADC
 	select ZMK_BATTERY
 	help
 		Enable ZMK nRF VDDH voltage driver for battery monitoring.
 
 config ZMK_BATTERY_VOLTAGE_DIVIDER
 	bool "ZMK battery voltage divider"
-	select ADC
+	depends on ADC
 	select ZMK_BATTERY
 	help
 		Enable ZMK battery voltage divider driver for battery monitoring.
