@@ -25,36 +25,36 @@
         default_layer {
             bindings = <
         &kp TAB    &kp Q    &kp W    &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O    &kp   P  &kp BSPC
-        &kp CLCK   &kp A    &kp S    &kp D     &kp F     &kp G     &kp H     &out OUT_TOG    &kp K     &kp L    &kp SEMI &kp RET
+        &kp CLCK   &kp A    &kp S    &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L    &kp SEMI &kp RET
         &kp LSHIFT &kp Z    &kp X    &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
-        &kp LCTRL  &kp LGUI &kp LALT &mo MOUSE &mo NUMBS &mo NUMBS &kp SPACE &kp SPACE &mo FUNC &bt BT_CLR &kp RGUI &kp RCTRL
+        &kp LCTRL  &kp LGUI &kp LALT &mo MOUSE &mo NUMBS &mo NUMBS &kp SPACE &kp SPACE &mo FUNC  &kp LALT &kp RGUI &kp RCTRL
             >;
         };
 
         numbers_layer {
             bindings = <
-        &kp TAB    &kp Q    &kp W    &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O    &kp   P  &kp BSPC
-        &kp CLCK   &kp 1    &kp 2    &kp 3     &kp 4     &kp 5     &kp 6     &kp 7     &kp 8     &kp 9    &kp   0  &kp RET
-        &kp LSHIFT &kp !    &kp @    &kp #     &kp $     &kp %     &kp ^     &kp &     &kp *     &kp (    &kp   )  &kp RSHFT
-        &kp LCTRL  &kp LGUI &kp LALT &mo MOUSE &mo NUMBS &mo NUMBS &kp SPACE &kp SPACE &mo FUNC  &bt BT_CLR &kp RGUI &kp RCTRL
+        &kp F1     &kp F2   &kp F3   &kp F4    &kp F5    &kp F6    &kp F7    &kp F8    &kp F9       &kp F10    &kp F11   &kp F12
+        &kp C_MUTE &kp N1   &kp N2   &kp N3    &kp N4    &kp N5    &kp N6    &kp N7    &kp N8       &kp N9     &kp N0    &kp RET
+        &kp LSHIFT &kp EXCL &kp AT   &kp HASH  &kp DLLR  &kp PRCNT &kp CARET &kp AMPS  &kp ASTERISK &kp LPAR   &kp RPAR  &kp RSHFT
+        &kp LCTRL  &kp LGUI &kp LALT &trans    &trans    &trans    &trans    &trans    &trans       &kp LALT   &kp RGUI  &kp RCTRL
             >;
         };
 
         func_layer {
             bindings = <
-        &kp TAB    &kp Q    &kp W    &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O    &kp   P  &kp BSPC
-        &kp CLCK   &kp A    &kp S    &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L    &kp SEMI &kp RET
-        &kp LSHIFT &kp Z    &kp X    &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
-        &kp LCTRL  &kp LGUI &kp LALT &trans    &trans    &trans    &kp SPACE &kp SPACE &trans    &bt BT_CLR &kp RGUI &kp RCTRL
+        &kp ESC    &trans   &kp PG_UP &trans       &trans            &trans    &trans       &trans    &kp UP    &trans    &trans   &kp BSPC
+        &kp TAB    &kp HOME &kp PG_DN &kp C_VOL_UP &kp C_VOLUME_DOWN &kp MINUS &kp KP_EQUAL &kp LEFT  &kp DOWN  &kp RIGHT &kp SQT  &kp GRAVE
+        &kp LSHIFT &kp C_PP &trans    &trans       &trans            &kp LBKT  &kp RBKT     &trans    &kp COMMA &kp DOT   &kp BSLH &kp RSHFT
+        &kp LCTRL  &kp LGUI &kp LALT  &trans       &trans            &trans    &trans       &trans    &trans    &kp LALT  &kp RGUI &kp RCTRL
             >;
         };
 
         mouse_layer {
             bindings = <
-        &kp TAB    &kp Q    &kp W    &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O    &kp   P  &kp BSPC
-        &kp CLCK   &kp A    &kp S    &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L    &kp SEMI &kp RET
-        &kp LSHIFT &kp Z    &kp X    &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
-        &kp LCTRL  &kp LGUI &kp LALT &trans    &trans    &trans    &kp SPACE &kp SPACE &trans    &bt BT_CLR &kp RGUI &kp RCTRL
+        &kp TAB    &trans   &trans   &trans   &trans   &trans     &trans       &trans   &trans     &trans   &trans   &trans
+        &kp CLCK   &trans   &trans   &trans   &trans   &bt BT_PRV &out OUT_TOG &trans   &trans     &trans   &trans   &trans
+        &kp LSHIFT &trans   &trans   &trans   &trans   &bt BT_NXT &bt BT_CLR   &trans   &trans     &trans   &trans   &trans
+        &kp LCTRL  &kp LGUI &kp LALT &trans    &trans  &trans     &trans       &trans    &trans    &kp LALT &kp RGUI &trans
             >;
         };
     };
