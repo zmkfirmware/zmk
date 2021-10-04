@@ -4,7 +4,7 @@
 if SHIELD_babyvble
 
 config ZMK_KEYBOARD_NAME
-	default "BabyvBle"
+	default "babyvble"
 
 endif
 
