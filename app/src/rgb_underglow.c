@@ -57,6 +57,56 @@ static struct rgb_underglow_state state;
 static const struct device *ext_power;
 #endif
 
+#if IS_ENABLED(CONFIG_FPU)
+static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
+    double r, g, b;
+
+    uint8_t i = hsb.h / 60;
+    double v = hsb.b / ((float)BRT_MAX);
+    double s = hsb.s / ((float)SAT_MAX);
+    double f = hsb.h / ((float)HUE_MAX) * 6 - i;
+    double p = v * (1 - s);
+    double q = v * (1 - f * s);
+    double t = v * (1 - (1 - f) * s);
+
+    switch (i % 6) {
+    case 0:
+        r = v;
+        g = t;
+        b = p;
+        break;
+    case 1:
+        r = q;
+        g = v;
+        b = p;
+        break;
+    case 2:
+        r = p;
+        g = v;
+        b = t;
+        break;
+    case 3:
+        r = p;
+        g = q;
+        b = v;
+        break;
+    case 4:
+        r = t;
+        g = p;
+        b = v;
+        break;
+    case 5:
+        r = v;
+        g = p;
+        b = q;
+        break;
+    }
+
+    struct led_rgb rgb = {r : r * 255, g : g * 255, b : b * 255};
+
+    return rgb;
+}
+#else
 static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
     uint8_t i = hsb.h / DEG_SEG;
     uint8_t f = hsb.h % DEG_SEG;
@@ -102,6 +152,7 @@ static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
 
     return rgb;
 }
+#endif
 
 static void zmk_rgb_underglow_effect_solid() {
     for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
