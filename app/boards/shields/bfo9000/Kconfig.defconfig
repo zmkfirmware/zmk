@@ -4,17 +4,10 @@
 if SHIELD_BFO9000_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "BFO9000 Left"
+	default "BFO-9000"
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
-
-endif
-
-if SHIELD_BFO9000_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "BFO9000 Right"
 
 endif
 
