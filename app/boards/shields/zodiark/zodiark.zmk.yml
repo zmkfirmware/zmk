@@ -1,0 +1,14 @@
+file_format: "1"
+id: zodiark
+name: Zodiark
+type: shield
+url: https://www.splitlogic.xyz/buildguides/zodiark-build-guide
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+siblings:
+  - zodiark_left
+  - zodiark_right
