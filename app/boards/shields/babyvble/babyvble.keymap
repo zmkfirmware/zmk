@@ -43,7 +43,7 @@
         func_layer {
             bindings = <
         &kp ESC    &trans   &kp PG_UP &trans       &trans            &trans    &trans       &trans    &kp UP    &trans    &trans   &kp BSPC
-        &kp TAB    &kp HOME &kp PG_DN &kp C_VOL_UP &kp C_VOLUME_DOWN &kp MINUS &kp KP_EQUAL &kp LEFT  &kp DOWN  &kp RIGHT &kp SQT  &kp GRAVE
+        &kp TAB    &kp HOME &kp PG_DN &kp C_VOL_UP &kp C_VOLUME_DOWN &kp MINUS &kp EQUAL    &kp LEFT  &kp DOWN  &kp RIGHT &kp SQT  &kp GRAVE
         &kp LSHIFT &kp C_PP &trans    &trans       &trans            &kp LBKT  &kp RBKT     &trans    &kp COMMA &kp DOT   &kp BSLH &kp RSHFT
         &kp LCTRL  &kp LGUI &kp LALT  &trans       &trans            &trans    &trans       &trans    &trans    &kp LALT  &kp RGUI &kp RCTRL
             >;
