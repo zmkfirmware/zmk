@@ -1,6 +1,6 @@
 file_format: "1"
 id: babyvble
-name: BabyvBle
+name: babyvble
 type: shield
 url: none
 requires: [pro_micro]
