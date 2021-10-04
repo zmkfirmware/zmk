@@ -24,7 +24,7 @@ The `CONFIG_ZMK_USB_LOGGING` KConfig value needs to be set, either by copy and p
 `west build -t menuconfig` and manually enabling the setting in that UI at `ZMK -> Advanced -> USB Logging`.
 
 :::note
-If you are debugging your own keyboard in your [user config repository](./user-setup.md), use
+If you are debugging your own keyboard in your [user config repository](user-setup.md), use
 `config/boards/shields/<your_keyboard>/<your_keyboard>.conf` instead of `app/prj.conf`. In Github
 Actions, you can search the `Kconfig file` build log to verify the options above have been enabled
 for you successfully.

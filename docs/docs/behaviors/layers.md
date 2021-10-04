@@ -43,7 +43,7 @@ Example:
 
 ## Layer-tap
 
-The "layer-tap" behavior enables a layer when a key is held, and output another key when the key is only tapped for a short time. For more information on the inner workings of layer-tap, see [hold-tap](./hold-tap.md).
+The "layer-tap" behavior enables a layer when a key is held, and output another key when the key is only tapped for a short time. For more information on the inner workings of layer-tap, see [hold-tap](hold-tap.md).
 
 ### Behavior Binding
 
