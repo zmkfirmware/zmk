@@ -71,6 +71,13 @@ endchoice
 
 endif # ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
+config ZMK_DISPLAY_FULL_REFRESH_PERIOD
+    int "(Optional) Period to issue a full refresh to the display (in seconds)"
+    default 0
+    help
+      Period in seconds for how often to completely refresh/redraw the whole screen.
+      Most useful for e-ink/EPD displays that require occasional full redraws.
+
 rsource "widgets/Kconfig"
 
 endif
