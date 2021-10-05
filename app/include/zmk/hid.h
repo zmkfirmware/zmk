@@ -138,6 +138,24 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* USAGE_PAGE (Consumer) */
     HID_GI_USAGE_PAGE,
     HID_USAGE_CONSUMER,
+
+#if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
+    /* LOGICAL_MINIMUM (0) */
+    HID_GI_LOGICAL_MIN(1),
+    0x00,
+    /* LOGICAL_MAXIMUM (0xFFFF) */
+    HID_GI_LOGICAL_MAX(1),
+    0xFF,
+    HID_LI_USAGE_MIN(1),
+    0x00,
+    /* USAGE_MAXIMUM (0xFFFF) */
+    HID_LI_USAGE_MAX(1),
+    0xFF,
+    /* INPUT (Data,Ary,Abs) */
+    /* REPORT_SIZE (8) */
+    HID_GI_REPORT_SIZE,
+    0x08,
+#elif IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL)
     /* LOGICAL_MINIMUM (0) */
     HID_GI_LOGICAL_MIN(1),
     0x00,
@@ -155,6 +173,9 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* REPORT_SIZE (16) */
     HID_GI_REPORT_SIZE,
     0x10,
+#else
+#error "A proper consumer HID report usage range must be selected"
+#endif
     /* REPORT_COUNT (CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE) */
     HID_GI_REPORT_COUNT,
     CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE,
@@ -187,7 +208,11 @@ struct zmk_hid_keyboard_report {
 } __packed;
 
 struct zmk_hid_consumer_report_body {
+#if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
+    uint8_t keys[CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE];
+#elif IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL)
     uint16_t keys[CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE];
+#endif
 } __packed;
 
 struct zmk_hid_consumer_report {
