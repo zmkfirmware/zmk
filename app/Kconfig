@@ -209,7 +209,7 @@ endif
 endif
 
 #ZMK_SPLIT
-endif 
+endif
 
 if ZMK_BLE
 
@@ -261,6 +261,16 @@ config SPI
 config ZMK_RGB_UNDERGLOW_EXT_POWER
 	bool "RGB underglow toggling also controls external power"
 	default y
+
+config ZMK_RGB_UNDERGLOW_BRT_MIN
+	int "RGB underglow minimum brightness in percent"
+	range 0 100
+	default 0
+
+config ZMK_RGB_UNDERGLOW_BRT_MAX
+	int "RGB underglow maximum brightness in percent"
+	range 0 100
+	default 100
 
 config ZMK_RGB_UNDERGLOW_HUE_STEP
 	int "RGB underglow hue step in degrees of 360"
