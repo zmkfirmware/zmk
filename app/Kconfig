@@ -294,7 +294,7 @@ config ZMK_RGB_UNDERGLOW_BRT_START
 
 config ZMK_RGB_UNDERGLOW_BRT_MIN
 	int "RGB underglow minimum brightness value in percent"
-	range 0 100 
+	range 0 100
 	default 0
 
 config ZMK_RGB_UNDERGLOW_BRT_MAX
