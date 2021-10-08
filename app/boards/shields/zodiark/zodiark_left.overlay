@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "zodiark.dtsi"
+
+&kscan0 {
+	col-gpios
+		= <&pro_micro  2 GPIO_ACTIVE_HIGH>
+		, <&pro_micro  1 GPIO_ACTIVE_HIGH>
+		, <&pro_micro  0 GPIO_ACTIVE_HIGH>
+		, <&pro_micro 15 GPIO_ACTIVE_HIGH>
+		, <&pro_micro 14 GPIO_ACTIVE_HIGH>
+		, <&pro_micro 16 GPIO_ACTIVE_HIGH>
+		, <&pro_micro 10 GPIO_ACTIVE_HIGH>
+		;
+};
+
+&left_encoder {
+	status = "okay";
+};
