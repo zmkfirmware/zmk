@@ -1,0 +1,99 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            // ----------------------------------------------------------------------------------------------------------
+            // |  ESC  |  1   |  2   |  3   |  4   |  5   |-------|-------|   6   |  7    |  8   |  9   |   0   | BSPC  |
+            // |  TAB  |  Q   |  W   |  E   |  R   |  T   |-------|-------|   Y   |  U    |  I   |  O   |   P   |  \    |
+            // | SHIFT |  A   |  S   |  D   |  F   |  G   |-------|-------|   H   |  J    |  K   |  L   |   ;   |  '    |
+            // | CTRL  |  Z   |  X   |  C   |  V   |  B   |-------|-------|   N   |  M    |  ,   |  .   |   /   | ENTER |
+            // |-------|ADJUST| LCTL | LALT | LGUI | LOWR | SPACE | SPACE |  RAIS | LARW | DARW | UARW  | RARW  |-------|
+
+
+            bindings = <
+                &kp ESC    &kp N1 &kp N2    &kp N3   &kp N4   &kp N5                    &kp N6 &kp N7   &kp N8    &kp N9  &kp N0    &kp BSPC
+                &kp TAB    &kp Q  &kp W     &kp E    &kp R    &kp T                     &kp Y  &kp U    &kp I     &kp O   &kp P     &kp BSLH
+                &kp LSHFT  &kp A  &kp S     &kp D    &kp F    &kp G                     &kp H  &kp J    &kp K     &kp L   &kp SEMI  &kp SQT
+                &kp LCTRL  &kp Z  &kp X     &kp C    &kp V    &kp B                     &kp N  &kp M    &kp COMMA &kp DOT &kp FSLH  &kp RET
+                           &mo 3  &kp LCTRL &kp LALT &kp LGUI &mo 1 &kp SPACE &kp SPACE &mo 2  &kp LEFT &kp DOWN  &kp UP  &kp RIGHT 
+            >;
+        };
+
+        lower {
+            // ----------------------------------------------------------------------------------------------------------
+            // |  ESC  |  F2  |  F3  |  F4  |  F5  |  F6  |-------|-------|   F7  |  F8   |  F9  | F10  |  F11  |  F12  |
+            // |   ~   |  !   |  @   |  #   |  $   |  %   |-------|-------|   ^   |   &   |  *   |  (   |   )   |  DEL  |
+            // |       |  F1  |  F2  |  F3  |  F4  |  F5  |-------|-------|   F6  |   _   |  +   |  {   |   }   |   |   |
+            // |       |  F7  |  F8  |  F9  |  F10 |  F11 |-------|-------|   F12 | LS(#) |LS(|) |      |       |       |
+            // |-------|      |      |      |      |      |       |       |       | NEXT  | Vol- | Vol+ | PLAY  |-------|
+            bindings = <
+                &kp ESC   &kp F2   &kp F3   &kp F4   &kp F5    &kp F6                  &kp F7    &kp F8              &kp F9              &kp F10      &kp F11          &kp F12
+                &kp TILDE &kp EXCL &kp AT   &kp HASH &kp DLLR  &kp PRCNT               &kp CARET &kp AMPS            &kp ASTRK           &kp LPAR     &kp RPAR         &kp DEL
+                &trans    &kp F1   &kp F2   &kp F3   &kp F4    &kp F5                  &kp F6    &kp UNDER           &kp PLUS            &kp LBRC     &kp RBRC         &kp PIPE
+                &trans    &kp F7   &kp F8   &kp F9   &kp F10   &kp F11                 &kp F12   &kp LS(NON_US_HASH) &kp LS(NON_US_BSLH) &trans    &trans        &trans
+                          &trans   &trans   &trans   &trans    &trans    &trans &trans &mo 3     &kp C_NEXT          &kp C_VOL_DN        &kp C_VOL_UP &kp C_PLAY_PAUSE 
+            >;
+        };
+
+        raise {
+            // ----------------------------------------------------------------------------------------------------------
+            // |  ESC  |  F2  |  F3  |  F4  |  F5  |  F6  |-------|-------|  F7   |  F8   |  F9  | F10  |  F11  |  F12  |
+            // |   ~   |  1   |  2   |  3   |  4   |  5   |-------|-------|  6    |   7   |  8   |  9   |   0   |  DEL  |
+            // |  DEL  |  F1  |  F2  |  F3  |  F4  |  F5  |-------|-------|  F6   |   -   |  =   |  [   |   ]   |   \   |
+            // |       |  F7  |  F8  |  F9  |  F10 |  F11 |-------|-------|  F12  |   #   |  |   |      |       |       |
+            // |-------|      |      |      |      |      |       |       |       |       |      |      |       |-------|
+            bindings = <
+                &kp ESC   &kp F2   &kp F3   &kp F4   &kp F5    &kp F6                &kp F7    &kp F8          &kp F9          &kp F10      &kp F11          &kp F12
+                &kp TILDE &kp N1   &kp N2   &kp N3   &kp N4    &kp N5                &kp N6    &kp N7          &kp N8          &kp N9       &kp N0           &kp DEL
+                &kp DEL   &kp F1   &kp F2   &kp F3   &kp F4    &kp F5                &kp F6    &kp MINUS       &kp EQUAL       &kp LBKT     &kp RBKT         &kp BSLH
+                &trans    &kp F7   &kp F8   &kp F9   &kp F10   &kp F11               &kp F12   &kp NON_US_HASH &kp NON_US_BSLH &trans       &trans           &trans
+                          &trans   &trans   &trans   &trans    &mo 3   &trans &trans &trans    &trans          &trans          &trans       &trans
+            >;
+        };
+
+        adjust {
+            // ----------------------------------------------------------------------------------------------------------
+            // |tog(4)|  F2  |  F3  |  F4  |  F5  |  F6  |------|------|  F7  |  F8  |  F9  |  F10 |  F11 |    F12    |
+            // |      |  NA  |  NA  |  NA  |  NA  |  NA  |------|------|  NA  |  NA  |  NA  |  NA  |  NA  |LALT(PRTSN)|
+            // |      |  NA  |  NA  |  NA  |  NA  |  NA  |------|------|  NA  |  NA  |  NA  |  NA  |  NA  |   PRTSN   |
+            // |      |  NA  |  NA  |  NA  |  NA  |  NA  |------|------|  NA  |  NA  |  NA  |  NA  |  NA  |LCTRL(DEL) |
+            // |------|      |      |      |      |      |BOOTLD|BOOTLD|      |      |      |      |      |-----------|
+            bindings = <
+                &tog 4 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6                         &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
+                &trans &none  &none  &none  &none  &none                          &none  &none  &none  &none   &none   &kp LA(PSCRN)
+                &trans &none  &none  &none  &none  &none                          &none  &none  &none  &none   &none   &kp PSCRN
+                &trans &none  &none  &none  &none  &none                          &none  &none  &none  &none   &none   &kp LC(DEL)
+                       &trans &trans &trans &trans &trans &bootloader &bootloader &trans &trans &trans &trans  &trans
+            >;
+        };
+
+        flock {
+            // ----------------------------------------------------------------------------------------------------------
+            // |tog(4) |  F2    |   F3   |   F4   |   F5   |   F6   |-------|-------|  F7  |  F8  |  F9  | F10 | F11 |      |
+            // |out tog|BT_SEL 0|BT_SEL 1|BT_SEL 2|BT_SEL 3|BT_SEL 4|-------|-------|BT_PRV|BT_NXT|BT_CLR|     |     |      |
+            // |       |        |        |        |        |        |-------|-------|      |      |      |     |     |      |
+            // |       |        |        |        |        |        |-------|-------|      |      |      |     |     |      |
+            // |-------|        |        |        |        |        |       |       |      |      |      |     |     |------|
+            bindings = <
+                &tog 4       &kp F2       &kp F3       &kp F4       &kp F5       &kp F6                     &kp F7     &kp F8     &kp F9     &kp F10 &kp F11 &trans
+                &out OUT_TOG &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4               &bt BT_PRV &bt BT_NXT &bt BT_CLR &trans  &trans  &trans
+                &trans       &trans       &trans       &trans       &trans       &trans                     &trans     &trans     &trans     &trans  &trans  &trans
+                &trans       &trans       &trans       &trans       &trans       &trans                     &trans     &trans     &trans     &trans  &trans  &trans
+                             &trans       &trans       &trans       &trans       &trans       &trans &trans &trans     &trans     &trans     &trans  &trans
+            >;
+        };
+    };
+};

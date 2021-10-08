@@ -1,0 +1,10 @@
+file_format: "1"
+id: tidbit
+name: Tidbit Numpad
+type: shield
+url: https://nullbits.co/tidbit/
+requires: [pro_micro]
+features:
+  - keys
+  - encoder
+  - display

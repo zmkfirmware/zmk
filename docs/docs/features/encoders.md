@@ -11,7 +11,7 @@ Encoders are currently only support on the left/central sides of splits. For pro
 
 ## Enabling EC11 Encoders
 
-To enable encoders for boards that have existing encoder support, uncomment the `EC11_CONFIG=y` and `CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y` lines in your board's .conf file in your `zmk-config/config` folder. Save and push your changes, then download and flash the new firmware.
+To enable encoders for boards that have existing encoder support, uncomment the `CONFIG_EC11=y` and `CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y` lines in your board's .conf file in your `zmk-config/config` folder. Save and push your changes, then download and flash the new firmware.
 
 ## Customizing EC11 Encoder Behavior
 

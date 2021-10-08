@@ -1,0 +1,29 @@
+#
+# Copyright (c) 2020 Geanix ApS
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+description: >
+    This is a representation of the Microchip MCP23017 I2C Gpio Expander.
+
+compatible: "microchip,mcp23017"
+
+include: [gpio-controller.yaml, i2c-device.yaml]
+
+properties:
+    label:
+      required: true
+
+    "#gpio-cells":
+      const: 2
+
+    ngpios:
+      type: int
+      required: true
+      const: 16
+      description: Number of gpios supported
+
+gpio-cells:
+  - pin
+  - flags
