@@ -12,7 +12,7 @@
 #define SYS 6
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-// Keymap Version: Sept 24, 2021, 10:10 am
+// Keymap Version: Sept 22, 2021, 3:05 pm
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 / {
@@ -22,9 +22,7 @@
             label = "MENU_KEY_HOLD_TAP";
             #binding-cells = <2>;
             flavor = "hold-preferred";
-            // Tapping-term 200ms is slightly too long for cmd+mouseClick
-            // to reliably decide into a hold-behavior.
-            tapping-term-ms = <150>;
+            tapping-term-ms = <200>;
             bindings = <&kp>, <&kp>;
         };
 
