@@ -3,7 +3,7 @@
 if BOARD_RETIC1337_TKL
 
 config ZMK_KEYBOARD_NAME
-    default "Test_Keyboard"
+    default "Test_TKL_v2"
 
 config I2C
 	default y
