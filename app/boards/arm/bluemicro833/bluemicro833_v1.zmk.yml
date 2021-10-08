@@ -1,0 +1,10 @@
+file_format: "1"
+id: bluemicro833_v1
+name: BlueMicro833 v1
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://github.com/jpconstantineau/BlueMicro833_hardware
+exposes: [pro_micro]

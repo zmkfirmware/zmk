@@ -1,0 +1,8 @@
+# BlueMicro833 board configuration
+
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_BLUEMICRO833_V1
+	bool "BlueMicro833_V1"
+	depends on SOC_NRF52833_QIAA
