@@ -3,7 +3,6 @@
 
 config ZMK_BATTERY
 	bool "ZMK battery monitoring"
-	depends on ADC
 	help
 		Enable battery monitoring
 
