@@ -1,0 +1,38 @@
+name: Clean up PR Compiler Service Container
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  build:
+    if: github.repository == 'moergo-sc/zmk'
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      ECR_REPOSITORY: zmk-builder-lambda
+      UPDATE_COMPILER_VERSIONS_FUNCTION: arn:aws:lambda:us-east-1:431227615537:function:Glove80FirmwarePipelineSt-UpdateCompilerVersions2A-CNxPOHb4VSuV
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - name: Extract image tag name
+        shell: bash
+        run: |
+          tag="pr${PR_NUMBER}.${GITHUB_HEAD_REF}"
+          # Replace / with . in container tag names
+          tag="${tag//\//.}"
+          echo "IMAGE_TAG=${tag}" >> $GITHUB_ENV
+        id: extract_name
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::431227615537:role/GithubCompilerLambdaBuilder
+          aws-region: us-east-1
+      - name: Delete the container image for the PR from ECR
+        run: aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG
+      - name: Notify the build pipeline that the compile containers have updated
+        run: aws lambda invoke --function-name $UPDATE_COMPILER_VERSIONS_FUNCTION /dev/null

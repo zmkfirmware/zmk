@@ -66,7 +66,9 @@ stdenvNoCC.mkDerivation {
         # Transient state
         relPath == "build" || relPath == ".west" ||
         # Fetched by west
-        relPath == "modules" || relPath == "tools" || relPath == "zephyr"
+        relPath == "modules" || relPath == "tools" || relPath == "zephyr" ||
+        # Not part of ZMK
+        relPath == "lambda" || relPath == ".github"
       );
     };
 

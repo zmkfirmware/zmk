@@ -1,0 +1,72 @@
+name: Build Compiler Service Container
+
+on:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    if: github.repository == 'moergo-sc/zmk'
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      ECR_REPOSITORY: zmk-builder-lambda
+      UPDATE_COMPILER_VERSIONS_FUNCTION: arn:aws:lambda:us-east-1:431227615537:function:Glove80FirmwarePipelineSt-UpdateCompilerVersions2A-CNxPOHb4VSuV
+      REVISION_TAG: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v2.4.0
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::431227615537:role/GithubCompilerLambdaBuilder
+          aws-region: us-east-1
+      - name: Extract image tag name
+        shell: bash
+        run: |
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            tag="latest"
+          elif [ "$GITHUB_HEAD_REF" ]; then
+            pr=${GITHUB_REF#refs/pull/}
+            pr=${pr%/merge}
+            tag="pr${pr}.${GITHUB_HEAD_REF}"
+          elif [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            tag="${GITHUB_REF#refs/tags/}"
+          else
+            echo "Not a release branch or tag" >&2
+            exit 1
+          fi
+          # Replace / with . in container tag names
+          tag="${tag//\//.}"
+          echo "IMAGE_TAG=${tag}" >> $GITHUB_ENV
+        id: extract_name
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - uses: cachix/install-nix-action@v16
+        with:
+          nix_path: nixpkgs=channel:nixos-22.05
+      - uses: cachix/cachix-action@v12
+        with:
+          name: moergo-glove80-zmk-dev
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - name: Build lambda image
+        run: nix-build release.nix --arg revision "\"${REVISION_TAG}\"" -A directLambdaImage -o directLambdaImage
+      - name: Import OCI image into docker-daemon
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: skopeo --insecure-policy copy oci:directLambdaImage docker-daemon:$REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Push container image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: docker push $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Notify the build pipeline that the compile containers have updated
+        run: aws lambda invoke --function-name $UPDATE_COMPILER_VERSIONS_FUNCTION /dev/null

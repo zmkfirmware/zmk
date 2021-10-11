@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+gem 'aws_lambda_ric'
+gem 'rack'
+gem 'sinatra', '~> 2'
+
+# The version on rubygems (1.0.7) is very out of date
+gem 'serverless-rack', git: 'https://github.com/logandk/serverless-rack', branch: '7364305bc'

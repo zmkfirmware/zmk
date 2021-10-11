@@ -1,4 +1,4 @@
-name: Build
+name: Build Glove80 Firmware
 
 on:
   push:
