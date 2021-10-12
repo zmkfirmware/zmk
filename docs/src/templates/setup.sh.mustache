@@ -51,7 +51,7 @@ if [[ $curl_exists == "true" && $wget_exists == "true" ]]; then
     if [[ $force_wget == "true" ]]; then
         download_command="wget "
     else
-        download_command="curl -O "
+        download_command="curl -fsOL "
     fi
 elif [[ $curl_exists == "true" ]]; then
     download_command="curl -O "
@@ -62,7 +62,7 @@ else
     exit 1
 fi
 
-repo_path="https://github.com/zmkfirmware/zmk-config-split-template.git"
+repo_path="https://github.com/zmkfirmware/unified-zmk-config-template.git"
 title="ZMK Config Setup:"
 
 echo ""
@@ -71,8 +71,17 @@ PS3="Pick a keyboard: "
 options=({{#keyboards}}"{{{name}}}" {{/keyboards}})
 keyboards_id=({{#keyboards}}"{{id}}" {{/keyboards}})
 keyboards_type=({{#keyboards}}"{{type}}" {{/keyboards}})
+keyboards_arch=({{#keyboards}}"{{arch}}" {{/keyboards}})
+keyboards_basedir=({{#keyboards}}"{{base_dir}}" {{/keyboards}})
 keyboards_split=({{#keyboards}}"{{#split}}y{{/split}}{{^split}}n{{/split}}" {{/keyboards}})
 keyboards_shield=({{#keyboards}}"{{#compatible}}y{{/compatible}}{{^compatible}}n{{/compatible}}" {{/keyboards}})
+
+{{#keyboards}}
+{{#siblings.0}}
+{{id}}_siblings=({{#siblings}}"{{.}}" {{/siblings}})
+{{/siblings.0}}
+{{/keyboards}}
+
 select opt in "${options[@]}" "Quit"; do
     case "$REPLY" in
         ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
@@ -85,9 +94,17 @@ select opt in "${options[@]}" "Quit"; do
             fi
             keyboard_index=$(( $REPLY-1 ))
             keyboard=${keyboards_id[$keyboard_index]}
+            keyboard_arch=${keyboards_arch[$keyboard_index]}
+            keyboard_basedir=${keyboards_basedir[$keyboard_index]}
             keyboard_title=${options[$keyboard_index]}
+            keyboard_sibling_var=${keyboard}_siblings[@]                                                  
+            keyboard_sibling_first=${keyboard}_siblings[0]
+            if [ -n "${!keyboard_sibling_first}" ]; then
+                keyboard_siblings=${!keyboard_sibling_var}
+            else
+                keyboard_siblings=( "${keyboard}" )
+            fi
             split=${keyboards_split[$keyboard_index]}
-            type=${keyboards_type[$keyboard_index]}
             keyboard_shield=${keyboards_shield[$keyboard_index]}
             break
         ;;
@@ -96,6 +113,7 @@ select opt in "${options[@]}" "Quit"; do
 done
 
 if [ "$keyboard_shield" == "y" ]; then
+    shields=$keyboard_siblings
     shield=${keyboard}
     shield_title=${keyboard_title}
 
@@ -119,6 +137,7 @@ if [ "$keyboard_shield" == "y" ]; then
                 board_index=$(( $REPLY-1 ))
                 board=${board_ids[$board_index]}
                 board_title=${options[$board_index]}
+                boards=( "${board}" )
                 break
             ;;
 
@@ -126,12 +145,7 @@ if [ "$keyboard_shield" == "y" ]; then
     done
 else
     board=${keyboard}
-    echo "Support for onboard microcontroller keyboards is still a work in progress."
-    exit 1
-fi
-
-if [ "$split" == "n" ]; then
-    repo_path="https://github.com/zmkfirmware/zmk-config-template.git"
+    boards=$keyboard_siblings
 fi
 
 read -r -e -p "Copy in the stock keymap for customization? [Yn]: " copy_keymap
@@ -152,8 +166,12 @@ fi
 
 echo ""
 echo "Preparing a user config for:"
-echo "* MCU Board: ${board}"
-echo "* Shield: ${shield}"
+if [ "$keyboard_shield" == "y" ]; then
+    echo "* MCU Board: ${boards}"
+    echo "* Shield(s): ${shields}"
+else
+    echo "* Board(s): ${boards}"
+fi
 
 if [ "$copy_keymap" == "yes" ]; then
     echo "* Copy Keymap?: ✓"
@@ -178,26 +196,37 @@ cd ${repo_name}
 
 pushd config
 
-$download_command "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.conf"
+if [ "$keyboard_shield" == "y" ]; then
+    config_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${keyboard_basedir}/${shield}.conf"
+    
+    keymap_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${keyboard_basedir}/${shield}.keymap"
+else
+    config_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${keyboard_basedir}/${board}.conf"
+    keymap_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${keyboard_basedir}/${board}.keymap"
+fi
 
+echo "Downloading config file (${config_file})"
+$download_command "${config_file}" || echo "# Put configuration options here" > "${keyboard}.conf"
 if [ "$copy_keymap" == "yes" ]; then
-    $download_command "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.keymap"
+    echo "Downloading keymap file (${keymap_file})"
+    $download_command "${keymap_file}"
 fi
 
 popd
 
-sed -i'.orig' \
-    -e "s/BOARD_NAME/$board/" \
-    -e "s/SHIELD_NAME/$shield/" \
-    -e "s|KEYBOARD_TITLE|$shield_title|" \
-    .github/workflows/build.yml
+echo "include:" >> build.yaml
 
-if [ "$board" == "proton_c" ]; then
-    # Proton-C board still fa
-    sed -i'.orig' -e "s/uf2/hex/g" .github/workflows/build.yml
-fi
-
-rm .github/workflows/*.yml.orig
+for b in ${boards}; do
+    if [ -n "${shields}" ];
+    then
+        for s in ${shields}; do
+            echo "  - board: ${b}" >> build.yaml
+            echo "    shield: ${s}" >> build.yaml
+        done
+    else
+        echo "  - board: ${b}" >> build.yaml
+    fi
+done
 
 rm -rf .git
 git init .
