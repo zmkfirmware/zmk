@@ -14,13 +14,26 @@
 static int pinmux_mikoto_init(const struct device *port) {
     ARG_UNUSED(port);
 
-#if CONFIG_BOARD_MIKOTO_517
+#if CONFIG_BOARD_MIKOTO_520
     const struct device *p0 = device_get_binding("GPIO_0");
+    const struct device *p1 = device_get_binding("GPIO_1");
 #if CONFIG_BOARD_MIKOTO_CHARGER
-    gpio_pin_configure(p0, 5, GPIO_OUTPUT);
-    gpio_pin_set(p0, 5, 0);
+    // 100mA
+    gpio_pin_configure(p0, 26, GPIO_OUTPUT);
+    gpio_pin_set(p0, 26, 0);
+    gpio_pin_configure(p1, 15, GPIO_INPUT);
+    // 250mA
+    // gpio_pin_configure(p0, 26, GPIO_INPUT);
+    // gpio_pin_configure(p1, 15, GPIO_OUTPUT);
+    // gpio_pin_set(p1, 15, 0);
+    // 250mA
+    // gpio_pin_configure(p0, 26, GPIO_OUTPUT);
+    // gpio_pin_set(p0, 26, 0);
+    // gpio_pin_configure(p1, 15, GPIO_OUTPUT);
+    // gpio_pin_set(p1, 15, 0);
 #else
-    gpio_pin_configure(p0, 5, GPIO_INPUT);
+    gpio_pin_configure(p0, 26, GPIO_INPUT);
+    gpio_pin_configure(p1, 15, GPIO_INPUT);
 #endif
 #endif
     return 0;

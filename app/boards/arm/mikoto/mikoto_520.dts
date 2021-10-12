@@ -21,7 +21,7 @@
 	leds {
 		compatible = "gpio-leds";
 		blue_led: led_0 {
-			gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
 			label = "Blue LED";
 		};
 	};
@@ -29,15 +29,15 @@
 	ext-power {
 		compatible = "zmk,ext-power-generic";
 		label = "EXT_POWER";
-		control-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+		control-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
 	};
 
 	vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 2>;
-		output-ohms = <2000000>;
-		full-ohms = <(2000000 + 820000)>;
+		output-ohms = <10000000>;
+		full-ohms = <(10000000 + 4000000)>;
 	};
 };
 

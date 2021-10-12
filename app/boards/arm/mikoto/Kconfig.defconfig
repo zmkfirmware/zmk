@@ -3,7 +3,7 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if BOARD_MIKOTO_517
+if BOARD_MIKOTO_520
 
 config BOARD
 	default "mikoto"
@@ -36,4 +36,4 @@ config BOARD_MIKOTO_CHARGER
 config ZMK_BATTERY_VOLTAGE_DIVIDER
 	default y
 
-endif # BOARD_MIKOTO_517
+endif # BOARD_MIKOTO_520

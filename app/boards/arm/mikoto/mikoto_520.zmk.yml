@@ -1,6 +1,6 @@
 file_format: "1"
-id: mikoto_517
-name: Mikoto 5.17
+id: mikoto_520
+name: Mikoto 5.20
 type: board
 arch: arm
 outputs:
