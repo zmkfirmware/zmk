@@ -4,7 +4,6 @@ name: Ergodash
 type: shield
 url: https://github.com/omkbd/ErgoDash
 requires: [pro_micro]
-exposes: []
 features:
   - keys
 siblings:
