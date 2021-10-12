@@ -18,7 +18,7 @@
                 compatible = "zmk,keymap";
 
                 default_layer {
-/* Colemak
+/* QWERTY
  * .----------------------------------------------------------------------------------------------------------------------.
  * |  `   |   1  |   2  |   3  |   4  |   5  |  [   |                    |  ]   |   6  |   7  |   8  |   9  |   0  | PScr |
  * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
@@ -32,7 +32,7 @@
  * .----------------------------------------------------------------------------------------------------------------------.
  */
                         bindings = <
-&kp  GRAVE    &kp  N1       &kp  N2       &kp  N3       &kp  N4       &kp  N5       &kp  LBKT              &kp  RBKT     &kp  N6       &kp  N7       &kp  N8       &kp  N9       &kp  N0       &kp  PRSC
+&kp  GRAVE    &kp  N1       &kp  N2       &kp  N3       &kp  N4       &kp  N5       &kp  LBKT              &kp  RBKT     &kp  N6       &kp  N7       &kp  N8       &kp  N9       &kp  N0       &kp  PSCRN
 &kp  ESC      &kp  Q        &kp  W        &kp  E        &kp  R        &kp  T        &kp  MINUS             &kp  EQUAL    &kp  Y        &kp  U        &kp  I        &kp  O        &kp  P        &kp  BSLH
 &kp  TAB      &kp  A        &kp  S        &kp  D        &kp  F        &kp  G        &kp  DEL               &kp  BSPC     &kp  H        &kp  J        &kp  K        &kp  L        &kp  SEMI     &kp  SQT
 &kp  LSHFT    &kp  Z        &kp  X        &kp  C        &kp  V        &kp  B        &kp  END               &kp  HOME     &kp  N        &kp  M        &kp  COMMA    &kp  DOT      &kp  SLASH    &kp  RSHFT
@@ -47,38 +47,38 @@
  * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
  * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+---------------------------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
+ * | Shift| Boot | Reset|      |      |      |      |                    |      |      |      |      |      |      | Shift|
  * |-------------+------+------+------+------+------+------+------+------+------+------+------+------+------+-------------|
- * | REST | BOOT |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+ * | Ctlr |      |      |  Win |||||||| Alt  |      | Lower|||||||| Raise|      | RAlt ||||||||      |      |      | RCtrl|
  * .----------------------------------------------------------------------------------------------------------------------.
- */
+ */ /* FIXME boot and reset are not yet locale aware */
                         bindings = <
 &kp  F11      &kp  F1       &kp  F2       &kp  F3       &kp  F4       &kp  F5       &kp  &none             &kp  &none    &kp  F6       &kp  F7       &kp  F8       &kp  F9       &kp  F10      &kp  F12
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
-&none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
-&reset        &bootloader   &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
+&trans        &bootloader   &reset        &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &trans
+&trans        &none         &none         &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
                         >;
                 };
                 raise_layer {
 /* .----------------------------------------------------------------------------------------------------------------------.
- * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
+ * |      | BT 0 | BT 1 | BT 2 | BT 3 |      | BTCL |                    |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
  * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
  * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+---------------------------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
+ * | Shift|      |      |      |      |      |      |                    |      |      |      |      | Boot | Reset| Shift|
  * |-------------+------+------+------+------+------+------+------+------+------+------+------+------+------+-------------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |      |      |      | BOOT | REST |
+ * | Ctlr |      |      |  Win |||||||| Alt  |      | Lower|||||||| Raise|      | RAlt ||||||||      |      |      | RCtrl|
  * .----------------------------------------------------------------------------------------------------------------------.
- */
+ */ /* FIXME boot and reset are not yet locale aware */
                         bindings = <
+&none         &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none         &bt BT_CLR             &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
-&none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
-&none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
-&none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &bootloader   &reset
+&trans        &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &bootloader   &reset        &trans
+&trans        &none         &none         &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
                         >;
                 };
         };
