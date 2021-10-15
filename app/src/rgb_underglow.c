@@ -68,67 +68,78 @@ static struct zmk_led_hsb hsb_scale_zero_max(struct zmk_led_hsb hsb) {
     return hsb;
 }
 
+// Conversion algorithm taken from https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
 static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
-    double r, g, b;
+    struct led_rgb rgb;
 
-    uint8_t i = hsb.h / 60;
-    double v = hsb.b / ((float)BRT_MAX);
-    double s = hsb.s / ((float)SAT_MAX);
-    double f = hsb.h / ((float)HUE_MAX) * 6 - i;
-    double p = v * (1 - s);
-    double q = v * (1 - f * s);
-    double t = v * (1 - (1 - f) * s);
+    uint32_t from_h = hsb.h;
+    uint32_t from_s = hsb.s;
+    uint32_t from_b = hsb.b;
 
-    switch (i % 6) {
-    case 0:
-        r = v;
-        g = t;
-        b = p;
-        break;
-    case 1:
-        r = q;
-        g = v;
-        b = p;
-        break;
-    case 2:
-        r = p;
-        g = v;
-        b = t;
-        break;
-    case 3:
-        r = p;
-        g = q;
-        b = v;
-        break;
-    case 4:
-        r = t;
-        g = p;
-        b = v;
-        break;
-    case 5:
-        r = v;
-        g = p;
-        b = q;
-        break;
+    // Scale brightness from [0-100] to [0-255]
+    uint32_t max_brightness = from_b * 2.55f;
+    uint32_t min_brightness = from_b * (100 - from_s) * 0.0255f;
+
+    uint32_t sector = from_h / 60;
+    uint32_t distance_into_sector = sector % 60;
+    uint32_t offset = (max_brightness - min_brightness) * distance_into_sector / 60;
+
+    switch (sector) {
+        case 0:
+            rgb.r = max_brightness;
+            rgb.g = min_brightness + offset;
+            rgb.b = min_brightness;
+            break;
+        case 1:
+            rgb.r = max_brightness - offset;
+            rgb.g = max_brightness;
+            rgb.b = min_brightness;
+            break;
+        case 2:
+            rgb.r = min_brightness;
+            rgb.g = max_brightness;
+            rgb.b = min_brightness + offset;
+            break;
+        case 3:
+            rgb.r = min_brightness;
+            rgb.g = max_brightness - offset;
+            rgb.b = max_brightness;
+            break;
+        case 4:
+            rgb.r = min_brightness + offset;
+            rgb.g = min_brightness;
+            rgb.b = max_brightness;
+            break;
+        case 5:
+            rgb.r = max_brightness;
+            rgb.g = min_brightness;
+            rgb.b = max_brightness - offset;
+            break;
+        default:
+            rgb.r = 0;
+            rgb.g = 0;
+            rgb.b = 0;
+            break;
     }
-
-    struct led_rgb rgb = {r : r * 255, g : g * 255, b : b * 255};
 
     return rgb;
 }
 
 static void zmk_rgb_underglow_effect_solid() {
+    struct led_rgb rgb = hsb_to_rgb(hsb_scale_min_max(state.color));
+
     for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
-        pixels[i] = hsb_to_rgb(hsb_scale_min_max(state.color));
+        pixels[i] = rgb;
     }
 }
 
 static void zmk_rgb_underglow_effect_breathe() {
-    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
-        struct zmk_led_hsb hsb = state.color;
-        hsb.b = abs(state.animation_step - 1200) / 12;
+    struct zmk_led_hsb hsb = state.color;
+    hsb.b = abs(state.animation_step - 1200) / 12;
+    struct led_rgb rgb = hsb_to_rgb(hsb_scale_zero_max(hsb));
 
-        pixels[i] = hsb_to_rgb(hsb_scale_zero_max(hsb));
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        pixels[i] = rgb;
     }
 
     state.animation_step += state.animation_speed * 10;
@@ -139,11 +150,12 @@ static void zmk_rgb_underglow_effect_breathe() {
 }
 
 static void zmk_rgb_underglow_effect_spectrum() {
-    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
-        struct zmk_led_hsb hsb = state.color;
-        hsb.h = state.animation_step;
+    struct zmk_led_hsb hsb = state.color;
+    hsb.h = state.animation_step;
+    struct led_rgb rgb = hsb_to_rgb(hsb_scale_min_max(hsb));
 
-        pixels[i] = hsb_to_rgb(hsb_scale_min_max(hsb));
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        pixels[i] = rgb;
     }
 
     state.animation_step += state.animation_speed;
