@@ -85,41 +85,41 @@ static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
     uint32_t offset = (max_brightness - min_brightness) * distance_into_sector / 60;
 
     switch (sector) {
-        case 0:
-            rgb.r = max_brightness;
-            rgb.g = min_brightness + offset;
-            rgb.b = min_brightness;
-            break;
-        case 1:
-            rgb.r = max_brightness - offset;
-            rgb.g = max_brightness;
-            rgb.b = min_brightness;
-            break;
-        case 2:
-            rgb.r = min_brightness;
-            rgb.g = max_brightness;
-            rgb.b = min_brightness + offset;
-            break;
-        case 3:
-            rgb.r = min_brightness;
-            rgb.g = max_brightness - offset;
-            rgb.b = max_brightness;
-            break;
-        case 4:
-            rgb.r = min_brightness + offset;
-            rgb.g = min_brightness;
-            rgb.b = max_brightness;
-            break;
-        case 5:
-            rgb.r = max_brightness;
-            rgb.g = min_brightness;
-            rgb.b = max_brightness - offset;
-            break;
-        default:
-            rgb.r = 0;
-            rgb.g = 0;
-            rgb.b = 0;
-            break;
+    case 0:
+        rgb.r = max_brightness;
+        rgb.g = min_brightness + offset;
+        rgb.b = min_brightness;
+        break;
+    case 1:
+        rgb.r = max_brightness - offset;
+        rgb.g = max_brightness;
+        rgb.b = min_brightness;
+        break;
+    case 2:
+        rgb.r = min_brightness;
+        rgb.g = max_brightness;
+        rgb.b = min_brightness + offset;
+        break;
+    case 3:
+        rgb.r = min_brightness;
+        rgb.g = max_brightness - offset;
+        rgb.b = max_brightness;
+        break;
+    case 4:
+        rgb.r = min_brightness + offset;
+        rgb.g = min_brightness;
+        rgb.b = max_brightness;
+        break;
+    case 5:
+        rgb.r = max_brightness;
+        rgb.g = min_brightness;
+        rgb.b = max_brightness - offset;
+        break;
+    default:
+        rgb.r = 0;
+        rgb.g = 0;
+        rgb.b = 0;
+        break;
     }
 
     return rgb;
