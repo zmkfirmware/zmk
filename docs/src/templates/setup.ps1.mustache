@@ -91,43 +91,53 @@ Write-Host ""
 Write-Host "Keyboard Shield Selection:"
 $prompt = "Pick a keyboard"
 
+$keyboards = [ordered]@{
+    {{#keyboards}}
+    "{{id}}" = @{
+        name = "{{{name}}}";
+        type = "{{type}}";
+        basedir = "{{__base_dir}}";
+        split = "{{split}}";
+        arch = "{{arch}}";
+        siblings = {{#siblings.0}}@(
+            {{#siblings}}
+            "{{.}}"
+            {{/siblings}}
+            ){{/siblings.0}}{{^siblings.0}}( "{{id}}" ){{/siblings.0}};
+    }
+    {{/keyboards}}
+}
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
-$options = {{#keyboards}}"{{name}}", {{/keyboards}} "" | Where-Object { $_ -ne "" }
-$names = {{#keyboards}}"{{id}}", {{/keyboards}} "" | Where-Object { $_ -ne "" }
-$types = {{#keyboards}}"{{type}}", {{/keyboards}} "" | Where-Object { $_ -ne "" }
-$basedirs = {{#keyboards}}"{{base_dir}}", {{/keyboards}} "" | Where-Object { $_ -ne "" }
-$splits = {{#keyboards}}"{{#split}}y{{/split}}{{^split}}n{{/split}}", {{/keyboards}} "" | Where-Object { $_ -ne "" }
-$arches = {{#keyboards}}"{{arch}}", {{/keyboards}} "REMOVEME" | Where-Object { $_ -ne "REMOVEME" }
-$basedirs = {{#keyboards}}"{{base_dir}}", {{/keyboards}} "" | Where-Object { $_ -ne "" }
-$sibling_sets = {{#keyboards}}{{#siblings.0}}( {{#siblings}}"{{.}}",{{/siblings}} "" | Where-Object { $_ -ne "" } ){{/siblings.0}}{{^siblings.0}}( "{{id}}" ){{/siblings.0}}, {{/keyboards}} "REMOVEME" | Where-Object { $_ -ne "REMOVEME" }
 
-$choice = Get-Choice-From-Options -Options $options -Prompt $prompt
-$keyboard_title = $($options[$choice])
-$keyboard = $($names[$choice])
-$basedir = $($basedirs[$choice])
-$keyboard_split = $($splits[$choice])
-$keyboard_arch = $($arches[$choice])
-$keyboard_siblings = $($sibling_sets[$choice])
-$keyboard_type = $($types[$choice])
+$choice = Get-Choice-From-Options -Options ($keyboards.values | % { $_['name'] }) -Prompt $prompt
+$keyboard = $($($keyboards.keys)[$choice])
+$keyboard_title = $keyboards[$keyboard].name
+$basedir = $keyboards[$keyboard].basedir
+$keyboard_split = $keyboards[$keyboard].split
+$keyboard_arch = $keyboards[$keyboard].arch
+$keyboard_siblings = $keyboards[$keyboard].siblings
+$keyboard_type = $keyboards[$keyboard].type
 
 if ($keyboard_type -eq "shield") {
     $prompt = "Pick an MCU board"
-    $options = {{#boards}}"{{{name}}}", {{/boards}} "" | Where-Object { $_ -ne "" }
-    $boards = {{#boards}}"{{id}}", {{/boards}} "" | Where-Object { $_ -ne "" }
+    $boards = [ordered]@{
+        {{#boards}}
+        {{id}} = "{{{name}}}";
+        {{/boards}}
+    }
 
     Write-Host "$title"
     Write-Host ""
     Write-Host "MCU Board Selection:"
 
-    $choice = Get-Choice-From-Options -Options $options -Prompt $prompt
+    $choice = Get-Choice-From-Options -Options $boards.values -Prompt $prompt
     $shields = $keyboard_siblings
-    $board = $($boards[$choice])
+    $board = $($($boards.keys)[$choice])
     $boards = ( $board )
 } else {
     $boards = ( $keyboard_siblings )
     $shields = @( )
 }
-
 
 $copy_keymap = Read-Host "Copy in the stock keymap for customisation? [Yn]"
 

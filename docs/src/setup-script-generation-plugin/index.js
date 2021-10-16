@@ -14,8 +14,8 @@ const Mustache = require("mustache");
 function generateSetupScripts() {
   return glob("../app/boards/**/*.zmk.yml", (error, files) => {
     const aggregated = files.map((f) => ({
-      ...yaml.safeLoadAll(fs.readFileSync(f, "utf8"))[0],
-      base_dir: path.basename(path.dirname(f)),
+      ...yaml.load(fs.readFileSync(f, "utf8")),
+      __base_dir: path.basename(path.dirname(f)),
     }));
 
     const data = aggregated.reduce(
