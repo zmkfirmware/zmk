@@ -10,7 +10,7 @@
 
 / {
 	model = "mikoto";
-	compatible = "mrninhvn,mikoto";
+	compatible = "zhiayang,mikoto";
 
 	chosen {
 		zephyr,code-partition = &code_partition;
