@@ -67,6 +67,7 @@ foreach(root ${BOARD_ROOT})
 	    NO_DEFAULT_PATH
 		)
 	if(BOARD_DIR)
+		get_filename_component(BOARD_DIR_NAME ${BOARD_DIR} NAME)
 		list(APPEND KEYMAP_DIRS ${BOARD_DIR})
 	endif()
 
@@ -130,7 +131,7 @@ endif()
 
 if(NOT KEYMAP_FILE)
 	foreach(keymap_dir ${KEYMAP_DIRS})
-		foreach(keymap_prefix ${SHIELD} ${SHIELD_DIR} ${BOARD} ${BOARD_DIR})
+		foreach(keymap_prefix ${SHIELD} ${SHIELD_DIR} ${BOARD} ${BOARD_DIR_NAME})
 			if (EXISTS ${keymap_dir}/${keymap_prefix}.keymap)
 				set(KEYMAP_FILE "${keymap_dir}/${keymap_prefix}.keymap" CACHE STRING "Selected keymap file")
 				message(STATUS "Using keymap file: ${KEYMAP_FILE}")
