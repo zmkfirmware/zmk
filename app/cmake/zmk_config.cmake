@@ -61,14 +61,16 @@ foreach(root ${BOARD_ROOT})
 	if (EXISTS "${root}/boards/${BOARD}.overlay")
 		list(APPEND ZMK_DTC_FILES "${root}/boards/${BOARD}.overlay")
 	endif()
-	find_path(BOARD_DIR
-	    NAMES ${BOARD}_defconfig
-	    PATHS ${root}/boards/*/*
-	    NO_DEFAULT_PATH
-		)
-	if(BOARD_DIR)
-		get_filename_component(BOARD_DIR_NAME ${BOARD_DIR} NAME)
-		list(APPEND KEYMAP_DIRS ${BOARD_DIR})
+	if (NOT DEFINED BOARD_DIR)
+		find_path(BOARD_DIR
+			NAMES ${BOARD}_defconfig
+			PATHS ${root}/boards/*/*
+			NO_DEFAULT_PATH
+			)
+		if(BOARD_DIR)
+			get_filename_component(BOARD_DIR_NAME ${BOARD_DIR} NAME)
+			list(APPEND KEYMAP_DIRS ${BOARD_DIR})
+		endif()
 	endif()
 
 	if(DEFINED SHIELD)
