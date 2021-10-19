@@ -61,7 +61,7 @@ foreach(root ${BOARD_ROOT})
 	if (EXISTS "${root}/boards/${BOARD}.overlay")
 		list(APPEND ZMK_DTC_FILES "${root}/boards/${BOARD}.overlay")
 	endif()
-	if (NOT DEFINED BOARD_DIR)
+	if (NOT DEFINED BOARD_DIR_NAME)
 		find_path(BOARD_DIR
 			NAMES ${BOARD}_defconfig
 			PATHS ${root}/boards/*/*
