@@ -27,7 +27,7 @@ This allows you to use those defines, e.g. `LOWER` later in your keymap.
 ## Momentary Layer
 
 The "momentary layer" behavior enables a layer while a certain key is pressed. Immediately upon
-activation of the key, the layer is enabled, and immediately open release of the key, the layer is disabled
+activation of the key, the layer is enabled, and immediately upon release of the key, the layer is disabled
 again.
 
 ### Behavior Binding
