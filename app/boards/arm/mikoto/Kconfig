@@ -4,7 +4,20 @@ config BOARD_ENABLE_DCDC
 	default y
 	depends on (BOARD_MIKOTO_520)
 
-config BOARD_MIKOTO_CHARGER
-	bool "Enable battery charger"
-	default y
-	depends on (BOARD_MIKOTO_520)
+choice BOARD_MIKOTO_CHARGER_CURRENT
+    prompt "Charge current to supply to attached batteries"
+		depends on (BOARD_MIKOTO_520)
+
+config BOARD_MIKOTO_CHARGER_CURRENT_100MA
+    bool "100mA charge current"
+
+config BOARD_MIKOTO_CHARGER_CURRENT_250MA
+    bool "250mA charge current"
+
+config BOARD_MIKOTO_CHARGER_CURRENT_350MA
+    bool "350mA charge current"
+
+config BOARD_MIKOTO_CHARGER_CURRENT_NONE
+    bool "Disable charge current"
+
+endchoice
