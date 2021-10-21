@@ -21,19 +21,16 @@ static int pinmux_mikoto_init(const struct device *port) {
     gpio_pin_configure(p0, 26, GPIO_OUTPUT);
     gpio_pin_set(p0, 26, 0);
     gpio_pin_configure(p1, 15, GPIO_INPUT);
-#endif
-#if CONFIG_BOARD_MIKOTO_CHARGER_CURRENT_250MA
+#elif CONFIG_BOARD_MIKOTO_CHARGER_CURRENT_250MA
     gpio_pin_configure(p0, 26, GPIO_INPUT);
     gpio_pin_configure(p1, 15, GPIO_OUTPUT);
     gpio_pin_set(p1, 15, 0);
-#endif
-#if CONFIG_BOARD_MIKOTO_CHARGER_CURRENT_350MA
+#elif CONFIG_BOARD_MIKOTO_CHARGER_CURRENT_350MA
     gpio_pin_configure(p0, 26, GPIO_OUTPUT);
     gpio_pin_set(p0, 26, 0);
     gpio_pin_configure(p1, 15, GPIO_OUTPUT);
     gpio_pin_set(p1, 15, 0);
-#endif
-#if CONFIG_BOARD_MIKOTO_CHARGER_CURRENT_NONE
+#elif CONFIG_BOARD_MIKOTO_CHARGER_CURRENT_NONE
     gpio_pin_configure(p0, 26, GPIO_INPUT);
     gpio_pin_configure(p1, 15, GPIO_INPUT);
 #endif
