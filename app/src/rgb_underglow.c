@@ -68,59 +68,51 @@ static struct zmk_led_hsb hsb_scale_zero_max(struct zmk_led_hsb hsb) {
     return hsb;
 }
 
-// Conversion algorithm taken from https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
 static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
-    struct led_rgb rgb;
+    double r, g, b;
 
-    uint32_t from_h = hsb.h;
-    uint32_t from_s = hsb.s;
-    uint32_t from_b = hsb.b;
+    uint8_t i = hsb.h / 60;
+    double v = hsb.b / ((float)BRT_MAX);
+    double s = hsb.s / ((float)SAT_MAX);
+    double f = hsb.h / ((float)HUE_MAX) * 6 - i;
+    double p = v * (1 - s);
+    double q = v * (1 - f * s);
+    double t = v * (1 - (1 - f) * s);
 
-    // Scale brightness from [0-100] to [0-255]
-    uint32_t max_brightness = from_b * 2.55f;
-    uint32_t min_brightness = from_b * (100 - from_s) * 0.0255f;
-
-    uint32_t sector = from_h / 60;
-    uint32_t distance_into_sector = sector % 60;
-    uint32_t offset = (max_brightness - min_brightness) * distance_into_sector / 60;
-
-    switch (sector) {
+    switch (i % 6) {
     case 0:
-        rgb.r = max_brightness;
-        rgb.g = min_brightness + offset;
-        rgb.b = min_brightness;
+        r = v;
+        g = t;
+        b = p;
         break;
     case 1:
-        rgb.r = max_brightness - offset;
-        rgb.g = max_brightness;
-        rgb.b = min_brightness;
+        r = q;
+        g = v;
+        b = p;
         break;
     case 2:
-        rgb.r = min_brightness;
-        rgb.g = max_brightness;
-        rgb.b = min_brightness + offset;
+        r = p;
+        g = v;
+        b = t;
         break;
     case 3:
-        rgb.r = min_brightness;
-        rgb.g = max_brightness - offset;
-        rgb.b = max_brightness;
+        r = p;
+        g = q;
+        b = v;
         break;
     case 4:
-        rgb.r = min_brightness + offset;
-        rgb.g = min_brightness;
-        rgb.b = max_brightness;
+        r = t;
+        g = p;
+        b = v;
         break;
     case 5:
-        rgb.r = max_brightness;
-        rgb.g = min_brightness;
-        rgb.b = max_brightness - offset;
-        break;
-    default:
-        rgb.r = 0;
-        rgb.g = 0;
-        rgb.b = 0;
+        r = v;
+        g = p;
+        b = q;
         break;
     }
+
+    struct led_rgb rgb = {r : r * 255, g : g * 255, b : b * 255};
 
     return rgb;
 }
