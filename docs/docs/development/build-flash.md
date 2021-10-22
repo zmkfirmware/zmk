@@ -92,7 +92,7 @@ This produces `left` and `right` subfolders under the `build` directory and two 
 
 Getting your `zmk-config` to be used by your build environment differs based on what type of build environment you are using.
 
-#### non-containerized environment
+#### Local/Host Build Environment.
 
 Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup#github-repo) by adding
 `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build` command. **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
@@ -120,11 +120,11 @@ docker volume create --driver local -o o=bind -o type=none -o \
     device="/full/path/to/your/zmk-config/" zmk-config
 ```
 
-Now start VSCode and rebuild the container after being prompted. You should be able to see your zmk-config mounted to `/workspaces/zmk-config` inside the container. So you can build your custom firmware with `-DZMK_CONFIG="/workspaces/zmk-config/config"`.
+Now start VSCode and rebuild the container after being prompted. You should be able to see your zmk-config mounted to `/workspaces/zmk-config` inside the container. So you can build your custom firmware by adding `-DZMK_CONFIG="/workspaces/zmk-config/config"` to your `west build` command.
 
-#### docker compose build environment
+#### Docker Compose Build Environment
 
-Attaching your `zmk-config` to your docker-compose build environment is done by specifying a volume mount when running the service:
+ATTACHING your `zmk-config` to your docker-compose build environment is done by specifying a volume mount when running the service:
 
 ```
 docker compose run --rm -v /full/path/to/your/zmk-config:/workspace/zmk-config shell bash

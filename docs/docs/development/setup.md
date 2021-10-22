@@ -16,7 +16,7 @@ values={[
 {label: 'Raspberry OS', value: 'raspberryos'},
 {label: 'Fedora', value: 'fedora'},
 {label: 'VS Code & Docker', value: 'docker'},
-{label: 'docker compose', value: 'dockercompose'},
+{label: 'Docker Compose', value: 'dockercompose'},
 ]
 }>{props.children}</Tabs>);
 
