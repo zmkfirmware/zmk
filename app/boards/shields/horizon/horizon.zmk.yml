@@ -1,0 +1,8 @@
+file_format: "1"
+id: horizon
+name: Horizon
+type: shield
+url: https://github.com/skarrmann/horizon
+requires: [pro_micro]
+features:
+  - keys
