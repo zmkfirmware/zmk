@@ -20,7 +20,7 @@
             // -----------------------------------------------------------------------------------------------------------------
             // |   `   |   Q   |   W   |   E   |   R   |   T   |---------------|   Y   |   U   |   I   |   O   |   P   |   -   |
             // |   =   |   A   |   S   |   D   |   F   |   G   |---------------|   H   |   J   |   K   |   L   |   ;   |   '   |
-            // | LSHFT |   Z   |   X   |   C   |   V   |   B   |  ESC  | SPACE |   N   |   M   |   ,   |   .   |   /   | RSHFT |
+            // | LSHFT |   Z   |   X   |   C   |   V   |   B   |  ESC  | ENTER |   N   |   M   |   ,   |   .   |   /   | RSHFT |
             // | LCTRL | LALT  | LGUI  | K_APP |  DEL  |  TAB  |  SYM  |  FUN  | SPACE | BSPC  | K_APP | RGUI  | RALT  | RCTRL |
             bindings = <
                 &kp GRAVE &kp Q    &kp W    &kp E     &kp R   &kp T                     &kp Y     &kp U    &kp I     &kp O    &kp P     &kp MINUS
