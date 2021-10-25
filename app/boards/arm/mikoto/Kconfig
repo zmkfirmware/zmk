@@ -9,19 +9,19 @@ choice BOARD_MIKOTO_CHARGER_CURRENT
 	depends on (BOARD_MIKOTO_520)
 
 config BOARD_MIKOTO_CHARGER_CURRENT_40MA
-    bool "40mA charge current"
+    bool "40mA charge current, for battery capacity 40mAh or higher"
 
 config BOARD_MIKOTO_CHARGER_CURRENT_100MA
-    bool "100mA charge current"
+    bool "100mA charge current, for battery capacity 100mAh or higher"
 
 config BOARD_MIKOTO_CHARGER_CURRENT_150MA
-    bool "150mA charge current"
+    bool "150mA charge current, for battery capacity 150mAh or higher"
 
 config BOARD_MIKOTO_CHARGER_CURRENT_250MA
-    bool "250mA charge current"
+    bool "250mA charge current, for battery capacity 250mAh or higher"
 
 config BOARD_MIKOTO_CHARGER_CURRENT_350MA
-    bool "350mA charge current"
+    bool "350mA charge current, for battery capacity 350mAh or higher"
 
 config BOARD_MIKOTO_CHARGER_CURRENT_NONE
     bool "Disable charge current"
