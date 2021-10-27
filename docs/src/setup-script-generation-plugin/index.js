@@ -5,6 +5,7 @@
  */
 
 var PrebuildPlugin = require("prebuild-webpack-plugin");
+const path = require("path");
 const fs = require("fs");
 const glob = require("glob");
 const yaml = require("js-yaml");
@@ -12,9 +13,10 @@ const Mustache = require("mustache");
 
 function generateSetupScripts() {
   return glob("../app/boards/**/*.zmk.yml", (error, files) => {
-    const aggregated = files.flatMap((f) =>
-      yaml.safeLoadAll(fs.readFileSync(f, "utf8"))
-    );
+    const aggregated = files.map((f) => ({
+      ...yaml.load(fs.readFileSync(f, "utf8")),
+      __base_dir: path.basename(path.dirname(f)),
+    }));
 
     const data = aggregated.reduce(
       (agg, item) => {
@@ -25,7 +27,9 @@ function generateSetupScripts() {
             agg.keyboards.push(item);
             break;
           case "board":
-            if (!item.features?.includes("keys")) {
+            if (item.features?.includes("keys")) {
+              agg.keyboards.push(item);
+            } else {
               agg.boards.push(item);
             }
             break;
@@ -34,6 +38,9 @@ function generateSetupScripts() {
       },
       { keyboards: [], boards: [] }
     );
+
+    data.keyboards.sort((a, b) => a.name.localeCompare(b.name));
+    data.boards.sort((a, b) => a.name.localeCompare(b.name));
 
     for (let script_ext of ["sh", "ps1"]) {
       const templateBuffer = fs.readFileSync(

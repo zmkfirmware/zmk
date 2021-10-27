@@ -469,22 +469,12 @@ static int position_state_changed_listener(const zmk_event_t *ev) {
 ZMK_LISTENER(combo, position_state_changed_listener);
 ZMK_SUBSCRIPTION(combo, zmk_position_state_changed);
 
-// todo: remove this once #506 is merged and #include <zmk/keymap.h>
-#define KEY_BINDING_TO_STRUCT(idx, drv_inst)                                                       \
-    {                                                                                              \
-        .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(drv_inst, bindings, idx)),                      \
-        .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(drv_inst, bindings, idx, param1), (0),        \
-                              (DT_PHA_BY_IDX(drv_inst, bindings, idx, param1))),                   \
-        .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(drv_inst, bindings, idx, param2), (0),        \
-                              (DT_PHA_BY_IDX(drv_inst, bindings, idx, param2))),                   \
-    }
-
 #define COMBO_INST(n)                                                                              \
     static struct combo_cfg combo_config_##n = {                                                   \
         .timeout_ms = DT_PROP(n, timeout_ms),                                                      \
         .key_positions = DT_PROP(n, key_positions),                                                \
         .key_position_len = DT_PROP_LEN(n, key_positions),                                         \
-        .behavior = KEY_BINDING_TO_STRUCT(0, n),                                                   \
+        .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, n),                                              \
         .virtual_key_position = ZMK_KEYMAP_LEN + __COUNTER__,                                      \
         .slow_release = DT_PROP(n, slow_release),                                                  \
         .layers = DT_PROP(n, layers),                                                              \

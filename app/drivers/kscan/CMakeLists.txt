@@ -4,6 +4,7 @@
 zephyr_library_named(zmk__drivers__kscan)
 zephyr_library_include_directories(${CMAKE_SOURCE_DIR}/include)
 
+zephyr_library_sources_ifdef(CONFIG_ZMK_KSCAN_GPIO_DRIVER debounce.c)
 zephyr_library_sources_ifdef(CONFIG_ZMK_KSCAN_GPIO_DRIVER kscan_gpio_matrix.c)
 zephyr_library_sources_ifdef(CONFIG_ZMK_KSCAN_GPIO_DRIVER kscan_gpio_direct.c)
 zephyr_library_sources_ifdef(CONFIG_ZMK_KSCAN_GPIO_DRIVER kscan_gpio_demux.c)

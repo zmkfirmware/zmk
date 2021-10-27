@@ -14,6 +14,24 @@ config ZMK_KSCAN_MATRIX_POLLING
 config ZMK_KSCAN_DIRECT_POLLING
 	bool "Poll for key event triggers instead of using interrupts on direct wired boards."
 
+config ZMK_KSCAN_DEBOUNCE_PRESS_MS
+	int "Debounce time for key press in milliseconds."
+	default -1
+	help
+		Global debounce time for key press in milliseconds.
+		If this is -1, the debounce time is controlled by the debounce-press-ms
+		Devicetree property, which defaults to 5 ms. Otherwise this overrides the
+		debounce time for all key scan drivers to the chosen value.
+
+config ZMK_KSCAN_DEBOUNCE_RELEASE_MS
+	int "Debounce time for key release in milliseconds."
+	default -1
+	help
+		Global debounce time for key release in milliseconds.
+		If this is -1, the debounce time is controlled by the debounce-release-ms
+		Devicetree property, which defaults to 5 ms. Otherwise this overrides the
+		debounce time for all key scan drivers to the chosen value.
+
 endif
 
 config ZMK_KSCAN_INIT_PRIORITY
