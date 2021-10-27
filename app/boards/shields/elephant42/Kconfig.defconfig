@@ -1,0 +1,16 @@
+if SHIELD_ELEPHANT42_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Elephant42"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_ELEPHANT42_LEFT || SHIELD_ELEPHANT42_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+endif
