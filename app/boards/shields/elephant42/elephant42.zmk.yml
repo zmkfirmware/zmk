@@ -8,6 +8,7 @@ exposes: [i2c_oled]
 features:
   - keys
   - display
+  - underglow
 siblings:
   - elephant42_left
   - elephant42_right
