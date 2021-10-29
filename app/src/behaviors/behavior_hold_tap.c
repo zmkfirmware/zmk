@@ -58,8 +58,8 @@ struct behavior_hold_tap_config {
     int quick_tap_ms;
     enum flavor flavor;
     bool retro_tap;
-    int32_t hold_enabler_keys[ZMK_KEYMAP_LEN];
-    int32_t hold_enabler_keys_len;
+    int32_t hold_trigger_key_positions[ZMK_KEYMAP_LEN];
+    int32_t hold_trigger_key_positions_len;
 };
 
 // this data is specific for each hold-tap
@@ -366,12 +366,12 @@ static int release_binding(struct active_hold_tap *hold_tap) {
 }
 
 static bool is_positional_hold_tap_enabled(struct active_hold_tap *hold_tap) {
-    return (hold_tap->config->hold_enabler_keys_len > 0);
+    return (hold_tap->config->hold_trigger_key_positions_len > 0);
 }
 
 static bool passes_positional_hold_conditions(struct active_hold_tap *hold_tap) {
-    for (int i = 0; i < hold_tap->config->hold_enabler_keys_len; i++) {
-        if (hold_tap->config->hold_enabler_keys[i] ==
+    for (int i = 0; i < hold_tap->config->hold_trigger_key_positions_len; i++) {
+        if (hold_tap->config->hold_trigger_key_positions[i] ==
             hold_tap->position_of_first_other_key_pressed) {
             return true;
         }
@@ -643,8 +643,8 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
         .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
         .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
-        .hold_enabler_keys = DT_INST_PROP(n, hold_enabler_keys),                                   \
-        .hold_enabler_keys_len = DT_INST_PROP_LEN(n, hold_enabler_keys),                           \
+        .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
+        .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, device_pm_control_nop,                        \
                           &behavior_hold_tap_data, &behavior_hold_tap_config_##n, APPLICATION,     \
