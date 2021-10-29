@@ -73,9 +73,6 @@ struct active_hold_tap {
     const struct behavior_hold_tap_config *config;
     struct k_delayed_work work;
     bool work_is_cancelled;
-
-    // Initialized to -1, which is to be interpreted as "no other key has been pressed yet".
-    int32_t position_of_first_other_key_pressed;
 };
 
 // The undecided hold tap is the hold tap that needs to be decided before
@@ -212,9 +209,6 @@ static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_
         active_hold_taps[i].param_hold = param_hold;
         active_hold_taps[i].param_tap = param_tap;
         active_hold_taps[i].timestamp = timestamp;
-
-        // Initialized to -1, which is to be interpreted as "no other key has been pressed yet".
-        active_hold_taps[i].position_of_first_other_key_pressed = -1;
         return &active_hold_taps[i];
     }
     return NULL;
@@ -319,6 +313,8 @@ static inline const char *flavor_str(enum flavor flavor) {
         return "balanced";
     case FLAVOR_TAP_PREFERRED:
         return "tap-preferred";
+    case FLAVOR_TAP_POSITIONALLY_PREFERRED:
+        return "tap-positionally-preferred";
     default:
         return "UNKNOWN FLAVOR";
     }
@@ -495,7 +491,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     undecided_hold_tap = hold_tap;
 
     if (is_quick_tap(hold_tap)) {
-        decide_hold_tap(hold_tap, HT_QUICK_TAP);
+        decide_hold_tap(hold_tap, HT_QUICK_TAP, -1);
     }
 
     // if this behavior was queued we have to adjust the timer to only
@@ -518,10 +514,10 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     // We insert a timer event before the TH_KEY_UP event to verify.
     int work_cancel_result = k_delayed_work_cancel(&hold_tap->work);
     if (event.timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
-        decide_hold_tap(hold_tap, HT_TIMER_EVENT);
+        decide_hold_tap(hold_tap, HT_TIMER_EVENT, -1);
     }
 
-    decide_hold_tap(hold_tap, HT_KEY_UP);
+    decide_hold_tap(hold_tap, HT_KEY_UP, -1);
     decide_retro_tap(hold_tap);
     release_binding(hold_tap);
 
@@ -553,14 +549,6 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    // Store the position of pressed key for positional hold-tap purposes.
-    if ((ev->state) // i.e. key pressed (not released)
-        && (undecided_hold_tap->position_of_first_other_key_pressed ==
-            -1) // i.e. no other key has been pressed yet
-    ) {
-        undecided_hold_tap->position_of_first_other_key_pressed = ev->position;
-    }
-
     if (undecided_hold_tap->position == ev->position) {
         if (ev->state) { // keydown
             LOG_ERR("hold-tap listener should be called before before most other listeners!");
@@ -576,7 +564,7 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     // have run out.
     if (ev->timestamp >
         (undecided_hold_tap->timestamp + undecided_hold_tap->config->tapping_term_ms)) {
-        decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT);
+        decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT, -1);
     }
 
     if (!ev->state && find_captured_keydown_event(ev->position) == NULL) {
@@ -636,7 +624,7 @@ void behavior_hold_tap_timer_work_handler(struct k_work *item) {
     if (hold_tap->work_is_cancelled) {
         clear_hold_tap(hold_tap);
     } else {
-        decide_hold_tap(hold_tap, HT_TIMER_EVENT);
+        decide_hold_tap(hold_tap, HT_TIMER_EVENT, -1);
     }
 }
 

@@ -4,9 +4,9 @@
 
 / {
 	behaviors {
-		ht_tap: behavior_hold_tap_tap_preferred {
+		ht_tpp: behavior_hold_tap_tap_positionally_preferred {
 			compatible = "zmk,behavior-hold-tap";
-			label = "HOLD_TAP_TAP_PREFERRED";
+			label = "HOLD_TAP_TAP_POSITIONALLY_PREFERRED";
 			#binding-cells = <2>;
 			flavor = "tap-preferred";
 			tapping-term-ms = <300>;
@@ -22,7 +22,7 @@
 
 		default_layer {
 			bindings = <
-				&ht_tap LEFT_SHIFT F &kp J
+				&ht_tpp LEFT_SHIFT F &kp J
 				&kp D &kp RIGHT_CONTROL>;
 		};
 	};
