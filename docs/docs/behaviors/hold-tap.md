@@ -65,7 +65,8 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 - `hold-trigger-key-positions` is used exclusively with the `tap-positionally-preferred` flavor, and is required for the `tap-positionally-preferred` flavor.
 - Specifies which key positions are eligible for triggering a hold behavior.
 - If and only if a key at one of the `hold-trigger-key-positions` is pressed before `tapping-term-ms` expires, will 'tap-positionally-preferred' produce a hold behavior.
-- `hold-trigger-key-positions` is an array of key positions indexes. Key positions are numbered / indexed according to the keys in your keymap, starting at 0. So, if the first key in your keymap is Q, this key is in position 0. The next key (possibly W) will have position 1, et cetera. 
+- `hold-trigger-key-positions` is an array of key positions indexes. Key positions are numbered / indexed according to the keys in your keymap, starting at 0. So, if the first key in your keymap is Q, this key is in position 0. The next key (possibly W) will have position 1, et cetera.
+
 * See the following example:
 
 ```
