@@ -406,7 +406,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap,
         return;
     }
 
-    // If positional hold-tap is enabled, force a decision if the positional conditiosn for
+    // If positional hold-tap is enabled, force a decision if the positional conditions for
     // a hold decision are not met.
     if (is_positional_hold_tap_enabled(hold_tap) && !passes_positional_hold_conditions(hold_tap)) {
         hold_tap->status = STATUS_TAP;
