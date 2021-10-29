@@ -365,11 +365,24 @@ static int release_binding(struct active_hold_tap *hold_tap) {
     return behavior_keymap_binding_released(&binding, event);
 }
 
-static bool is_positional_hold_tap_enabled(struct active_hold_tap *hold_tap) {
-    return (hold_tap->config->hold_trigger_key_positions_len > 0);
+// Force a tap decision if the positional conditions for a hold decision are not met.
+static void decide_positional_hold(struct active_hold_tap *hold_tap) {
+    // Check if the positional hold/tap feature is enabled.
+    if (!(hold_tap->config->hold_trigger_key_positions_len > 0)) {
+        return;
+    }
+
+    // Only mutate the hold/tap decision if the first other key to be pressed
+    // (after the hold/tap key) is not one of the trigger keys.
+    if (!is_first_other_key_pressed_trigger_key(hold_tap)) {
+        return;
+    }
+
+    // Since the positional key conditions have failed, force a TAP decision.
+    hold_tap->status = STATUS_TAP;
 }
 
-static bool passes_positional_hold_conditions(struct active_hold_tap *hold_tap) {
+static bool is_first_other_key_pressed_trigger_key(struct active_hold_tap *hold_tap) {
     for (int i = 0; i < hold_tap->config->hold_trigger_key_positions_len; i++) {
         if (hold_tap->config->hold_trigger_key_positions[i] ==
             hold_tap->position_of_first_other_key_pressed) {
@@ -406,11 +419,7 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap,
         return;
     }
 
-    // If positional hold-tap is enabled, force a decision if the positional conditions for
-    // a hold decision are not met.
-    if (is_positional_hold_tap_enabled(hold_tap) && !passes_positional_hold_conditions(hold_tap)) {
-        hold_tap->status = STATUS_TAP;
-    }
+    decide_positional_hold(hold_tap);
 
     // Since the hold-tap has been decided, clean up undecided_hold_tap and
     // execute the decided behavior.
