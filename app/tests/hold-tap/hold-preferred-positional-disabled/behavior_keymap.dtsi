@@ -12,7 +12,7 @@
 			tapping-term-ms = <300>;
 			quick-tap-ms = <200>;
 			bindings = <&kp>, <&kp>;
-			hold-enabler-keys = <88>;
+			hold-trigger-key-positions = <60>;
 		};
 	};
 
