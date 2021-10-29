@@ -51,7 +51,7 @@ enum decision_moment {
     HT_QUICK_TAP,
 };
 
-struct behavior_hold_tagit stp_config {
+struct behavior_hold_tap_config {
     int tapping_term_ms;
     char *hold_behavior_dev;
     char *tap_behavior_dev;
