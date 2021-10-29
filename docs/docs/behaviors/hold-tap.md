@@ -26,6 +26,7 @@ We call this the 'hold-preferred' flavor of hold-taps. While this flavor may wor
 - The 'hold-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired or another key is pressed.
 - The 'balanced' flavor will trigger the hold behavior when the `tapping-term-ms` has expired or another key is pressed and released.
 - The 'tap-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired. It triggers the tap behavior when another key is pressed.
+- The 'tap-positionally-preferred' flavor triggers the hold behavior if and only if a key at one of the `hold-trigger-key-positions` is pressed before `tapping-term-ms` expires. See the below section on `hold-trigger-key-positions` for more details.
 
 When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
 
@@ -58,6 +59,50 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 	retro-tap;
 };
 ```
+
+#### `hold-trigger-key-positions`
+
+- `hold-trigger-key-positions` is used exclusively with the `tap-positionally-preferred` flavor, and is required for the `tap-positionally-preferred` flavor.
+- Specifies which key positions are eligible for triggering a hold behavior.
+- If and only if a key at one of the `hold-trigger-key-positions` is pressed before `tapping-term-ms` expires, will 'tap-positionally-preferred' produce a hold behavior.
+- `hold-trigger-key-positions` is an array of key positions indexes. Key positions are numbered / indexed according to the keys in your keymap, starting at 0. So, if the first key in your keymap is Q, this key is in position 0. The next key (possibly W) will have position 1, et cetera. 
+* See the following example:
+
+```
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+
+/ {
+	behaviors {
+		tpht: tap_positional_hold_tap {
+			compatible = "zmk,behavior-hold-tap";
+			label = "TAP_POSITIONAL_HOLD_TAP";
+			#binding-cells = <2>;
+			flavor = "tap-positionally-preferred";
+			tapping-term-ms = <200>;
+			quick-tap-ms = <200>;
+			bindings = <&kp>, <&kp>;
+			hold-trigger-key-positions = <1>;    // <---[[the W key]]
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+		default_layer {
+			bindings = <
+				//  position 0         position 1       position 2
+				&tpht LEFT_SHIFT Q        &kp W            &kp E
+			>;
+		};
+	};
+};
+```
+
+- The sequence `(tpht_down, W_down, W_up, tpht_up)` produces `W`. The `tap-positionally-preferred` flavor produces a **hold** behavior because the first key pressed after the hold-tap key is the `W key`, which is in position 1, which **IS** included in `hold-trigger-key-positions`.
+- Meanwhile the sequence `(tpht_down, E_down, E_up, tpht_up)` produces `qe`. The `tap-positionally-preferred` flavor produces a **tap** behavior because the first key pressed after the hold-tap key is the `E key`, which is in position 2, which is **NOT** included in `hold-trigger-key-positions`.
+- If the `LEFT_SHIFT / Q key` is held by itself for longer than `tapping-term-ms`, a **tap** behavior is produced.
+- The `tap-positionally-preferred` flavor is useful with home-row modifiers. With a home-row-modifier key in the left hand, by only including keys positions from the right hand in `hold-trigger-key-positions`, hold behaviors will only occur with cross-hand key combinations.
 
 #### Home row mods
 
@@ -94,52 +139,6 @@ This example configures a hold-tap that works well for homerow mods:
 ```
 
 If this config does not work for you, try the flavor "balanced" with a medium `tapping-term-ms` such as 200ms.
-
-#### Positional hold-tap and `hold-trigger-key-positions`
-
-* Including `hold-trigger-key-postions` in your hold-tap behavior definition enables the positional hold-tap feature.
-* With positional hold-tap enabled, your hold-tap behavior will only produce a hold behavior if, while the hold-tap key is still held down, the next key to be pressed is at one of the positions listed in the `hold-trigger-key-postions` array.
-* `hold-trigger-key-postions` is an array of key positions indexes. Key positions are numbered / indexed according to the keys in your keymap, starting at 0. So, if the first key in your keymap is Q, this key is in position 0. The next key (possibly W) will have position 1, et cetera.
-* See the following example, which references the below hold-tap behavior definition:
-
-```
-#include <dt-bindings/zmk/keys.h>
-#include <behaviors.dtsi>
-
-/ {
-	behaviors {
-		pht: positional_hold_tap {
-			compatible = "zmk,behavior-hold-tap";
-			label = "POSITIONAL_HOLD_TAP";
-			#binding-cells = <2>;
-			flavor = "hold-preferred";
-			tapping-term-ms = <400>;
-			quick-tap-ms = <200>;
-			bindings = <&kp>, <&kp>;
-			hold-trigger-key-positions = <1>;    // <---[[the W key]]
-		};
-	};
-
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
-		default_layer {
-			bindings = <
-				//  position 0         position 1       position 2
-				&pht LEFT_SHIFT Q        &kp W            &kp E
-			>;
-		};
-	};
-};
-```
-
-  * The sequence `(pht_down, W_down, W_up, E_down, E_up, pht_up)` produces `WE`. The positional hold-tap **IS** permitted to produce a hold behavior, because the first key pressed after the hold-tap key (i.e. the W key, in position 1) **IS** one of the `hold-trigger-key-positions`.
-
-  * Meanwhile, the sequence `(pht_down, E_down, E_up, W_down, W_up pht_up)` produces `qew`. The positional hold-tap is **NOT** permitted to produce a hold behavior, because the first key pressed after the hold-tap key (i.e. the E key, in position 2) is **NOT** one of the `hold-trigger-key-positions`.
-
-* Positional hold-taps can be useful with home-row modifiers. By using a positional hold-tap behavior for home-row modifiers on the left hand, and setting `hold-trigger-key-positions` to the keys under the right hand, positional hold-tap will only allow hold behaviors to occur with cross-hand keypresses.
-
-* Note that for regular hold-tap behaviors a shorter `tapping-term` encourages hold decisions. However the opposite is true for positional hold-tap behaviors, where a shorter `tapping-term` actually encourages tap decisions. This is because when the `tapping-term` expires, this triggers the behavior to decide as either a tap or a hold. But if the user has not yet had time to press one of the `hold-trigger-key-positions`, then with positional hold-tap the behavior will decide as a tap.
 
 #### Comparison to QMK
 
