@@ -102,7 +102,7 @@ If this config does not work for you, try the flavor "balanced" with a medium `t
 * `hold-trigger-key-postions` is an array of key positions. See the info section below about how to figure out the positions of keys on your board.
 :::info
 
-Key positions are numbered according to the keys in your keymap, starting at 0. So, if the first key in your keymap is Q, this key is in position 0. The next key (possibly W) will have position 1, etcetera.
+Key positions are numbered according to the keys in your keymap, starting at 0. So, if the first key in your keymap is Q, this key is in position 0. The next key (possibly W) will have position 1, et cetera.
 
 :::
 * See the following example, which references the below hold-tap behavior definiton:
