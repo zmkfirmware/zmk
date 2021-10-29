@@ -51,15 +51,15 @@ enum decision_moment {
     HT_QUICK_TAP,
 };
 
-struct behavior_hold_tap_config {
+struct behavior_hold_tagit stp_config {
     int tapping_term_ms;
     char *hold_behavior_dev;
     char *tap_behavior_dev;
     int quick_tap_ms;
     enum flavor flavor;
     bool retro_tap;
-    int32_t hold_trigger_key_positions[ZMK_KEYMAP_LEN];
     int32_t hold_trigger_key_positions_len;
+    int32_t hold_trigger_key_positions[];
 };
 
 // this data is specific for each hold-tap
