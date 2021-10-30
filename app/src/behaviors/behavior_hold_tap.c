@@ -274,8 +274,8 @@ static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decisio
     }
 }
 
-static bool does_pressed_key_trigger_hold(struct active_hold_tap *hold_tap,
-                                          int32_t other_key_down_position) {
+static bool does_other_key_down_position_trigger_hold(struct active_hold_tap *hold_tap,
+                                                      int32_t other_key_down_position) {
     for (int i = 0; i < hold_tap->config->hold_trigger_key_positions_len; i++) {
         if (hold_tap->config->hold_trigger_key_positions[i] == other_key_down_position) {
             return true;
@@ -286,15 +286,16 @@ static bool does_pressed_key_trigger_hold(struct active_hold_tap *hold_tap,
 
 static void decide_tap_positionally_preferred(struct active_hold_tap *hold_tap,
                                               enum decision_moment event,
-                                              int32_t pressed_key_position) {
+                                              int32_t other_key_down_position) {
     switch (event) {
     case HT_KEY_UP:
         hold_tap->status = STATUS_TAP;
         return;
     case HT_OTHER_KEY_DOWN:
-        hold_tap->status = does_pressed_key_trigger_hold(hold_tap, pressed_key_position)
-                               ? STATUS_HOLD_INTERRUPT
-                               : STATUS_TAP;
+        hold_tap->status =
+            does_other_key_down_position_trigger_hold(hold_tap, other_key_down_position)
+                ? STATUS_HOLD_INTERRUPT
+                : STATUS_TAP;
         return;
     case HT_TIMER_EVENT:
         hold_tap->status = STATUS_TAP;
