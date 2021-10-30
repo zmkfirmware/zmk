@@ -28,7 +28,6 @@ properties:
       - "hold-preferred"
       - "balanced"
       - "tap-preferred"
-      - "tap-positionally-preferred"
   retro-tap:
     type: boolean
   hold-trigger-key-positions:
