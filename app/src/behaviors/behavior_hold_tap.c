@@ -659,12 +659,12 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
     DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, device_pm_control_nop,                        \
                           &behavior_hold_tap_data, &behavior_hold_tap_config_##n, APPLICATION,     \
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_hold_tap_driver_api);     \
-    BUILD_ASSERT((DT_ENUM_IDX(DT_DRV_INST(n), flavor) == 3 &&                                      \
+    BUILD_ASSERT((DT_ENUM_IDX(DT_DRV_INST(n), flavor) == 4 &&                                      \
                   !(DT_INST_PROP_LEN(n, hold_trigger_key_positions) > 0)),                         \
                  "'hold-trigger-key-positions' must be non-empty if hold-tap flavor is "           \
                  "'tap-positionally-preferred'");                                                  \
     BUILD_ASSERT((DT_INST_PROP_LEN(n, hold_trigger_key_positions) > 0)                             \
-                 && DT_ENUM_IDX(DT_DRV_INST(n), flavor) != 3 ),                                    \
+                 && DT_ENUM_IDX(DT_DRV_INST(n), flavor) != 4 ),                                    \
                  "hold-tap flavor must be 'tap-positionally-preferred' if 'hold-trigger-key-positions' is non-empty");
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
