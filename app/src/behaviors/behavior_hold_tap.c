@@ -413,18 +413,15 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_mome
         return;
     }
 
-    // If the hold-tap behavior is still undecided, attempt to decide it.
-    if (hold_tap->status == STATUS_UNDECIDED) {
-        switch (hold_tap->config->flavor) {
-        case FLAVOR_HOLD_PREFERRED:
-            decide_hold_preferred(hold_tap, decision_moment);
-        case FLAVOR_BALANCED:
-            decide_balanced(hold_tap, decision_moment);
-        case FLAVOR_TAP_PREFERRED:
-            decide_tap_preferred(hold_tap, decision_moment);
-        case FLAVOR_TAP_POSITIONALLY_PREFERRED:
-            decide_tap_positionally_preferred(hold_tap, decision_moment, other_key_down_pos);
-        }
+    switch (hold_tap->config->flavor) {
+    case FLAVOR_HOLD_PREFERRED:
+        decide_hold_preferred(hold_tap, decision_moment);
+    case FLAVOR_BALANCED:
+        decide_balanced(hold_tap, decision_moment);
+    case FLAVOR_TAP_PREFERRED:
+        decide_tap_preferred(hold_tap, decision_moment);
+    case FLAVOR_TAP_POSITIONALLY_PREFERRED:
+        decide_tap_positionally_preferred(hold_tap, decision_moment, other_key_down_pos);
     }
 
     if (hold_tap->status == STATUS_UNDECIDED) {
