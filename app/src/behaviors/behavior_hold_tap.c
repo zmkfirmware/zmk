@@ -274,10 +274,10 @@ static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decisio
     }
 }
 
-static bool does_pressed_key_trigger_hold(struct active_hold_tap *hold_tap, int32_t other_key_down_position) {
+static bool does_pressed_key_trigger_hold(struct active_hold_tap *hold_tap,
+                                          int32_t other_key_down_position) {
     for (int i = 0; i < hold_tap->config->hold_trigger_key_positions_len; i++) {
-        if (hold_tap->config->hold_trigger_key_positions[i] ==
-            other_key_down_position) {
+        if (hold_tap->config->hold_trigger_key_positions[i] == other_key_down_position) {
             return true;
         }
     }
@@ -292,7 +292,9 @@ static void decide_tap_positionally_preferred(struct active_hold_tap *hold_tap,
         hold_tap->status = STATUS_TAP;
         return;
     case HT_OTHER_KEY_DOWN:
-        hold_tap->status = does_pressed_key_trigger_hold(hold_tap, pressed_key_position) ? STATUS_HOLD_INTERRUPT : STATUS_TAP;
+        hold_tap->status = does_pressed_key_trigger_hold(hold_tap, pressed_key_position)
+                               ? STATUS_HOLD_INTERRUPT
+                               : STATUS_TAP;
         return;
     case HT_TIMER_EVENT:
         hold_tap->status = STATUS_TAP;
@@ -395,11 +397,11 @@ static int release_binding(struct active_hold_tap *hold_tap) {
     return behavior_keymap_binding_released(&binding, event);
 }
 
-static void decide_hold_tap(struct active_hold_tap *hold_tap,
-                            enum decision_moment decision_moment,
+static void decide_hold_tap(struct active_hold_tap *hold_tap, enum decision_moment decision_moment,
                             int32_t other_key_down_pos) {
     if (decision_moment == HT_OTHER_KEY_DOWN && other_key_down_pos < 0) {
-        LOG_DBG("ERROR other_key_down_pos must be a valid key position if decision_moment == HT_OTHER_KEY_DOWN");
+        LOG_DBG("ERROR other_key_down_pos must be a valid key position if decision_moment == "
+                "HT_OTHER_KEY_DOWN");
     }
 
     if (hold_tap->status != STATUS_UNDECIDED) {
@@ -578,7 +580,8 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->position,
             ev->state ? "down" : "up");
     capture_event(eh);
-    decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP, ev->state ? ev->position : -1);
+    decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP,
+                    ev->state ? ev->position : -1);
     return ZMK_EV_EVENT_CAPTURED;
 }
 
