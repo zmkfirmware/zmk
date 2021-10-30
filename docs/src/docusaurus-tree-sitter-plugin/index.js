@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 module.exports = function () {
   return {
     configureWebpack(config, isServer) {

@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+    };
+
+    kscan0: kscan_0 {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";
+
+        col-gpios
+            = <&pro_micro 21 GPIO_ACTIVE_HIGH> // col 0
+            , <&pro_micro 20 GPIO_ACTIVE_HIGH> // col 1
+            , <&pro_micro 19 GPIO_ACTIVE_HIGH> // col 2
+            , <&pro_micro 18 GPIO_ACTIVE_HIGH> // col 3
+            , <&pro_micro 15 GPIO_ACTIVE_HIGH> // col 4
+            , <&pro_micro 14 GPIO_ACTIVE_HIGH> // col 5
+            , <&pro_micro 16 GPIO_ACTIVE_HIGH> // col 6
+            , <&pro_micro 6 GPIO_ACTIVE_HIGH> // col 7
+            , <&pro_micro 7 GPIO_ACTIVE_HIGH> // col 8
+            , <&pro_micro 8 GPIO_ACTIVE_HIGH> // col 9
+            , <&pro_micro 9 GPIO_ACTIVE_HIGH> // col 10
+            , <&pro_micro 1 GPIO_ACTIVE_HIGH> // col 11
+            ;
+
+        row-gpios
+            = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // row 0
+            , <&pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // row 1
+            , <&pro_micro 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // row 2
+            , <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // row 3
+            , <&pro_micro 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // row 4
+            ;
+    };
+};

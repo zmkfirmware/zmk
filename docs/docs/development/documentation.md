@@ -19,7 +19,7 @@ If you are working with the documentation from within VS Code+Docker please be a
 :::
 
 :::note
-You will need `Node.js` and `npm` installed to update the documentation. If you're using the ZMK dev container (Docker) the necessary dependencies are already installed.
+You will need `Node.js` and `npm` installed to update the documentation. If you're using the ZMK dev container (Docker) the necessary dependencies are already installed. Otherwise, you must install these dependencies yourself. Since `Node.js` packages in Linux distributions tend to be outdated, it's recommended to install the current version from a repository like [NodeSource](https://github.com/nodesource/distributions) to avoid build errors.
 :::
 
 ## Testing Documentation Updates Locally

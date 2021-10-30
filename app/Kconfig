@@ -25,7 +25,57 @@ config USB_DEVICE_PID
 config USB_DEVICE_MANUFACTURER
 	default "ZMK Project"
 
-menu "HID Output Types"
+menu "HID"
+
+choice ZMK_HID_REPORT_TYPE
+	prompt "HID Report Type"
+
+config ZMK_HID_REPORT_TYPE_HKRO
+	bool "#-Key Roll Over (HKRO) HID Report"
+	help
+	  Enable # key roll over for HID report. This selection is "boot keyboard" compatible
+	  but limits the total number of possible keys to report as held to #.
+
+config ZMK_HID_REPORT_TYPE_NKRO
+	bool "Full N-Key Roll Over (NKRO) HID Report"
+	help
+	  Enable full N-Key Roll Over for HID output. This selection will prevent the keyboard
+	  from working with some BIOS/UEFI versions that only support "boot keyboard" support.
+	  This option also prevents using some infrequently used higher range HID usages.
+
+endchoice
+
+if ZMK_HID_REPORT_TYPE_HKRO
+
+config ZMK_HID_KEYBOARD_REPORT_SIZE
+	int "# Keyboard Keys Reportable"
+	default 6
+
+endif
+
+config ZMK_HID_CONSUMER_REPORT_SIZE
+	int "# Consumer Keys Reportable"
+	default 6
+
+
+choice ZMK_HID_CONSUMER_REPORT_USAGES
+	prompt "HID Report Type"
+
+config ZMK_HID_CONSUMER_REPORT_USAGES_FULL
+	bool "Full Consumer HID Usage Support"
+	help
+	  Enable full Consumer usage ID values to be sent to hosts. Allows for less
+	  frequently used usages, but has compatibability issues with some host OSes.
+
+config ZMK_HID_CONSUMER_REPORT_USAGES_BASIC
+	bool "Basic Consumer HID Usage Support"
+	help
+	  Enable Consumer usage ID values up to "Playback Speed - Slow" to be sent to
+	  hosts. Allows for broader compatibability with more host OSes.
+
+endchoice
+
+menu "Output Types"
 
 config ZMK_USB
 	bool "USB"
@@ -92,7 +142,10 @@ config ZMK_BLE_PASSKEY_ENTRY
 #ZMK_BLE
 endif
 
-#HID Output Types
+#Output Types
+endmenu
+
+# HID
 endmenu
 
 menu "Split Support"
@@ -156,7 +209,7 @@ endif
 endif
 
 #ZMK_SPLIT
-endif 
+endif
 
 if ZMK_BLE
 
@@ -209,36 +262,54 @@ config ZMK_RGB_UNDERGLOW_EXT_POWER
 	bool "RGB underglow toggling also controls external power"
 	default y
 
+config ZMK_RGB_UNDERGLOW_BRT_MIN
+	int "RGB underglow minimum brightness in percent"
+	range 0 100
+	default 0
+
+config ZMK_RGB_UNDERGLOW_BRT_MAX
+	int "RGB underglow maximum brightness in percent"
+	range ZMK_RGB_UNDERGLOW_BRT_MIN 100
+	default 100
+
 config ZMK_RGB_UNDERGLOW_HUE_STEP
-	int "RGB underglow hue step in degrees of 360"
+	int "RGB underglow hue step in degrees"
+	range 0 359
 	default 10
 
 config ZMK_RGB_UNDERGLOW_SAT_STEP
-	int "RGB underglow sturation step in percent"
+	int "RGB underglow saturation step in percent"
+	range 0 100
 	default 10
 
 config ZMK_RGB_UNDERGLOW_BRT_STEP
 	int "RGB underglow brightness step in percent"
+	range 0 100
 	default 10
 
 config ZMK_RGB_UNDERGLOW_HUE_START
-	int "RGB underglow start hue value from 0-359"
+	int "RGB underglow start hue value in degrees"
+	range 0 359
 	default 0
 
 config ZMK_RGB_UNDERGLOW_SAT_START
-	int "RGB underglow start saturations value from 0-100"
+	int "RGB underglow start saturations value in percent"
+	range 0 100
 	default 100
 
 config ZMK_RGB_UNDERGLOW_BRT_START
-	int "RGB underglow start brightness value from 0-100"
-	default 100
+	int "RGB underglow start brightness value in percent"
+	range ZMK_RGB_UNDERGLOW_BRT_MIN ZMK_RGB_UNDERGLOW_BRT_MAX
+	default ZMK_RGB_UNDERGLOW_BRT_MAX
 
 config ZMK_RGB_UNDERGLOW_SPD_START
-	int "RGB underglow start animation speed value from 1-5"
+	int "RGB underglow start animation speed value"
+	range 1 5
 	default 3
 
 config ZMK_RGB_UNDERGLOW_EFF_START
 	int "RGB underglow start effect int value related to the effect enum list"
+	range 0 3
 	default 0
 
 config ZMK_RGB_UNDERGLOW_ON_START

@@ -48,6 +48,9 @@ lv_obj_t *zmk_display_status_screen() {
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_LAYER_STATUS)
     zmk_widget_layer_status_init(&layer_status_widget, screen);
+    lv_obj_set_style_local_text_font(zmk_widget_layer_status_obj(&layer_status_widget),
+                                     LV_LABEL_PART_MAIN, LV_STATE_DEFAULT,
+                                     lv_theme_get_font_small());
     lv_obj_align(zmk_widget_layer_status_obj(&layer_status_widget), NULL, LV_ALIGN_IN_BOTTOM_LEFT,
                  0, 0);
 #endif
