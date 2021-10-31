@@ -664,3 +664,5 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
