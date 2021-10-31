@@ -410,15 +410,13 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap,
     }
 
     // If the hold-tap behavior is still undecided, attempt to decide it.
-    if (hold_tap->status == STATUS_UNDECIDED) {
-        switch (hold_tap->config->flavor) {
-        case FLAVOR_HOLD_PREFERRED:
-            decide_hold_preferred(hold_tap, decision_moment);
-        case FLAVOR_BALANCED:
-            decide_balanced(hold_tap, decision_moment);
-        case FLAVOR_TAP_PREFERRED:
-            decide_tap_preferred(hold_tap, decision_moment);
-        }
+    switch (hold_tap->config->flavor) {
+    case FLAVOR_HOLD_PREFERRED:
+        decide_hold_preferred(hold_tap, decision_moment);
+    case FLAVOR_BALANCED:
+        decide_balanced(hold_tap, decision_moment);
+    case FLAVOR_TAP_PREFERRED:
+        decide_tap_preferred(hold_tap, decision_moment);
     }
 
     if (hold_tap->status == STATUS_UNDECIDED) {
@@ -666,5 +664,3 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
-
-#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
