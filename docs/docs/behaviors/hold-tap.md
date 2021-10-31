@@ -26,6 +26,7 @@ We call this the 'hold-preferred' flavor of hold-taps. While this flavor may wor
 - The 'hold-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired or another key is pressed.
 - The 'balanced' flavor will trigger the hold behavior when the `tapping-term-ms` has expired or another key is pressed and released.
 - The 'tap-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired. It triggers the tap behavior when another key is pressed.
+- The 'tap-unless-interrupted' flavor triggers a hold behavior only when another key is pressed before `tapping-term-ms` has expired. It triggers the tap behavior in all other situations.
 
 When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
 

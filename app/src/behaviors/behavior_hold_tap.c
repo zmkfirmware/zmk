@@ -1,4 +1,5 @@
 /*
+
  * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
@@ -34,6 +35,7 @@ enum flavor {
     FLAVOR_HOLD_PREFERRED,
     FLAVOR_BALANCED,
     FLAVOR_TAP_PREFERRED,
+    FLAVOR_TAP_UNLESS_INTERRUPTED,
 };
 
 enum status {
@@ -252,6 +254,26 @@ static void decide_tap_preferred(struct active_hold_tap *hold_tap, enum decision
     }
 }
 
+static void decide_tap_unless_interrupted(struct active_hold_tap *hold_tap,
+                                          enum decision_moment event) {
+    switch (event) {
+    case HT_KEY_UP:
+        hold_tap->status = STATUS_TAP;
+        return;
+    case HT_OTHER_KEY_DOWN:
+        hold_tap->status = STATUS_HOLD_INTERRUPT;
+        return;
+    case HT_TIMER_EVENT:
+        hold_tap->status = STATUS_TAP;
+        return;
+    case HT_QUICK_TAP:
+        hold_tap->status = STATUS_TAP;
+        return;
+    default:
+        return;
+    }
+}
+
 static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
@@ -279,6 +301,8 @@ static inline const char *flavor_str(enum flavor flavor) {
         return "balanced";
     case FLAVOR_TAP_PREFERRED:
         return "tap-preferred";
+    case FLAVOR_TAP_UNLESS_INTERRUPTED:
+        return "tap-unless-interrupted";
     default:
         return "UNKNOWN FLAVOR";
     }
@@ -377,6 +401,8 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap,
         decide_balanced(hold_tap, decision_moment);
     case FLAVOR_TAP_PREFERRED:
         decide_tap_preferred(hold_tap, decision_moment);
+    case FLAVOR_TAP_UNLESS_INTERRUPTED:
+        decide_tap_unless_interrupted(hold_tap, decision_moment);
     }
 
     if (hold_tap->status == STATUS_UNDECIDED) {
