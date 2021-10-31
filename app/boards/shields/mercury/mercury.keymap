@@ -12,7 +12,7 @@
 #define SYS 6
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-// Keymap: 31Oct2021 4:30 pm
+// [Keymap 31Oct2021 4:40 pm]
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 / {
@@ -60,8 +60,8 @@
     combos {
         compatible = "zmk,combos";
         combo_menu {
-            timeout-ms = <25>;
-            key-positions = <37 38>;
+            timeout-ms = <50>;
+            key-positions = <18 19>;
             bindings = <&kp K_CMENU>;
         };
     };
