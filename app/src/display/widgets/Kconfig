@@ -27,4 +27,24 @@ config ZMK_WIDGET_WPM_STATUS
     select LVGL_USE_LABEL
     select ZMK_WPM
 
+config ZMK_WIDGET_BONGO_CAT
+    bool "Widget for displaying bongo cat that reacts to typing"
+    depends on !ZMK_DISPLAY_WORK_QUEUE_DEDICATED && (!ZMK_SPLIT || ZMK_SPLIT_BLE_ROLE_CENTRAL)
+    select LVGL_USE_IMG
+    select LVGL_USE_ANIMATION
+    select ZMK_WPM
+
+if ZMK_WIDGET_BONGO_CAT
+
+config ZMK_WIDGET_BONGO_CAT_IDLE_LIMIT
+    int "Upper limit for WPM for showing idle animation"
+    default 30
+
+config ZMK_WIDGET_BONGO_CAT_SLOW_LIMIT
+    int "Upper limit for WPM for showing slow typing image"
+    default 60
+
+endif # ZMK_WIDGET_BONGO_CAT
+
+
 endmenu
