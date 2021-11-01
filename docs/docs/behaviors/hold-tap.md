@@ -107,6 +107,7 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 The following are suggested hold-tap configurations that work well with home row mods:
 
 ##### Option 1: cross-hand only modifiers, using `tap-unless-interrupted` and positional hold-tap (`hold-trigger-key-positions`)
+
 ```
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
@@ -137,6 +138,7 @@ The following are suggested hold-tap configurations that work well with home row
 ```
 
 ##### Option 2: `tap-preferred`
+
 ```
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
