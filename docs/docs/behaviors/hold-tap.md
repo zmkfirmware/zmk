@@ -59,6 +59,48 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 };
 ```
 
+#### Positional hold-tap and `hold-trigger-key-positions`
+
+- Including `hold-trigger-key-postions` in your hold-tap definition turns on the positional hold-tap feature.
+- With positional hold-tap enabled, if you press any key **NOT** listed in `hold-trigger-key-positions` before `tapping-term-ms` expires, it will produce a tap.
+- In all other situations, positional hold-tap will not modify the behavior of your hold-tap.
+- Positional hold-tap is useful with home-row modifiers. If you have a home-row modifier key in the left hand for example, by including only keys positions from the right hand in `hold-trigger-key-positions`, you will only get hold behaviors during cross-hand key combinations.
+- Note that `hold-trigger-key-postions` is an array of key position indexes. Key positions are numbered according to your keymap, starting with 0. So if the first key in your keymap is Q, this key is in position 0. The next key (probably W) will be in position 1, et cetera.
+- See the following example, which uses a hold-tap behavior definition, configured with the `hold-preferrred` flavor, and with positional hold-tap enabled:
+
+```
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+/ {
+	behaviors {
+		pht: positional_hold_tap {
+			compatible = "zmk,behavior-hold-tap";
+			label = "POSITIONAL_HOLD_TAP";
+			#binding-cells = <2>;
+			flavor = "hold-preferred";
+			tapping-term-ms = <400>;
+			quick-tap-ms = <200>;
+			bindings = <&kp>, <&kp>;
+			hold-trigger-key-positions = <1>;    // <---[[the W key]]
+		};
+	};
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+		default_layer {
+			bindings = <
+				//  position 0         position 1       position 2
+				&pht LEFT_SHIFT Q        &kp W            &kp E
+			>;
+		};
+	};
+};
+```
+
+- The sequence `(pht_down, E_down, E_up, pht_up)` produces `qe`. The normal hold behavior (LEFT_SHIFT) **IS** modified into a tap behavior (Q) by positional hold-tap because the first key pressed after the hold-tap key is the `E key`, which is in position 2, which **is NOT** included in `hold-trigger-key-positions`.
+- The sequence `(pht_down, W_down, W_up, pht_up)` produces `W`. The normal hold behavior (LEFT_SHIFT) **is NOT** modified into a tap behavior (Q) by positional hold-tap because the first key pressed after the hold-tap key is the `W key`, which is in position 1, which **IS** included in `hold-trigger-key-positions`.
+- If the `LEFT_SHIFT / Q key` is held by itself for longer than `tapping-term-ms`, a hold behavior is produced. This is because positional hold-tap only modifies the behavior of a hold-tap if another key is pressed before the `tapping-term-ms` period expires.
+
 #### Home row mods
 
 This example configures a hold-tap that works well for homerow mods:

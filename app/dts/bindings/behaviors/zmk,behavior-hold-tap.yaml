@@ -30,3 +30,7 @@ properties:
       - "tap-preferred"
   retro-tap:
     type: boolean
+  hold-trigger-key-positions:
+    type: array
+    required: false
+    default: []
