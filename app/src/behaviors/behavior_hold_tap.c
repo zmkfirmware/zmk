@@ -413,10 +413,13 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap,
     switch (hold_tap->config->flavor) {
     case FLAVOR_HOLD_PREFERRED:
         decide_hold_preferred(hold_tap, decision_moment);
+        break;
     case FLAVOR_BALANCED:
         decide_balanced(hold_tap, decision_moment);
+        break;
     case FLAVOR_TAP_PREFERRED:
         decide_tap_preferred(hold_tap, decision_moment);
+        break;
     }
 
     if (hold_tap->status == STATUS_UNDECIDED) {
