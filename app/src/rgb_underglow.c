@@ -19,6 +19,12 @@
 
 #include <zmk/rgb_underglow.h>
 
+#include <zmk/activity.h>
+#include <zmk/usb.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/activity_state_changed.h>
+#include <zmk/events/usb_conn_state_changed.h>
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define STRIP_LABEL DT_LABEL(DT_CHOSEN(zmk_underglow))
@@ -433,5 +439,67 @@ int zmk_rgb_underglow_change_spd(int direction) {
 
     return zmk_rgb_underglow_save_state();
 }
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
+static bool auto_off_idle_prev_state = false;
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+static bool auto_off_usb_prev_state = false;
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE) || IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+static int rgb_underglow_event_listener(const zmk_event_t *eh) {
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
+    if (as_zmk_activity_state_changed(eh)) {
+        bool new_state = (zmk_activity_get_state() == ZMK_ACTIVITY_ACTIVE);
+        if (state.on == new_state) {
+            return 0;
+        }
+        if (new_state) {
+            state.on = auto_off_idle_prev_state;
+            auto_off_idle_prev_state = false;
+            return zmk_rgb_underglow_on();
+        } else {
+            state.on = false;
+            auto_off_idle_prev_state = true;
+            return zmk_rgb_underglow_off();
+        }
+    }
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+    if (as_zmk_usb_conn_state_changed(eh)) {
+        bool new_state = zmk_usb_is_powered();
+        if (state.on == new_state) {
+            return 0;
+        }
+        if (new_state) {
+            state.on = auto_off_usb_prev_state;
+            auto_off_usb_prev_state = false;
+            return zmk_rgb_underglow_on();
+        } else {
+            state.on = false;
+            auto_off_usb_prev_state = true;
+            return zmk_rgb_underglow_off();
+        }
+    }
+#endif
+
+    return -ENOTSUP;
+}
+
+ZMK_LISTENER(rgb_underglow, rgb_underglow_event_listener);
+#endif // IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE) ||
+       // IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
+ZMK_SUBSCRIPTION(rgb_underglow, zmk_activity_state_changed);
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+ZMK_SUBSCRIPTION(rgb_underglow, zmk_usb_conn_state_changed);
+#endif
 
 SYS_INIT(zmk_rgb_underglow_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
