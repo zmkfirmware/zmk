@@ -45,6 +45,16 @@ endif()
 # Store the selected user_config in the cache
 set(CACHED_ZMK_CONFIG ${ZMK_CONFIG} CACHE STRING "Selected user ZMK config")
 
+string(FIND "${BOARD}" "@" REVISION_SEPARATOR_INDEX)
+if(NOT (REVISION_SEPARATOR_INDEX EQUAL -1))
+  message(STATUS "Board with revision: ${BOARD}")
+  math(EXPR BOARD_REVISION_INDEX "${REVISION_SEPARATOR_INDEX} + 1")
+  string(SUBSTRING ${BOARD} ${BOARD_REVISION_INDEX} -1 BOARD_REVISION)
+  string(SUBSTRING ${BOARD} 0 ${REVISION_SEPARATOR_INDEX} BOARD)
+  message(STATUS "Board without revision: ${BOARD}")
+endif()
+
+
 if (ZMK_CONFIG)
 	set(ENV{ZMK_CONFIG} "${ZMK_CONFIG}")
 	if(EXISTS ${ZMK_CONFIG}/boards)
