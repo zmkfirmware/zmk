@@ -15,6 +15,7 @@
 		zephyr,code-partition = &code_partition;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
+		zephyr,console = &nice_nano_cdc_acm_uart;
 	};
 
 	leds {
@@ -56,13 +57,17 @@
 
 &usbd {
 	status = "okay";
+	nice_nano_cdc_acm_uart: nice_nano_cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
 };
 
 
 &flash0 {
 	/*
 	 * For more information, see:
-	 * http://docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
+	 * http: //docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
 	 */
 	partitions {
 		compatible = "fixed-partitions";
