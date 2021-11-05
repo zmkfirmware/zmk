@@ -372,10 +372,6 @@ config ZMK_SLEEP
 
 if ZMK_SLEEP
 
-choice SYS_PM_POLICY
-	default PM_POLICY_APP
-endchoice
-
 config PM_DEVICE
 	default y
 

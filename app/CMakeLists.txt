@@ -22,7 +22,6 @@ zephyr_linker_sources(RODATA include/linker/zmk-events.ld)
 # Add your source file to the "app" target. This must come after
 # find_package(Zephyr) which defines the target.
 target_include_directories(app PRIVATE include)
-target_sources_ifdef(CONFIG_ZMK_SLEEP app PRIVATE src/power.c)
 target_sources(app PRIVATE src/stdlib.c)
 target_sources(app PRIVATE src/activity.c)
 target_sources(app PRIVATE src/kscan.c)
