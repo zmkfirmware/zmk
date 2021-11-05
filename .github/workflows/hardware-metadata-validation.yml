@@ -29,7 +29,7 @@ jobs:
   validate-metadata:
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-dev-arm:2.5
+      image: docker.io/petejohanson/zmk-dev-arm:2.7-branch
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
