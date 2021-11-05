@@ -688,8 +688,8 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
         .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
         .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, device_pm_control_nop,                        \
-                          &behavior_hold_tap_data, &behavior_hold_tap_config_##n, APPLICATION,     \
+    DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, &behavior_hold_tap_data,                \
+                          &behavior_hold_tap_config_##n, APPLICATION,                              \
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)

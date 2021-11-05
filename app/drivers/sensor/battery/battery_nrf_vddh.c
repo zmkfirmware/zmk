@@ -112,5 +112,5 @@ static int vddh_init(const struct device *dev) {
 
 static struct vddh_data vddh_data;
 
-DEVICE_DT_INST_DEFINE(0, &vddh_init, device_pm_control_nop, &vddh_data, NULL, POST_KERNEL,
+DEVICE_DT_INST_DEFINE(0, &vddh_init, NULL, &vddh_data, NULL, POST_KERNEL,
                       CONFIG_SENSOR_INIT_PRIORITY, &vddh_api);
