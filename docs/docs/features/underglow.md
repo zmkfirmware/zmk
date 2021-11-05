@@ -67,6 +67,8 @@ To identify which pin number you need to put in the config you need do to a bit 
 Here's an example on a definition that uses P0.06:
 
 ```
+#include <dt-bindings/led/led.h>
+
 &spi1 {
   compatible = "nordic,nrf-spim";
   status = "okay";
@@ -87,6 +89,9 @@ Here's an example on a definition that uses P0.06:
     chain-length = <10>; /* number of LEDs */
     spi-one-frame = <0x70>;
     spi-zero-frame = <0x40>;
+    color-mapping = <LED_COLOR_ID_GREEN
+                          LED_COLOR_ID_RED
+                          LED_COLOR_ID_BLUE>;
   };
 };
 ```
@@ -105,6 +110,8 @@ For other boards, you must select an SPI definition that has the `MOSI` pin as y
 Here's another example for a non-nRF52 board on `spi1`:
 
 ```
+#include <dt-bindings/led/led.h>
+
 &spi1 {
 
   led_strip: ws2812@0 {
@@ -119,6 +126,9 @@ Here's another example for a non-nRF52 board on `spi1`:
     chain-length = <10>; /* number of LEDs */
     spi-one-frame = <0x70>; /* make sure to configure this properly for your SOC */
     spi-zero-frame = <0x40>; /* make sure to configure this properly for your SOC */
+    color-mapping = <LED_COLOR_ID_GREEN
+                          LED_COLOR_ID_RED
+                          LED_COLOR_ID_BLUE>;
   };
 };
 ```

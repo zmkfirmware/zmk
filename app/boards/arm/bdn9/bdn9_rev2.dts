@@ -6,6 +6,7 @@
 
 /dts-v1/;
 #include <st/f0/stm32f072Xb.dtsi>
+#include <dt-bindings/led/led.h>
 
 / {
 	model = "Keeb.io BDN9 rev2";
@@ -17,24 +18,24 @@
 		zmk,kscan = &kscan;
 		/* TODO: Enable once the GPIO bitbanging driver supports STM32
 		zmk,underglow = &led_strip;
-		*/
+		 */
 	};
-	
+
 	kscan: kscan {
 		compatible = "zmk,kscan-gpio-direct";
 		label = "KSCAN";
 
 		input-gpios
-			= <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&gpiob 5  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&gpiob 6  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&gpiob 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&gpiob 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&gpiob 7  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&gpioa 3  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&gpiof 1  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			, <&gpiof 0  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			;
+		= <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpiob 5  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpiob 6  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpiob 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpiob 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpiob 7  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpioa 3  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpiof 1  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpiof 0  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		;
 	};
 
 	/*
@@ -46,7 +47,7 @@
 
 		chain-length = <9>;
 	};
-	*/
+	 */
 
 	left_encoder: encoder_left {
 		compatible = "alps,ec11";
@@ -91,7 +92,7 @@
 &flash0 {
 	/*
 	 * For more information, see:
-	 * http://docs.zephyrproject.org/latest/guides/dts/index.html#flash-partitions
+	 * http: //docs.zephyrproject.org/latest/guides/dts/index.html#flash-partitions
 	 */
 	partitions {
 		compatible = "fixed-partitions";
