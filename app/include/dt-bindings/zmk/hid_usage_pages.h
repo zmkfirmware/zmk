@@ -10,9 +10,9 @@
 
 #pragma once
 
-#define HID_USAGE(page, id) ((page << 16) | id)
-#define HID_USAGE_ID(usage) (usage & 0xFFFF)
-#define HID_USAGE_PAGE(usage) (usage >> 16)
+#define ZMK_HID_USAGE(page, id) ((page << 16) | id)
+#define ZMK_HID_USAGE_ID(usage) (usage & 0xFFFF)
+#define ZMK_HID_USAGE_PAGE(usage) (usage >> 16)
 
 /* WARNING: DEPRECATED from dt-bindings/zmk/keys.h */
 #define USAGE_KEYPAD (0x07)   // WARNING: DEPRECATED (DO NOT USE)
