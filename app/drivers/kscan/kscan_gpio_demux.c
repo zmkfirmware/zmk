@@ -246,7 +246,7 @@ struct kscan_gpio_item_config {
         .cols = {UTIL_LISTIFY(INST_DEMUX_GPIOS(n), _KSCAN_GPIO_OUTPUT_CFG_INIT, n)},               \
     };                                                                                             \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, device_pm_control_nop, &kscan_gpio_data_##n,     \
+    DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, NULL, &kscan_gpio_data_##n,                      \
                           &kscan_gpio_config_##n, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY,   \
                           &gpio_driver_api_##n);
 
