@@ -71,7 +71,7 @@ struct active_hold_tap {
     int64_t timestamp;
     enum status status;
     const struct behavior_hold_tap_config *config;
-    struct k_delayed_work work;
+    struct k_work_delayable work;
     bool work_is_cancelled;
 
     // initialized to -1, which is to be interpreted as "no other key has been pressed yet"
@@ -522,7 +522,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     // if this behavior was queued we have to adjust the timer to only
     // wait for the remaining time.
     int32_t tapping_term_ms_left = (hold_tap->timestamp + cfg->tapping_term_ms) - k_uptime_get();
-    k_delayed_work_submit(&hold_tap->work, K_MSEC(tapping_term_ms_left));
+    k_work_schedule(&hold_tap->work, K_MSEC(tapping_term_ms_left));
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
@@ -537,7 +537,7 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
 
     // If these events were queued, the timer event may be queued too late or not at all.
     // We insert a timer event before the TH_KEY_UP event to verify.
-    int work_cancel_result = k_delayed_work_cancel(&hold_tap->work);
+    int work_cancel_result = k_work_cancel_delayable(&hold_tap->work);
     if (event.timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(hold_tap, HT_TIMER_EVENT);
     }
@@ -666,7 +666,7 @@ static int behavior_hold_tap_init(const struct device *dev) {
 
     if (init_first_run) {
         for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
-            k_delayed_work_init(&active_hold_taps[i].work, behavior_hold_tap_timer_work_handler);
+            k_work_init_delayable(&active_hold_taps[i].work, behavior_hold_tap_timer_work_handler);
             active_hold_taps[i].position = ZMK_BHV_HOLD_TAP_POSITION_NOT_USED;
         }
     }

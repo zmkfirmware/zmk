@@ -43,7 +43,7 @@ struct active_sticky_key {
     bool timer_started;
     bool timer_cancelled;
     int64_t release_at;
-    struct k_delayed_work release_timer;
+    struct k_work_delayable release_timer;
     // usage page and keycode for the key that is being modified by this sticky key
     uint8_t modified_key_usage_page;
     uint32_t modified_key_keycode;
@@ -118,7 +118,7 @@ static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_k
 }
 
 static int stop_timer(struct active_sticky_key *sticky_key) {
-    int timer_cancel_result = k_delayed_work_cancel(&sticky_key->release_timer);
+    int timer_cancel_result = k_work_cancel_delayable(&sticky_key->release_timer);
     if (timer_cancel_result == -EINPROGRESS) {
         // too late to cancel, we'll let the timer handler clear up.
         sticky_key->timer_cancelled = true;
@@ -167,7 +167,7 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
     // adjust timer in case this behavior was queued by a hold-tap
     int32_t ms_left = sticky_key->release_at - k_uptime_get();
     if (ms_left > 0) {
-        k_delayed_work_submit(&sticky_key->release_timer, K_MSEC(ms_left));
+        k_work_schedule(&sticky_key->release_timer, K_MSEC(ms_left));
     }
     return ZMK_BEHAVIOR_OPAQUE;
 }
@@ -254,8 +254,8 @@ static int behavior_sticky_key_init(const struct device *dev) {
     static bool init_first_run = true;
     if (init_first_run) {
         for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
-            k_delayed_work_init(&active_sticky_keys[i].release_timer,
-                                behavior_sticky_key_timer_handler);
+            k_work_init_delayable(&active_sticky_keys[i].release_timer,
+                                  behavior_sticky_key_timer_handler);
             active_sticky_keys[i].position = ZMK_BHV_STICKY_KEY_POSITION_FREE;
         }
     }
