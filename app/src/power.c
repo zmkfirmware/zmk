@@ -16,11 +16,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/activity.h>
 
 bool is_usb_power_present() {
-#ifdef CONFIG_USB
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     return zmk_usb_is_powered();
 #else
     return false;
-#endif /* CONFIG_USB */
+#endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 }
 
 struct pm_state_info pm_policy_next_state(int32_t ticks) {

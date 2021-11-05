@@ -422,7 +422,7 @@ menu "Advanced"
 
 menu "Initialization Priorities"
 
-if USB
+if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
 	int "USB Init Priority"
@@ -526,7 +526,7 @@ config KERNEL_BIN_NAME
 config REBOOT
 	default y
 
-config USB
+config USB_DEVICE_STACK
 	default y if HAS_HW_NRF_USBD
 
 config ZMK_WPM
