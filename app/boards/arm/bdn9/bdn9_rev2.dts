@@ -14,6 +14,7 @@
 	chosen {
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
+		zephyr,console = &cdc_acm_uart;
 		zmk,kscan = &kscan;
 		/* TODO: Enable once the GPIO bitbanging driver supports STM32
 		zmk,underglow = &led_strip;
@@ -82,6 +83,10 @@
 
 &usb {
 	status = "okay";
+	cdc_acm_uart: cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
 };
 
 &rtc {

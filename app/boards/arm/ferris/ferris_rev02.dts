@@ -17,6 +17,7 @@
 	chosen {
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
+		zephyr,console = &cdc_acm_uart;
 		zmk,kscan = &kscan;
 		zmk,matrix_transform = &transform;
 		/* TODO: Enable once we support the IC for underglow
@@ -118,6 +119,10 @@
 
 &rtc {
 	status = "okay";
+	cdc_acm_uart: cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
 };
 
 &flash0 {

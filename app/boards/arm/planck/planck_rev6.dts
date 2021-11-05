@@ -15,8 +15,9 @@
 	chosen {
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
+		zephyr,console = &cdc_acm_uart;
 		zmk,kscan = &kscan0;
-                zmk,matrix_transform = &layout_grid_transform;
+		zmk,matrix_transform = &layout_grid_transform;
 	};
 
 	kscan0: kscan {
@@ -83,6 +84,10 @@ layout_2x2u_transform:
 
 &usb {
 	status = "okay";
+	cdc_acm_uart: cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
 };
 
 &flash0 {
