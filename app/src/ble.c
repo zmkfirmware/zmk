@@ -247,13 +247,12 @@ static void ble_save_profile_work(struct k_work *work) {
     settings_save_one("ble/active_profile", &active_profile, sizeof(active_profile));
 }
 
-static struct k_delayed_work ble_save_work;
+static struct k_work_delayable ble_save_work;
 #endif
 
 static int ble_save_profile() {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    k_delayed_work_cancel(&ble_save_work);
-    return k_delayed_work_submit(&ble_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return k_work_reschedule(&ble_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
     return 0;
 #endif
@@ -391,11 +390,6 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
     LOG_DBG("Connected %s", log_strdup(addr));
 
-    err = bt_conn_le_param_update(conn, BT_LE_CONN_PARAM(0x0006, 0x000c, 30, 400));
-    if (err) {
-        LOG_WRN("Failed to update LE parameters (err %d)", err);
-    }
-
 #if IS_SPLIT_PERIPHERAL
     bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
 #endif
@@ -505,7 +499,7 @@ static enum bt_security_err auth_pairing_accept(struct bt_conn *conn,
     bt_conn_get_info(conn, &info);
 
     LOG_DBG("role %d, open? %s", info.role, zmk_ble_active_profile_is_open() ? "yes" : "no");
-    if (info.role == BT_CONN_ROLE_SLAVE && !zmk_ble_active_profile_is_open()) {
+    if (info.role == BT_CONN_ROLE_PERIPHERAL && !zmk_ble_active_profile_is_open()) {
         LOG_WRN("Rejecting pairing request to taken profile %d", active_profile);
         return BT_SECURITY_ERR_PAIR_NOT_ALLOWED;
     }
@@ -522,7 +516,7 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
     bt_addr_le_to_str(dst, addr, sizeof(addr));
     bt_conn_get_info(conn, &info);
 
-    if (info.role != BT_CONN_ROLE_SLAVE) {
+    if (info.role != BT_CONN_ROLE_PERIPHERAL) {
         LOG_DBG("SKIPPING FOR ROLE %d", info.role);
         return;
     }
@@ -579,7 +573,7 @@ static int zmk_ble_init(const struct device *_arg) {
         return err;
     }
 
-    k_delayed_work_init(&ble_save_work, ble_save_profile_work);
+    k_work_init_delayable(&ble_save_work, ble_save_profile_work);
 
     settings_load_subtree("ble");
     settings_load_subtree("bt");
