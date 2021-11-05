@@ -477,8 +477,8 @@ static const struct kscan_driver_api kscan_matrix_api = {
         .diode_direction = INST_DIODE_DIR(index),                                                  \
     };                                                                                             \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(index, &kscan_matrix_init, device_pm_control_nop,                        \
-                          &kscan_matrix_data_##index, &kscan_matrix_config_##index, APPLICATION,   \
+    DEVICE_DT_INST_DEFINE(index, &kscan_matrix_init, NULL, &kscan_matrix_data_##index,             \
+                          &kscan_matrix_config_##index, APPLICATION,                               \
                           CONFIG_APPLICATION_INIT_PRIORITY, &kscan_matrix_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSCAN_MATRIX_INIT);
