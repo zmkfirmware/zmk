@@ -47,13 +47,12 @@ static void ext_power_save_state_work(struct k_work *work) {
     settings_save_one(setting_path, &data->status, sizeof(data->status));
 }
 
-static struct k_delayed_work ext_power_save_work;
+static struct k_work_delayable ext_power_save_work;
 #endif
 
 int ext_power_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    k_delayed_work_cancel(&ext_power_save_work);
-    return k_delayed_work_submit(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
     return 0;
 #endif
@@ -156,14 +155,14 @@ static int ext_power_generic_init(const struct device *dev) {
         return err;
     }
 
-    k_delayed_work_init(&ext_power_save_work, ext_power_save_state_work);
+    k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
 
     // Set default value (on) if settings isn't set
     settings_load_subtree("ext_power");
     if (!data->settings_init) {
 
         data->status = true;
-        k_delayed_work_submit(&ext_power_save_work, K_NO_WAIT);
+        k_work_schedule(&ext_power_save_work, K_NO_WAIT);
 
         ext_power_enable(dev);
     }

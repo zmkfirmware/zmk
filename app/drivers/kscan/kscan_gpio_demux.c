@@ -47,7 +47,7 @@ struct kscan_gpio_item_config {
 
 #define GPIO_INST_INIT(n)                                                                          \
     struct kscan_gpio_irq_callback_##n {                                                           \
-        struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_delayed_work)) * work;                           \
+        struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_work_delayable)) * work;                         \
         struct gpio_callback callback;                                                             \
         const struct device *dev;                                                                  \
     };                                                                                             \
@@ -60,7 +60,7 @@ struct kscan_gpio_item_config {
     struct kscan_gpio_data_##n {                                                                   \
         kscan_callback_t callback;                                                                 \
         struct k_timer poll_timer;                                                                 \
-        struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_delayed_work)) work;                             \
+        struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_work_delayable)) work;                           \
         bool matrix_state[INST_MATRIX_INPUTS(n)][INST_MATRIX_OUTPUTS(n)];                          \
         const struct device *rows[INST_MATRIX_INPUTS(n)];                                          \
         const struct device *cols[INST_MATRIX_OUTPUTS(n)];                                         \
@@ -137,10 +137,8 @@ struct kscan_gpio_item_config {
             }                                                                                      \
         }                                                                                          \
         if (submit_follow_up_read) {                                                               \
-            CHECK_DEBOUNCE_CFG(n, ({ k_work_submit(&data->work); }), ({                            \
-                                   k_delayed_work_cancel(&data->work);                             \
-                                   k_delayed_work_submit(&data->work, K_MSEC(5));                  \
-                               }))                                                                 \
+            CHECK_DEBOUNCE_CFG(n, ({ k_work_submit(&data->work); }),                               \
+                               ({ k_work_reschedule(&data->work, K_MSEC(5)); }))                   \
         }                                                                                          \
         return 0;                                                                                  \
     }                                                                                              \
@@ -232,7 +230,7 @@ struct kscan_gpio_item_config {
                                                                                                    \
         k_timer_init(&data->poll_timer, kscan_gpio_timer_handler, NULL);                           \
                                                                                                    \
-        (CHECK_DEBOUNCE_CFG(n, (k_work_init), (k_delayed_work_init)))(                             \
+        (CHECK_DEBOUNCE_CFG(n, (k_work_init), (k_work_init_delayable)))(                           \
             &data->work, kscan_gpio_work_handler_##n);                                             \
         return 0;                                                                                  \
     }                                                                                              \

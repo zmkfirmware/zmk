@@ -22,7 +22,7 @@ struct q_item {
 K_MSGQ_DEFINE(zmk_behavior_queue_msgq, sizeof(struct q_item), CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE, 4);
 
 static void behavior_queue_process_next(struct k_work *work);
-static K_DELAYED_WORK_DEFINE(queue_work, behavior_queue_process_next);
+static K_WORK_DELAYABLE_DEFINE(queue_work, behavior_queue_process_next);
 
 static void behavior_queue_process_next(struct k_work *work) {
     struct q_item item = {.wait = 0};
@@ -43,7 +43,7 @@ static void behavior_queue_process_next(struct k_work *work) {
         LOG_DBG("Processing next queued behavior in %dms", item.wait);
 
         if (item.wait > 0) {
-            k_delayed_work_submit(&queue_work, K_MSEC(item.wait));
+            k_work_schedule(&queue_work, K_MSEC(item.wait));
             break;
         }
     }
@@ -58,7 +58,7 @@ int zmk_behavior_queue_add(uint32_t position, const struct zmk_behavior_binding 
         return ret;
     }
 
-    if (!k_delayed_work_pending(&queue_work)) {
+    if (!k_work_delayable_is_pending(&queue_work)) {
         behavior_queue_process_next(&queue_work.work);
     }
 
