@@ -152,8 +152,10 @@ int zmk_split_bt_position_released(uint8_t position) {
 }
 
 int service_init(const struct device *_arg) {
-    k_work_q_start(&service_work_q, service_q_stack, K_THREAD_STACK_SIZEOF(service_q_stack),
-                   CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY);
+    static const struct k_work_queue_config queue_config = {
+        .name = "Split Peripheral Notification Queue"};
+    k_work_queue_start(&service_work_q, service_q_stack, K_THREAD_STACK_SIZEOF(service_q_stack),
+                       CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY, &queue_config);
 
     return 0;
 }
