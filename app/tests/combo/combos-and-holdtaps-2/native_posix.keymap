@@ -26,12 +26,12 @@
 
 	keymap {
 		compatible = "zmk,keymap";
-		label ="Default keymap";
+		label = "Default keymap";
 
 		default_layer {
 			bindings = <
-				&mt LEFT_CONTROL A &mt RIGHT_CONTROL B
-				&none &none
+			&mt LEFT_CONTROL A &mt RIGHT_CONTROL B
+			&none &none
 			>;
 		};
 	};
@@ -39,7 +39,7 @@
 
 &kscan {
 	events = <
-		ZMK_MOCK_PRESS(0,0,0) 
-		ZMK_MOCK_PRESS(0,1,300)
+	ZMK_MOCK_PRESS(0,0,0)
+	ZMK_MOCK_PRESS(0,1,300)
 	>;
 };
