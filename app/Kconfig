@@ -477,15 +477,6 @@ config ZMK_LOG_LEVEL
 config USB_CDC_ACM_RINGBUF_SIZE
 	default 1024
 
-config USB_CDC_ACM_DEVICE_NAME
-	default "CDC_ACM"
-
-config USB_CDC_ACM_DEVICE_COUNT
-	default 1
-
-config UART_CONSOLE_ON_DEV_NAME
-	default "CDC_ACM_0"
-
 config LOG_BUFFER_SIZE
 	default 8192
 
