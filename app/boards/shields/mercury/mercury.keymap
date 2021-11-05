@@ -12,7 +12,7 @@
 #define SYS 6
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-// [Keymap 31Oct2021 4:40 pm]
+// [Keymap 3Nov2021 10:35 am]
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 / {
@@ -64,6 +64,12 @@
             key-positions = <18 19>;
             bindings = <&kp K_CMENU>;
         };
+        
+        combo_layered_return {
+            timeout-ms = <50>;
+            key-positions = <23 40>;
+            bindings = <&kp RET>;
+        };
     };
 
     keymap {
@@ -71,10 +77,10 @@
         
         apple_layer {
             bindings = <
-&hlt FUN TAB  &cmt LSFT Q  &kp W    &kp E      &kp R      &kp T    /**/   &kp Y      &kp U        &kp I    &kp O    &kp P    &kp BKSP
-&hlt NUM ESC     &kp A     &kp S    &kp D   &cmt LSFT F   &kp G    /**/   &kp H      &kp J        &kp K    &kp L   &kp SCLN  &kp QUOT
-  &kp LSFT       &kp Z     &kp X    &kp C      &kp V      &kp B    /**/   &kp N      &kp M      &kp CMMA  &kp DOT  &kp FSLH  &kp RSFT
-                                  &kp LCTL   &kp LALT    &kp LGUI  /**/  &kp SPC  &hlt NAV RET   &mo MED
+&hlt FUN TAB  &cmt LSFT Q  &kp W    &kp E      &kp R       &kp T   /**/   &kp Y    &kp U     &kp I    &kp O    &kp P    &kp BKSP
+&hlt NUM ESC     &kp A     &kp S    &kp D   &cmt LSFT F    &kp G   /**/   &kp H    &kp J     &kp K    &kp L   &kp SCLN  &kp QUOT
+  &kp LSFT       &kp Z     &kp X    &kp C      &kp V       &kp B   /**/   &kp N    &kp M   &kp CMMA  &kp DOT  &kp FSLH  &kp RSFT
+                                  &kp LCTL   &kp LALT    &kp LGUI  /**/  &kp SPC  &mo NAV  &mo MED
             >;
         };
 
@@ -109,7 +115,7 @@
         nav_layer {
             bindings = <
 &trans  &trans  &trans    &trans    &trans    &trans         /**/  &trans   &trans    &kp UARW  &kp PGUP  &kp PRSC  &kp DEL
-&trans  &trans  &kp SLCK  &trans    &trans    &trans         /**/  &trans   &kp LARW  &kp DARW  &kp RARW   &trans   &trans
+&trans  &trans  &kp SLCK  &trans    &trans    &trans         /**/  &trans   &kp LARW  &kp DARW  &kp RARW   &trans   &kp RET
 &trans  &trans  &trans    &kp CLCK  &trans  &kp PAUSE_BREAK  /**/  &kp INS  &kp PGDN  &kp HOME  &kp END    &trans   &trans
                           &trans    &trans    &trans         /**/  &trans   &trans    &trans
             >;
