@@ -6,7 +6,7 @@
 
 #include <zephyr.h>
 #include <kernel.h>
-#include <power/power.h>
+#include <pm/pm.h>
 
 #include <logging/log.h>
 
@@ -30,5 +30,3 @@ struct pm_state_info pm_policy_next_state(int32_t ticks) {
 
     return (struct pm_state_info){PM_STATE_ACTIVE, 0, 0};
 }
-
-__weak bool pm_policy_low_power_devices(enum pm_state state) { return pm_is_sleep_state(state); }

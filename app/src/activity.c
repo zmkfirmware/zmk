@@ -7,7 +7,7 @@
 #include <device.h>
 #include <init.h>
 #include <kernel.h>
-#include <power/power.h>
+#include <pm/pm.h>
 
 #include <logging/log.h>
 
