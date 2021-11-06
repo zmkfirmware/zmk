@@ -26,6 +26,7 @@ We call this the 'hold-preferred' flavor of hold-taps. While this flavor may wor
 - The 'hold-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired or another key is pressed.
 - The 'balanced' flavor will trigger the hold behavior when the `tapping-term-ms` has expired or another key is pressed and released.
 - The 'tap-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired. It triggers the tap behavior when another key is pressed.
+- The 'tap-unless-interrupted' flavor triggers a hold behavior only when another key is pressed before `tapping-term-ms` has expired. It triggers the tap behavior in all other situations.
 
 When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
 
@@ -103,7 +104,40 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 
 #### Home row mods
 
-This example configures a hold-tap that works well for homerow mods:
+The following are suggested hold-tap configurations that work well with home row mods:
+
+##### Option 1: cross-hand only modifiers, using `tap-unless-interrupted` and positional hold-tap (`hold-trigger-key-positions`)
+
+```
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+/ {
+	behaviors {
+		lh_pht: left_hand_positional_hold_tap {
+			compatible = "zmk,behavior-hold-tap";
+			label = "POSITIONAL_HOLD_TAP";
+			#binding-cells = <2>;
+			flavor = "tap-unless-interrupted";
+			tapping-term-ms = <100>;                        // <---[[produces tap if held longer than tapping-term-ms]]
+			quick-tap-ms = <200>;
+			bindings = <&kp>, <&kp>;
+			hold-trigger-key-positions = <5 6 7 8 9 10>;    // <---[[right-hand keys]]
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		default_layer {
+			bindings = <
+				// position 0           pos 1             pos 2             pos 3       pos 4    pos 5    pos 6    pos 7    pos 8    pos 9     pos 10
+				&lh_pht LSFT A    &lh_pht LGUI S    &lh_pht LALT D    &lh_pht LCTL F    &kp G    &kp H    &kp I    &kp J    &kp K    &kp L    &kp SCLN
+			>;
+		};
+	};
+};
+```
+
+##### Option 2: `tap-preferred`
 
 ```
 #include <behaviors.dtsi>
@@ -124,7 +158,6 @@ This example configures a hold-tap that works well for homerow mods:
 
 	keymap {
 		compatible = "zmk,keymap";
-
 		default_layer {
 			bindings = <
 	            &hm LCTRL A &hm LGUI S &hm LALT D &hm LSHIFT F
@@ -135,7 +168,36 @@ This example configures a hold-tap that works well for homerow mods:
 
 ```
 
-If this config does not work for you, try the flavor "balanced" with a medium `tapping-term-ms` such as 200ms.
+##### Option 3: `balanced`
+
+```
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+	behaviors {
+		bhm: balanced_homerow_mods {
+			compatible = "zmk,behavior-hold-tap";
+			label = "HOMEROW_MODS";
+			#binding-cells = <2>;
+			tapping-term-ms = <200>;    // <---[[moderate duration]]
+			quick_tap_ms = <0>;
+			flavor = "balanced";
+			bindings = <&kp>, <&kp>;
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		default_layer {
+			bindings = <
+	            &bhm LCTRL A &bhm LGUI S &bhm LALT D &bhm LSHIFT F
+			>;
+		};
+	};
+};
+
+```
 
 #### Comparison to QMK
 
