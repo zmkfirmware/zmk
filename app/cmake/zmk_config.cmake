@@ -97,6 +97,7 @@ endforeach()
 
 if (ZMK_CONFIG)
 	if (EXISTS ${ZMK_CONFIG})
+		message(STATUS "ZMK Config directory: ${ZMK_CONFIG}")
 		list(APPEND DTS_ROOT ${ZMK_CONFIG})
 		list(PREPEND KEYMAP_DIRS "${ZMK_CONFIG}")
 
