@@ -507,6 +507,8 @@ rsource "boards/shields/*/Kconfig.shield"
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
+osource "$(ZMK_CONFIG)/boards/arm/*/Kconfig.defconfig"
+osource "$(ZMK_CONFIG)/boards/arm/*/Kconfig.boards"
 
 source "Kconfig.zephyr"
 
