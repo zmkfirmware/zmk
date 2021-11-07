@@ -71,7 +71,7 @@ foreach(root ${BOARD_ROOT})
 	if (NOT DEFINED BOARD_DIR_NAME)
 		find_path(BOARD_DIR
 			NAMES ${BOARD}_defconfig
-			PATHS ${root}/boards/*/*
+			PATHS ${root}/boards/*/* ${root}/boards
 			NO_DEFAULT_PATH
 			)
 		if(BOARD_DIR)
@@ -83,13 +83,13 @@ foreach(root ${BOARD_ROOT})
 	if(DEFINED SHIELD)
 		find_path(shields_refs_list
 		    NAMES ${SHIELD}.overlay
-		    PATHS ${root}/boards/shields/*
+		    PATHS ${root}/boards/shields/* ${root}
 		    NO_DEFAULT_PATH)
 		foreach(shield_path ${shields_refs_list})
 			get_filename_component(SHIELD_DIR_NAME ${shield_path} NAME)
 			list(APPEND KEYMAP_DIRS ${shield_path})
 		endforeach()
-		
+
 		# make it consistent with other naming conventions used in project
 		set(SHIELD_DIR "${shields_refs_list}")
 	endif()
