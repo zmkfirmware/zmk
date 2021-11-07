@@ -58,9 +58,16 @@ if (ZMK_CONFIG)
 endif()
 
 foreach(root ${BOARD_ROOT})
+	# this case is for app/boards/shields/boards/<board>.overlay
+	# TODO: think if this should not be converted do /shileds/boards/arm/<board>.overlay
+	# this way zmk-config structure will be identical as main repo
 	if (EXISTS "${root}/boards/${BOARD}.overlay")
 		list(APPEND ZMK_DTC_FILES "${root}/boards/${BOARD}.overlay")
 	endif()
+	if (EXISTS "${root}/boards/arm/${BOARD}/${BOARD}.overlay")
+		list(APPEND ZMK_DTC_FILES "${root}/boards/arm/${BOARD}.overlay")
+	endif()
+
 	if (NOT DEFINED BOARD_DIR_NAME)
 		find_path(BOARD_DIR
 			NAMES ${BOARD}_defconfig
@@ -77,12 +84,14 @@ foreach(root ${BOARD_ROOT})
 		find_path(shields_refs_list
 		    NAMES ${SHIELD}.overlay
 		    PATHS ${root}/boards/shields/*
-		    NO_DEFAULT_PATH
-		    )
+		    NO_DEFAULT_PATH)
 		foreach(shield_path ${shields_refs_list})
-			get_filename_component(SHIELD_DIR ${shield_path} NAME)
+			get_filename_component(SHIELD_DIR_NAME ${shield_path} NAME)
 			list(APPEND KEYMAP_DIRS ${shield_path})
 		endforeach()
+		
+		# make it consistent with other naming conventions used in project
+		set(SHIELD_DIR "${shields_refs_list}")
 	endif()
 endforeach()
 
@@ -93,22 +102,22 @@ if (ZMK_CONFIG)
 		list(PREPEND KEYMAP_DIRS "${ZMK_CONFIG}")
 
 		if (SHIELD)
-			message(STATUS "Board: ${BOARD}, ${BOARD_DIR}, ${SHIELD}, ${SHIELD_DIR}")
-			list(APPEND overlay_candidates "${ZMK_CONFIG}/${SHIELD_DIR}.overlay")
-			list(APPEND overlay_candidates "${ZMK_CONFIG}/${SHIELD_DIR}_${BOARD}.overlay")
-			list(APPEND overlay_candidates "${ZMK_CONFIG}/${SHIELD}_${BOARD}.overlay")
-			list(APPEND overlay_candidates "${ZMK_CONFIG}/${SHIELD}.overlay")
-			list(APPEND config_candidates "${ZMK_CONFIG}/${SHIELD_DIR}.conf")
-			list(APPEND config_candidates "${ZMK_CONFIG}/${SHIELD_DIR}_${BOARD}.conf")
-			list(APPEND config_candidates "${ZMK_CONFIG}/${SHIELD}_${BOARD}.conf")
-			list(APPEND config_candidates "${ZMK_CONFIG}/${SHIELD}.conf")
+			message(STATUS "Board: ${BOARD}, ${BOARD_DIR}, ${SHIELD}, ${SHIELD_DIR_NAME}")
+			list(APPEND overlay_candidates "${SHIELD_DIR}/${SHIELD_DIR_NAME}.overlay")
+			list(APPEND overlay_candidates "${SHIELD_DIR}/${SHIELD_DIR_NAME}_${BOARD}.overlay")
+			list(APPEND overlay_candidates "${SHIELD_DIR}/${SHIELD}_${BOARD}.overlay")
+			list(APPEND overlay_candidates "${SHIELD_DIR}/${SHIELD}.overlay")
+			list(APPEND config_candidates "${SHIELD_DIR}/${SHIELD_DIR_NAME}.conf")
+			list(APPEND config_candidates "${SHIELD_DIR}/${SHIELD_DIR_NAME}_${BOARD}.conf")
+			list(APPEND config_candidates "${SHIELD_DIR}/${SHIELD}_${BOARD}.conf")
+			list(APPEND config_candidates "${SHIELD_DIR}/${SHIELD}.conf")
 		endif()
 
 		# TODO: Board revisions?
-		list(APPEND overlay_candidates "${ZMK_CONFIG}/${BOARD}.overlay")
-		list(APPEND overlay_candidates "${ZMK_CONFIG}/default.overlay")
-		list(APPEND config_candidates "${ZMK_CONFIG}/${BOARD}.conf")
-		list(APPEND config_candidates "${ZMK_CONFIG}/default.conf")
+		list(APPEND overlay_candidates "${BOARD_DIR}/${BOARD}.overlay")
+		list(APPEND overlay_candidates "${BOARD_DIR}/default.overlay")
+		list(APPEND config_candidates "${BOARD_DIR}/${BOARD}.conf")
+		list(APPEND config_candidates "${BOARD_DIR}/default.conf")
 
 		foreach(overlay ${overlay_candidates})
 			if (EXISTS "${overlay}")
@@ -133,7 +142,7 @@ endif()
 
 if(NOT KEYMAP_FILE)
 	foreach(keymap_dir ${KEYMAP_DIRS})
-		foreach(keymap_prefix ${SHIELD} ${SHIELD_DIR} ${BOARD} ${BOARD_DIR_NAME})
+		foreach(keymap_prefix ${SHIELD} ${SHIELD_DIR_NAME} ${BOARD} ${BOARD_DIR_NAME})
 			if (EXISTS ${keymap_dir}/${keymap_prefix}.keymap)
 				set(KEYMAP_FILE "${keymap_dir}/${keymap_prefix}.keymap" CACHE STRING "Selected keymap file")
 				message(STATUS "Using keymap file: ${KEYMAP_FILE}")
