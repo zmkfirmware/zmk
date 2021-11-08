@@ -1,0 +1,29 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+	behaviors {
+		tp: behavior_tap_preferred {
+			compatible = "zmk,behavior-hold-tap";
+			label = "MOD_TAP";
+			#binding-cells = <2>;
+			flavor = "tap-preferred";
+			tapping-term-ms = <300>;
+			quick-tap-ms = <200>;
+			bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <2>;
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&tp LEFT_SHIFT F      &tp LEFT_CONTROL J
+				&kp D      &kp E>;
+		};
+	};
+};

@@ -1,0 +1,9 @@
+file_format: "1"
+id: nibble
+name: Nibble
+type: shield
+url: https://nullbits.co/nibble/
+requires: [pro_micro]
+features:
+  - keys
+  - encoder

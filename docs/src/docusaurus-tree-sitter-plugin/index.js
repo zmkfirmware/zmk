@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 module.exports = function () {
   return {
     configureWebpack(config, isServer) {
@@ -11,17 +17,33 @@ module.exports = function () {
           loader: "null-loader",
         });
       } else {
-        // web-tree-sitter has a hard-coded path to tree-sitter.wasm,
+        // The way web-tree-sitter loads tree-sitter.wasm isn't something that
+        // Docusaurus/Webpack identify as an asset. There is currently no way to
+        // set location of the file other than patching web-tree-sitter.
         // (see https://github.com/tree-sitter/tree-sitter/issues/559)
-        // which some browsers treat as absolute and others as relative.
-        // This breaks everything. Rewrite it to always use an absolute path.
         rules.push({
           test: /tree-sitter\.js$/,
           loader: "string-replace-loader",
           options: {
-            search: '"tree-sitter.wasm"',
-            replace: '"/tree-sitter.wasm"',
-            strict: true,
+            multiple: [
+              // Replace the path to tree-sitter.wasm with a "new URL()" to clue
+              // Webpack in that it is an asset.
+              {
+                search: '"tree-sitter.wasm"',
+                replace: '(new URL("tree-sitter.wasm", import.meta.url)).href',
+                strict: true,
+              },
+              // Webpack replaces "new URL()" with the full URL to the asset, but
+              // web-tree-sitter will still add a prefix to it unless there is a
+              // Module.locateFile() function.
+              {
+                search: "var Module=void 0!==Module?Module:{};",
+                replace: `var Module = {
+                  locateFile: (path, prefix) => path.startsWith('http') ? path : prefix + path,
+                };`,
+                strict: true,
+              },
+            ],
           },
         });
       }

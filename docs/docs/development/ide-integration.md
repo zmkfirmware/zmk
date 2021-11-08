@@ -35,7 +35,7 @@ terminal to the ZMK repository and run the following command:
 west config build.cmake-args -- -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 ```
 
-Every [build](build-flash#building) will now update the database. You will
+Every [build](build-flash.md#building) will now update the database. You will
 need to build once to create the database before code completion will work.
 We'll tell Visual Studio Code where to find the database in the next step.
 
