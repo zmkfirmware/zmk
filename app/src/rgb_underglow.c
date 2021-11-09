@@ -332,16 +332,26 @@ int zmk_rgb_underglow_off() {
     return zmk_rgb_underglow_save_state();
 }
 
-int zmk_rgb_underglow_cycle_effect(int direction) {
+int zmk_rgb_underglow_calc_effect(int direction) {
+    return (state.current_effect + UNDERGLOW_EFFECT_NUMBER + direction) % UNDERGLOW_EFFECT_NUMBER;
+}
+
+int zmk_rgb_underglow_select_effect(int effect) {
     if (!led_strip)
         return -ENODEV;
 
-    state.current_effect += UNDERGLOW_EFFECT_NUMBER + direction;
-    state.current_effect %= UNDERGLOW_EFFECT_NUMBER;
+    if (effect < 0 || effect >= UNDERGLOW_EFFECT_NUMBER) {
+        return -EINVAL;
+    }
 
+    state.current_effect = effect;
     state.animation_step = 0;
 
     return zmk_rgb_underglow_save_state();
+}
+
+int zmk_rgb_underglow_cycle_effect(int direction) {
+    return zmk_rgb_underglow_select_effect(zmk_rgb_underglow_calc_effect(direction));
 }
 
 int zmk_rgb_underglow_toggle() {

@@ -77,6 +77,16 @@ on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_bin
         binding->param2 = RGB_COLOR_HSB_VAL(color.h, color.s, color.b);
         break;
     }
+    case RGB_EFR_CMD: {
+        binding->param1 = RGB_EFS_CMD;
+        binding->param2 = zmk_rgb_underglow_calc_effect(-1);
+        break;
+    }
+    case RGB_EFF_CMD: {
+        binding->param1 = RGB_EFS_CMD;
+        binding->param2 = zmk_rgb_underglow_calc_effect(1);
+        break;
+    }
     default:
         return 0;
     }
@@ -111,6 +121,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         return zmk_rgb_underglow_change_spd(1);
     case RGB_SPD_CMD:
         return zmk_rgb_underglow_change_spd(-1);
+    case RGB_EFS_CMD:
+        return zmk_rgb_underglow_select_effect(binding->param2);
     case RGB_EFF_CMD:
         return zmk_rgb_underglow_cycle_effect(1);
     case RGB_EFR_CMD:
