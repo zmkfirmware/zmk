@@ -132,6 +132,9 @@ config ZMK_BLE_CLEAR_BONDS_ON_START
 config BT_GATT_NOTIFY_MULTIPLE
 	default n
 
+config BT_GATT_AUTO_SEC_REQ
+	default n
+
 config BT_DEVICE_APPEARANCE
 	default 961
 
