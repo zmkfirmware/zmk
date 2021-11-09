@@ -1,11 +1,10 @@
-identifier: dogbone
-name: dogbone
+identifier: s40nc
+name: S40NC
 type: mcu
 arch: arm
 toolchain:
   - zephyr
   - gnuarmemb
-  - xtools
 supported:
   - adc
   - usb_device

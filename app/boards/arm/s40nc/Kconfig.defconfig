@@ -1,10 +1,10 @@
-# Copyright (c) 2021 The ZMK Contributors
+# Copyright (c) 2021 Kyle McCreery
 # SPDX-License-Identifier: MIT
 
-if BOARD_DOGBONE
+if BOARD_S40NC
 
-config BOARD
-	default "dogbone"
+config ZMK_KEYBOARD_NAME
+	default "S40NC"
 
 if USB
 
@@ -28,4 +28,4 @@ config ZMK_USB
 config ZMK_BATTERY_VOLTAGE_DIVIDER
 	default y
 
-endif # BOARD_DOGBONE
+endif # BOARD_S40NC
