@@ -1,7 +1,7 @@
 if SHIELD_MERCURY_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "Mercury-L"
+	default "Mercury-WL"
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y

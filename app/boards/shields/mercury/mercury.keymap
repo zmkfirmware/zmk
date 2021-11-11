@@ -67,7 +67,7 @@
 
     keymap {
         compatible = "zmk,keymap";
-        
+
         apple_layer {
             bindings = <
 &hlt FUN TAB  &pht LSFT Q  &kp W    &kp E      &kp R       &kp T   /**/   &kp Y    &kp U     &kp I    &kp O    &kp P      &kp BKSP

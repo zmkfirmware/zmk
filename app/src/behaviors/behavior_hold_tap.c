@@ -388,7 +388,6 @@ static int release_binding(struct active_hold_tap *hold_tap) {
     return behavior_keymap_binding_released(&binding, event);
 }
 
-
 static bool is_first_other_key_pressed_trigger_key(struct active_hold_tap *hold_tap) {
     for (int i = 0; i < hold_tap->config->hold_trigger_key_positions_len; i++) {
         if (hold_tap->config->hold_trigger_key_positions[i] ==
