@@ -12,7 +12,7 @@
 #define SYS 6
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-// [Keymap 6Nov2021 16:20]
+// [Keymap 11Nov2021 10:25]
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 / {
@@ -35,35 +35,24 @@
             bindings = <&mo>, <&kp>;
         };
 
-        // For regular, hold-preferred, hold-tap behaviors, a shorter tapping term
-        // encourages hold-decisions. This is because an expiring tapping term forces
-        // the behavior to decide as a hold.
-        // 
-        // However, for conditional, hold-preferred, hold-tap behaviors, a shorter
-        // tapping term actually encourages tap-decisions. This is because a shorter
-        // tapping term gives the user less time to press one of the conditional
-        // hold-enabler-keys that are required to enable a hold-decision.
-        // Furthermore, if the tapping-term expires before the user manages to press
-        // a hold-enabler-key, the expiring tapping-term timer also directly triggers
-        // the behavior to decide as a tap.
-        cmt: c_mod_tap {
+        pht: pos_hold_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "CONDITIONAL_HOLD_TAP";
+            label = "POSITIONAL_HOLD_TAP";
             #binding-cells = <2>;
-            flavor = "hold-preferred";
+            flavor = "tap-unless-interrupted";
             tapping-term-ms = <50>;
             bindings = <&kp>, <&kp>;
-            hold-enabler-keys = <0 12>;
+            hold-trigger-key-positions = <0 12>;
         };
 
-        c_ht: combo_like_hold_tap {
+        cht: combo_like_hold_tap {
             compatible = "zmk,behavior-hold-tap";
             label = "COMBO_LIKE_HOLD_TAP";
             #binding-cells = <2>;
-            flavor = "hold-preferred";
+            flavor = "tap-unless-interrupted";
             tapping-term-ms = <200>;
             bindings = <&kp>, <&kp>;
-            hold-enabler-keys = <40>;
+            hold-trigger-key-positions = <40>;
         };
     };
 
@@ -81,9 +70,9 @@
         
         apple_layer {
             bindings = <
-&hlt FUN TAB  &cmt LSFT Q  &kp W    &kp E      &kp R       &kp T   /**/   &kp Y    &kp U     &kp I    &kp O    &kp P       &kp BKSP
-&hlt NUM ESC     &kp A     &kp S    &kp D   &cmt LSFT F    &kp G   /**/   &kp H    &kp J     &kp K    &kp L   &kp SCLN  &c_ht RET QUOT
-  &kp LSFT       &kp Z     &kp X    &kp C      &kp V       &kp B   /**/   &kp N    &kp M   &kp CMMA  &kp DOT  &kp FSLH     &kp RSFT
+&hlt FUN TAB  &pht LSFT Q  &kp W    &kp E      &kp R       &kp T   /**/   &kp Y    &kp U     &kp I    &kp O    &kp P      &kp BKSP
+&hlt NUM ESC     &kp A     &kp S    &kp D   &pht LSFT F    &kp G   /**/   &kp H    &kp J     &kp K    &kp L   &kp SCLN  &cht RET QUOT
+  &kp LSFT       &kp Z     &kp X    &kp C      &kp V       &kp B   /**/   &kp N    &kp M   &kp CMMA  &kp DOT  &kp FSLH    &kp RSFT
                                   &kp LCTL   &kp LALT    &kp LGUI  /**/  &kp SPC  &mo NAV  &mo MED
             >;
         };
