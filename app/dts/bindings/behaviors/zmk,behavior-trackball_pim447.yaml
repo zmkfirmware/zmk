@@ -1,0 +1,15 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Trackball PIM447 behavior
+
+compatible: "zmk,behavior-trackball-pim447"
+
+include: zero_param.yaml
+
+properties:
+  mode:
+    type: int
+    required: true
+  momentary:
+    type: boolean
