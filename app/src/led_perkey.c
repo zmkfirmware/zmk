@@ -16,10 +16,10 @@ const uint8_t GRB = 2;
 #define ZMK_KSCAN_EVENT_STATE_PRESSED 0
 #define ZMK_KSCAN_EVENT_STATE_RELEASED 1
 #define BASE_RED 255
-#define BASE_GREEN 255
-#define BASE_BLUE 255
+#define BASE_GREEN 222
+#define BASE_BLUE 0
 uint8_t led_base_color[3] = {BASE_RED, BASE_GREEN, BASE_BLUE};
-#define PRESSED_RED 250
+#define PRESSED_RED 25
 #define PRESSED_GREEN 0
 #define PRESSED_BLUE 0
 uint8_t pressed_color[3] = {PRESSED_RED, PRESSED_GREEN, PRESSED_BLUE};
@@ -45,27 +45,16 @@ static void zmk_kscan_callback_led(const struct device *dev, uint32_t row, uint3
     k_work_submit(&led_processor.work);
 }
 
-uint8_t led_type_matrix[128] = {    GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB,
-                                    RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, GRB, GRB, RGB, RGB, RGB, RGB, RGB, RGB,
-                                    RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, RGB, GRB,
-                                    GRB, GRB, RGB, GRB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB,
-                                    RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, GRB, RGB, GRB, RGB, GRB, GRB, GRB, RGB, RGB, RGB, RGB,
-                                    RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB, RGB,
-                                    GRB, RGB, GRB, RGB, GRB, RGB, GRB, RGB};
-uint8_t led_lookup_matrix[108] = {  1,  0,  3,  5,  7,  9, 11, 13, 15, 65,  0, 67, 69, 71, 73, 75, 77, 79,
+uint8_t led_lookup_matrix[96] = {  1, 3,  5,  6,  8,  10,  12, 13, 15, 65,  67, 68, 70, 72, 74, 75,
+                                  77, 79,
                                     17, 20, 22, 24, 26, 28, 30, 80, 81, 82, 83, 84, 85,  0, 86, 87, 88, 90,
                                     19, 21, 23, 25, 27, 29, 31, 96, 98, 100, 102, 104, 106, 0, 108, 109, 110, 92,
                                     34, 36, 38, 40, 42, 44, 46, 97, 99, 101, 103, 105, 0, 0, 107, 0, 0, 0,
                                     35, 0,  37, 39, 41, 43, 45, 47, 112, 113, 114, 115, 0, 0, 119, 0, 111, 0,
-                                    49, 51, 53, 0, 0, 0, 55, 57, 0, 0, 0, 62, 116, 118, 121, 123, 125, 127};
+                                    49, 51, 53, 0, 0, 0,};
 
 void led_set_color_rgb(struct device *dev, uint8_t led,uint8_t qty, uint8_t  *rgb, uint8_t type){
-    if (led_type_matrix[led] == RGB)
     led_set_color(dev, led, qty, rgb);
-    else if (led_type_matrix[led] == GRB){
-        uint8_t color[3] = {rgb[1], rgb[0], rgb[2]};
-        led_set_color(dev, led, qty, color);
-    }
 }
 void set_led_rgb(uint8_t led, uint8_t *rgb){
     struct device *dev = NULL;
@@ -113,6 +102,7 @@ void set_all_rgb(const struct device *dev, uint8_t *rgb){
     }
 }
 int led_perkey_init(char *name) {    
+    k_busy_wait(1000);
     LOG_INF("ZMK_PER_KEY_LED INIT\n");
 	const struct device *dev_a = device_get_binding("IS31FL3733A");
     	if (!dev_a) {

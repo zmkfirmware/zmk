@@ -7,7 +7,7 @@
 
 / {
 	model = "retic1337_tkl";
-	compatible = "nordic,pca10056-dk";
+	compatible = "nice,nano";
 
 	chosen {
 		zephyr,console = &uart0;
@@ -56,22 +56,10 @@
        , <&gpio0 23 GPIO_ACTIVE_HIGH>
       ;
   };
-  	encoder: encoder {
-		compatible = "alps,ec11";
-		label = "ENCODER";
-		a-gpios = <&gpio0 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-		b-gpios = <&gpio0 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-		resolution = <2>;
-		status = "disabled";
-	};
 	ext-power {
 		compatible = "zmk,ext-power-generic";
 		label = "EXT_POWER";
-		control-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
-	};
-	sensors {
-		compatible = "zmk,keymap-sensors";
-		sensors = <&encoder>;
+		control-gpios = <&gpio1 4 (GPIO_ACTIVE_HIGH)>;
 	};
   leds {
   	compatible = "gpio-leds";
@@ -134,6 +122,24 @@
 	sda-pin = <21>;
 	scl-pin = <19>;
 	clock-frequency = < I2C_BITRATE_STANDARD >;
+
+	bq27441@55 {
+		compatible = "ti,bq274xx";
+		label = "BATTERY";
+		reg = <0x55>;
+		design-voltage = <3700>;
+		design-capacity = <450>;
+		taper-current = <45>;
+		terminate-voltage = <3000>;
+	};
+};
+
+&i2c1 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	sda-pin = <15>;
+	scl-pin = <17>;
+	clock-frequency = < I2C_BITRATE_STANDARD >;
 	is31fl3733a: is31fl3733@50 {
 		compatible = "issi,is31fl3733";
 		label = "IS31FL3733A";
@@ -144,22 +150,6 @@
 		label = "IS31FL3733B";
 		reg = <0x53>;
 	};
-	bq27441@55 {
-		compatible = "ti,bq274xx";
-		label = "BATTERY";
-		reg = <0x55>;
-		design-voltage = <3700>;
-		design-capacity = <900>;
-		taper-current = <45>;
-		terminate-voltage = <3000>;
-	};
-};
-
-&i2c1 {
-	compatible = "nordic,nrf-twi";
-	status = "okay";
-	sda-pin = <30>;
-	scl-pin = <31>;
 };
 
 &pwm0 {

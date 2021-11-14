@@ -1,0 +1,9 @@
+file_format: "1"
+id: Retic1337_BTCTRL
+name: Retic1337_BTCTRL
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://nicekeyboards.com/nice-nano
