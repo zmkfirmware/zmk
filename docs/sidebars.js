@@ -15,6 +15,7 @@ module.exports = {
       "features/displays",
       "features/encoders",
       "features/underglow",
+      "features/trackballs",
       "features/beta-testing",
     ],
     Behaviors: [
@@ -32,6 +33,7 @@ module.exports = {
       "behaviors/outputs",
       "behaviors/lighting",
       "behaviors/power",
+      "behaviors/trackball-pim447",
     ],
     Codes: [
       "codes/index",

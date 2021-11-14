@@ -40,6 +40,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | Realtime Keymap Updating                                                                                                  | 💡  |           | ✅  |
 | AVR/8 Bit                                                                                                                 |     |           | ✅  |
 | [Wide Range of ARM Chips Supported](https://docs.zephyrproject.org/latest/boards/index.html)                              | ✅  |           |     |
+| [Trackballs](features/trackballs)                                                                                         | ✅  |           | ✅  |
 
 [^2]: Encoders are not currently supported on peripheral side splits.
 [^1]: OLEDs are currently proof of concept in ZMK.
