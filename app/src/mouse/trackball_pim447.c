@@ -8,8 +8,45 @@
 #include <logging/log.h>
 #include <zmk/hid.h>
 #include <zmk/endpoints.h>
+#include <zmk/trackball_pim447.h>
 
 LOG_MODULE_REGISTER(PIM447, CONFIG_SENSOR_LOG_LEVEL);
+
+#define MOVE_FACTOR    DT_PROP(DT_INST(0, pimoroni_trackball_pim447), move_factor)
+#define MOVE_X_INVERT  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), invert_move_x)
+#define MOVE_Y_INVERT  DT_PROP(DT_INST(0, pimoroni_trackball_pim447), invert_move_y)
+#define MOVE_X_FACTOR  (MOVE_FACTOR * (MOVE_X_INVERT ? -1 : 1))
+#define MOVE_Y_FACTOR  (MOVE_FACTOR * (MOVE_Y_INVERT ? -1 : 1))
+
+#define SCROLL_DIVISOR    DT_PROP(DT_INST(0, pimoroni_trackball_pim447), scroll_divisor)
+#define SCROLL_X_INVERT   DT_PROP(DT_INST(0, pimoroni_trackball_pim447), invert_scroll_x)
+#define SCROLL_Y_INVERT   DT_PROP(DT_INST(0, pimoroni_trackball_pim447), invert_scroll_y)
+#define SCROLL_X_DIVISOR  (SCROLL_DIVISOR * (SCROLL_X_INVERT ? -1 : 1))
+#define SCROLL_Y_DIVISOR  (SCROLL_DIVISOR * (SCROLL_Y_INVERT ?  1 : -1))
+
+#define BUTTON    DT_PROP(DT_INST(0, pimoroni_trackball_pim447), button)
+#define SWAP_AXES DT_PROP(DT_INST(0, pimoroni_trackball_pim447), swap_axes)
+
+static int mode = DT_PROP(DT_INST(0, pimoroni_trackball_pim447), mode);
+
+void zmk_trackball_pim447_set_mode(int new_mode)
+{
+    switch (new_mode) {
+        case PIM447_MOVE:
+        case PIM447_SCROLL:
+            mode = new_mode;
+            break;
+
+       case PIM447_TOGGLE:
+            mode = mode == PIM447_MOVE
+                   ? PIM447_SCROLL
+                   : PIM447_MOVE;
+            break;
+
+       default:
+            break;
+    }
+}
 
 /*
  * It feels more natural and more confortable to convert the speed
@@ -65,6 +102,7 @@ static void thread_code(void *p1, void *p2, void *p3)
     while (true) {
         struct sensor_value pos_dx, pos_dy, pos_dz;
         bool send_report = false;
+        int clear = PIM447_NONE;
 
         result = sensor_sample_fetch(dev);
         if (result < 0) {
@@ -91,18 +129,41 @@ static void thread_code(void *p1, void *p2, void *p3)
         }
 
         if (pos_dx.val1 != 0 || pos_dy.val1 != 0) {
-            zmk_hid_mouse_movement_update(convert_speed(pos_dx.val1),
-                                          convert_speed(pos_dy.val1));
-            send_report = true;
+            if (SWAP_AXES) {
+                int32_t tmp = pos_dx.val1;
+                pos_dx.val1 = pos_dy.val1;
+                pos_dy.val1 = tmp;
+            }
+
+            switch(mode) {
+                default:
+                case PIM447_MOVE: {
+                    int dx = convert_speed(pos_dx.val1) * MOVE_X_FACTOR;
+                    int dy = convert_speed(pos_dy.val1) * MOVE_Y_FACTOR;
+                    zmk_hid_mouse_movement_set(dx, dy);
+                    send_report = true;
+                    clear = PIM447_MOVE;
+                    break;
+                }
+
+                case PIM447_SCROLL: {
+                    int dx = pos_dx.val1 / SCROLL_X_DIVISOR;
+                    int dy = pos_dy.val1 / SCROLL_Y_DIVISOR;
+                    zmk_hid_mouse_scroll_set(dx, dy);
+                    send_report = true;
+                    clear = PIM447_SCROLL;
+                    break;
+                }
+            }
         }
 
         if (pos_dz.val1 == 0x80 && button_press_sent == false) {
-            zmk_hid_mouse_button_press(0);
+            zmk_hid_mouse_button_press(BUTTON);
             button_press_sent   = true;
             button_release_sent = false;
             send_report = true;
         } else if (pos_dz.val1 == 0x01 && button_release_sent == false) {
-            zmk_hid_mouse_button_release(0);
+            zmk_hid_mouse_button_release(BUTTON);
             button_press_sent   = false;
             button_release_sent = true;
             send_report = true;
@@ -110,7 +171,12 @@ static void thread_code(void *p1, void *p2, void *p3)
 
         if (send_report) {
             zmk_endpoints_send_mouse_report();
-            zmk_hid_mouse_clear();
+
+            switch (clear) {
+                case PIM447_MOVE: zmk_hid_mouse_movement_set(0, 0); break;
+                case PIM447_SCROLL: zmk_hid_mouse_scroll_set(0, 0); break;
+                default: break;
+            }
         }
 
         k_sleep(K_MSEC(10));
