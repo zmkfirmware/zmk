@@ -1,0 +1,86 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define DEFAULT 0
+#define LOWER   1
+#define RAISE   2
+
+
+/ {
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+/* QWERTY
+ * .----------------------------------------------------------------------------------------------------------------------.
+ * |  `   |   1  |   2  |   3  |   4  |   5  |  [   |                    |  ]   |   6  |   7  |   8  |   9  |   0  | PScr |
+ * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
+ * | ESC  |   Q  |   W  |   E  |   R  |   T  |  -   |                    |  =   |   Y  |   U  |   I  |   O  |   P  |  \   |
+ * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
+ * | Tab  |   A  |   S  |   D  |   F  |   G  | Del  |                    | Bksp |   H  |   J  |   K  |   L  |   ;  |  '   |
+ * |------+------+------+------+------+------+---------------------------+------+------+------+------+------+------+------|
+ * | Shift|   Z  |   X  |   C  |   V  |   B  | End  |                    | Home |   N  |   M  |   ,  |   .  |   /  | Shift|
+ * |-------------+------+------+------+------+------+------+------+------+------+------+------+------+------+-------------|
+ * | Ctrl |      | PGDN | Win  |||||||| Alt  | Space| Lower|||||||| Raise| Enter| RAlt ||||||||      | PGUP | Ins  | RCtrl|
+ * .----------------------------------------------------------------------------------------------------------------------.
+ */
+                        bindings = <
+&kp  GRAVE    &kp  N1       &kp  N2       &kp  N3       &kp  N4       &kp  N5       &kp  LBKT              &kp  RBKT     &kp  N6       &kp  N7       &kp  N8       &kp  N9       &kp  N0       &kp  PSCRN
+&kp  ESC      &kp  Q        &kp  W        &kp  E        &kp  R        &kp  T        &kp  MINUS             &kp  EQUAL    &kp  Y        &kp  U        &kp  I        &kp  O        &kp  P        &kp  BSLH
+&kp  TAB      &kp  A        &kp  S        &kp  D        &kp  F        &kp  G        &kp  DEL               &kp  BSPC     &kp  H        &kp  J        &kp  K        &kp  L        &kp  SEMI     &kp  SQT
+&kp  LSHFT    &kp  Z        &kp  X        &kp  C        &kp  V        &kp  B        &kp  END               &kp  HOME     &kp  N        &kp  M        &kp  COMMA    &kp  DOT      &kp  SLASH    &kp  RSHFT
+&kp  LCTRL    &none         &kp  PG_DN    &kp  LMETA    &kp  LALT     &kp  SPACE    &mo  LOWER             &mo  RAISE    &kp  RET      &kp  RALT     &none         &kp  PG_UP    &kp  INS      &kp  RCTRL
+                        >;
+                };
+                lower_layer {
+/* .----------------------------------------------------------------------------------------------------------------------.
+ * |  F11 |  F1  |  F2  |  F3  |  F4  |  F5  |      |                    |      |  F6  |  F7  |  F8  |  F9  |  F10 |  F12 |
+ * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+---------------------------+------+------+------+------+------+------+------|
+ * | Shift| Boot | Reset|      |      |      |      |                    |      |      |      |      |      |      | Shift|
+ * |-------------+------+------+------+------+------+------+------+------+------+------+------+------+------+-------------|
+ * | Ctlr |      |      |  Win |||||||| Alt  |      | Lower|||||||| Raise|      | RAlt ||||||||      |      |      | RCtrl|
+ * .----------------------------------------------------------------------------------------------------------------------.
+ */ /* FIXME boot and reset are not yet locale aware */
+                        bindings = <
+&kp  F11      &kp  F1       &kp  F2       &kp  F3       &kp  F4       &kp  F5       &kp  &none             &kp  &none    &kp  F6       &kp  F7       &kp  F8       &kp  F9       &kp  F10      &kp  F12
+&none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
+&none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
+&trans        &bootloader   &reset        &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &trans
+&trans        &none         &none         &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
+                        >;
+                };
+                raise_layer {
+/* .----------------------------------------------------------------------------------------------------------------------.
+ * |      | BT 0 | BT 1 | BT 2 | BT 3 |      | BTCL |                    |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+------+--------------------+------+------+------+------+------+------+------|
+ * |      |      |      |      |      |      |      |                    |      |      |      |      |      |      |      |
+ * |------+------+------+------+------+------+---------------------------+------+------+------+------+------+------+------|
+ * | Shift|      |      |      |      |      |      |                    |      |      |      |      | Boot | Reset| Shift|
+ * |-------------+------+------+------+------+------+------+------+------+------+------+------+------+------+-------------|
+ * | Ctlr |      |      |  Win |||||||| Alt  |      | Lower|||||||| Raise|      | RAlt ||||||||      |      |      | RCtrl|
+ * .----------------------------------------------------------------------------------------------------------------------.
+ */ /* FIXME boot and reset are not yet locale aware */
+                        bindings = <
+&none         &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none         &bt BT_CLR             &none         &none         &none         &none         &none         &none         &none
+&none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
+&none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
+&trans        &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &bootloader   &reset        &trans
+&trans        &none         &none         &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
+                        >;
+                };
+        };
+};
+

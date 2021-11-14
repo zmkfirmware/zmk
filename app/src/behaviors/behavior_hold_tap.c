@@ -34,6 +34,7 @@ enum flavor {
     FLAVOR_HOLD_PREFERRED,
     FLAVOR_BALANCED,
     FLAVOR_TAP_PREFERRED,
+    FLAVOR_TAP_UNLESS_INTERRUPTED,
 };
 
 enum status {
@@ -58,6 +59,8 @@ struct behavior_hold_tap_config {
     int quick_tap_ms;
     enum flavor flavor;
     bool retro_tap;
+    int32_t hold_trigger_key_positions_len;
+    int32_t hold_trigger_key_positions[];
 };
 
 // this data is specific for each hold-tap
@@ -70,6 +73,9 @@ struct active_hold_tap {
     const struct behavior_hold_tap_config *config;
     struct k_delayed_work work;
     bool work_is_cancelled;
+
+    // initialized to -1, which is to be interpreted as "no other key has been pressed yet"
+    int32_t position_of_first_other_key_pressed;
 };
 
 // The undecided hold tap is the hold tap that needs to be decided before
@@ -206,6 +212,7 @@ static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_
         active_hold_taps[i].param_hold = param_hold;
         active_hold_taps[i].param_tap = param_tap;
         active_hold_taps[i].timestamp = timestamp;
+        active_hold_taps[i].position_of_first_other_key_pressed = -1;
         return &active_hold_taps[i];
     }
     return NULL;
@@ -252,6 +259,26 @@ static void decide_tap_preferred(struct active_hold_tap *hold_tap, enum decision
     }
 }
 
+static void decide_tap_unless_interrupted(struct active_hold_tap *hold_tap,
+                                          enum decision_moment event) {
+    switch (event) {
+    case HT_KEY_UP:
+        hold_tap->status = STATUS_TAP;
+        return;
+    case HT_OTHER_KEY_DOWN:
+        hold_tap->status = STATUS_HOLD_INTERRUPT;
+        return;
+    case HT_TIMER_EVENT:
+        hold_tap->status = STATUS_TAP;
+        return;
+    case HT_QUICK_TAP:
+        hold_tap->status = STATUS_TAP;
+        return;
+    default:
+        return;
+    }
+}
+
 static void decide_hold_preferred(struct active_hold_tap *hold_tap, enum decision_moment event) {
     switch (event) {
     case HT_KEY_UP:
@@ -279,6 +306,8 @@ static inline const char *flavor_str(enum flavor flavor) {
         return "balanced";
     case FLAVOR_TAP_PREFERRED:
         return "tap-preferred";
+    case FLAVOR_TAP_UNLESS_INTERRUPTED:
+        return "tap-unless-interrupted";
     default:
         return "UNKNOWN FLAVOR";
     }
@@ -359,6 +388,39 @@ static int release_binding(struct active_hold_tap *hold_tap) {
     return behavior_keymap_binding_released(&binding, event);
 }
 
+static bool is_first_other_key_pressed_trigger_key(struct active_hold_tap *hold_tap) {
+    for (int i = 0; i < hold_tap->config->hold_trigger_key_positions_len; i++) {
+        if (hold_tap->config->hold_trigger_key_positions[i] ==
+            hold_tap->position_of_first_other_key_pressed) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Force a tap decision if the positional conditions for a hold decision are not met.
+static void decide_positional_hold(struct active_hold_tap *hold_tap) {
+    // Only force a tap decision if the positional hold/tap feature is enabled.
+    if (!(hold_tap->config->hold_trigger_key_positions_len > 0)) {
+        return;
+    }
+
+    // Only force a tap decision if another key was pressed after
+    // the hold/tap key.
+    if (hold_tap->position_of_first_other_key_pressed == -1) {
+        return;
+    }
+
+    // Only force a tap decision if the first other key to be pressed
+    // (after the hold/tap key) is not one of the trigger keys.
+    if (is_first_other_key_pressed_trigger_key(hold_tap)) {
+        return;
+    }
+
+    // Since the positional key conditions have failed, force a TAP decision.
+    hold_tap->status = STATUS_TAP;
+}
+
 static void decide_hold_tap(struct active_hold_tap *hold_tap,
                             enum decision_moment decision_moment) {
     if (hold_tap->status != STATUS_UNDECIDED) {
@@ -370,19 +432,30 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap,
         return;
     }
 
+    // If the hold-tap behavior is still undecided, attempt to decide it.
     switch (hold_tap->config->flavor) {
     case FLAVOR_HOLD_PREFERRED:
         decide_hold_preferred(hold_tap, decision_moment);
+        break;
     case FLAVOR_BALANCED:
         decide_balanced(hold_tap, decision_moment);
+        break;
     case FLAVOR_TAP_PREFERRED:
         decide_tap_preferred(hold_tap, decision_moment);
+        break;
+    case FLAVOR_TAP_UNLESS_INTERRUPTED:
+        decide_tap_unless_interrupted(hold_tap, decision_moment);
+        break;
     }
 
     if (hold_tap->status == STATUS_UNDECIDED) {
         return;
     }
 
+    decide_positional_hold(hold_tap);
+
+    // Since the hold-tap has been decided, clean up undecided_hold_tap and
+    // execute the decided behavior.
     LOG_DBG("%d decided %s (%s decision moment %s)", hold_tap->position,
             status_str(hold_tap->status), flavor_str(hold_tap->config->flavor),
             decision_moment_str(decision_moment));
@@ -501,6 +574,14 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
+    // Store the position of pressed key for positional hold-tap purposes.
+    if ((ev->state) // i.e. key pressed (not released)
+        && (undecided_hold_tap->position_of_first_other_key_pressed ==
+            -1) // i.e. no other key has been pressed yet
+    ) {
+        undecided_hold_tap->position_of_first_other_key_pressed = ev->position;
+    }
+
     if (undecided_hold_tap->position == ev->position) {
         if (ev->state) { // keydown
             LOG_ERR("hold-tap listener should be called before before most other listeners!");
@@ -604,6 +685,8 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
         .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
         .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
+        .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
+        .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, device_pm_control_nop,                        \
                           &behavior_hold_tap_data, &behavior_hold_tap_config_##n, APPLICATION,     \

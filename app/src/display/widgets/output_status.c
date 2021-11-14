@@ -39,7 +39,7 @@ static struct output_status_state get_state(const zmk_event_t *_eh) {
 }
 
 static void set_status_symbol(lv_obj_t *label, struct output_status_state state) {
-    char text[6] = {};
+    char text[9] = {};
 
     switch (state.selected_endpoint) {
     case ZMK_ENDPOINT_USB:

@@ -1,0 +1,8 @@
+# mikoto board configuration
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_MIKOTO_520
+	bool "mikoto_520"
+	depends on SOC_NRF52840_QIAA
