@@ -28,5 +28,10 @@ properties:
       - "hold-preferred"
       - "balanced"
       - "tap-preferred"
+      - "tap-unless-interrupted"
   retro-tap:
     type: boolean
+  hold-trigger-key-positions:
+    type: array
+    required: false
+    default: []

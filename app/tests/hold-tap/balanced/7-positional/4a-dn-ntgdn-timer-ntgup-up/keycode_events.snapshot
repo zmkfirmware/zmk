@@ -1,0 +1,7 @@
+ht_binding_pressed: 0 new undecided hold_tap
+ht_decide: 0 decided tap (balanced decision moment timer)
+kp_pressed: usage_page 0x07 keycode 0x09 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x08 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x08 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x09 implicit_mods 0x00 explicit_mods 0x00
+ht_binding_released: 0 cleaning up hold-tap

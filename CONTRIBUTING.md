@@ -91,7 +91,7 @@ You can setup git to run prettier automatically when you commit by installing th
 ### Development Setup
 
 To get your development environment setup going, start at the
-[basic setup](https://zmk.dev/docs/dev-setup) docs, and make sure you can build and flash
+[basic setup](https://zmk.dev/docs/development/setup/) docs, and make sure you can build and flash
 your own locally built firmware.
 
 ### Formatting

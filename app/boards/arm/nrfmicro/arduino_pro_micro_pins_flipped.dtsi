@@ -5,7 +5,7 @@
  */
 
 / {
-	pro_micro_d: connector_d {
+	pro_micro: connector {
 		compatible = "arduino-pro-micro";
 		#gpio-cells = <2>;
 		gpio-map-mask = <0xffffffff 0xffffffc0>;
@@ -21,10 +21,14 @@
 			, <7 0 &gpio0 3 0>		/* D7 */
 			, <8 0 &gpio0 28 0>		/* D8/A8 */
 			, <9 0 &gpio1 11 0>		/* D9/A9 */
-			, <10 0 &gpio1 6 0>	    /* D10/A10 */
+			, <10 0 &gpio1 6 0>	/* D10/A10 */
 			, <16 0 &gpio0 10 0>	/* D16 */
-			, <14 0 &gpio0 9 0>	    /* D14 */
+			, <14 0 &gpio0 9 0>	/* D14 */
 			, <15 0 &gpio0 24 0>	/* D15 */
+			, <18 0 &gpio0 13 0>	/* D18/A0 */
+			, <19 0 &gpio0 20 0>	/* D19/A1 */
+			, <20 0 &gpio0 17 0>	/* D20/A2 */
+			, <21 0 &gpio0 15 0>	/* D21/A3 */
 			;
 	};
 
@@ -34,10 +38,10 @@
 		gpio-map-mask = <0xffffffff 0xffffffc0>;
 		gpio-map-pass-thru = <0 0x3f>;
 		gpio-map
-			= <0 0 &gpio0 13 0>	/* A0 */
-			, <1 0 &gpio0 20 0>	/* A1 */
-			, <2 0 &gpio0 17 0>	/* A2 */
-			, <3 0 &gpio0 15 0>	/* A3 */
+			= <0 0 &gpio0 13 0>	/* D18/A0 */
+			, <1 0 &gpio0 20 0>	/* D19/A1 */
+			, <2 0 &gpio0 17 0>	/* D20/A2 */
+			, <3 0 &gpio0 15 0>	/* D21/A3 */
 			, <6 0 &gpio0 29 0>	/* D4/A6 */
 			, <7 0 &gpio1 13 0>	/* D6/A7 */
 			, <8 0 &gpio0 28 0>	/* D8/A8 */
@@ -47,6 +51,7 @@
 	};
 };
 
+pro_micro_d: &pro_micro {};
 pro_micro_i2c: &i2c0 {};
 pro_micro_spi: &spi0 {};
 pro_micro_serial: &uart0 {};

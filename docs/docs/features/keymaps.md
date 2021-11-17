@@ -33,7 +33,7 @@ For example, the simplest behavior in ZMK is the "key press" behavior, which res
 (a certain spot on the keyboard), and when that position is pressed, send a keycode to the host, and
 when the key position is released, updates the host to notify of the keycode being released.
 
-For the full set of possible behaviors, start at the [Key Press](/docs/behaviors/key-press) behavior.
+For the full set of possible behaviors, start at the [Key Press](../behaviors/key-press.md) behavior.
 
 ## Layers
 
@@ -98,7 +98,7 @@ The second include brings in the defines for all the keycodes (e.g. `A`, `N1`, `
 
 ### Root devicetree Node
 
-ALl the remaining keymap nodes will be nested inside of the root devicetree node, like so:
+All the remaining keymap nodes will be nested inside of the root devicetree node, like so:
 
 ```devicetree
 / {
@@ -131,7 +131,7 @@ Each layer should have:
 1. A `bindings` property this will be a list of behaviour bindings, one for each key position for the keyboard.
 1. (Optional) A `sensor-bindings` property that will be a list of behavior bindings for each sensor on the keyboard. (Currently, only encoders are supported as sensor hardware, but in the future devices like trackpoints would be supported the same way)
 
-For the full set of possible behaviors, start at the [Key Press](/docs/behaviors/key-press) behavior.
+For the full set of possible behaviors, start at the [Key Press](../behaviors/key-press.md) behavior.
 
 ### Complete Example
 
