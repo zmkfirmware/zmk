@@ -1,0 +1,40 @@
+# Electronut Labs Papyr board configuration
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_MIKOTO_520
+
+config BOARD
+	default "mikoto"
+
+if USB
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+endif # USB
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+config PINMUX
+	default y
+
+choice BOARD_MIKOTO_CHARGER_CURRENT
+    default BOARD_MIKOTO_CHARGER_CURRENT_100MA
+endchoice
+
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+	default y
+
+endif # BOARD_MIKOTO_520

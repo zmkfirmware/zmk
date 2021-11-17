@@ -1,0 +1,17 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Conditional layers allow layer combinations to trigger additional layers
+
+compatible: "zmk,conditional-layers"
+
+child-binding:
+  description: "Single conditional layer that activates then-layer when if-layers are active"
+
+  properties:
+    if-layers:
+      type: array
+      required: true
+    then-layer:
+      type: int
+      required: true

@@ -12,7 +12,7 @@ const glob = require("glob");
 function generateHardwareMetadataAggregate() {
   glob("../app/boards/**/*.zmk.yml", (error, files) => {
     const aggregated = files.flatMap((f) =>
-      yaml.safeLoadAll(fs.readFileSync(f, "utf8"))
+      yaml.loadAll(fs.readFileSync(f, "utf8"))
     );
     fs.writeFileSync(
       "src/data/hardware-metadata.json",

@@ -84,36 +84,59 @@ if (Test-CommandExists Get-Acl) {
     }
 }
 
-$repo_path = "https://github.com/zmkfirmware/zmk-config-split-template.git"
+$repo_path = "https://github.com/zmkfirmware/unified-zmk-config-template.git"
 
 $title = "ZMK Config Setup:"
-$prompt = "Pick an MCU board"
-$options = {{#boards}}"{{{name}}}", {{/boards}} "" | Where-Object { $_ -ne "" }
-$boards = {{#boards}}"{{id}}", {{/boards}} "" | Where-Object { $_ -ne "" }
-
-Write-Host "$title"
-Write-Host ""
-Write-Host "MCU Board Selection:"
-
-$choice = Get-Choice-From-Options -Options $options -Prompt $prompt
-$board = $($boards[$choice])
-
 Write-Host ""
 Write-Host "Keyboard Shield Selection:"
 $prompt = "Pick a keyboard"
 
+$keyboards = [ordered]@{
+    {{#keyboards}}
+    "{{id}}" = @{
+        name = "{{{name}}}";
+        type = "{{type}}";
+        basedir = "{{__base_dir}}";
+        split = "{{split}}";
+        arch = "{{arch}}";
+        siblings = {{#siblings.0}}@(
+            {{#siblings}}
+            "{{.}}"
+            {{/siblings}}
+            ){{/siblings.0}}{{^siblings.0}}( "{{id}}" ){{/siblings.0}};
+    }
+    {{/keyboards}}
+}
 # TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
-$options = {{#keyboards}}"{{name}}", {{/keyboards}} "" | Where-Object { $_ -ne "" }
-$names = {{#keyboards}}"{{id}}", {{/keyboards}} "" | Where-Object { $_ -ne "" }
-$splits = {{#keyboards}}"{{#split}}y{{/split}}{{^split}}n{{/split}}", {{/keyboards}} "" | Where-Object { $_ -ne "" }
 
-$choice = Get-Choice-From-Options -Options $options -Prompt $prompt
-$shield_title = $($options[$choice])
-$shield = $($names[$choice])
-$split = $($splits[$choice])
+$choice = Get-Choice-From-Options -Options ($keyboards.values | % { $_['name'] }) -Prompt $prompt
+$keyboard = $($($keyboards.keys)[$choice])
+$keyboard_title = $keyboards[$keyboard].name
+$basedir = $keyboards[$keyboard].basedir
+$keyboard_split = $keyboards[$keyboard].split
+$keyboard_arch = $keyboards[$keyboard].arch
+$keyboard_siblings = $keyboards[$keyboard].siblings
+$keyboard_type = $keyboards[$keyboard].type
 
-if ($split -eq "n") {
-    $repo_path = "https://github.com/zmkfirmware/zmk-config-template.git"
+if ($keyboard_type -eq "shield") {
+    $prompt = "Pick an MCU board"
+    $boards = [ordered]@{
+        {{#boards}}
+        {{id}} = "{{{name}}}";
+        {{/boards}}
+    }
+
+    Write-Host "$title"
+    Write-Host ""
+    Write-Host "MCU Board Selection:"
+
+    $choice = Get-Choice-From-Options -Options $boards.values -Prompt $prompt
+    $shields = $keyboard_siblings
+    $board = $($($boards.keys)[$choice])
+    $boards = ( $board )
+} else {
+    $boards = ( $keyboard_siblings )
+    $shields = @( )
 }
 
 $copy_keymap = Read-Host "Copy in the stock keymap for customisation? [Yn]"
@@ -144,8 +167,12 @@ else {
 
 Write-Host ""
 Write-Host "Preparing a user config for:"
-Write-Host "* MCU Board: ${board}"
-Write-Host "* Shield: ${shield}"
+if ($keyboard_type -eq "shield") {
+    Write-Host "* MCU Board: ${boards}"
+    Write-Host "* Shield(s): ${shields}"
+} else {
+    Write-Host "* Board(s): ${boards}"
+}
 
 if ($copy_keymap -eq "yes") {
     Write-Host "* Copy Keymap?: Yes"
@@ -171,23 +198,42 @@ Set-Location "$repo_name"
 
 Push-Location config
 
-Invoke-RestMethod -Uri "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.conf" -OutFile "${shield}.conf"
+$config_file = "${keyboard}.conf"
+$keymap_file = "${keyboard}.keymap"
+
+if ($keyboard_type -eq "shield") {
+    $config_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${basedir}/${keyboard}.conf"
+    $keymap_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${basedir}/${keyboard}.keymap"
+} else {
+    $config_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${basedir}/${keyboard}.conf"
+    $keymap_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${basedir}/${keyboard}.keymap"
+}
+
+Write-Host "Downloading config file (${config_url})"
+Try {
+    Invoke-RestMethod -Uri "${config_url}" -OutFile "${config_file}"
+} Catch {
+    Set-Content -Path $config_file "# Place configuration items here"
+}
 
 if ($copy_keymap -eq "yes") {
-    Invoke-RestMethod -Uri "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${shield}/${shield}.keymap" -OutFile "${shield}.keymap"
+    Write-Host "Downloading keymap file (${keymap_url})"
+    Invoke-RestMethod -Uri "${keymap_url}" -OutFile "${keymap_file}"
 }
 
 Pop-Location
 
-$build_file = (Get-Content .github/workflows/build.yml).replace("BOARD_NAME", $board)
-$build_file = $build_file.replace("SHIELD_NAME", $shield)
-$build_file = $build_file.replace("KEYBOARD_TITLE", $shield_title)
-
-if ($board -eq "proton_c") {
-    $build_file = $build_file.replace("uf2", "hex")
+Add-Content -Path "build.yaml" -Value "include:"
+foreach ($b in ${boards}) {
+    if ($keyboard_type -eq "shield") {
+        foreach ($s in ${shields}) {
+            Add-Content -Path "build.yaml" -Value "  - board: $b"
+            Add-Content -Path "build.yaml" -Value "    shield: $s"
+        }
+    } else {
+        Add-Content -Path "build.yaml" -Value "  - board: $b"
+    }
 }
-
-Set-Content -Path .github/workflows/build.yml -Value $build_file
 
 Remove-Item -Recurse -Force .git
 git init .
