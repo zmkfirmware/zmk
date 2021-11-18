@@ -454,7 +454,7 @@ static int rgb_underglow_auto_state(bool *prev_state, bool *new_state) {
     if (state.on == *new_state) {
         return 0;
     }
-    if (new_state) {
+    if (*new_state) {
         state.on = *prev_state;
         *prev_state = false;
         return zmk_rgb_underglow_on();
