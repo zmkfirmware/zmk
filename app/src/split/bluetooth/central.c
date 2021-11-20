@@ -352,6 +352,51 @@ static struct bt_conn_cb conn_callbacks = {
     .disconnected = split_central_disconnected,
 };
 
+K_THREAD_STACK_DEFINE(split_central_split_run_q_stack,
+                      CONFIG_ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE);
+
+struct k_work_q split_central_split_run_q;
+
+K_MSGQ_DEFINE(zmk_split_central_split_run_msgq, sizeof(struct zmk_split_run_behavior_payload),
+              CONFIG_ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE, 4);
+
+void split_central_split_run_callback(struct k_work *work) {
+    struct zmk_split_run_behavior_payload payload;
+
+    while (k_msgq_get(&zmk_split_central_split_run_msgq, &payload, K_NO_WAIT) == 0) {
+        int err =
+            bt_gatt_write_without_response(default_conn, run_behavior_handle, &payload,
+                                           sizeof(struct zmk_split_run_behavior_payload), true);
+
+        if (err) {
+            LOG_ERR("Failed to write the behavior characteristic (err %d)", err);
+        }
+    }
+}
+
+K_WORK_DEFINE(split_central_split_run_work, split_central_split_run_callback);
+
+static int split_bt_invoke_behavior_payload(struct zmk_split_run_behavior_payload payload) {
+    int err = k_msgq_put(&zmk_split_central_split_run_msgq, &payload, K_MSEC(100));
+    if (err) {
+        switch (err) {
+        case -EAGAIN: {
+            LOG_WRN("Consumer message queue full, popping first message and queueing again");
+            struct zmk_split_run_behavior_payload discarded_report;
+            k_msgq_get(&zmk_split_central_split_run_msgq, &discarded_report, K_NO_WAIT);
+            return split_bt_invoke_behavior_payload(payload);
+        }
+        default:
+            LOG_WRN("Failed to queue behavior to send (%d)", err);
+            return err;
+        }
+    }
+
+    k_work_submit_to_queue(&split_central_split_run_q, &split_central_split_run_work);
+
+    return 0;
+};
+
 int zmk_split_bt_invoke_behavior(const bt_addr_le_t *source, struct zmk_behavior_binding *binding,
                                  struct zmk_behavior_binding_event event, bool state) {
     struct zmk_split_run_behavior_payload payload = {.data = {
@@ -363,17 +408,13 @@ int zmk_split_bt_invoke_behavior(const bt_addr_le_t *source, struct zmk_behavior
     strncpy(payload.behavior_dev, binding->behavior_dev, ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN - 1);
     payload.behavior_dev[ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN - 1] = '\0';
 
-    int err = bt_gatt_write_without_response(default_conn, run_behavior_handle, &payload,
-                                             sizeof(struct zmk_split_run_behavior_payload), true);
-
-    if (err) {
-        LOG_ERR("Failed to write the behavior characteristic (err %d)", err);
-    }
-
-    return err;
-};
+    return split_bt_invoke_behavior_payload(payload);
+}
 
 int zmk_split_bt_central_init(const struct device *_arg) {
+    k_work_q_start(&split_central_split_run_q, split_central_split_run_q_stack,
+                   K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
+                   CONFIG_ZMK_BLE_THREAD_PRIORITY);
     bt_conn_cb_register(&conn_callbacks);
 
     return start_scan();
