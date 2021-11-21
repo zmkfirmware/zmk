@@ -16,6 +16,7 @@ module.exports = {
       "features/displays",
       "features/encoders",
       "features/underglow",
+      "features/trackballs",
       "features/beta-testing",
     ],
     Behaviors: [
@@ -27,11 +28,13 @@ module.exports = {
       "behaviors/mod-morph",
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
+      "behaviors/mouse-emulation",
       "behaviors/reset",
       "behaviors/bluetooth",
       "behaviors/outputs",
       "behaviors/lighting",
       "behaviors/power",
+      "behaviors/trackball-pim447",
     ],
     Codes: [
       "codes/index",

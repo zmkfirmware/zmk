@@ -1,0 +1,9 @@
+/ {
+	behaviors {
+		/omit-if-no-ref/ mkp: behavior_mouse_key_press {
+			compatible = "zmk,behavior-mouse-key-press";
+			label = "MOUSE_KEY_PRESS";
+			#binding-cells = <1>;
+		};
+	};
+};
