@@ -1,0 +1,15 @@
+identifier: bt60_v1_hs
+name: BT60 V1 Hotswap
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - watchdog
