@@ -5,7 +5,7 @@
  */
 
 / {
-	micromod: connector {
+	sparkfun_micromod: connector {
 		compatible = "sparkfun,micromod-gpio";
 		#gpio-cells = <2>;
 		gpio-map-mask = <0xffffffff 0xffffffc0>;
@@ -29,7 +29,7 @@
 			;
 	};
 
-	micromod_a: connector_a {
+	sparkfun_micromod_a: connector_a {
 		compatible = "sparkfun,micromod-gpio";
 		#gpio-cells = <2>;
 		gpio-map-mask = <0xffffffff 0xffffffc0>;
@@ -44,13 +44,13 @@
 
 };
 
-micromod_d: &micromod {};
+sparkfun_micromod_d: &sparkfun_micromod {};
 
-micromod_i2c1: &i2c0 {};
-micromod_i2c2: &i2c1 {};
+sparkfun_micromod_i2c1: &i2c0 {};
+sparkfun_micromod_i2c2: &i2c1 {};
 
-micromod_spi1: &spi0 {};
-micromod_spi2: &spi1 {};
+sparkfun_micromod_spi1: &spi0 {};
+sparkfun_micromod_spi2: &spi1 {};
 
-micromod_serial1: &uart0 {};
-micromod_serial2: &uart1 {};
+sparkfun_micromod_serial1: &uart0 {};
+sparkfun_micromod_serial2: &uart1 {};

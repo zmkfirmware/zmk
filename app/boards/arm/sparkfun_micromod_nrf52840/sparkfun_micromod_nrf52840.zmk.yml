@@ -7,4 +7,4 @@ outputs:
   - usb
   - ble
 url: https://www.sparkfun.com/products/16984
-exposes: [micromod]
+exposes: [sparkfun_micromod]

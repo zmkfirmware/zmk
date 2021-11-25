@@ -5,7 +5,7 @@
 if BOARD_SPARKFUN_MICROMOD_NRF52840
 
 config BOARD
-	default "nrf52480_m2"
+	default "sparkfun_micromod_nrf52840"
 
 if USB
 
