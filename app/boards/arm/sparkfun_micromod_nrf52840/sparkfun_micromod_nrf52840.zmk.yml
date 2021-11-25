@@ -1,0 +1,10 @@
+file_format: "1"
+id: sparkfun_micromod_nrf52840
+name: sparkfun micromod nrf52840
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://www.sparkfun.com/products/16984
+exposes: [micromod]

@@ -1,0 +1,56 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	micromod: connector {
+		compatible = "sparkfun,micromod-gpio";
+		#gpio-cells = <2>;
+		gpio-map-mask = <0xffffffff 0xffffffc0>;
+		gpio-map-pass-thru = <0 0x3f>;
+		gpio-map
+			= <0 0 &gpio0 29 0>		 /* G0  - GPIO0/P0.29  	, MicroMod pad 40 */
+			, <1 0 &gpio0 3 0>		 /* G1  - GPIO1/P0.03  	, MicroMod pad 42 */
+			, <2 0 &gpio1 13 0>		 /* G2  - GPIO2/P1.13  	, MicroMod pad 44 */
+			, <3 0 &gpio1 12 0>		 /* G3  - GPIO3/P1.12  	, MicroMod pad 46 */
+			, <4 0 &gpio1 11 0>		 /* G4  - GPIO4/P1.11  	, MicroMod pad 48 */
+			, <5 0 &gpio0 17 0>		 /* G5  - GPIO5/P0.17  	, MicroMod pad 73 */
+			, <6 0 &gpio1 6 0>		 /* G6  - GPIO6/P1.06  	, MicroMod pad 71 */
+			, <7 0 &gpio1 4 0>		 /* G7  - GPIO7/P1.04  	, MicroMod pad 69 */
+			, <8 0 &gpio1 14 0>		 /* G8  - GPIO8/P1.14  	, MicroMod pad 67 */
+			, <9 0 &gpio0 9 0>		 /* G9  - GPIO9/P0.09  	, MicroMod pad 65  */
+			, <10 0 &gpio0 10 0>	 /* G10 - GPIO10/P0.10 	, MicroMod pad 63  */
+			, <11 0 &gpio0 27 0>	 /* D0 - P0.27			, MicroMod pad pad 10 */
+			, <12 0 &gpio1 8 0>	 	 /* D1 - P1.08 			, MicroMod pad pad 18 */
+			, <13 0 &gpio1 6 0>	 	 /* PWM0 - P0.06 		, MicroMod pad pad 32 */
+			, <14 0 &gpio1 16 0>	 /* PWM1 - P0.16 		, MicroMod pad pad 47 */
+			;
+	};
+
+	micromod_a: connector_a {
+		compatible = "sparkfun,micromod-gpio";
+		#gpio-cells = <2>;
+		gpio-map-mask = <0xffffffff 0xffffffc0>;
+		gpio-map-pass-thru = <0 0x3f>;
+		gpio-map
+			= <0 0 &gpio0 4 0>		/* A0 - ADC0/P0.04 , MicroMod pad 34 (Input Only!) */
+			, <1 0 &gpio0 5 0>		/* A1 - ADC1/P0.05 , MicroMod pad pad 38 (Input Only!) */
+
+			;
+	};
+
+
+};
+
+micromod_d: &micromod {};
+
+micromod_i2c1: &i2c0 {};
+micromod_i2c2: &i2c1 {};
+
+micromod_spi1: &spi0 {};
+micromod_spi2: &spi1 {};
+
+micromod_serial1: &uart0 {};
+micromod_serial2: &uart1 {};

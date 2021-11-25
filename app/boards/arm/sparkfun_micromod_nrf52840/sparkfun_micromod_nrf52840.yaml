@@ -1,0 +1,15 @@
+identifier: sparkfun_micromod_nrf52840
+name: sparkfun micromod nrf52840
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - watchdog
