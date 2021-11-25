@@ -46,11 +46,11 @@
 
 sparkfun_micromod_d: &sparkfun_micromod {};
 
-sparkfun_micromod_i2c1: &i2c0 {};
-sparkfun_micromod_i2c2: &i2c1 {};
+sparkfun_micromod_i2c: &i2c0 {};
+sparkfun_micromod_i2c1: &i2c1 {};
 
-sparkfun_micromod_spi1: &spi0 {};
-sparkfun_micromod_spi2: &spi1 {};
+sparkfun_micromod_spi: &spi0 {};
+sparkfun_micromod_spi1: &spi1 {};
 
-sparkfun_micromod_serial1: &uart0 {};
-sparkfun_micromod_serial2: &uart1 {};
+sparkfun_micromod_serial: &uart0 {};
+sparkfun_micromod_serial1: &uart1 {};
