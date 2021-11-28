@@ -48,32 +48,60 @@ jobs:
         run: west update
       - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
-      - name: Prepare variables
-        id: variables
-        run: |
-          SHIELD_ARG=
-          ARTIFACT_NAME="${{ matrix.board }}"
-
-          if [ -n "${{ matrix.shield }}" ]; then
-            SHIELD_ARG="-DSHIELD=${{ matrix.shield }}"
-            ARTIFACT_NAME="${ARTIFACT_NAME}-${{ matrix.shield }}"
-          fi
-
-          ARTIFACT_NAME="${ARTIFACT_NAME}-zmk"
-
-          echo ::set-output name=shield-arg::${SHIELD_ARG}
-          echo ::set-output name=artifact-name::${ARTIFACT_NAME}
-      - name: Build (west build)
-        run: west build -s app -b ${{ matrix.board }} -- ${{ steps.variables.outputs.shield-arg }} ${{ matrix.cmake-args }}
-      - name: Archive artifacts
-        if: ${{ !matrix.skip-archive }}
-        uses: actions/upload-artifact@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
         with:
-          name: "${{ steps.variables.outputs.artifact-name }}"
-          path: |
-            build/zephyr/zmk.hex
-            build/zephyr/zmk.uf2
-        continue-on-error: true
+          node-version: '14.x'
+      - name: Install @actions/artifact
+        run: npm install @actions/artifact
+      - name: Build and upload artifacts
+        uses: actions/github-script@v4
+        id: boards-list
+        with:
+          script: |
+            const fs = require('fs');
+            const artifact = require('@actions/artifact');
+            const artifactClient = artifact.create();
+
+            const execSync = require('child_process').execSync;
+            
+            const buildShieldArgs = JSON.parse(`${{ matrix.shieldArgs }}`);
+
+            let error = false;
+
+            for (const shieldArgs of buildShieldArgs) {
+              try {
+                const output = execSync(`west build -s app -p -b ${{ matrix.board }} -- ${shieldArgs.shield ? '-DSHIELD=' + shieldArgs.shield : ''} ${shieldArgs['cmake-args'] || ''}`);
+
+                console.log(output.toString());
+
+                const fileExtensions = ['hex', 'uf2'];
+                let files = [];
+
+                for (const extension of fileExtensions) {
+                  const path = 'build/zephyr/zmk.' + extension;
+                  if (fs.existsSync(path)) {
+                    files.push(path);
+                  }
+                }
+
+                const rootDirectory = 'build/zephyr';
+                const options = {
+                    continueOnError: true
+                }
+                const artifactName = `${{ matrix.board }}${shieldArgs.shield ? '-' + shieldArgs.shield : ''}-zmk`;
+
+                await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
+              } catch (e) {
+                console.error(`Failed to build or upload ${{ matrix.board }} ${shieldArgs.shield} ${shieldArgs['cmake-args']}`);
+                console.error(e);
+                error = true;
+              }
+            }
+
+            if (error) {
+              throw new Error('Failed to build one or more configurations');
+            }
   compile-matrix:
     if: ${{ always() }}
     runs-on: ubuntu-latest
@@ -96,8 +124,30 @@ jobs:
             const nightlyArray = nightly ? JSON.parse(nightly) : [];
 
             const combined = [...coreCoverageArray, ...boardChangesArray, ...nightlyArray];
+            const combinedUnique = [...new Map(combined.map(el => [JSON.stringify(el), el])).values()];
 
-            return [...new Map(combined.map(el => [JSON.stringify(el), el])).values()];
+            const perBoard = {};
+
+            for (const configuration of combinedUnique) {
+              if (!perBoard[configuration.board])
+                perBoard[configuration.board] = [];
+              
+              perBoard[configuration.board].push({
+                shield: configuration.shield,
+                'cmake-args': configuration['cmake-args']
+              })
+            }
+
+            const includeList = [];
+
+            for (const [board, shieldArgs] of Object.entries(perBoard)) {
+              includeList.push({
+                board,
+                shieldArgs: JSON.stringify(shieldArgs)
+              });
+            }
+
+            return includeList;
   core-coverage:
     if: ${{ needs.get-changed-files.outputs.core-changes == 'true' }}
     runs-on: ubuntu-latest
