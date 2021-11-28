@@ -10,7 +10,7 @@
 
 / {
 	model = "BT60";
-	compatible = "bt60";
+	compatible = "polarityworks,bt60";
 
 	chosen {
 		zephyr,code-partition = &code_partition;
@@ -21,20 +21,20 @@
 	};
 
 	sensors {
-				compatible = "zmk,keymap-sensors";
-				sensors = <&left_encoder>;
+		compatible = "zmk,keymap-sensors";
+		sensors = <&left_encoder>;
 	};
 
 
 
-left_encoder: encoder_left {
-				compatible = "alps,ec11";
-				label = "LEFT_ENCODER";
-				a-gpios = <&gpio1 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-				b-gpios = <&gpio1 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-				resolution = <4>;
-				status = "okay";
-				};
+	left_encoder: encoder_left {
+		compatible = "alps,ec11";
+		label = "LEFT_ENCODER";
+		a-gpios = <&gpio1 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		b-gpios = <&gpio1 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		resolution = <4>;
+		status = "okay";
+	};
 
 
 	leds {
