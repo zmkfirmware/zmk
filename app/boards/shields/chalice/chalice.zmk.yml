@@ -1,0 +1,9 @@
+file_format: "1"
+id: chalice
+name: Chalice
+type: shield
+url: https://customkbd.com/products/chalice-pre-order
+requires: [pro_micro]
+features:
+  - keys
+  - underglow
