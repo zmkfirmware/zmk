@@ -10,7 +10,7 @@
 		default_layer {
 			bindings = <
 			&key_repeat &kp A
-			&kp B &kp C_VOL_UP
+			&kp LCTRL &kp C_VOL_UP
 			>;
 		};
 	};
