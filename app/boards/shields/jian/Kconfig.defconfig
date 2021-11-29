@@ -2,19 +2,11 @@
 if SHIELD_JIAN_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "Jian Left"
+	default "Jian"
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
 
-endif
-
-
-if SHIELD_JIAN_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "Jian Right"
-	
 endif
 
 if SHIELD_JIAN_LEFT || SHIELD_JIAN_RIGHT

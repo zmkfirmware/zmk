@@ -1,0 +1,19 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_A_DUX_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "A. Dux"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+endif
+
+if SHIELD_A_DUX_LEFT || SHIELD_A_DUX_RIGHT
+
+config ZMK_SPLIT
+	default y
+
+endif

@@ -7,6 +7,7 @@
 #include <device.h>
 #include <init.h>
 
+#include <errno.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -250,6 +251,10 @@ static int ble_save_profile() {
 }
 
 int zmk_ble_prof_select(uint8_t index) {
+    if (index >= PROFILE_COUNT) {
+        return -ERANGE;
+    }
+
     LOG_DBG("profile %d", index);
     if (active_profile == index) {
         return 0;

@@ -7,27 +7,24 @@ config ZMK_WIDGET_LAYER_STATUS
     bool "Widget for highest, active layer using small icons"
     default y
     depends on !ZMK_SPLIT || ZMK_SPLIT_BLE_ROLE_CENTRAL
-    select LVGL_FONT_MONTSERRAT_12
+    select LVGL_USE_LABEL
 
 config ZMK_WIDGET_BATTERY_STATUS
     bool "Widget for battery charge information, using small icons"
     depends on BT
     default y if BT
     select LVGL_USE_LABEL
-    select LVGL_FONT_MONTSERRAT_16
 
 config ZMK_WIDGET_OUTPUT_STATUS
     bool "Widget for keyboard output status icons"
     depends on BT
     default y if BT
     select LVGL_USE_LABEL
-    select LVGL_FONT_MONTSERRAT_16
     
 config ZMK_WIDGET_WPM_STATUS
     bool "Widget for displaying typed words per minute"
     depends on !ZMK_SPLIT || ZMK_SPLIT_BLE_ROLE_CENTRAL
     select LVGL_USE_LABEL
-    select LVGL_FONT_MONTSERRAT_16
     select ZMK_WPM
 
 endmenu

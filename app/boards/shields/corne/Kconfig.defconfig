@@ -8,13 +8,6 @@ config ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 endif
 
-if SHIELD_CORNE_RIGHT
-
-config ZMK_KEYBOARD_NAME
-	default "Corne Right"
-	
-endif
-
 if SHIELD_CORNE_LEFT || SHIELD_CORNE_RIGHT
 
 config ZMK_SPLIT

@@ -10,7 +10,6 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:mdx/recommended",
     "prettier",
-    "prettier/react",
   ],
   parserOptions: {
     ecmaFeatures: {
