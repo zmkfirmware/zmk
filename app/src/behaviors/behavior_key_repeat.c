@@ -10,6 +10,7 @@
 #include <drivers/behavior.h>
 #include <logging/log.h>
 #include <zmk/behavior.h>
+#include <zmk/hid.h>
 
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
@@ -93,6 +94,7 @@ static int key_repeat_keycode_state_changed_listener(const zmk_event_t *eh) {
         for (int u = 0; u < config->usage_pages_count; u++) {
             if (config->usage_pages[u] == ev->usage_page) {
                 memcpy(&data->last_keycode_pressed, ev, sizeof(struct zmk_keycode_state_changed));
+                data->last_keycode_pressed.implicit_modifiers |= zmk_hid_get_explicit_mods();
                 break;
             }
         }
