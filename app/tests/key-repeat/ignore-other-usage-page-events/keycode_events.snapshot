@@ -1,0 +1,12 @@
+pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+press: Modifiers set to 0x00
+released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+release: Modifiers set to 0x00
+pressed: usage_page 0x0c keycode 0xe9 implicit_mods 0x00 explicit_mods 0x00
+press: Modifiers set to 0x00
+released: usage_page 0x0c keycode 0xe9 implicit_mods 0x00 explicit_mods 0x00
+release: Modifiers set to 0x00
+pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+press: Modifiers set to 0x00
+released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+release: Modifiers set to 0x00
