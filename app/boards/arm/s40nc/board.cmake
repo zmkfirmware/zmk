@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Kyle McCreery
+# Copyright (c) 2021 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 set(OPENOCD_NRF5_SUBFAMILY nrf52)
