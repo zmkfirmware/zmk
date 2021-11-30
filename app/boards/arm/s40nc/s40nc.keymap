@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Kyle McCreery
+ * Copyright (c) 2021 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -55,3 +55,4 @@
 		};
 	};
 };
+            
