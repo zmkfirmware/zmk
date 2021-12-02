@@ -1,0 +1,28 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Global animation configuration
+
+compatible: "zmk,animation"
+
+properties:
+  drivers:
+    type: phandles
+    required: true
+    description: |
+      This array should contain all driver devices responsible for illuminating animated LEDs.
+      The devices must implement Zephyr's LED Strip Interface and expose a chain-lenght devicetree property.
+
+  animations:
+    type: phandles
+    required: true
+    description: |
+      Handles to all active animations.
+
+  pixels:
+    type: phandle-array
+    required: true
+    description: |
+      This field contains the pixel configuration for the entire board.
+      The order of this array determines in what order pixels are sent to the driver device API.
+      If multiple driving devices are used, their chain-length property determines the size of the buffer for each device.
