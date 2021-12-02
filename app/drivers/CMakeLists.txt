@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 add_subdirectory_ifdef(CONFIG_ZMK_DRIVERS_GPIO gpio)
+add_subdirectory_ifdef(CONFIG_ZMK_ANIUMATION animation)
 add_subdirectory(kscan)
 add_subdirectory(sensor)
 add_subdirectory(display)

@@ -1,0 +1,21 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Animation for displaying solid colors across the entire area
+
+compatible: "zmk,animation-solid"
+
+properties:
+  duration:
+    type: int
+    required: true
+    description: |
+      Animation duration in seconds.
+      This is the time it takes for the animation to complete a full cycle and return to the original color.
+
+  colors:
+    type: array
+    required: true
+    description: |
+      The colors to cycle through during the animation.
