@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <drivers/sensor.h>
+#include <zephyr/drivers/sensor.h>
 
 #define _SENSOR_CHILD_LEN(node) 1 +
 #define ZMK_KEYMAP_SENSORS_NODE DT_INST(0, zmk_keymap_sensors)
