@@ -16,6 +16,8 @@
 
 #include "ec11.h"
 
+#define FULL_ROTATION 360
+
 LOG_MODULE_REGISTER(EC11, CONFIG_SENSOR_LOG_LEVEL);
 
 static int ec11_get_ab_state(const struct device *dev) {
@@ -59,9 +61,14 @@ static int ec11_sample_fetch(const struct device *dev, enum sensor_channel chan)
     drv_data->pulses += delta;
     drv_data->ab_state = val;
 
-    drv_data->ticks = drv_data->pulses / drv_cfg->resolution;
-    drv_data->delta = delta;
-    drv_data->pulses %= drv_cfg->resolution;
+    // TODO: Temporary code for backwards compatibility to support
+    // the sensor channel rotation reporting *ticks* instead of delta of degrees.
+    // REMOVE ME
+    if (drv_cfg->steps == 0) {
+        drv_data->ticks = drv_data->pulses / drv_cfg->resolution;
+        drv_data->delta = delta;
+        drv_data->pulses %= drv_cfg->resolution;
+    }
 
     return 0;
 }
@@ -69,13 +76,26 @@ static int ec11_sample_fetch(const struct device *dev, enum sensor_channel chan)
 static int ec11_channel_get(const struct device *dev, enum sensor_channel chan,
                             struct sensor_value *val) {
     struct ec11_data *drv_data = dev->data;
+    const struct ec11_config *drv_cfg = dev->config;
+    int32_t pulses = drv_data->pulses;
 
     if (chan != SENSOR_CHAN_ROTATION) {
         return -ENOTSUP;
     }
 
-    val->val1 = drv_data->ticks;
-    val->val2 = drv_data->delta;
+    drv_data->pulses = 0;
+
+    if (drv_cfg->steps > 0) {
+        val->val1 = (pulses * FULL_ROTATION) / drv_cfg->steps;
+        val->val2 = (pulses * FULL_ROTATION) % drv_cfg->steps;
+        if (val->val2 != 0) {
+            val->val2 *= 1000000;
+            val->val2 /= drv_cfg->steps;
+        }
+    } else {
+        val->val1 = drv_data->ticks;
+        val->val2 = drv_data->delta;
+    }
 
     return 0;
 }
@@ -132,7 +152,8 @@ int ec11_init(const struct device *dev) {
     const struct ec11_config ec11_cfg_##n = {                                                      \
         .a = GPIO_DT_SPEC_INST_GET(n, a_gpios),                                                    \
         .b = GPIO_DT_SPEC_INST_GET(n, b_gpios),                                                    \
-        COND_CODE_0(DT_INST_NODE_HAS_PROP(n, resolution), (1), (DT_INST_PROP(n, resolution))),     \
+        .resolution = DT_INST_PROP_OR(n, resolution, 1),                                           \
+        .steps = DT_INST_PROP_OR(n, steps, 0),                                                     \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, ec11_init, NULL, &ec11_data_##n, &ec11_cfg_##n, POST_KERNEL,          \
                           CONFIG_SENSOR_INIT_PRIORITY, &ec11_driver_api);

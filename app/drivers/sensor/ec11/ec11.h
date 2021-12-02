@@ -14,6 +14,7 @@ struct ec11_config {
     const struct gpio_dt_spec a;
     const struct gpio_dt_spec b;
 
+    const uint16_t steps;
     const uint8_t resolution;
 };
 

@@ -6,11 +6,11 @@
 
 #pragma once
 
-
+#include <zephyr/device.h>
 #include <zephyr/drivers/sensor.h>
+
 #include <zmk/event_manager.h>
 #include <zmk/sensors.h>
-#include <device.h>
 
 // TODO: Move to Kconfig when we need more than one channel
 #define ZMK_SENSOR_EVENT_MAX_CHANNELS 1
