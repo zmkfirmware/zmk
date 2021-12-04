@@ -1,0 +1,13 @@
+file_format: "1"
+id: hillside
+name: Hillside
+type: shield
+url: https://github.com/mmccoyd/hillside/
+requires: [pro_micro]
+features:
+  - keys
+  - encoder
+  - underglow
+siblings:
+  - hillside_left
+  - hillside_right
