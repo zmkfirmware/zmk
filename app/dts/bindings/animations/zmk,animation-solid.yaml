@@ -6,7 +6,13 @@ description: |
 
 compatible: "zmk,animation-solid"
 
+include: animation_base.yaml
+
 properties:
+  label:
+    type: string
+    required: true
+
   duration:
     type: int
     required: true

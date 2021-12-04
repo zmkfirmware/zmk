@@ -1,0 +1,6 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+pixel-cells:
+  - position_x
+  - position_y
