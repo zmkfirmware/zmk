@@ -44,6 +44,7 @@ struct is31fl3741_config {
     uint8_t gcc;
     uint8_t sws;
     uint16_t *rgb_map;
+    uint8_t (*gamma)[256];
 };
 
 struct is31fl3741_data {
@@ -65,7 +66,7 @@ static int is31fl3741_reg_write(const struct device *dev, uint8_t addr, uint8_t 
 }
 
 static int is31fl3741_reg_burst_write(const struct device *dev, uint8_t start_addr,
-                                       const uint8_t *buffer, size_t num_bytes) {
+                                      const uint8_t *buffer, size_t num_bytes) {
     const struct is31fl3741_data *data = dev->data;
     const struct is31fl3741_config *config = dev->config;
 
@@ -101,7 +102,7 @@ static inline bool num_pixels_ok(const struct is31fl3741_config *config, size_t 
  * Updates individual LED channels without an RGB interpretation.
  */
 static int is31fl3741_strip_update_channels(const struct device *dev, uint8_t *channels,
-                                             size_t num_channels) {
+                                            size_t num_channels) {
     const struct is31fl3741_config *config = dev->config;
 
     if (config->px_buffer_size < num_channels) {
@@ -112,11 +113,10 @@ static int is31fl3741_strip_update_channels(const struct device *dev, uint8_t *c
 
     int result;
 
-    result = is31fl3741_reg_burst_write(
-        dev,
-        0x00,
-        channels,
-        (num_channels <= IS31FL3741_BUFFER_PAGE_BREAK) ? num_channels : IS31FL3741_BUFFER_PAGE_BREAK);
+    result = is31fl3741_reg_burst_write(dev, 0x00, channels,
+                                        (num_channels <= IS31FL3741_BUFFER_PAGE_BREAK)
+                                            ? num_channels
+                                            : IS31FL3741_BUFFER_PAGE_BREAK);
 
     if (result || num_channels <= IS31FL3741_BUFFER_PAGE_BREAK) {
         return result;
@@ -131,7 +131,7 @@ static int is31fl3741_strip_update_channels(const struct device *dev, uint8_t *c
  * Updates the RGB LED matrix according to devicetree's map property.
  */
 static int is31fl3741_strip_update_rgb(const struct device *dev, struct led_rgb *pixels,
-                                        size_t num_pixels) {
+                                       size_t num_pixels) {
     const struct is31fl3741_config *config = dev->config;
 
     uint8_t *px_buffer = config->px_buffer;
@@ -145,9 +145,9 @@ static int is31fl3741_strip_update_rgb(const struct device *dev, struct led_rgb 
     }
 
     while (i < num_pixels) {
-        px_buffer[rgb_map[j++]] = pixels[i].r;
-        px_buffer[rgb_map[j++]] = pixels[i].g;
-        px_buffer[rgb_map[j++]] = pixels[i].b;
+        px_buffer[rgb_map[j++]] = config->gamma[0][pixels[i].r];
+        px_buffer[rgb_map[j++]] = config->gamma[1][pixels[i].g];
+        px_buffer[rgb_map[j++]] = config->gamma[2][pixels[i].b];
 
         ++i;
     }
@@ -204,9 +204,9 @@ int static is31fl3741_init(const struct device *dev) {
     }
 
     // Configure LED driver operation mode
-    is31fl3741_reg_write(
-        dev, 0x00, (config->sws << 4) | (0x01 << 3) | 0x01); // SWS, H logic, Normal operation
-    is31fl3741_reg_write(dev, 0x01, config->gcc);            // Set GCC
+    is31fl3741_reg_write(dev, 0x00,
+                         (config->sws << 4) | (0x01 << 3) | 0x01); // SWS, H logic, Normal operation
+    is31fl3741_reg_write(dev, 0x01, config->gcc);                  // Set GCC
 
     // Set all scaling registers to 0xff, brightness is controlled using PWM
     uint8_t scaling_buffer[0xb4];
@@ -245,6 +245,12 @@ static const struct led_strip_driver_api is31fl3741_api = {
                                                                                                    \
     static uint16_t is31fl3741_##idx##_rgb_map[IS31FL3741_BUFFER_SIZE] = DT_INST_PROP(idx, map);   \
                                                                                                    \
+    static uint8_t is31fl3741_##idx##_gamma[3][256] = {                                            \
+        DT_INST_PROP(idx, red_gamma),                                                              \
+        DT_INST_PROP(idx, green_gamma),                                                            \
+        DT_INST_PROP(idx, blue_gamma),                                                             \
+    };                                                                                             \
+                                                                                                   \
     static const struct is31fl3741_config is31fl3741_##idx##_config = {                            \
         .bus = DT_INST_BUS_LABEL(idx),                                                             \
         .reg = DT_INST_REG_ADDR(idx),                                                              \
@@ -257,10 +263,11 @@ static const struct led_strip_driver_api is31fl3741_api = {
         .gcc = IS31FL3741_GCC(idx),                                                                \
         .sws = DT_INST_PROP(idx, sw_setting),                                                      \
         .rgb_map = is31fl3741_##idx##_rgb_map,                                                     \
+        .gamma = is31fl3741_##idx##_gamma,                                                         \
     };                                                                                             \
                                                                                                    \
-    DEVICE_AND_API_INIT(is31fl3741_##idx, DT_INST_LABEL(idx), &is31fl3741_init,                    \
-                        &is31fl3741_##idx##_data, &is31fl3741_##idx##_config, POST_KERNEL,         \
-                        CONFIG_LED_STRIP_INIT_PRIORITY, &is31fl3741_api);
+    DEVICE_DT_INST_DEFINE(idx, &is31fl3741_init, NULL, &is31fl3741_##idx##_data,                   \
+                          &is31fl3741_##idx##_config, POST_KERNEL, CONFIG_LED_STRIP_INIT_PRIORITY, \
+                          &is31fl3741_api);
 
 DT_INST_FOREACH_STATUS_OKAY(IS31FL3741_DEVICE);
