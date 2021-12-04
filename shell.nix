@@ -3,6 +3,15 @@
 with pkgs;
 
 let inherit (lib) ;
+  mach-nix = import (builtins.fetchGit {
+    url = "https://github.com/DavHau/mach-nix";
+    ref = "master";
+  }) {
+    python = "python3";
+  };
+  machNix = mach-nix.mkPython rec {
+    requirements = builtins.readFile ./zephyr/scripts/requirements-base.txt;
+  };
 in mkShell {
   buildInputs = [
     cmake
@@ -11,9 +20,7 @@ in mkShell {
     dtc
     dfu-util
     gcc-arm-embedded
-    python3
-    python38Packages.west
-    python38Packages.pip
+    machNix
   ];
 
   shellHook = ''
