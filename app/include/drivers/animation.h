@@ -37,7 +37,8 @@ typedef void (*animation_api_prep_next_frame)(const struct device *dev);
  *
  * @see animation_prep_next_frame() for argument descriptions.
  */
-typedef void (*animation_api_get_pixel)(const struct device *dev, const struct animation_pixel_position *pixel_position,
+typedef void (*animation_api_get_pixel)(const struct device *dev,
+                                        const struct animation_pixel_position *pixel_position,
                                         struct zmk_color_rgb *value);
 
 struct animation_api {
@@ -50,7 +51,7 @@ struct animation_api {
  * @param dev [description]
  */
 static inline void animation_prep_next_frame(const struct device *dev) {
-    const struct animation_api *api = (const struct animation_api *) dev->api;
+    const struct animation_api *api = (const struct animation_api *)dev->api;
 
     return api->prep_next_frame(dev);
 }
@@ -60,9 +61,10 @@ static inline void animation_prep_next_frame(const struct device *dev) {
  * @param dev   [description]
  * @param pixel [description]
  */
-static inline void animation_get_pixel(const struct device *dev, const struct animation_pixel_position *pixel_position,
-                                        struct zmk_color_rgb *value) {
-    const struct animation_api *api = (const struct animation_api *) dev->api;
+static inline void animation_get_pixel(const struct device *dev,
+                                       const struct animation_pixel_position *pixel_position,
+                                       struct zmk_color_rgb *value) {
+    const struct animation_api *api = (const struct animation_api *)dev->api;
 
     return api->get_pixel(dev, pixel_position, value);
 }
