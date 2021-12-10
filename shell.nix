@@ -6,14 +6,14 @@ let inherit (lib) ;
 in mkShell {
   buildInputs = [
     cmake
-    ninja
-    python3
     ccache
+    ninja
     dtc
     dfu-util
     gcc-arm-embedded
+    python3
     python38Packages.west
-    python38Packages.pyelftools
+    python38Packages.pip
   ];
 
   shellHook = ''
