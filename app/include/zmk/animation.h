@@ -9,16 +9,6 @@
 #include <device.h>
 #include <drivers/led_strip.h>
 
-struct animation_pixel_position {
-    const uint8_t x;
-    const uint8_t y;
-};
-
-struct animation_pixel {
-    const struct device *animation;
-    const struct animation_pixel_position position;
-};
-
 struct zmk_color_rgb {
     float r;
     float g;

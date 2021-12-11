@@ -32,12 +32,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define PHANDLE_TO_PIXEL(idx, node_id, prop)                                                       \
     {                                                                                              \
+        .id = idx,                                                                                 \
+        .position_x = DT_PHA_BY_IDX(node_id, prop, idx, position_x),                               \
+        .position_y = DT_PHA_BY_IDX(node_id, prop, idx, position_y),                               \
         .animation = DEVICE_DT_GET(DT_PHANDLE_BY_IDX(node_id, prop, idx)),                         \
-        .position =                                                                                \
-            {                                                                                      \
-                .x = DT_PHA_BY_IDX(node_id, prop, idx, position_x),                                \
-                .y = DT_PHA_BY_IDX(node_id, prop, idx, position_y),                                \
-            },                                                                                     \
     },
 
 /**
@@ -86,7 +84,7 @@ static struct led_rgb px_buffer[DT_INST_PROP_LEN(0, pixels)];
 
 static void zmk_animation_tick(struct k_work *work) {
     for (size_t i = 0; i < animations_size; ++i) {
-        animation_prep_next_frame(animations[i]);
+        animation_on_before_frame(animations[i]);
     }
 
     for (size_t i = 0; i < pixels_size; ++i) {
@@ -96,7 +94,7 @@ static void zmk_animation_tick(struct k_work *work) {
             .b = 0,
         };
 
-        animation_get_pixel(pixels[i].animation, &pixels[i].position, &rgb);
+        animation_render_pixel(pixels[i].animation, &pixels[i], &rgb);
 
         zmk_rgb_to_led_rgb(&rgb, &px_buffer[i]);
     }
@@ -107,6 +105,10 @@ static void zmk_animation_tick(struct k_work *work) {
         led_strip_update_rgb(drivers[i], &px_buffer[pixels_updated], pixels_per_driver[i]);
 
         pixels_updated += (size_t)pixels_per_driver;
+    }
+
+    for (size_t i = 0; i < animations_size; ++i) {
+        animation_on_after_frame(animations[i]);
     }
 }
 

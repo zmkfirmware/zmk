@@ -31,7 +31,7 @@ struct animation_solid_data {
     struct zmk_color_rgb current_rgb;
 };
 
-static void animation_solid_prep_next_frame(const struct device *dev) {
+static void animation_solid_on_before_frame(const struct device *dev) {
     const struct animation_solid_config *config = dev->config;
     struct animation_solid_data *data = dev->data;
 
@@ -57,9 +57,9 @@ static void animation_solid_prep_next_frame(const struct device *dev) {
     data->counter = (data->counter + 1) % config->duration;
 }
 
-static void animation_solid_get_pixel(const struct device *dev,
-                                      const struct animation_pixel_position *position,
-                                      struct zmk_color_rgb *value) {
+static void animation_solid_render_pixel(const struct device *dev,
+                                         const struct animation_pixel *pixel,
+                                         struct zmk_color_rgb *value) {
     const struct animation_solid_data *data = dev->data;
 
     value->r = data->current_rgb.r;
@@ -80,8 +80,9 @@ static int animation_solid_init(const struct device *dev) {
 }
 
 static const struct animation_api animation_solid_api = {
-    .prep_next_frame = animation_solid_prep_next_frame,
-    .get_pixel = animation_solid_get_pixel,
+    .on_before_frame = animation_solid_on_before_frame,
+    .on_after_frame = NULL,
+    .render_pixel = animation_solid_render_pixel,
 };
 
 #define ANIMATION_SOLID_DEVICE(idx)                                                                \
