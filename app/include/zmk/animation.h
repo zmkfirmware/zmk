@@ -21,6 +21,18 @@ struct zmk_color_hsl {
     uint8_t l;
 };
 
+#if DT_NODE_HAS_PROP(DT_INST(0, animation), key_position)
+size_t zmk_animation_get_pixel_by_key_position(size_t key_position);
+#else
+static inline size_t zmk_animation_get_pixel_by_key_position(size_t key_position) {
+    return key_position;
+}
+#endif
+
+#if defined(CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE) && (CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE == 1)
+uint16_t zmk_animation_get_pixel_distance(size_t pixel_idx, size_t other_pixel_idx);
+#endif
+
 /**
  * Converts color from HSL to RGB.
  *

@@ -312,6 +312,10 @@ config ZMK_ANIMATION_FPS
 	range 0 60
 	default 30
 
+config ZMK_ANIMATION_PIXEL_DISTANCE
+	bool "Generate a lookup table for distances between pixels"
+	default y
+
 #ZMK_ANIMATION
 endif
 

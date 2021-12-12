@@ -11,6 +11,9 @@
 #include <init.h>
 #include <kernel.h>
 
+#include <stdlib.h>
+#include <math.h>
+
 #include <logging/log.h>
 
 #include <drivers/animation.h>
@@ -82,6 +85,31 @@ static const size_t pixels_size = DT_INST_PROP_LEN(0, pixels);
  */
 static struct led_rgb px_buffer[DT_INST_PROP_LEN(0, pixels)];
 
+/**
+ * Conditional implementation of zmk_animation_get_pixel_by_key_position
+ * if key-pixels is set.
+ */
+#if DT_INST_NODE_HAS_PROP(0, key_position)
+static const uint8_t pixels_by_key_position[] = DT_INST_PROP(0, key_pixels);
+
+size_t zmk_animation_get_pixel_by_key_position(size_t key_position) {
+    return pixels_by_key_position[key_position];
+}
+#endif
+
+#if defined(CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE) && (CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE == 1)
+
+/**
+ * Lookup table for distance between any two pixels.
+ */
+static uint16_t pixel_distance[DT_INST_PROP_LEN(0, pixels)][DT_INST_PROP_LEN(0, pixels)];
+
+uint16_t zmk_animation_get_pixel_distance(size_t pixel_idx, size_t other_pixel_idx) {
+    return pixel_distance[pixel_idx][other_pixel_idx];
+}
+
+#endif
+
 static void zmk_animation_tick(struct k_work *work) {
     for (size_t i = 0; i < animations_size; ++i) {
         animation_on_before_frame(animations[i]);
@@ -119,6 +147,16 @@ static void zmk_animation_tick_handler(struct k_timer *timer) { k_work_submit(&a
 K_TIMER_DEFINE(animation_tick, zmk_animation_tick_handler, NULL);
 
 static int zmk_animation_init(const struct device *dev) {
+#if defined(CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE) && (CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE == 1)
+    // Prefill the pixel distance lookup table
+    for (size_t i = 0; i < pixels_size; ++i) {
+        for (size_t j = 0; j < pixels_size; ++j) {
+            pixel_distance[i][j] = sqrt(pow(pixels[i].position_x - pixels[j].position_x, 2) +
+                                        pow(pixels[i].position_y - pixels[j].position_y, 2));
+        }
+    }
+#endif
+
     LOG_INF("ZMK Animation Ready");
 
     k_timer_start(&animation_tick, K_NO_WAIT, K_MSEC(1000 / CONFIG_ZMK_ANIMATION_FPS));

@@ -26,3 +26,12 @@ properties:
       This field contains the pixel configuration for the entire board.
       The order of this array determines in what order pixels are sent to the driver device API.
       If multiple driving devices are used, their chain-length property determines the size of the buffer for each device.
+
+  key-pixels:
+    type: array
+    required: false
+    description: |
+      Use this field to specify the pixel index corresponding to each key
+      following the order used in your keymap.
+      When left unspecified, the driver assumes that for every key, the pixel has a matching id.
+      So for N keys, the first N pixels are exactly in the same order as keys in your keymap.
