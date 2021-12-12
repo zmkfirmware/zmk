@@ -1,0 +1,46 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Animated 'ripples' trigered by key presses.
+
+compatible: "zmk,animation-ripple"
+
+include: animation_base.yaml
+
+properties:
+  label:
+    type: string
+    required: true
+
+  duration:
+    type: int
+    required: false
+    default: 1000
+    description: |
+      Approximate ripple travel time in milliseconds.
+
+  color:
+    type: int
+    required: true
+    description: |
+      Ripple color.
+
+  buffer-size:
+    type: int
+    default: 10
+    description: |
+      This will limit how many keystroke events the animation is able to track
+      at the same time. Depending on how fast you type and the animation duration
+      you might need to increase this number.
+
+  ripple-width:
+    type: int
+    default: 25
+    description: |
+      This setting determines the thickness of the ripple 'ring'.
+      Think of it as antialiasing. The further apart the pixels are, or if they're
+      spaced irregularly, the larger this number should be. Otherwise the animation
+      will look uneven or LEDs might not light up at all.
+      The effect is especially pronounced when lowering the effect duration or running
+      low FPS.
