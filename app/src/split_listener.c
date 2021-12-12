@@ -5,7 +5,6 @@
  */
 
 #include <device.h>
-#include <power/reboot.h>
 #include <logging/log.h>
 
 #include <zmk/split/bluetooth/service.h>
