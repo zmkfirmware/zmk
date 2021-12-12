@@ -7,7 +7,7 @@
 #define DT_DRV_COMPAT zmk_behavior_reset
 
 #include <device.h>
-#include <power/reboot.h>
+#include <sys/reboot.h>
 #include <drivers/behavior.h>
 #include <logging/log.h>
 

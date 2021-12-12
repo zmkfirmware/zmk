@@ -7,7 +7,6 @@
 #define DT_DRV_COMPAT zmk_behavior_none
 
 #include <device.h>
-#include <power/reboot.h>
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
