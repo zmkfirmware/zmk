@@ -6,7 +6,7 @@ url: https://mechwild.com/product/murphpad/
 requires: [pro_micro]
 exposes: [i2c_oled]
 features:
-    - keys
-    - display
-    - encoder
-    - underglow
+  - keys
+  - display
+  - encoder
+  - underglow
