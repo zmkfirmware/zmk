@@ -6,8 +6,6 @@ if SHIELD_MURPHPAD
 config ZMK_KEYBOARD_NAME
 	default "MurphPad"
 
-endif
-
 if ZMK_DISPLAY
 
 config I2C
@@ -43,3 +41,5 @@ choice LVGL_COLOR_DEPTH
 endchoice
 
 endif # LVGL
+
+endif
