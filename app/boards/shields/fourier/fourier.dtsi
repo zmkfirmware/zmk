@@ -8,8 +8,8 @@
 
 / {
 	chosen {
-	    zmk,kscan = &kscan0;
-	    zmk,matrix_transform = &default_transform;
+		zmk,kscan = &kscan0;
+		zmk,matrix_transform = &default_transform;
 	};
 
 	/*
@@ -34,10 +34,10 @@ RC(3,0)   RC(3,1) RC(3,2) RC(3,3) RC(3,4)            /**/  RC(3,6)        RC(3,9
 
 		diode-direction = "col2row";
 		row-gpios
-            = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row A
-            , <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   // Row B
-            , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   // Row C
-            , <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   // Row D
-            ;
+			= <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row A
+			, <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   // Row B
+			, <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   // Row C
+			, <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   // Row D
+			;
 	};
 };
