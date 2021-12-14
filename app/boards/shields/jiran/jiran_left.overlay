@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "jiran.dtsi"
+
+&kscan0 {
+	col-gpios
+		= <&pro_micro  1 GPIO_ACTIVE_HIGH>
+		, <&pro_micro  0 GPIO_ACTIVE_HIGH>
+		, <&pro_micro  4 GPIO_ACTIVE_HIGH>
+		, <&pro_micro  5 GPIO_ACTIVE_HIGH>
+		, <&pro_micro  6 GPIO_ACTIVE_HIGH>
+		, <&pro_micro  7 GPIO_ACTIVE_HIGH>
+		;
+};
