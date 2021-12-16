@@ -48,6 +48,7 @@ jobs:
           - microdox_left
           - microdox_right
           - nibble
+          - osprette
           - qaz
           - quefrency_left
           - quefrency_right
