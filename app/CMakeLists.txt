@@ -81,6 +81,7 @@ target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/events/battery_state_changed
 target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/battery.c)
 
 target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/color.c)
+target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation_compose.c)
 target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation_ripple.c)
 target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation_solid.c)
 target_sources_ifdef(CONFIG_ZMK_ANIMATION app PRIVATE src/animation/animation.c)

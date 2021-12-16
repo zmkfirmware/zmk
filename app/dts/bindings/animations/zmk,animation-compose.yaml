@@ -1,0 +1,27 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Higher-order animation which allows for composing other animation
+  drivers and using different blending modes.
+
+compatible: "zmk,animation-compose"
+
+include: animation_base.yaml
+
+properties:
+  label:
+    type: string
+    required: true
+
+  animations:
+    type: phandles
+    required: true
+    description: |
+      Animations to be combined.
+
+  blending-modes:
+    type: array
+    required: true
+    description: |
+      Blending modes for each animation.
