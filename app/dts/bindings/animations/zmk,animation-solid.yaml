@@ -15,10 +15,12 @@ properties:
 
   duration:
     type: int
-    required: true
+    required: false
+    default: 5
     description: |
       Animation duration in seconds.
       This is the time it takes for the animation to complete a full cycle and return to the original color.
+      Ignored if only a single color is given.
 
   colors:
     type: array
