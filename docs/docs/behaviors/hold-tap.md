@@ -52,17 +52,21 @@ In QMK, unlike ZMK, this functionality is enabled by default, and you turn it of
 
 If retro tap is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime. The hold key does not activate until another key is pressed, meaning that it cannot be used for mouse events like Shift Click to select from your cursor position to mouse position.
 
-For example, if you press `&sh LEFT_SHIFT Z` and then release it without pressing another key, it will output `z`.
+For example, if you press `&mt LEFT_SHIFT Z` and then release it without pressing another key, it will output `z`.
 
 ```
-sh: shift {
+/ { 
+behaviors {
+	mt_retro: mt_retro {
+		retro-tap;
 		compatible = "zmk,behavior-hold-tap";
  		label = "shift mod";
  		#binding-cells = <2>;
  		tapping_term_ms = <100>;
-		retro-tap;
  		flavor = "hold-preferred";
  		bindings = <&kp>, <&kp>;
+	};
+};
 };
 ```
 
