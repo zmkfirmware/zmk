@@ -29,7 +29,7 @@ struct animation_ripple_event {
 };
 
 struct animation_ripple_config {
-    struct zmk_color_hsl *color;
+    struct zmk_color_hsl *color_hsl;
     size_t event_buffer_size;
     uint8_t distance_per_frame;
     uint8_t ripple_width;
@@ -37,6 +37,7 @@ struct animation_ripple_config {
 };
 
 struct animation_ripple_data {
+    struct zmk_color_rgb color_rgb;
     struct animation_ripple_event *event_buffer;
     size_t events_start;
     size_t events_end;
@@ -115,9 +116,9 @@ static void animation_ripple_render_pixel(const struct device *dev,
             float intensity =
                 (float)abs(pixel_distance - event->distance) / (float)config->ripple_width;
 
-            value->r = value->r < intensity ? intensity : value->r;
-            value->g = value->g < intensity ? intensity : value->g;
-            value->b = value->b < intensity ? intensity : value->b;
+            value->r = intensity * data->color_rgb.r;
+            value->g = intensity * data->color_rgb.g;
+            value->b = intensity * data->color_rgb.b;
         }
 
         if (++i == config->event_buffer_size) {
@@ -126,7 +127,14 @@ static void animation_ripple_render_pixel(const struct device *dev,
     }
 }
 
-static int animation_ripple_init(const struct device *dev) { return 0; }
+static int animation_ripple_init(const struct device *dev) {
+    const struct animation_ripple_config *config = dev->config;
+    struct animation_ripple_data *data = dev->data;
+
+    zmk_hsl_to_rgb(config->color_hsl, &data->color_rgb);
+
+    return 0;
+}
 
 static const struct animation_api animation_ripple_api = {
     .on_before_frame = NULL,
@@ -149,7 +157,7 @@ static const struct animation_api animation_ripple_api = {
     static uint32_t animation_ripple_##idx##_color = DT_INST_PROP(idx, color);                     \
                                                                                                    \
     static struct animation_ripple_config animation_ripple_##idx##_config = {                      \
-        .color = (struct zmk_color_hsl *)&animation_ripple_##idx##_color,                          \
+        .color_hsl = (struct zmk_color_hsl *)&animation_ripple_##idx##_color,                      \
         .event_buffer_size = DT_INST_PROP(idx, buffer_size),                                       \
         .distance_per_frame =                                                                      \
             (255 * 1000 / DT_INST_PROP(idx, duration)) / CONFIG_ZMK_ANIMATION_FPS,                 \
