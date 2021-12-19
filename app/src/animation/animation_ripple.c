@@ -97,7 +97,7 @@ static void animation_ripple_render_frame(const struct device *dev, struct anima
 
             if (config->ripple_width > abs(pixel_distance - event->distance)) {
                 float intensity =
-                    (float)abs(pixel_distance - event->distance) / (float)config->ripple_width;
+                    1.0f - (float)abs(pixel_distance - event->distance) / (float)config->ripple_width;
 
                 struct zmk_color_rgb color = {
                     .r = intensity * data->color_rgb.r,
