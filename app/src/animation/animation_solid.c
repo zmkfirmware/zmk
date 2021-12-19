@@ -16,6 +16,8 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct animation_solid_config {
+    size_t *pixel_map;
+    size_t pixel_map_size;
     struct zmk_color_hsl *colors;
     uint8_t num_colors;
     uint16_t duration;
@@ -31,7 +33,7 @@ struct animation_solid_data {
     struct zmk_color_rgb current_rgb;
 };
 
-static void animation_solid_on_before_frame(const struct device *dev) {
+static void animation_solid_tick(const struct device *dev) {
     const struct animation_solid_config *config = dev->config;
     struct animation_solid_data *data = dev->data;
 
@@ -57,14 +59,16 @@ static void animation_solid_on_before_frame(const struct device *dev) {
     data->counter = (data->counter + 1) % config->duration;
 }
 
-static void animation_solid_render_pixel(const struct device *dev,
-                                         const struct animation_pixel *pixel,
-                                         struct zmk_color_rgb *value) {
-    const struct animation_solid_data *data = dev->data;
+static void animation_solid_render_frame(const struct device *dev, struct animation_pixel *pixels,
+                                         size_t num_pixels) {
+    const struct animation_solid_config *config = dev->config;
+    struct animation_solid_data *data = dev->data;
 
-    value->r = data->current_rgb.r;
-    value->g = data->current_rgb.g;
-    value->b = data->current_rgb.b;
+    animation_solid_tick(dev);
+
+    for (size_t i = 0; i < config->pixel_map_size; ++i) {
+        pixels[config->pixel_map[i]].value = data->current_rgb;
+    }
 }
 
 static int animation_solid_init(const struct device *dev) {
@@ -76,23 +80,30 @@ static int animation_solid_init(const struct device *dev) {
 
     zmk_hsl_to_rgb(&data->current_hsl, &data->current_rgb);
 
+    // if (config->num_colors == 1) {
+    //     return 0;
+    // }
+
+    // start timer here, so the only option is inline
+
     return 0;
 }
 
 static const struct animation_api animation_solid_api = {
-    .on_before_frame = animation_solid_on_before_frame,
-    .on_after_frame = NULL,
-    .render_pixel = animation_solid_render_pixel,
+    .render_frame = animation_solid_render_frame,
 };
 
 #define ANIMATION_SOLID_DEVICE(idx)                                                                \
                                                                                                    \
     static struct animation_solid_data animation_solid_##idx##_data;                               \
                                                                                                    \
-    static uint32_t animation_solid_##idx##_colors[DT_INST_PROP_LEN(idx, colors)] =                \
-        DT_INST_PROP(idx, colors);                                                                 \
+    static size_t animation_ripple_##idx##_pixel_map[] = DT_INST_PROP(idx, pixels);                \
+                                                                                                   \
+    static uint32_t animation_solid_##idx##_colors[] = DT_INST_PROP(idx, colors);                  \
                                                                                                    \
     static struct animation_solid_config animation_solid_##idx##_config = {                        \
+        .pixel_map = &animation_ripple_##idx##_pixel_map[0],                                       \
+        .pixel_map_size = DT_INST_PROP_LEN(idx, pixels),                                           \
         .colors = (struct zmk_color_hsl *)animation_solid_##idx##_colors,                          \
         .num_colors = DT_INST_PROP_LEN(idx, colors),                                               \
         .duration = DT_INST_PROP(idx, duration) * CONFIG_ZMK_ANIMATION_FPS,                        \

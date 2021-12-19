@@ -13,12 +13,6 @@ properties:
       This array should contain all driver devices responsible for illuminating animated LEDs.
       The devices must implement Zephyr's LED Strip Interface and expose a chain-lenght devicetree property.
 
-  animations:
-    type: phandles
-    required: true
-    description: |
-      Handles to all active animations.
-
   pixels:
     type: phandle-array
     required: true

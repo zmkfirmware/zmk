@@ -21,11 +21,10 @@
  */
 
 struct animation_pixel {
-    const size_t id;
     const uint8_t position_x;
     const uint8_t position_y;
 
-    const struct device *animation;
+    struct zmk_color_rgb value;
 };
 
 #ifdef __cplusplus
@@ -33,63 +32,23 @@ extern "C" {
 #endif
 
 /**
- * @typedef animation_api_prep_next_frame
- * @brief Callback run before every frame is rendered.
- *
- * @see animation_api_before_frame() for argument descriptions.
- */
-typedef void (*animation_api_on_before_frame)(const struct device *dev);
-
-/**
- * @typedef animation_api_prep_next_frame
- * @brief Callback run after every frame is rendered.
- *
- * @see animation_api_before_frame() for argument descriptions.
- */
-typedef void (*animation_api_on_after_frame)(const struct device *dev);
-
-/**
- * @typedef animation_api_prep_next_frame
+ * @typedef animation_render_frame
  * @brief Callback API for generating the next animation frame
  *
- * @see animation_prep_next_frame() for argument descriptions.
+ * @see animation_render_frame() for argument descriptions.
  */
-typedef void (*animation_api_render_pixel)(const struct device *dev,
-                                           const struct animation_pixel *pixel,
-                                           struct zmk_color_rgb *value);
+typedef void (*animation_api_render_frame)(const struct device *dev, struct animation_pixel *pixels,
+                                           size_t num_pixels);
 
 struct animation_api {
-    animation_api_on_before_frame on_before_frame;
-    animation_api_on_after_frame on_after_frame;
-    animation_api_render_pixel render_pixel;
+    animation_api_render_frame render_frame;
 };
 
-static inline void animation_on_before_frame(const struct device *dev) {
+static inline void animation_render_frame(const struct device *dev, struct animation_pixel *pixels,
+                                          size_t num_pixels) {
     const struct animation_api *api = (const struct animation_api *)dev->api;
 
-    if (api->on_before_frame == NULL) {
-        return;
-    }
-
-    api->on_before_frame(dev);
-}
-
-static inline void animation_on_after_frame(const struct device *dev) {
-    const struct animation_api *api = (const struct animation_api *)dev->api;
-
-    if (api->on_after_frame == NULL) {
-        return;
-    }
-
-    api->on_after_frame(dev);
-}
-
-static inline void animation_render_pixel(const struct device *dev,
-                                          const struct animation_pixel *pixel,
-                                          struct zmk_color_rgb *value) {
-    const struct animation_api *api = (const struct animation_api *)dev->api;
-
-    return api->render_pixel(dev, pixel, value);
+    return api->render_frame(dev, pixels, num_pixels);
 }
 
 #ifdef __cplusplus

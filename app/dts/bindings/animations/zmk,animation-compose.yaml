@@ -7,21 +7,9 @@ description: |
 
 compatible: "zmk,animation-compose"
 
-include: animation_base.yaml
-
 properties:
-  label:
-    type: string
-    required: true
-
   animations:
     type: phandles
     required: true
     description: |
       Animations to be combined.
-
-  blending-modes:
-    type: array
-    required: true
-    description: |
-      Blending modes for each animation.

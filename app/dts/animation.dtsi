@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	/omit-if-no-ref/ pixel: animation_pixel {
+		compatible = "zmk,animation-pixel";
+		label = "PIXEL";
+		#pixel-cells = <2>;
+	};
+};

@@ -35,10 +35,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define PHANDLE_TO_PIXEL(idx, node_id, prop)                                                       \
     {                                                                                              \
-        .id = idx,                                                                                 \
         .position_x = DT_PHA_BY_IDX(node_id, prop, idx, position_x),                               \
         .position_y = DT_PHA_BY_IDX(node_id, prop, idx, position_y),                               \
-        .animation = DEVICE_DT_GET(DT_PHANDLE_BY_IDX(node_id, prop, idx)),                         \
     },
 
 /**
@@ -59,20 +57,14 @@ static const uint8_t pixels_per_driver[] = {
     ZMK_DT_INST_FOREACH_PROP_ELEM(0, drivers, PHANDLE_TO_CHAIN_LENGTH)};
 
 /**
- * Pointers to all active animation devices.
+ * Pointer to the root animation
  */
-static const struct device *animations[] = {
-    ZMK_DT_INST_FOREACH_PROP_ELEM(0, animations, PHANDLE_TO_DEVICE)};
-
-/**
- * Size of the animation device pointers array.
- */
-static const size_t animations_size = DT_INST_PROP_LEN(0, animations);
+static const struct device *animation_root = DEVICE_DT_GET(DT_CHOSEN(zmk_animation));
 
 /**
  * Pixel configuration.
  */
-static const struct animation_pixel pixels[] = {
+static struct animation_pixel pixels[] = {
     ZMK_DT_INST_FOREACH_PROP_ELEM(0, pixels, PHANDLE_TO_PIXEL)};
 
 /**
@@ -102,29 +94,19 @@ size_t zmk_animation_get_pixel_by_key_position(size_t key_position) {
 /**
  * Lookup table for distance between any two pixels.
  */
-static uint16_t pixel_distance[DT_INST_PROP_LEN(0, pixels)][DT_INST_PROP_LEN(0, pixels)];
+static uint8_t pixel_distance[DT_INST_PROP_LEN(0, pixels)][DT_INST_PROP_LEN(0, pixels)];
 
-uint16_t zmk_animation_get_pixel_distance(size_t pixel_idx, size_t other_pixel_idx) {
+uint8_t zmk_animation_get_pixel_distance(size_t pixel_idx, size_t other_pixel_idx) {
     return pixel_distance[pixel_idx][other_pixel_idx];
 }
 
 #endif
 
 static void zmk_animation_tick(struct k_work *work) {
-    for (size_t i = 0; i < animations_size; ++i) {
-        animation_on_before_frame(animations[i]);
-    }
+    animation_render_frame(animation_root, &pixels[0], pixels_size);
 
     for (size_t i = 0; i < pixels_size; ++i) {
-        struct zmk_color_rgb rgb = {
-            .r = 0,
-            .g = 0,
-            .b = 0,
-        };
-
-        animation_render_pixel(pixels[i].animation, &pixels[i], &rgb);
-
-        zmk_rgb_to_led_rgb(&rgb, &px_buffer[i]);
+        zmk_rgb_to_led_rgb(&pixels[i].value, &px_buffer[i]);
     }
 
     size_t pixels_updated = 0;
@@ -133,10 +115,6 @@ static void zmk_animation_tick(struct k_work *work) {
         led_strip_update_rgb(drivers[i], &px_buffer[pixels_updated], pixels_per_driver[i]);
 
         pixels_updated += (size_t)pixels_per_driver;
-    }
-
-    for (size_t i = 0; i < animations_size; ++i) {
-        animation_on_after_frame(animations[i]);
     }
 }
 
@@ -151,8 +129,11 @@ static int zmk_animation_init(const struct device *dev) {
     // Prefill the pixel distance lookup table
     for (size_t i = 0; i < pixels_size; ++i) {
         for (size_t j = 0; j < pixels_size; ++j) {
+            // Distances are normalized to fit inside 0-255 range to fit inside uint8_t
+            // for better space efficiency
             pixel_distance[i][j] = sqrt(pow(pixels[i].position_x - pixels[j].position_x, 2) +
-                                        pow(pixels[i].position_y - pixels[j].position_y, 2));
+                                        pow(pixels[i].position_y - pixels[j].position_y, 2)) *
+                                   255 / 360;
         }
     }
 #endif

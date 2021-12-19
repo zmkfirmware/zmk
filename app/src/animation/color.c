@@ -103,3 +103,36 @@ void zmk_interpolate_hsl(const struct zmk_color_hsl *from, const struct zmk_colo
     result->s = from->s - (from->s - to->s) * step;
     result->l = from->l - (from->l - to->l) * step;
 }
+
+struct zmk_color_rgb __zmk_apply_blending_mode(struct zmk_color_rgb base_value,
+                                               struct zmk_color_rgb blend_value, uint8_t mode) {
+    switch (mode) {
+    case ZMK_ANIMATION_BLENDING_MODE_MULTIPLY:
+        base_value.r = base_value.r * blend_value.r;
+        base_value.g = base_value.g * blend_value.g;
+        base_value.b = base_value.b * blend_value.b;
+        break;
+    case ZMK_ANIMATION_BLENDING_MODE_LIGHTEN:
+        base_value.r = base_value.r > blend_value.r ? base_value.r : blend_value.r;
+        base_value.g = base_value.g > blend_value.g ? base_value.g : blend_value.g;
+        base_value.b = base_value.b > blend_value.b ? base_value.b : blend_value.b;
+        break;
+    case ZMK_ANIMATION_BLENDING_MODE_DARKEN:
+        base_value.r = base_value.r > blend_value.r ? blend_value.r : base_value.r;
+        base_value.g = base_value.g > blend_value.g ? blend_value.g : base_value.g;
+        base_value.b = base_value.b > blend_value.b ? blend_value.b : base_value.b;
+        break;
+    case ZMK_ANIMATION_BLENDING_MODE_SCREEN:
+        base_value.r = base_value.r + (1.0f - base_value.r) * blend_value.r;
+        base_value.g = base_value.g + (1.0f - base_value.g) * blend_value.g;
+        base_value.b = base_value.b + (1.0f - base_value.b) * blend_value.b;
+        break;
+    case ZMK_ANIMATION_BLENDING_MODE_SUBTRACT:
+        base_value.r = base_value.r - base_value.r * blend_value.r;
+        base_value.g = base_value.g - base_value.g * blend_value.g;
+        base_value.b = base_value.b - base_value.b * blend_value.b;
+        break;
+    }
+
+    return base_value;
+}

@@ -1,0 +1,10 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Pixel configuration
+
+compatible: "zmk,animation-pixel"
+
+pixel-cells:
+  - position_x
+  - position_y

@@ -30,7 +30,10 @@ struct animation_ripple_event {
 
 struct animation_ripple_config {
     struct zmk_color_hsl *color_hsl;
+    size_t *pixel_map;
+    size_t pixel_map_size;
     size_t event_buffer_size;
+    uint8_t blending_mode;
     uint8_t distance_per_frame;
     uint8_t ripple_width;
     uint8_t event_frames;
@@ -76,49 +79,44 @@ static int animation_ripple_on_key_press(const struct device *dev, const zmk_eve
     return 0;
 }
 
-static void animation_ripple_on_after_frame(const struct device *dev) {
+static void animation_ripple_render_frame(const struct device *dev, struct animation_pixel *pixels,
+                                          size_t num_pixels) {
     const struct animation_ripple_config *config = dev->config;
     struct animation_ripple_data *data = dev->data;
+
+    size_t *pixel_map = config->pixel_map;
 
     size_t i = data->events_start;
 
     while (i != data->events_end) {
         struct animation_ripple_event *event = &data->event_buffer[i];
 
+        // Render all pixels for each event
+        for (int j = 0; j < config->pixel_map_size; ++j) {
+            uint8_t pixel_distance = zmk_animation_get_pixel_distance(event->pixel_id, j);
+
+            if (config->ripple_width > abs(pixel_distance - event->distance)) {
+                float intensity =
+                    (float)abs(pixel_distance - event->distance) / (float)config->ripple_width;
+
+                struct zmk_color_rgb color = {
+                    .r = intensity * data->color_rgb.r,
+                    .g = intensity * data->color_rgb.g,
+                    .b = intensity * data->color_rgb.b,
+                };
+
+                pixels[pixel_map[j]].value = zmk_apply_blending_mode(pixels[pixel_map[j]].value,
+                                                                     color, config->blending_mode);
+            }
+        }
+
+        // Update event counter
         if (event->counter < config->event_frames) {
             event->distance += config->distance_per_frame;
             event->counter += 1;
         } else {
             data->events_start = (data->events_start + 1) % config->event_buffer_size;
             data->num_events -= 1;
-        }
-
-        if (++i == config->event_buffer_size) {
-            i = 0;
-        }
-    }
-}
-
-static void animation_ripple_render_pixel(const struct device *dev,
-                                          const struct animation_pixel *pixel,
-                                          struct zmk_color_rgb *value) {
-    const struct animation_ripple_config *config = dev->config;
-    struct animation_ripple_data *data = dev->data;
-
-    size_t i = data->events_start;
-
-    while (i != data->events_end) {
-        const struct animation_ripple_event *event = &data->event_buffer[i];
-
-        uint16_t pixel_distance = zmk_animation_get_pixel_distance(event->pixel_id, pixel->id);
-
-        if (config->ripple_width > abs(pixel_distance - event->distance)) {
-            float intensity =
-                (float)abs(pixel_distance - event->distance) / (float)config->ripple_width;
-
-            value->r = intensity * data->color_rgb.r;
-            value->g = intensity * data->color_rgb.g;
-            value->b = intensity * data->color_rgb.b;
         }
 
         if (++i == config->event_buffer_size) {
@@ -137,9 +135,7 @@ static int animation_ripple_init(const struct device *dev) {
 }
 
 static const struct animation_api animation_ripple_api = {
-    .on_before_frame = NULL,
-    .on_after_frame = animation_ripple_on_after_frame,
-    .render_pixel = animation_ripple_render_pixel,
+    .render_frame = animation_ripple_render_frame,
 };
 
 #define ANIMATION_RIPPLE_DEVICE(idx)                                                               \
@@ -154,16 +150,21 @@ static const struct animation_api animation_ripple_api = {
         .num_events = 0,                                                                           \
     };                                                                                             \
                                                                                                    \
+    static size_t animation_ripple_##idx##_pixel_map[] = DT_INST_PROP(idx, pixels);                \
+                                                                                                   \
     static uint32_t animation_ripple_##idx##_color = DT_INST_PROP(idx, color);                     \
                                                                                                    \
     static struct animation_ripple_config animation_ripple_##idx##_config = {                      \
         .color_hsl = (struct zmk_color_hsl *)&animation_ripple_##idx##_color,                      \
+        .pixel_map = &animation_ripple_##idx##_pixel_map[0],                                       \
+        .pixel_map_size = DT_INST_PROP_LEN(idx, pixels),                                           \
         .event_buffer_size = DT_INST_PROP(idx, buffer_size),                                       \
+        .blending_mode = DT_INST_PROP(idx, blending_mode),                                         \
         .distance_per_frame =                                                                      \
             (255 * 1000 / DT_INST_PROP(idx, duration)) / CONFIG_ZMK_ANIMATION_FPS,                 \
         .ripple_width = DT_INST_PROP(idx, ripple_width) / 2,                                       \
         .event_frames =                                                                            \
-            360 / ((255 * 1000 / DT_INST_PROP(idx, duration)) / CONFIG_ZMK_ANIMATION_FPS),         \
+            255 / ((255 * 1000 / DT_INST_PROP(idx, duration)) / CONFIG_ZMK_ANIMATION_FPS),         \
     };                                                                                             \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(idx, &animation_ripple_init, NULL, &animation_ripple_##idx##_data,       \

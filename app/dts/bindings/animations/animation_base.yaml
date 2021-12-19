@@ -1,6 +1,23 @@
 # Copyright (c) 2020, The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-pixel-cells:
-  - position_x
-  - position_y
+properties:
+  pixels:
+    type: array
+    required: true
+    description: |
+      Pixel positions to which the animation should apply.
+
+  blending-mode:
+    type: int
+    required: false
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+    default: 0
+    description: |
+      Blending mode for the animation to use during render.

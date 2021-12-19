@@ -9,10 +9,6 @@ compatible: "zmk,animation-ripple"
 include: animation_base.yaml
 
 properties:
-  label:
-    type: string
-    required: true
-
   duration:
     type: int
     required: false
