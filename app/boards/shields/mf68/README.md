@@ -7,7 +7,7 @@ Hardware repo: https://github.com/di0ib/tmk_keyboard/tree/master/keyboard/mf68
 
 - Designed for Pro Micro boards
 - PWM backlight control (with optional FDS6630A, not configured)
-- Mini USB port for DIY case
+- Mini USB footprint for DIY case, pads for the original MagicForce 68 daughter board
 
 ## Default layout
 ![](mf68.png)
