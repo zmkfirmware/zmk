@@ -1,6 +1,6 @@
 # Adafruit Feather nRF52840 Express board configuration
 
-# Copyright (c) 2021 Exentio
+# Copyright (c) 2021 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 if BOARD_ADAFRUIT_FEATHER_NRF52840
