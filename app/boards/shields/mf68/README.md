@@ -3,8 +3,6 @@
 Replacement MagicForce 68 PCB designed by [di0ib](https://github.com/di0ib).  
 Hardware repo: https://github.com/di0ib/tmk_keyboard/tree/master/keyboard/mf68  
 
-This shield is made to be easily used with an Adafruit Feather nRF52840 Express, and the default pin order is optimized for that board. For use with a Pro Micro-compatible controller, comment lines 21-41 and uncomment lines 44-64 in `mf68.overlay`.  
-
 ## Features
 
 - Designed for Pro Micro boards
@@ -15,6 +13,8 @@ This shield is made to be easily used with an Adafruit Feather nRF52840 Express,
 ![](mf68.png)
 
 ## Use with an Adafruit Feather nRF52840 Express
+
+Build with `west build -p -d build/feather -b adafruit_feather_nrf52840 -- -DSHIELD=mf68_feather`.
 
 ### Pinout
 

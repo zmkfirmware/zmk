@@ -7,3 +7,10 @@ config ZMK_KEYBOARD_NAME
 	default "MF68"
 
 endif
+
+if SHIELD_MF68_FEATHER
+
+config ZMK_KEYBOARD_NAME
+	default "MF68"
+
+endif
