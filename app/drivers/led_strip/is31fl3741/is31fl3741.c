@@ -39,17 +39,20 @@ struct is31fl3741_config {
     char *sdb_port;
     gpio_pin_t sdb_pin;
     gpio_dt_flags_t sdb_flags;
-    uint8_t *px_buffer;
     size_t px_buffer_size;
     uint8_t gcc;
     uint8_t sws;
     uint16_t *rgb_map;
-    uint8_t (*gamma)[256];
+    uint8_t *gamma;
+    uint8_t scaling_red;
+    uint8_t scaling_blue;
+    uint8_t scaling_green;
 };
 
 struct is31fl3741_data {
     const struct device *i2c;
     const struct device *gpio;
+    uint8_t *px_buffer;
 };
 
 static int is31fl3741_reg_write(const struct device *dev, uint8_t addr, uint8_t value) {
@@ -133,9 +136,7 @@ static int is31fl3741_strip_update_channels(const struct device *dev, uint8_t *c
 static int is31fl3741_strip_update_rgb(const struct device *dev, struct led_rgb *pixels,
                                        size_t num_pixels) {
     const struct is31fl3741_config *config = dev->config;
-
-    uint8_t *px_buffer = config->px_buffer;
-    uint16_t *rgb_map = config->rgb_map;
+    struct is31fl3741_data *data = dev->data;
 
     size_t i = 0;
     size_t j = 0;
@@ -145,14 +146,14 @@ static int is31fl3741_strip_update_rgb(const struct device *dev, struct led_rgb 
     }
 
     while (i < num_pixels) {
-        px_buffer[rgb_map[j++]] = config->gamma[0][pixels[i].r];
-        px_buffer[rgb_map[j++]] = config->gamma[1][pixels[i].g];
-        px_buffer[rgb_map[j++]] = config->gamma[2][pixels[i].b];
+        data->px_buffer[config->rgb_map[j++]] = config->gamma[pixels[i].r];
+        data->px_buffer[config->rgb_map[j++]] = config->gamma[pixels[i].g];
+        data->px_buffer[config->rgb_map[j++]] = config->gamma[pixels[i].b];
 
         ++i;
     }
 
-    return is31fl3741_strip_update_channels(dev, px_buffer, config->px_buffer_size);
+    return is31fl3741_strip_update_channels(dev, data->px_buffer, config->px_buffer_size);
 }
 
 /*
@@ -164,8 +165,8 @@ static int is31fl3741_strip_update_rgb(const struct device *dev, struct led_rgb 
  * Function and scaling registers are then pre-configured based on devicetree settings.
  */
 int static is31fl3741_init(const struct device *dev) {
-    struct is31fl3741_data *data = dev->data;
     const struct is31fl3741_config *config = dev->config;
+    struct is31fl3741_data *data = dev->data;
 
     data->i2c = device_get_binding(config->bus);
 
@@ -208,23 +209,27 @@ int static is31fl3741_init(const struct device *dev) {
                          (config->sws << 4) | (0x01 << 3) | 0x01); // SWS, H logic, Normal operation
     is31fl3741_reg_write(dev, 0x01, config->gcc);                  // Set GCC
 
-    // Set all scaling registers to 0xff, brightness is controlled using PWM
-    uint8_t scaling_buffer[0xb4];
-    for (size_t i = 0; i < 0xb4; ++i) {
-        scaling_buffer[i] = 0xff;
+    // Set scaling registers
+    uint8_t *px_buffer = data->px_buffer;
+    uint16_t *rgb_map = config->rgb_map;
+
+    for (int i = 0; i < config->px_buffer_size; i += 3) {
+        px_buffer[rgb_map[i]] = config->scaling_red;
+        px_buffer[rgb_map[i + 1]] = config->scaling_green;
+        px_buffer[rgb_map[i + 2]] = config->scaling_blue;
     }
 
-    if (is31fl3741_set_page(dev, IS31FL3741_PAGE_SCALING_A)) {
-        LOG_ERR("Couldn't switch to scaling register A on %s", config->label);
+    is31fl3741_set_page(dev, IS31FL3741_PAGE_SCALING_A);
+    is31fl3741_reg_burst_write(dev, 0x00, px_buffer, 0xb4);
+
+    is31fl3741_set_page(dev, IS31FL3741_PAGE_SCALING_B);
+    is31fl3741_reg_burst_write(dev, 0x00, px_buffer + 0xb4, 0xab);
+
+    // Re-initialize px_buffer to prevent any scaling values from being sent
+    // to PWM registers during normal operation.
+    for (size_t i = 0; i < config->px_buffer_size; ++i) {
+        px_buffer[i] = 0;
     }
-
-    is31fl3741_reg_burst_write(dev, 0x00, scaling_buffer, 0xb4);
-
-    if (is31fl3741_set_page(dev, IS31FL3741_PAGE_SCALING_B)) {
-        LOG_ERR("Couldn't switch to scaling register B on %s", config->label);
-    }
-
-    is31fl3741_reg_burst_write(dev, 0x00, scaling_buffer, 0xab);
 
     return 0;
 }
@@ -239,17 +244,15 @@ static const struct led_strip_driver_api is31fl3741_api = {
 
 #define IS31FL3741_DEVICE(idx)                                                                     \
                                                                                                    \
-    static struct is31fl3741_data is31fl3741_##idx##_data;                                         \
-                                                                                                   \
     static uint8_t is31fl3741_##idx##_px_buffer[IS31FL3741_BUFFER_SIZE];                           \
+                                                                                                   \
+    static struct is31fl3741_data is31fl3741_##idx##_data = {                                      \
+        .px_buffer = is31fl3741_##idx##_px_buffer,                                                 \
+    };                                                                                             \
                                                                                                    \
     static uint16_t is31fl3741_##idx##_rgb_map[IS31FL3741_BUFFER_SIZE] = DT_INST_PROP(idx, map);   \
                                                                                                    \
-    static uint8_t is31fl3741_##idx##_gamma[3][256] = {                                            \
-        DT_INST_PROP(idx, red_gamma),                                                              \
-        DT_INST_PROP(idx, green_gamma),                                                            \
-        DT_INST_PROP(idx, blue_gamma),                                                             \
-    };                                                                                             \
+    static uint8_t is31fl3741_##idx##_gamma[] = DT_INST_PROP(idx, gamma);                          \
                                                                                                    \
     static const struct is31fl3741_config is31fl3741_##idx##_config = {                            \
         .bus = DT_INST_BUS_LABEL(idx),                                                             \
@@ -258,12 +261,14 @@ static const struct led_strip_driver_api is31fl3741_api = {
         .sdb_port = DT_INST_GPIO_LABEL(idx, sdb_gpios),                                            \
         .sdb_pin = DT_INST_GPIO_PIN(idx, sdb_gpios),                                               \
         .sdb_flags = DT_INST_GPIO_FLAGS(idx, sdb_gpios),                                           \
-        .px_buffer = is31fl3741_##idx##_px_buffer,                                                 \
         .px_buffer_size = IS31FL3741_BUFFER_SIZE,                                                  \
         .gcc = IS31FL3741_GCC(idx),                                                                \
         .sws = DT_INST_PROP(idx, sw_setting),                                                      \
         .rgb_map = is31fl3741_##idx##_rgb_map,                                                     \
         .gamma = is31fl3741_##idx##_gamma,                                                         \
+        .scaling_red = DT_INST_PROP(idx, red_scaling),                                             \
+        .scaling_green = DT_INST_PROP(idx, green_scaling),                                         \
+        .scaling_blue = DT_INST_PROP(idx, blue_scaling),                                           \
     };                                                                                             \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(idx, &is31fl3741_init, NULL, &is31fl3741_##idx##_data,                   \
