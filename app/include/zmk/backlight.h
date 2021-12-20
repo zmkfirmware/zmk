@@ -6,14 +6,11 @@
 
 #pragma once
 
-int zmk_backlight_set_on(bool on);
-bool zmk_backlight_is_on();
-
-int zmk_backlight_set_brt(int brt);
-int zmk_backlight_get_brt();
-
 int zmk_backlight_toggle();
+bool zmk_backlight_get_on();
 int zmk_backlight_on();
 int zmk_backlight_off();
-int zmk_backlight_inc();
-int zmk_backlight_dec();
+uint8_t zmk_backlight_calc_brt(int direction);
+int zmk_backlight_set_brt(uint8_t brightness);
+int zmk_backlight_adjust_brt(int direction);
+int zmk_backlight_get_brt();

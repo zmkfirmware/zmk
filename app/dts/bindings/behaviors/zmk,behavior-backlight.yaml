@@ -5,4 +5,4 @@ description: Backlight behavior
 
 compatible: "zmk,behavior-backlight"
 
-include: one_param.yaml
+include: two_param.yaml

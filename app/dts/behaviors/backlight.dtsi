@@ -9,7 +9,7 @@
 		/omit-if-no-ref/ bl: behavior_backlight {
 			compatible = "zmk,behavior-backlight";
 			label = "BACKLIGHT";
-			#binding-cells = <1>;
+			#binding-cells = <2>;
 		};
 	};
 };
