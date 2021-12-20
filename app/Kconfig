@@ -330,9 +330,7 @@ endif
 
 menuconfig ZMK_BACKLIGHT
 	bool "LED backlight"
-	select PWM
 	select LED
-	select ZMK_LED_PWM
 
 if ZMK_BACKLIGHT
 
