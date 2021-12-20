@@ -44,6 +44,8 @@ static struct backlight_state state = {.brightness = CONFIG_ZMK_BACKLIGHT_BRT_ST
 
 static int zmk_backlight_update() {
     uint8_t brt = zmk_backlight_get_brt();
+    LOG_DBG("Update backlight brightness: %d%%", brt);
+
     for (int i = 0; i < BACKLIGHT_NUM_LEDS; i++) {
         int rc = led_set_brightness(backlight_dev, i, brt);
         if (rc != 0) {

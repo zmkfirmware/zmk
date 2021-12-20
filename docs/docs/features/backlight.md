@@ -7,9 +7,11 @@ Backlight is a feature used to control array of LEDs, usually placed through or 
 
 ## Enabling Backlight
 
-To enable backlight on your board or shield, simply enable the `CONFIG_ZMK_BACKLIGHT` configuration values in the `.conf` file of your user config directory as such:
+To enable backlight on your board or shield, add the following lines to your `.conf` file of your user config directory as such:
 
 ```
+CONFIG_PWM=y
+CONFIG_LED_PWM=y
 CONFIG_ZMK_BACKLIGHT=y
 ```
 
