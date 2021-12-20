@@ -24,7 +24,7 @@ There are various Kconfig options used to configure the backlight feature. These
 | `CONFIG_ZMK_BACKLIGHT_BRT_STEP`      | Brightness step in percent                            | 20      |
 | `CONFIG_ZMK_BACKLIGHT_BRT_START`     | Default brightness in percent                         | 40      |
 | `CONFIG_ZMK_BACKLIGHT_ON_START`      | Default backlight state                               | y       |
-| `CONFIG_ZMK_BACKLIGHT_AUTO_OFF_IDLE` | Turn off backlight when keyboard goes into idle state | y       |
+| `CONFIG_ZMK_BACKLIGHT_AUTO_OFF_IDLE` | Turn off backlight when keyboard goes into idle state | n       |
 | `CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB`  | Turn off backlight when USB is disconnected           | n       |
 
 ## Adding Backlight to a Board
@@ -43,7 +43,7 @@ First, you need to enable PWM by adding the following lines to your `.overlay` f
 };
 ```
 
-The value `ch0-pin` represents the pin that controls the LEDs. To calculate the value to use, you need a bit of math. You need the hardware port and run it through a function.
+The value `ch0-pin` represents the pin that controls the LEDs. With nRF52 boards, you can calculate the value to use in the following way: you need the hardware port and run it through a function.
 **32 \* X + Y** = `<Pin number>` where X is first part of the hardware port "PX.01" and Y is the second part of the hardware port "P1.Y".
 
 For example, _P1.13_ would give you _32 \* 1 + 13_ = `<45>` and _P0.15_ would give you _32 \* 0 + 15_ = `<15>`.

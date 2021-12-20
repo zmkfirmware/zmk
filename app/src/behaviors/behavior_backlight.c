@@ -24,24 +24,17 @@ static int
 on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_binding *binding,
                                                          struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
-    case BL_TOG_CMD: {
-        binding->param1 = zmk_backlight_get_on() ? BL_OFF_CMD : BL_ON_CMD;
+    case BL_TOG_CMD:
+        binding->param1 = zmk_backlight_is_on() ? BL_OFF_CMD : BL_ON_CMD;
         break;
-    }
-    case BL_INC_CMD: {
-        uint8_t brightness = zmk_backlight_calc_brt(1);
-
+    case BL_INC_CMD:
         binding->param1 = BL_SET_CMD;
-        binding->param2 = brightness;
+        binding->param2 = zmk_backlight_calc_brt(1);
         break;
-    }
-    case BL_DEC_CMD: {
-        uint8_t brightness = zmk_backlight_calc_brt(-1);
-
+    case BL_DEC_CMD:
         binding->param1 = BL_SET_CMD;
-        binding->param2 = brightness;
+        binding->param2 = zmk_backlight_calc_brt(-1);
         break;
-    }
     default:
         return 0;
     }
@@ -54,18 +47,24 @@ on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_bin
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
-    case BL_TOG_CMD:
-        return zmk_backlight_toggle();
     case BL_ON_CMD:
         return zmk_backlight_on();
     case BL_OFF_CMD:
         return zmk_backlight_off();
-    case BL_INC_CMD:
-        return zmk_backlight_adjust_brt(1);
-    case BL_DEC_CMD:
-        return zmk_backlight_adjust_brt(-1);
+    case BL_TOG_CMD:
+        return zmk_backlight_toggle();
+    case BL_INC_CMD: {
+        uint8_t brt = zmk_backlight_calc_brt(1);
+        return zmk_backlight_set_brt(brt);
+    }
+    case BL_DEC_CMD: {
+        uint8_t brt = zmk_backlight_calc_brt(-1);
+        return zmk_backlight_set_brt(brt);
+    }
     case BL_SET_CMD:
         return zmk_backlight_set_brt(binding->param2);
+    default:
+        LOG_ERR("Unknown backlight command: %d", binding->param1);
     }
 
     return -ENOTSUP;

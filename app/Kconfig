@@ -352,11 +352,9 @@ config ZMK_BACKLIGHT_ON_START
 
 config ZMK_BACKLIGHT_AUTO_OFF_IDLE
 	bool "Turn off backlight when keyboard goes into idle state"
-	default y
 
 config ZMK_BACKLIGHT_AUTO_OFF_USB
 	bool "Turn off backlight when USB is disconnected"
-	default n
 
 #ZMK_BACKLIGHT
 endif
