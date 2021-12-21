@@ -31,6 +31,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 struct behavior_sticky_key_config {
     uint32_t release_after_ms;
     bool quick_release;
+    uint32_t count;
     struct zmk_behavior_binding behavior;
 };
 
@@ -39,6 +40,7 @@ struct active_sticky_key {
     uint32_t param1;
     uint32_t param2;
     const struct behavior_sticky_key_config *config;
+    int32_t remaining_presses;
     // timer data.
     bool timer_started;
     bool timer_cancelled;
@@ -169,6 +171,9 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
     if (ms_left > 0) {
         k_delayed_work_submit(&sticky_key->release_timer, K_MSEC(ms_left));
     }
+
+    sticky_key->remaining_presses = sticky_key->config->count;
+
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
@@ -210,6 +215,7 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
         }
 
         if (ev->state) { // key down
+            --sticky_key->remaining_presses;
             if (sticky_key->modified_key_usage_page != 0 || sticky_key->modified_key_keycode != 0) {
                 // this sticky key is already in use for a keycode
                 continue;
@@ -230,7 +236,12 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
                 sticky_key->modified_key_usage_page == ev->usage_page &&
                 sticky_key->modified_key_keycode == ev->keycode) {
                 stop_timer(sticky_key);
-                release_sticky_key_behavior(sticky_key, ev->timestamp);
+                if (sticky_key->remaining_presses <= 0) {
+                    release_sticky_key_behavior(sticky_key, ev->timestamp);
+                } else {
+                    sticky_key->modified_key_usage_page = 0;
+                    sticky_key->modified_key_keycode = 0;
+                }
             }
         }
     }
@@ -271,6 +282,7 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
         .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, DT_DRV_INST(n)),                                 \
         .release_after_ms = DT_INST_PROP(n, release_after_ms),                                     \
         .quick_release = DT_INST_PROP(n, quick_release),                                           \
+        .count = DT_INST_PROP(n, count),                                                           \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, behavior_sticky_key_init, device_pm_control_nop,                      \
                           &behavior_sticky_key_data, &behavior_sticky_key_config_##n, APPLICATION, \
