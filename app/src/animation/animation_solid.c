@@ -25,22 +25,15 @@ struct animation_solid_config {
 };
 
 struct animation_solid_data {
-    bool has_changed;
-
     uint16_t counter;
 
     struct zmk_color_hsl current_hsl;
     struct zmk_color_rgb current_rgb;
 };
 
-static void animation_solid_tick(const struct device *dev) {
+static void animation_solid_update_color(const struct device *dev) {
     const struct animation_solid_config *config = dev->config;
     struct animation_solid_data *data = dev->data;
-
-    // Animation only contains a single color, nothing to do
-    if (config->num_colors == 1) {
-        return;
-    }
 
     const size_t from = data->counter / config->transition_duration;
     const size_t to = (from + 1) % config->num_colors;
@@ -50,8 +43,6 @@ static void animation_solid_tick(const struct device *dev) {
     zmk_interpolate_hsl(&config->colors[from], &config->colors[to], &next_hsl,
                         (data->counter % config->transition_duration) /
                             (float)config->transition_duration);
-
-    data->has_changed = !zmk_cmp_hsl(&data->current_hsl, &next_hsl);
 
     data->current_hsl = next_hsl;
     zmk_hsl_to_rgb(&data->current_hsl, &data->current_rgb);
@@ -64,11 +55,26 @@ static void animation_solid_render_frame(const struct device *dev, struct animat
     const struct animation_solid_config *config = dev->config;
     struct animation_solid_data *data = dev->data;
 
-    animation_solid_tick(dev);
-
     for (size_t i = 0; i < config->pixel_map_size; ++i) {
         pixels[config->pixel_map[i]].value = data->current_rgb;
     }
+
+    if (config->num_colors == 1) {
+        return;
+    }
+
+    // Request frames on counter reset
+    if (data->counter == 0) {
+        zmk_animation_request_frames(config->duration);
+    }
+
+    animation_solid_update_color(dev);
+}
+
+static void animation_solid_start(const struct device *dev) { zmk_animation_request_frames(1); }
+
+static void animation_solid_stop(const struct device *dev) {
+    // Nothing to do.
 }
 
 static int animation_solid_init(const struct device *dev) {
@@ -80,16 +86,12 @@ static int animation_solid_init(const struct device *dev) {
 
     zmk_hsl_to_rgb(&data->current_hsl, &data->current_rgb);
 
-    // if (config->num_colors == 1) {
-    //     return 0;
-    // }
-
-    // start timer here, so the only option is inline
-
     return 0;
 }
 
 static const struct animation_api animation_solid_api = {
+    .on_start = animation_solid_start,
+    .on_stop = animation_solid_stop,
     .render_frame = animation_solid_render_frame,
 };
 

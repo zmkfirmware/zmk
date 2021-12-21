@@ -78,6 +78,8 @@ bool zmk_cmp_hsl(const struct zmk_color_hsl *a, const struct zmk_color_hsl *b);
 void zmk_interpolate_hsl(const struct zmk_color_hsl *from, const struct zmk_color_hsl *to,
                          struct zmk_color_hsl *result, float step);
 
+void zmk_animation_request_frames(uint32_t frames);
+
 struct zmk_color_rgb __zmk_apply_blending_mode(struct zmk_color_rgb base_value,
                                                struct zmk_color_rgb blend_value, uint8_t mode);
 

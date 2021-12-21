@@ -36,9 +36,27 @@ static void animation_compose_render_frame(const struct device *dev, struct anim
     }
 }
 
+static void animation_compose_start(const struct device *dev) {
+    const struct animation_compose_config *config = dev->config;
+
+    for (size_t i = 0; i < config->animations_size; ++i) {
+        animation_start(config->animations[i]);
+    }
+}
+
+static void animation_compose_stop(const struct device *dev) {
+    const struct animation_compose_config *config = dev->config;
+
+    for (size_t i = 0; i < config->animations_size; ++i) {
+        animation_stop(config->animations[i]);
+    }
+}
+
 static int animation_compose_init(const struct device *dev) { return 0; }
 
 static const struct animation_api animation_compose_api = {
+    .on_start = animation_compose_start,
+    .on_stop = animation_compose_stop,
     .render_frame = animation_compose_render_frame,
 };
 

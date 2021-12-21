@@ -76,6 +76,8 @@ static int animation_ripple_on_key_press(const struct device *dev, const zmk_eve
     data->events_end = (data->events_end + 1) % config->event_buffer_size;
     data->num_events += 1;
 
+    zmk_animation_request_frames(config->event_frames);
+
     return 0;
 }
 
@@ -96,8 +98,8 @@ static void animation_ripple_render_frame(const struct device *dev, struct anima
             uint8_t pixel_distance = zmk_animation_get_pixel_distance(event->pixel_id, j);
 
             if (config->ripple_width > abs(pixel_distance - event->distance)) {
-                float intensity =
-                    1.0f - (float)abs(pixel_distance - event->distance) / (float)config->ripple_width;
+                float intensity = 1.0f - (float)abs(pixel_distance - event->distance) /
+                                             (float)config->ripple_width;
 
                 struct zmk_color_rgb color = {
                     .r = intensity * data->color_rgb.r,
@@ -125,6 +127,19 @@ static void animation_ripple_render_frame(const struct device *dev, struct anima
     }
 }
 
+static void animation_ripple_start(const struct device *dev) {
+    // Nothing to do.
+}
+
+static void animation_ripple_stop(const struct device *dev) {
+    struct animation_ripple_data *data = dev->data;
+
+    // Cancel the processing of any ongoing events.
+    data->num_events = 0;
+    data->events_start = 0;
+    data->events_end = 0;
+}
+
 static int animation_ripple_init(const struct device *dev) {
     const struct animation_ripple_config *config = dev->config;
     struct animation_ripple_data *data = dev->data;
@@ -135,6 +150,8 @@ static int animation_ripple_init(const struct device *dev) {
 }
 
 static const struct animation_api animation_ripple_api = {
+    .on_start = animation_ripple_start,
+    .on_stop = animation_ripple_stop,
     .render_frame = animation_ripple_render_frame,
 };
 

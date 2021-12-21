@@ -78,6 +78,11 @@ static const size_t pixels_size = DT_INST_PROP_LEN(0, pixels);
 static struct led_rgb px_buffer[DT_INST_PROP_LEN(0, pixels)];
 
 /**
+ * Counter for animation frames that have been requested but have yet to be executed.
+ */
+static uint32_t animation_timer_countdown = 0;
+
+/**
  * Conditional implementation of zmk_animation_get_pixel_by_key_position
  * if key-pixels is set.
  */
@@ -103,6 +108,7 @@ uint8_t zmk_animation_get_pixel_distance(size_t pixel_idx, size_t other_pixel_id
 #endif
 
 static void zmk_animation_tick(struct k_work *work) {
+    LOG_DBG("Animation tick");
     animation_render_frame(animation_root, &pixels[0], pixels_size);
 
     for (size_t i = 0; i < pixels_size; ++i) {
@@ -120,9 +126,28 @@ static void zmk_animation_tick(struct k_work *work) {
 
 K_WORK_DEFINE(animation_work, zmk_animation_tick);
 
-static void zmk_animation_tick_handler(struct k_timer *timer) { k_work_submit(&animation_work); }
+static void zmk_animation_tick_handler(struct k_timer *timer) {
+    if (--animation_timer_countdown == 0) {
+        k_timer_stop(timer);
+    }
+
+    k_work_submit(&animation_work);
+}
 
 K_TIMER_DEFINE(animation_tick, zmk_animation_tick_handler, NULL);
+
+void zmk_animation_request_frames(uint32_t frames) {
+    if (frames <= animation_timer_countdown) {
+        return;
+    }
+
+    if (animation_timer_countdown == 0) {
+        k_timer_start(&animation_tick, K_MSEC(1000 / CONFIG_ZMK_ANIMATION_FPS),
+                      K_MSEC(1000 / CONFIG_ZMK_ANIMATION_FPS));
+    }
+
+    animation_timer_countdown = frames;
+}
 
 static int zmk_animation_init(const struct device *dev) {
 #if defined(CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE) && (CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE == 1)
@@ -140,7 +165,7 @@ static int zmk_animation_init(const struct device *dev) {
 
     LOG_INF("ZMK Animation Ready");
 
-    k_timer_start(&animation_tick, K_NO_WAIT, K_MSEC(1000 / CONFIG_ZMK_ANIMATION_FPS));
+    animation_start(animation_root);
 
     return 0;
 }
