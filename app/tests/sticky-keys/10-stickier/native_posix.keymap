@@ -1,0 +1,48 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&sk2 A &kp B
+				&kp C &kp D>;
+		};
+
+		lower_layer {
+			bindings = <
+				&sk X &kp Y
+				&kp Z &kp W>;
+		};
+	};
+	behaviors {
+		sk2: sk2 {
+			compatible = "zmk,behavior-sticky-key";
+			label = "STICKY_KEY x2";
+			#binding-cells = <1>;
+			release-after-ms = <1000>;
+			count = <2>;
+			bindings = <&kp>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10)
+		
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+
+		ZMK_MOCK_PRESS(1,0,10)
+		ZMK_MOCK_RELEASE(1,0,10)
+
+		ZMK_MOCK_PRESS(1,1,10)
+		ZMK_MOCK_RELEASE(1,1,10)
+	>;
+};
