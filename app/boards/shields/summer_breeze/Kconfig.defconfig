@@ -1,0 +1,24 @@
+
+if SHIELD_SUMMER_BREEZE_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "SBreeze Left"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+endif
+
+if SHIELD_SUMMER_BREEZE_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "SBreeze Right"
+
+endif
+
+if SHIELD_SUMMER_BREEZE_LEFT || SHIELD_SUMMER_BREEZE_RIGHT
+
+config ZMK_SPLIT
+	default y
+
+endif
