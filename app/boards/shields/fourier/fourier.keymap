@@ -1,0 +1,64 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+// ----------------------------------------------      ----------------------------------------------
+// | ESC  |  Q  |  W  |  E  |  R  |  T  |              |  Y  |  U  |  I  |  O  |  P  |     |  BKSP  |
+// | TAB    |  A  |  S  |  D   |  F  |  G  |             |  H  |  J  |  K  |  L  |  '  |    ENTER   |
+// | SHIFT     |  Z  |  X  |  C  |  V  |  B  |              |  N  |  M  |  ,  |  .  |  /  |  RSHFT  |
+// | LCTRL   | LALT| LGUI |   SPACE        |             |   SPACE/L1  | L2 |  RGUI  |  RALT  |RCTRL|
+// -------------------------------------------        -----------------------------------------------
+
+        default_layer {
+            bindings = <
+    &kp ESC   &kp Q    &kp W    &kp E     &kp R     &kp T   /**/ &kp Y       &kp U  &kp I     &kp O     &kp P     &none  &kp BACKSPACE
+    &kp TAB   &kp A    &kp S    &kp D     &kp F     &kp G   /**/ &kp H       &kp J  &kp K     &kp L     &kp SQT   &kp ENTER
+    &kp LSHFT &kp Z    &kp X    &kp C     &kp V     &kp B   /**/ &kp N       &kp M  &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT
+    &kp LCTRL &kp LALT &kp LGUI &none     &kp SPACE         /**/ &lt 1 SPACE        &mo 2     &kp RGUI  &kp RALT  &kp RCTRL
+            >;
+        };
+
+// ----------------------------------------------      ----------------------------------------------
+// | 1    |  2  |  3  |  4  |  5  |  6  |              |  7  |  8  |  9  |  O  | PSCR |     |  DEL  |
+// | `      |     |  <- |  ^   |  -> |  Vo+ |             |  [  |  ]  |  -  |  =  |  ;  |      \    |
+// | trans     |     |     |     |  V  |  Vo- |              |     |     |    |     |     |  trans  |
+// | trans   | trans| trans |   trans        |             |   trans   | trans | trans | trans|trans|
+// -------------------------------------------        -----------------------------------------------
+
+        symbols_layer {
+            bindings = <
+    &kp N1     &kp N2   &kp N3   &kp N4    &kp N5    &kp N6        /**/ &kp N7    &kp N8   &kp N9    &kp N0    &kp PSCRN  &none  &kp DEL
+    &kp GRAVE  &none    &kp LEFT &kp UP    &kp RIGHT &kp C_VOL_UP  /**/ &kp LBKT  &kp RBKT &kp MINUS &kp EQUAL &kp SEMI   &kp BACKSLASH
+    &trans     &none    &none    &none     &kp DOWN  &kp C_VOL_DN  /**/ &none     &none    &none     &none     &none      &trans
+    &trans     &trans   &trans   &none     &trans                  /**/ &trans             &trans    &trans    &trans     &trans
+            >;
+        };
+
+// ----------------------------------------------      ----------------------------------------------
+// | F1   |  F2 |  F3 |  F4 | F5  |  F6 |              |  F7 |  F8  | F9  | F1O  | F11 |    |  F12  |
+// | CAP      |     | home| PgUp | End |     |           |     |     |     |     |        |         |
+// | trans     |  RGB T  |  RGB M   | PgDn |      |     | BT_NXT | BT_CLR |    |    |    |    |trans|
+// | trans   | trans| trans |   trans        |           | trans   | trans | trans | trans | trans  |
+// -------------------------------------------        -----------------------------------------------
+
+        fn_layer {
+            bindings = <
+    &kp F1     &kp F2          &kp F3          &kp F4    &kp F5     &kp F6    /**/ &kp F7     &kp F8     &kp F9    &kp F10    &kp F11    &none  &kp F12
+    &kp CAPS   &none           &kp HOME        &kp PG_UP &kp END    &none     /**/ &none      &none      &none     &none     &none      &none
+    &trans     &rgb_ug RGB_TOG &rgb_ug RGB_EFF &none     &kp PG_DN  &none     /**/ &bt BT_NXT &bt BT_CLR &none     &none     &none      &trans
+    &trans     &trans          &trans          &none     &trans               /**/ &trans                &trans    &trans    &trans     &trans
+            >;
+        };
+    };
+};

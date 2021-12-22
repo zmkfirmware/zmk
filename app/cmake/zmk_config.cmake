@@ -105,8 +105,10 @@ if (ZMK_CONFIG)
 		endif()
 
 		# TODO: Board revisions?
+		list(APPEND overlay_candidates "${ZMK_CONFIG}/${BOARD_DIR_NAME}.overlay")
 		list(APPEND overlay_candidates "${ZMK_CONFIG}/${BOARD}.overlay")
 		list(APPEND overlay_candidates "${ZMK_CONFIG}/default.overlay")
+		list(APPEND config_candidates "${ZMK_CONFIG}/${BOARD_DIR_NAME}.conf")
 		list(APPEND config_candidates "${ZMK_CONFIG}/${BOARD}.conf")
 		list(APPEND config_candidates "${ZMK_CONFIG}/default.conf")
 

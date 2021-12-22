@@ -1,0 +1,12 @@
+# BT60 board configuration
+
+# Copyright (c) 2021 Polarity Works
+# SPDX-License-Identifier: MIT
+
+config BOARD_BT60_V1
+	bool "bt60"
+	depends on SOC_NRF52840_QIAA
+
+config BOARD_BT60_V1_HS
+	bool "bt60 hotswap"
+	depends on SOC_NRF52840_QIAA
