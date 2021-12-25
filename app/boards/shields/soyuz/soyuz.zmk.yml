@@ -1,0 +1,8 @@
+file_format: "1"
+id: soyuz
+name: soyuz by ai03
+type: shield
+url: https://github.com/ai03-2725/Soyuz
+requires: [nice_nano]
+features:
+  - keys
