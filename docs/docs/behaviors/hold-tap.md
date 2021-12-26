@@ -62,12 +62,12 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 
 #### Positional hold-tap and `hold-trigger-key-positions`
 
-- Including `hold-trigger-key-postions` in your hold-tap definition turns on the positional hold-tap feature.
+- Including `hold-trigger-key-positions` in your hold-tap definition turns on the positional hold-tap feature.
 - With positional hold-tap enabled, if you press any key **NOT** listed in `hold-trigger-key-positions` before `tapping-term-ms` expires, it will produce a tap.
 - In all other situations, positional hold-tap will not modify the behavior of your hold-tap.
 - Positional hold-tap is useful with home-row modifiers. If you have a home-row modifier key in the left hand for example, by including only keys positions from the right hand in `hold-trigger-key-positions`, you will only get hold behaviors during cross-hand key combinations.
-- Note that `hold-trigger-key-postions` is an array of key position indexes. Key positions are numbered according to your keymap, starting with 0. So if the first key in your keymap is Q, this key is in position 0. The next key (probably W) will be in position 1, et cetera.
-- See the following example, which uses a hold-tap behavior definition, configured with the `hold-preferrred` flavor, and with positional hold-tap enabled:
+- Note that `hold-trigger-key-positions` is an array of key position indexes. Key positions are numbered according to your keymap, starting with 0. So if the first key in your keymap is Q, this key is in position 0. The next key (probably W) will be in position 1, et cetera.
+- See the following example, which uses a hold-tap behavior definition, configured with the `hold-preferred` flavor, and with positional hold-tap enabled:
 
 ```
 #include <dt-bindings/zmk/keys.h>
