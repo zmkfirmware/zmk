@@ -42,9 +42,9 @@ For basic usage, please see [mod-tap](mod-tap.md) and [layer-tap](layers.md) pag
 
 Defines how long a key must be pressed to trigger Hold behavior.
 
-#### `quick_tap_ms`
+#### `quick-tap-ms`
 
-If you press a tapped hold-tap again within `quick_tap_ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
+If you press a tapped hold-tap again within `quick-tap-ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
 
 In QMK, unlike ZMK, this functionality is enabled by default, and you turn it off using `TAPPING_FORCE_HOLD`.
 
@@ -150,7 +150,7 @@ The following are suggested hold-tap configurations that work well with home row
 			label = "HOMEROW_MODS";
 			#binding-cells = <2>;
 			tapping-term-ms = <150>;
-			quick_tap_ms = <0>;
+			quick-tap-ms = <0>;
 			flavor = "tap-preferred";
 			bindings = <&kp>, <&kp>;
 		};
@@ -181,7 +181,7 @@ The following are suggested hold-tap configurations that work well with home row
 			label = "HOMEROW_MODS";
 			#binding-cells = <2>;
 			tapping-term-ms = <200>;    // <---[[moderate duration]]
-			quick_tap_ms = <0>;
+			quick-tap-ms = <0>;
 			flavor = "balanced";
 			bindings = <&kp>, <&kp>;
 		};
