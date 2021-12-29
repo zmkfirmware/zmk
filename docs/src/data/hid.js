@@ -5182,7 +5182,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=134",
     os: {
-      windows: false,
+      windows: true,
       linux: true,
       android: null,
       macos: null,
