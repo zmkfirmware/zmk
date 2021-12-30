@@ -26,7 +26,7 @@ From here on, building and flashing ZMK should all be done from the `app/` subdi
 cd app
 ```
 
-To build for your particular keyboard, the behaviour varies slightly depending on if you are building for a keyboard with
+To build for your particular keyboard, the behavior varies slightly depending on if you are building for a keyboard with
 an onboard MCU, or one that uses an MCU board addon.
 
 ### Keyboard (Shield) + MCU Board
