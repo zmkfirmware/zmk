@@ -43,6 +43,46 @@ sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
 
 Here, the left encoder is configured to control volume up and down while the right encoder sends either Page Up or Page Down.
 
+### Modifier with built-in delay
+
+In addition to the keycodes above a modifier (`modifier-key`) can be configured that is pressed simultaneously with the configured keycodes, and then held until another keycode is send via an encoder action or a timeout (`mod-timeout-ms`) is reached.
+
+Example for application switching:
+
+```
+sm: supermods {
+    compatible = "zmk,behavior-sensor-rotate-key-press";
+    label = "encoder supermod";
+    #sensor-binding-cells = <2>;
+    modifier-key = <LWIN>;
+    mod-timeout-ms = <1200>;
+};
+
+[...]
+
+sensor-bindings = <&sm TAB LS(TAB)>;
+```
+
+![Application switching with rotary encoder](../assets/features/encoders/supertab.gif)
+
+Example for selecting characters in an text editor:
+
+```
+hlm: highlightmods {
+    compatible = "zmk,behavior-sensor-rotate-key-press";
+    label = "encoder highlighter";
+    #sensor-binding-cells = <2>;
+    modifier-key = <LSHFT>;
+    mod-timeout-ms = <500>;
+};
+
+[...]
+
+sensor-bindings = <&hlm RIGHT LEFT>;
+```
+
+![Select characters with rotary encoder](../assets/features/encoders/highlighter.gif)
+
 ## Adding Encoder Support
 
 See the [New Keyboard Shield](../development/new-shield.md#encoders) documentation for how to add or modify additional encoders to your shield.

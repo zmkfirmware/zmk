@@ -13,6 +13,12 @@ properties:
     type: int
     required: true
     const: 2
+  modifier-key:
+    type: int
+    default: -1
+  mod-timeout-ms:
+    type: int
+    default: -1
 
 sensor-binding-cells:
   - param1
