@@ -6,22 +6,34 @@
     {
       "label": "Build",
       "type": "shell",
-      "command": "cd app && west build",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
+      "command": "west build",
+      "options": {
+        "cwd": "${workspaceFolder}/app"
+      },
+      "group": "build",
+      "problemMatcher": [
+        {
+          "base": "$gcc",
+          "fileLocation": ["autoDetect", "${workspaceFolder}/app/build"]
+        }
+      ]
     },
     {
       "label": "Flash",
       "type": "shell",
-      "command": "cd app && west flash",
+      "command": "west flash",
+      "options": {
+        "cwd": "${workspaceFolder}/app"
+      },
       "group": "test"
     },
     {
       "label": "Debug",
       "type": "shell",
-      "command": "cd app && west debug",
+      "command": "west debug",
+      "options": {
+        "cwd": "${workspaceFolder}/app"
+      },
       "group": "test"
     }
   ]
