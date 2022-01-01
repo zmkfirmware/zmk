@@ -1,6 +1,5 @@
 {
   "files.associations": {
-    "*.overlay": "dts",
-    "*.keymap": "dts"
+    "*.overlay": "dts"
   }
 }

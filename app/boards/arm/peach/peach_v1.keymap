@@ -1,0 +1,63 @@
+/*
+# Copyright (c) 2021 The ZMK Contributors
+*
+* SPDX-License-Identifier: MIT
+*/
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/ext_power.h>
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+				    /* Base layer
+                         * ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬────┬────┬────┐
+                         * │ ` │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │BSPC│BSPC│Del │
+                         * ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬──┴────┼────┤
+                         * │ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │ [ │ ] │  \    │Ins │
+                         * ├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴───────┼────┤
+                         * │  Cap │ A │ S │ D │ F │ G │ H │ J │ K │ L │ ; │ ' │ Enter    │Home│
+                         * ├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─────┬────┼────┤
+                         * │ LShift │ Z │ X │ C │ V │ B │ N │ M │ , │ . │ / │RShift │ ↑  │End │
+                         * ├────┬───┴┬──┴─┬─┴───┴─┬─┴───┴─┬─┴───┴──┬┴───┼───┴┬─┬────┼────┼────┤
+                         * │LCtl│LGui│LAlt│ Space │ Space │ Space  │RCtl│Fn 1│ │ ←  │ ↓  │  → │
+                         * └────┴────┴────┴───────┴───────┴────────┴────┴────┘ └────┴────┴────┘
+                    */
+			bindings = <
+			     &kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &kp MINUS &kp EQUAL  &kp BSPC  &kp BSPC    &kp DEL
+			     &kp TAB      &kp Q   &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp I  &kp O  &kp P   &kp LBKT  &kp RBKT  &kp BSLH          &kp INS
+			     &kp CAPS       &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp K  &kp L  &kp SEMI   &kp APOS     &kp ENTER            &kp HOME
+			     &kp LSHIFT       &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA  &kp PERIOD  &kp SLASH  &kp RSHIFT  &kp UP     &kp END
+			     &kp LCTRL  &kp LGUI  &kp LALT     &kp SPACE       &kp SPACE       &kp SPACE     &kp RCTRL  &mo 1     &kp LEFT   &kp DOWN   &kp RIGHT
+			>;
+		};
+		function_layer {
+				    /* Function layer
+                         * ┌───┬────┬────┬────┬────┬────┬────┬────┬────┬───┬────┬────┬─────┬────┬────┬───────┐
+                         * │ESC│ F1 │ F2 │ F3 │ F4 │ F5 │ F6 │ F7 │ F8 │F9 │ F10│ F11│ F12 │BSPC│BSPC│OUT TOG│
+                         * ├───┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬─┴──┬─┴──┬─┴──┬──┴─┬──┴────┼───────┤
+                         * │     │    │    │    │    │    │    │    │    │    │    │    │    │  DFU  │BT CLR │
+                         * ├─────┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴┬───┴───────┼───────┤
+                         * │RGBTOG│Mod+│Hue+│Sad+│Bri+│Eff+│    │    │    │    │    │    │           │BT NXT │
+                         * ├──────┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴─┬──┴──────┬────┼───────┤
+                         * │POWERTOG│Mod-│Hue-│Sad-│Bri-│Eff-│    │    │    │    │    │         │ ↑  │BT PRV │
+                         * ├────┬───┴┬───┴─┬──┴────┴─┬──┴────┴─┬──┴────┴──┬─┴────┼────┴┬───┬────┼────┼───────┤
+                         * │    │    │     │         │         │          │      │Fn 1 │   │ ←  │ ↓  │   →   │
+                         * └────┴────┴─────┴─────────┴─────────┴──────────┴──────┴─────┘   └────┴────┴───────┘
+                    */
+			bindings = <
+			     &kp ESC    &kp F1   &kp F2   &kp F3   &kp F4   &kp F5   &kp F6   &kp F7   &kp F8   &kp F9   &kp F10   &kp F11   &kp F12     &kp BSPC     &kp BSPC      &out OUT_TOG
+			     &none          &none    &none    &none    &none    &none    &none    &none    &none    &none     &none     &none      &none          &bootloader       &bt BT_CLR
+			     &rgb_ug RGB_TOG &rgb_ug RGB_EFF &rgb_ug RGB_HUI &rgb_ug RGB_SAI &rgb_ug RGB_BRI &rgb_ug RGB_SPI  &none   &none   &none  &none  &none   &none  &none    &bt BT_NXT
+			     &ext_power EP_TOG &rgb_ug RGB_EFR &rgb_ug RGB_HUD &rgb_ug RGB_SAD &rgb_ug RGB_BRD &rgb_ug RGB_SPD &none  &none  &none    &none   &none &none  &kp UP   &bt BT_PRV
+			     &none         &none        &none            &none               &none               &none            &none         &trans          &kp LEFT   &kp DOWN &kp RIGHT
+			>;
+		};
+	};
+};

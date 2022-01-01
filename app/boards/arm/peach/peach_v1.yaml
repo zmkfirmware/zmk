@@ -1,0 +1,15 @@
+identifier: peach_v1
+name: Peach Rev1 BOARD
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
+  - ble
+  - RGB
+  - ieee802154
+  - watchdog

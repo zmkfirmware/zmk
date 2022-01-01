@@ -1,0 +1,6 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_PEACH_V1
+	bool "peach v1"
+	depends on SOC_NRF52840_QIAA
