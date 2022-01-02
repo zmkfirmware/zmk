@@ -183,6 +183,10 @@ config ZMK_DISPLAY_FULL_REFRESH_PERIOD
       Period in seconds for how often to completely refresh/redraw the whole screen.
       Most useful for e-ink/EPD displays that require occasional full redraws.
 
+config ZMK_DISPLAY_HIDE_MOMENTARY_LAYERS
+    bool "Do not update layer widget for momentary layer changes"
+    default n
+
 rsource "widgets/Kconfig"
 
 endif
