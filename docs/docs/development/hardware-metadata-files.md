@@ -100,7 +100,7 @@ Boards and shields should document the sets of hardware features found on them u
 
 The `siblings` array is used to identify multiple hardware items designed to be used together as one logical device. Right now, that primarily is used to identify the two halves of a split keyboard, but future enhancements will include more complicated and flexible combinations.
 
-The array should contrain the complete harware IDs of the siblings that combine in the logical device, e.g. with the `corne.zmk.yml` file:
+The array should contain the complete hardware IDs of the siblings that combine in the logical device, e.g. with the `corne.zmk.yml` file:
 
 ```yaml
 id: corne
