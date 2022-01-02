@@ -9,6 +9,17 @@
 #include <zmk/keys.h>
 #include <zmk/ble/profile.h>
 
+#define ZMK_BLE_IS_CENTRAL                                                                         \
+    (IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_BLE) &&                                 \
+     IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL))
+
+#if ZMK_BLE_IS_CENTRAL
+#define ZMK_BLE_PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - 1)
+#define ZMK_BLE_SPLIT_PERIPHERAL_COUNT 1
+#else
+#define ZMK_BLE_PROFILE_COUNT CONFIG_BT_MAX_PAIRED
+#endif
+
 int zmk_ble_clear_bonds();
 int zmk_ble_prof_next();
 int zmk_ble_prof_prev();
