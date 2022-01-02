@@ -4,10 +4,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define IS_BLE_CENTRAL                                                                             \
-    (IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_BLE) &&                                 \
-     IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL))
-
 #include <sys/util.h>
 #include <bluetooth/bluetooth.h>
 #include <logging/log.h>
@@ -19,7 +15,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <drivers/behavior.h>
 #include <zmk/behavior.h>
 
-#if IS_BLE_CENTRAL
+#include <zmk/ble.h>
+#if ZMK_BLE_IS_CENTRAL
 #include <zmk/split/bluetooth/central.h>
 #endif
 
@@ -170,8 +167,8 @@ int invoke_locally(struct zmk_behavior_binding *binding, struct zmk_behavior_bin
     }
 }
 
-int zmk_keymap_apply_position_state(zmk_position_state_changed_source_t source, int layer,
-                                    uint32_t position, bool pressed, int64_t timestamp) {
+int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position, bool pressed,
+                                    int64_t timestamp) {
     // We want to make a copy of this, since it may be converted from
     // relative to absolute before being invoked
     struct zmk_behavior_binding binding = zmk_keymap[layer][position];
@@ -209,8 +206,8 @@ int zmk_keymap_apply_position_state(zmk_position_state_changed_source_t source, 
     case BEHAVIOR_LOCALITY_CENTRAL:
         return invoke_locally(&binding, event, pressed);
     case BEHAVIOR_LOCALITY_EVENT_SOURCE:
-#if IS_BLE_CENTRAL
-        if (!bt_addr_le_cmp(source, BT_ADDR_LE_NONE)) {
+#if ZMK_BLE_IS_CENTRAL
+        if (source == UINT_MAX) {
             return invoke_locally(&binding, event, pressed);
         } else {
             return zmk_split_bt_invoke_behavior(source, &binding, event, pressed);
@@ -219,8 +216,10 @@ int zmk_keymap_apply_position_state(zmk_position_state_changed_source_t source, 
         return invoke_locally(&binding, event, pressed);
 #endif
     case BEHAVIOR_LOCALITY_GLOBAL:
-#if IS_BLE_CENTRAL
-        zmk_split_bt_invoke_behavior(BT_ADDR_LE_ANY, &binding, event, pressed);
+#if ZMK_BLE_IS_CENTRAL
+        for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
+            zmk_split_bt_invoke_behavior(i, &binding, event, pressed);
+        }
 #endif
         return invoke_locally(&binding, event, pressed);
     }
@@ -228,8 +227,8 @@ int zmk_keymap_apply_position_state(zmk_position_state_changed_source_t source, 
     return -ENOTSUP;
 }
 
-int zmk_keymap_position_state_changed(zmk_position_state_changed_source_t source, uint32_t position,
-                                      bool pressed, int64_t timestamp) {
+int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
+                                      int64_t timestamp) {
     if (pressed) {
         zmk_keymap_active_behavior_layer[position] = _zmk_keymap_layer_state;
     }

@@ -72,7 +72,7 @@ enum advertising_type {
     BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_ONE_TIME, BT_GAP_ADV_FAST_INT_MIN_2, \
                     BT_GAP_ADV_FAST_INT_MAX_2, NULL)
 
-static struct zmk_ble_profile profiles[PROFILE_COUNT];
+static struct zmk_ble_profile profiles[ZMK_BLE_PROFILE_COUNT];
 static uint8_t active_profile;
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
@@ -260,7 +260,7 @@ static int ble_save_profile() {
 }
 
 int zmk_ble_prof_select(uint8_t index) {
-    if (index >= PROFILE_COUNT) {
+    if (index >= ZMK_BLE_PROFILE_COUNT) {
         return -ERANGE;
     }
 
@@ -281,12 +281,13 @@ int zmk_ble_prof_select(uint8_t index) {
 
 int zmk_ble_prof_next() {
     LOG_DBG("");
-    return zmk_ble_prof_select((active_profile + 1) % PROFILE_COUNT);
+    return zmk_ble_prof_select((active_profile + 1) % ZMK_BLE_PROFILE_COUNT);
 };
 
 int zmk_ble_prof_prev() {
     LOG_DBG("");
-    return zmk_ble_prof_select((active_profile + PROFILE_COUNT - 1) % PROFILE_COUNT);
+    return zmk_ble_prof_select((active_profile + ZMK_BLE_PROFILE_COUNT - 1) %
+                               ZMK_BLE_PROFILE_COUNT);
 };
 
 bt_addr_le_t *zmk_ble_active_profile_addr() { return &profiles[active_profile].peer; }
@@ -324,8 +325,9 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
             return -EINVAL;
         }
 
-        if (idx >= PROFILE_COUNT) {
-            LOG_WRN("Profile address for index %d is larger than max of %d", idx, PROFILE_COUNT);
+        if (idx >= ZMK_BLE_PROFILE_COUNT) {
+            LOG_WRN("Profile address for index %d is larger than max of %d", idx,
+                    ZMK_BLE_PROFILE_COUNT);
             return -EINVAL;
         }
 
@@ -591,7 +593,7 @@ static int zmk_ble_init(const struct device *_arg) {
         bt_unpair(i, NULL);
     }
 
-    for (int i = 0; i < PROFILE_COUNT; i++) {
+    for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
         char setting_name[15];
         sprintf(setting_name, "ble/profiles/%d", i);
 
