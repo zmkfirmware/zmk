@@ -23,16 +23,9 @@ jobs:
           - corne_left
           - corne_right
           - nibble
+          - summer_breeze_right
+          - summer_breeze_left
         cmake-args: [""]
-        include:
-          - board: nice_nano_v2
-            shield: summer_breeze_right
-            cmake-args: -DCONFIG_ZMK_DISPLAY=n
-            skip-archive: true
-          - board: nice_nano_v2
-            shield: summer_breeze_left
-            cmake-args: -DCONFIG_ZMK_DISPLAY=n
-            skip-archive: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
