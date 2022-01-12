@@ -24,6 +24,8 @@ jobs:
           - nrfmicro_13
           - proton_c
         shield:
+          - summer_breeze_left
+          - Summer_breeze_right
           - bfo9000_left
           - bfo9000_right
           - boardsource3x4
