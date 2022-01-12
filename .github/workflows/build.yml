@@ -20,8 +20,6 @@ jobs:
         board:
           - nice_nano_v2
         shield:
-          - summer_breeze_left
-          - summer_breeze_right
           - corne_left
           - corne_right
           - nibble
