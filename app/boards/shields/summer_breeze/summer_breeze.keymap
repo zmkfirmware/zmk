@@ -25,7 +25,7 @@
 			bindings = <
 &kp F1  &kp F2  &kp F3  &gresc    &kp N1 &kp N2 &kp N3    &kp N4   &kp N5                     &kp N6    &kp N7     &kp N8    &kp N9  &kp N0   &kp DEL    &kp MINUS &kp EQUAL  &mo 2
 &kp F4  &kp F5  &kp F6  &kp TAB   &kp Q  &kp W  &kp E     &kp R    &kp T                      &kp Y     &kp U      &kp I     &kp O   &kp P    &kp GRAVE  &kp LBKT  &kp RBKT   &kp BSLH
-        &kp W           &kp CAPS  &kp A  &kp S  &kp D     &kp F    &kp G                      &kp H     &kp J      &kp K     &kp L   &kp SEMI &kp APOS              &kp UP 
+        &kp W           &kp LCTRL  &kp A  &kp S  &kp D     &kp F    &kp G                      &kp H     &kp J      &kp K     &kp L   &kp SEMI &kp APOS              &kp UP 
 &kp A   &kp S   &kp D   &kp LSHFT &kp Z  &kp X  &kp C     &kp V    &kp B                      &kp N     &kp M      &kp COMMA &kp DOT &kp FSLH &kp BSPC   &kp LEFT  &kp DOWN   &kp RIGHT
                                                 &kp LCTRL &kp LGUI &kp LALT &kp SPACE &kp RET &mo 1     &kp RCTRL  &mo 1
 			>;
