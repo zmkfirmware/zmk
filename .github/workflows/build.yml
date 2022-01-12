@@ -18,24 +18,13 @@ jobs:
     strategy:
       matrix:
         board:
-          - bluemicro840_v1
-          - nice_nano
           - nice_nano_v2
-          - nrfmicro_13
-          - proton_c
         shield:
           - summer_breeze_left
           - Summer_breeze_right
           - corne_left
           - corne_right
-          - iris_left
-          - iris_right
-          - kyria_left
-          - kyria_right
-          - lily58_left
-          - lily58_right
           - nibble
-          - tidbit
         cmake-args: [""]
         include:
           - board: bdn9_rev2
