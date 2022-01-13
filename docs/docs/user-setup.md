@@ -143,6 +143,10 @@ GitHub Repo: https://github.com/petejohanson/zmk-config.git
 
 Only the GitHub username is required; if you are happy with the defaults offered in the square brackets, you can simply hit `Enter`.
 
+:::note
+If you are using SSH keys for git push, change GitHub Repo field to the SSH scheme, e.g. `git@github.com:petejohanson/zmk-config.git'.
+:::
+
 ### Confirming Selections
 
 The setup script will confirm all of your selections one last time, before performing the setup:
@@ -155,10 +159,6 @@ Preparing a user config for:
 
 Continue? [Yn]:
 ```
-
-:::note
-If you are using SSH keys for GitHub push, change the repository field to the SSH scheme, e.g. `git@github.com:petejohanson/zmk-config.git'.
-:::
 
 After hitting `Enter` or typing `y`, the script will create an initial config in a directory named after the repo name,
 update the GitHub Action YAML file, commit the initial version, and then push to your repo.
