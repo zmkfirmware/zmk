@@ -144,7 +144,7 @@ GitHub Repo: https://github.com/petejohanson/zmk-config.git
 Only the GitHub username is required; if you are happy with the defaults offered in the square brackets, you can simply hit `Enter`.
 
 :::note
-If you are using SSH keys for git push, change GitHub Repo field to the SSH scheme, e.g. `git@github.com:petejohanson/zmk-config.git'.
+If you are using SSH keys for git push, change GitHub Repo field to the SSH scheme, e.g. `git@github.com:petejohanson/zmk-config.git`.
 :::
 
 ### Confirming Selections
