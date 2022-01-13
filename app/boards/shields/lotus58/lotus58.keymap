@@ -15,17 +15,17 @@
 
         default_layer {
 // ------------------------------------------------------------------------------------------------------------
-// |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   =   |
-// |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   | BKSPC |
-// |  SFT  |  A  |  S  |  D   |  F   |  G   |  GUI   |  | RESET |  H   |  J    |  K    |  L   |   ;   | ' SFT |
-// |  CTRL |  Z  |  X  |  C   |  V   |  B   |  MUTE  |  | PLAY  |  N   |  M    |  ,    |  .   |   /   | \ CTRL|
-//                     | ALT  | CTRL | SPACE| DELETE |  | ENTER | BKSPC|  ] LW | RGUI  |
+// |  ESC  |  1  |  2  |  3   |  4   |  5   |                     |  6   |  7    |  8    |  9   |   0   |   =   |
+// |  TAB  |  Q  |  W  |  E   |  R   |  T   |                     |  Y   |  U    |  I    |  O   |   P   |   [   |
+// |  SFT  |  A  |  S  |  D   |  F   |  G   |  RESET  |  | RESET  |  H   |  J    |  K    |  L   |   ;   | ' SFT |
+// |  CTRL |  Z  |  X  |  C   |  V   |  B   |  MUTE   |  | PLAY   |  N   |  M    |  ,    |  .   |   /   | \ CTRL|
+//                     |ENT RS|  ALT | SPACE|DELETE LW|  |ENTER RS| BSPC |  ] LW | RGUI  |
             bindings = <
-&kp ESC   &kp N1 &kp N2   &kp N3     &kp N4    &kp N5                                 &kp N6    &kp N7      &kp N8    &kp N9   &kp N0   &kp EQUAL
-&kp TAB   &kp Q  &kp W    &kp E      &kp R     &kp T                                  &kp Y     &kp U       &kp I     &kp O    &kp P    &kp LBKT
-&kp LSHFT &kp A  &kp S    &kp D      &kp F     &kp G      &kp LGUI         &reset     &kp H     &kp J       &kp K     &kp L    &kp SEMI &kp SQT
-&kp LCTRL &kp Z  &kp X    &kp C      &kp V     &kp B      &kp C_MUTE       &kp C_PP   &kp N     &kp M       &kp COMMA &kp DOT  &kp FSLH &mt RCTRL BSLH
-                          &lt 2 RET  &kp LALT  &kp SPACE  &lt 1 DEL        &lt 2 RET  &kp BSPC  &lt 1 RBKT  &kp RGUI  
+&kp ESC   &kp N1 &kp N2   &kp N3     &kp N4    &kp N5                               &kp N6    &kp N7      &kp N8    &kp N9   &kp N0   &kp EQUAL
+&kp TAB   &kp Q  &kp W    &kp E      &kp R     &kp T                                &kp Y     &kp U       &kp I     &kp O    &kp P    &kp LBKT
+&kp LSHFT &kp A  &kp S    &kp D      &kp F     &kp G      &reset         &reset     &kp H     &kp J       &kp K     &kp L    &kp SEMI &mt RSHFT SQT
+&kp LCTRL &kp Z  &kp X    &kp C      &kp V     &kp B      &kp C_MUTE     &kp C_PP   &kp N     &kp M       &kp COMMA &kp DOT  &kp FSLH &mt RCTRL BSLH
+                          &lt 2 RET  &kp LALT  &kp SPACE  &lt 1 DEL      &lt 2 RET  &kp BSPC  &lt 1 RBKT  &kp RGUI  
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
@@ -38,7 +38,7 @@
 // |       |  !  | HOME|   ^  |  END |  %   |                   | VOL^ |  PGUP |  INS  |  ^   |  PSCR |   -   |
 // |       |  #  |  <- |   v  | ->   |  $   |        |  |       | VOLv |    <- |   ^   |  ->  |   ~   |   _   |
 // |       |  @  |  -  |  (   |  )   |  &   |        |  |       | MUTE |  PGDN |   v   |  :   |   *   |   |   |
-//                     |  F11 |      |      |        |  |       |      |       |       |       
+//                     |  F11 |      |      |        |  |       |      |       |  F12  |       
             bindings = <
 &kp GRAVE  &kp F1    &kp F2    &kp F3      &kp F4     &kp F5                     &kp F6        &kp F7     &kp F8    &kp F9     &kp F10   &kp PLUS
 &trans     &kp EXCL  &kp HOME  &kp UP      &kp END    &kp PRCNT                  &kp C_VOL_UP  &kp PG_UP  &kp INS   &kp CARET  &kp PSCRN &kp MINUS
@@ -47,14 +47,14 @@
                                &kp F11     &trans     &trans    &trans   &trans  &trans        &trans     &kp F12
             >;
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp C_NEXT C_PREV>;
         };
 
         raise_layer {
 // ------------------------------------------------------------------------------------------------------------
 // |BTCLR| BT1  | BT2  |  BT3  |  BT4  |  BT5 |                |      |      |       |      |       |       |
 // |OUTTG| INS  | PSCR | GUI   | RESET |      |                | PGUP |      |   ^   |      |       |       |
-// |     | ALT  | CTRL | SHIFT | FLASH | CAPS |                | PGDN |   <- |   v   |  ->  |  DEL  | BKSPC |
+// |     | ALT  | CTRL | SHIFT | FLASH | CAPS |                | PGDN |   <- |   v   |  ->  |  DEL  | BSPC  |
 // |     | UNDO | CUT  | COPY  | PASTE |      |      |  |      |      |      |       |      |       |       |
 //              |      |       |       |      |      |  |      |      |      |       |      |
             bindings = <
