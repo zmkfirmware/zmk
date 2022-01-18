@@ -120,6 +120,11 @@ static void zmk_animation_tick(struct k_work *work) {
 
     for (size_t i = 0; i < pixels_size; ++i) {
         zmk_rgb_to_led_rgb(&pixels[i].value, &px_buffer[i]);
+
+        // Reset values for the next cycle
+        pixels[i].value.r = 0;
+        pixels[i].value.g = 0;
+        pixels[i].value.b = 0;
     }
 
     size_t pixels_updated = 0;
