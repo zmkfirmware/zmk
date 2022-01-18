@@ -45,6 +45,7 @@ struct animation_ripple_data {
     size_t events_start;
     size_t events_end;
     size_t num_events;
+    bool is_active;
 };
 
 static int animation_ripple_on_key_press(const struct device *dev, const zmk_event_t *event) {
@@ -52,6 +53,10 @@ static int animation_ripple_on_key_press(const struct device *dev, const zmk_eve
     struct animation_ripple_data *data = dev->data;
 
     const struct zmk_position_state_changed *pos_event;
+
+    if (!data->is_active) {
+        return 0;
+    }
 
     if ((pos_event = as_zmk_position_state_changed(event)) == NULL) {
         // Event not supported.
@@ -128,13 +133,17 @@ static void animation_ripple_render_frame(const struct device *dev, struct anima
 }
 
 static void animation_ripple_start(const struct device *dev) {
-    // Nothing to do.
+    struct animation_ripple_data *data = dev->data;
+
+    data->is_active = true;
 }
 
 static void animation_ripple_stop(const struct device *dev) {
     struct animation_ripple_data *data = dev->data;
 
-    // Cancel the processing of any ongoing events.
+    data->is_active = false;
+
+    // Cancel processing of any ongoing events.
     data->num_events = 0;
     data->events_start = 0;
     data->events_end = 0;
