@@ -1,0 +1,23 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Higher-order animation which allows for controlling animation drivers
+  placed underneath it by turning them on and off, cycling though them,
+  or changing the brightness.
+
+compatible: "zmk,animation-control"
+
+properties:
+  animations:
+    type: phandles
+    required: true
+    description: |
+      Animations to be combined.
+
+  brightness-steps:
+    type: int
+    required: false
+    default: 5
+    description: |
+      How many brightness steps should be supported.

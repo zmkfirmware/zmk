@@ -1,0 +1,8 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Animation Action
+
+compatible: "zmk,behavior-animation"
+
+include: one_param.yaml

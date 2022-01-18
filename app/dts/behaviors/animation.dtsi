@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    behaviors {
+        /omit-if-no-ref/ animation: behavior_animation {
+            compatible = "zmk,behavior-animation";
+            label = "ANIMATION";
+            #binding-cells = <1>;
+        };
+    };
+};
