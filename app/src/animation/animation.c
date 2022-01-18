@@ -98,11 +98,18 @@ size_t zmk_animation_get_pixel_by_key_position(size_t key_position) {
 
 /**
  * Lookup table for distance between any two pixels.
+ *
+ * The values are stored as a triangular matrix which cuts the space requirement roughly in half.
  */
-static uint8_t pixel_distance[DT_INST_PROP_LEN(0, pixels)][DT_INST_PROP_LEN(0, pixels)];
+static uint8_t
+    pixel_distance[((DT_INST_PROP_LEN(0, pixels) + 1) * DT_INST_PROP_LEN(0, pixels)) / 2];
 
 uint8_t zmk_animation_get_pixel_distance(size_t pixel_idx, size_t other_pixel_idx) {
-    return pixel_distance[pixel_idx][other_pixel_idx];
+    if (pixel_idx < other_pixel_idx) {
+        return zmk_animation_get_pixel_distance(other_pixel_idx, pixel_idx);
+    }
+
+    return pixel_distance[(((pixel_idx + 1) * pixel_idx) >> 1) + other_pixel_idx];
 }
 
 #endif
@@ -152,13 +159,14 @@ void zmk_animation_request_frames(uint32_t frames) {
 static int zmk_animation_init(const struct device *dev) {
 #if defined(CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE) && (CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE == 1)
     // Prefill the pixel distance lookup table
+    int k = 0;
     for (size_t i = 0; i < pixels_size; ++i) {
-        for (size_t j = 0; j < pixels_size; ++j) {
+        for (size_t j = 0; j <= i; ++j) {
             // Distances are normalized to fit inside 0-255 range to fit inside uint8_t
             // for better space efficiency
-            pixel_distance[i][j] = sqrt(pow(pixels[i].position_x - pixels[j].position_x, 2) +
-                                        pow(pixels[i].position_y - pixels[j].position_y, 2)) *
-                                   255 / 360;
+            pixel_distance[k++] = sqrt(pow(pixels[i].position_x - pixels[j].position_x, 2) +
+                                       pow(pixels[i].position_y - pixels[j].position_y, 2)) *
+                                  255 / 360;
         }
     }
 #endif
