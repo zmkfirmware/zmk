@@ -111,8 +111,9 @@ static void kscan_gpio_irq_callback_handler(const struct device *dev, struct gpi
 
 static void kscan_gpio_timer_handler(struct k_timer *timer) {
     struct kscan_gpio_data *data = CONTAINER_OF(timer, struct kscan_gpio_data, poll_timer);
+    const struct kscan_gpio_config *cfg = data->dev->config;
 
-    kscan_gpio_direct_queue_read(&data->work, 0);
+    kscan_gpio_direct_queue_read(&data->work, cfg->debounce_period);
 }
 
 static int kscan_gpio_direct_enable(const struct device *dev) {
