@@ -54,7 +54,7 @@ if [[ $curl_exists == "true" && $wget_exists == "true" ]]; then
         download_command="curl -fsOL "
     fi
 elif [[ $curl_exists == "true" ]]; then
-    download_command="curl -O "
+    download_command="curl -fsOL "
 elif [[ $wget_exists == "true" ]]; then
     download_command="wget "
 else
