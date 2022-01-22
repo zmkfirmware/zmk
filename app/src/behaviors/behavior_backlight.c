@@ -35,6 +35,10 @@ on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_bin
         binding->param1 = BL_SET_CMD;
         binding->param2 = zmk_backlight_calc_brt(-1);
         break;
+    case BL_CYCLE_CMD:
+        binding->param1 = BL_SET_CMD;
+        binding->param2 = zmk_backlight_calc_brt_cycle();
+        break;
     default:
         return 0;
     }
@@ -59,6 +63,10 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     }
     case BL_DEC_CMD: {
         uint8_t brt = zmk_backlight_calc_brt(-1);
+        return zmk_backlight_set_brt(brt);
+    }
+    case BL_CYCLE_CMD: {
+        uint8_t brt = zmk_backlight_calc_brt_cycle();
         return zmk_backlight_set_brt(brt);
     }
     case BL_SET_CMD:
