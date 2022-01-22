@@ -14,3 +14,4 @@ bool zmk_backlight_is_on();
 int zmk_backlight_set_brt(uint8_t brightness);
 uint8_t zmk_backlight_get_brt();
 uint8_t zmk_backlight_calc_brt(int direction);
+uint8_t zmk_backlight_calc_brt_cycle();

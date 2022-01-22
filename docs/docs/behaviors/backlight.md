@@ -20,18 +20,21 @@ This will allow you to reference the actions defined in this header such as `BL_
 
 Here is a table describing the action for each define:
 
-| Define   | Action                                   |
-| -------- | ---------------------------------------- |
-| `BL_TOG` | Toggles the backlight on and off         |
-| `BL_ON`  | Turn on backlight on and off             |
-| `BL_OFF` | Toggles the backlight feature on and off |
-| `BL_INC` | Increase backlight brightness            |
-| `BL_DEC` | Decrease backlight brightness            |
+| Define     | Action                      |
+| ---------- | --------------------------- |
+| `BL_ON`    | Turn on backlight           |
+| `BL_OFF`   | Turn off backlight          |
+| `BL_TOG`   | Toggle backlight on and off |
+| `BL_INC`   | Increase brightness         |
+| `BL_DEC`   | Decrease brightness         |
+| `BL_CYCLE` | Cycle brightness            |
+| `BL_SET`   | Set a specific brightness   |
 
 ## Behavior Binding
 
 - Reference: `&bl`
 - Parameter #1: The backlight action define, e.g. `BL_TOG` or `BL_INC`
+- Parameter #2: Only applies to `BL_SET`and is the brightness value
 
 ### Examples
 
@@ -41,8 +44,8 @@ Here is a table describing the action for each define:
    &bl BL_TOG
    ```
 
-1. Increase backlight brightness
+1. Sets a specific brightness
 
    ```
-   &bl BL_INC
+   &bl BL_SET 50
    ```

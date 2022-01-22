@@ -137,6 +137,14 @@ uint8_t zmk_backlight_calc_brt(int direction) {
     return CLAMP(brt, 0, BRT_MAX);
 }
 
+uint8_t zmk_backlight_calc_brt_cycle() {
+    if (state.brightness == BRT_MAX) {
+        return 0;
+    } else {
+        return zmk_backlight_calc_brt(1);
+    }
+}
+
 #if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_IDLE) || IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB)
 static int backlight_auto_state(bool *prev_state, bool new_state) {
     if (state.on == new_state) {
