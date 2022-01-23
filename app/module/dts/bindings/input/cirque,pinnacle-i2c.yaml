@@ -1,0 +1,6 @@
+description: |
+  Sensor driver for the Cirque Pinnacle trackpad ASICs, using the I2C interface
+
+compatible: "cirque,pinnacle"
+
+include: ["i2c-device.yaml", "cirque,pinnacle-common.yaml"]

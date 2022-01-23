@@ -1,0 +1,12 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+menuconfig INPUT_PINNACLE
+    bool "Cirque Pinnacle trackpads"
+    default y
+    depends on GPIO
+    depends on SPI || I2C
+    depends on INPUT
+    depends on DT_HAS_CIRQUE_PINNACLE_ENABLED
+    help
+      Enable driver for Cirque Pinnacle trackpads
