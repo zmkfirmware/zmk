@@ -24,7 +24,7 @@ bool is_usb_power_present() {
 }
 
 struct pm_state_info pm_policy_next_state(int32_t ticks) {
-    if (zmk_activity_get_state() == ZMK_ACTIVITY_SLEEP && !is_usb_power_present()) {
+    if (zmk_activity_get_state() == ZMK_ACTIVITY_SLEEP && !is_usb_power_present() && !device_any_busy_check()) {
         return (struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0};
     }
 
