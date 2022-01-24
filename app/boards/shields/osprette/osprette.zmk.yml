@@ -1,0 +1,8 @@
+file_format: "1"
+id: osprette
+name: Osprette
+type: shield
+url: https://github.com/smores56/osprette/
+requires: [pro_micro]
+features:
+  - keys

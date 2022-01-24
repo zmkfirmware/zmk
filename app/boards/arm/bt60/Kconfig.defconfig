@@ -1,0 +1,34 @@
+# Copyright (c) 2021 Polarity Works
+# SPDX-License-Identifier: MIT
+
+if BOARD_BT60_V1_HS || BOARD_BT60_V1
+
+config BOARD
+	default "bt60"
+
+if USB
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+endif # USB
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+	default y
+
+config ZMK_KEYBOARD_NAME
+	default "BT60"
+
+endif # BOARD_BT60

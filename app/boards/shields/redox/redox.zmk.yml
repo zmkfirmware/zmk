@@ -1,0 +1,12 @@
+file_format: "1"
+id: redox
+name: Redox
+type: shield
+url: https://github.com/mattdibi/redox-keyboard
+requires: [pro_micro]
+features:
+  - keys
+  - underglow
+siblings:
+  - redox_left
+  - redox_right

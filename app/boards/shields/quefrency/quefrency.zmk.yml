@@ -8,5 +8,5 @@ features:
   - keys
   - encoder
 siblings:
-  - quenfrency_left
-  - quenfrency_right
+  - quefrency_left
+  - quefrency_right

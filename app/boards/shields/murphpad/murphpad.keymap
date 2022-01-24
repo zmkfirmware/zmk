@@ -1,0 +1,85 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/rgb.h>
+
+
+#define TIMEOUT 300
+
+&encoder_1 {
+    status = "okay";
+};
+
+&encoder_2 {
+    status = "okay";
+};
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+        combo_btclr {
+            timeout-ms = <TIMEOUT>;
+            key-positions = <1 6>;
+            bindings = <&bt BT_CLR>;
+        };
+        combo_reset {
+            timeout-ms = <TIMEOUT>;
+            key-positions = <1 3>;
+            bindings = <&reset>;
+        };
+        combo_bootloader {
+            timeout-ms = <TIMEOUT>;
+            key-positions = <1 2>;
+            bindings = <&bootloader>;
+        };
+        combo_bt_nxt {
+            timeout-ms = <TIMEOUT>;
+            key-positions = <1 4>;
+            bindings = <&bt BT_NXT>;
+        };
+    };
+    
+    sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&encoder_1 &encoder_2>;
+    };
+
+
+    keymap0: keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            label = "default layer";
+            bindings = <
+                &bt BT_CLR       &kp TAB      &kp F5          &kp LC(LA(C))     &kp LG(D)   
+                &rgb_ug RGB_TOG  &kp ESC      &kp KP_DIVIDE   &kp KP_MULTIPLY   &kp KP_MINUS    
+                &rgb_ug RGB_EFF  &kp KP_N7    &kp KP_N8       &kp KP_N9         &kp KP_PLUS   
+                &kp C_MUTE       &kp KP_N4    &kp KP_N5       &kp KP_N6         &trans
+                &mo 1            &kp KP_N1    &kp KP_N2       &kp KP_N3         &kp KP_ENTER
+                &kp BSPC         &kp KP_N0    &trans          &kp KP_DOT        &trans
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+
+        }; 
+        
+        fn_layer {
+            label = "fn layer";
+            bindings = <
+                &trans      &trans     &trans        &trans          &trans  
+                &trans      &kp KP_NUM &trans        &trans          &trans     
+                &trans      &trans     &trans        &trans             &trans
+                &bt BT_CLR  &trans     &trans        &trans          &trans    
+                &trans      &trans     &trans        &trans          &trans
+                &kp DEL        &trans     &trans        &trans          &trans           
+            >;  
+            sensor-bindings = <&inc_dec_kp PG_UP PG_DN &inc_dec_kp C_VOL_UP C_VOL_DN>;
+                
+        };
+    };
+};

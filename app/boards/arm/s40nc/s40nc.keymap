@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+
+#define DEFAULT 0
+#define LOWER   1
+#define RAISE   2
+#define CONTROL 3
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+		
+		default_layer {
+			bindings = <
+                &kp ESC    &kp Q     &kp W     &kp E  &kp R     &kp T      &kp Y   &kp U  &kp I     &kp O     &kp P     &kp BSPC
+                &mo LOWER  &kp A     &kp S     &kp D  &kp F     &kp G      &kp H   &kp J  &kp K     &kp L               &kp ENTER
+                &kp LSHFT  &kp Z     &kp X     &kp C  &kp V     &kp B      &kp N   &kp M  &kp FSLH            &kp UP    &kp RSHFT
+                &kp LCTRL  &kp LGUI  &kp LALT  &lt LOWER SPACE  &lt CONTROL SPACE  &lt RAISE SPACE  &kp LEFT  &kp DOWN  &kp RIGHT
+			>;
+		};
+
+		lower_layer {
+			bindings = <
+                &kp GRAVE  &kp N1     &kp N2     &kp N3  &kp N4  &kp N5  &kp N6  &kp N7     &kp N8    &kp N9     &kp N0     &kp DEL
+                &kp PSCRN  &kp MINUS  &kp EQUAL  &trans  &trans  &trans  &trans  &kp LBKT   &kp RBKT  &kp SEMI              &kp APOS
+                &trans     &trans     &trans     &trans  &trans  &trans  &trans  &kp COMMA  &kp DOT              &kp PG_UP  &kp BSLH
+                &trans     &trans     &trans     &kp TAB         &kp TAB         &kp TAB              &kp HOME   &kp PG_DN  &kp END
+			>;
+		};
+        
+        raise_layer {
+			bindings = <
+                &kp TILDE  &kp EXCL   &kp AT    &kp HASH  &kp DLLR  &kp PRCNT  &kp CARET  &kp AMPS  &kp STAR  &kp LPAR   &kp RPAR   &trans
+                &kp PSCRN  &kp UNDER  &kp PLUS  &trans    &trans    &trans     &trans     &kp LBRC  &kp RBRC  &kp COLON             &kp DQT
+                &trans     &trans     &trans    &trans    &trans    &trans     &trans     &kp LT    &kp GT               &kp PG_UP  &kp PIPE
+                &trans     &trans     &trans    &kp TAB             &kp TAB               &kp TAB             &kp HOME   &kp PG_DN  &kp END
+			>;
+		};
+        
+        control_layer {
+			bindings = <
+                &bt BT_CLR    &kp F1        &kp F2           &kp F3      &kp F4    &kp F5  &kp F6  &kp F7     &kp F8   &kp F9        &kp F10       &kp C_PP
+                &bt BT_SEL 0  &kp F11       &kp F12          &trans      &trans    &trans  &trans  &trans     &trans   &trans                      &kp K_LOCK
+                &bt BT_SEL 1  &out OUT_USB  &kp CAPS         &kp KP_NUM  &kp SLCK  &trans  &trans  &kp COMMA  &kp DOT                &kp K_VOL_UP  &kp K_MUTE
+                &bt BT_SEL 2  &out OUT_BLE  &kp PAUSE_BREAK  &reset                &trans          &bootloader         &kp C_BRI_DN  &kp K_VOL_DN  &kp C_BRI_UP
+			>;
+		};
+	};
+};
+            

@@ -1,0 +1,11 @@
+file_format: "1"
+id: jiran
+name: Jiran
+type: shield
+url: https://github.com/Ladniy/jiran
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - jiran_left
+  - jiran_right

@@ -26,14 +26,17 @@ static zmk_mod_flags_t explicit_modifiers = 0;
         LOG_DBG("Modifiers set to 0x%02X", keyboard_report.body.modifiers);                        \
     }
 
+#define GET_MODIFIERS (keyboard_report.body.modifiers)
+
 zmk_mod_flags_t zmk_hid_get_explicit_mods() { return explicit_modifiers; }
 
 int zmk_hid_register_mod(zmk_mod_t modifier) {
     explicit_modifier_counts[modifier]++;
     LOG_DBG("Modifier %d count %d", modifier, explicit_modifier_counts[modifier]);
     WRITE_BIT(explicit_modifiers, modifier, true);
+    zmk_mod_flags_t current = GET_MODIFIERS;
     SET_MODIFIERS(explicit_modifiers);
-    return 0;
+    return current == GET_MODIFIERS ? 0 : 1;
 }
 
 int zmk_hid_unregister_mod(zmk_mod_t modifier) {
@@ -47,26 +50,30 @@ int zmk_hid_unregister_mod(zmk_mod_t modifier) {
         LOG_DBG("Modifier %d released", modifier);
         WRITE_BIT(explicit_modifiers, modifier, false);
     }
+    zmk_mod_flags_t current = GET_MODIFIERS;
     SET_MODIFIERS(explicit_modifiers);
-    return 0;
+    return current == GET_MODIFIERS ? 0 : 1;
 }
 
 int zmk_hid_register_mods(zmk_mod_flags_t modifiers) {
+    int ret = 0;
     for (zmk_mod_t i = 0; i < 8; i++) {
         if (modifiers & (1 << i)) {
-            zmk_hid_register_mod(i);
+            ret += zmk_hid_register_mod(i);
         }
     }
-    return 0;
+    return ret;
 }
 
 int zmk_hid_unregister_mods(zmk_mod_flags_t modifiers) {
+    int ret = 0;
     for (zmk_mod_t i = 0; i < 8; i++) {
         if (modifiers & (1 << i)) {
-            zmk_hid_unregister_mod(i);
+            ret += zmk_hid_unregister_mod(i);
         }
     }
-    return 0;
+
+    return ret;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
@@ -130,13 +137,15 @@ static inline int deselect_keyboard_usage(zmk_key_t usage) {
     }
 
 int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t implicit_modifiers) {
+    zmk_mod_flags_t current = GET_MODIFIERS;
     SET_MODIFIERS(explicit_modifiers | implicit_modifiers);
-    return 0;
+    return current == GET_MODIFIERS ? 0 : 1;
 }
 
 int zmk_hid_implicit_modifiers_release() {
+    zmk_mod_flags_t current = GET_MODIFIERS;
     SET_MODIFIERS(explicit_modifiers);
-    return 0;
+    return current == GET_MODIFIERS ? 0 : 1;
 }
 
 int zmk_hid_keyboard_press(zmk_key_t code) {

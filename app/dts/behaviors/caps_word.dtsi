@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+	behaviors {
+		/omit-if-no-ref/ caps_word: behavior_caps_word {
+			compatible = "zmk,behavior-caps-word";
+			label = "CAPS_WORD";
+			#binding-cells = <0>;
+			continue-list = <UNDERSCORE>;
+		};
+	};
+};
+
