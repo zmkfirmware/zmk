@@ -15,3 +15,5 @@ properties:
     type: int
   quick-release:
     type: boolean
+  ignore-modifiers:
+    type: boolean
