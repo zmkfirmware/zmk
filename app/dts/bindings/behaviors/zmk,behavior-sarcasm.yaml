@@ -1,0 +1,8 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: SaRcASm BeHaViOr
+
+compatible: "zmk,behavior-sarcasm"
+
+include: zero_param.yaml
