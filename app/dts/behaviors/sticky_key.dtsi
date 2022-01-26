@@ -12,6 +12,7 @@
 			#binding-cells = <1>;
 			release-after-ms = <1000>;
 			bindings = <&kp>;
+			ignore-modifiers;
 		};
 		/omit-if-no-ref/ sl: behavior_sticky_layer {
 			compatible = "zmk,behavior-sticky-key";
