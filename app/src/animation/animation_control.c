@@ -6,10 +6,12 @@
 
 #define DT_DRV_COMPAT zmk_animation_control
 
+#include <stdio.h>
 #include <zephyr.h>
 #include <device.h>
 #include <drivers/animation.h>
 #include <logging/log.h>
+#include <settings/settings.h>
 
 #include <zmk/animation.h>
 #include <zmk/animation/animation_control.h>
@@ -23,10 +25,17 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define PHANDLE_TO_DEVICE(idx, node_id, prop) DEVICE_DT_GET(DT_PHANDLE_BY_IDX(node_id, prop, idx)),
 
+struct animation_control_work_context {
+    const struct device *animation;
+    struct k_delayed_work save_work;
+};
+
 struct animation_control_config {
     const struct device **animations;
     const size_t animations_size;
     const uint8_t brightness_steps;
+    struct animation_control_work_context *work;
+    struct settings_handler *settings_handler;
 };
 
 struct animation_control_data {
@@ -34,6 +43,47 @@ struct animation_control_data {
     uint8_t brightness;
     size_t current_animation;
 };
+
+static int animation_control_load_settings(const struct device *dev, const char *name, size_t len,
+                                           settings_read_cb read_cb, void *cb_arg) {
+    const char *next;
+    int rc;
+
+    if (settings_name_steq(name, "state", &next) && !next) {
+        if (len != sizeof(struct animation_control_data)) {
+            return -EINVAL;
+        }
+
+        rc = read_cb(cb_arg, dev->data, sizeof(struct animation_control_data));
+        if (rc >= 0) {
+            return 0;
+        }
+
+        return rc;
+    }
+
+    return -ENOENT;
+}
+
+static void animation_control_save_work(struct k_work *work) {
+    struct animation_control_work_context *ctx =
+        CONTAINER_OF(work, struct animation_control_work_context, save_work);
+    const struct device *dev = ctx->animation;
+
+    char path[40];
+    snprintf(path, 40, "%s/state", dev->name);
+
+    settings_save_one(path, dev->data, sizeof(struct animation_control_data));
+};
+
+static int animation_control_save_settings(const struct device *dev) {
+    const struct animation_control_config *config = dev->config;
+    struct animation_control_work_context *ctx = config->work;
+
+    k_delayed_work_cancel(&ctx->save_work);
+
+    return k_delayed_work_submit(&ctx->save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+}
 
 int animation_control_handle_command(const struct device *dev, uint8_t command, uint8_t param) {
     const struct animation_control_config *config = dev->config;
@@ -45,7 +95,7 @@ int animation_control_handle_command(const struct device *dev, uint8_t command, 
 
         if (data->active) {
             animation_start(config->animations[data->current_animation]);
-            return 0;
+            break;
         }
 
         animation_stop(config->animations[data->current_animation]);
@@ -95,32 +145,17 @@ int animation_control_handle_command(const struct device *dev, uint8_t command, 
         break;
     }
 
+    // Save the new settings
+    animation_control_save_settings(dev);
+
     // Force refresh
     zmk_animation_request_frames(1);
 
     return 0;
 }
 
-void animation_control_start(const struct device *dev) {
-    const struct animation_control_config *config = dev->config;
-    const struct animation_control_data *data = dev->data;
-
-    if (!data->active) {
-        return;
-    }
-
-    animation_start(config->animations[data->current_animation]);
-}
-
-void animation_control_stop(const struct device *dev) {
-    const struct animation_control_config *config = dev->config;
-    const struct animation_control_data *data = dev->data;
-
-    animation_stop(config->animations[data->current_animation]);
-}
-
-void animation_control_render_frame(const struct device *dev, struct animation_pixel *pixels,
-                                    size_t num_pixels) {
+static void animation_control_render_frame(const struct device *dev, struct animation_pixel *pixels,
+                                           size_t num_pixels) {
     const struct animation_control_config *config = dev->config;
     const struct animation_control_data *data = dev->data;
 
@@ -143,7 +178,37 @@ void animation_control_render_frame(const struct device *dev, struct animation_p
     }
 }
 
-static int animation_control_init(const struct device *dev) { return 0; }
+static void animation_control_start(const struct device *dev) {
+    const struct animation_control_config *config = dev->config;
+    const struct animation_control_data *data = dev->data;
+
+    if (!data->active) {
+        return;
+    }
+
+    animation_start(config->animations[data->current_animation]);
+}
+
+static void animation_control_stop(const struct device *dev) {
+    const struct animation_control_config *config = dev->config;
+    const struct animation_control_data *data = dev->data;
+
+    animation_stop(config->animations[data->current_animation]);
+}
+
+static int animation_control_init(const struct device *dev) {
+    const struct animation_control_config *config = dev->config;
+
+    settings_subsys_init();
+
+    settings_register(config->settings_handler);
+
+    k_delayed_work_init(&config->work->save_work, animation_control_save_work);
+
+    settings_load_subtree(dev->name);
+
+    return 0;
+}
 
 static const struct animation_api animation_control_api = {
     .on_start = animation_control_start,
@@ -156,10 +221,28 @@ static const struct animation_api animation_control_api = {
     static const struct device *animation_control_##idx##_animations[] = {                         \
         ZMK_DT_INST_FOREACH_PROP_ELEM(idx, animations, PHANDLE_TO_DEVICE)};                        \
                                                                                                    \
+    static struct animation_control_work_context animation_control_##idx##_work = {                \
+        .animation = DEVICE_DT_GET(DT_DRV_INST(idx)),                                              \
+    };                                                                                             \
+                                                                                                   \
+    static int animation_control_##idx##_load_settings(const char *name, size_t len,               \
+                                                       settings_read_cb read_cb, void *cb_arg) {   \
+        const struct device *dev = DEVICE_DT_GET(DT_DRV_INST(idx));                                \
+                                                                                                   \
+        return animation_control_load_settings(dev, name, len, read_cb, cb_arg);                   \
+    }                                                                                              \
+                                                                                                   \
+    static struct settings_handler animation_control_##idx##_settings_handler = {                  \
+        .name = DT_INST_PROP(idx, label),                                                          \
+        .h_set = animation_control_##idx##_load_settings,                                          \
+    };                                                                                             \
+                                                                                                   \
     static const struct animation_control_config animation_control_##idx##_config = {              \
         .animations = animation_control_##idx##_animations,                                        \
         .animations_size = DT_INST_PROP_LEN(idx, animations),                                      \
         .brightness_steps = DT_INST_PROP(idx, brightness_steps) - 1,                               \
+        .work = &animation_control_##idx##_work,                                                   \
+        .settings_handler = &animation_control_##idx##_settings_handler,                           \
     };                                                                                             \
                                                                                                    \
     static struct animation_control_data animation_control_##idx##_data = {                        \

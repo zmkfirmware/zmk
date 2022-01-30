@@ -9,6 +9,10 @@ description: |
 compatible: "zmk,animation-control"
 
 properties:
+  label:
+    type: string
+    required: true
+
   animations:
     type: phandles
     required: true
