@@ -14,32 +14,32 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | Legend: | ✅ Supported | 🚧 Under Development | 💡 Planned |
 | :------ | :----------- | :------------------- | :--------- |
 
-| **Feature**                                                                                                                        | ZMK | BlueMicro | QMK |
-| ---------------------------------------------------------------------------------------------------------------------------------- | :-: | :-------: | :-: |
-| Low Latency BLE Support                                                                                                            | ✅  |    ✅     |     |
-| Multi-Device BLE Support                                                                                                           | ✅  |           |     |
-| [USB Connectivity](behaviors/outputs.md)                                                                                           | ✅  |    ✅     | ✅  |
-| User Configuration Repositories                                                                                                    | ✅  |           |     |
-| Split Keyboard Support                                                                                                             | ✅  |    ✅     | ✅  |
-| [Keymaps and Layers](behaviors/layers.md)                                                                                          | ✅  |    ✅     | ✅  |
-| [Hold-Tap](behaviors/hold-tap.md) (which includes [Mod-Tap](behaviors/mod-tap.md) and [Layer-Tap](behaviors/layers.md/#layer-tap)) | ✅  |    ✅     | ✅  |
-| [Keyboard Codes](codes/index.mdx#keyboard)                                                                                         | ✅  |    ✅     | ✅  |
-| [Media](codes/index.mdx#media-controls) & [Consumer](codes/index.mdx#consumer-controls) Codes                                      | ✅  |    ✅     | ✅  |
-| [Encoders](features/encoders.md)[^1]                                                                                               | ✅  |    ✅     | ✅  |
-| [Display Support](features/displays.md)[^2]                                                                                        | 🚧  |    🚧     | ✅  |
-| [RGB Underglow](features/underglow.md)                                                                                             | ✅  |    ✅     | ✅  |
-| One Shot Keys                                                                                                                      | ✅  |    ✅     | ✅  |
-| [Combo Keys](features/combos.md)                                                                                                   | ✅  |           | ✅  |
-| Macros                                                                                                                             | 🚧  |    ✅     | ✅  |
-| Mouse Keys                                                                                                                         | 🚧  |    ✅     | ✅  |
-| Low Active Power Usage                                                                                                             | ✅  |           |     |
-| Low Power Sleep States                                                                                                             | ✅  |    ✅     |     |
-| [Low Power Mode (VCC Shutoff)](behaviors/power.md)                                                                                 | ✅  |    ✅     |     |
-| Battery Reporting                                                                                                                  | ✅  |    ✅     |     |
-| Shell over BLE                                                                                                                     | 💡  |           |     |
-| Realtime Keymap Updating                                                                                                           | 💡  |           | ✅  |
-| AVR/8 Bit                                                                                                                          |     |           | ✅  |
-| [Wide Range of ARM Chips Supported](https://docs.zephyrproject.org/latest/boards/index.html)                                       | ✅  |           |     |
+| **Feature**                                                                                                               | ZMK | BlueMicro | QMK |
+| ------------------------------------------------------------------------------------------------------------------------- | :-: | :-------: | :-: |
+| Low Latency BLE Support                                                                                                   | ✅  |    ✅     |     |
+| Multi-Device BLE Support                                                                                                  | ✅  |           |     |
+| [USB Connectivity](behaviors/outputs)                                                                                     | ✅  |    ✅     | ✅  |
+| User Configuration Repositories                                                                                           | ✅  |           |     |
+| Split Keyboard Support                                                                                                    | ✅  |    ✅     | ✅  |
+| [Keymaps and Layers](behaviors/layers)                                                                                    | ✅  |    ✅     | ✅  |
+| [Hold-Tap](behaviors/hold-tap) (which includes [Mod-Tap](behaviors/mod-tap) and [Layer-Tap](behaviors/layers/#layer-tap)) | ✅  |    ✅     | ✅  |
+| [Keyboard Codes](codes/#keyboard)                                                                                         | ✅  |    ✅     | ✅  |
+| [Media](codes/#media-controls) & [Consumer](codes/#consumer-controls) Codes                                               | ✅  |    ✅     | ✅  |
+| [Encoders](features/encoders)[^1]                                                                                         | ✅  |    ✅     | ✅  |
+| [Display Support](features/displays)[^2]                                                                                  | 🚧  |    🚧     | ✅  |
+| [RGB Underglow](features/underglow)                                                                                       | ✅  |    ✅     | ✅  |
+| One Shot Keys                                                                                                             | ✅  |    ✅     | ✅  |
+| [Combo Keys](features/combos)                                                                                             | ✅  |           | ✅  |
+| Macros                                                                                                                    | 🚧  |    ✅     | ✅  |
+| Mouse Keys                                                                                                                | ✅  |    ✅     | ✅  |
+| Low Active Power Usage                                                                                                    | ✅  |           |     |
+| Low Power Sleep States                                                                                                    | ✅  |    ✅     |     |
+| [Low Power Mode (VCC Shutoff)](behaviors/power)                                                                           | ✅  |    ✅     |     |
+| Battery Reporting                                                                                                         | ✅  |    ✅     |     |
+| Shell over BLE                                                                                                            | 💡  |           |     |
+| Realtime Keymap Updating                                                                                                  | 💡  |           | ✅  |
+| AVR/8 Bit                                                                                                                 |     |           | ✅  |
+| [Wide Range of ARM Chips Supported](https://docs.zephyrproject.org/latest/boards/index.html)                              | ✅  |           |     |
 
 [^2]: Encoders are not currently supported on peripheral side splits.
 [^1]: OLEDs are currently proof of concept in ZMK.

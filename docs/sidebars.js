@@ -28,6 +28,7 @@ module.exports = {
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
       "behaviors/caps-word",
+      "behaviors/mouse-emulation",
       "behaviors/reset",
       "behaviors/bluetooth",
       "behaviors/outputs",
