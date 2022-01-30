@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "clog.dtsi"
+
+&default_transform {
+	col-offset = <17>;
+};
