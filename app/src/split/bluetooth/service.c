@@ -52,7 +52,7 @@ static ssize_t split_svc_run_behavior(struct bt_conn *conn, const struct bt_gatt
     // 1: We've gotten all the position/state/param data.
     // 2: We have a null terminated string for the behavior device label.
     if ((end_addr > sizeof(struct zmk_split_run_behavior_data)) &&
-        payload->behavior_dev[end_addr - sizeof(struct zmk_split_run_behavior_data)] == '\0') {
+        payload->behavior_dev[end_addr - sizeof(struct zmk_split_run_behavior_data) - 1] == '\0') {
         struct zmk_behavior_binding binding = {
             .param1 = payload->data.param1,
             .param2 = payload->data.param2,
