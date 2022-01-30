@@ -20,6 +20,8 @@
 #include <drivers/led_strip.h>
 
 #include <zmk/animation.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/activity_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -161,6 +163,28 @@ void zmk_animation_request_frames(uint32_t frames) {
     animation_timer_countdown = frames;
 }
 
+static int zmk_animation_on_activity_state_changed(const zmk_event_t *event) {
+    const struct zmk_activity_state_changed *activity_state_event;
+
+    if ((activity_state_event = as_zmk_activity_state_changed(event)) == NULL) {
+        // Event not supported.
+        return -ENOTSUP;
+    }
+
+    switch (activity_state_event->state) {
+    case ZMK_ACTIVITY_ACTIVE:
+        animation_start(animation_root);
+        return 0;
+    case ZMK_ACTIVITY_SLEEP:
+        animation_stop(animation_root);
+        k_timer_stop(&animation_tick);
+        animation_timer_countdown = 0;
+        return 0;
+    default:
+        return 0;
+    }
+}
+
 static int zmk_animation_init(const struct device *dev) {
 #if defined(CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE) && (CONFIG_ZMK_ANIMATION_PIXEL_DISTANCE == 1)
     // Prefill the pixel distance lookup table
@@ -184,3 +208,6 @@ static int zmk_animation_init(const struct device *dev) {
 }
 
 SYS_INIT(zmk_animation_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
+
+ZMK_LISTENER(amk_animation, zmk_animation_on_activity_state_changed);
+ZMK_SUBSCRIPTION(amk_animation, zmk_activity_state_changed);
