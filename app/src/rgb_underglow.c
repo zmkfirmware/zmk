@@ -440,21 +440,13 @@ int zmk_rgb_underglow_change_spd(int direction) {
     return zmk_rgb_underglow_save_state();
 }
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
-static bool auto_off_idle_prev_state = false;
-#endif
-
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
-static bool auto_off_usb_prev_state = false;
-#endif
-
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE) ||                                          \
     IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
-static int rgb_underglow_auto_state(bool *prev_state, bool *new_state) {
-    if (state.on == *new_state) {
+static int rgb_underglow_auto_state(bool *prev_state, bool new_state) {
+    if (state.on == new_state) {
         return 0;
     }
-    if (*new_state) {
+    if (new_state) {
         state.on = *prev_state;
         *prev_state = false;
         return zmk_rgb_underglow_on();
@@ -469,15 +461,16 @@ static int rgb_underglow_event_listener(const zmk_event_t *eh) {
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
     if (as_zmk_activity_state_changed(eh)) {
-        bool new_state = (zmk_activity_get_state() == ZMK_ACTIVITY_ACTIVE);
-        return rgb_underglow_auto_state(&auto_off_idle_prev_state, &new_state);
+        static bool prev_state = false;
+        return rgb_underglow_auto_state(&prev_state,
+                                        zmk_activity_get_state() == ZMK_ACTIVITY_ACTIVE);
     }
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
     if (as_zmk_usb_conn_state_changed(eh)) {
-        bool new_state = zmk_usb_is_powered();
-        return rgb_underglow_auto_state(&auto_off_usb_prev_state, &new_state);
+        static bool prev_state = false;
+        return rgb_underglow_auto_state(&prev_state, zmk_usb_is_powered());
     }
 #endif
 
