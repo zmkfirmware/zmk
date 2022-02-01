@@ -17,6 +17,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#include <zmk/stdlib.h>
 #include <zmk/ble.h>
 #include <zmk/behavior.h>
 #include <zmk/split/bluetooth/uuid.h>
@@ -549,8 +550,12 @@ int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *bi
                                                          .position = event.position,
                                                          .state = state ? 1 : 0,
                                                      }};
-    strncpy(payload.behavior_dev, binding->behavior_dev, ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN - 1);
-    payload.behavior_dev[ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN - 1] = '\0';
+    const size_t payload_dev_size = sizeof(payload.behavior_dev);
+    if (strlcpy(payload.behavior_dev, binding->behavior_dev, payload_dev_size) >=
+        payload_dev_size) {
+        LOG_ERR("Truncated behavior label %s to %s before invoking peripheral behavior",
+                log_strdup(binding->behavior_dev), log_strdup(payload.behavior_dev));
+    }
 
     struct zmk_split_run_behavior_payload_wrapper wrapper = {.source = source, .payload = payload};
     return split_bt_invoke_behavior_payload(wrapper);
