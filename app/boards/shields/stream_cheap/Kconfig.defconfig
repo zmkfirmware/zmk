@@ -1,0 +1,7 @@
+
+if SHIELD_STREAM_CHEAP
+
+config ZMK_KEYBOARD_NAME
+	default "Stream Cheap"
+
+endif

@@ -1,0 +1,5 @@
+# Copyright (c) 2022 Luigi311
+# SPDX-License-Identifier: MIT
+
+config SHIELD_STREAM_CHEAP
+	def_bool $(shields_list_contains,stream_cheap)

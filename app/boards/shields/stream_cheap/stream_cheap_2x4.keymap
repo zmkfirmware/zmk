@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2021 Luigi311
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define DEFAULT 0
+#define LOWER   1
+
+/ {
+	combos {
+		compatible = "zmk,combos";
+		combo_bootloader {
+			timeout-ms = <100>;
+			key-positions = <2 3 6 7>;
+			bindings = <&bootloader>;
+		};
+		combo_reboot {
+			timeout-ms = <100>;
+			key-positions = <0 1 4 5>;
+			bindings = <&reset>;
+		};
+	};
+};
+
+/ {
+	keymap0: keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+			bindings = <
+				&kp F13 &kp F14 &kp F15 &kp F16
+                &kp F17 &kp F18 &kp F19 &mo LOWER
+				>;
+		};
+
+		lower_layer {
+			bindings = <
+				&kp F20 &kp F21 &kp F22 &kp F23
+				&bt BT_SEL 0 &bt BT_SEL 1 &bt BT_CLR &trans
+				>;
+		};
+	};
+};
