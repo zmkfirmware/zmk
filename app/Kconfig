@@ -155,10 +155,14 @@ config ZMK_SPLIT
 
 if ZMK_SPLIT
 
+choice ZMK_SPLIT_TYPE
+	prompt "ZMK split type"
+
+if ZMK_BLE
+
 menuconfig ZMK_SPLIT_BLE
 	bool "Split keyboard support via BLE transport"
 	depends on ZMK_BLE
-	default y
 	select BT_USER_PHY_UPDATE
 
 if ZMK_SPLIT_BLE
@@ -199,9 +203,6 @@ config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
 	int "Max number of key position state events to queue to send to the central"
 	default 10
 
-config ZMK_USB
-	default n
-
 config BT_MAX_PAIRED
 	default 1
 
@@ -216,6 +217,56 @@ endif
 
 #ZMK_SPLIT_BLE
 endif
+
+# ZMK_BLE
+endif
+
+if ZMK_USB
+
+menuconfig ZMK_SPLIT_SERIAL
+	bool "Split keyboard support via Serial transport"
+	depends on ZMK_USB
+
+if ZMK_SPLIT_SERIAL
+
+choice ZMK_SPLIT_SERIAL_ROLE
+	prompt "ZMK split serial role"
+
+menuconfig ZMK_SPLIT_SERIAL_ROLE_CENTRAL
+	bool "Central"
+
+menuconfig ZMK_SPLIT_SERIAL_ROLE_PERIPHERAL
+	bool "Peripheral"
+
+if ZMK_SPLIT_SERIAL_ROLE_PERIPHERAL
+
+config ZMK_SPLIT_SERIAL_PERIPHERAL_STACK_SIZE
+	int "Serial split peripheral notify thread stack size"
+	default 512
+
+config ZMK_SPLIT_SERIAL_PERIPHERAL_PRIORITY
+	int "Serial split peripheral notify thread priority"
+	default 5
+
+config ZMK_SPLIT_SERIAL_PERIPHERAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue to send to the central"
+	default 10
+
+# ZMK_SPLIT_SERIAL_ROLE_PERIPHERAL
+endif
+
+# ZMK_SPLIT_SERIAL_ROLE
+endchoice
+
+# ZMK_SPLIT_SERIAL
+endif
+
+# ZMK_USB
+endif
+
+# ZMK_SPLIT_TYPE
+endchoice
+
 
 #ZMK_SPLIT
 endif

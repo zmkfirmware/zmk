@@ -19,6 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/behavior.h>
 #include <zmk/matrix.h>
 #include <zmk/split/bluetooth/uuid.h>
+#include <zmk/split/common.h>
 #include <zmk/split/bluetooth/service.h>
 
 #define POS_STATE_LEN 16
@@ -141,12 +142,12 @@ int send_position_state() {
     return 0;
 }
 
-int zmk_split_bt_position_pressed(uint8_t position) {
+int zmk_split_position_pressed(uint8_t position) {
     WRITE_BIT(position_state[position / 8], position % 8, true);
     return send_position_state();
 }
 
-int zmk_split_bt_position_released(uint8_t position) {
+int zmk_split_position_released(uint8_t position) {
     WRITE_BIT(position_state[position / 8], position % 8, false);
     return send_position_state();
 }

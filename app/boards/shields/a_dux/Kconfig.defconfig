@@ -1,19 +1,41 @@
 # Copyright (c) 2021 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+if SHIELD_A_DUX_LEFT || SHIELD_A_DUX_RIGHT
+
+if ZMK_BLE || ZMK_USB
+config ZMK_SPLIT
+	default y
+endif
+
 if SHIELD_A_DUX_LEFT
 
 config ZMK_KEYBOARD_NAME
 	default "A. Dux"
 
+if ZMK_BLE
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
-
 endif
 
-if SHIELD_A_DUX_LEFT || SHIELD_A_DUX_RIGHT
+if ZMK_USB
+choice ZMK_SPLIT_SERIAL_ROLE
+  default ZMK_SPLIT_SERIAL_ROLE_CENTRAL
+endchoice
+endif
 
-config ZMK_SPLIT
-	default y
+# SHIELD_A_DUX_LEFT
+endif
+
+if SHIELD_A_DUX_RIGHT
+
+if ZMK_USB
+choice ZMK_SPLIT_SERIAL_ROLE
+  default ZMK_SPLIT_SERIAL_ROLE_PERIPHERAL
+endchoice
+endif
+
+# SHIELD_A_DUX_RIGHT
+endif
 
 endif

@@ -4,12 +4,14 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
+    - name: megamind4089
+      url-base: https://github.com/megamind4089
     - name: microsoft
       url-base: https://github.com/microsoft
   projects:
     - name: zephyr
-      remote: zmkfirmware
-      revision: v2.5.0+zmk-fixes
+      remote: megamind4089
+      revision: v2.5.0+zmk-fixes-stm32f4
       clone-depth: 1
       import:
         # TODO: Rename once upstream offers option like `exclude` or `denylist`
