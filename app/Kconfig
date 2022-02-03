@@ -333,6 +333,10 @@ endmenu
 
 menu "Power Management"
 
+config ZMK_USB_EXT_POWER_ONLY
+	bool "Turn off external power when USB is disconnected"
+	default n
+
 config ZMK_IDLE_TIMEOUT
 	int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
 	default 30000

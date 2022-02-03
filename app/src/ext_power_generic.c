@@ -14,6 +14,11 @@
 #include <drivers/gpio.h>
 #include <drivers/ext_power.h>
 
+#include <zmk/activity.h>
+#include <zmk/usb.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/usb_conn_state_changed.h>
+
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
 #include <logging/log.h>
@@ -128,6 +133,33 @@ struct settings_handler ext_power_conf = {.name = "ext_power/state",
                                           .h_set = ext_power_settings_set};
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_USB_EXT_POWER_ONLY)
+static int ext_power_toggle(const struct device *dev, bool enable) {
+    // If our new state matches the power state, do nothing
+    if (!enable == (ext_power_get(dev) > 0)) {
+        return 0;
+    }
+    if (enable) {
+        return ext_power_enable(dev);
+    } else {
+        return ext_power_disable(dev);
+    }
+}
+
+static int ext_power_event_listener(const zmk_event_t *eh) {
+    if (as_zmk_usb_conn_state_changed(eh)) {
+        const struct device *ext_power = device_get_binding("EXT_POWER");
+        return ext_power_toggle(ext_power, zmk_usb_is_powered());
+    }
+
+    return -ENOTSUP;
+}
+
+ZMK_LISTENER(ext_power, ext_power_event_listener);
+
+ZMK_SUBSCRIPTION(ext_power, zmk_usb_conn_state_changed);
+#endif
+
 static int ext_power_generic_init(const struct device *dev) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
@@ -167,6 +199,8 @@ static int ext_power_generic_init(const struct device *dev) {
 
         ext_power_enable(dev);
     }
+#elif IS_ENABLED(CONFIG_ZMK_USB_EXT_POWER_ONLY)
+    ext_power_toggle(dev, zmk_usb_is_powered());
 #else
     // Default to the ext_power being open when no settings
     ext_power_enable(dev);
