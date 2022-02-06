@@ -238,25 +238,20 @@ menuconfig ZMK_SPLIT_SERIAL_ROLE_CENTRAL
 menuconfig ZMK_SPLIT_SERIAL_ROLE_PERIPHERAL
 	bool "Peripheral"
 
-if ZMK_SPLIT_SERIAL_ROLE_PERIPHERAL
-
-config ZMK_SPLIT_SERIAL_PERIPHERAL_STACK_SIZE
-	int "Serial split peripheral notify thread stack size"
-	default 512
-
-config ZMK_SPLIT_SERIAL_PERIPHERAL_PRIORITY
-	int "Serial split peripheral notify thread priority"
-	default 5
-
-config ZMK_SPLIT_SERIAL_PERIPHERAL_POSITION_QUEUE_SIZE
-	int "Max number of key position state events to queue to send to the central"
-	default 10
-
-# ZMK_SPLIT_SERIAL_ROLE_PERIPHERAL
-endif
-
 # ZMK_SPLIT_SERIAL_ROLE
 endchoice
+
+config ZMK_SPLIT_SERIAL_THREAD_STACK_SIZE
+	int "Serial split thread stack size"
+	default 128
+
+config ZMK_SPLIT_SERIAL_THREAD_PRIORITY
+	int "Serial split thread priority"
+	default 5
+
+config ZMK_SPLIT_SERIAL_THREAD_QUEUE_SIZE
+	int "Max number of queue size for split data buffering"
+	default 5
 
 # ZMK_SPLIT_SERIAL
 endif

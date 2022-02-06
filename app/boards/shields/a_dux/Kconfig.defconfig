@@ -3,10 +3,8 @@
 
 if SHIELD_A_DUX_LEFT || SHIELD_A_DUX_RIGHT
 
-if ZMK_BLE || ZMK_USB
 config ZMK_SPLIT
 	default y
-endif
 
 if SHIELD_A_DUX_LEFT
 

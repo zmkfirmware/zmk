@@ -19,28 +19,25 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/position_state_changed.h>
 #include <zmk/matrix.h>
 
-#if DT_HAS_CHOSEN(zmk_split_serial)
+#if !DT_HAS_CHOSEN(zmk_split_serial)
+    #error "No zmk-split-serial node is chosen"
+#endif
 
 #define UART_NODE1 DT_CHOSEN(zmk_split_serial)
 const struct device *serial_dev = DEVICE_DT_GET(UART_NODE1);
 static int uart_ready = 0;
 
-#define CONFIG_ZMK_SPLIT_SERIAL_CENTRAL_POSITION_QUEUE_SIZE 5
-
-#define CONFIG_SERIAL_THREAD_STACK_SIZE 128
-#define CONFIG_SERIAL_THREAD_PRIORITY 5
-
 static void split_serial_receive_thread(void *unused, void *unused1, void *unused2);
 
 K_MEM_SLAB_DEFINE(split_memory_slab, sizeof(split_data_t), \
-                  CONFIG_ZMK_SPLIT_SERIAL_CENTRAL_POSITION_QUEUE_SIZE, 4);
+                  CONFIG_ZMK_SPLIT_SERIAL_THREAD_QUEUE_SIZE, 4);
 
 K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed), \
-              CONFIG_ZMK_SPLIT_SERIAL_CENTRAL_POSITION_QUEUE_SIZE, 4);
+              CONFIG_ZMK_SPLIT_SERIAL_THREAD_QUEUE_SIZE, 4);
 
-K_THREAD_DEFINE(split_central, CONFIG_SERIAL_THREAD_STACK_SIZE,
+K_THREAD_DEFINE(split_central, CONFIG_ZMK_SPLIT_SERIAL_THREAD_STACK_SIZE,
                 split_serial_receive_thread, NULL, NULL, NULL,
-                K_PRIO_PREEMPT(CONFIG_SERIAL_THREAD_PRIORITY), 0, 0);
+                K_PRIO_PREEMPT(CONFIG_ZMK_SPLIT_SERIAL_THREAD_PRIORITY), 0, 0);
 
 
 static void peripheral_event_work_callback(struct k_work *work) {
@@ -185,6 +182,4 @@ static void split_serial_receive_thread(void *unused, void *unused1, void *unuse
         }
     };
 }
-
-#endif /* DT_HAS_CHOSEN(zmk_matrix_transform) */
 
