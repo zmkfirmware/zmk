@@ -50,7 +50,7 @@
     "@types/react-router-dom": "^5.1.7",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-mdx": "^1.13.0",
+    "eslint-plugin-mdx": "^1.16.0",
     "eslint-plugin-react": "^7.28.0",
     "json-schema-to-typescript": "^10.1.5",
     "mustache": "^4.2.0",
