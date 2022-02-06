@@ -1,8 +1,8 @@
 /*
-* Copyright (c) 2022 The ZMK Contributors
-*
-* SPDX-License-Identifier: MIT
-*/
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include <zmk/split/common.h>
 #include <init.h>
@@ -20,7 +20,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/matrix.h>
 
 #if !DT_HAS_CHOSEN(zmk_split_serial)
-    #error "No zmk-split-serial node is chosen"
+#error "No zmk-split-serial node is chosen"
 #endif
 
 #define UART_NODE1 DT_CHOSEN(zmk_split_serial)
@@ -29,16 +29,15 @@ static int uart_ready = 0;
 
 static void split_serial_receive_thread(void *unused, void *unused1, void *unused2);
 
-K_MEM_SLAB_DEFINE(split_memory_slab, sizeof(split_data_t), \
+K_MEM_SLAB_DEFINE(split_memory_slab, sizeof(split_data_t),
                   CONFIG_ZMK_SPLIT_SERIAL_THREAD_QUEUE_SIZE, 4);
 
-K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed), \
+K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
               CONFIG_ZMK_SPLIT_SERIAL_THREAD_QUEUE_SIZE, 4);
 
 K_THREAD_DEFINE(split_central, CONFIG_ZMK_SPLIT_SERIAL_THREAD_STACK_SIZE,
                 split_serial_receive_thread, NULL, NULL, NULL,
                 K_PRIO_PREEMPT(CONFIG_ZMK_SPLIT_SERIAL_THREAD_PRIORITY), 0, 0);
-
 
 static void peripheral_event_work_callback(struct k_work *work) {
     struct zmk_position_state_changed ev;
@@ -63,7 +62,6 @@ static uint8_t split_central_notify_func(const void *data, uint16_t length) {
         LOG_WRN("CRC mismatch (%x:%x), skipping data", crc, split_data->crc);
         return 0;
     }
-
 
     for (int i = 0; i < SPLIT_DATA_LEN; i++) {
         changed_positions[i] = split_data->data[i] ^ position_state[i];
@@ -102,50 +100,47 @@ static char *alloc_position_state_buffer() {
     return block_ptr;
 }
 
-
 static void free_position_state_buffer(char *block_ptr) {
     k_mem_slab_free(&split_memory_slab, (void **)&block_ptr);
 }
-
 
 static void uart_callback(const struct device *dev, struct uart_event *evt, void *user_data) {
     char *buf = NULL;
 
     switch (evt->type) {
 
-        case UART_RX_STOPPED:
-            LOG_DBG("UART device:%s rx stopped", serial_dev->name);
-            break;
+    case UART_RX_STOPPED:
+        LOG_DBG("UART device:%s rx stopped", serial_dev->name);
+        break;
 
-        case UART_RX_BUF_REQUEST:
-            LOG_DBG("UART device:%s rx extra buf req", serial_dev->name);
-            buf = alloc_position_state_buffer();
-            if (NULL != buf) {
-                int ret = uart_rx_buf_rsp(serial_dev, buf, sizeof(split_data_t));
-                if (0 != ret) {
-                    LOG_WRN("UART device:%s rx extra buf req add failed: %d", serial_dev->name, ret);
-                    free_position_state_buffer(buf);
-                }
+    case UART_RX_BUF_REQUEST:
+        LOG_DBG("UART device:%s rx extra buf req", serial_dev->name);
+        buf = alloc_position_state_buffer();
+        if (NULL != buf) {
+            int ret = uart_rx_buf_rsp(serial_dev, buf, sizeof(split_data_t));
+            if (0 != ret) {
+                LOG_WRN("UART device:%s rx extra buf req add failed: %d", serial_dev->name, ret);
+                free_position_state_buffer(buf);
             }
-            break;
+        }
+        break;
 
-        case UART_RX_RDY:
-            LOG_DBG("UART device:%s rx buf ready", serial_dev->name);
-            break;
+    case UART_RX_RDY:
+        LOG_DBG("UART device:%s rx buf ready", serial_dev->name);
+        break;
 
-        case UART_RX_BUF_RELEASED:
-            LOG_DBG("UART device:%s rx buf released", serial_dev->name);
-            split_central_notify_func(evt->data.rx_buf.buf, sizeof(split_data_t));
-            free_position_state_buffer(evt->data.rx_buf.buf);
-            break;
+    case UART_RX_BUF_RELEASED:
+        LOG_DBG("UART device:%s rx buf released", serial_dev->name);
+        split_central_notify_func(evt->data.rx_buf.buf, sizeof(split_data_t));
+        free_position_state_buffer(evt->data.rx_buf.buf);
+        break;
 
-        default:
-            LOG_DBG("UART device:%s unhandled event: %u", serial_dev->name, evt->type);
-            break;
+    default:
+        LOG_DBG("UART device:%s unhandled event: %u", serial_dev->name, evt->type);
+        break;
     };
     return;
 }
-
 
 static void split_serial_receive_thread(void *unused, void *unused1, void *unused2) {
     if (!device_is_ready(serial_dev)) {
@@ -162,7 +157,7 @@ static void split_serial_receive_thread(void *unused, void *unused1, void *unuse
     uart_ready = 1;
     LOG_DBG("UART device:%s ready", serial_dev->name);
 
-    while(true) {
+    while (true) {
         char *buf = alloc_position_state_buffer();
         if (NULL == buf) {
             k_msleep(100);
@@ -182,4 +177,3 @@ static void split_serial_receive_thread(void *unused, void *unused1, void *unuse
         }
     };
 }
-

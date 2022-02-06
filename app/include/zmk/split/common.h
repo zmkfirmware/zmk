@@ -21,4 +21,3 @@ typedef struct _split_data_t {
 int zmk_split_position_pressed(uint8_t position);
 
 int zmk_split_position_released(uint8_t position);
-

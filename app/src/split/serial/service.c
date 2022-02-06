@@ -1,8 +1,8 @@
 /*
-* Copyright (c) 2022 The ZMK Contributors
-*
-* SPDX-License-Identifier: MIT
-*/
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include <zmk/split/common.h>
 #include <sys/util.h>
@@ -19,7 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/matrix.h>
 
 #if !DT_HAS_CHOSEN(zmk_split_serial)
-    #error "No zmk-split-serial node is chosen"
+#error "No zmk-split-serial node is chosen"
 #endif
 
 #define UART_NODE1 DT_CHOSEN(zmk_split_serial)
@@ -35,13 +35,12 @@ struct k_work_q service_work_q;
 K_MSGQ_DEFINE(position_state_msgq, sizeof(char[SPLIT_DATA_LEN]),
               CONFIG_ZMK_SPLIT_SERIAL_THREAD_QUEUE_SIZE, 4);
 
-
 void send_data_via_uart(const struct device *dev, char *data, size_t len) {
     if (!uart_ready) {
         return;
     }
 
-    for (int i=0; i < len; i++) {
+    for (int i = 0; i < len; i++) {
         uart_poll_out(serial_dev, data[i]);
     }
 }
@@ -61,15 +60,15 @@ int send_position_state() {
     int err = k_msgq_put(&position_state_msgq, position_state, K_MSEC(100));
     if (err) {
         switch (err) {
-            case -EAGAIN: {
-                LOG_WRN("Position state message queue full, popping first message and queueing again");
-                uint8_t discarded_state[SPLIT_DATA_LEN];
-                k_msgq_get(&position_state_msgq, &discarded_state, K_NO_WAIT);
-                return send_position_state();
-            }
-            default:
-                LOG_WRN("Failed to queue position state to send (%d)", err);
-                return err;
+        case -EAGAIN: {
+            LOG_WRN("Position state message queue full, popping first message and queueing again");
+            uint8_t discarded_state[SPLIT_DATA_LEN];
+            k_msgq_get(&position_state_msgq, &discarded_state, K_NO_WAIT);
+            return send_position_state();
+        }
+        default:
+            LOG_WRN("Failed to queue position state to send (%d)", err);
+            return err;
         }
     }
 
@@ -103,4 +102,3 @@ int service_init(const struct device *_arg) {
 }
 
 SYS_INIT(service_init, APPLICATION, CONFIG_ZMK_USB_INIT_PRIORITY);
-
