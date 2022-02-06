@@ -243,7 +243,7 @@ endchoice
 
 config ZMK_SPLIT_SERIAL_THREAD_STACK_SIZE
 	int "Serial split thread stack size"
-	default 128
+	default 1024
 
 config ZMK_SPLIT_SERIAL_THREAD_PRIORITY
 	int "Serial split thread priority"
