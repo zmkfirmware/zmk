@@ -1,0 +1,8 @@
+file_format: "1"
+id: shapeshifter4060
+name: Shapeshifter4060
+type: shield
+url: https://kitsunekeyboards.com/
+requires: [pro_micro]
+features:
+  - keys
