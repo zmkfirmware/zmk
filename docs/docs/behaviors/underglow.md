@@ -66,3 +66,7 @@ Value Limits:
    ```
    &rgb_ug RGB_COLOR_HSB(128,100,100)
    ```
+
+## Split Keyboards
+
+RGB underglow behaviors are global: This means that when triggered, they affect both the central and peripheral side of split keyboards.
