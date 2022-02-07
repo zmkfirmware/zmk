@@ -3,7 +3,7 @@ id: breeze
 name: Breeze
 type: shield
 url: https://afternoonlabs.com/breeze/
-requires: 
+requires:
   - pro_micro
 features:
   - keys
