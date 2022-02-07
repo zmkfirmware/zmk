@@ -49,3 +49,7 @@ Here is a table describing the action for each define:
    ```
    &bl BL_SET 50
    ```
+
+## Split Keyboards
+
+Backlight behaviors are global: This means that when triggered, they affect both the central and peripheral side of split keyboards.
