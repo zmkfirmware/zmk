@@ -31,7 +31,7 @@ K_MSGQ_DEFINE(position_state_msgq, sizeof(char[SPLIT_DATA_LEN]),
 static void send_position_state_callback(struct k_work *work) {
     split_data_t *split_data = NULL;
 
-    while (!(split_data = (split_data_t *)alloc_position_state_buffer(K_MSEC(100)))) {
+    while (!(split_data = (split_data_t *)alloc_split_serial_buffer(K_MSEC(100)))) {
     };
 
     memset(split_data, sizeof(split_data_t), 0);

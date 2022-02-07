@@ -37,7 +37,7 @@ static K_SEM_DEFINE(split_serial_tx_sem, 1, 1);
 
 rx_complete_t split_serial_rx_complete_fn = NULL;
 
-uint8_t *alloc_position_state_buffer(k_timeout_t timeout) {
+uint8_t *alloc_split_serial_buffer(k_timeout_t timeout) {
     uint8_t *block_ptr = NULL;
     if (k_mem_slab_alloc(&split_memory_slab, (void **)&block_ptr, timeout) == 0) {
         memset(block_ptr, 0, SPLIT_DATA_LEN);
@@ -47,14 +47,14 @@ uint8_t *alloc_position_state_buffer(k_timeout_t timeout) {
     return block_ptr;
 }
 
-void free_position_state_buffer(const uint8_t *data) {
+void free_split_serial_buffer(const uint8_t *data) {
     k_mem_slab_free(&split_memory_slab, (void **)&data);
 }
 
 static void enable_rx(const struct device *dev) {
     int ret;
     uint8_t *buf = NULL;
-    while (!(buf = alloc_position_state_buffer(K_MSEC(100)))) {
+    while (!(buf = alloc_split_serial_buffer(K_MSEC(100)))) {
     };
 
     while (0 != (ret = uart_rx_enable(serial_dev, buf, sizeof(split_data_t), SYS_FOREVER_MS))) {
@@ -75,12 +75,12 @@ static void uart_callback(const struct device *dev, struct uart_event *evt, void
 
     case UART_RX_BUF_REQUEST:
         LOG_DBG("UART device:%s rx extra buf req", serial_dev->name);
-        buf = alloc_position_state_buffer(K_NO_WAIT);
+        buf = alloc_split_serial_buffer(K_NO_WAIT);
         if (NULL != buf) {
             int ret = uart_rx_buf_rsp(serial_dev, buf, sizeof(split_data_t));
             if (0 != ret) {
                 LOG_WRN("UART device:%s rx extra buf req add failed: %d", serial_dev->name, ret);
-                free_position_state_buffer(buf);
+                free_split_serial_buffer(buf);
             }
         }
         break;
@@ -94,7 +94,7 @@ static void uart_callback(const struct device *dev, struct uart_event *evt, void
         if (split_serial_rx_complete_fn) {
             split_serial_rx_complete_fn(evt->data.rx_buf.buf, sizeof(split_data_t));
         }
-        free_position_state_buffer(evt->data.rx_buf.buf);
+        free_split_serial_buffer(evt->data.rx_buf.buf);
         break;
 
     case UART_RX_DISABLED:
@@ -104,7 +104,7 @@ static void uart_callback(const struct device *dev, struct uart_event *evt, void
 
     case UART_TX_DONE:
         LOG_DBG("UART device:%s tx done", serial_dev->name);
-        free_position_state_buffer(evt->data.tx.buf);
+        free_split_serial_buffer(evt->data.tx.buf);
         k_sem_give(&split_serial_tx_sem);
         break;
 
@@ -140,14 +140,14 @@ void split_serial_async_init(rx_complete_t rx_comp_fn) {
 
     int ret = uart_callback_set(serial_dev, uart_callback, NULL);
     if (ret == -ENOTSUP || ret == -ENOSYS) {
-        LOG_WRN("UART device:%s ASYNC not supported", serial_dev->name);
+        LOG_ERR("UART device:%s ASYNC not supported", serial_dev->name);
         return;
     }
 
     split_serial_rx_complete_fn = rx_comp_fn;
 
     uart_ready = 1;
-    LOG_ERR("UART device:%s ready", serial_dev->name);
+    LOG_INF("UART device:%s ready", serial_dev->name);
 
     enable_rx(serial_dev);
 }
