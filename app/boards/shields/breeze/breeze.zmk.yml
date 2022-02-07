@@ -1,0 +1,12 @@
+file_format: "1"
+id: breeze
+name: Breeze
+type: shield
+url: https://afternoonlabs.com/breeze/
+requires: 
+  - pro_micro
+features:
+  - keys
+siblings:
+  - breeze_left
+  - breeze_right
