@@ -2,7 +2,7 @@ file_format: "1"
 id: stream_cheap
 name: Stream Cheap Macropad
 type: shield
-url: https://www.thingiverse.com/thing:5231094
+url: https://www.thingiverse.com/thing:5238367
 requires: [pro_micro]
 features:
   - keys

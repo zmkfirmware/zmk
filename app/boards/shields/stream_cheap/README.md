@@ -9,6 +9,6 @@ A small 8-key macropad as a cheap alternative to the stream deck.
 
 ## Build
 
-<https://www.thingiverse.com/thing:5231094>
+<https://www.thingiverse.com/thing:5238367>
 
 west build -p -b nice_nano_v2 -- -DSHIELD=stream_cheap_2x4
