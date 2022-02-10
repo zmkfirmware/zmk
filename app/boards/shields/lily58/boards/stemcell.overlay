@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	chosen {
+		zmk,split-serial = &usart2;
+	};
+};
+
+&usart2 {
+	status = "okay";
+};
+
