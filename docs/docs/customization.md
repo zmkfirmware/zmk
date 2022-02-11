@@ -73,4 +73,11 @@ include:
     shield: lily58_right
 ```
 
-Lily58 specific shield files, e.g. `lily58.conf` and `lily58.keymap` should be added into the `config` sub-folder inside `zmk-config`.
+Lily58's shield files should be added into the `config` sub-folder inside `zmk-config` together with your Corne files, e.g.:
+
+```
+corne.conf
+corne.keymap
+lily58.conf
+lily58.keymap
+```
