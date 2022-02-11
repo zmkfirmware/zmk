@@ -73,7 +73,7 @@ include:
     shield: lily58_right
 ```
 
-Lily58's shield files should be added into the `config` sub-folder inside `zmk-config` together with your Corne files, e.g.:
+In addition to updating `build.yaml`, Lily58's shield files should also be added into the `config` sub-folder inside `zmk-config` together with your Corne files, e.g.:
 
 ```
 corne.conf
