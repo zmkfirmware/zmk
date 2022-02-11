@@ -56,3 +56,21 @@ For normal keyboards, follow the same flashing instructions as before to flash y
 
 For split keyboards, only the central (left) side will need to be reflashed if you are just updating your keymap.
 More troubleshooting information for split keyboards can be found [here](troubleshooting.md#split-keyboard-halves-unable-to-pair).
+
+## Building Additional Keyboards
+
+You can build additional keyboards with GitHub actions by appending them to `build.yml` in your `zmk-config` folder. The following example will build Corne with Nice!Nano and Lily58 with Nice!Nano v2:
+
+```
+include:
+  - board: nice_nano
+    shield: corne_left
+  - board: nice_nano
+    shield: corne_right
+  - board: nice_nano_v2
+    shield: lily58_left
+  - board: nice_nano_v2
+    shield: lily58_right
+```
+
+Lily58 specific shield files, e.g. `lily58.conf` and `lily58.keymap` should be added into the `config` sub-folder inside `zmk-config`.
