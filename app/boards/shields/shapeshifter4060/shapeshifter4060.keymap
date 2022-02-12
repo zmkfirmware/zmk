@@ -22,12 +22,12 @@
             // |-------|ADJUST| LCTL | LALT | LGUI | LOWR | SPACE | SPACE |  RAIS | LARW | DARW | UARW  | RARW  |-------|
 
 
-            bindings = <
-                &kp A &kp N1 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &kp K &kp M
-                &kp A &kp N2 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &kp K &out OUT_USB
-                &kp A &kp N3 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &kp K &out OUT_BLE
-                &kp A &kp N4 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &bt BT_CLR &out OUT_TOG
-            >;
+			bindings = <
+            &kp TAB   &kp Q    &kp W    &kp E     &kp R  &kp T                  &kp Y     &kp U  &kp I     &kp O    &kp P    &kp DEL
+            &kp ESC   &kp A    &kp S    &kp D     &kp F  &kp G                  &kp H     &kp J  &kp K     &kp L    &kp SEMI &kp SQT
+            &kp LSHFT &kp Z    &kp X    &kp C     &kp V  &kp B                  &kp N     &kp M  &kp COMMA &kp DOT  &kp BSLH &kp RET
+                &trans    &kp LGUI &kp LALT &kp LCTRL &trans &trans     &kp SPACE &trans &kp LEFT  &kp DOWN &kp UP   &kp RIGHT
+			>;
         };
 
 //        lower {
