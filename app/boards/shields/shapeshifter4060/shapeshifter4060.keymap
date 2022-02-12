@@ -23,10 +23,10 @@
 
 
             bindings = <
-                &kp A &kp 1 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &kp K &kp M
-                &kp A &kp 2 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &kp K &out OUT_USB
-                &kp A &kp 3 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &kp K &out OUT_BLE
-                &kp A &kp 4 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &bt BT_CLR &out OUT_TOG
+                &kp A &kp N1 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &kp K &kp M
+                &kp A &kp N2 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &kp K &out OUT_USB
+                &kp A &kp N3 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &kp K &out OUT_BLE
+                &kp A &kp N4 &kp B &kp C &kp D &kp E &kp F &kp G &kp H &kp J &bt BT_CLR &out OUT_TOG
             >;
         };
 
