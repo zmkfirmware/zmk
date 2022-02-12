@@ -29,6 +29,7 @@ module.exports = {
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
       "behaviors/caps-word",
+      "behaviors/key-repeat",
       "behaviors/reset",
       "behaviors/bluetooth",
       "behaviors/outputs",
