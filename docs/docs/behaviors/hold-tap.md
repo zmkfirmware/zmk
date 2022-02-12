@@ -115,7 +115,7 @@ The following are suggested hold-tap configurations that work well with home row
 	behaviors {
 		lh_pht: left_hand_positional_hold_tap {
 			compatible = "zmk,behavior-hold-tap";
-			label = "POSITIONAL_HOLD_TAP";
+			label = "LEFT_POSITIONAL_HOLD_TAP";
 			#binding-cells = <2>;
 			flavor = "tap-unless-interrupted";
 			tapping-term-ms = <100>;                        // <---[[produces tap if held longer than tapping-term-ms]]
