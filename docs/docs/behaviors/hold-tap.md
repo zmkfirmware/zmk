@@ -129,8 +129,8 @@ The following are suggested hold-tap configurations that work well with home row
 		compatible = "zmk,keymap";
 		default_layer {
 			bindings = <
-				// position 0           pos 1             pos 2             pos 3       pos 4    pos 5    pos 6    pos 7    pos 8    pos 9     pos 10
-				&lh_pht LSFT A    &lh_pht LGUI S    &lh_pht LALT D    &lh_pht LCTL F    &kp G    &kp H    &kp I    &kp J    &kp K    &kp L    &kp SCLN
+				// position 0     pos 1             pos 2             pos 3             pos 4    pos 5    pos 6    pos 7    pos 8    pos 9    pos 10
+				&lh_pht LSFT A    &lh_pht LGUI S    &lh_pht LALT D    &lh_pht LCTL F    &kp G    &kp H    &kp I    &kp J    &kp K    &kp L    &kp SEMI
 			>;
 		};
 	};
