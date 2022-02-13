@@ -48,16 +48,16 @@ shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
 
 ### Kconfig.shield
 
-The `Kconfig.shield` file defines any additional Kconfig settings that may be relevant when using this keyboard. For most keyboards, there is just one additional configuration value for the shield itself, e.g.:
+The `Kconfig.shield` file defines any additional Kconfig settings that may be relevant when using this keyboard. For most keyboards, there is just one additional configuration value for the shield itself. If your YAML file sets your `id` to a value of `my_board`, it would look like this:
 
 ```
 config SHIELD_MY_BOARD
 	def_bool $(shields_list_contains,my_board)
 ```
 
-This will make sure the new configuration `SHIELD_MY_BOARD` is set to true whenever `my_board` is added as a shield in your build.
+This will make sure that a new configuration value named `SHIELD_MY_BOARD` is set to true whenever `my_board` is added as a shield in your `build.yaml` file. This configuration value will be used in Kconfig.defconfig to set other properties about your shield, so make sure that you use the same name for the configuration value in both places. 
 
-**For split boards**, you will need to add configurations for the left and right sides.
+**For split boards**, you will need to add configurations for the left and right sides, and check for the sibling you're building. For example, if your board's `id` is `my_board` and your `siblings` are named `my_board_left` and `my_board_right`, it would look like this:
 
 ```
 config SHIELD_MY_BOARD_LEFT
@@ -84,7 +84,7 @@ Do not make the keyboard name too long, otherwise the bluetooth advertising migh
 if SHIELD_MY_BOARD
 
 config ZMK_KEYBOARD_NAME
-	default "My Awesome Keyboard"
+	default "My Board"
 
 endif
 ```
