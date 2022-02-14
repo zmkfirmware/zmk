@@ -3,3 +3,6 @@
 
 config SHIELD_TIDBIT
 	def_bool $(shields_list_contains,tidbit)
+
+config SHEILD_TIDBIT_19KEY
+	def_bool $(shields_list_contains,tidbit_19key)
