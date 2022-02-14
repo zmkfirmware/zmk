@@ -3,3 +3,6 @@
 
 config SHIELD_STREAM_CHEAP
 	def_bool $(shields_list_contains,stream_cheap)
+
+config SHIELD_STREAM_CHEAP_2X4
+	def_bool $(shields_list_contains,stream_cheap_2x4)
