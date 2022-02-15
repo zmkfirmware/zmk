@@ -48,7 +48,7 @@ shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
 
 ### Kconfig.shield
 
-The `Kconfig.shield` file defines any additional Kconfig settings that may be relevant when using this keyboard. For most keyboards, there is just one additional configuration value for the shield itself. If your YAML file sets your `id` to a value of `my_board`, it would look like this:
+The `Kconfig.shield` file defines any additional Kconfig settings that may be relevant when using this keyboard. For most keyboards, there is just one additional configuration value for the shield itself.
 
 ```
 config SHIELD_MY_BOARD
@@ -98,7 +98,7 @@ Finally, you'll want to turn on the split option for both sides. This can all be
 if SHIELD_MY_BOARD_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "My Awesome Keyboard"
+	default "My Board"
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
