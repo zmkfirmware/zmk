@@ -12,7 +12,7 @@ As a best-in-class RTOS, Zephyr™ brings many [benefits](https://www.zephyrproj
 - Powerful hardware abstraction and configuration using [DeviceTree](https://docs.zephyrproject.org/latest/guides/dts/index.html) and [Kconfig](https://docs.zephyrproject.org/latest/guides/kconfig/index.html).
 - A BLE stack that periodically obtains [qualification](https://docs.zephyrproject.org/latest/guides/bluetooth/bluetooth-qual.html) listings, making it easier for final products to obtain qualification from the Bluetooth® SIG.
 - Multi-processor support, which is critical for power efficiency in upcoming MCUs.
-- Permissive licencing with its Apache 2.0 open source [license](https://www.apache.org/licenses/LICENSE-2.0).
+- Permissive licensing with its Apache 2.0 open source [license](https://www.apache.org/licenses/LICENSE-2.0).
 - A buzzing developer [community](https://github.com/zephyrproject-rtos/zephyr) including many leading [embedded technology](https://www.zephyrproject.org/project-members) companies.
 - Long term support (LTS) with security updates.
 
@@ -23,7 +23,7 @@ That’s an excellent question! There are already great keyboard firmwares avail
 - Zephyr™
   - See [Why Zephyr™?](#why-zephyr)
 - Licensing
-  - Just like other open source firmware, ZMK is all about the free and the sharing. However, some other projects use the GPL licence which prevents integration of libraries and drivers whose licenses are not GPL-compatible (such as some embedded BLE drivers). ZMK uses the permissive [MIT](https://github.com/zmkfirmware/zmk/blob/main/LICENSE) license which doesn’t have this limitation.
+  - Just like other open source firmware, ZMK is all about the free and the sharing. However, some other projects use the GPL license which prevents integration of libraries and drivers whose licenses are not GPL-compatible (such as some embedded BLE drivers). ZMK uses the permissive [MIT](https://github.com/zmkfirmware/zmk/blob/main/LICENSE) license which doesn’t have this limitation.
 - Wireless First
   - ZMK is designed for the future, and we believe the future is wireless. So power efficiency plays a critical role in every design decision, just like in Zephyr™.
 

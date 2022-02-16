@@ -1,0 +1,14 @@
+file_format: "1"
+id: lotus58
+name: Lotus58
+type: shield
+url: https://github.com/TweetyDaBird/Lotus58
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+siblings:
+  - lotus58_left
+  - lotus58_right

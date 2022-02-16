@@ -1,0 +1,113 @@
+/*
+* Copyright (c) 2022 The ZMK Contributors
+*
+* SPDX-License-Identifier: MIT
+*/
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define MAIN 0
+#define SYM 1
+#define NAV 2
+#define BT 3
+
+&mt {
+    flavor = "tap-preferred";
+    tapping_term_ms = <140>;
+};
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        combo_esc {
+            timeout-ms = <100>;
+            key-positions = <21 22>;
+            bindings = <&kp ESC>;
+        };
+
+        combo_tab {
+            timeout-ms = <100>;
+            key-positions = <22 23>;
+            bindings = <&kp TAB>;
+        };
+
+        combo_minus {
+            timeout-ms = <100>;
+            key-positions = <26 27>;
+            bindings = <&kp MINUS>;
+        };
+
+        combo_underscore {
+            timeout-ms = <100>;
+            key-positions = <26 28>;
+            bindings = <&kp UNDERSCORE>;
+        };
+
+        combo_colon {
+            timeout-ms = <100>;
+            key-positions = <7 8>;
+            bindings = <&kp COLON>;
+        };
+
+        combo_semicolon {
+            timeout-ms = <100>;
+            key-positions = <6 8>;
+            bindings = <&kp SEMICOLON>;
+        };
+
+        combo_backslash {
+            timeout-ms = <100>;
+            key-positions = <27 28>;
+            bindings = <&kp BSLH>;
+        };
+
+        combo_grave {
+            timeout-ms = <100>;
+            key-positions = <8 9>;
+            bindings = <&kp GRAVE>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        MAIN_layer {
+            bindings = <
+                            &kp W      &kp E       &kp R        &kp T            &kp Y     &kp U      &kp I           &kp O
+          &kp Q &kp A       &kp S      &kp D       &lt SYM F    &kp G            &kp H     &lt SYM J  &kp K           &kp L        &kp SQT        &kp P
+                &mt LSHFT Z &mt LALT X &mt LCTRL C &mt LGUI V   &kp B            &kp N     &mt RGUI M &mt RCTRL COMMA &mt RALT DOT &mt RSHFT FSLH
+                                                   &lt BT ENTER &lt NAV SPACE    &sk RSHFT &kp BSPC
+            >;
+        };
+
+        SYM_layer {
+            bindings = <
+                          &kp N7 &kp N8 &kp N9  &kp STAR     &kp DLLR  &kp LBRC &kp RBRC &kp HASH
+       &kp AMPS &kp EXCL  &kp N1 &kp N2 &kp N3  &kp EQUAL    &kp LT    &kp LPAR &kp RPAR &kp GT   &kp PIPE  &none
+                &kp CARET &kp N4 &kp N5 &kp N6  &kp PLUS     &kp TILDE &kp LBKT &kp RBKT &kp AT   &kp PRCNT
+                                        &kp DOT &kp N0       &trans    &none
+            >;
+        };
+
+        NAV_layer {
+            bindings = <
+                           &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT &kp C_PP           &none     &kp F7  &kp F8 &kp F9
+     &kp C_PREV &kp LEFT   &kp DOWN     &kp UP       &kp RIGHT  &kp LC(TAB)        &kp PSCRN &kp F1  &kp F2 &kp F3 &kp F10 &kp F12
+                &kp HOME   &kp PG_DN    &kp PG_UP    &kp END    &kp LS(LC(TAB))    &kp CAPS  &kp F4  &kp F5 &kp F6 &kp F11
+                                                     &none      &none              &trans    &kp DEL
+            >;
+        };
+
+        BT_layer {
+            bindings = <
+                      &none &none &none &none    &none &none        &none        &none
+          &none &none &none &none &none &none    &none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &none
+                &none &none &none &none &none    &none &bt BT_CLR   &none        &none        &none
+                                  &none &none    &none &none
+            >;
+        };
+    };
+};

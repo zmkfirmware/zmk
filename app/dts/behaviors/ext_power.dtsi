@@ -6,9 +6,9 @@
 
 / {
 	behaviors {
-		/omit-if-no-ref/ ext_power: behavior_ext_power {
+		ext_power: behavior_ext_power {
 			compatible = "zmk,behavior-ext-power";
-			label = "EXT_POWER_BEHAVIOR";
+			label = "EXTPOWER";
 			#binding-cells = <1>;
 		};
 	};
