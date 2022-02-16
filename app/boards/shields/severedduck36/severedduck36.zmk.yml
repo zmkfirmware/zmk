@@ -1,0 +1,14 @@
+file_format: "1"
+id: severedduck36
+name: SeveredDuck36
+type: shield
+url: https://keyboard.pixelytical.net/
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+siblings:
+  - severedduck36_left
+  - severedduck36_right
