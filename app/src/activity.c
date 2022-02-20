@@ -69,8 +69,8 @@ void activity_work_handler(struct k_work *work) {
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
     if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
         // Put devices in low power mode before sleeping
-        pm_power_state_force((struct pm_state_info){PM_STATE_STANDBY, 0, 0});
         set_state(ZMK_ACTIVITY_SLEEP);
+        pm_power_state_set((struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0});
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
