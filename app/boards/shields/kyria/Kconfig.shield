@@ -1,8 +1,21 @@
 # Copyright (c) 2020 Pete Johanson
 # SPDX-License-Identifier: MIT
 
+config SHIELD_KYRIA
+    bool
+
 config SHIELD_KYRIA_LEFT
 	def_bool $(shields_list_contains,kyria_left)
+	select SHIELD_KYRIA
 
 config SHIELD_KYRIA_RIGHT
 	def_bool $(shields_list_contains,kyria_right)
+	select SHIELD_KYRIA
+
+config SHIELD_KYRIA_REV2_LEFT
+	def_bool $(shields_list_contains,kyria_rev2_left)
+	select SHIELD_KYRIA
+
+config SHIELD_KYRIA_REV2_RIGHT
+	def_bool $(shields_list_contains,kyria_rev2_right)
+	select SHIELD_KYRIA
