@@ -1,5 +1,6 @@
 #include <behaviors/key_press.dtsi>
 #include <behaviors/key_toggle.dtsi>
+#include <behaviors/key_tap.dtsi>
 #include <behaviors/transparent.dtsi>
 #include <behaviors/none.dtsi>
 #include <behaviors/mod_tap.dtsi>

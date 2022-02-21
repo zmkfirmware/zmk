@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	behaviors {
+		/omit-if-no-ref/ kt: behavior_key_tap {
+			compatible = "zmk,behavior-key-tap";
+			label = "KEY_TAP";
+			#binding-cells = <1>;
+		};
+	};
+};

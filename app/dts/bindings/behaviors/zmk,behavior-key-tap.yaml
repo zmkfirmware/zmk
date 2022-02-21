@@ -1,0 +1,8 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Key press/immediate release behavior
+
+compatible: "zmk,behavior-key-tap"
+
+include: one_param.yaml
