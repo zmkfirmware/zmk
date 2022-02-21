@@ -17,6 +17,9 @@
 
 #define COLLECTION_REPORT 0x03
 
+#define HID_REPORT_ID_KEYBOARD 0x01
+#define HID_REPORT_ID_CONSUMER 0x02
+
 static const uint8_t zmk_hid_report_desc[] = {
     /* USAGE_PAGE (Generic Desktop) */
     HID_GI_USAGE_PAGE,
@@ -29,7 +32,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     COLLECTION_APPLICATION,
     /* REPORT ID (1) */
     HID_GI_REPORT_ID,
-    0x01,
+    HID_REPORT_ID_KEYBOARD,
     /* USAGE_PAGE (Keyboard/Keypad) */
     HID_GI_USAGE_PAGE,
     HID_USAGE_KEY,
@@ -134,7 +137,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     COLLECTION_APPLICATION,
     /* REPORT ID (1) */
     HID_GI_REPORT_ID,
-    0x02,
+    HID_REPORT_ID_CONSUMER,
     /* USAGE_PAGE (Consumer) */
     HID_GI_USAGE_PAGE,
     HID_USAGE_CONSUMER,
@@ -187,12 +190,27 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_MI_COLLECTION_END,
 };
 
-// struct zmk_hid_boot_report
-// {
-//     uint8_t modifiers;
-//     uint8_t _unused;
-//     uint8_t keys[6];
-// } __packed;
+typedef enum {
+    HID_REPORT_FULL,
+    HID_REPORT_BODY
+} zmk_hid_report_request_t;
+
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+
+#define HID_ERROR_ROLLOVER 0x1
+#define HID_BOOT_KEY_LEN 6
+
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) && CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE == HID_BOOT_KEY_LEN
+    typedef struct zmk_hid_keyboard_report_body zmk_hid_boot_report_t;
+#else
+typedef struct
+{
+    zmk_mod_flags_t modifiers;
+    uint8_t _reserved;
+    uint8_t keys[6];
+} __packed zmk_hid_boot_report_t;
+#endif
+#endif
 
 struct zmk_hid_keyboard_report_body {
     zmk_mod_flags_t modifiers;
@@ -237,5 +255,5 @@ int zmk_hid_consumer_press(zmk_key_t key);
 int zmk_hid_consumer_release(zmk_key_t key);
 void zmk_hid_consumer_clear();
 
-struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();
-struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();
+uint8_t *zmk_hid_get_keyboard_report(zmk_hid_report_request_t req_t, uint8_t proto);
+uint8_t *zmk_hid_get_consumer_report(zmk_hid_report_request_t req_t);

@@ -47,12 +47,12 @@ enum {
 };
 
 static struct hids_report input = {
-    .id = 0x01,
+    .id = HID_REPORT_ID_KEYBOARD,
     .type = HIDS_INPUT,
 };
 
 static struct hids_report consumer_input = {
-    .id = 0x02,
+    .id = HID_REPORT_ID_CONSUMER,
     .type = HIDS_INPUT,
 };
 
@@ -80,7 +80,7 @@ static ssize_t read_hids_report_map(struct bt_conn *conn, const struct bt_gatt_a
 
 static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                       void *buf, uint16_t len, uint16_t offset) {
-    struct zmk_hid_keyboard_report_body *report_body = &zmk_hid_get_keyboard_report()->body;
+    uint8_t *report_body = zmk_hid_get_keyboard_report(HID_REPORT_BODY, HID_PROTOCOL_REPORT);
     return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
                              sizeof(struct zmk_hid_keyboard_report_body));
 }
@@ -88,7 +88,7 @@ static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt
 static ssize_t read_hids_consumer_input_report(struct bt_conn *conn,
                                                const struct bt_gatt_attr *attr, void *buf,
                                                uint16_t len, uint16_t offset) {
-    struct zmk_hid_consumer_report_body *report_body = &zmk_hid_get_consumer_report()->body;
+    uint8_t *report_body = zmk_hid_get_consumer_report(HID_REPORT_BODY);
     return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
                              sizeof(struct zmk_hid_consumer_report_body));
 }
@@ -190,7 +190,8 @@ void send_keyboard_report_callback(struct k_work *work) {
 
 K_WORK_DEFINE(hog_keyboard_work, send_keyboard_report_callback);
 
-int zmk_hog_send_keyboard_report(struct zmk_hid_keyboard_report_body *report) {
+int zmk_hog_send_keyboard_report() {
+    uint8_t *report = zmk_hid_get_keyboard_report(HID_REPORT_BODY, HID_PROTOCOL_REPORT);
     int err = k_msgq_put(&zmk_hog_keyboard_msgq, report, K_MSEC(100));
     if (err) {
         switch (err) {
@@ -240,7 +241,8 @@ void send_consumer_report_callback(struct k_work *work) {
 
 K_WORK_DEFINE(hog_consumer_work, send_consumer_report_callback);
 
-int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
+int zmk_hog_send_consumer_report() {
+    uint8_t *report = zmk_hid_get_consumer_report(HID_REPORT_BODY);
     int err = k_msgq_put(&zmk_hog_consumer_msgq, report, K_MSEC(100));
     if (err) {
         switch (err) {

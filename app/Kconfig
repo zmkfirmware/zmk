@@ -82,11 +82,25 @@ config ZMK_USB
 	select USB
 	select USB_DEVICE_STACK
 	select USB_DEVICE_HID
+	select USB_DEVICE_SOF
+	select USB_HID_BOOT_PROTOCOL
 
 if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
+
+config ZMK_USB_BOOT
+	bool "USB Boot Protocol Support"
+
+if ZMK_USB_BOOT
+
+# Declare boot keyboard interface
+config USB_HID_PROTOCOL_CODE
+	default 1
+
+#ZMK_USB_BOOT
+endif
 
 #ZMK_USB
 endif
