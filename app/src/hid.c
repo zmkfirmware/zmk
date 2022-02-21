@@ -99,7 +99,7 @@ static zmk_hid_boot_report_t error_report = {
 };
 
 #define HID_CHECK_ROLLOVER_ERROR() \
-    if (keys_held >= HID_BOOT_KEY_LEN) { \
+    if (keys_held > HID_BOOT_KEY_LEN) { \
         error_report.modifiers = keyboard_report.body.modifiers; \
         return &error_report; \
     }
@@ -119,6 +119,9 @@ static zmk_hid_boot_report_t *get_boot_report() {
     int ix = 0;
     uint8_t base_code = 0;
     for (int i = 0; i < (ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1) / 8; ++i) {
+        if (ix == keys_held) {
+            break;
+        }
         if (!keyboard_report.body.keys[i]) {
             continue;
         }
