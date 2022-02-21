@@ -50,6 +50,7 @@ static int zmk_usb_get_report(const struct device *dev,
      * For requested reports that aren't input reports, return -ENOTSUP like the Zephyr subsys does
      */
     if ((setup->wValue & HID_GET_REPORT_TYPE_MASK) != HID_REPORT_TYPE_INPUT) {
+        LOG_ERR("Unsupported report type %d requested", (setup->wValue & HID_GET_REPORT_TYPE_MASK) << 8);
         return -ENOTSUP;
     }
 
@@ -63,6 +64,9 @@ static int zmk_usb_get_report(const struct device *dev,
             report = zmk_hid_get_consumer_report(HID_REPORT_FULL);
             *len = sizeof(struct zmk_hid_consumer_report);
             break;
+        default:
+            LOG_ERR("Invalid report ID %d requested", setup->wValue & HID_GET_REPORT_ID_MASK);
+            return -EINVAL;
     }
 
     *data = report;
