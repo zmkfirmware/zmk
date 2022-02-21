@@ -103,7 +103,7 @@ int zmk_usb_hid_send_report(uint8_t report_id) {
             report = zmk_hid_get_keyboard_report(HID_REPORT_FULL, hid_protocol);
             len = hid_protocol == HID_PROTOCOL_BOOT ? sizeof(zmk_hid_boot_report_t) : sizeof(struct zmk_hid_keyboard_report);
 #else
-            report = zmk_hid_get_keyboard_report(HID_REPORT_FULL, hid_protocol);
+            report = zmk_hid_get_keyboard_report(HID_REPORT_FULL, HID_PROTOCOL_REPORT);
             len = sizeof(struct zmk_hid_keyboard_report);
 #endif
         } else {

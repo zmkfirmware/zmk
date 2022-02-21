@@ -110,6 +110,7 @@ static zmk_hid_boot_report_t error_report = {
 
 #define TOGGLE_KEYBOARD(code, val) WRITE_BIT(keyboard_report.body.keys[code / 8], code % 8, val)
 
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 static zmk_hid_boot_report_t *get_boot_report() {
     HID_CHECK_ROLLOVER_ERROR();
 
@@ -130,6 +131,7 @@ static zmk_hid_boot_report_t *get_boot_report() {
     }
     return &boot_report;
 }
+#endif
 
 static inline int select_keyboard_usage(zmk_key_t usage) {
     if (usage > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE) {
@@ -166,6 +168,7 @@ static inline int deselect_keyboard_usage(zmk_key_t usage) {
         }                                                                                          \
     }
 
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 static zmk_hid_boot_report_t *get_boot_report() {
     HID_CHECK_ROLLOVER_ERROR();
 #if CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE != HID_BOOT_KEY_LEN
@@ -177,6 +180,7 @@ static zmk_hid_boot_report_t *get_boot_report() {
     return &keyboard_report.body;
 #endif
 }
+#endif
 
 static inline int select_keyboard_usage(zmk_key_t usage) {
     TOGGLE_KEYBOARD(0U, usage);
