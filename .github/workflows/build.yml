@@ -29,8 +29,6 @@ jobs:
           - boardsource3x4
           - corne_left
           - corne_right
-          - fifi_left
-          - fifi_right
           - cradio_left
           - cradio_right
           - crbn
