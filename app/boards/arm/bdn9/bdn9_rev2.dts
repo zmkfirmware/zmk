@@ -6,6 +6,7 @@
 
 /dts-v1/;
 #include <st/f0/stm32f072Xb.dtsi>
+#include <st/f0/stm32f072c(8-b)tx-pinctrl.dtsi>
 #include <dt-bindings/led/led.h>
 
 / {
@@ -19,7 +20,7 @@
 		zmk,kscan = &kscan;
 		/* TODO: Enable once the GPIO bitbanging driver supports STM32
 		zmk,underglow = &led_strip;
-		 */
+		*/
 	};
 
 	kscan: kscan {
@@ -27,16 +28,16 @@
 		label = "KSCAN";
 
 		input-gpios
-		= <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-		, <&gpiob 5  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-		, <&gpiob 6  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-		, <&gpiob 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-		, <&gpiob 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-		, <&gpiob 7  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-		, <&gpioa 3  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-		, <&gpiof 1  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-		, <&gpiof 0  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-		;
+			= <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 5  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 6  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiob 7  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpioa 3  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiof 1  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpiof 0  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			;
 	};
 
 	/*
@@ -48,7 +49,7 @@
 
 		chain-length = <9>;
 	};
-	 */
+	*/
 
 	left_encoder: encoder_left {
 		compatible = "alps,ec11";
@@ -82,8 +83,28 @@
 	};
 };
 
+&clk_hsi {
+	status = "okay";
+};
+
+&pll {
+	status = "okay";
+	prediv = <1>;
+	mul = <6>;
+	clocks = <&clk_hsi>;
+};
+
+&rcc {
+	clocks = <&pll>;
+	clock-frequency = <DT_FREQ_M(48)>;
+	ahb-prescaler = <1>;
+	apb1-prescaler = <1>;
+};
+
 &usb {
 	status = "okay";
+	pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
+	pinctrl-names = "default";
 	cdc_acm_uart: cdc_acm_uart {
 		compatible = "zephyr,cdc-acm-uart";
 		label = "CDC_ACM_0";
@@ -97,7 +118,7 @@
 &flash0 {
 	/*
 	 * For more information, see:
-	 * http: //docs.zephyrproject.org/latest/guides/dts/index.html#flash-partitions
+	 * http://docs.zephyrproject.org/latest/guides/dts/index.html#flash-partitions
 	 */
 	partitions {
 		compatible = "fixed-partitions";
@@ -105,7 +126,7 @@
 		#size-cells = <1>;
 
 		/* Set 6Kb of storage at the end of the 128Kb of flash */
-		storage_partition: partition@3e800 {
+		storage_partition: partition@1e800 {
 			label = "storage";
 			reg = <0x0001e800 0x00001800>;
 		};
