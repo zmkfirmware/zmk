@@ -11,12 +11,43 @@
 };
 
 &kscan0 {
+    row-gpios
+        = <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio1 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        ;
+
 	col-gpios
-        = <&gpio0 12 GPIO_ACTIVE_HIGH>
+        = <&gpio0 19 GPIO_ACTIVE_HIGH>
+        , <&gpio0 21 GPIO_ACTIVE_HIGH>
+        , <&gpio0 23 GPIO_ACTIVE_HIGH>
+        , <&gpio0 12 GPIO_ACTIVE_HIGH>
         , <&gpio1 9  GPIO_ACTIVE_HIGH>
         , <&gpio0 7  GPIO_ACTIVE_HIGH>
-        , <&gpio0 5  GPIO_ACTIVE_HIGH>
-        , <&gpio0 4  GPIO_ACTIVE_HIGH>
-        , <&gpio0 31 GPIO_ACTIVE_HIGH>
 		;
+};
+
+/ {
+    leds {
+        compatible = "gpio-leds";
+        led1: led1 {
+            gpios = <&gpio0 10 GPIO_ACTIVE_HIGH>;
+            label = "LED 1";
+        };
+        led2: led2 {
+            gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>;
+            label = "LED 2";
+        };
+        led3: led3 {
+            gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
+            label = "LED 3";
+        };
+    };
+
+    ext-power {
+        compatible = "zmk,ext-power-generic";
+        label = "EXT_POWER";
+        control-gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
+    };
 };

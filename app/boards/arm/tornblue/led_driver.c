@@ -1,3 +1,5 @@
+#ifdef CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL
+
 #include <init.h>
 #include <device.h>
 #include <devicetree.h>
@@ -67,3 +69,5 @@ ZMK_LISTENER(led, led_event_handler);
 ZMK_SUBSCRIPTION(led, zmk_layer_state_changed);
 
 SYS_INIT(led_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
+
+#endif

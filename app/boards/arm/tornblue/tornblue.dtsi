@@ -42,34 +42,6 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(2,7) RC(2,8) RC(2,9)
 		label = "KSCAN";
 
 		diode-direction = "col2row";
-		row-gpios
-			= <&gpio1 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio1 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio1 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio1 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			;
-	};
-
-	leds {
-		compatible = "gpio-leds";
-		led1: led1 {
-			gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
-			label = "LED 1";
-		};
-		led2: led2 {
-			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
-			label = "LED 2";
-		};
-		led3: led3 {
-			gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
-			label = "LED 3";
-		};
-	};
-
-	ext-power {
-		compatible = "zmk,ext-power-generic";
-		label = "EXT_POWER";
-		control-gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
 	};
 
 	vbatt {
