@@ -226,7 +226,7 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
                     // continue processing the event. Release the sticky key afterwards.
                     ZMK_EVENT_RAISE_AFTER(eh, behavior_sticky_key);
                     release_sticky_key_behavior(sticky_key, ev->timestamp);
-                    return ZMK_EV_EVENT_CAPTURED;
+                    return ZMK_EV_EVENT_HANDLED;
                 }
             }
             sticky_key->modified_key_usage_page = ev->usage_page;
