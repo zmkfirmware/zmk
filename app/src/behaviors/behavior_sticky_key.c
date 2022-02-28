@@ -31,6 +31,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 struct behavior_sticky_key_config {
     uint32_t release_after_ms;
     bool quick_release;
+    bool ignore_modifiers;
     struct zmk_behavior_binding behavior;
 };
 
@@ -201,7 +202,7 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
             continue;
         }
 
-        // If events were queued, the timer event may be queued late or not at all.
+        // If this event was queued, the timer may be triggered late or not at all.
         // Release the sticky key if the timer should've run out in the meantime.
         if (sticky_key->release_at != 0 && ev->timestamp > sticky_key->release_at) {
             stop_timer(sticky_key);
@@ -210,6 +211,11 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
         }
 
         if (ev->state) { // key down
+            if (sticky_key->config->ignore_modifiers && is_mod(ev->usage_page, ev->keycode)) {
+                // ignore modifier key press so we can stack sticky keys and combine with other
+                // modifiers
+                continue;
+            }
             if (sticky_key->modified_key_usage_page != 0 || sticky_key->modified_key_keycode != 0) {
                 // this sticky key is already in use for a keycode
                 continue;
@@ -270,6 +276,7 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
     static struct behavior_sticky_key_config behavior_sticky_key_config_##n = {                    \
         .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, DT_DRV_INST(n)),                                 \
         .release_after_ms = DT_INST_PROP(n, release_after_ms),                                     \
+        .ignore_modifiers = DT_INST_PROP(n, ignore_modifiers),                                     \
         .quick_release = DT_INST_PROP(n, quick_release),                                           \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, behavior_sticky_key_init, device_pm_control_nop,                      \

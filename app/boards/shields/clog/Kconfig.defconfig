@@ -1,0 +1,19 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_CLOG_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Clog"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+endif
+
+if SHIELD_CLOG_LEFT || SHIELD_CLOG_RIGHT
+
+config ZMK_SPLIT
+	default y
+
+endif

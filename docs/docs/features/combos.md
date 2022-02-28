@@ -43,6 +43,10 @@ Key positions are numbered like the keys in your keymap, starting at 0. So, if t
 - Fully overlapping combos like `0 1` and `0 1 2` are supported.
 - You are not limited to `&kp` bindings. You can use all ZMK behaviors there, like `&mo`, `&bt`, `&mt`, `&lt` etc.
 
+:::note Source-specific behaviors on split keyboards
+Invoking a source-specific behavior such as one of the [reset behaviors](behaviors/reset.md) using a combo will always trigger it on the central side of the keyboard, regardless of the side that the keys corresponding to `key-positions` are on.
+:::
+
 ### Advanced configuration
 
 There are three global combo parameters which are set through KConfig. You can set them in the `<boardname>.conf` file in the same directory as your keymap file.

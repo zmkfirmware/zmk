@@ -16,6 +16,7 @@ module.exports = {
       "features/displays",
       "features/encoders",
       "features/underglow",
+      "features/backlight",
       "features/beta-testing",
     ],
     Behaviors: [
@@ -28,10 +29,12 @@ module.exports = {
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
       "behaviors/caps-word",
+      "behaviors/key-repeat",
       "behaviors/reset",
       "behaviors/bluetooth",
       "behaviors/outputs",
-      "behaviors/lighting",
+      "behaviors/underglow",
+      "behaviors/backlight",
       "behaviors/power",
     ],
     Codes: [

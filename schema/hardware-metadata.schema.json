@@ -55,6 +55,7 @@
           "display",
           "encoder",
           "underglow",
+          "backlight",
           "pointer"
         ]
       }

@@ -1,0 +1,30 @@
+board:
+- nice_nano_v2
+- nrfmicro_13
+- proton_c
+shield:
+- corne_left
+- corne_right
+- romac
+- settings_reset
+- tidbit
+include:
+- board: bdn9_rev2
+- board: nice60
+- board: nrf52840_m2
+  shield: m60
+- board: planck_rev6
+- board: proton_c
+  shield: clueboard_california
+- board: nice_nano_v2
+  shield: kyria_left
+  cmake-args: "-DCONFIG_ZMK_DISPLAY=y"
+  nickname: "display"
+- board: nice_nano_v2
+  shield: kyria_right
+  cmake-args: "-DCONFIG_ZMK_DISPLAY=y"
+  nickname: "display"
+- board: nice_nano
+  shield: romac_plus
+  cmake-args: "-DCONFIG_ZMK_RGB_UNDERGLOW=y -DCONFIG_WS2812_STRIP=y"
+  nickname: "underglow"
