@@ -377,9 +377,17 @@ static bool is_conn_active_profile(const struct bt_conn *conn) {
 
 static void connected(struct bt_conn *conn, uint8_t err) {
     char addr[BT_ADDR_LE_STR_LEN];
-    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+    struct bt_conn_info info;
     LOG_DBG("Connected thread: %p", k_current_get());
 
+    bt_conn_get_info(conn, &info);
+
+    if (info.role != BT_CONN_ROLE_PERIPHERAL) {
+        LOG_DBG("SKIPPING FOR ROLE %d", info.role);
+        return;
+    }
+
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
     advertising_status = ZMK_ADV_NONE;
 
     if (err) {
@@ -408,10 +416,18 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
 static void disconnected(struct bt_conn *conn, uint8_t reason) {
     char addr[BT_ADDR_LE_STR_LEN];
+    struct bt_conn_info info;
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
     LOG_DBG("Disconnected from %s (reason 0x%02x)", log_strdup(addr), reason);
+
+    bt_conn_get_info(conn, &info);
+
+    if (info.role != BT_CONN_ROLE_PERIPHERAL) {
+        LOG_DBG("SKIPPING FOR ROLE %d", info.role);
+        return;
+    }
 
     // We need to do this in a work callback, otherwise the advertising update will still see the
     // connection for a profile as active, and not start advertising yet.
