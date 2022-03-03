@@ -63,3 +63,17 @@ The output selection behavior changes the preferred output on press.
    ```
    &out OUT_TOG
    ```
+   
+### Split keyboard example and default behaviour
+
+In split keyboard left / right nicenano settings, the problem of *unresponsive bluetooth connection* can occur. If usb cable is connected on the left, the USB mode will be selected, and bluetooth mode turned off, no matter if the USB is connected to your laptop or usb power source. 
+If usb cable is connected to the right nicenano, only the bluetooth mode will be activated and the usb mode will be turned off.
+
+The USB mode is indicated on an optional OLED by a USB icon on the main or left OLED display.
+The Bluetooth mode is indicated either by a GEAR icon (pairing mode) or Wifi icon (connected mode).
+However, due to the operating system design, there are situations where the Wifi icon could show connected Bluetooth keyboard and no input is shown, for instance after firmware update on the nicenano.
+
+USB mode will disable the .keymap &bt BT_CLR &bt BT_SEL 0 ... commands and they will be unresponsive.
+Bluetooth mode will enable the .keymap &bt commands.
+
+For troubleshooting bluetooth, it is recommended to connect to the right nicenano, issue a BT_CLR command, delete the bluetooth fevice in the operating system and issue BT_SEL 1 to start t he pairing process on another bt profile for the os to notice.
