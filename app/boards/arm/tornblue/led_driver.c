@@ -1,5 +1,3 @@
-#ifdef CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL
-
 #include <init.h>
 #include <device.h>
 #include <devicetree.h>
@@ -42,32 +40,38 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #error "Unsupported board: led3 devicetree alias is not defined"
 #endif
 
-int led_event_handler(const zmk_event_t *eh) {
-    const struct device *dev = device_get_binding(LED1);
+static void led_pin_init(const char *name, gpio_pin_t pin, gpio_dt_flags_t dt_flags) {
+    const struct device *dev = device_get_binding(name);
+    gpio_pin_configure(dev, pin, GPIO_OUTPUT_ACTIVE | dt_flags);
+    gpio_pin_set(dev, pin, 0);
+}
+
+static void led_pin_set(const char *name, gpio_pin_t pin, int value) {
+    const struct device *dev = device_get_binding(name);
+    gpio_pin_set(dev, pin, value);
+}
+
+static int led_event_handler(const zmk_event_t *eh) {
     const uint8_t layer_active = zmk_keymap_highest_layer_active();
-    gpio_pin_set(dev, PIN3, layer_active == 3 /* Nav */);
-    gpio_pin_set(dev, PIN2, layer_active == 7 /* Symbol */);
-    gpio_pin_set(dev, PIN1, layer_active == 6 /* Num */);
+    led_pin_set(LED3, PIN3, layer_active == 3 /* Nav */);
+    led_pin_set(LED2, PIN2, layer_active == 7 /* Symbol */);
+    led_pin_set(LED1, PIN1, layer_active == 6 /* Num */);
 
     return 0;
 }
 
 static int led_init(const struct device *port) {
-    const struct device *dev = device_get_binding(LED1);
-    gpio_pin_configure(dev, PIN1, GPIO_OUTPUT_ACTIVE | FLAGS1);
-    gpio_pin_configure(dev, PIN2, GPIO_OUTPUT_ACTIVE | FLAGS2);
-    gpio_pin_configure(dev, PIN3, GPIO_OUTPUT_ACTIVE | FLAGS3);
-
-    gpio_pin_set(dev, PIN3, 0);
-    gpio_pin_set(dev, PIN2, 0);
-    gpio_pin_set(dev, PIN1, 0);
+    led_pin_init(LED1, PIN1, FLAGS1);
+    led_pin_init(LED2, PIN2, FLAGS2);
+    led_pin_init(LED3, PIN3, FLAGS3);
 
     return 0;
 }
 
 ZMK_LISTENER(led, led_event_handler);
+
+#ifdef CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL
 ZMK_SUBSCRIPTION(led, zmk_layer_state_changed);
+#endif
 
 SYS_INIT(led_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
-
-#endif

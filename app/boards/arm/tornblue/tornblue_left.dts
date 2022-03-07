@@ -41,16 +41,16 @@
     leds {
         compatible = "gpio-leds";
         led1: led1 {
-            gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
-            label = "LED 1";
+            gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+            label = "LED 1"; /* D28 */
         };
         led2: led2 {
-            gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
-            label = "LED 2";
+            gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+            label = "LED 2"; /* D27 */
         };
         led3: led3 {
-            gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
-            label = "LED 3";
+            gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
+            label = "LED 3"; /* D26 */
         };
     };
 
@@ -59,6 +59,30 @@
         label = "EXT_POWER";
         control-gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
     };
+};
+
+&spi0 {
+	compatible = "nordic,nrf-spim";
+	// Cannot be used together with i2c0
+	status = "okay";
+	mosi-pin = <23>;
+    // Unused pins, needed for SPI definition, but not used by the ws2812 driver itself.
+	sck-pin = <6>;
+	miso-pin = <8>;
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+		label = "WS2812";
+
+		// SPI
+		reg = <0>; /* ignored, but necessary for SPI bindings */
+		spi-max-frequency = <4000000>;
+
+		// WS2812
+		chain-length = <6>; /* LED strip length */
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+	};
 };
 
 &left_encoder {
