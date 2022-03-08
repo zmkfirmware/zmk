@@ -53,7 +53,7 @@ Since then, a much simpler procedure of performing a bluetooth reset for split k
 **New Procedure:**
 
 1. [Open the GitHub `Actions` tab and select the `Build` workflow](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain+event%3Apush).
-1. Select the top 'result' on that page.
+1. Find one of the 'results' for which the core-coverage job was successfully run, indicated by a green checkmark in the core-coverage bubble.
 1. From the next page under "Artifacts", download the `$boardname-settings_reset-zmk` zip file.
 1. Unzip the downloaded file.
 1. Put each half of the split keyboard into bootloader mode
@@ -61,6 +61,10 @@ Since then, a much simpler procedure of performing a bluetooth reset for split k
    to avoid accidental bonding between the halves.
 1. Repeat step 3 with the other half of the split keyboard
 1. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half)
+
+| ![Successful core-coverage Job](../docs/assets/troubleshooting/splitpairing/corecoverage.png) |
+| :-------------------------------------------------------------------------------------------: |
+|  An example of a successful core-coverage job which will produce a settings_reset firmware.   |
 
 After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins
 for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.
