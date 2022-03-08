@@ -3,3 +3,4 @@
 
 add_subdirectory_ifdef(CONFIG_ZMK_BATTERY battery)
 add_subdirectory_ifdef(CONFIG_EC11 ec11)
+add_subdirectory_ifdef(CONFIG_PMW3389 pmw3389)
