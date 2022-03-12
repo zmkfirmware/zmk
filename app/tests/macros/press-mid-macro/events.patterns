@@ -1,0 +1,2 @@
+s/.*hid_listener_keycode/kp/p
+s/.*keymap_apply_position_state/pos_state/p
