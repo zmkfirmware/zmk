@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+	macros {
+		ZMK_MACRO(abc_macro,
+			wait-ms = <10>;
+			tap-ms = <50>;
+			bindings = <&kp A &kp B &kp C>;
+		)
+
+		ZMK_MACRO(hold_shift_macro,
+			bindings
+				= <&macro_press &kp LSHFT>
+				, <&macro_tap>
+				, <&kp D &kp O &kp G>
+				, <&macro_release &kp LSHFT>
+				;
+		)
+
+		ZMK_MACRO(custom_timing,
+			bindings
+				= <&macro_wait_time 50>
+				, <&kp A>
+				, <&macro_tap_time 20>
+				, <&kp B &kp C>
+				;
+		)
+
+		ZMK_MACRO(dual_sequence_macro,
+			wait-ms = <10>;
+			tap-ms = <40>;
+			bindings
+				= <&macro_press &kp LALT>
+				, <&macro_tap>
+				, <&kp TAB>
+				, <&macro_pause_for_release>
+				, <&macro_release &kp LALT>
+				;
+		)
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&abc_macro &mo 1
+				&hold_shift_macro &custom_timing>;
+		};
+
+		extra_layer {
+			bindings = <
+				&dual_sequence_macro &trans
+				&kp TAB &none>;
+
+		};
+
+	};
+};
