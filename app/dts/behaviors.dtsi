@@ -17,3 +17,4 @@
 #include <behaviors/caps_word.dtsi>
 #include <behaviors/key_repeat.dtsi>
 #include <behaviors/backlight.dtsi>
+#include <behaviors/macros.dtsi>

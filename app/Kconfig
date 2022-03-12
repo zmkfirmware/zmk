@@ -410,6 +410,14 @@ config ZMK_COMBO_MAX_KEYS_PER_COMBO
 #Combo options
 endmenu
 
+menu "Behavior Options"
+
+config ZMK_BEHAVIORS_QUEUE_SIZE
+	int "Maximum number of behaviors to allow queueing from a macro or other complex behavior"
+	default 64
+
+endmenu
+
 menu "Advanced"
 
 menu "Initialization Priorities"
