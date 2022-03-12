@@ -1,0 +1,104 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+        combo_dsklg {
+            timeout-ms = <100>;
+            key-positions = <24 52>;
+            layers = <0>;
+            bindings = <&kp LGUI>;
+        };        
+    };
+
+    behaviors {
+        fofunc: four_ffour {
+            compatible = "zmk,behavior-mod-morph";
+            label = "FOUR_FUNCFOUR";
+            #binding-cells = <0>;
+            bindings = <&kp N4>, <&kp F4>;
+            mods = <(MOD_LALT|MOD_RALT)>;
+        };
+        sleft: s_left {
+            compatible = "zmk,behavior-mod-morph";
+            label = "S_LEFT";
+            #binding-cells = <0>;
+            bindings = <&kp S>, <&kp LEFT>;
+            mods = <(MOD_LGUI|MOD_RGUI)>;
+        };
+        fright: f_right {
+            compatible = "zmk,behavior-mod-morph";
+            label = "R_RIGHT";
+            #binding-cells = <0>;
+            bindings = <&kp F>, <&kp RIGHT>;
+            mods = <(MOD_LGUI|MOD_RGUI)>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+//   ------------------------------------------------------------------------------------------------------------
+//  0|  ESC  |  1  |  2  |  3   |  4   |  5   |                     |  6   |  7    |  8    |  9   |   0   |   =   | 11
+// 12|  TAB  |  Q  |  W  |  E   |  R   |  T   |                     |  Y   |  U    |  I    |  O   |   P   |   [   | 23
+// 24|  SFT  |  A  |  S  |  D   |  F   |  G   |  RESET  |  | RESET  |  H   |  J    |  K    |  L   |   ;   | ' SFT | 37
+// 38|  CTRL |  Z  |  X  |  C   |  V   |  B   |  MUTE   |  | PLAY   |  N   |  M    |  ,    |  .   |   /   | \ CTRL| 51
+// 52                    |ENT RS|  ALT | SPACE|DELETE LW|  |ENTER RS| BSPC |  ] LW | RGUI  |                        59
+            bindings = <
+&kp ESC   &kp N1 &kp N2   &kp N3     &fofunc   &kp N5                               &kp N6    &kp N7      &kp N8    &kp N9   &kp N0   &kp EQUAL
+&kp TAB   &kp Q  &kp W    &kp E      &kp R     &kp T                                &kp Y     &kp U       &kp I     &kp O    &kp P    &kp LBKT
+&kp LSHFT &kp A  &sleft   &kp D      &fright   &kp G      &reset         &reset     &kp H     &kp J       &kp K     &kp L    &kp SEMI &mt RSHFT SQT
+&kp LCTRL &kp Z  &kp X    &kp C      &kp V     &kp B      &kp C_MUTE     &kp C_PP   &kp N     &kp M       &kp COMMA &kp DOT  &kp FSLH &mt RCTRL BSLH
+                          &lt 2 RET  &kp LALT  &kp SPACE  &lt 1 DEL      &lt 2 RET  &kp BSPC  &lt 1 RBKT  &kp LGUI  
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp PG_UP PG_DN>;
+        };
+
+        lower_layer {
+// ------------------------------------------------------------------------------------------------------------
+// | `     |  F1 |  F2 |  F3  |  F4  |  F5  |                   |  F6  |  F7   |  F8   |  F9  |  F10  |  F11  |
+// |       |  !  | HOME|   ^  |  END |  %   |                   | VOL^ |  PGUP |  INS  |  ^   |  PSCR |   -   |
+// |       |  #  |  <- |   v  | ->   |  $   |        |  |       | VOLv |    <- |   ^   |  ->  |   ~   |   _   |
+// |       |  @  |  -  |  (   |  )   |  &   |        |  |       | MUTE |  PGDN |   v   |  :   |   *   |   |   |
+//                     |  F11 |      |      |        |  |       |      |       |  F12  |       
+            bindings = <
+&kp GRAVE  &kp F1    &kp F2    &kp F3      &kp F4     &kp F5                     &kp F6        &kp F7     &kp F8    &kp F9     &kp F10   &kp PLUS
+&trans     &kp EXCL  &kp HOME  &kp UP      &kp END    &kp PRCNT                  &kp C_VOL_UP  &kp PG_UP  &kp INS   &kp CARET  &kp PSCRN &kp MINUS
+&trans     &kp HASH  &kp LEFT  &kp DOWN    &kp RIGHT  &kp DLLR  &trans   &trans  &kp C_VOL_DN  &kp LEFT   &kp UP    &kp RIGHT  &kp TILDE &kp UNDER
+&trans     &kp AT    &kp MINUS &kp LBRC    &kp RBRC   &kp AMPS  &trans   &trans  &kp C_MUTE    &kp PG_DN  &kp DOWN  &kp COLON  &kp STAR  &kp PIPE
+                               &kp F11     &trans     &trans    &trans   &trans  &trans        &trans     &kp F12
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp C_NEXT C_PREV>;
+        };
+
+        raise_layer {
+// ------------------------------------------------------------------------------------------------------------
+// |BTCLR| BT1  | BT2  |  BT3  |  BT4  |  BT5 |                |OUTTOG|OUTUSB| OUTBT |      | RESET | FLASH |
+// |     | INS  | PSCR | GUI   | RESET |      |                | PGUP |      |   ^   |      |       |       |
+// |     | ALT  | CTRL | SHIFT | FLASH | CAPS |      |  |      | PGDN |   <- |   v   |  ->  |  DEL  | BSPC  |
+// |     | UNDO | CUT  | COPY  | PASTE |      |      |  |      |      |  |>  |  <|<| | |>|> |       |       |
+//                     |       |       |      |      |  |      |      |      |       |       
+            bindings = <
+&bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4                    &out OUT_TOG  &out OUT_USB  &out OUT_BLE  &trans     &reset  &bootloader
+&trans     &kp INS      &kp PSCRN    &kp K_CMENU  &reset       &trans                          &kp PG_UP     &trans        &kp UP        &trans     &trans  &trans
+&trans     &kp LALT     &kp LCTRL    &kp LSHFT    &bootloader  &kp CLCK     &trans   &trans    &kp PG_DN     &kp LEFT      &kp DOWN      &kp RIGHT  &kp DEL &kp BSPC
+&trans     &kp K_UNDO   &kp K_CUT    &kp K_COPY   &kp K_PASTE  &trans       &trans   &trans    &trans        &kp C_PP      &kp C_PREV    &kp C_NEXT &trans  &trans
+                                     &trans       &trans       &trans       &trans   &trans    &trans        &trans        &trans   
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &inc_dec_kp PG_UP PG_DN>;
+        };
+    };
+};

@@ -1,12 +1,11 @@
 ---
-title: Lighting Behavior
-sidebar_label: Lighting
+title: RGB Underglow Behavior
+sidebar_label: RGB Underglow
 ---
 
 ## Summary
 
-Lighting is often used for either aesthetics or for the practical purposes of lighting up keys in the dark.
-Currently ZMK supports RGB underglow, which can be changed and configured using its behavior.
+This page contains [RGB Underglow](../features/underglow.md) behaviors supported by ZMK.
 
 ## RGB Action Defines
 
@@ -36,11 +35,7 @@ Here is a table describing the action for each define:
 | `RGB_EFR`       | Cycles the RGB feature's effect reverse                                                        |
 | `RGB_COLOR_HSB` | Sets a specific [HSB (HSV)](https://en.wikipedia.org/wiki/HSL_and_HSV) value for the underglow |
 
-## RGB Underglow
-
-The "RGB underglow" behavior completes an RGB action given on press.
-
-### Behavior Binding
+## Behavior Binding
 
 - Reference: `&rgb_ug`
 - Parameter #1: The RGB action define, e.g. `RGB_TOG` or `RGB_BRI`
@@ -58,7 +53,7 @@ Value Limits:
 
 :::
 
-### Examples
+## Examples
 
 1. Toggle underglow on/off
 
@@ -71,3 +66,7 @@ Value Limits:
    ```
    &rgb_ug RGB_COLOR_HSB(128,100,100)
    ```
+
+## Split Keyboards
+
+RGB underglow behaviors are global: This means that when triggered, they affect both the central and peripheral side of split keyboards.

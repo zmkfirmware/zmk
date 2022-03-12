@@ -71,6 +71,18 @@ export const underglowPower = {
   ledOff: 460, // Quiescent current of a WS2812B
 };
 
+export const backlightLEDs = {
+  White: 3.2,
+  Blue: 3.0,
+  Green: 2.2,
+  Yellow: 2.1,
+  Red: 1.8,
+};
+
+export const backlightPower = {
+  pwmPower: 510, // Estimated power consumption of PWM module
+};
+
 export const displayPower = {
   // Based on GoodDisplay's 1.02in epaper
   EPAPER: {

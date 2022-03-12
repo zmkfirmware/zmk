@@ -175,6 +175,14 @@ config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
 	int "Max number of key position state events to queue when received from peripherals"
 	default 5
 
+config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE
+	int "BLE split central write thread stack size"
+	default 512
+
+config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE
+	int "Max number of behavior run events to queue to send to the peripheral(s)"
+	default 5
+
 endif
 
 if !ZMK_SPLIT_BLE_ROLE_CENTRAL
@@ -249,7 +257,7 @@ menu "Display/LED Options"
 
 rsource "src/display/Kconfig"
 
-config ZMK_RGB_UNDERGLOW
+menuconfig ZMK_RGB_UNDERGLOW
 	bool "RGB Adressable LED Underglow"
 	select LED_STRIP
 
@@ -320,6 +328,35 @@ config ZMK_RGB_UNDERGLOW_ON_START
 #ZMK_RGB_UNDERGLOW
 endif
 
+menuconfig ZMK_BACKLIGHT
+	bool "LED backlight"
+	select LED
+
+if ZMK_BACKLIGHT
+
+config ZMK_BACKLIGHT_BRT_STEP
+	int "Brightness step in percent"
+	range 1 100
+	default 20
+
+config ZMK_BACKLIGHT_BRT_START
+	int "Default brightness in percent"
+	range 1 100
+	default 40
+
+config ZMK_BACKLIGHT_ON_START
+	bool "Default backlight state"
+	default y
+
+config ZMK_BACKLIGHT_AUTO_OFF_IDLE
+	bool "Turn off backlight when keyboard goes into idle state"
+
+config ZMK_BACKLIGHT_AUTO_OFF_USB
+	bool "Turn off backlight when USB is disconnected"
+
+#ZMK_BACKLIGHT
+endif
+
 #Display/LED Options
 endmenu
 
@@ -370,7 +407,7 @@ config ZMK_COMBO_MAX_KEYS_PER_COMBO
 	int "Maximum number of keys per combo"
 	default 4
 
-#Display/LED Options
+#Combo options
 endmenu
 
 menu "Advanced"

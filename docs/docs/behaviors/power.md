@@ -62,3 +62,7 @@ Here is a table describing the command for each define:
    ```
    &ext_power EP_TOG
    ```
+
+## Split Keyboards
+
+Power management behaviors are global: This means that when triggered, they affects both the central and peripheral side of split keyboards.

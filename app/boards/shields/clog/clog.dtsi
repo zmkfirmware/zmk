@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+	    zmk,kscan = &kscan0;
+	    zmk,matrix_transform = &default_transform;
+    };
+
+    default_transform: keymap_transform_0 {
+	    compatible = "zmk,matrix-transform";
+	    columns = <34>;
+	    rows = <1>;
+	    map = <
+	                     RC(0,0)  RC(0,1)  RC(0,2)  RC(0,3)     RC(0,20) RC(0,19) RC(0,18) RC(0,17)
+	    RC(0,4) RC(0,5)  RC(0,6)  RC(0,7)  RC(0,8)  RC(0,9)     RC(0,26) RC(0,25) RC(0,24) RC(0,23) RC(0,22) RC(0,21)
+	            RC(0,10) RC(0,11) RC(0,12) RC(0,13) RC(0,14)    RC(0,31) RC(0,30) RC(0,29) RC(0,28) RC(0,27)
+	                                       RC(0,15) RC(0,16)    RC(0,33) RC(0,32)
+	    >;
+    };
+
+    kscan0: kscan {
+	    compatible = "zmk,kscan-gpio-direct";
+	    label = "KSCAN";
+	
+	    input-gpios
+		    = <&pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 1  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 2  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 3  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 5  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 6  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 7  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 8  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    , <&pro_micro 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		    ;
+    };
+};

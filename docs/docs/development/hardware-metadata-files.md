@@ -94,6 +94,7 @@ Boards and shields should document the sets of hardware features found on them u
 - `display` - Indicates the hardware includes a display for use with the ZMK display functionality.
 - `encoder` - Indicates the hardware contains one or more rotary encoders.
 - `underglow` - Indicates the hardware includes underglow LEDs.
+- `backlight` - Indicates the hardware includes backlight LEDs.
 - `pointer` (future) - Used to indicate the hardware includes one or more pointer inputs, e.g. joystick, touchpad, or trackpoint.
 
 ### Siblings
