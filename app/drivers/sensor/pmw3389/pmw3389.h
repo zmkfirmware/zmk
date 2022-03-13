@@ -40,9 +40,9 @@ struct pmw3389_config {
     int (*bus_init)(const struct device *dev);
     const union pmw3389_bus_cfg bus_cfg;
     int resolution;
-    struct pmw3389_gpio_dt_spec reset;
+    struct pmw3389_gpio_dt_spec reset_spec;
 #if CONFIG_PMW3389_TRIGGER
-    struct pmw3389_gpio_dt_spec motswk;
+    struct pmw3389_gpio_dt_spec motswk_spec;
 #endif // CONFIG_PMW3389_TRIGGER
 };
 
