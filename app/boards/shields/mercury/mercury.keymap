@@ -87,10 +87,10 @@
 
         windows_layer {
             bindings = <
-&none  &kp Q  &ltp FUN W  &ltp TRG E  &mtp LSFT R  &kp T     /**/  &kp Y    &kp U    &kp I     &kp O    &kp P     &kp BKSP
-&none  &kp A  &ltp NUM S  &ltp TRG D  &mtp LSFT F  &kp G     /**/  &kp H    &kp J    &kp K     &kp L    &kp SCLN  &cht RET QUOT
-&none  &kp Z  &kp X       &kp C       &kp V        &kp B     /**/  &kp N    &kp M    &kp CMMA  &kp DOT  &kp FSLH  &kp RSFT
-                          &kp LGUI    &kp LALT     &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
+&none  &kp Q  &ltp FUN W  &ltp TRG E  &ltp TRG R  &kp T     /**/  &kp Y    &kp U    &kp I     &kp O    &kp P     &kp BKSP
+&none  &kp A  &ltp NUM S  &ltp TRG D  &ltp TRG F  &kp G     /**/  &kp H    &kp J    &kp K     &kp L    &kp SCLN  &cht RET QUOT
+&none  &kp Z  &kp X       &kp C       &kp V       &kp B     /**/  &kp N    &kp M    &kp CMMA  &kp DOT  &kp FSLH  &kp RSFT
+                          &kp LGUI    &kp LALT    &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
             >;
         };
         
@@ -150,10 +150,10 @@
 
         trigger_layer {
             bindings = <
-                &trans  &trans  &mo FUN  &trans  &kp LSFT  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                &trans  &trans  &mo NUM  &trans  &kp LSFT  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                &trans  &trans  &trans   &trans  &trans    &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                                         &trans  &trans    &trans     /**/  &trans  &trans  &trans
+                &trans  &trans  &mo FUN  &kp LSFT  &kp LSFT  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &mo NUM  &kp LSFT  &kp LSFT  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans   &trans    &trans    &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                                         &trans    &trans    &trans     /**/  &trans  &trans  &trans
             >;
         };
     };
