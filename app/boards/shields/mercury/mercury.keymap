@@ -10,6 +10,7 @@
 #define NAV 4
 #define MED 5
 #define SYS 6
+#define TRG 7
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // [Keymap 3Jan2022 21:03]
@@ -17,15 +18,6 @@
 
 / {
     behaviors {
-        m_ht: menu_key_hold_tap {
-            compatible = "zmk,behavior-hold-tap";
-            label = "MENU_KEY_HOLD_TAP";
-            #binding-cells = <2>;
-            flavor = "hold-preferred";
-            tapping-term-ms = <200>;
-            bindings = <&kp>, <&kp>;
-        };
-
         hlt: hold_preferred_layer_tap {
             compatible = "zmk,behavior-hold-tap";
             label = "HOLD_PREFERRED_LAYER_TAP";
@@ -35,14 +27,24 @@
             bindings = <&mo>, <&kp>;
         };
 
-        pht: pos_hold_tap {
+        mtp: mod_tap_positional {
             compatible = "zmk,behavior-hold-tap";
-            label = "POSITIONAL_HOLD_TAP";
+            label = "MOD_TAP_POSITIONAL";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
-            tapping-term-ms = <50>;
+            tapping-term-ms = <25>;
             bindings = <&kp>, <&kp>;
-            hold-trigger-key-positions = <0 12>;
+            hold-trigger-key-positions = <2 3 4 14 15 16>;
+        };
+
+        ltp: layer_tap_positional {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_POSITIONAL";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <25>;
+            bindings = <&mo>, <&kp>;
+            hold-trigger-key-positions = <2 3 4 14 15 16>;
         };
 
         cht: combo_like_hold_tap {
@@ -58,10 +60,25 @@
 
     combos {
         compatible = "zmk,combos";
+        combo_sys {
+            timeout-ms = <25>;
+            key-positions = <0 1 2 3>;
+            bindings = <&to SYS>;
+        };
         combo_menu {
-            timeout-ms = <50>;
+            timeout-ms = <25>;
             key-positions = <18 19>;
             bindings = <&kp K_CMENU>;
+        };
+        combo_tab {
+            timeout-ms = <25>;
+            key-positions = <27 28>;
+            bindings = <&kp TAB>;
+        };
+        combo_esc {
+            timeout-ms = <25>;
+            key-positions = <26 26>;
+            bindings = <&kp ESC>;
         };
     };
 
@@ -70,10 +87,10 @@
 
         windows_layer {
             bindings = <
-&hlt FUN TAB  &pht LSFT Q  &kp W    &kp E       &kp R      &kp T    /**/   &kp Y    &kp U    &kp I     &kp O    &kp P      &kp BKSP
-&hlt NUM ESC     &kp A     &kp S    &kp D    &pht LSFT F   &kp G    /**/   &kp H    &kp J    &kp K     &kp L   &kp SCLN  &cht RET QUOT
-  &kp LSFT       &kp Z     &kp X    &kp C       &kp V      &kp B    /**/   &kp N    &kp M   &kp CMMA  &kp DOT  &kp FSLH    &kp RSFT
-                                   &kp LGUI   &kp LALT    &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
+&none  &kp Q  &ltp FUN W  &ltp TRG E  &mtp LSFT R  &kp T     /**/  &kp Y    &kp U    &kp I     &kp O    &kp P     &kp BKSP
+&none  &kp A  &ltp NUM S  &ltp TRG D  &mtp LSFT F  &kp G     /**/  &kp H    &kp J    &kp K     &kp L    &kp SCLN  &cht RET QUOT
+&none  &kp Z  &kp X       &kp C       &kp V        &kp B     /**/  &kp N    &kp M    &kp CMMA  &kp DOT  &kp FSLH  &kp RSFT
+                          &kp LGUI    &kp LALT     &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
             >;
         };
         
@@ -88,8 +105,7 @@
 
         num_layer {
             bindings = <
-         //
-&mo SYS  &kp LSFT   &trans    &trans     &trans   &trans  /**/   &trans    &kp NUM_7  &kp NUM_8  &kp NUM_9   &trans    &trans
+&trans   &kp LSFT   &trans    &trans     &trans   &trans  /**/   &trans    &kp NUM_7  &kp NUM_8  &kp NUM_9   &trans    &trans
 &trans    &trans   &kp GRAV  &kp TILDE  &kp LSFT  &trans  /**/   &kp EQL   &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp LBKT  &kp RBKT
 &trans    &trans    &trans    &trans     &trans   &trans  /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp BSLH   &trans
                               &trans     &trans   &trans  /**/   &trans    &kp NUM_0   &trans
@@ -129,6 +145,15 @@
 &trans  &to APL  &out OUT_USB     &trans       &trans         &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans      &trans      &bt BT_CLR     &trans      &out OUT_BLE  /**/  &trans  &trans  &trans  &trans  &trans  &trans
                                &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  /**/  &trans  &trans  &trans
+            >;
+        };
+
+        trigger_layer {
+            bindings = <
+                &trans  &trans  &mo FUN  &trans  &kp LSFT  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &mo NUM  &trans  &kp LSFT  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans   &trans  &trans    &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                                         &trans  &trans    &trans     /**/  &trans  &trans  &trans
             >;
         };
     };
