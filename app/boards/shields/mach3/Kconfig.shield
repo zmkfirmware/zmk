@@ -1,0 +1,2 @@
+config SHIELD_MACH3
+    def_bool $(shields_list_contains,MACH3)

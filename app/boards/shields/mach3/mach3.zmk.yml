@@ -1,0 +1,11 @@
+file_format: "1"
+id: MACH3
+name: MACH3
+type: shield
+url: https://machkeyboards.com
+requires: [pro_micro]
+features:
+  - keys
+outputs:
+  - usb
+  - ble
