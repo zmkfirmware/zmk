@@ -13,6 +13,7 @@
 #define TGL 7
 #define TGR 8
 
+// 25 At least while acclimating, 25 is too short and will miss attempts
 #define COMBO_TIMEOUT 50
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,9 +80,9 @@
             bindings = <&kp ESC>;
         };
         combo_caps {
-            timeout-ms = <75>;
-            key-positions = <14 15 20 21>;
-            bindings = <&kp ESC>;
+            timeout-ms = <COMBO_TIMEOUT>;
+            key-positions = <16 19>;
+            bindings = <&kp CAPS>;
         };
     };
 
@@ -108,19 +109,19 @@
 
         num_layer {
             bindings = <
-&trans  &trans  &trans  &trans  &trans    &trans  /**/  &kp GRAV   &kp NUM_7  &kp NUM_8  &kp NUM_9  &kp LBKT  &trans
-&trans  &trans  &trans  &none   &kp LSFT  &trans  /**/  &kp EQL    &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp RBKT  &trans
-&trans  &trans  &trans  &trans  &trans    &trans  /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp BSLH  &trans
-                        &trans  &trans    &trans  /**/  &trans     &kp NUM_0  &trans
+&trans  &trans  &trans    &trans  &trans    &trans  /**/  &kp GRAV   &kp NUM_7  &kp NUM_8  &kp NUM_9  &kp LBKT  &trans
+&trans  &trans  &kp LSFT  &none   &kp LSFT  &trans  /**/  &kp EQL    &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp RBKT  &trans
+&trans  &trans  &trans    &trans  &trans    &trans  /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp BSLH  &trans
+                          &trans  &trans    &trans  /**/  &trans     &kp NUM_0  &trans
             >;
         };
 
         function_layer {
             bindings = <
-&trans  &trans  &trans  &none   &kp LSFT  &trans  /**/  &kp F12  &kp F7  &kp F8  &kp F9  &kp LBKT  &trans
-&trans  &trans  &trans  &trans  &trans    &trans  /**/  &kp F11  &kp F4  &kp F5  &kp F6  &kp RBKT  &trans
-&trans  &trans  &trans  &trans  &trans    &trans  /**/  &kp F10  &kp F1  &kp F2  &kp F3  &kp BSLH  &trans
-                        &trans  &trans    &trans  /**/  &trans   &trans  &trans
+&trans  &trans  &kp LSFT  &none   &kp LSFT  &trans  /**/  &kp F12  &kp F7  &kp F8  &kp F9  &kp LBKT  &trans
+&trans  &trans  &trans    &trans  &trans    &trans  /**/  &kp F11  &kp F4  &kp F5  &kp F6  &kp RBKT  &trans
+&trans  &trans  &trans    &trans  &trans    &trans  /**/  &kp F10  &kp F1  &kp F2  &kp F3  &kp BSLH  &trans
+                          &trans  &trans    &trans  /**/  &trans   &trans  &trans
             >;
         };
 
