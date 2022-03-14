@@ -13,7 +13,8 @@
 #define TGL 7
 #define TGR 8
 
-#define COMBO_TIMEOUT 35
+#define COMBO_TIMEOUT_LEFT 25
+#define COMBO_TIMEOUT_RIGHT 50
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // [Keymap 3Jan2022 21:03]
@@ -26,7 +27,7 @@
             label = "LAYER_TAP_POSITIONAL_LEFT";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
-            tapping-term-ms = <COMBO_TIMEOUT>;
+            tapping-term-ms = <COMBO_TIMEOUT_LEFT>;
             bindings = <&mo>, <&kp>;
             hold-trigger-key-positions = <2 3 4 14 15 16>;
         };
@@ -36,7 +37,7 @@
             label = "LAYER_TAP_POSITIONAL_RIGHT";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
-            tapping-term-ms = <COMBO_TIMEOUT>;
+            tapping-term-ms = <COMBO_TIMEOUT_RIGHT>;
             bindings = <&mo>, <&kp>;
             hold-trigger-key-positions = <19 20>;
         };
@@ -59,22 +60,22 @@
     combos {
         compatible = "zmk,combos";
         combo_sys {
-            timeout-ms = <COMBO_TIMEOUT>;
+            timeout-ms = <COMBO_TIMEOUT_LEFT>;
             key-positions = <0 1 2>;
             bindings = <&sl SYS>;
         };
         combo_menu {
-            timeout-ms = <COMBO_TIMEOUT>;
+            timeout-ms = <COMBO_TIMEOUT_RIGHT>;
             key-positions = <18 19>;
             bindings = <&kp K_CMENU>;
         };
         combo_tab {
-            timeout-ms = <COMBO_TIMEOUT>;
+            timeout-ms = <COMBO_TIMEOUT_LEFT>;
             key-positions = <26 27>;
             bindings = <&kp TAB>;
         };
         combo_esc {
-            timeout-ms = <COMBO_TIMEOUT>;
+            timeout-ms = <COMBO_TIMEOUT_LEFT>;
             key-positions = <27 28>;
             bindings = <&kp ESC>;
         };
