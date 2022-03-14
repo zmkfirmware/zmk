@@ -14,11 +14,8 @@
 #define TGR 8
 
 // 25 At least while acclimating, 25 is too short and will miss attempts
-#define COMBO_TIMEOUT 50
-
-// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-// [Keymap 3Jan2022 21:03]
-// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// 50 words like "layer", the rolled "er" turn into combos
+#define COMBO_TIMEOUT 37
 
 / {
     behaviors {
