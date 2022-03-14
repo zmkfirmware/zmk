@@ -13,7 +13,7 @@
 #define TGL 7
 #define TGR 8
 
-#define COMBO_TIMEOUT 25
+#define COMBO_TIMEOUT 50
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // [Keymap 3Jan2022 21:03]
@@ -78,6 +78,11 @@
             key-positions = <27 28>;
             bindings = <&kp ESC>;
         };
+        combo_caps {
+            timeout-ms = <75>;
+            key-positions = <14 15 20 21>;
+            bindings = <&kp ESC>;
+        };
     };
 
     keymap {
@@ -85,9 +90,9 @@
 
         windows_layer {
             bindings = <
-&none  &kp Q  &lpl TGL W  &lpl TGL E  &lpl FUN R  &kp T     /**/  &kp Y    &kp U    &kp I       &kp O       &kp P     &kp BKSP
-&none  &kp A  &lpl TGL S  &lpl TGL D  &lpl NUM F  &kp G     /**/  &kp H    &kp J    &lpr TGR K  &lpr TGR L  &kp SCLN  &cht RET QUOT
-&none  &kp Z  &kp X       &kp C       &kp V       &kp B     /**/  &kp N    &kp M    &kp CMMA    &kp DOT     &kp FSLH  &kp RSFT
+&none  &kp Q  &lpl TGL W  &lpl TGL E  &lpl FUN R  &kp T     /**/  &kp Y    &kp U    &kp I       &kp O       &kp P     &none
+&none  &kp A  &lpl TGL S  &lpl TGL D  &lpl NUM F  &kp G     /**/  &kp H    &kp J    &lpr TGR K  &lpr TGR L  &kp SCLN  &kp QUOT
+&none  &kp Z  &kp X       &kp C       &kp V       &kp B     /**/  &kp N    &kp M    &kp CMMA    &kp DOT     &kp FSLH  &none
                           &kp LGUI    &kp LALT    &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
             >;
         };
@@ -103,8 +108,8 @@
 
         num_layer {
             bindings = <
-&trans  &trans  &trans  &trans  &trans    &trans  /**/  &kp GRAV   &kp NUM_7  &kp NUM_8  &kp NUM_9  &trans    &trans
-&trans  &trans  &trans  &none   &kp LSFT  &trans  /**/  &kp EQL    &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp LBKT  &kp RBKT
+&trans  &trans  &trans  &trans  &trans    &trans  /**/  &kp GRAV   &kp NUM_7  &kp NUM_8  &kp NUM_9  &kp LBKT  &trans
+&trans  &trans  &trans  &none   &kp LSFT  &trans  /**/  &kp EQL    &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp RBKT  &trans
 &trans  &trans  &trans  &trans  &trans    &trans  /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp BSLH  &trans
                         &trans  &trans    &trans  /**/  &trans     &kp NUM_0  &trans
             >;
@@ -112,28 +117,28 @@
 
         function_layer {
             bindings = <
-&trans  &trans  &trans  &none   &kp LSFT   &trans    /**/  &kp F12    &kp F7     &kp F8     &kp F9    &trans    &trans
-&trans  &trans  &trans  &trans  &trans     &trans    /**/  &kp F11    &kp F4     &kp F5     &kp F6    &kp LBKT  &kp RBKT
-&trans  &trans  &trans  &trans  &trans     &trans    /**/  &kp F10    &kp F1     &kp F2     &kp F3    &trans    &trans
-                        &trans  &trans     &trans    /**/  &trans     &trans     &trans
+&trans  &trans  &trans  &none   &kp LSFT  &trans  /**/  &kp F12  &kp F7  &kp F8  &kp F9  &kp LBKT  &trans
+&trans  &trans  &trans  &trans  &trans    &trans  /**/  &kp F11  &kp F4  &kp F5  &kp F6  &kp RBKT  &trans
+&trans  &trans  &trans  &trans  &trans    &trans  /**/  &kp F10  &kp F1  &kp F2  &kp F3  &kp BSLH  &trans
+                        &trans  &trans    &trans  /**/  &trans   &trans  &trans
             >;
         };
 
         nav_layer {
             bindings = <
-&trans  &trans  &trans    &trans    &trans    &trans         /**/  &trans   &trans    &kp UARW  &kp PGUP  &kp PRSC  &kp DEL
-&trans  &trans  &kp SLCK  &trans    &trans    &trans         /**/  &trans   &kp LARW  &kp DARW  &kp RARW   &trans   &kp RET
-&trans  &trans  &trans    &kp CLCK  &trans  &kp PAUSE_BREAK  /**/  &kp INS  &kp PGDN  &kp HOME  &kp END    &trans   &trans
+&trans  &trans  &trans    &trans    &kp PRSC  &trans         /**/  &trans   &trans    &kp UARW  &kp PGUP  &kp DEL   &trans
+&trans  &trans  &kp SLCK  &trans    &trans    &trans         /**/  &trans   &kp LARW  &kp DARW  &kp RARW  &kp BKSP  &trans
+&trans  &trans  &trans    &kp CLCK  &trans  &kp PAUSE_BREAK  /**/  &kp INS  &kp PGDN  &kp HOME  &kp END   &kp RET   &trans
                           &trans    &trans    &trans         /**/  &trans   &trans    &trans
             >;
         };
 
         media_layer {
             bindings = <
-&trans  &trans   &trans   &trans   &trans   &trans  /**/  &trans    &trans      &kp C_VOL_UP      &trans          &trans    &trans
-&trans  &trans   &trans   &trans   &trans   &trans  /**/  &trans  &kp C_BRI_DN  &kp C_VOL_DN    &kp C_BRI_UP      &trans    &trans
-&trans  &trans   &trans   &trans   &trans   &trans  /**/  &trans  &kp C_MUTE     &kp C_PREV   &kp C_PLAY_PAUSE  &kp C_NEXT  &trans
-                          &trans  &kp RALT  &trans  /**/  &trans    &trans        &trans
+&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans    &trans      &kp C_VOL_UP      &trans          &trans    &trans
+&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &kp C_BRI_DN  &kp C_VOL_DN    &kp C_BRI_UP      &trans    &trans
+&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &kp C_MUTE     &kp C_PREV   &kp C_PLAY_PAUSE  &kp C_NEXT  &trans
+                        &trans  &trans  &trans  /**/  &trans    &trans        &trans
             >;
         };
 
