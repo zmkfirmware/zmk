@@ -72,12 +72,12 @@
         };
         combo_tab {
             timeout-ms = <25>;
-            key-positions = <27 28>;
+            key-positions = <26 27>;
             bindings = <&kp TAB>;
         };
         combo_esc {
             timeout-ms = <25>;
-            key-positions = <26 27>;
+            key-positions = <27 28>;
             bindings = <&kp ESC>;
         };
     };
@@ -105,9 +105,9 @@
 
         num_layer {
             bindings = <
-&trans  &trans  &trans  &trans  &trans     &trans    /**/  &trans     &kp NUM_7  &kp NUM_8  &kp NUM_9  &trans    &trans
-&trans  &trans  &trans  &none   &kp LSFT   &kp GRAV  /**/  &kp EQL    &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp LBKT  &kp RBKT
-&trans  &trans  &trans  &trans  &kp TILDE  &trans    /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp BSLH  &trans
+&trans  &trans  &trans  &trans  &kp TILDE  &kp GRAV  /**/  &trans     &kp NUM_7  &kp NUM_8  &kp NUM_9  &trans    &trans
+&trans  &trans  &trans  &none   &kp LSFT   &trans    /**/  &kp EQL    &kp NUM_4  &kp NUM_5  &kp NUM_6  &kp LBKT  &kp RBKT
+&trans  &trans  &trans  &trans  &trans     &trans    /**/  &kp MINUS  &kp NUM_1  &kp NUM_2  &kp NUM_3  &kp BSLH  &trans
                         &trans  &trans     &trans    /**/  &trans     &kp NUM_0  &trans
             >;
         };
