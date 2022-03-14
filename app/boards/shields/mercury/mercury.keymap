@@ -77,7 +77,7 @@
             bindings = <&kp ESC>;
         };
         combo_caps {
-            timeout-ms = <COMBO_TIMEOUT>;
+            timeout-ms = <75>;
             key-positions = <16 19>;
             bindings = <&kp CAPS>;
         };
