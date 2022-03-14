@@ -12,6 +12,8 @@
 #define SYS 6
 #define TRG 7
 
+#define COMBO_TIMEOUT 35
+
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // [Keymap 3Jan2022 21:03]
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -32,7 +34,7 @@
             label = "MOD_TAP_POSITIONAL";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
-            tapping-term-ms = <25>;
+            tapping-term-ms = <COMBO_TIMEOUT>;
             bindings = <&kp>, <&kp>;
             hold-trigger-key-positions = <2 3 4 14 15 16>;
         };
@@ -42,7 +44,7 @@
             label = "LAYER_TAP_POSITIONAL";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
-            tapping-term-ms = <25>;
+            tapping-term-ms = <COMBO_TIMEOUT>;
             bindings = <&mo>, <&kp>;
             hold-trigger-key-positions = <2 3 4 14 15 16>;
         };
@@ -65,22 +67,22 @@
     combos {
         compatible = "zmk,combos";
         combo_sys {
-            timeout-ms = <25>;
+            timeout-ms = <COMBO_TIMEOUT>;
             key-positions = <0 1 2>;
             bindings = <&sl SYS>;
         };
         combo_menu {
-            timeout-ms = <25>;
+            timeout-ms = <COMBO_TIMEOUT>;
             key-positions = <18 19>;
             bindings = <&kp K_CMENU>;
         };
         combo_tab {
-            timeout-ms = <25>;
+            timeout-ms = <COMBO_TIMEOUT>;
             key-positions = <26 27>;
             bindings = <&kp TAB>;
         };
         combo_esc {
-            timeout-ms = <25>;
+            timeout-ms = <COMBO_TIMEOUT>;
             key-positions = <27 28>;
             bindings = <&kp ESC>;
         };
