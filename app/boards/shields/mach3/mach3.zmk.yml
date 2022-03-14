@@ -1,6 +1,6 @@
 file_format: "1"
-id: MACH3
-name: MACH3
+id: mach3
+name: mach3
 type: shield
 url: https://machkeyboards.com
 requires: [pro_micro]

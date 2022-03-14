@@ -1,6 +1,6 @@
 if SHIELD_MACH3
 
 config ZMK_KEYBOARD_NAME
-    default "MACH3"
+    default "mach3"
 
 endif # BOARD_MACH3
