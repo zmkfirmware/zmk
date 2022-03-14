@@ -21,10 +21,9 @@ static int behavior_key_tap_init(const struct device *dev) { return 0; };
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-    int ret = 0;
-    ret = ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(binding->param1, true, event.timestamp));
+    int ret = ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(binding->param1, true, event.timestamp));
     if(ret != 0) {
-        return 0;
+        return ret;
     }
     return ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(binding->param1, false, event.timestamp));
 
