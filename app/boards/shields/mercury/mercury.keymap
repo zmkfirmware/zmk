@@ -58,12 +58,16 @@
         };
     };
 
+    sl {
+        release-after-ms = <10000>;
+    };
+
     combos {
         compatible = "zmk,combos";
         combo_sys {
             timeout-ms = <25>;
             key-positions = <0 1 2>;
-            bindings = <&to SYS>;
+            bindings = <&sl SYS>;
         };
         combo_menu {
             timeout-ms = <25>;
@@ -87,8 +91,8 @@
 
         windows_layer {
             bindings = <
-&none  &kp Q  &ltp FUN W  &ltp TRG E  &ltp TRG R  &kp T     /**/  &kp Y    &kp U    &kp I     &kp O    &kp P     &kp BKSP
-&none  &kp A  &ltp NUM S  &ltp TRG D  &ltp TRG F  &kp G     /**/  &kp H    &kp J    &kp K     &kp L    &kp SCLN  &cht RET QUOT
+&none  &kp Q  &ltp TRG W  &ltp TRG E  &ltp FUN R  &kp T     /**/  &kp Y    &kp U    &kp I     &kp O    &kp P     &kp BKSP
+&none  &kp A  &ltp TRG S  &ltp TRG D  &ltp NUM F  &kp G     /**/  &kp H    &kp J    &kp K     &kp L    &kp SCLN  &cht RET QUOT
 &none  &kp Z  &kp X       &kp C       &kp V       &kp B     /**/  &kp N    &kp M    &kp CMMA  &kp DOT  &kp FSLH  &kp RSFT
                           &kp LGUI    &kp LALT    &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
             >;
@@ -114,10 +118,10 @@
 
         function_layer {
             bindings = <
-&trans    &kp LSFT   &trans   &trans   &trans    &trans  /**/  &kp F12   &kp F7   &kp F8   &kp F9    &trans     &trans
-&mo SYS    &trans    &trans   &trans  &kp LSFT   &trans  /**/  &kp F11   &kp F4   &kp F5   &kp F6   &kp LBKT   &kp RBKT
-&trans     &trans    &trans   &trans   &trans    &trans  /**/  &kp F10   &kp F1   &kp F2   &kp F3    &trans     &trans
-                              &trans   &trans    &trans  /**/  &trans    &trans   &trans
+&trans  &trans  &trans  &none   &kp LSFT   &trans    /**/  &kp F12    &kp F7     &kp F8     &kp F9    &trans    &trans
+&trans  &trans  &trans  &trans  &trans     &trans    /**/  &kp F11    &kp F4     &kp F5     &kp F6    &kp LBKT  &kp RBKT
+&trans  &trans  &trans  &trans  &trans     &trans    /**/  &kp F10    &kp F1     &kp F2     &kp F3    &trans    &trans
+                        &trans  &trans     &trans    /**/  &trans     &trans     &trans
             >;
         };
 
@@ -150,10 +154,10 @@
 
         trigger_layer {
             bindings = <
-                &trans  &trans  &mo FUN  &kp LSFT  &kp LSFT  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                &trans  &trans  &mo NUM  &kp LSFT  &kp LSFT  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                &trans  &trans  &trans   &trans    &trans    &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                                         &trans    &trans    &trans     /**/  &trans  &trans  &trans
+                &trans  &trans  &kp LSFT  &kp LSFT  &mo FUN  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &kp LSFT  &kp LSFT  &mo NUM  &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                &trans  &trans  &trans    &trans    &trans   &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                                          &trans    &trans   &trans     /**/  &trans  &trans  &trans
             >;
         };
     };
