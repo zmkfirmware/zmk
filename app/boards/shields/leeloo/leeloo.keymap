@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2022 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
