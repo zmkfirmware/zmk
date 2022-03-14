@@ -62,7 +62,7 @@
         compatible = "zmk,combos";
         combo_sys {
             timeout-ms = <25>;
-            key-positions = <0 1 2 3>;
+            key-positions = <0 1 2>;
             bindings = <&to SYS>;
         };
         combo_menu {
