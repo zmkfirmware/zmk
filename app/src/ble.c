@@ -78,11 +78,13 @@ static uint8_t active_profile;
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
+static uint8_t device_name[17] = DEVICE_NAME;
+
 BUILD_ASSERT(DEVICE_NAME_LEN <= 16, "ERROR: BLE device name is too long. Max length: 16");
 
-static const struct bt_data zmk_ble_ad[] = {
+static struct bt_data zmk_ble_ad[] = {
 #if IS_HOST_PERIPHERAL
-    BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
+    BT_DATA(BT_DATA_NAME_COMPLETE, device_name, 16),
     BT_DATA_BYTES(BT_DATA_GAP_APPEARANCE, 0xC1, 0x03),
 #endif
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -182,6 +184,12 @@ int update_advertising() {
     bt_addr_le_t *addr;
     struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
+
+    uint8_t max_device_name_length = (active_profile > 9) ? 13 : 14;
+    // need to store the temporary device name because Zephyr *printf doesn't support string precision
+    char temp_device_name[14];
+    snprintf(temp_device_name, max_device_name_length, "%s", DEVICE_NAME);
+    snprintf(device_name, 16, "%s~%d", temp_device_name, active_profile);
 
     if (zmk_ble_active_profile_is_open()) {
         desired_adv = ZMK_ADV_CONN;
