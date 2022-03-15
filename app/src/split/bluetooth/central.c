@@ -190,14 +190,8 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
     return BT_GATT_ITER_CONTINUE;
 }
 
-static void split_central_subscribe(struct bt_conn *conn) {
-    struct peripheral_slot *slot = peripheral_slot_for_conn(conn);
-    if (slot == NULL) {
-        LOG_ERR("No peripheral state found for connection");
-        return;
-    }
-
-    int err = bt_gatt_subscribe(conn, &slot->subscribe_params);
+static void split_central_subscribe(struct bt_conn *conn, struct bt_gatt_subscribe_params *params) {
+    int err = bt_gatt_subscribe(conn, params);
     switch (err) {
     case -EALREADY:
         LOG_DBG("[ALREADY SUBSCRIBED]");
@@ -244,7 +238,7 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
         slot->subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
         slot->subscribe_params.notify = split_central_notify_func;
         slot->subscribe_params.value = BT_GATT_CCC_NOTIFY;
-        split_central_subscribe(conn);
+        split_central_subscribe(conn, &slot->subscribe_params);
     } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                             BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_RUN_BEHAVIOR_UUID))) {
         LOG_DBG("Found run behavior handle");
