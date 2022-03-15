@@ -186,7 +186,7 @@ int update_advertising() {
     struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
-    uint8_t max_device_name_length = (active_profile > 9) ? 13 : 14;
+    uint8_t max_device_name_length = DEVICE_NAME_ARRAY_MAX_SIZE - ((active_profile > 9) ? 4 : 3);
     if (max_device_name_length > strlen(DEVICE_NAME)) {
       max_device_name_length = DEVICE_NAME_LEN;
     }
