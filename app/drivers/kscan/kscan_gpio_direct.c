@@ -27,6 +27,7 @@ union work_reference {
 struct kscan_gpio_config {
     uint8_t num_of_inputs;
     uint8_t debounce_period;
+    bool toggle_mode;
     struct kscan_gpio_item_config inputs[];
 };
 
@@ -124,6 +125,35 @@ static int kscan_gpio_direct_disable(const struct device *dev) {
 }
 
 #endif /* defined(CONFIG_ZMK_KSCAN_DIRECT_POLLING) */
+static gpio_flags_t kscan_gpio_get_pulls(const struct kscan_gpio_item_config *in_cfg) {
+    if (in_cfg->flags == GPIO_ACTIVE_LOW) {
+        return GPIO_PULL_UP;
+    }
+    if (in_cfg->flags == GPIO_ACTIVE_HIGH) {
+        return GPIO_PULL_DOWN;
+    }
+    LOG_ERR("Could not determine proper pull direction based on pin flags for pin %d", in_cfg->pin);
+    return 0;
+}
+
+static int kscan_gpio_set_pulls(const struct device *dev, const gpio_pin_t active_pin) {
+    const struct kscan_gpio_config *cfg = dev->config;
+    for (int i = 0; i < cfg->num_of_inputs; i++) {
+        const struct device *in_dev = kscan_gpio_input_devices(dev)[i];
+        const struct kscan_gpio_item_config *in_cfg = &kscan_gpio_input_configs(dev)[i];
+        gpio_flags_t combined_flags = in_cfg->flags;
+        if (in_cfg->pin != active_pin) {
+            combined_flags = combined_flags | kscan_gpio_get_pulls(in_cfg);
+        }
+        int err = gpio_pin_configure(in_dev, in_cfg->pin, GPIO_INPUT | combined_flags);
+        if (err) {
+            LOG_ERR("Unable to configure pulls on pin %d on %s", in_cfg->pin, in_cfg->label);
+            return err;
+        }
+        LOG_DBG("Configured pin %d with flags %d", in_cfg->pin, GPIO_INPUT | combined_flags);
+    }
+    return 0;
+}
 
 static int kscan_gpio_direct_configure(const struct device *dev, kscan_callback_t callback) {
     struct kscan_gpio_data *data = dev->data;
@@ -145,12 +175,17 @@ static int kscan_gpio_read(const struct device *dev) {
         WRITE_BIT(read_state, i, gpio_pin_get(in_dev, in_cfg->pin) > 0);
     }
     for (int i = 0; i < cfg->num_of_inputs; i++) {
+        const struct kscan_gpio_item_config *in_cfg = &kscan_gpio_input_configs(dev)[i];
         bool prev_pressed = BIT(i) & data->pin_state;
         bool pressed = (BIT(i) & read_state) != 0;
         submit_follow_up_read = (submit_follow_up_read || pressed);
         if (pressed != prev_pressed) {
             LOG_DBG("Sending event at %d,%d state %s", 0, i, (pressed ? "on" : "off"));
             WRITE_BIT(data->pin_state, i, pressed);
+            if (cfg->toggle_mode && pressed) {
+                LOG_DBG("Updating pulls with pin %d as active pin", in_cfg->pin);
+                kscan_gpio_set_pulls(dev, in_cfg->pin);
+            }
             data->callback(dev, 0, i, pressed);
         }
     }
@@ -196,6 +231,9 @@ static const struct kscan_driver_api gpio_driver_api = {
         const struct kscan_gpio_config *cfg = dev->config;                                         \
         int err;                                                                                   \
         const struct device **input_devices = kscan_gpio_input_devices(dev);                       \
+        if (cfg->toggle_mode) {                                                                    \
+            LOG_DBG("Toggle mode ENABLED on %s", dev->name);                                       \
+        }                                                                                          \
         for (int i = 0; i < cfg->num_of_inputs; i++) {                                             \
             const struct kscan_gpio_item_config *in_cfg = &kscan_gpio_input_configs(dev)[i];       \
             input_devices[i] = device_get_binding(in_cfg->label);                                  \
@@ -203,7 +241,14 @@ static const struct kscan_driver_api gpio_driver_api = {
                 LOG_ERR("Unable to find input GPIO device");                                       \
                 return -EINVAL;                                                                    \
             }                                                                                      \
-            err = gpio_pin_configure(input_devices[i], in_cfg->pin, GPIO_INPUT | in_cfg->flags);   \
+            if (cfg->toggle_mode) {                                                                \
+                err =                                                                              \
+                    gpio_pin_configure(input_devices[i], in_cfg->pin,                              \
+                                       GPIO_INPUT | in_cfg->flags | kscan_gpio_get_pulls(in_cfg)); \
+            } else {                                                                               \
+                err =                                                                              \
+                    gpio_pin_configure(input_devices[i], in_cfg->pin, GPIO_INPUT | in_cfg->flags); \
+            }                                                                                      \
             if (err) {                                                                             \
                 LOG_ERR("Unable to configure pin %d on %s for input", in_cfg->pin, in_cfg->label); \
                 return err;                                                                        \
@@ -234,7 +279,8 @@ static const struct kscan_driver_api gpio_driver_api = {
     static const struct kscan_gpio_config kscan_gpio_config_##n = {                                \
         .inputs = {UTIL_LISTIFY(INST_INPUT_LEN(n), KSCAN_DIRECT_INPUT_ITEM, n)},                   \
         .num_of_inputs = INST_INPUT_LEN(n),                                                        \
-        .debounce_period = DT_INST_PROP(n, debounce_period)};                                      \
+        .debounce_period = DT_INST_PROP(n, debounce_period),                                       \
+        .toggle_mode = DT_INST_PROP(n, toggle_mode)};                                              \
     DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, NULL, &kscan_gpio_data_##n,                      \
                           &kscan_gpio_config_##n, POST_KERNEL, CONFIG_ZMK_KSCAN_INIT_PRIORITY,     \
                           &gpio_driver_api);

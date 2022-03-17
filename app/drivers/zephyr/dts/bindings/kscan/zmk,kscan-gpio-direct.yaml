@@ -11,6 +11,8 @@ properties:
   input-gpios:
     type: phandle-array
     required: true
+  toggle-mode:
+    type: boolean
   debounce-period:
     type: int
     default: 5
