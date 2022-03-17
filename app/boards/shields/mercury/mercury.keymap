@@ -63,7 +63,7 @@
         };
         combo_menu {
             timeout-ms = <COMBO_TIMEOUT>;
-            key-positions = <19 20>;
+            key-positions = <18 19>;
             bindings = <&kp K_CMENU>;
         };
         combo_tab {
