@@ -2,7 +2,7 @@ file_format: "1"
 id: babyvble
 name: BabyvBle
 type: shield
-url: https://discord.gg/ktUDJ3w
+url: https://github.com/MakerJake01/MakerJakes-keyboards/tree/main/BabyvBle
 requires: [pro_micro]
 features:
   - keys
