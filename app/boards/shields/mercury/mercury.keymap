@@ -10,8 +10,9 @@
 #define NAV 4
 #define MED 5
 #define SYS 6
-#define TGL 7
-#define TGR 8
+#define TLH 7
+#define TLT 8
+#define TRH 9
 
 // 25 At least while acclimating, 25 is too short and will miss attempts
 // 50 words like "layer", the rolled "er" turn into combos
@@ -19,19 +20,49 @@
 
 / {
     behaviors {
-        lpl: layer_tap_positional_left {
+        mlh: mod_tap_left_home_row {
             compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_POSITIONAL_LEFT";
+            label = "MOD_TAP_LEFT_HOME_ROW";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <COMBO_TIMEOUT>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <14 15 16>;
+        };
+
+        llh: layer_tap_positional_left {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_POSITIONAL_LEFT_HOME_ROW";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
             tapping-term-ms = <COMBO_TIMEOUT>;
             bindings = <&mo>, <&kp>;
-            hold-trigger-key-positions = <2 3 4 14 15 16>;
+            hold-trigger-key-positions = <14 15 16>;
         };
 
-        lpr: layer_tap_positional_right {
+        mlt: mod_tap_left_top_row {
             compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_POSITIONAL_RIGHT";
+            label = "MOD_TAP_LEFT_TOP_ROW";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <COMBO_TIMEOUT>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <2 3 4>;
+        };
+
+        llt: layer_tap_left_top_row {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_LEFT_TOP_ROW";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <COMBO_TIMEOUT>;
+            bindings = <&mo>, <&kp>;
+            hold-trigger-key-positions = <2 3 4>;
+        };
+
+        mrh: mod_tap_right_home_row {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MOD_TAP_RIGHT_HOME_ROW";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
             tapping-term-ms = <COMBO_TIMEOUT>;
@@ -39,14 +70,14 @@
             hold-trigger-key-positions = <20 21>;
         };
 
-        cht: combo_like_hold_tap {
+        lrh: layer_tap_right_home_row {
             compatible = "zmk,behavior-hold-tap";
-            label = "COMBO_LIKE_HOLD_TAP";
+            label = "LAYER_TAP_RIGHT_HOME_ROW";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
-            tapping-term-ms = <200>;
-            bindings = <&kp>, <&kp>;
-            hold-trigger-key-positions = <40>;
+            tapping-term-ms = <COMBO_TIMEOUT>;
+            bindings = <&mo>, <&kp>;
+            hold-trigger-key-positions = <20 21>;
         };
     };
 
@@ -88,10 +119,10 @@
 
         windows_layer {
             bindings = <
-&none  &kp Q  &lpl TGL W  &lpl TGL E  &lpl FUN R  &kp T     /**/  &kp Y    &kp U    &kp I       &kp O       &kp P     &none
-&none  &kp A  &lpl TGL S  &lpl TGL D  &lpl NUM F  &kp G     /**/  &kp H    &kp J    &lpr TGR K  &lpr TGR L  &kp SCLN  &kp QUOT
-&none  &kp Z  &kp X       &kp C       &kp V       &kp B     /**/  &kp N    &kp M    &kp CMMA    &kp DOT     &kp FSLH  &none
-                          &kp LGUI    &kp LALT    &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
+&none  &kp Q  &mlt LSFT W  &llt TLT E  &llt FUN R  &kp T     /**/  &kp Y    &kp U    &kp I       &kp O        &kp P     &none
+&none  &kp A  &mlh LSFT S  &llh TLH D  &llh NUM F  &kp G     /**/  &kp H    &kp J    &lrh TRH K  &mrh LSFT L  &kp SCLN  &kp QUOT
+&none  &kp Z  &kp X        &kp C       &kp V       &kp B     /**/  &kp N    &kp M    &kp CMMA    &kp DOT      &kp FSLH  &none
+                           &kp LGUI    &kp LALT    &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
             >;
         };
         
@@ -149,19 +180,28 @@
             >;
         };
 
-        trigger_left_layer {
+        trigger_left_home_row_layer {
             bindings = <
-&trans  &trans  &kp LSFT  &kp LSFT  &mo FUN  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &kp LSFT  &kp LSFT  &mo NUM  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &kp LSFT  &none     &mo NUM  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
                           &trans    &trans   &trans  /**/  &trans  &trans  &trans
             >;
         };
 
-        trigger_right_layer {
+        trigger_left_top_row_layer {
+            bindings = <
+&trans  &trans  &kp LSFT  &none     &mo FUN  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
+            >;
+        };
+
+        trigger_right_home_row_layer {
             bindings = <
 &trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans    &trans    &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &kp RSFT  &kp RSFT  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &none     &kp RSFT  &trans  &trans
 &trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans    &trans    &trans  &trans
                         &trans  &trans  &trans  /**/  &trans  &trans  &trans
             >;
