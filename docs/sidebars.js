@@ -68,6 +68,7 @@ module.exports = {
         items: [
           "development/new-shield",
           "development/hardware-metadata-files",
+          "development/new-behavior",
         ],
       },
     ],
