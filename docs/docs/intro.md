@@ -23,6 +23,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | Split Keyboard Support                                                                                                             | ✅  |    ✅     | ✅  |
 | [Keymaps and Layers](behaviors/layers.md)                                                                                          | ✅  |    ✅     | ✅  |
 | [Hold-Tap](behaviors/hold-tap.md) (which includes [Mod-Tap](behaviors/mod-tap.md) and [Layer-Tap](behaviors/layers.md/#layer-tap)) | ✅  |    ✅     | ✅  |
+| [Tap-Dance](behaviors/tap-dance.md)                                                                                                | ✅  |  ✅[^3]   | ✅  |
 | [Keyboard Codes](codes/index.mdx#keyboard)                                                                                         | ✅  |    ✅     | ✅  |
 | [Media](codes/index.mdx#media-controls) & [Consumer](codes/index.mdx#consumer-controls) Codes                                      | ✅  |    ✅     | ✅  |
 | [Encoders](features/encoders.md)[^1]                                                                                               | ✅  |    ✅     | ✅  |
@@ -31,7 +32,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | [Backlight](features/backlight.md)                                                                                                 | ✅  |    ✅     | ✅  |
 | One Shot Keys                                                                                                                      | ✅  |    ✅     | ✅  |
 | [Combo Keys](features/combos.md)                                                                                                   | ✅  |           | ✅  |
-| Macros                                                                                                                             | 🚧  |    ✅     | ✅  |
+| [Macros](behaviors/macros)                                                                                                         | ✅  |    ✅     | ✅  |
 | Mouse Keys                                                                                                                         | 🚧  |    ✅     | ✅  |
 | Low Active Power Usage                                                                                                             | ✅  |           |     |
 | Low Power Sleep States                                                                                                             | ✅  |    ✅     |     |
@@ -42,6 +43,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | AVR/8 Bit                                                                                                                          |     |           | ✅  |
 | [Wide Range of ARM Chips Supported](https://docs.zephyrproject.org/latest/boards/index.html)                                       | ✅  |           |     |
 
+[^3]: Tap-Dances are limited to single and double-tap on BlueMicro
 [^2]: Encoders are not currently supported on peripheral side splits.
 [^1]: OLEDs are currently proof of concept in ZMK.
 
