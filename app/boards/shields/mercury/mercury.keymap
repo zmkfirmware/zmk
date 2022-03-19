@@ -10,74 +10,68 @@
 #define NAV 4
 #define MED 5
 #define SYS 6
-#define TLH 7
-#define TLT 8
-#define TRH 9
+#define DKL 7
+#define EKL 8
+#define KKL 9
 
 // 25 At least while acclimating, 25 is too short and will miss attempts
 // 50 words like "layer", the rolled "er" turn into combos
 #define COMBO_TIMEOUT 37
 
 / {
+    macros {
+        mcs: macro_s {
+        label = "MACRO_S";
+        compatible = "zmk,behavior-macro";
+        #binding-cells = <0>;
+        bindings
+            = <&macro_press &kp LSFT &tog DKL>
+            , <&macro_pause_for_release>
+            , <&macro_release &kp LSFT &tog DKL>
+            ;
+        };
+
+        mcf: macro_f {
+        label = "MACRO_F";
+        compatible = "zmk,behavior-macro";
+        #binding-cells = <0>;
+        bindings
+            = <&macro_press &mo NUM &tog DKL>
+            , <&macro_pause_for_release>
+            , <&macro_release &mo NUM &tog DKL>
+            ;
+        };
+    };
+
     behaviors {
-        mlh: mod_tap_left_home_row {
+        smt: s_macro_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "MOD_TAP_LEFT_HOME_ROW";
+            label = "S_MACRO_TAP";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
             tapping-term-ms = <COMBO_TIMEOUT>;
-            bindings = <&kp>, <&kp>;
+            bindings = <&mcs>, <&kp>;
             hold-trigger-key-positions = <14 15 16>;
         };
 
-        llh: layer_tap_positional_left {
+        fmt: f_macro_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_POSITIONAL_LEFT_HOME_ROW";
+            label = "F_MACRO_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <COMBO_TIMEOUT>;
+            bindings = <&mcs>, <&kp>;
+            hold-trigger-key-positions = <14 15 16>;
+        };
+
+        dlt: d_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "D_LAYER_TAP";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
             tapping-term-ms = <COMBO_TIMEOUT>;
             bindings = <&mo>, <&kp>;
             hold-trigger-key-positions = <14 15 16>;
-        };
-
-        mlt: mod_tap_left_top_row {
-            compatible = "zmk,behavior-hold-tap";
-            label = "MOD_TAP_LEFT_TOP_ROW";
-            #binding-cells = <2>;
-            flavor = "tap-unless-interrupted";
-            tapping-term-ms = <COMBO_TIMEOUT>;
-            bindings = <&kp>, <&kp>;
-            hold-trigger-key-positions = <2 3 4>;
-        };
-
-        llt: layer_tap_left_top_row {
-            compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_LEFT_TOP_ROW";
-            #binding-cells = <2>;
-            flavor = "tap-unless-interrupted";
-            tapping-term-ms = <COMBO_TIMEOUT>;
-            bindings = <&mo>, <&kp>;
-            hold-trigger-key-positions = <2 3 4>;
-        };
-
-        mrh: mod_tap_right_home_row {
-            compatible = "zmk,behavior-hold-tap";
-            label = "MOD_TAP_RIGHT_HOME_ROW";
-            #binding-cells = <2>;
-            flavor = "tap-unless-interrupted";
-            tapping-term-ms = <COMBO_TIMEOUT>;
-            bindings = <&mo>, <&kp>;
-            hold-trigger-key-positions = <20 21>;
-        };
-
-        lrh: layer_tap_right_home_row {
-            compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_RIGHT_HOME_ROW";
-            #binding-cells = <2>;
-            flavor = "tap-unless-interrupted";
-            tapping-term-ms = <COMBO_TIMEOUT>;
-            bindings = <&mo>, <&kp>;
-            hold-trigger-key-positions = <20 21>;
         };
     };
 
@@ -119,10 +113,10 @@
 
         windows_layer {
             bindings = <
-&none  &kp Q  &mlt LSFT W  &llt TLT E  &llt FUN R  &kp T     /**/  &kp Y    &kp U    &kp I       &kp O        &kp P     &none
-&none  &kp A  &mlh LSFT S  &llh TLH D  &llh NUM F  &kp G     /**/  &kp H    &kp J    &lrh TRH K  &mrh LSFT L  &kp SCLN  &kp QUOT
-&none  &kp Z  &kp X        &kp C       &kp V       &kp B     /**/  &kp N    &kp M    &kp CMMA    &kp DOT      &kp FSLH  &none
-                           &kp LGUI    &kp LALT    &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
+&none  &kp Q  &kp W     &kp E       &kp R     &kp T     /**/  &kp Y    &kp U    &kp I       &kp O        &kp P     &none
+&none  &kp A  &smt S S  &dlt DKL D  &fmt F F  &kp G     /**/  &kp H    &kp J    &kp K       &kp L        &kp SCLN  &kp QUOT
+&none  &kp Z  &kp X     &kp C       &kp V     &kp B     /**/  &kp N    &kp M    &kp CMMA    &kp DOT      &kp FSLH  &none
+                        &kp LGUI    &kp LALT  &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
             >;
         };
         
@@ -180,7 +174,7 @@
             >;
         };
 
-        trigger_left_home_row_layer {
+        d_key_layer {
             bindings = <
 &trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &kp LSFT  &none     &mo NUM  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
@@ -189,7 +183,7 @@
             >;
         };
 
-        trigger_left_top_row_layer {
+        e_key_layer {
             bindings = <
 &trans  &trans  &kp LSFT  &none     &mo FUN  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
@@ -198,7 +192,7 @@
             >;
         };
 
-        trigger_right_home_row_layer {
+        k_key_layer {
             bindings = <
 &trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans    &trans    &trans  &trans
 &trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &none     &kp RSFT  &trans  &trans
