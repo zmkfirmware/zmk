@@ -1,0 +1,6 @@
+s/.*mo_keymap_binding/mo/p
+s/.*hid_listener_keycode/kp/p
+s/.*decide_hold_tap/ht_decide/p
+s/.*on_hold_tap_binding/ht_binding/p
+// s/.*keymap_apply_position_state/pos_state/p
+s/.*behavior_queue_process_next/queue_process_next/p

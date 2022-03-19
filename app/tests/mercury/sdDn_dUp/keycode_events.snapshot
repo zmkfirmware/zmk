@@ -1,0 +1,10 @@
+pos_state: layer: 0, position: 14, binding name: S_MACRO_TAP, pressed: 1
+ht_binding_pressed: 14 new undecided hold_tap
+ht_decide: 14 decided hold-interrupt (tap-unless-interrupted decision moment other-key-down)
+pos_state: layer: 0, position: 15, binding name: D_LAYER_TAP, pressed: 1
+ht_binding_pressed: 15 new undecided hold_tap
+queue_process_next: Invoking MO: 0x08 0x00
+mo_pressed: position 0 layer 8
+queue_process_next: Processing next queued behavior in 100ms
+ht_decide: 15 decided tap (tap-unless-interrupted decision moment other-key-down)
+kp_pressed: usage_page 0x07 keycode 0x07 implicit_mods 0x00 explicit_mods 0x00

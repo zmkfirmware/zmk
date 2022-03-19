@@ -11,8 +11,8 @@
 		compatible = "zmk,kscan-mock";
 		label = "KSCAN_MOCK";
 
-		rows = <2>;
-		columns = <2>;
+		rows = <4>;
+		columns = <12>;
 		exit-after;
 	};
 };
