@@ -11,8 +11,9 @@
 #define MED 5
 #define SYS 6
 #define DKL 7
-#define EKL 8
-#define KKL 9
+#define SFL 8
+//#define EKL 9
+//#define KKL 10
 
 // 25 At least while acclimating, 25 is too short and will miss attempts
 // 50 words like "layer", the rolled "er" turn into combos
@@ -24,10 +25,12 @@
         label = "MACRO_S";
         compatible = "zmk,behavior-macro";
         #binding-cells = <0>;
+        wait-ms = <1>;
         bindings
-            = <&macro_press &kp LSFT &tog DKL>
+            // tog doesn't work, the tog on release doesn't seem to fire
+            = <&macro_press &mo SFL &kp LSFT>
             , <&macro_pause_for_release>
-            , <&macro_release &kp LSFT &tog DKL>
+            , <&macro_release &mo SFL &kp LSFT>
             ;
         };
 
@@ -35,10 +38,11 @@
         label = "MACRO_F";
         compatible = "zmk,behavior-macro";
         #binding-cells = <0>;
+        wait-ms = <1>;
         bindings
-            = <&macro_press &mo NUM &tog DKL>
+            = <&macro_press &mo SFL &mo NUM>
             , <&macro_pause_for_release>
-            , <&macro_release &mo NUM &tog DKL>
+            , <&macro_release &mo SFL &mo NUM>
             ;
         };
     };
@@ -60,7 +64,7 @@
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
             tapping-term-ms = <COMBO_TIMEOUT>;
-            bindings = <&mcs>, <&kp>;
+            bindings = <&mcf>, <&kp>;
             hold-trigger-key-positions = <14 15 16>;
         };
 
@@ -183,22 +187,31 @@
             >;
         };
 
-        e_key_layer {
+        sf_key_layer {
             bindings = <
-&trans  &trans  &kp LSFT  &none     &mo FUN  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans    &mo DKL   &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
                           &trans    &trans   &trans  /**/  &trans  &trans  &trans
             >;
         };
 
-        k_key_layer {
-            bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans    &trans    &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &none     &kp RSFT  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans    &trans    &trans  &trans
-                        &trans  &trans  &trans  /**/  &trans  &trans  &trans
-            >;
-        };
+//        e_key_layer {
+//            bindings = <
+//&trans  &trans  &kp LSFT  &none     &mo FUN  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+//&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+//&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+//                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
+//            >;
+//        };
+
+//        k_key_layer {
+//            bindings = <
+//&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans    &trans    &trans  &trans
+//&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &none     &kp RSFT  &trans  &trans
+//&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans    &trans    &trans  &trans
+//                        &trans  &trans  &trans  /**/  &trans  &trans  &trans
+//            >;
+//        };
     };
 };
