@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+	macros {
+		abc_macro: abc_macro {
+			label = "ABCs";
+			compatible = "zmk,behavior-macro";
+			#binding-cells = <0>;
+			bindings = <&kp A &kp B &kp C>;
+		};
+
+		hold_shift_macro: hold_shift_macro {
+			label = "HOLD_SHFT";
+			compatible = "zmk,behavior-macro";
+			#binding-cells = <0>;
+			bindings
+				= <&macro_press &kp LSHFT>
+				, <&macro_tap>
+				, <&kp D &kp O &kp G>
+				, <&macro_release &kp LSHFT>
+				;
+		};
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&abc_macro 			&mo 1
+				&hold_shift_macro 	&custom_timing>;
+		};
+
+		extra_layer {
+			bindings = <
+				&dual_sequence_macro &trans
+				&kp TAB &none>;
+
+		};
+
+	};
+};
