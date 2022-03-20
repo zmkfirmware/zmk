@@ -19,10 +19,13 @@
 			#binding-cells = <0>;
 			wait-ms = <1>;
 			bindings
-				// tog doesn't work, the tog on release doesn't seem to fire
-				= <&macro_press &mo RAISE &kp LSHFT>
+				//= <&macro_press &mo RAISE &kp LSHFT>
+				= <&macro_press &mo RAISE>
+				, <&macro_press &kp LSHFT>
 				, <&macro_pause_for_release>
-				, <&macro_release &mo RAISE &kp LSHFT>
+				//, <&macro_release &mo RAISE &kp LSHFT>
+				, <&macro_release &mo RAISE>
+				, <&macro_release &kp LSHFT>
 				;
         };
 	};
@@ -51,7 +54,7 @@
 
 		raise_layer {
 			bindings = <
-				&mth L M 			&kp N
+				&kp M 				&kp N
 				&kp O				&kp P>;
 		};
 	};
