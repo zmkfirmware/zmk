@@ -8,44 +8,51 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/kscan_mock.h>
 
+#define BASE 0
+#define RAISE 1
+
 / {
 	macros {
-		abc_macro: abc_macro {
-			label = "ABCs";
+        shift_layer_macro: shift_layer_macro {
+			label = "SHIFT_LAYER_MACRO";
 			compatible = "zmk,behavior-macro";
 			#binding-cells = <0>;
-			bindings = <&kp A &kp B &kp C>;
-		};
-
-		hold_shift_macro: hold_shift_macro {
-			label = "HOLD_SHFT";
-			compatible = "zmk,behavior-macro";
-			#binding-cells = <0>;
+			wait-ms = <1>;
 			bindings
-				= <&macro_press &kp LSHFT>
-				, <&macro_tap>
-				, <&kp D &kp O &kp G>
-				, <&macro_release &kp LSHFT>
+				// tog doesn't work, the tog on release doesn't seem to fire
+				= <&macro_press &mo RAISE &kp LSHFT>
+				, <&macro_pause_for_release>
+				, <&macro_release &mo RAISE &kp LSHFT>
 				;
-		};
+        };
+	};
+
+
+	behaviors {
+        mth: macro_tap_hold {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MACRO_TAP_HOLD";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <200>;
+            bindings = <&shift_layer_macro>, <&kp>;
+        };
 	};
 
 	keymap {
 		compatible = "zmk,keymap";
 		label ="Default keymap";
 
-		default_layer {
+		base_layer {
 			bindings = <
-				&abc_macro 			&mo 1
-				&hold_shift_macro 	&custom_timing>;
+				&mth A B 			&kp C
+				&shift_layer_macro  &kp D>;
 		};
 
-		extra_layer {
+		raise_layer {
 			bindings = <
-				&dual_sequence_macro &trans
-				&kp TAB &none>;
-
+				&mth L M 			&kp N
+				&kp O				&kp P>;
 		};
-
 	};
 };
