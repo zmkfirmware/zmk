@@ -17,6 +17,9 @@
 #include <drivers/led_strip.h>
 #include <drivers/ext_power.h>
 
+#include <zmk/event_manager.h>
+#include <zmk/events/activity_state_changed.h>
+
 #include <zmk/rgb_underglow.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -331,6 +334,33 @@ int zmk_rgb_underglow_off() {
 
     return zmk_rgb_underglow_save_state();
 }
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
+static int zmk_rgb_underglow_event_listener(const zmk_event_t *eh) {
+
+    struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
+    if (ev == NULL) {
+        return -ENOTSUP;
+    }
+
+    switch (ev->state) {
+        case ZMK_ACTIVITY_ACTIVE:
+            zmk_rgb_underglow_on();
+            break;
+        case ZMK_ACTIVITY_IDLE:
+        case ZMK_ACTIVITY_SLEEP:
+            zmk_rgb_underglow_off();
+            break;
+        default:
+            LOG_WRN("Unhandled activity state: %d", ev->state);
+            return -EINVAL;
+    }
+    return 0;
+}
+
+ZMK_LISTENER(rgb_underglow, zmk_rgb_underglow_event_listener);
+ZMK_SUBSCRIPTION(rgb_underglow, zmk_activity_state_changed);
+#endif // IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
 
 int zmk_rgb_underglow_calc_effect(int direction) {
     return (state.current_effect + UNDERGLOW_EFFECT_NUMBER + direction) % UNDERGLOW_EFFECT_NUMBER;
