@@ -19,13 +19,9 @@
 			#binding-cells = <0>;
 			wait-ms = <1>;
 			bindings
-				//= <&macro_press &mo RAISE &kp LSHFT>
-				= <&macro_press &mo RAISE>
-				, <&macro_press &kp LSHFT>
+				= <&macro_press &mo RAISE &kp LSHFT>
 				, <&macro_pause_for_release>
-				//, <&macro_release &mo RAISE &kp LSHFT>
-				, <&macro_release &mo RAISE>
-				, <&macro_release &kp LSHFT>
+				, <&macro_release &mo RAISE &kp LSHFT>
 				;
         };
 	};
