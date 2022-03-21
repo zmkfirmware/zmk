@@ -10,42 +10,37 @@
 
 / {
 	macros {
-		abc_macro: abc_macro {
-			label = "ABCs";
-			compatible = "zmk,behavior-macro";
-			#binding-cells = <0>;
+		ZMK_MACRO(
+			abc_macro,
+			wait-ms = <10>;
+			tap-ms = <50>;
 			bindings = <&kp A &kp B &kp C>;
-		};
+		)
 
-		hold_shift_macro: hold_shift_macro {
-			label = "HOLD_SHFT";
-			compatible = "zmk,behavior-macro";
-			#binding-cells = <0>;
+		ZMK_MACRO(
+			hold_shift_macro,
 			bindings
 				= <&macro_press &kp LSHFT>
 				, <&macro_tap>
 				, <&kp D &kp O &kp G>
 				, <&macro_release &kp LSHFT>
 				;
-		};
+		)
 
-		custom_timing: custom_timing_macro {
-			label = "ABC_TIMING";
-			compatible = "zmk,behavior-macro";
-			#binding-cells = <0>;
+		ZMK_MACRO(
+			custom_timing,
 			bindings
 				= <&macro_wait_time 50>
 				, <&kp A>
 				, <&macro_tap_time 20>
 				, <&kp B &kp C>
 				;
-		};
+		)
 
-		dual_sequence_macro: dual_sequence_macro {
-			label = "DUAL_SEQ";
-			compatible = "zmk,behavior-macro";
-			#binding-cells = <0>;
+		ZMK_MACRO(
+			dual_sequence_macro,
 			wait-ms = <10>;
+			tap-ms = <40>;
 			bindings
 				= <&macro_press &kp LALT>
 				, <&macro_tap>
@@ -53,7 +48,7 @@
 				, <&macro_pause_for_release>
 				, <&macro_release &kp LALT>
 				;
-		};
+		)
 	};
 
 	keymap {

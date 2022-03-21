@@ -100,7 +100,7 @@ To pause the macro until release, use `&macro_pause_for_release`, like in this e
 ```
 bindings
 	= <&macro_press &mo 1 &kp LSHFT>
-	, <&macro_wait_for_release>
+	, <&macro_pause_for_release>
 	, <&macro_release &mo 1 &kp LSHFT>
 	;
 ```

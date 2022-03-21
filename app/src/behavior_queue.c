@@ -26,7 +26,6 @@ static K_DELAYED_WORK_DEFINE(queue_work, behavior_queue_process_next);
 
 static void behavior_queue_process_next(struct k_work *work) {
     struct q_item item = {.wait = 0};
-    int ret;
 
     while (k_msgq_get(&zmk_behavior_queue_msgq, &item, K_NO_WAIT) == 0) {
         LOG_DBG("Invoking %s: 0x%02x 0x%02x", log_strdup(item.binding.behavior_dev),
@@ -53,17 +52,14 @@ static void behavior_queue_process_next(struct k_work *work) {
 int zmk_behavior_queue_add(uint32_t position, const struct zmk_behavior_binding binding, bool press,
                            uint32_t wait) {
     struct q_item item = {.press = press, .binding = binding, .wait = wait};
-    int ret;
 
-    LOG_DBG("");
-
-    ret = k_msgq_put(&zmk_behavior_queue_msgq, &item, K_NO_WAIT);
+    const int ret = k_msgq_put(&zmk_behavior_queue_msgq, &item, K_NO_WAIT);
     if (ret < 0) {
         return ret;
     }
 
     if (!k_delayed_work_pending(&queue_work)) {
-        k_delayed_work_submit(&queue_work, K_NO_WAIT);
+        behavior_queue_process_next(&queue_work);
     }
 
     return 0;

@@ -4,6 +4,15 @@
  * SPDX-License-Identifier: MIT
  */
 
+#define ZMK_MACRO_STRINGIFY(x) #x
+#define ZMK_MACRO(name,...) \
+  name: name { \
+			label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
+			compatible = "zmk,behavior-macro"; \
+			#binding-cells = <0>; \
+			__VA_ARGS__ \
+		};
+
  / {
 	behaviors {
 		macro_tap: macro_control_mode_tap {
