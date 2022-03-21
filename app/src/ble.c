@@ -85,7 +85,7 @@ BUILD_ASSERT(DEVICE_NAME_LEN <= 16, "ERROR: BLE device name is too long. Max len
 
 static struct bt_data zmk_ble_ad[] = {
 #if IS_HOST_PERIPHERAL
-    BT_DATA(BT_DATA_NAME_COMPLETE, device_name, DEVICE_NAME_ARRAY_MAX_SIZE-1),
+    BT_DATA(BT_DATA_NAME_COMPLETE, device_name, DEVICE_NAME_ARRAY_MAX_SIZE - 1),
     BT_DATA_BYTES(BT_DATA_GAP_APPEARANCE, 0xC1, 0x03),
 #endif
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -188,7 +188,7 @@ int update_advertising() {
 
     uint8_t max_device_name_length = DEVICE_NAME_ARRAY_MAX_SIZE - ((active_profile > 9) ? 4 : 3);
     if (max_device_name_length > strlen(DEVICE_NAME)) {
-      max_device_name_length = DEVICE_NAME_LEN;
+        max_device_name_length = DEVICE_NAME_LEN;
     }
     snprintf(device_name, max_device_name_length + 1, "%s", DEVICE_NAME);
     sprintf(device_name + max_device_name_length, "~%d", active_profile);
