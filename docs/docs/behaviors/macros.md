@@ -40,9 +40,9 @@ used to reference the macro in your keymap
 The macro can then be bound in your keymap by referencing it by the label `&zed_em_kay`, e.g.:
 
 ```
-        raise_layer {
-            bindings = <&zed_em_kay>;
-        };
+    raise_layer {
+        bindings = <&zed_em_kay>;
+    };
 ```
 
 ### Bindings
@@ -99,10 +99,10 @@ To pause the macro until release, use `&macro_pause_for_release`, like in this e
 
 ```
 bindings
-	= <&macro_press &mo 1 &kp LSHFT>
-	, <&macro_pause_for_release>
-	, <&macro_release &mo 1 &kp LSHFT>
-	;
+    = <&macro_press &mo 1 &kp LSHFT>
+    , <&macro_pause_for_release>
+    , <&macro_release &mo 1 &kp LSHFT>
+    ;
 ```
 
 ### Wait Time
@@ -129,8 +129,54 @@ point in a macro bindings list, use `&macro_tap_time`, e.g. `&macro_tap_time 30`
 ```
 bindings
     = <&macro_tap_time 10>
-	, <&kp S &kp H &kp O &kp R &kp T>
+    , <&kp S &kp H &kp O &kp R &kp T>
     , <&macro_tap_time 500>
     , <&kp L &kp O &kp N &kp G>
+    ;
+```
+
+## Common Patterns
+
+### Layer Activation + More
+
+Macros make it easy to combine a [layer behavior](/docs/behaviors/layers), e.g. `&mo` with another behavior at the same time.
+Common examples are enabling one or more modifiers when the layer is active, or changing the RBG underglow color.
+
+To achieve this, a combination of a 0ms wait time and splitting the press and release between a `&macro_pause_for_release` is used:
+
+#### Layer + Modifier
+
+```
+wait-ms = <0>;
+bindings
+    = <&macro_press &mo 1 &kp LSHFT>
+    , <&macro_pause_for_release>
+    , <&macro_release &mo 1 &kp LSHFT>;
+```
+
+#### Layer + Underglow Color
+
+To trigged a different underglow when the macro is pressed, and when it is released, we use the macro "press" activation mode whenever triggering the `&rgb_ug` behavior:
+
+```
+wait-ms = <0>;
+bindings
+    = <&macro_press   &mo 1              &rgb_ug RGB_COLOR_HSB(128,100,100)>
+    , <&macro_pause_for_release>
+    , <&macro_release &mo 1 &macro_press &rgb_ug RGB_COLOR_HSB(300,100,50)>;
+```
+
+## Keycode Sequences
+
+The other common use case for macros is to sending sequences of keycodes to the connected host. Here, a wait and tap time of at least 30ms is recommended to
+avoid having HID notifications grouped at the BLE protocol level and then processed out of order:
+
+```
+wait-ms = <40>;
+tap-ms = <40>;
+bindings
+    = <&kp Z &kp M &kp K>
+    , <&kp SPACE>
+    , <&kp R &kp O &kp C &kp K &kp S>
     ;
 ```
