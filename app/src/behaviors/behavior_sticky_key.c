@@ -188,6 +188,9 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
     if (ev == NULL) {
         return ZMK_EV_EVENT_BUBBLE;
     }
+
+    // keep track whether the event has been reraised, so we only reraise it once
+    bool event_reraised = false;
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
         struct active_sticky_key *sticky_key = &active_sticky_keys[i];
         if (sticky_key->position == ZMK_BHV_STICKY_KEY_POSITION_FREE) {
@@ -223,10 +226,12 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
             if (sticky_key->timer_started) {
                 stop_timer(sticky_key);
                 if (sticky_key->config->quick_release) {
-                    // continue processing the event. Release the sticky key afterwards.
-                    ZMK_EVENT_RAISE_AFTER(eh, behavior_sticky_key);
+                    // immediately release the sticky key after the key press is handled.
+                    if (!event_reraised) {
+                        ZMK_EVENT_RAISE_AFTER(eh, behavior_sticky_key);
+                        event_reraised = true;
+                    }
                     release_sticky_key_behavior(sticky_key, ev->timestamp);
-                    return ZMK_EV_EVENT_CAPTURED;
                 }
             }
             sticky_key->modified_key_usage_page = ev->usage_page;
@@ -239,6 +244,9 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
                 release_sticky_key_behavior(sticky_key, ev->timestamp);
             }
         }
+    }
+    if (event_reraised) {
+        return ZMK_EV_EVENT_CAPTURED;
     }
     return ZMK_EV_EVENT_BUBBLE;
 }
