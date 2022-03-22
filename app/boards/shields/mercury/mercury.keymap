@@ -10,15 +10,16 @@
 #define NAV 4
 #define MED 5
 #define SYS 6
-#define DL 7
+#define DL  7
 #define SFL 8
-#define EL 9
+#define EL  9
 #define WRL 10
-#define KL 11
-#define LL 12
+#define KL  11
+#define LL  12
 
-// 25 At least while acclimating, 25 is too short and will miss attempts
-// 50 words like "layer", the rolled "er" turn into combos
+// 25 // At least while acclimating, 25 is too short and I miss combo attempts
+// 50 // words like "layer", the rolled "er" turn into combos unintentionally
+// 37 // "were" still has "er" turn into combos, but less often
 #define COMBO_TIMEOUT 37
 
 / {
@@ -258,64 +259,64 @@
 
         system_layer {
             bindings = <
-&trans  &trans      &to WIN       &trans       &trans         &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &to APL  &out OUT_USB     &trans       &trans         &trans     /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans      &trans      &bt BT_CLR     &trans      &out OUT_BLE  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans   &to WIN       &trans        &trans        &trans        /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &to APL  &out OUT_USB  &trans        &trans        &trans        /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans   &trans        &bt BT_CLR    &trans        &out OUT_BLE  /**/  &trans  &trans  &trans  &trans  &trans  &trans
                                &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  /**/  &trans  &trans  &trans
             >;
         };
 
         d_key_layer {
             bindings = <
-&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &kp LSFT  &none     &mo NUM  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &kp LSFT  &none     &mo NUM  &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
                           &trans    &trans   &trans  /**/  &trans  &trans  &trans
             >;
         };
 
         sf_key_layer {
             bindings = <
-&trans  &trans  &trans    &trans  &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans    &mo DL  &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans    &trans  &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                          &trans  &trans   &trans  /**/  &trans  &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &mo DL    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
             >;
         };
 
         e_key_layer {
             bindings = <
-&trans  &trans  &kp LSFT  &none   &mo FUN  &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans    &trans  &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans    &trans  &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                          &trans  &trans   &trans  /**/  &trans  &trans  &trans
+&trans  &trans  &kp LSFT  &none     &mo FUN  &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
             >;
         };
 
         wr_key_layer {
             bindings = <
-&trans  &trans  &trans    &mo EL  &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans    &trans  &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans    &trans  &trans   &trans  /**/  &trans  &trans  &trans  &trans  &trans  &trans
-                          &trans  &trans   &trans  /**/  &trans  &trans  &trans
+&trans  &trans  &trans    &mo EL    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
             >;
         };
 
         k_key_layer {
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &none   &kp RSFT  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
-                        &trans  &trans  &trans  /**/  &trans  &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &none   &kp RSFT  &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
             >;
         };
 
         l_key_layer {
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &mo KL  &trans    &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
-                        &trans  &trans  &trans  /**/  &trans  &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &mo KL  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
             >;
         };
     };
