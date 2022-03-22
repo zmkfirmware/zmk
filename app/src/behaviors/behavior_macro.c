@@ -98,7 +98,7 @@ static int behavior_macro_init(const struct device *dev) {
             // Updated state used for initial state on release.
         } else if (IS_PAUSE(cfg->bindings[i].behavior_dev)) {
             state->release_state.start_index = i + 1;
-            state->release_state.count = cfg->count - i - 1;
+            state->release_state.count = cfg->count - state->release_state.start_index;
             state->press_bindings_count = i;
             LOG_DBG("Release will resume at %d", state->release_state.start_index);
             break;
@@ -112,7 +112,7 @@ static int behavior_macro_init(const struct device *dev) {
 
 static void queue_macro(uint32_t position, const struct zmk_behavior_binding bindings[],
                         struct behavior_macro_trigger_state state) {
-    LOG_DBG("Iterating macro bindings from %d-%d", state.start_index, state.count);
+    LOG_DBG("Iterating macro bindings - starting: %d, count: %d", state.start_index, state.count);
     for (int i = state.start_index; i < state.start_index + state.count; i++) {
         if (!handle_control_binding(&state, &bindings[i])) {
             switch (state.mode) {
@@ -174,8 +174,8 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
 #define MACRO_INST(n)                                                                              \
     static struct behavior_macro_state behavior_macro_state_##n = {};                              \
     static struct behavior_macro_config behavior_macro_config_##n = {                              \
-        .default_wait_ms = DT_INST_PROP_OR(drv_inst, wait_ms, 100),                                \
-        .default_tap_ms = DT_INST_PROP_OR(drv_inst, tap_ms, 100),                                  \
+        .default_wait_ms = DT_INST_PROP_OR(n, wait_ms, 100),                                       \
+        .default_tap_ms = DT_INST_PROP_OR(n, tap_ms, 100),                                         \
         .count = DT_INST_PROP_LEN(n, bindings),                                                    \
         .bindings = TRANSFORMED_BEHAVIORS(n)};                                                     \
     DEVICE_DT_INST_DEFINE(n, behavior_macro_init, device_pm_control_nop,                           \
