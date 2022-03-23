@@ -6,10 +6,12 @@ manifest:
       url-base: https://github.com/zmkfirmware
     - name: microsoft
       url-base: https://github.com/microsoft
+    - name: infused-kim
+      url-base: https://github.com/infused-kim
   projects:
-    - name: zephyr
-      remote: zmkfirmware
-      revision: v2.5.0+zmk-fixes
+    - name: zmk-zephyr
+      remote: infused-kim
+      revision: v2.5.0+zmk-fixes+kim-fixes
       clone-depth: 1
       import:
         # TODO: Rename once upstream offers option like `exclude` or `denylist`

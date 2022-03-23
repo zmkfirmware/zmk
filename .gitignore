@@ -3,6 +3,7 @@
 /modules
 /tools
 /zephyr
+/zmk-zephyr
 /zmk-config
 /build
 *.DS_Store
