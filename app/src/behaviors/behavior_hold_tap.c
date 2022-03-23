@@ -91,19 +91,19 @@ const zmk_event_t *captured_events[ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS] = {};
 // Keep track of which key was tapped most recently for 'quick_tap_ms'
 struct last_tapped {
     int32_t position;
-    int64_t tap_deadline;
+    int64_t timestamp;
 };
 
 struct last_tapped last_tapped;
 
-static void store_last_tapped(struct active_hold_tap *hold_tap) {
-    last_tapped.position = hold_tap->position;
-    last_tapped.tap_deadline = hold_tap->timestamp + hold_tap->config->quick_tap_ms;
+static void store_last_tapped(int32_t position, int64_t timestamp) {
+    last_tapped.position = position;
+    last_tapped.timestamp = timestamp;
 }
 
 static bool is_quick_tap(struct active_hold_tap *hold_tap) {
-    return last_tapped.position == hold_tap->position &&
-           last_tapped.tap_deadline > hold_tap->timestamp;
+    return //last_tapped.position == hold_tap->position &&
+           last_tapped.timestamp + hold_tap->config->quick_tap_ms > hold_tap->timestamp;
 }
 
 static int capture_event(const zmk_event_t *event) {
@@ -362,7 +362,7 @@ static int press_binding(struct active_hold_tap *hold_tap) {
     } else {
         binding.behavior_dev = hold_tap->config->tap_behavior_dev;
         binding.param1 = hold_tap->param_tap;
-        store_last_tapped(hold_tap);
+        /* store_last_tapped(hold_tap); */
     }
     return behavior_keymap_binding_pressed(&binding, event);
 }
@@ -618,6 +618,10 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
 static int keycode_state_changed_listener(const zmk_event_t *eh) {
     // we want to catch layer-up events too... how?
     struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
+
+    if (ev->state && !is_mod(ev->usage_page, ev->keycode)) {
+        store_last_tapped(0, ev->timestamp);
+    }
 
     if (undecided_hold_tap == NULL) {
         // LOG_DBG("0x%02X bubble (no undecided hold_tap active)", ev->keycode);
