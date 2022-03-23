@@ -390,6 +390,10 @@ config ZMK_EXT_POWER
 	bool "Enable support to control external power output"
 	default y
 
+config ZMK_EXT_POWER_USB_ONLY
+	bool "Turn off external power when USB is disconnected"
+	default n
+
 #Power Management
 endmenu
 
