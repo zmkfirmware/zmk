@@ -325,6 +325,9 @@ config ZMK_RGB_UNDERGLOW_ON_START
 	bool "RGB underglow starts on by default"
 	default y
 
+config ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE
+	bool "Turn off RGB underglow when keyboard goes into idle state"
+
 #ZMK_RGB_UNDERGLOW
 endif
 
