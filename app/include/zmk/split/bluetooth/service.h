@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <drivers/sensor.h>
+
 #define ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN 9
 
 struct zmk_split_run_behavior_data {
@@ -20,5 +22,7 @@ struct zmk_split_run_behavior_payload {
     char behavior_dev[ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN];
 } __packed;
 
+
 int zmk_split_bt_position_pressed(uint8_t position);
 int zmk_split_bt_position_released(uint8_t position);
+int zmk_split_bt_sensor_triggered(uint8_t sensor_number, struct sensor_value value);
