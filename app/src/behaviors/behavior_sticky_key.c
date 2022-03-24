@@ -26,7 +26,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define ZMK_BHV_STICKY_KEY_MAX_HELD 10
 
-#define ZMK_BHV_STICKY_KEY_POSITION_FREE ULONG_MAX
+#define ZMK_BHV_STICKY_KEY_POSITION_FREE UINT32_MAX
 
 struct behavior_sticky_key_config {
     uint32_t release_after_ms;
