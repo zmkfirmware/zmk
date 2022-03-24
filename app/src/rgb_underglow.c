@@ -290,7 +290,8 @@ int zmk_rgb_underglow_get_state(bool *on_off) {
     return 0;
 }
 
-int zmk_rgb_underglow_on() {
+// Enables underglow LEDs and underglow_tick, but doesn't update state
+int zmk_rgb_underglow_resume() {
     if (!led_strip)
         return -ENODEV;
 
@@ -303,14 +304,22 @@ int zmk_rgb_underglow_on() {
     }
 #endif
 
+    k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
+
+    return 0;
+}
+
+int zmk_rgb_underglow_on() {
+    zmk_rgb_underglow_resume();
+
     state.on = true;
     state.animation_step = 0;
-    k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
 
     return zmk_rgb_underglow_save_state();
 }
 
-int zmk_rgb_underglow_off() {
+// Disables underglow LEDs and underglow_tick, but doesn't update state
+int zmk_rgb_underglow_pause() {
     if (!led_strip)
         return -ENODEV;
 
@@ -330,6 +339,13 @@ int zmk_rgb_underglow_off() {
     led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
 
     k_timer_stop(&underglow_tick);
+
+    return 0;
+}
+
+int zmk_rgb_underglow_off() {
+    zmk_rgb_underglow_pause();
+
     state.on = false;
 
     return zmk_rgb_underglow_save_state();
@@ -338,22 +354,24 @@ int zmk_rgb_underglow_off() {
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
 static int zmk_rgb_underglow_event_listener(const zmk_event_t *eh) {
 
-    struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
-    if (ev == NULL) {
-        return -ENOTSUP;
-    }
+    if (state.on == true) {
+        struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
+        if (ev == NULL) {
+            return -ENOTSUP;
+        }
 
-    switch (ev->state) {
-        case ZMK_ACTIVITY_ACTIVE:
-            zmk_rgb_underglow_on();
-            break;
-        case ZMK_ACTIVITY_IDLE:
-        case ZMK_ACTIVITY_SLEEP:
-            zmk_rgb_underglow_off();
-            break;
-        default:
-            LOG_WRN("Unhandled activity state: %d", ev->state);
-            return -EINVAL;
+        switch (ev->state) {
+            case ZMK_ACTIVITY_ACTIVE:
+                zmk_rgb_underglow_resume();
+                break;
+            case ZMK_ACTIVITY_IDLE:
+            case ZMK_ACTIVITY_SLEEP:
+                zmk_rgb_underglow_pause();
+                break;
+            default:
+                LOG_WRN("Unhandled activity state: %d", ev->state);
+                return -EINVAL;
+        }
     }
     return 0;
 }
