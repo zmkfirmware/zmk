@@ -280,10 +280,10 @@ platform.
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
-export ZSDK_VERSION=0.12.4
-wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run" && \
-	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
-	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run"
+export ZSDK_VERSION=0.13.2
+wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" && \
+	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
+	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run"
 ```
 
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
@@ -315,10 +315,10 @@ export CROSS_COMPILE=/usr/bin/arm-none-eabi-
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
-export ZSDK_VERSION=0.12.4
-wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run" && \
-	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
-	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run"
+export ZSDK_VERSION=0.13.2
+wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" && \
+	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
+	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run"
 ```
 
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
