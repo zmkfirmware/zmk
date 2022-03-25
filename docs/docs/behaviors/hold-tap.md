@@ -48,6 +48,10 @@ If you press a tapped hold-tap again within `quick-tap-ms` milliseconds, it will
 
 In QMK, unlike ZMK, this functionality is enabled by default, and you turn it off using `TAPPING_FORCE_HOLD`.
 
+#### `global-quick-tap`
+
+If global quick tap is enabled, then the quick tap will apply not only when the given hold tap is tapped, but for any key tap before it. This effectively disables the hold tap when typing quickly, which is can be quite useful for homerow mods. It can also have the effect of removing the input delay when typing quickly.
+
 #### `retro-tap`
 
 If retro tap is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime.
