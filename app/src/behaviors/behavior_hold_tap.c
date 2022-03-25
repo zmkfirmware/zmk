@@ -104,7 +104,7 @@ static void store_last_hold_tapped(struct active_hold_tap *hold_tap) {
 }
 
 // For global quick tap we just keep track of when the last key was pressed last
-int64_t last_key_tapped_timestamp;
+int64_t last_key_tapped_timestamp = INT64_MIN;
 
 static bool is_quick_tap(struct active_hold_tap *hold_tap) {
     if (hold_tap->config->global_quick_tap) {
