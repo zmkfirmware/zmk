@@ -1,13 +1,31 @@
-# Zephyr™ Mechanical Keyboard (ZMK) Firmware
+# ZMK Fork Optimized for Sofle Keyboards
 
-[![Discord](https://img.shields.io/discord/719497620560543766)](https://zmk.dev/community/discord/invite)
-[![Build](https://github.com/zmkfirmware/zmk/workflows/Build/badge.svg)](https://github.com/zmkfirmware/zmk/actions)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+This is a zmk fork that improves encoder, display and underglow support of zmk.
 
-[ZMK Firmware](https://zmk.dev/) is an open source (MIT) keyboard firmware built on the [Zephyr™ Project](https://www.zephyrproject.org/) Real Time Operating System (RTOS). ZMK's goal is to provide a modern, wireless, and powerful firmware free of licensing issues.
+While it's been optimized for and tested with a sofle choc keyboard, it can be benificial for and should work with any split keyboard that is using encoders and displays.
 
-Check out the website to learn more: https://zmk.dev/
+## It adds the following features and fixes:
 
-You can also come join our [ZMK Discord Server](https://zmk.dev/community/discord/invite)
+* Adds underglow (used for backlight) support to Sofle shield ([PR #1188](https://github.com/zmkfirmware/zmk/pull/1188))
+* Fixes split side encoder not working ([PR #728](https://github.com/zmkfirmware/zmk/pull/728))
+* Fixes display not working if you toggle external power off and then on again ([Issue #674](https://github.com/zmkfirmware/zmk/issues/674))
+* Adds automatic disabling and enabling of external power when USB is disconnected or connected ([PR #1184](https://github.com/zmkfirmware/zmk/pull/1184))
+* Adds automatic disabling of backlight if the keyboard is idle ([PR #1179](https://github.com/zmkfirmware/zmk/pull/1179))
 
-To review features, check out the [feature overview](https://zmk.dev/docs/). ZMK is under active development, and new features are listed with the [enhancement label](https://github.com/zmkfirmware/zmk/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) in GitHub. Please feel free to add 👍 to the issue description of any requests to upvote the feature.
+Most of these fixes and features have not made it into the official zmk yet, because they don't meet the (very resaonable and completely understandable) code standards of the zmk maintainers.
+
+However, while these fixes and features may not meet the quality standards of the official project, they work well enough to be used until these features get properly implemented.
+
+## How to use
+
+### Adjust your zmk-config's west.yml
+
+If you already have an existing sofle config, you can adjust your `config/west.yml` file to use this fork instead of the official version.
+
+Use [this commit as an example](https://github.com/infused-kim/zmk-config-sofle/commit/6b770ebdb6ad505f102f6b157c5f354ae9c884d0) of how to do it.
+
+Refer to this [.conf file](https://github.com/infused-kim/zmk-config-sofle/blob/main/config/sofle.conf) and this [.keymap file](https://github.com/infused-kim/zmk-config-sofle/blob/main/config/sofle.keymap) for config options.
+
+### Use zmk-config-sofle
+
+Alternatively, you can also use my [zmk-config-sofle repo](https://github.com/infused-kim/zmk-config-sofle) as a starting point for your config.
