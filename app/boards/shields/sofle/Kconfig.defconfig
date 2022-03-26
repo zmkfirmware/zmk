@@ -8,7 +8,7 @@ config ZMK_KEYBOARD_NAME
 
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
 	default y
-	
+
 endif
 
 if SHIELD_SOFLE_LEFT || SHIELD_SOFLE_RIGHT
@@ -51,5 +51,11 @@ choice LVGL_COLOR_DEPTH
 endchoice
 
 endif # LVGL
+
+if ZMK_RGB_UNDERGLOW
+
+config WS2812_STRIP
+	default y
+endif
 
 endif
