@@ -37,6 +37,10 @@ This can be verified by checking the file in question, found in `mkdir/app/build
 
 After opening the `<board>.dts.pre.tmp:<line number>` and scrolling down to the referenced line, one can locate errors within their shield's keymap by checking if the referenced keycodes were properly converted into the correct [USB HID Usage ID](https://www.usb.org/document-library/hid-usage-tables-12).
 
+:::note
+If you are reviewing these errors in the GitHub Actions tab, the contents of `<board>.dts.pre.tmp` is output (with line numbers) in the next step of the build process.
+:::
+
 |                                                                   ![Unhealthy Keymap Temp](../docs/assets/troubleshooting/keymaps/unhealthyEDIT.png)                                                                   |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | An incorrectly defined keymap unable to compile. As shown in red, `&kp SPAC` is not a valid reference to the [USB HID Usage ID](https://www.usb.org/document-library/hid-usage-tables-12) used for "Keyboard Spacebar" |
