@@ -41,6 +41,7 @@ struct peripheral_slot {
     struct bt_conn *conn;
     struct bt_gatt_discover_params discover_params;
     struct bt_gatt_subscribe_params subscribe_params;
+    struct bt_gatt_subscribe_params batt_lvl_subscribe_params;
     struct bt_gatt_discover_params sub_discover_params;
     uint16_t run_behavior_handle;
     uint8_t position_state[POSITION_STATE_DATA_LEN];
@@ -190,14 +191,32 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
     return BT_GATT_ITER_CONTINUE;
 }
 
-static void split_central_subscribe(struct bt_conn *conn) {
+static uint8_t split_central_battery_level_notify_func(struct bt_conn *conn,
+                                                       struct bt_gatt_subscribe_params *params,
+                                                       const void *data, uint16_t length) {
     struct peripheral_slot *slot = peripheral_slot_for_conn(conn);
+
     if (slot == NULL) {
         LOG_ERR("No peripheral state found for connection");
-        return;
+        return BT_GATT_ITER_CONTINUE;
     }
 
-    int err = bt_gatt_subscribe(conn, &slot->subscribe_params);
+    if (!data) {
+        LOG_DBG("[UNSUBSCRIBED]");
+        params->value_handle = 0U;
+        return BT_GATT_ITER_STOP;
+    }
+
+    LOG_DBG("[BATTERY LEVEL NOTIFICATION] data %p length %u", data, length);
+    uint8_t battery_level = ((uint8_t *)data)[0];
+    LOG_DBG("Battery level: %u", battery_level);
+
+    return BT_GATT_ITER_CONTINUE;
+}
+
+static void split_central_subscribe(struct bt_conn *conn,
+                                    struct bt_gatt_subscribe_params *subscribe_params) {
+    int err = bt_gatt_subscribe(conn, subscribe_params);
     switch (err) {
     case -EALREADY:
         LOG_DBG("[ALREADY SUBSCRIBED]");
@@ -235,23 +254,29 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
     if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                      BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID))) {
         LOG_DBG("Found position state characteristic");
-        slot->discover_params.uuid = NULL;
-        slot->discover_params.start_handle = attr->handle + 2;
-        slot->discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
-
         slot->subscribe_params.disc_params = &slot->sub_discover_params;
         slot->subscribe_params.end_handle = slot->discover_params.end_handle;
         slot->subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
         slot->subscribe_params.notify = split_central_notify_func;
         slot->subscribe_params.value = BT_GATT_CCC_NOTIFY;
-        split_central_subscribe(conn);
+        split_central_subscribe(conn, &slot->subscribe_params);
     } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                             BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_RUN_BEHAVIOR_UUID))) {
         LOG_DBG("Found run behavior handle");
         slot->run_behavior_handle = bt_gatt_attr_value_handle(attr);
+    } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                            BT_UUID_BAS_BATTERY_LEVEL)) {
+        LOG_DBG("Found battery level characteristics");
+        slot->batt_lvl_subscribe_params.disc_params = &slot->sub_discover_params;
+        slot->batt_lvl_subscribe_params.end_handle = slot->discover_params.end_handle;
+        slot->batt_lvl_subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
+        slot->batt_lvl_subscribe_params.notify = split_central_battery_level_notify_func;
+        slot->batt_lvl_subscribe_params.value = BT_GATT_CCC_NOTIFY;
+        split_central_subscribe(conn, &slot->batt_lvl_subscribe_params);
     }
 
-    bool subscribed = (slot->run_behavior_handle && slot->subscribe_params.value_handle);
+    bool subscribed = (slot->run_behavior_handle && slot->subscribe_params.value_handle &&
+                       slot->batt_lvl_subscribe_params.value_handle);
 
     return subscribed ? BT_GATT_ITER_STOP : BT_GATT_ITER_CONTINUE;
 }
@@ -281,7 +306,6 @@ static uint8_t split_central_service_discovery_func(struct bt_conn *conn,
     LOG_DBG("Found split service");
     slot->discover_params.uuid = NULL;
     slot->discover_params.func = split_central_chrc_discovery_func;
-    slot->discover_params.start_handle = attr->handle + 1;
     slot->discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
 
     int err = bt_gatt_discover(conn, &slot->discover_params);
