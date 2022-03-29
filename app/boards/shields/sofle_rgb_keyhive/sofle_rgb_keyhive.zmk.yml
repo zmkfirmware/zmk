@@ -9,6 +9,8 @@ features:
   - keys
   - display
   - encoder
+  - underglow
+  - backlight
 siblings:
   - sofle_rgb_keyhive_left
   - sofle_rgb_keyhive_right
