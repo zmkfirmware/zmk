@@ -52,19 +52,41 @@ If you are reviewing these errors in the GitHub Actions tab, the contents of `<b
 ### Split Keyboard Halves Unable to Pair
 
 Previously, pairing split keyboard halves involved a **BLE Reset** via a combination of held keys that removed all bluetooth profile information from the keyboard.
-Since then, a much simpler procedure of performing a bluetooth reset for split keyboards has come about, without the need for any file modification:
+Since then, Bluetooth reset for split keyboards can be performed by flashing a settings reset firmware to both halves with one of the following options:
 
-**New Procedure:**
+#### Option 1: Build Reset UF2 in 'zmk-config'
+
+Find the `build.yaml` file in your `zmk-config` folder and add an additional settings reset build for the board used by your split keyboard. For example assume that 
+we have setup nice!nano v2 for Corne, apppend the following `settings_reset` shield to the `build.yaml` file:
+
+```yml
+include:
+  - board: nice_nano_v2
+    shield: corne_left
+  - board: nice_nano_v2
+    shield: corne_right
+  - board: nice_nano_v2
+    shield: settings_reset
+```
+
+Save the file, commit the changes and push them to GitHub. Download the new firmware zip file build by the latest GitHub Actions job. In it you will find an 
+additional `settings_reset` UF2 image file. Reset the split keyboard with the following steps:
+
+1. Put each half of the split keyboard into bootloader mode.
+2. Flash one of the halves of the split with the downloaded settings reset UF2 image. Immediately after flashing the chosen half, immediately put it into bootloader mode to avoid accidental bonding between the halves.
+3. Repeat step 2 with the other half of the split keyboard.
+4. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
+
+#### Option 2: Download Reset UF2 from ZMK's Workflow
 
 1. [Open the GitHub `Actions` tab and select the `Build` workflow](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain+event%3Apush).
-1. Find one of the 'results' for which the core-coverage job was successfully run, indicated by a green checkmark in the core-coverage bubble.
-1. From the next page under "Artifacts", download the `$boardname-settings_reset-zmk` zip file.
-1. Unzip the downloaded file.
-1. Put each half of the split keyboard into bootloader mode
-1. Flash one of the halves of the split with the "settings clear" UF2 image from step 1. Immediately after flashing "settings clear" to the chosen half, immediately put it into bootloader mode
-   to avoid accidental bonding between the halves.
-1. Repeat step 3 with the other half of the split keyboard
-1. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half)
+2. Find one of the 'results' for which the core-coverage job was successfully run, indicated by a green checkmark in the core-coverage bubble.
+3. From the next page under "Artifacts", download the `$boardname-settings_reset-zmk` zip file.
+4. Unzip the downloaded file.
+5. Put each half of the split keyboard into bootloader mode.
+6. Flash one of the halves of the split with the "settings reset" UF2 image from step 4. Immediately after flashing the chosen half, immediately put it into bootloader mode to avoid accidental bonding between the halves.
+7. Repeat step 6 with the other half of the split keyboard.
+8. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
 
 | ![Successful core-coverage Job](../docs/assets/troubleshooting/splitpairing/corecoverage.png) |
 | :-------------------------------------------------------------------------------------------: |
