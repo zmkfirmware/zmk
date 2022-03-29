@@ -541,6 +541,10 @@ choice CBPRINTF_IMPLEMENTATION
 
 endchoice
 
+config ZMK_USB_REPORT_LEDS
+  bool "Enable usb report leds"
+  select ENABLE_HID_INT_OUT_EP
+
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"

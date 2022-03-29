@@ -59,6 +59,20 @@ int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
     }
 }
 
+#ifdef CONFIG_ZMK_USB_REPORT_LEDS
+
+int zmk_usb_hid_receive_report(uint8_t *report, size_t len) {
+    int err = hid_int_ep_read(hid_dev, report, len, NULL);
+
+    if (err) {
+        LOG_ERR("Error receive report %d", err);
+    }
+
+    return err;
+}
+
+#endif /* CONFIG_ZMK_USB_REPORT_LEDS */
+
 #endif /* CONFIG_ZMK_USB */
 
 enum usb_dc_status_code zmk_usb_get_status() { return usb_status; }

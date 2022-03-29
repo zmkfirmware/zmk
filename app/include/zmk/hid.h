@@ -183,6 +183,41 @@ static const uint8_t zmk_hid_report_desc[] = {
     CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE,
     HID_MI_INPUT,
     0x00,
+
+#ifdef CONFIG_ZMK_USB_REPORT_LEDS
+    /* LED */
+    0x85,
+    0x01,
+    /* REPORT_COUNT (5) */
+    HID_GI_REPORT_COUNT,
+    0x05,
+    /* REPORT_SIZE (1) */
+    HID_GI_REPORT_SIZE,
+    0x01,
+    /* USAGE_PAGE (Page# for LEDs) */
+    HID_GI_USAGE_PAGE,
+    0x08,
+    /* USAGE_MINIMUM (1) */
+    0x19,
+    0x01,
+    /* USAGE_MAXIMUM (5) */
+    0x29,
+    0x05,
+    /* OUTPUT (Data, Variable, Absolute), */
+    HID_MI_OUTPUT,
+    0x02,
+    /* LED REPORT */
+    /* REPORT_COUNT (1) */
+    HID_GI_REPORT_COUNT,
+    0x01,
+    /* REPORT_SIZE (3) */
+    HID_GI_REPORT_SIZE,
+    0x03,
+    /* OUTPUT (Data, Variable, Absolute), */
+    HID_MI_OUTPUT,
+    0x01,
+#endif /* CONFIG_ZMK_USB_REPORT_LEDS */
+
     /* END COLLECTION */
     HID_MI_COLLECTION_END,
 };
