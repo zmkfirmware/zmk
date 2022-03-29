@@ -1,0 +1,8 @@
+# Copyright (c) 2022 Josh Whitley
+# SPDX-License-Identifier: MIT
+
+config SHIELD_SOFLE_RGB_KEYHIVE_LEFT
+	def_bool $(shields_list_contains,sofle_rgb_keyhive_left)
+
+config SHIELD_SOFLE_RGB_KEYHIVE_RIGHT
+	def_bool $(shields_list_contains,sofle_rgb_keyhive_right)
