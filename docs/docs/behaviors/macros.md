@@ -187,14 +187,14 @@ bindings
 
 ### Unicode Sequences
 
-Many operating systems allow a special sequence to input unicode characters, e.g. [Windows alt codes](https://support.microsoft.com/en-us/office/insert-ascii-or-unicode-latin-based-symbols-and-characters-d13f58d3-7bcb-44a7-a4d5-972ee12e50e0). You can use macros to insert there automatically, e.g.:
+Many operating systems allow a special sequence to input unicode characters, e.g. [Windows alt codes](https://support.microsoft.com/en-us/office/insert-ascii-or-unicode-latin-based-symbols-and-characters-d13f58d3-7bcb-44a7-a4d5-972ee12e50e0). You can use macros to automate inputting the sequences, e.g. below macro inserts `£` on Windows:
 
 ```
 wait-ms = <40>;
 tap-ms = <40>;
 bindings
     = <&macro_press   &kp LALT>
-    , <&macro_tap     &kp N0 &kp N1 &kp N6 &kp N3>
+    , <&macro_tap     &kp KP_N0 &kp KP_N1 &kp KP_N6 &kp KP_N3>
     , <&macro_release &kp LALT>
     ;
 ```
