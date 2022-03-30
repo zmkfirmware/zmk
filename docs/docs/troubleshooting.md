@@ -55,7 +55,7 @@ Split keyboard halves pairing issue can be resolved by flashing a settings reset
 
 #### Option 1: Build Reset UF2 in 'zmk-config'
 
-Find the `build.yaml` file in your `zmk-config` folder and add an additional settings reset build for the board used by your split keyboard. For example assume that we have setup nice!nano v2 for Corne, apppend the following `settings_reset` shield to the `build.yaml` file:
+Find the `build.yaml` file in your `zmk-config` folder and add an additional settings reset build for the board used by your split keyboard. For example assuming that the config repo is setup for nice!nano v2 with Corne, append the `settings_reset` shield to the `build.yaml` file as follows:
 
 ```yml
 include:
@@ -73,7 +73,7 @@ Save the file, commit the changes and push them to GitHub. Download the new firm
 
 1. [Open the GitHub `Actions` tab and select the `Build` workflow](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain+event%3Apush).
 2. Find one of the 'results' for which the core-coverage job was successfully run, indicated by a green checkmark in the core-coverage bubble like the image example below.
-3. From the next page under "Artifacts", download and unzip the `$boardname-settings_reset-zmk` zip file for the UF2 image.
+3. From the next page under "Artifacts", download and unzip the `<board_name>-settings_reset-zmk` zip file for the UF2 image.
 
 | ![Successful core-coverage Job](../docs/assets/troubleshooting/splitpairing/corecoverage.png) |
 | :-------------------------------------------------------------------------------------------: |
@@ -84,7 +84,7 @@ Save the file, commit the changes and push them to GitHub. Download the new firm
 Perform the following steps to reset both halves of your split keyboard:
 
 1. Put each half of the split keyboard into bootloader mode.
-2. Flash one of the halves of the split with the downloaded settings reset UF2 image. Immediately after flashing the chosen half, immediately put it into bootloader mode to avoid accidental bonding between the halves.
+2. Flash one of the halves of the split with the downloaded settings reset UF2 image. Immediately after flashing the chosen half, put it into bootloader mode to avoid accidental bonding between the halves.
 3. Repeat step 2 with the other half of the split keyboard.
 4. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
 
