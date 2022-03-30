@@ -72,8 +72,8 @@ Save the file, commit the changes and push them to GitHub. Download the new firm
 #### Option 2: Download Reset UF2 from ZMK's Workflow
 
 1. [Open the GitHub `Actions` tab and select the `Build` workflow](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain+event%3Apush).
-2. Find one of the 'results' for which the core-coverage job was successfully run, indicated by a green checkmark in the core-coverage bubble like the image example below.
-3. From the next page under "Artifacts", download and unzip the `<board_name>-settings_reset-zmk` zip file for the UF2 image.
+1. Find one of the 'results' for which the core-coverage job was successfully run, indicated by a green checkmark in the core-coverage bubble like the image example below.
+1. From the next page under "Artifacts", download and unzip the `<board_name>-settings_reset-zmk` zip file for the UF2 image.
 
 | ![Successful core-coverage Job](../docs/assets/troubleshooting/splitpairing/corecoverage.png) |
 | :-------------------------------------------------------------------------------------------: |
@@ -84,9 +84,9 @@ Save the file, commit the changes and push them to GitHub. Download the new firm
 Perform the following steps to reset both halves of your split keyboard:
 
 1. Put each half of the split keyboard into bootloader mode.
-2. Flash one of the halves of the split with the downloaded settings reset UF2 image. Immediately after flashing the chosen half, put it into bootloader mode to avoid accidental bonding between the halves.
-3. Repeat step 2 with the other half of the split keyboard.
-4. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
+1. Flash one of the halves of the split with the downloaded settings reset UF2 image. Immediately after flashing the chosen half, put it into bootloader mode to avoid accidental bonding between the halves.
+1. Repeat step 2 with the other half of the split keyboard.
+1. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
 
 After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.
 
