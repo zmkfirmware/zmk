@@ -70,7 +70,7 @@ function mapInterconnect({
 
   return (
     <div key={interconnect.id}>
-      <h4>{interconnect.name} Keyboards</h4>
+      <h4>{interconnect.name} Interconnect</h4>
       {interconnect.description && <p>{interconnect.description}</p>}
       <h5>Boards</h5>
       <ul>
@@ -148,7 +148,7 @@ function HardwareList({ items }: HardwareListProps) {
   return (
     <>
       <h2>Keyboards</h2>
-      <h3>Onboard Controller Boards</h3>
+      <h3>Onboard Controller Keyboards</h3>
       <p>
         Keyboards with onboard controllers are single PCBs that contain all the
         components of a keyboard, including the controller chip, switch
@@ -161,12 +161,13 @@ function HardwareList({ items }: HardwareListProps) {
             <HardwareLineItem key={s.id} item={s} />
           ))}
       </ul>
-      <h3>Composite Boards</h3>
+      <h3>Composite Keyboards</h3>
       <p>
         Composite keyboards are composed of two main PCBs: a small controller
         board with exposed pads, and a larger keyboard PCB (a shield, in ZMK
-        lingo) with switch footprints and location a where the controller is
-        added.
+        lingo) with switch footprints and a location where the controller is
+        added. This location is called an interconnect. Multiple interconnects
+        can be found below.
       </p>
       {Object.values(grouped.interconnects).map(mapInterconnect)}
     </>
