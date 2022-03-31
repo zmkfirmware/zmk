@@ -11,6 +11,9 @@ CONFIG_FPU=y
 # enable GPIO
 CONFIG_GPIO=y
 
+# Needed for matrix to properly work
+CONFIG_ZMK_KSCAN_DIRECT_POLLING=y
+
 # Enable pinmux
 CONFIG_PINMUX=y
 
