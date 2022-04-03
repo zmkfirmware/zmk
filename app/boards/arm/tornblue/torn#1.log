@@ -1,0 +1,1207 @@
+default	20:48:50.190834+0100	bluetoothd	[MacUserClient][NotificationEventHandler] -- Received Heart Beat notification -- HIDShim
+debug	20:48:52.249228+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+info	20:48:52.249377+0100	bluetoothd	Dispatching indication for device <private>
+info	20:48:52.249469+0100	bluetoothd	Dispatching GATT indication for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+debug	20:48:52.249557+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicValueUpdated" to session "com.apple.BTLEServer-central-384-11"
+debug	20:48:52.249979+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+info	20:48:52.250067+0100	bluetoothd	Dispatching indication for device <private>
+info	20:48:52.250123+0100	bluetoothd	Dispatching GATT indication for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+debug	20:48:52.250179+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicValueUpdated" to session "com.apple.BTLEServer-central-384-11"
+default	20:48:52.736798+0100	bluetoothd	Adding LE Connection <private>
+default	20:48:52.736910+0100	bluetoothd	Adding LE Connection <private>
+default	20:48:52.736968+0100	bluetoothd	PowerManager power state is 1
+default	20:48:52.737004+0100	bluetoothd	PowerManager power state is 1
+default	20:48:52.737338+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:48:59.186846+0100	bluetoothd	Adding LE Connection <private>
+default	20:48:59.186964+0100	bluetoothd	Adding LE Connection <private>
+default	20:48:59.187015+0100	bluetoothd	PowerManager power state is 1
+default	20:48:59.187060+0100	bluetoothd	PowerManager power state is 1
+default	20:48:59.187540+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:02.592277+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:02.592478+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:02.592657+0100	bluetoothd	PowerManager power state is 1
+default	20:49:02.593503+0100	bluetoothd	PowerManager power state is 1
+default	20:49:02.594676+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:08.091876+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:08.091954+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:08.091989+0100	bluetoothd	PowerManager power state is 1
+default	20:49:08.092017+0100	bluetoothd	PowerManager power state is 1
+default	20:49:08.092291+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:12.738270+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:12.738389+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:12.738440+0100	bluetoothd	PowerManager power state is 1
+default	20:49:12.738483+0100	bluetoothd	PowerManager power state is 1
+default	20:49:12.738821+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+info	20:49:19.026499+0100	bluetoothd	Battery capacity is now at 84% (discharging)
+default	20:49:19.088059+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:19.088150+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:19.088187+0100	bluetoothd	PowerManager power state is 1
+default	20:49:19.088218+0100	bluetoothd	PowerManager power state is 1
+default	20:49:19.088475+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:19.213677+0100	bluetoothd	Received XPC message "CBMsgIdRetrievePairedPeersWithOptions" from session "com.apple.PerfPowerServices-classic-9915-1055"
+default	20:49:19.215409+0100	bluetoothd	Received XPC message "CBMsgIdPairingAgentRetrievePairedDevices" from session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:49:19.216643+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:49:19.219742+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:49:20.189798+0100	bluetoothd	[MacUserClient][NotificationEventHandler] -- Received Heart Beat notification -- HIDShim
+default	20:49:22.242213+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:22.242281+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:22.242326+0100	bluetoothd	PowerManager power state is 1
+default	20:49:22.242366+0100	bluetoothd	PowerManager power state is 1
+default	20:49:22.242587+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:27.194571+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:27.194684+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:27.194736+0100	bluetoothd	PowerManager power state is 1
+default	20:49:27.194782+0100	bluetoothd	PowerManager power state is 1
+default	20:49:27.195214+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:32.194432+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:32.194531+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:32.194561+0100	bluetoothd	PowerManager power state is 1
+default	20:49:32.194583+0100	bluetoothd	PowerManager power state is 1
+default	20:49:32.194859+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:37.194422+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:37.194516+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:37.194557+0100	bluetoothd	PowerManager power state is 1
+default	20:49:37.194588+0100	bluetoothd	PowerManager power state is 1
+default	20:49:37.194889+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:42.194288+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:42.194396+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:42.194448+0100	bluetoothd	PowerManager power state is 1
+default	20:49:42.194493+0100	bluetoothd	PowerManager power state is 1
+default	20:49:42.194820+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:49.190687+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:49.190804+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:49.190856+0100	bluetoothd	PowerManager power state is 1
+default	20:49:49.190898+0100	bluetoothd	PowerManager power state is 1
+default	20:49:49.191289+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:50.190437+0100	bluetoothd	[MacUserClient][NotificationEventHandler] -- Received Heart Beat notification -- HIDShim
+default	20:49:53.596148+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:53.596271+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:53.596321+0100	bluetoothd	PowerManager power state is 1
+default	20:49:53.596395+0100	bluetoothd	PowerManager power state is 1
+default	20:49:53.596688+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:49:57.194382+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:57.194494+0100	bluetoothd	Adding LE Connection <private>
+default	20:49:57.194545+0100	bluetoothd	PowerManager power state is 1
+default	20:49:57.194585+0100	bluetoothd	PowerManager power state is 1
+default	20:49:57.194920+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:50:03.842961+0100	bluetoothd	Adding LE Connection <private>
+debug	20:50:03.843106+0100	bluetoothd	Already tracking address "<private>" as device "1D6E3010-4A17-171F-E046-3C087BC495C7"
+default	20:50:03.843147+0100	bluetoothd	Adding LE Connection <private>
+info	20:50:03.843229+0100	bluetoothd	Dispatching indication for device <private>
+default	20:50:03.843228+0100	bluetoothd	PowerManager power state is 1
+info	20:50:03.843319+0100	bluetoothd	Dispatching GATT indication for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:03.843354+0100	bluetoothd	PowerManager power state is 1
+debug	20:50:03.843413+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicValueUpdated" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:03.843753+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+info	20:50:03.844433+0100	bluetoothd	Accessory power changed (raw)
+default	20:50:05.630945+0100	bluetoothd	Accessory power changed (coalesced)
+default	20:50:05.631078+0100	bluetoothd	Update devices: paired, classic, 0 total
+default	20:50:05.631222+0100	bluetoothd	Update devices: paired, BLE, 2 total
+default	20:50:05.631278+0100	bluetoothd	Update devices: connected, classic, 0 total
+default	20:50:05.631807+0100	bluetoothd	Update devices: connected, BLE, 2 total, power sources 2
+default	20:50:05.631931+0100	bluetoothd	Device found: CBDevice 1D6E3010-4A17-171F-E046-3C087BC495C7, BDA D0:AE:5A:BD:E5:3A, Nm 'Tornblue Left', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -79%, CF 0x80000000000 < Attr >
+debug	20:50:05.632131+0100	bluetoothd	Device found: CBDevice 9E5CC049-A393-EB24-EBF0-77D7651747B2, BDA D8:0C:6C:EA:F5:BE, Nm 'Tornblue Left #1', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -100%, CF 0x0 < >, unchanged
+default	20:50:09.191916+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:09.192116+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:09.192184+0100	bluetoothd	PowerManager power state is 1
+default	20:50:09.192219+0100	bluetoothd	PowerManager power state is 1
+default	20:50:09.192662+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:50:14.193281+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:14.193401+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:14.193458+0100	bluetoothd	PowerManager power state is 1
+default	20:50:14.193489+0100	bluetoothd	PowerManager power state is 1
+default	20:50:14.193720+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:50:14.567473+0100	bluetoothd	 _GATT_LE_DisconnectedCB on handle 0x00007F98F59048D0 with reason  STATUS 708
+default	20:50:14.567517+0100	bluetoothd	LE Link disconnected for handle 0x7f98f59048d0 address <private> with reason 708 encryptionPending 0
+default	20:50:14.567595+0100	bluetoothd	 Releasing LE connection 0x0042
+default	20:50:14.567624+0100	bluetoothd	LE ConnManager disconnection complete reason 708 address=<private> localRole=Central
+default	20:50:14.568181+0100	bluetoothd	Device "9E5CC049-A393-EB24-EBF0-77D7651747B2" set last connected time to 1648155014
+info	20:50:14.568294+0100	bluetoothd	Writing device "<private>" to 'paired devices' cache
+info	20:50:14.574995+0100	bluetoothd	Successully wrote device "<private>" into 'paired devices' cache
+default	20:50:14.575114+0100	bluetoothd	Found link-ready device calling disconnection notification
+error	20:50:14.575159+0100	bluetoothd	Connection timed out to device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:14.575192+0100	bluetoothd	linkReady:1 disconnectDevice:0 localRole:0 reason:708 result:307
+default	20:50:14.575239+0100	bluetoothd	Removing temporary security keys for device <private>
+default	20:50:14.575278+0100	bluetoothd	Removing temporary IRK for device <private>
+default	20:50:14.575308+0100	bluetoothd	Device "9E5CC049-A393-EB24-EBF0-77D7651747B2" does not require low latency
+default	20:50:14.575366+0100	bluetoothd	Sending 'connection status changed' event to local device listeners
+default	20:50:14.575484+0100	bluetoothd	Masking 'connection status changed' event from local device listener : <private>
+debug	20:50:14.575506+0100	bluetoothd	MBFXPC LOG: BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallbackHandler() 0x7f98f1121750, fCallbacksRegistered:1
+default	20:50:14.575586+0100	bluetoothd	Device disconnected - {cbuuid: 9E5CC049-A393-EB24-EBF0-77D7651747B2, devicename: Tornblue Left #1, lmHandle: 0x42, adv-addr: <private>, resolved-addr: <private>, result: 307}
+debug	20:50:14.575586+0100	bluetoothd	BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallback localDevice:92140001 event:5 result:0 cbid:1
+default	20:50:14.575668+0100	bluetoothd	Sending 'connection state updated' event for device "<private>" to session "com.apple.UserEventAgent-central-461-20"
+default	20:50:14.575722+0100	bluetoothd	Sending XPC message "kCBMsgIdLocalDeviceStatusEvent" to session "com.apple.AirPlayXPCHelper-MBF-162-14"
+default	20:50:14.575804+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralConnectionStateUpdated" to session "com.apple.UserEventAgent-central-461-20"
+debug	20:50:14.575887+0100	bluetoothd	MBFXPC LOG: BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallbackHandler() 0x7f98f1329450, fCallbacksRegistered:1
+debug	20:50:14.576047+0100	bluetoothd	BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallback localDevice:c8490001 event:5 result:0 cbid:1
+default	20:50:14.576116+0100	bluetoothd	Sending XPC message "kCBMsgIdLocalDeviceStatusEvent" to session "com.apple.ContextStoreAgent-MBF-573-30"
+default	20:50:14.576091+0100	bluetoothd	Sending 'connection state updated' event for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+debug	20:50:14.576205+0100	bluetoothd	MBFXPC LOG: BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallbackHandler() 0x7f98f0768c70, fCallbacksRegistered:1
+error	20:50:14.576280+0100	bluetoothd	Couldn't find active session 0x00007F98F59040F0! (status=65535)
+debug	20:50:14.576317+0100	bluetoothd	BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallback localDevice:ae300001 event:5 result:0 cbid:1
+default	20:50:14.576397+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralConnectionStateUpdated" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:14.576647+0100	bluetoothd	Sending XPC message "kCBMsgIdLocalDeviceStatusEvent" to session "com.apple.tipsd-MBF-5149-560"
+default	20:50:14.576785+0100	bluetoothd	Dispatching connection status update for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:14.576934+0100	bluetoothd	App disconnected - {cbuuid: 9E5CC049-A393-EB24-EBF0-77D7651747B2, bundle: com.apple.BTLEServer}
+default	20:50:14.577080+0100	bluetoothd	Sending LESessionEndedMetric(<private>) :<private>
+default	20:50:14.577203+0100	bluetoothd	Sending BT Stats to CoreAnalytics for <private>
+info	20:50:14.577408+0100	bluetoothd	Dropping <private> as it isn't used in any transform (not in the config or budgeted?)
+default	20:50:14.577563+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralDisconnectionCompleted" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:14.577742+0100	bluetoothd	Checking if device <private> is Apple Device
+default	20:50:14.577905+0100	bluetoothd	DIS for device <private>
+default	20:50:14.578175+0100	bluetoothd	Received XPC message "CBMsgIdPeerHasTag" from session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+debug	20:50:14.578340+0100	bluetoothd	found no value for key Tags in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+error	20:50:14.578243+0100	bluetoothd	No handle exists for device
+info	20:50:14.578417+0100	bluetoothd	Received MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.ContextStoreAgent-MBF-573-30"
+default	20:50:14.578739+0100	bluetoothd	Received XPC message "CBMsgIdPeerHasTag" from session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+debug	20:50:14.578901+0100	bluetoothd	found no value for key Tags in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:14.578629+0100	bluetoothd	Sending BT Stats to CoreAnalytics for <private>
+info	20:50:14.578533+0100	bluetoothd	Received MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.AirPlayXPCHelper-MBF-162-14"
+info	20:50:14.578855+0100	bluetoothd	Received MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.tipsd-MBF-5149-560"
+default	20:50:14.578715+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg localDeviceId:c8490001
+default	20:50:14.579925+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg localDeviceId:ae300001
+default	20:50:14.580040+0100	bluetoothd	PowerManager power state is 1
+default	20:50:14.580243+0100	bluetoothd	PowerManager power state is 1
+default	20:50:14.581274+0100	bluetoothd	Returning bluetooth power state: ffffffff
+default	20:50:14.581612+0100	bluetoothd	Returning bluetooth power state: ffffffff
+default	20:50:14.581752+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg bluetooth power state: ffffffff
+default	20:50:14.581823+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg bluetooth power state: ffffffff
+default	20:50:14.579780+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg localDeviceId:92140001
+info	20:50:14.579626+0100	bluetoothd	Dropping <private> as it isn't used in any transform (not in the config or budgeted?)
+info	20:50:14.582003+0100	bluetoothd	Handled MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.tipsd-MBF-5149-560"
+info	20:50:14.581969+0100	bluetoothd	Handled MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.ContextStoreAgent-MBF-573-30"
+default	20:50:14.582287+0100	bluetoothd	Sending 'connection state updated' event for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:14.582159+0100	bluetoothd	PowerManager power state is 1
+error	20:50:14.582832+0100	bluetoothd	Couldn't find active session 0x00007F98F59040F0! (status=65535)
+default	20:50:14.582896+0100	bluetoothd	Returning bluetooth power state: ffffffff
+default	20:50:14.583035+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralConnectionStateUpdated" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:14.583225+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg bluetooth power state: ffffffff
+default	20:50:14.583389+0100	bluetoothd	Sending 'connection state updated' event for device "<private>" to session "com.apple.PerfPowerServices-central-9915-1056"
+info	20:50:14.583456+0100	bluetoothd	Handled MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.AirPlayXPCHelper-MBF-162-14"
+error	20:50:14.583579+0100	bluetoothd	Couldn't find active session 0x00007F98F59040F0! (status=65535)
+default	20:50:14.583801+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralConnectionStateUpdated" to session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:14.584124+0100	bluetoothd	leDeviceDisconnected: LE Connection completed <private>. Device is a LE HID.
+default	20:50:14.584352+0100	bluetoothd	leDeviceDisconnected: LE Link to LE HID <private> has been disconnected. Adjusting Sniff intervals on connected HIDs now.
+debug	20:50:14.584486+0100	bluetoothd	found no value for key moveAllAppleHIDsTo15 in CFPrefsPlistSource<0x7f98f10280a0> (Domain: com.apple.Bluetooth, User: kCFPreferencesAnyUser, ByHost: Yes, Container: (null), Contents Need Refresh: No)
+default	20:50:14.584629+0100	bluetoothd	adjustHIDSniffInterval: Number of connected SCO Devices: 0. Stereo SCO Session Active: 0
+default	20:50:14.584817+0100	bluetoothd	adjustHIDSniffInterval: Number of connected two-sniff attempt Apple Devices: 0. Number of connected Old Apple HID Devices: 0.
+default	20:50:14.585041+0100	bluetoothd	adjustHIDSniffInterval: Number of connected Apple HID Devices: 0. Number of connected non-Apple HIDs: 0.
+default	20:50:14.585226+0100	bluetoothd	adjustHIDSniffInterval: Defaults Write for adjustHIDSniffForStereoSCO: 0
+default	20:50:14.585464+0100	bluetoothd	Switching LE HID "<private>" to 15ms
+default	20:50:14.585616+0100	bluetoothd	 new connection parameters interval 11ms-11ms, timeout=720ms, CE 4-4 latency=0
+default	20:50:14.585776+0100	bluetoothd	 current connection params interval 11ms-11ms, timeout=720ms, CE 4-4 latency=0
+default	20:50:14.585937+0100	bluetoothd	 Ignoring request to update parameters since we are already configured for the same values
+error	20:50:14.586080+0100	bluetoothd	Failed to update connection parameters status=4170
+default	20:50:14.586361+0100	bluetoothd	adjustHIDSniffInterval: Stereo SCO Session Active: 0. Old Apple HIDs connected: 0. Sticking to default Sniff interval for connected HID.
+default	20:50:14.586486+0100	bluetoothd	adjustHIDSniffInterval: Multi-HID Sniff Configuration: 0
+default	20:50:14.586716+0100	bluetoothd	setPreferredSniffParamsOnConnectedTouchIDHIDs: Number of connected classic HIDs: 0. Number of LE HIDs connected: 1. Number of non-Apple HIDs connected: 1
+default	20:50:14.586884+0100	bluetoothd	setPreferredSniffParamsOnConnectedTouchIDHIDs: Number of SCO Connections: 0. A2DP Streaming State: 0.
+default	20:50:14.587061+0100	bluetoothd	adjustHIDSniffInterval: 0 Apple HIDs connected; shifting Game Controllers to 15ms
+default	20:50:14.587249+0100	bluetoothd	handleDisconnectionCompleteCallback skipping processConnectingList, processConnectingList=0, LE Connection Manager State is Active
+default	20:50:14.587390+0100	bluetoothd	BLE Disconnected Default <private> reason 708
+default	20:50:14.587600+0100	bluetoothd	Gatt device disconnected on handle 0x7f98f59048d0 with status 708
+default	20:50:14.587790+0100	bluetoothd	GattGateway device "9E5CC049-A393-EB24-EBF0-77D7651747B2" is disconnected
+info	20:50:14.588119+0100	bluetoothd	Cached service hit!
+info	20:50:14.591093+0100	bluetoothd	Keeping database for paired device "<private>"
+default	20:50:14.591249+0100	bluetoothd	GATT Device <private> disconnected
+default	20:50:14.591490+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:0
+error	20:50:14.591711+0100	bluetoothd	Could not find a device address for device <private>
+default	20:50:14.592004+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.cloudpaird-central-1215-32"
+default	20:50:14.592322+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:0
+error	20:50:14.592545+0100	bluetoothd	Could not find a device address for device <private>
+default	20:50:14.592879+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.UserEventAgent-central-461-20"
+default	20:50:14.592935+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.cloudpaird-central-1215-32"
+default	20:50:14.593044+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:0
+error	20:50:14.593192+0100	bluetoothd	Could not find a device address for device <private>
+default	20:50:14.593391+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:14.593400+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.UserEventAgent-central-461-20"
+default	20:50:14.593545+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:0
+error	20:50:14.593795+0100	bluetoothd	Could not find a device address for device <private>
+default	20:50:14.593859+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:14.593981+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.sharingd-central-572-25"
+info	20:50:14.578972+0100	bluetoothd	Accessory power changed (raw)
+default	20:50:14.594706+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.sharingd-central-572-25"
+default	20:50:14.594743+0100	bluetoothd	Connection status changed
+default	20:50:14.594916+0100	bluetoothd	Update devices: paired, classic, 0 total
+default	20:50:14.595088+0100	bluetoothd	Update devices: paired, BLE, 2 total
+default	20:50:14.579011+0100	bluetoothd	Received XPC message "CBMsgIdConnectPeripheral" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:14.595232+0100	bluetoothd	Update devices: connected, classic, 0 total
+default	20:50:14.595666+0100	bluetoothd	Update devices: connected, BLE, 1 total, power sources 1
+debug	20:50:14.595963+0100	bluetoothd	Device found: CBDevice 1D6E3010-4A17-171F-E046-3C087BC495C7, BDA D0:AE:5A:BD:E5:3A, Nm 'Tornblue Left', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -79%, CF 0x0 < >, unchanged
+default	20:50:14.596359+0100	bluetoothd	Device found: CBDevice 9E5CC049-A393-EB24-EBF0-77D7651747B2, BDA D8:0C:6C:EA:F5:BE, Nm 'Tornblue Left #1', VS 1, DsF 0x800000 < Pairing >, DvF 0x3000 < Hidn BLEP >, DvT Keyboard, Battery M -100%, CF 0x80800200000 < Connections DsFl Attr >
+default	20:50:14.602159+0100	bluetoothd	Received XPC message "CBMsgIdPeerHasTag" from session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+debug	20:50:14.602370+0100	bluetoothd	found no value for key Tags in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:14.610327+0100	bluetoothd	Received XPC message "CBMsgIdPeerHasTag" from session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+debug	20:50:14.610568+0100	bluetoothd	found no value for key Tags in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+info	20:50:14.595314+0100	bluetoothd	Session "<private>" setting up connection scan level of 0 (screenOff 3) for device <private>
+default	20:50:14.611778+0100	bluetoothd	clientBundleID NoClientBundleID clientProcessID NoClientProcessID connectionUseCase 0 maxAllowedConnectionDelay 0 isLatencyCritical 0
+debug	20:50:14.611922+0100	bluetoothd	Temporary IRK for device  <private>, missing IRK (null)
+debug	20:50:14.612118+0100	bluetoothd	updateBTClock =0
+default	20:50:14.612463+0100	bluetoothd	Device <private> overriding wifi coex policy
+default	20:50:14.612840+0100	bluetoothd	Setting minimum RSSI level for connection to 0 for device <private>
+default	20:50:14.613660+0100	bluetoothd	App connecting - {cbuuid: 9E5CC049-A393-EB24-EBF0-77D7651747B2, bundle: com.apple.BTLEServer}
+default	20:50:14.614027+0100	bluetoothd	BLE Connecting Default <private> for <private>
+default	20:50:14.614126+0100	bluetoothd	Connecting device "9E5CC049-A393-EB24-EBF0-77D7651747B2" for session "com.apple.BTLEServer-central-384-11" with options (connect:0 disconnect:0 notify:0 delay:0 wantsObjectDiscoverData:0 transportBridging:0 disableLeGATT:0 ancsRequired:0)
+default	20:50:14.614181+0100	bluetoothd	Device <private> classicPaired 0, lePaired 1, discoveredViaLeScan 1
+default	20:50:14.614278+0100	bluetoothd	Connect called to "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:14.614454+0100	bluetoothd	Current state when trying to connect Idle(0)
+default	20:50:14.614578+0100	bluetoothd	Adding device to connecting list
+default	20:50:14.615226+0100	bluetoothd	MUC - Adding device "9E5CC049-A393-EB24-EBF0-77D7651747B2" with address "<private>" to connection filter accept list supportsVAPairing:NO, waiting for controller to complete.
+default	20:50:14.615864+0100	bluetoothd	Device "<private>" Added to Filter Accept List with status:0
+debug	20:50:14.615950+0100	bluetoothd	device <private> added to filter accept list at <private>
+default	20:50:14.616013+0100	bluetoothd	Added device "9E5CC049-A393-EB24-EBF0-77D7651747B2" to connection filter accept list with CE min 2, max 12, connectionInterval min:7.500000 ms max:15.000000 ms WLParams 0, LowLatency NO
+default	20:50:14.616091+0100	bluetoothd	Device connecting - {cbuuid: 9E5CC049-A393-EB24-EBF0-77D7651747B2, devicename: Tornblue Left #1, result: 0, adv-addr: <private>, resolved-addr: <private>}
+
+
+default	20:50:14.616189+0100	bluetoothd	checkIfFastConnectionScanIsRequired reason:32 state89 isA2DPStreaming:0 isHFPStreaming:0
+info	20:50:14.616281+0100	bluetoothd	<private>
+default	20:50:14.616348+0100	bluetoothd	shouldEnableFastConnectionScan:1 <private><private>
+debug	20:50:14.616394+0100	bluetoothd	fConnectingDevices.size:1
+info	20:50:14.616425+0100	bluetoothd	creating com.apple.bluetooth.LeConnectionManager.HighPriorityScan power assertion
+debug	20:50:14.616729+0100	bluetoothd	Delete 1 out 100 entries from PowerAssertionHistory
+default	20:50:14.616775+0100	bluetoothd	PowerAssertionHistory push time:669844214.62 source:LE_CONNECTION_MANAGER event:Create com.apple.bluetooth.LeConnectionManager.HighPriorityScan
+default	20:50:14.616810+0100	bluetoothd	Setting scan level expiration 6.000000 ms from now
+default	20:50:14.616841+0100	bluetoothd	Arming Fast connection scan Timer with interval 6.000000 seconds
+default	20:50:14.616955+0100	bluetoothd	Bluetooth Daemon: LE Connection scan state: LeConnectionScanHigh
+info	20:50:14.617151+0100	bluetoothd	<private>
+info	20:50:14.617285+0100	bluetoothd	device "<private>" Connection scans [0x30/0x30(level:0)] ignored:NO [aggregated 0x30/0x30, scanCoreEnabled:NO]
+default	20:50:14.617389+0100	bluetoothd	LELR is not enabled, disable coded PHY
+default	20:50:14.617465+0100	bluetoothd	Next connection parameters are: window - 0x30, interval - 0x30 enableLELR - 0 initPHYs - 1
+default	20:50:14.617580+0100	bluetoothd	Starting auto connection for 1 devices
+default	20:50:14.618042+0100	bluetoothd	overriding macOS connection interval to 7.5ms min and 15ms max
+default	20:50:14.618206+0100	bluetoothd	Using public address because device <private> isn't a cloud pair device
+default	20:50:14.618374+0100	bluetoothd	 overriding min/max connection intervals to 6-12ms (9ms)
+default	20:50:14.618484+0100	bluetoothd	 Connecting with interval:7ms-15ms, latency=0, timeout=360ms, initPHYs=00000001 connectingAddress=Public:<private>
+default	20:50:14.618746+0100	bluetoothd	Success, setting new connectionState
+default	20:50:14.618952+0100	bluetoothd	Setting new connection state Idle(0), <private>sec, 0 errs --> Connecting(1), Connection Manager Active(0)
+debug	20:50:14.671623+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+debug	20:50:14.671719+0100	bluetoothd	<private>
+debug	20:50:14.671768+0100	bluetoothd	support for new Scan Enhancement VSC is disabled
+debug	20:50:14.671812+0100	bluetoothd	doesDeviceMatch: fAdvDataMap size:30 fMaxNumOfReportsInMap:200 fAdvDataMap size:30 Puck?:1 mfgMatch:0 roomInMap:1
+debug	20:50:14.671879+0100	bluetoothd	moreAvailable=0
+debug	20:50:14.671900+0100	bluetoothd	isFromADVBuffer=0
+debug	20:50:14.671971+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralDiscovered" to session "com.apple.bluetoothd-central-157-2"
+debug	20:50:14.672096+0100	bluetoothd	support for new Scan Enhancement VSC is disabled
+debug	20:50:14.672125+0100	bluetoothd	Received XPC message <private>: <private>
+default	20:50:14.672246+0100	bluetoothd	 _GATT_LE_ConnectCompleteCB notification from lmHandle 0x00000042 with status OI_OK
+default	20:50:14.672317+0100	bluetoothd	Le topology - {adv-addr: <private>-Random, resolved-addr: <private>-Public, lmhandle: 0x42, interval: 11, latency: 0, lsto: 36, minCE: 0, maxCE: 12, role: master, state: CONNECTED, ready-state: LE_READY_CONNECTION_COMPLETE, enc-state: OFF, phyStatsEnabled: 0}
+debug	20:50:14.672208+0100	bluetoothd	doesDeviceMatch: fAdvDataMap size:30 fMaxNumOfReportsInMap:200 fAdvDataMap size:30 Puck?:0 mfgMatch:0 roomInMap:1
+debug	20:50:14.672269+0100	bluetoothd	WPDScanManager didDiscoverPeripheral:<private> RSSI-69
+debug	20:50:14.672514+0100	bluetoothd	moreAvailable=0
+debug	20:50:14.672600+0100	bluetoothd	isFromADVBuffer=0
+debug	20:50:14.672756+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralDiscovered" to session "com.apple.bluetoothd-central-157-5"
+debug	20:50:14.672902+0100	bluetoothd	Agents: <private>
+debug	20:50:14.672946+0100	bluetoothd	Received XPC message <private>: <private>
+default	20:50:14.673028+0100	bluetoothd	Outgoing LE Connection complete for handle 0x7f98f5b06170 address <private> with status 0
+default	20:50:14.673149+0100	bluetoothd	handleConnectionCompleteCallback address=<private> handle=0x7f98f5b06170 status=0 connectionIsActive=1
+debug	20:50:14.673346+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:14.673381+0100	bluetoothd	Device "9E5CC049-A393-EB24-EBF0-77D7651747B2" set last connected time to 1648155014
+info	20:50:14.673429+0100	bluetoothd	Writing device "<private>" to 'paired devices' cache
+info	20:50:14.673897+0100	bluetoothd	Successully wrote device "<private>" into 'paired devices' cache
+default	20:50:14.673989+0100	bluetoothd	Removing device "9E5CC049-A393-EB24-EBF0-77D7651747B2" with address "<private>" from connection filter accept list, waiting for controller to complete.
+default	20:50:14.674381+0100	bluetoothd	Device "<private>" Removed from Filter Accept List with status:0
+default	20:50:14.674441+0100	bluetoothd	Successful outgoing connection
+default	20:50:14.674484+0100	bluetoothd	Setting new connection state Connecting(1), <private>sec, 0 errs --> Idle(0), Connection Manager Active(0)
+default	20:50:14.674515+0100	bluetoothd	Bluetooth Daemon: LE Connection scan state: LeConnectionScanNone
+default	20:50:14.674559+0100	bluetoothd	Idle, checking Connection Manager state
+default	20:50:14.674585+0100	bluetoothd	Connection Manager state is settled
+default	20:50:14.674614+0100	bluetoothd	deviceUseCase:0 maxUseCaseConnections:100 currentlyConnectedForUseCase:2
+default	20:50:14.674637+0100	bluetoothd	BLE Connection Completed Default <private>
+debug	20:50:14.674766+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.674829+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.674930+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.675050+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.675134+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.675185+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.675270+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.675353+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.675441+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.675474+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.675502+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:14.675578+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:14.675683+0100	bluetoothd	Outgoing connection to device "9E5CC049-A393-EB24-EBF0-77D7651747B2" (<private>) with handle:0x7f98f5b06170 was successful with connection interval 9 active=1
+default	20:50:14.675714+0100	bluetoothd	Connection Complete: setting LE device "<private>" connection threshold to 24 events with interval 9, LSTO 36
+info	20:50:14.675733+0100	bluetoothd	Sending: BD_VSC_SET_PRIORITIZATION_THRESHOLD
+info	20:50:14.675796+0100	bluetoothd	VSC BD_VSC_SET_PRIORITIZATION_THRESHOLD, not supported
+default	20:50:14.675899+0100	bluetoothd	Canceling Fast connection scan Timer
+default	20:50:14.675971+0100	bluetoothd	checkIfFastConnectionScanIsRequired reason:32 state89 isA2DPStreaming:0 isHFPStreaming:0
+default	20:50:14.676007+0100	bluetoothd	shouldEnableFastConnectionScan:0 <private><private>
+info	20:50:14.676105+0100	bluetoothd	destroying com.apple.bluetooth.LeConnectionManager.HighPriorityScan power assertion
+debug	20:50:14.676317+0100	bluetoothd	Delete 1 out 100 entries from PowerAssertionHistory
+default	20:50:14.676398+0100	bluetoothd	PowerAssertionHistory push time:669844214.68 source:LE_CONNECTION_MANAGER event:Destroy com.apple.bluetooth.LeConnectionManager.HighPriorityScan
+debug	20:50:14.676433+0100	bluetoothd	fConnectionState:Idle fConnectingDevices.size:0
+default	20:50:14.676505+0100	bluetoothd	Connection list empty, skipping
+debug	20:50:14.676573+0100	bluetoothd	Already in state Idle, ignoring state change
+default	20:50:14.676605+0100	bluetoothd	Gatt device connected on transport 2 on handle 0x7f98f5b06170 address:<private> with status 0
+default	20:50:14.676630+0100	bluetoothd	Notify gattDeviceConnected <private> transport=LE handle=0x7f98f5b06170
+default	20:50:14.676709+0100	bluetoothd	GattServer device "<private>" connected for session 0x7f98f5b06280
+default	20:50:14.676793+0100	bluetoothd	GattGateway device "9E5CC049-A393-EB24-EBF0-77D7651747B2" is connected with Gatt handle 0x70c
+default	20:50:14.676819+0100	bluetoothd	GATT Device <private> connected
+debug	20:50:14.676848+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+error	20:50:14.691291+0100	bluetoothd	There is already an encryption in progress on this link, ignoring this request (status=65535)
+default	20:50:14.859256+0100	bluetoothd	encryptionStatusChangedCb handle:0x7f98f5b06170 status=0 address=<private> isPairing=0
+debug	20:50:14.859394+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:14.859508+0100	bluetoothd	Encryption is now enabled for device "9E5CC049-A393-EB24-EBF0-77D7651747B2" (<private>)
+info	20:50:14.859622+0100	bluetoothd	Sending: BD_VSC_WRITE_LE_REMOTE_PUBLIC_ADDR
+default	20:50:14.859667+0100	bluetoothd	 ReadRemoteVersionInformationCB LMPVersion=11 mfgName=1521 LMPSubVersion=65535 status OI_OK, ready: wait-for-version, role 0
+info	20:50:14.859683+0100	bluetoothd	VSC BD_VSC_WRITE_LE_REMOTE_PUBLIC_ADDR, not supported
+default	20:50:14.859791+0100	bluetoothd	Sending XPC message "CBMsgIdPeerLinkEncryptionChanged" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:14.859870+0100	bluetoothd	Sending XPC message "CBMsgIdPeerLinkEncryptionChanged" to session "com.apple.BTLEServer-central-384-11"
+
+
+error	20:50:15.286717+0100	bluetoothd	Remote used features error:  STATUS 708
+error	20:50:15.286870+0100	bluetoothd	GAP LinkReadyCB error with status  STATUS 708 during CONNECTED, not-disconnecting
+default	20:50:15.287240+0100	bluetoothd	 _GATT_LE_DisconnectedCB on handle 0x00007F98F5B06170 with reason  STATUS 708
+default	20:50:15.287296+0100	bluetoothd	LE Link disconnected for handle 0x7f98f5b06170 address <private> with reason 708 encryptionPending 0
+default	20:50:15.287348+0100	bluetoothd	 Releasing LE connection 0x0042
+default	20:50:15.287372+0100	bluetoothd	LE ConnManager disconnection complete reason 708 address=<private> localRole=Central
+default	20:50:15.287683+0100	bluetoothd	Device "9E5CC049-A393-EB24-EBF0-77D7651747B2" set last connected time to 1648155015
+info	20:50:15.287734+0100	bluetoothd	Writing device "<private>" to 'paired devices' cache
+info	20:50:15.288028+0100	bluetoothd	Successully wrote device "<private>" into 'paired devices' cache
+error	20:50:15.288088+0100	bluetoothd	Connection timed out to device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:15.288115+0100	bluetoothd	linkReady:0 disconnectDevice:0 localRole:0 reason:708 result:307
+default	20:50:15.288139+0100	bluetoothd	Device disconnected without being ready, skipping disconnection notification.
+default	20:50:15.288158+0100	bluetoothd	Retrying the connection attempt.
+default	20:50:15.288178+0100	bluetoothd	LeConnectionStateIdle, lets add to filter accept list and process connecting devices.
+default	20:50:15.288218+0100	bluetoothd	MUC - Adding device "9E5CC049-A393-EB24-EBF0-77D7651747B2" with address "<private>" to connection filter accept list supportsVAPairing:NO, waiting for controller to complete.
+default	20:50:15.293104+0100	bluetoothd	Device "<private>" Added to Filter Accept List with status:0
+default	20:50:15.293270+0100	bluetoothd	Added device "9E5CC049-A393-EB24-EBF0-77D7651747B2" to connection filter accept list with CE min 2, max 12, connectionInterval min:7.500000 ms max:15.000000 ms WLParams 0, LowLatency NO
+default	20:50:15.293345+0100	bluetoothd	Processing connecting devices
+default	20:50:15.293380+0100	bluetoothd	checkIfFastConnectionScanIsRequired reason:32 state89 isA2DPStreaming:0 isHFPStreaming:0
+info	20:50:15.293442+0100	bluetoothd	<private>
+default	20:50:15.293498+0100	bluetoothd	shouldEnableFastConnectionScan:1 <private><private>
+debug	20:50:15.293534+0100	bluetoothd	fConnectingDevices.size:1
+info	20:50:15.293560+0100	bluetoothd	creating com.apple.bluetooth.LeConnectionManager.HighPriorityScan power assertion
+debug	20:50:15.293847+0100	bluetoothd	Delete 1 out 100 entries from PowerAssertionHistory
+default	20:50:15.293908+0100	bluetoothd	PowerAssertionHistory push time:669844215.29 source:LE_CONNECTION_MANAGER event:Create com.apple.bluetooth.LeConnectionManager.HighPriorityScan
+default	20:50:15.293940+0100	bluetoothd	Setting scan level expiration 5.323000 ms from now
+default	20:50:15.293967+0100	bluetoothd	Arming Fast connection scan Timer with interval 5.323000 seconds
+default	20:50:15.294019+0100	bluetoothd	Bluetooth Daemon: LE Connection scan state: LeConnectionScanHigh
+info	20:50:15.294092+0100	bluetoothd	<private>
+info	20:50:15.294128+0100	bluetoothd	device "<private>" Connection scans [0x30/0x30(level:0)] ignored:NO [aggregated 0x30/0x30, scanCoreEnabled:NO]
+default	20:50:15.294153+0100	bluetoothd	LELR is not enabled, disable coded PHY
+default	20:50:15.294174+0100	bluetoothd	Next connection parameters are: window - 0x30, interval - 0x30 enableLELR - 0 initPHYs - 1
+default	20:50:15.294195+0100	bluetoothd	Starting auto connection for 1 devices
+default	20:50:15.294218+0100	bluetoothd	overriding macOS connection interval to 7.5ms min and 15ms max
+default	20:50:15.294244+0100	bluetoothd	Using public address because device <private> isn't a cloud pair device
+default	20:50:15.294271+0100	bluetoothd	 overriding min/max connection intervals to 6-12ms (9ms)
+default	20:50:15.294296+0100	bluetoothd	 Connecting with interval:7ms-15ms, latency=0, timeout=360ms, initPHYs=00000001 connectingAddress=Public:<private>
+default	20:50:15.294352+0100	bluetoothd	Success, setting new connectionState
+default	20:50:15.294382+0100	bluetoothd	Setting new connection state Idle(0), <private>sec, 0 errs --> Connecting(1), Connection Manager Active(0)
+default	20:50:15.294472+0100	bluetoothd	BLE Disconnected Default <private> reason 708
+default	20:50:15.294519+0100	bluetoothd	Gatt device disconnected on handle 0x7f98f5b06170 with status 708
+default	20:50:15.294579+0100	bluetoothd	GattGateway device "9E5CC049-A393-EB24-EBF0-77D7651747B2" is disconnected
+info	20:50:15.294636+0100	bluetoothd	Cached service hit!
+info	20:50:15.294747+0100	bluetoothd	Keeping database for paired device "<private>"
+default	20:50:15.294789+0100	bluetoothd	GATT Device <private> disconnected
+default	20:50:16.596630+0100	bluetoothd	Accessory power changed (coalesced)
+default	20:50:16.596811+0100	bluetoothd	Update devices: paired, classic, 0 total
+default	20:50:16.596966+0100	bluetoothd	Update devices: paired, BLE, 2 total
+default	20:50:16.597029+0100	bluetoothd	Update devices: connected, classic, 0 total
+default	20:50:16.597559+0100	bluetoothd	Update devices: connected, BLE, 1 total, power sources 1
+debug	20:50:16.597701+0100	bluetoothd	Device found: CBDevice 1D6E3010-4A17-171F-E046-3C087BC495C7, BDA D0:AE:5A:BD:E5:3A, Nm 'Tornblue Left', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -79%, CF 0x0 < >, unchanged
+debug	20:50:16.597785+0100	bluetoothd	Device found: CBDevice 9E5CC049-A393-EB24-EBF0-77D7651747B2, BDA D8:0C:6C:EA:F5:BE, Nm 'Tornblue Left #1', VS 1, DsF 0x800000 < Pairing >, DvF 0x3000 < Hidn BLEP >, DvT Keyboard, Battery M -100%, CF 0x0 < >, unchanged
+debug	20:50:16.879524+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+debug	20:50:16.879702+0100	bluetoothd	<private>
+debug	20:50:16.879793+0100	bluetoothd	support for new Scan Enhancement VSC is disabled
+debug	20:50:16.879862+0100	bluetoothd	doesDeviceMatch: fAdvDataMap size:30 fMaxNumOfReportsInMap:200 fAdvDataMap size:30 Puck?:1 mfgMatch:0 roomInMap:1
+default	20:50:16.879925+0100	bluetoothd	 _GATT_LE_ConnectCompleteCB notification from lmHandle 0x00000042 with status OI_OK
+debug	20:50:16.879971+0100	bluetoothd	moreAvailable=0
+debug	20:50:16.880019+0100	bluetoothd	isFromADVBuffer=0
+default	20:50:16.880022+0100	bluetoothd	Le topology - {adv-addr: <private>-Random, resolved-addr: <private>-Public, lmhandle: 0x42, interval: 11, latency: 0, lsto: 36, minCE: 0, maxCE: 12, role: master, state: CONNECTED, ready-state: LE_READY_CONNECTION_COMPLETE, enc-state: OFF, phyStatsEnabled: 0}
+debug	20:50:16.880197+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralDiscovered" to session "com.apple.bluetoothd-central-157-2"
+debug	20:50:16.880326+0100	bluetoothd	support for new Scan Enhancement VSC is disabled
+debug	20:50:16.880374+0100	bluetoothd	doesDeviceMatch: fAdvDataMap size:30 fMaxNumOfReportsInMap:200 fAdvDataMap size:30 Puck?:0 mfgMatch:0 roomInMap:1
+debug	20:50:16.880408+0100	bluetoothd	Received XPC message <private>: <private>
+debug	20:50:16.880440+0100	bluetoothd	moreAvailable=0
+debug	20:50:16.880623+0100	bluetoothd	WPDScanManager didDiscoverPeripheral:<private> RSSI-70
+debug	20:50:16.880635+0100	bluetoothd	isFromADVBuffer=0
+debug	20:50:16.880856+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralDiscovered" to session "com.apple.bluetoothd-central-157-5"
+debug	20:50:16.880964+0100	bluetoothd	Agents: <private>
+default	20:50:16.881016+0100	bluetoothd	Outgoing LE Connection complete for handle 0x7f98f5b06170 address <private> with status 0
+debug	20:50:16.881028+0100	bluetoothd	Received XPC message <private>: <private>
+default	20:50:16.881058+0100	bluetoothd	handleConnectionCompleteCallback address=<private> handle=0x7f98f5b06170 status=0 connectionIsActive=1
+debug	20:50:16.881155+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:16.881207+0100	bluetoothd	Device "9E5CC049-A393-EB24-EBF0-77D7651747B2" set last connected time to 1648155016
+info	20:50:16.881256+0100	bluetoothd	Writing device "<private>" to 'paired devices' cache
+info	20:50:16.881594+0100	bluetoothd	Successully wrote device "<private>" into 'paired devices' cache
+default	20:50:16.881659+0100	bluetoothd	Removing device "9E5CC049-A393-EB24-EBF0-77D7651747B2" with address "<private>" from connection filter accept list, waiting for controller to complete.
+default	20:50:16.882262+0100	bluetoothd	Device "<private>" Removed from Filter Accept List with status:0
+default	20:50:16.882333+0100	bluetoothd	Successful outgoing connection
+default	20:50:16.882371+0100	bluetoothd	Setting new connection state Connecting(1), <private>sec, 0 errs --> Idle(0), Connection Manager Active(0)
+default	20:50:16.882397+0100	bluetoothd	Bluetooth Daemon: LE Connection scan state: LeConnectionScanNone
+default	20:50:16.882436+0100	bluetoothd	Idle, checking Connection Manager state
+default	20:50:16.882458+0100	bluetoothd	Connection Manager state is settled
+default	20:50:16.882483+0100	bluetoothd	deviceUseCase:0 maxUseCaseConnections:100 currentlyConnectedForUseCase:2
+default	20:50:16.882509+0100	bluetoothd	BLE Connection Completed Default <private>
+debug	20:50:16.882560+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.882602+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.882637+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.882668+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.882747+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.882800+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.882838+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.882888+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.882971+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.883024+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.883063+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:16.883095+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:16.883162+0100	bluetoothd	Outgoing connection to device "9E5CC049-A393-EB24-EBF0-77D7651747B2" (<private>) with handle:0x7f98f5b06170 was successful with connection interval 9 active=1
+default	20:50:16.883198+0100	bluetoothd	Connection Complete: setting LE device "<private>" connection threshold to 24 events with interval 9, LSTO 36
+info	20:50:16.883256+0100	bluetoothd	Sending: BD_VSC_SET_PRIORITIZATION_THRESHOLD
+info	20:50:16.883295+0100	bluetoothd	VSC BD_VSC_SET_PRIORITIZATION_THRESHOLD, not supported
+default	20:50:16.883397+0100	bluetoothd	Canceling Fast connection scan Timer
+default	20:50:16.883451+0100	bluetoothd	checkIfFastConnectionScanIsRequired reason:32 state89 isA2DPStreaming:0 isHFPStreaming:0
+default	20:50:16.883533+0100	bluetoothd	shouldEnableFastConnectionScan:0 <private><private>
+info	20:50:16.883572+0100	bluetoothd	destroying com.apple.bluetooth.LeConnectionManager.HighPriorityScan power assertion
+debug	20:50:16.883713+0100	bluetoothd	Delete 1 out 100 entries from PowerAssertionHistory
+default	20:50:16.883754+0100	bluetoothd	PowerAssertionHistory push time:669844216.88 source:LE_CONNECTION_MANAGER event:Destroy com.apple.bluetooth.LeConnectionManager.HighPriorityScan
+debug	20:50:16.883811+0100	bluetoothd	fConnectionState:Idle fConnectingDevices.size:0
+default	20:50:16.883851+0100	bluetoothd	Connection list empty, skipping
+debug	20:50:16.883907+0100	bluetoothd	Already in state Idle, ignoring state change
+default	20:50:16.883963+0100	bluetoothd	Gatt device connected on transport 2 on handle 0x7f98f5b06170 address:<private> with status 0
+default	20:50:16.883999+0100	bluetoothd	Notify gattDeviceConnected <private> transport=LE handle=0x7f98f5b06170
+default	20:50:16.884079+0100	bluetoothd	GattServer device "<private>" connected for session 0x7f98f5b06280
+default	20:50:16.884123+0100	bluetoothd	GattGateway device "9E5CC049-A393-EB24-EBF0-77D7651747B2" is connected with Gatt handle 0x70d
+default	20:50:16.884226+0100	bluetoothd	GATT Device <private> connected
+debug	20:50:16.884279+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+error	20:50:16.918575+0100	bluetoothd	There is already an encryption in progress on this link, ignoring this request (status=65535)
+default	20:50:16.962903+0100	bluetoothd	encryptionStatusChangedCb handle:0x7f98f5b06170 status=0 address=<private> isPairing=0
+debug	20:50:16.963126+0100	bluetoothd	Already tracking address "<private>" as device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:16.963232+0100	bluetoothd	Encryption is now enabled for device "9E5CC049-A393-EB24-EBF0-77D7651747B2" (<private>)
+info	20:50:16.963311+0100	bluetoothd	Sending: BD_VSC_WRITE_LE_REMOTE_PUBLIC_ADDR
+default	20:50:16.963305+0100	bluetoothd	 ReadRemoteVersionInformationCB LMPVersion=11 mfgName=1521 LMPSubVersion=65535 status OI_OK, ready: wait-for-version, role 0
+info	20:50:16.963356+0100	bluetoothd	VSC BD_VSC_WRITE_LE_REMOTE_PUBLIC_ADDR, not supported
+default	20:50:16.963493+0100	bluetoothd	Sending XPC message "CBMsgIdPeerLinkEncryptionChanged" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:16.963557+0100	bluetoothd	Sending XPC message "CBMsgIdPeerLinkEncryptionChanged" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.019229+0100	bluetoothd	 Remote Features: FF 00 00 00 00 00 00 00 , handle F5B06170, ready: wait-for-features, EDL [remote 1, local 1], 2M [remote 0, local 0], ChanSel2 [remote 0, local 0] PHYReady:no
+default	20:50:17.019392+0100	bluetoothd	LE Link Ready for handle 0x7f98f5b06170 with status 0
+default	20:50:17.019459+0100	bluetoothd	 No pending ATT MTU requests
+default	20:50:17.019483+0100	bluetoothd	Le link "9E5CC049-A393-EB24-EBF0-77D7651747B2" is ready with status 0
+default	20:50:17.019516+0100	bluetoothd	 ATT central MTU 527 (calculated 527): for rx 27 bytes, tx 27 bytes, ce 7500 us, probestate 0
+default	20:50:17.019570+0100	bluetoothd	 _GATT_LE_LinkReadyCB notification from lmHandle 0x00000042 with status OI_OK
+debug	20:50:17.019704+0100	bluetoothd	resetDeviceAddedToWhitelistTime for device <private> at <private>
+default	20:50:17.019782+0100	bluetoothd	Sending 'connection status changed' event to local device listeners
+debug	20:50:17.019880+0100	bluetoothd	MBFXPC LOG: BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallbackHandler() 0x7f98f1121750, fCallbacksRegistered:1
+debug	20:50:17.019931+0100	bluetoothd	BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallback localDevice:92140001 event:5 result:0 cbid:1
+default	20:50:17.019881+0100	bluetoothd	Masking 'connection status changed' event from local device listener : <private>
+default	20:50:17.019967+0100	bluetoothd	Sending XPC message "kCBMsgIdLocalDeviceStatusEvent" to session "com.apple.AirPlayXPCHelper-MBF-162-14"
+info	20:50:17.020086+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-7"
+debug	20:50:17.020189+0100	bluetoothd	MBFXPC LOG: BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallbackHandler() 0x7f98f1329450, fCallbacksRegistered:1
+info	20:50:17.020260+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-8"
+debug	20:50:17.020309+0100	bluetoothd	BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallback localDevice:c8490001 event:5 result:0 cbid:1
+info	20:50:17.020395+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.UserEventAgent-classic-461-19"
+default	20:50:17.020643+0100	bluetoothd	Sending XPC message "kCBMsgIdLocalDeviceStatusEvent" to session "com.apple.ContextStoreAgent-MBF-573-30"
+info	20:50:17.020838+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.jamf.management.daemon-central-102-18"
+info	20:50:17.020785+0100	bluetoothd	Received MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.AirPlayXPCHelper-MBF-162-14"
+info	20:50:17.021100+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-central-157-2"
+default	20:50:17.021320+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg localDeviceId:92140001
+info	20:50:17.021565+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-classic-21168-1105"
+debug	20:50:17.021028+0100	bluetoothd	MBFXPC LOG: BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallbackHandler() 0x7f98f0768c70, fCallbacksRegistered:1
+info	20:50:17.021907+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-3"
+debug	20:50:17.021979+0100	bluetoothd	BTLocalDeviceMsgHandler::BTLocalDeviceStatusEventCallback localDevice:ae300001 event:5 result:0 cbid:1
+info	20:50:17.022114+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.PerfPowerServices-classic-9915-1055"
+default	20:50:17.022180+0100	bluetoothd	Sending XPC message "kCBMsgIdLocalDeviceStatusEvent" to session "com.apple.tipsd-MBF-5149-560"
+info	20:50:17.022296+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BTLEServerAgent-peripheral-2833-35"
+info	20:50:17.021830+0100	bluetoothd	Received MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.ContextStoreAgent-MBF-573-30"
+default	20:50:17.022511+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.BTLEServerAgent-peripheral-2833-35"
+default	20:50:17.021749+0100	bluetoothd	PowerManager power state is 1
+info	20:50:17.022663+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.cloudpaird-central-1215-32"
+default	20:50:17.022779+0100	bluetoothd	Returning bluetooth power state: ffffffff
+info	20:50:17.022928+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.tipsd-central-5149-559"
+default	20:50:17.023061+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg bluetooth power state: ffffffff
+info	20:50:17.023133+0100	bluetoothd	Received MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.tipsd-MBF-5149-560"
+default	20:50:17.022602+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg localDeviceId:c8490001
+default	20:50:17.023299+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg localDeviceId:ae300001
+default	20:50:17.023389+0100	bluetoothd	PowerManager power state is 1
+default	20:50:17.023534+0100	bluetoothd	PowerManager power state is 1
+info	20:50:17.023232+0100	bluetoothd	Handled MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.AirPlayXPCHelper-MBF-162-14"
+default	20:50:17.023670+0100	bluetoothd	Returning bluetooth power state: ffffffff
+default	20:50:17.023694+0100	bluetoothd	Returning bluetooth power state: ffffffff
+default	20:50:17.023840+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg bluetooth power state: ffffffff
+default	20:50:17.023888+0100	bluetoothd	BTLocalDeviceMsgHandler::handleBTLocalDeviceGetModulePowerMsg bluetooth power state: ffffffff
+info	20:50:17.023181+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.UserEventAgent-central-461-20"
+info	20:50:17.023956+0100	bluetoothd	Handled MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.ContextStoreAgent-MBF-573-30"
+info	20:50:17.024003+0100	bluetoothd	Handled MBFramework XPC message "kCBMsgIdLocalDeviceGetModulePowerMsg" from session "com.apple.tipsd-MBF-5149-560"
+default	20:50:17.024054+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.UserEventAgent-central-461-20"
+info	20:50:17.024350+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:17.024542+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+info	20:50:17.024697+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-4"
+info	20:50:17.024893+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.025022+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.BTLEServer-central-384-11"
+info	20:50:17.025163+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-central-157-5"
+info	20:50:17.025201+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.systemstats-classic-97-17"
+info	20:50:17.025278+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-classic-21168-1103"
+info	20:50:17.025343+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.sharingd-classic-572-24"
+info	20:50:17.025460+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-central-157-9"
+info	20:50:17.025566+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:17.025599+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.PerfPowerServices-central-9915-1056"
+info	20:50:17.025680+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.sharingd-central-572-25"
+info	20:50:17.025760+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.locationd-central-360-10"
+info	20:50:17.025901+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.rapportd-peripheral-497-1102"
+info	20:50:17.025989+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.cloudpaird-classic-1215-31"
+info	20:50:17.026112+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.rapportd-peripheral-497-22"
+info	20:50:17.026187+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.sharingd-peripheral-572-26"
+default	20:50:17.026243+0100	bluetoothd	Initiating pipe capability exchange with device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:17.026334+0100	bluetoothd	 CL is disabled for (F5B06170) .
+default	20:50:17.026371+0100	bluetoothd	Gatt device ready with mtu 527 and status 0
+default	20:50:17.026437+0100	bluetoothd	GattGateway device "9E5CC049-A393-EB24-EBF0-77D7651747B2" is ready with mtu 527
+default	20:50:17.026475+0100	bluetoothd	GattGateway init on device "<private>" with mtu 527
+default	20:50:17.026505+0100	bluetoothd	Beginning init sequence for device "<private>"
+default	20:50:17.026535+0100	bluetoothd	Attempting to set MTU to 527 on device "<private>"
+default	20:50:17.026575+0100	bluetoothd	Enqueuing a delayed command for device "<private>"
+default	20:50:17.026621+0100	bluetoothd	GATT Device <private> ready isInitiator=1 mtu=527
+default	20:50:17.026664+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:1
+default	20:50:17.026695+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.cloudpaird-central-1215-32"
+default	20:50:17.026738+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:1
+default	20:50:17.026766+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.UserEventAgent-central-461-20"
+default	20:50:17.026802+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:1
+default	20:50:17.026828+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:17.026954+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:1
+default	20:50:17.027030+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.sharingd-central-572-25"
+default	20:50:17.027096+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.cloudpaird-central-1215-32"
+default	20:50:17.027138+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.UserEventAgent-central-461-20"
+default	20:50:17.027220+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:17.027661+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.sharingd-central-572-25"
+info	20:50:17.027198+0100	bluetoothd	Starting device disconnection watchdog
+default	20:50:17.027910+0100	bluetoothd	Device ready - {cbuuid: 9E5CC049-A393-EB24-EBF0-77D7651747B2, devicename: Tornblue Left #1, lmHandle: 0x42, adv-addr: <private>, resolved-addr: <private>, result: 0}
+default	20:50:17.027966+0100	bluetoothd	Sending 'connection state updated' event for device "<private>" to session "com.apple.UserEventAgent-central-461-20"
+default	20:50:17.028001+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralConnectionStateUpdated" to session "com.apple.UserEventAgent-central-461-20"
+default	20:50:17.028038+0100	bluetoothd	Sending 'connection state updated' event for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:17.028095+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralConnectionStateUpdated" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:17.028177+0100	bluetoothd	Dispatching connection status update for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.028215+0100	bluetoothd	Device <private> connected with result 0
+default	20:50:17.028353+0100	bluetoothd	App ready - {cbuuid: 9E5CC049-A393-EB24-EBF0-77D7651747B2, bundle: com.apple.BTLEServer, transport: le, result: 0}
+default	20:50:17.028450+0100	bluetoothd	BLE Connection Ready Default <private> for <private>
+default	20:50:17.028553+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralConnectionCompleted" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.028724+0100	bluetoothd	Received XPC message "CBMsgIdPeerHasTag" from session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+debug	20:50:17.028800+0100	bluetoothd	found no value for key Tags in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:17.028721+0100	bluetoothd	Checking if device <private> is Apple Device
+default	20:50:17.028979+0100	bluetoothd	DIS for device <private>
+default	20:50:17.029089+0100	bluetoothd	Received XPC message "CBMsgIdPeerHasTag" from session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:17.029134+0100	bluetoothd	Sending BT Stats to CoreAnalytics for <private>
+debug	20:50:17.029290+0100	bluetoothd	found no value for key Tags in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+info	20:50:17.029357+0100	bluetoothd	Dropping <private> as it isn't used in any transform (not in the config or budgeted?)
+default	20:50:17.029484+0100	bluetoothd	Sending 'connection state updated' event for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.029541+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralConnectionStateUpdated" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.029036+0100	bluetoothd	Received XPC message "CBMsgIdPeripheralDiscoverServices" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.029697+0100	bluetoothd	Sending 'connection state updated' event for device "<private>" to session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:17.029896+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralConnectionStateUpdated" to session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:17.030109+0100	bluetoothd	Connection status changed
+default	20:50:17.030157+0100	bluetoothd	Update devices: paired, classic, 0 total
+default	20:50:17.030245+0100	bluetoothd	Finding all primary services on device "<private>"
+default	20:50:17.030256+0100	bluetoothd	Update devices: paired, BLE, 2 total
+default	20:50:17.030471+0100	bluetoothd	Update devices: connected, classic, 0 total
+default	20:50:17.030925+0100	bluetoothd	Update devices: connected, BLE, 2 total, power sources 1
+debug	20:50:17.031014+0100	bluetoothd	Device found: CBDevice 1D6E3010-4A17-171F-E046-3C087BC495C7, BDA D0:AE:5A:BD:E5:3A, Nm 'Tornblue Left', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -79%, CF 0x0 < >, unchanged
+default	20:50:17.031260+0100	bluetoothd	Device found: CBDevice 9E5CC049-A393-EB24-EBF0-77D7651747B2, BDA D8:0C:6C:EA:F5:BE, Nm 'Tornblue Left #1', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -100%, CF 0x80800200000 < Connections DsFl Attr >
+default	20:50:17.036551+0100	bluetoothd	Received XPC message "CBMsgIdPeripheralDiscoverServices" from session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:17.036631+0100	bluetoothd	Finding all primary services on device "<private>"
+default	20:50:17.038875+0100	bluetoothd	Received XPC message "CBMsgIdPeerHasTag" from session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+debug	20:50:17.038944+0100	bluetoothd	found no value for key Tags in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:17.041651+0100	bluetoothd	Received XPC message "CBMsgIdRetrievePairedPeersWithOptions" from session "com.apple.PerfPowerServices-classic-9915-1055"
+default	20:50:17.041973+0100	bluetoothd	Remote response with MTU 65
+default	20:50:17.041994+0100	bluetoothd	Received device "<private>" ready event from stack
+default	20:50:17.042054+0100	bluetoothd	Sending XPC message "CBMsgIdPeerMTUChanged" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:17.042114+0100	bluetoothd	Sending XPC message "CBMsgIdPeerMTUChanged" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.042174+0100	bluetoothd	Attempting to find all services on device "<private>"
+info	20:50:17.042232+0100	bluetoothd	Cached service hit!
+default	20:50:17.042267+0100	bluetoothd	Returning primary services from cache
+default	20:50:17.042323+0100	bluetoothd	GATT Device <private> services discovered
+default	20:50:17.042371+0100	bluetoothd	The device "<private>" supports HID
+default	20:50:17.042431+0100	bluetoothd	Identification - Identification hash does not exist - generating
+default	20:50:17.042467+0100	bluetoothd	Identification - le device has address type 0, 0, 1, 0, 1, can not generate metric
+default	20:50:17.042503+0100	bluetoothd	Identification - generating for device <private>, stimulus 0, sent 2
+default	20:50:17.042627+0100	bluetoothd	Adding "_HID_DEVICE_" tag to device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:17.042788+0100	bluetoothd	Finding GATT service changed characteristic handle on device "<private>"
+info	20:50:17.042988+0100	bluetoothd	Cached characteristics hit!
+info	20:50:17.043124+0100	bluetoothd	Cached service hit!
+default	20:50:17.043216+0100	bluetoothd	Using local database for discover characteristics by UUID.
+default	20:50:17.043386+0100	bluetoothd	Enabling GATT service changed indications on device "<private>"
+info	20:50:17.043519+0100	bluetoothd	Found client configuration descriptor at handle 0x0004
+default	20:50:17.043668+0100	bluetoothd	Enabling indications on client configuration descriptor at handle 0x0002 on device "<private>"
+default	20:50:17.044043+0100	bluetoothd	Received XPC message "CBMsgIdPairingAgentRetrievePairedDevices" from session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:17.044281+0100	bluetoothd	Received XPC message "CBMsgIdPeerHasTag" from session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+debug	20:50:17.044358+0100	bluetoothd	found no value for key Tags in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:17.044928+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:17.045672+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:17.064497+0100	bluetoothd	Reading DIS information on device "<private>"
+info	20:50:17.064554+0100	bluetoothd	Cached characteristics hit!
+info	20:50:17.064588+0100	bluetoothd	Cached service hit!
+default	20:50:17.064608+0100	bluetoothd	Using local database for discover all characteristics.
+info	20:50:17.087788+0100	bluetoothd	Found service "0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]" for value "0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]"
+default	20:50:17.087917+0100	bluetoothd	DIS for device <private> DIS Manufacturer: <private>
+info	20:50:17.110301+0100	bluetoothd	Found service "0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]" for value "0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]"
+default	20:50:17.110361+0100	bluetoothd	DIS for device <private> DIS Model number: <private>
+info	20:50:17.132025+0100	bluetoothd	Found service "0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]" for value "0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]"
+default	20:50:17.132093+0100	bluetoothd	DIS for device <private> DIS PNP ID: <private>
+default	20:50:17.132167+0100	bluetoothd	LE HID connection complete for address: <private> (VID:0x0000/PID:0x0000
+default	20:50:17.132258+0100	bluetoothd	Completed DIS discovery for device <private> <private>
+default	20:50:17.132301+0100	bluetoothd	Identification - Identification hash does not exist - generating
+default	20:50:17.132338+0100	bluetoothd	Identification - le device has address type 0, 0, 1, 0, 1, can not generate metric
+default	20:50:17.132370+0100	bluetoothd	Identification - generating for device <private>, stimulus 1, sent 2
+default	20:50:17.136352+0100	bluetoothd	Bluetooth LE HID activity woke up machine fully
+default	20:50:17.136432+0100	bluetoothd	gattDeviceInitCompleted: HID Service detected on the device <private>. Adjusting Sniff intervals on connected HIDs now.
+info	20:50:17.136466+0100	bluetoothd	Sending: BD_VSC_CHANGE_CONNECTION_PRIORITY
+info	20:50:17.137005+0100	bluetoothd	BD_VSC_CHANGE_CONNECTION_PRIORITY completed with status 0
+debug	20:50:17.137111+0100	bluetoothd	found no value for key moveAllAppleHIDsTo15 in CFPrefsPlistSource<0x7f98f10280a0> (Domain: com.apple.Bluetooth, User: kCFPreferencesAnyUser, ByHost: Yes, Container: (null), Contents Need Refresh: No)
+default	20:50:17.137151+0100	bluetoothd	adjustHIDSniffInterval: Number of connected SCO Devices: 0. Stereo SCO Session Active: 0
+default	20:50:17.137173+0100	bluetoothd	adjustHIDSniffInterval: Number of connected two-sniff attempt Apple Devices: 0. Number of connected Old Apple HID Devices: 0.
+default	20:50:17.137200+0100	bluetoothd	adjustHIDSniffInterval: Number of connected Apple HID Devices: 0. Number of connected non-Apple HIDs: 0.
+default	20:50:17.137221+0100	bluetoothd	adjustHIDSniffInterval: Defaults Write for adjustHIDSniffForStereoSCO: 0
+default	20:50:17.137255+0100	bluetoothd	Switching LE HID "<private>" to 15ms
+default	20:50:17.137283+0100	bluetoothd	 new connection parameters interval 11ms-11ms, timeout=720ms, CE 4-4 latency=0
+default	20:50:17.137303+0100	bluetoothd	 current connection params interval 11ms-11ms, timeout=720ms, CE 4-4 latency=0
+default	20:50:17.137398+0100	bluetoothd	 Ignoring request to update parameters since we are already configured for the same values
+error	20:50:17.137512+0100	bluetoothd	Failed to update connection parameters status=4170
+default	20:50:17.137593+0100	bluetoothd	adjustHIDSniffInterval: Stereo SCO Session Active: 0. Old Apple HIDs connected: 0. Sticking to default Sniff interval for connected HID.
+default	20:50:17.137681+0100	bluetoothd	adjustHIDSniffInterval: Multi-HID Sniff Configuration: 0
+default	20:50:17.137782+0100	bluetoothd	setPreferredSniffParamsOnConnectedTouchIDHIDs: Number of connected classic HIDs: 0. Number of LE HIDs connected: 2. Number of non-Apple HIDs connected: 2
+default	20:50:17.137823+0100	bluetoothd	setPreferredSniffParamsOnConnectedTouchIDHIDs: Number of SCO Connections: 0. A2DP Streaming State: 0.
+default	20:50:17.137857+0100	bluetoothd	adjustHIDSniffInterval: 0 Apple HIDs connected; shifting Game Controllers to 15ms
+default	20:50:17.137926+0100	bluetoothd	GATT device init completed: Device 9E5CC049-A393-EB24-EBF0-77D7651747B2
+info	20:50:17.138012+0100	bluetoothd	Cached service hit!
+default	20:50:17.138047+0100	bluetoothd	Returning primary services from cache
+default	20:50:17.138114+0100	bluetoothd	statedump: 0x0001 Primary Service      [ serviceUUID: 0x1801, endHandle: 0x0008, discoveredCharacteristics: some ]
+default	20:50:17.138115+0100	bluetoothd	Update devices: paired, classic, 0 total
+default	20:50:17.138160+0100	bluetoothd	statedump: 0x0002 Characteristic       [ valueUUID: 0x2A05, valueHandle: 0x0003, properties: indicate, discoveredDescriptors: all ]
+default	20:50:17.138232+0100	bluetoothd	Update devices: paired, BLE, 2 total
+default	20:50:17.138261+0100	bluetoothd	statedump: 0x0004 Client Configuration [ none ]
+default	20:50:17.138302+0100	bluetoothd	Update devices: connected, classic, 0 total
+default	20:50:17.138356+0100	bluetoothd	statedump: 0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]
+default	20:50:17.138480+0100	bluetoothd	statedump: 0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]
+default	20:50:17.138537+0100	bluetoothd	statedump: 0x0011 Characteristic       [ valueUUID: 0x2A19, valueHandle: 0x0012, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.138605+0100	bluetoothd	statedump: 0x0012 Characteristic Value [ 64 ]
+default	20:50:17.138680+0100	bluetoothd	Update devices: connected, BLE, 2 total, power sources 1
+default	20:50:17.138700+0100	bluetoothd	statedump: 0x0013 Client Configuration [ none ]
+debug	20:50:17.138851+0100	bluetoothd	Device found: CBDevice 1D6E3010-4A17-171F-E046-3C087BC495C7, BDA D0:AE:5A:BD:E5:3A, Nm 'Tornblue Left', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -79%, CF 0x0 < >, unchanged
+default	20:50:17.138873+0100	bluetoothd	statedump: 0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]
+debug	20:50:17.138946+0100	bluetoothd	Device found: CBDevice 9E5CC049-A393-EB24-EBF0-77D7651747B2, BDA D8:0C:6C:EA:F5:BE, Nm 'Tornblue Left #1', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -100%, CF 0x0 < >, unchanged
+default	20:50:17.138988+0100	bluetoothd	statedump: 0x0015 Characteristic       [ valueUUID: 0x2A24, valueHandle: 0x0016, properties: read, discoveredDescriptors: none ]
+default	20:50:17.139121+0100	bluetoothd	statedump: 0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]
+default	20:50:17.139152+0100	bluetoothd	statedump: 0x0017 Characteristic       [ valueUUID: 0x2A29, valueHandle: 0x0018, properties: read, discoveredDescriptors: none ]
+default	20:50:17.139179+0100	bluetoothd	statedump: 0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]
+default	20:50:17.139238+0100	bluetoothd	statedump: 0x0019 Characteristic       [ valueUUID: 0x2A50, valueHandle: 0x001A, properties: read, discoveredDescriptors: none ]
+default	20:50:17.139332+0100	bluetoothd	statedump: 0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]
+default	20:50:17.139436+0100	bluetoothd	statedump: 0x001B Primary Service      [ serviceUUID: 0x1812, endHandle: 0x0029, discoveredCharacteristics: all ]
+default	20:50:17.139519+0100	bluetoothd	statedump: 0x001C Characteristic       [ valueUUID: 0x2A4A, valueHandle: 0x001D, properties: read, discoveredDescriptors: none ]
+default	20:50:17.139630+0100	bluetoothd	statedump: 0x001D Characteristic Value [ 00 00 00 03 ]
+default	20:50:17.139724+0100	bluetoothd	statedump: 0x001E Characteristic       [ valueUUID: 0x2A4B, valueHandle: 0x001F, properties: read, discoveredDescriptors: none ]
+default	20:50:17.139849+0100	bluetoothd	statedump: 0x001F Characteristic Value [ 05 01 09 06 A1 01 85 01 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 05 07 75 08 95 01 81 03 05 07 15 00 25 FF 19 00 29 FF 75 08 95 06 81 00 C0 05 0C 09 01 A1 01 85 02 05 0C 15 00 26 FF FF 19 00 2A FF FF 75 10 95 06 81 00 C0 ]
+default	20:50:17.139893+0100	bluetoothd	statedump: 0x0020 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0021, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.139950+0100	bluetoothd	statedump: 0x0021 Characteristic Value [ 00 00 00 00 00 00 00 00 ]
+default	20:50:17.140058+0100	bluetoothd	statedump: 0x0022 Client Configuration [ none ]
+default	20:50:17.140144+0100	bluetoothd	statedump: 0x0023 0x2908               [ 01 01 ]
+default	20:50:17.140235+0100	bluetoothd	statedump: 0x0024 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0025, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.140341+0100	bluetoothd	statedump: 0x0026 Client Configuration [ none ]
+default	20:50:17.140408+0100	bluetoothd	statedump: 0x0027 0x2908               [ 02 01 ]
+default	20:50:17.140444+0100	bluetoothd	statedump: 0x0028 Characteristic       [ valueUUID: 0x2A4C, valueHandle: 0x0029, properties: responseless-writes, discoveredDescriptors: none ]
+default	20:50:17.140532+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralServicesDiscovered" to session "com.apple.BTLEServer-central-384-11"
+info	20:50:17.140651+0100	bluetoothd	Cached service hit!
+default	20:50:17.140690+0100	bluetoothd	Returning primary services from cache
+default	20:50:17.140799+0100	bluetoothd	statedump: 0x0001 Primary Service      [ serviceUUID: 0x1801, endHandle: 0x0008, discoveredCharacteristics: some ]
+default	20:50:17.140840+0100	bluetoothd	statedump: 0x0002 Characteristic       [ valueUUID: 0x2A05, valueHandle: 0x0003, properties: indicate, discoveredDescriptors: all ]
+default	20:50:17.140957+0100	bluetoothd	statedump: 0x0004 Client Configuration [ none ]
+default	20:50:17.141112+0100	bluetoothd	statedump: 0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]
+default	20:50:17.141278+0100	bluetoothd	statedump: 0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]
+default	20:50:17.141364+0100	bluetoothd	statedump: 0x0011 Characteristic       [ valueUUID: 0x2A19, valueHandle: 0x0012, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.141418+0100	bluetoothd	statedump: 0x0012 Characteristic Value [ 64 ]
+default	20:50:17.141510+0100	bluetoothd	statedump: 0x0013 Client Configuration [ none ]
+default	20:50:17.141637+0100	bluetoothd	statedump: 0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]
+default	20:50:17.141444+0100	bluetoothd	Received XPC message "CBMsgIdServiceDiscoverCharacteristics" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.141762+0100	bluetoothd	statedump: 0x0015 Characteristic       [ valueUUID: 0x2A24, valueHandle: 0x0016, properties: read, discoveredDescriptors: none ]
+default	20:50:17.141900+0100	bluetoothd	statedump: 0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]
+default	20:50:17.141989+0100	bluetoothd	statedump: 0x0017 Characteristic       [ valueUUID: 0x2A29, valueHandle: 0x0018, properties: read, discoveredDescriptors: none ]
+default	20:50:17.142050+0100	bluetoothd	statedump: 0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]
+default	20:50:17.142132+0100	bluetoothd	statedump: 0x0019 Characteristic       [ valueUUID: 0x2A50, valueHandle: 0x001A, properties: read, discoveredDescriptors: none ]
+default	20:50:17.142231+0100	bluetoothd	statedump: 0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]
+default	20:50:17.142273+0100	bluetoothd	statedump: 0x001B Primary Service      [ serviceUUID: 0x1812, endHandle: 0x0029, discoveredCharacteristics: all ]
+default	20:50:17.142306+0100	bluetoothd	statedump: 0x001C Characteristic       [ valueUUID: 0x2A4A, valueHandle: 0x001D, properties: read, discoveredDescriptors: none ]
+default	20:50:17.142354+0100	bluetoothd	statedump: 0x001D Characteristic Value [ 00 00 00 03 ]
+default	20:50:17.142385+0100	bluetoothd	statedump: 0x001E Characteristic       [ valueUUID: 0x2A4B, valueHandle: 0x001F, properties: read, discoveredDescriptors: none ]
+default	20:50:17.142457+0100	bluetoothd	statedump: 0x001F Characteristic Value [ 05 01 09 06 A1 01 85 01 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 05 07 75 08 95 01 81 03 05 07 15 00 25 FF 19 00 29 FF 75 08 95 06 81 00 C0 05 0C 09 01 A1 01 85 02 05 0C 15 00 26 FF FF 19 00 2A FF FF 75 10 95 06 81 00 C0 ]
+default	20:50:17.142481+0100	bluetoothd	statedump: 0x0020 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0021, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.142501+0100	bluetoothd	statedump: 0x0021 Characteristic Value [ 00 00 00 00 00 00 00 00 ]
+default	20:50:17.142518+0100	bluetoothd	statedump: 0x0022 Client Configuration [ none ]
+default	20:50:17.142582+0100	bluetoothd	statedump: 0x0023 0x2908               [ 01 01 ]
+default	20:50:17.142611+0100	bluetoothd	statedump: 0x0024 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0025, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.142627+0100	bluetoothd	statedump: 0x0026 Client Configuration [ none ]
+default	20:50:17.142647+0100	bluetoothd	statedump: 0x0027 0x2908               [ 02 01 ]
+default	20:50:17.142666+0100	bluetoothd	statedump: 0x0028 Characteristic       [ valueUUID: 0x2A4C, valueHandle: 0x0029, properties: responseless-writes, discoveredDescriptors: none ]
+default	20:50:17.142721+0100	bluetoothd	Sending XPC message "CBMsgIdPeripheralServicesDiscovered" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:17.142870+0100	bluetoothd	Finding all characteristics in range [0x0014, 0x001a] on device "<private>"
+info	20:50:17.142916+0100	bluetoothd	Cached characteristics hit!
+info	20:50:17.142968+0100	bluetoothd	Cached service hit!
+default	20:50:17.143030+0100	bluetoothd	Using local database for discover all characteristics.
+default	20:50:17.143141+0100	bluetoothd	statedump: 0x0001 Primary Service      [ serviceUUID: 0x1801, endHandle: 0x0008, discoveredCharacteristics: some ]
+default	20:50:17.143186+0100	bluetoothd	statedump: 0x0002 Characteristic       [ valueUUID: 0x2A05, valueHandle: 0x0003, properties: indicate, discoveredDescriptors: all ]
+default	20:50:17.143225+0100	bluetoothd	statedump: 0x0004 Client Configuration [ none ]
+default	20:50:17.143264+0100	bluetoothd	statedump: 0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]
+default	20:50:17.143311+0100	bluetoothd	statedump: 0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]
+default	20:50:17.143387+0100	bluetoothd	statedump: 0x0011 Characteristic       [ valueUUID: 0x2A19, valueHandle: 0x0012, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.143448+0100	bluetoothd	statedump: 0x0012 Characteristic Value [ 64 ]
+default	20:50:17.143495+0100	bluetoothd	statedump: 0x0013 Client Configuration [ none ]
+default	20:50:17.143563+0100	bluetoothd	statedump: 0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]
+default	20:50:17.143599+0100	bluetoothd	statedump: 0x0015 Characteristic       [ valueUUID: 0x2A24, valueHandle: 0x0016, properties: read, discoveredDescriptors: none ]
+default	20:50:17.143657+0100	bluetoothd	statedump: 0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]
+default	20:50:17.143695+0100	bluetoothd	statedump: 0x0017 Characteristic       [ valueUUID: 0x2A29, valueHandle: 0x0018, properties: read, discoveredDescriptors: none ]
+default	20:50:17.143731+0100	bluetoothd	statedump: 0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]
+default	20:50:17.143765+0100	bluetoothd	statedump: 0x0019 Characteristic       [ valueUUID: 0x2A50, valueHandle: 0x001A, properties: read, discoveredDescriptors: none ]
+default	20:50:17.143841+0100	bluetoothd	statedump: 0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]
+default	20:50:17.143930+0100	bluetoothd	statedump: 0x001B Primary Service      [ serviceUUID: 0x1812, endHandle: 0x0029, discoveredCharacteristics: all ]
+default	20:50:17.143978+0100	bluetoothd	statedump: 0x001C Characteristic       [ valueUUID: 0x2A4A, valueHandle: 0x001D, properties: read, discoveredDescriptors: none ]
+default	20:50:17.144108+0100	bluetoothd	statedump: 0x001D Characteristic Value [ 00 00 00 03 ]
+default	20:50:17.144165+0100	bluetoothd	statedump: 0x001E Characteristic       [ valueUUID: 0x2A4B, valueHandle: 0x001F, properties: read, discoveredDescriptors: none ]
+default	20:50:17.144232+0100	bluetoothd	statedump: 0x001F Characteristic Value [ 05 01 09 06 A1 01 85 01 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 05 07 75 08 95 01 81 03 05 07 15 00 25 FF 19 00 29 FF 75 08 95 06 81 00 C0 05 0C 09 01 A1 01 85 02 05 0C 15 00 26 FF FF 19 00 2A FF FF 75 10 95 06 81 00 C0 ]
+default	20:50:17.144273+0100	bluetoothd	statedump: 0x0020 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0021, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.144349+0100	bluetoothd	statedump: 0x0021 Characteristic Value [ 00 00 00 00 00 00 00 00 ]
+default	20:50:17.144390+0100	bluetoothd	statedump: 0x0022 Client Configuration [ none ]
+default	20:50:17.144453+0100	bluetoothd	statedump: 0x0023 0x2908               [ 01 01 ]
+default	20:50:17.144507+0100	bluetoothd	statedump: 0x0024 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0025, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.144597+0100	bluetoothd	statedump: 0x0026 Client Configuration [ none ]
+default	20:50:17.144685+0100	bluetoothd	statedump: 0x0027 0x2908               [ 02 01 ]
+default	20:50:17.144767+0100	bluetoothd	statedump: 0x0028 Characteristic       [ valueUUID: 0x2A4C, valueHandle: 0x0029, properties: responseless-writes, discoveredDescriptors: none ]
+default	20:50:17.144866+0100	bluetoothd	Sending XPC message "CBMsgIdServiceCharacteristicsDiscovered" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.145536+0100	bluetoothd	Received XPC message "CBMsgIdServiceDiscoverCharacteristics" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.145607+0100	bluetoothd	Finding all characteristics in range [0x001b, 0x0029] on device "<private>"
+info	20:50:17.145642+0100	bluetoothd	Cached characteristics hit!
+info	20:50:17.145693+0100	bluetoothd	Cached service hit!
+default	20:50:17.145731+0100	bluetoothd	Using local database for discover all characteristics.
+default	20:50:17.145823+0100	bluetoothd	statedump: 0x0001 Primary Service      [ serviceUUID: 0x1801, endHandle: 0x0008, discoveredCharacteristics: some ]
+default	20:50:17.145872+0100	bluetoothd	statedump: 0x0002 Characteristic       [ valueUUID: 0x2A05, valueHandle: 0x0003, properties: indicate, discoveredDescriptors: all ]
+default	20:50:17.145922+0100	bluetoothd	statedump: 0x0004 Client Configuration [ none ]
+default	20:50:17.145957+0100	bluetoothd	statedump: 0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]
+default	20:50:17.145986+0100	bluetoothd	statedump: 0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]
+default	20:50:17.146013+0100	bluetoothd	statedump: 0x0011 Characteristic       [ valueUUID: 0x2A19, valueHandle: 0x0012, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.146120+0100	bluetoothd	statedump: 0x0012 Characteristic Value [ 64 ]
+default	20:50:17.146205+0100	bluetoothd	statedump: 0x0013 Client Configuration [ none ]
+default	20:50:17.146238+0100	bluetoothd	statedump: 0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]
+default	20:50:17.146261+0100	bluetoothd	statedump: 0x0015 Characteristic       [ valueUUID: 0x2A24, valueHandle: 0x0016, properties: read, discoveredDescriptors: none ]
+default	20:50:17.146363+0100	bluetoothd	statedump: 0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]
+default	20:50:17.146399+0100	bluetoothd	statedump: 0x0017 Characteristic       [ valueUUID: 0x2A29, valueHandle: 0x0018, properties: read, discoveredDescriptors: none ]
+default	20:50:17.146428+0100	bluetoothd	statedump: 0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]
+default	20:50:17.146456+0100	bluetoothd	statedump: 0x0019 Characteristic       [ valueUUID: 0x2A50, valueHandle: 0x001A, properties: read, discoveredDescriptors: none ]
+default	20:50:17.146477+0100	bluetoothd	statedump: 0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]
+default	20:50:17.146497+0100	bluetoothd	statedump: 0x001B Primary Service      [ serviceUUID: 0x1812, endHandle: 0x0029, discoveredCharacteristics: all ]
+default	20:50:17.146518+0100	bluetoothd	statedump: 0x001C Characteristic       [ valueUUID: 0x2A4A, valueHandle: 0x001D, properties: read, discoveredDescriptors: none ]
+default	20:50:17.146543+0100	bluetoothd	statedump: 0x001D Characteristic Value [ 00 00 00 03 ]
+default	20:50:17.146584+0100	bluetoothd	statedump: 0x001E Characteristic       [ valueUUID: 0x2A4B, valueHandle: 0x001F, properties: read, discoveredDescriptors: none ]
+default	20:50:17.146702+0100	bluetoothd	statedump: 0x001F Characteristic Value [ 05 01 09 06 A1 01 85 01 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 05 07 75 08 95 01 81 03 05 07 15 00 25 FF 19 00 29 FF 75 08 95 06 81 00 C0 05 0C 09 01 A1 01 85 02 05 0C 15 00 26 FF FF 19 00 2A FF FF 75 10 95 06 81 00 C0 ]
+default	20:50:17.146744+0100	bluetoothd	statedump: 0x0020 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0021, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.146801+0100	bluetoothd	statedump: 0x0021 Characteristic Value [ 00 00 00 00 00 00 00 00 ]
+default	20:50:17.146836+0100	bluetoothd	statedump: 0x0022 Client Configuration [ none ]
+default	20:50:17.146858+0100	bluetoothd	statedump: 0x0023 0x2908               [ 01 01 ]
+default	20:50:17.146967+0100	bluetoothd	statedump: 0x0024 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0025, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.147001+0100	bluetoothd	statedump: 0x0026 Client Configuration [ none ]
+default	20:50:17.147084+0100	bluetoothd	statedump: 0x0027 0x2908               [ 02 01 ]
+default	20:50:17.147169+0100	bluetoothd	statedump: 0x0028 Characteristic       [ valueUUID: 0x2A4C, valueHandle: 0x0029, properties: responseless-writes, discoveredDescriptors: none ]
+default	20:50:17.147212+0100	bluetoothd	Sending XPC message "CBMsgIdServiceCharacteristicsDiscovered" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.147672+0100	bluetoothd	Received XPC message "CBMsgIdCharacteristicDiscoverDescriptors" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.147728+0100	bluetoothd	Finding all descriptors for characteristic handle 0x001e on device "<private>"
+default	20:50:17.147842+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicDescriptorsDiscovered" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.147890+0100	bluetoothd	Received XPC message "CBMsgIdCharacteristicDiscoverDescriptors" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.147943+0100	bluetoothd	Finding all descriptors for characteristic handle 0x0020 on device "<private>"
+default	20:50:17.148053+0100	bluetoothd	Attempting to discover descriptors in range [0x0022, 0x0023] on device "<private>"
+info	20:50:17.148092+0100	bluetoothd	Cached descriptors hit!
+default	20:50:17.148122+0100	bluetoothd	Using local database for discover all descriptors.
+default	20:50:17.148210+0100	bluetoothd	statedump: 0x0001 Primary Service      [ serviceUUID: 0x1801, endHandle: 0x0008, discoveredCharacteristics: some ]
+default	20:50:17.148230+0100	bluetoothd	Received XPC message "CBMsgIdCharacteristicDiscoverDescriptors" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.148246+0100	bluetoothd	statedump: 0x0002 Characteristic       [ valueUUID: 0x2A05, valueHandle: 0x0003, properties: indicate, discoveredDescriptors: all ]
+default	20:50:17.148272+0100	bluetoothd	statedump: 0x0004 Client Configuration [ none ]
+default	20:50:17.148297+0100	bluetoothd	statedump: 0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]
+default	20:50:17.148318+0100	bluetoothd	statedump: 0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]
+default	20:50:17.148338+0100	bluetoothd	statedump: 0x0011 Characteristic       [ valueUUID: 0x2A19, valueHandle: 0x0012, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.148439+0100	bluetoothd	statedump: 0x0012 Characteristic Value [ 64 ]
+default	20:50:17.148473+0100	bluetoothd	statedump: 0x0013 Client Configuration [ none ]
+default	20:50:17.148535+0100	bluetoothd	statedump: 0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]
+default	20:50:17.148566+0100	bluetoothd	statedump: 0x0015 Characteristic       [ valueUUID: 0x2A24, valueHandle: 0x0016, properties: read, discoveredDescriptors: none ]
+default	20:50:17.148626+0100	bluetoothd	statedump: 0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]
+default	20:50:17.148658+0100	bluetoothd	statedump: 0x0017 Characteristic       [ valueUUID: 0x2A29, valueHandle: 0x0018, properties: read, discoveredDescriptors: none ]
+default	20:50:17.148763+0100	bluetoothd	statedump: 0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]
+default	20:50:17.148798+0100	bluetoothd	statedump: 0x0019 Characteristic       [ valueUUID: 0x2A50, valueHandle: 0x001A, properties: read, discoveredDescriptors: none ]
+default	20:50:17.148823+0100	bluetoothd	statedump: 0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]
+default	20:50:17.148871+0100	bluetoothd	statedump: 0x001B Primary Service      [ serviceUUID: 0x1812, endHandle: 0x0029, discoveredCharacteristics: all ]
+default	20:50:17.148956+0100	bluetoothd	statedump: 0x001C Characteristic       [ valueUUID: 0x2A4A, valueHandle: 0x001D, properties: read, discoveredDescriptors: none ]
+default	20:50:17.149060+0100	bluetoothd	statedump: 0x001D Characteristic Value [ 00 00 00 03 ]
+default	20:50:17.149091+0100	bluetoothd	statedump: 0x001E Characteristic       [ valueUUID: 0x2A4B, valueHandle: 0x001F, properties: read, discoveredDescriptors: none ]
+default	20:50:17.149159+0100	bluetoothd	statedump: 0x001F Characteristic Value [ 05 01 09 06 A1 01 85 01 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 05 07 75 08 95 01 81 03 05 07 15 00 25 FF 19 00 29 FF 75 08 95 06 81 00 C0 05 0C 09 01 A1 01 85 02 05 0C 15 00 26 FF FF 19 00 2A FF FF 75 10 95 06 81 00 C0 ]
+default	20:50:17.149192+0100	bluetoothd	statedump: 0x0020 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0021, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.149302+0100	bluetoothd	statedump: 0x0021 Characteristic Value [ 00 00 00 00 00 00 00 00 ]
+default	20:50:17.149336+0100	bluetoothd	statedump: 0x0022 Client Configuration [ none ]
+default	20:50:17.149384+0100	bluetoothd	statedump: 0x0023 0x2908               [ 01 01 ]
+default	20:50:17.149488+0100	bluetoothd	statedump: 0x0024 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0025, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.149530+0100	bluetoothd	statedump: 0x0026 Client Configuration [ none ]
+default	20:50:17.149569+0100	bluetoothd	statedump: 0x0027 0x2908               [ 02 01 ]
+default	20:50:17.149589+0100	bluetoothd	statedump: 0x0028 Characteristic       [ valueUUID: 0x2A4C, valueHandle: 0x0029, properties: responseless-writes, discoveredDescriptors: none ]
+default	20:50:17.149616+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicDescriptorsDiscovered" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.149678+0100	bluetoothd	Finding all descriptors for characteristic handle 0x0024 on device "<private>"
+default	20:50:17.149741+0100	bluetoothd	Attempting to discover descriptors in range [0x0026, 0x0027] on device "<private>"
+info	20:50:17.149777+0100	bluetoothd	Cached descriptors hit!
+default	20:50:17.149808+0100	bluetoothd	Using local database for discover all descriptors.
+default	20:50:17.149866+0100	bluetoothd	statedump: 0x0001 Primary Service      [ serviceUUID: 0x1801, endHandle: 0x0008, discoveredCharacteristics: some ]
+default	20:50:17.149892+0100	bluetoothd	statedump: 0x0002 Characteristic       [ valueUUID: 0x2A05, valueHandle: 0x0003, properties: indicate, discoveredDescriptors: all ]
+default	20:50:17.149910+0100	bluetoothd	statedump: 0x0004 Client Configuration [ none ]
+default	20:50:17.149935+0100	bluetoothd	statedump: 0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]
+default	20:50:17.149955+0100	bluetoothd	statedump: 0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]
+default	20:50:17.149981+0100	bluetoothd	statedump: 0x0011 Characteristic       [ valueUUID: 0x2A19, valueHandle: 0x0012, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.150003+0100	bluetoothd	statedump: 0x0012 Characteristic Value [ 64 ]
+default	20:50:17.150043+0100	bluetoothd	statedump: 0x0013 Client Configuration [ none ]
+default	20:50:17.149976+0100	bluetoothd	Received XPC message "CBMsgIdCharacteristicNotifyValue" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.150098+0100	bluetoothd	statedump: 0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]
+default	20:50:17.150152+0100	bluetoothd	statedump: 0x0015 Characteristic       [ valueUUID: 0x2A24, valueHandle: 0x0016, properties: read, discoveredDescriptors: none ]
+default	20:50:17.150178+0100	bluetoothd	statedump: 0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]
+default	20:50:17.150218+0100	bluetoothd	statedump: 0x0017 Characteristic       [ valueUUID: 0x2A29, valueHandle: 0x0018, properties: read, discoveredDescriptors: none ]
+default	20:50:17.150240+0100	bluetoothd	statedump: 0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]
+default	20:50:17.150266+0100	bluetoothd	statedump: 0x0019 Characteristic       [ valueUUID: 0x2A50, valueHandle: 0x001A, properties: read, discoveredDescriptors: none ]
+default	20:50:17.150296+0100	bluetoothd	statedump: 0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]
+default	20:50:17.150325+0100	bluetoothd	statedump: 0x001B Primary Service      [ serviceUUID: 0x1812, endHandle: 0x0029, discoveredCharacteristics: all ]
+default	20:50:17.150361+0100	bluetoothd	statedump: 0x001C Characteristic       [ valueUUID: 0x2A4A, valueHandle: 0x001D, properties: read, discoveredDescriptors: none ]
+default	20:50:17.150382+0100	bluetoothd	statedump: 0x001D Characteristic Value [ 00 00 00 03 ]
+default	20:50:17.150437+0100	bluetoothd	statedump: 0x001E Characteristic       [ valueUUID: 0x2A4B, valueHandle: 0x001F, properties: read, discoveredDescriptors: none ]
+default	20:50:17.150532+0100	bluetoothd	statedump: 0x001F Characteristic Value [ 05 01 09 06 A1 01 85 01 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 05 07 75 08 95 01 81 03 05 07 15 00 25 FF 19 00 29 FF 75 08 95 06 81 00 C0 05 0C 09 01 A1 01 85 02 05 0C 15 00 26 FF FF 19 00 2A FF FF 75 10 95 06 81 00 C0 ]
+default	20:50:17.150566+0100	bluetoothd	statedump: 0x0020 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0021, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.150628+0100	bluetoothd	statedump: 0x0021 Characteristic Value [ 00 00 00 00 00 00 00 00 ]
+default	20:50:17.150670+0100	bluetoothd	statedump: 0x0022 Client Configuration [ none ]
+default	20:50:17.150693+0100	bluetoothd	statedump: 0x0023 0x2908               [ 01 01 ]
+default	20:50:17.150716+0100	bluetoothd	statedump: 0x0024 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0025, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.150785+0100	bluetoothd	statedump: 0x0026 Client Configuration [ none ]
+default	20:50:17.150846+0100	bluetoothd	statedump: 0x0027 0x2908               [ 02 01 ]
+default	20:50:17.150872+0100	bluetoothd	statedump: 0x0028 Characteristic       [ valueUUID: 0x2A4C, valueHandle: 0x0029, properties: responseless-writes, discoveredDescriptors: none ]
+default	20:50:17.150898+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicDescriptorsDiscovered" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.150954+0100	bluetoothd	Subscribing to updates of characteristic handle 0x0020 on device "<private>"
+info	20:50:17.150979+0100	bluetoothd	Found client configuration descriptor at handle 0x0022
+default	20:50:17.151000+0100	bluetoothd	Enabling notifications on client configuration descriptor at handle 0x0020 on device "<private>"
+default	20:50:17.151254+0100	bluetoothd	Received XPC message "CBMsgIdCharacteristicNotifyValue" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.151316+0100	bluetoothd	Subscribing to updates of characteristic handle 0x0024 on device "<private>"
+default	20:50:17.151371+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.165723+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicValueNotifying" to session "com.apple.BTLEServer-central-384-11"
+info	20:50:17.165796+0100	bluetoothd	Found client configuration descriptor at handle 0x0026
+default	20:50:17.165832+0100	bluetoothd	Enabling notifications on client configuration descriptor at handle 0x0024 on device "<private>"
+default	20:50:17.187874+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicValueNotifying" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.194082+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:17.194236+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:17.194279+0100	bluetoothd	PowerManager power state is 1
+default	20:50:17.194308+0100	bluetoothd	PowerManager power state is 1
+default	20:50:17.194591+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:50:17.276050+0100	bluetoothd	Received XPC message "SetConnectionParameters"
+default	20:50:17.276112+0100	bluetoothd	Got a profile request to update parameters to 15ms->500ms, 2 min CE length, 6 max CE length, 4 latency, and 1000 timeout
+default	20:50:17.276144+0100	bluetoothd	 new connection parameters interval 15ms-15ms, timeout=1000ms, CE 2-6 latency=4
+default	20:50:17.276170+0100	bluetoothd	 current connection params interval 0ms-0ms, timeout=360ms, CE 0-12 latency=0
+default	20:50:17.276199+0100	bluetoothd	 Sending parameters to controller
+info	20:50:17.276267+0100	bluetoothd	Sending: BD_VSC_WRITE_HI_PRIO_LE_CONN
+info	20:50:17.276295+0100	bluetoothd	VSC BD_VSC_WRITE_HI_PRIO_LE_CONN, not supported
+default	20:50:17.276465+0100	bluetoothd	Received XPC message "PeerIsUsingBuiltinService"
+default	20:50:17.276515+0100	bluetoothd	Adding "HasBuiltinServices" tag to device "9E5CC049-A393-EB24-EBF0-77D7651747B2"
+default	20:50:17.276632+0100	bluetoothd	Received XPC message "CBMsgIdServiceDiscoverCharacteristics" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.276734+0100	bluetoothd	NVRAM write: flags 0x2
+default	20:50:17.276777+0100	bluetoothd	Write NVRAM: legacy bytes 8, devices 0
+default	20:50:17.276833+0100	bluetoothd	NVRAM set: Key '24A6EDCB-EBB6-490B-A455-FC9E8FAB5366:BluetoothUHEDevices', Value 8 bytes
+default	20:50:17.276814+0100	bluetoothd	Finding all characteristics in range [0x0010, 0x0013] on device "<private>"
+info	20:50:17.276870+0100	bluetoothd	Cached characteristics hit!
+info	20:50:17.276910+0100	bluetoothd	Cached service hit!
+default	20:50:17.276942+0100	bluetoothd	Using local database for discover all characteristics.
+default	20:50:17.277061+0100	bluetoothd	statedump: 0x0001 Primary Service      [ serviceUUID: 0x1801, endHandle: 0x0008, discoveredCharacteristics: some ]
+default	20:50:17.277163+0100	bluetoothd	statedump: 0x0002 Characteristic       [ valueUUID: 0x2A05, valueHandle: 0x0003, properties: indicate, discoveredDescriptors: all ]
+default	20:50:17.277241+0100	bluetoothd	statedump: 0x0004 Client Configuration [ none ]
+default	20:50:17.277429+0100	bluetoothd	statedump: 0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]
+default	20:50:17.277580+0100	bluetoothd	statedump: 0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]
+default	20:50:17.277837+0100	bluetoothd	statedump: 0x0011 Characteristic       [ valueUUID: 0x2A19, valueHandle: 0x0012, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.277921+0100	bluetoothd	statedump: 0x0012 Characteristic Value [ 64 ]
+default	20:50:17.278126+0100	bluetoothd	statedump: 0x0013 Client Configuration [ none ]
+default	20:50:17.278332+0100	bluetoothd	statedump: 0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]
+default	20:50:17.278472+0100	bluetoothd	statedump: 0x0015 Characteristic       [ valueUUID: 0x2A24, valueHandle: 0x0016, properties: read, discoveredDescriptors: none ]
+default	20:50:17.278676+0100	bluetoothd	statedump: 0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]
+default	20:50:17.278841+0100	bluetoothd	statedump: 0x0017 Characteristic       [ valueUUID: 0x2A29, valueHandle: 0x0018, properties: read, discoveredDescriptors: none ]
+default	20:50:17.279000+0100	bluetoothd	statedump: 0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]
+default	20:50:17.279201+0100	bluetoothd	statedump: 0x0019 Characteristic       [ valueUUID: 0x2A50, valueHandle: 0x001A, properties: read, discoveredDescriptors: none ]
+default	20:50:17.279306+0100	bluetoothd	statedump: 0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]
+default	20:50:17.279449+0100	bluetoothd	statedump: 0x001B Primary Service      [ serviceUUID: 0x1812, endHandle: 0x0029, discoveredCharacteristics: all ]
+default	20:50:17.279668+0100	bluetoothd	statedump: 0x001C Characteristic       [ valueUUID: 0x2A4A, valueHandle: 0x001D, properties: read, discoveredDescriptors: none ]
+default	20:50:17.279814+0100	bluetoothd	statedump: 0x001D Characteristic Value [ 00 00 00 03 ]
+default	20:50:17.279993+0100	bluetoothd	statedump: 0x001E Characteristic       [ valueUUID: 0x2A4B, valueHandle: 0x001F, properties: read, discoveredDescriptors: none ]
+default	20:50:17.280193+0100	bluetoothd	statedump: 0x001F Characteristic Value [ 05 01 09 06 A1 01 85 01 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 05 07 75 08 95 01 81 03 05 07 15 00 25 FF 19 00 29 FF 75 08 95 06 81 00 C0 05 0C 09 01 A1 01 85 02 05 0C 15 00 26 FF FF 19 00 2A FF FF 75 10 95 06 81 00 C0 ]
+default	20:50:17.280380+0100	bluetoothd	statedump: 0x0020 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0021, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.280615+0100	bluetoothd	statedump: 0x0021 Characteristic Value [ 00 00 00 00 00 00 00 00 ]
+default	20:50:17.280780+0100	bluetoothd	statedump: 0x0022 Client Configuration [ none ]
+default	20:50:17.280951+0100	bluetoothd	statedump: 0x0023 0x2908               [ 01 01 ]
+default	20:50:17.281308+0100	bluetoothd	statedump: 0x0024 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0025, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.281394+0100	bluetoothd	statedump: 0x0026 Client Configuration [ none ]
+default	20:50:17.281429+0100	bluetoothd	statedump: 0x0027 0x2908               [ 02 01 ]
+default	20:50:17.281696+0100	bluetoothd	statedump: 0x0028 Characteristic       [ valueUUID: 0x2A4C, valueHandle: 0x0029, properties: responseless-writes, discoveredDescriptors: none ]
+default	20:50:17.281771+0100	bluetoothd	Sending XPC message "CBMsgIdServiceCharacteristicsDiscovered" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.282563+0100	bluetoothd	Received XPC message "CBMsgIdCharacteristicNotifyValue" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.282629+0100	bluetoothd	Subscribing to updates of characteristic handle 0x0011 on device "<private>"
+info	20:50:17.282706+0100	bluetoothd	Found client configuration descriptor at handle 0x0013
+default	20:50:17.282773+0100	bluetoothd	Enabling notifications on client configuration descriptor at handle 0x0011 on device "<private>"
+default	20:50:17.283122+0100	bluetoothd	Received XPC message "CBMsgIdCharacteristicReadValue" from session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.283381+0100	bluetoothd	Reading value for characteristic value handle 0x0012, char handle 0x0011 on device "<private>"
+default	20:50:17.309588+0100	bluetoothd	PowerManager power state is 1
+default	20:50:17.309689+0100	bluetoothd	Received XPC message "CBClassicMsgIdCheckIn" from session ""
+default	20:50:17.309746+0100	bluetoothd	Classic kCBManagerAppSDKVersion for app <private> : 0
+default	20:50:17.309784+0100	bluetoothd	Classic Received XPC check-in from session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:17.309830+0100	bluetoothd	Sending 'session attached' event for session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:17.309870+0100	bluetoothd	Attached session for "com.apple.BluetoothUIServer-classic-21314-1110" with session: 0x7f98f1285380, session handle: 0x88c00000
+default	20:50:17.309912+0100	bluetoothd	Registering classic session "com.apple.BluetoothUIServer-classic-21314-1110" with backgrounding: off, persistence: off restoreID: (null)
+debug	20:50:17.311378+0100	bluetoothd	Decoded RBSProcessHandle with IPC ID f28b8fc00005342
+debug	20:50:17.312715+0100	bluetoothd	Decoded RBSProcessHandle with IPC ID f28b8fc00005342
+default	20:50:17.312839+0100	bluetoothd	Session "com.apple.BluetoothUIServer-classic-21314-1110" : needsRestrictedStateOperation = 0, overrideRestrictedState = 0 , denylistMode = 0
+default	20:50:17.312887+0100	bluetoothd	PowerManager power state is 1
+default	20:50:17.312931+0100	bluetoothd	Sending 'state updated' event with state "On" to session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:17.312949+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicValueNotifying" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.312962+0100	bluetoothd	Sending XPC message "CBClassicMsgIdStateUpdated" to session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:17.313043+0100	bluetoothd	Received XPC message "CBClassicMsgIdGetLocalDeviceStates" from session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:17.313086+0100	bluetoothd	PowerManager power state is 1
+info	20:50:17.334105+0100	bluetoothd	Found service "0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]" for value "0x0012 Characteristic Value [ 64 ]"
+default	20:50:17.334193+0100	bluetoothd	statedump: 0x0001 Primary Service      [ serviceUUID: 0x1801, endHandle: 0x0008, discoveredCharacteristics: some ]
+default	20:50:17.334238+0100	bluetoothd	statedump: 0x0002 Characteristic       [ valueUUID: 0x2A05, valueHandle: 0x0003, properties: indicate, discoveredDescriptors: all ]
+default	20:50:17.334269+0100	bluetoothd	statedump: 0x0004 Client Configuration [ none ]
+default	20:50:17.334300+0100	bluetoothd	statedump: 0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]
+default	20:50:17.334328+0100	bluetoothd	statedump: 0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]
+default	20:50:17.334357+0100	bluetoothd	statedump: 0x0011 Characteristic       [ valueUUID: 0x2A19, valueHandle: 0x0012, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.334383+0100	bluetoothd	statedump: 0x0012 Characteristic Value [ 64 ]
+default	20:50:17.334424+0100	bluetoothd	statedump: 0x0013 Client Configuration [ none ]
+default	20:50:17.334588+0100	bluetoothd	statedump: 0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]
+default	20:50:17.334700+0100	bluetoothd	statedump: 0x0015 Characteristic       [ valueUUID: 0x2A24, valueHandle: 0x0016, properties: read, discoveredDescriptors: none ]
+default	20:50:17.334749+0100	bluetoothd	statedump: 0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]
+default	20:50:17.334839+0100	bluetoothd	statedump: 0x0017 Characteristic       [ valueUUID: 0x2A29, valueHandle: 0x0018, properties: read, discoveredDescriptors: none ]
+default	20:50:17.334948+0100	bluetoothd	statedump: 0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]
+default	20:50:17.335062+0100	bluetoothd	statedump: 0x0019 Characteristic       [ valueUUID: 0x2A50, valueHandle: 0x001A, properties: read, discoveredDescriptors: none ]
+default	20:50:17.335117+0100	bluetoothd	statedump: 0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]
+default	20:50:17.335253+0100	bluetoothd	statedump: 0x001B Primary Service      [ serviceUUID: 0x1812, endHandle: 0x0029, discoveredCharacteristics: all ]
+default	20:50:17.335306+0100	bluetoothd	statedump: 0x001C Characteristic       [ valueUUID: 0x2A4A, valueHandle: 0x001D, properties: read, discoveredDescriptors: none ]
+default	20:50:17.335480+0100	bluetoothd	statedump: 0x001D Characteristic Value [ 00 00 00 03 ]
+default	20:50:17.335530+0100	bluetoothd	statedump: 0x001E Characteristic       [ valueUUID: 0x2A4B, valueHandle: 0x001F, properties: read, discoveredDescriptors: none ]
+default	20:50:17.335630+0100	bluetoothd	statedump: 0x001F Characteristic Value [ 05 01 09 06 A1 01 85 01 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 05 07 75 08 95 01 81 03 05 07 15 00 25 FF 19 00 29 FF 75 08 95 06 81 00 C0 05 0C 09 01 A1 01 85 02 05 0C 15 00 26 FF FF 19 00 2A FF FF 75 10 95 06 81 00 C0 ]
+default	20:50:17.335736+0100	bluetoothd	statedump: 0x0020 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0021, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.335918+0100	bluetoothd	statedump: 0x0021 Characteristic Value [ 00 00 00 00 00 00 00 00 ]
+default	20:50:17.336066+0100	bluetoothd	statedump: 0x0022 Client Configuration [ none ]
+default	20:50:17.336180+0100	bluetoothd	statedump: 0x0023 0x2908               [ 01 01 ]
+default	20:50:17.336260+0100	bluetoothd	statedump: 0x0024 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0025, properties: read notify, discoveredDescriptors: all ]
+default	20:50:17.336297+0100	bluetoothd	statedump: 0x0026 Client Configuration [ none ]
+default	20:50:17.336350+0100	bluetoothd	statedump: 0x0027 0x2908               [ 02 01 ]
+default	20:50:17.336431+0100	bluetoothd	statedump: 0x0028 Characteristic       [ valueUUID: 0x2A4C, valueHandle: 0x0029, properties: responseless-writes, discoveredDescriptors: none ]
+debug	20:50:17.336576+0100	bluetoothd	Sending XPC message "CBMsgIdCharacteristicValueUpdated" to session "com.apple.BTLEServer-central-384-11"
+info	20:50:17.337399+0100	bluetoothd	Accessory power changed (raw)
+default	20:50:17.359584+0100	bluetoothd	PowerManager power state is 1
+default	20:50:17.359735+0100	bluetoothd	Received XPC message "CBClassicMsgIdPairingAgentRegistered" from session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:17.359774+0100	bluetoothd	Session "com.apple.BluetoothUIServer-classic-21314-1110" is asking to register pairing agent
+default	20:50:17.359802+0100	bluetoothd	Registering pairing agent for session "com.apple.BluetoothUIServer-classic-21314-1110" with programmatic pairing disabled
+default	20:50:17.359858+0100	bluetoothd	Creating pairing agent for session com.apple.BluetoothUIServer-classic-21314-1110
+default	20:50:17.359895+0100	bluetoothd	Classic Pairing Agent successfully created. Now starting the pairing agent.
+info	20:50:17.359925+0100	bluetoothd	Sending 'pairing agent started' event with result 0
+default	20:50:17.359986+0100	bluetoothd	Received XPC message "CBMsgIdCheckIn" from session ""
+default	20:50:17.360044+0100	bluetoothd	Received XPC check-in from session "com.apple.BluetoothUIServer-central-21314-1111" fAccessLevel 1 fProgrammaticPairing 1
+default	20:50:17.360078+0100	bluetoothd	Setting fNeedsRestrictedState operation: 0
+default	20:50:17.360310+0100	bluetoothd	Overriding TCC for bundleIdentifier <private>
+default	20:50:17.360443+0100	bluetoothd	Sending 'session attached' event for session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.360548+0100	bluetoothd	Attached session for "com.apple.BluetoothUIServer-central-21314-1111" with session: 0x7f98f0792f10, session handle: 0xaba90000
+default	20:50:17.360620+0100	bluetoothd	Registering central session "com.apple.BluetoothUIServer-central-21314-1111" with backgrounding: off, persistence: off (CBSR) restoreID: (null)
+debug	20:50:17.360711+0100	bluetoothd	found no value for key BTUCM in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+debug	20:50:17.361812+0100	bluetoothd	Decoded RBSProcessHandle with IPC ID f28b8fc00005342
+debug	20:50:17.362894+0100	bluetoothd	Decoded RBSProcessHandle with IPC ID f28b8fc00005342
+default	20:50:17.363024+0100	bluetoothd	Session "com.apple.BluetoothUIServer-central-21314-1111" tccRequired : 0
+default	20:50:17.363065+0100	bluetoothd	ReadyForTCC. TCC required : 0
+default	20:50:17.363099+0100	bluetoothd	Sending XPC message "CBMsgIdReadyForTCC" to session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.363143+0100	bluetoothd	Session "com.apple.BluetoothUIServer-central-21314-1111" : needsRestrictedStateOperation = 0, overrideRestrictedState = 0 , denylistMode = 0, receivesControllerBTClockEvents=0
+default	20:50:17.363173+0100	bluetoothd	PowerManager power state is 1
+debug	20:50:17.363224+0100	bluetoothd	found no value for key Sentinel in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:17.363276+0100	bluetoothd	Received XPC message "CBClassicMsgIdPairingAgentRetrievePairedDevices" from session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:17.363430+0100	bluetoothd	Received XPC message "CBMsgIdTCCDone" from session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.363486+0100	bluetoothd	PowerManager power state is 1
+default	20:50:17.363523+0100	bluetoothd	Power state changed. PowerState:1 managerState:5 fUserAuthorization: 0	 medicalDeviceorStateRestorationAppPendingTCC:0
+default	20:50:17.363554+0100	bluetoothd	Sending 'state updated' event with state "On" to session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.363583+0100	bluetoothd	Sending XPC message "CBMsgIdStateUpdated" to session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.363631+0100	bluetoothd	Received XPC message "CBClassicMsgIdPairingAgentRegistered" from session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:17.363734+0100	bluetoothd	Sending XPC message "CBMsgIdSupportedFeatures" to session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.363935+0100	bluetoothd	advertisingAddressDidChange connectable:<private> non-connectable:<private>
+default	20:50:17.364049+0100	bluetoothd	Sending XPC message "CBMsgIdAdvertisingAddressChanged" to session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.364226+0100	bluetoothd	advertisingAddressDidChange connectable:<private> non-connectable:<private>
+default	20:50:17.364356+0100	bluetoothd	Sending XPC message "CBMsgIdAdvertisingAddressChanged" to session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.364480+0100	bluetoothd	PowerManager power state is 1
+default	20:50:17.364598+0100	bluetoothd	Session "com.apple.BluetoothUIServer-classic-21314-1110" is asking to register pairing agent
+default	20:50:17.364707+0100	bluetoothd	Registering pairing agent for session "com.apple.BluetoothUIServer-classic-21314-1110" with programmatic pairing enabled
+error	20:50:17.364821+0100	bluetoothd	Classic pairing agent already exist
+default	20:50:17.364957+0100	bluetoothd	Received XPC message "CBMsgIdRetrievePeerWithAddress" from session "com.apple.BluetoothUIServer-classic-21314-1110"
+debug	20:50:17.365071+0100	bluetoothd	Already tracking address "<private>" as device "88707F8E-ED0E-0668-5A1B-DA4ECD0DE1AC"
+default	20:50:17.365219+0100	bluetoothd	Received XPC message "CBMsgIdRegisterForConnectionEventsWithOptions" from session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.365292+0100	bluetoothd	handleRegisterForConnectionEventsWithOptionsMsg peripherals:(null)
+default	20:50:17.365405+0100	bluetoothd	handleRegisterForConnectionEventsWithOptionsMsg allPeripherals:1
+default	20:50:17.365550+0100	bluetoothd	registerForConnectionEventsWithOptionsforApp - notifyConnectionEventDidOccur - Device:<private>
+default	20:50:17.365670+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:1
+default	20:50:17.365734+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.365781+0100	bluetoothd	registerForConnectionEventsWithOptionsforApp - notifyConnectionEventDidOccur - Device:<private>
+default	20:50:17.365871+0100	bluetoothd	sending connectionEvent session:<private> device:<private> connected:1
+default	20:50:17.366029+0100	bluetoothd	Sending XPC message "CBMsgIdConnectionEventDidOccur" to session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.366177+0100	bluetoothd	Received XPC message "CBMsgIdGetPeerState" from session "com.apple.BluetoothUIServer-classic-21314-1110"
+error	20:50:17.366265+0100	bluetoothd	handleSetPeerState, invalid peer
+default	20:50:17.366175+0100	bluetoothd	Sending BT Stats to CoreAnalytics for <private>
+default	20:50:17.366373+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.BluetoothUIServer-central-21314-1111"
+info	20:50:17.366476+0100	bluetoothd	Dropping <private> as it isn't used in any transform (not in the config or budgeted?)
+default	20:50:17.367728+0100	bluetoothd	Received XPC message "CBMsgIdRetrievePeerWithAddress" from session "com.apple.BluetoothUIServer-classic-21314-1110"
+debug	20:50:17.367786+0100	bluetoothd	Already tracking address "<private>" as device "5BF3C2D6-945F-07D1-E24B-EA727FB45310"
+default	20:50:17.368168+0100	bluetoothd	Received XPC message "CBMsgIdGetPeerState" from session "com.apple.BluetoothUIServer-classic-21314-1110"
+error	20:50:17.368212+0100	bluetoothd	handleSetPeerState, invalid peer
+default	20:50:17.369371+0100	bluetoothd	Received XPC message "CBMsgIdRetrieveAddressForPeripheral" from session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:17.383928+0100	bluetoothd	Received XPC message "CBMsgIdPeerHasTag" from session "com.apple.BluetoothUIServer-central-21314-1111"
+debug	20:50:17.384002+0100	bluetoothd	found no value for key Tags in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:17.394104+0100	bluetoothd	LE Connection Parameters Updated for handle 0x7f98f5b06170, interval:12 peripheral latency:4 supervisionTO:100 maxCELen:6
+default	20:50:17.394156+0100	bluetoothd	Le topology - {adv-addr: <private>-Random, resolved-addr: <private>-Public, lmhandle: 0x42, interval: 15, latency: 4, lsto: 100, minCE: 2, maxCE: 6, role: master, state: CONNECTED, ready-state: LE_READY_IDLE, enc-state: ON, phyStatsEnabled: 0}
+default	20:50:17.394176+0100	bluetoothd	Connection Update: setting LE device "<private>" connection threshold to 50 events with interval 12, LSTO 100
+info	20:50:17.394213+0100	bluetoothd	Sending: BD_VSC_SET_PRIORITIZATION_THRESHOLD
+info	20:50:17.394239+0100	bluetoothd	VSC BD_VSC_SET_PRIORITIZATION_THRESHOLD, not supported
+info	20:50:17.394275+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-7"
+info	20:50:17.394304+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-8"
+info	20:50:17.394332+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.UserEventAgent-classic-461-19"
+info	20:50:17.394359+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.jamf.management.daemon-central-102-18"
+info	20:50:17.394382+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-central-157-2"
+info	20:50:17.394418+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-classic-21168-1105"
+info	20:50:17.394505+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BluetoothUIServer-central-21314-1111"
+info	20:50:17.394560+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-3"
+info	20:50:17.394612+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.PerfPowerServices-classic-9915-1055"
+info	20:50:17.394660+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BTLEServerAgent-peripheral-2833-35"
+default	20:50:17.394716+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.BTLEServerAgent-peripheral-2833-35"
+info	20:50:17.394781+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.cloudpaird-central-1215-32"
+info	20:50:17.394855+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.tipsd-central-5149-559"
+info	20:50:17.394947+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.UserEventAgent-central-461-20"
+default	20:50:17.395061+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.UserEventAgent-central-461-20"
+info	20:50:17.395179+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:17.395237+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+info	20:50:17.395344+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-4"
+info	20:50:17.395473+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:17.395533+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.BTLEServer-central-384-11"
+info	20:50:17.395648+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-central-157-5"
+info	20:50:17.395730+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.systemstats-classic-97-17"
+info	20:50:17.395793+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-classic-21168-1103"
+info	20:50:17.395904+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.sharingd-classic-572-24"
+info	20:50:17.395973+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-central-157-9"
+info	20:50:17.396028+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BluetoothUIServer-classic-21314-1110"
+info	20:50:17.396090+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:17.396116+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.PerfPowerServices-central-9915-1056"
+info	20:50:17.396202+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.sharingd-central-572-25"
+info	20:50:17.396262+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.locationd-central-360-10"
+info	20:50:17.396374+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.rapportd-peripheral-497-1102"
+info	20:50:17.396431+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.cloudpaird-classic-1215-31"
+info	20:50:17.396498+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.rapportd-peripheral-497-22"
+info	20:50:17.396581+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.sharingd-peripheral-572-26"
+default	20:50:18.558617+0100	bluetoothd	Accessory power changed (coalesced)
+default	20:50:18.558748+0100	bluetoothd	Update devices: paired, classic, 0 total
+default	20:50:18.558881+0100	bluetoothd	Update devices: paired, BLE, 2 total
+default	20:50:18.558944+0100	bluetoothd	Update devices: connected, classic, 0 total
+default	20:50:18.559427+0100	bluetoothd	Update devices: connected, BLE, 2 total, power sources 2
+debug	20:50:18.559561+0100	bluetoothd	Device found: CBDevice 1D6E3010-4A17-171F-E046-3C087BC495C7, BDA D0:AE:5A:BD:E5:3A, Nm 'Tornblue Left', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -79%, CF 0x0 < >, unchanged
+debug	20:50:18.559639+0100	bluetoothd	Device found: CBDevice 9E5CC049-A393-EB24-EBF0-77D7651747B2, BDA D8:0C:6C:EA:F5:BE, Nm 'Tornblue Left #1', VS 1, DsF 0xA00000 < Connections Pairing >, DvF 0x202000 < BLEP Cent >, DvT Keyboard, CnS 0x400000 < BLE >, Battery M -100%, CF 0x0 < >, unchanged
+default	20:50:19.126466+0100	bluetoothd	Reading GAP name characteristic value on device "<private>"
+info	20:50:19.150356+0100	bluetoothd	Found service "0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]" for value "0x000B Characteristic Value [ 54 6F 72 6E 62 6C 75 65 20 4C 65 66 74 20 23 31 ]"
+default	20:50:19.150490+0100	bluetoothd	The device "<private>" is named "<private>"
+default	20:50:19.150631+0100	bluetoothd	statedump: 0x0001 Primary Service      [ serviceUUID: 0x1801, endHandle: 0x0008, discoveredCharacteristics: some ]
+default	20:50:19.150701+0100	bluetoothd	statedump: 0x0002 Characteristic       [ valueUUID: 0x2A05, valueHandle: 0x0003, properties: indicate, discoveredDescriptors: all ]
+default	20:50:19.150748+0100	bluetoothd	statedump: 0x0004 Client Configuration [ none ]
+default	20:50:19.150800+0100	bluetoothd	statedump: 0x0009 Primary Service      [ serviceUUID: 0x1800, endHandle: 0x000F, discoveredCharacteristics: none ]
+default	20:50:19.150845+0100	bluetoothd	statedump: 0x0010 Primary Service      [ serviceUUID: 0x180F, endHandle: 0x0013, discoveredCharacteristics: all ]
+default	20:50:19.150887+0100	bluetoothd	statedump: 0x0011 Characteristic       [ valueUUID: 0x2A19, valueHandle: 0x0012, properties: read notify, discoveredDescriptors: all ]
+default	20:50:19.150937+0100	bluetoothd	statedump: 0x0012 Characteristic Value [ 64 ]
+default	20:50:19.150985+0100	bluetoothd	statedump: 0x0013 Client Configuration [ none ]
+default	20:50:19.151015+0100	bluetoothd	statedump: 0x0014 Primary Service      [ serviceUUID: 0x180A, endHandle: 0x001A, discoveredCharacteristics: all ]
+default	20:50:19.151050+0100	bluetoothd	statedump: 0x0015 Characteristic       [ valueUUID: 0x2A24, valueHandle: 0x0016, properties: read, discoveredDescriptors: none ]
+default	20:50:19.151084+0100	bluetoothd	statedump: 0x0016 Characteristic Value [ 6E 52 46 35 32 38 34 30 5F 51 49 41 41 ]
+default	20:50:19.151135+0100	bluetoothd	statedump: 0x0017 Characteristic       [ valueUUID: 0x2A29, valueHandle: 0x0018, properties: read, discoveredDescriptors: none ]
+default	20:50:19.151222+0100	bluetoothd	statedump: 0x0018 Characteristic Value [ 4D 61 6E 75 66 61 63 74 75 72 65 72 ]
+default	20:50:19.151335+0100	bluetoothd	statedump: 0x0019 Characteristic       [ valueUUID: 0x2A50, valueHandle: 0x001A, properties: read, discoveredDescriptors: none ]
+default	20:50:19.151376+0100	bluetoothd	statedump: 0x001A Characteristic Value [ 01 00 00 00 00 01 00 ]
+default	20:50:19.151454+0100	bluetoothd	statedump: 0x001B Primary Service      [ serviceUUID: 0x1812, endHandle: 0x0029, discoveredCharacteristics: all ]
+default	20:50:19.151511+0100	bluetoothd	statedump: 0x001C Characteristic       [ valueUUID: 0x2A4A, valueHandle: 0x001D, properties: read, discoveredDescriptors: none ]
+default	20:50:19.151578+0100	bluetoothd	statedump: 0x001D Characteristic Value [ 00 00 00 03 ]
+default	20:50:19.151653+0100	bluetoothd	statedump: 0x001E Characteristic       [ valueUUID: 0x2A4B, valueHandle: 0x001F, properties: read, discoveredDescriptors: none ]
+default	20:50:19.151748+0100	bluetoothd	statedump: 0x001F Characteristic Value [ 05 01 09 06 A1 01 85 01 05 07 19 E0 29 E7 15 00 25 01 75 01 95 08 81 02 05 07 75 08 95 01 81 03 05 07 15 00 25 FF 19 00 29 FF 75 08 95 06 81 00 C0 05 0C 09 01 A1 01 85 02 05 0C 15 00 26 FF FF 19 00 2A FF FF 75 10 95 06 81 00 C0 ]
+default	20:50:19.151788+0100	bluetoothd	statedump: 0x0020 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0021, properties: read notify, discoveredDescriptors: all ]
+default	20:50:19.151910+0100	bluetoothd	statedump: 0x0021 Characteristic Value [ 00 00 00 00 00 00 00 00 ]
+default	20:50:19.151951+0100	bluetoothd	statedump: 0x0022 Client Configuration [ none ]
+default	20:50:19.151981+0100	bluetoothd	statedump: 0x0023 0x2908               [ 01 01 ]
+default	20:50:19.152062+0100	bluetoothd	statedump: 0x0024 Characteristic       [ valueUUID: 0x2A4D, valueHandle: 0x0025, properties: read notify, discoveredDescriptors: all ]
+default	20:50:19.152111+0100	bluetoothd	statedump: 0x0026 Client Configuration [ none ]
+default	20:50:19.152143+0100	bluetoothd	statedump: 0x0027 0x2908               [ 02 01 ]
+default	20:50:19.152199+0100	bluetoothd	statedump: 0x0028 Characteristic       [ valueUUID: 0x2A4C, valueHandle: 0x0029, properties: responseless-writes, discoveredDescriptors: none ]
+default	20:50:20.190574+0100	bluetoothd	[MacUserClient][NotificationEventHandler] -- Received Heart Beat notification -- HIDShim
+debug	20:50:21.988699+0100	bluetoothd	found no value for key LE in CFPrefsSearchListSource<0x7f98f070d950> (Domain: com.apple.MobileBluetooth.debug, Container: (null))
+default	20:50:21.988780+0100	bluetoothd	Accepting following parameters: min=6, max=12, lat=30, mul=400, cel=4, preferredLowLatencyInterval=0
+default	20:50:21.988814+0100	bluetoothd	 new connection parameters interval 7ms-15ms, timeout=4000ms, CE 4-4 latency=30
+default	20:50:21.988836+0100	bluetoothd	 current connection params interval 15ms-15ms, timeout=1000ms, CE 2-6 latency=4
+default	20:50:21.988854+0100	bluetoothd	 Sending parameters to controller
+default	20:50:22.160470+0100	bluetoothd	LE Connection Parameters Updated for handle 0x7f98f5b06170, interval:9 peripheral latency:30 supervisionTO:400 maxCELen:4
+default	20:50:22.160526+0100	bluetoothd	Le topology - {adv-addr: <private>-Random, resolved-addr: <private>-Public, lmhandle: 0x42, interval: 11, latency: 30, lsto: 400, minCE: 4, maxCE: 4, role: master, state: CONNECTED, ready-state: LE_READY_IDLE, enc-state: ON, phyStatsEnabled: 0}
+default	20:50:22.160561+0100	bluetoothd	Connection Update: setting LE device "<private>" connection threshold to 266 events with interval 9, LSTO 400
+info	20:50:22.160599+0100	bluetoothd	Sending: BD_VSC_SET_PRIORITIZATION_THRESHOLD
+info	20:50:22.160620+0100	bluetoothd	VSC BD_VSC_SET_PRIORITIZATION_THRESHOLD, not supported
+info	20:50:22.160649+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-7"
+info	20:50:22.160670+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-8"
+info	20:50:22.160686+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.UserEventAgent-classic-461-19"
+info	20:50:22.160703+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.jamf.management.daemon-central-102-18"
+info	20:50:22.160720+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-central-157-2"
+info	20:50:22.160736+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-classic-21168-1105"
+info	20:50:22.160753+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BluetoothUIServer-central-21314-1111"
+info	20:50:22.160770+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-3"
+info	20:50:22.160820+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.PerfPowerServices-classic-9915-1055"
+info	20:50:22.160873+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BTLEServerAgent-peripheral-2833-35"
+default	20:50:22.160917+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.BTLEServerAgent-peripheral-2833-35"
+info	20:50:22.160974+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.cloudpaird-central-1215-32"
+info	20:50:22.160994+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.tipsd-central-5149-559"
+info	20:50:22.161046+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.UserEventAgent-central-461-20"
+default	20:50:22.161079+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.UserEventAgent-central-461-20"
+info	20:50:22.161138+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+default	20:50:22.161207+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.preferences.Bluetooth.remoteservice-central-21168-1104"
+info	20:50:22.161319+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-peripheral-157-4"
+info	20:50:22.161371+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BTLEServer-central-384-11"
+default	20:50:22.161475+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.BTLEServer-central-384-11"
+info	20:50:22.161578+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-central-157-5"
+info	20:50:22.161616+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.systemstats-classic-97-17"
+info	20:50:22.161714+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.preferences.Bluetooth.remoteservice-classic-21168-1103"
+info	20:50:22.161746+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.sharingd-classic-572-24"
+info	20:50:22.161791+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.bluetoothd-central-157-9"
+info	20:50:22.161839+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.BluetoothUIServer-classic-21314-1110"
+info	20:50:22.161879+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.PerfPowerServices-central-9915-1056"
+default	20:50:22.161921+0100	bluetoothd	Sending XPC message "CBMsgIdPeerConnectionParametersUpdated" to session "com.apple.PerfPowerServices-central-9915-1056"
+info	20:50:22.161961+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.sharingd-central-572-25"
+info	20:50:22.161979+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.locationd-central-360-10"
+info	20:50:22.162040+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.rapportd-peripheral-497-1102"
+info	20:50:22.162101+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.cloudpaird-classic-1215-31"
+info	20:50:22.162157+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.rapportd-peripheral-497-22"
+info	20:50:22.162237+0100	bluetoothd	Dispatching connection parameters update for device "<private>" to session "com.apple.sharingd-peripheral-572-26"
+error	20:50:22.253520+0100	bluetoothd	XPCServiceConnection (com.apple.bluetoothUIServer) interrupted
+default	20:50:22.254028+0100	bluetoothd	Closed XPC connection to session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:22.254091+0100	bluetoothd	Unregistering session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:22.254139+0100	bluetoothd	Destroying pairing agent for session com.apple.BluetoothUIServer-classic-21314-1110
+info	20:50:22.254179+0100	bluetoothd	Sending 'pairing agent stopped' event with result 0
+default	20:50:22.254240+0100	bluetoothd	Detach session: 0x7f98f1285380, session handle: 0x88c00000
+default	20:50:22.254281+0100	bluetoothd	Sending 'session detached' event for session "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:22.254360+0100	bluetoothd	Erasing session 0x7f98f1285380 from SessionMap for "com.apple.BluetoothUIServer-classic-21314-1110"
+default	20:50:22.254441+0100	bluetoothd	Closed XPC connection to session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:22.254648+0100	bluetoothd	Unregistering session "com.apple.BluetoothUIServer-central-21314-1111"
+error	20:50:22.254967+0100	bluetoothd	stopTrackingForSession: sensor tracking is not supported on this platform
+default	20:50:22.255320+0100	bluetoothd	Detach session: 0x7f98f0792f10, session handle: 0xaba90000
+default	20:50:22.255456+0100	bluetoothd	Sending 'session detached' event for session "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:22.255691+0100	bluetoothd	Erasing session 0x7f98f0792f10 from SessionMap for "com.apple.BluetoothUIServer-central-21314-1111"
+default	20:50:22.256196+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:22.257215+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:22.257293+0100	bluetoothd	PowerManager power state is 1
+default	20:50:22.257544+0100	bluetoothd	PowerManager power state is 1
+default	20:50:22.258122+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:50:27.544758+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:27.544909+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:27.544976+0100	bluetoothd	PowerManager power state is 1
+default	20:50:27.545022+0100	bluetoothd	PowerManager power state is 1
+default	20:50:27.545367+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:50:33.039072+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:33.039191+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:33.039256+0100	bluetoothd	PowerManager power state is 1
+default	20:50:33.039288+0100	bluetoothd	PowerManager power state is 1
+default	20:50:33.039616+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:50:38.539104+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:38.539220+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:38.539282+0100	bluetoothd	PowerManager power state is 1
+default	20:50:38.539318+0100	bluetoothd	PowerManager power state is 1
+default	20:50:38.539675+0100	bluetoothd	Posting Bluetooth Status Notification <private>
+default	20:50:44.039174+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:44.039266+0100	bluetoothd	Adding LE Connection <private>
+default	20:50:44.039324+0100	bluetoothd	PowerManager power state is 1
+default	20:50:44.039370+0100	bluetoothd	PowerManager power state is 1
+default	20:50:44.039669+0100	bluetoothd	Posting Bluetooth Status Notification <private>
