@@ -323,6 +323,23 @@ config ZMK_EXT_POWER
 	bool "Enable support to control external power output"
 	default y
 
+choice ZMK_BATTERY_FETCH
+	prompt "Battery sensor fetch mode"
+
+config ZMK_BATTERY_FETCH_INDIVIDUAL_CHANNELS
+	bool "Use sensor_sample_fetch_chan()"
+	help
+	  Use sensor_sample_fetch_chan() to fetch the individual battery sensor
+	  channels instead of fetching all channels.
+
+config ZMK_BATTERY_FETCH_ALL
+	bool "Use sensor_sample_fetch()"
+	help
+	  Use sensor_sample_fetch() to fetch all battery sensor channels. Use this
+	  if your battery sensor driver requires fetching SENSOR_CHAN_ALL.
+
+endchoice
+
 #Power Management
 endmenu
 

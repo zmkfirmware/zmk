@@ -34,7 +34,13 @@ static const struct device *battery;
 static int zmk_battery_update(const struct device *battery) {
     struct sensor_value state_of_charge;
 
+#if defined(CONFIG_ZMK_BATTERY_FETCH_ALL)
+    int rc = sensor_sample_fetch(battery);
+#elif defined(CONFIG_ZMK_BATTERY_FETCH_INDIVIDUAL_CHANNELS)
     int rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE);
+#else
+#error "No value selected for ZMK_BATTERY_FETCH"
+#endif
 
     if (rc != 0) {
         LOG_DBG("Failed to fetch battery values: %d", rc);
