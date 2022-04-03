@@ -24,6 +24,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/split/bluetooth/service.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
+#include <zmk/events/battery_state_changed.h>
 #include <init.h>
 
 static int start_scan(void);
@@ -53,6 +54,9 @@ static struct peripheral_slot peripherals[ZMK_BLE_SPLIT_PERIPHERAL_COUNT];
 static const struct bt_uuid_128 split_service_uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
 
 K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
+              CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
+
+K_MSGQ_DEFINE(peripheral_batt_lvl_msgq, sizeof(struct zmk_peripheral_battery_state_changed),
               CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
 
 int peripheral_slot_index_for_conn(struct bt_conn *conn) {
@@ -191,6 +195,16 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
     return BT_GATT_ITER_CONTINUE;
 }
 
+void peripheral_batt_lvl_change_callback(struct k_work *work) {
+    struct zmk_peripheral_battery_state_changed ev;
+    while (k_msgq_get(&peripheral_batt_lvl_msgq, &ev, K_NO_WAIT) == 0) {
+        LOG_DBG("Triggering peripheral battery level change %u", ev.state_of_charge);
+        ZMK_EVENT_RAISE(new_zmk_peripheral_battery_state_changed(ev));
+    }
+}
+
+K_WORK_DEFINE(peripheral_batt_lvl_work, peripheral_batt_lvl_change_callback);
+
 static uint8_t split_central_battery_level_notify_func(struct bt_conn *conn,
                                                        struct bt_gatt_subscribe_params *params,
                                                        const void *data, uint16_t length) {
@@ -209,6 +223,11 @@ static uint8_t split_central_battery_level_notify_func(struct bt_conn *conn,
 
     LOG_DBG("[BATTERY LEVEL NOTIFICATION] data %p length %u", data, length);
     uint8_t battery_level = ((uint8_t *)data)[0];
+    struct zmk_peripheral_battery_state_changed ev = {
+        .state_of_charge = battery_level
+    };
+    k_msgq_put(&peripheral_batt_lvl_msgq, &ev, K_NO_WAIT);
+    k_work_submit(&peripheral_batt_lvl_work);
     LOG_DBG("Battery level: %u", battery_level);
 
     return BT_GATT_ITER_CONTINUE;
