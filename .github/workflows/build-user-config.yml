@@ -64,14 +64,15 @@ jobs:
           echo ::set-output name=extra-cmake-args::${EXTRA_CMAKE_ARGS}
           echo ::set-output name=artifact-name::${ARTIFACT_NAME}
           echo ::set-output name=display-name::${DISPLAY_NAME}
+          echo ::set-output name=zephyr-version::${ZEPHYR_VERSION}
 
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Cache west modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.1
         env:
-          cache-name: cache-zephyr-modules
+          cache-name: cache-zephyr-${{ steps.variables.outputs.zephyr-version }}-modules
         with:
           path: |
             modules/
@@ -97,12 +98,7 @@ jobs:
       - name: West Build (${{ steps.variables.outputs.display-name }})
         run: |
           west build -s zmk/app -b ${{ matrix.board }} -- -DZMK_CONFIG=${GITHUB_WORKSPACE}/${{ inputs.config_path }} ${{ steps.variables.outputs.extra-cmake-args }} ${{ matrix.cmake-args }}
-      - name: ${{ steps.variables.outputs.display-name }} DTS File
-        if: ${{ always() }}
-        run: |
-          if [ -f "build/zephyr/${{ matrix.board }}.dts.pre.tmp" ]; then cat -n build/zephyr/${{ matrix.board }}.dts.pre.tmp; fi
-          if [ -f "build/zephyr/zephyr.dts" ]; then cat -n build/zephyr/zephyr.dts; fi
-      
+
       - name: ${{ steps.variables.outputs.display-name }} Kconfig file
         run: cat build/zephyr/.config | grep -v "^#" | grep -v "^$"
       
