@@ -250,9 +250,9 @@ static int behavior_tap_dance_init(const struct device *dev) {
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
         .behaviors = behavior_tap_dance_config_##n##_bindings,                                     \
         .behavior_count = DT_INST_PROP_LEN(n, bindings)};                                          \
-    DEVICE_DT_INST_DEFINE(n, behavior_tap_dance_init, device_pm_control_nop, NULL,                 \
-                          &behavior_tap_dance_config_##n, APPLICATION,                             \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_tap_dance_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_tap_dance_init, NULL, NULL, &behavior_tap_dance_config_##n,  \
+                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
+                          &behavior_tap_dance_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 
