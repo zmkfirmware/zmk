@@ -26,6 +26,36 @@ Variations of the warnings shown below occur when flashing the `<firmware>.uf2` 
 An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
 For more information, click [here](../docs/development/setup.md#environment-variables).
 
+### West build errors
+
+West build errors usually indicates syntax problems in the `<shield>.keymap` file in the compilation process. These errors
+
+:::note
+If you are reviewing these errors in the GitHub Actions tab, they can be found in the `West Build` step of the build process.
+:::
+
+#### devicetree error
+
+A `devicetree error` followed by a reference to the line number on `<shield>.keymap` refers to an issue at the exact line position in that file. For example, this indicates a missing `;`:
+
+```
+devicetree error: /__w/zmk-config/zmk-config/config/cradio.keymap:109 (column 4): parse error: expected ';' or ','
+```
+This example indicates a missing `;` at line 109 of the `cradio.keymap` file.
+
+#### devicetree_unfixed.h error
+
+A `devicetree_unfixed.h` error that follows with an "undeclared here" string indicates a problem with key bindings, like behavior nodes (e.g. `&kp` or `&mt`) with incorrect number of key bindings:
+
+```
+/__w/zmk-config/zmk-config/build/zephyr/include/generated/devicetree_unfixed.h:3756:145: error: 'DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label' undeclared here (not in a function); did you mean 'DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_16_PH'?
+```
+The error string `DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label` indicates a key binding syntax problem on position `12` in the `symbol_layer` of the keymap.
+
+:::note
+Key positions are numbered starting from `0` at the top left key on the keymap, incrementing horizontally, row by row.
+:::
+
 ### dtlib.DTError
 
 An error along the lines of `dtlib.DTError: <board>.dts.pre.tmp:<line number>` during firmware compilation indicates an issue within the `<shield>.keymap` file.
