@@ -21,12 +21,13 @@ static int behavior_key_tap_init(const struct device *dev) { return 0; };
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-    int ret = ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(binding->param1, true, event.timestamp));
-    if(ret != 0) {
+    int ret = ZMK_EVENT_RAISE(
+        zmk_keycode_state_changed_from_encoded(binding->param1, true, event.timestamp));
+    if (ret != 0) {
         return ret;
     }
-    return ZMK_EVENT_RAISE(zmk_keycode_state_changed_from_encoded(binding->param1, false, event.timestamp));
-
+    return ZMK_EVENT_RAISE(
+        zmk_keycode_state_changed_from_encoded(binding->param1, false, event.timestamp));
 }
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
@@ -39,7 +40,7 @@ static const struct behavior_driver_api behavior_key_tap_driver_api = {
     .binding_pressed = on_keymap_binding_pressed, .binding_released = on_keymap_binding_released};
 
 #define KT_INST(n)                                                                                 \
-    DEVICE_DT_INST_DEFINE(n, behavior_key_tap_init, device_pm_control_nop, NULL, NULL,           \
+    DEVICE_DT_INST_DEFINE(n, behavior_key_tap_init, device_pm_control_nop, NULL, NULL,             \
                           APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
                           &behavior_key_tap_driver_api);
 
