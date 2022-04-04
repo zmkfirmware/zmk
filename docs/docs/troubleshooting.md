@@ -28,7 +28,7 @@ For more information, click [here](../docs/development/setup.md#environment-vari
 
 ### West build errors
 
-West build errors usually indicates syntax problems in the `<shield>.keymap` file in the compilation process. These errors
+West build errors usually indicates syntax problems in the `<shield>.keymap` file in the compilation process. The following are some examples and root causes.
 
 :::note
 If you are reviewing these errors in the GitHub Actions tab, they can be found in the `West Build` step of the build process.
@@ -36,12 +36,11 @@ If you are reviewing these errors in the GitHub Actions tab, they can be found i
 
 #### devicetree error
 
-A `devicetree error` followed by a reference to the line number on `<shield>.keymap` refers to an issue at the exact line position in that file. For example, this indicates a missing `;`:
+A `devicetree error` followed by a reference to the line number on `<shield>.keymap` refers to an issue at the exact line position in that file. For example, below error message indicates a missing `;`at line 109 of the `cradio.keymap` file:
 
 ```
 devicetree error: /__w/zmk-config/zmk-config/config/cradio.keymap:109 (column 4): parse error: expected ';' or ','
 ```
-This example indicates a missing `;` at line 109 of the `cradio.keymap` file.
 
 #### devicetree_unfixed.h error
 
@@ -50,6 +49,7 @@ A `devicetree_unfixed.h` error that follows with an "undeclared here" string ind
 ```
 /__w/zmk-config/zmk-config/build/zephyr/include/generated/devicetree_unfixed.h:3756:145: error: 'DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label' undeclared here (not in a function); did you mean 'DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_16_PH'?
 ```
+
 The error string `DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label` indicates a key binding syntax problem on position `12` in the `symbol_layer` of the keymap.
 
 :::note
