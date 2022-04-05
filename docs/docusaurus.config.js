@@ -106,7 +106,7 @@ module.exports = {
     },
     algolia: {
       appId: "USXLDJ14JE",
-      apiKey: "75325855fc90356828fe212d38e5ca34",
+      apiKey: "384a3bd2d50136c9dc8c8ddfe1b3a4b2",
       indexName: "zmkfirmware",
     },
   },
