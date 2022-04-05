@@ -56,29 +56,6 @@ The error string `DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label` ind
 Key positions are numbered starting from `0` at the top left key on the keymap, incrementing horizontally, row by row.
 :::
 
-### dtlib.DTError
-
-An error along the lines of `dtlib.DTError: <board>.dts.pre.tmp:<line number>` during firmware compilation indicates an issue within the `<shield>.keymap` file.
-This can be verified by checking the file in question, found in `mkdir/app/build`.
-
-|                  ![Example Error Screen](../docs/assets/troubleshooting/keymaps/errorscreen.png)                   |
-| :----------------------------------------------------------------------------------------------------------------: |
-| An example of the dtlib.DTError when compiling an iris with the nice!nano while the keymap is not properly defined |
-
-After opening the `<board>.dts.pre.tmp:<line number>` and scrolling down to the referenced line, one can locate errors within their shield's keymap by checking if the referenced keycodes were properly converted into the correct [USB HID Usage ID](https://www.usb.org/document-library/hid-usage-tables-12).
-
-:::note
-If you are reviewing these errors in the GitHub Actions tab, the contents of `<board>.dts.pre.tmp` is output (with line numbers) in the next step of the build process.
-:::
-
-|                                                                   ![Unhealthy Keymap Temp](../docs/assets/troubleshooting/keymaps/unhealthyEDIT.png)                                                                   |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| An incorrectly defined keymap unable to compile. As shown in red, `&kp SPAC` is not a valid reference to the [USB HID Usage ID](https://www.usb.org/document-library/hid-usage-tables-12) used for "Keyboard Spacebar" |
-
-|                                                                               ![Healthy Keymap Temp](../docs/assets/troubleshooting/keymaps/healthyEDIT.png)                                                                               |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| A properly defined keymap with successful compilation. As shown in red, the corrected keycode (`&kp SPACE`) references the proper Usage ID defined in the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12) |
-
 ### Split Keyboard Halves Unable to Pair
 
 Split keyboard halves pairing issue can be resolved by flashing a settings reset firmware to both controllers. You will first need to acquire the reset UF2 image file with one of the following options:
