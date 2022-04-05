@@ -36,7 +36,7 @@ If you are reviewing these errors in the GitHub Actions tab, they can be found i
 
 #### devicetree error
 
-A `devicetree error` followed by a reference to the line number on `<shield>.keymap` refers to an issue at the exact line position in that file. For example, below error message indicates a missing `;`at line 109 of the `cradio.keymap` file:
+A `devicetree error` followed by a reference to the line number on `<shield>.keymap` refers to an issue at the exact line position in that file. For example, below error message indicates a missing `;` at line 109 of the `cradio.keymap` file:
 
 ```
 devicetree error: /__w/zmk-config/zmk-config/config/cradio.keymap:109 (column 4): parse error: expected ';' or ','
