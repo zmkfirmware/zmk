@@ -224,10 +224,10 @@ static uint8_t split_central_battery_level_notify_func(struct bt_conn *conn,
 
     LOG_DBG("[BATTERY LEVEL NOTIFICATION] data %p length %u", data, length);
     uint8_t battery_level = ((uint8_t *)data)[0];
+    LOG_DBG("Battery level: %u", battery_level);
     struct zmk_peripheral_battery_state_changed ev = {.state_of_charge = battery_level};
     k_msgq_put(&peripheral_batt_lvl_msgq, &ev, K_NO_WAIT);
     k_work_submit(&peripheral_batt_lvl_work);
-    LOG_DBG("Battery level: %u", battery_level);
 
     return BT_GATT_ITER_CONTINUE;
 }
