@@ -99,7 +99,6 @@ menuconfig ZMK_BLE
 	select BT_SMP_APP_PAIRING_ACCEPT
 	select BT_PERIPHERAL
 	select BT_DIS
-	select BT_BAS
 	select BT_SETTINGS
 	select SETTINGS
 
@@ -214,6 +213,9 @@ config BT_MAX_CONN
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
 	default n
 
+config BT_BAS
+	default y
+
 #!ZMK_SPLIT_BLE_ROLE_CENTRAL
 endif
 
@@ -243,6 +245,9 @@ config BT_MAX_CONN
 
 config BT_MAX_PAIRED
 	default 5
+
+config BT_BAS
+	default y
 
 #!ZMK_SPLIT_BLE
 endif
