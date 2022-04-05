@@ -674,9 +674,6 @@ static int behavior_hold_tap_init(const struct device *dev) {
     return 0;
 }
 
-struct behavior_hold_tap_data {};
-static struct behavior_hold_tap_data behavior_hold_tap_data;
-
 #define KP_INST(n)                                                                                 \
     static struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                        \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
@@ -688,9 +685,9 @@ static struct behavior_hold_tap_data behavior_hold_tap_data;
         .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
         .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, &behavior_hold_tap_data,                \
-                          &behavior_hold_tap_config_##n, APPLICATION,                              \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_hold_tap_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, NULL, &behavior_hold_tap_config_##n,    \
+                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
+                          &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 
