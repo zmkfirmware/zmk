@@ -326,7 +326,7 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
 
         slot->batt_lvl_read_params.func = split_central_battery_level_read_func;
         slot->batt_lvl_read_params.handle_count = 1;
-        slot->batt_lvl_read_params.single.handle = attr->handle + 1;
+        slot->batt_lvl_read_params.single.handle = bt_gatt_attr_value_handle(attr);
         slot->batt_lvl_read_params.single.offset = 0;
         bt_gatt_read(conn, &slot->batt_lvl_read_params);
     }
