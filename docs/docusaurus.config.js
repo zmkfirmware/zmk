@@ -19,10 +19,6 @@ module.exports = {
     colorMode: {
       respectPrefersColorScheme: true,
     },
-    googleAnalytics: {
-      trackingID: "UA-145201102-2",
-      anonymizeIP: true,
-    },
     // sidebarCollapsible: false,
     navbar: {
       title: "ZMK Firmware",
@@ -109,6 +105,7 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} ZMK Project Contributors. <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a>`,
     },
     algolia: {
+      appId: "USXLDJ14JE",
       apiKey: "75325855fc90356828fe212d38e5ca34",
       indexName: "zmkfirmware",
     },
@@ -117,6 +114,10 @@ module.exports = {
     [
       "@docusaurus/preset-classic",
       {
+        googleAnalytics: {
+          trackingID: "UA-145201102-2",
+          anonymizeIP: true,
+        },
         docs: {
           // It is recommended to set document id as docs home page (`docs/` path).
           sidebarPath: require.resolve("./sidebars.js"),
