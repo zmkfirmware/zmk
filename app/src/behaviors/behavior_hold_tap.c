@@ -89,29 +89,32 @@ struct active_hold_tap active_hold_taps[ZMK_BHV_HOLD_TAP_MAX_HELD] = {};
 // We capture most position_state_changed events and some modifiers_state_changed events.
 const zmk_event_t *captured_events[ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS] = {};
 
-// Keep track of which hold tap key was tapped most recently for the standard
-// 'quick_tap_ms' implementation
-struct last_hold_tapped {
+// Keep track of which key was tapped most recently for the standard, if it is a hold-tap
+// a position, will be given, if not it will just be INT32_MIN
+struct last_tapped {
     int32_t position;
     int64_t timestamp;
 };
 
-struct last_hold_tapped last_hold_tapped;
+struct last_tapped last_tapped = { INT32_MIN, INT64_MIN };
 
-static void store_last_hold_tapped(struct active_hold_tap *hold_tap) {
-    last_hold_tapped.position = hold_tap->position;
-    last_hold_tapped.timestamp = hold_tap->timestamp + hold_tap->config->quick_tap_ms;
+static void store_last_tapped(int64_t timestamp) {
+    if (timestamp > last_tapped.timestamp) {
+        last_tapped.position = INT32_MIN;
+        last_tapped.timestamp = timestamp;
+    }
 }
 
-// For global quick tap we just keep track of when the last key was pressed last
-int64_t last_key_tapped_timestamp = INT64_MIN;
+static void store_last_hold_tapped(struct active_hold_tap *hold_tap) {
+    last_tapped.position = hold_tap->position;
+    last_tapped.timestamp = hold_tap->timestamp;
+}
 
 static bool is_quick_tap(struct active_hold_tap *hold_tap) {
-    if (hold_tap->config->global_quick_tap) {
-        return (last_key_tapped_timestamp + hold_tap->config->quick_tap_ms) > hold_tap->timestamp;
+    if (hold_tap->config->global_quick_tap || last_tapped.position == hold_tap->position) {
+        return (last_tapped.timestamp + hold_tap->config->quick_tap_ms) > hold_tap->timestamp;
     } else {
-        return last_hold_tapped.position == hold_tap->position &&
-               last_hold_tapped.timestamp > hold_tap->timestamp;
+        return false;
     }
 }
 
@@ -629,7 +632,7 @@ static int keycode_state_changed_listener(const zmk_event_t *eh) {
     struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
 
     if (ev->state && !is_mod(ev->usage_page, ev->keycode)) {
-        last_key_tapped_timestamp = ev->timestamp;
+        store_last_tapped(ev->timestamp);
     }
 
     if (undecided_hold_tap == NULL) {
