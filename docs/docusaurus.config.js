@@ -119,6 +119,8 @@ module.exports = {
           anonymizeIP: true,
         },
         docs: {
+          // Removed (for now) until we have content for each level of the generated breadcrumbs
+          breadcrumbs: false,
           // It is recommended to set document id as docs home page (`docs/` path).
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
