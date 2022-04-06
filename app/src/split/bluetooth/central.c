@@ -232,8 +232,8 @@ static uint8_t split_central_battery_level_notify_func(struct bt_conn *conn,
     return BT_GATT_ITER_CONTINUE;
 }
 static uint8_t split_central_battery_level_read_func(struct bt_conn *conn, uint8_t err,
-                                                    struct bt_gatt_read_params *params,
-                                                    const void *data, uint16_t length) {
+                                                     struct bt_gatt_read_params *params,
+                                                     const void *data, uint16_t length) {
     if (err > 0) {
         LOG_ERR("Error during reading peripheral battery level: %u", err);
         return BT_GATT_ITER_STOP;
