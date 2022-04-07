@@ -26,7 +26,7 @@ Variations of the warnings shown below occur when flashing the `<firmware>.uf2` 
 An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
 For more information, click [here](../docs/development/setup.md#environment-variables).
 
-### West build errors
+### West Build Errors
 
 West build errors usually indicate syntax problems in the `<keyboard>.keymap` file during the compilation process. The following are some examples and root causes.
 
