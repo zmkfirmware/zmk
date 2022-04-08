@@ -70,9 +70,7 @@ sudo apt install -y \
 ```
 
 :::note
-Recent LTS releases of Debian and Ubuntu may include outdated CMake versions. If the output of `cmake --version` is older than 3.15, upgrade your distribution (e.g., from Ubuntu 18.04 LTS to Ubuntu 20.04 LTS), or else install CMake version 3.15 or newer manually (e.g, from Debian backports or by building from source).
-
-There is also a [zephyr bug](https://github.com/zephyrproject-rtos/zephyr/issues/22060) with cmake 3.19.x. You'll need a version _below_ 3.19.
+Recent LTS releases of Debian and Ubuntu may include outdated CMake versions. If the output of `cmake --version` is older than 3.20, upgrade your distribution (e.g., from Ubuntu 20.04 LTS to Ubuntu 22.04 LTS), or else install CMake version 3.20 or newer manually (e.g, from Debian backports or from PyPI with `pip install --user cmake`).
 :::
 </TabItem>
 <TabItem value="raspberryos">
