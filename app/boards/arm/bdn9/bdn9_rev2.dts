@@ -18,9 +18,7 @@
 		zephyr,flash = &flash0;
 		zephyr,console = &cdc_acm_uart;
 		zmk,kscan = &kscan;
-		/* TODO: Enable once the GPIO bitbanging driver supports STM32
 		zmk,underglow = &led_strip;
-		*/
 	};
 
 	kscan: kscan {
@@ -39,17 +37,6 @@
 			, <&gpiof 0  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 			;
 	};
-
-	/*
-	led_strip: ws2812 {
-		compatible = "worldsemi,ws2812-gpio";
-		label = "WS2812";
-
-		in-gpios = <&gpiob 15 0>;
-
-		chain-length = <9>;
-	};
-	*/
 
 	left_encoder: encoder_left {
 		compatible = "alps,ec11";
@@ -80,6 +67,28 @@
 		compatible = "zmk,keymap-sensors";
 		status = "disabled";
 		sensors = <>;
+	};
+};
+
+&spi2 {
+	status = "okay";
+	pinctrl-0 = <&spi2_sck_pb13 &spi2_miso_pb14 &spi2_mosi_pb15>;
+	pinctrl-names = "default";
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+		label = "WS2812";
+
+		/* SPI */
+		reg = <0>; /* ignored, but necessary for SPI bindings */
+		spi-max-frequency = <4000000>;
+
+		/* WS2812 */
+		chain-length = <9>;
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+
+		color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
 	};
 };
 
