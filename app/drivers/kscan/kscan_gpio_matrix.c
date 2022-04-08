@@ -88,7 +88,7 @@ struct kscan_matrix_irq_callback {
 struct kscan_matrix_data {
     const struct device *dev;
     kscan_callback_t callback;
-    struct k_delayed_work work;
+    struct k_work_delayable work;
 #if USE_INTERRUPTS
     /** Array of length config->inputs.len */
     struct kscan_matrix_irq_callback *irqs;
@@ -214,9 +214,7 @@ static void kscan_matrix_irq_callback_handler(const struct device *port, struct 
 
     data->scan_time = k_uptime_get();
 
-    // TODO (Zephyr 2.6): use k_work_reschedule()
-    k_delayed_work_cancel(&data->work);
-    k_delayed_work_submit(&data->work, K_NO_WAIT);
+    k_work_reschedule(&data->work, K_NO_WAIT);
 }
 #endif
 
@@ -226,9 +224,7 @@ static void kscan_matrix_read_continue(const struct device *dev) {
 
     data->scan_time += config->debounce_scan_period_ms;
 
-    // TODO (Zephyr 2.6): use k_work_reschedule()
-    k_delayed_work_cancel(&data->work);
-    k_delayed_work_submit(&data->work, K_TIMEOUT_ABS_MS(data->scan_time));
+    k_work_reschedule(&data->work, K_TIMEOUT_ABS_MS(data->scan_time));
 }
 
 static void kscan_matrix_read_end(const struct device *dev) {
@@ -242,9 +238,7 @@ static void kscan_matrix_read_end(const struct device *dev) {
     data->scan_time += config->poll_period_ms;
 
     // Return to polling slowly.
-    // TODO (Zephyr 2.6): use k_work_reschedule()
-    k_delayed_work_cancel(&data->work);
-    k_delayed_work_submit(&data->work, K_TIMEOUT_ABS_MS(data->scan_time));
+    k_work_reschedule(&data->work, K_TIMEOUT_ABS_MS(data->scan_time));
 #endif
 }
 
@@ -311,7 +305,7 @@ static int kscan_matrix_read(const struct device *dev) {
 }
 
 static void kscan_matrix_work_handler(struct k_work *work) {
-    struct k_delayed_work *dwork = CONTAINER_OF(work, struct k_delayed_work, work);
+    struct k_work_delayable *dwork = CONTAINER_OF(work, struct k_work_delayable, work);
     struct kscan_matrix_data *data = CONTAINER_OF(dwork, struct kscan_matrix_data, work);
     kscan_matrix_read(data->dev);
 }
@@ -339,7 +333,7 @@ static int kscan_matrix_enable(const struct device *dev) {
 static int kscan_matrix_disable(const struct device *dev) {
     struct kscan_matrix_data *data = dev->data;
 
-    k_delayed_work_cancel(&data->work);
+    k_work_cancel_delayable(&data->work);
 
 #if USE_INTERRUPTS
     return kscan_matrix_interrupt_disable(dev);
@@ -434,7 +428,7 @@ static int kscan_matrix_init(const struct device *dev) {
     kscan_matrix_init_outputs(dev);
     kscan_matrix_set_all_outputs(dev, 0);
 
-    k_delayed_work_init(&data->work, kscan_matrix_work_handler);
+    k_work_init_delayable(&data->work, kscan_matrix_work_handler);
 
     return 0;
 }
@@ -483,8 +477,8 @@ static const struct kscan_driver_api kscan_matrix_api = {
         .diode_direction = INST_DIODE_DIR(index),                                                  \
     };                                                                                             \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(index, &kscan_matrix_init, device_pm_control_nop,                        \
-                          &kscan_matrix_data_##index, &kscan_matrix_config_##index, APPLICATION,   \
+    DEVICE_DT_INST_DEFINE(index, &kscan_matrix_init, NULL, &kscan_matrix_data_##index,             \
+                          &kscan_matrix_config_##index, APPLICATION,                               \
                           CONFIG_APPLICATION_INIT_PRIORITY, &kscan_matrix_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSCAN_MATRIX_INIT);

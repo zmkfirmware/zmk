@@ -13,10 +13,27 @@ on:
       - "app/src/**"
 
 jobs:
-  integration_test:
+  collect-tests:
+    outputs:
+      test-dirs: ${{ steps.test-dirs.outputs.test-dirs }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Find test directories
+        id: test-dirs
+        run: |
+          cd app/tests/
+          export TESTS=$(ls -d * | jq -R -s -c 'split("\n")[:-1]')
+          echo "::set-output name=test-dirs::${TESTS}"
+  run-tests:
+    needs: collect-tests
+    strategy:
+      matrix:
+        test: ${{ fromJSON(needs.collect-tests.outputs.test-dirs) }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:2.5
+      image: docker.io/zmkfirmware/zmk-build-arm:3.0
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -43,8 +60,9 @@ jobs:
         run: west update
       - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
-      - name: Test all
-        run: west test
+      - name: Test ${{ matrix.test }}
+        working-directory: app
+        run: west test tests/${{ matrix.test }}
       - name: Archive artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v2

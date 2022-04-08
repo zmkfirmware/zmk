@@ -6,6 +6,8 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
+
+#include <dt-bindings/led/led.h>
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
@@ -16,6 +18,7 @@
 		zephyr,code-partition = &code_partition;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
+		zephyr,console = &cdc_acm_uart;
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
 		zmk,underglow = &led_strip;
@@ -123,11 +126,16 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
 		chain-length = <12>; /* LED strip length */
 		spi-one-frame = <0x70>;
 		spi-zero-frame = <0x40>;
+		color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
 	};
 };
 
 &usbd {
 	status = "okay";
+	cdc_acm_uart: cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
 };
 
 &flash0 {

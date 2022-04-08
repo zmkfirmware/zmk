@@ -16,6 +16,7 @@
 		zephyr,code-partition = &code_partition;
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
+		zephyr,console = &cdc_acm_uart;
 	};
 
 	leds {
@@ -29,7 +30,8 @@
 	ext-power {
 		compatible = "zmk,ext-power-generic";
 		label = "EXT_POWER";
-		control-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
+		control-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+		init-delay-ms = <50>;
 	};
 
 	vbatt {
@@ -71,6 +73,10 @@
 
 &usbd {
 	status = "okay";
+	cdc_acm_uart: cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
 };
 
 

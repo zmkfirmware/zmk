@@ -128,7 +128,7 @@ that defines just one layer for this keymap:
 
 Each layer should have:
 
-1. A `bindings` property this will be a list of behaviour bindings, one for each key position for the keyboard.
+1. A `bindings` property this will be a list of behavior bindings, one for each key position for the keyboard.
 1. (Optional) A `sensor-bindings` property that will be a list of behavior bindings for each sensor on the keyboard. (Currently, only encoders are supported as sensor hardware, but in the future devices like trackpoints would be supported the same way)
 
 For the full set of possible behaviors, start at the [Key Press](../behaviors/key-press.md) behavior.

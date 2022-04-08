@@ -42,9 +42,9 @@ For basic usage, please see [mod-tap](mod-tap.md) and [layer-tap](layers.md) pag
 
 Defines how long a key must be pressed to trigger Hold behavior.
 
-#### `quick_tap_ms`
+#### `quick-tap-ms`
 
-If you press a tapped hold-tap again within `quick_tap_ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
+If you press a tapped hold-tap again within `quick-tap-ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
 
 In QMK, unlike ZMK, this functionality is enabled by default, and you turn it off using `TAPPING_FORCE_HOLD`.
 
@@ -62,12 +62,12 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 
 #### Positional hold-tap and `hold-trigger-key-positions`
 
-- Including `hold-trigger-key-postions` in your hold-tap definition turns on the positional hold-tap feature.
+- Including `hold-trigger-key-positions` in your hold-tap definition turns on the positional hold-tap feature.
 - With positional hold-tap enabled, if you press any key **NOT** listed in `hold-trigger-key-positions` before `tapping-term-ms` expires, it will produce a tap.
 - In all other situations, positional hold-tap will not modify the behavior of your hold-tap.
 - Positional hold-tap is useful with home-row modifiers. If you have a home-row modifier key in the left hand for example, by including only keys positions from the right hand in `hold-trigger-key-positions`, you will only get hold behaviors during cross-hand key combinations.
-- Note that `hold-trigger-key-postions` is an array of key position indexes. Key positions are numbered according to your keymap, starting with 0. So if the first key in your keymap is Q, this key is in position 0. The next key (probably W) will be in position 1, et cetera.
-- See the following example, which uses a hold-tap behavior definition, configured with the `hold-preferrred` flavor, and with positional hold-tap enabled:
+- Note that `hold-trigger-key-positions` is an array of key position indexes. Key positions are numbered according to your keymap, starting with 0. So if the first key in your keymap is Q, this key is in position 0. The next key (probably W) will be in position 1, et cetera.
+- See the following example, which uses a hold-tap behavior definition, configured with the `hold-preferred` flavor, and with positional hold-tap enabled:
 
 ```
 #include <dt-bindings/zmk/keys.h>
@@ -115,7 +115,7 @@ The following are suggested hold-tap configurations that work well with home row
 	behaviors {
 		lh_pht: left_hand_positional_hold_tap {
 			compatible = "zmk,behavior-hold-tap";
-			label = "POSITIONAL_HOLD_TAP";
+			label = "LEFT_POSITIONAL_HOLD_TAP";
 			#binding-cells = <2>;
 			flavor = "tap-unless-interrupted";
 			tapping-term-ms = <100>;                        // <---[[produces tap if held longer than tapping-term-ms]]
@@ -129,8 +129,8 @@ The following are suggested hold-tap configurations that work well with home row
 		compatible = "zmk,keymap";
 		default_layer {
 			bindings = <
-				// position 0           pos 1             pos 2             pos 3       pos 4    pos 5    pos 6    pos 7    pos 8    pos 9     pos 10
-				&lh_pht LSFT A    &lh_pht LGUI S    &lh_pht LALT D    &lh_pht LCTL F    &kp G    &kp H    &kp I    &kp J    &kp K    &kp L    &kp SCLN
+				// position 0     pos 1             pos 2             pos 3             pos 4    pos 5    pos 6    pos 7    pos 8    pos 9    pos 10
+				&lh_pht LSFT A    &lh_pht LGUI S    &lh_pht LALT D    &lh_pht LCTL F    &kp G    &kp H    &kp I    &kp J    &kp K    &kp L    &kp SEMI
 			>;
 		};
 	};
@@ -150,7 +150,7 @@ The following are suggested hold-tap configurations that work well with home row
 			label = "HOMEROW_MODS";
 			#binding-cells = <2>;
 			tapping-term-ms = <150>;
-			quick_tap_ms = <0>;
+			quick-tap-ms = <0>;
 			flavor = "tap-preferred";
 			bindings = <&kp>, <&kp>;
 		};
@@ -181,7 +181,7 @@ The following are suggested hold-tap configurations that work well with home row
 			label = "HOMEROW_MODS";
 			#binding-cells = <2>;
 			tapping-term-ms = <200>;    // <---[[moderate duration]]
-			quick_tap_ms = <0>;
+			quick-tap-ms = <0>;
 			flavor = "balanced";
 			bindings = <&kp>, <&kp>;
 		};

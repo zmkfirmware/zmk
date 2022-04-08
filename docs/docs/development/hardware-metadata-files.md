@@ -94,13 +94,14 @@ Boards and shields should document the sets of hardware features found on them u
 - `display` - Indicates the hardware includes a display for use with the ZMK display functionality.
 - `encoder` - Indicates the hardware contains one or more rotary encoders.
 - `underglow` - Indicates the hardware includes underglow LEDs.
+- `backlight` - Indicates the hardware includes backlight LEDs.
 - `pointer` (future) - Used to indicate the hardware includes one or more pointer inputs, e.g. joystick, touchpad, or trackpoint.
 
 ### Siblings
 
 The `siblings` array is used to identify multiple hardware items designed to be used together as one logical device. Right now, that primarily is used to identify the two halves of a split keyboard, but future enhancements will include more complicated and flexible combinations.
 
-The array should contrain the complete harware IDs of the siblings that combine in the logical device, e.g. with the `corne.zmk.yml` file:
+The array should contain the complete hardware IDs of the siblings that combine in the logical device, e.g. with the `corne.zmk.yml` file:
 
 ```yaml
 id: corne

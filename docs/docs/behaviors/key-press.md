@@ -33,11 +33,6 @@ provided by ZMK near the top:
 
 Doing so makes a set of defines such as `A`, `N1`, etc. available for use with these behaviors
 
-### Improperly defined keymap - `dtlib.DTError: <board>.dts.pre.tmp:<line number>`
-
-When compiling firmware from a keymap, it may be common to encounter an error in the form of a`dtlib.DTError: <board>.dts.pre.tmp:<line number>`.
-For instructions to resolve such an error, click [here](../troubleshooting.md###Improperly-defined-keymap)
-
 ## Key Press
 
 The "key press" behavior sends standard keycodes on press/release.

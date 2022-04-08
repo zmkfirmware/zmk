@@ -1,0 +1,65 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan-mock.h>
+
+/*
+ sticky layers should quick-release.
+ Thus, the second keypress should be on the default layer, not on the lower_layer.
+*/
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&sl 1 &kp A
+				&none &none>;
+		};
+
+		layer_1 {
+			bindings = <
+				&sl 2 &none
+				&none &none>;
+		};
+
+		layer_2 {
+			bindings = <
+				&none &kp NUM_1
+				&none &none>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		/* press sl 1 */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		/* press sl 2 */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		/* press 1 */
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+		/* press A */
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+
+		/* repeat test to check if cleanup is done correctly */
+		/* press sl 1 */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		/* press sl 2 */
+		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10) 
+		/* press 1 */
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+		/* press A */
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+
+	>;
+};

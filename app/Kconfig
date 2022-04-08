@@ -132,6 +132,9 @@ config ZMK_BLE_CLEAR_BONDS_ON_START
 config BT_GATT_NOTIFY_MULTIPLE
 	default n
 
+config BT_GATT_AUTO_SEC_REQ
+	default n
+
 config BT_DEVICE_APPEARANCE
 	default 961
 
@@ -173,6 +176,14 @@ if ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
 	int "Max number of key position state events to queue when received from peripherals"
+	default 5
+
+config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE
+	int "BLE split central write thread stack size"
+	default 512
+
+config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE
+	int "Max number of behavior run events to queue to send to the peripheral(s)"
 	default 5
 
 endif
@@ -249,7 +260,7 @@ menu "Display/LED Options"
 
 rsource "src/display/Kconfig"
 
-config ZMK_RGB_UNDERGLOW
+menuconfig ZMK_RGB_UNDERGLOW
 	bool "RGB Adressable LED Underglow"
 	select LED_STRIP
 
@@ -320,6 +331,35 @@ config ZMK_RGB_UNDERGLOW_ON_START
 #ZMK_RGB_UNDERGLOW
 endif
 
+menuconfig ZMK_BACKLIGHT
+	bool "LED backlight"
+	select LED
+
+if ZMK_BACKLIGHT
+
+config ZMK_BACKLIGHT_BRT_STEP
+	int "Brightness step in percent"
+	range 1 100
+	default 20
+
+config ZMK_BACKLIGHT_BRT_START
+	int "Default brightness in percent"
+	range 1 100
+	default 40
+
+config ZMK_BACKLIGHT_ON_START
+	bool "Default backlight state"
+	default y
+
+config ZMK_BACKLIGHT_AUTO_OFF_IDLE
+	bool "Turn off backlight when keyboard goes into idle state"
+
+config ZMK_BACKLIGHT_AUTO_OFF_USB
+	bool "Turn off backlight when USB is disconnected"
+
+#ZMK_BACKLIGHT
+endif
+
 #Display/LED Options
 endmenu
 
@@ -334,10 +374,6 @@ config ZMK_SLEEP
 	imply USB
 
 if ZMK_SLEEP
-
-choice SYS_PM_POLICY
-	default PM_POLICY_APP
-endchoice
 
 config PM_DEVICE
 	default y
@@ -370,14 +406,22 @@ config ZMK_COMBO_MAX_KEYS_PER_COMBO
 	int "Maximum number of keys per combo"
 	default 4
 
-#Display/LED Options
+#Combo options
+endmenu
+
+menu "Behavior Options"
+
+config ZMK_BEHAVIORS_QUEUE_SIZE
+	int "Maximum number of behaviors to allow queueing from a macro or other complex behavior"
+	default 64
+
 endmenu
 
 menu "Advanced"
 
 menu "Initialization Priorities"
 
-if USB
+if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
 	int "USB Init Priority"
@@ -436,15 +480,6 @@ config ZMK_LOG_LEVEL
 config USB_CDC_ACM_RINGBUF_SIZE
 	default 1024
 
-config USB_CDC_ACM_DEVICE_NAME
-	default "CDC_ACM"
-
-config USB_CDC_ACM_DEVICE_COUNT
-	default 1
-
-config UART_CONSOLE_ON_DEV_NAME
-	default "CDC_ACM_0"
-
 config LOG_BUFFER_SIZE
 	default 8192
 
@@ -481,7 +516,7 @@ config KERNEL_BIN_NAME
 config REBOOT
 	default y
 
-config USB
+config USB_DEVICE_STACK
 	default y if HAS_HW_NRF_USBD
 
 config ZMK_WPM

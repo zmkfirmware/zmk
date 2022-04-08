@@ -22,7 +22,7 @@ struct kscan_gpio_item_config {
 };
 
 union work_reference {
-    struct k_delayed_work delayed;
+    struct k_work_delayable delayed;
     struct k_work direct;
 };
 
@@ -55,8 +55,7 @@ static const struct kscan_gpio_item_config *kscan_gpio_input_configs(const struc
 
 static void kscan_gpio_direct_queue_read(union work_reference *work, uint8_t debounce_period) {
     if (debounce_period > 0) {
-        k_delayed_work_cancel(&work->delayed);
-        k_delayed_work_submit(&work->delayed, K_MSEC(debounce_period));
+        k_work_reschedule(&work->delayed, K_MSEC(debounce_period));
     } else {
         k_work_submit(&work->direct);
     }
@@ -228,7 +227,7 @@ static const struct kscan_driver_api gpio_driver_api = {
         COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KSCAN_DIRECT_POLLING),                                   \
                     (k_timer_init(&data->poll_timer, kscan_gpio_timer_handler, NULL);), ())        \
         if (cfg->debounce_period > 0) {                                                            \
-            k_delayed_work_init(&data->work.delayed, kscan_gpio_work_handler);                     \
+            k_work_init_delayable(&data->work.delayed, kscan_gpio_work_handler);                   \
         } else {                                                                                   \
             k_work_init(&data->work.direct, kscan_gpio_work_handler);                              \
         }                                                                                          \
@@ -238,7 +237,7 @@ static const struct kscan_driver_api gpio_driver_api = {
         .inputs = {UTIL_LISTIFY(INST_INPUT_LEN(n), KSCAN_DIRECT_INPUT_ITEM, n)},                   \
         .num_of_inputs = INST_INPUT_LEN(n),                                                        \
         .debounce_period = DT_INST_PROP(n, debounce_period)};                                      \
-    DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, device_pm_control_nop, &kscan_gpio_data_##n,     \
+    DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, NULL, &kscan_gpio_data_##n,                      \
                           &kscan_gpio_config_##n, POST_KERNEL, CONFIG_ZMK_KSCAN_INIT_PRIORITY,     \
                           &gpio_driver_api);
 

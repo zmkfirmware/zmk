@@ -1,0 +1,8 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Set Macro To Press Mode
+
+compatible: "zmk,macro-control-mode-press"
+
+include: zero_param.yaml

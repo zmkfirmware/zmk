@@ -8,6 +8,7 @@
 
 / {
     chosen {
+        zephyr,display = &oled;
         zmk,kscan = &kscan0;
         zmk,matrix_transform = &default_transform;
     };
@@ -71,7 +72,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
 &pro_micro_i2c {
     status = "okay";
 
-    ssd1306@3c {
+    oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
         label = "DISPLAY";

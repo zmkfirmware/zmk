@@ -123,3 +123,8 @@ Example:
 ```
 
 It is possible to use "toggle layer" to have keys that raise and lower the layers as well.
+
+## Conditional Layers
+
+The "conditional layers" feature enables a particular layer when all layers in a specified set are active.
+For more information, see [conditional layers](../features/conditional-layers.md).

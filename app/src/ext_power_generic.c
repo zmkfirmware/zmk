@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <device.h>
+#include <pm/device.h>
 #include <init.h>
 #include <kernel.h>
 #include <settings/settings.h>
@@ -32,9 +33,6 @@ struct ext_power_generic_data {
 #if IS_ENABLED(CONFIG_SETTINGS)
     bool settings_init;
 #endif
-#ifdef CONFIG_PM_DEVICE
-    uint32_t pm_state;
-#endif
 };
 
 #if IS_ENABLED(CONFIG_SETTINGS)
@@ -47,13 +45,13 @@ static void ext_power_save_state_work(struct k_work *work) {
     settings_save_one(setting_path, &data->status, sizeof(data->status));
 }
 
-static struct k_delayed_work ext_power_save_work;
+static struct k_work_delayable ext_power_save_work;
 #endif
 
 int ext_power_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    k_delayed_work_cancel(&ext_power_save_work);
-    return k_delayed_work_submit(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    int ret = k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return MIN(ret, 0);
 #else
     return 0;
 #endif
@@ -95,7 +93,7 @@ static int ext_power_settings_set(const char *name, size_t len, settings_read_cb
     int rc;
 
     if (settings_name_steq(name, DT_INST_LABEL(0), &next) && !next) {
-        const struct device *ext_power = device_get_binding(DT_INST_LABEL(0));
+        const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
         struct ext_power_generic_data *data = ext_power->data;
 
         if (len != sizeof(data->status)) {
@@ -143,10 +141,6 @@ static int ext_power_generic_init(const struct device *dev) {
         return -EIO;
     }
 
-#ifdef CONFIG_PM_DEVICE
-    data->pm_state = DEVICE_PM_ACTIVE_STATE;
-#endif
-
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_subsys_init();
 
@@ -156,14 +150,14 @@ static int ext_power_generic_init(const struct device *dev) {
         return err;
     }
 
-    k_delayed_work_init(&ext_power_save_work, ext_power_save_state_work);
+    k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
 
     // Set default value (on) if settings isn't set
     settings_load_subtree("ext_power");
     if (!data->settings_init) {
 
         data->status = true;
-        k_delayed_work_submit(&ext_power_save_work, K_NO_WAIT);
+        k_work_schedule(&ext_power_save_work, K_NO_WAIT);
 
         ext_power_enable(dev);
     }
@@ -180,35 +174,17 @@ static int ext_power_generic_init(const struct device *dev) {
 }
 
 #ifdef CONFIG_PM_DEVICE
-static int ext_power_generic_pm_control(const struct device *dev, uint32_t ctrl_command,
-                                        void *context, device_pm_cb cb, void *arg) {
-    int rc;
-    struct ext_power_generic_data *data = dev->data;
-
-    switch (ctrl_command) {
-    case DEVICE_PM_SET_POWER_STATE:
-        if (*((uint32_t *)context) == DEVICE_PM_ACTIVE_STATE) {
-            data->pm_state = DEVICE_PM_ACTIVE_STATE;
-            rc = 0;
-        } else {
-            ext_power_generic_disable(dev);
-            data->pm_state = DEVICE_PM_LOW_POWER_STATE;
-            rc = 0;
-        }
-        break;
-    case DEVICE_PM_GET_POWER_STATE:
-        *((uint32_t *)context) = data->pm_state;
-        rc = 0;
-        break;
+static int ext_power_generic_pm_action(const struct device *dev, enum pm_device_action action) {
+    switch (action) {
+    case PM_DEVICE_ACTION_TURN_ON:
+        ext_power_generic_enable(dev);
+        return 0;
+    case PM_DEVICE_ACTION_TURN_OFF:
+        ext_power_generic_disable(dev);
+        return 0;
     default:
-        rc = -EINVAL;
+        return -ENOTSUP;
     }
-
-    if (cb != NULL) {
-        cb(dev, rc, context, arg);
-    }
-
-    return rc;
 }
 #endif /* CONFIG_PM_DEVICE */
 
@@ -231,7 +207,8 @@ static const struct ext_power_api api = {.enable = ext_power_generic_enable,
 
 #define ZMK_EXT_POWER_INIT_PRIORITY 81
 
-DEVICE_DT_INST_DEFINE(0, ext_power_generic_init, &ext_power_generic_pm_control, &data, &config,
+PM_DEVICE_DT_INST_DEFINE(0, ext_power_generic_pm_action);
+DEVICE_DT_INST_DEFINE(0, ext_power_generic_init, PM_DEVICE_DT_INST_GET(0), &data, &config,
                       POST_KERNEL, ZMK_EXT_POWER_INIT_PRIORITY, &api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

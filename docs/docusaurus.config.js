@@ -11,16 +11,13 @@ module.exports = {
   plugins: [
     path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin"),
     path.resolve(__dirname, "src/hardware-metadata-collection-plugin"),
+    path.resolve(__dirname, "src/hardware-metadata-static-plugin"),
     path.resolve(__dirname, "src/hardware-schema-typescript-plugin"),
     path.resolve(__dirname, "src/setup-script-generation-plugin"),
   ],
   themeConfig: {
     colorMode: {
       respectPrefersColorScheme: true,
-    },
-    googleAnalytics: {
-      trackingID: "UA-145201102-2",
-      anonymizeIP: true,
     },
     // sidebarCollapsible: false,
     navbar: {
@@ -108,7 +105,8 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} ZMK Project Contributors. <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a>`,
     },
     algolia: {
-      apiKey: "75325855fc90356828fe212d38e5ca34",
+      appId: "USXLDJ14JE",
+      apiKey: "384a3bd2d50136c9dc8c8ddfe1b3a4b2",
       indexName: "zmkfirmware",
     },
   },
@@ -116,7 +114,13 @@ module.exports = {
     [
       "@docusaurus/preset-classic",
       {
+        googleAnalytics: {
+          trackingID: "UA-145201102-2",
+          anonymizeIP: true,
+        },
         docs: {
+          // Removed (for now) until we have content for each level of the generated breadcrumbs
+          breadcrumbs: false,
           // It is recommended to set document id as docs home page (`docs/` path).
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.

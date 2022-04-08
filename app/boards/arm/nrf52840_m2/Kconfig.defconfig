@@ -6,15 +6,12 @@ if BOARD_NRF52840_M2
 config BOARD
 	default "nrf52480_m2"
 
-if USB
+if USB_DEVICE_STACK
 
 config USB_NRFX
 	default y
 
-config USB_DEVICE_STACK
-	default y
-
-endif # USB
+endif # USB_DEVICE_STACK
 
 config BT_CTLR
 	default BT
