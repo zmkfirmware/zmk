@@ -100,7 +100,7 @@ jobs:
           west build -s zmk/app -b ${{ matrix.board }} -- -DZMK_CONFIG=${GITHUB_WORKSPACE}/${{ inputs.config_path }} ${{ steps.variables.outputs.extra-cmake-args }} ${{ matrix.cmake-args }}
 
       - name: ${{ steps.variables.outputs.display-name }} Kconfig file
-        run: cat build/zephyr/.config | grep -v "^#" | grep -v "^$"
+        run: cat build/zephyr/.config | grep -v "^#" | grep -v "^$" | sort
       
       - name: Rename artifacts
         run: |
