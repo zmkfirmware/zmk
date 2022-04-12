@@ -7,12 +7,6 @@ sidebar_label: Sticky Key
 
 A sticky key stays pressed until another key is pressed. It is often used for 'sticky shift'. By using a sticky shift, you don't have to hold the shift key to write a capital.
 
-By default, sticky keys stay pressed for a second if you don't press any other key. You can configure this with the `release-after-ms` setting.
-
-Some typists may find that using a sticky shift key interspersed with rapid typing results in two or more capitalized letters instead of one. This happens as the sticky key is active until the next key is released, under which other keys may be pressed and will receive the modifier. You can change this with the `quick-release` setting which will instead deactivate the sticky key on the next key being pressed, as opposed to released.
-
-The sticky behavior is only triggered on release, and if the next key is pressed before the sticky key is released, it will behave like a normal key. This also applies if the next key is another sticky key. If you use *callum-style mods* where you are prone to rolling sticky keys, you can allow for this with the `ignore-modifiers` setting.
-
 ### Behavior Binding
 
 - Reference: `&sk`
@@ -32,13 +26,25 @@ You can use any keycode that works for `&kp` as parameter to `&sk`:
 
 ### Configuration
 
-You can configure a different `release-after-ms`, enable `quick-release` or enable `ignore-modifiers` in your keymap:
+#### `release-after-ms`
+
+By default, sticky keys stay pressed for a second if you don't press any other key. You can configure this with the `release-after-ms` setting.
+
+#### `quick-release`
+
+Some typists may find that using a sticky shift key interspersed with rapid typing results in two or more capitalized letters instead of one. This happens as the sticky key is active until the next key is released, under which other keys may be pressed and will receive the modifier. You can enable the `quick-release` setting to instead deactivate the sticky key on the next key being pressed, as opposed to released.
+
+#### `ignore-modifiers`
+
+This setting is enabled by default. It ensures that if a sticky key modifier is pressed before a previously pressed sticky key is released, the modifiers will get combined so you can add more sticky keys or press a regular key to apply the modifiers. This is to accommodate *callum-style mods* where you are prone to rolling sticky keys. If you want sticky key modifiers to only chain after release, you can disable this setting.
+
+#### Example
 
 ```
 &sk {
     release-after-ms = <2000>;
     quick-release;
-    ignore-modifiers;
+    /delete-property/ ignore-modifiers;
 };
 
 / {
