@@ -11,7 +11,7 @@
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
-#include <zmk/usb.h>
+#include <zmk/usb_hid.h>
 #include <zmk/hog.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
