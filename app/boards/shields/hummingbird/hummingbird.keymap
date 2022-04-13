@@ -1,0 +1,98 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+#define DEF_L 0
+#define NAV_L 1
+#define NUM_L 2
+#define SYM_L 3
+
+// Using layer taps on thumbs, having quick tap as well helps w/ repeating space/backspace
+&lt { quick_tap_ms = <200>; };
+
+/ {
+    behaviors {
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "homerow mods";
+            #binding-cells = <2>;
+            tapping_term_ms = <225>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+        combo_z {
+            timeout-ms = <50>;
+            key-positions = <20 21>;
+            bindings = <&kp Z>;
+        };
+        combo_b {
+            timeout-ms = <50>;
+            key-positions = <21 22>;
+            bindings = <&kp B>;
+        };
+
+        combo_y {
+            timeout-ms = <50>;
+            key-positions = <23 24>;
+            bindings = <&kp Y>;
+        };
+
+        combo_slash {
+            timeout-ms = <50>;
+            key-positions = <24 25>;
+            bindings = <&kp SLASH>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp Q      &kp W      &kp E       &kp R           &kp T        &kp H            &kp U          &kp I       &kp O      &kp P
+                &hm LGUI A &hm LALT S &hm LCTRL D &hm LSHFT F     &kp G        &kp N            &hm RSHFT J    &hm RCTRL K &hm LALT L &hm RGUI QUOT
+                           &kp X      &kp C       &kp V                                         &kp M          &kp COMMA  &kp DOT
+                                                  &lt NAV_L TAB  &kp RET       &lt NUM_L SPACE  &lt SYM_L BKSP
+            >;
+        };
+
+        nav_layer {
+            label = "Nav";
+            bindings = <
+                &trans     &trans     &trans      &trans          &trans       &trans           &kp HOME       &kp UARW &kp PG_UP  &trans
+                &trans     &trans     &trans      &trans          &trans       &trans           &kp LARW       &kp DARW &kp RARW   &trans
+                           &trans     &trans      &trans                                        &kp END        &trans   &kp PG_DN
+                                                  &trans          &trans       &kp ESC          &kp DEL
+            >;
+        };
+
+        num_layer {
+            label = "Num";
+            bindings = <
+                &kp LBKT   &kp N7     &kp N8      &kp N9          &kp RBKT      &trans          &trans         &trans      &trans     &trans
+                &kp SEMI   &kp N4     &kp N5      &kp N6          &kp EQUAL     &trans          &trans         &trans      &trans     &trans
+                           &kp N1     &kp N2      &kp N3                                        &trans         &trans      &trans
+                                                  &kp N0          &kp MINUS     &trans          &trans
+            >;
+        };
+
+        sym_layer {
+            label = "Sym";
+            bindings = <
+                &kp LBRC   &kp LS(N7) &kp LS(N8)  &kp LS(N9)      &kp RBRC      &trans          &trans         &trans      &trans     &trans
+                &kp COLON  &kp LS(N4) &kp LS(N5)  &kp LS(N6)      &kp PLUS      &trans          &trans         &trans      &trans     &trans
+                           &kp LS(N1) &kp LS(N2)  &kp LS(N3)                                    &trans         &trans      &trans
+                                                  &kp LS(N0)      &kp UNDER     &trans          &trans
+            >;
+        };
+    };
+};

@@ -50,7 +50,8 @@ static struct k_work_delayable ext_power_save_work;
 
 int ext_power_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    return k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    int ret = k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return MIN(ret, 0);
 #else
     return 0;
 #endif
