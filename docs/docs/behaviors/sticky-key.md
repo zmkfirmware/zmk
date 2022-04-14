@@ -36,7 +36,7 @@ Some typists may find that using a sticky shift key interspersed with rapid typi
 
 #### `ignore-modifiers`
 
-This setting is enabled by default. It ensures that if a sticky key modifier is pressed before a previously pressed sticky key is released, the modifiers will get combined so you can add more sticky keys or press a regular key to apply the modifiers. This is to accommodate *callum-style mods* where you are prone to rolling sticky keys. If you want sticky key modifiers to only chain after release, you can disable this setting.
+This setting is enabled by default. It ensures that if a sticky key modifier is pressed before a previously pressed sticky key is released, the modifiers will get combined so you can add more sticky keys or press a regular key to apply the modifiers. This is to accommodate _callum-style mods_ where you are prone to rolling sticky keys. If you want sticky key modifiers to only chain after release, you can disable this setting.
 
 #### Example
 
