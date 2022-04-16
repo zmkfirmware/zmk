@@ -6,7 +6,11 @@ sidebar_label: Backlight
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-Backlight is a feature used to control array of LEDs, usually placed through or under switches. Unlike [RGB Underglow](underglow.md), backlight currently allows only one color per LED, also LEDs are not addressable, so you can't control individual LEDs.
+Backlight is a feature used to control an array of LEDs, usually placed through or under switches.
+
+:::info
+Unlike [RGB Underglow](underglow.md), backlight can only control single color LEDs. Additionally, because backlight LEDs all receive the same power, it's not possible to dim individual LEDs.
+:::
 
 ## Enabling Backlight
 
