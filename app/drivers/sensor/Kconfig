@@ -3,4 +3,4 @@
 
 rsource "battery/Kconfig"
 rsource "ec11/Kconfig"
-rsource "pmw3389/Kconfig"
+rsource "pmw33xx/Kconfig"

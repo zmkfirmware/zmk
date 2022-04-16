@@ -1,0 +1,67 @@
+config PMW33XX
+	bool "PMW33XX Mouse Sensor"
+	depends on SPI
+	help
+	  Enable mouse sensor
+
+		The PMW33XX is a 16-bit optical mouse sensor
+
+if PMW33XX
+choice
+	prompt "Sensor"
+	default PMW33XX_3360
+
+	config PMW33XX_3360
+		bool "Enable PMW3360"
+
+	config PMW33XX_3389
+		bool "Enable PMW3389"
+		help
+		  PMW3389 requires an external srom included in `pmw3389_srom.h` which we cannot currently include in zmk
+endchoice
+
+config PMW33XX_3389_SROM_INCLUDE_DIR
+	string "PMW3389 SROM Include Dir"
+	default "."
+	help
+		directory where the header with the pmw3389 srom file is located
+
+choice
+	prompt "Trigger mode"
+	default PMW33XX_TRIGGER_NONE
+	help
+	  Specify the type of triggering to be used by the driver.
+
+config PMW33XX_TRIGGER_NONE
+	bool "No trigger"
+
+config PMW33XX_TRIGGER_GLOBAL_THREAD
+	bool "Use global thread"
+	depends on GPIO
+	select PMW33XX_TRIGGER
+
+config PMW33XX_TRIGGER_OWN_THREAD
+	bool "Use own thread"
+	depends on GPIO
+	select PMW33XX_TRIGGER
+
+endchoice
+
+config PMW33XX_TRIGGER
+	bool
+
+config PMW33XX_THREAD_PRIORITY
+	int "Thread priority"
+	depends on PMW33XX_TRIGGER_OWN_THREAD
+	default 10
+	help
+	  Priority of thread used by the driver to handle interrupts.
+
+config PMW33XX_THREAD_STACK_SIZE
+	int "Thread stack size"
+	depends on PMW33XX_TRIGGER_OWN_THREAD
+	default 1024
+	help
+	  Stack size of thread used by the driver to handle interrupts.
+
+endif # PMW33XX

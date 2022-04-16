@@ -1,0 +1,22 @@
+description: |
+  Sensor driver for the pixart PMW33XX optical mouse sensor supports 3360 built in, and 3389 with external srom
+compatible: "pixart,pmw33xx"
+
+include: spi-device.yaml
+
+properties:
+  label:
+    type: string
+    required: true
+  cs-gpios:
+    type: phandle-array
+    required: true
+    description: chip select pin for the sensor
+  motswk-gpios:
+    type: phandle-array
+    required: false
+    description: interrupt pin for motion
+  cpi:
+    type: int
+    description: mouse cpi
+    required: false
