@@ -65,6 +65,11 @@
 /* power up reset cmd */
 #define PMW33XX_RESET_CMD 0x5A
 
+#define PMW33XX_3389_CPI_MIN 50
+#define PMW33XX_3389_CPI_MAX 16000
+#define PMW33XX_3360_CPI_MIN 100
+#define PMW33XX_3360_CPI_MAX 12000
+
 struct pmw33xx_gpio_dt_spec {
 	const struct device *port;
 	gpio_pin_t pin;
@@ -84,7 +89,7 @@ struct pmw33xx_config {
 	char *bus_name;
 	int (*bus_init)(const struct device *dev);
 	const union pmw33xx_bus_cfg bus_cfg;
-	int resolution;
+	int cpi;
 #if CONFIG_PMW33XX_TRIGGER
 	struct pmw33xx_gpio_dt_spec motswk_spec;
 #endif // CONFIG_PMW33XX_TRIGGER
