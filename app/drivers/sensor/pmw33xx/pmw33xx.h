@@ -65,65 +65,67 @@
 /* power up reset cmd */
 #define PMW33XX_RESET_CMD 0x5A
 
+/* cpi max and min values */
 #define PMW33XX_3389_CPI_MIN 50
 #define PMW33XX_3389_CPI_MAX 16000
 #define PMW33XX_3360_CPI_MIN 100
 #define PMW33XX_3360_CPI_MAX 12000
 
 struct pmw33xx_gpio_dt_spec {
-	const struct device *port;
-	gpio_pin_t pin;
-	gpio_dt_flags_t dt_flags;
+    const struct device *port;
+    gpio_pin_t pin;
+    gpio_dt_flags_t dt_flags;
 };
 
 struct pmw33xx_spi_cfg {
-	struct spi_config spi_conf;
-	struct pmw33xx_gpio_dt_spec cs_spec;
+    struct spi_config spi_conf;
+    struct pmw33xx_gpio_dt_spec cs_spec;
 };
 
 union pmw33xx_bus_cfg {
-	struct pmw33xx_spi_cfg *spi_cfg;
+    struct pmw33xx_spi_cfg *spi_cfg;
 };
 
 struct pmw33xx_config {
-	char *bus_name;
-	int (*bus_init)(const struct device *dev);
-	const union pmw33xx_bus_cfg bus_cfg;
-	int cpi;
+    char *bus_name;
+    int (*bus_init)(const struct device *dev);
+    const union pmw33xx_bus_cfg bus_cfg;
+    bool disable_rest;
+    int cpi;
 #if CONFIG_PMW33XX_TRIGGER
-	struct pmw33xx_gpio_dt_spec motswk_spec;
+    struct pmw33xx_gpio_dt_spec motswk_spec;
 #endif // CONFIG_PMW33XX_TRIGGER
 };
 
 struct pmw33xx_data;
 
 struct pmw33xx_transfer_function {
-	int (*read_data)(const struct device *dev, uint16_t *value);
+    int (*read_data)(const struct device *dev, int16_t *value);
 };
 
 struct pmw33xx_data {
-	const struct device *bus;
-	struct spi_cs_control cs_ctrl;
+    const struct device *bus;
+    struct spi_cs_control cs_ctrl;
 
-	int16_t dx;
-	int16_t dy;
+    int16_t dx;
+    int16_t dy;
 
-	const struct pmw33xx_transfer_function *hw_tf;
+    const struct pmw33xx_transfer_function *hw_tf;
 
 #ifdef CONFIG_PMW33XX_TRIGGER
 
-	struct gpio_callback motswk_gpio_cb;
-	const struct device *dev;
+    struct gpio_callback motswk_gpio_cb;
+    const struct device *dev;
 
-	sensor_trigger_handler_t handler;
-	const struct sensor_trigger *trigger;
+    sensor_trigger_handler_t handler;
+    const struct sensor_trigger *trigger;
 
 #if defined(CONFIG_PMW33XX_TRIGGER_OWN_THREAD)
-	K_THREAD_STACK_MEMBER(thread_stack, CONFIG_PMW33XX_THREAD_STACK_SIZE);
-	struct k_sem gpio_sem;
-	struct k_thread thread;
+    K_THREAD_STACK_MEMBER(thread_stack, CONFIG_PMW33XX_THREAD_STACK_SIZE);
+    struct k_sem gpio_sem;
+    struct k_thread thread;
 #elif defined(CONFIG_PMW33XX_TRIGGER_GLOBAL_THREAD)
-	struct k_work work;
+    struct k_work work;
 #endif
 
 #endif /* CONFIG_PMW33XX_TRIGGER */
@@ -133,9 +135,11 @@ int pmw33xx_spi_init(const struct device *dev);
 #ifdef CONFIG_PMW33XX_TRIGGER
 
 int pmw33xx_trigger_set(const struct device *dev, const struct sensor_trigger *trig,
-			sensor_trigger_handler_t handler);
+                        sensor_trigger_handler_t handler);
 
 int pmw33xx_init_interrupt(const struct device *dev);
+
+void pmw33xx_reset_motion(const struct device *dev);
 #endif
 
 #endif /* ZEPHYR_DRIVERS_SENSOR_PIXART_PMW33XX_H_ */

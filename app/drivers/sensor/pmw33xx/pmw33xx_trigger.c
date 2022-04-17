@@ -23,6 +23,7 @@ static inline void setup_int(const struct device *dev, bool enable) {
     struct pmw33xx_data *data = dev->data;
     const struct pmw33xx_config *cfg = dev->config;
 
+    gpio_pin_configure(cfg->motswk_spec.port, cfg->motswk_spec.pin, cfg->motswk_spec.dt_flags);
     if (gpio_pin_interrupt_configure(cfg->motswk_spec.port, cfg->motswk_spec.pin,
                                      enable ? GPIO_INT_EDGE_TO_ACTIVE : GPIO_INT_DISABLE)) {
         LOG_WRN("Unable to set MOTSWK GPIO interrupt");
@@ -72,7 +73,7 @@ static void pmw33xx_thread(int dev_ptr, int unused) {
 static void pmw33xx_work_cb(struct k_work *work) {
     struct pmw33xx_data *drv_data = CONTAINER_OF(work, struct pmw33xx_data, work);
 
-    LOG_DBG("");
+    LOG_DBG(" ");
 
     pmw33xx_thread_cb(drv_data->dev);
 }
@@ -91,6 +92,8 @@ int pmw33xx_trigger_set(const struct device *dev, const struct sensor_trigger *t
 
     setup_int(dev, true);
 
+    // reset motion on int setup
+    pmw33xx_reset_motion(dev);
     return 0;
 }
 

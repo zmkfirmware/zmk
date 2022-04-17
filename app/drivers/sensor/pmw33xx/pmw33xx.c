@@ -52,7 +52,11 @@ static int pmw33xx_access(const struct device *dev, const uint8_t reg, uint8_t *
             },
         .count = 1,
     };
-    uint8_t result[1] = {*value};
+
+    uint8_t result[1];
+    if (value != NULL) {
+        result[0] = *value;
+    }
     struct spi_buf_set rx = {
         .buffers =
             &(struct spi_buf){
@@ -77,7 +81,7 @@ static int pmw33xx_access(const struct device *dev, const uint8_t reg, uint8_t *
         err = spi_read(data->bus, spi_cfg, &rx);
     pmw33xx_cs_select(cs_gpio_cfg, 1);
     k_sleep(K_USEC(160));
-    if ((reg & PMW33XX_WR_MASK) == 0)
+    if ((reg & PMW33XX_WR_MASK) == 0 && value != NULL)
         *value = result[0];
     return err;
 }
@@ -88,6 +92,7 @@ static int pmw33xx_write_reg(const struct device *dev, const uint8_t reg, const 
     uint8_t v = value;
     return pmw33xx_access(dev, reg | PMW33XX_WR_MASK, &v);
 }
+
 static int pmw33xx_write_srom(const struct device *dev) {
     struct pmw33xx_data *data = dev->data;
     const struct pmw33xx_config *cfg = dev->config;
@@ -166,8 +171,18 @@ static int pmw33xx_read_motion_burst(const struct device *dev, struct pmw33xx_mo
     }
     err = spi_read(data->bus, spi_cfg, &rx);
     pmw33xx_cs_select(cs_gpio_cfg, 1);
+#ifdef CONFIG_PMW33XX_TRIGGER
+    pmw33xx_reset_motion(dev);
+#endif
     return err;
 }
+
+#ifdef CONFIG_PMW33XX_TRIGGER
+void pmw33xx_reset_motion(const struct device *dev) {
+    // reset motswk interrupt
+    pmw33xx_read_reg(dev, PMW33XX_REG_MOTION, NULL);
+}
+#endif
 
 int pmw33xx_spi_init(const struct device *dev) {
     const struct pmw33xx_config *cfg = dev->config;
@@ -269,7 +284,8 @@ static int pmw33xx_init_chip(const struct device *dev) {
         LOG_ERR("pid does not match expected: got (%x), expected(%x)", pid, PMW33XX_PID);
         return -EIO;
     }
-    pmw33xx_write_reg(dev, PMW33XX_REG_CONFIG2, 0x00); // clear rest enable
+    pmw33xx_write_reg(dev, PMW33XX_REG_CONFIG2,
+                      config->disable_rest ? 0x00 : PMW33XX_RESTEN); // set rest enable
 
     err = pmw33xx_write_srom(dev);
     if (err) {
@@ -361,9 +377,10 @@ static int pmw33xx_init(const struct device *dev) {
     {                                                                                              \
         .bus_name = DT_INST_BUS_LABEL(n), .bus_init = pmw33xx_spi_init,                            \
         .bus_cfg = {.spi_cfg = PMW33XX_SPI_CFG(n)},                                                \
+        .disable_rest = DT_INST_NODE_HAS_PROP(n, disable_rest),                                    \
         COND_CODE_0(DT_INST_NODE_HAS_PROP(n, cpi), (0), (DT_INST_PROP(n, cpi)))                    \
             COND_CODE_1(CONFIG_PMW33XX_TRIGGER,                                                    \
-                        (PMW33XX_GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(n), motswk_gpios, 0)), ())    \
+                        (, PMW33XX_GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(n), motswk_gpios, 0)), ())  \
     }
 
 #define PMW33XX_INST(n)                                                                            \

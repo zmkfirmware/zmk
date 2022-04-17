@@ -20,3 +20,7 @@ properties:
     type: int
     description: mouse cpi
     required: false
+  disable-rest:
+    type: boolean
+    description: disables mouse rest mode, will decrease battery life
+    required: false
