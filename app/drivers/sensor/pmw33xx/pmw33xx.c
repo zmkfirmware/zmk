@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 #define DT_DRV_COMPAT pixart_pmw33xx
 
 #include <drivers/spi.h>

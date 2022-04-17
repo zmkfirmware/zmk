@@ -1,3 +1,5 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
 config PMW33XX
 	bool "PMW33XX Mouse Sensor"
 	depends on SPI

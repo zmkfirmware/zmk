@@ -1,3 +1,5 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
 description: |
   Sensor driver for the pixart PMW33XX optical mouse sensor supports 3360 built in, and 3389 with external srom
 compatible: "pixart,pmw33xx"

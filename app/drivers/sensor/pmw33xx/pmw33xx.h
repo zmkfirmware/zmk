@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 #ifndef ZEPHYR_DRIVERS_SENSOR_PIXART_PMW33XX_H_
 #define ZEPHYR_DRIVERS_SENSOR_PIXART_PMW33XX_H_
 
