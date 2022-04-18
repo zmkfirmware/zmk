@@ -6,6 +6,7 @@ module.exports = {
   url: "https://zmk.dev",
   baseUrl: "/",
   favicon: "img/favicon.ico",
+  trailingSlash: "false",
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
   plugins: [
