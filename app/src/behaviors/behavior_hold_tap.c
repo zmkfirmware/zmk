@@ -96,7 +96,7 @@ struct last_tapped {
     int64_t timestamp;
 };
 
-struct last_tapped last_tapped = { INT32_MIN, INT64_MIN };
+struct last_tapped last_tapped = {INT32_MIN, INT64_MIN};
 
 static void store_last_tapped(int64_t timestamp) {
     if (timestamp > last_tapped.timestamp) {
