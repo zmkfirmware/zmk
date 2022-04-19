@@ -19,6 +19,7 @@
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
 		zephyr,console = &cdc_acm_uart;
+		zmk,battery = &vbatt;
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
 		zmk,underglow = &led_strip;
@@ -81,7 +82,7 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
 		control-gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
 	};
 
-	vbatt {
+	vbatt: vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 2>;

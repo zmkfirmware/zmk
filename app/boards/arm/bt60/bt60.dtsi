@@ -17,6 +17,7 @@
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
 		zephyr,console = &cdc_acm_uart;
+		zmk,battery = &vbatt;
 		zmk,kscan = &kscan0;
 		zmk,matrix_transform = &default_transform;
 	};
@@ -46,7 +47,7 @@
 		};
 	};
 
-	vbatt {
+	vbatt: vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 2>;
