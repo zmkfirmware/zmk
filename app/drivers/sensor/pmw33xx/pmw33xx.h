@@ -16,7 +16,7 @@
 #define PMW33XX_RD_MASK 0x7F
 
 #define PMW33XX_3389_PID 0x47
-#define PMW33XX_3360_PID 0x45
+#define PMW33XX_3360_PID 0x42
 #define PMW33XX_REV 0x01
 
 /* General Registers */
