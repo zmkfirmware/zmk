@@ -319,8 +319,7 @@ static int pmw33xx_init_chip(const struct device *dev) {
         return -EIO;
     }
 
-    pmw33xx_write_reg(dev, PMW33XX_REG_CONFIG2, 0x00); // clear rest enable
-    pmw33xx_write_reg(dev, PMW33XX_REG_BURST, 0x01);   // clear rest enable
+    pmw33xx_write_reg(dev, PMW33XX_REG_BURST, 0x01);
     struct pmw33xx_motion_burst val;
     pmw33xx_read_motion_burst(dev, &val); // read and throwout initial motion data
 
