@@ -18,6 +18,11 @@ on:
         default: "bin"
         required: false
         type: string
+      artifact_name:
+        description: 'Artifact output file name'
+        default: 'firmware'
+        required: false
+        type: string
 
 jobs:
   matrix:
@@ -117,5 +122,5 @@ jobs:
       - name: Archive (${{ steps.variables.outputs.display-name }})
         uses: actions/upload-artifact@v2
         with:
-          name: firmware
+          name: ${{ inputs.artifact_name }}
           path: build/artifacts
