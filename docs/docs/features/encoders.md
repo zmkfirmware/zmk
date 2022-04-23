@@ -29,9 +29,15 @@ Rotation is handled separately as a type of sensor. The behavior for this is set
 sensor-bindings = <BINDING CW_KEY CCW_KEY>;
 ```
 
-- `BINDING`, for now, has only one behavior available; `&inc_dec_kp` for key presses (see [Key Press](../behaviors/key-press.md) for details on available keycodes).
+- `BINDING` `&inc_dec_kp` for key presses (see [Key Press](../behaviors/key-press.md) for details on available keycodes).
 - `CW_KEY` is the keycode activated by a clockwise turn.
 - `CCW_KEY` is the keycode activated by a counter-clockwise turn.
+
+or
+
+- `BINDING` `&inc_dec_to` for switching layers (see [Layers](../behaviors/layers.md)).
+- `CW_KEY` is the layer activated by a clockwise turn.
+- `CCW_KEY` is the layer activated by a counter-clockwise turn.
 
 Additional encoders can be configured by adding more `BINDING CW_KEY CCW_KEY` sets immediately after the first.
 

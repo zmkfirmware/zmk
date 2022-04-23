@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	behaviors {
+		/* DEPRECATED: `inc_dec_cp` will be removed in the future */
+		/omit-if-no-ref/ inc_dec_to: behavior_sensor_rotate_layer_to {
+			compatible = "zmk,behavior-sensor-rotate-layer-to";
+			label = "ENC_LAYER_TO";
+			#sensor-binding-cells = <2>;
+		};
+	};
+};
