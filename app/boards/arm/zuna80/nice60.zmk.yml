@@ -1,0 +1,12 @@
+file_format: "1"
+id: nice60
+name: nice!60
+type: board
+arch: arm
+features:
+  - keys
+  - underglow
+outputs:
+  - usb
+  - ble
+url: https://nicekeyboards.com/nice-60
