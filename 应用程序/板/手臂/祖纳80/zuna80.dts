@@ -9,7 +9,7 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-	model = "zuna80";
+	模型 = “zuna80”
 	compatible = "zuna80";
 
 	chosen {
