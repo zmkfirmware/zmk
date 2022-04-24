@@ -192,7 +192,7 @@ if !ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE
 	int "BLE split peripheral notify thread stack size"
-	default 512
+	default 650
 
 config ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY
 	int "BLE split peripheral notify thread priority"
