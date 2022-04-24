@@ -1,0 +1,92 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/outputs.h>
+
+
+
+#define DEFAULT 0
+#define SYMNUM 1
+#define NAVFN 2
+#define CONFIG 3
+
+&mt {
+    tapping-term-ms = <165>;
+};
+
+/ {    
+    macros {
+            ZMK_MACRO(save,
+              wait-ms = <30>;
+              tap-ms = <40>;
+              bindings =  <&macro_tap &kp ESC &kp COLON &kp W &kp RET>;
+            )
+    };
+
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+// -------------------------------------------------------------------------------------------
+// |  B      |  Y      |  O       |  U       |   |  L        |  D        |  W      |  V      | 
+// | LGUI(C) | LALT(I) | LSHFT(E) | LCTRL(A) |   | RCTRL(H)  | RSHFT(T)  | RALT(S) | RGUI(N) |
+// | G       | X       | J        | K        |   | R         | M         | F       | P       |
+//                     | RET      | NAV(SPC) |   | SYM(BSPC) | CONF(ESC) |
+                        bindings = <
+   &kp B      &kp Y      &kp O       &kp U       &none &none &kp L         &kp D       &kp W       &kp V
+   &mt LGUI C &mt LALT I &mt LSHFT E &mt LCTRL A &none &none &mt RCTRL H   &mt RSHFT T &mt RALT S  &mt RGUI N
+   &kp G      &kp X      &kp J       &kp K       &none &none &kp R         &kp M       &kp F       &kp P
+                        &kp RET  &lt NAVFN SPACE  &lt SYMNUM BSPC &lt CONFIG ESC
+                        >;
+                };
+
+                symnum_layer {
+// -------------------------------------------------------------------------------------------
+// |         |  `      |  \       |  /       |   |  1        |  2        |  3      |  4      | 
+// | LGUI(') | LALT(-) | LSHFT(,) | LCTRL(.) |   | RCTRL(5)  | RSHFT(6)  | RALT(7) | RGUI(8) |
+// | =       | ;       | [        | ]        |   | 9         | 0         | Z       | Q       |
+//                     | SAVE     | TAB      |   |           |           |
+                        bindings = <
+   &none      &kp GRAVE  &kp BSLH    &kp FSLH    &none &none &kp N1        &kp N2      &kp N3      &kp N4
+   &mt LGUI SQT &mt LALT MINUS &mt LSHFT COMMA &mt LCTRL DOT &none &none &mt RCTRL N5   &mt RSHFT N6 &mt RALT N7  &mt RGUI N8
+   &kp EQUAL      &kp SEMI      &kp LBKT       &kp RBKT       &none &none &kp N9         &kp N0       &kp Z       &kp Q
+                        &save  &kp TAB &trans &none
+                        >;
+                };
+                
+                navfn_layer {
+// -------------------------------------------------------------------------------------------
+// |         |         |          |          |   | F1        | F2        | F3      | F4      | 
+// | LGUI(LFT) | LALT(DWN) | LSHFT(UP) | LCTRL(RGT) |   | RCTRL(F5)  | RSHFT(F6)  | RALT(F7) | RGUI(F8) |
+// | HOME       | PGDN       | PGUP        | END        |   | F9         | F10         | F11       | F12       |
+//                     |          |          |   | DEL       |           |
+                        bindings = <
+   &none      &none  &none    &none    &none &none &kp F1        &kp F2      &kp F3      &kp F4
+   &mt LGUI LEFT &mt LALT DOWN &mt LSHFT UP &mt LCTRL RIGHT &none &none &mt RCTRL F5   &mt RSHFT F6 &mt RALT F7  &mt RGUI F8
+   &kp HOME      &kp PG_DN      &kp PG_UP       &kp END       &none &none &kp F9         &kp F10       &kp F11       &kp F12
+                        &none  &trans &kp DEL &caps_word
+                        >;
+                };
+               
+                config_layer {
+// -----------------------------------------------------------------------------------------
+// | RGB BRI+ | RGB SAT+ | RGB HUE+ | RGB ANI+ |    | BT1  | BT2 | BT3 | BT4 |
+// | RGB BRI- | RGB SAT- | RGB HUE- | RGB ANI+ |    | BT5   |       |     |     |
+// |          |          |          | RGB TOG  |    | BT CLR |     |     | RESET     |
+//                                              |     |     |     |     |     |
+                        bindings = <
+   &rgb_ug RGB_BRI &rgb_ug RGB_SAI &rgb_ug RGB_HUI &rgb_ug RGB_EFF &none &none &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3  
+   &rgb_ug RGB_BRD &rgb_ug RGB_SAD &rgb_ug RGB_HUD &rgb_ug RGB_EFR &none &none &bt BT_SEL 4 &none &none        &none     
+   &none           &none           &none           &rgb_ug RGB_TOG &none &none &bt BT_CLR   &none &out OUT_TOG        &reset   
+                                                             &trans      &trans               &trans      &trans
+                        >;
+                };
+        };
+};
