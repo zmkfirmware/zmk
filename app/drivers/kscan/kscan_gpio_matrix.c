@@ -19,8 +19,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define DT_DRV_COMPAT zmk_kscan_gpio_matrix
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
-
 #define INST_DIODE_DIR(n) DT_ENUM_IDX(DT_DRV_INST(n), diode_direction)
 #define COND_DIODE_DIR(n, row2col_code, col2row_code)                                              \
     COND_CODE_0(INST_DIODE_DIR(n), row2col_code, col2row_code)
@@ -463,5 +461,3 @@ static const struct kscan_driver_api kscan_matrix_api = {
                           CONFIG_APPLICATION_INIT_PRIORITY, &kscan_matrix_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSCAN_MATRIX_INIT);
-
-#endif // DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)

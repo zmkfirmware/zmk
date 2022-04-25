@@ -1,10 +1,38 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+DT_COMPAT_ZMK_KSCAN_COMPOSITE := zmk,kscan-composite
+DT_COMPAT_ZMK_KSCAN_GPIO_DEMUX := zmk,kscan-gpio-demux
+DT_COMPAT_ZMK_KSCAN_GPIO_DIRECT := zmk,kscan-gpio-direct
+DT_COMPAT_ZMK_KSCAN_GPIO_MATRIX := zmk,kscan-gpio-matrix
+DT_COMPAT_ZMK_KSCAN_MOCK := zmk,kscan-mock
+
+config ZMK_KSCAN_COMPOSITE_DRIVER
+	bool
+	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_COMPOSITE))
+
 config ZMK_KSCAN_GPIO_DRIVER
-	bool "Enable GPIO kscan driver to detect key presses"
-	default y
+	bool
 	select GPIO
+
+config ZMK_KSCAN_GPIO_DEMUX
+	bool
+	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_GPIO_DEMUX))
+	select ZMK_KSCAN_GPIO_DRIVER
+
+config ZMK_KSCAN_GPIO_DIRECT
+	bool
+	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_GPIO_DIRECT))
+	select ZMK_KSCAN_GPIO_DRIVER
+
+config ZMK_KSCAN_GPIO_MATRIX
+	bool
+	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_GPIO_MATRIX))
+	select ZMK_KSCAN_GPIO_DRIVER
+
+config ZMK_KSCAN_MOCK_DRIVER
+	bool
+	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_MOCK))
 
 if ZMK_KSCAN_GPIO_DRIVER
 
