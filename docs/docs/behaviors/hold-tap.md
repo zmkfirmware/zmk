@@ -50,9 +50,9 @@ In QMK, unlike ZMK, this functionality is enabled by default, and you turn it of
 
 #### `global-quick-tap`
 
-If global quick tap is enabled, then the quick tap will apply not only when the given hold tap is tapped, but for any key tap before it. This effectively disables the hold tap when typing quickly, which can be quite useful for home row mods. It can also have the effect of removing the input delay when typing quickly.
+If global quick tap is enabled, then `quick-tap-ms` will apply not only when the given hold-tap is tapped but for any key tap before it. This effectively disables the hold tap when typing quickly, which can be quite useful for home row mods. It can also have the effect of removing the input delay when typing quickly.
 
-For example, the following hold tap configuration enables global quick tap with a 125 millisecond term.
+For example, the following hold-tap configuration enables global quick tap with a 125 millisecond term.
 ```
 gqt: global-quick-tap {
 	compatible = "zmk,behavior-hold-tap";
@@ -66,9 +66,9 @@ gqt: global-quick-tap {
 };
 ```
 
-If you press `&kp A`, and then `&gqt LEFT_SHIFT B` **within** 125 ms after, then `ab` will be output. Importantly, the `b` will be output immediately since it was within the `quick-tap-ms`. This behavior will hold for any key that is output to the computer. The `&gqt LEFT_SHIFT B` binding will only have its underlying hold-tap behavior if it is pressed 125 ms **after** any keycode is sent to the computer.
+If you press `&kp A` and then `&gqt LEFT_SHIFT B` **within** 125 ms, then `ab` will be output. Importantly, `b` will be output immediately since it was within the `quick-tap-ms`. This quick-tap behavior will work for any key press, whether it is within a behavior like hold-tap, or a simple `&kp`. This means the `&gqt LEFT_SHIFT B` binding will only have its underlying hold-tap behavior if it is pressed 125 ms **after** a key press.
 
-Note that the higher the `quick-tap-ms`, the harder it will be to use the hold behavior, making this unideal for capitalizing letter while typing normally. However, paired with [mod-tap](mod-tap.md)
+Note that the higher the `quick-tap-ms` the harder it will be to use the hold behavior, making this less applicable for something like capitalizing letter while typing normally. However, if the hold behavior isn't used during fast typing, then it can be an effective way to mitigate misfires.
 
 #### `retro-tap`
 
