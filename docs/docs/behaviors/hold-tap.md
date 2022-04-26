@@ -53,6 +53,7 @@ In QMK, unlike ZMK, this functionality is enabled by default, and you turn it of
 If global quick tap is enabled, then `quick-tap-ms` will apply not only when the given hold-tap is tapped but for any key tap before it. This effectively disables the hold tap when typing quickly, which can be quite useful for home row mods. It can also have the effect of removing the input delay when typing quickly.
 
 For example, the following hold-tap configuration enables global quick tap with a 125 millisecond term.
+
 ```
 gqt: global-quick-tap {
 	compatible = "zmk,behavior-hold-tap";
