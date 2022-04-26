@@ -88,6 +88,9 @@ if ZMK_USB
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
 
+config USB_HID_POLL_INTERVAL_MS
+	default 1
+
 #ZMK_USB
 endif
 
