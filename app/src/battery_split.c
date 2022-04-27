@@ -57,7 +57,7 @@ int peripheral_batt_lvl_listener(const zmk_event_t *eh) {
     };
     LOG_DBG("Peripheral battery level event: %u", ev->state_of_charge);
     last_state_of_peripheral_charge = ev->state_of_charge;
-    
+
     // TODO: super fragile because of hardcoded attribute index
     int rc = bt_gatt_notify(NULL, &bas.attrs[5], &last_state_of_peripheral_charge,
                             sizeof(last_state_of_peripheral_charge));
