@@ -57,6 +57,7 @@ struct behavior_hold_tap_config {
     char *hold_behavior_dev;
     char *tap_behavior_dev;
     int quick_tap_ms;
+    bool global_quick_tap;
     enum flavor flavor;
     bool retro_tap;
     int32_t hold_trigger_key_positions_len;
@@ -88,22 +89,33 @@ struct active_hold_tap active_hold_taps[ZMK_BHV_HOLD_TAP_MAX_HELD] = {};
 // We capture most position_state_changed events and some modifiers_state_changed events.
 const zmk_event_t *captured_events[ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS] = {};
 
-// Keep track of which key was tapped most recently for 'quick_tap_ms'
+// Keep track of which key was tapped most recently for the standard, if it is a hold-tap
+// a position, will be given, if not it will just be INT32_MIN
 struct last_tapped {
     int32_t position;
-    int64_t tap_deadline;
+    int64_t timestamp;
 };
 
-struct last_tapped last_tapped;
+struct last_tapped last_tapped = {INT32_MIN, INT64_MIN};
 
-static void store_last_tapped(struct active_hold_tap *hold_tap) {
+static void store_last_tapped(int64_t timestamp) {
+    if (timestamp > last_tapped.timestamp) {
+        last_tapped.position = INT32_MIN;
+        last_tapped.timestamp = timestamp;
+    }
+}
+
+static void store_last_hold_tapped(struct active_hold_tap *hold_tap) {
     last_tapped.position = hold_tap->position;
-    last_tapped.tap_deadline = hold_tap->timestamp + hold_tap->config->quick_tap_ms;
+    last_tapped.timestamp = hold_tap->timestamp;
 }
 
 static bool is_quick_tap(struct active_hold_tap *hold_tap) {
-    return last_tapped.position == hold_tap->position &&
-           last_tapped.tap_deadline > hold_tap->timestamp;
+    if (hold_tap->config->global_quick_tap || last_tapped.position == hold_tap->position) {
+        return (last_tapped.timestamp + hold_tap->config->quick_tap_ms) > hold_tap->timestamp;
+    } else {
+        return false;
+    }
 }
 
 static int capture_event(const zmk_event_t *event) {
@@ -362,7 +374,7 @@ static int press_binding(struct active_hold_tap *hold_tap) {
     } else {
         binding.behavior_dev = hold_tap->config->tap_behavior_dev;
         binding.param1 = hold_tap->param_tap;
-        store_last_tapped(hold_tap);
+        store_last_hold_tapped(hold_tap);
     }
     return behavior_keymap_binding_pressed(&binding, event);
 }
@@ -619,6 +631,10 @@ static int keycode_state_changed_listener(const zmk_event_t *eh) {
     // we want to catch layer-up events too... how?
     struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
 
+    if (ev->state && !is_mod(ev->usage_page, ev->keycode)) {
+        store_last_tapped(ev->timestamp);
+    }
+
     if (undecided_hold_tap == NULL) {
         // LOG_DBG("0x%02X bubble (no undecided hold_tap active)", ev->keycode);
         return ZMK_EV_EVENT_BUBBLE;
@@ -680,6 +696,7 @@ static int behavior_hold_tap_init(const struct device *dev) {
         .hold_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 0)),                     \
         .tap_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 1)),                      \
         .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
+        .global_quick_tap = DT_INST_PROP(n, global_quick_tap),                                     \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
         .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
         .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
