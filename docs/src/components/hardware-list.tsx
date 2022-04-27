@@ -1,11 +1,9 @@
 import React from "react";
 
-import {
-  Board,
-  HardwareMetadata,
-  Interconnect,
-  Shield,
-} from "../hardware-metadata";
+import Heading from "@theme/Heading";
+
+import { HardwareMetadata } from "../hardware-metadata";
+import { groupedMetadata, InterconnectDetails } from "./hardware-utils";
 
 interface HardwareListProps {
   items: HardwareMetadata[];
@@ -53,12 +51,6 @@ function HardwareLineItem({ item }: { item: HardwareMetadata }) {
   );
 }
 
-interface InterconnectDetails {
-  interconnect?: Interconnect;
-  boards: Board[];
-  shields: Shield[];
-}
-
 function mapInterconnect({
   interconnect,
   boards,
@@ -70,15 +62,17 @@ function mapInterconnect({
 
   return (
     <div key={interconnect.id}>
-      <h4>{interconnect.name} Interconnect</h4>
+      <Heading as="h3" id={interconnect.id}>
+        {interconnect.name} Interconnect
+      </Heading>
       {interconnect.description && <p>{interconnect.description}</p>}
-      <h5>Boards</h5>
+      <Heading as="h4">Boards</Heading>
       <ul>
         {boards.map((s) => (
           <HardwareLineItem key={s.id} item={s} />
         ))}
       </ul>
-      <h5>Shields</h5>
+      <Heading as="h4">Shields</Heading>
       <ul>
         {shields.map((s) => (
           <HardwareLineItem key={s.id} item={s} />
@@ -88,88 +82,41 @@ function mapInterconnect({
   );
 }
 
-interface GroupedMetadata {
-  onboard: Board[];
-  interconnects: Record<string, InterconnectDetails>;
-}
-
-function groupedBoard(agg: GroupedMetadata, board: Board) {
-  if (board.features?.includes("keys")) {
-    agg.onboard.push(board);
-  } else if (board.exposes) {
-    board.exposes.forEach((element) => {
-      let ic = agg.interconnects[element] ?? {
-        boards: [],
-        shields: [],
-      };
-      ic.boards.push(board);
-      agg.interconnects[element] = ic;
-    });
-  } else {
-    console.error("Board without keys or interconnect");
-  }
-
-  return agg;
-}
-
-function groupedShield(agg: GroupedMetadata, shield: Shield) {
-  shield.requires.forEach((id) => {
-    let ic = agg.interconnects[id] ?? { boards: [], shields: [] };
-    ic.shields.push(shield);
-    agg.interconnects[id] = ic;
-  });
-
-  return agg;
-}
-
-function groupedInterconnect(agg: GroupedMetadata, item: Interconnect) {
-  let ic = agg.interconnects[item.id] ?? { boards: [], shields: [] };
-  ic.interconnect = item;
-  agg.interconnects[item.id] = ic;
-
-  return agg;
-}
-
 function HardwareList({ items }: HardwareListProps) {
-  let grouped = items.reduce<GroupedMetadata>(
-    (agg, hm) => {
-      switch (hm.type) {
-        case "board":
-          return groupedBoard(agg, hm);
-        case "shield":
-          return groupedShield(agg, hm);
-        case "interconnect":
-          return groupedInterconnect(agg, hm);
-      }
-    },
-    { onboard: [] as Board[], interconnects: {} }
-  );
+  let grouped = groupedMetadata(items);
 
   return (
     <>
-      <h2>Keyboards</h2>
-      <h3>Onboard Controller Keyboards</h3>
-      <p>
-        Keyboards with onboard controllers are single PCBs that contain all the
-        components of a keyboard, including the controller chip, switch
-        footprints, etc.
-      </p>
-      <ul>
-        {grouped["onboard"]
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((s) => (
-            <HardwareLineItem key={s.id} item={s} />
-          ))}
-      </ul>
-      <h3>Composite Keyboards</h3>
-      <p>
-        Composite keyboards are composed of two main PCBs: a small controller
-        board with exposed pads, and a larger keyboard PCB (a shield, in ZMK
-        lingo) with switch footprints and a location where the controller is
-        added. This location is called an interconnect. Multiple interconnects
-        can be found below.
-      </p>
-      {Object.values(grouped.interconnects).map(mapInterconnect)}
+      <section>
+        <Heading as="h2" id="onboard">
+          Onboard Controller Keyboards
+        </Heading>
+        <p>
+          Keyboards with onboard controllers are single PCBs that contain all
+          the components of a keyboard, including the controller chip, switch
+          footprints, etc.
+        </p>
+        <ul>
+          {grouped["onboard"]
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((s) => (
+              <HardwareLineItem key={s.id} item={s} />
+            ))}
+        </ul>
+      </section>
+      <section>
+        <Heading as="h2" id="composite">
+          Composite Keyboards
+        </Heading>
+        <p>
+          Composite keyboards are composed of two main PCBs: a small controller
+          board with exposed pads, and a larger keyboard PCB (a shield, in ZMK
+          lingo) with switch footprints and a location where the controller is
+          added. This location is called an interconnect. Multiple interconnects
+          can be found below.
+        </p>
+        {Object.values(grouped.interconnects).map(mapInterconnect)}
+      </section>
     </>
   );
 }

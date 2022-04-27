@@ -398,10 +398,6 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
     LOG_DBG("Connected %s", log_strdup(addr));
 
-#if IS_SPLIT_PERIPHERAL
-    bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
-#endif
-
     if (bt_conn_set_security(conn, BT_SECURITY_L2)) {
         LOG_ERR("Failed to set security");
     }
