@@ -14,11 +14,14 @@ Definition files:
 - [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 - [zmk/app/drivers/kscan/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/kscan/Kconfig)
 
-| Config                              | Type | Description                                            | Default |
-| ----------------------------------- | ---- | ------------------------------------------------------ | ------- |
-| `CONFIG_ZMK_KSCAN_GPIO_DRIVER`      | bool | Enable GPIO keyboard scan driver to detect key presses | y       |
-| `CONFIG_ZMK_KSCAN_EVENT_QUEUE_SIZE` | int  | Size of the event queue for kscan events               | 4       |
-| `CONFIG_ZMK_KSCAN_INIT_PRIORITY`    | int  | Keyboard scan device driver initialization priority    | 40      |
+| Config                                 | Type | Description                                          | Default |
+| -------------------------------------- | ---- | ---------------------------------------------------- | ------- |
+| `CONFIG_ZMK_KSCAN_EVENT_QUEUE_SIZE`    | int  | Size of the event queue for kscan events             | 4       |
+| `CONFIG_ZMK_KSCAN_INIT_PRIORITY`       | int  | Keyboard scan device driver initialization priority  | 40      |
+| `CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS`   | int  | Global debounce time for key press in milliseconds   | -1      |
+| `CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS` | int  | Global debounce time for key release in milliseconds | -1      |
+
+If the debounce press/release values are set to any value other than `-1`, they override the `debounce-press-ms` and `debounce-release-ms` devicetree properties for all keyboard scan drivers which support them.
 
 ### Devicetree
 
@@ -87,13 +90,16 @@ Applies to: `compatible = "zmk,kscan-gpio-matrix"`
 
 Definition file: [zmk/app/drivers/zephyr/dts/bindings/kscan/zmk,kscan-gpio-matrix.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/zephyr/dts/bindings/kscan/zmk%2Ckscan-gpio-matrix.yaml)
 
-| Property          | Type       | Description                                                  | Default     |
-| ----------------- | ---------- | ------------------------------------------------------------ | ----------- |
-| `label`           | string     | Unique label for the node                                    |             |
-| `row-gpios`       | GPIO array | Matrix row GPIOs in order, starting from the top row         |             |
-| `col-gpios`       | GPIO array | Matrix column GPIOs in order, starting from the leftmost row |             |
-| `debounce-period` | int        | Debounce period in milliseconds                              | 5           |
-| `diode-direction` | string     | The direction of the matrix diodes                           | `"row2col"` |
+| Property                  | Type       | Description                                                                                        | Default     |
+| ------------------------- | ---------- | -------------------------------------------------------------------------------------------------- | ----------- |
+| `label`                   | string     | Unique label for the node                                                                          |             |
+| `row-gpios`               | GPIO array | Matrix row GPIOs in order, starting from the top row                                               |             |
+| `col-gpios`               | GPIO array | Matrix column GPIOs in order, starting from the leftmost row                                       |             |
+| `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                           | 5           |
+| `debounce-release-ms`     | int        | Debounce time for key release in milliseconds.                                                     | 5           |
+| `debounce-scan-period-ms` | int        | Time between reads in milliseconds when any key is pressed.                                        | 1           |
+| `diode-direction`         | string     | The direction of the matrix diodes                                                                 | `"row2col"` |
+| `poll-period-ms`          | int        | Time between reads in milliseconds when no key is pressed and ZMK_KSCAN_MATRIX_POLLING is enabled. | 10          |
 
 The `diode-direction` property must be one of:
 
@@ -105,14 +111,6 @@ The `diode-direction` property must be one of:
 ## Composite Driver
 
 Keyboard scan driver which combines multiple other keyboard scan drivers.
-
-### Kconfig
-
-Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
-
-| Config                              | Type | Description                   | Default |
-| ----------------------------------- | ---- | ----------------------------- | ------- |
-| `CONFIG_ZMK_KSCAN_COMPOSITE_DRIVER` | bool | Enable composite kscan driver | n       |
 
 ### Devicetree
 
@@ -226,14 +224,6 @@ One possible way to do this is a 3x4 matrix where the direct GPIO keys are shift
 ## Mock Driver
 
 Mock keyboard scan driver that simulates key events.
-
-### Kconfig
-
-Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
-
-| Config                         | Type | Description              | Default |
-| ------------------------------ | ---- | ------------------------ | ------- |
-| `CONFIG_ZMK_KSCAN_MOCK_DRIVER` | bool | Enable mock kscan driver | n       |
 
 ### Devicetree
 
