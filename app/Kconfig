@@ -330,6 +330,12 @@ config ZMK_BEHAVIORS_QUEUE_SIZE
 	int "Maximum number of behaviors to allow queueing from a macro or other complex behavior"
 	default 64
 
+DT_COMPAT_ZMK_BEHAVIOR_KEY_TOGGLE := zmk,behavior-key-toggle
+
+config ZMK_BEHAVIOR_KEY_TOGGLE
+        bool
+        default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_KEY_TOGGLE))
+
 endmenu
 
 menu "Advanced"
