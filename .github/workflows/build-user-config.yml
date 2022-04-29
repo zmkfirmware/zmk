@@ -71,7 +71,7 @@ jobs:
 
       - name: Cache west modules
         uses: actions/cache@v3.0.1
-        if: false # Disabled for now, caching is broken
+        continue-on-error: true
         env:
           cache-name: cache-zephyr-${{ steps.variables.outputs.zephyr-version }}-modules
         with:
