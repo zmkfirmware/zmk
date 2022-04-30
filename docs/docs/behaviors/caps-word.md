@@ -5,7 +5,7 @@ sidebar_label: Caps Word
 
 ## Summary
 
-The caps word behavior behaves similar to a caps lock, but will automatically deactivate when one of the configured "break keycodes" is pressed, or if the caps word key is pressed again. For smaller keyboards, using [mod-taps](/docs/behaviors/mod-tap), this can help avoid repeated alternating holds when typing words in all caps.
+The caps word behavior behaves similar to a caps lock, but will automatically deactivate when any key not in a continue list is pressed, or if the caps word key is pressed again. For smaller keyboards using [mod-taps](/docs/behaviors/mod-tap), this can help avoid repeated alternating holds when typing words in all caps.
 
 The modifiers are applied only to to the alphabetic (`A` to `Z`) keycodes, to avoid automatically appliying them to numeric values, etc.
 
