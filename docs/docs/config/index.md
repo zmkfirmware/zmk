@@ -58,7 +58,7 @@ ZMK will search the shield folder for the following config files:
 - `<shield>.overlay` (Devicetree)
 - `<shield>.keymap` (Devicetree)
 
-For more documentation on creating and configuring a new shield, see [Zephyr's shield documentation](https://docs.zephyrproject.org/latest/guides/porting/shields.html) and [ZMK's new keyboard shield](/docs/development/new-shield) guide.
+For more documentation on creating and configuring a new shield, see [Zephyr's shield documentation](https://docs.zephyrproject.org/latest/hardware/porting/shields.html) and [ZMK's new keyboard shield](../development/new-shield.md) guide.
 
 ## Kconfig Files
 

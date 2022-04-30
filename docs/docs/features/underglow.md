@@ -34,7 +34,7 @@ CONFIG_ZMK_RGB_UNDERGLOW=y
 CONFIG_WS2812_STRIP=y
 ```
 
-See [Configuration Overview](/docs/config/index) for more instructions on how to
+See [Configuration Overview](/docs/config) for more instructions on how to
 use Kconfig.
 
 If your board or shield does not have RGB underglow configured, refer to [Adding RGB Underglow to a Board](#adding-rgb-underglow-to-a-board).

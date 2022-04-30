@@ -23,7 +23,7 @@ The setup script creates a `config/<shield>.conf` file that allows you to add ad
 control what features and options are built into your firmware. Opening that file with your text editor will allow you to see the
 various config settings that can be commented/uncommented to modify how your firmware is built.
 
-Refer to the [Configuration](/docs/config/index) documentation for more details on this file.
+Refer to the [Configuration](/docs/config) documentation for more details on this file.
 
 ## Keymap
 

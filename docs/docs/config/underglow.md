@@ -3,9 +3,9 @@ title: RGB Underglow Configuration
 sidebar_label: RGB Underglow
 ---
 
-See the [RGB Underglow feature page](/docs/features/underglow) for more details, including instructions for adding underglow support to a board.
+See the [RGB Underglow feature page](../features/underglow.md) for more details, including instructions for adding underglow support to a board.
 
-See [Configuration Overview](/docs/config) for instructions on how to change these settings.
+See [Configuration Overview](index.md) for instructions on how to change these settings.
 
 ## Kconfig
 
@@ -40,4 +40,4 @@ Values for `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`:
 
 ZMK does not have any Devicetree properties of its own. See the Devicetree bindings for [Zephyr's LED strip drivers](https://github.com/zephyrproject-rtos/zephyr/tree/main/dts/bindings/led_strip).
 
-See the [RGB underglow feature page](/docs/features/underglow) for examples of the properties that must be set to enable underglow.
+See the [RGB underglow feature page](../features/underglow.md) for examples of the properties that must be set to enable underglow.
