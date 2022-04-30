@@ -50,16 +50,8 @@ Applies to: `compatible = "zmk,ext-power-generic"`
 
 Driver for reading the voltage of a battery using an ADC connected to a voltage divider.
 
-### Kconfig
-
-Definition file: [zmk/app/drivers/sensor/battery_voltage_divider/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/sensor/battery_voltage_divider/Kconfig)
-
-| Config                               | Type | Description                                                  | Default |
-| ------------------------------------ | ---- | ------------------------------------------------------------ | ------- |
-| `CONFIG_ZMK_BATTERY_VOLTAGE_DIVIDER` | bool | Enable battery voltage divider driver for battery monitoring | n       |
-
 ### Devicetree
 
 Applies to: `compatible = "zmk,battery-voltage-divider"`
 
-See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/latest/reference/devicetree/bindings/voltage-divider.html).
+See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/latest/build/dts/api/bindings/adc/voltage-divider.html).
