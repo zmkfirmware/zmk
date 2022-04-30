@@ -3,9 +3,9 @@ title: Combo Configuration
 sidebar_label: Combos
 ---
 
-See the [Combos feature page](/docs/features/combos) for more details and examples.
+See the [Combos feature page](../features/combos.md) for more details and examples.
 
-See [Configuration Overview](/docs/config/index) for instructions on how to change these settings.
+See [Configuration Overview](index.md) for instructions on how to change these settings.
 
 ## Kconfig
 
@@ -33,7 +33,7 @@ Each child node can have the following properties:
 
 | Property        | Type          | Description                                                                        | Default |
 | --------------- | ------------- | ---------------------------------------------------------------------------------- | ------- |
-| `bindings`      | phandle-array | A [behavior](/docs/features/keymaps#behaviors) to run when the combo is triggered  |         |
+| `bindings`      | phandle-array | A [behavior](../features/keymaps.md#behaviors) to run when the combo is triggered  |         |
 | `key-positions` | array         | A list of key position indices for the keys which should trigger the combo         |         |
 | `timeout-ms`    | int           | All the keys must be pressed within this time in milliseconds to trigger the combo | 50      |
 | `slow-release`  | bool          | Releases the combo when all keys are released instead of when any key is released  | false   |

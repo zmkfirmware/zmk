@@ -5,7 +5,7 @@ sidebar_label: Behaviors
 
 Some behaviors have properties to adjust how they behave. These can also be used as templates to create custom behaviors when none of the built-in behaviors do what you want.
 
-See [Configuration Overview](/docs/config/index) for instructions on how to change these settings.
+See [Configuration Overview](index.md) for instructions on how to change these settings.
 
 See the [zmk/app/dts/behaviors/](https://github.com/zmkfirmware/zmk/tree/main/app/dts/behaviors) folder for all default behaviors.
 
@@ -13,7 +13,7 @@ See the [zmk/app/dts/behaviors/](https://github.com/zmkfirmware/zmk/tree/main/ap
 
 Creates a custom behavior that behaves similar to a caps lock but deactivates when any key not in a continue list is pressed.
 
-See the [caps word behavior](/docs/behaviors/caps-word) documentation for more details and examples.
+See the [caps word behavior](../behaviors/caps-word.md) documentation for more details and examples.
 
 ### Devicetree
 
@@ -36,13 +36,13 @@ You can use the following nodes to tweak the default behaviors:
 
 | Node         | Behavior                               |
 | ------------ | -------------------------------------- |
-| `&caps_word` | [Caps Word](/docs/behaviors/caps-word) |
+| `&caps_word` | [Caps Word](../behaviors/caps-word.md) |
 
 ## Hold-Tap
 
 Creates a custom behavior that triggers one behavior when a key is held or a different one when the key is tapped.
 
-See the [hold-tap behavior documentation](/docs/behaviors/hold-tap) for more details and examples.
+See the [hold-tap behavior documentation](../behaviors/hold-tap.md) for more details and examples.
 
 ### Devicetree
 
@@ -69,7 +69,7 @@ The `flavor` property may be one of:
 - `"tap-preferred"`
 - `"tap-unless-interrupted"`
 
-See the [hold-tap behavior documentation](/docs/behaviors/hold-tap) for an explanation of each flavor.
+See the [hold-tap behavior documentation](../behaviors/hold-tap.md) for an explanation of each flavor.
 
 `hold-trigger-key-positions` is an array of zero-based key position indices.
 
@@ -77,14 +77,14 @@ You can use the following nodes to tweak the default behaviors:
 
 | Node  | Behavior                                      |
 | ----- | --------------------------------------------- |
-| `&lt` | [Layer-tap](/docs/behaviors/layers#layer-tap) |
-| `&mt` | [Mod-tap](/docs/behaviors/mod-tap)            |
+| `&lt` | [Layer-tap](../behaviors/layers.md#layer-tap) |
+| `&mt` | [Mod-tap](../behaviors/mod-tap.md)            |
 
 ## Key Repeat
 
 Creates a custom behavior that repeats the whatever key code was last sent.
 
-See the [key repeat behavior](/docs/behaviors/key-repeat) documentation for more details and examples.
+See the [key repeat behavior](../behaviors/key-repeat.md) documentation for more details and examples.
 
 ### Devicetree
 
@@ -104,13 +104,13 @@ You can use the following nodes to tweak the default behaviors:
 
 | Node          | Behavior                                 |
 | ------------- | ---------------------------------------- |
-| `&key_repeat` | [Key repeat](/docs/behaviors/key-repeat) |
+| `&key_repeat` | [Key repeat](../behaviors/key-repeat.md) |
 
 ## Macro
 
 Creates a custom behavior which triggers a sequence of other behaviors.
 
-See the [macro behavior](/docs/behaviors/macros) documentation for more details and examples.
+See the [macro behavior](../behaviors/macros.md) documentation for more details and examples.
 
 ### Devicetree
 
@@ -166,7 +166,7 @@ You can use the following nodes to tweak the default behaviors:
 
 Creates a custom behavior that triggers a behavior and keeps it pressed it until another key is pressed and released.
 
-See the [sticky key behavior](/docs/behaviors/sticky-key) and [sticky layer behavior](/docs/behaviors/sticky-layer) documentation for more details and examples.
+See the [sticky key behavior](../behaviors/sticky-key.md) and [sticky layer behavior](../behaviors/sticky-layer.md) documentation for more details and examples.
 
 ### Devicetree
 
@@ -187,8 +187,8 @@ You can use the following nodes to tweak the default behaviors:
 
 | Node  | Behavior                                     |
 | ----- | -------------------------------------------- |
-| `&sk` | [Sticky key](/docs/behaviors/sticky-key)     |
-| `&sl` | [Sticky layer](/docs/behaviors/sticky-layer) |
+| `&sk` | [Sticky key](../behaviors/sticky-key.md)     |
+| `&sl` | [Sticky layer](../behaviors/sticky-layer.md) |
 
 ## Tap Dance
 

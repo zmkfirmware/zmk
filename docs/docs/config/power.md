@@ -3,7 +3,7 @@ title: Power Management Configuration
 sidebar_label: Power Management
 ---
 
-See [Configuration Overview](/docs/config/index) for instructions on how to
+See [Configuration Overview](index.md) for instructions on how to
 change these settings.
 
 ## Idle/Sleep
@@ -26,7 +26,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ## External Power Control
 
-Driver for enabling or disabling power to peripherals such as displays and lighting. This driver must be configured to use [power management behaviors](/docs/behaviors/power).
+Driver for enabling or disabling power to peripherals such as displays and lighting. This driver must be configured to use [power management behaviors](../behaviors/power.md).
 
 ### Kconfig
 
