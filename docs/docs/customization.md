@@ -1,5 +1,5 @@
 ---
-title: Customizing ZMK/`zmk-config` folders
+title: Customizing ZMK/zmk-config folders
 sidebar_label: Customizing ZMK
 ---
 
