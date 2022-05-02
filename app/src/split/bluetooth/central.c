@@ -328,6 +328,12 @@ static void split_central_process_connection(struct bt_conn *conn) {
 
     LOG_DBG("New connection params: Interval: %d, Latency: %d, PHY: %d", info.le.interval,
             info.le.latency, info.le.phy->rx_phy);
+
+    // keep scanning until all peripherals are connected
+    for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
+        if (peripherals[i].state != PERIPHERAL_SLOT_STATE_CONNECTED)
+            start_scan();
+    }
 }
 
 static bool split_central_eir_found(struct bt_data *data, void *user_data) {
@@ -376,9 +382,9 @@ static bool split_central_eir_found(struct bt_data *data, void *user_data) {
                 continue;
             }
 
-            uint8_t slot_idx = reserve_peripheral_slot();
+            int slot_idx = reserve_peripheral_slot();
             if (slot_idx < 0) {
-                LOG_ERR("Faild to reserve peripheral slot (err %d)", slot_idx);
+                LOG_ERR("Failed to reserve peripheral slot (err %d)", slot_idx);
                 continue;
             }
 

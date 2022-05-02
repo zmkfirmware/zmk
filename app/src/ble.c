@@ -54,12 +54,6 @@ static uint8_t passkey_digit = 0;
 
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
-#define PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - 1)
-#else
-#define PROFILE_COUNT CONFIG_BT_MAX_PAIRED
-#endif
-
 enum advertising_type {
     ZMK_ADV_NONE,
     ZMK_ADV_DIR,
