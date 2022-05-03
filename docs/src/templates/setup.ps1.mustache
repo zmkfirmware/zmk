@@ -125,12 +125,23 @@ if ($keyboard_type -eq "shield") {
         {{id}} = "{{{name}}}";
         {{/boards}}
     }
+    $boards_usb_only = [ordered]@{
+        {{#boards}}
+        {{id}} = "{{usb_only}}";
+        {{/boards}}
+    }
 
     Write-Host "$title"
     Write-Host ""
     Write-Host "MCU Board Selection:"
 
     $choice = Get-Choice-From-Options -Options $boards.values -Prompt $prompt
+
+    if ($keyboard_split -eq "true" -and $($($boards_usb_only.values)[$choice]) -eq "true") {
+        Write-Host "Wired split is not yet supported by ZMK."
+        exit 1
+    }
+    
     $shields = $keyboard_siblings
     $board = $($($boards.keys)[$choice])
     $boards = ( $board )
