@@ -177,6 +177,7 @@ DEVICE_DT_INST_DEFINE(0,                                                    // I
                       &<behavior_name>_data, &<behavior_name>_config,       // Behavior Data Pointer, Behavior Configuration Pointer (Both Optional)
                       APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,     // Initialization Level, Device Priority
                       &<behavior_name>_driver_api);                         // API Structure
+
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
 
 ```
@@ -212,20 +213,6 @@ Including `zmk/event_manager.h` is required for the following dependencies to fu
 
 Events can be used similarly to hardware interrupts, through the use of [listeners](#listeners-and-subscriptions).
 
-`return` values:
-
-- `ZMK_EV_EVENT_BUBBLE`: The function saw the event memory and is done using it. Keep propagating the event memory to the next listeners.
-- `ZMK_EV_EVENT_HANDLED`: The function received the event memory and has handled it. Stop propagating it to the next listeners and free the event payload memory.
-- `ZMK_EV_EVENT_CAPTURED`: The function now owns the event memory. Stop propagating it to other listeners. The event memory will be manually freed at the end of the function when we are done with it.
-
-Functions:
-
-- `ZMK_EVENT_RAISE(ev)`: Invoke event (`ev`) as soon as possible in the workqueue
-- `ZMK_EVENT_RAISE_AFTER(ev, mod)`: Invoke event (`ev`) as soon as possible in the workqueue, _after_ an event is captured by a [listener](#listeners-and-subscriptions) (`mod`)
-- `ZMK_EVENT_RAISE_AT(ev, mod)`: Invoke event (`ev`) as soon as possible in the workqueue, _at the same time_ an event is captured by a [listener](#listeners-and-subscriptions) (`mod`)
-- `ZMK_EVENT_RELEASE(ev)`: Release event (`ev`) as soon as possible
-- `ZMK_EVENT_FREE(ev)`: Free the memory associated with the event (`ev`)
-
 ###### Listeners and Subscriptions
 
 The condensed form of lines 192-225 of the tap-dance driver, shown below, does an excellent job of showcasing the function of listeners and subscriptions with respect to the [ZMK Event Manager](#zmk-event-manager).
@@ -241,7 +228,21 @@ static int tap_dance_position_state_changed_listener(const zmk_event_t *eh){
 }
 ```
 
-Listeners, defined by the `ZMK_LISTENER(mod, cb)` function, take in a listener name (`mod`) and a callback function (`cb`) as their parameters. On the other hand subscriptions are defined by the `ZMK_SUBSCRIPTION(mod, ev_type)`, and determine what kind of event (`ev_type`) should invoke the callback function from the listener. In the tap-dance example, this listener executes code depending on a `zmk_position_state_changed` event, or simply, a change in key position. Other types of ZMK events can be found as the name of the `struct` inside each of the files located at `app/include/zmk/events/<Event Type>.h`.
+Listeners, defined by the `ZMK_LISTENER(mod, cb)` function, take in a listener name (`mod`) and a callback function (`cb`) as their parameters. On the other hand subscriptions are defined by the `ZMK_SUBSCRIPTION(mod, ev_type)`, and determine what kind of event (`ev_type`) should invoke the callback function from the listener. In the tap-dance example, this listener executes code depending on a `zmk_position_state_changed` event, or simply, a change in key position. Other types of ZMK events can be found as the name of the `struct` inside each of the files located at `app/include/zmk/events/<Event Type>.h`. All control paths in a listener should `return` one of the [`ZMK_EV_EVENT_*` values](#return-values), which are shown below.
+
+###### `return` values:
+
+- `ZMK_EV_EVENT_BUBBLE`: Keep propagating the event `struct` to the next listener.
+- `ZMK_EV_EVENT_HANDLED`: Stop propagating the event `struct` to the next listener. The event manager still owns the `struct`'s memory, so it will be `free`d automatically. Do **not** free the memory in this function.
+- `ZMK_EV_EVENT_CAPTURED`: Stop propagating the event `struct` to the next listener. The event `struct`'s memory is now owned by your code, so the event manager will not free the event `struct` memory. Make sure your code will release or free the event at some point in the future. (Use the [`ZMK_EVENT_*` macros](#macros) described below.)
+
+###### Macros:
+
+- `ZMK_EVENT_RAISE(ev)`: Start handling this event (`ev`) with the first registered event listener.
+- `ZMK_EVENT_RAISE_AFTER(ev, mod)`: Start handling this event (`ev`) after the event is captured by the named [event listener](#listeners-and-subscriptions) (`mod`). The named event listener will be skipped as well.
+- `ZMK_EVENT_RAISE_AT(ev, mod)`: Start handling this event (`ev`) at the named [event listener](#listeners-and-subscriptions) (`mod`). The named event listener is the first handler to be invoked.
+- `ZMK_EVENT_RELEASE(ev)`: Continue handling this event (`ev`) at the next registered event listener.
+- `ZMK_EVENT_FREE(ev)`: Free the memory associated with the event (`ev`).
 
 #### `DEVICE_DT_INST_DEFINE`
 
@@ -446,4 +447,4 @@ values={[
 Remember to change the copyright year (`XXXX`) to the current year when adding the copyright headers to your newly created files.
 :::
 
-If the pull request contains multiple commits, combine them into a single commit before submitting. Remember to check for any code reviews and stay updated with any users testing your new behavior.
+While you wait for your PR to become approved and merged into the main repository, please stay up to date for any code reviews and check in with users testing your new behavior. For more detailed information on contributing to ZMK, it is recommended to thoroughly review the [documentation for contributors](https://github.com/zmkfirmware/zmk/blob/main/CONTRIBUTING.md).
