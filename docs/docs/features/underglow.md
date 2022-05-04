@@ -145,7 +145,7 @@ Once you have your `led_strip` properly defined you need to add it to the root d
 };
 ```
 
-Finally you need to enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `CONFIG*_STRIP` configuration values in the `.conf` file of your board (or set a default in the `Kconfig.defconfig`):
+Finally you need to enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `CONFIG_*_STRIP` configuration values in the `.conf` file of your board (or set a default in the `Kconfig.defconfig`):
 
 ```
 CONFIG_ZMK_RGB_UNDERGLOW=y

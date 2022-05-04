@@ -21,7 +21,7 @@ Definition files:
 | `CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS`   | int  | Global debounce time for key press in milliseconds   | -1      |
 | `CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS` | int  | Global debounce time for key release in milliseconds | -1      |
 
-If the debounce press/release values are set to any value other than `-1`, they override the `debounce-press-ms` and `debounce-release-ms` devicetree properties for all keyboard scan drivers which support them.
+If the debounce press/release values are set to any value other than `-1`, they override the `debounce-press-ms` and `debounce-release-ms` devicetree properties for all keyboard scan drivers which support them. See the [debouncing documentation](../features/debouncing.md) for more details.
 
 ### Devicetree
 
@@ -35,6 +35,10 @@ Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/guides/dts/in
 ## Demux Driver
 
 Keyboard scan driver which works like a regular matrix but uses a demultiplexer to drive the rows or columns. This allows N GPIOs to drive N<sup>2</sup> rows or columns instead of just N like with a regular matrix.
+
+:::note
+Currently this driver does not honor the `CONFIG_ZMK_KSCAN_DEBOUNCE_*` settings.
+:::
 
 ### Devicetree
 
@@ -53,6 +57,10 @@ Definition file: [zmk/app/drivers/zephyr/dts/bindings/kscan/zmk,kscan-gpio-demux
 ## Direct GPIO Driver
 
 Keyboard scan driver where each key has a dedicated GPIO.
+
+:::note
+Currently this driver does not honor the `CONFIG_ZMK_KSCAN_DEBOUNCE_*` settings.
+:::
 
 ### Kconfig
 
