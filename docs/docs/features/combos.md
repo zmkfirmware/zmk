@@ -25,7 +25,7 @@ Combos configured in your `.keymap` file, but are separate from the `keymap` nod
 
 - The name of the combo doesn't really matter, but convention is to start the node name with `combo_`.
 - The `compatible` property should always be `"zmk,combos"` for combos.
-- `timeout-ms` is the number of milliseconds that all keys of the combo must be pressed.
+- `timeout-ms` is the length of the window (in milliseconds) in which all keys of the combo must be pressed in order to successfully trigger the combo.
 - `key-positions` is an array of key positions. See the info section below about how to figure out the positions on your board.
 - `layers = <0 1...>` will allow limiting a combo to specific layers. This is an _optional_ parameter, when omitted it defaults to global scope.
 - `bindings` is the behavior that is activated when the behavior is pressed.

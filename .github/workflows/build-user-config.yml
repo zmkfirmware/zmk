@@ -1,21 +1,21 @@
 name: Reusable user config build
 
-on: 
+on:
   workflow_call:
     inputs:
       build_matrix_path:
-        description: 'Path to the build matrix file'
-        default: 'build.yaml'
+        description: "Path to the build matrix file"
+        default: "build.yaml"
         required: false
         type: string
       config_path:
-        description: 'Path to the config directory'
-        default: 'config'
+        description: "Path to the config directory"
+        default: "config"
         required: false
         type: string
       fallback_binary:
-        description: 'Fallback binary format, if no *.uf2 file was built'
-        default: 'bin'
+        description: "Fallback binary format, if no *.uf2 file was built"
+        default: "bin"
         required: false
         type: string
 
@@ -71,6 +71,7 @@ jobs:
 
       - name: Cache west modules
         uses: actions/cache@v3.0.1
+        continue-on-error: true
         env:
           cache-name: cache-zephyr-${{ steps.variables.outputs.zephyr-version }}-modules
         with:
@@ -101,7 +102,7 @@ jobs:
 
       - name: ${{ steps.variables.outputs.display-name }} Kconfig file
         run: cat build/zephyr/.config | grep -v "^#" | grep -v "^$" | sort
-      
+
       - name: Rename artifacts
         run: |
           mkdir build/artifacts
@@ -112,7 +113,7 @@ jobs:
           then
             cp build/zephyr/zmk.${{ inputs.fallback_binary }} "build/artifacts/${{ steps.variables.outputs.artifact-name }}.${{ inputs.fallback_binary }}"
           fi
-      
+
       - name: Archive (${{ steps.variables.outputs.display-name }})
         uses: actions/upload-artifact@v2
         with:
