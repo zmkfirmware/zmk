@@ -548,6 +548,12 @@ choice CBPRINTF_IMPLEMENTATION
 
 endchoice
 
+DT_COMPAT_ZMK_BEHAVIOR_RETRO_HOLD_TAP := zmk,behavior-retro-hold-tap
+
+config ZMK_BEHAVIOR_RETRO_HOLD_TAP
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_RETRO_HOLD_TAP))
+
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
