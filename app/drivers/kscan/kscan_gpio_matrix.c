@@ -418,46 +418,46 @@ static const struct kscan_driver_api kscan_matrix_api = {
     .disable_callback = kscan_matrix_disable,
 };
 
-#define KSCAN_MATRIX_INIT(index)                                                                   \
-    BUILD_ASSERT(INST_DEBOUNCE_PRESS_MS(index) <= DEBOUNCE_COUNTER_MAX,                            \
+#define KSCAN_MATRIX_INIT(n)                                                                       \
+    BUILD_ASSERT(INST_DEBOUNCE_PRESS_MS(n) <= DEBOUNCE_COUNTER_MAX,                                \
                  "ZMK_KSCAN_DEBOUNCE_PRESS_MS or debounce-press-ms is too large");                 \
-    BUILD_ASSERT(INST_DEBOUNCE_RELEASE_MS(index) <= DEBOUNCE_COUNTER_MAX,                          \
+    BUILD_ASSERT(INST_DEBOUNCE_RELEASE_MS(n) <= DEBOUNCE_COUNTER_MAX,                              \
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
-    static const struct gpio_dt_spec kscan_matrix_rows_##index[] = {                               \
-        UTIL_LISTIFY(INST_ROWS_LEN(index), KSCAN_GPIO_ROW_CFG_INIT, index)};                       \
+    static const struct gpio_dt_spec kscan_matrix_rows_##n[] = {                                   \
+        UTIL_LISTIFY(INST_ROWS_LEN(n), KSCAN_GPIO_ROW_CFG_INIT, n)};                               \
                                                                                                    \
-    static const struct gpio_dt_spec kscan_matrix_cols_##index[] = {                               \
-        UTIL_LISTIFY(INST_COLS_LEN(index), KSCAN_GPIO_COL_CFG_INIT, index)};                       \
+    static const struct gpio_dt_spec kscan_matrix_cols_##n[] = {                                   \
+        UTIL_LISTIFY(INST_COLS_LEN(n), KSCAN_GPIO_COL_CFG_INIT, n)};                               \
                                                                                                    \
-    static struct debounce_state kscan_matrix_state_##index[INST_MATRIX_LEN(index)];               \
+    static struct debounce_state kscan_matrix_state_##n[INST_MATRIX_LEN(n)];                       \
                                                                                                    \
-    COND_INTERRUPTS((static struct kscan_matrix_irq_callback                                       \
-                         kscan_matrix_irqs_##index[INST_INPUTS_LEN(index)];))                      \
+    COND_INTERRUPTS(                                                                               \
+        (static struct kscan_matrix_irq_callback kscan_matrix_irqs_##n[INST_INPUTS_LEN(n)];))      \
                                                                                                    \
-    static struct kscan_matrix_data kscan_matrix_data_##index = {                                  \
-        .matrix_state = kscan_matrix_state_##index,                                                \
-        COND_INTERRUPTS((.irqs = kscan_matrix_irqs_##index, ))};                                   \
+    static struct kscan_matrix_data kscan_matrix_data_##n = {                                      \
+        .matrix_state = kscan_matrix_state_##n,                                                    \
+        COND_INTERRUPTS((.irqs = kscan_matrix_irqs_##n, ))};                                       \
                                                                                                    \
-    static struct kscan_matrix_config kscan_matrix_config_##index = {                              \
-        .rows = KSCAN_GPIO_LIST(kscan_matrix_rows_##index),                                        \
-        .cols = KSCAN_GPIO_LIST(kscan_matrix_cols_##index),                                        \
-        .inputs = KSCAN_GPIO_LIST(                                                                 \
-            COND_DIODE_DIR(index, (kscan_matrix_cols_##index), (kscan_matrix_rows_##index))),      \
-        .outputs = KSCAN_GPIO_LIST(                                                                \
-            COND_DIODE_DIR(index, (kscan_matrix_rows_##index), (kscan_matrix_cols_##index))),      \
+    static struct kscan_matrix_config kscan_matrix_config_##n = {                                  \
+        .rows = KSCAN_GPIO_LIST(kscan_matrix_rows_##n),                                            \
+        .cols = KSCAN_GPIO_LIST(kscan_matrix_cols_##n),                                            \
+        .inputs =                                                                                  \
+            KSCAN_GPIO_LIST(COND_DIODE_DIR(n, (kscan_matrix_cols_##n), (kscan_matrix_rows_##n))),  \
+        .outputs =                                                                                 \
+            KSCAN_GPIO_LIST(COND_DIODE_DIR(n, (kscan_matrix_rows_##n), (kscan_matrix_cols_##n))),  \
         .debounce_config =                                                                         \
             {                                                                                      \
-                .debounce_press_ms = INST_DEBOUNCE_PRESS_MS(index),                                \
-                .debounce_release_ms = INST_DEBOUNCE_RELEASE_MS(index),                            \
+                .debounce_press_ms = INST_DEBOUNCE_PRESS_MS(n),                                    \
+                .debounce_release_ms = INST_DEBOUNCE_RELEASE_MS(n),                                \
             },                                                                                     \
-        .debounce_scan_period_ms = DT_INST_PROP(index, debounce_scan_period_ms),                   \
-        .poll_period_ms = DT_INST_PROP(index, poll_period_ms),                                     \
-        .diode_direction = INST_DIODE_DIR(index),                                                  \
+        .debounce_scan_period_ms = DT_INST_PROP(n, debounce_scan_period_ms),                       \
+        .poll_period_ms = DT_INST_PROP(n, poll_period_ms),                                         \
+        .diode_direction = INST_DIODE_DIR(n),                                                      \
     };                                                                                             \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(index, &kscan_matrix_init, NULL, &kscan_matrix_data_##index,             \
-                          &kscan_matrix_config_##index, APPLICATION,                               \
-                          CONFIG_APPLICATION_INIT_PRIORITY, &kscan_matrix_api);
+    DEVICE_DT_INST_DEFINE(n, &kscan_matrix_init, NULL, &kscan_matrix_data_##n,                     \
+                          &kscan_matrix_config_##n, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY, \
+                          &kscan_matrix_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSCAN_MATRIX_INIT);
