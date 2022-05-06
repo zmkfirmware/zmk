@@ -176,10 +176,10 @@ static int ext_power_generic_init(const struct device *dev) {
 #ifdef CONFIG_PM_DEVICE
 static int ext_power_generic_pm_action(const struct device *dev, enum pm_device_action action) {
     switch (action) {
-    case PM_DEVICE_ACTION_TURN_ON:
+    case PM_DEVICE_ACTION_RESUME:
         ext_power_generic_enable(dev);
         return 0;
-    case PM_DEVICE_ACTION_TURN_OFF:
+    case PM_DEVICE_ACTION_SUSPEND:
         ext_power_generic_disable(dev);
         return 0;
     default:
