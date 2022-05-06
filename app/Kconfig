@@ -202,6 +202,40 @@ config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE
 	int "Max number of behavior run events to queue to send to the peripheral(s)"
 	default 5
 
+config ZMK_BLE_PERIPHERAL_INT
+	int "Peripheral connection interval in 1.25ms units"
+	default 6
+
+config ZMK_BLE_PERIPHERAL_LATENCY
+	int "Peripheral latency in Connection Intervals"
+	default 30
+
+config ZMK_BLE_PERIPHERAL_TIMEOUT
+	int "Peripheral supervision timeout in 10ms units"
+	default 400
+
+config ZMK_BLE_PERIPHERAL_IDLE
+	bool "Set slower split peripheral BLE params on idle to save power"
+	depends on ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+if ZMK_BLE_PERIPHERAL_IDLE
+
+config ZMK_BLE_PERIPHERAL_IDLE_INT
+	int "Peripheral idle connection interval in 1.25ms units"
+	default 18
+
+config ZMK_BLE_PERIPHERAL_IDLE_LATENCY
+	int "Peripheral idle latency in Connection Intervals"
+	default 10
+
+config ZMK_BLE_PERIPHERAL_IDLE_TIMEOUT
+	int "Peripheral idle supervision timeout in 10ms units"
+	default 400
+
+# ZMK_BLE_PERIPHERAL_IDLE
+endif
+
 endif
 
 if !ZMK_SPLIT_BLE_ROLE_CENTRAL
