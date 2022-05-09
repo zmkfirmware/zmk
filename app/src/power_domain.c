@@ -400,9 +400,11 @@ static int zmk_power_domain_manager_post_boot_init(const struct device *dev) {
     return 0;
 }
 
-// The lowest priority. Ensures this function is runs after all other devices
-// have been initialized
-#define ZMK_POWER_DOMAIN_MANAGER_POST_BOOT_INIT_PRIORITY 99
+// Run this post_boot_init function at the second lowest priority.
+// This ensures this function is run after all other devices have been
+// initialized, except for the dev_pm_policy devices, which must be run after
+// this.
+#define ZMK_POWER_DOMAIN_MANAGER_POST_BOOT_INIT_PRIORITY 98
 SYS_INIT(zmk_power_domain_manager_post_boot_init, APPLICATION, ZMK_POWER_DOMAIN_MANAGER_POST_BOOT_INIT_PRIORITY);
 
 

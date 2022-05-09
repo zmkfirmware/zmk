@@ -1,0 +1,32 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Device Power Management Policy
+
+compatible: "zmk,dev-pm-policy"
+
+properties:
+  label:
+    type: string
+    required: true
+
+  device:
+    type: phandle
+    required: true
+    description: |
+
+      The device or power domain on which the power management policy should be run on.
+
+  auto-off-on-idle:
+    type: boolean
+    required: false
+    description: |
+
+      Automatically turn off a device or power domain when the keyboard is idle.
+
+  usb-auto-toggle:
+    type: boolean
+    required: false
+    description: |
+
+      Automatically turn off a device or power domain when usb is disconnected and turn on when usb is connected.
