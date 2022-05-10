@@ -103,7 +103,7 @@ Finally you need to add backlight to the `chosen` element of the root devicetree
     chosen {
         zmk,backlight = &backlight;
     };
-}:
+};
 ```
 
 </TabItem>

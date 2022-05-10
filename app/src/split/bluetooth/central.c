@@ -403,12 +403,6 @@ static bool split_central_eir_found(struct bt_data *data, void *user_data) {
                             BT_HCI_OP_LE_CREATE_CONN);
                     start_scan();
                 }
-
-                err = bt_conn_le_phy_update(slot->conn, BT_CONN_LE_PHY_PARAM_2M);
-                if (err) {
-                    LOG_ERR("Update phy conn failed (err %d)", err);
-                    start_scan();
-                }
             }
 
             return false;

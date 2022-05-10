@@ -88,6 +88,9 @@ if ZMK_USB
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
 
+config USB_HID_POLL_INTERVAL_MS
+	default 1
+
 #ZMK_USB
 endif
 
@@ -142,6 +145,18 @@ config ZMK_BLE_PASSKEY_ENTRY
 	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
 	default n
 
+config BT_PERIPHERAL_PREF_MIN_INT
+	default 6
+
+config BT_PERIPHERAL_PREF_MAX_INT
+	default 12
+
+config BT_PERIPHERAL_PREF_LATENCY
+	default 30
+
+config BT_PERIPHERAL_PREF_TIMEOUT
+	default 400
+
 #ZMK_BLE
 endif
 
@@ -163,6 +178,7 @@ menuconfig ZMK_SPLIT_BLE
 	depends on ZMK_BLE
 	default y
 	select BT_USER_PHY_UPDATE
+	select BT_AUTO_PHY_UPDATE
 
 if ZMK_SPLIT_BLE
 
@@ -192,7 +208,7 @@ if !ZMK_SPLIT_BLE_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE
 	int "BLE split peripheral notify thread stack size"
-	default 512
+	default 650
 
 config ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY
 	int "BLE split peripheral notify thread priority"
@@ -211,8 +227,8 @@ config BT_MAX_PAIRED
 config BT_MAX_CONN
 	default 1
 
-config BT_GAP_AUTO_UPDATE_CONN_PARAMS
-	default n
+config BT_PERIPHERAL_PREF_MAX_INT
+	default 6
 
 #!ZMK_SPLIT_BLE_ROLE_CENTRAL
 endif
@@ -447,12 +463,6 @@ menu "KSCAN Settings"
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
 	int "Size of the event queue for KSCAN events to buffer events"
 	default 4
-
-config ZMK_KSCAN_MOCK_DRIVER
-	bool "Enable mock kscan driver to simulate key presses"
-
-config ZMK_KSCAN_COMPOSITE_DRIVER
-	bool "Enable composite kscan driver to combine kscan devices"
 
 #KSCAN Settings
 endmenu
