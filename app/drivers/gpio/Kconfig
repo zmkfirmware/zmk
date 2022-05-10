@@ -1,1 +1,1 @@
-rsource "Kconfig.mcp23017"
+rsource "mcp23017/Kconfig"
