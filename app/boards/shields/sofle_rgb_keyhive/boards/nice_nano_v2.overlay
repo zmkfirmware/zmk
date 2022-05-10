@@ -1,10 +1,10 @@
-#include <dt-bindings/led/led.h>
-
 /*
  * Copyright (c) 2022 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
+ 
+#include <dt-bindings/led/led.h>
 
 &spi1 {
   compatible = "nordic,nrf-spim";
