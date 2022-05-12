@@ -37,9 +37,10 @@ jobs:
       - name: Install yaml2json
         run: python3 -m pip install remarshal
 
-      - id: set-matrix
-        name: Fetch Build Matrix
+      - name: Fetch Build Matrix
+        id: set-matrix
         run: |
+          set -x
           matrix=$(yaml2json ${{ inputs.build_matrix_path }} | jq -c .)
           yaml2json ${{ inputs.build_matrix_path }}
           echo "::set-output name=matrix::${matrix}"
@@ -57,7 +58,9 @@ jobs:
       - name: Prepare variables
         id: variables
         run: |
-          if [ -n "${{ matrix.shield }}" ]; then
+          set -x
+          if [ -n "${{ matrix.shield }}" ]
+          then
             EXTRA_CMAKE_ARGS="-DSHIELD=${{ matrix.shield }}"
             ARTIFACT_NAME="${{ matrix.shield }}-${{ matrix.board }}-zmk"
             DISPLAY_NAME="${{ matrix.shield }} - ${{ matrix.board }}"
@@ -103,13 +106,15 @@ jobs:
 
       - name: West Build (${{ steps.variables.outputs.display-name }})
         run: |
+          set -x
           west build -s zmk/app -b ${{ matrix.board }} -- -DZMK_CONFIG=${GITHUB_WORKSPACE}/${{ inputs.config_path }} ${{ steps.variables.outputs.extra-cmake-args }} ${{ matrix.cmake-args }}
 
       - name: ${{ steps.variables.outputs.display-name }} Kconfig file
-        run: cat build/zephyr/.config | grep -v "^#" | grep -v "^$" | sort
+        run: grep -v -e "^#" -e "^$" build/zephyr/.config | sort
 
       - name: Rename artifacts
         run: |
+          set -x
           mkdir build/artifacts
           if [ -f build/zephyr/zmk.uf2 ]
           then
