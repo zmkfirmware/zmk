@@ -1,0 +1,93 @@
+/*
+ * Copyright (c) 2022 Kyle McCreery
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/ext_power.h>
+
+#define BASE 0
+#define FN1  1
+#define FN2  2
+#define FN3  3
+
+/ {
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+//    --------------------------------------------          ---------------------------------------------
+//    |  ESC |  1  |  2  |  3  |  4  |  5  |  6  |          |  -  |  7  |  8  |  9  |  0  | NONE | BKSP |
+//   |  TAB   |  Q  |  W  |  E  |  R  |  T  |  Y  |             |  Y  |  U  |  I  |  O  |   P   |    \    |
+//  |   FN1   |  A  |  S  |  D  |  F  |  G  |  H  |           |  ;  |  H  |  J  |  K  |  L  |  '  |   ENT   |
+// | SHFT |NONE|  Z  |  X  |  C  |  V  |  B  | MUTE |    | MUTE |  B  |  N  |  M   |  , |  .  |  UP  |  SHFT |
+// | CTRL | GUI | ALT |  FN2  |  SP1  |  SP2  | FN3 |    | FN3 |  SP2  |  SP1  |  FN2  |  LFT  | DWN | RGHT |
+// --------------------------------------------------    ----------------------------------------------------
+                        bindings = <
+   &kp ESC   &kp N1   &kp N2   &kp N3  &kp N4        &kp N5        &kp N6           &kp MINUS  &kp N7 &kp N8 &kp N9   &kp N0     &none   &kp BSPC
+   &kp TAB   &kp Q    &kp W    &kp E   &kp R         &kp T         &kp Y            &kp Y      &kp U  &kp I  &kp O    &kp P      &kp BSLH
+   &mo FN1   &kp A    &kp S    &kp D   &kp F         &kp G         &kp H            &kp SEMI   &kp H  &kp J  &kp K    &kp L      &kp SQT    &kp RET
+   &kp LSHFT &none    &kp Z    &kp X   &kp C   &kp V &kp B         &kp C_MUTE       &kp C_MUTE &kp B  &kp N  &kp M    &kp COMMA  &kp DOT    &kp UP   &kp RSHFT 
+   &kp LCTRL &kp LGUI &kp LALT &mo FN2 &lt FN1 SPACE &lt FN2 SPACE &mo FN3          &mo FN3    &lt FN2 SPACE &lt FN1 SPACE &mo FN2 &kp LEFT &kp DOWN &kp RIGHT
+                        >;
+                sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+                };
+
+                fn1_layer {
+//    --------------------------------------------          --------------------------------------
+//    |      | F1  | F2  | F3  | F4  | F5  | F6  |          |  =  | F7  | F8  | F9  | F10 | NONE | DEL |
+//   |        |     |     |     |     |     |     |             |     |     |     | LBKT | RBKT |        |
+//  |         |     |     |     |     |     |     |           |     |     |     |     |     |  ;  |        |
+// |      |NONE|     |     |     |     |     |      |    |      |     |     |      |    |   /  | PGUP|CAPS WORD|
+// |      |     |     |       |       |       |     |    |     |       |       |       |  HOME |PGDWN|  END |
+// --------------------------------------------------    ----------------------------------------------------
+                        bindings = <
+   &trans &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6         &kp EQUAL &kp F7 &kp F8 &kp F9 &kp F10  &none     &kp DEL
+   &trans &trans &trans &trans &trans &trans &trans                   &trans &trans &trans &kp LBKT &kp RBKT  &trans
+   &trans &trans &trans &trans &trans &trans &trans            &trans &trans &trans &trans &trans   &kp SEMI  &trans
+   &trans &none  &trans &trans &trans &trans &trans     &trans &trans &trans &trans &trans &kp FSLH &kp PG_UP &caps_word 
+   &trans &trans &trans &trans &trans &trans &trans            &trans &trans &trans &trans &kp HOME &kp PG_DN &kp END
+                        >;
+                };
+    
+                fn2_layer {
+//    --------------------------------------------          --------------------------------------
+//    |      | F11 | F12 |     |     |     |     |          |     |     |     |     |      | NONE |     |
+//   |        |     |     |     |     |     |     |             |     |     |     |      |      |         |
+//  |         |     |     |     |     |     |     |           |     |     |     |     |     |  ;  |        |
+// |      |NONE|     |     |     |     |     |      |    |      |     |     |      |    |      |     |      |
+// |      |     |     |       |       |       |     |    |     |       |       |       |       |     |      |
+// --------------------------------------------------    ----------------------------------------------------
+                        bindings = <
+   &trans &kp F11 &kp F12 &trans &trans &trans &trans            &trans &trans &trans &trans &trans &none  &trans
+   &trans &trans  &trans  &trans &trans &trans &trans                   &trans &trans &trans &trans &trans &trans
+   &trans &trans  &trans  &trans &trans &trans &trans            &trans &trans &trans &trans &trans &trans &trans
+   &trans &none   &trans  &trans &trans &trans &trans     &trans &trans &trans &trans &trans &trans &trans &trans 
+   &trans &trans  &trans  &trans &trans &trans &trans            &trans &trans &trans &trans &trans &trans &trans
+                        >;
+                };
+
+                fn3_layer {
+//    --------------------------------------------          --------------------------------------
+//    |BT CLR| BT1 | BT2 | BT3 | BT4 | BT5 |      |          |     |     |     |     |     | NONE |     |
+//   |        |BT PRV|BT NXT|     |RESET|     |     |             |     |     |RESET|     |     |         |
+//  |         |      |      |     |     |     |     |           |     |     |     |     |     |     |        |
+// |      |NONE|      |      |     |    | BOOT |RGB_TOG|   |EP_TOG| BOOT |     |      |     |      |     |      |
+// |      |     |      |        |       |      |RGB_EFR|   |RGB_EFF|       |       |       |       |     |      |
+// --------------------------------------------------    --------------------------------------------------------
+                        bindings = <                                                                   
+   &bt BT_CLR &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &bt BT_SEL 5 &trans                                &trans      &trans          &trans &trans &trans &none  &trans
+   &trans     &bt BT_PRV   &bt BT_NXT   &trans       &reset       &trans       &trans                                            &trans          &trans &reset &trans &trans &trans
+   &trans     &trans       &trans       &trans       &trans       &trans       &trans                                &trans      &trans          &trans &trans &trans &trans &trans
+   &trans     &none        &trans       &trans       &trans       &bootloader  &rgb_ug RGB_TOG    &ext_power EP_TOG &bootloader &trans          &trans &trans &trans &trans &trans 
+   &trans     &trans       &trans       &trans       &trans       &trans       &rgb_ug RGB_EFF                       &trans      &rgb_ug RGB_EFR &trans &trans &trans &trans &trans
+                        >;
+                };
+        };
+        
+        sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+};
