@@ -13,11 +13,11 @@ Simply put, the hold-tap key will output the 'hold' behavior if it's held for a 
 
 The graph below shows how the hold-tap decides between a 'tap' and a 'hold'.
 
-![Simple behavior](../assets/hold-tap/case1_2.png)
+![Simple behavior](../assets/hold-tap/case1_2.svg)
 
 By default, the hold-tap is configured to also select the 'hold' functionality if another key is tapped while it's active:
 
-![Hold preferred behavior](../assets/hold-tap/case1_2.png)
+![Hold preferred behavior](../assets/hold-tap/case_hold_preferred.svg)
 
 We call this the 'hold-preferred' flavor of hold-taps. While this flavor may work very well for a ctrl/escape key, it's not very well suited for home-row mods or layer-taps. That's why there are two more flavors to choose from: 'tap-preferred' and 'balanced'.
 
@@ -30,7 +30,7 @@ We call this the 'hold-preferred' flavor of hold-taps. While this flavor may wor
 
 When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
 
-![Hold-tap comparison](../assets/hold-tap/comparison.png)
+![Hold-tap comparison](../assets/hold-tap/comparison.svg)
 
 ### Basic usage
 
