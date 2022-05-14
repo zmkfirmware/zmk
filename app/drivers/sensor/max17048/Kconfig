@@ -1,0 +1,9 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config MAX17048
+	bool "MAX17048 Fuel Gauge"
+	depends on I2C
+	help
+	  Enable I2C-based driver for MAX17048/9 Fuel Gauge. Supports measuring
+	  battery voltage and state-of-charge.
