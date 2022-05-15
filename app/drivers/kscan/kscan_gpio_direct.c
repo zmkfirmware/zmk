@@ -76,6 +76,7 @@ struct kscan_direct_config {
     struct debounce_config debounce_config;
     int32_t debounce_scan_period_ms;
     int32_t poll_period_ms;
+    bool toggle_mode;
 };
 
 #if USE_INTERRUPTS
@@ -123,6 +124,40 @@ static void kscan_direct_irq_callback_handler(const struct device *port, struct 
     k_work_reschedule(&data->work, K_NO_WAIT);
 }
 #endif
+
+static gpio_flags_t kscan_gpio_get_flags(const struct gpio_dt_spec *gpio, bool active) {
+    if (((BIT(0) & gpio->dt_flags) == BIT(0))) { // Devicetree configured input ACTIVE_LOW
+        if (!active) {
+            return GPIO_ACTIVE_LOW | GPIO_PULL_UP;
+        }
+        return GPIO_ACTIVE_LOW;
+    } else { // Devicetree configured input ACTIVE_HIGH
+        if (!active) {
+            return GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN;
+        }
+        return GPIO_ACTIVE_HIGH;
+    }
+    LOG_ERR("Could not determine proper flags to set for pin %d", gpio->pin);
+    return 0;
+}
+
+static int kscan_inputs_set_flags(const struct kscan_gpio_list *inputs,
+                                  const struct gpio_dt_spec *active_gpio) {
+    gpio_flags_t updated_flags;
+    for (int i = 0; i < inputs->len; i++) {
+        updated_flags =
+            GPIO_INPUT | kscan_gpio_get_flags(&inputs->gpios[i], &inputs->gpios[i] == active_gpio);
+        LOG_DBG("Updated flags equal to: %d", updated_flags);
+
+        int err = gpio_pin_configure(inputs->gpios[i].port, inputs->gpios[i].pin, updated_flags);
+        if (err) {
+            LOG_ERR("Unable to configure flags on pin %d on %s", inputs->gpios[i].pin,
+                    inputs->gpios[i].port->name);
+            return err;
+        }
+    }
+    return 0;
+}
 
 static void kscan_direct_read_continue(const struct device *dev) {
     const struct kscan_direct_config *config = dev->config;
@@ -173,6 +208,9 @@ static int kscan_direct_read(const struct device *dev) {
 
             LOG_DBG("Sending event at 0,%i state %s", i, pressed ? "on" : "off");
             data->callback(dev, 0, i, pressed);
+            if (config->toggle_mode && pressed) {
+                kscan_inputs_set_flags(&config->inputs, &config->inputs.gpios[i]);
+            }
         }
 
         continue_scan = continue_scan || debounce_is_active(state);
@@ -317,6 +355,7 @@ static const struct kscan_driver_api kscan_direct_api = {
             },                                                                                     \
         .debounce_scan_period_ms = DT_INST_PROP(n, debounce_scan_period_ms),                       \
         .poll_period_ms = DT_INST_PROP(n, poll_period_ms),                                         \
+        .toggle_mode = DT_INST_PROP(n, toggle_mode),                                               \
     };                                                                                             \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(n, &kscan_direct_init, NULL, &kscan_direct_data_##n,                     \

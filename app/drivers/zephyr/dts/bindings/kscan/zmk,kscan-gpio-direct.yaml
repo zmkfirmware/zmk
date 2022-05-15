@@ -32,3 +32,6 @@ properties:
     type: int
     default: 10
     description: Time between reads in milliseconds when no key is pressed and ZMK_KSCAN_DIRECT_POLLING is enabled.
+  toggle-mode:
+    type: boolean
+    description: Enable toggle-switch mode.
