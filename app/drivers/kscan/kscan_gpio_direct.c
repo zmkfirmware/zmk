@@ -126,19 +126,11 @@ static void kscan_direct_irq_callback_handler(const struct device *port, struct 
 #endif
 
 static gpio_flags_t kscan_gpio_get_flags(const struct gpio_dt_spec *gpio, bool active) {
-    if (((BIT(0) & gpio->dt_flags) == BIT(0))) { // Devicetree configured input ACTIVE_LOW
-        if (!active) {
-            return GPIO_ACTIVE_LOW | GPIO_PULL_UP;
-        }
-        return GPIO_ACTIVE_LOW;
-    } else { // Devicetree configured input ACTIVE_HIGH
-        if (!active) {
-            return GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN;
-        }
-        return GPIO_ACTIVE_HIGH;
+    gpio_flags_t flags = BIT_MASK(0) & gpio->dt_flags;
+    if (active) {
+      flags |= flags ? GPIO_PULL_DOWN : GPIO_PULL_UP;
     }
-    LOG_ERR("Could not determine proper flags to set for pin %d", gpio->pin);
-    return 0;
+    return flags;
 }
 
 static int kscan_inputs_set_flags(const struct kscan_gpio_list *inputs,
