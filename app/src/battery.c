@@ -104,7 +104,7 @@ static int zmk_battery_init(const struct device *_arg) {
         return rc;
     }
 
-    k_timer_start(&battery_timer, K_MINUTES(1), K_MINUTES(1));
+    k_timer_start(&battery_timer, K_MINUTES(1), K_SECONDS(CONFIG_ZMK_BATTERY_REPORT_INTERVAL));
 
     return 0;
 }

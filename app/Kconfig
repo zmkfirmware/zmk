@@ -518,6 +518,11 @@ config ZMK_SETTINGS_SAVE_DEBOUNCE
 #SETTINGS
 endif
 
+config ZMK_BATTERY_REPORT_INTERVAL
+	depends on ZMK_BLE
+	int "Battery level report interval in seconds"
+	default 60
+
 #Advanced
 endmenu
 
