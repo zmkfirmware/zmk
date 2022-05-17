@@ -355,7 +355,7 @@ For behaviors that do not require central locality, the following options for up
 
 For the purpose of this section, we will discuss the structure of `app/dts/behaviors/gresc.dtsi` below.
 
-```
+```dtsi title="app/dts/behaviors/gresc.dtsi"
 /*
  * Copyright (c) 2020 The ZMK Contributors
  *
@@ -379,12 +379,39 @@ For the purpose of this section, we will discuss the structure of `app/dts/behav
 
 The format of a behavior's `.dtsi` file is identical to declaring an instance of the behavior in a user's keymap. The only major difference is that the value `/omit-if-no-ref/` should be placed adjacent to the name of the behavior, as seen in line 11 of the `gresc` example.
 
+After creating the `.dtsi` from above, update `app/dts/behaviors.dtsi` to include your newly predefined behavior instance, making it accessible by the devicetree.
+
+```dtsi title="app/dts/behaviors.dtsi"
+#include <behaviors/key_press.dtsi>
+#include <behaviors/transparent.dtsi>
+#include <behaviors/none.dtsi>
+#include <behaviors/mod_tap.dtsi>
+#include <behaviors/layer_tap.dtsi>
+#include <behaviors/gresc.dtsi>
+#include <behaviors/sticky_key.dtsi>
+#include <behaviors/momentary_layer.dtsi>
+#include <behaviors/toggle_layer.dtsi>
+#include <behaviors/to_layer.dtsi>
+#include <behaviors/reset.dtsi>
+#include <behaviors/sensor_rotate_key_press.dtsi>
+#include <behaviors/rgb_underglow.dtsi>
+#include <behaviors/bluetooth.dtsi>
+#include <behaviors/ext_power.dtsi>
+#include <behaviors/outputs.dtsi>
+#include <behaviors/caps_word.dtsi>
+#include <behaviors/key_repeat.dtsi>
+#include <behaviors/backlight.dtsi>
+#include <behaviors/macros.dtsi>
+// highlight-next-line
+#include <behaviors/new_behavior_instance.dtsi>
+```
+
 ## Testing changes locally
 
 Create a new folder in `app/tests/` to develop virtual test sets for all common use cases of the behavior. Behaviors should be tested thoroughly on both virtual testing environments using `west test` and real hardware.
 
 :::note
-Zephyr currently does not support logging over Bluetooth, so any use of the serial monitor for hardware testing must be done over USB.
+Zephyr currently does not support logging over Bluetooth, so any use of the serial monitor for hardware testing must be done over hardware UART or USB virtual UART.
 :::
 
 :::info
