@@ -125,7 +125,7 @@ static void kscan_direct_irq_callback_handler(const struct device *port, struct 
 }
 #endif
 
-static gpio_flags_t kscan_gpio_get_flags(const struct gpio_dt_spec *gpio, bool active) {
+static gpio_flags_t kscan_gpio_get_extra_flags(const struct gpio_dt_spec *gpio, bool active) {
     gpio_flags_t flags = BIT(0) & gpio->dt_flags;
     if (!active) {
         flags |= flags ? GPIO_PULL_UP : GPIO_PULL_DOWN;
@@ -135,13 +135,13 @@ static gpio_flags_t kscan_gpio_get_flags(const struct gpio_dt_spec *gpio, bool a
 
 static int kscan_inputs_set_flags(const struct kscan_gpio_list *inputs,
                                   const struct gpio_dt_spec *active_gpio) {
-    gpio_flags_t updated_flags;
+    gpio_flags_t extra_flags;
     for (int i = 0; i < inputs->len; i++) {
-        updated_flags =
-            GPIO_INPUT | kscan_gpio_get_flags(&inputs->gpios[i], &inputs->gpios[i] == active_gpio);
-        LOG_DBG("Updated flags equal to: %d", updated_flags);
+        extra_flags = GPIO_INPUT | kscan_gpio_get_extra_flags(&inputs->gpios[i],
+                                                              &inputs->gpios[i] == active_gpio);
+        LOG_DBG("Extra flags equal to: %d", extra_flags);
 
-        int err = gpio_pin_configure(inputs->gpios[i].port, inputs->gpios[i].pin, updated_flags);
+        int err = gpio_pin_configure_dt(&inputs->gpios[i], extra_flags);
         if (err) {
             LOG_ERR("Unable to configure flags on pin %d on %s", inputs->gpios[i].pin,
                     inputs->gpios[i].port->name);
@@ -265,7 +265,7 @@ static int kscan_direct_init_input_inst(const struct device *dev, const struct g
         return -ENODEV;
     }
     int err = gpio_pin_configure_dt(
-        gpio, GPIO_INPUT | (toggle_mode ? kscan_gpio_get_flags(gpio, false) : 0));
+        gpio, GPIO_INPUT | (toggle_mode ? kscan_gpio_get_extra_flags(gpio, false) : 0));
     if (err) {
         LOG_ERR("Unable to configure pin %u on %s for input", gpio->pin, gpio->port->name);
         return err;
