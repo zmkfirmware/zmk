@@ -269,9 +269,11 @@ An example of this can be seen below, taking the `#define KP_INST(n)` from the h
     DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, NULL, &behavior_hold_tap_config_##n,    \
                           APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
                           &behavior_hold_tap_driver_api);
+
+DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 ```
 
-Note that in the hold-tap example, the instance number, `0`, has been replaced by `n`, signifying the uniqueness of each instance of a behavior.
+Note that in the hold-tap example, the instance number, `0`, has been replaced by `n`, signifying the uniqueness of each instance of a behavior. Furthermore, the line `DT_INST_FOREACH_STATUS_OKAY(KP_INST)` has been added as a form of error-checking for each defined instance.
 
 Behaviors also require the following parameters of `DEVICE_DT_INST_DEFINE` to be changed:
 
