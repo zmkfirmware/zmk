@@ -11,6 +11,8 @@ shield:
 include:
 - board: bdn9_rev2
 - board: nice60
+- board: seeeduino_xiao_ble
+  shield: hummingbird
 - board: nrf52840_m2
   shield: m60
 - board: planck_rev6
