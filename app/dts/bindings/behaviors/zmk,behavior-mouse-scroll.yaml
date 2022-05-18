@@ -1,0 +1,13 @@
+description: Mouse scroll
+
+compatible: "zmk,behavior-mouse-scroll"
+
+include: one_param.yaml
+
+properties:
+  delay-ms:
+    type: int
+  time-to-max-speed-ms:
+    type: int
+  acceleration-exponent:
+    type: int
