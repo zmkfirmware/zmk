@@ -266,7 +266,6 @@ static int kscan_direct_init_input_inst(const struct device *dev, const struct g
     }
     int err = gpio_pin_configure_dt(
         gpio, GPIO_INPUT | (toggle_mode ? kscan_gpio_get_flags(gpio, false) : 0));
-    LOG_DBG("Extra flags: %d", GPIO_INPUT | (toggle_mode ? kscan_gpio_get_flags(gpio, false) : 0));
     if (err) {
         LOG_ERR("Unable to configure pin %u on %s for input", gpio->pin, gpio->port->name);
         return err;
