@@ -16,6 +16,8 @@ int zmk_rgb_underglow_toggle();
 int zmk_rgb_underglow_get_state(bool *state);
 int zmk_rgb_underglow_on();
 int zmk_rgb_underglow_off();
+int zmk_rgb_underglow_resume();
+int zmk_rgb_underglow_pause();
 int zmk_rgb_underglow_cycle_effect(int direction);
 int zmk_rgb_underglow_calc_effect(int direction);
 int zmk_rgb_underglow_select_effect(int effect);
@@ -27,3 +29,5 @@ int zmk_rgb_underglow_change_sat(int direction);
 int zmk_rgb_underglow_change_brt(int direction);
 int zmk_rgb_underglow_change_spd(int direction);
 int zmk_rgb_underglow_set_hsb(struct zmk_led_hsb color);
+
+int zmk_rgb_underglow_init_power_domain_manager(const struct device *dev);

@@ -10,12 +10,19 @@
 / {
 	chosen {
 		zmk,battery = &vbatt;
+		zmk,default-power-domain = &pd_ext_power;
 	};
 
 	ext-power {
 		compatible = "zmk,ext-power-generic";
 		label = "EXT_POWER";
 		control-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
+	};
+
+	pd_ext_power: pd_ext_power {
+		compatible = "power-domain-gpio";
+		label = "PD_EXT_POWER";
+		enable-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
 	};
 
 	vbatt: vbatt {

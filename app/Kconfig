@@ -381,6 +381,10 @@ endmenu
 
 menu "Power Management"
 
+config ZMK_EXT_POWER
+	bool "Enable support to control external power output"
+	default y
+
 config ZMK_IDLE_TIMEOUT
 	int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
 	default 30000
@@ -389,21 +393,34 @@ config ZMK_SLEEP
 	bool "Enable deep sleep support"
 	imply USB
 
-if ZMK_SLEEP
+config POWER_DOMAIN
+	default y
+
+if ZMK_EXT_POWER
+
+config POWER_DOMAIN_GPIO
+	default y
+
+endif
 
 config PM_DEVICE
+	default y
+
+config PM_DEVICE_POWER_DOMAIN
+	default y
+
+config PM_DEVICE_POWER_DOMAIN_DYNAMIC
+	default y
+
+config PM_DEVICE_POWER_DOMAIN_DYNAMIC_NUM
+	default 10
+
+config PM_DEVICE_RUNTIME
 	default y
 
 config ZMK_IDLE_SLEEP_TIMEOUT
 	int "Milliseconds of inactivity before entering deep sleep"
 	default 900000
-
-#ZMK_SLEEP
-endif
-
-config ZMK_EXT_POWER
-	bool "Enable support to control external power output"
-	default y
 
 #Power Management
 endmenu

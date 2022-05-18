@@ -45,6 +45,7 @@
 
 &i2c0 {
 	compatible = "nordic,nrf-twi";
+	power-domain = <&pd_ext_power>;
 	sda-pin = <17>;
 	scl-pin = <20>;
 };

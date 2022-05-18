@@ -6,3 +6,11 @@ description: External power control Behavior
 compatible: "zmk,behavior-ext-power"
 
 include: one_param.yaml
+
+properties:
+  power-domain:
+    required: false
+    type: phandle
+    description: |
+
+      Power domain the behavior should execute the action on.
