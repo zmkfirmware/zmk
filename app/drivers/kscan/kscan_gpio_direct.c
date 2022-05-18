@@ -126,9 +126,9 @@ static void kscan_direct_irq_callback_handler(const struct device *port, struct 
 #endif
 
 static gpio_flags_t kscan_gpio_get_flags(const struct gpio_dt_spec *gpio, bool active) {
-    gpio_flags_t flags = BIT_MASK(0) & gpio->dt_flags;
-    if (active) {
-      flags |= flags ? GPIO_PULL_DOWN : GPIO_PULL_UP;
+    gpio_flags_t flags = BIT(0) & gpio->dt_flags;
+    if (!active) {
+        flags |= flags ? GPIO_PULL_UP : GPIO_PULL_DOWN;
     }
     return flags;
 }
@@ -259,13 +259,14 @@ static int kscan_direct_disable(const struct device *dev) {
 }
 
 static int kscan_direct_init_input_inst(const struct device *dev, const struct gpio_dt_spec *gpio,
-                                        const int index) {
+                                        const int index, bool toggle_mode) {
     if (!device_is_ready(gpio->port)) {
         LOG_ERR("GPIO is not ready: %s", gpio->port->name);
         return -ENODEV;
     }
-
-    int err = gpio_pin_configure_dt(gpio, GPIO_INPUT);
+    int err = gpio_pin_configure_dt(
+        gpio, GPIO_INPUT | (toggle_mode ? kscan_gpio_get_flags(gpio, false) : 0));
+    LOG_DBG("Extra flags: %d", GPIO_INPUT | (toggle_mode ? kscan_gpio_get_flags(gpio, false) : 0));
     if (err) {
         LOG_ERR("Unable to configure pin %u on %s for input", gpio->pin, gpio->port->name);
         return err;
@@ -294,7 +295,7 @@ static int kscan_direct_init_inputs(const struct device *dev) {
 
     for (int i = 0; i < config->inputs.len; i++) {
         const struct gpio_dt_spec *gpio = &config->inputs.gpios[i];
-        int err = kscan_direct_init_input_inst(dev, gpio, i);
+        int err = kscan_direct_init_input_inst(dev, gpio, i, config->toggle_mode);
         if (err) {
             return err;
         }
