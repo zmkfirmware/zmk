@@ -49,7 +49,7 @@ static const struct behavior_driver_api behavior_mouse_scroll_driver_api = {
         .time_to_max_speed_ms = DT_INST_PROP(n, time_to_max_speed_ms),                             \
         .acceleration_exponent = DT_INST_PROP(n, acceleration_exponent),                           \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_mouse_scroll_init, device_pm_control_nop, NULL,              \
+    DEVICE_DT_INST_DEFINE(n, behavior_mouse_scroll_init, NULL, NULL,              \
                           &behavior_mouse_scroll_config_##n, APPLICATION,                          \
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mouse_scroll_driver_api);
 

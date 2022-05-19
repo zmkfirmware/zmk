@@ -45,6 +45,8 @@ void mouse_clear_cb(struct k_timer *dummy) {
     k_work_submit_to_queue(zmk_mouse_work_q(), &mouse_clear);
 }
 
+//TODO: There is probably a better flag to use here
+#if(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
 static void mouse_tick_timer_handler(struct k_work *work) {
     zmk_hid_mouse_movement_set(0, 0);
     zmk_hid_mouse_scroll_set(0, 0);
@@ -158,3 +160,5 @@ ZMK_LISTENER(mouse_listener, mouse_listener);
 ZMK_SUBSCRIPTION(mouse_listener, zmk_mouse_button_state_changed);
 ZMK_SUBSCRIPTION(mouse_listener, zmk_mouse_move_state_changed);
 ZMK_SUBSCRIPTION(mouse_listener, zmk_mouse_scroll_state_changed);
+
+#endif /* CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL */

@@ -11,6 +11,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/events/mouse_tick.h>
 #include <zmk/endpoints.h>
+#include <zmk/hid.h>
 #include <zmk/mouse.h>
 
 #include <sys/util.h> // CLAMP
@@ -78,6 +79,7 @@ static struct vector2d update_movement(struct vector2d *remainder,
     return move;
 }
 
+#if(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
 static void mouse_tick_handler(const struct zmk_mouse_tick *tick) {
     struct vector2d move = update_movement(&move_remainder, &(tick->move_config), tick->max_move,
                                            tick->timestamp, tick->start_time);
@@ -88,13 +90,16 @@ static void mouse_tick_handler(const struct zmk_mouse_tick *tick) {
     zmk_hid_mouse_scroll_update((int8_t)CLAMP(scroll.x, INT8_MIN, INT8_MAX),
                                 (int8_t)CLAMP(scroll.y, INT8_MIN, INT8_MAX));
 }
+#endif
 
 int zmk_mouse_tick_listener(const zmk_event_t *eh) {
     const struct zmk_mouse_tick *tick = as_zmk_mouse_tick(eh);
+    #if(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
     if (tick) {
         mouse_tick_handler(tick);
         return 0;
     }
+    #endif
     return 0;
 }
 
