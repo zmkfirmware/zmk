@@ -126,11 +126,10 @@ static void kscan_direct_irq_callback_handler(const struct device *port, struct 
 #endif
 
 static gpio_flags_t kscan_gpio_get_extra_flags(const struct gpio_dt_spec *gpio, bool active) {
-    gpio_flags_t flags = BIT(0) & gpio->dt_flags;
     if (!active) {
-        flags |= flags ? GPIO_PULL_UP : GPIO_PULL_DOWN;
+        return ((BIT(0) & gpio->dt_flags) ? GPIO_PULL_UP : GPIO_PULL_DOWN);
     }
-    return flags;
+    return 0;
 }
 
 static int kscan_inputs_set_flags(const struct kscan_gpio_list *inputs,
