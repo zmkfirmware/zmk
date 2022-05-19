@@ -45,10 +45,10 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^2.0.0-beta.18",
     "@docusaurus/types": "^2.0.0-beta.18",
-    "@tsconfig/docusaurus": "^1.0.2",
+    "@tsconfig/docusaurus": "^1.0.5",
     "@types/js-yaml": "^4.0.5",
     "@types/react": "^17.0.3",
-    "@types/react-helmet": "^6.1.0",
+    "@types/react-helmet": "^6.1.5",
     "@types/react-router-dom": "^5.1.7",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
