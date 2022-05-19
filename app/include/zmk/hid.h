@@ -15,6 +15,8 @@
 #include <dt-bindings/zmk/hid_usage.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
 
+#define ZMK_HID_KEYBOARD_NKRO_MAX_USAGE HID_USAGE_KEY_KEYPAD_EQUAL
+   
 #define COLLECTION_REPORT 0x03
 
 static const uint8_t zmk_hid_report_desc[] = {
@@ -88,7 +90,6 @@ static const uint8_t zmk_hid_report_desc[] = {
     /* REPORT_COUNT (CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE) */
     HID_REPORT_COUNT(CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE),
     HID_INPUT(0x00),
-    0x00,
     /* END COLLECTION */
     HID_END_COLLECTION,
 
