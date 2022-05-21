@@ -281,7 +281,70 @@ Definition file: [zmk/app/dts/bindings/zmk,matrix-transform.yaml](https://github
 
 The `map` array should be defined using the `RC()` macro from [dt-bindings/zmk/matrix_transform.h](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/matrix_transform.h). It should have one item per logical position in the keymap. Each item should list the physical row and column that should trigger the key in that position.
 
-### Example Configuration
+### Example: Skipping Unused Positions
+
+Any keyboard which is not a grid of 1 unit keys will likely have some unused positions in the matrix. A matrix transform can be used to skip the unused positions so users don't have to set them to `&none` in keymaps.
+
+```devicetree
+// numpad.overlay
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &default_transform;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        rows = <5>;
+        columns = <4>;
+        // define the matrix...
+    };
+
+    default_transform: matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <5>;
+        columns = <4>;
+        // ┌───┬───┬───┬───┐
+        // │NUM│ / │ * │ - │
+        // ├───┼───┼───┼───┤
+        // │ 7 │ 8 │ 9 │ + │
+        // ├───┼───┼───┤   │
+        // │ 4 │ 5 │ 6 │   │
+        // ├───┼───┼───┼───┤
+        // │ 1 │ 2 │ 3 │RET│
+        // ├───┴───┼───┤   │
+        // │ 0     │ . │   │
+        // └───────┴───┴───┘
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3)
+            RC(2,0) RC(2,1) RC(2,2)
+            RC(3,0) RC(3,1) RC(3,2) RC(3,3)
+            RC(4,0)         RC(4,1)
+        >;
+    };
+};
+```
+
+```devicetree
+// numpad.keymap
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        default {
+            bindings = <
+                &kp KP_NUM &kp KP_DIV &kp KP_MULT &kp KP_MINUS
+                &kp KP_N7  &kp KP_N8  &kp KP_N9   &kp KP_PLUS
+                &kp KP_N4  &kp KP_N5  &kp KP_N6
+                &kp KP_N1  &kp KP_N2  &kp KP_N3   &kp KP_ENTER
+                &kp KP_N0             &kp KP_DOT
+            >;
+        };
+    }
+};
+```
+
+### Example: Non-standard Matrix
 
 Consider a keyboard with a [duplex matrix](https://wiki.ai03.com/books/pcb-design/page/matrices-and-duplex-matrix), where the matrix has twice as many rows and half as many columns as the keyboard has keys. A matrix transform can be used to correct for this so that keymaps can match the layout of the keys, not the layout of the matrix.
 
