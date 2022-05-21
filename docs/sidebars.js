@@ -55,6 +55,7 @@ module.exports = {
     Configuration: [
       "config/index",
       "config/backlight",
+      "config/battery",
       "config/behaviors",
       "config/combos",
       "config/displays",
@@ -62,8 +63,8 @@ module.exports = {
       "config/keymap",
       "config/kscan",
       "config/power",
-      "config/system",
       "config/underglow",
+      "config/system",
     ],
     Development: [
       "development/clean-room",

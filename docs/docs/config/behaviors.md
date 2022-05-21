@@ -158,9 +158,9 @@ See [dt-bindings/zmk/modifiers.h](https://github.com/zmkfirmware/zmk/blob/main/a
 
 You can use the following nodes to tweak the default behaviors:
 
-| Node     | Behavior     |
-| -------- | ------------ |
-| `&gresc` | Grave escape |
+| Node     | Behavior                                  |
+| -------- | ----------------------------------------- |
+| `&gresc` | [Grave escape](../behaviors/mod-morph.md) |
 
 ## Sticky Key
 

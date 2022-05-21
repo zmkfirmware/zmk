@@ -36,6 +36,10 @@ Values for `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`:
 | 2     | Spectrum    |
 | 3     | Swirl       |
 
+:::note
+The `*_START` settings only determine the initial underglow state. Any changes you make with the [underglow behavior](../behaviors/underglow.md) are saved to flash after a one minute delay and will be used after that.
+:::
+
 ## Devicetree
 
 ZMK does not have any Devicetree properties of its own. See the Devicetree bindings for [Zephyr's LED strip drivers](https://github.com/zephyrproject-rtos/zephyr/tree/main/dts/bindings/led_strip).

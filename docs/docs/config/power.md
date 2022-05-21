@@ -12,7 +12,7 @@ Configuration for entering low power modes when the keyboard is idle.
 
 In the idle state, peripherals such as displays and lighting are disabled, but the keyboard remains connected to Bluetooth so it can immediately respond when you press a key.
 
-In the deep sleep state, the keyboard additionally disconnects from Bluetooth. This state uses very little power, but it may take a few seconds to reconnect after waking.
+In the deep sleep state, the keyboard additionally disconnects from Bluetooth and any external power output is disabled. This state uses very little power, but it may take a few seconds to reconnect after waking.
 
 ### Kconfig
 
@@ -45,13 +45,3 @@ Applies to: `compatible = "zmk,ext-power-generic"`
 | `label`         | string     | Unique label for the node                                     |
 | `control-gpios` | GPIO array | List of GPIOs which should be active to enable external power |
 | `init-delay-ms` | int        | number of milliseconds to delay after initializing the driver |
-
-## Battery Voltage Divider
-
-Driver for reading the voltage of a battery using an ADC connected to a voltage divider.
-
-### Devicetree
-
-Applies to: `compatible = "zmk,battery-voltage-divider"`
-
-See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/latest/build/dts/api/bindings/adc/voltage-divider.html).
