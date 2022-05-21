@@ -273,7 +273,7 @@ An example of this can be seen below, taking the `#define KP_INST(n)` from the h
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 ```
 
-Note that in the hold-tap example, the instance number, 0, has been replaced by n, signifying the unique node-id of each instance of a behavior. Furthermore, the DT_INST_FOREACH_STATUS_OKAY(KP_INST) macro iterates through each compatible, non-disabled devicetree node, creating and applying the proper values to any instance-specific configurations or data by invoking the KP_INST macro for each instance of the new behavior.
+Note that in the hold-tap example, the instance number, `0`, has been replaced by `n`, signifying the unique `node_id` of each instance of a behavior. Furthermore, the DT_INST_FOREACH_STATUS_OKAY(KP_INST) macro iterates through each compatible, non-disabled devicetree node, creating and applying the proper values to any instance-specific configurations or data by invoking the KP_INST macro for each instance of the new behavior.
 
 Behaviors also require the following parameters of `DEVICE_DT_INST_DEFINE` to be changed:
 
