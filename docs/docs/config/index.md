@@ -22,9 +22,9 @@ When building with a `zmk-config` folder, ZMK will search the `zmk-config/config
 - `<name>.conf` (Kconfig)
 - `<name>.keymap` (Devicetree)
 
-These files hold your personal settings for the keyboard. They override any configuration set in the board or shield folders.
+These files hold your personal settings for the keyboard. All files are optional. If present, they override any configuration set in the board or shield folders. Otherwise, the default configuration and/or keymap is used.
 
-When using a split keyboard, you can use a single file without the `_left` or `_right` suffix to configure both sides. For example, `corne.conf` and `corne.keymap` will apply to both `corne_left` and `corne_right`.
+When using a split keyboard, you can use a single file without the `_left` or `_right` suffix to configure both sides. For example, `corne.conf` and `corne.keymap` will apply to both `corne_left` and `corne_right`. If a shared config file exists, any left or right files will be ignored.
 
 ### Board Folder
 
@@ -38,8 +38,11 @@ ZMK will search for config files in either of:
 ZMK will search the board folder for the following config files:
 
 - `<board>_defconfig` (Kconfig)
+- `<board>.conf` (Kconfig)
 - `<board>.dts` (Devicetree)
-- `<board>.keymap` (Devictree, standalone boards only)
+- `<board>.keymap` (Devicetree, keyboards with onboard controllers only)
+
+Shared config files (excluding any `_left` or `_right` suffix) are not currently supported in board folders.
 
 For more documentation on creating and configuring a new board, see [Zephyr's board porting guide](https://docs.zephyrproject.org/latest/hardware/porting/board_porting.html#write-kconfig-files).
 
@@ -58,6 +61,8 @@ ZMK will search the shield folder for the following config files:
 - `<shield>.overlay` (Devicetree)
 - `<shield>.keymap` (Devicetree)
 
+Shared config files (excluding any `_left` or `_right` suffix) are not currently supported in shield folders.
+
 For more documentation on creating and configuring a new shield, see [Zephyr's shield documentation](https://docs.zephyrproject.org/latest/hardware/porting/shields.html) and [ZMK's new keyboard shield](../development/new-shield.md) guide.
 
 ## Kconfig Files
@@ -72,7 +77,7 @@ CONFIG_EC11=y
 CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y
 ```
 
-The list of available settings is determined by various files in ZMK whose names start with `Kconfig`. Note that options are _not_ prefixed with `CONFIG_` in these files.
+The list of available settings is determined by various files in ZMK whose names start with `Kconfig`. Files ending with `_defconfig` use the same syntax, but are intended for setting configuration specific to the hardware which users typically won't need to change. Note that options are _not_ prefixed with `CONFIG_` in these files.
 
 See [Zephyr's Kconfig documentation](https://docs.zephyrproject.org/latest/build/kconfig/index.html) for more details on Kconfig files.
 
@@ -98,7 +103,14 @@ Example: `CONFIG_FOO="foo"`
 
 ## Devicetree Files
 
-Various Devicetree files are combined to build a tree that describes the hardware for a keyboard. They are also used to define keymaps. Common file extensions for Devicetree files are `.dts`, `.dtsi`, `.overlay`, and `.keymap`.
+Various Devicetree files are combined to build a tree that describes the hardware for a keyboard. They are also used to define keymaps.
+
+Devicetree files use various file extensions. These indicate the purpose of the file, but they have no effect on how the file is processed. Common file extensions for Devicetree files include:
+
+- `.dts`: The base hardware definition.
+- `.overlay`: Adds to and/or overrides definitions in a `.dts` file.
+- `.keymap`: Holds a keymap and user-specific hardware configuration.
+- `.dtsi`: A file which is only intended to be `#include`d from another file.
 
 Devicetree files look like this:
 
