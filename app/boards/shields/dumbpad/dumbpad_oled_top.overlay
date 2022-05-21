@@ -4,4 +4,4 @@
  * SPDX-License-Identifier: MIT
  */
 
- #include "dumbpad.dtsi"
+#include "dumbpad.dtsi"

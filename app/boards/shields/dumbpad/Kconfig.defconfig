@@ -1,7 +1,7 @@
 # Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if SHIELD_DUMBPAD
+if SHIELD_DUMBPAD || SHIELD_DUMBPAD_OLED_TOP
 
 config ZMK_KEYBOARD_NAME
 	default "DumbPad"
