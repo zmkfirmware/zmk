@@ -6,3 +6,4 @@ url: https://github.com/duckyb/eternal-keypad
 requires: [pro_micro]
 features:
   - keys
+  - underglow
