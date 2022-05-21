@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2022 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -7,16 +7,17 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
 
 #define BASE        0
 #define ARROW       1
 #define FUNC        2
 
 / {
-    chosen {
-        zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
-    };
+  chosen {
+      zmk,kscan = &kscan0;
+      zmk,matrix_transform = &default_transform;
+  };
 
   keymap {
     compatible = "zmk,keymap";
@@ -33,11 +34,11 @@
 
     arrow_layer {
       bindings = <
-                    &trans    &trans    &trans   &trans    &trans    &trans  &trans
-                    &trans    &trans    &kp UP   &trans    &trans    &trans  &trans
-        &bt BT_CLR  &trans    &kp LEFT  &kp DOWN &kp RIGHT &trans    &trans  &trans
-        &reset      &trans    &trans    &trans   &trans    &trans    &trans  &trans
-        &bootloader &trans    &trans    &trans             &trans            &trans
+                    &bt BT_SEL 0 &bt BT_SEL 1 &trans     &trans    &trans  &out OUT_USB &out OUT_BLE
+                    &trans       &trans       &kp UP     &trans    &trans  &trans       &trans
+        &bt BT_CLR  &trans       &kp RIGHT    &kp DOWN   &kp RIGHT &trans  &trans       &trans
+        &reset      &trans       &trans       &trans     &trans    &trans  &trans       &trans
+        &bootloader &trans       &trans       &trans               &trans               &trans
       >;
     };
 
@@ -46,7 +47,7 @@
                     &trans    &kp F1    &kp F2   &kp F3    &kp F4   &kp F5   &kp F6
                     &trans    &kp P     &kp O    &kp I     &kp U    &kp Y    &kp F7
         &bt BT_CLR  &kp BSPC  &kp SEMI  &kp L    &kp K     &kp J    &kp H    &kp F8
-        &bt BT_NXT  &trans    &kp LGUI  &kp M    &kp N     &kp F12  &kp F11  &kp F9
+        &reset      &trans    &kp LGUI  &kp M    &kp N     &kp F12  &kp F11  &kp F9
         &bootloader &trans    &trans    &trans             &trans            &kp F10
       >;
     };

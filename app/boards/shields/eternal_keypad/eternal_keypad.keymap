@@ -14,6 +14,11 @@
 #define FUNC        2
 
 / {
+  chosen {
+      zmk,kscan = &kscan0;
+      zmk,matrix_transform = &default_transform;
+  };
+
   keymap {
     compatible = "zmk,keymap";
 
