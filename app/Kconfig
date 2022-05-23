@@ -477,6 +477,18 @@ choice CBPRINTF_IMPLEMENTATION
 
 endchoice
 
+DT_COMPAT_ZMK_BEHAVIOR_SENSOR_ROTATE := zmk,behavior-sensor-rotate
+
+config ZMK_BEHAVIOR_SENSOR_ROTATE
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_SENSOR_ROTATE))
+
+DT_COMPAT_ZMK_BEHAVIOR_SENSOR_ROTATE_VAR := zmk,behavior-sensor-rotate-var
+
+config ZMK_BEHAVIOR_SENSOR_ROTATE_VAR
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_SENSOR_ROTATE_VAR))
+
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
