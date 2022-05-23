@@ -100,7 +100,7 @@ if SHIELD_MY_BOARD_LEFT
 config ZMK_KEYBOARD_NAME
 	default "My Board"
 
-config ZMK_SPLIT_BLE_ROLE_CENTRAL
+config ZMK_SPLIT_ROLE_CENTRAL
 	default y
 
 endif

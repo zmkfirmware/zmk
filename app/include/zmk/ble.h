@@ -11,7 +11,7 @@
 
 #define ZMK_BLE_IS_CENTRAL                                                                         \
     (IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_BLE) &&                                 \
-     IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL))
+     IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
 
 #if ZMK_BLE_IS_CENTRAL
 #define ZMK_BLE_PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - 1)
@@ -33,6 +33,6 @@ char *zmk_ble_active_profile_name();
 
 int zmk_ble_unpair_all();
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 void zmk_ble_set_peripheral_addr(bt_addr_le_t *addr);
-#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
+#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) */
