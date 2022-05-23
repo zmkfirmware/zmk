@@ -320,10 +320,10 @@ Remember that `.c` files should be formatted according to `clang-format` to ensu
 
 ### Updating `app/CmakeLists.txt` to include the new driver
 
-Most behavior drivers' are invoked according to the central half's [locality](#api-structure), and are therefore stored after the line `if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)` in the form, `target_sources(app PRIVATE src/behaviors/<behavior_name>.c)`, as shown below.
+Most behavior drivers' are invoked according to the central half's [locality](#api-structure), and are therefore stored after the line `if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)` in the form, `target_sources(app PRIVATE src/behaviors/<behavior_name>.c)`, as shown below.
 
 ```txt title="app/CmakeLists.txt"
-if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
+if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   target_sources(app PRIVATE src/behaviors/behavior_key_press.c)
   target_sources(app PRIVATE src/behaviors/behavior_hold_tap.c)
   target_sources(app PRIVATE src/behaviors/behavior_sticky_key.c)
@@ -346,9 +346,9 @@ endif()
 
 For behaviors that do not require central locality, the following options for updating `app/CmakeLists.txt` also exist:
 
-- Behavior applies to unibody, or central or peripheral half of keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` line _before_ `if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)`
-- Behavior applies to _only_ central half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT_BLE AND CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)`
-- Behavior applies to _only_ peripheral half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT_BLE AND (NOT CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL))`
+- Behavior applies to unibody, or central or peripheral half of keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` line _before_ `if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)`
+- Behavior applies to _only_ central half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT_BLE AND CONFIG_ZMK_SPLIT_ROLE_CENTRAL)`
+- Behavior applies to _only_ peripheral half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT_BLE AND (NOT CONFIG_ZMK_SPLIT_ROLE_CENTRAL))`
 - Behavior requires certain condition in a keyboard's `.conf` file to be met: use `target_sources_ifdef(CONFIG_<Configuration Requirement> app PRIVATE <behavior_name>.c)` instead of `target_sources(<behavior_name>.c)`
 
 ### Defining common use-cases for the behavior (`.dtsi`) (Optional)
