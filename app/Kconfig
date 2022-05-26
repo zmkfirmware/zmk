@@ -474,6 +474,7 @@ endmenu
 menu "Advanced"
 
 rsource "src/boot/Kconfig"
+rsource "src/shell/Kconfig"
 
 menu "Initialization Priorities"
 
