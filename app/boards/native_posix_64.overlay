@@ -14,5 +14,6 @@
         rows = <2>;
         columns = <2>;
         exit-after;
+        events = <>;
     };
 };
