@@ -532,8 +532,11 @@ config ZMK_WPM
     bool "Calculate WPM"
     default n
 
-config SENSOR
+config ZMK_KEYMAP_SENSORS
+    bool "Enable Keymap Sensors support"
     default y
+    depends on DT_HAS_ZMK_KEYMAP_SENSORS_ENABLED
+    select SENSOR
 
 if ZMK_KEYMAP_SENSORS
 
