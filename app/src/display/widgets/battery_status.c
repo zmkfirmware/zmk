@@ -27,7 +27,7 @@ struct battery_status_state {
 };
 
 static void set_battery_symbol(lv_obj_t *label, struct battery_status_state state) {
-    char text[2] = "  ";
+    char text[7] = "  ";
 
     uint8_t level = state.level;
 
