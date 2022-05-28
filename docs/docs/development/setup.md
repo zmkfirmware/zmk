@@ -70,9 +70,7 @@ sudo apt install -y \
 ```
 
 :::note
-Recent LTS releases of Debian and Ubuntu may include outdated CMake versions. If the output of `cmake --version` is older than 3.15, upgrade your distribution (e.g., from Ubuntu 18.04 LTS to Ubuntu 20.04 LTS), or else install CMake version 3.15 or newer manually (e.g, from Debian backports or by building from source).
-
-There is also a [zephyr bug](https://github.com/zephyrproject-rtos/zephyr/issues/22060) with cmake 3.19.x. You'll need a version _below_ 3.19.
+Recent LTS releases of Debian and Ubuntu may include outdated CMake versions. If the output of `cmake --version` is older than 3.20, upgrade your distribution (e.g., from Ubuntu 20.04 LTS to Ubuntu 22.04 LTS), or else install CMake version 3.20 or newer manually (e.g, from Debian backports or from PyPI with `pip install --user cmake`).
 :::
 </TabItem>
 <TabItem value="raspberryos">
@@ -280,10 +278,10 @@ platform.
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
-export ZSDK_VERSION=0.12.4
-wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run" && \
-	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
-	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run"
+export ZSDK_VERSION=0.13.2
+wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" && \
+	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
+	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run"
 ```
 
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
@@ -315,10 +313,10 @@ export CROSS_COMPILE=/usr/bin/arm-none-eabi-
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
-export ZSDK_VERSION=0.12.4
-wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run" && \
-	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
-	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-x86_64-linux-setup.run"
+export ZSDK_VERSION=0.13.2
+wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" && \
+	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
+	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run"
 ```
 
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.

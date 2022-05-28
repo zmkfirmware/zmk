@@ -17,6 +17,7 @@ module.exports = {
       "features/encoders",
       "features/underglow",
       "features/backlight",
+      "features/battery",
       "features/beta-testing",
     ],
     Behaviors: [
@@ -26,8 +27,10 @@ module.exports = {
       "behaviors/hold-tap",
       "behaviors/mod-tap",
       "behaviors/mod-morph",
+      "behaviors/macros",
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
+      "behaviors/tap-dance",
       "behaviors/caps-word",
       "behaviors/key-repeat",
       "behaviors/reset",
@@ -65,6 +68,7 @@ module.exports = {
         items: [
           "development/new-shield",
           "development/hardware-metadata-files",
+          "development/new-behavior",
         ],
       },
     ],

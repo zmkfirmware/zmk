@@ -6,12 +6,48 @@ sidebar_label: Supported Hardware
 import HardwareList from "@site/src/components/hardware-list";
 import Metadata from "@site/src/data/hardware-metadata.json";
 
+import Heading from "@theme/Heading";
+
+import { groupedMetadata } from "@site/src/components/hardware-utils";
+
+export const toc = [
+  {
+    value: "Onboard Controller Keyboards",
+    id: "onboard",
+    level: 2,
+  },
+  {
+    value: "Composite Keyboards",
+    id: "composite",
+    level: 2,
+  },
+  ...Object.values(groupedMetadata(Metadata).interconnects).map(
+    ({ interconnect }) => ({
+      value: `${interconnect.name} Interconnect`,
+      id: interconnect.id,
+      level: 3,
+    })
+  ),
+  {
+    value: "Other Hardware",
+    id: "other-hardware",
+    level: 2,
+  },
+  {
+    value: "Contributing",
+    id: "contributing",
+    level: 2,
+  },
+];
+
 With the solid technical foundation of Zephyr™ RTOS, ZMK can support a wide diversity of hardware targets.
 That being said, there are currently only a few specific [boards](/docs/faq#what-is-a-board)/[shields](faq.md#what-is-a-shield) that have been implemented and tested by the ZMK contributors.
 
 <HardwareList items={Metadata} />
 
-## Other Hardware
+<Heading as="h2" id="other-hardware">
+  Other Hardware
+</Heading>
 
 In addition to the basic keyboard functionality, there is some initial support for additional keyboard hardware:
 
@@ -22,6 +58,8 @@ In addition to the basic keyboard functionality, there is some initial support f
 
 Until detailed documentation is available, feel free to ask questions about how these are supported in the [Discord server](https://zmk.dev/community/discord/invite).
 
-## Contributing
+<Heading as="h2" id="contributing">
+  Contributing
+</Heading>
 
 If you'd like to add support for a new keyboard shield, head over to the [New Keyboard Shield](development/new-shield.md) documentation.

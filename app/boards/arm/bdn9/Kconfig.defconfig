@@ -1,6 +1,6 @@
 # keeb.io BDN9 board configuration
 
-# Copyright (c) 2020 Pete Johanson
+# Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 if BOARD_BDN9
@@ -13,5 +13,9 @@ config ZMK_KEYBOARD_NAME
 
 config ZMK_USB
 	default y
+
+config ZMK_RGB_UNDERGLOW
+	select SPI
+	select WS2812_STRIP
 
 endif # BOARD_BDN9

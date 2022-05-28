@@ -17,7 +17,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:2.5
+      image: docker.io/zmkfirmware/zmk-build-arm:3.0
     needs: compile-matrix
     strategy:
       matrix:
@@ -26,7 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cache west modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.2
         env:
           cache-name: cache-zephyr-modules
         with:
@@ -249,7 +249,7 @@ jobs:
                     }
                     break;
                   case "interconnect":
-                    break;
+                    return [];
                 }
               });
             }))).flat();

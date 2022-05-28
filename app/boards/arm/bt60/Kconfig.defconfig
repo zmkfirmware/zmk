@@ -25,9 +25,6 @@ config ZMK_BLE
 config ZMK_USB
 	default y
 
-config ZMK_BATTERY_VOLTAGE_DIVIDER
-	default y
-
 config ZMK_KEYBOARD_NAME
 	default "BT60"
 

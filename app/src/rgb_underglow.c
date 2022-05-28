@@ -220,7 +220,7 @@ static void zmk_rgb_underglow_save_state_work() {
     settings_save_one("rgb/underglow/state", &state, sizeof(state));
 }
 
-static struct k_delayed_work underglow_save_work;
+static struct k_work_delayable underglow_save_work;
 #endif
 
 static int zmk_rgb_underglow_init(const struct device *_arg) {
@@ -260,7 +260,7 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
         return err;
     }
 
-    k_delayed_work_init(&underglow_save_work, zmk_rgb_underglow_save_state_work);
+    k_work_init_delayable(&underglow_save_work, zmk_rgb_underglow_save_state_work);
 
     settings_load_subtree("rgb/underglow");
 #endif
@@ -272,8 +272,8 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
 
 int zmk_rgb_underglow_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    k_delayed_work_cancel(&underglow_save_work);
-    return k_delayed_work_submit(&underglow_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    int ret = k_work_reschedule(&underglow_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return MIN(ret, 0);
 #else
     return 0;
 #endif

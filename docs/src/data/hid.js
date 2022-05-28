@@ -4989,7 +4989,7 @@ export default [
     footnotes: {},
   },
   {
-    names: ["C_CAPTIONS", "C_SUBTITILES"],
+    names: ["C_CAPTIONS", "C_SUBTITLES"],
     description: "Closed Caption",
     context: "Consumer",
     clarify: true,
