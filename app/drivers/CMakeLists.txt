@@ -4,4 +4,4 @@
 add_subdirectory(gpio)
 add_subdirectory(kscan)
 add_subdirectory(sensor)
-add_subdirectory(display)
+add_subdirectory(led)

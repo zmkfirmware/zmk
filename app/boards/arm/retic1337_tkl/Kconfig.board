@@ -1,0 +1,5 @@
+# nRF52840-KEYBOARD board configuration
+
+config BOARD_RETIC1337_TKL
+	bool "retic1337_tkl"
+	depends on SOC_NRF52840_QIAA

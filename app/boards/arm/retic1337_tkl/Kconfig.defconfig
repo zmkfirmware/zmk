@@ -1,0 +1,29 @@
+# retic1337_tkl board configuration
+
+if BOARD_RETIC1337_TKL
+
+config ZMK_KEYBOARD_NAME
+    default "Test_TKL_v2"
+
+config I2C
+	default y
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+config IS31FL3733
+	default y
+
+endif # BOARD_RETIC1337_TKL

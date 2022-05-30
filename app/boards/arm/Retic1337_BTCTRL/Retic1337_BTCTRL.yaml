@@ -1,0 +1,16 @@
+identifier: RETIC1337_BTCTRL
+name: Retic1337_BTCTRL
+type: keyboard
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - watchdog
+

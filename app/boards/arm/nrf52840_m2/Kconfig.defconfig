@@ -22,4 +22,7 @@ config ZMK_BLE
 config ZMK_USB
 	default y
 
+config IS31FL3733
+	default y
+
 endif # BOARD_NRF52840_M2

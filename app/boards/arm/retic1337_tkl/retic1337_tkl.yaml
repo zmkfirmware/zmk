@@ -1,0 +1,16 @@
+identifier: RETIC1337_TKL
+name: retic1337_tkl
+type: keyboard
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - i2c
+  - kscan
+

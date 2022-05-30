@@ -1,0 +1,208 @@
+/*
+ * Cameron Banna 2020
+ */
+
+/dts-v1/;
+#include <nordic/nrf52840_qiaa.dtsi>
+
+/ {
+	model = "Retic1337_btctrl";
+	compatible = "nice,nano";
+
+	chosen {
+		zephyr,i2c0 = &i2c0;
+		zephyr,i2c_0 = &i2c0;
+		zephyr,i2c1 = &i2c1;
+		zephyr,i2c_1 = &i2c1;
+		zephyr,code-partition = &code_partition;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zmk,kscan = &kscan0;
+
+		
+	};
+  kscan0: kscan {
+    compatible = "zmk,kscan-gpio-matrix";
+    label = "KSCAN";
+
+    diode-direction = "col2row";
+    row-gpios
+		= <&gpio1 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpio1 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpio1 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpio1 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpio1 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		;
+    col-gpios
+		= <&gpio1 6  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 5  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 4  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 29  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 28  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 7  (GPIO_ACTIVE_LOW)>
+		, <&gpio1 8  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 15  (GPIO_ACTIVE_LOW)>
+		, <&gpio1 2  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 8  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 6  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 31  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 30  (GPIO_ACTIVE_LOW)>
+		, <&gpio1 3  (GPIO_ACTIVE_LOW)>
+		, <&gpio1 4  (GPIO_ACTIVE_LOW)>
+		, <&gpio0 25  (GPIO_ACTIVE_LOW)>
+      	;
+  };
+left_encoder: encoder_left {
+	compatible = "alps,ec11";
+	label = "LEFT_ENCODER";
+	a-gpios = <&gpio0 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	b-gpios = <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	resolution = <4>;
+};
+sensors {
+	compatible = "zmk,keymap-sensors";
+	sensors = <&left_encoder>;
+};
+ext-power {
+	compatible = "zmk,ext-power-generic";
+	label = "EXT_POWER";
+	control-gpios = <&gpio0 3 (GPIO_ACTIVE_LOW | GPIO_PULL_DOWN)>;
+};
+leds {
+	compatible = "gpio-leds";
+	led0_blue: led_0 {
+		gpios = <&gpio0 23 GPIO_ACTIVE_LOW>;
+		label = "Blue LED 0";
+	};																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										
+};
+
+pwmleds {
+	compatible = "pwm-leds";
+	pwm_led0_blue: pwm_led_0 {
+		pwms = <&pwm0 23>;
+		label = "Blue PWM LED 0";
+	};
+};
+/* These aliases are provided for compatibility with samples */
+aliases {
+	led0 = &led0_blue;
+	led0-blue = &led0_blue;
+	pwm-led0 = &pwm_led0_blue;
+	blue-pwm-led = &pwm_led0_blue;
+	i2c0 = &i2c0;
+	i2c1 = &i2c1;
+  };
+};
+
+
+
+
+
+&adc {
+	status = "okay";
+};
+
+&gpiote {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&i2c0 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	sda-pin = <10>;
+	scl-pin = <9>;
+	clock-frequency = < I2C_BITRATE_FAST >;
+	is31fl3733a: is31fl3733@50 {
+		compatible = "issi,is31fl3733";
+		label = "IS31FL3733A";
+		reg = <0x50>;
+	};
+	is31fl3733b: is31fl3733@53 {
+		compatible = "issi,is31fl3733";
+		label = "IS31FL3733B";
+		reg = <0x53>;
+	};
+
+};
+
+&i2c1 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	sda-pin = <33>;
+	scl-pin = <37>;
+	clock-frequency = < I2C_BITRATE_STANDARD >;
+	bq27441@55 {
+		compatible = "ti,bq274xx";
+		label = "BATTERY";
+		reg = <0x55>;
+		design-voltage = <3700>;
+		design-capacity = <450>;
+		taper-current = <45>;
+		terminate-voltage = <3000>;
+	};
+};
+&uart0 {
+	compatible = "nordic,nrf-uarte";
+	status = "okay";
+	current-speed = <115200>;
+	tx-pin = <19>;
+	rx-pin = <21>;
+};
+&pwm0 {
+	status = "okay";
+	ch0-pin = <41>;
+	ch0-inverted;
+};
+&flash0 {
+	/*
+	 * For more information, see:
+	 * http://docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
+	 */
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		sd_partition: partition@0 {
+			label = "softdevice";
+			reg = <0x00000000 0x00026000>;
+		};
+		code_partition: partition@26000 {
+			label = "code_partition";
+			reg = <0x00026000 0x000c6000>;
+		};
+
+		/*
+		 * The flash starting at 0x000ec000 and ending at
+		 * 0x000f3fff is reserved for use by the application.
+		 */
+
+		/*
+		 * Storage partition will be used by FCB/LittleFS/NVS
+		 * if enabled.
+		 */
+		storage_partition: partition@ec000 {
+			label = "storage";
+			reg = <0x000ec000 0x00008000>;
+		};
+
+		boot_partition: partition@f4000 {
+			label = "adafruit_boot";
+			reg = <0x000f4000 0x0000c000>;
+		};
+	};
+};
+
+&usbd {
+	compatible = "nordic,nrf-usbd";
+	status = "okay";
+};
