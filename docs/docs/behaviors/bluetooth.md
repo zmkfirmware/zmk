@@ -82,7 +82,7 @@ ZMK support bluetooth “profiles” which allows connection to multiple devices
 The bluetooth MAC address and negotiated keys during pairing are stored in the permanent storage on your chip and can be reused even after reflashing the firmware. If for some reason you want to delete the stored information, you can bind the `BT_CLR` behavior described above to a key and use it to clear the _current_ profile.
 
 :::note Number of Profiles
-Please note there are only five available Bluetooth profiles by default. If you need to increase the number of available profiles you can set `CONFIG_BT_MAX_CONN` in your `zmk-config` `.conf` file.
+Please note there are five available Bluetooth profiles by default. If you need to adjust the number of available profiles, set `CONFIG_BT_MAX_CONN` _and_ `CONFIG_BT_MAX_PAIRED` to the desired number of profiles, `n`, or `n+1` for split keyboards, in your `zmk-config` `.conf` file.
 :::
 
 :::note

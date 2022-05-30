@@ -5,6 +5,10 @@ sidebar_label: RGB Underglow
 
 RGB underglow is a feature used to control "strips" of RGB LEDs. Most of the time this is called underglow and creates a glow underneath the board using a ring of LEDs around the edge, hence the name. However, this can be extended to be used to control anything from a single LED to a long string of LEDs anywhere on the keyboard.
 
+:::info
+RGB underglow can also be used for under-key lighting. If you have RGB LEDs on your keyboard, this is what you want. For PWM/single color LEDs, see [Backlight](backlight.md).
+:::
+
 ZMK supports all the RGB LEDs supported by Zephyr. Here's the current list supported:
 
 - WS2812-ish (WS2812B, WS2813, SK6812, or compatible)
@@ -67,6 +71,8 @@ To identify which pin number you need to put in the config you need do to a bit 
 Here's an example on a definition that uses P0.06:
 
 ```
+#include <dt-bindings/led/led.h>
+
 &spi1 {
   compatible = "nordic,nrf-spim";
   status = "okay";
@@ -87,6 +93,9 @@ Here's an example on a definition that uses P0.06:
     chain-length = <10>; /* number of LEDs */
     spi-one-frame = <0x70>;
     spi-zero-frame = <0x40>;
+    color-mapping = <LED_COLOR_ID_GREEN
+                          LED_COLOR_ID_RED
+                          LED_COLOR_ID_BLUE>;
   };
 };
 ```
@@ -98,6 +107,13 @@ Ignoring these restrictions may result in poor wireless performance. You can fin
 
 :::
 
+:::note
+
+Standard WS2812 LEDs use a wire protocol where the bits for the colors green, red, and blue values are sent in that order.
+If your board/shield uses LEDs that require the data sent in a different order, the `color-mapping` property ordering should be changed to match.
+
+:::
+
 ### Other boards
 
 For other boards, you must select an SPI definition that has the `MOSI` pin as your data pin going to your LED strip.
@@ -105,6 +121,8 @@ For other boards, you must select an SPI definition that has the `MOSI` pin as y
 Here's another example for a non-nRF52 board on `spi1`:
 
 ```
+#include <dt-bindings/led/led.h>
+
 &spi1 {
 
   led_strip: ws2812@0 {
@@ -119,6 +137,9 @@ Here's another example for a non-nRF52 board on `spi1`:
     chain-length = <10>; /* number of LEDs */
     spi-one-frame = <0x70>; /* make sure to configure this properly for your SOC */
     spi-zero-frame = <0x40>; /* make sure to configure this properly for your SOC */
+    color-mapping = <LED_COLOR_ID_GREEN
+                          LED_COLOR_ID_RED
+                          LED_COLOR_ID_BLUE>;
   };
 };
 ```

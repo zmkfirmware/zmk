@@ -428,5 +428,5 @@ static struct display_driver_api il0323_driver_api = {
     .set_orientation = il0323_set_orientation,
 };
 
-DEVICE_DT_INST_DEFINE(0, il0323_init, device_pm_control_nop, &il0323_driver, NULL, POST_KERNEL,
+DEVICE_DT_INST_DEFINE(0, il0323_init, NULL, &il0323_driver, NULL, POST_KERNEL,
                       CONFIG_APPLICATION_INIT_PRIORITY, &il0323_driver_api);

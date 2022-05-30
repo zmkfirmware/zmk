@@ -18,7 +18,6 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct io_channel_config {
-    const char *label;
     uint8_t channel;
 };
 
@@ -119,10 +118,8 @@ static int bvd_init(const struct device *dev) {
     struct bvd_data *drv_data = dev->data;
     const struct bvd_config *drv_cfg = dev->config;
 
-    drv_data->adc = device_get_binding(drv_cfg->io_channel.label);
-
     if (drv_data->adc == NULL) {
-        LOG_ERR("ADC %s failed to retrieve", drv_cfg->io_channel.label);
+        LOG_ERR("ADC failed to retrieve ADC driver");
         return -ENODEV;
     }
 
@@ -170,12 +167,12 @@ static int bvd_init(const struct device *dev) {
     return rc;
 }
 
-static struct bvd_data bvd_data;
+static struct bvd_data bvd_data = {.adc = DEVICE_DT_GET(DT_IO_CHANNELS_CTLR(DT_DRV_INST(0)))};
+
 static const struct bvd_config bvd_cfg = {
     .io_channel =
         {
-            DT_INST_IO_CHANNELS_LABEL(0),
-            DT_INST_IO_CHANNELS_INPUT(0),
+            DT_IO_CHANNELS_INPUT(DT_DRV_INST(0)),
         },
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
     .power_gpios =
@@ -189,5 +186,5 @@ static const struct bvd_config bvd_cfg = {
     .full_ohm = DT_INST_PROP(0, full_ohms),
 };
 
-DEVICE_DT_INST_DEFINE(0, &bvd_init, device_pm_control_nop, &bvd_data, &bvd_cfg, POST_KERNEL,
+DEVICE_DT_INST_DEFINE(0, &bvd_init, NULL, &bvd_data, &bvd_cfg, POST_KERNEL,
                       CONFIG_SENSOR_INIT_PRIORITY, &bvd_api);

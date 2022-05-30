@@ -13,9 +13,9 @@ if [ $path = "all" ]; then
 	path="tests"
 fi
 
-testcases=$(find $path -name native_posix.keymap -exec dirname \{\} \;)
+testcases=$(find $path -name native_posix_64.keymap -exec dirname \{\} \;)
 num_cases=$(echo "$testcases" | wc -l)
-if [ $num_cases -gt 1 ]; then
+if [ $num_cases -gt 1 ] || [ "$testcases" != "$path" ]; then
 	echo "" > ./build/tests/pass-fail.log
 	echo "$testcases" | xargs -L 1 -P ${J:-4} ./run-test.sh
 	err=$?
@@ -26,7 +26,7 @@ fi
 testcase="$path"
 echo "Running $testcase:"
 
-west build -d build/$testcase -b native_posix -- -DZMK_CONFIG="$(pwd)/$testcase" > /dev/null 2>&1
+west build -d build/$testcase -b native_posix_64 -- -DZMK_CONFIG="$(pwd)/$testcase" > /dev/null 2>&1
 if [ $? -gt 0 ]; then
 	echo "FAILED: $testcase did not build" | tee -a ./build/tests/pass-fail.log
 	exit 1

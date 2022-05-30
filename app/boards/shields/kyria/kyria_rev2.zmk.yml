@@ -11,5 +11,5 @@ features:
   - encoder
   - underglow
 siblings:
-  - kyria_left
-  - kyria_right
+  - kyria_rev2_left
+  - kyria_rev2_right
