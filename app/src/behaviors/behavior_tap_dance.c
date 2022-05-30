@@ -23,7 +23,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define ZMK_BHV_TAP_DANCE_MAX_HELD 10
 
-#define ZMK_BHV_TAP_DANCE_POSITION_FREE ULONG_MAX
+#define ZMK_BHV_TAP_DANCE_POSITION_FREE UINT32_MAX
 
 struct behavior_tap_dance_config {
     uint32_t tapping_term_ms;
@@ -45,7 +45,7 @@ struct active_tap_dance {
     bool timer_cancelled;
     bool tap_dance_decided;
     int64_t release_at;
-    struct k_delayed_work release_timer;
+    struct k_work_delayable release_timer;
 };
 
 struct active_tap_dance active_tap_dances[ZMK_BHV_TAP_DANCE_MAX_HELD] = {};
@@ -84,7 +84,7 @@ static void clear_tap_dance(struct active_tap_dance *tap_dance) {
 }
 
 static int stop_timer(struct active_tap_dance *tap_dance) {
-    int timer_cancel_result = k_delayed_work_cancel(&tap_dance->release_timer);
+    int timer_cancel_result = k_work_cancel_delayable(&tap_dance->release_timer);
     if (timer_cancel_result == -EINPROGRESS) {
         // too late to cancel, we'll let the timer handler clear up.
         tap_dance->timer_cancelled = true;
@@ -97,7 +97,7 @@ static void reset_timer(struct active_tap_dance *tap_dance,
     tap_dance->release_at = event.timestamp + tap_dance->config->tapping_term_ms;
     int32_t ms_left = tap_dance->release_at - k_uptime_get();
     if (ms_left > 0) {
-        k_delayed_work_submit(&tap_dance->release_timer, K_MSEC(ms_left));
+        k_work_schedule(&tap_dance->release_timer, K_MSEC(ms_left));
         LOG_DBG("Successfully reset timer at position %d", tap_dance->position);
     }
 }
@@ -228,8 +228,8 @@ static int behavior_tap_dance_init(const struct device *dev) {
     static bool init_first_run = true;
     if (init_first_run) {
         for (int i = 0; i < ZMK_BHV_TAP_DANCE_MAX_HELD; i++) {
-            k_delayed_work_init(&active_tap_dances[i].release_timer,
-                                behavior_tap_dance_timer_handler);
+            k_work_init_delayable(&active_tap_dances[i].release_timer,
+                                  behavior_tap_dance_timer_handler);
             clear_tap_dance(&active_tap_dances[i]);
         }
     }
@@ -250,9 +250,9 @@ static int behavior_tap_dance_init(const struct device *dev) {
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
         .behaviors = behavior_tap_dance_config_##n##_bindings,                                     \
         .behavior_count = DT_INST_PROP_LEN(n, bindings)};                                          \
-    DEVICE_AND_API_INIT(behavior_tap_dance_##n, DT_INST_LABEL(n), behavior_tap_dance_init, NULL,   \
-                        &behavior_tap_dance_config_##n, APPLICATION,                               \
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_tap_dance_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_tap_dance_init, NULL, NULL, &behavior_tap_dance_config_##n,  \
+                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
+                          &behavior_tap_dance_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

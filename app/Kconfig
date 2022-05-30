@@ -88,6 +88,9 @@ if ZMK_USB
 config USB_NUMOF_EP_WRITE_RETRIES
 	default 10
 
+config USB_HID_POLL_INTERVAL_MS
+	default 1
+
 #ZMK_USB
 endif
 
@@ -132,12 +135,27 @@ config ZMK_BLE_CLEAR_BONDS_ON_START
 config BT_GATT_NOTIFY_MULTIPLE
 	default n
 
+config BT_GATT_AUTO_SEC_REQ
+	default n
+
 config BT_DEVICE_APPEARANCE
 	default 961
 
 config ZMK_BLE_PASSKEY_ENTRY
 	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
 	default n
+
+config BT_PERIPHERAL_PREF_MIN_INT
+	default 6
+
+config BT_PERIPHERAL_PREF_MAX_INT
+	default 12
+
+config BT_PERIPHERAL_PREF_LATENCY
+	default 30
+
+config BT_PERIPHERAL_PREF_TIMEOUT
+	default 400
 
 #ZMK_BLE
 endif
@@ -148,107 +166,7 @@ endmenu
 # HID
 endmenu
 
-menu "Split Support"
-
-config ZMK_SPLIT
-	bool "Split keyboard support"
-
-if ZMK_SPLIT
-
-menuconfig ZMK_SPLIT_BLE
-	bool "Split keyboard support via BLE transport"
-	depends on ZMK_BLE
-	default y
-	select BT_USER_PHY_UPDATE
-
-if ZMK_SPLIT_BLE
-
-menuconfig ZMK_SPLIT_BLE_ROLE_CENTRAL
-	bool "Central"
-	select BT_CENTRAL
-	select BT_GATT_CLIENT
-	select BT_GATT_AUTO_DISCOVER_CCC
-
-if ZMK_SPLIT_BLE_ROLE_CENTRAL
-
-config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
-	int "Max number of key position state events to queue when received from peripherals"
-	default 5
-
-config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE
-	int "BLE split central write thread stack size"
-	default 512
-
-config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE
-	int "Max number of behavior run events to queue to send to the peripheral(s)"
-	default 5
-
-endif
-
-if !ZMK_SPLIT_BLE_ROLE_CENTRAL
-
-config ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE
-	int "BLE split peripheral notify thread stack size"
-	default 512
-
-config ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY
-	int "BLE split peripheral notify thread priority"
-	default 5
-
-config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
-	int "Max number of key position state events to queue to send to the central"
-	default 10
-
-config ZMK_USB
-	default n
-
-config BT_MAX_PAIRED
-	default 1
-
-config BT_MAX_CONN
-	default 1
-
-config BT_GAP_AUTO_UPDATE_CONN_PARAMS
-	default n
-
-#!ZMK_SPLIT_BLE_ROLE_CENTRAL
-endif
-
-#ZMK_SPLIT_BLE
-endif
-
-#ZMK_SPLIT
-endif
-
-if ZMK_BLE
-
-if ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
-
-config BT_MAX_CONN
-	default 6
-
-config BT_MAX_PAIRED
-	default 6
-
-#ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
-endif
-
-if !ZMK_SPLIT_BLE
-
-config BT_MAX_CONN
-	default 5
-
-config BT_MAX_PAIRED
-	default 5
-
-#!ZMK_SPLIT_BLE
-endif
-
-#ZMK_BLE
-endif
-
-#Split Support
-endmenu
+rsource "src/split/Kconfig"
 
 #Basic Keyboard Setup
 endmenu
@@ -372,10 +290,6 @@ config ZMK_SLEEP
 
 if ZMK_SLEEP
 
-choice SYS_PM_POLICY
-	default PM_POLICY_APP
-endchoice
-
 config PM_DEVICE
 	default y
 
@@ -422,7 +336,7 @@ menu "Advanced"
 
 menu "Initialization Priorities"
 
-if USB
+if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
 	int "USB Init Priority"
@@ -449,12 +363,6 @@ config ZMK_KSCAN_EVENT_QUEUE_SIZE
 	int "Size of the event queue for KSCAN events to buffer events"
 	default 4
 
-config ZMK_KSCAN_MOCK_DRIVER
-	bool "Enable mock kscan driver to simulate key presses"
-
-config ZMK_KSCAN_COMPOSITE_DRIVER
-	bool "Enable composite kscan driver to combine kscan devices"
-
 #KSCAN Settings
 endmenu
 
@@ -478,23 +386,21 @@ if ZMK_USB_LOGGING
 config ZMK_LOG_LEVEL
 	default 4
 
-config USB_CDC_ACM_RINGBUF_SIZE
-	default 1024
-
-config USB_CDC_ACM_DEVICE_NAME
-	default "CDC_ACM"
-
-config USB_CDC_ACM_DEVICE_COUNT
+# We do this to avoid log loop where logging to USB generates more log messages.
+config USB_CDC_ACM_LOG_LEVEL
 	default 1
 
-config UART_CONSOLE_ON_DEV_NAME
-	default "CDC_ACM_0"
+config USB_CDC_ACM_RINGBUF_SIZE
+	default 1024
 
 config LOG_BUFFER_SIZE
 	default 8192
 
 config LOG_STRDUP_BUF_COUNT
 	default 16
+
+config LOG_PROCESS_THREAD_STARTUP_DELAY_MS
+	default 1000
 
 #ZMK_USB_LOGGING
 endif
@@ -511,6 +417,11 @@ config ZMK_SETTINGS_SAVE_DEBOUNCE
 #SETTINGS
 endif
 
+config ZMK_BATTERY_REPORT_INTERVAL
+	depends on ZMK_BLE
+	int "Battery level report interval in seconds"
+	default 60
+
 #Advanced
 endmenu
 
@@ -526,7 +437,7 @@ config KERNEL_BIN_NAME
 config REBOOT
 	default y
 
-config USB
+config USB_DEVICE_STACK
 	default y if HAS_HW_NRF_USBD
 
 config ZMK_WPM

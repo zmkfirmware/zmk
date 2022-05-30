@@ -395,16 +395,12 @@ static bool split_central_eir_found(struct bt_data *data, void *user_data) {
             } else {
                 param = BT_LE_CONN_PARAM(0x0006, 0x0006, 30, 400);
 
+                LOG_DBG("Initiating new connnection");
+
                 err = bt_conn_le_create(addr, BT_CONN_LE_CREATE_CONN, param, &slot->conn);
                 if (err) {
                     LOG_ERR("Create conn failed (err %d) (create conn? 0x%04x)", err,
                             BT_HCI_OP_LE_CREATE_CONN);
-                    start_scan();
-                }
-
-                err = bt_conn_le_phy_update(slot->conn, BT_CONN_LE_PHY_PARAM_2M);
-                if (err) {
-                    LOG_ERR("Update phy conn failed (err %d)", err);
                     start_scan();
                 }
             }
@@ -445,8 +441,16 @@ static int start_scan(void) {
 
 static void split_central_connected(struct bt_conn *conn, uint8_t conn_err) {
     char addr[BT_ADDR_LE_STR_LEN];
+    struct bt_conn_info info;
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+    bt_conn_get_info(conn, &info);
+
+    if (info.role != BT_CONN_ROLE_CENTRAL) {
+        LOG_DBG("SKIPPING FOR ROLE %d", info.role);
+        return;
+    }
 
     if (conn_err) {
         LOG_ERR("Failed to connect to %s (%u)", log_strdup(addr), conn_err);
@@ -465,12 +469,17 @@ static void split_central_connected(struct bt_conn *conn, uint8_t conn_err) {
 
 static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
     char addr[BT_ADDR_LE_STR_LEN];
+    int err;
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
     LOG_DBG("Disconnected: %s (reason %d)", log_strdup(addr), reason);
 
-    release_peripheral_slot_for_conn(conn);
+    err = release_peripheral_slot_for_conn(conn);
+
+    if (err < 0) {
+        return;
+    }
 
     start_scan();
 }
@@ -562,9 +571,9 @@ int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *bi
 }
 
 int zmk_split_bt_central_init(const struct device *_arg) {
-    k_work_q_start(&split_central_split_run_q, split_central_split_run_q_stack,
-                   K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
-                   CONFIG_ZMK_BLE_THREAD_PRIORITY);
+    k_work_queue_start(&split_central_split_run_q, split_central_split_run_q_stack,
+                       K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
+                       CONFIG_ZMK_BLE_THREAD_PRIORITY, NULL);
     bt_conn_cb_register(&conn_callbacks);
 
     return start_scan();

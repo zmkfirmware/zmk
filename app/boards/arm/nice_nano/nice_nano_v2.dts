@@ -8,6 +8,10 @@
 #include "nice_nano.dtsi"
 
 / {
+	chosen {
+		zmk,battery = &vbatt;
+	};
+
 	ext-power {
 		compatible = "zmk,ext-power-generic";
 		label = "EXT_POWER";
@@ -15,7 +19,7 @@
 		init-delay-ms = <50>;
 	};
 
-	vbatt {
+	vbatt: vbatt {
 		compatible = "zmk,battery-nrf-vddh";
 		label = "BATTERY";
 	};

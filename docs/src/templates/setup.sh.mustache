@@ -120,6 +120,7 @@ if [ "$keyboard_shield" == "y" ]; then
     prompt="Pick an MCU board:"
     options=({{#boards}}"{{{name}}}" {{/boards}})
     board_ids=({{#boards}}"{{id}}" {{/boards}})
+    boards_usb_only=({{#boards}}"{{#usb_only}}y{{/usb_only}}{{^usb_only}}n{{/usb_only}}" {{/boards}})
 
     echo ""
     echo "MCU Board Selection:"
@@ -134,6 +135,12 @@ if [ "$keyboard_shield" == "y" ]; then
                     echo "Invalid option. Try another one."
                     continue
                 fi
+
+                if [ -n "${!keyboard_sibling_first}" ] && [ "${boards_usb_only[$board_index]}" = "y" ] ; then
+                    echo "Wired split is not yet supported by ZMK."
+                    exit 1
+                fi
+
                 board_index=$(( $REPLY-1 ))
                 board=${board_ids[$board_index]}
                 board_title=${options[$board_index]}

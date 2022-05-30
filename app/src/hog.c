@@ -262,8 +262,9 @@ int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
 };
 
 int zmk_hog_init(const struct device *_arg) {
-    k_work_q_start(&hog_work_q, hog_q_stack, K_THREAD_STACK_SIZEOF(hog_q_stack),
-                   CONFIG_ZMK_BLE_THREAD_PRIORITY);
+    static const struct k_work_queue_config queue_config = {.name = "HID Over GATT Send Work"};
+    k_work_queue_start(&hog_work_q, hog_q_stack, K_THREAD_STACK_SIZEOF(hog_q_stack),
+                       CONFIG_ZMK_BLE_THREAD_PRIORITY, &queue_config);
 
     return 0;
 }

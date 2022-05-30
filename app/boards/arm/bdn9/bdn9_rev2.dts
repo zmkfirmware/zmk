@@ -6,6 +6,8 @@
 
 /dts-v1/;
 #include <st/f0/stm32f072Xb.dtsi>
+#include <st/f0/stm32f072c(8-b)tx-pinctrl.dtsi>
+#include <dt-bindings/led/led.h>
 
 / {
 	model = "Keeb.io BDN9 rev2";
@@ -14,12 +16,11 @@
 	chosen {
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
+		zephyr,console = &cdc_acm_uart;
 		zmk,kscan = &kscan;
-		/* TODO: Enable once the GPIO bitbanging driver supports STM32
 		zmk,underglow = &led_strip;
-		*/
 	};
-	
+
 	kscan: kscan {
 		compatible = "zmk,kscan-gpio-direct";
 		label = "KSCAN";
@@ -36,17 +37,6 @@
 			, <&gpiof 0  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 			;
 	};
-
-	/*
-	led_strip: ws2812 {
-		compatible = "worldsemi,ws2812-gpio";
-		label = "WS2812";
-
-		in-gpios = <&gpiob 15 0>;
-
-		chain-length = <9>;
-	};
-	*/
 
 	left_encoder: encoder_left {
 		compatible = "alps,ec11";
@@ -80,8 +70,54 @@
 	};
 };
 
+&spi2 {
+	status = "okay";
+	pinctrl-0 = <&spi2_sck_pb13 &spi2_mosi_pb15>;
+	pinctrl-names = "default";
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+		label = "WS2812";
+
+		/* SPI */
+		reg = <0>; /* ignored, but necessary for SPI bindings */
+		spi-max-frequency = <4000000>;
+
+		/* WS2812 */
+		chain-length = <9>;
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+
+		color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+	};
+};
+
+&clk_hsi {
+	status = "okay";
+};
+
+&pll {
+	status = "okay";
+	prediv = <1>;
+	mul = <6>;
+	clocks = <&clk_hsi>;
+};
+
+&rcc {
+	clocks = <&pll>;
+	clock-frequency = <DT_FREQ_M(48)>;
+	ahb-prescaler = <1>;
+	apb1-prescaler = <1>;
+};
+
 &usb {
 	status = "okay";
+	pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
+	pinctrl-names = "default";
+	cdc_acm_uart: cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
 };
 
 &rtc {
@@ -99,7 +135,7 @@
 		#size-cells = <1>;
 
 		/* Set 6Kb of storage at the end of the 128Kb of flash */
-		storage_partition: partition@3e800 {
+		storage_partition: partition@1e800 {
 			label = "storage";
 			reg = <0x0001e800 0x00001800>;
 		};

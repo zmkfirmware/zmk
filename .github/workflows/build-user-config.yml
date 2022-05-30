@@ -1,0 +1,131 @@
+name: Reusable user config build
+
+on:
+  workflow_call:
+    inputs:
+      build_matrix_path:
+        description: "Path to the build matrix file"
+        default: "build.yaml"
+        required: false
+        type: string
+      config_path:
+        description: "Path to the config directory"
+        default: "config"
+        required: false
+        type: string
+      fallback_binary:
+        description: "Fallback binary format, if no *.uf2 file was built"
+        default: "bin"
+        required: false
+        type: string
+      artifact_name:
+        description: 'Artifact output file name'
+        default: 'firmware'
+        required: false
+        type: string
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    name: Fetch Build Keyboards
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install yaml2json
+        run: python3 -m pip install remarshal
+
+      - name: Fetch Build Matrix
+        id: set-matrix
+        run: |
+          set -x
+          matrix=$(yaml2json ${{ inputs.build_matrix_path }} | jq -c .)
+          yaml2json ${{ inputs.build_matrix_path }}
+          echo "::set-output name=matrix::${matrix}"
+
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-build-arm:stable
+    needs: matrix
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.matrix.outputs.matrix)}}
+    steps:
+      - name: Prepare variables
+        id: variables
+        run: |
+          set -x
+          if [ -n "${{ matrix.shield }}" ]
+          then
+            EXTRA_CMAKE_ARGS="-DSHIELD=${{ matrix.shield }}"
+            ARTIFACT_NAME="${{ matrix.shield }}-${{ matrix.board }}-zmk"
+            DISPLAY_NAME="${{ matrix.shield }} - ${{ matrix.board }}"
+          else
+            EXTRA_CMAKE_ARGS=
+            DISPLAY_NAME="${{ matrix.board }}"
+            ARTIFACT_NAME="${{ matrix.board }}-zmk"
+          fi
+          echo ::set-output name=extra-cmake-args::${EXTRA_CMAKE_ARGS}
+          echo ::set-output name=artifact-name::${ARTIFACT_NAME}
+          echo ::set-output name=display-name::${DISPLAY_NAME}
+          echo ::set-output name=zephyr-version::${ZEPHYR_VERSION}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cache west modules
+        uses: actions/cache@v3.0.2
+        continue-on-error: true
+        env:
+          cache-name: cache-zephyr-${{ steps.variables.outputs.zephyr-version }}-modules
+        with:
+          path: |
+            modules/
+            tools/
+            zephyr/
+            bootloader/
+            zmk/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/west.yml', '**/build.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: West Init
+        run: west init -l ${{ inputs.config_path }}
+
+      - name: West Update
+        run: west update
+
+      - name: West Zephyr export
+        run: west zephyr-export
+
+      - name: West Build (${{ steps.variables.outputs.display-name }})
+        run: |
+          set -x
+          west build -s zmk/app -b ${{ matrix.board }} -- -DZMK_CONFIG=${GITHUB_WORKSPACE}/${{ inputs.config_path }} ${{ steps.variables.outputs.extra-cmake-args }} ${{ matrix.cmake-args }}
+
+      - name: ${{ steps.variables.outputs.display-name }} Kconfig file
+        run: grep -v -e "^#" -e "^$" build/zephyr/.config | sort
+
+      - name: Rename artifacts
+        run: |
+          set -x
+          mkdir build/artifacts
+          if [ -f build/zephyr/zmk.uf2 ]
+          then
+            cp build/zephyr/zmk.uf2 "build/artifacts/${{ steps.variables.outputs.artifact-name }}.uf2"
+          elif [ -f build/zephyr/zmk.${{ inputs.fallback_binary }} ]
+          then
+            cp build/zephyr/zmk.${{ inputs.fallback_binary }} "build/artifacts/${{ steps.variables.outputs.artifact-name }}.${{ inputs.fallback_binary }}"
+          fi
+
+      - name: Archive (${{ steps.variables.outputs.display-name }})
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: build/artifacts

@@ -1,3 +1,5 @@
+#include <dt-bindings/led/led.h>
+
 &spi1 {
 	compatible = "nordic,nrf-spim";
 	/* Cannot be used together with i2c0. */
@@ -19,6 +21,8 @@
 		chain-length = <6>; /* There are per-key RGB, but the first 6 are underglow */
 		spi-one-frame = <0x70>;
 		spi-zero-frame = <0x40>;
+
+		color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
 	};
 };
 

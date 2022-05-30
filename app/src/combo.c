@@ -67,7 +67,7 @@ struct combo_cfg *combo_lookup[ZMK_KEYMAP_LEN][CONFIG_ZMK_COMBO_MAX_COMBOS_PER_K
 struct active_combo active_combos[CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS] = {NULL};
 int active_combo_count = 0;
 
-struct k_delayed_work timeout_task;
+struct k_work_delayable timeout_task;
 int64_t timeout_task_timeout_at;
 
 // Store the combo key pointer in the combos array, one pointer for each key position
@@ -370,7 +370,7 @@ static bool release_combo_key(int32_t position, int64_t timestamp) {
 }
 
 static int cleanup() {
-    k_delayed_work_cancel(&timeout_task);
+    k_work_cancel_delayable(&timeout_task);
     clear_candidates();
     if (fully_pressed_combo != NULL) {
         activate_combo(fully_pressed_combo);
@@ -386,10 +386,10 @@ static void update_timeout_task() {
     }
     if (first_timeout == LLONG_MAX) {
         timeout_task_timeout_at = 0;
-        k_delayed_work_cancel(&timeout_task);
+        k_work_cancel_delayable(&timeout_task);
         return;
     }
-    if (k_delayed_work_submit(&timeout_task, K_MSEC(first_timeout - k_uptime_get())) == 0) {
+    if (k_work_schedule(&timeout_task, K_MSEC(first_timeout - k_uptime_get())) >= 0) {
         timeout_task_timeout_at = first_timeout;
     }
 }
@@ -486,7 +486,7 @@ ZMK_SUBSCRIPTION(combo, zmk_position_state_changed);
 DT_INST_FOREACH_CHILD(0, COMBO_INST)
 
 static int combo_init() {
-    k_delayed_work_init(&timeout_task, combo_timeout_handler);
+    k_work_init_delayable(&timeout_task, combo_timeout_handler);
     DT_INST_FOREACH_CHILD(0, INITIALIZE_COMBO);
     return 0;
 }
