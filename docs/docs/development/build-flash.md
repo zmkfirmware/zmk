@@ -89,7 +89,7 @@ west build -d build/right -b nice_nano -- -DSHIELD=kyria_right
 This produces `left` and `right` subfolders under the `build` directory and two separate .uf2 files. For future work on a specific half, use the `-d` parameter again to ensure you are building into the correct location.
 
 :::tip
-Build times can be significantly reduced after the initial build by omitting all build arguments except the build directory, e.g `west build -d build/left`. The additional options from your initial build are cached.
+Build times can be significantly reduced after the initial build by omitting all build arguments except the build directory, e.g. `west build -d build/left`. The additional options and intermediate build outputs from your initial build are cached and reused for unchanged files.
 :::
 
 ### Building from `zmk-config` Folder
