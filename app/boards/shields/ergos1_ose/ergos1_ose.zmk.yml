@@ -3,7 +3,7 @@ id: ergos1_ose
 name: Ergo S-1 OSE
 type: shield
 url: https://github.com/wizarddata/Ergo-S-1
-requires:
+requires: [pro_micro]
 features:
   - keys
 siblings:
