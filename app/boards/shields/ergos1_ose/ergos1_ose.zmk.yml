@@ -1,12 +1,11 @@
 file_format: "1"
-id: redox
-name: Redox
+id: ergos1_ose
+name: Ergo S-1 OSE
 type: shield
-url: https://github.com/mattdibi/redox-keyboard
-requires: [pro_micro]
+url: https://github.com/wizarddata/Ergo-S-1
+requires:
 features:
   - keys
-  - underglow
 siblings:
-  - redox_left
-  - redox_right
+  - ergo_s1_ose_left
+  - ergo_s1_ose_right
