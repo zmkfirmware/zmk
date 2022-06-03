@@ -7,18 +7,18 @@
 #include "ergos1_ose.dtsi"
 
 &default_transform {
-	col-offset = <9>;
+	col-offset = <8>;
 };
 
 &kscan0 {
 	col-gpios
-		= <&gpio0 22 GPIO_ACTIVE_HIGH>
+		= <&gpio0 20 GPIO_ACTIVE_HIGH>
+		, <&gpio0 22 GPIO_ACTIVE_HIGH>
 		, <&gpio0 24 GPIO_ACTIVE_HIGH>
 		, <&gpio1 0 GPIO_ACTIVE_HIGH>
 		, <&gpio0 11 GPIO_ACTIVE_HIGH>
 		, <&gpio1 4 GPIO_ACTIVE_HIGH>
-		, <&gpio1 6 GPIO_ACTIVE_HIGH>
-		, <&gpio0 9 GPIO_ACTIVE_HIGH>
 		, <&gpio0 10 GPIO_ACTIVE_HIGH>
+		, <&gpio1 11 GPIO_ACTIVE_HIGH>
 		;
 };
