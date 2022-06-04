@@ -139,7 +139,7 @@ defaultValue="homerow_mods"
 values={[
 {label: 'Homerow Mods', value: 'homerow_mods'},
 {label: 'Autoshift', value: 'autoshift'},
-{label: 'Sticky-Holds', value: 'sticky_holds'},
+{label: 'Sticky Holds', value: 'sticky_holds'},
 {label: 'Toggle-on-Tap, Momentary-on-Hold Layers', value: 'tog_mo'},
 ]}>
 
@@ -207,7 +207,6 @@ The following are suggested hold-tap configurations that work well with home row
 		};
 	};
 };
-
 ```
 
 ##### Option 3: `balanced`
@@ -238,7 +237,6 @@ The following are suggested hold-tap configurations that work well with home row
 		};
 	};
 };
-
 ```
 
 </TabItem>
@@ -251,7 +249,7 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
 
-#define AS(keycode) &as LS(keycode) keycode
+#define AS(keycode) &as LS(keycode) keycode     // Autoshift Macro
 
 / {
     behaviors {
@@ -281,9 +279,11 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 
 <TabItem value="sticky_holds">
 
-This section describes hold-tap behaviors involving [sticky-keys](sticky-key.md) or [sticky-layers](sticky-layer.md). These code snippets implement a sticky tap paired with a [keypress](key-press.md) or [momentary layer](layers.md/#momentary-layer) on the hold, as relevant to each example.
+This section describes hold-tap behaviors involving [sticky keys](sticky-key.md) or [sticky layers](sticky-layer.md). These code snippets implement a sticky tap paired with a [keypress](key-press.md) or [momentary layer](layers.md/#momentary-layer) on the hold, as relevant to each example.
 
-```dtsi title="Hold-Tap Example: Sticky-Hold Key (&sk on tap, &kp on hold)"
+If uninterrupted by another keypress, a regular [sticky key](sticky-key.md) or [sticky layer](sticky-layer.md) remains sticky after its release; the [`release-after-ms`](sticky-key.md/#release-after-ms) timer must expire before the sticky key/layer is deactivated. This can be an issue for cases like using the mouse while a modifier is held. The "sticky hold" implementations below provide a workaround for this problem, since the user can immediately deactivate the [sticky key](sticky-key.md) or [sticky layer](sticky-layer.md) on its release, after it has been held down for a sufficient amount of time.
+
+```dtsi title="Hold-Tap Example: Sticky Hold Key (&sk on tap, &kp on hold)"
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
 
@@ -305,15 +305,15 @@ This section describes hold-tap behaviors involving [sticky-keys](sticky-key.md)
 		compatible = "zmk,keymap";
 		default_layer {
 			bindings = <
-	            &shk X Z    // &sk Z on tap, &kp X on hold
-                SHK(A)      // &sk A on tap, &kp A on hold
+	            &shk X Z    // &kp X on hold, &sk Z on tap
+                SHK(A)      // &kp A on hold, &sk A on tap
 			>;
 		};
 	};
 };
 ```
 
-```dtsi title="Hold-Tap Example: Sticky-Hold Layer (&sl on tap, &mo on hold)"
+```dtsi title="Hold-Tap Example: Sticky Hold Layer (&sl on tap, &mo on hold)"
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
 
@@ -335,8 +335,8 @@ This section describes hold-tap behaviors involving [sticky-keys](sticky-key.md)
 		compatible = "zmk,keymap";
 		default_layer {
 			bindings = <
-	            &shl 2 1    // &sl 1 on tap, &mo 2 on hold
-                SHL(3)      // &sl 3 on tap, &mo 3 on hold
+	            &shl 2 1    // &mo 2 on hold, &sl 1 on tap
+                SHL(3)      // &mo 3 on hold, &sl 3 on tap
 			>;
 		};
 	};
@@ -347,7 +347,7 @@ This section describes hold-tap behaviors involving [sticky-keys](sticky-key.md)
 
 <TabItem value="tog_mo">
 
-This hold-tap example implements a [toggle-layer](layers.md/#toggle-layer) when the keybind is tapped and a [momentary-layer](layers.md/#momentary-layer) when it is held. Similarly to the Autoshift and Sticky-Hold use-cases, a `TOG_MO(layer)` macro is defined such that the `&tog` and `&mo` behaviors can target a single layer.
+This hold-tap example implements a [toggle-layer](layers.md/#toggle-layer) when the keybind is tapped and a [momentary-layer](layers.md/#momentary-layer) when it is held. Similarly to the Autoshift and Sticky Hold use-cases, a `TOG_MO(layer)` macro is defined such that the `&tog` and `&mo` behaviors can target a single layer.
 
 ```dtsi title="Hold-Tap Example: Toggle layer on Tap, Momentary layer on Hold"
 #include <dt-bindings/zmk/keys.h>
@@ -371,8 +371,8 @@ This hold-tap example implements a [toggle-layer](layers.md/#toggle-layer) when 
 		compatible = "zmk,keymap";
 		default_layer {
 			bindings = <
-	            &tog_mo 2 1     // &tog 1 on tap, &mo 2 on hold
-                TOG_MO(3)       // &tog 3 on tap, &mo 3 on hold
+	            &tog_mo 2 1     // &mo 2 on hold, &tog 1 on tap
+                TOG_MO(3)       // &mo 3 on hold, &tog 3 on tap
 			>;
 		};
 	};
