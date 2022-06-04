@@ -3,8 +3,11 @@
 # Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+DT_COMPAT_ZMK_GPIO_MAX7318 := zmk,gpio-max7318
+
 menuconfig GPIO_MAX7318
 	bool "MAX7318 I2C-based GPIO chip"
+	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_GPIO_MAX7318))
 	depends on I2C
 	select HAS_DTS_GPIO
 	help
