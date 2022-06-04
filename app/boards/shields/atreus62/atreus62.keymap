@@ -9,7 +9,6 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
 
-
 / {
     keymap {
         compatible = "zmk,keymap";
@@ -38,11 +37,11 @@
             // |       |  F7  |  F8  |  F9  |  F10 |  F11 |-------|-------|   F12 | LS(#) |LS(|) |      |       |       |
             // |-------|      |      |      |      |      |       |       |       | NEXT  | Vol- | Vol+ | PLAY  |-------|
             bindings = <
-                &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans
-                &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans
-                &kp DEL    &trans  &trans  &trans  &trans  &trans                  &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT
-                &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans
-                &trans     &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans    &trans
+                &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans     &trans    &trans
+                &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans     &trans    &trans
+                &kp DEL    &trans  &trans  &trans  &trans  &trans                  &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT  &trans    &trans
+                &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans     &trans    &trans
+                &trans     &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans    &trans     &trans    &trans
             >;
         };
 
@@ -51,14 +50,14 @@
             // |  ESC  |  F2  |  F3  |  F4  |  F5  |  F6  |-------|-------|  F7   |  F8   |  F9  | F10  |  F11  |  F12  |
             // |   ~   |  1   |  2   |  3   |  4   |  5   |-------|-------|  6    |   7   |  8   |  9   |   0   |  DEL  |
             // |  DEL  |  F1  |  F2  |  F3  |  F4  |  F5  |-------|-------|  F6   |   -   |  =   |  [   |   ]   |   \   |
-            // |       |  F7  |  F8  |  F9  |  F10 |  F11 |-------|-------|  F12  |   #   |  |   |      |       |       |
+            // |       |  F7  |  F8  |  F9  |  F10 |  F11 |-------|-------|  F12  |   #   |  |   |      |       |       |9
             // |-------|      |      |      |      |      |       |       |       |       |      |      |       |-------|
             bindings = <
-                &trans  &kp F1  &kp F2  &kp F3   &kp F4   &kp F5               &kp F6     &kp F7     &kp F8  &kp F9       &kp F10      &kp F11
-                &trans  &trans  &trans  &kp LBRC &kp RBRC &trans               &trans     &trans     &trans  &trans       &trans       &kp F12
-                &trans  &trans  &trans  &kp LPAR &kp RPAR &trans               &kp LEFT   &kp DOWN   &kp UP  &kp RIGHT    &trans       &trans
-                &trans  &trans  &trans  &kp LBKT &kp RBKT &trans               &kp C_PREV &kp C_NEXT &trans  &trans       &trans       &trans
-                &trans  &trans  &trans  &trans   &mo 3    &trans &trans &trans &trans     &trans     &trans  &kp C_VOL_DN &kp C_VOL_UP &kp C_PP
+                &trans  &kp F1  &kp F2  &kp F3   &kp F4   &kp F5               &kp F6     &kp F7    &kp F8     &kp F9       &kp F10      &kp F11
+                &trans  &trans  &trans  &kp LBRC &kp RBRC &trans               &trans     &trans    &trans     &trans       &trans       &kp F12
+                &trans  &trans  &trans  &kp LPAR &kp RPAR &trans               &kp LEFT   &kp DOWN  &kp UP     &kp RIGHT    &trans       &trans
+                &trans  &trans  &trans  &kp LBKT &kp RBKT &trans               &trans     &trans    &kp C_PREV &kp C_NEXT   &trans       &trans
+                &trans  &trans  &trans  &trans   &mo 3    &trans &trans &trans &trans     &trans    &trans     &kp C_VOL_DN &kp C_VOL_UP &kp C_PP
             >;
         };
 
