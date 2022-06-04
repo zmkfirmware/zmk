@@ -1,2 +1,1 @@
-rsource "mcp23017/Kconfig"
-rsource "max7318/Kconfig"
+rsource "Kconfig.mcp23017"
