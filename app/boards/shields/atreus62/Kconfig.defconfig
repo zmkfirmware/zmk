@@ -3,4 +3,10 @@ if SHIELD_ATREUS62
 config ZMK_KEYBOARD_NAME
     default "Atreus62"
 
+config ZMK_BLE
+    default y
+
+config ZMK_USB
+    default y
+
 endif

@@ -3,6 +3,6 @@ id: atreus62
 name: Atreus62
 type: shield
 url: https://github.com/profet23/atreus62
-requires: [nice!nano]
+requires: [nice_nano]
 features:
   - keys
