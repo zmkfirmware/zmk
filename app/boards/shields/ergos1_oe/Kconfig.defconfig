@@ -1,6 +1,6 @@
 # Copyright (c) 2021 The ZMK Contributors
 # SPDX-License-Identifier: MIT
-if SHIELD_ERGOS1_OSE_LEFT
+if SHIELD_ERGOS1_OE_LEFT
 
 config ZMK_KEYBOARD_NAME
 	default "Ergo S-1"
@@ -10,7 +10,7 @@ config ZMK_SPLIT_ROLE_CENTRAL
 
 endif
 
-if SHIELD_ERGOS1_OSE_LEFT || SHIELD_ERGOS1_OSE_RIGHT
+if SHIELD_ERGOS1_OE_LEFT || SHIELD_ERGOS1_OE_RIGHT
 
 config ZMK_SPLIT
 	default y

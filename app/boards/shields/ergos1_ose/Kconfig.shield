@@ -1,7 +1,0 @@
-# Copyright (c) 2021 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-config SHIELD_ERGOS1_OSE_LEFT
-	def_bool $(shields_list_contains,ergos1_ose_left)
-
-config SHIELD_ERGOS1_OSE_RIGHT
-	def_bool $(shields_list_contains,ergos1_ose_right)
