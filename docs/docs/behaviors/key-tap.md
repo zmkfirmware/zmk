@@ -5,20 +5,24 @@ sidebar_label: Key Tap
 
 ## Summary
 
-The key tap behavior is a combination of key press and release on just pressing the key.
+The key tap behavior is similar to [key press](key-press.md), but key tap will press _and then immediately release_ the key (even if the physical key remains held down).
 
-All keycodes including modifiers can be used the same way as with the key press behavior (so standard keycodes are sent for press/release).
+All [keycodes](../codes/index.mdx) (including modifiers) can be used the same way as with the [key press](key-press.md) behavior.
 
-It is usefull if you want to make a layout that has the same keycode with and without a modifier close together, e.g. `[` and `{`.
+:::tip
 
-Since `LBRC` is basically just `LSHIFT(LBKT)` it can happen, that you still hold `{` while using `[` which leads to a missed keycode since the base-key is still pressed.
+Key tap is useful if you experience issues when rolling keys that share a base keycode.
 
-By immediately releasing the key with key tap this is circumvented.
+For example, a common programming bigram is `+=`. Behind the scenes, `+` is produced with `SHIFT` and `=`. So typing the keys `+` and `=` too quickly can sometimes result in one of them being ignored since the base-key is still pressed. However, by immediately releasing the key with key tap this issue is circumvented.
+
+See [zmkfirmware/zmk #1076](https://github.com/zmkfirmware/zmk/issues/1076) for a thread tracking this.
+
+:::
 
 ### Behavior Binding
 
 - Reference: `&kt`
-- Parameter: The keycode usage ID from the usage page, e.g. `LBTK` or `A`
+- Parameter: The keycode usage ID from the usage page, e.g. `PLUS` or `A`
 
 Example:
 
