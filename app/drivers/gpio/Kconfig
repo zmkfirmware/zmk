@@ -1,2 +1,3 @@
 rsource "Kconfig.mcp23017"
 rsource "Kconfig.max7318"
+rsource "Kconfig.595"

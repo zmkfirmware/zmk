@@ -32,8 +32,8 @@ Build command for the default keymap of Leeloo:
 
 Build command for your custom keymap of Leeloo:
 
-    west build -d build/right -p -b nice_nano_v2 -- -DSHIELD=leeloo_right -DZMK_CONFIG="C:\dev\zmk\[yourNmae]\leeloo\config"
-    west build -d build/left -p -b nice_nano_v2 -- -DSHIELD=leeloo_left -DZMK_CONFIG="C:\dev\zmk\[yourName]\leeloo\config"
+    west build -d build/right -p -b nice_nano_v2 -- -DSHIELD=leeloo_right -DZMK_CONFIG="C:/dev/zmk/[yourNmae]/leeloo/config"
+    west build -d build/left -p -b nice_nano_v2 -- -DSHIELD=leeloo_left -DZMK_CONFIG="C:/dev/zmk/[yourName]/leeloo/config"
 
 # Support
 If you have any questions with regards to Leeloo, please [Contact Us](https://clicketysplit.ca/pages/contact-us).

@@ -6,7 +6,7 @@ menu "ZMK Display Widgets"
 config ZMK_WIDGET_LAYER_STATUS
     bool "Widget for highest, active layer using small icons"
     default y
-    depends on !ZMK_SPLIT || ZMK_SPLIT_BLE_ROLE_CENTRAL
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
     select LVGL_USE_LABEL
 
 config ZMK_WIDGET_BATTERY_STATUS
@@ -17,13 +17,19 @@ config ZMK_WIDGET_BATTERY_STATUS
 
 config ZMK_WIDGET_OUTPUT_STATUS
     bool "Widget for keyboard output status icons"
-    depends on BT
-    default y if BT
+    depends on BT && (!ZMK_SPLIT_BLE || ZMK_SPLIT_ROLE_CENTRAL)
+    default y if BT && (!ZMK_SPLIT_BLE || ZMK_SPLIT_ROLE_CENTRAL)
+    select LVGL_USE_LABEL
+
+config ZMK_WIDGET_PERIPHERAL_STATUS
+    bool "Widget for split peripheral status icons"
+    depends on BT && ZMK_SPLIT_BLE && !ZMK_SPLIT_ROLE_CENTRAL
+    default y if BT && ZMK_SPLIT_BLE && !ZMK_SPLIT_ROLE_CENTRAL
     select LVGL_USE_LABEL
     
 config ZMK_WIDGET_WPM_STATUS
     bool "Widget for displaying typed words per minute"
-    depends on !ZMK_SPLIT || ZMK_SPLIT_BLE_ROLE_CENTRAL
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
     select LVGL_USE_LABEL
     select ZMK_WPM
 

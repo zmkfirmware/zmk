@@ -23,7 +23,7 @@ ZMK_EVENT_DECLARE(zmk_keycode_state_changed);
 
 static inline struct zmk_keycode_state_changed_event *
 zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t timestamp) {
-    uint16_t page = ZMK_HID_USAGE_PAGE(encoded) & 0xFF;
+    uint16_t page = ZMK_HID_USAGE_PAGE(encoded);
     uint16_t id = ZMK_HID_USAGE_ID(encoded);
     uint8_t implicit_modifiers = 0x00;
     uint8_t explicit_modifiers = 0x00;
