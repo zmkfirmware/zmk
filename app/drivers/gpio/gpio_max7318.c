@@ -20,12 +20,42 @@
 #include <drivers/i2c.h>
 #include <drivers/ext_power.h>
 
-#include "gpio_max7318.h"
-
 #define LOG_LEVEL CONFIG_GPIO_LOG_LEVEL
 #include <logging/log.h>
 
 LOG_MODULE_REGISTER(gpio_max7318);
+
+// Register definitions
+#define REG_INPUT_PORTA 0x00
+#define REG_INPUT_PORTB 0x01
+#define REG_OUTPUT_PORTA 0x02
+#define REG_OUTPUT_PORTB 0x03
+#define REG_IPOL_PORTA 0x04
+#define REG_IPOL_PORTB 0x05
+#define REG_CONFIG_PORTA 0x06
+#define REG_CONFIG_PORTB 0x07
+
+// Configuration data
+struct max7318_config {
+    struct gpio_driver_config common;
+
+    struct i2c_dt_spec i2c_bus;
+    uint8_t ngpios;
+};
+
+// Runtime driver data
+struct max7318_drv_data {
+    // gpio_driver_data needs to be first
+    struct gpio_driver_config data;
+
+    struct k_sem lock;
+
+    struct {
+        uint16_t ipol;
+        uint16_t config;
+        uint16_t output;
+    } reg_cache;
+};
 
 /**
  * @brief Read the value of two consecutive registers
@@ -40,11 +70,10 @@ LOG_MODULE_REGISTER(gpio_max7318);
  * @return 0 if successful, failed otherwise.
  */
 static int read_registers(const struct device *dev, uint8_t reg, uint16_t *buf) {
-    struct max7318_drv_data *const drv_data = (struct max7318_drv_data *const)dev->data;
-    uint16_t dev_addr = ((struct max7318_config *)dev->config)->device_addr;
+    const struct max7318_config *config = dev->config;
 
     uint16_t data = 0;
-    int ret = i2c_burst_read(drv_data->i2c, dev_addr, reg, (uint8_t *)&data, sizeof(data));
+    int ret = i2c_burst_read_dt(&config->i2c_bus, reg, (uint8_t *)&data, sizeof(data));
     if (ret) {
         LOG_DBG("i2c_write_read FAIL %d\n", ret);
         return ret;
@@ -71,15 +100,14 @@ static int read_registers(const struct device *dev, uint8_t reg, uint16_t *buf) 
  * @return 0 if successful, failed otherwise.
  */
 static int write_registers(const struct device *dev, uint8_t reg, uint16_t value) {
-    struct max7318_drv_data *const drv_data = (struct max7318_drv_data *const)dev->data;
+    const struct max7318_config *config = dev->config;
 
     LOG_DBG("max7318: write: reg[0x%X] = 0x%X, reg[0x%X] = 0x%X", reg, (value & 0xFF), (reg + 1),
             (value >> 8));
 
     uint16_t data = sys_cpu_to_le16(value);
-    uint16_t dev_addr = ((struct max7318_config *)dev->config)->device_addr;
 
-    return i2c_burst_write(drv_data->i2c, dev_addr, reg, (uint8_t *)&data, sizeof(data));
+    return i2c_burst_write_dt(&config->i2c_bus, reg, (uint8_t *)&data, sizeof(data));
 }
 
 /**
@@ -273,28 +301,26 @@ static int max7318_init(const struct device *dev) {
     const struct max7318_config *const config = dev->config;
     struct max7318_drv_data *const drv_data = (struct max7318_drv_data *const)dev->data;
 
-    drv_data->i2c = device_get_binding((char *)config->i2c_dev_name);
-    if (!drv_data->i2c) {
-        LOG_DBG("Unable to get i2c device");
-        return -ENODEV;
-    }
-
-    if (!device_is_ready(drv_data->i2c)) {
+    if (!device_is_ready(config->i2c_bus.bus)) {
         LOG_WRN("i2c bus not ready!");
         return -EINVAL;
     }
 
-    LOG_INF("device initialised at 0x%x (i2c=%s)", config->device_addr, config->i2c_dev_name);
+    LOG_INF("device initialised at 0x%x", config->i2c_bus.addr);
 
     k_sem_init(&drv_data->lock, 1, 1);
     return 0;
 }
 
+#define GPIO_PORT_PIN_MASK_FROM_NGPIOS(ngpios) ((gpio_port_pins_t)(((uint64_t)1 << (ngpios)) - 1U))
+
+#define GPIO_PORT_PIN_MASK_FROM_DT_INST(inst)                                                      \
+    GPIO_PORT_PIN_MASK_FROM_NGPIOS(DT_INST_PROP(inst, ngpios))
+
 #define MAX7318_INIT(inst)                                                                         \
     static struct max7318_config max7318_##inst##_config = {                                       \
-        .i2c_dev_name = DT_INST_BUS_LABEL(inst),                                                   \
-        .device_addr = DT_INST_REG_ADDR(inst),                                                     \
-    };                                                                                             \
+        .common = {.port_pin_mask = GPIO_PORT_PIN_MASK_FROM_DT_INST(inst)},                        \
+        .i2c_bus = I2C_DT_SPEC_INST_GET(inst)};                                                    \
                                                                                                    \
     static struct max7318_drv_data max7318_##inst##_drvdata = {                                    \
         /* Default for registers according to datasheet */                                         \
