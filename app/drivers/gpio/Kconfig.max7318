@@ -10,6 +10,7 @@ menuconfig GPIO_MAX7318
 	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_GPIO_MAX7318))
 	depends on I2C
 	select HAS_DTS_GPIO
+	select ZMK_DRIVERS_GPIO
 	help
 	  Enable driver for MAX7318 I2C-based GPIO chip.
 
