@@ -38,22 +38,5 @@ config ZMK_WIDGET_BONGO_CAT
     depends on !ZMK_SPLIT || ZMK_SPLIT_BLE_ROLE_CENTRAL
     select LVGL_USE_LABEL
     select LVGL_USE_IMG
-    select LVGL_USE_ANIMATION if !ZMK_WIDGET_BONGO_CAT_INTERACTIVE
-
-if ZMK_WIDGET_BONGO_CAT
-
-config ZMK_WIDGET_BONGO_CAT_INTERACTIVE
-    bool "Bongo cat responds to key press"
-    default y
-
-if !ZMK_WIDGET_BONGO_CAT_INTERACTIVE
-
-config ZMK_WIDGET_BONGO_CAT_ANIMATION_INTERVAL
-    int "Time delay in ms for bongo cat animation"
-    default 531
-
-endif
-
-endif # ZMK_WIDGET_BONGO_CAT
 
 endmenu

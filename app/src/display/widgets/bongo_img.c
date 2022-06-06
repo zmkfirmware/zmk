@@ -106,7 +106,6 @@ const lv_img_dsc_t right = {
   .data = right_map,
 };
 
-#if IS_ENABLED(CONFIG_ZMK_WIDGET_BONGO_CAT_INTERACTIVE)
 #ifndef LV_ATTRIBUTE_IMG_NONE
 #define LV_ATTRIBUTE_IMG_NONE
 #endif
@@ -208,4 +207,3 @@ const lv_img_dsc_t both = {
   .data_size = 256,
   .data = both_map,
 };
-#endif /* IS_ENABLED(CONFIG_ZMK_WIDGET_BONGO_CAT_INTERACTIVE) */
