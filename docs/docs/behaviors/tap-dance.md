@@ -76,7 +76,7 @@ Alphanumeric [`key press`](key-press.md) bindings, like those used for `td0`, wi
 
 <TabItem value="advanced">
 
-This example configures a mod-tap inside a tap-dance named `td_mt` that outputs `LSHIFT` on a single tap, `CAPSLOCK` on a single press and hold, and `LCTRL` on double-tap.
+This example configures a mod-tap inside a tap-dance named `td_mt` that outputs `CAPSLOCK` on a single tap, `LSHIFT` on a single press and hold, and `LCTRL` when the tap-dance is pressed twice.
 
 ```title="Advanced Tap-Dance Example: Nested Mod-Tap"
 #include <behaviors.dtsi>
@@ -89,7 +89,7 @@ This example configures a mod-tap inside a tap-dance named `td_mt` that outputs 
             label = "TAP_DANCE_MOD_TAP";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
-            bindings = <&mt CAPSLOCK LSHIFT>, <&kp LCTRL>;
+            bindings = <&mt LSHIFT CAPSLOCK>, <&kp LCTRL>;
         };
 	};
 
