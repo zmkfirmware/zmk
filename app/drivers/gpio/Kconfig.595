@@ -10,6 +10,7 @@ menuconfig GPIO_595
 	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_GPIO_595))
 	depends on SPI
 	select HAS_DTS_GPIO
+	select ZMK_DRIVERS_GPIO
 	help
 	  Enable driver for 595 shift register chip using SPI.
 
