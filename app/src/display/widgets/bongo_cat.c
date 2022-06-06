@@ -14,16 +14,16 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
+enum bongo_state {
+    bongo_state_none,  /* no hands down */
+    bongo_state_left,  /* left hand down */
+    bongo_state_right, /* right hand down */
+} current_bongo_state;
+
 LV_IMG_DECLARE(none);
 LV_IMG_DECLARE(left);
 LV_IMG_DECLARE(right);
 LV_IMG_DECLARE(both);
-
-enum bongo_state {
-    bongo_state_none,
-    bongo_state_left,
-    bongo_state_right,
-} current_bongo_state;
 
 const void *images[] = {
     &none,
@@ -59,7 +59,7 @@ void set_bongo_state(struct zmk_widget_bongo_cat *widget, struct zmk_position_st
     } else {
         if (current_bongo_state ^ (bongo_state_left | bongo_state_right)) {
             tmp = bongo_state_none;
-            widget->is_right = !widget->is_right;
+            widget->is_right = !widget->is_right; /* flip side when return to none state */
         }
     }
 
