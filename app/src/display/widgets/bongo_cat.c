@@ -14,9 +14,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
+LV_IMG_DECLARE(none);
 LV_IMG_DECLARE(left);
 LV_IMG_DECLARE(right);
-LV_IMG_DECLARE(none);
 LV_IMG_DECLARE(both);
 
 enum bongo_state {
