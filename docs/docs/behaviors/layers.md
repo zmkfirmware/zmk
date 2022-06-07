@@ -58,11 +58,12 @@ Example:
 ```
 
 :::info
-Functionally, the layer-tap is a ["hold-preferred" flavor](hold-tap.md/#flavors) of [hold-tap](hold-tap.md) with a [`tapping-term-ms`](hold-tap.md/#tapping-term-ms) of 200 that takes in a [`momentary layer`](#momentary-layer) and a [keypress](key-press.md) as its "hold" and "tap" parameters respectively.
+Functionally, the layer-tap is a [hold-tap](hold-tap.md) of the ["tap-preferred" flavor](hold-tap.md/#flavors) and a [`tapping-term-ms`](hold-tap.md/#tapping-term-ms) of 200 that takes in a [`momentary layer`](#momentary-layer) and a [keypress](key-press.md) as its "hold" and "tap" parameters, respectively.
 
-For users looking to create a keybind like the layer-tap that depending on how long the key is held, invokes behaviors like [sticky keys](sticky-key.md) or [key toggles](key-toggle.md), see [Hold-Tap](hold-tap.md).
+For users who want to send a different [keycode](../codes/index.mdx) depending on if the same key is held or tapped, see [Mod-Tap](mod-tap.md).
 
-Similarly, for users who want to send a different [keycode](../codes/index.mdx) depending on if the same key is held or tapped, see [Mod-Tap](mod-tap.md).
+Similarly, for users looking to create a keybind like the layer-tap that depending on how long the key is held, invokes behaviors like [sticky keys](sticky-key.md) or [key toggles](key-toggle.md), see [Hold-Tap](hold-tap.md).
+
 :::
 
 ## To Layer
