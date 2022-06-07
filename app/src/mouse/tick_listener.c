@@ -16,7 +16,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <sys/util.h> // CLAMP
 
-#if !defined(CONFIG_ZMK_SPLIT) || defined(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
+#if !defined(CONFIG_ZMK_SPLIT) || defined(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 #if CONFIG_MINIMAL_LIBC
 static float powf(float base, float exponent) {
     // poor man's power implementation rounds the exponent down to the nearest integer.
@@ -103,4 +103,4 @@ int zmk_mouse_tick_listener(const zmk_event_t *eh) {
 ZMK_LISTENER(zmk_mouse_tick_listener, zmk_mouse_tick_listener);
 ZMK_SUBSCRIPTION(zmk_mouse_tick_listener, zmk_mouse_tick);
 
-#endif /* !defined(CONFIG_ZMK_SPLIT) || defined(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
+#endif /* !defined(CONFIG_ZMK_SPLIT) || defined(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) */
