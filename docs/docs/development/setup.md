@@ -336,7 +336,8 @@ Since the Zephyr™ SDK is not available for Windows, we recommending following 
 Since the Zephyr™ SDK is not available for macOS, we recommending following the steps to install the GNU ARM Embedded toolchain:
 
 ```
-brew install --cask gcc-arm-embedded
+brew tap armmbed/formulae
+brew install arm-none-eabi-gcc
 ```
 
 </TabItem>
@@ -513,6 +514,11 @@ To load the Zephyr environment properly for just one transient shell, run the fo
 ```
 source zephyr/zephyr-env.sh
 ```
+
+:::info
+If it goes wrong running ``west build`` on macOS, try ``export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb && export GNUARMEMB_TOOLCHAIN_PATH=/opt/homebrew/Cellar/arm-none-eabi-gcc/10.3-2021.07/gcc``
+The value of ``GNUARMEMB_TOOLCHAIN_PATH`` may differ, please refer to your own path.
+:::
 
 ##### All Shells
 
