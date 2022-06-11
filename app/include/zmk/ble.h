@@ -24,6 +24,7 @@ int zmk_ble_clear_bonds();
 int zmk_ble_prof_next();
 int zmk_ble_prof_prev();
 int zmk_ble_prof_select(uint8_t index);
+int zmk_ble_clear_all_bonds();
 
 int zmk_ble_active_profile_index();
 int zmk_ble_profile_index(const bt_addr_le_t *addr);

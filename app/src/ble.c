@@ -225,6 +225,23 @@ int zmk_ble_clear_bonds() {
     return 0;
 };
 
+int zmk_ble_clear_all_bonds() {
+    LOG_DBG("zmk_ble_clear_all_bonds()");
+
+    // Unpair all profiles
+    for (uint8_t i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
+        if (bt_addr_le_cmp(&profiles[i].peer, BT_ADDR_LE_ANY)) {
+            bt_unpair(BT_ID_DEFAULT, &profiles[i].peer);
+            set_profile_address(i, BT_ADDR_LE_ANY);
+        }
+    }
+
+    // Automatically switch to profile 0
+    zmk_ble_prof_select(0);
+
+    return 0;
+};
+
 int zmk_ble_active_profile_index() { return active_profile; }
 
 int zmk_ble_profile_index(const bt_addr_le_t *addr) {
