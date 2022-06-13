@@ -1,0 +1,95 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if ZMK_SPLIT && ZMK_SPLIT_BLE
+
+menu "BLE Transport"
+
+# Added for backwards compatibility. New shields/board should set `ZMK_SPLIT_ROLE_CENTRAL` only.
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	bool
+	select ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_SPLIT_ROLE_CENTRAL
+	select BT_CENTRAL
+	select BT_GATT_CLIENT
+	select BT_GATT_AUTO_DISCOVER_CCC
+
+if ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue when received from peripherals"
+	default 5
+
+config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE
+	int "BLE split central write thread stack size"
+	default 512
+
+config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE
+	int "Max number of behavior run events to queue to send to the peripheral(s)"
+	default 5
+
+endif # ZMK_SPLIT_ROLE_CENTRAL
+
+if !ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE
+	int "BLE split peripheral notify thread stack size"
+	default 650
+
+config ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY
+	int "BLE split peripheral notify thread priority"
+	default 5
+
+config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue to send to the central"
+	default 10
+
+config ZMK_USB
+	default n
+
+config BT_MAX_PAIRED
+	default 1
+
+config BT_MAX_CONN
+	default 1
+
+config BT_PERIPHERAL_PREF_MAX_INT
+	default 6
+
+#!ZMK_SPLIT_ROLE_CENTRAL
+endif
+
+endmenu
+
+#ZMK_SPLIT_BLE
+endif
+
+
+if ZMK_BLE
+
+if ZMK_SPLIT_BLE && ZMK_SPLIT_ROLE_CENTRAL
+
+config BT_MAX_CONN
+	default 6
+
+config BT_MAX_PAIRED
+	default 6
+
+#ZMK_SPLIT_BLE && ZMK_SPLIT_ROLE_CENTRAL
+endif
+
+if !ZMK_SPLIT_BLE
+
+config BT_MAX_CONN
+	default 5
+
+config BT_MAX_PAIRED
+	default 5
+
+#!ZMK_SPLIT_BLE
+endif
+
+#ZMK_BLE
+endif
+

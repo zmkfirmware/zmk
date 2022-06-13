@@ -1,0 +1,33 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+		label = "Default keymap";
+
+		default_layer {
+			bindings = <
+			&caps_word &kp A
+			&kp LSHFT &kp MINUS
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+	ZMK_MOCK_PRESS(0,0,10)
+	ZMK_MOCK_RELEASE(0,0,10)
+	ZMK_MOCK_PRESS(0,1,10)
+	ZMK_MOCK_RELEASE(0,1,10)
+	ZMK_MOCK_PRESS(1,0,10)
+	ZMK_MOCK_PRESS(1,1,10)
+	ZMK_MOCK_RELEASE(1,1,10)
+	ZMK_MOCK_RELEASE(1,0,10)
+	ZMK_MOCK_PRESS(0,1,10)
+	ZMK_MOCK_RELEASE(0,1,10)
+	>;
+};

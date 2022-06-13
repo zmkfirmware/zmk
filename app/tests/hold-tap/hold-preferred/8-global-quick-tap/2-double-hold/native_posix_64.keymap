@@ -1,0 +1,20 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+&kscan {
+	events = <
+		/* hold the first mod tap */
+		ZMK_MOCK_PRESS(0,0,400)
+		/* hold the second mod tap */
+		ZMK_MOCK_PRESS(0,1,400)
+		/* press the normal key */
+		ZMK_MOCK_PRESS(1,0,10)
+		ZMK_MOCK_RELEASE(1,0,10)
+
+		/* release the hold taps */
+		ZMK_MOCK_RELEASE(0,0,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+	>;
+};

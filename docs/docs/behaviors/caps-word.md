@@ -23,8 +23,7 @@ Example:
 
 #### Continue List
 
-By default, the caps word will remain active when any alphanumeric character or the underscore (`UNDERSCORE`) characters are pressed. Any other keycode sent,
-will turn off caps word. If you would like to override this, you can set a new array of keys in the `continue-list` property in your keymap:
+By default, the caps word will remain active when any alphanumeric character or underscore (`UNDERSCORE`), backspace (`BACKSPACE`), or delete (`DELETE`) characters are pressed. Any other non-modifier keycode sent will turn off caps word. If you would like to override this, you can set a new array of keys in the `continue-list` property in your keymap:
 
 ```
 &caps_word {

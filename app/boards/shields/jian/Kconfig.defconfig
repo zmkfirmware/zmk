@@ -4,7 +4,7 @@ if SHIELD_JIAN_LEFT
 config ZMK_KEYBOARD_NAME
 	default "Jian"
 
-config ZMK_SPLIT_BLE_ROLE_CENTRAL
+config ZMK_SPLIT_ROLE_CENTRAL
 	default y
 
 endif

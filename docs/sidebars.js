@@ -28,6 +28,7 @@ module.exports = {
       "behaviors/mod-tap",
       "behaviors/mod-morph",
       "behaviors/macros",
+      "behaviors/key-toggle",
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
       "behaviors/tap-dance",
@@ -68,6 +69,7 @@ module.exports = {
         items: [
           "development/new-shield",
           "development/hardware-metadata-files",
+          "development/new-behavior",
         ],
       },
     ],
