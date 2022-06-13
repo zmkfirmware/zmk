@@ -11,7 +11,7 @@ import styles from "./styles.module.css";
 import PowerEstimate from "../components/power-estimate";
 import CustomBoardForm from "../components/custom-board-form";
 import { useInput } from "../utils/hooks";
-import { zmkBoards } from "../data/power";
+import { zmkBoards, backlightLEDs } from "../data/power";
 import "../css/power-profiler.css";
 
 const Disclaimer = `This profiler makes many assumptions about typing
@@ -41,6 +41,17 @@ function PowerProfiler() {
   const { value: glowQuantity, bind: bindGlowQuantity } = useInput(10);
   const { value: glowBrightness, bind: bindGlowBrightness } = useInput(1);
 
+  const { value: backlightEnabled, bind: bindBacklightEnabled } =
+    useInput(false);
+  const { value: backlightQuantity, bind: bindBacklightQuantity } =
+    useInput(60);
+  const { value: backlightColor, bind: bindBacklightColor } = useInput("");
+  const { value: backlightVoltage, bind: bindBacklightVoltage } = useInput(2.2);
+  const { value: backlightResistance, bind: bindBacklightResistance } =
+    useInput(100);
+  const { value: backlightBrightness, bind: bindBacklightBrightness } =
+    useInput(1);
+
   const { value: displayEnabled, bind: bindDisplayEnabled } = useInput(false);
   const { value: displayType, bind: bindDisplayType } = useInput("");
 
@@ -62,6 +73,11 @@ function PowerProfiler() {
           otherQuiescentMicroA: otherQuiescentMicroA,
         }
       : zmkBoards[board];
+
+  const currentBacklightVoltage =
+    backlightColor === "custom"
+      ? backlightVoltage
+      : backlightLEDs[backlightColor || "White"];
 
   return (
     <Layout
@@ -209,6 +225,68 @@ function PowerProfiler() {
               </div>
               <div className="col col--4">
                 <div className="profilerInput">
+                  <label>Backlight</label>
+                  <input
+                    checked={backlightEnabled}
+                    id="backlight"
+                    {...bindBacklightEnabled}
+                    className="toggleInput"
+                    type="checkbox"
+                  />
+                  <label htmlFor="backlight" className="toggle">
+                    <div className="toggleThumb" />
+                  </label>
+                </div>
+                {backlightEnabled && (
+                  <>
+                    <div className="profilerInput">
+                      <label>LED Quantity</label>
+                      <div className="inputBox">
+                        <input {...bindBacklightQuantity} type="number" />
+                      </div>
+                    </div>
+                    <div className="profilerInput">
+                      <label>LED Forward Voltage</label>
+                      <select {...bindBacklightColor}>
+                        {Object.entries(backlightLEDs).map(([c, v]) => (
+                          <option key={c} value={c}>
+                            {c} ({v.toFixed(1)} V)
+                          </option>
+                        ))}
+                        <option value="custom">Custom</option>
+                      </select>
+                      {backlightColor === "custom" && (
+                        <div className="profilerInput">
+                          <div className="inputBox">
+                            <input {...bindBacklightVoltage} type="number" />
+                            <span>V</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="profilerInput">
+                      <label>LED Resistance</label>
+                      <div className="inputBox">
+                        <input {...bindBacklightResistance} type="number" />
+                        <span>ohm</span>
+                      </div>
+                    </div>
+                    <div className="profilerInput">
+                      <label>Brightness</label>
+                      <input
+                        {...bindBacklightBrightness}
+                        type="range"
+                        min="0"
+                        step=".01"
+                        max="1"
+                      />
+                      <span>{Math.round(backlightBrightness * 100)}%</span>
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="col col--4">
+                <div className="profilerInput">
                   <label>Display</label>
                   <input
                     checked={displayEnabled}
@@ -244,6 +322,13 @@ function PowerProfiler() {
                 batteryMilliAh={batteryMilliAh}
                 usage={{ bondedQty, percentAsleep }}
                 underglow={{ glowEnabled, glowBrightness, glowQuantity }}
+                backlight={{
+                  backlightEnabled,
+                  backlightVoltage: currentBacklightVoltage,
+                  backlightResistance,
+                  backlightBrightness,
+                  backlightQuantity,
+                }}
                 display={{ displayEnabled, displayType }}
               />
               <PowerEstimate
@@ -252,6 +337,13 @@ function PowerProfiler() {
                 batteryMilliAh={batteryMilliAh}
                 usage={{ bondedQty, percentAsleep }}
                 underglow={{ glowEnabled, glowBrightness, glowQuantity }}
+                backlight={{
+                  backlightEnabled,
+                  backlightVoltage: currentBacklightVoltage,
+                  backlightResistance,
+                  backlightBrightness,
+                  backlightQuantity,
+                }}
                 display={{ displayEnabled, displayType }}
               />
             </>
@@ -262,6 +354,13 @@ function PowerProfiler() {
               batteryMilliAh={batteryMilliAh}
               usage={{ bondedQty, percentAsleep }}
               underglow={{ glowEnabled, glowBrightness, glowQuantity }}
+              backlight={{
+                backlightEnabled,
+                backlightVoltage: currentBacklightVoltage,
+                backlightResistance,
+                backlightBrightness,
+                backlightQuantity,
+              }}
               display={{ displayEnabled, displayType }}
             />
           )}

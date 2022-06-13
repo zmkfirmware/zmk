@@ -325,7 +325,7 @@ static int mcp23017_init(const struct device *dev) {
     };                                                                                             \
                                                                                                    \
     /* This has to init after SPI master */                                                        \
-    DEVICE_DT_INST_DEFINE(inst, mcp23017_init, device_pm_control_nop, &mcp23017_##inst##_drvdata,  \
+    DEVICE_DT_INST_DEFINE(inst, mcp23017_init, NULL, &mcp23017_##inst##_drvdata,                   \
                           &mcp23017_##inst##_config, POST_KERNEL,                                  \
                           CONFIG_GPIO_MCP23017_INIT_PRIORITY, &api_table);
 

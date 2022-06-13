@@ -7,6 +7,7 @@ menuconfig GPIO_MCP23017
 	bool "MCP23017 I2C-based GPIO chip"
 	depends on I2C
 	select HAS_DTS_GPIO
+	select ZMK_DRIVERS_GPIO
 	help
 	  Enable driver for MCP23017 I2C-based GPIO chip.
 

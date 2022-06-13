@@ -11,7 +11,7 @@
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
-#include <zmk/usb.h>
+#include <zmk/usb_hid.h>
 #include <zmk/hog.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
@@ -35,13 +35,12 @@ static void endpoints_save_preferred_work(struct k_work *work) {
     settings_save_one("endpoints/preferred", &preferred_endpoint, sizeof(preferred_endpoint));
 }
 
-static struct k_delayed_work endpoints_save_work;
+static struct k_work_delayable endpoints_save_work;
 #endif
 
 static int endpoints_save_preferred() {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    k_delayed_work_cancel(&endpoints_save_work);
-    return k_delayed_work_submit(&endpoints_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return k_work_reschedule(&endpoints_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
     return 0;
 #endif
@@ -182,7 +181,7 @@ static int zmk_endpoints_init(const struct device *_arg) {
         return err;
     }
 
-    k_delayed_work_init(&endpoints_save_work, endpoints_save_preferred_work);
+    k_work_init_delayable(&endpoints_save_work, endpoints_save_preferred_work);
 
     settings_load_subtree("endpoints");
 #endif

@@ -6,6 +6,7 @@
 
 #include <zephyr.h>
 #include <device.h>
+#include <bluetooth/addr.h>
 #include <drivers/kscan.h>
 #include <logging/log.h>
 
@@ -49,8 +50,11 @@ void zmk_kscan_process_msgq(struct k_work *item) {
         uint32_t position = zmk_matrix_transform_row_column_to_position(ev.row, ev.column);
         LOG_DBG("Row: %d, col: %d, position: %d, pressed: %s", ev.row, ev.column, position,
                 (pressed ? "true" : "false"));
-        ZMK_EVENT_RAISE(new_zmk_position_state_changed((struct zmk_position_state_changed){
-            .state = pressed, .position = position, .timestamp = k_uptime_get()}));
+        ZMK_EVENT_RAISE(new_zmk_position_state_changed(
+            (struct zmk_position_state_changed){.source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
+                                                .state = pressed,
+                                                .position = position,
+                                                .timestamp = k_uptime_get()}));
     }
 }
 

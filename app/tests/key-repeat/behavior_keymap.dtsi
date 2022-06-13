@@ -1,0 +1,17 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+		label = "Default keymap";
+
+		default_layer {
+			bindings = <
+			&key_repeat &kp A
+			&kp LCTRL &kp C_VOL_UP
+			>;
+		};
+	};
+};
