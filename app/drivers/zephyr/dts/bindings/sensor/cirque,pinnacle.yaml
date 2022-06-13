@@ -3,7 +3,7 @@ description: |
 
 compatible: "cirque,pinnacle"
 
-include: base.yaml
+include: spi-device.yaml
 
 on-bus: spi
 
