@@ -1,0 +1,12 @@
+file_format: "1"
+id: lake65
+name: lake65
+type: board
+arch: arm
+features:
+  - keys
+  - underglow
+outputs:
+  - usb
+  - ble
+url:none
