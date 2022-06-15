@@ -9,33 +9,40 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
 
+#define NONE 0
+#define LOWER 1
+#define RAISE 2
+#define SOME_THING 4 // need to update this layer what should this be called??
+#define MEDIA 5
+#define FUNC 6
+
 / {
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             // ----------------------------------------------------------------------------------------------------------
-            // |  ESC  |  1   |  2   |  3   |  4   |  5   |-------|-------|   6   |  7    |  8   |  9   |   0   |   |
-            // |  TAB  |  Q   |  W   |  E   |  R   |  T   |-------|-------|   Y   |  U    |  I   |  O   |   P   |  \    |
-            // | BSPC  |  A   |  S   |  D   |  F   |  G   |-------|-------|   H   |  J    |  K   |  L   |   ;   |  '    |
-            // | SHIFT |  Z   |  X   |  C   |  V   |  B   |-------|-------|   N   |  M    |  ,   |  .   |   /   | ENTER |
-            // |  CTRL |  Fn  | LALT | LGUI | RAIS | TAB  | SPACE | ENTER |  LOWR |	 MEH  |      |  -   |   =   |-------|
+            // |  ESC  |  1   |  2   |  3   |  4   |  5     |-------|-------|   6   |  7    |  8   |  9   |   0   |   |
+            // |  TAB  |  Q   |  W   |  E   |  R   |  T     |-------|-------|   Y   |  U    |  I   |  O   |   P   |  \    |
+            // | BSPC  |  A   |  S   |  D   |  F   |  G     |-------|-------|   H   |  J    |  K   |  L   |   ;   |  '    |
+            // | SHIFT |  Z   |  X   |  C   |  V   |  B     |-------|-------|   N   |  M    |  ,   |  .   |   /   | ENTER |
+            // |  CTRL |  Fn  | LALT | LGUI | RAIS | SPACE  | TAB   | ENTER |  LOWR |  MEH  |      |  -   |   =   |-------|
             bindings = <
-                &kp ESC    &kp N1 &kp N2   &kp N3   &kp N4 &kp N5                    &kp N6 &kp N7            &kp N8    &kp N9    &kp N0    &trans
-                &kp GRAVE  &kp Q  &kp W    &kp E    &kp R  &kp T                     &kp Y  &kp U             &kp I     &kp O     &kp P     &kp BSLH
-                &kp BSPC   &kp A  &kp S    &kp D    &kp F  &kp G                     &kp H  &kp J             &kp K     &kp L     &kp SEMI  &kp SQT
-                &kp LSHFT  &kp Z  &kp X    &kp C    &kp V  &kp B                     &kp N  &kp M             &kp COMMA &kp DOT   &kp FSLH  &kp RSHIFT
-                &kp LCTRL  &mo 5  &kp LALT &kp LGUI &mo 1  &kp TAB &kp SPACE &kp RET &mo 2  &kp LA(LC(LSHFT)) &trans    &kp MINUS &kp EQUAL &mo 4
+                &kp ESC    &kp N1 &kp N2   &kp N3   &kp N4     &kp N5                    &kp N6     &kp N7            &kp N8    &kp N9    &kp N0    &trans
+                &kp GRAVE  &kp Q  &kp W    &kp E    &kp R      &kp T                     &kp Y      &kp U             &kp I     &kp O     &kp P     &kp BSLH
+                &kp BSPC   &kp A  &kp S    &kp D    &kp F      &kp G                     &kp H      &kp J             &kp K     &kp L     &kp SEMI  &kp SQT
+                &kp LSHFT  &kp Z  &kp X    &kp C    &kp V      &kp B                     &kp N      &kp M             &kp COMMA &kp DOT   &kp FSLH  &kp RSHIFT
+                &kp LCTRL  &mo 5  &kp LALT &kp LGUI &mo LOWER  &kp SPACE &kp TAB &kp RET &mo RAISE  &kp LA(LC(LSHFT)) &trans    &kp MINUS &kp EQUAL &mo 4
             >;
         };
 
-        raise {
-            // ----------------------------------------------------------------------------------------------------------
-            // |  ESC  |  F2  |  F3  |  F4  |  F5  |  F6  |-------|-------|   F7  |  F8   |  F9  | F10  |  F11  |  F12  |
-            // |   ~   |  !   |  @   |  #   |  $   |  %   |-------|-------|   ^   |   &   |  *   |  (   |   )   |  DEL  |
-            // |       |  F1  |  F2  |  F3  |  F4  |  F5  |-------|-------|   F6  |   _   |  +   |  {   |   }   |   |   |
-            // |       |  F7  |  F8  |  F9  |  F10 |  F11 |-------|-------|   F12 | LS(#) |LS(|) |      |       |       |
-            // |-------|      |      |      |      |      |       |       |       | NEXT  | Vol- | Vol+ | PLAY  |-------|
+        lower {
+            // ----------------------------------------------------------------------------------------------------------------------------
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |  DEL  |        |        |        |        |        |-------|-------|  LEFT  |  DOWN  |  UP    |  RIGHT |        |        |
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |       |       |        |        |        |        |        |        |
             bindings = <
                 &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans     &trans    &trans
                 &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans     &trans    &trans
@@ -45,13 +52,13 @@
             >;
         };
 
-        lower {
-            // ----------------------------------------------------------------------------------------------------------
-            // |  ESC  |  F2  |  F3  |  F4  |  F5  |  F6  |-------|-------|  F7   |  F8   |  F9  | F10  |  F11  |  F12  |
-            // |   ~   |  1   |  2   |  3   |  4   |  5   |-------|-------|  6    |   7   |  8   |  9   |   0   |  DEL  |
-            // |  DEL  |  F1  |  F2  |  F3  |  F4  |  F5  |-------|-------|  F6   |   -   |  =   |  [   |   ]   |   \   |
-            // |       |  F7  |  F8  |  F9  |  F10 |  F11 |-------|-------|  F12  |   #   |  |   |      |       |       |
-            // |-------|      |      |      |      |      |       |       |       |       |      |      |       |-------|
+        raise {
+            // ----------------------------------------------------------------------------------------------------------------------------
+            // |       |   F1   |   F2   |   F3   |   F4   |   F5   |-------|-------|   F6   |   F7   |   F8   |   F9   |   F10  |   F11  |
+            // |       |        |        |   {    |   }    |        |-------|-------|        |        |        |        |        |   F12  |
+            // |       |        |        |   (    |   )    |        |-------|-------|  LEFT  |  DOWN  |  UP    |  RIGHT |        |        |
+            // |       |        |        |   [    |   ]    |        |-------|-------|        |        |  PREV  |  NEXT  |        |        |
+            // |       |        |        |        |        |        |       |       |        |        |        |  VOL-  |  VOL+  |  PLAY  |
             bindings = <
                 &trans  &kp F1  &kp F2  &kp F3   &kp F4   &kp F5               &kp F6     &kp F7    &kp F8     &kp F9       &kp F10      &kp F11
                 &trans  &trans  &trans  &kp LBRC &kp RBRC &trans               &trans     &trans    &trans     &trans       &trans       &kp F12
@@ -89,12 +96,12 @@
         };
 /*
         flock {
-            // ----------------------------------------------------------------------------------------------------------
-            // |tog(4) |  F2    |   F3   |   F4   |   F5   |   F6   |-------|-------|  F7  |  F8  |  F9  | F10 | F11 |      |
-            // |out tog|BT_SEL 0|BT_SEL 1|BT_SEL 2|BT_SEL 3|BT_SEL 4|-------|-------|BT_PRV|BT_NXT|BT_CLR|     |     |      |
-            // |       |        |        |        |        |        |-------|-------|      |      |      |     |     |      |
-            // |       |        |        |        |        |        |-------|-------|      |      |      |     |     |      |
-            // |       |        |        |        |        |        |       |       |      |      |      |     |     |      |
+            // ----------------------------------------------------------------------------------------------------------------------------
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |       |       |        |        |        |        |        |        |
             bindings = <
                 &tog 4       &kp F2       &kp F3       &kp F4       &kp F5       &kp F6                     &kp F7     &kp F8     &kp F9     &kp F10 &kp F11 &trans
                 &out OUT_TOG &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4               &bt BT_PRV &bt BT_NXT &bt BT_CLR &trans  &trans  &trans
@@ -105,3 +112,10 @@
         };*/
     };
 };
+
+            // ----------------------------------------------------------------------------------------------------------------------------
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        |        |        |       |       |        |        |        |        |        |        |
