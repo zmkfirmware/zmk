@@ -19,13 +19,13 @@
             // |  TAB  |  Q   |  W   |  E   |  R   |  T   |-------|-------|   Y   |  U    |  I   |  O   |   P   |  \    |
             // | BSPC  |  A   |  S   |  D   |  F   |  G   |-------|-------|   H   |  J    |  K   |  L   |   ;   |  '    |
             // | SHIFT |  Z   |  X   |  C   |  V   |  B   |-------|-------|   N   |  M    |  ,   |  .   |   /   | ENTER |
-            // |  CTRL |  Fn  | LALT | LGUI | RAIS | TAB  | SPACE | ENTER |  LOWR |       |      |  -   |   =   |-------|
+            // |  CTRL |  Fn  | LALT | LGUI | RAIS | TAB  | SPACE | ENTER |  LOWR |	 MEH  |      |  -   |   =   |-------|
             bindings = <
-                &kp ESC    &kp N1 &kp N2   &kp N3   &kp N4 &kp N5                    &kp N6 &kp N7 &kp N8    &kp N9    &kp N0    &trans
-                &kp GRAVE  &kp Q  &kp W    &kp E    &kp R  &kp T                     &kp Y  &kp U  &kp I     &kp O     &kp P     &kp BSLH
-                &kp BSPC   &kp A  &kp S    &kp D    &kp F  &kp G                     &kp H  &kp J  &kp K     &kp L     &kp SEMI  &kp SQT
-                &kp LSHFT  &kp Z  &kp X    &kp C    &kp V  &kp B                     &kp N  &kp M  &kp COMMA &kp DOT   &kp FSLH  &kp RSHIFT
-                &kp LCTRL  &mo 5  &kp LALT &kp LGUI &mo 1  &kp TAB &kp SPACE &kp RET &mo 2  &trans &trans    &kp MINUS &kp EQUAL &mo 4
+                &kp ESC    &kp N1 &kp N2   &kp N3   &kp N4 &kp N5                    &kp N6 &kp N7            &kp N8    &kp N9    &kp N0    &trans
+                &kp GRAVE  &kp Q  &kp W    &kp E    &kp R  &kp T                     &kp Y  &kp U             &kp I     &kp O     &kp P     &kp BSLH
+                &kp BSPC   &kp A  &kp S    &kp D    &kp F  &kp G                     &kp H  &kp J             &kp K     &kp L     &kp SEMI  &kp SQT
+                &kp LSHFT  &kp Z  &kp X    &kp C    &kp V  &kp B                     &kp N  &kp M             &kp COMMA &kp DOT   &kp FSLH  &kp RSHIFT
+                &kp LCTRL  &mo 5  &kp LALT &kp LGUI &mo 1  &kp TAB &kp SPACE &kp RET &mo 2  &kp LA(LC(LSHFT)) &trans    &kp MINUS &kp EQUAL &mo 4
             >;
         };
 
@@ -50,7 +50,7 @@
             // |  ESC  |  F2  |  F3  |  F4  |  F5  |  F6  |-------|-------|  F7   |  F8   |  F9  | F10  |  F11  |  F12  |
             // |   ~   |  1   |  2   |  3   |  4   |  5   |-------|-------|  6    |   7   |  8   |  9   |   0   |  DEL  |
             // |  DEL  |  F1  |  F2  |  F3  |  F4  |  F5  |-------|-------|  F6   |   -   |  =   |  [   |   ]   |   \   |
-            // |       |  F7  |  F8  |  F9  |  F10 |  F11 |-------|-------|  F12  |   #   |  |   |      |       |       |9
+            // |       |  F7  |  F8  |  F9  |  F10 |  F11 |-------|-------|  F12  |   #   |  |   |      |       |       |
             // |-------|      |      |      |      |      |       |       |       |       |      |      |       |-------|
             bindings = <
                 &trans  &kp F1  &kp F2  &kp F3   &kp F4   &kp F5               &kp F6     &kp F7    &kp F8     &kp F9       &kp F10      &kp F11
