@@ -38,17 +38,17 @@
 
         lower {
             // ----------------------------------------------------------------------------------------------------------------------------
-            // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
+            // |       |        |        |        | SCRSHT |        |-------|-------|  GIFOX |        |        |        |        |        |
             // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
             // |  DEL  |        |        |        |        |        |-------|-------|  LEFT  |  DOWN  |  UP    |  RIGHT |        |        |
             // |       |        |        |        |        |        |-------|-------|        |        |        |        |        |        |
             // |       |        |        |        |        |        |       |       |        |        |        |        |        |        |
             bindings = <
-                &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans     &trans    &trans
-                &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans     &trans    &trans
-                &kp DEL    &trans  &trans  &trans  &trans  &trans                  &kp LEFT  &kp DOWN  &kp UP    &kp RIGHT  &trans    &trans
-                &trans     &trans  &trans  &trans  &trans  &trans                  &trans    &trans    &trans    &trans     &trans    &trans
-                &trans     &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans    &trans    &trans    &trans     &trans    &trans
+                &trans     &trans  &trans  &trans  &kp LG(LS(N4)) &trans                  &kp LG(LS(N6))  &trans    &trans    &trans     &trans    &trans
+                &trans     &trans  &trans  &trans  &trans         &trans                  &trans          &trans    &trans    &trans     &trans    &trans
+                &kp DEL    &trans  &trans  &trans  &trans         &trans                  &kp LEFT        &kp DOWN  &kp UP    &kp RIGHT  &trans    &trans
+                &trans     &trans  &trans  &trans  &trans         &trans                  &trans          &trans    &trans    &trans     &trans    &trans
+                &trans     &trans  &trans  &trans  &trans         &trans  &trans  &trans  &trans          &trans    &trans    &trans     &trans    &trans
             >;
         };
 
