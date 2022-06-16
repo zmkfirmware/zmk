@@ -1,0 +1,16 @@
+file_format: "1"
+id: corne-ish_zen_v2
+name: Corne-ish Zen v2
+url: https://lowprokb.ca/collections/keyboards/products/corne-ish-zen
+type: board
+arch: arm
+features:
+  - keys
+  - display
+outputs:
+  - usb
+  - ble
+siblings:
+  - corneish_zen_left
+  - corneish_zen_right
+
