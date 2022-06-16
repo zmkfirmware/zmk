@@ -25,7 +25,8 @@ struct behavior_sensor_rotate_config {
 };
 
 static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
-                                       const struct device *sensor, int64_t timestamp) {
+                                       const struct device *sensor,
+                                       struct zmk_behavior_binding_event event) {
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_sensor_rotate_config *cfg = dev->config;
 
@@ -53,8 +54,8 @@ static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
 
     LOG_DBG("Sensor binding: %s", log_strdup(binding->behavior_dev));
 
-    zmk_behavior_queue_add(0, *triggered_binding, true, cfg->tap_ms);
-    zmk_behavior_queue_add(0, *triggered_binding, false, 0);
+    zmk_behavior_queue_add(ZMK_KEYMAP_LEN + event.position, *triggered_binding, true, cfg->tap_ms);
+    zmk_behavior_queue_add(ZMK_KEYMAP_LEN + event.position, *triggered_binding, false, 0);
 
     return ZMK_BEHAVIOR_OPAQUE;
 }

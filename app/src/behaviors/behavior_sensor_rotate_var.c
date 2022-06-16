@@ -25,7 +25,8 @@ struct behavior_sensor_rotate_var_config {
 };
 
 static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
-                                       const struct device *sensor, int64_t timestamp) {
+                                       const struct device *sensor,
+                                       struct zmk_behavior_binding_event event) {
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_sensor_rotate_var_config *cfg = dev->config;
 
