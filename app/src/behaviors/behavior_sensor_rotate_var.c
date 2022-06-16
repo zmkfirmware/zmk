@@ -15,6 +15,7 @@
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/behavior_queue.h>
 #include <zmk/keymap.h>
+#include <zmk/matrix.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
