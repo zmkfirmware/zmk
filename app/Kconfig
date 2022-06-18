@@ -330,11 +330,86 @@ config ZMK_BEHAVIORS_QUEUE_SIZE
 	int "Maximum number of behaviors to allow queueing from a macro or other complex behavior"
 	default 64
 
+DT_COMPAT_ZMK_BEHAVIOR_CAPS_WORD := zmk,behavior-caps-word
+DT_COMPAT_ZMK_BEHAVIOR_HOLD_TAP := zmk,behavior-hold-tap
+DT_COMPAT_ZMK_BEHAVIOR_KEY_PRESS := zmk,behavior-key-press
+DT_COMPAT_ZMK_BEHAVIOR_KEY_REPEAT := zmk,behavior-key-repeat
 DT_COMPAT_ZMK_BEHAVIOR_KEY_TOGGLE := zmk,behavior-key-toggle
+DT_COMPAT_ZMK_BEHAVIOR_MACRO := zmk,behavior-macro
+DT_COMPAT_ZMK_BEHAVIOR_MOD_MORPH := zmk,behavior-mod-morph
+DT_COMPAT_ZMK_BEHAVIOR_MOMENTARY_LAYER := zmk,behavior-momentary-layer
+DT_COMPAT_ZMK_BEHAVIOR_NONE := zmk,behavior-none
+DT_COMPAT_ZMK_BEHAVIOR_OUTPUTS := zmk,behavior-outputs
+DT_COMPAT_ZMK_BEHAVIOR_SENSOR_ROTATE_KEY_PRESS := zmk,behavior-sensor-rotate-key-press
+DT_COMPAT_ZMK_BEHAVIOR_STICKY_KEY := zmk,behavior-sticky-key
+DT_COMPAT_ZMK_BEHAVIOR_TAP_DANCE := zmk,behavior-tap-dance
+DT_COMPAT_ZMK_BEHAVIOR_TO_LAYER := zmk,behavior-to-layer
+DT_COMPAT_ZMK_BEHAVIOR_TOGGLE_LAYER := zmk,behavior-toggle-layer
+DT_COMPAT_ZMK_BEHAVIOR_TRANSPARENT := zmk,behavior-transparent
+
+config ZMK_BEHAVIOR_CAPS_WORD
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_CAPS_WORD))
+
+config ZMK_BEHAVIOR_HOLD_TAP
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_HOLD_TAP))
+
+config ZMK_BEHAVIOR_KEY_PRESS
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_KEY_PRESS))
+
+config ZMK_BEHAVIOR_KEY_REPEAT
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_KEY_REPEAT))
 
 config ZMK_BEHAVIOR_KEY_TOGGLE
-        bool
-        default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_KEY_TOGGLE))
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_KEY_TOGGLE))
+
+config ZMK_BEHAVIOR_MACRO
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_MACRO))
+
+config ZMK_BEHAVIOR_MOD_MORPH
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_MOD_MORPH))
+
+config ZMK_BEHAVIOR_MOMENTARY_LAYER
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_MOMENTARY_LAYER))
+
+config ZMK_BEHAVIOR_NONE
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_NONE))
+
+config ZMK_BEHAVIOR_OUTPUTS
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_OUTPUTS))
+
+config ZMK_BEHAVIOR_SENSOR_ROTATE_KEY_PRESS
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_SENSOR_ROTATE_KEY_PRESS))
+
+config ZMK_BEHAVIOR_STICKY_KEY
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_STICKY_KEY))
+
+config ZMK_BEHAVIOR_TAP_DANCE
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_TAP_DANCE))
+
+config ZMK_BEHAVIOR_TO_LAYER
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_TO_LAYER))
+
+config ZMK_BEHAVIOR_TOGGLE_LAYER
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_TOGGLE_LAYER))
+
+config ZMK_BEHAVIOR_TRANSPARENT
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_TRANSPARENT))
 
 endmenu
 
