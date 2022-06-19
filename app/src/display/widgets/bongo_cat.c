@@ -59,8 +59,12 @@ void set_bongo_state(struct zmk_widget_bongo_cat *widget, struct zmk_position_st
     } else {
         if (current_bongo_state ^ (bongo_state_left | bongo_state_right)) {
             tmp = bongo_state_none;
-            widget->is_right = !widget->is_right; /* flip side when return to none state */
+            widget->is_right = !widget->is_right; /* switch hand when return to none state */
         }
+    }
+
+    if (current_bongo_state == tmp) {
+        return;
     }
 
     current_bongo_state = tmp;
