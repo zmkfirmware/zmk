@@ -27,7 +27,7 @@ struct battery_status_state {
 };
 
 static void set_battery_symbol(lv_obj_t *label, struct battery_status_state state) {
-    char text[2] = "  ";
+    char text[3] = "";
 
     uint8_t level = state.level;
 
@@ -38,15 +38,15 @@ static void set_battery_symbol(lv_obj_t *label, struct battery_status_state stat
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 
     if (level > 95) {
-        strcat(text, LV_SYMBOL_BATTERY_FULL);
+        strcat(text, " " LV_SYMBOL_BATTERY_FULL);
     } else if (level > 65) {
-        strcat(text, LV_SYMBOL_BATTERY_3);
+        strcat(text, " " LV_SYMBOL_BATTERY_3);
     } else if (level > 35) {
-        strcat(text, LV_SYMBOL_BATTERY_2);
+        strcat(text, " " LV_SYMBOL_BATTERY_2);
     } else if (level > 5) {
-        strcat(text, LV_SYMBOL_BATTERY_1);
+        strcat(text, " " LV_SYMBOL_BATTERY_1);
     } else {
-        strcat(text, LV_SYMBOL_BATTERY_EMPTY);
+        strcat(text, " " LV_SYMBOL_BATTERY_EMPTY);
     }
     lv_label_set_text(label, text);
 }
@@ -74,7 +74,7 @@ ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 
 int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_label_create(parent, NULL);
+    widget->obj = lv_label_create(parent);
 
     lv_obj_set_size(widget->obj, 40, 15);
 

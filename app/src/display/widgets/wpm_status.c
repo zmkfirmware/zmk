@@ -24,13 +24,14 @@ struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
     return (struct wpm_status_state){.wpm = zmk_wpm_get_state()};
 };
 
-void set_wpm_symbol(lv_obj_t *label, struct wpm_status_state state) {
+void set_wpm_symbol(lv_obj_t *obj, struct wpm_status_state state) {
     char text[4] = {};
 
     LOG_DBG("WPM changed to %i", state.wpm);
-    snprintf(text, sizeof(text), "%i ", state.wpm);
+    snprintf(text, sizeof(text), "%i", state.wpm);
 
-    lv_label_set_text(label, text);
+    lv_span_t *span = lv_spangroup_get_child(obj, 0);
+    lv_span_set_text(span, text);
 }
 
 void wpm_status_update_cb(struct wpm_status_state state) {
@@ -43,10 +44,11 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state, wpm_stat
 ZMK_SUBSCRIPTION(widget_wpm_status, zmk_wpm_state_changed);
 
 int zmk_widget_wpm_status_init(struct zmk_widget_wpm_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_label_create(parent, NULL);
-    lv_label_set_align(widget->obj, LV_LABEL_ALIGN_RIGHT);
-
-    lv_obj_set_size(widget->obj, 40, 15);
+    widget->obj = lv_spangroup_create(parent);
+    lv_spangroup_new_span(widget->obj);
+    lv_spangroup_set_align(widget->obj, LV_TEXT_ALIGN_RIGHT);
+    lv_spangroup_set_mode(widget->obj, LV_SPAN_MODE_EXPAND);
+    lv_obj_set_size(widget->obj, 60, 32);
 
     sys_slist_append(&widgets, &widget->node);
 

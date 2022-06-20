@@ -6,13 +6,13 @@ menuconfig ZMK_DISPLAY
     default n
     select DISPLAY
     select LVGL
-	select LVGL_THEMES
-	select LVGL_THEME_MONO
+	select LV_THEMES
+	select LV_THEME_MONO
 
 if ZMK_DISPLAY
 
-choice LVGL_TXT_ENC
-    default LVGL_TXT_ENC_UTF8
+choice LV_TXT_ENC
+    default LV_TXT_ENC_UTF8
 
 endchoice
 
@@ -21,7 +21,7 @@ choice ZMK_DISPLAY_STATUS_SCREEN
 
 config ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
     bool "Built in status screen"
-    select LVGL_OBJ_LABEL
+    select LV_OBJ_LABEL
 
 config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
     bool "Custom status screen"
@@ -53,21 +53,21 @@ endif # ZMK_DISPLAY_WORK_QUEUE_DEDICATED
 
 if ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
-config LVGL_FONT_MONTSERRAT_16
-    default y
+# config LV_FONT_MONTSERRAT_16
+#     default y
 
-choice LVGL_THEME_DEFAULT_FONT_NORMAL
-    default LVGL_THEME_DEFAULT_FONT_NORMAL_MONTSERRAT_16
+# choice LV_THEME_DEFAULT_FONT_NORMAL
+#     default LV_FONT_MONTSERRAT_16
 
-endchoice
+# endchoice
 
-config LVGL_FONT_MONTSERRAT_12
-    default y
+# config LV_FONT_MONTSERRAT_12
+#     default y
     
-choice LVGL_THEME_DEFAULT_FONT_SMALL
-    default LVGL_THEME_DEFAULT_FONT_SMALL_MONTSERRAT_12
+# choice LV_THEME_DEFAULT_FONT_SMALL
+#     default LV_FONT_MONTSERRAT_12
 
-endchoice
+# endchoice
 
 endif # ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 

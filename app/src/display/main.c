@@ -19,7 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/display/status_screen.h>
 
-#define ZMK_DISPLAY_NAME CONFIG_LVGL_DISPLAY_DEV_NAME
+#define ZMK_DISPLAY_NAME CONFIG_LV_Z_DISPLAY_DEV_NAME
 
 static const struct device *display;
 static bool initialized = false;
@@ -51,7 +51,7 @@ struct k_work_q *zmk_display_work_q() {
 }
 
 void display_timer_cb() {
-    lv_tick_inc(TICK_MS);
+    //lv_tick_inc(TICK_MS);
     k_work_submit_to_queue(zmk_display_work_q(), &display_tick_work);
 }
 

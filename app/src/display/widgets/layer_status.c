@@ -26,13 +26,13 @@ static void set_layer_symbol(lv_obj_t *label, struct layer_status_state state) {
     if (state.label == NULL) {
         char text[6] = {};
 
-        sprintf(text, LV_SYMBOL_KEYBOARD "%i", state.index);
+        sprintf(text, LV_SYMBOL_KEYBOARD " %i", state.index);
 
         lv_label_set_text(label, text);
     } else {
         char text[12] = {};
 
-        snprintf(text, 12, LV_SYMBOL_KEYBOARD "%s", state.label);
+        snprintf(text, 12, LV_SYMBOL_KEYBOARD " %s", state.label);
 
         lv_label_set_text(label, text);
     }
@@ -54,7 +54,7 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_layer_status, struct layer_status_state, laye
 ZMK_SUBSCRIPTION(widget_layer_status, zmk_layer_state_changed);
 
 int zmk_widget_layer_status_init(struct zmk_widget_layer_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_label_create(parent, NULL);
+    widget->obj = lv_label_create(parent);
 
     lv_obj_set_size(widget->obj, 40, 15);
 
