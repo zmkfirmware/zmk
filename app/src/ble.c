@@ -47,7 +47,7 @@ static uint8_t passkey_digit = 0;
 
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY) */
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 #define PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - 1)
 #else
 #define PROFILE_COUNT CONFIG_BT_MAX_PAIRED
@@ -82,11 +82,11 @@ static const struct bt_data zmk_ble_ad[] = {
                   ),
 };
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
 static bt_addr_le_t peripheral_addr;
 
-#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
+#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) */
 
 static void raise_profile_changed_event() {
     ZMK_EVENT_RAISE(new_zmk_ble_active_profile_changed((struct zmk_ble_active_profile_changed){
@@ -278,14 +278,14 @@ bt_addr_le_t *zmk_ble_active_profile_addr() { return &profiles[active_profile].p
 
 char *zmk_ble_active_profile_name() { return profiles[active_profile].name; }
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
 void zmk_ble_set_peripheral_addr(bt_addr_le_t *addr) {
     memcpy(&peripheral_addr, addr, sizeof(bt_addr_le_t));
     settings_save_one("ble/peripheral_address", addr, sizeof(bt_addr_le_t));
 }
 
-#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL) */
+#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) */
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 
@@ -336,7 +336,7 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
             return err;
         }
     }
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     else if (settings_name_steq(name, "peripheral_address", &next) && !next) {
         if (len != sizeof(bt_addr_le_t)) {
             return -EINVAL;

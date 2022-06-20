@@ -16,6 +16,7 @@
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/events/modifiers_state_changed.h>
+#include <zmk/keys.h>
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
 
@@ -92,7 +93,9 @@ static bool caps_word_is_caps_includelist(const struct behavior_caps_word_config
                 continuation->id, continuation->implicit_modifiers);
 
         if (continuation->page == usage_page && continuation->id == usage_id &&
-            continuation->implicit_modifiers == implicit_modifiers) {
+            (continuation->implicit_modifiers &
+             (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
+                continuation->implicit_modifiers) {
             LOG_DBG("Continuing capsword, found included usage: 0x%02X - 0x%02X", usage_page,
                     usage_id);
             return true;
@@ -143,6 +146,7 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
         caps_word_enhance_usage(config, ev);
 
         if (!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode) &&
+            !is_mod(ev->usage_page, ev->keycode) &&
             !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
                                            ev->implicit_modifiers)) {
             LOG_DBG("Deactivating caps_word for 0x%02X - 0x%02X", ev->usage_page, ev->keycode);
@@ -162,7 +166,7 @@ static int behavior_caps_word_init(const struct device *dev) {
 #define CAPS_WORD_LABEL(i, _n) DT_INST_LABEL(i)
 
 #define PARSE_BREAK(i)                                                                             \
-    {.page = (ZMK_HID_USAGE_PAGE(i) & 0xFF),                                                       \
+    {.page = ZMK_HID_USAGE_PAGE(i),                                                                \
      .id = ZMK_HID_USAGE_ID(i),                                                                    \
      .implicit_modifiers = SELECT_MODS(i)},
 
