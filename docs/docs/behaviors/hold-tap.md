@@ -287,7 +287,7 @@ If uninterrupted by another keypress, a regular [sticky key](sticky-key.md) or [
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
 
-#define SKH(keycode) &skh keycode keycode   // Macro to apply sticky-key-on-tap/keypress-on-hold to a specific keycode
+#define SHK(keycode) &shk keycode keycode   // Macro to apply sticky-key-on-tap/keypress-on-hold to a specific keycode
 
 / {
     behaviors {
