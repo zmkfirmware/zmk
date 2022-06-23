@@ -330,7 +330,7 @@ config ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE
 
 config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
 	bool "Turn off RGB underglow when USB is disconnected"
-	depends on USB
+	depends on USB_DEVICE_STACK
 
 #ZMK_RGB_UNDERGLOW
 endif
