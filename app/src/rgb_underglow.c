@@ -272,7 +272,7 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
-    if(!zmk_usb_is_powered())
+    if (!zmk_usb_is_powered())
         state.on = false;
 #endif
 
