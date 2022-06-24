@@ -102,7 +102,6 @@ menuconfig ZMK_BLE
 	select BT_SMP_APP_PAIRING_ACCEPT
 	select BT_PERIPHERAL
 	select BT_DIS
-	select BT_BAS
 	select BT_SETTINGS
 	select SETTINGS
 
@@ -156,6 +155,13 @@ config BT_PERIPHERAL_PREF_LATENCY
 
 config BT_PERIPHERAL_PREF_TIMEOUT
 	default 400
+
+if ((!ZMK_SPLIT_ROLE_CENTRAL) || (!ZMK_SPLIT)) 
+	
+config BT_BAS
+	 default y
+
+endif
 
 #ZMK_BLE
 endif
