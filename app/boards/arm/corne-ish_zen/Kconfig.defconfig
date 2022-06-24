@@ -35,16 +35,16 @@ config ZMK_SPLIT
 #    default y
 #    depends on I2C
 
-menuconfig SENSOR
-    bool "Sensor Drivers"
+#menuconfig SENSOR
+#    bool "Sensor Drivers"
 
 #config BQ274XX
 #    bool "BQ274xx Fuel Gauge"
 #    depends on I2C && SENSOR
 
-config SENSOR_CAN_FETCH_ALL
-	bool "Can the fuel gauge fetch all channels at once"
-	default y
+#config SENSOR_CAN_FETCH_ALL
+#	bool "Can the fuel gauge fetch all channels at once"
+#	default y
 
 config SPI
     bool
@@ -89,6 +89,11 @@ config SPI
 config IL0323
 	bool
 	default y
+
+config LVGL_DISPLAY_DEV_NAME
+    string
+    default "DISPLAY"
+    depends on LVGL
 
 #config DISPLAY_WOB
 #	bool "White on Black Display"

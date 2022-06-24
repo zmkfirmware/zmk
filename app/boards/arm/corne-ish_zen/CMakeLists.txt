@@ -1,0 +1,59 @@
+set_property(GLOBAL APPEND PROPERTY extra_post_build_commands
+  COMMAND ${PYTHON_EXECUTABLE} ${ZEPHYR_BASE}/../tools/uf2/utils/uf2conv.py
+  -c 
+  -b 0x26000
+  -f 0xADA52840
+  -o ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}.uf2
+  ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}.bin
+)
+
+if(CONFIG_ZMK_DISPLAY)
+  target_sources_ifdef(CONFIG_CUSTOM_WIDGET_BATTERY_STATUS app PRIVATE widgets/battery_status.c)
+  target_sources_ifdef(CONFIG_CUSTOM_WIDGET_OUTPUT_STATUS app PRIVATE widgets/output_status.c)
+  target_sources_ifdef(CONFIG_CUSTOM_WIDGET_LAYER_STATUS app PRIVATE widgets/layer_status.c)
+  # target_sources_ifdef(CONFIG_ZMK_WIDGET_WPM_STATUS app PRIVATE wpm_status.c)
+
+  add_subdirectory_ifdef(CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM  widgets/icons)
+endif()
+
+zephyr_library()
+
+# zephyr_library_sources(corne-ish_zen.c)
+if(CONFIG_ZMK_DISPLAY)
+  zephyr_library_sources(widgets/icons/batt_100.c)
+  zephyr_library_sources(widgets/icons/batt_100_chg.c)
+  zephyr_library_sources(widgets/icons/batt_75.c)
+  zephyr_library_sources(widgets/icons/batt_75_chg.c)
+  zephyr_library_sources(widgets/icons/batt_50.c)
+  zephyr_library_sources(widgets/icons/batt_50_chg.c)
+  zephyr_library_sources(widgets/icons/batt_25.c)
+  zephyr_library_sources(widgets/icons/batt_25_chg.c)
+  zephyr_library_sources(widgets/icons/batt_5.c)
+  zephyr_library_sources(widgets/icons/batt_5_chg.c)
+  zephyr_library_sources(widgets/icons/batt_0.c)
+  zephyr_library_sources(widgets/icons/batt_0_chg.c)
+  zephyr_library_sources(widgets/icons/zenlogo.c)
+  zephyr_library_sources(widgets/icons/bluetooth_advertising.c)
+  zephyr_library_sources(widgets/icons/bluetooth_connected_right.c)
+  zephyr_library_sources(widgets/icons/bluetooth_disconnected_right.c)
+  zephyr_library_sources(widgets/icons/USB_connected.c)
+  zephyr_library_sources(widgets/icons/layers.c)
+  zephyr_library_sources(widgets/icons/layers2.c)
+  zephyr_library_sources(widgets/icons/bluetooth_connected_1.c)
+  zephyr_library_sources(widgets/icons/bluetooth_connected_2.c)
+  zephyr_library_sources(widgets/icons/bluetooth_connected_3.c)
+  zephyr_library_sources(widgets/icons/bluetooth_connected_4.c)
+  zephyr_library_sources(widgets/icons/bluetooth_connected_5.c)
+  zephyr_library_sources(widgets/icons/bluetooth_advertising_1.c)
+  zephyr_library_sources(widgets/icons/bluetooth_advertising_2.c)
+  zephyr_library_sources(widgets/icons/bluetooth_advertising_3.c)
+  zephyr_library_sources(widgets/icons/bluetooth_advertising_4.c)
+  zephyr_library_sources(widgets/icons/bluetooth_advertising_5.c)
+endif()
+
+zephyr_library_include_directories(${ZEPHYR_LVGL_MODULE_DIR})
+zephyr_library_include_directories(${ZEPHYR_BASE}/lib/gui/lvgl/)
+zephyr_library_sources_ifdef(CONFIG_ZMK_DISPLAY custom_status_screen.c)
+zephyr_library_sources(${ZEPHYR_BASE}/misc/empty_file.c)
+zephyr_library_include_directories(${CMAKE_SOURCE_DIR}/include)
+zephyr_library_include_directories(${ZEPHYR_BASE}/drivers)
