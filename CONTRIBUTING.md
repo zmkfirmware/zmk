@@ -7,7 +7,7 @@ you have any questions, please come join us on the
 ## Code of Conduct
 
 All community members are expected to abide by the [Code of Conduct][code-of-conduct].
-For any and all conduct inquiries or concerns, please contact conduct@zmkfirmware.dev.
+For any and all conduct inquiries or concerns, please contact conduct@zmk.dev.
 
 [code-of-conduct]: https://github.com/zmkfirmware/zmk/blob/main/CODE_OF_CONDUCT.md
 
@@ -35,8 +35,8 @@ ZMK project.
 
 ### Before Submitting a Report
 
-- Review the [Frequently Asked Questions](https://zmkfirmware.dev/docs/faq).
-- Check the [Troubleshooting Guide](https://zmkfirmware.dev/docs/troubleshooting) for answers.
+- Review the [Frequently Asked Questions](https://zmk.dev/docs/faq).
+- Check the [Troubleshooting Guide](https://zmk.dev/docs/troubleshooting) for answers.
 - Search the [open issues](https://github.com/zmkfirmware/zmk/issues) for an existing report that
   matches your problem.
 
@@ -47,10 +47,10 @@ To open a report:
 - Head to https://github.com/zmkfirmware/zmk/issues/new
 - Provide an accurate summary of the issue in the title.
 - Provide as much detail as you can about the issue including:
-  - What [board/shield](https://zmkfirmware.dev/docs/faq#what-is-a-board) you are using.
+  - What [board/shield](https://zmk.dev/docs/faq#what-is-a-board) you are using.
   - A link to the user repository, if you used it to build your firmware.
   - Exact steps to reproduce the problem.
-  - Any relevant screenshots or [logs](https://zmkfirmware.dev/docs/dev-guide-usb-logging)
+  - Any relevant screenshots or [logs](https://zmk.dev/docs/dev-guide-usb-logging)
 
 ## Testing
 
@@ -91,7 +91,7 @@ You can setup git to run prettier automatically when you commit by installing th
 ### Development Setup
 
 To get your development environment setup going, start at the
-[basic setup](https://zmkfirmware.dev/docs/dev-setup) docs, and make sure you can build and flash
+[basic setup](https://zmk.dev/docs/development/setup/) docs, and make sure you can build and flash
 your own locally built firmware.
 
 ### Formatting
@@ -124,4 +124,4 @@ When opening a pull request with your changes, please:
   - Requested testing by reviewers or testers.
   - Screenshots or logs that support understanding the change.
 
-[discord-invite]: https://zmkfirmware.dev/community/discord/invite
+[discord-invite]: https://zmk.dev/community/discord/invite

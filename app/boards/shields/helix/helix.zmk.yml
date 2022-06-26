@@ -1,0 +1,13 @@
+file_format: "1"
+id: helix
+name: Helix
+type: shield
+url: https://github.com/MakotoKurauchi/helix
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+siblings:
+  - helix_left
+  - helix_right

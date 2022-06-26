@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "fourier.dtsi"
+
+&kscan0 {
+    col-gpios
+        = <&pro_micro 20 GPIO_ACTIVE_HIGH>  // Col1
+        , <&pro_micro 19 GPIO_ACTIVE_HIGH>  // Col2
+        , <&pro_micro 18 GPIO_ACTIVE_HIGH>  // Col3
+        , <&pro_micro 15 GPIO_ACTIVE_HIGH>  // Col4
+        , <&pro_micro 14 GPIO_ACTIVE_HIGH>  // Col5
+        , <&pro_micro 16 GPIO_ACTIVE_HIGH>  // Col6
+        ;
+};

@@ -7,7 +7,7 @@
 #define DT_DRV_COMPAT zmk_behavior_reset
 
 #include <device.h>
-#include <power/reboot.h>
+#include <sys/reboot.h>
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
@@ -36,14 +36,15 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 
 static const struct behavior_driver_api behavior_reset_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
+    .locality = BEHAVIOR_LOCALITY_EVENT_SOURCE,
 };
 
 #define RST_INST(n)                                                                                \
     static const struct behavior_reset_config behavior_reset_config_##n = {                        \
         .type = DT_INST_PROP(n, type)};                                                            \
-    DEVICE_AND_API_INIT(behavior_reset_##n, DT_INST_LABEL(n), behavior_reset_init, NULL,           \
-                        &behavior_reset_config_##n, APPLICATION,                                   \
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_reset_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_reset_init, NULL, NULL, &behavior_reset_config_##n,          \
+                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
+                          &behavior_reset_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(RST_INST)
 

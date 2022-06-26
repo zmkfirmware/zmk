@@ -1,0 +1,275 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+$ErrorActionPreference = "Stop"
+
+function Get-Choice-From-Options {
+    param(
+        [String[]] $Options,
+        [String] $Prompt
+    )
+
+    while ($true) {
+        for ($i = 0; $i -lt $Options.length; $i++) {
+            Write-Host "$($i + 1)) $($Options[$i])"
+        }
+
+        Write-Host "$($Options.length + 1)) Quit"
+        $selection = (Read-Host $Prompt) -as [int]
+
+        if ($selection -eq $Options.length + 1) {
+            Write-Host "Goodbye!"
+            exit 1
+        }
+        elseif ($selection -le $Options.length -and $selection -gt 0) {
+            $choice = $($selection - 1)
+            break
+        }
+        else {
+            Write-Host "Invalid Option. Try another one."
+        }
+    }
+
+    return $choice
+}
+
+function Test-Git-Config {
+    param(
+        [String] $Option,
+        [String] $ErrMsg
+    )
+
+    git config $Option | Out-Null
+
+    if ($lastExitCode -ne 0) {
+        Write-Host $ErrMsg
+        exit 1
+    }
+}
+
+try {
+    git | Out-Null
+}
+catch [System.Management.Automation.CommandNotFoundException] {
+    Write-Host "Git is not installed, and is required for this script!"
+    exit 1
+}
+
+Test-Git-Config -Option "user.name" -ErrMsg "Git username not set!`nRun: git config --global user.name 'My Name'"
+Test-Git-Config -Option "user.email" -ErrMsg "Git email not set!`nRun: git config --global user.email 'example@myemail.com'"
+
+function Test-CommandExists {
+    param ($command)
+
+    $oldPreference = $ErrorActionPreference
+    $ErrorActionPreference = "stop"
+
+    try {
+        if(Get-Command $command){ return $true }
+    } Catch { return $false }
+    Finally { $ErrorActionPreference=$oldPreference }
+}
+
+if (Test-CommandExists Get-Acl) {
+    $permission = (Get-Acl $pwd).Access |
+    ?{$_.IdentityReference -match $env:UserName `
+        -and $_.FileSystemRights -match "FullControl" `
+        -or $_.FileSystemRights -match "Write" } | 
+             Select IdentityReference,FileSystemRights
+
+    If (-Not $permission){
+        Write-Host "Sorry, you do not have write permissions in this directory."
+        Write-Host "Please try running this script again from a directory that you do have write permissions for."
+        exit 1
+    }
+}
+
+$repo_path = "https://github.com/zmkfirmware/unified-zmk-config-template.git"
+
+$title = "ZMK Config Setup:"
+Write-Host ""
+Write-Host "Keyboard Shield Selection:"
+$prompt = "Pick a keyboard"
+
+$keyboards = [ordered]@{
+    {{#keyboards}}
+    "{{id}}" = @{
+        name = "{{{name}}}";
+        type = "{{type}}";
+        basedir = "{{__base_dir}}";
+        split = "{{split}}";
+        arch = "{{arch}}";
+        siblings = {{#siblings.0}}@(
+            {{#siblings}}
+            "{{.}}"
+            {{/siblings}}
+            ){{/siblings.0}}{{^siblings.0}}( "{{id}}" ){{/siblings.0}};
+    }
+    {{/keyboards}}
+}
+# TODO: Add support for "Other" and linking to docs on adding custom shields in user config repos.
+
+$choice = Get-Choice-From-Options -Options ($keyboards.values | % { $_['name'] }) -Prompt $prompt
+$keyboard = $($($keyboards.keys)[$choice])
+$keyboard_title = $keyboards[$keyboard].name
+$basedir = $keyboards[$keyboard].basedir
+$keyboard_split = $keyboards[$keyboard].split
+$keyboard_arch = $keyboards[$keyboard].arch
+$keyboard_siblings = $keyboards[$keyboard].siblings
+$keyboard_type = $keyboards[$keyboard].type
+
+if ($keyboard_type -eq "shield") {
+    $prompt = "Pick an MCU board"
+    $boards = [ordered]@{
+        {{#boards}}
+        {{id}} = "{{{name}}}";
+        {{/boards}}
+    }
+    $boards_usb_only = [ordered]@{
+        {{#boards}}
+        {{id}} = "{{usb_only}}";
+        {{/boards}}
+    }
+
+    Write-Host "$title"
+    Write-Host ""
+    Write-Host "MCU Board Selection:"
+
+    $choice = Get-Choice-From-Options -Options $boards.values -Prompt $prompt
+
+    if ($keyboard_split -eq "true" -and $($($boards_usb_only.values)[$choice]) -eq "true") {
+        Write-Host "Wired split is not yet supported by ZMK."
+        exit 1
+    }
+    
+    $shields = $keyboard_siblings
+    $board = $($($boards.keys)[$choice])
+    $boards = ( $board )
+} else {
+    $boards = ( $keyboard_siblings )
+    $shields = @( )
+}
+
+$copy_keymap = Read-Host "Copy in the stock keymap for customisation? [Yn]"
+
+if ($copy_keymap -eq "" -or $copy_keymap -eq "Y" -or $copy_keymap -eq "y") {
+    $copy_keymap = "yes"
+}
+
+$github_user = Read-Host "GitHub Username (leave empty to skip GitHub repo creation)"
+
+if ($github_user -ne "") {
+    $repo_name = Read-Host "GitHub Repo Name [zmk-config]"
+
+    if ($repo_name -eq "") {
+        $repo_name = "zmk-config"
+    }
+
+    $github_repo = Read-Host "GitHub Repo [https://github.com/$github_user/$repo_name.git]"
+
+    if ($github_repo -eq "") {
+        $github_repo = "https://github.com/$github_user/$repo_name.git"
+    }
+}
+else {
+    $repo_name = "zmk-config"
+    $github_repo = ""
+}
+
+Write-Host ""
+Write-Host "Preparing a user config for:"
+if ($keyboard_type -eq "shield") {
+    Write-Host "* MCU Board: ${boards}"
+    Write-Host "* Shield(s): ${shields}"
+} else {
+    Write-Host "* Board(s): ${boards}"
+}
+
+if ($copy_keymap -eq "yes") {
+    Write-Host "* Copy Keymap?: Yes"
+}
+else {
+    Write-Host "* Copy Keymap?: No"
+}
+
+if ($github_repo -ne "") {
+    Write-Host "* GitHub Repo to Push (please create this in GH first!): $github_repo"
+}
+
+Write-Host ""
+$do_it = Read-Host "Continue? [Yn]"
+
+if ($do_it -ne "" -and $do_it -ne "Y" -and $do_it -ne "y") {
+    Write-Host "Aborting..."
+    exit 1
+}
+
+git clone --single-branch "$repo_path" "$repo_name"
+Set-Location "$repo_name"
+
+Push-Location config
+
+$config_file = "${keyboard}.conf"
+$keymap_file = "${keyboard}.keymap"
+
+if ($keyboard_type -eq "shield") {
+    $config_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${basedir}/${keyboard}.conf"
+    $keymap_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${basedir}/${keyboard}.keymap"
+} else {
+    $config_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${basedir}/${keyboard}.conf"
+    $keymap_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${basedir}/${keyboard}.keymap"
+}
+
+Write-Host "Downloading config file (${config_url})"
+Try {
+    Invoke-RestMethod -Uri "${config_url}" -OutFile "${config_file}"
+} Catch {
+    Set-Content -Path $config_file "# Place configuration items here"
+}
+
+if ($copy_keymap -eq "yes") {
+    Write-Host "Downloading keymap file (${keymap_url})"
+    Invoke-RestMethod -Uri "${keymap_url}" -OutFile "${keymap_file}"
+}
+
+Pop-Location
+
+Add-Content -Path "build.yaml" -Value "include:"
+foreach ($b in ${boards}) {
+    if ($keyboard_type -eq "shield") {
+        foreach ($s in ${shields}) {
+            Add-Content -Path "build.yaml" -Value "  - board: $b"
+            Add-Content -Path "build.yaml" -Value "    shield: $s"
+        }
+    } else {
+        Add-Content -Path "build.yaml" -Value "  - board: $b"
+    }
+}
+
+Remove-Item -Recurse -Force .git
+git init .
+git add .
+git commit -m "Initial User Config."
+
+if ($github_repo -ne "") {
+    git remote add origin "$github_repo"
+
+    git push --set-upstream origin $(git symbolic-ref --short HEAD)
+
+    # If push failed, assume that the origin was incorrect and give instructions on fixing.
+    if ($lastExitCode -ne 0) {
+        Write-Host "Remote repository $github_repo not found..."
+        Write-Host "Check GitHub URL, and try adding again."
+        Write-Host "Run the following: "
+        Write-Host "    git remote rm origin"
+        Write-Host "    git remote add origin FIXED_URL"
+        Write-Host "    git push --set-upstream origin $(git symbolic-ref --short HEAD)"
+        Write-Host "Once pushed, your firmware should be availalbe from GitHub Actions at: $actions"
+        exit 1
+    }
+
+    if ($github_repo -imatch "https") {
+        $actions = "$($github_repo.substring(0, $github_repo.length - 4))/actions"
+        Write-Host "Your firmware should be availalbe from GitHub Actions shortly: $actions"
+    }
+}

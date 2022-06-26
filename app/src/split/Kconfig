@@ -1,0 +1,26 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+menuconfig ZMK_SPLIT
+	bool "Split keyboard support"
+
+if ZMK_SPLIT
+
+config ZMK_SPLIT_ROLE_CENTRAL
+	bool "Split central device"
+
+choice ZMK_SPLIT_TRANSPORT
+	prompt "Split transport"
+
+config ZMK_SPLIT_BLE
+	bool "BLE"
+	depends on ZMK_BLE
+	select BT_USER_PHY_UPDATE
+	select BT_AUTO_PHY_UPDATE
+
+endchoice
+
+#ZMK_SPLIT
+endif
+
+rsource "bluetooth/Kconfig"

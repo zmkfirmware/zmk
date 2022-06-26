@@ -53,7 +53,7 @@ sudo apt install -y \
 	autoconf \
 	automake \
 	build-essential \
-        bzip2 \
+	bzip2 \
 	ccache \
 	device-tree-compiler \
 	dfu-util \
@@ -70,9 +70,7 @@ sudo apt install -y \
 ```
 
 :::note
-Recent LTS releases of Debian and Ubuntu may include outdated CMake versions. If the output of `cmake --version` is older than 3.15, upgrade your distribution (e.g., from Ubuntu 18.04 LTS to Ubuntu 20.04 LTS), or else install CMake version 3.15 or newer manually (e.g, from Debian backports or by building from source).
-
-There is also a [zephyr bug](https://github.com/zephyrproject-rtos/zephyr/issues/22060) with cmake 3.19.x. You'll need a version _below_ 3.19.
+Recent LTS releases of Debian and Ubuntu may include outdated CMake versions. If the output of `cmake --version` is older than 3.20, upgrade your distribution (e.g., from Ubuntu 20.04 LTS to Ubuntu 22.04 LTS), or else install CMake version 3.20 or newer manually (e.g, from Debian backports or from PyPI with `pip install --user cmake`).
 :::
 </TabItem>
 <TabItem value="raspberryos">
@@ -95,7 +93,7 @@ sudo apt install -y \
 	autoconf \
 	automake \
 	build-essential \
-        bzip2 \
+	bzip2 \
 	ccache \
 	device-tree-compiler \
 	dfu-util \
@@ -135,7 +133,7 @@ sudo dnf install -y \
 	wget \
 	autoconf \
 	automake \
-        bzip2 \
+	bzip2 \
 	ccache \
 	dtc \
 	dfu-util \
@@ -188,7 +186,7 @@ brew install cmake ninja python3 ccache dtc git wget dfu-util
 </TabItem>
 <TabItem value="docker">
 
-This setup leverages the same [image which is used by the GitHub action](https://github.com/zmkfirmware/zephyr-west-action) for local development. Beyond the benefits of [dev/prod parity](https://12factor.net/dev-prod-parity), this approach is also the easiest to set up. No toolchain or dependencies are necessary when using Docker; the container image you'll be using already has the toolchain installed and set up to use.
+This setup leverages the same [image which is used by the GitHub action](https://github.com/zmkfirmware/zmk-docker) for local development. Beyond the benefits of [dev/prod parity](https://12factor.net/dev-prod-parity), this approach is also the easiest to set up. No toolchain or dependencies are necessary when using Docker; the container image you'll be using already has the toolchain installed and set up to use.
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your operating system.
 2. Install [VS Code](https://code.visualstudio.com/)
@@ -205,9 +203,9 @@ The docker container includes `west` and the compilation toolchain. If you're us
 
 ### West Installation
 
-`west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/2.3.0/guides/west/index.html) used to configure and build Zephyr™ applications.
+`west` is the [Zephyr™ meta-tool](https://docs.zephyrproject.org/2.5.0/guides/west/index.html) used to configure and build Zephyr™ applications.
 
-West can be installed by using the `pip` python package manager. The [Zephyr™ instructions](https://docs.zephyrproject.org/latest/guides/west/install.html#installing-west) are summarized here:
+West can be installed by using the `pip` python package manager. The [Zephyr™ instructions](https://docs.zephyrproject.org/2.5.0/guides/west/install.html#installing-west) are summarized here:
 
 <Tabs
 defaultValue="linux"
@@ -280,10 +278,10 @@ platform.
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
-export ZSDK_VERSION=0.11.4
-wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
-	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
-	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run"
+export ZSDK_VERSION=0.13.2
+wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" && \
+	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
+	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run"
 ```
 
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
@@ -292,7 +290,7 @@ The installation will prompt with several questions about installation location,
 <TabItem value="raspberryos">
 
 Because Raspberry OS (Raspbian) runs on the same architecture (but different ABI) as the keyboard MCUs,
-the operating system's installed [cross compilers](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_other_x_compilers.html) can be used to target the different ABI.
+the operating system's installed [cross compilers](https://docs.zephyrproject.org/2.5.0/getting_started/toolchain_other_x_compilers.html) can be used to target the different ABI.
 
 First, the cross compiler should be installed:
 
@@ -315,10 +313,10 @@ export CROSS_COMPILE=/usr/bin/arm-none-eabi-
 To build firmwares for the ARM architecture (all supported MCUs/keyboards at this point), you'll need to install the Zephyr™ ARM SDK to your system:
 
 ```
-export ZSDK_VERSION=0.11.4
-wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" && \
- sh "zephyr-toolchain-arm-${ZSDK_VERSION}-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
- rm "zephyr-toolchain-arm-\${ZSDK_VERSION}-setup.run"
+export ZSDK_VERSION=0.13.2
+wget -q "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" && \
+	sh "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run" --quiet -- -d ~/.local/zephyr-sdk-${ZSDK_VERSION} && \
+	rm "zephyr-toolchain-arm-${ZSDK_VERSION}-linux-x86_64-setup.run"
 ```
 
 The installation will prompt with several questions about installation location, and creating a default `~/.zephyrrc` for you with various variables. The defaults should normally work as expected.
@@ -328,20 +326,18 @@ The installation will prompt with several questions about installation location,
 
 #### GNU ARM Embedded
 
-Since the Zephyr™ SDK is not available for Windows, we recommending following the [Zephyr documentation](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded) to install a GNU ARM Embedded build. Note the warnings regarding installing the toolchain into a path with spaces, and make sure to follow the steps to add the environment variables which are also summarized with screenshots in the [Environment Variables](#environment-variables) section below.
+Since the Zephyr™ SDK is not available for Windows, we recommending following the [Zephyr documentation](https://docs.zephyrproject.org/2.5.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded) to install a GNU ARM Embedded build. Note the warnings regarding installing the toolchain into a path with spaces, and make sure to follow the steps to add the environment variables which are also summarized with screenshots in the [Environment Variables](#environment-variables) section below.
 
 </TabItem>
 <TabItem value="mac">
 
 #### GNU ARM Embedded
 
-Since the Zephyr™ SDK is not available for macOS, we recommending following the steps to install the [GNU ARM Embedded](https://docs.zephyrproject.org/2.3.0/getting_started/toolchain_3rd_party_x_compilers.html#gnu-arm-embedded).
+Since the Zephyr™ SDK is not available for macOS, we recommending following the steps to install the GNU ARM Embedded toolchain:
 
-:::warning Security Controls Workaround
-
-Please be sure to read the [additional setup instructions](https://docs.zephyrproject.org/2.3.0/getting_started/installation_mac.html#mac-gatekeeper) needed to address security controls found in macOS 10.15 Catalina and newer
-
-:::
+```
+brew install --cask gcc-arm-embedded
+```
 
 </TabItem>
 </OsTabs>
@@ -450,7 +446,7 @@ This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can tak
 :::info
 If you're using Docker, you're done with setup! You must restart the container at this point. The easiest way to do so is to close the VS Code window, verify that the container has stopped in Docker Dashboard, and reopen the container with VS Code.
 
-Once your container is restarted, proceed to [Building and Flashing](./development/build-flash.md).
+Once your container is restarted, proceed to [Building and Flashing](development/build-flash.md).
 :::
 
 #### Export Zephyr™ Core
@@ -508,7 +504,7 @@ On Windows, only two environment variables need to be set for ZMK to build prope
 #### For Zephyr
 
 By default, the Zephyr™ SDK will create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
-We suggest two main [options](https://docs.zephyrproject.org/2.3.0/guides/env_vars.html?highlight=zephyrrc) for how to load those settings.
+We suggest two main [options](https://docs.zephyrproject.org/2.5.0/guides/env_vars.html#option-3-using-zephyrrc-files) for how to load those settings.
 
 ##### Per Shell
 

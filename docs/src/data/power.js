@@ -37,13 +37,22 @@ export const zmkBase = {
  */
 export const zmkBoards = {
   "nice!nano": {
-    name: "nice!nano",
+    name: "nice!nano v1",
     powerSupply: {
       type: "LDO",
       outputVoltage: 3.3,
       quiescentMicroA: 55,
     },
     otherQuiescentMicroA: 4,
+  },
+  "nice!nano v2": {
+    name: "nice!nano v2",
+    powerSupply: {
+      type: "LDO",
+      outputVoltage: 3.3,
+      quiescentMicroA: 15,
+    },
+    otherQuiescentMicroA: 3,
   },
   "nice!60": {
     powerSupply: {
@@ -60,6 +69,18 @@ export const underglowPower = {
   firmware: 60, // ZMK power usage while underglow feature is turned on (SPIM mostly)
   ledOn: 20000, // Estimated power consumption of a WS2812B at 100% (can be anywhere from 10mA to 30mA)
   ledOff: 460, // Quiescent current of a WS2812B
+};
+
+export const backlightLEDs = {
+  White: 3.2,
+  Blue: 3.0,
+  Green: 2.2,
+  Yellow: 2.1,
+  Red: 1.8,
+};
+
+export const backlightPower = {
+  pwmPower: 510, // Estimated power consumption of PWM module
 };
 
 export const displayPower = {

@@ -27,7 +27,7 @@ This allows you to use those defines, e.g. `LOWER` later in your keymap.
 ## Momentary Layer
 
 The "momentary layer" behavior enables a layer while a certain key is pressed. Immediately upon
-activation of the key, the layer is enabled, and immediately open release of the key, the layer is disabled
+activation of the key, the layer is enabled, and immediately upon release of the key, the layer is disabled
 again.
 
 ### Behavior Binding
@@ -43,7 +43,7 @@ Example:
 
 ## Layer-tap
 
-The "layer-tap" behavior enables a layer when a key is held, and output another key when the key is only tapped for a short time. For more information on the inner workings of layer-tap, see [hold-tap](./hold-tap.md).
+The "layer-tap" behavior enables a layer when a key is held, and output another key when the key is only tapped for a short time. For more information on the inner workings of layer-tap, see [hold-tap](hold-tap.md).
 
 ### Behavior Binding
 
@@ -123,3 +123,8 @@ Example:
 ```
 
 It is possible to use "toggle layer" to have keys that raise and lower the layers as well.
+
+## Conditional Layers
+
+The "conditional layers" feature enables a particular layer when all layers in a specified set are active.
+For more information, see [conditional layers](../features/conditional-layers.md).

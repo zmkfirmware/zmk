@@ -7,7 +7,6 @@
 #define DT_DRV_COMPAT zmk_behavior_transparent
 
 #include <device.h>
-#include <power/reboot.h>
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
@@ -34,8 +33,7 @@ static const struct behavior_driver_api behavior_transparent_driver_api = {
     .binding_released = on_keymap_binding_released,
 };
 
-DEVICE_AND_API_INIT(behavior_transparent, DT_INST_LABEL(0), behavior_transparent_init, NULL, NULL,
-                    APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
-                    &behavior_transparent_driver_api);
+DEVICE_DT_INST_DEFINE(0, behavior_transparent_init, NULL, NULL, NULL, APPLICATION,
+                      CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_transparent_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

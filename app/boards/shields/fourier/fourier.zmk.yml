@@ -1,0 +1,12 @@
+file_format: "1"
+id: fourier
+name: Fourier Rev. 1
+type: shield
+url: https://github.com/keebio/fourier
+requires:
+  - pro_micro
+features:
+  - keys
+siblings:
+  - fourier_left
+  - fourier_right

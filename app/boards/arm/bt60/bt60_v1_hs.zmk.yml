@@ -1,0 +1,12 @@
+file_format: "1"
+id: bt60_v1_hs
+name: BT60 V1 Hotswap
+type: board
+arch: arm
+features:
+  - keys
+  - encoder
+outputs:
+  - usb
+  - ble
+url: https://polarityworks.com

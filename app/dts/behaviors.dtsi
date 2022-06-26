@@ -1,4 +1,5 @@
 #include <behaviors/key_press.dtsi>
+#include <behaviors/key_toggle.dtsi>
 #include <behaviors/transparent.dtsi>
 #include <behaviors/none.dtsi>
 #include <behaviors/mod_tap.dtsi>
@@ -14,3 +15,7 @@
 #include <behaviors/bluetooth.dtsi>
 #include <behaviors/ext_power.dtsi>
 #include <behaviors/outputs.dtsi>
+#include <behaviors/caps_word.dtsi>
+#include <behaviors/key_repeat.dtsi>
+#include <behaviors/backlight.dtsi>
+#include <behaviors/macros.dtsi>

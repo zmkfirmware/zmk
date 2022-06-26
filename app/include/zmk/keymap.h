@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <zmk/events/position_state_changed.h>
+
 typedef uint32_t zmk_keymap_layers_state_t;
 
 uint8_t zmk_keymap_layer_default();
@@ -18,7 +20,8 @@ int zmk_keymap_layer_toggle(uint8_t layer);
 int zmk_keymap_layer_to(uint8_t layer);
 const char *zmk_keymap_layer_label(uint8_t layer);
 
-int zmk_keymap_position_state_changed(uint32_t position, bool pressed, int64_t timestamp);
+int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
+                                      int64_t timestamp);
 
 #define ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst)                                                  \
     {                                                                                              \

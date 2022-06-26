@@ -1,0 +1,55 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "kyria_common.dtsi"
+
+/ {
+	chosen {
+		zmk,matrix_transform = &default_transform;
+	};
+
+	default_transform: keymap_transform_0 {
+		compatible = "zmk,matrix-transform";
+		columns = <16>;
+		rows = <4>;
+// | MX6  | MX5  | MX4  | MX3  | MX2  | MX1  |                               | MX1  | MX2  | MX3  | MX4  | MX5  | MX6  |
+// | MX12 | MX11 | MX10 | MX9  | MX8  | MX7  |                               | MX7  | MX8  | MX9  | MX10 | MX11 | MX12 |
+// | MX20 | MX19 | MX18 | MX17 | MX16 | MX15 | MX14 | MX13 |   | MX13 | MX14 | MX15 | MX16 | MX17 | MX18 | MX19 | MX20 |
+//                    | MX25 | MX24 | MX23 | MX22 | MX21 |       | MX21 | MX22 | MX23 | MX24 | MX25 |
+		map = <
+RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5)                                 RC(0,10) RC(0,11) RC(0,12) RC(0,13) RC(0,14) RC(0,15)
+RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5)                                 RC(1,10) RC(1,11) RC(1,12) RC(1,13) RC(1,14) RC(1,15)
+RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10) RC(2,11) RC(2,12) RC(2,13) RC(2,14) RC(2,15)
+                        RC(3,2) RC(3,4) RC(3,5) RC(3,6) RC(3,7) RC(3,8) RC(3,9) RC(3,10) RC(3,11) RC(3,13)
+		>;
+	};
+
+// | MX5  | MX4  | MX3  | MX2  | MX1  |                               | MX1  | MX2  | MX3  | MX4  | MX5  |
+// | MX11 | MX10 | MX9  | MX8  | MX7  |                               | MX7  | MX8  | MX9  | MX10 | MX11 |
+// | MX19 | MX18 | MX17 | MX16 | MX15 | MX14 | MX13 |   | MX13 | MX14 | MX15 | MX16 | MX17 | MX18 | MX19 |
+//             | MX25 | MX24 | MX23 | MX22 | MX21 |       | MX21 | MX22 | MX23 | MX24 | MX25 |
+	five_column_transform: keymap_transform_1 {
+		compatible = "zmk,matrix-transform";
+		columns = <14>;
+		rows = <4>;
+		map = <
+RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4)                                 RC(0,9) RC(0,10) RC(0,11) RC(0,12) RC(0,13)
+RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)                                 RC(1,9) RC(1,10) RC(1,11) RC(1,12) RC(1,13)
+RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10) RC(2,11) RC(2,12) RC(2,13)
+                RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(3,6) RC(3,7) RC(3,8) RC(3,9) RC(3,10) RC(3,11)
+		>;
+	};
+};
+
+&left_encoder {
+	a-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	b-gpios = <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+};
+
+&right_encoder {
+	a-gpios = <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	b-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+};

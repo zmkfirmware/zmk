@@ -13,8 +13,6 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
-
 struct kscan_gpio_item_config {
     char *label;
     gpio_pin_t pin;
@@ -47,7 +45,7 @@ struct kscan_gpio_item_config {
 
 #define GPIO_INST_INIT(n)                                                                          \
     struct kscan_gpio_irq_callback_##n {                                                           \
-        struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_delayed_work)) * work;                           \
+        struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_work_delayable)) * work;                         \
         struct gpio_callback callback;                                                             \
         const struct device *dev;                                                                  \
     };                                                                                             \
@@ -60,7 +58,7 @@ struct kscan_gpio_item_config {
     struct kscan_gpio_data_##n {                                                                   \
         kscan_callback_t callback;                                                                 \
         struct k_timer poll_timer;                                                                 \
-        struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_delayed_work)) work;                             \
+        struct CHECK_DEBOUNCE_CFG(n, (k_work), (k_work_delayable)) work;                           \
         bool matrix_state[INST_MATRIX_INPUTS(n)][INST_MATRIX_OUTPUTS(n)];                          \
         const struct device *rows[INST_MATRIX_INPUTS(n)];                                          \
         const struct device *cols[INST_MATRIX_OUTPUTS(n)];                                         \
@@ -113,6 +111,8 @@ struct kscan_gpio_item_config {
                     &kscan_gpio_output_configs_##n(dev)[bit];                                      \
                 gpio_pin_set(out_dev, out_cfg->pin, state);                                        \
             }                                                                                      \
+            /* Let the col settle before reading the rows */                                       \
+            k_usleep(1);                                                                           \
                                                                                                    \
             for (int i = 0; i < INST_MATRIX_INPUTS(n); i++) {                                      \
                 /* Get the input device (port) */                                                  \
@@ -135,10 +135,8 @@ struct kscan_gpio_item_config {
             }                                                                                      \
         }                                                                                          \
         if (submit_follow_up_read) {                                                               \
-            CHECK_DEBOUNCE_CFG(n, ({ k_work_submit(&data->work); }), ({                            \
-                                   k_delayed_work_cancel(&data->work);                             \
-                                   k_delayed_work_submit(&data->work, K_MSEC(5));                  \
-                               }))                                                                 \
+            CHECK_DEBOUNCE_CFG(n, ({ k_work_submit(&data->work); }),                               \
+                               ({ k_work_reschedule(&data->work, K_MSEC(5)); }))                   \
         }                                                                                          \
         return 0;                                                                                  \
     }                                                                                              \
@@ -230,7 +228,7 @@ struct kscan_gpio_item_config {
                                                                                                    \
         k_timer_init(&data->poll_timer, kscan_gpio_timer_handler, NULL);                           \
                                                                                                    \
-        (CHECK_DEBOUNCE_CFG(n, (k_work_init), (k_delayed_work_init)))(                             \
+        (CHECK_DEBOUNCE_CFG(n, (k_work_init), (k_work_init_delayable)))(                           \
             &data->work, kscan_gpio_work_handler_##n);                                             \
         return 0;                                                                                  \
     }                                                                                              \
@@ -246,10 +244,8 @@ struct kscan_gpio_item_config {
         .cols = {UTIL_LISTIFY(INST_DEMUX_GPIOS(n), _KSCAN_GPIO_OUTPUT_CFG_INIT, n)},               \
     };                                                                                             \
                                                                                                    \
-    DEVICE_AND_API_INIT(kscan_gpio_##n, DT_INST_LABEL(n), kscan_gpio_init_##n,                     \
-                        &kscan_gpio_data_##n, &kscan_gpio_config_##n, APPLICATION,                 \
-                        CONFIG_APPLICATION_INIT_PRIORITY, &gpio_driver_api_##n);
+    DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, NULL, &kscan_gpio_data_##n,                      \
+                          &kscan_gpio_config_##n, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY,   \
+                          &gpio_driver_api_##n);
 
 DT_INST_FOREACH_STATUS_OKAY(GPIO_INST_INIT)
-
-#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

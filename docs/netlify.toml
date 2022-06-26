@@ -1,4 +1,22 @@
+[build]
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF . ../app/boards/"
+
 [[redirects]]
   from = "/community/discord/invite"
   to = "https://discord.gg/sycytVQ"
   status = 302
+
+[[redirects]]
+  from = "https://zmkfirmware.dev/*"
+  to = "https://zmk.dev/:splat"
+  force = true
+
+[[redirects]]
+  from = "https://www.zmkfirmware.dev/*"
+  to = "https://www.zmk.dev/:splat"
+  force = true
+
+[[headers]]
+  for = "/hardware-metadata.json"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
