@@ -1,6 +1,6 @@
 file_format: "1"
 id: pteron36
-name: pteron36
+name: Pteron36
 type: shield
 requires: [pro_micro]
 features:
