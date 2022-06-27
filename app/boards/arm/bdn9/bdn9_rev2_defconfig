@@ -11,8 +11,11 @@ CONFIG_FPU=y
 # enable GPIO
 CONFIG_GPIO=y
 
-# Enable pinmux
-CONFIG_PINMUX=y
+# Enable pinctrl
+CONFIG_PINCTRL=y
+
+# Poll to avoid interrupt overlap issues
+CONFIG_ZMK_KSCAN_DIRECT_POLLING=y
 
 # Needed to reduce this to size that will fit on F072
 CONFIG_HEAP_MEM_POOL_SIZE=1024
@@ -20,13 +23,3 @@ CONFIG_HEAP_MEM_POOL_SIZE=1024
 # clock configuration
 CONFIG_CLOCK_CONTROL=y
 
-# Clock configuration for Cube Clock control driver
-CONFIG_CLOCK_STM32_SYSCLK_SRC_PLL=y
-# use HSI as PLL input
-CONFIG_CLOCK_STM32_PLL_SRC_HSI=y
-# produce 72MHz clock at PLL output
-CONFIG_CLOCK_STM32_PLL_PREDIV=1
-CONFIG_CLOCK_STM32_PLL_MULTIPLIER=12
-CONFIG_CLOCK_STM32_AHB_PRESCALER=1
-CONFIG_CLOCK_STM32_APB1_PRESCALER=2
-CONFIG_CLOCK_STM32_APB2_PRESCALER=1

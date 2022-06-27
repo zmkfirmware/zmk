@@ -59,8 +59,8 @@ static const struct behavior_driver_api behavior_sensor_rotate_key_press_driver_
     .sensor_binding_triggered = on_sensor_binding_triggered};
 
 #define KP_INST(n)                                                                                 \
-    DEVICE_DT_INST_DEFINE(n, behavior_sensor_rotate_key_press_init, device_pm_control_nop, NULL,   \
-                          NULL, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                  \
+    DEVICE_DT_INST_DEFINE(n, behavior_sensor_rotate_key_press_init, NULL, NULL, NULL, APPLICATION, \
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                     \
                           &behavior_sensor_rotate_key_press_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)

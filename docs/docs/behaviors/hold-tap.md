@@ -48,6 +48,29 @@ If you press a tapped hold-tap again within `quick-tap-ms` milliseconds, it will
 
 In QMK, unlike ZMK, this functionality is enabled by default, and you turn it off using `TAPPING_FORCE_HOLD`.
 
+#### `global-quick-tap`
+
+If global quick tap is enabled, then `quick-tap-ms` will apply not only when the given hold-tap is tapped but for any key tap before it. This effectively disables the hold tap when typing quickly, which can be quite useful for home row mods. It can also have the effect of removing the input delay when typing quickly.
+
+For example, the following hold-tap configuration enables global quick tap with a 125 millisecond term.
+
+```
+gqt: global-quick-tap {
+	compatible = "zmk,behavior-hold-tap";
+	label = "GLOBAL_QUICK_TAP";
+	#binding-cells = <2>;
+	flavor = "tap-preferred";
+	tapping-term-ms = <200>;
+	quick-tap-ms = <125>;
+	global-quick-tap;
+	bindings = <&kp>, <&kp>;
+};
+```
+
+If you press `&kp A` and then `&gqt LEFT_SHIFT B` **within** 125 ms, then `ab` will be output. Importantly, `b` will be output immediately since it was within the `quick-tap-ms`. This quick-tap behavior will work for any key press, whether it is within a behavior like hold-tap, or a simple `&kp`. This means the `&gqt LEFT_SHIFT B` binding will only have its underlying hold-tap behavior if it is pressed 125 ms **after** a key press.
+
+Note that the higher the `quick-tap-ms` the harder it will be to use the hold behavior, making this less applicable for something like capitalizing letter while typing normally. However, if the hold behavior isn't used during fast typing, then it can be an effective way to mitigate misfires.
+
 #### `retro-tap`
 
 If retro tap is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime.
@@ -115,7 +138,7 @@ The following are suggested hold-tap configurations that work well with home row
 	behaviors {
 		lh_pht: left_hand_positional_hold_tap {
 			compatible = "zmk,behavior-hold-tap";
-			label = "POSITIONAL_HOLD_TAP";
+			label = "LEFT_POSITIONAL_HOLD_TAP";
 			#binding-cells = <2>;
 			flavor = "tap-unless-interrupted";
 			tapping-term-ms = <100>;                        // <---[[produces tap if held longer than tapping-term-ms]]
@@ -129,8 +152,8 @@ The following are suggested hold-tap configurations that work well with home row
 		compatible = "zmk,keymap";
 		default_layer {
 			bindings = <
-				// position 0           pos 1             pos 2             pos 3       pos 4    pos 5    pos 6    pos 7    pos 8    pos 9     pos 10
-				&lh_pht LSFT A    &lh_pht LGUI S    &lh_pht LALT D    &lh_pht LCTL F    &kp G    &kp H    &kp I    &kp J    &kp K    &kp L    &kp SCLN
+				// position 0     pos 1             pos 2             pos 3             pos 4    pos 5    pos 6    pos 7    pos 8    pos 9    pos 10
+				&lh_pht LSFT A    &lh_pht LGUI S    &lh_pht LALT D    &lh_pht LCTL F    &kp G    &kp H    &kp I    &kp J    &kp K    &kp L    &kp SEMI
 			>;
 		};
 	};

@@ -1,0 +1,25 @@
+# 595 GPIO configuration options
+
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+DT_COMPAT_ZMK_GPIO_595 := zmk,gpio-595
+
+menuconfig GPIO_595
+	bool "595 Shift Register SPI driver"
+	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_GPIO_595))
+	depends on SPI
+	select HAS_DTS_GPIO
+	select ZMK_DRIVERS_GPIO
+	help
+	  Enable driver for 595 shift register chip using SPI.
+
+if GPIO_595
+
+config GPIO_595_INIT_PRIORITY
+	int "Init priority"
+	default 75
+	help
+	  Device driver initialization priority.
+
+endif #GPIO_595
