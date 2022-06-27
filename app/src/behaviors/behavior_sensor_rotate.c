@@ -36,7 +36,7 @@ static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
 
     err = sensor_channel_get(sensor, SENSOR_CHAN_ROTATION, &value);
 
-    if (err) {
+    if (err < 0) {
         LOG_WRN("Failed to get sensor rotation value: %d", err);
         return err;
     }
