@@ -269,7 +269,8 @@ int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sens
                 continue;
             }
 
-            struct zmk_behavior_binding_event event = {.position = sensor_number, .timestamp = timestamp};
+            struct zmk_behavior_binding_event event = {.position = sensor_number,
+                                                       .timestamp = timestamp};
             ret = behavior_sensor_keymap_binding_triggered(binding, sensor, event);
 
             if (ret > 0) {
