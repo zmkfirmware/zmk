@@ -22,6 +22,8 @@ Here is a table describing the action for each define:
 
 | Define          | Action                                                                                         |
 | --------------- | ---------------------------------------------------------------------------------------------- |
+| `RGB_ON`        | Turns the RGB feature on                                                                       |
+| `RGB_OFF`       | Turns the RGB feature off                                                                      |
 | `RGB_TOG`       | Toggles the RGB feature on and off                                                             |
 | `RGB_HUI`       | Increases the hue of the RGB feature                                                           |
 | `RGB_HUD`       | Decreases the hue of the RGB feature                                                           |
