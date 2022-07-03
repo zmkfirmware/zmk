@@ -134,8 +134,8 @@ Definition file: [zmk/app/dts/bindings/zmk,kscan-composite.yaml](https://github.
 | Property | Type   | Description                                   | Default |
 | -------- | ------ | --------------------------------------------- | ------- |
 | `label`  | string | Unique label for the node                     |         |
-| `rows`   | int    | The number rows of in the composite matrix    |         |
-| `cols`   | int    | The number columns of in the composite matrix |         |
+| `rows`   | int    | The number of rows in the composite matrix    |         |
+| `cols`   | int    | The number of columns in the composite matrix |         |
 
 The `zmk,kscan-composite` node should have one child node per keyboard scan driver that should be composited. Each child node can have the following properties:
 
@@ -249,8 +249,8 @@ Definition file: [zmk/app/dts/bindings/zmk,kscan-mock.yaml](https://github.com/z
 | `label`        | string | Unique label for the node                     |         |
 | `event-period` | int    | Milliseconds between each generated event     |         |
 | `events`       | array  | List of key events to simulate                |         |
-| `rows`         | int    | The number rows of in the composite matrix    |         |
-| `cols`         | int    | The number columns of in the composite matrix |         |
+| `rows`         | int    | The number of rows in the composite matrix    |         |
+| `cols`         | int    | The number of columns in the composite matrix |         |
 | `exit-after`   | bool   | Exit the program after running all events     | false   |
 
 The `events` array should be defined using the macros from [dt-bindings/zmk/kscan_mock.h](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/kscan_mock.h).

@@ -157,6 +157,8 @@ this might look something like:
 };
 ```
 
+See the [Keyboard Scan configuration documentation](../config/kscan.md) for details on configuring the KSCAN driver.
+
 </TabItem>
 
 <TabItem value="split">
@@ -260,6 +262,8 @@ This is exemplified with the iris .overlay files.
 
 ```
 
+See the [Keyboard Scan configuration documentation](../config/kscan.md) for details on configuring the KSCAN driver.
+
 ### .conf files (Split Shields)
 
 While unibody boards only have one .conf file that applies configuration characteristics to the entire keyboard,
@@ -340,6 +344,8 @@ Some important things to note:
 - The `#include <dt-bindings/zmk/matrix_transform.h>` is critical. The `RC` macro is used to generate the internal storage in the matrix transform, and is actually replaced by a C preprocessor before the final devicetree is compiled into ZMK.
 - `RC(row, column)` is placed sequentially to define what row and column values that position corresponds to.
 - If you have a keyboard with options for `2u` keys in certain positions, or break away portions, it is a good idea to set the chosen `zmk,matrix_transform` to the default arrangement, and include _other_ possible matrix transform nodes in the devicetree that users can select in their user config by overriding the chosen node.
+
+See the [matrix transform section](../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for details and more examples of matrix transforms.
 
 ## Default Keymap
 

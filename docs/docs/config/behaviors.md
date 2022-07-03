@@ -21,12 +21,12 @@ Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-caps-word.yaml](ht
 
 Applies to: `compatible = "zmk,behavior-caps-word"`
 
-| Property         | Type   | Description                                                        | Default        |
-| ---------------- | ------ | ------------------------------------------------------------------ | -------------- |
-| `label`          | string | Unique label for the node                                          |                |
-| `#binding-cells` | int    | Must be `<0>`                                                      |                |
-| `continue-list`  | array  | List of [key codes](/docs/codes) which do not deactivate caps lock | `<UNDERSCORE>` |
-| `mods`           | int    | A bit field of modifiers to apply                                  | `<MOD_LSFT>`   |
+| Property         | Type   | Description                                                        | Default                         |
+| ---------------- | ------ | ------------------------------------------------------------------ | ------------------------------- |
+| `label`          | string | Unique label for the node                                          |                                 |
+| `#binding-cells` | int    | Must be `<0>`                                                      |                                 |
+| `continue-list`  | array  | List of [key codes](/docs/codes) which do not deactivate caps lock | `<UNDERSCORE BACKSPACE DELETE>` |
+| `mods`           | int    | A bit field of modifiers to apply                                  | `<MOD_LSFT>`                    |
 
 `continue-list` is treated as if it always includes alphanumeric characters (A-Z, 0-9).
 
