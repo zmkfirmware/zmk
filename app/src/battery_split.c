@@ -19,8 +19,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/battery.h>
 #include <zmk/events/battery_state_changed.h>
 
-static uint8_t last_state_of_charge = 0;
-static uint8_t last_state_of_peripheral_charge = 0;
+const uint8_t NULL_BATTERY_LEVEL = 0xFF;
+
+// Initialize the charge level to a special value indicating no sampling has been made yet.
+static uint8_t last_state_of_charge = NULL_BATTERY_LEVEL;
+static uint8_t last_state_of_peripheral_charge = NULL_BATTERY_LEVEL;
 
 static void blvl_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value) {
     ARG_UNUSED(attr);
