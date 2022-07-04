@@ -139,7 +139,6 @@ defaultValue="homerow_mods"
 values={[
 {label: 'Homerow Mods', value: 'homerow_mods'},
 {label: 'Autoshift', value: 'autoshift'},
-{label: 'Sticky Holds', value: 'sticky_holds'},
 {label: 'Toggle-on-Tap, Momentary-on-Hold Layers', value: 'tog_mo'},
 ]}>
 
@@ -269,74 +268,6 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 		default_layer {
 			bindings = <
 	            AS(Q) AS(W) AS(E) AS(R) AS(T) AS(Y) // Autoshift applied for QWERTY keys
-			>;
-		};
-	};
-};
-```
-
-</TabItem>
-
-<TabItem value="sticky_holds">
-
-This section describes hold-tap behaviors involving [sticky keys](sticky-key.md) or [sticky layers](sticky-layer.md). These code snippets implement a sticky tap paired with a [keypress](key-press.md) or [momentary layer](layers.md/#momentary-layer) on the hold, as relevant to each example.
-
-If uninterrupted by another keypress, a regular [sticky key](sticky-key.md) or [sticky layer](sticky-layer.md) remains sticky after its release; the [`release-after-ms`](sticky-key.md/#release-after-ms) timer must expire before the sticky key/layer is deactivated. This can be an issue for cases like using the mouse while a modifier is held. The "sticky hold" implementations below provide a workaround for this problem, since the user can immediately deactivate the [sticky key](sticky-key.md) or [sticky layer](sticky-layer.md) on its release, after it has been held down for a sufficient amount of time.
-
-```dtsi title="Hold-Tap Example: Sticky Hold Key (&sk on tap, &kp on hold)"
-#include <dt-bindings/zmk/keys.h>
-#include <behaviors.dtsi>
-
-#define SHK(keycode) &shk keycode keycode   // Macro to apply sticky-key-on-tap/keypress-on-hold to a specific keycode
-
-/ {
-    behaviors {
-        shk: sticky_hold_key {
-            compatible = "zmk,behavior-hold-tap";
-            label = "sticky-hold key";
-            #binding-cells = <2>;
-            tapping_term_ms = <200>;
-            flavor = "tap-preferred";
-            bindings = <&kp>, <&sk>;
-        };
-    };
-
-    keymap {
-		compatible = "zmk,keymap";
-		default_layer {
-			bindings = <
-	            &shk X Z    // &kp X on hold, &sk Z on tap
-                SHK(A)      // &kp A on hold, &sk A on tap
-			>;
-		};
-	};
-};
-```
-
-```dtsi title="Hold-Tap Example: Sticky Hold Layer (&sl on tap, &mo on hold)"
-#include <dt-bindings/zmk/keys.h>
-#include <behaviors.dtsi>
-
-#define SHL(layer) &shl layer layer   // Macro to apply sticky-layer-on-tap/momentary-layer-on-hold to a specific layer
-
-/ {
-    behaviors {
-        shl: sticky_layer_hold {
-            compatible = "zmk,behavior-hold-tap";
-            label = "sticky-hold layer";
-            #binding-cells = <2>;
-            tapping_term_ms = <200>;
-            flavor = "tap-preferred";
-            bindings = <&mo>, <&sl>;
-        };
-    };
-
-    keymap {
-		compatible = "zmk,keymap";
-		default_layer {
-			bindings = <
-	            &shl 2 1    // &mo 2 on hold, &sl 1 on tap
-                SHL(3)      // &mo 3 on hold, &sl 3 on tap
 			>;
 		};
 	};
