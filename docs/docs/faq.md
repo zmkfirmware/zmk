@@ -49,7 +49,7 @@ ZMK is still in its infancy, so there’s a learning curve involved. But if you�
 
 ### What is a “board”?
 
-In ZMK, a _board_ defines the _PCB_ that _includes the MCU_.
+In ZMK, a _board_ defines the _PCB (printed circuit board)_ that _includes the MCU_.
 For keyboards, this is one of two options:
 
 - Complete keyboard PCBs that include the MCU (e.g. the Planck or Preonic).
@@ -57,7 +57,7 @@ For keyboards, this is one of two options:
 
 ### What is a “shield”?
 
-In ZMK, a _shield_ is a _PCB_ or _hardwired set of components_ that when combined with a MCU only [board](#what-is-a-board) like the Proton-C or nice!nano, results in a complete usable keyboard. Examples would be keyboard PCBs like the Kyria or Corne. The _shield_ is usually the big PCB containing all the keys.
+In ZMK, a _shield_ is a _PCB_ or _hardwired set of components_ that, when combined with a MCU only [board](#what-is-a-board) like the Proton-C or nice!nano, results in a complete and functional keyboard. Examples would be keyboard PCBs like the Kyria or Corne. The _shield_ is usually the big PCB containing all the keys.
 
 ### Why _boards_ and _shields_? Why not just “keyboard”?
 
@@ -68,7 +68,7 @@ If you haven't already done so, please read these FAQs first:
 
 When a keyboard accepts a small “PCB MCU module” (e.g. _Arduino Pro Micro_) for its “brains”, then it's important to conceptually separate the hardware into a [board](#what-is-a-board) PCB and a [shield](#what-is-a-shield) PCB.
 
-The [shield](#what-is-a-shield) is a brainless shell containing all the keys, RGB LEDs, encoders etc. It maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
+The [shield](#what-is-a-shield) is a "brainless" shell containing all the keys, RGB LEDs, encoders etc. It maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
 
 To bring this brainless [shield](#what-is-a-shield) to life, you attach any MCU [board](#what-is-a-board) matching the footprint. For instance, the _nice!nano_ is _pin-compatible_ with the _Arduino Pro Micro_, so you can substitute either [board](#what-is-a-board) onto the [shield](#what-is-a-shield). But each [board](#what-is-a-board) comes with its own features (MCU, flash, BLE, etc.) which must also be handled.
 
@@ -80,9 +80,13 @@ Please note, many keyboards only have a single PCB which includes the “brains�
 
 Currently, ZMK only supports wireless split, but wired split is possible and we welcome contributions!
 
+### How is the latency?
+
+ZMK uses [interrupts](https://en.wikipedia.org/wiki/Interrupt) to scan for key presses. Thus, the polling speed is high (> 1ms) and lowers input delay. For more information on ZMK's latency, check out this [video](https://www.youtube.com/watch?v=jWL4nU-vtWs).
+
 ### What bootloader does ZMK use?
 
-ZMK isn’t designed for any particular bootloader, and supports flashing different boards with different flash utilities (e.g. OpenOCD, nrfjprog, etc.). So if you have any difficulties, please let us know on [Discord](https://zmk.dev/community/discord/invite)!
+ZMK isn’t designed for any particular bootloader, and supports flashing different boards with different flash utilities (e.g. OpenOCD, nrfjprog, Blackmagic, etc.). So if you have any difficulties, please let us know on [Discord](https://zmk.dev/community/discord/invite)!
 
 ### Can I contribute?
 
