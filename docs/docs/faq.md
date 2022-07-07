@@ -82,7 +82,7 @@ Currently, ZMK only supports wireless split, but wired split is possible and we 
 
 ### How is the latency?
 
-ZMK uses [interrupts](https://en.wikipedia.org/wiki/Interrupt) to scan for key presses. Thus, the polling speed is high (> 1ms) and lowers input delay. For more information on ZMK's latency, check out this [video](https://www.youtube.com/watch?v=jWL4nU-vtWs).
+ZMK uses [interrupts](https://en.wikipedia.org/wiki/Interrupt) to scan for key presses. Thus, the polling speed is high (> 1ms) and lowers input delay. For a comparison of input latency between ZMK and other keyboard offerings, see this [video](https://www.youtube.com/watch?v=jWL4nU-vtWs).
 
 ### What bootloader does ZMK use?
 
