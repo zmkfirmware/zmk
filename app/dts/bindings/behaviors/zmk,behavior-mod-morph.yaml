@@ -1,7 +1,7 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-description: Keyboard Reset Behavior
+description: Mod Morph Behavior
 
 compatible: "zmk,behavior-mod-morph"
 

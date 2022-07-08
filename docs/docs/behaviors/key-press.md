@@ -40,7 +40,7 @@ The "key press" behavior sends standard keycodes on press/release.
 ### Behavior Binding
 
 - Reference: `&kp`
-- Parameter: The keycode usage ID from the usage page, e.g. `4` or `A`
+- Parameter: The keycode usage ID from the usage page, e.g. `N4` or `A`
 
 Example:
 
