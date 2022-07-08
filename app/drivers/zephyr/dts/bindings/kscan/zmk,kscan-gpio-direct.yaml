@@ -13,4 +13,25 @@ properties:
     required: true
   debounce-period:
     type: int
+    required: false
+    deprecated: true
+    description: Deprecated. Use debounce-press-ms and debounce-release-ms instead.
+  debounce-press-ms:
+    type: int
     default: 5
+    description: Debounce time for key press in milliseconds. Use 0 for eager debouncing.
+  debounce-release-ms:
+    type: int
+    default: 5
+    description: Debounce time for key release in milliseconds.
+  debounce-scan-period-ms:
+    type: int
+    default: 1
+    description: Time between reads in milliseconds when any key is pressed.
+  poll-period-ms:
+    type: int
+    default: 10
+    description: Time between reads in milliseconds when no key is pressed and ZMK_KSCAN_DIRECT_POLLING is enabled.
+  toggle-mode:
+    type: boolean
+    description: Enable toggle-switch mode.
