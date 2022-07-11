@@ -9,4 +9,4 @@ outputs:
   - usb
   - ble
 url: https://mechwild.com
-exposes:[blackpill]
+exposes: [blackpill]
