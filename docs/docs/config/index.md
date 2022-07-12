@@ -134,7 +134,7 @@ See [Zephyr's Devicetree guide](https://docs.zephyrproject.org/latest/build/dts/
 ### Changing Devicetree Properties
 
 Since Devicetree properties are set for specific nodes in the tree, you will first need to find the node you want to configure. You will typically need to
-search through the `.dts` file for you board, `.overlay` file for your shield, or a `.dtsi` file included in by of those files using an `#include` statement.
+search through the `.dts` file for your board, `.overlay` file for your shield, or a `.dtsi` file included by those files using an `#include` statement.
 
 A Devicetree node looks like this:
 
