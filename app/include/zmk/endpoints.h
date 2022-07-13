@@ -11,5 +11,6 @@
 int zmk_endpoints_select(enum zmk_endpoint endpoint);
 int zmk_endpoints_toggle();
 enum zmk_endpoint zmk_endpoints_selected();
+bool zmk_endpoints_preferred_is_active();
 
 int zmk_endpoints_send_report(uint16_t usage_page);

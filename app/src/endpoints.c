@@ -63,6 +63,7 @@ int zmk_endpoints_select(enum zmk_endpoint endpoint) {
 }
 
 enum zmk_endpoint zmk_endpoints_selected() { return current_endpoint; }
+bool zmk_endpoints_preferred_is_active() { return preferred_endpoint == current_endpoint; }
 
 int zmk_endpoints_toggle() {
     enum zmk_endpoint new_endpoint =

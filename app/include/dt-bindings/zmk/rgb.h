@@ -19,6 +19,7 @@
 #define RGB_EFR_CMD 12
 #define RGB_EFS_CMD 13
 #define RGB_COLOR_HSB_CMD 14
+#define RGB_STATUS_CMD 15
 
 #define RGB_TOG RGB_TOG_CMD 0
 #define RGB_ON RGB_ON_CMD 0
@@ -33,6 +34,7 @@
 #define RGB_SPD RGB_SPD_CMD 0
 #define RGB_EFF RGB_EFF_CMD 0
 #define RGB_EFR RGB_EFR_CMD 0
+#define RGB_STATUS RGB_STATUS_CMD 0
 #define RGB_COLOR_HSB_VAL(h, s, v) (((h) << 16) + ((s) << 8) + (v))
 #define RGB_COLOR_HSB(h, s, v) RGB_COLOR_HSB_CMD##(RGB_COLOR_HSB_VAL(h, s, v))
 #define RGB_COLOR_HSV RGB_COLOR_HSB
