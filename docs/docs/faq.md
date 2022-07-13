@@ -82,7 +82,7 @@ Currently, ZMK only supports wireless split, but wired split is possible and we 
 
 ### How is the latency?
 
-By default, ZMK uses [interrupts](https://en.wikipedia.org/wiki/Interrupt) to scan for key presses. However, ZMK is equipped with a variety of scanning methods and debounce algorithms that can affect the final measured latency. Latency is comparable to other firmware offerings, although it is highly dependent on the setup. For a video comparing ZMK and other keyboard firmwares' latency, see this [video](https://www.youtube.com/watch?v=jWL4nU-vtWs).
+Latency is comparable to other firmware offerings. ZMK is equipped with a variety of scanning methods and debounce algorithms that can affect the final measured latency. [This video shows a latency comparison of ZMK and other keyboard firmwares](https://www.youtube.com/watch?v=jWL4nU-vtWs).
 
 ### What bootloader does ZMK use?
 
