@@ -72,6 +72,8 @@ ZMK_SUBSCRIPTION(peripheral_batt_lvl_listener, zmk_peripheral_battery_state_chan
 
 uint8_t zmk_battery_state_of_charge() { return last_state_of_charge; }
 
+uint8_t zmk_battery_state_of_peripheral_charge() { return last_state_of_peripheral_charge; }
+
 static int zmk_battery_update(const struct device *battery) {
     struct sensor_value state_of_charge;
 
