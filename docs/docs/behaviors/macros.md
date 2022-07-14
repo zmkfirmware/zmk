@@ -134,6 +134,12 @@ bindings
     ;
 ```
 
+### Behavior Queue Limit
+
+The default queue limit is 64. However, some actions require multiple events (e.g. `&kp` requires `key press` and `key release` events). As a result, the effective number of actions can be less than 64.
+
+You can change the limit by adding `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=n` to your `.conf` file. For example, you can add `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` if your macro outputs more than 200 characters.
+
 ## Common Patterns
 
 Below are some examples of how the macro behavior can be used for various useful functionality.
