@@ -7719,6 +7719,27 @@ export default [
     footnotes: {},
   },
   {
+    names: ["C_AC_DESKTOP_SHOW_ALL_APPLICATIONS"],
+    description: "Desktop Show All Applications",
+    context: "Consumer AC",
+    clarify: true,
+    usages: [
+      {
+        application: consumerApplication,
+        item: usage(consumerPage, 0x2A2),
+      },
+    ],
+    documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=153",
+    os: {
+      windows: null,
+      linux: true,
+      android: null,
+      macos: null,
+      ios: null,
+    },
+    footnotes: {},
+  },
+  {
     names: ["C_KEYBOARD_INPUT_ASSIST_PREVIOUS", "C_KBIA_PREV"],
     description: "Previous",
     context: "Consumer KBIA",
