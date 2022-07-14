@@ -419,9 +419,16 @@ if ZMK_USB_LOGGING
 config ZMK_LOG_LEVEL
 	default 4
 
+choice USB_CDC_ACM_LOG_LEVEL_CHOICE
+	default USB_CDC_ACM_LOG_LEVEL_OFF
+endchoice
+
+choice USB_DRIVER_LOG_LEVEL_CHOICE
+	default USB_DRIVER_LOG_LEVEL_OFF
+
+endchoice
+
 # We do this to avoid log loop where logging to USB generates more log messages.
-config USB_CDC_ACM_LOG_LEVEL
-	default 1
 
 config USB_CDC_ACM_RINGBUF_SIZE
 	default 1024
