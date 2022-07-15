@@ -11,9 +11,9 @@ See the [zmk/app/dts/behaviors/](https://github.com/zmkfirmware/zmk/tree/main/ap
 
 ## Kconfig
 
-| Config                             | Type | Description                                          | Default |
-| ---------------------------------- | ---- | ---------------------------------------------------- | ------- |
-| `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE`  | int  | The size of the behaviors queue                      | 64      |
+| Config                            | Type | Description                                                                          | Default |
+| --------------------------------- | ---- | ------------------------------------------------------------------------------------ | ------- |
+| `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` | int  | Maximum number of behaviors to allow queueing from a macro or other complex behavior | 64      |
 
 ## Caps Word
 
