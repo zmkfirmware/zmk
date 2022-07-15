@@ -44,6 +44,7 @@ config ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS
 
 config ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS
     int "Ticks to wait between each output when scanning"
+	default 1 if SOC_RP2040
 	default 0
 	help
 	    When iterating over each output to drive it active, read inputs, then set
