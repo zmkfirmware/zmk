@@ -9,6 +9,12 @@ See [Configuration Overview](index.md) for instructions on how to change these s
 
 See the [zmk/app/dts/behaviors/](https://github.com/zmkfirmware/zmk/tree/main/app/dts/behaviors) folder for all default behaviors.
 
+## Kconfig
+
+| Config                             | Type | Description                                          | Default |
+| ---------------------------------- | ---- | ---------------------------------------------------- | ------- |
+| `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE`  | int  | The size of the behaviors queue                      | 64      |
+
 ## Caps Word
 
 Creates a custom behavior that behaves similar to a caps lock but deactivates when any key not in a continue list is pressed.
