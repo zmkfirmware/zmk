@@ -138,7 +138,7 @@ bindings
 
 Macros use an internal queue to invoke each behavior in the bindings list when triggered, which has a size of 64 by default. Bindings in "press" and "release" modes correspond to one event in the queue, whereas "tap" mode bindings correspond to two (one for press and one for release). As a result, the effective number of actions processed might be less than 64 and this can cause problems for long macros.
 
-You can change the limit by adding `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=n` to your `.conf` file. For example, you can add `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` if your macro outputs more than 200 characters.
+To prevent issues with longer macros, you can change the size of this queue via the `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` setting in your configuration, [typically through your `.conf` file](../config/index.md). For example, `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` would allow your macro to type about 256 characters.
 
 ## Common Patterns
 
