@@ -1,0 +1,11 @@
+file_format: "1"
+id: wing36
+name: Wing36
+type: shield
+url: https://github.com
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - wing36_left
+  - wing36_right
