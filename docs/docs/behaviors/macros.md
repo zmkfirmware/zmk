@@ -136,7 +136,7 @@ bindings
 
 ### Behavior Queue Limit
 
-The default queue limit is 64. However, some actions require multiple events (e.g. `&kp` requires `key press` and `key release` events). As a result, the effective number of actions can be less than 64.
+Macros use an internal queue to invoke each behavior in the bindings list when triggered, which has a size of 64 by default. Bindings in "press" and "release" modes correspond to one event in the queue, whereas "tap" mode bindings correspond to two (one for press and one for release). As a result, the effective number of actions processed might be less than 64 and this can cause problems for long macros.
 
 You can change the limit by adding `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=n` to your `.conf` file. For example, you can add `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` if your macro outputs more than 200 characters.
 
