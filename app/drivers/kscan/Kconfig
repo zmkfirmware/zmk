@@ -30,6 +30,20 @@ config ZMK_KSCAN_GPIO_MATRIX
 	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_GPIO_MATRIX))
 	select ZMK_KSCAN_GPIO_DRIVER
 
+if ZMK_KSCAN_GPIO_MATRIX
+
+config ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS
+    int "Ticks to wait between each output when scanning"
+	default 0
+	help
+	    When iterating over each output to drive it active, read inputs, then set
+		inactive again, some boards may take time for the previous output to
+		"settle" before reading inputs for the next active output column. In that
+		scenario, set this value to a positive value to configure the number of
+		usecs to wait after reading each column of keys.
+
+endif # ZMK_KSCAN_GPIO_MATRIX
+
 config ZMK_KSCAN_MOCK_DRIVER
 	bool
 	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_MOCK))

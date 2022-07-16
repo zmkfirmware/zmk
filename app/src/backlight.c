@@ -91,7 +91,9 @@ static int zmk_backlight_init(const struct device *_arg) {
         LOG_ERR("Failed to load backlight settings: %d", rc);
     }
 #endif
-
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB)
+    state.on = zmk_usb_is_powered();
+#endif
     return zmk_backlight_update();
 }
 
