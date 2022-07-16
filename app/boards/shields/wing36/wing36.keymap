@@ -12,10 +12,10 @@
     //               | SW6  | SW9  | SW12 | SW15 |                              | SW23 | SW27 | SW30 | SW33 |              
     //                                    | SW16 | SW17 | SW18 |  | SW19 | SW20 | SW24 |   
     bindings = <
-          &kp Q &kp W &kp E &kp R &kp T 						  &kp T &kp R &kp E &kp W &kp Q 
-    &kp A &kp S &kp D &kp F &kp G &kp H			        	      &kp H &kp G &kp F &kp D &kp S &kp A
-                &kp Z &kp X &kp C &kp V				              &kp V &kp C &kp X &kp Z 
-                                  &kp B &kp N &kp M	  &kp M &kp N &kp B 
+               &kp Q &kp W &kp E &kp R &kp T 						                                      &kp T &kp R &kp E &kp W &kp Q 
+    &bt BT_CLR &kp S &kp D &kp F &kp G &kp H			        	                                  &kp H &kp G &kp F &kp D &kp S &bt BT_CLR
+                     &kp Z &kp X &kp C &kp V				                                          &kp V &kp C &kp X &kp Z 
+                                 &bt BT_NXT &bt BT_PRV &bt BT_SEL 1	  &bt BT_SEL 1 &bt BT_PRV &bt BT_NXT 
     >;
 
     };
