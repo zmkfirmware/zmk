@@ -11,8 +11,8 @@
             flavor = "hold-preferred";
             tapping-term-ms = <300>;
             quick-tap-ms = <300>;
+            global-quick-tap-ms = <100>;
             bindings = <&kp>, <&kp>;
-            global-quick-tap;
         };
     };
 

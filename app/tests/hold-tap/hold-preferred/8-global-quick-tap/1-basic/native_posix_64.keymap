@@ -7,7 +7,7 @@
     events = <
         /* tap */
         ZMK_MOCK_PRESS(0,0,10)
-        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,250)
         /* normal quick tap */
         ZMK_MOCK_PRESS(0,0,400)
         ZMK_MOCK_RELEASE(0,0,400)
