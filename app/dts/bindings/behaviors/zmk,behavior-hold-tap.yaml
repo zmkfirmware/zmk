@@ -20,8 +20,11 @@ properties:
     default: -1
   quick_tap_ms: # deprecated
     type: int
-  global-quick-tap:
+  global-quick-tap: # deprecated
     type: boolean
+  global-quick-tap-ms:
+    type: int
+    default: -1
   flavor:
     type: string
     required: false

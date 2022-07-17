@@ -6,7 +6,7 @@
 &kscan {
     events = <
         /* hold the first mod tap */
-        ZMK_MOCK_PRESS(0,0,400)
+        ZMK_MOCK_PRESS(0,0,10)
         /* hold the second mod tap */
         ZMK_MOCK_PRESS(0,1,400)
         /* press the normal key */
