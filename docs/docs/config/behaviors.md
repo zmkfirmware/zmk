@@ -9,7 +9,9 @@ See [Configuration Overview](index.md) for instructions on how to change these s
 
 See the [zmk/app/dts/behaviors/](https://github.com/zmkfirmware/zmk/tree/main/app/dts/behaviors) folder for all default behaviors.
 
-## Kconfig
+## Common
+
+### Kconfig
 
 | Config                            | Type | Description                                                                          | Default |
 | --------------------------------- | ---- | ------------------------------------------------------------------------------------ | ------- |
