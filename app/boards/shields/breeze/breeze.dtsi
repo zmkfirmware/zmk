@@ -32,7 +32,7 @@ RC(3,5) RC(3,4) RC(3,3) RC(3,2) RC(3,1) RC(3,0)                  RC(8,0) RC(8,1)
     };
 
     // WINTER BREEZE
-    five_column_transform: keymap_transform_1 {
+    no_wing_transform: keymap_transform_1 {
         compatible = "zmk,matrix-transform";
         columns = <6>;
         rows = <10>;
@@ -51,7 +51,7 @@ RC(3,5) RC(3,4) RC(3,3) RC(3,2) RC(3,1) RC(3,0)                  RC(8,0) RC(8,1)
     };
 
     // SOUTHERN BREEZE
-    left_wing_transform: keymap_transform_1 {
+    left_wing_transform: keymap_transform_2 {
         compatible = "zmk,matrix-transform";
         columns = <9>;
         rows = <10>;
@@ -70,7 +70,7 @@ RC(1,8) RC(1,7) RC(1,6) RC(3,5) RC(3,4) RC(3,3) RC(3,2) RC(3,1) RC(3,0)         
     };
 
     // SUMMER BREEZE
-    both_wings_transform: keymap_transform_1 {
+    both_wings_transform: keymap_transform_3 {
         compatible = "zmk,matrix-transform";
         columns = <9>;
         rows = <10>;
