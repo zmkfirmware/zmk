@@ -81,13 +81,12 @@ static int kscan_round_robin_matrix_read(const struct device *dev) {
     for (int o = 0; o < len; o++) {
         const struct gpio_dt_spec *out_gpio = &config->outputs.gpios[o];
 
-        // Init output/input
+        // Init output
         if (!device_is_ready(out_gpio->port)) {
             LOG_ERR("GPIO is not ready: %s", out_gpio->port->name);
             return -ENODEV;
         }
 
-        // Init output
         int err = gpio_pin_configure_dt(out_gpio, GPIO_OUTPUT);
         if (err) {
             LOG_ERR("Unable to configure pin %u on %s for output", out_gpio->pin,
