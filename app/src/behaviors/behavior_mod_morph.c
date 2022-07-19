@@ -46,7 +46,6 @@ static int on_mod_morph_binding_pressed(struct zmk_behavior_binding *binding,
     }
 
     if (zmk_hid_get_explicit_mods() & cfg->mods) {
-        zmk_mod_flags_t trigger_mods = zmk_hid_get_explicit_mods() & cfg->mods;
         zmk_hid_masked_modifiers_set(cfg->masked_mods);
         data->pressed_binding = (struct zmk_behavior_binding *)&cfg->morph_binding;
     } else {
