@@ -82,7 +82,7 @@ Currently, ZMK only supports wireless split, but wired split is possible and we 
 
 ### How is the latency?
 
-The latency of ZMK is comparable to other firmware offerings. ZMK is equipped with a variety of scanning methods and [debounce algorithms](https://zmk.dev/docs/features/debouncing) that can affect the final measured latency. [This video](https://www.youtube.com/watch?v=jWL4nU-vtWs) shows a latency comparison of ZMK and other keyboard firmwares.
+The latency of ZMK is comparable to other firmware offerings. ZMK is equipped with a variety of scanning methods and [debounce algorithms](features/debouncing.md) that can affect the final measured latency. [This video](https://www.youtube.com/watch?v=jWL4nU-vtWs) shows a latency comparison of ZMK and other keyboard firmwares.
 
 ### Any chance for 2.4GHz dongle implementation?
 
