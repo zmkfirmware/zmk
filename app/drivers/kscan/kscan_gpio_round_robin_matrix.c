@@ -27,14 +27,14 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define INST_DEBOUNCE_PRESS_MS(n) CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS
 #else
 #define INST_DEBOUNCE_PRESS_MS(n)                                                                  \
-    DT_INST_PROP_OR(n, debounce_period, DT_INST_PROP(n, debounce_press_ms))
+    DT_INST_PROP(n, debounce_press_ms)
 #endif
 
 #if CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS >= 0
 #define INST_DEBOUNCE_RELEASE_MS(n) CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS
 #else
 #define INST_DEBOUNCE_RELEASE_MS(n)                                                                \
-    DT_INST_PROP_OR(n, debounce_period, DT_INST_PROP(n, debounce_release_ms))
+    DT_INST_PROP(n, debounce_release_ms)
 #endif
 
 #define KSCAN_GPIO_INPUT_CFG_INIT(idx, inst_idx)                                                   \
@@ -50,36 +50,28 @@ struct kscan_round_robin_matrix_data {
     struct debounce_state *matrix_state;
 };
 
-struct kscan_gpio_list {
-    const struct gpio_dt_spec *gpios;
-    size_t len;
-};
-
-#define KSCAN_GPIO_LIST(gpio_array)                                                                \
-    ((struct kscan_gpio_list){.gpios = gpio_array, .len = ARRAY_SIZE(gpio_array)})
-
 struct kscan_round_robin_matrix_config {
-    struct kscan_gpio_list outputs;
-    struct kscan_gpio_list inputs;
+    const struct gpio_dt_spec *inputs;
+    const struct gpio_dt_spec *outputs;
+    size_t gpio_count;
     struct debounce_config debounce_config;
     int32_t poll_period_ms;
 };
 
 static int state_index_io(const struct kscan_round_robin_matrix_config *config, const int input_idx,
                           const int output_idx) {
-    __ASSERT(input_idx < config->inputs.len, "Invalid input %i", input_idx);
-    __ASSERT(output_idx < config->outputs.len, "Invalid output %i", output_idx);
+    __ASSERT(input_idx < config->gpio_count, "Invalid input %i", input_idx);
+    __ASSERT(output_idx < config->gpio_count, "Invalid output %i", output_idx);
 
-    return ((input_idx * config->outputs.len) + output_idx);
+    return ((input_idx * config->gpio_count) + output_idx);
 }    
 
 static int kscan_round_robin_matrix_read(const struct device *dev) {
     struct kscan_round_robin_matrix_data *data = dev->data;
     const struct kscan_round_robin_matrix_config *config = dev->config;
 
-    size_t len = config->outputs.len;
-    for (int o = 0; o < len; o++) {
-        const struct gpio_dt_spec *out_gpio = &config->outputs.gpios[o];
+    for (int o = 0; o < config->gpio_count; o++) {
+        const struct gpio_dt_spec *out_gpio = &config->outputs[o];
 
         // Init output
         if (!device_is_ready(out_gpio->port)) {
@@ -97,8 +89,8 @@ static int kscan_round_robin_matrix_read(const struct device *dev) {
         LOG_DBG("Configured pin %u on %s for output", out_gpio->pin, out_gpio->port->name);
 
         // Init input
-        for (int i = (o + 1) % len; i != o; i = (i + 1) % len) {
-            const struct gpio_dt_spec *in_gpio = &config->inputs.gpios[i];
+        for (int i = (o + 1) % config->gpio_count; i != o; i = (i + 1) % config->gpio_count) {
+            const struct gpio_dt_spec *in_gpio = &config->inputs[i];
 
             if (!device_is_ready(in_gpio->port)) {
                 LOG_ERR("GPIO is not ready: %s", in_gpio->port->name);
@@ -120,8 +112,8 @@ static int kscan_round_robin_matrix_read(const struct device *dev) {
             return err;
         }
 
-        for (int i = (o + 1) % len; i != o; i = (i + 1) % len) {
-            const struct gpio_dt_spec *in_gpio = &config->inputs.gpios[i];
+        for (int i = (o + 1) % config->gpio_count; i != o; i = (i + 1) % config->gpio_count) {
+            const struct gpio_dt_spec *in_gpio = &config->inputs[i];
 
             const int index = state_index_io(config, i, o);
             const bool is_active = gpio_pin_get_dt(in_gpio);
@@ -209,6 +201,8 @@ static const struct kscan_driver_api kscan_round_robin_matrix_api = {
 };
 
 #define KSCAN_ROUND_ROBIN_MATRIX_INIT(n)                                                           \
+    BUILD_ASSERT(INST_INPUTS_LEN(n) == INST_OUTPUTS_LEN(n),                                        \
+                 "the number of input-gpios must be equal to output-gpios");                       \
     BUILD_ASSERT(INST_DEBOUNCE_PRESS_MS(n) <= DEBOUNCE_COUNTER_MAX,                                \
                  "ZMK_KSCAN_DEBOUNCE_PRESS_MS or debounce-press-ms is too large");                 \
     BUILD_ASSERT(INST_DEBOUNCE_RELEASE_MS(n) <= DEBOUNCE_COUNTER_MAX,                              \
@@ -226,8 +220,9 @@ static const struct kscan_driver_api kscan_round_robin_matrix_api = {
         .matrix_state = kscan_round_robin_matrix_state_##n, };                                     \
                                                                                                    \
     static struct kscan_round_robin_matrix_config kscan_round_robin_matrix_config_##n = {          \
-        .outputs = KSCAN_GPIO_LIST(kscan_round_robin_matrix_outputs_##n),                          \
-        .inputs = KSCAN_GPIO_LIST(kscan_round_robin_matrix_inputs_##n),                            \
+        .inputs = kscan_round_robin_matrix_inputs_##n,                                             \
+        .outputs = kscan_round_robin_matrix_outputs_##n,                                           \
+        .gpio_count = ARRAY_SIZE(kscan_round_robin_matrix_inputs_##n),                             \
         .debounce_config =                                                                         \
             {                                                                                      \
                 .debounce_press_ms = INST_DEBOUNCE_PRESS_MS(n),                                    \
