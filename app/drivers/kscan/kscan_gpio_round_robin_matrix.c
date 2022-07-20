@@ -64,7 +64,7 @@ static int state_index_io(const struct kscan_round_robin_matrix_config *config, 
     __ASSERT(output_idx < config->gpio_count, "Invalid output %i", output_idx);
 
     return ((input_idx * config->gpio_count) + output_idx);
-}    
+}
 
 static int kscan_round_robin_matrix_read(const struct device *dev) {
     struct kscan_round_robin_matrix_data *data = dev->data;
@@ -136,8 +136,8 @@ static int kscan_round_robin_matrix_read(const struct device *dev) {
             return err;
         }
 
-#if CONFIG_ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS > 0
-        k_busy_wait(CONFIG_ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS);
+#if CONFIG_ZMK_KSCAN_ROUND_ROBIN_MATRIX_WAIT_BETWEEN_OUTPUTS > 0
+        k_busy_wait(CONFIG_ZMK_KSCAN_ROUND_ROBIN_MATRIX_WAIT_BETWEEN_OUTPUTS);
 #endif
     }
 
