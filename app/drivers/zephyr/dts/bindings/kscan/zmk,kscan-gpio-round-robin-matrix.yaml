@@ -8,7 +8,7 @@ compatible: "zmk,kscan-gpio-round-robin-matrix"
 include: kscan.yaml
 
 properties:
-  output-gpios:
+  gpios:
     type: phandle-array
     required: true
   debounce-press-ms:
