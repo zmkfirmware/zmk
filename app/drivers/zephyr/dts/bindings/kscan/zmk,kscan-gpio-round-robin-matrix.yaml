@@ -8,9 +8,6 @@ compatible: "zmk,kscan-gpio-round-robin-matrix"
 include: kscan.yaml
 
 properties:
-  input-gpios:
-    type: phandle-array
-    required: true
   output-gpios:
     type: phandle-array
     required: true

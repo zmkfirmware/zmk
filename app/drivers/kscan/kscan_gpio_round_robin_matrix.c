@@ -19,9 +19,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define DT_DRV_COMPAT zmk_kscan_gpio_round_robin_matrix
 
-#define INST_INPUTS_LEN(n) DT_INST_PROP_LEN(n, input_gpios)
 #define INST_OUTPUTS_LEN(n) DT_INST_PROP_LEN(n, output_gpios)
-#define INST_MATRIX_LEN(n) (INST_INPUTS_LEN(n) * INST_OUTPUTS_LEN(n))
+#define INST_MATRIX_LEN(n) (INST_OUTPUTS_LEN(n) * INST_OUTPUTS_LEN(n))
 
 #if CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS >= 0
 #define INST_DEBOUNCE_PRESS_MS(n) CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS
@@ -38,7 +37,12 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #endif
 
 #define KSCAN_GPIO_INPUT_CFG_INIT(idx, inst_idx)                                                   \
-    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), input_gpios, idx),
+    {                                                                                              \
+        .port = DEVICE_DT_GET(DT_GPIO_CTLR_BY_IDX(DT_DRV_INST(inst_idx), output_gpios, idx)),      \
+        .pin = DT_GPIO_PIN_BY_IDX(DT_DRV_INST(inst_idx), output_gpios, idx),                       \
+        .dt_flags = (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN),                                           \
+    },
+
 #define KSCAN_GPIO_OUTPUT_CFG_INIT(idx, inst_idx)                                                  \
     GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), output_gpios, idx),
 
@@ -201,15 +205,13 @@ static const struct kscan_driver_api kscan_round_robin_matrix_api = {
 };
 
 #define KSCAN_ROUND_ROBIN_MATRIX_INIT(n)                                                           \
-    BUILD_ASSERT(INST_INPUTS_LEN(n) == INST_OUTPUTS_LEN(n),                                        \
-                 "the number of input-gpios must be equal to output-gpios");                       \
     BUILD_ASSERT(INST_DEBOUNCE_PRESS_MS(n) <= DEBOUNCE_COUNTER_MAX,                                \
                  "ZMK_KSCAN_DEBOUNCE_PRESS_MS or debounce-press-ms is too large");                 \
     BUILD_ASSERT(INST_DEBOUNCE_RELEASE_MS(n) <= DEBOUNCE_COUNTER_MAX,                              \
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
     static const struct gpio_dt_spec kscan_round_robin_matrix_inputs_##n[] = {                     \
-        UTIL_LISTIFY(INST_INPUTS_LEN(n), KSCAN_GPIO_INPUT_CFG_INIT, n)};                           \
+        UTIL_LISTIFY(INST_OUTPUTS_LEN(n), KSCAN_GPIO_INPUT_CFG_INIT, n)};                           \
                                                                                                    \
     static const struct gpio_dt_spec kscan_round_robin_matrix_outputs_##n[] = {                    \
         UTIL_LISTIFY(INST_OUTPUTS_LEN(n), KSCAN_GPIO_OUTPUT_CFG_INIT, n)};                         \
