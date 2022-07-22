@@ -222,7 +222,7 @@ static const struct kscan_driver_api kscan_round_robin_matrix_api = {
     static struct kscan_round_robin_matrix_config kscan_round_robin_matrix_config_##n = {          \
         .inputs = kscan_round_robin_matrix_inputs_##n,                                             \
         .outputs = kscan_round_robin_matrix_outputs_##n,                                           \
-        .gpios_len = INST_INPUTS_LEN(n),                                                            \
+        .gpios_len = INST_INPUTS_LEN(n),                                                           \
         .debounce_config =                                                                         \
             {                                                                                      \
                 .debounce_press_ms = INST_DEBOUNCE_PRESS_MS(n),                                    \
