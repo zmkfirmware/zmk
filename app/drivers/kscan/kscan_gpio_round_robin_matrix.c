@@ -40,7 +40,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define KSCAN_GPIO_INPUT_CFG_INIT(idx, inst_idx)                                                   \
     GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), input_gpios, idx),
 #define KSCAN_GPIO_OUTPUT_CFG_INIT(idx, inst_idx)                                                  \
-    KSCAN_GPIO_ITEM_CFG_INIT(DT_DRV_INST(inst_idx), gpios, idx, GPIO_ACTIVE_HIGH)
+    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), output_gpios, idx),
 
 struct kscan_round_robin_matrix_data {
     const struct device *dev;
@@ -212,7 +212,7 @@ static const struct kscan_driver_api kscan_round_robin_matrix_api = {
         UTIL_LISTIFY(INST_INPUTS_LEN(n), KSCAN_GPIO_INPUT_CFG_INIT, n)};                           \
                                                                                                    \
     static const struct gpio_dt_spec kscan_round_robin_matrix_outputs_##n[] = {                    \
-        UTIL_LISTIFY(INST_GPIOS_LEN(n), KSCAN_GPIO_OUTPUT_CFG_INIT, n)};                           \
+        UTIL_LISTIFY(INST_OUTPUTS_LEN(n), KSCAN_GPIO_OUTPUT_CFG_INIT, n)};                         \
                                                                                                    \
     static struct debounce_state kscan_round_robin_matrix_state_##n[INST_MATRIX_LEN(n)];           \
                                                                                                    \
@@ -222,7 +222,7 @@ static const struct kscan_driver_api kscan_round_robin_matrix_api = {
     static struct kscan_round_robin_matrix_config kscan_round_robin_matrix_config_##n = {          \
         .inputs = kscan_round_robin_matrix_inputs_##n,                                             \
         .outputs = kscan_round_robin_matrix_outputs_##n,                                           \
-        .gpios_len = INST_GPIOS_LEN(n),                                                            \
+        .gpios_len = INST_INPUTS_LEN(n),                                                            \
         .debounce_config =                                                                         \
             {                                                                                      \
                 .debounce_press_ms = INST_DEBOUNCE_PRESS_MS(n),                                    \
