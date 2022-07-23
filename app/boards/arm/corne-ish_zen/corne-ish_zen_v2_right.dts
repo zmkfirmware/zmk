@@ -41,7 +41,17 @@
 				label = "Blue LED";
 			};
 		};
+	chosen {
+		zmk,battery = &vbatt;
+	};
 
+    vbatt: vbatt {
+		compatible = "zmk,battery-voltage-divider";
+		label = "BATTERY";
+		io-channels = <&adc 0>;
+		output-ohms = <1960000>;
+		full-ohms = <(1960000 + 810000)>;
+	};
 };
 
 &default_transform {
@@ -50,6 +60,8 @@
 &five_column_transform {
 	col-offset = <6>;
 };
+
+
 
 /* &i2c0 {
 	status = "ok";
@@ -71,7 +83,7 @@
 	};
 }; */
 
-&spi2 {
+&spi0 {
 	status = "okay";
 	compatible = "nordic,nrf-spim";
 	sck-pin = <20>;
