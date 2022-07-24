@@ -14,12 +14,6 @@ The Mod-Morph behavior sends a different keypress, depending on whether a specif
 
 The Mod-Morph behavior acts as one of two keycodes, depending on if the required modifier is being held during the keypress.
 
-When the modifier is being held it is sent along with the morphed keycode. This can cause problems when the morphed keycode and modifier have an existing relationship (such as `shift-delete` or `ctrl-v` on many operating systems).
-
-As a remedy, you can add the optional attribute `masked_mods`, containing
-the bitwise or of the modifiers that should be disabled while the key is held,
-so that they are not included in the report sent to the host.
-
 ### Configuration
 
 An example of how to implement the mod-morph "Grave Escape":
@@ -34,10 +28,6 @@ An example of how to implement the mod-morph "Grave Escape":
             bindings = <&kp ESC>, <&kp GRAVE>;
             mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
         };
-    };
-
-    keymap {
-        ...
     };
 };
 ```
@@ -75,3 +65,30 @@ Example:
 ```
 mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
 ```
+
+### Advanced configuration
+
+`masked_mods`
+
+When a modifier specified in `mods` is being held, it won't be sent along with the morphed keycode if it is also part of `masked_mods`. To sent all modifiers along with the morphed keycode, set `masked_mods` to `<0>`. By default, `masked_mods` equals `mods`.
+
+For example, the following configuration morphs `LEFT_SHIFT` + `BACKSPACE` into `DELETE`, and morphs `RIGHT_SHIFT` + `BACKSPACE` into `RIGHT_SHIFT` + `DELETE`.
+
+```
+/ {
+    behaviors {
+        bspc_del: backspace_delete {
+            compatible = "zmk,behavior-mod-morph";
+            label = "BACKSPACE_DELETE";
+            #binding-cells = <0>;
+            bindings = <&kp BACKSPACE>, <&kp DELETE>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+            masked_mods = <(MOD_LSFT)>;
+        };
+    };
+};
+```
+
+### Limitations
+
+In some circumstance, when the morphed keycode is a hold-tap, the modifier gets sent along with the hold-tap regardless of the specification of `masked_mods`.
