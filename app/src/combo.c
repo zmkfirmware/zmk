@@ -253,7 +253,7 @@ static int release_pressed_keys() {
         if (i == 0) {
             LOG_DBG("combo: releasing position event %d",
                     as_zmk_position_state_changed(captured_event)->position);
-            ZMK_EVENT_RELEASE(captured_event)
+            ZMK_EVENT_RAISE_AFTER(captured_event, combo);
         } else {
             // reprocess events (see tests/combo/fully-overlapping-combos-3 for why this is needed)
             LOG_DBG("combo: reraising position event %d",
