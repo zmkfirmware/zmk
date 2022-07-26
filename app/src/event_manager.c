@@ -25,6 +25,7 @@ int zmk_event_manager_handle_from(zmk_event_t *event, uint8_t start_index) {
         if (ev_sub->event_type != event->event) {
             continue;
         }
+        event->last_listener_index = i;
         ret = ev_sub->listener->callback(event);
         switch (ret) {
         case ZMK_EV_EVENT_BUBBLE:
@@ -35,7 +36,6 @@ int zmk_event_manager_handle_from(zmk_event_t *event, uint8_t start_index) {
             goto release;
         case ZMK_EV_EVENT_CAPTURED:
             LOG_DBG("Listener captured the event");
-            event->last_listener_index = i;
             // Listeners are expected to free events they capture
             return 0;
         default:
