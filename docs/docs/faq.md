@@ -86,7 +86,7 @@ The latency of ZMK is comparable to other firmware offerings. ZMK is equipped wi
 
 ### Any chance for 2.4GHz dongle implementation?
 
-Unfortunately, there are no current plans to implement 2.4GHz dongle mode. This is because utilizing Nordic's proprietary 2.4GHz radio requires use of the Nordic Connect SDK, which possesses a more restrictive license than ZMK's MIT license. However, ZMK does plans to implement dongle mode using BLE (with encryption), although with an additional 3.5ms average latency over the 2.4GHz radio.
+Unfortunately, there are no current plans to implement 2.4GHz dongle mode. This is because utilizing Nordic's proprietary 2.4GHz low level protocols requires use of the Nordic Connect SDK, which is licensed with a more restrictive license than ZMK's MIT license. However, ZMK does plans to implement dongle mode using BLE (with encryption). This will result in a 3.5ms average latency from the protocol itself.
 
 ### What bootloader does ZMK use?
 
