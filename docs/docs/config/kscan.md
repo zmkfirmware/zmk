@@ -207,8 +207,8 @@ One possible way to do this is a 3x4 matrix where the direct GPIO keys are shift
     kscan0: kscan_composite {
         compatible = "zmk,kscan-composite";
         label = "KSCAN0";
-        rows = <3>;
-        columns = <4>;
+        rows = <4>;
+        columns = <3>;
 
         // Include the matrix driver
         matrix {
