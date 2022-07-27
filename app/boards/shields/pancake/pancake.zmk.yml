@@ -3,6 +3,6 @@ id: pancake
 name: Pancake
 type: shield
 url: https://mkultra.click/pancake-keyboard-kit
-required: [pro_micro]
+requires: [pro_micro]
 features:
   - keys
