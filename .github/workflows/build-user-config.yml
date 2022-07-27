@@ -55,6 +55,13 @@ jobs:
       fail-fast: false
       matrix: ${{fromJson(needs.matrix.outputs.matrix)}}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set short SHA for unique firmware file names
+        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        id: sha_short
+
       - name: Prepare variables
         id: variables
         run: |
@@ -62,20 +69,17 @@ jobs:
           if [ -n "${{ matrix.shield }}" ]
           then
             EXTRA_CMAKE_ARGS="-DSHIELD=${{ matrix.shield }}"
-            ARTIFACT_NAME="${{ matrix.shield }}-${{ matrix.board }}-zmk"
+            ARTIFACT_NAME="${{ matrix.shield }}-${{ matrix.board }}-zmk-${{ steps.sha_short.outputs.sha_short }}"
             DISPLAY_NAME="${{ matrix.shield }} - ${{ matrix.board }}"
           else
             EXTRA_CMAKE_ARGS=
             DISPLAY_NAME="${{ matrix.board }}"
-            ARTIFACT_NAME="${{ matrix.board }}-zmk"
+            ARTIFACT_NAME="${{ matrix.board }}-zmk-${{ steps.sha_short.outputs.sha_short }}"
           fi
           echo ::set-output name=extra-cmake-args::${EXTRA_CMAKE_ARGS}
           echo ::set-output name=artifact-name::${ARTIFACT_NAME}
           echo ::set-output name=display-name::${DISPLAY_NAME}
           echo ::set-output name=zephyr-version::${ZEPHYR_VERSION}
-
-      - name: Checkout
-        uses: actions/checkout@v2
 
       - name: Cache west modules
         uses: actions/cache@v3.0.2
@@ -127,5 +131,5 @@ jobs:
       - name: Archive (${{ steps.variables.outputs.display-name }})
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ inputs.artifact_name }}
+          name: ${{ inputs.artifact_name }}-${{ steps.short-sha.outputs.sha_short }}
           path: build/artifacts
