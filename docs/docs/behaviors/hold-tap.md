@@ -73,13 +73,23 @@ Note that the higher the `quick-tap-ms` the harder it will be to use the hold be
 
 #### `retro-tap`
 
-If retro tap is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime.
+If retro tap is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime. The hold key does not activate until another key is pressed, meaning that it cannot be used for mouse events like Shift Click to select from your cursor position to mouse position.
 
-For example, if you press `&mt LEFT_SHIFT A` and then release it without pressing another key, it will output `a`.
+For example, if you press `&mt_retro LEFT_SHIFT Z` and then release it without pressing another key, it will output `z`.
 
 ```
-&mt {
-	retro-tap;
+/ { 
+behaviors {
+	mt_retro: mt_retro {
+		compatible = "zmk,behavior-hold-tap";
+ 		label = "mod tap with retro-tap";
+ 		#binding-cells = <2>;
+ 		tapping_term_ms = <100>;
+ 		flavor = "hold-preferred";
+ 		bindings = <&kp>, <&kp>;
+		retro-tap;
+	};
+};
 };
 ```
 
