@@ -88,18 +88,6 @@ powershell -Command "iex ((New-Object System.Net.WebClient).DownloadString('http
 </TabItem>
 </Tabs>
 
-### MCU Board Selection
-
-When prompted, enter the number for the corresponding MCU board you would like to target:
-
-```
-MCU Board Selection:
-1) nice!nano
-2) QMK Proton-C
-3) Quit
-Pick an MCU board:
-```
-
 ### Keyboard Shield Selection
 
 :::note
@@ -116,6 +104,18 @@ Keyboard Shield Selection:
 2) Lily58
 3) Quit
 Pick an keyboard:
+```
+
+### MCU Board Selection
+
+When prompted, enter the number for the corresponding MCU board you would like to target:
+
+```
+MCU Board Selection:
+1) nice!nano
+2) QMK Proton-C
+3) Quit
+Pick an MCU board:
 ```
 
 ### Keymap Customization
