@@ -44,6 +44,11 @@ You can configure a different tapping term in your keymap:
 };
 ```
 
-### Additional information
+:::info
+Under the hood, the mod-tap is simply a [hold-tap](hold-tap.md) of the ["hold-preferred" flavor](hold-tap.md/#flavors) with a [`tapping-term-ms`](hold-tap.md/#tapping-term-ms) of 200 that takes in two [keypresses](key-press.md) as its "hold" and "tap" parameters. This means that the mod-tap can be used to invoke **any** [keycode](../codes/index.mdx), and is not limited to only activating [modifier keys](../codes/modifiers.mdx) when it is held.
 
-The mod-tap is a [hold-tap](hold-tap.md) under the hood with the "hold-preferred" flavor and tapping-term-ms 200.
+For users who want to momentarily access a specific [layer](../features/keymaps#layers) while a key is held and send a keycode when the same key is tapped, see [Layer-Tap](layers.md/#layer-tap).
+
+Similarly, for users looking to create a keybind like the mod-tap that invokes behaviors _other_ than [keypresses](key-press.md), like [sticky keys](sticky-key.md) or [key toggles](key-toggle.md), see [Hold-Tap](hold-tap.md).
+
+:::
