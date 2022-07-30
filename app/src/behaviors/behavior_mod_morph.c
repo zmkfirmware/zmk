@@ -66,8 +66,10 @@ static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
 
     struct zmk_behavior_binding *pressed_binding = data->pressed_binding;
     data->pressed_binding = NULL;
+    int err;
+    err = behavior_keymap_binding_released(pressed_binding, event);
     zmk_hid_masked_modifiers_clear();
-    return behavior_keymap_binding_released(pressed_binding, event);
+    return err;
 }
 
 static const struct behavior_driver_api behavior_mod_morph_driver_api = {
