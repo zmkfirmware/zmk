@@ -91,7 +91,7 @@ powershell -Command "iex ((New-Object System.Net.WebClient).DownloadString('http
 ### Keyboard Selection
 
 :::note
-If you are building firmware for a new keyboard or shield that is not included in the built-in
+If you are building firmware for a new keyboard that is not included in the built-in
 list of keyboards, you can choose any keyboard or shield from the list that is similar to yours to generate the repository,
 and edit / add necessary files. You can follow the [new shield guide](development/new-shield.md) if you are adding support for a composite keyboard.
 :::
