@@ -93,7 +93,7 @@ powershell -Command "iex ((New-Object System.Net.WebClient).DownloadString('http
 :::note
 If you are building firmware for a new keyboard or shield that is not included in the built-in
 list of keyboards, you can choose any keyboard or shield from the list that is similar to yours to generate the repository,
-and edit / add necessary files according to the [guide for adding new keyboard shield](development/new-shield.md).
+and edit / add necessary files. You can follow the [new shield guide](development/new-shield.md) if you are adding support for a composite keyboard.
 :::
 
 When prompted, enter the number for the corresponding keyboard you would like to target:
