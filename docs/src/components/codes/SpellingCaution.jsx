@@ -5,12 +5,16 @@
  */
 
 import React from "react";
-import Admonition from '@theme/Admonition';
+import Admonition from "@theme/Admonition";
 
 export default function SpellingCaution() {
   return (
     <Admonition type="caution">
-        <p>Take extra notice of the spelling of the keycodes, especially the shorthand spelling. Otherwise, it will result in an elusive parsing error!</p>
+      <p>
+        Take extra notice of the spelling of the keycodes, especially the
+        shorthand spelling. Otherwise, it will result in an elusive parsing
+        error!
+      </p>
     </Admonition>
   );
 }
