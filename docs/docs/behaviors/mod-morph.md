@@ -88,7 +88,3 @@ For example, the following configuration morphs `LEFT_SHIFT` + `BACKSPACE` into 
     };
 };
 ```
-
-### Limitations
-
-In some circumstance, when the morphed keycode is a hold-tap, the modifier gets sent along with the hold-tap regardless of the specification of `masked_mods`.
