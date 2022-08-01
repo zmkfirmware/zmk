@@ -68,9 +68,9 @@ mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
 
 ### Advanced configuration
 
-`masked_mods`
+`masked-mods`
 
-When a modifier specified in `mods` is being held, it won't be sent along with the morphed keycode if it is also part of `masked_mods`. To sent all modifiers along with the morphed keycode, set `masked_mods` to `<0>`. By default, `masked_mods` equals `mods`.
+When a modifier specified in `mods` is being held, it won't be sent along with the morphed keycode if it is also part of `masked-mods`. To sent all modifiers along with the morphed keycode, set `masked-mods` to `<0>`. By default, `masked-mods` equals `mods`.
 
 For example, the following configuration morphs `LEFT_SHIFT` + `BACKSPACE` into `DELETE`, and morphs `RIGHT_SHIFT` + `BACKSPACE` into `RIGHT_SHIFT` + `DELETE`.
 
@@ -83,7 +83,7 @@ For example, the following configuration morphs `LEFT_SHIFT` + `BACKSPACE` into 
             #binding-cells = <0>;
             bindings = <&kp BACKSPACE>, <&kp DELETE>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
-            masked_mods = <(MOD_LSFT)>;
+            masked-mods = <(MOD_LSFT)>;
         };
     };
 };

@@ -10,7 +10,7 @@
             #binding-cells = <0>;
             bindings = <&kp A>, <&kp B>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
-            masked_mods = <0>;  // no masking
+            masked-mods = <0>;  // no masking
         };
     };
 
