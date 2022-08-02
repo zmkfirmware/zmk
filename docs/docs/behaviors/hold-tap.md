@@ -294,7 +294,7 @@ This hold-tap example implements a [toggle-layer](layers.md/#toggle-layer) when 
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;
-            bindings = <&tog>, <&mo>;
+            bindings = <&mo>, <&tog>;
         };
     };
 
