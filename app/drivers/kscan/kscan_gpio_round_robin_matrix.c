@@ -125,8 +125,8 @@ static int kscan_round_robin_matrix_read(const struct device *dev) {
             if (debounce_get_changed(state)) {
                 const bool is_pressed = debounce_is_pressed(state);
 
-                LOG_DBG("Sending event at %i,%i state %s", i, o, is_pressed ? "on" : "off");
-                data->callback(dev, i, o, is_pressed);
+                LOG_DBG("Sending event at %i,%i state %s", o, i, is_pressed ? "on" : "off");
+                data->callback(dev, o, i, is_pressed);
             }
         }
 
