@@ -121,6 +121,7 @@ menuconfig ZMK_BLE
 if ZMK_BLE
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
+	default 4096 if SOC_RP2040
 	default 2048
 
 config ZMK_BLE_THREAD_STACK_SIZE
