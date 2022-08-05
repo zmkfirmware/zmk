@@ -13,3 +13,5 @@ properties:
     required: true
   mods:
     type: int
+  ignore-modifiers:
+    type: boolean
