@@ -37,6 +37,18 @@ By default, the caps word will remain active when any alphanumeric character or 
 };
 ```
 
+#### Continue on modifiers
+
+By default, the caps word will remain active when any modifiers are pressed. If you
+would like to deactivate caps word when modifiers are pressed, you can delete the
+`ignored-modifiers` property in your keymap:
+
+```
+&caps_word {
+    /delete-property/ ignore-modifiers;
+};
+```
+
 #### Applied Modifier(s)
 
 In addition, if you would like _multiple_ modifiers, instead of just `MOD_LSFT`, you can override the `mods` property:
