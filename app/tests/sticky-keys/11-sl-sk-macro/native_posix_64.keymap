@@ -1,0 +1,54 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+&sl {
+    ignore-modifiers;
+};
+
+/ {
+    macros {
+        sls: sls {
+            label = "sticky_layer_shift";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <1>;
+            bindings
+                = <&sl 1 &sk LSHFT>;
+        };
+    };
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&sls  &kp A
+				&sl 1 &sk LSHFT
+            >;
+		};
+
+		second_layer {
+			bindings = <
+				&trans &kp B
+				&trans &trans
+            >;
+		};
+	};
+};
+
+
+&kscan {
+	events = <
+		ZMK_MOCK_PRESS(0,0,10)  // macro should produce same as sl followd by sk
+		ZMK_MOCK_RELEASE(0,0,10)
+//		ZMK_MOCK_PRESS(1,0,10)
+//		ZMK_MOCK_RELEASE(1,0,10)
+//		ZMK_MOCK_PRESS(1,1,10)
+//		ZMK_MOCK_RELEASE(1,1,10)
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+	>;
+};
