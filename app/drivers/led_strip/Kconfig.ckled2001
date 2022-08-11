@@ -1,0 +1,12 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+DT_COMPAT_ZMK_CKLED2001 := zmk,ckled2001
+
+config CKLED2001
+	bool "CKLED2001 compatible LED strip controller driver"
+	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_CKLED2001))
+	depends on I2C
+	depends on LED_STRIP
+	help
+	  Enable driver for CKLED2001 compatible LED strip controller.

@@ -1,0 +1,38 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: CKLED2001 LED strip controller
+
+compatible: "zmk,ckled2001"
+
+include: [i2c-device.yaml]
+
+properties:
+  label:
+    type: string
+    required: true
+
+  chain-length:
+    type: int
+    required: true
+
+  scan-phase-channels:
+    type: int
+    default: 12
+    enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+
+  map:
+    type: array
+    required: true
