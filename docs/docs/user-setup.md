@@ -196,6 +196,14 @@ Once this happens, copy the correct UF2 file (e.g. left or right if working on a
 storage device. Once the flash is complete, the controller should automatically restart, and load your newly flashed firmware. It is
 recommended that you test your keyboard works over USB first to rule out hardware issues, before trying to connect to it wirelessly.
 
+:::caution Split keyboards
+
+For split keyboards, only the central half (typically the left side) will send keyboard outputs over USB or advertise to other devices
+over bluetooth. Peripheral half will only send keystrokes to the central once they are paired and connected. For this reason it is
+recommended to test the left half of a split keyboard first.
+
+:::
+
 ## Wirelessly Connecting Your Keyboard
 
 ZMK will automatically advertise itself as connectable if it is not currently connected to a device. You should be able to see your keyboard from the bluetooth scanning view of your computer or phone / tablet. It is reported by some users that the connections with Android / iOS devices are generally smoother than with laptops, so if you have trouble connecting, you could try to connect from your phone or tablet first to eliminate any potential hardware issues with bluetooth receivers.
