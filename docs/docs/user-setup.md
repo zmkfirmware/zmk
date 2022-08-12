@@ -213,3 +213,11 @@ ZMK supports multiple BLE “profiles”, which allows you to connect to and swi
 ### Connecting Split Keyboard Halves
 
 For split keyboards, after flashing each half individually you can connect them together by resetting them at the same time. Within a few seconds of resetting, both halves should automatically connect to each other.
+
+:::note
+
+If you have issues connecting the halves, make sure that both sides are getting powered properly through USB or batteries, then follow the
+[recommended troubleshooting procedure](troubleshooting.md#split-keyboard-halves-unable-to-pair). This is typically necessary if you
+swapped firmware sides between controllers, like flashing left side firmware to the same controller after flashing the right, or vice versa.
+
+:::
