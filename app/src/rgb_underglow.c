@@ -332,14 +332,14 @@ int zmk_rgb_underglow_off() {
     }
 #endif
 
+    k_timer_stop(&underglow_tick);
+    state.on = false;
+
     for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
         pixels[i] = (struct led_rgb){r : 0, g : 0, b : 0};
     }
 
     led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
-
-    k_timer_stop(&underglow_tick);
-    state.on = false;
 
     return zmk_rgb_underglow_save_state();
 }
