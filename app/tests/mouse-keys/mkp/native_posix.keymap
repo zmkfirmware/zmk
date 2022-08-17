@@ -10,8 +10,8 @@
 
 		default_layer {
 			bindings = <
-				&mmv MOVE_LEFT &none
-				&none &none
+				&mkp LCLK &none
+				&none     &mkp RCLK
 			>;
 		};
 	};
@@ -20,7 +20,9 @@
 
 &kscan {
 	events = <
-		ZMK_MOCK_PRESS(0,0,100) 
-		ZMK_MOCK_RELEASE(0,0,10)
+		ZMK_MOCK_PRESS  (0,0,100)
+		ZMK_MOCK_PRESS  (1,1,100)
+		ZMK_MOCK_RELEASE(1,1, 10)
+		ZMK_MOCK_RELEASE(0,0, 10)
 	>;
 };
