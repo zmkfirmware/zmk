@@ -1,0 +1,32 @@
+#include <dt-bindings/led/led.h>
+
+&spi1 {
+	compatible = "nordic,nrf-spim";
+	status = "okay";
+	mosi-pin = <43>;
+	// Unused pins, needed for SPI definition, but not used by the ws2812 driver itself.
+	sck-pin = <12>;  // 0.12 is not broken out on the nRFMicro
+	miso-pin = <22>; // 0.22 is not broken out on the nRFMicro
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+		label = "WS2812";
+
+		/* SPI */
+		reg = <0>; /* ignored, but necessary for SPI bindings */
+		spi-max-frequency = <4000000>;
+
+		/* WS2812 */
+		chain-length = <2>;
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+		color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+	};
+};
+
+/ {
+	chosen {
+		zmk,underglow = &led_strip;
+	};
+};
+
