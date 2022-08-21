@@ -90,12 +90,6 @@ powershell -Command "iex ((New-Object System.Net.WebClient).DownloadString('http
 
 ### Keyboard Selection
 
-:::note
-If you are building firmware for a new keyboard that is not included in the built-in
-list of keyboards, you can choose any keyboard from the list that is similar to yours (e.g. in terms of unibody/split and [onboard controller](hardware.mdx#onboard)/[composite](hardware.mdx#composite)) to generate the repository,
-and edit / add necessary files. You can follow the [new shield guide](development/new-shield.md) if you are adding support for a composite keyboard.
-:::
-
 When prompted, enter the number for the corresponding keyboard you would like to target:
 
 ```
@@ -109,10 +103,15 @@ Keyboard Selection:
 Pick an keyboard:
 ```
 
-If the keyboard selected uses an onboard controller you will skip the MCU Board selection step.
+:::note For a keyboard not in the included list:
+If you are building firmware for a new keyboard that is not included in the built-in
+list of keyboards, you can choose any keyboard from the list that is similar to yours (e.g. in terms of unibody/split and [onboard controller](hardware.mdx#onboard)/[composite](hardware.mdx#composite)) to generate the repository,
+and edit / add necessary files. You can follow the [new shield guide](development/new-shield.md) if you are adding support for a composite keyboard.
+:::
 
 ### MCU Board Selection
 
+If the keyboard selected uses an onboard controller you will skip this step.
 When prompted, enter the number for the corresponding MCU board you would like to target:
 
 ```
