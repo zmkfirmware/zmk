@@ -1,0 +1,10 @@
+file_format: "1"
+id: puchi_ble_v1
+name: Puchi-BLE v1
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://github.com/Keycapsss/puchi-ble
+exposes: [pro_micro]
