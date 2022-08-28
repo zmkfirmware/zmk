@@ -13,7 +13,6 @@
 struct zmk_widget_layer_status {
     sys_snode_t node;
     lv_obj_t *obj;
-    //lv_obj_t *obj2;
 };
 
 int zmk_widget_layer_status_init(struct zmk_widget_layer_status *widget, lv_obj_t *parent);
