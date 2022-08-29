@@ -1,0 +1,25 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_HANNAH60_B
+
+config ZMK_KEYBOARD_NAME
+	default "Hannah60_B"
+
+if USB_DEVICE_STACK
+
+config USB_NRFX
+	default y
+
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+endif # BOARD_HANNAH60_B
