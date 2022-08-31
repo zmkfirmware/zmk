@@ -1,0 +1,9 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+menuconfig JOYSTICK
+	bool "JOYSTICK Analogue Sensor"
+	select ADC
+	help
+	  Enable driver for Joystick analogue sensors.
+
