@@ -27,7 +27,7 @@
 			bindings = <
 				&kp HOME  &kp K_PP &kp END
 				&kp PG_UP &kp UP   &kp PG_DN
-				&kp LEFT  &kp DOWN &kp RIGHT
+				&kp LEFT  &kp DOWN &kp LEFT
 			>;
 			/* Uncomment and add necessary bindings. This examples is for one encoder
 			sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
