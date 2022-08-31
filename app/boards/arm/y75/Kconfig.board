@@ -1,0 +1,6 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+config BOARD_Y75
+	bool "y75"
+	depends on SOC_NRF52840_QIAA

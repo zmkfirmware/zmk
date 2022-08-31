@@ -1,0 +1,12 @@
+file_format: "1"
+id: y75
+name: y75
+type: board
+arch: arm
+features:
+  - keys
+  - underglow
+outputs:
+  - usb
+  - ble
+url: https://nicekeyboards.com/nice-60
