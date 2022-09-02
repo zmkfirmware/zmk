@@ -8,6 +8,7 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/ext_power.h>
 
 
 #define TIMEOUT 300
@@ -70,7 +71,7 @@
                 &bootloader &trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &trans &trans &trans &trans &trans &trans &trans &trans &trans
                 &bt BT_NXT &kp CAPS &kp KP_NUM &kp SLCK &trans &trans &trans &trans &trans &trans &trans &trans &trans          &trans
                          &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-                         &trans &trans &trans          &trans &trans          &trans          &trans &trans &kp HOME &trans &kp END
+                         &trans &trans  &rgb_ug RGB_BRD &rgb_ug RGB_EFR          &ext_power EP_TOG          &rgb_ug RGB_EFF &rgb_ug RGB_BRI &trans &kp HOME &trans &kp END
             >;  
             sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
                 
