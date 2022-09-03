@@ -1,0 +1,26 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_OBE
+
+config ZMK_KEYBOARD_NAME
+    default "OrangeBoyErgo"
+
+if LVGL
+
+config LVGL_VDB_SIZE
+    default 64
+
+config LVGL_DPI
+    default 148
+
+config LVGL_BITS_PER_PIXEL
+    default 1
+
+choice LVGL_COLOR_DEPTH
+    default LVGL_COLOR_DEPTH_1
+endchoice
+
+endif # LVGL
+
+endif
