@@ -23,7 +23,4 @@ endchoice
 
 endif # LVGL
 
-# Enable IO multiplexer
-CONFIG_GPIO_MCP23017=y
-
 endif
