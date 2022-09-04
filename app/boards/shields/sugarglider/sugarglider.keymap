@@ -17,7 +17,7 @@
     status = "okay";
 };
 
-&encoder_1 {
+&encoder_2 {
     status = "okay";
 };
 
@@ -58,11 +58,10 @@
         default_layer {
             label = "default layer";
             bindings = <
-                &kp C_MUTE &kp ESC &kp N1    &kp N2    &kp N3    &kp N4    &kp N5    &kp N6    &kp N7    &kp N8    &kp N9    &kp N0    &kp MINUS &kp EQUAL  &trans &kp BSPC
-                &kp PG_UP &kp TAB  &kp Q    &kp W    &kp E    &kp R    &kp T    &kp Y    &kp U    &kp I    &kp O    &kp P    &kp LBKT &kp RBKT &kp BSLH
-                &kp PG_DN &mo 1   &kp A    &kp S    &kp D    &kp F    &kp G    &kp H    &kp J    &kp K    &kp L    &kp SEMI &kp APOS          &kp ENTER
-                         &kp LSHFT &kp Z    &kp X    &kp C    &kp V    &kp B    &kp B    &kp N    &kp M    &kp COMMA &kp DOT  &kp FSLH &kp UP   &kp RSHFT
-                         &kp LCTRL &kp LGUI &kp LALT          &kp SPACE  &mo 1           &kp SPACE           &kp RALT &mo 1   &kp LEFT &kp DOWN &kp RIGHT
+                &kp ESC   &kp Q   &kp W    &kp E     &kp R &kp T                      &trans &kp Y &kp U &kp I     &kp O    &kp P    &kp BSPC 
+                &kp TAB   &kp A   &kp S    &kp D     &kp F &kp G             &kp C_MUTE &trans &kp H &kp J &kp K     &kp L    &kp SEMI &kp ENTER
+                &kp LSHFT &kp Z   &kp X    &kp C     &kp V &kp B                      &trans &kp N &kp M &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
+                          &kp C_MUTE &kp LCTRL &kp LALT &kp SPACE &kp Y &kp Y &kp Y &kp SPACE &kp SPACE &kp RGUI  &kp C_MUTE
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
 
@@ -71,11 +70,10 @@
         fn_layer {
             label = "fn layer";
             bindings = <
-                &bt BT_CLR &trans &kp F1   &kp F2   &kp F3   &kp F4   &kp F5   &kp F6   &kp F7   &kp F8   &kp F9   &kp F10  &kp F11  &kp F12  &trans &kp DEL
-                &bootloader &trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &trans &trans &trans &trans &trans &trans &trans &trans &trans
-                &bt BT_NXT &kp CAPS &kp KP_NUM &kp SLCK &trans &trans &trans &trans &trans &trans &trans &trans &trans          &trans
-                         &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-                         &trans &trans  &rgb_ug RGB_BRD &rgb_ug RGB_EFR          &ext_power EP_TOG          &rgb_ug RGB_EFF &rgb_ug RGB_BRI &trans &kp HOME &trans &kp END
+                &trans &trans &trans &trans &trans &trans               &trans &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans        &trans &trans &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans               &trans &trans &trans &trans &trans &trans &trans
+                            &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
             >;  
             sensor-bindings = <&inc_dec_kp PG_UP PG_DN &inc_dec_kp C_VOL_UP C_VOL_DN>;
                 

@@ -1,10 +1,10 @@
 # Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if SHIELD_OBE
+if SHIELD_SUGARGLIDER
 
 config ZMK_KEYBOARD_NAME
-    default "OrangeBoyErgo"
+    default "Sugar Glider"
 
 if LVGL
 
@@ -22,5 +22,8 @@ choice LVGL_COLOR_DEPTH
 endchoice
 
 endif # LVGL
+
+# Enable IO multiplexer
+CONFIG_GPIO_MCP23017=y
 
 endif
