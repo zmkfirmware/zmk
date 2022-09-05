@@ -16,6 +16,13 @@ static struct zmk_hid_keyboard_report keyboard_report = {
 
 static struct zmk_hid_consumer_report consumer_report = {.report_id = HID_REPORT_ID_CONSUMER,
                                                          .body = {.keys = {0}}};
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+
+static zmk_hid_boot_report_t boot_report = {.modifiers = 0, ._reserved = 0, .keys = {0}};
+
+static uint8_t keys_held = 0;
+
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
 
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
@@ -85,15 +92,58 @@ int zmk_hid_unregister_mods(zmk_mod_flags_t modifiers) {
     return ret;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+
+static zmk_hid_boot_report_t *boot_report_rollover(uint8_t modifiers) {
+    boot_report.modifiers = modifiers;
+    for (int i = 0; i < HID_BOOT_KEY_LEN; i++) {
+        boot_report.keys[i] = HID_ERROR_ROLLOVER;
+    }
+    return &boot_report;
+}
+
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
+
 #if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
 
 #define TOGGLE_KEYBOARD(code, val) WRITE_BIT(keyboard_report.body.keys[code / 8], code % 8, val)
+
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+zmk_hid_boot_report_t *zmk_hid_get_boot_report() {
+    if (keys_held > HID_BOOT_KEY_LEN) {
+        return boot_report_rollover(keyboard_report.body.modifiers);
+    }
+
+    boot_report.modifiers = keyboard_report.body.modifiers;
+    memset(&boot_report.keys, 0, HID_BOOT_KEY_LEN);
+    int ix = 0;
+    uint8_t base_code = 0;
+    for (int i = 0; i < (ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1) / 8; ++i) {
+        if (ix == keys_held) {
+            break;
+        }
+        if (!keyboard_report.body.keys[i]) {
+            continue;
+        }
+        base_code = i * 8;
+        for (int j = 0; j < 8; ++j) {
+            if (keyboard_report.body.keys[i] & BIT(j)) {
+                boot_report.keys[ix++] = base_code + j;
+            }
+        }
+    }
+    return &boot_report;
+}
+#endif
 
 static inline int select_keyboard_usage(zmk_key_t usage) {
     if (usage > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE) {
         return -EINVAL;
     }
     TOGGLE_KEYBOARD(usage, 1);
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    ++keys_held;
+#endif
     return 0;
 }
 
@@ -102,6 +152,9 @@ static inline int deselect_keyboard_usage(zmk_key_t usage) {
         return -EINVAL;
     }
     TOGGLE_KEYBOARD(usage, 0);
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    --keys_held;
+#endif
     return 0;
 }
 
@@ -125,13 +178,52 @@ static inline bool check_keyboard_usage(zmk_key_t usage) {
         }                                                                                          \
     }
 
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+zmk_hid_boot_report_t *zmk_hid_get_boot_report() {
+    if (keys_held > HID_BOOT_KEY_LEN) {
+        return boot_report_rollover(keyboard_report.body.modifiers);
+    }
+
+#if CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE != HID_BOOT_KEY_LEN
+    // Form a boot report from a report of different size.
+
+    boot_report.modifiers = keyboard_report.body.modifiers;
+
+    int out = 0;
+    for (int i = 0; i < CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE; i++) {
+        uint8_t key = keyboard_report.body.keys[i];
+        if (key) {
+            boot_report.keys[out++] = key;
+            if (out == keys_held) {
+                break;
+            }
+        }
+    }
+
+    while (out < HID_BOOT_KEY_LEN) {
+        boot_report.keys[out++] = 0;
+    }
+
+    return &boot_report;
+#else
+    return &keyboard_report.body;
+#endif /* CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE != HID_BOOT_KEY_LEN */
+}
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
+
 static inline int select_keyboard_usage(zmk_key_t usage) {
     TOGGLE_KEYBOARD(0U, usage);
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    ++keys_held;
+#endif
     return 0;
 }
 
 static inline int deselect_keyboard_usage(zmk_key_t usage) {
     TOGGLE_KEYBOARD(usage, 0U);
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    --keys_held;
+#endif
     return 0;
 }
 

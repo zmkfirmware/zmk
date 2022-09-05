@@ -109,12 +109,24 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_END_COLLECTION,
 };
 
-// struct zmk_hid_boot_report
-// {
-//     uint8_t modifiers;
-//     uint8_t _unused;
-//     uint8_t keys[6];
-// } __packed;
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+
+#define HID_ERROR_ROLLOVER 0x1
+#define HID_BOOT_KEY_LEN 6
+
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) &&                                                 \
+    CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE == HID_BOOT_KEY_LEN
+typedef struct zmk_hid_keyboard_report_body zmk_hid_boot_report_t;
+#else
+struct zmk_hid_boot_report {
+    zmk_mod_flags_t modifiers;
+    uint8_t _reserved;
+    uint8_t keys[6];
+} __packed;
+
+typedef struct zmk_hid_boot_report zmk_hid_boot_report_t;
+#endif
+#endif
 
 struct zmk_hid_keyboard_report_body {
     zmk_mod_flags_t modifiers;
@@ -181,3 +193,7 @@ bool zmk_hid_is_pressed(uint32_t usage);
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();
+
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+zmk_hid_boot_report_t *zmk_hid_get_boot_report();
+#endif
