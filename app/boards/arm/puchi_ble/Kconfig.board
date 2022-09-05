@@ -1,6 +1,6 @@
 # Puchi-BLE board configuration
 
-# Copyright (c) 2020 The ZMK Contributors
+# Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 config BOARD_PUCHI_BLE_v1

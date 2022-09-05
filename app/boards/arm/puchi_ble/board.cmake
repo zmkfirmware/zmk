@@ -1,3 +1,4 @@
+# Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 board_runner_args(nrfjprog "--nrf-family=NRF52" "--softreset")
