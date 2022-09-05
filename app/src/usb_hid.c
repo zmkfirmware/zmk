@@ -65,11 +65,6 @@ static uint8_t hid_protocol = HID_PROTOCOL_REPORT;
 void zmk_usb_set_proto_cb(const struct device *dev, uint8_t protocol) {
     hid_protocol = protocol;
 }
-
-#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
-
-#endif
-
 #endif
 
 static const struct device *hid_dev;
@@ -142,15 +137,15 @@ static int zmk_usb_hid_init(const struct device *_arg) {
 }
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
-static int hid_listener(const zmk_event_t *eh) {
+static int usb_hid_listener(const zmk_event_t *eh) {
     if (as_zmk_usb_conn_state_changed(eh) && zmk_usb_get_status() == USB_DC_RESET) {
         hid_protocol = HID_PROTOCOL_REPORT;
     }
     return 0;
 }
 
-ZMK_LISTENER(hid_listener, hid_listener);
-ZMK_SUBSCRIPTION(hid_listener, zmk_usb_conn_state_changed);
+ZMK_LISTENER(usb_hid_listener, usb_hid_listener);
+ZMK_SUBSCRIPTION(usb_hid_listener, zmk_usb_conn_state_changed);
 #endif
 
 SYS_INIT(zmk_usb_hid_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
