@@ -1,13 +1,3 @@
 # Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-config BOARD_ENABLE_DCDC
-	bool "Enable DCDC mode"
-	select SOC_DCDC_NRF52X
-	default y
-	depends on (BOARD_PUCHI_BLE_v1)
-
-config BOARD_PUCHI_BLE_CHARGER
-	bool "Enable battery charger"
-	default y
-	depends on (BOARD_PUCHI_BLE_v1)

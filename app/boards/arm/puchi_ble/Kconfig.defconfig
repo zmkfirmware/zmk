@@ -25,11 +25,4 @@ config ZMK_USB
 config PINMUX
 	default y
 
-if BOARD_PUCHI_BLE_v1
-
-config BOARD_PUCHI_BLE_CHARGER
-	default y
-
-endif # BOARD_PUCHI_BLE_v1
-
 endif # BOARD_PUCHI_BLE_v1
