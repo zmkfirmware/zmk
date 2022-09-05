@@ -48,16 +48,16 @@ shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
 
 ### Kconfig.shield
 
-The `Kconfig.shield` file defines any additional Kconfig settings that may be relevant when using this keyboard. For most keyboards, there is just one additional configuration value for the shield itself, e.g.:
+The `Kconfig.shield` file defines any additional Kconfig settings that may be relevant when using this keyboard. For most keyboards, there is just one additional configuration value for the shield itself.
 
 ```
 config SHIELD_MY_BOARD
 	def_bool $(shields_list_contains,my_board)
 ```
 
-This will make sure the new configuration `SHIELD_MY_BOARD` is set to true whenever `my_board` is added as a shield in your build.
+This will make sure that a new configuration value named `SHIELD_MY_BOARD` is set to true whenever `my_board` is used as the shield name, either as the `SHIELD` variable [in a local build](build-flash.md) or in your `build.yaml` file [when using Github Actions](../customization). Note that this configuration value will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
 
-**For split boards**, you will need to add configurations for the left and right sides.
+**For split boards**, you will need to add configurations for the left and right sides. For example, if your split halves are named `my_board_left` and `my_board_right`, it would look like this:
 
 ```
 config SHIELD_MY_BOARD_LEFT
@@ -77,14 +77,14 @@ which controls the display name of the device over USB and BLE.
 The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file. Here's the simplest example file.
 
 :::warning
-Do not make the keyboard name too long, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your laptop / tablet.
+The keyboard name must be less than or equal to 16 characters in length, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your device.
 :::
 
 ```
 if SHIELD_MY_BOARD
 
 config ZMK_KEYBOARD_NAME
-	default "My Awesome Keyboard"
+	default "My Board"
 
 endif
 ```
@@ -98,9 +98,9 @@ Finally, you'll want to turn on the split option for both sides. This can all be
 if SHIELD_MY_BOARD_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "My Awesome Keyboard"
+	default "My Board"
 
-config ZMK_SPLIT_BLE_ROLE_CENTRAL
+config ZMK_SPLIT_ROLE_CENTRAL
 	default y
 
 endif
@@ -156,6 +156,8 @@ this might look something like:
 	};
 };
 ```
+
+See the [Keyboard Scan configuration documentation](../config/kscan.md) for details on configuring the KSCAN driver.
 
 </TabItem>
 
@@ -260,6 +262,8 @@ This is exemplified with the iris .overlay files.
 
 ```
 
+See the [Keyboard Scan configuration documentation](../config/kscan.md) for details on configuring the KSCAN driver.
+
 ### .conf files (Split Shields)
 
 While unibody boards only have one .conf file that applies configuration characteristics to the entire keyboard,
@@ -340,6 +344,8 @@ Some important things to note:
 - The `#include <dt-bindings/zmk/matrix_transform.h>` is critical. The `RC` macro is used to generate the internal storage in the matrix transform, and is actually replaced by a C preprocessor before the final devicetree is compiled into ZMK.
 - `RC(row, column)` is placed sequentially to define what row and column values that position corresponds to.
 - If you have a keyboard with options for `2u` keys in certain positions, or break away portions, it is a good idea to set the chosen `zmk,matrix_transform` to the default arrangement, and include _other_ possible matrix transform nodes in the devicetree that users can select in their user config by overriding the chosen node.
+
+See the [matrix transform section](../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for details and more examples of matrix transforms.
 
 ## Default Keymap
 

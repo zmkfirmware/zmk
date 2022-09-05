@@ -1,5 +1,5 @@
 ---
-title: Customizing ZMK/`zmk-config` folders
+title: Customizing ZMK/zmk-config folders
 sidebar_label: Customizing ZMK
 ---
 
@@ -9,10 +9,10 @@ with the main `zmk` firmware repository to build your desired firmware. The main
 working components of ZMK are kept separate from your personal keyboard settings, reducing the amount of file manipulation in the configuration process.
 This makes flashing ZMK to your keyboard much easier, especially because you don't need to keep an up-to-date copy of zmk on your computer at all times.
 
-On default `zmk-config` folder should contain two files:
+By default, the `zmk-config` folder should contain two files:
 
 - `<shield>.conf`
-- `<shield>`.keymap
+- `<shield>.keymap`
 
 However, your config folder can also be modified to include a `boards/` directory for keymaps and configurations for multiple boards/shields
 outside of the default keyboard setting definitions.
@@ -22,6 +22,8 @@ outside of the default keyboard setting definitions.
 The setup script creates a `config/<shield>.conf` file that allows you to add additional configuration options to
 control what features and options are built into your firmware. Opening that file with your text editor will allow you to see the
 various config settings that can be commented/uncommented to modify how your firmware is built.
+
+Refer to the [Configuration](/docs/config) documentation for more details on this file.
 
 ## Keymap
 
@@ -56,3 +58,28 @@ For normal keyboards, follow the same flashing instructions as before to flash y
 
 For split keyboards, only the central (left) side will need to be reflashed if you are just updating your keymap.
 More troubleshooting information for split keyboards can be found [here](troubleshooting.md#split-keyboard-halves-unable-to-pair).
+
+## Building Additional Keyboards
+
+You can build additional keyboards with GitHub actions by appending them to `build.yml` in your `zmk-config` folder. For instance assume that we have set up a Corne shield with nice!nano during [initial setup](user-setup.md) and we want to add a Lily58 shield with nice!nano v2. The following is an example `build.yaml` file that would accomplish that:
+
+```
+include:
+  - board: nice_nano
+    shield: corne_left
+  - board: nice_nano
+    shield: corne_right
+  - board: nice_nano_v2
+    shield: lily58_left
+  - board: nice_nano_v2
+    shield: lily58_right
+```
+
+In addition to updating `build.yaml`, Lily58's shield files should also be added into the `config` sub-folder inside `zmk-config` together with your Corne files, e.g.:
+
+```
+corne.conf
+corne.keymap
+lily58.conf
+lily58.keymap
+```

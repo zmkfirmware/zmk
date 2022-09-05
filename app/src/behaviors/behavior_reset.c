@@ -7,7 +7,7 @@
 #define DT_DRV_COMPAT zmk_behavior_reset
 
 #include <device.h>
-#include <power/reboot.h>
+#include <sys/reboot.h>
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
@@ -42,9 +42,9 @@ static const struct behavior_driver_api behavior_reset_driver_api = {
 #define RST_INST(n)                                                                                \
     static const struct behavior_reset_config behavior_reset_config_##n = {                        \
         .type = DT_INST_PROP(n, type)};                                                            \
-    DEVICE_DT_INST_DEFINE(n, behavior_reset_init, device_pm_control_nop, NULL,                     \
-                          &behavior_reset_config_##n, APPLICATION,                                 \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_reset_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_reset_init, NULL, NULL, &behavior_reset_config_##n,          \
+                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
+                          &behavior_reset_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(RST_INST)
 

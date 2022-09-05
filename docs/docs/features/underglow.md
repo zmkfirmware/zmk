@@ -5,6 +5,10 @@ sidebar_label: RGB Underglow
 
 RGB underglow is a feature used to control "strips" of RGB LEDs. Most of the time this is called underglow and creates a glow underneath the board using a ring of LEDs around the edge, hence the name. However, this can be extended to be used to control anything from a single LED to a long string of LEDs anywhere on the keyboard.
 
+:::info
+RGB underglow can also be used for under-key lighting. If you have RGB LEDs on your keyboard, this is what you want. For PWM/single color LEDs, see [Backlight](backlight.md).
+:::
+
 ZMK supports all the RGB LEDs supported by Zephyr. Here's the current list supported:
 
 - WS2812-ish (WS2812B, WS2813, SK6812, or compatible)
@@ -21,7 +25,8 @@ Here you can see the RGB underglow feature in action using WS2812 LEDs.
 
 ## Enabling RGB Underglow
 
-To enable RGB underglow on your board or shield, simply enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `X_STRIP` configuration values in the `.conf` file of your user config directory as such:
+To enable RGB underglow on your board or shield, simply enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `CONFIG_*_STRIP` configuration values in the `.conf` file for your board or shield.
+For example:
 
 ```
 CONFIG_ZMK_RGB_UNDERGLOW=y
@@ -29,24 +34,14 @@ CONFIG_ZMK_RGB_UNDERGLOW=y
 CONFIG_WS2812_STRIP=y
 ```
 
+See [Configuration Overview](/docs/config) for more instructions on how to
+use Kconfig.
+
 If your board or shield does not have RGB underglow configured, refer to [Adding RGB Underglow to a Board](#adding-rgb-underglow-to-a-board).
 
 ## Configuring RGB Underglow
 
-There are various Kconfig options used to configure the RGB underglow feature. These can all be set in the `.conf` file.
-
-| Option                               | Description                                     | Default |
-| ------------------------------------ | ----------------------------------------------- | ------- |
-| `CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER` | Underglow toggling also controls external power | y       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP`  | Hue step in degrees of 360 used by RGB actions  | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP`  | Saturation step in percent used by RGB actions  | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP`  | Brightness step in percent used by RGB actions  | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_START` | Default hue 0-359 in degrees                    | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_START` | Default saturation 0-100 in percent             | 100     |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_START` | Default brightness 0-100 in percent             | 100     |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SPD_START` | Default effect speed 1-5                        | 3       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START` | Default effect integer from the effect enum     | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_ON_START`  | Default on state                                | y       |
+See [RGB underglow configuration](/docs/config/underglow).
 
 ## Adding RGB Underglow to a Board
 
@@ -67,6 +62,8 @@ To identify which pin number you need to put in the config you need do to a bit 
 Here's an example on a definition that uses P0.06:
 
 ```
+#include <dt-bindings/led/led.h>
+
 &spi1 {
   compatible = "nordic,nrf-spim";
   status = "okay";
@@ -87,6 +84,9 @@ Here's an example on a definition that uses P0.06:
     chain-length = <10>; /* number of LEDs */
     spi-one-frame = <0x70>;
     spi-zero-frame = <0x40>;
+    color-mapping = <LED_COLOR_ID_GREEN
+                          LED_COLOR_ID_RED
+                          LED_COLOR_ID_BLUE>;
   };
 };
 ```
@@ -98,6 +98,13 @@ Ignoring these restrictions may result in poor wireless performance. You can fin
 
 :::
 
+:::note
+
+Standard WS2812 LEDs use a wire protocol where the bits for the colors green, red, and blue values are sent in that order.
+If your board/shield uses LEDs that require the data sent in a different order, the `color-mapping` property ordering should be changed to match.
+
+:::
+
 ### Other boards
 
 For other boards, you must select an SPI definition that has the `MOSI` pin as your data pin going to your LED strip.
@@ -105,6 +112,8 @@ For other boards, you must select an SPI definition that has the `MOSI` pin as y
 Here's another example for a non-nRF52 board on `spi1`:
 
 ```
+#include <dt-bindings/led/led.h>
+
 &spi1 {
 
   led_strip: ws2812@0 {
@@ -119,6 +128,9 @@ Here's another example for a non-nRF52 board on `spi1`:
     chain-length = <10>; /* number of LEDs */
     spi-one-frame = <0x70>; /* make sure to configure this properly for your SOC */
     spi-zero-frame = <0x40>; /* make sure to configure this properly for your SOC */
+    color-mapping = <LED_COLOR_ID_GREEN
+                          LED_COLOR_ID_RED
+                          LED_COLOR_ID_BLUE>;
   };
 };
 ```
@@ -133,7 +145,7 @@ Once you have your `led_strip` properly defined you need to add it to the root d
 };
 ```
 
-Finally you need to enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `X_STRIP` configuration values in the `.conf` file of your board (or set a default in the `Kconfig.defconfig`):
+Finally you need to enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `CONFIG_*_STRIP` configuration values in the `.conf` file of your board (or set a default in the `Kconfig.defconfig`):
 
 ```
 CONFIG_ZMK_RGB_UNDERGLOW=y

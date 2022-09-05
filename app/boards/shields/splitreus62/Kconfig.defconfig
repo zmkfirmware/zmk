@@ -8,7 +8,7 @@ if SHIELD_SPLITREUS62_LEFT
 config ZMK_KEYBOARD_NAME
 	default "Splitreus62"
 
-config ZMK_SPLIT_BLE_ROLE_CENTRAL
+config ZMK_SPLIT_ROLE_CENTRAL
 	default y
 
 endif

@@ -54,6 +54,16 @@ static const struct bt_uuid_128 split_service_uuid = BT_UUID_INIT_128(ZMK_SPLIT_
 K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
               CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
 
+void peripheral_event_work_callback(struct k_work *work) {
+    struct zmk_position_state_changed ev;
+    while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
+        LOG_DBG("Trigger key position state change for %d", ev.position);
+        ZMK_EVENT_RAISE(new_zmk_position_state_changed(ev));
+    }
+}
+
+K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
+
 int peripheral_slot_index_for_conn(struct bt_conn *conn) {
     for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
         if (peripherals[i].conn == conn) {
@@ -91,6 +101,22 @@ int release_peripheral_slot(int index) {
         slot->conn = NULL;
     }
     slot->state = PERIPHERAL_SLOT_STATE_OPEN;
+
+    // Raise events releasing any active positions from this peripheral
+    for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (slot->position_state[i] & BIT(j)) {
+                uint32_t position = (i * 8) + j;
+                struct zmk_position_state_changed ev = {.source = index,
+                                                        .position = position,
+                                                        .state = false,
+                                                        .timestamp = k_uptime_get()};
+
+                k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
+                k_work_submit(&peripheral_event_work);
+            }
+        }
+    }
 
     for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
         slot->position_state[i] = 0U;
@@ -135,16 +161,6 @@ int confirm_peripheral_slot_conn(struct bt_conn *conn) {
     peripherals[idx].state = PERIPHERAL_SLOT_STATE_CONNECTED;
     return 0;
 }
-
-void peripheral_event_work_callback(struct k_work *work) {
-    struct zmk_position_state_changed ev;
-    while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
-        LOG_DBG("Trigger key position state change for %d", ev.position);
-        ZMK_EVENT_RAISE(new_zmk_position_state_changed(ev));
-    }
-}
-
-K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
 
 static uint8_t split_central_notify_func(struct bt_conn *conn,
                                          struct bt_gatt_subscribe_params *params, const void *data,
@@ -395,16 +411,12 @@ static bool split_central_eir_found(struct bt_data *data, void *user_data) {
             } else {
                 param = BT_LE_CONN_PARAM(0x0006, 0x0006, 30, 400);
 
+                LOG_DBG("Initiating new connnection");
+
                 err = bt_conn_le_create(addr, BT_CONN_LE_CREATE_CONN, param, &slot->conn);
                 if (err) {
                     LOG_ERR("Create conn failed (err %d) (create conn? 0x%04x)", err,
                             BT_HCI_OP_LE_CREATE_CONN);
-                    start_scan();
-                }
-
-                err = bt_conn_le_phy_update(slot->conn, BT_CONN_LE_PHY_PARAM_2M);
-                if (err) {
-                    LOG_ERR("Update phy conn failed (err %d)", err);
                     start_scan();
                 }
             }
@@ -445,8 +457,16 @@ static int start_scan(void) {
 
 static void split_central_connected(struct bt_conn *conn, uint8_t conn_err) {
     char addr[BT_ADDR_LE_STR_LEN];
+    struct bt_conn_info info;
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+
+    bt_conn_get_info(conn, &info);
+
+    if (info.role != BT_CONN_ROLE_CENTRAL) {
+        LOG_DBG("SKIPPING FOR ROLE %d", info.role);
+        return;
+    }
 
     if (conn_err) {
         LOG_ERR("Failed to connect to %s (%u)", log_strdup(addr), conn_err);
@@ -465,12 +485,17 @@ static void split_central_connected(struct bt_conn *conn, uint8_t conn_err) {
 
 static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
     char addr[BT_ADDR_LE_STR_LEN];
+    int err;
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
     LOG_DBG("Disconnected: %s (reason %d)", log_strdup(addr), reason);
 
-    release_peripheral_slot_for_conn(conn);
+    err = release_peripheral_slot_for_conn(conn);
+
+    if (err < 0) {
+        return;
+    }
 
     start_scan();
 }
@@ -562,9 +587,9 @@ int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *bi
 }
 
 int zmk_split_bt_central_init(const struct device *_arg) {
-    k_work_q_start(&split_central_split_run_q, split_central_split_run_q_stack,
-                   K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
-                   CONFIG_ZMK_BLE_THREAD_PRIORITY);
+    k_work_queue_start(&split_central_split_run_q, split_central_split_run_q_stack,
+                       K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
+                       CONFIG_ZMK_BLE_THREAD_PRIORITY, NULL);
     bt_conn_cb_register(&conn_callbacks);
 
     return start_scan();

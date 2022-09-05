@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#define ZMK_MACRO_STRINGIFY(x) #x
+#define ZMK_MACRO(name,...) \
+	name: name { \
+			label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
+			compatible = "zmk,behavior-macro"; \
+			#binding-cells = <0>; \
+			__VA_ARGS__ \
+		};
+
+ / {
+	behaviors {
+		macro_tap: macro_control_mode_tap {
+			compatible = "zmk,macro-control-mode-tap";
+			label = "MAC_TAP";
+			#binding-cells = <0>;
+		};
+
+		macro_press: macro_control_mode_press {
+			compatible = "zmk,macro-control-mode-press";
+			label = "MAC_PRESS";
+			#binding-cells = <0>;
+		};
+
+		macro_release: macro_control_mode_release {
+			compatible = "zmk,macro-control-mode-release";
+			label = "MAC_REL";
+			#binding-cells = <0>;
+		};
+
+		macro_tap_time: macro_control_tap_time {
+			compatible = "zmk,macro-control-tap-time";
+			label = "MAC_TAP_TIME";
+			#binding-cells = <1>;
+		};
+
+		macro_wait_time: macro_control_wait_time {
+			compatible = "zmk,macro-control-wait-time";
+			label = "MAC_WAIT_TIME";
+			#binding-cells = <1>;
+		};
+
+		macro_pause_for_release: macro_pause_for_release {
+			compatible = "zmk,macro-pause-for-release";
+			label = "MAC_WAIT_REL";
+			#binding-cells = <0>;
+		};
+	};
+};

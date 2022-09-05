@@ -5,6 +5,7 @@
  */
 
 #include <zmk/display/widgets/output_status.h>
+#include <zmk/display/widgets/peripheral_status.h>
 #include <zmk/display/widgets/battery_status.h>
 #include <zmk/display/widgets/layer_status.h>
 #include <zmk/display/widgets/wpm_status.h>
@@ -19,6 +20,10 @@ static struct zmk_widget_battery_status battery_status_widget;
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_OUTPUT_STATUS)
 static struct zmk_widget_output_status output_status_widget;
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_PERIPHERAL_STATUS)
+static struct zmk_widget_peripheral_status peripheral_status_widget;
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_LAYER_STATUS)
@@ -44,6 +49,12 @@ lv_obj_t *zmk_display_status_screen() {
     zmk_widget_output_status_init(&output_status_widget, screen);
     lv_obj_align(zmk_widget_output_status_obj(&output_status_widget), NULL, LV_ALIGN_IN_TOP_LEFT, 0,
                  0);
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_PERIPHERAL_STATUS)
+    zmk_widget_peripheral_status_init(&peripheral_status_widget, screen);
+    lv_obj_align(zmk_widget_peripheral_status_obj(&peripheral_status_widget), NULL,
+                 LV_ALIGN_IN_TOP_LEFT, 0, 0);
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_LAYER_STATUS)
