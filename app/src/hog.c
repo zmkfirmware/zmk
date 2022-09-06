@@ -15,8 +15,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <bluetooth/gatt.h>
 
 #include <zmk/ble.h>
+#include <zmk/endpoints_types.h>
 #include <zmk/hog.h>
 #include <zmk/hid.h>
+#include <zmk/led_indicators.h>
 
 enum {
     HIDS_REMOTE_WAKE = BIT(0),
@@ -47,12 +49,17 @@ enum {
 };
 
 static struct hids_report input = {
-    .id = 0x01,
+    .id = HID_REPORT_ID_KEYBOARD,
     .type = HIDS_INPUT,
 };
 
+static struct hids_report led_indicators = {
+    .id = HID_REPORT_ID_LEDS,
+    .type = HIDS_OUTPUT,
+};
+
 static struct hids_report consumer_input = {
-    .id = 0x02,
+    .id = HID_REPORT_ID_CONSUMER,
     .type = HIDS_INPUT,
 };
 
@@ -83,6 +90,27 @@ static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt
     struct zmk_hid_keyboard_report_body *report_body = &zmk_hid_get_keyboard_report()->body;
     return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
                              sizeof(struct zmk_hid_keyboard_report_body));
+}
+
+static ssize_t write_hids_leds_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
+                                      const void *buf, uint16_t len, uint16_t offset,
+                                      uint8_t flags) {
+    if (flags & BT_GATT_WRITE_FLAG_PREPARE) {
+        return 0;
+    }
+
+    if (len != sizeof(struct zmk_hid_led_report_body)) {
+        LOG_ERR("LED report is malformed: length=%d", len);
+        return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+    }
+
+    struct zmk_hid_led_report_body *report =
+        (struct zmk_hid_led_report_body *)((uint8_t *)buf + offset);
+    uint8_t profile = zmk_ble_profile_index(bt_conn_get_dst(conn));
+
+    zmk_leds_process_report(report, ZMK_ENDPOINT_BLE, profile);
+
+    return len;
 }
 
 static ssize_t read_hids_consumer_input_report(struct bt_conn *conn,
@@ -134,6 +162,13 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
     BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
                        NULL, &input),
+
+    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT,
+                           BT_GATT_CHRC_WRITE | BT_GATT_CHRC_WRITE_WITHOUT_RESP,
+                           BT_GATT_PERM_WRITE_ENCRYPT, NULL, write_hids_leds_report, NULL),
+    BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
+                       NULL, &led_indicators),
+
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ_ENCRYPT, read_hids_consumer_input_report, NULL, NULL),
     BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
@@ -224,7 +259,7 @@ void send_consumer_report_callback(struct k_work *work) {
         }
 
         struct bt_gatt_notify_params notify_params = {
-            .attr = &hog_svc.attrs[10],
+            .attr = &hog_svc.attrs[12],
             .data = &report,
             .len = sizeof(report),
         };
