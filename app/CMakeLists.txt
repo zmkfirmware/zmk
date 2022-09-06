@@ -82,6 +82,7 @@ target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/events/battery_state_changed
 target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/battery.c)
 
 target_sources(app PRIVATE src/events/led_indicator_changed.c)
+target_sources_ifdef(CONFIG_ZMK_LED_INDICATORS app PRIVATE src/led_indicators.c)
 
 target_sources_ifdef(CONFIG_ZMK_SPLIT app PRIVATE src/events/split_peripheral_status_changed.c)
 add_subdirectory(src/split)
