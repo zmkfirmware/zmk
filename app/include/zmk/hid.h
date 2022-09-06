@@ -17,11 +17,15 @@
 
 #define COLLECTION_REPORT 0x03
 
+#define HID_REPORT_ID_KEYBOARD 0x01
+#define HID_REPORT_ID_LEDS 0x01
+#define HID_REPORT_ID_CONSUMER 0x02
+
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
     HID_USAGE(HID_USAGE_GD_KEYBOARD),
     HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(0x01),
+    HID_REPORT_ID(HID_REPORT_ID_KEYBOARD),
     HID_USAGE_PAGE(HID_USAGE_KEY),
     HID_USAGE_MIN8(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),
     HID_USAGE_MAX8(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI),
@@ -38,6 +42,20 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_REPORT_COUNT(0x01),
     /* INPUT (Cnst,Var,Abs) */
     HID_INPUT(0x03),
+
+    HID_USAGE_PAGE(HID_USAGE_LED),
+    HID_USAGE_MIN8(HID_USAGE_LED_NUM_LOCK),
+    HID_USAGE_MAX8(HID_USAGE_LED_KANA),
+    HID_REPORT_SIZE(0x01),
+    HID_REPORT_COUNT(0x05),
+    /* OUTPUT (Data,Var,Abs) */
+    HID_OUTPUT(0x02),
+
+    HID_USAGE_PAGE(HID_USAGE_LED),
+    HID_REPORT_SIZE(0x03),
+    HID_REPORT_COUNT(0x01),
+    /* OUTPUT (Cnst,Var,Abs) */
+    HID_OUTPUT(0x03),
 
     HID_USAGE_PAGE(HID_USAGE_KEY),
 
@@ -67,7 +85,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_CONSUMER),
     HID_USAGE(HID_USAGE_CONSUMER_CONSUMER_CONTROL),
     HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(0x02),
+    HID_REPORT_ID(HID_REPORT_ID_CONSUMER),
     HID_USAGE_PAGE(HID_USAGE_CONSUMER),
 
 #if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
@@ -111,6 +129,15 @@ struct zmk_hid_keyboard_report_body {
 struct zmk_hid_keyboard_report {
     uint8_t report_id;
     struct zmk_hid_keyboard_report_body body;
+} __packed;
+
+struct zmk_hid_led_report_body {
+    uint8_t leds;
+} __packed;
+
+struct zmk_hid_led_report {
+    uint8_t report_id;
+    struct zmk_hid_led_report_body body;
 } __packed;
 
 struct zmk_hid_consumer_report_body {
