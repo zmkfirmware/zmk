@@ -13,6 +13,9 @@
 #include <zmk/usb.h>
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
+#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+#include <zmk/hid_indicators.h>
+#endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
 #include <zmk/event_manager.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -83,12 +86,44 @@ static int get_report_cb(const struct device *dev, struct usb_setup_packet *setu
     return 0;
 }
 
+static int set_report_cb(const struct device *dev, struct usb_setup_packet *setup, int32_t *len,
+                         uint8_t **data) {
+    if ((setup->wValue & HID_GET_REPORT_TYPE_MASK) != HID_REPORT_TYPE_OUTPUT) {
+        LOG_ERR("Unsupported report type %d requested",
+                (setup->wValue & HID_GET_REPORT_TYPE_MASK) >> 8);
+        return -ENOTSUP;
+    }
+
+    switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
+#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+    case ZMK_HID_REPORT_ID_LEDS:
+        if (*len != sizeof(struct zmk_hid_led_report)) {
+            LOG_ERR("LED set report is malformed: length=%d", *len);
+            return -EINVAL;
+        } else {
+            struct zmk_hid_led_report *report = (struct zmk_hid_led_report *)*data;
+            struct zmk_endpoint_instance endpoint = {
+                .transport = ZMK_TRANSPORT_USB,
+            };
+            zmk_hid_indicators_process_report(&report->body, endpoint);
+        }
+        break;
+#endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+    default:
+        LOG_ERR("Invalid report ID %d requested", setup->wValue & HID_GET_REPORT_ID_MASK);
+        return -EINVAL;
+    }
+
+    return 0;
+}
+
 static const struct hid_ops ops = {
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
     .protocol_change = set_proto_cb,
 #endif
     .int_in_ready = in_ready_cb,
     .get_report = get_report_cb,
+    .set_report = set_report_cb,
 };
 
 static int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
