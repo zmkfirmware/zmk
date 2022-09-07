@@ -1,9 +1,9 @@
-# nice!60
-![nice!60](https://i.imgur.com/0YWv5PE.png)
+# hannah60b
+![hannah60b](https://i.imgur.com/uQOyRh8.png)
 
-The nice!60 is a hotswap 60% made by Nice Keyboards. https://nicekeyboards.com/nice-60
+The Hannah60B is a 60% keybaord PCB 
 
-## Building nice!60 ZMK firmware
+## Building hannah60b ZMK firmware
 ```
-west build -p -b nice60
+west build -p -b hannah60_b
 ```
