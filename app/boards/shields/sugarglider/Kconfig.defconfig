@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 if SHIELD_SUGARGLIDER
-
+    
 config ZMK_KEYBOARD_NAME
     default "Sugar Glider"
 
