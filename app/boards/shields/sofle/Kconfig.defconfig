@@ -119,3 +119,5 @@ config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
 
 #ZMK_RGB_UNDERGLOW
 endif
+
+endif
