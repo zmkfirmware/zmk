@@ -65,6 +65,7 @@ void peripheral_event_work_callback(struct k_work *work) {
 }
 
 K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
+
 #if ZMK_KEYMAP_HAS_SENSORS
 K_MSGQ_DEFINE(peripheral_sensor_event_msgq, sizeof(struct zmk_sensor_event),
               CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
@@ -108,6 +109,7 @@ static uint8_t split_central_sensor_notify_func(struct bt_conn *conn,
     return BT_GATT_ITER_CONTINUE;
 }
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
+
 int peripheral_slot_index_for_conn(struct bt_conn *conn) {
     for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
         if (peripherals[i].conn == conn) {
@@ -270,19 +272,38 @@ static void split_central_subscribe(struct bt_conn *conn) {
         break;
     }
 }
+
 #if ZMK_KEYMAP_HAS_SENSORS
-        memcpy(&sensor_uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_SENSOR_STATE_UUID),
-               sizeof(sensor_uuid));
+static struct bt_uuid_128 sensor_uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
+static struct bt_gatt_discover_params sensor_discover_params;
+static struct bt_gatt_subscribe_params sensor_subscribe_params;
+static uint8_t split_central_sensor_desc_discovery_func(struct bt_conn *conn,
+                                                        const struct bt_gatt_attr *attr,
+                                                        struct bt_gatt_discover_params *params) {
+    int err;
+
+    if (!bt_uuid_cmp(sensor_discover_params.uuid,
+                     BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_SENSOR_STATE_UUID))) {
+        memcpy(&sensor_uuid, BT_UUID_GATT_CCC, sizeof(uuid));
         sensor_discover_params.uuid = &sensor_uuid.uuid;
         sensor_discover_params.start_handle = attr->handle;
-        sensor_discover_params.end_handle = 0xffff;
-        sensor_discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
-        sensor_discover_params.func = split_central_sensor_desc_discovery_func;
+        sensor_discover_params.type = BT_GATT_DISCOVER_DESCRIPTOR;
+
+        sensor_subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
 
         err = bt_gatt_discover(conn, &sensor_discover_params);
         if (err) {
             LOG_ERR("Discover failed (err %d)", err);
         }
+    } else {
+        sensor_subscribe_params.notify = split_central_sensor_notify_func;
+        sensor_subscribe_params.value = BT_GATT_CCC_NOTIFY;
+        sensor_subscribe_params.ccc_handle = attr->handle;
+        split_central_subscribe(conn, &sensor_subscribe_params);
+    }
+
+    return BT_GATT_ITER_STOP;
+}
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
 static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
@@ -362,6 +383,21 @@ static uint8_t split_central_service_discovery_func(struct bt_conn *conn,
     if (err) {
         LOG_ERR("Failed to start discovering split service characteristics (err %d)", err);
     }
+#if ZMK_KEYMAP_HAS_SENSORS
+        memcpy(&sensor_uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_SENSOR_STATE_UUID),
+               sizeof(sensor_uuid));
+        sensor_discover_params.uuid = &sensor_uuid.uuid;
+        sensor_discover_params.start_handle = attr->handle;
+        sensor_discover_params.end_handle = 0xffff;
+        sensor_discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
+        sensor_discover_params.func = split_central_sensor_desc_discovery_func;
+
+        err = bt_gatt_discover(conn, &sensor_discover_params);
+        if (err) {
+            LOG_ERR("Discover failed (err %d)", err);
+        }
+#endif /* ZMK_KEYMAP_HAS_SENSORS */
+
     return BT_GATT_ITER_STOP;
 }
 
