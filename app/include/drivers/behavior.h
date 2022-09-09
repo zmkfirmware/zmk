@@ -6,7 +6,6 @@
 
 #pragma once
 
-#include <drivers/sensor.h>
 #include <zephyr/types.h>
 #include <stddef.h>
 #include <sys/util.h>
@@ -26,7 +25,7 @@
 typedef int (*behavior_keymap_binding_callback_t)(struct zmk_behavior_binding *binding,
                                                   struct zmk_behavior_binding_event event);
 typedef int (*behavior_sensor_keymap_binding_callback_t)(struct zmk_behavior_binding *binding,
-                                                         const struct sensor_value value ,
+                                                         const struct device *sensor,
                                                          int64_t timestamp);
 
 enum behavior_locality {
@@ -160,12 +159,12 @@ static inline int z_impl_behavior_keymap_binding_released(struct zmk_behavior_bi
  * @retval Negative errno code if failure.
  */
 __syscall int behavior_sensor_keymap_binding_triggered(struct zmk_behavior_binding *binding,
-                                                      const struct sensor_value value,,
+                                                       const struct device *sensor,
                                                        int64_t timestamp);
 
-static inline int z_impl_behavior_sensor_keymap_binding_triggered(
-    struct zmk_behavior_binding *binding, const struct sensor_value value, int64_t timestamp) {
-
+static inline int
+z_impl_behavior_sensor_keymap_binding_triggered(struct zmk_behavior_binding *binding,
+                                                const struct device *sensor, int64_t timestamp) {
     const struct device *dev = device_get_binding(binding->behavior_dev);
 
     if (dev == NULL) {
@@ -178,7 +177,7 @@ static inline int z_impl_behavior_sensor_keymap_binding_triggered(
         return -ENOTSUP;
     }
 
-    return api->sensor_binding_triggered(binding, value, timestamp);
+    return api->sensor_binding_triggered(binding, sensor, timestamp);
 }
 
 /**
