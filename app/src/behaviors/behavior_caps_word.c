@@ -194,7 +194,7 @@ static int behavior_caps_word_init(const struct device *dev) {
     static struct behavior_caps_word_data behavior_caps_word_data_##n = {.active = false};         \
     static struct behavior_caps_word_config behavior_caps_word_config_##n = {                      \
         .index = n,                                                                                \
-        .mods = DT_INST_PROP_OR(n, mods, MOD_LSFT),                                                \
+        .mods = DT_INST_PROP_OR(n, mods, 0),                                                       \
         .layers = DT_INST_PROP_OR(n, layers, -1),                                                  \
         .ignore_alphas = DT_INST_PROP(n, ignore_alphas),                                           \
         .ignore_numbers = DT_INST_PROP(n, ignore_numbers),                                         \

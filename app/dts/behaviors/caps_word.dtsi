@@ -12,6 +12,7 @@
 			compatible = "zmk,behavior-caps-word";
 			label = "CAPS_WORD";
 			#binding-cells = <0>;
+            mods = <MOD_LSFT>;
 			continue-list = <UNDERSCORE BACKSPACE DELETE>;
             ignore-alphas;
             ignore-numbers;
@@ -24,7 +25,6 @@
 			compatible = "zmk,behavior-caps-word";
 			label = "NUM_WORD";
 			#binding-cells = <0>;
-            mods = <0>;
             // layers = <xxx>;  // to be specified in user config using &num_word {}
 			continue-list = <BACKSPACE DELETE>;
             ignore-numbers;
