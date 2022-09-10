@@ -32,6 +32,9 @@ struct caps_word_continue_item {
 
 struct behavior_caps_word_config {
     zmk_mod_flags_t mods;
+    int8_t layers;
+    bool ignore_alphas;
+    bool ignore_numbers;
     bool ignore_modifiers;
     uint8_t index;
     uint8_t continuations_count;
@@ -45,12 +48,22 @@ struct behavior_caps_word_data {
 static void activate_caps_word(const struct device *dev) {
     struct behavior_caps_word_data *data = dev->data;
 
+    const struct behavior_caps_word_config *config = dev->config;
+
+    if (config->layers > -1) {
+        zmk_keymap_layer_activate(config->layers);
+    }
     data->active = true;
 }
 
 static void deactivate_caps_word(const struct device *dev) {
     struct behavior_caps_word_data *data = dev->data;
 
+    const struct behavior_caps_word_config *config = dev->config;
+
+    if (config->layers > -1) {
+        zmk_keymap_layer_deactivate(config->layers);
+    }
     data->active = false;
 }
 
@@ -122,7 +135,10 @@ static void caps_word_enhance_usage(const struct behavior_caps_word_config *conf
     }
 
     LOG_DBG("Enhancing usage 0x%02X with modifiers: 0x%02X", ev->keycode, config->mods);
-    ev->implicit_modifiers |= config->mods;
+    if (config->mods != 0) {
+        ev->implicit_modifiers |= config->mods;
+    }
+
 }
 
 static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
@@ -146,8 +162,8 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
 
         caps_word_enhance_usage(config, ev);
 
-        if (!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode) &&
-            (!is_mod(ev->usage_page, ev->keycode) || !(config->ignore_modifiers)) &&
+        if ((!caps_word_is_alpha(ev->keycode) || !config->ignore_alphas) && (!caps_word_is_numeric(ev->keycode) || !config->ignore_numbers) &&
+            (!is_mod(ev->usage_page, ev->keycode) || !config->ignore_modifiers) &&
             !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
                                            ev->implicit_modifiers)) {
             LOG_DBG("Deactivating caps_word for 0x%02X - 0x%02X", ev->usage_page, ev->keycode);
@@ -179,6 +195,9 @@ static int behavior_caps_word_init(const struct device *dev) {
     static struct behavior_caps_word_config behavior_caps_word_config_##n = {                      \
         .index = n,                                                                                \
         .mods = DT_INST_PROP_OR(n, mods, MOD_LSFT),                                                \
+        .layers = DT_INST_PROP_OR(n, layers, -1),                                                \
+        .ignore_alphas = DT_INST_PROP(n, ignore_alphas),                                     \
+        .ignore_numbers = DT_INST_PROP(n, ignore_numbers),                                     \
         .ignore_modifiers = DT_INST_PROP(n, ignore_modifiers),                                     \
         .continuations = {LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, (, ), n)},       \
         .continuations_count = DT_INST_PROP_LEN(n, continue_list),                                 \
