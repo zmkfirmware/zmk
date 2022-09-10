@@ -138,7 +138,6 @@ static void caps_word_enhance_usage(const struct behavior_caps_word_config *conf
     if (config->mods != 0) {
         ev->implicit_modifiers |= config->mods;
     }
-
 }
 
 static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
@@ -162,7 +161,8 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
 
         caps_word_enhance_usage(config, ev);
 
-        if ((!caps_word_is_alpha(ev->keycode) || !config->ignore_alphas) && (!caps_word_is_numeric(ev->keycode) || !config->ignore_numbers) &&
+        if ((!caps_word_is_alpha(ev->keycode) || !config->ignore_alphas) &&
+            (!caps_word_is_numeric(ev->keycode) || !config->ignore_numbers) &&
             (!is_mod(ev->usage_page, ev->keycode) || !config->ignore_modifiers) &&
             !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
                                            ev->implicit_modifiers)) {
@@ -195,9 +195,9 @@ static int behavior_caps_word_init(const struct device *dev) {
     static struct behavior_caps_word_config behavior_caps_word_config_##n = {                      \
         .index = n,                                                                                \
         .mods = DT_INST_PROP_OR(n, mods, MOD_LSFT),                                                \
-        .layers = DT_INST_PROP_OR(n, layers, -1),                                                \
-        .ignore_alphas = DT_INST_PROP(n, ignore_alphas),                                     \
-        .ignore_numbers = DT_INST_PROP(n, ignore_numbers),                                     \
+        .layers = DT_INST_PROP_OR(n, layers, -1),                                                  \
+        .ignore_alphas = DT_INST_PROP(n, ignore_alphas),                                           \
+        .ignore_numbers = DT_INST_PROP(n, ignore_numbers),                                         \
         .ignore_modifiers = DT_INST_PROP(n, ignore_modifiers),                                     \
         .continuations = {LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, (, ), n)},       \
         .continuations_count = DT_INST_PROP_LEN(n, continue_list),                                 \
