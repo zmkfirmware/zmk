@@ -76,7 +76,7 @@ ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_obj_t *parent) {
     widget->obj = lv_label_create(parent, NULL);
 
-    lv_obj_set_size(widget->obj, 40, 15);
+    lv_obj_set_size(widget->obj, 43, 15);
 
     sys_slist_append(&widgets, &widget->node);
 

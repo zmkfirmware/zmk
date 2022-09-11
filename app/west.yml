@@ -27,7 +27,6 @@ manifest:
           - mcuboot
           - mcumgr
           - net-tools
-          - segger
           - openthread
           - edtt
           - trusted-firmware-m

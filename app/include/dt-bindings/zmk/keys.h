@@ -1404,6 +1404,10 @@
 #define C_AC_DESKTOP_SHOW_ALL_WINDOWS                                                              \
     (ZMK_HID_USAGE(HID_USAGE_CONSUMER, HID_USAGE_CONSUMER_AC_DESKTOP_SHOW_ALL_WINDOWS))
 
+/* Consumer AC Desktop Show All Applications */
+#define C_AC_DESKTOP_SHOW_ALL_APPLICATIONS                                                         \
+    (ZMK_HID_USAGE(HID_USAGE_CONSUMER, HID_USAGE_CONSUMER_AC_DESKTOP_SHOW_ALL_APPLICATIONS))
+
 /* Consumer Keyboard Input Assist Previous */
 #define C_KEYBOARD_INPUT_ASSIST_PREVIOUS                                                           \
     (ZMK_HID_USAGE(HID_USAGE_CONSUMER, HID_USAGE_CONSUMER_KEYBOARD_INPUT_ASSIST_PREVIOUS))

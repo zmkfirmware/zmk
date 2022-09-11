@@ -80,6 +80,14 @@ Please note, many keyboards only have a single PCB which includes the “brains�
 
 Currently, ZMK only supports wireless split, but wired split is possible and we welcome contributions!
 
+### How is the latency?
+
+The latency of ZMK is comparable to other firmware offerings. ZMK is equipped with a variety of scanning methods and [debounce algorithms](features/debouncing.md) that can affect the final measured latency. [This video](https://www.youtube.com/watch?v=jWL4nU-vtWs) shows a latency comparison of ZMK and other keyboard firmwares.
+
+### Any chance for 2.4GHz dongle implementation?
+
+At this time, there are no current plans to implement 2.4GHz dongle mode. This is because utilizing Nordic's proprietary 2.4GHz low level protocols requires use of the Nordic Connect SDK, which is licensed with a more restrictive license than ZMK's MIT license. However, ZMK does plan to implement dongle mode using BLE (with encryption). This will result in a 3.75ms average latency from the protocol itself.
+
 ### What bootloader does ZMK use?
 
 ZMK isn’t designed for any particular bootloader, and supports flashing different boards with different flash utilities (e.g. OpenOCD, nrfjprog, etc.). So if you have any difficulties, please let us know on [Discord](https://zmk.dev/community/discord/invite)!

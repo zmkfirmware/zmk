@@ -1,0 +1,8 @@
+# Puchi-BLE board configuration
+
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_PUCHI_BLE_v1
+	bool "puchi_ble_v1"
+	depends on SOC_NRF52840_QIAA
