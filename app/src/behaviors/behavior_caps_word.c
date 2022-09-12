@@ -134,8 +134,8 @@ static void caps_word_enhance_usage(const struct behavior_caps_word_config *conf
         return;
     }
 
-    LOG_DBG("Enhancing usage 0x%02X with modifiers: 0x%02X", ev->keycode, config->mods);
     if (config->mods != 0) {
+        LOG_DBG("Enhancing usage 0x%02X with modifiers: 0x%02X", ev->keycode, config->mods);
         ev->implicit_modifiers |= config->mods;
     }
 }
