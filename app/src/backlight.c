@@ -75,7 +75,7 @@ static void backlight_save_work_handler(struct k_work *work) {
     settings_save_one("backlight/state", &state, sizeof(state));
 }
 
-static K_DELAYED_WORK_DEFINE(backlight_save_work, backlight_save_work_handler);
+static struct k_work_delayable backlight_save_work;
 #endif
 
 static int zmk_backlight_init(const struct device *_arg) {
@@ -90,6 +90,7 @@ static int zmk_backlight_init(const struct device *_arg) {
     if (rc != 0) {
         LOG_ERR("Failed to load backlight settings: %d", rc);
     }
+    k_work_init_delayable(&backlight_save_work, backlight_save_work_handler);
 #endif
 #if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB)
     state.on = zmk_usb_is_powered();
@@ -104,8 +105,8 @@ static int zmk_backlight_update_and_save() {
     }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
-    k_delayed_work_cancel(&backlight_save_work);
-    return k_delayed_work_submit(&backlight_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    int ret = k_work_reschedule(&backlight_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return MIN(ret, 0);
 #else
     return 0;
 #endif
