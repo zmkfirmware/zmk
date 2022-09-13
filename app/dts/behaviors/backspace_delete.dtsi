@@ -1,6 +1,6 @@
 / {
     behaviors {
-        gresc: grave_escape {
+        bdel: delete_backspace {
             compatible = "zmk,behavior-mod-morph";
             label = "DELETE_BACKSPACE";
             #binding-cells = <0>;
