@@ -1,0 +1,16 @@
+file_format: "1"
+id: adv360pro
+name: Advantage 360 Pro
+type: board
+url: https://kinesis-ergo.com/keyboards/advantage360
+arch: arm
+features:
+  - keys
+  - underglow
+  - backlight
+outputs:
+  - usb
+  - ble
+siblings:
+  - adv360pro_left
+  - adv360pro_right

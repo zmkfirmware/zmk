@@ -1,0 +1,19 @@
+identifier: adv360pro
+name: Advantage 360 Pro
+type: keyboard
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - gpio
+  - i2c
+  - counter
+  - spi
+  - usb_device
+  - nvs
+  - can
+  - kscan
+  - ble
+  - pwm
