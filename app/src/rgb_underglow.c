@@ -21,6 +21,7 @@
 
 #include <zmk/activity.h>
 #include <zmk/usb.h>
+#include <zmk/battery.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
@@ -49,6 +50,7 @@ enum rgb_underglow_effect {
     UNDERGLOW_EFFECT_BREATHE,
     UNDERGLOW_EFFECT_SPECTRUM,
     UNDERGLOW_EFFECT_SWIRL,
+    UNDERGLOW_EFFECT_BATTERY,
     UNDERGLOW_EFFECT_NUMBER // Used to track number of underglow effects
 };
 
@@ -175,6 +177,22 @@ static void zmk_rgb_underglow_effect_swirl(void) {
     state.animation_step = state.animation_step % HUE_MAX;
 }
 
+static void zmk_rgb_underglow_effect_battery(void) {
+    struct zmk_led_hsb hsb = state.color;
+
+    // Only set lights if battery information available, otherwise set to blue
+    if (DT_HAS_CHOSEN(zmk_battery)) {
+        uint8_t soc = zmk_battery_state_of_charge();
+        hsb.h = (soc * 1.2);
+    } else {
+        hsb.h = 240;
+    }
+    hsb.s = SAT_MAX;
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        pixels[i] = hsb_to_rgb(hsb_scale_min_max(hsb));
+    }
+}
+
 static void zmk_rgb_underglow_tick(struct k_work *work) {
     switch (state.current_effect) {
     case UNDERGLOW_EFFECT_SOLID:
@@ -188,6 +206,9 @@ static void zmk_rgb_underglow_tick(struct k_work *work) {
         break;
     case UNDERGLOW_EFFECT_SWIRL:
         zmk_rgb_underglow_effect_swirl();
+        break;
+    case UNDERGLOW_EFFECT_BATTERY:
+        zmk_rgb_underglow_effect_battery();
         break;
     }
 
