@@ -1,3 +1,16 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/*
+ * This is a pixel redraw of the redraw of the original Bongo Cat
+ * https://twitter.com/strayrogue/status/992994454058381312
+ * The redraw is distributed under CC BY-SA 4.0
+ * https://commons.wikimedia.org/wiki/File:Bongo_Cat_Redraw.png
+ */
+
 #include <lvgl.h>
 
 #ifndef LV_ATTRIBUTE_MEM_ALIGN
