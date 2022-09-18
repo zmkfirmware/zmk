@@ -1,4 +1,4 @@
-{ pkgs ?  import <nixpkgs> {} }:
+{ pkgs ? (import ./nix/pinned-nixpkgs.nix {}) }:
 let
   inherit (pkgs) newScope;
   inherit (pkgs.lib) makeScope;

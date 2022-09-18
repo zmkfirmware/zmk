@@ -1,4 +1,4 @@
-{ pkgs ? (import <nixpkgs> {})}:
+{ pkgs ? (import ./pinned-nixpkgs.nix {}) }:
 
 let
   # need a newer west than nixpkgs packages
@@ -28,10 +28,15 @@ let
     intelhex
     west
   ];
+
+  requiredStdenv =
+    if pkgs.stdenv.hostPlatform.isLinux
+    then pkgs.multiStdenv
+    else pkgs.stdenv;
 in
 with pkgs;
 # requires multiStdenv to build 32-bit test binaries
-multiStdenv.mkDerivation {
+requiredStdenv.mkDerivation {
   name = "zmk-shell";
 
   buildInputs = [

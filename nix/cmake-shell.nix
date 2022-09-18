@@ -1,4 +1,4 @@
-{ pkgs ? (import <nixpkgs> {})}:
+{ pkgs ? (import ./pinned-nixpkgs.nix {}) }:
 
 let
   zmkPkgs = (import ../default.nix { inherit pkgs; });

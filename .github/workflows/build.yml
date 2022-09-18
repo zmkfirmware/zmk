@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    if: ${{ always() }}
+    if: ${{ false }}
     runs-on: ubuntu-latest
     container:
       image: docker.io/zmkfirmware/zmk-build-arm:3.0
@@ -104,7 +104,7 @@ jobs:
               throw new Error('Failed to build one or more configurations');
             }
   compile-matrix:
-    if: ${{ always() }}
+    if: ${{ false && always() }}
     runs-on: ubuntu-latest
     needs: [core-coverage, board-changes, nightly]
     outputs:
@@ -144,7 +144,7 @@ jobs:
               shieldArgs: JSON.stringify(shieldArgs),
             }));
   core-coverage:
-    if: ${{ needs.get-changed-files.outputs.core-changes == 'true' }}
+    if: ${{ false && needs.get-changed-files.outputs.core-changes == 'true' }}
     runs-on: ubuntu-latest
     needs: get-changed-files
     outputs:
@@ -173,7 +173,7 @@ jobs:
 
             return [...include, ...coreCoverage.include];
   board-changes:
-    if: ${{ needs.get-changed-files.outputs.board-changes == 'true' }}
+    if: ${{ false && needs.get-changed-files.outputs.board-changes == 'true' }}
     runs-on: ubuntu-latest
     needs: [get-grouped-hardware, get-changed-files]
     outputs:
@@ -257,7 +257,7 @@ jobs:
               });
             }))).flat();
   nightly:
-    if: ${{ github.event_name == 'schedule' }}
+    if: ${{ false && github.event_name == 'schedule' }}
     runs-on: ubuntu-latest
     needs: get-grouped-hardware
     outputs:
@@ -302,6 +302,7 @@ jobs:
 
             return [...includeOnboard, ...includeInterconnect];
   get-grouped-hardware:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     outputs:
       organized-metadata: ${{ steps.organize-metadata.outputs.result }}
@@ -379,7 +380,7 @@ jobs:
             return JSON.stringify(grouped).replace(/\\/g,"\\\\");
           result-encoding: string
   get-changed-files:
-    if: ${{ github.event_name != 'schedule' }}
+    if: ${{ false && github.event_name != 'schedule' }}
     runs-on: ubuntu-latest
     outputs:
       changed-files: ${{ steps.changed-files.outputs.all }}
