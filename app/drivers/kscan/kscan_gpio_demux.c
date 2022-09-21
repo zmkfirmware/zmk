@@ -28,7 +28,7 @@ struct kscan_gpio_item_config {
         .label = DT_INST_GPIO_LABEL_BY_IDX(n, prop, idx),                                          \
         .pin = DT_INST_GPIO_PIN_BY_IDX(n, prop, idx),                                              \
         .flags = DT_INST_GPIO_FLAGS_BY_IDX(n, prop, idx),                                          \
-    },
+    }
 
 // Define row and col cfg
 #define _KSCAN_GPIO_INPUT_CFG_INIT(idx, n) _KSCAN_GPIO_ITEM_CFG_INIT(n, input_gpios, idx)
@@ -240,8 +240,8 @@ struct kscan_gpio_item_config {
     };                                                                                             \
                                                                                                    \
     static const struct kscan_gpio_config_##n kscan_gpio_config_##n = {                            \
-        .rows = {UTIL_LISTIFY(INST_MATRIX_INPUTS(n), _KSCAN_GPIO_INPUT_CFG_INIT, n)},              \
-        .cols = {UTIL_LISTIFY(INST_DEMUX_GPIOS(n), _KSCAN_GPIO_OUTPUT_CFG_INIT, n)},               \
+        .rows = {LISTIFY(INST_MATRIX_INPUTS(n), _KSCAN_GPIO_INPUT_CFG_INIT, (,), n)},              \
+        .cols = {LISTIFY(INST_DEMUX_GPIOS(n), _KSCAN_GPIO_OUTPUT_CFG_INIT, (,), n)},               \
     };                                                                                             \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, NULL, &kscan_gpio_data_##n,                      \
