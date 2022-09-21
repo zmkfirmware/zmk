@@ -65,20 +65,18 @@ lv_obj_t *zmk_display_status_screen() {
                                      lv_theme_get_font_small());
     lv_obj_align(zmk_widget_layer_status_obj(&layer_status_widget), NULL, LV_ALIGN_IN_BOTTOM_MID, 0,
                  -5);
-#endif
 
-#if CONFIG_BOARD_CORNEISH_ZEN_V2_RIGHT
-    lv_obj_t * zenlogo_icon;
-    zenlogo_icon = lv_img_create(screen, NULL);
-    lv_img_set_src(zenlogo_icon, &zenlogo);
-    lv_obj_align(zenlogo_icon, NULL, LV_ALIGN_IN_BOTTOM_MID, 2, -5);
-#endif
-
-#if CONFIG_BOARD_CORNEISH_ZEN_V2_LEFT
     lv_obj_t * LayersHeading;
     LayersHeading = lv_img_create(screen, NULL);
     lv_obj_align(LayersHeading, NULL, LV_ALIGN_IN_BOTTOM_MID, 8, 5);
     lv_img_set_src(LayersHeading, &layers2);
+#endif
+
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    lv_obj_t * zenlogo_icon;
+    zenlogo_icon = lv_img_create(screen, NULL);
+    lv_img_set_src(zenlogo_icon, &zenlogo);
+    lv_obj_align(zenlogo_icon, NULL, LV_ALIGN_IN_BOTTOM_MID, 2, -5);
 #endif
 
     //lv_task_handler();
