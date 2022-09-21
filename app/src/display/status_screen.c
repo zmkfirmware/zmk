@@ -78,7 +78,7 @@ lv_obj_t *zmk_display_status_screen() {
 #endif
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_BONGO_CAT)
     zmk_widget_bongo_cat_init(&bongo_cat_widget, screen);
-    lv_obj_align(zmk_widget_bongo_cat_obj(&bongo_cat_widget), NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -28, 1);
+    lv_obj_align(zmk_widget_bongo_cat_obj(&bongo_cat_widget), NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -25, -2);
 #endif
     return screen;
 }
