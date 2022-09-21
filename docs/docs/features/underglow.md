@@ -110,9 +110,9 @@ If your board/shield uses LEDs that require the data sent in a different order, 
 Currently, If you are using a nice nano 2, underglow won't work out of the box.
 To make this work you need to add an overlay in your `.keymap` file like this:
 
-'''
+```
 #include <../boards/shields/<board>/boards/nice_nano.overlay>
-'''
+```
 
 :::
 
