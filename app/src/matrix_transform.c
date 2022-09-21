@@ -13,9 +13,9 @@
 
 #define _TRANSFORM_ENTRY(i, _)                                                                     \
     [(KT_ROW(DT_PROP_BY_IDX(ZMK_KEYMAP_TRANSFORM_NODE, map, i)) * ZMK_MATRIX_COLS) +               \
-        KT_COL(DT_PROP_BY_IDX(ZMK_KEYMAP_TRANSFORM_NODE, map, i))] = i,
+        KT_COL(DT_PROP_BY_IDX(ZMK_KEYMAP_TRANSFORM_NODE, map, i))] = i
 
-static uint32_t transform[] = {UTIL_LISTIFY(ZMK_KEYMAP_LEN, _TRANSFORM_ENTRY, 0)};
+static uint32_t transform[] = {LISTIFY(ZMK_KEYMAP_LEN, _TRANSFORM_ENTRY, (,), 0)};
 
 #endif
 

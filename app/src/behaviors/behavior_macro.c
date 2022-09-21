@@ -166,10 +166,10 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
     .binding_released = on_macro_binding_released,
 };
 
-#define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, DT_DRV_INST(drv_inst)),
+#define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, DT_DRV_INST(drv_inst))
 
 #define TRANSFORMED_BEHAVIORS(n)                                                                   \
-    {UTIL_LISTIFY(DT_PROP_LEN(DT_DRV_INST(n), bindings), BINDING_WITH_COMMA, n)},
+    {LISTIFY(DT_PROP_LEN(DT_DRV_INST(n), bindings), BINDING_WITH_COMMA, (,), n)},
 
 #define MACRO_INST(n)                                                                              \
     static struct behavior_macro_state behavior_macro_state_##n = {};                              \
