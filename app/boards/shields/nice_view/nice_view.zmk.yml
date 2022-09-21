@@ -1,0 +1,8 @@
+file_format: "1"
+id: nice_view
+name: nice!view
+type: shield
+url: https://nicekeyboards.com/nice-view
+requires: [pro_micro, i2c_oled]
+features:
+  - display

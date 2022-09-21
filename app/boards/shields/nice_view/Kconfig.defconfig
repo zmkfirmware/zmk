@@ -1,0 +1,26 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_NICE_VIEW
+
+config ZMK_DISPLAY
+	select LVGL_FONT_MONTSERRAT_26
+
+if ZMK_DISPLAY
+
+config SPI
+	default y
+
+config LS0XX
+	default y
+
+if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_WIDGET_WPM_STATUS
+	default y
+
+endif # !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+
+endif # ZMK_DISPLAY
+
+endif
