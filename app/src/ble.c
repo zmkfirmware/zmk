@@ -528,13 +528,16 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
 
 static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
     .pairing_accept = auth_pairing_accept,
-    .pairing_complete = auth_pairing_complete,
 // .passkey_display = auth_passkey_display,
 
 #if IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY)
     .passkey_entry = auth_passkey_entry,
 #endif
     .cancel = auth_cancel,
+};
+
+static struct bt_conn_auth_info_cb zmk_ble_auth_info_cb_display = {
+    .pairing_complete = auth_pairing_complete,
 };
 
 static void zmk_ble_ready(int err) {
@@ -589,6 +592,7 @@ static int zmk_ble_init(const struct device *_arg) {
 
     bt_conn_cb_register(&conn_callbacks);
     bt_conn_auth_cb_register(&zmk_ble_auth_cb_display);
+    bt_conn_auth_info_cb_register(&zmk_ble_auth_info_cb_display);
 
     zmk_ble_ready(0);
 
