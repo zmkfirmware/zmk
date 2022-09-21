@@ -31,7 +31,7 @@
         combo_reset {
             timeout-ms = <TIMEOUT>;
             key-positions = <1 3>;
-            bindings = <&reset>;
+            bindings = <&sys_reset>;
         };
         combo_bootloader {
             timeout-ms = <TIMEOUT>;
