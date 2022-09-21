@@ -8,9 +8,9 @@
 
 / {
 	behaviors {
-		reset: behavior_reset {
+		sys_reset: behavior_reset {
 			compatible = "zmk,behavior-reset";
-			label = "RESET";
+			label = "SYSRESET";
 			#binding-cells = <0>;
 		};
 
