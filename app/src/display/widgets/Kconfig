@@ -38,5 +38,17 @@ config ZMK_WIDGET_BONGO_CAT
     depends on !ZMK_SPLIT || ZMK_SPLIT_BLE_ROLE_CENTRAL
     select LVGL_USE_LABEL
     select LVGL_USE_IMG
+    
+config ZMK_WIDGET_LABEL
+    bool "Widget for text label"
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    select LVGL_USE_LABEL
 
+if ZMK_WIDGET_LABEL
+
+config ZMK_WIDGET_LABEL_TEXT
+    string "Label widget text"
+    default ZMK_KEYBOARD_NAME
+
+endif # ZMK_WIDGET_LABEL
 endmenu
