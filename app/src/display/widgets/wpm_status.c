@@ -28,9 +28,10 @@ void set_wpm_symbol(lv_obj_t *label, struct wpm_status_state state) {
     char text[4] = {};
 
     LOG_DBG("WPM changed to %i", state.wpm);
-    snprintf(text, sizeof(text), "%i ", state.wpm);
+    snprintf(text, sizeof(text), "%i", state.wpm);
 
     lv_label_set_text(label, text);
+    lv_obj_align(label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
 }
 
 void wpm_status_update_cb(struct wpm_status_state state) {
