@@ -41,7 +41,7 @@ config ZMK_WIDGET_BONGO_CAT
     
 config ZMK_WIDGET_LABEL
     bool "Widget for text label"
-    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    depends on !ZMK_SPLIT || !ZMK_SPLIT_ROLE_CENTRAL
     select LVGL_USE_LABEL
 
 if ZMK_WIDGET_LABEL
