@@ -93,10 +93,8 @@ config IL0323
 	bool
 	default y
 
-config LVGL_DISPLAY_DEV_NAME
-    string
-    default "DISPLAY"
-    depends on LVGL
+config ZMK_DISPLAY_BLANK_ON_IDLE
+	default n
 
 #config DISPLAY_WOB
 #	bool "White on Black Display"
