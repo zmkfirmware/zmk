@@ -139,7 +139,7 @@ defaultValue="homerow_mods"
 values={[
 {label: 'Homerow Mods', value: 'homerow_mods'},
 {label: 'Autoshift', value: 'autoshift'},
-{label: 'Toggle-on-Tap, Momentary-on-Hold Layers', value: 'tog_mo'},
+{label: 'Toggle-on-Tap, Momentary-on-Hold Layers', value: 'mo_tog'},
 ]}>
 
 <TabItem value="homerow_mods">
