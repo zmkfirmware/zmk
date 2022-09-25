@@ -1,0 +1,9 @@
+file_format: "1"
+id: nice_view_oled
+name: nice!view
+type: shield
+url: https://nicekeyboards.com/nice-view
+requires: [i2c_oled]
+exposes: [nice_view]
+features:
+  - display
