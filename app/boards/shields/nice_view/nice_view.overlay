@@ -3,27 +3,4 @@
  *
  * SPDX-License-Identifier: MIT
  */
-
-&nice_view_spi {
-	status = "okay";
-	cs-gpios = <&pro_micro 1 GPIO_ACTIVE_HIGH>;
-
-	nice_view: ls0xx@0 {
-		compatible = "sharp,ls0xx";
-		label = "DISPLAY";
-		spi-max-frequency = <1000000>;
-		reg = <0>;
-		width = <160>;
-		height = <68>;
-	};
-};
-
-&pro_micro_i2c {
-	status = "disabled";
-};
-
-/ {
-	chosen {
-		zephyr,display = &nice_view;
-	};
-};
+ 
