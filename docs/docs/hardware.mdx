@@ -21,7 +21,9 @@ export const toc = [
     id: "composite",
     level: 2,
   },
-  ...Object.values(groupedMetadata(Metadata).interconnects).map(
+  ...Object.values(groupedMetadata(Metadata).interconnects).filter(
+    (ic) => ic.interconnect !== undefined
+  ).map(
     ({ interconnect }) => ({
       value: `${interconnect.name} Interconnect`,
       id: interconnect.id,
