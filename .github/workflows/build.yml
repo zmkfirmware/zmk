@@ -71,7 +71,7 @@ jobs:
 
             for (const shieldArgs of buildShieldArgs) {
               try {
-                const output = execSync(`west build -s app -p -b ${{ matrix.board }} -- ${shieldArgs.shield ? '-DSHIELD=' + shieldArgs.shield : ''} ${shieldArgs['cmake-args'] || ''}`);
+                const output = execSync(`west build -s app -p -b ${{ matrix.board }} -- ${shieldArgs.shield ? '-DSHIELD="' + shieldArgs.shield + '"' : ''} ${shieldArgs['cmake-args'] || ''}`);
 
                 console.log(`::group::${{ matrix.board}} ${shieldArgs.shield} Build`)
                 console.log(output.toString());
