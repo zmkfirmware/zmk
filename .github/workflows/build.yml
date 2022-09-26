@@ -246,10 +246,12 @@ jobs:
                       return hm.requires.flatMap(i => 
                         metadata.interconnects[i].boards.flatMap(b => boardAndShield(b, hm))
                       );
+                    } else {
+                      console.warn("Unhandled shield without keys");
+                      return [];
                     }
                     break;
                   case "interconnect":
-                  default:
                     return [];
                 }
               });
