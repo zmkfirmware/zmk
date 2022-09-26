@@ -1,8 +1,0 @@
-file_format: "1"
-id: nice_view
-name: nice!view
-type: interconnect
-url: https://nicekeyboards.com/nice-view
-manufacturer: Nice Keyboards
-description: |
-  The nice!view is a low power, high refresh rate display using a 3-pin SPI protocol.
