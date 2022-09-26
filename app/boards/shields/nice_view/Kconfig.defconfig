@@ -14,12 +14,8 @@ config SPI
 config LS0XX
 	default y
 
-if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
-
 config ZMK_WIDGET_WPM_STATUS
-	default y
-
-endif # !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+	default y if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
 
 endif # ZMK_DISPLAY
 
