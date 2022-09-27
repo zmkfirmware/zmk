@@ -87,7 +87,7 @@ lv_obj_t *zmk_display_status_screen() {
                                      LV_LABEL_PART_MAIN, LV_STATE_DEFAULT,
                                      lv_theme_get_font_small());
     lv_label_set_text(label, CONFIG_ZMK_WIDGET_LABEL_TEXT);
-    lv_obj_align(label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -25, 0);
+    lv_obj_align(label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -23, 0);
 #endif    
     return screen;
 }
