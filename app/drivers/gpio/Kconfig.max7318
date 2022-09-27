@@ -3,7 +3,7 @@
 # Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-DT_COMPAT_ZMK_GPIO_MAX7318 := zmk,max7318
+DT_COMPAT_ZMK_GPIO_MAX7318 := maxim,max7318
 
 menuconfig GPIO_MAX7318
 	bool "MAX7318 I2C-based GPIO chip"
