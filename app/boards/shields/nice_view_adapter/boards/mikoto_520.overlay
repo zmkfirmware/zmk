@@ -9,7 +9,7 @@ nice_view_spi: &spi0 {
 	sck-pin = <20>;
 	mosi-pin = <17>;
 	miso-pin = <5>;
-	cs-gpios = <&pro_micro 1 GPIO_ACTIVE_HIGH>;
+	cs-gpios = <&pro_micro 4 GPIO_ACTIVE_HIGH>;
 };
 
 &pro_micro_i2c {
