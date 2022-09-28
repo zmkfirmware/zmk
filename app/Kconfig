@@ -236,7 +236,7 @@ config ZMK_RGB_UNDERGLOW_SPD_START
 
 config ZMK_RGB_UNDERGLOW_EFF_START
 	int "RGB underglow start effect int value related to the effect enum list"
-	range 0 3
+	range 0 4
 	default 0
 
 config ZMK_RGB_UNDERGLOW_ON_START
@@ -249,6 +249,26 @@ config ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE
 config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
 	bool "Turn off RGB underglow when USB is disconnected"
 	depends on USB_DEVICE_STACK
+
+config ZMK_RGB_UNDERGLOW_STATUS_BATTERY
+	bool "Shows battery status on a LED"
+	default y
+
+config ZMK_RGB_UNDERGLOW_STATUS_BATTERY_N
+	int "LED number to show the battery status"
+	range 0 26
+	default 0
+	depends on ZMK_RGB_UNDERGLOW_STATUS_BATTERY
+
+config ZMK_RGB_UNDERGLOW_STATUS_LAYER
+	bool "Shows layer status on a LED"
+	default y
+
+config ZMK_RGB_UNDERGLOW_STATUS_LAYER_N
+	int "LED number to show the layer status"
+	range 0 26
+	default 1
+	depends on ZMK_RGB_UNDERGLOW_STATUS_LAYER
 
 #ZMK_RGB_UNDERGLOW
 endif
