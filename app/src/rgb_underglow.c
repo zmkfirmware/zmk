@@ -27,6 +27,8 @@
 
 #include <zmk/keymap.h>
 #include <zmk/battery.h>
+#include <zmk/endpoints.h>
+#include <zmk/ble.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -183,23 +185,41 @@ static void zmk_rgb_underglow_effect_status() {
 
     // and turn on specific ones.
 
-    // ------- Turn on the layer status leds -------
-    struct zmk_led_hsb layer_hsb = state.color;
     #if CONFIG_ZMK_SPLIT_ROLE_CENTRAL
-        layer_hsb.h = zmk_keymap_highest_layer_active() * 20;
-    #endif
+        // ------- Turn on the layer status leds -------
+        #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER) 
+            struct zmk_led_hsb layer_hsb = state.color;
+            layer_hsb.h = zmk_keymap_highest_layer_active() * 20;
 
-    #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER) 
-        pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER_N] = hsb_to_rgb(hsb_scale_min_max(layer_hsb));
+            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER_N] = hsb_to_rgb(hsb_scale_min_max(layer_hsb));
+        #endif
+
+        // ------- Turn on the output status led -------
+        #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT)
+            struct zmk_led_hsb output_hsb = state.color;
+            output_hsb.h = zmk_endpoints_selected() * 40;
+
+            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_N] = hsb_to_rgb(hsb_scale_min_max(output_hsb));
+        #endif
+
+        // ------- Turn on the status led for selected ble -------
+        #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE)
+            struct zmk_led_hsb ble_hsb = state.color;
+            ble_hsb.h = zmk_ble_active_profile_index() * 80;
+
+            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE_N] = hsb_to_rgb(hsb_scale_min_max(ble_hsb));
+            //LOG_DBG("---------> BLE selected: %d", ble_hsb.h);
+        #endif
     #endif
 
     // ------- Turn on the battery status led -------
-    struct zmk_led_hsb battery_hsb = state.color;
-    battery_hsb.h = zmk_battery_state_of_charge();
-
     #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY)
+        struct zmk_led_hsb battery_hsb = state.color;
+        battery_hsb.h = zmk_battery_state_of_charge();
+        battery_hsb.b = zmk_battery_state_of_charge();
+
         pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_N] = hsb_to_rgb(hsb_scale_min_max(battery_hsb));
-        LOG_DBG("---------> Battery Level: %d", battery_hsb.h);
+        //LOG_DBG("---------> Battery Level: %d", battery_hsb.h);
     #endif
 }
 

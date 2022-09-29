@@ -270,6 +270,26 @@ config ZMK_RGB_UNDERGLOW_STATUS_LAYER_N
 	default 1
 	depends on ZMK_RGB_UNDERGLOW_STATUS_LAYER
 
+config ZMK_RGB_UNDERGLOW_STATUS_OUTPUT
+	bool "Shows output status on a LED"
+	default y
+
+config ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_N
+	int "LED number to show the output status"
+	range 0 26
+	default 2
+	depends on ZMK_RGB_UNDERGLOW_STATUS_OUTPUT
+
+config ZMK_RGB_UNDERGLOW_STATUS_BLE
+	bool "Shows on a LED the status of the selected ble device."
+	default y
+
+config ZMK_RGB_UNDERGLOW_STATUS_BLE_N
+	int "LED number to show the selected ble"
+	range 0 26
+	default 3
+	depends on ZMK_RGB_UNDERGLOW_STATUS_BLE
+
 #ZMK_RGB_UNDERGLOW
 endif
 
