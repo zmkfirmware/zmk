@@ -80,6 +80,13 @@ static struct zmk_led_hsb hsb_scale_zero_max(struct zmk_led_hsb hsb) {
     return hsb;
 }
 
+static uint8_t hue_scale_range(uint8_t hue) {
+    int hue_d = abs(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MAX - CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN);
+    int direc = hue_d - abs(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MAX - CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN - 1);
+    hue = (hue * hue_d / 100) + (CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN * direc);
+    return hue;
+}
+
 static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
     double r, g, b;
 
@@ -186,36 +193,31 @@ static void zmk_rgb_underglow_effect_status() {
     // and turn on specific ones.
 
     #if CONFIG_ZMK_SPLIT_ROLE_CENTRAL
+        struct zmk_led_hsb status_hsb = state.color;
+        
         // ------- Turn on the layer status leds -------
-        #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER) 
-            struct zmk_led_hsb layer_hsb = state.color;
-            layer_hsb.h = zmk_keymap_highest_layer_active() * 20;
-
-            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER_N] = hsb_to_rgb(hsb_scale_min_max(layer_hsb));
+        #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER)
+            status_hsb.h = zmk_keymap_highest_layer_active() * 20;
+            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER_N] = hsb_to_rgb(hsb_scale_min_max(status_hsb));
         #endif
 
         // ------- Turn on the output status led -------
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT)
-            struct zmk_led_hsb output_hsb = state.color;
-            output_hsb.h = zmk_endpoints_selected() * 40;
-
-            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_N] = hsb_to_rgb(hsb_scale_min_max(output_hsb));
+            status_hsb.h = zmk_endpoints_selected() * 40;
+            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_N] = hsb_to_rgb(hsb_scale_min_max(status_hsb));
         #endif
 
         // ------- Turn on the status led for selected ble -------
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE)
-            struct zmk_led_hsb ble_hsb = state.color;
-            ble_hsb.h = zmk_ble_active_profile_index() * 80;
-
-            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE_N] = hsb_to_rgb(hsb_scale_min_max(ble_hsb));
-            //LOG_DBG("---------> BLE selected: %d", ble_hsb.h);
+            status_hsb.h = zmk_ble_active_profile_index() * 80;
+            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE_N] = hsb_to_rgb(hsb_scale_min_max(status_hsb));
         #endif
     #endif
 
     // ------- Turn on the battery status led -------
     #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY)
         struct zmk_led_hsb battery_hsb = state.color;
-        battery_hsb.h = zmk_battery_state_of_charge();
+        battery_hsb.h = hue_scale_range(zmk_battery_state_of_charge());
         battery_hsb.b = zmk_battery_state_of_charge();
 
         pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_N] = hsb_to_rgb(hsb_scale_min_max(battery_hsb));

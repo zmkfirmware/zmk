@@ -250,15 +250,30 @@ config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
 	bool "Turn off RGB underglow when USB is disconnected"
 	depends on USB_DEVICE_STACK
 
+config ZMK_RGB_UNDERGLOW_NUM_LEDS
+	int "Numer of leds on the pcb"
+	range 0 100
+	default 100
+
 config ZMK_RGB_UNDERGLOW_STATUS_BATTERY
 	bool "Shows battery status on a LED"
 	default y
 
 config ZMK_RGB_UNDERGLOW_STATUS_BATTERY_N
 	int "LED number to show the battery status"
-	range 0 26
+	range 0 ZMK_RGB_UNDERGLOW_NUM_LEDS
 	default 0
 	depends on ZMK_RGB_UNDERGLOW_STATUS_BATTERY
+
+config ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN
+	int "Color when battery is at 0%"
+	range 0 359
+	default 0
+
+config ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MAX
+	int "Color when battery is at 100%"
+	range 0 359
+	default 100
 
 config ZMK_RGB_UNDERGLOW_STATUS_LAYER
 	bool "Shows layer status on a LED"
@@ -266,7 +281,7 @@ config ZMK_RGB_UNDERGLOW_STATUS_LAYER
 
 config ZMK_RGB_UNDERGLOW_STATUS_LAYER_N
 	int "LED number to show the layer status"
-	range 0 26
+	range 0 ZMK_RGB_UNDERGLOW_NUM_LEDS
 	default 1
 	depends on ZMK_RGB_UNDERGLOW_STATUS_LAYER
 
@@ -276,7 +291,7 @@ config ZMK_RGB_UNDERGLOW_STATUS_OUTPUT
 
 config ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_N
 	int "LED number to show the output status"
-	range 0 26
+	range 0 ZMK_RGB_UNDERGLOW_NUM_LEDS
 	default 2
 	depends on ZMK_RGB_UNDERGLOW_STATUS_OUTPUT
 
@@ -286,7 +301,7 @@ config ZMK_RGB_UNDERGLOW_STATUS_BLE
 
 config ZMK_RGB_UNDERGLOW_STATUS_BLE_N
 	int "LED number to show the selected ble"
-	range 0 26
+	range 0 ZMK_RGB_UNDERGLOW_NUM_LEDS
 	default 3
 	depends on ZMK_RGB_UNDERGLOW_STATUS_BLE
 
