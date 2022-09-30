@@ -194,7 +194,7 @@ static void zmk_rgb_underglow_effect_status() {
 
     #if CONFIG_ZMK_SPLIT_ROLE_CENTRAL
         struct zmk_led_hsb status_hsb = state.color;
-        
+
         // ------- Turn on the layer status leds -------
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER)
             status_hsb.h = zmk_keymap_highest_layer_active() * 20;
@@ -564,25 +564,5 @@ ZMK_SUBSCRIPTION(rgb_underglow, zmk_activity_state_changed);
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
 ZMK_SUBSCRIPTION(rgb_underglow, zmk_usb_conn_state_changed);
 #endif
-
-// ----------------------------------------------------------------------------
-#if IS_ENABLED(ZMK_RGB_UNDERGLOW_STATUS_BATTERY)
-static int rgb_status_battery_event_listener(const zmk_event_t *eh) {
-    struct zmk_led_hsb hsb = state.color;
-    //state.pressed = abs(state.pressed - 1);
-    //hsb.h = abs(state.pressed - 1) * 20;
-    //hsb.b
-    hsb.h = zmk_battery_state_of_charge();
-
-    //pixels[i] = hsb_to_rgb(hsb_scale_zero_max(hsb));
-    state.color = hsb;
-
-}
-
-ZMK_LISTENER(rgb_status_press, rgb_status_battery_event_listener);
-ZMK_SUBSCRIPTION(rgb_status_press, zmk_battery_state_changed);
-#endif // IS_ENABLED(ZMK_RGB_UNDERGLOW_STATUS_BATTERY)
-
-// ----------------------------------------------------------------------------
 
 SYS_INIT(zmk_rgb_underglow_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
