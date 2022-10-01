@@ -305,6 +305,15 @@ config ZMK_RGB_UNDERGLOW_STATUS_BLE_N
 	default 3
 	depends on ZMK_RGB_UNDERGLOW_STATUS_BLE
 
+config ZMK_RGB_UNDERGLOW_STATUS_CAPS
+	bool "Shows on a LED the status of caps word."
+	default y
+
+config ZMK_RGB_UNDERGLOW_STATUS_CAPS_N
+	int "LED number to show the status of caps word"
+	range 0 ZMK_RGB_UNDERGLOW_NUM_LEDS
+	default 4
+
 #ZMK_RGB_UNDERGLOW
 endif
 

@@ -29,6 +29,7 @@
 #include <zmk/battery.h>
 #include <zmk/endpoints.h>
 #include <zmk/ble.h>
+#include <zmk/caps_word.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -80,7 +81,7 @@ static struct zmk_led_hsb hsb_scale_zero_max(struct zmk_led_hsb hsb) {
     return hsb;
 }
 
-static uint8_t hue_scale_range(uint8_t hue) {
+static uint16_t hue_scale_range(uint16_t hue) {
     int hue_d = abs(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MAX - CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN);
     int direc = hue_d - abs(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MAX - CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN - 1);
     hue = (hue * hue_d / 100) + (CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN * direc);
@@ -203,7 +204,7 @@ static void zmk_rgb_underglow_effect_status() {
 
         // ------- Turn on the output status led -------
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT)
-            status_hsb.h = zmk_endpoints_selected() * 40;
+            status_hsb.h = zmk_endpoints_selected() * 90;
             pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_N] = hsb_to_rgb(hsb_scale_min_max(status_hsb));
         #endif
 
@@ -211,6 +212,15 @@ static void zmk_rgb_underglow_effect_status() {
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE)
             status_hsb.h = zmk_ble_active_profile_index() * 80;
             pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE_N] = hsb_to_rgb(hsb_scale_min_max(status_hsb));
+        #endif
+
+        // ------- Turn on the caps word for status led -------
+        #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS)
+            struct zmk_led_hsb caps_word_hsb = state.color;
+            caps_word_hsb.h = zmk_caps_word_state() * 80;
+            caps_word_hsb.b = zmk_caps_word_state() * BRT_MAX;
+
+            pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS_N] = hsb_to_rgb(hsb_scale_zero_max(caps_word_hsb));
         #endif
     #endif
 
@@ -220,7 +230,7 @@ static void zmk_rgb_underglow_effect_status() {
         battery_hsb.h = hue_scale_range(zmk_battery_state_of_charge());
         battery_hsb.b = zmk_battery_state_of_charge();
 
-        pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_N] = hsb_to_rgb(hsb_scale_min_max(battery_hsb));
+        pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_N] = hsb_to_rgb(hsb_scale_zero_max(battery_hsb));
         //LOG_DBG("---------> Battery Level: %d", battery_hsb.h);
     #endif
 }
@@ -564,5 +574,46 @@ ZMK_SUBSCRIPTION(rgb_underglow, zmk_activity_state_changed);
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
 ZMK_SUBSCRIPTION(rgb_underglow, zmk_usb_conn_state_changed);
 #endif
+
+
+/*#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS)
+
+static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
+    struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
+    if (ev == NULL || !ev->state) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+
+    for (int i = 0; i < DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT); i++) {
+        const struct device *dev = devs[i];
+        if (dev == NULL) {
+            continue;
+        }
+
+        struct behavior_caps_word_data *data = dev->data;
+        if (!data->active) {
+            continue;
+        }
+
+        const struct behavior_caps_word_config *config = dev->config;
+
+        caps_word_enhance_usage(config, ev);
+
+        if (!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode) &&
+            !is_mod(ev->usage_page, ev->keycode) &&
+            !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
+                                           ev->implicit_modifiers)) {
+            LOG_DBG("Deactivating caps_word for 0x%02X - 0x%02X", ev->usage_page, ev->keycode);
+            deactivate_caps_word(dev);
+        }
+    }
+
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(rgb_underglow_caps_word, caps_word_keycode_state_changed_listener);
+ZMK_SUBSCRIPTION(rgb_underglow_caps_word, zmk_keycode_state_changed);
+
+#endif*/
 
 SYS_INIT(zmk_rgb_underglow_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
