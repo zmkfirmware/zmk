@@ -35,11 +35,11 @@ jobs:
             tools/
             zephyr/
             bootloader/
-          key: 4-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
           restore-keys: |
-            4-${{ runner.os }}-build-${{ env.cache-name }}-
-            4-${{ runner.os }}-build-
-            4-${{ runner.os }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
         timeout-minutes: 2
         continue-on-error: true
       - name: Initialize workspace (west init)
@@ -71,7 +71,7 @@ jobs:
 
             for (const shieldArgs of buildShieldArgs) {
               try {
-                const output = execSync(`west build -s app -p -b ${{ matrix.board }} -- ${shieldArgs.shield ? '-DSHIELD=' + shieldArgs.shield : ''} ${shieldArgs['cmake-args'] || ''}`);
+                const output = execSync(`west build -s app -p -b ${{ matrix.board }} -- ${shieldArgs.shield ? '-DSHIELD="' + shieldArgs.shield + '"' : ''} ${shieldArgs['cmake-args'] || ''}`);
 
                 console.log(`::group::${{ matrix.board}} ${shieldArgs.shield} Build`)
                 console.log(output.toString());
@@ -246,6 +246,9 @@ jobs:
                       return hm.requires.flatMap(i => 
                         metadata.interconnects[i].boards.flatMap(b => boardAndShield(b, hm))
                       );
+                    } else {
+                      console.warn("Unhandled shield without keys");
+                      return [];
                     }
                     break;
                   case "interconnect":
