@@ -240,7 +240,7 @@ static void zmk_rgb_underglow_effect_status() {
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS)
             struct zmk_led_hsb caps_word_hsb = state.color;
             caps_word_hsb.h = zmk_caps_word_state() * CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS_COLOR;
-            caps_word_hsb.b = zmk_caps_word_state() * BRT_MAX;
+            caps_word_hsb.b = zmk_caps_word_state() * caps_word_hsb.b;
 
             pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS_N] = hsb_to_rgb(hsb_scale_zero_max(caps_word_hsb));
         #endif
