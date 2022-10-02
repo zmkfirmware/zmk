@@ -601,45 +601,4 @@ ZMK_SUBSCRIPTION(rgb_underglow, zmk_activity_state_changed);
 ZMK_SUBSCRIPTION(rgb_underglow, zmk_usb_conn_state_changed);
 #endif
 
-
-/*#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS)
-
-static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
-    struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
-    if (ev == NULL || !ev->state) {
-        return ZMK_EV_EVENT_BUBBLE;
-    }
-
-    for (int i = 0; i < DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT); i++) {
-        const struct device *dev = devs[i];
-        if (dev == NULL) {
-            continue;
-        }
-
-        struct behavior_caps_word_data *data = dev->data;
-        if (!data->active) {
-            continue;
-        }
-
-        const struct behavior_caps_word_config *config = dev->config;
-
-        caps_word_enhance_usage(config, ev);
-
-        if (!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode) &&
-            !is_mod(ev->usage_page, ev->keycode) &&
-            !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
-                                           ev->implicit_modifiers)) {
-            LOG_DBG("Deactivating caps_word for 0x%02X - 0x%02X", ev->usage_page, ev->keycode);
-            deactivate_caps_word(dev);
-        }
-    }
-
-    return ZMK_EV_EVENT_BUBBLE;
-}
-
-ZMK_LISTENER(rgb_underglow_caps_word, caps_word_keycode_state_changed_listener);
-ZMK_SUBSCRIPTION(rgb_underglow_caps_word, zmk_keycode_state_changed);
-
-#endif*/
-
 SYS_INIT(zmk_rgb_underglow_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

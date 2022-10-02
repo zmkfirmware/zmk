@@ -23,7 +23,6 @@
 #include <zmk/caps_word.h>
 
 bool last_state_of_caps_word = false;
-//bool zmk_caps_word_state() { return last_state_of_caps_word; }
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
