@@ -81,10 +81,16 @@ static struct zmk_led_hsb hsb_scale_zero_max(struct zmk_led_hsb hsb) {
     return hsb;
 }
 
-static uint16_t hue_scale_range(uint16_t hue) {
-    int hue_d = abs(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MAX - CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN);
-    int direc = hue_d - abs(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MAX - CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN - 1);
-    hue = (hue * hue_d / 100) + (CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN * direc);
+static uint16_t hue_scale_to_range(uint16_t hue, uint16_t from_max, uint16_t to_min, uint16_t to_max) {
+    if (to_max > HUE_MAX) to_max = HUE_MAX;
+    if (to_min > HUE_MAX) to_min = HUE_MAX;
+
+    if (to_min < 0) to_min = 0;
+    if (to_max < 0) to_max = 0;
+
+    int hue_d = abs(to_max - to_min);
+    int direc = hue_d - abs(to_max - to_min - 1);
+    hue = (hue * hue_d / from_max) + (to_min * direc);
     return hue;
 }
 
@@ -198,26 +204,42 @@ static void zmk_rgb_underglow_effect_status() {
 
         // ------- Turn on the layer status leds -------
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER)
-            status_hsb.h = zmk_keymap_highest_layer_active() * 20;
+            status_hsb.h = hue_scale_to_range(
+                zmk_keymap_highest_layer_active(),
+                zmk_keymap_number_of_layers(),
+                CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER_COLOR_MIN,
+                CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER_COLOR_MAX
+            );
             pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_LAYER_N] = hsb_to_rgb(hsb_scale_min_max(status_hsb));
         #endif
 
         // ------- Turn on the output status led -------
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT)
-            status_hsb.h = zmk_endpoints_selected() * 90;
+            //status_hsb.h = zmk_endpoints_selected() * 90;
+            status_hsb.h = hue_scale_to_range(
+                zmk_endpoints_selected(),
+                ZMK_ENDPOINT_BLE,
+                CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_COLOR_MIN,
+                CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_COLOR_MAX
+            );
             pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_N] = hsb_to_rgb(hsb_scale_min_max(status_hsb));
         #endif
 
         // ------- Turn on the status led for selected ble -------
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE)
-            status_hsb.h = zmk_ble_active_profile_index() * 80;
+            status_hsb.h = hue_scale_to_range(
+                zmk_ble_active_profile_index(),
+                ZMK_BLE_PROFILE_COUNT,
+                CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE_COLOR_MIN,
+                CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE_COLOR_MAX
+            );
             pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BLE_N] = hsb_to_rgb(hsb_scale_min_max(status_hsb));
         #endif
 
         // ------- Turn on the caps word for status led -------
         #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS)
             struct zmk_led_hsb caps_word_hsb = state.color;
-            caps_word_hsb.h = zmk_caps_word_state() * 80;
+            caps_word_hsb.h = zmk_caps_word_state() * CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS_COLOR;
             caps_word_hsb.b = zmk_caps_word_state() * BRT_MAX;
 
             pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_CAPS_N] = hsb_to_rgb(hsb_scale_zero_max(caps_word_hsb));
@@ -227,11 +249,15 @@ static void zmk_rgb_underglow_effect_status() {
     // ------- Turn on the battery status led -------
     #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY)
         struct zmk_led_hsb battery_hsb = state.color;
-        battery_hsb.h = hue_scale_range(zmk_battery_state_of_charge());
+        battery_hsb.h = hue_scale_to_range(
+            zmk_battery_state_of_charge(),
+            100,
+            CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN,
+            CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MAX
+        );
         battery_hsb.b = zmk_battery_state_of_charge();
 
         pixels[CONFIG_ZMK_RGB_UNDERGLOW_STATUS_BATTERY_N] = hsb_to_rgb(hsb_scale_zero_max(battery_hsb));
-        //LOG_DBG("---------> Battery Level: %d", battery_hsb.h);
     #endif
 }
 

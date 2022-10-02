@@ -267,12 +267,12 @@ config ZMK_RGB_UNDERGLOW_STATUS_BATTERY_N
 
 config ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MIN
 	int "Color when battery is at 0%"
-	range 0 359
+	range 0 360
 	default 0
 
 config ZMK_RGB_UNDERGLOW_STATUS_BATTERY_COLOR_MAX
 	int "Color when battery is at 100%"
-	range 0 359
+	range 0 360
 	default 100
 
 config ZMK_RGB_UNDERGLOW_STATUS_LAYER
@@ -285,6 +285,16 @@ config ZMK_RGB_UNDERGLOW_STATUS_LAYER_N
 	default 1
 	depends on ZMK_RGB_UNDERGLOW_STATUS_LAYER
 
+config ZMK_RGB_UNDERGLOW_STATUS_LAYER_COLOR_MIN
+	int "Color when lower layer is selected."
+	range 0 360
+	default 320
+
+config ZMK_RGB_UNDERGLOW_STATUS_LAYER_COLOR_MAX
+	int "Color when highest layer is selected."
+	range 0 360
+	default 0
+
 config ZMK_RGB_UNDERGLOW_STATUS_OUTPUT
 	bool "Shows output status on a LED"
 	default y
@@ -294,6 +304,16 @@ config ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_N
 	range 0 ZMK_RGB_UNDERGLOW_NUM_LEDS
 	default 2
 	depends on ZMK_RGB_UNDERGLOW_STATUS_OUTPUT
+
+config ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_COLOR_MIN
+	int "Color when usb is selected."
+	range 0 360
+	default 50
+
+config ZMK_RGB_UNDERGLOW_STATUS_OUTPUT_COLOR_MAX
+	int "Color when ble is selected."
+	range 0 360
+	default 300
 
 config ZMK_RGB_UNDERGLOW_STATUS_BLE
 	bool "Shows on a LED the status of the selected ble device."
@@ -305,6 +325,16 @@ config ZMK_RGB_UNDERGLOW_STATUS_BLE_N
 	default 3
 	depends on ZMK_RGB_UNDERGLOW_STATUS_BLE
 
+config ZMK_RGB_UNDERGLOW_STATUS_BLE_COLOR_MIN
+	int "Color when ble selected is the first one."
+	range 0 360
+	default 10
+
+config ZMK_RGB_UNDERGLOW_STATUS_BLE_COLOR_MAX
+	int "Color when ble selected is the last one."
+	range 0 360
+	default 320
+
 config ZMK_RGB_UNDERGLOW_STATUS_CAPS
 	bool "Shows on a LED the status of caps word."
 	default y
@@ -313,6 +343,11 @@ config ZMK_RGB_UNDERGLOW_STATUS_CAPS_N
 	int "LED number to show the status of caps word"
 	range 0 ZMK_RGB_UNDERGLOW_NUM_LEDS
 	default 4
+
+config ZMK_RGB_UNDERGLOW_STATUS_CAPS_COLOR
+	int "Color when caps word is on."
+	range 0 360
+	default 360
 
 #ZMK_RGB_UNDERGLOW
 endif
