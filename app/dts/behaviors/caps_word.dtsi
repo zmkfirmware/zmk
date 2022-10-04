@@ -13,6 +13,8 @@
 			label = "CAPS_WORD";
 			#binding-cells = <0>;
 			continue-list = <UNDERSCORE BACKSPACE DELETE>;
+			also-mod-list = <>;
+			break-list = <>;
 		};
 	};
 };

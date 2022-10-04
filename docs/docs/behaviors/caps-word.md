@@ -3,6 +3,9 @@ title: Caps Word Behavior
 sidebar_label: Caps Word
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ## Summary
 
 The caps word behavior behaves similar to a caps lock, but will automatically deactivate when any key not in a continue list is pressed, or if the caps word key is pressed again. For smaller keyboards using [mod-taps](/docs/behaviors/mod-tap), this can help avoid repeated alternating holds when typing words in all caps.
@@ -52,6 +55,89 @@ In addition, if you would like _multiple_ modifiers, instead of just `MOD_LSFT`,
     };
 };
 ```
+
+#### OS-Mapped Layouts or Non-English Characters
+
+By default, caps word will only capitalize alpha characters a-z. If you use an alternative layout (Colemak, Dvorak etc) _and_ are performing the mapping in the OS rather than in the firmware, then there are some additional configuration options needed.
+
+As an example, take Colemak mapped in the OS, when you type "o", the keyboard thinks you are pressing `SEMICOLON`. For caps word to produce a capital "O" we need to configure caps word to both remain active _and apply the shift modifier_ when it sees `SEMICOLON`.
+
+Likewise when you type ";" the keyboard thinks you are pressing `P`. If caps word is active and you type ";" we need to tell caps word to deactivate even though it sees the alpha keycode `P`.
+
+To do this, there are two optional properties: `also-mod-list` is a list of (non-alpha) keycodes that caps word should also apply the shift modifier to. `break-list` handles the second case, and is a list of (alpha) keycodes that should deactivate caps word.
+
+##### Example Configurations
+
+<Tabs
+defaultValue="os_colemak"
+values={[
+{label: 'Colemak', value: 'os_colemak'},
+{label: 'Dvorak', value: 'os_dvorak'},
+{label: 'Workman', value: 'os_workman'},
+]}>
+
+<TabItem value="os_colemak">
+
+This will allow caps word to work as expected when using Colemak mapped in the OS. If you are mapping the Colemak layout in your keyboard firmware, there is no need to do this.
+
+```dtsi title="For OS-mapped Colemak"
+&caps_word {
+    continue-list = <UNDERSCORE BACKSPACE DELETE SEMICOLON>; // <--- prevent SEMICOLON ("o") from deactivating
+    also-mod-list = <SEMICOLON>;                             // <--- capitalize SEMICOLON ("o")
+    break-list = <P>;                                        // <--- deactivate on P (";")
+};
+
+/ {
+    keymap {
+        ...
+    };
+};
+```
+
+</TabItem>
+
+<TabItem value="os_dvorak">
+
+This will allow caps word to work as expected when using Dvorak mapped in the OS. If you are mapping the Dvorak layout in your keyboard firmware, there is no need to do this.
+
+```dtsi title="For OS-mapped Dvorak"
+&caps_word {
+    // Prevent from deactivating:          "_"      "s"   "w"  "v"  "z"
+    continue-list = <BACKSPACE DELETE DOUBLE_QUOTES SEMI COMMA DOT SLASH>;
+    also-mod-list = <SEMI COMMA DOT SLASH>; // <--- capitalize "s" "w" "v" "z"
+    break-list = <Q W E Z>;                 // <--- deactivate on "'" "," "." ";"
+};
+
+/ {
+    keymap {
+        ...
+    };
+};
+```
+
+</TabItem>
+
+<TabItem value="os_workman">
+
+This will allow caps word to work as expected when using Workman mapped in the OS. If you are mapping the Workman layout in your keyboard firmware, there is no need to do this.
+
+```dtsi title="For OS-mapped Workman"
+&caps_word {
+    continue-list = <UNDERSCORE BACKSPACE DELETE SEMICOLON>; // <--- prevent SEMICOLON ("i") from deactivating
+    also-mod-list = <SEMICOLON>;                             // <--- capitalize SEMICOLON ("i")
+    break-list = <P>;                                        // <--- deactivate on P (";")
+};
+
+/ {
+    keymap {
+        ...
+    };
+};
+```
+
+</TabItem>
+
+</Tabs>
 
 ### Multiple Caps Breaks
 

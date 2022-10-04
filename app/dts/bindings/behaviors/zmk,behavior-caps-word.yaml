@@ -13,3 +13,11 @@ properties:
     required: true
   mods:
     type: int
+  also-mod-list:
+    type:  array
+    required: false
+    default: []
+  break-list:
+    type:  array
+    required: false
+    default: []

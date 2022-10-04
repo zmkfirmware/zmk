@@ -30,11 +30,17 @@ struct caps_word_continue_item {
     uint8_t implicit_modifiers;
 };
 
+struct caps_word_item_array {
+    uint8_t length;
+    struct caps_word_continue_item members[];
+};
+
 struct behavior_caps_word_config {
     zmk_mod_flags_t mods;
     uint8_t index;
-    uint8_t continuations_count;
-    struct caps_word_continue_item continuations[];
+    struct caps_word_item_array *continuations;
+    struct caps_word_item_array *also_mod_list;
+    struct caps_word_item_array *break_list;
 };
 
 struct behavior_caps_word_data {
@@ -84,22 +90,55 @@ ZMK_SUBSCRIPTION(behavior_caps_word, zmk_keycode_state_changed);
 
 static const struct device *devs[DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT)];
 
+static bool caps_word_is_in_list(const struct caps_word_item_array *list, uint16_t usage_page,
+                                 uint8_t usage_id, uint8_t implicit_modifiers) {
+    for (int i = 0; i < list->length; i++) {
+        const struct caps_word_continue_item *member = &list->members[i];
+        LOG_DBG("Comparing with 0x%02X - 0x%02X (with implicit mods: 0x%02X)", member->page,
+                member->id, member->implicit_modifiers);
+
+        if (member->page == usage_page && member->id == usage_id &&
+            (member->implicit_modifiers & (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
+                member->implicit_modifiers) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 static bool caps_word_is_caps_includelist(const struct behavior_caps_word_config *config,
                                           uint16_t usage_page, uint8_t usage_id,
                                           uint8_t implicit_modifiers) {
-    for (int i = 0; i < config->continuations_count; i++) {
-        const struct caps_word_continue_item *continuation = &config->continuations[i];
-        LOG_DBG("Comparing with 0x%02X - 0x%02X (with implicit mods: 0x%02X)", continuation->page,
-                continuation->id, continuation->implicit_modifiers);
+    LOG_DBG("Checking if 0x%02X - 0x%02X is in list", usage_page, usage_id);
 
-        if (continuation->page == usage_page && continuation->id == usage_id &&
-            (continuation->implicit_modifiers &
-             (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
-                continuation->implicit_modifiers) {
-            LOG_DBG("Continuing capsword, found included usage: 0x%02X - 0x%02X", usage_page,
-                    usage_id);
-            return true;
-        }
+    if (caps_word_is_in_list(config->continuations, usage_page, usage_id, implicit_modifiers)) {
+        LOG_DBG("Continuing capsword, found included usage: 0x%02X - 0x%02X", usage_page, usage_id);
+        return true;
+    }
+
+    return false;
+}
+
+static bool caps_word_is_in_also_mod_list(const struct behavior_caps_word_config *config,
+                                          uint16_t usage_page, uint8_t usage_id,
+                                          uint8_t implicit_modifiers) {
+    LOG_DBG("Checking if usage 0x%02X - 0x%02X is in list", usage_page, usage_id);
+
+    if (caps_word_is_in_list(config->also_mod_list, usage_page, usage_id, implicit_modifiers)) {
+        return true;
+    }
+
+    return false;
+}
+
+static bool caps_word_is_in_break_list(const struct behavior_caps_word_config *config,
+                                       uint16_t usage_page, uint8_t usage_id,
+                                       uint8_t implicit_modifiers) {
+    LOG_DBG("Checking if usage 0x%02X - 0x%02X is in list", usage_page, usage_id);
+
+    if (caps_word_is_in_list(config->break_list, usage_page, usage_id, implicit_modifiers)) {
+        return true;
     }
 
     return false;
@@ -116,7 +155,11 @@ static bool caps_word_is_numeric(uint8_t usage_id) {
 
 static void caps_word_enhance_usage(const struct behavior_caps_word_config *config,
                                     struct zmk_keycode_state_changed *ev) {
-    if (ev->usage_page != HID_USAGE_KEY || !caps_word_is_alpha(ev->keycode)) {
+    if (ev->usage_page != HID_USAGE_KEY ||
+        !(caps_word_is_alpha(ev->keycode) ||
+          caps_word_is_in_also_mod_list(config, ev->usage_page, ev->keycode,
+                                        ev->implicit_modifiers)) ||
+        caps_word_is_in_break_list(config, ev->usage_page, ev->keycode, ev->implicit_modifiers)) {
         return;
     }
 
@@ -145,10 +188,12 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
 
         caps_word_enhance_usage(config, ev);
 
-        if (!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode) &&
-            !is_mod(ev->usage_page, ev->keycode) &&
-            !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
-                                           ev->implicit_modifiers)) {
+        if ((!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode) &&
+             !is_mod(ev->usage_page, ev->keycode) &&
+             !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
+                                            ev->implicit_modifiers)) ||
+            caps_word_is_in_break_list(config, ev->usage_page, ev->keycode,
+                                       ev->implicit_modifiers)) {
             LOG_DBG("Deactivating caps_word for 0x%02X - 0x%02X", ev->usage_page, ev->keycode);
             deactivate_caps_word(dev);
         }
@@ -172,13 +217,29 @@ static int behavior_caps_word_init(const struct device *dev) {
 
 #define BREAK_ITEM(i, n) PARSE_BREAK(DT_INST_PROP_BY_IDX(n, continue_list, i))
 
+#define BREAK_ITEM_2(i, n) PARSE_BREAK(DT_INST_PROP_BY_IDX(n, also_mod_list, i))
+
+#define BREAK_ITEM_3(i, n) PARSE_BREAK(DT_INST_PROP_BY_IDX(n, break_list, i))
+
 #define KP_INST(n)                                                                                 \
     static struct behavior_caps_word_data behavior_caps_word_data_##n = {.active = false};         \
+    static struct caps_word_item_array continuations_##n = {                                       \
+        .members = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, n)},              \
+        .length = DT_INST_PROP_LEN(n, continue_list)};                                             \
+    static struct caps_word_item_array also_mod_list_##n = {                                       \
+        .members = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, also_mod_list), BREAK_ITEM_2, n)},            \
+        .length = DT_INST_PROP_LEN(n, also_mod_list),                                              \
+    };                                                                                             \
+    static struct caps_word_item_array break_list_##n = {                                          \
+        .members = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, break_list), BREAK_ITEM_3, n)},               \
+        .length = DT_INST_PROP_LEN(n, break_list),                                                 \
+    };                                                                                             \
     static struct behavior_caps_word_config behavior_caps_word_config_##n = {                      \
         .index = n,                                                                                \
         .mods = DT_INST_PROP_OR(n, mods, MOD_LSFT),                                                \
-        .continuations = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, n)},        \
-        .continuations_count = DT_INST_PROP_LEN(n, continue_list),                                 \
+        .continuations = &continuations_##n,                                                       \
+        .also_mod_list = &also_mod_list_##n,                                                       \
+        .break_list = &break_list_##n,                                                             \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, behavior_caps_word_init, NULL, &behavior_caps_word_data_##n,          \
                           &behavior_caps_word_config_##n, APPLICATION,                             \
