@@ -1,0 +1,9 @@
+file_format: "1"
+id: revlp
+name: revlp
+type: shield
+url: https://github.com/cyril279/keyboards/tree/main/revlp
+requires: [pro_micro]
+features:
+  - keys
+  - backlight
