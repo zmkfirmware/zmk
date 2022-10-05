@@ -96,4 +96,10 @@ export const displayPower = {
     active: 10000, // Estimated power draw when about half the pixels are on
     sleep: 7, // Deep sleep power draw (display off)
   },
+  // Based on the nice!view using Sharp's LS011B7DH01
+  NICEVIEW: {
+    activePercent: 0.01, // Estimated two refreshes per second taking five milliseconds each
+    active: 225, // Power draw during refresh
+    sleep: 1, // Idle power draw of the display
+  },
 };
