@@ -99,7 +99,7 @@ export const displayPower = {
   // Based on the nice!view using Sharp's LS011B7DH01
   NICEVIEW: {
     activePercent: 0.01, // Estimated two refreshes per second taking five milliseconds each
-    active: 225, // Power draw during refresh
+    active: 1425, // Power draw during refresh (225uA display + 1200uA SPIM)
     sleep: 1, // Idle power draw of the display
   },
 };
