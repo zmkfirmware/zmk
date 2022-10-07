@@ -11,45 +11,67 @@
 #include <logging/log.h>
 #include <zmk/behavior.h>
 
+#include <zmk/behavior_queue.h>
 #include <zmk/endpoints.h>
 #include <zmk/event_manager.h>
-#include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
-#include <zmk/events/modifiers_state_changed.h>
-#include <zmk/keys.h>
 #include <zmk/hid.h>
+#include <zmk/keys.h>
 #include <zmk/keymap.h>
+#include <zmk/led_indicators.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-struct caps_word_continue_item {
+struct caps_word_break_item {
     uint16_t page;
     uint32_t id;
     uint8_t implicit_modifiers;
 };
 
 struct behavior_caps_word_config {
-    zmk_mod_flags_t mods;
     uint8_t index;
-    uint8_t continuations_count;
-    struct caps_word_continue_item continuations[];
+    struct zmk_behavior_binding capslock_binding;
+    uint8_t break_items_count;
+    struct caps_word_break_item break_items[];
 };
 
 struct behavior_caps_word_data {
+    uint32_t position;
     bool active;
 };
+
+static void toggle_capslock(const struct device *dev) {
+    const struct behavior_caps_word_config *config = dev->config;
+    const struct behavior_caps_word_data *data = dev->data;
+
+    zmk_behavior_queue_add(data->position, config->capslock_binding, true, 0);
+    zmk_behavior_queue_add(data->position, config->capslock_binding, false, 0);
+}
+
+static void set_capslock_state(const struct device *dev, const bool target_state) {
+    const bool current_state =
+        zmk_led_indicators_get_current_flags() & ZMK_LED_INDICATORS_CAPSLOCK_BIT;
+
+    if (current_state != target_state) {
+        toggle_capslock(dev);
+    } else {
+        LOG_DBG("capslock state was already %d", target_state);
+    }
+}
 
 static void activate_caps_word(const struct device *dev) {
     struct behavior_caps_word_data *data = dev->data;
 
+    set_capslock_state(dev, true);
     data->active = true;
 }
 
 static void deactivate_caps_word(const struct device *dev) {
     struct behavior_caps_word_data *data = dev->data;
 
+    set_capslock_state(dev, false);
     data->active = false;
 }
 
@@ -57,6 +79,8 @@ static int on_caps_word_binding_pressed(struct zmk_behavior_binding *binding,
                                         struct zmk_behavior_binding_event event) {
     const struct device *dev = device_get_binding(binding->behavior_dev);
     struct behavior_caps_word_data *data = dev->data;
+
+    data->position = event.position;
 
     if (data->active) {
         deactivate_caps_word(dev);
@@ -84,44 +108,24 @@ ZMK_SUBSCRIPTION(behavior_caps_word, zmk_keycode_state_changed);
 
 static const struct device *devs[DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT)];
 
-static bool caps_word_is_caps_includelist(const struct behavior_caps_word_config *config,
-                                          uint16_t usage_page, uint8_t usage_id,
-                                          uint8_t implicit_modifiers) {
-    for (int i = 0; i < config->continuations_count; i++) {
-        const struct caps_word_continue_item *continuation = &config->continuations[i];
-        LOG_DBG("Comparing with 0x%02X - 0x%02X (with implicit mods: 0x%02X)", continuation->page,
-                continuation->id, continuation->implicit_modifiers);
+static bool caps_word_is_break_item(const struct behavior_caps_word_config *config,
+                                    uint16_t usage_page, uint8_t usage_id,
+                                    uint8_t implicit_modifiers) {
+    for (int i = 0; i < config->break_items_count; i++) {
+        const struct caps_word_break_item *break_item = &config->break_items[i];
+        LOG_DBG("Comparing with 0x%02X - 0x%02X (with implicit mods: 0x%02X)", break_item->page,
+                break_item->id, break_item->implicit_modifiers);
 
-        if (continuation->page == usage_page && continuation->id == usage_id &&
-            (continuation->implicit_modifiers &
-             (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
-                continuation->implicit_modifiers) {
-            LOG_DBG("Continuing capsword, found included usage: 0x%02X - 0x%02X", usage_page,
+        if (break_item->page == usage_page && break_item->id == usage_id &&
+            (break_item->implicit_modifiers & (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
+                break_item->implicit_modifiers) {
+            LOG_DBG("Stopping capsword, found included usage: 0x%02X - 0x%02X", usage_page,
                     usage_id);
             return true;
         }
     }
 
     return false;
-}
-
-static bool caps_word_is_alpha(uint8_t usage_id) {
-    return (usage_id >= HID_USAGE_KEY_KEYBOARD_A && usage_id <= HID_USAGE_KEY_KEYBOARD_Z);
-}
-
-static bool caps_word_is_numeric(uint8_t usage_id) {
-    return (usage_id >= HID_USAGE_KEY_KEYBOARD_1_AND_EXCLAMATION &&
-            usage_id <= HID_USAGE_KEY_KEYBOARD_0_AND_RIGHT_PARENTHESIS);
-}
-
-static void caps_word_enhance_usage(const struct behavior_caps_word_config *config,
-                                    struct zmk_keycode_state_changed *ev) {
-    if (ev->usage_page != HID_USAGE_KEY || !caps_word_is_alpha(ev->keycode)) {
-        return;
-    }
-
-    LOG_DBG("Enhancing usage 0x%02X with modifiers: 0x%02X", ev->keycode, config->mods);
-    ev->implicit_modifiers |= config->mods;
 }
 
 static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
@@ -143,12 +147,7 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
 
         const struct behavior_caps_word_config *config = dev->config;
 
-        caps_word_enhance_usage(config, ev);
-
-        if (!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode) &&
-            !is_mod(ev->usage_page, ev->keycode) &&
-            !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
-                                           ev->implicit_modifiers)) {
+        if (caps_word_is_break_item(config, ev->usage_page, ev->keycode, ev->implicit_modifiers)) {
             LOG_DBG("Deactivating caps_word for 0x%02X - 0x%02X", ev->usage_page, ev->keycode);
             deactivate_caps_word(dev);
         }
@@ -163,22 +162,29 @@ static int behavior_caps_word_init(const struct device *dev) {
     return 0;
 }
 
-#define CAPS_WORD_LABEL(i, _n) DT_INST_LABEL(i)
-
 #define PARSE_BREAK(i)                                                                             \
     {.page = ZMK_HID_USAGE_PAGE(i),                                                                \
      .id = ZMK_HID_USAGE_ID(i),                                                                    \
      .implicit_modifiers = SELECT_MODS(i)},
 
-#define BREAK_ITEM(i, n) PARSE_BREAK(DT_INST_PROP_BY_IDX(n, continue_list, i))
+#define BREAK_ITEM(i, n) PARSE_BREAK(DT_INST_PROP_BY_IDX(n, break_list, i))
+
+#define _TRANSFORM_ENTRY(idx, node)                                                                \
+    {                                                                                              \
+        .behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),                     \
+        .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0),       \
+                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))),                  \
+        .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),       \
+                              (DT_INST_PHA_BY_IDX(node, bindings, idx, param2))),                  \
+    }
 
 #define KP_INST(n)                                                                                 \
     static struct behavior_caps_word_data behavior_caps_word_data_##n = {.active = false};         \
     static struct behavior_caps_word_config behavior_caps_word_config_##n = {                      \
         .index = n,                                                                                \
-        .mods = DT_INST_PROP_OR(n, mods, MOD_LSFT),                                                \
-        .continuations = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, n)},        \
-        .continuations_count = DT_INST_PROP_LEN(n, continue_list),                                 \
+        .capslock_binding = _TRANSFORM_ENTRY(0, n),                                                \
+        .break_items = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, break_list), BREAK_ITEM, n)},             \
+        .break_items_count = DT_INST_PROP_LEN(n, break_list),                                      \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, behavior_caps_word_init, NULL, &behavior_caps_word_data_##n,          \
                           &behavior_caps_word_config_##n, APPLICATION,                             \

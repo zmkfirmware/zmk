@@ -8,8 +8,9 @@ compatible: "zmk,behavior-caps-word"
 include: zero_param.yaml
 
 properties:
-  continue-list:
+  break-list:
     type: array
     required: true
-  mods:
-    type: int
+  bindings:
+    type: phandle-array
+    required: true

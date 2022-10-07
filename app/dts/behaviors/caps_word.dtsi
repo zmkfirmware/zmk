@@ -12,7 +12,8 @@
 			compatible = "zmk,behavior-caps-word";
 			label = "CAPS_WORD";
 			#binding-cells = <0>;
-			continue-list = <UNDERSCORE BACKSPACE DELETE>;
+			bindings = <&kp CAPSLOCK>;
+			break-list = <SPACE TAB ENTER ESCAPE>;
 		};
 	};
 };
