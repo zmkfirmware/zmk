@@ -11,7 +11,7 @@
 #include <zmk/display/widgets/wpm_status.h>
 #include <zmk/display/status_screen.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS)

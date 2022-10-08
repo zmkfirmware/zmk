@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <kernel.h>
-#include <device.h>
-#include <init.h>
-#include <drivers/gpio.h>
-#include <sys/sys_io.h>
-#include <devicetree.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/sys/sys_io.h>
+#include <zephyr/devicetree.h>
 
 static int pinmux_puchi_ble_init(const struct device *port) {
     ARG_UNUSED(port);

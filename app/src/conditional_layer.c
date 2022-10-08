@@ -7,10 +7,10 @@
 #define DT_DRV_COMPAT zmk_conditional_layers
 
 #include <stdint.h>
-#include <kernel.h>
+#include <zephyr/kernel.h>
 
-#include <devicetree.h>
-#include <logging/log.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/logging/log.h>
 
 #include <zmk/event_manager.h>
 #include <zmk/keymap.h>

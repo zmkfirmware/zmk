@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
  
-#include <linker/linker-defs.h>
+#include <zephyr/linker/linker-defs.h>
 
         	__event_type_start = .; \
         	KEEP(*(".event_type")); \

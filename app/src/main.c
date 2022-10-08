@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <zephyr.h>
-#include <device.h>
-#include <devicetree.h>
-#include <settings/settings.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/settings/settings.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/matrix.h>

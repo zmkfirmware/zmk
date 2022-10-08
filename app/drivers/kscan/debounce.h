@@ -8,7 +8,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <sys/util.h>
+#include <zephyr/sys/util.h>
 
 #define DEBOUNCE_COUNTER_BITS 14
 #define DEBOUNCE_COUNTER_MAX BIT_MASK(DEBOUNCE_COUNTER_BITS)

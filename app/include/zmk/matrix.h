@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <devicetree.h>
+#include <zephyr/devicetree.h>
 
 #define ZMK_MATRIX_NODE_ID DT_CHOSEN(zmk_kscan)
 

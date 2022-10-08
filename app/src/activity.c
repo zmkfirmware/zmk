@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <device.h>
-#include <init.h>
-#include <kernel.h>
-#include <pm/pm.h>
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/pm/pm.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -74,8 +74,8 @@ void activity_work_handler(struct k_work *work) {
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
-        set_state(ZMK_ACTIVITY_IDLE);
-    }
+            set_state(ZMK_ACTIVITY_IDLE);
+        }
 }
 
 K_WORK_DEFINE(activity_work, activity_work_handler);

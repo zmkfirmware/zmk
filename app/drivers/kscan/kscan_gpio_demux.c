@@ -6,10 +6,10 @@
 
 #define DT_DRV_COMPAT zmk_kscan_gpio_demux
 
-#include <device.h>
-#include <drivers/kscan.h>
-#include <drivers/gpio.h>
-#include <logging/log.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/kscan.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 

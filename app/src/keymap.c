@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <sys/util.h>
-#include <bluetooth/bluetooth.h>
-#include <logging/log.h>
+#include <zephyr/sys/util.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/matrix.h>
@@ -37,7 +37,7 @@ static uint8_t _zmk_keymap_layer_default = 0;
 #define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst)
 
 #define TRANSFORMED_LAYER(node)                                                                    \
-    {LISTIFY(DT_PROP_LEN(node, bindings), BINDING_WITH_COMMA, (,), node)},
+    {LISTIFY(DT_PROP_LEN(node, bindings), BINDING_WITH_COMMA, (, ), node)},
 
 #if ZMK_KEYMAP_HAS_SENSORS
 #define _TRANSFORM_SENSOR_ENTRY(idx, layer)                                                        \
@@ -52,7 +52,7 @@ static uint8_t _zmk_keymap_layer_default = 0;
 #define SENSOR_LAYER(node)                                                                         \
     COND_CODE_1(                                                                                   \
         DT_NODE_HAS_PROP(node, sensor_bindings),                                                   \
-        ({LISTIFY(DT_PROP_LEN(node, sensor_bindings), _TRANSFORM_SENSOR_ENTRY, (,), node)}),       \
+        ({LISTIFY(DT_PROP_LEN(node, sensor_bindings), _TRANSFORM_SENSOR_ENTRY, (, ), node)}),      \
         ({})),
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */

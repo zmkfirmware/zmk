@@ -6,17 +6,17 @@
 
 #define DT_DRV_COMPAT alps_ec11
 
-#include <device.h>
-#include <drivers/gpio.h>
-#include <sys/util.h>
-#include <kernel.h>
-#include <drivers/sensor.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/sys/util.h>
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/sensor.h>
 
 #include "ec11.h"
 
 extern struct ec11_data ec11_driver;
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(EC11, CONFIG_SENSOR_LOG_LEVEL);
 
 static inline void setup_int(const struct device *dev, bool enable) {
