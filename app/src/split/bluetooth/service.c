@@ -5,15 +5,15 @@
  */
 
 #include <zephyr/types.h>
-#include <sys/util.h>
-#include <init.h>
+#include <zephyr/sys/util.h>
+#include <zephyr/init.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <bluetooth/gatt.h>
-#include <bluetooth/uuid.h>
+#include <zephyr/bluetooth/gatt.h>
+#include <zephyr/bluetooth/uuid.h>
 
 #include <drivers/behavior.h>
 #include <zmk/behavior.h>

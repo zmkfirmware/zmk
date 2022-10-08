@@ -6,11 +6,11 @@
 
 #define DT_DRV_COMPAT zmk_behavior_sensor_rotate_key_press
 
-#include <device.h>
-#include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/logging/log.h>
 
-#include <drivers/sensor.h>
+#include <drivers/behavior.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
 

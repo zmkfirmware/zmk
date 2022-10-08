@@ -6,11 +6,11 @@
 
 #define DT_DRV_COMPAT zmk_behavior_hold_tap
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
 #include <zmk/keys.h>
 #include <dt-bindings/zmk/keys.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/matrix.h>
 #include <zmk/endpoints.h>

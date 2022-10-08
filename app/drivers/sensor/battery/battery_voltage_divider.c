@@ -6,12 +6,12 @@
 
 #define DT_DRV_COMPAT zmk_battery_voltage_divider
 
-#include <device.h>
-#include <devicetree.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
 #include <drivers/gpio.h>
 #include <drivers/adc.h>
 #include <drivers/sensor.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 #include "battery_common.h"
 

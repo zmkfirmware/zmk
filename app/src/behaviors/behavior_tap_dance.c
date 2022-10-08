@@ -6,9 +6,9 @@
 
 #define DT_DRV_COMPAT zmk_behavior_tap_dance
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/keymap.h>
 #include <zmk/matrix.h>

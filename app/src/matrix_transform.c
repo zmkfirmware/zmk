@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 #include <zmk/matrix_transform.h>
 #include <zmk/matrix.h>
 #include <dt-bindings/zmk/matrix_transform.h>
@@ -15,7 +15,7 @@
     [(KT_ROW(DT_PROP_BY_IDX(ZMK_KEYMAP_TRANSFORM_NODE, map, i)) * ZMK_MATRIX_COLS) +               \
         KT_COL(DT_PROP_BY_IDX(ZMK_KEYMAP_TRANSFORM_NODE, map, i))] = i
 
-static uint32_t transform[] = {LISTIFY(ZMK_KEYMAP_LEN, _TRANSFORM_ENTRY, (,), 0)};
+static uint32_t transform[] = {LISTIFY(ZMK_KEYMAP_LEN, _TRANSFORM_ENTRY, (, ), 0)};
 
 #endif
 
