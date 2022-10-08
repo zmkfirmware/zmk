@@ -429,9 +429,6 @@ config USB_CDC_ACM_RINGBUF_SIZE
 config LOG_BUFFER_SIZE
 	default 8192
 
-config LOG_STRDUP_BUF_COUNT
-	default 16
-
 config LOG_PROCESS_THREAD_STARTUP_DELAY_MS
 	default 1000
 
