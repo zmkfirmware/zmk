@@ -20,7 +20,6 @@
             #binding-cells = <0>;
             bindings = <&kp A>, <&lt 1 B>;
             mods = <(MOD_LSFT|MOD_RSFT)>;
-            masked-mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
     };
