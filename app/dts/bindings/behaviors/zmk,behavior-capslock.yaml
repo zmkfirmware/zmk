@@ -3,14 +3,21 @@
 
 description: Caps word behavior
 
-compatible: "zmk,behavior-caps-word"
+compatible: "zmk,behavior-capslock"
 
 include: zero_param.yaml
 
 properties:
-  break-list:
+  enable-on-press:
+    type: boolean
+  disable-on-release:
+    type: boolean
+  disable-on-second-press:
+    type: boolean
+  disable-on-keys:
     type: array
-    required: true
+    required: false
+    default: []
   bindings:
     type: phandle-array
     required: true

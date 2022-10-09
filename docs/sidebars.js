@@ -32,7 +32,7 @@ module.exports = {
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
       "behaviors/tap-dance",
-      "behaviors/caps-word",
+      "behaviors/capslock",
       "behaviors/key-repeat",
       "behaviors/reset",
       "behaviors/bluetooth",

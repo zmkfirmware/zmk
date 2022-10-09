@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+	behaviors {
+		/omit-if-no-ref/ caps_on: behavior_caps_on {
+			compatible = "zmk,behavior-capslock";
+			label = "CAPS_ON";
+			#binding-cells = <0>;
+			bindings = <&kp CAPSLOCK>;
+			enable-on-press;
+		};
+
+		/omit-if-no-ref/ caps_off: behavior_caps_off {
+			compatible = "zmk,behavior-capslock";
+			label = "CAPS_OFF";
+			#binding-cells = <0>;
+			bindings = <&kp CAPSLOCK>;
+			disable-on-release;
+		};
+
+		/omit-if-no-ref/ caps_hold: behavior_caps_hold {
+			compatible = "zmk,behavior-capslock";
+			label = "CAPS_HOLD";
+			#binding-cells = <0>;
+			bindings = <&kp CAPSLOCK>;
+			enable-on-press;
+			disable-on-release;
+		};
+
+		/omit-if-no-ref/ caps_word: behavior_caps_word {
+			compatible = "zmk,behavior-capslock";
+			label = "CAPS_WORD";
+			#binding-cells = <0>;
+			bindings = <&kp CAPSLOCK>;
+			enable-on-press;
+			disable-on-second-press;
+			disable-on-keys = <SPACE TAB ENTER ESCAPE>;
+		};
+	};
+};
+
