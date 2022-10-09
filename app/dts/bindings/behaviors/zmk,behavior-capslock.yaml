@@ -12,7 +12,7 @@ properties:
     type: boolean
   disable-on-release:
     type: boolean
-  disable-on-second-press:
+  disable-on-next-release:
     type: boolean
   disable-on-keys:
     type: array

@@ -5,96 +5,54 @@ sidebar_label: Caps Lock
 
 ## Summary
 
-This set of behaviors offers enhahced versions of the caps lock key.
-
-
-## Caps On
-
-Enables caps lock when pressed, regarless of the current caps lock state.
+The caps lock behavior provides an improved caps lock key.
+Pressing the regular caps lock key toggles the state of caps lock on the host machine, this behavior offers more control on how and when caps lock get activated and deactivated, regardless of the current status on the host machine.
 
 ### Behavior Binding
-- Reference: `&caps_on`
 
-Example:
+Four pre-configured instances are provided:
 
-```
-&caps_on
-```
-
-
-## Caps Off
-
-Disables caps lock when released, regarless of the current caps lock state.
-
-### Behavior Binding
-- Reference: `&caps_off`
-
-Example:
-
-```
-&caps_off
-```
-
-
-## Caps Hold
-
-Enables caps lock when pressed, and disables it when released.
-
-### Behavior Binding
-- Reference: `&caps_hold`
-
-Example:
-
-```
-&caps_hold
-```
-
-
-## Caps Word
-
-Enables caps lock when pressed, and deactivate it when any key in the break list is pressed, or if the caps word key is pressed again.
-
-### Behavior Binding
-- Reference: `&caps_word`
-
-Example:
-
-```
-&caps_word
-```
+- `&caps_on` enables caps lock
+- `&caps_off` disables caps lock
+- `&caps_hold` enables caps lock while held, and disables it when released
+- `&caps_word` enables caps lock, and disables it when a word separator is typed or the key is pressed again
 
 ### Configuration
 
-#### Word Separators
+The following options allow to customize the caps lock behavior:
 
-By default, the caps word will remain active until space (`SPACE`), tab (`TAB`), enter (`ENTER`), or escape (`ESCAPE`) is pressed. If you would like to override this, you can set a new array of keys in the `disable-on-keys` property in your keymap:
+- `enable-on-press`: whether to enable caps lock when the key is pressed
+- `disable-on-release`: whether to disable caps lock when the key is released
+- `disable-on-next-release`: whether to disable caps lock when the key is released a second time
+- `disable-on-keys`: list of keys after which caps lock is disabled
+
+### Examples
+
+The pre-configured `caps_word` enables caps lock when pressed, and disables it when `SPACE`, `TAB`, or `ENTER` is pressed, or the key is pressed again.
 
 ```
-&caps_word {
-    disable-on-keys = <SPACE MINUS>;
+caps_word: behavior_caps_word {
+    compatible = "zmk,behavior-capslock";
+    label = "CAPS_WORD";
+    #binding-cells = <0>;
+    bindings = <&kp CAPSLOCK>;
+    enable-on-press;
+    disable-on-next-release;
+    disable-on-keys = <SPACE TAB ENTER>;
 };
-
-/ {
-    keymap {
-        ...
-    };
-};
 ```
 
-### Multiple Caps Words
-
-If you want to use multiple caps words with different word separators, you can add additional caps word instances to use in your keymap:
+A key to activate caps lock and disable it only after typing a whole line can be defined as:
 
 ```
 / {
-    prog_caps: behavior_prog_caps_word {
+    prog_caps: caps_line {
         compatible = "zmk,behavior-capslock";
-        label = "CAPS_WORD";
+        label = "CAPS_LINE";
         #binding-cells = <0>;
         bindings = <&kp CAPSLOCK>;
         enable-on-press;
-        disable-on-second-press;
-        disable-on-keys = <SPACE TAB ENTER ESCAPE>;
+        disable-on-keys = <ENTER>;
     };
 
     keymap {

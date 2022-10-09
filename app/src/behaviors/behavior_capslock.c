@@ -35,7 +35,7 @@ struct behavior_capslock_config {
     struct zmk_behavior_binding capslock_binding;
     bool enable_on_press;
     bool disable_on_release;
-    bool disable_on_second_press;
+    bool disable_on_next_release;
     uint8_t disable_on_keys_count;
     struct capslock_key_item disable_on_keys[];
 };
@@ -104,7 +104,7 @@ static int on_capslock_binding_released(struct zmk_behavior_binding *binding,
     const struct behavior_capslock_config *config = dev->config;
     struct behavior_capslock_data *data = dev->data;
 
-    if (config->disable_on_release || (config->disable_on_second_press && !data->just_activated)) {
+    if (config->disable_on_release || (config->disable_on_next_release && !data->just_activated)) {
         deactivate_capslock(dev);
     }
 
@@ -201,7 +201,7 @@ static int behavior_capslock_init(const struct device *dev) {
         .capslock_binding = _TRANSFORM_ENTRY(0, n),                                                \
         .enable_on_press = DT_INST_PROP(n, enable_on_press),                                       \
         .disable_on_release = DT_INST_PROP(n, disable_on_release),                                 \
-        .disable_on_second_press = DT_INST_PROP(n, disable_on_second_press),                       \
+        .disable_on_next_release = DT_INST_PROP(n, disable_on_next_release),                       \
         .disable_on_keys = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, disable_on_keys), BREAK_ITEM, n)},    \
         .disable_on_keys_count = DT_INST_PROP_LEN(n, disable_on_keys),                             \
     };                                                                                             \

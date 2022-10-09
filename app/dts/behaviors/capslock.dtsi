@@ -39,8 +39,8 @@
 			#binding-cells = <0>;
 			bindings = <&kp CAPSLOCK>;
 			enable-on-press;
-			disable-on-second-press;
-			disable-on-keys = <SPACE TAB ENTER ESCAPE>;
+			disable-on-next-release;
+			disable-on-keys = <SPACE TAB ENTER>;
 		};
 	};
 };
