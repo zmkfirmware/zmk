@@ -23,4 +23,4 @@ properties:
     required: true
   binding-hold-time:
     type: int
-    default: 85
+    default: 95

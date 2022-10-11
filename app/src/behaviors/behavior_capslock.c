@@ -94,6 +94,7 @@ static int on_capslock_binding_pressed(struct zmk_behavior_binding *binding,
 
     data->position = event.position;
     if (config->enable_on_press) {
+        LOG_DBG("activating capslock (enable-on-press)");
         activate_capslock(dev);
     }
 
@@ -106,7 +107,11 @@ static int on_capslock_binding_released(struct zmk_behavior_binding *binding,
     const struct behavior_capslock_config *config = dev->config;
     struct behavior_capslock_data *data = dev->data;
 
-    if (config->disable_on_release || (config->disable_on_next_release && !data->just_activated)) {
+    if (config->disable_on_release) {
+        LOG_DBG("deactivating capslock (disable-on-release)");
+        deactivate_capslock(dev);
+    } else if (config->disable_on_next_release && !data->just_activated) {
+        LOG_DBG("deactivating capslock (disable-on-next-release)");
         deactivate_capslock(dev);
     }
 
@@ -127,11 +132,11 @@ ZMK_SUBSCRIPTION(behavior_capslock, zmk_keycode_state_changed);
 
 static const struct device *devs[DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT)];
 
-static bool capslock_find_key_item(const struct behavior_capslock_config *config,
-                                   uint16_t usage_page, uint8_t usage_id,
-                                   uint8_t implicit_modifiers) {
-    for (int i = 0; i < config->disable_on_keys_count; i++) {
-        const struct capslock_key_item *break_item = &config->disable_on_keys[i];
+static bool capslock_find_key_item(const struct capslock_key_item *key_items,
+                                   const size_t key_items_count, uint16_t usage_page,
+                                   uint8_t usage_id, uint8_t implicit_modifiers) {
+    for (int i = 0; i < key_items_count; i++) {
+        const struct capslock_key_item *break_item = &key_items[i];
         LOG_DBG("Comparing with 0x%02X - 0x%02X (with implicit mods: 0x%02X)", break_item->page,
                 break_item->id, break_item->implicit_modifiers);
 
@@ -165,8 +170,10 @@ static int capslock_keycode_state_changed_listener(const zmk_event_t *eh) {
 
         const struct behavior_capslock_config *config = dev->config;
 
-        if (capslock_find_key_item(config, ev->usage_page, ev->keycode, ev->implicit_modifiers)) {
-            LOG_DBG("Deactivating capslock for 0x%02X - 0x%02X", ev->usage_page, ev->keycode);
+        if (capslock_find_key_item(config->disable_on_keys, config->disable_on_keys_count,
+                                   ev->usage_page, ev->keycode, ev->implicit_modifiers)) {
+            LOG_DBG("deactivating capslock (disable-on-keys: 0x%02X-0x%02X)", ev->usage_page,
+                    ev->keycode);
             deactivate_capslock(dev);
         }
     }
@@ -180,12 +187,12 @@ static int behavior_capslock_init(const struct device *dev) {
     return 0;
 }
 
-#define PARSE_BREAK(i)                                                                             \
+#define PARSE_KEY_ITEM(i)                                                                          \
     {.page = ZMK_HID_USAGE_PAGE(i),                                                                \
      .id = ZMK_HID_USAGE_ID(i),                                                                    \
      .implicit_modifiers = SELECT_MODS(i)},
 
-#define BREAK_ITEM(i, n) PARSE_BREAK(DT_INST_PROP_BY_IDX(n, disable_on_keys, i))
+#define BREAK_ITEM(i, n) PARSE_KEY_ITEM(DT_INST_PROP_BY_IDX(n, disable_on_keys, i))
 
 #define _TRANSFORM_ENTRY(idx, node)                                                                \
     {                                                                                              \
