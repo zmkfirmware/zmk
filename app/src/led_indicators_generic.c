@@ -37,7 +37,7 @@ zmk_led_indicators_flags_t zmk_led_indicators_get_current_flags() {
     uint8_t profile = 0;
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
-    if (endpoint == ZMK_ENDPOINT_USB) {
+    if (endpoint == ZMK_ENDPOINT_BLE) {
         profile = zmk_ble_active_profile_index();
     }
 #endif
