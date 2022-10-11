@@ -22,9 +22,13 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/activity.h>
 #include <zmk/workqueue.h>
 
+#include <drivers/sensor/battery/battery_charging.h>
+
 static uint8_t last_state_of_charge = 0;
+static bool charging = 0;
 
 uint8_t zmk_battery_state_of_charge(void) { return last_state_of_charge; }
+bool zmk_battery_charging(void) { return charging; }
 
 #if DT_HAS_CHOSEN(zmk_battery)
 static const struct device *const battery = DEVICE_DT_GET(DT_CHOSEN(zmk_battery));
@@ -66,6 +70,23 @@ static int zmk_battery_update(const struct device *battery) {
         rc = raise_zmk_battery_state_changed(
             (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge});
     }
+
+#if DT_NODE_HAS_PROP(DT_CHOSEN(zmk_battery), chg_gpios)
+
+    rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_CHARGING);
+
+    if (rc != 0) {
+        LOG_DBG("Failed to fetch battery values: %d", rc);
+        return rc;
+    }
+    struct sensor_value charging_state;
+    rc = sensor_channel_get(battery, SENSOR_CHAN_CHARGING, &charging_state);
+    if (rc != 0) {
+        LOG_DBG("Failed to get battery charging status: %d", rc);
+        return rc;
+    }
+    charging = charging_state.val1;
+#endif
 
     return rc;
 }

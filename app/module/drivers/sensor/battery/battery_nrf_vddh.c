@@ -11,10 +11,12 @@
 
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
+#include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/adc.h>
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/logging/log.h>
 
+#include <drivers/sensor/battery/battery_charging.h>
 #include "battery_common.h"
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -22,6 +24,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define VDDHDIV (5)
 
 static const struct device *adc = DEVICE_DT_GET(DT_NODELABEL(adc));
+
+struct vddh_config {
+    struct gpio_dt_spec chg;
+};
 
 struct vddh_data {
     struct adc_channel_cfg acc;
@@ -32,12 +38,13 @@ struct vddh_data {
 static int vddh_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     // Make sure selected channel is supported
     if (chan != SENSOR_CHAN_GAUGE_VOLTAGE && chan != SENSOR_CHAN_GAUGE_STATE_OF_CHARGE &&
-        chan != SENSOR_CHAN_ALL) {
+        (enum sensor_channel_bvd)chan != SENSOR_CHAN_CHARGING && chan != SENSOR_CHAN_ALL) {
         LOG_DBG("Selected channel is not supported: %d.", chan);
         return -ENOTSUP;
     }
 
     struct vddh_data *drv_data = dev->data;
+    const struct vddh_config *drv_cfg = dev->config;
     struct adc_sequence *as = &drv_data->as;
 
     int rc = adc_read(adc, as);
@@ -61,6 +68,18 @@ static int vddh_sample_fetch(const struct device *dev, enum sensor_channel chan)
     LOG_DBG("ADC raw %d ~ %d mV => %d%%", drv_data->value.adc_raw, drv_data->value.millivolts,
             drv_data->value.state_of_charge);
 
+#if DT_INST_NODE_HAS_PROP(0, chg_gpios)
+    int raw = gpio_pin_get_dt(&drv_cfg->chg);
+    if (raw == -EIO || raw == -EWOULDBLOCK) {
+        LOG_DBG("Failed to read chg status: %d", raw);
+        return raw;
+    } else {
+        bool charging = raw;
+        LOG_DBG("Charging state: %d", raw);
+        drv_data->value.charging = charging;
+    }
+#endif
+
     return rc;
 }
 
@@ -77,6 +96,7 @@ static const struct sensor_driver_api vddh_api = {
 
 static int vddh_init(const struct device *dev) {
     struct vddh_data *drv_data = dev->data;
+    const struct vddh_config *drv_cfg = dev->config;
 
     if (!device_is_ready(adc)) {
         LOG_ERR("ADC device is not ready %s", adc->name);
@@ -104,13 +124,31 @@ static int vddh_init(const struct device *dev) {
 #error Unsupported ADC
 #endif
 
-    const int rc = adc_channel_setup(adc, &drv_data->acc);
+    int rc = adc_channel_setup(adc, &drv_data->acc);
     LOG_DBG("VDDHDIV5 setup returned %d", rc);
+
+#if DT_INST_NODE_HAS_PROP(0, chg_gpios)
+    if (!device_is_ready(drv_cfg->chg.port)) {
+        LOG_ERR("GPIO port for chg reading is not ready");
+        return -ENODEV;
+    }
+    rc = gpio_pin_configure_dt(&drv_cfg->chg, GPIO_INPUT);
+    if (rc != 0) {
+        LOG_ERR("Failed to set chg feed %u: %d", drv_cfg->chg.pin, rc);
+        return rc;
+    }
+#endif // DT_INST_NODE_HAS_PROP(0, chg_gpios)
 
     return rc;
 }
 
 static struct vddh_data vddh_data;
 
-DEVICE_DT_INST_DEFINE(0, &vddh_init, NULL, &vddh_data, NULL, POST_KERNEL,
+static const struct vddh_config vddh_cfg = {
+#if DT_INST_NODE_HAS_PROP(0, chg_gpios)
+    .chg = GPIO_DT_SPEC_INST_GET(0, chg_gpios),
+#endif
+};
+
+DEVICE_DT_INST_DEFINE(0, &vddh_init, NULL, &vddh_data, &vddh_cfg, POST_KERNEL,
                       CONFIG_SENSOR_INIT_PRIORITY, &vddh_api);
