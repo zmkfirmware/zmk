@@ -47,6 +47,10 @@ static uint8_t passkey_digit = 0;
 
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY) */
 
+#if IS_ENABLED(CONFIG_ZMK_BOOTLOADER_BLE_CLEAR_BONDS)
+#include <sys/reboot.h>
+#endif
+
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 #define PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - 1)
 #else
@@ -585,6 +589,11 @@ static int zmk_ble_init(const struct device *_arg) {
             LOG_ERR("Failed to delete setting: %d", err);
         }
     }
+#if IS_ENABLED(CONFIG_ZMK_BOOTLOADER_BLE_CLEAR_BONDS)
+    LOG_WRN("Clearing completed, rebooting to bootloader");
+    sys_reboot(0x57);
+#endif
+
 #endif
 
     bt_conn_cb_register(&conn_callbacks);

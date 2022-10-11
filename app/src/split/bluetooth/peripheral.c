@@ -116,6 +116,10 @@ static int zmk_peripheral_ble_init(const struct device *_arg) {
     LOG_WRN("Clearing all existing BLE bond information from the keyboard");
 
     bt_unpair(BT_ID_DEFAULT, NULL);
+#if IS_ENABLED(CONFIG_ZMK_BOOTLOADER_BLE_CLEAR_BONDS)
+    LOG_WRN("Clearing completed, rebooting to bootloader");
+    sys_reboot(0x57);
+#endif
 #endif
 
     bt_conn_cb_register(&conn_callbacks);

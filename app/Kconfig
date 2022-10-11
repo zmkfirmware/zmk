@@ -143,6 +143,11 @@ config ZMK_BLE_CLEAR_BONDS_ON_START
 	bool "Configuration that clears all bond information from the keyboard on startup."
 	default n
 
+config ZMK_BOOTLOADER_BLE_CLEAR_BONDS
+	bool "Configuration that resets to bootloader after clearing all bond information"
+	depends on ZMK_BLE_CLEAR_BONDS_ON_START
+	default n
+
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
 	default n
