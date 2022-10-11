@@ -21,3 +21,6 @@ properties:
   bindings:
     type: phandle-array
     required: true
+  binding-hold-time:
+    type: int
+    default: 85

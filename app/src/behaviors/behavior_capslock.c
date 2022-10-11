@@ -33,6 +33,7 @@ struct capslock_key_item {
 struct behavior_capslock_config {
     uint8_t index;
     struct zmk_behavior_binding capslock_binding;
+    uint32_t capslock_binding_hold_time;
     bool enable_on_press;
     bool disable_on_release;
     bool disable_on_next_release;
@@ -50,7 +51,8 @@ static void toggle_capslock(const struct device *dev) {
     const struct behavior_capslock_config *config = dev->config;
     const struct behavior_capslock_data *data = dev->data;
 
-    zmk_behavior_queue_add(data->position, config->capslock_binding, true, 0);
+    zmk_behavior_queue_add(data->position, config->capslock_binding, true,
+                           config->capslock_binding_hold_time);
     zmk_behavior_queue_add(data->position, config->capslock_binding, false, 0);
 }
 
@@ -199,6 +201,7 @@ static int behavior_capslock_init(const struct device *dev) {
     static struct behavior_capslock_config behavior_capslock_config_##n = {                        \
         .index = n,                                                                                \
         .capslock_binding = _TRANSFORM_ENTRY(0, n),                                                \
+        .capslock_binding_hold_time = DT_INST_PROP(n, binding_hold_time),                          \
         .enable_on_press = DT_INST_PROP(n, enable_on_press),                                       \
         .disable_on_release = DT_INST_PROP(n, disable_on_release),                                 \
         .disable_on_next_release = DT_INST_PROP(n, disable_on_next_release),                       \
