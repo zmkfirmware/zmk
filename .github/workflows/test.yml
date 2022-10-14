@@ -47,11 +47,11 @@ jobs:
             tools/
             zephyr/
             bootloader/
-          key: 4-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
           restore-keys: |
-            4-${{ runner.os }}-build-${{ env.cache-name }}-
-            4-${{ runner.os }}-build-
-            4-${{ runner.os }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
         timeout-minutes: 2
         continue-on-error: true
       - name: Initialize workspace (west init)

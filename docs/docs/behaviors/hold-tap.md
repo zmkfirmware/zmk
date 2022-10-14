@@ -139,7 +139,7 @@ defaultValue="homerow_mods"
 values={[
 {label: 'Homerow Mods', value: 'homerow_mods'},
 {label: 'Autoshift', value: 'autoshift'},
-{label: 'Toggle-on-Tap, Momentary-on-Hold Layers', value: 'tog_mo'},
+{label: 'Toggle-on-Tap, Momentary-on-Hold Layers', value: 'mo_tog'},
 ]}>
 
 <TabItem value="homerow_mods">
@@ -276,25 +276,25 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 
 </TabItem>
 
-<TabItem value="tog_mo">
+<TabItem value="mo_tog">
 
-This hold-tap example implements a [toggle-layer](layers.md/#toggle-layer) when the keybind is tapped and a [momentary-layer](layers.md/#momentary-layer) when it is held. Similarly to the Autoshift and Sticky Hold use-cases, a `TOG_MO(layer)` macro is defined such that the `&tog` and `&mo` behaviors can target a single layer.
+This hold-tap example implements a [momentary-layer](layers.md/#momentary-layer) when the keybind is held and a [toggle-layer](layers.md/#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
 
-```dtsi title="Hold-Tap Example: Toggle layer on Tap, Momentary layer on Hold"
+```dtsi title="Hold-Tap Example: Momentary layer on Hold, Toggle layer on Tap"
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
 
-#define TOG_MO(layer) &tog_mo layer layer   // Macro to apply toggle-layer-on-tap/momentary-layer-on-hold to a specific layer
+#define MO_TOG(layer) &mo_tog layer layer   // Macro to apply momentary-layer-on-hold/toggle-layer-on-tap to a specific layer
 
 / {
     behaviors {
-        tog_mo: behavior_mo_tog {
+        mo_tog: behavior_mo_tog {
             compatible = "zmk,behavior-hold-tap";
             label = "mo_tog";
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;
-            bindings = <&tog>, <&mo>;
+            bindings = <&mo>, <&tog>;
         };
     };
 
@@ -302,8 +302,8 @@ This hold-tap example implements a [toggle-layer](layers.md/#toggle-layer) when 
 		compatible = "zmk,keymap";
 		default_layer {
 			bindings = <
-	            &tog_mo 2 1     // &mo 2 on hold, &tog 1 on tap
-                TOG_MO(3)       // &mo 3 on hold, &tog 3 on tap
+				&mo_tog 2 1     // &mo 2 on hold, &tog 1 on tap
+				MO_TOG(3)       // &mo 3 on hold, &tog 3 on tap
 			>;
 		};
 	};
