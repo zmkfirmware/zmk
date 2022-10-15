@@ -14,7 +14,6 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-LV_IMG_DECLARE(zenlogo);
 LV_IMG_DECLARE(layers2);
 
 #if IS_ENABLED(CONFIG_CUSTOM_WIDGET_BATTERY_STATUS)
@@ -88,7 +87,19 @@ lv_obj_t *zmk_display_status_screen() {
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     lv_obj_t *zenlogo_icon;
     zenlogo_icon = lv_img_create(screen);
+  #if IS_ENABLED(CONFIG_CUSTOM_WIDGET_LOGO_IMAGE_ZEN)
+    LV_IMG_DECLARE(zenlogo);
     lv_img_set_src(zenlogo_icon, &zenlogo);
+  #elif IS_ENABLED(CONFIG_CUSTOM_WIDGET_LOGO_IMAGE_LPKB)
+    LV_IMG_DECLARE(lpkblogo);
+    lv_img_set_src(zenlogo_icon, &lpkblogo);
+  #elif IS_ENABLED(CONFIG_CUSTOM_WIDGET_LOGO_IMAGE_ZMK)
+    LV_IMG_DECLARE(zmklogo);
+    lv_img_set_src(zenlogo_icon, &zmklogo);
+  #elif IS_ENABLED(CONFIG_CUSTOM_WIDGET_LOGO_IMAGE_MIRYOKU)
+    LV_IMG_DECLARE(miryokulogo);
+    lv_img_set_src(zenlogo_icon, &miryokulogo);
+  #endif
 #if IS_ENABLED(CONFIG_CUSTOM_WIDGET_LAYER_STATUS_HIDE_HEADING)
     lv_obj_align(zenlogo_icon, LV_ALIGN_CENTER, 0, 43);
 #else
