@@ -33,6 +33,7 @@ enum zmk_usb_conn_state zmk_usb_get_conn_state() {
     switch (usb_status) {
     case USB_DC_SUSPEND:
     case USB_DC_CONFIGURED:
+    case USB_DC_RESUME:
         return ZMK_USB_CONN_HID;
 
     case USB_DC_DISCONNECTED:
