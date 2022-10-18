@@ -11,5 +11,5 @@ outputs:
   - usb
   - ble
 siblings:
-  - corneish_zen_left
-  - corneish_zen_right
+  - corneish_zen_left_v2
+  - corneish_zen_right_v2
