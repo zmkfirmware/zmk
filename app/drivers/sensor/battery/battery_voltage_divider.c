@@ -74,22 +74,10 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
     as->calibrate = false;
 
     if (rc == 0) {
-        /*
-        CALCULATE SOC BASED ON VOLTAGE
-        - the raw value from the analog pin represents the voltage it senses
-        - 
-        */
         int32_t val = drv_data->value.adc_raw;
-        LOG_DBG("Raw 1: %d", val);
 
         adc_raw_to_millivolts(adc_ref_internal(drv_data->adc), drv_data->acc.gain, as->resolution,
                               &val);
-        LOG_DBG("Raw 2: %d", val);
-
-        LOG_DBG("Internal Reference Voltage: %d", adc_ref_internal(drv_data->adc));
-        LOG_DBG("Gain: %d", drv_data->acc.gain);
-        LOG_DBG("Resolution: %d", as->resolution);
-        LOG_DBG("Resistor values: %d / %d", drv_cfg->full_ohm, drv_cfg->output_ohm);
 
         uint16_t millivolts = val * (uint64_t)drv_cfg->full_ohm / drv_cfg->output_ohm;
         LOG_DBG("ADC raw %d ~ %d mV => %d mV", drv_data->value.adc_raw, val, millivolts);
