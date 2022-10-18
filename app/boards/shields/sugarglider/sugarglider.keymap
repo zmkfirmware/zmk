@@ -11,7 +11,7 @@
 #include <dt-bindings/zmk/ext_power.h>
 #include <dt-bindings/zmk/outputs.h>
 
-#define TIMEOUT 100
+#define TIMEOUT 10
 
 &encoder_1 {
     status = "okay";
@@ -21,11 +21,19 @@
     status = "okay";
 };
 
+&encoder_3 {
+    status = "okay";
+};
+
+&encoder_4 {
+    status = "okay";
+};
+
 / {
 
     sensors {
         compatible = "zmk,keymap-sensors";
-        sensors = <&encoder_1 &encoder_2>;
+        sensors = <&encoder_1 &encoder_2 &encoder_3 &encoder_4>;
     };
 
 
@@ -40,7 +48,7 @@
                 &kp LSHFT &kp Z   &kp X    &kp C     &kp V &kp B                      &trans &kp N &kp M &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
                           &kp C_MUTE &kp LCTRL &kp LALT &kp SPACE &kp Y &kp Y &kp Y &kp SPACE &kp SPACE &kp RGUI  &kp C_MUTE
             >;
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN &inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp C_VOL_UP C_VOL_DN>;
 
         }; 
         
@@ -52,7 +60,7 @@
                 &trans &trans &trans &trans &trans &trans               &trans &trans &trans &trans &trans &trans &trans
                             &trans &trans &trans &kp TAB &trans &trans &trans &kp TAB &trans &trans &trans
             >;  
-            sensor-bindings = <&inc_dec_kp PG_UP PG_DN &inc_dec_kp C_VOL_UP C_VOL_DN>;
+            sensor-bindings = <&inc_dec_kp PG_UP PG_DN &inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp C_VOL_UP C_VOL_DN>;
                 
         };
     };
