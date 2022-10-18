@@ -4,9 +4,9 @@
 #
 
 config BOARD_CORNEISH_ZEN_V2_LEFT
-	bool "corne-ish zen left v2"
+	bool "corneish zen left v2"
 	depends on SOC_NRF52840_QIAA
 
 config BOARD_CORNEISH_ZEN_V2_RIGHT
-	bool "corne-ish zen right v2"
+	bool "corneish zen right v2"
 	depends on SOC_NRF52840_QIAA

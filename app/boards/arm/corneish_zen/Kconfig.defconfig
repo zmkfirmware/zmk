@@ -24,7 +24,7 @@ endif # BOARD_CORNEISH_ZEN_V2_RIGHT
 if BOARD_CORNEISH_ZEN_V2_LEFT || BOARD_CORNEISH_ZEN_V2_RIGHT
 
 config BOARD
-	default "corne-ish_zen"
+	default "corneish_zen"
 
 config ZMK_SPLIT
 	default y
