@@ -135,6 +135,8 @@ int zmk_hid_register_mods(zmk_mod_flags_t explicit_modifiers);
 int zmk_hid_unregister_mods(zmk_mod_flags_t explicit_modifiers);
 int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t implicit_modifiers);
 int zmk_hid_implicit_modifiers_release();
+int zmk_hid_masked_modifiers_set(zmk_mod_flags_t masked_modifiers);
+int zmk_hid_masked_modifiers_clear();
 
 int zmk_hid_keyboard_press(zmk_key_t key);
 int zmk_hid_keyboard_release(zmk_key_t key);
