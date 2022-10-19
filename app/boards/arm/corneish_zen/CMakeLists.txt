@@ -1,12 +1,3 @@
-set_property(GLOBAL APPEND PROPERTY extra_post_build_commands
-  COMMAND ${PYTHON_EXECUTABLE} ${ZEPHYR_BASE}/../tools/uf2/utils/uf2conv.py
-  -c 
-  -b 0x26000
-  -f 0xADA52840
-  -o ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}.uf2
-  ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}.bin
-)
-
 if(CONFIG_ZMK_DISPLAY)
   target_sources_ifdef(CONFIG_CUSTOM_WIDGET_BATTERY_STATUS app PRIVATE widgets/battery_status.c)
   target_sources_ifdef(CONFIG_CUSTOM_WIDGET_OUTPUT_STATUS app PRIVATE widgets/output_status.c)
