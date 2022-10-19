@@ -90,7 +90,6 @@ config SPI
 	default y
 
 config IL0323
-	bool
 	default y
 
 config ZMK_DISPLAY_BLANK_ON_IDLE
