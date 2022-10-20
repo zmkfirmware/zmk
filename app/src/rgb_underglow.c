@@ -27,7 +27,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#if !DT_CHOSEN(zmk_underglow)
+#if !DT_HAS_CHOSEN(zmk_underglow)
 
 #error "A zmk,underglow chosen node must be declared"
 
