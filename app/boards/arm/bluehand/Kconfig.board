@@ -1,7 +1,7 @@
-# BlueHand board configuration
-
 # Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
+
+# BlueHand board configuration
 
 config BOARD_BLUEHAND
     bool "BlueHand"
