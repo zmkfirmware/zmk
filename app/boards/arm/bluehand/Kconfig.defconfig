@@ -1,0 +1,27 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+# BlueHand keyboard configuration
+
+if BOARD_BLUEHAND
+
+config ZMK_KEYBOARD_NAME
+    default "bluehand"
+
+if USB_DEVICE_STACK
+
+config USB_NRFX
+	default y
+
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+endif # BOARD_BLUEHAND

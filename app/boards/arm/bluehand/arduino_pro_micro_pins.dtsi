@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2020 Derek Schmell
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	pro_micro: connector {
+		compatible = "arduino-pro-micro";
+		#gpio-cells = <2>;
+		gpio-map-mask = <0xffffffff 0xffffffc0>;
+		gpio-map-pass-thru = <0 0x3f>;
+		gpio-map
+			= <0 0 &gpio0 8 0>		/* D0	D2 */ 			
+			, <1 0 &gpio0 6 0>		/* D1 	D3*/			
+			, <2 0 &gpio0 15 0>		/* D2 	D1*/			
+			, <3 0 &gpio0 17 0>		/* D3 	D0*/			
+			, <4 0 &gpio0 20 0>		/* D4/A6 	D4*/		
+			, <5 0 &gpio0 13 0>		/* D5 	C6*/
+			, <6 0 &gpio0 24 0>		/* D6/A7 	D7*/
+			, <7 0 &gpio0 9 0>		/* D7 	E6*/
+			, <8 0 &gpio0 10 0>		/* D8/A8 	B4*/
+			, <9 0 &gpio1 6 0>		/* D9/A9 	B5*/
+			, <10 0 &gpio1 11 0>		/* D10/A10 	B6*/
+			, <16 0 &gpio0 28 0>	/* D16 	B2*/
+			, <14 0 &gpio0 3 0>	/* D14 	B3*/
+			, <15 0 &gpio1 13 0>	/* D15 	B1*/
+			, <18 0 &gpio0 2 0>	/* D18/A0 	F7*/
+			, <19 0 &gpio0 29 0>	/* D19/A1 	F6*/
+			, <20 0 &gpio0 26 0>	/* D20/A2 	F5*/
+			, <21 0 &gpio0 30 0>	/* D21/A3 	F4*/
+			;
+	};
+
+	pro_micro_a: connector_a {
+		compatible = "arduino-pro-micro";
+		#gpio-cells = <2>;
+		gpio-map-mask = <0xffffffff 0xffffffc0>;
+		gpio-map-pass-thru = <0 0x3f>;
+		gpio-map
+			= <0 0 &gpio0 2 0>	/* D18/A0 	F7*/
+			, <1 0 &gpio0 29 0>	/* D19/A1 	F6*/
+			, <2 0 &gpio0 26 0>	/* D20/A2 	F5*/
+			, <3 0 &gpio0 30 0>	/* D21/A3 	F4*/
+			, <6 0 &gpio0 20 0>	/* D4/A6 	D4*/
+			, <7 0 &gpio0 24 0>	/* D6/A7 	D7*/
+			, <8 0 &gpio0 10 0>	/* D8/A8 	B4*/
+			, <9 0 &gpio1 6 0>	/* D9/A9 	B5*/
+			, <10 0 &gpio1 11 0>	/* D10/A10 	B6*/
+			;
+	};
+};
+
+pro_micro_d: &pro_micro {};
+pro_micro_i2c: &i2c0 {};
+pro_micro_spi: &spi0 {};
+pro_micro_serial: &uart0 {};
