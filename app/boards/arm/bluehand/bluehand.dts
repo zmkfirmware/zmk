@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
 #include "arduino_pro_micro_pins.dtsi"
@@ -49,7 +50,7 @@
 			label = "Blue LED";
 		};
 	};
-	
+
 	zephyr,user {
 		/* period cell corresponds to initial period */
 		pwms = <&sw_pwm 0 PWM_USEC(1500) PWM_POLARITY_NORMAL>;
@@ -125,4 +126,3 @@
 	status = "okay";
 	channel-gpios = <&gpio1 13 GPIO_ACTIVE_HIGH>;
 };
-
