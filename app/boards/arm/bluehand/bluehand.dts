@@ -49,11 +49,6 @@
 		};
 	};
 
-	/*zephyr,user {
-	 *	pwms = <&sw_pwm 0 PWM_USEC(1500) PWM_POLARITY_NORMAL>;
-	 * };
-	 */
-
 };
 &adc {
 	status = "okay";
@@ -119,9 +114,3 @@
 		};
 	};
 };
-
-/* &sw_pwm {
- *	status = "okay";
- *	channel-gpios = <&gpio1 13 GPIO_ACTIVE_HIGH>;
- * };
- */
