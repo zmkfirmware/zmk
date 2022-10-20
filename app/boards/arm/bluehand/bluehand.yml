@@ -1,0 +1,12 @@
+file_format: "1"
+id: bluehand
+name: BlueHand
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://nrf52.jpconstantineau.com/docs/macropad/bluehand/
+features:
+  - keys
+
