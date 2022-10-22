@@ -24,7 +24,7 @@ jobs:
         include: ${{ fromJSON(needs.compile-matrix.outputs.include-list) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache west modules
         uses: actions/cache@v3.0.2
         env:
@@ -151,7 +151,7 @@ jobs:
       core-include: ${{ steps.core-list.outputs.result }} 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
@@ -180,7 +180,7 @@ jobs:
       boards-include: ${{ steps.boards-list.outputs.result }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
@@ -307,7 +307,7 @@ jobs:
       organized-metadata: ${{ steps.organize-metadata.outputs.result }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
