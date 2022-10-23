@@ -1,24 +1,17 @@
 #
-# Copyright (c) 2021 Darryl deHaan
+# Copyright (c) 2022 Darryl deHaan
 # SPDX-License-Identifier: MIT
 #
 
 if BOARD_CORNEISH_ZEN_V2_LEFT
 
 	config ZMK_KEYBOARD_NAME
-	default "Corne-ish Zen"
+		default "Corne-ish Zen"
 
 	config ZMK_SPLIT_ROLE_CENTRAL
-	default y
+		default y
 
 endif # BOARD_CORNEISH_ZEN_V2_LEFT
-
-if BOARD_CORNEISH_ZEN_V2_RIGHT
-
-	config ZMK_KEYBOARD_NAME
-	default "Corne-ish Zen rt"
-
-endif # BOARD_CORNEISH_ZEN_V2_RIGHT
 
 
 if BOARD_CORNEISH_ZEN_V2_LEFT || BOARD_CORNEISH_ZEN_V2_RIGHT

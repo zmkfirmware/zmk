@@ -56,24 +56,6 @@
 
 };
 
-/* &i2c0 {
-	status = "okay";
-	compatible = "nordic,nrf-twim";
-	sda-pin = <6>;
-	scl-pin = <26>;
-	clock-frequency = <100000>; 
-
-	fuelgauge: bq27xx@55 {
-		compatible = "ti,bq274xx";
-		label = "BATTERY";
-		reg = <0x55>;
-		design-voltage = <3700>; //Battery Design Volatge in mV
-		design-capacity = <180>; //Battery Design Capacity in mAh
-		taper-current = <2>; //Battery Taper current in mAh
-		terminate-voltage = <2750>; //Battery Terminate Voltage in mV
-	};
-}; */
-
 &spi0  {
 	status = "okay";
 	compatible = "nordic,nrf-spim";
@@ -93,7 +75,6 @@
 		busy-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
 		reset-gpios = <&gpio0 24 GPIO_ACTIVE_LOW>;
 		pwr = [03 00 26 26];
-		//softstart = [17 17 17 17];
 		cdi = <0xd2>;
 		tcon = <0x22>;
 	};
