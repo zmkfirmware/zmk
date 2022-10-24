@@ -11,8 +11,8 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-	model = "corne-ish_zen_v2";
-	compatible = "corne-ish_zen_v2";
+	model = "corneish_zen_v2";
+	compatible = "corneish_zen_v2";
 
 	chosen {
 		zephyr,code-partition = &code_partition;
@@ -86,37 +86,6 @@
 		label = "CDC_ACM_0";
 	};
 };
-
-&uart0 {
-	compatible = "nordic,nrf-uarte";
-	status = "okay";
-	current-speed = <115200>;
-	tx-pin = <39>;
-	rx-pin = <44>;
-	rts-pin = <34>;
-	cts-pin = <9>;
-};
-
-/* &clk_hsi {
-  status = "okay";
-};
-
-&pll {
-  prediv = <1>;
-  mul = <12>;
-  clocks = <&clk_hsi>;
-  status = "okay";
-};
-
-&rcc {
-  clocks = <&pll>;
-  clock-frequency = <DT_FREQ_M(72)>;
-  ahb-prescaler = <1>;
-  apb1-prescaler = <2>;
-}; */
-
-
-
 
 &flash0 {
 	/*

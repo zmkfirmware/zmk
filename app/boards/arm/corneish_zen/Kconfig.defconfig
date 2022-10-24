@@ -22,30 +22,6 @@ config BOARD
 config ZMK_SPLIT
 	default y
 
-#config I2C
-#	bool
-#	default y
-
-#config I2C_0
-#    bool
-#    default y
-#    depends on I2C
-
-#menuconfig SENSOR
-#    bool "Sensor Drivers"
-
-#config BQ274XX
-#    bool "BQ274xx Fuel Gauge"
-#    depends on I2C && SENSOR
-
-#config SENSOR_CAN_FETCH_ALL
-#	bool "Can the fuel gauge fetch all channels at once"
-#	default y
-
-config SPI
-    bool
-    default y
-
 config BT_CTLR
 	default BT
 
@@ -88,10 +64,6 @@ config IL0323
 config ZMK_DISPLAY_BLANK_ON_IDLE
 	default n
 
-#config DISPLAY_WOB
-#	bool "White on Black Display"
-#	default n
-
 endif # ZMK_DISPLAY
 
 menuconfig CUSTOM_WIDGET_BATTERY_STATUS
@@ -105,8 +77,5 @@ menuconfig CUSTOM_WIDGET_LAYER_STATUS
 
 menuconfig CUSTOM_WIDGET_PERIPHERAL_STATUS
 	bool "custom peripheral status widget"
-
-# config CORNE_ISH_ZEN_20
-#    bool
 
 endif # BOARD_CORNEISH_ZEN_V2_LEFT || BOARD_CORNEISH_ZEN_V2_RIGHT
