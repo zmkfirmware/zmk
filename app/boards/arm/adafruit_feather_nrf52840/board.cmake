@@ -1,4 +1,5 @@
-# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
 
 # board_runner_args(jlink "--device=nrf52" "--speed=4000")
 # board_runner_args(pyocd "--target=nrf52840" "--frequency=4000000")

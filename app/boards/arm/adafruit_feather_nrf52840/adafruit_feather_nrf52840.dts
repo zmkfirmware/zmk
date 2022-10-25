@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2020 Tobias Svehagen
- *
- * SPDX-License-Identifier: Apache-2.0
+* Copyright (c) 2021 The ZMK Contributors
+*
+* SPDX-License-Identifier: MIT
  */
 
  /dts-v1/;
