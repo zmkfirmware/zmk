@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "snap.dtsi"
+
+&kscan_demux {
+	input-gpios
+		= <&pro_micro 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 5  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 6  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 8  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		;
+	output-gpios
+		= <&pro_micro 18 GPIO_ACTIVE_HIGH>
+		, <&pro_micro 19 GPIO_ACTIVE_HIGH>
+		, <&pro_micro 20 GPIO_ACTIVE_HIGH>
+		;
+};
+
+&left_encoder {
+	a-gpios = <&pro_micro 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	b-gpios = <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;	
+	status = "okay";
+};
+
+&oled {
+	segment-remap;
+	com-invdir;
+};
