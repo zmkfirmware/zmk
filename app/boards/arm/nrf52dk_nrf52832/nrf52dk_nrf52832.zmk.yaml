@@ -1,0 +1,12 @@
+file_format: "1"
+id: nrf52dk_nrf52832
+name: nrf52dk_nrf52832
+type: board
+arch: arm
+features:
+  - keys
+  - ble
+outputs:
+  - usb
+  - ble
+url: https://nicekeyboards.com/nice-60
