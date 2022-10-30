@@ -4,16 +4,17 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <drivers/behavior.h>
 #include <zephyr/sys/util.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#include <zmk/behavior.h>
+#include <zmk/keymap.h>
 #include <zmk/matrix.h>
 #include <zmk/sensors.h>
-#include <zmk/keymap.h>
-#include <drivers/behavior.h>
-#include <zmk/behavior.h>
+#include <zmk/virtual_key_position.h>
 
 #include <zmk/ble.h>
 #if ZMK_BLE_IS_CENTRAL
@@ -269,7 +270,8 @@ int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sens
                 continue;
             }
 
-            ret = behavior_sensor_keymap_binding_triggered(binding, sensor, timestamp);
+            const uint32_t position = ZMK_VIRTUAL_KEY_POSITION_SENSOR(sensor_number);
+            ret = behavior_sensor_keymap_binding_triggered(binding, sensor, position, timestamp);
 
             if (ret > 0) {
                 LOG_DBG("behavior processing to continue to next layer");

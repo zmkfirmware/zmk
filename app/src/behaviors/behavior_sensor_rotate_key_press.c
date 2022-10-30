@@ -21,7 +21,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static int behavior_sensor_rotate_key_press_init(const struct device *dev) { return 0; };
 
 static int on_sensor_binding_triggered(struct zmk_behavior_binding *binding,
-                                       const struct device *sensor, int64_t timestamp) {
+                                       const struct device *sensor, uint32_t virtual_key_position,
+                                       int64_t timestamp) {
     struct sensor_value value;
     int err;
     uint32_t keycode;
