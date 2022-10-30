@@ -255,7 +255,7 @@ int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pr
 int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sensor,
                                 int64_t timestamp) {
     for (int layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer >= _zmk_keymap_layer_default; layer--) {
-        if (zmk_keymap_layer_active(layer) && zmk_sensor_keymap[layer] != NULL) {
+        if (zmk_keymap_layer_active(layer)) {
             struct zmk_behavior_binding *binding = &zmk_sensor_keymap[layer][sensor_number];
             const struct device *behavior;
             int ret;
