@@ -3,7 +3,7 @@
 #include <dt-bindings/zmk/kscan_mock.h>
 
 / {
-	behaviors {
+    behaviors {
         ht: hold_tap {
             compatible = "zmk,behavior-hold-tap";
             label = "HOLD_TAP";
@@ -47,14 +47,24 @@
         };
     };
 
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    combos {
+        compatible = "zmk,combos";
 
-		default_layer {
-			bindings = <
-				&tdm    &tds
-				&tdb    &td2>;
-		};
-	};
+        td_combo {
+            bindings = <&tdb>;
+            key-positions = <0 1>;
+            timeout-ms = <50>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        label = "Default keymap";
+
+        default_layer {
+            bindings = <
+            &tdm    &tds
+            &tdb    &td2>;
+        };
+    };
 };
