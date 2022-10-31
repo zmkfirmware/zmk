@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "*.overlay": "dts",
+    "*.keymap": "dts",
+    "peripheral_status.h": "c"
+  },
+  "python.formatting.provider": "black",
+
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
