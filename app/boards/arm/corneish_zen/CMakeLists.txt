@@ -9,7 +9,6 @@ endif()
 
 zephyr_library()
 
-# zephyr_library_sources(corne-ish_zen.c)
 if(CONFIG_ZMK_DISPLAY)
   if(CONFIG_CUSTOM_WIDGET_BATTERY_STATUS)
     zephyr_library_sources(widgets/icons/batt_100.c)
