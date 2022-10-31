@@ -3,10 +3,3 @@
 
 config SHIELD_NICE_VIEW
 	def_bool $(shields_list_contains,nice_view)
-
-config LVGL_BITS_PER_PIXEL
-	default 1
-
-choice LVGL_COLOR_DEPTH
-	default LVGL_COLOR_DEPTH_1
-endchoice
