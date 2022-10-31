@@ -1,8 +1,7 @@
 {
   "files.associations": {
     "*.overlay": "dts",
-    "*.keymap": "dts",
-    "peripheral_status.h": "c"
+    "*.keymap": "dts"
   },
-  "python.formatting.provider": "black",
+  "python.formatting.provider": "black"
 }
