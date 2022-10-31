@@ -32,6 +32,7 @@ module.exports = {
       "behaviors/key-toggle",
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
+      "behaviors/tri-state",
       "behaviors/tap-dance",
       "behaviors/caps-word",
       "behaviors/key-repeat",
