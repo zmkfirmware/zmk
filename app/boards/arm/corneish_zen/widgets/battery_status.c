@@ -41,21 +41,52 @@ LV_IMG_DECLARE(batt_0);
 LV_IMG_DECLARE(batt_0_chg);
 
 static void set_battery_symbol(lv_obj_t *icon, struct battery_status_state state) {
-    uint8_t level = state.level;
-
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+    static uint8_t stage_prev = 255;
+    static bool usb_prev = false;
+
+    uint8_t level = state.level;
+    bool usb_present = state.usb_present;
+    uint8_t stage;
+
     if (level > 95) {
-        lv_img_set_src(icon, state.usb_present ? &batt_100_chg : &batt_100);
+        stage = 5;
     } else if (level > 74) {
-        lv_img_set_src(icon, state.usb_present ? &batt_75_chg : &batt_75);
+        stage = 4;
     } else if (level > 49) {
-        lv_img_set_src(icon, state.usb_present ? &batt_50_chg : &batt_50);
+        stage = 3;
     } else if (level > 24) {
-        lv_img_set_src(icon, state.usb_present ? &batt_25_chg : &batt_25);
+        stage = 2;
     } else if (level > 5) {
-        lv_img_set_src(icon, state.usb_present ? &batt_5_chg : &batt_5);
+        stage = 1;
     } else {
-        lv_img_set_src(icon, state.usb_present ? &batt_0_chg : &batt_0);
+        stage = 0;
+    }
+
+    // check if there is a change requiring an update
+    if (usb_present != usb_prev || stage != stage_prev) {
+        switch (stage) {
+        case 5:
+            lv_img_set_src(icon, usb_present ? &batt_100_chg : &batt_100);
+            break;
+        case 4:
+            lv_img_set_src(icon, usb_present ? &batt_75_chg : &batt_75);
+            break;
+        case 3:
+            lv_img_set_src(icon, usb_present ? &batt_50_chg : &batt_50);
+            break;
+        case 2:
+            lv_img_set_src(icon, usb_present ? &batt_25_chg : &batt_25);
+            break;
+        case 1:
+            lv_img_set_src(icon, usb_present ? &batt_5_chg : &batt_5);
+            break;
+        default:
+            lv_img_set_src(icon, usb_present ? &batt_0_chg : &batt_0);
+            break;
+        }
+        usb_prev = usb_present;
+        stage_prev = stage;
     }
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 }
