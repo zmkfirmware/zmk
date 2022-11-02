@@ -49,13 +49,13 @@ static void set_battery_symbol(lv_obj_t *icon, struct battery_status_state state
     bool usb_present = state.usb_present;
     uint8_t stage;
 
-    if (level > 95) {
+    if (level > 87) {
         stage = 5;
-    } else if (level > 74) {
+    } else if (level > 62) {
         stage = 4;
-    } else if (level > 49) {
+    } else if (level > 37) {
         stage = 3;
-    } else if (level > 24) {
+    } else if (level > 12) {
         stage = 2;
     } else if (level > 5) {
         stage = 1;
