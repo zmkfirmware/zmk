@@ -33,16 +33,15 @@
             , <&gpio1  9 GPIO_ACTIVE_HIGH>
             , <&gpio0  7 GPIO_ACTIVE_HIGH>
             ;
-
     };
 
     leds {
-            compatible = "gpio-leds";
-            blue_led: led_0 {
-                gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>;
-                label = "Blue LED";
-            };
+        compatible = "gpio-leds";
+        blue_led: led_0 {
+            gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>;
+            label = "Blue LED";
         };
+    };
 
     vbatt: vbatt {
         compatible = "zmk,battery-voltage-divider";
@@ -56,6 +55,7 @@
 &default_transform {
     col-offset = <6>;
 };
+
 &five_column_transform {
     col-offset = <6>;
 };
@@ -98,7 +98,6 @@
         busy-gpios = <&gpio0 14 GPIO_ACTIVE_LOW>;
         reset-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
         pwr = [03 00 26 26];
-        //softstart = [17 17 17 17];
         cdi = <0xd2>;
         tcon = <0x22>;
     };
