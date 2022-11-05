@@ -7,6 +7,9 @@ CONFIG_BOARD_NICE_NANO_V2=y
 # Enable MPU
 CONFIG_ARM_MPU=y
 
+# Use pinctrl
+CONFIG_PINCTRL=y
+
 # enable GPIO
 CONFIG_GPIO=y
 

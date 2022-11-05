@@ -7,6 +7,7 @@
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
 #include "arduino_pro_micro_pins.dtsi"
+#include "mikoto_520-pinctrl.dtsi"
 
 / {
 	model = "mikoto";
@@ -62,14 +63,17 @@
 
 &i2c0 {
 	compatible = "nordic,nrf-twi";
-	sda-pin = <17>;
-	scl-pin = <20>;
+	pinctrl-0 = <&i2c0_default>;
+	pinctrl-1 = <&i2c0_sleep>;
+	pinctrl-names = "default", "sleep";
 };
 
 &uart0 {
 	compatible = "nordic,nrf-uarte";
-	tx-pin = <8>;
-	rx-pin = <4>;
+	current-speed = <115200>;
+	pinctrl-0 = <&uart0_default>;
+	pinctrl-1 = <&uart0_sleep>;
+	pinctrl-names = "default", "sleep";
 };
 
 &usbd {
