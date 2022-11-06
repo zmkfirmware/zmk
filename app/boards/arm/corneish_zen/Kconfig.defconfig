@@ -44,7 +44,6 @@ endif # USB
 config ZMK_DISPLAY
     select LV_USE_CONT
     select LV_FONT_MONTSERRAT_26
-    select LV_FONT_MONTSERRAT_20
     select LV_FONT_MONTSERRAT_16
     select LV_USE_LABEL
     select LV_USE_IMG
