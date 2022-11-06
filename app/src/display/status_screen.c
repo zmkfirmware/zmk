@@ -11,6 +11,13 @@
 #include <zmk/display/widgets/wpm_status.h>
 #include <zmk/display/status_screen.h>
 
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_BONGO_CAT)
+#include <zmk/display/widgets/bongo_cat.h>
+#endif
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_LUNA)
+#include <zmk/display/widgets/luna.h>
+#endif
+
 #include <logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -32,6 +39,14 @@ static struct zmk_widget_layer_status layer_status_widget;
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_WPM_STATUS)
 static struct zmk_widget_wpm_status wpm_status_widget;
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_BONGO_CAT)
+static struct zmk_widget_bongo_cat bongo_cat_widget;
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_LUNA)
+static struct zmk_widget_luna luna_widget;
 #endif
 
 lv_obj_t *zmk_display_status_screen() {
@@ -71,5 +86,17 @@ lv_obj_t *zmk_display_status_screen() {
     lv_obj_align(zmk_widget_wpm_status_obj(&wpm_status_widget), NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0,
                  0);
 #endif
+
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_BONGO_CAT)
+    zmk_widget_bongo_cat_init(&bongo_cat_widget, screen);
+    lv_obj_align(zmk_widget_bongo_cat_obj(&bongo_cat_widget), NULL, LV_ALIGN_CENTER, 0, 0);
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_LUNA)
+    zmk_widget_luna_init(&luna_widget, screen);
+    lv_obj_align(zmk_widget_luna_obj(&luna_widget), NULL, LV_ALIGN_IN_LEFT_MID, 0, 0);
+#endif
+
+
     return screen;
 }
