@@ -28,7 +28,7 @@ static struct peripheral_status_state get_state(const zmk_event_t *_eh) {
 
 static void set_status_symbol(lv_obj_t *label, struct peripheral_status_state state) {
     const char *text =
-        state.connected ? (LV_SYMBOL_OK) : (LV_SYMBOL_CLOSE);
+        state.connected ? (LV_SYMBOL_WIFI " " LV_SYMBOL_OK) : (LV_SYMBOL_WIFI " " LV_SYMBOL_CLOSE);
 
     LOG_DBG("connected? %s", state.connected ? "true" : "false");
     lv_label_set_text(label, text);
