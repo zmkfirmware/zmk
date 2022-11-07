@@ -60,8 +60,9 @@ static void set_status_symbol(lv_obj_t *label, struct output_status_state state)
         }
         break;
     }
-    lv_obj_set_size(label, 30, 5);
+    
     lv_label_set_text(label, text);
+    lv_obj_set_size(label, 30, 5);
 }
 
 static void output_status_update_cb(struct output_status_state state) {
