@@ -54,6 +54,18 @@ lv_obj_t *zmk_display_status_screen() {
 
     screen = lv_obj_create(NULL, NULL);
 
+
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_BONGO_CAT)
+    zmk_widget_bongo_cat_init(&bongo_cat_widget, screen);
+    lv_obj_align(zmk_widget_bongo_cat_obj(&bongo_cat_widget), NULL, LV_ALIGN_CENTER, 0, 0);
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_LUNA)
+    zmk_widget_luna_init(&luna_widget, screen);
+    lv_obj_align(zmk_widget_luna_obj(&luna_widget), NULL, LV_ALIGN_IN_LEFT_MID, 0, 0);
+#endif
+
+
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS)
     zmk_widget_battery_status_init(&battery_status_widget, screen);
     lv_obj_align(zmk_widget_battery_status_obj(&battery_status_widget), NULL, LV_ALIGN_IN_TOP_RIGHT,
@@ -86,17 +98,6 @@ lv_obj_t *zmk_display_status_screen() {
     lv_obj_align(zmk_widget_wpm_status_obj(&wpm_status_widget), NULL, LV_ALIGN_IN_BOTTOM_RIGHT, 0,
                  0);
 #endif
-
-#if IS_ENABLED(CONFIG_ZMK_WIDGET_BONGO_CAT)
-    zmk_widget_bongo_cat_init(&bongo_cat_widget, screen);
-    lv_obj_align(zmk_widget_bongo_cat_obj(&bongo_cat_widget), NULL, LV_ALIGN_CENTER, 0, 0);
-#endif
-
-#if IS_ENABLED(CONFIG_ZMK_WIDGET_LUNA)
-    zmk_widget_luna_init(&luna_widget, screen);
-    lv_obj_align(zmk_widget_luna_obj(&luna_widget), NULL, LV_ALIGN_IN_LEFT_MID, 0, 0);
-#endif
-
 
     return screen;
 }
