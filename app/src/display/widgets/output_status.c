@@ -60,9 +60,8 @@ static void set_status_symbol(lv_obj_t *label, struct output_status_state state)
         }
         break;
     }
-    
+
     lv_label_set_text(label, text);
-    lv_obj_set_size(label, 30, 5);
 }
 
 static void output_status_update_cb(struct output_status_state state) {
@@ -84,7 +83,7 @@ ZMK_SUBSCRIPTION(widget_output_status, zmk_ble_active_profile_changed);
 int zmk_widget_output_status_init(struct zmk_widget_output_status *widget, lv_obj_t *parent) {
     widget->obj = lv_label_create(parent, NULL);
 
-    lv_obj_set_size(widget->obj, 30, 5);
+    lv_obj_set_size(widget->obj, 40, 15);
 
     sys_slist_append(&widgets, &widget->node);
 
