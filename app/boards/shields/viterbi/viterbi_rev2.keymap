@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+#define DEFAULT 0
+#define FN      1
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+// -------------------------------------------------------------------------------------------------------------
+// | GRAVE  |   1   |  2  |     3      |   4  |   5  |    6     |  |   5      |   6   |  7  |  8  |  9  |  0  |   -    |
+// |  TAB   |   Q   |  W  |     E      |   R  |   T  | C_VOL_DN |  | C_VOL_UP |   Y   |  U  |  I  |  O  |  P  |   \    |
+// |  ESC   |   A   |  S  |     D      |   F  |   G  |  C_PREV  |  |  C_NEXT  |   H   |  J  |  K  |  L  |  ;  |   '    |
+// | LSHIFT |   Z   |  X  |     C      |   V  |   B  |  SPACE   |  |   INS    |   N   |  M  |  ,  |  .  |  /  | RSHIFT |
+// | LMETA  | PSCRN | DEL | Play/Pause | LALT | BSPC |  LCTRL   |  |  SPACE   | ENTER | FN  | END |  [  |  ]  |   =    |
+			bindings = <
+&kp GRAVE  &kp   1   &kp  2  &kp   3    &kp  4   &kp  5   &kp   6        &kp   5      &kp   6   &kp  7   &kp   8   &kp   9   &kp   0   &kp  MINUS
+&kp  TAB   &kp   Q   &kp  W  &kp   E    &kp  R   &kp  T   &kp C_VOL_DN   &kp C_VOL_UP &kp   Y   &kp  U   &kp   I   &kp   O   &kp   P   &kp   BSLH
+&kp  ESC   &kp   A   &kp  S  &kp   D    &kp  F   &kp  G   &kp  C_PREV    &kp  C_NEXT  &kp   H   &kp  J   &kp   K   &kp   L   &kp SEMI  &kp    SQT
+&kp LSHIFT &kp   Z   &kp  X  &kp   C    &kp  V   &kp  B   &kp  SPACE     &kp   INS    &kp   N   &kp  M   &kp COMMA &kp  DOT  &kp SLASH &kp RSHIFT
+&kp LMETA  &kp PSCRN &kp DEL &kp  C_PP  &kp LALT &kp BSPC &kp  LCTRL     &kp  SPACE   &kp ENTER &mo  FN  &kp  END  &kp LBKT  &kp RBKT  &kp  EQUAL
+			>;
+		};
+
+		fn_layer {
+// -------------------------------------------------------------------------------------------------------------
+// |     |  F1  |  F2  |  F3   | F4  | F5  | F6  |  | F7  | F8  | F9  | F10 | F11 | F12 |     |
+// |     |      |  UP  |       |     |     |     |  |     |     |     |     |     |     |     |
+// |     | LEFT | DOWN | RIGHT |     |     |     |  |     |     |     |     |     |     |     |
+// |     |      |      |       |     |     |     |  |     |     |     |     |     |     |     |
+// |     |      |      |       |     |     |     |  |     |     |     |     |     |     |     |
+			bindings = <
+&none &kp  F1  &kp  F2  &kp  F3   &kp F4 &kp F5 &kp F6    &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12
+&none &none    &kp  UP  &none     &none  &none  &none     &none  &none  &none  &none   &none   &none
+&none &kp LEFT &kp DOWN &kp RIGHT &none  &none  &none     &none  &none  &none  &none   &none   &none
+&none &none    &none    &none     &none  &none  &none     &none  &none  &none  &none   &none   &none
+&none &none    &none    &none     &none  &none  &none     &none  &none  &none  &none   &none   &none
+			>;
+		};
+	};
+};

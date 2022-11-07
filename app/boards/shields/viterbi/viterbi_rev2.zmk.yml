@@ -1,0 +1,11 @@
+file_format: "1"
+id: viterbi_rev2
+name: Viterbi Rev2
+type: shield
+url: https://keeb.io/products/viterbi-keyboard-pcbs-5x7-70-split-ortholinear
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - viterbi_rev2_left
+  - viterbi_rev2_right
