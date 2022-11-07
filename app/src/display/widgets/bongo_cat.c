@@ -64,7 +64,7 @@ void update_bongo_cat_wpm(struct zmk_widget_bongo_cat *widget, int wpm) {
             lv_anim_set_values(&widget->anim, 0, 4);
             lv_anim_set_exec_cb(&widget->anim, set_img_src);
             lv_anim_set_repeat_count(&widget->anim, 1000);
-            lv_anim_set_repeat_delay(&widget->anim, 100);
+            lv_anim_set_repeat_delay(&widget->anim, 400);
             images = idle_images;
             current_anim_state = anim_state_idle;
             lv_anim_start(&widget->anim);
