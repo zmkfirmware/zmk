@@ -48,14 +48,14 @@ static void set_status_symbol(lv_obj_t *label, struct output_status_state state)
     case ZMK_ENDPOINT_BLE:
         if (state.active_profile_bonded) {
             if (state.active_profile_connected) {
-                snprintf(text, sizeof(text), " %i " LV_SYMBOL_OK,
+                snprintf(text, sizeof(text), LV_SYMBOL_WIFI " %i " LV_SYMBOL_OK,
                          state.active_profile_index + 1);
             } else {
-                snprintf(text, sizeof(text), " %i " LV_SYMBOL_CLOSE,
+                snprintf(text, sizeof(text), LV_SYMBOL_WIFI " %i " LV_SYMBOL_CLOSE,
                          state.active_profile_index + 1);
             }
         } else {
-            snprintf(text, sizeof(text), " %i " LV_SYMBOL_SETTINGS,
+            snprintf(text, sizeof(text), LV_SYMBOL_WIFI " %i " LV_SYMBOL_SETTINGS,
                      state.active_profile_index + 1);
         }
         break;
