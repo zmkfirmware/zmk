@@ -1,0 +1,39 @@
+#include <dt-bindings/led/led.h>
+
+
+&spi1 {
+
+  compatible = "nordic,nrf-spim";
+	/* Cannot be used together with i2c0. */
+	status = "okay";
+	mosi-pin = <6>; //gpio 0.06
+	// Unused pins, needed for SPI definition, but not used by the ws2812 driver itself.
+	sck-pin = <5>;
+	miso-pin = <7>;
+
+  led_strip: ws2812@0 {
+    compatible = "worldsemi,ws2812-spi";
+    label = "WS2812";
+
+    /* SPI */
+    reg = <0>;
+    spi-max-frequency = <5250000>;
+
+    /* WS2812 */
+    chain-length = <27>; /* number of LEDs */
+    spi-one-frame = <0x70>; /* make sure to configure this properly for your SOC */
+    spi-zero-frame = <0x40>; /* make sure to configure this properly for your SOC */
+    color-mapping = <LED_COLOR_ID_GREEN
+                          LED_COLOR_ID_RED
+                          LED_COLOR_ID_BLUE>;
+  };
+};
+
+/ {
+
+	chosen {
+		zmk,underglow = &led_strip;
+    		zmk,battery = &vbatt;
+	};
+
+};
