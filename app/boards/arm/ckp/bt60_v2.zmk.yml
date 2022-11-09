@@ -1,0 +1,14 @@
+file_format: "1"
+id: bt60_v2
+name: BT60 V2
+type: board
+arch: arm
+features:
+  - keys
+  - encoder
+  - underglow
+  - backlight
+outputs:
+  - usb
+  - ble
+url: https://polarityworks.com/btckp
