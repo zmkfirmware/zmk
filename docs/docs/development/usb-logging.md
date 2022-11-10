@@ -68,7 +68,7 @@ If you already have the Ardunio IDE installed you can also use its built-in Seri
 </TabItem>
 <TabItem value="macos">
 
-On MacOS, the device name is something like `/dev/tty.usbmodemXXXXX` where `XXXXX` is some numerical ID.
+On macOS, the device name is something like `/dev/tty.usbmodemXXXXX` where `XXXXX` is some numerical ID.
 You can connect to the device with [tio](https://tio.github.io/) (can be installed via [Homebrew](https://formulae.brew.sh/formula/tio)):
 
 ```
