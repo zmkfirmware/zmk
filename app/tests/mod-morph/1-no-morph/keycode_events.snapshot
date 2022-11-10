@@ -1,0 +1,5 @@
+pressed: keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+reg implicit: Modifiers set to 0x00
+released: keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+unreg implicit: Modifiers set to 0x00
+unmask mods: Modifiers set to 0x00

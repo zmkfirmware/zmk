@@ -30,3 +30,6 @@ include:
   shield: romac_plus
   cmake-args: "-DCONFIG_ZMK_RGB_UNDERGLOW=y -DCONFIG_WS2812_STRIP=y"
   nickname: "underglow"
+- board: nice_nano_v2
+  shield: lily58_left nice_view_adapter nice_view
+  nickname: "niceview"
