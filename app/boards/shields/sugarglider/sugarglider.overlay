@@ -8,6 +8,7 @@
 
 / {
     chosen {
+        zephyr,display = &oled;
         zmk,kscan = &kscan0;
         zmk,matrix_transform = &default_transform;
     };
@@ -17,6 +18,7 @@
         label = "KSCAN";
 
         diode-direction = "row2col";
+        debounce-scan-period-ms = <10>;
         row-gpios
             = <&ext_gpio 14 (GPIO_ACTIVE_LOW)>
             , <&ext_gpio 15 (GPIO_ACTIVE_LOW)>
@@ -68,6 +70,28 @@
         status = "disabled";
     };
 
+    encoder_3: encoder_3 {
+		compatible = "alps,ec11";
+		label = "Encoder 3";
+		a-gpios = <&blackpill 45 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		b-gpios = <&blackpill 46 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		resolution = <4>;
+		status = "disabled";
+	};
+
+
+	encoder_4: encoder_4 {
+		compatible = "alps,ec11";
+		label = "Encoder 4";
+		a-gpios = <&blackpill 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		b-gpios = <&blackpill 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		resolution = <2>;
+		status = "disabled";
+	};
+};
+
+&spi1 {
+  cs-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
 };
 
 &i2c0 {
@@ -83,5 +107,18 @@
 		#gpio-cells = <2>;
 		ngpios = <16>;
 	};
+    
+	oled: ssd1306@3c {
+		compatible = "solomon,ssd1306fb";
+        status = "okay";
+		reg = <0x3c>;
+		label = "DISPLAY";
+		width = <128>;
+		height = <64>;
+		segment-offset = <0>;
+		page-offset = <0>;
+		display-offset = <0>;
+		multiplex-ratio = <63>;
+		prechargep = <0x22>;
+	};
 };
-
