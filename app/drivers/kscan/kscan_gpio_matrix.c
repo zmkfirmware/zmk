@@ -225,6 +225,8 @@ static int kscan_matrix_read(const struct device *dev) {
     struct kscan_matrix_data *data = dev->data;
     const struct kscan_matrix_config *config = dev->config;
 
+    int num_active = 0;
+    int stored_states[3] = {0};
     // Scan the matrix.
     for (int o = 0; o < config->outputs.len; o++) {
         const struct gpio_dt_spec *out_gpio = &config->outputs.gpios[o];
@@ -245,8 +247,19 @@ static int kscan_matrix_read(const struct device *dev) {
             const int index = state_index_io(config, i, o);
             const bool active = gpio_pin_get_dt(in_gpio);
 
-            debounce_update(&data->matrix_state[index], active, config->debounce_scan_period_ms,
-                            &config->debounce_config);
+
+            if (active) {
+                if (num_active < sizeof(stored_states) / sizeof(stored_states[0])) {
+                    stored_states[num_active] = index;
+                }
+                num_active++;
+            } else {
+                debounce_update(&data->matrix_state[index], active,
+                                config->debounce_scan_period_ms,
+                                &config->debounce_config);
+            }
+
+
         }
 
         err = gpio_pin_set_dt(out_gpio, 0);
@@ -258,6 +271,14 @@ static int kscan_matrix_read(const struct device *dev) {
 #if CONFIG_ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS > 0
         k_busy_wait(CONFIG_ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS);
 #endif
+    }
+
+    if (0 < num_active && num_active <= 3) {
+        for (int i = 0; i < num_active; i++) {
+            int index = stored_states[i];
+            debounce_update(&data->matrix_state[index], true, config->debounce_scan_period_ms,
+                            &config->debounce_config);
+        }
     }
 
     // Process the new state.
