@@ -120,7 +120,7 @@ Example:
 
 		nav_layer {
 			bindings = <
-                &tog NAVI       &kp KP_DIVIDE   &kp KP_MULTIPLY &kp KP_MINUS
+                &tog DEFAULT    &kp KP_DIVIDE   &kp KP_MULTIPLY &kp KP_MINUS
                 &kp HOME        &kp UP          &kp PAGE_UP     &kp KP_PLUS
                 &kp LEFT        &none           &kp RIGHT       &kp KP_PLUS
                 &kp END         &kp DOWN        &kp PAGE_DOWN   &kp RETURN
