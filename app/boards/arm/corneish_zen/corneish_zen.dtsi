@@ -22,6 +22,7 @@
         zmk,display = &epd;
         zmk,battery = &vbatt;
         zephyr,console = &cdc_acm_uart;
+        zmk,matrix_transform = &default_transform;
     };
 
     default_transform: keymap_transform_0 {
