@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	behaviors {
+		/omit-if-no-ref/ lock: behavior_custom_lock {
+			compatible = "zmk,behavior-custom-lock";
+			label = "CUSTOM LOCK";
+			#binding-cells = <0>;
+		};
+	};
+};
