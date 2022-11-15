@@ -115,17 +115,32 @@ endif
 
 ## Shield Overlays
 
-### Pro Micro Compatible Shields
+<Tabs
+defaultValue="pro_micro"
+values={[
+{label: 'Pro Micro Shields', value: 'pro_micro'},
+{label: 'BlackPill Shields', value: 'blackpill'},
+]}>
+
+<TabItem value="pro_micro">
+
+### Pro Micro Shields
 
 ![Labelled Pro Micro pins](../assets/pro-micro/pro-micro-pins-labelled.jpg)
 
 ZMK uses the blue color coded pin names to generate devicetree node references. For example, to refer to the node `0` in the devicetree files, use `&pro_micro 0`.
 
-### BlackPill Compatible Shields
+</TabItem>
+
+<TabItem value="blackpill">
+
+### BlackPill Shields
 
 ![Labelled BlackPill pins](../assets/blackpill/blackpill-pins-labelled.png)
 
 ZMK uses the blue color coded pin names to generate devicetree node references. For example, to refer to the node `17` in the devicetree files, use `&blackpill 17`.
+
+</TabItem>
 
 <Tabs
 defaultValue="unibody"
