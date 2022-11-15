@@ -115,9 +115,17 @@ endif
 
 ## Shield Overlays
 
+### Pro Micro Compatible Shields
+
 ![Labelled Pro Micro pins](../assets/pro-micro/pro-micro-pins-labelled.jpg)
 
 ZMK uses the blue color coded pin names to generate devicetree node references. For example, to refer to the node `0` in the devicetree files, use `&pro_micro 0`.
+
+### BlackPill Compatible Shields
+
+![Labelled BlackPill pins](../assets/blackpill/blackpill-pins-labelled.jpg)
+
+ZMK uses the blue color coded pin names to generate devicetree node references. For example, to refer to the node `17` in the devicetree files, use `&blackpill 17`.
 
 <Tabs
 defaultValue="unibody"
