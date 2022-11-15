@@ -123,7 +123,7 @@ ZMK uses the blue color coded pin names to generate devicetree node references. 
 
 ### BlackPill Compatible Shields
 
-![Labelled BlackPill pins](../assets/blackpill/blackpill-pins-labelled.jpg)
+![Labelled BlackPill pins](../assets/blackpill/blackpill-pins-labelled.png)
 
 ZMK uses the blue color coded pin names to generate devicetree node references. For example, to refer to the node `17` in the devicetree files, use `&blackpill 17`.
 
