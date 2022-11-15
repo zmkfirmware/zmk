@@ -141,6 +141,7 @@ ZMK uses the blue color coded pin names to generate devicetree node references. 
 ZMK uses the blue color coded pin names to generate devicetree node references. For example, to refer to the node `17` in the devicetree files, use `&blackpill 17`.
 
 </TabItem>
+</Tabs>
 
 <Tabs
 defaultValue="unibody"
