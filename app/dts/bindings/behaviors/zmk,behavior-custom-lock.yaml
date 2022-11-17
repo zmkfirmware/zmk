@@ -1,8 +1,11 @@
 # Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-description: Custom Lock Behavior
+description: Custom lock behavior variable definition
 
 compatible: "zmk,behavior-custom-lock"
 
-include: zero_param.yaml
+child-binding:
+  description: Key definitions for lock variable
+
+  include: two_param.yaml
