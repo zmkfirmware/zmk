@@ -26,6 +26,10 @@ struct behavior_custom_lock_key_config {
     char *locked_behavior_dev;
 };
 
+struct behavior_custom_lock_var_config {
+    uint8_t persistence;
+};
+
 struct behavior_custom_lock_var_data {
     bool active;
 };
@@ -88,7 +92,14 @@ static int lock_settings_load(const char *name, size_t len, settings_read_cb rea
     }
 
     struct behavior_custom_lock_var_data* data = dev->data;
+    const struct behavior_custom_lock_var_config *config = dev->config;
     int rc;
+
+    if (config->persistence == 0) {
+        LOG_WRN("key %s is not marked as persistent (%d), deleting", name, config->persistence);
+        lock_delete_state(name);
+        return 0;
+    }
 
     if (len != sizeof(bool)) {
         LOG_DBG("something is of with size %d", len);
@@ -182,9 +193,13 @@ static int on_keymap_var_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     const struct device *dev = device_get_binding(binding->behavior_dev);
     struct behavior_custom_lock_var_data* data = dev->data;
+    const struct behavior_custom_lock_var_config* config = dev->config;
 
     data->active = !data->active;
-    lock_save_state(dev->name, data->active);
+
+    if (config->persistence != 0) {
+        lock_save_state(dev->name, data->active);
+    }
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
@@ -217,9 +232,13 @@ static const struct behavior_driver_api behavior_lock_var_driver_api = {
 #define CL_INST(id) \
     DT_INST_FOREACH_CHILD(id, CL_CHILD) \
     static struct behavior_custom_lock_var_data behavior_lock_var_data_##id = { .active = false }; \
-        \
-    DEVICE_DT_INST_DEFINE(id, &behavior_lock_var_init, NULL, &behavior_lock_var_data_##id, \
-            NULL, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_lock_var_driver_api);
+    static struct behavior_custom_lock_var_config behavior_lock_var_config_##id = { \
+        .persistence = DT_INST_ENUM_IDX(id, persistence), \
+    };\
+    \
+    DEVICE_DT_INST_DEFINE(id, &behavior_lock_var_init, NULL, \
+            &behavior_lock_var_data_##id, &behavior_lock_var_config_##id, \
+            APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_lock_var_driver_api);
 
 
 DT_INST_FOREACH_STATUS_OKAY(CL_INST)

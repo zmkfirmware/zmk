@@ -7,6 +7,16 @@ compatible: "zmk,behavior-custom-lock"
 
 include: zero_param.yaml
 
+properties:
+  persistence:
+    type: string
+    default: "disabled"
+    required: false
+    enum:
+      - "disabled"
+      - "enabled"
+      - "per-profile"
+
 child-binding:
   description: Key definitions for lock variable
 
