@@ -7,6 +7,7 @@
 #define DT_DRV_COMPAT zmk_behavior_custom_lock
 
 #include <device.h>
+#include <settings/settings.h>
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
@@ -63,7 +64,72 @@ static void clear_lock_key(struct active_lock_key *lock_key) {
     lock_key->position = ZMK_BHV_LOCK_KEY_POSITION_FREE;
 }
 
-static int behavior_lock_init(const struct device *dev) { 
+#if IS_ENABLED(CONFIG_SETTINGS)
+
+static void lock_save_state(const char* name, bool active) {
+    char settings_name[30];
+    sprintf(settings_name, "bhv/lock/%s", name);
+    settings_save_one(settings_name, &active, sizeof(bool));
+}
+
+static void lock_delete_state(const char* name) {
+    char settings_name[30];
+    sprintf(settings_name, "bhv/lock/%s", name);
+    settings_delete(settings_name);
+}
+
+static int lock_settings_load(const char *name, size_t len, settings_read_cb read_cb, void *cb_arg) {
+    const struct device* dev = device_get_binding(name);
+
+    if (dev == NULL) {
+        LOG_WRN("Unknown lock device from settings %s - purging from settings", name);
+        lock_delete_state(name);
+        return -1;
+    }
+
+    struct behavior_custom_lock_var_data* data = dev->data;
+    int rc;
+
+    if (len != sizeof(bool)) {
+        LOG_DBG("something is of with size %d", len);
+        return -EINVAL;
+    }
+
+    rc = read_cb(cb_arg, &data->active, sizeof(bool));
+    if (rc >= 0) {
+        return 0;
+    }
+
+    return rc;
+}
+
+struct settings_handler lock_settings_conf = {.name = "bhv/lock", .h_set = lock_settings_load};
+
+#endif
+
+static int behavior_lock_init(const struct device *_arg) {
+
+#if IS_ENABLED(CONFIG_SETTINGS)
+    settings_subsys_init();
+
+    int err = settings_register(&lock_settings_conf);
+    if (err) {
+        LOG_ERR("Failed to register the ext_power settings handler (err %d)", err);
+        return err;
+    }
+
+    settings_load_subtree("bhv/lock");
+#endif
+
+    return 0;
+}
+
+
+static int behavior_lock_key_init(const struct device *dev) {
+    return 0;
+};
+
+static int behavior_lock_var_init(const struct device *dev) {
     for (int i = 0; i < ZMK_BHV_LOCK_KEY_MAX_HELD; i++) {
         active_lock_keys[i].position = ZMK_BHV_LOCK_KEY_POSITION_FREE;
     }
@@ -118,6 +184,7 @@ static int on_keymap_var_binding_pressed(struct zmk_behavior_binding *binding,
     struct behavior_custom_lock_var_data* data = dev->data;
 
     data->active = !data->active;
+    lock_save_state(dev->name, data->active);
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
@@ -143,7 +210,7 @@ static const struct behavior_driver_api behavior_lock_var_driver_api = {
         .unlocked_behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(id, bindings, 0)), \
         .locked_behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(id, bindings, 1)), \
     }; \
-    DEVICE_DT_DEFINE(id, &behavior_lock_init, NULL, NULL, &behavior_lock_key_config_##id, \
+    DEVICE_DT_DEFINE(id, &behavior_lock_key_init, NULL, NULL, &behavior_lock_key_config_##id, \
            APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_lock_key_driver_api);
 
 
@@ -151,10 +218,12 @@ static const struct behavior_driver_api behavior_lock_var_driver_api = {
     DT_INST_FOREACH_CHILD(id, CL_CHILD) \
     static struct behavior_custom_lock_var_data behavior_lock_var_data_##id = { .active = false }; \
         \
-    DEVICE_DT_INST_DEFINE(id, &behavior_lock_init, NULL, &behavior_lock_var_data_##id, \
+    DEVICE_DT_INST_DEFINE(id, &behavior_lock_var_init, NULL, &behavior_lock_var_data_##id, \
             NULL, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_lock_var_driver_api);
 
 
 DT_INST_FOREACH_STATUS_OKAY(CL_INST)
+
+SYS_INIT(behavior_lock_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
