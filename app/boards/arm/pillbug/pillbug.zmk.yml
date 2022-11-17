@@ -3,10 +3,8 @@ id: pillbug
 name: PillBug
 type: board
 arch: arm
-features:
-  - keys
 outputs:
   - usb
   - ble
-url: https://mechwild.com
+url: https://mechwild.com/product/pillbug
 exposes: [blackpill]
