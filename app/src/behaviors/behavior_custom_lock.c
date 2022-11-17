@@ -11,6 +11,8 @@
 #include <drivers/behavior.h>
 #include <logging/log.h>
 
+#include <zmk/ble.h>
+#include <zmk/endpoints.h>
 #include <zmk/behavior.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -20,6 +22,12 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define ZMK_BHV_LOCK_KEY_MAX_HELD 10
 #define ZMK_BHV_LOCK_KEY_POSITION_FREE UINT32_MAX
 
+enum lock_persistence {
+    PERS_DISABLED = 0,
+    PERS_ENABLED = 1,
+    PERS_PER_PROFILE = 2
+};
+
 struct behavior_custom_lock_key_config {
     const struct device *dev;
     char *unlocked_behavior_dev;
@@ -27,11 +35,16 @@ struct behavior_custom_lock_key_config {
 };
 
 struct behavior_custom_lock_var_config {
-    uint8_t persistence;
+    enum lock_persistence persistence;
+};
+
+struct active_state {
+    bool def;
+    bool profiles[ZMK_BLE_PROFILE_COUNT];
 };
 
 struct behavior_custom_lock_var_data {
-    bool active;
+    struct active_state active;
 };
 
 struct active_lock_key {
@@ -68,12 +81,44 @@ static void clear_lock_key(struct active_lock_key *lock_key) {
     lock_key->position = ZMK_BHV_LOCK_KEY_POSITION_FREE;
 }
 
+static bool* get_active_state(const struct device* dev) {
+    struct behavior_custom_lock_var_data* data = dev->data;
+    const struct behavior_custom_lock_var_config *config = dev->config;
+
+    switch (config->persistence) {
+        case PERS_DISABLED:
+        case PERS_ENABLED:
+            return &data->active.def;
+        case PERS_PER_PROFILE:
+            if (zmk_endpoints_selected() == ZMK_ENDPOINT_BLE) {
+                return &data->active.profiles[zmk_ble_active_profile_index()];
+            } else {
+                return &data->active.def;
+            }
+        default:
+            LOG_ERR("Unknown persistence value encountered %d", config->persistence);
+    }
+
+    LOG_ERR("Couldn't find usable active state");
+    return NULL;
+}
+
+static void toggle_active_state(const struct device* dev) {
+    bool* state = get_active_state(dev);
+    if (state == NULL) {
+        LOG_ERR("encountered null state %s", dev->name);
+        return;
+    }
+
+    *state = !(*state);
+}
+
 #if IS_ENABLED(CONFIG_SETTINGS)
 
-static void lock_save_state(const char* name, bool active) {
+static void lock_save_state(const char* name, struct active_state* active) {
     char settings_name[30];
     sprintf(settings_name, "bhv/lock/%s", name);
-    settings_save_one(settings_name, &active, sizeof(bool));
+    settings_save_one(settings_name, active, sizeof(struct active_state));
 }
 
 static void lock_delete_state(const char* name) {
@@ -101,12 +146,12 @@ static int lock_settings_load(const char *name, size_t len, settings_read_cb rea
         return 0;
     }
 
-    if (len != sizeof(bool)) {
+    if (len != sizeof(struct active_state)) {
         LOG_DBG("something is of with size %d", len);
         return -EINVAL;
     }
 
-    rc = read_cb(cb_arg, &data->active, sizeof(bool));
+    rc = read_cb(cb_arg, &data->active, sizeof(struct active_state));
     if (rc >= 0) {
         return 0;
     }
@@ -154,10 +199,9 @@ static int on_keymap_key_binding_pressed(struct zmk_behavior_binding *binding,
     const struct behavior_custom_lock_key_config *config = dev->config;
 
     const struct device *parent = config->dev;
-    const bool active = ((struct behavior_custom_lock_var_data*)parent->data)->active;
 
     struct zmk_behavior_binding new_binding = {0};
-    if (active) {
+    if (*get_active_state(parent)) {
         new_binding.behavior_dev = config->locked_behavior_dev;
         new_binding.param1 = binding->param2;
     } else {
@@ -195,11 +239,13 @@ static int on_keymap_var_binding_pressed(struct zmk_behavior_binding *binding,
     struct behavior_custom_lock_var_data* data = dev->data;
     const struct behavior_custom_lock_var_config* config = dev->config;
 
-    data->active = !data->active;
+    toggle_active_state(dev);
 
+#if IS_ENABLED(CONFIG_SETTINGS)
     if (config->persistence != 0) {
-        lock_save_state(dev->name, data->active);
+        lock_save_state(dev->name, &data->active);
     }
+#endif
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
