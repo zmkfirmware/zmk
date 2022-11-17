@@ -5,7 +5,14 @@ description: Custom lock behavior variable definition
 
 compatible: "zmk,behavior-custom-lock"
 
+include: zero_param.yaml
+
 child-binding:
   description: Key definitions for lock variable
 
   include: two_param.yaml
+  
+  properties:
+    bindings:
+      type: phandles
+      required: true
