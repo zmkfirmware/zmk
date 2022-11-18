@@ -11,6 +11,10 @@ menuconfig ZMK_DISPLAY
 
 if ZMK_DISPLAY
 
+config ZMK_DISPLAY_BLANK_ON_IDLE
+    bool "Blank display on idle"
+    default y
+
 choice LVGL_TXT_ENC
     default LVGL_TXT_ENC_UTF8
 

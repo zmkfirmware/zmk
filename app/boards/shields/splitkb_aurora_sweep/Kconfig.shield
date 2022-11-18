@@ -1,0 +1,8 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_SPLITKB_AURORA_SWEEP_LEFT
+	def_bool $(shields_list_contains,splitkb_aurora_sweep_left)
+
+config SHIELD_SPLITKB_AURORA_SWEEP_RIGHT
+	def_bool $(shields_list_contains,splitkb_aurora_sweep_right)

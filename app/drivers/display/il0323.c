@@ -115,28 +115,6 @@ static int il0323_update_display(const struct device *dev) {
     return 0;
 }
 
-static int il0323_blanking_off(const struct device *dev) {
-    struct il0323_data *driver = dev->data;
-
-    if (blanking_on) {
-        /* Update EPD pannel in normal mode */
-        il0323_busy_wait(driver);
-        if (il0323_update_display(dev)) {
-            return -EIO;
-        }
-    }
-
-    blanking_on = false;
-
-    return 0;
-}
-
-static int il0323_blanking_on(const struct device *dev) {
-    blanking_on = true;
-
-    return 0;
-}
-
 static int il0323_write(const struct device *dev, const uint16_t x, const uint16_t y,
                         const struct display_buffer_descriptor *desc, const void *buf) {
     struct il0323_data *driver = dev->data;
@@ -208,6 +186,58 @@ static int il0323_read(const struct device *dev, const uint16_t x, const uint16_
     return -ENOTSUP;
 }
 
+static int il0323_clear_and_write_buffer(const struct device *dev, uint8_t pattern, bool update) {
+    struct display_buffer_descriptor desc = {
+        .buf_size = IL0323_NUMOF_PAGES,
+        .width = EPD_PANEL_WIDTH,
+        .height = 1,
+        .pitch = EPD_PANEL_WIDTH,
+    };
+    uint8_t *line;
+
+    line = k_malloc(IL0323_NUMOF_PAGES);
+    if (line == NULL) {
+        return -ENOMEM;
+    }
+
+    memset(line, pattern, IL0323_NUMOF_PAGES);
+    for (int i = 0; i < EPD_PANEL_HEIGHT; i++) {
+        il0323_write(dev, 0, i, &desc, line);
+    }
+
+    k_free(line);
+
+    if (update == true) {
+        if (il0323_update_display(dev)) {
+            return -EIO;
+        }
+    }
+
+    return 0;
+}
+
+static int il0323_blanking_off(const struct device *dev) {
+    struct il0323_data *driver = dev->data;
+
+    if (blanking_on) {
+        /* Update EPD pannel in normal mode */
+        il0323_busy_wait(driver);
+        if (il0323_clear_and_write_buffer(dev, 0xff, true)) {
+            return -EIO;
+        }
+    }
+
+    blanking_on = false;
+
+    return 0;
+}
+
+static int il0323_blanking_on(const struct device *dev) {
+    blanking_on = true;
+
+    return 0;
+}
+
 static void *il0323_get_framebuffer(const struct device *dev) {
     LOG_ERR("not supported");
     return NULL;
@@ -245,36 +275,6 @@ static int il0323_set_pixel_format(const struct device *dev, const enum display_
 
     LOG_ERR("not supported");
     return -ENOTSUP;
-}
-
-static int il0323_clear_and_write_buffer(const struct device *dev, uint8_t pattern, bool update) {
-    struct display_buffer_descriptor desc = {
-        .buf_size = IL0323_NUMOF_PAGES,
-        .width = EPD_PANEL_WIDTH,
-        .height = 1,
-        .pitch = EPD_PANEL_WIDTH,
-    };
-    uint8_t *line;
-
-    line = k_malloc(IL0323_NUMOF_PAGES);
-    if (line == NULL) {
-        return -ENOMEM;
-    }
-
-    memset(line, pattern, IL0323_NUMOF_PAGES);
-    for (int i = 0; i < EPD_PANEL_HEIGHT; i++) {
-        il0323_write(dev, 0, i, &desc, line);
-    }
-
-    k_free(line);
-
-    if (update == true) {
-        if (il0323_update_display(dev)) {
-            return -EIO;
-        }
-    }
-
-    return 0;
 }
 
 static int il0323_controller_init(const struct device *dev) {
@@ -348,10 +348,6 @@ static int il0323_controller_init(const struct device *dev) {
     tmp[0] = IL0323_AUTO_PON_DRF_POF;
     if (il0323_write_cmd(driver, IL0323_CMD_AUTO, tmp, 1)) {
         return -EIO;
-    }
-
-    if (il0323_clear_and_write_buffer(dev, 0xff, false)) {
-        return -1;
     }
 
     return 0;

@@ -1,0 +1,33 @@
+#
+# Copyright (c) 2022 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+#
+
+description: >
+  This is a representation of the 595 Shift Register.
+
+compatible: "zmk,gpio-595"
+
+include: [gpio-controller.yaml, spi-device.yaml]
+
+properties:
+  label:
+    required: true
+
+  "#gpio-cells":
+    const: 2
+
+  ngpios:
+    type: int
+    required: true
+    enum:
+      - 8
+      - 16
+      - 24
+      - 32
+    description: Number of gpios supported
+
+gpio-cells:
+  - pin
+  - flags

@@ -1,0 +1,8 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_ETERNAL_KEYPAD
+	def_bool $(shields_list_contains,eternal_keypad)
+
+config SHIELD_ETERNAL_KEYPAD_LEFTY
+	def_bool $(shields_list_contains,eternal_keypad_lefty)

@@ -1,0 +1,20 @@
+enhance_usage: Enhancing usage 0x04 with modifiers: 0x02
+pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x02 explicit_mods 0x00
+press: Modifiers set to 0x02
+released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+release: Modifiers set to 0x00
+pressed: usage_page 0x07 keycode 0xE1 implicit_mods 0x00 explicit_mods 0x00
+press: Modifiers set to 0x02
+caps_includelist: Comparing with 0x07 - 0x2D (with implicit mods: 0x02)
+caps_includelist: Continuing capsword, found included usage: 0x07 - 0x2D
+pressed: usage_page 0x07 keycode 0x2D implicit_mods 0x00 explicit_mods 0x00
+press: Modifiers set to 0x02
+released: usage_page 0x07 keycode 0x2D implicit_mods 0x00 explicit_mods 0x00
+release: Modifiers set to 0x02
+released: usage_page 0x07 keycode 0xE1 implicit_mods 0x00 explicit_mods 0x00
+release: Modifiers set to 0x00
+enhance_usage: Enhancing usage 0x04 with modifiers: 0x02
+pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x02 explicit_mods 0x00
+press: Modifiers set to 0x02
+released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+release: Modifiers set to 0x00

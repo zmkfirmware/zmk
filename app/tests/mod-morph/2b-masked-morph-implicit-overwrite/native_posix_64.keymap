@@ -1,0 +1,37 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        mod_morph: mod_morph {
+            compatible = "zmk,behavior-mod-morph";
+            label = "MOD_MORPH_TEST";
+            #binding-cells = <0>;
+            bindings = <&kp A>, <&kp LS(B)>;  // implict mod overwrite
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+    };
+
+	keymap {
+		compatible = "zmk,keymap";
+		label ="Default keymap";
+
+		default_layer {
+			bindings = <
+				&kp LEFT_ALT &mod_morph
+				&kp LEFT_SHIFT &kp RIGHT_SHIFT
+			>;
+		};
+	};
+};
+
+&kscan {
+	events = <
+		ZMK_MOCK_PRESS(1,0,10)
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+		ZMK_MOCK_RELEASE(1,0,10)
+	>;
+};
+

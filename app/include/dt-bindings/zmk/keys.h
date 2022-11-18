@@ -263,6 +263,7 @@
 
 /* Keyboard Non-US # and ~ (Non-US Hash/Number and Tilde) */
 #define NON_US_HASH (ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_NON_US_HASH_AND_TILDE))
+#define NUHS (NON_US_HASH)
 
 /* Keyboard ~ (Tilde) */
 #define TILDE2 (LS(ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_NON_US_HASH_AND_TILDE)))
@@ -499,6 +500,7 @@
 #define NON_US_BACKSLASH                                                                           \
     (ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_NON_US_BACKSLASH_AND_PIPE))
 #define NON_US_BSLH (NON_US_BACKSLASH)
+#define NUBS (NON_US_BACKSLASH)
 
 /* Keyboard Pipe */
 #define PIPE2 (LS(ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_NON_US_BACKSLASH_AND_PIPE)))
@@ -1403,6 +1405,10 @@
 /* Consumer AC Desktop Show All Windows */
 #define C_AC_DESKTOP_SHOW_ALL_WINDOWS                                                              \
     (ZMK_HID_USAGE(HID_USAGE_CONSUMER, HID_USAGE_CONSUMER_AC_DESKTOP_SHOW_ALL_WINDOWS))
+
+/* Consumer AC Desktop Show All Applications */
+#define C_AC_DESKTOP_SHOW_ALL_APPLICATIONS                                                         \
+    (ZMK_HID_USAGE(HID_USAGE_CONSUMER, HID_USAGE_CONSUMER_AC_DESKTOP_SHOW_ALL_APPLICATIONS))
 
 /* Consumer Keyboard Input Assist Previous */
 #define C_KEYBOARD_INPUT_ASSIST_PREVIOUS                                                           \

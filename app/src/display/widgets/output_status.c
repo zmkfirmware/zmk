@@ -39,24 +39,24 @@ static struct output_status_state get_state(const zmk_event_t *_eh) {
 }
 
 static void set_status_symbol(lv_obj_t *label, struct output_status_state state) {
-    char text[9] = {};
+    char text[10] = {};
 
     switch (state.selected_endpoint) {
     case ZMK_ENDPOINT_USB:
-        strcat(text, LV_SYMBOL_USB "   ");
+        strcat(text, LV_SYMBOL_USB);
         break;
     case ZMK_ENDPOINT_BLE:
         if (state.active_profile_bonded) {
             if (state.active_profile_connected) {
-                snprintf(text, sizeof(text), LV_SYMBOL_WIFI "%i " LV_SYMBOL_OK,
-                         state.active_profile_index);
+                snprintf(text, sizeof(text), LV_SYMBOL_WIFI " %i " LV_SYMBOL_OK,
+                         state.active_profile_index + 1);
             } else {
-                snprintf(text, sizeof(text), LV_SYMBOL_WIFI "%i " LV_SYMBOL_CLOSE,
-                         state.active_profile_index);
+                snprintf(text, sizeof(text), LV_SYMBOL_WIFI " %i " LV_SYMBOL_CLOSE,
+                         state.active_profile_index + 1);
             }
         } else {
-            snprintf(text, sizeof(text), LV_SYMBOL_WIFI "%i " LV_SYMBOL_SETTINGS,
-                     state.active_profile_index);
+            snprintf(text, sizeof(text), LV_SYMBOL_WIFI " %i " LV_SYMBOL_SETTINGS,
+                     state.active_profile_index + 1);
         }
         break;
     }

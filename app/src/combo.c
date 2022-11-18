@@ -211,7 +211,7 @@ static int filter_timed_out_candidates(int64_t timestamp) {
         if (candidate->timeout_at > timestamp) {
             // reorder candidates so they're contiguous
             candidates[num_candidates].combo = candidate->combo;
-            candidates[num_candidates].timeout_at = candidates->timeout_at;
+            candidates[num_candidates].timeout_at = candidate->timeout_at;
             num_candidates++;
         } else {
             candidate->combo = NULL;
