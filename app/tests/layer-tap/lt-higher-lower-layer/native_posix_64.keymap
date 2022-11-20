@@ -1,0 +1,71 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+&lt {
+    flavor = "balanced";
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                &kp N0 &lt 2 N0
+                &to 1 &to 3
+            >;
+        };
+        layer_1 {
+            bindings = <
+                &kp N1 &none
+                &lt 2 N1 &to 0
+            >;
+        };
+        layer_2 {
+            bindings = <
+                &kp N2 &none
+                &trans &trans
+            >;
+        };
+        layer_3 {
+            bindings = <
+                &kp N3 &none
+                &lt 2 N3 &to 0
+            >;
+        };
+    };
+};
+
+&kscan {
+  events = <
+    // LT 0->2 and get 2
+    ZMK_MOCK_PRESS(0,1,10)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    ZMK_MOCK_RELEASE(0,1,10)
+
+    // TO 1
+    ZMK_MOCK_PRESS(1,0,10)
+    ZMK_MOCK_RELEASE(1,0,10)
+
+    // LT 1->2 and get 2
+    ZMK_MOCK_PRESS(1,0,10)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    ZMK_MOCK_RELEASE(1,0,10)
+
+    // TO 0
+    ZMK_MOCK_PRESS(1,1,10)
+    ZMK_MOCK_RELEASE(1,1,10)
+
+    // TO 3
+    ZMK_MOCK_PRESS(1,1,10)
+    ZMK_MOCK_RELEASE(1,1,10)
+
+    // LT 3->2 and get 2
+    ZMK_MOCK_PRESS(1,0,10)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    ZMK_MOCK_RELEASE(1,0,10)
+    >;
+};
