@@ -19,11 +19,11 @@ Variations of the warnings shown below occur when flashing the `<firmware>.uf2` 
 
 | ![Example Error Screen](../docs/assets/troubleshooting/filetransfer/mac.png) |
 | :--------------------------------------------------------------------------: |
-|                An example of the file transfer error on MacOS                |
+|                An example of the file transfer error on macOS                |
 
-### MacOS Ventura error
+### macOS Ventura error
 
-MacOS 13.0 (Ventura) Finder running on Apple silicon hardware may report an error code 100093 when copying `<firmware>.uf2` files into microcontrollers. This bug is limited to the operating system's Finder. You can work around it by copying on Terminal command line or use a third party file manager.
+macOS 13.0 (Ventura) Finder may report an error code 100093 when copying `<firmware>.uf2` files into microcontrollers. This bug is limited to the operating system's Finder. You can work around it by copying on Terminal command line or use a third party file manager.
 
 ### CMake Error
 
