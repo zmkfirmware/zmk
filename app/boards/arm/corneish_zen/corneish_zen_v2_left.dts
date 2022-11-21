@@ -43,7 +43,7 @@
 		};
 	};
 
-    vbatt: vbatt {
+	vbatt: vbatt {
 		compatible = "zmk,battery-voltage-divider";
 		label = "BATTERY";
 		io-channels = <&adc 0>;
