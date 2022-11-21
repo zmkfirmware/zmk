@@ -10,6 +10,7 @@
 /{
 	chosen {
 		zephyr,display = &epd;
+		zmk,battery = &vbatt;
 	};
 
 	kscan0: kscan {
@@ -40,10 +41,6 @@
 			gpios = <&gpio0 16 GPIO_ACTIVE_HIGH>;
 			label = "Blue LED";
 		};
-	};
-
-    chosen {
-		zmk,battery = &vbatt;
 	};
 
     vbatt: vbatt {
