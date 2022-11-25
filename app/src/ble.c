@@ -227,6 +227,15 @@ int zmk_ble_clear_bonds() {
 
 int zmk_ble_active_profile_index() { return active_profile; }
 
+int zmk_ble_profile_index(const bt_addr_le_t *addr) {
+    for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
+        if (bt_addr_le_cmp(addr, &profiles[i].peer) == 0) {
+            return i;
+        }
+    }
+    return -ENODEV;
+}
+
 #if IS_ENABLED(CONFIG_SETTINGS)
 static void ble_save_profile_work(struct k_work *work) {
     settings_save_one("ble/active_profile", &active_profile, sizeof(active_profile));

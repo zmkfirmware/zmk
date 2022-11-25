@@ -294,6 +294,20 @@ config ZMK_BACKLIGHT_AUTO_OFF_USB
 #ZMK_BACKLIGHT
 endif
 
+menuconfig ZMK_LED_INDICATORS
+	bool "LED indicators"
+	select LED
+
+if ZMK_LED_INDICATORS
+
+config ZMK_LED_INDICATORS_BRT
+	int "Brightness in percent"
+	range 1 100
+	default 80
+
+#ZMK_LED_INDICATORS
+endif
+
 #Display/LED Options
 endmenu
 
