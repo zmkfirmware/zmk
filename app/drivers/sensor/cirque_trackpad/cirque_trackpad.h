@@ -1,6 +1,8 @@
 #pragma once
 
 #include <device.h>
+#include <drivers/spi.h>
+#include <drivers/i2c.h>
 
 #define PINNACLE_READ       0xA0
 #define PINNACLE_WRITE      0x80
@@ -50,7 +52,6 @@
 #define PINNACLE_PACKET0_Y_SIGN     BIT(5)  // Y delta sign
 
 struct pinnacle_data {
-    const struct device *spi;
     int16_t dx, dy;
     int8_t wheel;
     uint8_t btn;
@@ -70,11 +71,13 @@ struct pinnacle_data {
 };
 
 struct pinnacle_config {
-	struct spi_cs_control spi_cs;
-	struct spi_config spi_config;
+#if DT_INST_ON_BUS(0, i2c)
+	const struct i2c_dt_spec bus;
+#elif DT_INST_ON_BUS(0, spi)
+	const struct spi_dt_spec bus;
+#endif
     bool invert_x, invert_y, sleep_en, no_taps;
 #ifdef CONFIG_PINNACLE_TRIGGER
-    const struct device *dr_port;
-    uint8_t dr_pin, dr_flags;
+    const struct gpio_dt_spec dr;
 #endif
 };
