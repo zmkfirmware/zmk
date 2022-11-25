@@ -43,7 +43,7 @@ In addition, if you would like _multiple_ modifiers, instead of just `MOD_LSFT`,
 
 ```
 &caps_word {
-    mods = <MOD_LSFT | MOD_LALT>;
+    mods = <(MOD_LSFT | MOD_LALT)>;
 };
 
 / {
