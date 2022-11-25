@@ -75,7 +75,7 @@
  *          `-----'   `--------------------'            `--------------------'   `-----'
  */
 			bindings = <
-	&kp PRCNT       &kp LS(QUOT) &kp LBKT    &kp RBKT &kp NON_US_BSLH        &kp RA(GRAVE)   &kp LS(GRAVE)  &kp CARET   &trans               &trans
+	&kp PRCNT       &kp LS(SQT) &kp LBKT    &kp RBKT &kp NON_US_BSLH        &kp RA(GRAVE)   &kp LS(GRAVE)  &kp CARET   &trans               &trans
 	&kp NON_US_HASH &kp EXCL     &kp LPAR    &kp RPAR &kp LS(NON_US_BSLH)               &kp UNDER       &kp APOS       &kp LS(N2)  &kp LS(NON_US_HASH)  &kp GRAVE
 	&kp DLLR        &kp LS(N3)   &kp LBRC    &kp RBRC &kp AMPS       		 &trans          &trans         &trans      &trans               &trans
 	&kp N1 			&lt 3 DEL    &lt 1 SPACE &kp TAB  &kp N2      		     &kp N3  	  	 &kp ESC        &kp BSPC    &lt 2 RET            &kp N4
