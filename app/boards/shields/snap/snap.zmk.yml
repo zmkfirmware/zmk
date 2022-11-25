@@ -1,0 +1,15 @@
+file_format: "1"
+id: snap
+name: SNAP
+type: shield
+url: https://nullbits.co/snap
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+  - underglow
+siblings:
+  - snap_left
+  - snap_right

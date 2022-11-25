@@ -612,6 +612,10 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
         decide_hold_tap(undecided_hold_tap, HT_TIMER_EVENT);
     }
 
+    if (undecided_hold_tap == NULL) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+
     if (!ev->state && find_captured_keydown_event(ev->position) == NULL) {
         // no keydown event has been captured, let it bubble.
         // we'll catch modifiers later in modifier_state_changed_listener

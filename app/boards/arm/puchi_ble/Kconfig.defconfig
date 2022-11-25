@@ -1,0 +1,28 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_PUCHI_BLE_v1
+
+config BOARD
+	default "puchi_ble"
+
+if USB_DEVICE_STACK
+
+config USB_NRFX
+	default y
+
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+config PINMUX
+	default y
+
+endif # BOARD_PUCHI_BLE_v1

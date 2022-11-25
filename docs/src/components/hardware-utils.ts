@@ -41,7 +41,11 @@ function groupedShield(agg: GroupedMetadata, shield: Shield) {
     ic.shields.push(shield);
     agg.interconnects[id] = ic;
   });
-
+  shield.exposes?.forEach((id) => {
+    let ic = agg.interconnects[id] ?? { boards: [], shields: [] };
+    ic.shields.push(shield);
+    agg.interconnects[id] = ic;
+  });
   return agg;
 }
 

@@ -1,0 +1,7 @@
+td_binding_pressed: 4 created new tap dance
+td_binding_pressed: 4 tap dance pressed
+td_binding_released: 4 tap dance keybind released
+td_binding_pressed: 4 tap dance pressed
+td_binding_released: 4 tap dance keybind released
+kp_pressed: usage_page 0x07 keycode 0x1F implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x1F implicit_mods 0x00 explicit_mods 0x00

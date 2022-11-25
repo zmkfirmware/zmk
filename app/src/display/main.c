@@ -85,26 +85,20 @@ static void stop_display_updates() {
 
 int zmk_display_is_initialized() { return initialized; }
 
-int zmk_display_init() {
+void initialize_display(struct k_work *work) {
     LOG_DBG("");
 
     display = device_get_binding(ZMK_DISPLAY_NAME);
     if (display == NULL) {
         LOG_ERR("Failed to find display device");
-        return -EINVAL;
+        return;
     }
-
-#if IS_ENABLED(CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED)
-    k_work_queue_start(&display_work_q, display_work_stack_area,
-                       K_THREAD_STACK_SIZEOF(display_work_stack_area),
-                       CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY, NULL);
-#endif
 
     screen = zmk_display_status_screen();
 
     if (screen == NULL) {
         LOG_ERR("No status screen provided");
-        return 0;
+        return;
     }
 
     lv_scr_load(screen);
@@ -112,11 +106,24 @@ int zmk_display_init() {
     start_display_updates();
 
     initialized = true;
+}
+
+K_WORK_DEFINE(init_work, initialize_display);
+
+int zmk_display_init() {
+#if IS_ENABLED(CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED)
+    k_work_queue_start(&display_work_q, display_work_stack_area,
+                       K_THREAD_STACK_SIZEOF(display_work_stack_area),
+                       CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY, NULL);
+#endif
+
+    k_work_submit_to_queue(zmk_display_work_q(), &init_work);
 
     LOG_DBG("");
     return 0;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_DISPLAY_BLANK_ON_IDLE)
 int display_event_handler(const zmk_event_t *eh) {
     struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
     if (ev == NULL) {
@@ -140,3 +147,5 @@ int display_event_handler(const zmk_event_t *eh) {
 
 ZMK_LISTENER(display, display_event_handler);
 ZMK_SUBSCRIPTION(display, zmk_activity_state_changed);
+
+#endif /* IS_ENABLED(CONFIG_ZMK_DISPLAY_BLANK_ON_IDLE) */

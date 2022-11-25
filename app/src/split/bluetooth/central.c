@@ -54,6 +54,16 @@ static const struct bt_uuid_128 split_service_uuid = BT_UUID_INIT_128(ZMK_SPLIT_
 K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
               CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
 
+void peripheral_event_work_callback(struct k_work *work) {
+    struct zmk_position_state_changed ev;
+    while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
+        LOG_DBG("Trigger key position state change for %d", ev.position);
+        ZMK_EVENT_RAISE(new_zmk_position_state_changed(ev));
+    }
+}
+
+K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
+
 int peripheral_slot_index_for_conn(struct bt_conn *conn) {
     for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
         if (peripherals[i].conn == conn) {
@@ -91,6 +101,22 @@ int release_peripheral_slot(int index) {
         slot->conn = NULL;
     }
     slot->state = PERIPHERAL_SLOT_STATE_OPEN;
+
+    // Raise events releasing any active positions from this peripheral
+    for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (slot->position_state[i] & BIT(j)) {
+                uint32_t position = (i * 8) + j;
+                struct zmk_position_state_changed ev = {.source = index,
+                                                        .position = position,
+                                                        .state = false,
+                                                        .timestamp = k_uptime_get()};
+
+                k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
+                k_work_submit(&peripheral_event_work);
+            }
+        }
+    }
 
     for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
         slot->position_state[i] = 0U;
@@ -135,16 +161,6 @@ int confirm_peripheral_slot_conn(struct bt_conn *conn) {
     peripherals[idx].state = PERIPHERAL_SLOT_STATE_CONNECTED;
     return 0;
 }
-
-void peripheral_event_work_callback(struct k_work *work) {
-    struct zmk_position_state_changed ev;
-    while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
-        LOG_DBG("Trigger key position state change for %d", ev.position);
-        ZMK_EVENT_RAISE(new_zmk_position_state_changed(ev));
-    }
-}
-
-K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
 
 static uint8_t split_central_notify_func(struct bt_conn *conn,
                                          struct bt_gatt_subscribe_params *params, const void *data,
