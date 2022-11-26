@@ -4,7 +4,7 @@
 menuconfig PINNACLE
 	bool "PINNACLE Incremental Encoder Sensor"
 	depends on GPIO
-	depends on SPI
+	depends on SPI || I2C
 	help
 	  Enable driver for Cirque Pinnacle trackpads
 

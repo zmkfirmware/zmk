@@ -237,20 +237,16 @@ static const struct sensor_driver_api pinnacle_driver_api = {
     .attr_set = pinnacle_attr_set,
 };
 
-static struct pinnacle_data pinnacle_data;
-static const struct pinnacle_config pinnacle_config = {
-#if DT_INST_ON_BUS(0, i2c)
-	.bus = I2C_DT_SPEC_INST_GET(0),
-#elif DT_INST_ON_BUS(0, spi)
-	.bus = SPI_DT_SPEC_INST_GET(0, SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | SPI_LINES_SINGLE | SPI_TRANSFER_MSB, 0),
-#endif
-    .invert_x = DT_INST_PROP(0, invert_x),
-    .invert_y = DT_INST_PROP(0, invert_y),
-    .sleep_en = DT_INST_PROP(0, sleep),
-    .no_taps = DT_INST_PROP(0, no_taps),
-#ifdef CONFIG_PINNACLE_TRIGGER
-    .dr = GPIO_DT_SPEC_GET(DT_DRV_INST(0), dr_gpios),
-#endif
-};
+#define CIRQUE_INST(n) \
+    static struct pinnacle_data pinnacle_data_##n; \
+    static const struct pinnacle_config pinnacle_config_##n = { \
+        .bus = COND_CODE_1(DT_INST_ON_BUS(0, i2c), I2C_DT_SPEC_INST_GET(0), (SPI_DT_SPEC_INST_GET(0, SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | SPI_LINES_SINGLE | SPI_TRANSFER_MSB, 0))), \
+        .invert_x = DT_INST_PROP(0, invert_x), \
+        .invert_y = DT_INST_PROP(0, invert_y), \
+        .sleep_en = DT_INST_PROP(0, sleep), \
+        .no_taps = DT_INST_PROP(0, no_taps), \
+        COND_CODE_1(CONFIG_PINNACLE_TRIGGER, (.dr = GPIO_DT_SPEC_GET(DT_DRV_INST(0), dr_gpios),), ) \
+    }; \
+    DEVICE_DT_INST_DEFINE(n, pinnacle_init, device_pm_control_nop, &pinnacle_data_##n, &pinnacle_config_##n, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &pinnacle_driver_api);
 
-DEVICE_DT_INST_DEFINE(0, pinnacle_init, device_pm_control_nop, &pinnacle_data, &pinnacle_config, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &pinnacle_driver_api);
+DT_INST_FOREACH_STATUS_OKAY(CIRQUE_INST)
