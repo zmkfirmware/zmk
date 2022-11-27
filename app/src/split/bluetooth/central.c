@@ -27,6 +27,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
+#include <zmk/hid_indicators_types.h>
 
 static int start_scanning(void);
 
@@ -46,6 +47,7 @@ struct peripheral_slot {
     struct bt_gatt_subscribe_params sensor_subscribe_params;
     struct bt_gatt_discover_params sub_discover_params;
     uint16_t run_behavior_handle;
+    uint16_t update_hid_indicators;
     uint8_t position_state[POSITION_STATE_DATA_LEN];
     uint8_t changed_positions[POSITION_STATE_DATA_LEN];
 };
@@ -131,6 +133,7 @@ int release_peripheral_slot(int index) {
     // Clean up previously discovered handles;
     slot->subscribe_params.value_handle = 0;
     slot->run_behavior_handle = 0;
+    slot->update_hid_indicators = 0;
 
     return 0;
 }
@@ -329,9 +332,14 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
         slot->discover_params.uuid = NULL;
         slot->discover_params.start_handle = attr->handle + 2;
         slot->run_behavior_handle = bt_gatt_attr_value_handle(attr);
+    } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                            BT_UUID_DECLARE_128(ZMK_SPLIT_BT_UPDATE_HID_INDICATORS_UUID))) {
+        LOG_DBG("Found update HID indicators handle");
+        slot->update_hid_indicators = bt_gatt_attr_value_handle(attr);
     }
 
-    bool subscribed = slot->run_behavior_handle && slot->subscribe_params.value_handle;
+    bool subscribed = (slot->run_behavior_handle && slot->subscribe_params.value_handle &&
+                       slot->update_hid_indicators);
 #if ZMK_KEYMAP_HAS_SENSORS
     subscribed = subscribed && slot->sensor_subscribe_params.value_handle;
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
@@ -683,6 +691,32 @@ int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *bi
 
     struct zmk_split_run_behavior_payload_wrapper wrapper = {.source = source, .payload = payload};
     return split_bt_invoke_behavior_payload(wrapper);
+}
+
+static zmk_hid_indicators hid_indicators = 0;
+
+static void split_central_update_indicators_callback(struct k_work *work) {
+    zmk_hid_indicators indicators = hid_indicators;
+    for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
+        if (peripherals[i].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+            continue;
+        }
+
+        int err = bt_gatt_write_without_response(peripherals[i].conn,
+                                                 peripherals[i].update_hid_indicators, &indicators,
+                                                 sizeof(indicators), true);
+
+        if (err) {
+            LOG_ERR("Failed to write HID indicator characteristic (err %d)", err);
+        }
+    }
+}
+
+static K_WORK_DEFINE(split_central_update_indicators, split_central_update_indicators_callback);
+
+int zmk_split_bt_update_hid_indicator(zmk_hid_indicators indicators) {
+    hid_indicators = indicators;
+    return k_work_submit_to_queue(&split_central_split_run_q, &split_central_update_indicators);
 }
 
 int zmk_split_bt_central_init(const struct device *_arg) {

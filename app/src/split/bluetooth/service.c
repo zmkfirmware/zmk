@@ -21,6 +21,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/matrix.h>
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/split/bluetooth/service.h>
+#include <zmk/events/hid_indicators_changed.h>
 #include <zmk/events/sensor_event.h>
 #include <zmk/sensors.h>
 
@@ -105,6 +106,29 @@ static void split_svc_pos_state_ccc(const struct bt_gatt_attr *attr, uint16_t va
     LOG_DBG("value %d", value);
 }
 
+static zmk_hid_indicators hid_indicators = 0;
+
+static void split_svc_update_indicators_callback(struct k_work *work) {
+    ZMK_EVENT_RAISE(new_zmk_hid_indicators_changed(
+        (struct zmk_hid_indicators_changed){.indicators = hid_indicators}));
+}
+
+static K_WORK_DEFINE(split_svc_update_indicators_work, split_svc_update_indicators_callback);
+
+static ssize_t split_svc_update_indicators(struct bt_conn *conn, const struct bt_gatt_attr *attr,
+                                           const void *buf, uint16_t len, uint16_t offset,
+                                           uint8_t flags) {
+    if (offset + len > sizeof(zmk_hid_indicators)) {
+        return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
+    }
+
+    memcpy((uint8_t *)&hid_indicators + offset, buf, len);
+
+    k_work_submit(&split_svc_update_indicators_work);
+
+    return len;
+}
+
 BT_GATT_SERVICE_DEFINE(
     split_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID)),
     BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID),
@@ -114,6 +138,9 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_RUN_BEHAVIOR_UUID),
                            BT_GATT_CHRC_WRITE_WITHOUT_RESP, BT_GATT_PERM_WRITE_ENCRYPT, NULL,
                            split_svc_run_behavior, &behavior_run_payload),
+    BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_UPDATE_HID_INDICATORS_UUID),
+                           BT_GATT_CHRC_WRITE_WITHOUT_RESP, BT_GATT_PERM_WRITE_ENCRYPT, NULL,
+                           split_svc_update_indicators, NULL),
     BT_GATT_DESCRIPTOR(BT_UUID_NUM_OF_DIGITALS, BT_GATT_PERM_READ, split_svc_num_of_positions, NULL,
                        &num_of_positions),
 #if ZMK_KEYMAP_HAS_SENSORS
