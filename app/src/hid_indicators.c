@@ -28,8 +28,14 @@ zmk_hid_indicators zmk_hid_indicators_get_profile(struct zmk_endpoint_instance e
 }
 
 static void raise_led_changed_event(struct k_work *_work) {
-    ZMK_EVENT_RAISE(new_zmk_hid_indicators_changed((struct zmk_hid_indicators_changed){
-        .indicators = zmk_hid_indicators_get_current_profile()}));
+    zmk_hid_indicators indicators = zmk_hid_indicators_get_current_profile();
+
+    ZMK_EVENT_RAISE(new_zmk_hid_indicators_changed(
+        (struct zmk_hid_indicators_changed){.indicators = indicators}));
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS) && IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
+    zmk_split_bt_update_hid_indicator(indicators);
+#endif
 }
 
 static K_WORK_DEFINE(led_changed_work, raise_led_changed_event);
