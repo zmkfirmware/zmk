@@ -2,7 +2,6 @@
 
 #include <init.h>
 #include <drivers/sensor.h>
-#include <zmk/sensors.h>
 #include <logging/log.h>
 
 #include "cirque_trackpad.h"
@@ -92,17 +91,6 @@ static int pinnacle_channel_get(const struct device *dev, enum sensor_channel ch
     default: return -ENOTSUP;
     }
     return 0;
-}
-
-static int pinnacle_attr_set(const struct device *dev, enum sensor_channel chan, enum sensor_attribute attr, const struct sensor_value *val) {
-    const struct pinnacle_config *config = dev->config;
-    if (attr == SENSOR_ATTR_PINNACLE_GE) {
-        const uint8_t ge_set = val->val1 ? 0 : PINNACLE_FEED_CFG2_DIS_GE;
-        const uint8_t taps_set = config->no_taps ? PINNACLE_FEED_CFG2_DIS_TAP : 0;
-        pinnacle_write(dev, PINNACLE_FEED_CFG2, ge_set | taps_set);
-        return 0;
-    }
-    return -ENOTSUP;
 }
 
 static int pinnacle_sample_fetch(const struct device *dev, enum sensor_channel chan) {
@@ -234,13 +222,12 @@ static const struct sensor_driver_api pinnacle_driver_api = {
 #endif
 	.sample_fetch = pinnacle_sample_fetch,
 	.channel_get = pinnacle_channel_get,
-    .attr_set = pinnacle_attr_set,
 };
 
 #define CIRQUE_INST(n) \
     static struct pinnacle_data pinnacle_data_##n; \
     static const struct pinnacle_config pinnacle_config_##n = { \
-        .bus = COND_CODE_1(DT_INST_ON_BUS(0, i2c), I2C_DT_SPEC_INST_GET(0), (SPI_DT_SPEC_INST_GET(0, SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | SPI_LINES_SINGLE | SPI_TRANSFER_MSB, 0))), \
+        .bus = COND_CODE_1(DT_INST_ON_BUS(0, i2c), (I2C_DT_SPEC_INST_GET(0)), (SPI_DT_SPEC_INST_GET(0, SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | SPI_LINES_SINGLE | SPI_TRANSFER_MSB, 0))), \
         .invert_x = DT_INST_PROP(0, invert_x), \
         .invert_y = DT_INST_PROP(0, invert_y), \
         .sleep_en = DT_INST_PROP(0, sleep), \
