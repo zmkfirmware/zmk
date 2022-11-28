@@ -150,7 +150,7 @@ static void pinnacle_thread(void *arg) {
 static void pinnacle_work_cb(struct k_work *work) {
     struct pinnacle_data *data = CONTAINER_OF(work, struct pinnacle_data, work);
     pinnacle_int_cb(data->dev);
-    pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
+    pinnacle_write(data->dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
 }
 #endif
 
@@ -164,9 +164,6 @@ static void pinnacle_gpio_cb(const struct device *port, struct gpio_callback *cb
 #endif
 }
 #endif
-
-#define SPI_BUS DT_BUS(DT_DRV_INST(0))
-#define SPI_REG DT_REG_ADDR(DT_DRV_INST(0))
 
 static int pinnacle_init(const struct device *dev) {
     struct pinnacle_data *data = dev->data;
