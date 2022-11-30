@@ -12,8 +12,6 @@
 #define BASE 0
 #define BLE 1
 
-&encoder { status = "okay"; };
-
 / {
         keymap {
             compatible = "zmk,keymap";
