@@ -27,7 +27,7 @@ struct battery_status_state {
 };
 
 static void set_battery_symbol(lv_obj_t *label, struct battery_status_state state) {
-    char text[8] = {};
+    char text[9] = {};
 
     uint8_t level = state.level;
 
@@ -37,6 +37,11 @@ static void set_battery_symbol(lv_obj_t *label, struct battery_status_state stat
     }
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS_SHOW_PERCENTAGE)
+    char perc[5] = {};
+    snprintf(perc, sizeof(perc), "%3u%%", level);
+    strcat(text, perc);
+#else
     if (level > 95) {
         strcat(text, LV_SYMBOL_BATTERY_FULL);
     } else if (level > 65) {
@@ -48,6 +53,7 @@ static void set_battery_symbol(lv_obj_t *label, struct battery_status_state stat
     } else {
         strcat(text, LV_SYMBOL_BATTERY_EMPTY);
     }
+#endif
     lv_label_set_text(label, text);
     lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_RIGHT, 0, 0);
 }
