@@ -46,5 +46,5 @@
 };
 
 blackpill_i2c: &i2c0 {};
-blackpill_spi: &spi0 {};
+blackpill_spi: &spi1 {};
 blackpill_serial: &uart0 {};
