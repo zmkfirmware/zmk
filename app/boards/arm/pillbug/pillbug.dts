@@ -67,6 +67,13 @@
     scl-pin = <13>;
 };
 
+&spi1{
+    compatible = "nordic,nrf-twi";
+	sck-pin = <40>;
+	mosi-pin = <11>;
+	miso-pin = <26>;
+};
+
 &uart0 {
     compatible = "nordic,nrf-uarte";
     tx-pin = <6>;
