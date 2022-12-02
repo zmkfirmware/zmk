@@ -467,6 +467,7 @@ pip3 install --user -r zephyr/scripts/requirements-base.txt
 defaultValue="win"
 values={[
 {label: 'Windows', value: 'win'},
+{label: 'macOS', value: 'mac'},
 {label: 'Other OS', value: 'other'},
 ]}>
 <TabItem value = 'win'>
@@ -496,6 +497,64 @@ On Windows, only two environment variables need to be set for ZMK to build prope
 ![Adding GNUARMEMB variable](../assets/env-var/gnuarmemb.png)
 
 6. Close Command Prompt and reopen, or run `refreshenv` to apply the changes.
+
+</TabItem>
+
+<TabItem value = 'mac'>
+
+#### For Zephyr
+
+By default, the Zephyr™ SDK will create a file named `~/.zephyrrc` with the correct environment variables to build ZMK.
+We suggest two main [options](https://docs.zephyrproject.org/2.5.0/guides/env_vars.html#option-3-using-zephyrrc-files) for how to load those settings.
+
+#### `~/.zephyrrc` Setup
+
+If the toolchain was installed through Homebrew as stated above, the `~/.zephyrrc` file should be set up as such:
+
+```
+export ZEPHYR_TOOLCHAIN_VARIANT=gnuarmemb
+export GNUARMEMB_TOOLCHAIN_PATH="/opt/homebrew/"
+```
+
+##### Per Shell
+
+To load the Zephyr environment properly for just one transient shell, run the following from your ZMK checkout directory:
+
+```
+source zephyr/zephyr-env.sh
+```
+
+##### All Shells
+
+To load the environment variables for your shell every time,
+append the existing `~/.zephyrrc` file to your shell's RC file and then start a new shell.
+
+<Tabs
+groupId="shell"
+defaultValue="bash"
+values={[
+{label: 'bash', value: 'bash'},
+{label: 'zsh', value: 'zsh'},
+]
+}>
+
+<TabItem value="bash">
+
+```
+cat ~/.zephyrrc >> ~/.bashrc
+```
+
+</TabItem>
+
+<TabItem value="zsh">
+
+```
+cat ~/.zephyrrc >> ~/.zshrc
+```
+
+</TabItem>
+
+</Tabs>
 
 </TabItem>
 
