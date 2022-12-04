@@ -1,0 +1,7 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_ARGOWORKS_ISHI80_MK0
+
+config ZMK_KEYBOARD_NAME
+	default "Ishi80 Mk0"

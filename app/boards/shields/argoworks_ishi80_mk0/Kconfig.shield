@@ -1,0 +1,5 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_ARGOWORKS_ISHI80_MK0
+    def_bool $(shields_list_contains,argoworks_ishi80_mk0)
