@@ -90,7 +90,13 @@ struct kscan_gpio_list {
 #define KSCAN_GPIO_LIST(gpio_array)                                                                \
     ((struct kscan_gpio_list){.gpios = gpio_array, .len = ARRAY_SIZE(gpio_array)})
 
+struct kscan_gpio_port_data {
+    sys_snode_t node;
+    const struct device *port;
+};
+
 struct kscan_matrix_config {
+    sys_slist_t *input_ports_list;
     struct kscan_gpio_list rows;
     struct kscan_gpio_list cols;
     struct kscan_gpio_list inputs;
@@ -224,6 +230,7 @@ static void kscan_matrix_read_end(const struct device *dev) {
 static int kscan_matrix_read(const struct device *dev) {
     struct kscan_matrix_data *data = dev->data;
     const struct kscan_matrix_config *config = dev->config;
+    struct kscan_gpio_port_data *port_data;
 
     // Scan the matrix.
     for (int o = 0; o < config->outputs.len; o++) {
@@ -239,14 +246,25 @@ static int kscan_matrix_read(const struct device *dev) {
         k_busy_wait(CONFIG_ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS);
 #endif
 
-        for (int i = 0; i < config->inputs.len; i++) {
-            const struct gpio_dt_spec *in_gpio = &config->inputs.gpios[i];
+        SYS_SLIST_FOR_EACH_CONTAINER(config->input_ports_list, port_data, node) {
+            gpio_port_value_t port_value;
+            int err = gpio_port_get(port_data->port, &port_value);
+            if (err) {
+                LOG_ERR("Failed to read port %s: %i", port_data->port->name, err);
+                return err;
+            }
 
-            const int index = state_index_io(config, i, o);
-            const bool active = gpio_pin_get_dt(in_gpio);
+            for (int i = 0; i < config->inputs.len; i++) {
+                const struct device *input_port = config->inputs.gpios[i].port;
 
-            debounce_update(&data->matrix_state[index], active, config->debounce_scan_period_ms,
-                            &config->debounce_config);
+                if (input_port == port_data->port) {
+                    const int index = state_index_io(config, i, o);
+                    const bool active = (bool)(port_value & BIT(config->inputs.gpios[i].pin));
+
+                    debounce_update(&data->matrix_state[index], active,
+                                    config->debounce_scan_period_ms, &config->debounce_config);
+                }
+            }
         }
 
         err = gpio_pin_set_dt(out_gpio, 0);
@@ -408,8 +426,35 @@ static int kscan_matrix_init_outputs(const struct device *dev) {
 
 static int kscan_matrix_init(const struct device *dev) {
     struct kscan_matrix_data *data = dev->data;
+    const struct kscan_matrix_config *config = dev->config;
 
     data->dev = dev;
+
+    struct kscan_gpio_port_data *port_data;
+
+    for (int i = 0; i < config->inputs.len; i++) {
+        bool port_found = false;
+        const struct device *port = config->inputs.gpios[i].port;
+
+        SYS_SLIST_FOR_EACH_CONTAINER(config->input_ports_list, port_data, node) {
+            if (port_data->port == port) {
+                port_found = true;
+                break;
+            }
+        }
+
+        if (!port_found) {
+            port_data = k_malloc(sizeof(struct kscan_gpio_port_data));
+            if (port_data == NULL) {
+                LOG_ERR("Failed to allocate port_data");
+                return -ENOMEM;
+            }
+
+            port_data->port = port;
+
+            sys_slist_append(config->input_ports_list, &port_data->node);
+        }
+    }
 
     kscan_matrix_init_inputs(dev);
     kscan_matrix_init_outputs(dev);
@@ -432,6 +477,8 @@ static const struct kscan_driver_api kscan_matrix_api = {
     BUILD_ASSERT(INST_DEBOUNCE_RELEASE_MS(n) <= DEBOUNCE_COUNTER_MAX,                              \
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
+    static sys_slist_t kscan_input_ports_list_##n;                                                 \
+                                                                                                   \
     static const struct gpio_dt_spec kscan_matrix_rows_##n[] = {                                   \
         UTIL_LISTIFY(INST_ROWS_LEN(n), KSCAN_GPIO_ROW_CFG_INIT, n)};                               \
                                                                                                    \
@@ -448,6 +495,7 @@ static const struct kscan_driver_api kscan_matrix_api = {
         COND_INTERRUPTS((.irqs = kscan_matrix_irqs_##n, ))};                                       \
                                                                                                    \
     static struct kscan_matrix_config kscan_matrix_config_##n = {                                  \
+        .input_ports_list = &kscan_input_ports_list_##n,                                           \
         .rows = KSCAN_GPIO_LIST(kscan_matrix_rows_##n),                                            \
         .cols = KSCAN_GPIO_LIST(kscan_matrix_cols_##n),                                            \
         .inputs =                                                                                  \
