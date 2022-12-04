@@ -24,6 +24,7 @@
 / {
     keymap {
         compatible = "zmk,keymap";
+        
         default_layer {
             bindings = <
             &kp KP_MINUS   &kp KP_MULTIPLY   &kp KP_DIVIDE   &kp KP_NLCK        &kp ESC     &kp N1     &kp N2          &kp N3   &kp N4   &kp N5   &kp N6     &kp N7   &kp N8     &kp N9     &kp N0     &kp MINUS   &kp EQUAL   &kp BSPC
@@ -42,6 +43,6 @@
             &bootloader   &bt BT_SEL 3   &bt BT_SEL 2   &bt BT_SEL 1          &trans      &trans   &trans   &trans   &trans   &trans   &trans   &trans   &trans   &trans   &trans                &kp UP
                           &out OUT_BLE   &out OUT_USB                         &trans      &trans   &trans                              &trans                              &trans    &kp LEFT    &kp DOWN    &kp RIGHT   &kp C_PLAY_PAUSE
             >;
-        }
+        };
     };
 };

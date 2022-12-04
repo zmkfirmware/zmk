@@ -5,3 +5,5 @@ if SHIELD_ARGOWORKS_ISHI80_MK0
 
 config ZMK_KEYBOARD_NAME
 	default "Ishi80 Mk0"
+
+endif

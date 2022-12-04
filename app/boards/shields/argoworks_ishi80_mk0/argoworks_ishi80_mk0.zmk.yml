@@ -3,7 +3,6 @@ id: argoworks_ishi80_mk0
 name: Argo Works Ishi80 Mk0
 type: shield
 url: https://jasonj2232.github.io/Ishi/
-requires:
-  - pro_micro
+requires: [pro_micro]
 features:
   - keys
