@@ -5,6 +5,7 @@
  */
 
 #include "debounce.h"
+#include "kscan_gpio.h"
 
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
@@ -50,9 +51,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
     COND_CODE_1(CONFIG_ZMK_KSCAN_MATRIX_POLLING, pollcode, intcode)
 
 #define KSCAN_GPIO_ROW_CFG_INIT(idx, inst_idx)                                                     \
-    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), row_gpios, idx)
+    KSCAN_GPIO_GET_BY_IDX(DT_DRV_INST(inst_idx), row_gpios, idx)
 #define KSCAN_GPIO_COL_CFG_INIT(idx, inst_idx)                                                     \
-    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), col_gpios, idx)
+    KSCAN_GPIO_GET_BY_IDX(DT_DRV_INST(inst_idx), col_gpios, idx)
 
 enum kscan_diode_direction {
     KSCAN_ROW2COL,
@@ -66,6 +67,7 @@ struct kscan_matrix_irq_callback {
 
 struct kscan_matrix_data {
     const struct device *dev;
+    struct kscan_gpio_list inputs;
     kscan_callback_t callback;
     struct k_work_delayable work;
 #if USE_INTERRUPTS
@@ -76,26 +78,16 @@ struct kscan_matrix_data {
     int64_t scan_time;
     /**
      * Current state of the matrix as a flattened 2D array of length
-     * (config->rows.len * config->cols.len)
+     * (config->rows * config->cols)
      */
     struct debounce_state *matrix_state;
 };
 
-struct kscan_gpio_list {
-    const struct gpio_dt_spec *gpios;
-    size_t len;
-};
-
-/** Define a kscan_gpio_list from a compile-time GPIO array. */
-#define KSCAN_GPIO_LIST(gpio_array)                                                                \
-    ((struct kscan_gpio_list){.gpios = gpio_array, .len = ARRAY_SIZE(gpio_array)})
-
 struct kscan_matrix_config {
-    struct kscan_gpio_list rows;
-    struct kscan_gpio_list cols;
-    struct kscan_gpio_list inputs;
     struct kscan_gpio_list outputs;
     struct debounce_config debounce_config;
+    size_t rows;
+    size_t cols;
     int32_t debounce_scan_period_ms;
     int32_t poll_period_ms;
     enum kscan_diode_direction diode_direction;
@@ -105,10 +97,10 @@ struct kscan_matrix_config {
  * Get the index into a matrix state array from a row and column.
  */
 static int state_index_rc(const struct kscan_matrix_config *config, const int row, const int col) {
-    __ASSERT(row < config->rows.len, "Invalid row %i", row);
-    __ASSERT(col < config->cols.len, "Invalid column %i", col);
+    __ASSERT(row < config->rows, "Invalid row %i", row);
+    __ASSERT(col < config->cols, "Invalid column %i", col);
 
-    return (col * config->rows.len) + row;
+    return (col * config->rows) + row;
 }
 
 /**
@@ -125,7 +117,7 @@ static int kscan_matrix_set_all_outputs(const struct device *dev, const int valu
     const struct kscan_matrix_config *config = dev->config;
 
     for (int i = 0; i < config->outputs.len; i++) {
-        const struct gpio_dt_spec *gpio = &config->outputs.gpios[i];
+        const struct gpio_dt_spec *gpio = &config->outputs.gpios[i].spec;
 
         int err = gpio_pin_set_dt(gpio, value);
         if (err) {
@@ -139,10 +131,10 @@ static int kscan_matrix_set_all_outputs(const struct device *dev, const int valu
 
 #if USE_INTERRUPTS
 static int kscan_matrix_interrupt_configure(const struct device *dev, const gpio_flags_t flags) {
-    const struct kscan_matrix_config *config = dev->config;
+    const struct kscan_matrix_data *data = dev->data;
 
-    for (int i = 0; i < config->inputs.len; i++) {
-        const struct gpio_dt_spec *gpio = &config->inputs.gpios[i];
+    for (int i = 0; i < data->inputs.len; i++) {
+        const struct gpio_dt_spec *gpio = &data->inputs.gpios[i].spec;
 
         int err = gpio_pin_interrupt_configure_dt(gpio, flags);
         if (err) {
@@ -226,32 +218,37 @@ static int kscan_matrix_read(const struct device *dev) {
     const struct kscan_matrix_config *config = dev->config;
 
     // Scan the matrix.
-    for (int o = 0; o < config->outputs.len; o++) {
-        const struct gpio_dt_spec *out_gpio = &config->outputs.gpios[o];
+    for (int i = 0; i < config->outputs.len; i++) {
+        const struct kscan_gpio *out_gpio = &config->outputs.gpios[i];
 
-        int err = gpio_pin_set_dt(out_gpio, 1);
+        int err = gpio_pin_set_dt(&out_gpio->spec, 1);
         if (err) {
-            LOG_ERR("Failed to set output %i active: %i", o, err);
+            LOG_ERR("Failed to set output %i active: %i", out_gpio->index, err);
             return err;
         }
 
 #if CONFIG_ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS > 0
         k_busy_wait(CONFIG_ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS);
 #endif
+        struct kscan_gpio_port_state state = {0};
 
-        for (int i = 0; i < config->inputs.len; i++) {
-            const struct gpio_dt_spec *in_gpio = &config->inputs.gpios[i];
+        for (int j = 0; j < data->inputs.len; j++) {
+            const struct kscan_gpio *in_gpio = &data->inputs.gpios[j];
 
-            const int index = state_index_io(config, i, o);
-            const bool active = gpio_pin_get_dt(in_gpio);
+            const int index = state_index_io(config, in_gpio->index, out_gpio->index);
+            const int active = kscan_gpio_pin_get(in_gpio, &state);
+            if (active < 0) {
+                LOG_ERR("Failed to read port %s: %i", in_gpio->spec.port->name, active);
+                return active;
+            }
 
             debounce_update(&data->matrix_state[index], active, config->debounce_scan_period_ms,
                             &config->debounce_config);
         }
 
-        err = gpio_pin_set_dt(out_gpio, 0);
+        err = gpio_pin_set_dt(&out_gpio->spec, 0);
         if (err) {
-            LOG_ERR("Failed to set output %i inactive: %i", o, err);
+            LOG_ERR("Failed to set output %i inactive: %i", out_gpio->index, err);
             return err;
         }
 
@@ -263,8 +260,8 @@ static int kscan_matrix_read(const struct device *dev) {
     // Process the new state.
     bool continue_scan = false;
 
-    for (int r = 0; r < config->rows.len; r++) {
-        for (int c = 0; c < config->cols.len; c++) {
+    for (int r = 0; r < config->rows; r++) {
+        for (int c = 0; c < config->cols; c++) {
             const int index = state_index_rc(config, r, c);
             struct debounce_state *state = &data->matrix_state[index];
 
@@ -329,28 +326,28 @@ static int kscan_matrix_disable(const struct device *dev) {
 #endif
 }
 
-static int kscan_matrix_init_input_inst(const struct device *dev, const struct gpio_dt_spec *gpio,
-                                        const int index) {
-    if (!device_is_ready(gpio->port)) {
-        LOG_ERR("GPIO is not ready: %s", gpio->port->name);
+static int kscan_matrix_init_input_inst(const struct device *dev, const struct kscan_gpio *gpio) {
+    if (!device_is_ready(gpio->spec.port)) {
+        LOG_ERR("GPIO is not ready: %s", gpio->spec.port->name);
         return -ENODEV;
     }
 
-    int err = gpio_pin_configure_dt(gpio, GPIO_INPUT);
+    int err = gpio_pin_configure_dt(&gpio->spec, GPIO_INPUT);
     if (err) {
-        LOG_ERR("Unable to configure pin %u on %s for input", gpio->pin, gpio->port->name);
+        LOG_ERR("Unable to configure pin %u on %s for input", gpio->spec.pin,
+                gpio->spec.port->name);
         return err;
     }
 
-    LOG_DBG("Configured pin %u on %s for input", gpio->pin, gpio->port->name);
+    LOG_DBG("Configured pin %u on %s for input", gpio->spec.pin, gpio->spec.port->name);
 
 #if USE_INTERRUPTS
     struct kscan_matrix_data *data = dev->data;
-    struct kscan_matrix_irq_callback *irq = &data->irqs[index];
+    struct kscan_matrix_irq_callback *irq = &data->irqs[gpio->index];
 
     irq->dev = dev;
-    gpio_init_callback(&irq->callback, kscan_matrix_irq_callback_handler, BIT(gpio->pin));
-    err = gpio_add_callback(gpio->port, &irq->callback);
+    gpio_init_callback(&irq->callback, kscan_matrix_irq_callback_handler, BIT(gpio->spec.pin));
+    err = gpio_add_callback(gpio->spec.port, &irq->callback);
     if (err) {
         LOG_ERR("Error adding the callback to the input device: %i", err);
         return err;
@@ -361,11 +358,11 @@ static int kscan_matrix_init_input_inst(const struct device *dev, const struct g
 }
 
 static int kscan_matrix_init_inputs(const struct device *dev) {
-    const struct kscan_matrix_config *config = dev->config;
+    const struct kscan_matrix_data *data = dev->data;
 
-    for (int i = 0; i < config->inputs.len; i++) {
-        const struct gpio_dt_spec *gpio = &config->inputs.gpios[i];
-        int err = kscan_matrix_init_input_inst(dev, gpio, i);
+    for (int i = 0; i < data->inputs.len; i++) {
+        const struct kscan_gpio *gpio = &data->inputs.gpios[i];
+        int err = kscan_matrix_init_input_inst(dev, gpio);
         if (err) {
             return err;
         }
@@ -396,7 +393,7 @@ static int kscan_matrix_init_outputs(const struct device *dev) {
     const struct kscan_matrix_config *config = dev->config;
 
     for (int i = 0; i < config->outputs.len; i++) {
-        const struct gpio_dt_spec *gpio = &config->outputs.gpios[i];
+        const struct gpio_dt_spec *gpio = &config->outputs.gpios[i].spec;
         int err = kscan_matrix_init_output_inst(dev, gpio);
         if (err) {
             return err;
@@ -410,6 +407,9 @@ static int kscan_matrix_init(const struct device *dev) {
     struct kscan_matrix_data *data = dev->data;
 
     data->dev = dev;
+
+    // Sort inputs by port so we can read each port just once per scan.
+    kscan_gpio_list_sort_by_port(&data->inputs);
 
     kscan_matrix_init_inputs(dev);
     kscan_matrix_init_outputs(dev);
@@ -432,10 +432,10 @@ static const struct kscan_driver_api kscan_matrix_api = {
     BUILD_ASSERT(INST_DEBOUNCE_RELEASE_MS(n) <= DEBOUNCE_COUNTER_MAX,                              \
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
-    static const struct gpio_dt_spec kscan_matrix_rows_##n[] = {                                   \
+    static struct kscan_gpio kscan_matrix_rows_##n[] = {                                           \
         LISTIFY(INST_ROWS_LEN(n), KSCAN_GPIO_ROW_CFG_INIT, (, ), n)};                              \
                                                                                                    \
-    static const struct gpio_dt_spec kscan_matrix_cols_##n[] = {                                   \
+    static struct kscan_gpio kscan_matrix_cols_##n[] = {                                           \
         LISTIFY(INST_COLS_LEN(n), KSCAN_GPIO_COL_CFG_INIT, (, ), n)};                              \
                                                                                                    \
     static struct debounce_state kscan_matrix_state_##n[INST_MATRIX_LEN(n)];                       \
@@ -444,14 +444,14 @@ static const struct kscan_driver_api kscan_matrix_api = {
         (static struct kscan_matrix_irq_callback kscan_matrix_irqs_##n[INST_INPUTS_LEN(n)];))      \
                                                                                                    \
     static struct kscan_matrix_data kscan_matrix_data_##n = {                                      \
+        .inputs =                                                                                  \
+            KSCAN_GPIO_LIST(COND_DIODE_DIR(n, (kscan_matrix_cols_##n), (kscan_matrix_rows_##n))),  \
         .matrix_state = kscan_matrix_state_##n,                                                    \
         COND_INTERRUPTS((.irqs = kscan_matrix_irqs_##n, ))};                                       \
                                                                                                    \
     static struct kscan_matrix_config kscan_matrix_config_##n = {                                  \
-        .rows = KSCAN_GPIO_LIST(kscan_matrix_rows_##n),                                            \
-        .cols = KSCAN_GPIO_LIST(kscan_matrix_cols_##n),                                            \
-        .inputs =                                                                                  \
-            KSCAN_GPIO_LIST(COND_DIODE_DIR(n, (kscan_matrix_cols_##n), (kscan_matrix_rows_##n))),  \
+        .rows = ARRAY_SIZE(kscan_matrix_rows_##n),                                                 \
+        .cols = ARRAY_SIZE(kscan_matrix_cols_##n),                                                 \
         .outputs =                                                                                 \
             KSCAN_GPIO_LIST(COND_DIODE_DIR(n, (kscan_matrix_rows_##n), (kscan_matrix_cols_##n))),  \
         .debounce_config =                                                                         \
