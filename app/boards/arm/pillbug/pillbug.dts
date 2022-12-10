@@ -68,7 +68,8 @@
 };
 
 &spi1{
-    compatible = "nordic,nrf-twi";
+    status = "disabled";
+    compatible = "nordic,nrf-spim";
 	sck-pin = <40>;
 	mosi-pin = <11>;
 	miso-pin = <26>;
