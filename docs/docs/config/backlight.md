@@ -34,7 +34,7 @@ Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/build/dts/int
 
 See the Zephyr devicetree bindings for LED drivers:
 
-- [gpio-leds](https://docs.zephyrproject.org/latest/build/dts/api/bindings/gpio/gpio-leds.html)
+- [gpio-leds](https://docs.zephyrproject.org/3.0.0/reference/devicetree/bindings/gpio/gpio-leds.html)
 - [pwm-leds](https://docs.zephyrproject.org/latest/build/dts/api/bindings/led/pwm-leds.html)
 
 See the [backlight feature page](../features/backlight.md) for examples of the properties that must be set to enable backlighting.
