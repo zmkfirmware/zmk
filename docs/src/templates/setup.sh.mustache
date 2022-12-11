@@ -136,12 +136,13 @@ if [ "$keyboard_shield" == "y" ]; then
                     continue
                 fi
 
+                board_index=$(( $REPLY-1 ))
+
                 if [ -n "${!keyboard_sibling_first}" ] && [ "${boards_usb_only[$board_index]}" = "y" ] ; then
                     echo "Wired split is not yet supported by ZMK."
                     exit 1
                 fi
 
-                board_index=$(( $REPLY-1 ))
                 board=${board_ids[$board_index]}
                 board_title=${options[$board_index]}
                 boards=( "${board}" )
