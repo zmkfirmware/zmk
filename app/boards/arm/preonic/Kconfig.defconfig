@@ -1,6 +1,6 @@
 # Preonic keyboard configuration
 
-# Copyright (c) 2020 The ZMK Contributors
+# Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 if BOARD_PREONIC_REV3
@@ -10,5 +10,8 @@ config ZMK_KEYBOARD_NAME
 
 config ZMK_USB
 	default y
+
+	config ZMK_KSCAN_MATRIX_POLLING
+        default y
 
 endif # BOARD_PREONIC_REV3
