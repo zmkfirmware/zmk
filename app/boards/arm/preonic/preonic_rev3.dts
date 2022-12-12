@@ -8,6 +8,7 @@
 #include <st/f3/stm32f303Xc.dtsi>
 #include <dt-bindings/zmk/matrix-transform.h>
 
+
 / {
     model = "Preonic PCD, rev3";
     compatible = "preonic,rev3", "st,stm32f303";
@@ -59,7 +60,8 @@
             >;
     };
 
-    layout_mit_transform: keymap_transform_1 {
+    layout_mit_transform:
+    keymap_transform_1 {
         compatible = "zmk,matrix-transform";
         columns = <6>;
         rows = <10>;
@@ -72,7 +74,8 @@
             >;
     };
 
-    layout_2x2u_transform: keymap_transform_2 {
+    layout_2x2u_transform:
+    keymap_transform_2 {
         compatible = "zmk,matrix-transform";
         columns = <6>;
         rows = <10>;
@@ -84,7 +87,6 @@
             RC(8,0) RC(8,1) RC(8,2) RC(9,3)       RC(9,5)      RC(9,1)      RC(9,2) RC(8,3) RC(8,4) RC(8,5)
             >;
     };
-
 };
 
 &usb {
