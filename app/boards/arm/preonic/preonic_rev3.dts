@@ -90,7 +90,13 @@
 };
 
 &usb {
+    pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
+    pinctrl-names = "default";
     status = "okay";
+cdc_acm_uart: cdc_acm_uart {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "CDC_ACM_0";
+    };
 };
 
 &clk_hse {
