@@ -11,8 +11,8 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-    model = "corneish_zen_v2";
-    compatible = "corneish_zen_v2";
+    model = "Corne-ish Zen";
+    compatible = "corneish_zen";
 
     chosen {
         zephyr,code-partition = &code_partition;
@@ -20,7 +20,6 @@
         zephyr,flash = &flash0;
         zmk,kscan = &kscan0;
         zmk,display = &epd;
-        zmk,battery = &vbatt;
         zephyr,console = &cdc_acm_uart;
         zmk,matrix_transform = &default_transform;
     };
