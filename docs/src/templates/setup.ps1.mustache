@@ -217,7 +217,7 @@ if ($keyboard_type -eq "shield") {
 
 Write-Host "Downloading config file (${url_base}/${keyboard}.conf)"
 Try {
-    Invoke-RestMethod -Uri "${config_url}" -OutFile "${keyboard}.conf"
+    Invoke-RestMethod -Uri "${url_base}/${keyboard}.conf" -OutFile "${keyboard}.conf"
 } Catch {
     Try {
         Write-Host "Could not find it, falling back to ${url_base}/${basedir}.conf"
