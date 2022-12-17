@@ -304,6 +304,7 @@ export default {
     "HASH",
     "DOLLAR",
     "PERCENT",
+    "EURO",
     "CARET",
     "AMPERSAND",
     "ASTERISK",

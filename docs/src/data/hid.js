@@ -791,6 +791,31 @@ export default [
     footnotes: {},
   },
   {
+    names: ["EURO", "EUR"],
+    description: "€ [Euro]",
+    context: "Keyboard",
+    clarify: false,
+    usages: [
+      {
+        application: keyboardApplication,
+        item: usage(keyPage, 0x22),
+      },
+      {
+        application: keyboardApplication,
+        item: usage(keyPage, 0xe6),
+      },
+    ],
+    documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=84",
+    os: {
+      windows: true,
+      linux: true,
+      android: true,
+      macos: true,
+      ios: true,
+    },
+    footnotes: {},
+  },
+  {
     names: ["NUMBER_6", "N6"],
     description: "6 and ^ [Caret]",
     context: "Keyboard",
