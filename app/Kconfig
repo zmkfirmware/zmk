@@ -155,7 +155,7 @@ config BT_DEVICE_APPEARANCE
 
 config ZMK_BLE_PASSKEY_ENTRY
 	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
-	default n
+	default y
 
 config BT_PERIPHERAL_PREF_MIN_INT
 	default 6
