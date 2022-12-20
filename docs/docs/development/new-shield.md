@@ -461,6 +461,7 @@ left_encoder: encoder_left {
 		a-gpios = <PIN_A (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 		b-gpios = <PIN_B (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
 		resolution = <4>;
+		status = "disabled";
 	};
 ```
 
