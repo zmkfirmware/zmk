@@ -107,11 +107,6 @@ done:
 
 static int max17048_sample_fetch(const struct device *dev, enum sensor_channel chan) {
 
-    if (chan != SENSOR_CHAN_GAUGE_VOLTAGE && chan != SENSOR_CHAN_GAUGE_STATE_OF_CHARGE) {
-        LOG_DBG("unsupported channel %d", chan);
-        return -ENOTSUP;
-    }
-
     struct max17048_drv_data *const drv_data = dev->data;
     k_sem_take(&drv_data->lock, K_FOREVER);
 
@@ -133,6 +128,9 @@ static int max17048_sample_fetch(const struct device *dev, enum sensor_channel c
             goto done;
         }
         LOG_DBG("read vcell: %d", drv_data->raw_vcell);
+    } else {
+        LOG_DBG("unsupported channel %d", chan);
+        err = -ENOTSUP;
     }
 
 done:
