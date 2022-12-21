@@ -25,12 +25,11 @@ extern "C" {
 #define REG_STATUS 0x1A
 
 struct max17048_config {
-    const char *i2c_device_name;
-    uint16_t device_addr;
+    struct i2c_dt_spec i2c_bus;
 };
 
 struct max17048_drv_data {
-    const struct device *i2c;
+    struct k_sem lock;
 
     uint16_t raw_state_of_charge;
     uint16_t raw_charge_rate;
