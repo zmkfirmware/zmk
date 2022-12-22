@@ -1,0 +1,8 @@
+# Copyright (c) 2022 Shawn Rutledge
+# SPDX-License-Identifier: MIT
+
+config SHIELD_PINKY4_LEFT
+	def_bool $(shields_list_contains,pinky4_left)
+
+config SHIELD_PINKY4_RIGHT
+	def_bool $(shields_list_contains,pinky4_right)

@@ -1,0 +1,13 @@
+file_format: "1"
+id: pinky4
+name: Pinky4
+type: shield
+url: https://github.com/tamanishi/Pinky4
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+siblings:
+  - pinky4_left
+  - pinky4_right
