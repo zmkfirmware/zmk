@@ -13,3 +13,13 @@ description: |
   Note: ZMK doesn't support boards with AVR 8-bit processors, such as the ATmega32U4, because Zephyr™ only
   supports 32-bit and 64-bit platforms. As a result, boards like the original Arduino Uno Rev3 itself are
   *not* supported by ZMK.
+node_labels:
+  gpio: arduino_header
+  i2c: arduino_i2c
+  spi: arduino_spi
+  uart: arduino_serial
+  adc: arduino_adc
+design_guideline: |
+  The GPIO pin references for the Uno format are a bit odd. The `&arduino_header` label is used, but the numbering
+  starts at the `A0` pin and increments as you go counter clockwise around the board. That means the `D6` pin
+  can be referenced by `&arduino_header 12` in your overlay files.

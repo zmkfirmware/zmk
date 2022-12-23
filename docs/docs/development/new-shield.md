@@ -6,6 +6,9 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import KeymapExampleFile from '../keymap-example-file.md';
 
+import InterconnectTabs from "@site/src/components/interconnect-tabs";
+import Metadata from "@site/src/data/hardware-metadata.json";
+
 ## Overview
 
 This guide will walk through the steps necessary to add ZMK support for a keyboard the uses a (Pro Micro compatible) addon MCU board to provide the microprocessor.
@@ -115,33 +118,7 @@ endif
 
 ## Shield Overlays
 
-<Tabs
-defaultValue="pro_micro"
-values={[
-{label: 'Pro Micro Shields', value: 'pro_micro'},
-{label: 'BlackPill Shields', value: 'blackpill'},
-]}>
-
-<TabItem value="pro_micro">
-
-### Pro Micro Shields
-
-![Labelled Pro Micro pins](../assets/pro-micro/pro-micro-pins-labelled.jpg)
-
-ZMK uses the blue color coded pin names to generate devicetree node references. For example, to refer to the node `0` in the devicetree files, use `&pro_micro 0`.
-
-</TabItem>
-
-<TabItem value="blackpill">
-
-### BlackPill Shields
-
-![Labelled BlackPill pins](../assets/blackpill/blackpill-pins-labelled.png)
-
-ZMK uses the blue color coded pin names to generate devicetree node references. For example, to refer to the node `17` in the devicetree files, use `&blackpill 17`.
-
-</TabItem>
-</Tabs>
+<InterconnectTabs items={Metadata}/>
 
 <Tabs
 defaultValue="unibody"
