@@ -336,12 +336,12 @@ Since the Zephyr™ SDK is not available for Windows, we recommending following 
 :::note
 It is recommended to extract the Zephyr™ SDK Bundle at one of these locations:
 
- - `~/`
- - `~/.local`
- - `~/.local/opt`
- - `~/bin`
- - `/opt`
- - `/usr/local`
+- `~/`
+- `~/.local`
+- `~/.local/opt`
+- `~/bin`
+- `/opt`
+- `/usr/local`
 
 Note that the install includes the directory `zephyr-sdk-X.XX.X`
 :::
