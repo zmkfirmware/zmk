@@ -331,13 +331,33 @@ Since the Zephyr™ SDK is not available for Windows, we recommending following 
 </TabItem>
 <TabItem value="mac">
 
-#### GNU ARM Embedded
+#### Zephyr™ SDK Bundle
 
-Since the Zephyr™ SDK is not available for macOS, we recommending following the steps to install the GNU ARM Embedded toolchain:
+:::note
+It is recommended to extract the Zephyr™ SDK Bundle at one of these locations:
 
+ - `~/`
+ - `~/.local`
+ - `~/.local/opt`
+ - `~/bin`
+ - `/opt`
+ - `/usr/local`
+
+Note that the install includes the directory `zephyr-sdk-X.XX.X`
+:::
+
+Download the [latest Zephyr SDK™ Bundle](https://github.com/zephyrproject-rtos/sdk-ng/releases) to a directory of your choice. If the host architecture is Apple Silicon based, download the aarch64 version.
+
+Next, extract the Zephyr SDK™ Bundle and run the setup script
+
+```sh
+cd /installation/directory
+tar xvf zephyr-sdk-X.XX.X_macos-XXXX.tar.gz
+cd zephyr-sdk-X.XX.X
+./setup.sh
 ```
-brew install --cask gcc-arm-embedded
-```
+
+If you relocated the Zephyr SDK™ Bundle after setup, you must run the setup script again.
 
 </TabItem>
 </OsTabs>
