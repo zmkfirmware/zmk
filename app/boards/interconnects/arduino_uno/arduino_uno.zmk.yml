@@ -1,0 +1,25 @@
+file_format: "1"
+id: arduino_uno
+name: Arduino Uno Rev3
+type: interconnect
+url: https://store-usa.arduino.cc/products/arduino-uno-rev3?selectedStore=us
+manufacturer: Arduino
+description: |
+  The Arduino Uno Rev3 is a board who's popularity lead to countless shields being developed for it. By
+  natural extension, once there were many shields designed for it, many other *boards* began to be developed
+  that were compatible to leverage the extensive available shields. Today, many dev kits come with Uno
+  headers to make it easy to work with them.
+
+  Note: ZMK doesn't support boards with AVR 8-bit processors, such as the ATmega32U4, because Zephyr™ only
+  supports 32-bit and 64-bit platforms. As a result, boards like the original Arduino Uno Rev3 itself are
+  *not* supported by ZMK.
+node_labels:
+  gpio: arduino_header
+  i2c: arduino_i2c
+  spi: arduino_spi
+  uart: arduino_serial
+  adc: arduino_adc
+design_guideline: |
+  The GPIO pin references for the Uno format are a bit odd. The `&arduino_header` label is used, but the numbering
+  starts at the `A0` pin and increments as you go counter clockwise around the board. That means the `D6` pin
+  can be referenced by `&arduino_header 12` in your overlay files.

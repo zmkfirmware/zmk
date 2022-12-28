@@ -1,0 +1,20 @@
+identifier: corneish_zen_v2
+name: Corne-ish Zen v2
+type: keyboard
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - gpio
+  - i2c
+  - counter
+  - spi
+  - usb_device
+  - lsm303dlhc
+  - nvs
+  - can
+  - kscan
+  - ble
+  - adc

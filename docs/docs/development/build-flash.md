@@ -140,3 +140,23 @@ your board and run the following command to flash:
 ```
 west flash
 ```
+
+## Multi-CPU and Dual-Chip Bluetooth Boards
+
+Zephyr supports running the Bluetooth host and controller on separate processors. In such a configuration, ZMK always runs on the host processor, but you may need to build and flash separate firmware for the controller. Zephyr provides sample code which can be used as the controller firmware for Bluetooth HCI over [RPMsg](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_rpmsg/README.html), [SPI](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_spi/README.html), [UART](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_uart/README.html), and [USB](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_usb/README.html). See [Zephyr's Bluetooth Stack Architecture documentation](https://docs.zephyrproject.org/3.2.0/connectivity/bluetooth/bluetooth-arch.html) for more details.
+
+The following documentation shows how to build and flash ZMK for boards that use a dual-chip configuration.
+
+### nRF5340
+
+To build and flash the firmware for the nRF5340 development kit's network core, run the following command from the root of the ZMK repo:
+
+```sh
+cd zephyr/samples/bluetooth/hci_rpmsg
+west build -b nrf5340dk_nrf5340_cpunet
+west flash
+```
+
+You can then build and flash ZMK firmware using the normal steps described above. The network core's firmware only needs to be updated whenever ZMK upgrades to a new version of Zephyr.
+
+For a custom nRF5340-based board, you will need to define two Zephyr boards: one for the application core and one for the network core. The [nRF5340 DK's board definition](https://github.com/zephyrproject-rtos/zephyr/tree/main/boards/arm/nrf5340dk_nrf5340) can be used as reference. Replace `nrf5340dk_nrf5340_cpunet` with the name of your network core board.

@@ -34,7 +34,7 @@ in the `app/boards/${arch}/${board_name}` directory, e.g. `app/boards/arm/planck
 
 ## Pro Micro Compatible Keyboard
 
-![Labelled Pro Micro pins](../assets/pro-micro/pro-micro-pins-labelled.jpg)
+![Labelled Pro Micro pins](../assets/interconnects/pro_micro/pinout.png)
 
 For keyboards that require a (usually Pro Micro compatible) add-on board to operate, the ZMK integration pieces are places
 in the _shield_ definition for that keyboard, allowing users to
