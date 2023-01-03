@@ -379,18 +379,18 @@ static uint8_t split_central_service_discovery_func(struct bt_conn *conn,
     }
 
 #if ZMK_KEYMAP_HAS_SENSORS
-        memcpy(&sensor_uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_SENSOR_STATE_UUID),
-               sizeof(sensor_uuid));
-        sensor_discover_params.uuid = &sensor_uuid.uuid;
-        sensor_discover_params.start_handle = attr->handle;
-        sensor_discover_params.end_handle = 0xffff;
-        sensor_discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
-        sensor_discover_params.func = split_central_sensor_desc_discovery_func;
+    memcpy(&sensor_uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_SENSOR_STATE_UUID),
+           sizeof(sensor_uuid));
+    sensor_discover_params.uuid = &sensor_uuid.uuid;
+    sensor_discover_params.start_handle = attr->handle;
+    sensor_discover_params.end_handle = 0xffff;
+    sensor_discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
+    sensor_discover_params.func = split_central_sensor_desc_discovery_func;
 
-        err = bt_gatt_discover(conn, &sensor_discover_params);
-        if (err) {
-            LOG_ERR("Discover failed (err %d)", err);
-        }
+    err = bt_gatt_discover(conn, &sensor_discover_params);
+    if (err) {
+        LOG_ERR("Discover failed (err %d)", err);
+    }
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
     return BT_GATT_ITER_STOP;
