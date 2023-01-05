@@ -376,7 +376,7 @@ jobs:
             },
             { onboard: [], interconnects: {} });
 
-            return JSON.stringify(grouped).replace(/\\/g,"\\\\");
+            return JSON.stringify(grouped).replace(/\\/g,"\\\\").replace(/`/g,"\\`");
           result-encoding: string
   get-changed-files:
     if: ${{ github.event_name != 'schedule' }}
