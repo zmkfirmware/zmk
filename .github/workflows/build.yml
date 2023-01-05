@@ -386,7 +386,7 @@ jobs:
       board-changes: ${{ steps.board-changes.outputs.result }}
       core-changes: ${{ steps.core-changes.outputs.result }}
     steps:
-      - uses: Ana06/get-changed-files@v2.0.0
+      - uses: Ana06/get-changed-files@v2.2.0
         id: changed-files
         with:
           format: "json"
