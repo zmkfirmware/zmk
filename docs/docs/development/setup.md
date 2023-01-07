@@ -346,7 +346,7 @@ It is recommended to extract the Zephyr™ SDK Bundle at one of these locations:
 Note that the install includes the directory `zephyr-sdk-X.XX.X`
 :::
 
-Download the [latest Zephyr SDK™ Bundle](https://github.com/zephyrproject-rtos/sdk-ng/releases) to a directory of your choice. If the host architecture is Apple Silicon based, download the aarch64 version.
+Download the [latest Zephyr SDK™ Bundle](https://github.com/zephyrproject-rtos/sdk-ng/releases/tag/v0.15.2) to a directory of your choice. If the host architecture is Apple Silicon based, download the aarch64 version.
 
 Next, extract the Zephyr SDK™ Bundle and run the setup script
 
