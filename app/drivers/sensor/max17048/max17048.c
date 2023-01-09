@@ -26,7 +26,7 @@ static int read_register(const struct device *dev, uint8_t reg, uint16_t *value)
 
     struct max17048_config *config = (struct max17048_config *)dev->config;
 
-    uint8_t data[2] = { 0 };
+    uint8_t data[2] = {0};
     int ret = i2c_burst_read_dt(&config->i2c_bus, reg, &data[0], sizeof(data));
     if (ret != 0) {
         LOG_DBG("i2c_write_read FAIL %d\n", ret);
@@ -46,7 +46,7 @@ static int write_register(const struct device *dev, uint8_t reg, uint16_t value)
 
     struct max17048_config *config = (struct max17048_config *)dev->config;
 
-    uint8_t data[2] = { 0 };
+    uint8_t data[2] = {0};
     sys_put_be16(value, &data[0]);
 
     return i2c_burst_write_dt(&config->i2c_bus, reg, &data[0], sizeof(data));
@@ -202,8 +202,8 @@ static const struct sensor_driver_api max17048_api_table = {.sample_fetch = max1
                                                             .channel_get = max17048_channel_get};
 
 #define MAX17048_INIT(inst)                                                                        \
-    static struct max17048_config max17048_##inst##_config = {                                     \
-        .i2c_bus = I2C_DT_SPEC_INST_GET(inst)};                                                    \
+    static struct max17048_config max17048_##inst##_config = {.i2c_bus =                           \
+                                                                  I2C_DT_SPEC_INST_GET(inst)};     \
                                                                                                    \
     static struct max17048_drv_data max17048_##inst##_drvdata = {                                  \
         .raw_state_of_charge = 0,                                                                  \
