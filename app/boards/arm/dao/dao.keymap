@@ -1,0 +1,85 @@
+/*
+ * Copyright (c) 2021 Rafael Yumagulov
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define DEF 0
+#define LWR 1
+#define RSE 2
+#define ADJ 3
+
+&lt { quick_tap_ms = <200>; };
+&mt { quick_tap_ms = <200>; };
+
+/ {
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+// -------------------------------------------------------------------------------------------------
+// NOTE: For 44 version you should add map to edge buttons
+// -------------------------------------------------------------------------------------------------
+// |      | CMD/[  |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  | [      |     |
+//        | CTRL/` |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  | CTRL/' |
+//        | ALT/-  |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | ALT/\  |
+//                | RSE/TAB | SHFT/SPC | LWR/RET |   | LWR/ESC | SHFT/BKSP  | RSE/DEL |
+                        bindings = <
+  &none   &mt LGUI RBKT     &kp Q   &kp W   &kp E         &kp R             &kp T         &kp Y         &kp U            &kp I         &kp O     &kp P      &kp LBKT        &none
+          &mt LCTRL GRAVE   &kp A   &kp S   &kp D         &kp F             &kp G         &kp H         &kp J            &kp K         &kp L     &kp SEMI   &mt RCTRL SQT
+          &mt LALT MINUS    &kp Z   &kp X   &kp C         &kp V             &kp B         &kp N         &kp M            &kp COMMA     &kp DOT   &kp FSLH   &mt RALT BSLH
+                                            &lt RSE TAB   &mt LSHFT SPACE   &lt LWR RET   &lt LWR ESC   &mt RSHFT BSPC   &lt RSE DEL
+                        >;
+                };
+                lower_layer {
+// -------------------------------------------------------------------------------------------------
+// NOTE: For 44 version you should add map to edge buttons
+// -------------------------------------------------------------------------------------------------
+// |      | CMD/F1 |  F2 |  F3 |  F4 |  F5 |  F6 |   |  F7 |  F8  |  F9 | F10 | F11 | F12    |     |
+//        | CTRL/+ |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &   |  *  |  (  |  )  | CTRL/- |
+//        | ALT/=  |  1  |  2  |  3  |  4  |  5  |   |  6  |  7   |  8  |  9  |  0  | ALT |
+//                         | ADJ/TAB |     |     |   |     |      | ADJ/DEL |
+                        bindings = <
+  &none   &mt LGUI F1      &kp F2     &kp F3   &kp F4        &kp F5     &kp F6      &kp F7      &kp F8     &kp F9        &kp F10    &kp F11    &kp F12           &none
+          &mt LCTRL PLUS   &kp EXCL   &kp AT   &kp HASH      &kp DLLR   &kp PRCNT   &kp CARET   &kp AMPS   &kp STAR      &kp LPAR   &kp RPAR   &mt RCTRL MINUS
+          &mt LALT EQUAL   &kp N1     &kp N2   &kp N3        &kp N4     &kp N5      &kp N6      &kp N7     &kp N8        &kp N9     &kp N0     &kp RALT
+                                               &lt ADJ TAB   &trans     &trans      &trans      &trans     &lt ADJ DEL
+                        >;
+                };
+
+                raise_layer {
+// -------------------------------------------------------------------------------------------------
+// NOTE: For 44 version you should add map to edge buttons
+// -------------------------------------------------------------------------------------------------
+// |      | CMD/NLCK | / |  7  |  8  |  9  |  -  |   | VOL_UP | HOME | PSCRN | PGUP | SLCK |       CAPS |     |
+//        | CTRL/=   | * |  4  |  5  |  6  |  +  |   |   MUTE | LEFT |    UP | RHGT |  INS |CTRL/CTXMENU|
+//        | ALT      | 0 |  1  |  2  |  3  |  .  |   | VOL_DN |  END |  DOWN | PGDN | PAUS |        ALT |
+//                       |     |       | ADJ/ENT |   | ADJ/ESC |        |     |
+                        bindings = <
+  &none   &mt LGUI KP_NUM   &kp KP_SLASH      &kp KP_N7   &kp KP_N8   &kp KP_N9   &kp KP_MINUS   &kp C_VOL_UP   &kp HOME   &kp PSCRN   &kp PG_UP   &kp SLCK          &kp CLCK           &none
+          &mt LCTRL EQUAL   &kp KP_MULTIPLY   &kp KP_N4   &kp KP_N5   &kp KP_N6   &kp KP_PLUS    &kp C_MUTE     &kp LEFT   &kp UP      &kp RIGHT   &kp INS           &mt RCTRL  K_APP
+          &kp LALT          &kp KP_N0         &kp KP_N1   &kp KP_N2   &kp KP_N3   &kp KP_DOT     &kp C_VOL_DN   &kp END    &kp DOWN    &kp PG_DN   &kp PAUSE_BREAK   &kp RALT
+                                                          &trans      &trans      &lt ADJ RET    &lt ADJ ESC    &trans     &trans
+                        >;
+                };
+                adjust_layer {
+// -------------------------------------------------------------------------------------------------
+// NOTE: For 44 version you should add map to edge buttons
+// -------------------------------------------------------------------------------------------------
+// |      | BTLDR  |     |     |     |     |     |   |     |     |     |     |     |  BTLDR |     |
+//        | BT_CLR | BT0 | BT1 | BT2 | BT3 | BT4 |   | BT4 | BT3 | BT2 | BT1 | BT0 | BT_CLR |
+//        | RST    |     |     |     |     |     |   |     |     |     |     |     |    RST |
+//                             |     |     |     |   |     |     |     |
+                        bindings = <
+  &none   &bootloader   &none          &none          &none          &none          &none          &none          &none          &none          &none          &none          &bootloader   &none
+          &bt BT_CLR    &bt BT_SEL 0   &bt BT_SEL 1   &bt BT_SEL 2   &bt BT_SEL 3   &bt BT_SEL 4   &bt BT_SEL 4   &bt BT_SEL 3   &bt BT_SEL 2   &bt BT_SEL 1   &bt BT_SEL 0   &bt BT_CLR
+          &reset        &none          &none          &none          &none          &none          &none          &none          &none          &none          &none          &reset
+                                                      &trans         &none          &trans         &none          &trans         &trans
+                        >;
+                };
+        };
+};
