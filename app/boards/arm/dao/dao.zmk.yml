@@ -1,7 +1,7 @@
 file_format: "1"
-id: dao 
-name: Dao 
-url: https://github.com/yumagulovrn/dao-choc-ble 
+id: dao
+name: Dao
+url: https://github.com/yumagulovrn/dao-choc-ble
 type: board
 arch: arm
 features:
@@ -12,4 +12,3 @@ outputs:
 siblings:
   - dao_left
   - dao_right
-
