@@ -19,3 +19,11 @@ config SHIELD_KYRIA_REV2_LEFT
 config SHIELD_KYRIA_REV2_RIGHT
 	def_bool $(shields_list_contains,kyria_rev2_right)
 	select SHIELD_KYRIA
+
+config SHIELD_KYRIA_REV3_LEFT
+	def_bool $(shields_list_contains,kyria_rev3_left)
+	select SHIELD_KYRIA
+
+config SHIELD_KYRIA_REV3_RIGHT
+	def_bool $(shields_list_contains,kyria_rev3_right)
+	select SHIELD_KYRIA
