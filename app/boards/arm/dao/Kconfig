@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Rafael Yumagulov
+# Copyright (c) 2023 ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 config BOARD_ENABLE_DCDC
