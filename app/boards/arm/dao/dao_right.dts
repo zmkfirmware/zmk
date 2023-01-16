@@ -10,6 +10,10 @@
 	col-offset = <6>;
 };
 
+&less_key_transform {
+	col-offset = <6>;
+};
+
 &kscan0 {
 	col-gpios
 		= <&gpio0 12 GPIO_ACTIVE_HIGH>
