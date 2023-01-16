@@ -55,7 +55,7 @@
             RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,11) RC(2,10) RC(2,9) RC(2,8) RC(2,7) RC(2,6)
                                     RC(3,3) RC(3,4) RC(3,5)  RC(3,11) RC(3,10) RC(3,9)
 		>;
-	}
+	};
 
 	kscan0: kscan {
 		compatible = "zmk,kscan-gpio-matrix";
