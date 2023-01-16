@@ -36,6 +36,3 @@ CONFIG_CLOCK_CONTROL_NRF_K32SRC_30PPM=y
 
 # Turn on uf2 build
 CONFIG_BUILD_OUTPUT_UF2=y
-
-# Increase transmit power level
-CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
