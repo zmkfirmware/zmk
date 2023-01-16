@@ -10,6 +10,7 @@ module.exports = {
     ],
     Features: [
       "features/keymaps",
+      "features/bluetooth",
       "features/combos",
       "features/conditional-layers",
       "features/debouncing",
@@ -57,6 +58,7 @@ module.exports = {
       "config/backlight",
       "config/battery",
       "config/behaviors",
+      "config/bluetooth",
       "config/combos",
       "config/displays",
       "config/encoders",
