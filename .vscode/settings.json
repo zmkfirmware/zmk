@@ -3,5 +3,9 @@
     "*.overlay": "dts",
     "*.keymap": "dts"
   },
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.cwd": "${workspaceFolder}/app",
+  "python.testing.pytestArgs": ["test_zmk.py", "-v", "--numprocesses=auto"]
 }

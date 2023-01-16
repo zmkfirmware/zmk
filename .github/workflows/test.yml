@@ -33,10 +33,11 @@ jobs:
         test: ${{ fromJSON(needs.collect-tests.outputs.test-dirs) }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:3.0
+      image: docker.io/zmkfirmware/zmk-build-arm:stable
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Cache west modules
         uses: actions/cache@v3.0.2
         env:
@@ -62,7 +63,7 @@ jobs:
         run: west zephyr-export
       - name: Test ${{ matrix.test }}
         working-directory: app
-        run: west test tests/${{ matrix.test }}
+        run: west test ${{ matrix.test }}
       - name: Archive artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v2

@@ -1,8 +1,10 @@
 # Copyright (c) 2021 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-# Convert YAML to JSON for validation
-remarshal>=0.14.0
-
 # Perform our hardware metadata validation
 jsonschema>=3.2.0
+
+# Unit testing
+pythonsed>=2.1
+pytest>=7.0.0
+pytest-xdist>=3.0.0

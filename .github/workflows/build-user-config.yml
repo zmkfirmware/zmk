@@ -29,18 +29,16 @@ jobs:
     runs-on: ubuntu-latest
     name: Fetch Build Keyboards
     outputs:
-      build_matrix: ${{ env.build_matrix }}
+      build_matrix: ${{ steps.fetch_build_matrix.outputs.result }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install yaml2json
-        run: python3 -m pip install remarshal
-
       - name: Fetch Build Matrix
-        run: |
-          echo "build_matrix=$(yaml2json ${{ inputs.build_matrix_path }} | jq -c .)" >> $GITHUB_ENV
-          yaml2json ${{ inputs.build_matrix_path }} | jq
+        id: fetch_build_matrix
+        uses: mikefarah/yq@v4.30.8
+        with:
+          cmd: yq -o json ${{ inputs.build_matrix_path }}
 
   build:
     runs-on: ubuntu-latest
