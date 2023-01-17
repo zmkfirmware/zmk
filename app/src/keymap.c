@@ -231,7 +231,7 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
         return invoke_locally(&binding, event, pressed);
 #endif
     case BEHAVIOR_LOCALITY_GLOBAL:
-        LOG_DBG("locality is: BEHAVIOR_LOCALITY_GLOBAL");
+        LOG_DBG("locality is: BEHAVIOR_LOCALITY_GLOBAL - Invoking %s", log_strdup(binding.behavior_dev));
 #if ZMK_BLE_IS_CENTRAL
         LOG_DBG("BEHAVIOR_LOCALITY_GLOBAL is central");
         for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
