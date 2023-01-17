@@ -5,6 +5,7 @@
  */
 
 #include <zmk/behavior_queue.h>
+#include <zmk/keymap.h>
 
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -35,9 +36,9 @@ static void behavior_queue_process_next(struct k_work *work) {
                                                    .timestamp = k_uptime_get()};
 
         if (item.press) {
-            behavior_keymap_binding_pressed(&item.binding, event);
+            zmk_trigger_behavior_callbacks(&item.binding, event, 0, true);
         } else {
-            behavior_keymap_binding_released(&item.binding, event);
+            zmk_trigger_behavior_callbacks(&item.binding, event, 0, false);
         }
 
         LOG_DBG("Processing next queued behavior in %dms", item.wait);
