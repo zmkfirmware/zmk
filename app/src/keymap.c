@@ -179,18 +179,19 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
         .timestamp = timestamp,
     };
 
-    LOG_DBG("layer: %d position: %d, binding name: %s", layer, position,
-            log_strdup(binding.behavior_dev));
-
     return zmk_run_behavior(&binding,event,pressed);
 }
 
 int zmk_run_behavior(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,bool pressed){
 
+    LOG_DBG("layer: %d position: %d, binding name: %s", event.layer, event.position,
+            log_strdup(binding->behavior_dev));
+
+
     const struct device *behavior = device_get_binding(binding->behavior_dev);
 
     if (!behavior) {
-        LOG_WRN("No behavior assigned to %d on layer %d", position, layer);
+        LOG_WRN("No behavior assigned to %d on layer %d", event.position, event.layer);
         return 1;
     }
 
