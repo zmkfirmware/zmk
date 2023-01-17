@@ -37,10 +37,10 @@ static void behavior_queue_process_next(struct k_work *work) {
                                                    .timestamp = k_uptime_get()};
 
         if (item.press) {
-            zmk_run_behavior(&item.binding, event,true)
+            zmk_run_behavior(&item.binding, event,true);
 //            behavior_keymap_binding_pressed(&item.binding, event);
         } else {
-             zmk_run_behavior(&item.binding, event,false)
+             zmk_run_behavior(&item.binding, event,false);
     //        behavior_keymap_binding_released(&item.binding, event);
         }
 
