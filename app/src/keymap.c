@@ -202,10 +202,13 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
         return err;
     }
 
+
     switch (locality) {
     case BEHAVIOR_LOCALITY_CENTRAL:
+        LOG_DBG("locality is: BEHAVIOR_LOCALITY_CENTRAL");
         return invoke_locally(&binding, event, pressed);
     case BEHAVIOR_LOCALITY_EVENT_SOURCE:
+        LOG_DBG("locality is: BEHAVIOR_LOCALITY_EVENT_SOURCE");
 #if ZMK_BLE_IS_CENTRAL
         if (source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
             return invoke_locally(&binding, event, pressed);
@@ -216,10 +219,14 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
         return invoke_locally(&binding, event, pressed);
 #endif
     case BEHAVIOR_LOCALITY_GLOBAL:
+        LOG_DBG("locality is: BEHAVIOR_LOCALITY_GLOBAL");
 #if ZMK_BLE_IS_CENTRAL
+        LOG_DBG("BEHAVIOR_LOCALITY_GLOBAL is central");
         for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
             zmk_split_bt_invoke_behavior(i, &binding, event, pressed);
         }
+#else
+        LOG_DBG("BEHAVIOR_LOCALITY_GLOBAL is peripheral");
 #endif
         return invoke_locally(&binding, event, pressed);
     }

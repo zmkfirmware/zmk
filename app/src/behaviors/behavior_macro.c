@@ -164,7 +164,6 @@ static int on_macro_binding_released(struct zmk_behavior_binding *binding,
 static const struct behavior_driver_api behavior_macro_driver_api = {
     .binding_pressed = on_macro_binding_pressed,
     .binding_released = on_macro_binding_released,
-        .locality = BEHAVIOR_LOCALITY_GLOBAL,
 };
 
 #define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, DT_DRV_INST(drv_inst)),

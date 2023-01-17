@@ -475,6 +475,9 @@ static int rgb_underglow_auto_state(bool *prev_state, bool new_state) {
 
 static int rgb_underglow_event_listener(const zmk_event_t *eh) {
 
+        LOG_DBG("rgb_underglow_event_listener");
+
+
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
     if (as_zmk_activity_state_changed(eh)) {
         static bool prev_state = false;
