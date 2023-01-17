@@ -210,7 +210,7 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
     }
 
      if (strncmp(binding.behavior_dev, "layer", 5) == 0) {
-            behavior_locality locality = BEHAVIOR_LOCALITY_GLOBAL;
+             locality = BEHAVIOR_LOCALITY_GLOBAL;
              LOG_DBG("force locality: BEHAVIOR_LOCALITY_GLOBAL because of a 'layer' behavior");
         }
 
