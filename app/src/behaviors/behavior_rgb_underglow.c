@@ -8,6 +8,7 @@
 
 #include <device.h>
 #include <drivers/behavior.h>
+#include <zmk/split/bluetooth/central.h>
 #include <logging/log.h>
 
 #include <dt-bindings/zmk/rgb.h>
