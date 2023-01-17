@@ -37,13 +37,11 @@ static void behavior_queue_process_next(struct k_work *work) {
                                                    .timestamp = k_uptime_get()};
 
         if (item.press) {
-            if(strncmp(item.binding.behavior_dev,"RGB_UG",6)==0){
-                LOG_DBG("RGB_COLOR_HSB_CMD sending binding to peripheral");
-                zmk_split_bt_invoke_behavior(0, &item.binding, event, true);
-            }
-            behavior_keymap_binding_pressed(&item.binding, event);
+            zmk_run_behavior(&item.binding, event,true)
+//            behavior_keymap_binding_pressed(&item.binding, event);
         } else {
-            behavior_keymap_binding_released(&item.binding, event);
+             zmk_run_behavior(&item.binding, event,false)
+    //        behavior_keymap_binding_released(&item.binding, event);
         }
 
         LOG_DBG("Processing next queued behavior in %dms", item.wait);

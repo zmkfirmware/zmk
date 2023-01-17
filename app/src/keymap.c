@@ -182,7 +182,10 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
     LOG_DBG("layer: %d position: %d, binding name: %s", layer, position,
             log_strdup(binding.behavior_dev));
 
+    return zmk_run_behavior(&binding,event,pressed);
+}
 
+int zmk_run_behavior(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,bool pressed){
 
     behavior = device_get_binding(binding.behavior_dev);
 
@@ -198,29 +201,16 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
     }
 
     enum behavior_locality locality = BEHAVIOR_LOCALITY_CENTRAL;
-
-
-
     err = behavior_get_locality(behavior, &locality);
     if (err) {
         LOG_ERR("Failed to get behavior locality %d", err);
         return err;
-    }else{
-        LOG_DBG("got locality: BEHAVIOR_LOCALITY_CENTRAL from behavior");
     }
-
-     if (strncmp(binding.behavior_dev, "layer", 5) == 0) {
-             locality = BEHAVIOR_LOCALITY_GLOBAL;
-             LOG_DBG("force locality: BEHAVIOR_LOCALITY_GLOBAL because of a 'layer' behavior");
-        }
-
 
     switch (locality) {
     case BEHAVIOR_LOCALITY_CENTRAL:
-        LOG_DBG("locality is: BEHAVIOR_LOCALITY_CENTRAL");
         return invoke_locally(&binding, event, pressed);
     case BEHAVIOR_LOCALITY_EVENT_SOURCE:
-        LOG_DBG("locality is: BEHAVIOR_LOCALITY_EVENT_SOURCE");
 #if ZMK_BLE_IS_CENTRAL
         if (source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
             return invoke_locally(&binding, event, pressed);
@@ -231,14 +221,10 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
         return invoke_locally(&binding, event, pressed);
 #endif
     case BEHAVIOR_LOCALITY_GLOBAL:
-        LOG_DBG("locality is: BEHAVIOR_LOCALITY_GLOBAL - Invoking %s", log_strdup(binding.behavior_dev));
 #if ZMK_BLE_IS_CENTRAL
-        LOG_DBG("BEHAVIOR_LOCALITY_GLOBAL is central, calling binding on the peripheral...");
         for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
             zmk_split_bt_invoke_behavior(i, &binding, event, pressed);
         }
-#else
-        LOG_DBG("BEHAVIOR_LOCALITY_GLOBAL is peripheral");
 #endif
         return invoke_locally(&binding, event, pressed);
     }
