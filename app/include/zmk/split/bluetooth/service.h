@@ -20,6 +20,7 @@ struct sensor_event {
 
 struct zmk_split_run_behavior_data {
     uint8_t position;
+    uint8_t source;
     uint8_t state;
     uint32_t param1;
     uint32_t param2;
