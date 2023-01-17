@@ -7,4 +7,4 @@
 int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *binding,
                                  struct zmk_behavior_binding_event event, bool state);
 
-int zmk_run_behavior(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,bool pressed);
+int zmk_run_behavior(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,uint8_t source,bool pressed);
