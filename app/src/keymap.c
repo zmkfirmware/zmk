@@ -179,10 +179,10 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
         .timestamp = timestamp,
     };
 
-    return zmk_run_behavior(&binding,event,pressed);
+    return zmk_run_behavior(&binding,event,source,pressed);
 }
 
-int zmk_run_behavior(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,bool pressed){
+int zmk_run_behavior(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,uint8_t source,bool pressed){
 
     LOG_DBG("layer: %d position: %d, binding name: %s", event.layer, event.position,
             log_strdup(binding->behavior_dev));
