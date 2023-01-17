@@ -26,12 +26,12 @@
   font-size: 14px;
 }
 
-span[tooltip] {
+span[data-tooltip] {
   position: relative;
 }
 
-span[tooltip]::before {
-  content: attr(tooltip);
+span[data-tooltip]::before {
+  content: attr(data-tooltip);
   font-size: 13px;
   padding: 5px 10px;
   position: absolute;
@@ -47,7 +47,7 @@ span[tooltip]::before {
   left: 50%;
 }
 
-span[tooltip]::after {
+span[data-tooltip]::after {
   content: "";
   position: absolute;
   border-top: 8px solid var(--ifm-background-surface-color);
@@ -62,12 +62,12 @@ span[tooltip]::after {
   left: 50%;
 }
 
-span[tooltip]:hover::before {
+span[data-tooltip]:hover::before {
   opacity: 1;
   visibility: visible;
 }
 
-span[tooltip]:hover::after {
+span[data-tooltip]:hover::after {
   opacity: 1;
   visibility: visible;
 }

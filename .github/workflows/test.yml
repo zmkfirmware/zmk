@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Find test directories
         id: test-dirs
         run: |
@@ -36,7 +36,7 @@ jobs:
       image: docker.io/zmkfirmware/zmk-build-arm:3.0
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache west modules
         uses: actions/cache@v3.0.2
         env:

@@ -263,6 +263,7 @@
 
 /* Keyboard Non-US # and ~ (Non-US Hash/Number and Tilde) */
 #define NON_US_HASH (ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_NON_US_HASH_AND_TILDE))
+#define NUHS (NON_US_HASH)
 
 /* Keyboard ~ (Tilde) */
 #define TILDE2 (LS(ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_NON_US_HASH_AND_TILDE)))
@@ -499,6 +500,7 @@
 #define NON_US_BACKSLASH                                                                           \
     (ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_NON_US_BACKSLASH_AND_PIPE))
 #define NON_US_BSLH (NON_US_BACKSLASH)
+#define NUBS (NON_US_BACKSLASH)
 
 /* Keyboard Pipe */
 #define PIPE2 (LS(ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_NON_US_BACKSLASH_AND_PIPE)))

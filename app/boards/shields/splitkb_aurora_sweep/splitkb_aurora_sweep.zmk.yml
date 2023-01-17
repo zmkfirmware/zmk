@@ -1,0 +1,12 @@
+file_format: "1"
+id: splitkb_aurora_sweep
+name: splitkb.com Aurora Sweep
+type: shield
+url: https://splitkb.com/products/aurora-sweep-pcb-kit
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+siblings:
+  - splitkb_aurora_sweep_left
+  - splitkb_aurora_sweep_right

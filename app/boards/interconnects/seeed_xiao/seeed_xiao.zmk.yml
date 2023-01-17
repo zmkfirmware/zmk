@@ -8,3 +8,10 @@ description: |
   The Seeed(uino) XIAO is a popular smaller format micro-controller, that has gained popularity as an alterative
   to the SparkFun Pro Micro. Since its creation, several pin compatible controllers, such
   as the Seeeduino XIAO BLE, Adafruit QT Py and Adafruit QT Py RP2040, have become available.
+node_labels:
+  gpio: xiao_d
+  i2c: xiao_i2c
+  spi: xiao_spi
+  uart: xiao_serial
+design_guideline: |
+  ZMK uses the "D"-prefixed, green color coded pin names, e.g. `D2`, to generate devicetree node references. For example, to refer to the pin labeled `D0` in the diagram, use `&xiao_d 0` in the devicetree files.

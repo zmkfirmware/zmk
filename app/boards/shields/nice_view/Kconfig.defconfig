@@ -17,6 +17,13 @@ config LS0XX
 config ZMK_WIDGET_WPM_STATUS
 	default y if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
 
+config LVGL_BITS_PER_PIXEL
+	default 1
+
+choice LVGL_COLOR_DEPTH
+	default LVGL_COLOR_DEPTH_1
+endchoice
+
 endif # ZMK_DISPLAY
 
 endif
