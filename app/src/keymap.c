@@ -179,17 +179,23 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
         .timestamp = timestamp,
     };
 
-    LOG_DBG("layer: %d position: %d, binding name: %s", layer, position,
-            log_strdup(binding.behavior_dev));
+    return zmk_run_behavior(&binding,event,source,pressed);
+}
 
-    behavior = device_get_binding(binding.behavior_dev);
+int zmk_run_behavior(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,uint8_t source,bool pressed){
+
+    LOG_DBG("layer: %d position: %d, binding name: %s", event.layer, event.position,
+            log_strdup(binding->behavior_dev));
+
+
+    const struct device *behavior = device_get_binding(binding->behavior_dev);
 
     if (!behavior) {
-        LOG_WRN("No behavior assigned to %d on layer %d", position, layer);
+        LOG_WRN("No behavior assigned to %d on layer %d", event.position, event.layer);
         return 1;
     }
 
-    int err = behavior_keymap_binding_convert_central_state_dependent_params(&binding, event);
+    int err = behavior_keymap_binding_convert_central_state_dependent_params(binding, event);
     if (err) {
         LOG_ERR("Failed to convert relative to absolute behavior binding (err %d)", err);
         return err;
@@ -204,24 +210,24 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
 
     switch (locality) {
     case BEHAVIOR_LOCALITY_CENTRAL:
-        return invoke_locally(&binding, event, pressed);
+        return invoke_locally(binding, event, pressed);
     case BEHAVIOR_LOCALITY_EVENT_SOURCE:
 #if ZMK_BLE_IS_CENTRAL
         if (source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
-            return invoke_locally(&binding, event, pressed);
+            return invoke_locally(binding, event, pressed);
         } else {
             return zmk_split_bt_invoke_behavior(source, &binding, event, pressed);
         }
 #else
-        return invoke_locally(&binding, event, pressed);
+        return invoke_locally(binding, event, pressed);
 #endif
     case BEHAVIOR_LOCALITY_GLOBAL:
 #if ZMK_BLE_IS_CENTRAL
         for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
-            zmk_split_bt_invoke_behavior(i, &binding, event, pressed);
+            zmk_split_bt_invoke_behavior(i, binding, event, pressed);
         }
 #endif
-        return invoke_locally(&binding, event, pressed);
+        return invoke_locally(binding, event, pressed);
     }
 
     return -ENOTSUP;

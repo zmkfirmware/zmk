@@ -9,6 +9,8 @@
 #include <kernel.h>
 #include <logging/log.h>
 #include <drivers/behavior.h>
+#include <zmk/split/bluetooth/central.h>
+
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -35,9 +37,11 @@ static void behavior_queue_process_next(struct k_work *work) {
                                                    .timestamp = k_uptime_get()};
 
         if (item.press) {
-            behavior_keymap_binding_pressed(&item.binding, event);
+            zmk_run_behavior(&item.binding, event,0,true);
+//            behavior_keymap_binding_pressed(&item.binding, event);
         } else {
-            behavior_keymap_binding_released(&item.binding, event);
+             zmk_run_behavior(&item.binding, event,0,false);
+    //        behavior_keymap_binding_released(&item.binding, event);
         }
 
         LOG_DBG("Processing next queued behavior in %dms", item.wait);
