@@ -128,7 +128,12 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     case RGB_EFR_CMD:
         return zmk_rgb_underglow_cycle_effect(-1);
     case RGB_COLOR_HSB_CMD:
-        LOG_DBG("RGB_COLOR_HSB_CMD");
+        #if ZMK_BLE_IS_CENTRAL
+        LOG_DBG("central RGB_COLOR_HSB_CMD (sending binding to peripheral)");
+        zmk_split_bt_invoke_behavior(0, &binding, event, true);
+        #else
+        LOG_DBG("peripheral RGB_COLOR_HSB_CMD (nothing special)");
+        #endif
         return zmk_rgb_underglow_set_hsb((struct zmk_led_hsb){.h = (binding->param2 >> 16) & 0xFFFF,
                                                               .s = (binding->param2 >> 8) & 0xFF,
                                                               .b = binding->param2 & 0xFF});
