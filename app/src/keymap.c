@@ -182,6 +182,8 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
     LOG_DBG("layer: %d position: %d, binding name: %s", layer, position,
             log_strdup(binding.behavior_dev));
 
+
+
     behavior = device_get_binding(binding.behavior_dev);
 
     if (!behavior) {
@@ -196,11 +198,21 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
     }
 
     enum behavior_locality locality = BEHAVIOR_LOCALITY_CENTRAL;
+
+
+
     err = behavior_get_locality(behavior, &locality);
     if (err) {
         LOG_ERR("Failed to get behavior locality %d", err);
         return err;
-    }
+    }else{
+        LOG_DBG("got locality: BEHAVIOR_LOCALITY_CENTRAL from behavior");
+    } 
+
+     if (strncmp(binding.behavior_dev, "layer") == 0) {
+            behavior_locality locality = BEHAVIOR_LOCALITY_GLOBAL;
+             LOG_DBG("force locality: BEHAVIOR_LOCALITY_GLOBAL because of a 'layer' behavior");
+        }
 
 
     switch (locality) {
