@@ -45,9 +45,7 @@ ZMK_SUBSCRIPTION(widget_peripheral_status, zmk_split_peripheral_status_changed);
 
 int zmk_widget_peripheral_status_init(struct zmk_widget_peripheral_status *widget,
                                       lv_obj_t *parent) {
-    widget->obj = lv_label_create(parent, NULL);
-
-    lv_obj_set_size(widget->obj, 40, 15);
+    widget->obj = lv_label_create(parent);
 
     sys_slist_append(&widgets, &widget->node);
 
