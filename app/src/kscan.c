@@ -58,8 +58,7 @@ void zmk_kscan_process_msgq(struct k_work *item) {
     }
 }
 
-int zmk_kscan_init(char *name) {
-    const struct device *dev = device_get_binding(name);
+int zmk_kscan_init(const struct device *dev) {
     if (dev == NULL) {
         LOG_ERR("Failed to get the KSCAN device");
         return -EINVAL;

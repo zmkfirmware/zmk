@@ -65,7 +65,8 @@ static void zmk_sensors_init_item(const char *node, uint8_t i, uint8_t abs_i) {
     sensor_trigger_set(sensors[i].dev, &sensors[i].trigger, zmk_sensors_trigger_handler);
 }
 
-#define _SENSOR_INIT(node) zmk_sensors_init_item(DT_LABEL(node), local_index++, absolute_index++);
+#define _SENSOR_INIT(node)                                                                         \
+    zmk_sensors_init_item(DT_PROP(node, label), local_index++, absolute_index++);
 #define SENSOR_INIT(idx, _i)                                                                       \
     COND_CODE_1(DT_NODE_HAS_STATUS(ZMK_KEYMAP_SENSORS_BY_IDX(idx), okay),                          \
                 (_SENSOR_INIT(ZMK_KEYMAP_SENSORS_BY_IDX(idx))), (absolute_index++;))

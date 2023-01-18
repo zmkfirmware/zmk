@@ -42,7 +42,7 @@ static uint8_t _zmk_keymap_layer_default = 0;
 #if ZMK_KEYMAP_HAS_SENSORS
 #define _TRANSFORM_SENSOR_ENTRY(idx, layer)                                                        \
     {                                                                                              \
-        .behavior_dev = DT_LABEL(DT_PHANDLE_BY_IDX(layer, sensor_bindings, idx)),                  \
+        .behavior_dev = DT_PROP(DT_PHANDLE_BY_IDX(layer, sensor_bindings, idx), label),            \
         .param1 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(layer, sensor_bindings, idx, param1), (0),    \
                               (DT_PHA_BY_IDX(layer, sensor_bindings, idx, param1))),               \
         .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(layer, sensor_bindings, idx, param2), (0),    \
@@ -57,7 +57,8 @@ static uint8_t _zmk_keymap_layer_default = 0;
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
-#define LAYER_LABEL(node) COND_CODE_0(DT_NODE_HAS_PROP(node, label), (NULL), (DT_LABEL(node))),
+#define LAYER_LABEL(node)                                                                          \
+    COND_CODE_0(DT_NODE_HAS_PROP(node, label), (NULL), (DT_PROP(node, label))),
 
 // State
 

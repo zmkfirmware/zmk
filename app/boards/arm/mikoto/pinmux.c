@@ -15,8 +15,8 @@ static int pinmux_mikoto_init(const struct device *port) {
     ARG_UNUSED(port);
 
 #if CONFIG_BOARD_MIKOTO_520
-    const struct device *p0 = device_get_binding("GPIO_0");
-    const struct device *p1 = device_get_binding("GPIO_1");
+    const struct device *p0 = DEVICE_DT_GET(DT_NODELABEL(gpio0));
+    const struct device *p1 = DEVICE_DT_GET(DT_NODELABEL(gpio1));
 #if CONFIG_BOARD_MIKOTO_CHARGER_CURRENT_40MA
     gpio_pin_configure(p0, 26, GPIO_INPUT | GPIO_PULL_DOWN);
     gpio_pin_configure(p1, 15, GPIO_INPUT);

@@ -12,7 +12,7 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <drivers/display.h>
+#include <zephyr/drivers/display.h>
 #include <lvgl.h>
 
 #include "theme.h"
@@ -21,9 +21,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/display/status_screen.h>
 
-#define ZMK_DISPLAY_NAME CONFIG_LV_Z_DISPLAY_DEV_NAME
-
-static const struct device *display;
+static const struct device *display = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
 static bool initialized = false;
 
 static lv_obj_t *screen;
@@ -103,8 +101,7 @@ static void initialize_theme() {
 void initialize_display(struct k_work *work) {
     LOG_DBG("");
 
-    display = device_get_binding(ZMK_DISPLAY_NAME);
-    if (display == NULL) {
+    if (!device_is_ready(display)) {
         LOG_ERR("Failed to find display device");
         return;
     }
