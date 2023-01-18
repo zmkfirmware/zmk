@@ -148,7 +148,7 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
 
 static int endpoints_handle_set(const char *name, size_t len, settings_read_cb read_cb,
                                 void *cb_arg) {
-    LOG_DBG("Setting endpoint value %s", log_strdup(name));
+    LOG_DBG("Setting endpoint value %s", name);
 
     if (settings_name_steq(name, "preferred", NULL)) {
         if (len != sizeof(enum zmk_endpoint)) {

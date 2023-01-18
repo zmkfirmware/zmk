@@ -327,7 +327,7 @@ static const struct kscan_driver_api kscan_direct_api = {
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
     static const struct gpio_dt_spec kscan_direct_inputs_##n[] = {                                 \
-        LISTIFY(INST_INPUTS_LEN(n), KSCAN_DIRECT_INPUT_CFG_INIT, (,), n)};                         \
+        LISTIFY(INST_INPUTS_LEN(n), KSCAN_DIRECT_INPUT_CFG_INIT, (, ), n)};                        \
                                                                                                    \
     static struct debounce_state kscan_direct_state_##n[INST_INPUTS_LEN(n)];                       \
                                                                                                    \

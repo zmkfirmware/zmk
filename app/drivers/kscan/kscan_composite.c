@@ -43,7 +43,7 @@ static int kscan_composite_enable_callback(const struct device *dev) {
 
         const struct device *dev = device_get_binding(cfg->label);
         if (!dev) {
-            LOG_WRN("Failed to load child kscan device %s", log_strdup(cfg->label));
+            LOG_WRN("Failed to load child kscan device %s", cfg->label);
             continue;
         }
         kscan_enable_callback(dev);
@@ -57,7 +57,7 @@ static int kscan_composite_disable_callback(const struct device *dev) {
 
         const struct device *dev = device_get_binding(cfg->label);
         if (!dev) {
-            LOG_WRN("Failed to load child kscan device %s", log_strdup(cfg->label));
+            LOG_WRN("Failed to load child kscan device %s", cfg->label);
             continue;
         }
         kscan_disable_callback(dev);
