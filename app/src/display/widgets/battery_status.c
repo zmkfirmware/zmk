@@ -55,7 +55,6 @@ static void set_battery_symbol(lv_obj_t *label, struct battery_status_state stat
     }
 #endif
     lv_label_set_text(label, text);
-    lv_obj_align(label, NULL, LV_ALIGN_IN_TOP_RIGHT, 0, 0);
 }
 
 void battery_status_update_cb(struct battery_status_state state) {
@@ -81,9 +80,7 @@ ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 
 int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_label_create(parent, NULL);
-
-    lv_obj_set_size(widget->obj, 43, 15);
+    widget->obj = lv_label_create(parent);
 
     sys_slist_append(&widgets, &widget->node);
 

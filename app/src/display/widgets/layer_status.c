@@ -54,9 +54,7 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_layer_status, struct layer_status_state, laye
 ZMK_SUBSCRIPTION(widget_layer_status, zmk_layer_state_changed);
 
 int zmk_widget_layer_status_init(struct zmk_widget_layer_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_label_create(parent, NULL);
-
-    lv_obj_set_size(widget->obj, 40, 15);
+    widget->obj = lv_label_create(parent);
 
     sys_slist_append(&widgets, &widget->node);
 
