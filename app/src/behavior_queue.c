@@ -28,8 +28,8 @@ static void behavior_queue_process_next(struct k_work *work) {
     struct q_item item = {.wait = 0};
 
     while (k_msgq_get(&zmk_behavior_queue_msgq, &item, K_NO_WAIT) == 0) {
-        LOG_DBG("Invoking %s: 0x%02x 0x%02x", item.binding.behavior_dev,
-                item.binding.param1, item.binding.param2);
+        LOG_DBG("Invoking %s: 0x%02x 0x%02x", item.binding.behavior_dev, item.binding.param1,
+                item.binding.param2);
 
         struct zmk_behavior_binding_event event = {.position = item.position,
                                                    .timestamp = k_uptime_get()};
