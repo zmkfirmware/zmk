@@ -433,10 +433,10 @@ static const struct kscan_driver_api kscan_matrix_api = {
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
     static const struct gpio_dt_spec kscan_matrix_rows_##n[] = {                                   \
-        LISTIFY(INST_ROWS_LEN(n), KSCAN_GPIO_ROW_CFG_INIT, (,), n)};                               \
+        LISTIFY(INST_ROWS_LEN(n), KSCAN_GPIO_ROW_CFG_INIT, (, ), n)};                              \
                                                                                                    \
     static const struct gpio_dt_spec kscan_matrix_cols_##n[] = {                                   \
-        LISTIFY(INST_COLS_LEN(n), KSCAN_GPIO_COL_CFG_INIT, (,), n)};                               \
+        LISTIFY(INST_COLS_LEN(n), KSCAN_GPIO_COL_CFG_INIT, (, ), n)};                              \
                                                                                                    \
     static struct debounce_state kscan_matrix_state_##n[INST_MATRIX_LEN(n)];                       \
                                                                                                    \

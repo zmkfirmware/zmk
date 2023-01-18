@@ -179,8 +179,7 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
         .timestamp = timestamp,
     };
 
-    LOG_DBG("layer: %d position: %d, binding name: %s", layer, position,
-            log_strdup(binding.behavior_dev));
+    LOG_DBG("layer: %d position: %d, binding name: %s", layer, position, binding.behavior_dev);
 
     behavior = device_get_binding(binding.behavior_dev);
 
@@ -260,7 +259,7 @@ int zmk_keymap_sensor_triggered(uint8_t sensor_number, const struct device *sens
             int ret;
 
             LOG_DBG("layer: %d sensor_number: %d, binding name: %s", layer, sensor_number,
-                    log_strdup(binding->behavior_dev));
+                    binding->behavior_dev);
 
             behavior = device_get_binding(binding->behavior_dev);
 

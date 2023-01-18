@@ -240,8 +240,8 @@ struct kscan_gpio_item_config {
     };                                                                                             \
                                                                                                    \
     static const struct kscan_gpio_config_##n kscan_gpio_config_##n = {                            \
-        .rows = {LISTIFY(INST_MATRIX_INPUTS(n), _KSCAN_GPIO_INPUT_CFG_INIT, (,), n)},              \
-        .cols = {LISTIFY(INST_DEMUX_GPIOS(n), _KSCAN_GPIO_OUTPUT_CFG_INIT, (,), n)},               \
+        .rows = {LISTIFY(INST_MATRIX_INPUTS(n), _KSCAN_GPIO_INPUT_CFG_INIT, (, ), n)},             \
+        .cols = {LISTIFY(INST_DEMUX_GPIOS(n), _KSCAN_GPIO_OUTPUT_CFG_INIT, (, ), n)},              \
     };                                                                                             \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(n, kscan_gpio_init_##n, NULL, &kscan_gpio_data_##n,                      \

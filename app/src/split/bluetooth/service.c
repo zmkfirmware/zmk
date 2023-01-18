@@ -60,7 +60,7 @@ static ssize_t split_svc_run_behavior(struct bt_conn *conn, const struct bt_gatt
             .param2 = payload->data.param2,
             .behavior_dev = payload->behavior_dev,
         };
-        LOG_DBG("%s with params %d %d: pressed? %d", log_strdup(binding.behavior_dev),
+        LOG_DBG("%s with params %d %d: pressed? %d", binding.behavior_dev,
                 binding.param1, binding.param2, payload->data.state);
         struct zmk_behavior_binding_event event = {.position = payload->data.position,
                                                    .timestamp = k_uptime_get()};
@@ -72,7 +72,7 @@ static ssize_t split_svc_run_behavior(struct bt_conn *conn, const struct bt_gatt
         }
 
         if (err) {
-            LOG_ERR("Failed to invoke behavior %s: %d", log_strdup(binding.behavior_dev), err);
+            LOG_ERR("Failed to invoke behavior %s: %d", binding.behavior_dev, err);
         }
     }
 
