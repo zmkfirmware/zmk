@@ -352,6 +352,15 @@ config ZMK_EXT_POWER
 	bool "Enable support to control external power output"
 	default y
 
+if ZMK_EXT_POWER
+
+config ZMK_EXT_POWER_START
+	bool "Enable external power output by default"
+	default y
+
+#ZMK_EXT_POWER
+endif
+
 #Power Management
 endmenu
 

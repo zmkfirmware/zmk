@@ -152,18 +152,26 @@ static int ext_power_generic_init(const struct device *dev) {
 
     k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
 
-    // Set default value (on) if settings isn't set
+    // Set default value if settings isn't set
     settings_load_subtree("ext_power");
     if (!data->settings_init) {
 
-        data->status = true;
+        data->status = IS_ENABLED(CONFIG_ZMK_EXT_POWER_START);
         k_work_schedule(&ext_power_save_work, K_NO_WAIT);
 
-        ext_power_enable(dev);
+        if (data->status) {
+            ext_power_enable(dev);
+        } else {
+            ext_power_disable(dev);
+        }
     }
 #else
-    // Default to the ext_power being open when no settings
-    ext_power_enable(dev);
+    // If no settings, set ext_power on/off
+    if (IS_ENABLED(CONFIG_ZMK_EXT_POWER_START)) {
+        ext_power_enable(dev);
+    } else {
+        ext_power_disable(dev);
+    }
 #endif
 
     if (config->init_delay_ms) {
