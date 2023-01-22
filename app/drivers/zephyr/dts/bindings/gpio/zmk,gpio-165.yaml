@@ -1,0 +1,34 @@
+#
+# Copyright (c) 2022 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+#
+
+description: >
+  This is a representation of the 165 Parrallel-in Shift Register.
+
+compatible: "zmk,gpio-165"
+
+include: [gpio-controller.yaml, spi-device.yaml]
+
+properties:
+  "#gpio-cells":
+    const: 2
+
+  ngpios:
+    type: int
+    required: true
+    enum:
+      - 8
+      - 16
+      - 24
+      - 32
+    description: Number of gpios supported
+
+  load-gpios:
+    type: phandle-array
+    description: GPIO to which the /PL a.k.a. SH/LD pin is connected
+
+gpio-cells:
+  - pin
+  - flags
