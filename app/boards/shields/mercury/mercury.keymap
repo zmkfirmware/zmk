@@ -1,0 +1,301 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+
+#define WIN 0
+#define APL 1
+#define GAM 2
+#define NUM 3
+#define FUN 4
+#define NAV 5
+#define MED 6
+#define SYS 7
+#define DL  8
+#define SFL 9
+#define KL  10
+#define LL  11
+
+// Words like "sounds" can sometimes come out as "soun" because the final "ds" gets interpreted as a combo.
+// Reducing timeout helps prevent this. However, reducing timeout too much makes it difficult to trigger
+// the combo when desired. A timeout of 50 ms to 75 ms seems to strike a good balance for most typists.
+#define RH_COMBO_TIMEOUT 50
+#define LH_COMBO_TIMEOUT 50
+
+// Single finger combos are like "rg" or "hj", where the combined keys are normally typed using
+// the same finger. As a result, such sequences are typically typed quite slowly. A very long timeout
+// can be used for to be very timing-tolerant, while also not risking accidentally triggering the combo.
+#define SINGLE_FINGER_COMBO_TIMEOUT 200
+
+/ {
+    behaviors {
+        pht: pos_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "POS_HOLD_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <LH_COMBO_TIMEOUT>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <12 13>;
+        };
+    };
+
+    macros {
+        mcs: macro_s {
+            label = "MACRO_S";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            bindings
+                = <&macro_press &mo SFL &kp LSFT>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo SFL &kp LSFT>
+                ;
+        };
+
+        mcf: macro_f {
+            label = "MACRO_F";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            bindings
+                = <&macro_press &mo SFL &mo NUM>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo SFL &mo NUM>
+                ;
+        };
+
+        mcl: macro_l {
+            label = "MACRO_L";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            bindings
+                = <&macro_press &mo KL &kp RSFT>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo KL &kp RSFT>
+                ;
+        };
+    };
+
+    behaviors {
+        smt: s_macro_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "S_MACRO_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <LH_COMBO_TIMEOUT>;
+            bindings = <&mcs>, <&kp>;
+            hold-trigger-key-positions = <15 16 36 37 38 40 41>;
+        };
+
+        dlt: d_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "D_LAYER_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <LH_COMBO_TIMEOUT>;
+            bindings = <&mo>, <&kp>;
+            hold-trigger-key-positions = <14 16 36 37 38 40 41>;
+        };
+
+        fmt: f_macro_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "F_MACRO_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <LH_COMBO_TIMEOUT>;
+            bindings = <&mcf>, <&kp>;
+            hold-trigger-key-positions = <14 15 36 37 38 40 41>;
+        };
+
+        klt: k_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "K_LAYER_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <RH_COMBO_TIMEOUT>;
+            bindings = <&mo>, <&kp>;
+            hold-trigger-key-positions = <21 36 37 38 40 41>;
+        };
+        
+        lmt: l_macro_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "L_MACRO_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <RH_COMBO_TIMEOUT>;
+            bindings = <&mcl>, <&kp>;
+            hold-trigger-key-positions = <20 36 37 38 40 41>;
+        };
+    };
+
+    sl {
+        release-after-ms = <20000>; // 20 seconds
+    };
+
+    combos {
+        compatible = "zmk,combos";
+        // Mode switching combos:
+        combo_sys {
+            timeout-ms = <LH_COMBO_TIMEOUT>;
+            key-positions = <1 2 3>;
+            bindings = <&sl SYS>;
+        };
+        combo_standard {
+            timeout-ms = <LH_COMBO_TIMEOUT>;
+            key-positions = <3 4 5>;
+            bindings = <&to WIN>;
+        };
+        combo_game {
+            timeout-ms = <LH_COMBO_TIMEOUT>;
+            key-positions = <2 3 4>;
+            bindings = <&to GAM>;
+        };
+
+        // Slow combos:
+        // Because these combos use only keys controlled by a single index finger,
+        // it is very unlikely that a standard touch-typist will accidentally trigger
+        // during normal typing. We can use a very long timeout for these.
+        combo_tab {
+            timeout-ms = <SINGLE_FINGER_COMBO_TIMEOUT>;
+            key-positions = <4 17>;
+            bindings = <&kp TAB>;
+        };
+        combo_esc {
+            timeout-ms = <SINGLE_FINGER_COMBO_TIMEOUT>;
+        // 16,17 is a great location for ESC: convenient and safe. However, it is just affected
+        // by the hold-tap => combo mis-fire bug: https://github.com/zmkfirmware/zmk/issues/1395
+        // Until that is resolved, use positions 4,5
+            key-positions = <16 17>;
+            bindings = <&kp ESC>;
+        };
+        combo_quote {
+            timeout-ms = <SINGLE_FINGER_COMBO_TIMEOUT>;
+            key-positions = <18 19>;
+            bindings = <&kp QUOT>;
+        };
+        combo_caps {
+            timeout-ms = <SINGLE_FINGER_COMBO_TIMEOUT>;
+            key-positions = <30 31>;
+            bindings = <&kp CAPS>;
+        };
+        combo_menu {
+            timeout-ms = <SINGLE_FINGER_COMBO_TIMEOUT>;
+            key-positions = <7 18>;
+            bindings = <&kp K_CMENU>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        windows_layer {
+            bindings = <
+&none    &kp Q        &kp W     &kp E      &kp R     &kp T     /**/  &kp Y    &kp U    &kp I      &kp O     &kp P     &kp BSLH
+&mo FUN  &pht LSFT A  &smt S S  &dlt DL D  &fmt F F  &kp G     /**/  &kp H    &kp J    &klt KL K  &lmt L L  &kp SCLN  &kp QUOT
+&none    &kp Z        &kp X     &kp C      &kp V     &kp B     /**/  &kp N    &kp M    &kp CMMA   &kp DOT   &kp FSLH  &none
+                                &kp LGUI   &kp LALT  &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
+            >;
+        };
+        
+        apple_layer {
+            bindings = <
+&trans  &trans  &trans   &trans    &trans    &trans   /**/  &trans   &trans   &trans   &trans  &trans  &trans
+&trans  &trans  &trans   &trans    &trans    &trans   /**/  &trans   &trans   &trans   &trans  &trans  &trans
+&trans  &trans  &trans   &trans    &trans    &trans   /**/  &trans   &trans   &trans   &trans  &trans  &trans
+                        &kp LCTL  &kp LALT  &kp LGUI  /**/  &kp SPC  &mo NAV  &mo MED
+            >;
+        };
+
+        game_layer {
+            bindings = <
+&kp TAB   &kp Q  &kp W  &kp E      &kp R     &kp T     /**/  &kp Y    &kp U    &kp I     &kp O    &kp P     &kp BSLH
+&kp ESC   &kp A  &kp S  &kp D      &kp F     &kp G     /**/  &kp H    &kp J    &kp K     &kp L    &kp SCLN  &kp QUOT
+&kp LSFT  &kp Z  &kp X  &kp C      &kp V     &kp B     /**/  &kp N    &kp M    &kp CMMA  &kp DOT  &kp FSLH  &kp RSFT
+                        &kp GRAV   &kp LALT  &kp LCTL  /**/  &kp SPC  &mo NAV  &mo MED
+            >;
+        };
+
+        num_layer {
+            bindings = <
+&trans  &trans  &trans    &trans  &trans  &trans  /**/  &kp GRAV   &kp N7  &kp N8  &kp N9  &kp LBKT  &kp RBKT
+&trans  &trans  &kp LSFT  &mo DL  &trans  &trans  /**/  &kp EQL    &kp N4  &kp N5  &kp N6  &kp N0    &kp DOT
+&trans  &trans  &trans    &trans  &trans  &trans  /**/  &kp MINUS  &kp N1  &kp N2  &kp N3  &kp FSLH  &kp DOT
+                          &trans  &trans  &trans  /**/  &trans     &trans  &trans
+            >;
+        };
+
+        function_layer {
+            bindings = <
+&trans  &trans    &trans  &trans  &trans  &trans  /**/  &kp F12  &kp F7  &kp F8  &kp F9  &kp LBKT  &kp RBKT
+&trans  &kp LSFT  &trans  &trans  &trans  &trans  /**/  &kp F11  &kp F4  &kp F5  &kp F6  &trans    &kp DOT
+&trans  &trans    &trans  &trans  &trans  &trans  /**/  &kp F10  &kp F1  &kp F2  &kp F3  &kp FSLH  &kp DOT
+                          &trans  &trans  &trans  /**/  &trans   &trans  &trans
+            >;
+        };
+
+        nav_layer {
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &trans    &kp UARW  &kp PGUP  &kp DEL   &trans
+&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &kp LARW  &kp DARW  &kp RARW  &kp BKSP  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  /**/  &trans  &kp PGDN  &kp HOME  &kp END   &kp RET   &trans
+                        &trans  &trans  &trans  /**/  &trans  &trans    &trans
+            >;
+        };
+
+        media_layer {
+            bindings = <
+&trans  &trans  &trans    &trans  &trans  &trans           /**/  &trans   &trans        &kp C_VOL_UP  &trans            &kp PRSC    &trans
+&trans  &trans  &kp SLCK  &trans  &trans  &trans           /**/  &trans   &kp C_BRI_DN  &kp C_VOL_DN  &kp C_BRI_UP      &trans      &trans
+&trans  &trans  &trans    &trans  &trans  &kp PAUSE_BREAK  /**/  &kp INS  &kp C_MUTE    &kp C_PREV    &kp C_PLAY_PAUSE  &kp C_NEXT  &trans
+                          &trans  &trans  &trans           /**/  &trans   &trans        &trans
+            >;
+        };
+
+        system_layer {
+            bindings = <
+&trans  &trans   &to WIN       &trans        &trans        &trans        /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &to APL  &out OUT_USB  &trans        &trans        &trans        /**/  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans   &trans        &bt BT_CLR    &trans        &out OUT_BLE  /**/  &trans  &trans  &trans  &trans  &trans  &trans
+                               &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  /**/  &trans  &trans  &trans
+            >;
+        };
+
+        d_key_layer {
+            bindings = <
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &kp LSFT  &none     &mo NUM  &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
+            >;
+        };
+
+        sf_key_layer {
+            bindings = <
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &mo DL    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
+            >;
+        };
+
+        k_key_layer {
+            bindings = <
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &none   &kp RSFT  &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
+            >;
+        };
+
+        l_key_layer {
+            bindings = <
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &mo KL  &trans    &trans  &trans
+&trans  &trans  &trans    &trans    &trans   &trans  /**/  &trans  &trans  &trans  &trans    &trans  &trans
+                          &trans    &trans   &trans  /**/  &trans  &trans  &trans
+            >;
+        };
+    };
+};
