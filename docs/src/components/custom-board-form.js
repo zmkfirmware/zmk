@@ -34,7 +34,7 @@ function CustomBoardForm({
           <div className="profilerInput">
             <label>
               Output Voltage{" "}
-              <span tooltip="Output Voltage of the PSU used by the system">
+              <span data-tooltip="Output Voltage of the PSU used by the system">
                 ⓘ
               </span>
             </label>
@@ -45,7 +45,7 @@ function CustomBoardForm({
             <div className="profilerInput">
               <label>
                 PSU Efficiency{" "}
-                <span tooltip="The estimated efficiency with a VIN of 3.8 and the output voltage entered above">
+                <span data-tooltip="The estimated efficiency with a VIN of 3.8 and the output voltage entered above">
                   ⓘ
                 </span>
               </label>
@@ -64,7 +64,7 @@ function CustomBoardForm({
           <div className="profilerInput">
             <label>
               PSU Quiescent{" "}
-              <span tooltip="The standby usage of the PSU">ⓘ</span>
+              <span data-tooltip="The standby usage of the PSU">ⓘ</span>
             </label>
             <div className="inputBox">
               <input {...bindQuiescentMicroA} type="number" />
@@ -74,7 +74,7 @@ function CustomBoardForm({
           <div className="profilerInput">
             <label>
               Other Quiescent{" "}
-              <span tooltip="Any other standby usage of the board (voltage dividers, extra ICs, etc)">
+              <span data-tooltip="Any other standby usage of the board (voltage dividers, extra ICs, etc)">
                 ⓘ
               </span>
             </label>

@@ -52,7 +52,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_INPUT(0x02),
 #elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
     HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0xFF),
+    HID_LOGICAL_MAX16(0xFF, 0x00),
     HID_USAGE_MIN8(0x00),
     HID_USAGE_MAX8(0xFF),
     HID_REPORT_SIZE(0x08),
@@ -135,6 +135,8 @@ int zmk_hid_register_mods(zmk_mod_flags_t explicit_modifiers);
 int zmk_hid_unregister_mods(zmk_mod_flags_t explicit_modifiers);
 int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t implicit_modifiers);
 int zmk_hid_implicit_modifiers_release();
+int zmk_hid_masked_modifiers_set(zmk_mod_flags_t masked_modifiers);
+int zmk_hid_masked_modifiers_clear();
 
 int zmk_hid_keyboard_press(zmk_key_t key);
 int zmk_hid_keyboard_release(zmk_key_t key);

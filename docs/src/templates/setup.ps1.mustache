@@ -209,27 +209,36 @@ Set-Location "$repo_name"
 
 Push-Location config
 
-$config_file = "${keyboard}.conf"
-$keymap_file = "${keyboard}.keymap"
-
 if ($keyboard_type -eq "shield") {
-    $config_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${basedir}/${keyboard}.conf"
-    $keymap_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${basedir}/${keyboard}.keymap"
+    $url_base = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${basedir}"
 } else {
-    $config_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${basedir}/${keyboard}.conf"
-    $keymap_url = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${basedir}/${keyboard}.keymap"
+    $url_base = "https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${basedir}"
 }
 
-Write-Host "Downloading config file (${config_url})"
+Write-Host "Downloading config file (${url_base}/${keyboard}.conf)"
 Try {
-    Invoke-RestMethod -Uri "${config_url}" -OutFile "${config_file}"
+    Invoke-RestMethod -Uri "${url_base}/${keyboard}.conf" -OutFile "${keyboard}.conf"
 } Catch {
-    Set-Content -Path $config_file "# Place configuration items here"
+    Try {
+        Write-Host "Could not find it, falling back to ${url_base}/${basedir}.conf"
+        Invoke-RestMethod -Uri "${url_base}/${basedir}.conf" -OutFile "${basedir}.conf"
+    } Catch {
+        Set-Content -Path "${keyboard}.conf" "# Put configuration options here"
+    }
 }
 
 if ($copy_keymap -eq "yes") {
-    Write-Host "Downloading keymap file (${keymap_url})"
-    Invoke-RestMethod -Uri "${keymap_url}" -OutFile "${keymap_file}"
+    Write-Host "Downloading keymap file (${url_base}/${keyboard}.keymap)"
+    Try {
+        Invoke-RestMethod -Uri "${url_base}/${keyboard}.keymap" -OutFile "${keyboard}.keymap"
+    } Catch {
+        Write-Host "Could not find it, falling back to ${url_base}/${basedir}.keymap"
+        Try {
+            Invoke-RestMethod -Uri "${url_base}/${basedir}.keymap" -OutFile "${basedir}.keymap"
+        } Catch {
+            Write-Host "Warning: Could not find a keymap file to download!"
+        }
+    }
 }
 
 Pop-Location
@@ -264,7 +273,7 @@ if ($github_repo -ne "") {
         Write-Host "    git remote rm origin"
         Write-Host "    git remote add origin FIXED_URL"
         Write-Host "    git push --set-upstream origin $(git symbolic-ref --short HEAD)"
-        Write-Host "Once pushed, your firmware should be availalbe from GitHub Actions at: $actions"
+        Write-Host "Once pushed, your firmware should be available from GitHub Actions at: $actions"
         exit 1
     }
 

@@ -75,7 +75,7 @@ The bluetooth behavior completes an bluetooth action given on press.
 
 ZMK support bluetooth “profiles” which allows connection to multiple devices (5 by default). Each profile stores the bluetooth MAC address of a peer, which can be empty if a profile has not been paired with a device yet. Upon switching to a profile, ZMK does the following:
 
-- If a profile has not been paired with a peer yet, ZMK automatically advertise itself as connectable. You can discover you keyboard from bluetooth scanning on your laptop / tablet. If you try to connect, it will trigger the _pairing_ procedure. After pairing, the bluetooth MAC address of the peer device will be stored in the current profile. Pairing also negotiate a random key for secure communication between the device and the keyboard.
+- If a profile has not been paired with a peer yet, ZMK automatically advertises itself as connectable. You can discover your keyboard from bluetooth scanning on your laptop / tablet. If you try to connect, it will trigger the _pairing_ procedure. After pairing, the bluetooth MAC address of the peer device will be stored in the current profile. Pairing also negotiates a random key for secure communication between the device and the keyboard.
 - If a profile has been paired but the peer is not connected yet, ZMK will also advertise itself as connectable. In the future, the behavior might change to _direct advertising_ which only target the peer with the stored bluetooth MAC address. In this state, if the peer is powered on and moved within the distance of bluetooth signal coverage, it should automatically connect to the keyboard.
 - If a profile has been paired and is currently connected, ZMK will not advertise it as connectable.
 

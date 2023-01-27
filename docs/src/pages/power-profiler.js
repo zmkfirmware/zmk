@@ -155,7 +155,7 @@ function PowerProfiler() {
                 <div className="profilerInput">
                   <label>
                     Bonded Bluetooth Profiles{" "}
-                    <span tooltip="The average number of host devices connected at once">
+                    <span data-tooltip="The average number of host devices connected at once">
                       ⓘ
                     </span>
                   </label>
@@ -167,7 +167,7 @@ function PowerProfiler() {
                 <div className="profilerInput">
                   <label>
                     Percentage Asleep{" "}
-                    <span tooltip="How much time the keyboard is in deep sleep (15 min. default timeout)">
+                    <span data-tooltip="How much time the keyboard is in deep sleep (15 min. default timeout)">
                       ⓘ
                     </span>
                   </label>
@@ -308,6 +308,7 @@ function PowerProfiler() {
                       </option>
                       <option value="EPAPER">ePaper</option>
                       <option value="OLED">OLED</option>
+                      <option value="NICEVIEW">nice!view</option>
                     </select>
                   </div>
                 )}
