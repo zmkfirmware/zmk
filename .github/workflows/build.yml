@@ -10,7 +10,7 @@ on:
       - ".github/workflows/build.yml"
       - "app/**"
   schedule:
-    - cron: '22 4 * * *'
+    - cron: "22 4 * * *"
 
 jobs:
   build:
@@ -51,7 +51,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: "14.x"
       - name: Install @actions/artifact
         run: npm install @actions/artifact
       - name: Build and upload artifacts
@@ -64,7 +64,7 @@ jobs:
             const artifactClient = artifact.create();
 
             const execSync = require('child_process').execSync;
-            
+
             const buildShieldArgs = JSON.parse(`${{ matrix.shieldArgs }}`);
 
             let error = false;
@@ -118,7 +118,7 @@ jobs:
             const coreCoverage = `${{ needs.core-coverage.outputs.core-include }}` || "[]";
             const boardChanges = `${{ needs.board-changes.outputs.boards-include }}` || "[]";
             const nightly = `${{ needs.nightly.outputs.nightly-include }}` || "[]";
-            
+
             const combined = [
               ...JSON.parse(coreCoverage),
               ...JSON.parse(boardChanges),
@@ -148,14 +148,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: get-changed-files
     outputs:
-      core-include: ${{ steps.core-list.outputs.result }} 
+      core-include: ${{ steps.core-list.outputs.result }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: "14.x"
       - name: Install js-yaml
         run: npm install js-yaml
       - uses: actions/github-script@v4
@@ -166,7 +166,7 @@ jobs:
             const yaml = require('js-yaml');
 
             const coreCoverage = yaml.load(fs.readFileSync('app/core-coverage.yml', 'utf8'));
-            
+
             let include = coreCoverage.board.flatMap(board =>
               coreCoverage.shield.map(shield => ({ board, shield }))
             );
@@ -184,7 +184,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: "14.x"
       - name: Install js-yaml
         run: npm install js-yaml
       - uses: actions/github-script@v4
@@ -269,7 +269,7 @@ jobs:
         with:
           script: |
             const metadata = JSON.parse(`${{ needs.get-grouped-hardware.outputs.organized-metadata }}`);
-            
+
             let includeOnboard = metadata.onboard.flatMap(b => {
               if (b.siblings) {
                 return b.siblings.map(board => ({
@@ -311,7 +311,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14.x'
+          node-version: "14.x"
       - name: Install js-yaml
         run: npm install js-yaml
       - name: Aggregate Metadata
@@ -329,7 +329,7 @@ jobs:
               yaml.loadAll(fs.readFileSync(f, "utf8"))
             );
 
-            return JSON.stringify(aggregated).replace(/\\/g,"\\\\");
+            return JSON.stringify(aggregated).replace(/\\/g,"\\\\").replace(/`/g,"\\`");
           result-encoding: string
 
       - name: Organize Metadata
@@ -376,7 +376,7 @@ jobs:
             },
             { onboard: [], interconnects: {} });
 
-            return JSON.stringify(grouped).replace(/\\/g,"\\\\");
+            return JSON.stringify(grouped).replace(/\\/g,"\\\\").replace(/`/g,"\\`");
           result-encoding: string
   get-changed-files:
     if: ${{ github.event_name != 'schedule' }}
@@ -389,7 +389,7 @@ jobs:
       - uses: Ana06/get-changed-files@v2.0.0
         id: changed-files
         with:
-          format: 'json'
+          format: "json"
       - uses: actions/github-script@v4
         id: board-changes
         with:

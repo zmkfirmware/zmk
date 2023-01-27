@@ -1,0 +1,8 @@
+# Preonic V3 board configuration
+
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_PREONIC_REV3
+	bool "Preonic V3 Keyboard"
+	depends on SOC_STM32F303XC

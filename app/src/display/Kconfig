@@ -6,14 +6,14 @@ menuconfig ZMK_DISPLAY
     default n
     select DISPLAY
     select LVGL
-	select LVGL_THEMES
-	select LVGL_THEME_MONO
+    select LVGL_THEMES
+    select LVGL_THEME_MONO
 
 if ZMK_DISPLAY
 
 config ZMK_DISPLAY_BLANK_ON_IDLE
     bool "Blank display on idle"
-    default y
+    default y if SSD1306
 
 choice LVGL_TXT_ENC
     default LVGL_TXT_ENC_UTF8
