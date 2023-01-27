@@ -136,12 +136,13 @@ if [ "$keyboard_shield" == "y" ]; then
                     continue
                 fi
 
+                board_index=$(( $REPLY-1 ))
+
                 if [ -n "${!keyboard_sibling_first}" ] && [ "${boards_usb_only[$board_index]}" = "y" ] ; then
                     echo "Wired split is not yet supported by ZMK."
                     exit 1
                 fi
 
-                board_index=$(( $REPLY-1 ))
                 board=${board_ids[$board_index]}
                 board_title=${options[$board_index]}
                 boards=( "${board}" )
@@ -204,19 +205,23 @@ cd ${repo_name}
 pushd config
 
 if [ "$keyboard_shield" == "y" ]; then
-    config_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${keyboard_basedir}/${shield}.conf"
-    
-    keymap_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${keyboard_basedir}/${shield}.keymap"
+    url_base="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${keyboard_basedir}"
 else
-    config_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${keyboard_basedir}/${board}.conf"
-    keymap_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${keyboard_basedir}/${board}.keymap"
+    url_base="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${keyboard_basedir}"
 fi
 
-echo "Downloading config file (${config_file})"
-$download_command "${config_file}" || echo "# Put configuration options here" > "${keyboard}.conf"
+echo "Downloading config file (${url_base}/${keyboard}.conf)"
+if ! $download_command "${url_base}/${keyboard}.conf"; then
+    echo "Could not find it, falling back to ${url_base}/${keyboard_basedir}.conf"
+    $download_command "${url_base}/${keyboard_basedir}.conf" || echo "# Put configuration options here" > "${keyboard}.conf"
+fi
+
 if [ "$copy_keymap" == "yes" ]; then
-    echo "Downloading keymap file (${keymap_file})"
-    $download_command "${keymap_file}"
+    echo "Downloading keymap file (${url_base}/${keyboard}.keymap)"
+    if ! $download_command "${url_base}/${keyboard}.keymap"; then
+        echo "Could not find it, falling back to ${url_base}/${keyboard_basedir}.keymap"
+        $download_command "${url_base}/${keyboard_basedir}.keymap" || echo "Warning: Could not find a keymap file to download!"
+    fi
 fi
 
 popd
@@ -253,7 +258,7 @@ if [ -n "$github_repo" ]; then
         echo "    git remote rm origin"
         echo "    git remote add origin FIXED_URL"
         echo "    git push --set-upstream origin $(git symbolic-ref --short HEAD)"
-        echo "Once pushed, your firmware should be availalbe from GitHub Actions at: ${github_repo%.git}/actions"
+        echo "Once pushed, your firmware should be available from GitHub Actions at: ${github_repo%.git}/actions"
         exit 1
     fi
 

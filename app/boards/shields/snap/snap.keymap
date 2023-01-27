@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/rgb.h>
+
+/ {
+	sensors {
+		compatible = "zmk,keymap-sensors";
+		sensors = <&left_encoder &right_encoder>;
+	};
+
+	keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+			label = "Default";
+			sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp C_VOL_UP C_VOL_DN>;
+			bindings = <
+             &kp ESC     &kp F1   &kp F2   &kp F3   &kp F4   &kp F5   &kp F6     &kp F7   &kp F8   &kp F9    &kp F10  &kp F11     &kp F12     &kp KP_NUM   &kp PAUSE_BREAK
+&kp C_MUTE   &kp TILDE   &kp N1   &kp N2   &kp N3   &kp N4   &kp N5   &kp N6     &kp N7   &kp N8   &kp N9    &kp N0   &kp MINUS   &kp EQUAL   &kp BSPC     &kp DEL    &kp HOME
+&kp F13      &kp TAB     &kp Q    &kp W    &kp E    &kp R             &kp T      &kp Y    &kp U    &kp I     &kp O    &kp P       &kp LBKT    &kp RBKT     &kp BSLH   &kp END
+&kp F14      &kp CLCK    &kp A    &kp S    &kp D    &kp F             &kp G      &kp H    &kp J    &kp K     &kp L    &kp SEMI    &kp SQT     &kp RET                 &kp PG_UP
+&kp F15      &kp LSHFT   &kp NUHS &kp Z    &kp X    &kp C    &kp V    &kp B      &kp N    &kp M    &kp COMMA &kp DOT  &kp FSLH    &kp RSHFT                &kp UP     &kp PG_DN
+&kp F16      &kp LCTRL   &kp LGUI &kp LALT          &mo 1            &kp SPACE    &kp BSPC                   &mo 1    &kp RALT    &kp RCTRL   &kp LEFT     &kp DOWN   &kp RIGHT
+			>;
+		};
+
+		function_layer {
+			label = "Function";
+			sensor-bindings = <&inc_dec_kp C_NEXT C_PREV &inc_dec_kp C_NEXT C_PREV>;
+			bindings = <
+             &bootloader &trans   &trans   &trans   &trans   &trans   &trans     &trans   &trans   &trans   &trans    &trans      &trans      &trans       &bootloader
+&kp C_PP     &trans      &trans   &trans   &trans   &trans   &trans   &trans     &trans   &trans   &trans   &trans    &trans      &trans      &trans       &trans     &kp C_PP
+&trans       &trans      &trans   &trans   &trans   &trans            &trans     &trans   &trans   &trans   &trans    &trans      &trans      &trans       &trans     &trans 
+&trans       &trans      &trans   &trans   &trans   &trans            &trans     &trans   &trans   &trans   &trans    &trans      &trans                   &trans     &trans
+&trans       &trans      &trans   &trans   &trans   &trans   &trans   &trans     &trans   &trans   &trans   &trans    &trans          &rgb_ug RGB_TOG &rgb_ug RGB_BRI &rgb_ug RGB_EFF
+&trans       &trans      &trans   &trans            &trans           &trans       &trans                    &trans    &trans  &trans  &rgb_ug RGB_HUD &rgb_ug RGB_BRD &rgb_ug RGB_HUI
+			>;
+		};
+	};
+};

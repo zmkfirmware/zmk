@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "snap.dtsi"
+
+/ {
+kscan_direct: kscan_direct {
+	compatible = "zmk,kscan-gpio-direct";
+	label = "DIRECT";
+	input-gpios
+		= <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		;
+	};
+};
+
+&default_transform {
+	col-offset = <8>;
+};
+
+&kscan_composite {
+		direct {
+			kscan = <&kscan_direct>;
+			row-offset = <1>;
+			column-offset = <8>;
+	};
+};
+
+&kscan_demux {
+	input-gpios
+		= <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		, <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+		;
+	output-gpios
+		= <&pro_micro 6 GPIO_ACTIVE_HIGH>
+		, <&pro_micro 5 GPIO_ACTIVE_HIGH>
+		, <&pro_micro 4 GPIO_ACTIVE_HIGH>
+		;
+};
+
+&right_encoder {
+	a-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+	b-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;	
+	status = "okay";
+};

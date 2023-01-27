@@ -1,0 +1,12 @@
+file_format: "1"
+id: splitkb_aurora_corne
+name: splitkb.com Aurora Corne
+type: shield
+url: https://splitkb.com/products/aurora-corne-pcb-kit
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+siblings:
+  - splitkb_aurora_corne_left
+  - splitkb_aurora_corne_right

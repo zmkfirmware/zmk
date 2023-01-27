@@ -15,6 +15,13 @@ config ZMK_WIDGET_BATTERY_STATUS
     default y if BT
     select LVGL_USE_LABEL
 
+if ZMK_WIDGET_BATTERY_STATUS
+
+config ZMK_WIDGET_BATTERY_STATUS_SHOW_PERCENTAGE
+    bool "Show battery level percentage in text"
+
+endif
+
 config ZMK_WIDGET_OUTPUT_STATUS
     bool "Widget for keyboard output status icons"
     depends on BT && (!ZMK_SPLIT_BLE || ZMK_SPLIT_ROLE_CENTRAL)

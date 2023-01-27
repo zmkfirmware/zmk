@@ -120,19 +120,26 @@ Creates a custom behavior which triggers a sequence of other behaviors.
 
 See the [macro behavior](../behaviors/macros.md) documentation for more details and examples.
 
+### Kconfig
+
+| Config                             | Type | Description                            | Default |
+| ---------------------------------- | ---- | -------------------------------------- | ------- |
+| `CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS` | int  | Default value for `wait-ms` in macros. | 15      |
+| `CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`  | int  | Default value for `tap-ms` in macros.  | 30      |
+
 ### Devicetree
 
 Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-macro.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-macro.yaml)
 
 Applies to: `compatible = "zmk,behavior-macro"`
 
-| Property         | Type          | Description                                                                                           | Default |
-| ---------------- | ------------- | ----------------------------------------------------------------------------------------------------- | ------- |
-| `label`          | string        | Unique label for the node                                                                             |         |
-| `#binding-cells` | int           | Must be `<0>`                                                                                         |         |
-| `bindings`       | phandle array | List of behaviors to trigger                                                                          |         |
-| `wait-ms`        | int           | The default time to wait (in milliseconds) before triggering the next behavior.                       | 100     |
-| `tap-ms`         | int           | The default time to wait (in milliseconds) between the press and release events of a tapped behavior. | 100     |
+| Property         | Type          | Description                                                                                           | Default                            |
+| ---------------- | ------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `label`          | string        | Unique label for the node                                                                             |                                    |
+| `#binding-cells` | int           | Must be `<0>`                                                                                         |                                    |
+| `bindings`       | phandle array | List of behaviors to trigger                                                                          |                                    |
+| `wait-ms`        | int           | The default time to wait (in milliseconds) before triggering the next behavior.                       | `CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS` |
+| `tap-ms`         | int           | The default time to wait (in milliseconds) between the press and release events of a tapped behavior. | `CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`  |
 
 The following macro-specific behaviors can be added at any point in the `bindings` list to change how the macro triggers subsequent behaviors.
 

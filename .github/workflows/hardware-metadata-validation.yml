@@ -18,8 +18,8 @@ jobs:
   check-metadata-format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - uses: bahmutov/npm-install@v1
         with:
           working-directory: app
@@ -31,7 +31,7 @@ jobs:
     container:
       image: docker.io/zmkfirmware/zmk-dev-arm:3.0
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: pip install -r app/scripts/requirements.txt
       - name: West init
