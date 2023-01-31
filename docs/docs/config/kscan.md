@@ -236,6 +236,100 @@ One possible way to do this is a 3x4 matrix where the direct GPIO keys are shift
 }
 ```
 
+## Deghost Driver
+
+Keyboard scan driver which takes another keyboard scan driver and applies deghosting on it.
+Deghosting is needed for keyboard matrices that are not built to be n-key-rollover capable,
+for example contact switch matrices that don't have one diode per key.
+
+In keyboards such as these typically the output pins will be configured GPIO_OPEN_DRAIN, or
+GPIO_OPEN_SOURCE, with pull resistors enabled in the opposite direction on the inputs, and
+often on the outputs as well. Alternatively external circuitry can also be used to achieve
+this if the outputs don't support single-ended output, or sometimes discrete pull-resistors
+can be added per input pin.
+
+On keyboards such as these, if 3 keys are pressed that form a right angle on the keyboard
+matrix, then the 4th key will also appear to be incorrectly pressed from the perspective
+of the matrix driver, for example:
+
+<table>
+    <thead>
+        <tr><th></th><th>...</th><th>Col 1</th><th>...</th><th>Col 2</th><th>...</th></tr>
+    </thead>
+    <tbody>
+        <tr><th>...</th><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+        <tr><th>Row 1</th><td>...</td><td>Pressed</td><td>...</td><td>Pressed</td><td>...</td></tr>
+        <tr><th>...</th><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+        <tr><th>Row 2</th><td>...</td><td>Pressed</td><td>...</td><td><b>Ghosting</b></td><td>...</td></tr>
+        <tr><th>...</th><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    </tbody>
+</table>
+
+In the above example, if the keys were ressed in the following order:
+
+- (Row1,Col1)
+- (Row1,Col2)
+- (Row2,Col1)
+
+then in fact it is impossible to determine if the 3rd key pressed was actually
+(Row2,Col1) or (Row2,Col2), because both matrix positions become active at the same time,
+and with a simple switch matrix it's not possible to differentiate between those two.
+
+Note that there are 4 possible rotation of the above example.
+
+Deghosting works by looking for rectangles in the keyboard matrix on the corners of which
+at least 2 keys have already been reported as pressed. If new keypresses come in on additional
+corners, then they will be ignored. Since only two keys are guaranteed to be accepted, these
+keyboards are often called 2-key rollover keyboards, even though in some cases many more keys
+could be pressed, and successfully reported, as long as they don't form right angles on the
+matrix.
+
+It's possible to further optimize this behaviour, if the deghosting driver knows which matrix
+positions are guaranteed to be empty, and never make contact. In this case certain right-angle
+combinations can also be accepted. This can be done by giving the dehost driver a transform node.
+
+### Devicetree
+
+Applies to : `compatible = "zmk,kscan-deghost"`
+
+Definition file: [zmk/app/dts/bindings/zmk,kscan-deghost.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk,kscan-deghost.yaml)
+
+| Property    | Type    | Description                                 | Default                                                                                   |
+| ----------- | ------- | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `kscan`     | phandle | The kscan driver to perform deghosting on   |                                                                                           |
+| `transform` | phandle | Optional transform node for optimization    |                                                                                           |
+| `rows`      | int     | The number of rows in the deghost matrix    | It will try to extract the row count from the transform, or from the referenced kscan.    |
+| `columnss`  | int     | The number of columns in the deghost matrix | It will try to extract the column count from the transform, or from the referenced kscan. |
+
+### Example Configuration
+
+The deghost driver will typically sit on top of a matrix driver,
+like the following Devicetree code:
+
+```devicetree
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &default_transform;
+    };
+
+    kscan0: kscan_deghost {
+        compatible = "zmk,kscan-deghost";
+        kscan = <&kscan1>;
+        transform = <&default_transform>;
+    };
+
+    kscan1: kscan_matrix {
+        compatible = "zmk,kscan-gpio-matrix";
+        // define matrix here...
+    };
+
+    default_transform: keymap_transform_0 {
+        // define default transform here...
+    }
+}
+```
+
 ## Mock Driver
 
 Mock keyboard scan driver that simulates key events.

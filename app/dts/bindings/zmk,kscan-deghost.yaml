@@ -1,0 +1,15 @@
+description: |
+  Allows deghosting a 2-key rollover matrix KSCAN device, resulting int a deghosted virtual device
+
+compatible: "zmk,kscan-deghost"
+
+properties:
+  rows:
+    type: int
+  columns:
+    type: int
+  kscan:
+    type: phandle
+    required: true
+  transform:
+    type: phandle
