@@ -1,0 +1,14 @@
+file_format: "1"
+id: swept
+name: Swept
+type: shield
+url: https://github.com/AYM1607/swept-crkbd/
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - underglow
+siblings:
+  - swept_left
+  - swept_right
