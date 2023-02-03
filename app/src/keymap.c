@@ -85,6 +85,10 @@ static inline int set_layer_state(uint8_t layer, bool state) {
         return -EINVAL;
     }
 
+    if (state) {
+        printk("GUIDO: layer %d\n", layer);
+    }
+    
     // Default layer should *always* remain active
     if (layer == _zmk_keymap_layer_default && !state) {
         return 0;
