@@ -85,6 +85,8 @@ static inline int set_layer_state(uint8_t layer, bool state) {
         return -EINVAL;
     }
 
+    printk("GUIDO: highest layer active: %d\n", zmk_keymap_highest_layer_active());
+    
     if (state) {
         printk("GUIDO: layer %d\n", layer);
     }
