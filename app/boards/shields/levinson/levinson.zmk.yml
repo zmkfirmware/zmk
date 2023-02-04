@@ -1,0 +1,13 @@
+file_format: "1"
+id: levinson
+name: Levinson
+type: shield
+url: https://keeb.io/collections/levinson-keyboard
+requires:
+  - pro_micro
+exposes:
+features:
+  - keys
+siblings:
+  - levinson_left
+  - levinson_right
