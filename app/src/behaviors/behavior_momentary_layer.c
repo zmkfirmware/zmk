@@ -22,6 +22,7 @@ static int behavior_mo_init(const struct device *dev) { return 0; };
 
 static int mo_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
+    printk("GUIDO: mo layer %d", binding->param1)
     LOG_DBG("position %d layer %d", event.position, binding->param1);
     return zmk_keymap_layer_activate(binding->param1);
 }

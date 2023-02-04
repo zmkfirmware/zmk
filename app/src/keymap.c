@@ -85,15 +85,8 @@ static inline int set_layer_state(uint8_t layer, bool state) {
         return -EINVAL;
     }
 
-    printk("GUIDO: highest layer active: %d\n", zmk_keymap_highest_layer_active());
-    
-    if (state) {
-        printk("GUIDO: layer %d\n", layer);
-    }
-    
     // Default layer should *always* remain active
     if (layer == _zmk_keymap_layer_default && !state) {
-        printk("GUIDO: layer 0\n");
         return 0;
     }
 
@@ -101,6 +94,7 @@ static inline int set_layer_state(uint8_t layer, bool state) {
     WRITE_BIT(_zmk_keymap_layer_state, layer, state);
     // Don't send state changes unless there was an actual change
     if (old_state != _zmk_keymap_layer_state) {
+        printk("GUIDO: layer %d, new state set: %d\n", layer, _zmk_keymap_layer_state);
         LOG_DBG("layer_changed: layer %d state %d", layer, state);
         ZMK_EVENT_RAISE(create_layer_state_changed(layer, state));
     }
