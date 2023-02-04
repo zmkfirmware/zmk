@@ -20,7 +20,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define DT_DRV_COMPAT zmk_kscan_gpio_multiplex
 
 #define INST_LEN(n) DT_INST_PROP_LEN(n, gpios)
-#define INST_MULTIPLEX_LEN(n) (INST_LEN(n) * (INST_LEN(n) - 1))
+#define INST_MULTIPLEX_LEN(n) (INST_LEN(n) * INST_LEN(n))
 
 #if CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS >= 0
 #define INST_DEBOUNCE_PRESS_MS(n) CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS
@@ -118,9 +118,7 @@ static int kscan_multiplex_set_as_output(const struct gpio_dt_spec *gpio) {
         LOG_ERR("Unable to configure pin %u on %s for output", gpio->pin, gpio->port->name);
         return err;
     }
-#if CONFIG_ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS > 0
-    k_busy_wait(CONFIG_ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS);
-#endif
+
     err = gpio_pin_set_dt(gpio, 1);
     if (err) {
         LOG_ERR("Failed to set output pin %u active: %i", gpio->pin, err);
