@@ -2,9 +2,7 @@ properties:
   dr-gpios:
     type: phandle-array
     description: Data ready pin for the trackpad
-  invert-x:
-    type: boolean
-  invert-y:
+  rotate-90:
     type: boolean
   sleep:
     type: boolean

@@ -110,7 +110,7 @@ static int pinnacle_sample_fetch(const struct device *dev, enum sensor_channel c
 #ifdef CONFIG_PINNACLE_TRIGGER
 static void set_int(const struct device *dev, const bool en) {
     const struct pinnacle_config *config = dev->config;
-    int ret = gpio_pin_interrupt_configure_dt(&config->dr, en ? GPIO_INT_LEVEL_ACTIVE : GPIO_INT_DISABLE);
+    int ret = gpio_pin_interrupt_configure_dt(&config->dr, en ? GPIO_INT_EDGE_TO_ACTIVE : GPIO_INT_DISABLE);
     if (ret < 0) {
         LOG_ERR("can't set interrupt");
     }
@@ -156,7 +156,6 @@ static void pinnacle_work_cb(struct k_work *work) {
 
 static void pinnacle_gpio_cb(const struct device *port, struct gpio_callback *cb, uint32_t pins) {
     struct pinnacle_data *data = CONTAINER_OF(cb, struct pinnacle_data, gpio_cb);
-    const struct device *dev = data->dev;
 #if defined(CONFIG_PINNACLE_TRIGGER_OWN_THREAD)
     k_sem_give(&data->gpio_sem);
 #elif defined(CONFIG_PINNACLE_TRIGGER_GLOBAL_THREAD)
@@ -169,30 +168,58 @@ static int pinnacle_init(const struct device *dev) {
     struct pinnacle_data *data = dev->data;
     const struct pinnacle_config *config = dev->config;
 
-    pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear CC
-    pinnacle_write(dev, PINNACLE_Z_IDLE, 0);    // No Z-Idle packets
-    if (config->sleep_en) {
-        pinnacle_write(dev, PINNACLE_SYS_CFG, PINNACLE_SYS_CFG_EN_SLEEP);
+    LOG_WRN("pinnacle start");
+    int ret;
+    ret = pinnacle_write(dev, PINNACLE_STATUS1, PINNACLE_SYS_CFG_RESET);
+    if (ret < 0) {
+        LOG_ERR("can't reset %d", ret);
+        return ret;
     }
+    k_msleep(20);
+    ret = pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear CC
+    if (ret < 0) {
+        LOG_ERR("can't write %d", ret);
+        return ret;
+    }
+    k_usleep(50);
+    ret = pinnacle_write(dev, PINNACLE_Z_IDLE, 0);    // No Z-Idle packets
+    if (ret < 0) {
+        LOG_ERR("can't write %d", ret);
+        return ret;
+    }
+    if (config->sleep_en) {
+        ret = pinnacle_write(dev, PINNACLE_SYS_CFG, PINNACLE_SYS_CFG_EN_SLEEP);
+        if (ret < 0) {
+            LOG_ERR("can't write %d", ret);
+            return ret;
+        }
+    }
+    uint8_t feed_cfg2 = PINNACLE_FEED_CFG2_EN_IM;
     if (config->no_taps) {
-        pinnacle_write(dev, PINNACLE_FEED_CFG2, PINNACLE_FEED_CFG2_DIS_TAP);
+        feed_cfg2 |= PINNACLE_FEED_CFG2_DIS_TAP;
+    }
+    if (config->rotate_90) {
+        feed_cfg2 |= PINNACLE_FEED_CFG2_ROTATE_90;
+    }
+    ret = pinnacle_write(dev, PINNACLE_FEED_CFG2, feed_cfg2);
+    if (ret < 0) {
+        LOG_ERR("can't write %d", ret);
+        return ret;
     }
     uint8_t feed_cfg1 = PINNACLE_FEED_CFG1_EN_FEED;
-    if (config->invert_x) {
-        feed_cfg1 |= PINNACLE_FEED_CFG1_INV_X;
-    }
-    if (config->invert_y) {
-        feed_cfg1 |= PINNACLE_FEED_CFG1_INV_Y;
-    }
     if (feed_cfg1) {
-        pinnacle_write(dev, PINNACLE_FEED_CFG1, feed_cfg1);
+        ret = pinnacle_write(dev, PINNACLE_FEED_CFG1, feed_cfg1);
+    }
+    if (ret < 0) {
+        LOG_ERR("can't write %d", ret);
+        return ret;
     }
 
 #ifdef CONFIG_PINNACLE_TRIGGER
     data->dev = dev;
     gpio_pin_configure_dt(&config->dr, GPIO_INPUT);
     gpio_init_callback(&data->gpio_cb, pinnacle_gpio_cb, BIT(config->dr.pin));
-    int ret = gpio_add_callback(config->dr.port, &data->gpio_cb);
+    ret = gpio_add_callback(config->dr.port, &data->gpio_cb);
     if (ret < 0) {
         LOG_ERR("Failed to set DR callback: %d", ret);
         return -EIO;
@@ -225,12 +252,11 @@ static const struct sensor_driver_api pinnacle_driver_api = {
     static struct pinnacle_data pinnacle_data_##n; \
     static const struct pinnacle_config pinnacle_config_##n = { \
         .bus = COND_CODE_1(DT_INST_ON_BUS(0, i2c), (I2C_DT_SPEC_INST_GET(0)), (SPI_DT_SPEC_INST_GET(0, SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | SPI_LINES_SINGLE | SPI_TRANSFER_MSB, 0))), \
-        .invert_x = DT_INST_PROP(0, invert_x), \
-        .invert_y = DT_INST_PROP(0, invert_y), \
+        .rotate_90 = DT_INST_PROP(0, rotate_90), \
         .sleep_en = DT_INST_PROP(0, sleep), \
         .no_taps = DT_INST_PROP(0, no_taps), \
         COND_CODE_1(CONFIG_PINNACLE_TRIGGER, (.dr = GPIO_DT_SPEC_GET(DT_DRV_INST(0), dr_gpios),), ) \
     }; \
-    DEVICE_DT_INST_DEFINE(n, pinnacle_init, device_pm_control_nop, &pinnacle_data_##n, &pinnacle_config_##n, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &pinnacle_driver_api);
+    DEVICE_DT_INST_DEFINE(n, pinnacle_init, NULL, &pinnacle_data_##n, &pinnacle_config_##n, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &pinnacle_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(CIRQUE_INST)
