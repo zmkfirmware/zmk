@@ -11,7 +11,7 @@
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
-#include <zmk/usb_hid.h>
+#include <zmk/usb.h>
 #include <zmk/hog.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
@@ -35,12 +35,13 @@ static void endpoints_save_preferred_work(struct k_work *work) {
     settings_save_one("endpoints/preferred", &preferred_endpoint, sizeof(preferred_endpoint));
 }
 
-static struct k_work_delayable endpoints_save_work;
+static struct k_delayed_work endpoints_save_work;
 #endif
 
 static int endpoints_save_preferred() {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    return k_work_reschedule(&endpoints_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    k_delayed_work_cancel(&endpoints_save_work);
+    return k_delayed_work_submit(&endpoints_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
     return 0;
 #endif
@@ -144,6 +145,40 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
     }
 }
 
+int zmk_endpoints_send_mouse_report() {
+    struct zmk_hid_mouse_report *mouse_report = zmk_hid_get_mouse_report();
+
+    switch (current_endpoint) {
+#if IS_ENABLED(CONFIG_ZMK_USB)
+    case ZMK_ENDPOINT_USB: {
+        int err = zmk_usb_hid_send_report((uint8_t *)mouse_report, sizeof(*mouse_report));
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER USB: %d", err);
+        }
+        return err;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_USB) */
+
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    case ZMK_ENDPOINT_BLE: {
+#if IS_ENABLED(CONFIG_ZMK_MOUSE_WORK_QUEUE_DEDICATED)
+        int err = zmk_hog_send_mouse_report_direct(&mouse_report->body);
+#else
+        int err = zmk_hog_send_mouse_report(&mouse_report->body);
+#endif
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
+        }
+        return err;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
+
+    default:
+        LOG_ERR("Unsupported endpoint %d", current_endpoint);
+        return -ENOTSUP;
+    }
+}
+
 #if IS_ENABLED(CONFIG_SETTINGS)
 
 static int endpoints_handle_set(const char *name, size_t len, settings_read_cb read_cb,
@@ -181,7 +216,7 @@ static int zmk_endpoints_init(const struct device *_arg) {
         return err;
     }
 
-    k_work_init_delayable(&endpoints_save_work, endpoints_save_preferred_work);
+    k_delayed_work_init(&endpoints_save_work, endpoints_save_preferred_work);
 
     settings_load_subtree("endpoints");
 #endif
@@ -228,6 +263,7 @@ static enum zmk_endpoint get_selected_endpoint() {
 static void disconnect_current_endpoint() {
     zmk_hid_keyboard_clear();
     zmk_hid_consumer_clear();
+    zmk_hid_mouse_clear();
 
     zmk_endpoints_send_report(HID_USAGE_KEY);
     zmk_endpoints_send_report(HID_USAGE_CONSUMER);
