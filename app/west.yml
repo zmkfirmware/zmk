@@ -10,8 +10,7 @@ manifest:
       revision: v3.0.0+zmk-fixes
       clone-depth: 1
       import:
-        # TODO: Rename once upstream offers option like `exclude` or `denylist`
-        name-blacklist:
+        name-blocklist:
           - ci-tools
           - hal_altera
           - hal_cypress
