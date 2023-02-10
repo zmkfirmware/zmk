@@ -5,6 +5,7 @@ sidebar_label: Hold-Tap
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import '@motion-canvas/player'
 
 ## Summary
 
@@ -17,6 +18,11 @@ Simply put, the hold-tap key will output the 'hold' behavior if it's held for a 
 The graph below shows how the hold-tap decides between a 'tap' and a 'hold'.
 
 ![Simple behavior](../assets/hold-tap/case1_2.svg)
+
+<motion-canvas-player
+src={"/animations/hold_tap_comparison.js"}
+auto={true}
+/>
 
 By default, the hold-tap is configured to also select the 'hold' functionality if another key is tapped while it's active:
 
