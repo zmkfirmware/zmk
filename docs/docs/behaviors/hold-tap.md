@@ -15,7 +15,7 @@ Simply put, the hold-tap key will output the 'hold' behavior if it's held for a 
 
 ### Hold-Tap
 
-The graph below shows how the hold-tap decides between a 'tap' and a 'hold'.
+The figures below shows how the hold-tap decides between a 'tap' and a 'hold'.
 
 <AnimationPlayer auto small name="hold_tap_comparison" />
 
