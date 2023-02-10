@@ -1,8 +1,8 @@
 import { makeScene2D } from "@motion-canvas/2d/lib/scenes";
 import { makeRefs } from "@motion-canvas/core/lib/utils";
 import { any, all, chain, delay, waitFor } from "@motion-canvas/core/lib/flow";
-import Key, { KeyTravel } from "../../components/Key";
-import Output from "../../components/Output";
+import Key, { KeyTravel } from "../../../components/Key";
+import Output from "../../../components/Output";
 import { linear } from "@motion-canvas/core/lib/tweening";
 
 export default makeScene2D(function* (view) {
@@ -13,7 +13,7 @@ export default makeScene2D(function* (view) {
   interrupt.duration.fill("#D9D9D9");
 
   const hold = makeRefs<typeof Key>();
-  view.add(<Key refs={hold} binding={"&ht_tui"} params={"\u21e7 F"} />);
+  view.add(<Key refs={hold} binding={"&ht_bl"} params={"\u21e7 F"} />);
   hold.group.position.x(-125);
   hold.group.position.y(-150);
   hold.duration.fill("#D9D9D9");
@@ -26,25 +26,30 @@ export default makeScene2D(function* (view) {
   yield* waitFor(0.5);
   yield* any(
     hold.body.position.y(KeyTravel, 0.15),
-    hold.duration.grow(0.75, 1.5, linear)
+    hold.duration.grow(0.5, 1, linear)
   );
   yield* delay(
-    1.2,
+    0.35,
     all(
       interrupt.body.position.y(KeyTravel, 0.15),
       hold.duration.fill("F21D00", 0.15)
     )
   );
-  yield* chain(
-    hold.group.rotation(3, 0.03),
-    hold.group.rotation(-3, 0.06),
-    hold.group.rotation(0, 0.03),
-    all(
-      delay(0.15, hold_output.output.text("J", 0)),
-      hold_output.shift.fill("#969696", 0.15)
+  yield* delay(
+    0.35,
+    chain(
+      interrupt.body.position.y(0, 0.15),
+      hold.group.rotation(3, 0.03),
+      hold.group.rotation(-3, 0.06),
+      hold.group.rotation(0, 0.03),
+      hold.duration.grow(0, 0.15),
+      all(
+        delay(0.05, hold_output.output.text("J", 0)),
+        hold_output.shift.fill("#969696", 0.1)
+      )
     )
   );
   yield* waitFor(0.25);
   yield* hold.body.position.y(0, 0.15);
-  yield* delay(0.5, hold.duration.grow(0, 0.15));
+  yield* waitFor(1);
 });

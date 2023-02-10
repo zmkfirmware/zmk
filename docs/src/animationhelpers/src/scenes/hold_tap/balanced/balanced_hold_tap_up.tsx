@@ -1,8 +1,8 @@
 import { makeScene2D } from "@motion-canvas/2d/lib/scenes";
 import { makeRefs } from "@motion-canvas/core/lib/utils";
 import { any, all, chain, delay, waitFor } from "@motion-canvas/core/lib/flow";
-import Key, { KeyTravel } from "../../components/Key";
-import Output from "../../components/Output";
+import Key, { KeyTravel } from "../../../components/Key";
+import Output from "../../../components/Output";
 import { linear } from "@motion-canvas/core/lib/tweening";
 
 export default makeScene2D(function* (view) {
