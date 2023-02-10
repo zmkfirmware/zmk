@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "docusaurus start --host 0.0.0.0",
-    "build": "docusaurus build",
+    "build": "npm run build_animations && docusaurus build",
     "serve": "docusaurus serve",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
@@ -12,7 +12,8 @@
     "lint": "eslint . --ext js,jsx,md,mdx",
     "prettier:check": "prettier --check .",
     "prettier:format": "prettier --write .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "build_animations": "cd src/animationhelpers && npm run build"
   },
   "dependencies": {
     "@docusaurus/core": "^2.1.0",
