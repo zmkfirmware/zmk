@@ -53,7 +53,6 @@ export default makeScene2D(function* (view) {
     </Text>
   );
 
-
   yield* waitFor(0.5);
   yield* all(
     tap.body.position.y(KeyTravel, 0.15),
