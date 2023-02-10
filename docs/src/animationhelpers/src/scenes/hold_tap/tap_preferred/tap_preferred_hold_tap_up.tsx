@@ -28,13 +28,7 @@ export default makeScene2D(function* (view) {
     hold.body.position.y(KeyTravel, 0.15),
     hold.duration.grow(0.5, 1, linear)
   );
-  yield* delay(
-    0.35,
-    all(
-      interrupt.body.position.y(KeyTravel, 0.15),
-      hold.duration.fill("F21D00", 0.15)
-    )
-  );
+  yield* delay(0.35, interrupt.body.position.y(KeyTravel, 0.15));
   yield* delay(
     0.35,
     chain(
