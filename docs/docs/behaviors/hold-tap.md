@@ -34,7 +34,46 @@ We call this the 'hold-preferred' flavor of hold-taps. While this flavor may wor
 
 When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
 
+<Tabs
+defaultValue="hold-preferred"
+values={[
+{label: 'Hold-Preferred', value: 'hold-preferred'},
+{label: 'Balanced', value: 'balanced'},
+{label: 'Tap-Preferred', value: 'tap-preferred'},
+]}>
+
+<TabItem value="hold-preferred">
+
+As shown previously, the hold-tap decision is generally made after the [`tapping-term-ms`](#tapping-term-ms) has expired.
+
+<AnimationPlayer auto small name="hold_tap_comparison" />
+
+Alternatively, the 'hold-preferred' flavor triggers the hold behavior when another key is pressed.
+
+<AnimationPlayer auto small name="hold_tap_interrupted" />
+
+</TabItem>
+
+<TabItem value="balanced">
+
+The following section describes the behavior of the 'balanced' hold-tap when another key is pressed while the hold-tap is held.
+
+If another key is pressed while the 'balanced' hold-tap pressed, releasing the hold-tap before the interrupting keypress will invoke the tap behavior.
+
+<AnimationPlayer auto small name="balanced_hold_tap_up" />
+
+On the other hand, if the interrupting key is released before the hold-tap, the hold behavior will be invoked.
+
+<AnimationPlayer auto small name="balanced_other_key_up" />
+
+</TabItem>
+
+<TabItem value="tap-preferred">
+
 ![Hold-tap comparison](../assets/hold-tap/comparison.svg)
+
+</TabItem>
+</Tabs>
 
 ### Basic usage
 
