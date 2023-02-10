@@ -26,29 +26,30 @@ export default makeScene2D(function* (view) {
   yield* waitFor(0.5);
   yield* any(
     hold.body.position.y(KeyTravel, 0.15),
-    hold.duration.grow(1, 2, linear)
+    hold.duration.grow(0.5, 1, linear)
   );
   yield* delay(
-    1.2,
+    0.35,
     all(
       interrupt.body.position.y(KeyTravel, 0.15),
       hold.duration.fill("F21D00", 0.15)
     )
   );
   yield* delay(
-    1.5,
+    0.35,
     chain(
       interrupt.body.position.y(0, 0.15),
       hold.group.rotation(3, 0.03),
       hold.group.rotation(-3, 0.06),
       hold.group.rotation(0, 0.03),
+      hold.duration.grow(0, 0.15),
       all(
-        delay(0.15, hold_output.output.text("J", 0)),
-        hold_output.shift.fill("#969696", 0.15)
+        delay(0.05, hold_output.output.text("J", 0)),
+        hold_output.shift.fill("#969696", 0.1)
       )
     )
   );
   yield* waitFor(0.25);
   yield* hold.body.position.y(0, 0.15);
-  yield* delay(0.5, hold.duration.grow(0, 0.15));
+  yield* waitFor(1);
 });
