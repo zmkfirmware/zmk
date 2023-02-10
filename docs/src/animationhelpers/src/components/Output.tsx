@@ -40,6 +40,7 @@ export default function Output({
           justifyContent={"center"}
           fontWeight={OutputFontWeight}
           fontSize={OutputFontSize}
+          fontFamily={"sans-serif"}
           margin={ModifierMargin}
         />
       </Rect>
@@ -58,6 +59,7 @@ export default function Output({
             text={() => "SHIFT"}
             fontWeight={ModifierFontWeight}
             fontSize={ModifierFontSize}
+            fontFamily={"sans-serif"}
             margin={ModifierMargin}
           />
         </Rect>
@@ -76,6 +78,7 @@ export default function Output({
             text={() => "ALT"}
             fontWeight={ModifierFontWeight}
             fontSize={ModifierFontSize}
+            fontFamily={"sans-serif"}
             margin={ModifierMargin}
           />
         </Rect>
@@ -94,6 +97,7 @@ export default function Output({
             text={() => "CTRL"}
             fontWeight={ModifierFontWeight}
             fontSize={ModifierFontSize}
+            fontFamily={"sans-serif"}
             margin={ModifierMargin}
           />
         </Rect>
@@ -112,6 +116,7 @@ export default function Output({
             text={() => "GUI"}
             fontWeight={ModifierFontWeight}
             fontSize={ModifierFontSize}
+            fontFamily={"sans-serif"}
             margin={ModifierMargin}
           />
         </Rect>

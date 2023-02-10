@@ -25,6 +25,7 @@ export default makeScene2D(function* (view) {
       position={tap.group.position().addY(-160)}
       fontWeight={600}
       fontSize={64}
+      fontFamily={"sans-serif"}
     >
       tap
     </Text>
@@ -48,6 +49,7 @@ export default makeScene2D(function* (view) {
       position={hold.group.position().addY(-160)}
       fontWeight={600}
       fontSize={64}
+      fontFamily={"sans-serif"}
     >
       hold
     </Text>

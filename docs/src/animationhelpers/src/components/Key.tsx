@@ -63,6 +63,7 @@ export default function Key({
           padding={15}
           fontWeight={600}
           fontSize={32}
+          fontFamily={"sans-serif"}
           y={-65}
         />
         <Text
@@ -73,6 +74,7 @@ export default function Key({
           justifyContent={"center"}
           fontWeight={600}
           fontSize={60}
+          fontFamily={"sans-serif"}
         />
       </Node>
     </Node>
