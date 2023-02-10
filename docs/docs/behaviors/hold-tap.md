@@ -28,6 +28,11 @@ By default, the hold-tap is configured to also select the 'hold' functionality i
 
 ![Hold preferred behavior](../assets/hold-tap/case_hold_preferred.svg)
 
+<motion-canvas-player
+src={"/animations/hold_tap_interrupted.js"}
+auto={true}
+/>
+
 We call this the 'hold-preferred' flavor of hold-taps. While this flavor may work very well for a ctrl/escape key, it's not very well suited for home-row mods or layer-taps. That's why there are two more flavors to choose from: 'tap-preferred' and 'balanced'.
 
 #### Flavors

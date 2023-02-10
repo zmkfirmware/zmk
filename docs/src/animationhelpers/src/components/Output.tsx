@@ -1,4 +1,4 @@
-import { Rect, Text, Node } from "@motion-canvas/2d/lib/components";
+import { Rect, Text } from "@motion-canvas/2d/lib/components";
 import { makeRef } from "@motion-canvas/core/lib/utils";
 import { KeyBorderThickness } from "./Key";
 
