@@ -40,6 +40,7 @@ values={[
 {label: 'Hold-Preferred', value: 'hold-preferred'},
 {label: 'Balanced', value: 'balanced'},
 {label: 'Tap-Preferred', value: 'tap-preferred'},
+{label: 'Tap-Unless-Interrupted', value: 'tap-unless-interrupted'},
 ]}>
 
 <TabItem value="hold-preferred">
@@ -69,6 +70,14 @@ On the other hand, if the interrupting key is released before the hold-tap, the 
 </TabItem>
 
 <TabItem value="tap-preferred">
+
+
+
+<AnimationPlayer auto small name="tap_preferred_hold_tap_up" />
+
+</TabItem>
+
+<TabItem value="tap-unless-interrupted">
 
 ![Hold-tap comparison](../assets/hold-tap/comparison.svg)
 
