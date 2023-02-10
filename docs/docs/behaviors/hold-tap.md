@@ -71,15 +71,19 @@ On the other hand, if the interrupting key is released before the hold-tap, the 
 
 <TabItem value="tap-preferred">
 
-
-
 <AnimationPlayer auto small name="tap_preferred_hold_tap_up" />
 
 </TabItem>
 
 <TabItem value="tap-unless-interrupted">
 
-![Hold-tap comparison](../assets/hold-tap/comparison.svg)
+As seen below, the hold duration of the 'tap-unless-interrupteed' hold-tap does not have an effect on the output. The 'tap' behavior will always be invoked.
+
+<AnimationPlayer auto small name="tap_unless_interrupted" />
+
+Only another key being pressed can invoke the 'hold' behavior.
+
+<AnimationPlayer auto small name="tap_unless_interrupted_invoke_hold" />
 
 </TabItem>
 </Tabs>
