@@ -5,7 +5,7 @@ sidebar_label: Hold-Tap
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import '@motion-canvas/player'
+import AnimationPlayer from '@site/src/components/AnimationPlayer';
 
 ## Summary
 
@@ -17,21 +17,11 @@ Simply put, the hold-tap key will output the 'hold' behavior if it's held for a 
 
 The graph below shows how the hold-tap decides between a 'tap' and a 'hold'.
 
-![Simple behavior](../assets/hold-tap/case1_2.svg)
-
-<motion-canvas-player
-src={"/animations/hold_tap_comparison.js"}
-auto={true}
-/>
+<AnimationPlayer auto small name="hold_tap_comparison" />
 
 By default, the hold-tap is configured to also select the 'hold' functionality if another key is tapped while it's active:
 
-![Hold preferred behavior](../assets/hold-tap/case_hold_preferred.svg)
-
-<motion-canvas-player
-src={"/animations/hold_tap_interrupted.js"}
-auto={true}
-/>
+<AnimationPlayer auto small name="hold_tap_interrupted" />
 
 We call this the 'hold-preferred' flavor of hold-taps. While this flavor may work very well for a ctrl/escape key, it's not very well suited for home-row mods or layer-taps. That's why there are two more flavors to choose from: 'tap-preferred' and 'balanced'.
 

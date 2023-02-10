@@ -1,0 +1,21 @@
+.container {
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--ifm-global-radius);
+  background-color: var(--ifm-background-surface-color);
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.container.small {
+  max-width: 720px;
+  aspect-ratio: 16/9;
+  margin: 0 auto var(--ifm-leading);
+}
+
+.player {
+  aspect-ratio: 16 / 9;
+}
