@@ -25,14 +25,7 @@ By default, the hold-tap is configured to also select the 'hold' functionality i
 
 We call this the 'hold-preferred' flavor of hold-taps. While this flavor may work very well for a ctrl/escape key, it's not very well suited for home-row mods or layer-taps. That's why there are two more flavors to choose from: 'tap-preferred' and 'balanced'.
 
-#### Flavors
-
-- The 'hold-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired or another key is pressed.
-- The 'balanced' flavor will trigger the hold behavior when the `tapping-term-ms` has expired or another key is pressed and released.
-- The 'tap-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired. Pressing another key within `tapping-term-ms` does not affect the decision.
-- The 'tap-unless-interrupted' flavor triggers a hold behavior only when another key is pressed before `tapping-term-ms` has expired. It triggers the tap behavior in all other situations.
-
-When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
+### Flavors
 
 <Tabs
 defaultValue="hold-preferred"
@@ -45,6 +38,10 @@ values={[
 
 <TabItem value="hold-preferred">
 
+> The 'hold-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired or another key is pressed.
+> When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
+
+
 As shown previously, the hold-tap decision is generally made after the [`tapping-term-ms`](#tapping-term-ms) has expired.
 
 <AnimationPlayer auto small name="hold_tap_comparison" />
@@ -56,6 +53,10 @@ Alternatively, the 'hold-preferred' flavor triggers the hold behavior when anoth
 </TabItem>
 
 <TabItem value="balanced">
+
+> The 'balanced' flavor will trigger the hold behavior when the `tapping-term-ms` has expired or another key is pressed and released.
+> When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
+
 
 The following section describes the behavior of the 'balanced' hold-tap when another key is pressed while the hold-tap is held.
 
@@ -71,13 +72,18 @@ On the other hand, if the interrupting key is released before the hold-tap, the 
 
 <TabItem value="tap-preferred">
 
+> The 'tap-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired. Pressing another key within `tapping-term-ms` does not affect the decision.
+> When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
+
 <AnimationPlayer auto small name="tap_preferred_hold_tap_up" />
 
 </TabItem>
 
 <TabItem value="tap-unless-interrupted">
 
-As seen below, the hold duration of the 'tap-unless-interrupteed' hold-tap does not have an effect on the output. The 'tap' behavior will always be invoked.
+> The 'tap-unless-interrupted' flavor triggers a hold behavior only when another key is pressed before `tapping-term-ms` has expired. It triggers the tap behavior in all other situations.
+
+As seen below, the hold duration of the 'tap-unless-interrupted' hold-tap does not have an effect on the output. The 'tap' behavior will always be invoked.
 
 <AnimationPlayer auto small name="tap_unless_interrupted" />
 
