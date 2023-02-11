@@ -91,7 +91,7 @@ For basic usage, please see the [mod-tap](mod-tap.md) and [layer-tap](layers.md#
 
 #### `tapping-term-ms`
 
-Defines how long a key must be pressed to trigger Hold behavior.
+Defines how long a key must be pressed to trigger the 'hold' behavior.
 
 #### `quick-tap-ms`
 
