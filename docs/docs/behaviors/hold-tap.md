@@ -28,10 +28,8 @@ values={[
 
 <TabItem value="hold-preferred">
 
-> The 'hold-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired or another key is pressed.
-> When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
-
-The simplest flavor, 'hold-preferred', means that when the 'hold-tap' is held for longer than [`tapping-term-ms`](#tapping-term-ms), then it is considered a 'hold'. Otherwise, it is considered a tap. We show this in the diagram below.
+The simplest flavor, 'hold-preferred', triggers the hold behavior when the [`tapping-term-ms`](#tapping-term-ms) has expired or another key is pressed.
+When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
 
 <AnimationPlayer auto small name="hold_tap_comparison" />
 
@@ -45,16 +43,15 @@ While this flavor may work very well for a ctrl/escape key, it's not very well s
 
 <TabItem value="balanced">
 
-> The 'balanced' flavor will trigger the hold behavior when the `tapping-term-ms` has expired or another key is pressed and released.
-> When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
+The 'balanced' flavor triggers the hold behavior when the [`tapping-term-ms`](#tapping-term-ms) has expired.
 
 <AnimationPlayer auto small name="balanced_comparison" />
 
-If another key is pressed while the 'balanced' hold-tap pressed, releasing the hold-tap before the interrupting keypress will invoke the tap behavior.
+Alternatively, if another key is pressed while the 'balanced' hold-tap pressed, releasing the _hold-tap_ before the interrupting keypress will invoke the tap behavior.
 
 <AnimationPlayer auto small name="balanced_hold_tap_up" />
 
-On the other hand, if the interrupting key is released before the hold-tap, the hold behavior will be invoked.
+On the other hand, if the _interrupting key_ is released before the hold-tap, the hold behavior will be invoked.
 
 <AnimationPlayer auto small name="balanced_other_key_up" />
 
@@ -62,14 +59,11 @@ On the other hand, if the interrupting key is released before the hold-tap, the 
 
 <TabItem value="tap-preferred">
 
-> The 'tap-preferred' flavor triggers the hold behavior when the `tapping-term-ms` has expired. Pressing another key within `tapping-term-ms` does not affect the decision.
-> When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
-
-Like other flavors of hold-tap, releasing the 'tap-preferred' hold-tap before [`tapping-term-ms`](#tapping-term-ms) has expired will invoke the 'tap'. Holding it for past the tapping-term will invoke the 'hold'.
+The 'tap-preferred' flavor triggers the hold behavior when the [`tapping-term-ms`](#tapping-term-ms) has expired.
 
 <AnimationPlayer auto small name="tap_preferred_comparison" />
 
-As shown below, pressing other keys while the 'tap-preferred' hold-tap is pressed does not interrupt its activity.
+As shown below, pressing another key within [`tapping-term-ms`](#tapping-term-ms) does not affect the hold-tap decision; only the press duration will decide if the 'tap-preferred' hold-tap is a 'hold' or a 'tap'.
 
 <AnimationPlayer auto small name="tap_preferred_hold_tap_up" />
 
@@ -77,9 +71,7 @@ As shown below, pressing other keys while the 'tap-preferred' hold-tap is presse
 
 <TabItem value="tap-unless-interrupted">
 
-> The 'tap-unless-interrupted' flavor triggers a hold behavior only when another key is pressed before `tapping-term-ms` has expired. It triggers the tap behavior in all other situations.
-
-As seen below, the hold duration of the 'tap-unless-interrupted' hold-tap does not have an effect on the output. The 'tap' behavior will always be invoked.
+The press duration of the 'tap-unless-interrupted' flavor of hold-tap does not have an effect on the output: the 'tap' behavior will always be invoked.
 
 <AnimationPlayer auto small name="tap_unless_interrupted" />
 
@@ -88,6 +80,7 @@ Only another key being pressed can invoke the 'hold' behavior.
 <AnimationPlayer auto small name="tap_unless_interrupted_invoke_hold" />
 
 </TabItem>
+
 </Tabs>
 
 ### Basic usage
