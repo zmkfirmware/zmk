@@ -1,6 +1,5 @@
 import { makeScene2D } from "@motion-canvas/2d/lib/scenes";
-import { Text } from "@motion-canvas/2d/lib/components";
-import { createRef, makeRefs } from "@motion-canvas/core/lib/utils";
+import { makeRefs } from "@motion-canvas/core/lib/utils";
 import { all, chain, delay, waitFor } from "@motion-canvas/core/lib/flow";
 import Key, { KeyTravel } from "../../../components/Key";
 import Output from "../../../components/Output";
@@ -36,14 +35,23 @@ export default makeScene2D(function* (view) {
   );
   yield* all(
     tap.duration.grow(0.5, 1, linear),
-    delay(1, tap.body.position.y(0, 0.15)),
+    delay(
+      1,
+      chain(
+        tap.body.position.y(0, 0.15),
+        tap.group.rotation(3, 0.03),
+        tap.group.rotation(-3, 0.06),
+        tap.group.rotation(0, 0.03),
+        tap_output.output.text("f", 0)
+      )
+    ),
     hold.duration.grow(1, 2, linear)
   );
   yield* chain(
-    all(tap.group.rotation(3, 0.03), hold.group.rotation(3, 0.03)),
-    all(tap.group.rotation(-3, 0.06), hold.group.rotation(-3, 0.06)),
-    all(tap.group.rotation(0, 0.03), hold.group.rotation(0, 0.03)),
-    all(tap_output.output.text("f", 0), hold_output.output.text("f", 0))
+    hold.group.rotation(3, 0.03),
+    hold.group.rotation(-3, 0.06),
+    hold.group.rotation(0, 0.03),
+    hold_output.output.text("f", 0)
   );
   yield* waitFor(0.25);
   yield* hold.body.position.y(0, 0.15);
