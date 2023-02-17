@@ -4,7 +4,7 @@
 #include <drivers/sensor.h>
 #include <logging/log.h>
 
-#include "cirque_trackpad.h"
+#include "pinnacle.h"
 
 LOG_MODULE_REGISTER(pinnacle, CONFIG_SENSOR_LOG_LEVEL);
 
@@ -248,7 +248,7 @@ static const struct sensor_driver_api pinnacle_driver_api = {
 	.channel_get = pinnacle_channel_get,
 };
 
-#define CIRQUE_INST(n) \
+#define PINNACLE_INST(n) \
     static struct pinnacle_data pinnacle_data_##n; \
     static const struct pinnacle_config pinnacle_config_##n = { \
         .bus = COND_CODE_1(DT_INST_ON_BUS(0, i2c), (I2C_DT_SPEC_INST_GET(0)), (SPI_DT_SPEC_INST_GET(0, SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | SPI_LINES_SINGLE | SPI_TRANSFER_MSB, 0))), \
@@ -259,4 +259,4 @@ static const struct sensor_driver_api pinnacle_driver_api = {
     }; \
     DEVICE_DT_INST_DEFINE(n, pinnacle_init, NULL, &pinnacle_data_##n, &pinnacle_config_##n, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &pinnacle_driver_api);
 
-DT_INST_FOREACH_STATUS_OKAY(CIRQUE_INST)
+DT_INST_FOREACH_STATUS_OKAY(PINNACLE_INST)

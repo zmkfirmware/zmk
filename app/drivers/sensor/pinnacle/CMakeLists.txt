@@ -5,4 +5,4 @@ zephyr_include_directories(.)
 
 zephyr_library()
 
-zephyr_library_sources(cirque_trackpad.c)
+zephyr_library_sources(pinnacle.c)

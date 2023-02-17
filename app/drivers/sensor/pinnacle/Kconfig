@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 menuconfig PINNACLE
-	bool "PINNACLE Incremental Encoder Sensor"
+	bool "Cirque Pinnacle trackpads"
 	depends on GPIO
 	depends on SPI || I2C
 	help
