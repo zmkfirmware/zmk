@@ -159,7 +159,7 @@ The following are suggested hold-tap configurations that work well with home row
 			label = "LEFT_POSITIONAL_HOLD_TAP";
 			#binding-cells = <2>;
 			flavor = "tap-unless-interrupted";
-			tapping-term-ms = <100>;                        // <---[[produces tap if held longer than tapping-term-ms]]
+			tapping-term-ms = <100>;                        // <---[[produces hold if held longer than tapping-term-ms]]
 			quick-tap-ms = <200>;
 			bindings = <&kp>, <&kp>;
 			hold-trigger-key-positions = <5 6 7 8 9 10>;    // <---[[right-hand keys]]
