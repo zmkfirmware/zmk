@@ -255,7 +255,7 @@ static const struct sensor_driver_api pinnacle_driver_api = {
         .rotate_90 = DT_INST_PROP(0, rotate_90), \
         .sleep_en = DT_INST_PROP(0, sleep), \
         .no_taps = DT_INST_PROP(0, no_taps), \
-        COND_CODE_1(CONFIG_PINNACLE_TRIGGER, (.dr = GPIO_DT_SPEC_GET(DT_DRV_INST(0), dr_gpios),), ) \
+        COND_CODE_1(CONFIG_PINNACLE_TRIGGER, (.dr = GPIO_DT_SPEC_GET(DT_DRV_INST(0), dr_gpios),), ()) \
     }; \
     DEVICE_DT_INST_DEFINE(n, pinnacle_init, NULL, &pinnacle_data_##n, &pinnacle_config_##n, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &pinnacle_driver_api);
 
