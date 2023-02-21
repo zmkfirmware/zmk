@@ -48,7 +48,7 @@
            bindings = <
             &kp ESC &kp F1 &kp F2 &kp F3 &kp F4 &out OUT_USB &out OUT_BLE &none  &kp EQUAL &kp MINUS
             &kp CAPS &kp F5 &kp F6 &kp F7 &kp F8 &kp LBKT &kp RBKT &none &kp GRAVE &kp BSLH
-            &kp LSHFT &kp F9 &kp F10 &kp F11 &kp F12 &none &none &none &kp RSHFT
+            &kp LSHFT &kp F9 &kp F10 &kp F11 &kp F12 &none &none &none &none &kp RSHFT
             &kp LCTRL &kp LGUI &kp LALT &reset &none &trans
            >;
         };
