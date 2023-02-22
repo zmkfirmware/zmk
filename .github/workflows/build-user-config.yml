@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Cache west modules
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v3.2.6
         continue-on-error: true
         env:
           cache_name: cache-zephyr-${{ env.zephyr_version }}-modules
