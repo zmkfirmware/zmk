@@ -54,7 +54,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-mdx": "^2.0.5",
     "eslint-plugin-react": "^7.30.0",
-    "json-schema-to-typescript": "^10.1.5",
+    "json-schema-to-typescript": "^11.0.4",
     "mustache": "^4.2.0",
     "null-loader": "^4.0.0",
     "prebuild-webpack-plugin": "^1.1.1",
