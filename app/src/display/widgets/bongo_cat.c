@@ -42,7 +42,6 @@ LV_IMG_DECLARE(fast_img2);
 const void *idle_images[] = {
     &idle_img1, &idle_img2, &idle_img3, &idle_img4, &idle_img5,
 };
-
 const void *fast_images[] = {
     &fast_img1,
     &fast_img2,
@@ -60,10 +59,10 @@ void update_bongo_cat_wpm(struct zmk_widget_bongo_cat *widget, int wpm) {
             LOG_DBG("Set source to idle images!");
             lv_anim_init(&widget->anim);
             lv_anim_set_var(&widget->anim, widget->obj);
-            lv_anim_set_time(&widget->anim, 1000);
+            lv_anim_set_time(&widget->anim, 2000);
             lv_anim_set_values(&widget->anim, 0, 4);
             lv_anim_set_exec_cb(&widget->anim, set_img_src);
-            lv_anim_set_repeat_count(&widget->anim, 1000);
+            lv_anim_set_repeat_count(&widget->anim, 10);
             lv_anim_set_repeat_delay(&widget->anim, 100);
             images = idle_images;
             current_anim_state = anim_state_idle;
