@@ -400,7 +400,7 @@ config ZMK_KSCAN_EVENT_QUEUE_SIZE
 #KSCAN Settings
 endmenu
 
-menu "USB Logging"
+menu "Logging"
 
 config ZMK_LOGGING_MINIMAL
 	bool "Suppress all ZMK debug log messages"
@@ -441,16 +441,38 @@ endchoice
 config USB_CDC_ACM_RINGBUF_SIZE
 	default 1024
 
-config LOG_BUFFER_SIZE
-	default 8192
-
 config LOG_PROCESS_THREAD_STARTUP_DELAY_MS
 	default 1000
 
 #ZMK_USB_LOGGING
 endif
 
-#USB Logging
+config ZMK_RTT_LOGGING
+	bool "Enable RTT logging to help debug"
+	select LOG
+	select DEBUG
+	select ASSERT
+	select USE_SEGGER_RTT
+	select CONSOLE
+	select RTT_CONSOLE
+
+if ZMK_RTT_LOGGING
+
+config SEGGER_RTT_BUFFER_SIZE_UP
+	default 8192
+
+#ZMK_RTT_LOGGING
+endif
+
+if ZMK_USB_LOGGING || ZMK_RTT_LOGGING
+
+config LOG_BUFFER_SIZE
+	default 8192
+
+#ZMK_USB_LOGGING || ZMK_RTT_LOGGING
+endif
+
+#Logging
 endmenu
 
 if SETTINGS
