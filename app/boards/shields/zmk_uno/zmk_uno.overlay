@@ -36,7 +36,7 @@
 		zmk,kscan = &kscan_matrix_comp;
 		zmk,backlight = &backlight;
 		zmk,underglow = &led_strip;
-		zmk,matrix-transform = &matrix_transform;
+		zmk,matrix_transform = &matrix_transform;
 	};
 
 	// Commented out until we add more powerful power domain support
