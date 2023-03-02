@@ -1,0 +1,16 @@
+if SHIELD_LUGG46E_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Lugg46e"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_LUGG46E_LEFT || SHIELD_LUGG46E_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+endif

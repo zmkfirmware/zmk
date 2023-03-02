@@ -1,0 +1,12 @@
+file_format: "1"
+id: lugg46e
+name: Lugg46e
+type: shield
+url: https://github.com/rkun123/lugg46e/
+requires: [xiao]
+exposes: []
+features:
+  - keys
+siblings:
+  - lugg46e_left
+  - lugg46e_right
