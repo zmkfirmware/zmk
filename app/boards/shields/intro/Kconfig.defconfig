@@ -1,0 +1,22 @@
+# Copyright (c) 2023 ZMK
+# SPDX-License-Identifier: MIT
+
+config ZMK_USB
+	default y
+
+if SHIELD_INTRO_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Intro"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+	default y
+
+endif
+
+if SHIELD_INTRO_LEFT || SHIELD_INTRO_RIGHT
+
+config ZMK_SPLIT
+	default y
+
+endif

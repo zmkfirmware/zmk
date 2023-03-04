@@ -1,0 +1,57 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    behaviors {
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "homerow mods";
+            #binding-cells = <2>;
+            tapping_term_ms = <225>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+
+        tt: to_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "TO_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <225>;
+            bindings = <&mo>, <&to>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            label = "Az123";
+            bindings = <
+                &kp GRAVE &kp N1    &kp N2     &kp N3     &kp N4     &kp N5           &kp N6    &kp N7     &kp N8     &kp N9     &kp N0    &kp MINUS &kp EQUAL
+                &kp TAB   &kp Q     &kp W      &kp E      &kp R      &kp T            &kp Y     &kp U      &kp I      &kp O      &kp P     &kp LBKT  &kp RBKT
+                &kp CAPS  &kp A     &hm LCTL S &hm LGUI D &hm LALT F &kp G            &kp H     &hm RALT J &hm RGUI K &hm RCTL L &kp SEMI  &kp SQT   &kp ENTER
+                &kp LSHFT &kp Z     &kp X      &kp C      &kp V      &kp B            &kp N     &kp M      &kp COMMA  &kp DOT    &kp FSLH  &kp RSHFT &kp ESC
+                                               &kp BKSP   &kp TAB    &kp SPACE        &kp ENTER &tt 1 1    &kp DEL
+            >;
+        };
+
+        function_layer {
+            label = "Func";
+            bindings = <
+                &kp GRAVE &kp F1    &kp F2     &kp F3     &kp F4     &kp F5           &kp F6    &kp F7     &kp F8     &kp F9     &kp F10   &kp F11   &kp F12
+                &kp TAB   &none     &none      &none      &none      &none            &none     &none      &kp UP     &none      &kp PG_UP &kp HOME  &kp END
+                &kp CAPS  &none     &kp LCTL   &kp LGUI   &kp LALT   &none            &none     &kp LEFT   &kp DOWN   &kp RIGHT  &kp PG_DN &none     &kp ENTER
+                &kp LSHFT &kp LC(Z) &kp LC(X)  &kp LC(C)  &kp LC(V)  &kp LC(B)        &none     &none      &none      &none      &none     &kp RSHFT &kp ESC
+                                               &kp BKSP   &kp TAB    &kp SPACE        &kp ENTER &to 0      &kp DEL
+            >;
+        };
+    };
+};

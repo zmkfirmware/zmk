@@ -1,0 +1,14 @@
+file_format: "1"
+id: intro
+name: Intro
+type: shield
+url: https://github.com/HookyKB/intro
+requires:
+    - seeed_xiao
+    - nice_view
+features:
+    - keys
+    - display
+siblings:
+    - intro_left
+    - intro_right
