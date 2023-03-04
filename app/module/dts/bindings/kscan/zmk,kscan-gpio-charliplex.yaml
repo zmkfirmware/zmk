@@ -1,9 +1,9 @@
 # Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-description: GPIO keyboard full multiplexed matrix controller
+description: GPIO keyboard charliplex matrix controller
 
-compatible: "zmk,kscan-gpio-multiplex"
+compatible: "zmk,kscan-gpio-charliplex"
 
 include: kscan.yaml
 

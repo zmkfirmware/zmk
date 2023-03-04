@@ -17,10 +17,10 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#define DT_DRV_COMPAT zmk_kscan_gpio_multiplex
+#define DT_DRV_COMPAT zmk_kscan_gpio_charliplex
 
 #define INST_LEN(n) DT_INST_PROP_LEN(n, gpios)
-#define INST_MULTIPLEX_LEN(n) (INST_LEN(n) * INST_LEN(n))
+#define INST_CHARLIPLEX_LEN(n) (INST_LEN(n) * INST_LEN(n))
 
 #if CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS >= 0
 #define INST_DEBOUNCE_PRESS_MS(n) CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS
@@ -36,17 +36,17 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
     DT_INST_PROP_OR(n, debounce_period, DT_INST_PROP(n, debounce_release_ms))
 #endif
 
-#define USE_POLLING IS_ENABLED(CONFIG_ZMK_KSCAN_MULTIPLEX_POLLING)
+#define USE_POLLING IS_ENABLED(CONFIG_ZMK_KSCAN_CHARLIPLEX_POLLING)
 #define USE_INTERRUPT (!USE_POLLING)
 
-#define COND_INTERRUPT(code) COND_CODE_1(CONFIG_ZMK_KSCAN_MULTIPLEX_POLLING, (), code)
+#define COND_INTERRUPT(code) COND_CODE_1(CONFIG_ZMK_KSCAN_CHARLIPLEX_POLLING, (), code)
 
 #define KSCAN_GPIO_CFG_INIT(idx, inst_idx)                                                         \
     GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), gpios, idx),
 
 #define KSCAN_INTR_CFG_INIT(inst_idx) GPIO_DT_SPEC_GET(DT_DRV_INST(inst_idx), interrupt_gpios)
 
-struct kscan_multiplex_data {
+struct kscan_charliplex_data {
     const struct device *dev;
     kscan_callback_t callback;
     struct k_work_delayable work;
@@ -58,7 +58,7 @@ struct kscan_multiplex_data {
      * Current state of the matrix as a flattened 2D array of length
      * (config->cells.length ^2)
      */
-    struct debounce_state *multiplex_state;
+    struct debounce_state *charliplex_state;
 };
 
 struct kscan_gpio_list {
@@ -70,7 +70,7 @@ struct kscan_gpio_list {
 #define KSCAN_GPIO_LIST(gpio_array)                                                                \
     ((struct kscan_gpio_list){.gpios = gpio_array, .len = ARRAY_SIZE(gpio_array)})
 
-struct kscan_multiplex_config {
+struct kscan_charliplex_config {
     struct kscan_gpio_list cells;
     struct debounce_config debounce_config;
     int32_t debounce_scan_period_ms;
@@ -85,7 +85,7 @@ struct kscan_multiplex_config {
  * There are effectively (n) cols and (n-1) rows, but we use the full col x row space
  * as a safety measure against someone accidentally defining a transform RC at (p,p)
  */
-static int state_index(const struct kscan_multiplex_config *config, const int row, const int col) {
+static int state_index(const struct kscan_charliplex_config *config, const int row, const int col) {
     __ASSERT(row < config->cells.len, "Invalid row %i", row);
     __ASSERT(col < config->cells.len, "Invalid column %i", col);
     __ASSERT(col != row, "Invalid column row pair %i, %i", col, row);
@@ -93,7 +93,7 @@ static int state_index(const struct kscan_multiplex_config *config, const int ro
     return (col * config->cells.len) + row;
 }
 
-static int kscan_multiplex_set_as_input(const struct gpio_dt_spec *gpio) {
+static int kscan_charliplex_set_as_input(const struct gpio_dt_spec *gpio) {
     if (!device_is_ready(gpio->port)) {
         LOG_ERR("GPIO is not ready: %s", gpio->port->name);
         return -ENODEV;
@@ -107,7 +107,7 @@ static int kscan_multiplex_set_as_input(const struct gpio_dt_spec *gpio) {
     return 0;
 }
 
-static int kscan_multiplex_set_as_output(const struct gpio_dt_spec *gpio) {
+static int kscan_charliplex_set_as_output(const struct gpio_dt_spec *gpio) {
     if (!device_is_ready(gpio->port)) {
         LOG_ERR("GPIO is not ready: %s", gpio->port->name);
         return -ENODEV;
@@ -126,11 +126,11 @@ static int kscan_multiplex_set_as_output(const struct gpio_dt_spec *gpio) {
     return err;
 }
 
-static int kscan_multiplex_set_all_as_input(const struct device *dev) {
-    const struct kscan_multiplex_config *config = dev->config;
+static int kscan_charliplex_set_all_as_input(const struct device *dev) {
+    const struct kscan_charliplex_config *config = dev->config;
     int err = 0;
     for (int i = 0; i < config->cells.len; i++) {
-        err = kscan_multiplex_set_as_input(&config->cells.gpios[i]);
+        err = kscan_charliplex_set_as_input(&config->cells.gpios[i]);
         if (err) {
             return err;
         }
@@ -139,8 +139,8 @@ static int kscan_multiplex_set_all_as_input(const struct device *dev) {
     return 0;
 }
 
-static int kscan_multiplex_set_all_outputs(const struct device *dev, const int value) {
-    const struct kscan_multiplex_config *config = dev->config;
+static int kscan_charliplex_set_all_outputs(const struct device *dev, const int value) {
+    const struct kscan_charliplex_config *config = dev->config;
 
     for (int i = 0; i < config->cells.len; i++) {
         const struct gpio_dt_spec *gpio = &config->cells.gpios[i];
@@ -161,8 +161,9 @@ static int kscan_multiplex_set_all_outputs(const struct device *dev, const int v
 }
 
 #if USE_INTERRUPT
-static int kscan_multiplex_interrupt_configure(const struct device *dev, const gpio_flags_t flags) {
-    const struct kscan_multiplex_config *config = dev->config;
+static int kscan_charliplex_interrupt_configure(const struct device *dev,
+                                                const gpio_flags_t flags) {
+    const struct kscan_charliplex_config *config = dev->config;
     const struct gpio_dt_spec *gpio = &config->interrupt;
 
     int err = gpio_pin_interrupt_configure_dt(gpio, flags);
@@ -176,45 +177,46 @@ static int kscan_multiplex_interrupt_configure(const struct device *dev, const g
 #endif
 
 #if USE_INTERRUPT
-static int kscan_multiplex_interrupt_enable(const struct device *dev) {
-    int err = kscan_multiplex_interrupt_configure(dev, GPIO_INT_LEVEL_ACTIVE);
+static int kscan_charliplex_interrupt_enable(const struct device *dev) {
+    int err = kscan_charliplex_interrupt_configure(dev, GPIO_INT_LEVEL_ACTIVE);
     if (err) {
         return err;
     }
 
     // While interrupts are enabled, set all outputs active so an pressed key will trigger
-    return kscan_multiplex_set_all_outputs(dev, 1);
+    return kscan_charliplex_set_all_outputs(dev, 1);
 }
 #endif
 
 #if USE_INTERRUPT
-static void kscan_multiplex_irq_callback(const struct device *port, struct gpio_callback *cb,
-                                         const gpio_port_pins_t _pin) {
-    struct kscan_multiplex_data *data = CONTAINER_OF(cb, struct kscan_multiplex_data, irq_callback);
+static void kscan_charliplex_irq_callback(const struct device *port, struct gpio_callback *cb,
+                                          const gpio_port_pins_t _pin) {
+    struct kscan_charliplex_data *data =
+        CONTAINER_OF(cb, struct kscan_charliplex_data, irq_callback);
 
     // Disable our interrupt to avoid re-entry while we scan.
-    kscan_multiplex_interrupt_configure(data->dev, GPIO_INT_DISABLE);
+    kscan_charliplex_interrupt_configure(data->dev, GPIO_INT_DISABLE);
     data->scan_time = k_uptime_get();
     k_work_reschedule(&data->work, K_NO_WAIT);
 }
 #endif
 
-static void kscan_multiplex_read_continue(const struct device *dev) {
-    const struct kscan_multiplex_config *config = dev->config;
-    struct kscan_multiplex_data *data = dev->data;
+static void kscan_charliplex_read_continue(const struct device *dev) {
+    const struct kscan_charliplex_config *config = dev->config;
+    struct kscan_charliplex_data *data = dev->data;
 
     data->scan_time += config->debounce_scan_period_ms;
 
     k_work_reschedule(&data->work, K_TIMEOUT_ABS_MS(data->scan_time));
 }
 
-static void kscan_multiplex_read_end(const struct device *dev) {
+static void kscan_charliplex_read_end(const struct device *dev) {
 #if USE_INTERRUPT
     // Return to waiting for an interrupt.
-    kscan_multiplex_interrupt_enable(dev);
+    kscan_charliplex_interrupt_enable(dev);
 #else
-    struct kscan_multiplex_data *data = dev->data;
-    const struct kscan_multiplex_config *config = dev->config;
+    struct kscan_charliplex_data *data = dev->data;
+    const struct kscan_charliplex_config *config = dev->config;
 
     data->scan_time += config->poll_period_ms;
 
@@ -223,14 +225,14 @@ static void kscan_multiplex_read_end(const struct device *dev) {
 #endif
 }
 
-static int kscan_multiplex_read(const struct device *dev) {
-    struct kscan_multiplex_data *data = dev->data;
-    const struct kscan_multiplex_config *config = dev->config;
+static int kscan_charliplex_read(const struct device *dev) {
+    struct kscan_charliplex_data *data = dev->data;
+    const struct kscan_charliplex_config *config = dev->config;
     bool continue_scan = false;
 
-    // NOTE: MULTI vs MATRIX: set all pins as input, in case there was a failure on a
+    // NOTE: RR vs MATRIX: set all pins as input, in case there was a failure on a
     // previous scan, and one of the pins is still set as output
-    int err = kscan_multiplex_set_all_as_input(dev);
+    int err = kscan_charliplex_set_all_as_input(dev);
     if (err) {
         return err;
     }
@@ -238,13 +240,13 @@ static int kscan_multiplex_read(const struct device *dev) {
     // Scan the matrix.
     for (int row = 0; row < config->cells.len; row++) {
         const struct gpio_dt_spec *out_gpio = &config->cells.gpios[row];
-        err = kscan_multiplex_set_as_output(out_gpio);
+        err = kscan_charliplex_set_as_output(out_gpio);
         if (err) {
             return err;
         }
 
-#if CONFIG_ZMK_KSCAN_MULTIPLEX_WAIT_BEFORE_INPUTS > 0
-        k_busy_wait(CONFIG_ZMK_KSCAN_MULTIPLEX_WAIT_BEFORE_INPUTS);
+#if CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BEFORE_INPUTS > 0
+        k_busy_wait(CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BEFORE_INPUTS);
 #endif
 
         for (int col = 0; col < config->cells.len; col++) {
@@ -254,11 +256,11 @@ static int kscan_multiplex_read(const struct device *dev) {
             const struct gpio_dt_spec *in_gpio = &config->cells.gpios[col];
             const int index = state_index(config, row, col);
 
-            struct debounce_state *state = &data->multiplex_state[index];
+            struct debounce_state *state = &data->charliplex_state[index];
             debounce_update(state, gpio_pin_get_dt(in_gpio), config->debounce_scan_period_ms,
                             &config->debounce_config);
 
-            // NOTE: MULTI vs MATRIX: because we don't need an input/output => row/column
+            // NOTE: RR vs MATRIX: because we don't need an input/output => row/column
             // setup, we can update in the same loop.
             if (debounce_get_changed(state)) {
                 const bool pressed = debounce_is_pressed(state);
@@ -269,67 +271,67 @@ static int kscan_multiplex_read(const struct device *dev) {
             continue_scan = continue_scan || debounce_is_active(state);
         }
 
-        err = kscan_multiplex_set_as_input(out_gpio);
+        err = kscan_charliplex_set_as_input(out_gpio);
         if (err) {
             return err;
         }
-#if CONFIG_ZMK_KSCAN_MULTIPLEX_WAIT_BETWEEN_OUTPUTS > 0
-        k_busy_wait(CONFIG_ZMK_KSCAN_MULTIPLEX_WAIT_BETWEEN_OUTPUTS);
+#if CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BETWEEN_OUTPUTS > 0
+        k_busy_wait(CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BETWEEN_OUTPUTS);
 #endif
     }
 
     if (continue_scan) {
         // At least one key is pressed or the debouncer has not yet decided if
         // it is pressed. Poll quickly until everything is released.
-        kscan_multiplex_read_continue(dev);
+        kscan_charliplex_read_continue(dev);
     } else {
         // All keys are released. Return to normal.
-        kscan_multiplex_read_end(dev);
+        kscan_charliplex_read_end(dev);
     }
 
     return 0;
 }
 
-static void kscan_multiplex_work_handler(struct k_work *work) {
+static void kscan_charliplex_work_handler(struct k_work *work) {
     struct k_work_delayable *dwork = CONTAINER_OF(work, struct k_work_delayable, work);
-    struct kscan_multiplex_data *data = CONTAINER_OF(dwork, struct kscan_multiplex_data, work);
-    kscan_multiplex_read(data->dev);
+    struct kscan_charliplex_data *data = CONTAINER_OF(dwork, struct kscan_charliplex_data, work);
+    kscan_charliplex_read(data->dev);
 }
 
-static int kscan_multiplex_configure(const struct device *dev, const kscan_callback_t callback) {
+static int kscan_charliplex_configure(const struct device *dev, const kscan_callback_t callback) {
     if (!callback) {
         return -EINVAL;
     }
 
-    struct kscan_multiplex_data *data = dev->data;
+    struct kscan_charliplex_data *data = dev->data;
     data->callback = callback;
     return 0;
 }
 
-static int kscan_multiplex_enable(const struct device *dev) {
-    struct kscan_multiplex_data *data = dev->data;
+static int kscan_charliplex_enable(const struct device *dev) {
+    struct kscan_charliplex_data *data = dev->data;
     data->scan_time = k_uptime_get();
 
     // Read will automatically start interrupts/polling once done.
-    return kscan_multiplex_read(dev);
+    return kscan_charliplex_read(dev);
 }
 
-static int kscan_multiplex_disable(const struct device *dev) {
-    struct kscan_multiplex_data *data = dev->data;
+static int kscan_charliplex_disable(const struct device *dev) {
+    struct kscan_charliplex_data *data = dev->data;
     k_work_cancel_delayable(&data->work);
 
 #if USE_INTERRUPT
-    return kscan_multiplex_interrupt_configure(dev, GPIO_INT_DISABLE);
+    return kscan_charliplex_interrupt_configure(dev, GPIO_INT_DISABLE);
 #else
     return 0;
 #endif
 }
 
-static int kscan_multiplex_init_inputs(const struct device *dev) {
-    const struct kscan_multiplex_config *config = dev->config;
+static int kscan_charliplex_init_inputs(const struct device *dev) {
+    const struct kscan_charliplex_config *config = dev->config;
 
     for (int i = 0; i < config->cells.len; i++) {
-        int err = kscan_multiplex_set_as_input(&config->cells.gpios[i]);
+        int err = kscan_charliplex_set_as_input(&config->cells.gpios[i]);
         if (err) {
             return err;
         }
@@ -339,17 +341,17 @@ static int kscan_multiplex_init_inputs(const struct device *dev) {
 }
 
 #if USE_INTERRUPT
-static int kscan_multiplex_init_interrupt(const struct device *dev) {
-    struct kscan_multiplex_data *data = dev->data;
+static int kscan_charliplex_init_interrupt(const struct device *dev) {
+    struct kscan_charliplex_data *data = dev->data;
 
-    const struct kscan_multiplex_config *config = dev->config;
+    const struct kscan_charliplex_config *config = dev->config;
     const struct gpio_dt_spec *gpio = &config->interrupt;
-    int err = kscan_multiplex_set_as_input(gpio);
+    int err = kscan_charliplex_set_as_input(gpio);
     if (err) {
         return err;
     }
 
-    gpio_init_callback(&data->irq_callback, kscan_multiplex_irq_callback, BIT(gpio->pin));
+    gpio_init_callback(&data->irq_callback, kscan_charliplex_irq_callback, BIT(gpio->pin));
     err = gpio_add_callback(gpio->port, &data->irq_callback);
     if (err) {
         LOG_ERR("Error adding the callback to the input device: %i", err);
@@ -358,42 +360,42 @@ static int kscan_multiplex_init_interrupt(const struct device *dev) {
 }
 #endif
 
-static int kscan_multiplex_init(const struct device *dev) {
-    struct kscan_multiplex_data *data = dev->data;
+static int kscan_charliplex_init(const struct device *dev) {
+    struct kscan_charliplex_data *data = dev->data;
 
     data->dev = dev;
 
-    kscan_multiplex_init_inputs(dev);
-    kscan_multiplex_set_all_outputs(dev, 0);
+    kscan_charliplex_init_inputs(dev);
+    kscan_charliplex_set_all_outputs(dev, 0);
 #if USE_INTERRUPT
-    kscan_multiplex_init_interrupt(dev);
+    kscan_charliplex_init_interrupt(dev);
 #endif
 
-    k_work_init_delayable(&data->work, kscan_multiplex_work_handler);
+    k_work_init_delayable(&data->work, kscan_charliplex_work_handler);
     return 0;
 }
 
-static const struct kscan_driver_api kscan_multiplex_api = {
-    .config = kscan_multiplex_configure,
-    .enable_callback = kscan_multiplex_enable,
-    .disable_callback = kscan_multiplex_disable,
+static const struct kscan_driver_api kscan_charliplex_api = {
+    .config = kscan_charliplex_configure,
+    .enable_callback = kscan_charliplex_enable,
+    .disable_callback = kscan_charliplex_disable,
 };
 
-#define KSCAN_MULTIPLEX_INIT(n)                                                                    \
+#define KSCAN_CHARLIPLEX_INIT(n)                                                                   \
     BUILD_ASSERT(INST_DEBOUNCE_PRESS_MS(n) <= DEBOUNCE_COUNTER_MAX,                                \
                  "ZMK_KSCAN_DEBOUNCE_PRESS_MS or debounce-press-ms is too large");                 \
     BUILD_ASSERT(INST_DEBOUNCE_RELEASE_MS(n) <= DEBOUNCE_COUNTER_MAX,                              \
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
-    static struct debounce_state kscan_multiplex_state_##n[INST_MULTIPLEX_LEN(n)];                 \
-    static const struct gpio_dt_spec kscan_multiplex_cells_##n[] = {                               \
+    static struct debounce_state kscan_charliplex_state_##n[INST_CHARLIPLEX_LEN(n)];               \
+    static const struct gpio_dt_spec kscan_charliplex_cells_##n[] = {                              \
         UTIL_LISTIFY(INST_LEN(n), KSCAN_GPIO_CFG_INIT, n)};                                        \
-    static struct kscan_multiplex_data kscan_multiplex_data_##n = {                                \
-        .multiplex_state = kscan_multiplex_state_##n,                                              \
+    static struct kscan_charliplex_data kscan_charliplex_data_##n = {                              \
+        .charliplex_state = kscan_charliplex_state_##n,                                            \
     };                                                                                             \
                                                                                                    \
-    static struct kscan_multiplex_config kscan_multiplex_config_##n = {                            \
-        .cells = KSCAN_GPIO_LIST(kscan_multiplex_cells_##n),                                       \
+    static struct kscan_charliplex_config kscan_charliplex_config_##n = {                          \
+        .cells = KSCAN_GPIO_LIST(kscan_charliplex_cells_##n),                                      \
         .debounce_config =                                                                         \
             {                                                                                      \
                 .debounce_press_ms = INST_DEBOUNCE_PRESS_MS(n),                                    \
@@ -403,8 +405,8 @@ static const struct kscan_driver_api kscan_multiplex_api = {
         .poll_period_ms = DT_INST_PROP(n, poll_period_ms),                                         \
         COND_INTERRUPT((.interrupt = KSCAN_INTR_CFG_INIT(n), ))};                                  \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(n, &kscan_multiplex_init, NULL, &kscan_multiplex_data_##n,               \
-                          &kscan_multiplex_config_##n, APPLICATION,                                \
-                          CONFIG_APPLICATION_INIT_PRIORITY, &kscan_multiplex_api);
+    DEVICE_DT_INST_DEFINE(n, &kscan_charliplex_init, NULL, &kscan_charliplex_data_##n,             \
+                          &kscan_charliplex_config_##n, APPLICATION,                               \
+                          CONFIG_APPLICATION_INIT_PRIORITY, &kscan_charliplex_api);
 
-DT_INST_FOREACH_STATUS_OKAY(KSCAN_MULTIPLEX_INIT);
+DT_INST_FOREACH_STATUS_OKAY(KSCAN_CHARLIPLEX_INIT);

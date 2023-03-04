@@ -149,26 +149,26 @@ The output pins (e.g. columns for `col2row`) should have the flag `GPIO_ACTIVE_H
     };
 ```
 
-## Multiplex Driver
+## Charliplex Driver
 
 Keyboard scan driver where keys are arranged on a matrix with each GPIO used as both input and output. This driver enables n pins to drive up to n\*(n-1) keys.
 
 Definition file: [zmk/app/drivers/kscan/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/kscan/Kconfig)
 
-| Config                                            | Type        | Description                                                               | Default |
-| ------------------------------------------------- | ----------- | ------------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_KSCAN_MULTIPLEX_POLLING`              | bool        | Poll for key presses instead of using interrupts                          | n       |
-| `CONFIG_ZMK_KSCAN_MULTIPLEX_WAIT_BEFORE_INPUTS`   | int (ticks) | How long to wait before reading input pins after setting output active    | 0       |
-| `CONFIG_ZMK_KSCAN_MULTIPLEX_WAIT_BETWEEN_OUTPUTS` | int (ticks) | How long to wait between each output to allow previous output to "settle" | 0       |
+| Config                                              | Type        | Description                                                               | Default |
+| --------------------------------------------------- | ----------- | ------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_KSCAN_CHARLIPLEX_POLLING`              | bool        | Poll for key presses instead of using interrupts                          | n       |
+| `CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BEFORE_INPUTS`   | int (ticks) | How long to wait before reading input pins after setting output active    | 0       |
+| `CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BETWEEN_OUTPUTS` | int (ticks) | How long to wait between each output to allow previous output to "settle" | 0       |
 
-- With `CONFIG_ZMK_KSCAN_MULTIPLEX_POLLING` enabled this allows n pins to drive n\*(n-1) keys.
-- With `CONFIG_ZMK_KSCAN_MULTIPLEX_POLLING` disabled n pins will drive (n-1)\*(n-2) keys, but provide much improved power handling.
+- With `CONFIG_ZMK_KSCAN_CHARLIPLEX_POLLING` enabled this allows n pins to drive n\*(n-1) keys.
+- With `CONFIG_ZMK_KSCAN_CHARLIPLEX_POLLING` disabled n pins will drive (n-1)\*(n-2) keys, but provide much improved power handling.
 
 ### Devicetree
 
-Applies to: `compatible = "zmk,kscan-gpio-multiplex"`
+Applies to: `compatible = "zmk,kscan-gpio-charliplex"`
 
-Definition file: [zmk/app/drivers/zephyr/dts/bindings/kscan/zmk,kscan-gpio-multiplex.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/zephyr/dts/bindings/kscan/zmk%2Ckscan-gpio-multiplex.yaml)
+Definition file: [zmk/app/drivers/zephyr/dts/bindings/kscan/zmk,kscan-gpio-charliplex.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/zephyr/dts/bindings/kscan/zmk%2Ckscan-gpio-charliplex.yaml)
 
 | Property                  | Type       | Description                                                                                                 | Default |
 | ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- | ------- |
@@ -439,9 +439,9 @@ Consider a keyboard with a [duplex matrix](https://wiki.ai03.com/books/pcb-desig
 };
 ```
 
-### Example: Multiplex
+### Example: Charliplex
 
-Since a multiplex driver will never align with a keyboard directly due to the un-addressable positions, a matrix transform should be used to map the pairs to the layout of the keys.
+Since a charliplex driver will never align with a keyboard directly due to the un-addressable positions, a matrix transform should be used to map the pairs to the layout of the keys.
 Note that the entire addressable space does not need to be mapped.
 
 ```devicetree
@@ -452,7 +452,7 @@ Note that the entire addressable space does not need to be mapped.
     };
 
     kscan0: kscan {
-        compatible = "zmk,kscan-gpio-multiplex";
+        compatible = "zmk,kscan-gpio-charliplex";
         label = "KSCAN";
 
         interrupt-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH|GPIO_PULL_DOWN) >;
