@@ -33,7 +33,7 @@ if [ $? -gt 0 ]; then
 fi
 
 ./build/$testcase/zephyr/zmk.exe | sed -e "s/.*> //" | tee build/$testcase/keycode_events_full.log | sed -n -f $testcase/events.patterns > build/$testcase/keycode_events.log
-diff -au $testcase/keycode_events.snapshot build/$testcase/keycode_events.log
+diff -auZ $testcase/keycode_events.snapshot build/$testcase/keycode_events.log
 if [ $? -gt 0 ]; then
 	if [ -f $testcase/pending ]; then
 		echo "PENDING: $testcase" | tee -a ./build/tests/pass-fail.log
