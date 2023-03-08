@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "iris.dtsi"
+#include "lugg46e.dtsi"
 
 &kscan0 {
 	col-gpios

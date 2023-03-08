@@ -3,7 +3,7 @@ id: lugg46e
 name: Lugg46e
 type: shield
 url: https://github.com/rkun123/lugg46e/
-requires: [xiao]
+requires: [seeeduino_xiao_ble]
 exposes: []
 features:
   - keys
