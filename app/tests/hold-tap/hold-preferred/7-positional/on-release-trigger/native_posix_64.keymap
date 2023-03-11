@@ -1,0 +1,17 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+&ht_hold { hold-trigger-on-release; };
+
+&kscan {
+	events = <
+		ZMK_MOCK_PRESS(0,0,10)  // mod 1
+		ZMK_MOCK_PRESS(0,1,10)  // mod 2
+		ZMK_MOCK_PRESS(1,0,10)  // trigger position
+		ZMK_MOCK_RELEASE(1,0,10)
+		ZMK_MOCK_RELEASE(0,1,10)
+		ZMK_MOCK_RELEASE(0,0,10)
+	>;
+};
