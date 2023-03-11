@@ -588,8 +588,9 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     }
 
     // Store the position of pressed key for positional hold-tap purposes.
-    if (((!undecided_hold_tap->config->hold_trigger_on_release && ev->state)     // key pressed
-         || (undecided_hold_tap->config->hold_trigger_on_release && !ev->state)) // key released
+    if ((undecided_hold_tap->config->hold_trigger_on_release !=
+         ev->state) // key has been pressed and hold_trigger_on_release is not set, or key
+                    // has been released and hold_trigger_on_release is set
         && (undecided_hold_tap->position_of_first_other_key_pressed ==
             -1) // no other key has been pressed yet
     ) {
