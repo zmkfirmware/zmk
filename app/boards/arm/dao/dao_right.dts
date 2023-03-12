@@ -10,7 +10,7 @@
 	col-offset = <6>;
 };
 
-&less_key_transform {
+&extra_keys_transform {
 	col-offset = <6>;
 };
 
