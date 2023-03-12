@@ -1,0 +1,8 @@
+file_format: "1"
+id: newhorizons
+name: New Horizons
+type: shield
+url: https://keeb.supply/products/0xcb-new-horizons
+requires: [pro_micro]
+features:
+  - keys
