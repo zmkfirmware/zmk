@@ -1,0 +1,10 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_VITERBI_REV2_LEFT
+	def_bool $(shields_list_contains,viterbi_rev2_left)
+
+config SHIELD_VITERBI_REV2_RIGHT
+	def_bool $(shields_list_contains,viterbi_rev2_right)
+
+
