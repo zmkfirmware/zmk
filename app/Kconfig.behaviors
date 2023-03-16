@@ -1,6 +1,16 @@
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+config ZMK_BEHAVIOR_KEY
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_KEY_ENABLED
+
+config ZMK_BEHAVIOR_KEY_SCANNED
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_KEY_SCANNED_ENABLED
+
 config ZMK_BEHAVIOR_KEY_TOGGLE
     bool
     default y
