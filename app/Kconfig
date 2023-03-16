@@ -340,6 +340,11 @@ config ZMK_EXT_POWER
     bool "Enable support to control external power output"
     default y
 
+config ZMK_SOFT_ON_OFF_GPIO
+    bool "Hardware supported soft on/off (GPIO)"
+    default y
+    depends on DT_HAS_ZMK_SOFT_ON_OFF_GPIO_ENABLED
+
 #Power Management
 endmenu
 

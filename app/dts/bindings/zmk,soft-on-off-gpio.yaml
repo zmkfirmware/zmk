@@ -1,0 +1,22 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Driver for controlling the device's power status
+  by listening for activity on a GPIO pin for sleep
+  and wake.
+
+compatible: "zmk,soft-on-off-gpio"
+
+properties:
+  input-gpios:
+    type: phandle-array
+    required: true
+    description: The GPIO pin that triggers wake/sleep via interrupt
+  wakeup-sources:
+    type: phandles
+    required: true
+    description: List of wakeup-sources that need to be deactivated so that only this driver/pin wakes the device.
+  output-gpios:
+    type: phandle-array
+    description: Optional set of pins that should be set active before sleeping.
