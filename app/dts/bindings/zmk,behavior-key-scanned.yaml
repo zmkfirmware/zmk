@@ -1,0 +1,31 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Driver for a dedicated key triggered by matrix scanning for invoking a connected behavior.
+
+compatible: "zmk,behavior-key-scanned"
+
+include: base.yaml
+
+properties:
+  key:
+    type: phandle
+    required: true
+    description: The GPIO key that triggers wake via interrupt
+  bindings:
+    type: phandle
+    required: true
+    description: The GPIO key that triggers wake via interrupt
+  debounce-press-ms:
+    type: int
+    default: 5
+    description: Debounce time for key press in milliseconds. Use 0 for eager debouncing.
+  debounce-release-ms:
+    type: int
+    default: 5
+    description: Debounce time for key release in milliseconds.
+  debounce-scan-period-ms:
+    type: int
+    default: 1
+    description: Time between reads in milliseconds when any key is pressed.
