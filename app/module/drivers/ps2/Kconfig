@@ -1,0 +1,9 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if PS2
+
+rsource "Kconfig.gpio"
+rsource "Kconfig.uart"
+
+endif # PS2

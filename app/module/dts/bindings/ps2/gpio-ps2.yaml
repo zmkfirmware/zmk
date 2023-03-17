@@ -1,0 +1,19 @@
+# Copyright (c) 2019, Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+description: GPIO PS2
+
+compatible: "gpio-ps2"
+
+include: base.yaml
+
+properties:
+    scl-gpios:
+      type: phandle-array
+      required: true
+      description: GPIO to which the SCL pin of the I2C bus is connected.
+    sda-gpios:
+      type: phandle-array
+      required: true
+      description: GPIO to which the SDA pin of the I2C bus is connected.
+
