@@ -1,0 +1,10 @@
+file_format: "1"
+id: bb65
+name: BB65
+type: shield
+url: https://mechwild.com/product/bb65/
+requires: [blackpill]
+features:
+  - keys
+  - encoder
+  - underglow
