@@ -47,6 +47,7 @@ static uint8_t il0323_pwr[] = DT_INST_PROP(0, pwr);
 
 static uint8_t last_buffer[IL0323_BUFFER_SIZE];
 static bool blanking_on = true;
+static bool init_clear_done = false;
 
 static inline int il0323_write_cmd(const struct il0323_cfg *cfg, uint8_t cmd, uint8_t *data,
                                    size_t len) {
@@ -198,15 +199,20 @@ static int il0323_clear_and_write_buffer(const struct device *dev, uint8_t patte
 static int il0323_blanking_off(const struct device *dev) {
     const struct il0323_cfg *cfg = dev->config;
 
-    if (blanking_on) {
+    if (!init_clear_done) {
         /* Update EPD panel in normal mode */
         il0323_busy_wait(cfg);
         if (il0323_clear_and_write_buffer(dev, 0xff, true)) {
             return -EIO;
         }
+        init_clear_done = true;
     }
 
     blanking_on = false;
+
+    if (il0323_update_display(dev)) {
+        return -EIO;
+    }
 
     return 0;
 }
