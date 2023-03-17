@@ -95,15 +95,31 @@ static int pinnacle_channel_get(const struct device *dev, enum sensor_channel ch
 
 static int pinnacle_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     uint8_t packet[3];
-    int res = pinnacle_seq_read(dev, PINNACLE_2_2_PACKET0, packet, 3);
-    if (res < 0) {
-        LOG_ERR("res: %d", res);
-        return res;
+    int ret;
+    ret = pinnacle_seq_read(dev, PINNACLE_STATUS1, packet, 0);
+    if (ret < 0) {
+        LOG_ERR("read status: %d", ret);
+        return ret;
+    }
+    if (!(packet[0] & PINNACLE_STATUS1_SW_DR)) {
+        return -EAGAIN;
+    }
+    ret = pinnacle_seq_read(dev, PINNACLE_2_2_PACKET0, packet, 3);
+    if (ret < 0) {
+        LOG_ERR("read packet: %d", ret);
+        return ret;
     }
     struct pinnacle_data *data = dev->data;
     data->btn = packet[0] & PINNACLE_PACKET0_BTN_PRIM;
     data->dx = (int16_t) (int8_t) packet[1];
     data->dy = (int16_t) (int8_t) packet[2];
+    if (!data->in_int) {
+        ret = pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
+        if (ret < 0) {
+            LOG_ERR("clear dr: %d", ret);
+            return ret;
+        }
+    }
     return 0;
 }
 
@@ -133,6 +149,11 @@ static void pinnacle_int_cb(const struct device *dev) {
     struct pinnacle_data *data = dev->data;
     data->data_ready_handler(dev, data->data_ready_trigger);
     set_int(dev, true);
+    int ret = pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
+    if (ret < 0) {
+        LOG_ERR("clear dr: %d", ret);
+    }
+    data->in_int = false;
 }
 
 #ifdef CONFIG_PINNACLE_TRIGGER_OWN_THREAD
@@ -143,19 +164,18 @@ static void pinnacle_thread(void *arg) {
     while (1) {
         k_sem_take(&data->gpio_sem, K_FOREVER);
         pinnacle_int_cb(dev);
-        pinnacle_write(dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
     }
 }
 #elif defined(CONFIG_PINNACLE_TRIGGER_GLOBAL_THREAD)
 static void pinnacle_work_cb(struct k_work *work) {
     struct pinnacle_data *data = CONTAINER_OF(work, struct pinnacle_data, work);
     pinnacle_int_cb(data->dev);
-    pinnacle_write(data->dev, PINNACLE_STATUS1, 0);   // Clear SW_DR
 }
 #endif
 
 static void pinnacle_gpio_cb(const struct device *port, struct gpio_callback *cb, uint32_t pins) {
     struct pinnacle_data *data = CONTAINER_OF(cb, struct pinnacle_data, gpio_cb);
+    data->in_int = true;
 #if defined(CONFIG_PINNACLE_TRIGGER_OWN_THREAD)
     k_sem_give(&data->gpio_sem);
 #elif defined(CONFIG_PINNACLE_TRIGGER_GLOBAL_THREAD)
@@ -169,8 +189,9 @@ static int pinnacle_init(const struct device *dev) {
     const struct pinnacle_config *config = dev->config;
 
     LOG_WRN("pinnacle start");
+    data->in_int = false;
     int ret;
-    ret = pinnacle_write(dev, PINNACLE_STATUS1, PINNACLE_SYS_CFG_RESET);
+    ret = pinnacle_write(dev, PINNACLE_SYS_CFG, PINNACLE_SYS_CFG_RESET);
     if (ret < 0) {
         LOG_ERR("can't reset %d", ret);
         return ret;

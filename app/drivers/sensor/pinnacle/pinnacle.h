@@ -14,6 +14,8 @@
 #define PINNACLE_FW_ID               0x00 // ASIC ID.
 #define PINNACLE_FW_VER              0x01 // Firmware Version Firmware revision number.
 #define PINNACLE_STATUS1             0x02 // Contains status flags about the state of Pinnacle.
+#define PINNACLE_STATUS1_SW_DR       BIT(2)
+#define PINNACLE_STATUS1_SW_CC       BIT(3)
 #define PINNACLE_SYS_CFG             0x03 // Contains system operation and configuration bits.
 #define PINNACLE_SYS_CFG_EN_SLEEP    BIT(2)
 #define PINNACLE_SYS_CFG_SHUTDOWN    BIT(1)
@@ -54,6 +56,7 @@
 struct pinnacle_data {
     int16_t dx, dy;
     uint8_t btn;
+    bool in_int;
 #ifdef CONFIG_PINNACLE_TRIGGER
     const struct device *dev;
     const struct sensor_trigger *data_ready_trigger;
