@@ -1,0 +1,10 @@
+file_format: "1"
+id: obe
+name: OrangeBoyErgo
+type: shield
+url: https://mechwild.com/product/orange-boy-ergo/
+requires: [blackpill]
+features:
+  - keys
+  - encoder
+  - underglow
