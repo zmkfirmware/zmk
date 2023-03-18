@@ -15,7 +15,6 @@
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         label = "KSCAN";
-
         diode-direction = "col2row";
         row-gpios
             = <&blackpill 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
@@ -61,5 +60,4 @@
         resolution = <4>;
         status = "disabled";
     };
-
 };
