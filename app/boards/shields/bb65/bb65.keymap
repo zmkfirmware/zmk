@@ -75,7 +75,6 @@
                 &kp LCTRL &kp LGUI &kp LALT                         &kp SPACE                      &kp RALT &mo FN    &kp RCTRL &kp LEFT  &kp DOWN  &kp RIGHT
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-
         }; 
 
         fn_layer {
@@ -88,7 +87,6 @@
                 &trans &trans &trans          &trans                           &trans &trans &trans              &kp HOME &kp PG_DN &kp END
             >;  
             sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
-                
         };
 
         setting_layer {
@@ -101,7 +99,6 @@
                 &trans     &out OUT_BLE        &out OUT_USB                           &trans                            &trans &trans &trans &trans &trans &trans
             >;  
             sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
-                
         };
 
         lock_layer {
@@ -113,7 +110,6 @@
                 &none &none &none &none &none &none &none &none &none &none &none &none &none       &none &none
                 &none &none &none                   &none                   &none &none &none &none &none &none
             >;  
-               
         };
     };
 };
