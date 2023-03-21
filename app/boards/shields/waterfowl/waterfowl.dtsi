@@ -40,28 +40,53 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
             , <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
-
     };
 
-    left_encoder: encoder_left {    //roller
+    roller_left_encoder: encoder_left_roller {
         compatible = "alps,ec11";
-        label = "LEFT_ENCODER";
-        a-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        b-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        resolution = <4>;
+        label = "ROLLER_LEFT_ENCODER";
+        a-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <80>;
+        status = "disabled";
     };
 
-    right_encoder: encoder_right {  //Standard encoder on left half
+    dial_left_encoder: encoder_left_dial {
         compatible = "alps,ec11";
-        label = "RIGHT_ENCODER";
+        label = "DIAL_LEFT_ENCODER";
         a-gpios = <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        resolution = <2>;
+        steps = <80>;
+        status = "disabled";
+    };
+
+    roller_right_encoder: encoder_right_roller {
+        compatible = "alps,ec11";
+        label = "ROLLER_RIGHT_ENCODER";
+        a-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <80>;
+        status = "disabled";
+    };
+
+    dial_right_encoder: encoder_right_dial {
+        compatible = "alps,ec11";
+        label = "DIAL_RIGHT_ENCODER";
+        a-gpios = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <80>;
+        status = "disabled";
     };
 
     sensors {
         compatible = "zmk,keymap-sensors";
-        sensors = <&left_encoder &right_encoder>;
+        triggers-per-rotation = <20>;
+        sensors = <
+            &roller_left_encoder
+            &dial_left_encoder
+            &dial_right_encoder
+            &roller_right_encoder
+        >;
     };
 
     // TODO: RGB node(s)
