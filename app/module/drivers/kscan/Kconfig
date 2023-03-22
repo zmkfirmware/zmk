@@ -66,7 +66,7 @@ endif # ZMK_KSCAN_GPIO_MATRIX
 
 if ZMK_KSCAN_GPIO_CHARLIPLEX
 
-config ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS
+config ZMK_KSCAN_CHARLIPLEX_WAIT_BEFORE_INPUTS
     int "Ticks to wait before reading inputs after an output set active"
     default 0
     help
@@ -96,9 +96,6 @@ if ZMK_KSCAN_GPIO_DRIVER
 
 config ZMK_KSCAN_MATRIX_POLLING
     bool "Poll for key event triggers instead of using interrupts on matrix boards."
-
-config ZMK_KSCAN_CHARLIPLEX_POLLING
-    bool "Poll for key event triggers instead of using interrupts on multiplex boards."
 
 config ZMK_KSCAN_DIRECT_POLLING
     bool "Poll for key event triggers instead of using interrupts on direct wired boards."

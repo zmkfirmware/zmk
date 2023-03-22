@@ -1,4 +1,4 @@
-# Copyright (c) 2022 The ZMK Contributors
+# Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 description: GPIO keyboard charliplex matrix controller
@@ -13,7 +13,6 @@ properties:
     required: true
   interrupt-gpios:
     type: phandle-array
-    required: true
   debounce-press-ms:
     type: int
     default: 5
