@@ -54,8 +54,7 @@ void wpm_work_handler(struct k_work *work) {
     if (last_wpm_state != wpm_state) {
         LOG_DBG("Raised WPM state changed %d wpm_update_counter %d", wpm_state, wpm_update_counter);
 
-        ZMK_EVENT_RAISE(
-            new_zmk_wpm_state_changed((struct zmk_wpm_state_changed){.state = wpm_state}));
+        raise_zmk_wpm_state_changed((struct zmk_wpm_state_changed){.state = wpm_state});
 
         last_wpm_state = wpm_state;
     }

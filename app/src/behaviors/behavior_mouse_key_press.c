@@ -24,15 +24,15 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
 
-    return ZMK_EVENT_RAISE(
-        zmk_mouse_button_state_changed_from_encoded(binding->param1, true, event.timestamp));
+    return raise_zmk_mouse_button_state_changed_from_encoded(binding->param1, true,
+                                                             event.timestamp);
 }
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-    return ZMK_EVENT_RAISE(
-        zmk_mouse_button_state_changed_from_encoded(binding->param1, false, event.timestamp));
+    return raise_zmk_mouse_button_state_changed_from_encoded(binding->param1, false,
+                                                             event.timestamp);
 }
 
 static const struct behavior_driver_api behavior_mouse_key_press_driver_api = {
