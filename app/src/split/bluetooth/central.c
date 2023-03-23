@@ -72,7 +72,7 @@ void peripheral_event_work_callback(struct k_work *work) {
     struct zmk_position_state_changed ev;
     while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
         LOG_DBG("Trigger key position state change for %d", ev.position);
-        ZMK_EVENT_RAISE(new_zmk_position_state_changed(ev));
+        raise_zmk_position_state_changed(ev);
     }
 }
 
@@ -188,7 +188,7 @@ void peripheral_sensor_event_work_callback(struct k_work *work) {
     struct zmk_sensor_event ev;
     while (k_msgq_get(&peripheral_sensor_event_msgq, &ev, K_NO_WAIT) == 0) {
         LOG_DBG("Trigger sensor change for %d", ev.sensor_index);
-        ZMK_EVENT_RAISE(new_zmk_sensor_event(ev));
+        raise_zmk_sensor_event(ev);
     }
 }
 

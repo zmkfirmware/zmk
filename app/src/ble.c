@@ -83,8 +83,8 @@ static bt_addr_le_t peripheral_addrs[ZMK_SPLIT_BLE_PERIPHERAL_COUNT];
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) */
 
 static void raise_profile_changed_event(void) {
-    ZMK_EVENT_RAISE(new_zmk_ble_active_profile_changed((struct zmk_ble_active_profile_changed){
-        .index = active_profile, .profile = &profiles[active_profile]}));
+    raise_zmk_ble_active_profile_changed((struct zmk_ble_active_profile_changed){
+        .index = active_profile, .profile = &profiles[active_profile]});
 }
 
 static void raise_profile_changed_event_callback(struct k_work *work) {

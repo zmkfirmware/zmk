@@ -43,8 +43,8 @@ static uint32_t activity_last_uptime;
 #endif
 
 int raise_event(void) {
-    return ZMK_EVENT_RAISE(new_zmk_activity_state_changed(
-        (struct zmk_activity_state_changed){.state = activity_state}));
+    return raise_zmk_activity_state_changed(
+        (struct zmk_activity_state_changed){.state = activity_state});
 }
 
 int set_state(enum zmk_activity_state state) {

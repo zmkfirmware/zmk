@@ -88,7 +88,24 @@ struct active_hold_tap {
 struct active_hold_tap *undecided_hold_tap = NULL;
 struct active_hold_tap active_hold_taps[ZMK_BHV_HOLD_TAP_MAX_HELD] = {};
 // We capture most position_state_changed events and some modifiers_state_changed events.
-const zmk_event_t *captured_events[ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS] = {};
+
+enum captured_event_tag {
+    ET_NONE,
+    ET_POS_CHANGED,
+    ET_CODE_CHANGED,
+};
+
+union captured_event_data {
+    struct zmk_position_state_changed_event position;
+    struct zmk_keycode_state_changed_event keycode;
+};
+
+struct captured_event {
+    enum captured_event_tag tag;
+    union captured_event_data data;
+};
+
+struct captured_event captured_events[ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS] = {};
 
 // Keep track of which key was tapped most recently for the standard, if it is a hold-tap
 // a position, will be given, if not it will just be INT32_MIN
@@ -122,33 +139,32 @@ static bool is_quick_tap(struct active_hold_tap *hold_tap) {
     }
 }
 
-static int capture_event(const zmk_event_t *event) {
+static int capture_event(struct captured_event *data) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
-        if (captured_events[i] == NULL) {
-            captured_events[i] = event;
+        if (captured_events[i].tag == ET_NONE) {
+            captured_events[i] = *data;
             return 0;
         }
     }
     return -ENOMEM;
 }
 
-static struct zmk_position_state_changed *find_captured_keydown_event(uint32_t position) {
-    struct zmk_position_state_changed *last_match = NULL;
+static bool have_captured_keydown_event(uint32_t position) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
-        const zmk_event_t *eh = captured_events[i];
-        if (eh == NULL) {
-            return last_match;
+        struct captured_event *ev = &captured_events[i];
+        if (ev->tag == ET_NONE) {
+            return false;
         }
-        struct zmk_position_state_changed *position_event = as_zmk_position_state_changed(eh);
-        if (position_event == NULL) {
+
+        if (ev->tag != ET_POS_CHANGED) {
             continue;
         }
 
-        if (position_event->position == position && position_event->state) {
-            last_match = position_event;
+        if (ev->data.position.data.position == position && ev->data.position.data.state) {
+            return true;
         }
     }
-    return last_match;
+    return false;
 }
 
 const struct zmk_listener zmk_listener_behavior_hold_tap;
@@ -184,25 +200,35 @@ static void release_captured_events() {
     // [k1_down, k1_up, null, null, null, ...]
     // now mt2 will start releasing it's own captured positions.
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS; i++) {
-        const zmk_event_t *captured_event = captured_events[i];
-        if (captured_event == NULL) {
+        struct captured_event *captured_event = &captured_events[i];
+        enum captured_event_tag tag = captured_event->tag;
+
+        if (tag == ET_NONE) {
             return;
         }
-        captured_events[i] = NULL;
+
+        captured_events[i].tag = ET_NONE;
         if (undecided_hold_tap != NULL) {
             k_msleep(10);
         }
 
-        struct zmk_position_state_changed *position_event;
-        struct zmk_keycode_state_changed *modifier_event;
-        if ((position_event = as_zmk_position_state_changed(captured_event)) != NULL) {
-            LOG_DBG("Releasing key position event for position %d %s", position_event->position,
-                    (position_event->state ? "pressed" : "released"));
-        } else if ((modifier_event = as_zmk_keycode_state_changed(captured_event)) != NULL) {
-            LOG_DBG("Releasing mods changed event 0x%02X %s", modifier_event->keycode,
-                    (modifier_event->state ? "pressed" : "released"));
+        switch (tag) {
+        case ET_CODE_CHANGED:
+            LOG_DBG("Releasing mods changed event 0x%02X %s",
+                    captured_event->data.keycode.data.keycode,
+                    (captured_event->data.keycode.data.state ? "pressed" : "released"));
+            ZMK_EVENT_RAISE_AT(captured_event->data.keycode, behavior_hold_tap);
+            break;
+        case ET_POS_CHANGED:
+            LOG_DBG("Releasing key position event for position %d %s",
+                    captured_event->data.position.data.position,
+                    (captured_event->data.position.data.state ? "pressed" : "released"));
+            ZMK_EVENT_RAISE_AT(captured_event->data.position, behavior_hold_tap);
+            break;
+        default:
+            LOG_ERR("Unhandled captured event type");
+            break;
         }
-        ZMK_EVENT_RAISE_AT(captured_event, behavior_hold_tap);
     }
 }
 
@@ -622,7 +648,7 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    if (!ev->state && find_captured_keydown_event(ev->position) == NULL) {
+    if (!ev->state && !have_captured_keydown_event(ev->position)) {
         // no keydown event has been captured, let it bubble.
         // we'll catch modifiers later in modifier_state_changed_listener
         LOG_DBG("%d bubbling %d %s event", undecided_hold_tap->position, ev->position,
@@ -632,7 +658,11 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
 
     LOG_DBG("%d capturing %d %s event", undecided_hold_tap->position, ev->position,
             ev->state ? "down" : "up");
-    capture_event(eh);
+    struct captured_event capture = {
+        .tag = ET_POS_CHANGED,
+        .data = {.position = copy_raised_zmk_position_state_changed(ev)},
+    };
+    capture_event(&capture);
     decide_hold_tap(undecided_hold_tap, ev->state ? HT_OTHER_KEY_DOWN : HT_OTHER_KEY_UP);
     return ZMK_EV_EVENT_CAPTURED;
 }
@@ -659,7 +689,9 @@ static int keycode_state_changed_listener(const zmk_event_t *eh) {
     // if a undecided_hold_tap is active.
     LOG_DBG("%d capturing 0x%02X %s event", undecided_hold_tap->position, ev->keycode,
             ev->state ? "down" : "up");
-    capture_event(eh);
+    struct captured_event capture = {
+        .tag = ET_CODE_CHANGED, .data = {.keycode = copy_raised_zmk_keycode_state_changed(ev)}};
+    capture_event(&capture);
     return ZMK_EV_EVENT_CAPTURED;
 }
 
