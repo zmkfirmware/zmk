@@ -31,16 +31,18 @@ enum usb_dc_status_code zmk_usb_get_status() { return usb_status; }
 enum zmk_usb_conn_state zmk_usb_get_conn_state() {
     LOG_DBG("state: %d", usb_status);
     switch (usb_status) {
+    case USB_DC_SUSPEND:
+    case USB_DC_CONFIGURED:
+    case USB_DC_RESUME:
+    case USB_DC_CLEAR_HALT:
+        return ZMK_USB_CONN_HID;
+
     case USB_DC_DISCONNECTED:
     case USB_DC_UNKNOWN:
         return ZMK_USB_CONN_NONE;
 
-    case USB_DC_ERROR:
-    case USB_DC_RESET:
-        return ZMK_USB_CONN_POWERED;
-
     default:
-        return ZMK_USB_CONN_HID;
+        return ZMK_USB_CONN_POWERED;
     }
 }
 

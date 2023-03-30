@@ -9,10 +9,10 @@ with the main `zmk` firmware repository to build your desired firmware. The main
 working components of ZMK are kept separate from your personal keyboard settings, reducing the amount of file manipulation in the configuration process.
 This makes flashing ZMK to your keyboard much easier, especially because you don't need to keep an up-to-date copy of zmk on your computer at all times.
 
-On default `zmk-config` folder should contain two files:
+By default, the `zmk-config` folder should contain two files:
 
 - `<shield>.conf`
-- `<shield>`.keymap
+- `<shield>.keymap`
 
 However, your config folder can also be modified to include a `boards/` directory for keymaps and configurations for multiple boards/shields
 outside of the default keyboard setting definitions.
@@ -22,6 +22,8 @@ outside of the default keyboard setting definitions.
 The setup script creates a `config/<shield>.conf` file that allows you to add additional configuration options to
 control what features and options are built into your firmware. Opening that file with your text editor will allow you to see the
 various config settings that can be commented/uncommented to modify how your firmware is built.
+
+Refer to the [Configuration](/docs/config) documentation for more details on this file.
 
 ## Keymap
 

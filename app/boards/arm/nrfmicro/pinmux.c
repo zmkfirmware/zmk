@@ -14,7 +14,7 @@
 static int pinmux_nrfmicro_init(const struct device *port) {
     ARG_UNUSED(port);
 
-#if CONFIG_BOARD_NRFMICRO_13
+#if (CONFIG_BOARD_NRFMICRO_13 || CONFIG_BOARD_NRFMICRO_13_52833)
     const struct device *p0 = device_get_binding("GPIO_0");
 #if CONFIG_BOARD_NRFMICRO_CHARGER
     gpio_pin_configure(p0, 5, GPIO_OUTPUT);

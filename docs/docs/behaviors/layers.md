@@ -43,7 +43,7 @@ Example:
 
 ## Layer-tap
 
-The "layer-tap" behavior enables a layer when a key is held, and output another key when the key is only tapped for a short time. For more information on the inner workings of layer-tap, see [hold-tap](hold-tap.md).
+The "layer-tap" behavior enables a layer when a key is held, and outputs a [keypress](key-press.md) when the key is only tapped for a short time.
 
 ### Behavior Binding
 
@@ -56,6 +56,15 @@ Example:
 ```
 &lt LOWER SPACE
 ```
+
+:::info
+Functionally, the layer-tap is a [hold-tap](hold-tap.md) of the ["tap-preferred" flavor](hold-tap.md/#flavors) and a [`tapping-term-ms`](hold-tap.md/#tapping-term-ms) of 200 that takes in a [`momentary layer`](#momentary-layer) and a [keypress](key-press.md) as its "hold" and "tap" parameters, respectively.
+
+For users who want to send a different [keycode](../codes/index.mdx) depending on if the same key is held or tapped, see [Mod-Tap](mod-tap.md).
+
+Similarly, for users looking to create a keybind like the layer-tap that depending on how long the key is held, invokes behaviors like [sticky keys](sticky-key.md) or [key toggles](key-toggle.md), see [Hold-Tap](hold-tap.md).
+
+:::
 
 ## To Layer
 

@@ -1,0 +1,56 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/rgb.h>
+
+#define BASE        0
+#define ARROW       1
+#define FUNC        2
+
+/ {
+  chosen {
+      zmk,kscan = &kscan0;
+      zmk,matrix_transform = &default_transform;
+  };
+
+  keymap {
+    compatible = "zmk,keymap";
+
+    default_layer {
+      bindings = <
+                    &kp ESC   &kp N1    &kp N2   &kp N3    &kp N4    &kp N5  &kp N6
+                    &kp TAB   &kp Q     &kp W    &kp E     &kp R     &kp T   &kp N7
+        &kp F13     &kp ENTER &kp D     &kp S    &kp A     &kp F     &kp G   &kp N8
+        &kp F14     &kp LSHFT &kp Z     &kp X    &kp C     &kp V     &kp B   &kp N9
+        &kp F15     &kp LCTRL &sl FUNC  &kp LALT           &kp SPACE         &lt ARROW N0
+      >;
+    };
+
+    arrow_layer {
+      bindings = <
+                    &bt BT_SEL 0 &bt BT_SEL 1 &trans     &trans    &trans           &out OUT_USB     &out OUT_BLE
+                    &trans       &trans       &kp UP     &trans    &rgb_ug RGB_TOG  &rgb_ug RGB_HUI  &rgb_ug RGB_HUD
+        &bt BT_CLR  &trans       &kp RIGHT    &kp DOWN   &kp RIGHT &trans           &rgb_ug RGB_BRI  &rgb_ug RGB_BRD
+        &reset      &trans       &trans       &trans     &trans    &trans           &rgb_ug RGB_EFF  &rgb_ug RGB_EFR
+        &bootloader &trans       &trans       &trans               &trans                            &trans
+      >;
+    };
+
+    function_layer {
+      bindings = <
+                    &trans    &kp F1    &kp F2   &kp F3    &kp F4   &kp F5   &kp F6
+                    &trans    &kp P     &kp O    &kp I     &kp U    &kp Y    &kp F7
+        &bt BT_CLR  &kp BSPC  &kp SEMI  &kp L    &kp K     &kp J    &kp H    &kp F8
+        &reset      &trans    &kp LGUI  &kp M    &kp N     &kp F12  &kp F11  &kp F9
+        &bootloader &trans    &trans    &trans             &trans            &kp F10
+      >;
+    };
+  };
+};
