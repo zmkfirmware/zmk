@@ -1,0 +1,8 @@
+file_format: "1"
+id: fa65
+name: fa65
+type: shield
+url: 
+requires: [nrfmicro_13_52833]
+features:
+  - keys

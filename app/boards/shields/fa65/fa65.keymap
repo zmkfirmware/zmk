@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+
+/ {
+	keymap0: keymap {
+		compatible = "zmk,keymap";
+
+		default_layer {
+// ------------------------------------------------------------------------------------------
+// | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   |
+// | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |    \    |
+// | CAPS  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |
+// |  SHIFT  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |      SHIFT       |
+// |  CTL  |  WIN  |  ALT  |            SPACE               | ALT | MO(1) |  WIN  | CTRL    |
+// ------------------------------------------------------------------------------------------
+			bindings = <
+	&gresc  &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &kp MINUS &kp EQUAL  &kp BSPC &kp INS
+	&kp TAB  &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp I  &kp O  &kp P  &kp LBKT  &kp RBKT  &kp BSLH &kp DEL
+	&kp CLCK  &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp SQT           &kp RET &kp PGUP
+	&kp LSHFT   &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH           &kp RSHFT &kp UP &kp PGDN
+	&kp LCTRL &kp LGUI &kp LALT             &kp SPACE                     &kp RALT    &mo 1   &kp LEFT &kp DOWN &kp RIGHT
+			>;
+		};
+
+		fn_layer {
+			bindings = <
+	&bootloader  &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12  &out OUT_TOG &kp INS
+	&bt BT_CLR  &bt BT_SEL 1  &bt BT_PRV  &bt BT_NXT  &kp R  &kp T  &kp Y  &kp U  &kp I  &kp O  &kp P  &kp LBKT  &kp RBKT  &kp BSLH &kp DEL
+	&kp CLCK  &out OUT_TOG  &out OUT_USB  &out OUT_BLE  &kp F  &kp G  &kp H  &kp J  &kp K  &kp L  &kp SEMI &kp SQT           &bootloader &kp PGUP
+	&bootloader   &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH           &kp RSHFT &kp C_VOL_UP &kp C_MUTE
+	&kp LCTRL &kp LGUI &kp LALT             &kp K_PP                     &kp RALT    &mo 1   &bt BT_NXT &kp C_VOL_DN &bt BT_PRV
+			>;
+		};
+	};
+};
