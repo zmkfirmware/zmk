@@ -1,0 +1,8 @@
+file_format: "1"
+id: fa65
+name: fa65
+type: shield
+url: https://github.com/shuihuohuooo/zmk/tree/bf0dd0325fd22ca9100c746bde99699300d5ef29/app/boards/shields/fa65
+requires: [nrfmicro_13_52833]
+features:
+  - keys
