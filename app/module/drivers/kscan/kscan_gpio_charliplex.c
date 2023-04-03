@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2022 The ZMK Contributors
+ * Copyright (c) 2020-2023 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -36,14 +36,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
     DT_INST_PROP_OR(n, debounce_period, DT_INST_PROP(n, debounce_release_ms))
 #endif
 
-#define USE_POLLING IS_ENABLED(CONFIG_ZMK_KSCAN_CHARLIPLEX_POLLING)
-#define USE_INTERRUPT (!USE_POLLING)
-
-#define COND_INTERRUPT(code) COND_CODE_1(CONFIG_ZMK_KSCAN_CHARLIPLEX_POLLING, (), code)
-
 #define KSCAN_GPIO_CFG_INIT(idx, inst_idx)                                                         \
     GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), gpios, idx),
 
+#define INST_INTR_DEFINED(n) DT_INST_NODE_HAS_PROP(n, interrupt_gpios)
 #define KSCAN_INTR_CFG_INIT(inst_idx) GPIO_DT_SPEC_GET(DT_DRV_INST(inst_idx), interrupt_gpios)
 
 struct kscan_charliplex_data {
@@ -51,9 +47,7 @@ struct kscan_charliplex_data {
     kscan_callback_t callback;
     struct k_work_delayable work;
     int64_t scan_time; /* Timestamp of the current or scheduled scan. */
-#if USE_INTERRUPT
     struct gpio_callback irq_callback;
-#endif
     /**
      * Current state of the matrix as a flattened 2D array of length
      * (config->cells.length ^2)
@@ -75,9 +69,8 @@ struct kscan_charliplex_config {
     struct debounce_config debounce_config;
     int32_t debounce_scan_period_ms;
     int32_t poll_period_ms;
-#if USE_INTERRUPT
+    bool use_interrupt;
     const struct gpio_dt_spec interrupt;
-#endif
 };
 
 /**
@@ -160,7 +153,6 @@ static int kscan_charliplex_set_all_outputs(const struct device *dev, const int 
     return 0;
 }
 
-#if USE_INTERRUPT
 static int kscan_charliplex_interrupt_configure(const struct device *dev,
                                                 const gpio_flags_t flags) {
     const struct kscan_charliplex_config *config = dev->config;
@@ -174,9 +166,7 @@ static int kscan_charliplex_interrupt_configure(const struct device *dev,
 
     return 0;
 }
-#endif
 
-#if USE_INTERRUPT
 static int kscan_charliplex_interrupt_enable(const struct device *dev) {
     int err = kscan_charliplex_interrupt_configure(dev, GPIO_INT_LEVEL_ACTIVE);
     if (err) {
@@ -186,9 +176,7 @@ static int kscan_charliplex_interrupt_enable(const struct device *dev) {
     // While interrupts are enabled, set all outputs active so an pressed key will trigger
     return kscan_charliplex_set_all_outputs(dev, 1);
 }
-#endif
 
-#if USE_INTERRUPT
 static void kscan_charliplex_irq_callback(const struct device *port, struct gpio_callback *cb,
                                           const gpio_port_pins_t _pin) {
     struct kscan_charliplex_data *data =
@@ -199,7 +187,6 @@ static void kscan_charliplex_irq_callback(const struct device *port, struct gpio
     data->scan_time = k_uptime_get();
     k_work_reschedule(&data->work, K_NO_WAIT);
 }
-#endif
 
 static void kscan_charliplex_read_continue(const struct device *dev) {
     const struct kscan_charliplex_config *config = dev->config;
@@ -211,18 +198,18 @@ static void kscan_charliplex_read_continue(const struct device *dev) {
 }
 
 static void kscan_charliplex_read_end(const struct device *dev) {
-#if USE_INTERRUPT
-    // Return to waiting for an interrupt.
-    kscan_charliplex_interrupt_enable(dev);
-#else
     struct kscan_charliplex_data *data = dev->data;
     const struct kscan_charliplex_config *config = dev->config;
 
-    data->scan_time += config->poll_period_ms;
+    if (config->use_interrupt) {
+        // Return to waiting for an interrupt.
+        kscan_charliplex_interrupt_enable(dev);
+    } else {
+        data->scan_time += config->poll_period_ms;
 
-    // Return to polling slowly.
-    k_work_reschedule(&data->work, K_TIMEOUT_ABS_MS(data->scan_time));
-#endif
+        // Return to polling slowly.
+        k_work_reschedule(&data->work, K_TIMEOUT_ABS_MS(data->scan_time));
+    }
 }
 
 static int kscan_charliplex_read(const struct device *dev) {
@@ -320,11 +307,11 @@ static int kscan_charliplex_disable(const struct device *dev) {
     struct kscan_charliplex_data *data = dev->data;
     k_work_cancel_delayable(&data->work);
 
-#if USE_INTERRUPT
-    return kscan_charliplex_interrupt_configure(dev, GPIO_INT_DISABLE);
-#else
+    const struct kscan_charliplex_config *config = dev->config;
+    if (config->use_interrupt) {
+        return kscan_charliplex_interrupt_configure(dev, GPIO_INT_DISABLE);
+    }
     return 0;
-#endif
 }
 
 static int kscan_charliplex_init_inputs(const struct device *dev) {
@@ -340,7 +327,6 @@ static int kscan_charliplex_init_inputs(const struct device *dev) {
     return 0;
 }
 
-#if USE_INTERRUPT
 static int kscan_charliplex_init_interrupt(const struct device *dev) {
     struct kscan_charliplex_data *data = dev->data;
 
@@ -358,7 +344,6 @@ static int kscan_charliplex_init_interrupt(const struct device *dev) {
     }
     return err;
 }
-#endif
 
 static int kscan_charliplex_init(const struct device *dev) {
     struct kscan_charliplex_data *data = dev->data;
@@ -367,10 +352,11 @@ static int kscan_charliplex_init(const struct device *dev) {
 
     kscan_charliplex_init_inputs(dev);
     kscan_charliplex_set_all_outputs(dev, 0);
-#if USE_INTERRUPT
-    kscan_charliplex_init_interrupt(dev);
-#endif
 
+    const struct kscan_charliplex_config *config = dev->config;
+    if (config->use_interrupt) {
+        kscan_charliplex_init_interrupt(dev);
+    }
     k_work_init_delayable(&data->work, kscan_charliplex_work_handler);
     return 0;
 }
@@ -403,7 +389,8 @@ static const struct kscan_driver_api kscan_charliplex_api = {
             },                                                                                     \
         .debounce_scan_period_ms = DT_INST_PROP(n, debounce_scan_period_ms),                       \
         .poll_period_ms = DT_INST_PROP(n, poll_period_ms),                                         \
-        COND_INTERRUPT((.interrupt = KSCAN_INTR_CFG_INIT(n), ))};                                  \
+        .use_interrupt = INST_INTR_DEFINED(n),                                                     \
+        COND_CODE_1(INST_INTR_DEFINED(n), (.interrupt = KSCAN_INTR_CFG_INIT(n)), ())};             \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(n, &kscan_charliplex_init, NULL, &kscan_charliplex_data_##n,             \
                           &kscan_charliplex_config_##n, APPLICATION,                               \
