@@ -75,7 +75,7 @@ This configuration would apply to all sticky keys. This may not be appropriate i
 };
 ```
 
-If you combine multiple modifiers in a single key, like for example `&skq LS(LALT)`, you might need to add the `ignore-modifiers;` setting because it is not inherited from the default `&sq` behaviour.
+If you combine multiple modifiers in a single key, like for example `&skq LS(LALT)`, you might need to add the `ignore-modifiers;` setting because it is not inherited from the default `&sq` behavior.
 
 ### Advanced usage
 
