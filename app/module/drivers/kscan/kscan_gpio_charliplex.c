@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "debounce.h"
+#include <zmk/debounce.h>
 
-#include <device.h>
-#include <devicetree.h>
-#include <drivers/gpio.h>
-#include <drivers/kscan.h>
-#include <kernel.h>
-#include <logging/log.h>
-#include <sys/__assert.h>
-#include <sys/util.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/kscan.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/__assert.h>
+#include <zephyr/sys/util.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -40,6 +40,23 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
     GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), gpios, idx),
 
 #define INST_INTR_DEFINED(n) DT_INST_NODE_HAS_PROP(n, interrupt_gpios)
+
+#define WITH_INTR(n) COND_CODE_1(INST_INTR_DEFINED(n), (+1), (+0))
+#define WITHOUT_INTR(n) COND_CODE_0(INST_INTR_DEFINED(n), (+1), (+0))
+
+#define USES_POLLING DT_INST_FOREACH_STATUS_OKAY(WITHOUT_INTR) > 0
+#define USES_INTERRUPT DT_INST_FOREACH_STATUS_OKAY(WITH_INTR) > 0
+
+#if USES_POLLING && USES_INTERRUPT
+#define USES_POLL_AND_INTR 1
+#else
+#define USES_POLL_AND_INTR 0
+#endif
+
+#define COND_ANY_POLLING(code) COND_CODE_1(USES_POLLING, code, ())
+#define COND_POLL_AND_INTR(code) COND_CODE_1(USES_POLL_AND_INTR, code, ())
+#define COND_THIS_INTERRUPT(n, code) COND_CODE_1(INST_INTR_DEFINED(n), code, ())
+
 #define KSCAN_INTR_CFG_INIT(inst_idx) GPIO_DT_SPEC_GET(DT_DRV_INST(inst_idx), interrupt_gpios)
 
 struct kscan_charliplex_data {
@@ -52,7 +69,7 @@ struct kscan_charliplex_data {
      * Current state of the matrix as a flattened 2D array of length
      * (config->cells.length ^2)
      */
-    struct debounce_state *charliplex_state;
+    struct zmk_debounce_state *charliplex_state;
 };
 
 struct kscan_gpio_list {
@@ -66,7 +83,7 @@ struct kscan_gpio_list {
 
 struct kscan_charliplex_config {
     struct kscan_gpio_list cells;
-    struct debounce_config debounce_config;
+    struct zmk_debounce_config debounce_config;
     int32_t debounce_scan_period_ms;
     int32_t poll_period_ms;
     bool use_interrupt;
@@ -243,19 +260,19 @@ static int kscan_charliplex_read(const struct device *dev) {
             const struct gpio_dt_spec *in_gpio = &config->cells.gpios[col];
             const int index = state_index(config, row, col);
 
-            struct debounce_state *state = &data->charliplex_state[index];
-            debounce_update(state, gpio_pin_get_dt(in_gpio), config->debounce_scan_period_ms,
-                            &config->debounce_config);
+            struct zmk_debounce_state *state = &data->charliplex_state[index];
+            zmk_debounce_update(state, gpio_pin_get_dt(in_gpio), config->debounce_scan_period_ms,
+                                &config->debounce_config);
 
             // NOTE: RR vs MATRIX: because we don't need an input/output => row/column
             // setup, we can update in the same loop.
-            if (debounce_get_changed(state)) {
-                const bool pressed = debounce_is_pressed(state);
+            if (zmk_debounce_get_changed(state)) {
+                const bool pressed = zmk_debounce_is_pressed(state);
 
                 LOG_DBG("Sending event at %i,%i state %s", row, col, pressed ? "on" : "off");
                 data->callback(dev, row, col, pressed);
             }
-            continue_scan = continue_scan || debounce_is_active(state);
+            continue_scan = continue_scan || zmk_debounce_is_active(state);
         }
 
         err = kscan_charliplex_set_as_input(out_gpio);
@@ -373,7 +390,7 @@ static const struct kscan_driver_api kscan_charliplex_api = {
     BUILD_ASSERT(INST_DEBOUNCE_RELEASE_MS(n) <= DEBOUNCE_COUNTER_MAX,                              \
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
-    static struct debounce_state kscan_charliplex_state_##n[INST_CHARLIPLEX_LEN(n)];               \
+    static struct zmk_debounce_state kscan_charliplex_state_##n[INST_CHARLIPLEX_LEN(n)];           \
     static const struct gpio_dt_spec kscan_charliplex_cells_##n[] = {                              \
         UTIL_LISTIFY(INST_LEN(n), KSCAN_GPIO_CFG_INIT, n)};                                        \
     static struct kscan_charliplex_data kscan_charliplex_data_##n = {                              \
@@ -388,9 +405,9 @@ static const struct kscan_driver_api kscan_charliplex_api = {
                 .debounce_release_ms = INST_DEBOUNCE_RELEASE_MS(n),                                \
             },                                                                                     \
         .debounce_scan_period_ms = DT_INST_PROP(n, debounce_scan_period_ms),                       \
-        .poll_period_ms = DT_INST_PROP(n, poll_period_ms),                                         \
-        .use_interrupt = INST_INTR_DEFINED(n),                                                     \
-        COND_CODE_1(INST_INTR_DEFINED(n), (.interrupt = KSCAN_INTR_CFG_INIT(n)), ())};             \
+        COND_ANY_POLLING((.poll_period_ms = DT_INST_PROP(n, poll_period_ms), ))                    \
+            COND_POLL_AND_INTR((.use_interrupt = INST_INTR_DEFINED(n), ))                          \
+                COND_THIS_INTERRUPT(n, (.interrupt = KSCAN_INTR_CFG_INIT(n), ))};                  \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(n, &kscan_charliplex_init, NULL, &kscan_charliplex_data_##n,             \
                           &kscan_charliplex_config_##n, APPLICATION,                               \

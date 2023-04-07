@@ -158,8 +158,8 @@ Keyboard scan driver where keys are arranged on a matrix with each GPIO used as 
 
 Definition file: [zmk/app/drivers/kscan/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/kscan/Kconfig)
 
-| Config                                              | Type        | Description                                                               | Default |
-| --------------------------------------------------- | ----------- | ------------------------------------------------------------------------- | ------- |
+| Config                                             | Type        | Description                                                               | Default |
+| -------------------------------------------------- | ----------- | ------------------------------------------------------------------------- | ------- |
 | `CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BEFORE_INPUTS`   | int (ticks) | How long to wait before reading input pins after setting output active    | 0       |
 | `CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BETWEEN_OUTPUTS` | int (ticks) | How long to wait between each output to allow previous output to "settle" | 0       |
 
