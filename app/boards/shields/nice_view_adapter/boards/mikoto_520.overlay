@@ -16,7 +16,7 @@
 
 nice_view_spi: &spi0 {
 	compatible = "nordic,nrf-spim";
-	pinctrl-0 = &spi0_default;
+	pinctrl-0 = <&spi0_default>;
 	pinctrl-names = "default";
 	cs-gpios = <&pro_micro 1 GPIO_ACTIVE_HIGH>;
 };
