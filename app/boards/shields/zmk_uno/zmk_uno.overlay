@@ -16,7 +16,6 @@
 
 	led_strip: ws2812@0 {
 		compatible = "worldsemi,ws2812-spi";
-		label = "RGB";
 
 		/* SPI */
 		reg = <0>; /* ignored, but necessary for SPI bindings */
@@ -126,8 +125,6 @@
 	kscan_matrix: kscan_matrix {
 		compatible = "zmk,kscan-gpio-matrix";
 
-		label = "KSCAN_MATRIX";
-
 		diode-direction = "col2row";
 
 		col-gpios
@@ -146,8 +143,6 @@
 		compatible = "zmk,kscan-gpio-direct";
 		status = "disabled";
 
-		label = "KSCAN_DIRECT";
-
 		input-gpios
 			= <&arduino_header 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 			, <&arduino_header 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
@@ -160,8 +155,6 @@
 	kscan_sp3t_toggle: kscan_sp3t_toggle {
 		compatible = "zmk,kscan-gpio-direct";
 		toggle-mode;
-
-		label = "KSCAN_TOGGLE";
 
 		input-gpios
 			= <&arduino_header 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
