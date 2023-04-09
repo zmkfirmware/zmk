@@ -52,7 +52,7 @@ For example, the Kyria shield has a `boards/nice_nano.overlay` file that defines
 
 ### nRF52-based boards
 
-With nRF52 boards, you can just use `&spi1` and define the pins you want to use.
+With nRF52 boards, you can just use `&spi3` and define the pins you want to use.
 
 Here's an example on a definition that uses P0.06:
 
@@ -60,13 +60,13 @@ Here's an example on a definition that uses P0.06:
 #include <dt-bindings/led/led.h>
 
 &pinctrl {
-	spi1_default: spi1_default {
+	spi3_default: spi3_default {
 		group1 {
 			psels = <NRF_PSEL(SPIM_MOSI, 0, 6)>;
 		};
 	};
 
-	spi1_sleep: spi1_sleep {
+	spi3_sleep: spi3_sleep {
 		group1 {
 			psels = <NRF_PSEL(SPIM_MOSI, 0, 6)>;
 			low-power-enable;
@@ -74,12 +74,12 @@ Here's an example on a definition that uses P0.06:
 	};
 };
 
-&spi1 {
+&spi3 {
   compatible = "nordic,nrf-spim";
   status = "okay";
 
-  pinctrl-0 = <&spi1_default>;
-  pinctrl-1 = <&spi1_sleep>;
+  pinctrl-0 = <&spi3_default>;
+  pinctrl-1 = <&spi3_sleep>;
   pinctrl-names = "default", "sleep";
 
   led_strip: ws2812@0 {
@@ -119,12 +119,12 @@ If your board/shield uses LEDs that require the data sent in a different order, 
 
 For other boards, you must select an SPI definition that has the `MOSI` pin as your data pin going to your LED strip.
 
-Here's another example for a non-nRF52 board on `spi1`:
+Here's another example for a non-nRF52 board on `spi3`:
 
 ```
 #include <dt-bindings/led/led.h>
 
-&spi1 {
+&spi3 {
 
   led_strip: ws2812@0 {
     compatible = "worldsemi,ws2812-spi";
