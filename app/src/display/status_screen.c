@@ -34,16 +34,9 @@ static struct zmk_widget_layer_status layer_status_widget;
 static struct zmk_widget_wpm_status wpm_status_widget;
 #endif
 
-lv_style_t global_style;
-
 lv_obj_t *zmk_display_status_screen() {
     lv_obj_t *screen;
-
-    lv_style_init(&global_style);
-    lv_style_set_text_font(&global_style, &lv_font_montserrat_12);
-
     screen = lv_obj_create(NULL);
-    lv_obj_add_style(screen, &global_style, LV_PART_MAIN);
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS)
     zmk_widget_battery_status_init(&battery_status_widget, screen);
