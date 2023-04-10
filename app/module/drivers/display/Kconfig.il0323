@@ -13,3 +13,7 @@ config IL0323
 config IL0323_INVERT
     bool "Invert display"
     default n
+
+config IL0323_ALTERNATIVE_REFRESH
+    bool "Use an alternative approach for partial refreshes"
+    default n

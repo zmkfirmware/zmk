@@ -124,7 +124,11 @@ static int il0323_write(const struct device *dev, const uint16_t x, const uint16
     ptl[IL0323_PTL_HRED_IDX] = x_end_idx;
     ptl[IL0323_PTL_VRST_IDX] = y;
     ptl[IL0323_PTL_VRED_IDX] = y_end_idx;
+#if IS_ENABLED(CONFIG_IL0323_ALTERNATIVE_REFRESH)
+    ptl[sizeof(ptl) - 1] = 0; // limits fading outside of refresh window
+#else
     ptl[sizeof(ptl) - 1] = IL0323_PTL_PT_SCAN;
+#endif
     LOG_HEXDUMP_DBG(ptl, sizeof(ptl), "ptl");
 
     il0323_busy_wait(cfg);
