@@ -10,6 +10,8 @@
 #include <dt-bindings/led/led.h>
 #include <dt-bindings/zmk/matrix_transform.h>
 
+#include "ckp-pinctrl.dtsi"
+
 / {
 	model = "CKP";
 	compatible = "polarityworks,ckp";
@@ -100,8 +102,7 @@
 		compatible = "pwm-leds";
 		label = "Backlight LEDs";
 		pwm_led_0 {
-			pwms = <&pwm0 17>;
-			label = "Backlight LED 0";
+			pwms = <&pwm0 0 10000 PWM_POLARITY_NORMAL>;
 		};
 	};
 
@@ -128,7 +129,9 @@
 
 &pwm0 {
 	status = "okay";
-	ch0-pin = <17>;
+	pinctrl-0 = <&pwm0_default>;
+	pinctrl-1 = <&pwm0_sleep>;
+	pinctrl-names = "default", "sleep";
 };
 
 &gpiote {
@@ -191,10 +194,9 @@
 &spi1 {
 	compatible = "nordic,nrf-spim";
 	status = "okay";
-	mosi-pin = <20>;
-	// Unused pins, needed for SPI definition, but not used by the ws2812 driver itself.
-	sck-pin = <27>;
-	miso-pin = <8>;
+	pinctrl-0 = <&spi3_default>;
+	pinctrl-1 = <&spi3_sleep>;
+	pinctrl-names = "default", "sleep";
 
 	led_strip: ws2812@0 {
 		compatible = "worldsemi,ws2812-spi";

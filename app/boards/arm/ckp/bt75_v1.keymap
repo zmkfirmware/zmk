@@ -55,7 +55,7 @@
       bindings = <
         &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
         &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &bl BL_TOG &rgb_ug RGB_TOG
-        &trans &trans &trans &trans &rgb_ug RGB_HUI &rgb_ug RGB_HUD &trans &trans &trans &trans &trans &kp SLCK &trans &reset &kp PAUSE_BREAK
+        &trans &trans &trans &trans &rgb_ug RGB_HUI &rgb_ug RGB_HUD &trans &trans &trans &trans &trans &kp SLCK &trans &sys_reset &kp PAUSE_BREAK
         &trans    &trans &trans &trans &rgb_ug RGB_BRI &rgb_ug RGB_BRD &trans &trans &trans &trans &trans  &trans   &bootloader &trans
         &trans &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &bl BL_INC &bl BL_DEC &trans &trans &trans &trans &trans  &trans &trans &trans
         &bt BT_PRV &bt BT_NXT  &trans              &trans                            &trans   &trans   &trans &trans  &trans &bt BT_CLR
@@ -95,7 +95,7 @@
         &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
         &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &bl BL_TOG &rgb_ug RGB_TOG
         &trans &trans &trans &trans &rgb_ug RGB_HUI &rgb_ug RGB_HUD &trans &trans &trans &trans &trans &kp SLCK &trans &kp PAUSE_BREAK
-        &trans   &trans &trans &trans &rgb_ug RGB_BRI &rgb_ug RGB_BRD &trans &trans &trans &trans &trans  &trans  &reset  &bootloader &trans
+        &trans   &trans &trans &trans &rgb_ug RGB_BRI &rgb_ug RGB_BRD &trans &trans &trans &trans &trans  &trans  &sys_reset  &bootloader &trans
         &trans &trans &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &bl BL_INC &bl BL_DEC &trans &trans &trans &trans &trans  &trans &trans &trans
         &bt BT_PRV &bt BT_NXT  &trans              &trans                            &trans   &trans   &trans &trans &trans &bt BT_CLR
       >;
@@ -133,7 +133,7 @@
       bindings = <
         &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
         &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans  &bl BL_TOG &rgb_ug RGB_TOG &trans
-        &trans &trans &trans &trans &rgb_ug RGB_HUI &rgb_ug RGB_HUD &trans &trans &trans &trans &trans &kp SLCK &trans &reset  &trans
+        &trans &trans &trans &trans &rgb_ug RGB_HUI &rgb_ug RGB_HUD &trans &trans &trans &trans &trans &kp SLCK &trans &sys_reset  &trans
         &trans   &trans &trans &trans &rgb_ug RGB_BRI &rgb_ug RGB_BRD &trans &trans &trans &trans &trans  &trans   &bootloader &trans
         &trans &trans &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &bl BL_INC &bl BL_DEC &trans &trans &trans &trans &trans &trans  &trans &trans &trans
         &bt BT_PRV &bt BT_NXT  &trans              &trans                            &trans   &trans   &trans &trans &trans &bt BT_CLR

@@ -58,7 +58,7 @@
         &trans &trans &kp UP &trans &rgb_ug RGB_HUI &rgb_ug RGB_HUD &trans &trans &kp INS &trans &kp PSCRN &kp SLCK &kp PAUSE_BREAK &rgb_ug RGB_TOG
         &trans    &kp LEFT &kp DOWN &kp RIGHT &rgb_ug RGB_BRI &rgb_ug RGB_BRD &trans &trans &trans &trans &kp HOME  &kp PG_UP   &bootloader
         &trans   &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &bl BL_INC &bl BL_DEC &trans &trans &trans &kp END &kp PG_DN  &bl BL_TOG
-        &bt BT_PRV &bt BT_NXT  &trans              &trans                            &trans   &trans   &reset &bt BT_CLR
+        &bt BT_PRV &bt BT_NXT  &trans              &trans                            &trans   &trans   &sys_reset &bt BT_CLR
       >;
       sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
     };
@@ -94,7 +94,7 @@
         &trans &trans &kp UP &trans &rgb_ug RGB_HUI &rgb_ug RGB_HUD &trans &trans &kp INS &trans &kp PSCRN &kp SLCK &kp PAUSE_BREAK
         &trans    &kp LEFT &kp DOWN &kp RIGHT &rgb_ug RGB_BRI &rgb_ug RGB_BRD &trans &trans &trans &trans &kp HOME  &kp PG_UP &rgb_ug RGB_TOG &bootloader
         &trans &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &bl BL_INC &bl BL_DEC &trans &trans &trans &trans &kp END &kp PG_DN  &bl BL_TOG
-        &bt BT_PRV &bt BT_NXT  &trans              &trans                            &trans   &trans   &reset &bt BT_CLR
+        &bt BT_PRV &bt BT_NXT  &trans              &trans                            &trans   &trans   &sys_reset &bt BT_CLR
       >;
       sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
     };
@@ -129,7 +129,7 @@
         &trans &trans &trans &trans &rgb_ug RGB_HUI &rgb_ug RGB_HUD &trans &trans &kp INS &trans &kp PSCRN &kp SLCK &kp PAUSE_BREAK &rgb_ug RGB_TOG
         &trans    &trans &trans &trans &rgb_ug RGB_BRI &rgb_ug RGB_BRD &trans &trans &trans &trans &kp HOME  &kp PG_UP   &bootloader
         &trans &none &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &bl BL_INC &bl BL_DEC &trans &trans &trans &kp END &kp PG_DN &trans &bl BL_TOG &trans
-        &bt BT_PRV &bt BT_NXT  &trans              &trans                            &trans  &trans &trans   &reset &bt BT_CLR
+        &bt BT_PRV &bt BT_NXT  &trans              &trans                            &trans  &trans &trans   &sys_reset &bt BT_CLR
       >;
       sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
     };
@@ -165,7 +165,7 @@
         &trans &trans &kp UP &trans &rgb_ug RGB_HUI &rgb_ug RGB_HUD &trans &trans &kp INS &trans &kp PSCRN &kp SLCK &kp PAUSE_BREAK &rgb_ug RGB_TOG
         &trans    &kp LEFT &kp DOWN &kp RIGHT &rgb_ug RGB_BRI &rgb_ug RGB_BRD &trans &trans &trans &trans &kp HOME  &kp PG_UP   &bootloader
         &trans &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &bl BL_INC &bl BL_DEC &trans &trans &trans &kp END &kp PG_DN  &bl BL_TOG
-        &bt BT_PRV &bt BT_NXT  &trans              &trans                            &reset   &trans  &bt BT_CLR
+        &bt BT_PRV &bt BT_NXT  &trans              &trans                            &sys_reset   &trans  &bt BT_CLR
       >;
       sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
     };
