@@ -6,14 +6,14 @@
 
 #include "debounce.h"
 
-#include <device.h>
-#include <devicetree.h>
-#include <drivers/gpio.h>
-#include <drivers/kscan.h>
-#include <kernel.h>
-#include <logging/log.h>
-#include <sys/__assert.h>
-#include <sys/util.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/kscan.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/__assert.h>
+#include <zephyr/sys/util.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -50,9 +50,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
     COND_CODE_1(CONFIG_ZMK_KSCAN_MATRIX_POLLING, pollcode, intcode)
 
 #define KSCAN_GPIO_ROW_CFG_INIT(idx, inst_idx)                                                     \
-    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), row_gpios, idx),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), row_gpios, idx)
 #define KSCAN_GPIO_COL_CFG_INIT(idx, inst_idx)                                                     \
-    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), col_gpios, idx),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), col_gpios, idx)
 
 enum kscan_diode_direction {
     KSCAN_ROW2COL,
@@ -433,10 +433,10 @@ static const struct kscan_driver_api kscan_matrix_api = {
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
     static const struct gpio_dt_spec kscan_matrix_rows_##n[] = {                                   \
-        UTIL_LISTIFY(INST_ROWS_LEN(n), KSCAN_GPIO_ROW_CFG_INIT, n)};                               \
+        LISTIFY(INST_ROWS_LEN(n), KSCAN_GPIO_ROW_CFG_INIT, (, ), n)};                              \
                                                                                                    \
     static const struct gpio_dt_spec kscan_matrix_cols_##n[] = {                                   \
-        UTIL_LISTIFY(INST_COLS_LEN(n), KSCAN_GPIO_COL_CFG_INIT, n)};                               \
+        LISTIFY(INST_COLS_LEN(n), KSCAN_GPIO_COL_CFG_INIT, (, ), n)};                              \
                                                                                                    \
     static struct debounce_state kscan_matrix_state_##n[INST_MATRIX_LEN(n)];                       \
                                                                                                    \

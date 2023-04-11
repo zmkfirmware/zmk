@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <init.h>
-#include <settings/settings.h>
+#include <zephyr/init.h>
+#include <zephyr/settings/settings.h>
 
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
@@ -18,7 +18,7 @@
 #include <zmk/events/usb_conn_state_changed.h>
 #include <zmk/events/endpoint_selection_changed.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define DEFAULT_ENDPOINT                                                                           \
@@ -148,7 +148,7 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
 
 static int endpoints_handle_set(const char *name, size_t len, settings_read_cb read_cb,
                                 void *cb_arg) {
-    LOG_DBG("Setting endpoint value %s", log_strdup(name));
+    LOG_DBG("Setting endpoint value %s", name);
 
     if (settings_name_steq(name, "preferred", NULL)) {
         if (len != sizeof(enum zmk_endpoint)) {

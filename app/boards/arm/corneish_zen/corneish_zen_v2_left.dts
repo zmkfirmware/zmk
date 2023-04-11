@@ -53,12 +53,31 @@
 
 };
 
+&pinctrl {
+	spi0_default: spi0_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 0, 27)>,
+				<NRF_PSEL(SPIM_MOSI, 0, 8)>,
+				<NRF_PSEL(SPIM_MISO, 0, 22)>;
+		};
+	};
+
+	spi0_sleep: spi0_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_SCK, 0, 27)>,
+				<NRF_PSEL(SPIM_MOSI, 0, 8)>,
+				<NRF_PSEL(SPIM_MISO, 0, 22)>;
+			low-power-enable;
+		};
+	};
+};
+
 &spi0  {
 	status = "okay";
 	compatible = "nordic,nrf-spim";
-	sck-pin = <27>;
-	mosi-pin = <8>;
-	miso-pin = <22>;
+	pinctrl-0 = <&spi0_default>;
+	pinctrl-1 = <&spi0_sleep>;
+	pinctrl-names = "default", "sleep";
 	cs-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
 
 	epd: il0323@0 {

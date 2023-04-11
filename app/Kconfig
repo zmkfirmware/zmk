@@ -121,6 +121,7 @@ menuconfig ZMK_BLE
 if ZMK_BLE
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
+	default 4096 if SOC_RP2040
 	default 2048
 
 config ZMK_BLE_THREAD_STACK_SIZE
@@ -399,7 +400,18 @@ config ZMK_KSCAN_EVENT_QUEUE_SIZE
 #KSCAN Settings
 endmenu
 
-menu "USB Logging"
+menu "Logging"
+
+config ZMK_LOGGING_MINIMAL
+	bool "Suppress all ZMK debug log messages"
+	default false
+
+if !ZMK_LOGGING_MINIMAL
+
+config ZMK_LOG_LEVEL
+	default 4
+
+endif
 
 config ZMK_USB_LOGGING
 	bool "Enable USB CDC ACM logging to help debug"
@@ -416,21 +428,18 @@ config ZMK_USB_LOGGING
 
 if ZMK_USB_LOGGING
 
-config ZMK_LOG_LEVEL
-	default 4
+choice USB_CDC_ACM_LOG_LEVEL_CHOICE
+	default USB_CDC_ACM_LOG_LEVEL_OFF
+endchoice
+
+choice USB_DRIVER_LOG_LEVEL_CHOICE
+	default USB_DRIVER_LOG_LEVEL_OFF
+endchoice
 
 # We do this to avoid log loop where logging to USB generates more log messages.
-config USB_CDC_ACM_LOG_LEVEL
-	default 1
 
 config USB_CDC_ACM_RINGBUF_SIZE
 	default 1024
-
-config LOG_BUFFER_SIZE
-	default 8192
-
-config LOG_STRDUP_BUF_COUNT
-	default 16
 
 config LOG_PROCESS_THREAD_STARTUP_DELAY_MS
 	default 1000
@@ -438,7 +447,35 @@ config LOG_PROCESS_THREAD_STARTUP_DELAY_MS
 #ZMK_USB_LOGGING
 endif
 
-#USB Logging
+config ZMK_RTT_LOGGING
+	bool "Enable RTT logging to help debug"
+	select LOG
+	select DEBUG
+	select ASSERT
+	select USE_SEGGER_RTT
+	select CONSOLE
+	select RTT_CONSOLE
+
+if ZMK_RTT_LOGGING
+
+config SEGGER_RTT_BUFFER_SIZE_UP
+	default 8192
+
+#ZMK_RTT_LOGGING
+endif
+
+if ZMK_USB_LOGGING || ZMK_RTT_LOGGING
+
+config LOG_BUFFER_SIZE
+	default 8192
+
+config LOG_PROCESS_THREAD_SLEEP_MS
+	default 100
+
+#ZMK_USB_LOGGING || ZMK_RTT_LOGGING
+endif
+
+#Logging
 endmenu
 
 if SETTINGS

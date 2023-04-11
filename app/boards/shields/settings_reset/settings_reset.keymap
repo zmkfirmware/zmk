@@ -13,7 +13,7 @@
 
         default_layer {
             bindings = <
-    &reset
+    &sys_reset
             >;
         };
     };

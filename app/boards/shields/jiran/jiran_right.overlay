@@ -10,6 +10,14 @@
 	col-offset = <6>;
 };
 
+&jian_transform {
+	col-offset = <6>;
+};
+
+&crkbd_transform {
+	col-offset = <6>;
+};
+
 &kscan0 {
 	col-gpios
 		= <&pro_micro  7 GPIO_ACTIVE_HIGH>

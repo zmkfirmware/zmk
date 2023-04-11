@@ -57,7 +57,7 @@
             bindings = <
 &kp ESC   &kp N1 &kp N2   &kp N3     &fofunc   &kp N5                               &kp N6    &kp N7      &kp N8    &kp N9   &kp N0   &kp EQUAL
 &kp TAB   &kp Q  &kp W    &kp E      &kp R     &kp T                                &kp Y     &kp U       &kp I     &kp O    &kp P    &kp LBKT
-&kp LSHFT &kp A  &sleft   &kp D      &fright   &kp G      &reset         &reset     &kp H     &kp J       &kp K     &kp L    &kp SEMI &mt RSHFT SQT
+&kp LSHFT &kp A  &sleft   &kp D      &fright   &kp G      &sys_reset         &sys_reset     &kp H     &kp J       &kp K     &kp L    &kp SEMI &mt RSHFT SQT
 &kp LCTRL &kp Z  &kp X    &kp C      &kp V     &kp B      &kp C_MUTE     &kp C_PP   &kp N     &kp M       &kp COMMA &kp DOT  &kp FSLH &mt RCTRL BSLH
                           &lt 2 RET  &kp LALT  &kp SPACE  &lt 1 DEL      &lt 2 RET  &kp BSPC  &lt 1 RBKT  &kp LGUI  
             >;
@@ -91,8 +91,8 @@
 // |     | UNDO | CUT  | COPY  | PASTE |      |      |  |      |      |  |>  |  <|<| | |>|> |       |       |
 //                     |       |       |      |      |  |      |      |      |       |       
             bindings = <
-&bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4                    &out OUT_TOG  &out OUT_USB  &out OUT_BLE  &trans     &reset  &bootloader
-&trans     &kp INS      &kp PSCRN    &kp K_CMENU  &reset       &trans                          &kp PG_UP     &trans        &kp UP        &trans     &trans  &trans
+&bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4                    &out OUT_TOG  &out OUT_USB  &out OUT_BLE  &trans     &sys_reset  &bootloader
+&trans     &kp INS      &kp PSCRN    &kp K_CMENU  &sys_reset       &trans                          &kp PG_UP     &trans        &kp UP        &trans     &trans  &trans
 &trans     &kp LALT     &kp LCTRL    &kp LSHFT    &bootloader  &kp CLCK     &trans   &trans    &kp PG_DN     &kp LEFT      &kp DOWN      &kp RIGHT  &kp DEL &kp BSPC
 &trans     &kp K_UNDO   &kp K_CUT    &kp K_COPY   &kp K_PASTE  &trans       &trans   &trans    &trans        &kp C_PP      &kp C_PREV    &kp C_NEXT &trans  &trans
                                      &trans       &trans       &trans       &trans   &trans    &trans        &trans        &trans   

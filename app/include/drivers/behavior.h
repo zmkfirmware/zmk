@@ -8,9 +8,9 @@
 
 #include <zephyr/types.h>
 #include <stddef.h>
-#include <sys/util.h>
+#include <zephyr/sys/util.h>
 #include <string.h>
-#include <device.h>
+#include <zephyr/device.h>
 #include <zmk/keys.h>
 #include <zmk/behavior.h>
 

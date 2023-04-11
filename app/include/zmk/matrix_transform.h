@@ -6,4 +6,4 @@
 
 #pragma once
 
-uint32_t zmk_matrix_transform_row_column_to_position(uint32_t row, uint32_t column);
+int32_t zmk_matrix_transform_row_column_to_position(uint32_t row, uint32_t column);
