@@ -1,7 +1,7 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if SHIELD_TIDBIT
+if SHIELD_TIDBIT || SHEILD_TIDBIT_19KEY
 
 config ZMK_KEYBOARD_NAME
 	default "tidbit"
