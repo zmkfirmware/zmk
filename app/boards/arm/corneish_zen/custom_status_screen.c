@@ -70,7 +70,7 @@ lv_obj_t *zmk_display_status_screen() {
     lv_obj_t *zenlogo_icon;
     zenlogo_icon = lv_img_create(screen);
     lv_img_set_src(zenlogo_icon, &zenlogo);
-    lv_obj_align(zenlogo_icon, LV_ALIGN_BOTTOM_MID, 2, -5);
+    lv_obj_align(zenlogo_icon, LV_ALIGN_BOTTOM_MID, 0, -5);
 #endif
 
     return screen;
