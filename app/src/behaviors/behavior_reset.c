@@ -7,12 +7,12 @@
 #define DT_DRV_COMPAT zmk_behavior_reset
 
 #include <zephyr/device.h>
-#include <zephyr/sys/reboot.h>
 #include <zephyr/logging/log.h>
 
 #include <drivers/behavior.h>
 
 #include <zmk/behavior.h>
+#include <zmk/reset.h>
 
 #if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)
 
@@ -36,6 +36,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_reset_config *cfg = dev->config;
 
+<<<<<<< HEAD
 #if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)
     int ret = bootmode_set(cfg->boot_mode);
     if (ret < 0) {
@@ -50,6 +51,9 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     sys_reboot(cfg->type);
 #endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
 
+=======
+    zmk_reset(cfg->type);
+>>>>>>> 1d73fc26 (refactor: Move reset logic to a new function)
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
