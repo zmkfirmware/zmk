@@ -1,0 +1,24 @@
+
+/ {
+    // First, delete the existing basic GPIO based instance.
+    /delete-node/ encoder;
+};
+
+&pinctrl {
+    qdec_default: qdec_default {
+        group1 {
+            psels = <NRF_PSEL(QDEC_A, 1, 11)>,
+                    <NRF_PSEL(QDEC_B, 1, 10)>;
+            bias-pull-up;
+        };
+    };
+};
+
+// Set up the QDEC hardware based driver and give it the same label as the deleted node.
+encoder: &qdec0 {
+    status = "okay";
+    led-pre = <0>;
+    steps = <80>;
+    pinctrl-0 = <&qdec_default>;
+    pinctrl-names = "default";
+};
