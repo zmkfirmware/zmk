@@ -11,6 +11,7 @@ module.exports = {
     Features: [
       "features/keymaps",
       "features/bluetooth",
+      "features/boot-magic-key",
       "features/combos",
       "features/conditional-layers",
       "features/debouncing",

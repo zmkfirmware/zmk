@@ -1,0 +1,23 @@
+# Copyright (c) 2023, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Triggers one or more actions if a specific key is held while the keyboard boots.
+  This is typically used for recovering a keyboard in cases such as &bootloader
+  being missing from the keymap or a split peripheral which isn't connected to
+  the central, and therefore can't process th ekeymap.
+
+compatible: "zmk,boot-magic-key"
+
+properties:
+  key-position:
+    type: int
+    default: 0
+    description: Zero-based index of the key which triggers the action(s).
+  # Boot magic actions:
+  jump-to-bootloader:
+    type: boolean
+    description: Reboots into the bootloader.
+  reset-settings:
+    type: boolean
+    description: Clears settings and reboots.
