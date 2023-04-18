@@ -114,9 +114,9 @@ menuconfig ZMK_BLE
     select BT_SMP_APP_PAIRING_ACCEPT
     select BT_PERIPHERAL
     select BT_DIS
-    select BT_BAS
     select BT_SETTINGS
     select SETTINGS
+    imply ZMK_BATTERY_REPORTING
 
 if ZMK_BLE
 
@@ -317,6 +317,12 @@ endif
 endmenu
 
 menu "Power Management"
+
+config ZMK_BATTERY_REPORTING
+    bool "Battery level detection/reporting"
+    default n
+    select SENSOR
+    select BT_BAS if ZMK_BLE
 
 config ZMK_IDLE_TIMEOUT
     int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
