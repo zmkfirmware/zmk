@@ -85,6 +85,21 @@
         }
       }
     },
+    "interconnect_node_labels": {
+      "title": "InterconnectNodeLabels",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gpio"
+      ],
+      "properties": {
+        "gpio": { "type": "string" },
+        "i2c": { "type": "string" },
+        "spi": { "type": "string" },
+        "uart": { "type": "string" },
+        "adc": { "type": "string" }
+      }
+    },
     "interconnect": {
       "title": "Interconnect",
       "type": "object",
@@ -93,6 +108,7 @@
         "file_format",
         "id",
         "name",
+        "description",
         "url",
         "type"
       ],
@@ -115,6 +131,12 @@
           "format": "uri"
         },
         "description": {
+          "type": "string"
+        },
+        "node_labels": {
+          "$ref": "#/$defs/interconnect_node_labels"
+        },
+        "design_guideline": {
           "type": "string"
         },
         "manufacturer": {

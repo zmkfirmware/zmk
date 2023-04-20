@@ -1,0 +1,10 @@
+file_format: "1"
+id: nrf5340dk_nrf5340_cpuapp
+name: Nordic nRF5340 DK
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://www.nordicsemi.com/Products/Development-hardware/nrf5340-dk
+exposes: [arduino_uno]

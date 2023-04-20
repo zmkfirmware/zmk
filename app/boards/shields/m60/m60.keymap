@@ -32,7 +32,7 @@
 		fn_layer {
 			bindings = <
 &kp GRAVE  &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12    &bootloader
-&trans         &bt BT_CLR &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &reset
+&trans         &bt BT_CLR &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &sys_reset
 &trans           &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &kp LEFT   &kp DOWN   &kp UP   &kp RIGHT   &none      &none      &trans
 &trans                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &trans
 &trans       &trans       &trans       &trans                                                                     &trans     &trans     &trans     &trans

@@ -10,6 +10,10 @@
 	col-offset = <8>;
 };
 
+&five_column_transform {
+	col-offset = <8>;
+};
+
 &kscan0 {
 	col-gpios
 		= <&pro_micro 10 GPIO_ACTIVE_HIGH>

@@ -104,11 +104,10 @@
 	clock-frequency = <I2C_BITRATE_FAST>;
 
 	right_io: mcp23017@20 {
-		compatible = "microchip,mcp23017";
+		compatible = "microchip,mcp230xx";
 		status = "okay";
 		gpio-controller;
 		reg = <0x20>;
-		label = "RIGHT_IO";
 		#gpio-cells = <2>;
 		ngpios = <16>;
 	};
@@ -116,6 +115,10 @@
 
 &usb {
 	status = "okay";
+	cdc_acm_uart: cdc_acm_uart {
+		compatible = "zephyr,cdc-acm-uart";
+		label = "CDC_ACM_0";
+	};
 };
 
 &clk_hsi {
@@ -139,10 +142,6 @@
 
 &rtc {
 	status = "okay";
-	cdc_acm_uart: cdc_acm_uart {
-		compatible = "zephyr,cdc-acm-uart";
-		label = "CDC_ACM_0";
-	};
 };
 
 &flash0 {

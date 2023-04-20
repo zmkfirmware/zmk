@@ -26,7 +26,7 @@
 			bindings = <
 								&kp KP_NUMLOCK  &kp KP_ASTERISK &kp KP_MINUS
 				&kp KP_NUMBER_7 &kp KP_NUMBER_8 &kp KP_NUMBER_9 &kp KP_PLUS
-				&kp KP_NUMBER_4 &kp KP_NUMBER_5 &kp KP_NUMBER_6 &kp &none
+				&kp KP_NUMBER_4 &kp KP_NUMBER_5 &kp KP_NUMBER_6 &none
 				&kp KP_NUMBER_1 &kp KP_NUMBER_2 &kp KP_NUMBER_3 &lt 1 KP_ENTER
 				&none           &kp KP_NUMBER_0 &kp KP_DOT      &none
 			>;
@@ -36,7 +36,7 @@
 
 		 func_layer {
 			 bindings = <
-								&none           &reset          &bootloader
+								&none           &sys_reset          &bootloader
 				&out OUT_TOG    &out OUT_USB    &out OUT_BLE    &none
 				&bt BT_SEL 0    &bt BT_PRV      &bt BT_NXT      &bt BT_CLR
 				&bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &tog 0

@@ -59,86 +59,41 @@ click **Add Configuration**, enter a name, and click **OK**.
 
 Change these options:
 
-| Option                                | Value                                                |
-| ------------------------------------- | ---------------------------------------------------- |
-| Compiler path                         | Path to your toolchain's GCC binary (see below)      |
-| IntelliSense mode                     | gcc-arm                                              |
-| Advanced Settings > Compiler commands | `${workspaceFolder}/app/build/compile_commands.json` |
+| Option                                | Value                                                  |
+| ------------------------------------- | ------------------------------------------------------ |
+| Compiler path                         | Path to your toolchain's GCC binary (see below)        |
+| IntelliSense mode                     | `linux-gcc-arm`, `windows-gcc-arm`, or `macos-gcc-arm` |
+| Advanced Settings > Compiler commands | `${workspaceFolder}/app/build/compile_commands.json`   |
+
+If you are developing inside a Docker container, set the IntelliSense mode to `linux-gcc-arm` regardless of the host operating system.
 
 #### Compiler Path
 
-<OsTabs>
-<TabItem value="debian">
-
-Open VS Code's integrated terminal and run the following commands. It will print
-your compiler path.
-
-```sh
-source zephyr/zephyr-env.sh
-echo ${ZEPHYR_SDK_INSTALL_DIR}/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
-```
-
-:::note
-You will need to update this path any time you switch to a new version of the Zephyr SDK.
-:::
-
-</TabItem>
-<TabItem value="win">
-
-Your compiler path is
+Open VS Code's integrated terminal and run the following command:
 
 ```
-${env:GNUARMEMB_TOOLCHAIN_PATH}/bin/arm-none-eabi-gcc.exe
+cmake -P zephyr/cmake/verify-toolchain.cmake
 ```
 
-This assumes `GNUARMEMB_TOOLCHAIN_PATH` is set in your system or user environment variables.
-If not, you will need to list the full path instead of using the `${env}` placeholder.
-
-</TabItem>
-<TabItem value="mac">
-
-Open VS Code's integrated terminal and run the following command. It will print
-your compiler path.
-
-```sh
-echo ${GNUARMEMB_TOOLCHAIN_PATH}/bin/arm-none-eabi-gcc
-```
-
-</TabItem>
-<TabItem value="raspberryos">
-
-Your compiler path is
+This should print something like
 
 ```
-/usr/bin/arm-none-eabi-gcc
+-- ZEPHYR_TOOLCHAIN_VARIANT: zephyr
+-- SDK_VERSION: 0.15.2
+-- ZEPHYR_SDK_INSTALL_DIR  : /home/marvin/.local/zephyr-sdk-0.15.2
 ```
 
-</TabItem>
-<TabItem value="fedora">
-
-Open VS Code's integrated terminal and run the following commands. It will print
-your compiler path.
-
-```sh
-source zephyr/zephyr-env.sh
-echo ${ZEPHYR_SDK_INSTALL_DIR}/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
-```
-
-:::note
-You will need to update this path any time you switch to a new version of the Zephyr SDK.
-:::
-
-</TabItem>
-<TabItem value="docker">
-
-Your compiler path is
+Your compiler path is the value of `ZEPHYR_SDK_INSTALL_DIR` plus `/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc`, for example:
 
 ```
-${env:ZEPHYR_SDK_INSTALL_DIR}/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
+/home/marvin/.local/zephyr-sdk-0.15.2/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc
 ```
 
-</TabItem>
-</OsTabs>
+If you are building for an platform other than ARM, replace `/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc` with the path to the compiler for the appropriate architecture, for example:
+
+```
+/home/marvin/.local/zephyr-sdk-0.15.2/riscv64-zephyr-elf/bin/riscv64-zephyr-elf-gcc
+```
 
 #### Compiler Commands Path
 

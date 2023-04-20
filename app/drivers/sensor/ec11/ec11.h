@@ -6,25 +6,18 @@
 
 #pragma once
 
-#include <device.h>
-#include <drivers/gpio.h>
-#include <sys/util.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/sys/util.h>
 
 struct ec11_config {
-    const char *a_label;
-    const uint8_t a_pin;
-    const uint8_t a_flags;
-
-    const char *b_label;
-    const uint8_t b_pin;
-    const uint8_t b_flags;
+    const struct gpio_dt_spec a;
+    const struct gpio_dt_spec b;
 
     const uint8_t resolution;
 };
 
 struct ec11_data {
-    const struct device *a;
-    const struct device *b;
     uint8_t ab_state;
     int8_t pulses;
     int8_t ticks;
