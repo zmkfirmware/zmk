@@ -1,8 +1,8 @@
 /*
  * Copyright (c) 2022 The ZMK Contributors
- *
  * SPDX-License-Identifier: MIT
  */
+
 #include "leeloo.dtsi"
 
 &kscan0 {
@@ -17,5 +17,10 @@
 };
 
 &left_encoder {
+<<<<<<< HEAD
     status = "okay";
 };
+=======
+	status = "okay";
+};
+>>>>>>> 69308eaf (Leeloo v2 and Leeloo v1 updates to support Zephyr 3.2)
