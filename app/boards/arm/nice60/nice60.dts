@@ -109,10 +109,10 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
 	status = "okay";
 };
 
-&spi0 {
+&spi3 {
 	compatible = "nordic,nrf-spim";
-	/* Cannot be used together with i2c0. */
-	pinctrl-0 = <&spi0_default>;
+
+	pinctrl-0 = <&spi3_default>;
 	pinctrl-names = "default";
 	status = "okay";
 
