@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/display.h>
@@ -38,7 +38,7 @@ void set_mods_symbol(lv_obj_t *label, struct mods_status_state state) {
         strcat(text, "G");
 
     lv_label_set_text(label, text);
-    lv_obj_align(label, NULL, LV_ALIGN_IN_BOTTOM_RIGHT, -1, 0);
+    lv_obj_align(label, LV_ALIGN_BOTTOM_RIGHT, -1, 0);
 }
 
 void mods_status_update_cb(struct mods_status_state state) {
@@ -51,10 +51,8 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_mods_status, struct mods_status_state, mods_s
 ZMK_SUBSCRIPTION(widget_mods_status, zmk_keycode_state_changed);
 
 int zmk_widget_mods_status_init(struct zmk_widget_mods_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_label_create(parent, NULL);
-    lv_label_set_align(widget->obj, LV_LABEL_ALIGN_RIGHT);
-
-    lv_obj_set_size(widget->obj, 40, 15);
+    widget->obj = lv_label_create(parent);
+    lv_obj_set_style_text_align(widget->obj, LV_TEXT_ALIGN_RIGHT, 0);
 
     sys_slist_append(&widgets, &widget->node);
 
