@@ -15,8 +15,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.1.0",
-    "@docusaurus/preset-classic": "^2.1.0",
+    "@docusaurus/core": "^2.4.0",
+    "@docusaurus/preset-classic": "^2.4.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.18",
@@ -43,12 +43,12 @@
     ]
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^2.1.0",
-    "@docusaurus/types": "^2.1.0",
-    "@tsconfig/docusaurus": "^1.0.5",
+    "@docusaurus/module-type-aliases": "^2.4.0",
+    "@docusaurus/types": "^2.4.0",
+    "@tsconfig/docusaurus": "^1.0.7",
     "@types/js-yaml": "^4.0.5",
-    "@types/react": "^17.0.3",
-    "@types/react-helmet": "^6.1.5",
+    "@types/react": "^17.0.58",
+    "@types/react-helmet": "^6.1.6",
     "@types/react-router-dom": "^5.1.7",
     "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
