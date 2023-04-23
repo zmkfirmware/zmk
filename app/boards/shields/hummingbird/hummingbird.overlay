@@ -10,8 +10,8 @@
     chosen {
         zmk,kscan = &kscan0;
         zmk,matrix_transform = &default_transform;
-	/delete-property/ zephyr,console;
-	/delete-property/ zephyr,shell-uart;
+    /delete-property/ zephyr,console;
+    /delete-property/ zephyr,shell-uart;
     };
 
     default_transform: keymap_transform_0 {

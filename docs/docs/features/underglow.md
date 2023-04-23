@@ -60,18 +60,18 @@ Here's an example on a definition that uses P0.06:
 #include <dt-bindings/led/led.h>
 
 &pinctrl {
-	spi3_default: spi3_default {
-		group1 {
-			psels = <NRF_PSEL(SPIM_MOSI, 0, 6)>;
-		};
-	};
+    spi3_default: spi3_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 6)>;
+        };
+    };
 
-	spi3_sleep: spi3_sleep {
-		group1 {
-			psels = <NRF_PSEL(SPIM_MOSI, 0, 6)>;
-			low-power-enable;
-		};
-	};
+    spi3_sleep: spi3_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 6)>;
+            low-power-enable;
+        };
+    };
 };
 
 &spi3 {
@@ -149,9 +149,9 @@ Once you have your `led_strip` properly defined you need to add it to the root d
 
 ```
 / {
-	chosen {
-		zmk,underglow = &led_strip;
-	};
+    chosen {
+        zmk,underglow = &led_strip;
+    };
 };
 ```
 
