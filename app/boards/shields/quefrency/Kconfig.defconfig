@@ -1,7 +1,7 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
- 
- 
+
+
 if SHIELD_QUEFRENCY_LEFT
 
 config ZMK_KEYBOARD_NAME

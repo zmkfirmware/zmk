@@ -17,7 +17,7 @@
 / {
 	keymap {
 		compatible = "zmk,keymap";
-		
+
 		default_layer {
 			bindings = <
                 &kp ESC    &kp Q     &kp W     &kp E  &kp R     &kp T      &kp Y   &kp U  &kp I     &kp O     &kp P     &kp BSPC
@@ -35,7 +35,7 @@
                 &trans     &trans     &trans     &kp TAB         &kp TAB         &kp TAB              &kp HOME   &kp PG_DN  &kp END
 			>;
 		};
-        
+
         raise_layer {
 			bindings = <
                 &kp TILDE  &kp EXCL   &kp AT    &kp HASH  &kp DLLR  &kp PRCNT  &kp CARET  &kp AMPS  &kp STAR  &kp LPAR   &kp RPAR   &trans
@@ -44,7 +44,7 @@
                 &trans     &trans     &trans    &kp TAB             &kp TAB               &kp TAB             &kp HOME   &kp PG_DN  &kp END
 			>;
 		};
-        
+
         control_layer {
 			bindings = <
                 &bt BT_CLR    &kp F1        &kp F2           &kp F3      &kp F4    &kp F5  &kp F6  &kp F7     &kp F8   &kp F9        &kp F10       &kp C_PP
@@ -55,4 +55,4 @@
 		};
 	};
 };
-            
+

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
- 
+
 #include <zephyr/linker/linker-defs.h>
 
         	__event_type_start = .; \

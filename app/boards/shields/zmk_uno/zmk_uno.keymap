@@ -29,8 +29,8 @@
 };
 
 REMOVE ME: */
- 
- 
+
+
 / {
     macros {
         ZMK_MACRO(ble_zero,
@@ -47,7 +47,7 @@ REMOVE ME: */
 
     keymap {
         compatible = "zmk,keymap";
- 
+
         default_layer {
             bindings = <
                 &kp A &bl BL_TOG
@@ -55,7 +55,7 @@ REMOVE ME: */
 
                 &out OUT_USB &ble_zero &ble_one
            >;
-	
+
            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
         };
     };

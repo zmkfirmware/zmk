@@ -22,7 +22,7 @@
 
 	keymap {
 		compatible = "zmk,keymap";
-		
+
 		default_layer {
 			bindings = <
 								&tog 1          &kp KP_NUMLOCK  &kp KP_SLASH

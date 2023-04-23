@@ -8,7 +8,7 @@
 		ZMK_MOCK_PRESS(0,0,100)
 		ZMK_MOCK_PRESS(1,0,100)
 		ZMK_MOCK_RELEASE(1,0,200)
-		/* timer fires */ 
+		/* timer fires */
 		ZMK_MOCK_RELEASE(0,0,10)
 	>;
 };

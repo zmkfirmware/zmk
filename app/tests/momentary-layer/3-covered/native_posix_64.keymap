@@ -27,7 +27,7 @@ and the original key is "covered".
 
 &kscan {
 	events = <
-		ZMK_MOCK_PRESS(0,1,10) 
+		ZMK_MOCK_PRESS(0,1,10)
 		ZMK_MOCK_RELEASE(0,1,10)
 	>;
 };

@@ -39,26 +39,26 @@
 
 &kscan {
 	events = <
-		/* if you're debugging these, remember that the timer can be triggered between 
+		/* if you're debugging these, remember that the timer can be triggered between
 		  events while stepping through code. */
 		/* all permutations of combo two press and release, combo triggered by timeout */
-		ZMK_MOCK_PRESS(0,0,10) 
-		ZMK_MOCK_PRESS(0,1,100) 
-		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_PRESS(0,0,10)
+		ZMK_MOCK_PRESS(0,1,100)
+		ZMK_MOCK_RELEASE(0,0,10)
 		ZMK_MOCK_RELEASE(0,1,10)
 
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_PRESS(0,0,100) 
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_PRESS(0,0,100)
 		ZMK_MOCK_RELEASE(0,1,10)
-		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_RELEASE(0,0,10)
 
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_PRESS(0,0,100) 
-		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_PRESS(0,0,100)
+		ZMK_MOCK_RELEASE(0,0,10)
 		ZMK_MOCK_RELEASE(0,1,10)
 
-		ZMK_MOCK_PRESS(0,0,10)  
-		ZMK_MOCK_PRESS(0,1,100) 
+		ZMK_MOCK_PRESS(0,0,10)
+		ZMK_MOCK_PRESS(0,1,100)
 		ZMK_MOCK_RELEASE(0,1,10)
 		ZMK_MOCK_RELEASE(0,0,10)
 	>;

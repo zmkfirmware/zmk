@@ -11,11 +11,11 @@
 		gpio-map-mask = <0xffffffff 0xffffffc0>;
 		gpio-map-pass-thru = <0 0x3f>;
 		gpio-map
-			= <0 0 &gpio0 8 0>		/* D0	D2 */ 			
-			, <1 0 &gpio0 6 0>		/* D1 	D3*/			
-			, <2 0 &gpio0 15 0>		/* D2 	D1*/			
-			, <3 0 &gpio0 17 0>		/* D3 	D0*/			
-			, <4 0 &gpio0 20 0>		/* D4/A6 	D4*/		
+			= <0 0 &gpio0 8 0>		/* D0	D2 */
+			, <1 0 &gpio0 6 0>		/* D1 	D3*/
+			, <2 0 &gpio0 15 0>		/* D2 	D1*/
+			, <3 0 &gpio0 17 0>		/* D3 	D0*/
+			, <4 0 &gpio0 20 0>		/* D4/A6 	D4*/
 			, <5 0 &gpio0 13 0>		/* D5 	C6*/
 			, <6 0 &gpio0 24 0>		/* D6/A7 	D7*/
 			, <7 0 &gpio0 9 0>		/* D7 	E6*/

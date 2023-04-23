@@ -17,7 +17,7 @@
 		compatible = "zmk,kscan-gpio-matrix";
 		label = "KSCAN";
 
-		diode-direction = "col2row";		
+		diode-direction = "col2row";
 	};
 
 	left_encoder: encoder_left {
