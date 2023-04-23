@@ -12,8 +12,8 @@ two behaviors and their parameters together, or allowing binding the sensor rota
 
 The standard sensor rotation behavior allows fully binding behaviors to be invoked:
 
-- If rotated counter-clockwise, the first bound behavior is triggered.
-- If rotated clockwise, the second bound behavior is triggered.
+- If rotated clockwise, the first bound behavior is triggered.
+- If rotated counter-clockwise, the second bound behavior is triggered.
 
 ### Configuration
 
@@ -26,7 +26,7 @@ Here is an example that binds the [RGB Underglow Behavior](/docs/behaviors/under
             compatible = "zmk,behavior-sensor-rotate";
             label = "RGB_ENCODER";
             #sensor-binding-cells = <0>;
-            bindings = <&rgb_ug RGB_BRD>, <&rgb_ug RGB_BRI>;
+            bindings = <&rgb_ug RGB_BRI>, <&rgb_ug RGB_BRD>;
         };
     };
 
@@ -46,8 +46,8 @@ Here is an example that binds the [RGB Underglow Behavior](/docs/behaviors/under
 The variable sensor rotation behavior is configured with two behaviors that each expect a single parameter,
 allowing the sensor rotation instance to be bound with two parameters at usage time.
 
-- If rotated counter-clockwise, the first bound behavior is triggered with the first parameter passed to the sensor rotation.
-- If rotated clockwise, the second bound behavior is triggered with the second parameter passed to the sensor rotation.
+- If rotated clockwise, the first bound behavior is triggered with the first parameter passed to the sensor rotation.
+- If rotated counter-clockwise, the second bound behavior is triggered with the second parameter passed to the sensor rotation.
 
 ### Configuration
 
@@ -70,7 +70,7 @@ First, defining the sensor rotation itself, binding the [Key Press Behavior](/do
         compatible = "zmk,keymap";
         base {
             ...
-            sensor-bindings = <&rot_kp PG_DN PG_UP>;
+            sensor-bindings = <&rot_kp PG_UP PG_DN>;
         }
     }
 };
