@@ -8,18 +8,18 @@
 #include <dt-bindings/zmk/keys.h>
 
 / {
-	keymap0: keymap {
-		compatible = "zmk,keymap";
+    keymap0: keymap {
+        compatible = "zmk,keymap";
 
-		default_layer {
-			bindings = <
-				&kp N9 &kp N8
-				&kp N7 &kp N6
-				       &kp N5
-				        &kp N4 &kp N3
-				              &kp N2 &kp N1
-				                        &kp N0
-				>;
-		};
-	};
+        default_layer {
+            bindings = <
+                &kp N9 &kp N8
+                &kp N7 &kp N6
+                       &kp N5
+                        &kp N4 &kp N3
+                              &kp N2 &kp N1
+                                        &kp N0
+                >;
+        };
+    };
 };

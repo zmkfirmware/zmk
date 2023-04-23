@@ -105,29 +105,29 @@ Example:
 #define NONE 0
 
 / {
-	keymap {
-		compatible = "zmk,keymap";
+    keymap {
+        compatible = "zmk,keymap";
 
-		default_layer {
-			bindings = <
+        default_layer {
+            bindings = <
                 &tog NAVI       &kp KP_DIVIDE   &kp KP_MULTIPLY &kp KP_MINUS
                 &kp NUMBER_7    &kp NUMBER_8    &kp NUMBER_9    &kp KP_PLUS
                 &kp NUMBER_4    &kp NUMBER_5    &kp NUMBER_6    &kp KP_PLUS
                 &kp NUMBER_1    &kp NUMBER_2    &kp NUMBER_3    &kp RETURN
                 &kp NUMBER_0    &kp NUMBER_0    &kp DOT         &kp RETURN
-			>;
-		};
+            >;
+        };
 
-		nav_layer {
-			bindings = <
+        nav_layer {
+            bindings = <
                 &tog NAVI       &kp KP_DIVIDE   &kp KP_MULTIPLY &kp KP_MINUS
                 &kp HOME        &kp UP          &kp PAGE_UP     &kp KP_PLUS
                 &kp LEFT        &none           &kp RIGHT       &kp KP_PLUS
                 &kp END         &kp DOWN        &kp PAGE_DOWN   &kp RETURN
                 &kp INSERT      &kp INSERT      &kp DEL         &kp RETURN
             >;
-		};
-	};
+        };
+    };
 };
 ```
 

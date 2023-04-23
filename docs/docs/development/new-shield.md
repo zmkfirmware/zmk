@@ -55,7 +55,7 @@ The `Kconfig.shield` file defines any additional Kconfig settings that may be re
 
 ```
 config SHIELD_MY_BOARD
-	def_bool $(shields_list_contains,my_board)
+    def_bool $(shields_list_contains,my_board)
 ```
 
 This will make sure that a new configuration value named `SHIELD_MY_BOARD` is set to true whenever `my_board` is used as the shield name, either as the `SHIELD` variable [in a local build](build-flash.md) or in your `build.yaml` file [when using Github Actions](../customization). Note that this configuration value will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
@@ -64,10 +64,10 @@ This will make sure that a new configuration value named `SHIELD_MY_BOARD` is se
 
 ```
 config SHIELD_MY_BOARD_LEFT
-	def_bool $(shields_list_contains,my_board_left)
+    def_bool $(shields_list_contains,my_board_left)
 
 config SHIELD_MY_BOARD_RIGHT
-	def_bool $(shields_list_contains,my_board_right)
+    def_bool $(shields_list_contains,my_board_right)
 ```
 
 ### Kconfig.defconfig
@@ -87,7 +87,7 @@ The keyboard name must be less than or equal to 16 characters in length, otherwi
 if SHIELD_MY_BOARD
 
 config ZMK_KEYBOARD_NAME
-	default "My Board"
+    default "My Board"
 
 endif
 ```
@@ -101,17 +101,17 @@ Finally, you'll want to turn on the split option for both sides. This can all be
 if SHIELD_MY_BOARD_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "My Board"
+    default "My Board"
 
 config ZMK_SPLIT_ROLE_CENTRAL
-	default y
+    default y
 
 endif
 
 if SHIELD_MY_BOARD_LEFT || SHIELD_MY_BOARD_RIGHT
 
 config ZMK_SPLIT
-	default y
+    default y
 
 endif
 ```
@@ -134,13 +134,13 @@ this might look something like:
 
 ```
 / {
-	chosen {
-		zmk,kscan = &kscan0;
-	};
+    chosen {
+        zmk,kscan = &kscan0;
+    };
 
-	kscan0: kscan_0 {
-		compatible = "zmk,kscan-gpio-matrix";
-		label = "KSCAN";
+    kscan0: kscan_0 {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
         diode-direction = "col2row";
 
         col-gpios
@@ -149,12 +149,12 @@ this might look something like:
             , <&pro_micro 16 GPIO_ACTIVE_HIGH>
             ;
 
-		row-gpios
-			= <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        row-gpios
+            = <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             , <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			;
-	};
+            ;
+    };
 };
 ```
 
@@ -174,43 +174,43 @@ For `col2row` directed boards like the iris, the shared .dtsi file may look like
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-	chosen {
-		zmk,kscan = &kscan0;
-		zmk,matrix_transform = &default_transform;
-	};
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &default_transform;
+    };
 
-	default_transform: keymap_transform_0 {
-		compatible = "zmk,matrix-transform";
-		columns = <16>;
-		rows = <4>;
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <16>;
+        rows = <4>;
 // | SW6  | SW5  | SW4  | SW3  | SW2  | SW1  |                 | SW1  | SW2  | SW3  | SW4  | SW5  | SW6  |
 // | SW12 | SW11 | SW10 | SW9  | SW8  | SW7  |                 | SW7  | SW8  | SW9  | SW10 | SW11 | SW12 |
 // | SW18 | SW17 | SW16 | SW15 | SW14 | SW13 |                 | SW13 | SW14 | SW15 | SW16 | SW17 | SW18 |
 // | SW24 | SW23 | SW22 | SW21 | SW20 | SW19 | SW25 |   | SW25 | SW19 | SW20 | SW21 | SW22 | SW23 | SW24 |
 //                      | SW29 | SW28 | SW27 | SW26 |   | SW26 | SW27 | SW28 | SW29 |
-		map = <
+        map = <
 RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5)                 RC(0,6) RC(0,7) RC(0,8) RC(0,9) RC(0,10) RC(0,11)
 RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5)                 RC(1,6) RC(1,7) RC(1,8) RC(1,9) RC(1,10) RC(1,11)
 RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)                 RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10) RC(2,11)
 RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,2) RC(4,9) RC(3,6) RC(3,7) RC(3,8) RC(3,9) RC(3,10) RC(3,11)
-                        		RC(4,3) RC(4,4) RC(4,5) RC(4,6) RC(4,7) RC(4,8)
-		>;
-	};
+                                RC(4,3) RC(4,4) RC(4,5) RC(4,6) RC(4,7) RC(4,8)
+        >;
+    };
 
-	kscan0: kscan {
-		compatible = "zmk,kscan-gpio-matrix";
-		label = "KSCAN";
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
 
-		diode-direction = "col2row";
-		row-gpios
-			= <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row A from the schematic file
-			, <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row B from the schematic file
-			, <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row C from the schematic file
-			, <&pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row D from the schematic file
-			, <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row E from the schematic file
-			;
+        diode-direction = "col2row";
+        row-gpios
+            = <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row A from the schematic file
+            , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row B from the schematic file
+            , <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row C from the schematic file
+            , <&pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row D from the schematic file
+            , <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row E from the schematic file
+            ;
 
-	};
+    };
 };
 ```
 
@@ -230,14 +230,14 @@ This is exemplified with the iris .overlay files.
 #include "iris.dtsi" // Notice that the main dtsi files are included in the overlay.
 
 &kscan0 {
-	col-gpios
-		= <&pro_micro 19 GPIO_ACTIVE_HIGH> // col1 in the schematic
-		, <&pro_micro 18 GPIO_ACTIVE_HIGH> // col2 in the schematic
-		, <&pro_micro 15 GPIO_ACTIVE_HIGH> // col3 in the schematic
-		, <&pro_micro 14 GPIO_ACTIVE_HIGH> // col4 in the schematic
-		, <&pro_micro 16 GPIO_ACTIVE_HIGH> // col5 in the schematic
-		, <&pro_micro 10 GPIO_ACTIVE_HIGH> // col6 in the schematic
-		;
+    col-gpios
+        = <&pro_micro 19 GPIO_ACTIVE_HIGH> // col1 in the schematic
+        , <&pro_micro 18 GPIO_ACTIVE_HIGH> // col2 in the schematic
+        , <&pro_micro 15 GPIO_ACTIVE_HIGH> // col3 in the schematic
+        , <&pro_micro 14 GPIO_ACTIVE_HIGH> // col4 in the schematic
+        , <&pro_micro 16 GPIO_ACTIVE_HIGH> // col5 in the schematic
+        , <&pro_micro 10 GPIO_ACTIVE_HIGH> // col6 in the schematic
+        ;
 };
 ```
 
@@ -247,18 +247,18 @@ This is exemplified with the iris .overlay files.
 #include "iris.dtsi"
 
 &default_transform { // The matrix transform for this board is 6 columns over because the left half is 6 columns wide according to the matrix.
-	col-offset = <6>;
+    col-offset = <6>;
 };
 
 &kscan0 {
-	col-gpios
-		= <&pro_micro 10 GPIO_ACTIVE_HIGH> // col6 in the schematic
-		, <&pro_micro 16 GPIO_ACTIVE_HIGH> // col5 in the schematic
-		, <&pro_micro 14 GPIO_ACTIVE_HIGH> // col4 in the schematic
-		, <&pro_micro 15 GPIO_ACTIVE_HIGH> // col3 in the schematic
-		, <&pro_micro 18 GPIO_ACTIVE_HIGH>  // col2 in the schematic
-		, <&pro_micro 19 GPIO_ACTIVE_HIGH>  // col1 in the schematic
-		;
+    col-gpios
+        = <&pro_micro 10 GPIO_ACTIVE_HIGH> // col6 in the schematic
+        , <&pro_micro 16 GPIO_ACTIVE_HIGH> // col5 in the schematic
+        , <&pro_micro 14 GPIO_ACTIVE_HIGH> // col4 in the schematic
+        , <&pro_micro 15 GPIO_ACTIVE_HIGH> // col3 in the schematic
+        , <&pro_micro 18 GPIO_ACTIVE_HIGH>  // col2 in the schematic
+        , <&pro_micro 19 GPIO_ACTIVE_HIGH>  // col1 in the schematic
+        ;
 };
 
 ```
@@ -316,28 +316,28 @@ Here is an example for the [nice60](https://github.com/Nicell/nice60), which use
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-	chosen {
-		zmk,kscan = &kscan0;
-		zmk,matrix_transform = &default_transform;
-	};
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &default_transform;
+    };
 
-	default_transform: keymap_transform_0 {
-		compatible = "zmk,matrix-transform";
-		columns = <8>;
-		rows = <8>;
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <8>;
+        rows = <8>;
 // | MX1  | MX2  | MX3  | MX4  | MX5  | MX6  | MX7  | MX8  | MX9  | MX10 | MX11 | MX12 | MX13 |    MX14     |
 // |   MX15   | MX16 | MX17 | MX18 | MX19 | MX20 | MX21 | MX22 | MX23 | MX34 | MX25 | MX26 | MX27 |  MX28   |
 // |    MX29    | MX30 | MX31 | MX32 | MX33 | MX34 | MX35 | MX36 | MX37 | MX38 | MX39 | MX40 |     MX41     |
 // |     MX42      | MX43 | MX44 | MX45 | MX46 | MX47 | MX48 | MX49 | MX50 | MX51 | MX52 |       MX53       |
 // |  MX54  |  MX55  |  MX56  |                  MX57                   |  MX58  |  MX59  |  MX60  |  MX61  |
-		map = <
+        map = <
 RC(3,0)  RC(2,0) RC(1,0) RC(0,0) RC(1,1) RC(0,1) RC(0,2) RC(1,3) RC(0,3) RC(1,4) RC(0,4) RC(0,5) RC(1,6)     RC(1,7)
 RC(4,0)    RC(4,1) RC(3,1) RC(2,1) RC(2,2) RC(1,2) RC(2,3) RC(3,4) RC(2,4) RC(2,5) RC(1,5) RC(2,6) RC(2,7)   RC(3,7)
 RC(5,0)     RC(5,1) RC(5,2) RC(4,2) RC(3,2) RC(4,3) RC(3,3) RC(4,4) RC(4,5) RC(3,5) RC(4,6) RC(3,6)          RC(4,7)
 RC(6,0)       RC(6,1) RC(6,2) RC(6,3) RC(5,3) RC(6,4) RC(5,4) RC(6,5) RC(5,5) RC(6,6) RC(5,6)                RC(5,7)
 RC(7,0)    RC(7,1)   RC(7,2)                     RC(7,3)                    RC(7,5)    RC(7,6)    RC(6,7)    RC(7,7)
-		>;
-	};
+        >;
+    };
 ```
 
 Some important things to note:
@@ -433,13 +433,13 @@ In your device tree file you will need to add the following lines to define the 
 
 ```
 left_encoder: encoder_left {
-		compatible = "alps,ec11";
-		label = "LEFT_ENCODER";
-		a-gpios = <PIN_A (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-		b-gpios = <PIN_B (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-		resolution = <4>;
-		status = "disabled";
-	};
+        compatible = "alps,ec11";
+        label = "LEFT_ENCODER";
+        a-gpios = <PIN_A (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <PIN_B (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        resolution = <4>;
+        status = "disabled";
+    };
 ```
 
 Here you will have to replace PIN_A and PIN_B with the appropriate pins that your PCB utilizes for the encoder(s). For keyboards that use the Pro Micro or any of the Pro Micro replacements, Sparkfun's [Pro Micro Hookup Guide](https://learn.sparkfun.com/tutorials/pro-micro--fio-v3-hookup-guide/hardware-overview-pro-micro) has a pinout diagram that can be useful to determine the right pins. Reference either the blue numbers labeled "Arduino" (digital pins) or the green numbers labeled "Analog" (analog pins). For pins that are labeled as both digital and analog, refer to your specific board's .dtsi file to determine how you should refer to that pin.
@@ -450,9 +450,9 @@ Once you have defined the encoder sensors, you will have to add them to the list
 
 ```
 sensors {
-		compatible = "zmk,keymap-sensors";
-		sensors = <&left_encoder &right_encoder>;
-	};
+        compatible = "zmk,keymap-sensors";
+        sensors = <&left_encoder &right_encoder>;
+    };
 ```
 
 In this example, a left_encoder and right_encoder are both added. Additional encoders can be added with spaces separating each, and the order they are added here determines the order in which you define their behavior in your keymap.
@@ -463,7 +463,7 @@ Add the following lines to your overlay file(s) to enable the encoder:
 
 ```
 &left_encoder {
-	status = "okay";
+    status = "okay";
 };
 ```
 
