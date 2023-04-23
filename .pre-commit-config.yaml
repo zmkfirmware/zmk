@@ -15,6 +15,9 @@ repos:
     rev: v2.7.1
     hooks:
       - id: prettier
+        # Workaround for https://github.com/pre-commit/mirrors-prettier/issues/29
+        additional_dependencies:
+          - prettier@2.8.7
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
