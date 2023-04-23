@@ -7,7 +7,7 @@ toolchain:
 - gnuarmemb
 - xtools
 ram: 40
-supported:
+supported
 - encoders
 - switches
 - underglow
