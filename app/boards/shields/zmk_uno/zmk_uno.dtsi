@@ -11,6 +11,22 @@
 
 &arduino_i2c {
     status = "okay";
+
+    oled: ssd1306@3c {
+        compatible = "solomon,ssd1306fb";
+        reg = <0x3c>;
+        label = "DISPLAY";
+        width = <128>;
+        height = <64>;
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <63>;
+        prechargep = <0x22>;
+
+        power-domain = <&core_power_domain>;
+        zephyr,pm-device-runtime-auto;
+    };
 };
 
 nice_view_spi: &arduino_spi {
@@ -22,10 +38,16 @@ nice_view_spi: &arduino_spi {
     // on the bus, properly picking up the first `cs-gpios` specifier.
     ls0xx@0 {
         reg = <0>;
+
+        power-domain = <&core_power_domain>;
+        zephyr,pm-device-runtime-auto;
     };
 
     led_strip: ws2812@0 {
         compatible = "worldsemi,ws2812-spi";
+
+        power-domain = <&rgb_power>;
+        zephyr,pm-device-runtime-auto;
 
         /* SPI */
         reg = <0>; /* ignored, but necessary for SPI bindings */
@@ -37,6 +59,7 @@ nice_view_spi: &arduino_spi {
         spi-zero-frame = <0x40>;
 
         color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+
     };
 };
 
@@ -44,19 +67,24 @@ nice_view_spi: &arduino_spi {
     chosen {
         zmk,backlight = &backlight;
         zmk,underglow = &led_strip;
+        zephyr,display = &oled;
     };
 
-    // Commented out until we add more powerful power domain support
-    // external_power {
-        //  compatible = "zmk,ext-power-generic";
-        //  init-delay-ms = <200>;
-        //  control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
-    // };
+    core_power_domain: core_power_domain {
+        compatible = "power-domain-gpio";
+        startup-delay-us = <2000>;
+        off-on-delay-us = <2000>;
+        enable-gpios = <&arduino_header 0 GPIO_ACTIVE_LOW>;
+        zephyr,pm-device-runtime-auto;
+    };
 
-    rgb_power {
-        compatible = "zmk,ext-power-generic";
-        init-delay-ms = <200>;
-        control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
+    rgb_power: rgb_power {
+        compatible = "power-domain-gpio";
+        startup-delay-us = <200>;
+        off-on-delay-us = <2000>;
+        enable-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
+        power-domain = <&core_power_domain>;
+        zephyr,pm-device-runtime-auto;
     };
 
     backlight: gpioleds {
