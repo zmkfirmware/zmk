@@ -298,7 +298,7 @@ config SPI
 
 config ZMK_RGB_UNDERGLOW_EXT_POWER
     bool "RGB underglow toggling also controls external power"
-    default y
+    default y if !POWER_DOMAIN
 
 config ZMK_RGB_UNDERGLOW_BRT_MIN
     int "RGB underglow minimum brightness in percent"

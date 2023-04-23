@@ -7,6 +7,7 @@
 #include <zephyr/device.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
+#include <zephyr/pm/device_runtime.h>
 #include <zephyr/settings/settings.h>
 
 #include <math.h>
@@ -274,6 +275,7 @@ static int zmk_rgb_underglow_init(void) {
 #endif
 
     if (state.on) {
+        pm_device_runtime_get(led_strip);
         k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
     }
 
@@ -300,6 +302,14 @@ int zmk_rgb_underglow_get_state(bool *on_off) {
 int zmk_rgb_underglow_on(void) {
     if (!led_strip)
         return -ENODEV;
+    }
+
+    // Newer PM device approach to ensuring powered on when used.
+    const int rc = pm_device_runtime_get(led_strip);
+    if (rc < 0) {
+        LOG_ERR("Failed to enable/get the PM device (%d)", rc);
+        return rc;
+    }
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
     if (ext_power != NULL) {
@@ -344,6 +354,8 @@ int zmk_rgb_underglow_off(void) {
 
     k_timer_stop(&underglow_tick);
     state.on = false;
+
+    pm_device_runtime_put(led_strip);
 
     return zmk_rgb_underglow_save_state();
 }
