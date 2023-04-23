@@ -21,7 +21,7 @@
 
 	keymap {
 		compatible = "zmk,keymap";
-		
+
 		default_layer {
 			bindings = <
 								&kp KP_NUMLOCK  &kp KP_ASTERISK &kp KP_MINUS

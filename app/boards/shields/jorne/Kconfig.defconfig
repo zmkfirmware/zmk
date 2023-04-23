@@ -13,7 +13,7 @@ if SHIELD_JORNE_LEFT || SHIELD_JORNE_RIGHT
 
 config ZMK_SPLIT
 	default y
- 
+
 if ZMK_DISPLAY
 
 config I2C

@@ -42,7 +42,7 @@
 		resolution = <4>;
 		status = "disabled";
 	};
-	
+
 	encoder_2: encoder_2 {
 		compatible = "alps,ec11";
 		label = "Encoder 2";

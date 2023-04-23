@@ -13,7 +13,7 @@ if SHIELD_WATERFOWL_LEFT || SHIELD_WATERFOWL_RIGHT
 
 config ZMK_SPLIT
 	default y
- 
+
 if ZMK_DISPLAY
 
 config I2C

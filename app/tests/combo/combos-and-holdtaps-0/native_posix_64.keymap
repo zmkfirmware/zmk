@@ -8,7 +8,7 @@
 
 /*
 This test fails if the order of event handlers for hold-taps
-and combos is wrong. Hold-taps need to process key position events 
+and combos is wrong. Hold-taps need to process key position events
 first so the decision to hold or tap can be made.
 */
 / {
@@ -37,11 +37,11 @@ first so the decision to hold or tap can be made.
 
 &kscan {
 	events = <
-		ZMK_MOCK_PRESS(0,0,10) 
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_PRESS(0,2,10) 
-		ZMK_MOCK_RELEASE(0,0,10) 
-		ZMK_MOCK_RELEASE(0,1,10) 
+		ZMK_MOCK_PRESS(0,0,10)
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_PRESS(0,2,10)
+		ZMK_MOCK_RELEASE(0,0,10)
+		ZMK_MOCK_RELEASE(0,1,10)
 		ZMK_MOCK_RELEASE(0,2,10)
 	>;
 };

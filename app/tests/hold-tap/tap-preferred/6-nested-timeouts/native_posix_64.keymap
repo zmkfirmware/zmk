@@ -2,7 +2,7 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/kscan_mock.h>
 
-/* 
+/*
 * A hold-tap with long tapping term is pressed first.
 * A hold-tap with short tapping term is quickly tapped.
 * The short tapping term hold-tap should 'tap', not 'hold'.
@@ -45,9 +45,9 @@
 
 &kscan {
 	events = <
-		ZMK_MOCK_PRESS(0,0,20) 
-		ZMK_MOCK_PRESS(0,1,20) 
-		ZMK_MOCK_RELEASE(0,1,200) 
-		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_PRESS(0,0,20)
+		ZMK_MOCK_PRESS(0,1,20)
+		ZMK_MOCK_RELEASE(0,1,200)
+		ZMK_MOCK_RELEASE(0,0,10)
 	>;
 };

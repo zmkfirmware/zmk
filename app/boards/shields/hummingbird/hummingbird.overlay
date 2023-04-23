@@ -49,7 +49,7 @@
             , <&xiao_d 5 GPIO_ACTIVE_HIGH>
             ;
     };
-    
+
 };
 
 &xiao_spi { status = "disabled"; };

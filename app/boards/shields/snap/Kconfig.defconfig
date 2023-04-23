@@ -15,7 +15,7 @@ if SHIELD_SNAP_LEFT || SHIELD_SNAP_RIGHT
 
 config ZMK_SPLIT
 	default y
- 
+
 if ZMK_DISPLAY
 
 config I2C

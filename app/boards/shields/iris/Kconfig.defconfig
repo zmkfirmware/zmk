@@ -15,5 +15,5 @@ if SHIELD_IRIS_LEFT || SHIELD_IRIS_RIGHT
 
 config ZMK_SPLIT
 	default y
-	
+
 endif

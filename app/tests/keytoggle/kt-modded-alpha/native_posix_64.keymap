@@ -5,18 +5,18 @@
 &kscan {
 	events = <
     /* Toggle LS(A) on */
-		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,0,10)
 		ZMK_MOCK_RELEASE(0,0,10)
     /* Toggle LS(A) off */
-		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,0,10)
 		ZMK_MOCK_RELEASE(0,0,10)
     /* Press A */
-		ZMK_MOCK_PRESS(1,0,10) 
+		ZMK_MOCK_PRESS(1,0,10)
     /* Toggle LS(A) on */
-		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,0,10)
 		ZMK_MOCK_RELEASE(0,0,10)
     /* Toggle LS(A) off */
-		ZMK_MOCK_PRESS(0,0,10) 
+		ZMK_MOCK_PRESS(0,0,10)
 		ZMK_MOCK_RELEASE(0,0,10)
     /* Release A */
 		ZMK_MOCK_RELEASE(1,0,10)

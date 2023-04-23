@@ -15,7 +15,7 @@ if SHIELD_MICRODOX_LEFT || SHIELD_MICRODOX_RIGHT
 
 config ZMK_SPLIT
 	default y
- 
+
 if ZMK_DISPLAY
 
 config I2C

@@ -1,8 +1,8 @@
 
 # Copyright (c) 2020 Derek Schmell
 # SPDX-License-Identifier: MIT
- 
- 
+
+
 if SHIELD_SPLITREUS62_LEFT
 
 config ZMK_KEYBOARD_NAME
@@ -17,5 +17,5 @@ if SHIELD_SPLITREUS62_LEFT || SHIELD_SPLITREUS62_RIGHT
 
 config ZMK_SPLIT
 	default y
-	
+
 endif
