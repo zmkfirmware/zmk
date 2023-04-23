@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 config SHIELD_BFO9000_LEFT
-	def_bool $(shields_list_contains,bfo9000_left)
+    def_bool $(shields_list_contains,bfo9000_left)
 
 config SHIELD_BFO9000_RIGHT
-	def_bool $(shields_list_contains,bfo9000_right)
+    def_bool $(shields_list_contains,bfo9000_right)

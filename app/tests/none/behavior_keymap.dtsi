@@ -3,20 +3,20 @@
 #include <dt-bindings/zmk/kscan_mock.h>
 
 / {
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
 
-		default_layer {
-			bindings = <
-				&none &mo 1
-				&kp A &none>;
-		};
+        default_layer {
+            bindings = <
+                &none &mo 1
+                &kp A &none>;
+        };
 
-		lower_layer {
-			bindings = <
-				&none &trans
-				&none  &kp A>;
-		};
-	};
+        lower_layer {
+            bindings = <
+                &none &trans
+                &none  &kp A>;
+        };
+    };
 };

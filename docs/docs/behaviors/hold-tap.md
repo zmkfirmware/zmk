@@ -57,14 +57,14 @@ For example, the following hold-tap configuration enables `global-quick-tap` wit
 
 ```
 gqt: global-quick-tap {
-	compatible = "zmk,behavior-hold-tap";
-	label = "GLOBAL_QUICK_TAP";
-	#binding-cells = <2>;
-	flavor = "tap-preferred";
-	tapping-term-ms = <200>;
-	quick-tap-ms = <125>;
-	global-quick-tap;
-	bindings = <&kp>, <&kp>;
+    compatible = "zmk,behavior-hold-tap";
+    label = "GLOBAL_QUICK_TAP";
+    #binding-cells = <2>;
+    flavor = "tap-preferred";
+    tapping-term-ms = <200>;
+    quick-tap-ms = <125>;
+    global-quick-tap;
+    bindings = <&kp>, <&kp>;
 };
 ```
 
@@ -80,7 +80,7 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 
 ```
 &mt {
-	retro-tap;
+    retro-tap;
 };
 ```
 
@@ -101,28 +101,28 @@ See the following example, which uses a hold-tap behavior definition, configured
 #include <behaviors.dtsi>
 
 / {
-	behaviors {
-		pht: positional_hold_tap {
-			compatible = "zmk,behavior-hold-tap";
-			label = "POSITIONAL_HOLD_TAP";
-			#binding-cells = <2>;
-			flavor = "hold-preferred";
-			tapping-term-ms = <400>;
-			quick-tap-ms = <200>;
-			bindings = <&kp>, <&kp>;
-			hold-trigger-key-positions = <1>;    // <---[[the W key]]
-		};
-	};
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
-		default_layer {
-			bindings = <
-				//  position 0         position 1       position 2
-				&pht LEFT_SHIFT Q        &kp W            &kp E
-			>;
-		};
-	};
+    behaviors {
+        pht: positional_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "POSITIONAL_HOLD_TAP";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <400>;
+            quick-tap-ms = <200>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <1>;    // <---[[the W key]]
+        };
+    };
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+        default_layer {
+            bindings = <
+                //  position 0         position 1       position 2
+                &pht LEFT_SHIFT Q        &kp W            &kp E
+            >;
+        };
+    };
 };
 ```
 
@@ -154,28 +154,28 @@ The following are suggested hold-tap configurations that work well with home row
 #include <behaviors.dtsi>
 
 / {
-	behaviors {
-		lh_pht: left_hand_positional_hold_tap {
-			compatible = "zmk,behavior-hold-tap";
-			label = "LEFT_POSITIONAL_HOLD_TAP";
-			#binding-cells = <2>;
-			flavor = "tap-unless-interrupted";
-			tapping-term-ms = <100>;                        // <---[[produces tap if held longer than tapping-term-ms]]
-			quick-tap-ms = <200>;
-			bindings = <&kp>, <&kp>;
-			hold-trigger-key-positions = <5 6 7 8 9 10>;    // <---[[right-hand keys]]
-		};
-	};
+    behaviors {
+        lh_pht: left_hand_positional_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LEFT_POSITIONAL_HOLD_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <100>;                        // <---[[produces tap if held longer than tapping-term-ms]]
+            quick-tap-ms = <200>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <5 6 7 8 9 10>;    // <---[[right-hand keys]]
+        };
+    };
 
-	keymap {
-		compatible = "zmk,keymap";
-		default_layer {
-			bindings = <
-				// position 0     pos 1             pos 2             pos 3             pos 4    pos 5    pos 6    pos 7    pos 8    pos 9    pos 10
-				&lh_pht LSFT A    &lh_pht LGUI S    &lh_pht LALT D    &lh_pht LCTL F    &kp G    &kp H    &kp I    &kp J    &kp K    &kp L    &kp SEMI
-			>;
-		};
-	};
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                // position 0     pos 1             pos 2             pos 3             pos 4    pos 5    pos 6    pos 7    pos 8    pos 9    pos 10
+                &lh_pht LSFT A    &lh_pht LGUI S    &lh_pht LALT D    &lh_pht LCTL F    &kp G    &kp H    &kp I    &kp J    &kp K    &kp L    &kp SEMI
+            >;
+        };
+    };
 };
 ```
 
@@ -186,26 +186,26 @@ The following are suggested hold-tap configurations that work well with home row
 #include <dt-bindings/zmk/keys.h>
 
 / {
-	behaviors {
-		hm: homerow_mods {
-			compatible = "zmk,behavior-hold-tap";
-			label = "HOMEROW_MODS";
-			#binding-cells = <2>;
-			tapping-term-ms = <150>;
-			quick-tap-ms = <0>;
-			flavor = "tap-preferred";
-			bindings = <&kp>, <&kp>;
-		};
-	};
+    behaviors {
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOMEROW_MODS";
+            #binding-cells = <2>;
+            tapping-term-ms = <150>;
+            quick-tap-ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
 
-	keymap {
-		compatible = "zmk,keymap";
-		default_layer {
-			bindings = <
-	            &hm LCTRL A &hm LGUI S &hm LALT D &hm LSHIFT F
-			>;
-		};
-	};
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                &hm LCTRL A &hm LGUI S &hm LALT D &hm LSHIFT F
+            >;
+        };
+    };
 };
 ```
 
@@ -216,26 +216,26 @@ The following are suggested hold-tap configurations that work well with home row
 #include <dt-bindings/zmk/keys.h>
 
 / {
-	behaviors {
-		bhm: balanced_homerow_mods {
-			compatible = "zmk,behavior-hold-tap";
-			label = "HOMEROW_MODS";
-			#binding-cells = <2>;
-			tapping-term-ms = <200>;    // <---[[moderate duration]]
-			quick-tap-ms = <0>;
-			flavor = "balanced";
-			bindings = <&kp>, <&kp>;
-		};
-	};
+    behaviors {
+        bhm: balanced_homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOMEROW_MODS";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;    // <---[[moderate duration]]
+            quick-tap-ms = <0>;
+            flavor = "balanced";
+            bindings = <&kp>, <&kp>;
+        };
+    };
 
-	keymap {
-		compatible = "zmk,keymap";
-		default_layer {
-			bindings = <
-	            &bhm LCTRL A &bhm LGUI S &bhm LALT D &bhm LSHIFT F
-			>;
-		};
-	};
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                &bhm LCTRL A &bhm LGUI S &bhm LALT D &bhm LSHIFT F
+            >;
+        };
+    };
 };
 ```
 
@@ -264,14 +264,14 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
         };
     };
 
-	keymap {
-		compatible = "zmk,keymap";
-		default_layer {
-			bindings = <
-	            AS(Q) AS(W) AS(E) AS(R) AS(T) AS(Y) // Autoshift applied for QWERTY keys
-			>;
-		};
-	};
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                AS(Q) AS(W) AS(E) AS(R) AS(T) AS(Y) // Autoshift applied for QWERTY keys
+            >;
+        };
+    };
 };
 ```
 
@@ -300,14 +300,14 @@ This hold-tap example implements a [momentary-layer](layers.md/#momentary-layer)
     };
 
     keymap {
-		compatible = "zmk,keymap";
-		default_layer {
-			bindings = <
-				&mo_tog 2 1     // &mo 2 on hold, &tog 1 on tap
-				MO_TOG(3)       // &mo 3 on hold, &tog 3 on tap
-			>;
-		};
-	};
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                &mo_tog 2 1     // &mo 2 on hold, &tog 1 on tap
+                MO_TOG(3)       // &mo 3 on hold, &tog 3 on tap
+            >;
+        };
+    };
 };
 ```
 
