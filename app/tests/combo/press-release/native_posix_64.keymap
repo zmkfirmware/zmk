@@ -3,7 +3,7 @@
 #include <dt-bindings/zmk/kscan-mock.h>
 
 / {
-	combos {	
+	combos {
 		compatible = "zmk,combos";
 		combo_one {
 			timeout-ms = <30>;
@@ -28,24 +28,24 @@
 &kscan {
 	events = <
 		/* all different combinations of press and release order */
-		ZMK_MOCK_PRESS(0,0,10) 
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_PRESS(0,0,10)
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_RELEASE(0,0,10)
 		ZMK_MOCK_RELEASE(0,1,10)
 
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_PRESS(0,0,10) 
-		ZMK_MOCK_RELEASE(0,0,10) 
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_PRESS(0,0,10)
+		ZMK_MOCK_RELEASE(0,0,10)
 		ZMK_MOCK_RELEASE(0,1,10)
 
-		ZMK_MOCK_PRESS(0,0,10) 
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_RELEASE(0,1,10) 
+		ZMK_MOCK_PRESS(0,0,10)
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_RELEASE(0,1,10)
 		ZMK_MOCK_RELEASE(0,0,10)
 
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_PRESS(0,0,10) 
-		ZMK_MOCK_RELEASE(0,1,10) 
+		ZMK_MOCK_PRESS(0,1,10)
+		ZMK_MOCK_PRESS(0,0,10)
+		ZMK_MOCK_RELEASE(0,1,10)
 		ZMK_MOCK_RELEASE(0,0,10)
 	>;
 };

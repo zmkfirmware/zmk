@@ -20,7 +20,7 @@
 
 		default_layer {
 			bindings = <
-				&ht_bal LEFT_SHIFT F &ht_bal LEFT_CONTROL J 
+				&ht_bal LEFT_SHIFT F &ht_bal LEFT_CONTROL J
 				&ht_bal LEFT_GUI H &ht_bal LEFT_ALT L
 			>;
 		};
@@ -29,13 +29,13 @@
 
 &kscan {
 	events = <
-	 	ZMK_MOCK_PRESS(0,0,100) 
-		ZMK_MOCK_PRESS(0,1,100) 
+	 	ZMK_MOCK_PRESS(0,0,100)
+		ZMK_MOCK_PRESS(0,1,100)
 		ZMK_MOCK_PRESS(1,0,100)
-		ZMK_MOCK_PRESS(1,1,100) 
-		ZMK_MOCK_RELEASE(0,0,100) 
-		ZMK_MOCK_RELEASE(0,1,100) 
-		ZMK_MOCK_RELEASE(1,0,100) 
-		ZMK_MOCK_RELEASE(1,1,100) 
+		ZMK_MOCK_PRESS(1,1,100)
+		ZMK_MOCK_RELEASE(0,0,100)
+		ZMK_MOCK_RELEASE(0,1,100)
+		ZMK_MOCK_RELEASE(1,0,100)
+		ZMK_MOCK_RELEASE(1,1,100)
 	>;
 };
