@@ -7,6 +7,7 @@
 #include <zephyr/kernel.h>
 #include <zephyr/init.h>
 #include <zephyr/device.h>
+#include <zephyr/pm/device.h>
 #include <zephyr/pm/device_runtime.h>
 #include <zephyr/devicetree.h>
 
@@ -117,6 +118,19 @@ void initialize_display(struct k_work *work) {
         LOG_ERR("Failed to find display device");
         return;
     }
+
+#if IS_ENABLED(CONFIG_ZMK_DISPLAY_DEFAULT_POWER_DOMAIN) && DT_HAS_CHOSEN(zmk_default_power_domain)
+
+    pm_device_runtime_enable(display);
+    if (!pm_device_on_power_domain(display)) {
+        int rc =
+            pm_device_power_domain_add(display, DEVICE_DT_GET(DT_CHOSEN(zmk_default_power_domain)));
+        if (rc < 0) {
+            LOG_ERR("Failed to add the display to the default power domain (0x%02x)", -rc);
+        }
+    }
+
+#endif
 
     initialized = true;
 
