@@ -49,8 +49,6 @@ Defines how long a key must be pressed to trigger Hold behavior.
 
 If you press a tapped hold-tap again within `quick-tap-ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
 
-In QMK, unlike ZMK, this functionality is enabled by default, and you turn it off using `TAPPING_FORCE_HOLD`.
-
 #### `global-quick-tap`
 
 If `global-quick-tap` is enabled, then `quick-tap-ms` will apply not only when the given hold-tap is tapped, but for any key tapped before it. This effectively disables the hold-tap when typing quickly, which can be quite useful for homerow mods. It can also have the effect of removing the input delay when typing quickly.
@@ -319,4 +317,4 @@ This hold-tap example implements a [momentary-layer](layers.md/#momentary-layer)
 
 ### Comparison to QMK
 
-The hold-preferred flavor works similar to the `HOLD_ON_OTHER_KEY_PRESS` setting in QMK. The 'balanced' flavor is similar to the `PERMISSIVE_HOLD` setting, and the `tap-preferred` flavor is similar to `IGNORE_MOD_TAP_INTERRUPT`.
+The `hold-preferred` flavor works similar to the `HOLD_ON_OTHER_KEY_PRESS` setting in QMK. The `balanced` flavor is similar to the `PERMISSIVE_HOLD` setting, and the `tap-preferred` flavor is the QMK default.
