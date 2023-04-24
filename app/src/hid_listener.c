@@ -28,7 +28,7 @@ static int hid_listener_keycode_pressed(const struct zmk_keycode_state_changed *
     }
     explicit_mods_changed = zmk_hid_register_mods(ev->explicit_modifiers);
     implicit_mods_changed = zmk_hid_implicit_modifiers_press(ev->implicit_modifiers);
-    if (ev->usage_page != HID_USAGE_KEY &&
+    if (ev->usage_page != HID_USAGE_KEY && ev->usage_page != (HID_USAGE_VENDOR_PLOVER & 0xFF) &&
         (explicit_mods_changed > 0 || implicit_mods_changed > 0)) {
         err = zmk_endpoints_send_report(HID_USAGE_KEY);
         if (err < 0) {
@@ -59,7 +59,7 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
     // active and only releasing modifiers at that time.
     implicit_mods_changed = zmk_hid_implicit_modifiers_release();
     ;
-    if (ev->usage_page != HID_USAGE_KEY &&
+    if (ev->usage_page != HID_USAGE_KEY && ev->usage_page != (HID_USAGE_VENDOR_PLOVER & 0xFF) &&
         (explicit_mods_changed > 0 || implicit_mods_changed > 0)) {
         err = zmk_endpoints_send_report(HID_USAGE_KEY);
         if (err < 0) {
