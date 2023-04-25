@@ -121,7 +121,7 @@ menuconfig ZMK_BLE
 if ZMK_BLE
 
 choice BT_LL_SW_LLCP_IMPL
-	default BT_LL_SW_LLCP_LEGACY
+    default BT_LL_SW_LLCP_LEGACY
 
 endchoice
 
