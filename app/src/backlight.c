@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <device.h>
-#include <devicetree.h>
-#include <init.h>
-#include <kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/led.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
 
-#include <drivers/led.h>
-#include <logging/log.h>
-#include <settings/settings.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/settings/settings.h>
 
 #include <zmk/activity.h>
 #include <zmk/backlight.h>

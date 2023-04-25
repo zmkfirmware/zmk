@@ -97,7 +97,7 @@ select opt in "${options[@]}" "Quit"; do
             keyboard_arch=${keyboards_arch[$keyboard_index]}
             keyboard_basedir=${keyboards_basedir[$keyboard_index]}
             keyboard_title=${options[$keyboard_index]}
-            keyboard_sibling_var=${keyboard}_siblings[@]                                                  
+            keyboard_sibling_var=${keyboard}_siblings[@]
             keyboard_sibling_first=${keyboard}_siblings[0]
             if [ -n "${!keyboard_sibling_first}" ]; then
                 keyboard_siblings=${!keyboard_sibling_var}

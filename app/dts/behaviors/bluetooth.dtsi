@@ -5,11 +5,11 @@
  */
 
 / {
-	behaviors {
-		/omit-if-no-ref/ bt: behavior_bluetooth {
-			compatible = "zmk,behavior-bluetooth";
-			label = "BLUETOOTH";
-			#binding-cells = <2>;
-		};
-	};
+    behaviors {
+        /omit-if-no-ref/ bt: behavior_bluetooth {
+            compatible = "zmk,behavior-bluetooth";
+            label = "BLUETOOTH";
+            #binding-cells = <2>;
+        };
+    };
 };

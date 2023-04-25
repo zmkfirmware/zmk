@@ -2,13 +2,13 @@
 if SHIELD_CLUEBOARD_CALIFORNIA
 
 config ZMK_KEYBOARD_NAME
-	default "Clueboard California Macropad"
+    default "Clueboard California Macropad"
 
 # Unable to use interrupts as the same pin number is used
 # across A & B controllers, and STM32F303CCT6 can't enable
 # interrutps for multiple controllers for the same "line"
 # for the external interrupts.
 config ZMK_KSCAN_DIRECT_POLLING
-	default y
+    default y
 
 endif

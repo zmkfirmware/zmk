@@ -6,9 +6,9 @@
 
 #define DT_DRV_COMPAT zmk_behavior_macro
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/behavior_queue.h>
 #include <zmk/keymap.h>
@@ -44,13 +44,13 @@ struct behavior_macro_config {
     struct zmk_behavior_binding bindings[];
 };
 
-#define TAP_MODE DT_LABEL(DT_INST(0, zmk_macro_control_mode_tap))
-#define PRESS_MODE DT_LABEL(DT_INST(0, zmk_macro_control_mode_press))
-#define REL_MODE DT_LABEL(DT_INST(0, zmk_macro_control_mode_release))
+#define TAP_MODE DT_PROP(DT_INST(0, zmk_macro_control_mode_tap), label)
+#define PRESS_MODE DT_PROP(DT_INST(0, zmk_macro_control_mode_press), label)
+#define REL_MODE DT_PROP(DT_INST(0, zmk_macro_control_mode_release), label)
 
-#define TAP_TIME DT_LABEL(DT_INST(0, zmk_macro_control_tap_time))
-#define WAIT_TIME DT_LABEL(DT_INST(0, zmk_macro_control_wait_time))
-#define WAIT_REL DT_LABEL(DT_INST(0, zmk_macro_pause_for_release))
+#define TAP_TIME DT_PROP(DT_INST(0, zmk_macro_control_tap_time), label)
+#define WAIT_TIME DT_PROP(DT_INST(0, zmk_macro_control_wait_time), label)
+#define WAIT_REL DT_PROP(DT_INST(0, zmk_macro_pause_for_release), label)
 
 #define ZM_IS_NODE_MATCH(a, b) (strcmp(a, b) == 0)
 #define IS_TAP_MODE(dev) ZM_IS_NODE_MATCH(dev, TAP_MODE)
@@ -166,10 +166,10 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
     .binding_released = on_macro_binding_released,
 };
 
-#define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, DT_DRV_INST(drv_inst)),
+#define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, DT_DRV_INST(drv_inst))
 
 #define TRANSFORMED_BEHAVIORS(n)                                                                   \
-    {UTIL_LISTIFY(DT_PROP_LEN(DT_DRV_INST(n), bindings), BINDING_WITH_COMMA, n)},
+    {LISTIFY(DT_PROP_LEN(DT_DRV_INST(n), bindings), BINDING_WITH_COMMA, (, ), n)},
 
 #define MACRO_INST(n)                                                                              \
     static struct behavior_macro_state behavior_macro_state_##n = {};                              \

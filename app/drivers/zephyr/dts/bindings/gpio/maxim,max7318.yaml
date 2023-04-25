@@ -5,24 +5,24 @@
 #
 
 description: >
-    This is a representation of the Maxim MAX7318 I2C Gpio Expander.
+  This is a representation of the Maxim MAX7318 I2C Gpio Expander.
 
 compatible: "maxim,max7318"
 
 include: [gpio-controller.yaml, i2c-device.yaml]
 
 properties:
-    label:
-      required: true
+  label:
+    required: true
 
-    "#gpio-cells":
-      const: 2
+  "#gpio-cells":
+    const: 2
 
-    ngpios:
-      type: int
-      required: true
-      const: 16
-      description: Number of gpios supported
+  ngpios:
+    type: int
+    required: true
+    const: 16
+    description: Number of gpios supported
 
 gpio-cells:
   - pin

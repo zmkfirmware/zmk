@@ -8,166 +8,172 @@ menu "ZMK"
 menu "Basic Keyboard Setup"
 
 config ZMK_KEYBOARD_NAME
-	string "Keyboard Name"
+    string "Keyboard Name"
 
 config USB_DEVICE_PRODUCT
-	default ZMK_KEYBOARD_NAME
+    default ZMK_KEYBOARD_NAME
 
 config BT_DEVICE_NAME
-	default ZMK_KEYBOARD_NAME
+    default ZMK_KEYBOARD_NAME
 
 config USB_DEVICE_VID
-	default 0x1D50
+    default 0x1D50
 
 config USB_DEVICE_PID
-	default 0x615E
+    default 0x615E
 
 config USB_DEVICE_MANUFACTURER
-	default "ZMK Project"
+    default "ZMK Project"
 
 config BT_DIS_PNP_VID
-	default 0x1D50
+    default 0x1D50
 
 config BT_DIS_PNP_PID
-	default 0x615E
+    default 0x615E
 
 config BT_DIS_MODEL
-	default ZMK_KEYBOARD_NAME
+    default ZMK_KEYBOARD_NAME
 
 config BT_DIS_MANUF
-	default "ZMK Project"
+    default "ZMK Project"
 
 menu "HID"
 
 choice ZMK_HID_REPORT_TYPE
-	prompt "HID Report Type"
+    prompt "HID Report Type"
 
 config ZMK_HID_REPORT_TYPE_HKRO
-	bool "#-Key Roll Over (HKRO) HID Report"
-	help
-	  Enable # key roll over for HID report. This selection is "boot keyboard" compatible
-	  but limits the total number of possible keys to report as held to #.
+    bool "#-Key Roll Over (HKRO) HID Report"
+    help
+      Enable # key roll over for HID report. This selection is "boot keyboard" compatible
+      but limits the total number of possible keys to report as held to #.
 
 config ZMK_HID_REPORT_TYPE_NKRO
-	bool "Full N-Key Roll Over (NKRO) HID Report"
-	help
-	  Enable full N-Key Roll Over for HID output. This selection will prevent the keyboard
-	  from working with some BIOS/UEFI versions that only support "boot keyboard" support.
-	  This option also prevents using some infrequently used higher range HID usages.
+    bool "Full N-Key Roll Over (NKRO) HID Report"
+    help
+      Enable full N-Key Roll Over for HID output. This selection will prevent the keyboard
+      from working with some BIOS/UEFI versions that only support "boot keyboard" support.
+      This option also prevents using some infrequently used higher range HID usages.
 
 endchoice
 
 if ZMK_HID_REPORT_TYPE_HKRO
 
 config ZMK_HID_KEYBOARD_REPORT_SIZE
-	int "# Keyboard Keys Reportable"
-	default 6
+    int "# Keyboard Keys Reportable"
+    default 6
 
 endif
 
 config ZMK_HID_CONSUMER_REPORT_SIZE
-	int "# Consumer Keys Reportable"
-	default 6
+    int "# Consumer Keys Reportable"
+    default 6
 
 
 choice ZMK_HID_CONSUMER_REPORT_USAGES
-	prompt "HID Report Type"
+    prompt "HID Report Type"
 
 config ZMK_HID_CONSUMER_REPORT_USAGES_FULL
-	bool "Full Consumer HID Usage Support"
-	help
-	  Enable full Consumer usage ID values to be sent to hosts. Allows for less
-	  frequently used usages, but has compatibability issues with some host OSes.
+    bool "Full Consumer HID Usage Support"
+    help
+      Enable full Consumer usage ID values to be sent to hosts. Allows for less
+      frequently used usages, but has compatibability issues with some host OSes.
 
 config ZMK_HID_CONSUMER_REPORT_USAGES_BASIC
-	bool "Basic Consumer HID Usage Support"
-	help
-	  Enable Consumer usage ID values up to "Playback Speed - Slow" to be sent to
-	  hosts. Allows for broader compatibability with more host OSes.
+    bool "Basic Consumer HID Usage Support"
+    help
+      Enable Consumer usage ID values up to "Playback Speed - Slow" to be sent to
+      hosts. Allows for broader compatibability with more host OSes.
 
 endchoice
 
 menu "Output Types"
 
 config ZMK_USB
-	bool "USB"
-	select USB
-	select USB_DEVICE_STACK
-	select USB_DEVICE_HID
+    bool "USB"
+    select USB
+    select USB_DEVICE_STACK
+    select USB_DEVICE_HID
 
 if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
-	default 10
+    default 10
 
 config USB_HID_POLL_INTERVAL_MS
-	default 1
+    default 1
 
 #ZMK_USB
 endif
 
 menuconfig ZMK_BLE
-	bool "BLE (HID over GATT)"
-	select BT
-	select BT_SMP
-	select BT_SMP_SC_PAIR_ONLY
-	select BT_SMP_APP_PAIRING_ACCEPT
-	select BT_PERIPHERAL
-	select BT_DIS
-	select BT_BAS
-	select BT_SETTINGS
-	select SETTINGS
+    bool "BLE (HID over GATT)"
+    select BT
+    select BT_SMP
+    select BT_SMP_SC_PAIR_ONLY
+    select BT_SMP_APP_PAIRING_ACCEPT
+    select BT_PERIPHERAL
+    select BT_DIS
+    select BT_BAS
+    select BT_SETTINGS
+    select SETTINGS
 
 if ZMK_BLE
 
+choice BT_LL_SW_LLCP_IMPL
+    default BT_LL_SW_LLCP_LEGACY
+
+endchoice
+
 config SYSTEM_WORKQUEUE_STACK_SIZE
-	default 2048
+    default 4096 if SOC_RP2040
+    default 2048
 
 config ZMK_BLE_THREAD_STACK_SIZE
-	int "BLE notify thread stack size"
-	default 512
+    int "BLE notify thread stack size"
+    default 512
 
 config ZMK_BLE_THREAD_PRIORITY
-	int "BLE notify thread priority"
-	default 5
+    int "BLE notify thread priority"
+    default 5
 
 config ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE
-	int "Max number of keyboard HID reports to queue for sending over BLE"
-	default 20
+    int "Max number of keyboard HID reports to queue for sending over BLE"
+    default 20
 
 config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
-	int "Max number of consumer HID reports to queue for sending over BLE"
-	default 5
+    int "Max number of consumer HID reports to queue for sending over BLE"
+    default 5
 
 config ZMK_BLE_CLEAR_BONDS_ON_START
-	bool "Configuration that clears all bond information from the keyboard on startup."
-	default n
+    bool "Configuration that clears all bond information from the keyboard on startup."
+    default n
 
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
-	default n
+    default n
 
 config BT_GATT_AUTO_SEC_REQ
-	default n
+    default n
 
 config BT_DEVICE_APPEARANCE
-	default 961
+    default 961
 
 config ZMK_BLE_PASSKEY_ENTRY
-	bool "Experimental: Requiring typing passkey from host to pair BLE connection"
-	default n
+    bool "Experimental: Requiring typing passkey from host to pair BLE connection"
+    default n
 
 config BT_PERIPHERAL_PREF_MIN_INT
-	default 6
+    default 6
 
 config BT_PERIPHERAL_PREF_MAX_INT
-	default 12
+    default 12
 
 config BT_PERIPHERAL_PREF_LATENCY
-	default 30
+    default 30
 
 config BT_PERIPHERAL_PREF_TIMEOUT
-	default 400
+    default 400
 
 #ZMK_BLE
 endif
@@ -188,108 +194,108 @@ menu "Display/LED Options"
 rsource "src/display/Kconfig"
 
 menuconfig ZMK_RGB_UNDERGLOW
-	bool "RGB Adressable LED Underglow"
-	select LED_STRIP
+    bool "RGB Adressable LED Underglow"
+    select LED_STRIP
 
 if ZMK_RGB_UNDERGLOW
 
 # This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
 config SPI
-	default y
+    default y
 
 config ZMK_RGB_UNDERGLOW_EXT_POWER
-	bool "RGB underglow toggling also controls external power"
-	default y
+    bool "RGB underglow toggling also controls external power"
+    default y
 
 config ZMK_RGB_UNDERGLOW_BRT_MIN
-	int "RGB underglow minimum brightness in percent"
-	range 0 100
-	default 0
+    int "RGB underglow minimum brightness in percent"
+    range 0 100
+    default 0
 
 config ZMK_RGB_UNDERGLOW_BRT_MAX
-	int "RGB underglow maximum brightness in percent"
-	range ZMK_RGB_UNDERGLOW_BRT_MIN 100
-	default 100
+    int "RGB underglow maximum brightness in percent"
+    range ZMK_RGB_UNDERGLOW_BRT_MIN 100
+    default 100
 
 config ZMK_RGB_UNDERGLOW_HUE_STEP
-	int "RGB underglow hue step in degrees"
-	range 0 359
-	default 10
+    int "RGB underglow hue step in degrees"
+    range 0 359
+    default 10
 
 config ZMK_RGB_UNDERGLOW_SAT_STEP
-	int "RGB underglow saturation step in percent"
-	range 0 100
-	default 10
+    int "RGB underglow saturation step in percent"
+    range 0 100
+    default 10
 
 config ZMK_RGB_UNDERGLOW_BRT_STEP
-	int "RGB underglow brightness step in percent"
-	range 0 100
-	default 10
+    int "RGB underglow brightness step in percent"
+    range 0 100
+    default 10
 
 config ZMK_RGB_UNDERGLOW_HUE_START
-	int "RGB underglow start hue value in degrees"
-	range 0 359
-	default 0
+    int "RGB underglow start hue value in degrees"
+    range 0 359
+    default 0
 
 config ZMK_RGB_UNDERGLOW_SAT_START
-	int "RGB underglow start saturations value in percent"
-	range 0 100
-	default 100
+    int "RGB underglow start saturations value in percent"
+    range 0 100
+    default 100
 
 config ZMK_RGB_UNDERGLOW_BRT_START
-	int "RGB underglow start brightness value in percent"
-	range ZMK_RGB_UNDERGLOW_BRT_MIN ZMK_RGB_UNDERGLOW_BRT_MAX
-	default ZMK_RGB_UNDERGLOW_BRT_MAX
+    int "RGB underglow start brightness value in percent"
+    range ZMK_RGB_UNDERGLOW_BRT_MIN ZMK_RGB_UNDERGLOW_BRT_MAX
+    default ZMK_RGB_UNDERGLOW_BRT_MAX
 
 config ZMK_RGB_UNDERGLOW_SPD_START
-	int "RGB underglow start animation speed value"
-	range 1 5
-	default 3
+    int "RGB underglow start animation speed value"
+    range 1 5
+    default 3
 
 config ZMK_RGB_UNDERGLOW_EFF_START
-	int "RGB underglow start effect int value related to the effect enum list"
-	range 0 3
-	default 0
+    int "RGB underglow start effect int value related to the effect enum list"
+    range 0 3
+    default 0
 
 config ZMK_RGB_UNDERGLOW_ON_START
-	bool "RGB underglow starts on by default"
-	default y
+    bool "RGB underglow starts on by default"
+    default y
 
 config ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE
-	bool "Turn off RGB underglow when keyboard goes into idle state"
+    bool "Turn off RGB underglow when keyboard goes into idle state"
 
 config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
-	bool "Turn off RGB underglow when USB is disconnected"
-	depends on USB_DEVICE_STACK
+    bool "Turn off RGB underglow when USB is disconnected"
+    depends on USB_DEVICE_STACK
 
 #ZMK_RGB_UNDERGLOW
 endif
 
 menuconfig ZMK_BACKLIGHT
-	bool "LED backlight"
-	select LED
+    bool "LED backlight"
+    select LED
 
 if ZMK_BACKLIGHT
 
 config ZMK_BACKLIGHT_BRT_STEP
-	int "Brightness step in percent"
-	range 1 100
-	default 20
+    int "Brightness step in percent"
+    range 1 100
+    default 20
 
 config ZMK_BACKLIGHT_BRT_START
-	int "Default brightness in percent"
-	range 1 100
-	default 40
+    int "Default brightness in percent"
+    range 1 100
+    default 40
 
 config ZMK_BACKLIGHT_ON_START
-	bool "Default backlight state"
-	default y
+    bool "Default backlight state"
+    default y
 
 config ZMK_BACKLIGHT_AUTO_OFF_IDLE
-	bool "Turn off backlight when keyboard goes into idle state"
+    bool "Turn off backlight when keyboard goes into idle state"
 
 config ZMK_BACKLIGHT_AUTO_OFF_USB
-	bool "Turn off backlight when USB is disconnected"
+    bool "Turn off backlight when USB is disconnected"
 
 #ZMK_BACKLIGHT
 endif
@@ -300,28 +306,28 @@ endmenu
 menu "Power Management"
 
 config ZMK_IDLE_TIMEOUT
-	int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
-	default 30000
+    int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
+    default 30000
 
 config ZMK_SLEEP
-	bool "Enable deep sleep support"
-	imply USB
+    bool "Enable deep sleep support"
+    imply USB
 
 if ZMK_SLEEP
 
 config PM_DEVICE
-	default y
+    default y
 
 config ZMK_IDLE_SLEEP_TIMEOUT
-	int "Milliseconds of inactivity before entering deep sleep"
-	default 900000
+    int "Milliseconds of inactivity before entering deep sleep"
+    default 900000
 
 #ZMK_SLEEP
 endif
 
 config ZMK_EXT_POWER
-	bool "Enable support to control external power output"
-	default y
+    bool "Enable support to control external power output"
+    default y
 
 #Power Management
 endmenu
@@ -329,16 +335,16 @@ endmenu
 menu "Combo options"
 
 config ZMK_COMBO_MAX_PRESSED_COMBOS
-	int "Maximum number of currently pressed combos"
-	default 4
+    int "Maximum number of currently pressed combos"
+    default 4
 
 config ZMK_COMBO_MAX_COMBOS_PER_KEY
-	int "Maximum number of combos per key"
-	default 5
+    int "Maximum number of combos per key"
+    default 5
 
 config ZMK_COMBO_MAX_KEYS_PER_COMBO
-	int "Maximum number of keys per combo"
-	default 4
+    int "Maximum number of keys per combo"
+    default 4
 
 #Combo options
 endmenu
@@ -346,22 +352,18 @@ endmenu
 menu "Behavior Options"
 
 config ZMK_BEHAVIORS_QUEUE_SIZE
-	int "Maximum number of behaviors to allow queueing from a macro or other complex behavior"
-	default 64
+    int "Maximum number of behaviors to allow queueing from a macro or other complex behavior"
+    default 64
 
-DT_COMPAT_ZMK_BEHAVIOR_KEY_TOGGLE := zmk,behavior-key-toggle
-
-config ZMK_BEHAVIOR_KEY_TOGGLE
-        bool
-        default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_KEY_TOGGLE))
+rsource "Kconfig.behaviors"
 
 config ZMK_MACRO_DEFAULT_WAIT_MS
-	int "Default time to wait (in milliseconds) before triggering the next behavior in macros"
-	default 15
+    int "Default time to wait (in milliseconds) before triggering the next behavior in macros"
+    default 15
 
 config ZMK_MACRO_DEFAULT_TAP_MS
-	int "Default time to wait (in milliseconds) between the press and release events of a tapped behavior in macros"
-	default 30
+    int "Default time to wait (in milliseconds) between the press and release events of a tapped behavior in macros"
+    default 30
 
 endmenu
 
@@ -372,8 +374,8 @@ menu "Initialization Priorities"
 if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
-	int "USB Init Priority"
-	default 50
+    int "USB Init Priority"
+    default 50
 
 #USB
 endif
@@ -381,8 +383,8 @@ endif
 if ZMK_BLE || ZMK_SPLIT_BLE
 
 config ZMK_BLE_INIT_PRIORITY
-	int "BLE Init Priority"
-	default 50
+    int "BLE Init Priority"
+    default 50
 
 #ZMK_BLE || ZMK_SPLIT_BLE
 endif
@@ -393,67 +395,103 @@ endmenu
 menu "KSCAN Settings"
 
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
-	int "Size of the event queue for KSCAN events to buffer events"
-	default 4
+    int "Size of the event queue for KSCAN events to buffer events"
+    default 4
 
 #KSCAN Settings
 endmenu
 
-menu "USB Logging"
+menu "Logging"
+
+config ZMK_LOGGING_MINIMAL
+    bool "Suppress all ZMK debug log messages"
+    default false
+
+if !ZMK_LOGGING_MINIMAL
+
+config ZMK_LOG_LEVEL
+    default 4
+
+endif
 
 config ZMK_USB_LOGGING
-	bool "Enable USB CDC ACM logging to help debug"
-	select LOG
-	select USB
-	select USB_DEVICE_STACK
-	select USB_CDC_ACM
-	select SERIAL
-	select CONSOLE
-	select UART_INTERRUPT_DRIVEN
-	select UART_LINE_CTRL
-	select UART_CONSOLE
-	select USB_UART_CONSOLE
+    bool "Enable USB CDC ACM logging to help debug"
+    select LOG
+    select USB
+    select USB_DEVICE_STACK
+    select USB_CDC_ACM
+    select SERIAL
+    select CONSOLE
+    select UART_INTERRUPT_DRIVEN
+    select UART_LINE_CTRL
+    select UART_CONSOLE
+    select USB_UART_CONSOLE
 
 if ZMK_USB_LOGGING
 
-config ZMK_LOG_LEVEL
-	default 4
+choice USB_CDC_ACM_LOG_LEVEL_CHOICE
+    default USB_CDC_ACM_LOG_LEVEL_OFF
+endchoice
+
+choice USB_DRIVER_LOG_LEVEL_CHOICE
+    default USB_DRIVER_LOG_LEVEL_OFF
+endchoice
 
 # We do this to avoid log loop where logging to USB generates more log messages.
-config USB_CDC_ACM_LOG_LEVEL
-	default 1
 
 config USB_CDC_ACM_RINGBUF_SIZE
-	default 1024
-
-config LOG_BUFFER_SIZE
-	default 8192
-
-config LOG_STRDUP_BUF_COUNT
-	default 16
+    default 1024
 
 config LOG_PROCESS_THREAD_STARTUP_DELAY_MS
-	default 1000
+    default 1000
 
 #ZMK_USB_LOGGING
 endif
 
-#USB Logging
+config ZMK_RTT_LOGGING
+    bool "Enable RTT logging to help debug"
+    select LOG
+    select DEBUG
+    select ASSERT
+    select USE_SEGGER_RTT
+    select CONSOLE
+    select RTT_CONSOLE
+
+if ZMK_RTT_LOGGING
+
+config SEGGER_RTT_BUFFER_SIZE_UP
+    default 8192
+
+#ZMK_RTT_LOGGING
+endif
+
+if ZMK_USB_LOGGING || ZMK_RTT_LOGGING
+
+config LOG_BUFFER_SIZE
+    default 8192
+
+config LOG_PROCESS_THREAD_SLEEP_MS
+    default 100
+
+#ZMK_USB_LOGGING || ZMK_RTT_LOGGING
+endif
+
+#Logging
 endmenu
 
 if SETTINGS
 
 config ZMK_SETTINGS_SAVE_DEBOUNCE
-	int "Milliseconds to debounce settings saves"
-	default 60000
+    int "Milliseconds to debounce settings saves"
+    default 60000
 
 #SETTINGS
 endif
 
 config ZMK_BATTERY_REPORT_INTERVAL
-	depends on ZMK_BLE
-	int "Battery level report interval in seconds"
-	default 60
+    depends on ZMK_BLE
+    int "Battery level report interval in seconds"
+    default 60
 
 #Advanced
 endmenu
@@ -462,26 +500,26 @@ endmenu
 endmenu
 
 config HEAP_MEM_POOL_SIZE
-	default 8192
+    default 8192
 
 config KERNEL_BIN_NAME
-	default "zmk"
+    default "zmk"
 
 config REBOOT
-	default y
+    default y
 
 config USB_DEVICE_STACK
-	default y if HAS_HW_NRF_USBD
+    default y if HAS_HW_NRF_USBD
 
 config ZMK_WPM
-	bool "Calculate WPM"
-	default n
+    bool "Calculate WPM"
+    default n
 
 config SENSOR
-	default y
+    default y
 
 choice CBPRINTF_IMPLEMENTATION
-	default CBPRINTF_NANO
+    default CBPRINTF_NANO
 
 endchoice
 

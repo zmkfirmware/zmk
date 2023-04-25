@@ -6,12 +6,12 @@
 
 #define DT_DRV_COMPAT zmk_battery_voltage_divider
 
-#include <device.h>
-#include <devicetree.h>
-#include <drivers/gpio.h>
-#include <drivers/adc.h>
-#include <drivers/sensor.h>
-#include <logging/log.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/adc.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/logging/log.h>
 
 #include "battery_common.h"
 
@@ -21,22 +21,15 @@ struct io_channel_config {
     uint8_t channel;
 };
 
-struct gpio_channel_config {
-    const char *label;
-    uint8_t pin;
-    uint8_t flags;
-};
-
 struct bvd_config {
     struct io_channel_config io_channel;
-    struct gpio_channel_config power_gpios;
+    struct gpio_dt_spec power;
     uint32_t output_ohm;
     uint32_t full_ohm;
 };
 
 struct bvd_data {
     const struct device *adc;
-    const struct device *gpio;
     struct adc_channel_cfg acc;
     struct adc_sequence as;
     struct battery_value value;
@@ -56,18 +49,18 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
 
     int rc = 0;
 
-    // Enable power GPIO if present
-    if (drv_data->gpio) {
-        rc = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, 1);
+#if DT_INST_NODE_HAS_PROP(0, power_gpios)
+    // Enable power before sampling
+    rc = gpio_pin_set_dt(&drv_cfg->power, 1);
 
-        if (rc != 0) {
-            LOG_DBG("Failed to enable ADC power GPIO: %d", rc);
-            return rc;
-        }
-
-        // wait for any capacitance to charge up
-        k_sleep(K_MSEC(10));
+    if (rc != 0) {
+        LOG_DBG("Failed to enable ADC power GPIO: %d", rc);
+        return rc;
     }
+
+    // wait for any capacitance to charge up
+    k_sleep(K_MSEC(10));
+#endif // DT_INST_NODE_HAS_PROP(0, power_gpios)
 
     // Read ADC
     rc = adc_read(drv_data->adc, as);
@@ -90,15 +83,15 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
         LOG_DBG("Failed to read ADC: %d", rc);
     }
 
+#if DT_INST_NODE_HAS_PROP(0, power_gpios)
     // Disable power GPIO if present
-    if (drv_data->gpio) {
-        int rc2 = gpio_pin_set(drv_data->gpio, drv_cfg->power_gpios.pin, 0);
+    int rc2 = gpio_pin_set_dt(&drv_cfg->power, 0);
 
-        if (rc2 != 0) {
-            LOG_DBG("Failed to disable ADC power GPIO: %d", rc2);
-            return rc2;
-        }
+    if (rc2 != 0) {
+        LOG_DBG("Failed to disable ADC power GPIO: %d", rc2);
+        return rc2;
     }
+#endif // DT_INST_NODE_HAS_PROP(0, power_gpios)
 
     return rc;
 }
@@ -125,20 +118,17 @@ static int bvd_init(const struct device *dev) {
 
     int rc = 0;
 
-    if (drv_cfg->power_gpios.label) {
-        drv_data->gpio = device_get_binding(drv_cfg->power_gpios.label);
-        if (drv_data->gpio == NULL) {
-            LOG_ERR("Failed to get GPIO %s", drv_cfg->power_gpios.label);
-            return -ENODEV;
-        }
-        rc = gpio_pin_configure(drv_data->gpio, drv_cfg->power_gpios.pin,
-                                GPIO_OUTPUT_INACTIVE | drv_cfg->power_gpios.flags);
-        if (rc != 0) {
-            LOG_ERR("Failed to control feed %s.%u: %d", drv_cfg->power_gpios.label,
-                    drv_cfg->power_gpios.pin, rc);
-            return rc;
-        }
+#if DT_INST_NODE_HAS_PROP(0, power_gpios)
+    if (!device_is_ready(drv_cfg->power.port)) {
+        LOG_ERR("GPIO port for power control is not ready");
+        return -ENODEV;
     }
+    rc = gpio_pin_configure_dt(&drv_cfg->power, GPIO_OUTPUT_INACTIVE);
+    if (rc != 0) {
+        LOG_ERR("Failed to control feed %u: %d", drv_cfg->power.pin, rc);
+        return rc;
+    }
+#endif // DT_INST_NODE_HAS_PROP(0, power_gpios)
 
     drv_data->as = (struct adc_sequence){
         .channels = BIT(0),
@@ -175,12 +165,7 @@ static const struct bvd_config bvd_cfg = {
             DT_IO_CHANNELS_INPUT(DT_DRV_INST(0)),
         },
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
-    .power_gpios =
-        {
-            DT_INST_GPIO_LABEL(0, power_gpios),
-            DT_INST_GPIO_PIN(0, power_gpios),
-            DT_INST_GPIO_FLAGS(0, power_gpios),
-        },
+    .power = GPIO_DT_SPEC_INST_GET(0, power_gpios),
 #endif
     .output_ohm = DT_INST_PROP(0, output_ohms),
     .full_ohm = DT_INST_PROP(0, full_ohms),

@@ -6,9 +6,9 @@
 
 #define DT_DRV_COMPAT zmk_behavior_tap_dance
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/keymap.h>
 #include <zmk/matrix.h>
@@ -237,10 +237,10 @@ static int behavior_tap_dance_init(const struct device *dev) {
     return 0;
 }
 
-#define _TRANSFORM_ENTRY(idx, node) ZMK_KEYMAP_EXTRACT_BINDING(idx, node),
+#define _TRANSFORM_ENTRY(idx, node) ZMK_KEYMAP_EXTRACT_BINDING(idx, node)
 
 #define TRANSFORMED_BINDINGS(node)                                                                 \
-    { UTIL_LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, DT_DRV_INST(node)) }
+    { LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, (, ), DT_DRV_INST(node)) }
 
 #define KP_INST(n)                                                                                 \
     static struct zmk_behavior_binding                                                             \

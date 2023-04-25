@@ -45,7 +45,7 @@
         raise_layer {
             bindings = <
 &trans     &trans     &trans     &trans     &trans     &trans                           &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &trans
-&trans     &trans     &trans     &trans     &trans     &trans                           &trans        &trans        &trans        &trans        &reset        &bootloader
+&trans     &trans     &trans     &trans     &trans     &trans                           &trans        &trans        &trans        &trans        &sys_reset        &bootloader
 &trans     &trans     &trans     &trans     &trans     &trans                           &trans        &trans        &trans        &trans        &trans        &trans
 &trans     &trans     &trans     &trans     &trans     &trans                           &trans        &trans        &trans        &trans        &trans        &trans
                       &trans     &trans     &trans     &trans     &trans     &trans     &trans        &trans        &bt BT_CLR    &trans

@@ -6,8 +6,9 @@ menuconfig ZMK_DISPLAY
     default n
     select DISPLAY
     select LVGL
-    select LVGL_THEMES
-    select LVGL_THEME_MONO
+    select LV_THEMES
+    select LV_THEME_MONO
+    select LV_CONF_MINIMAL
 
 if ZMK_DISPLAY
 
@@ -15,17 +16,26 @@ config ZMK_DISPLAY_BLANK_ON_IDLE
     bool "Blank display on idle"
     default y if SSD1306
 
-choice LVGL_TXT_ENC
-    default LVGL_TXT_ENC_UTF8
+choice LV_TXT_ENC
+    default LV_TXT_ENC_UTF8
 
 endchoice
+
+config LV_MEM_CUSTOM
+    default y
+
+config LV_Z_MEM_POOL_MIN_SIZE
+    default 32
+
+config LV_Z_MEM_POOL_MAX_SIZE
+    default 8192
 
 choice ZMK_DISPLAY_STATUS_SCREEN
     prompt "Default status screen for displays"
 
 config ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
     bool "Built in status screen"
-    select LVGL_OBJ_LABEL
+    select LV_OBJ_LABEL
 
 config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
     bool "Custom status screen"
@@ -57,23 +67,104 @@ endif # ZMK_DISPLAY_WORK_QUEUE_DEDICATED
 
 if ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
-config LVGL_FONT_MONTSERRAT_16
+config LV_FONT_MONTSERRAT_16
     default y
 
-choice LVGL_THEME_DEFAULT_FONT_NORMAL
-    default LVGL_THEME_DEFAULT_FONT_NORMAL_MONTSERRAT_16
+choice LV_FONT_DEFAULT
+    default LV_FONT_DEFAULT_MONTSERRAT_16
 
 endchoice
 
-config LVGL_FONT_MONTSERRAT_12
+config LV_FONT_MONTSERRAT_12
     default y
-    
-choice LVGL_THEME_DEFAULT_FONT_SMALL
-    default LVGL_THEME_DEFAULT_FONT_SMALL_MONTSERRAT_12
-
-endchoice
 
 endif # ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
+
+choice ZMK_LV_FONT_DEFAULT_SMALL
+    prompt "Select theme default small font"
+    default ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_12
+    help
+        Select theme default small font
+
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_8
+        bool "Montserrat 8"
+        select LV_FONT_MONTSERRAT_8
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_12
+        bool "Montserrat 12"
+        select LV_FONT_MONTSERRAT_12
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_14
+        bool "Montserrat 14"
+        select LV_FONT_MONTSERRAT_14
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_16
+        bool "Montserrat 16"
+        select LV_FONT_MONTSERRAT_16
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_18
+        bool "Montserrat 18"
+        select LV_FONT_MONTSERRAT_18
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_20
+        bool "Montserrat 20"
+        select LV_FONT_MONTSERRAT_20
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_22
+        bool "Montserrat 22"
+        select LV_FONT_MONTSERRAT_22
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_24
+        bool "Montserrat 24"
+        select LV_FONT_MONTSERRAT_24
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_26
+        bool "Montserrat 26"
+        select LV_FONT_MONTSERRAT_26
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_28
+        bool "Montserrat 28"
+        select LV_FONT_MONTSERRAT_28
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_30
+        bool "Montserrat 30"
+        select LV_FONT_MONTSERRAT_30
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_32
+        bool "Montserrat 32"
+        select LV_FONT_MONTSERRAT_32
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_34
+        bool "Montserrat 34"
+        select LV_FONT_MONTSERRAT_34
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_36
+        bool "Montserrat 36"
+        select LV_FONT_MONTSERRAT_36
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_38
+        bool "Montserrat 38"
+        select LV_FONT_MONTSERRAT_38
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_40
+        bool "Montserrat 40"
+        select LV_FONT_MONTSERRAT_40
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_42
+        bool "Montserrat 42"
+        select LV_FONT_MONTSERRAT_42
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_44
+        bool "Montserrat 44"
+        select LV_FONT_MONTSERRAT_44
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_46
+        bool "Montserrat 46"
+        select LV_FONT_MONTSERRAT_46
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_48
+        bool "Montserrat 48"
+        select LV_FONT_MONTSERRAT_48
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_12_SUBPX
+        bool "Montserrat 12 sub-pixel"
+        select LV_FONT_MONTSERRAT_12_SUBPX
+    config ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_28_COMPRESSED
+        bool "Montserrat 28 compressed"
+        select LV_FONT_MONTSERRAT_28_COMPRESSED
+    config ZMK_LV_FONT_DEFAULT_SMALL_DEJAVU_16_PERSIAN_HEBREW
+        bool "Dejavu 16 Persian, Hebrew, Arabic letters"
+        select LV_FONT_DEJAVU_16_PERSIAN_HEBREW
+    config ZMK_LV_FONT_DEFAULT_SMALL_SIMSUN_16_CJK
+        bool "Simsun 16 CJK"
+        select LV_FONT_SIMSUN_16_CJK
+    config ZMK_LV_FONT_DEFAULT_SMALL_UNSCII_8
+        bool "UNSCII 8 (Perfect monospace font)"
+        select LV_FONT_UNSCII_8
+    config ZMK_LV_FONT_DEFAULT_SMALL_UNSCII_16
+        bool "UNSCII 16 (Perfect monospace font)"
+        select LV_FONT_UNSCII_16
+endchoice
 
 rsource "widgets/Kconfig"
 
