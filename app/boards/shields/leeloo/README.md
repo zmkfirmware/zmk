@@ -6,11 +6,7 @@ Keyboard Designer: [clicketysplit.ca](https://clicketysplit.ca)
 GitHub: [ClicketySplit](https://github.com/ClicketySplit)
 Hardware Supported: Pro Micro, Elite-C, and nice!nano v2
 
-<<<<<<< HEAD
-Albeit, there is no doubt where Leeloo's heritage is derived from—Lily58, and Corne. It is not a copy-paste-modify implementation.
-=======
 Leeloo v2 has been designed from scratch—again.  Everything from the wiring schematic to its case.  Leeloo v2 still keeps the column stagger that it's known for, along with its low profile design.
->>>>>>> 69308eaf (Leeloo v2 and Leeloo v1 updates to support Zephyr 3.2)
 
 ## Features/Differences from Leeloo v1
 * Support for Kailh Low Profile Choc switches with 18mm x 18mm spacing.
@@ -24,20 +20,6 @@ Leeloo v2 has been designed from scratch—again.  Everything from the wiring sc
   - Different location for soldering battery leads.
 * Support for Alps Alpine Micro On/off switches.
 
-<<<<<<< HEAD
-Features:
-
-- 4x6x5m Split Keyboard
-- Support for MX/Box or Low Profile Choc switches.
-- 90% of the switches are socketed; with the exception to the rotary encoder positions—6 positions require soldering.
-- Support for 128x32 OLED Displays.
-- The option to select one of three positions for an EC11 rotary encoder on each half.
-- Support for Alps Alpine Micro Switch
-- Support for 3.7v 301230 LiPo Battery
-
-# Building Your Firmware
-
-=======
 # Leeloo v1
 
 ![Leeloo](https://github.com/ClicketySplit/build-guides/blob/main/leeloo/images/gallery/Leeloo-v1.jpg)
@@ -54,7 +36,6 @@ Features:
 * Support for Alps Alpine Micro On/off switches.
 
 # Building Leeloo's ZMK Firmware
->>>>>>> 69308eaf (Leeloo v2 and Leeloo v1 updates to support Zephyr 3.2)
 ZMK Firmware: [Introduction to ZMK](https://zmk.dev/docs/)
 Installation: [Installing ZMK](https://zmk.dev/docs/user-setup)
 Customization: [Customizing ZMK](https://zmk.dev/docs/customization)
@@ -149,7 +130,6 @@ west build -d build/right -p -b nice_nano_v2 -- -DSHIELD="leeloo_rev2_right nice
 ```
 
 # Support
-
 If you have any questions with regards to Leeloo, please [Contact Us](https://clicketysplit.ca/pages/contact-us).
 
 Clickety Split
