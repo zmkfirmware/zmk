@@ -1,0 +1,8 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_CHOCOFI_LEFT
+    def_bool $(shields_list_contains,chocofi_left)
+
+config SHIELD_CHOCOFI_RIGHT
+    def_bool $(shields_list_contains,chocofi_right)
