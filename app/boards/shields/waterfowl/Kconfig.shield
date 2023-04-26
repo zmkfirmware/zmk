@@ -3,7 +3,7 @@
 
 
 config SHIELD_WATERFOWL_LEFT
-	def_bool $(shields_list_contains,waterfowl_left)
+    def_bool $(shields_list_contains,waterfowl_left)
 
 config SHIELD_WATERFOWL_RIGHT
-	def_bool $(shields_list_contains,waterfowl_right)
+    def_bool $(shields_list_contains,waterfowl_right)

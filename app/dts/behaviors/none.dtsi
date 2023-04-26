@@ -5,11 +5,11 @@
  */
 
 / {
-	behaviors {
-		/omit-if-no-ref/ none: behavior_none {
-			compatible = "zmk,behavior-none";
-			label = "NONE";
-			#binding-cells = <0>;
-		};
-	};
+    behaviors {
+        /omit-if-no-ref/ none: behavior_none {
+            compatible = "zmk,behavior-none";
+            label = "NONE";
+            #binding-cells = <0>;
+        };
+    };
 };

@@ -15,9 +15,9 @@
 
         default {
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//  Q    |  W  |  E  |  R  |  T  | |  Y  |  U  |  I  |    O    |  P   | 
-//  A    |  S  |  D  |  F  |  G  | |  H  |  J  |  K  |    L    |  ;   | 
-// Lsft/Z|  X  |  C  |  V  |  B  | |  N  |  M  |  ,  |    .    |Rsft//| 
+//  Q    |  W  |  E  |  R  |  T  | |  Y  |  U  |  I  |    O    |  P   |
+//  A    |  S  |  D  |  F  |  G  | |  H  |  J  |  K  |    L    |  ;   |
+// Lsft/Z|  X  |  C  |  V  |  B  | |  N  |  M  |  ,  |    .    |Rsft//|
 //      | LCTL | Bspc/LMOD | SPC | | Del/Num | Ent | Sym |
            bindings = <
             &kp Q &kp W &kp E &kp R &kp T &kp Y &kp U &kp I &kp O &kp P
@@ -28,7 +28,7 @@
         };
         numbers {
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//  1  |    2   |  3     |  4  |  5  | |  6  |  7  |  8  |  9  |  0  |  
+//  1  |    2   |  3     |  4  |  5  | |  6  |  7  |  8  |  9  |  0  |
 // TAB | BT_PRV | BT_NXT | VOL-| VOL+| |  <  |  v  |  ∧  |  >  |  '  |
 // Lsft| BT_SEL0| BT_CLR | MUTE|     | | HOME| END | PGUP| PGDN| Rsft|
 //               | LCTL | LMOD| LALT | | Num |     | BL-reset |
@@ -41,15 +41,15 @@
         };
         symbols {
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// ESC |  F1 |  F2 |  F3 |  F4 | | OUT_USB | OUT_BLE |        |  =  |  -   | 
-// CAPS|  F5 |  F6 |  F7 |  F8 | |    [    |    ]    |        |  `  |  \   | 
+// ESC |  F1 |  F2 |  F3 |  F4 | | OUT_USB | OUT_BLE |        |  =  |  -   |
+// CAPS|  F5 |  F6 |  F7 |  F8 | |    [    |    ]    |        |  `  |  \   |
 // LSFT|  F9 | F10 | F11 | F12 | |         |         |        |     | RSFT |
 //         | LCTL | LMOD| LALT | |  RESET  |         |   SYM  |
            bindings = <
             &kp ESC &kp F1 &kp F2 &kp F3 &kp F4 &out OUT_USB &out OUT_BLE &none  &kp EQUAL &kp MINUS
             &kp CAPS &kp F5 &kp F6 &kp F7 &kp F8 &kp LBKT &kp RBKT &none &kp GRAVE &kp BSLH
-            &kp LSHFT &kp F9 &kp F10 &kp F11 &kp F12 &none &none &none &kp RSHFT
-            &kp LCTRL &kp LGUI &kp LALT &reset &none &trans
+            &kp LSHFT &kp F9 &kp F10 &kp F11 &kp F12 &none &none &none &none &kp RSHFT
+            &kp LCTRL &kp LGUI &kp LALT &sys_reset &none &trans
            >;
         };
     };

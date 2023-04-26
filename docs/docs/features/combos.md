@@ -12,14 +12,14 @@ Combos configured in your `.keymap` file, but are separate from the `keymap` nod
 
 ```
 / {
-	combos {
-		compatible = "zmk,combos";
-		combo_esc {
-			timeout-ms = <50>;
-			key-positions = <0 1>;
-			bindings = <&kp ESC>;
-		};
-	};
+    combos {
+        compatible = "zmk,combos";
+        combo_esc {
+            timeout-ms = <50>;
+            key-positions = <0 1>;
+            bindings = <&kp ESC>;
+        };
+    };
 };
 ```
 

@@ -38,7 +38,7 @@
                     &bt BT_SEL 0 &bt BT_SEL 1 &trans     &trans    &trans           &out OUT_USB     &out OUT_BLE
                     &trans       &trans       &kp UP     &trans    &rgb_ug RGB_TOG  &rgb_ug RGB_HUI  &rgb_ug RGB_HUD
         &bt BT_CLR  &trans       &kp LEFT     &kp DOWN   &kp RIGHT &trans           &rgb_ug RGB_BRI  &rgb_ug RGB_BRD
-        &reset      &trans       &trans       &trans     &trans    &trans           &rgb_ug RGB_EFF  &rgb_ug RGB_EFR
+        &sys_reset      &trans       &trans       &trans     &trans    &trans           &rgb_ug RGB_EFF  &rgb_ug RGB_EFR
         &bootloader &trans       &trans       &trans               &trans                            &trans
       >;
     };
@@ -48,7 +48,7 @@
                     &trans    &kp F1    &kp F2   &kp F3    &kp F4   &kp F5   &kp F6
                     &trans    &kp P     &kp O    &kp I     &kp U    &kp Y    &kp F7
         &bt BT_CLR  &kp BSPC  &kp SEMI  &kp L    &kp K     &kp J    &kp H    &kp F8
-        &reset      &trans    &kp LGUI  &kp M    &kp N     &kp F12  &kp F11  &kp F9
+        &sys_reset      &trans    &kp LGUI  &kp M    &kp N     &kp F12  &kp F11  &kp F9
         &bootloader &trans    &trans    &trans             &trans            &kp F10
       >;
     };

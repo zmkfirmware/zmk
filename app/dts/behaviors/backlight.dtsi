@@ -5,11 +5,11 @@
  */
 
  / {
-	behaviors {
-		/omit-if-no-ref/ bl: behavior_backlight {
-			compatible = "zmk,behavior-backlight";
-			label = "BCKLGHT";
-			#binding-cells = <2>;
-		};
-	};
+    behaviors {
+        /omit-if-no-ref/ bl: behavior_backlight {
+            compatible = "zmk,behavior-backlight";
+            label = "BCKLGHT";
+            #binding-cells = <2>;
+        };
+    };
 };
