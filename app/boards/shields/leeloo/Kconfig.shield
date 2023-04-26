@@ -5,12 +5,6 @@ config SHIELD_LEELOO
 	bool
 
 config SHIELD_LEELOO_LEFT
-<<<<<<< HEAD
-    def_bool $(shields_list_contains,leeloo_left)
-
-config SHIELD_LEELOO_RIGHT
-    def_bool $(shields_list_contains,leeloo_right)
-=======
 	def_bool $(shields_list_contains,leeloo_left)
 	select SHIELD_LEELOO
 
@@ -25,4 +19,3 @@ config SHIELD_LEELOO_REV2_LEFT
 config SHIELD_LEELOO_REV2_RIGHT
 	def_bool $(shields_list_contains,leeloo_rev2_right)
 	select SHIELD_LEELOO
->>>>>>> 69308eaf (Leeloo v2 and Leeloo v1 updates to support Zephyr 3.2)
