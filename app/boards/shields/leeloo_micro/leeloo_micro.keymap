@@ -40,16 +40,16 @@
 #define RGBEFF  &rgb_ug RGB_EFF
 
 
-/* 
+/*
  * Assign the cs-gpios pin to 4.
  * Uncomment these next few lines if implementing nice!view Displays.
  */
 //nice_view_spi: &spi0 {
-//	compatible = "nordic,nrf-spim";
-//	pinctrl-0 = <&spi0_default>;
-//	pinctrl-1 = <&spi0_sleep>;
-//	pinctrl-names = "default", "sleep";
-//	cs-gpios = <&pro_micro 4 GPIO_ACTIVE_HIGH>;
+//  compatible = "nordic,nrf-spim";
+//  pinctrl-0 = <&spi0_default>;
+//  pinctrl-1 = <&spi0_sleep>;
+//  pinctrl-names = "default", "sleep";
+//  cs-gpios = <&pro_micro 4 GPIO_ACTIVE_HIGH>;
 //};
 
 
@@ -130,7 +130,7 @@
             bindings = <
 
 &trans     &none      &none      &none      &none                            &kp SLASH  &kp N7     &kp N8     &kp N9     &kp MINUS
-RGBON      RGBTOG     RGBHUI     RGBSAI     RGBBRI                           &kp ASTRK  &kp N4     &kp N5     &kp N6     &kp PLUS 
+RGBON      RGBTOG     RGBHUI     RGBSAI     RGBBRI                           &kp ASTRK  &kp N4     &kp N5     &kp N6     &kp PLUS
 RGBOFF     RGBEFF     RGBHUD     RGBSAD     RGBBRD     &trans     &trans     &none      &kp N1     &kp N2     &kp N3     &kp EQUAL
                       &trans     &trans     &trans     &trans     &trans     &kp N0     &kp DOT    &none
             >;
