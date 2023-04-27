@@ -1,0 +1,5 @@
+description: Mouse key press/release behavior
+
+compatible: "zmk,behavior-mouse-key-press"
+
+include: one_param.yaml
