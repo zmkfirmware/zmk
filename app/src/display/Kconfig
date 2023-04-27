@@ -176,6 +176,17 @@ choice ZMK_LV_FONT_DEFAULT_SMALL
         select LV_FONT_UNSCII_16
 endchoice
 
+config ZMK_DISPLAY_FULL_REFRESH_PERIOD
+    int "(Optional) Period to issue a full refresh to the display (in seconds)"
+    default 0
+    help
+      Period in seconds for how often to completely refresh/redraw the whole screen.
+      Most useful for e-ink/EPD displays that require occasional full redraws.
+
+config ZMK_DISPLAY_HIDE_MOMENTARY_LAYERS
+    bool "Do not update layer widget for momentary layer changes"
+    default n
+
 rsource "widgets/Kconfig"
 
 endif

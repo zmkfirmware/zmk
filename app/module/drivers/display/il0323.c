@@ -124,7 +124,11 @@ static int il0323_write(const struct device *dev, const uint16_t x, const uint16
     ptl[IL0323_PTL_HRED_IDX] = x_end_idx;
     ptl[IL0323_PTL_VRST_IDX] = y;
     ptl[IL0323_PTL_VRED_IDX] = y_end_idx;
+#if IS_ENABLED(CONFIG_IL0323_ALTERNATIVE_REFRESH)
+    ptl[sizeof(ptl) - 1] = 0; // limits fading outside of refresh window
+#else
     ptl[sizeof(ptl) - 1] = IL0323_PTL_PT_SCAN;
+#endif
     LOG_HEXDUMP_DBG(ptl, sizeof(ptl), "ptl");
 
     il0323_busy_wait(cfg);
@@ -242,8 +246,12 @@ static void il0323_get_capabilities(const struct device *dev, struct display_cap
     memset(caps, 0, sizeof(struct display_capabilities));
     caps->x_resolution = EPD_PANEL_WIDTH;
     caps->y_resolution = EPD_PANEL_HEIGHT;
-    caps->supported_pixel_formats = PIXEL_FORMAT_MONO10;
+    caps->supported_pixel_formats = PIXEL_FORMAT_MONO10 | PIXEL_FORMAT_MONO01;
+#if IS_ENABLED(CONFIG_IL0323_INVERT)
+    caps->current_pixel_format = PIXEL_FORMAT_MONO01;
+#else
     caps->current_pixel_format = PIXEL_FORMAT_MONO10;
+#endif
     caps->screen_info = SCREEN_INFO_MONO_MSB_FIRST | SCREEN_INFO_EPD;
 }
 
@@ -254,7 +262,7 @@ static int il0323_set_orientation(const struct device *dev,
 }
 
 static int il0323_set_pixel_format(const struct device *dev, const enum display_pixel_format pf) {
-    if (pf == PIXEL_FORMAT_MONO10) {
+    if ((pf == PIXEL_FORMAT_MONO10) || (pf == PIXEL_FORMAT_MONO10)) {
         return 0;
     }
 

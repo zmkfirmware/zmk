@@ -77,6 +77,9 @@ menuconfig CUSTOM_WIDGET_LAYER_STATUS
 menuconfig CUSTOM_WIDGET_PERIPHERAL_STATUS
     bool "custom peripheral status widget"
 
+config CUSTOM_WIDGET_LAYER_STATUS_HIDE_HEADING
+    bool "Hide heading strip for layer widget and center widgets on 1/3rds"
+
 endif # BOARD_CORNEISH_ZEN_LEFT || BOARD_CORNEISH_ZEN_RIGHT
 
 if BOARD_CORNEISH_ZEN_V1_LEFT || BOARD_CORNEISH_ZEN_V1_RIGHT

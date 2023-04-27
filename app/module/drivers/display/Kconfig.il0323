@@ -9,3 +9,11 @@ config IL0323
     depends on HEAP_MEM_POOL_SIZE != 0
     help
       Enable driver for IL0323 compatible controller.
+
+config IL0323_INVERT
+    bool "Invert display"
+    default n
+
+config IL0323_ALTERNATIVE_REFRESH
+    bool "Use an alternative approach for partial refreshes"
+    default n
