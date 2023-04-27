@@ -3,4 +3,4 @@
 
 rsource "battery/Kconfig"
 rsource "ec11/Kconfig"
-rsource "cirque_trackpad/Kconfig"
+rsource "pinnacle/Kconfig"
