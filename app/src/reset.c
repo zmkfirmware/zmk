@@ -6,7 +6,11 @@
 
 #include <zephyr/sys/reboot.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/sys/util.h>
 
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+#include <zmk/ble.h>
+#endif
 #include <zmk/reset.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -34,4 +38,11 @@ FUNC_NORETURN void zmk_reset(int type) {
         LOG_ERR("Unknown reset type %d", type);
         break;
     }
+}
+
+void zmk_reset_settings(void) {
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    zmk_ble_unpair_all();
+#endif
+    // TODO: clear settings for all subsystems.
 }
