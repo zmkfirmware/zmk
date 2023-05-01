@@ -9,46 +9,46 @@
 #include <dt-bindings/zmk/bt.h>
 
 / {
-	behaviors {
-		ht: hold_tap {
-			compatible = "zmk,behavior-hold-tap";
-			label = "Hold Tap";
-			#binding-cells = <2>;
-			tapping-term-ms = <200>;
-			flavor = "tap-preferred";
-			bindings = <&kp>, <&kp>;
-		};
-	};
+    behaviors {
+        ht: hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "Hold Tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
 
-	keymap {
-		compatible = "zmk,keymap";
+    keymap {
+        compatible = "zmk,keymap";
 
-		default_layer {
-			bindings = <
+        default_layer {
+            bindings = <
 &kp ESC      &kp Q    &kp W    &kp E       &kp R &kp T &kp Y &kp U    &kp I     &kp O    &kp P    &kp SEMI  &kp BSPC
 &ht CAPS TAB &kp A    &kp S    &kp D       &kp F &kp G &kp H &kp J    &kp K     &kp L    &kp APOS           &kp RET
 &kp LSHFT    &kp Z    &kp X    &kp C       &kp V &kp B &kp N &kp M    &kp COMMA &kp DOT                     &kp RSHFT
 &kp LCTRL    &kp LGUI &kp LALT &lt 1 SPACE                  &kp SPACE &kp RALT  &kp RGUI &mo 2              &kp RCTRL
-			>;
-		};
+            >;
+        };
 
-		function_layer {
-			bindings = <
+        function_layer {
+            bindings = <
 &kp GRAVE &kp N1   &kp N2    &kp N3 &kp N4 &kp N5 &kp N6   &kp N7   &kp N8    &kp N9    &kp N0   &kp MINUS &kp DEL
 &none     &kp HOME &kp PG_UP &trans &trans &trans &kp LBKT &kp RBKT &kp EQUAL &kp BSLH  &kp FSLH           &trans
 &trans    &kp END  &kp PG_DN &trans &trans &trans &trans   &trans   &trans    &kp UP                       &trans
 &trans    &trans   &trans    &trans                        &trans   &trans    &kp LEFT  &kp DOWN           &kp RIGHT
-			>;
-		};
+            >;
+        };
 
-		other_layer {
-			bindings = <
+        other_layer {
+            bindings = <
 &kp PRINTSCREEN &kp F1     &kp F2     &kp F3     &kp F4 &kp F5 &kp F6 &kp F7 &kp F8       &kp F9       &kp F10  &kp F11 &kp F12
 &trans          &trans     &trans     &trans     &trans &trans &trans &trans &trans       &trans       &trans           &trans
-&trans          &bt BT_CLR &bt BT_PRV &bt BT_NXT &trans &trans &trans &trans &bootloader  &reset                        &trans
+&trans          &bt BT_CLR &bt BT_PRV &bt BT_NXT &trans &trans &trans &trans &bootloader  &sys_reset                        &trans
 &trans          &trans     &trans     &trans                          &trans &kp C_VOL_UP &kp C_VOL_DN                  &kp C_PP
-			>;
-		};
+            >;
+        };
 
-	};
+    };
 };

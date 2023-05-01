@@ -19,8 +19,8 @@ on:
         required: false
         type: string
       archive_name:
-        description: 'Archive output file name'
-        default: 'firmware'
+        description: "Archive output file name"
+        default: "firmware"
         required: false
         type: string
 

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
- 
+
 #include "helix.dtsi"
 
 &kscan0 {

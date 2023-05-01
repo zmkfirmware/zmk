@@ -9,15 +9,15 @@
         };
     };
 
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
 
-		default_layer {
-			bindings = <
-				&kp LEFT_ALT &mod_morph
-				&kp LEFT_SHIFT &kp RIGHT_SHIFT
-			>;
-		};
-	};
+        default_layer {
+            bindings = <
+                &kp LEFT_ALT &mod_morph
+                &kp LEFT_SHIFT &kp RIGHT_SHIFT
+            >;
+        };
+    };
 };

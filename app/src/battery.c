@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <device.h>
-#include <devicetree.h>
-#include <init.h>
-#include <kernel.h>
-#include <drivers/sensor.h>
-#include <bluetooth/services/bas.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/bluetooth/services/bas.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 

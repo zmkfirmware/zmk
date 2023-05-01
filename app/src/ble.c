@@ -4,29 +4,29 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <device.h>
-#include <init.h>
+#include <zephyr/device.h>
+#include <zephyr/init.h>
 
 #include <errno.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <settings/settings.h>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/conn.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/uuid.h>
-#include <bluetooth/gatt.h>
-#include <bluetooth/hci_err.h>
+#include <zephyr/settings/settings.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/bluetooth/hci.h>
+#include <zephyr/bluetooth/uuid.h>
+#include <zephyr/bluetooth/gatt.h>
+#include <zephyr/bluetooth/hci_err.h>
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 
-#include <settings/settings.h>
+#include <zephyr/settings/settings.h>
 
 #endif
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -111,7 +111,7 @@ void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
 
     memcpy(&profiles[index].peer, addr, sizeof(bt_addr_le_t));
     sprintf(setting_name, "ble/profiles/%d", index);
-    LOG_DBG("Setting profile addr for %s to %s", log_strdup(setting_name), log_strdup(addr_str));
+    LOG_DBG("Setting profile addr for %s to %s", setting_name, addr_str);
     settings_save_one(setting_name, &profiles[index], sizeof(struct zmk_ble_profile));
     k_work_submit(&raise_profile_changed_event_work);
 }
@@ -177,7 +177,7 @@ int update_advertising() {
         // addr_str[BT_ADDR_LE_STR_LEN]; bt_addr_le_to_str(zmk_ble_active_profile_addr(), addr_str,
         // sizeof(addr_str));
 
-        // LOG_DBG("Directed advertising to %s", log_strdup(addr_str));
+        // LOG_DBG("Directed advertising to %s", addr_str);
         // desired_adv = ZMK_ADV_DIR;
     }
     LOG_DBG("advertising from %d to %d", advertising_status, desired_adv);
@@ -293,13 +293,13 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
                                    void *cb_arg) {
     const char *next;
 
-    LOG_DBG("Setting BLE value %s", log_strdup(name));
+    LOG_DBG("Setting BLE value %s", name);
 
     if (settings_name_steq(name, "profiles", &next) && next) {
         char *endptr;
         uint8_t idx = strtoul(next, &endptr, 10);
         if (*endptr != '\0') {
-            LOG_WRN("Invalid profile index: %s", log_strdup(next));
+            LOG_WRN("Invalid profile index: %s", next);
             return -EINVAL;
         }
 
@@ -324,7 +324,7 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
         char addr_str[BT_ADDR_LE_STR_LEN];
         bt_addr_le_to_str(&profiles[idx].peer, addr_str, sizeof(addr_str));
 
-        LOG_DBG("Loaded %s address for profile %d", log_strdup(addr_str), idx);
+        LOG_DBG("Loaded %s address for profile %d", addr_str, idx);
     } else if (settings_name_steq(name, "active_profile", &next) && !next) {
         if (len != sizeof(active_profile)) {
             return -EINVAL;
@@ -376,12 +376,12 @@ static void connected(struct bt_conn *conn, uint8_t err) {
     advertising_status = ZMK_ADV_NONE;
 
     if (err) {
-        LOG_WRN("Failed to connect to %s (%u)", log_strdup(addr), err);
+        LOG_WRN("Failed to connect to %s (%u)", addr, err);
         update_advertising();
         return;
     }
 
-    LOG_DBG("Connected %s", log_strdup(addr));
+    LOG_DBG("Connected %s", addr);
 
     if (bt_conn_set_security(conn, BT_SECURITY_L2)) {
         LOG_ERR("Failed to set security");
@@ -401,7 +401,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_DBG("Disconnected from %s (reason 0x%02x)", log_strdup(addr), reason);
+    LOG_DBG("Disconnected from %s (reason 0x%02x)", addr, reason);
 
     bt_conn_get_info(conn, &info);
 
@@ -426,9 +426,9 @@ static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
     if (!err) {
-        LOG_DBG("Security changed: %s level %u", log_strdup(addr), level);
+        LOG_DBG("Security changed: %s level %u", addr, level);
     } else {
-        LOG_ERR("Security failed: %s level %u err %d", log_strdup(addr), level, err);
+        LOG_ERR("Security failed: %s level %u err %d", addr, level, err);
     }
 }
 
@@ -438,7 +438,7 @@ static void le_param_updated(struct bt_conn *conn, uint16_t interval, uint16_t l
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_DBG("%s: interval %d latency %d timeout %d", log_strdup(addr), interval, latency, timeout);
+    LOG_DBG("%s: interval %d latency %d timeout %d", addr, interval, latency, timeout);
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -454,7 +454,7 @@ static void auth_passkey_display(struct bt_conn *conn, unsigned int passkey) {
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_DBG("Passkey for %s: %06u", log_strdup(addr), passkey);
+    LOG_DBG("Passkey for %s: %06u", addr, passkey);
 }
 */
 
@@ -465,7 +465,7 @@ static void auth_passkey_entry(struct bt_conn *conn) {
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_DBG("Passkey entry requested for %s", log_strdup(addr));
+    LOG_DBG("Passkey entry requested for %s", addr);
     passkey_digit = 0;
     auth_passkey_entry_conn = bt_conn_ref(conn);
 }
@@ -486,7 +486,7 @@ static void auth_cancel(struct bt_conn *conn) {
     passkey_digit = 0;
 #endif
 
-    LOG_DBG("Pairing cancelled: %s", log_strdup(addr));
+    LOG_DBG("Pairing cancelled: %s", addr);
 }
 
 static enum bt_security_err auth_pairing_accept(struct bt_conn *conn,
@@ -517,7 +517,7 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
     }
 
     if (!zmk_ble_active_profile_is_open()) {
-        LOG_ERR("Pairing completed but current profile is not open: %s", log_strdup(addr));
+        LOG_ERR("Pairing completed but current profile is not open: %s", addr);
         bt_unpair(BT_ID_DEFAULT, dst);
         return;
     }
@@ -528,13 +528,16 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
 
 static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
     .pairing_accept = auth_pairing_accept,
-    .pairing_complete = auth_pairing_complete,
 // .passkey_display = auth_passkey_display,
 
 #if IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY)
     .passkey_entry = auth_passkey_entry,
 #endif
     .cancel = auth_cancel,
+};
+
+static struct bt_conn_auth_info_cb zmk_ble_auth_info_cb_display = {
+    .pairing_complete = auth_pairing_complete,
 };
 
 static void zmk_ble_ready(int err) {
@@ -589,6 +592,7 @@ static int zmk_ble_init(const struct device *_arg) {
 
     bt_conn_cb_register(&conn_callbacks);
     bt_conn_auth_cb_register(&zmk_ble_auth_cb_display);
+    bt_conn_auth_info_cb_register(&zmk_ble_auth_info_cb_display);
 
     zmk_ble_ready(0);
 

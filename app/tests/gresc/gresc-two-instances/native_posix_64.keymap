@@ -11,33 +11,33 @@ The first gresc that is released releases the key.
 */
 
 / {
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
 
-		default_layer {
-			bindings = <
-				&gresc         &gresc
-				&kp LEFT_SHIFT &kp LEFT_GUI
-			>;
-		};
-	};
+        default_layer {
+            bindings = <
+                &gresc         &gresc
+                &kp LEFT_SHIFT &kp LEFT_GUI
+            >;
+        };
+    };
 };
 
 &kscan {
-	events = <
-		/* esc */
-		ZMK_MOCK_PRESS(0,0,10) 
-		ZMK_MOCK_PRESS(0,1,10) /* the second gresc is ignored */
-		ZMK_MOCK_RELEASE(0,0,10)
-		ZMK_MOCK_RELEASE(0,1,10) /* the second gresc is ignored */
+    events = <
+        /* esc */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(0,1,10) /* the second gresc is ignored */
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_RELEASE(0,1,10) /* the second gresc is ignored */
 
-		/* ~ */
-		ZMK_MOCK_PRESS(1,0,10) 
-		ZMK_MOCK_PRESS(0,1,10)
-		ZMK_MOCK_PRESS(0,0,10)  /* the second gresc is ignored */ 
-		ZMK_MOCK_RELEASE(1,0,10)
-		ZMK_MOCK_RELEASE(0,1,10)
-		ZMK_MOCK_RELEASE(0,0,10)  /* the second gresc is ignored */
-	>;
+        /* ~ */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_PRESS(0,0,10)  /* the second gresc is ignored */
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)  /* the second gresc is ignored */
+    >;
 };

@@ -6,32 +6,29 @@
 
 #define DT_DRV_COMPAT alps_ec11
 
-#include <device.h>
-#include <drivers/gpio.h>
-#include <sys/util.h>
-#include <kernel.h>
-#include <drivers/sensor.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/sys/util.h>
+#include <zephyr/kernel.h>
+#include <zephyr/drivers/sensor.h>
 
 #include "ec11.h"
 
 extern struct ec11_data ec11_driver;
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(EC11, CONFIG_SENSOR_LOG_LEVEL);
 
 static inline void setup_int(const struct device *dev, bool enable) {
-    struct ec11_data *data = dev->data;
     const struct ec11_config *cfg = dev->config;
 
     LOG_DBG("enabled %s", (enable ? "true" : "false"));
 
-    if (gpio_pin_interrupt_configure(data->a, cfg->a_pin,
-                                     enable ? GPIO_INT_EDGE_BOTH : GPIO_INT_DISABLE)) {
+    if (gpio_pin_interrupt_configure_dt(&cfg->a, enable ? GPIO_INT_EDGE_BOTH : GPIO_INT_DISABLE)) {
         LOG_WRN("Unable to set A pin GPIO interrupt");
     }
 
-    if (gpio_pin_interrupt_configure(data->b, cfg->b_pin,
-                                     enable ? GPIO_INT_EDGE_BOTH : GPIO_INT_DISABLE)) {
+    if (gpio_pin_interrupt_configure_dt(&cfg->b, enable ? GPIO_INT_EDGE_BOTH : GPIO_INT_DISABLE)) {
         LOG_WRN("Unable to set A pin GPIO interrupt");
     }
 }
@@ -121,16 +118,16 @@ int ec11_init_interrupt(const struct device *dev) {
     drv_data->dev = dev;
     /* setup gpio interrupt */
 
-    gpio_init_callback(&drv_data->a_gpio_cb, ec11_a_gpio_callback, BIT(drv_cfg->a_pin));
+    gpio_init_callback(&drv_data->a_gpio_cb, ec11_a_gpio_callback, BIT(drv_cfg->a.pin));
 
-    if (gpio_add_callback(drv_data->a, &drv_data->a_gpio_cb) < 0) {
+    if (gpio_add_callback(drv_cfg->a.port, &drv_data->a_gpio_cb) < 0) {
         LOG_DBG("Failed to set A callback!");
         return -EIO;
     }
 
-    gpio_init_callback(&drv_data->b_gpio_cb, ec11_b_gpio_callback, BIT(drv_cfg->b_pin));
+    gpio_init_callback(&drv_data->b_gpio_cb, ec11_b_gpio_callback, BIT(drv_cfg->b.pin));
 
-    if (gpio_add_callback(drv_data->b, &drv_data->b_gpio_cb) < 0) {
+    if (gpio_add_callback(drv_cfg->b.port, &drv_data->b_gpio_cb) < 0) {
         LOG_DBG("Failed to set B callback!");
         return -EIO;
     }

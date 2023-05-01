@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
- 
+
 #include "elephant42.dtsi"
 
 &kscan0 {
