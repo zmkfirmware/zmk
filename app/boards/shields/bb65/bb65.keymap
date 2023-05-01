@@ -30,15 +30,10 @@
             key-positions = <1 6>;
             bindings = <&bt BT_CLR>;
         };
-        combo_lock {
-            timeout-ms = <TIMEOUT>;
-            key-positions = <1 7>;
-            bindings = <&tog 2>;
-        };
         combo_reset {
             timeout-ms = <TIMEOUT>;
             key-positions = <1 3>;
-            bindings = <&reset>;
+            bindings = <&sys_reset>;
         };
         combo_bootloader {
             timeout-ms = <TIMEOUT>;
@@ -93,7 +88,7 @@
             label = "settings layer";
             bindings = <
                 &bt BT_CLR        &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &trans &trans &trans &trans &trans &trans &trans &kp DEL
-                &trans            &trans       &trans       &trans       &reset       &trans       &trans &trans &trans &trans &trans &trans &trans &trans
+                &trans            &trans       &trans       &trans       &sys_reset   &trans       &trans &trans &trans &trans &trans &trans &trans &trans
                 &trans            &trans       &trans       &trans       &trans       &trans       &trans &trans &trans &trans &trans &trans &trans &trans
                 &trans     &trans &trans       &trans       &trans       &trans       &bootloader  &trans &trans &trans &trans &trans &trans        &trans &rgb_ug RGB_EFF
                 &trans     &out OUT_BLE        &out OUT_USB                           &trans                            &trans &trans &trans &trans &trans &trans
