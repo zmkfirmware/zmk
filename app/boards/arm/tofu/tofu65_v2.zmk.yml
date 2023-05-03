@@ -1,0 +1,10 @@
+file_format: "1"
+id: tofu65_v2
+name: Tofu65 2.0
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+url: https://olkb.com/collections/planck
