@@ -13,7 +13,8 @@
 #include "behavior_sensor_rotate_common.h"
 
 static const struct behavior_driver_api behavior_sensor_rotate_var_driver_api = {
-    .sensor_binding_triggered = zmk_behavior_sensor_rotate_common_trigger};
+    .sensor_binding_data = zmk_behavior_sensor_rotate_common_data,
+    .sensor_binding_process = zmk_behavior_sensor_rotate_common_process};
 
 static int behavior_sensor_rotate_var_init(const struct device *dev) { return 0; };
 
