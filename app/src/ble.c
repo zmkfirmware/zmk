@@ -118,6 +118,7 @@ void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
 
 bool zmk_ble_active_profile_is_connected() {
     struct bt_conn *conn;
+    struct bt_conn_info info;
     bt_addr_le_t *addr = zmk_ble_active_profile_addr();
     if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
         return false;
@@ -125,9 +126,11 @@ bool zmk_ble_active_profile_is_connected() {
         return false;
     }
 
+    bt_conn_get_info(conn, &info);
+
     bt_conn_unref(conn);
 
-    return true;
+    return info.state == BT_CONN_STATE_CONNECTED;
 }
 
 #define CHECKED_ADV_STOP()                                                                         \
