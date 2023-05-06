@@ -79,7 +79,7 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
             = <&gpio0 25 GPIO_ACTIVE_HIGH>
             , <&gpio0 24 GPIO_ACTIVE_HIGH>
             , <&gpio0 23 GPIO_ACTIVE_HIGH>
-            , <&gpio0 3  GPIO_ACTIVE_HIGH>
+            , <&gpio0 1  GPIO_ACTIVE_HIGH>
             , <&gpio0 7  GPIO_ACTIVE_HIGH>
             , <&gpio0 21 GPIO_ACTIVE_HIGH>
             , <&gpio0 20 GPIO_ACTIVE_HIGH>
@@ -139,14 +139,12 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
 
 
 &spi0 {
-    status = "okay";
     pinctrl-0 = <&spi0_default>;
     pinctrl-names = "default";
     clock-frequency = <DT_FREQ_M(8)>;
 };
 
 &i2c1 {
-    status = "okay";
     pinctrl-0 = <&i2c1_default>;
     pinctrl-names = "default";
     clock-frequency = <I2C_BITRATE_FAST>;
@@ -157,11 +155,9 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
 };
 
 &wdt0 {
-    status = "okay";
 };
 
 &adc {
-    status = "okay";
     pinctrl-0 = <&adc_default>;
     pinctrl-names = "default";
 };
