@@ -13,6 +13,7 @@ supported:
   - gpio
   - adc
   - i2c
+  - usb_device
   - spi
   - hwinfo
   - watchdog
