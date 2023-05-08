@@ -1,9 +1,5 @@
-/*
- * Copyright (c) 2021 Yonatan Schachter
- * Copyright (c) 2022 Peter Johanson
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
 
 /dts-v1/;
 
