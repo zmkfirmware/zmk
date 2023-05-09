@@ -10,6 +10,8 @@
 #include <zmk/behavior.h>
 #include <zmk/behavior_queue.h>
 #include <zmk/keymap.h>
+#include <zmk/event_manager.h>
+#include <zmk/events/layer_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -20,6 +22,11 @@ enum behavior_macro_mode {
 };
 
 enum param_source { PARAM_SOURCE_BINDING, PARAM_SOURCE_MACRO_1ST, PARAM_SOURCE_MACRO_2ND };
+
+enum behavior_macro_release_trigger {
+    MACRO_RELEASE_KEY,
+    MACRO_RELEASE_LAYER,
+};
 
 struct behavior_macro_trigger_state {
     uint32_t wait_ms;
@@ -33,6 +40,7 @@ struct behavior_macro_trigger_state {
 
 struct behavior_macro_state {
     struct behavior_macro_trigger_state release_state;
+    enum behavior_macro_release_trigger release_trigger;
 
     uint32_t press_bindings_count;
 };
@@ -44,6 +52,16 @@ struct behavior_macro_config {
     struct zmk_behavior_binding bindings[];
 };
 
+#define MACRO_SCHEDULED_QUEUE_SIZE 16
+struct behavior_macro_scheduled_state {
+    int layer;
+    uint32_t position;
+    struct zmk_behavior_binding binding;
+};
+static struct behavior_macro_scheduled_state
+    behavior_macro_scheduled_states[MACRO_SCHEDULED_QUEUE_SIZE];
+static int behavior_macro_scheduled_states_count = 0;
+
 #define TAP_MODE DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_mode_tap))
 #define PRESS_MODE DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_mode_press))
 #define REL_MODE DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_mode_release))
@@ -51,6 +69,7 @@ struct behavior_macro_config {
 #define TAP_TIME DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_tap_time))
 #define WAIT_TIME DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_wait_time))
 #define WAIT_REL DEVICE_DT_NAME(DT_INST(0, zmk_macro_pause_for_release))
+#define WAIT_LAYER DEVICE_DT_NAME(DT_INST(0, zmk_macro_pause_for_layer))
 
 #define P1TO1 DEVICE_DT_NAME(DT_INST(0, zmk_macro_param_1to1))
 #define P1TO2 DEVICE_DT_NAME(DT_INST(0, zmk_macro_param_1to2))
@@ -65,6 +84,7 @@ struct behavior_macro_config {
 #define IS_TAP_TIME(dev) ZM_IS_NODE_MATCH(dev, TAP_TIME)
 #define IS_WAIT_TIME(dev) ZM_IS_NODE_MATCH(dev, WAIT_TIME)
 #define IS_PAUSE(dev) ZM_IS_NODE_MATCH(dev, WAIT_REL)
+#define IS_LAYER_PAUSE(dev) ZM_IS_NODE_MATCH(dev, WAIT_LAYER)
 
 #define IS_P1TO1(dev) ZM_IS_NODE_MATCH(dev, P1TO1)
 #define IS_P1TO2(dev) ZM_IS_NODE_MATCH(dev, P1TO2)
@@ -124,6 +144,13 @@ static int behavior_macro_init(const struct device *dev) {
             state->press_bindings_count = i;
             LOG_DBG("Release will resume at %d", state->release_state.start_index);
             break;
+        } else if (IS_LAYER_PAUSE(cfg->bindings[i].behavior_dev)) {
+            state->release_state.start_index = i + 1;
+            state->release_state.count = cfg->count - state->release_state.start_index;
+            state->release_trigger = MACRO_RELEASE_LAYER;
+            state->press_bindings_count = i + 1;
+            LOG_DBG("Layer change will resume at %d", state->release_state.start_index);
+            break;
         } else {
             // Ignore regular invokable bindings
         }
@@ -156,10 +183,31 @@ static void replace_params(struct behavior_macro_trigger_state *state,
 
 static void queue_macro(uint32_t position, const struct zmk_behavior_binding bindings[],
                         struct behavior_macro_trigger_state state,
-                        const struct zmk_behavior_binding *macro_binding) {
+                        const struct zmk_behavior_binding *macro_binding, int layer) {
     LOG_DBG("Iterating macro bindings - starting: %d, count: %d", state.start_index, state.count);
     for (int i = state.start_index; i < state.start_index + state.count; i++) {
-        if (!handle_control_binding(&state, &bindings[i])) {
+        if (IS_LAYER_PAUSE(bindings[i].behavior_dev)) {
+            char *behavior_dev = macro_binding->behavior_dev;
+            if (behavior_macro_scheduled_states_count < MACRO_SCHEDULED_QUEUE_SIZE) {
+                behavior_macro_scheduled_states[behavior_macro_scheduled_states_count].position =
+                    position;
+                behavior_macro_scheduled_states[behavior_macro_scheduled_states_count].layer =
+                    layer;
+                behavior_macro_scheduled_states[behavior_macro_scheduled_states_count].binding =
+                    *macro_binding;
+                LOG_DBG("macro_layer: scheduling resume behavior %s on layer %d deactivation",
+                        behavior_dev, layer);
+                behavior_macro_scheduled_states_count++;
+            } else {
+                LOG_ERR("macro_layer: queue size %d exceeded; running behavior %s immediately",
+                        MACRO_SCHEDULED_QUEUE_SIZE, behavior_dev);
+                const struct device *dev = device_get_binding(behavior_dev);
+                const struct behavior_macro_config *cfg = dev->config;
+                struct behavior_macro_state *dev_state = dev->data;
+                queue_macro(position, cfg->bindings, dev_state->release_state, macro_binding,
+                            layer);
+            }
+        } else if (!handle_control_binding(&state, &bindings[i])) {
             struct zmk_behavior_binding binding = bindings[i];
             replace_params(&state, &binding, macro_binding);
 
@@ -193,7 +241,7 @@ static int on_macro_binding_pressed(struct zmk_behavior_binding *binding,
                                                          .start_index = 0,
                                                          .count = state->press_bindings_count};
 
-    queue_macro(event.position, cfg->bindings, trigger_state, binding);
+    queue_macro(event.position, cfg->bindings, trigger_state, binding, event.layer);
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
@@ -204,9 +252,56 @@ static int on_macro_binding_released(struct zmk_behavior_binding *binding,
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
 
-    queue_macro(event.position, cfg->bindings, state->release_state, binding);
+    if (state->release_trigger == MACRO_RELEASE_KEY) {
+        queue_macro(event.position, cfg->bindings, state->release_state, binding, event.layer);
+    } else {
+        LOG_DBG("skipping macro release with trigger %d", state->release_trigger);
+    }
 
     return ZMK_BEHAVIOR_OPAQUE;
+}
+
+static int macro_layer_state_changed_listener(const zmk_event_t *eh);
+
+ZMK_LISTENER(behavior_macro, macro_layer_state_changed_listener);
+ZMK_SUBSCRIPTION(behavior_macro, zmk_layer_state_changed);
+
+static int macro_layer_state_changed_listener(const zmk_event_t *eh) {
+    struct zmk_layer_state_changed *ev = as_zmk_layer_state_changed(eh);
+    if (ev == NULL || behavior_macro_scheduled_states_count == 0) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+    for (int i = 0; i < behavior_macro_scheduled_states_count; i++) {
+        const struct zmk_behavior_binding *binding = &behavior_macro_scheduled_states[i].binding;
+        char *behavior_dev = binding->behavior_dev;
+        int layer = behavior_macro_scheduled_states[i].layer;
+        if (behavior_dev == NULL || ev->layer != layer || ev->state == true) {
+            continue;
+        }
+        behavior_macro_scheduled_states[i].binding.behavior_dev = NULL;
+        const struct device *dev = device_get_binding(behavior_dev);
+        if (dev == NULL) {
+            LOG_ERR("unable to find device for behavior %s", behavior_dev);
+            continue;
+        }
+        const struct behavior_macro_config *cfg = dev->config;
+        struct behavior_macro_state *state = dev->data;
+        if (state->release_trigger == MACRO_RELEASE_LAYER) {
+            LOG_DBG("macro_layer: running scheduled behavior %s from index %d with %d behaviors",
+                    behavior_dev, state->release_state.start_index, state->release_state.count);
+            queue_macro(behavior_macro_scheduled_states[i].position, cfg->bindings,
+                        state->release_state, binding, behavior_macro_scheduled_states[i].layer);
+        }
+    }
+    int new_count = 0;
+    for (int i = 0; i < behavior_macro_scheduled_states_count; i++) {
+        if (behavior_macro_scheduled_states[i].binding.behavior_dev != NULL) {
+            behavior_macro_scheduled_states[new_count] = behavior_macro_scheduled_states[i];
+            new_count++;
+        }
+    }
+    behavior_macro_scheduled_states_count = new_count;
+    return ZMK_EV_EVENT_BUBBLE;
 }
 
 static const struct behavior_driver_api behavior_macro_driver_api = {

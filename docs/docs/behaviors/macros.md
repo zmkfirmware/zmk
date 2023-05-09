@@ -108,6 +108,30 @@ bindings
     ;
 ```
 
+### Processing Continuation on Layer Change
+
+The macro can also be paused so that the remaining part of the `bindings` list is processed when the layer containing the macro is turned off.
+
+To pause the macro until layer change, use `&macro_pause_for_layer`. For example, this macro will press a modifier and tap a key, then hold that modifier until the current layer is deactivated.
+
+```
+bindings
+    = <&macro_press &kp LGUI>
+    , <&macro_tap &kp TAB>
+    , <&macro_pause_for_layer>
+    , <&macro_release &kp LGUI>
+    ;
+```
+
+Notes:
+
+- `&macro_pause_for_layer` cannot currently be used in the same macro as `&macro_pause_for_release`.
+- Because `&macro_pause_for_layer` waits for the layer containing the macro to be deactivated, it will not work if defined on the base default layer.
+  This includes all combo keys.
+- `&macro_pause_for_layer` adds an entry to a queue of scheduled macro states to resume, and if the queue is full, subsequent macros are resumed immediately.
+  This is to prevent stuck keys due to an uneven ratio of `&macro_press` to `&macro_release` calls.
+  In the example above, LGUI will remain held even if the queue is already full, until the layer changes. The queue size is 16.
+
 ### Wait Time
 
 The wait time setting controls how long of a delay is introduced between behaviors in the `bindings` list. The initial wait time for a macro,
