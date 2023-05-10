@@ -1,0 +1,24 @@
+/*
+ * Copyright (c) 2023 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/soft_poweroff.h>
+
+/ {
+    behaviors {
+        /omit-if-no-ref/ soft_poweroff: behavior_soft_poweroff {
+            compatible = "zmk,behavior-soft-poweroff";
+            label = "SOFT_POWEROFF";
+            #binding-cells = <0>;
+        };
+
+        /omit-if-no-ref/ sleep: behavior_sleep {
+            compatible = "zmk,behavior-soft-poweroff";
+            label = "SLEEP";
+            type = <SLEEP>;
+            #binding-cells = <0>;
+        };
+    };
+};

@@ -47,7 +47,7 @@ int raise_event() {
         (struct zmk_activity_state_changed){.state = activity_state}));
 }
 
-int set_state(enum zmk_activity_state state) {
+int zmk_activity_set_state(enum zmk_activity_state state) {
     if (activity_state == state)
         return 0;
 
@@ -60,7 +60,7 @@ enum zmk_activity_state zmk_activity_get_state() { return activity_state; }
 int activity_event_listener(const zmk_event_t *eh) {
     activity_last_uptime = k_uptime_get();
 
-    return set_state(ZMK_ACTIVITY_ACTIVE);
+    return zmk_activity_set_state(ZMK_ACTIVITY_ACTIVE);
 }
 
 void activity_work_handler(struct k_work *work) {
@@ -69,12 +69,12 @@ void activity_work_handler(struct k_work *work) {
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
     if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
         // Put devices in suspend power mode before sleeping
-        set_state(ZMK_ACTIVITY_SLEEP);
+        zmk_activity_set_state(ZMK_ACTIVITY_SLEEP);
         pm_state_force(0U, &(struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0});
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
-            set_state(ZMK_ACTIVITY_IDLE);
+            zmk_activity_set_state(ZMK_ACTIVITY_IDLE);
         }
 }
 
