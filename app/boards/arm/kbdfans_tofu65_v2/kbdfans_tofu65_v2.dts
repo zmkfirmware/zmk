@@ -7,7 +7,6 @@
 
 #include <rpi_pico/rp2040.dtsi>
 #include "kbdfans_tofu65_v2-pinctrl.dtsi"
-// #include "sparkfun_pro_micro_connector.dtsi"
 #include <freq.h>
 #include <dt-bindings/zmk/matrix_transform.h>
 
@@ -18,7 +17,6 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        // zephyr,flash-controller = &ssi;
         zephyr,console = &cdc_acm_uart;
         zephyr,shell-uart = &uart0;
         zephyr,code-partition = &code_partition;
@@ -94,7 +92,7 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
 };
 
 &flash0 {
-    reg = <0x10000000 DT_SIZE_M(8)>;
+    reg = <0x10000000 DT_SIZE_M(16)>;
 
     partitions {
         compatible = "fixed-partitions";
@@ -110,11 +108,11 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
 
         /*
          * Usable flash. Starts at 0x100, after the bootloader. The partition
-         * size is 8MB minus the 0x100 bytes taken by the bootloader.
+         * size is 16MB minus the 0x100 bytes taken by the bootloader.
          */
         code_partition: partition@100 {
             label = "code";
-            reg = <0x100 (DT_SIZE_M(8) - 0x100)>;
+            reg = <0x100 (DT_SIZE_M(16) - 0x100)>;
             read-only;
         };
     };
