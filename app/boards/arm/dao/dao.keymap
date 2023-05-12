@@ -81,9 +81,9 @@
             //                       |     |     |     |   |     |     |     |
 
             bindings = <
- &bootloader        &reset         &none         &none         &none         &none         &none         &none         &none         &none         &none  &bootloader
+ &bootloader        &sys_reset         &none         &none         &none         &none         &none         &none         &none         &none         &none  &bootloader
   &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &bt BT_SEL 4  &bt BT_SEL 3  &bt BT_SEL 2  &bt BT_SEL 1  &bt BT_SEL 0   &bt BT_CLR
-      &reset         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none       &reset
+      &sys_reset         &none         &none         &none         &none         &none         &none         &none         &none         &none         &none       &sys_reset
                     &trans         &none        &trans         &none        &trans        &trans
             >;
         };
