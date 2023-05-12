@@ -1,0 +1,58 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Trackball PIM447
+
+compatible: "pimoroni,trackball_pim447"
+
+properties:
+  label:
+    type: string
+    required: true
+
+  reg:
+    type: int
+    required: true
+
+  move-factor:
+    type: int
+    required: false
+    default: 1
+
+  invert-move-x:
+    type: boolean
+    required: false
+
+  invert-move-y:
+    type: boolean
+    required: false
+
+  button:
+    type: int
+    required: false
+    default: 0
+
+  swap-axes:
+    type: boolean
+    required: false
+
+  scroll-divisor:
+    type: int
+    required: false
+    default: 2
+
+  invert-scroll-x:
+    type: boolean
+    required: false
+
+  invert-scroll-y:
+    type: boolean
+    required: false
+
+  mode:
+    type: int
+    required: false
+    default: 1
+    enum:
+      - 1
+      - 2

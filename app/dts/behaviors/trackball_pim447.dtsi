@@ -1,0 +1,56 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/trackball_pim447.h>
+
+/ {
+	behaviors {
+		/omit-if-no-ref/ pim447_move: behavior_trackball_pim447_move {
+			compatible = "zmk,behavior-trackball-pim447";
+			label = "PIM447_MOVE";
+			mode = <PIM447_MOVE>;
+			#binding-cells = <0>;
+		};
+
+		/omit-if-no-ref/ pim447_scroll: behavior_trackball_pim447_scroll {
+			compatible = "zmk,behavior-trackball-pim447";
+			label = "PIM447_SCROLL";
+			mode = <PIM447_SCROLL>;
+			#binding-cells = <0>;
+		};
+
+		/omit-if-no-ref/ pim447_toggle: behavior_trackball_pim447_toggle {
+			compatible = "zmk,behavior-trackball-pim447";
+			label = "PIM447_TOGGLE";
+			mode = <PIM447_TOGGLE>;
+			#binding-cells = <0>;
+		};
+
+		/omit-if-no-ref/ pim447_move_scroll: behavior_trackball_pim447_move_scroll {
+			compatible = "zmk,behavior-trackball-pim447";
+			label = "PIM447_MOVE_SCROLL";
+			mode = <PIM447_MOVE>;
+			momentary;
+			#binding-cells = <0>;
+		};
+
+		/omit-if-no-ref/ pim447_scroll_move: behavior_trackball_pim447_scroll_move {
+			compatible = "zmk,behavior-trackball-pim447";
+			label = "PIM447_SCROLL_MOVE";
+			mode = <PIM447_SCROLL>;
+			momentary;
+			#binding-cells = <0>;
+		};
+
+		/omit-if-no-ref/ pim447_toggle_toggle: behavior_trackball_pim447_toggle_toggle {
+			compatible = "zmk,behavior-trackball-pim447";
+			label = "PIM447_TOGGLE_TOGGLE";
+			mode = <PIM447_TOGGLE>;
+			momentary;
+			#binding-cells = <0>;
+		};
+	};
+};

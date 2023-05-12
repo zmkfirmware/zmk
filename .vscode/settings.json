@@ -3,5 +3,6 @@
     "*.overlay": "dts",
     "*.keymap": "dts"
   },
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "cmake.configureOnOpen": false
 }

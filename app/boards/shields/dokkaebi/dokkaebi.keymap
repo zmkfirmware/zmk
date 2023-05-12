@@ -1,0 +1,154 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/outputs.h>
+
+&mt {
+    tapping-term-ms = <160>;
+};
+
+&lt {
+    tapping-term-ms = <175>;
+    quick-tap-ms = <120>;
+};
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+        combo_lbrc {
+            timeout-ms = <50>;
+            key-positions = <24 25>;
+            bindings = <&kp LBKT>;
+        };
+        combo_rbrc {
+            timeout-ms = <50>;
+            key-positions = <34 35>;
+            bindings = <&kp RBKT>;
+        };
+        combo_lt2 {
+            timeout-ms = <50>;
+            key-positions = <48 49 50>;
+            bindings = <&mo 2>;
+        };
+    };
+
+    behaviors {
+        gresc: grave_escape {
+            compatible = "zmk,behavior-mod-morph";
+            label = "GRAVE_ESCAPE";
+            #binding-cells = <0>;
+            bindings = <&kp ESC>, <&kp GRAVE>;
+            mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT|MOD_RALT)>;
+            keep-mods = <(MOD_RSFT)>;
+        };
+        td_lsftbkt: tap_dance_lsft_bkt {
+            compatible = "zmk,behavior-tap-dance";
+            label = "TAP_DANCE_LSFT_BKT";
+            #binding-cells = <0>;
+            tapping-term-ms = <175>;
+            bindings = <&kp LSHFT>, <&kp LBKT>;
+        };
+        td_rsftbkt: tap_dance_rsft_bkt {
+            compatible = "zmk,behavior-tap-dance";
+            label = "TAP_DANCE_RSFT_BKT";
+            #binding-cells = <0>;
+            tapping-term-ms = <175>;
+            bindings = <&kp RSHFT>, <&kp RBKT>;
+        };
+        gqt: global-quick-tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "GLOBAL_QUICK_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <160>;
+            quick-tap-ms = <120>;
+            global-quick-tap;
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    macros {
+        bt_0: bt_profile_macro_0 {
+            label = "BT_0";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&out OUT_BLE>
+                , <&bt BT_SEL 0>;
+        };
+
+        bt_1: bt_profile_macro_1 {
+            label = "BT_1";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&out OUT_BLE>
+                , <&bt BT_SEL 1>;
+        };
+        
+        bt_2: bt_profile_macro_2 {
+            label = "BT_2";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&out OUT_BLE>
+                , <&bt BT_SEL 2>;
+        };
+
+        bt_3: bt_profile_macro_3 {
+            label = "BT_3";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&out OUT_BLE>
+                , <&bt BT_SEL 3>;
+        };
+
+        bt_4: bt_profile_macro_4 {
+            label = "BT_4";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&out OUT_BLE>
+                , <&bt BT_SEL 4>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+&gresc          &kp N1 &kp N2 &kp N3   &kp N4   &kp N5                        &kp N6 &kp N7   &kp N8    &kp N9  &kp N0   &kp DEL
+&kp TAB         &kp Q  &kp W  &kp E    &kp R    &kp T                         &kp Y  &kp U    &kp I     &kp O   &kp P    &kp EQUAL
+&mt LGUI MINUS  &kp A  &kp S  &kp D    &kp F    &kp G                         &kp H  &kp J    &kp K     &kp L   &kp SEMI &kp SQT
+&kp LSHFT       &kp Z  &kp X  &kp C    &kp V    &kp B                         &kp N  &kp M    &kp COMMA &kp DOT &kp FSLH &kp RSHFT
+                           &kp LALT &lt 1 SPACE &gqt LCTRL BSPC           &kp ENTER  &lt 1 SPACE  &kp RALT
+            >;
+
+        };
+
+        lower_layer {
+            bindings = <
+&trans     &kp F1     &kp F2     &kp F3     &kp F4     &kp F5                 &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &kp HOME
+&trans     &trans     &trans     &trans     &trans     &kp F11                &kp F12    &trans     &kp UP     &trans     &trans     &kp END
+&trans     &trans     &trans     &trans     &trans     &kp C_VOL_UP           &trans     &kp LEFT   &kp DOWN   &kp RIGHT  &trans     &kp PG_UP
+&trans     &trans     &trans     &trans     &trans     &kp C_VOL_DN           &trans     &trans     &trans     &trans     &kp BSLH   &kp PG_DN
+                                 &trans     &kp SPACE  &kp LCTRL              &trans     &kp SPACE  &kp RCTRL
+            >;
+
+        };
+
+        raise_layer {
+            bindings = <
+&bt BT_CLR    &bt_0         &bt_1         &bt_2         &bt_3         &bt_4                        &trans     &trans     &trans     &trans     &trans     &trans
+&out OUT_TOG  &key_repeat        &trans        &trans        &trans        &trans                       &trans     &trans     &trans     &trans     &trans     &trans
+&trans        &trans        &trans        &trans        &trans        &trans                       &trans     &trans     &trans     &trans     &trans     &trans
+&trans        &trans        &trans        &trans        &trans        &trans                       &trans     &trans     &trans     &trans     &trans     &trans
+                                          &trans        &trans        &trans                       &trans     &trans     &trans
+            >;
+
+        };
+    };
+};

@@ -1,0 +1,11 @@
+file_format: "1"
+id: dokkaebi
+name: dokkaebi
+type: shield
+url: https://github.com/zenithistk/dokkaebi
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - dokkaebi_left
+  - dokkaebi_right
