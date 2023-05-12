@@ -39,7 +39,7 @@
             //         | RSE/TAB | SHFT/SPC | LWR/RET |   | LWR/ESC | SHFT/BKSP  | RSE/DEL |
 
             bindings = <
-    &mt LGUI RBKT   &kp Q   &kp W      &kp E            &kp R      &kp T      &kp Y           &kp U      &kp I    &kp O     &kp P       &kp LBKT 
+    &mt LGUI RBKT   &kp Q   &kp W      &kp E            &kp R      &kp T      &kp Y           &kp U      &kp I    &kp O     &kp P       &kp LBKT
   &mt LCTRL GRAVE   &kp A   &kp S      &kp D            &kp F      &kp G      &kp H           &kp J      &kp K    &kp L  &kp SEMI  &mt RCTRL SQT
    &mt LALT MINUS   &kp Z   &kp X      &kp C            &kp V      &kp B      &kp N           &kp M  &kp COMMA  &kp DOT  &kp FSLH  &mt RALT BSLH
                                    &lt 2 TAB  &mt LSHFT SPACE  &lt 1 RET  &lt 1 ESC  &mt RSHFT BSPC  &lt 2 DEL
