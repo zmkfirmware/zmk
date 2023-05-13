@@ -1,5 +1,5 @@
-identifier: tofu65_v2
-name: Kbdfans Tofu65 2.0
+identifier: kbdfans_tofu65_v2
+name: KBDfans Tofu65 2.0
 type: mcu
 arch: arm
 flash: 8192

@@ -11,8 +11,6 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-    // model = "Tofu65, 2.0";
-    // compatible = "tofu65,2.0", "st,stm32f303";
 
     chosen {
         zephyr,sram = &sram0;
@@ -23,10 +21,6 @@
         zmk,kscan = &kscan0;
         zmk,matrix_transform = &default_transform;
     };
-
-    // aliases {
-    //  watchdog0 = &wdt0;
-    // };
 
     xtal_clk: xtal-clk {
         compatible = "fixed-clock";
@@ -41,7 +35,7 @@
 
 //  ------- Switch Matrix ----------
 //
-//  Column     0 |   1 |   2 |  3  |   4 |   5 |   6 |   7 |   8 |   9 |  10 |  11 |  12 | 13  | 14  |
+//  Column     0 |   1 |   2 |   3 |   4 |   5 |   6 |   7 |   8 |   9 |  10 |  11 |  12 |  13 |  14 |
 //          ==========================================================================================
 //  Row 0 ||  S0 |  S1 |  S2 |  S3 |  S4 |  S5 |  S6 |  S7 |  S8 |  S9 | S10 | S11 | S12 | S13 | S14 |
 //  Row 1 ||  S0 |  S1 |  S2 |  S3 |  S4 |  S5 |  S6 |  S7 |  S8 |  S9 | S10 | S11 | S12 | S13 | S14 |
@@ -161,9 +155,3 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
 zephyr_udc0: &usbd {
     status = "okay";
 };
-
-
-// &vreg {
-//  regulator-always-on;
-//  regulator-allowed-modes = <REGULATOR_RPI_PICO_MODE_NORMAL>;
-// };
