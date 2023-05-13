@@ -16,7 +16,7 @@ CONFIG_CONSOLE=y
 CONFIG_UART_CONSOLE=y
 
 # Enable USB CDC ACM logging for debugging
-CONFIG_ZMK_USB_LOGGING=y
+# CONFIG_ZMK_USB_LOGGING=y
 
 # Enable reset by default
 CONFIG_RESET=y
