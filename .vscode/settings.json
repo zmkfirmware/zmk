@@ -5,8 +5,7 @@
   },
   "python.formatting.provider": "black",
   "[c]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "ms-vscode.cpptools"
+    "editor.formatOnSave": true
   },
   "[javascript][javascriptreact][typescript][typescriptreact]": {
     "editor.formatOnSave": true,
