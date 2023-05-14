@@ -6,8 +6,6 @@ menuconfig ZMK_DISPLAY
     default n
     select DISPLAY
     select LVGL
-    select LV_THEMES
-    select LV_THEME_MONO
     select LV_CONF_MINIMAL
     imply LV_USE_THEME_MONO
 
