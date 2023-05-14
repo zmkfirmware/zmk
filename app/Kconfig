@@ -120,6 +120,10 @@ menuconfig ZMK_BLE
 
 if ZMK_BLE
 
+# BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
+config BT_TINYCRYPT_ECC
+    default y if BT_HCI && !BT_CTLR
+
 choice BT_LL_SW_LLCP_IMPL
     default BT_LL_SW_LLCP_LEGACY
 
