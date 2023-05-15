@@ -6,7 +6,6 @@
 /dts-v1/;
 
 #include <rpi_pico/rp2040.dtsi>
-#include "kbdfans_tofu65_v2-pinctrl.dtsi"
 #include <freq.h>
 #include <dt-bindings/zmk/matrix_transform.h>
 
@@ -16,7 +15,7 @@
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
         zephyr,console = &cdc_acm_uart;
-        zephyr,shell-uart = &uart0;
+        zephyr,shell-uart = &cdc_acm_uart;
         zephyr,code-partition = &code_partition;
         zmk,kscan = &kscan0;
         zmk,matrix_transform = &default_transform;
@@ -112,12 +111,6 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
     };
 };
 
-&uart0 {
-    current-speed = <115200>;
-    status = "okay";
-    pinctrl-0 = <&uart0_default>;
-    pinctrl-names = "default";
-};
 
 &usbd {
   status = "okay";
@@ -128,29 +121,10 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
 };
 
 
-&spi0 {
-    pinctrl-0 = <&spi0_default>;
-    pinctrl-names = "default";
-    clock-frequency = <DT_FREQ_M(8)>;
-};
-
-&i2c1 {
-    pinctrl-0 = <&i2c1_default>;
-    pinctrl-names = "default";
-    clock-frequency = <I2C_BITRATE_FAST>;
-};
-
 &gpio0 {
     status = "okay";
 };
 
-&wdt0 {
-};
-
-&adc {
-    pinctrl-0 = <&adc_default>;
-    pinctrl-names = "default";
-};
 
 zephyr_udc0: &usbd {
     status = "okay";
