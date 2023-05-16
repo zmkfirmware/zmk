@@ -5,12 +5,12 @@
 #
 
 description: >
-    This is a representation of the Maxim max17048 I2C Fuel Gauge.
+  This is a representation of the Maxim max17048 I2C Fuel Gauge.
 
 compatible: "maxim,max17048"
 
 include: [i2c-device.yaml]
 
 properties:
-    label:
-      required: true
+  label:
+    required: true

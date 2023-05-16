@@ -188,7 +188,7 @@ static int max17048_init(const struct device *dev) {
 
     // the functions below need the semaphore, so initialise it here
     k_sem_init(&drv_data->lock, 1, 1);
-    
+
     // bring the device out of sleep
     set_sleep_enabled(dev, false);
 
