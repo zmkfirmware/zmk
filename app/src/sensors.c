@@ -19,7 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #if ZMK_KEYMAP_HAS_SENSORS
 
 struct sensors_item_cfg {
-    uint8_t sensor_position;
+    uint8_t sensor_index;
     const struct zmk_sensor_config *config;
     const struct device *dev;
     struct sensor_trigger trigger;
@@ -57,17 +57,17 @@ static struct sensors_item_cfg sensors[] = {LISTIFY(ZMK_KEYMAP_SENSORS_LEN, SENS
 
 static ATOMIC_DEFINE(pending_sensors, ZMK_KEYMAP_SENSORS_LEN);
 
-const struct zmk_sensor_config *zmk_sensors_get_config_at_position(uint8_t sensor_position) {
-    if (sensor_position > ARRAY_SIZE(configs)) {
+const struct zmk_sensor_config *zmk_sensors_get_config_at_index(uint8_t sensor_index) {
+    if (sensor_index > ARRAY_SIZE(configs)) {
         return NULL;
     }
 
-    return &configs[sensor_position];
+    return &configs[sensor_index];
 }
 
-static void trigger_sensor_data_for_position(uint32_t sensor_position) {
+static void trigger_sensor_data_for_position(uint32_t sensor_index) {
     int err;
-    const struct sensors_item_cfg *item = &sensors[sensor_position];
+    const struct sensors_item_cfg *item = &sensors[sensor_index];
 
     err = sensor_sample_fetch(item->dev);
     if (err) {
@@ -84,7 +84,7 @@ static void trigger_sensor_data_for_position(uint32_t sensor_position) {
     }
 
     ZMK_EVENT_RAISE(new_zmk_sensor_event(
-        (struct zmk_sensor_event){.sensor_position = item->sensor_position,
+        (struct zmk_sensor_event){.sensor_index = item->sensor_index,
                                   .channel_data = {(struct zmk_sensor_channel_data){
                                       .value = value, .channel = item->trigger.chan}},
                                   .timestamp = k_uptime_get()}));
@@ -122,7 +122,7 @@ static void zmk_sensors_trigger_handler(const struct device *dev,
 static void zmk_sensors_init_item(uint8_t i) {
     LOG_DBG("Init sensor at index %d", i);
 
-    sensors[i].sensor_position = i;
+    sensors[i].sensor_index = i;
 
     if (!sensors[i].dev) {
         LOG_DBG("No local device for %d", i);

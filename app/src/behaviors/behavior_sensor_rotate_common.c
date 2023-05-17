@@ -21,7 +21,7 @@ int zmk_behavior_sensor_rotate_common_data(struct zmk_behavior_binding *binding,
 
     const struct sensor_value value = channel_data[0].value;
     int triggers;
-    int sensor_position = ZMK_SENSOR_POSITION_FROM_VIRTUAL_KEY_POSITION(event.position);
+    int sensor_index = ZMK_SENSOR_POSITION_FROM_VIRTUAL_KEY_POSITION(event.position);
 
     // Some funky special casing for "old encoder behavior" where ticks where reported in val2 only,
     // instead of rotational degrees in val1.
@@ -29,7 +29,7 @@ int zmk_behavior_sensor_rotate_common_data(struct zmk_behavior_binding *binding,
     if (value.val1 == 0) {
         triggers = value.val2;
     } else {
-        struct sensor_value remainder = data->remainder[sensor_position];
+        struct sensor_value remainder = data->remainder[sensor_index];
 
         remainder.val1 += value.val1;
         remainder.val2 += value.val2;
@@ -43,15 +43,15 @@ int zmk_behavior_sensor_rotate_common_data(struct zmk_behavior_binding *binding,
         triggers = remainder.val1 / trigger_degrees;
         remainder.val1 %= trigger_degrees;
 
-        data->remainder[sensor_position] = remainder;
+        data->remainder[sensor_index] = remainder;
     }
 
     LOG_DBG(
         "val1: %d, val2: %d, remainder: %d/%d triggers: %d inc keycode 0x%02X dec keycode 0x%02X",
-        value.val1, value.val2, data->remainder[sensor_position].val1,
-        data->remainder[sensor_position].val2, triggers, binding->param1, binding->param2);
+        value.val1, value.val2, data->remainder[sensor_index].val1,
+        data->remainder[sensor_index].val2, triggers, binding->param1, binding->param2);
 
-    data->triggers[sensor_position] = triggers;
+    data->triggers[sensor_index] = triggers;
     return 0;
 }
 
@@ -62,14 +62,14 @@ int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *bindi
     const struct behavior_sensor_rotate_config *cfg = dev->config;
     struct behavior_sensor_rotate_data *data = dev->data;
 
-    const int sensor_position = ZMK_SENSOR_POSITION_FROM_VIRTUAL_KEY_POSITION(event.position);
+    const int sensor_index = ZMK_SENSOR_POSITION_FROM_VIRTUAL_KEY_POSITION(event.position);
 
     if (mode != BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_TRIGGER) {
-        data->triggers[sensor_position] = 0;
+        data->triggers[sensor_index] = 0;
         return 0;
     }
 
-    int triggers = data->triggers[sensor_position];
+    int triggers = data->triggers[sensor_index];
 
     struct zmk_behavior_binding triggered_binding;
     if (triggers > 0) {
