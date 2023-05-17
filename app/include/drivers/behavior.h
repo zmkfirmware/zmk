@@ -33,7 +33,7 @@ typedef int (*behavior_keymap_binding_callback_t)(struct zmk_behavior_binding *b
 typedef int (*behavior_sensor_keymap_binding_process_callback_t)(
     struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
     enum behavior_sensor_binding_process_mode mode);
-typedef int (*behavior_sensor_keymap_binding_data_callback_t)(
+typedef int (*behavior_sensor_keymap_binding_accept_data_callback_t)(
     struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
     const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
     const struct zmk_sensor_channel_data channel_data[channel_data_size]);
@@ -49,7 +49,7 @@ __subsystem struct behavior_driver_api {
     behavior_keymap_binding_callback_t binding_convert_central_state_dependent_params;
     behavior_keymap_binding_callback_t binding_pressed;
     behavior_keymap_binding_callback_t binding_released;
-    behavior_sensor_keymap_binding_data_callback_t sensor_binding_data;
+    behavior_sensor_keymap_binding_accept_data_callback_t sensor_binding_data;
     behavior_sensor_keymap_binding_process_callback_t sensor_binding_process;
 };
 /**
@@ -169,12 +169,12 @@ static inline int z_impl_behavior_keymap_binding_released(struct zmk_behavior_bi
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_sensor_keymap_binding_data(
+__syscall int behavior_sensor_keymap_binding_accept_data(
     struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
     const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
     const struct zmk_sensor_channel_data *channel_data);
 
-static inline int z_impl_behavior_sensor_keymap_binding_data(
+static inline int z_impl_behavior_sensor_keymap_binding_accept_data(
     struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
     const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
     const struct zmk_sensor_channel_data *channel_data) {
