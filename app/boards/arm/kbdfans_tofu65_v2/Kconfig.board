@@ -1,4 +1,4 @@
-# Copyright (c) 2022 Pete Johanson
+# Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: Apache-2.0
 
 config BOARD_KBDFANS_TOFU65_V2

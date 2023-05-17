@@ -6,7 +6,6 @@
 /dts-v1/;
 
 #include <rpi_pico/rp2040.dtsi>
-#include <freq.h>
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
@@ -125,7 +124,3 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
     status = "okay";
 };
 
-
-zephyr_udc0: &usbd {
-    status = "okay";
-};
