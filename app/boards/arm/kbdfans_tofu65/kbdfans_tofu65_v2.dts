@@ -115,7 +115,6 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
   status = "okay";
   cdc_acm_uart: cdc_acm_uart {
     compatible = "zephyr,cdc-acm-uart";
-    label = "CDC_ACM_0";
   };
 };
 
