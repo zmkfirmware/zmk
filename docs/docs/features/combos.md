@@ -76,7 +76,7 @@ combo_nav {
 };
 ```
 
-### Partial Hold with Slow Release Positions
+### Partial Holds with Slow Release Positions
 
 Partial holds compliment `slow-release-positions`, by letting you control what happens when a combo is partially released. The best motivating example is a combo that is used to "accelerate" an existing thumb momentary layer with a key on that layer, allowing you to mash the keys together at the same time. The following layout is an example of this:
 
