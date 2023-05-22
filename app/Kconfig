@@ -135,7 +135,7 @@ config SYSTEM_WORKQUEUE_STACK_SIZE
 
 config ZMK_BLE_THREAD_STACK_SIZE
     int "BLE notify thread stack size"
-    default 512
+    default 768
 
 config ZMK_BLE_THREAD_PRIORITY
     int "BLE notify thread priority"
