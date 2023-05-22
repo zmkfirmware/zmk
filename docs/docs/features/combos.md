@@ -50,6 +50,12 @@ Invoking a source-specific behavior such as one of the [reset behaviors](behavio
 
 See [combo configuration](/docs/config/combos) for advanced configuration options.
 
+### Slow Release
+
+If you want the combo binding to be released when all positions are released, instead of when any position is released, enable `slow-release`. This is useful for combos that are used to toggle a layer, for example.
+
+However, you may want to continue to hold the combo when one position is held but not the other. For example, if the keys corresponding to the combo positions 0 and 1 are `&mo NAV` and `&kp A`, and the combo behavior is `&kp LEFT`, you may want to continue holding `LEFT` while you hold `A` and release `NAV`, but not if you hold `NAV` and release `A`. To solve this, you can specify `slow-release-positions` to select which keys must be held to maintain `slow-release`. In this example, you would specify `slow-release-positions = <1>`. In other words, the combo will be held as long _all_ keys in `slow-release-positions` are held, and released when _any_ key in `slow-release-positions` is released.
+
 ### Partial Holds
 
 After pressing a combo, you may want to specify the behavior that is activated when the combo is partially released. For example, if the keys corresponding to the combo positions 0, 1, and 2 are `&tog NAV`, `&kp A`, and `&kp LSFT` and the combo behavior is `&kp LEFT`, you may want to activate `&mo NAV` when you release `A` or `LSFT` but continue to hold `NAV`, or activate `LSFT` when you release `NAV` or `A` but continue to hold `LSFT`.

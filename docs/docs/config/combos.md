@@ -38,6 +38,7 @@ Each child node can have the following properties:
 | `key-positions`          | array         | A list of key position indices for the keys which should trigger the combo                                                                                         |         |
 | `timeout-ms`             | int           | All the keys in `key-positions` must be pressed within this time in milliseconds to trigger the combo                                                              | 50      |
 | `slow-release`           | bool          | Releases the combo when all keys are released instead of when any key is released                                                                                  | false   |
+| `slow-release-positions` | array         | A list of key position indices for the keys that must be held during `slow-release`. If any key in `slow-release-positions` is released, the combo is released.    |         |
 | `layers`                 | array         | A list of layers on which the combo may be triggered. `-1` allows all layers.                                                                                      | `<-1>`  |
 
 The `key-positions` array must not be longer than the `CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO` setting, which defaults to 4. If you want a combo that triggers when pressing 5 keys, then you must change the setting to 5.

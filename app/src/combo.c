@@ -29,9 +29,12 @@ struct combo_cfg {
     int32_t key_positions[CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO];
     int32_t key_position_len;
     int32_t timeout_ms;
-    // if slow release is set, the combo releases when the last key is released.
-    // otherwise, the combo releases when the first key is released.
+    // if slow release is set, the combo releases when the last key in slow_release_positions is
+    // released or all keys are released. otherwise, the combo releases when the first key is
+    // released.
     bool slow_release;
+    int32_t slow_release_positions[CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO];
+    int32_t slow_release_positions_len;
     int8_t layers[CONFIG_ZMK_COMBO_MAX_LAYERS_PER_COMBO];
     int32_t layers_len;
     // the virtual key position is a key position outside the range used by the keyboard.
@@ -47,6 +50,8 @@ struct active_combo {
     // The keys are removed from this array when they are released.
     // Once this array is empty, the behavior is released.
     const zmk_event_t *key_positions_pressed[CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO];
+    // keep track if the behavior has already been released (used for slow release)
+    bool behavior_released;
 };
 
 struct combo_candidate {
@@ -315,6 +320,7 @@ static struct active_combo *store_active_combo(struct combo_cfg *combo) {
     for (int i = 0; i < CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS; i++) {
         if (active_combos[i].combo == NULL) {
             active_combos[i].combo = combo;
+            active_combos[i].behavior_released = false;
             active_combo_count++;
             return &active_combos[i];
         }
@@ -374,6 +380,27 @@ static bool release_combo_key(int32_t position, int64_t timestamp, const zmk_eve
         }
 
         if (key_released) {
+            // slow release
+            if (!active_combo->combo->slow_release && all_keys_pressed) {
+                // if slow release is not enabled, release the behavior
+                process_combo_behavior(active_combo->combo, timestamp, false);
+            } else if (active_combo->combo->slow_release && !active_combo->behavior_released) {
+                // if slow release is enabled and the behavior has not yet been released
+                if (all_keys_released) {
+                    // if all keys are released, release the behavior
+                    process_combo_behavior(active_combo->combo, timestamp, false);
+                    active_combo->behavior_released = true;
+                } else {
+                    // if the key being released is a slow release key, release the behavior,
+                    // otherwise ignore
+                    for (int i = 0; i < active_combo->combo->slow_release_positions_len; i++) {
+                        if (active_combo->combo->slow_release_positions[i] == position) {
+                            process_combo_behavior(active_combo->combo, timestamp, false);
+                            active_combo->behavior_released = true;
+                        }
+                    }
+                }
+            }
 
             // partial holds
             for (int i = 1; i < active_combo->combo->behaviors_len; i++) {
@@ -539,6 +566,8 @@ ZMK_SUBSCRIPTION(combo, zmk_position_state_changed);
         .key_positions = DT_PROP(n, key_positions),                                                \
         .key_position_len = DT_PROP_LEN(n, key_positions),                                         \
         .slow_release = DT_PROP(n, slow_release),                                                  \
+        .slow_release_positions = DT_PROP(n, slow_release_positions),                              \
+        .slow_release_positions_len = DT_PROP_LEN(n, slow_release_positions),                      \
         .layers = DT_PROP(n, layers),                                                              \
         .layers_len = DT_PROP_LEN(n, layers),                                                      \
         .virtual_key_position = ZMK_VIRTUAL_KEY_POSITION_COMBO(__COUNTER__),                       \
