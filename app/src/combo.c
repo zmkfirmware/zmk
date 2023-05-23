@@ -29,9 +29,8 @@ struct combo_cfg {
     int32_t key_positions[CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO];
     int32_t key_position_len;
     int32_t timeout_ms;
-    // if slow release is set, the combo releases when the last key in slow_release_positions is
-    // released or all keys are released. otherwise, the combo releases when the first key is
-    // released.
+    // if slow release is set, the combo releases when any key in slow_release_positions is released
+    // or all keys are released. otherwise, the combo releases when the first key is released.
     bool slow_release;
     int32_t slow_release_positions[CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO];
     int32_t slow_release_positions_len;
@@ -406,7 +405,7 @@ static bool release_combo_key(int32_t position, int64_t timestamp, const zmk_eve
             for (int i = 1; i < active_combo->combo->behaviors_len; i++) {
                 // loop through every behavior except the first. If the behavior is a partial hold
                 // position, process it. If the next behavior is also a behavior, press that
-                // behavior instead of the partial hold position.
+                // behavior instead of the key at the position.
                 struct zmk_behavior_binding *binding = &active_combo->combo->behaviors[i];
                 // if the behavior is not a partial hold position, skip it
                 if (!IS_PARTIAL_HOLD_POSITION(binding->behavior_dev)) {
@@ -420,7 +419,7 @@ static bool release_combo_key(int32_t position, int64_t timestamp, const zmk_eve
                         : !IS_PARTIAL_HOLD_POSITION(
                               active_combo->combo->behaviors[i + 1].behavior_dev);
 
-                // if all keys are pressed, press all other partial hold keys that are still held
+                // if all keys were pressed, press all other partial hold keys that are still held
                 if (all_keys_pressed) {
                     // except the one that was released
                     if (partial_hold_position != position) {
