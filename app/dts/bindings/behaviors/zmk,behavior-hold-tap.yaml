@@ -37,6 +37,10 @@ properties:
       - "balanced"
       - "tap-preferred"
       - "tap-unless-interrupted"
+  hold-while-undecided:
+    type: boolean
+  hold-while-undecided-linger:
+    type: boolean
   retro-tap:
     type: boolean
   hold-trigger-key-positions:
