@@ -49,11 +49,11 @@ Defines how long a key must be pressed to trigger Hold behavior.
 
 If you press a tapped hold-tap again within `quick-tap-ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
 
-#### `global-quick-tap`
+#### `global-quick-tap-ms`
 
-If `global-quick-tap` is enabled, then `quick-tap-ms` will apply not only when the given hold-tap is tapped, but for any key tapped before it. This effectively disables the hold-tap when typing quickly, which can be quite useful for homerow mods. It can also have the effect of removing the input delay when typing quickly.
+If `global-quick-tap-ms` is like `quick-tap-ms` however it will apply for _any_ key tapped before it. This effectively disables the hold-tap when typing quickly, which can be quite useful for homerow mods. It can also have the effect of removing the input delay when typing quickly.
 
-For example, the following hold-tap configuration enables `global-quick-tap` with a 125 millisecond `quick-tap-ms` term.
+For example, the following hold-tap configuration enables `global-quick-tap-ms` with a 125 millisecond term, alongside a regular `quick-tap-ms` with a 200 millisecond term.
 
 ```
 gqt: global-quick-tap {
@@ -62,8 +62,8 @@ gqt: global-quick-tap {
     #binding-cells = <2>;
     flavor = "tap-preferred";
     tapping-term-ms = <200>;
-    quick-tap-ms = <125>;
-    global-quick-tap;
+    quick-tap-ms = <200>;
+    global-quick-tap-ms = <125>;
     bindings = <&kp>, <&kp>;
 };
 ```
