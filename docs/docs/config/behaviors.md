@@ -230,6 +230,7 @@ Applies to: `compatible = "zmk,behavior-sticky-key"`
 | `bindings`         | phandle array | A behavior (without parameters) to trigger                               |         |
 | `release-after-ms` | int           | Releases the key after this many milliseconds if no other key is pressed | 1000    |
 | `quick-release`    | bool          | Release the sticky key on the next key press instead of release          | false   |
+| `lazy`             | bool          | Wait until the next key press to activate the sticky key behavior        | false   |
 | `ignore-modifiers` | bool          | If enabled, pressing a modifier key does not cancel the sticky key       | true    |
 
 This behavior forwards the one parameter it receives to the parameter of the behavior specified in `bindings`.
