@@ -34,6 +34,12 @@ By default, sticky keys stay pressed for a second if you don't press any other k
 
 Some typists may find that using a sticky shift key interspersed with rapid typing results in two or more capitalized letters instead of one. This happens as the sticky key is active until the next key is released, under which other keys may be pressed and will receive the modifier. You can enable the `quick-release` setting to instead deactivate the sticky key on the next key being pressed, as opposed to released.
 
+#### `lazy`
+
+By default, sticky keys are activated on press until another key is pressed. You can enable the `lazy` setting to instead activate the sticky key right _before_ the other key is pressed. This is useful for mouse interaction or situations where you don't want the host to see anything during a sticky-key timeout, for example `&sk LGUI`, which can trigger a menu if pressed alone.
+
+Note that tapping a lazy sticky key will not trigger other behaviors such as the release of other sticky keys or layers. If you want to use a lazy sticky key to activate the release of a sticky layer, potential solutions include wrappping the sticky key in a simple macro which presses the sticky behavior around the sticky key press, doing the same with `&mo LAYER`, or triggering a tap of some key like `K_CANCEL` on sticky key press.
+
 #### `ignore-modifiers`
 
 This setting is enabled by default. It ensures that if a sticky key modifier is pressed before a previously pressed sticky key is released, the modifiers will get combined so you can add more sticky keys or press a regular key to apply the modifiers. This is to accommodate _callum-style mods_ where you are prone to rolling sticky keys. If you want sticky key modifiers to only chain after release, you can disable this setting. Please note that activating multiple modifiers via [modifier functions](https://zmk.dev/docs/codes/modifiers#modifier-functions) such as `&sk LS(LALT)`, require `ignore-modifiers` enabled in order to function properly.

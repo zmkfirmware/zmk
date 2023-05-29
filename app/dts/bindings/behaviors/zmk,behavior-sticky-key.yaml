@@ -16,5 +16,7 @@ properties:
     required: true
   quick-release:
     type: boolean
+  lazy:
+    type: boolean
   ignore-modifiers:
     type: boolean
