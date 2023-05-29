@@ -47,11 +47,11 @@ Defines how long a key must be pressed to trigger Hold behavior.
 
 #### `quick-tap-ms`
 
-If you press a tapped hold-tap again within `quick-tap-ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
+If you press a tapped hold-tap again within `quick-tap-ms` milliseconds of the first press, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
 
 #### `global-quick-tap-ms`
 
-If `global-quick-tap-ms` is like `quick-tap-ms` however it will apply for _any_ key tapped before it. This effectively disables the hold-tap when typing quickly, which can be quite useful for homerow mods. It can also have the effect of removing the input delay when typing quickly.
+`global-quick-tap-ms` is like `quick-tap-ms` however it will apply for _any_ non-modifier key pressed before it. This effectively disables the hold-tap when typing quickly, which can be quite useful for homerow mods. It can also have the effect of removing the input delay when typing quickly.
 
 For example, the following hold-tap configuration enables `global-quick-tap-ms` with a 125 millisecond term, alongside a regular `quick-tap-ms` with a 200 millisecond term.
 
