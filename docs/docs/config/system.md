@@ -97,8 +97,8 @@ Following split keyboard settings are defined in [zmk/app/src/split/Kconfig](htt
 | `CONFIG_ZMK_SPLIT_BLE`                                | bool | Use BLE to communicate between split keyboard halves                    | y       |
 | `CONFIG_ZMK_SPLIT_ROLE_CENTRAL`                       | bool | `y` for central device, `n` for peripheral                              |         |
 | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE`    | int  | Max number of key state events to queue when received from peripherals  | 5       |
-| `CONFIG_ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE`   | int  | Stack size of the BLE split central write thread                        | 512     |
-| `CONFIG_ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE`   | int  | Max number of behavior run events to queue to send to the peripheral(s) | 5       |
+| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE`   | int  | Stack size of the BLE split central write thread                        | 512     |
+| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE`   | int  | Max number of behavior run events to queue to send to the peripheral(s) | 5       |
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE`          | int  | Stack size of the BLE split peripheral notify thread                    | 650     |
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY`            | int  | Priority of the BLE split peripheral notify thread                      | 5       |
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE` | int  | Max number of key state events to queue to send to the central          | 10      |
