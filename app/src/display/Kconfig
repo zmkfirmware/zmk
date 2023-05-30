@@ -6,15 +6,21 @@ menuconfig ZMK_DISPLAY
     default n
     select DISPLAY
     select LVGL
-    select LV_THEMES
-    select LV_THEME_MONO
     select LV_CONF_MINIMAL
+    imply LV_USE_THEME_MONO
 
 if ZMK_DISPLAY
 
 config ZMK_DISPLAY_BLANK_ON_IDLE
     bool "Blank display on idle"
     default y if SSD1306
+
+if LV_USE_THEME_MONO
+
+config ZMK_DISPLAY_INVERT
+    bool "Invert display colors"
+
+endif
 
 choice LV_TXT_ENC
     default LV_TXT_ENC_UTF8

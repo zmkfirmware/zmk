@@ -2,10 +2,23 @@ import Parser from "web-tree-sitter";
 
 import { Codes, Behaviors } from "./data/keymap-upgrade";
 
+const TREE_SITTER_WASM_URL = new URL(
+  "/node_modules/web-tree-sitter/tree-sitter.wasm",
+  import.meta.url
+);
+
 let Devicetree;
 
 export async function initParser() {
-  await Parser.init();
+  await Parser.init({
+    locateFile: (path, prefix) => {
+      // When locating tree-sitter.wasm, use a path that Webpack can map to the correct URL.
+      if (path == "tree-sitter.wasm") {
+        return TREE_SITTER_WASM_URL.href;
+      }
+      return prefix + path;
+    },
+  });
   Devicetree = await Parser.Language.load("/tree-sitter-devicetree.wasm");
 }
 

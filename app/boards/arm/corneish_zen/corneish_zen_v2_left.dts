@@ -20,7 +20,7 @@
         diode-direction = "col2row";
         row-gpios
             = <&gpio0 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0  4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             , <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             , <&gpio0 30 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
@@ -72,7 +72,7 @@
     };
 };
 
-&spi0  {
+&spi0 {
     status = "okay";
     compatible = "nordic,nrf-spim";
     pinctrl-0 = <&spi0_default>;
