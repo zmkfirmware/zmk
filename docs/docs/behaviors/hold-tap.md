@@ -133,6 +133,23 @@ See the following example, which uses a hold-tap behavior definition, configured
 By default, `hold-trigger-key-positions` are evaluated upon the first _key press_ after
 the hold-tap. For homerow mods, this is not always ideal, because it prevents combining multiple modifiers unless they are included in `hold-trigger-key-positions`. To overwrite this behavior, one can set `hold-trigger-on-release`. If set to true, the evaluation of `hold-trigger-key-positions` gets delayed until _key release_. This allows combining multiple modifiers when the next key is _held_, while still deciding the hold-tap in favor of a tap when the next key is _tapped_.
 
+#### Using different behavior types with hold-taps
+
+You can create instances of hold-taps invoking most [behavior types](../features/keymaps.md#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
+The two parameters that are passed to the hold-tap in your keymap will be forwarded to the referred behaviors, first one to the hold behavior and second one to the tap.
+
+If you use behaviors that accept no parameters such as [mod-morphs](mod-morph.md) or [macros](macros.md), you can pass a dummy parameter value such as `0` to the hold-tap when you use it in your keymap.
+For instance, a hold-tap with node label `caps` and `bindings = <&kp>, <&caps_word>;` can be used in the keymap as below to send the caps lock keycode on hold and invoke the [caps word behavior](caps-word.md) on tap:
+
+```
+&caps CAPS 0
+```
+
+:::info
+You cannot use behaviors that expect more than one parameter such as [`&bt`](bluetooth.md) and [`&rgb_ug`](underglow.md) with hold-taps, due to the limitations of the [devicetree keymap format](../config/index.md#devicetree-files).
+One workaround is to create a [macro](macros.md) that invokes those behaviors and use the macro as the hold or tap action.
+:::
+
 ### Example Use-Cases
 
 <Tabs
