@@ -48,7 +48,7 @@ static uint8_t passkey_digit = 0;
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY) */
 
 #if IS_ENABLED(CONFIG_ZMK_BOOTLOADER_BLE_CLEAR_BONDS)
-#include <sys/reboot.h>
+#include <zephyr/sys/reboot.h>
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)

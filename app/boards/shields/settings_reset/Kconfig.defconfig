@@ -6,5 +6,8 @@ if SHIELD_SETTINGS_RESET
 config ZMK_KEYBOARD_NAME
     default "SETTINGS RESET"
 
+config ZMK_BOOTLOADER_BLE_CLEAR_BONDS
+    default y
+
 endif
 
