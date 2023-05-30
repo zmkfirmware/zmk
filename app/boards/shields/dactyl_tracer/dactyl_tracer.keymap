@@ -33,7 +33,7 @@
    &mt LGUI A &mt LALT S &mt LCTRL D &mt LSHFT F &kp G                          &kp H   &mt LSHFT J &mt LCTRL K &mt LALT L &mt LGUI SEMI
    &kp Z      &kp X      &kp C       &kp V       &kp B                          &kp N   &kp M       &kp COMMA   &kp DOT    &kp SQT
               &kp LEFT   &kp RIGHT                                                                  &kp UP      &kp DOWN
-                                                           &kp HOME    &kp END  
+                                                           &kp HOME    &kp END
                                             &mo1 &kp SPACE &kp DEL     &kp BSPC &kp ENT &mo 2
                                                  &kp TAB                        &kp ESC
                         >;
@@ -113,7 +113,7 @@
    &none        &none        &none        &none        &none                &none &none      &none       &none      &none
    &bt BT_SEL 4 &bt BT_SEL 3 &bt BT_SEL 2 &bt BT_SEL 1 &none                &none &kp C_NEXT &kp C_PP    &kp C_PREV &none
    &bt BT_CLR   &none        &none        &bt BT_SEL 5 &none                &none &kp C_FF   &none       &kp C_RW   &none
-                &sys_reset   &bootloader                                                     &bootloader &sys_reset 
+                &sys_reset   &bootloader                                                     &bootloader &sys_reset
                                                              &none    &none
                                                 &trans &none &none    &none &none &trans
                                                        &none                &none
