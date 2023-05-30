@@ -1,0 +1,123 @@
+/*
+ * Copyright (c) 2023 Michael Johns
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+        keymap {
+                compatible = "zmk,keymap";
+
+                deafult_layer {
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// |  Q  |  W  |  E  |  R  |  T  |               |  Y  |  U  |  I  |  O  |  P  |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// | A(g)| S(a)| D(c)| F(s)|  G  |               |  H  | J(s)| K(c)| L(a)| ;(g)|
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// |  Z  |  X  |  C  |  V  |  B  |               |  N  |  M  |  ,  |  .  |  '  |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+//       |  ←  |  →  |                                       |  ↑  |  ↓  |
+//        ----- -----             -----     -----             ----- -----
+//                               | HOM |   | END |
+//                    ----- ----- -----     ----- ----- -----
+//                   | mo1 | SPC | DEL |   | BSP | ENT | mo2 |
+//                    ----- ----- -----     ----- ----- -----
+//                            | TAB |         | ESC |
+//                             -----           -----
+                        bindings = <
+   &kp Q      &kp W      &kp E       &kp R       &kp T                          &kp Y   &kp U       &kp I       &kp O      &kp P
+   &mt LGUI A &mt LALT S &mt LCTRL D &mt LSHFT F &kp G                          &kp H   &mt LSHFT J &mt LCTRL K &mt LALT L &mt LGUI SEMI
+   &kp Z      &kp X      &kp C       &kp V       &kp B                          &kp N   &kp M       &kp COMMA   &kp DOT    &kp SQT
+              &kp LEFT   &kp RIGHT                                                                  &kp UP      &kp DOWN
+                                                           &kp HOME    &kp END  
+                                            &mo1 &kp SPACE &kp DEL     &kp BSPC &kp ENT &mo 2
+                                                 &kp TAB                        &kp ESC
+                        >;
+                };
+
+                lower_layer {
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// |  1  |  2  |  3  |  4  |  5  |               |  6  |  7  |  8  |  9  |  0  |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// |  !  |  @  |  #  |  $  |  [  |               |  ]  |  %  |  ^  |  &  |  *  |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// | "|" |  `  |  \  |  (  |  {  |               |  }  |  )  |  /  |  ?  |  ~  |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+//       |  -  |  +  |                                       |  =  |  _  |
+//        ----- -----             -----     -----             ----- -----
+//                               |     |   | ALT |
+//                    ----- ----- -----     ----- ----- -----
+//                   |  ◌  |     |     |   | CTL | SFT | mo3 |
+//                    ----- ----- -----     ----- ----- -----
+//                            |     |         | GUI |
+//                             -----           -----
+                        bindings = <
+   &kp N1   &kp N2    &kp N3   &kp N4   &kp N5                      &kp N6    &kp N7    &kp N8    &kp N9    &kp N0
+   &kp EXCL &kp AT    &kp HASH &kp DLLR &kp LBKT                    &kp RBKT  &kp PRCNT &kp CARET &kp AMPS  &kp STAR
+   &kp PIPE &kp GRAVE &kp FSLH &kp LPAR &kp LBRC                    &kp RBRC  &kp RPAR  &kp BSLH  &kp QMARK &kp TILDE
+            &kp MINUS &kp PLUS                                                          &kp EQUAL &kp UNDER
+                                                 &none    &kp LALT
+                                    &trans &none &none    &kp RCTRL &kp RSHFT &mo 3
+                                           &none                    &kp RGUI
+                        >;
+                };
+
+                raise_layer {
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// | F1  | F2  | F3  | F4  | F5  |               | F6  | F7  | F8  | F9  | F10 |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// | F11 | INS | BRK | PG↑ | PSC |               |     | VL+ | VLm | VL- | F12 |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// |     | SLK |     | PG↓ |     |               |     |     |     |     |     |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+//       | BR- | BR+ |                                       |a+TB |sa+TB|
+//        ----- -----             -----     -----             ----- -----
+//                               | ALT |   |     |
+//                    ----- ----- -----     ----- ----- -----
+//                   | mo3 | SFT | CTL |   |     |     |  ◌  |
+//                    ----- ----- -----     ----- ----- -----
+//                            | GUI |         |     |
+//                             -----           -----
+                        bindings = <
+   &kp F1  &kp F2       &kp F3          &kp F4    &kp F5                       &kp F6 &kp F7       &kp F8      &kp F9       &kp F10
+   &kp F11 &kp INS      &kp PAUSE_BREAK &kp PG_UP &kp PSCRN                    &none  &kp C_VOL_UP &kp C_MUTE  &kp C_VOL_DN &kp F12
+   &none   &kp SLCK     &none           &kp PG_DN &none                        &none  &none        &none       &none        &none
+           &kp C_BRI_DN &kp C_BRI_UP                                                               &kp LA(TAB) &kp LS(LA(TAB))
+                                                            &kp LALT     &none
+                                            &mo 3 &kp LSHFT &kp LCTRL    &none &none &trans
+                                                  &kp LGUI                     &none
+                        >;
+                };
+
+                system_layer {
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// |     |     |     |     |     |               |     |     |     |     |     |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// | BT4 | BT3 | BT2 | BT1 |     |               |     | mNT | mPP | mPV |     |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+// | BTC |     |     | BT5 |     |               |     | mFF |     | mRW |     |
+//  ----- ----- ----- ----- -----                 ----- ----- ----- ----- -----
+//       | RST | BLR |                                       | BLR | RST |
+//        ----- -----             -----     -----             ----- -----
+//                               |     |   |     |
+//                    ----- ----- -----     ----- ----- -----
+//                   |  ◌  |     |     |   |     |     |  ◌  |
+//                    ----- ----- -----     ----- ----- -----
+//                            |     |         |     |
+//                             -----           -----
+                        bindings = <
+   &none        &none        &none        &none        &none                &none &none      &none       &none      &none
+   &bt BT_SEL 4 &bt BT_SEL 3 &bt BT_SEL 2 &bt BT_SEL 1 &none                &none &kp C_NEXT &kp C_PP    &kp C_PREV &none
+   &bt BT_CLR   &none        &none        &bt BT_SEL 5 &none                &none &kp C_FF   &none       &kp C_RW   &none
+                &sys_reset   &bootloader                                                     &bootloader &sys_reset 
+                                                             &none    &none
+                                                &trans &none &none    &none &none &trans
+                                                       &none                &none
+                        >;
+                };
+        };
+};

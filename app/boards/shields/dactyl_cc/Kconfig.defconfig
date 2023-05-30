@@ -1,0 +1,18 @@
+# Copyright (c) 2023 Matt Adereth
+# SPDX-License-Identifier: MIT
+if SHIELD_DACTYL_CC_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Dactyl CC"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_DACTYL_CC_LEFT || SHIELD_DACTYL_CC_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+endif

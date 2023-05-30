@@ -1,0 +1,11 @@
+file_format: "1"
+id: dactyl
+name: Dactyl
+type: shield
+url: https://github.com/adereth/dactyl-keyboard
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - dactyl_left
+  - dactyl_right

@@ -1,0 +1,135 @@
+/*
+ * Copyright (c) 2023 Matt Adereth
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+        keymap {
+                compatible = "zmk,keymap";
+
+                deafult_layer {
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// | ESC |  1  |  2  |  3  |  4  |  5  |                           |  6  |  7  |  8  |  9  |  0  |  `  |
+//  ------ ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// | CAP |  Q  |  W  |  E  |  R  |  T  |                           |  Y  |  U  |  I  |  O  |  P  |  \  |
+//  ------ ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// | TAB |  A  |  S  |  D  |  F  |  G  |                           |  H  |  J  |  K  |  L  |  ;  |  '  |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// | SFT |  Z  |  X  |  C  |  V  |  B  |                           |  N  |  M  |  ,  |  .  |  /  | SFT |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----  
+// | CTL |  -  |  =  |  ←  |  →  |                                       |  ↑  |  ↓  |  [  |  ]  | CTL |
+//  ----- ----- ----- ----- -----       ----- -----     ----- -----       ----- ----- ----- ----- -----
+//                                     | ALT | GUI |   | GUI | ALT |
+//                                ----- ----- -----     ----- ----- ----- 
+//                               |     |     | HOM |   | PG↑ |     |     |
+//                               | BSP | SPC |-----     -----| ENT | DEL |
+//                               |(lt1)|     | END |   | PG↓ |     |(lt2)|
+//                                ----- ----- -----     ----- ----- -----
+                        bindings = <
+   &kp ESC   &kp N1    &kp N2    &kp N3    &kp N4    &kp N5                                        &kp N6 &kp N7 &kp N8    &kp N9   &kp N0   &kp GRAVE
+   &kp CAPS  &kp Q     &kp W     &kp E     &kp R     &kp T                                         &kp Y  &kp U  &kp I     &kp O    &kp P    &kp BSLH
+   &kp TAB   &kp A     &kp S     &kp D     &kp F     &kp G                                         &kp H  &kp J  &kp K     &kp L    &kp SEMI &kp SQT
+   &kp LSHFT &kp Z     &kp X     &kp C     &kp V     &kp B                                         &kp N  &kp M  &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
+   &kp LCTRL &kp MINUS &kp EQUAL &kp LEFT  &kp RIGHT                                                      &kp UP &kp DOWN  &kp LBKT &kp RBKT &kp RCTRL
+                                                            &kp LALT  &kp LGUI  &kp RGUI  &kp LALT
+                                                 &lt 1 BSPC &kp SPACE &kp HOME  &kp PG_UP &kp ENT  &lt 2 DEL
+                                                                      &kp END   &kp PG_DN
+                        >;
+                };
+
+                tkm_layer {
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     |     |     |     |     |     |                           |     |     |     |     |     |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     |     |     |     |     |     |                           | KP( | KP7 | KP8 | KP9 | KP) |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     | SLK | INS | BRK | PSC |     |                           | KP* | KP4 | KP5 | KP6 | KP+ | NLK |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     |     |     |     |     |     |                           | KP/ | KP1 | KP2 | KP3 | KP- |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     |     |     |     |     |                                       | KP, | KP0 | KP. | KP↵ |     |
+//  ----- ----- ----- ----- -----       ----- -----     ----- -----       ----- ----- ----- ----- -----
+//                                     |     |     |   |  ◌  |  ◌  |
+//                                ----- ----- -----     ----- ----- ----- 
+//                               |     |     |     |   |     |     |     |
+//                               |  ◌  |     |-----     -----| SFT | mo3 |
+//                               |     |     |     |   | CTL |     |     |
+//                                ----- ----- -----     ----- ----- -----
+                        bindings = <
+   &none &none    &none   &none           &none     &none                                   &none           &none        &none     &none      &none        &none
+   &none &none    &none   &none           &none     &none                                   &kp KP_LPAR     &kp KP_N7    &kp KP_N8 &kp KP_N9  &kp KP_RPAR  &none
+   &none &kp SLCK &kp INS &kp PAUSE_BREAK &kp PSCRN &none                                   &kp KP_ASTERISK &kp KP_N4    &kp KP_N5 &kp KP_N6  &kp KP_PLUS  &kp KP_NUM
+   &none &none    &none   &none           &none     &none                                   &kp KP_SLASH    &kp KP_N1    &kp KP_N2 &kp KP_N3  &kp KP_MINUS &none
+   &none &none    &none   &none           &none                                                             &kp KP_COMMA &kp KP_N0 &kp KP_DOT &kp KP_ENTER &none
+                                                           &none &none  &trans    &trans
+                                                    &trans &none &none  &none     &kp RSHFT &mo 3
+                                                                 &none  &kp RCTRL
+                        >;
+                };
+
+                function_layer {
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     |     |     |     |     |     |                           |     |     |     |     |     |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     | F4  | F3  | F2  | F1  |     |                           |     | F13 | F14 | F15 | F16 |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     | F8  | F7  | F6  | F5  |     |                           |     | F17 | F18 | F19 | F20 |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     | F12 | F11 | F10 | F9  |     |                           |     | F21 | F22 | F23 | F24 |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     |     |     |     |     |                                       |     |     |     |     |     |
+//  ----- ----- ----- ----- -----       ----- -----     ----- -----       ----- ----- ----- ----- -----
+//                                     |  ◌  |  ◌  |   |     |     |
+//                                ----- ----- -----     ----- ----- ----- 
+//                               |     |     |     |   |     |     |     |
+//                               | mo3 | SFT |-----     -----|     |  ◌  |
+//                               |     |     | CTL |   |     |     |     |
+//                                ----- ----- -----     ----- ----- -----
+                        bindings = <
+   &none &none   &none   &none   &none  &none                                  &none &none   &none   &none   &none   &none
+   &none &kp F4  &kp F3  &kp F2  &kp F1 &none                                  &none &kp F13 &kp F14 &kp F15 &kp F16 &none
+   &none &kp F8  &kp F7  &kp F6  &kp F5 &none                                  &none &kp F17 &kp F18 &kp F19 &kp F20 &none
+   &none &kp F12 &kp F11 &kp F10 &kp F9 &none                                  &none &kp F21 &kp F22 &kp F23 &kp F24 &none
+   &none &none   &none   &none   &none                                               &none   &none   &none   &none   &none
+                                              &trans    &trans     &none &none
+                                        &mo 3 &kp LSHFT &none      &none &none &trans
+                                                        &kp LCTRL  &none
+                        >;
+                };
+
+                system_layer {
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     |     |     |     |     |     |                           |     |     |     |     |     |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     |     |     |     |     |     |                           |     | VL+ |     | BR+ |     |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// | BT5 | BT4 | BT3 | BT2 | BT1 |     |                           |     | VLm | mNT | mPP | mPV |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// | BTC |     |     |     |     |     |                           |     | VL- |     | BR- |     |     |
+//  ----- ----- ----- ----- ----- -----                             ----- ----- ----- ----- ----- -----
+// |     |     |     | RST | BLR |                                       | BLR | RST |     |     |     |
+//  ----- ----- ----- ----- -----       ----- -----     ----- -----       ----- ----- ----- ----- -----
+//                                     |     |     |   |     |     |
+//                                ----- ----- -----     ----- ----- ----- 
+//                               |     |     |     |   |     |     |     |
+//                               |  ◌  |     |-----     -----|     |  ◌  |
+//                               |     |     |     |   |     |     |     |
+//                                ----- ----- -----     ----- ----- -----
+                        bindings = <
+   &none        &none        &none        &none        &none        &none                           &none  &none        &none      &none        &none      &none
+   &none        &none        &none        &none        &none        &none                           &none  &kp C_VOL_UP &none      &kp C_BRI_UP &none      &none
+   &bt BT_SEL 5 &bt BT_SEL 4 &bt BT_SEL 3 &bt BT_SEL 2 &bt BT_SEL 1 &none                           &none  &kp C_MUTE   &kp C_NEXT &kp C_PP     &kp C_PREV &none
+   &bt BT_CLR   &none        &none        &none        &none        &none                           &none  &kp C_VOL_DN &none      &kp C_BRI_DN &none      &none
+   &none        &none        &none        &sys_reset   &bootloader                                         &bootloader  &sys_reset &none        &none      &none
+                                                                           &none &none  &none &none
+                                                                    &trans &none &none  &none &none &trans
+                                                                                 &none  &none
+                        >;
+                };
+        };
+};

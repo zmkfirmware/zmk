@@ -1,0 +1,8 @@
+# Copyright (c) 2023 Michael Johns
+# SPDX-License-Identifier: MIT
+
+config SHIELD_DACTYL_TRACER_LEFT
+    def_bool $(shields_list_contains,dactyl_tracer_left)
+
+config SHIELD_DACTYL_TRACER_RIGHT
+    def_bool $(shields_list_contains,dactyl_tracer_right)

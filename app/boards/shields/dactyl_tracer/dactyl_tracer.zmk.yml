@@ -1,0 +1,11 @@
+file_format: "1"
+id: dactyl_tracer
+name: Dactyl Tracer
+type: shield
+url: https://github.com/mjohns/tracer
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - dactyl_tracer_left
+  - dactyl_tracer_right

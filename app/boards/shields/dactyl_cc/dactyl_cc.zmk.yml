@@ -1,0 +1,11 @@
+file_format: "1"
+id: dactyl_cc
+name: Dactyl CC
+type: shield
+url: https://github.com/mjohns/dactyl-cc
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - dactyl_cc_left
+  - dactyl_cc_right
