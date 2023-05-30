@@ -15,7 +15,7 @@
 
 / {
     model = "Adv360";
-    compatible = "kinesis,adv360";
+    compatible = "kinesis,adv360pro";
 
     chosen {
         zephyr,code-partition = &code_partition;
