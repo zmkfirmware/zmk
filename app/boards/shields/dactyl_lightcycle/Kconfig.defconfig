@@ -3,7 +3,7 @@
 if SHIELD_DACTYL_LIGHTCYCLE_LEFT
 
 config ZMK_KEYBOARD_NAME
-    default "Dactyl Lightcycle"
+    default "DactylLightcycle"
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
