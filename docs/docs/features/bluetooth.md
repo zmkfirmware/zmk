@@ -57,3 +57,18 @@ If you attempt to pair a ZMK keyboard from macOS in a way that causes a bonding 
 1. Remove the keyboard from macOS using the Bluetooth control panel.
 1. Invoke `&bt BT_CLR` on the keyboard while the profile associated with the macOS device is active, by pressing the correct keys for your particular keymap.
 1. Try connecting again from macOS.
+
+### Windows Connected But Not Working
+
+Occasionally pairing the keyboard to a Windows device might result in a state where the keyboard is connected but does not send any key strokes.
+If this occurs:
+
+1. Remove the keyboard from Windows using the Bluetooth settings.
+1. Invoke `&bt BT_CLR` on the keyboard while the profile associated with the Windows device is active, by pressing the correct keys for your particular keymap.
+1. Turn off Bluetooth from Windows settings, then turn it back on.
+1. Pair the keyboard to the Windows device.
+
+If this doesn't help, try following the procedure above but replace step 3 with one of the following:
+
+- Restart the Windows device
+- Open "Device Manager," turn on "Show hidden devices" from the "View" menu, then find and delete the keyboard under the "Bluetooth" item
