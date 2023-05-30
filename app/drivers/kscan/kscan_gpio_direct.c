@@ -5,6 +5,7 @@
  */
 
 #include "debounce.h"
+#include "kscan_gpio.h"
 
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
@@ -41,7 +42,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define INST_INPUTS_LEN(n) DT_INST_PROP_LEN(n, input_gpios)
 #define KSCAN_DIRECT_INPUT_CFG_INIT(idx, inst_idx)                                                 \
-    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), input_gpios, idx)
+    KSCAN_GPIO_GET_BY_IDX(DT_DRV_INST(inst_idx), input_gpios, idx)
 
 struct kscan_direct_irq_callback {
     const struct device *dev;
@@ -50,6 +51,7 @@ struct kscan_direct_irq_callback {
 
 struct kscan_direct_data {
     const struct device *dev;
+    struct kscan_gpio_list inputs;
     kscan_callback_t callback;
     struct k_work_delayable work;
 #if USE_INTERRUPTS
@@ -62,17 +64,7 @@ struct kscan_direct_data {
     struct debounce_state *pin_state;
 };
 
-struct kscan_gpio_list {
-    const struct gpio_dt_spec *gpios;
-    size_t len;
-};
-
-/** Define a kscan_gpio_list from a compile-time GPIO array. */
-#define KSCAN_GPIO_LIST(gpio_array)                                                                \
-    ((struct kscan_gpio_list){.gpios = gpio_array, .len = ARRAY_SIZE(gpio_array)})
-
 struct kscan_direct_config {
-    struct kscan_gpio_list inputs;
     struct debounce_config debounce_config;
     int32_t debounce_scan_period_ms;
     int32_t poll_period_ms;
@@ -81,10 +73,10 @@ struct kscan_direct_config {
 
 #if USE_INTERRUPTS
 static int kscan_direct_interrupt_configure(const struct device *dev, const gpio_flags_t flags) {
-    const struct kscan_direct_config *config = dev->config;
+    const struct kscan_direct_data *data = dev->data;
 
-    for (int i = 0; i < config->inputs.len; i++) {
-        const struct gpio_dt_spec *gpio = &config->inputs.gpios[i];
+    for (int i = 0; i < data->inputs.len; i++) {
+        const struct gpio_dt_spec *gpio = &data->inputs.gpios[i].spec;
 
         int err = gpio_pin_interrupt_configure_dt(gpio, flags);
         if (err) {
@@ -134,16 +126,16 @@ static gpio_flags_t kscan_gpio_get_extra_flags(const struct gpio_dt_spec *gpio, 
 
 static int kscan_inputs_set_flags(const struct kscan_gpio_list *inputs,
                                   const struct gpio_dt_spec *active_gpio) {
-    gpio_flags_t extra_flags;
     for (int i = 0; i < inputs->len; i++) {
-        extra_flags = GPIO_INPUT | kscan_gpio_get_extra_flags(&inputs->gpios[i],
-                                                              &inputs->gpios[i] == active_gpio);
+        const bool active = &inputs->gpios[i].spec == active_gpio;
+        const gpio_flags_t extra_flags =
+            GPIO_INPUT | kscan_gpio_get_extra_flags(&inputs->gpios[i].spec, active);
         LOG_DBG("Extra flags equal to: %d", extra_flags);
 
-        int err = gpio_pin_configure_dt(&inputs->gpios[i], extra_flags);
+        int err = gpio_pin_configure_dt(&inputs->gpios[i].spec, extra_flags);
         if (err) {
-            LOG_ERR("Unable to configure flags on pin %d on %s", inputs->gpios[i].pin,
-                    inputs->gpios[i].port->name);
+            LOG_ERR("Unable to configure flags on pin %d on %s", inputs->gpios[i].spec.pin,
+                    inputs->gpios[i].spec.port->name);
             return err;
         }
     }
@@ -179,28 +171,35 @@ static int kscan_direct_read(const struct device *dev) {
     const struct kscan_direct_config *config = dev->config;
 
     // Read the inputs.
-    for (int i = 0; i < config->inputs.len; i++) {
-        const struct gpio_dt_spec *gpio = &config->inputs.gpios[i];
+    struct kscan_gpio_port_state state = {0};
 
-        const bool active = gpio_pin_get_dt(gpio);
+    for (int i = 0; i < data->inputs.len; i++) {
+        const struct kscan_gpio *gpio = &data->inputs.gpios[i];
 
-        debounce_update(&data->pin_state[i], active, config->debounce_scan_period_ms,
+        const int active = kscan_gpio_pin_get(gpio, &state);
+        if (active < 0) {
+            LOG_ERR("Failed to read port %s: %i", gpio->spec.port->name, active);
+            return active;
+        }
+
+        debounce_update(&data->pin_state[gpio->index], active, config->debounce_scan_period_ms,
                         &config->debounce_config);
     }
 
     // Process the new state.
     bool continue_scan = false;
 
-    for (int i = 0; i < config->inputs.len; i++) {
-        struct debounce_state *state = &data->pin_state[i];
+    for (int i = 0; i < data->inputs.len; i++) {
+        const struct kscan_gpio *gpio = &data->inputs.gpios[i];
+        struct debounce_state *state = &data->pin_state[gpio->index];
 
         if (debounce_get_changed(state)) {
             const bool pressed = debounce_is_pressed(state);
 
-            LOG_DBG("Sending event at 0,%i state %s", i, pressed ? "on" : "off");
-            data->callback(dev, 0, i, pressed);
+            LOG_DBG("Sending event at 0,%i state %s", gpio->index, pressed ? "on" : "off");
+            data->callback(dev, 0, gpio->index, pressed);
             if (config->toggle_mode && pressed) {
-                kscan_inputs_set_flags(&config->inputs, &config->inputs.gpios[i]);
+                kscan_inputs_set_flags(&data->inputs, &gpio->spec);
             }
         }
 
@@ -289,10 +288,11 @@ static int kscan_direct_init_input_inst(const struct device *dev, const struct g
 }
 
 static int kscan_direct_init_inputs(const struct device *dev) {
+    const struct kscan_direct_data *data = dev->data;
     const struct kscan_direct_config *config = dev->config;
 
-    for (int i = 0; i < config->inputs.len; i++) {
-        const struct gpio_dt_spec *gpio = &config->inputs.gpios[i];
+    for (int i = 0; i < data->inputs.len; i++) {
+        const struct gpio_dt_spec *gpio = &data->inputs.gpios[i].spec;
         int err = kscan_direct_init_input_inst(dev, gpio, i, config->toggle_mode);
         if (err) {
             return err;
@@ -306,6 +306,9 @@ static int kscan_direct_init(const struct device *dev) {
     struct kscan_direct_data *data = dev->data;
 
     data->dev = dev;
+
+    // Sort inputs by port so we can read each port just once per scan.
+    kscan_gpio_list_sort_by_port(&data->inputs);
 
     kscan_direct_init_inputs(dev);
 
@@ -326,7 +329,7 @@ static const struct kscan_driver_api kscan_direct_api = {
     BUILD_ASSERT(INST_DEBOUNCE_RELEASE_MS(n) <= DEBOUNCE_COUNTER_MAX,                              \
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
-    static const struct gpio_dt_spec kscan_direct_inputs_##n[] = {                                 \
+    static struct kscan_gpio kscan_direct_inputs_##n[] = {                                         \
         LISTIFY(INST_INPUTS_LEN(n), KSCAN_DIRECT_INPUT_CFG_INIT, (, ), n)};                        \
                                                                                                    \
     static struct debounce_state kscan_direct_state_##n[INST_INPUTS_LEN(n)];                       \
@@ -335,10 +338,11 @@ static const struct kscan_driver_api kscan_direct_api = {
         (static struct kscan_direct_irq_callback kscan_direct_irqs_##n[INST_INPUTS_LEN(n)];))      \
                                                                                                    \
     static struct kscan_direct_data kscan_direct_data_##n = {                                      \
-        .pin_state = kscan_direct_state_##n, COND_INTERRUPTS((.irqs = kscan_direct_irqs_##n, ))};  \
+        .inputs = KSCAN_GPIO_LIST(kscan_direct_inputs_##n),                                        \
+        .pin_state = kscan_direct_state_##n,                                                       \
+        COND_INTERRUPTS((.irqs = kscan_direct_irqs_##n, ))};                                       \
                                                                                                    \
     static struct kscan_direct_config kscan_direct_config_##n = {                                  \
-        .inputs = KSCAN_GPIO_LIST(kscan_direct_inputs_##n),                                        \
         .debounce_config =                                                                         \
             {                                                                                      \
                 .debounce_press_ms = INST_DEBOUNCE_PRESS_MS(n),                                    \
