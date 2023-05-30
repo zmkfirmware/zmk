@@ -33,7 +33,7 @@ A macro definition looks like:
 
 :::note
 The text before the colon (`:`) in the declaration of the macro node is the "node label", and is the text
-used to reference the macro in your keymap
+used to reference the macro in your keymap.
 :::
 
 The macro can then be bound in your keymap by referencing it by the label `&zed_em_kay`, e.g.:
@@ -43,6 +43,11 @@ The macro can then be bound in your keymap by referencing it by the label `&zed_
         bindings = <&zed_em_kay>;
     };
 ```
+
+:::note
+For use cases involving sending a single keycode with modifiers, for instance ctrl+tab, the [key press behavior](key-press.md)
+with [modifier functions](../codes/modifiers.mdx#modifier-functions) can be used instead of a macro.
+:::
 
 ### Bindings
 
