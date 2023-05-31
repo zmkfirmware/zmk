@@ -3477,7 +3477,7 @@ export default [
   },
   {
     names: ["INTERNATIONAL_6", "INT6", "INT_KPJPCOMMA"],
-    description: ", [カソマ] (International 6)",
+    description: ", [カンマ] (International 6)",
     context: "Keyboard",
     clarify: false,
     usages: [
