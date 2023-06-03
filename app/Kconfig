@@ -160,8 +160,9 @@ config BT_DEVICE_APPEARANCE
     default 961
 
 config ZMK_BLE_PASSKEY_ENTRY
-    bool "Experimental: Requiring typing passkey from host to pair BLE connection"
+    bool "Require passkey entry on the keyboard to complete pairing"
     default n
+    select RING_BUFFER
 
 config BT_PERIPHERAL_PREF_MIN_INT
     default 6
