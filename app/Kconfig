@@ -458,6 +458,19 @@ config ZMK_COMBO_MAX_KEYS_PER_COMBO
 # Combo options
 endmenu
 
+menu "Leader Options"
+
+config ZMK_LEADER_MAX_KEYS_PER_SEQUENCE
+    int "Maximum number of key presses in a leader sequence"
+    default 4
+
+config ZMK_LEADER_MAX_SEQUENCES_PER_KEY
+    int "Maximum number of leader sequences that a key can belong to"
+    default 5
+
+#Leader options
+endmenu
+
 menu "Behavior Options"
 
 config ZMK_BEHAVIORS_QUEUE_SIZE
@@ -473,6 +486,18 @@ config ZMK_MACRO_DEFAULT_WAIT_MS
 config ZMK_MACRO_DEFAULT_TAP_MS
     int "Default time to wait (in milliseconds) between the press and release events of a tapped behavior in macros"
     default 30
+
+DT_COMPAT_ZMK_LEADER := zmk,leader-sequences
+
+config ZMK_LEADER
+        bool
+        default $(dt_compat_enabled,$(DT_COMPAT_ZMK_LEADER))
+
+DT_COMPAT_ZMK_BEHAVIOR_LEADER_KEY := zmk,behavior-leader-key
+
+config ZMK_BEHAVIOR_LEADER_KEY
+        bool
+        default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_LEADER_KEY))
 
 endmenu
 
