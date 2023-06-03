@@ -99,6 +99,8 @@ bool zmk_endpoint_is_connected(void);
  */
 int zmk_endpoint_send_report(uint16_t usage_page);
 
+struct zmk_endpoint_instance zmk_last_endpoint();
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 /**
  * Sends the HID mouse report to the selected endpoint.

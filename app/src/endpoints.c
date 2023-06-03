@@ -47,6 +47,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #endif
 
 static struct zmk_endpoint_instance current_instance = {};
+static struct zmk_endpoint_instance last_instance = {};
 
 // Transport to use if multiple endpoints are ready
 static enum zmk_transport preferred_transport = DEFAULT_TRANSPORT;
@@ -486,6 +487,7 @@ static void update_current_endpoint(void) {
         // Cancel all current keypresses so keys don't stay held on the old endpoint.
         zmk_endpoint_clear_reports();
 
+        last_instance = current_instance;
         current_instance = new_instance;
 
         char endpoint_str[ZMK_ENDPOINT_STR_LEN];
