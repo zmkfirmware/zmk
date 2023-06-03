@@ -1,0 +1,33 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    leader-sequences {
+        compatible = "zmk,leader-sequences";
+
+        leader_seq_one {
+            key-positions = <0>;
+            bindings = <&kp A>;
+            layers = <2>;
+        };
+
+        leader_seq_two {
+            key-positions = <1>;
+            bindings = <&kp B>;
+        };
+
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &kp N1 &kp N2
+                &kp N3 &leader
+            >;
+        };
+    };
+};
