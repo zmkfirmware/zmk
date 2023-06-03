@@ -24,6 +24,10 @@ An array of one or more keybinds. This list can include [any ZMK keycode](../lis
 
 The number of bindings in this array also determines the tap-dance's maximum number of keypresses. When a tap-dance reaches its maximum number of keypresses, it will immediately invoke the last behavior in its list of `bindings`, rather than waiting for [`tapping-term-ms`](#tapping-term-ms) to expire before the output is displayed.
 
+#### `trigger-each-binding`
+
+If enabled, the tap-dance will output each behavior on key press. For example, a tap-dance with bindings `1`, `2`, and `3` will output 123 on triple tap.
+
 ### Example Usage
 
 <Tabs
