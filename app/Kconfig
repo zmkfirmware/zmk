@@ -365,6 +365,12 @@ config ZMK_MACRO_DEFAULT_TAP_MS
     int "Default time to wait (in milliseconds) between the press and release events of a tapped behavior in macros"
     default 30
 
+DT_COMPAT_ZMK_BEHAVIOR_TRI_STATE := zmk,behavior-tri-state
+
+config ZMK_BEHAVIOR_TRI_STATE
+        bool
+        default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_TRI_STATE))
+
 endmenu
 
 menu "Advanced"
