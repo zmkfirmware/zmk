@@ -1,0 +1,22 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Turbo key behavior
+
+compatible: "zmk,behavior-turbo-key"
+
+include: zero_param.yaml
+
+properties:
+  bindings:
+    type: phandle-array
+    required: true
+  wait-ms:
+    type: int
+    default: 200
+  tap-ms:
+    type: int
+    default: 5
+  toggle-term-ms:
+    type: int
+    default: -1
