@@ -84,6 +84,14 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
 };
 ```
 
+#### `hold-while-undecided`
+
+If enabled, the hold behavior will immediately be held, and will release before the tap behavior is sent. With modifiers (excluding the windows key) this will not affect typing, and is useful for mod + clicking.
+
+:::note Alt behavior
+In some applications, pressing the alt key by itself will have its own behavior like activate a menu.
+:::
+
 #### Positional hold-tap and `hold-trigger-key-positions`
 
 Including `hold-trigger-key-positions` in your hold-tap definition turns on the positional hold-tap feature. With positional hold-tap enabled, if you press any key **NOT** listed in `hold-trigger-key-positions` before `tapping-term-ms` expires, it will produce a tap.
