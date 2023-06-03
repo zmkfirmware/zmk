@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    behaviors {
+        /omit-if-no-ref/ last_dev: last_device {
+            compatible = "zmk,behavior-last-device";
+            label = "LAST_DEVICE";
+            #binding-cells = <0>;
+        };
+    };
+};

@@ -27,6 +27,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
     COND_CODE_1(IS_ENABLED(CONFIG_ZMK_BLE), (ZMK_TRANSPORT_BLE), (ZMK_TRANSPORT_USB))
 
 static struct zmk_endpoint_instance current_instance = {};
+static struct zmk_endpoint_instance last_instance = {};
 static enum zmk_transport preferred_transport =
     ZMK_TRANSPORT_USB; /* Used if multiple endpoints are ready */
 
@@ -347,6 +348,7 @@ static void update_current_endpoint(void) {
         // Cancel all current keypresses so keys don't stay held on the old endpoint.
         zmk_endpoints_clear_current();
 
+        last_instance = current_instance;
         current_instance = new_instance;
 
         char endpoint_str[ZMK_ENDPOINT_STR_LEN];
