@@ -17,6 +17,7 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
+#include <zmk/events/sensor_event.h>
 #include <zmk/behavior.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -109,6 +110,7 @@ enum captured_event_tag {
 union captured_event_data {
     struct zmk_position_state_changed_event position;
     struct zmk_keycode_state_changed_event keycode;
+    struct zmk_sensor_event_event sensor;
 };
 
 struct captured_event {
@@ -819,11 +821,38 @@ static int keycode_state_changed_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_CAPTURED;
 }
 
+static int sensor_event_listener(const zmk_event_t *eh) {
+    struct zmk_sensor_event *ev = as_zmk_sensor_event(eh);
+
+    update_hold_status_for_retro_tap(ev->sensor_index);
+
+    if (undecided_hold_tap == NULL) {
+        LOG_DBG("bubble (no undecided hold_tap active)");
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+
+    // hold-while-undecided can produce a mod, but we don't want to capture it.
+    if (undecided_hold_tap->config->hold_while_undecided &&
+        undecided_hold_tap->status == STATUS_UNDECIDED) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+
+    struct captured_event capture = {.tag = ET_CODE_CHANGED,
+                                     .data = {.sensor = copy_raised_zmk_sensor_event(ev)}};
+    capture_event(&capture);
+
+    decide_hold_tap(undecided_hold_tap, HT_OTHER_KEY_DOWN);
+    decide_hold_tap(undecided_hold_tap, HT_OTHER_KEY_UP);
+    return ZMK_EV_EVENT_CAPTURED;
+}
+
 int behavior_hold_tap_listener(const zmk_event_t *eh) {
     if (as_zmk_position_state_changed(eh) != NULL) {
         return position_state_changed_listener(eh);
     } else if (as_zmk_keycode_state_changed(eh) != NULL) {
         return keycode_state_changed_listener(eh);
+    } else if (as_zmk_sensor_event(eh) != NULL) {
+        return sensor_event_listener(eh);
     }
     return ZMK_EV_EVENT_BUBBLE;
 }
@@ -832,6 +861,7 @@ ZMK_LISTENER(behavior_hold_tap, behavior_hold_tap_listener);
 ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_position_state_changed);
 // this should be modifiers_state_changed, but unfrotunately that's not implemented yet.
 ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_keycode_state_changed);
+ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_sensor_event);
 
 void behavior_hold_tap_timer_work_handler(struct k_work *item) {
     struct k_work_delayable *d_work = k_work_delayable_from_work(item);
