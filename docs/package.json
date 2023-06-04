@@ -15,11 +15,11 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.1.0",
-    "@docusaurus/preset-classic": "^2.1.0",
-    "@fortawesome/fontawesome-svg-core": "^1.2.32",
-    "@fortawesome/free-solid-svg-icons": "^5.15.3",
-    "@fortawesome/react-fontawesome": "^0.1.18",
+    "@docusaurus/core": "^2.4.0",
+    "@docusaurus/preset-classic": "^2.4.0",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@mdx-js/react": "^1.6.22",
     "classnames": "^2.2.6",
     "js-yaml": "^4.1.0",
@@ -28,7 +28,7 @@
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.2",
     "react-toastify": "^7.0.4",
-    "web-tree-sitter": "^0.19.4"
+    "web-tree-sitter": "^0.20.8"
   },
   "browserslist": {
     "production": [
@@ -43,24 +43,24 @@
     ]
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^2.1.0",
-    "@docusaurus/types": "^2.1.0",
-    "@tsconfig/docusaurus": "^1.0.5",
+    "@docusaurus/module-type-aliases": "^2.4.0",
+    "@docusaurus/types": "^2.4.0",
+    "@tsconfig/docusaurus": "^1.0.7",
     "@types/js-yaml": "^4.0.5",
-    "@types/react": "^17.0.3",
-    "@types/react-helmet": "^6.1.5",
+    "@types/react": "^17.0.58",
+    "@types/react-helmet": "^6.1.6",
     "@types/react-router-dom": "^5.1.7",
-    "eslint": "^8.0.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint": "^8.39.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-mdx": "^2.0.5",
-    "eslint-plugin-react": "^7.30.0",
-    "json-schema-to-typescript": "^10.1.5",
+    "eslint-plugin-react": "^7.32.2",
+    "json-schema-to-typescript": "^12.0.0",
     "mustache": "^4.2.0",
     "null-loader": "^4.0.0",
     "prebuild-webpack-plugin": "^1.1.1",
     "prettier": "^2.8.7",
     "string-replace-loader": "^3.1.0",
-    "typescript": "^4.6.3",
-    "webpack": "^5.72.1"
+    "typescript": "^5.0.4",
+    "webpack": "^5.80.0"
   }
 }
