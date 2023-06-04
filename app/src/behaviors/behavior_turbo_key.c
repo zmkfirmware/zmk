@@ -63,8 +63,6 @@ static void clear_turbo(struct behavior_turbo_data *data) {
 
 static void reset_timer(struct behavior_turbo_data *data, struct zmk_behavior_binding_event event) {
     data->release_at = event.timestamp + data->wait_ms;
-    LOG_DBG("Resetting turbo timer: %d + %d = %d", event.timestamp, data->wait_ms,
-            data->release_at);
     int32_t ms_left = data->release_at - k_uptime_get();
     if (ms_left > 0) {
         k_work_schedule(&data->release_timer, K_MSEC(ms_left));
@@ -115,7 +113,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
     const struct behavior_turbo_config *cfg = dev->config;
     struct behavior_turbo_data *data = dev->data;
 
-    if (&data->is_active == false) {
+    if (data->is_active) {
         data->is_pressed = false;
         int32_t elapsedTime = k_uptime_get() - data->press_time;
         LOG_DBG("turbo elapsed time: %d", elapsedTime);
