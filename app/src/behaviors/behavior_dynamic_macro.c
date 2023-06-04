@@ -60,6 +60,15 @@ static struct recording_macro *find_recording_macro(uint32_t position) {
     return NULL;
 }
 
+static struct recording_macro *find_macro_at_position(uint32_t position) {
+    for (int i = 0; i < ZMK_BHV_RECORDING_MACRO_MAX; i++) {
+        if (recording_macros[i].position == position) {
+            return &recording_macros[i];
+        }
+    }
+    return NULL;
+}
+
 static int new_recording_macro(uint32_t position,
                                const struct behavior_dynamic_macro_config *config,
                                struct behavior_dynamic_macro_state *state,
@@ -116,8 +125,11 @@ static int on_dynamic_macro_binding_pressed(struct zmk_behavior_binding *binding
                 return ZMK_BEHAVIOR_OPAQUE;
             }
             LOG_DBG("Recording new macro: %d", event.position);
-            if (macro) {
-                total_recorded_actions -= macro->count;
+
+            struct recording_macro *old_macro;
+            old_macro = find_macro_at_position(event.position);
+            if (old_macro) {
+                total_recorded_actions -= old_macro->state->count;
             }
             macro->count = 0;
         } else {
