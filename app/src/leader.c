@@ -324,7 +324,7 @@ static int position_state_changed_listener(const zmk_event_t *ev) {
                     zmk_leader_deactivate();
                 }
             }
-            if (!timerless) {
+            if (!timerless || num_comp_candidates < num_candidates) {
                 reset_timer(data->timestamp);
             }
         }
