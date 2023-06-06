@@ -20,6 +20,7 @@ module.exports = {
       "features/backlight",
       "features/battery",
       "features/beta-testing",
+      "features/animations",
     ],
     Behaviors: [
       "behaviors/key-press",
@@ -42,6 +43,7 @@ module.exports = {
       "behaviors/underglow",
       "behaviors/backlight",
       "behaviors/power",
+      "behaviors/animations",
     ],
     Codes: [
       "codes/index",
