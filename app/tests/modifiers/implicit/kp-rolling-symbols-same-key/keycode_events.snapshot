@@ -1,0 +1,9 @@
+pressed: usage_page 0x07 keycode 0x2E implicit_mods 0x02 explicit_mods 0x00
+mods: Modifiers set to 0x02
+pressed: unregistering usage_page 0x07 keycode 0x2E since it was already pressed
+pressed: usage_page 0x07 keycode 0x2E implicit_mods 0x00 explicit_mods 0x00
+mods: Modifiers set to 0x00
+released: usage_page 0x07 keycode 0x2E implicit_mods 0x02 explicit_mods 0x00
+mods: Modifiers set to 0x00
+released: usage_page 0x07 keycode 0x2E implicit_mods 0x00 explicit_mods 0x00
+mods: Modifiers set to 0x00
