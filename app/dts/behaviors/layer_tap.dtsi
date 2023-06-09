@@ -5,14 +5,14 @@
  */
 
 / {
-	behaviors {
-		/omit-if-no-ref/ lt: behavior_layer_tap {
-			compatible = "zmk,behavior-hold-tap";
-			label = "LAYER_TAP";
-			#binding-cells = <2>;
-			flavor = "tap-preferred";
-			tapping-term-ms = <200>;
-			bindings = <&mo>, <&kp>;
-		};
-	};
+    behaviors {
+        /omit-if-no-ref/ lt: behavior_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&kp>;
+        };
+    };
 };

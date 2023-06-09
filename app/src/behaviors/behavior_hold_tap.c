@@ -6,11 +6,11 @@
 
 #define DT_DRV_COMPAT zmk_behavior_hold_tap
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
 #include <zmk/keys.h>
 #include <dt-bindings/zmk/keys.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/matrix.h>
 #include <zmk/endpoints.h>
@@ -60,6 +60,7 @@ struct behavior_hold_tap_config {
     bool global_quick_tap;
     enum flavor flavor;
     bool retro_tap;
+    bool hold_trigger_on_release;
     int32_t hold_trigger_key_positions_len;
     int32_t hold_trigger_key_positions[];
 };
@@ -587,9 +588,11 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     }
 
     // Store the position of pressed key for positional hold-tap purposes.
-    if ((ev->state) // i.e. key pressed (not released)
+    if ((undecided_hold_tap->config->hold_trigger_on_release !=
+         ev->state) // key has been pressed and hold_trigger_on_release is not set, or key
+                    // has been released and hold_trigger_on_release is set
         && (undecided_hold_tap->position_of_first_other_key_pressed ==
-            -1) // i.e. no other key has been pressed yet
+            -1) // no other key has been pressed yet
     ) {
         undecided_hold_tap->position_of_first_other_key_pressed = ev->position;
     }
@@ -697,12 +700,13 @@ static int behavior_hold_tap_init(const struct device *dev) {
 #define KP_INST(n)                                                                                 \
     static struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                        \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
-        .hold_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 0)),                     \
-        .tap_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 1)),                      \
+        .hold_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 0), label),               \
+        .tap_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 1), label),                \
         .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
         .global_quick_tap = DT_INST_PROP(n, global_quick_tap),                                     \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
         .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
+        .hold_trigger_on_release = DT_INST_PROP(n, hold_trigger_on_release),                       \
         .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
         .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \

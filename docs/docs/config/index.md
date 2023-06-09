@@ -116,14 +116,14 @@ Devicetree files look like this:
 
 ```devicetree
 / {
-	chosen {
-		zmk,kscan = &kscan0;
-	};
+    chosen {
+        zmk,kscan = &kscan0;
+    };
 
-	kscan0: kscan {
-		compatible = "zmk,kscan-gpio-matrix";
-		label = "KSCAN";
-	};
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+    };
 };
 ```
 
@@ -167,9 +167,9 @@ If the node you want to edit doesn't have a label, you can also write a new tree
 
 ```devicetree
 / {
-	kscan {
-		debounce-press-ms = <0>;
-	};
+    kscan {
+        debounce-press-ms = <0>;
+    };
 };
 ```
 
@@ -244,7 +244,7 @@ Example:
 some-gpios =
     <&gpio0 0 GPIO_ACTIVE_HIGH>,
     <&gpio0 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-	;
+    ;
 ```
 
 #### path

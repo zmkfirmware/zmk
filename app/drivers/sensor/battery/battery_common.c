@@ -5,7 +5,7 @@
  */
 
 #include <errno.h>
-#include <drivers/sensor.h>
+#include <zephyr/drivers/sensor.h>
 
 #include "battery_common.h"
 

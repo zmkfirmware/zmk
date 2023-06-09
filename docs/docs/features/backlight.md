@@ -62,9 +62,9 @@ Then you have to add the following lines to your `.dts` file:
 
 ```
 &pwm0 {
-	status = "okay";
-	ch0-pin = <45>;
-	/* ch0-inverted; */
+    status = "okay";
+    ch0-pin = <45>;
+    /* ch0-inverted; */
 };
 ```
 
@@ -84,7 +84,7 @@ Then you have to add the following lines inside the root devicetree node on the 
         label = "Backlight LEDs";
         pwm_led_0 {
             pwms = <&pwm0 45>;
-        	label = "Backlight LED 0";
+            label = "Backlight LED 0";
         };
     };
 };
@@ -129,9 +129,9 @@ Then add the following lines to your `.overlay` file:
 
 ```
 &pwm0 {
-	status = "okay";
-	ch0-pin = <45>;
-	/* ch0-inverted; */
+    status = "okay";
+    ch0-pin = <45>;
+    /* ch0-inverted; */
 };
 ```
 
@@ -151,7 +151,7 @@ Then you have to add the following lines inside the root devicetree node on the 
         label = "Backlight LEDs";
         pwm_led_0 {
             pwms = <&pwm0 45>;
-        	label = "Backlight LED 0";
+            label = "Backlight LED 0";
         };
     };
 };
@@ -182,7 +182,7 @@ Optionally, on Pro Micro compatible shields you can add a LED GPIO node to your 
         label = "Backlight LEDs";
         gpio_led_0 {
             gpios = <&pro_micro 20 GPIO_ACTIVE_HIGH>;
-        	label = "Backlight LED 0";
+            label = "Backlight LED 0";
         };
     };
 };
@@ -201,10 +201,10 @@ In order to do that, first you need to enable PWM for each pin:
 
 ```
 &pwm0 {
-	status = "okay";
-	ch0-pin = <45>; /* LED 0 */
-	ch1-pin = <46>; /* LED 1 */
-	ch2-pin = <47>; /* LED 2 */
+    status = "okay";
+    ch0-pin = <45>; /* LED 0 */
+    ch1-pin = <46>; /* LED 1 */
+    ch2-pin = <47>; /* LED 2 */
     ...
 };
 ```

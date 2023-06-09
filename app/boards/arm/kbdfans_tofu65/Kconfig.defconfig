@@ -1,0 +1,15 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_KBDFANS_TOFU65_V2
+
+config ZMK_KEYBOARD_NAME
+    default "kbdfans tofu65"
+
+config RP2_FLASH_W25Q080
+    default y
+
+config ZMK_USB
+    default y
+
+endif # BOARD_KBDFANS_TOFU65_V2

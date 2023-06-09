@@ -1,0 +1,16 @@
+# CKP boards configuration
+
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_BT60_V2
+    bool "bt60_v2"
+    depends on SOC_NRF52840_QIAA
+
+config BOARD_BT65_V1
+    bool "bt65_v1"
+    depends on SOC_NRF52840_QIAA
+
+config BOARD_BT75_V1
+    bool "bt75_v1"
+    depends on SOC_NRF52840_QIAA

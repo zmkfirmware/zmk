@@ -9,11 +9,11 @@
 
 #define DT_DRV_COMPAT zmk_battery_nrf_vddh
 
-#include <device.h>
-#include <devicetree.h>
-#include <drivers/adc.h>
-#include <drivers/sensor.h>
-#include <logging/log.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/adc.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/logging/log.h>
 
 #include "battery_common.h"
 

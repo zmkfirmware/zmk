@@ -2,4 +2,4 @@
 # SPDX-License-Identifier: MIT
 
 config SHIELD_TWO_PERCENT_MILK
-	def_bool $(shields_list_contains,two_percent_milk)
+    def_bool $(shields_list_contains,two_percent_milk)

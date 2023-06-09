@@ -1,0 +1,9 @@
+file_format: "1"
+id: seeeduino_xiao_rp2040
+name: Seeeduino XIAO RP2040
+type: board
+arch: arm
+outputs:
+  - usb
+url: https://wiki.seeedstudio.com/XIAO-RP2040/
+exposes: [seeed_xiao]

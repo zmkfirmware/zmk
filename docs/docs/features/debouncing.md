@@ -99,8 +99,6 @@ one millisecond of latency but protects against short noise spikes.
 
 ZMK's default debouncing is similar to QMK's `sym_defer_pk` algorithm.
 
-Setting `CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS=0` for eager debouncing would be similar
-to QMK's (unimplemented as of this writing) `asym_eager_defer_pk`.
+Setting `CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS=0` for eager debouncing would be similar to QMK's `asym_eager_defer_pk`.
 
-See [QMK's Debounce API documentation](https://beta.docs.qmk.fm/using-qmk/software-features/feature_debounce_type)
-for more information.
+See [QMK's Debounce API documentation](https://docs.qmk.fm/#/feature_debounce_type) for more information.

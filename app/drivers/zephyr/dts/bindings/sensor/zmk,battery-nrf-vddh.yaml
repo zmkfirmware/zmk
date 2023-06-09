@@ -4,8 +4,3 @@
 description: Battery SoC monitoring using nRF VDDH
 
 compatible: "zmk,battery-nrf-vddh"
-
-properties:
-  label:
-    required: true
-    type: string

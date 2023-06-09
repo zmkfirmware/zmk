@@ -20,9 +20,6 @@ CONFIG_ZMK_USB=y
 CONFIG_ZMK_KSCAN_MATRIX_POLLING=y
 CONFIG_USB_SELF_POWERED=n
 
-# Enable IO multiplexer
-CONFIG_GPIO_MCP23017=y
-
 # Needed to reduce this to size that will fit on F072
 CONFIG_HEAP_MEM_POOL_SIZE=1024
 

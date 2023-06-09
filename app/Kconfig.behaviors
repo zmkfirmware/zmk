@@ -1,0 +1,24 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config ZMK_BEHAVIOR_KEY_TOGGLE
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_KEY_TOGGLE_ENABLED
+
+
+config ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
+    bool
+    default n
+
+config ZMK_BEHAVIOR_SENSOR_ROTATE
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_SENSOR_ROTATE_ENABLED
+    select ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
+
+config ZMK_BEHAVIOR_SENSOR_ROTATE_VAR
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_SENSOR_ROTATE_VAR_ENABLED
+    select ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON

@@ -3,15 +3,15 @@
 #include <dt-bindings/zmk/kscan_mock.h>
 
 &kscan {
-	events = <
+    events = <
         /* Shift + hold &mod_morph --> expect and get D (no shift) */
-		ZMK_MOCK_PRESS(0,0,10)
-		ZMK_MOCK_PRESS(0,1,200)
-		ZMK_MOCK_PRESS(1,0,10)
-		ZMK_MOCK_RELEASE(1,0,10)
-		ZMK_MOCK_RELEASE(0,1,10)
-		ZMK_MOCK_RELEASE(0,0,10)
-	>;
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(0,1,200)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+    >;
 };
 
 / {
@@ -26,22 +26,22 @@
 
     };
 
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
 
-		default_layer {
-			bindings = <
-				&kp LEFT_SHIFT &mod_morph
-				&kp C &none
-			>;
-		};
+        default_layer {
+            bindings = <
+                &kp LEFT_SHIFT &mod_morph
+                &kp C &none
+            >;
+        };
 
         second_layer {
-			bindings = <
-				&trans &trans
-				&kp D &trans
-			>;
-		};
-	};
+            bindings = <
+                &trans &trans
+                &kp D &trans
+            >;
+        };
+    };
 };

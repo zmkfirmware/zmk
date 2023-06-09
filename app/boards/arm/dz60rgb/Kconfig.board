@@ -2,5 +2,5 @@
 # SPDX-License-Identifier: MIT
 
 config BOARD_DZ60RGB_REV1
-	bool "DZ60RGB Keyboard"
-	depends on SOC_STM32F303XC
+    bool "DZ60RGB Keyboard"
+    depends on SOC_STM32F303XC

@@ -1,6 +1,5 @@
 # Building ZMK for the Ferris 0.2
 
-
 ## Standard Build
 
 ```

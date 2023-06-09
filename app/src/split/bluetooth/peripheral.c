@@ -4,29 +4,29 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <device.h>
-#include <init.h>
+#include <zephyr/device.h>
+#include <zephyr/init.h>
 
 #include <errno.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <settings/settings.h>
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/conn.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/uuid.h>
-#include <bluetooth/gatt.h>
-#include <bluetooth/hci_err.h>
+#include <zephyr/settings/settings.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/bluetooth/hci.h>
+#include <zephyr/bluetooth/uuid.h>
+#include <zephyr/bluetooth/gatt.h>
+#include <zephyr/bluetooth/hci_err.h>
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 
-#include <settings/settings.h>
+#include <zephyr/settings/settings.h>
 
 #endif
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -59,7 +59,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_DBG("Disconnected from %s (reason 0x%02x)", log_strdup(addr), reason);
+    LOG_DBG("Disconnected from %s (reason 0x%02x)", addr, reason);
 
     is_connected = false;
 
@@ -73,9 +73,9 @@ static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
     if (!err) {
-        LOG_DBG("Security changed: %s level %u", log_strdup(addr), level);
+        LOG_DBG("Security changed: %s level %u", addr, level);
     } else {
-        LOG_ERR("Security failed: %s level %u err %d", log_strdup(addr), level, err);
+        LOG_ERR("Security failed: %s level %u err %d", addr, level, err);
     }
 }
 
@@ -85,7 +85,7 @@ static void le_param_updated(struct bt_conn *conn, uint16_t interval, uint16_t l
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-    LOG_DBG("%s: interval %d latency %d timeout %d", log_strdup(addr), interval, latency, timeout);
+    LOG_DBG("%s: interval %d latency %d timeout %d", addr, interval, latency, timeout);
 }
 
 static struct bt_conn_cb conn_callbacks = {

@@ -6,11 +6,12 @@
 
 #define DT_DRV_COMPAT zmk_combos
 
-#include <device.h>
+#include <zephyr/device.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/dlist.h>
+#include <zephyr/kernel.h>
+
 #include <drivers/behavior.h>
-#include <logging/log.h>
-#include <sys/dlist.h>
-#include <kernel.h>
 
 #include <zmk/behavior.h>
 #include <zmk/event_manager.h>
@@ -18,6 +19,7 @@
 #include <zmk/hid.h>
 #include <zmk/matrix.h>
 #include <zmk/keymap.h>
+#include <zmk/virtual_key_position.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -475,7 +477,7 @@ ZMK_SUBSCRIPTION(combo, zmk_position_state_changed);
         .key_positions = DT_PROP(n, key_positions),                                                \
         .key_position_len = DT_PROP_LEN(n, key_positions),                                         \
         .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, n),                                              \
-        .virtual_key_position = ZMK_KEYMAP_LEN + __COUNTER__,                                      \
+        .virtual_key_position = ZMK_VIRTUAL_KEY_POSITION_COMBO(__COUNTER__),                       \
         .slow_release = DT_PROP(n, slow_release),                                                  \
         .layers = DT_PROP(n, layers),                                                              \
         .layers_len = DT_PROP_LEN(n, layers),                                                      \

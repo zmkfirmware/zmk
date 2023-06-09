@@ -6,9 +6,9 @@
 if BOARD_QMK_PROTON_C
 
 config BOARD
-	default "proton_c"
+    default "proton_c"
 
 config ZMK_USB
-	default y
+    default y
 
 endif # BOARD_QMK_PROTON_C

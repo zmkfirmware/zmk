@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 config SHIELD_ERGODASH_LEFT
-	def_bool $(shields_list_contains,ergodash_left)
+    def_bool $(shields_list_contains,ergodash_left)
 
 config SHIELD_ERGODASH_RIGHT
-	def_bool $(shields_list_contains,ergodash_right)
+    def_bool $(shields_list_contains,ergodash_right)

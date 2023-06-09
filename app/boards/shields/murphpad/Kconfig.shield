@@ -2,4 +2,4 @@
 # SPDX-License-Identifier: MIT
 
 config SHIELD_MURPHPAD
-	def_bool $(shields_list_contains,murphpad)
+    def_bool $(shields_list_contains,murphpad)

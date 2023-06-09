@@ -3,27 +3,27 @@
 #include <dt-bindings/zmk/kscan_mock.h>
 
 / {
-	behaviors {
-		ht_bal: behavior_balanced {
-			compatible = "zmk,behavior-hold-tap";
-			label = "MOD_TAP";
-			#binding-cells = <2>;
-			flavor = "balanced";
-			tapping-term-ms = <300>;
-			quick-tap-ms = <300>;
-			bindings = <&kp>, <&kp>;
-			global-quick-tap;
-		};
-	};
+    behaviors {
+        ht_bal: behavior_balanced {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MOD_TAP";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <300>;
+            quick-tap-ms = <300>;
+            bindings = <&kp>, <&kp>;
+            global-quick-tap;
+        };
+    };
 
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
 
-		default_layer {
-			bindings = <
-				&ht_bal LEFT_SHIFT F &ht_bal LEFT_CONTROL C
-				&kp D &none>;
-		};
-	};
+        default_layer {
+            bindings = <
+                &ht_bal LEFT_SHIFT F &ht_bal LEFT_CONTROL C
+                &kp D &none>;
+        };
+    };
 };

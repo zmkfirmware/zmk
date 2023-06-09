@@ -5,11 +5,11 @@
  */
 
 / {
-	behaviors {
-		/omit-if-no-ref/ tog: behavior_toggle_layer {
-			compatible = "zmk,behavior-toggle-layer";
-			label = "TOGGLE_LAYER";
-			#binding-cells = <1>;
-		};
-	};
+    behaviors {
+        /omit-if-no-ref/ tog: behavior_toggle_layer {
+            compatible = "zmk,behavior-toggle-layer";
+            label = "TOGGLE_LAYER";
+            #binding-cells = <1>;
+        };
+    };
 };

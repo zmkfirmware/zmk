@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <settings/settings.h>
-#include <init.h>
+#include <zephyr/settings/settings.h>
+#include <zephyr/init.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/gatt.h>
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/gatt.h>
 
 #include <zmk/ble.h>
 #include <zmk/hog.h>

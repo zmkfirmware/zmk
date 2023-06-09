@@ -1,0 +1,6 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_KBDFANS_TOFU65_V2
+    bool "KBDfans Tofu65 2.0"
+    depends on SOC_RP2040

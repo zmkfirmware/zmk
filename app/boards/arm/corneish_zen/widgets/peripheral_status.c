@@ -5,10 +5,10 @@
  *
  */
 
-#include <kernel.h>
-#include <bluetooth/services/bas.h>
+#include <zephyr/kernel.h>
+#include <zephyr/bluetooth/services/bas.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/display.h>
@@ -48,7 +48,7 @@ ZMK_SUBSCRIPTION(widget_peripheral_status, zmk_split_peripheral_status_changed);
 
 int zmk_widget_peripheral_status_init(struct zmk_widget_peripheral_status *widget,
                                       lv_obj_t *parent) {
-    widget->obj = lv_img_create(parent, NULL);
+    widget->obj = lv_img_create(parent);
 
     sys_slist_append(&widgets, &widget->node);
 

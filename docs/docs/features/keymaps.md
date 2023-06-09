@@ -113,10 +113,10 @@ Nested under the devicetree root, is the keymap node. The node _name_ itself is 
 
 ```
     keymap {
-		compatible = "zmk,keymap";
+        compatible = "zmk,keymap";
 
         // Layer nodes go here!
-	};
+    };
 ```
 
 ### Layers

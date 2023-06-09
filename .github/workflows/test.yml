@@ -33,7 +33,7 @@ jobs:
         test: ${{ fromJSON(needs.collect-tests.outputs.test-dirs) }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:3.0
+      image: docker.io/zmkfirmware/zmk-build-arm:3.2
     steps:
       - name: Checkout
         uses: actions/checkout@v3

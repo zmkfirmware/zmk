@@ -5,11 +5,11 @@
  */
 
 / {
-	behaviors {
-		ext_power: behavior_ext_power {
-			compatible = "zmk,behavior-ext-power";
-			label = "EXTPOWER";
-			#binding-cells = <1>;
-		};
-	};
+    behaviors {
+        ext_power: behavior_ext_power {
+            compatible = "zmk,behavior-ext-power";
+            label = "EXTPOWER";
+            #binding-cells = <1>;
+        };
+    };
 };

@@ -38,6 +38,8 @@ These functions take the form: `XX(code)`
   - `&kp LS(A)` = `LEFT_SHIFT`+`A` (a capitalized **A**).
 - They can be combined:
   - `&kp LC(RA(B))` = `LEFT_CONTROL`+`RIGHT_ALT`+`B`
+- They can be applied to a modifier keycode to create combined modifier keys:
+  - `&kp LS(LALT)` = `LEFT_SHIFT` + `LEFT_ALT`
 - Some basic codes already include a modifier function in their definition:
   - `DOLLAR` = `LS(NUMBER_4)`
 - There are left- and right-handed versions of each modifier (also see table above):

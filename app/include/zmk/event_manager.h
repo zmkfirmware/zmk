@@ -7,7 +7,7 @@
 #pragma once
 
 #include <stddef.h>
-#include <kernel.h>
+#include <zephyr/kernel.h>
 #include <zephyr/types.h>
 
 struct zmk_event_type {

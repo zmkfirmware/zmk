@@ -4,5 +4,5 @@
 # SPDX-License-Identifier: MIT
 
 config BOARD_PREONIC_REV3
-	bool "Preonic V3 Keyboard"
-	depends on SOC_STM32F303XC
+    bool "Preonic V3 Keyboard"
+    depends on SOC_STM32F303XC

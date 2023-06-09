@@ -15,21 +15,10 @@ on:
       - "app/scripts/west_commands/metadata.py"
 
 jobs:
-  check-metadata-format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
-      - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: app
-      - name: Prettier Check
-        run: npm run prettier:check
-        working-directory: app
   validate-metadata:
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-dev-arm:3.0
+      image: docker.io/zmkfirmware/zmk-dev-arm:3.2
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies

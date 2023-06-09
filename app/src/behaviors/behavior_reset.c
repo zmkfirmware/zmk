@@ -6,10 +6,11 @@
 
 #define DT_DRV_COMPAT zmk_behavior_reset
 
-#include <device.h>
-#include <sys/reboot.h>
+#include <zephyr/device.h>
+#include <zephyr/sys/reboot.h>
+#include <zephyr/logging/log.h>
+
 #include <drivers/behavior.h>
-#include <logging/log.h>
 
 #include <zmk/behavior.h>
 

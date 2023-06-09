@@ -31,10 +31,7 @@
         },
         {
           "type": "object",
-          "required": [
-            "id",
-            "features"
-          ],
+          "required": ["id", "features"],
           "properties": {
             "id": {
               "$ref": "#/$defs/id"
@@ -89,9 +86,7 @@
       "title": "InterconnectNodeLabels",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "gpio"
-      ],
+      "required": ["gpio"],
       "properties": {
         "gpio": { "type": "string" },
         "i2c": { "type": "string" },
@@ -104,14 +99,7 @@
       "title": "Interconnect",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "file_format",
-        "id",
-        "name",
-        "description",
-        "url",
-        "type"
-      ],
+      "required": ["file_format", "id", "name", "description", "url", "type"],
       "properties": {
         "file_format": {
           "type": "string",
@@ -200,10 +188,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": [
-              "usb",
-              "ble"
-            ]
+            "enum": ["usb", "ble"]
           }
         },
         "features": {
@@ -224,14 +209,7 @@
       "title": "Shield",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "file_format",
-        "id",
-        "name",
-        "url",
-        "type",
-        "requires"
-      ],
+      "required": ["file_format", "id", "name", "url", "type", "requires"],
       "properties": {
         "file_format": {
           "type": "string",

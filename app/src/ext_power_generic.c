@@ -7,28 +7,26 @@
 #define DT_DRV_COMPAT zmk_ext_power_generic
 
 #include <stdio.h>
-#include <device.h>
-#include <pm/device.h>
-#include <init.h>
-#include <kernel.h>
-#include <settings/settings.h>
-#include <drivers/gpio.h>
+#include <zephyr/device.h>
+#include <zephyr/pm/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/settings/settings.h>
+#include <zephyr/drivers/gpio.h>
+
 #include <drivers/ext_power.h>
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct ext_power_generic_config {
-    const char *label;
-    const uint8_t pin;
-    const uint8_t flags;
+    const struct gpio_dt_spec control;
     const uint16_t init_delay_ms;
 };
 
 struct ext_power_generic_data {
-    const struct device *gpio;
     bool status;
 #if IS_ENABLED(CONFIG_SETTINGS)
     bool settings_init;
@@ -38,10 +36,10 @@ struct ext_power_generic_data {
 #if IS_ENABLED(CONFIG_SETTINGS)
 static void ext_power_save_state_work(struct k_work *work) {
     char setting_path[40];
-    const struct device *ext_power = device_get_binding(DT_INST_LABEL(0));
+    const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
     struct ext_power_generic_data *data = ext_power->data;
 
-    snprintf(setting_path, 40, "ext_power/state/%s", DT_INST_LABEL(0));
+    snprintf(setting_path, 40, "ext_power/state/%s", DT_INST_PROP(0, label));
     settings_save_one(setting_path, &data->status, sizeof(data->status));
 }
 
@@ -61,7 +59,7 @@ static int ext_power_generic_enable(const struct device *dev) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
-    if (gpio_pin_set(data->gpio, config->pin, 1)) {
+    if (gpio_pin_set_dt(&config->control, 1)) {
         LOG_WRN("Failed to set ext-power control pin");
         return -EIO;
     }
@@ -73,7 +71,8 @@ static int ext_power_generic_disable(const struct device *dev) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
-    if (gpio_pin_set(data->gpio, config->pin, 0)) {
+    if (gpio_pin_set_dt(&config->control, 0)) {
+        LOG_WRN("Failed to set ext-power control pin");
         LOG_WRN("Failed to clear ext-power control pin");
         return -EIO;
     }
@@ -92,7 +91,7 @@ static int ext_power_settings_set(const char *name, size_t len, settings_read_cb
     const char *next;
     int rc;
 
-    if (settings_name_steq(name, DT_INST_LABEL(0), &next) && !next) {
+    if (settings_name_steq(name, DT_INST_PROP(0, label), &next) && !next) {
         const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
         struct ext_power_generic_data *data = ext_power->data;
 
@@ -105,7 +104,7 @@ static int ext_power_settings_set(const char *name, size_t len, settings_read_cb
             data->settings_init = true;
 
             if (ext_power == NULL) {
-                LOG_ERR("Unable to retrieve ext_power device: %s", DT_INST_LABEL(0));
+                LOG_ERR("Unable to retrieve ext_power device: %s", DT_INST_PROP(0, label));
                 return -EIO;
             }
 
@@ -130,13 +129,7 @@ static int ext_power_generic_init(const struct device *dev) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
-    data->gpio = device_get_binding(config->label);
-    if (data->gpio == NULL) {
-        LOG_ERR("Failed to get ext-power control device");
-        return -EINVAL;
-    }
-
-    if (gpio_pin_configure(data->gpio, config->pin, config->flags | GPIO_OUTPUT)) {
+    if (gpio_pin_configure_dt(&config->control, GPIO_OUTPUT_INACTIVE)) {
         LOG_ERR("Failed to configure ext-power control pin");
         return -EIO;
     }
@@ -189,9 +182,7 @@ static int ext_power_generic_pm_action(const struct device *dev, enum pm_device_
 #endif /* CONFIG_PM_DEVICE */
 
 static const struct ext_power_generic_config config = {
-    .label = DT_INST_GPIO_LABEL(0, control_gpios),
-    .pin = DT_INST_GPIO_PIN(0, control_gpios),
-    .flags = DT_INST_GPIO_FLAGS(0, control_gpios),
+    .control = GPIO_DT_SPEC_INST_GET(0, control_gpios),
     .init_delay_ms = DT_INST_PROP_OR(0, init_delay_ms, 0)};
 
 static struct ext_power_generic_data data = {

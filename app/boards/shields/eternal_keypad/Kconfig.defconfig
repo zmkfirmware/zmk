@@ -4,6 +4,6 @@
 if SHIELD_ETERNAL_KEYPAD || SHIELD_ETERNAL_KEYPAD_LEFTY
 
 config ZMK_KEYBOARD_NAME
-	default "Eternal Keypad"
+    default "Eternal Keypad"
 
 endif

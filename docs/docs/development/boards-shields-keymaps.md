@@ -30,7 +30,7 @@ in the `app/boards/${arch}/${board_name}` directory, e.g. `app/boards/arm/planck
   - A [chosen](https://docs.zephyrproject.org/2.5.0/guides/dts/intro.html#aliases-and-chosen-nodes) node named `zmk,kscan` which references the configured KSCAN driver (usually a GPIO matrix)
   - (Optional) A [chosen](https://docs.zephyrproject.org/2.5.0/guides/dts/intro.html#aliases-and-chosen-nodes) node named `zmk,matrix_transform` that defines the mapping from KSCAN row/column values to the logical key position for the keyboard.
 - A `board.cmake` file with CMake directives for how to flash to the device.
-- A `keymap/keymap.overlay` file that includes the default keymap for that keyboard. Users will be able to override this keymap in their user configs.
+- A `${board_name}.keymap` file that includes the default keymap for that keyboard. Users will be able to override this keymap in their user configs.
 
 ## Pro Micro Compatible Keyboard
 

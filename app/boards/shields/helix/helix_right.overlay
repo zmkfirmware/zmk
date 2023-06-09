@@ -7,7 +7,7 @@
 #include "helix.dtsi"
 
 &default_transform {
-	col-offset = <7>;
+    col-offset = <7>;
 };
 
 &kscan0 {

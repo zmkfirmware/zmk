@@ -4,18 +4,18 @@
 #include "../behavior_keymap.dtsi"
 
 &caps_word {
-	continue-list = <UNDERSCORE MINUS>;
+    continue-list = <UNDERSCORE MINUS>;
 };
 
 &kscan {
-	events = <
-	ZMK_MOCK_PRESS(0,0,10)
-	ZMK_MOCK_RELEASE(0,0,10)
-	ZMK_MOCK_PRESS(0,1,10)
-	ZMK_MOCK_RELEASE(0,1,10)
-	ZMK_MOCK_PRESS(1,0,10)
-	ZMK_MOCK_RELEASE(1,0,10)
-	ZMK_MOCK_PRESS(0,1,10)
-	ZMK_MOCK_RELEASE(0,1,10)
-	>;
+    events = <
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    ZMK_MOCK_PRESS(0,1,10)
+    ZMK_MOCK_RELEASE(0,1,10)
+    ZMK_MOCK_PRESS(1,0,10)
+    ZMK_MOCK_RELEASE(1,0,10)
+    ZMK_MOCK_PRESS(0,1,10)
+    ZMK_MOCK_RELEASE(0,1,10)
+    >;
 };

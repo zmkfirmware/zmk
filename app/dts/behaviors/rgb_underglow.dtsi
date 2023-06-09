@@ -5,11 +5,11 @@
  */
 
 / {
-	behaviors {
-		rgb_ug: behavior_rgb_underglow {
-			compatible = "zmk,behavior-rgb-underglow";
-			label = "RGB_UG";
-			#binding-cells = <2>;
-		};
-	};
+    behaviors {
+        rgb_ug: behavior_rgb_underglow {
+            compatible = "zmk,behavior-rgb-underglow";
+            label = "RGB_UG";
+            #binding-cells = <2>;
+        };
+    };
 };

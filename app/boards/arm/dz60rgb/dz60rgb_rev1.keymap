@@ -2,10 +2,10 @@
 #include <dt-bindings/zmk/keys.h>
 
 / {
-	keymap {
-		compatible = "zmk,keymap";
+    keymap {
+        compatible = "zmk,keymap";
 
-		default_layer {
+        default_layer {
 // ------------------------------------------------------------------------------------------
 // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   |
 // | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   "|"   |
@@ -13,13 +13,13 @@
 // |  SHIFT  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  SHIFT(/)  |  ^  | DEL |
 // |  CTL  |  WIN  |  ALT  |            SPACE               | ALT | MO(1) |  <- |  v  | ->  |
 // ------------------------------------------------------------------------------------------
-			bindings = <
-	&kp ESC &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp  N8   &kp  N9 &kp  N0  &kp MINUS &kp EQUAL &kp BSPC
-	&kp TAB  &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp  I    &kp  O  &kp  P   &kp LBKT &kp RBKT  &kp BSLH
-	&kp CLCK  &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp  K    &kp  L  &kp SEMI &kp SQT           &kp RET
-	&kp LSHFT  &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &mt RSHFT FSLH   &kp  UP  &kp DEL
-	&kp LCTRL &kp LGUI &kp LALT            &kp SPACE                     &kp RALT &mo  1  &kp LEFT &kp DOWN &kp RIGHT
-			>;
-		};
-	};
+            bindings = <
+    &kp ESC &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp  N8   &kp  N9 &kp  N0  &kp MINUS &kp EQUAL &kp BSPC
+    &kp TAB  &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp  I    &kp  O  &kp  P   &kp LBKT &kp RBKT  &kp BSLH
+    &kp CLCK  &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp  K    &kp  L  &kp SEMI &kp SQT           &kp RET
+    &kp LSHFT  &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &mt RSHFT FSLH   &kp  UP  &kp DEL
+    &kp LCTRL &kp LGUI &kp LALT            &kp SPACE                     &kp RALT &mo  1  &kp LEFT &kp DOWN &kp RIGHT
+            >;
+        };
+    };
 };

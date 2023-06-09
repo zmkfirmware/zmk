@@ -4,7 +4,7 @@
 if SHIELD_ROMAC
 
 config ZMK_KEYBOARD_NAME
-	default "RoMac"
+    default "RoMac"
 
 endif
 

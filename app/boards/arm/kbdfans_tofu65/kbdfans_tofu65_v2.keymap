@@ -1,0 +1,97 @@
+// Copyright (c) 2023 The ZMK Contributors
+// SPDX-License-Identifier: MIT
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+#define BASE  0
+#define FUNC  1
+
+//
+// ---------- Tofu65 2.0 key switch positions ----------
+//
+// -------------------------------------------------------------------------------------------------
+// |  0  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  10  |  11  |  12  |   13   |  14 |
+// -------------------------------------------------------------------------------------------------
+// |  15    |  16 |  17 |  18 |  19 |  20 |  21 |  22 |  23 |  24 |  24 |  26 |  27 |   28   |  29 |
+// -------------------------------------------------------------------------------------------------
+// |  30     |  31 |  32 |  33 |  34 |  35 |  36 |  37 |  38 |  39 |  40 |  41  |     42     |  43 |
+// -------------------------------------------------------------------------------------------------
+// |     44     |  45 |  46 |  47 |  48 |  49 |  50 |  51 |  52 |  53 |  54 |    55   |  56  |  57 |
+// -------------------------------------------------------------------------------------------------
+// |   58  |   59  |   60  |                   61              |  62 |  63 |  64 |  65 |  66 |  67 |
+// -------------------------------------------------------------------------------------------------
+//
+
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        // BACKSPACE + LCTRL + LALT = &sys_reset
+        combo_bootloader {
+            timeout-ms = <100>;
+            key-positions = <13 58 60>;
+            bindings = <&sys_reset>;
+        };
+
+        // RETURN + LCTRL + LALT = &bootloader
+        combo_sys_reset {
+            timeout-ms = <100>;
+            key-positions = <42 58 60>;
+            bindings = <&bootloader>;
+        };
+    };
+
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        base {
+
+// --------- Default QWERTY Layout ---------
+// Layer 0 BASE
+// -------------------------------------------------------------------------------------------------
+// | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |    BSPC   | HME |
+// -------------------------------------------------------------------------------------------------
+// | TAB    |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]   |   \   | PGU |
+// -------------------------------------------------------------------------------------------------
+// | CAPS    |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '   |    ENTER   | PGD |
+// -------------------------------------------------------------------------------------------------
+// | LSHIFT     |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |    RSHFT |  ↑  | END |
+// -------------------------------------------------------------------------------------------------
+// | LCTL | LGUI | LALT |                     SPACE         | RALT | RGUI | RCTL |  <- |  ↓  | ->  |
+// -------------------------------------------------------------------------------------------------
+            bindings = <
+&kp ESC  &kp N1  &kp N2  &kp N3  &kp N4  &kp N5  &kp N6  &kp N7  &kp N8  &kp N9  &kp N0  &kp MINUS &kp EQUAL  &kp BSPC  &kp HOME
+&kp TAB   &kp Q   &kp W   &kp E   &kp R   &kp T   &kp Y   &kp U   &kp I   &kp O   &kp P   &kp LBKT  &kp RBKT   &kp BSLH &kp PG_UP
+&kp CLCK   &kp A   &kp S   &kp D   &kp F   &kp G   &kp H   &kp J   &kp K   &kp  L  &kp SEMI &kp SQT      &kp ENTER      &kp PG_DN
+&kp LSHFT   &kp Z   &kp X   &kp C   &kp V   &kp B   &kp N   &kp M   &kp COMMA &kp DOT &kp FSLH  &kp RSHFT     &kp UP    &kp END
+&kp LCTRL &kp LGUI &kp LALT            &kp SPACE               &kp RALT  &lt FUNC K_APP  &kp RCTRL  &kp LEFT  &kp DOWN  &kp RIGHT
+            >;
+        };
+
+        func {
+// --------- Default QWERTY Layout ---------
+// Layer 1 FUNC
+// ---------------------------------------------------------------------------------------------------
+// | ESC | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F8  | F9  | F10 | F11 | F12 |    DEL     | HME  |
+// ---------------------------------------------------------------------------------------------------
+// | ---    | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- | scroll lock | pause |   ---   | PGU  |
+// ---------------------------------------------------------------------------------------------------
+// | CAPS    | --  | --  | --  | --  | --  | --  | --  | --  | --  | --  | --  |     ---      | PGD  |
+// ---------------------------------------------------------------------------------------------------
+// | LSHIFT     | -- | -- | -- | -- | -- | -- | -- | -- | -- | -- |      -----      | VOL UP  | MUTE |
+// ---------------------------------------------------------------------------------------------------
+// | ---- | ---- | ---- |                     ----         | -- | MO 1 | -- | PREV  | VOL DN  | NEXT |
+// ---------------------------------------------------------------------------------------------------
+            bindings = <
+&kp GRAVE &kp F1  &kp F2  &kp F3  &kp F4  &kp F5  &kp F6  &kp F7  &kp F8  &kp F9  &kp F10  &kp F11  &kp F12      &kp DEL     &trans
+&trans    &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &kp SLCK  &kp PAUSE_BREAK  &trans  &trans
+&trans     &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans               &trans       &trans
+&trans      &trans  &trans  &trans  &trans  &trans  &trans  &trans  &trans     &trans   &trans        &trans   &kp C_VOL_UP  &kp C_MUTE
+&trans   &trans   &trans               &trans                             &trans  &trans  &trans  &kp C_PREV   &kp C_VOL_DN  &kp C_NEXT
+            >;
+        };
+    };
+};

@@ -3,7 +3,7 @@
 
 
 config SHIELD_FOURIER_LEFT
-	def_bool $(shields_list_contains,fourier_left)
+    def_bool $(shields_list_contains,fourier_left)
 
 config SHIELD_FOURIER_RIGHT
-	def_bool $(shields_list_contains,fourier_right)
+    def_bool $(shields_list_contains,fourier_right)

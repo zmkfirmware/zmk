@@ -4,13 +4,13 @@
 #include "../behavior_keymap.dtsi"
 
 &kscan {
-	events = <
-		ZMK_MOCK_PRESS(1,0,10) // trigger key
-		ZMK_MOCK_PRESS(0,0,10)
-		ZMK_MOCK_PRESS(1,1,400) // not trigger key
-		/* timer fires */ 
-		ZMK_MOCK_RELEASE(1,1,10)
-		ZMK_MOCK_RELEASE(1,0,10)
-		ZMK_MOCK_RELEASE(0,0,10)
-	>;
+    events = <
+        ZMK_MOCK_PRESS(1,0,10) // trigger key
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(1,1,400) // not trigger key
+        /* timer fires */
+        ZMK_MOCK_RELEASE(1,1,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+    >;
 };

@@ -72,17 +72,18 @@ struct max7318_drv_data {
 static int read_registers(const struct device *dev, uint8_t reg, uint16_t *buf) {
     const struct max7318_config *config = dev->config;
 
-    uint16_t data = 0;
-    int ret = i2c_burst_read_dt(&config->i2c_bus, reg, (uint8_t *)&data, sizeof(data));
+    uint8_t data[2] = {0};
+    int ret = i2c_burst_read_dt(&config->i2c_bus, reg, &data[0], sizeof(data));
     if (ret) {
-        LOG_DBG("i2c_write_read FAIL %d\n", ret);
+        LOG_DBG("i2c_burst_read FAIL %d\n", ret);
         return ret;
     }
 
-    *buf = sys_le16_to_cpu(data);
+    // the first register is data[0], the second one is data[1]
+    // since we only ever read the PORTA registers here, it's effectively little endian.
+    *buf = sys_get_le16(data);
 
-    LOG_DBG("max7318: read: reg[0x%X] = 0x%X, reg[0x%X] = 0x%X", reg, (*buf & 0xFF), (reg + 1),
-            (*buf >> 8));
+    LOG_DBG("max7318: read: reg[0x%X] = 0x%X, reg[0x%X] = 0x%X", reg, data[0], (reg + 1), data[1]);
 
     return 0;
 }
@@ -105,9 +106,13 @@ static int write_registers(const struct device *dev, uint8_t reg, uint16_t value
     LOG_DBG("max7318: write: reg[0x%X] = 0x%X, reg[0x%X] = 0x%X", reg, (value & 0xFF), (reg + 1),
             (value >> 8));
 
-    uint16_t data = sys_cpu_to_le16(value);
+    uint8_t data[2] = {0};
 
-    return i2c_burst_write_dt(&config->i2c_bus, reg, (uint8_t *)&data, sizeof(data));
+    // bits 0..7 are port A, 8..15 are port B, so we should write bits 0..7 first
+    // -- ie. this is little endian also.
+    sys_put_le16(value, &data[0]);
+
+    return i2c_burst_write_dt(&config->i2c_bus, reg, &data[0], sizeof(data));
 }
 
 /**

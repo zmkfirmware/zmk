@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 config SHIELD_SPLITREUS62_LEFT
-	def_bool $(shields_list_contains,splitreus62_left)
+    def_bool $(shields_list_contains,splitreus62_left)
 
 config SHIELD_SPLITREUS62_RIGHT
-	def_bool $(shields_list_contains,splitreus62_right)
+    def_bool $(shields_list_contains,splitreus62_right)

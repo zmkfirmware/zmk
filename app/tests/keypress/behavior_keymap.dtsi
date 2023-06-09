@@ -3,15 +3,15 @@
 #include <dt-bindings/zmk/kscan_mock.h>
 
 / {
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
 
-		default_layer {
-			bindings = <
-				&kp B &none
-				&none &none
-			>;
-		};
-	};
+        default_layer {
+            bindings = <
+                &kp B &none
+                &none &none
+            >;
+        };
+    };
 };

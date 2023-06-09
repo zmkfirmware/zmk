@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 config SHIELD_QUEFRENCY_LEFT
-	def_bool $(shields_list_contains,quefrency_left)
+    def_bool $(shields_list_contains,quefrency_left)
 
 config SHIELD_QUEFRENCY_RIGHT
-	def_bool $(shields_list_contains,quefrency_right)
+    def_bool $(shields_list_contains,quefrency_right)

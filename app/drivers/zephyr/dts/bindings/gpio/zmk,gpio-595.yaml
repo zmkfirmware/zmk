@@ -12,9 +12,6 @@ compatible: "zmk,gpio-595"
 include: [gpio-controller.yaml, spi-device.yaml]
 
 properties:
-  label:
-    required: true
-
   "#gpio-cells":
     const: 2
 

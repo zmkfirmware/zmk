@@ -4,6 +4,6 @@
 if SHIELD_ROMAC_PLUS
 
 config ZMK_KEYBOARD_NAME
-	default "RoMac+ v4"
+    default "RoMac+ v4"
 
 endif

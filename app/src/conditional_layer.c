@@ -7,10 +7,10 @@
 #define DT_DRV_COMPAT zmk_conditional_layers
 
 #include <stdint.h>
-#include <kernel.h>
+#include <zephyr/kernel.h>
 
-#include <devicetree.h>
-#include <logging/log.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/logging/log.h>
 
 #include <zmk/event_manager.h>
 #include <zmk/keymap.h>
@@ -33,13 +33,12 @@ struct conditional_layer_cfg {
     int8_t then_layer;
 };
 
-#define IF_LAYER_BIT(i, n) BIT(DT_PROP_BY_IDX(n, if_layers, i)) |
+#define IF_LAYER_BIT(node_id, prop, idx) BIT(DT_PROP_BY_IDX(node_id, prop, idx)) |
 
 // Evaluates to conditional_layer_cfg struct initializer.
 #define CONDITIONAL_LAYER_DECL(n)                                                                  \
     {                                                                                              \
-        /* TODO: Replace UTIL_LISTIFY with DT_FOREACH_PROP_ELEM after Zepyhr 2.6.0 upgrade. */     \
-        .if_layers_state_mask = UTIL_LISTIFY(DT_PROP_LEN(n, if_layers), IF_LAYER_BIT, n) 0,        \
+        .if_layers_state_mask = DT_FOREACH_PROP_ELEM(n, if_layers, IF_LAYER_BIT) 0,                \
         .then_layer = DT_PROP(n, then_layer),                                                      \
     },
 

@@ -6,10 +6,10 @@
 if BOARD_PLANCK_REV6
 
 config ZMK_KEYBOARD_NAME
-	default "Planck V6"
+    default "Planck V6"
 
 config ZMK_USB
-	default y
+    default y
 
 config ZMK_KSCAN_MATRIX_POLLING
     default y

@@ -17,7 +17,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:3.0
+      image: docker.io/zmkfirmware/zmk-build-arm:3.2
     needs: compile-matrix
     strategy:
       matrix:
@@ -131,7 +131,7 @@ jobs:
             for (const configuration of combinedUnique) {
               if (!perBoard[configuration.board])
                 perBoard[configuration.board] = [];
-              
+
               perBoard[configuration.board].push({
                 shield: configuration.shield,
                 'cmake-args': configuration['cmake-args'],
@@ -234,7 +234,7 @@ jobs:
                         };
                       }
                     } else if (hm.exposes) {
-                      return hm.exposes.flatMap(i => 
+                      return hm.exposes.flatMap(i =>
                         metadata.interconnects[i].shields.flatMap(s => boardAndShield(hm, s))
                       );
                     } else {
@@ -243,7 +243,7 @@ jobs:
                     break;
                   case "shield":
                     if (hm.features && hm.features.includes("keys")) {
-                      return hm.requires.flatMap(i => 
+                      return hm.requires.flatMap(i =>
                         metadata.interconnects[i].boards.flatMap(b => boardAndShield(b, hm))
                       );
                     } else {

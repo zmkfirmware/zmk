@@ -4,5 +4,5 @@
 # SPDX-License-Identifier: MIT
 
 config BOARD_BDN9
-	bool "BDN9 rev2"
-	depends on SOC_STM32F072XB
+    bool "BDN9 rev2"
+    depends on SOC_STM32F072XB

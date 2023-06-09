@@ -4,22 +4,22 @@
 
 
 &kscan {
-	events = <
-		ZMK_MOCK_PRESS(0,0,10) 
-		ZMK_MOCK_RELEASE(0,0,10) 
-	>;
+    events = <
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+    >;
 };
 
 / {
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
 
-		default_layer {
-			bindings = <
-				&kp LEFT_CONTROL &kp LEFT_CONTROL
-				&kp LEFT_SHIFT &none
-			>;
-		};
-	};
+        default_layer {
+            bindings = <
+                &kp LEFT_CONTROL &kp LEFT_CONTROL
+                &kp LEFT_SHIFT &none
+            >;
+        };
+    };
 };

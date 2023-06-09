@@ -7,39 +7,22 @@
 #define DT_DRV_COMPAT gooddisplay_il0323
 
 #include <string.h>
-#include <device.h>
-#include <init.h>
-#include <drivers/display.h>
-#include <drivers/gpio.h>
-#include <drivers/spi.h>
-#include <sys/byteorder.h>
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/drivers/display.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/spi.h>
+#include <zephyr/sys/byteorder.h>
 
 #include "il0323_regs.h"
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(il0323, CONFIG_DISPLAY_LOG_LEVEL);
 
 /**
  * IL0323 compatible EPD controller driver.
  *
  */
-
-#define IL0323_SPI_FREQ DT_INST_PROP(0, spi_max_frequency)
-#define IL0323_BUS_NAME DT_INST_BUS_LABEL(0)
-#define IL0323_DC_PIN DT_INST_GPIO_PIN(0, dc_gpios)
-#define IL0323_DC_FLAGS DT_INST_GPIO_FLAGS(0, dc_gpios)
-#define IL0323_DC_CNTRL DT_INST_GPIO_LABEL(0, dc_gpios)
-#define IL0323_CS_PIN DT_INST_SPI_DEV_CS_GPIOS_PIN(0)
-#define IL0323_CS_FLAGS DT_INST_SPI_DEV_CS_GPIOS_FLAGS(0)
-#if DT_INST_SPI_DEV_HAS_CS_GPIOS(0)
-#define IL0323_CS_CNTRL DT_INST_SPI_DEV_CS_GPIOS_LABEL(0)
-#endif
-#define IL0323_BUSY_PIN DT_INST_GPIO_PIN(0, busy_gpios)
-#define IL0323_BUSY_CNTRL DT_INST_GPIO_LABEL(0, busy_gpios)
-#define IL0323_BUSY_FLAGS DT_INST_GPIO_FLAGS(0, busy_gpios)
-#define IL0323_RESET_PIN DT_INST_GPIO_PIN(0, reset_gpios)
-#define IL0323_RESET_CNTRL DT_INST_GPIO_LABEL(0, reset_gpios)
-#define IL0323_RESET_FLAGS DT_INST_GPIO_FLAGS(0, reset_gpios)
 
 #define EPD_PANEL_WIDTH DT_INST_PROP(0, width)
 #define EPD_PANEL_HEIGHT DT_INST_PROP(0, height)
@@ -53,37 +36,34 @@ LOG_MODULE_REGISTER(il0323, CONFIG_DISPLAY_LOG_LEVEL);
 #define IL0323_PANEL_LAST_PAGE (IL0323_NUMOF_PAGES - 1)
 #define IL0323_BUFFER_SIZE 1280
 
-struct il0323_data {
-    const struct device *reset;
-    const struct device *dc;
-    const struct device *busy;
-    const struct device *spi_dev;
-    struct spi_config spi_config;
-#if defined(IL0323_CS_CNTRL)
-    struct spi_cs_control cs_ctrl;
-#endif
+struct il0323_cfg {
+    struct gpio_dt_spec reset;
+    struct gpio_dt_spec dc;
+    struct gpio_dt_spec busy;
+    struct spi_dt_spec spi;
 };
 
 static uint8_t il0323_pwr[] = DT_INST_PROP(0, pwr);
 
 static uint8_t last_buffer[IL0323_BUFFER_SIZE];
 static bool blanking_on = true;
+static bool init_clear_done = false;
 
-static inline int il0323_write_cmd(struct il0323_data *driver, uint8_t cmd, uint8_t *data,
+static inline int il0323_write_cmd(const struct il0323_cfg *cfg, uint8_t cmd, uint8_t *data,
                                    size_t len) {
     struct spi_buf buf = {.buf = &cmd, .len = sizeof(cmd)};
     struct spi_buf_set buf_set = {.buffers = &buf, .count = 1};
 
-    gpio_pin_set(driver->dc, IL0323_DC_PIN, 1);
-    if (spi_write(driver->spi_dev, &driver->spi_config, &buf_set)) {
+    gpio_pin_set_dt(&cfg->dc, 1);
+    if (spi_write_dt(&cfg->spi, &buf_set)) {
         return -EIO;
     }
 
     if (data != NULL) {
         buf.buf = data;
         buf.len = len;
-        gpio_pin_set(driver->dc, IL0323_DC_PIN, 0);
-        if (spi_write(driver->spi_dev, &driver->spi_config, &buf_set)) {
+        gpio_pin_set_dt(&cfg->dc, 0);
+        if (spi_write_dt(&cfg->spi, &buf_set)) {
             return -EIO;
         }
     }
@@ -91,22 +71,22 @@ static inline int il0323_write_cmd(struct il0323_data *driver, uint8_t cmd, uint
     return 0;
 }
 
-static inline void il0323_busy_wait(struct il0323_data *driver) {
-    int pin = gpio_pin_get(driver->busy, IL0323_BUSY_PIN);
+static inline void il0323_busy_wait(const struct il0323_cfg *cfg) {
+    int pin = gpio_pin_get_dt(&cfg->busy);
 
     while (pin > 0) {
         __ASSERT(pin >= 0, "Failed to get pin level");
         // LOG_DBG("wait %u", pin);
         k_msleep(IL0323_BUSY_DELAY);
-        pin = gpio_pin_get(driver->busy, IL0323_BUSY_PIN);
+        pin = gpio_pin_get_dt(&cfg->busy);
     }
 }
 
 static int il0323_update_display(const struct device *dev) {
-    struct il0323_data *driver = dev->data;
+    const struct il0323_cfg *cfg = dev->config;
 
     LOG_DBG("Trigger update sequence");
-    if (il0323_write_cmd(driver, IL0323_CMD_DRF, NULL, 0)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_DRF, NULL, 0)) {
         return -EIO;
     }
 
@@ -117,7 +97,7 @@ static int il0323_update_display(const struct device *dev) {
 
 static int il0323_write(const struct device *dev, const uint16_t x, const uint16_t y,
                         const struct display_buffer_descriptor *desc, const void *buf) {
-    struct il0323_data *driver = dev->data;
+    const struct il0323_cfg *cfg = dev->config;
     uint16_t x_end_idx = x + desc->width - 1;
     uint16_t y_end_idx = y + desc->height - 1;
     uint8_t ptl[IL0323_PTL_REG_LENGTH] = {0};
@@ -147,20 +127,20 @@ static int il0323_write(const struct device *dev, const uint16_t x, const uint16
     ptl[sizeof(ptl) - 1] = IL0323_PTL_PT_SCAN;
     LOG_HEXDUMP_DBG(ptl, sizeof(ptl), "ptl");
 
-    il0323_busy_wait(driver);
-    if (il0323_write_cmd(driver, IL0323_CMD_PIN, NULL, 0)) {
+    il0323_busy_wait(cfg);
+    if (il0323_write_cmd(cfg, IL0323_CMD_PIN, NULL, 0)) {
         return -EIO;
     }
 
-    if (il0323_write_cmd(driver, IL0323_CMD_PTL, ptl, sizeof(ptl))) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_PTL, ptl, sizeof(ptl))) {
         return -EIO;
     }
 
-    if (il0323_write_cmd(driver, IL0323_CMD_DTM1, last_buffer, IL0323_BUFFER_SIZE)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_DTM1, last_buffer, IL0323_BUFFER_SIZE)) {
         return -EIO;
     }
 
-    if (il0323_write_cmd(driver, IL0323_CMD_DTM2, (uint8_t *)buf, buf_len)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_DTM2, (uint8_t *)buf, buf_len)) {
         return -EIO;
     }
 
@@ -173,7 +153,7 @@ static int il0323_write(const struct device *dev, const uint16_t x, const uint16
         }
     }
 
-    if (il0323_write_cmd(driver, IL0323_CMD_POUT, NULL, 0)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_POUT, NULL, 0)) {
         return -EIO;
     }
 
@@ -217,17 +197,22 @@ static int il0323_clear_and_write_buffer(const struct device *dev, uint8_t patte
 }
 
 static int il0323_blanking_off(const struct device *dev) {
-    struct il0323_data *driver = dev->data;
+    const struct il0323_cfg *cfg = dev->config;
 
-    if (blanking_on) {
-        /* Update EPD pannel in normal mode */
-        il0323_busy_wait(driver);
+    if (!init_clear_done) {
+        /* Update EPD panel in normal mode */
+        il0323_busy_wait(cfg);
         if (il0323_clear_and_write_buffer(dev, 0xff, true)) {
             return -EIO;
         }
+        init_clear_done = true;
     }
 
     blanking_on = false;
+
+    if (il0323_update_display(dev)) {
+        return -EIO;
+    }
 
     return 0;
 }
@@ -278,30 +263,30 @@ static int il0323_set_pixel_format(const struct device *dev, const enum display_
 }
 
 static int il0323_controller_init(const struct device *dev) {
-    struct il0323_data *driver = dev->data;
+    const struct il0323_cfg *cfg = dev->config;
     uint8_t tmp[IL0323_TRES_REG_LENGTH];
 
     LOG_DBG("");
 
-    gpio_pin_set(driver->reset, IL0323_RESET_PIN, 1);
+    gpio_pin_set_dt(&cfg->reset, 1);
     k_msleep(IL0323_RESET_DELAY);
-    gpio_pin_set(driver->reset, IL0323_RESET_PIN, 0);
+    gpio_pin_set_dt(&cfg->reset, 0);
     k_msleep(IL0323_RESET_DELAY);
-    il0323_busy_wait(driver);
+    il0323_busy_wait(cfg);
 
     LOG_DBG("Initialize IL0323 controller");
 
-    if (il0323_write_cmd(driver, IL0323_CMD_PWR, il0323_pwr, sizeof(il0323_pwr))) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_PWR, il0323_pwr, sizeof(il0323_pwr))) {
         return -EIO;
     }
 
     /* Turn on: booster, controller, regulators, and sensor. */
-    if (il0323_write_cmd(driver, IL0323_CMD_PON, NULL, 0)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_PON, NULL, 0)) {
         return -EIO;
     }
 
     k_msleep(IL0323_PON_DELAY);
-    il0323_busy_wait(driver);
+    il0323_busy_wait(cfg);
 
     /* Pannel settings, KW mode */
     tmp[0] = IL0323_PSR_UD | IL0323_PSR_SHL | IL0323_PSR_SHD | IL0323_PSR_RST;
@@ -321,7 +306,7 @@ static int il0323_controller_init(const struct device *dev) {
 #endif /* panel width */
 
     LOG_HEXDUMP_DBG(tmp, 1, "PSR");
-    if (il0323_write_cmd(driver, IL0323_CMD_PSR, tmp, 1)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_PSR, tmp, 1)) {
         return -EIO;
     }
 
@@ -329,24 +314,24 @@ static int il0323_controller_init(const struct device *dev) {
     tmp[IL0323_TRES_HRES_IDX] = EPD_PANEL_WIDTH;
     tmp[IL0323_TRES_VRES_IDX] = EPD_PANEL_HEIGHT;
     LOG_HEXDUMP_DBG(tmp, IL0323_TRES_REG_LENGTH, "TRES");
-    if (il0323_write_cmd(driver, IL0323_CMD_TRES, tmp, IL0323_TRES_REG_LENGTH)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_TRES, tmp, IL0323_TRES_REG_LENGTH)) {
         return -EIO;
     }
 
     tmp[IL0323_CDI_CDI_IDX] = DT_INST_PROP(0, cdi);
     LOG_HEXDUMP_DBG(tmp, IL0323_CDI_REG_LENGTH, "CDI");
-    if (il0323_write_cmd(driver, IL0323_CMD_CDI, tmp, IL0323_CDI_REG_LENGTH)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_CDI, tmp, IL0323_CDI_REG_LENGTH)) {
         return -EIO;
     }
 
     tmp[0] = DT_INST_PROP(0, tcon);
-    if (il0323_write_cmd(driver, IL0323_CMD_TCON, tmp, 1)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_TCON, tmp, 1)) {
         return -EIO;
     }
 
     /* Enable Auto Sequence */
     tmp[0] = IL0323_AUTO_PON_DRF_POF;
-    if (il0323_write_cmd(driver, IL0323_CMD_AUTO, tmp, 1)) {
+    if (il0323_write_cmd(cfg, IL0323_CMD_AUTO, tmp, 1)) {
         return -EIO;
     }
 
@@ -354,62 +339,43 @@ static int il0323_controller_init(const struct device *dev) {
 }
 
 static int il0323_init(const struct device *dev) {
-    struct il0323_data *driver = dev->data;
+    const struct il0323_cfg *cfg = dev->config;
 
-    LOG_DBG("");
-
-    driver->spi_dev = device_get_binding(IL0323_BUS_NAME);
-    if (driver->spi_dev == NULL) {
-        LOG_ERR("Could not get SPI device for IL0323");
+    if (!spi_is_ready(&cfg->spi)) {
+        LOG_ERR("SPI device not ready for IL0323");
         return -EIO;
     }
 
-    driver->spi_config.frequency = IL0323_SPI_FREQ;
-    driver->spi_config.operation = SPI_OP_MODE_MASTER | SPI_WORD_SET(8);
-    driver->spi_config.slave = DT_INST_REG_ADDR(0);
-    driver->spi_config.cs = NULL;
-
-    driver->reset = device_get_binding(IL0323_RESET_CNTRL);
-    if (driver->reset == NULL) {
+    if (!device_is_ready(cfg->reset.port)) {
         LOG_ERR("Could not get GPIO port for IL0323 reset");
         return -EIO;
     }
 
-    gpio_pin_configure(driver->reset, IL0323_RESET_PIN, GPIO_OUTPUT_INACTIVE | IL0323_RESET_FLAGS);
+    gpio_pin_configure_dt(&cfg->reset, GPIO_OUTPUT_INACTIVE);
 
-    driver->dc = device_get_binding(IL0323_DC_CNTRL);
-    if (driver->dc == NULL) {
+    if (!device_is_ready(cfg->dc.port)) {
         LOG_ERR("Could not get GPIO port for IL0323 DC signal");
         return -EIO;
     }
 
-    gpio_pin_configure(driver->dc, IL0323_DC_PIN, GPIO_OUTPUT_INACTIVE | IL0323_DC_FLAGS);
+    gpio_pin_configure_dt(&cfg->dc, GPIO_OUTPUT_INACTIVE);
 
-    driver->busy = device_get_binding(IL0323_BUSY_CNTRL);
-    if (driver->busy == NULL) {
+    if (!device_is_ready(cfg->busy.port)) {
         LOG_ERR("Could not get GPIO port for IL0323 busy signal");
         return -EIO;
     }
 
-    gpio_pin_configure(driver->busy, IL0323_BUSY_PIN, GPIO_INPUT | IL0323_BUSY_FLAGS);
-
-#if defined(IL0323_CS_CNTRL)
-    driver->cs_ctrl.gpio_dev = device_get_binding(IL0323_CS_CNTRL);
-    if (!driver->cs_ctrl.gpio_dev) {
-        LOG_ERR("Unable to get SPI GPIO CS device");
-        return -EIO;
-    }
-
-    driver->cs_ctrl.gpio_pin = IL0323_CS_PIN;
-    driver->cs_ctrl.gpio_dt_flags = IL0323_CS_FLAGS;
-    driver->cs_ctrl.delay = 0U;
-    driver->spi_config.cs = &driver->cs_ctrl;
-#endif
+    gpio_pin_configure_dt(&cfg->busy, GPIO_INPUT);
 
     return il0323_controller_init(dev);
 }
 
-static struct il0323_data il0323_driver;
+static struct il0323_cfg il0323_config = {
+    .spi = SPI_DT_SPEC_INST_GET(0, SPI_OP_MODE_MASTER | SPI_WORD_SET(8), 0),
+    .reset = GPIO_DT_SPEC_INST_GET(0, reset_gpios),
+    .busy = GPIO_DT_SPEC_INST_GET(0, busy_gpios),
+    .dc = GPIO_DT_SPEC_INST_GET(0, dc_gpios),
+};
 
 static struct display_driver_api il0323_driver_api = {
     .blanking_on = il0323_blanking_on,
@@ -424,5 +390,5 @@ static struct display_driver_api il0323_driver_api = {
     .set_orientation = il0323_set_orientation,
 };
 
-DEVICE_DT_INST_DEFINE(0, il0323_init, NULL, &il0323_driver, NULL, POST_KERNEL,
+DEVICE_DT_INST_DEFINE(0, il0323_init, NULL, NULL, &il0323_config, POST_KERNEL,
                       CONFIG_APPLICATION_INIT_PRIORITY, &il0323_driver_api);
