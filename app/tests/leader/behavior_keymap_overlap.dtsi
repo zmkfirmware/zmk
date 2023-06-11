@@ -1,0 +1,41 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+&leader {
+    timeout-ms = <200>;
+};
+
+/ {
+    leader-sequences {
+        compatible = "zmk,leader-sequences";
+
+        leader_seq_one {
+            key-positions = <0>;
+            bindings = <&kp A>;
+        };
+
+        leader_seq_two {
+            key-positions = <1>;
+            bindings = <&kp B>;
+        };
+
+        leader_seq_three {
+            key-positions = <0 1>;
+            bindings = <&kp C>;
+        };
+
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &kp N1 &kp N2
+                &kp N3 &leader
+            >;
+        };
+    };
+};
