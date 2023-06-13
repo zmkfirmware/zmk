@@ -1,0 +1,8 @@
+file_format: "1"
+id: atreus42
+name: Atreus42
+type: shield
+url: https://github.com/ralphie02/zmk-config/tree/master/config/boards/shields/atreus42
+requires: [pro_micro]
+features:
+  - keys

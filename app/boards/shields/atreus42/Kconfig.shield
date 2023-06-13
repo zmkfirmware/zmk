@@ -1,2 +1,5 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
 config SHIELD_ATREUS42
   def_bool $(shields_list_contains,atreus42)
