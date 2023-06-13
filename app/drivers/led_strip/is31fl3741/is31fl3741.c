@@ -6,14 +6,14 @@
 
 #define DT_DRV_COMPAT issi_is31fl3741
 
-#include <zephyr.h>
-#include <device.h>
-#include <drivers/gpio.h>
-#include <drivers/i2c.h>
-#include <drivers/led_strip.h>
-#include <logging/log.h>
-#include <sys/math_extras.h>
-#include <sys/util.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/i2c.h>
+#include <zephyr/drivers/led_strip.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/math_extras.h>
+#include <zephyr/sys/util.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -33,12 +33,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define IS31FL3741_PAGE_FUNCTION (0x04)
 
 struct is31fl3741_config {
-    char *bus;
-    int reg;
     char *label;
-    char *sdb_port;
-    gpio_pin_t sdb_pin;
-    gpio_dt_flags_t sdb_flags;
+    struct i2c_dt_spec i2c;
+    struct gpio_dt_spec gpio;
     size_t px_buffer_size;
     uint8_t gcc;
     uint8_t sws;
@@ -50,18 +47,15 @@ struct is31fl3741_config {
 };
 
 struct is31fl3741_data {
-    const struct device *i2c;
-    const struct device *gpio;
     uint8_t *px_buffer;
 };
 
 static int is31fl3741_reg_write(const struct device *dev, uint8_t addr, uint8_t value) {
-    const struct is31fl3741_data *data = dev->data;
     const struct is31fl3741_config *config = dev->config;
 
-    if (i2c_reg_write_byte(data->i2c, config->reg, addr, value)) {
+    if (i2c_reg_write_byte_dt(&config->i2c, addr, value)) {
         LOG_ERR("Failed writing value %x to register address %x on device %x.", value, addr,
-                config->reg);
+                config->i2c.addr);
         return -EIO;
     }
 
@@ -70,10 +64,9 @@ static int is31fl3741_reg_write(const struct device *dev, uint8_t addr, uint8_t 
 
 static int is31fl3741_reg_burst_write(const struct device *dev, uint8_t start_addr,
                                       const uint8_t *buffer, size_t num_bytes) {
-    const struct is31fl3741_data *data = dev->data;
     const struct is31fl3741_config *config = dev->config;
 
-    if (i2c_burst_write(data->i2c, config->reg, start_addr, buffer, num_bytes)) {
+    if (i2c_burst_write_dt(&config->i2c, start_addr, buffer, num_bytes)) {
         LOG_ERR("Failed burst write with starting address %x", start_addr);
         return -EIO;
     }
@@ -107,6 +100,8 @@ static inline bool num_pixels_ok(const struct is31fl3741_config *config, size_t 
 static int is31fl3741_strip_update_channels(const struct device *dev, uint8_t *channels,
                                             size_t num_channels) {
     const struct is31fl3741_config *config = dev->config;
+
+    LOG_ERR("UPDATING CHANNELS!");
 
     if (config->px_buffer_size < num_channels) {
         return -ENOMEM;
@@ -166,25 +161,24 @@ static int is31fl3741_strip_update_rgb(const struct device *dev, struct led_rgb 
  */
 int static is31fl3741_init(const struct device *dev) {
     const struct is31fl3741_config *config = dev->config;
-    struct is31fl3741_data *data = dev->data;
+    const struct is31fl3741_data *data = dev->data;
 
-    data->i2c = device_get_binding(config->bus);
+    if (!device_is_ready(config->i2c.bus)) {
+        LOG_ERR("I2C device %s not ready", config->i2c.bus->name);
+        return -ENODEV;        
+    }
 
-    if (data->i2c == NULL) {
-        LOG_ERR("I2C device %s not found", config->bus);
+    if (!device_is_ready(config->gpio.port)) {
+        LOG_ERR("GPIO device for %s is not ready", config->label);
         return -ENODEV;
     }
 
-    data->gpio = device_get_binding(config->sdb_port);
-
-    if (data->gpio == NULL) {
-        LOG_ERR("GPIO device %s not found", config->sdb_port);
-        return -ENODEV;
+    if (gpio_pin_configure_dt(&config->gpio, GPIO_OUTPUT)) {
+        LOG_ERR("SDB pin for %s cannot be configured", config->label);
+        return -EIO;
     }
 
-    gpio_pin_configure(data->gpio, config->sdb_pin, (GPIO_OUTPUT | config->sdb_flags));
-
-    if (gpio_pin_set(data->gpio, config->sdb_pin, 1)) {
+    if (gpio_pin_set_dt(&config->gpio, 1)) {
         LOG_ERR("SDB pin for %s cannot be pulled high", config->label);
         return -EIO;
     }
@@ -255,12 +249,9 @@ static const struct led_strip_driver_api is31fl3741_api = {
     static uint8_t is31fl3741_##idx##_gamma[] = DT_INST_PROP(idx, gamma);                          \
                                                                                                    \
     static const struct is31fl3741_config is31fl3741_##idx##_config = {                            \
-        .bus = DT_INST_BUS_LABEL(idx),                                                             \
-        .reg = DT_INST_REG_ADDR(idx),                                                              \
-        .label = DT_INST_LABEL(idx),                                                               \
-        .sdb_port = DT_INST_GPIO_LABEL(idx, sdb_gpios),                                            \
-        .sdb_pin = DT_INST_GPIO_PIN(idx, sdb_gpios),                                               \
-        .sdb_flags = DT_INST_GPIO_FLAGS(idx, sdb_gpios),                                           \
+        .label = DT_INST_PROP(idx, label),                                                         \
+        .i2c = I2C_DT_SPEC_INST_GET(idx),                                                          \
+        .gpio = GPIO_DT_SPEC_INST_GET(idx, sdb_gpios),                                             \
         .px_buffer_size = IS31FL3741_BUFFER_SIZE,                                                  \
         .gcc = IS31FL3741_GCC(idx),                                                                \
         .sws = DT_INST_PROP(idx, sw_setting),                                                      \
