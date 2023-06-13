@@ -1,0 +1,6 @@
+if SHIELD_ATREUS42
+
+config ZMK_KEYBOARD_NAME
+	default "RAH-Atreus42-SS"
+
+endif
