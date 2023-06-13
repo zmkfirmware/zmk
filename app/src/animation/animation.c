@@ -6,18 +6,16 @@
 
 #define DT_DRV_COMPAT zmk_animation
 
-#include <zephyr.h>
-#include <device.h>
-#include <init.h>
-#include <kernel.h>
-
 #include <stdlib.h>
 #include <math.h>
 
-#include <logging/log.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/led_strip.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include <drivers/animation.h>
-#include <drivers/led_strip.h>
 
 #include <zmk/animation.h>
 #include <zmk/event_manager.h>
@@ -25,17 +23,12 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-// Zephyr 2.7.0 comes with DT_INST_FOREACH_PROP_ELEM
-// that we can't use quite yet as we're still on 2.5.*
-#define ZMK_DT_INST_FOREACH_PROP_ELEM(inst, prop, fn)                                              \
-    UTIL_LISTIFY(DT_INST_PROP_LEN(inst, prop), fn, DT_DRV_INST(inst), prop)
+#define PHANDLE_TO_DEVICE(node_id, prop, idx) DEVICE_DT_GET(DT_PHANDLE_BY_IDX(node_id, prop, idx)),
 
-#define PHANDLE_TO_DEVICE(idx, node_id, prop) DEVICE_DT_GET(DT_PHANDLE_BY_IDX(node_id, prop, idx)),
-
-#define PHANDLE_TO_CHAIN_LENGTH(idx, node_id, prop)                                                \
+#define PHANDLE_TO_CHAIN_LENGTH(node_id, prop, idx)                                                \
     DT_PROP_BY_PHANDLE_IDX(node_id, prop, idx, chain_length),
 
-#define PHANDLE_TO_PIXEL(idx, node_id, prop)                                                       \
+#define PHANDLE_TO_PIXEL(node_id, prop, idx)                                                       \
     {                                                                                              \
         .position_x = DT_PHA_BY_IDX(node_id, prop, idx, position_x),                               \
         .position_y = DT_PHA_BY_IDX(node_id, prop, idx, position_y),                               \
@@ -45,7 +38,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
  * LED Driver device pointers.
  */
 static const struct device *drivers[] = {
-    ZMK_DT_INST_FOREACH_PROP_ELEM(0, drivers, PHANDLE_TO_DEVICE)};
+    DT_INST_FOREACH_PROP_ELEM(0, drivers, PHANDLE_TO_DEVICE)};
 
 /**
  * Size of the LED driver device pointers array.
@@ -56,7 +49,7 @@ static const size_t drivers_size = DT_INST_PROP_LEN(0, drivers);
  * Array containing the number of LEDs handled by each device.
  */
 static const uint8_t pixels_per_driver[] = {
-    ZMK_DT_INST_FOREACH_PROP_ELEM(0, drivers, PHANDLE_TO_CHAIN_LENGTH)};
+    DT_INST_FOREACH_PROP_ELEM(0, drivers, PHANDLE_TO_CHAIN_LENGTH)};
 
 /**
  * Pointer to the root animation
@@ -67,7 +60,7 @@ static const struct device *animation_root = DEVICE_DT_GET(DT_CHOSEN(zmk_animati
  * Pixel configuration.
  */
 static struct animation_pixel pixels[] = {
-    ZMK_DT_INST_FOREACH_PROP_ELEM(0, pixels, PHANDLE_TO_PIXEL)};
+    DT_INST_FOREACH_PROP_ELEM(0, pixels, PHANDLE_TO_PIXEL)};
 
 /**
  * Size of the pixels array.

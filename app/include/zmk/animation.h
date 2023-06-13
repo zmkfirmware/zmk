@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <device.h>
-#include <drivers/led_strip.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/led_strip.h>
 
 #define ZMK_ANIMATION_BLENDING_MODE_NORMAL 0
 #define ZMK_ANIMATION_BLENDING_MODE_MULTIPLY 1

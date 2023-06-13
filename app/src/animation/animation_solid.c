@@ -6,10 +6,11 @@
 
 #define DT_DRV_COMPAT zmk_animation_solid
 
-#include <zephyr.h>
-#include <device.h>
+#include <zephyr/device.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+
 #include <drivers/animation.h>
-#include <logging/log.h>
 
 #include <zmk/animation.h>
 

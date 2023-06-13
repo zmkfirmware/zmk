@@ -7,27 +7,24 @@
 #define DT_DRV_COMPAT zmk_animation_control
 
 #include <stdio.h>
-#include <zephyr.h>
-#include <device.h>
+
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/settings/settings.h>
+
 #include <drivers/animation.h>
-#include <logging/log.h>
-#include <settings/settings.h>
 
 #include <zmk/animation.h>
 #include <zmk/animation/animation_control.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-// Zephyr 2.7.0 comes with DT_INST_FOREACH_PROP_ELEM
-// that we can't use quite yet as we're still on 2.5.*
-#define ZMK_DT_INST_FOREACH_PROP_ELEM(inst, prop, fn)                                              \
-    UTIL_LISTIFY(DT_INST_PROP_LEN(inst, prop), fn, DT_DRV_INST(inst), prop)
-
-#define PHANDLE_TO_DEVICE(idx, node_id, prop) DEVICE_DT_GET(DT_PHANDLE_BY_IDX(node_id, prop, idx)),
+#define PHANDLE_TO_DEVICE(node_id, prop, idx) DEVICE_DT_GET(DT_PHANDLE_BY_IDX(node_id, prop, idx)),
 
 struct animation_control_work_context {
     const struct device *animation;
-    struct k_delayed_work save_work;
+    struct k_work_delayable save_work;
 };
 
 struct animation_control_config {
@@ -85,9 +82,9 @@ static int animation_control_save_settings(const struct device *dev) {
     const struct animation_control_config *config = dev->config;
     struct animation_control_work_context *ctx = config->work;
 
-    k_delayed_work_cancel(&ctx->save_work);
+    k_work_cancel_delayable(&ctx->save_work);
 
-    return k_delayed_work_submit(&ctx->save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return k_work_reschedule(&ctx->save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 }
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
@@ -211,7 +208,7 @@ static int animation_control_init(const struct device *dev) {
 
     settings_register(config->settings_handler);
 
-    k_delayed_work_init(&config->work->save_work, animation_control_save_work);
+    k_work_init_delayable(&config->work->save_work, animation_control_save_work);
 
     settings_load_subtree(dev->name);
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
@@ -228,7 +225,7 @@ static const struct animation_api animation_control_api = {
 #define ANIMATION_CONTROL_DEVICE(idx)                                                              \
                                                                                                    \
     static const struct device *animation_control_##idx##_animations[] = {                         \
-        ZMK_DT_INST_FOREACH_PROP_ELEM(idx, animations, PHANDLE_TO_DEVICE)};                        \
+        DT_INST_FOREACH_PROP_ELEM(idx, animations, PHANDLE_TO_DEVICE)};                            \
                                                                                                    \
     static struct animation_control_work_context animation_control_##idx##_work = {                \
         .animation = DEVICE_DT_GET(DT_DRV_INST(idx)),                                              \

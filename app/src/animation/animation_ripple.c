@@ -6,13 +6,12 @@
 
 #define DT_DRV_COMPAT zmk_animation_ripple
 
-#include <zephyr.h>
-#include <device.h>
-
 #include <stdlib.h>
 #include <math.h>
 
-#include <logging/log.h>
+#include <zephyr/device.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include <drivers/animation.h>
 

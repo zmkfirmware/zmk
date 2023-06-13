@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <zephyr.h>
-#include <device.h>
+#include <zephyr/device.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+
 #include <drivers/behavior.h>
-#include <logging/log.h>
 
 #include <zmk/animation/animation_control.h>
 
@@ -89,5 +90,5 @@ static const struct behavior_driver_api behavior_animation_driver_api = {
     .binding_released = on_keymap_binding_released,
 };
 
-DEVICE_DT_INST_DEFINE(0, behavior_animation_init, device_pm_control_nop, NULL, NULL, APPLICATION,
+DEVICE_DT_INST_DEFINE(0, behavior_animation_init, NULL, NULL, NULL, APPLICATION,
                       CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_animation_driver_api);

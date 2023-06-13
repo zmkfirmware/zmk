@@ -7,8 +7,8 @@
 #pragma once
 
 #include <zephyr/types.h>
-#include <device.h>
-#include <drivers/led_strip.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/led_strip.h>
 
 #include <zmk/animation.h>
 

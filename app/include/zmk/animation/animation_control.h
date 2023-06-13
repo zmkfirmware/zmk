@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <zephyr.h>
-#include <device.h>
+#include <zephyr/device.h>
+#include <zephyr/kernel.h>
 
 /**
  * Animation control commands

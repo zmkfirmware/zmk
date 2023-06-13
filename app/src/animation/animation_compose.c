@@ -6,21 +6,17 @@
 
 #define DT_DRV_COMPAT zmk_animation_compose
 
-#include <zephyr.h>
-#include <device.h>
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/logging/log.h>
+
 #include <drivers/animation.h>
-#include <logging/log.h>
 
 #include <zmk/animation.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-// Zephyr 2.7.0 comes with DT_INST_FOREACH_PROP_ELEM
-// that we can't use quite yet as we're still on 2.5.*
-#define ZMK_DT_INST_FOREACH_PROP_ELEM(inst, prop, fn)                                              \
-    UTIL_LISTIFY(DT_INST_PROP_LEN(inst, prop), fn, DT_DRV_INST(inst), prop)
-
-#define PHANDLE_TO_DEVICE(idx, node_id, prop) DEVICE_DT_GET(DT_PHANDLE_BY_IDX(node_id, prop, idx)),
+#define PHANDLE_TO_DEVICE(node_id, prop, idx) DEVICE_DT_GET(DT_PHANDLE_BY_IDX(node_id, prop, idx)),
 
 struct animation_compose_config {
     const struct device **animations;
@@ -63,7 +59,7 @@ static const struct animation_api animation_compose_api = {
 #define ANIMATION_COMPOSE_DEVICE(idx)                                                              \
                                                                                                    \
     static const struct device *animation_compose_##idx##_animations[] = {                         \
-        ZMK_DT_INST_FOREACH_PROP_ELEM(idx, animations, PHANDLE_TO_DEVICE)};                        \
+        DT_INST_FOREACH_PROP_ELEM(idx, animations, PHANDLE_TO_DEVICE)};                            \
                                                                                                    \
     static struct animation_compose_config animation_compose_##idx##_config = {                    \
         .animations = animation_compose_##idx##_animations,                                        \
