@@ -37,8 +37,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 /**
  * LED Driver device pointers.
  */
-static const struct device *drivers[] = {
-    DT_INST_FOREACH_PROP_ELEM(0, drivers, PHANDLE_TO_DEVICE)};
+static const struct device *drivers[] = {DT_INST_FOREACH_PROP_ELEM(0, drivers, PHANDLE_TO_DEVICE)};
 
 /**
  * Size of the LED driver device pointers array.
@@ -59,8 +58,7 @@ static const struct device *animation_root = DEVICE_DT_GET(DT_CHOSEN(zmk_animati
 /**
  * Pixel configuration.
  */
-static struct animation_pixel pixels[] = {
-    DT_INST_FOREACH_PROP_ELEM(0, pixels, PHANDLE_TO_PIXEL)};
+static struct animation_pixel pixels[] = {DT_INST_FOREACH_PROP_ELEM(0, pixels, PHANDLE_TO_PIXEL)};
 
 /**
  * Size of the pixels array.

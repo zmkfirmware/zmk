@@ -5,9 +5,9 @@
  */
 
 / {
-	/omit-if-no-ref/ pixel: animation_pixel {
-		compatible = "zmk,animation-pixel";
-		label = "PIXEL";
-		#pixel-cells = <2>;
-	};
+    /omit-if-no-ref/ pixel: animation_pixel {
+        compatible = "zmk,animation-pixel";
+        label = "PIXEL";
+        #pixel-cells = <2>;
+    };
 };

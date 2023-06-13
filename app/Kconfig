@@ -302,19 +302,19 @@ config ZMK_BACKLIGHT_AUTO_OFF_USB
 endif
 
 config ZMK_ANIMATION
-	bool "RGB Animations"
-	select LED_STRIP
+    bool "RGB Animations"
+    select LED_STRIP
 
 if ZMK_ANIMATION
 
 config ZMK_ANIMATION_FPS
-	int "Animation FPS"
-	range 0 60
-	default 30
+    int "Animation FPS"
+    range 0 60
+    default 30
 
 config ZMK_ANIMATION_PIXEL_DISTANCE
-	bool "Generate a lookup table for distances between pixels"
-	default y
+    bool "Generate a lookup table for distances between pixels"
+    default y
 
 #ZMK_ANIMATION
 endif
