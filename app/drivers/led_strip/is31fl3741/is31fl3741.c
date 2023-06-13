@@ -165,7 +165,7 @@ int static is31fl3741_init(const struct device *dev) {
 
     if (!device_is_ready(config->i2c.bus)) {
         LOG_ERR("I2C device %s not ready", config->i2c.bus->name);
-        return -ENODEV;        
+        return -ENODEV;
     }
 
     if (!device_is_ready(config->gpio.port)) {
