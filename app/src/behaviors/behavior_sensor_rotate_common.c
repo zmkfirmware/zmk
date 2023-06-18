@@ -11,11 +11,10 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-int zmk_behavior_sensor_rotate_common_data(struct zmk_behavior_binding *binding,
-                                           struct zmk_behavior_binding_event event,
-                                           const struct zmk_sensor_config *sensor_config,
-                                           size_t channel_data_size,
-                                           const struct zmk_sensor_channel_data *channel_data) {
+int zmk_behavior_sensor_rotate_common_accept_data(
+    struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
+    const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
+    const struct zmk_sensor_channel_data *channel_data) {
     const struct device *dev = device_get_binding(binding->behavior_dev);
     struct behavior_sensor_rotate_data *data = dev->data;
 
