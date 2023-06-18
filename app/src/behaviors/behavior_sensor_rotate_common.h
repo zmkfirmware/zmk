@@ -20,11 +20,10 @@ struct behavior_sensor_rotate_data {
     int triggers[ZMK_KEYMAP_SENSORS_LEN];
 };
 
-int zmk_behavior_sensor_rotate_common_data(struct zmk_behavior_binding *binding,
-                                           struct zmk_behavior_binding_event event,
-                                           const struct zmk_sensor_config *sensor_config,
-                                           size_t channel_data_size,
-                                           const struct zmk_sensor_channel_data *channel_data);
+int zmk_behavior_sensor_rotate_common_accept_data(
+    struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
+    const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
+    const struct zmk_sensor_channel_data *channel_data);
 int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *binding,
                                               struct zmk_behavior_binding_event event,
                                               enum behavior_sensor_binding_process_mode mode);

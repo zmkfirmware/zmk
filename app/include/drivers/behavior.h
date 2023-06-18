@@ -49,7 +49,7 @@ __subsystem struct behavior_driver_api {
     behavior_keymap_binding_callback_t binding_convert_central_state_dependent_params;
     behavior_keymap_binding_callback_t binding_pressed;
     behavior_keymap_binding_callback_t binding_released;
-    behavior_sensor_keymap_binding_accept_data_callback_t sensor_binding_data;
+    behavior_sensor_keymap_binding_accept_data_callback_t sensor_binding_accept_data;
     behavior_sensor_keymap_binding_process_callback_t sensor_binding_process;
 };
 /**
@@ -186,11 +186,12 @@ static inline int z_impl_behavior_sensor_keymap_binding_accept_data(
 
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
 
-    if (api->sensor_binding_data == NULL) {
+    if (api->sensor_binding_accept_data == NULL) {
         return -ENOTSUP;
     }
 
-    return api->sensor_binding_data(binding, event, sensor_config, channel_data_size, channel_data);
+    return api->sensor_binding_accept_data(binding, event, sensor_config, channel_data_size,
+                                           channel_data);
 }
 
 /**

@@ -19,10 +19,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #if ZMK_KEYMAP_HAS_SENSORS
 
 struct sensors_item_cfg {
-    uint8_t sensor_index;
     const struct zmk_sensor_config *config;
     const struct device *dev;
     struct sensor_trigger trigger;
+    uint8_t sensor_index;
 };
 
 #define _SENSOR_ITEM(idx, node)                                                                    \
@@ -43,7 +43,11 @@ struct sensors_item_cfg {
                                   CONFIG_ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION))        \
     }
 #define SENSOR_CHILD_DEFAULTS(idx, arg)                                                            \
-    { .triggers_per_rotation = DT_PROP_OR(ZMK_KEYMAP_SENSORS_NODE, triggers_per_rotation, 20) }
+    {                                                                                              \
+        .triggers_per_rotation =                                                                   \
+            DT_PROP_OR(ZMK_KEYMAP_SENSORS_NODE, triggers_per_rotation,                             \
+                       CONFIG_ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION)                    \
+    }
 
 static struct zmk_sensor_config configs[] = {
 #if ZMK_KEYMAP_SENSORS_CHILD_COUNT > 0
@@ -85,6 +89,7 @@ static void trigger_sensor_data_for_position(uint32_t sensor_index) {
 
     ZMK_EVENT_RAISE(new_zmk_sensor_event(
         (struct zmk_sensor_event){.sensor_index = item->sensor_index,
+                                  .channel_data_size = 1,
                                   .channel_data = {(struct zmk_sensor_channel_data){
                                       .value = value, .channel = item->trigger.chan}},
                                   .timestamp = k_uptime_get()}));
