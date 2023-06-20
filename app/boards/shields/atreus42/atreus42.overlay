@@ -7,17 +7,17 @@
 #include "atreus42.dtsi"
 
 &kscan0{
-  col-gpios
-    = <&pro_micro_a 3 GPIO_ACTIVE_HIGH>     /* A3 */
-    , <&pro_micro_a 2 GPIO_ACTIVE_HIGH>     /* A2 */
-    , <&pro_micro_a 1 GPIO_ACTIVE_HIGH>     /* A1 */
-    , <&pro_micro_a 0 GPIO_ACTIVE_HIGH>     /* A0 */
-    , <&pro_micro_d 15 GPIO_ACTIVE_HIGH>    /* D15 */
-    , <&pro_micro_d 14 GPIO_ACTIVE_HIGH>    /* D14 */
-    , <&pro_micro_d 6 GPIO_ACTIVE_HIGH>     /* D6/A7 */
-    , <&pro_micro_d 5 GPIO_ACTIVE_HIGH>     /* D5 */
-    , <&pro_micro_d 4 GPIO_ACTIVE_HIGH>     /* D4/A6 */
-    , <&pro_micro_d 3 GPIO_ACTIVE_HIGH>     /* D3 */
-    , <&pro_micro_d 2 GPIO_ACTIVE_HIGH>     /* D2 */
-    ;
+    col-gpios
+        = <&pro_micro_a 3 GPIO_ACTIVE_HIGH>     /* A3 */
+        , <&pro_micro_a 2 GPIO_ACTIVE_HIGH>     /* A2 */
+        , <&pro_micro_a 1 GPIO_ACTIVE_HIGH>     /* A1 */
+        , <&pro_micro_a 0 GPIO_ACTIVE_HIGH>     /* A0 */
+        , <&pro_micro_d 15 GPIO_ACTIVE_HIGH>    /* D15 */
+        , <&pro_micro_d 14 GPIO_ACTIVE_HIGH>    /* D14 */
+        , <&pro_micro_d 6 GPIO_ACTIVE_HIGH>     /* D6/A7 */
+        , <&pro_micro_d 5 GPIO_ACTIVE_HIGH>     /* D5 */
+        , <&pro_micro_d 4 GPIO_ACTIVE_HIGH>     /* D4/A6 */
+        , <&pro_micro_d 3 GPIO_ACTIVE_HIGH>     /* D3 */
+        , <&pro_micro_d 2 GPIO_ACTIVE_HIGH>     /* D2 */
+        ;
 };

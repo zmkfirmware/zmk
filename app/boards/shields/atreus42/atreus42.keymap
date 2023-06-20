@@ -15,48 +15,48 @@
 
 / {
     keymap {
-      compatible = "zmk,keymap";
+        compatible = "zmk,keymap";
 
-      default_layer {
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// |     Q     |     W     |     E     |     R     |     T     |                       |     Y     |    U      |     I     |     O     |     P     |
-// |     A     |     S     |     D     |     F     |     G     |                       |     H     |    J      |     K     |     L     |     ;     |
-// |     Z     |     X     |     C     |     V     |     B     |                       |     N     |    M      |     ,     |     .     |  SHIFT(/) |
-// |   LSHFT   | LAY2(TAB) |   SUPER   |   LAY1    |    BSPC   |    CTL    |  ALT(ESC) |   SPACE   |   LAY1    |   SUPER   |   LAY2    |    ENT    |
-        bindings = <
-    &kp Q       &kp W       &kp E       &kp R       &kp T                               &kp Y       &kp U       &kp I       &kp O       &kp P
-    &kp A       &kp S       &kp D       &kp F       &kp G                               &kp H       &kp J       &kp K       &kp L       &kp SEMI
-    &kp Z       &kp X       &kp C       &kp V       &kp B                               &kp N       &kp M       &kp COMMA   &kp DOT     &mt RSHFT FSLH
-    &kp LSHFT   &lt FUN TAB &kp LGUI    &mo NAV     &kp BSPC    &kp LCTRL  &mt RALT ESC &kp SPACE   &mo NAV     &kp RGUI    &mo FUN     &kp RET
-        >;
-      };
+        default_layer {
+            // -------------------------------------------------------------------------------------------------------------------------------------------------
+            // |     Q     |     W     |     E     |     R     |     T     |                       |     Y     |    U      |     I     |     O     |     P     |
+            // |     A     |     S     |     D     |     F     |     G     |                       |     H     |    J      |     K     |     L     |     ;     |
+            // |     Z     |     X     |     C     |     V     |     B     |                       |     N     |    M      |     ,     |     .     |  SHIFT(/) |
+            // |   LSHFT   | LAY2(TAB) |   SUPER   |   LAY1    |    BSPC   |    CTL    |  ALT(ESC) |   SPACE   |   LAY1    |   SUPER   |   LAY2    |    ENT    |
+            bindings = <
+                &kp Q       &kp W       &kp E       &kp R       &kp T                               &kp Y       &kp U       &kp I       &kp O       &kp P
+                &kp A       &kp S       &kp D       &kp F       &kp G                               &kp H       &kp J       &kp K       &kp L       &kp SEMI
+                &kp Z       &kp X       &kp C       &kp V       &kp B                               &kp N       &kp M       &kp COMMA   &kp DOT     &mt RSHFT FSLH
+                &kp LSHFT   &lt FUN TAB &kp LGUI    &mo NAV     &kp BSPC    &kp LCTRL  &mt RALT ESC &kp SPACE   &mo NAV     &kp RGUI    &mo FUN     &kp RET
+            >;
+        };
 
-      nav_layer {
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// |     1     |    2      |    3      |     4     |    5      |                       |    6      |    7      |     8     |     9     |     0     |
-// |    TAB    |    `      |    UP     |     \     |    =/+    |                       |   LEFT    |   DOWN    |    UP     |   RIGHT   |     '     |
-// |   SUPER   |   LEFT    |   DOWN    |   RIGHT   |    -/_    |                       |     [     |     ]     |     ,     |     .     |  SHIFT(/) |
-// |___________|___________|___________|___________|___________|___________|___________|___________|___________|   HOME    |    END    |    ENT    |
-        bindings = <
-    &kp N1      &kp N2      &kp N3      &kp N4      &kp N5                              &kp N6      &kp N7      &kp N8      &kp N9      &kp N0
-    &kp TAB     &kp GRAVE   &kp UP      &kp BSLH    &kp EQUAL                           &kp LEFT    &kp DOWN    &kp UP      &kp RIGHT   &kp SQT
-    &kp LGUI    &kp LEFT    &kp DOWN    &kp RIGHT   &kp MINUS                           &kp LBKT    &kp RBKT    &kp COMMA   &kp DOT     &mt RSHFT FSLH
-    &trans      &trans      &trans      &trans      &trans      &trans       &trans     &trans      &trans      &kp HOME    &kp END     &trans
-        >;
-      };
+        nav_layer {
+            // -------------------------------------------------------------------------------------------------------------------------------------------------
+            // |     1     |    2      |    3      |     4     |    5      |                       |    6      |    7      |     8     |     9     |     0     |
+            // |    TAB    |    `      |    UP     |     \     |    =/+    |                       |   LEFT    |   DOWN    |    UP     |   RIGHT   |     '     |
+            // |   SUPER   |   LEFT    |   DOWN    |   RIGHT   |    -/_    |                       |     [     |     ]     |     ,     |     .     |  SHIFT(/) |
+            // |___________|___________|___________|___________|___________|___________|___________|___________|___________|   HOME    |    END    |    ENT    |
+            bindings = <
+                &kp N1      &kp N2      &kp N3      &kp N4      &kp N5                              &kp N6      &kp N7      &kp N8      &kp N9      &kp N0
+                &kp TAB     &kp GRAVE   &kp UP      &kp BSLH    &kp EQUAL                           &kp LEFT    &kp DOWN    &kp UP      &kp RIGHT   &kp SQT
+                &kp LGUI    &kp LEFT    &kp DOWN    &kp RIGHT   &kp MINUS                           &kp LBKT    &kp RBKT    &kp COMMA   &kp DOT     &mt RSHFT FSLH
+                &trans      &trans      &trans      &trans      &trans      &trans       &trans     &trans      &trans      &kp HOME    &kp END     &trans
+            >;
+        };
 
-      fun_layer {
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// |    F1     |    F2     |    F3     |    F4     |    F5     |                       |    F6     |    F7     |    F8     |    F9     |    F10    |
-// |           |           |           |           |           |                       |   PREV    |   NEXT    |  VOL_UP   |  VOL_DN   |    F11    |
-// |BOOTLOADER |   RESET   |  BT_PRV   |  BT_NXT   |  BT_CLR   |                       |PLAY/PAUSE |    CTL    |   PG_UP   |   PG_DN   |    F12    |
-// |___________|___________|___________|___________|    DEL    |___________|___________|___________|           |           |___________|    ENT    |
-        bindings = <
-    &kp F1      &kp F2      &kp F3      &kp F4      &kp F5                              &kp F6      &kp F7      &kp F8      &kp F9      &kp F10
-    &none       &none       &none       &none       &none                               &kp C_PREV &kp C_NEXT &kp C_VOL_UP &kp C_VOL_DN &kp F11
-    &bootloader &sys_reset  &bt BT_PRV  &bt BT_NXT  &bt BT_CLR                          &kp C_PP    &kp RCTRL   &kp PG_UP   &kp PG_DN   &kp F12
-    &trans      &trans      &trans      &trans      &kp DEL     &trans       &trans     &trans      &none       &none       &trans      &trans
-        >;
-      };
+        fun_layer {
+            // -------------------------------------------------------------------------------------------------------------------------------------------------
+            // |    F1     |    F2     |    F3     |    F4     |    F5     |                       |    F6     |    F7     |    F8     |    F9     |    F10    |
+            // |           |           |           |           |           |                       |   PREV    |   NEXT    |  VOL_UP   |  VOL_DN   |    F11    |
+            // |BOOTLOADER |   RESET   |  BT_PRV   |  BT_NXT   |  BT_CLR   |                       |PLAY/PAUSE |    CTL    |   PG_UP   |   PG_DN   |    F12    |
+            // |___________|___________|___________|___________|    DEL    |___________|___________|___________|           |           |___________|    ENT    |
+            bindings = <
+                &kp F1      &kp F2      &kp F3      &kp F4      &kp F5                              &kp F6      &kp F7      &kp F8      &kp F9      &kp F10
+                &none       &none       &none       &none       &none                               &kp C_PREV &kp C_NEXT &kp C_VOL_UP &kp C_VOL_DN &kp F11
+                &bootloader &sys_reset  &bt BT_PRV  &bt BT_NXT  &bt BT_CLR                          &kp C_PP    &kp RCTRL   &kp PG_UP   &kp PG_DN   &kp F12
+                &trans      &trans      &trans      &trans      &kp DEL     &trans       &trans     &trans      &none       &none       &trans      &trans
+            >;
+        };
     };
 };

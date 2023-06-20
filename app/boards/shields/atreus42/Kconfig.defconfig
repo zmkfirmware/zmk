@@ -4,6 +4,6 @@
 if SHIELD_ATREUS42
 
 config ZMK_KEYBOARD_NAME
-	default "Atreus42"
+    default "RAH-Atreus42-SS"
 
 endif
