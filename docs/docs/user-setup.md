@@ -88,34 +88,39 @@ powershell -Command "iex ((New-Object System.Net.WebClient).DownloadString('http
 </TabItem>
 </Tabs>
 
+### Keyboard Selection
+
+When prompted, enter the number for the corresponding keyboard you would like to target:
+
+```
+Keyboard Selection:
+ 1) 2% Milk                   19) Ferris 0.2                37) Nibble
+ 2) A. Dux                    20) Fourier Rev. 1            38) nice!60
+ 3) BAT43                     21) Helix                     39) Osprette
+ 4) BDN9 Rev2                 22) Hummingbird               40) Pancake
+ 5) BFO-9000                  23) Iris                      41) Planck Rev6
+ 6) Boardsource 3x4 Macropad  24) etc...
+Pick an keyboard:
+```
+
+:::note For a keyboard not in the included list:
+If you are building firmware for a new keyboard that is not included in the built-in
+list of keyboards, you can choose any keyboard from the list that is similar to yours (e.g. in terms of unibody/split and [onboard controller](hardware.mdx#onboard)/[composite](hardware.mdx#composite)) to generate the repository,
+and edit / add necessary files. You can follow the [new shield guide](development/new-shield.md) if you are adding support for a composite keyboard.
+:::
+
 ### MCU Board Selection
 
+If the keyboard selected uses an onboard controller you will skip this step.
 When prompted, enter the number for the corresponding MCU board you would like to target:
 
 ```
 MCU Board Selection:
-1) nice!nano
-2) QMK Proton-C
-3) Quit
+1) BlueMicro840 v1           5) nRF52840 M.2 Module      9) QMK Proton-C
+2) Mikoto 5.20               6) nRFMicro 1.1 (flipped)  10) Seeeduino XIAO
+3) nice!nano v1              7) nRFMicro 1.1/1.2        11) Seeeduino XIAO BLE
+4) nice!nano v2              8) nRFMicro 1.3/1.4        12) Quit
 Pick an MCU board:
-```
-
-### Keyboard Shield Selection
-
-:::note
-If you are building firmware for a new keyboard shield that is not included in the built-in
-list of shields, you can choose any shield from the list that is similar to yours to generate the repository,
-and edit / add necessary files according to the [guide for adding new keyboard shield](development/new-shield.md).
-:::
-
-When prompted, enter the number for the corresponding keyboard shield you would like to target:
-
-```
-Keyboard Shield Selection:
-1) Kyria
-2) Lily58
-3) Quit
-Pick an keyboard:
 ```
 
 ### Keymap Customization

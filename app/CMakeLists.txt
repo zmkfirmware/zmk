@@ -77,8 +77,8 @@ endif()
 target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/behaviors/behavior_rgb_underglow.c)
 target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/behaviors/behavior_backlight.c)
 
-target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/events/battery_state_changed.c)
-target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/battery.c)
+target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/events/battery_state_changed.c)
+target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/battery.c)
 
 target_sources_ifdef(CONFIG_ZMK_SPLIT app PRIVATE src/events/split_peripheral_status_changed.c)
 add_subdirectory(src/split)
