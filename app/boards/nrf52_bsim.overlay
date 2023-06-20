@@ -4,7 +4,6 @@
 
 / {
     chosen {
-        zephyr,console = &uart0;
         zmk,kscan = &kscan;
     };
 
@@ -14,15 +13,5 @@
 
         rows = <2>;
         columns = <2>;
-        exit-after;
-    };
-
-    uart0: uart {
-        status = "okay";
-        compatible = "zephyr,native-posix-uart";
-        /* Dummy current-speed entry to comply with serial
-         * DTS binding
-         */
-        current-speed = <0>;
     };
 };
