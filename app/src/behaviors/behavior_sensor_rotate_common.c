@@ -65,7 +65,7 @@ int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *bindi
 
     if (mode != BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_TRIGGER) {
         data->triggers[sensor_index] = 0;
-        return 0;
+        return ZMK_BEHAVIOR_TRANSPARENT;
     }
 
     int triggers = data->triggers[sensor_index];
@@ -83,7 +83,7 @@ int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *bindi
             triggered_binding.param1 = binding->param2;
         }
     } else {
-        return 0;
+        return ZMK_BEHAVIOR_TRANSPARENT;
     }
 
     LOG_DBG("Sensor binding: %s", binding->behavior_dev);
