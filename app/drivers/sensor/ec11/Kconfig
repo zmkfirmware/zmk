@@ -3,6 +3,8 @@
 
 menuconfig EC11
     bool "EC11 Incremental Encoder Sensor"
+    default y
+    depends on DT_HAS_ALPS_EC11_ENABLED
     depends on GPIO
     help
       Enable driver for EC11 incremental encoder sensors.

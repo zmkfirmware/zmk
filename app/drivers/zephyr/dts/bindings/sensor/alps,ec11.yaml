@@ -18,4 +18,9 @@ properties:
   resolution:
     type: int
     description: Number of pulses per tick
+    deprecated: true
+    required: false
+  steps:
+    type: int
+    description: Number of pulses in one full rotation
     required: false

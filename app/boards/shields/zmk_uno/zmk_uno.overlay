@@ -40,10 +40,10 @@
 
     // Commented out until we add more powerful power domain support
     // external_power {
-    //  compatible = "zmk,ext-power-generic";
-    //  label = "EXT_POWER";
-    //  init-delay-ms = <200>;
-    //  control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
+        //  compatible = "zmk,ext-power-generic";
+        //  label = "EXT_POWER";
+        //  init-delay-ms = <200>;
+        //  control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
     // };
 
     rgb_power {
@@ -128,14 +128,14 @@
         diode-direction = "col2row";
 
         col-gpios
-            = <&arduino_header 10 GPIO_ACTIVE_HIGH>
-            , <&arduino_header 9  GPIO_ACTIVE_HIGH>
-            ;
+        = <&arduino_header 10 GPIO_ACTIVE_HIGH>
+        , <&arduino_header 9  GPIO_ACTIVE_HIGH>
+        ;
 
         row-gpios
-            = <&arduino_header 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&arduino_header 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            ;
+        = <&arduino_header 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&arduino_header 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        ;
 
     };
 
@@ -144,11 +144,11 @@
         status = "disabled";
 
         input-gpios
-            = <&arduino_header 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&arduino_header 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&arduino_header 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&arduino_header 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            ;
+        = <&arduino_header 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        ;
 
     };
 
@@ -157,23 +157,26 @@
         toggle-mode;
 
         input-gpios
-            = <&arduino_header 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&arduino_header 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&arduino_header 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            ;
+        = <&arduino_header 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        ;
     };
 
     encoder: encoder {
         label = "ENCODER";
-        resolution = <4>;
+        steps = <80>;
         compatible = "alps,ec11";
-        a-gpios = <&arduino_header 14 GPIO_PULL_UP>;
-        b-gpios = <&arduino_header 15 GPIO_PULL_UP>;
+        a-gpios = <&arduino_header 15 GPIO_PULL_UP>;
+        b-gpios = <&arduino_header 14 GPIO_PULL_UP>;
     };
-
     sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&encoder>;
+        triggers-per-rotation = <20>;
+        left {
+            triggers-per-rotation = <20>;
+        };
     };
 
 };

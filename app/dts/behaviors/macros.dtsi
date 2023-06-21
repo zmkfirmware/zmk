@@ -4,16 +4,33 @@
  * SPDX-License-Identifier: MIT
  */
 
+#define MACRO_PLACEHOLDER 0
 #define ZMK_MACRO_STRINGIFY(x) #x
 #define ZMK_MACRO(name,...) \
-    name: name { \
-            label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
-            compatible = "zmk,behavior-macro"; \
-            #binding-cells = <0>; \
-            __VA_ARGS__ \
-        };
+name: name { \
+    label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
+    compatible = "zmk,behavior-macro"; \
+    #binding-cells = <0>; \
+    __VA_ARGS__ \
+};
 
- / {
+#define ZMK_MACRO1(name,...) \
+name: name { \
+    label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
+    compatible = "zmk,behavior-macro-one-param"; \
+    #binding-cells = <1>; \
+    __VA_ARGS__ \
+};
+
+#define ZMK_MACRO2(name,...) \
+name: name { \
+    label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
+    compatible = "zmk,behavior-macro-two-param"; \
+    #binding-cells = <2>; \
+    __VA_ARGS__ \
+};
+
+/ {
     behaviors {
         macro_tap: macro_control_mode_tap {
             compatible = "zmk,macro-control-mode-tap";
@@ -48,6 +65,30 @@
         macro_pause_for_release: macro_pause_for_release {
             compatible = "zmk,macro-pause-for-release";
             label = "MAC_WAIT_REL";
+            #binding-cells = <0>;
+        };
+
+        macro_param_1to1: macro_param_1to1 {
+            compatible = "zmk,macro-param-1to1";
+            label = "MAC_PARAM_1TO1";
+            #binding-cells = <0>;
+        };
+
+        macro_param_1to2: macro_param_1to2 {
+            compatible = "zmk,macro-param-1to2";
+            label = "MAC_PARAM_1TO2";
+            #binding-cells = <0>;
+        };
+
+        macro_param_2to1: macro_param_2to1 {
+            compatible = "zmk,macro-param-2to1";
+            label = "MAC_PARAM_2TO1";
+            #binding-cells = <0>;
+        };
+
+        macro_param_2to2: macro_param_2to2 {
+            compatible = "zmk,macro-param-2to2";
+            label = "MAC_PARAM_2TO2";
             #binding-cells = <0>;
         };
     };
