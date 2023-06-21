@@ -99,7 +99,8 @@ static void animation_ripple_render_frame(const struct device *dev, struct anima
 
         // Render all pixels for each event
         for (int j = 0; j < config->pixel_map_size; ++j) {
-            uint8_t pixel_distance = zmk_animation_get_pixel_distance(event->pixel_id, j);
+            uint8_t pixel_distance =
+                zmk_animation_get_pixel_distance(event->pixel_id, pixel_map[j]);
 
             if (config->ripple_width > abs(pixel_distance - event->distance)) {
                 float intensity = 1.0f - (float)abs(pixel_distance - event->distance) /
