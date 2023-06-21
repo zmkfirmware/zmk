@@ -9,15 +9,14 @@ properties:
       Pixel positions to which the animation should apply.
 
   blending-mode:
-    type: int
-    required: false
+    type: string
     enum:
-      - 0
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-    default: 0
+      - "normal"
+      - "multiply"
+      - "lighten"
+      - "darken"
+      - "screen"
+      - "subtract"
+    default: "normal"
     description: |
       Blending mode for the animation to use during render.

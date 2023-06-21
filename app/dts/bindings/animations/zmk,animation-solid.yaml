@@ -11,7 +11,6 @@ include: animation_base.yaml
 properties:
   duration:
     type: int
-    required: false
     default: 5
     description: |
       Animation duration in seconds.
@@ -22,4 +21,4 @@ properties:
     type: array
     required: true
     description: |
-      The colors to cycle through during the animation.
+      The colors to cycle through during the animation in HSL format.

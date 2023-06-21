@@ -21,7 +21,6 @@ properties:
 
   brightness-steps:
     type: int
-    required: false
     default: 5
     description: |
       How many brightness steps should be supported.

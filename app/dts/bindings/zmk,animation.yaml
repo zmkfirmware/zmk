@@ -11,7 +11,13 @@ properties:
     required: true
     description: |
       This array should contain all driver devices responsible for illuminating animated LEDs.
-      The devices must implement Zephyr's LED Strip Interface and expose a chain-lenght devicetree property.
+      The devices must implement Zephyr's LED Strip Interface.
+
+  chain-lengths:
+    type: array
+    required: true
+    description: |
+      This field contains the number of LEDs controlled by each driver device.
 
   pixels:
     type: phandle-array
@@ -23,7 +29,6 @@ properties:
 
   key-pixels:
     type: array
-    required: false
     description: |
       Use this field to specify the pixel index corresponding to each key
       following the order used in your keymap.
