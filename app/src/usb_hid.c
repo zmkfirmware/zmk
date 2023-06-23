@@ -48,7 +48,7 @@ int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
     }
 }
 
-static int zmk_usb_hid_init(const struct device *_arg) {
+static int zmk_usb_hid_init(void) {
     hid_dev = device_get_binding("HID_0");
     if (hid_dev == NULL) {
         LOG_ERR("Unable to locate HID device");

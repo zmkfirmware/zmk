@@ -74,8 +74,8 @@ void activity_work_handler(struct k_work *work) {
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
-            set_state(ZMK_ACTIVITY_IDLE);
-        }
+        set_state(ZMK_ACTIVITY_IDLE);
+    }
 }
 
 K_WORK_DEFINE(activity_work, activity_work_handler);
@@ -84,7 +84,7 @@ void activity_expiry_function() { k_work_submit(&activity_work); }
 
 K_TIMER_DEFINE(activity_timer, activity_expiry_function, NULL);
 
-int activity_init() {
+int activity_init(void) {
     activity_last_uptime = k_uptime_get();
 
     k_timer_start(&activity_timer, K_SECONDS(1), K_SECONDS(1));
