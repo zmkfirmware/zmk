@@ -6,7 +6,7 @@ if SHIELD_NICE_VIEW
 config LV_Z_VDB_SIZE
     default 100
 
-config LV_Z_DPI
+config LV_DPI_DEF
     default 161
 
 config LV_Z_BITS_PER_PIXEL
