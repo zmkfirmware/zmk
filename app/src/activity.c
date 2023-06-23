@@ -84,7 +84,7 @@ void activity_expiry_function(struct k_timer *_timer) { k_work_submit(&activity_
 
 K_TIMER_DEFINE(activity_timer, activity_expiry_function, NULL);
 
-int activity_init(const struct device *_device) {
+static int activity_init(void) {
     activity_last_uptime = k_uptime_get();
 
     k_timer_start(&activity_timer, K_SECONDS(1), K_SECONDS(1));

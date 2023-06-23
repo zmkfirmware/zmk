@@ -65,7 +65,7 @@ void usb_status_cb(enum usb_dc_status_code status, const uint8_t *params) {
     k_work_submit(&usb_status_notifier_work);
 };
 
-static int zmk_usb_init(const struct device *_arg) {
+static int zmk_usb_init(void) {
     int usb_enable_ret;
 
     usb_enable_ret = usb_enable(usb_status_cb);

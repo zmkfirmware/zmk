@@ -92,7 +92,7 @@ static void zmk_battery_start_reporting() {
     }
 }
 
-static int zmk_battery_init(const struct device *_arg) {
+static int zmk_battery_init(void) {
 #if !DT_HAS_CHOSEN(zmk_battery)
     battery = device_get_binding("BATTERY");
 
