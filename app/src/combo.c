@@ -531,7 +531,7 @@ ZMK_SUBSCRIPTION(combo, zmk_keycode_state_changed);
 
 DT_INST_FOREACH_CHILD(0, COMBO_INST)
 
-static int combo_init() {
+static int combo_init(void) {
     k_work_init_delayable(&timeout_task, combo_timeout_handler);
     DT_INST_FOREACH_CHILD(0, INITIALIZE_COMBO);
     return 0;
