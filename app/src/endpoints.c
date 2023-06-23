@@ -302,7 +302,7 @@ static struct zmk_endpoint_instance get_selected_instance(void) {
     return instance;
 }
 
-static int zmk_endpoints_init(const struct device *_arg) {
+static int zmk_endpoints_init(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_subsys_init();
 
