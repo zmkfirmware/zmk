@@ -100,7 +100,7 @@ bindings
 Because `kp` takes one parameter, you can't simply make the second entry `<&kp>` in the `bindings` list. Whatever value you do pass in will be replaced when the macro is triggered, so you can put _any_ value there, e.g. `0`, `A` keycode, etc. To make it very obvious that the parameter there is not actually going to be used, you can use `MACRO_PLACEHOLDER` which is simply an alias for `0`.
 
 :::note
-This isn't a find-and-replace, the behavior is being triggered with the parameter supplied to the macro. To apply a modifier, for example, instead of using `&kp LS(MACRO_PLACEHOLDER)` you would need additional bindings like `<&kt LSHFT>, <&kp MACRO_PLACEHOLDER>, <&kt LSHFT>`.
+This isn't a find-and-replace, the behavior is being triggered with the parameter supplied to the macro. To apply a modifier, for example, instead of using `&kp LS(MACRO_PLACEHOLDER)` you would need additional bindings like `<&sk LSHFT>, <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>`.
 :::
 
 The available parameter controls are:
