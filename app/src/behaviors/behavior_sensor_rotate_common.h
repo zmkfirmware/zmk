@@ -6,6 +6,7 @@
 
 #include <drivers/behavior.h>
 #include <zmk/behavior.h>
+#include <zmk/keymap.h>
 #include <zmk/sensors.h>
 
 struct behavior_sensor_rotate_config {
@@ -16,8 +17,8 @@ struct behavior_sensor_rotate_config {
 };
 
 struct behavior_sensor_rotate_data {
-    struct sensor_value remainder[ZMK_KEYMAP_SENSORS_LEN];
-    int triggers[ZMK_KEYMAP_SENSORS_LEN];
+    struct sensor_value remainder[ZMK_KEYMAP_SENSORS_LEN][ZMK_KEYMAP_LAYERS_LEN];
+    int triggers[ZMK_KEYMAP_SENSORS_LEN][ZMK_KEYMAP_LAYERS_LEN];
 };
 
 int zmk_behavior_sensor_rotate_common_accept_data(

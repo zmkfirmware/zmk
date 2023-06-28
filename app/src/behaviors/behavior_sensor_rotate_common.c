@@ -28,7 +28,7 @@ int zmk_behavior_sensor_rotate_common_accept_data(
     if (value.val1 == 0) {
         triggers = value.val2;
     } else {
-        struct sensor_value remainder = data->remainder[sensor_index];
+        struct sensor_value remainder = data->remainder[sensor_index][event.layer];
 
         remainder.val1 += value.val1;
         remainder.val2 += value.val2;
@@ -42,15 +42,16 @@ int zmk_behavior_sensor_rotate_common_accept_data(
         triggers = remainder.val1 / trigger_degrees;
         remainder.val1 %= trigger_degrees;
 
-        data->remainder[sensor_index] = remainder;
+        data->remainder[sensor_index][event.layer] = remainder;
     }
 
     LOG_DBG(
         "val1: %d, val2: %d, remainder: %d/%d triggers: %d inc keycode 0x%02X dec keycode 0x%02X",
-        value.val1, value.val2, data->remainder[sensor_index].val1,
-        data->remainder[sensor_index].val2, triggers, binding->param1, binding->param2);
+        value.val1, value.val2, data->remainder[sensor_index][event.layer].val1,
+        data->remainder[sensor_index][event.layer].val2, triggers, binding->param1,
+        binding->param2);
 
-    data->triggers[sensor_index] = triggers;
+    data->triggers[sensor_index][event.layer] = triggers;
     return 0;
 }
 
@@ -64,11 +65,11 @@ int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *bindi
     const int sensor_index = ZMK_SENSOR_POSITION_FROM_VIRTUAL_KEY_POSITION(event.position);
 
     if (mode != BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_TRIGGER) {
-        data->triggers[sensor_index] = 0;
+        data->triggers[sensor_index][event.layer] = 0;
         return ZMK_BEHAVIOR_TRANSPARENT;
     }
 
-    int triggers = data->triggers[sensor_index];
+    int triggers = data->triggers[sensor_index][event.layer];
 
     struct zmk_behavior_binding triggered_binding;
     if (triggers > 0) {
