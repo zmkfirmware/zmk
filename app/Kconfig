@@ -124,11 +124,6 @@ if ZMK_BLE
 config BT_TINYCRYPT_ECC
     default y if BT_HCI && !BT_CTLR
 
-choice BT_LL_SW_LLCP_IMPL
-    default BT_LL_SW_LLCP_LEGACY
-
-endchoice
-
 config SYSTEM_WORKQUEUE_STACK_SIZE
     default 4096 if SOC_RP2040
     default 2048
