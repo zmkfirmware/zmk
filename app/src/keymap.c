@@ -31,10 +31,6 @@ static uint8_t _zmk_keymap_layer_default = 0;
 
 #define DT_DRV_COMPAT zmk_keymap
 
-#define LAYER_CHILD_LEN(node) 1 +
-#define ZMK_KEYMAP_NODE DT_DRV_INST(0)
-#define ZMK_KEYMAP_LAYERS_LEN (DT_INST_FOREACH_CHILD(0, LAYER_CHILD_LEN) 0)
-
 #define BINDING_WITH_COMMA(idx, drv_inst) ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst)
 
 #define TRANSFORMED_LAYER(node)                                                                    \
