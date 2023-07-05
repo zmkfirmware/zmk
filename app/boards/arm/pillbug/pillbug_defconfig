@@ -8,6 +8,9 @@ CONFIG_BOARD_PILLBUG=y
 # Enable MPU
 CONFIG_ARM_MPU=y
 
+# Use pinctrl
+CONFIG_PINCTRL=y
+
 # enable GPIO
 CONFIG_GPIO=y
 
