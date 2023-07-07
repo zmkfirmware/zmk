@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 The ZMK Contributors
+ * Copyright (c) 2023 The ZMK Contributors
  * SPDX-License-Identifier: MIT
  */
 
@@ -7,11 +7,6 @@
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
-
-// Layers
-#define DEFAULT    0       // default_layer
-#define LOWER      1       // lower_layer
-#define RAISE      2       // raise_layer
 
 /*
  * Assign the cs-gpios pin to 4.
@@ -21,10 +16,6 @@
  * the pins with Arduino Labels.
  */
 //nice_view_spi: &spi0 {
-//  compatible = "nordic,nrf-spim";
-//  pinctrl-0 = <&spi0_default>;
-//  pinctrl-1 = <&spi0_sleep>;
-//  pinctrl-names = "default", "sleep";
 //  cs-gpios = <&pro_micro 4 GPIO_ACTIVE_HIGH>;
 //};
 

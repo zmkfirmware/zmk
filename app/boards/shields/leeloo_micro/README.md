@@ -37,7 +37,7 @@ west build -d build/right -p -b nice_nano_v2 -- -DSHIELD=leeloo_micro_right
 Build commands for your custom keymap of Leeloo-Micro:
 
 ```
-west build -d build/right -p -b nice_nano_v2 -- -DSHIELD=leeloo_micro_right -DZMK_CONFIG="C:/dev/zmk/[yourNmae]/leeloo_micro/config"
+west build -d build/right -p -b nice_nano_v2 -- -DSHIELD=leeloo_micro_right -DZMK_CONFIG="C:/dev/zmk/[yourName]/leeloo_micro/config"
 west build -d build/left -p -b nice_nano_v2 -- -DSHIELD=leeloo_micro_left -DZMK_CONFIG="C:/dev/zmk/[yourName]/leeloo_micro/config"
 ```
 
@@ -51,10 +51,6 @@ Near the top 3rd of the leeloo_micro.keymap file, locate the following code bloc
 
 ```
 //nice_view_spi: &spi0 {
-//  compatible = "nordic,nrf-spim";
-//  pinctrl-0 = <&spi0_default>;
-//  pinctrl-1 = <&spi0_sleep>;
-//  pinctrl-names = "default", "sleep";
 //  cs-gpios = <&pro_micro 4 GPIO_ACTIVE_HIGH>;
 //};
 ```
@@ -63,30 +59,8 @@ Remove the forward slashes to resemble the following:
 
 ```
 nice_view_spi: &spi0 {
-    compatible = "nordic,nrf-spim";
-    pinctrl-0 = <&spi0_default>;
-    pinctrl-1 = <&spi0_sleep>;
-    pinctrl-names = "default", "sleep";
     cs-gpios = <&pro_micro 4 GPIO_ACTIVE_HIGH>;
 };
-```
-
-Save your changes and close the file.
-
-### Edit the leeloo_micro.conf file:
-
-Near the top of the leeloo_micro.conf file, locate the following line items:
-
-```
-# Uncomment the following line to enable the OLED Display or nice!view Display
-# CONFIG_ZMK_DISPLAY=y
-```
-
-Remove the # character in front of the CONFIG_ZMK_DISPLAY configuration item to resemble the following:
-
-```
-# Uncomment the following line to enable the OLED Display or nice!view Display
-CONFIG_ZMK_DISPLAY=y
 ```
 
 Save your changes and close the file.
@@ -103,8 +77,8 @@ west build -d build/right -p -b nice_nano_v2 -- -DSHIELD="leeloo_micro_right nic
 Build commands for your custom keymap of Leeloo-Micro:
 
 ```
-west build -d build/left -p -b nice_nano_v2 -- -DSHIELD="leeloo_micro_left nice_view_adapter nice_view" -DZMK_CONFIG="/workspaces/zmk-config/[yourNmae]/leeloo_micro/config"
-west build -d build/right -p -b nice_nano_v2 -- -DSHIELD="leeloo_micro_right nice_view_adapter nice_view" -DZMK_CONFIG="/workspaces/zmk-config/[yourNmae]/leeloo_micro/config"
+west build -d build/left -p -b nice_nano_v2 -- -DSHIELD="leeloo_micro_left nice_view_adapter nice_view" -DZMK_CONFIG="/workspaces/zmk-config/[yourName]/leeloo_micro/config"
+west build -d build/right -p -b nice_nano_v2 -- -DSHIELD="leeloo_micro_right nice_view_adapter nice_view" -DZMK_CONFIG="/workspaces/zmk-config/[yourName]/leeloo_micro/config"
 ```
 
 # Support
