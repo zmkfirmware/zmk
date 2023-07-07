@@ -103,7 +103,7 @@ west build -d build/right -p -b nice_nano_v2 -- -DSHIELD="leeloo_micro_right nic
 Build commands for your custom keymap of Leeloo-Micro:
 
 ```
-west build -d build/left -p -b nice_nano_v2 -- -DSHIELD="leeloo_micro_left nice_view_adapter nice_view" -DZMK_CONFIG="/workspaces/zmk-config/[yourNmae]/leeloo_micro/config"
+west build -d build/left -p -b nice_nano_v2 -- -DSHIELD="leeloo_micro_left nice_view_adapter nice_view" -DZMK_CONFIG="/workspaces/zmk-config/[yourName]/leeloo_micro/config"
 west build -d build/right -p -b nice_nano_v2 -- -DSHIELD="leeloo_micro_right nice_view_adapter nice_view" -DZMK_CONFIG="/workspaces/zmk-config/[yourNmae]/leeloo_micro/config"
 ```
 
