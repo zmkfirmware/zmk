@@ -88,34 +88,39 @@ powershell -Command "iex ((New-Object System.Net.WebClient).DownloadString('http
 </TabItem>
 </Tabs>
 
+### Keyboard Selection
+
+When prompted, enter the number for the corresponding keyboard you would like to target:
+
+```
+Keyboard Selection:
+ 1) 2% Milk                   19) Ferris 0.2                37) Nibble
+ 2) A. Dux                    20) Fourier Rev. 1            38) nice!60
+ 3) BAT43                     21) Helix                     39) Osprette
+ 4) BDN9 Rev2                 22) Hummingbird               40) Pancake
+ 5) BFO-9000                  23) Iris                      41) Planck Rev6
+ 6) Boardsource 3x4 Macropad  24) etc...
+Pick an keyboard:
+```
+
+:::note For a keyboard not in the included list:
+If you are building firmware for a new keyboard that is not included in the built-in
+list of keyboards, you can choose any keyboard from the list that is similar to yours (e.g. in terms of unibody/split and [onboard controller](hardware.mdx#onboard)/[composite](hardware.mdx#composite)) to generate the repository,
+and edit / add necessary files. You can follow the [new shield guide](development/new-shield.md) if you are adding support for a composite keyboard.
+:::
+
 ### MCU Board Selection
 
+If the keyboard selected uses an onboard controller you will skip this step.
 When prompted, enter the number for the corresponding MCU board you would like to target:
 
 ```
 MCU Board Selection:
-1) nice!nano
-2) QMK Proton-C
-3) Quit
+1) BlueMicro840 v1           5) nRF52840 M.2 Module      9) QMK Proton-C
+2) Mikoto 5.20               6) nRFMicro 1.1 (flipped)  10) Seeeduino XIAO
+3) nice!nano v1              7) nRFMicro 1.1/1.2        11) Seeeduino XIAO BLE
+4) nice!nano v2              8) nRFMicro 1.3/1.4        12) Quit
 Pick an MCU board:
-```
-
-### Keyboard Shield Selection
-
-:::note
-If you are building firmware for a new keyboard shield that is not included in the built-in
-list of shields, you can choose any shield from the list that is similar to yours to generate the repository,
-and edit / add necessary files according to the [guide for adding new keyboard shield](development/new-shield.md).
-:::
-
-When prompted, enter the number for the corresponding keyboard shield you would like to target:
-
-```
-Keyboard Shield Selection:
-1) Kyria
-2) Lily58
-3) Quit
-Pick an keyboard:
 ```
 
 ### Keymap Customization
@@ -193,14 +198,32 @@ To flash the firmware, first put your board into bootloader mode by double click
 or the one that is part of your keyboard). The controller should appear in your OS as a new USB storage device.
 
 Once this happens, copy the correct UF2 file (e.g. left or right if working on a split), and paste it onto the root of that USB mass
-storage device. Once the flash is complete, the controller should automatically restart, and load your newly flashed firmware.
+storage device. Once the flash is complete, the controller should unmount the USB storage, automatically restart and load your newly
+flashed firmware. It is recommended that you test your keyboard works over USB first to rule out hardware issues, before trying to
+connect to it wirelessly.
+
+:::caution Split keyboards
+
+For split keyboards, only the central half (typically the left side) will send keyboard outputs over USB or advertise to other devices
+over bluetooth. Peripheral half will only send keystrokes to the central once they are paired and connected. For this reason it is
+recommended to test the left half of a split keyboard first.
+
+:::
 
 ## Wirelessly Connecting Your Keyboard
 
-ZMK will automatically advertise itself as connectable if it is not currently connected to a device. You should be able to see your keyboard from the bluetooth scanning view of your laptop or phone / tablet. It is reported by some users that the connections with Android / iOS devices are generally smoother than with laptops, so if you have trouble connecting, you could try to connect from your phone or tablet first to eliminate any potential hardware issues.
+ZMK will automatically advertise itself as connectable if it is not currently connected to a device. You should be able to see your keyboard from the bluetooth scanning view of your computer or phone / tablet. It is reported by some users that the connections with Android / iOS devices are generally smoother than with laptops, so if you have trouble connecting, you could try to connect from your phone or tablet first to eliminate any potential hardware issues with bluetooth receivers.
 
-ZMK supports multiple BLE “profiles”, which allows you to connect to and switch among multiple devices. Please refer to the [Bluetooth behavior](behaviors/bluetooth.md) section for detailed explanations on how to use them.
+ZMK supports multiple BLE “profiles”, which allows you to connect to and switch among multiple devices. Please refer to the [Bluetooth behavior](behaviors/bluetooth.md) section for detailed explanations on how to use them. If you don't make use of the mentioned behaviors you will have issues pairing your keyboard to other devices.
 
 ### Connecting Split Keyboard Halves
 
 For split keyboards, after flashing each half individually you can connect them together by resetting them at the same time. Within a few seconds of resetting, both halves should automatically connect to each other.
+
+:::note
+
+If you have issues connecting the halves, make sure that both sides are getting powered properly through USB or batteries, then follow the
+[recommended troubleshooting procedure](troubleshooting.md#split-keyboard-halves-unable-to-pair). This is typically necessary if you
+swapped firmware sides between controllers, like flashing left side firmware to the same controller after flashing the right, or vice versa.
+
+:::

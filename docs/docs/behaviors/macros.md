@@ -33,7 +33,7 @@ A macro definition looks like:
 
 :::note
 The text before the colon (`:`) in the declaration of the macro node is the "node label", and is the text
-used to reference the macro in your keymap
+used to reference the macro in your keymap.
 :::
 
 The macro can then be bound in your keymap by referencing it by the label `&zed_em_kay`, e.g.:
@@ -43,6 +43,27 @@ The macro can then be bound in your keymap by referencing it by the label `&zed_
         bindings = <&zed_em_kay>;
     };
 ```
+
+:::note
+For use cases involving sending a single keycode with modifiers, for instance ctrl+tab, the [key press behavior](key-press.md)
+with [modifier functions](../codes/modifiers.mdx#modifier-functions) can be used instead of a macro.
+:::
+
+### Parameterized Macros
+
+Macros can also be "parameterized", allowing them to be bound in your keymap with unique values passed into them, e.g.:
+
+```
+    raise_layer {
+        bindings = <&my_cool_macro A>
+    };
+```
+
+When defining a parameterized macro, a different `compatible` value will be used depending on how many parameters are passed into it:
+
+- `zmk,behavior-macro` - a parameter that takes no parameters.
+- `zmk,behavior-macro-one-param` - a parameter that takes one parameter when used.
+- `zmk,behavior-macro-two-param` - a parameter that takes two parameters when used.
 
 ### Bindings
 
@@ -61,6 +82,30 @@ bindings
 
 There are a set of special macro controls that can be included in the `bindings` list to modify the
 way the macro is processed.
+
+### Parameters
+
+When creating a macro that takes parameter(s), there are macro controls that change when the parameters passed to the macro are used
+within the macro itself. All of the controls are "one shot" and will change how the passed in parameters are used for the very next non-macro control behavior in the `bindings` list of the macro.
+
+For example, to pass the first parameter from the macro into a `&kp` used in the macro, you would use:
+
+```
+bindings
+    = <&macro_param_1to1>
+    , <&kp MACRO_PLACEHOLDER>
+    ;
+```
+
+Because `kp` takes one parameter, you can't simply make the second entry `<&kp>` in the `bindings` list. Whatever value you do pass in will be replaced when the macro is triggered, so you can put _any_ value there, e.g. `0`, `A` keycode, etc. To make it very obvious that the parameter there is not actually going to be used, you can use `MACRO_PLACEHOLDER` which is simply an alias for `0`.
+
+The available parameter controls are:
+
+- `&macro_param_1to1` - pass the first parameter of the macro into the first parameter of the next behavior in the `bindings` list.
+- `&macro_param_1to2` - pass the first parameter of the macro into the second parameter of the next behavior in the `bindings` list.
+
+* `&macro_param_2to1` - pass the second parameter of the macro into the first parameter of the next behavior in the `bindings` list.
+* `&macro_param_2to2` - pass the second parameter of the macro into the second parameter of the next behavior in the `bindings` list.
 
 ### Binding Activation Mode
 

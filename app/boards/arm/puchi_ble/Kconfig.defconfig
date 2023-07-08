@@ -4,25 +4,25 @@
 if BOARD_PUCHI_BLE_v1
 
 config BOARD
-	default "puchi_ble"
+    default "puchi_ble"
 
 if USB_DEVICE_STACK
 
 config USB_NRFX
-	default y
+    default y
 
 endif # USB_DEVICE_STACK
 
 config BT_CTLR
-	default BT
+    default BT
 
 config ZMK_BLE
-	default y
+    default y
 
 config ZMK_USB
-	default y
+    default y
 
 config PINMUX
-	default y
+    default y
 
 endif # BOARD_PUCHI_BLE_v1

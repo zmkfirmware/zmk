@@ -14,6 +14,22 @@ function generateHardwareMetadataAggregate() {
     const aggregated = files.flatMap((f) =>
       yaml.loadAll(fs.readFileSync(f, "utf8"))
     );
+
+    aggregated
+      .filter((agg) => agg.type === "interconnect")
+      .forEach((agg) => {
+        let baseDir = `src/data/interconnects/${agg.id}`;
+        if (!fs.existsSync(baseDir)) {
+          fs.mkdirSync(baseDir);
+        }
+
+        if (agg.design_guideline) {
+          fs.writeFileSync(
+            `${baseDir}/design_guideline.md`,
+            agg.design_guideline
+          );
+        }
+      });
     fs.writeFileSync(
       "src/data/hardware-metadata.json",
       JSON.stringify(aggregated)

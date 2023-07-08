@@ -7,41 +7,41 @@
 /* This provies a mapping from Arduino Uno to Arduino Pro Micro pins for development */
 
 / {
-	pro_micro_d: connector_d {
-		compatible = "arduino-pro-micro";
-		#gpio-cells = <2>;
-		gpio-map-mask = <0xffffffff 0xffffffc0>;
-		gpio-map-pass-thru = <0 0x3f>;
-		gpio-map
-			= <0 0 &arduino_header 6 0>		/* D0 */
-			, <1 0 &arduino_header 7 0>		/* D1 */
-			, <2 0 &arduino_header 8 0>		/* D2 */
-			, <3 0 &arduino_header 9 0>		/* D3 */
-			, <4 0 &arduino_header 10 0>		/* D4/A6 */
-			, <5 0 &arduino_header 11 0>		/* D5 */
-			, <6 0 &arduino_header 12 0>		/* D6/A7 */
-			, <7 0 &arduino_header 13 0>		/* D7 */
-			, <8 0 &arduino_header 14 0>		/* D8/A8 */
-			, <9 0 &arduino_header 15 0>		/* D9/A9 */
-			, <10 0 &arduino_header 16 0>		/* D10/A10 */
-			, <16 0 &arduino_header 17 0>	/* D16 */
-			, <14 0 &arduino_header 18 0>	/* D14 */
-			, <15 0 &arduino_header 19 0>	/* D15 */
-			;
-	};
+    pro_micro_d: connector_d {
+        compatible = "arduino-pro-micro";
+        #gpio-cells = <2>;
+        gpio-map-mask = <0xffffffff 0xffffffc0>;
+        gpio-map-pass-thru = <0 0x3f>;
+        gpio-map
+            = <0 0 &arduino_header 6 0>     /* D0 */
+            , <1 0 &arduino_header 7 0>     /* D1 */
+            , <2 0 &arduino_header 8 0>     /* D2 */
+            , <3 0 &arduino_header 9 0>     /* D3 */
+            , <4 0 &arduino_header 10 0>        /* D4/A6 */
+            , <5 0 &arduino_header 11 0>        /* D5 */
+            , <6 0 &arduino_header 12 0>        /* D6/A7 */
+            , <7 0 &arduino_header 13 0>        /* D7 */
+            , <8 0 &arduino_header 14 0>        /* D8/A8 */
+            , <9 0 &arduino_header 15 0>        /* D9/A9 */
+            , <10 0 &arduino_header 16 0>       /* D10/A10 */
+            , <16 0 &arduino_header 17 0>   /* D16 */
+            , <14 0 &arduino_header 18 0>   /* D14 */
+            , <15 0 &arduino_header 19 0>   /* D15 */
+            ;
+    };
 
-	pro_micro_a: connector_a {
-		compatible = "arduino-pro-micro";
-		#gpio-cells = <2>;
-		gpio-map-mask = <0xffffffff 0xffffffc0>;
-		gpio-map-pass-thru = <0 0x3f>;
-		gpio-map
-			= <0 0 &arduino_header 0 0>	/* A0 */
-			, <1 0 &arduino_header 1 0>	/* A1 */
-			, <2 0 &arduino_header 2 0>	/* A2 */
-			, <3 0 &arduino_header 3 0>	/* A3 */
-			;
-	};
+    pro_micro_a: connector_a {
+        compatible = "arduino-pro-micro";
+        #gpio-cells = <2>;
+        gpio-map-mask = <0xffffffff 0xffffffc0>;
+        gpio-map-pass-thru = <0 0x3f>;
+        gpio-map
+            = <0 0 &arduino_header 0 0> /* A0 */
+            , <1 0 &arduino_header 1 0> /* A1 */
+            , <2 0 &arduino_header 2 0> /* A2 */
+            , <3 0 &arduino_header 3 0> /* A3 */
+            ;
+    };
 };
 
 pro_micro_i2c: &arduino_i2c {};

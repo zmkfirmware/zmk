@@ -5,11 +5,11 @@
  */
 
 / {
-	behaviors {
-		/omit-if-no-ref/ mo: behavior_momentary_layer {
-			compatible = "zmk,behavior-momentary-layer";
-			label = "MO";
-			#binding-cells = <1>;
-		};
-	};
+    behaviors {
+        /omit-if-no-ref/ mo: behavior_momentary_layer {
+            compatible = "zmk,behavior-momentary-layer";
+            label = "MO";
+            #binding-cells = <1>;
+        };
+    };
 };

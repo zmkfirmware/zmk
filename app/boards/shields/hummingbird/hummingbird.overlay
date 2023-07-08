@@ -10,8 +10,8 @@
     chosen {
         zmk,kscan = &kscan0;
         zmk,matrix_transform = &default_transform;
-	/delete-property/ zephyr,console;
-	/delete-property/ zephyr,shell-uart;
+    /delete-property/ zephyr,console;
+    /delete-property/ zephyr,shell-uart;
     };
 
     default_transform: keymap_transform_0 {
@@ -49,9 +49,8 @@
             , <&xiao_d 5 GPIO_ACTIVE_HIGH>
             ;
     };
-    
+
 };
 
 &xiao_spi { status = "disabled"; };
-&xiao_i2c { status = "disabled"; };
 &xiao_serial { status = "disabled"; };

@@ -1,0 +1,8 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Macro Parameter One Substituted Into Next Binding's Second Parameter
+
+compatible: "zmk,macro-param-1to2"
+
+include: zero_param.yaml
