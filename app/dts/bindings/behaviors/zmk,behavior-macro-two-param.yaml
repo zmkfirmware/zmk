@@ -3,6 +3,6 @@
 
 description: Macro Behavior
 
-compatible: "zmk,behavior-macro"
+compatible: "zmk,behavior-macro-two-param"
 
-include: [zero_param.yaml, macro_base.yaml]
+include: [two_param.yaml, macro_base.yaml]

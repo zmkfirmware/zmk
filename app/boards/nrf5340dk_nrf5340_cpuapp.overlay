@@ -6,5 +6,5 @@
 
 &arduino_i2c {
     // Default buffer size is too small for use with displays.
-    zephyr,concat-buf-size = <512>;
+    zephyr,concat-buf-size = <1024>;
 };

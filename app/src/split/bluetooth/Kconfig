@@ -17,6 +17,10 @@ config ZMK_SPLIT_ROLE_CENTRAL
 
 if ZMK_SPLIT_ROLE_CENTRAL
 
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    int "Number of peripherals that will connect to the central."
+    default 1
+
 config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
     int "Max number of key position state events to queue when received from peripherals"
     default 5
@@ -28,6 +32,18 @@ config ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE
 config ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE
     int "Max number of behavior run events to queue to send to the peripheral(s)"
     default 5
+
+config ZMK_SPLIT_BLE_PREF_INT
+    int "Connection interval to use for split central/peripheral connection"
+    default 6
+
+config ZMK_SPLIT_BLE_PREF_LATENCY
+    int "Latency to use for split central/peripheral connection"
+    default 30
+
+config ZMK_SPLIT_BLE_PREF_TIMEOUT
+    int "Supervision timeout to use for split central/peripheral connection"
+    default 400
 
 endif # ZMK_SPLIT_ROLE_CENTRAL
 
@@ -54,8 +70,9 @@ config BT_MAX_PAIRED
 config BT_MAX_CONN
     default 1
 
-config BT_PERIPHERAL_PREF_MAX_INT
-    default 6
+# Allow central to specify connection parameters.
+config BT_GAP_AUTO_UPDATE_CONN_PARAMS
+    default n
 
 #!ZMK_SPLIT_ROLE_CENTRAL
 endif
