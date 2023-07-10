@@ -7,12 +7,12 @@
 #define DT_DRV_COMPAT zmk_behavior_reset
 
 #include <zephyr/device.h>
-#include <zephyr/sys/reboot.h>
 #include <zephyr/logging/log.h>
 
 #include <drivers/behavior.h>
 
 #include <zmk/behavior.h>
+#include <zmk/reset.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -28,10 +28,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_reset_config *cfg = dev->config;
 
-    // TODO: Correct magic code for going into DFU?
-    // See
-    // https://github.com/adafruit/Adafruit_nRF52_Bootloader/blob/d6b28e66053eea467166f44875e3c7ec741cb471/src/main.c#L107
-    sys_reboot(cfg->type);
+    zmk_reset(cfg->type);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
