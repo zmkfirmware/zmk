@@ -74,7 +74,7 @@ if (Test-CommandExists Get-Acl) {
     $permission = (Get-Acl $pwd).Access |
     ?{$_.IdentityReference -match $env:UserName `
         -and $_.FileSystemRights -match "FullControl" `
-        -or $_.FileSystemRights -match "Write" } | 
+        -or $_.FileSystemRights -match "Write" } |
              Select IdentityReference,FileSystemRights
 
     If (-Not $permission){
@@ -141,7 +141,7 @@ if ($keyboard_type -eq "shield") {
         Write-Host "Wired split is not yet supported by ZMK."
         exit 1
     }
-    
+
     $shields = $keyboard_siblings
     $board = $($($boards.keys)[$choice])
     $boards = ( $board )

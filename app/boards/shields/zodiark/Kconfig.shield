@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 config SHIELD_ZODIARK_LEFT
-	def_bool $(shields_list_contains,zodiark_left)
+    def_bool $(shields_list_contains,zodiark_left)
 
 config SHIELD_ZODIARK_RIGHT
-	def_bool $(shields_list_contains,zodiark_right)
+    def_bool $(shields_list_contains,zodiark_right)

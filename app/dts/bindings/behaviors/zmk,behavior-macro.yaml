@@ -5,15 +5,4 @@ description: Macro Behavior
 
 compatible: "zmk,behavior-macro"
 
-include: zero_param.yaml
-
-properties:
-  bindings:
-    type: phandle-array
-    required: true
-  wait-ms:
-    type: int
-    description: The default time to wait (in milliseconds) before triggering the next behavior in the macro bindings list.
-  tap-ms:
-    type: int
-    description: The default time to wait (in milliseconds) between the press and release events on a tapped macro behavior binding
+include: [zero_param.yaml, macro_base.yaml]

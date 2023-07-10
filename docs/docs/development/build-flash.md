@@ -130,8 +130,8 @@ The above build commands generate a UF2 file in `build/zephyr` (or
 `build/left|right/zephyr` if you followed the instructions for splits) and is by
 default named `zmk.uf2`. If your board supports USB Flashing Format (UF2), copy
 that file onto the root of the USB mass storage device for your board. The
-controller should flash your built firmware and automatically restart once
-flashing is complete.
+controller should flash your built firmware, unmount the USB storage device and
+automatically restart once flashing is complete.
 
 Alternatively, if your board supports flashing and you're not developing from
 within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on

@@ -3,7 +3,7 @@
   "include": ["src/"],
   "compilerOptions": {
     "types": ["node", "@docusaurus/theme-classic"],
-    "moduleResolution": "Node",
+    "moduleResolution": "Node16",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "strict": true,
