@@ -106,7 +106,9 @@ void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
     memcpy(&profiles[index].peer, addr, sizeof(bt_addr_le_t));
     sprintf(setting_name, "ble/profiles/%d", index);
     LOG_DBG("Setting profile addr for %s to %s", setting_name, addr_str);
+#if IS_ENABLED(CONFIG_SETTINGS)
     settings_save_one(setting_name, &profiles[index], sizeof(struct zmk_ble_profile));
+#endif
     k_work_submit(&raise_profile_changed_event_work);
 }
 
