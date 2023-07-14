@@ -6,6 +6,7 @@ DT_COMPAT_ZMK_BATTERY_VOLTAGE_DIVIDER := zmk,battery-voltage-divider
 
 config ZMK_BATTERY
     bool "ZMK battery monitoring"
+    depends on ZMK_BATTERY_REPORTING
     help
         Enable battery monitoring
 
@@ -13,7 +14,7 @@ config ZMK_BATTERY_NRF_VDDH
     bool
     default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BATTERY_NRF_VDDH))
     select ADC
-    select ZMK_BATTERY
+    imply ZMK_BATTERY
     help
         Enable ZMK nRF VDDH voltage driver for battery monitoring.
 
@@ -21,6 +22,6 @@ config ZMK_BATTERY_VOLTAGE_DIVIDER
     bool
     default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BATTERY_VOLTAGE_DIVIDER))
     select ADC
-    select ZMK_BATTERY
+    imply ZMK_BATTERY
     help
         Enable ZMK battery voltage divider driver for battery monitoring.
