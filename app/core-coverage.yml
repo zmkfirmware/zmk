@@ -2,6 +2,7 @@ board:
   - nice_nano_v2
   - nrfmicro_13
   - proton_c
+  - waveshare_rp2040_zero
 shield:
   - corne_left
   - corne_right
@@ -11,6 +12,7 @@ shield:
 include:
   - board: bdn9_rev2
   - board: nice60
+  - board: waveshare_rp2040_zero
   - board: seeeduino_xiao_ble
     shield: hummingbird
   - board: nrf52840_m2
