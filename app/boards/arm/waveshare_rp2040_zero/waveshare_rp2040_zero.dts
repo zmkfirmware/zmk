@@ -17,6 +17,13 @@
 		zephyr,console = &uart0;
 		zephyr,code-partition = &code_partition;
 	};
+
+	xtal_clk: xtal-clk {
+		compatible = "fixed-clock";
+		clock-frequency = <12000000>;
+		#clock-cells = <0>;
+	};
+
 };
 
 &flash0 {
