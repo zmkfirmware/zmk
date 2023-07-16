@@ -1,3 +1,4 @@
+# Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: Apache-2.0
 
 CONFIG_SOC_SERIES_RP2XXX=y
