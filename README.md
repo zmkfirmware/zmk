@@ -6,8 +6,8 @@
 
 [ZMK Firmware](https://zmk.dev/) is an open source ([MIT](LICENSE)) keyboard firmware built on the [Zephyr™ Project](https://www.zephyrproject.org/) Real Time Operating System (RTOS). ZMK's goal is to provide a modern, wireless, and powerful firmware free of licensing issues.
 
-Explore more about ZMK on our website: https://zmk.dev/.
+Check out the website to learn more: https://zmk.dev/.
 
-Feel free to join our [ZMK Discord Server](https://zmk.dev/community/discord/invite).
+You can also come join our [ZMK Discord Server](https://zmk.dev/community/discord/invite).
 
-For a comprehensive feature list, visit the [feature overview](https://zmk.dev/docs#features). ZMK is under active development, and you can find the latest features listed under the [enhancement label](https://github.com/zmkfirmware/zmk/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) on GitHub. Feel free to upvote feature requests by adding a 👍 to their issue descriptions.
+To review features, check out the [feature overview](https://zmk.dev/docs/). ZMK is under active development, and new features are listed with the [enhancement label](https://github.com/zmkfirmware/zmk/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) in GitHub. Please feel free to add 👍 to the issue description of any requests to upvote the feature.
