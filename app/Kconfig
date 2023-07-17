@@ -504,6 +504,14 @@ config ZMK_BATTERY_REPORT_INTERVAL
     int "Battery level report interval in seconds"
     default 60
 
+config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
+    int "Low priority thread stack size"
+    default 768
+
+config ZMK_LOW_PRIORITY_THREAD_PRIORITY
+    int "Low priority thread priority"
+    default 10
+
 #Advanced
 endmenu
 
