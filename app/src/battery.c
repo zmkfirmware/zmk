@@ -18,6 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/battery.h>
 #include <zmk/events/battery_state_changed.h>
+#include <zmk/workqueue.h>
 
 static uint8_t last_state_of_charge = 0;
 
@@ -77,7 +78,9 @@ static void zmk_battery_work(struct k_work *work) {
 
 K_WORK_DEFINE(battery_work, zmk_battery_work);
 
-static void zmk_battery_timer(struct k_timer *timer) { k_work_submit(&battery_work); }
+static void zmk_battery_timer(struct k_timer *timer) {
+    k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &battery_work);
+}
 
 K_TIMER_DEFINE(battery_timer, zmk_battery_timer, NULL);
 
@@ -97,14 +100,7 @@ static int zmk_battery_init(const struct device *_arg) {
         return -ENODEV;
     }
 
-    int rc = zmk_battery_update(battery);
-
-    if (rc != 0) {
-        LOG_DBG("Failed to update battery value: %d.", rc);
-        return rc;
-    }
-
-    k_timer_start(&battery_timer, K_MINUTES(1), K_SECONDS(CONFIG_ZMK_BATTERY_REPORT_INTERVAL));
+    k_timer_start(&battery_timer, K_NO_WAIT, K_SECONDS(CONFIG_ZMK_BATTERY_REPORT_INTERVAL));
 
     return 0;
 }
