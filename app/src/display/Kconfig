@@ -7,7 +7,6 @@ menuconfig ZMK_DISPLAY
     select DISPLAY
     select LVGL
     select LV_CONF_MINIMAL
-    imply LV_USE_THEME_MONO
 
 if ZMK_DISPLAY
 
@@ -42,6 +41,11 @@ choice ZMK_DISPLAY_STATUS_SCREEN
 config ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
     bool "Built in status screen"
     select LV_OBJ_LABEL
+    imply LV_USE_THEME_MONO
+    imply ZMK_WIDGET_LAYER_STATUS
+    imply ZMK_WIDGET_BATTERY_STATUS
+    imply ZMK_WIDGET_OUTPUT_STATUS
+    imply ZMK_WIDGET_PERIPHERAL_STATUS
 
 config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
     bool "Custom status screen"
