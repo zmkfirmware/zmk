@@ -14,6 +14,7 @@ config ZMK_BATTERY_NRF_VDDH
     default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BATTERY_NRF_VDDH))
     select ADC
     select ZMK_BATTERY
+    depends on SENSOR
     help
         Enable ZMK nRF VDDH voltage driver for battery monitoring.
 
@@ -22,5 +23,6 @@ config ZMK_BATTERY_VOLTAGE_DIVIDER
     default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BATTERY_VOLTAGE_DIVIDER))
     select ADC
     select ZMK_BATTERY
+    depends on SENSOR
     help
         Enable ZMK battery voltage divider driver for battery monitoring.
