@@ -61,9 +61,9 @@ Macros can also be "parameterized", allowing them to be bound in your keymap wit
 
 When defining a parameterized macro, a different `compatible` value will be used depending on how many parameters are passed into it:
 
-- `zmk,behavior-macro` - a parameter that takes no parameters.
-- `zmk,behavior-macro-one-param` - a parameter that takes one parameter when used.
-- `zmk,behavior-macro-two-param` - a parameter that takes two parameters when used.
+- `zmk,behavior-macro` - a macro that takes no parameters.
+- `zmk,behavior-macro-one-param` - a macro that takes one parameter when used.
+- `zmk,behavior-macro-two-param` - a macro that takes two parameters when used.
 
 ### Bindings
 
