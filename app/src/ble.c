@@ -606,7 +606,7 @@ static int zmk_ble_init(const struct device *_arg) {
 
     bt_unpair(BT_ID_DEFAULT, NULL);
 
-    for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
+    for (int i = 0; i < 8; i++) {
         char setting_name[15];
         sprintf(setting_name, "ble/profiles/%d", i);
 
@@ -615,7 +615,20 @@ static int zmk_ble_init(const struct device *_arg) {
             LOG_ERR("Failed to delete setting: %d", err);
         }
     }
-#endif
+
+    // Hardcoding a reasonable hardcoded value of peripheral addresses
+    // to clear so we properly clear a split central as well.
+    for (int i = 0; i < 8; i++) {
+        char setting_name[32];
+        sprintf(setting_name, "ble/peripheral_addresses/%d", i);
+
+        err = settings_delete(setting_name);
+        if (err) {
+            LOG_ERR("Failed to delete setting: %d", err);
+        }
+    }
+
+#endif // IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START)
 
     bt_conn_cb_register(&conn_callbacks);
     bt_conn_auth_cb_register(&zmk_ble_auth_cb_display);
