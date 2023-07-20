@@ -93,7 +93,7 @@ static int vddh_init(const struct device *dev) {
 
 #ifdef CONFIG_ADC_NRFX_SAADC
     drv_data->acc = (struct adc_channel_cfg){
-        .gain = ADC_GAIN_1_5,
+        .gain = ADC_GAIN_1_2,
         .reference = ADC_REF_INTERNAL,
         .acquisition_time = ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40),
         .input_positive = SAADC_CH_PSELN_PSELN_VDDHDIV5,
