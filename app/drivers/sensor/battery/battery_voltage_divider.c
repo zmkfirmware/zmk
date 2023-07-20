@@ -140,7 +140,7 @@ static int bvd_init(const struct device *dev) {
 
 #ifdef CONFIG_ADC_NRFX_SAADC
     drv_data->acc = (struct adc_channel_cfg){
-        .gain = ADC_GAIN_1_5,
+        .gain = ADC_GAIN_1_6,
         .reference = ADC_REF_INTERNAL,
         .acquisition_time = ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40),
         .input_positive = SAADC_CH_PSELP_PSELP_AnalogInput0 + drv_cfg->io_channel.channel,
