@@ -282,7 +282,12 @@ int zmk_ble_put_peripheral_addr(const bt_addr_le_t *addr) {
         // If the address is recognized and already stored in settings, return
         // index and no additional action is necessary.
         if (bt_addr_le_cmp(&peripheral_addrs[i], addr) == 0) {
+            LOG_DBG("Found existing peripheral address in slot %d", i);
             return i;
+        } else {
+            char addr_str[BT_ADDR_LE_STR_LEN];
+            bt_addr_le_to_str(&peripheral_addrs[i], addr_str, sizeof(addr_str));
+            LOG_DBG("peripheral slot %d occupied by %s", i, addr_str);
         }
 
         // If the peripheral address slot is open, store new peripheral in the
