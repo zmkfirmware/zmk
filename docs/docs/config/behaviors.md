@@ -131,26 +131,31 @@ See the [macro behavior](../behaviors/macros.md) documentation for more details 
 
 Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-macro.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-macro.yaml)
 
-Applies to: `compatible = "zmk,behavior-macro"`
+| Property         | Type          | Description                                                                                                                                  | Default                            |
+| ---------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `label`          | string        | Unique label for the node                                                                                                                    |                                    |
+| `compatible`     | string        | Macro type, **must be _one_ of**:<br/>• `"zmk,behavior-macro"`<br/>• `"zmk,behavior-macro-one-param"`<br/>• `"zmk,behavior-macro-two-param"` |                                    |
+| `#binding-cells` | int           | Number of params accepted (depends on `compatible` property), **must be _one_ of**:<br/>• `<0>`<br/>• `<1>`<br/>• `<2>`                      |                                    |
+| `bindings`       | phandle array | List of behaviors to trigger                                                                                                                 |                                    |
+| `wait-ms`        | int           | The default time to wait (in milliseconds) before triggering the next behavior.                                                              | `CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS` |
+| `tap-ms`         | int           | The default time to wait (in milliseconds) between the press and release events of a tapped behavior.                                        | `CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`  |
 
-| Property         | Type          | Description                                                                                           | Default                            |
-| ---------------- | ------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `label`          | string        | Unique label for the node                                                                             |                                    |
-| `#binding-cells` | int           | Must be `<0>`                                                                                         |                                    |
-| `bindings`       | phandle array | List of behaviors to trigger                                                                          |                                    |
-| `wait-ms`        | int           | The default time to wait (in milliseconds) before triggering the next behavior.                       | `CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS` |
-| `tap-ms`         | int           | The default time to wait (in milliseconds) between the press and release events of a tapped behavior. | `CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`  |
+### Macro Control Behaviors
 
 The following macro-specific behaviors can be added at any point in the `bindings` list to change how the macro triggers subsequent behaviors.
 
-| Behavior                   | Description                                                                                           |
-| -------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `&macro_tap`               | Switches to tap mode                                                                                  |
-| `&macro_press`             | Switches to press mode                                                                                |
-| `&macro_release`           | Switches to release mode                                                                              |
-| `&macro_pause_for_release` | Pauses the macro until the macro key itself is released                                               |
-| `&macro_wait_time TIME`    | Changes the time to wait (in milliseconds) before triggering the next behavior.                       |
-| `&macro_tap_time TIME`     | Changes the time to wait (in milliseconds) between the press and release events of a tapped behavior. |
+| Behavior                   | Description                                                                                                          |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `&macro_tap`               | Switches to tap mode                                                                                                 |
+| `&macro_press`             | Switches to press mode                                                                                               |
+| `&macro_release`           | Switches to release mode                                                                                             |
+| `&macro_pause_for_release` | Pauses the macro until the macro key itself is released                                                              |
+| `&macro_wait_time TIME`    | Changes the time to wait (in milliseconds) before triggering the next behavior.                                      |
+| `&macro_tap_time TIME`     | Changes the time to wait (in milliseconds) between the press and release events of a tapped behavior.                |
+| `&macro_param_1to1`        | Forward the first parameter received by the macro to the first parameter of the next (non-macro control) behavior.   |
+| `&macro_param_1to2`        | Forward the first parameter received by the macro to the second parameter of the next (non-macro control) behavior.  |
+| `&macro_param_2to1`        | Forward the second parameter received by the macro to the first parameter of the next (non-macro control) behavior.  |
+| `&macro_param_2to2`        | Forward the second parameter received by the macro to the second parameter of the next (non-macro control) behavior. |
 
 ## Mod-Morph
 

@@ -49,22 +49,6 @@ For use cases involving sending a single keycode with modifiers, for instance ct
 with [modifier functions](../codes/modifiers.mdx#modifier-functions) can be used instead of a macro.
 :::
 
-### Parameterized Macros
-
-Macros can also be "parameterized", allowing them to be bound in your keymap with unique values passed into them, e.g.:
-
-```
-    raise_layer {
-        bindings = <&my_cool_macro A>
-    };
-```
-
-When defining a parameterized macro, a different `compatible` value will be used depending on how many parameters are passed into it:
-
-- `zmk,behavior-macro` - a macro that takes no parameters.
-- `zmk,behavior-macro-one-param` - a macro that takes one parameter when used.
-- `zmk,behavior-macro-two-param` - a macro that takes two parameters when used.
-
 ### Bindings
 
 Like [hold-taps](/docs/behaviors/hold-tap), macros are created by composing other behaviors, and any of those behaviors can
@@ -82,30 +66,6 @@ bindings
 
 There are a set of special macro controls that can be included in the `bindings` list to modify the
 way the macro is processed.
-
-### Parameters
-
-When creating a macro that takes parameter(s), there are macro controls that change when the parameters passed to the macro are used
-within the macro itself. All of the controls are "one shot" and will change how the passed in parameters are used for the very next non-macro control behavior in the `bindings` list of the macro.
-
-For example, to pass the first parameter from the macro into a `&kp` used in the macro, you would use:
-
-```
-bindings
-    = <&macro_param_1to1>
-    , <&kp MACRO_PLACEHOLDER>
-    ;
-```
-
-Because `kp` takes one parameter, you can't simply make the second entry `<&kp>` in the `bindings` list. Whatever value you do pass in will be replaced when the macro is triggered, so you can put _any_ value there, e.g. `0`, `A` keycode, etc. To make it very obvious that the parameter there is not actually going to be used, you can use `MACRO_PLACEHOLDER` which is simply an alias for `0`.
-
-The available parameter controls are:
-
-- `&macro_param_1to1` - pass the first parameter of the macro into the first parameter of the next behavior in the `bindings` list.
-- `&macro_param_1to2` - pass the first parameter of the macro into the second parameter of the next behavior in the `bindings` list.
-
-* `&macro_param_2to1` - pass the second parameter of the macro into the first parameter of the next behavior in the `bindings` list.
-* `&macro_param_2to2` - pass the second parameter of the macro into the second parameter of the next behavior in the `bindings` list.
 
 ### Binding Activation Mode
 
@@ -185,6 +145,70 @@ Macros use an internal queue to invoke each behavior in the bindings list when t
 
 To prevent issues with longer macros, you can change the size of this queue via the `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` setting in your configuration, [typically through your `.conf` file](../config/index.md). For example, `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` would allow your macro to type about 256 characters.
 
+## Parameterized Macros
+
+Macros can also be "parameterized", allowing them to be bound in your keymap with unique values passed into them, e.g.:
+
+```
+    raise_layer {
+        bindings = <&my_one_param_macro A>
+    };
+```
+
+### Defining Parameterized Macros
+
+Parameterized macros must be defined using specific values for the `compatible` and `#binding-cells` properties, depending on how many parameters they require (up to a maximum of two):
+
+```dts
+/ {
+    macros {
+        // 0 params macro
+        my_macro: my_macro {
+            // ...
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>; // Must be 0
+            bindings = /* ... */;
+        };
+
+        // 1 param macro
+        my_one_param_macro: my_one_param_macro {
+            // ...
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>; // Must be 1
+            bindings = /* ... */;
+        };
+
+        // 2 params macro
+        my_two_param_macro: my_two_param_macro {
+            // ...
+            compatible = "zmk,behavior-macro-two-param";
+            #binding-cells = <2>; // Must be 2
+            bindings = /* ... */;
+        };
+    };
+};
+```
+
+### Parameters, Bindings and Controls
+
+There are special macro controls which must be used in order to forward received parameters to the macro's `bindings`. These controls are "one shot" and will determine how received parameters are used on the very next (non-macro control) behavior in the macro's `bindings` list.
+
+For example, to pass the first parameter received into a `&kp` binding, you would use:
+
+```dts
+bindings = <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+```
+
+Because `kp` takes one parameter, you can't simply make the second entry `<&kp>` in the `bindings` list. Whatever value you do pass in will be replaced when the macro is triggered, so you can put _any_ value there, e.g. `0`, `A` keycode, etc. To make it very obvious that the parameter there is not actually going to be used, you can use `MACRO_PLACEHOLDER` which is simply an alias for `0`.
+
+The available parameter controls are:
+
+- `&macro_param_1to1` - pass the first parameter of the macro into the first parameter of the next behavior in the `bindings` list.
+- `&macro_param_1to2` - pass the first parameter of the macro into the second parameter of the next behavior in the `bindings` list.
+
+* `&macro_param_2to1` - pass the second parameter of the macro into the first parameter of the next behavior in the `bindings` list.
+* `&macro_param_2to2` - pass the second parameter of the macro into the second parameter of the next behavior in the `bindings` list.
+
 ## Common Patterns
 
 Below are some examples of how the macro behavior can be used for various useful functionality.
@@ -198,12 +222,36 @@ To achieve this, a combination of a 0ms wait time and splitting the press and re
 
 #### Layer + Modifier
 
-```
-wait-ms = <0>;
-bindings
-    = <&macro_press &mo 1 &kp LSHFT>
-    , <&macro_pause_for_release>
-    , <&macro_release &mo 1 &kp LSHFT>;
+```dts
+/**
+ * Temporarily switches to a layer (`&mo`) while a modifier is held.
+ * Analogous to QMK's `LM()`, using a parameterized macro.
+ *
+ * Params:
+ *  1. Layer to switch to
+ *  2. Modifier to press while layer is active
+ *
+ * Example:
+ *  `&lm NUM_LAYER LSHIFT`
+ */
+lm: lm {
+    label = "LAYER_MOD";
+    compatible = "zmk,behavior-macro-two-param";
+    wait-ms = <0>;
+    tap-ms = <0>;
+    #binding-cells = <2>;
+    bindings
+        = <&macro_param_1to1>
+        , <&macro_press &mo MACRO_PLACEHOLDER>
+        , <&macro_param_2to1>
+        , <&macro_press &kp MACRO_PLACEHOLDER>
+        , <&macro_pause_for_release>
+        , <&macro_param_2to1>
+        , <&macro_release &kp MACRO_PLACEHOLDER>
+        , <&macro_param_1to1>
+        , <&macro_release &mo MACRO_PLACEHOLDER>
+        ;
+};
 ```
 
 #### Layer + Underglow Color
@@ -252,20 +300,24 @@ bindings
 
 ## Convenience C Macro
 
-To avoid repetition or possible typos when declaring a macro, a convenience _C_ macro, named `ZMK_MACRO(name, props)` can be used to simplify things:
+To avoid repetition or possible typos when declaring a **zero parameter macro**, a convenience _C_ macro, named `ZMK_MACRO(name, props)` can be used to simplify things:
 
 ```
-    ZMK_MACRO(my_macro,
+    ZMK_MACRO(my_zero_param_macro,
         wait-ms = <30>;
         tap-ms = <40>;
         bindings = <&kp Z &kp M &kp K>;
     )
 ```
 
+:::note
+`ZMK_MACRO()` **only supports declaring non-parameterized (zero parameter) macros**; parameterized declarations are not currently supported.
+:::
+
 This can be used instead of a complete macro definition. During the firmware build process, the example above would produce the complete macro definition below:
 
 ```
-    my_macro: my_macro {
+    my_zero_param_macro: my_zero_param_macro {
         compatible = "zmk,behavior-macro";
         label = "ZM_my_macro";
         #binding-cells = <0>;
