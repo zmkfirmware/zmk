@@ -20,3 +20,5 @@
 #include <behaviors/backlight.dtsi>
 #include <behaviors/macros.dtsi>
 #include <behaviors/mouse_key_press.dtsi>
+#include <behaviors/character_map.dtsi>
+#include <behaviors/send_string.dtsi>
