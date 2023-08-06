@@ -8,6 +8,15 @@ sidebar_label: Macros
 The macro behavior allows configuring a list of other behaviors to invoke
 when the macro is pressed and/or released.
 
+:::note
+Some things that you can do with macros can be done more easily with other behaviors.
+
+To send a single keycode with modifiers, for instance <kbd>ctrl</kbd>+<kbd>tab</kbd>, you can use the [key press behavior](key-press.md)
+with [modifier functions](../modifiers.mdx#modifier-functions).
+
+To send a string of text, you can use the [send string behavior](send-string.md).
+:::
+
 ## Macro Definition
 
 Each macro you want to use in your keymap gets defined first, then bound in your keymap.
@@ -42,11 +51,6 @@ The macro can then be bound in your keymap by referencing it by the label `&zed_
         bindings = <&zed_em_kay>;
     };
 ```
-
-:::note
-For use cases involving sending a single keycode with modifiers, for instance ctrl+tab, the [key press behavior](key-press.md)
-with [modifier functions](../modifiers.mdx#modifier-functions) can be used instead of a macro.
-:::
 
 ### Bindings
 

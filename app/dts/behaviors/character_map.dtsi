@@ -1,0 +1,116 @@
+/*
+ * Copyright (c) 2023 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    // Codepoint to keycode mapping for a US keyboard layout.
+    /omit-if-no-ref/ charmap_us: character_map_us {
+        compatible = "zmk,character-map";
+        behavior = <&kp>;
+        map = <0x08 BACKSPACE>
+            , <0x0A RETURN>
+            , <0x0B TAB>
+            , <0x20 SPACE>
+            , <0x21 EXCLAMATION>
+            , <0x22 DOUBLE_QUOTES>
+            , <0x23 HASH>
+            , <0x24 DOLLAR>
+            , <0x25 PERCENT>
+            , <0x26 AMPERSAND>
+            , <0x27 APOSTROPHE>
+            , <0x28 LEFT_PARENTHESIS>
+            , <0x29 RIGHT_PARENTHESIS>
+            , <0x2A ASTERISK>
+            , <0x2B PLUS>
+            , <0x2C COMMA>
+            , <0x2D MINUS>
+            , <0x2E PERIOD>
+            , <0x2F SLASH>
+            , <0x30 N0>
+            , <0x31 N1>
+            , <0x32 N2>
+            , <0x33 N3>
+            , <0x34 N4>
+            , <0x35 N5>
+            , <0x36 N6>
+            , <0x37 N7>
+            , <0x38 N8>
+            , <0x39 N9>
+            , <0x3A COLON>
+            , <0x3B SEMICOLON>
+            , <0x3C LESS_THAN>
+            , <0x3D EQUAL>
+            , <0x3E GREATER_THAN>
+            , <0x3F QUESTION>
+            , <0x40 AT_SIGN>
+            , <0x41 LS(A)>
+            , <0x42 LS(B)>
+            , <0x43 LS(C)>
+            , <0x44 LS(D)>
+            , <0x45 LS(E)>
+            , <0x46 LS(F)>
+            , <0x47 LS(G)>
+            , <0x48 LS(H)>
+            , <0x49 LS(I)>
+            , <0x4A LS(J)>
+            , <0x4B LS(K)>
+            , <0x4C LS(L)>
+            , <0x4D LS(M)>
+            , <0x4E LS(N)>
+            , <0x4F LS(O)>
+            , <0x50 LS(P)>
+            , <0x51 LS(Q)>
+            , <0x52 LS(R)>
+            , <0x53 LS(S)>
+            , <0x54 LS(T)>
+            , <0x55 LS(U)>
+            , <0x56 LS(V)>
+            , <0x57 LS(W)>
+            , <0x58 LS(X)>
+            , <0x59 LS(Y)>
+            , <0x5A LS(Z)>
+            , <0x5B LEFT_BRACKET>
+            , <0x5C BACKSLASH>
+            , <0x5D RIGHT_BRACKET>
+            , <0x5E CARET>
+            , <0x5F UNDERSCORE>
+            , <0x60 GRAVE>
+            , <0x61 A>
+            , <0x62 B>
+            , <0x63 C>
+            , <0x64 D>
+            , <0x65 E>
+            , <0x66 F>
+            , <0x67 G>
+            , <0x68 H>
+            , <0x69 I>
+            , <0x6A J>
+            , <0x6B K>
+            , <0x6C L>
+            , <0x6D M>
+            , <0x6E N>
+            , <0x6F O>
+            , <0x70 P>
+            , <0x71 Q>
+            , <0x72 R>
+            , <0x73 S>
+            , <0x74 T>
+            , <0x75 U>
+            , <0x76 V>
+            , <0x77 W>
+            , <0x78 X>
+            , <0x79 Y>
+            , <0x7A Z>
+            , <0x7B LEFT_BRACE>
+            , <0x7C PIPE>
+            , <0x7D RIGHT_BRACE>
+            , <0x7E TILDE>
+            , <0x7F DELETE>
+            ;
+    };
+};
+
