@@ -1,0 +1,5 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_CORNEISH_ZEN_DONGLE
+	def_bool $(shields_list_contains,corneish_zen_dongle)

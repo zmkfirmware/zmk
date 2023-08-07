@@ -1,0 +1,24 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_CORNEISH_ZEN_DONGLE
+
+config BOARD
+    default "corneish_zen"
+
+config ZMK_KEYBOARD_NAME
+	default "Corne-ish Zen"
+	
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+	
+config ZMK_USB
+	default y
+
+config ZMK_SPLIT
+	default y
+
+config ZMK_BLE
+	default y
+	
+endif

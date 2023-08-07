@@ -1,0 +1,11 @@
+file_format: "1"
+id: corneish_zen_dongle
+name: Corne-ish Zen Dongle
+type: shield
+url: https://github.com/benvallack/zmk-config-enki42
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+siblings:
+  - corneish_zen_dongle
