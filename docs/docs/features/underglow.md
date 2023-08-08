@@ -39,6 +39,20 @@ use Kconfig.
 
 If your board or shield does not have RGB underglow configured, refer to [Adding RGB Underglow to a Board](#adding-rgb-underglow-to-a-board).
 
+### Modifying the number of LEDs
+
+A common issue when enabling underglow is that some of the installed LEDs do not illuminate. This can happen when a board's default underglow configuration accounts only for either the downward facing LEDs or the upward facing LEDs under each key. On a split keyboard, a good sign that this may be the problem is that the unilluminated LEDs on each half are symmetrical.
+
+The number of underglow LEDs is controlled by the `chain-length` property in the `led_strip` node. You can [change the value of this property](../config/index.md#changing-devicetree-properties) in the `<keyboard>.keymap` file by adding a stanza like this one outside of any other node (i.e. above or below the `/` node):
+
+```
+&led_strip {
+    chain-length = <21>;
+};
+```
+
+where the value is the total count of LEDs (per half, for split keyboards).
+
 ## Configuring RGB Underglow
 
 See [RGB underglow configuration](/docs/config/underglow).
