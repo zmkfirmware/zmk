@@ -1,3 +1,5 @@
+NB: This is j-w-e's fork which is intended for applying specific PRs before they get merged into main. You should probably use [the main repo](https://github.com/zmkfirmware/zmk).
+
 # Zephyr™ Mechanical Keyboard (ZMK) Firmware
 
 [![Discord](https://img.shields.io/discord/719497620560543766)](https://zmk.dev/community/discord/invite)
