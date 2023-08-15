@@ -16,7 +16,7 @@
 / {
        keymap {
               compatible = "zmk,keymap";
- 
+
               default_layer {
 // ---------------------------------------------------------------------------------------------------------------------------------
 // | ESC  |  1   |  2   |  3   |  4   |  5   |                                                   |  6   |  7   |  8   |  9   |  0   | BSPC |
@@ -31,7 +31,7 @@
         &kp TAB    &kp A   &kp S    &kp D    &kp F     &kp G                                                                     &kp H     &kp J     &kp K     &kp L      &kp SEMI  &kp SQT
         &kp DEL    &kp Z   &kp X    &kp C    &kp V     &kp B               &kp LCTRL &kp LALT      &kp CAPS  &kp RCTRL           &kp N     &kp M     &kp COMMA &kp PERIOD &kp SLASH &kp MINUS
                    &kp GRAVE &kp BSLH &kp LEFT &kp RIGHT         &kp LSHFT &mo 1     &kp HOME      &kp PG_UP &kp ENTER &kp SPACE           &kp UP    &kp DOWN  &kp LBKT   &kp RBKT
-                                                                                     &kp END       &kp PG_DN 
+                                                                                     &kp END       &kp PG_DN
                      >;
               };
               fn_layer {
@@ -48,7 +48,7 @@
         &trans     &trans  &trans   &trans   &trans    &trans                                                                    &trans    &kp N4    &kp N5    &kp N6    &kp PLUS  &trans
         &trans     &trans  &trans   &trans   &kp PSCRN &trans              &kp F11   &kp F12       &trans    &trans              &trans    &kp N1    &kp N2    &kp N3    &kp ENTER &trans
                    &trans  &kp INS  &trans   &trans              &trans    &trans    &trans        &trans    &trans    &trans              &trans    &trans    &kp DOT   &kp ENTER
-                                                                                     &trans        &trans    
+                                                                                     &trans        &trans
                      >;
               };
 
