@@ -1,5 +1,6 @@
 # Copyright (c) 2021 The ZMK Contributors
 # SPDX-License-Identifier: MIT
+
 config SHIELD_ERGO_S1_OE_LEFT
     def_bool $(shields_list_contains,ergo_s1_oe_left)
 
