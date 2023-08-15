@@ -91,7 +91,7 @@ Then you have to add the following lines inside the root devicetree node on the 
 
 The value inside `pwm_led_0` must be the same as you used before.
 
-In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible/
+In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible.
 
 If your board uses a P-channel MOSFET to control backlight instead of a N-channel MOSFET, you may want to change `PWM_POLARITY_NORMAL` for `PWM_POLARITY_INVERTED`.
 
@@ -140,19 +140,16 @@ A pinctrl file has an `&pinctrl` node that encompasses all pinctrl settings incl
     };
     pwm0_sleep: pwm0_sleep {
         group1 {
-            psels = <NRF_PSEL(PWM_OUT0, 0, 45)>;
+            psels = <NRF_PSEL(PWM_OUT0, 1, 13)>;
             low-power-enable;
         };
     };
 }
 ```
 
-The pin number is calculated in the same way as for the non pinctrl configuration.
+The pin number is handled differently depending on the MCU in question, on nRF boards it is defined as (PWM_OUTX, Y, Z) where X is the PWM channel used (usually 0) Y is first part of the hardware port "PY.01" and Z is the second part of the hardware port "P1.Z".
 
-The value `45` in the example represents the pin that controls the LEDs. With nRF52 boards, you can calculate the value to use in the following way: you need the hardware port and run it through a function.
-**32 \* X + Y** = `<Pin number>` where X is first part of the hardware port "PX.01" and Y is the second part of the hardware port "P1.Y".
-
-For example, _P1.13_ would give you _32 \* 1 + 13_ = `<PWM_OUT0, 0, 45>` and _P0.15_ would give you _32 \* 0 + 15_ = `<PWM_OUT0, 0, 15>`.
+For example, _P1.13_ would give you `(PWM_OUT0, 1, 13)` and _P0.15_ would give you `(PWM_OUT0, 0, 15)`.
 
 Then you add the PWM device inside the `board.dts` file and assign the pinctrl definitions to it
 
@@ -178,7 +175,7 @@ Then you have to add the following lines inside the root devicetree node on the 
 };
 ```
 
-In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible/
+In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible.
 
 If your board uses a P-channel MOSFET to control backlight instead of a N-channel MOSFET, you may want to change `PWM_POLARITY_NORMAL` for `PWM_POLARITY_INVERTED`.
 
@@ -305,24 +302,21 @@ Then add the following lines to your `.overlay` file:
     // Other pinctrl definitions for other hardware
     pwm0_default: pwm0_default {
         group1 {
-            psels = <NRF_PSEL(PWM_OUT0, 0, 45)>;
+            psels = <NRF_PSEL(PWM_OUT0, 1, 13)>;
         };
     };
     pwm0_sleep: pwm0_sleep {
         group1 {
-            psels = <NRF_PSEL(PWM_OUT0, 0, 45)>;
+            psels = <NRF_PSEL(PWM_OUT0, 1, 13)>;
             low-power-enable;
         };
     };
 }
 ```
 
-The pin number is calculated in the same way as for the non pinctrl configuration.
+The pin number is handled differently depending on the MCU in question, on nRF boards it is defined as (PWM_OUTX, Y, Z) where X is the PWM channel used (usually 0) Y is first part of the hardware port "PY.01" and Z is the second part of the hardware port "P1.Z".
 
-The value `45` in the example represents the pin that controls the LEDs. With nRF52 boards, you can calculate the value to use in the following way: you need the hardware port and run it through a function.
-**32 \* X + Y** = `<Pin number>` where X is first part of the hardware port "PX.01" and Y is the second part of the hardware port "P1.Y".
-
-For example, _P1.13_ would give you _32 \* 1 + 13_ = `<PWM_OUT0, 0, 45>` and _P0.15_ would give you _32 \* 0 + 15_ = `<PWM_OUT0, 0, 15>`.
+For example, _P1.13_ would give you `(PWM_OUT0, 1, 13)` and _P0.15_ would give you `(PWM_OUT0, 0, 15)`.
 
 Then you add the PWM device inside the `.overlay` file and assign the pinctrl definitions to it
 
@@ -348,7 +342,7 @@ Then you have to add the following lines inside the root devicetree node on the 
 };
 ```
 
-In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible/
+In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible.
 
 If your board uses a P-channel MOSFET to control backlight instead of a N-channel MOSFET, you may want to change `PWM_POLARITY_NORMAL` for `PWM_POLARITY_INVERTED`.
 
