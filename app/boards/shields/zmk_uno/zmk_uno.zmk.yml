@@ -1,0 +1,10 @@
+file_format: "1"
+id: zmk_uno
+name: ZMK Uno
+type: shield
+url: https://github.com/zmkfirmware/zmk-uno
+requires: [arduino_uno]
+features:
+  - keys
+  - encoder
+  - display

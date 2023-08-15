@@ -9,4 +9,14 @@ compatible: "zmk,keymap-sensors"
 properties:
   sensors:
     type: phandles
-    required: true
+    required: false
+  triggers-per-rotation:
+    type: int
+    required: false
+
+child-binding:
+  description: Per-sensor configuration settings
+  properties:
+    triggers-per-rotation:
+      type: int
+      required: false

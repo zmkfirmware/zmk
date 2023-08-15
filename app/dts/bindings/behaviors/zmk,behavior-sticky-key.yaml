@@ -13,6 +13,7 @@ properties:
     required: true
   release-after-ms:
     type: int
+    required: true
   quick-release:
     type: boolean
   ignore-modifiers:

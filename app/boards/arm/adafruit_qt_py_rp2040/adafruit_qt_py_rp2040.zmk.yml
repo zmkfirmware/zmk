@@ -1,0 +1,9 @@
+file_format: "1"
+id: adafruit_qt_py_rp2040
+name: Adafruit QT Py RP2040
+type: board
+arch: arm
+outputs:
+  - usb
+url: https://www.adafruit.com/product/4900
+exposes: [seeed_xiao]

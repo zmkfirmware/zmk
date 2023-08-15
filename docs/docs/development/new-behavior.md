@@ -137,9 +137,9 @@ The code snippet below shows the essential components of a new driver.
 #define DT_DRV_COMPAT zmk_<behavior_name>
 
 // Dependencies
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 #include <zmk/behavior.h>
 
@@ -258,8 +258,8 @@ An example of this can be seen below, taking the `#define KP_INST(n)` from the h
 #define KP_INST(n)                                                                                 \
     static struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                        \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
-        .hold_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 0)),                     \
-        .tap_behavior_dev = DT_LABEL(DT_INST_PHANDLE_BY_IDX(n, bindings, 1)),                      \
+        .hold_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 0), label),               \
+        .tap_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 1), label),                \
         .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
         .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
@@ -347,8 +347,8 @@ endif()
 For behaviors that do not require central locality, the following options for updating `app/CmakeLists.txt` also exist:
 
 - Behavior applies to unibody, or central or peripheral half of keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` line _before_ `if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)`
-- Behavior applies to _only_ central half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT_BLE AND CONFIG_ZMK_SPLIT_ROLE_CENTRAL)`
-- Behavior applies to _only_ peripheral half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT_BLE AND (NOT CONFIG_ZMK_SPLIT_ROLE_CENTRAL))`
+- Behavior applies to _only_ central half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT AND CONFIG_ZMK_SPLIT_ROLE_CENTRAL)`
+- Behavior applies to _only_ peripheral half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT AND (NOT CONFIG_ZMK_SPLIT_ROLE_CENTRAL))`
 - Behavior requires certain condition in a keyboard's `.conf` file to be met: use `target_sources_ifdef(CONFIG_<Configuration Requirement> app PRIVATE <behavior_name>.c)` instead of `target_sources(<behavior_name>.c)`
 
 ### Defining common use-cases for the behavior (`.dtsi`) (Optional)
@@ -367,15 +367,15 @@ For the purpose of this section, we will discuss the structure of `app/dts/behav
 #include <dt-bindings/zmk/keys.h>
 
 / {
-	behaviors {
-		/omit-if-no-ref/ gresc: grave_escape {
-			compatible = "zmk,behavior-mod-morph";
-			label = "GRAVE_ESCAPE";
-			#binding-cells = <0>;
-			bindings = <&kp ESC>, <&kp GRAVE>;
+    behaviors {
+        /omit-if-no-ref/ gresc: grave_escape {
+            compatible = "zmk,behavior-mod-morph";
+            label = "GRAVE_ESCAPE";
+            #binding-cells = <0>;
+            bindings = <&kp ESC>, <&kp GRAVE>;
             mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
-		};
-	};
+        };
+    };
 };
 ```
 

@@ -7,42 +7,42 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-	chosen {
-		zmk,kscan = &kscan0;
-		zmk,matrix_transform = &default_transform;
-	};
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &default_transform;
+    };
 
-	kscan0: kscan {
-		compatible = "zmk,kscan-gpio-matrix";
-		label = "KSCAN";
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
 
-		diode-direction = "col2row";
-		row-gpios
-			= <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio0 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio1 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio1 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			, <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-			;
-		col-gpios
-			= <&gpio0 19 GPIO_ACTIVE_HIGH>
-			, <&gpio0 20 GPIO_ACTIVE_HIGH>
-			, <&gpio0 21 GPIO_ACTIVE_HIGH>
-			, <&gpio0 22 GPIO_ACTIVE_HIGH>
-			, <&gpio0 23 GPIO_ACTIVE_HIGH>
-			, <&gpio0 24 GPIO_ACTIVE_HIGH>
-			, <&gpio0 25 GPIO_ACTIVE_HIGH>
-			, <&gpio0 26 GPIO_ACTIVE_HIGH>
-			;
-	};
+        diode-direction = "col2row";
+        row-gpios
+            = <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio1 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio1 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+        col-gpios
+            = <&gpio0 19 GPIO_ACTIVE_HIGH>
+            , <&gpio0 20 GPIO_ACTIVE_HIGH>
+            , <&gpio0 21 GPIO_ACTIVE_HIGH>
+            , <&gpio0 22 GPIO_ACTIVE_HIGH>
+            , <&gpio0 23 GPIO_ACTIVE_HIGH>
+            , <&gpio0 24 GPIO_ACTIVE_HIGH>
+            , <&gpio0 25 GPIO_ACTIVE_HIGH>
+            , <&gpio0 26 GPIO_ACTIVE_HIGH>
+            ;
+    };
 
-	default_transform: keymap_transform_0 {
-		compatible = "zmk,matrix-transform";
-		columns = <8>;
-		rows = <8>;
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <8>;
+        rows = <8>;
 // | MX1  | MX2  | MX3  | MX4  | MX5  | MX6  | MX7  | MX8  | MX9  | MX10 | MX11 | MX12 | MX13 |    MX14     |
 // |   MX15   | MX16 | MX17 | MX18 | MX19 | MX20 | MX21 | MX22 | MX23 | MX24 | MX25 | MX26 | MX27 |  MX28   |
 // |    MX29    | MX30 | MX31 | MX32 | MX33 | MX34 | MX35 | MX36 | MX37 | MX38 | MX39 | MX40 |     MX41     |
@@ -55,6 +55,6 @@ RC(3,4)     RC(3,5) RC(3,6) RC(3,7) RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4
 RC(6,4)       RC(6,3) RC(6,2) RC(6,1) RC(6,0) RC(5,7) RC(5,6) RC(5,5) RC(5,4) RC(5,3) RC(5,2)                RC(5,1)
 RC(6,5)    RC(6,6)   RC(6,7)                     RC(7,0)                    RC(7,1)    RC(7,2)    RC(7,3)    RC(7,4)
         >;
-	};
+    };
 };
 

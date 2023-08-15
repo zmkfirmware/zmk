@@ -1,0 +1,10 @@
+file_format: "1"
+id: kbdfans_tofu65_v2
+name: KBDfans Tofu65 2.0
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+url: https://kbdfans.com/collections/tofu65-2-0/products/tofu65-2-0

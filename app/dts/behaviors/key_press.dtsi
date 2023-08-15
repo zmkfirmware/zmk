@@ -5,12 +5,12 @@
  */
 
 / {
-	behaviors {
-		/* DEPRECATED: `cp` will be removed in the future */
-		/omit-if-no-ref/ cp: kp: behavior_key_press {
-			compatible = "zmk,behavior-key-press";
-			label = "KEY_PRESS";
-			#binding-cells = <1>;
-		};
-	};
+    behaviors {
+        /* DEPRECATED: `cp` will be removed in the future */
+        /omit-if-no-ref/ cp: kp: behavior_key_press {
+            compatible = "zmk,behavior-key-press";
+            label = "KEY_PRESS";
+            #binding-cells = <1>;
+        };
+    };
 };

@@ -1,0 +1,10 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+&arduino_i2c {
+    // Default buffer size is too small for use with displays.
+    zephyr,concat-buf-size = <1024>;
+};

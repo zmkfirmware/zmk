@@ -1,1 +1,5 @@
-rsource "Kconfig.mcp23017"
+menuconfig ZMK_DRIVERS_GPIO
+    bool "GPIO"
+
+rsource "Kconfig.max7318"
+rsource "Kconfig.595"

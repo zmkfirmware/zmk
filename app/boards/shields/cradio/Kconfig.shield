@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 config SHIELD_CRADIO_LEFT
-	def_bool $(shields_list_contains,cradio_left)
+    def_bool $(shields_list_contains,cradio_left)
 
 config SHIELD_CRADIO_RIGHT
-	def_bool $(shields_list_contains,cradio_right)
+    def_bool $(shields_list_contains,cradio_right)

@@ -1,0 +1,16 @@
+kp_pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x38 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x38 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x34 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x34 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x34 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x34 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x08 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x08 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x09 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x09 implicit_mods 0x00 explicit_mods 0x00
