@@ -1,0 +1,10 @@
+file_format: "1"
+id: puchi_ble_v1
+name: Puchi-BLE V1
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://keycapsss.com/keyboard-parts/mcu-controller/202/puchi-ble-wireless-microcontroller
+exposes: [pro_micro]

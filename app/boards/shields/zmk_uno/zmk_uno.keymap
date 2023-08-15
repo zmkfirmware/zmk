@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/backlight.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/rgb.h>
+
+// Uncomment the following block if using the "Direct Wire" jumper to switch the matrix to a direct wire.
+
+/* :REMOVE ME
+
+&kscan_direct_comp { status = "okay"; };
+&kscan_direct { status = "okay"; };
+&kscan_matrix_comp { status = "disabled"; };
+&kscan_matrix { status = "disabled"; };
+
+/ {
+    chosen {
+        zmk,matrix-transform = &direct_matrix_transform;
+        zmk,kscan = &kscan_direct_comp;
+    };
+};
+
+REMOVE ME: */
+
+
+/ {
+    macros {
+        ZMK_MACRO(ble_zero,
+            wait-ms = <1>;
+            tap-ms = <1>;
+            bindings = <&out OUT_BLE &bt BT_SEL 0>;
+        )
+        ZMK_MACRO(ble_one,
+            wait-ms = <1>;
+            tap-ms = <1>;
+            bindings = <&out OUT_BLE &bt BT_SEL 1>;
+        )
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp A &bl BL_TOG
+                &rgb_ug RGB_EFF &bt BT_CLR
+
+                &out OUT_USB &ble_zero &ble_one
+           >;
+
+           sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+    };
+};

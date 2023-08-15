@@ -14,8 +14,6 @@ The Mod-Morph behavior sends a different keypress, depending on whether a specif
 
 The Mod-Morph behavior acts as one of two keycodes, depending on if the required modifier is being held during the keypress.
 
-When the modifier is being held it is sent along with the morphed keycode. This can cause problems when the morphed keycode and modifier have an existing relationship (such as `shift-delete` or `ctrl-v` on many operating systems).
-
 ### Configuration
 
 An example of how to implement the mod-morph "Grave Escape":
@@ -30,10 +28,6 @@ An example of how to implement the mod-morph "Grave Escape":
             bindings = <&kp ESC>, <&kp GRAVE>;
             mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
         };
-    };
-
-    keymap {
-        ...
     };
 };
 ```
@@ -70,4 +64,27 @@ Example:
 
 ```
 mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
+```
+
+### Advanced configuration
+
+`keep-mods`
+
+When a modifier specified in `mods` is being held, it won't be sent along with the morphed keycode unless it is also specified in `keep-mods`. By default `keep-mods` equals `0`, which means no modifier specified in `mods` will be sent along with the morphed keycode.
+
+For example, the following configuration morphs `LEFT_SHIFT` + `BACKSPACE` into `DELETE`, and morphs `RIGHT_SHIFT` + `BACKSPACE` into `RIGHT_SHIFT` + `DELETE`.
+
+```
+/ {
+    behaviors {
+        bspc_del: backspace_delete {
+            compatible = "zmk,behavior-mod-morph";
+            label = "BACKSPACE_DELETE";
+            #binding-cells = <0>;
+            bindings = <&kp BACKSPACE>, <&kp DELETE>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+            keep-mods = <(MOD_RSFT)>;
+        };
+    };
+};
 ```

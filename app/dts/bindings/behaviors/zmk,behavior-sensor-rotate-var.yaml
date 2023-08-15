@@ -1,0 +1,25 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Sensor rotate behavior
+
+compatible: "zmk,behavior-sensor-rotate-var"
+
+properties:
+  label:
+    type: string
+    required: true
+  "#sensor-binding-cells":
+    type: int
+    required: true
+    const: 2
+  bindings:
+    type: phandles
+    required: true
+  tap-ms:
+    type: int
+    default: 5
+
+sensor-binding-cells:
+  - param1
+  - param2

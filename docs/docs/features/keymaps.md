@@ -58,7 +58,7 @@ in the stack _also_ get the event.
 
 Binding a behavior at a certain key position may include up to two extra parameters that are used to
 alter the behavior when that specific key position is activated/deactivated. For example, when binding
-the "key press" (`kp`) behavior at a certain key position, you must specific _which_ keycode should
+the "key press" (`kp`) behavior at a certain key position, you must specify _which_ keycode should
 be used for that key position.
 
 ```
@@ -113,10 +113,10 @@ Nested under the devicetree root, is the keymap node. The node _name_ itself is 
 
 ```
     keymap {
-		compatible = "zmk,keymap";
+        compatible = "zmk,keymap";
 
         // Layer nodes go here!
-	};
+    };
 ```
 
 ### Layers

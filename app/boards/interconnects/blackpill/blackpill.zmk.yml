@@ -1,0 +1,15 @@
+file_format: "1"
+id: blackpill
+name: BlackPill
+type: interconnect
+url: https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1
+manufacturer: WeAct Studio
+description: |
+  The WeAct Studio BlackPill has grown in popularity due to its low price, availability, and utilization of the powerful STM32F4x1CEU6 microcontroller. The BlackPill features more GPIO than most other boards, but also has a comparatively larger footprint as a result. Many clones and variations of the original BlackPill are available on the market as an affordable and more powerful alternative to many popular boards. The official WeAct variations of the WeAct Studio BlackPill are powered by the STM32F411CEU6 and STM32F401CEU6 microcontrollers.
+node_labels:
+  gpio: blackpill
+  i2c: blackpill_i2c
+  spi: blackpill_spi
+  uart: blackpill_serial
+design_guideline: |
+  ZMK uses the blue color coded pin names to generate devicetree node references. For example, to refer to the pin labeled `17` in the diagram, use `&blackpill 17` in the devicetree files.

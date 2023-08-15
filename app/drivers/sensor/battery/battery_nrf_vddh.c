@@ -9,11 +9,11 @@
 
 #define DT_DRV_COMPAT zmk_battery_nrf_vddh
 
-#include <device.h>
-#include <devicetree.h>
-#include <drivers/adc.h>
-#include <drivers/sensor.h>
-#include <logging/log.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/adc.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/logging/log.h>
 
 #include "battery_common.h"
 
@@ -93,7 +93,7 @@ static int vddh_init(const struct device *dev) {
 
 #ifdef CONFIG_ADC_NRFX_SAADC
     drv_data->acc = (struct adc_channel_cfg){
-        .gain = ADC_GAIN_1_5,
+        .gain = ADC_GAIN_1_2,
         .reference = ADC_REF_INTERNAL,
         .acquisition_time = ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40),
         .input_positive = SAADC_CH_PSELN_PSELN_VDDHDIV5,

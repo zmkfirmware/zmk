@@ -1,0 +1,14 @@
+file_format: "1"
+id: waterfowl
+name: Waterfowl
+type: shield
+url: https://waterfowl.bio.link/
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+siblings:
+  - waterfowl_left
+  - waterfowl_right

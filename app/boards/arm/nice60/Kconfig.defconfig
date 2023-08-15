@@ -4,22 +4,22 @@
 if BOARD_NICE60
 
 config ZMK_KEYBOARD_NAME
-	default "nice!60"
+    default "nice!60"
 
 if USB_DEVICE_STACK
 
 config USB_NRFX
-	default y
+    default y
 
 endif # USB_DEVICE_STACK
 
 config BT_CTLR
-	default BT
+    default BT
 
 config ZMK_BLE
-	default y
+    default y
 
 config ZMK_USB
-	default y
+    default y
 
 endif # BOARD_NICE60

@@ -53,10 +53,10 @@
  * .----------------------------------------------------------------------------------------------------------------------.
  */ /* FIXME boot and reset are not yet locale aware */
                         bindings = <
-&kp  F11      &kp  F1       &kp  F2       &kp  F3       &kp  F4       &kp  F5       &kp  &none             &kp  &none    &kp  F6       &kp  F7       &kp  F8       &kp  F9       &kp  F10      &kp  F12
+&kp  F11      &kp  F1       &kp  F2       &kp  F3       &kp  F4       &kp  F5       &none                  &none         &kp  F6       &kp  F7       &kp  F8       &kp  F9       &kp  F10      &kp  F12
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
-&trans        &bootloader   &reset        &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &trans
+&trans        &bootloader   &sys_reset        &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &trans
 &trans        &none         &none         &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
                         >;
                 };
@@ -77,7 +77,7 @@
 &none         &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none         &bt BT_CLR             &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
-&trans        &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &bootloader   &reset        &trans
+&trans        &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &bootloader   &sys_reset        &trans
 &trans        &none         &none         &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
                         >;
                 };

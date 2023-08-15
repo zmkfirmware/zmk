@@ -1,0 +1,139 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+#include <st/f3/stm32f303Xc.dtsi>
+#include <st/f3/stm32f303c(b-c)tx-pinctrl.dtsi>
+#include <dt-bindings/zmk/matrix_transform.h>
+
+
+/ {
+    model = "Preonic PCD, rev3";
+    compatible = "preonic,rev3", "st,stm32f303";
+
+    chosen {
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &layout_grid_transform;
+    };
+
+    kscan0: kscan_0 {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";
+        row-gpios
+            = <&gpioa 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpioa 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpioa 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpiob 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpioc 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpioc 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpioc 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpioa 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpioa 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpioa 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+        col-gpios
+            = <&gpiob 11 GPIO_ACTIVE_HIGH>
+            , <&gpiob 10 GPIO_ACTIVE_HIGH>
+            , <&gpiob 2  GPIO_ACTIVE_HIGH>
+            , <&gpiob 1  GPIO_ACTIVE_HIGH>
+            , <&gpioa 7  GPIO_ACTIVE_HIGH>
+            , <&gpiob 0  GPIO_ACTIVE_HIGH>
+            ;
+    };
+
+    layout_grid_transform:
+    keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <6>;
+        rows = <10>;
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5) RC(5,0) RC(5,1) RC(5,2) RC(5,3) RC(5,4) RC(5,5)
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(6,0) RC(6,1) RC(6,2) RC(6,3) RC(6,4) RC(6,5)
+            RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(7,0) RC(7,1) RC(7,2) RC(7,3) RC(7,4) RC(7,5)
+            RC(8,0) RC(8,1) RC(8,2) RC(9,3) RC(9,4) RC(9,5) RC(9,0) RC(9,1) RC(9,2) RC(8,3) RC(8,4) RC(8,5)
+            >;
+    };
+
+    layout_mit_transform:
+    keymap_transform_1 {
+        compatible = "zmk,matrix-transform";
+        columns = <6>;
+        rows = <10>;
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5) RC(5,0) RC(5,1) RC(5,2) RC(5,3) RC(5,4) RC(5,5)
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(6,0) RC(6,1) RC(6,2) RC(6,3) RC(6,4) RC(6,5)
+            RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(7,0) RC(7,1) RC(7,2) RC(7,3) RC(7,4) RC(7,5)
+            RC(8,0) RC(8,1) RC(8,2) RC(9,3) RC(9,4)     RC(9,0)     RC(9,1) RC(9,2) RC(8,3) RC(8,4) RC(8,5)
+            >;
+    };
+
+    layout_2x2u_transform:
+    keymap_transform_2 {
+        compatible = "zmk,matrix-transform";
+        columns = <6>;
+        rows = <10>;
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5) RC(5,0) RC(5,1) RC(5,2) RC(5,3) RC(5,4) RC(5,5)
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(6,0) RC(6,1) RC(6,2) RC(6,3) RC(6,4) RC(6,5)
+            RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(7,0) RC(7,1) RC(7,2) RC(7,3) RC(7,4) RC(7,5)
+            RC(8,0) RC(8,1) RC(8,2) RC(9,3)       RC(9,5)      RC(9,1)      RC(9,2) RC(8,3) RC(8,4) RC(8,5)
+            >;
+    };
+};
+
+&usb {
+    pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
+    pinctrl-names = "default";
+    status = "okay";
+cdc_acm_uart: cdc_acm_uart {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "CDC_ACM_0";
+    };
+};
+
+&clk_hse {
+    status = "okay";
+    clock-frequency = <DT_FREQ_M(8)>;
+};
+
+&pll {
+    prediv = <1>;
+    mul = <9>;
+    clocks = <&clk_hse>;
+    status = "okay";
+};
+
+&rcc {
+    clocks = <&pll>;
+    clock-frequency = <DT_FREQ_M(72)>;
+    ahb-prescaler = <1>;
+    apb1-prescaler = <2>;
+    apb2-prescaler = <1>;
+};
+
+&flash0 {
+    /*
+     * For more information, see:
+     * http://docs.zephyrproject.org/latest/guides/dts/index.html#flash-partitions
+     */
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        /* Set 6Kb of storage at the end of the 256Kb of flash */
+        storage_partition: partition@3e800 {
+            label = "storage";
+            reg = <0x0003e800 0x00001800>;
+        };
+    };
+};

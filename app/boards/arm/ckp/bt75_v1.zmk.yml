@@ -1,0 +1,14 @@
+file_format: "1"
+id: bt75_v1
+name: BT75_V1
+type: board
+arch: arm
+features:
+  - keys
+  - encoder
+  - underglow
+  - backlight
+outputs:
+  - usb
+  - ble
+url: https://polarityworks.com/btckp

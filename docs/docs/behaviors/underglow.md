@@ -22,6 +22,8 @@ Here is a table describing the action for each define:
 
 | Define          | Action                                                                                         |
 | --------------- | ---------------------------------------------------------------------------------------------- |
+| `RGB_ON`        | Turns the RGB feature on                                                                       |
+| `RGB_OFF`       | Turns the RGB feature off                                                                      |
 | `RGB_TOG`       | Toggles the RGB feature on and off                                                             |
 | `RGB_HUI`       | Increases the hue of the RGB feature                                                           |
 | `RGB_HUD`       | Decreases the hue of the RGB feature                                                           |
@@ -39,11 +41,11 @@ Here is a table describing the action for each define:
 
 - Reference: `&rgb_ug`
 - Parameter #1: The RGB action define, e.g. `RGB_TOG` or `RGB_BRI`
-- Parameter #2: Only applies to `RGB_COLOR_HSB` and is the HSB values of the color to set within parenthesis and separated by a common (see below for an example)
+- Parameter #2: Only applies to `RGB_COLOR_HSB` and is the HSB representation of the color to set (see below for an example)
 
 :::note HSB Values
 
-When specifying HSB values you'll need to use `RGB_COLOR_HSB(h, s, b)` in your keymap file. See below for an example.
+When specifying HSB values you'll need to use `RGB_COLOR_HSB(h, s, b)` in your keymap file.
 
 Value Limits:
 
