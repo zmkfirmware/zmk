@@ -135,7 +135,7 @@ A pinctrl file has an `&pinctrl` node that encompasses all pinctrl settings incl
     // Other pinctrl definitions for other hardware
     pwm0_default: pwm0_default {
         group1 {
-            psels = <NRF_PSEL(PWM_OUT0, 0, 45)>;
+            psels = <NRF_PSEL(PWM_OUT0, 1, 13)>;
         };
     };
     pwm0_sleep: pwm0_sleep {
@@ -244,7 +244,7 @@ Then you have to add the following lines inside the root devicetree node on the 
 
 The value inside `pwm_led_0` must be the same as you used before.
 
-In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible/
+In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible.
 
 If your board uses a P-channel MOSFET to control backlight instead of a N-channel MOSFET, you may want to change `PWM_POLARITY_NORMAL` for `PWM_POLARITY_INVERTED`.
 
