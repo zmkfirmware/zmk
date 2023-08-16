@@ -1,0 +1,10 @@
+#include "../behavior_keymap_overlap_timerless.dtsi"
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(1,1,10)
+        ZMK_MOCK_RELEASE(1,1,10)
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,2000)
+    >;
+};

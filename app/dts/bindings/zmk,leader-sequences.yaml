@@ -1,0 +1,22 @@
+# Copyright (c) 2022, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Leader sequence container
+
+compatible: "zmk,leader-sequences"
+
+child-binding:
+  description: "A leader sequence"
+
+  properties:
+    bindings:
+      type: phandle-array
+      required: true
+    key-positions:
+      type: array
+      required: true
+    layers:
+      type: array
+      default: [-1]
+    immediate-trigger:
+      type: boolean

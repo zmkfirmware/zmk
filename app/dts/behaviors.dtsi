@@ -22,3 +22,4 @@
 #include <behaviors/mouse_key_press.dtsi>
 #include <behaviors/mouse_move.dtsi>
 #include <behaviors/mouse_scroll.dtsi>
+#include <behaviors/leader_key.dtsi>
