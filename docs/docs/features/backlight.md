@@ -144,7 +144,7 @@ A pinctrl file has an `&pinctrl` node that encompasses all pinctrl settings incl
             low-power-enable;
         };
     };
-}
+};
 ```
 
 The pin number is handled differently depending on the MCU in question, on nRF boards it is defined as (PWM_OUTX, Y, Z) where X is the PWM channel used (usually 0) Y is first part of the hardware port "PY.01" and Z is the second part of the hardware port "P1.Z".
@@ -311,7 +311,7 @@ Then add the following lines to your `.overlay` file:
             low-power-enable;
         };
     };
-}
+};
 ```
 
 The pin number is handled differently depending on the MCU in question, on nRF boards it is defined as (PWM_OUTX, Y, Z) where X is the PWM channel used (usually 0) Y is first part of the hardware port "PY.01" and Z is the second part of the hardware port "P1.Z".
