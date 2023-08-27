@@ -7,6 +7,8 @@
 #include <zephyr/init.h>
 #include <zephyr/settings/settings.h>
 
+#include <stdio.h>
+
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
