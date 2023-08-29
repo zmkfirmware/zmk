@@ -97,6 +97,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         data->is_active = true;
 
         LOG_DBG("%d started new turbo", event.position);
+        data->press_time = k_uptime_get();
         k_work_init_delayable(&data->release_timer, behavior_turbo_timer_handler);
         zmk_behavior_queue_add(event.position, cfg->binding, true, cfg->tap_ms);
         zmk_behavior_queue_add(event.position, cfg->binding, false, 0);
