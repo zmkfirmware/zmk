@@ -72,16 +72,15 @@ Applies to: `compatible = "zmk,kscan-gpio-direct"`
 
 Definition file: [zmk/app/drivers/zephyr/dts/bindings/kscan/zmk,kscan-gpio-direct.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/zephyr/dts/bindings/kscan/zmk%2Ckscan-gpio-direct.yaml)
 
-| Property                  | Type       | Description                                                                                                 | Default     |
-| ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- | ----------- |
-| `label`                   | string     | Unique label for the node                                                                                   |             |
-| `input-gpios`             | GPIO array | Input GPIOs (one per key)                                                                                   |             |
-| `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                                    | 5           |
-| `debounce-release-ms`     | int        | Debounce time for key release in milliseconds.                                                              | 5           |
-| `debounce-scan-period-ms` | int        | Time between reads in milliseconds when any key is pressed.                                                 | 1           |
-| `diode-direction`         | string     | The direction of the matrix diodes                                                                          | `"row2col"` |
-| `poll-period-ms`          | int        | Time between reads in milliseconds when no key is pressed and `CONFIG_ZMK_KSCAN_DIRECT_POLLING` is enabled. | 10          |
-| `toggle-mode`             | bool       | Use toggle switch mode.                                                                                     | n           |
+| Property                  | Type       | Description                                                                                                 | Default |
+| ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- | ------- |
+| `label`                   | string     | Unique label for the node                                                                                   |         |
+| `input-gpios`             | GPIO array | Input GPIOs (one per key)                                                                                   |         |
+| `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                                    | 5       |
+| `debounce-release-ms`     | int        | Debounce time for key release in milliseconds.                                                              | 5       |
+| `debounce-scan-period-ms` | int        | Time between reads in milliseconds when any key is pressed.                                                 | 1       |
+| `poll-period-ms`          | int        | Time between reads in milliseconds when no key is pressed and `CONFIG_ZMK_KSCAN_DIRECT_POLLING` is enabled. | 10      |
+| `toggle-mode`             | bool       | Use toggle switch mode.                                                                                     | n       |
 
 By default, a switch will drain current through the internal pull up/down resistor whenever it is pressed. This is not ideal for a toggle switch, where the switch may be left in the "pressed" state for a long time. Enabling `toggle-mode` will make the driver flip between pull up and down as the switch is toggled to optimize for power.
 
