@@ -58,7 +58,7 @@ config LED_PWM
 endif # ZMK_BACKLIGHT
 ```
 
-Since the Zephyr 3.2 update the PWM driver has been revised, permitting the use of the pinctrl API to select the pins. For now the old method of pin select is also functional
+Since the Zephyr 3.2 update the PWM driver has been revised, permitting the use of the pinctrl API to select the pins. For now the old method of pin select is also functional, as long as you don't enable pinctrl for the board at all.
 
 If you do not want to use pinctrl add the following lines to your `.dts` file:
 
@@ -126,9 +126,9 @@ config LED_PWM
 endif # ZMK_BACKLIGHT
 ```
 
-When using the pinctrl API you should create a pinctrl.dtsi file if it's not created already, and include it at the beginning of the `board.dts` file. You also need to add `CONFIG_PINCTRL=y` to board_defconfig if it's not already enabled
+When using the pinctrl API you should create a pinctrl.dtsi file if it's not created already, and include it at the beginning of the `board.dts` file. You also need to add `CONFIG_PINCTRL=y` to board_defconfig if it's not already enabled.
 
-A pinctrl file has an `&pinctrl` node that encompasses all pinctrl settings including for I2C or SPI peripherals (e.g. WS2812 LEDs, Battery fuel gauges)
+A pinctrl file has an `&pinctrl` node that encompasses all pinctrl settings including for I2C or SPI peripherals (e.g. WS2812 LEDs, Battery fuel gauges):
 
 ```
 &pinctrl {
@@ -151,7 +151,7 @@ The pin number is handled differently depending on the MCU in question, on nRF b
 
 For example, _P1.13_ would give you `(PWM_OUT0, 1, 13)` and _P0.15_ would give you `(PWM_OUT0, 0, 15)`.
 
-Then you add the PWM device inside the `board.dts` file and assign the pinctrl definitions to it
+Then you add the PWM device inside the `board.dts` file and assign the pinctrl definitions to it:
 
 ```
 &pwm0 {
@@ -192,7 +192,7 @@ Finally you need to add backlight to the `chosen` element of the root devicetree
 </TabItem>
 <TabItem value="shieldnopin">
 
-Since the Zephyr 3.2 update the PWM driver has been revised, permitting the use of the pinctrl API to select the pins. For now the old method of pin select is also functional
+Since the Zephyr 3.2 update the PWM driver has been revised, permitting the use of the pinctrl API to select the pins. For now the old method of pin select is also functional, but note that if you are modifying a shield and the board already has pinctrl enabled then you have to use the pinctrl API as well.
 
 You must first add a `boards/` directory within your shield folder. For each board that supports the shield you must create a `<board>.defconfig` file and a `<board>.overlay` file inside the `boards/` folder.
 
@@ -318,7 +318,7 @@ The pin number is handled differently depending on the MCU in question, on nRF b
 
 For example, _P1.13_ would give you `(PWM_OUT0, 1, 13)` and _P0.15_ would give you `(PWM_OUT0, 0, 15)`.
 
-Then you add the PWM device inside the `.overlay` file and assign the pinctrl definitions to it
+Then you add the PWM device inside the `.overlay` file and assign the pinctrl definitions to it:
 
 ```
 &pwm0 {
