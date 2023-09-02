@@ -111,7 +111,8 @@ bindings
 
 ### Wait Time
 
-The wait time setting controls how long of a delay is introduced between behaviors in the `bindings` list. The initial wait time for a macro, 100ms by default, can
+The wait time setting controls how long of a delay is introduced between behaviors in the `bindings` list. The initial wait time for a macro,
+which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS`](../config/behaviors.md#macro) by default, can
 be set by assigning a value to the `wait-ms` property of the macro, e.g. `wait-ms = <20>;`. If you want to update the wait time at any
 point in the macro bindings list, use `&macro_wait_time`, e.g. `&macro_wait_time 30`. A full example:
 
@@ -126,7 +127,8 @@ bindings
 
 ### Tap Time
 
-The tap time setting controls how long a tapped behavior is held in the `bindings` list. The initial tap time for a macro, 100ms by default, can
+The tap time setting controls how long a tapped behavior is held in the `bindings` list. The initial tap time for a macro,
+which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`](../config/behaviors.md#macro) by default, can
 be set by assigning a value to the `tap-ms` property of the macro, e.g. `tap-ms = <20>;`. If you want to update the tap time at any
 point in a macro bindings list, use `&macro_tap_time`, e.g. `&macro_tap_time 30`. A full example:
 
