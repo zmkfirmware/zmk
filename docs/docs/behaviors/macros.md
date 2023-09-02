@@ -147,6 +147,8 @@ Macros use an internal queue to invoke each behavior in the bindings list when t
 
 To prevent issues with longer macros, you can change the size of this queue via the `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` setting in your configuration, [typically through your `.conf` file](../config/index.md). For example, `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` would allow your macro to type about 256 characters.
 
+Another limit worth noting is that the maximum number of bindings you can pass to a `bindings` field in the [Devicetree](../config/index.md#devicetree-files) is 256, which also constrains how many behaviors can be invoked by a macro.
+
 ## Parameterized Macros
 
 Macros can also be "parameterized", allowing them to be bound in your keymap with unique values passed into them, e.g.:
