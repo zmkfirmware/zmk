@@ -120,6 +120,10 @@ endif
 
 <InterconnectTabs items={Metadata}/>
 
+To use GPIO pins that are not part of the interconnects as described above, you can use the GPIO labels that are specific to each controller type.
+For instance, pins numbered `PX.Y` in nRF52840-based boards can be referred to via `&gpioX Y` labels.
+An example is `&gpio1 7` for the `P1.07` pin that the nice!nano exposes in the middle of the board.
+
 <Tabs
 defaultValue="unibody"
 values={[
