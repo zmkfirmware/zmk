@@ -296,9 +296,7 @@ Any keyboard which is not a grid of 1 unit keys will likely have some unused pos
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        rows = <5>;
-        columns = <4>;
-        // define the matrix...
+        // define row-gpios with 5 elements and col-gpios with 4...
     };
 
     default_transform: matrix_transform {
@@ -358,9 +356,7 @@ Consider a keyboard with a [duplex matrix](https://wiki.ai03.com/books/pcb-desig
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        rows = <12>;
-        columns = <8>;
-        // define the matrix...
+        // define row-gpios with 12 elements and col-gpios with 8...
     };
 
     default_transform: matrix_transform {
