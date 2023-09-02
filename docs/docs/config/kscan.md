@@ -86,6 +86,18 @@ By default, a switch will drain current through the internal pull up/down resist
 
 `toggle-mode` applies to all switches handled by the instance of the driver. To use a toggle switch with other, non-toggle, direct GPIO switches, create two instances of the direct GPIO driver, one with `toggle-mode` and the other without. Then, use a [composite driver](#composite-driver) to combine them.
 
+Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](https://docs.zephyrproject.org/3.2.0/hardware/peripherals/gpio.html#api-reference) for the elements in `input-gpios` should be `(GPIO_ACTIVE_LOW | GPIO_PULL_UP)`:
+
+```devicetree
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        input-gpios
+            = <&pro_micro 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pro_micro 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            ;
+    };
+```
+
 ## Matrix Driver
 
 Keyboard scan driver where keys are arranged on a matrix with one GPIO per row and column.
@@ -121,6 +133,24 @@ The `diode-direction` property must be one of:
 | ----------- | --------------------------------------------------------------------- |
 | `"row2col"` | Diodes point from rows to columns (cathodes are connected to columns) |
 | `"col2row"` | Diodes point from columns to rows (cathodes are connected to rows)    |
+
+Given the `diode-direction`, the [GPIO flags](https://docs.zephyrproject.org/3.2.0/hardware/peripherals/gpio.html#api-reference) for the elements in `row-` and `col-gpios` should be set appropriately.
+The output pins (e.g. columns for `col2row`) should have the flag `GPIO_ACTIVE_HIGH`, and input pins (e.g. rows for `col2row`) should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`:
+
+```devicetree
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "col2row";
+        col-gpios
+            = <&pro_micro 4 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 5 GPIO_ACTIVE_HIGH>
+            ;
+        row-gpios
+            = <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+```
 
 ## Composite Driver
 
