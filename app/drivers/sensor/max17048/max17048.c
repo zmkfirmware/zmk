@@ -6,13 +6,13 @@
 
 #define DT_DRV_COMPAT maxim_max17048
 
-#include <device.h>
-#include <kernel.h>
-#include <sys/util.h>
-#include <logging/log.h>
-#include <drivers/i2c.h>
-#include <sys/byteorder.h>
-#include <drivers/sensor.h>
+#include <zephyr/device.h>
+#include <zephyr/kernel.h>
+#include <zephyr/sys/util.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/drivers/i2c.h>
+#include <zephyr/sys/byteorder.h>
+#include <zephyr/drivers/sensor.h>
 
 #include "max17048.h"
 
