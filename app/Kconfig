@@ -403,14 +403,18 @@ endif
 #Initialization Priorities
 endmenu
 
-menu "KSCAN Settings"
+menuconfig ZMK_KSCAN
+    bool "ZMK KScan Integration"
+    default y
+    select KSCAN
+
+if ZMK_KSCAN
 
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
     int "Size of the event queue for KSCAN events to buffer events"
     default 4
 
-#KSCAN Settings
-endmenu
+endif # ZMK_KSCAN
 
 menu "Logging"
 

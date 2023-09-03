@@ -1,8 +1,7 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-zephyr_library_named(zmk__drivers__kscan)
-zephyr_library_include_directories(${CMAKE_SOURCE_DIR}/include)
+zephyr_library_amend()
 
 zephyr_library_sources_ifdef(CONFIG_ZMK_KSCAN_GPIO_DRIVER debounce.c)
 zephyr_library_sources_ifdef(CONFIG_ZMK_KSCAN_GPIO_DRIVER kscan_gpio.c)

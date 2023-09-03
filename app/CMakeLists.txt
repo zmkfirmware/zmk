@@ -8,7 +8,7 @@ list(APPEND DTS_ROOT ${CMAKE_SOURCE_DIR}/drivers/zephyr)
 set(ZephyrBuildConfiguration_ROOT ${CMAKE_SOURCE_DIR}/cmake)
 
 list(APPEND ZEPHYR_EXTRA_MODULES
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
+  ${CMAKE_CURRENT_SOURCE_DIR}/module
 )
 
 # Find Zephyr. This also loads Zephyr's build system.
