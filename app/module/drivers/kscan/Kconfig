@@ -89,10 +89,4 @@ config ZMK_KSCAN_DEBOUNCE_RELEASE_MS
 
 endif
 
-# config ZMK_KSCAN_INIT_PRIORITY
-#     int "Keyboard scan driver init priority"
-#     default 40
-#     help
-#       Keyboard scan device driver initialization priority.
-
 endif # KSCAN

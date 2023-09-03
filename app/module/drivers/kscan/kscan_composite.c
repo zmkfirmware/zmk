@@ -109,4 +109,4 @@ static const struct kscan_composite_config kscan_composite_config = {};
 static struct kscan_composite_data kscan_composite_data;
 
 DEVICE_DT_INST_DEFINE(0, kscan_composite_init, NULL, &kscan_composite_data, &kscan_composite_config,
-                      APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &mock_driver_api);
+                      POST_KERNEL, CONFIG_KSCAN_INIT_PRIORITY, &mock_driver_api);
