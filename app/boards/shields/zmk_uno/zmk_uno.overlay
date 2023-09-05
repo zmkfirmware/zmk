@@ -49,15 +49,12 @@ nice_view_spi: &arduino_spi {
     // Commented out until we add more powerful power domain support
     // external_power {
         //  compatible = "zmk,ext-power-generic";
-        //  label = "EXT_POWER";
         //  init-delay-ms = <200>;
         //  control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
     // };
 
     rgb_power {
         compatible = "zmk,ext-power-generic";
-        label = "EXT_POWER";
-        // label = "RGB_POWER";
         init-delay-ms = <200>;
         control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
     };

@@ -78,9 +78,9 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
         };
     };
 
-    ext-power {
+    // Node name must match original "EXT_POWER" label to preserve user settings.
+    EXT_POWER {
         compatible = "zmk,ext-power-generic";
-        label = "EXT_POWER";
         control-gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
     };
 
