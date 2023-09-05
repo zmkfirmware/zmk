@@ -81,7 +81,7 @@ static int behavior_mod_morph_init(const struct device *dev) { return 0; }
 
 #define _TRANSFORM_ENTRY(idx, node)                                                                \
     {                                                                                              \
-        .behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(node, bindings, idx), label),               \
+        .behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),               \
         .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0),       \
                               (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))),                  \
         .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),       \
