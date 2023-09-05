@@ -29,9 +29,9 @@
         };
     };
 
-    ext-power {
+    // Node name must match original "EXT_POWER" label to preserve user settings.
+    EXT_POWER {
         compatible = "zmk,ext-power-generic";
-        label = "EXT_POWER";
         init-delay-ms = <20>;
         control-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
     };
