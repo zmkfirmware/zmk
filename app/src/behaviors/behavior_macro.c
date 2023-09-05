@@ -44,18 +44,18 @@ struct behavior_macro_config {
     struct zmk_behavior_binding bindings[];
 };
 
-#define TAP_MODE DT_PROP(DT_INST(0, zmk_macro_control_mode_tap), label)
-#define PRESS_MODE DT_PROP(DT_INST(0, zmk_macro_control_mode_press), label)
-#define REL_MODE DT_PROP(DT_INST(0, zmk_macro_control_mode_release), label)
+#define TAP_MODE DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_mode_tap))
+#define PRESS_MODE DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_mode_press))
+#define REL_MODE DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_mode_release))
 
-#define TAP_TIME DT_PROP(DT_INST(0, zmk_macro_control_tap_time), label)
-#define WAIT_TIME DT_PROP(DT_INST(0, zmk_macro_control_wait_time), label)
-#define WAIT_REL DT_PROP(DT_INST(0, zmk_macro_pause_for_release), label)
+#define TAP_TIME DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_tap_time))
+#define WAIT_TIME DEVICE_DT_NAME(DT_INST(0, zmk_macro_control_wait_time))
+#define WAIT_REL DEVICE_DT_NAME(DT_INST(0, zmk_macro_pause_for_release))
 
-#define P1TO1 DT_PROP(DT_INST(0, zmk_macro_param_1to1), label)
-#define P1TO2 DT_PROP(DT_INST(0, zmk_macro_param_1to2), label)
-#define P2TO1 DT_PROP(DT_INST(0, zmk_macro_param_2to1), label)
-#define P2TO2 DT_PROP(DT_INST(0, zmk_macro_param_2to2), label)
+#define P1TO1 DEVICE_DT_NAME(DT_INST(0, zmk_macro_param_1to1))
+#define P1TO2 DEVICE_DT_NAME(DT_INST(0, zmk_macro_param_1to2))
+#define P2TO1 DEVICE_DT_NAME(DT_INST(0, zmk_macro_param_2to1))
+#define P2TO2 DEVICE_DT_NAME(DT_INST(0, zmk_macro_param_2to2))
 
 #define ZM_IS_NODE_MATCH(a, b) (strcmp(a, b) == 0)
 #define IS_TAP_MODE(dev) ZM_IS_NODE_MATCH(dev, TAP_MODE)

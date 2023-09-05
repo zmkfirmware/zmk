@@ -703,8 +703,8 @@ static int behavior_hold_tap_init(const struct device *dev) {
 #define KP_INST(n)                                                                                 \
     static struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                        \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
-        .hold_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 0), label),               \
-        .tap_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 1), label),                \
+        .hold_behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(n, bindings, 0)),               \
+        .tap_behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(n, bindings, 1)),                \
         .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
         .require_prior_idle_ms = DT_INST_PROP(n, global_quick_tap)                                 \
                                      ? DT_INST_PROP(n, quick_tap_ms)                               \

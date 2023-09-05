@@ -4,7 +4,8 @@
 properties:
   label:
     type: string
-    required: true
+    required: false
+    deprecated: true
   "#binding-cells":
     type: int
     required: true
