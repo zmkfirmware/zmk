@@ -63,7 +63,7 @@ Key positions are numbered starting from `0` at the top left key on the keymap, 
 :::
 
 :::tip
-A common mistake is to enter the keycodes directly without the leading `&kp` behavior. That is, having entries such as `SPACE` that should have been `&kp SPACE`.
+A common mistake that leads to this error is to use keycodes without the leading `&kp` behavior. That is, having entries such as `SPACE` that should have been `&kp SPACE`.
 :::
 
 ### Split Keyboard Halves Unable to Pair
