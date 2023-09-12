@@ -1,6 +1,6 @@
 file_format: "1"
-id: microdox
-name: Microdox
+id: microdox_v2
+name: Microdox V2
 type: shield
 url: https://boardsource.xyz/store/5f2e7e4a2902de7151494f92
 requires: [pro_micro]
