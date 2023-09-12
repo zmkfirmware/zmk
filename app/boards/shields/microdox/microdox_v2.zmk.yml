@@ -9,5 +9,5 @@ features:
   - keys
   - display
 siblings:
-  - microdox_left
-  - microdox_right
+  - microdox_v2_left
+  - microdox_v2_right
