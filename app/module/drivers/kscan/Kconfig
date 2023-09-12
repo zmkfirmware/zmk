@@ -16,6 +16,7 @@ config ZMK_KSCAN_COMPOSITE_DRIVER
 config ZMK_KSCAN_GPIO_DRIVER
     bool
     select GPIO
+    select ZMK_DEBOUNCE
 
 config ZMK_KSCAN_GPIO_DEMUX
     bool

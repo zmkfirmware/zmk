@@ -1,0 +1,3 @@
+
+config ZMK_DEBOUNCE
+    bool "Debounce Support"
