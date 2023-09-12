@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "debounce.h"
 #include "kscan_gpio.h"
 
 #include <zephyr/device.h>
@@ -15,6 +14,8 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/__assert.h>
 #include <zephyr/sys/util.h>
+
+#include <zmk/debounce.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -80,12 +81,12 @@ struct kscan_matrix_data {
      * Current state of the matrix as a flattened 2D array of length
      * (config->rows * config->cols)
      */
-    struct debounce_state *matrix_state;
+    struct zmk_debounce_state *matrix_state;
 };
 
 struct kscan_matrix_config {
     struct kscan_gpio_list outputs;
-    struct debounce_config debounce_config;
+    struct zmk_debounce_config debounce_config;
     size_t rows;
     size_t cols;
     int32_t debounce_scan_period_ms;
@@ -242,8 +243,8 @@ static int kscan_matrix_read(const struct device *dev) {
                 return active;
             }
 
-            debounce_update(&data->matrix_state[index], active, config->debounce_scan_period_ms,
-                            &config->debounce_config);
+            zmk_debounce_update(&data->matrix_state[index], active, config->debounce_scan_period_ms,
+                                &config->debounce_config);
         }
 
         err = gpio_pin_set_dt(&out_gpio->spec, 0);
@@ -263,16 +264,16 @@ static int kscan_matrix_read(const struct device *dev) {
     for (int r = 0; r < config->rows; r++) {
         for (int c = 0; c < config->cols; c++) {
             const int index = state_index_rc(config, r, c);
-            struct debounce_state *state = &data->matrix_state[index];
+            struct zmk_debounce_state *state = &data->matrix_state[index];
 
-            if (debounce_get_changed(state)) {
-                const bool pressed = debounce_is_pressed(state);
+            if (zmk_debounce_get_changed(state)) {
+                const bool pressed = zmk_debounce_is_pressed(state);
 
                 LOG_DBG("Sending event at %i,%i state %s", r, c, pressed ? "on" : "off");
                 data->callback(dev, r, c, pressed);
             }
 
-            continue_scan = continue_scan || debounce_is_active(state);
+            continue_scan = continue_scan || zmk_debounce_is_active(state);
         }
     }
 
@@ -438,7 +439,7 @@ static const struct kscan_driver_api kscan_matrix_api = {
     static struct kscan_gpio kscan_matrix_cols_##n[] = {                                           \
         LISTIFY(INST_COLS_LEN(n), KSCAN_GPIO_COL_CFG_INIT, (, ), n)};                              \
                                                                                                    \
-    static struct debounce_state kscan_matrix_state_##n[INST_MATRIX_LEN(n)];                       \
+    static struct zmk_debounce_state kscan_matrix_state_##n[INST_MATRIX_LEN(n)];                   \
                                                                                                    \
     COND_INTERRUPTS(                                                                               \
         (static struct kscan_matrix_irq_callback kscan_matrix_irqs_##n[INST_INPUTS_LEN(n)];))      \
