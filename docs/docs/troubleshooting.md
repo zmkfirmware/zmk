@@ -58,8 +58,12 @@ A `devicetree_unfixed.h` error that follows with an "undeclared here" string ind
 
 In this example, the error string `DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label` indicates a problem with the key binding in position `12` in the `symbol_layer` of the keymap.
 
-:::note
+:::info
 Key positions are numbered starting from `0` at the top left key on the keymap, incrementing horizontally, row by row.
+:::
+
+:::tip
+A common mistake that leads to this error is to use [key press keycodes](behaviors/key-press.md) without the leading `&kp` binding. That is, having entries such as `SPACE` that should have been `&kp SPACE`.
 :::
 
 ### Split Keyboard Halves Unable to Pair
