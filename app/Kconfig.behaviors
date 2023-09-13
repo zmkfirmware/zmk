@@ -16,6 +16,10 @@ config ZMK_BEHAVIOR_KEY_TOGGLE
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_KEY_TOGGLE_ENABLED
 
+config ZMK_BEHAVIOR_SOFT_OFF
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_SOFT_OFF_ENABLED && ZMK_PM_SOFT_OFF
 
 config ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
     bool
