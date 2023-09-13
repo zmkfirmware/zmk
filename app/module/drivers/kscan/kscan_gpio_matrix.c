@@ -10,6 +10,7 @@
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/kscan.h>
+#include <zephyr/pm/device.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/__assert.h>
@@ -421,6 +422,28 @@ static int kscan_matrix_init(const struct device *dev) {
     return 0;
 }
 
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+
+static int kscan_matrix_pm_action(const struct device *dev, enum pm_device_action action) {
+    int ret = 0;
+
+    switch (action) {
+    case PM_DEVICE_ACTION_SUSPEND:
+        kscan_matrix_disable(dev);
+        break;
+    case PM_DEVICE_ACTION_RESUME:
+        kscan_matrix_enable(dev);
+        break;
+    default:
+        ret = -ENOTSUP;
+        break;
+    }
+
+    return ret;
+}
+
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
 static const struct kscan_driver_api kscan_matrix_api = {
     .config = kscan_matrix_configure,
     .enable_callback = kscan_matrix_enable,
@@ -465,7 +488,9 @@ static const struct kscan_driver_api kscan_matrix_api = {
         .diode_direction = INST_DIODE_DIR(n),                                                      \
     };                                                                                             \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(n, &kscan_matrix_init, NULL, &kscan_matrix_data_##n,                     \
+    PM_DEVICE_DT_INST_DEFINE(n, kscan_matrix_pm_action);                                           \
+                                                                                                   \
+    DEVICE_DT_INST_DEFINE(n, &kscan_matrix_init, PM_DEVICE_DT_INST_GET(n), &kscan_matrix_data_##n, \
                           &kscan_matrix_config_##n, POST_KERNEL, CONFIG_KSCAN_INIT_PRIORITY,       \
                           &kscan_matrix_api);
 
