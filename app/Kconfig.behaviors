@@ -22,6 +22,12 @@ config ZMK_BEHAVIOR_MOUSE_KEY_PRESS
     depends on DT_HAS_ZMK_BEHAVIOR_MOUSE_KEY_PRESS_ENABLED
     imply ZMK_MOUSE
 
+config ZMK_BEHAVIOR_SOFT_OFF
+    bool
+    default y
+    select ZMK_PM_SOFT_OFF
+    depends on DT_HAS_ZMK_BEHAVIOR_SOFT_OFF_ENABLED
+
 config ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
     bool
 
