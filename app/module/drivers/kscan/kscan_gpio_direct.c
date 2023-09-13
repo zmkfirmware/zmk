@@ -12,6 +12,7 @@
 #include <zephyr/drivers/kscan.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/pm/device.h>
 #include <zephyr/sys/util.h>
 
 #include <zmk/debounce.h>
@@ -318,6 +319,28 @@ static int kscan_direct_init(const struct device *dev) {
     return 0;
 }
 
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+
+static int kscan_direct_pm_action(const struct device *dev, enum pm_device_action action) {
+    int ret = 0;
+
+    switch (action) {
+    case PM_DEVICE_ACTION_SUSPEND:
+        kscan_direct_disable(dev);
+        break;
+    case PM_DEVICE_ACTION_RESUME:
+        kscan_direct_enable(dev);
+        break;
+    default:
+        ret = -ENOTSUP;
+        break;
+    }
+
+    return ret;
+}
+
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
 static const struct kscan_driver_api kscan_direct_api = {
     .config = kscan_direct_configure,
     .enable_callback = kscan_direct_enable,
@@ -354,7 +377,9 @@ static const struct kscan_driver_api kscan_direct_api = {
         .toggle_mode = DT_INST_PROP(n, toggle_mode),                                               \
     };                                                                                             \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(n, &kscan_direct_init, NULL, &kscan_direct_data_##n,                     \
+    PM_DEVICE_DT_INST_DEFINE(n, kscan_direct_pm_action);                                           \
+                                                                                                   \
+    DEVICE_DT_INST_DEFINE(n, &kscan_direct_init, PM_DEVICE_DT_INST_GET(n), &kscan_direct_data_##n, \
                           &kscan_direct_config_##n, POST_KERNEL, CONFIG_KSCAN_INIT_PRIORITY,       \
                           &kscan_direct_api);
 
