@@ -57,3 +57,5 @@ pro_micro_d: &pro_micro {};
 pro_micro_i2c: &i2c0 {};
 pro_micro_spi: &spi0 {};
 pro_micro_serial: &uart0 {};
+
+pro_micro_power_domain: &core_power_domain {};
