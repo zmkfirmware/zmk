@@ -9,14 +9,15 @@
 #include <zephyr/device.h>
 #include <zephyr/kernel.h>
 #include <zephyr/sys/util.h>
-#include <zephyr/logging/log.h>
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/sys/byteorder.h>
 #include <zephyr/drivers/sensor.h>
 
 #include "max17048.h"
 
-LOG_MODULE_REGISTER(sensor_max17048, CONFIG_SENSOR_LOG_LEVEL);
+#define LOG_LEVEL CONFIG_SENSOR_LOG_LEVEL
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(sensor_max17048);
 
 static int read_register(const struct device *dev, uint8_t reg, uint16_t *value) {
 
@@ -112,7 +113,7 @@ static int max17048_sample_fetch(const struct device *dev, enum sensor_channel c
 
     int err = 0;
 
-    if (chan == SENSOR_CHAN_GAUGE_VOLTAGE) {
+    if (chan == SENSOR_CHAN_GAUGE_STATE_OF_CHARGE) {
         err = read_register(dev, REG_STATE_OF_CHARGE, &drv_data->raw_state_of_charge);
         if (err != 0) {
             LOG_WRN("failed to read state-of-charge: %d", err);
@@ -120,7 +121,7 @@ static int max17048_sample_fetch(const struct device *dev, enum sensor_channel c
         }
         LOG_DBG("read soc: %d", drv_data->raw_state_of_charge);
 
-    } else if (chan == SENSOR_CHAN_GAUGE_STATE_OF_CHARGE) {
+    } else if (chan == SENSOR_CHAN_GAUGE_VOLTAGE) {
 
         err = read_register(dev, REG_VCELL, &drv_data->raw_vcell);
         if (err != 0) {
