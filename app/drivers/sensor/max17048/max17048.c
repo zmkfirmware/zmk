@@ -113,7 +113,7 @@ static int max17048_sample_fetch(const struct device *dev, enum sensor_channel c
 
     int err = 0;
 
-    if (chan == SENSOR_CHAN_GAUGE_STATE_OF_CHARGE) {
+    if (chan == SENSOR_CHAN_GAUGE_STATE_OF_CHARGE || chan == SENSOR_CHAN_ALL) {
         err = read_register(dev, REG_STATE_OF_CHARGE, &drv_data->raw_state_of_charge);
         if (err != 0) {
             LOG_WRN("failed to read state-of-charge: %d", err);
@@ -121,14 +121,14 @@ static int max17048_sample_fetch(const struct device *dev, enum sensor_channel c
         }
         LOG_DBG("read soc: %d", drv_data->raw_state_of_charge);
 
-    } else if (chan == SENSOR_CHAN_GAUGE_VOLTAGE) {
-
+    } else if (chan == SENSOR_CHAN_GAUGE_VOLTAGE || chan == SENSOR_CHAN_ALL) {
         err = read_register(dev, REG_VCELL, &drv_data->raw_vcell);
         if (err != 0) {
             LOG_WRN("failed to read vcell: %d", err);
             goto done;
         }
         LOG_DBG("read vcell: %d", drv_data->raw_vcell);
+
     } else {
         LOG_DBG("unsupported channel %d", chan);
         err = -ENOTSUP;
