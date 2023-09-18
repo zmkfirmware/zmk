@@ -32,3 +32,6 @@
     };
 };
 
+&qspi {
+    status = "disabled";
+};

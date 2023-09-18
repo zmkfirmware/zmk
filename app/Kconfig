@@ -114,11 +114,15 @@ menuconfig ZMK_BLE
     select BT_SMP_APP_PAIRING_ACCEPT
     select BT_PERIPHERAL
     select BT_DIS
-    select BT_BAS
     select BT_SETTINGS
     select SETTINGS
+    imply ZMK_BATTERY_REPORTING
 
 if ZMK_BLE
+
+# BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
+config BT_TINYCRYPT_ECC
+    default y if BT_HCI && !BT_CTLR
 
 choice BT_LL_SW_LLCP_IMPL
     default BT_LL_SW_LLCP_LEGACY
@@ -131,7 +135,7 @@ config SYSTEM_WORKQUEUE_STACK_SIZE
 
 config ZMK_BLE_THREAD_STACK_SIZE
     int "BLE notify thread stack size"
-    default 512
+    default 768
 
 config ZMK_BLE_THREAD_PRIORITY
     int "BLE notify thread priority"
@@ -160,8 +164,9 @@ config BT_DEVICE_APPEARANCE
     default 961
 
 config ZMK_BLE_PASSKEY_ENTRY
-    bool "Experimental: Requiring typing passkey from host to pair BLE connection"
+    bool "Require passkey entry on the keyboard to complete pairing"
     default n
+    select RING_BUFFER
 
 config BT_PERIPHERAL_PREF_MIN_INT
     default 6
@@ -305,6 +310,12 @@ endmenu
 
 menu "Power Management"
 
+config ZMK_BATTERY_REPORTING
+    bool "Battery level detection/reporting"
+    default n
+    select SENSOR
+    select BT_BAS if ZMK_BLE
+
 config ZMK_IDLE_TIMEOUT
     int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
     default 30000
@@ -392,14 +403,18 @@ endif
 #Initialization Priorities
 endmenu
 
-menu "KSCAN Settings"
+menuconfig ZMK_KSCAN
+    bool "ZMK KScan Integration"
+    default y
+    select KSCAN
+
+if ZMK_KSCAN
 
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
     int "Size of the event queue for KSCAN events to buffer events"
     default 4
 
-#KSCAN Settings
-endmenu
+endif # ZMK_KSCAN
 
 menu "Logging"
 
@@ -489,9 +504,17 @@ config ZMK_SETTINGS_SAVE_DEBOUNCE
 endif
 
 config ZMK_BATTERY_REPORT_INTERVAL
-    depends on ZMK_BLE
+    depends on ZMK_BATTERY_REPORTING
     int "Battery level report interval in seconds"
     default 60
+
+config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
+    int "Low priority thread stack size"
+    default 768
+
+config ZMK_LOW_PRIORITY_THREAD_PRIORITY
+    int "Low priority thread priority"
+    default 10
 
 #Advanced
 endmenu
@@ -515,8 +538,24 @@ config ZMK_WPM
     bool "Calculate WPM"
     default n
 
-config SENSOR
+config ZMK_KEYMAP_SENSORS
+    bool "Enable Keymap Sensors support"
     default y
+    depends on DT_HAS_ZMK_KEYMAP_SENSORS_ENABLED
+    select SENSOR
+
+if ZMK_KEYMAP_SENSORS
+
+config ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION
+    int "Default triggers per rotation"
+    help
+      Unless overridden for a sensor in the board/shield/devicetree, this value
+      determines how many times to trigger the bound behavior per full rotation.
+      For tactile encoders with detents, this usually should match the number of
+      detents per rotation of the encoder.
+    default 20
+
+endif # ZMK_KEYMAP_SENSORS
 
 choice CBPRINTF_IMPLEMENTATION
     default CBPRINTF_NANO

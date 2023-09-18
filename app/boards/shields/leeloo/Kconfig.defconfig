@@ -1,5 +1,15 @@
-# Copyright (c) 2022 The ZMK Contributors
+# Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
+
+if SHIELD_LEELOO_REV2_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Leeloo v2"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
 
 if SHIELD_LEELOO_LEFT
 
@@ -11,7 +21,7 @@ config ZMK_SPLIT_ROLE_CENTRAL
 
 endif
 
-if SHIELD_LEELOO_LEFT || SHIELD_LEELOO_RIGHT
+if SHIELD_LEELOO
 
 config ZMK_SPLIT
     default y
@@ -30,7 +40,6 @@ config SSD1306_REVERSE_MODE
 endif # ZMK_DISPLAY
 
 if LVGL
-
 
 config LV_Z_VDB_SIZE
     default 64

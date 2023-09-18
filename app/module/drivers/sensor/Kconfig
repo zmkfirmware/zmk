@@ -1,0 +1,9 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SENSOR
+
+rsource "battery/Kconfig"
+rsource "ec11/Kconfig"
+
+endif # SENSOR

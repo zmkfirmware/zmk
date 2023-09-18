@@ -33,7 +33,7 @@ A macro definition looks like:
 
 :::note
 The text before the colon (`:`) in the declaration of the macro node is the "node label", and is the text
-used to reference the macro in your keymap
+used to reference the macro in your keymap.
 :::
 
 The macro can then be bound in your keymap by referencing it by the label `&zed_em_kay`, e.g.:
@@ -43,6 +43,11 @@ The macro can then be bound in your keymap by referencing it by the label `&zed_
         bindings = <&zed_em_kay>;
     };
 ```
+
+:::note
+For use cases involving sending a single keycode with modifiers, for instance ctrl+tab, the [key press behavior](key-press.md)
+with [modifier functions](../codes/modifiers.mdx#modifier-functions) can be used instead of a macro.
+:::
 
 ### Bindings
 
@@ -106,7 +111,8 @@ bindings
 
 ### Wait Time
 
-The wait time setting controls how long of a delay is introduced between behaviors in the `bindings` list. The initial wait time for a macro, 100ms by default, can
+The wait time setting controls how long of a delay is introduced between behaviors in the `bindings` list. The initial wait time for a macro,
+which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS`](../config/behaviors.md#macro) by default, can
 be set by assigning a value to the `wait-ms` property of the macro, e.g. `wait-ms = <20>;`. If you want to update the wait time at any
 point in the macro bindings list, use `&macro_wait_time`, e.g. `&macro_wait_time 30`. A full example:
 
@@ -121,7 +127,8 @@ bindings
 
 ### Tap Time
 
-The tap time setting controls how long a tapped behavior is held in the `bindings` list. The initial tap time for a macro, 100ms by default, can
+The tap time setting controls how long a tapped behavior is held in the `bindings` list. The initial tap time for a macro,
+which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`](../config/behaviors.md#macro) by default, can
 be set by assigning a value to the `tap-ms` property of the macro, e.g. `tap-ms = <20>;`. If you want to update the tap time at any
 point in a macro bindings list, use `&macro_tap_time`, e.g. `&macro_tap_time 30`. A full example:
 
@@ -140,6 +147,72 @@ Macros use an internal queue to invoke each behavior in the bindings list when t
 
 To prevent issues with longer macros, you can change the size of this queue via the `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` setting in your configuration, [typically through your `.conf` file](../config/index.md). For example, `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` would allow your macro to type about 256 characters.
 
+Another limit worth noting is that the maximum number of bindings you can pass to a `bindings` field in the [Devicetree](../config/index.md#devicetree-files) is 256, which also constrains how many behaviors can be invoked by a macro.
+
+## Parameterized Macros
+
+Macros can also be "parameterized", allowing them to be bound in your keymap with unique values passed into them, e.g.:
+
+```
+    raise_layer {
+        bindings = <&my_one_param_macro A>
+    };
+```
+
+### Defining Parameterized Macros
+
+Parameterized macros must be defined using specific values for the `compatible` and `#binding-cells` properties, depending on how many parameters they require (up to a maximum of two):
+
+```dts
+/ {
+    macros {
+        // 0 params macro
+        my_macro: my_macro {
+            // ...
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>; // Must be 0
+            bindings = /* ... */;
+        };
+
+        // 1 param macro
+        my_one_param_macro: my_one_param_macro {
+            // ...
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>; // Must be 1
+            bindings = /* ... */;
+        };
+
+        // 2 params macro
+        my_two_param_macro: my_two_param_macro {
+            // ...
+            compatible = "zmk,behavior-macro-two-param";
+            #binding-cells = <2>; // Must be 2
+            bindings = /* ... */;
+        };
+    };
+};
+```
+
+### Parameters, Bindings and Controls
+
+There are special macro controls which must be used in order to forward received parameters to the macro's `bindings`. These controls are "one shot" and will determine how received parameters are used on the very next (non-macro control) behavior in the macro's `bindings` list.
+
+For example, to pass the first parameter received into a `&kp` binding, you would use:
+
+```dts
+bindings = <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+```
+
+Because `kp` takes one parameter, you can't simply make the second entry `<&kp>` in the `bindings` list. Whatever value you do pass in will be replaced when the macro is triggered, so you can put _any_ value there, e.g. `0`, `A` keycode, etc. To make it very obvious that the parameter there is not actually going to be used, you can use `MACRO_PLACEHOLDER` which is simply an alias for `0`.
+
+The available parameter controls are:
+
+- `&macro_param_1to1` - pass the first parameter of the macro into the first parameter of the next behavior in the `bindings` list.
+- `&macro_param_1to2` - pass the first parameter of the macro into the second parameter of the next behavior in the `bindings` list.
+
+* `&macro_param_2to1` - pass the second parameter of the macro into the first parameter of the next behavior in the `bindings` list.
+* `&macro_param_2to2` - pass the second parameter of the macro into the second parameter of the next behavior in the `bindings` list.
+
 ## Common Patterns
 
 Below are some examples of how the macro behavior can be used for various useful functionality.
@@ -153,12 +226,36 @@ To achieve this, a combination of a 0ms wait time and splitting the press and re
 
 #### Layer + Modifier
 
-```
-wait-ms = <0>;
-bindings
-    = <&macro_press &mo 1 &kp LSHFT>
-    , <&macro_pause_for_release>
-    , <&macro_release &mo 1 &kp LSHFT>;
+```dts
+/**
+ * Temporarily switches to a layer (`&mo`) while a modifier is held.
+ * Analogous to QMK's `LM()`, using a parameterized macro.
+ *
+ * Params:
+ *  1. Layer to switch to
+ *  2. Modifier to press while layer is active
+ *
+ * Example:
+ *  `&lm NUM_LAYER LSHIFT`
+ */
+lm: lm {
+    label = "LAYER_MOD";
+    compatible = "zmk,behavior-macro-two-param";
+    wait-ms = <0>;
+    tap-ms = <0>;
+    #binding-cells = <2>;
+    bindings
+        = <&macro_param_1to1>
+        , <&macro_press &mo MACRO_PLACEHOLDER>
+        , <&macro_param_2to1>
+        , <&macro_press &kp MACRO_PLACEHOLDER>
+        , <&macro_pause_for_release>
+        , <&macro_param_2to1>
+        , <&macro_release &kp MACRO_PLACEHOLDER>
+        , <&macro_param_1to1>
+        , <&macro_release &mo MACRO_PLACEHOLDER>
+        ;
+};
 ```
 
 #### Layer + Underglow Color
@@ -207,20 +304,24 @@ bindings
 
 ## Convenience C Macro
 
-To avoid repetition or possible typos when declaring a macro, a convenience _C_ macro, named `ZMK_MACRO(name, props)` can be used to simplify things:
+To avoid repetition or possible typos when declaring a **zero parameter macro**, a convenience _C_ macro, named `ZMK_MACRO(name, props)` can be used to simplify things:
 
 ```
-    ZMK_MACRO(my_macro,
+    ZMK_MACRO(my_zero_param_macro,
         wait-ms = <30>;
         tap-ms = <40>;
         bindings = <&kp Z &kp M &kp K>;
     )
 ```
 
+:::note
+`ZMK_MACRO()` **only supports declaring non-parameterized (zero parameter) macros**; parameterized declarations are not currently supported.
+:::
+
 This can be used instead of a complete macro definition. During the firmware build process, the example above would produce the complete macro definition below:
 
 ```
-    my_macro: my_macro {
+    my_zero_param_macro: my_zero_param_macro {
         compatible = "zmk,behavior-macro";
         label = "ZM_my_macro";
         #binding-cells = <0>;

@@ -1,0 +1,15 @@
+file_format: "1"
+id: splitkb_aurora_helix
+name: splitkb.com Aurora Helix
+type: shield
+url: https://splitkb.com/products/aurora-helix-pcb-kit
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+  - underglow
+siblings:
+  - splitkb_aurora_helix_left
+  - splitkb_aurora_helix_right
