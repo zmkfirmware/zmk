@@ -7865,4 +7865,25 @@ export default [
     },
     footnotes: {},
   },
+  {
+    names: ["C_KEYBOARD_LAYOUT_SELECT", "GLOBE"],
+    description: "Layout Select (Apple Globe)",
+    context: "Consumer AC",
+    clarify: true,
+    usages: [
+      {
+        application: consumerApplication,
+        item: usage(consumerPage, 0x29d),
+      },
+    ],
+    documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=150",
+    os: {
+      windows: null,
+      linux: true,
+      android: null,
+      macos: true,
+      ios: null,
+    },
+    footnotes: {},
+  },
 ];
