@@ -12,16 +12,16 @@
 
 #include <errno.h>
 
-#include <zephyr/kernel.h>
-#include <zephyr/device.h>
-#include <zephyr/init.h>
-#include <zephyr/sys/byteorder.h>
-#include <zephyr/drivers/gpio.h>
-#include <zephyr/drivers/i2c.h>
+#include <kernel.h>
+#include <device.h>
+#include <init.h>
+#include <sys/byteorder.h>
+#include <drivers/gpio.h>
+#include <drivers/i2c.h>
 #include <drivers/ext_power.h>
 
 #define LOG_LEVEL CONFIG_GPIO_LOG_LEVEL
-#include <zephyr/logging/log.h>
+#include <logging/log.h>
 
 LOG_MODULE_REGISTER(gpio_max7318);
 
