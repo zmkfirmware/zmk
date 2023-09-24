@@ -18,7 +18,6 @@
 #include <zephyr/sys/byteorder.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/i2c.h>
-#include <drivers/ext_power.h>
 
 #define LOG_LEVEL CONFIG_GPIO_LOG_LEVEL
 #include <zephyr/logging/log.h>
