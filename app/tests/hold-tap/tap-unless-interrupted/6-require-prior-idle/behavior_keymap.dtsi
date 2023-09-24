@@ -4,14 +4,14 @@
 
 / {
     behaviors {
-        hp: behavior_hold_preferred {
+        ht_tui: behavior_hold_tap_tap_unless_interrupted {
             compatible = "zmk,behavior-hold-tap";
-            label = "MOD_TAP";
+            label = "hold_tap_tap_unless_interrupted";
             #binding-cells = <2>;
-            flavor = "hold-preferred";
+            flavor = "tap-unless-interrupted";
             tapping-term-ms = <300>;
             quick-tap-ms = <300>;
-            global-quick-tap-ms = <100>;
+            require-prior-idle-ms = <100>;
             bindings = <&kp>, <&kp>;
         };
     };
@@ -22,8 +22,8 @@
 
         default_layer {
             bindings = <
-                &hp LEFT_SHIFT F &hp LEFT_CONTROL G
-                &kp D &none>;
+                &ht_tui LEFT_SHIFT F      &ht_tui LEFT_CONTROL J
+                &kp D      &kp RIGHT_CONTROL>;
         };
     };
 };

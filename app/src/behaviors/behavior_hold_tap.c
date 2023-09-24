@@ -57,7 +57,7 @@ struct behavior_hold_tap_config {
     char *hold_behavior_dev;
     char *tap_behavior_dev;
     int quick_tap_ms;
-    int global_quick_tap_ms;
+    int require_prior_idle_ms;
     enum flavor flavor;
     bool retro_tap;
     bool hold_trigger_on_release;
@@ -114,7 +114,7 @@ static void store_last_hold_tapped(struct active_hold_tap *hold_tap) {
 }
 
 static bool is_quick_tap(struct active_hold_tap *hold_tap) {
-    if ((last_tapped.timestamp + hold_tap->config->global_quick_tap_ms) > hold_tap->timestamp) {
+    if ((last_tapped.timestamp + hold_tap->config->require_prior_idle_ms) > hold_tap->timestamp) {
         return true;
     } else {
         return (last_tapped.position == hold_tap->position) &&
@@ -706,9 +706,9 @@ static int behavior_hold_tap_init(const struct device *dev) {
         .hold_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 0), label),               \
         .tap_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 1), label),                \
         .quick_tap_ms = DT_INST_PROP(n, quick_tap_ms),                                             \
-        .global_quick_tap_ms = DT_INST_PROP(n, global_quick_tap)                                   \
-                                   ? DT_INST_PROP(n, quick_tap_ms)                                 \
-                                   : DT_INST_PROP(n, global_quick_tap_ms),                         \
+        .require_prior_idle_ms = DT_INST_PROP(n, global_quick_tap)                                 \
+                                     ? DT_INST_PROP(n, quick_tap_ms)                               \
+                                     : DT_INST_PROP(n, require_prior_idle_ms),                     \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
         .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
         .hold_trigger_on_release = DT_INST_PROP(n, hold_trigger_on_release),                       \
