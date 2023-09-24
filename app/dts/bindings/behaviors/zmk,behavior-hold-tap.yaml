@@ -22,7 +22,7 @@ properties:
     type: int
   global-quick-tap: # deprecated
     type: boolean
-  global-quick-tap-ms:
+  require-prior-idle-ms:
     type: int
     default: -1
   flavor:

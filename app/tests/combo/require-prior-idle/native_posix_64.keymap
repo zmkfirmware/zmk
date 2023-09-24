@@ -9,7 +9,7 @@
             timeout-ms = <50>;
             key-positions = <0 1>;
             bindings = <&kp X>;
-            global-quick-tap-ms = <100>;
+            require-prior-idle-ms = <100>;
         };
 
         combo_two {
