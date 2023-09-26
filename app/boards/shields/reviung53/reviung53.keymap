@@ -10,13 +10,13 @@
 #include <dt-bindings/zmk/rgb.h>
 
 / {
-        conditional_layers {
-                compatible = "zmk,conditional-layers";
-                tri_layer {
-                if-layers = <1 2>;
-                then-layer = <3>;
-                };
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+        tri_layer {
+            if-layers = <1 2>;
+            then-layer = <3>;
         };
+    };
 
         keymap {
                 compatible = "zmk,keymap";
