@@ -100,7 +100,7 @@
                         bindings = <
                           &kp ESC   &none      &none     &none     &none      &none     &none      &none      &none     &kp DEL
    &kp TAB      &none     &kp UP    &none      &none     &none     &none      &none     &none      &none      &none     &kp BSPC
-   &mo 4        &kp LEFT  &kp DOWN  &kp RIGHT  &none     &none     &kp LEFT   &kp DOWN  &kp UP     &kp RIGHT  &none     &kp RET
+   &trans       &kp LEFT  &kp DOWN  &kp RIGHT  &none     &none     &kp LEFT   &kp DOWN  &kp UP     &kp RIGHT  &none     &kp RET
    &kp LSHFT    &none     &none     &none      &none     &none     &kp HOME   &kp END   &kp PG_UP  &kp PG_DN            &kp RSHFT
    &kp LCTRL    &kp LCMD  &kp LALT             &kp SPACE           &kp SPACE                       &kp LALT   &kp RCMD  &kp RCTRL
                         >;
