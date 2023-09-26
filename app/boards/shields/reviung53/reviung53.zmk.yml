@@ -6,3 +6,4 @@ url: https://github.com/gtips/reviung/tree/master/reviung53
 requires: [pro_micro]
 features:
   - keys
+  - underglow
