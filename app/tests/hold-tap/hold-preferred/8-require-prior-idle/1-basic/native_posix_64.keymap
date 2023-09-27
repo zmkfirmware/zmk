@@ -16,7 +16,7 @@
         ZMK_MOCK_PRESS(1,0,10)
         ZMK_MOCK_RELEASE(1,0,10)
         ZMK_MOCK_RELEASE(0,0,400)
-        /* global quick tap */
+        /* require-prior-idle */
         ZMK_MOCK_PRESS(1,0,10)
         ZMK_MOCK_PRESS(0,0,400)
         ZMK_MOCK_RELEASE(1,0,10)

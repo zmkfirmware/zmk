@@ -58,7 +58,7 @@ For example, the following hold-tap configuration enables `require-prior-idle-ms
 ```
 rpi: require_prior_idle {
     compatible = "zmk,behavior-hold-tap";
-    label = "GLOBAL_QUICK_TAP";
+    label = "REQUIRE_PRIOR_IDLE";
     #binding-cells = <2>;
     flavor = "tap-preferred";
     tapping-term-ms = <200>;
