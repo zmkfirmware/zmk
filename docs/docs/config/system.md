@@ -71,6 +71,7 @@ for more information on configuring Bluetooth.
 | `CONFIG_BT_MAX_PAIRED`                      | int  | Maximum number of paired Bluetooth devices                            | 5       |
 | `CONFIG_ZMK_BLE`                            | bool | Enable ZMK as a Bluetooth keyboard                                    |         |
 | `CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START`       | bool | Clears all bond information from the keyboard on startup              | n       |
+| `CONFIG_ZMK_BOOTLOADER_BLE_CLEAR_BONDS`     | bool | Reboots to bootloader after clearing all bond information             | n       |
 | `CONFIG_ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE` | int  | Max number of consumer HID reports to queue for sending over BLE      | 5       |
 | `CONFIG_ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE` | int  | Max number of keyboard HID reports to queue for sending over BLE      | 20      |
 | `CONFIG_ZMK_BLE_INIT_PRIORITY`              | int  | BLE init priority                                                     | 50      |
