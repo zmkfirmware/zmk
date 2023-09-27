@@ -12,9 +12,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
-            bindings = <
-    &sys_reset
-            >;
+            bindings = <&sys_reset>;
         };
     };
 };

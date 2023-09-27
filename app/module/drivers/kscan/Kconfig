@@ -1,0 +1,93 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+DT_COMPAT_ZMK_KSCAN_COMPOSITE := zmk,kscan-composite
+DT_COMPAT_ZMK_KSCAN_GPIO_DEMUX := zmk,kscan-gpio-demux
+DT_COMPAT_ZMK_KSCAN_GPIO_DIRECT := zmk,kscan-gpio-direct
+DT_COMPAT_ZMK_KSCAN_GPIO_MATRIX := zmk,kscan-gpio-matrix
+DT_COMPAT_ZMK_KSCAN_MOCK := zmk,kscan-mock
+
+if KSCAN
+
+config ZMK_KSCAN_COMPOSITE_DRIVER
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_COMPOSITE))
+
+config ZMK_KSCAN_GPIO_DRIVER
+    bool
+    select GPIO
+    select ZMK_DEBOUNCE
+
+config ZMK_KSCAN_GPIO_DEMUX
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_GPIO_DEMUX))
+    select ZMK_KSCAN_GPIO_DRIVER
+
+config ZMK_KSCAN_GPIO_DIRECT
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_GPIO_DIRECT))
+    select ZMK_KSCAN_GPIO_DRIVER
+
+config ZMK_KSCAN_GPIO_MATRIX
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_GPIO_MATRIX))
+    select ZMK_KSCAN_GPIO_DRIVER
+
+if ZMK_KSCAN_GPIO_MATRIX
+
+config ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS
+    int "Ticks to wait before reading inputs after an output set active"
+    default 0
+    help
+        When iterating over each output to drive it active, read inputs, then set
+        inactive again, some boards may take time for output to propagate to the
+        inputs. In that scenario, set this value to a positive value to configure
+        the number of ticks to wait after setting an output active before reading
+        the inputs for their active state.
+
+config ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS
+    int "Ticks to wait between each output when scanning"
+    default 1 if SOC_RP2040
+    default 0
+    help
+        When iterating over each output to drive it active, read inputs, then set
+        inactive again, some boards may take time for the previous output to
+        "settle" before reading inputs for the next active output column. In that
+        scenario, set this value to a positive value to configure the number of
+        ticks to wait after reading each column of keys.
+
+endif # ZMK_KSCAN_GPIO_MATRIX
+
+config ZMK_KSCAN_MOCK_DRIVER
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_MOCK))
+
+if ZMK_KSCAN_GPIO_DRIVER
+
+config ZMK_KSCAN_MATRIX_POLLING
+    bool "Poll for key event triggers instead of using interrupts on matrix boards."
+
+config ZMK_KSCAN_DIRECT_POLLING
+    bool "Poll for key event triggers instead of using interrupts on direct wired boards."
+
+config ZMK_KSCAN_DEBOUNCE_PRESS_MS
+    int "Debounce time for key press in milliseconds."
+    default -1
+    help
+        Global debounce time for key press in milliseconds.
+        If this is -1, the debounce time is controlled by the debounce-press-ms
+        Devicetree property, which defaults to 5 ms. Otherwise this overrides the
+        debounce time for all key scan drivers to the chosen value.
+
+config ZMK_KSCAN_DEBOUNCE_RELEASE_MS
+    int "Debounce time for key release in milliseconds."
+    default -1
+    help
+        Global debounce time for key release in milliseconds.
+        If this is -1, the debounce time is controlled by the debounce-release-ms
+        Devicetree property, which defaults to 5 ms. Otherwise this overrides the
+        debounce time for all key scan drivers to the chosen value.
+
+endif
+
+endif # KSCAN
