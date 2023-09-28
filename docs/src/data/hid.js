@@ -7867,7 +7867,7 @@ export default [
   },
   {
     names: ["C_KEYBOARD_LAYOUT_SELECT", "GLOBE"],
-    description: "Layout Select (Apple Globe)",
+    description: "AC Next Keyboard Layout Select (Apple Globe)",
     context: "Consumer AC",
     clarify: true,
     usages: [
