@@ -7876,7 +7876,7 @@ export default [
         item: usage(consumerPage, 0x29d),
       },
     ],
-    documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=150",
+    documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=153",
     os: {
       windows: null,
       linux: null,
