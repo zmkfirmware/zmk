@@ -227,8 +227,9 @@ static int filter_timed_out_candidates(int64_t timestamp) {
         }
     }
 
-    LOG_DBG("after filtering out timed out combo candidates: remaining_candidates=%d timestamp=%d",
-            remaining_candidates, timestamp);
+    LOG_DBG(
+        "after filtering out timed out combo candidates: remaining_candidates=%d timestamp=%lld",
+        remaining_candidates, timestamp);
 
     return remaining_candidates;
 }
