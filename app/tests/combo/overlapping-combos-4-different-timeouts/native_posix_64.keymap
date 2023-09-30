@@ -56,7 +56,7 @@
     ZMK_MOCK_RELEASE(0,0,delay_next)
 #define release_D_and_wait(delay_next) \
     ZMK_MOCK_RELEASE(1,1,delay_next)
- 
+
 &kscan {
     events = <
         /* Note: This starts at T+50 because the ZMK_MOCK_PRESS seems to launch the first event at T+(first wait duration). So in our case T+50 */
