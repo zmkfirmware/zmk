@@ -5,7 +5,7 @@
  */
 
 #include "mikoto-pinctrl.dtsi"
-#include "arduino_pro_micro_pins_6_1_0.dtsi"
+#include "arduino_pro_micro_pins_v6.dtsi"
 
 &pinctrl {
     i2c1_default: i2c1_default {
