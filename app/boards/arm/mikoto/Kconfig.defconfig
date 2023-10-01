@@ -3,7 +3,7 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if BOARD_MIKOTO_520
+if BOARD_MIKOTO
 
 config BOARD
     default "mikoto"
@@ -25,4 +25,4 @@ choice BOARD_MIKOTO_CHARGER_CURRENT
     default BOARD_MIKOTO_CHARGER_CURRENT_100MA
 endchoice
 
-endif # BOARD_MIKOTO_520
+endif # BOARD_MIKOTO
