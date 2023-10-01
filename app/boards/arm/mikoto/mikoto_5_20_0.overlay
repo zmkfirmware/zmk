@@ -5,4 +5,4 @@
  */
 
 #include "mikoto-pinctrl.dtsi"
-#include "arduino_pro_micro_pins_5_20_0.dtsi"
+#include "arduino_pro_micro_pins_v5.dtsi"
