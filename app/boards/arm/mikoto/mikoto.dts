@@ -6,8 +6,6 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
-// #include "arduino_pro_micro_pins_5_20_0.dtsi"
-// #include "mikoto_5_20_0-pinctrl.dtsi"
 
 / {
     model = "mikoto";
