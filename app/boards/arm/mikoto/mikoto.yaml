@@ -1,5 +1,5 @@
-identifier: mikoto_520
-name: mikoto_520
+identifier: mikoto
+name: mikoto
 type: mcu
 arch: arm
 toolchain:

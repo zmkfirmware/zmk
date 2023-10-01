@@ -1,0 +1,7 @@
+/*
+ * Copyright (c) 2023 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "arduino_pro_micro_pins_5_20_0.dtsi"
