@@ -4,4 +4,43 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "mikoto-pinctrl.dtsi"
 #include "arduino_pro_micro_pins_6_1_0.dtsi"
+
+&pinctrl {
+    i2c1_default: i2c1_default {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 23)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 19)>;
+        };
+    };
+
+    i2c1_sleep: i2c1_sleep {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 0, 23)>,
+                    <NRF_PSEL(TWIM_SCL, 0, 19)>;
+            low-power-enable;
+        };
+    };
+};
+
+&i2c1 {
+    status = "okay";
+    compatible = "nordic,nrf-twi";
+    pinctrl-0 = <&i2c1_default>;
+    pinctrl-1 = <&i2c1_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    builtin_fuel_gauge: max17048@36 {
+        compatible = "maxim,max17048";
+        status = "okay";
+        label = "max17048";
+        reg = <0x36>;
+    };
+};
+
+/ {
+    chosen {
+        zmk,battery = &builtin_fuel_gauge;
+    };
+};
