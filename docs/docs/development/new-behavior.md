@@ -404,6 +404,7 @@ After creating the `.dtsi` from above, update `app/dts/behaviors.dtsi` to includ
 #include <behaviors/key_repeat.dtsi>
 #include <behaviors/backlight.dtsi>
 #include <behaviors/macros.dtsi>
+#include <behaviors/combos.dtsi>
 // highlight-next-line
 #include <behaviors/new_behavior_instance.dtsi>
 ```

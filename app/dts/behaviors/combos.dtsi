@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+ / {
+    behaviors {
+        partial_hold_position: combo_partial_hold_position {
+            compatible = "zmk,combo-partial-hold-position";
+            label = "PARTIAL_HOLD_POSITION";
+            #binding-cells = <1>;
+        };
+    };
+};

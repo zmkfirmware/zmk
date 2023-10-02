@@ -11,11 +11,12 @@ See [Configuration Overview](index.md) for instructions on how to change these s
 
 Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 
-| Config                                | Type | Description                                                    | Default |
-| ------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS` | int  | Maximum number of combos that can be active at the same time   | 4       |
-| `CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY` | int  | Maximum number of active combos that use the same key position | 5       |
-| `CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO` | int  | Maximum number of keys to press to activate a combo            | 4       |
+| Config                                  | Type | Description                                                    | Default |
+| --------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS`   | int  | Maximum number of combos that can be active at the same time   | 4       |
+| `CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY`   | int  | Maximum number of active combos that use the same key position | 5       |
+| `CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO`   | int  | Maximum number of keys to press to activate a combo            | 4       |
+| `CONFIG_ZMK_COMBO_MAX_LAYERS_PER_COMBO` | int  | Maximum number of layers specified per combo                   | 4       |
 
 If `CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY` is 5, you can have 5 separate combos that use position `0`, 5 combos that use position `1`, and so on.
 
@@ -31,12 +32,13 @@ The `zmk,combos` node itself has no properties. It should have one child node pe
 
 Each child node can have the following properties:
 
-| Property        | Type          | Description                                                                                           | Default |
-| --------------- | ------------- | ----------------------------------------------------------------------------------------------------- | ------- |
-| `bindings`      | phandle-array | A [behavior](../features/keymaps.md#behaviors) to run when the combo is triggered                     |         |
-| `key-positions` | array         | A list of key position indices for the keys which should trigger the combo                            |         |
-| `timeout-ms`    | int           | All the keys in `key-positions` must be pressed within this time in milliseconds to trigger the combo | 50      |
-| `slow-release`  | bool          | Releases the combo when all keys are released instead of when any key is released                     | false   |
-| `layers`        | array         | A list of layers on which the combo may be triggered. `-1` allows all layers.                         | `<-1>`  |
+| Property                 | Type          | Description                                                                                                                                                        | Default |
+| ------------------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
+| `bindings`               | phandle-array | A [behavior](../features/keymaps.md#behaviors) to run when the combo is triggered, along with optional `partial-hold-position` specifiers with associated bindings |         |
+| `key-positions`          | array         | A list of key position indices for the keys which should trigger the combo                                                                                         |         |
+| `timeout-ms`             | int           | All the keys in `key-positions` must be pressed within this time in milliseconds to trigger the combo                                                              | 50      |
+| `slow-release`           | bool          | Releases the combo when all keys are released instead of when any key is released                                                                                  | false   |
+| `slow-release-positions` | array         | A list of key position indices for the keys that must be held during `slow-release`. If any key in `slow-release-positions` is released, the combo is released.    |         |
+| `layers`                 | array         | A list of layers on which the combo may be triggered. `-1` allows all layers.                                                                                      | `<-1>`  |
 
 The `key-positions` array must not be longer than the `CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO` setting, which defaults to 4. If you want a combo that triggers when pressing 5 keys, then you must change the setting to 5.

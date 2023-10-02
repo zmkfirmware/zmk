@@ -1,0 +1,8 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Add a partial hold position to a combo
+
+compatible: "zmk,combo-partial-hold-position"
+
+include: one_param.yaml

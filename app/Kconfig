@@ -357,6 +357,10 @@ config ZMK_COMBO_MAX_KEYS_PER_COMBO
     int "Maximum number of keys per combo"
     default 4
 
+config ZMK_COMBO_MAX_LAYERS_PER_COMBO
+    int "Maximum number of layers specified per combo"
+    default 4
+
 #Combo options
 endmenu
 

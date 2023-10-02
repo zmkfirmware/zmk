@@ -20,6 +20,10 @@ child-binding:
       default: 50
     slow-release:
       type: boolean
+    slow-release-positions:
+      type: array
+      required: false
+      default: []
     layers:
       type: array
       default: [-1]
