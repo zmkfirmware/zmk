@@ -82,14 +82,14 @@ Then you have to add the following lines inside the root devicetree node on the 
         compatible = "pwm-leds";
         label = "Backlight LEDs";
         pwm_led_0 {
-            pwms = <&pwm0 45 10000 PWM_POLARITY_NORMAL>;
+            pwms = <&pwm0 0 10000 PWM_POLARITY_NORMAL>;
             label = "Backlight LED 0";
         };
     };
 };
 ```
 
-The value inside `pwm_led_0` must be the same as you used before.
+The value inside `pwm_led_0` after `&pwm0` must be the channel number. Since (`<ch0-pin>`) is used in the `&pwm0` node the channel in this example is 0.
 
 In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible.
 
@@ -174,6 +174,8 @@ Then you have to add the following lines inside the root devicetree node on the 
     };
 };
 ```
+
+The value inside `pwm_led_0` after `&pwm0` must be the channel number. Since (`PWM_OUT0`) is defined in the pinctrl node the channel in this example is 0.
 
 In this example `10000` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible.
 
