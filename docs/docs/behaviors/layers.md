@@ -59,7 +59,7 @@ Example:
 
 ### Configuration
 
-You can configure a different tapping term in your keymap or others options from the [hold-tap](hold-tap.md#advanced-configuration) documentation page:
+You can configure a different tapping term or tweak other properties noted in the [hold-tap](hold-tap.md#advanced-configuration) documentation page in your keymap:
 
 ```
 &lt {
