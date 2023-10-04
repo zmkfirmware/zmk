@@ -57,6 +57,22 @@ Example:
 &lt LOWER SPACE
 ```
 
+### Configuration
+
+You can configure a different tapping term or tweak other properties noted in the [hold-tap](hold-tap.md#advanced-configuration) documentation page in your keymap:
+
+```
+&lt {
+    tapping-term-ms = <200>;
+};
+
+/ {
+    keymap {
+        ...
+    };
+};
+```
+
 :::info
 Functionally, the layer-tap is a [hold-tap](hold-tap.md) of the ["tap-preferred" flavor](hold-tap.md/#flavors) and a [`tapping-term-ms`](hold-tap.md/#tapping-term-ms) of 200 that takes in a [`momentary layer`](#momentary-layer) and a [keypress](key-press.md) as its "hold" and "tap" parameters, respectively.
 
