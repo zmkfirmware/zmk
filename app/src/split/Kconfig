@@ -18,9 +18,13 @@ config ZMK_SPLIT_BLE
     select BT_USER_PHY_UPDATE
     select BT_AUTO_PHY_UPDATE
 
+config ZMK_SPLIT_SERIAL
+    bool "Serial"
+
 endchoice
 
 #ZMK_SPLIT
 endif
 
 rsource "bluetooth/Kconfig"
+rsource "serial/Kconfig"

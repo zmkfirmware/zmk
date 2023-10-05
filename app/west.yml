@@ -4,6 +4,9 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
+    - name: grandcentrix
+      url-base: https://github.com/grandcentrix
+
   projects:
     - name: zephyr
       remote: zmkfirmware
@@ -30,5 +33,11 @@ manifest:
           - edtt
           - trusted-firmware-m
           - sof
+    - name: cobs
+      repo-path: cobs
+      remote: grandcentrix
+      revision: 0876ef80209618b10508af728731f4944f9d2fd2
+      path: modules/lib/cobs
+
   self:
     west-commands: scripts/west-commands.yml
