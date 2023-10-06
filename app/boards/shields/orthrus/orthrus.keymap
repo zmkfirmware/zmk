@@ -1,0 +1,66 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+&mt {
+      flavor = "tap-preferred";
+      tapping-term-ms = <400>;
+      quick-tap-ms = <200>;
+};
+
+#define DFT 0
+#define LWR 1
+#define RSE 2
+#define ADJ 3
+
+/ {
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+                      bindings = <
+    &mt F12 ESC &mt F1 N1 &mt F2 N2  &mt F3 N3 &mt F4 N4 &mt F5 N5     &mt F6 N6 &mt F7 N7 &mt F8 N8 &mt F9 N9 &mt F10 N0 &mt F11 MINUS
+    &kp TAB     &kp Q     &kp W      &kp E     &kp R     &kp T         &kp Y     &kp U     &kp I     &kp O     &kp P      &kp LBRC
+    &kp LGUI    &kp A     &kp S      &kp D     &kp F     &kp G         &kp H     &kp J     &kp K     &kp L     &kp SEMI   &kp SQT
+    &kp LSHFT   &kp Z     &kp X      &kp C     &kp V     &kp B         &kp N     &kp M     &kp COMMA &kp DOT   &kp SLASH  &kp RSHFT
+                          &mo ADJ    &kp LCTRL &mo RSE   &kp SPACE     &kp ENTER &mo LWR   &kp RALT  &kp BKSP
+                       >;
+                };
+
+                lower_layer {
+                      bindings = <
+    &kp GRAVE &kp EXCL  &kp AT   &kp HASH &kp DLLR  &kp PRCNT    &kp CARET &kp AMPS &kp STAR &kp LPRN &kp RPRN &kp UNDER
+    &kp TILD  &kp AT    &kp HASH &kp DLLR &kp CARET &kp STAR     &trans    &trans   &trans   &trans   &trans   &trans
+    &kp CAPS  &kp QMARK &none    &kp LBKT &kp RBKT  &kp COLN     &trans    &trans   &trans   &trans   &trans   &trans
+    &trans    &kp UNDER &kp DQT  &kp LPRN &kp RPRN  &kp PIPE     &trans    &trans   &trans   &trans   &trans   &trans
+                        &trans   &trans   &trans    &trans       &trans    &trans   &trans   &trans 
+                       >;
+                };
+
+               raise_layer {
+                     bindings = <
+    &trans &none  &none  &none  &none  &none      &kp PSCRN &none  &none  &none  &none   &kp EQL
+    &trans &trans &trans &trans &trans &trans     &kp INS   &kp N7 &kp N8 &kp N9 &trans  &kp RBRC
+    &trans &trans &trans &trans &trans &trans     &kp DEL   &kp N4 &kp N5 &kp N6 &kp LT  &kp GT
+    &trans &trans &trans &trans &trans &trans     &kp N0    &kp N1 &kp N2 &kp N3 &kp DOT &trans
+                  &trans &trans &trans &trans     &trans    &trans &trans &lt ADJ BKSP
+                      >;
+                };
+
+               adjust_layer {
+                     bindings = <
+    &trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4     &trans      &trans   &trans   &trans   &trans    &trans
+    &trans &bt BT_PRV   &bt BT_NXT   &bt BT_CLR   &trans       &trans           &trans      &kp HOME &kp PGDN &kp PGUP &kp END   &kp BSLH
+    &trans &trans       &trans       &trans       &trans       &trans           &trans      &kp LEFT &kp DOWN &kp UP   &kp RIGHT &trans
+    &trans &trans       &trans       &trans       &reset       &bootloader      &bootloader &reset   &trans   &trans   &trans    &trans
+                        &trans       &trans       &trans       &trans           &trans      &trans   &trans   &trans
+                      >;
+                };
+        };
+};

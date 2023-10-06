@@ -1,0 +1,11 @@
+file_format: "1"
+id: orthrus
+name: Orthrus
+type: shield
+url: https://github.com/
+requires: [mdbt50q]
+features:
+  - keys
+siblings:
+  - orthrus_left
+  - orthrus_right

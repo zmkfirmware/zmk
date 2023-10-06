@@ -1,0 +1,8 @@
+# Copyright (c) 2020 Pete Johanson
+# SPDX-License-Identifier: MIT
+
+config SHIELD_ORTHRUS_LEFT
+	def_bool $(shields_list_contains,orthrus_left)
+
+config SHIELD_ORTHRUS_RIGHT
+	def_bool $(shields_list_contains,orthrus_right)

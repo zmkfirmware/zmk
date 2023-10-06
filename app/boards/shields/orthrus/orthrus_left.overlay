@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "orthrus.dtsi"
+
+/ {
+  chosen {
+    zmk,kscan = &kscan0;
+  };
+
+kscan0: kscan {
+    compatible = "zmk,kscan-gpio-direct";
+    label = "KSCAN";
+    input-gpios
+    = <&gpio1 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 23 #0 28
+    , <&gpio0 30 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 29 #1 29
+    , <&gpio0  0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  0 #2 30
+    , <&gpio1  9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  5 #3 31
+    , <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  9 #4 32
+    , <&gpio0 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 13 #5 33
+    , <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 22 #6 34
+    , <&gpio0 31 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 28 #7 35
+    , <&gpio0 27 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 30 #8 36
+    , <&gpio0  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  4 #9 37
+    , <&gpio1  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  8 #10 38
+    , <&gpio0 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 14 #11 39
+    , <&gpio1 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 21 #12 40
+    , <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 25 #13 41
+    , <&gpio1  3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 11 #14 42
+    , <&gpio0  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  3 #15 43
+    , <&gpio0  7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  7 #16 44
+    , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 15 #17 45
+    , <&gpio1  7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 20 #18 46
+    , <&gpio1 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 24 #19 47
+    , <&gpio1  1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 12 #20 48
+    , <&gpio0  4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  2 #21 49
+    , <&gpio0  5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  6 #22 50
+    , <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 16 #23 51
+    , <&gpio0  1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  1 #24 52
+    , <&gpio0 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 10 #25 53
+    , <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 17 #26 54
+    , <&gpio1  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 18 #27 55
+    ;
+ };
+};
+
+//&uart0 {
+//  tx-pin = <27>;
+//};

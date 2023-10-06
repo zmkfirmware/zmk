@@ -1,0 +1,56 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "orthrus.dtsi"
+
+/ {
+  chosen {
+    zmk,kscan = &kscan0;
+  };
+
+kscan0: kscan {
+    compatible = "zmk,kscan-gpio-direct";
+    label = "KSCAN";
+    input-gpios
+    = <&gpio0 30 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 29 #0 28
+    , <&gpio0  0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  0 #1 29
+    , <&gpio0  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  4 #2 30
+    , <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  9 #3 29
+    , <&gpio0 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 13 #4 30
+    , <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 17 #5 31
+    , <&gpio0 31 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 28 #6 32
+    , <&gpio0  1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  1 #7 33
+    , <&gpio1  9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  5 #8 34
+    , <&gpio0 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 10 #9 35
+    , <&gpio0 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 14 #10 36
+    , <&gpio1  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 18 #11 37
+    , <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 25 #12 38
+    , <&gpio0  4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  2 #13 39
+    , <&gpio0  5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  6 #14 40
+    , <&gpio1  3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 11 #15 41
+    , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 15 #16 42
+    , <&gpio1  5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 19 #17 43
+    , <&gpio1 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 24 #18 44
+    , <&gpio0  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  3 #19 45
+    , <&gpio0  7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  7 #20 46
+    , <&gpio1  1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 12 #21 47
+    , <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 16 #22 48
+    , <&gpio1  7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 20 #24 49
+    , <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 22 #25 50
+    , <&gpio1 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 23 #26 51
+    , <&gpio0 27 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> // 30 #27 52
+    , <&gpio1  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)> //  8 #28 53   
+    ;
+ };
+};
+
+&default_transform {
+  col-offset = <28>;
+};
+
+//&uart0 {
+//  tx-pin = <27>;
+//};

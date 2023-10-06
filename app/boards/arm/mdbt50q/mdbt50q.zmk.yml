@@ -1,0 +1,10 @@
+file_format: "1"
+id: mdbt50q
+name: mdbt50q Module
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://raytac.com
+exposes: [raytac_mdbt50q]

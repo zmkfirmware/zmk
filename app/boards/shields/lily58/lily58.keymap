@@ -7,64 +7,109 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
-#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/outputs.h>
+#include "lily58.h"
+
+&kscan0 {
+    debounce-press-ms = <3>;
+    debounce-release-ms = <3>;
+    debounce-scan-period-ms = <10>;
+};
+
+&mt {
+    flavor = "tap-preferred";
+    tapping-term-ms = <400>;
+    quick-tap-ms = <200>;
+};
+
+&caps_word {
+    continue-list = <UNDER MINUS BSPC>;
+};
 
 / {
-    keymap {
-        compatible = "zmk,keymap";
+        keymap {
+                compatible = "zmk,keymap";
 
-        default_layer {
-// ------------------------------------------------------------------------------------------------------------
-// |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   `   |
-// |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
-// |  CTRL |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
-// | SHIFT |  Z  |  X  |  C   |  V   |  B   |   "["  |  |  "]"  |  N   |  M    |  ,    |  .   |   /   | SHIFT |
-//                     | ALT  | GUI  | LOWER|  SPACE |  | ENTER | RAISE| BSPC  | GUI   |
-            bindings = <
-&kp ESC   &kp N1 &kp N2 &kp N3   &kp N4   &kp N5                     &kp N6 &kp N7   &kp N8    &kp N9  &kp N0   &kp GRAVE
-&kp TAB   &kp Q  &kp W  &kp E    &kp R    &kp T                      &kp Y  &kp U    &kp I     &kp O   &kp P    &kp MINUS
-&kp LCTRL &kp A  &kp S  &kp D    &kp F    &kp G                      &kp H  &kp J    &kp K     &kp L   &kp SEMI &kp SQT
-&kp LSHFT &kp Z  &kp X  &kp C    &kp V    &kp B  &kp LBKT   &kp RBKT &kp N  &kp M    &kp COMMA &kp DOT &kp FSLH &kp RSHFT
-                        &kp LALT &kp LGUI &mo 1  &kp SPACE  &kp RET  &mo 2  &kp BSPC &kp RGUI
-            >;
+                default_layer {
+                      bindings = <
+    
+//                ┌────────┬────────┬────────┬────────┬────────┬────────┐                      ┌────────┬────────┬────────┬────────┬────────┬────────┐
+                     ESCT     FN1      FN2      FN3      FN4      FN5                              FN6     FN7      FN8      FN9      FN10     FN11
+//                ├────────┼────────┼────────┼────────┼────────┼────────┤                      ├────────┼────────┼────────┼────────┼────────┼────────┤
+                   &kp TAB   &kp Q    &kp W    &kp E    &kp R    &kp T                            &kp Y   &kp U    &kp I    &kp O    &kp P   &kp LBKT
+//                ├────────┼────────┼────────┼────────┼────────┼────────┤                      ├────────┼────────┼────────┼────────┼────────┼────────┤
+                  &kp LCTRL  &kp A    &kp S    &kp D    &kp F    &kp G                            &kp H   &kp J    &kp K    &kp L   &kp SEMI &kp SQT
+//                ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐    ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+                  &kp LSHFT  &kp Z    &kp X    &kp C    &kp V    &kp B   &kp LPAR      &kp RPAR   &kp N   &kp M  &kp COMMA &kp DOT &kp SLASH &kp RSHFT
+//                └────────┴────────┴─────┬──┴─────┬──┴─────┬──┴─────┬──┴────────┤    ├────────┴──┬─────┴──┬─────┴──┬─────┴──┬─────┴────────┴────────┘
+                                           &mo ADJ  &kp LGUI  &mo RSE  &kp SPACE        &kp ENTER  &mo LWR  &kp RALT &kp BKSP
+//                                        └────────┴────────┴────────┴───────────┘    └───────────┴────────┴────────┴────────┘
+                       >;
+                };
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+                lower_layer {
+                      bindings = <
+
+//                ┌────────┬────────┬────────┬────────┬────────┬────────┐                      ┌────────┬────────┬────────┬────────┬────────┬────────┐
+                  &kp GRAVE &kp EXCL  &kp AT  &kp HASH &kp DLLR &kp PRCNT                      &kp CARET &kp AMPS &kp STAR &kp LPRN &kp RPRN &kp UNDER  
+//                ├────────┼────────┼────────┼────────┼────────┼────────┤                      ├────────┼────────┼────────┼────────┼────────┼────────┤
+                    ______   &kp AT  &kp HASH &kp DLLR &kp CARET &kp STAR                        ______   ______   ______   ______   ______   ______
+//                ├────────┼────────┼────────┼────────┼────────┼────────┤                      ├────────┼────────┼────────┼────────┼────────┼────────┤
+                     CPW   &kp QMARK  XXXXXX  &kp LBKT &kp RBKT &kp COLN                         ______   ______   ______   ______   ______   ______
+//                ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐    ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+                    ______ &kp UNDER &kp DQT  &kp LPRN &kp RPRN &kp PIPE  ______        ______   ______   ______   ______   ______   ______   ______
+//                └────────┴────────┴─────┬──┴─────┬──┴─────┬──┴─────┬──┴────────┤    ├────────┴──┬─────┴──┬─────┴──┬─────┴──┬─────┴────────┴────────┘
+                                            ______   ______   ______      ______        ______      ______   ______   ______
+//                                        └────────┴────────┴────────┴───────────┘    └───────────┴────────┴────────┴────────┘
+                       >;
+                };
+
+                raise_layer {
+                     bindings = <
+
+//                ┌────────┬────────┬────────┬────────┬────────┬────────┐                      ┌────────┬────────┬────────┬────────┬────────┬────────┐
+                    ______   XXXXXX   XXXXXX   XXXXXX   XXXXXX   XXXXXX                        &kp PSCRN  XXXXXX   XXXXXX   XXXXXX   XXXXXX   &kp EQL
+//                ├────────┼────────┼────────┼────────┼────────┼────────┤                      ├────────┼────────┼────────┼────────┼────────┼────────┤
+                    ______   ______   ______   ______   ______   ______                         &kp INS   &kp N7   &kp N8   &kp N9   XXXXXX  &kp RBKT
+//                ├────────┼────────┼────────┼────────┼────────┼────────┤                      ├────────┼────────┼────────┼────────┼────────┼────────┤
+                    ______   ______   ______   ______   ______   ______                          &kp DEL  &kp N4   &kp N5   &kp N6   &kp LT   &kp GT
+//                ├────────┼────────┼────────┼────────┼────────┼────────┼────────┐    ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+                    ______   ______   ______   ______   ______   ______   ______        ______   &kp N0   &kp N1   &kp N2   &kp N3   &kp DOT  ______
+//                └────────┴────────┴─────┬──┴─────┬──┴─────┬──┴─────┬──┴────────┤    ├────────┴──┬─────┴──┬─────┴──┬─────┴──┬─────┴────────┴────────┘
+                                            ______   ______   ______      ______        ______      ______   ______   ______
+//                                        └────────┴────────┴────────┴───────────┘    └───────────┴────────┴────────┴────────┘
+                      >;
+                };
+
+               adjust_layer {
+                     bindings = <
+
+//                ┌──[0]───┬──[1]───┬──[2]───┬──[3]───┬──[4]───┬──[5]───┐                      ┌──[6]───┬──[7]───┬──[8]───┬──[9]───┬──[10]──┬──[11]──┐
+                    ______   Z_BT_0   Z_BT_1   Z_BT_2   Z_BT_3   Z_BT_4                          Z_VUP    XXXXXX   XXXXXX   XXXXXX   XXXXXX   XXXXXX
+//                ├──[12]──┼──[13]──┼──[14]──┼──[15]──┼──[16]──┼──[17]──┤                      ├──[18]──┼──[19]──┼──[20]──┼──[21]──┼──[22]──┼──[23]──┤
+                    ______   ______   ______   ______   OUT_T    Z_BT_C                          Z_VDN   &kp HOME  &kp UP  &kp END  &kp PGUP &kp BSLH
+//                ├──[24]──┼──[25]──┼──[26]──┼──[27]──┼──[28]──┼──[29]──┤                      ├──[30]──┼──[31]──┼──[32]──┼──[33]──┼──[34]──┼──[35]──┤
+                    ______   ______   ______   ______   ______   ______                          Z_MUT   &kp LEFT &kp DOWN &kp RIGHT &kp PGDN ______
+//                ├──[36]──┼──[37]──┼──[38]──┼──[39]──┼──[40]──┼──[41]──┼──[52]──┐    ┌──[53]──┼──[42]──┼──[43]──┼──[44]──┼──[45]──┼──[46]──┼──[47]──┤
+                    ______   ______   ______   ______  &suspend  Z_BOOT   &vim_s        &vim_q   Z_BOOT  &suspend  ______   ______   ______   ______
+//                └────────┴────────┴─────┬──┴[48]─┬──┴[49]─┬──┴[50]─┬──┴──[51]──┤    ├──[54]──┴──┬─[55]┴──┬─[56]┴──┬─[57]┴──┬─────┴────────┴────────┘
+                                            ______   ______   ______      ______        ______      ______   ______   ______
+//                                        └────────┴────────┴────────┴───────────┘    └───────────┴────────┴────────┴────────┘
+                      >;
+                };
         };
 
-        lower_layer {
-// ------------------------------------------------------------------------------------------------------------
-// | BTCLR | BT1 | BT2 |  BT3 |  BT4 |  BT5 |                   |      |       |       |      |       |       |
-// |  F1   |  F2 |  F3 |  F4  |  F5  |  F6  |                   |  F7  |  F8   |  F9   |  F10 |  F11  |  F12  |
-// |   `   |  !  |  @  |  #   |  $   |  %   |                   |  ^   |  &    |  *    |  (   |   )   |   ~   |
-// |       |     |     |      |      |      |        |  |       |      |  _    |  +    |  {   |   }   |  "|"  |
-//                     |      |      |      |        |  |       |      |       |       |
-            bindings = <
-&bt BT_CLR &bt BT_SEL 0     &bt BT_SEL 1      &bt BT_SEL 2      &bt BT_SEL 3 &bt BT_SEL 4                 &trans    &trans    &trans          &trans    &trans    &trans
-&kp F1     &kp F2           &kp F3            &kp F4            &kp F5       &kp F6                       &kp F7    &kp F8    &kp F9          &kp F10   &kp F11   &kp F12
-&kp GRAVE  &kp EXCL         &kp AT            &kp HASH          &kp DOLLAR   &kp PRCNT                    &kp CARET &kp AMPS  &kp KP_MULTIPLY &kp LPAR  &kp RPAR  &kp TILDE
-&trans     &ext_power EP_ON &ext_power EP_OFF &ext_power EP_TOG &trans       &trans    &trans   &trans    &trans    &kp MINUS &kp KP_PLUS     &kp LBRC  &kp RBRC  &kp PIPE
-                                              &trans            &trans       &trans    &trans   &trans    &trans    &trans    &trans
-            >;
-
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-        };
-
-        raise_layer {
-// ------------------------------------------------------------------------------------------------------------
-// |       |     |     |      |      |      |                   |      |       |       |      |       |       |
-// |   `   |  1  |  2  |  3   |  4   |  5   |                   |  6   |   7   |   8   |  9   |   0   |       |
-// |   F1  |  F2 |  F3 |  F4  |  F5  |  F6  |                   |      |   <-  |   v   |  ^   |  ->   |       |
-// |   F7  |  F8 |  F9 |  F10 |  F11 |  F12 |        |  |       |  +   |   -   |   =   |  [   |   ]   |   \   |
-//                     |      |      |      |        |  |       |      |       |       |
-            bindings = <
-&trans    &trans &trans &trans  &trans  &trans                       &trans      &trans    &trans    &trans   &trans    &trans
-&kp GRAVE &kp N1 &kp N2 &kp N3  &kp N4  &kp N5                       &kp N6      &kp N7    &kp N8    &kp N9   &kp N0    &trans
-&kp F1    &kp F2 &kp F3 &kp F4  &kp F5  &kp F6                       &trans      &kp LEFT  &kp DOWN  &kp UP   &kp RIGHT &trans
-&kp F7    &kp F8 &kp F9 &kp F10 &kp F11 &kp F12   &trans   &trans    &kp KP_PLUS &kp MINUS &kp EQUAL &kp LBKT &kp RBKT  &kp BSLH
-                        &trans  &trans  &trans    &trans   &trans    &trans      &trans    &trans
-            >;
-
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-        };
+    combos {
+        compatible = "zmk,combos";
+        // layer toggle
+        COMBO(nlock,  &tog RSE, 28 31)
+        COMBO(caps,   &kp CAPS, 25 34)
+        // vim shortcuts
+    };
+    
+    macros {
+        MACRO(vim_q,  &kp COLON &kp Q &kp EXCL)
+        MACRO(vim_s,  &kp COLON &kp W &kp Q)
+        MACRO(dir_up, &kp DOT &kp DOT &kp FSLH)
     };
 };

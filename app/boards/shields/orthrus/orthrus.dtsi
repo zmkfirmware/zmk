@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+  chosen {
+    zmk,matrix_transform = &default_transform;
+  };
+
+  default_transform: keymap_transform_0 {
+    compatible = "zmk,matrix-transform";
+    columns = <56>;
+    rows = <1>;
+// | SW1  | SW2  | SW3  | SW4  | SW5  | SW6  |   | SW6  | SW5  | SW4  | SW3  | SW2  | SW1  |
+// | SW7  | SW8  | SW9  | SW10 | SW11 | SW12 |   | SW12 | SW11 | SW10 | SW9  | SW8  | SW7  |
+// | SW13 | SW14 | SW15 | SW16 | SW17 | SW18 |   | SW18 | SW17 | SW16 | SW15 | SW14 | SW13 |
+//                      | SW19 | SW20 | SW21 |   | SW21 | SW20 | SW19 |
+    map = <
+RC(0,0)  RC(0,1)  RC(0,2)  RC(0,3)  RC(0,4)  RC(0,5)   RC(0,28) RC(0,29) RC(0,30) RC(0,31) RC(0,32) RC(0,33)
+RC(0,6)  RC(0,7)  RC(0,8)  RC(0,9)  RC(0,10) RC(0,11)  RC(0,34) RC(0,35) RC(0,36) RC(0,37) RC(0,38) RC(0,39)
+RC(0,12) RC(0,13) RC(0,14) RC(0,15) RC(0,16) RC(0,17)  RC(0,40) RC(0,41) RC(0,42) RC(0,43) RC(0,44) RC(0,45)
+RC(0,18) RC(0,19) RC(0,20) RC(0,21) RC(0,22) RC(0,23)  RC(0,46) RC(0,47) RC(0,48) RC(0,49) RC(0,50) RC(0,51)
+                  RC(0,24) RC(0,25) RC(0,26) RC(0,27)  RC(0,52) RC(0,53) RC(0,54) RC(0,55)
+    >;
+  };
+};
