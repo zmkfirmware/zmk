@@ -11,5 +11,3 @@
 // https://github.com/adafruit/Adafruit_nRF52_Bootloader/blob/d6b28e66053eea467166f44875e3c7ec741cb471/src/main.c#L107
 
 #define RST_UF2 0x57
-#define RST_OTA 0xA8
-#define RST_SUSPEND 0xFE
