@@ -52,7 +52,7 @@ static uint8_t _zmk_keymap_layer_default = 0;
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
-#define LAYER_LABEL(node) DT_PROP_OR(node, label, NULL)
+#define LAYER_NAME(node) DT_PROP_OR(node, display_name, DT_PROP_OR(node, label, NULL))
 
 // State
 
@@ -65,7 +65,7 @@ static struct zmk_behavior_binding zmk_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_
     DT_INST_FOREACH_CHILD_SEP(0, TRANSFORMED_LAYER, (, ))};
 
 static const char *zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN] = {
-    DT_INST_FOREACH_CHILD_SEP(0, LAYER_LABEL, (, ))};
+    DT_INST_FOREACH_CHILD_SEP(0, LAYER_NAME, (, ))};
 
 #if ZMK_KEYMAP_HAS_SENSORS
 
@@ -145,7 +145,7 @@ bool is_active_layer(uint8_t layer, zmk_keymap_layers_state_t layer_state) {
     return (layer_state & BIT(layer)) == BIT(layer) || layer == _zmk_keymap_layer_default;
 }
 
-const char *zmk_keymap_layer_label(uint8_t layer) {
+const char *zmk_keymap_layer_name(uint8_t layer) {
     if (layer >= ZMK_KEYMAP_LAYERS_LEN) {
         return NULL;
     }

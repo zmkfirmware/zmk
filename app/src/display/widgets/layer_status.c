@@ -45,7 +45,7 @@ static void layer_status_update_cb(struct layer_status_state state) {
 
 static struct layer_status_state layer_status_get_state(const zmk_event_t *eh) {
     uint8_t index = zmk_keymap_highest_layer_active();
-    return (struct layer_status_state){.index = index, .label = zmk_keymap_layer_label(index)};
+    return (struct layer_status_state){.index = index, .label = zmk_keymap_layer_name(index)};
 }
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_layer_status, struct layer_status_state, layer_status_update_cb,
