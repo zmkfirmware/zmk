@@ -48,7 +48,7 @@ default keyboard settings.
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
 
-```
+```bash
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
 
@@ -63,7 +63,7 @@ More troubleshooting information for split keyboards can be found [here](trouble
 
 You can build additional keyboards with GitHub actions by appending them to `build.yml` in your `zmk-config` folder. For instance assume that we have set up a Corne shield with nice!nano during [initial setup](user-setup.md) and we want to add a Lily58 shield with nice!nano v2. The following is an example `build.yaml` file that would accomplish that:
 
-```
+```yaml
 include:
   - board: nice_nano
     shield: corne_left

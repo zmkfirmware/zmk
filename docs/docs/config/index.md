@@ -71,7 +71,7 @@ Kconfig is used to configure global settings such as the keyboard name and enabl
 
 Kconfig files look like this:
 
-```
+```ini
 CONFIG_ZMK_SLEEP=y
 CONFIG_EC11=y
 CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y
@@ -114,7 +114,7 @@ Devicetree files use various file extensions. These indicate the purpose of the 
 
 Devicetree files look like this:
 
-```devicetree
+```dts
 / {
     chosen {
         zmk,kscan = &kscan0;
@@ -138,7 +138,7 @@ search through the `.dts` file for your board, `.overlay` file for your shield, 
 
 A Devicetree node looks like this:
 
-```devicetree
+```dts
 kscan0: kscan {
     compatible = "zmk,kscan-gpio-matrix";
     // more properties and/or nodes...
@@ -157,7 +157,7 @@ followed by the node's label, an opening curly brace (`{`), one or more new prop
 
 For example, to adjust the debouncing of the `zmk,kscan-gpio-matrix` node shown above, you could add this to your keymap:
 
-```devicetree
+```dts
 &kscan0 {
     debounce-press-ms = <0>;
 };
@@ -165,7 +165,7 @@ For example, to adjust the debouncing of the `zmk,kscan-gpio-matrix` node shown 
 
 If the node you want to edit doesn't have a label, you can also write a new tree and it will be merged with the existing tree, overriding any properties. Adding this to your keymap would be equivalent to the previous example.
 
-```devicetree
+```dts
 / {
     kscan {
         debounce-press-ms = <0>;
@@ -185,7 +185,7 @@ Example: `property;`
 
 If a property has already been set to true and you need to override it to false, use the following command to delete the existing property:
 
-```devicetree
+```dts
 /delete-property/ the-property-name;
 ```
 
@@ -240,7 +240,7 @@ Each item in the array should be a label for a GPIO node (the names of which dif
 
 Example:
 
-```devicetree
+```dts
 some-gpios =
     <&gpio0 0 GPIO_ACTIVE_HIGH>,
     <&gpio0 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
@@ -253,7 +253,7 @@ A path to a node, either as a node reference or as a string.
 
 Examples:
 
-```
+```dts
 property = &label;
 property = "/path/to/some/node";
 ```

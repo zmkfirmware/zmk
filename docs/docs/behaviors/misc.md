@@ -21,7 +21,7 @@ passed down to the next active layer in the stack.
 
 Example:
 
-```
+```dts
 &trans
 ```
 
@@ -37,6 +37,6 @@ be passed down to the next active layer in the stack.
 
 Example:
 
-```
+```dts
 &none
 ```

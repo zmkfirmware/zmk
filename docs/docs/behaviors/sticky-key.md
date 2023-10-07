@@ -14,13 +14,13 @@ A sticky key stays pressed until another key is pressed. It is often used for 's
 
 Example:
 
-```
+```dts
 &sk LSHIFT
 ```
 
 You can use any keycode that works for `&kp` as parameter to `&sk`:
 
-```
+```dts
 &sk LG(LS(LA(LCTRL)))
 ```
 
@@ -40,7 +40,7 @@ This setting is enabled by default. It ensures that if a sticky key modifier is 
 
 #### Example
 
-```
+```dts
 &sk {
     release-after-ms = <2000>;
     quick-release;
@@ -56,7 +56,7 @@ This setting is enabled by default. It ensures that if a sticky key modifier is 
 
 This configuration would apply to all sticky keys. This may not be appropriate if using `quick-release` as you'll lose the ability to chain sticky key modifiers. A better approach for this use case would be to create a new behavior:
 
-```
+```dts
 / {
     behaviors {
       skq: sticky_key_quick_release {

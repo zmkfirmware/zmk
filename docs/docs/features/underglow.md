@@ -28,7 +28,7 @@ Here you can see the RGB underglow feature in action using WS2812 LEDs.
 To enable RGB underglow on your board or shield, simply enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `CONFIG_*_STRIP` configuration values in the `.conf` file for your board or shield.
 For example:
 
-```
+```ini
 CONFIG_ZMK_RGB_UNDERGLOW=y
 # Use the STRIP config specific to the LEDs you're using
 CONFIG_WS2812_STRIP=y
@@ -45,7 +45,7 @@ A common issue when enabling underglow is that some of the installed LEDs do not
 
 The number of underglow LEDs is controlled by the `chain-length` property in the `led_strip` node. You can [change the value of this property](../config/index.md#changing-devicetree-properties) in the `<keyboard>.keymap` file by adding a stanza like this one outside of any other node (i.e. above or below the `/` node):
 
-```
+```dts
 &led_strip {
     chain-length = <21>;
 };
@@ -70,7 +70,7 @@ With nRF52 boards, you can just use `&spi3` and define the pins you want to use.
 
 Here's an example on a definition that uses P0.06:
 
-```
+```dts
 #include <dt-bindings/led/led.h>
 
 &pinctrl {
@@ -135,7 +135,7 @@ For other boards, you must select an SPI definition that has the `MOSI` pin as y
 
 Here's another example for a non-nRF52 board on `spi3`:
 
-```
+```dts
 #include <dt-bindings/led/led.h>
 
 &spi3 {
@@ -161,7 +161,7 @@ Here's another example for a non-nRF52 board on `spi3`:
 
 Once you have your `led_strip` properly defined you need to add it to the root devicetree node `chosen` element:
 
-```
+```dts
 / {
     chosen {
         zmk,underglow = &led_strip;
@@ -171,7 +171,7 @@ Once you have your `led_strip` properly defined you need to add it to the root d
 
 Finally you need to enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `CONFIG_*_STRIP` configuration values in the `.conf` file of your board (or set a default in the `Kconfig.defconfig`):
 
-```
+```ini
 CONFIG_ZMK_RGB_UNDERGLOW=y
 # Use the STRIP config specific to the LEDs you're using
 CONFIG_WS2812_STRIP=y
