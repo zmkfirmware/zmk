@@ -76,13 +76,13 @@ For split keyboards, you will have to build and flash each side separately the f
 
 By default, the `build` command outputs a single .uf2 file named `zmk.uf2` so building left and then right immediately after will overwrite your left firmware. In addition, you will need to pristine build each side to ensure the correct files are used. To avoid having to pristine build every time and separate the left and right build files, we recommend setting up separate build directories for each half. You can do this by using the `-d` parameter and first building left into `build/left`:
 
-```
+```sh
 west build -d build/left -b nice_nano -- -DSHIELD=kyria_left
 ```
 
 and then building right into `build/right`:
 
-```
+```sh
 west build -d build/right -b nice_nano -- -DSHIELD=kyria_right
 ```
 
@@ -99,7 +99,7 @@ Instead of building .uf2 files using the default keymap and config files, you ca
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
 
-```
+```sh
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
 
@@ -117,7 +117,7 @@ volume automatically -- we need to delete the default volume before binding it t
 
 Then you can bind the `zmk-config` volume to the correct path pointing to your local [zmk-config](customization.md) folder:
 
-```
+```sh
 docker volume create --driver local -o o=bind -o type=none -o \
     device="/full/path/to/your/zmk-config/" zmk-config
 ```
@@ -137,7 +137,7 @@ Alternatively, if your board supports flashing and you're not developing from
 within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on
 your board and run the following command to flash:
 
-```
+```sh
 west flash
 ```
 

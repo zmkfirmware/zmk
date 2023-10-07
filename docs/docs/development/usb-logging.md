@@ -33,7 +33,7 @@ In Github Actions, you can check the `<Keyboard> Kconfig file` step output to ve
 for you successfully.
 :::
 
-```
+```ini
 # Turn on logging, and set ZMK logging to debug output
 CONFIG_ZMK_USB_LOGGING=y
 ```
@@ -53,7 +53,7 @@ values={[
 
 On Linux, this should be a device like `/dev/ttyACM0` and you can connect with `minicom` or `tio` as usual, e.g.:
 
-```
+```sh
 sudo tio /dev/ttyACM0
 ```
 
@@ -74,7 +74,7 @@ If you already have the Ardunio IDE installed you can also use its built-in Seri
 On macOS, the device name is something like `/dev/tty.usbmodemXXXXX` where `XXXXX` is some numerical ID.
 You can connect to the device with [tio](https://tio.github.io/) (can be installed via [Homebrew](https://formulae.brew.sh/formula/tio)):
 
-```
+```sh
 sudo tio /dev/tty.usbmodem14401
 ```
 

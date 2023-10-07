@@ -8,13 +8,13 @@ The ZMK Documentation is licensed [CC-BY-NC-SA](http://creativecommons.org/licen
 
 ### Installation
 
-```
+```sh
 $ npm ci
 ```
 
 ### Local Development
 
-```
+```sh
 $ npm start
 ```
 
@@ -22,7 +22,7 @@ This command starts a local development server and open up a browser window. Mos
 
 ### Build
 
-```
+```sh
 $ npm build
 ```
 

@@ -67,21 +67,21 @@ values={[
 ]}>
 <TabItem value="curl">
 
-```
+```bash
 bash -c "$(curl -fsSL https://zmk.dev/setup.sh)"
 ```
 
 </TabItem>
 <TabItem value="wget">
 
-```
+```bash
 bash -c "$(wget https://zmk.dev/setup.sh -O -)" '' --wget
 ```
 
 </TabItem>
 <TabItem value="PowerShell">
 
-```
+```powershell
 powershell -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://zmk.dev/setup.ps1'))"
 ```
 

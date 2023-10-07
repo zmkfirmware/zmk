@@ -19,7 +19,7 @@ The standard sensor rotation behavior allows fully binding behaviors to be invok
 
 Here is an example that binds the [RGB Underglow Behavior](/docs/behaviors/underglow.md) to change the RGB brightness:
 
-```
+```dts
 / {
     behaviors {
         rgb_encoder: rgb_encoder {
@@ -55,7 +55,7 @@ Here is an example, showing how send key presses on rotation:
 
 First, defining the sensor rotation itself, binding the [Key Press Behavior](/docs/behaviors/key-press.md) twice, then binding it in the `sensor-bindings` property of a keymap layer:
 
-```
+```dts
 / {
     behaviors {
         rot_kp: behavior_sensor_rotate_kp {

@@ -77,7 +77,7 @@ So first I enabled logging of the NVS module by adding
 `CONFIG_NVS_LOG_LEVEL_DBG=y` to my `.conf` file. I repeated the same test of
 spamming RGB underglow effect cycle and the resulting logs I got were this:
 
-```
+```log
 [00:00:00.000,671] <inf> fs_nvs: 8 Sectors of 4096 bytes
 [00:00:00.000,671] <inf> fs_nvs: alloc wra: 3, f70
 [00:00:00.000,671] <inf> fs_nvs: data wra: 3, f40
@@ -130,7 +130,7 @@ and [Dan Halbert](https://github.com/dhalbert) pointed me towards the [linker
 map](https://github.com/adafruit/Adafruit_nRF52_Bootloader/blob/master/linker/nrf52840.ld)
 of the nRF52840. Let's take a look.
 
-```
+```linker-script
 FLASH (rx) : ORIGIN = 0xF4000, LENGTH = 0xFE000-0xF4000-2048 /* 38 KB */
 
 BOOTLOADER_CONFIG (r): ORIGIN = 0xFE000 - 2048, LENGTH = 2048
@@ -166,7 +166,7 @@ Now that we've found the issue, we can pretty easily fix this. We'll need to
 move the settings flash area back so that it doesn't overlap with the
 bootloader. First we calculate the size of the of flash area the bootloader is using.
 
-```
+```linker-script
 0x100000 (end of flash) - 0x0F4000 (start of bootloader) = 0xC000 (48KB)
 ```
 

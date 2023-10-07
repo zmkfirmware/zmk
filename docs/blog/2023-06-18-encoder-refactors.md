@@ -35,7 +35,7 @@ Splitting these two parts of the encoder configuration allows greater flexibilit
 
 Previously, an encoder configuration looked like:
 
-```
+```dts
     left_encoder: encoder_left {
         compatible = "alps,ec11";
         label = "LEFT_ENCODER";
@@ -47,7 +47,7 @@ Previously, an encoder configuration looked like:
 
 Here, the `resolution` property was used to indicate how many encoder pulses should trigger the sensor behavior one time. Next, the encoder is selected in the sensors node:
 
-```
+```dts
     sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&left_encoder &right_encoder>;
@@ -58,7 +58,7 @@ That was the entirety of the configuration for encoders.
 
 ### New Configuration
 
-```
+```dts
     left_encoder: encoder_left {
         compatible = "alps,ec11";
         label = "LEFT_ENCODER";
@@ -70,7 +70,7 @@ That was the entirety of the configuration for encoders.
 
 Here, the `steps` property is now used to indicate how many encoder pulses there are in a single complete rotation of the encoder. Next, the encoder is selected in the sensors node as before, but an additional configuration is used to indicate how many times the encoder should trigger the behavior in your keymap per rotation:
 
-```
+```dts
     sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&left_encoder &right_encoder>;
@@ -84,7 +84,7 @@ For tactile encoders that have detents, the `triggers-per-rotation` would match 
 
 The configuration changes bring ZMK's code in line with how upstream Zephyr sensor drivers handle rotations. This has the added advantage of allowing us to leverage other sensor drivers. On Nordic MCUs, like nRF52840, the NRFX QDEC driver can be used, for example:
 
-```
+```dts
 &pinctrl {
     qdec_default: qdec_default {
         group1 {

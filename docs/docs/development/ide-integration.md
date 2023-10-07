@@ -71,7 +71,7 @@ If you are developing inside a Docker container, set the IntelliSense mode to `l
 
 Open VS Code's integrated terminal and run the following command:
 
-```
+```sh
 cmake -P zephyr/cmake/verify-toolchain.cmake
 ```
 

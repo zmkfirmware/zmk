@@ -22,7 +22,7 @@ to the device
 
 Example:
 
-```
+```dts
 &sys_reset
 ```
 
@@ -38,7 +38,7 @@ you to flash a new firmware.
 
 Example:
 
-```
+```dts
 &bootloader
 ```
 

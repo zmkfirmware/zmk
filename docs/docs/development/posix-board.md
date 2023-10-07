@@ -14,7 +14,7 @@ with a compiler that can target 32-bit POSIX.
 
 On Debian, you can do this with:
 
-```
+```sh
 apt install -y gcc-multilib
 ```
 
@@ -23,7 +23,7 @@ apt install -y gcc-multilib
 To do this, you can build ZMK targeting the
 `native_posix_64` board.
 
-```
+```sh
 west build --pristine --board native_posix_64 -- -DZMK_CONFIG=tests/none/normal/
 ```
 

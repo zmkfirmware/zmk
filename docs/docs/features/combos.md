@@ -10,7 +10,7 @@ Combo keys are a way to combine multiple keypresses to output a different key. F
 
 Combos configured in your `.keymap` file, but are separate from the `keymap` node found there, since they are processed before the normal keymap. They are specified like this:
 
-```
+```dts
 / {
     combos {
         compatible = "zmk,combos";

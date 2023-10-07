@@ -88,7 +88,7 @@ By default, a switch will drain current through the internal pull up/down resist
 
 Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](https://docs.zephyrproject.org/3.2.0/hardware/peripherals/gpio.html#api-reference) for the elements in `input-gpios` should be `(GPIO_ACTIVE_LOW | GPIO_PULL_UP)`:
 
-```devicetree
+```dts
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-direct";
         input-gpios
@@ -137,7 +137,7 @@ The `diode-direction` property must be one of:
 Given the `diode-direction`, the [GPIO flags](https://docs.zephyrproject.org/3.2.0/hardware/peripherals/gpio.html#api-reference) for the elements in `row-` and `col-gpios` should be set appropriately.
 The output pins (e.g. columns for `col2row`) should have the flag `GPIO_ACTIVE_HIGH`, and input pins (e.g. rows for `col2row`) should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`:
 
-```devicetree
+```dts
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
@@ -229,7 +229,7 @@ One possible way to do this is a 3x4 matrix where the direct GPIO keys are shift
 
 ...which can be configured with the following Devicetree code:
 
-```devicetree
+```dts
 / {
     chosen {
         zmk,kscan = &kscan0;
@@ -316,7 +316,7 @@ The `map` array should be defined using the `RC()` macro from [dt-bindings/zmk/m
 
 Any keyboard which is not a grid of 1 unit keys will likely have some unused positions in the matrix. A matrix transform can be used to skip the unused positions so users don't have to set them to `&none` in keymaps.
 
-```devicetree
+```dts
 // numpad.overlay
 / {
     chosen {
@@ -355,7 +355,7 @@ Any keyboard which is not a grid of 1 unit keys will likely have some unused pos
 };
 ```
 
-```devicetree
+```dts
 // numpad.keymap
 / {
     keymap {
@@ -377,7 +377,7 @@ Any keyboard which is not a grid of 1 unit keys will likely have some unused pos
 
 Consider a keyboard with a [duplex matrix](https://wiki.ai03.com/books/pcb-design/page/matrices-and-duplex-matrix), where the matrix has twice as many rows and half as many columns as the keyboard has keys. A matrix transform can be used to correct for this so that keymaps can match the layout of the keys, not the layout of the matrix.
 
-```devicetree
+```dts
 / {
     chosen {
         zmk,kscan = &kscan0;

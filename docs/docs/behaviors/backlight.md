@@ -12,7 +12,7 @@ This page contains [backlight](../features/backlight.md) behaviors supported by 
 Backlight actions defines are provided through the [`dt-bindings/zmk/backlight.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/backlight.h) header,
 which is added at the top of the keymap file:
 
-```
+```dts
 #include <dt-bindings/zmk/backlight.h>
 ```
 
@@ -46,13 +46,13 @@ However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNC
 
 1. Toggle backlight on/off
 
-   ```
+   ```dts
    &bl BL_TOG
    ```
 
 1. Sets a specific brightness
 
-   ```
+   ```dts
    &bl BL_SET 50
    ```
 
