@@ -242,7 +242,6 @@ Add each of your LEDs to the backlight node in the same manner as for one LED, u
 ```dts
 backlight: pwmleds {
     compatible = "pwm-leds";
-    label = "Backlight LEDs";
     pwm_led_0: pwm_led_0 {
         pwms = <&pwm0 0 PWM_MSEC(10) PWM_POLARITY_NORMAL>;
     };

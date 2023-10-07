@@ -45,7 +45,6 @@ This example configures a tap-dance named `td0` that outputs the number of times
     behaviors {
         td0: tap_dance_0 {
             compatible = "zmk,behavior-tap-dance";
-            label = "TAP_DANCE_0";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
             bindings = <&kp N1>, <&kp N2>, <&kp N3>;
@@ -86,7 +85,6 @@ This example configures a mod-tap inside a tap-dance named `td_mt` that outputs 
     behaviors {
         td_mt: tap_dance_mod_tap {
             compatible = "zmk,behavior-tap-dance";
-            label = "TAP_DANCE_MOD_TAP";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
             bindings = <&mt LSHIFT CAPSLOCK>, <&kp LCTRL>;

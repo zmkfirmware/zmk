@@ -122,7 +122,6 @@ Devicetree files look like this:
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
     };
 };
 ```

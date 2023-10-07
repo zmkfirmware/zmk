@@ -144,7 +144,6 @@ this might look something like:
 
     kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
         diode-direction = "col2row";
 
         col-gpios
@@ -203,7 +202,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,2) RC(4,9) RC(3,6) RC(3,7) 
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
 
         diode-direction = "col2row";
         row-gpios
@@ -432,7 +430,6 @@ In your device tree file you will need to add the following lines to define the 
 ```dts
     left_encoder: encoder_left {
         compatible = "alps,ec11";
-        label = "LEFT_ENCODER";
         a-gpios = <PIN_A (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <PIN_B (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         steps = <80>;

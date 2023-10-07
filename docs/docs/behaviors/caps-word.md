@@ -59,9 +59,8 @@ If you want to use multiple caps breaks with different codes to break the caps, 
 
 ```dts
 / {
-    prog_caps: behavior_prog_caps_word {
+    prog_caps: prog_caps {
         compatible = "zmk,behavior-caps-word";
-        label = "PROG_CAPS";
         #binding-cells = <0>;
         continue-list = <UNDERSCORE>;
     };

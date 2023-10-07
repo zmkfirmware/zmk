@@ -24,7 +24,6 @@ Here is an example that binds the [RGB Underglow Behavior](/docs/behaviors/under
     behaviors {
         rgb_encoder: rgb_encoder {
             compatible = "zmk,behavior-sensor-rotate";
-            label = "RGB_ENCODER";
             #sensor-binding-cells = <0>;
             bindings = <&rgb_ug RGB_BRI>, <&rgb_ug RGB_BRD>;
         };
@@ -58,9 +57,8 @@ First, defining the sensor rotation itself, binding the [Key Press Behavior](/do
 ```dts
 / {
     behaviors {
-        rot_kp: behavior_sensor_rotate_kp {
+        rot_kp: sensor_rotate_kp {
             compatible = "zmk,behavior-sensor-rotate-var";
-            label = "ENC_KP";
             #sensor-binding-cells = <2>;
             bindings = <&kp>, <&kp>;
         };

@@ -48,7 +48,6 @@ Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-demux.yaml](h
 
 | Property                | Type       | Description                      | Default |
 | ----------------------- | ---------- | -------------------------------- | ------- |
-| `label`                 | string     | Unique label for the node        |         |
 | `input-gpios`           | GPIO array | Input GPIOs                      |         |
 | `output-gpios`          | GPIO array | Demultiplexer address GPIOs      |         |
 | `debounce-period`       | int        | Debounce period in milliseconds  | 5       |
@@ -74,7 +73,6 @@ Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-direct.yaml](
 
 | Property                  | Type       | Description                                                                                                 | Default |
 | ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- | ------- |
-| `label`                   | string     | Unique label for the node                                                                                   |         |
 | `input-gpios`             | GPIO array | Input GPIOs (one per key)                                                                                   |         |
 | `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                                    | 5       |
 | `debounce-release-ms`     | int        | Debounce time for key release in milliseconds.                                                              | 5       |
@@ -118,7 +116,6 @@ Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-matrix.yaml](
 
 | Property                  | Type       | Description                                                                                                 | Default     |
 | ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- | ----------- |
-| `label`                   | string     | Unique label for the node                                                                                   |             |
 | `row-gpios`               | GPIO array | Matrix row GPIOs in order, starting from the top row                                                        |             |
 | `col-gpios`               | GPIO array | Matrix column GPIOs in order, starting from the leftmost row                                                |             |
 | `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                                    | 5           |
@@ -162,17 +159,15 @@ Applies to : `compatible = "zmk,kscan-composite"`
 
 Definition file: [zmk/app/dts/bindings/zmk,kscan-composite.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk,kscan-composite.yaml)
 
-| Property | Type   | Description                                   | Default |
-| -------- | ------ | --------------------------------------------- | ------- |
-| `label`  | string | Unique label for the node                     |         |
-| `rows`   | int    | The number of rows in the composite matrix    |         |
-| `cols`   | int    | The number of columns in the composite matrix |         |
+| Property | Type | Description                                   | Default |
+| -------- | ---- | --------------------------------------------- | ------- |
+| `rows`   | int  | The number of rows in the composite matrix    |         |
+| `cols`   | int  | The number of columns in the composite matrix |         |
 
 The `zmk,kscan-composite` node should have one child node per keyboard scan driver that should be composited. Each child node can have the following properties:
 
 | Property        | Type    | Description                                                                    | Default |
 | --------------- | ------- | ------------------------------------------------------------------------------ | ------- |
-| `label`         | string  | Unique label for the node                                                      |         |
 | `kscan`         | phandle | Label of the kscan driver to include                                           |         |
 | `row-offset`    | int     | Shifts row 0 of the included driver to a new row in the composite matrix       | 0       |
 | `column-offset` | int     | Shifts column 0 of the included driver to a new column in the composite matrix | 0       |
@@ -237,7 +232,6 @@ One possible way to do this is a 3x4 matrix where the direct GPIO keys are shift
 
     kscan0: kscan_composite {
         compatible = "zmk,kscan-composite";
-        label = "KSCAN0";
         rows = <4>;
         columns = <3>;
 
@@ -275,14 +269,13 @@ Applies to: `compatible = "zmk,kscan-mock"`
 
 Definition file: [zmk/app/dts/bindings/zmk,kscan-mock.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk%2Ckscan-mock.yaml)
 
-| Property       | Type   | Description                                   | Default |
-| -------------- | ------ | --------------------------------------------- | ------- |
-| `label`        | string | Unique label for the node                     |         |
-| `event-period` | int    | Milliseconds between each generated event     |         |
-| `events`       | array  | List of key events to simulate                |         |
-| `rows`         | int    | The number of rows in the composite matrix    |         |
-| `cols`         | int    | The number of columns in the composite matrix |         |
-| `exit-after`   | bool   | Exit the program after running all events     | false   |
+| Property       | Type  | Description                                   | Default |
+| -------------- | ----- | --------------------------------------------- | ------- |
+| `event-period` | int   | Milliseconds between each generated event     |         |
+| `events`       | array | List of key events to simulate                |         |
+| `rows`         | int   | The number of rows in the composite matrix    |         |
+| `cols`         | int   | The number of columns in the composite matrix |         |
+| `exit-after`   | bool  | Exit the program after running all events     | false   |
 
 The `events` array should be defined using the macros from [app/module/include/dt-bindings/zmk/kscan_mock.h](https://github.com/zmkfirmware/zmk/blob/main/app/module/include/dt-bindings/zmk/kscan_mock.h).
 
