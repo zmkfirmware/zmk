@@ -10,7 +10,6 @@
 
     kscan: kscan {
         compatible = "zmk,kscan-mock";
-        label = "KSCAN_MOCK";
 
         rows = <2>;
         columns = <2>;

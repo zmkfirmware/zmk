@@ -9,7 +9,6 @@
 / {
 kscan_direct: kscan_direct {
     compatible = "zmk,kscan-gpio-direct";
-    label = "DIRECT";
     input-gpios
         = <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
         ;

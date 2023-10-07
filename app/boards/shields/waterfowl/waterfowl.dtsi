@@ -31,7 +31,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
 
         diode-direction = "col2row";
         row-gpios
@@ -44,7 +43,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
 
     roller_left_encoder: encoder_left_roller {
         compatible = "alps,ec11";
-        label = "ROLLER_LEFT_ENCODER";
         a-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         steps = <80>;
@@ -53,7 +51,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
 
     dial_left_encoder: encoder_left_dial {
         compatible = "alps,ec11";
-        label = "DIAL_LEFT_ENCODER";
         a-gpios = <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         steps = <80>;
@@ -62,7 +59,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
 
     roller_right_encoder: encoder_right_roller {
         compatible = "alps,ec11";
-        label = "ROLLER_RIGHT_ENCODER";
         a-gpios = <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         steps = <80>;
@@ -71,7 +67,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
 
     dial_right_encoder: encoder_right_dial {
         compatible = "alps,ec11";
-        label = "DIAL_RIGHT_ENCODER";
         a-gpios = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         steps = <80>;
@@ -98,7 +93,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
-        label = "DISPLAY";
         width = <128>;
         height = <64>;
         segment-offset = <0>;

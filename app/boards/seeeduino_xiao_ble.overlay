@@ -13,7 +13,6 @@
 
     vbatt: vbatt {
         compatible = "zmk,battery-voltage-divider";
-        label = "BATTERY";
         io-channels = <&adc 7>;
         power-gpios = <&gpio0 14 (GPIO_OPEN_DRAIN | GPIO_ACTIVE_LOW)>;
         output-ohms = <510000>;
@@ -28,7 +27,6 @@
 &usbd {
     cdc_acm_uart: cdc_acm_uart {
         compatible = "zephyr,cdc-acm-uart";
-        label = "CDC_ACM_0";
     };
 };
 

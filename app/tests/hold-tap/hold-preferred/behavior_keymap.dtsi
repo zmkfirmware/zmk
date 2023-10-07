@@ -8,7 +8,6 @@
     behaviors {
         ht_hold: behavior_hold_hold_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "hold_hold_tap";
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <300>;
@@ -19,7 +18,6 @@
 
     keymap {
         compatible = "zmk,keymap";
-        label ="Default keymap";
 
         default_layer {
             bindings = <
