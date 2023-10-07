@@ -29,12 +29,11 @@ Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-caps-word.yaml](ht
 
 Applies to: `compatible = "zmk,behavior-caps-word"`
 
-| Property         | Type   | Description                                                        | Default                         |
-| ---------------- | ------ | ------------------------------------------------------------------ | ------------------------------- |
-| `label`          | string | Unique label for the node                                          |                                 |
-| `#binding-cells` | int    | Must be `<0>`                                                      |                                 |
-| `continue-list`  | array  | List of [key codes](/docs/codes) which do not deactivate caps lock | `<UNDERSCORE BACKSPACE DELETE>` |
-| `mods`           | int    | A bit field of modifiers to apply                                  | `<MOD_LSFT>`                    |
+| Property         | Type  | Description                                                        | Default                         |
+| ---------------- | ----- | ------------------------------------------------------------------ | ------------------------------- |
+| `#binding-cells` | int   | Must be `<0>`                                                      |                                 |
+| `continue-list`  | array | List of [key codes](/docs/codes) which do not deactivate caps lock | `<UNDERSCORE BACKSPACE DELETE>` |
+| `mods`           | int   | A bit field of modifiers to apply                                  | `<MOD_LSFT>`                    |
 
 `continue-list` is treated as if it always includes alphanumeric characters (A-Z, 0-9).
 
@@ -60,7 +59,6 @@ Applies to: `compatible = "zmk,behavior-hold-tap"`
 
 | Property                     | Type          | Description                                                                                                    | Default            |
 | ---------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------- | ------------------ |
-| `label`                      | string        | Unique label for the node                                                                                      |                    |
 | `#binding-cells`             | int           | Must be `<2>`                                                                                                  |                    |
 | `bindings`                   | phandle array | A list of two behaviors (without parameters): one for hold and one for tap                                     |                    |
 | `flavor`                     | string        | Adjusts how the behavior chooses between hold and tap                                                          | `"hold-preferred"` |
@@ -100,11 +98,10 @@ Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-key-repeat.yaml](h
 
 Applies to: `compatible = "zmk,behavior-key-repeat"`
 
-| Property         | Type   | Description                      | Default           |
-| ---------------- | ------ | -------------------------------- | ----------------- |
-| `label`          | string | Unique label for the node        |                   |
-| `#binding-cells` | int    | Must be `<0>`                    |                   |
-| `usage-pages`    | array  | List of HID usage pages to track | `<HID_USAGE_KEY>` |
+| Property         | Type  | Description                      | Default           |
+| ---------------- | ----- | -------------------------------- | ----------------- |
+| `#binding-cells` | int   | Must be `<0>`                    |                   |
+| `usage-pages`    | array | List of HID usage pages to track | `<HID_USAGE_KEY>` |
 
 For the `usage-pages` property, use the `HID_USAGE_*` defines from [dt-bindings/zmk/hid_usage_pages.h](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/hid_usage_pages.h).
 
@@ -133,7 +130,6 @@ Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-macro.yaml](https:
 
 | Property         | Type          | Description                                                                                                                                  | Default                            |
 | ---------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `label`          | string        | Unique label for the node                                                                                                                    |                                    |
 | `compatible`     | string        | Macro type, **must be _one_ of**:<br/>• `"zmk,behavior-macro"`<br/>• `"zmk,behavior-macro-one-param"`<br/>• `"zmk,behavior-macro-two-param"` |                                    |
 | `#binding-cells` | int           | Number of params accepted (depends on `compatible` property), **must be _one_ of**:<br/>• `<0>`<br/>• `<1>`<br/>• `<2>`                      |                                    |
 | `bindings`       | phandle array | List of behaviors to trigger                                                                                                                 |                                    |
@@ -169,7 +165,6 @@ Applies to: `compatible = "zmk,behavior-mod-morph"`
 
 | Property         | Type          | Description                                                                       |
 | ---------------- | ------------- | --------------------------------------------------------------------------------- |
-| `label`          | string        | Unique label for the node                                                         |
 | `#binding-cells` | int           | Must be `<0>`                                                                     |
 | `bindings`       | phandle array | A list of two behaviors: one for normal press and one for mod morphed press       |
 | `mods`           | int           | A bit field of modifiers. The morph behavior is used if any of these are pressed. |
@@ -196,7 +191,6 @@ Applies to: `compatible = "zmk,behavior-sticky-key"`
 
 | Property           | Type          | Description                                                              | Default |
 | ------------------ | ------------- | ------------------------------------------------------------------------ | ------- |
-| `label`            | string        | Unique label for the node                                                |         |
 | `#binding-cells`   | int           | Must match the number of parameters the `bindings` behavior uses         |         |
 | `bindings`         | phandle array | A behavior (without parameters) to trigger                               |         |
 | `release-after-ms` | int           | Releases the key after this many milliseconds if no other key is pressed | 1000    |
@@ -222,7 +216,6 @@ Applies to: `compatible = "zmk,behavior-tap-dance"`
 
 | Property          | Type          | Description                                                                                  | Default |
 | ----------------- | ------------- | -------------------------------------------------------------------------------------------- | ------- |
-| `label`           | string        | Unique label for the node                                                                    |         |
 | `#binding-cells`  | int           | Must be `<0>`                                                                                |         |
 | `bindings`        | phandle array | A list of behaviors from which to select                                                     |         |
 | `tapping-term-ms` | int           | The maximum time (in milliseconds) between taps before an item from `bindings` is triggered. | 200     |

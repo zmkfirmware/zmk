@@ -42,6 +42,5 @@ Applies to: `compatible = "zmk,ext-power-generic"`
 
 | Property        | Type       | Description                                                   |
 | --------------- | ---------- | ------------------------------------------------------------- |
-| `label`         | string     | Unique label for the node                                     |
 | `control-gpios` | GPIO array | List of GPIOs which should be active to enable external power |
 | `init-delay-ms` | int        | number of milliseconds to delay after initializing the driver |

@@ -61,7 +61,6 @@ This configuration would apply to all sticky keys. This may not be appropriate i
     behaviors {
       skq: sticky_key_quick_release {
         compatible = "zmk,behavior-sticky-key";
-        label = "STICKY_KEY_QUICK_RELEASE";
         #binding-cells = <1>;
         bindings = <&kp>;
         release-after-ms = <1000>;

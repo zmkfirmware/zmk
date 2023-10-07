@@ -48,7 +48,7 @@ See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/late
 
 ## nRF VDDH Battery Sensor
 
-Driver for reading the voltage of a battery using a Nordic nRF52's VDDH pin. This driver has no configuration except for the required `label` property.
+Driver for reading the voltage of a battery using a Nordic nRF52's VDDH pin.
 
 ### Devicetree
 
@@ -56,6 +56,4 @@ Applies to: `compatible = "zmk,battery-nrf-vddh"`
 
 Definition file: [zmk/app/module/dts/bindings/sensor/zmk,battery-nrf-vddh.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/sensor/zmk%2Cbattery-nrf-vddh.yaml)
 
-| Property | Type   | Description               |
-| -------- | ------ | ------------------------- |
-| `label`  | string | Unique label for the node |
+This driver has no configuration.

@@ -58,7 +58,6 @@ For example, the following hold-tap configuration enables `require-prior-idle-ms
 ```dts
 rpi: require_prior_idle {
     compatible = "zmk,behavior-hold-tap";
-    label = "REQUIRE_PRIOR_IDLE";
     #binding-cells = <2>;
     flavor = "tap-preferred";
     tapping-term-ms = <200>;
@@ -104,7 +103,6 @@ See the following example, which uses a hold-tap behavior definition, configured
     behaviors {
         pht: positional_hold_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "POSITIONAL_HOLD_TAP";
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <400>;
@@ -115,7 +113,6 @@ See the following example, which uses a hold-tap behavior definition, configured
     };
     keymap {
         compatible = "zmk,keymap";
-        label ="Default keymap";
         default_layer {
             bindings = <
                 //  position 0         position 1       position 2
@@ -172,9 +169,8 @@ The following are suggested hold-tap configurations that work well with home row
 
 / {
     behaviors {
-        lh_pht: left_hand_positional_hold_tap {
+        lh_pht: left_positional_hold_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "LEFT_POSITIONAL_HOLD_TAP";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
             tapping-term-ms = <100>;                        // <---[[produces tap if held longer than tapping-term-ms]]
@@ -206,7 +202,6 @@ The following are suggested hold-tap configurations that work well with home row
     behaviors {
         hm: homerow_mods {
             compatible = "zmk,behavior-hold-tap";
-            label = "HOMEROW_MODS";
             #binding-cells = <2>;
             tapping-term-ms = <150>;
             quick-tap-ms = <0>;
@@ -236,7 +231,6 @@ The following are suggested hold-tap configurations that work well with home row
     behaviors {
         bhm: balanced_homerow_mods {
             compatible = "zmk,behavior-hold-tap";
-            label = "HOMEROW_MODS";
             #binding-cells = <2>;
             tapping-term-ms = <200>;    // <---[[moderate duration]]
             quick-tap-ms = <0>;
@@ -272,7 +266,6 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
     behaviors {
         as: auto_shift {
             compatible = "zmk,behavior-hold-tap";
-            label = "AUTO_SHIFT";
             #binding-cells = <2>;
             tapping_term_ms = <135>;
             quick_tap_ms = <0>;
@@ -308,7 +301,6 @@ This hold-tap example implements a [momentary-layer](layers.md/#momentary-layer)
     behaviors {
         mo_tog: behavior_mo_tog {
             compatible = "zmk,behavior-hold-tap";
-            label = "mo_tog";
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;

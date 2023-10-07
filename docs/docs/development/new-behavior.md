@@ -370,7 +370,6 @@ For the purpose of this section, we will discuss the structure of `app/dts/behav
     behaviors {
         /omit-if-no-ref/ gresc: grave_escape {
             compatible = "zmk,behavior-mod-morph";
-            label = "GRAVE_ESCAPE";
             #binding-cells = <0>;
             bindings = <&kp ESC>, <&kp GRAVE>;
             mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
