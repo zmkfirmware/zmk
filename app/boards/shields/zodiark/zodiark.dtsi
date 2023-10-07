@@ -33,7 +33,6 @@ RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4)      RC(4,5)    RC(4,6)   RC(4,7)      R
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
 
         diode-direction = "col2row";
         row-gpios
@@ -47,7 +46,6 @@ RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4)      RC(4,5)    RC(4,6)   RC(4,7)      R
 
     left_encoder: encoder_left {
         compatible = "alps,ec11";
-        label = "LEFT_ENCODER";
         a-gpios = <&pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         steps = <80>;
@@ -56,7 +54,6 @@ RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4)      RC(4,5)    RC(4,6)   RC(4,7)      R
 
     right_encoder: encoder_right {
         compatible = "alps,ec11";
-        label = "RIGHT_ENCODER";
         a-gpios = <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         steps = <80>;
@@ -76,7 +73,6 @@ RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4)      RC(4,5)    RC(4,6)   RC(4,7)      R
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
-        label = "DISPLAY";
         width = <128>;
         height = <64>;
         segment-offset = <0>;

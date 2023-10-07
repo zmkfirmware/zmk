@@ -12,17 +12,14 @@
         compatible = "gpio-leds";
         led_0 {
             gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
-            label = "Backlight LED 0";
         };
         led_1 {
             gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
-            label = "Backlight LED 1";
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
-        label ="Default keymap";
 
         default_layer {
             bindings = <

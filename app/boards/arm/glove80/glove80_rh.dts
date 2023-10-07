@@ -22,10 +22,8 @@
 
     back_led_backlight: pwmleds {
         compatible = "pwm-leds";
-        label = "BACK LED";
         pwm_led_0 {
             pwms = <&pwm0 0 PWM_USEC(20) PWM_POLARITY_NORMAL>;
-            label = "Back LED configured as backlight";
         };
     };
 
@@ -38,7 +36,6 @@
 
     vbatt: vbatt {
         compatible = "zmk,battery-nrf-vddh";
-        label = "BATTERY";
     };
 };
 
@@ -52,7 +49,6 @@
 
     led_strip: ws2812@0 {
         compatible = "worldsemi,ws2812-spi";
-        label = "WS2812C-2020";
 
         /* SPI */
         reg = <0>; /* ignored, but necessary for SPI bindings */

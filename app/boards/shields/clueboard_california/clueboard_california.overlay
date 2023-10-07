@@ -12,8 +12,6 @@
     kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-direct";
 
-        label = "KSCAN";
-
         input-gpios
             = <&gpioa 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpioa 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>

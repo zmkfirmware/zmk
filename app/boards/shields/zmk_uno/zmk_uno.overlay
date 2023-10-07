@@ -61,10 +61,8 @@ nice_view_spi: &arduino_spi {
 
     backlight: gpioleds {
         compatible = "gpio-leds";
-        label = "Backlight LEDs";
         gpio_led_0 {
             gpios = <&arduino_header 12 GPIO_ACTIVE_HIGH>;
-            label = "Backlight LED 0";
         };
     };
 
@@ -97,8 +95,6 @@ nice_view_spi: &arduino_spi {
         rows = <1>;
         columns = <7>;
 
-        label = "KSCAN_MATRIX_COMP";
-
         matrix {
             kscan = <&kscan_matrix>;
         };
@@ -112,8 +108,6 @@ nice_view_spi: &arduino_spi {
 
     kscan_direct_comp: kscan_direct_comp {
         compatible = "zmk,kscan-composite";
-
-        label = "KSCAN_DIRECT_COMP";
         status = "disabled";
 
         matrix {
@@ -169,7 +163,6 @@ nice_view_spi: &arduino_spi {
     };
 
     encoder: encoder {
-        label = "ENCODER";
         steps = <80>;
         compatible = "alps,ec11";
         a-gpios = <&arduino_header 15 GPIO_PULL_UP>;

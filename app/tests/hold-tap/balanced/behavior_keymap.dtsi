@@ -6,7 +6,6 @@
     behaviors {
         ht_bal: behavior_hold_tap_balanced {
             compatible = "zmk,behavior-hold-tap";
-            label = "HOLD_TAP_BALANCED";
             #binding-cells = <2>;
             flavor = "balanced";
             tapping-term-ms = <300>;
@@ -17,7 +16,6 @@
 
     keymap {
         compatible = "zmk,keymap";
-        label ="Default keymap";
 
         default_layer {
             bindings = <
