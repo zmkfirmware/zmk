@@ -17,7 +17,7 @@
             compatible = "zmk,keymap";
 
             base_layer {
-              label = "BASE";
+              display-name = "BASE";
               bindings = <
                 // ╭─────────────┬──────────────┬──────────────────┬─────────────┬─────────────╮
                      &mo BLE      &kp C_PREVIOUS  &kp C_PLAY_PAUSE    &kp C_NEXT   &kp C_MUTE
@@ -27,7 +27,7 @@
             };
 
             ble_layer {
-              label = "BLE";
+              display-name = "BLE";
               bindings = <
                 // ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
                      &trans     &out OUT_TOG   &bt BT_PRV    &bt BT_NXT    &bt BT_CLR
