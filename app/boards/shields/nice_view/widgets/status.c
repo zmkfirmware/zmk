@@ -30,6 +30,7 @@ static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
 struct output_status_state {
     struct zmk_endpoint_instance selected_endpoint;
+    int active_profile_index;
     bool active_profile_connected;
     bool active_profile_bonded;
 };
@@ -146,7 +147,7 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     };
 
     for (int i = 0; i < 5; i++) {
-        bool selected = state->selected_endpoint.ble.profile_index == i;
+        bool selected = i == state->active_profile_index;
 
         lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13, 0, 359,
                            &arc_dsc);
@@ -228,6 +229,7 @@ ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 static void set_output_status(struct zmk_widget_status *widget,
                               const struct output_status_state *state) {
     widget->state.selected_endpoint = state->selected_endpoint;
+    widget->state.active_profile_index = state->active_profile_index;
     widget->state.active_profile_connected = state->active_profile_connected;
     widget->state.active_profile_bonded = state->active_profile_bonded;
 
@@ -243,6 +245,7 @@ static void output_status_update_cb(struct output_status_state state) {
 static struct output_status_state output_status_get_state(const zmk_event_t *_eh) {
     return (struct output_status_state){
         .selected_endpoint = zmk_endpoints_selected(),
+        .active_profile_index = zmk_ble_active_profile_index(),
         .active_profile_connected = zmk_ble_active_profile_is_connected(),
         .active_profile_bonded = !zmk_ble_active_profile_is_open(),
     };
