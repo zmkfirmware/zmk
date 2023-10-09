@@ -7884,6 +7884,8 @@ export default [
       macos: true,
       ios: true,
     },
-    footnotes: {},
+    footnotes: {
+      macos: ["globe"],
+    },
   },
 ];
