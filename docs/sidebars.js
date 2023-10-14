@@ -19,7 +19,6 @@ module.exports = {
       "features/underglow",
       "features/backlight",
       "features/battery",
-      "features/soft-off",
       "features/beta-testing",
     ],
     Behaviors: [
@@ -43,7 +42,6 @@ module.exports = {
       "behaviors/underglow",
       "behaviors/backlight",
       "behaviors/power",
-      "behaviors/soft-off",
     ],
     Codes: [
       "codes/index",
