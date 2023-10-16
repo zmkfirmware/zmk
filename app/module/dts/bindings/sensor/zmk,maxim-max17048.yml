@@ -7,6 +7,6 @@
 description: >
   This is a representation of the Maxim max17048 I2C Fuel Gauge.
 
-compatible: "maxim,max17048"
+compatible: "zmk,maxim-max17048"
 
 include: [i2c-device.yaml]
