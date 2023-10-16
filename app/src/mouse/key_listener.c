@@ -23,7 +23,7 @@ static struct vector2d move_speed = {0};
 static struct vector2d scroll_speed = {0};
 static struct mouse_config move_config = (struct mouse_config){0};
 static struct mouse_config scroll_config = (struct mouse_config){0};
-static int64_t start_time = 0;
+static struct mouse_times start_times = (struct mouse_times){0};
 
 bool equals(const struct mouse_config *one, const struct mouse_config *other) {
     return one->delay_ms == other->delay_ms &&
@@ -34,7 +34,7 @@ bool equals(const struct mouse_config *one, const struct mouse_config *other) {
 static void clear_mouse_state(struct k_work *work) {
     move_speed = (struct vector2d){0};
     scroll_speed = (struct vector2d){0};
-    start_time = 0;
+    start_times = (struct mouse_times){0};
     zmk_hid_mouse_movement_set(0, 0);
     zmk_hid_mouse_scroll_set(0, 0);
     LOG_DBG("Clearing state");
@@ -51,7 +51,7 @@ static void mouse_tick_timer_handler(struct k_work *work) {
     zmk_hid_mouse_scroll_set(0, 0);
     LOG_DBG("Raising mouse tick event");
     ZMK_EVENT_RAISE(
-        zmk_mouse_tick(move_speed, scroll_speed, move_config, scroll_config, &start_time));
+        zmk_mouse_tick(move_speed, scroll_speed, move_config, scroll_config, start_times));
     zmk_endpoints_send_mouse_report();
 }
 
@@ -64,21 +64,59 @@ void mouse_timer_cb(struct k_timer *dummy) {
 
 K_TIMER_DEFINE(mouse_timer, mouse_timer_cb, mouse_clear_cb);
 
-static int mouse_timer_ref_count = 0;
+static struct {
+    int m_x;
+    int m_y;
+    int s_x;
+    int s_y;
+} mouse_timer_ref_counts = {0, 0, 0, 0};
 
-void mouse_timer_ref() {
-    if (mouse_timer_ref_count == 0) {
-        start_time = k_uptime_get();
+void mouse_timer_ref(bool m_x, bool m_y, bool s_x, bool s_y) {
+    if (m_x && mouse_timer_ref_counts.m_x == 0) {
+        start_times.m_x = k_uptime_get();
+    }
+    if (m_y && mouse_timer_ref_counts.m_y == 0) {
+        start_times.m_y = k_uptime_get();
+    }
+    if (s_x && mouse_timer_ref_counts.s_x == 0) {
+        start_times.s_x = k_uptime_get();
+    }
+    if (s_y && mouse_timer_ref_counts.s_y == 0) {
+        start_times.s_y = k_uptime_get();
+    }
+    if (mouse_timer_ref_counts.m_x == 0 && mouse_timer_ref_counts.m_y == 0 &&
+        mouse_timer_ref_counts.s_x == 0 && mouse_timer_ref_counts.s_y == 0) {
         k_timer_start(&mouse_timer, K_NO_WAIT, K_MSEC(CONFIG_ZMK_MOUSE_TICK_DURATION));
     }
-    mouse_timer_ref_count += 1;
+    if (m_x) {
+        mouse_timer_ref_counts.m_x++;
+    }
+    if (m_y) {
+        mouse_timer_ref_counts.m_y++;
+    }
+    if (s_x) {
+        mouse_timer_ref_counts.s_x++;
+    }
+    if (s_y) {
+        mouse_timer_ref_counts.s_y++;
+    }
 }
 
-void mouse_timer_unref() {
-    if (mouse_timer_ref_count > 0) {
-        mouse_timer_ref_count--;
+void mouse_timer_unref(bool m_x, bool m_y, bool s_x, bool s_y) {
+    if (m_x && mouse_timer_ref_counts.m_x > 0) {
+        mouse_timer_ref_counts.m_x--;
     }
-    if (mouse_timer_ref_count == 0) {
+    if (m_y && mouse_timer_ref_counts.m_y > 0) {
+        mouse_timer_ref_counts.m_y--;
+    }
+    if (s_x && mouse_timer_ref_counts.s_x > 0) {
+        mouse_timer_ref_counts.s_x--;
+    }
+    if (s_y && mouse_timer_ref_counts.s_y > 0) {
+        mouse_timer_ref_counts.s_y--;
+    }
+    if (mouse_timer_ref_counts.m_x == 0 && mouse_timer_ref_counts.m_y == 0 &&
+        mouse_timer_ref_counts.s_x == 0 && mouse_timer_ref_counts.s_y == 0) {
         k_timer_stop(&mouse_timer);
     }
 }
@@ -86,25 +124,25 @@ void mouse_timer_unref() {
 static void listener_mouse_move_pressed(const struct zmk_mouse_move_state_changed *ev) {
     move_speed.x += ev->max_speed.x;
     move_speed.y += ev->max_speed.y;
-    mouse_timer_ref();
+    mouse_timer_ref(ev->max_speed.x != 0, ev->max_speed.y != 0, false, false);
 }
 
 static void listener_mouse_move_released(const struct zmk_mouse_move_state_changed *ev) {
     move_speed.x -= ev->max_speed.x;
     move_speed.y -= ev->max_speed.y;
-    mouse_timer_unref();
+    mouse_timer_unref(ev->max_speed.x != 0, ev->max_speed.y != 0, false, false);
 }
 
 static void listener_mouse_scroll_pressed(const struct zmk_mouse_scroll_state_changed *ev) {
     scroll_speed.x += ev->max_speed.x;
     scroll_speed.y += ev->max_speed.y;
-    mouse_timer_ref();
+    mouse_timer_ref(false, false, ev->max_speed.x != 0, ev->max_speed.y != 0);
 }
 
 static void listener_mouse_scroll_released(const struct zmk_mouse_scroll_state_changed *ev) {
     scroll_speed.x -= ev->max_speed.x;
     scroll_speed.y -= ev->max_speed.y;
-    mouse_timer_unref();
+    mouse_timer_unref(false, false, ev->max_speed.x != 0, ev->max_speed.y != 0);
 }
 
 static void listener_mouse_button_pressed(const struct zmk_mouse_button_state_changed *ev) {
