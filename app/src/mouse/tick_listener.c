@@ -61,17 +61,18 @@ static void track_remainder(float *move, float *remainder) {
 
 static struct vector2d update_movement(struct vector2d *remainder,
                                        const struct mouse_config *config, struct vector2d max_speed,
-                                       int64_t now, int64_t *start_time) {
+                                       int64_t now, int64_t start_time_x, int64_t start_time_y) {
     struct vector2d move = {0};
     if (max_speed.x == 0 && max_speed.y == 0) {
         *remainder = (struct vector2d){0};
         return move;
     }
 
-    int64_t move_duration = ms_since_start(*start_time, now, config->delay_ms);
+    int64_t move_duration_x = ms_since_start(start_time_x, now, config->delay_ms);
+    int64_t move_duration_y = ms_since_start(start_time_y, now, config->delay_ms);
     move = (struct vector2d){
-        .x = speed(config, max_speed.x, move_duration) * CONFIG_ZMK_MOUSE_TICK_DURATION / 1000,
-        .y = speed(config, max_speed.y, move_duration) * CONFIG_ZMK_MOUSE_TICK_DURATION / 1000,
+        .x = speed(config, max_speed.x, move_duration_x) * CONFIG_ZMK_MOUSE_TICK_DURATION / 1000,
+        .y = speed(config, max_speed.y, move_duration_y) * CONFIG_ZMK_MOUSE_TICK_DURATION / 1000,
     };
 
     track_remainder(&(move.x), &(remainder->x));
@@ -81,12 +82,16 @@ static struct vector2d update_movement(struct vector2d *remainder,
 }
 
 static void mouse_tick_handler(const struct zmk_mouse_tick *tick) {
-    struct vector2d move = update_movement(&move_remainder, &(tick->move_config), tick->max_move,
-                                           tick->timestamp, tick->start_time);
+    LOG_INF("tick start times: %lld %lld %lld %lld", tick->start_times.m_x, tick->start_times.m_y,
+            tick->start_times.s_x, tick->start_times.s_y);
+    struct vector2d move =
+        update_movement(&move_remainder, &(tick->move_config), tick->max_move, tick->timestamp,
+                        tick->start_times.m_x, tick->start_times.m_y);
     zmk_hid_mouse_movement_update((int16_t)CLAMP(move.x, INT16_MIN, INT16_MAX),
                                   (int16_t)CLAMP(move.y, INT16_MIN, INT16_MAX));
-    struct vector2d scroll = update_movement(&scroll_remainder, &(tick->scroll_config),
-                                             tick->max_scroll, tick->timestamp, tick->start_time);
+    struct vector2d scroll =
+        update_movement(&scroll_remainder, &(tick->scroll_config), tick->max_scroll,
+                        tick->timestamp, tick->start_times.s_x, tick->start_times.s_y);
     zmk_hid_mouse_scroll_update((int8_t)CLAMP(scroll.x, INT8_MIN, INT8_MAX),
                                 (int8_t)CLAMP(scroll.y, INT8_MIN, INT8_MAX));
 }
