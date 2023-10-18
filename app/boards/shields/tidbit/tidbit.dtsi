@@ -49,7 +49,7 @@
         label = "Top Row Encoder";
         a-gpios = <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
@@ -58,7 +58,7 @@
         label = "Encoder 1";
         a-gpios = <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
@@ -67,7 +67,7 @@
         label = "Encoder 2";
         a-gpios = <&pro_micro 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
@@ -76,7 +76,7 @@
         label = "Encoder 3";
         a-gpios = <&pro_micro 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
@@ -85,7 +85,7 @@
         label = "Encoder 4";
         a-gpios = <&pro_micro 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
