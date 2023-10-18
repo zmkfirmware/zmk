@@ -7,6 +7,12 @@ See the [battery level feature page](../features/battery.md) for more details on
 
 See [Configuration Overview](index.md) for instructions on how to change these settings.
 
+:::note
+
+On MacOS the BLE battery reporting packets can cause the computer to wakeup from sleep, the battery service can be disabled indepently of battery monitoring (allowing the battery level to be displayed on a screen or through a custom lighting implementation) by setting `CONFIG_BT_BAS=n`
+
+:::
+
 ### Devicetree
 
 Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/guides/dts/intro.html#aliases-and-chosen-nodes)
