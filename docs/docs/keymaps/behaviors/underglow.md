@@ -35,13 +35,15 @@ Here is a table describing the action for each define:
 | `RGB_SPD`       | Decreases the speed of the RGB feature effect's animation                                      |
 | `RGB_EFF`       | Cycles the RGB feature's effect forwards                                                       |
 | `RGB_EFR`       | Cycles the RGB feature's effect reverse                                                        |
+| `RGB_EFS`       | Selects a specific RGB effect                                                                  |
+| `RGB_MEFS`      | Selects a specific RGB effect whilst held down and reverts when released                       |
 | `RGB_COLOR_HSB` | Sets a specific [HSB (HSV)](https://en.wikipedia.org/wiki/HSL_and_HSV) value for the underglow |
 
 ## Behavior Binding
 
 - Reference: `&rgb_ug`
 - Parameter #1: The RGB action define, e.g. `RGB_TOG` or `RGB_BRI`
-- Parameter #2: Only applies to `RGB_COLOR_HSB` and is the HSB representation of the color to set (see below for an example)
+- Parameter #2: Applies to `RGB_EFS` and `RGB_MEFS` (the effect to select) as well as `RGB_COLOR_HSB` (the HSB representation of the color to set). See below for examples.
 
 :::note[HSB Values]
 
@@ -59,6 +61,27 @@ Value Limits:
 The RGB settings that are changed via the `&rgb_ug` behavior will be saved to flash storage and hence persist across restarts and firmware flashes.
 They will also override the start values set by [`CONFIG_ZMK_RGB_*_START` settings](../../config/lighting.md#kconfig).
 However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+:::
+
+:::note Effect Selection
+
+When using the `RGB_EFS` or `RGB_MEFS` definitions you must also include a parameter corresponding to the effect you want to select, e.g. `&rgb_ug RGB_EFS RGB_EFF_SOLID`. There are currently 4 RGB effects, defined in [`dt-bindings/zmk/rgb.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/rgb.h):
+
+| Value              | Effect                                    |
+| ------------------ | ----------------------------------------- |
+| `RGB_EFF_SOLID`    | Solid color (set by HSB)                  |
+| `RGB_EFF_BREATHE`  | Breathe a solid color                     |
+| `RGB_EFF_SPECTRUM` | Cycle all LEDs through the color spectrum |
+| `RGB_EFF_SWIRL`    | Swirl a rainbow around the LEDs           |
+
+When using the `RGB_EFS` or `RGB_MEFS` definitions you must also include a number as an argument in the keymap corresponding to the effect you want to select e.g. `RGB_EFS 0`
+
+:::
+
+:::warning
+
+If the `RGB_MEFS` key is held down for longer than [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds and the board is reset prior to releasing the key, the temporary effect will have been saved to flash memory and will be the one selected after resetting/power cycling.
+
 :::
 
 ## Examples
