@@ -14,7 +14,7 @@ Each macro you want to use in your keymap gets defined first, then bound in your
 
 A macro definition looks like:
 
-```
+```dts
 / {
     macros {
         zed_em_kay: zed_em_kay {
@@ -38,7 +38,7 @@ used to reference the macro in your keymap.
 
 The macro can then be bound in your keymap by referencing it by the label `&zed_em_kay`, e.g.:
 
-```
+```dts
     raise_layer {
         bindings = <&zed_em_kay>;
     };
@@ -54,7 +54,7 @@ with [modifier functions](../codes/modifiers.mdx#modifier-functions) can be used
 Like [hold-taps](/docs/behaviors/hold-tap), macros are created by composing other behaviors, and any of those behaviors can
 be added to the `bindings` list, e.g.:
 
-```
+```dts
 bindings
     = <&to 1>
     , <&bl BL_ON>
@@ -86,7 +86,7 @@ To modify the activation mode, macro controls can be added at any point in the `
 
 A concrete example, used to hold a modifier, tap multiple keys, then release the modifier, would look like:
 
-```
+```dts
 bindings
     = <&macro_press &kp LSHFT>
     , <&macro_tap &kp Z &kp M &kp K>
@@ -101,7 +101,7 @@ the macro itself is released.
 
 To pause the macro until release, use `&macro_pause_for_release`. For example, this macro will press a modifier and activate a layer when the macro is pressed. Once the macro is released, it will release the modifier and deactivate the layer by releasing the `&mo`:
 
-```
+```dts
 bindings
     = <&macro_press &mo 1 &kp LSHFT>
     , <&macro_pause_for_release>
@@ -116,7 +116,7 @@ which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS`](../config/be
 be set by assigning a value to the `wait-ms` property of the macro, e.g. `wait-ms = <20>;`. If you want to update the wait time at any
 point in the macro bindings list, use `&macro_wait_time`, e.g. `&macro_wait_time 30`. A full example:
 
-```
+```dts
 wait-ms = <10>;
 bindings
     = <&kp F &kp A &kp S &kp T>
@@ -132,7 +132,7 @@ which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`](../config/beh
 be set by assigning a value to the `tap-ms` property of the macro, e.g. `tap-ms = <20>;`. If you want to update the tap time at any
 point in a macro bindings list, use `&macro_tap_time`, e.g. `&macro_tap_time 30`. A full example:
 
-```
+```dts
 bindings
     = <&macro_tap_time 10>
     , <&kp S &kp H &kp O &kp R &kp T>
@@ -153,7 +153,7 @@ Another limit worth noting is that the maximum number of bindings you can pass t
 
 Macros can also be "parameterized", allowing them to be bound in your keymap with unique values passed into them, e.g.:
 
-```
+```dts
     raise_layer {
         bindings = <&my_one_param_macro A>
     };
@@ -262,7 +262,7 @@ lm: lm {
 
 To trigger a different underglow when the macro is pressed, and when it is released, we use the macro "press" activation mode whenever triggering the `&rgb_ug` behavior:
 
-```
+```dts
 wait-ms = <0>;
 tap-ms = <0>;
 bindings
@@ -278,7 +278,7 @@ bindings
 The other common use case for macros is to sending sequences of keycodes to the connected host. Here, a wait and tap time of at least 30ms is recommended to
 avoid having HID notifications grouped at the BLE protocol level and then processed out of order:
 
-```
+```dts
 wait-ms = <40>;
 tap-ms = <40>;
 bindings
@@ -292,7 +292,7 @@ bindings
 
 Many operating systems allow a special sequence to input unicode characters, e.g. [Windows alt codes](https://support.microsoft.com/en-us/office/insert-ascii-or-unicode-latin-based-symbols-and-characters-d13f58d3-7bcb-44a7-a4d5-972ee12e50e0). You can use macros to automate inputting the sequences, e.g. below macro inserts `£` on Windows:
 
-```
+```dts
 wait-ms = <40>;
 tap-ms = <40>;
 bindings
@@ -306,7 +306,7 @@ bindings
 
 To avoid repetition or possible typos when declaring a **zero parameter macro**, a convenience _C_ macro, named `ZMK_MACRO(name, props)` can be used to simplify things:
 
-```
+```dts
     ZMK_MACRO(my_zero_param_macro,
         wait-ms = <30>;
         tap-ms = <40>;
@@ -320,7 +320,7 @@ To avoid repetition or possible typos when declaring a **zero parameter macro**,
 
 This can be used instead of a complete macro definition. During the firmware build process, the example above would produce the complete macro definition below:
 
-```
+```dts
     my_zero_param_macro: my_zero_param_macro {
         compatible = "zmk,behavior-macro";
         label = "ZM_my_macro";

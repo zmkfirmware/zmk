@@ -18,7 +18,7 @@ Example uses for key toggle include shift lock, or `ALT-TAB` window switching wi
 
 Example:
 
-```
+```dts
 &kt LALT
 ```
 

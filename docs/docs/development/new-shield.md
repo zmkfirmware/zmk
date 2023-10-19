@@ -53,7 +53,7 @@ shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
 
 The `Kconfig.shield` file defines any additional Kconfig settings that may be relevant when using this keyboard. For most keyboards, there is just one additional configuration value for the shield itself.
 
-```
+```kconfig
 config SHIELD_MY_BOARD
     def_bool $(shields_list_contains,my_board)
 ```
@@ -62,7 +62,7 @@ This will make sure that a new configuration value named `SHIELD_MY_BOARD` is se
 
 **For split boards**, you will need to add configurations for the left and right sides. For example, if your split halves are named `my_board_left` and `my_board_right`, it would look like this:
 
-```
+```kconfig
 config SHIELD_MY_BOARD_LEFT
     def_bool $(shields_list_contains,my_board_left)
 
@@ -83,7 +83,7 @@ The updated new default values should always be wrapped inside a conditional on 
 The keyboard name must be less than or equal to 16 characters in length, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your device.
 :::
 
-```
+```kconfig
 if SHIELD_MY_BOARD
 
 config ZMK_KEYBOARD_NAME
@@ -97,7 +97,7 @@ You'll also want to set which half is the central side. Most boards set it to th
 Then on the peripheral half, you'll want to turn USB on so that it shows USB status on displays properly.
 Finally, you'll want to turn on the split option for both sides. This can all be seen below.
 
-```
+```kconfig
 if SHIELD_MY_BOARD_LEFT
 
 config ZMK_KEYBOARD_NAME
@@ -120,6 +120,10 @@ endif
 
 <InterconnectTabs items={Metadata}/>
 
+To use GPIO pins that are not part of the interconnects as described above, you can use the GPIO labels that are specific to each controller type.
+For instance, pins numbered `PX.Y` in nRF52840-based boards can be referred to via `&gpioX Y` labels.
+An example is `&gpio1 7` for the `P1.07` pin that the nice!nano exposes in the middle of the board.
+
 <Tabs
 defaultValue="unibody"
 values={[
@@ -132,7 +136,7 @@ values={[
 The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the chosen node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
 this might look something like:
 
-```
+```dts
 / {
     chosen {
         zmk,kscan = &kscan0;
@@ -170,7 +174,7 @@ Unlike unibody keyboards, split keyboards have a core .dtsi file with shield ove
 It is preferred to define only the `col-gpios` or `row-gpios` in the common shield .dtsi, depending on the `diode-direction` value.
 For `col2row` directed boards like the iris, the shared .dtsi file may look like this:
 
-```
+```dts
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
@@ -224,9 +228,7 @@ Furthermore, the column offset for the [matrix transform](#optional-matrix-trans
 because the keyboard's switch matrix is read from left to right, top to bottom.
 This is exemplified with the iris .overlay files.
 
-```
-// iris_left.overlay
-
+```dts title=iris_left.overlay
 #include "iris.dtsi" // Notice that the main dtsi files are included in the overlay.
 
 &kscan0 {
@@ -241,9 +243,7 @@ This is exemplified with the iris .overlay files.
 };
 ```
 
-```
-// iris_right.overlay
-
+```dts title=iris_right.overlay
 #include "iris.dtsi"
 
 &default_transform { // The matrix transform for this board is 6 columns over because the left half is 6 columns wide according to the matrix.
@@ -277,9 +277,7 @@ For example, a split board called `my_awesome_split_board` would have the follow
 
 In most case you'll only need to use the .conf file that affects both halves of a split board. It's used for adding features like deep-sleep or rotary encoders.
 
-```
-// my_awesome_split_board.conf
-
+```ini title=my_awesome_split_board.conf
 CONFIG_ZMK_SLEEP=y
 ```
 
@@ -302,7 +300,7 @@ the logical key location as perceived by the end user. All _keymap_ mappings act
 
 _Without_ a matrix transform, that intentionally map each key position to the row/column pair that position corresponds to, the default equation to determine that is:
 
-```
+```c
 ($row * NUMBER_OF_COLUMNS) + $column
 ```
 
@@ -312,7 +310,7 @@ Whenever that default key position mapping is insufficient, the `<shield_name>.o
 
 Here is an example for the [nice60](https://github.com/Nicell/nice60), which uses an efficient 8x8 GPIO matrix, and uses a transform:
 
-```
+```dts
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
@@ -415,7 +413,7 @@ values={[
 
 In your configuration file you will need to add the following lines so that the encoders can be enabled/disabled:
 
-```
+```ini
 # Uncomment to enable encoder
 # CONFIG_EC11=y
 # CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y
@@ -431,7 +429,7 @@ If building locally for split boards, you may need to add these lines to the spe
 <TabItem value = "dtsi">
 In your device tree file you will need to add the following lines to define the encoder sensor:
 
-```
+```dts
 left_encoder: encoder_left {
         compatible = "alps,ec11";
         label = "LEFT_ENCODER";
@@ -448,8 +446,8 @@ Add additional encoders as necessary by duplicating the above lines, replacing `
 
 Once you have defined the encoder sensors, you will have to add them to the list of sensors:
 
-```
-sensors {
+```dts
+    sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&left_encoder &right_encoder>;
     };
@@ -461,7 +459,7 @@ In this example, a left_encoder and right_encoder are both added. Additional enc
 <TabItem value = "overlay">
 Add the following lines to your overlay file(s) to enable the encoder:
 
-```
+```dts
 &left_encoder {
     status = "okay";
 };
@@ -475,7 +473,7 @@ For split keyboards, make sure to add left hand encoders to the left .overlay fi
 <TabItem value = "keymap">
 Add the following line to your keymap file to add default encoder behavior bindings:
 
-```
+```dts
 sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 ```
 
@@ -489,7 +487,7 @@ Add additional bindings as necessary to match the default number of encoders on 
 Once you've fully created the new keyboard shield definition,
 you should be able to test with a build command like:
 
-```
+```sh
 west build --pristine -b proton_c -- -DSHIELD=my_board
 ```
 
@@ -502,7 +500,7 @@ Alternatively, if your board supports flashing and you're not developing from
 within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on
 your board and run the following command to test your build:
 
-```
+```sh
 west flash
 ```
 

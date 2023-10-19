@@ -7,6 +7,8 @@
 #include <zephyr/init.h>
 #include <zephyr/settings/settings.h>
 
+#include <stdio.h>
+
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
@@ -16,29 +18,29 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
-#include <zmk/events/endpoint_selection_changed.h>
+#include <zmk/events/endpoint_changed.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#define DEFAULT_ENDPOINT                                                                           \
-    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_BLE), (ZMK_ENDPOINT_BLE), (ZMK_ENDPOINT_USB))
+#define DEFAULT_TRANSPORT                                                                          \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_BLE), (ZMK_TRANSPORT_BLE), (ZMK_TRANSPORT_USB))
 
-static enum zmk_endpoint current_endpoint = DEFAULT_ENDPOINT;
-static enum zmk_endpoint preferred_endpoint =
-    ZMK_ENDPOINT_USB; /* Used if multiple endpoints are ready */
+static struct zmk_endpoint_instance current_instance = {};
+static enum zmk_transport preferred_transport =
+    ZMK_TRANSPORT_USB; /* Used if multiple endpoints are ready */
 
-static void update_current_endpoint();
+static void update_current_endpoint(void);
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 static void endpoints_save_preferred_work(struct k_work *work) {
-    settings_save_one("endpoints/preferred", &preferred_endpoint, sizeof(preferred_endpoint));
+    settings_save_one("endpoints/preferred", &preferred_transport, sizeof(preferred_transport));
 }
 
 static struct k_work_delayable endpoints_save_work;
 #endif
 
-static int endpoints_save_preferred() {
+static int endpoints_save_preferred(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     return k_work_reschedule(&endpoints_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
@@ -46,14 +48,60 @@ static int endpoints_save_preferred() {
 #endif
 }
 
-int zmk_endpoints_select(enum zmk_endpoint endpoint) {
-    LOG_DBG("Selected endpoint %d", endpoint);
+bool zmk_endpoint_instance_eq(struct zmk_endpoint_instance a, struct zmk_endpoint_instance b) {
+    if (a.transport != b.transport) {
+        return false;
+    }
 
-    if (preferred_endpoint == endpoint) {
+    switch (a.transport) {
+    case ZMK_TRANSPORT_USB:
+        return true;
+
+    case ZMK_TRANSPORT_BLE:
+        return a.ble.profile_index == b.ble.profile_index;
+    }
+
+    LOG_ERR("Invalid transport %d", a.transport);
+    return false;
+}
+
+int zmk_endpoint_instance_to_str(struct zmk_endpoint_instance endpoint, char *str, size_t len) {
+    switch (endpoint.transport) {
+    case ZMK_TRANSPORT_USB:
+        return snprintf(str, len, "USB");
+
+    case ZMK_TRANSPORT_BLE:
+        return snprintf(str, len, "BLE:%d", endpoint.ble.profile_index);
+
+    default:
+        return snprintf(str, len, "Invalid");
+    }
+}
+
+#define INSTANCE_INDEX_OFFSET_USB 0
+#define INSTANCE_INDEX_OFFSET_BLE ZMK_ENDPOINT_USB_COUNT
+
+int zmk_endpoint_instance_to_index(struct zmk_endpoint_instance endpoint) {
+    switch (endpoint.transport) {
+    case ZMK_TRANSPORT_USB:
+        return INSTANCE_INDEX_OFFSET_USB;
+
+    case ZMK_TRANSPORT_BLE:
+        return INSTANCE_INDEX_OFFSET_BLE + endpoint.ble.profile_index;
+    }
+
+    LOG_ERR("Invalid transport %d", endpoint.transport);
+    return 0;
+}
+
+int zmk_endpoints_select_transport(enum zmk_transport transport) {
+    LOG_DBG("Selected endpoint transport %d", transport);
+
+    if (preferred_transport == transport) {
         return 0;
     }
 
-    preferred_endpoint = endpoint;
+    preferred_transport = transport;
 
     endpoints_save_preferred();
 
@@ -62,20 +110,22 @@ int zmk_endpoints_select(enum zmk_endpoint endpoint) {
     return 0;
 }
 
-enum zmk_endpoint zmk_endpoints_selected() { return current_endpoint; }
-
-int zmk_endpoints_toggle() {
-    enum zmk_endpoint new_endpoint =
-        (preferred_endpoint == ZMK_ENDPOINT_USB) ? ZMK_ENDPOINT_BLE : ZMK_ENDPOINT_USB;
-    return zmk_endpoints_select(new_endpoint);
+int zmk_endpoints_toggle_transport(void) {
+    enum zmk_transport new_transport =
+        (preferred_transport == ZMK_TRANSPORT_USB) ? ZMK_TRANSPORT_BLE : ZMK_TRANSPORT_USB;
+    return zmk_endpoints_select_transport(new_transport);
 }
 
-static int send_keyboard_report() {
+struct zmk_endpoint_instance zmk_endpoints_selected(void) {
+    return current_instance;
+}
+
+static int send_keyboard_report(void) {
     struct zmk_hid_keyboard_report *keyboard_report = zmk_hid_get_keyboard_report();
 
-    switch (current_endpoint) {
+    switch (current_instance.transport) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
-    case ZMK_ENDPOINT_USB: {
+    case ZMK_TRANSPORT_USB: {
         int err = zmk_usb_hid_send_report((uint8_t *)keyboard_report, sizeof(*keyboard_report));
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
@@ -85,7 +135,7 @@ static int send_keyboard_report() {
 #endif /* IS_ENABLED(CONFIG_ZMK_USB) */
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
-    case ZMK_ENDPOINT_BLE: {
+    case ZMK_TRANSPORT_BLE: {
         int err = zmk_hog_send_keyboard_report(&keyboard_report->body);
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
@@ -93,19 +143,18 @@ static int send_keyboard_report() {
         return err;
     }
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
-
-    default:
-        LOG_ERR("Unsupported endpoint %d", current_endpoint);
-        return -ENOTSUP;
     }
+
+    LOG_ERR("Unsupported endpoint transport %d", current_instance.transport);
+    return -ENOTSUP;
 }
 
-static int send_consumer_report() {
+static int send_consumer_report(void) {
     struct zmk_hid_consumer_report *consumer_report = zmk_hid_get_consumer_report();
 
-    switch (current_endpoint) {
+    switch (current_instance.transport) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
-    case ZMK_ENDPOINT_USB: {
+    case ZMK_TRANSPORT_USB: {
         int err = zmk_usb_hid_send_report((uint8_t *)consumer_report, sizeof(*consumer_report));
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
@@ -115,7 +164,7 @@ static int send_consumer_report() {
 #endif /* IS_ENABLED(CONFIG_ZMK_USB) */
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
-    case ZMK_ENDPOINT_BLE: {
+    case ZMK_TRANSPORT_BLE: {
         int err = zmk_hog_send_consumer_report(&consumer_report->body);
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
@@ -123,11 +172,10 @@ static int send_consumer_report() {
         return err;
     }
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
-
-    default:
-        LOG_ERR("Unsupported endpoint %d", current_endpoint);
-        return -ENOTSUP;
     }
+
+    LOG_ERR("Unsupported endpoint transport %d", current_instance.transport);
+    return -ENOTSUP;
 }
 
 int zmk_endpoints_send_report(uint16_t usage_page) {
@@ -136,12 +184,13 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
     switch (usage_page) {
     case HID_USAGE_KEY:
         return send_keyboard_report();
+
     case HID_USAGE_CONSUMER:
         return send_consumer_report();
-    default:
-        LOG_ERR("Unsupported usage page %d", usage_page);
-        return -ENOTSUP;
     }
+
+    LOG_ERR("Unsupported usage page %d", usage_page);
+    return -ENOTSUP;
 }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
@@ -151,12 +200,12 @@ static int endpoints_handle_set(const char *name, size_t len, settings_read_cb r
     LOG_DBG("Setting endpoint value %s", name);
 
     if (settings_name_steq(name, "preferred", NULL)) {
-        if (len != sizeof(enum zmk_endpoint)) {
-            LOG_ERR("Invalid endpoint size (got %d expected %d)", len, sizeof(enum zmk_endpoint));
+        if (len != sizeof(enum zmk_transport)) {
+            LOG_ERR("Invalid endpoint size (got %d expected %d)", len, sizeof(enum zmk_transport));
             return -EINVAL;
         }
 
-        int err = read_cb(cb_arg, &preferred_endpoint, sizeof(enum zmk_endpoint));
+        int err = read_cb(cb_arg, &preferred_transport, sizeof(enum zmk_transport));
         if (err <= 0) {
             LOG_ERR("Failed to read preferred endpoint from settings (err %d)", err);
             return err;
@@ -170,6 +219,60 @@ static int endpoints_handle_set(const char *name, size_t len, settings_read_cb r
 
 struct settings_handler endpoints_handler = {.name = "endpoints", .h_set = endpoints_handle_set};
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
+
+static bool is_usb_ready(void) {
+#if IS_ENABLED(CONFIG_ZMK_USB)
+    return zmk_usb_is_hid_ready();
+#else
+    return false;
+#endif
+}
+
+static bool is_ble_ready(void) {
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    return zmk_ble_active_profile_is_connected();
+#else
+    return false;
+#endif
+}
+
+static enum zmk_transport get_selected_transport(void) {
+    if (is_ble_ready()) {
+        if (is_usb_ready()) {
+            LOG_DBG("Both endpoint transports are ready. Using %d", preferred_transport);
+            return preferred_transport;
+        }
+
+        LOG_DBG("Only BLE is ready.");
+        return ZMK_TRANSPORT_BLE;
+    }
+
+    if (is_usb_ready()) {
+        LOG_DBG("Only USB is ready.");
+        return ZMK_TRANSPORT_USB;
+    }
+
+    LOG_DBG("No endpoint transports are ready.");
+    return DEFAULT_TRANSPORT;
+}
+
+static struct zmk_endpoint_instance get_selected_instance(void) {
+    struct zmk_endpoint_instance instance = {.transport = get_selected_transport()};
+
+    switch (instance.transport) {
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    case ZMK_TRANSPORT_BLE:
+        instance.ble.profile_index = zmk_ble_active_profile_index();
+        break;
+#endif // IS_ENABLED(CONFIG_ZMK_BLE)
+
+    default:
+        // No extra data for this transport.
+        break;
+    }
+
+    return instance;
+}
 
 static int zmk_endpoints_init(const struct device *_arg) {
 #if IS_ENABLED(CONFIG_SETTINGS)
@@ -186,43 +289,9 @@ static int zmk_endpoints_init(const struct device *_arg) {
     settings_load_subtree("endpoints");
 #endif
 
+    current_instance = get_selected_instance();
+
     return 0;
-}
-
-static bool is_usb_ready() {
-#if IS_ENABLED(CONFIG_ZMK_USB)
-    return zmk_usb_is_hid_ready();
-#else
-    return false;
-#endif
-}
-
-static bool is_ble_ready() {
-#if IS_ENABLED(CONFIG_ZMK_BLE)
-    return zmk_ble_active_profile_is_connected();
-#else
-    return false;
-#endif
-}
-
-static enum zmk_endpoint get_selected_endpoint() {
-    if (is_ble_ready()) {
-        if (is_usb_ready()) {
-            LOG_DBG("Both endpoints are ready. Using %d", preferred_endpoint);
-            return preferred_endpoint;
-        }
-
-        LOG_DBG("Only BLE is ready.");
-        return ZMK_ENDPOINT_BLE;
-    }
-
-    if (is_usb_ready()) {
-        LOG_DBG("Only USB is ready.");
-        return ZMK_ENDPOINT_USB;
-    }
-
-    LOG_DBG("No endpoints are ready.");
-    return DEFAULT_ENDPOINT;
 }
 
 static void disconnect_current_endpoint() {
@@ -233,18 +302,21 @@ static void disconnect_current_endpoint() {
     zmk_endpoints_send_report(HID_USAGE_CONSUMER);
 }
 
-static void update_current_endpoint() {
-    enum zmk_endpoint new_endpoint = get_selected_endpoint();
+static void update_current_endpoint(void) {
+    struct zmk_endpoint_instance new_instance = get_selected_instance();
 
-    if (new_endpoint != current_endpoint) {
-        /* Cancel all current keypresses so keys don't stay held on the old endpoint. */
+    if (!zmk_endpoint_instance_eq(new_instance, current_instance)) {
+        // Cancel all current keypresses so keys don't stay held on the old endpoint.
         disconnect_current_endpoint();
 
-        current_endpoint = new_endpoint;
-        LOG_INF("Endpoint changed: %d", current_endpoint);
+        current_instance = new_instance;
 
-        ZMK_EVENT_RAISE(new_zmk_endpoint_selection_changed(
-            (struct zmk_endpoint_selection_changed){.endpoint = current_endpoint}));
+        char endpoint_str[ZMK_ENDPOINT_STR_LEN];
+        zmk_endpoint_instance_to_str(current_instance, endpoint_str, sizeof(endpoint_str));
+        LOG_INF("Endpoint changed: %s", endpoint_str);
+
+        ZMK_EVENT_RAISE(
+            new_zmk_endpoint_changed((struct zmk_endpoint_changed){.endpoint = current_instance}));
     }
 }
 

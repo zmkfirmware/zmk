@@ -14,7 +14,7 @@ Another way to think of this feature is as a simple combo system for layers, jus
 
 Conditional layers are configured via a `conditional_layers` node in your `.keymap` file as follows:
 
-```
+```dts
 / {
     conditional_layers {
         compatible = "zmk,conditional-layers";

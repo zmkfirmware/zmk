@@ -44,7 +44,7 @@ values={[
 ]}>
 <TabItem value="zmk">
 
-```
+```yaml
 manifest:
   remotes:
     - name: zmkfirmware
@@ -61,7 +61,7 @@ manifest:
 </TabItem>
 <TabItem value="macros">
 
-```
+```yaml
 manifest:
   remotes:
     - name: zmkfirmware
@@ -80,7 +80,7 @@ manifest:
 </TabItem>
 <TabItem value="sleep">
 
-```
+```yaml
 manifest:
   remotes:
     - name: zmkfirmware

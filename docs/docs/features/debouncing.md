@@ -56,7 +56,7 @@ per-driver option.
 For example, if your board/shield has a kscan driver labeled `kscan0` in its
 `.overlay`, `.dts`, or `.dtsi` files,
 
-```devicetree
+```dts
 kscan0: kscan {
     compatible = "zmk,kscan-gpio-matrix";
     ...
@@ -65,7 +65,7 @@ kscan0: kscan {
 
 then you could add this to your `.keymap`:
 
-```devicetree
+```dts
 &kscan0 {
     debounce-press-ms = <3>;
     debounce-release-ms = <3>;

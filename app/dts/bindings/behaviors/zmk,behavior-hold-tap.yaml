@@ -13,15 +13,21 @@ properties:
     required: true
   tapping-term-ms:
     type: int
-  tapping_term_ms: # deprecated
+  tapping_term_ms:
     type: int
+    deprecated: true
   quick-tap-ms:
     type: int
     default: -1
-  quick_tap_ms: # deprecated
+  quick_tap_ms:
     type: int
+    deprecated: true
   global-quick-tap:
     type: boolean
+    deprecated: true
+  require-prior-idle-ms:
+    type: int
+    default: -1
   flavor:
     type: string
     required: false

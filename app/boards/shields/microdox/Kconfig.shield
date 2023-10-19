@@ -6,3 +6,9 @@ config SHIELD_MICRODOX_LEFT
 
 config SHIELD_MICRODOX_RIGHT
     def_bool $(shields_list_contains,microdox_right)
+
+config SHIELD_MICRODOX_V2_LEFT
+    def_bool $(shields_list_contains,microdox_v2_left)
+
+config SHIELD_MICRODOX_V2_RIGHT
+    def_bool $(shields_list_contains,microdox_v2_right)

@@ -1,4 +1,4 @@
-```
+```dts
     keymap {
         compatible = "zmk,keymap";
 

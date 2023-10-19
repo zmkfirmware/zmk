@@ -18,7 +18,7 @@ The Mod-Morph behavior acts as one of two keycodes, depending on if the required
 
 An example of how to implement the mod-morph "Grave Escape":
 
-```
+```dts
 / {
     behaviors {
         gresc: grave_escape {
@@ -41,7 +41,7 @@ Note that this specific mod-morph exists in ZMK by default using code `&gresc`.
 
 Example:
 
-```
+```dts
 &gresc
 ```
 
@@ -62,7 +62,7 @@ Available Modifiers:
 
 Example:
 
-```
+```dts
 mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
 ```
 
@@ -74,7 +74,7 @@ When a modifier specified in `mods` is being held, it won't be sent along with t
 
 For example, the following configuration morphs `LEFT_SHIFT` + `BACKSPACE` into `DELETE`, and morphs `RIGHT_SHIFT` + `BACKSPACE` into `RIGHT_SHIFT` + `DELETE`.
 
-```
+```dts
 / {
     behaviors {
         bspc_del: backspace_delete {

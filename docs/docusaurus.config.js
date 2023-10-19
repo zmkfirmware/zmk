@@ -1,4 +1,6 @@
 const path = require("path");
+const theme = require("./src/theme/prism/themes/github");
+const darkTheme = require("./src/theme/prism/themes/github-dark-dimmed");
 
 module.exports = {
   title: "ZMK Firmware",
@@ -19,6 +21,19 @@ module.exports = {
   themeConfig: {
     colorMode: {
       respectPrefersColorScheme: true,
+    },
+    prism: {
+      additionalLanguages: [
+        "bash",
+        "c",
+        "cmake",
+        "ini",
+        "linker-script",
+        "log",
+        "powershell",
+      ],
+      theme,
+      darkTheme,
     },
     // sidebarCollapsible: false,
     navbar: {

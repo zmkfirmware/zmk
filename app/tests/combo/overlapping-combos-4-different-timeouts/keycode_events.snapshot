@@ -1,0 +1,8 @@
+after filtering out timed out combo candidates: remaining_candidates=2 timestamp=71
+after filtering out timed out combo candidates: remaining_candidates=1 timestamp=81
+after filtering out timed out combo candidates: remaining_candidates=0 timestamp=91
+usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+after filtering out timed out combo candidates: remaining_candidates=2 timestamp=143
+after filtering out timed out combo candidates: remaining_candidates=1 timestamp=153
+after filtering out timed out combo candidates: remaining_candidates=1 timestamp=159
+usage_page 0x07 keycode 0x1D implicit_mods 0x00 explicit_mods 0x00

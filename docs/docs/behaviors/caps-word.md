@@ -15,7 +15,7 @@ The modifiers are applied only to to the alphabetic (`A` to `Z`) keycodes, to av
 
 Example:
 
-```
+```dts
 &caps_word
 ```
 
@@ -25,7 +25,7 @@ Example:
 
 By default, the caps word will remain active when any alphanumeric character or underscore (`UNDERSCORE`), backspace (`BACKSPACE`), or delete (`DELETE`) characters are pressed. Any other non-modifier keycode sent will turn off caps word. If you would like to override this, you can set a new array of keys in the `continue-list` property in your keymap:
 
-```
+```dts
 &caps_word {
     continue-list = <UNDERSCORE MINUS>;
 };
@@ -41,7 +41,7 @@ By default, the caps word will remain active when any alphanumeric character or 
 
 In addition, if you would like _multiple_ modifiers, instead of just `MOD_LSFT`, you can override the `mods` property:
 
-```
+```dts
 &caps_word {
     mods = <(MOD_LSFT | MOD_LALT)>;
 };
@@ -57,7 +57,7 @@ In addition, if you would like _multiple_ modifiers, instead of just `MOD_LSFT`,
 
 If you want to use multiple caps breaks with different codes to break the caps, you can add additional caps words instances to use in your keymap:
 
-```
+```dts
 / {
     prog_caps: behavior_prog_caps_word {
         compatible = "zmk,behavior-caps-word";
