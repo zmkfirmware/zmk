@@ -98,6 +98,12 @@ If the `RGB_MEFS` key is held down for longer than [`CONFIG_ZMK_SETTINGS_SAVE_DE
    &rgb_ug RGB_COLOR_HSB(128,100,100)
    ```
 
+1. Select a specific RGB effect (Swirl)
+
+   ```dts
+   &rgb_ug RGB_EFS RGB_EFF_SWIRL
+   ```
+
 ## Split Keyboards
 
 RGB underglow behaviors are [global](../../features/split-keyboards.md#global-locality-behaviors): This means that when triggered, they affect both the central and peripheral side of split keyboards.
