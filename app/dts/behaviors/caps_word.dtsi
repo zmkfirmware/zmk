@@ -12,7 +12,22 @@
             compatible = "zmk,behavior-caps-word";
             label = "CAPS_WORD";
             #binding-cells = <0>;
+            mods = <MOD_LSFT>;
             continue-list = <UNDERSCORE BACKSPACE DELETE>;
+            ignore-alphas;
+            ignore-numbers;
+            ignore-modifiers;
+        };
+    };
+
+    behaviors {
+        /omit-if-no-ref/ num_word: behavior_num_word {
+            compatible = "zmk,behavior-caps-word";
+            label = "NUM_WORD";
+            #binding-cells = <0>;
+            // layers = <xx>; // to be specified in user config using "&num_word { layers = <xx>; };"
+            continue-list = <BACKSPACE DELETE DOT COMMA>;
+            ignore-numbers;
         };
     };
 };

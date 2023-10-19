@@ -149,6 +149,10 @@ config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
     int "Max number of consumer HID reports to queue for sending over BLE"
     default 5
 
+config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
+    int "Max number of mouse HID reports to queue for sending over BLE"
+    default 20
+
 config ZMK_BLE_CLEAR_BONDS_ON_START
     bool "Configuration that clears all bond information from the keyboard on startup."
     default n
@@ -308,6 +312,13 @@ endif
 #Display/LED Options
 endmenu
 
+menu "Mouse Options"
+
+rsource "src/mouse/Kconfig"
+
+#Mouse Options
+endmenu
+
 menu "Power Management"
 
 config ZMK_BATTERY_REPORTING
@@ -375,6 +386,12 @@ config ZMK_MACRO_DEFAULT_WAIT_MS
 config ZMK_MACRO_DEFAULT_TAP_MS
     int "Default time to wait (in milliseconds) between the press and release events of a tapped behavior in macros"
     default 30
+
+DT_COMPAT_ZMK_BEHAVIOR_TRI_STATE := zmk,behavior-tri-state
+
+config ZMK_BEHAVIOR_TRI_STATE
+        bool
+        default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_TRI_STATE))
 
 endmenu
 

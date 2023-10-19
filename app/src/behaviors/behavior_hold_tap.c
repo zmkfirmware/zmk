@@ -78,6 +78,7 @@ struct active_hold_tap {
 
     // initialized to -1, which is to be interpreted as "no other key has been pressed yet"
     int32_t position_of_first_other_key_pressed;
+    int32_t position_of_first_other_key_released;
 };
 
 // The undecided hold tap is the hold tap that needs to be decided before
@@ -229,6 +230,7 @@ static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_
         active_hold_taps[i].param_tap = param_tap;
         active_hold_taps[i].timestamp = timestamp;
         active_hold_taps[i].position_of_first_other_key_pressed = -1;
+        active_hold_taps[i].position_of_first_other_key_released = -1;
         return &active_hold_taps[i];
     }
     return NULL;
@@ -414,27 +416,73 @@ static bool is_first_other_key_pressed_trigger_key(struct active_hold_tap *hold_
     return false;
 }
 
-// Force a tap decision if the positional conditions for a hold decision are not met.
+static bool is_first_other_key_released_trigger_key(struct active_hold_tap *hold_tap) {
+    for (int i = 0; i < hold_tap->config->hold_trigger_key_positions_len; i++) {
+        if (hold_tap->config->hold_trigger_key_positions[i] ==
+            hold_tap->position_of_first_other_key_released) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 static void decide_positional_hold(struct active_hold_tap *hold_tap) {
-    // Only force a tap decision if the positional hold/tap feature is enabled.
+    
+    // Positional conditions is not active?
     if (!(hold_tap->config->hold_trigger_key_positions_len > 0)) {
-        return;
+        return; // apply flavour
     }
-
-    // Only force a tap decision if another key was pressed after
-    // the hold/tap key.
+    
+    // Pressed key is not set? 
     if (hold_tap->position_of_first_other_key_pressed == -1) {
-        return;
+        return; // apply flavor
     }
-
-    // Only force a tap decision if the first other key to be pressed
-    // (after the hold/tap key) is not one of the trigger keys.
+    
+    // Pressed key is included in positions? 
     if (is_first_other_key_pressed_trigger_key(hold_tap)) {
-        return;
+        return; // apply flavor
     }
 
-    // Since the positional key conditions have failed, force a TAP decision.
+    // Pressed key is not included in positions. 
+    // We act on press?
+    if (undecided_hold_tap->config->hold_trigger_on_release == false) {
+        hold_tap->status = STATUS_TAP;
+        return; // ignore flavor, set TAP
+    } 
+    
+    // We act on release. 
+    // Released key is not set?
+    if (hold_tap->position_of_first_other_key_released == -1)
+    {  
+        // Is current decision hold based on key pressed?
+        if (hold_tap->status == STATUS_HOLD_INTERRUPT) {
+            
+            // We can't decide yet if key which will be released:
+            // - not in positions
+            // - be released before timer
+            // So we can't decide yet if we should overwrite decision to TAP.
+            // We have to wait for key release.
+            
+            hold_tap->status = STATUS_UNDECIDED; 
+            return; // remove flavor
+        }
+        
+        // There decision is decision:
+        // - STATUS_HOLD_TIMER - tapping term reached, apply flavor
+        // - STATUS_TAP - even if we set TAP later it will not change decision
+        return; // apply flavor
+    }
+
+
+    // Released key is included in positions?
+    if (is_first_other_key_released_trigger_key(hold_tap)) {
+        return; // apply flavor
+    } 
+    
+    // Released key is not included in positions.
     hold_tap->status = STATUS_TAP;
+    return; // ignore flavor, set TAP
 }
 
 static void decide_hold_tap(struct active_hold_tap *hold_tap,
@@ -470,6 +518,9 @@ static void decide_hold_tap(struct active_hold_tap *hold_tap,
 
     decide_positional_hold(hold_tap);
 
+    if (hold_tap->status == STATUS_UNDECIDED) {
+        return;
+    }
     // Since the hold-tap has been decided, clean up undecided_hold_tap and
     // execute the decided behavior.
     LOG_DBG("%d decided %s (%s decision moment %s)", hold_tap->position,
@@ -591,13 +642,14 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     }
 
     // Store the position of pressed key for positional hold-tap purposes.
-    if ((undecided_hold_tap->config->hold_trigger_on_release !=
-         ev->state) // key has been pressed and hold_trigger_on_release is not set, or key
-                    // has been released and hold_trigger_on_release is set
-        && (undecided_hold_tap->position_of_first_other_key_pressed ==
-            -1) // no other key has been pressed yet
-    ) {
+    if (ev->state && (undecided_hold_tap->position_of_first_other_key_pressed == -1)) {
         undecided_hold_tap->position_of_first_other_key_pressed = ev->position;
+    }
+
+    // Store the position of pressed key for positional hold-tap purposes.
+    if (!ev->state && undecided_hold_tap->config->hold_trigger_on_release &&
+        (undecided_hold_tap->position_of_first_other_key_released == -1)) {
+        undecided_hold_tap->position_of_first_other_key_released = ev->position;
     }
 
     if (undecided_hold_tap->position == ev->position) {
