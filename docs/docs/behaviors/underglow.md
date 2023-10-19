@@ -65,7 +65,14 @@ However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNC
 
 :::note Effect Selection
 
-When using the `RGB_EFS` or `RGB_MEFS` definitions you must also include a number as an argument in the keymap corresponding to the effect you want to select e.g. `RGB_EFS 0`
+When using the `RGB_EFS` or `RGB_MEFS` definitions you must also include a parameter corresponding to the effect you want to select, e.g. `&rgb_ug RGB_EFS RGB_EFF_SOLID`. There are currently 4 RGB effects, defined in [`dt-bindings/zmk/rgb.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/rgb.h):
+
+| Value              | Effect                                    |
+| ------------------ | ----------------------------------------- |
+| `RGB_EFF_SOLID`    | Solid color (set by HSB)                  |
+| `RGB_EFF_BREATHE`  | Breathe a solid color                     |
+| `RGB_EFF_SPECTRUM` | Cycle all LEDs through the color spectrum |
+| `RGB_EFF_SWIRL`    | Swirl a rainbow around the LEDs           |
 
 :::
 
@@ -92,7 +99,7 @@ If the `RGB_MEFS` key is held down for longer than [`CONFIG_ZMK_SETTINGS_SAVE_DE
 1. Select a specific RGB effect (Swirl)
 
    ```dts
-   &rgb_ug RGB_EFS 3
+   &rgb_ug RGB_EFS RGB_EFF_SWIRL
    ```
 
 ## Split Keyboards

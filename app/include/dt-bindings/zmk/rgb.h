@@ -39,3 +39,8 @@
 #define RGB_COLOR_HSB_VAL(h, s, v) (((h) << 16) + ((s) << 8) + (v))
 #define RGB_COLOR_HSB(h, s, v) RGB_COLOR_HSB_CMD##(RGB_COLOR_HSB_VAL(h, s, v))
 #define RGB_COLOR_HSV RGB_COLOR_HSB
+
+#define RGB_EFF_SOLID 0
+#define RGB_EFF_BREATHE 1
+#define RGB_EFF_SPECTRUM 2
+#define RGB_EFF_SWIRL 3
