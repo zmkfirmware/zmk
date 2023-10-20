@@ -49,22 +49,42 @@ Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intr
 
 ## Battery Voltage Divider Sensor
 
-Driver for reading the voltage of a battery using an ADC connected to a voltage divider.
+Driver for reading the voltage of a battery using an ADC connected to a voltage divider. This driver can also read a GPIO pin to detect whether the battery is charging or not. This requires supported hardware (a battery charging IC with an output to indicate charging status). This functionality is optional, if the hardware doesn't support it the `chg-gpios` devicetree configuration does not have to be set.
 
 ### Devicetree
 
 Applies to: `compatible = "zmk,battery-voltage-divider"`
 
-See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/iio/afe/voltage-divider.html).
+Definition file: [zmk/app/module/dts/bindings/sensor/zmk,battery-voltage-divider.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/sensor/zmk,battery-voltage-divider.yaml)
+
+The ZMK battery voltage divider includes the [Zephyr voltage divider](https://docs.zephyrproject.org/latest/build/dts/api/bindings/adc/voltage-divider.html) and adds on additional functionality.
+
+| Property    | Type       | Description                                      | Default |
+| ----------- | ---------- | ------------------------------------------------ | ------- |
+| `chg-gpios` | GPIO array | GPIO connected to the charging IC's charging pin |         |
+
+:::note Charging indication
+
+The battery charging status is not consumed by any built-in indicators currently and it cannot be conveyed to the host over BLE.
+
+:::
 
 ## nRF VDDH Battery Sensor
 
-Driver for reading the voltage of a battery using a Nordic nRF52's VDDH pin.
+Driver for reading the voltage of a battery using a Nordic nRF52's VDDH pin. This driver can also read a GPIO pin to detect whether the battery is charging or not. This requires supported hardware (a battery charging IC with an output to indicate charging status). This functionality is optional, if the hardware doesn't support it the `chg-gpios` devicetree configuration does not have to be set.
 
 ### Devicetree
 
 Applies to: `compatible = "zmk,battery-nrf-vddh"`
 
-Definition file: [zmk/app/module/dts/bindings/sensor/zmk,battery-nrf-vddh.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/sensor/zmk%2Cbattery-nrf-vddh.yaml)
+Definition file: [zmk/app/module/dts/bindings/sensor/zmk,battery-nrf-vddh.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/sensor/zmk,battery-nrf-vddh.yaml)
 
-This driver has no configuration.
+| Property    | Type       | Description                                      | Default |
+| ----------- | ---------- | ------------------------------------------------ | ------- |
+| `chg-gpios` | GPIO array | GPIO connected to the charging IC's charging pin |         |
+
+:::note Charging indication
+
+The battery charging status is not consumed by any built-in indicators currently and it cannot be conveyed to the host over BLE.
+
+:::
