@@ -163,9 +163,6 @@ Definition file: [zmk/app/drivers/kscan/Kconfig](https://github.com/zmkfirmware/
 | `CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BEFORE_INPUTS`   | int (ticks) | How long to wait before reading input pins after setting output active    | 0       |
 | `CONFIG_ZMK_KSCAN_CHARLIPLEX_WAIT_BETWEEN_OUTPUTS` | int (ticks) | How long to wait between each output to allow previous output to "settle" | 0       |
 
-- With `CONFIG_ZMK_KSCAN_CHARLIPLEX_POLLING` enabled this allows n pins to drive n\*(n-1) keys.
-- With `CONFIG_ZMK_KSCAN_CHARLIPLEX_POLLING` disabled n pins will drive (n-1)\*(n-2) keys, but provide much improved power handling.
-
 ### Devicetree
 
 Applies to: `compatible = "zmk,kscan-gpio-charliplex"`
@@ -457,13 +454,13 @@ Note that the entire addressable space does not need to be mapped.
         compatible = "zmk,kscan-gpio-charliplex";
         label = "KSCAN";
 
-        interrupt-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH|GPIO_PULL_DOWN) >;
+        interrupt-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >;
         gpios
-          = <&pro_micro 16 (GPIO_ACTIVE_HIGH|GPIO_PULL_DOWN) >
-          , <&pro_micro 17 (GPIO_ACTIVE_HIGH|GPIO_PULL_DOWN) >
-          , <&pro_micro 18 (GPIO_ACTIVE_HIGH|GPIO_PULL_DOWN) >
-          , <&pro_micro 19 (GPIO_ACTIVE_HIGH|GPIO_PULL_DOWN) >
-          , <&pro_micro 20 (GPIO_ACTIVE_HIGH|GPIO_PULL_DOWN) >
+          = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          , <&pro_micro 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          , <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          , <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
           ; // addressable space is 5x5, (minus paired values)
     };
 
