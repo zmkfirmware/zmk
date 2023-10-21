@@ -48,7 +48,7 @@ Driver for reading the voltage of a battery using a Nordic nRF52's VDDH pin. Thi
 
 Applies to: `compatible = "zmk,battery-nrf-vddh"`
 
-Definition file: [zmk/app/drivers/zephyr/dts/bindings/sensor/zmk,battery-nrf-vddh.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/zephyr/dts/bindings/sensor/zmk%2Cbattery-nrf-vddh.yaml)
+Definition file: [zmk/app/module/dts/bindings/sensor/zmk,battery-nrf-vddh.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/sensor/zmk%2Cbattery-nrf-vddh.yaml)
 
 | Property | Type   | Description               |
 | -------- | ------ | ------------------------- |
