@@ -284,7 +284,7 @@ Definition file: [zmk/app/dts/bindings/zmk,kscan-mock.yaml](https://github.com/z
 | `cols`         | int    | The number of columns in the composite matrix |         |
 | `exit-after`   | bool   | Exit the program after running all events     | false   |
 
-The `events` array should be defined using the macros from [dt-bindings/zmk/kscan_mock.h](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/kscan_mock.h).
+The `events` array should be defined using the macros from [app/module/include/dt-bindings/zmk/kscan_mock.h](https://github.com/zmkfirmware/zmk/blob/main/app/module/include/dt-bindings/zmk/kscan_mock.h).
 
 ## Matrix Transform
 
