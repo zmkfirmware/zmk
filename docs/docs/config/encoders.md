@@ -32,7 +32,7 @@ If `CONFIG_EC11` is enabled, exactly one of the following options must be set to
 Applies to: `compatible = "alps,ec11"`
 
 Definition file: [zmk/app/module/dts/bindings/sensor/alps,ec11.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/sensor/alps%2Cec11.yaml)
-app/module/dts/bindings/sensor/alps,ec11.yaml
+
 | Property     | Type       | Description                           | Default |
 | ------------ | ---------- | ------------------------------------- | ------- |
 | `label`      | string     | Unique label for the node             |         |
