@@ -1,0 +1,9 @@
+file_format: "1"
+id: lagom
+name: Lagom
+type: shield
+url: https://github.com/mohoyt/lagom
+requires: [pro_micro]
+features:
+  - keys
+  - encoder
