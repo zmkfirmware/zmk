@@ -1,0 +1,8 @@
+file_format: "1"
+id: skew68
+name: skew68
+type: shield
+url: 
+requires: [nrfmicro_13_52840]
+features:
+  - keys
