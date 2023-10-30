@@ -156,7 +156,7 @@ Keyboard scan driver where keys are arranged on a matrix with each GPIO used as 
 - With `interrupt-gpios` unset, this allows n pins to drive n\*(n-1) keys.
 - With `interrupt-gpios` set, n pins will drive (n-1)\*(n-2) keys, but provide much improved power handling.
 
-Definition file: [zmk/app/drivers/kscan/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/kscan/Kconfig)
+Definition file: [zmk/app/module/drivers/kscan/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/module/drivers/kscan/Kconfig)
 
 | Config                                              | Type        | Description                                                               | Default |
 | --------------------------------------------------- | ----------- | ------------------------------------------------------------------------- | ------- |
@@ -167,7 +167,7 @@ Definition file: [zmk/app/drivers/kscan/Kconfig](https://github.com/zmkfirmware/
 
 Applies to: `compatible = "zmk,kscan-gpio-charlieplex"`
 
-Definition file: [zmk/app/drivers/zephyr/dts/bindings/kscan/zmk,kscan-gpio-charlieplex.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/drivers/zephyr/dts/bindings/kscan/zmk%2Ckscan-gpio-charlieplex.yaml)
+Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-charlieplex.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/kscan/zmk%2Ckscan-gpio-charlieplex.yaml)
 
 | Property                  | Type       | Description                                                                                 | Default |
 | ------------------------- | ---------- | ------------------------------------------------------------------------------------------- | ------- |
