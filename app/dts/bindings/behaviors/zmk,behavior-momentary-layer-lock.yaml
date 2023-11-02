@@ -1,0 +1,8 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Momentary layer on press/release behavior
+
+compatible: "zmk,behavior-momentary-layer-lock"
+
+include: one_param.yaml

@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2023 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    behaviors {
+        /omit-if-no-ref/ molock: behavior_momentary_layer_lock {
+            compatible = "zmk,behavior-momentary-layer-lock";
+            label = "MO_LOCK";
+            #binding-cells = <1>;
+        };
+    };
+};
