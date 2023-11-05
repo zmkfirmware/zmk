@@ -26,12 +26,37 @@ Definition files:
 
 Note that `CONFIG_ZMK_DISPLAY_INVERT` setting might not work as expected with custom status screens that utilize images.
 
+### Status Screen
+
 If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options must be set to `y`. The first option is used if none are set.
 
 | Config                                      | Description                    |
 | ------------------------------------------- | ------------------------------ |
 | `CONFIG_ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN` | Use the built-in status screen |
 | `CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM`   | Use a custom status screen     |
+
+If `CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM` is enabled, you must add a C file to the build which implements the following function.
+
+```c
+lv_obj_t *zmk_display_status_screen(void);
+```
+
+### Pairing Screen
+
+If `CONFIG_ZMK_DISPLAY` and `CONFIG_ZMK_BLE` are enabled, exactly zero or one of the following options must be set to `y`. The first option is used if none are set.
+
+| Config                                       | Description                                  |
+| -------------------------------------------- | -------------------------------------------- |
+| `CONFIG_ZMK_DISPLAY_PAIRING_SCREEN_BUILT_IN` | Use the built-in bluetooth pairing screen    |
+| `CONFIG_ZMK_DISPLAY_PAIRING_SCREEN_CUSTOM`   | Use a custom bluetooth pairing screen screen |
+
+If `CONFIG_ZMK_DISPLAY_PAIRING_SCREEN_CUSTOM` is enabled, you must add a C file to the build which implements the following function.
+
+```c
+lv_obj_t *zmk_display_pairing_screen(void);
+```
+
+### Work Queue
 
 If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options must be set to `y`. The first option is used if none are set.
 
@@ -47,9 +72,29 @@ Using a dedicated thread requires more memory but prevents displays with slow up
 | `CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_STACK_SIZE` | int  | Stack size for the UI thread | 2048    |
 | `CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY`   | int  | Priority for the UI thread   | 5       |
 
-You must also configure the driver for your display. ZMK provides the following display drivers:
+### Default Fonts
 
-- [IL0323](https://github.com/zmkfirmware/zmk/blob/main/app/module/drivers/display/Kconfig.il0323)
+ZMK's built-in screens use three sizes of fonts:
+
+| Config                              | Default                                           |
+| ----------------------------------- | ------------------------------------------------- |
+| `CONFIG_ZMK_LV_FONT_DEFAULT_SMALL`  | `CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_12`  |
+| `CONFIG_ZMK_LV_FONT_DEFAULT_NORMAL` | `CONFIG_ZMK_LV_FONT_DEFAULT_NORMAL_MONTSERRAT_16` |
+| `CONFIG_ZMK_LV_FONT_DEFAULT_LARGE`  | `CONFIG_ZMK_LV_FONT_DEFAULT_LARGE_MONTSERRAT_20`  |
+
+See [zmk/app/src/display/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/display/Kconfig) for a full list of the possible fonts. To change the font, set the option for the specific font to `y`. For example, to increase all font sizes to be slightly larger than the defaults, you could set
+
+```kconfig
+CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_14=y
+CONFIG_ZMK_LV_FONT_DEFAULT_NORMAL_MONTSERRAT_18=y
+CONFIG_ZMK_LV_FONT_DEFAULT_LARGE_MONTSERRAT_22=y
+```
+
+### Display Driver
+
+You may also need to configure the driver for your display. ZMK provides the following display drivers:
+
+- [IL0323 E-Paper Display](https://github.com/zmkfirmware/zmk/blob/main/app/module/drivers/display/Kconfig.il0323)
 
 Zephyr provides several display drivers as well. Search for the name of your display in [Zephyr's Kconfig options](https://docs.zephyrproject.org/latest/kconfig.html) documentation.
 
@@ -57,8 +102,9 @@ Zephyr provides several display drivers as well. Search for the name of your dis
 
 See the Devicetree bindings for your display. Here are the bindings for common displays:
 
-- [IL0323](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/display/gooddisplay%2Cil0323.yaml)
-- [SSD1306 (i2c)](https://docs.zephyrproject.org/latest/build/dts/api/bindings/display/solomon,ssd1306fb-i2c.html)
-- [SSD1306 (spi)](https://docs.zephyrproject.org/latest/build/dts/api/bindings/display/solomon,ssd1306fb-spi.html)
+- [IL0323 E-Paper Display](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/display/gooddisplay%2Cil0323.yaml)
+- [LS0xx Memory LCD](https://docs.zephyrproject.org/latest/build/dts/api/bindings/display/sharp%2Cls0xx.html)
+- [SSD1306 OLED (i2c)](https://docs.zephyrproject.org/latest/build/dts/api/bindings/display/solomon,ssd1306fb-i2c.html)
+- [SSD1306 OLED (spi)](https://docs.zephyrproject.org/latest/build/dts/api/bindings/display/solomon,ssd1306fb-spi.html)
 
 A full list of drivers provided by Zephyr can be found in [Zephyr's Devicetree bindings index](https://docs.zephyrproject.org/latest/build/dts/api/bindings.html).

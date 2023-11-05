@@ -67,6 +67,7 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   target_sources(app PRIVATE src/events/keycode_state_changed.c)
 
   if (CONFIG_ZMK_BLE)
+    target_sources(app PRIVATE src/events/ble_auth_state_changed.c)
     target_sources(app PRIVATE src/events/ble_active_profile_changed.c)
     target_sources(app PRIVATE src/behaviors/behavior_bt.c)
     target_sources(app PRIVATE src/ble.c)
@@ -90,6 +91,6 @@ target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/backlight.c)
 target_sources(app PRIVATE src/workqueue.c)
 target_sources(app PRIVATE src/main.c)
 
-add_subdirectory(src/display/)
+add_subdirectory_ifdef(CONFIG_ZMK_DISPLAY src/display/)
 
 zephyr_cc_option(-Wfatal-errors)

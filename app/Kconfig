@@ -163,10 +163,30 @@ config BT_GATT_AUTO_SEC_REQ
 config BT_DEVICE_APPEARANCE
     default 961
 
+config ZMK_BLE_PASSKEY_DISPLAY
+    bool "BLE passkey display"
+    default n
+    help
+      Enable keyboard to display a passkey used to complete pairing. The keyboard
+      will display a 6-digit passkey, and the user must enter it on the host.
+
+config ZMK_BLE_PASSKEY_CONFIRM
+    bool "BLE passkey confirmation"
+    default n
+    select ZMK_BLE_PASSKEY_DISPLAY
+    help
+      Enables a simpler pairing method, where the keyboard and host each display
+      a passkey, and the user must confirm that they match by pressing enter or
+      keypad enter.
+
 config ZMK_BLE_PASSKEY_ENTRY
-    bool "Require passkey entry on the keyboard to complete pairing"
+    bool "BLE passkey entry"
     default n
     select RING_BUFFER
+    help
+      Require passkey entry on the keyboard to complete pairing. The host will
+      display a 6-digit passkey, and the user must type it using the number or
+      keypad number keys, then press enter or keypad enter.
 
 config BT_PERIPHERAL_PREF_MIN_INT
     default 6

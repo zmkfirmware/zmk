@@ -36,4 +36,10 @@ config ZMK_WIDGET_WPM_STATUS
     select LV_USE_LABEL
     select ZMK_WPM
 
+config ZMK_WIDGET_BLE_PASSKEY
+    bool "Widget for displaying BLE pairing passkey"
+    depends on ZMK_BLE
+    select LV_USE_LABEL
+    select LV_USE_GRID
+
 endmenu

@@ -1,73 +1,51 @@
 /*
- * Copyright (c) 2022 The ZMK Contributors
+ * Copyright (c) 2023 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
 
+#include "theme.h"
+
 #include <lvgl.h>
+#include <zephyr/sys/util.h>
 
-#if defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_8)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_8
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_10)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_10
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_12)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_12
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_14)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_14
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_16)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_16
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_18)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_18
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_20)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_20
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_22)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_22
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_24)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_24
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_26)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_26
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_28)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_28
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_30)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_30
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_32)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_32
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_34)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_34
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_36)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_36
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_38)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_38
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_40)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_40
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_42)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_42
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_44)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_44
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_46)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_46
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_48)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_48
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_12_SUBPX)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_12_subpx
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_28_COMPRESSED)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_montserrat_28_compressed
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_DEJAVU_16_PERSIAN_HEBREW)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_dejavu_16_persian_hebrew
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_SIMSUN_16_CJK)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_simsun_16_cjk
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_UNSCII_8)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_unscii_8
-#elif defined(CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_UNSCII_16)
-#define CONFIG_ZMK_LV_FONT_DEFAULT_SMALL &lv_font_unscii_16
-#endif
+#if IS_ENABLED(CONFIG_LV_USE_THEME_MONO)
 
-void zmk_display_theme_init(lv_obj_t *obj) {
-    lv_theme_t *theme = lv_theme_get_from_obj(obj);
-
-    if (theme == NULL) {
-        return;
-    }
+static lv_theme_t *initialize_theme(lv_disp_t *disp) {
+    lv_theme_t *theme = lv_theme_mono_init(disp, IS_ENABLED(CONFIG_ZMK_DISPLAY_INVERT),
+                                           CONFIG_ZMK_LV_FONT_DEFAULT_NORMAL);
 
     theme->font_small = CONFIG_ZMK_LV_FONT_DEFAULT_SMALL;
+    theme->font_normal = CONFIG_ZMK_LV_FONT_DEFAULT_NORMAL;
+    theme->font_large = CONFIG_ZMK_LV_FONT_DEFAULT_LARGE;
+
+    return theme;
+}
+
+#else
+
+// Create a basic theme which only sets font sizes.
+static lv_theme_t theme;
+
+static void theme_apply(lv_theme_t *th, lv_obj_t *obj) {
+    LV_UNUSED(th);
+    LV_UNUSED(obj);
+}
+
+static lv_theme_t *initialize_theme(lv_disp_t *disp) {
+    theme.disp = disp;
+    theme.font_small = CONFIG_ZMK_LV_FONT_DEFAULT_SMALL;
+    theme.font_normal = CONFIG_ZMK_LV_FONT_DEFAULT_NORMAL;
+    theme.font_large = CONFIG_ZMK_LV_FONT_DEFAULT_LARGE;
+    theme.apply_cb = theme_apply;
+
+    return &theme;
+}
+
+#endif // IS_ENABLED(CONFIG_LV_USE_THEME_MONO)
+
+void zmk_display_initialize_theme(void) {
+    lv_disp_t *disp = lv_disp_get_default();
+    lv_theme_t *theme = initialize_theme(disp);
+    lv_disp_set_theme(disp, theme);
 }
