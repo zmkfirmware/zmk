@@ -34,6 +34,8 @@ static struct zmk_widget_layer_status layer_status_widget;
 static struct zmk_widget_wpm_status wpm_status_widget;
 #endif
 
+static bool is_small_display(void) { return lv_disp_get_ver_res(lv_disp_get_default()) < 40; }
+
 lv_obj_t *zmk_display_status_screen(void) {
     lv_obj_t *screen;
     screen = lv_obj_create(NULL);
@@ -56,9 +58,11 @@ lv_obj_t *zmk_display_status_screen(void) {
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_LAYER_STATUS)
     zmk_widget_layer_status_init(&layer_status_widget, screen);
-    lv_obj_set_style_text_font(zmk_widget_layer_status_obj(&layer_status_widget),
-                               lv_theme_get_font_small(screen), LV_PART_MAIN);
     lv_obj_align(zmk_widget_layer_status_obj(&layer_status_widget), LV_ALIGN_BOTTOM_LEFT, 0, 0);
+    if (is_small_display()) {
+        lv_obj_set_style_text_font(zmk_widget_layer_status_obj(&layer_status_widget),
+                                   lv_theme_get_font_small(screen), LV_PART_MAIN);
+    }
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_WIDGET_WPM_STATUS)
