@@ -9,7 +9,8 @@
         /omit-if-no-ref/ molock: behavior_momentary_layer_lock {
             compatible = "zmk,behavior-momentary-layer-lock";
             label = "MO_LOCK";
-            #binding-cells = <1>;
+            #binding-cells = <0>;
+            bindings = <&to 0>;
         };
     };
 };

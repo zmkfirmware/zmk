@@ -5,4 +5,9 @@ description: Momentary layer on press/release behavior
 
 compatible: "zmk,behavior-momentary-layer-lock"
 
-include: one_param.yaml
+include: zero_param.yaml
+
+properties:
+  bindings:
+    type: phandle-array
+    required: true
