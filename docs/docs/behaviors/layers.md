@@ -149,6 +149,43 @@ Example:
 
 It is possible to use "toggle layer" to have keys that raise and lower the layers as well.
 
+## Momentary Layer Lock
+
+Even if you mostly use momentary layers, it's occasionally useful to permanently enable a layer without needing to hold anything down. Instead of creating a separate `&tog` or `&to` binding for each layer, you can use `&molock`.
+
+`&molock` causes all currently active momentary layers not to be deactivated when `&mo` is released. If no momentary layers are active, `&molock` triggers a fallback behavior, which by default returns to the base layer (`&to 0`), deactivating any locked momentary layers in the process. Alternatively, the user can deactivate a single locked momentary layer by pressing and releasing the corresponding `&mo` binding again.
+
+### Behavior Binding
+
+- Reference: `&molock`
+
+Example:
+
+```dts
+&molock
+```
+
+### Configuration
+
+You can configure a different fallback behavior by overriding the `bindings` property of the built-in `&molock` behavior. For example, to return to layer 1 (instead of layer 0):
+
+```dts
+&molock {
+    bindings = <&to 1>;
+};
+```
+
+You can also create any number of custom `&molock` behaviors by using `compatible = "zmk,behavior-momentary-layer-lock"` like so:
+
+```dts
+// Presses F if triggered while no momentary layers are active
+kp_molock: kp_molock {
+    compatible = "zmk,behavior-momentary-layer-lock";
+    label = "KP_MOLOCK";
+    bindings = <&kp F>;
+};
+```
+
 ## Conditional Layers
 
 The "conditional layers" feature enables a particular layer when all layers in a specified set are active.
