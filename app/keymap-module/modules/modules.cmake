@@ -5,8 +5,6 @@
 #    * single overlay,
 #    * or per board/shield.
 
-cmake_minimum_required(VERSION 3.15)
-
 list(APPEND BOARD_ROOT ${APPLICATION_SOURCE_DIR})
 list(APPEND DTS_ROOT ${APPLICATION_SOURCE_DIR})
 
