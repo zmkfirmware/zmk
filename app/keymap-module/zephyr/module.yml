@@ -1,0 +1,5 @@
+# This ensures our modules/modules.cmake file is loaded *after* all the other modules,
+# To set up the various keymap DTS and overridden .conf files are located and chosen.
+build:
+  settings:
+    module_ext_root: "."
