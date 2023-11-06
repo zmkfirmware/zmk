@@ -66,9 +66,9 @@ for more information on configuring Bluetooth.
 | Config                                      | Type | Description                                                           | Default |
 | ------------------------------------------- | ---- | --------------------------------------------------------------------- | ------- |
 | `CONFIG_BT`                                 | bool | Enable Bluetooth support                                              |         |
+| `CONFIG_BT_BAS`                             | bool | Enable the Bluetooth BAS (battery reporting service)                  | y       |
 | `CONFIG_BT_MAX_CONN`                        | int  | Maximum number of simultaneous Bluetooth connections                  | 5       |
 | `CONFIG_BT_MAX_PAIRED`                      | int  | Maximum number of paired Bluetooth devices                            | 5       |
-| `CONFIG_BT_BAS`                             | bool | Enable the Bluetooth BAS (battery reporting service)                  | y       |
 | `CONFIG_ZMK_BLE`                            | bool | Enable ZMK as a Bluetooth keyboard                                    |         |
 | `CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START`       | bool | Clears all bond information from the keyboard on startup              | n       |
 | `CONFIG_ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE` | int  | Max number of consumer HID reports to queue for sending over BLE      | 5       |
