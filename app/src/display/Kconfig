@@ -53,7 +53,7 @@ config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
 
 endchoice
 
-if ZMK_BLE
+if ZMK_BLE && (!ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL)
 choice ZMK_DISPLAY_PAIRING_SCREEN
     prompt "Bluetooth pairing screen for displays"
 

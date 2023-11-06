@@ -19,7 +19,12 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/display/status_screen.h>
 #include <zmk/event_manager.h>
-#if IS_ENABLED(CONFIG_ZMK_BLE)
+
+#define HAS_PAIRING_SCREEN                                                                         \
+    (IS_ENABLED(CONFIG_ZMK_DISPLAY_PAIRING_SCREEN_BUILT_IN) ||                                     \
+     IS_ENABLED(CONFIG_ZMK_DISPLAY_PAIRING_SCREEN_CUSTOM))
+
+#if HAS_PAIRING_SCREEN
 #include <zmk/ble.h>
 #include <zmk/display/pairing_screen.h>
 #include <zmk/events/ble_auth_state_changed.h>
@@ -29,7 +34,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 enum screen_type {
     SCREEN_TYPE_STATUS,
-#if IS_ENABLED(CONFIG_ZMK_BLE)
+#if HAS_PAIRING_SCREEN
     SCREEN_TYPE_PAIRING,
 #endif
 };
@@ -39,12 +44,12 @@ static lv_obj_t *current_screen = NULL;
 static bool initialized = false;
 
 static lv_obj_t *status_screen = NULL;
-#if IS_ENABLED(CONFIG_ZMK_BLE)
+#if HAS_PAIRING_SCREEN
 static lv_obj_t *pairing_screen = NULL;
 #endif
 
 __attribute__((weak)) lv_obj_t *zmk_display_status_screen(void) { return NULL; }
-#if IS_ENABLED(CONFIG_ZMK_BLE)
+#if HAS_PAIRING_SCREEN
 __attribute__((weak)) lv_obj_t *zmk_display_pairing_screen(void) { return NULL; }
 #endif
 
@@ -105,14 +110,14 @@ void zmk_display_blanking_on(void) {
 int zmk_display_is_initialized(void) { return initialized; }
 
 K_MUTEX_DEFINE(screen_state_mutex);
-#if IS_ENABLED(CONFIG_ZMK_BLE)
+#if HAS_PAIRING_SCREEN
 static struct zmk_ble_auth_state ble_auth_state;
 #endif
 
 static enum screen_type get_screen_type(void) {
     enum screen_type screen_type = SCREEN_TYPE_STATUS;
 
-#if IS_ENABLED(CONFIG_ZMK_BLE)
+#if HAS_PAIRING_SCREEN
     k_mutex_lock(&screen_state_mutex, K_FOREVER);
 
     if (ble_auth_state.mode != ZMK_BLE_AUTH_MODE_NONE) {
@@ -134,7 +139,7 @@ static void update_screen(struct k_work *work) {
         new_screen = status_screen;
         break;
 
-#if IS_ENABLED(CONFIG_ZMK_BLE)
+#if HAS_PAIRING_SCREEN
     case SCREEN_TYPE_PAIRING:
         new_screen = pairing_screen;
         break;
@@ -174,7 +179,7 @@ int zmk_display_init(void) {
     zmk_display_initialize_theme();
 
     status_screen = zmk_display_status_screen();
-#if IS_ENABLED(CONFIG_ZMK_BLE)
+#if HAS_PAIRING_SCREEN
     pairing_screen = zmk_display_pairing_screen();
 #endif
 
@@ -189,7 +194,7 @@ int zmk_display_init(void) {
     return 0;
 }
 
-#if IS_ENABLED(CONFIG_ZMK_BLE)
+#if HAS_PAIRING_SCREEN
 static int handle_ble_auth_state_changed(const struct zmk_ble_auth_state_changed *ev) {
     k_mutex_lock(&screen_state_mutex, K_FOREVER);
     ble_auth_state = ev->state;
@@ -210,4 +215,4 @@ static int display_event_handler(const zmk_event_t *eh) {
 
 ZMK_LISTENER(display, display_event_handler);
 ZMK_SUBSCRIPTION(display, zmk_ble_auth_state_changed);
-#endif // IS_ENABLED(CONFIG_ZMK_BLE)
+#endif // HAS_PAIRING_SCREEN
