@@ -30,7 +30,7 @@ mkdir -p build/$testcase
 west build -d build/$testcase -b native_posix_64 -- -DZMK_CONFIG="$(pwd)/$testcase" >build/$testcase/build.log 2>&1
 if [ $? -gt 0 ]; then
     echo "FAILED: $testcase did not build" | tee -a ./build/tests/pass-fail.log
-    echo $'\t' "see ./build/$testcase/build.log"
+    printf '\t%s\n' "see ./build/$testcase/build.log"
     exit 1
 fi
 
