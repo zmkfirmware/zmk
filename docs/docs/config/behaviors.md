@@ -212,7 +212,7 @@ With `compatible = "zmk,behavior-sensor-rotate-var"`, this behavior forwards the
 
 ## Momentary Layer Lock
 
-Creates a custom behavior that locks any active momentary layers or—if none are active—triggers the fallback behavior specified in `bindings`.
+Creates a custom behavior that locks any active momentary layers or triggers the fallback behavior specified in `bindings` if none are active.
 
 See the [momentary layer lock](../behaviors/layers.md#momentary-layer-lock) documentation for more details and examples.
 
