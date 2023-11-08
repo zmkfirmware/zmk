@@ -47,12 +47,12 @@ enum {
 };
 
 static struct hids_report input = {
-    .id = 0x01,
+    .id = ZMK_HID_REPORT_ID_KEYBOARD,
     .type = HIDS_INPUT,
 };
 
 static struct hids_report consumer_input = {
-    .id = 0x02,
+    .id = ZMK_HID_REPORT_ID_CONSUMER,
     .type = HIDS_INPUT,
 };
 
