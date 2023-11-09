@@ -387,12 +387,11 @@ config ZMK_IDLE_TIMEOUT
 
 config ZMK_SLEEP
     bool "Enable deep sleep support"
+    depends on HAS_POWEROFF
+    select POWEROFF
     imply USB
 
 if ZMK_SLEEP
-
-config PM_DEVICE
-    default y
 
 config ZMK_IDLE_SLEEP_TIMEOUT
     int "Milliseconds of inactivity before entering deep sleep"
