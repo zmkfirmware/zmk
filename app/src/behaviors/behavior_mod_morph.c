@@ -98,7 +98,7 @@ static int behavior_mod_morph_init(const struct device *dev) { return 0; }
     };                                                                                             \
     static struct behavior_mod_morph_data behavior_mod_morph_data_##n = {};                        \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_mod_morph_init, NULL, &behavior_mod_morph_data_##n,        \
-                            &behavior_mod_morph_config_##n, APPLICATION,                           \
+                            &behavior_mod_morph_config_##n, POST_KERNEL,                           \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mod_morph_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)

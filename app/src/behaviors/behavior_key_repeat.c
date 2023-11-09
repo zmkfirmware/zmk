@@ -117,7 +117,7 @@ static int behavior_key_repeat_init(const struct device *dev) {
         .usage_pages_count = DT_INST_PROP_LEN(n, usage_pages),                                     \
     };                                                                                             \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_key_repeat_init, NULL, &behavior_key_repeat_data_##n,      \
-                            &behavior_key_repeat_config_##n, APPLICATION,                          \
+                            &behavior_key_repeat_config_##n, POST_KERNEL,                          \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_repeat_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KR_INST)

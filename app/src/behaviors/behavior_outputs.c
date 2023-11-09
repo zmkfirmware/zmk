@@ -42,7 +42,7 @@ static const struct behavior_driver_api behavior_outputs_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
 };
 
-BEHAVIOR_DT_INST_DEFINE(0, behavior_out_init, NULL, NULL, NULL, APPLICATION,
+BEHAVIOR_DT_INST_DEFINE(0, behavior_out_init, NULL, NULL, NULL, POST_KERNEL,
                         CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_outputs_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
