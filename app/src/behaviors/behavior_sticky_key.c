@@ -298,7 +298,7 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
         .quick_release = DT_INST_PROP(n, quick_release),                                           \
     };                                                                                             \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_sticky_key_init, NULL, &behavior_sticky_key_data,          \
-                            &behavior_sticky_key_config_##n, APPLICATION,                          \
+                            &behavior_sticky_key_config_##n, POST_KERNEL,                          \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sticky_key_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)

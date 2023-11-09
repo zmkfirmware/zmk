@@ -28,7 +28,7 @@ static int behavior_sensor_rotate_var_init(const struct device *dev) { return 0;
     static struct behavior_sensor_rotate_data behavior_sensor_rotate_var_data_##n = {};            \
     BEHAVIOR_DT_INST_DEFINE(                                                                       \
         n, behavior_sensor_rotate_var_init, NULL, &behavior_sensor_rotate_var_data_##n,            \
-        &behavior_sensor_rotate_var_config_##n, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,  \
+        &behavior_sensor_rotate_var_config_##n, POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,  \
         &behavior_sensor_rotate_var_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(SENSOR_ROTATE_VAR_INST)

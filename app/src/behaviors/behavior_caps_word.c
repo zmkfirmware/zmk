@@ -182,7 +182,7 @@ static int behavior_caps_word_init(const struct device *dev) {
         .continuations_count = DT_INST_PROP_LEN(n, continue_list),                                 \
     };                                                                                             \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_caps_word_init, NULL, &behavior_caps_word_data_##n,        \
-                            &behavior_caps_word_config_##n, APPLICATION,                           \
+                            &behavior_caps_word_config_##n, POST_KERNEL,                           \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_caps_word_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)

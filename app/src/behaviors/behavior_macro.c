@@ -225,7 +225,7 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
         .count = DT_PROP_LEN(inst, bindings),                                                      \
         .bindings = TRANSFORMED_BEHAVIORS(inst)};                                                  \
     BEHAVIOR_DT_DEFINE(inst, behavior_macro_init, NULL, &behavior_macro_state_##inst,              \
-                       &behavior_macro_config_##inst, APPLICATION,                                 \
+                       &behavior_macro_config_##inst, POST_KERNEL,                                 \
                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_macro_driver_api);
 
 DT_FOREACH_STATUS_OKAY(zmk_behavior_macro, MACRO_INST)

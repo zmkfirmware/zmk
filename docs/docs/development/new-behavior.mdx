@@ -175,7 +175,7 @@ BEHAVIOR_DT_INST_DEFINE(0,                                                    //
                                                                               //                  Equal to n for behaviors that do make use of multiple instances)
                         <behavior_name>_init, NULL,                           // Initialization Function, Power Management Device Pointer
                         &<behavior_name>_data, &<behavior_name>_config,       // Behavior Data Pointer, Behavior Configuration Pointer (Both Optional)
-                        APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,     // Initialization Level, Device Priority
+                        POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,     // Initialization Level, Device Priority
                         &<behavior_name>_driver_api);                         // API Structure
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

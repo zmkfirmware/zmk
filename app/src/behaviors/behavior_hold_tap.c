@@ -748,7 +748,7 @@ static int behavior_hold_tap_init(const struct device *dev) {
         .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, NULL, &behavior_hold_tap_config_##n,  \
-                            APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
+                            POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
                             &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
