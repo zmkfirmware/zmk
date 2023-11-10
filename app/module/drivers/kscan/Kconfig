@@ -14,6 +14,14 @@ config ZMK_KSCAN_COMPOSITE_DRIVER
     bool
     default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_COMPOSITE))
 
+if ZMK_KSCAN_COMPOSITE_DRIVER
+
+config ZMK_KSCAN_COMPOSITE_INIT_PRIORITY
+    int "Init Priority for the composite kscan driver"
+    default 95
+
+endif
+
 config ZMK_KSCAN_GPIO_DRIVER
     bool
     select GPIO
