@@ -31,6 +31,5 @@ manifest:
           - openthread
           - edtt
           - trusted-firmware-m
-          - sof
   self:
     west-commands: scripts/west-commands.yml
