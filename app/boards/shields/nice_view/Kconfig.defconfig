@@ -33,6 +33,9 @@ config NICE_VIEW_WIDGET_STATUS
     select LV_USE_IMG
     select LV_USE_CANVAS
 
+config NICE_VIEW_BATTERY_SHOW_PERCENTAGE
+    bool "Show battery percentage instead of icon"
+
 config NICE_VIEW_WIDGET_INVERTED
     bool "Invert custom status widget colors"
 
