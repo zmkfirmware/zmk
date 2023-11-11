@@ -493,7 +493,7 @@ Once you've fully created the new keyboard shield definition,
 you should be able to test with a build command like:
 
 ```sh
-west build --pristine -b proton_c -- -DSHIELD=my_board
+west build --pristine -b nice_nano_v2 -- -DSHIELD=my_board
 ```
 
 The above build command generates `build/zephyr/zmk.uf2`. If your board
