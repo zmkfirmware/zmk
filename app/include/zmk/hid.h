@@ -128,7 +128,7 @@ typedef struct zmk_hid_keyboard_report_body zmk_hid_boot_report_t;
 struct zmk_hid_boot_report {
     zmk_mod_flags_t modifiers;
     uint8_t _reserved;
-    uint8_t keys[6];
+    uint8_t keys[HID_BOOT_KEY_LEN];
 } __packed;
 
 typedef struct zmk_hid_boot_report zmk_hid_boot_report_t;

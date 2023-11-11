@@ -108,16 +108,6 @@ config ZMK_USB_BOOT
     default y
     select USB_HID_BOOT_PROTOCOL
     select USB_DEVICE_SOF
-
-if ZMK_USB_BOOT
-
-# Declare boot keyboard interface
-config USB_HID_PROTOCOL_CODE
-    default 1
-
-#ZMK_USB_BOOT
-endif
-
 #ZMK_USB
 endif
 

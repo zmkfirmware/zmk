@@ -26,9 +26,6 @@ static void in_ready_cb(const struct device *dev) { k_sem_give(&hid_sem); }
 #define HID_GET_REPORT_TYPE_MASK 0xff00
 #define HID_GET_REPORT_ID_MASK 0x00ff
 
-#define HID_REPORT_ID_KEYBOARD 1
-#define HID_REPORT_ID_CONSUMER 2
-
 #define HID_REPORT_TYPE_INPUT 0x100
 #define HID_REPORT_TYPE_OUTPUT 0x200
 #define HID_REPORT_TYPE_FEATURE 0x300
@@ -68,11 +65,11 @@ static int get_report_cb(const struct device *dev, struct usb_setup_packet *setu
     }
 
     switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
-    case HID_REPORT_ID_KEYBOARD: {
+    case ZMK_HID_REPORT_ID_KEYBOARD: {
         *data = get_keyboard_report(len);
         break;
     }
-    case HID_REPORT_ID_CONSUMER: {
+    case ZMK_HID_REPORT_ID_CONSUMER: {
         struct zmk_hid_consumer_report *report = zmk_hid_get_consumer_report();
         *data = (uint8_t *)report;
         *len = sizeof(*report);
@@ -140,6 +137,11 @@ static int zmk_usb_hid_init(const struct device *_arg) {
     }
 
     usb_hid_register_device(hid_dev, zmk_hid_report_desc, sizeof(zmk_hid_report_desc), &ops);
+
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    usb_hid_set_proto_code(hid_dev, HID_BOOT_IFACE_CODE_KEYBOARD);
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
+
     usb_hid_init(hid_dev);
 
     return 0;
