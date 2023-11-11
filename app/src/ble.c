@@ -280,9 +280,9 @@ int zmk_ble_prof_disconnect(uint8_t index) {
     int result;
 
     if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
-        return -1;
+        return -ENODEV;
     } else if ((conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr)) == NULL) {
-        return -1;
+        return -ENODEV;
     }
 
     result = bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
