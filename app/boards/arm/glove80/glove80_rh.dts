@@ -36,26 +36,18 @@
         init-delay-ms = <100>;
     };
 
-    vbatt: vbatt-divider {
-        compatible = "zmk,battery-voltage-divider";
-        label = "BATTERY";
-        io-channels = <&adc 5>;
-        output-ohms = <820000>;
-        full-ohms = <(1500000 + 820000)>;
-    };
-
-    vbatt-vddh {
+    vbatt: vbatt {
         compatible = "zmk,battery-nrf-vddh";
-        label = "BATTERY-VDDH";
+        label = "BATTERY";
     };
 };
 
-&spi1 {
+&spi3 {
     compatible = "nordic,nrf-spim";
     status = "okay";
 
-    pinctrl-0 = <&spi1_default>;
-    pinctrl-1 = <&spi1_sleep>;
+    pinctrl-0 = <&spi3_default>;
+    pinctrl-1 = <&spi3_sleep>;
     pinctrl-names = "default", "sleep";
 
     led_strip: ws2812@0 {

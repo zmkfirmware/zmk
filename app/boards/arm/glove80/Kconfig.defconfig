@@ -9,9 +9,6 @@ config BOARD
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
     default y
 
-config ZMK_KEYBOARD_NAME
-    default "Glove80"
-
 endif # BOARD_GLOVE80_LH
 
 if BOARD_GLOVE80_RH
@@ -33,12 +30,6 @@ config ZMK_BLE
     default y
 
 config ZMK_USB
-    default y
-
-config ZMK_BATTERY_VOLTAGE_DIVIDER
-    default y
-
-config ZMK_BATTERY_NRF_VDDH
     default y
 
 config ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS
