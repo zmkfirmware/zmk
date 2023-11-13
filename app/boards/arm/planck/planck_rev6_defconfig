@@ -15,3 +15,5 @@ CONFIG_GPIO=y
 
 # clock configuration
 CONFIG_CLOCK_CONTROL=y
+
+CONFIG_ZMK_USB=y
