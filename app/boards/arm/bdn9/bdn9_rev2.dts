@@ -43,7 +43,7 @@
         label = "LEFT_ENCODER";
         a-gpios = <&gpioa 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&gpioa 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
     mid_encoder: encoder_mid {
@@ -51,7 +51,7 @@
         label = "MID_ENCODER";
         a-gpios = <&gpioa 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&gpioa 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
     right_encoder: encoder_right {
@@ -59,7 +59,7 @@
         label = "RIGHT_ENCODER";
         a-gpios = <&gpioa 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&gpiob 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
@@ -67,6 +67,7 @@
         compatible = "zmk,keymap-sensors";
         status = "disabled";
         sensors = <>;
+        triggers-per-rotation = <20>;
     };
 };
 

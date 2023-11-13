@@ -39,7 +39,7 @@
         label = "TOP_ENCODER";
         a-gpios = <&pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "okay";
     };
 
@@ -48,13 +48,14 @@
         label = "BOTTOM_ENCODER";
         a-gpios = <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "okay";
     };
 
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&top_encoder &bottom_encoder>;
+        triggers-per-rotation = <20>;
     };
 
 };
