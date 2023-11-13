@@ -103,6 +103,11 @@ config USB_NUMOF_EP_WRITE_RETRIES
 config USB_HID_POLL_INTERVAL_MS
     default 1
 
+config ZMK_USB_BOOT
+    bool "USB Boot Protocol Support"
+    default y
+    select USB_HID_BOOT_PROTOCOL
+    select USB_DEVICE_SOF
 #ZMK_USB
 endif
 
@@ -575,4 +580,3 @@ osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
 
 source "Kconfig.zephyr"
-

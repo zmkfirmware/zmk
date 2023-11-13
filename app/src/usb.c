@@ -15,6 +15,8 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/usb_conn_state_changed.h>
 
+#include <zmk/usb_hid.h>
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static enum usb_dc_status_code usb_status = USB_DC_UNKNOWN;
@@ -35,6 +37,7 @@ enum zmk_usb_conn_state zmk_usb_get_conn_state() {
     case USB_DC_CONFIGURED:
     case USB_DC_RESUME:
     case USB_DC_CLEAR_HALT:
+    case USB_DC_SOF:
         return ZMK_USB_CONN_HID;
 
     case USB_DC_DISCONNECTED:
@@ -47,6 +50,17 @@ enum zmk_usb_conn_state zmk_usb_get_conn_state() {
 }
 
 void usb_status_cb(enum usb_dc_status_code status, const uint8_t *params) {
+    // Start-of-frame events are too frequent and noisy to notify, and they're
+    // not used within ZMK
+    if (status == USB_DC_SOF) {
+        return;
+    }
+
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    if (status == USB_DC_RESET) {
+        zmk_usb_hid_set_protocol(HID_PROTOCOL_REPORT);
+    }
+#endif
     usb_status = status;
     k_work_submit(&usb_status_notifier_work);
 };
