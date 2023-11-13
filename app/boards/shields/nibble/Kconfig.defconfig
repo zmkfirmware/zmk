@@ -6,10 +6,6 @@ if SHIELD_NIBBLE
 config ZMK_KEYBOARD_NAME
     default "NIBBLE"
 
-config ZMK_USB
-    default y
-
-
 if ZMK_DISPLAY
 
 config I2C

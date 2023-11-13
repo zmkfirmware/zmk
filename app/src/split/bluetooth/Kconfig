@@ -62,9 +62,6 @@ config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
     int "Max number of key position state events to queue to send to the central"
     default 10
 
-config ZMK_USB
-    default n
-
 config BT_MAX_PAIRED
     default 1
 

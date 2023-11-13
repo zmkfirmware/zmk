@@ -9,7 +9,4 @@ config ZMK_KEYBOARD_NAME
 config RP2_FLASH_W25Q080
     default y
 
-config ZMK_USB
-    default y
-
 endif # BOARD_KBDFANS_TOFU65_V2
