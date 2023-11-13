@@ -12,7 +12,7 @@ This page contains [RGB Underglow](../features/underglow.md) behaviors supported
 RGB actions defines are provided through the [`dt-bindings/zmk/rgb.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/rgb.h) header,
 which is added at the top of the keymap file:
 
-```
+```dts
 #include <dt-bindings/zmk/rgb.h>
 ```
 
@@ -65,13 +65,13 @@ However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNC
 
 1. Toggle underglow on/off
 
-   ```
+   ```dts
    &rgb_ug RGB_TOG
    ```
 
 1. Set a specific HSB color (green)
 
-   ```
+   ```dts
    &rgb_ug RGB_COLOR_HSB(128,100,100)
    ```
 

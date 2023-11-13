@@ -24,7 +24,7 @@ The Mod-Tap behavior either acts as a held modifier, or as a tapped keycode.
 
 Example:
 
-```
+```dts
 &mt LSHIFT A
 ```
 
@@ -32,7 +32,7 @@ Example:
 
 You can configure a different tapping term in your keymap:
 
-```
+```dts
 &mt {
     tapping-term-ms = <400>;
 };

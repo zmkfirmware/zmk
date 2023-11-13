@@ -42,7 +42,7 @@ Management of the bluetooth in ZMK is accomplished using the [`&bt` behavior](..
 
 Some users may experience a poor connection between the keyboard and the host. This might be due to poor quality BLE hardware, a metal enclosure on the keyboard or host, or the distance between them. Increasing the transmit power of the keyboard's BLE radio may reduce the severity of this problem. To do this, set the `CONFIG_BT_CTLR_TX_PWR_PLUS_8` configuration value in the `.conf` file of your user config directory as such:
 
-```
+```ini
 CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
 ```
 
@@ -64,7 +64,7 @@ There are a few known issues related to BLE and ZMK:
 
 There is a known issue with Windows failing to update the battery information after connecting to a ZMK keyboard. You can work around this Windows bug by overriding a [Bluetooth config variable](../config/bluetooth.md) to force battery notifications even if a host neglects to subscribe to them:
 
-```
+```ini
 CONFIG_BT_GATT_ENFORCE_SUBSCRIPTION=n
 ```
 

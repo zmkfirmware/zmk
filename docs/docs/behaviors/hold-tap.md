@@ -47,30 +47,30 @@ Defines how long a key must be pressed to trigger Hold behavior.
 
 #### `quick-tap-ms`
 
-If you press a tapped hold-tap again within `quick-tap-ms` milliseconds, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
+If you press a tapped hold-tap again within `quick-tap-ms` milliseconds of the first press, it will always trigger the tap behavior. This is useful for things like a backspace, where a quick tap+hold holds backspace pressed. Set this to a negative value to disable. The default is -1 (disabled).
 
-#### `global-quick-tap`
+#### `require-prior-idle-ms`
 
-If `global-quick-tap` is enabled, then `quick-tap-ms` will apply not only when the given hold-tap is tapped, but for any key tapped before it. This effectively disables the hold-tap when typing quickly, which can be quite useful for homerow mods. It can also have the effect of removing the input delay when typing quickly.
+`require-prior-idle-ms` is like `quick-tap-ms` however it will apply for _any_ non-modifier key pressed before it. This effectively disables the hold-tap when typing quickly, which can be quite useful for homerow mods. It can also have the effect of removing the input delay when typing quickly.
 
-For example, the following hold-tap configuration enables `global-quick-tap` with a 125 millisecond `quick-tap-ms` term.
+For example, the following hold-tap configuration enables `require-prior-idle-ms` with a 125 millisecond term, alongside `quick-tap-ms` with a 200 millisecond term.
 
-```
-gqt: global-quick-tap {
+```dts
+rpi: require_prior_idle {
     compatible = "zmk,behavior-hold-tap";
-    label = "GLOBAL_QUICK_TAP";
+    label = "REQUIRE_PRIOR_IDLE";
     #binding-cells = <2>;
     flavor = "tap-preferred";
     tapping-term-ms = <200>;
-    quick-tap-ms = <125>;
-    global-quick-tap;
+    quick-tap-ms = <200>;
+    require-prior-idle-ms = <125>;
     bindings = <&kp>, <&kp>;
 };
 ```
 
-If you press `&kp A` and then `&gqt LEFT_SHIFT B` **within** 125 ms, then `ab` will be output. Importantly, `b` will be output immediately since it was within the `quick-tap-ms`. This quick-tap behavior will work for any key press, whether it is within a behavior like hold-tap, or a simple `&kp`. This means the `&gqt LEFT_SHIFT B` binding will only have its underlying hold-tap behavior if it is pressed 125 ms **after** a key press.
+If you press `&kp A` and then `&rpi LEFT_SHIFT B` **within** 125 ms, then `ab` will be output. Importantly, `b` will be output immediately since it was within the `require-prior-idle-ms`, without waiting for a timeout or an interrupting key. In other words, the `&rpi LEFT_SHIFT B` binding will only have its underlying hold-tap behavior if it is pressed 125 ms **after** the previous key press; otherwise it will act like `&kp B`.
 
-Note that the greater the value of `quick-tap-ms` is, the harder it will be to invoke the hold behavior, making this feature less applicable for use-cases like capitalizing letters while typing normally. However, if the hold behavior isn't used during fast typing, then it can be an effective way to mitigate misfires.
+Note that the greater the value of `require-prior-idle-ms` is, the harder it will be to invoke the hold behavior, making this feature less applicable for use-cases like capitalizing letters while typing normally. However, if the hold behavior isn't used during fast typing, then it can be an effective way to mitigate misfires.
 
 #### `retro-tap`
 
@@ -78,7 +78,7 @@ If `retro-tap` is enabled, the tap behavior is triggered when releasing the hold
 
 For example, if you press `&mt LEFT_SHIFT A` and then release it without pressing another key, it will output `a`.
 
-```
+```dts
 &mt {
     retro-tap;
 };
@@ -96,7 +96,7 @@ Note that `hold-trigger-key-positions` is an array of key position indexes. Key 
 
 See the following example, which uses a hold-tap behavior definition, configured with the `hold-preferred` flavor, and with positional hold-tap enabled:
 
-```
+```dts
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
 
@@ -141,7 +141,7 @@ The two parameters that are passed to the hold-tap in your keymap will be forwar
 If you use behaviors that accept no parameters such as [mod-morphs](mod-morph.md) or [macros](macros.md), you can pass a dummy parameter value such as `0` to the hold-tap when you use it in your keymap.
 For instance, a hold-tap with node label `caps` and `bindings = <&kp>, <&caps_word>;` can be used in the keymap as below to send the caps lock keycode on hold and invoke the [caps word behavior](caps-word.md) on tap:
 
-```
+```dts
 &caps CAPS 0
 ```
 
@@ -166,7 +166,7 @@ The following are suggested hold-tap configurations that work well with home row
 
 ##### Option 1: cross-hand only modifiers, using `tap-unless-interrupted` and positional hold-tap (`hold-trigger-key-positions`)
 
-```dtsi title="Homerow Mods: Cross-hand Example"
+```dts title="Homerow Mods: Cross-hand Example"
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
 
@@ -198,7 +198,7 @@ The following are suggested hold-tap configurations that work well with home row
 
 ##### Option 2: `tap-preferred`
 
-```dtsi title="Homerow Mods: Tap-Preferred Example"
+```dts title="Homerow Mods: Tap-Preferred Example"
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 
@@ -228,7 +228,7 @@ The following are suggested hold-tap configurations that work well with home row
 
 ##### Option 3: `balanced`
 
-```dtsi title="Homerow Mods: Balanced Example"
+```dts title="Homerow Mods: Balanced Example"
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 
@@ -262,7 +262,7 @@ The following are suggested hold-tap configurations that work well with home row
 
 A popular method of implementing Autoshift in ZMK involves a C-preprocessor macro, commonly defined as `AS(keycode)`. This macro applies the `LSHIFT` modifier to the specified `keycode` when `AS(keycode)` is held, and simply performs a [keypress](key-press.md), `&kp keycode`, when the `AS(keycode)` binding is tapped. This simplifies the use of Autoshift in a keymap, as the complete hold-tap bindings for each desired Autoshift key, as in `&as LS(<keycode 1>) <keycode 1> &as LS(<keycode 2>) <keycode 2> ... &as LS(<keycode n>) <keycode n>`, can be quite cumbersome to use when applied to a large portion of the keymap.
 
-```dtsi title="Hold-Tap Example: Autoshift"
+```dts title="Hold-Tap Example: Autoshift"
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
 
@@ -298,7 +298,7 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 
 This hold-tap example implements a [momentary-layer](layers.md/#momentary-layer) when the keybind is held and a [toggle-layer](layers.md/#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
 
-```dtsi title="Hold-Tap Example: Momentary layer on Hold, Toggle layer on Tap"
+```dts title="Hold-Tap Example: Momentary layer on Hold, Toggle layer on Tap"
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
 

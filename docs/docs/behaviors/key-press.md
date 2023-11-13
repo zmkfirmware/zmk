@@ -27,7 +27,7 @@ To make it easier to encode the HID keycode numeric values, most keymaps include
 the [`dt-bindings/zmk/keys.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/keys.h) header
 provided by ZMK near the top:
 
-```
+```dts
 #include <dt-bindings/zmk/keys.h>
 ```
 
@@ -44,6 +44,6 @@ The "key press" behavior sends standard keycodes on press/release.
 
 Example:
 
-```
+```dts
 &kp A
 ```

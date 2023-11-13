@@ -25,10 +25,4 @@ endif # USB
 config BT_CTLR
     default BT
 
-config ZMK_BLE
-    default y
-
-config ZMK_USB
-    default y
-
 endif # BOARD_BT60_V2 || BOARD_BT65_V1 || BOARD_BT75_V1

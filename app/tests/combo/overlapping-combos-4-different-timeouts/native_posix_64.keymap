@@ -1,0 +1,98 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+#define kA 0
+#define kB 1
+#define kC 2
+#define kD 3
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        // Intentionally out of order in the config, to make sure 'combo.c' handles it properly
+        combo_40 {
+            timeout-ms = <40>;
+            key-positions = <kA kD>;
+            bindings = <&kp Z>;
+        };
+        combo_20 {
+            timeout-ms = <20>;
+            key-positions = <kA kB>;
+            bindings = <&kp X>;
+        };
+        combo_30 {
+            timeout-ms = <30>;
+            key-positions = <kA kC>;
+            bindings = <&kp Y>;
+        };
+
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &kp A &kp B
+                &kp C &kp D
+            >;
+        };
+    };
+};
+
+#define press_A_and_wait(delay_next) \
+    ZMK_MOCK_PRESS(0,0,delay_next)
+#define press_B_and_wait(delay_next) \
+    ZMK_MOCK_PRESS(0,1,delay_next)
+#define press_C_and_wait(delay_next) \
+    ZMK_MOCK_PRESS(1,0,delay_next)
+#define press_D_and_wait(delay_next) \
+    ZMK_MOCK_PRESS(1,1,delay_next)
+
+#define release_A_and_wait(delay_next) \
+    ZMK_MOCK_RELEASE(0,0,delay_next)
+#define release_D_and_wait(delay_next) \
+    ZMK_MOCK_RELEASE(1,1,delay_next)
+
+&kscan {
+    events = <
+        /* Note: This starts at T+50 because the ZMK_MOCK_PRESS seems to launch the first event at T+(first wait duration). So in our case T+50 */
+
+
+
+        /*** First Phase: All 3 combos expire ***/
+
+        /* T+50+0=    T+50: Press A and wait 50ms */
+        press_A_and_wait(50)
+
+        /* T+50+20=   T+70: 'combo_20' should expire */
+        /* T+50+30=   T+80: 'combo_30' should expire */
+        /* T+50+40=   T+90: 'combo_40' should expire, and we should send the keycode 'A' */
+
+        /* T+50+50=  T+100: We release A and wait 20ms */
+        release_A_and_wait(20)
+
+
+
+        /*** Second Phase: 2 combo expire, 1 combo triggers ***/
+
+        /* T+120+0=  T+120: Press A and wait 35ms */
+        press_A_and_wait(35)
+
+        /* T+120+20= T+140: 'combo_20' should expire */
+        /* T+120+30= T+150: 'combo_30' should expire */
+
+        /* T+120+35= T+155: We press 'D', this should trigger 'combo_40' and send the keycode 'Z'. We wait 15ms */
+        press_D_and_wait(15)
+
+
+
+        /*** Cleanup ***/
+        /* T+120+50= T+170: We release both keys */
+        release_A_and_wait(20)
+        release_D_and_wait(0)
+    >;
+};

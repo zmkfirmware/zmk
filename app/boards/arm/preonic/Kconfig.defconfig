@@ -8,9 +8,6 @@ if BOARD_PREONIC_REV3
 config ZMK_KEYBOARD_NAME
     default "Preonic V3"
 
-config ZMK_USB
-    default y
-
 config ZMK_KSCAN_MATRIX_POLLING
     default y
 

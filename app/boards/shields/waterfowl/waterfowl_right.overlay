@@ -20,7 +20,10 @@
         ;
 };
 
+&roller_right_encoder {
+    status = "okay";
+};
 
-&right_encoder {
+&dial_right_encoder {
     status = "okay";
 };

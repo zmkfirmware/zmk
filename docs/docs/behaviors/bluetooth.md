@@ -20,7 +20,7 @@ A ZMK device may show as "connected" on multiple hosts at the same time. This is
 Bluetooth command defines are provided through the [`dt-bindings/zmk/bt.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/bt.h) header,
 which is added at the top of the keymap file:
 
-```
+```dts
 #include <dt-bindings/zmk/bt.h>
 ```
 
@@ -54,25 +54,25 @@ The bluetooth behavior completes an bluetooth action given on press.
 
 1. Behavior binding to clear the paired host for the selected profile:
 
-   ```
+   ```dts
    &bt BT_CLR
    ```
 
 1. Behavior binding to select the next profile:
 
-   ```
+   ```dts
    &bt BT_NXT
    ```
 
 1. Behavior binding to select the previous profile:
 
-   ```
+   ```dts
    &bt BT_PRV
    ```
 
 1. Behavior binding to select the 2nd profile (passed parameters are [zero based](https://en.wikipedia.org/wiki/Zero-based_numbering)):
 
-   ```
+   ```dts
    &bt BT_SEL 1
    ```
 

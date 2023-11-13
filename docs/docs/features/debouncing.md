@@ -20,7 +20,7 @@ socket or using some sharp tweezers to bend the contacts back together.
 ## Debounce Configuration
 
 :::note
-Currently only the `zmk,kscan-gpio-matrix` driver supports these options. The other drivers have not yet been updated to use the new debouncing code.
+Currently the `zmk,kscan-gpio-matrix` and `zmk,kscan-gpio-direct` [drivers](../config/kscan.md) supports these options, while `zmk,kscan-gpio-demux` driver does not.
 :::
 
 ### Global Options
@@ -56,7 +56,7 @@ per-driver option.
 For example, if your board/shield has a kscan driver labeled `kscan0` in its
 `.overlay`, `.dts`, or `.dtsi` files,
 
-```devicetree
+```dts
 kscan0: kscan {
     compatible = "zmk,kscan-gpio-matrix";
     ...
@@ -65,7 +65,7 @@ kscan0: kscan {
 
 then you could add this to your `.keymap`:
 
-```devicetree
+```dts
 &kscan0 {
     debounce-press-ms = <3>;
     debounce-release-ms = <3>;

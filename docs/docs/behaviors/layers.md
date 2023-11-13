@@ -16,7 +16,7 @@ add a set of `#define`s at the top of your keymap file, and use those layer in y
 
 For example, if you have three layers, you can add the following to the top of your keymap:
 
-```
+```dts
 #define DEFAULT 0
 #define LOWER   1
 #define RAISE   2
@@ -37,7 +37,7 @@ again.
 
 Example:
 
-```
+```dts
 &mo LOWER
 ```
 
@@ -53,8 +53,24 @@ The "layer-tap" behavior enables a layer when a key is held, and outputs a [keyp
 
 Example:
 
-```
+```dts
 &lt LOWER SPACE
+```
+
+### Configuration
+
+You can configure a different tapping term or tweak other properties noted in the [hold-tap](hold-tap.md#advanced-configuration) documentation page in your keymap:
+
+```dts
+&lt {
+    tapping-term-ms = <200>;
+};
+
+/ {
+    keymap {
+        ...
+    };
+};
 ```
 
 :::info
@@ -77,7 +93,7 @@ The "to layer" behavior enables a layer and disables _all_ other layers _except_
 
 Example:
 
-```
+```dts
 &to 3
 ```
 
@@ -92,13 +108,13 @@ The "toggle layer" behavior enables a layer until the layer is manually disabled
 
 Example:
 
-```
+```dts
 &tog LOWER
 ```
 
 "Toggle layer" for a :
 
-```
+```dts
 #define DEFAULT 0
 #define NAVI    1
 

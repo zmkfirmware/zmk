@@ -16,6 +16,10 @@
         ;
 };
 
-&left_encoder {
+&roller_left_encoder {
+    status = "okay";
+};
+
+&dial_left_encoder {
     status = "okay";
 };

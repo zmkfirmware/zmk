@@ -22,9 +22,10 @@
         zmk,matrix_transform = &default_transform;
     };
 
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&left_encoder>;
+        triggers-per-rotation = <20>;
     };
 
 
@@ -34,7 +35,7 @@
         label = "LEFT_ENCODER";
         a-gpios = <&gpio1 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&gpio1 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "okay";
     };
 

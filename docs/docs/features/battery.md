@@ -26,7 +26,7 @@ Zephyr also provides some drivers for fuel gauge ICs such as the TI bq274xx seri
 
 Once you have the sensor driver defined, add a `zmk,battery` property to the `chosen` node and set it to reference the sensor node. For example:
 
-```
+```dts
 / {
     chosen {
       zmk,battery = &vbatt;

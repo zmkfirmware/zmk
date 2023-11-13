@@ -33,7 +33,12 @@
     &kp N1      &lt 3 DEL   &lt 1 SPACE &kp TAB     &kp N2          &kp N3  &kp ESC     &kp BSPC    &lt 2 RET   &kp N4
             >;
 
-            sensor-bindings = <&inc_dec_kp PAGE_UP PAGE_DOWN &inc_dec_kp TAB LS(TAB)>;
+            sensor-bindings = <
+                &inc_dec_kp PAGE_DOWN PAGE_UP
+                &inc_dec_kp C_VOL_DN C_VOL_UP
+                &inc_dec_kp DOWN UP
+                &inc_dec_kp LEFT RIGHT
+            >;
         };
 
         navnum_layer {
@@ -57,7 +62,12 @@
     &kp N1      &lt 3 DEL   &lt 1 SPACE &kp TAB     &kp N2                  &kp N3      &kp ESC &kp BSPC    &lt 2 RET   &kp N4
             >;
 
-            sensor-bindings = <&inc_dec_kp PAGE_UP PAGE_DOWN &inc_dec_kp TAB LS(TAB)>;
+            sensor-bindings = <
+                &inc_dec_kp PAGE_DOWN PAGE_UP
+                &inc_dec_kp C_VOL_DN C_VOL_UP
+                &inc_dec_kp DOWN UP
+                &inc_dec_kp LEFT RIGHT
+            >;
         };
 
         symbol_layer {
@@ -81,7 +91,12 @@
     &kp N1          &lt 3 DEL   &lt 1 SPACE &kp TAB     &kp N2                  &kp N3          &kp ESC         &kp BSPC            &lt 2 RET   &kp N4
             >;
 
-            sensor-bindings = <&inc_dec_kp PAGE_UP PAGE_DOWN &inc_dec_kp TAB LS(TAB)>;
+            sensor-bindings = <
+                &inc_dec_kp PAGE_DOWN PAGE_UP
+                &inc_dec_kp C_VOL_DN C_VOL_UP
+                &inc_dec_kp DOWN UP
+                &inc_dec_kp LEFT RIGHT
+            >;
         };
 
         function_layer {
@@ -105,7 +120,12 @@
     &kp N1          &lt 3 DEL       &lt 1 SPACE     &kp TAB         &kp N2              &kp N3      &kp ESC &kp BSPC    &lt 2 RET   &kp N4
             >;
 
-            sensor-bindings = <&inc_dec_kp PAGE_UP PAGE_DOWN &inc_dec_kp TAB LS(TAB)>;
+            sensor-bindings = <
+                &inc_dec_kp PAGE_DOWN PAGE_UP
+                &inc_dec_kp C_VOL_DN C_VOL_UP
+                &inc_dec_kp DOWN UP
+                &inc_dec_kp LEFT RIGHT
+            >;
         };
 
     };

@@ -24,7 +24,7 @@ The following boards currently support this feature:
 External power control command defines are provided through the [`dt-bindings/zmk/ext_power.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/ext_power.h) header,
 which is added at the top of the keymap file:
 
-```
+```dts
 #include <dt-bindings/zmk/ext_power.h>
 ```
 
@@ -52,19 +52,19 @@ However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../con
 
 1. Behavior binding to enable the external power
 
-   ```
+   ```dts
    &ext_power EP_ON
    ```
 
 1. Behavior binding to disable the external power
 
-   ```
+   ```dts
    &ext_power EP_OFF
    ```
 
 1. Behavior binding to toggle the external power
 
-   ```
+   ```dts
    &ext_power EP_TOG
    ```
 

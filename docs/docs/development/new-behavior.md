@@ -357,7 +357,7 @@ For behaviors that do not require central locality, the following options for up
 
 For the purpose of this section, we will discuss the structure of `app/dts/behaviors/gresc.dtsi` below.
 
-```dtsi title="app/dts/behaviors/gresc.dtsi"
+```dts title="app/dts/behaviors/gresc.dtsi"
 /*
  * Copyright (c) 2020 The ZMK Contributors
  *
@@ -383,7 +383,7 @@ The format of a behavior's `.dtsi` file is identical to declaring an instance of
 
 After creating the `.dtsi` from above, update `app/dts/behaviors.dtsi` to include your newly predefined behavior instance, making it accessible by the devicetree.
 
-```dtsi title="app/dts/behaviors.dtsi"
+```dts title="app/dts/behaviors.dtsi"
 #include <behaviors/key_press.dtsi>
 #include <behaviors/transparent.dtsi>
 #include <behaviors/none.dtsi>
