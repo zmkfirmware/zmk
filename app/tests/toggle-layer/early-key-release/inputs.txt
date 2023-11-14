@@ -1,0 +1,5 @@
+key press 0
+key press 1
+key release 0
+key release 1
+key tap 0

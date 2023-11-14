@@ -1,0 +1,2 @@
+key tap 1
+key tap 0
