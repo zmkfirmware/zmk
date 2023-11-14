@@ -55,7 +55,7 @@ static int kscan_mock_configure(const struct device *dev, kscan_callback_t callb
             uint32_t ev = cfg->events[data->event_index];                                          \
             LOG_DBG("delaying next keypress: %d", ZMK_MOCK_MSEC(ev));                              \
             k_work_schedule(&data->work, K_MSEC(ZMK_MOCK_MSEC(ev)));                               \
-        } else if (cfg->exit_after) {                                                              \
+        } else if (cfg->exit_after && DT_INST_PROP_LEN(n, events) > 0) {                           \
             LOG_DBG("Exiting");                                                                    \
             exit(0);                                                                               \
         }                                                                                          \
