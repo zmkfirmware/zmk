@@ -26,12 +26,6 @@ config ZMK_SPLIT
 config BT_CTLR
     default BT
 
-config ZMK_BLE
-    default y
-
-config ZMK_USB
-    default y
-
 config ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS
     default 5
 
