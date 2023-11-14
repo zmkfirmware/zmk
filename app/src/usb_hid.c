@@ -39,16 +39,16 @@ void zmk_usb_hid_set_protocol(uint8_t protocol) { hid_protocol = protocol; }
 #endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
 
 static uint8_t *get_keyboard_report(size_t *len) {
-    if (hid_protocol == HID_PROTOCOL_REPORT) {
-        struct zmk_hid_keyboard_report *report = zmk_hid_get_keyboard_report();
-        *len = sizeof(*report);
-        return (uint8_t *)report;
-    }
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
-    zmk_hid_boot_report_t *boot_report = zmk_hid_get_boot_report();
-    *len = sizeof(*boot_report);
-    return (uint8_t *)boot_report;
+    if (hid_protocol != HID_PROTOCOL_REPORT) {
+        zmk_hid_boot_report_t *boot_report = zmk_hid_get_boot_report();
+        *len = sizeof(*boot_report);
+        return (uint8_t *)boot_report;
+    }
 #endif
+    struct zmk_hid_keyboard_report *report = zmk_hid_get_keyboard_report();
+    *len = sizeof(*report);
+    return (uint8_t *)report;
 }
 
 static int get_report_cb(const struct device *dev, struct usb_setup_packet *setup, int32_t *len,
