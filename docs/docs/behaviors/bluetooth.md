@@ -14,7 +14,7 @@ When pairing to a host device ZMK saves bond information to the selected profile
 
 A ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
 
-An inactive connected profile can be explicitly disconnected using the `BT_DISCONNECT` behavior. This can be helpful in
+An inactive connected profile can be explicitly disconnected using the `BT_DISC` behavior. This can be helpful in
 cases when host devices behave differently when a bluetooth keyboard is connected, for example by hiding their on-screen
 keyboard.
 
@@ -33,14 +33,14 @@ This will allow you to reference the actions defined in this header such as `BT_
 
 Here is a table describing the command for each define:
 
-| Define          | Action                                                                                                                                                    |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BT_CLR`        | Clear bond information between the keyboard and host for the selected profile.                                                                            |
-| `BT_NXT`        | Switch to the next profile, cycling through to the first one when the end is reached.                                                                     |
-| `BT_PRV`        | Switch to the previous profile, cycling through to the last one when the beginning is reached.                                                            |
-| `BT_SEL`        | Select the 0-indexed profile by number. Please note: this definition must include a number as an argument in the keymap to work correctly. eg. `BT_SEL 0` |
-| `BT_DISCONNECT` | Disconnect from the 0-indexed profile by number, if it's currently connected and inactive. Please note: this definition must include a number as an       |
-|                 | argument in the keymap to work correctly. eg. `BT_DISCONNECT 0`                                                                                           |
+| Define    | Action                                                                                                                                                    |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BT_CLR`  | Clear bond information between the keyboard and host for the selected profile.                                                                            |
+| `BT_NXT`  | Switch to the next profile, cycling through to the first one when the end is reached.                                                                     |
+| `BT_PRV`  | Switch to the previous profile, cycling through to the last one when the beginning is reached.                                                            |
+| `BT_SEL`  | Select the 0-indexed profile by number. Please note: this definition must include a number as an argument in the keymap to work correctly. eg. `BT_SEL 0` |
+| `BT_DISC` | Disconnect from the 0-indexed profile by number, if it's currently connected and inactive. Please note: this definition must include a number as an       |
+|           | argument in the keymap to work correctly. eg. `BT_DISC 0`                                                                                                 |
 
 :::note Selected profile persistence
 The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be saved to flash storage and hence persist across restarts and firmware flashes.
