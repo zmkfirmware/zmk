@@ -98,7 +98,6 @@ config ZMK_USB
 
 config ZMK_USB_BOOT
     bool "USB Boot Protocol Support"
-    default y
     depends on ZMK_USB
     select USB_HID_BOOT_PROTOCOL
     select USB_DEVICE_SOF
