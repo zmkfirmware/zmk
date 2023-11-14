@@ -15,7 +15,7 @@ function main() {
     testcases=$(find $path -name native_posix_64.keymap -exec dirname \{\} \;)
 
     :>./build/tests/pass-fail.log
-    echo "$testcases" | xargs -n 1 -P ${J:-4} bash -c 'run_test "$@"' _
+    echo "$testcases" | xargs -I {} -P ${J:-4} bash -c 'run_test "$@"' _ {}
     err=$?
     >&2 echo
     >&2 echo "=== Test results ==="
@@ -36,7 +36,7 @@ function run_test() {
 
     extra_config=""
     if [ -n "$inputs" ]; then
-        # replace with DEXTRA_CONFIG_FILE for Zephyr 3.4
+        # replace with -DEXTRA_CONFIG_FILE for Zephyr 3.4
         extra_config+="-DOVERLAY_CONFIG=boards/native_posix_shell_test_extra.conf"
     fi
 
@@ -48,7 +48,6 @@ function run_test() {
         >&2 printf "\t%s\n" "for details see ./$build_log"
         return 1
     fi
-
 
     function check_test_results() {
         testdir="$1"
@@ -79,11 +78,13 @@ function run_test() {
         return $?
     fi
 
-    # Add waits between each command to better simulate typing.
+    # Filters comments and blank lines from the inputs.txt file, adds a fixed
+    # `wait` after each command, and appends an `exit`.
     #
-    # FIXME(ecstaticmore): make this configurable
+    # FIXME(ecstaticmore): make the `wait` configurable.
     function augment_commands() {
-       awk '{print; print "wait 10"}' "$1/inputs.txt"
+        grep -v -e '^\s*#' -e '^\s*$' "$1/inputs.txt" | \
+           awk '{ print; print "wait 10" }'
        echo "exit"
     }
 
@@ -96,8 +97,9 @@ function run_test() {
     # - The shell driver reads from the UART driver greedily until it blocks
     #   (instead of stopping on newlines or when the ring buffer is full).
     #
-    # To work around this, we sleep inside a process substitution to keep
-    # the pipe open until the Zephyr executable exits.
+    # This means that piping directly to the Zephyr executable causes it to
+    # enter an infinite loop. To work around this, we sleep inside a process
+    # substitution to keep the pipe open until the Zephyr executable exits.
     ret=0
     for input in $inputs; do
         >&2 echo "Running $path/native_posix_64.keymap with $input/inputs.txt:"
