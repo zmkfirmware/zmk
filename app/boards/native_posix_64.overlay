@@ -5,6 +5,7 @@
 / {
     chosen {
         zmk,kscan = &kscan;
+        zephyr,shell-uart = &uart0;
     };
 
     kscan: kscan {
@@ -16,4 +17,8 @@
         exit-after;
         events = <>;
     };
+};
+
+&uart0 {
+    status = "okay";
 };
