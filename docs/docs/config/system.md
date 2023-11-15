@@ -33,11 +33,23 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 | `CONFIG_ZMK_HID_REPORT_TYPE_HKRO` | Enable `CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE` key roll over.                                           |
 | `CONFIG_ZMK_HID_REPORT_TYPE_NKRO` | Enable full N-key roll over. This may prevent the keyboard from working with some BIOS/UEFI versions. |
 
+:::note NKRO usages
+
+By default the NKRO max usage is set so as to maximise compatibility, however certain less frequently used keys (F13-F24 and INTL1-8) will not work. The solution is to set 'CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT=y'. This is known to break compatibility with Android.
+
+:::
+
 If `CONFIG_ZMK_HID_REPORT_TYPE_HKRO` is enabled, it may be configured with the following options:
 
 | Config                                | Type | Description                                       | Default |
 | ------------------------------------- | ---- | ------------------------------------------------- | ------- |
 | `CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE` | int  | Number of keyboard keys simultaneously reportable | 6       |
+
+If `CONFIG_ZMK_HID_REPORT_TYPE_NKRO` is enabled, it may be configured with the following options:
+
+| Config                                         | Type | Description                                                          | Default |
+| ---------------------------------------------- | ---- | -------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT` | bool | Enable less frequently used key usages, at the cost of compatibility | n       |
 
 Exactly zero or one of the following options may be set to `y`. The first is used if none are set.
 

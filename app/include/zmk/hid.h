@@ -17,7 +17,12 @@
 #include <dt-bindings/zmk/hid_usage.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
 
+#if IS_ENABLED(CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT)
+#define ZMK_HID_KEYBOARD_NKRO_MAX_USAGE HID_USAGE_KEY_KEYBOARD_LANG8
+#else
 #define ZMK_HID_KEYBOARD_NKRO_MAX_USAGE HID_USAGE_KEY_KEYPAD_EQUAL
+#endif
+
 #define ZMK_HID_MOUSE_NUM_BUTTONS 0x05
 
 // See https://www.usb.org/sites/default/files/hid1_11.pdf section 6.2.2.4 Main Items
