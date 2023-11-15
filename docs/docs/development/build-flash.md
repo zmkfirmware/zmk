@@ -65,7 +65,7 @@ west build -b planck_rev6
 When building for a new board and/or shield after having built one previously, you may need to enable the pristine build option. This option removes all existing files in the build directory before regenerating them, and can be enabled by adding either --pristine or -p to the command:
 
 ```sh
-west build -p -b proton_c -- -DSHIELD=kyria_left
+west build -p -b nice_nano_v2 -- -DSHIELD=kyria_left
 ```
 
 ### Building For Split Keyboards
@@ -77,13 +77,13 @@ For split keyboards, you will have to build and flash each side separately the f
 By default, the `build` command outputs a single .uf2 file named `zmk.uf2` so building left and then right immediately after will overwrite your left firmware. In addition, you will need to pristine build each side to ensure the correct files are used. To avoid having to pristine build every time and separate the left and right build files, we recommend setting up separate build directories for each half. You can do this by using the `-d` parameter and first building left into `build/left`:
 
 ```sh
-west build -d build/left -b nice_nano -- -DSHIELD=kyria_left
+west build -d build/left -b nice_nano_v2 -- -DSHIELD=kyria_left
 ```
 
 and then building right into `build/right`:
 
 ```sh
-west build -d build/right -b nice_nano -- -DSHIELD=kyria_right
+west build -d build/right -b nice_nano_v2 -- -DSHIELD=kyria_right
 ```
 
 This produces `left` and `right` subfolders under the `build` directory and two separate .uf2 files. For future work on a specific half, use the `-d` parameter again to ensure you are building into the correct location.

@@ -91,9 +91,16 @@ menu "Output Types"
 
 config ZMK_USB
     bool "USB"
+    depends on (!ZMK_SPLIT || (ZMK_SPLIT && ZMK_SPLIT_ROLE_CENTRAL))
     select USB
     select USB_DEVICE_STACK
     select USB_DEVICE_HID
+
+config ZMK_USB_BOOT
+    bool "USB Boot Protocol Support"
+    depends on ZMK_USB
+    select USB_HID_BOOT_PROTOCOL
+    select USB_DEVICE_SOF
 
 if ZMK_USB
 
@@ -575,4 +582,3 @@ osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
 
 source "Kconfig.zephyr"
-

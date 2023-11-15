@@ -8,7 +8,4 @@ if BOARD_DZ60RGB_REV1
 config ZMK_KEYBOARD_NAME
     default "DZ60RGB Rev 1"
 
-config ZMK_USB
-    default y
-
 endif # BOARD_DZ60RGB_REV1

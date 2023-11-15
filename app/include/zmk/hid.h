@@ -15,13 +15,43 @@
 
 #define ZMK_HID_KEYBOARD_NKRO_MAX_USAGE HID_USAGE_KEY_KEYPAD_EQUAL
 
-#define COLLECTION_REPORT 0x03
+// See https://www.usb.org/sites/default/files/hid1_11.pdf section 6.2.2.4 Main Items
+
+#define ZMK_HID_MAIN_VAL_DATA (0x00 << 0)
+#define ZMK_HID_MAIN_VAL_CONST (0x01 << 0)
+
+#define ZMK_HID_MAIN_VAL_ARRAY (0x00 << 1)
+#define ZMK_HID_MAIN_VAL_VAR (0x01 << 1)
+
+#define ZMK_HID_MAIN_VAL_ABS (0x00 << 2)
+#define ZMK_HID_MAIN_VAL_REL (0x01 << 2)
+
+#define ZMK_HID_MAIN_VAL_NO_WRAP (0x00 << 3)
+#define ZMK_HID_MAIN_VAL_WRAP (0x01 << 3)
+
+#define ZMK_HID_MAIN_VAL_LIN (0x00 << 4)
+#define ZMK_HID_MAIN_VAL_NON_LIN (0x01 << 4)
+
+#define ZMK_HID_MAIN_VAL_PREFERRED (0x00 << 5)
+#define ZMK_HID_MAIN_VAL_NO_PREFERRED (0x01 << 5)
+
+#define ZMK_HID_MAIN_VAL_NO_NULL (0x00 << 6)
+#define ZMK_HID_MAIN_VAL_NULL (0x01 << 6)
+
+#define ZMK_HID_MAIN_VAL_NON_VOL (0x00 << 7)
+#define ZMK_HID_MAIN_VAL_VOL (0x01 << 7)
+
+#define ZMK_HID_MAIN_VAL_BIT_FIELD (0x00 << 8)
+#define ZMK_HID_MAIN_VAL_BUFFERED_BYTES (0x01 << 8)
+
+#define ZMK_HID_REPORT_ID_KEYBOARD 0x01
+#define ZMK_HID_REPORT_ID_CONSUMER 0x02
 
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
     HID_USAGE(HID_USAGE_GD_KEYBOARD),
     HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(0x01),
+    HID_REPORT_ID(ZMK_HID_REPORT_ID_KEYBOARD),
     HID_USAGE_PAGE(HID_USAGE_KEY),
     HID_USAGE_MIN8(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),
     HID_USAGE_MAX8(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI),
@@ -30,14 +60,12 @@ static const uint8_t zmk_hid_report_desc[] = {
 
     HID_REPORT_SIZE(0x01),
     HID_REPORT_COUNT(0x08),
-    /* INPUT (Data,Var,Abs) */
-    HID_INPUT(0x02),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 
     HID_USAGE_PAGE(HID_USAGE_KEY),
     HID_REPORT_SIZE(0x08),
     HID_REPORT_COUNT(0x01),
-    /* INPUT (Cnst,Var,Abs) */
-    HID_INPUT(0x03),
+    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 
     HID_USAGE_PAGE(HID_USAGE_KEY),
 
@@ -48,8 +76,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_MAX8(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE),
     HID_REPORT_SIZE(0x01),
     HID_REPORT_COUNT(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1),
-    /* INPUT (Data,Ary,Abs) */
-    HID_INPUT(0x02),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 #elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
     HID_LOGICAL_MIN8(0x00),
     HID_LOGICAL_MAX16(0xFF, 0x00),
@@ -57,8 +84,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_MAX8(0xFF),
     HID_REPORT_SIZE(0x08),
     HID_REPORT_COUNT(CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE),
-    /* INPUT (Data,Ary,Abs) */
-    HID_INPUT(0x00),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),
 #else
 #error "A proper HID report type must be selected"
 #endif
@@ -67,7 +93,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_CONSUMER),
     HID_USAGE(HID_USAGE_CONSUMER_CONSUMER_CONTROL),
     HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(0x02),
+    HID_REPORT_ID(ZMK_HID_REPORT_ID_CONSUMER),
     HID_USAGE_PAGE(HID_USAGE_CONSUMER),
 
 #if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
@@ -86,17 +112,28 @@ static const uint8_t zmk_hid_report_desc[] = {
 #error "A proper consumer HID report usage range must be selected"
 #endif
     HID_REPORT_COUNT(CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE),
-    /* INPUT (Data,Ary,Abs) */
-    HID_INPUT(0x00),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),
     HID_END_COLLECTION,
 };
 
-// struct zmk_hid_boot_report
-// {
-//     uint8_t modifiers;
-//     uint8_t _unused;
-//     uint8_t keys[6];
-// } __packed;
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+
+#define HID_ERROR_ROLLOVER 0x1
+#define HID_BOOT_KEY_LEN 6
+
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) &&                                                 \
+    CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE == HID_BOOT_KEY_LEN
+typedef struct zmk_hid_keyboard_report_body zmk_hid_boot_report_t;
+#else
+struct zmk_hid_boot_report {
+    zmk_mod_flags_t modifiers;
+    uint8_t _reserved;
+    uint8_t keys[HID_BOOT_KEY_LEN];
+} __packed;
+
+typedef struct zmk_hid_boot_report zmk_hid_boot_report_t;
+#endif
+#endif
 
 struct zmk_hid_keyboard_report_body {
     zmk_mod_flags_t modifiers;
@@ -154,3 +191,7 @@ bool zmk_hid_is_pressed(uint32_t usage);
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();
+
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+zmk_hid_boot_report_t *zmk_hid_get_boot_report();
+#endif
