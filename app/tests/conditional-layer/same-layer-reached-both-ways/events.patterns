@@ -1,3 +1,0 @@
-s/.*hid_listener_keycode/kp/p
-s/.*mo_keymap_binding/mo/p
-s/.*conditional_layer/cl/p

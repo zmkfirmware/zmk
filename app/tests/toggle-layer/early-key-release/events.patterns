@@ -1,2 +1,0 @@
-s/.*hid_listener_keycode/kp/p
-s/.*tog_keymap_binding/tog/p
