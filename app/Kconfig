@@ -321,7 +321,7 @@ config ZMK_BATTERY_REPORTING
     bool "Battery level detection/reporting"
     default n
     select SENSOR
-    select BT_BAS if ZMK_BLE
+    imply BT_BAS if ZMK_BLE
 
 config ZMK_IDLE_TIMEOUT
     int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
