@@ -302,6 +302,9 @@ config ZMK_BACKLIGHT_AUTO_OFF_IDLE
 config ZMK_BACKLIGHT_AUTO_OFF_USB
     bool "Turn off backlight when USB is disconnected"
 
+config ZMK_BACKLIGHT_MAP
+    bool "Allow backlight to be mapped to LED channels"
+
 #ZMK_BACKLIGHT
 endif
 
