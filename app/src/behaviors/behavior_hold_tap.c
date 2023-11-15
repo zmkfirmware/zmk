@@ -678,7 +678,8 @@ ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_position_state_changed);
 ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_keycode_state_changed);
 
 void behavior_hold_tap_timer_work_handler(struct k_work *item) {
-    struct active_hold_tap *hold_tap = CONTAINER_OF(item, struct active_hold_tap, work);
+    struct k_work_delayable *d_work = k_work_delayable_from_work(item);
+    struct active_hold_tap *hold_tap = CONTAINER_OF(d_work, struct active_hold_tap, work);
 
     if (hold_tap->work_is_cancelled) {
         clear_hold_tap(hold_tap);

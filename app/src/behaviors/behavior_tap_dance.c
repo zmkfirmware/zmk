@@ -169,7 +169,9 @@ static int on_tap_dance_binding_released(struct zmk_behavior_binding *binding,
 }
 
 void behavior_tap_dance_timer_handler(struct k_work *item) {
-    struct active_tap_dance *tap_dance = CONTAINER_OF(item, struct active_tap_dance, release_timer);
+    struct k_work_delayable *d_work = k_work_delayable_from_work(item);
+    struct active_tap_dance *tap_dance =
+        CONTAINER_OF(d_work, struct active_tap_dance, release_timer);
     if (tap_dance->position == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
         return;
     }
