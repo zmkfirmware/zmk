@@ -62,7 +62,8 @@ static int kscan_mock_configure(const struct device *dev, kscan_callback_t callb
         }                                                                                          \
     }                                                                                              \
     static void kscan_mock_work_handler_##n(struct k_work *work) {                                 \
-        struct kscan_mock_data *data = CONTAINER_OF(work, struct kscan_mock_data, work);           \
+        struct k_work_delayable *d_work = k_work_delayable_from_work(work);                        \
+        struct kscan_mock_data *data = CONTAINER_OF(d_work, struct kscan_mock_data, work);         \
         const struct kscan_mock_config_##n *cfg = data->dev->config;                               \
         uint32_t ev = cfg->events[data->event_index];                                              \
         LOG_DBG("ev %u row %d column %d state %d\n", ev, ZMK_MOCK_ROW(ev), ZMK_MOCK_COL(ev),       \
