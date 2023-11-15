@@ -1,0 +1,25 @@
+# Copyright (c) 2023 Srishtik Bhandarkar
+# SPDX-License-Identifier: MIT
+
+if BOARD_TR60
+config ZMK_KEYBOARD_NAME
+    default "tr60"
+
+if USB_DEVICE_STACK
+
+config USB_NRFX
+    default y
+
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+    default BT
+
+config ZMK_BLE
+    default y
+
+config ZMK_USB
+    default y
+
+endif # BOARD_TR60
+
