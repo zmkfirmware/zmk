@@ -262,8 +262,9 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
 }
 
 void behavior_sticky_key_timer_handler(struct k_work *item) {
+    struct k_work_delayable *d_work = k_work_delayable_from_work(item);
     struct active_sticky_key *sticky_key =
-        CONTAINER_OF(item, struct active_sticky_key, release_timer);
+        CONTAINER_OF(d_work, struct active_sticky_key, release_timer);
     if (sticky_key->position == ZMK_BHV_STICKY_KEY_POSITION_FREE) {
         return;
     }
