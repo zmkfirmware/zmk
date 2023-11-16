@@ -1,0 +1,37 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config ZMK_MOUSE
+    bool "Mouse Emulation"
+    select INPUT
+    select INPUT_THREAD_PRIORITY_OVERRIDE
+
+if ZMK_MOUSE
+
+config ZMK_MOUSE_SMOOTH_SCROLLING
+    bool "Smooth Scrolling"
+    help
+      Enable smooth scrolling, with hosts that support HID Resolution Multipliers
+
+config ZMK_INPUT_PROCESSOR_TRANSFORM
+    bool "Transform Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_TRANSFORM_ENABLED
+
+config ZMK_INPUT_PROCESSOR_SCALER
+    bool "Scaling Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_SCALER_ENABLED
+
+config ZMK_INPUT_PROCESSOR_TEMP_LAYER
+    bool "Temporary Layer Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_TEMP_LAYER_ENABLED
+
+config ZMK_INPUT_PROCESSOR_CODE_MAPPER
+    bool "Code Mapper Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_CODE_MAPPER_ENABLED
+
+
+endif
