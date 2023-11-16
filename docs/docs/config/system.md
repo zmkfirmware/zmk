@@ -35,7 +35,7 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 
 :::note NKRO usages
 
-By default the NKRO max usage is set so as to maximise compatibility, however certain less frequently used keys (F13-F24 and INTL1-8) will not work. The solution is to set 'CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT=y'. This is known to break compatibility with Android.
+By default the NKRO max usage is set so as to maximize compatibility, however certain less frequently used keys (F13-F24 and INTL1-8) will not work with it. One solution is to set `CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT=y`, however this is known to break compatibility with Android and thus not enabled by default.
 
 :::
 
