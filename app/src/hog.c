@@ -380,7 +380,6 @@ int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *report) {
 
     return 0;
 };
-
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
 static int zmk_hog_init(void) {

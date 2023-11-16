@@ -61,6 +61,10 @@
 #define ZMK_HID_REPORT_ID_CONSUMER 0x02
 #define ZMK_HID_REPORT_ID_MOUSE 0x03
 
+// Needed until Zephyr offers a 2 byte usage macro
+#define HID_USAGE16(idx)                                                                           \
+    HID_ITEM(HID_ITEM_TAG_USAGE, HID_ITEM_TYPE_LOCAL, 2), (idx & 0xFF), (idx >> 8 & 0xFF)
+
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
     HID_USAGE(HID_USAGE_GD_KEYBOARD),
@@ -169,10 +173,17 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE(HID_USAGE_GD_X),
     HID_USAGE(HID_USAGE_GD_Y),
     HID_USAGE(HID_USAGE_GD_WHEEL),
-    HID_LOGICAL_MIN8(-0x7F),
-    HID_LOGICAL_MAX8(0x7F),
-    HID_REPORT_SIZE(0x08),
+    HID_LOGICAL_MIN16(0xFF, -0x7F),
+    HID_LOGICAL_MAX16(0xFF, 0x7F),
+    HID_REPORT_SIZE(0x10),
     HID_REPORT_COUNT(0x03),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
+    HID_USAGE_PAGE(HID_USAGE_CONSUMER),
+    HID_USAGE16(HID_USAGE_CONSUMER_AC_PAN),
+    HID_LOGICAL_MIN16(0xFF, -0x7F),
+    HID_LOGICAL_MAX16(0xFF, 0x7F),
+    HID_REPORT_SIZE(0x08),
+    HID_REPORT_COUNT(0x01),
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
     HID_END_COLLECTION,
     HID_END_COLLECTION,
@@ -242,9 +253,10 @@ struct zmk_hid_consumer_report {
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 struct zmk_hid_mouse_report_body {
     zmk_mouse_button_flags_t buttons;
-    int8_t d_x;
-    int8_t d_y;
-    int8_t d_wheel;
+    int16_t d_x;
+    int16_t d_y;
+    int16_t d_scroll_y;
+    int16_t d_scroll_x;
 } __packed;
 
 struct zmk_hid_mouse_report {
@@ -285,6 +297,10 @@ int zmk_hid_mouse_button_press(zmk_mouse_button_t button);
 int zmk_hid_mouse_button_release(zmk_mouse_button_t button);
 int zmk_hid_mouse_buttons_press(zmk_mouse_button_flags_t buttons);
 int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons);
+void zmk_hid_mouse_movement_set(int16_t x, int16_t y);
+void zmk_hid_mouse_scroll_set(int8_t x, int8_t y);
+void zmk_hid_mouse_movement_update(int16_t x, int16_t y);
+void zmk_hid_mouse_scroll_update(int8_t x, int8_t y);
 void zmk_hid_mouse_clear(void);
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
