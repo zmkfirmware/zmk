@@ -1,0 +1,38 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+menuconfig ZMK_MOUSE
+    bool "Mouse Emulation"
+
+if ZMK_MOUSE
+
+config ZMK_MOUSE_TICK_DURATION
+    int "Mouse tick duration in ms"
+    default 8
+
+
+choice ZMK_MOUSE_WORK_QUEUE
+    prompt "Work queue selection for mouse events"
+    default ZMK_MOUSE_WORK_QUEUE_DEDICATED
+
+config ZMK_MOUSE_WORK_QUEUE_SYSTEM
+    bool "Use default system work queue for mouse events"
+
+config ZMK_MOUSE_WORK_QUEUE_DEDICATED
+    bool "Use dedicated work queue for mouse events"
+
+endchoice
+
+if ZMK_MOUSE_WORK_QUEUE_DEDICATED
+
+config ZMK_MOUSE_DEDICATED_THREAD_STACK_SIZE
+    int "Stack size for dedicated mouse thread/queue"
+    default 2048
+
+config ZMK_MOUSE_DEDICATED_THREAD_PRIORITY
+    int "Thread priority for dedicated mouse thread/queue"
+    default 3
+
+endif # ZMK_MOUSE_WORK_QUEUE_DEDICATED
+
+endif
