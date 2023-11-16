@@ -1,0 +1,5 @@
+s/.*hid_mouse_//p
+s/.*set_layer_state: //p
+s/.*handle_state_changed_dispatcher: //p
+s/.*handle_position_state_changed: //p
+s/.*handle_keycode_state_changed: //p
