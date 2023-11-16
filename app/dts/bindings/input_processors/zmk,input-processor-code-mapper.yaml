@@ -1,0 +1,16 @@
+# Copyright (c) 2024, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Input Processor for remapping certain input codes to other codes
+
+compatible: "zmk,input-processor-code-mapper"
+
+include: ip_zero_param.yaml
+
+properties:
+  type:
+    type: int
+    required: true
+  map:
+    type: array
+    required: true

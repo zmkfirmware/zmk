@@ -1,0 +1,20 @@
+
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    /omit-if-no-ref/ zip_xy_transform: zip_xy_transform {
+        compatible = "zmk,input-processor-transform";
+        #input-processor-cells = <1>;
+        type = <INPUT_EV_REL>;
+        y-codes = <INPUT_REL_Y>;
+        x-codes = <INPUT_REL_X>;
+    };
+
+    /omit-if-no-ref/ zip_scroll_transform: zip_scroll_transform {
+        compatible = "zmk,input-processor-transform";
+        #input-processor-cells = <1>;
+        type = <INPUT_EV_REL>;
+        y-codes = <INPUT_REL_WHEEL>;
+        x-codes = <INPUT_REL_HWHEEL>;
+    };
+};
