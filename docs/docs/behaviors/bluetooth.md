@@ -14,9 +14,11 @@ When pairing to a host device ZMK saves bond information to the selected profile
 
 A ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
 
-An inactive connected profile can be explicitly disconnected using the `BT_DISC` behavior. This can be helpful in
+An _inactive_ connected profile can be explicitly disconnected using the `BT_DISC` behavior. This can be helpful in
 cases when host devices behave differently when a bluetooth keyboard is connected, for example by hiding their on-screen
-keyboard.
+keyboard. Note that at present the active bluetooth profile will immediately reconnect if disconnected. This is true
+even if OUT_USB is selected. To remain disconnected, another bluetooth profile must be first selected using (e.g.)
+`BT_SEL`.
 
 :::
 
