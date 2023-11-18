@@ -1,18 +1,18 @@
-queue_process_next: Invoking KEY_PRESS: 0x70004 0x00
+queue_process_next: Invoking key_press: 0x70004 0x00
 kp_pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
 queue_process_next: Processing next queued behavior in 50ms
-queue_process_next: Invoking KEY_PRESS: 0x70004 0x00
+queue_process_next: Invoking key_press: 0x70004 0x00
 kp_released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
 queue_process_next: Processing next queued behavior in 10ms
-queue_process_next: Invoking KEY_PRESS: 0x70005 0x00
+queue_process_next: Invoking key_press: 0x70005 0x00
 kp_pressed: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
 queue_process_next: Processing next queued behavior in 50ms
-queue_process_next: Invoking KEY_PRESS: 0x70005 0x00
+queue_process_next: Invoking key_press: 0x70005 0x00
 kp_released: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
 queue_process_next: Processing next queued behavior in 10ms
-queue_process_next: Invoking KEY_PRESS: 0x70006 0x00
+queue_process_next: Invoking key_press: 0x70006 0x00
 kp_pressed: usage_page 0x07 keycode 0x06 implicit_mods 0x00 explicit_mods 0x00
 queue_process_next: Processing next queued behavior in 50ms
-queue_process_next: Invoking KEY_PRESS: 0x70006 0x00
+queue_process_next: Invoking key_press: 0x70006 0x00
 kp_released: usage_page 0x07 keycode 0x06 implicit_mods 0x00 explicit_mods 0x00
 queue_process_next: Processing next queued behavior in 10ms

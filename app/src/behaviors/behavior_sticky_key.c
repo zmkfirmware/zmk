@@ -24,6 +24,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+#define KEY_PRESS DEVICE_DT_NAME(DT_INST(0, zmk_behavior_key_press))
+
 #define ZMK_BHV_STICKY_KEY_MAX_HELD 10
 
 #define ZMK_BHV_STICKY_KEY_POSITION_FREE UINT32_MAX
@@ -202,7 +204,7 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
             continue;
         }
 
-        if (strcmp(sticky_key->config->behavior.behavior_dev, "KEY_PRESS") == 0 &&
+        if (strcmp(sticky_key->config->behavior.behavior_dev, KEY_PRESS) == 0 &&
             ZMK_HID_USAGE_ID(sticky_key->param1) == ev_copy.keycode &&
             ZMK_HID_USAGE_PAGE(sticky_key->param1) == ev_copy.usage_page &&
             SELECT_MODS(sticky_key->param1) == ev_copy.implicit_modifiers) {

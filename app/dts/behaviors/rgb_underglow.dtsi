@@ -6,9 +6,9 @@
 
 / {
     behaviors {
-        rgb_ug: behavior_rgb_underglow {
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        rgb_ug: rgb_ug {
             compatible = "zmk,behavior-rgb-underglow";
-            label = "RGB_UG";
             #binding-cells = <2>;
         };
     };

@@ -6,9 +6,8 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ bt: behavior_bluetooth {
+        /omit-if-no-ref/ bt: bluetooth {
             compatible = "zmk,behavior-bluetooth";
-            label = "BLUETOOTH";
             #binding-cells = <2>;
         };
     };

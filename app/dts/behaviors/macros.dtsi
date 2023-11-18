@@ -5,10 +5,8 @@
  */
 
 #define MACRO_PLACEHOLDER 0
-#define ZMK_MACRO_STRINGIFY(x) #x
 #define ZMK_MACRO(name,...) \
 name: name { \
-    label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
     compatible = "zmk,behavior-macro"; \
     #binding-cells = <0>; \
     __VA_ARGS__ \
@@ -16,7 +14,6 @@ name: name { \
 
 #define ZMK_MACRO1(name,...) \
 name: name { \
-    label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
     compatible = "zmk,behavior-macro-one-param"; \
     #binding-cells = <1>; \
     __VA_ARGS__ \
@@ -24,7 +21,6 @@ name: name { \
 
 #define ZMK_MACRO2(name,...) \
 name: name { \
-    label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
     compatible = "zmk,behavior-macro-two-param"; \
     #binding-cells = <2>; \
     __VA_ARGS__ \
@@ -32,63 +28,53 @@ name: name { \
 
 / {
     behaviors {
-        macro_tap: macro_control_mode_tap {
+        macro_tap: macro_tap {
             compatible = "zmk,macro-control-mode-tap";
-            label = "MAC_TAP";
             #binding-cells = <0>;
         };
 
-        macro_press: macro_control_mode_press {
+        macro_press: macro_press {
             compatible = "zmk,macro-control-mode-press";
-            label = "MAC_PRESS";
             #binding-cells = <0>;
         };
 
-        macro_release: macro_control_mode_release {
+        macro_release: macro_release {
             compatible = "zmk,macro-control-mode-release";
-            label = "MAC_REL";
             #binding-cells = <0>;
         };
 
-        macro_tap_time: macro_control_tap_time {
+        macro_tap_time: macro_tap_time {
             compatible = "zmk,macro-control-tap-time";
-            label = "MAC_TAP_TIME";
             #binding-cells = <1>;
         };
 
-        macro_wait_time: macro_control_wait_time {
+        macro_wait_time: macro_wait_time {
             compatible = "zmk,macro-control-wait-time";
-            label = "MAC_WAIT_TIME";
             #binding-cells = <1>;
         };
 
         macro_pause_for_release: macro_pause_for_release {
             compatible = "zmk,macro-pause-for-release";
-            label = "MAC_WAIT_REL";
             #binding-cells = <0>;
         };
 
         macro_param_1to1: macro_param_1to1 {
             compatible = "zmk,macro-param-1to1";
-            label = "MAC_PARAM_1TO1";
             #binding-cells = <0>;
         };
 
         macro_param_1to2: macro_param_1to2 {
             compatible = "zmk,macro-param-1to2";
-            label = "MAC_PARAM_1TO2";
             #binding-cells = <0>;
         };
 
         macro_param_2to1: macro_param_2to1 {
             compatible = "zmk,macro-param-2to1";
-            label = "MAC_PARAM_2TO1";
             #binding-cells = <0>;
         };
 
         macro_param_2to2: macro_param_2to2 {
             compatible = "zmk,macro-param-2to2";
-            label = "MAC_PARAM_2TO2";
             #binding-cells = <0>;
         };
     };
