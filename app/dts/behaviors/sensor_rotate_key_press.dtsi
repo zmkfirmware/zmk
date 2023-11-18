@@ -7,9 +7,8 @@
 / {
     behaviors {
         /* DEPRECATED: `inc_dec_cp` will be removed in the future */
-        /omit-if-no-ref/ inc_dec_cp: inc_dec_kp: behavior_sensor_rotate_key_press {
+        /omit-if-no-ref/ inc_dec_cp: inc_dec_kp: enc_key_press {
             compatible = "zmk,behavior-sensor-rotate-var";
-            label = "ENC_KEY_PRESS";
             #sensor-binding-cells = <2>;
             bindings = <&kp>, <&kp>;
         };

@@ -6,9 +6,8 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ tog: behavior_toggle_layer {
+        /omit-if-no-ref/ tog: toggle_layer {
             compatible = "zmk,behavior-toggle-layer";
-            label = "TOGGLE_LAYER";
             #binding-cells = <1>;
         };
     };

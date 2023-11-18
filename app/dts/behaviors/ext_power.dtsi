@@ -6,9 +6,9 @@
 
 / {
     behaviors {
-        ext_power: behavior_ext_power {
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        ext_power: extpower {
             compatible = "zmk,behavior-ext-power";
-            label = "EXTPOWER";
             #binding-cells = <1>;
         };
     };

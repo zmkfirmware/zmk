@@ -6,9 +6,8 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ none: behavior_none {
+        /omit-if-no-ref/ none: none {
             compatible = "zmk,behavior-none";
-            label = "NONE";
             #binding-cells = <0>;
         };
     };
