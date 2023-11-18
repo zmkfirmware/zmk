@@ -6,7 +6,8 @@ compatible: "alps,ec11"
 properties:
   label:
     type: string
-    required: true
+    required: false
+    deprecated: true
   a-gpios:
     type: phandle-array
     required: true
