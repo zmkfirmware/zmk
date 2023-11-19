@@ -511,7 +511,7 @@ static void update_hold_status_for_retro_tap(uint32_t ignore_position) {
 
 static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
                                        struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_hold_tap_config *cfg = dev->config;
 
     if (undecided_hold_tap != NULL) {
@@ -715,9 +715,9 @@ static int behavior_hold_tap_init(const struct device *dev) {
         .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
         .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, NULL, &behavior_hold_tap_config_##n,    \
-                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
-                          &behavior_hold_tap_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, NULL, &behavior_hold_tap_config_##n,  \
+                            APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
+                            &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

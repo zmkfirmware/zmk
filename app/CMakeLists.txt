@@ -15,6 +15,7 @@ list(APPEND ZEPHYR_EXTRA_MODULES
 find_package(Zephyr REQUIRED HINTS ../zephyr)
 project(zmk)
 
+zephyr_linker_sources(SECTIONS include/linker/zmk-behaviors.ld)
 zephyr_linker_sources(RODATA include/linker/zmk-events.ld)
 
 # Add your source file to the "app" target. This must come after
@@ -22,6 +23,7 @@ zephyr_linker_sources(RODATA include/linker/zmk-events.ld)
 target_include_directories(app PRIVATE include)
 target_sources(app PRIVATE src/stdlib.c)
 target_sources(app PRIVATE src/activity.c)
+target_sources(app PRIVATE src/behavior.c)
 target_sources(app PRIVATE src/kscan.c)
 target_sources(app PRIVATE src/matrix_transform.c)
 target_sources(app PRIVATE src/sensors.c)

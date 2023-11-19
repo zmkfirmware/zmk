@@ -171,12 +171,12 @@ static const struct behavior_driver_api <behavior_name>_driver_api = {
 
 };
 
-DEVICE_DT_INST_DEFINE(0,                                                    // Instance Number (Equal to 0 for behaviors that don't require multiple instances,
-                                                                            //                  Equal to n for behaviors that do make use of multiple instances)
-                      <behavior_name>_init, NULL,                           // Initialization Function, Power Management Device Pointer
-                      &<behavior_name>_data, &<behavior_name>_config,       // Behavior Data Pointer, Behavior Configuration Pointer (Both Optional)
-                      APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,     // Initialization Level, Device Priority
-                      &<behavior_name>_driver_api);                         // API Structure
+BEHAVIOR_DT_INST_DEFINE(0,                                                    // Instance Number (Equal to 0 for behaviors that don't require multiple instances,
+                                                                              //                  Equal to n for behaviors that do make use of multiple instances)
+                        <behavior_name>_init, NULL,                           // Initialization Function, Power Management Device Pointer
+                        &<behavior_name>_data, &<behavior_name>_config,       // Behavior Data Pointer, Behavior Configuration Pointer (Both Optional)
+                        APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,     // Initialization Level, Device Priority
+                        &<behavior_name>_driver_api);                         // API Structure
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
 
@@ -244,13 +244,15 @@ Listeners, defined by the `ZMK_LISTENER(mod, cb)` function, take in a listener n
 - `ZMK_EVENT_RELEASE(ev)`: Continue handling this event (`ev`) at the next registered event listener.
 - `ZMK_EVENT_FREE(ev)`: Free the memory associated with the event (`ev`).
 
-#### `DEVICE_DT_INST_DEFINE`
+#### `BEHAVIOR_DT_INST_DEFINE`
+
+`BEHAVIOR_DT_INST_DEFINE` is a special ZMK macro. It forwards all the parameters to Zephyr's `DEVICE_DT_INST_DEFINE` macro to define the driver instance, then it adds the driver to a list of ZMK behaviors so they can be found by `zmk_behavior_get_binding()`.
 
 :::info
 For more information on this function, refer to [Zephyr's documentation on the Device Driver Model](https://docs.zephyrproject.org/latest/kernel/drivers/index.html#c.DEVICE_DT_INST_DEFINE).
 :::
 
-The example `DEVICE_DT_INST_DEFINE` call can be left as is with the first parameter, the instance number, equal to `0` for behaviors that only require a single instance (e.g. external power, backlighting, accessing layers). For behaviors that can have multiple instances (e.g. hold-taps, tap-dances, sticky-keys), `DEVICE_DT_INST_DEFINE` can be placed inside a `#define` statement, usually formatted as `#define <ABBREVIATED BEHAVIOR NAME>_INST(n)`, that sets up any [data pointers](#data-pointers-optional) and/or [configuration pointers](#configuration-pointers-optional) that are unique to each instance.
+The example `BEHAVIOR_DT_INST_DEFINE` call can be left as is with the first parameter, the instance number, equal to `0` for behaviors that only require a single instance (e.g. external power, backlighting, accessing layers). For behaviors that can have multiple instances (e.g. hold-taps, tap-dances, sticky-keys), `BEHAVIOR_DT_INST_DEFINE` can be placed inside a `#define` statement, usually formatted as `#define <ABBREVIATED BEHAVIOR NAME>_INST(n)`, that sets up any [data pointers](#data-pointers-optional) and/or [configuration pointers](#configuration-pointers-optional) that are unique to each instance.
 
 An example of this can be seen below, taking the `#define KP_INST(n)` from the hold-tap driver.
 
@@ -266,16 +268,16 @@ An example of this can be seen below, taking the `#define KP_INST(n)` from the h
         .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
         .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, NULL, &behavior_hold_tap_config_##n,    \
-                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
-                          &behavior_hold_tap_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, NULL, &behavior_hold_tap_config_##n,    \
+                            APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
+                            &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 ```
 
 Note that in the hold-tap example, the instance number, `0`, has been replaced by `n`, signifying the unique `node_id` of each instance of a behavior. Furthermore, the DT_INST_FOREACH_STATUS_OKAY(KP_INST) macro iterates through each compatible, non-disabled devicetree node, creating and applying the proper values to any instance-specific configurations or data by invoking the KP_INST macro for each instance of the new behavior.
 
-Behaviors also require the following parameters of `DEVICE_DT_INST_DEFINE` to be changed:
+Behaviors also require the following parameters of `BEHAVIOR_DT_INST_DEFINE` to be changed:
 
 ##### Initialization Function
 
@@ -300,19 +302,19 @@ Comes in the form `static const struct behavior_driver_api <behavior_name>_drive
 The data `struct` stores additional data required for **each new instance** of the behavior. Regardless of the instance number, `n`, `behavior_<behavior_name>_data_##n` is typically initialized as an empty `struct`. The data respective to each instance of the behavior can be accessed in functions like [`on_<behavior_name>_binding_pressed(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event)`](#dependencies) by extracting the behavior device from the keybind like so:
 
 ```c
-const struct device *dev = device_get_binding(binding->behavior_dev);
+const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
 struct behavior_<behavior_name>_data *data = dev->data;
 ```
 
 The variables stored inside the data `struct`, `data`, can be then modified as necessary.
 
-The fourth cell of `DEVICE_DT_INST_DEFINE` can be set to `NULL` instead if instance-specific data is not required.
+The fourth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if instance-specific data is not required.
 
 ##### Configuration Pointers (Optional)
 
-The configuration `struct` stores the properties declared from the behavior's `.yaml` for **each new instance** of the behavior. As seen in the `#define KP_INST(n)` of the hold-tap example, the configuration `struct`, `behavior_<behavior_name>_config_##n`, for each instance number, `n`, can be initialized using the [Zephyr Devicetree Instance-based APIs](https://docs.zephyrproject.org/latest/build/dts/api/api.html#instance-based-apis), which extract the values from the `properties` of each instance of the [devicetree binding](#creating-the-devicetree-binding-yaml) from a user's keymap or [predefined use-case `.dtsi` files](#defining-common-use-cases-for-the-behavior-dtsi-optional) stored in `app/dts/behaviors/`. We illustrate this further by comparing the [`#define KP_INST(n)` from the hold-tap driver](#device_dt_inst_define) and the [`properties` of the hold-tap devicetree binding.](#creating-the-devicetree-binding-yaml)
+The configuration `struct` stores the properties declared from the behavior's `.yaml` for **each new instance** of the behavior. As seen in the `#define KP_INST(n)` of the hold-tap example, the configuration `struct`, `behavior_<behavior_name>_config_##n`, for each instance number, `n`, can be initialized using the [Zephyr Devicetree Instance-based APIs](https://docs.zephyrproject.org/latest/build/dts/api/api.html#instance-based-apis), which extract the values from the `properties` of each instance of the [devicetree binding](#creating-the-devicetree-binding-yaml) from a user's keymap or [predefined use-case `.dtsi` files](#defining-common-use-cases-for-the-behavior-dtsi-optional) stored in `app/dts/behaviors/`. We illustrate this further by comparing the [`#define KP_INST(n)` from the hold-tap driver](#behavior_dt_inst_define) and the [`properties` of the hold-tap devicetree binding.](#creating-the-devicetree-binding-yaml)
 
-The fifth cell of `DEVICE_DT_INST_DEFINE` can be set to `NULL` instead if instance-specific configurations are not required.
+The fifth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if instance-specific configurations are not required.
 
 :::caution
 Remember that `.c` files should be formatted according to `clang-format` to ensure that checks run smoothly once the pull request is submitted.

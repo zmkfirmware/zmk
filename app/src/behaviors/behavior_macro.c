@@ -184,7 +184,7 @@ static void queue_macro(uint32_t position, const struct zmk_behavior_binding bin
 
 static int on_macro_binding_pressed(struct zmk_behavior_binding *binding,
                                     struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
     struct behavior_macro_trigger_state trigger_state = {.mode = MACRO_MODE_TAP,
@@ -200,7 +200,7 @@ static int on_macro_binding_pressed(struct zmk_behavior_binding *binding,
 
 static int on_macro_binding_released(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
 
@@ -224,9 +224,9 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
         .default_tap_ms = DT_PROP_OR(inst, tap_ms, CONFIG_ZMK_MACRO_DEFAULT_TAP_MS),               \
         .count = DT_PROP_LEN(inst, bindings),                                                      \
         .bindings = TRANSFORMED_BEHAVIORS(inst)};                                                  \
-    DEVICE_DT_DEFINE(inst, behavior_macro_init, NULL, &behavior_macro_state_##inst,                \
-                     &behavior_macro_config_##inst, APPLICATION,                                   \
-                     CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_macro_driver_api);
+    BEHAVIOR_DT_DEFINE(inst, behavior_macro_init, NULL, &behavior_macro_state_##inst,              \
+                       &behavior_macro_config_##inst, APPLICATION,                                 \
+                       CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_macro_driver_api);
 
 DT_FOREACH_STATUS_OKAY(zmk_behavior_macro, MACRO_INST)
 DT_FOREACH_STATUS_OKAY(zmk_behavior_macro_one_param, MACRO_INST)
