@@ -74,7 +74,7 @@ static const struct behavior_driver_api behavior_ext_power_driver_api = {
     .locality = BEHAVIOR_LOCALITY_GLOBAL,
 };
 
-DEVICE_DT_INST_DEFINE(0, behavior_ext_power_init, NULL, NULL, NULL, APPLICATION,
-                      CONFIG_APPLICATION_INIT_PRIORITY, &behavior_ext_power_driver_api);
+BEHAVIOR_DT_INST_DEFINE(0, behavior_ext_power_init, NULL, NULL, NULL, APPLICATION,
+                        CONFIG_APPLICATION_INIT_PRIORITY, &behavior_ext_power_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

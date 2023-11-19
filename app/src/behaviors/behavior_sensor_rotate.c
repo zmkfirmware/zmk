@@ -35,9 +35,9 @@ static int behavior_sensor_rotate_init(const struct device *dev) { return 0; };
         .override_params = false,                                                                  \
     };                                                                                             \
     static struct behavior_sensor_rotate_data behavior_sensor_rotate_data_##n = {};                \
-    DEVICE_DT_INST_DEFINE(n, behavior_sensor_rotate_init, NULL, &behavior_sensor_rotate_data_##n,  \
-                          &behavior_sensor_rotate_config_##n, APPLICATION,                         \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                     \
-                          &behavior_sensor_rotate_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_sensor_rotate_init, NULL,                                  \
+                            &behavior_sensor_rotate_data_##n, &behavior_sensor_rotate_config_##n,  \
+                            APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
+                            &behavior_sensor_rotate_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(SENSOR_ROTATE_INST)

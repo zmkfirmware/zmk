@@ -176,7 +176,7 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
 
     LOG_DBG("layer: %d position: %d, binding name: %s", layer, position, binding.behavior_dev);
 
-    behavior = device_get_binding(binding.behavior_dev);
+    behavior = zmk_behavior_get_binding(binding.behavior_dev);
 
     if (!behavior) {
         LOG_WRN("No behavior assigned to %d on layer %d", position, layer);
@@ -256,7 +256,7 @@ int zmk_keymap_sensor_event(uint8_t sensor_index,
         LOG_DBG("layer: %d sensor_index: %d, binding name: %s", layer, sensor_index,
                 binding->behavior_dev);
 
-        const struct device *behavior = device_get_binding(binding->behavior_dev);
+        const struct device *behavior = zmk_behavior_get_binding(binding->behavior_dev);
         if (!behavior) {
             LOG_DBG("No behavior assigned to %d on layer %d", sensor_index, layer);
             continue;

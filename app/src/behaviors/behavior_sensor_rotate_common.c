@@ -15,7 +15,7 @@ int zmk_behavior_sensor_rotate_common_accept_data(
     struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
     const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
     const struct zmk_sensor_channel_data *channel_data) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     struct behavior_sensor_rotate_data *data = dev->data;
 
     const struct sensor_value value = channel_data[0].value;
@@ -58,7 +58,7 @@ int zmk_behavior_sensor_rotate_common_accept_data(
 int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *binding,
                                               struct zmk_behavior_binding_event event,
                                               enum behavior_sensor_binding_process_mode mode) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_sensor_rotate_config *cfg = dev->config;
     struct behavior_sensor_rotate_data *data = dev->data;
 

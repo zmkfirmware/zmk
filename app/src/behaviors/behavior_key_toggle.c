@@ -38,7 +38,7 @@ static const struct behavior_driver_api behavior_key_toggle_driver_api = {
 };
 
 #define KT_INST(n)                                                                                 \
-    DEVICE_DT_INST_DEFINE(n, behavior_key_toggle_init, NULL, NULL, NULL, APPLICATION,              \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_toggle_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_key_toggle_init, NULL, NULL, NULL, APPLICATION,            \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_toggle_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KT_INST)
