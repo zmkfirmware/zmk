@@ -380,7 +380,20 @@ For the purpose of this section, we will discuss the structure of `app/dts/behav
 };
 ```
 
-The format of a behavior's `.dtsi` file is identical to declaring an instance of the behavior in a user's keymap. The only major difference is that the value `/omit-if-no-ref/` should be placed adjacent to the name of the behavior, as seen in line 11 of the `gresc` example.
+The format of a behavior's `.dtsi` file is identical to declaring an instance of the behavior in a user's keymap. The only major difference is that the value `/omit-if-no-ref/` should be placed adjacent to the label and name of the behavior, as seen in line 11 of the `gresc` example.
+
+:::caution
+
+If your behavior has its [`locality`](#api-structure) property set to anything other than `BEHAVIOR_LOCALITY_CENTRAL`, then the name of the node must be at most 8 characters long, or it will fail to be invoked on the peripheral half of a split keyboard.
+
+In the above example, `grave_escape` is too long, so it would need to be shortened, e.g.
+
+```dts
+// Behavior can be invoked on peripherals, so name must be <= 8 characters.
+/omit-if-no-ref/ gresc: gresc { ... };
+```
+
+:::
 
 After creating the `.dtsi` from above, update `app/dts/behaviors.dtsi` to include your newly predefined behavior instance, making it accessible by the devicetree.
 
