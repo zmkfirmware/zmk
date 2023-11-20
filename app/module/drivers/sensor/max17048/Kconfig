@@ -1,0 +1,23 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+DT_COMPAT_MAXIM_MAX17048 := maxim,max17048
+
+menuconfig MAX17048
+    bool "MAX17048/9 I2C-based Fuel Gauge"
+    default $(dt_compat_enabled,$(DT_COMPAT_MAXIM_MAX17048))
+    depends on I2C
+    select ZMK_BATTERY
+    help
+      Enable driver for MAX17048/9 I2C-based Fuel Gauge. Supports measuring
+      battery voltage and state-of-charge.
+
+if MAX17048
+
+config SENSOR_MAX17048_INIT_PRIORITY
+    int "Init priority"
+    default 75
+    help
+      Device driver initialization priority.
+
+endif #MAX17048

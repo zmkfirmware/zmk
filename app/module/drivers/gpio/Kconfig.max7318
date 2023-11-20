@@ -1,0 +1,24 @@
+# MAX7318 GPIO configuration options
+
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+DT_COMPAT_MAXIM_MAX7318 := maxim,max7318
+
+menuconfig GPIO_MAX7318
+    bool "MAX7318 I2C-based GPIO chip"
+    default $(dt_compat_enabled,$(DT_COMPAT_MAXIM_MAX7318))
+    depends on I2C
+    select HAS_DTS_GPIO
+    help
+      Enable driver for MAX7318 I2C-based GPIO chip.
+
+if GPIO_MAX7318
+
+config GPIO_MAX7318_INIT_PRIORITY
+    int "Init priority"
+    default 75
+    help
+      Device driver initialization priority.
+
+endif #GPIO_MAX7318

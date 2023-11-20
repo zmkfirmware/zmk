@@ -20,17 +20,20 @@ It is recommended to only enable logging when needed, and not leaving it on by d
 
 ## Kconfig
 
-The `CONFIG_ZMK_USB_LOGGING` KConfig value needs to be set, either by copy and pasting into the `app/prj.conf` file, or by running
-`west build -t menuconfig` and manually enabling the setting in that UI at `ZMK -> Advanced -> USB Logging`.
+The `CONFIG_ZMK_USB_LOGGING` Kconfig enables USB logging. This can be set at the keyboard level, typically in the `config/<your_keyboard>.conf`
+file if you are using a [user config repository](user-setup.md). It can also be enabled at the ZMK level using the `app/prj.conf` file, or other
+search locations described in the [configuration overview](config/index.md#config-file-locations).
+
+Logging can be further configured using Kconfig described in [the Zephyr documentation](https://docs.zephyrproject.org/3.2.0/services/logging/index.html).
+For instance, setting `CONFIG_LOG_PROCESS_THREAD_STARTUP_DELAY_MS` to a large value such as `8000` might help catch issues that happen near keyboard
+boot, before you can connect to view the logs.
 
 :::note
-If you are debugging your own keyboard in your [user config repository](user-setup.md), use
-`config/boards/shields/<your_keyboard>/<your_keyboard>.conf` instead of `app/prj.conf`. In Github
-Actions, you can search the `Kconfig file` build log to verify the options above have been enabled
+In Github Actions, you can check the `<Keyboard> Kconfig file` step output to verify the options above have been enabled
 for you successfully.
 :::
 
-```
+```ini
 # Turn on logging, and set ZMK logging to debug output
 CONFIG_ZMK_USB_LOGGING=y
 ```
@@ -50,7 +53,7 @@ values={[
 
 On Linux, this should be a device like `/dev/ttyACM0` and you can connect with `minicom` or `tio` as usual, e.g.:
 
-```
+```sh
 sudo tio /dev/ttyACM0
 ```
 
@@ -68,10 +71,10 @@ If you already have the Ardunio IDE installed you can also use its built-in Seri
 </TabItem>
 <TabItem value="macos">
 
-On MacOS, the device name is something like `/dev/tty.usbmodemXXXXX` where `XXXXX` is some numerical ID.
+On macOS, the device name is something like `/dev/tty.usbmodemXXXXX` where `XXXXX` is some numerical ID.
 You can connect to the device with [tio](https://tio.github.io/) (can be installed via [Homebrew](https://formulae.brew.sh/formula/tio)):
 
-```
+```sh
 sudo tio /dev/tty.usbmodem14401
 ```
 

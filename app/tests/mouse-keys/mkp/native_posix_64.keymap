@@ -1,0 +1,28 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/mouse.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        label = "Default keymap";
+
+        default_layer {
+            bindings = <
+            &mkp LCLK &none
+            &none     &mkp RCLK
+            >;
+        };
+    };
+};
+
+
+&kscan {
+    events = <
+    ZMK_MOCK_PRESS  (0,0,100)
+    ZMK_MOCK_PRESS  (1,1,100)
+    ZMK_MOCK_RELEASE(1,1, 10)
+    ZMK_MOCK_RELEASE(0,0, 10)
+    >;
+};

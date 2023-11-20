@@ -16,7 +16,7 @@ By default, sticky layers stay pressed for a second if you don't press any other
 
 Example:
 
-```
+```dts
 &sl 1
 ```
 
@@ -24,7 +24,7 @@ Example:
 
 You can configure a different `release-after-ms` in your keymap:
 
-```
+```dts
 &sl {
     release-after-ms = <2000>;
 };

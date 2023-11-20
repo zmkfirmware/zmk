@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <kernel.h>
-#include <bluetooth/services/bas.h>
+#include <zephyr/kernel.h>
+#include <zephyr/bluetooth/services/bas.h>
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/display.h>
@@ -21,22 +21,27 @@ static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
 struct battery_status_state {
     uint8_t level;
-#if IS_ENABLED(CONFIG_USB)
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     bool usb_present;
 #endif
 };
 
 static void set_battery_symbol(lv_obj_t *label, struct battery_status_state state) {
-    char text[2] = "  ";
+    char text[9] = {};
 
     uint8_t level = state.level;
 
-#if IS_ENABLED(CONFIG_USB)
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     if (state.usb_present) {
-        strcpy(text, LV_SYMBOL_CHARGE);
+        strcpy(text, LV_SYMBOL_CHARGE " ");
     }
-#endif /* IS_ENABLED(CONFIG_USB) */
+#endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 
+#if IS_ENABLED(CONFIG_ZMK_WIDGET_BATTERY_STATUS_SHOW_PERCENTAGE)
+    char perc[5] = {};
+    snprintf(perc, sizeof(perc), "%3u%%", level);
+    strcat(text, perc);
+#else
     if (level > 95) {
         strcat(text, LV_SYMBOL_BATTERY_FULL);
     } else if (level > 65) {
@@ -48,6 +53,7 @@ static void set_battery_symbol(lv_obj_t *label, struct battery_status_state stat
     } else {
         strcat(text, LV_SYMBOL_BATTERY_EMPTY);
     }
+#endif
     lv_label_set_text(label, text);
 }
 
@@ -59,9 +65,9 @@ void battery_status_update_cb(struct battery_status_state state) {
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
     return (struct battery_status_state) {
         .level = bt_bas_get_battery_level(),
-#if IS_ENABLED(CONFIG_USB)
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
         .usb_present = zmk_usb_is_powered(),
-#endif /* IS_ENABLED(CONFIG_USB) */
+#endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
     };
 }
 
@@ -69,14 +75,12 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_battery_status, struct battery_status_state,
                             battery_status_update_cb, battery_status_get_state)
 
 ZMK_SUBSCRIPTION(widget_battery_status, zmk_battery_state_changed);
-#if IS_ENABLED(CONFIG_USB)
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
 ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
-#endif /* IS_ENABLED(CONFIG_USB) */
+#endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 
 int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_label_create(parent, NULL);
-
-    lv_obj_set_size(widget->obj, 40, 15);
+    widget->obj = lv_label_create(parent);
 
     sys_slist_append(&widgets, &widget->node);
 

@@ -6,9 +6,9 @@
 
 #define DT_DRV_COMPAT zmk_behavior_key_press
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
@@ -36,8 +36,7 @@ static const struct behavior_driver_api behavior_key_press_driver_api = {
     .binding_pressed = on_keymap_binding_pressed, .binding_released = on_keymap_binding_released};
 
 #define KP_INST(n)                                                                                 \
-    DEVICE_DT_INST_DEFINE(n, behavior_key_press_init, device_pm_control_nop, NULL, NULL,           \
-                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
-                          &behavior_key_press_driver_api);
+    DEVICE_DT_INST_DEFINE(n, behavior_key_press_init, NULL, NULL, NULL, APPLICATION,               \
+                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_press_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)

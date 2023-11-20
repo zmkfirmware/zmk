@@ -4,16 +4,13 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    - name: microsoft
-      url-base: https://github.com/microsoft
   projects:
     - name: zephyr
       remote: zmkfirmware
-      revision: v2.5.0+zmk-fixes
+      revision: v3.2.0+zmk-fixes
       clone-depth: 1
       import:
-        # TODO: Rename once upstream offers option like `exclude` or `denylist`
-        name-blacklist:
+        name-blocklist:
           - ci-tools
           - hal_altera
           - hal_cypress
@@ -29,13 +26,9 @@ manifest:
           - mcuboot
           - mcumgr
           - net-tools
-          - segger
           - openthread
           - edtt
           - trusted-firmware-m
-    - name: uf2
-      remote: microsoft
-      path: tools/uf2
-      clone-depth: 1
+          - sof
   self:
     west-commands: scripts/west-commands.yml

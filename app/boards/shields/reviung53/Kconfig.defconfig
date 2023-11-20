@@ -1,0 +1,9 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_REVIUNG53
+
+config ZMK_KEYBOARD_NAME
+    default "Reviung53"
+
+endif

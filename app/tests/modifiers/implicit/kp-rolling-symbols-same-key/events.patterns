@@ -1,0 +1,4 @@
+s/.*hid_listener_keycode_//p
+s/.*hid_register_mod/reg/p
+s/.*hid_unregister_mod/unreg/p
+s/.*zmk_hid_.*Modifiers set to /mods: Modifiers set to /p

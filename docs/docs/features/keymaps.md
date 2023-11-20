@@ -58,10 +58,10 @@ in the stack _also_ get the event.
 
 Binding a behavior at a certain key position may include up to two extra parameters that are used to
 alter the behavior when that specific key position is activated/deactivated. For example, when binding
-the "key press" (`kp`) behavior at a certain key position, you must specific _which_ keycode should
+the "key press" (`kp`) behavior at a certain key position, you must specify _which_ keycode should
 be used for that key position.
 
-```
+```dts
 &kp A
 ```
 
@@ -69,7 +69,7 @@ In this case, the `A` is actually a define for the raw HID keycode, to make keym
 
 For example of a binding that uses two parameters, you can see how "mod-tap" (`mt`) is bound:
 
-```
+```dts
 &mt LSHIFT D
 ```
 
@@ -87,7 +87,7 @@ for what would otherwise be cryptic integer keycodes, etc. This also allows brin
 
 The top two lines of most keymaps should include:
 
-```
+```dts
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 ```
@@ -100,7 +100,7 @@ The second include brings in the defines for all the keycodes (e.g. `A`, `N1`, `
 
 All the remaining keymap nodes will be nested inside of the root devicetree node, like so:
 
-```devicetree
+```dts
 / {
     // Everything else goes here!
 };
@@ -111,12 +111,12 @@ All the remaining keymap nodes will be nested inside of the root devicetree node
 Nested under the devicetree root, is the keymap node. The node _name_ itself is not critical, but the node **MUST** have a property
 `compatible = "zmk,keymap"` in order to be used by ZMK.
 
-```
+```dts
     keymap {
-		compatible = "zmk,keymap";
+        compatible = "zmk,keymap";
 
         // Layer nodes go here!
-	};
+    };
 ```
 
 ### Layers

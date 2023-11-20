@@ -39,7 +39,7 @@
 // |       |  0  |  .  | Enter|      |               |       | |       |              |       |   0   |   .  | Enter |       |
             bindings = <
 &trans    &kp F1   &kp F2   &kp F3   &kp F4    &kp F5                                     &kp F6          &kp F7  &kp F8    &kp F9   &kp F10  &kp F11
-&kp KP_NUM &kp KP_N7 &kp KP_N8 &kp KP_N9  &kp PSCRN &kp SLCK &trans                &trans &kp PAUSE_BREAK &trans  &kp KP_N7 &kp KP_N8 &kp KP_N9   &kp F12 
+&kp KP_NUM &kp KP_N7 &kp KP_N8 &kp KP_N9  &kp PSCRN &kp SLCK &trans                &trans &kp PAUSE_BREAK &trans  &kp KP_N7 &kp KP_N8 &kp KP_N9   &kp F12
 &trans     &kp KP_N4 &kp KP_N5 &kp KP_N6  &kp INS   &kp HOME &trans                &trans &kp PG_UP       &trans  &kp KP_N4 &kp KP_N5 &kp KP_N6   &trans
 &trans     &kp KP_N1 &kp KP_N2 &kp KP_N3  &kp DEL   &kp END &trans &trans  &trans  &trans &kp PG_DN       &trans  &kp KP_N1 &kp KP_N2 &kp KP_N3   &trans
 &trans     &kp KP_N0 &kp KP_DOT  &kp KP_ENTER &trans &trans &trans         &trans     &trans              &trans  &kp KP_N0 &kp KP_DOT  &kp KP_ENTER &trans
@@ -56,7 +56,7 @@
 // |       |     |     |      |      |      |        |       | |       |       |      |       |       |      |       |       |
 // |       |     |     |      |      |               |       | |       |              |       |       |      |       |       |
             bindings = <
-&bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4                          &trans &trans &trans &trans &trans &reset
+&bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4                          &trans &trans &trans &trans &trans &sys_reset
 &trans   &trans        &trans        &trans       &trans      &trans  &trans                 &trans  &trans &trans &trans &trans &trans &bootloader
 &trans   &trans        &trans        &trans       &trans      &trans  &trans                 &trans  &trans &trans &trans &trans &trans &trans
 &trans   &trans        &trans        &trans       &trans      &trans  &trans &trans  &trans  &trans  &trans &trans &trans &trans &trans &trans

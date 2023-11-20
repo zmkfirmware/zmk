@@ -1,0 +1,8 @@
+file_format: "1"
+id: pancake
+name: Pancake
+type: shield
+url: https://mkultra.click/pancake-keyboard-kit
+requires: [pro_micro]
+features:
+  - keys

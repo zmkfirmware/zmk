@@ -5,6 +5,8 @@ sidebar_title: Troubleshooting
 
 The following page provides suggestions for common errors that may occur during firmware compilation or other issues with keyboard usage. If the information provided is insufficient to resolve the issue, feel free to seek out help from the [ZMK Discord](https://zmk.dev/community/discord/invite).
 
+Please also see [the troubleshooting section](features/bluetooth.md#troubleshooting) under the Bluetooth feature page for issues related to bluetooth.
+
 ### File Transfer Error
 
 Variations of the warnings shown below occur when flashing the `<firmware>.uf2` onto the microcontroller. This is because the microcontroller resets itself before the OS receives confirmation that the file transfer is complete. Errors like this are normal and can generally be ignored. Verification of a functional board can be done by attempting to pair your newly flashed keyboard to your computer via Bluetooth or plugging in a USB cable if `ZMK_USB` is enabled in your Kconfig.defconfig.
@@ -19,35 +21,50 @@ Variations of the warnings shown below occur when flashing the `<firmware>.uf2` 
 
 | ![Example Error Screen](../docs/assets/troubleshooting/filetransfer/mac.png) |
 | :--------------------------------------------------------------------------: |
-|                An example of the file transfer error on MacOS                |
+|                An example of the file transfer error on macOS                |
+
+### macOS Ventura error
+
+macOS 13.0 (Ventura) Finder may report an error code 100093 when copying `<firmware>.uf2` files into microcontrollers. This bug is limited to the operating system's Finder. You can work around it by copying on Terminal command line or use a third party file manager. Issue is fixed in macOS version 13.1.
 
 ### CMake Error
 
 An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
 For more information, click [here](../docs/development/setup.md#environment-variables).
 
-### dtlib.DTError
+### West Build Errors
 
-An error along the lines of `dtlib.DTError: <board>.dts.pre.tmp:<line number>` during firmware compilation indicates an issue within the `<shield>.keymap` file.
-This can be verified by checking the file in question, found in `mkdir/app/build`.
-
-|                  ![Example Error Screen](../docs/assets/troubleshooting/keymaps/errorscreen.png)                   |
-| :----------------------------------------------------------------------------------------------------------------: |
-| An example of the dtlib.DTError when compiling an iris with the nice!nano while the keymap is not properly defined |
-
-After opening the `<board>.dts.pre.tmp:<line number>` and scrolling down to the referenced line, one can locate errors within their shield's keymap by checking if the referenced keycodes were properly converted into the correct [USB HID Usage ID](https://www.usb.org/document-library/hid-usage-tables-12).
+West build errors usually indicate syntax problems in the `<keyboard>.keymap` file during the compilation process. The following are some examples and root causes.
 
 :::note
-If you are reviewing these errors in the GitHub Actions tab, the contents of `<board>.dts.pre.tmp` is output (with line numbers) in the next step of the build process.
+If you are reviewing these errors in the GitHub Actions tab, they can be found in the `West Build` step of the build process.
 :::
 
-|                                                                   ![Unhealthy Keymap Temp](../docs/assets/troubleshooting/keymaps/unhealthyEDIT.png)                                                                   |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| An incorrectly defined keymap unable to compile. As shown in red, `&kp SPAC` is not a valid reference to the [USB HID Usage ID](https://www.usb.org/document-library/hid-usage-tables-12) used for "Keyboard Spacebar" |
+#### devicetree error
 
-|                                                                               ![Healthy Keymap Temp](../docs/assets/troubleshooting/keymaps/healthyEDIT.png)                                                                               |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| A properly defined keymap with successful compilation. As shown in red, the corrected keycode (`&kp SPACE`) references the proper Usage ID defined in the [USB HID Usage Tables](https://www.usb.org/document-library/hid-usage-tables-12) |
+A `devicetree error` followed by a reference to the line number on `<keyboard>.keymap` refers to an issue at the exact line position in that file. For example, below error message indicates a missing `;` at line 109 of the `cradio.keymap` file:
+
+```
+devicetree error: /__w/zmk-config/zmk-config/config/cradio.keymap:109 (column 4): parse error: expected ';' or ','
+```
+
+#### devicetree_unfixed.h error
+
+A `devicetree_unfixed.h` error that follows with an "undeclared here" string indicates a problem with key bindings, like behavior nodes (e.g. `&kp` or `&mt`) with incorrect number of parameters:
+
+```
+/__w/zmk-config/zmk-config/build/zephyr/include/generated/devicetree_unfixed.h:3756:145: error: 'DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label' undeclared here (not in a function); did you mean 'DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_16_PH'?
+```
+
+In this example, the error string `DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label` indicates a problem with the key binding in position `12` in the `symbol_layer` of the keymap.
+
+:::info
+Key positions are numbered starting from `0` at the top left key on the keymap, incrementing horizontally, row by row.
+:::
+
+:::tip
+A common mistake that leads to this error is to use [key press keycodes](behaviors/key-press.md) without the leading `&kp` binding. That is, having entries such as `SPACE` that should have been `&kp SPACE`.
+:::
 
 ### Split Keyboard Halves Unable to Pair
 
@@ -89,17 +106,3 @@ Perform the following steps to reset both halves of your split keyboard:
 1. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
 
 After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.
-
-### Connectivity Issues
-
-Some users may experience a poor connection between the keyboard and the host. This might be due to poor quality BLE hardware, a metal enclosure on the keyboard or host, or the distance between them. Increasing the transmit power of the keyboard's BLE radio may reduce the severity of this problem. To do this, set the `CONFIG_BT_CTLR_TX_PWR_PLUS_8` configuration value in the `.conf` file of your user config directory as such:
-
-```
-CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
-```
-
-For the `nRF52840`, the value `PLUS_8` can be set to any multiple of four between `MINUS_20` and `PLUS_8`. The default value for this config is `0`, but if you are having connection issues it is recommended to set it to `PLUS_8` because the power consumption difference is negligible. For more information on changing the transmit power of your BLE device, please refer to [the Zephyr docs.](https://docs.zephyrproject.org/latest/reference/kconfig/CONFIG_BT_CTLR_TX_PWR_PLUS_8.html)
-
-### Other notes and warnings
-
-- If you want to test bluetooth output on your keyboard and are powering it through the USB connection rather than a battery, you will be able to pair with a host device but may not see keystrokes sent. In this case you need to use the [output selection behavior](../docs/behaviors/outputs.md) to prefer sending keystrokes over bluetooth rather than USB. This might be necessary even if you are not powering from a device capable of receiving USB inputs, such as a USB charger.

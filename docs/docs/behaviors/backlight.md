@@ -12,7 +12,7 @@ This page contains [backlight](../features/backlight.md) behaviors supported by 
 Backlight actions defines are provided through the [`dt-bindings/zmk/backlight.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/backlight.h) header,
 which is added at the top of the keymap file:
 
-```
+```dts
 #include <dt-bindings/zmk/backlight.h>
 ```
 
@@ -36,17 +36,23 @@ Here is a table describing the action for each define:
 - Parameter #1: The backlight action define, e.g. `BL_TOG` or `BL_INC`
 - Parameter #2: Only applies to `BL_SET`and is the brightness value
 
+:::note Backlight settings persistence
+The backlight settings that are changed via the `&bl` behavior will be saved to flash storage and hence persist across restarts and firmware flashes.
+They will also override the start values set by [`CONFIG_ZMK_BACKLIGHT_*_START` settings](../config/backlight.md#kconfig).
+However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+:::
+
 ### Examples
 
 1. Toggle backlight on/off
 
-   ```
+   ```dts
    &bl BL_TOG
    ```
 
 1. Sets a specific brightness
 
-   ```
+   ```dts
    &bl BL_SET 50
    ```
 

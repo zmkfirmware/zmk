@@ -4,39 +4,16 @@
 if BOARD_NICE_NANO || BOARD_NICE_NANO_V2
 
 config BOARD
-	default "nice_nano"
+    default "nice_nano"
 
-if USB
+if USB_DEVICE_STACK
 
 config USB_NRFX
-	default y
+    default y
 
-config USB_DEVICE_STACK
-	default y
-
-endif # USB
+endif # USB_DEVICE_STACK
 
 config BT_CTLR
-	default BT
-
-config ZMK_BLE
-	default y
-
-config ZMK_USB
-	default y
+    default BT
 
 endif # BOARD_NICE_NANO || BOARD_NICE_NANO_V2
-
-if BOARD_NICE_NANO
-
-config ZMK_BATTERY_VOLTAGE_DIVIDER
-	default y
-
-endif # BOARD_NICE_NANO
-
-if BOARD_NICE_NANO_V2
-
-config ZMK_BATTERY_NRF_VDDH
-	default y
-
-endif # BOARD_NICE_NANO_V2

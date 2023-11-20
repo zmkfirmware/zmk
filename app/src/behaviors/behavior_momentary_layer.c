@@ -6,9 +6,9 @@
 
 #define DT_DRV_COMPAT zmk_behavior_momentary_layer
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 #include <zmk/keymap.h>
 #include <zmk/behavior.h>
@@ -39,6 +39,5 @@ static const struct behavior_mo_config behavior_mo_config = {};
 
 static struct behavior_mo_data behavior_mo_data;
 
-DEVICE_DT_INST_DEFINE(0, behavior_mo_init, device_pm_control_nop, &behavior_mo_data,
-                      &behavior_mo_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
-                      &behavior_mo_driver_api);
+DEVICE_DT_INST_DEFINE(0, behavior_mo_init, NULL, &behavior_mo_data, &behavior_mo_config,
+                      APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mo_driver_api);

@@ -13,15 +13,32 @@ on:
       - "app/src/**"
 
 jobs:
-  integration_test:
+  collect-tests:
+    outputs:
+      test-dirs: ${{ steps.test-dirs.outputs.test-dirs }}
     runs-on: ubuntu-latest
-    container:
-      image: docker.io/zmkfirmware/zmk-build-arm:2.5
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Find test directories
+        id: test-dirs
+        run: |
+          cd app/tests/
+          export TESTS=$(ls -d * | jq -R -s -c 'split("\n")[:-1]')
+          echo "::set-output name=test-dirs::${TESTS}"
+  run-tests:
+    needs: collect-tests
+    strategy:
+      matrix:
+        test: ${{ fromJSON(needs.collect-tests.outputs.test-dirs) }}
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/zmkfirmware/zmk-build-arm:3.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Cache west modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.2
         env:
           cache-name: cache-zephyr-modules
         with:
@@ -30,11 +47,11 @@ jobs:
             tools/
             zephyr/
             bootloader/
-          key: 4-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
           restore-keys: |
-            4-${{ runner.os }}-build-${{ env.cache-name }}-
-            4-${{ runner.os }}-build-
-            4-${{ runner.os }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
         timeout-minutes: 2
         continue-on-error: true
       - name: Initialize workspace (west init)
@@ -43,8 +60,9 @@ jobs:
         run: west update
       - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
-      - name: Test all
-        run: west test
+      - name: Test ${{ matrix.test }}
+        working-directory: app
+        run: west test tests/${{ matrix.test }}
       - name: Archive artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v2

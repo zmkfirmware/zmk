@@ -23,7 +23,7 @@ to select the BLE output through below behavior to be able to send keystrokes to
 Output command defines are provided through the [`dt-bindings/zmk/outputs.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/outputs.h)
 header, which is added at the top of the keymap file:
 
-```
+```dts
 #include <dt-bindings/zmk/outputs.h>
 ```
 
@@ -44,22 +44,27 @@ The output selection behavior changes the preferred output on press.
 - Reference: `&out`
 - Parameter #1: Command, e.g. `OUT_BLE`
 
+:::note External power state persistence
+The endpoint that is selected by the `&out` behavior will be saved to flash storage and hence persist across restarts and firmware flashes.
+However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+:::
+
 ### Examples
 
 1. Behavior binding to prefer sending keyboard output to USB
 
-   ```
+   ```dts
    &out OUT_USB
    ```
 
 1. Behavior binding to prefer sending keyboard output to the current bluetooth profile
 
-   ```
+   ```dts
    &out OUT_BLE
    ```
 
 1. Behavior binding to toggle between preferring USB and BLE
 
-   ```
+   ```dts
    &out OUT_TOG
    ```

@@ -5,7 +5,7 @@
  */
 
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -19,23 +19,27 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static int hid_listener_keycode_pressed(const struct zmk_keycode_state_changed *ev) {
     int err, explicit_mods_changed, implicit_mods_changed;
 
+    if (!is_mod(ev->usage_page, ev->keycode) &&
+        zmk_hid_is_pressed(ZMK_HID_USAGE(ev->usage_page, ev->keycode))) {
+        LOG_DBG("unregistering usage_page 0x%02X keycode 0x%02X since it was already pressed",
+                ev->usage_page, ev->keycode);
+        err = zmk_hid_release(ZMK_HID_USAGE(ev->usage_page, ev->keycode));
+        if (err < 0) {
+            LOG_DBG("Unable to pre-release keycode (%d)", err);
+            return err;
+        }
+        err = zmk_endpoints_send_report(ev->usage_page);
+        if (err < 0) {
+            LOG_ERR("Failed to send key report for pre-releasing keycode (%d)", err);
+        }
+    }
+
     LOG_DBG("usage_page 0x%02X keycode 0x%02X implicit_mods 0x%02X explicit_mods 0x%02X",
             ev->usage_page, ev->keycode, ev->implicit_modifiers, ev->explicit_modifiers);
-    switch (ev->usage_page) {
-    case HID_USAGE_KEY:
-        err = zmk_hid_keyboard_press(ev->keycode);
-        if (err < 0) {
-            LOG_ERR("Unable to press keycode");
-            return err;
-        }
-        break;
-    case HID_USAGE_CONSUMER:
-        err = zmk_hid_consumer_press(ev->keycode);
-        if (err < 0) {
-            LOG_ERR("Unable to press keycode");
-            return err;
-        }
-        break;
+    err = zmk_hid_press(ZMK_HID_USAGE(ev->usage_page, ev->keycode));
+    if (err < 0) {
+        LOG_DBG("Unable to press keycode");
+        return err;
     }
     explicit_mods_changed = zmk_hid_register_mods(ev->explicit_modifiers);
     implicit_mods_changed = zmk_hid_implicit_modifiers_press(ev->implicit_modifiers);
@@ -56,20 +60,10 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
 
     LOG_DBG("usage_page 0x%02X keycode 0x%02X implicit_mods 0x%02X explicit_mods 0x%02X",
             ev->usage_page, ev->keycode, ev->implicit_modifiers, ev->explicit_modifiers);
-    switch (ev->usage_page) {
-    case HID_USAGE_KEY:
-        err = zmk_hid_keyboard_release(ev->keycode);
-        if (err < 0) {
-            LOG_ERR("Unable to release keycode");
-            return err;
-        }
-        break;
-    case HID_USAGE_CONSUMER:
-        err = zmk_hid_consumer_release(ev->keycode);
-        if (err < 0) {
-            LOG_ERR("Unable to release keycode");
-            return err;
-        }
+    err = zmk_hid_release(ZMK_HID_USAGE(ev->usage_page, ev->keycode));
+    if (err < 0) {
+        LOG_DBG("Unable to release keycode");
+        return err;
     }
 
     explicit_mods_changed = zmk_hid_unregister_mods(ev->explicit_modifiers);

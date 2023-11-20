@@ -4,16 +4,16 @@
 if SHIELD_ERGODASH_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "Ergodash"
+    default "Ergodash"
 
-config ZMK_SPLIT_BLE_ROLE_CENTRAL
-	default y
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
 
 endif
 
 if SHIELD_ERGODASH_LEFT || SHIELD_ERGODASH_RIGHT
 
 config ZMK_SPLIT
-	default y
+    default y
 
 endif

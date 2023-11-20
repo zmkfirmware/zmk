@@ -65,7 +65,7 @@ west build -b planck_rev6
 When building for a new board and/or shield after having built one previously, you may need to enable the pristine build option. This option removes all existing files in the build directory before regenerating them, and can be enabled by adding either --pristine or -p to the command:
 
 ```sh
-west build -p -b proton_c -- -DSHIELD=kyria_left
+west build -p -b nice_nano_v2 -- -DSHIELD=kyria_left
 ```
 
 ### Building For Split Keyboards
@@ -76,17 +76,21 @@ For split keyboards, you will have to build and flash each side separately the f
 
 By default, the `build` command outputs a single .uf2 file named `zmk.uf2` so building left and then right immediately after will overwrite your left firmware. In addition, you will need to pristine build each side to ensure the correct files are used. To avoid having to pristine build every time and separate the left and right build files, we recommend setting up separate build directories for each half. You can do this by using the `-d` parameter and first building left into `build/left`:
 
-```
-west build -d build/left -b nice_nano -- -DSHIELD=kyria_left
+```sh
+west build -d build/left -b nice_nano_v2 -- -DSHIELD=kyria_left
 ```
 
 and then building right into `build/right`:
 
-```
-west build -d build/right -b nice_nano -- -DSHIELD=kyria_right
+```sh
+west build -d build/right -b nice_nano_v2 -- -DSHIELD=kyria_right
 ```
 
 This produces `left` and `right` subfolders under the `build` directory and two separate .uf2 files. For future work on a specific half, use the `-d` parameter again to ensure you are building into the correct location.
+
+:::tip
+Build times can be significantly reduced after the initial build by omitting all build arguments except the build directory, e.g. `west build -d build/left`. The additional options and intermediate build outputs from your initial build are cached and reused for unchanged files.
+:::
 
 ### Building from `zmk-config` Folder
 
@@ -95,7 +99,7 @@ Instead of building .uf2 files using the default keymap and config files, you ca
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
 
-```
+```sh
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
 
@@ -113,7 +117,7 @@ volume automatically -- we need to delete the default volume before binding it t
 
 Then you can bind the `zmk-config` volume to the correct path pointing to your local [zmk-config](customization.md) folder:
 
-```
+```sh
 docker volume create --driver local -o o=bind -o type=none -o \
     device="/full/path/to/your/zmk-config/" zmk-config
 ```
@@ -126,13 +130,33 @@ The above build commands generate a UF2 file in `build/zephyr` (or
 `build/left|right/zephyr` if you followed the instructions for splits) and is by
 default named `zmk.uf2`. If your board supports USB Flashing Format (UF2), copy
 that file onto the root of the USB mass storage device for your board. The
-controller should flash your built firmware and automatically restart once
-flashing is complete.
+controller should flash your built firmware, unmount the USB storage device and
+automatically restart once flashing is complete.
 
 Alternatively, if your board supports flashing and you're not developing from
 within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on
 your board and run the following command to flash:
 
-```
+```sh
 west flash
 ```
+
+## Multi-CPU and Dual-Chip Bluetooth Boards
+
+Zephyr supports running the Bluetooth host and controller on separate processors. In such a configuration, ZMK always runs on the host processor, but you may need to build and flash separate firmware for the controller. Zephyr provides sample code which can be used as the controller firmware for Bluetooth HCI over [RPMsg](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_rpmsg/README.html), [SPI](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_spi/README.html), [UART](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_uart/README.html), and [USB](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_usb/README.html). See [Zephyr's Bluetooth Stack Architecture documentation](https://docs.zephyrproject.org/3.2.0/connectivity/bluetooth/bluetooth-arch.html) for more details.
+
+The following documentation shows how to build and flash ZMK for boards that use a dual-chip configuration.
+
+### nRF5340
+
+To build and flash the firmware for the nRF5340 development kit's network core, run the following command from the root of the ZMK repo:
+
+```sh
+cd zephyr/samples/bluetooth/hci_rpmsg
+west build -b nrf5340dk_nrf5340_cpunet
+west flash
+```
+
+You can then build and flash ZMK firmware using the normal steps described above. The network core's firmware only needs to be updated whenever ZMK upgrades to a new version of Zephyr.
+
+For a custom nRF5340-based board, you will need to define two Zephyr boards: one for the application core and one for the network core. The [nRF5340 DK's board definition](https://github.com/zephyrproject-rtos/zephyr/tree/main/boards/arm/nrf5340dk_nrf5340) can be used as reference. Replace `nrf5340dk_nrf5340_cpunet` with the name of your network core board.
