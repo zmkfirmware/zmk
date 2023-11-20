@@ -1,6 +1,6 @@
 /*
 *
-* Copyright (c) 2022 The ZMK Contributors
+* Copyright (c) 2023 The ZMK Contributors
 * SPDX-License-Identifier: MIT
 *
 */
@@ -8,9 +8,6 @@
 #include "adv360pro.dtsi"
 
 /{
-
-
-
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
 
@@ -39,5 +36,5 @@
 };
 
 &default_transform {
-        col-offset = <10>;
-    };
+    col-offset = <10>;
+};

@@ -1,14 +1,14 @@
 #
-# Copyright (c) 2022 The ZMK Contributors
+# Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 #
 
 if BOARD_ADV360PRO_LEFT
 
-    config ZMK_KEYBOARD_NAME
+config ZMK_KEYBOARD_NAME
     default "Adv360 Pro"
 
-    config ZMK_SPLIT_ROLE_CENTRAL
+config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
 
@@ -16,7 +16,7 @@ endif # BOARD_ADV360PRO_LEFT
 
 if BOARD_ADV360PRO_RIGHT
 
-    config ZMK_KEYBOARD_NAME
+config ZMK_KEYBOARD_NAME
     default "Adv360 Pro rt"
 
 endif # BOARD_ADV360PRO_RIGHT

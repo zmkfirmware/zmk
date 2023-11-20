@@ -1,6 +1,6 @@
 /*
 *
-* Copyright (c) 2021 Polarity Works
+* Copyright (c) 2023 The ZMK Contributors
 * SPDX-License-Identifier: MIT
 *
 */
@@ -11,16 +11,17 @@
 #include <dt-bindings/led/led.h>
 #include <dt-bindings/zmk/matrix_transform.h>
 
-#include "adv360pro_pinctrl.dtsi"
+#include "adv360pro-pinctrl.dtsi"
 
 / {
-    model = "Adv360";
+    model = "Adv360 Pro";
     compatible = "kinesis,adv360pro";
 
     chosen {
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
+        zephyr,console = &cdc_acm_uart;
         zmk,kscan = &kscan0;
         zmk,backlight = &backlight;
         zmk,battery = &vbatt;
@@ -44,10 +45,10 @@
         >;
     };
     ext-power {
-            compatible = "zmk,ext-power-generic";
-            label = "EXT_POWER";
-            control-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
-        };
+        compatible = "zmk,ext-power-generic";
+        label = "EXT_POWER";
+        control-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+    };
 
     vbatt: vbatt {
         compatible = "zmk,battery-voltage-divider";
@@ -57,11 +58,11 @@
     };
 
     backlight: pwmleds {
-            compatible = "pwm-leds";
-            pwm_led_0 {
-                pwms = <&pwm0 0 10000 PWM_POLARITY_NORMAL>;
-            };
+        compatible = "pwm-leds";
+        pwm_led_0 {
+            pwms = <&pwm0 0 10000 PWM_POLARITY_NORMAL>;
         };
+    };
 
 };
 
@@ -90,6 +91,10 @@
 
 &usbd {
     status = "okay";
+    cdc_acm_uart: cdc_acm_uart {
+        compatible = "zephyr,cdc-acm-uart";
+        label = "CDC_ACM_0";
+    };
 };
 
 &flash0 {
