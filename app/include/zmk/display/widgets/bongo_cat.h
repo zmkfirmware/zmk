@@ -6,7 +6,6 @@
 
 #include <lvgl.h>
 #include <kernel.h>
-
 struct zmk_widget_bongo_cat {
     sys_snode_t node;
     lv_obj_t *obj;
