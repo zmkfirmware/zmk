@@ -20,7 +20,7 @@ struct k_work_q *zmk_mouse_work_q() {
 #endif
 }
 
-int zmk_mouse_init() {
+int zmk_mouse_init(void) {
 #if IS_ENABLED(CONFIG_ZMK_MOUSE_WORK_QUEUE_DEDICATED)
     k_work_queue_start(&mouse_work_q, mouse_work_stack_area,
                        K_THREAD_STACK_SIZEOF(mouse_work_stack_area),
