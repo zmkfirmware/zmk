@@ -10,7 +10,7 @@
 
         default_layer {
             bindings = <
-                &mmv MOVE_LEFT &none
+                &mmv MOVE_UP &mmv MOVE_DOWN
                 &none &none
             >;
         };
@@ -22,5 +22,7 @@
     events = <
         ZMK_MOCK_PRESS(0,0,100)
         ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_PRESS(0,1,100)
+        ZMK_MOCK_RELEASE(0,1,10)
     >;
 };
