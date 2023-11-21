@@ -58,6 +58,14 @@ config ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE
     int "Max number of behavior run events to queue to send to the peripheral(s)"
     default 5
 
+config ZMK_SPLIT_BLE_CENTRAL_DATA_XFER_STACK_SIZE
+    int "BLE split central to peripheral thread stack size"
+    default 512
+
+config ZMK_SPLIT_BLE_CENTRAL_DATA_XFER_QUEUE_SIZE
+    int "Max number of data transfer requests to queue to send to the peripheral(s)"
+    default 5
+
 config ZMK_SPLIT_BLE_PREF_INT
     int "Connection interval to use for split central/peripheral connection"
     default 6
