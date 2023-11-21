@@ -49,6 +49,7 @@ static uint8_t num_of_positions = ZMK_KEYMAP_LEN;
 static uint8_t position_state[POS_STATE_LEN];
 
 static struct zmk_split_run_behavior_payload behavior_run_payload;
+static struct zmk_split_data_xfer_data data_xfer_payload;
 
 static ssize_t split_svc_pos_state(struct bt_conn *conn, const struct bt_gatt_attr *attrs,
                                    void *buf, uint16_t len, uint16_t offset) {
@@ -101,6 +102,28 @@ static ssize_t split_svc_run_behavior(struct bt_conn *conn, const struct bt_gatt
     return len;
 }
 
+static ssize_t split_svc_data_xfer(struct bt_conn *conn, const struct bt_gatt_attr *attrs,
+                                   const void *buf, uint16_t len, uint16_t offset, uint8_t flags) {
+    struct zmk_split_data_xfer_data *payload = attrs->user_data;
+    uint16_t end_addr = offset + len;
+
+    LOG_DBG("offset %d len %d", offset, len);
+
+    memcpy(payload + offset, buf, len);
+
+    // If whole packet transferred correctly
+    if ((end_addr == sizeof(struct zmk_split_data_xfer_data))) {
+        // Raise new data transfer event with received data
+        LOG_HEXDUMP_DBG(&payload, sizeof(struct zmk_split_data_xfer_data), "receiving :");
+        LOG_DBG("Size correct, raising evt, %d", end_addr);
+        struct zmk_split_data_xfer_event event;
+        memcpy(&event.data_xfer, payload, sizeof(struct zmk_split_data_xfer_data));
+        ZMK_EVENT_RAISE(new_zmk_split_data_xfer_event(event));
+    }
+
+    return len;
+}
+
 static ssize_t split_svc_num_of_positions(struct bt_conn *conn, const struct bt_gatt_attr *attrs,
                                           void *buf, uint16_t len, uint16_t offset) {
     return bt_gatt_attr_read(conn, attrs, buf, len, offset, attrs->user_data, sizeof(uint8_t));
@@ -147,6 +170,9 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_RUN_BEHAVIOR_UUID),
                            BT_GATT_CHRC_WRITE_WITHOUT_RESP, BT_GATT_PERM_WRITE_ENCRYPT, NULL,
                            split_svc_run_behavior, &behavior_run_payload),
+    BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_DATA_XFER_UUID),
+                           BT_GATT_CHRC_WRITE_WITHOUT_RESP, BT_GATT_PERM_WRITE_ENCRYPT, NULL,
+                           split_svc_data_xfer, &data_xfer_payload),
     BT_GATT_DESCRIPTOR(BT_UUID_NUM_OF_DIGITALS, BT_GATT_PERM_READ, split_svc_num_of_positions, NULL,
                        &num_of_positions),
 #if ZMK_KEYMAP_HAS_SENSORS
