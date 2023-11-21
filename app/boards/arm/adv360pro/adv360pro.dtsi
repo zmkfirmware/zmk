@@ -137,10 +137,6 @@
     };
 };
 
-&usbd {
-  status = "okay";
-};
-
 &spi3 {
     compatible = "nordic,nrf-spim";
     status = "okay";
@@ -162,7 +158,7 @@
         spi-zero-frame = <0x40>;
 
         color-mapping = <LED_COLOR_ID_GREEN
-                   LED_COLOR_ID_RED
-                   LED_COLOR_ID_BLUE>;
+                        LED_COLOR_ID_RED
+                        LED_COLOR_ID_BLUE>;
     };
 };

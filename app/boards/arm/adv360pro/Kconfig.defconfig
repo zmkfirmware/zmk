@@ -11,7 +11,6 @@ config ZMK_KEYBOARD_NAME
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
-
 endif # BOARD_ADV360PRO_LEFT
 
 if BOARD_ADV360PRO_RIGHT
@@ -52,7 +51,5 @@ config ZMK_BATTERY_VOLTAGE_DIVIDER
 
 config SPI
     default y
-
-
 
 endif # BOARD_ADV360PRO_LEFT || BOARD_ADV360PRO_RIGHT
