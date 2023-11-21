@@ -13,9 +13,13 @@
     "type=volume,source=zmk-zephyr-modules,target=${containerWorkspaceFolder}/modules",
     "type=volume,source=zmk-zephyr-tools,target=${containerWorkspaceFolder}/tools"
   ],
-  "extensions": ["ms-vscode.cpptools"],
-  "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-vscode.cpptools"],
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      }
+    }
   },
   "forwardPorts": [3000]
 }
