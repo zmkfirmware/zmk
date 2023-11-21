@@ -5,10 +5,6 @@
 #include <dt-bindings/zmk/backlight.h>
 
 / {
-    behaviors {
-        #include "macros.dtsi"
-    };
-
     keymap {
         compatible = "zmk,keymap";
 
