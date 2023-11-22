@@ -43,6 +43,8 @@ static const struct bt_data zmk_ble_ad[] = {
 
 static bool is_connected = false;
 
+static bool is_bonded = false;
+
 static void each_bond(const struct bt_bond_info *info, void *user_data) {
     bt_addr_le_t *addr = (bt_addr_le_t *)user_data;
 
@@ -57,10 +59,12 @@ static int start_advertising(bool low_duty) {
     bt_foreach_bond(BT_ID_DEFAULT, each_bond, &central_addr);
 
     if (bt_addr_le_cmp(&central_addr, BT_ADDR_LE_NONE) != 0) {
+        is_bonded = true;
         struct bt_le_adv_param adv_param = low_duty ? *BT_LE_ADV_CONN_DIR_LOW_DUTY(&central_addr)
                                                     : *BT_LE_ADV_CONN_DIR(&central_addr);
         return bt_le_adv_start(&adv_param, NULL, 0, NULL, 0);
     } else {
+        is_bonded = false;
         return bt_le_adv_start(BT_LE_ADV_CONN, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
     }
 };
@@ -133,6 +137,8 @@ static struct bt_conn_cb conn_callbacks = {
 };
 
 bool zmk_split_bt_peripheral_is_connected() { return is_connected; }
+
+bool zmk_split_bt_peripheral_is_bonded() { return is_bonded; }
 
 static int zmk_peripheral_ble_init(const struct device *_arg) {
     int err = bt_enable(NULL);
