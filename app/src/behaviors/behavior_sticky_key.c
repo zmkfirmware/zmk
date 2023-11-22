@@ -30,6 +30,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct behavior_sticky_key_config {
     uint32_t release_after_ms;
+    uint32_t no_sticky_after_hold_ms;
     bool quick_release;
     bool ignore_modifiers;
     struct zmk_behavior_binding behavior;
@@ -41,6 +42,7 @@ struct active_sticky_key {
     uint32_t param2;
     const struct behavior_sticky_key_config *config;
     // timer data.
+    int64_t no_sticky_after_hold_at;
     bool timer_started;
     bool timer_cancelled;
     int64_t release_at;
@@ -66,6 +68,7 @@ static struct active_sticky_key *store_sticky_key(uint32_t position, uint32_t pa
         sticky_key->param2 = param2;
         sticky_key->config = config;
         sticky_key->release_at = 0;
+        sticky_key->no_sticky_after_hold_at = 0;
         sticky_key->timer_cancelled = false;
         sticky_key->timer_started = false;
         sticky_key->modified_key_usage_page = 0;
@@ -144,6 +147,8 @@ static int on_sticky_key_binding_pressed(struct zmk_behavior_binding *binding,
         return ZMK_BEHAVIOR_OPAQUE;
     }
 
+    sticky_key->no_sticky_after_hold_at = event.timestamp + cfg->no_sticky_after_hold_ms;
+
     press_sticky_key_behavior(sticky_key, event.timestamp);
     LOG_DBG("%d new sticky_key", event.position);
     return ZMK_BEHAVIOR_OPAQUE;
@@ -159,6 +164,11 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
 
     if (sticky_key->modified_key_usage_page != 0 && sticky_key->modified_key_keycode != 0) {
         LOG_DBG("Another key was pressed while the sticky key was pressed. Act like a normal key.");
+        return release_sticky_key_behavior(sticky_key, event.timestamp);
+    }
+
+    if (sticky_key->no_sticky_after_hold_at < event.timestamp) {
+        LOG_DBG("Sticky key %d was held for longer than no-sticky-after-hold-ms.", event.position);
         return release_sticky_key_behavior(sticky_key, event.timestamp);
     }
 
@@ -290,6 +300,8 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
     static struct behavior_sticky_key_config behavior_sticky_key_config_##n = {                    \
         .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, DT_DRV_INST(n)),                                 \
         .release_after_ms = DT_INST_PROP(n, release_after_ms),                                     \
+        .no_sticky_after_hold_ms =                                                                 \
+            DT_INST_PROP_OR(n, no_sticky_after_hold_ms, DT_INST_PROP(n, release_after_ms)),        \
         .ignore_modifiers = DT_INST_PROP(n, ignore_modifiers),                                     \
         .quick_release = DT_INST_PROP(n, quick_release),                                           \
     };                                                                                             \

@@ -1,0 +1,57 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+/* This test ensures that sticky keys are deactivated immediately upon
+ * release after being held for longer than `no-sticky-after-hold-ms`.
+ */
+
+&sk {
+    no-sticky-after-hold-ms = <200>;
+};
+
+&sl {
+    no-sticky-after-hold-ms = <200>;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &sk E &sl 1
+                &kp A &kp B>;
+        };
+
+        lower_layer {
+            bindings = <
+                &sk LEFT_CONTROL &kp X
+                &kp Y  &kp Z>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        // Hold &sk E past no-sticky-after-hold-ms
+        ZMK_MOCK_PRESS(0,0,400)
+        // Release &sk E
+        ZMK_MOCK_RELEASE(0,0,10)
+        // &sk E should now be deactivated
+        // Tap &kp A right after
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+
+        // Hold &sl 1 past no-sticky-after-hold-ms
+        ZMK_MOCK_PRESS(0,1,400)
+        // Release &sl 1
+        ZMK_MOCK_RELEASE(0,1,10)
+        // &sl 1 should now be deactivated
+        // Tap &kp A right after
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+    >;
+};

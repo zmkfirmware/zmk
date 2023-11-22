@@ -1,0 +1,49 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+/* This test ensures that sticky keys remain active while being pressed. */
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &sk E &sl 1
+                &kp A &kp B>;
+        };
+
+        lower_layer {
+            bindings = <
+                &sk LEFT_CONTROL &kp X
+                &kp Y  &kp Z>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        // Hold &sk E past no-sticky-after-hold-ms
+        ZMK_MOCK_PRESS(0,0,1200)
+        // Tap &kp A twice
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        // &sk E should remain active before releasing
+        ZMK_MOCK_RELEASE(0,0,10)
+
+        // Hold &sl 1 past no-sticky-after-hold-ms
+        ZMK_MOCK_PRESS(0,1,1200)
+        // Tap &kp Y twice
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        // &sl 1 should remain active before releasing
+        ZMK_MOCK_RELEASE(0,1,10)
+    >;
+};

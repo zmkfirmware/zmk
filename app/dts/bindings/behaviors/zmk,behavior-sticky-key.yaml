@@ -14,6 +14,8 @@ properties:
   release-after-ms:
     type: int
     required: true
+  no-sticky-after-hold-ms:
+    type: int
   quick-release:
     type: boolean
   ignore-modifiers:

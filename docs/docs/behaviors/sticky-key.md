@@ -30,6 +30,10 @@ You can use any keycode that works for `&kp` as parameter to `&sk`:
 
 By default, sticky keys stay pressed for a second if you don't press any other key. You can configure this with the `release-after-ms` setting.
 
+#### `no-sticky-after-hold-ms`
+
+Sticky keys that are pressed for longer than `no-sticky-after-hold-ms` will function like regular keys.
+
 #### `quick-release`
 
 Some typists may find that using a sticky shift key interspersed with rapid typing results in two or more capitalized letters instead of one. This happens as the sticky key is active until the next key is released, under which other keys may be pressed and will receive the modifier. You can enable the `quick-release` setting to instead deactivate the sticky key on the next key being pressed, as opposed to released.
