@@ -606,6 +606,9 @@ config REBOOT
 config USB_DEVICE_STACK
     default y if HAS_HW_NRF_USBD
 
+config FPU
+    default CPU_HAS_FPU
+
 config ZMK_WPM
     bool "Calculate WPM"
     default n
