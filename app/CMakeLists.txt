@@ -28,6 +28,7 @@ target_sources_ifdef(CONFIG_ZMK_KSCAN_SIDEBAND_BEHAVIORS app PRIVATE src/kscan_s
 target_sources(app PRIVATE src/matrix_transform.c)
 target_sources(app PRIVATE src/physical_layouts.c)
 target_sources_ifdef(CONFIG_ZMK_MOUSE app PRIVATE src/mouse/main.c)
+target_sources_ifdef(CONFIG_ZMK_MOUSE app PRIVATE src/mouse/input_config.c)
 target_sources(app PRIVATE src/sensors.c)
 target_sources_ifdef(CONFIG_ZMK_WPM app PRIVATE src/wpm.c)
 target_sources(app PRIVATE src/event_manager.c)

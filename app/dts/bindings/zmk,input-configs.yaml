@@ -1,0 +1,24 @@
+description: |
+  Allows post-processing of input events based on the configuration
+
+compatible: "zmk,input-configs"
+
+child-binding:
+  description: "A configuration for a given input device"
+
+  properties:
+    device:
+      type: phandle
+      required: true
+    xy-swap:
+      type: boolean
+    x-invert:
+      type: boolean
+    y-invert:
+      type: boolean
+    scale-multiplier:
+      type: int
+      default: 1
+    scale-divisor:
+      type: int
+      default: 1

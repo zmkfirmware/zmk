@@ -9,6 +9,7 @@
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
 #include <zmk/mouse.h>
+#include <zmk/mouse/input_config.h>
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
 
@@ -52,7 +53,44 @@ void handle_key_code(struct input_event *evt) {
     }
 }
 
+static void swap_xy(struct input_event *evt) {
+    switch (evt->code) {
+    case INPUT_REL_X:
+        evt->code = INPUT_REL_Y;
+        break;
+    case INPUT_REL_Y:
+        evt->code = INPUT_REL_X;
+        break;
+    }
+}
+
+static void filter_with_input_config(struct input_event *evt) {
+    if (!evt->dev) {
+        return;
+    }
+
+    const struct zmk_input_config *cfg = zmk_input_config_get_for_device(evt->dev);
+
+    if (!cfg) {
+        return;
+    }
+
+    if (cfg->xy_swap) {
+        swap_xy(evt);
+    }
+
+    if ((cfg->x_invert && evt->code == INPUT_REL_X) ||
+        (cfg->y_invert && evt->code == INPUT_REL_Y)) {
+        evt->value = -(evt->value);
+    }
+
+    evt->value = (int16_t)((evt->value * cfg->scale_multiplier) / cfg->scale_divisor);
+}
+
 void input_handler(struct input_event *evt) {
+    // First, filter to update the event data as needed.
+    filter_with_input_config(evt);
+
     switch (evt->type) {
     case INPUT_EV_REL:
         handle_rel_code(evt);
