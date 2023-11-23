@@ -169,14 +169,16 @@ static void tick_work_cb(struct k_work *work) {
     }
 }
 
+static void set_start_times_for_activity_1d(struct movement_state_1d *state) {
+    if (state->speed != 0 && state->start_time == 0) {
+        state->start_time = k_uptime_get();
+    } else if (state->speed == 0) {
+        state->start_time = 0;
+    }
+}
 static void set_start_times_for_activity(struct movement_state_2d *state) {
-    if (state->x.speed != 0 && state->x.start_time == 0) {
-        state->x.start_time = k_uptime_get();
-    }
-
-    if (state->y.speed != 0 && state->y.start_time == 0) {
-        state->y.start_time = k_uptime_get();
-    }
+    set_start_times_for_activity_1d(&state->x);
+    set_start_times_for_activity_1d(&state->y);
 }
 
 static void update_work_scheduling(const struct device *dev) {
