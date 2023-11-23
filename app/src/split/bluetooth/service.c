@@ -103,23 +103,27 @@ static ssize_t split_svc_run_behavior(struct bt_conn *conn, const struct bt_gatt
     return len;
 }
 
+static void split_svc_data_xfer_callback(struct k_work *work) {
+    LOG_DBG("Size correct, raising event");
+    struct zmk_split_data_xfer_event event;
+    memcpy(&event.data_xfer, &data_xfer_payload, sizeof(struct zmk_split_data_xfer_data));
+    ZMK_EVENT_RAISE(new_zmk_split_data_xfer_event(event));
+}
+
+static K_WORK_DEFINE(split_svc_data_xfer_work, split_svc_data_xfer_callback);
+
 static ssize_t split_svc_data_xfer(struct bt_conn *conn, const struct bt_gatt_attr *attrs,
                                    const void *buf, uint16_t len, uint16_t offset, uint8_t flags) {
-    struct zmk_split_data_xfer_data *payload = attrs->user_data;
     uint16_t end_addr = offset + len;
 
     LOG_DBG("offset %d len %d", offset, len);
-
-    memcpy(payload + offset, buf, len);
+    LOG_HEXDUMP_DBG(buf, len, "Receiving :");
 
     // If whole packet transferred correctly
     if ((end_addr == sizeof(struct zmk_split_data_xfer_data))) {
         // Raise new data transfer event with received data
-        LOG_HEXDUMP_DBG(&payload, sizeof(struct zmk_split_data_xfer_data), "receiving :");
-        LOG_DBG("Size correct, raising evt, %d", end_addr);
-        struct zmk_split_data_xfer_event event;
-        memcpy(&event.data_xfer, payload, sizeof(struct zmk_split_data_xfer_data));
-        ZMK_EVENT_RAISE(new_zmk_split_data_xfer_event(event));
+        memcpy(&data_xfer_payload + offset, buf, len);
+        k_work_submit(&split_svc_data_xfer_work);
     }
 
     return len;
@@ -173,7 +177,7 @@ BT_GATT_SERVICE_DEFINE(
                            split_svc_run_behavior, &behavior_run_payload),
     BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_DATA_XFER_UUID),
                            BT_GATT_CHRC_WRITE_WITHOUT_RESP, BT_GATT_PERM_WRITE_ENCRYPT, NULL,
-                           split_svc_data_xfer, &data_xfer_payload),
+                           split_svc_data_xfer, NULL),
     BT_GATT_DESCRIPTOR(BT_UUID_NUM_OF_DIGITALS, BT_GATT_PERM_READ, split_svc_num_of_positions, NULL,
                        &num_of_positions),
 #if ZMK_KEYMAP_HAS_SENSORS
