@@ -110,7 +110,8 @@ static int kscan_charlieplex_set_as_input(const struct gpio_dt_spec *gpio) {
         return -ENODEV;
     }
 
-    gpio_flags_t pull_flag = (gpio->dt_flags & GPIO_ACTIVE_HIGH) ? GPIO_PULL_DOWN : GPIO_PULL_UP;
+    gpio_flags_t pull_flag =
+        ((gpio->dt_flags & GPIO_ACTIVE_LOW) == GPIO_ACTIVE_LOW) ? GPIO_PULL_UP : GPIO_PULL_DOWN;
 
     int err = gpio_pin_configure_dt(gpio, GPIO_INPUT | pull_flag);
     if (err) {
