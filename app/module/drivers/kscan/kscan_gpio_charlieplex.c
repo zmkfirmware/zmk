@@ -110,7 +110,9 @@ static int kscan_charlieplex_set_as_input(const struct gpio_dt_spec *gpio) {
         return -ENODEV;
     }
 
-    int err = gpio_pin_configure_dt(gpio, GPIO_INPUT);
+    gpio_flags_t pull_flag = (gpio->dt_flags & GPIO_ACTIVE_HIGH) ? GPIO_PULL_DOWN : GPIO_PULL_UP;
+
+    int err = gpio_pin_configure_dt(gpio, GPIO_INPUT | pull_flag);
     if (err) {
         LOG_ERR("Unable to configure pin %u on %s for input", gpio->pin, gpio->port->name);
         return err;
@@ -393,7 +395,7 @@ static const struct kscan_driver_api kscan_charlieplex_api = {
                                                                                                    \
     static struct zmk_debounce_state kscan_charlieplex_state_##n[INST_CHARLIEPLEX_LEN(n)];         \
     static const struct gpio_dt_spec kscan_charlieplex_cells_##n[] = {                             \
-        UTIL_LISTIFY(INST_LEN(n), KSCAN_GPIO_CFG_INIT, n)};                                        \
+        LISTIFY(INST_LEN(n), KSCAN_GPIO_CFG_INIT, (, ), n)};                                       \
     static struct kscan_charlieplex_data kscan_charlieplex_data_##n = {                            \
         .charlieplex_state = kscan_charlieplex_state_##n,                                          \
     };                                                                                             \
