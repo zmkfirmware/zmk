@@ -37,7 +37,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #endif
 
 #define KSCAN_GPIO_CFG_INIT(idx, inst_idx)                                                         \
-    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), gpios, idx),
+    GPIO_DT_SPEC_GET_BY_IDX(DT_DRV_INST(inst_idx), gpios, idx)
 
 #define INST_INTR_DEFINED(n) DT_INST_NODE_HAS_PROP(n, interrupt_gpios)
 
