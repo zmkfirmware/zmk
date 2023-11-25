@@ -52,6 +52,13 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.matrix.outputs.build_matrix) }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create build directory
+        run: |
+          echo "build_dir=$(mktemp -d)" >> $GITHUB_ENV
+
       - name: Prepare variables
         shell: sh -x {0}
         env:
@@ -59,13 +66,22 @@ jobs:
           shield: ${{ matrix.shield }}
           artifact_name: ${{ matrix.artifact-name }}
         run: |
+          export new_tmp_dir=$(mktemp -d)
+          echo "tmp_dir=${new_tmp_dir}" >> $GITHUB_ENV
+          echo "tmp_config_dir=${new_tmp_dir}/config" >> $GITHUB_ENV
+          if [ -e zephyr/module.yml ]; then
+            export zmk_load_arg=" -DZMK_EXTRA_MODULES='${GITHUB_WORKSPACE}'"
+          fi
+
           echo "zephyr_version=${ZEPHYR_VERSION}" >> $GITHUB_ENV
-          echo "extra_cmake_args=${shield:+-DSHIELD=\"$shield\"}" >> $GITHUB_ENV
+          echo "extra_cmake_args=${shield:+-DSHIELD=\"$shield\"}${zmk_load_arg}" >> $GITHUB_ENV
           echo "display_name=${shield:+$shield - }${board}" >> $GITHUB_ENV
           echo "artifact_name=${artifact_name:-${shield:+$shield-}${board}-zmk}" >> $GITHUB_ENV
 
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Copy config files to isolated temporary directory
+        run: |
+          mkdir "${{ env.tmp_config_dir }}"
+          cp -R ${{ inputs.config_path }}/* "${{ env.tmp_config_dir }}/"
 
       - name: Cache west modules
         uses: actions/cache@v3.0.11
@@ -74,11 +90,11 @@ jobs:
           cache_name: cache-zephyr-${{ env.zephyr_version }}-modules
         with:
           path: |
-            modules/
-            tools/
-            zephyr/
-            bootloader/
-            zmk/
+            ${{ env.tmp_dir }}/modules/
+            ${{ env.tmp_dir }}/tools/
+            ${{ env.tmp_dir }}/zephyr/
+            ${{ env.tmp_dir }}/bootloader/
+            ${{ env.tmp_dir }}/zmk/
           key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('**/west.yml', '**/build.yaml') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache_name }}-
@@ -86,23 +102,27 @@ jobs:
             ${{ runner.os }}-
 
       - name: West Init
-        run: west init -l "${{ inputs.config_path }}"
+        working-directory: ${{ env.tmp_dir }}
+        run: west init -l "${{ env.tmp_config_dir }}"
 
       - name: West Update
+        working-directory: ${{ env.tmp_dir }}
         run: west update
 
       - name: West Zephyr export
+        working-directory: ${{ env.tmp_dir }}
         run: west zephyr-export
 
       - name: West Build (${{ env.display_name }})
+        working-directory: ${{ env.tmp_dir }}
         shell: sh -x {0}
-        run: west build -s zmk/app -b "${{ matrix.board }}" -- -DZMK_CONFIG="${GITHUB_WORKSPACE}/${{ inputs.config_path }}" ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
+        run: west build -s zmk/app -d "${{ env.build_dir }}" -b "${{ matrix.board }}" -- -DZMK_CONFIG=${{ env.tmp_config_dir }} ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
 
       - name: ${{ env.display_name }} Kconfig file
         run: |
-          if [ -f build/zephyr/.config ]
+          if [ -f "${{ env.build_dir }}/zephyr/.config" ]
           then
-            grep -v -e "^#" -e "^$" build/zephyr/.config | sort
+            grep -v -e "^#" -e "^$" "${{ env.build_dir }}/zephyr/.config" | sort
           else
             echo "No Kconfig output"
           fi
@@ -110,12 +130,12 @@ jobs:
 
       - name: ${{ env.display_name }} Devicetree file
         run: |
-          if [ -f build/zephyr/zephyr.dts ]
+          if [ -f "${{ env.build_dir }}/zephyr/zephyr.dts" ]
           then
-            cat build/zephyr/zephyr.dts
-          elif [ -f build/zephyr/zephyr.dts.pre ]
+            cat "${{ env.build_dir }}/zephyr/zephyr.dts"
+          elif [ -f "${{ env.build_dir }}/zephyr/zephyr.dts.pre" ]
           then
-            cat -s build/zephyr/zephyr.dts.pre
+            cat -s "${{ env.build_dir }}/zephyr/zephyr.dts.pre"
           else
             echo "No Devicetree output"
           fi
@@ -124,17 +144,17 @@ jobs:
       - name: Rename artifacts
         shell: sh -x {0}
         run: |
-          mkdir build/artifacts
-          if [ -f build/zephyr/zmk.uf2 ]
+          mkdir "${{ env.build_dir }}/artifacts"
+          if [ -f "${{ env.build_dir }}/zephyr/zmk.uf2" ]
           then
-            cp build/zephyr/zmk.uf2 "build/artifacts/${{ env.artifact_name }}.uf2"
-          elif [ -f build/zephyr/zmk.${{ inputs.fallback_binary }} ]
+            cp "${{ env.build_dir }}/zephyr/zmk.uf2" "${{ env.build_dir }}/artifacts/${{ env.artifact_name }}.uf2"
+          elif [ -f "${{ env.build_dir }}/zephyr/zmk.${{ inputs.fallback_binary }}" ]
           then
-            cp "build/zephyr/zmk.${{ inputs.fallback_binary }}" "build/artifacts/${{ env.artifact_name }}.${{ inputs.fallback_binary }}"
+            cp "${{ env.build_dir }}/zephyr/zmk.${{ inputs.fallback_binary }}" "${{ env.build_dir }}/artifacts/${{ env.artifact_name }}.${{ inputs.fallback_binary }}"
           fi
 
       - name: Archive (${{ env.display_name }})
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.archive_name }}
-          path: build/artifacts
+          path: ${{ env.build_dir }}/artifacts
