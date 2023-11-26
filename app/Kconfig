@@ -565,6 +565,9 @@ endmenu
 
 if SETTINGS
 
+config ZMK_SETTINGS_RESET_ON_START
+    bool "Delete all persistent settings when the keyboard boots"
+
 config ZMK_SETTINGS_SAVE_DEBOUNCE
     int "Milliseconds to debounce settings saves"
     default 60000
