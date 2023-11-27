@@ -11,37 +11,58 @@ import Metadata from "@site/src/data/hardware-metadata.json";
 
 ## Overview
 
-This guide will walk through the steps necessary to add ZMK support for a keyboard the uses a (Pro Micro compatible) addon MCU board to provide the microprocessor.
+This guide will walk through the steps necessary to add ZMK support for a keyboard that uses an add-on MCU board (e.g. Pro Micro compatible) to provide the microprocessor.
+
 The high level steps are:
 
+- From a template, create a new [Zephyr module](https://docs.zephyrproject.org/3.2.0/develop/modules.html) housed in a git repository containing one or more custom shields.
 - Create a new shield directory.
 - Add the base Kconfig files.
 - Add the shield overlay file to define the KSCAN driver for detecting key press/release.
 - (Optional) Add the matrix transform for mapping KSCAN row/column values to sane key positions. This is needed for non-rectangular keyboards, or where the underlying row/column pin arrangement does not map one to one with logical locations on the keyboard.
 - Add a default keymap, which users can override in their own configs as needed.
+- Add a `<my_shield>.zmk.yml` metadata file to document the high level details of your shield, and the features it supports.
+- Update the `build.yaml` file from the repository template to have some sample builds of the firmware to test.
 - Add support for features such as encoders, OLED displays, or RGB underglow.
 
-It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/2.5.0/guides/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
+It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.2.0/guides/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
 :::note
 ZMK support for split keyboards requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
 :::
 
+## New Zephyr Module Repository
+
+The first step to creating the shield is to create a new Zephyr module repository from a template.
+
+:::note
+This guide assumes you already have a configured GitHub account. If you don't yet have one, go ahead and [sign up](https://github.com/join) before continuing.
+:::
+
+Follow these steps to create your new repository:
+
+- Visit https://github.com/zmkfirmware/unified-zmk-config-template
+- Click the green "Use this template" button
+- In the drop down that opens, click "Use this template".
+- In the following screen, provide the following information:
+  - A repository name, e.g. `my-shield-module`.
+  - A brief description, e.g. `ZMK Support For MyShield Keyboard`.
+  - Select Public or Private, depending on your preference.
+- Click the green "Create repository" button
+
 ## New Shield Directory
 
 :::note
-This guide describes how to add shield to the ZMK main repository. If you are building firmware for your
-own prototype or handwired keyboard, it is recommended to use your own user config repository. Follow the
-[user setup guide](user-setup.md) to create your user config repository first. When following the rest
-of this guide, replace the `app/` directory in the ZMK main repository with the `config/` directory in your
-user config repository. For example, `app/boards/shields/<keyboard_name>` should now be
-`config/boards/shields/<keyboard_name>`.
+This guide describes how to add a shield to an independently managed Zephyr module repository. This is the
+preferred way to handle boards and shields moving forward in ZMK, although the tooling to make this easier
+for users is still improving. ZMK does have a collection of boards/shields in the ZMK main repository, which are planned to be phased out, but until that is complete, there _may_ be a few select scenarios where adding your keyboard to ZMK itself is preferred. Due the volume of PRs and the focus of ZMK development not being merging of keyboard PRs, you are highly encouraged to use an out-of-tree Zephyr module repository to manage your definitions. Should you choose to try to get your keyboard included in ZMK main repository, the paths in the rest of the guide would be nested under the `app/` folder there instead. For example, `boards/shields/<keyboard_name>` should now be
+`app/boards/shields/<keyboard_name>`.
 :::
 
-Shields for Zephyr applications go into the `boards/shields/` directory; since ZMK's Zephyr application lives in the `app/` subdirectory of the repository, that means the new shield directory should be:
+Shields in Zephyr module "board root" go into the `boards/shields/` directory; that means the new shield directory in your module repository should be:
 
 ```bash
-mkdir app/boards/shields/<keyboard_name>
+mkdir boards/shields/<keyboard_name>
 ```
 
 ## Base Kconfig Files
@@ -346,9 +367,9 @@ See the [matrix transform section](../config/kscan.md#matrix-transform) in the K
 
 ## Default Keymap
 
-Each keyboard should provide an OOTB default keymap to be used when building the firmware, which can be overridden and customized by user configs. For "shield keyboards", this should be placed in the `app/boards/shields/<shield_name>/<shield_name>.keymap` file. The keymap is configured as an additional devicetree overlay that includes the following:
+Each keyboard should provide a default keymap to be used when building the firmware, which can be overridden and customized by user configs. For "shield keyboards", this should be placed in the `boards/shields/<shield_name>/<shield_name>.keymap` file. The keymap is configured as an additional devicetree overlay that includes the following:
 
-- A node with `compatible="zmk,keymap"` where each child node is a layer with a `bindings` array that binds each key position to a given behavior (e.g. key press, momentarily layer, etc).
+- A node with `compatible = "zmk,keymap"` where each child node is a layer with a `bindings` array that binds each key position to a given behavior (e.g. key press, momentary layer, etc).
 
 Here is an example simple keymap for the Kyria, with only one layer:
 
@@ -360,12 +381,7 @@ The two `#include` lines at the top of the keymap are required in order to bring
 
 ### Keymap Behaviors
 
-Further documentation on behaviors and bindings is forthcoming, but a summary of the current behaviors you can bind to key positions is as follows:
-
-- `kp` is the "key press" behavior, and takes a single binding argument of the key code from the 'keyboard/keypad" HID usage table.
-- `mo` is the "momentary layer" behavior, and takes a single binding argument of the numeric ID of the layer to momentarily enable when that key is held.
-- `trans` is the "transparent" behavior, useful to be place in higher layers above `mo` bindings to be sure the key release is handled by the lower layer. No binding arguments are required.
-- `mt` is the "mod-tap" behavior, and takes two binding arguments, the modifier to use if held, and the keycode to send if tapped.
+For the full documentation on the available behaviors for use in keymaps, start with reviewing [`kp`](../behaviors/key-press.md) and then use the sidebar to review the others available within ZMK.
 
 ## Metadata
 
@@ -392,6 +408,40 @@ siblings:
 ```
 
 You should place a properly named `foo.zmk.yml` file in the directory next to your other shield values, and fill it out completely and accurately. See [Hardware Metadata Files](/docs/development/hardware-metadata-files) for the full details.
+
+## Build File
+
+To help you test/verify your firmware, update the `build.yaml` to list your particular board/shield combinations you want built whenever changes are published to GitHub. Open `build.yaml` with your editor and add a combination, e.g.:
+
+```yaml
+# This file generates the GitHub Actions matrix
+# For simple board + shield combinations, add them
+# to the top level board and shield arrays, for more
+# control, add individual board + shield combinations to
+# the `include` property, e.g:
+#
+# board: [ "nice_nano_v2" ]
+# shield: [ "corne_left", "corne_right" ]
+# include:
+#   - board: bdn9_rev2
+#   - board: nice_nano_v2
+#     shield: reviung41
+#
+---
+include:
+  - board: nice_nano_v2
+    shield: <my_shield>
+```
+
+For split keyboards, you will need to specify the halves/siblings separately, e.g.:
+
+```yaml
+include:
+  - board: mikoto_520
+    shield: <my_shield>_left
+  - board: mikoto_520
+    shield: <my_shield>_right
+```
 
 ## Adding Features
 
@@ -486,17 +536,40 @@ Add additional bindings as necessary to match the default number of encoders on 
 
 ## Testing
 
+### GitHub Actions
+
+Using GitHub Actions to build your new firmware can save you from doing any local [development setup](./setup.md),
+at the expense of a longer feedback loop if there are issues. To push your changes and trigger a build:
+
+- Add all your pending changes with `git add .`
+- Commit your changes with `git commit -m "Initial shield"`
+- Push the changes to GitHub with `git push`
+
+Once pushed, click on the "Actions" tab of the repo you created in the first step, and you should see a new build running. If the build is successful, there will be a new `firmware.zip` artifact shown on the summary screen you can download that will contain the new `.uf2` files that can be flashed to the device.
+
+### Local Build
+
+:::note
+To build locally, be sure you've followed the [development setup](./setup.md) guide first.
+:::
+
 Once you've fully created the new keyboard shield definition,
 you should be able to test with a build command like:
 
 ```sh
-west build --pristine -b nice_nano_v2 -- -DSHIELD=my_board
+west build --pristine -b nice_nano_v2 -- -DSHIELD=<my_shield> -DZMK_EXTRA_MODULES=/full/path/to/your/module
+# replace <my_shield> with e.g. <my_shield>_left for split keyboards, then repeat for <my_shield>_right
 ```
 
-The above build command generates `build/zephyr/zmk.uf2`. If your board
+The above build command generates a `build/zephyr/zmk.uf2` file that you can flash using the steps from the following section. See the dedicated [building and flashing page](build-flash.md) for more details.
+
+### Flashing
+
+If your board
 supports USB Flashing Format (UF2), copy that file onto the root of the USB mass
 storage device for your board. The controller should flash your built firmware
-and automatically restart once flashing is complete.
+and automatically restart once flashing is complete. If you need to flash an updated
+UF2 file with fixes, you can re-enter the bootloader by double tapping the reset button.
 
 Alternatively, if your board supports flashing and you're not developing from
 within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on
