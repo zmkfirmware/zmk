@@ -84,7 +84,7 @@ You should see tio printing `Disconnected` or `Connected` when you disconnect or
 
 From there, you should see the various log messages from ZMK and Zephyr, depending on which systems you have set to what log levels.
 
-## Adding USB logging to a board
+## Adding USB Logging to a Board
 
 Standard boards such as the nice!nano and Seeeduino XIAO family have the necessary configuration for logging already added, however if you are developing your own standalone board you may wish to add the ability to use USB logging in the future.
 
