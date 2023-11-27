@@ -112,7 +112,7 @@ static void split_svc_pos_state_ccc(const struct bt_gatt_attr *attr, uint16_t va
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 
-static zmk_hid_indicators hid_indicators = 0;
+static zmk_hid_indicators_t hid_indicators = 0;
 
 static void split_svc_update_indicators_callback(struct k_work *work) {
     LOG_DBG("Raising HID indicators changed event: %x", hid_indicators);
@@ -125,7 +125,7 @@ static K_WORK_DEFINE(split_svc_update_indicators_work, split_svc_update_indicato
 static ssize_t split_svc_update_indicators(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                            const void *buf, uint16_t len, uint16_t offset,
                                            uint8_t flags) {
-    if (offset + len > sizeof(zmk_hid_indicators)) {
+    if (offset + len > sizeof(zmk_hid_indicators_t)) {
         return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
     }
 

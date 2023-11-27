@@ -6,4 +6,4 @@
 
 #pragma once
 
-typedef uint8_t zmk_hid_indicators;
+typedef uint8_t zmk_hid_indicators_t;
