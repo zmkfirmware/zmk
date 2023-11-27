@@ -18,7 +18,7 @@
 #include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/gatt.h>
-#include <zephyr/bluetooth/hci_err.h>
+#include <zephyr/bluetooth/hci_types.h>
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 
@@ -134,7 +134,7 @@ static struct bt_conn_cb conn_callbacks = {
 
 bool zmk_split_bt_peripheral_is_connected() { return is_connected; }
 
-static int zmk_peripheral_ble_init(const struct device *_arg) {
+static int zmk_peripheral_ble_init(void) {
     int err = bt_enable(NULL);
 
     if (err) {

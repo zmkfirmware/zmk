@@ -28,9 +28,6 @@ config SSD1306
 config I2C
     default y
 
-config SSD1306_REVERSE_MODE
-    default y
-
 endif # ZMK_DISPLAY
 
 if LVGL

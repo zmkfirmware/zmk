@@ -290,7 +290,7 @@ static int kscan_matrix_read(const struct device *dev) {
 }
 
 static void kscan_matrix_work_handler(struct k_work *work) {
-    struct k_work_delayable *dwork = CONTAINER_OF(work, struct k_work_delayable, work);
+    struct k_work_delayable *dwork = k_work_delayable_from_work(work);
     struct kscan_matrix_data *data = CONTAINER_OF(dwork, struct kscan_matrix_data, work);
     kscan_matrix_read(data->dev);
 }

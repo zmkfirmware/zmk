@@ -17,7 +17,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:3.2
+      image: docker.io/zmkfirmware/zmk-build-arm:3.5-branch
     needs: compile-matrix
     strategy:
       matrix:

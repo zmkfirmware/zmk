@@ -140,7 +140,7 @@ static void zmk_sensors_init_item(uint8_t i) {
 
 #define SENSOR_INIT(idx, _t) zmk_sensors_init_item(idx);
 
-static int zmk_sensors_init(const struct device *_arg) {
+static int zmk_sensors_init(void) {
     LISTIFY(ZMK_KEYMAP_SENSORS_LEN, SENSOR_INIT, (), 0)
 
     return 0;

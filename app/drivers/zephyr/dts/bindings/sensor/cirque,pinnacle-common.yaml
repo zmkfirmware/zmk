@@ -1,0 +1,18 @@
+properties:
+  dr-gpios:
+    type: phandle-array
+    description: Data ready pin for the trackpad
+  rotate-90:
+    type: boolean
+  sleep:
+    type: boolean
+  no-taps:
+    type: boolean
+  sensitivity:
+    type: string
+    enum:
+      - 1x
+      - 2x
+      - 3x
+      - 4x
+    description: ADC attenuation (sensitivity) setting.

@@ -131,11 +131,6 @@ if ZMK_BLE
 config BT_TINYCRYPT_ECC
     default y if BT_HCI && !BT_CTLR
 
-choice BT_LL_SW_LLCP_IMPL
-    default BT_LL_SW_LLCP_LEGACY
-
-endchoice
-
 config SYSTEM_WORKQUEUE_STACK_SIZE
     default 4096 if SOC_RP2040
     default 2048
@@ -342,12 +337,11 @@ config ZMK_IDLE_TIMEOUT
 
 config ZMK_SLEEP
     bool "Enable deep sleep support"
+    depends on HAS_POWEROFF
+    select POWEROFF
     imply USB
 
 if ZMK_SLEEP
-
-config PM_DEVICE
-    default y
 
 config ZMK_IDLE_SLEEP_TIMEOUT
     int "Milliseconds of inactivity before entering deep sleep"

@@ -678,7 +678,8 @@ ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_position_state_changed);
 ZMK_SUBSCRIPTION(behavior_hold_tap, zmk_keycode_state_changed);
 
 void behavior_hold_tap_timer_work_handler(struct k_work *item) {
-    struct active_hold_tap *hold_tap = CONTAINER_OF(item, struct active_hold_tap, work);
+    struct k_work_delayable *d_work = k_work_delayable_from_work(item);
+    struct active_hold_tap *hold_tap = CONTAINER_OF(d_work, struct active_hold_tap, work);
 
     if (hold_tap->work_is_cancelled) {
         clear_hold_tap(hold_tap);
@@ -716,7 +717,7 @@ static int behavior_hold_tap_init(const struct device *dev) {
         .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, NULL, &behavior_hold_tap_config_##n,    \
-                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
+                          POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
                           &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
