@@ -10,7 +10,7 @@
 #include <zmk/event_manager.h>
 
 struct zmk_hid_indicators_changed {
-    zmk_hid_indicators indicators;
+    zmk_hid_indicators_t indicators;
 };
 
 ZMK_EVENT_DECLARE(zmk_hid_indicators_changed);

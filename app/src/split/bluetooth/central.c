@@ -704,10 +704,10 @@ int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *bi
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 
-static zmk_hid_indicators hid_indicators = 0;
+static zmk_hid_indicators_t hid_indicators = 0;
 
 static void split_central_update_indicators_callback(struct k_work *work) {
-    zmk_hid_indicators indicators = hid_indicators;
+    zmk_hid_indicators_t indicators = hid_indicators;
     for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
         if (peripherals[i].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
             continue;
@@ -732,7 +732,7 @@ static void split_central_update_indicators_callback(struct k_work *work) {
 
 static K_WORK_DEFINE(split_central_update_indicators, split_central_update_indicators_callback);
 
-int zmk_split_bt_update_hid_indicator(zmk_hid_indicators indicators) {
+int zmk_split_bt_update_hid_indicator(zmk_hid_indicators_t indicators) {
     hid_indicators = indicators;
     return k_work_submit_to_queue(&split_central_split_run_q, &split_central_update_indicators);
 }
