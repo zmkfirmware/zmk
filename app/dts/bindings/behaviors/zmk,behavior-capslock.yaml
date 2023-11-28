@@ -1,0 +1,27 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Caps word behavior
+
+compatible: "zmk,behavior-capslock"
+
+include: zero_param.yaml
+
+properties:
+  enable-on-press:
+    type: boolean
+  disable-on-release:
+    type: boolean
+  disable-on-next-release:
+    type: boolean
+  disable-on-keys:
+    type: array
+    required: false
+    default: []
+  capslock-press-keycode:
+    type: int
+    default: 0 # will default to `CAPSLOCK`
+  capslock-press-duration:
+    type: int
+    default: 95 # seems to be the shortest reliable delay on Mac
+  
