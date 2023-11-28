@@ -58,13 +58,11 @@ config ZMK_HID_REPORT_TYPE_NKRO
 
 endchoice
 
-if ZMK_HID_REPORT_TYPE_NKRO
-
 config ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT
     bool "Enable extended NKRO reporting"
     default n
+    depends on ZMK_HID_REPORT_TYPE_NKRO
 
-endif
 
 if ZMK_HID_REPORT_TYPE_HKRO
 
