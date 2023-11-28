@@ -14,9 +14,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/event_manager.h>
 
-#define WIDGET_LABEL_TEXT 7
+#define WIDGET_LABEL_TEXT_MAX 7
 
-BUILD_ASSERT(sizeof(CONFIG_ZMK_WIDGET_LABEL_TEXT) - 1 <= WIDGET_LABEL_TEXT,
+BUILD_ASSERT(sizeof(CONFIG_ZMK_WIDGET_LABEL_TEXT) - 1 <= WIDGET_LABEL_TEXT_MAX,
              "ERROR: Widget label text length is too long. Max length: 7");
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
