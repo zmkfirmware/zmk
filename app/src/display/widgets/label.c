@@ -14,6 +14,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/event_manager.h>
 
+#define WIDGET_LABEL_TEXT 7
+
+BUILD_ASSERT(sizeof(CONFIG_ZMK_WIDGET_LABEL_TEXT) - 1 <= WIDGET_LABEL_TEXT,
+             "ERROR: Widget label text length is too long. Max length: 7");
+
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
 struct label_state {};
@@ -21,11 +26,7 @@ struct label_state {};
 static struct label_state get_state(const zmk_event_t *_eh) { return (struct label_state){}; }
 
 static void set_label_symbol(lv_obj_t *label) {
-    char text[7] = {};
-
-    strcat(text, CONFIG_ZMK_WIDGET_LABEL_TEXT);
-
-    lv_label_set_text(label, text);
+    lv_label_set_text(label, CONFIG_ZMK_WIDGET_LABEL_TEXT);
 }
 
 static void label_update_cb() {
