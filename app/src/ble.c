@@ -704,9 +704,9 @@ static int zmk_ble_handle_key_user(struct zmk_keycode_state_changed *event) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    if (!event->state) {
-        LOG_DBG("Key released, ignoring");
-        return ZMK_EV_EVENT_BUBBLE;
+    if (event->state) {
+        LOG_DBG("Key press, ignoring");
+        return ZMK_EV_EVENT_HANDLED;
     }
 
     if (key == HID_USAGE_KEY_KEYBOARD_ESCAPE) {
@@ -736,7 +736,7 @@ static int zmk_ble_handle_key_user(struct zmk_keycode_state_changed *event) {
           zmk_ble_numeric_usage_to_value(key, HID_USAGE_KEY_KEYPAD_1_AND_END,
                                          HID_USAGE_KEY_KEYPAD_0_AND_INSERT, &val))) {
         LOG_DBG("Key not a number, ignoring");
-        return ZMK_EV_EVENT_BUBBLE;
+        return ZMK_EV_EVENT_HANDLED;
     }
 
     if (ring_buf_space_get(&passkey_entries) <= 0) {
