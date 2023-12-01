@@ -6,3 +6,12 @@ config SHIELD_LILY58_LEFT
 
 config SHIELD_LILY58_RIGHT
     def_bool $(shields_list_contains,lily58_right)
+
+include:
+    board: nice_nano_v2
+    shield: lily58_left
+    shield: lily58_left nice_view_adapter nice_view
+
+    board: nice_nano_v2
+    shield: lily58_right
+    shield: lily58_right nice_view_adapter nice_view
