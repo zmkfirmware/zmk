@@ -28,4 +28,3 @@ properties:
   capslock-press-duration:
     type: int
     default: 95 # seems to be the shortest reliable delay on Mac
-  

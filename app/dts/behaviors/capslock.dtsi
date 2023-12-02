@@ -7,58 +7,58 @@
 #include <dt-bindings/zmk/keys.h>
 
 / {
-	behaviors {
-		/omit-if-no-ref/ capslock_on: behavior_capslock_on {
-			compatible = "zmk,behavior-capslock";
-			label = "CAPSLOCK_ON";
-			#binding-cells = <0>;
-			capslock-press-duration = <5>;
-			enable-on-press;
-		};
-		
-		/omit-if-no-ref/ capslock_off: behavior_capslock_off {
-			compatible = "zmk,behavior-capslock";
-			label = "CAPSLOCK_OFF";
-			#binding-cells = <0>;
-			capslock-press-duration = <5>;
-			disable-on-release;
-		};
-		
-		/omit-if-no-ref/ capslock_hold: behavior_capslock_hold {
-			compatible = "zmk,behavior-capslock";
-			label = "CAPSLOCK_HOLD";
-			#binding-cells = <0>;
-			capslock-press-duration = <5>;
-			enable-on-press;
-			disable-on-release;
-		};
-		
-		/* MacOS compatibility */
-		
-		/omit-if-no-ref/ capslock_on_mac: behavior_capslock_on_mac {
-			compatible = "zmk,behavior-capslock";
-			label = "CAPSLOCK_ON_MAC";
-			#binding-cells = <0>;
-			capslock-press-duration = <95>;
-			enable-on-press;
-		};
-		
-		/omit-if-no-ref/ capslock_off_mac: behavior_capslock_off_mac {
-			compatible = "zmk,behavior-capslock";
-			label = "CAPSLOCK_OFF_MAC";
-			#binding-cells = <0>;
-			capslock-press-duration = <95>;
-			disable-on-release;
-		};
-		
-		/omit-if-no-ref/ capslock_hold_mac: behavior_capslock_hold_mac {
-			compatible = "zmk,behavior-capslock";
-			label = "CAPSLOCK_HOLD_MAC";
-			#binding-cells = <0>;
-			capslock-press-duration = <95>;
-			enable-on-press;
-			disable-on-release;
-		};
-		
-	};
+    behaviors {
+        /omit-if-no-ref/ capslock_on: behavior_capslock_on {
+            compatible = "zmk,behavior-capslock";
+            label = "CAPSLOCK_ON";
+            #binding-cells = <0>;
+            capslock-press-duration = <5>;
+            enable-on-press;
+        };
+
+        /omit-if-no-ref/ capslock_off: behavior_capslock_off {
+            compatible = "zmk,behavior-capslock";
+            label = "CAPSLOCK_OFF";
+            #binding-cells = <0>;
+            capslock-press-duration = <5>;
+            disable-on-release;
+        };
+
+        /omit-if-no-ref/ capslock_hold: behavior_capslock_hold {
+            compatible = "zmk,behavior-capslock";
+            label = "CAPSLOCK_HOLD";
+            #binding-cells = <0>;
+            capslock-press-duration = <5>;
+            enable-on-press;
+            disable-on-release;
+        };
+
+        /* MacOS compatibility */
+
+        /omit-if-no-ref/ capslock_on_mac: behavior_capslock_on_mac {
+            compatible = "zmk,behavior-capslock";
+            label = "CAPSLOCK_ON_MAC";
+            #binding-cells = <0>;
+            capslock-press-duration = <95>;
+            enable-on-press;
+        };
+
+        /omit-if-no-ref/ capslock_off_mac: behavior_capslock_off_mac {
+            compatible = "zmk,behavior-capslock";
+            label = "CAPSLOCK_OFF_MAC";
+            #binding-cells = <0>;
+            capslock-press-duration = <95>;
+            disable-on-release;
+        };
+
+        /omit-if-no-ref/ capslock_hold_mac: behavior_capslock_hold_mac {
+            compatible = "zmk,behavior-capslock";
+            label = "CAPSLOCK_HOLD_MAC";
+            #binding-cells = <0>;
+            capslock-press-duration = <95>;
+            enable-on-press;
+            disable-on-release;
+        };
+
+    };
 };
