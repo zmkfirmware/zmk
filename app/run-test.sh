@@ -39,8 +39,15 @@ if [ $? -gt 0 ]; then
         echo "PENDING: $testcase" | tee -a ./build/tests/pass-fail.log
         exit 0
     fi
-    echo "FAILED: $testcase" | tee -a ./build/tests/pass-fail.log
-    exit 1
+
+
+    if [ -n "${ZMK_TESTS_AUTO_ACCEPT}" ]; then
+        echo "Auto-accepting failure for $testcase"
+        cp build/$testcase/keycode_events.log $testcase/keycode_events.snapshot
+    else
+        echo "FAILED: $testcase" | tee -a ./build/tests/pass-fail.log
+        exit 1
+    fi
 fi
 
 echo "PASS: $testcase" | tee -a ./build/tests/pass-fail.log
