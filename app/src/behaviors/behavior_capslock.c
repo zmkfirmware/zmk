@@ -31,6 +31,10 @@ struct capslock_key_item {
     uint32_t id;
     uint8_t implicit_modifiers;
 };
+struct capslock_key_list {
+    const struct capslock_key_item *keys;
+    size_t len;
+};
 
 struct behavior_capslock_config {
     uint8_t index;
@@ -39,8 +43,8 @@ struct behavior_capslock_config {
     bool enable_on_press;
     bool disable_on_release;
     bool disable_on_next_release;
-    uint8_t disable_on_keys_count;
-    struct capslock_key_item disable_on_keys[];
+    struct capslock_key_list disable_on_keys;
+    struct capslock_key_list enable_while_keys;
 };
 
 uint32_t config_capslock_press_keycode(const struct behavior_capslock_config *config) {
@@ -135,12 +139,11 @@ static int on_capslock_binding_released(struct zmk_behavior_binding *binding,
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
-static bool capslock_match_key_item(const struct capslock_key_item *key_items,
-                                    const size_t key_items_count, uint16_t usage_page,
+static bool capslock_match_key_item(const struct capslock_key_list list, uint16_t usage_page,
                                     uint8_t usage_id, uint8_t implicit_modifiers) {
-    for (int i = 0; i < key_items_count; ++i) {
-        const struct capslock_key_item *break_item = &key_items[i];
-        LOG_DBG("checking disable-on-keys: usage_page 0x%02X keycode 0x%02X", break_item->page,
+    for (int i = 0; i < list.len; ++i) {
+        const struct capslock_key_item *break_item = &list.keys[i];
+        LOG_DBG("checking key_list item: usage_page 0x%02X keycode 0x%02X", break_item->page,
                 break_item->id);
         if (break_item->page == usage_page && break_item->id == usage_id &&
             (break_item->implicit_modifiers & (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
@@ -180,11 +183,22 @@ static int capslock_keycode_state_changed_listener(const zmk_event_t *eh) {
                         ev->usage_page, ev->keycode);
                 data->active = false;
             }
-        } else if (capslock_match_key_item(config->disable_on_keys, config->disable_on_keys_count,
-                                           ev->usage_page, ev->keycode, ev->implicit_modifiers)) {
-            LOG_DBG("deactivating capslock (disable-on-keys: usage_page 0x%02X keycode 0x%02X)",
-                    ev->usage_page, ev->keycode);
-            deactivate_capslock(dev);
+        } else if (config->disable_on_keys.len > 0) {
+            LOG_DBG("checking %d disable-on-keys for usage_page 0x%02X keycode 0x%02X",
+                    config->disable_on_keys.len, ev->usage_page, ev->keycode);
+            if (capslock_match_key_item(config->disable_on_keys, ev->usage_page, ev->keycode,
+                                        ev->implicit_modifiers)) {
+                LOG_DBG("deactivating capslock (disable-on-keys)");
+                deactivate_capslock(dev);
+            }
+        } else if (config->enable_while_keys.len > 0) {
+            LOG_DBG("checking %d enable-while-keys for usage_page 0x%02X keycode 0x%02X",
+                    config->enable_while_keys.len, ev->usage_page, ev->keycode);
+            if (!capslock_match_key_item(config->enable_while_keys, ev->usage_page, ev->keycode,
+                                         ev->implicit_modifiers)) {
+                LOG_DBG("deactivating capslock (enable-while-keys)");
+                deactivate_capslock(dev);
+            }
         }
     }
 
@@ -210,9 +224,19 @@ static int behavior_capslock_init(const struct device *dev) {
      .id = ZMK_HID_USAGE_ID(i),                                                                    \
      .implicit_modifiers = SELECT_MODS(i)},
 
-#define BREAK_ITEM(i, n) PARSE_KEY_ITEM(DT_INST_PROP_BY_IDX(n, disable_on_keys, i))
+#define KEY_ARRAY_ITEM(i, n, prop) PARSE_KEY_ITEM(DT_INST_PROP_BY_IDX(n, prop, i))
+
+#define KEY_LIST_PROP(n, prop)                                                                     \
+    COND_CODE_1(DT_NODE_HAS_PROP(DT_DRV_INST(n), prop),                                            \
+                ({LISTIFY(DT_INST_PROP_LEN(n, prop), KEY_ARRAY_ITEM, (), n, prop)}), ({}))
+
+#define KEY_LIST(array) ((struct capslock_key_list){.keys = array, .len = ARRAY_SIZE(array)})
 
 #define CAPSLOCK_INST(n)                                                                           \
+    static const struct capslock_key_item capslock_disable_on_keys_list_##n[] =                    \
+        KEY_LIST_PROP(n, disable_on_keys);                                                         \
+    static const struct capslock_key_item capslock_enable_while_keys_list_##n[] =                  \
+        KEY_LIST_PROP(n, enable_while_keys);                                                       \
     static struct behavior_capslock_data behavior_capslock_data_##n = {.active = false};           \
     static struct behavior_capslock_config behavior_capslock_config_##n = {                        \
         .index = n,                                                                                \
@@ -221,8 +245,8 @@ static int behavior_capslock_init(const struct device *dev) {
         .enable_on_press = DT_INST_PROP(n, enable_on_press),                                       \
         .disable_on_release = DT_INST_PROP(n, disable_on_release),                                 \
         .disable_on_next_release = DT_INST_PROP(n, disable_on_next_release),                       \
-        .disable_on_keys = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, disable_on_keys), BREAK_ITEM, n)},    \
-        .disable_on_keys_count = DT_INST_PROP_LEN(n, disable_on_keys),                             \
+        .disable_on_keys = KEY_LIST(capslock_disable_on_keys_list_##n),                            \
+        .enable_while_keys = KEY_LIST(capslock_enable_while_keys_list_##n),                        \
     };                                                                                             \
     DEVICE_DT_INST_DEFINE(n, behavior_capslock_init, NULL, &behavior_capslock_data_##n,            \
                           &behavior_capslock_config_##n, APPLICATION,                              \

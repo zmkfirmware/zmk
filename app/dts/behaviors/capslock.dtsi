@@ -33,16 +33,6 @@
 			disable-on-release;
 		};
 		
-		/omit-if-no-ref/ capslock_word: behavior_capslock_word {
-			compatible = "zmk,behavior-capslock";
-			label = "CAPSLOCK_WORD";
-			#binding-cells = <0>;
-			capslock-press-duration = <5>;
-			enable-on-press;
-			disable-on-next-release;
-			disable-on-keys = <SPACE TAB ENTER ESC>;
-		};
-		
 		/* MacOS compatibility */
 		
 		/omit-if-no-ref/ capslock_on_mac: behavior_capslock_on_mac {
@@ -68,16 +58,6 @@
 			capslock-press-duration = <95>;
 			enable-on-press;
 			disable-on-release;
-		};
-		
-		/omit-if-no-ref/ capslock_word_mac: behavior_capslock_word_mac {
-			compatible = "zmk,behavior-capslock";
-			label = "CAPSLOCK_WORD_MAC";
-			#binding-cells = <0>;
-			capslock-press-duration = <95>;
-			enable-on-press;
-			disable-on-next-release;
-			disable-on-keys = <SPACE TAB ENTER ESC>;
 		};
 		
 	};

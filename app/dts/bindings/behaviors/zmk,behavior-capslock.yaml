@@ -18,6 +18,10 @@ properties:
     type: array
     required: false
     default: []
+  enable-while-keys:
+    type: array
+    required: false
+    default: []
   capslock-press-keycode:
     type: int
     default: 0 # will default to `CAPSLOCK`
