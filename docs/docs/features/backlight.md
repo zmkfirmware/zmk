@@ -37,7 +37,7 @@ There are various Kconfig options used to configure the backlight feature. These
 ## Adding Backlight to a board or a shield
 
 <Tabs
-defaultValue="boardpin"
+defaultValue="shieldpin"
 values={[
 {label: 'Adding to a board', value: 'boardpin'},{label: 'Adding to a shield', value: 'shieldpin'},
 ]}>
@@ -46,7 +46,7 @@ values={[
 
 First, you must enable PWM by adding the following lines to your `Kconfig.defconfig` file:
 
-```
+```kconfig
 if ZMK_BACKLIGHT
 
 config PWM
@@ -60,9 +60,9 @@ endif # ZMK_BACKLIGHT
 
 When using the pinctrl API you should create a pinctrl.dtsi file if it's not created already, and include it at the beginning of the `board.dts` file. You also need to add `CONFIG_PINCTRL=y` to board_defconfig if it's not already enabled. To use some of the definitions for the PWM node you need to include `#include <dt-bindings/led/led.h>` at the beginning of the `board.dts` file.
 
-A pinctrl file has an `&pinctrl` node that encompasses all pinctrl settings including for I2C or SPI peripherals (e.g. WS2812 LEDs, Battery fuel gauges):
+The pinctrl file has a `&pinctrl` node that encompasses all pinctrl settings, including I2C or SPI peripherals (e.g. WS2812 LEDs, Battery fuel gauges):
 
-```
+```dts
 &pinctrl {
     // Other pinctrl definitions for other hardware
     pwm0_default: pwm0_default {
@@ -79,13 +79,13 @@ A pinctrl file has an `&pinctrl` node that encompasses all pinctrl settings incl
 };
 ```
 
-The pin number is handled differently depending on the MCU in question, on nRF boards it is defined as (PWM_OUTX, Y, Z) where X is the PWM channel used (usually 0) Y is first part of the hardware port "PY.01" and Z is the second part of the hardware port "P1.Z".
+Pin numbers are handled differently depending on the MCU. On nRF MCUs pins are configured using `(PWM_OUTX, Y, Z)`, where `X` is the PWM channel used (usually 0), `Y` is the first part of the hardware port (_PY.01_) and `Z` is the second part of the hardware port (_P1.Z_).
 
 For example, _P1.13_ would give you `(PWM_OUT0, 1, 13)` and _P0.15_ would give you `(PWM_OUT0, 0, 15)`.
 
-Then you add the PWM device inside the `board.dts` file and assign the pinctrl definitions to it:
+Add the PWM device to the `board.dts` file and assign the pinctrl definitions to it:
 
-```
+```dts
 &pwm0 {
     status = "okay";
     pinctrl-0 = <&pwm0_default>;
@@ -94,9 +94,9 @@ Then you add the PWM device inside the `board.dts` file and assign the pinctrl d
 };
 ```
 
-Then you have to add the following lines inside the root devicetree node on the same file as before:
+Then add the following lines to the same `<board>.dts` file, but inside the root devicetree node:
 
-```
+```dts
 / {
     backlight: pwmleds {
         compatible = "pwm-leds";
@@ -107,15 +107,15 @@ Then you have to add the following lines inside the root devicetree node on the 
 };
 ```
 
-The value inside `pwm_led_0` after `&pwm0` must be the channel number. Since (`PWM_OUT0`) is defined in the pinctrl node the channel in this example is 0.
+The value inside `pwm_led_0` after `&pwm0` must be the channel number. Since `PWM_OUT0` is defined in the pinctrl node, the channel in this example is 0.
 
-In this example `PWM_MSEC(10)` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible.
+In this example, `PWM_MSEC(10)` is the period of the PWM waveform. This period can be altered if your drive circuitry requires different values or the frequency is audible.
 
 If your board uses a P-channel MOSFET to control backlight instead of a N-channel MOSFET, you may want to change `PWM_POLARITY_NORMAL` for `PWM_POLARITY_INVERTED`.
 
 Finally you need to add backlight to the `chosen` element of the root devicetree node:
 
-```
+```dts
 / {
     chosen {
         zmk,backlight = &backlight;
@@ -126,11 +126,11 @@ Finally you need to add backlight to the `chosen` element of the root devicetree
 </TabItem>
 <TabItem value="shieldpin">
 
-You must first add a `boards/` directory within your shield folder. For each board that supports the shield you must create a `<board>.defconfig` file and a `<board>.overlay` file inside the `boards/` folder. To use some of the definitions for the PWM node you need to include `#include <dt-bindings/led/led.h>` at the beginning of the `<board>.overlay` file.
+You must first add a `boards/` directory within your shield folder. For each board that supports the shield you must create a `<board>.defconfig` file and a `<board>.overlay` file inside the `boards/` folder.
 
 Inside your `<board>.defconfig` file, add the following lines:
 
-```
+```kconfig
 if ZMK_BACKLIGHT
 
 config PWM
@@ -144,7 +144,7 @@ endif # ZMK_BACKLIGHT
 
 Then add the following lines to your `.overlay` file:
 
-```
+```dts
 &pinctrl {
     // Other pinctrl definitions for other hardware
     pwm0_default: pwm0_default {
@@ -161,13 +161,13 @@ Then add the following lines to your `.overlay` file:
 };
 ```
 
-The pin number is handled differently depending on the MCU in question, on nRF boards it is defined as (PWM_OUTX, Y, Z) where X is the PWM channel used (usually 0) Y is first part of the hardware port "PY.01" and Z is the second part of the hardware port "P1.Z".
+Pin numbers are handled differently depending on the MCU. On nRF MCUs pins are configured using `(PWM_OUTX, Y, Z)`, where `X` is the PWM channel used (usually 0), `Y` is the first part of the hardware port (_PY.01_) and `Z` is the second part of the hardware port (_P1.Z_).
 
 For example, _P1.13_ would give you `(PWM_OUT0, 1, 13)` and _P0.15_ would give you `(PWM_OUT0, 0, 15)`.
 
-Then you add the PWM device inside the `.overlay` file and assign the pinctrl definitions to it:
+Add the PWM device to the `<board>.overlay` file and assign the pinctrl definitions to it:
 
-```
+```dts
 &pwm0 {
     status = "okay";
     pinctrl-0 = <&pwm0_default>;
@@ -176,7 +176,7 @@ Then you add the PWM device inside the `.overlay` file and assign the pinctrl de
 };
 ```
 
-Then you have to add the following lines inside the root devicetree node on the same file as before:
+Then add the following lines to the same `<board>.overlay` file, but inside the root devicetree node:
 
 ```
 / {
@@ -189,15 +189,15 @@ Then you have to add the following lines inside the root devicetree node on the 
 };
 ```
 
-In this example `PWM_MSEC(10)` is the period of the PWM waveform, some drive circuitry might require different values, it could also be altered in the event the drive frequency is audible.
+In this example, `PWM_MSEC(10)` is the period of the PWM waveform. This period can be altered if your drive circuitry requires different values or the frequency is audible.
 
 If your board uses a P-channel MOSFET to control backlight instead of a N-channel MOSFET, you may want to change `PWM_POLARITY_NORMAL` for `PWM_POLARITY_INVERTED`.
 
-The value inside `pwm_led_0` after `&pwm0` must be the channel number. Since (`PWM_OUT0`) is defined in the pinctrl node the channel in this example is 0.
+The value inside `pwm_led_0` after `&pwm0` must be the channel number. Since `PWM_OUT0` is defined in the pinctrl node, the channel in this example is 0.
 
 Finally you need to add backlight to the `chosen` element of the root devicetree node:
 
-```
+```dts
 / {
     chosen {
         zmk,backlight = &backlight;
@@ -212,9 +212,9 @@ Finally you need to add backlight to the `chosen` element of the root devicetree
 
 It is possible to control multiple backlight LEDs at the same time. This is useful if, for example, you have a Caps Lock LED connected to a different pin and you want it to be part of the backlight.
 
-In order to do that, first you need to enable a PWM for each pin in the pinctrl node:
+In order to do that, first configure PWM for each pin in the pinctrl node:
 
-```
+```dts
 &pinctrl {
     // Other Pinctrl definitions go here
     pwm0_default: pwm0_default {
@@ -237,7 +237,7 @@ In order to do that, first you need to enable a PWM for each pin in the pinctrl 
 
 This part will vary based on your MCU as different MCUs have a different number of modules, channels and configuration options.
 
-Then you can simply add each of your LED to the backlight node in the same manner as for one LED, using the channel number definitions in the pinctrl node:
+Add each of your LEDs to the backlight node in the same manner as for one LED, using the channel number definitions in the pinctrl node:
 
 ```dts
 backlight: pwmleds {
