@@ -68,6 +68,8 @@ Applies to: `compatible = "zmk,behavior-hold-tap"`
 | `retro-tap`                  | bool          | Triggers the tap behavior on release if no other key was pressed during a hold                                 | false              |
 | `hold-trigger-key-positions` | array         | If set, pressing the hold-tap and then any key position _not_ in the list triggers a tap.                      |                    |
 
+This behavior forwards the first parameter it receives to the parameter of the first behavior specified in `bindings`, and second parameter to the parameter of the second behavior.
+
 The `flavor` property may be one of:
 
 - `"hold-preferred"`
@@ -140,6 +142,8 @@ Definition files:
 | `wait-ms`        | int           | The default time to wait (in milliseconds) before triggering the next behavior.                                                              | `CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS` |
 | `tap-ms`         | int           | The default time to wait (in milliseconds) between the press and release events of a tapped behavior.                                        | `CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`  |
 
+With `compatible = "zmk,behavior-macro-one-param"` or `compatible = "zmk,behavior-macro-two-param"`, this behavior forwards the parameters it receives according to the `&macro_param_*` control behaviors noted below.
+
 ### Macro Control Behaviors
 
 The following macro-specific behaviors can be added at any point in the `bindings` list to change how the macro triggers subsequent behaviors.
@@ -204,6 +208,8 @@ Definition files:
 | `bindings`              | phandle array | A list of two behaviors to trigger for each rotation direction, must include parameters for `"zmk,behavior-sensor-rotate"` and exclude them for `"zmk,behavior-sensor-rotate-var"` |         |
 | `tap-ms`                | int           | The tap duration (between press and release events) in milliseconds for behaviors in `bindings`                                                                                    | 5       |
 
+With `compatible = "zmk,behavior-sensor-rotate-var"`, this behavior forwards the first parameter it receives to the parameter of the first behavior specified in `bindings`, and second parameter to the parameter of the second behavior.
+
 ## Sticky Key
 
 Creates a custom behavior that triggers a behavior and keeps it pressed it until another key is pressed and released.
@@ -223,6 +229,8 @@ Applies to: `compatible = "zmk,behavior-sticky-key"`
 | `release-after-ms` | int           | Releases the key after this many milliseconds if no other key is pressed | 1000    |
 | `quick-release`    | bool          | Release the sticky key on the next key press instead of release          | false   |
 | `ignore-modifiers` | bool          | If enabled, pressing a modifier key does not cancel the sticky key       | true    |
+
+This behavior forwards the one parameter it receives to the parameter of the behavior specified in `bindings`.
 
 You can use the following nodes to tweak the default behaviors:
 
