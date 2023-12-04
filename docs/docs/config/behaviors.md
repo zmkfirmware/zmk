@@ -49,7 +49,7 @@ You can use the following nodes to tweak the default behaviors:
 
 Creates a custom behavior that triggers one behavior when a key is held or a different one when the key is tapped.
 
-See the [hold-tap behavior documentation](../behaviors/hold-tap.md) for more details and examples.
+See the [hold-tap behavior](../behaviors/hold-tap.md) documentation for more details and examples.
 
 ### Devicetree
 
@@ -157,6 +157,8 @@ The following macro-specific behaviors can be added at any point in the `binding
 
 Creates a custom behavior that triggers one of two behaviors depending on whether certain modifiers are held.
 
+See the [mod-morph behavior](../behaviors/mod-morph.md) documentation for more details and examples.
+
 ### Devicetree
 
 Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-mod-morph.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-mod-morph.yaml)
@@ -207,6 +209,8 @@ You can use the following nodes to tweak the default behaviors:
 ## Tap Dance
 
 Creates a custom behavior that triggers a different behavior corresponding to the number of times the key is tapped.
+
+See the [tap dance behavior](../behaviors/tap-dance.md) documentation for more details and examples.
 
 ### Devicetree
 
