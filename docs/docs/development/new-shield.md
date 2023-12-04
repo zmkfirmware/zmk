@@ -113,10 +113,11 @@ config ZMK_KEYBOARD_NAME
 endif
 ```
 
-Similarly to defining the halves of a split board in `Kconfig.shield` it is important to set the `ZMK_KEYBOARD_NAME` for each half of a split keyboard.
-You'll also want to set which half is the central side. Most boards set it to the left.
-Then on the peripheral half, you'll want to turn USB on so that it shows USB status on displays properly.
-Finally, you'll want to turn on the split option for both sides. This can all be seen below.
+For split keyboards, `Kconfig.defconfig` needs to specify a few more options.
+Which side is central (usually the left) is determined via the configuration in this file.
+For that side, the keyboard name is assigned and the central config is set.
+The peripheral side is typically not assigned a name since only the central will be advertising for connections to other devices.
+Finally, the split config needs to be set for both sides:
 
 ```kconfig
 if SHIELD_MY_BOARD_LEFT
