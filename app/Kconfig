@@ -53,9 +53,18 @@ config ZMK_HID_REPORT_TYPE_NKRO
     help
       Enable full N-Key Roll Over for HID output. This selection will prevent the keyboard
       from working with some BIOS/UEFI versions that only support "boot keyboard" support.
-      This option also prevents using some infrequently used higher range HID usages.
+      This option also prevents using some infrequently used higher range HID usages (notably F13-F24 and INTL1-9)
+      These usages can be re enabled with ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT.
 
 endchoice
+
+config ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT
+    bool "Enable extended NKRO reporting"
+    depends on ZMK_HID_REPORT_TYPE_NKRO
+    help
+      Enables higher usage range for NKRO (F13-F24 and INTL1-9).
+      Please note this is not compatible with Android currently and you will get no input
+
 
 if ZMK_HID_REPORT_TYPE_HKRO
 
