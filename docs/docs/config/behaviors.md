@@ -126,7 +126,11 @@ See the [macro behavior](../behaviors/macros.md) documentation for more details 
 
 ### Devicetree
 
-Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-macro.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-macro.yaml)
+Definition files:
+
+- [zmk/app/dts/bindings/behaviors/zmk,behavior-macro.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-macro.yaml)
+- [zmk/app/dts/bindings/behaviors/zmk,behavior-macro-one-param.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-macro-one-param.yaml)
+- [zmk/app/dts/bindings/behaviors/zmk,behavior-macro-two-param.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-macro-two-param.yaml)
 
 | Property         | Type          | Description                                                                                                                                  | Default                            |
 | ---------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
