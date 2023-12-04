@@ -37,6 +37,17 @@ config BT_DIS_MODEL
 config BT_DIS_MANUF
     default "ZMK Project"
 
+# Hardware specific overrides
+
+if SOC_SERIES_NRF52X
+
+# Default on for our usage until boards implement retained bootmode.
+config NRF_STORE_REBOOT_TYPE_GPREGRET
+    bool
+    default y
+
+endif
+
 menu "HID"
 
 choice ZMK_HID_REPORT_TYPE
