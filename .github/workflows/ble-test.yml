@@ -69,7 +69,7 @@ jobs:
         run: make everything
       - name: Test ${{ matrix.test }}
         working-directory: app
-        run: BSIM_COMPONENTS_PATH="${GITHUB_WORKSPACE}/tools/bsim/components/" BSIM_OUT_PATH="${GITHUB_WORKSPACE}/tools/bsim/" ./run-ble-test.sh tests/ble/${{ matrix.test }}
+        run: BSIM_COMPONENTS_PATH="${GITHUB_WORKSPACE}/tools/bsim/components" BSIM_OUT_PATH="${GITHUB_WORKSPACE}/tools/bsim" ./run-ble-test.sh tests/ble/${{ matrix.test }}
       - name: Archive artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
