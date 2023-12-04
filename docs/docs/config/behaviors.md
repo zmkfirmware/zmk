@@ -183,6 +183,27 @@ You can use the following nodes to tweak the default behaviors:
 | -------- | ----------------------------------------- |
 | `&gresc` | [Grave escape](../behaviors/mod-morph.md) |
 
+## Sensor Rotation
+
+Creates a custom behavior which sends a tap of other behaviors when a sensor is rotated.
+Has two variants: with `compatible = "zmk,behavior-sensor-rotate"` it accepts no parameters when used, whereas with `compatible = "zmk,behavior-sensor-rotate-var"` it accepts two parameters.
+
+See the [sensor rotation behavior](../behaviors/sensor-rotate.md) documentation for more details and examples.
+
+### Devicetree
+
+Definition files:
+
+- [zmk/app/dts/bindings/behaviors/zmk,behavior-sensor-rotate.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-sensor-rotate.yaml)
+- [zmk/app/dts/bindings/behaviors/zmk,behavior-sensor-rotate-var.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-sensor-rotate-var.yaml)
+
+| Property                | Type          | Description                                                                                                                                                                        | Default |
+| ----------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `compatible`            | string        | Sensor rotation type, **must be _one_ of**:<br/>• `"zmk,behavior-sensor-rotate"`<br/>• `"zmk,behavior-sensor-rotate-var"`                                                          |         |
+| `#sensor-binding-cells` | int           | Number of params accepted (depends on `compatible` property), **must be _one_ of**:<br/>• `<0>`<br/>• `<2>`                                                                        |         |
+| `bindings`              | phandle array | A list of two behaviors to trigger for each rotation direction, must include parameters for `"zmk,behavior-sensor-rotate"` and exclude them for `"zmk,behavior-sensor-rotate-var"` |         |
+| `tap-ms`                | int           | The tap duration (between press and release events) in milliseconds for behaviors in `bindings`                                                                                    | 5       |
+
 ## Sticky Key
 
 Creates a custom behavior that triggers a behavior and keeps it pressed it until another key is pressed and released.
