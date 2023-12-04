@@ -193,7 +193,7 @@ Applies to: `compatible = "zmk,behavior-sticky-key"`
 
 | Property           | Type          | Description                                                              | Default |
 | ------------------ | ------------- | ------------------------------------------------------------------------ | ------- |
-| `#binding-cells`   | int           | Must match the number of parameters the `bindings` behavior uses         |         |
+| `#binding-cells`   | int           | Must be `<1>`                                                            |         |
 | `bindings`         | phandle array | A behavior (without parameters) to trigger                               |         |
 | `release-after-ms` | int           | Releases the key after this many milliseconds if no other key is pressed | 1000    |
 | `quick-release`    | bool          | Release the sticky key on the next key press instead of release          | false   |
