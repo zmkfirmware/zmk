@@ -136,6 +136,12 @@ static struct bt_conn_cb conn_callbacks = {
     .le_param_updated = le_param_updated,
 };
 
+static void auth_pairing_complete(struct bt_conn *conn, bool bonded) { is_bonded = bonded; }
+
+static struct bt_conn_auth_info_cb zmk_peripheral_ble_auth_info_cb = {
+    .pairing_complete = auth_pairing_complete,
+};
+
 bool zmk_split_bt_peripheral_is_connected() { return is_connected; }
 
 bool zmk_split_bt_peripheral_is_bonded() { return is_bonded; }
@@ -161,6 +167,7 @@ static int zmk_peripheral_ble_init(const struct device *_arg) {
     bt_unpair(BT_ID_DEFAULT, NULL);
 #else
     bt_conn_cb_register(&conn_callbacks);
+    bt_conn_auth_info_cb_register(&zmk_peripheral_ble_auth_info_cb);
 
     low_duty_advertising = false;
     k_work_submit(&advertising_work);
