@@ -134,13 +134,13 @@ Definition files:
 - [zmk/app/dts/bindings/behaviors/zmk,behavior-macro-one-param.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-macro-one-param.yaml)
 - [zmk/app/dts/bindings/behaviors/zmk,behavior-macro-two-param.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-macro-two-param.yaml)
 
-| Property         | Type          | Description                                                                                                                                  | Default                            |
-| ---------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `compatible`     | string        | Macro type, **must be _one_ of**:<br/>• `"zmk,behavior-macro"`<br/>• `"zmk,behavior-macro-one-param"`<br/>• `"zmk,behavior-macro-two-param"` |                                    |
-| `#binding-cells` | int           | Number of params accepted (depends on `compatible` property), **must be _one_ of**:<br/>• `<0>`<br/>• `<1>`<br/>• `<2>`                      |                                    |
-| `bindings`       | phandle array | List of behaviors to trigger                                                                                                                 |                                    |
-| `wait-ms`        | int           | The default time to wait (in milliseconds) before triggering the next behavior.                                                              | `CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS` |
-| `tap-ms`         | int           | The default time to wait (in milliseconds) between the press and release events of a tapped behavior.                                        | `CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`  |
+| Property         | Type          | Description                                                                                                                                                                                          | Default                            |
+| ---------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `compatible`     | string        | Macro type, **must be _one_ of**:<ul><li>`"zmk,behavior-macro"`</li><li>`"zmk,behavior-macro-one-param"`</li><li>`"zmk,behavior-macro-two-param"`</li></ul>                                          |                                    |
+| `#binding-cells` | int           | Must be <ul><li>`<0>` if `compatible = "zmk,behavior-macro"`</li><li>`<1>` if `compatible = "zmk,behavior-macro-one-param"`</li><li>`<2>` if `compatible = "zmk,behavior-macro-two-param"`</li></ul> |                                    |
+| `bindings`       | phandle array | List of behaviors to trigger                                                                                                                                                                         |                                    |
+| `wait-ms`        | int           | The default time to wait (in milliseconds) before triggering the next behavior.                                                                                                                      | `CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS` |
+| `tap-ms`         | int           | The default time to wait (in milliseconds) between the press and release events of a tapped behavior.                                                                                                | `CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`  |
 
 With `compatible = "zmk,behavior-macro-one-param"` or `compatible = "zmk,behavior-macro-two-param"`, this behavior forwards the parameters it receives according to the `&macro_param_*` control behaviors noted below.
 
@@ -203,8 +203,8 @@ Definition files:
 
 | Property                | Type          | Description                                                                                                                                                                        | Default |
 | ----------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `compatible`            | string        | Sensor rotation type, **must be _one_ of**:<br/>• `"zmk,behavior-sensor-rotate"`<br/>• `"zmk,behavior-sensor-rotate-var"`                                                          |         |
-| `#sensor-binding-cells` | int           | Number of params accepted (depends on `compatible` property), **must be _one_ of**:<br/>• `<0>`<br/>• `<2>`                                                                        |         |
+| `compatible`            | string        | Sensor rotation type, **must be _one_ of**: <ul><li>`"zmk,behavior-sensor-rotate"`</li><li>`"zmk,behavior-sensor-rotate-var"`</li></ul>                                            |         |
+| `#sensor-binding-cells` | int           | Must be <ul><li>`<0>` if `compatible = "zmk,behavior-sensor-rotate"`</li><li>`<2>` if `compatible = "zmk,behavior-sensor-rotate-var"`</li></ul>                                    |         |
 | `bindings`              | phandle array | A list of two behaviors to trigger for each rotation direction, must include parameters for `"zmk,behavior-sensor-rotate"` and exclude them for `"zmk,behavior-sensor-rotate-var"` |         |
 | `tap-ms`                | int           | The tap duration (between press and release events) in milliseconds for behaviors in `bindings`                                                                                    | 5       |
 
