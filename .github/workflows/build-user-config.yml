@@ -66,11 +66,12 @@ jobs:
           shield: ${{ matrix.shield }}
           artifact_name: ${{ matrix.artifact-name }}
         run: |
-          export new_tmp_dir=$(mktemp -d)
-          echo "tmp_dir=${new_tmp_dir}" >> $GITHUB_ENV
-          echo "tmp_config_dir=${new_tmp_dir}/config" >> $GITHUB_ENV
           if [ -e zephyr/module.yml ]; then
             export zmk_load_arg=" -DZMK_EXTRA_MODULES='${GITHUB_WORKSPACE}'"
+            export new_tmp_dir=$(mktemp -d)
+            echo "base_dir=${new_tmp_dir}" >> $GITHUB_ENV
+          else
+            echo "base_dir=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
           fi
 
           echo "zephyr_version=${ZEPHYR_VERSION}" >> $GITHUB_ENV
@@ -80,8 +81,10 @@ jobs:
 
       - name: Copy config files to isolated temporary directory
         run: |
-          mkdir "${{ env.tmp_config_dir }}"
-          cp -R ${{ inputs.config_path }}/* "${{ env.tmp_config_dir }}/"
+          if [ "${{ env.base_dir }}" != "${GITHUB_WORKSPACE}" ]; then
+            mkdir "${{ env.base_dir }}/${{ inputs.config_path }}"
+            cp -R ${{ inputs.config_path }}/* "${{ env.base_dir }}/${{ inputs.config_path }}/"
+          fi
 
       - name: Cache west modules
         uses: actions/cache@v3.0.11
@@ -90,11 +93,11 @@ jobs:
           cache_name: cache-zephyr-${{ env.zephyr_version }}-modules
         with:
           path: |
-            ${{ env.tmp_dir }}/modules/
-            ${{ env.tmp_dir }}/tools/
-            ${{ env.tmp_dir }}/zephyr/
-            ${{ env.tmp_dir }}/bootloader/
-            ${{ env.tmp_dir }}/zmk/
+            ${{ env.base_dir }}/modules/
+            ${{ env.base_dir }}/tools/
+            ${{ env.base_dir }}/zephyr/
+            ${{ env.base_dir }}/bootloader/
+            ${{ env.base_dir }}/zmk/
           key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('**/west.yml', '**/build.yaml') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache_name }}-
@@ -102,21 +105,21 @@ jobs:
             ${{ runner.os }}-
 
       - name: West Init
-        working-directory: ${{ env.tmp_dir }}
-        run: west init -l "${{ env.tmp_config_dir }}"
+        working-directory: ${{ env.base_dir }}
+        run: west init -l "${{ env.base_dir }}/${{ inputs.config_path }}"
 
       - name: West Update
-        working-directory: ${{ env.tmp_dir }}
+        working-directory: ${{ env.base_dir }}
         run: west update
 
       - name: West Zephyr export
-        working-directory: ${{ env.tmp_dir }}
+        working-directory: ${{ env.base_dir }}
         run: west zephyr-export
 
       - name: West Build (${{ env.display_name }})
-        working-directory: ${{ env.tmp_dir }}
+        working-directory: ${{ env.base_dir }}
         shell: sh -x {0}
-        run: west build -s zmk/app -d "${{ env.build_dir }}" -b "${{ matrix.board }}" -- -DZMK_CONFIG=${{ env.tmp_config_dir }} ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
+        run: west build -s zmk/app -d "${{ env.build_dir }}" -b "${{ matrix.board }}" -- -DZMK_CONFIG=${{ env.base_dir }}/${{ inputs.config_path }} ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
 
       - name: ${{ env.display_name }} Kconfig file
         run: |
