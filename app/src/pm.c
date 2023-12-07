@@ -13,6 +13,8 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#include <zmk/endpoints.h>
+
 #define HAS_WAKERS DT_HAS_COMPAT_STATUS_OKAY(zmk_soft_off_wakeup_sources)
 
 #if HAS_WAKERS
@@ -28,6 +30,10 @@ int zmk_pm_soft_off(void) {
 #if IS_ENABLED(CONFIG_PM_DEVICE)
     size_t device_count;
     const struct device *devs;
+
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    zmk_endpoints_clear_current();
+#endif
 
     device_count = z_device_get_all_static(&devs);
 
