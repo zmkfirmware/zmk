@@ -171,7 +171,6 @@ Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-charlieplex.y
 
 | Property                  | Type       | Description                                                                                 | Default |
 | ------------------------- | ---------- | ------------------------------------------------------------------------------------------- | ------- |
-| `label`                   | string     | Unique label for the node.                                                                  |         |
 | `gpios`                   | GPIO array | GPIOs used, listed in order.                                                                |         |
 | `interrupt-gpios`         | GPIO array | A single GPIO to use for interrupt. Leaving this empty will enable continuous polling.      |         |
 | `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                    | 5       |
@@ -452,7 +451,6 @@ Note that the entire addressable space does not need to be mapped.
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-charlieplex";
-        label = "KSCAN";
 
         interrupt-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >;
         gpios
