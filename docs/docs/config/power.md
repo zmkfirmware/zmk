@@ -26,7 +26,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ## Soft Off
 
-The [soft off feature](../features/soft-off.md) allows turning the keyboard on/off from either dedicated hardware of using the [`&soft_off` behavior](../behaviors/soft-off.md) to turn off and a reset button to turn back on again.
+The [soft off feature](../features/soft-off.md) allows turning the keyboard on/off from either dedicated hardware, or using the [`&soft_off` behavior](../behaviors/soft-off.md) to turn off and a reset button to turn back on again.
 
 ### Kconfig
 
@@ -34,7 +34,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 | Config                   | Type | Description                                                         | Default |
 | ------------------------ | ---- | ------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_PM_SOFT_OFF` | bool | Enable soft off functionality from the keymap of dedicated hardware | n       |
+| `CONFIG_ZMK_PM_SOFT_OFF` | bool | Enable soft off functionality from the keymap or dedicated hardware | n       |
 
 ## External Power Control
 

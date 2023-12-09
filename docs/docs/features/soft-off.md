@@ -20,15 +20,15 @@ Once powered off, the keyboard will only wake up when:
 
 ## Soft Off With Existing Designs
 
-For existing designs, using soft off is as simple as placing the [Soft Off Behavior](../behaviors/soft-off.md) in your keymap and then invoking it. For splits, at least for now, you'll need to place it somewhere on each side of your keymap and trigger on both sides, starting from the peripheral side first.
+For existing designs, using soft off is as simple as placing the [Soft Off Behavior](../behaviors/soft-off.md) in your keymap and then invoking it.
 
 You can then wake up the keyboard by pressing the reset button once, and repeating this for each side for split keyboards.
 
-## Adding Soft On/Off To New Designs
+## Adding Dedicated Soft On/Off GPIO Pin To New Designs
 
 ### Hardware Design
 
-ZMK's soft on/off requires a dedicated GPIO pin to be used to trigger powering off, and to wake the core from the
+ZMK's dedicated soft on/off pin feature requires a dedicated GPIO pin to be used to trigger powering off, and to wake the core from the
 soft off state when it goes active again later.
 
 #### Simple Direct Pin
@@ -71,10 +71,9 @@ In this case, we will be creating a dedicated instance of the [Soft Off Behavior
 ```
 / {
     behaviors {
-        hw_soft_off: behavior_hw_soft_off {
+        hw_soft_off: hw_soft_off {
             compatible = "zmk,behavior-soft-off";
             #binding-cells = <0>;
-            label = "HW_SO";
             hold-time-ms = <5000>;
         };
     };
