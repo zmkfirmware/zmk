@@ -149,6 +149,39 @@ The output pins (e.g. columns for `col2row`) should have the flag `GPIO_ACTIVE_H
     };
 ```
 
+## Charlieplex Driver
+
+Keyboard scan driver where keys are arranged on a matrix with each GPIO used as both input and output.
+
+- With `interrupt-gpios` unset, this allows n pins to drive n\*(n-1) keys.
+- With `interrupt-gpios` set, n pins will drive (n-1)\*(n-2) keys, but provide much improved power handling.
+
+Definition file: [zmk/app/module/drivers/kscan/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/module/drivers/kscan/Kconfig)
+
+| Config                                              | Type        | Description                                                               | Default |
+| --------------------------------------------------- | ----------- | ------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_KSCAN_CHARLIEPLEX_WAIT_BEFORE_INPUTS`   | int (ticks) | How long to wait before reading input pins after setting output active    | 0       |
+| `CONFIG_ZMK_KSCAN_CHARLIEPLEX_WAIT_BETWEEN_OUTPUTS` | int (ticks) | How long to wait between each output to allow previous output to "settle" | 0       |
+
+### Devicetree
+
+Applies to: `compatible = "zmk,kscan-gpio-charlieplex"`
+
+Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-charlieplex.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/module/dts/bindings/kscan/zmk%2Ckscan-gpio-charlieplex.yaml)
+
+| Property                  | Type       | Description                                                                                 | Default |
+| ------------------------- | ---------- | ------------------------------------------------------------------------------------------- | ------- |
+| `gpios`                   | GPIO array | GPIOs used, listed in order.                                                                |         |
+| `interrupt-gpios`         | GPIO array | A single GPIO to use for interrupt. Leaving this empty will enable continuous polling.      |         |
+| `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                    | 5       |
+| `debounce-release-ms`     | int        | Debounce time for key release in milliseconds.                                              | 5       |
+| `debounce-scan-period-ms` | int        | Time between reads in milliseconds when any key is pressed.                                 | 1       |
+| `poll-period-ms`          | int        | Time between reads in milliseconds when no key is pressed and `interrupt-gpois` is not set. | 10      |
+
+Define the transform with a [matrix transform](#matrix-transform). The row is always the driven pin, and the column always the receiving pin (input to the controller).
+For example, in `RC(5,0)` power flows from the 6th pin in `gpios` to the 1st pin in `gpios`.
+Exclude all positions where the row and column are the same as these pairs will never be triggered, since no pin can be both input and output at the same time.
+
 ## Composite Driver
 
 Keyboard scan driver which combines multiple other keyboard scan drivers.
@@ -393,12 +426,53 @@ Consider a keyboard with a [duplex matrix](https://wiki.ai03.com/books/pcb-desig
         // Shift  Z  X  C ...
         // Ctrl Alt       ...
         map = <
-            RC(0,0) RC(1,0) RC(0,1) RC(1,1)      // ...
-            RC(2,0) RC(3,0) RC(2,1) RC(3,1)      // ...
-            RC(4,0)   RC(5,0) RC(4,1) RC(5,1)    // ...
-            RC(6,0)      RC(7,0) RC(6,1) RC(7,1) // ...
-            RC(8,0)         RC(8,1) RC(9,1)      // ...
-            RC(10,0) RC(11,0)                    // ...
+            RC(0,0) RC(1,0) RC(0,1) RC(1,1)       // ...
+            RC(2,0) RC(3,0) RC(2,1) RC(3,1)       // ...
+            RC(4,0)   RC(5,0) RC(4,1) RC(5,1)     // ...
+            RC(6,0)     RC(7,0) RC(6,1) RC(7,1)   // ...
+            RC(8,0)       RC(9,0) RC(8,1) RC(9,1) // ...
+            RC(10,0) RC(11,0)                     // ...
+        >;
+    };
+};
+```
+
+### Example: Charlieplex
+
+Since a charlieplex driver will never align with a keyboard directly due to the un-addressable positions, a matrix transform should be used to map the pairs to the layout of the keys.
+Note that the entire addressable space does not need to be mapped.
+
+```devicetree
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &default_transform;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-charlieplex";
+
+        interrupt-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >;
+        gpios
+          = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          , <&pro_micro 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          , <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          , <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          ; // addressable space is 5x5, (minus paired values)
+    };
+
+    default_transform: matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <3>;
+        columns = <5>;
+        //  Q  W  E  R
+        //   A  S  D  F
+        //    Z  X  C  V
+        map = <
+            RC(0,1) RC(0,2) RC(0,3) RC(0,4)
+              RC(1,0) RC(1,2) RC(1,3) RC(1,4)
+                RC(2,0) RC(2,1) RC(2,3) RC(2,4)
         >;
     };
 };

@@ -1,0 +1,31 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: GPIO keyboard charlieplex matrix controller
+
+compatible: "zmk,kscan-gpio-charlieplex"
+
+include: kscan.yaml
+
+properties:
+  gpios:
+    type: phandle-array
+    required: true
+  interrupt-gpios:
+    type: phandle-array
+  debounce-press-ms:
+    type: int
+    default: 5
+    description: Debounce time for key press in milliseconds. Use 0 for eager debouncing.
+  debounce-release-ms:
+    type: int
+    default: 5
+    description: Debounce time for key release in milliseconds.
+  debounce-scan-period-ms:
+    type: int
+    default: 1
+    description: Time between reads in milliseconds when any key is pressed.
+  poll-period-ms:
+    type: int
+    default: 1
+    description: Time between reads in milliseconds
