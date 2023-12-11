@@ -43,12 +43,13 @@ struct behavior_input_two_axis_data {
 struct behavior_input_two_axis_config {
     int16_t x_code;
     int16_t y_code;
-    int delay_ms;
-    int time_to_max_speed_ms;
+    uint16_t delay_ms;
+    uint16_t time_to_max_speed_ms;
+    uint8_t trigger_period_ms;
     // acceleration exponent 0: uniform speed
     // acceleration exponent 1: uniform acceleration
     // acceleration exponent 2: uniform jerk
-    int acceleration_exponent;
+    uint8_t acceleration_exponent;
 };
 
 #if CONFIG_MINIMAL_LIBC
@@ -107,10 +108,9 @@ static float update_movement_1d(const struct behavior_input_two_axis_config *con
     }
 
     int64_t move_duration = ms_since_start(state->start_time, now, config->delay_ms);
-    move =
-        (move_duration > 0)
-            ? (speed(config, state->speed, move_duration) * CONFIG_ZMK_MOUSE_TICK_DURATION / 1000)
-            : 0;
+    move = (move_duration > 0)
+               ? (speed(config, state->speed, move_duration) * config->trigger_period_ms / 1000)
+               : 0;
 
     track_remainder(&(move), &(state->remainder));
 
@@ -165,7 +165,7 @@ static void tick_work_cb(struct k_work *work) {
     }
 
     if (should_be_working(data)) {
-        k_work_schedule(&data->tick_work, K_MSEC(CONFIG_ZMK_MOUSE_TICK_DURATION));
+        k_work_schedule(&data->tick_work, K_MSEC(cfg->trigger_period_ms));
     }
 }
 
@@ -183,11 +183,12 @@ static void set_start_times_for_activity(struct movement_state_2d *state) {
 
 static void update_work_scheduling(const struct device *dev) {
     struct behavior_input_two_axis_data *data = dev->data;
+    const struct behavior_input_two_axis_config *cfg = dev->config;
 
     set_start_times_for_activity(&data->state);
 
     if (should_be_working(data)) {
-        k_work_schedule(&data->tick_work, K_MSEC(CONFIG_ZMK_MOUSE_TICK_DURATION));
+        k_work_schedule(&data->tick_work, K_MSEC(cfg->trigger_period_ms));
     } else {
         k_work_cancel_delayable(&data->tick_work);
     }
@@ -260,6 +261,7 @@ static const struct behavior_driver_api behavior_input_two_axis_driver_api = {
     static struct behavior_input_two_axis_config behavior_input_two_axis_config_##n = {            \
         .x_code = DT_INST_PROP(n, x_input_code),                                                   \
         .y_code = DT_INST_PROP(n, y_input_code),                                                   \
+        .trigger_period_ms = DT_INST_PROP(n, trigger_period_ms),                                   \
         .delay_ms = DT_INST_PROP_OR(n, delay_ms, 0),                                               \
         .time_to_max_speed_ms = DT_INST_PROP(n, time_to_max_speed_ms),                             \
         .acceleration_exponent = DT_INST_PROP_OR(n, acceleration_exponent, 1),                     \
