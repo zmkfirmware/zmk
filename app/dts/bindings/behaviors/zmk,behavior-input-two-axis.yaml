@@ -11,6 +11,10 @@ properties:
   y-input-code:
     type: int
     required: true
+  trigger-period-ms:
+    type: int
+    default: 16
+    description: The time (in ms) between generated inputs when an input has non-zero speed.
   delay-ms:
     type: int
   time-to-max-speed-ms:
