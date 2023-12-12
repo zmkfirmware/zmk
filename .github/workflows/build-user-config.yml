@@ -23,6 +23,21 @@ on:
         default: "firmware"
         required: false
         type: string
+      release_enable:
+        description: "Enable publishing of artifacts as a release"
+        default: true
+        required: false
+        type: boolean
+      release_name:
+        description: "Release name"
+        default: "ZMK Firmware"
+        required: false
+        type: string
+      release_tag:
+        description: "Release tag"
+        default: "latest"
+        required: false
+        type: string
 
 jobs:
   matrix:
@@ -161,3 +176,25 @@ jobs:
         with:
           name: ${{ inputs.archive_name }}
           path: ${{ env.build_dir }}/artifacts
+
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.release_enable && !cancelled() }}
+    needs: build
+    name: Publish firmware
+    steps:
+      - name: Delete previous release
+        uses: dev-drprasad/delete-tag-and-release@v1.0.1
+        with:
+          tag_name: ${{ inputs.release_tag }}
+          github_token: ${{ github.token }}
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3.0.2
+
+      - name: Publish ${{ inputs.release_tag }} release
+        uses: softprops/action-gh-release@v0.1.15
+        with:
+          name: ${{ inputs.release_name }}
+          tag_name: ${{ inputs.release_tag }}
+          files: "**/*.*"
