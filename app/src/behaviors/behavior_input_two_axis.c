@@ -145,10 +145,10 @@ static void tick_work_cb(struct k_work *work) {
     const struct device *dev = data->dev;
     const struct behavior_input_two_axis_config *cfg = dev->config;
 
-    uint32_t timestamp = k_uptime_get();
+    uint64_t timestamp = k_uptime_get();
 
-    LOG_INF("tick start times: %lld %lld %lld", data->state.x.start_time, data->state.y.start_time,
-            timestamp);
+    LOG_INF("x start: %llu, y start: %llu, current timestamp: %llu", data->state.x.start_time,
+            data->state.y.start_time, timestamp);
 
     struct vector2d move = update_movement_2d(cfg, &data->state, timestamp);
 
