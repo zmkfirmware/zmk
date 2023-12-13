@@ -33,7 +33,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
 
     left_encoder: left_encoder {
         compatible = "alps,ec11";
-        label = "L_ENCODER";
         steps = <144>;
         status = "disabled";
 
@@ -43,7 +42,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
 
     right_encoder: right_encoder {
         compatible = "alps,ec11";
-        label = "R_ENCODER";
         steps = <144>;
         status = "disabled";
 
@@ -64,7 +62,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
-        label = "DISPLAY";
         width = <128>;
         height = <32>;
         segment-offset = <0>;

@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "zmk_uno_split.dtsi"
+
+&split_matrix_transform {
+    row-offset = <3>;
+};
+
+&split_direct_matrix_transform {
+    row-offset = <2>;
+};
+
+&right_encoder {
+    status = "okay";
+};

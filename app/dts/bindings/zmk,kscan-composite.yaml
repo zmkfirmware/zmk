@@ -6,6 +6,8 @@ compatible: "zmk,kscan-composite"
 properties:
   label:
     type: string
+    required: false
+    deprecated: true
   rows:
     type: int
   columns:
@@ -17,6 +19,8 @@ child-binding:
   properties:
     label:
       type: string
+      required: false
+      deprecated: true
     kscan:
       type: phandle
     row-offset:

@@ -24,7 +24,7 @@ jobs:
         id: test-dirs
         run: |
           cd app/tests/
-          export TESTS=$(ls -d * | jq -R -s -c 'split("\n")[:-1]')
+          export TESTS=$(ls -d * | grep -v ble | jq -R -s -c 'split("\n")[:-1]')
           echo "::set-output name=test-dirs::${TESTS}"
   run-tests:
     needs: collect-tests

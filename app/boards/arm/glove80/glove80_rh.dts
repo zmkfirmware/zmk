@@ -22,23 +22,20 @@
 
     back_led_backlight: pwmleds {
         compatible = "pwm-leds";
-        label = "BACK LED";
         pwm_led_0 {
             pwms = <&pwm0 0 PWM_USEC(20) PWM_POLARITY_NORMAL>;
-            label = "Back LED configured as backlight";
         };
     };
 
-    ext-power {
+    // Node name must match original "EXT_POWER" label to preserve user settings.
+    EXT_POWER {
         compatible = "zmk,ext-power-generic";
-        label = "EXT_POWER";
         control-gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>; /* WS2812_CE */
         init-delay-ms = <100>;
     };
 
     vbatt: vbatt {
         compatible = "zmk,battery-nrf-vddh";
-        label = "BATTERY";
     };
 };
 
@@ -52,7 +49,6 @@
 
     led_strip: ws2812@0 {
         compatible = "worldsemi,ws2812-spi";
-        label = "WS2812C-2020";
 
         /* SPI */
         reg = <0>; /* ignored, but necessary for SPI bindings */

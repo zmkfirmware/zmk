@@ -73,7 +73,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
-            label = " QWERTY";
+            display-name = " QWERTY";
             bindings = <
 &kp Q      &kp W      &kp E      &kp R      &kp T                            &kp Y      &kp U      &kp I      &kp O      &kp P
 &kp A      &kp S      &kp D      &kp F      &kp G                            &kp H      &kp J      &kp K      &kp L      &kp SEMI
@@ -85,7 +85,7 @@
         };
 
         lower_layer {
-            label = " Lower";
+            display-name = " Lower";
             bindings = <
 &kp N1     &kp N2     &kp N3     &kp N4     &kp N5                           &kp N6     &kp N7     &kp N8     &kp N9     &kp N0
 &trans     &trans     &trans     &trans     &trans                           &trans     &trans     &trans     &trans     &kp QUOT
@@ -97,7 +97,7 @@
         };
 
         raise_layer {
-            label = " Raise";
+            display-name = " Raise";
             bindings = <
 &kp TAB    &trans     &trans     &trans     &trans                           &kp PG_UP  &kp HOME   &kp UP     &kp END    &kp BSLH
 &kp CAPS   &trans     &trans     &trans     &trans                           &kp PG_DN  &kp LEFT   &kp DOWN   &kp RIGHT  &kp GRAVE
@@ -109,7 +109,7 @@
         };
 
         adjust_layer {
-            label = " Adjust";
+            display-name = " Adjust";
             bindings = <
 
 &kp F1     &kp F2     &kp F3     &kp F4     &kp F5                           &trans     &trans     &trans     &trans     &trans
@@ -122,7 +122,7 @@
         };
 
         numpad_layer {
-            label = " NumPad";
+            display-name = " NumPad";
             bindings = <
 
 &trans     &none      &none      &none      &none                            &kp SLASH  &kp N7     &kp N8     &kp N9     &kp MINUS
@@ -135,7 +135,7 @@ RGBOFF     RGBEFF     RGBHUD     RGBSAD     RGBBRD     &trans     &trans     &no
         };
 
         ble_layer {
-            label = " BLE";
+            display-name = " BLE";
             bindings = <
 
 &bt BT0    &bt BT1    &bt BT2    &bt BT3    &bt BT4                          &bt BT0    &bt BT1    &bt BT2    &bt BT3    &bt BT4

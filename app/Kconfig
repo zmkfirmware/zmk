@@ -53,9 +53,18 @@ config ZMK_HID_REPORT_TYPE_NKRO
     help
       Enable full N-Key Roll Over for HID output. This selection will prevent the keyboard
       from working with some BIOS/UEFI versions that only support "boot keyboard" support.
-      This option also prevents using some infrequently used higher range HID usages.
+      This option also prevents using some infrequently used higher range HID usages (notably F13-F24 and INTL1-9)
+      These usages can be re enabled with ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT.
 
 endchoice
+
+config ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT
+    bool "Enable extended NKRO reporting"
+    depends on ZMK_HID_REPORT_TYPE_NKRO
+    help
+      Enables higher usage range for NKRO (F13-F24 and INTL1-9).
+      Please note this is not compatible with Android currently and you will get no input
+
 
 if ZMK_HID_REPORT_TYPE_HKRO
 
@@ -86,6 +95,12 @@ config ZMK_HID_CONSUMER_REPORT_USAGES_BASIC
       hosts. Allows for broader compatibability with more host OSes.
 
 endchoice
+
+config ZMK_HID_INDICATORS
+    bool "HID Indicators"
+    help
+      Enable HID indicators, used for detecting state of Caps/Scroll/Num Lock,
+      Kata, and Compose.
 
 menu "Output Types"
 
@@ -121,20 +136,39 @@ menuconfig ZMK_BLE
     select BT_SMP_APP_PAIRING_ACCEPT
     select BT_PERIPHERAL
     select BT_DIS
-    select BT_SETTINGS
-    select SETTINGS
-    imply ZMK_BATTERY_REPORTING
+    imply BT_SETTINGS if !ARCH_POSIX
+    imply SETTINGS if !ARCH_POSIX
+    imply ZMK_BATTERY_REPORTING if !ARCH_POSIX
 
 if ZMK_BLE
+
+config ZMK_BLE_EXPERIMENTAL_FEATURES
+    bool "Experimental: Enable experimental/advanced BLE settings/features"
+    imply ZMK_BLE_PASSKEY_ENTRY
+    imply BT_GATT_AUTO_SEC_REQ
+    imply BT_SMP_ALLOW_UNAUTH_OVERWRITE
+    help
+      Enables a combination of settings that are planned to be default in future versions of ZMK.
+      This includes changes to timing on BLE pairing initation, BT Secure Connection passkey entry,
+      restores use of the updated/new LLCP implementation, disables 2M PHY support, and allows
+      overwrite of keys from previously paired hosts.
+
+config ZMK_BLE_PASSKEY_ENTRY
+    bool "Require passkey entry on the keyboard to complete pairing"
+    default n
+    select RING_BUFFER
+
+choice BT_LL_SW_LLCP_IMPL
+    default BT_LL_SW_LLCP_LEGACY if !ZMK_BLE_EXPERIMENTAL_FEATURES
+
+endchoice
+
+config BT_CTLR_PHY_2M
+    default n if ZMK_BLE_EXPERIMENTAL_FEATURES
 
 # BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
 config BT_TINYCRYPT_ECC
     default y if BT_HCI && !BT_CTLR
-
-choice BT_LL_SW_LLCP_IMPL
-    default BT_LL_SW_LLCP_LEGACY
-
-endchoice
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
     default 4096 if SOC_RP2040
@@ -173,11 +207,6 @@ config BT_GATT_AUTO_SEC_REQ
 
 config BT_DEVICE_APPEARANCE
     default 961
-
-config ZMK_BLE_PASSKEY_ENTRY
-    bool "Require passkey entry on the keyboard to complete pairing"
-    default n
-    select RING_BUFFER
 
 config BT_PERIPHERAL_PREF_MIN_INT
     default 6

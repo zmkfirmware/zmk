@@ -6,7 +6,6 @@
     behaviors {
         hp: behavior_hold_preferred {
             compatible = "zmk,behavior-hold-tap";
-            label = "MOD_TAP";
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping_term_ms = <300>;
@@ -17,7 +16,6 @@
 
     keymap {
         compatible = "zmk,keymap";
-        label ="Default keymap";
 
         default_layer {
             bindings = <

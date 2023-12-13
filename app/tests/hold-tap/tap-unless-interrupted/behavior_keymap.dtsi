@@ -8,7 +8,6 @@
     behaviors {
         ht_tui: behavior_hold_tap_tap_unless_interrupted {
             compatible = "zmk,behavior-hold-tap";
-            label = "hold_tap_tap_unless_interrupted";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
             tapping-term-ms = <300>;
@@ -19,7 +18,6 @@
 
     keymap {
         compatible = "zmk,keymap";
-        label ="Default keymap";
 
         default_layer {
             bindings = <

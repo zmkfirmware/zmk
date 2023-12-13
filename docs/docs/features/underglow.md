@@ -98,7 +98,6 @@ Here's an example on a definition that uses P0.06:
 
   led_strip: ws2812@0 {
     compatible = "worldsemi,ws2812-spi";
-    label = "WS2812";
 
     /* SPI */
     reg = <0>; /* ignored, but necessary for SPI bindings */
@@ -142,7 +141,6 @@ Here's another example for a non-nRF52 board on `spi3`:
 
   led_strip: ws2812@0 {
     compatible = "worldsemi,ws2812-spi";
-    label = "WS2812";
 
     /* SPI */
     reg = <0>;

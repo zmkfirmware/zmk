@@ -1,0 +1,55 @@
+#
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+#
+
+if BOARD_ADV360PRO_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Adv360 Pro"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif # BOARD_ADV360PRO_LEFT
+
+if BOARD_ADV360PRO_RIGHT
+
+config ZMK_KEYBOARD_NAME
+    default "Adv360 Pro rt"
+
+endif # BOARD_ADV360PRO_RIGHT
+
+
+if BOARD_ADV360PRO_LEFT || BOARD_ADV360PRO_RIGHT
+
+config BOARD
+    default "adv360pro"
+
+config ZMK_SPLIT
+    default y
+
+config SPI
+    bool
+    default y
+
+config BT_CTLR
+    default BT
+
+if USB
+
+config USB_NRFX
+    default y
+
+config USB_DEVICE_STACK
+    default y
+
+endif # USB
+
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+    default y
+
+config SPI
+    default y
+
+endif # BOARD_ADV360PRO_LEFT || BOARD_ADV360PRO_RIGHT

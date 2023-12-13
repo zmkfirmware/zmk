@@ -20,13 +20,13 @@ static int behavior_sensor_rotate_var_init(const struct device *dev) { return 0;
 
 #define SENSOR_ROTATE_VAR_INST(n)                                                                  \
     static struct behavior_sensor_rotate_config behavior_sensor_rotate_var_config_##n = {          \
-        .cw_binding = {.behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 0), label)},    \
-        .ccw_binding = {.behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 1), label)},   \
+        .cw_binding = {.behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(n, bindings, 0))},    \
+        .ccw_binding = {.behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(n, bindings, 1))},   \
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .override_params = true,                                                                   \
     };                                                                                             \
     static struct behavior_sensor_rotate_data behavior_sensor_rotate_var_data_##n = {};            \
-    DEVICE_DT_INST_DEFINE(                                                                         \
+    BEHAVIOR_DT_INST_DEFINE(                                                                       \
         n, behavior_sensor_rotate_var_init, NULL, &behavior_sensor_rotate_var_data_##n,            \
         &behavior_sensor_rotate_var_config_##n, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,  \
         &behavior_sensor_rotate_var_driver_api);

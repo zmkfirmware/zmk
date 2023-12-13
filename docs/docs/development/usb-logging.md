@@ -83,3 +83,32 @@ You should see tio printing `Disconnected` or `Connected` when you disconnect or
 </Tabs>
 
 From there, you should see the various log messages from ZMK and Zephyr, depending on which systems you have set to what log levels.
+
+## Adding USB Logging to a Board
+
+Standard boards such as the nice!nano and Seeeduino XIAO family have the necessary configuration for logging already added, however if you are developing your own standalone board you may wish to add the ability to use USB logging in the future.
+
+To add USB logging to a board you need to define the USB CDC ACM device that the serial output gets piped to, as well as adding the console in the `chosen` node inside `<board>.dts`.
+
+Inside the USB device (`&usbd`), add the CDC ACM node:
+
+```dts
+&usbd {
+    status = "okay";
+    cdc_acm_uart: cdc_acm_uart {
+        compatible = "zephyr,cdc-acm-uart";
+    };
+};
+```
+
+Then you can add the `zephyr,console` binding in the `chosen` node:
+
+```dts
+/ {
+    chosen {
+        ...
+        zephyr,console = &cdc_acm_uart;
+    };
+    ...
+};
+```

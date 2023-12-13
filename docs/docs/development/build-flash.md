@@ -92,6 +92,22 @@ This produces `left` and `right` subfolders under the `build` directory and two 
 Build times can be significantly reduced after the initial build by omitting all build arguments except the build directory, e.g. `west build -d build/left`. The additional options and intermediate build outputs from your initial build are cached and reused for unchanged files.
 :::
 
+### Building with external modules
+
+ZMK supports loading additional boards, shields, code, etc. from [external Zephyr modules](https://docs.zephyrproject.org/3.2.0/develop/modules.html), facilitating out-of-tree management and versioning independent of the ZMK repository. To build with any additional modules, use the `ZMK_EXTRA_MODULES` define added to your `west build` command.
+
+For instance, building with the `my-vendor-keebs-module` checked out to your documents directory, you would build like:
+
+```
+west build -b nice_nano_v2 -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Users/myUser/Documents/my-vendor-keebs-module"
+```
+
+When adding multiple modules, make sure they are separated by a semicolon, e.g.:
+
+```
+west build -b nice_nano_v2 -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Users/myUser/Documents/my-vendor-keebs-module;C:/Users/myUser/Documents/my-other-keebs-module"
+```
+
 ### Building from `zmk-config` Folder
 
 Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup.md#github-repo) by adding

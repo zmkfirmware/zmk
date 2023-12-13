@@ -31,6 +31,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         return zmk_ble_prof_prev();
     case BT_SEL_CMD:
         return zmk_ble_prof_select(binding->param2);
+    case BT_DISC_CMD:
+        return zmk_ble_prof_disconnect(binding->param2);
     default:
         LOG_ERR("Unknown BT command: %d", binding->param1);
     }
@@ -50,7 +52,7 @@ static const struct behavior_driver_api behavior_bt_driver_api = {
     .binding_released = on_keymap_binding_released,
 };
 
-DEVICE_DT_INST_DEFINE(0, behavior_bt_init, NULL, NULL, NULL, APPLICATION,
-                      CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_bt_driver_api);
+BEHAVIOR_DT_INST_DEFINE(0, behavior_bt_init, NULL, NULL, NULL, APPLICATION,
+                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_bt_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

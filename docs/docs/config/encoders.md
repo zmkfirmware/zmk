@@ -77,7 +77,6 @@ Definition file: [zmk/app/module/dts/bindings/sensor/alps,ec11.yaml](https://git
 
 | Property  | Type       | Description                                    | Default |
 | --------- | ---------- | ---------------------------------------------- | ------- |
-| `label`   | string     | Unique label for the node                      |         |
 | `a-gpios` | GPIO array | GPIO connected to the encoder's A pin          |         |
 | `b-gpios` | GPIO array | GPIO connected to the encoder's B pin          |         |
 | `steps`   | int        | Number of encoder pulses per complete rotation |         |

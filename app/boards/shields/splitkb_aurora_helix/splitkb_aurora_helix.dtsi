@@ -33,7 +33,6 @@
 
     left_encoder: left_encoder {
         compatible = "alps,ec11";
-        label = "L_ENCODER";
         steps = <144>;
         status = "disabled";
 
@@ -43,7 +42,6 @@
 
     right_encoder: right_encoder {
         compatible = "alps,ec11";
-        label = "R_ENCODER";
         steps = <144>;
         status = "disabled";
 
@@ -64,7 +62,6 @@
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
-        label = "DISPLAY";
         width = <128>;
         height = <32>;
         segment-offset = <0>;

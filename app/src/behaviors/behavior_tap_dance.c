@@ -125,7 +125,7 @@ static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
 
 static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,
                                         struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_tap_dance_config *cfg = dev->config;
     struct active_tap_dance *tap_dance;
     tap_dance = find_tap_dance(event.position);
@@ -250,9 +250,9 @@ static int behavior_tap_dance_init(const struct device *dev) {
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
         .behaviors = behavior_tap_dance_config_##n##_bindings,                                     \
         .behavior_count = DT_INST_PROP_LEN(n, bindings)};                                          \
-    DEVICE_DT_INST_DEFINE(n, behavior_tap_dance_init, NULL, NULL, &behavior_tap_dance_config_##n,  \
-                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
-                          &behavior_tap_dance_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_tap_dance_init, NULL, NULL,                                \
+                            &behavior_tap_dance_config_##n, APPLICATION,                           \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_tap_dance_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

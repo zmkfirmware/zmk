@@ -38,7 +38,6 @@ Previously, an encoder configuration looked like:
 ```dts
     left_encoder: encoder_left {
         compatible = "alps,ec11";
-        label = "LEFT_ENCODER";
         a-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         resolution = <4>;
@@ -61,7 +60,6 @@ That was the entirety of the configuration for encoders.
 ```dts
     left_encoder: encoder_left {
         compatible = "alps,ec11";
-        label = "LEFT_ENCODER";
         a-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         steps = <80>;
@@ -117,3 +115,7 @@ The old configuration will be supported for a period of one month, and then remo
 
 [petejohanson]: https://github.com/petejohanson
 [joelspadin]: https://github.com/joelspadin
+
+## Article Updates
+
+- 12/2023: Removed the deprecated `label` property from code snippets.
