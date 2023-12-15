@@ -1,0 +1,24 @@
+# Copyright (c) 2023 Taisheng WANG <wstrn66@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+description: LPM009M360A display controller
+
+compatible: "jdi,lpm009m360a"
+
+include: [spi-device.yaml, display-controller.yaml]
+
+properties:
+  extcomin_gpios:
+    type: phandle-array
+    description: COM Inversion Polarity Input pin.
+
+  disp_gpios:
+    type: phandle-array
+    required: true
+    description: Display ON/OFF Switching signal pin.
+
+  color_mode:
+    type: uint8-array
+    default: [0x04]
+
+
