@@ -256,6 +256,7 @@ rsource "src/display/Kconfig"
 menuconfig ZMK_RGB_UNDERGLOW
     bool "RGB Adressable LED Underglow"
     select LED_STRIP
+    select ZMK_LOW_PRIORITY_WORK_QUEUE
 
 if ZMK_RGB_UNDERGLOW
 
@@ -378,6 +379,7 @@ config ZMK_BATTERY_REPORTING
     bool "Battery level detection/reporting"
     default n
     select SENSOR
+    select ZMK_LOW_PRIORITY_WORK_QUEUE
     imply BT_BAS if ZMK_BLE
 
 config ZMK_IDLE_TIMEOUT
@@ -572,6 +574,11 @@ config ZMK_BATTERY_REPORT_INTERVAL
     int "Battery level report interval in seconds"
     default 60
 
+config ZMK_LOW_PRIORITY_WORK_QUEUE
+    bool "Work queue for low priority items"
+
+if ZMK_LOW_PRIORITY_WORK_QUEUE
+
 config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
     int "Low priority thread stack size"
     default 768
@@ -579,6 +586,8 @@ config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
 config ZMK_LOW_PRIORITY_THREAD_PRIORITY
     int "Low priority thread priority"
     default 10
+
+endif
 
 #Advanced
 endmenu
