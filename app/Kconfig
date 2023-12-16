@@ -142,29 +142,44 @@ menuconfig ZMK_BLE
 
 if ZMK_BLE
 
-config ZMK_BLE_EXPERIMENTAL_FEATURES
-    bool "Experimental: Enable experimental/advanced BLE settings/features"
-    imply ZMK_BLE_PASSKEY_ENTRY
+config ZMK_BLE_EXPERIMENTAL_CONN
+    bool "Experimental BLE connection changes"
     imply BT_GATT_AUTO_SEC_REQ
+    help
+      Enables a combination of settings that are planned to be default in future versions of ZMK
+      to improve connection stability. This includes changes to timing on BLE pairing initation,
+      restores use of the updated/new LLCP implementation, and disables 2M PHY support.
+
+config ZMK_BLE_EXPERIMENTAL_SEC
+    bool "Experimental BLE security changes"
     imply BT_SMP_ALLOW_UNAUTH_OVERWRITE
     help
-      Enables a combination of settings that are planned to be default in future versions of ZMK.
-      This includes changes to timing on BLE pairing initation, BT Secure Connection passkey entry,
-      restores use of the updated/new LLCP implementation, disables 2M PHY support, and allows
-      overwrite of keys from previously paired hosts.
+      Enables a combination of settings that are planned to be officially supported in the future.
+      This includes enabling BT Secure Connection passkey entry, and allows overwrite of keys from
+      previously paired hosts.
+
+config ZMK_BLE_EXPERIMENTAL_FEATURES
+    bool "Experimental BLE connection and security settings/features"
+    select ZMK_BLE_EXPERIMENTAL_CONN
+    select ZMK_BLE_EXPERIMENTAL_SEC
+    help
+      Enables experimental connection changes and security features.
 
 config ZMK_BLE_PASSKEY_ENTRY
     bool "Require passkey entry on the keyboard to complete pairing"
     default n
     select RING_BUFFER
 
+config BT_SMP_ALLOW_UNAUTH_OVERWRITE
+    imply ZMK_BLE_PASSKEY_ENTRY
+
 choice BT_LL_SW_LLCP_IMPL
-    default BT_LL_SW_LLCP_LEGACY if !ZMK_BLE_EXPERIMENTAL_FEATURES
+    default BT_LL_SW_LLCP_LEGACY if !ZMK_BLE_EXPERIMENTAL_CONN
 
 endchoice
 
 config BT_CTLR_PHY_2M
-    default n if ZMK_BLE_EXPERIMENTAL_FEATURES
+    default n if ZMK_BLE_EXPERIMENTAL_CONN
 
 # BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
 config BT_TINYCRYPT_ECC
