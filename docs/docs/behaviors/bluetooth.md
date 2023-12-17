@@ -56,7 +56,7 @@ The bluetooth behavior completes an bluetooth action given on press.
 
 - Reference: `&bt`
 - Parameter #1: The bluetooth command define, e.g. `BT_CLR`
-- Parameter #2: Only applies to `BT_SEL` and is the 0-indexed profile by number
+- Parameter #2: Only applies to `BT_SEL` and `BT_DISC`, and is the 0-indexed profile by number
 
 ### Examples
 
