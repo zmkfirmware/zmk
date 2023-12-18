@@ -20,11 +20,11 @@
 #define ZMK_BLE_PROFILE_COUNT CONFIG_BT_MAX_PAIRED
 #endif
 
-int zmk_ble_clear_bonds(void);
+void zmk_ble_clear_bonds(void);
 int zmk_ble_prof_next(void);
 int zmk_ble_prof_prev(void);
 int zmk_ble_prof_select(uint8_t index);
-int zmk_ble_clear_all_bonds(void);
+void zmk_ble_clear_all_bonds(void);
 int zmk_ble_prof_disconnect(uint8_t index);
 
 int zmk_ble_active_profile_index(void);
