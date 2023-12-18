@@ -80,11 +80,11 @@ void activity_work_handler(struct k_work *work) {
 
 K_WORK_DEFINE(activity_work, activity_work_handler);
 
-void activity_expiry_function(void) { k_work_submit(&activity_work); }
+void activity_expiry_function(struct k_timer *_timer) { k_work_submit(&activity_work); }
 
 K_TIMER_DEFINE(activity_timer, activity_expiry_function, NULL);
 
-int activity_init(void) {
+int activity_init(const struct device *_device) {
     activity_last_uptime = k_uptime_get();
 
     k_timer_start(&activity_timer, K_SECONDS(1), K_SECONDS(1));

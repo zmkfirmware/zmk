@@ -232,7 +232,7 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
 
 struct settings_handler rgb_conf = {.name = "rgb/underglow", .h_set = rgb_settings_set};
 
-static void zmk_rgb_underglow_save_state_work(void) {
+static void zmk_rgb_underglow_save_state_work(struct k_work *_work) {
     settings_save_one("rgb/underglow/state", &state, sizeof(state));
 }
 
