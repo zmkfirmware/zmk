@@ -121,6 +121,15 @@ static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_k
     return behavior_keymap_binding_released(&binding, event);
 }
 
+static inline int on_sticky_key_timeout(struct active_sticky_key *sticky_key) {
+    // If the key is lazy, a release is not needed on timeout
+    if (sticky_key->config->lazy) {
+        clear_sticky_key(sticky_key);
+    } else {
+        release_sticky_key_behavior(sticky_key, sticky_key->release_at);
+    }
+}
+
 static int stop_timer(struct active_sticky_key *sticky_key) {
     int timer_cancel_result = k_work_cancel_delayable(&sticky_key->release_timer);
     if (timer_cancel_result == -EINPROGRESS) {
@@ -241,12 +250,7 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
             // If this event was queued, the timer may be triggered late or not at all.
             // Release the sticky key if the timer should've run out in the meantime.
             if (sticky_key->release_at != 0 && ev_copy.timestamp > sticky_key->release_at) {
-                // If the key is lazy, a release is not needed on timeout
-                if (sticky_key->config->lazy) {
-                    clear_sticky_key(sticky_key);
-                } else {
-                    release_sticky_key_behavior(sticky_key, sticky_key->release_at);
-                }
+                on_sticky_key_timeout(sticky_key);
                 continue;
             }
 
@@ -275,24 +279,28 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
     // give each sticky key a chance to press their behavior before the event is reraised
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
         struct active_sticky_key *sticky_key = sticky_keys_to_press_before_reraise[i];
-        if (sticky_key) {
-            press_sticky_key_behavior(sticky_key, ev_copy.timestamp);
+        if (!sticky_key) {
+            continue;
         }
+
+        press_sticky_key_behavior(sticky_key, ev_copy.timestamp);
     }
     // give each sticky key a chance to release their behavior after the event is reraised, lazily
     // reraising. keep track whether the event has been reraised so we only reraise it once
     bool event_reraised = false;
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
         struct active_sticky_key *sticky_key = sticky_keys_to_release_after_reraise[i];
-        if (sticky_key) {
-            if (!event_reraised) {
-                struct zmk_keycode_state_changed_event dupe_ev =
-                    copy_raised_zmk_keycode_state_changed(ev);
-                ZMK_EVENT_RAISE_AFTER(dupe_ev, behavior_sticky_key);
-                event_reraised = true;
-            }
-            release_sticky_key_behavior(sticky_key, ev_copy.timestamp);
+        if (!sticky_key) {
+            continue;
         }
+
+        if (!event_reraised) {
+            struct zmk_keycode_state_changed_event dupe_ev =
+                copy_raised_zmk_keycode_state_changed(ev);
+            ZMK_EVENT_RAISE_AFTER(dupe_ev, behavior_sticky_key);
+            event_reraised = true;
+        }
+        release_sticky_key_behavior(sticky_key, ev_copy.timestamp);
     }
 
     return event_reraised ? ZMK_EV_EVENT_CAPTURED : ZMK_EV_EVENT_BUBBLE;
@@ -308,12 +316,7 @@ void behavior_sticky_key_timer_handler(struct k_work *item) {
     if (sticky_key->timer_cancelled) {
         sticky_key->timer_cancelled = false;
     } else {
-        // If the key is lazy, a release is not needed on timeout
-        if (sticky_key->config->lazy) {
-            clear_sticky_key(sticky_key);
-        } else {
-            release_sticky_key_behavior(sticky_key, sticky_key->release_at);
-        }
+        on_sticky_key_timeout(sticky_key);
     }
 }
 
