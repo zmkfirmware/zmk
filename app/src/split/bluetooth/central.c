@@ -561,7 +561,7 @@ static void split_central_process_connection(struct bt_conn *conn) {
     start_scanning();
 }
 
-static int stop_scanning() {
+static int stop_scanning(void) {
     LOG_DBG("Stopping peripheral scanning");
     is_scanning = false;
 

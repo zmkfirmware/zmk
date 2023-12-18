@@ -6,4 +6,4 @@
 
 #pragma once
 
-uint8_t zmk_battery_state_of_charge();
+uint8_t zmk_battery_state_of_charge(void);

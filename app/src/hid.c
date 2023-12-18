@@ -47,7 +47,7 @@ static zmk_mod_flags_t masked_modifiers = 0;
 
 #define GET_MODIFIERS (keyboard_report.body.modifiers)
 
-zmk_mod_flags_t zmk_hid_get_explicit_mods() { return explicit_modifiers; }
+zmk_mod_flags_t zmk_hid_get_explicit_mods(void) { return explicit_modifiers; }
 
 int zmk_hid_register_mod(zmk_mod_t modifier) {
     explicit_modifier_counts[modifier]++;
@@ -117,7 +117,7 @@ static zmk_hid_boot_report_t *boot_report_rollover(uint8_t modifiers) {
 #define TOGGLE_KEYBOARD(code, val) WRITE_BIT(keyboard_report.body.keys[code / 8], code % 8, val)
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
-zmk_hid_boot_report_t *zmk_hid_get_boot_report() {
+zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
     if (keys_held > HID_BOOT_KEY_LEN) {
         return boot_report_rollover(keyboard_report.body.modifiers);
     }
@@ -187,7 +187,7 @@ static inline bool check_keyboard_usage(zmk_key_t usage) {
     }
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
-zmk_hid_boot_report_t *zmk_hid_get_boot_report() {
+zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
     if (keys_held > HID_BOOT_KEY_LEN) {
         return boot_report_rollover(keyboard_report.body.modifiers);
     }
@@ -268,7 +268,7 @@ int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t new_implicit_modifiers) {
     return current == GET_MODIFIERS ? 0 : 1;
 }
 
-int zmk_hid_implicit_modifiers_release() {
+int zmk_hid_implicit_modifiers_release(void) {
     implicit_modifiers = 0;
     zmk_mod_flags_t current = GET_MODIFIERS;
     SET_MODIFIERS(explicit_modifiers);
@@ -282,7 +282,7 @@ int zmk_hid_masked_modifiers_set(zmk_mod_flags_t new_masked_modifiers) {
     return current == GET_MODIFIERS ? 0 : 1;
 }
 
-int zmk_hid_masked_modifiers_clear() {
+int zmk_hid_masked_modifiers_clear(void) {
     masked_modifiers = 0;
     zmk_mod_flags_t current = GET_MODIFIERS;
     SET_MODIFIERS(explicit_modifiers);
@@ -312,7 +312,9 @@ bool zmk_hid_keyboard_is_pressed(zmk_key_t code) {
     return check_keyboard_usage(code);
 }
 
-void zmk_hid_keyboard_clear() { memset(&keyboard_report.body, 0, sizeof(keyboard_report.body)); }
+void zmk_hid_keyboard_clear(void) {
+    memset(&keyboard_report.body, 0, sizeof(keyboard_report.body));
+}
 
 int zmk_hid_consumer_press(zmk_key_t code) {
     TOGGLE_CONSUMER(0U, code);
@@ -324,7 +326,9 @@ int zmk_hid_consumer_release(zmk_key_t code) {
     return 0;
 };
 
-void zmk_hid_consumer_clear() { memset(&consumer_report.body, 0, sizeof(consumer_report.body)); }
+void zmk_hid_consumer_clear(void) {
+    memset(&consumer_report.body, 0, sizeof(consumer_report.body));
+}
 
 bool zmk_hid_consumer_is_pressed(zmk_key_t key) {
     for (int idx = 0; idx < CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE; idx++) {
@@ -426,21 +430,21 @@ int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons) {
     }
     return 0;
 }
-void zmk_hid_mouse_clear() { memset(&mouse_report.body, 0, sizeof(mouse_report.body)); }
+void zmk_hid_mouse_clear(void) { memset(&mouse_report.body, 0, sizeof(mouse_report.body)); }
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report() {
+struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) {
     return &keyboard_report;
 }
 
-struct zmk_hid_consumer_report *zmk_hid_get_consumer_report() {
+struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) {
     return &consumer_report;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-struct zmk_hid_mouse_report *zmk_hid_get_mouse_report() {
+struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) {
     return &mouse_report;
 }
 

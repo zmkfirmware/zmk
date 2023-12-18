@@ -46,7 +46,7 @@ static void ext_power_save_state_work(struct k_work *work) {
 static struct k_work_delayable ext_power_save_work;
 #endif
 
-int ext_power_save_state() {
+int ext_power_save_state(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     int ret = k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
     return MIN(ret, 0);

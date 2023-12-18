@@ -252,7 +252,7 @@ struct zmk_hid_mouse_report {
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-zmk_mod_flags_t zmk_hid_get_explicit_mods();
+zmk_mod_flags_t zmk_hid_get_explicit_mods(void);
 int zmk_hid_register_mod(zmk_mod_t modifier);
 int zmk_hid_unregister_mod(zmk_mod_t modifier);
 bool zmk_hid_mod_is_pressed(zmk_mod_t modifier);
@@ -260,18 +260,18 @@ bool zmk_hid_mod_is_pressed(zmk_mod_t modifier);
 int zmk_hid_register_mods(zmk_mod_flags_t explicit_modifiers);
 int zmk_hid_unregister_mods(zmk_mod_flags_t explicit_modifiers);
 int zmk_hid_implicit_modifiers_press(zmk_mod_flags_t implicit_modifiers);
-int zmk_hid_implicit_modifiers_release();
+int zmk_hid_implicit_modifiers_release(void);
 int zmk_hid_masked_modifiers_set(zmk_mod_flags_t masked_modifiers);
-int zmk_hid_masked_modifiers_clear();
+int zmk_hid_masked_modifiers_clear(void);
 
 int zmk_hid_keyboard_press(zmk_key_t key);
 int zmk_hid_keyboard_release(zmk_key_t key);
-void zmk_hid_keyboard_clear();
+void zmk_hid_keyboard_clear(void);
 bool zmk_hid_keyboard_is_pressed(zmk_key_t key);
 
 int zmk_hid_consumer_press(zmk_key_t key);
 int zmk_hid_consumer_release(zmk_key_t key);
-void zmk_hid_consumer_clear();
+void zmk_hid_consumer_clear(void);
 bool zmk_hid_consumer_is_pressed(zmk_key_t key);
 
 int zmk_hid_press(uint32_t usage);
@@ -283,11 +283,11 @@ int zmk_hid_mouse_button_press(zmk_mouse_button_t button);
 int zmk_hid_mouse_button_release(zmk_mouse_button_t button);
 int zmk_hid_mouse_buttons_press(zmk_mouse_button_flags_t buttons);
 int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons);
-void zmk_hid_mouse_clear();
+void zmk_hid_mouse_clear(void);
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report();
-struct zmk_hid_consumer_report *zmk_hid_get_consumer_report();
+struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void);
+struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void);
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report();

@@ -142,9 +142,9 @@ static struct bt_conn_auth_info_cb zmk_peripheral_ble_auth_info_cb = {
     .pairing_complete = auth_pairing_complete,
 };
 
-bool zmk_split_bt_peripheral_is_connected() { return is_connected; }
+bool zmk_split_bt_peripheral_is_connected(void) { return is_connected; }
 
-bool zmk_split_bt_peripheral_is_bonded() { return is_bonded; }
+bool zmk_split_bt_peripheral_is_bonded(void) { return is_bonded; }
 
 static int zmk_peripheral_ble_init(const struct device *_arg) {
     int err = bt_enable(NULL);

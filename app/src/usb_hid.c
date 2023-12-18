@@ -147,13 +147,13 @@ static int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
     }
 }
 
-int zmk_usb_hid_send_keyboard_report() {
+int zmk_usb_hid_send_keyboard_report(void) {
     size_t len;
     uint8_t *report = get_keyboard_report(&len);
     return zmk_usb_hid_send_report(report, len);
 }
 
-int zmk_usb_hid_send_consumer_report() {
+int zmk_usb_hid_send_consumer_report(void) {
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
     if (hid_protocol == HID_PROTOCOL_BOOT) {
         return -ENOTSUP;
