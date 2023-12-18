@@ -82,7 +82,7 @@ static bt_addr_le_t peripheral_addrs[ZMK_SPLIT_BLE_PERIPHERAL_COUNT];
 
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) */
 
-static void raise_profile_changed_event() {
+static void raise_profile_changed_event(void) {
     ZMK_EVENT_RAISE(new_zmk_ble_active_profile_changed((struct zmk_ble_active_profile_changed){
         .index = active_profile, .profile = &profiles[active_profile]}));
 }
@@ -93,7 +93,7 @@ static void raise_profile_changed_event_callback(struct k_work *work) {
 
 K_WORK_DEFINE(raise_profile_changed_event_work, raise_profile_changed_event_callback);
 
-bool zmk_ble_active_profile_is_open() {
+bool zmk_ble_active_profile_is_open(void) {
     return !bt_addr_le_cmp(&profiles[active_profile].peer, BT_ADDR_LE_ANY);
 }
 
@@ -112,7 +112,7 @@ void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
     k_work_submit(&raise_profile_changed_event_work);
 }
 
-bool zmk_ble_active_profile_is_connected() {
+bool zmk_ble_active_profile_is_connected(void) {
     struct bt_conn *conn;
     struct bt_conn_info info;
     bt_addr_le_t *addr = zmk_ble_active_profile_addr();
@@ -161,7 +161,7 @@ bool zmk_ble_active_profile_is_connected() {
     }                                                                                              \
     advertising_status = ZMK_ADV_CONN;
 
-int update_advertising() {
+int update_advertising(void) {
     int err = 0;
     bt_addr_le_t *addr;
     struct bt_conn *conn;
@@ -210,7 +210,7 @@ static void update_advertising_callback(struct k_work *work) { update_advertisin
 
 K_WORK_DEFINE(update_advertising_work, update_advertising_callback);
 
-int zmk_ble_clear_bonds() {
+int zmk_ble_clear_bonds(void) {
     LOG_DBG("");
 
     if (bt_addr_le_cmp(&profiles[active_profile].peer, BT_ADDR_LE_ANY)) {
@@ -224,7 +224,7 @@ int zmk_ble_clear_bonds() {
     return 0;
 };
 
-int zmk_ble_clear_all_bonds() {
+int zmk_ble_clear_all_bonds(void) {
     LOG_DBG("zmk_ble_clear_all_bonds()");
 
     // Unpair all profiles
@@ -241,7 +241,7 @@ int zmk_ble_clear_all_bonds() {
     return 0;
 };
 
-int zmk_ble_active_profile_index() { return active_profile; }
+int zmk_ble_active_profile_index(void) { return active_profile; }
 
 int zmk_ble_profile_index(const bt_addr_le_t *addr) {
     for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
@@ -260,7 +260,7 @@ static void ble_save_profile_work(struct k_work *work) {
 static struct k_work_delayable ble_save_work;
 #endif
 
-static int ble_save_profile() {
+static int ble_save_profile(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     return k_work_reschedule(&ble_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
@@ -288,12 +288,12 @@ int zmk_ble_prof_select(uint8_t index) {
     return 0;
 };
 
-int zmk_ble_prof_next() {
+int zmk_ble_prof_next(void) {
     LOG_DBG("");
     return zmk_ble_prof_select((active_profile + 1) % ZMK_BLE_PROFILE_COUNT);
 };
 
-int zmk_ble_prof_prev() {
+int zmk_ble_prof_prev(void) {
     LOG_DBG("");
     return zmk_ble_prof_select((active_profile + ZMK_BLE_PROFILE_COUNT - 1) %
                                ZMK_BLE_PROFILE_COUNT);
@@ -320,9 +320,9 @@ int zmk_ble_prof_disconnect(uint8_t index) {
     return result;
 }
 
-bt_addr_le_t *zmk_ble_active_profile_addr() { return &profiles[active_profile].peer; }
+bt_addr_le_t *zmk_ble_active_profile_addr(void) { return &profiles[active_profile].peer; }
 
-char *zmk_ble_active_profile_name() { return profiles[active_profile].name; }
+char *zmk_ble_active_profile_name(void) { return profiles[active_profile].name; }
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 

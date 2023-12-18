@@ -18,8 +18,12 @@ enum zmk_usb_conn_state {
     ZMK_USB_CONN_HID,
 };
 
-enum usb_dc_status_code zmk_usb_get_status();
-enum zmk_usb_conn_state zmk_usb_get_conn_state();
+enum usb_dc_status_code zmk_usb_get_status(void);
+enum zmk_usb_conn_state zmk_usb_get_conn_state(void);
 
-static inline bool zmk_usb_is_powered() { return zmk_usb_get_conn_state() != ZMK_USB_CONN_NONE; }
-static inline bool zmk_usb_is_hid_ready() { return zmk_usb_get_conn_state() == ZMK_USB_CONN_HID; }
+static inline bool zmk_usb_is_powered(void) {
+    return zmk_usb_get_conn_state() != ZMK_USB_CONN_NONE;
+}
+static inline bool zmk_usb_is_hid_ready(void) {
+    return zmk_usb_get_conn_state() == ZMK_USB_CONN_HID;
+}

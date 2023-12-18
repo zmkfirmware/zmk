@@ -220,7 +220,7 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_CTRL_POINT, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
                            BT_GATT_PERM_WRITE, NULL, write_ctrl_point, &ctrl_point));
 
-struct bt_conn *destination_connection() {
+struct bt_conn *destination_connection(void) {
     struct bt_conn *conn;
     bt_addr_le_t *addr = zmk_ble_active_profile_addr();
     LOG_DBG("Address pointer %p", addr);

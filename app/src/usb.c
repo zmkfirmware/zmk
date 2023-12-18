@@ -28,9 +28,9 @@ static void raise_usb_status_changed_event(struct k_work *_work) {
 
 K_WORK_DEFINE(usb_status_notifier_work, raise_usb_status_changed_event);
 
-enum usb_dc_status_code zmk_usb_get_status() { return usb_status; }
+enum usb_dc_status_code zmk_usb_get_status(void) { return usb_status; }
 
-enum zmk_usb_conn_state zmk_usb_get_conn_state() {
+enum zmk_usb_conn_state zmk_usb_get_conn_state(void) {
     LOG_DBG("state: %d", usb_status);
     switch (usb_status) {
     case USB_DC_SUSPEND:
