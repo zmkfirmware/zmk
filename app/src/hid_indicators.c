@@ -13,6 +13,8 @@
 #include <zmk/events/hid_indicators_changed.h>
 #include <zmk/events/endpoint_changed.h>
 #include <zmk/split/bluetooth/central.h>
+#include <zmk/events/split_peripheral_status_changed.h>
+#include <zmk/workqueue.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -27,14 +29,23 @@ zmk_hid_indicators_t zmk_hid_indicators_get_profile(struct zmk_endpoint_instance
     return hid_indicators[profile];
 }
 
+static void zmk_hid_indicators_send_state(struct k_work *work) {
+    zmk_hid_indicators_t indicators = zmk_hid_indicators_get_current_profile();
+    int err = zmk_split_central_send_data(DATA_TAG_HID_INDICATORS_STATE,
+                                          sizeof(zmk_hid_indicators_t), (uint8_t *)&indicators);
+    if (err) {
+        LOG_ERR("HID indicators send failed (err %d)", err);
+    }
+}
+
+K_WORK_DEFINE(hid_indicators_send_state_work, zmk_hid_indicators_send_state);
+
 static void raise_led_changed_event(struct k_work *_work) {
     const zmk_hid_indicators_t indicators = zmk_hid_indicators_get_current_profile();
 
     raise_zmk_hid_indicators_changed((struct zmk_hid_indicators_changed){.indicators = indicators});
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS) && IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
-    zmk_split_bt_update_hid_indicator(indicators);
-#endif
+    k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &hid_indicators_send_state_work);
 }
 
 static K_WORK_DEFINE(led_changed_work, raise_led_changed_event);
@@ -60,9 +71,14 @@ void zmk_hid_indicators_process_report(struct zmk_hid_led_report_body *report,
 }
 
 static int profile_listener(const zmk_event_t *eh) {
-    raise_led_changed_event(NULL);
+    if (as_zmk_endpoint_changed(eh)) {
+        raise_led_changed_event(NULL);
+    } else if (as_zmk_split_peripheral_status_changed(eh)) {
+        k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &hid_indicators_send_state_work);
+    }
     return 0;
 }
 
 static ZMK_LISTENER(profile_listener, profile_listener);
 static ZMK_SUBSCRIPTION(profile_listener, zmk_endpoint_changed);
+static ZMK_SUBSCRIPTION(profile_listener, zmk_split_peripheral_status_changed);
