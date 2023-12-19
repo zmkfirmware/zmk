@@ -234,6 +234,7 @@ void zmk_ble_clear_all_bonds(void) {
 
     // Automatically switch to profile 0
     zmk_ble_prof_select(0);
+    update_advertising();
 };
 
 int zmk_ble_active_profile_index(void) { return active_profile; }
