@@ -210,15 +210,17 @@ static void update_advertising_callback(struct k_work *work) { update_advertisin
 
 K_WORK_DEFINE(update_advertising_work, update_advertising_callback);
 
-void zmk_ble_clear_bonds(void) {
-    LOG_DBG("");
-
-    if (bt_addr_le_cmp(&profiles[active_profile].peer, BT_ADDR_LE_ANY)) {
-        LOG_DBG("Unpairing!");
-        bt_unpair(BT_ID_DEFAULT, &profiles[active_profile].peer);
-        set_profile_address(active_profile, BT_ADDR_LE_ANY);
+static void clear_profile_bond(uint8_t profile) {
+    if (bt_addr_le_cmp(&profiles[profile].peer, BT_ADDR_LE_ANY)) {
+        bt_unpair(BT_ID_DEFAULT, &profiles[profile].peer);
+        set_profile_address(profile, BT_ADDR_LE_ANY);
     }
+}
 
+void zmk_ble_clear_bonds(void) {
+    LOG_DBG("zmk_ble_clear_bonds()");
+
+    clear_profile_bond(active_profile);
     update_advertising();
 };
 
@@ -227,10 +229,7 @@ void zmk_ble_clear_all_bonds(void) {
 
     // Unpair all profiles
     for (uint8_t i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
-        if (bt_addr_le_cmp(&profiles[i].peer, BT_ADDR_LE_ANY)) {
-            bt_unpair(BT_ID_DEFAULT, &profiles[i].peer);
-            set_profile_address(i, BT_ADDR_LE_ANY);
-        }
+        clear_profile_bond(i);
     }
 
     // Automatically switch to profile 0
