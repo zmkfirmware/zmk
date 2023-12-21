@@ -43,7 +43,7 @@ encoder: &qdec0 {
     };
 
     wakeup_source: wakeup_source {
-        compatible = "zmk,wakeup-trigger-key";
+        compatible = "zmk,gpio-key-wakeup-trigger";
         status = "okay";
 
         trigger = <&button0>;
@@ -58,7 +58,7 @@ encoder: &qdec0 {
     };
 
     soft_off_behavior_key {
-        compatible = "zmk,behavior-key";
+        compatible = "zmk,gpio-key-behavior-trigger";
         status = "okay";
         bindings = <&soft_off>;
         key = <&button0>;

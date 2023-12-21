@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: MIT
 
 description: |
-  Driver for a dedicated key triggered by matrix scanning for invoking a connected behavior.
+  Driver for a dedicated key for invoking a connected behavior.
 
-compatible: "zmk,behavior-key-scanned"
+compatible: "zmk,gpio-key-behavior-trigger"
 
 include: base.yaml
 
@@ -16,7 +16,7 @@ properties:
   bindings:
     type: phandle
     required: true
-    description: The GPIO key that triggers wake via interrupt
+    description: The behavior to invoke when the GPIO key is pressed
   debounce-press-ms:
     type: int
     default: 5

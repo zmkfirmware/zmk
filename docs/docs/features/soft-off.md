@@ -79,7 +79,7 @@ In this case, we will be creating a dedicated instance of the [Soft Off Behavior
     };
 
     soft_off_behavior_key {
-        compatible = "zmk,behavior-key";
+        compatible = "zmk,gpio-key-behavior-trigger";
         bindings = <&hw_soft_off>;
         key = <&wakeup_key>;
     };
@@ -88,7 +88,7 @@ In this case, we will be creating a dedicated instance of the [Soft Off Behavior
 
 Here are the properties for the behavior key node:
 
-- The `compatible` property for the node must be `zmk,behavior-key`.
+- The `compatible` property for the node must be `zmk,gpio-key-behavior-trigger`.
 - The `bindings` property is a phandle to the soft off behavior defined above.
 - The `key` property is a phandle to the GPIO key defined earlier.
 
@@ -97,7 +97,7 @@ If you have set up your on/off to be controlled by a matrix-integrated combo, th
 ```
 / {
     soft_off_behavior_key {
-        compatible = "zmk,behavior-key-scanned";
+        compatible = "zmk,gpio-scanned-key-behavior-trigger";
         status = "okay";
         bindings = <&hw_soft_off>;
         key = <&wakeup_key>;
@@ -105,7 +105,7 @@ If you have set up your on/off to be controlled by a matrix-integrated combo, th
 };
 ```
 
-Note that the only difference from the `soft_off_behavior_key` definition for GPIO keys above is the `compatible` value of `zmk,behavior-key-scanned`.
+Note that the only difference from the `soft_off_behavior_key` definition for GPIO keys above is the `compatible` value of `zmk,gpio-scanned-key-behavior-trigger`.
 
 #### Wakeup Sources
 
@@ -131,7 +131,7 @@ Next, we need to add another device which will be enabled only when the keyboard
 ```
 / {
     wakeup_source: wakeup_source {
-        compatible = "zmk,wakeup-trigger-key";
+        compatible = "zmk,gpio-key-wakeup-trigger";
 
         trigger = <&wakeup_key>;
         wakeup-source;
@@ -141,7 +141,7 @@ Next, we need to add another device which will be enabled only when the keyboard
 
 Here are the properties for the node:
 
-- The `compatible` property for the node must be `zmk,wakeup-trigger-key`.
+- The `compatible` property for the node must be `zmk,gpio-key-wakeup-trigger`.
 - The `trigger` property is a phandle to the GPIO key defined earlier.
 - The `wakeup-source` property signals to Zephyr this device should not be suspended during the shutdown procedure.
 - An optional `output-gpios` property contains a list of GPIO pins (including the appropriate flags) to set active before going into power off, if needed to ensure the GPIO pin will trigger properly to wake the keyboard. This is only needed for matrix integrated combos. For those keyboards, the list should include the matrix output needs needed so the combo hardware is properly "driven" when the keyboard is off.
