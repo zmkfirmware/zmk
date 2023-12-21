@@ -261,7 +261,10 @@ int zmk_ble_prof_select(uint8_t index) {
         return 0;
     }
 
+#if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
     zmk_ble_prof_disconnect(active_profile);
+#endif
+
     active_profile = index;
     ble_save_profile();
 
@@ -454,12 +457,25 @@ static void connected(struct bt_conn *conn, uint8_t err) {
     }
 #endif // !IS_ENABLED(CONFIG_BT_GATT_AUTO_SEC_REQ)
 
-    update_advertising();
-
     if (is_conn_active_profile(conn)) {
         LOG_DBG("Active profile connected");
         k_work_submit(&raise_profile_changed_event_work);
+
+#if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
+        // Due to a bug with directed advertising, we had to use open
+        // advertising and probably connected to multiple profiles.
+        // Now that we have the desired active connection, we disconnect
+        // everything else.
+        for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
+            if (i != active_profile && !bt_addr_le_cmp(&profiles[i].peer, BT_ADDR_LE_ANY)) {
+                zmk_ble_prof_disconnect(i);
+            }
+        }
+#endif
     }
+
+    update_advertising();
+
 }
 
 static void disconnected(struct bt_conn *conn, uint8_t reason) {
