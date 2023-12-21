@@ -467,7 +467,7 @@ static void connected(struct bt_conn *conn, uint8_t err) {
         // Now that we have the desired active connection, we disconnect
         // everything else.
         for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
-            if (i != active_profile && !bt_addr_le_cmp(&profiles[i].peer, BT_ADDR_LE_ANY)) {
+            if (i != active_profile && bt_addr_le_cmp(&profiles[i].peer, BT_ADDR_LE_ANY)) {
                 zmk_ble_prof_disconnect(i);
             }
         }
