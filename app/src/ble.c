@@ -424,13 +424,15 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
 struct settings_handler profiles_handler = {.name = "ble", .h_set = ble_profiles_handle_set};
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
-static bool is_conn_active_profile(const struct bt_conn *conn) {
-    return bt_addr_le_cmp(bt_conn_get_dst(conn), &profiles[active_profile].peer) == 0;
+static bool is_addr_active_profile(const bt_addr_le_t *addr) {
+    return bt_addr_le_cmp(addr, &profiles[active_profile].peer) == 0;
 }
 
 static void connected(struct bt_conn *conn, uint8_t err) {
     char addr[BT_ADDR_LE_STR_LEN];
     struct bt_conn_info info;
+    const bt_addr_le_t *dst = bt_conn_get_dst(conn);
+
     LOG_DBG("Connected thread: %p", k_current_get());
 
     bt_conn_get_info(conn, &info);
@@ -440,7 +442,7 @@ static void connected(struct bt_conn *conn, uint8_t err) {
         return;
     }
 
-    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+    bt_addr_le_to_str(dst, addr, sizeof(addr));
     advertising_status = ZMK_ADV_NONE;
 
     if (err) {
@@ -457,19 +459,14 @@ static void connected(struct bt_conn *conn, uint8_t err) {
     }
 #endif // !IS_ENABLED(CONFIG_BT_GATT_AUTO_SEC_REQ)
 
-    if (is_conn_active_profile(conn)) {
+    if (is_addr_active_profile(dst)) {
         LOG_DBG("Active profile connected");
         k_work_submit(&raise_profile_changed_event_work);
-
+    } else {
 #if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
-        // Due to a bug with directed advertising, we had to use open
-        // advertising and probably connected to multiple profiles.
-        // Now that we have the desired active connection, we disconnect
-        // everything else.
-        for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
-            if (i != active_profile && bt_addr_le_cmp(&profiles[i].peer, BT_ADDR_LE_ANY)) {
-                zmk_ble_prof_disconnect(i);
-            }
+        int index = zmk_ble_profile_index(dst);
+        if (index >= 0) {
+            zmk_ble_prof_disconnect(index);
         }
 #endif
     }
@@ -480,8 +477,9 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 static void disconnected(struct bt_conn *conn, uint8_t reason) {
     char addr[BT_ADDR_LE_STR_LEN];
     struct bt_conn_info info;
+    const bt_addr_le_t *dst = bt_conn_get_dst(conn);
 
-    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+    bt_addr_le_to_str(dst, addr, sizeof(addr));
 
     LOG_DBG("Disconnected from %s (reason 0x%02x)", addr, reason);
 
@@ -496,7 +494,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
     // connection for a profile as active, and not start advertising yet.
     k_work_submit(&update_advertising_work);
 
-    if (is_conn_active_profile(conn)) {
+    if (is_addr_active_profile(dst)) {
         LOG_DBG("Active profile disconnected");
         k_work_submit(&raise_profile_changed_event_work);
     }
