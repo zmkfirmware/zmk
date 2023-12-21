@@ -254,9 +254,9 @@ static int ble_save_profile() {
 }
 
 #if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
-static void zmk_ble_disconnect_other_profiles(int keep_index) {
+static void zmk_ble_disconnect_inactive_profiles() {
     for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
-        if (i != keep_index && bt_addr_le_cmp(&profiles[i].peer, BT_ADDR_LE_ANY)) {
+        if (i != active_profile && bt_addr_le_cmp(&profiles[i].peer, BT_ADDR_LE_ANY)) {
             zmk_ble_prof_disconnect(i);
         }
     }
@@ -273,14 +273,17 @@ int zmk_ble_prof_select(uint8_t index) {
         return 0;
     }
 
-#if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
-    if (zmk_ble_active_profile_is_open()) {
+#if IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
+    active_profile = index;
+#else
+    bool was_active_profile_open = zmk_ble_active_profile_is_open();
+    active_profile = index;
+    if (was_active_profile_open) {
         // We may have connected to multiple hosts while the active profile was open.
-        zmk_ble_disconnect_other_profiles(index);
+        zmk_ble_disconnect_inactive_profiles();
     }
 #endif
 
-    active_profile = index;
     ble_save_profile();
 
     update_advertising();
@@ -632,7 +635,7 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
 
 #if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
     // We may have connected to multiple hosts while the active profile was open.
-    zmk_ble_disconnect_other_profiles(active_profile);
+    zmk_ble_disconnect_inactive_profiles();
 #endif
 
     update_advertising();
