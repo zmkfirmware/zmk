@@ -475,7 +475,6 @@ static void connected(struct bt_conn *conn, uint8_t err) {
     }
 
     update_advertising();
-
 }
 
 static void disconnected(struct bt_conn *conn, uint8_t reason) {
