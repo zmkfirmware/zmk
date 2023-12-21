@@ -455,7 +455,7 @@ Note that the entire addressable space does not need to be mapped.
     };
 
     kscan0: kscan {
-        compatible = "zmk,kscan-gpio-charlieplex";k
+        compatible = "zmk,kscan-gpio-charlieplex";
         wakeup-source;
 
         interrupt-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >;

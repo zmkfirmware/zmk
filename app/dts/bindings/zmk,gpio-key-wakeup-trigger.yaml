@@ -4,7 +4,7 @@
 description: |
   Driver for a dedicated key for waking the device from sleep
 
-compatible: "zmk,wakeup-trigger-key"
+compatible: "zmk,gpio-key-wakeup-trigger"
 
 include: base.yaml
 

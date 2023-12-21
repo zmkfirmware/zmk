@@ -1,15 +1,15 @@
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-config ZMK_BEHAVIOR_KEY
+config ZMK_GPIO_KEY_BEHAVIOR_TRIGGER
     bool
     default y
-    depends on DT_HAS_ZMK_BEHAVIOR_KEY_ENABLED
+    depends on DT_HAS_ZMK_GPIO_KEY_BEHAVIOR_TRIGGER_ENABLED
 
-config ZMK_BEHAVIOR_KEY_SCANNED
+config ZMK_GPIO_SCANNED_KEY_BEHAVIOR_TRIGGER
     bool
     default y
-    depends on DT_HAS_ZMK_BEHAVIOR_KEY_SCANNED_ENABLED
+    depends on DT_HAS_ZMK_GPIO_SCANNED_KEY_BEHAVIOR_TRIGGER_ENABLED
 
 config ZMK_BEHAVIOR_KEY_TOGGLE
     bool

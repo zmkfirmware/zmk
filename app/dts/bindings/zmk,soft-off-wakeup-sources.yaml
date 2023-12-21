@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 description: |
-  Description of all possible wakeup-sources from a forces
+  Description of all possible wakeup-sources from a forced
   soft-off state.
 
 compatible: "zmk,soft-off-wakeup-sources"
@@ -11,4 +11,4 @@ properties:
   wakeup-sources:
     type: phandles
     required: true
-    description: List of wakeup-sources that should be enabled to wake the system from forces soft-off state.
+    description: List of wakeup-sources that should be enabled to wake the system from forced soft-off state.
