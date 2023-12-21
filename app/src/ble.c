@@ -168,6 +168,8 @@ int update_advertising() {
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
     if (zmk_ble_active_profile_is_open()) {
+        // We don't have an address for the active profile, so we need to open
+        // advertise so any interested hosts can connect.
         desired_adv = ZMK_ADV_CONN;
     } else if (!zmk_ble_active_profile_is_connected()) {
         desired_adv = ZMK_ADV_CONN;
@@ -251,6 +253,16 @@ static int ble_save_profile() {
 #endif
 }
 
+#if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
+static void zmk_ble_disconnect_other_profiles(int keep_index) {
+    for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
+        if (i != keep_index && bt_addr_le_cmp(&profiles[i].peer, BT_ADDR_LE_ANY)) {
+            zmk_ble_prof_disconnect(i);
+        }
+    }
+}
+#endif
+
 int zmk_ble_prof_select(uint8_t index) {
     if (index >= ZMK_BLE_PROFILE_COUNT) {
         return -ERANGE;
@@ -262,7 +274,10 @@ int zmk_ble_prof_select(uint8_t index) {
     }
 
 #if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
-    zmk_ble_prof_disconnect(active_profile);
+    if (zmk_ble_active_profile_is_open()) {
+        // We may have connected to multiple hosts while the active profile was open.
+        zmk_ble_disconnect_other_profiles(index);
+    }
 #endif
 
     active_profile = index;
@@ -464,9 +479,14 @@ static void connected(struct bt_conn *conn, uint8_t err) {
         k_work_submit(&raise_profile_changed_event_work);
     } else {
 #if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
-        int index = zmk_ble_profile_index(dst);
-        if (index >= 0) {
-            zmk_ble_prof_disconnect(index);
+        // If the active profile is open, then we don't know what host we want
+        // to connect to. We need to wait for the profile to pair before we can
+        // start disconnecting.
+        if (!zmk_ble_active_profile_is_open()) {
+            // A different host connected to us for some reason. Maybe we're in the
+            // middle of an open advertisement?
+            int result = bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
+            LOG_DBG("Disconnected from %s: %d", addr, result);
         }
 #endif
     }
@@ -609,6 +629,12 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
     }
 
     set_profile_address(active_profile, dst);
+
+#if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
+    // We may have connected to multiple hosts while the active profile was open.
+    zmk_ble_disconnect_other_profiles(active_profile);
+#endif
+
     update_advertising();
 };
 
