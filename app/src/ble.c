@@ -261,6 +261,7 @@ int zmk_ble_prof_select(uint8_t index) {
         return 0;
     }
 
+    zmk_ble_prof_disconnect(active_profile);
     active_profile = index;
     ble_save_profile();
 
