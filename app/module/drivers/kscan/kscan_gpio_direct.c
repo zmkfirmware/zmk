@@ -322,8 +322,6 @@ static int kscan_direct_init(const struct device *dev) {
 #if IS_ENABLED(CONFIG_PM_DEVICE)
 
 static int kscan_direct_pm_action(const struct device *dev, enum pm_device_action action) {
-    int ret = 0;
-
     switch (action) {
     case PM_DEVICE_ACTION_SUSPEND:
         kscan_direct_disable(dev);
@@ -332,11 +330,8 @@ static int kscan_direct_pm_action(const struct device *dev, enum pm_device_actio
         kscan_direct_enable(dev);
         break;
     default:
-        ret = -ENOTSUP;
-        break;
+        return -ENOTSUP;
     }
-
-    return ret;
 }
 
 #endif // IS_ENABLED(CONFIG_PM_DEVICE)

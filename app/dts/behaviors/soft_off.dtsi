@@ -8,7 +8,6 @@
     behaviors {
         /omit-if-no-ref/ soft_off: soft_off {
             compatible = "zmk,behavior-soft-off";
-            label = "SOFTOFF";
             #binding-cells = <0>;
         };
     };

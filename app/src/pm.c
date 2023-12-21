@@ -41,10 +41,10 @@ int zmk_pm_soft_off(void) {
     // from normal "inactive goes to sleep" behavior, so disable them as wakeup devices
     // and then suspend them so we're ready to take over setting up our system
     // and then putting it into an off state.
+    LOG_DBG("soft-on-off pressed cb: suspend devices");
     for (int i = 0; i < device_count; i++) {
         const struct device *dev = &devs[i];
 
-        LOG_DBG("soft-on-off pressed cb: suspend device");
         if (pm_device_wakeup_is_enabled(dev)) {
             pm_device_wakeup_enable(dev, false);
         }
@@ -60,6 +60,6 @@ int zmk_pm_soft_off(void) {
     }
 #endif // HAS_WAKERS
 
-    LOG_DBG("soft-on-off interrupt: go to sleep");
+    LOG_DBG("soft-off: go to sleep");
     return pm_state_force(0U, &(struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0});
 }
