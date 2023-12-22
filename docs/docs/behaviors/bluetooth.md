@@ -12,8 +12,8 @@ computer/laptop/keyboard should receive the keyboard input; many of the commands
 :::note Connection Management
 When pairing to a host device ZMK saves bond information to the selected
 profile. It will not replace this when you initiate pairing with another device.
-To pair with a new device select an unused profile with `BT_SEL`, `BT_NXT` or
-`BT_PRV` bindings, or by clearing an existing profile using `BT_CLR` or `BT_CLR_ALL`.
+To pair with a new device, select a profile that doesn't have a pairing with `BT_SEL`, `BT_NXT` or
+`BT_PRV` bindings, or clear an already paired profile using `BT_CLR` or `BT_CLR_ALL`.
 
 A ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
 
