@@ -10,7 +10,10 @@ between the keyboard and the host. By default, ZMK supports five "profiles" for 
 computer/laptop/keyboard should receive the keyboard input; many of the commands here operate on those profiles.
 
 :::note Connection Management
-When pairing to a host device ZMK saves bond information to the selected profile. It will not replace this when you initiate pairing with another device. To pair with a new device select an unused profile with `BT_SEL`, `BT_NXT` or `BT_PRV` bindings, or by clearing an existing profile using `BT_CLR`.
+When pairing to a host device ZMK saves bond information to the selected
+profile. It will not replace this when you initiate pairing with another device.
+To pair with a new device select an unused profile with `BT_SEL`, `BT_NXT` or
+`BT_PRV` bindings, or by clearing an existing profile using `BT_CLR` or `BT_CLR_ALL`.
 
 A ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
 
@@ -35,13 +38,14 @@ This will allow you to reference the actions defined in this header such as `BT_
 
 Here is a table describing the command for each define:
 
-| Define    | Action                                                                                                                                                                             |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BT_CLR`  | Clear bond information between the keyboard and host for the selected profile.                                                                                                     |
-| `BT_NXT`  | Switch to the next profile, cycling through to the first one when the end is reached.                                                                                              |
-| `BT_PRV`  | Switch to the previous profile, cycling through to the last one when the beginning is reached.                                                                                     |
-| `BT_SEL`  | Select the 0-indexed profile by number; must include a number as an argument in the keymap to work correctly, e.g. `BT_SEL 0`.                                                     |
-| `BT_DISC` | Disconnect from the 0-indexed profile by number, if it's currently connected and inactive; must include a number as an argument in the keymap to work correctly, e.g. `BT_DISC 0`. |
+| Define       | Action                                                                                                                                                                             |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BT_CLR`     | Clear bond information between the keyboard and host for the selected profile.                                                                                                     |
+| `BT_CLR_ALL` | Clear bond information between the keyboard and host for all profiles.                                                                                                             |
+| `BT_NXT`     | Switch to the next profile, cycling through to the first one when the end is reached.                                                                                              |
+| `BT_PRV`     | Switch to the previous profile, cycling through to the last one when the beginning is reached.                                                                                     |
+| `BT_SEL`     | Select the 0-indexed profile by number; must include a number as an argument in the keymap to work correctly, e.g. `BT_SEL 0`.                                                     |
+| `BT_DISC`    | Disconnect from the 0-indexed profile by number, if it's currently connected and inactive; must include a number as an argument in the keymap to work correctly, e.g. `BT_DISC 0`. |
 
 :::note Selected profile persistence
 The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be saved to flash storage and hence persist across restarts and firmware flashes.
