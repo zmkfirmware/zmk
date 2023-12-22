@@ -228,7 +228,7 @@ void zmk_ble_clear_all_bonds(void) {
     LOG_DBG("zmk_ble_clear_all_bonds()");
 
     // Unpair all profiles
-    for (uint8_t i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
+    for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
         clear_profile_bond(i);
     }
 
