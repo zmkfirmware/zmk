@@ -19,7 +19,7 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
-              CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
+              CONFIG_ZMK_SPLIT_CENTRAL_POSITION_QUEUE_SIZE, 4);
 
 void peripheral_event_work_callback(struct k_work *work) {
     struct zmk_position_state_changed ev;
@@ -38,7 +38,7 @@ void zmk_position_state_change_handle(struct zmk_position_state_changed *ev) {
 
 #if ZMK_KEYMAP_HAS_SENSORS
 K_MSGQ_DEFINE(peripheral_sensor_event_msgq, sizeof(struct zmk_sensor_event),
-              CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
+              CONFIG_ZMK_SPLIT_CENTRAL_POSITION_QUEUE_SIZE, 4);
 
 void peripheral_sensor_event_work_callback(struct k_work *work) {
     struct zmk_sensor_event ev;
@@ -57,13 +57,13 @@ void zmk_sensor_event_handle(struct zmk_sensor_event *ev) {
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
 K_THREAD_STACK_DEFINE(split_central_split_run_q_stack,
-                      CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE);
+                      CONFIG_ZMK_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE);
 
 struct k_work_q split_central_split_run_q;
 
 K_MSGQ_DEFINE(zmk_split_central_split_run_msgq,
               sizeof(struct zmk_split_run_behavior_payload_wrapper),
-              CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE, 4);
+              CONFIG_ZMK_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE, 4);
 
 void split_central_split_run_callback(struct k_work *work) {
     struct zmk_split_run_behavior_payload_wrapper payload_wrapper;
@@ -123,8 +123,8 @@ int zmk_split_invoke_behavior(uint8_t source, struct zmk_behavior_binding *bindi
 static int zmk_split_central_init(void) {
     k_work_queue_start(&split_central_split_run_q, split_central_split_run_q_stack,
                        K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
-                       CONFIG_ZMK_BLE_THREAD_PRIORITY, NULL);
+                       CONFIG_ZMK_SPLIT_CENTRAL_PRIORITY, NULL);
     return 0;
 }
 
-SYS_INIT(zmk_split_central_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);
+SYS_INIT(zmk_split_central_init, APPLICATION, CONFIG_ZMK_SPLIT_INIT_PRIORITY);

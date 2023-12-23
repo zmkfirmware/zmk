@@ -20,12 +20,12 @@ static uint8_t position_state[ZMK_SPLIT_POS_STATE_LEN];
 static struct sensor_event last_sensor_event;
 #endif
 
-K_THREAD_STACK_DEFINE(service_q_stack, CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE);
+K_THREAD_STACK_DEFINE(service_q_stack, CONFIG_ZMK_SPLIT_PERIPHERAL_STACK_SIZE);
 
 struct k_work_q service_work_q;
 
 K_MSGQ_DEFINE(position_state_msgq, sizeof(char[ZMK_SPLIT_POS_STATE_LEN]),
-              CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE, 4);
+              CONFIG_ZMK_SPLIT_PERIPHERAL_POSITION_QUEUE_SIZE, 4);
 
 void send_position_state_callback(struct k_work *work) {
     uint8_t state[ZMK_SPLIT_POS_STATE_LEN];
@@ -70,7 +70,7 @@ int zmk_split_position_released(uint8_t position) {
 
 #if ZMK_KEYMAP_HAS_SENSORS
 K_MSGQ_DEFINE(sensor_state_msgq, sizeof(struct sensor_event),
-              CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE, 4);
+              CONFIG_ZMK_SPLIT_PERIPHERAL_POSITION_QUEUE_SIZE, 4);
 
 void send_sensor_state_callback(struct k_work *work) {
     while (k_msgq_get(&sensor_state_msgq, &last_sensor_event, K_NO_WAIT) == 0) {
@@ -120,9 +120,9 @@ static int service_init(void) {
     static const struct k_work_queue_config queue_config = {
         .name = "Split Peripheral Notification Queue"};
     k_work_queue_start(&service_work_q, service_q_stack, K_THREAD_STACK_SIZEOF(service_q_stack),
-                       CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY, &queue_config);
+                       CONFIG_ZMK_SPLIT_PERIPHERAL_PRIORITY, &queue_config);
 
     return 0;
 }
 
-SYS_INIT(service_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);
+SYS_INIT(service_init, APPLICATION, CONFIG_ZMK_SPLIT_INIT_PRIORITY);
