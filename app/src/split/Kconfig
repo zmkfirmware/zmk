@@ -49,16 +49,16 @@ config ZMK_SPLIT_PERIPHERAL_POSITION_QUEUE_SIZE
 
 endif #!ZMK_SPLIT_ROLE_CENTRAL
 
-choice ZMK_SPLIT_TRANSPORT
-    prompt "Split transport"
-
 config ZMK_SPLIT_BLE
     bool "BLE"
+    default ZMK_SPLIT && ZMK_BLE
     depends on ZMK_BLE
     select BT_USER_PHY_UPDATE
     select BT_AUTO_PHY_UPDATE
 
-endchoice
+config ZMK_SPLIT_SERIAL
+    bool "Serial"
+    select RING_BUFFER
 
 config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     bool "Peripheral HID Indicators"
@@ -69,3 +69,4 @@ config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
 endif # ZMK_SPLIT
 
 rsource "bluetooth/Kconfig"
+rsource "serial/Kconfig"

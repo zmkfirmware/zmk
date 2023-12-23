@@ -1,0 +1,20 @@
+if ZMK_SPLIT && ZMK_SPLIT_SERIAL
+
+menu "Serial Transport"
+
+config ZMK_SPLIT_SERIAL_UART
+    bool "Serial over UART"
+    select CRC
+    default y
+
+config ZMK_SPLIT_SERIAL_UART_POLL
+    bool "Serial over UART Polling API"
+    default DT_HAS_RASPBERRYPI_PICO_UART_PIO_ENABLED || BOARD_NATIVE_SIM
+
+config ZMK_SPLIT_SERIAL_CDC_ACM
+    bool "Serial over USB CDC ACM"
+    default n
+
+endmenu
+
+endif
