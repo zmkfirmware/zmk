@@ -193,4 +193,4 @@ static int zmk_peripheral_ble_init(void) {
     return 0;
 }
 
-SYS_INIT(zmk_peripheral_ble_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);
+SYS_INIT(zmk_peripheral_ble_init, APPLICATION, CONFIG_ZMK_SPLIT_INIT_PRIORITY);

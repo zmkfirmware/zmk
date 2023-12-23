@@ -1076,7 +1076,7 @@ static int zmk_split_bt_central_init(void) {
 #endif // IS_ENABLED(CONFIG_SETTINGS)
 }
 
-SYS_INIT(zmk_split_bt_central_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);
+SYS_INIT(zmk_split_bt_central_init, APPLICATION, CONFIG_ZMK_SPLIT_INIT_PRIORITY);
 
 static int zmk_split_bt_central_listener_cb(const zmk_event_t *eh) {
     if (as_zmk_physical_layout_selection_changed(eh)) {

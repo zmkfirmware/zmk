@@ -129,12 +129,14 @@ Following [split keyboard](../features/split-keyboards.md) settings are defined 
 | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING`   | bool | Enable fetching split peripheral battery levels to the central side        | n                                          |
 | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY`      | bool | Enable central reporting of split battery levels to hosts                  | n                                          |
 | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_QUEUE_SIZE` | int  | Max number of battery level events to queue when received from peripherals | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS` |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE`      | int  | Max number of key state events to queue when received from peripherals     | 5                                          |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE`     | int  | Stack size of the BLE split central write thread                           | 512                                        |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE`     | int  | Max number of behavior run events to queue to send to the peripheral(s)    | 5                                          |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE`            | int  | Stack size of the BLE split peripheral notify thread                       | 756                                        |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY`              | int  | Priority of the BLE split peripheral notify thread                         | 5                                          |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE`   | int  | Max number of key state events to queue to send to the central             | 10                                         |
+| `CONFIG_ZMK_SPLIT_CENTRAL_POSITION_QUEUE_SIZE`          | int  | Max number of key state events to queue when received from peripherals     | 5                                          |
+| `CONFIG_ZMK_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE`         | int  | Stack size of the BLE split central write thread                           | 512                                        |
+| `CONFIG_ZMK_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE`         | int  | Max number of behavior run events to queue to send to the peripheral(s)    | 5                                          |
+| `CONFIG_ZMK_SPLIT_CENTRAL_PRIORITY`                     | int  | Priority of the split central thread                                       | 5                                          |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_STACK_SIZE`                | int  | Stack size of the split peripheral notify thread                           | 756                                        |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_PRIORITY`                  | int  | Priority of the split peripheral notify thread                             | 5                                          |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_POSITION_QUEUE_SIZE`       | int  | Max number of key state events to queue to send to the central             | 10                                         |
+| `CONFIG_ZMK_SPLIT_INIT_PRIORITY`                        | int  | Split init priority                                                        | 50                                         |
 
 ## Snippets
 
