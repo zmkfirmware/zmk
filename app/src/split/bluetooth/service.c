@@ -22,7 +22,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/matrix.h>
 #include <zmk/physical_layouts.h>
 #include <zmk/split/bluetooth/uuid.h>
-#include <zmk/split/bluetooth/service.h>
+#include <zmk/split/service.h>
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 #include <zmk/events/hid_indicators_changed.h>
@@ -45,10 +45,8 @@ static void split_svc_sensor_state_ccc(const struct bt_gatt_attr *attr, uint16_t
 }
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
-#define POS_STATE_LEN 16
-
 static uint8_t num_of_positions = ZMK_KEYMAP_LEN;
-static uint8_t position_state[POS_STATE_LEN];
+static uint8_t position_state[ZMK_SPLIT_POS_STATE_LEN];
 
 static struct zmk_split_run_behavior_payload behavior_run_payload;
 
@@ -244,112 +242,27 @@ BT_GATT_SERVICE_DEFINE(
                            split_svc_get_selected_phys_layout, split_svc_select_phys_layout,
                            NULL), );
 
-K_THREAD_STACK_DEFINE(service_q_stack, CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE);
-
-struct k_work_q service_work_q;
-
-K_MSGQ_DEFINE(position_state_msgq, sizeof(char[POS_STATE_LEN]),
-              CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE, 4);
-
-void send_position_state_callback(struct k_work *work) {
-    uint8_t state[POS_STATE_LEN];
-
-    while (k_msgq_get(&position_state_msgq, &state, K_NO_WAIT) == 0) {
-        int err = bt_gatt_notify(NULL, &split_svc.attrs[1], &state, sizeof(state));
-        if (err) {
-            LOG_DBG("Error notifying %d", err);
-        }
-    }
-};
-
-K_WORK_DEFINE(service_position_notify_work, send_position_state_callback);
-
-int send_position_state() {
-    int err = k_msgq_put(&position_state_msgq, position_state, K_MSEC(100));
+void send_position_state_impl(uint8_t *state, int len) {
+    memcpy(position_state, state, MIN(len, sizeof(position_state)));
+    int err = bt_gatt_notify(NULL, &split_svc.attrs[1], state, len);
     if (err) {
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Position state message queue full, popping first message and queueing again");
-            uint8_t discarded_state[POS_STATE_LEN];
-            k_msgq_get(&position_state_msgq, &discarded_state, K_NO_WAIT);
-            return send_position_state();
-        }
-        default:
-            LOG_WRN("Failed to queue position state to send (%d)", err);
-            return err;
-        }
+        LOG_DBG("Error notifying %d", err);
     }
-
-    k_work_submit_to_queue(&service_work_q, &service_position_notify_work);
-
-    return 0;
-}
-
-int zmk_split_bt_position_pressed(uint8_t position) {
-    WRITE_BIT(position_state[position / 8], position % 8, true);
-    return send_position_state();
-}
-
-int zmk_split_bt_position_released(uint8_t position) {
-    WRITE_BIT(position_state[position / 8], position % 8, false);
-    return send_position_state();
 }
 
 #if ZMK_KEYMAP_HAS_SENSORS
-K_MSGQ_DEFINE(sensor_state_msgq, sizeof(struct sensor_event),
-              CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE, 4);
-
-void send_sensor_state_callback(struct k_work *work) {
-    while (k_msgq_get(&sensor_state_msgq, &last_sensor_event, K_NO_WAIT) == 0) {
-        int err = bt_gatt_notify(NULL, &split_svc.attrs[8], &last_sensor_event,
-                                 sizeof(last_sensor_event));
-        if (err) {
-            LOG_DBG("Error notifying %d", err);
-        }
-    }
-};
-
-K_WORK_DEFINE(service_sensor_notify_work, send_sensor_state_callback);
-
-int send_sensor_state(struct sensor_event ev) {
-    int err = k_msgq_put(&sensor_state_msgq, &ev, K_MSEC(100));
+void send_sensor_state_impl(struct sensor_event *event, int len) {
+    memcpy(&last_sensor_event, event, MIN(len, sizeof(last_sensor_event)));
+    int err = bt_gatt_notify(NULL, &split_svc.attrs[8], event, len);
     if (err) {
-        // retry...
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Sensor state message queue full, popping first message and queueing again");
-            struct sensor_event discarded_state;
-            k_msgq_get(&sensor_state_msgq, &discarded_state, K_NO_WAIT);
-            return send_sensor_state(ev);
-        }
-        default:
-            LOG_WRN("Failed to queue sensor state to send (%d)", err);
-            return err;
-        }
+        LOG_DBG("Error notifying %d", err);
     }
-
-    k_work_submit_to_queue(&service_work_q, &service_sensor_notify_work);
-    return 0;
-}
-
-int zmk_split_bt_sensor_triggered(uint8_t sensor_index,
-                                  const struct zmk_sensor_channel_data channel_data[],
-                                  size_t channel_data_size) {
-    if (channel_data_size > ZMK_SENSOR_EVENT_MAX_CHANNELS) {
-        return -EINVAL;
-    }
-
-    struct sensor_event ev =
-        (struct sensor_event){.sensor_index = sensor_index, .channel_data_size = channel_data_size};
-    memcpy(ev.channel_data, channel_data,
-           channel_data_size * sizeof(struct zmk_sensor_channel_data));
-    return send_sensor_state(ev);
 }
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
 
-int zmk_split_bt_report_input(uint8_t reg, uint8_t type, uint16_t code, int32_t value, bool sync) {
+int zmk_split_report_input(uint8_t reg, uint8_t type, uint16_t code, int32_t value, bool sync) {
 
     for (size_t i = 0; i < split_svc.attr_count; i++) {
         if (bt_uuid_cmp(split_svc.attrs[i].uuid,
@@ -369,14 +282,3 @@ int zmk_split_bt_report_input(uint8_t reg, uint8_t type, uint16_t code, int32_t 
 }
 
 #endif /* IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT) */
-
-static int service_init(void) {
-    static const struct k_work_queue_config queue_config = {
-        .name = "Split Peripheral Notification Queue"};
-    k_work_queue_start(&service_work_q, service_q_stack, K_THREAD_STACK_SIZEOF(service_q_stack),
-                       CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY, &queue_config);
-
-    return 0;
-}
-
-SYS_INIT(service_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);
