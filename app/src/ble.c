@@ -273,15 +273,13 @@ int zmk_ble_prof_select(uint8_t index) {
         return 0;
     }
 
-#if IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
     active_profile = index;
-#else
-    bool was_active_profile_open = zmk_ble_active_profile_is_open();
-    active_profile = index;
-    if (was_active_profile_open) {
-        // We may have connected to multiple hosts while the active profile was open.
-        zmk_ble_disconnect_inactive_profiles();
-    }
+
+#if !IS_ENABLED(CONFIG_ZMK_BLE_FAST_SWITCHING)
+    // If the previous profile wasn't paired, then we may be connected to
+    // multiple hosts during the open advertisement. And if it was, we still
+    // want to disconnect the previous profile.
+    zmk_ble_disconnect_inactive_profiles();
 #endif
 
     ble_save_profile();
