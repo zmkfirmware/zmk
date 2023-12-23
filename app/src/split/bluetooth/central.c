@@ -24,6 +24,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/behavior.h>
 #include <zmk/sensors.h>
 #include <zmk/split/bluetooth/uuid.h>
+#include <zmk/split/central.h>
 #include <zmk/split/service.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
@@ -134,19 +135,6 @@ static bool is_scanning = false;
 
 static const struct bt_uuid_128 split_service_uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
 
-K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
-              CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
-
-void peripheral_event_work_callback(struct k_work *work) {
-    struct zmk_position_state_changed ev;
-    while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
-        LOG_DBG("Trigger key position state change for %d", ev.position);
-        raise_zmk_position_state_changed(ev);
-    }
-}
-
-K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
-
 int peripheral_slot_index_for_conn(struct bt_conn *conn) {
     for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
         if (peripherals[i].conn == conn) {
@@ -194,9 +182,7 @@ int release_peripheral_slot(int index) {
                                                         .position = position,
                                                         .state = false,
                                                         .timestamp = k_uptime_get()};
-
-                k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-                k_work_submit(&peripheral_event_work);
+                zmk_position_state_change_handle(&ev);
             }
         }
     }
@@ -389,9 +375,7 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
                                                         .position = position,
                                                         .state = pressed,
                                                         .timestamp = k_uptime_get()};
-
-                k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-                k_work_submit(&peripheral_event_work);
+                zmk_position_state_change_handle(&ev);
             }
         }
     }
