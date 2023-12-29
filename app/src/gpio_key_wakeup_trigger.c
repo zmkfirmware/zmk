@@ -39,18 +39,17 @@ static int gpio_key_wakeup_trigger_pm_resume(const struct device *dev) {
     int ret = gpio_pin_interrupt_configure_dt(&config->trigger, GPIO_INT_LEVEL_ACTIVE);
     if (ret < 0) {
         LOG_ERR("Failed to configure wakeup trigger key GPIO pin interrupt (%d)", ret);
-        goto exit;
+        return ret;
     }
 
     for (int i = 0; i < config->extra_gpios_count; i++) {
         ret = gpio_pin_configure_dt(&config->extra_gpios[i], GPIO_OUTPUT_ACTIVE);
         if (ret < 0) {
             LOG_WRN("Failed to set extra GPIO pin active for waker (%d)", ret);
-            goto exit;
+            return ret;
         }
     }
 
-exit:
     return ret;
 }
 
@@ -62,9 +61,20 @@ static int gpio_key_wakeup_trigger_pm_suspend(const struct device *dev) {
         LOG_ERR("Failed to configure wakeup trigger key GPIO pin interrupt (%d)", ret);
     }
 
+    for (int i = 0; i < config->extra_gpios_count; i++) {
+        ret = gpio_pin_configure_dt(&config->extra_gpios[i], GPIO_DISCONNECTED);
+        if (ret < 0) {
+            LOG_WRN("Failed to set extra GPIO pin disconnected for waker (%d)", ret);
+            return ret;
+        }
+    }
+
     return ret;
 }
 
+// The waker is "backwards", in as much as it is designed to be resumed/enabled immediately
+// before a soft-off state is entered, so it can wake the device from that state later.
+// So this waker correctly resumes and is ready to wake the device later.
 static int gpio_key_wakeup_trigger_pm_action(const struct device *dev,
                                              enum pm_device_action action) {
     switch (action) {
