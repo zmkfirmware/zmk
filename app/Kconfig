@@ -423,8 +423,12 @@ config ZMK_EXT_POWER
     bool "Enable support to control external power output"
     default y
 
+config ZMK_PM
+    bool
+
 config ZMK_PM_SOFT_OFF
     bool "Soft-off support"
+    select ZMK_PM
     select PM_DEVICE
 
 config ZMK_GPIO_KEY_WAKEUP_TRIGGER
