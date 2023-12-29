@@ -15,6 +15,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/endpoints.h>
 
+#if IS_ENABLED(CONFIG_ZMK_PM_SOFT_OFF)
+
 #define HAS_WAKERS DT_HAS_COMPAT_STATUS_OKAY(zmk_soft_off_wakeup_sources)
 
 #if HAS_WAKERS
@@ -63,3 +65,5 @@ int zmk_pm_soft_off(void) {
     LOG_DBG("soft-off: go to sleep");
     return pm_state_force(0U, &(struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0});
 }
+
+#endif // IS_ENABLED(CONFIG_ZMK_PM_SOFT_OFF)
