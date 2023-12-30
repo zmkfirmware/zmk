@@ -117,7 +117,7 @@ static void serial_callback(const struct device *dev, void *data) {
     }
 }
 
-void serial_write(struct serial_device *sd, uint32_t cmd, uint8_t *data, uint8_t len) {
+static void serial_write(struct serial_device *sd, uint32_t cmd, uint8_t *data, uint8_t len) {
     // TODO TODO TODO use buf with size SERIAL_BUF_SIZE. do single
     // ring_buf_put() to avoid potential race
     uint8_t header[13] = SERIAL_MSG_PREFIX;
@@ -137,6 +137,13 @@ void serial_write(struct serial_device *sd, uint32_t cmd, uint8_t *data, uint8_t
 
     uart_irq_tx_enable(sd->dev);
 }
+
+// TODO TODO TODO this should be abstracted a bit differently
+#ifdef CONFIG_ZMK_SPLIT_SERIAL_UART
+void serial_write_uart(uint32_t cmd, uint8_t *data, uint8_t len) {
+    serial_write(&serial_devs[0], cmd, data, len);
+}
+#endif
 
 #ifdef CONFIG_ZMK_SPLIT_SERIAL_UART_POLL
 
