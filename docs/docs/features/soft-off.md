@@ -37,7 +37,7 @@ The simplest way to achieve this is with a push button between a GPIO pin and gr
 
 #### Matrix-Integrated Hardware Combo
 
-Another, more complicated option is to tie two of the switch outputs in the matrix together through an AND gate and connect that to the dedicated GPIO pin. This way you can use a key combination in your existing keyboard matrix to trigger soft on/off. To make this work best, the two switches used should both be driven by the same matrix input pin so that both will be active simultaneously on the AND gate inputs. The alternative is to use a combination of diodes and capacitors to ensure both pins are active/high at the same time even if scanning sets them high at different times.
+Another, more complicated option is to tie two of the switch outputs in the matrix together through an AND gate and connect that to the dedicated GPIO pin. This way you can use a key combination in your existing keyboard matrix to trigger soft on/off. To make this work best, the two switches used should both be driven by the same matrix input pin so that both will be active simultaneously on the AND gate inputs. The alternative is to use a combination of diodes and capacitors to ensure both pins are active/high at the same time even if scanning sets them high at different times. Support for this mode will be coming soon.
 
 ### Firmware Changes
 
@@ -92,20 +92,7 @@ Here are the properties for the behavior key node:
 - The `bindings` property is a phandle to the soft off behavior defined above.
 - The `key` property is a phandle to the GPIO key defined earlier.
 
-If you have set up your on/off to be controlled by a matrix-integrated combo, the behavior key needs use a different driver that will handle detecting the pressed state when the pin is toggled by the other matrix kscan driver:
-
-```
-/ {
-    soft_off_behavior_key {
-        compatible = "zmk,gpio-scanned-key-behavior-trigger";
-        status = "okay";
-        bindings = <&hw_soft_off>;
-        key = <&wakeup_key>;
-    };
-};
-```
-
-Note that the only difference from the `soft_off_behavior_key` definition for GPIO keys above is the `compatible` value of `zmk,gpio-scanned-key-behavior-trigger`.
+If you have set up your on/off to be controlled by a matrix-integrated combo, the behavior key will need to be integrated into your existing kscan setup. Full details to come when this is supported.
 
 #### Wakeup Sources
 

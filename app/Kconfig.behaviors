@@ -6,11 +6,6 @@ config ZMK_GPIO_KEY_BEHAVIOR_TRIGGER
     default y
     depends on DT_HAS_ZMK_GPIO_KEY_BEHAVIOR_TRIGGER_ENABLED
 
-config ZMK_GPIO_SCANNED_KEY_BEHAVIOR_TRIGGER
-    bool
-    default y
-    depends on DT_HAS_ZMK_GPIO_SCANNED_KEY_BEHAVIOR_TRIGGER_ENABLED
-
 config ZMK_BEHAVIOR_KEY_TOGGLE
     bool
     default y
