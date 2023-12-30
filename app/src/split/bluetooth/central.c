@@ -713,89 +713,24 @@ static struct bt_conn_cb conn_callbacks = {
     .disconnected = split_central_disconnected,
 };
 
-K_THREAD_STACK_DEFINE(split_central_split_run_q_stack,
-                      CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE);
-
-struct k_work_q split_central_split_run_q;
-
-struct zmk_split_run_behavior_payload_wrapper {
-    uint8_t source;
-    struct zmk_split_run_behavior_payload payload;
-};
-
-K_MSGQ_DEFINE(zmk_split_central_split_run_msgq,
-              sizeof(struct zmk_split_run_behavior_payload_wrapper),
-              CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE, 4);
-
-void split_central_split_run_callback(struct k_work *work) {
-    struct zmk_split_run_behavior_payload_wrapper payload_wrapper;
-
-    LOG_DBG("");
-
-    while (k_msgq_get(&zmk_split_central_split_run_msgq, &payload_wrapper, K_NO_WAIT) == 0) {
-        if (peripherals[payload_wrapper.source].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
-            LOG_ERR("Source not connected");
-            continue;
-        }
-        if (!peripherals[payload_wrapper.source].run_behavior_handle) {
-            LOG_ERR("Run behavior handle not found");
-            continue;
-        }
-
-        int err = bt_gatt_write_without_response(
-            peripherals[payload_wrapper.source].conn,
-            peripherals[payload_wrapper.source].run_behavior_handle, &payload_wrapper.payload,
-            sizeof(struct zmk_split_run_behavior_payload), true);
-
-        if (err) {
-            LOG_ERR("Failed to write the behavior characteristic (err %d)", err);
-        }
+void send_split_run_impl(struct zmk_split_run_behavior_payload_wrapper *payload_wrapper) {
+    if (peripherals[payload_wrapper->source].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+        LOG_ERR("Source not connected");
+        return;
     }
-}
+    if (!peripherals[payload_wrapper->source].run_behavior_handle) {
+        LOG_ERR("Run behavior handle not found");
+        return;
+    }
 
-K_WORK_DEFINE(split_central_split_run_work, split_central_split_run_callback);
+    int err = bt_gatt_write_without_response(
+        peripherals[payload_wrapper->source].conn,
+        peripherals[payload_wrapper->source].run_behavior_handle, &payload_wrapper->payload,
+        sizeof(struct zmk_split_run_behavior_payload), true);
 
-static int
-split_bt_invoke_behavior_payload(struct zmk_split_run_behavior_payload_wrapper payload_wrapper) {
-    LOG_DBG("");
-
-    int err = k_msgq_put(&zmk_split_central_split_run_msgq, &payload_wrapper, K_MSEC(100));
     if (err) {
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Consumer message queue full, popping first message and queueing again");
-            struct zmk_split_run_behavior_payload_wrapper discarded_report;
-            k_msgq_get(&zmk_split_central_split_run_msgq, &discarded_report, K_NO_WAIT);
-            return split_bt_invoke_behavior_payload(payload_wrapper);
-        }
-        default:
-            LOG_WRN("Failed to queue behavior to send (%d)", err);
-            return err;
-        }
+        LOG_ERR("Failed to write the behavior characteristic (err %d)", err);
     }
-
-    k_work_submit_to_queue(&split_central_split_run_q, &split_central_split_run_work);
-
-    return 0;
-};
-
-int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *binding,
-                                 struct zmk_behavior_binding_event event, bool state) {
-    struct zmk_split_run_behavior_payload payload = {.data = {
-                                                         .param1 = binding->param1,
-                                                         .param2 = binding->param2,
-                                                         .position = event.position,
-                                                         .state = state ? 1 : 0,
-                                                     }};
-    const size_t payload_dev_size = sizeof(payload.behavior_dev);
-    if (strlcpy(payload.behavior_dev, binding->behavior_dev, payload_dev_size) >=
-        payload_dev_size) {
-        LOG_ERR("Truncated behavior label %s to %s before invoking peripheral behavior",
-                binding->behavior_dev, payload.behavior_dev);
-    }
-
-    struct zmk_split_run_behavior_payload_wrapper wrapper = {.source = source, .payload = payload};
-    return split_bt_invoke_behavior_payload(wrapper);
 }
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -836,11 +771,7 @@ int zmk_split_bt_update_hid_indicator(zmk_hid_indicators_t indicators) {
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 
 static int zmk_split_bt_central_init(void) {
-    k_work_queue_start(&split_central_split_run_q, split_central_split_run_q_stack,
-                       K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
-                       CONFIG_ZMK_BLE_THREAD_PRIORITY, NULL);
     bt_conn_cb_register(&conn_callbacks);
-
     return IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START) ? 0 : start_scanning();
 }
 
