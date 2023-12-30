@@ -2,7 +2,7 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/kscan_mock.h>
 
-/* this test verifies that lazy sticky keys work similarly to regular sticky keys, and includes cases from 10-callum-mods and 8-lsk-osk. 
+/* this test verifies that lazy sticky keys work similarly to regular sticky keys, and includes cases from 10-callum-mods and 8-lsk-osk.
    the only difference is that the lazy key does not exit the sticky layer */
 
 &sk {
