@@ -99,7 +99,7 @@ int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
         if (event.source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
             return invoke_locally(&binding, event, pressed);
         } else {
-            return zmk_split_bt_invoke_behavior(event.source, &binding, event, pressed);
+            return zmk_split_invoke_behavior(event.source, &binding, event, pressed);
         }
 #else
         return invoke_locally(&binding, event, pressed);
@@ -107,7 +107,7 @@ int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
     case BEHAVIOR_LOCALITY_GLOBAL:
 #if ZMK_BLE_IS_CENTRAL
         for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
-            zmk_split_bt_invoke_behavior(i, &binding, event, pressed);
+            zmk_split_invoke_behavior(i, &binding, event, pressed);
         }
 #endif
         return invoke_locally(&binding, event, pressed);

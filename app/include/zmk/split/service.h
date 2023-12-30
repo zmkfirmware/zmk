@@ -32,13 +32,17 @@ struct zmk_split_run_behavior_payload {
     char behavior_dev[ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN];
 } __packed;
 
+struct zmk_split_run_behavior_payload_wrapper {
+    uint8_t source;
+    struct zmk_split_run_behavior_payload payload;
+};
+
 struct zmk_split_input_event_payload {
     uint8_t type;
     uint16_t code;
     uint32_t value;
     uint8_t sync;
 } __packed;
-
 
 int zmk_split_position_pressed(uint8_t position);
 int zmk_split_position_released(uint8_t position);
