@@ -57,10 +57,19 @@ encoder: &qdec0 {
         wakeup-sources = <&wakeup_source>;
     };
 
-    soft_off_behavior_key {
-        compatible = "zmk,gpio-key-behavior-trigger";
-        status = "okay";
-        bindings = <&soft_off>;
-        key = <&button0>;
+    soft_off_direct_kscan: soft_off_direct_kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        input-keys = <&button0>;
     };
+
+    soft_off_sideband_behaviors {
+        compatible = "zmk,kscan-sideband-behaviors";
+        kscan = <&soft_off_direct_kscan>;
+        soft_off {
+            row = <0>;
+            column = <0>;
+            bindings = <&soft_off>;
+        };
+    };
+
 };

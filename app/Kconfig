@@ -512,6 +512,12 @@ config ZMK_KSCAN_EVENT_QUEUE_SIZE
 
 endif # ZMK_KSCAN
 
+config ZMK_KSCAN_SIDEBAND_BEHAVIORS
+    bool
+    default y
+    depends on DT_HAS_ZMK_KSCAN_SIDEBAND_BEHAVIORS_ENABLED
+    select KSCAN
+
 menu "Logging"
 
 config ZMK_LOGGING_MINIMAL
