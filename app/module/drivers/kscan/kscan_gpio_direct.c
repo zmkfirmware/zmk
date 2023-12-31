@@ -42,9 +42,14 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define COND_POLL_OR_INTERRUPTS(pollcode, intcode)                                                 \
     COND_CODE_1(CONFIG_ZMK_KSCAN_DIRECT_POLLING, pollcode, intcode)
 
-#define INST_INPUTS_LEN(n) DT_INST_PROP_LEN(n, input_gpios)
+#define INST_INPUTS_LEN(n)                                                                         \
+    COND_CODE_1(DT_INST_NODE_HAS_PROP(n, input_gpios), (DT_INST_PROP_LEN(n, input_gpios)),         \
+                (DT_INST_PROP_LEN(n, input_keys)))
+
 #define KSCAN_DIRECT_INPUT_CFG_INIT(idx, inst_idx)                                                 \
     KSCAN_GPIO_GET_BY_IDX(DT_DRV_INST(inst_idx), input_gpios, idx)
+#define KSCAN_KEY_DIRECT_INPUT_CFG_INIT(idx, inst_idx)                                             \
+    KSCAN_GPIO_GET_BY_IDX(DT_INST_PROP_BY_IDX(inst_idx, input_keys, idx), gpios, 0)
 
 struct kscan_direct_irq_callback {
     const struct device *dev;
@@ -347,7 +352,9 @@ static const struct kscan_driver_api kscan_direct_api = {
                  "ZMK_KSCAN_DEBOUNCE_RELEASE_MS or debounce-release-ms is too large");             \
                                                                                                    \
     static struct kscan_gpio kscan_direct_inputs_##n[] = {                                         \
-        LISTIFY(INST_INPUTS_LEN(n), KSCAN_DIRECT_INPUT_CFG_INIT, (, ), n)};                        \
+        COND_CODE_1(DT_INST_NODE_HAS_PROP(n, input_gpios),                                         \
+                    (LISTIFY(INST_INPUTS_LEN(n), KSCAN_DIRECT_INPUT_CFG_INIT, (, ), n)),           \
+                    (LISTIFY(INST_INPUTS_LEN(n), KSCAN_KEY_DIRECT_INPUT_CFG_INIT, (, ), n)))};     \
                                                                                                    \
     static struct zmk_debounce_state kscan_direct_state_##n[INST_INPUTS_LEN(n)];                   \
                                                                                                    \
