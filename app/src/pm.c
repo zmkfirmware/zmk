@@ -35,6 +35,8 @@ int zmk_pm_soft_off(void) {
 
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     zmk_endpoints_clear_current();
+    // Need to sleep to give any other threads a chance so submit endpoint data.
+    k_sleep(K_MSEC(100));
 #endif
 
     device_count = z_device_get_all_static(&devs);
