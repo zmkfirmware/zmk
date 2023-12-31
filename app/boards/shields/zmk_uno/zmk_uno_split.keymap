@@ -16,9 +16,7 @@
 
 /* :REMOVE ME
 
-&kscan_direct_comp { status = "okay"; };
 &kscan_direct { status = "okay"; };
-&kscan_matrix_comp { status = "disabled"; };
 &kscan_matrix { status = "disabled"; };
 
 / {
@@ -30,20 +28,7 @@
 
 REMOVE ME: */
 
-
 / {
-    macros {
-        ZMK_MACRO(ble_zero,
-            wait-ms = <1>;
-            tap-ms = <1>;
-            bindings = <&out OUT_BLE &bt BT_SEL 0>;
-        )
-        ZMK_MACRO(ble_one,
-            wait-ms = <1>;
-            tap-ms = <1>;
-            bindings = <&out OUT_BLE &bt BT_SEL 1>;
-        )
-    };
 
     keymap {
         compatible = "zmk,keymap";
@@ -53,11 +38,8 @@ REMOVE ME: */
                 &kp A &bl BL_TOG
                 &rgb_ug RGB_EFF &bt BT_CLR
 
-                &out OUT_USB &ble_zero &ble_one
-
                 &kp C &kp D
                 &kp E &kp F
-                &none &none &none
            >;
 
            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
