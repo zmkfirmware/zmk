@@ -13,3 +13,11 @@ properties:
     required: true
   mods:
     type: int
+  layers:
+    type: int
+  ignore-alphas:
+    type: boolean
+  ignore-numbers:
+    type: boolean
+  ignore-modifiers:
+    type: boolean
