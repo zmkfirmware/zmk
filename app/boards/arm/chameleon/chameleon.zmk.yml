@@ -1,0 +1,10 @@
+file_format: "1"
+id: chameleon
+name: Chameleon
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+url: https://lectronz.com/products/chameleon-48-60-key-ortho-keyboard

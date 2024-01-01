@@ -1,0 +1,18 @@
+identifier: chameleon
+name: chameleon
+type: keyboard
+arch: arm
+flash: 4096
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 264
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - gpio
+  - usb_device
+  - kscan
