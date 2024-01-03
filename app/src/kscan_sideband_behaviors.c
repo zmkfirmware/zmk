@@ -75,6 +75,7 @@ void ksbb_inner_kscan_callback(const struct device *dev, uint32_t row, uint32_t 
 }
 
 static int ksbb_configure(const struct device *dev, kscan_callback_t callback) {
+    const struct ksbb_config *cfg = dev->config;
     struct ksbb_data *data = dev->data;
 
     if (!callback) {
@@ -82,6 +83,13 @@ static int ksbb_configure(const struct device *dev, kscan_callback_t callback) {
     }
 
     data->callback = callback;
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+    if (pm_device_wakeup_is_enabled(dev) && pm_device_wakeup_is_capable(cfg->kscan)) {
+        pm_device_wakeup_enable(cfg->kscan, true);
+    }
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
     return 0;
 }
 
@@ -119,6 +127,21 @@ static const struct kscan_driver_api ksbb_api = {
     .disable_callback = ksbb_disable,
 };
 
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+
+static int ksbb_pm_action(const struct device *dev, enum pm_device_action action) {
+    switch (action) {
+    case PM_DEVICE_ACTION_SUSPEND:
+        return ksbb_disable(dev);
+    case PM_DEVICE_ACTION_RESUME:
+        return ksbb_disable(dev);
+    default:
+        return -ENOTSUP;
+    }
+}
+
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
 #define JUST_ONE(_id) 1
 
 #define ENTRY(e)                                                                                   \
@@ -136,7 +159,9 @@ static const struct kscan_driver_api ksbb_api = {
         .entries_len = DT_INST_FOREACH_CHILD_STATUS_OKAY_SEP(n, JUST_ONE, (+)),                    \
     };                                                                                             \
     struct ksbb_data ksbb_data_##n = {};                                                           \
-    DEVICE_DT_INST_DEFINE(n, ksbb_init, NULL, &ksbb_data_##n, &ksbb_config_##n, APPLICATION,       \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &ksbb_api);
+    PM_DEVICE_DT_INST_DEFINE(n, ksbb_pm_action);                                                   \
+    DEVICE_DT_INST_DEFINE(n, ksbb_init, PM_DEVICE_DT_INST_GET(n), &ksbb_data_##n,                  \
+                          &ksbb_config_##n, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,      \
+                          &ksbb_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSBB_INST)
