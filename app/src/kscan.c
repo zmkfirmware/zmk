@@ -74,13 +74,14 @@ int zmk_kscan_init(const struct device *dev) {
 
     k_work_init(&msg_processor.work, zmk_kscan_process_msgq);
 
-    kscan_config(dev, zmk_kscan_callback);
-    kscan_enable_callback(dev);
 #if IS_ENABLED(CONFIG_PM_DEVICE)
     if (pm_device_wakeup_is_capable(dev)) {
         pm_device_wakeup_enable(dev, true);
     }
 #endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
+    kscan_config(dev, zmk_kscan_callback);
+    kscan_enable_callback(dev);
 
     return 0;
 }

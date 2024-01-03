@@ -7,7 +7,7 @@ description: |
 
 compatible: "zmk,kscan-sideband-behaviors"
 
-include: [kscan.yaml]
+include: kscan.yaml
 
 properties:
   kscan:
