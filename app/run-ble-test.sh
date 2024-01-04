@@ -34,6 +34,14 @@ if [ -z "$BLE_TESTS_NO_CENTRAL_BUILD" ]; then
     fi
 
     cp build/tests/ble/private_central/zephyr/zephyr.exe "${BSIM_OUT_PATH}/bin/ble_test_private_central.exe"
+
+    if ! [ -e build/tests/ble/no_auto_sec_central ]; then
+        west build -d build/tests/ble/no_auto_sec_central -b nrf52_bsim tests/ble/central -- -DCONFIG_BT_ATT_RETRY_ON_SEC_ERR=n > /dev/null 2>&1
+    else
+        west build -d build/tests/ble/no_auto_sec_central
+    fi
+
+    cp build/tests/ble/no_auto_sec_central/zephyr/zephyr.exe "${BSIM_OUT_PATH}/bin/ble_test_no_auto_sec_central.exe"
 fi
 
 testcases=$(find $path -name nrf52_bsim.keymap -exec dirname \{\} \;)
