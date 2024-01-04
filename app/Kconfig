@@ -144,7 +144,6 @@ if ZMK_BLE
 
 config ZMK_BLE_EXPERIMENTAL_CONN
     bool "Experimental BLE connection changes"
-    imply BT_GATT_AUTO_SEC_REQ
     help
       Enables a combination of settings that are planned to be default in future versions of ZMK
       to improve connection stability. This includes changes to timing on BLE pairing initation,
