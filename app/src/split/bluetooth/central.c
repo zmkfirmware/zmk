@@ -522,14 +522,6 @@ static void split_central_process_connection(struct bt_conn *conn) {
 
     LOG_DBG("Current security for connection: %d", bt_conn_get_security(conn));
 
-#if !IS_ENABLED(CONFIG_BT_GATT_AUTO_SEC_REQ)
-    err = bt_conn_set_security(conn, BT_SECURITY_L2);
-    if (err) {
-        LOG_ERR("Failed to set security (reason %d)", err);
-        return;
-    }
-#endif // !IS_ENABLED(CONFIG_BT_GATT_AUTO_SEC_REQ)
-
     struct peripheral_slot *slot = peripheral_slot_for_conn(conn);
     if (slot == NULL) {
         LOG_ERR("No peripheral state found for connection");

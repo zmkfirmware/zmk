@@ -1,0 +1,1 @@
+./ble_test_central.exe -d=2 -skip_set_security_on_connect -read_hid_report_on_connect -skip_discovery_on_connect
