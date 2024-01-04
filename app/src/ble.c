@@ -460,12 +460,6 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
     LOG_DBG("Connected %s", addr);
 
-#if !IS_ENABLED(CONFIG_BT_GATT_AUTO_SEC_REQ)
-    if (bt_conn_set_security(conn, BT_SECURITY_L2)) {
-        LOG_ERR("Failed to set security");
-    }
-#endif // !IS_ENABLED(CONFIG_BT_GATT_AUTO_SEC_REQ)
-
     update_advertising();
 
     if (is_conn_active_profile(conn)) {
