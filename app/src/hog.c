@@ -258,8 +258,10 @@ void send_keyboard_report_callback(struct k_work *work) {
         };
 
         int err = bt_gatt_notify_cb(conn, &notify_params);
-        if (err) {
-            LOG_ERR("Error notifying %d", err);
+        if (err == -EPERM) {
+            bt_conn_set_security(conn, BT_SECURITY_L2);
+        } else if (err) {
+            LOG_DBG("Error notifying %d", err);
         }
 
         bt_conn_unref(conn);
@@ -308,7 +310,9 @@ void send_consumer_report_callback(struct k_work *work) {
         };
 
         int err = bt_gatt_notify_cb(conn, &notify_params);
-        if (err) {
+        if (err == -EPERM) {
+            bt_conn_set_security(conn, BT_SECURITY_L2);
+        } else if (err) {
             LOG_DBG("Error notifying %d", err);
         }
 
@@ -359,7 +363,9 @@ void send_mouse_report_callback(struct k_work *work) {
         };
 
         int err = bt_gatt_notify_cb(conn, &notify_params);
-        if (err) {
+        if (err == -EPERM) {
+            bt_conn_set_security(conn, BT_SECURITY_L2);
+        } else if (err) {
             LOG_DBG("Error notifying %d", err);
         }
 
@@ -380,9 +386,10 @@ int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *report) {
     };
 
     int err = bt_gatt_notify_cb(conn, &notify_params);
-    if (err) {
+    if (err == -EPERM) {
+        bt_conn_set_security(conn, BT_SECURITY_L2);
+    } else if (err) {
         LOG_DBG("Error notifying %d", err);
-        return err;
     }
 
     bt_conn_unref(conn);
