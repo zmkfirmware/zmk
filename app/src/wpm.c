@@ -68,11 +68,11 @@ void wpm_work_handler(struct k_work *work) {
 
 K_WORK_DEFINE(wpm_work, wpm_work_handler);
 
-void wpm_expiry_function(void) { k_work_submit(&wpm_work); }
+void wpm_expiry_function(struct k_timer *_timer) { k_work_submit(&wpm_work); }
 
 K_TIMER_DEFINE(wpm_timer, wpm_expiry_function, NULL);
 
-int wpm_init(void) {
+int wpm_init(const struct device *_device) {
     wpm_state = 0;
     wpm_update_counter = 0;
     k_timer_start(&wpm_timer, K_SECONDS(WPM_UPDATE_INTERVAL_SECONDS),
