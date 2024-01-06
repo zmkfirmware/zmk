@@ -217,7 +217,7 @@ config BT_GATT_NOTIFY_MULTIPLE
     default n
 
 config BT_GATT_AUTO_SEC_REQ
-    default n
+    default (ZMK_SPLIT_BLE && !ZMK_SPLIT_ROLE_CENTRAL)
 
 config BT_DEVICE_APPEARANCE
     default 961
