@@ -322,7 +322,7 @@ static int zmk_endpoints_init(const struct device *_arg) {
     return 0;
 }
 
-static void disconnect_current_endpoint() {
+static void disconnect_current_endpoint(void) {
     zmk_hid_keyboard_clear();
     zmk_hid_consumer_clear();
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)

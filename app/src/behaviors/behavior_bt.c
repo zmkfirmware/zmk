@@ -24,13 +24,17 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
     case BT_CLR_CMD:
-        return zmk_ble_clear_bonds();
+        zmk_ble_clear_bonds();
+        return 0;
     case BT_NXT_CMD:
         return zmk_ble_prof_next();
     case BT_PRV_CMD:
         return zmk_ble_prof_prev();
     case BT_SEL_CMD:
         return zmk_ble_prof_select(binding->param2);
+    case BT_CLR_ALL_CMD:
+        zmk_ble_clear_all_bonds();
+        return 0;
     case BT_DISC_CMD:
         return zmk_ble_prof_disconnect(binding->param2);
     default:

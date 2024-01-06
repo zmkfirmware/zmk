@@ -32,7 +32,7 @@ static uint8_t last_wpm_state;
 static uint8_t wpm_update_counter;
 static uint32_t key_pressed_count;
 
-int zmk_wpm_get_state() { return wpm_state; }
+int zmk_wpm_get_state(void) { return wpm_state; }
 
 int wpm_event_listener(const zmk_event_t *eh) {
     const struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
@@ -68,11 +68,11 @@ void wpm_work_handler(struct k_work *work) {
 
 K_WORK_DEFINE(wpm_work, wpm_work_handler);
 
-void wpm_expiry_function() { k_work_submit(&wpm_work); }
+void wpm_expiry_function(struct k_timer *_timer) { k_work_submit(&wpm_work); }
 
 K_TIMER_DEFINE(wpm_timer, wpm_expiry_function, NULL);
 
-int wpm_init() {
+int wpm_init(const struct device *_device) {
     wpm_state = 0;
     wpm_update_counter = 0;
     k_timer_start(&wpm_timer, K_SECONDS(WPM_UPDATE_INTERVAL_SECONDS),

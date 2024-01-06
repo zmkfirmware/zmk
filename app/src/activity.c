@@ -24,7 +24,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/usb.h>
 #endif
 
-bool is_usb_power_present() {
+bool is_usb_power_present(void) {
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     return zmk_usb_is_powered();
 #else
@@ -42,7 +42,7 @@ static uint32_t activity_last_uptime;
 #define MAX_SLEEP_MS CONFIG_ZMK_IDLE_SLEEP_TIMEOUT
 #endif
 
-int raise_event() {
+int raise_event(void) {
     return ZMK_EVENT_RAISE(new_zmk_activity_state_changed(
         (struct zmk_activity_state_changed){.state = activity_state}));
 }
@@ -55,7 +55,7 @@ int set_state(enum zmk_activity_state state) {
     return raise_event();
 }
 
-enum zmk_activity_state zmk_activity_get_state() { return activity_state; }
+enum zmk_activity_state zmk_activity_get_state(void) { return activity_state; }
 
 int activity_event_listener(const zmk_event_t *eh) {
     activity_last_uptime = k_uptime_get();
@@ -80,11 +80,11 @@ void activity_work_handler(struct k_work *work) {
 
 K_WORK_DEFINE(activity_work, activity_work_handler);
 
-void activity_expiry_function() { k_work_submit(&activity_work); }
+void activity_expiry_function(struct k_timer *_timer) { k_work_submit(&activity_work); }
 
 K_TIMER_DEFINE(activity_timer, activity_expiry_function, NULL);
 
-int activity_init() {
+int activity_init(const struct device *_device) {
     activity_last_uptime = k_uptime_get();
 
     k_timer_start(&activity_timer, K_SECONDS(1), K_SECONDS(1));

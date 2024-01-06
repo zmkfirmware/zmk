@@ -14,10 +14,10 @@
 
 typedef uint32_t zmk_keymap_layers_state_t;
 
-uint8_t zmk_keymap_layer_default();
-zmk_keymap_layers_state_t zmk_keymap_layer_state();
+uint8_t zmk_keymap_layer_default(void);
+zmk_keymap_layers_state_t zmk_keymap_layer_state(void);
 bool zmk_keymap_layer_active(uint8_t layer);
-uint8_t zmk_keymap_highest_layer_active();
+uint8_t zmk_keymap_highest_layer_active(void);
 int zmk_keymap_layer_activate(uint8_t layer);
 int zmk_keymap_layer_deactivate(uint8_t layer);
 int zmk_keymap_layer_toggle(uint8_t layer);

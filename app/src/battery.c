@@ -24,7 +24,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static uint8_t last_state_of_charge = 0;
 
-uint8_t zmk_battery_state_of_charge() { return last_state_of_charge; }
+uint8_t zmk_battery_state_of_charge(void) { return last_state_of_charge; }
 
 #if DT_HAS_CHOSEN(zmk_battery)
 static const struct device *const battery = DEVICE_DT_GET(DT_CHOSEN(zmk_battery));

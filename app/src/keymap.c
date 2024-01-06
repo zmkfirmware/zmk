@@ -96,9 +96,9 @@ static inline int set_layer_state(uint8_t layer, bool state) {
     return 0;
 }
 
-uint8_t zmk_keymap_layer_default() { return _zmk_keymap_layer_default; }
+uint8_t zmk_keymap_layer_default(void) { return _zmk_keymap_layer_default; }
 
-zmk_keymap_layers_state_t zmk_keymap_layer_state() { return _zmk_keymap_layer_state; }
+zmk_keymap_layers_state_t zmk_keymap_layer_state(void) { return _zmk_keymap_layer_state; }
 
 bool zmk_keymap_layer_active_with_state(uint8_t layer, zmk_keymap_layers_state_t state_to_test) {
     // The default layer is assumed to be ALWAYS ACTIVE so we include an || here to ensure nobody
@@ -110,7 +110,7 @@ bool zmk_keymap_layer_active(uint8_t layer) {
     return zmk_keymap_layer_active_with_state(layer, _zmk_keymap_layer_state);
 };
 
-uint8_t zmk_keymap_highest_layer_active() {
+uint8_t zmk_keymap_highest_layer_active(void) {
     for (uint8_t layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer > 0; layer--) {
         if (zmk_keymap_layer_active(layer)) {
             return layer;
