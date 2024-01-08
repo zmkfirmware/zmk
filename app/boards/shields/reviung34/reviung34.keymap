@@ -12,11 +12,11 @@
 / {
     chosen {
         // 34 keys.
-        zmk,matrix_transform = &dual_1u_transform;
+        zmk,matrix-transform = &dual_1u_transform;
 
         // 33 keys. Center two thumb keys replaced by a single 2u key. Remember to adjust your
         // keymap accordingly!
-        // zmk,matrix_transform = &single_2u_transform;
+        // zmk,matrix-transform = &single_2u_transform;
     };
 };
 
