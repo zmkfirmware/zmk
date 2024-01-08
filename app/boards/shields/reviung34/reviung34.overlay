@@ -9,7 +9,7 @@
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &dual_1u_transform;
+        zmk,matrix-transform = &dual_1u_transform;
     };
 
     dual_1u_transform: keymap_transform_0 {

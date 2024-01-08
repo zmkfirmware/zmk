@@ -19,7 +19,7 @@
         zephyr,flash = &flash0;
         zephyr,console = &cdc_acm_uart;
         zmk,kscan = &kscan;
-        zmk,matrix_transform = &transform;
+        zmk,matrix-transform = &transform;
         /* TODO: Enable once we support the IC for underglow
         zmk,underglow = &led_strip;
          */
