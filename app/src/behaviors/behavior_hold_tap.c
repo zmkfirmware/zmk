@@ -22,8 +22,6 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
-
 #define ZMK_BHV_HOLD_TAP_MAX_HELD 10
 #define ZMK_BHV_HOLD_TAP_MAX_CAPTURED_EVENTS 40
 
@@ -812,5 +810,3 @@ static int behavior_hold_tap_init(const struct device *dev) {
                             &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
-
-#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

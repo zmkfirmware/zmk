@@ -21,8 +21,6 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
-
 struct behavior_mod_morph_config {
     struct zmk_behavior_binding normal_binding;
     struct zmk_behavior_binding morph_binding;
@@ -102,5 +100,3 @@ static int behavior_mod_morph_init(const struct device *dev) { return 0; }
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mod_morph_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
-
-#endif

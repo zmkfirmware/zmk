@@ -7,7 +7,7 @@
 / {
     behaviors {
         // Behavior can be invoked on peripherals, so name must be <= 8 characters.
-        ext_power: extpower {
+        /omit-if-no-ref/ ext_power: extpower {
             compatible = "zmk,behavior-ext-power";
             #binding-cells = <1>;
         };

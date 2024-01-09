@@ -1,16 +1,89 @@
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+config ZMK_BEHAVIOR_BACKLIGHT
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_BACKLIGHT_ENABLED
+    imply ZMK_BACKLIGHT
+
+config ZMK_BEHAVIOR_BLUETOOTH
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_BLUETOOTH_ENABLED
+
+config ZMK_BEHAVIOR_CAPS_WORD
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
+
+config ZMK_BEHAVIOR_EXT_POWER
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_EXT_POWER_ENABLED
+    imply ZMK_EXT_POWER
+
+config ZMK_BEHAVIOR_HOLD_TAP
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_HOLD_TAP_ENABLED
+
+config ZMK_BEHAVIOR_KEY_PRESS
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_KEY_PRESS_ENABLED
+
+config ZMK_BEHAVIOR_KEY_REPEAT
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_KEY_REPEAT_ENABLED
+
 config ZMK_BEHAVIOR_KEY_TOGGLE
     bool
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_KEY_TOGGLE_ENABLED
+
+config ZMK_BEHAVIOR_MACRO
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_MACRO_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_ONE_PARAM_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_TWO_PARAM_ENABLED
+
+config ZMK_BEHAVIOR_MOD_MORPH
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_MOD_MORPH_ENABLED
+
+config ZMK_BEHAVIOR_MOMENTARY_LAYER
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_MOMENTARY_LAYER_ENABLED
 
 config ZMK_BEHAVIOR_MOUSE_KEY_PRESS
     bool
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_MOUSE_KEY_PRESS_ENABLED
     imply ZMK_MOUSE
+
+config ZMK_BEHAVIOR_NONE
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_NONE_ENABLED
+
+config ZMK_BEHAVIOR_OUTPUTS
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_OUTPUTS_ENABLED
+
+config ZMK_BEHAVIOR_RESET
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_RESET_ENABLED
+
+config ZMK_BEHAVIOR_RGB_UNDERGLOW
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_RGB_UNDERGLOW_ENABLED
+    imply ZMK_RGB_UNDERGLOW
 
 config ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
     bool
@@ -27,7 +100,27 @@ config ZMK_BEHAVIOR_SENSOR_ROTATE_VAR
     depends on DT_HAS_ZMK_BEHAVIOR_SENSOR_ROTATE_VAR_ENABLED
     select ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
 
-config ZMK_BEHAVIOR_MACRO
+config ZMK_BEHAVIOR_STICKY_KEY
     bool
     default y
-    depends on DT_HAS_ZMK_BEHAVIOR_MACRO_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_ONE_PARAM_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_TWO_PARAM_ENABLED
+    depends on DT_HAS_ZMK_BEHAVIOR_STICKY_KEY_ENABLED
+
+config ZMK_BEHAVIOR_TAP_DANCE
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_TAP_DANCE_ENABLED
+
+config ZMK_BEHAVIOR_TO_LAYER
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_TO_LAYER_ENABLED
+
+config ZMK_BEHAVIOR_TOGGLE_LAYER
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_TOGGLE_LAYER_ENABLED
+
+config ZMK_BEHAVIOR_TRANSPARENT
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_TRANSPARENT_ENABLED

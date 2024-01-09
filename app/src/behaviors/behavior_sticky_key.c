@@ -22,8 +22,6 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
-
 #define KEY_PRESS DEVICE_DT_NAME(DT_INST(0, zmk_behavior_key_press))
 
 #define ZMK_BHV_STICKY_KEY_MAX_HELD 10
@@ -303,5 +301,3 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sticky_key_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
-
-#endif

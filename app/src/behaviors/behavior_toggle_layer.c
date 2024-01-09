@@ -15,8 +15,6 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
-
 struct behavior_tog_config {};
 struct behavior_tog_data {};
 
@@ -45,5 +43,3 @@ static struct behavior_tog_data behavior_tog_data;
 
 BEHAVIOR_DT_INST_DEFINE(0, behavior_tog_init, NULL, &behavior_tog_data, &behavior_tog_config,
                         POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_tog_driver_api);
-
-#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

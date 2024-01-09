@@ -19,8 +19,6 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
-
 #define ZMK_BHV_TAP_DANCE_MAX_HELD 10
 
 #define ZMK_BHV_TAP_DANCE_POSITION_FREE UINT32_MAX
@@ -257,5 +255,3 @@ static int behavior_tap_dance_init(const struct device *dev) {
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_tap_dance_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
-
-#endif

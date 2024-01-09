@@ -17,8 +17,6 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
-
 struct behavior_key_repeat_config {
     uint8_t index;
     uint8_t usage_pages_count;
@@ -121,5 +119,3 @@ static int behavior_key_repeat_init(const struct device *dev) {
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_repeat_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KR_INST)
-
-#endif
