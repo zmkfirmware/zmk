@@ -54,13 +54,12 @@ jobs:
           node-version: "14.x"
       - name: Install @actions/artifact
         run: npm install @actions/artifact
-      - name: Build and upload artifacts
+      - name: Build
         uses: actions/github-script@v7
         id: boards-list
         with:
           script: |
             const fs = require('fs');
-            const {default: artifact} = require('@actions/artifact');
 
             const execSync = require('child_process').execSync;
 
@@ -70,10 +69,39 @@ jobs:
 
             for (const shieldArgs of buildShieldArgs) {
               try {
+                console.log(`::group::${{ matrix.board}} ${shieldArgs.shield} Build`)
+
                 const output = execSync(`west build -s app -p -b ${{ matrix.board }} -- ${shieldArgs.shield ? '-DSHIELD="' + shieldArgs.shield + '"' : ''} ${shieldArgs['cmake-args'] || ''}`);
 
-                console.log(`::group::${{ matrix.board}} ${shieldArgs.shield} Build`)
                 console.log(output.toString());
+              } catch (e) {
+                console.error(`::error::Failed to build ${{ matrix.board }} ${shieldArgs.shield} ${shieldArgs['cmake-args']}`);
+                console.error(e);
+                error = true;
+              } finally {
+                console.log('::endgroup::');
+              }
+            }
+
+            if (error) {
+              throw new Error('Failed to build one or more configurations');
+            }
+      - name: Upload artifacts
+        uses: actions/github-script@v7
+        continue-on-error: github.event_name == 'pull_request'
+        id: boards-upload
+        with:
+          script: |
+            const fs = require('fs');
+            const {default: artifact} = require('@actions/artifact');
+
+            const buildShieldArgs = JSON.parse(`${{ matrix.shieldArgs }}`);
+
+            let error = false;
+
+            for (const shieldArgs of buildShieldArgs) {
+              try {
+                console.log(`::group::${{ matrix.board}} ${shieldArgs.shield} Upload`)
 
                 const fileExtensions = ["hex", "uf2"];
 
@@ -91,7 +119,7 @@ jobs:
 
                 await artifact.uploadArtifact(artifactName, files, rootDirectory, options);
               } catch (e) {
-                console.error(`::error::Failed to build or upload ${{ matrix.board }} ${shieldArgs.shield} ${shieldArgs['cmake-args']}`);
+                console.error(`::error::Failed to upload ${{ matrix.board }} ${shieldArgs.shield} ${shieldArgs['cmake-args']}`);
                 console.error(e);
                 error = true;
               } finally {
