@@ -20,7 +20,7 @@
         hm: homerow_mods {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
-            tapping_term_ms = <225>;
+            tapping-term-ms = <225>;
             flavor = "tap-preferred";
             bindings = <&kp>, <&kp>;
         };
