@@ -336,20 +336,11 @@ Most behavior drivers are invoked according to the central half's [locality](#ap
 
 ```txt title="app/CmakeLists.txt"
 if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+  /* ... */
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_KEY_PRESS app PRIVATE src/behaviors/behavior_key_press.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_KEY_TOGGLE app PRIVATE src/behaviors/behavior_key_toggle.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_HOLD_TAP app PRIVATE src/behaviors/behavior_hold_tap.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_STICKY_KEY app PRIVATE src/behaviors/behavior_sticky_key.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_CAPS_WORD app PRIVATE src/behaviors/behavior_caps_word.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_KEY_REPEAT app PRIVATE src/behaviors/behavior_key_repeat.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_MACRO app PRIVATE src/behaviors/behavior_macro.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_MOMENTARY_LAYER app PRIVATE src/behaviors/behavior_momentary_layer.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_MOD_MORPH app PRIVATE src/behaviors/behavior_mod_morph.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_OUTPUTS app PRIVATE src/behaviors/behavior_outputs.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_TOGGLE_LAYER app PRIVATE src/behaviors/behavior_toggle_layer.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_TO_LAYER app PRIVATE src/behaviors/behavior_to_layer.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_TRANSPARENT app PRIVATE src/behaviors/behavior_transparent.c)
-  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_NONE app PRIVATE src/behaviors/behavior_none.c)
+  /* ... */
 endif()
 ```
 
