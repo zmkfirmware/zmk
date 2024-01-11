@@ -69,6 +69,7 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 | `CONFIG_USB_DEVICE_MANUFACTURER`  | string | The manufacturer name advertised to USB | `"ZMK Project"` |
 | `CONFIG_USB_HID_POLL_INTERVAL_MS` | int    | USB polling interval in milliseconds    | 1               |
 | `CONFIG_ZMK_USB`                  | bool   | Enable ZMK as a USB keyboard            |                 |
+| `CONFIG_ZMK_USB_BOOT`             | bool   | Enable ZMK Boot protocol                | n               |
 | `CONFIG_ZMK_USB_INIT_PRIORITY`    | int    | USB init priority                       | 50              |
 
 ### Bluetooth
