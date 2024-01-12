@@ -69,7 +69,14 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 | `CONFIG_USB_DEVICE_MANUFACTURER`  | string | The manufacturer name advertised to USB | `"ZMK Project"` |
 | `CONFIG_USB_HID_POLL_INTERVAL_MS` | int    | USB polling interval in milliseconds    | 1               |
 | `CONFIG_ZMK_USB`                  | bool   | Enable ZMK as a USB keyboard            |                 |
+| `CONFIG_ZMK_USB_BOOT`             | bool   | Enable USB Boot protocol support        | n               |
 | `CONFIG_ZMK_USB_INIT_PRIORITY`    | int    | USB init priority                       | 50              |
+
+:::note USB Boot protocol support
+
+By default USB Boot protocol support is disabled, however certain situations such as the input of Bitlocker pins or FileVault passwords may require it to be enabled.
+
+:::
 
 ### Bluetooth
 
