@@ -202,7 +202,7 @@ storage device. Once the flash is complete, the controller should unmount the US
 flashed firmware. It is recommended that you test your keyboard works over USB first to rule out hardware issues, before trying to
 connect to it wirelessly.
 
-:::caution Split keyboards
+:::warning Split keyboards
 
 For split keyboards, only the central half (typically the left side) will send keyboard outputs over USB or advertise to other devices
 over bluetooth. Peripheral half will only send keystrokes to the central once they are paired and connected. For this reason it is

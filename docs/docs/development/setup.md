@@ -244,7 +244,7 @@ Click `Reopen in Container` in order to reopen the VS Code with the running cont
 
 The first time you do this on your machine, it will pull the docker image down from the registry and build the container. Subsequent launches are much faster!
 
-:::caution
+:::warning
 All subsequent steps must be performed from the VS Code terminal _inside_ the container.
 :::
 
