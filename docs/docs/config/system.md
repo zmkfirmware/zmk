@@ -74,8 +74,9 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 
 :::note USB Boot protocol support
 
-By default USB Boot protocol support is disabled, however in certain situations such as the input of Bitlocker pins or FileVault passwords may require it to be enabled.
+By default USB Boot protocol support is disabled, however certain situations such as the input of Bitlocker pins or FileVault passwords may require it to be enabled.
 
+:::
 ### Bluetooth
 
 See [Zephyr's Bluetooth stack architecture documentation](https://docs.zephyrproject.org/latest/guides/bluetooth/bluetooth-arch.html)
