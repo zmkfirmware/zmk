@@ -3,7 +3,7 @@ title: Clean Room Implementation
 sidebar_label: Clean Room
 ---
 
-:::warning
+:::danger
 
 Anyone wanting to contribute code to ZMK _MUST_ read this, and adhere to the steps outlines in order to not violate any licenses/copyright of other projects
 

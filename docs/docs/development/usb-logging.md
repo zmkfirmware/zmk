@@ -11,7 +11,7 @@ If you are developing ZMK on a device that does not have a built in UART for deb
 Zephyr can be configured to create a USB CDC ACM device and the direct all `printk`, console output, and log
 messages to that device instead.
 
-:::warning Battery Life Impact
+:::danger Battery Life Impact
 
 Enabling logging increases the power usage of your keyboard, and can have a non-trivial impact to your time on battery.
 It is recommended to only enable logging when needed, and not leaving it on by default.

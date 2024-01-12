@@ -119,7 +119,7 @@ For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
 
-:::caution
+:::warning
 The above command must still be invoked from the `zmk/app` directory as noted above, rather than the config directory. Otherwise, you will encounter errors such as `ERROR: source directory "." does not contain a CMakeLists.txt; is this really what you want to build?`. Alternatively you can add the `-s /path/to/zmk/app` flag to your `west` command.
 :::
 

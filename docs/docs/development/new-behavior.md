@@ -316,7 +316,7 @@ The configuration `struct` stores the properties declared from the behavior's `.
 
 The fifth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if instance-specific configurations are not required.
 
-:::caution
+:::warning
 Remember that `.c` files should be formatted according to `clang-format` to ensure that checks run smoothly once the pull request is submitted.
 :::
 
@@ -382,7 +382,7 @@ For the purpose of this section, we will discuss the structure of `app/dts/behav
 
 The format of a behavior's `.dtsi` file is identical to declaring an instance of the behavior in a user's keymap. The only major difference is that the value `/omit-if-no-ref/` should be placed adjacent to the label and name of the behavior, as seen in line 11 of the `gresc` example.
 
-:::caution
+:::warning
 
 If your behavior has its [`locality`](#api-structure) property set to anything other than `BEHAVIOR_LOCALITY_CENTRAL`, then the name of the node must be at most 8 characters long, or it will fail to be invoked on the peripheral half of a split keyboard.
 
@@ -486,7 +486,7 @@ values={[
 </TabItem>
 </Tabs>
 
-:::caution
+:::warning
 Remember to change the copyright year (`XXXX`) to the current year when adding the copyright headers to your newly created files.
 :::
 
