@@ -3,25 +3,6 @@ title: Building and Flashing
 sidebar_label: Building and Flashing
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-
-export const OsTabs = (props) => (
-  <Tabs
-    groupId="operating-systems"
-    defaultValue="debian"
-    values={[
-      { label: "Debian/Ubuntu", value: "debian" },
-      { label: "Raspberry OS", value: "raspberryos" },
-      { label: "Fedora", value: "fedora" },
-      { label: "Windows", value: "win" },
-      { label: "macOS", value: "mac" },
-    ]}
-  >
-    {props.children}
-  </Tabs>
-);
-
 ## Building
 
 From here on, building and flashing ZMK should all be done from the `app/` subdirectory of the ZMK checkout:
