@@ -9,7 +9,7 @@ The bluetooth behavior allows management of various settings and states related 
 between the keyboard and the host. By default, ZMK supports five "profiles" for selecting which bonded host
 computer/laptop/keyboard should receive the keyboard input; many of the commands here operate on those profiles.
 
-:::note Connection Management
+:::note[Connection Management]
 When pairing to a host device ZMK saves bond information to the selected
 profile. It will not replace this when you initiate pairing with another device.
 To pair with a new device, select a profile that doesn't have a pairing with `BT_SEL`, `BT_NXT` or
@@ -47,7 +47,7 @@ Here is a table describing the command for each define:
 | `BT_SEL`     | Select the 0-indexed profile by number; must include a number as an argument in the keymap to work correctly, e.g. `BT_SEL 0`.                                                     |
 | `BT_DISC`    | Disconnect from the 0-indexed profile by number, if it's currently connected and inactive; must include a number as an argument in the keymap to work correctly, e.g. `BT_DISC 0`. |
 
-:::note Selected profile persistence
+:::note[Selected profile persistence]
 The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be saved to flash storage and hence persist across restarts and firmware flashes.
 However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
@@ -98,7 +98,7 @@ ZMK support bluetooth “profiles” which allows connection to multiple devices
 
 The bluetooth MAC address and negotiated keys during pairing are stored in the permanent storage on your chip and can be reused even after reflashing the firmware. If for some reason you want to delete the stored information, you can bind the `BT_CLR` behavior described above to a key and use it to clear the _current_ profile.
 
-:::note Number of Profiles
+:::note[Number of Profiles]
 Please note there are five available Bluetooth profiles by default. If you need to adjust the number of available profiles, set `CONFIG_BT_MAX_CONN` _and_ `CONFIG_BT_MAX_PAIRED` to the desired number of profiles, `n`, or `n+1` for split keyboards, in your `zmk-config` `.conf` file.
 :::
 

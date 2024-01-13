@@ -22,7 +22,7 @@ The only known vulnerability in the protocol is a risk of an active man-in-the-m
 By default, ZMK supports five "profiles" for selecting which bonded host
 device should receive the keyboard input.
 
-:::note Connection Management
+:::note[Connection Management]
 
 When pairing to a host device ZMK saves bond information to the selected profile. It will not replace this automatically when you initiate pairing with another device. To pair with a new device select an unused profile with or clearing the current profile, using the [`&bt` behavior](../behaviors/bluetooth.md) on your keyboard.
 

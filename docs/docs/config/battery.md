@@ -16,13 +16,13 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | `CONFIG_ZMK_BATTERY_REPORTING`       | bool | Enables/disables all battery level detection/reporting | n       |
 | `CONFIG_ZMK_BATTERY_REPORT_INTERVAL` | int  | Battery level report interval in seconds               | 60      |
 
-:::note Default setting
+:::note[Default setting]
 
 While `CONFIG_ZMK_BATTERY_REPORTING` is disabled by default it is implied by `CONFIG_ZMK_BLE`, thus any board with BLE enabled will have this automatically enabled unless explicitly overriden.
 
 :::
 
-:::note BLE reporting on MacOS
+:::note[BLE reporting on MacOS]
 
 On macOS the BLE battery reporting packets can cause the computer to wakeup from sleep. To prevent this, the battery _reporting_ service can be disabled by setting `CONFIG_BT_BAS=n`. This setting is independent of battery _monitoring_, for instance the battery level can still be indicated on a display.
 
