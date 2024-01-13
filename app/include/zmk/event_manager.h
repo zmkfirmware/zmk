@@ -52,8 +52,8 @@ struct zmk_event_subscription {
         return *outer;                                                                             \
     };                                                                                             \
     int raise_##event_type(struct event_type data) {                                               \
-        struct event_type##_event ev = {.data = data};                                             \
-        ev.header.event = &zmk_event_##event_type;                                                 \
+        struct event_type##_event ev = {.data = data,                                              \
+                                        .header = {.event = &zmk_event_##event_type}};             \
         return ZMK_EVENT_RAISE(ev);                                                                \
     };                                                                                             \
     struct event_type *as_##event_type(const zmk_event_t *eh) {                                    \
@@ -71,15 +71,19 @@ struct zmk_event_subscription {
             .listener = &zmk_listener_##mod,                                                       \
     };
 
-#define ZMK_EVENT_RAISE(ev) zmk_event_manager_raise((zmk_event_t *)&ev);
+#define ZMK_ASSERT_EVENT_LIKE(ev)                                                                  \
+    (__ASSERT((uint8_t *)&(ev).header - (uint8_t *)&ev == 0,                                       \
+              "header must be first element of event"))
+
+#define ZMK_EVENT_RAISE(ev) (ZMK_ASSERT_EVENT_LIKE(ev), zmk_event_manager_raise(&(ev).header))
 
 #define ZMK_EVENT_RAISE_AFTER(ev, mod)                                                             \
-    zmk_event_manager_raise_after((zmk_event_t *)&ev, &zmk_listener_##mod);
+    (ZMK_ASSERT_EVENT_LIKE(ev), zmk_event_manager_raise_after(&(ev).header, &zmk_listener_##mod))
 
 #define ZMK_EVENT_RAISE_AT(ev, mod)                                                                \
-    zmk_event_manager_raise_at((zmk_event_t *)&ev, &zmk_listener_##mod);
+    (ZMK_ASSERT_EVENT_LIKE(ev), zmk_event_manager_raise_at(&(ev).header, &zmk_listener_##mod))
 
-#define ZMK_EVENT_RELEASE(ev) zmk_event_manager_release((zmk_event_t *)&ev);
+#define ZMK_EVENT_RELEASE(ev) (ZMK_ASSERT_EVENT_LIKE(ev), zmk_event_manager_release(&(ev).header))
 
 int zmk_event_manager_raise(zmk_event_t *event);
 int zmk_event_manager_raise_after(zmk_event_t *event, const struct zmk_listener *listener);

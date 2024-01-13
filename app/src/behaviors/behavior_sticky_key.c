@@ -236,8 +236,8 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
                 if (sticky_key->config->quick_release) {
                     // immediately release the sticky key after the key press is handled.
                     if (!event_reraised) {
-                        struct zmk_keycode_state_changed_event dupe_ev;
-                        memcpy(&dupe_ev, eh, sizeof(struct zmk_keycode_state_changed_event));
+                        struct zmk_keycode_state_changed_event dupe_ev =
+                            copy_raised_zmk_keycode_state_changed(ev);
                         ZMK_EVENT_RAISE_AFTER(dupe_ev, behavior_sticky_key);
                         event_reraised = true;
                     }

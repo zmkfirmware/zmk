@@ -45,3 +45,9 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
                                               .state = pressed,
                                               .timestamp = timestamp};
 }
+
+static inline int raise_zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed,
+                                                               int64_t timestamp) {
+    return raise_zmk_keycode_state_changed(
+        zmk_keycode_state_changed_from_encoded(encoded, pressed, timestamp));
+}
