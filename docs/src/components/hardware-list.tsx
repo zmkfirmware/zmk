@@ -1,5 +1,3 @@
-import React from "react";
-
 import Heading from "@theme/Heading";
 
 import { HardwareMetadata } from "../hardware-metadata";
