@@ -3,21 +3,25 @@ title: Toolchain Setup
 sidebar_label: Toolchain Setup
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
-export const OsTabs = (props) => (<Tabs
-groupId="operating-systems"
-defaultValue="debian"
-values={[
-{label: 'VS Code & Docker', value: 'docker'},
-{label: 'Debian/Ubuntu', value: 'debian'},
-{label: 'Windows', value: 'win'},
-{label: 'macOS', value: 'mac'},
-{label: 'Raspberry OS', value: 'raspberryos'},
-{label: 'Fedora', value: 'fedora'},
-]
-}>{props.children}</Tabs>);
+export const OsTabs = (props) => (
+  <Tabs
+    groupId="operating-systems"
+    defaultValue="debian"
+    values={[
+      { label: "VS Code & Docker", value: "docker" },
+      { label: "Debian/Ubuntu", value: "debian" },
+      { label: "Windows", value: "win" },
+      { label: "macOS", value: "mac" },
+      { label: "Raspberry OS", value: "raspberryos" },
+      { label: "Fedora", value: "fedora" },
+    ]}
+  >
+    {props.children}
+  </Tabs>
+);
 
 This guide will show you how to set up a development environment for building ZMK locally.
 
@@ -270,7 +274,7 @@ This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can tak
 :::info
 If you're using Docker, you're done with setup! You must restart the container at this point. The easiest way to do so is to close the VS Code window, verify that the container has stopped in Docker Dashboard, and reopen the container with VS Code.
 
-Once your container is restarted, proceed to [Building and Flashing](development/build-flash.md).
+Once your container is restarted, proceed to [Building and Flashing](development/build-flash.mdx).
 :::
 
 ### Export Zephyr CMake package

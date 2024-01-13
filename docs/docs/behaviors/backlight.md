@@ -5,7 +5,7 @@ sidebar_label: Backlight
 
 ## Summary
 
-This page contains [backlight](../features/backlight.md) behaviors supported by ZMK.
+This page contains [backlight](../features/backlight.mdx) behaviors supported by ZMK.
 
 ## Backlight Action Defines
 

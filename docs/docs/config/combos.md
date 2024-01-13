@@ -33,7 +33,7 @@ Each child node can have the following properties:
 
 | Property                | Type          | Description                                                                                                                               | Default       |
 | ----------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `bindings`              | phandle-array | A [behavior](../features/keymaps.md#behaviors) to run when the combo is triggered                                                         |               |
+| `bindings`              | phandle-array | A [behavior](../features/keymaps.mdx#behaviors) to run when the combo is triggered                                                        |               |
 | `key-positions`         | array         | A list of key position indices for the keys which should trigger the combo                                                                |               |
 | `timeout-ms`            | int           | All the keys in `key-positions` must be pressed within this time in milliseconds to trigger the combo                                     | 50            |
 | `require-prior-idle-ms` | int           | If any non-modifier key is pressed within `require-prior-idle-ms` before a key in the combo, the key will not be considered for the combo | -1 (disabled) |
