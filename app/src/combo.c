@@ -274,14 +274,14 @@ static int release_pressed_keys() {
     uint32_t count = pressed_keys_count;
     pressed_keys_count = 0;
     for (int i = 0; i < count; i++) {
-        struct zmk_position_state_changed_event ev = pressed_keys[i];
+        struct zmk_position_state_changed_event *ev = &pressed_keys[i];
         if (i == 0) {
-            LOG_DBG("combo: releasing position event %d", ev.data.position);
-            ZMK_EVENT_RELEASE(ev)
+            LOG_DBG("combo: releasing position event %d", ev->data.position);
+            ZMK_EVENT_RELEASE(*ev);
         } else {
             // reprocess events (see tests/combo/fully-overlapping-combos-3 for why this is needed)
-            LOG_DBG("combo: reraising position event %d", ev.data.position);
-            ZMK_EVENT_RAISE(ev);
+            LOG_DBG("combo: reraising position event %d", ev->data.position);
+            ZMK_EVENT_RAISE(*ev);
         }
     }
 
