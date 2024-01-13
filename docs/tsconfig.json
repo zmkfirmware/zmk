@@ -1,9 +1,8 @@
 {
-  "extends": "@tsconfig/docusaurus/tsconfig.json",
+  "extends": "@docusaurus/tsconfig/tsconfig.json",
   "include": ["src/"],
   "compilerOptions": {
     "types": ["node", "@docusaurus/theme-classic"],
-    "moduleResolution": "Node16",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "strict": true,
