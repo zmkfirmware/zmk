@@ -11,7 +11,7 @@ The foundational elements needed to get a specific keyboard working with ZMK can
 - A keymap, which binds each key position to a behavior, e.g. key press, mod-tap, momentary layer, in a set of layers.
 
 These three core architectural elements are defined per-keyboard, and _where_ they are defined depends on the specifics of how that
-keyboard works. For an overview on the general concepts of boards and shields, please see the [FAQs on boards and shields](../faq.md#why-boards-and-shields--why-not-just-keyboard).
+keyboard works. For an overview on the general concepts of boards and shields, please see the [FAQs on boards and shields](../faq.md#why-boards-and-shields-why-not-just-keyboard).
 
 ## Self-Contained Keyboard
 
