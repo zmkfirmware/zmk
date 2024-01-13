@@ -34,7 +34,7 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 | `CONFIG_ZMK_HID_REPORT_TYPE_HKRO` | Enable `CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE` key roll over.                                           |
 | `CONFIG_ZMK_HID_REPORT_TYPE_NKRO` | Enable full N-key roll over. This may prevent the keyboard from working with some BIOS/UEFI versions. |
 
-:::note NKRO usages
+:::note[NKRO usages]
 
 By default the NKRO max usage is set so as to maximize compatibility, however certain less frequently used keys (F13-F24 and INTL1-8) will not work with it. One solution is to set `CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT=y`, however this is known to break compatibility with Android and thus not enabled by default.
 
@@ -72,7 +72,7 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 | `CONFIG_ZMK_USB_BOOT`             | bool   | Enable USB Boot protocol support        | n               |
 | `CONFIG_ZMK_USB_INIT_PRIORITY`    | int    | USB init priority                       | 50              |
 
-:::note USB Boot protocol support
+:::note[USB Boot protocol support]
 
 By default USB Boot protocol support is disabled, however certain situations such as the input of Bitlocker pins or FileVault passwords may require it to be enabled.
 
