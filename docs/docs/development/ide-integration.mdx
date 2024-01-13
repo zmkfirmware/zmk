@@ -3,26 +3,6 @@ title: IDE Integration
 sidebar_label: IDE Integration
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-
-export const OsTabs = (props) => (
-  <Tabs
-    groupId="operating-systems"
-    defaultValue="debian"
-    values={[
-      { label: "Debian/Ubuntu", value: "debian" },
-      { label: "Windows", value: "win" },
-      { label: "macOS", value: "mac" },
-      { label: "Raspberry OS", value: "raspberryos" },
-      { label: "Fedora", value: "fedora" },
-      { label: "VS Code & Docker", value: "docker" },
-    ]}
-  >
-    {props.children}
-  </Tabs>
-);
-
 ## Visual Studio Code
 
 Visual Studio Code needs to know some things about the project such as include
