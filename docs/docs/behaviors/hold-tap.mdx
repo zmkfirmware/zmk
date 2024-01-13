@@ -289,7 +289,7 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 
 <TabItem value="mo_tog">
 
-This hold-tap example implements a [momentary-layer](layers.md/#momentary-layer) when the keybind is held and a [toggle-layer](layers.md/#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
+This hold-tap example implements a [momentary-layer](layers.md#momentary-layer) when the keybind is held and a [toggle-layer](layers.md#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
 
 ```dts title="Hold-Tap Example: Momentary layer on Hold, Toggle layer on Tap"
 #include <dt-bindings/zmk/keys.h>
