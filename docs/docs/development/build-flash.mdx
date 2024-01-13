@@ -3,20 +3,24 @@ title: Building and Flashing
 sidebar_label: Building and Flashing
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
-export const OsTabs = (props) => (<Tabs
-groupId="operating-systems"
-defaultValue="debian"
-values={[
-{label: 'Debian/Ubuntu', value: 'debian'},
-{label: 'Raspberry OS', value: 'raspberryos'},
-{label: 'Fedora', value: 'fedora'},
-{label: 'Windows', value: 'win'},
-{label: 'macOS', value: 'mac'},
-]
-}>{props.children}</Tabs>);
+export const OsTabs = (props) => (
+  <Tabs
+    groupId="operating-systems"
+    defaultValue="debian"
+    values={[
+      { label: "Debian/Ubuntu", value: "debian" },
+      { label: "Raspberry OS", value: "raspberryos" },
+      { label: "Fedora", value: "fedora" },
+      { label: "Windows", value: "win" },
+      { label: "macOS", value: "mac" },
+    ]}
+  >
+    {props.children}
+  </Tabs>
+);
 
 ## Building
 
@@ -110,7 +114,7 @@ west build -b nice_nano_v2 -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Use
 
 ### Building from `zmk-config` Folder
 
-Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup.md#github-repo) by adding
+Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup.mdx#github-repo) by adding
 `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build` command. **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:

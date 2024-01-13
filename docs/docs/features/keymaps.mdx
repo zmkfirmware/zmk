@@ -3,8 +3,8 @@ title: Keymaps & Behaviors
 sidebar_label: Keymaps
 ---
 
-import KeymapExample from '../keymap-example.md';
-import KeymapExampleFile from '../keymap-example-file.md';
+import KeymapExample from "../keymap-example.md";
+import KeymapExampleFile from "../keymap-example-file.md";
 
 ZMK uses a declarative approach to keymaps instead of using C code for all keymap configuration.
 Right now, ZMK uses the devicetree syntax to declare those keymaps; future work is envisioned for
@@ -124,7 +124,7 @@ Nested under the devicetree root, is the keymap node. The node _name_ itself is 
 Each layer of your keymap will be nested under the keymap node. Here is a sample
 that defines just one layer for this keymap:
 
-<KeymapExample/>
+<KeymapExample />
 
 Each layer should have:
 
@@ -137,4 +137,4 @@ For the full set of possible behaviors, start at the [Key Press](../behaviors/ke
 
 Putting this all together, a complete [`kyria.keymap`](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/kyria.keymap) looks like:
 
-<KeymapExampleFile/>
+<KeymapExampleFile />
