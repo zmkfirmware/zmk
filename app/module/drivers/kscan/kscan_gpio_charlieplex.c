@@ -414,7 +414,7 @@ static const struct kscan_driver_api kscan_charlieplex_api = {
                 COND_THIS_INTERRUPT(n, (.interrupt = KSCAN_INTR_CFG_INIT(n), ))};                  \
                                                                                                    \
     DEVICE_DT_INST_DEFINE(n, &kscan_charlieplex_init, NULL, &kscan_charlieplex_data_##n,           \
-                          &kscan_charlieplex_config_##n, APPLICATION,                              \
-                          CONFIG_APPLICATION_INIT_PRIORITY, &kscan_charlieplex_api);
+                          &kscan_charlieplex_config_##n, POST_KERNEL, CONFIG_KSCAN_INIT_PRIORITY,  \
+                          &kscan_charlieplex_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSCAN_CHARLIEPLEX_INIT);
