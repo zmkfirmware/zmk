@@ -116,8 +116,8 @@ static zmk_hid_indicators_t hid_indicators = 0;
 
 static void split_svc_update_indicators_callback(struct k_work *work) {
     LOG_DBG("Raising HID indicators changed event: %x", hid_indicators);
-    ZMK_EVENT_RAISE(new_zmk_hid_indicators_changed(
-        (struct zmk_hid_indicators_changed){.indicators = hid_indicators}));
+    raise_zmk_hid_indicators_changed(
+        (struct zmk_hid_indicators_changed){.indicators = hid_indicators});
 }
 
 static K_WORK_DEFINE(split_svc_update_indicators_work, split_svc_update_indicators_callback);
