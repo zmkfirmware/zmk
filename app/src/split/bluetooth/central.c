@@ -295,7 +295,7 @@ void peripheral_batt_lvl_change_callback(struct k_work *work) {
     while (k_msgq_get(&peripheral_batt_lvl_msgq, &ev, K_NO_WAIT) == 0) {
         LOG_DBG("Triggering peripheral battery level change %u", ev.state_of_charge);
         peripheral_battery_levels[ev.source] = ev.state_of_charge;
-        ZMK_EVENT_RAISE(new_zmk_peripheral_battery_state_changed(ev));
+        raise_zmk_peripheral_battery_state_changed(ev);
     }
 }
 
