@@ -26,7 +26,7 @@ fi
 testcase="$path"
 echo "Running $testcase:"
 
-west build -d build/$testcase -b native_posix_64 -- -DZMK_CONFIG="$(pwd)/$testcase" > /dev/null 2>&1
+west build -d build/$testcase -b native_posix_64 -- -DCONFIG_ASSERT=y -DZMK_CONFIG="$(pwd)/$testcase" > /dev/null 2>&1
 if [ $? -gt 0 ]; then
     echo "FAILED: $testcase did not build" | tee -a ./build/tests/pass-fail.log
     exit 1
