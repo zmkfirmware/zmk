@@ -6,11 +6,13 @@ on:
       - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
+      - "app/include/**"
   pull_request:
     paths:
       - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
+      - "app/include/**"
 
 jobs:
   collect-tests:
