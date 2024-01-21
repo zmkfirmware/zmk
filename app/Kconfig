@@ -441,14 +441,6 @@ config ZMK_BEHAVIORS_QUEUE_SIZE
 
 rsource "Kconfig.behaviors"
 
-config ZMK_MACRO_DEFAULT_WAIT_MS
-    int "Default time to wait (in milliseconds) before triggering the next behavior in macros"
-    default 15
-
-config ZMK_MACRO_DEFAULT_TAP_MS
-    int "Default time to wait (in milliseconds) between the press and release events of a tapped behavior in macros"
-    default 30
-
 endmenu
 
 menu "Advanced"
@@ -497,8 +489,9 @@ config ZMK_LOGGING_MINIMAL
 
 if !ZMK_LOGGING_MINIMAL
 
-config ZMK_LOG_LEVEL
-    default 4
+choice ZMK_LOG_LEVEL_CHOICE
+    default ZMK_LOG_LEVEL_DBG
+endchoice
 
 endif
 

@@ -10,7 +10,7 @@
 #include <zephyr/logging/log.h>
 #include <drivers/behavior.h>
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+LOG_MODULE_REGISTER(zmk_behavior_queue, CONFIG_ZMK_BEHAVIORS_LOG_LEVEL);
 
 struct q_item {
     uint32_t position;

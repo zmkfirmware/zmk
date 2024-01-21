@@ -15,7 +15,7 @@
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/behavior.h>
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+LOG_MODULE_REGISTER(DT_DRV_COMPAT, CONFIG_ZMK_BEHAVIOR_KEY_TOGGLE_LOG_LEVEL);
 
 static int behavior_key_toggle_init(const struct device *dev) { return 0; }
 

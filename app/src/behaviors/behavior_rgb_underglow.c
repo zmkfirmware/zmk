@@ -14,9 +14,9 @@
 #include <zmk/rgb_underglow.h>
 #include <zmk/keymap.h>
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
-
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+LOG_MODULE_REGISTER(DT_DRV_COMPAT, CONFIG_ZMK_BEHAVIOR_RGB_UNDERGLOW_LOG_LEVEL);
 
 static int behavior_rgb_underglow_init(const struct device *dev) { return 0; }
 

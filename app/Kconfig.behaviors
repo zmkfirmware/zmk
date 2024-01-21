@@ -32,3 +32,130 @@ config ZMK_BEHAVIOR_MACRO
     bool
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_MACRO_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_ONE_PARAM_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_TWO_PARAM_ENABLED
+
+config ZMK_MACRO_DEFAULT_WAIT_MS
+    int "Default time to wait (in milliseconds) before triggering the next behavior in macros"
+    default 15
+
+config ZMK_MACRO_DEFAULT_TAP_MS
+    int "Default time to wait (in milliseconds) between the press and release events of a tapped behavior in macros"
+    default 30
+
+menu "Logging"
+
+module = ZMK_BEHAVIORS
+module-str = "ZMK Behaviors"
+parent-module = ZMK
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_BACKLIGHT
+module-str = "ZMK Backlight Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_BLUETOOTH
+module-str = "ZMK Bluetooth Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_CAPS_WORD
+module-str = "ZMK Caps Word Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_EXT_POWER
+module-str = "ZMK Ext Power Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_HOLD_TAP
+module-str = "ZMK Hold Tap Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_KEY_PRESS
+module-str = "ZMK Key Press Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_KEY_REPEAT
+module-str = "ZMK Key Repeat Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_KEY_TOGGLE
+module-str = "ZMK Key Toggle Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_MACRO
+module-str = "ZMK Macro Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_MOD_MORPH
+module-str = "ZMK Mod Morph Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_MOMENTARY_LAYER
+module-str = "ZMK Momentary Layer Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_MOUSE_KEY_PRESS
+module-str = "ZMK Mouse Key Press Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_NONE
+module-str = "ZMK None Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_OUTPUTS
+module-str = "ZMK Outputs Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_RESET
+module-str = "ZMK Reset Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_RGB_UNDERGLOW
+module-str = "ZMK RGB Underglow Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
+module-str = "ZMK Common Sensor Rotate Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_STICKY_KEY
+module-str = "ZMK Sticky Key Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_TAP_DANCE
+module-str = "ZMK Tap Dance Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_TO_LAYER
+module-str = "ZMK To Layer Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_TOGGLE_LAYER
+module-str = "ZMK Toggle Layer Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+module = ZMK_BEHAVIOR_TRANSPARENT
+module-str = "ZMK Transparent Behavior"
+parent-module = ZMK_BEHAVIORS
+source "subsys/logging/Kconfig.template.log_config_inherit"
+
+endmenu

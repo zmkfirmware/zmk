@@ -11,7 +11,7 @@
 #include <zmk/behavior_queue.h>
 #include <zmk/keymap.h>
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+LOG_MODULE_REGISTER(zmk_behavior_macro, CONFIG_ZMK_BEHAVIOR_MACRO_LOG_LEVEL);
 
 enum behavior_macro_mode {
     MACRO_MODE_TAP,

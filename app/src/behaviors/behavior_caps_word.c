@@ -20,9 +20,9 @@
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
-
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+LOG_MODULE_REGISTER(DT_DRV_COMPAT, CONFIG_ZMK_BEHAVIOR_CAPS_WORD_LOG_LEVEL);
 
 struct caps_word_continue_item {
     uint16_t page;

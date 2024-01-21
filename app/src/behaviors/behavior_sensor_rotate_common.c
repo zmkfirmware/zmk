@@ -9,7 +9,8 @@
 
 #include "behavior_sensor_rotate_common.h"
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+LOG_MODULE_REGISTER(zmk_behavior_sensor_rotate_common,
+                    CONFIG_ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON_LOG_LEVEL);
 
 int zmk_behavior_sensor_rotate_common_accept_data(
     struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
