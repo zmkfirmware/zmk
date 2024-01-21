@@ -1,5 +1,5 @@
 {
-  "extends": "@docusaurus/tsconfig/tsconfig.json",
+  "extends": "@docusaurus/tsconfig",
   "include": ["src/"],
   "compilerOptions": {
     "types": ["node", "@docusaurus/theme-classic"],

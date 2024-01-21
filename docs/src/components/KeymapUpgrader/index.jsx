@@ -40,7 +40,9 @@ function Editor() {
         onChange={(e) => setKeymap(e.target.value)}
       ></textarea>
       <div className={styles.result}>
-        <CodeBlock metastring={'title="Upgraded Keymap"'}>{upgraded}</CodeBlock>
+        <CodeBlock language="dts" metastring={'title="Upgraded Keymap"'}>
+          {upgraded}
+        </CodeBlock>
       </div>
     </div>
   );
