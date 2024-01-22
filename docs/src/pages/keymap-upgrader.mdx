@@ -11,9 +11,12 @@ Some behaviors, key codes, and other features have been renamed to be more consi
 
 Paste the contents of a `.keymap` file below. Then, hover your mouse over the upgraded keymap and click the `Copy` button in the upper-right corner to copy it to your clipboard.
 
-You will likely need to realign columns in the upgraded keymap. The upgrader also does not handle
-codes inside a `#define`, so you will need to update those manually using
+:::warning
+
+The upgrader does not handle key codes inside a `#define` or a behavior creation macro such as `ZMK_MACRO()`, so you will need to update those manually using
 [this list of deprecated codes and replacements](https://github.com/zmkfirmware/zmk/blob/main/docs/src/keymap-upgrade/keycodes.ts).
+
+:::
 
 import KeymapUpgrader from "@site/src/components/KeymapUpgrader/index";
 
