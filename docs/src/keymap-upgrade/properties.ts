@@ -24,9 +24,9 @@ function removeLabels(tree: Tree) {
     const node = findCapture("prop", captures);
     if (name?.text === "label" && node) {
       if (isLayerLabel(node)) {
-        edits.push(new TextEdit(name, "display-name"));
+        edits.push(TextEdit.fromNode(name, "display-name"));
       } else {
-        edits.push(new TextEdit(node, ""));
+        edits.push(TextEdit.fromNode(node, ""));
       }
     }
   }

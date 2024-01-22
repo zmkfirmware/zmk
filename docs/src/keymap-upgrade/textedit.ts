@@ -1,39 +1,22 @@
 import type { SyntaxNode } from "web-tree-sitter";
 
-export class TextEdit {
-  startIndex: number;
-  endIndex: number;
+export class Range {
+  constructor(public startIndex: number, public endIndex: number) {}
+}
+
+export class TextEdit extends Range {
   newText: string;
 
   /**
    * Creates a text edit to replace a range with new text.
    */
-  constructor(startIndex: number, endIndex: number, newText: string);
-  /**
-   * Creates a text edit to replace a node with new text.
-   */
-  constructor(node: SyntaxNode, newText: string);
-  constructor(
-    startIndex: number | SyntaxNode,
-    endIndex: number | string,
-    newText?: string
-  ) {
-    if (typeof startIndex !== "number") {
-      if (typeof endIndex === "string") {
-        const node = startIndex;
-        newText = endIndex;
-        startIndex = node.startIndex;
-        endIndex = node.endIndex;
-      } else {
-        throw new TypeError();
-      }
-    } else if (typeof endIndex !== "number" || typeof newText !== "string") {
-      throw new TypeError();
-    }
-
-    this.startIndex = startIndex;
-    this.endIndex = endIndex;
+  constructor(startIndex: number, endIndex: number, newText: string) {
+    super(startIndex, endIndex);
     this.newText = newText;
+  }
+
+  static fromNode(node: SyntaxNode | Range, newText: string) {
+    return new TextEdit(node.startIndex, node.endIndex, newText);
   }
 }
 
@@ -67,7 +50,7 @@ export function getUpgradeEdits(
   isMatch?: MatchFunc
 ) {
   const defaultReplace: ReplaceFunc = (node, replacement) => [
-    new TextEdit(node, replacement ?? ""),
+    TextEdit.fromNode(node, replacement ?? ""),
   ];
   const defaultMatch: MatchFunc = (node, text) => node.text === text;
 
@@ -89,16 +72,26 @@ function sortEdits(edits: TextEdit[]) {
   return edits.sort((a, b) => a.startIndex - b.startIndex);
 }
 
+export interface EditResult {
+  text: string;
+  changedRanges: Range[];
+}
+
+interface TextChunk {
+  text: string;
+  changed?: boolean;
+}
+
 /**
- * Returns a string with text replacements applied.
+ * Returns a string with text replacements applied and a list of ranges within
+ * that string that were modified.
  */
 export function applyEdits(text: string, edits: TextEdit[]) {
   // If we are removing text and it's the only thing on a line, remove the whole line.
   edits = edits.map((e) => (e.newText ? e : expandEditToLine(text, e)));
-
   edits = sortEdits(edits);
 
-  const chunks: string[] = [];
+  const chunks: TextChunk[] = [];
   let currentIndex = 0;
 
   for (let edit of edits) {
@@ -107,14 +100,34 @@ export function applyEdits(text: string, edits: TextEdit[]) {
       continue;
     }
 
-    chunks.push(text.substring(currentIndex, edit.startIndex));
-    chunks.push(edit.newText);
+    chunks.push({ text: text.substring(currentIndex, edit.startIndex) });
+    chunks.push({ text: edit.newText, changed: true });
     currentIndex = edit.endIndex;
   }
 
-  chunks.push(text.substring(currentIndex));
+  chunks.push({ text: text.substring(currentIndex) });
 
-  return chunks.join("");
+  // Join all of the text chunks while recording the ranges of any chunks that were changed.
+  return chunks.reduce<EditResult>(
+    (prev, current) => {
+      return {
+        text: prev.text + current.text,
+        changedRanges: reduceChangedRanges(prev, current),
+      };
+    },
+    { text: "", changedRanges: [] }
+  );
+}
+
+function reduceChangedRanges(prev: EditResult, current: TextChunk): Range[] {
+  if (current.changed) {
+    return [
+      ...prev.changedRanges,
+      new Range(prev.text.length, prev.text.length + current.text.length),
+    ];
+  }
+
+  return prev.changedRanges;
 }
 
 /**
