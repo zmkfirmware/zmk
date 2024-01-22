@@ -101,7 +101,7 @@ export function upgradeKeycodes(tree: Tree) {
 
 function keycodeReplaceHandler(node: SyntaxNode, replacement: string | null) {
   if (replacement) {
-    return [new TextEdit(node, replacement)];
+    return [TextEdit.fromNode(node, replacement)];
   }
 
   const nodes = findBehaviorNodes(node);
@@ -110,7 +110,7 @@ function keycodeReplaceHandler(node: SyntaxNode, replacement: string | null) {
     console.warn(
       `Found deprecated code "${node.text}" but it is not a parameter to a behavior`
     );
-    return [new TextEdit(node, `/* "${node.text}" no longer exists */`)];
+    return [TextEdit.fromNode(node, `/* "${node.text}" no longer exists */`)];
   }
 
   const oldText = nodes.map((n) => n.text).join(" ");

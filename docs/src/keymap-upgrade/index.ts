@@ -1,5 +1,5 @@
 import { createParser } from "./parser";
-import { applyEdits } from "./textedit";
+import { applyEdits, Range } from "./textedit";
 
 import { upgradeBehaviors } from "./behaviors";
 import { upgradeHeaders } from "./headers";
@@ -22,4 +22,38 @@ export function upgradeKeymap(text: string) {
   const edits = upgradeFunctions.map((f) => f(tree)).flat();
 
   return applyEdits(text, edits);
+}
+
+export function rangesToLineNumbers(
+  text: string,
+  changedRanges: Range[]
+): string {
+  const lineBreaks = getLineBreakPositions(text);
+
+  const changedLines = changedRanges.map((range) => {
+    const startLine = positionToLineNumber(range.startIndex, lineBreaks);
+    const endLine = positionToLineNumber(range.endIndex, lineBreaks);
+
+    return startLine === endLine ? `${startLine}` : `${startLine}-${endLine}`;
+  });
+
+  return `{${changedLines.join(",")}}`;
+}
+
+function getLineBreakPositions(text: string) {
+  const positions: number[] = [];
+  let index = 0;
+
+  while ((index = text.indexOf("\n", index)) >= 0) {
+    positions.push(index);
+    index++;
+  }
+
+  return positions;
+}
+
+function positionToLineNumber(position: number, lineBreaks: number[]) {
+  const line = lineBreaks.findIndex((lineBreak) => position <= lineBreak);
+
+  return line < 0 ? 0 : line + 1;
 }
