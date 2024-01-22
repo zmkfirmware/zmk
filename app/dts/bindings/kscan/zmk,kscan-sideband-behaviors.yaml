@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: MIT
 
 description: |
-  kscan sideband behavior runner. Only basic system behavior should be used,
-  since no keymap processing occurs when using them.
+  kscan sideband behavior runner. Only basic system behaviors should be used,
+  since no keymap processing occurs when using them. Primarily, that means avoiding
+  using tap-holds, sticky keys, etc. as sideband behaviors.
 
 compatible: "zmk,kscan-sideband-behaviors"
 
@@ -20,7 +21,7 @@ child-binding:
   properties:
     row:
       type: int
-      required: true
+      default: 0
     column:
       type: int
       required: true

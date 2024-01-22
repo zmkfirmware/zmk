@@ -12,21 +12,18 @@
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/rgb.h>
 
-// Uncomment the following block if using the "Direct Wire" jumper to switch the matrix to a direct wire.
+// Uncomment the following lines if using the "Direct Wire" jumper to switch the matrix to a direct wire.
 
-/* :REMOVE ME
 
-&kscan_direct { status = "okay"; };
-&kscan_matrix { status = "disabled"; };
+// &kscan_direct { status = "okay"; };
+// &kscan_matrix { status = "disabled"; };
 
-/ {
-    chosen {
-        zmk,matrix-transform = &split_direct_matrix_transform;
-        zmk,kscan = &kscan_direct_comp;
-    };
-};
-
-REMOVE ME: */
+// / {
+//     chosen {
+//         zmk,matrix-transform = &split_direct_matrix_transform;
+//         zmk,kscan = &kscan_direct_comp;
+//     };
+// };
 
 / {
 

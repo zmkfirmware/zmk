@@ -518,6 +518,15 @@ config ZMK_KSCAN_SIDEBAND_BEHAVIORS
     depends on DT_HAS_ZMK_KSCAN_SIDEBAND_BEHAVIORS_ENABLED
     select KSCAN
 
+if ZMK_KSCAN_SIDEBAND_BEHAVIORS
+
+config ZMK_KSCAN_SIDEBAND_BEHAVIORS_INIT_PRIORITY
+    int "Keyboard scan sideband behaviors driver init priority"
+    # The default kscan init priority is 90, so be sure we are lower.
+    default 95
+
+endif # ZMK_KSCAN_SIDEBAND_BEHAVIORS
+
 menu "Logging"
 
 config ZMK_LOGGING_MINIMAL

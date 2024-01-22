@@ -46,7 +46,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
     COND_CODE_1(DT_INST_NODE_HAS_PROP(n, input_gpios), (DT_INST_PROP_LEN(n, input_gpios)),         \
                 (DT_INST_PROP_LEN(n, input_keys)))
 
-#define KSCAN_DIRECT_INPUT_CFG_INIT(idx, inst_idx)                                                 \
+#define KSCAN_GPIO_DIRECT_INPUT_CFG_INIT(idx, inst_idx)                                            \
     KSCAN_GPIO_GET_BY_IDX(DT_DRV_INST(inst_idx), input_gpios, idx)
 #define KSCAN_KEY_DIRECT_INPUT_CFG_INIT(idx, inst_idx)                                             \
     KSCAN_GPIO_GET_BY_IDX(DT_INST_PROP_BY_IDX(inst_idx, input_keys, idx), gpios, 0)
@@ -353,7 +353,7 @@ static const struct kscan_driver_api kscan_direct_api = {
                                                                                                    \
     static struct kscan_gpio kscan_direct_inputs_##n[] = {                                         \
         COND_CODE_1(DT_INST_NODE_HAS_PROP(n, input_gpios),                                         \
-                    (LISTIFY(INST_INPUTS_LEN(n), KSCAN_DIRECT_INPUT_CFG_INIT, (, ), n)),           \
+                    (LISTIFY(INST_INPUTS_LEN(n), KSCAN_GPIO_DIRECT_INPUT_CFG_INIT, (, ), n)),      \
                     (LISTIFY(INST_INPUTS_LEN(n), KSCAN_KEY_DIRECT_INPUT_CFG_INIT, (, ), n)))};     \
                                                                                                    \
     static struct zmk_debounce_state kscan_direct_state_##n[INST_INPUTS_LEN(n)];                   \
