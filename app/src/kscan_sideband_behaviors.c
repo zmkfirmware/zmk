@@ -19,9 +19,9 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct ksbb_entry {
+    struct zmk_behavior_binding binding;
     uint8_t row;
     uint8_t column;
-    struct zmk_behavior_binding binding;
 };
 
 struct ksbb_config {
@@ -39,32 +39,53 @@ struct ksbb_data {
 
 // The kscan callback has no context with it, so we keep a static array of all possible
 // KSBBs to check when a kscan callback from the "wrapped" inner kscan fires.
-static const struct device *ksbbs[DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT)] = {
-    DT_INST_FOREACH_STATUS_OKAY(GET_KSBB_DEV)};
+static const struct device *ksbbs[] = {DT_INST_FOREACH_STATUS_OKAY(GET_KSBB_DEV)};
 
-void ksbb_inner_kscan_callback(const struct device *dev, uint32_t row, uint32_t column,
-                               bool pressed) {
+int find_ksbb_for_inner(const struct device *inner_dev, const struct device **ksbb_dev) {
     for (int i = 0; i < ARRAY_SIZE(ksbbs); i++) {
         const struct device *ksbb = ksbbs[i];
         const struct ksbb_config *cfg = ksbb->config;
-        struct ksbb_data *data = ksbb->data;
 
-        if (cfg->kscan != dev) {
-            continue;
+        if (cfg->kscan == inner_dev) {
+            *ksbb_dev = ksbb;
+            return 0;
         }
+    }
 
-        for (int e = 0; e < cfg->entries_len; e++) {
-            struct ksbb_entry *entry = &cfg->entries[e];
-            if (entry->row == row && entry->column == column) {
-                struct zmk_behavior_binding_event event = {.position = INT32_MAX,
-                                                           .timestamp = k_uptime_get()};
+    return -ENODEV;
+}
 
-                if (pressed) {
-                    behavior_keymap_binding_pressed(&entry->binding, event);
-                } else {
-                    behavior_keymap_binding_released(&entry->binding, event);
-                }
-                return;
+int find_sideband_behavior(const struct device *dev, uint32_t row, uint32_t column,
+                           struct ksbb_entry **entry) {
+    const struct ksbb_config *cfg = dev->config;
+
+    for (int e = 0; e < cfg->entries_len; e++) {
+        struct ksbb_entry *candidate = &cfg->entries[e];
+
+        if (candidate->row == row && candidate->column == column) {
+            *entry = candidate;
+            return 0;
+        }
+    }
+
+    return -ENODEV;
+}
+
+void ksbb_inner_kscan_callback(const struct device *dev, uint32_t row, uint32_t column,
+                               bool pressed) {
+    struct ksbb_entry *entry = NULL;
+    const struct device *ksbb = NULL;
+
+    if (find_ksbb_for_inner(dev, &ksbb) >= 0) {
+        struct ksbb_data *data = ksbb->data;
+        if (find_sideband_behavior(ksbb, row, column, &entry) >= 0) {
+            struct zmk_behavior_binding_event event = {.position = INT32_MAX,
+                                                       .timestamp = k_uptime_get()};
+
+            if (pressed) {
+                behavior_keymap_binding_pressed(&entry->binding, event);
+            } else {
+                behavior_keymap_binding_released(&entry->binding, event);
             }
         }
 
@@ -77,10 +98,6 @@ void ksbb_inner_kscan_callback(const struct device *dev, uint32_t row, uint32_t 
 static int ksbb_configure(const struct device *dev, kscan_callback_t callback) {
     const struct ksbb_config *cfg = dev->config;
     struct ksbb_data *data = dev->data;
-
-    if (!callback) {
-        return -EINVAL;
-    }
 
     data->callback = callback;
 
@@ -161,7 +178,7 @@ static int ksbb_pm_action(const struct device *dev, enum pm_device_action action
     struct ksbb_data ksbb_data_##n = {};                                                           \
     PM_DEVICE_DT_INST_DEFINE(n, ksbb_pm_action);                                                   \
     DEVICE_DT_INST_DEFINE(n, ksbb_init, PM_DEVICE_DT_INST_GET(n), &ksbb_data_##n,                  \
-                          &ksbb_config_##n, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,      \
-                          &ksbb_api);
+                          &ksbb_config_##n, POST_KERNEL,                                           \
+                          CONFIG_ZMK_KSCAN_SIDEBAND_BEHAVIORS_INIT_PRIORITY, &ksbb_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSBB_INST)

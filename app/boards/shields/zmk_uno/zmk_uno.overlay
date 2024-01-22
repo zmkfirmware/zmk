@@ -40,20 +40,17 @@
         compatible = "zmk,kscan-sideband-behaviors";
         kscan = <&kscan_sp3t_toggle>;
 
-        usb {
-            row = <0>;
+        first_toggle_sideband: first_toggle_sideband {
             column = <0>;
             bindings = <&out OUT_USB>;
         };
 
-        ble_zero {
-            row = <0>;
+        second_toggle_sideband: second_toggle_sideband {
             column = <1>;
             bindings = <&ble_zero>;
         };
 
-        ble_one {
-            row = <0>;
+        third_toggle_sideband: third_toggle_sideband {
             column = <2>;
             bindings = <&ble_one>;
         };
