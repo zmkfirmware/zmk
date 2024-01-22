@@ -4,6 +4,7 @@ import { applyEdits, Range } from "./textedit";
 import { upgradeBehaviors } from "./behaviors";
 import { upgradeHeaders } from "./headers";
 import { upgradeKeycodes } from "./keycodes";
+import { upgradeNodeNames } from "./nodes";
 import { upgradeProperties } from "./properties";
 
 export { initParser } from "./parser";
@@ -12,6 +13,7 @@ const upgradeFunctions = [
   upgradeBehaviors,
   upgradeHeaders,
   upgradeKeycodes,
+  upgradeNodeNames,
   upgradeProperties,
 ];
 
