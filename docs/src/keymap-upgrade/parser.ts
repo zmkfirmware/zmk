@@ -54,3 +54,70 @@ export function captureHasText(
   const node = findCapture(name, captures);
   return node?.text === text;
 }
+
+/**
+ * Get a list of SyntaxNodes representing a devicetree node with the given path.
+ * (The same node may be listed multiple times within a file.)
+ *
+ * @param path Absolute path to the node (must start with "/")
+ */
+export function findDevicetreeNode(
+  tree: Parser.Tree,
+  path: string
+): Parser.SyntaxNode[] {
+  const query = Devicetree.query("(node) @node");
+  const matches = query.matches(tree.rootNode);
+
+  const result: Parser.SyntaxNode[] = [];
+
+  for (const { captures } of matches) {
+    const node = findCapture("node", captures);
+
+    if (node && getDevicetreeNodePath(node) === path) {
+      result.push(node);
+    }
+  }
+
+  return result;
+}
+
+export function getDevicetreeNodePath(node: Parser.SyntaxNode | null) {
+  const parts = getDevicetreeNodePathParts(node);
+
+  if (parts.length === 0) {
+    return "";
+  }
+
+  if (parts.length === 1) {
+    return parts[0];
+  }
+
+  const path = parts.join("/");
+
+  // The top-level node should be named "/", which is a special case since the
+  // path should not start with "//".
+  return parts[0] === "/" ? path.substring(1) : path;
+}
+
+export function getDevicetreeNodePathParts(
+  node: Parser.SyntaxNode | null
+): string[] {
+  // There may be intermediate syntax nodes between devicetree nodes, such as
+  // #if blocks, so if we aren't currently on a "node" node, traverse up the
+  // tree until we find one.
+  const dtnode = getContainingDevicetreeNode(node);
+  if (!dtnode) {
+    return [];
+  }
+
+  const name = dtnode.childForFieldName("name")?.text ?? "";
+
+  return [...getDevicetreeNodePathParts(dtnode.parent), name];
+}
+
+function getContainingDevicetreeNode(node: Parser.SyntaxNode | null) {
+  while (node && node.type !== "node") {
+    node = node.parent;
+  }
+  return node;
+}
