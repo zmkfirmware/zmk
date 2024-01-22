@@ -77,21 +77,24 @@ const CODES = {
   MOD_RGUI: "RGUI",
 };
 
+// Regex matching names of properties that can have keymap bindings.
+const BINDINGS_PROPS = /^(bindings|sensor-bindings)$/;
+
 /**
  * Upgrades deprecated key code identifiers.
  */
 export function upgradeKeycodes(tree: Tree) {
   const edits: TextEdit[] = [];
 
-  // No need to filter to the bindings array. The C preprocessor would have
-  // replaced identifiers anywhere, so upgrading all identifiers preserves the
-  // original behavior of the keymap (even if that behavior wasn't intended).
   const query = Devicetree.query("(identifier) @name");
   const matches = query.matches(tree.rootNode);
 
   for (const { captures } of matches) {
     const node = findCapture("name", captures);
-    if (node) {
+
+    // Some of the codes are still valid to use in other properties such as
+    // "mods", so only replace those that are inside a "bindings" array.
+    if (node && isInBindingsArray(node)) {
       edits.push(...getUpgradeEdits(node, CODES, keycodeReplaceHandler));
     }
   }
@@ -147,4 +150,20 @@ function findBehaviorNodes(paramNode: SyntaxNode) {
   }
 
   return nodes;
+}
+
+/**
+ * Given a identifier, returns whether it is inside a "bindings" property value.
+ */
+function isInBindingsArray(identifier: SyntaxNode) {
+  let node = identifier.parent;
+  while (node) {
+    if (node.type === "property") {
+      return !!node.childForFieldName("name")?.text.match(BINDINGS_PROPS);
+    }
+
+    node = node.parent;
+  }
+
+  return false;
 }
