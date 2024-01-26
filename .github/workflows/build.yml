@@ -409,19 +409,20 @@ jobs:
     if: ${{ github.event_name != 'schedule' }}
     runs-on: ubuntu-latest
     outputs:
-      changed-files: ${{ steps.changed-files.outputs.all }}
+      changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
       board-changes: ${{ steps.board-changes.outputs.result }}
       core-changes: ${{ steps.core-changes.outputs.result }}
     steps:
-      - uses: Ana06/get-changed-files@v2.0.0
+      - uses: tj-actions/changed-files@v42
         id: changed-files
         with:
-          format: "json"
+          json: true
+          escape_json: false
       - uses: actions/github-script@v7
         id: board-changes
         with:
           script: |
-            const changedFiles = JSON.parse(`${{ steps.changed-files.outputs.all }}`);
+            const changedFiles = JSON.parse(`${{ steps.changed-files.outputs.all_changed_files }}`);
             const boardChanges = changedFiles.filter(f => f.startsWith('app/boards'));
             return boardChanges.length ? 'true' : 'false';
           result-encoding: string
@@ -429,7 +430,7 @@ jobs:
         id: core-changes
         with:
           script: |
-            const changedFiles = JSON.parse(`${{ steps.changed-files.outputs.all }}`);
+            const changedFiles = JSON.parse(`${{ steps.changed-files.outputs.all_changed_files }}`);
             const boardChanges = changedFiles.filter(f => f.startsWith('app/boards'));
             const appChanges = changedFiles.filter(f => f.startsWith('app'));
             const ymlChanges = changedFiles.includes('.github/workflows/build.yml');
