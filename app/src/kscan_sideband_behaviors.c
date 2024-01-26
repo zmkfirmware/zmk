@@ -41,44 +41,41 @@ struct ksbb_data {
 // KSBBs to check when a kscan callback from the "wrapped" inner kscan fires.
 static const struct device *ksbbs[] = {DT_INST_FOREACH_STATUS_OKAY(GET_KSBB_DEV)};
 
-int find_ksbb_for_inner(const struct device *inner_dev, const struct device **ksbb_dev) {
+const struct device *find_ksbb_for_inner(const struct device *inner_dev) {
     for (int i = 0; i < ARRAY_SIZE(ksbbs); i++) {
         const struct device *ksbb = ksbbs[i];
         const struct ksbb_config *cfg = ksbb->config;
 
         if (cfg->kscan == inner_dev) {
-            *ksbb_dev = ksbb;
-            return 0;
+            return ksbb;
         }
     }
 
-    return -ENODEV;
+    return NULL;
 }
 
-int find_sideband_behavior(const struct device *dev, uint32_t row, uint32_t column,
-                           struct ksbb_entry **entry) {
+struct ksbb_entry *find_sideband_behavior(const struct device *dev, uint32_t row, uint32_t column) {
     const struct ksbb_config *cfg = dev->config;
 
     for (int e = 0; e < cfg->entries_len; e++) {
         struct ksbb_entry *candidate = &cfg->entries[e];
 
         if (candidate->row == row && candidate->column == column) {
-            *entry = candidate;
-            return 0;
+            return candidate;
         }
     }
 
-    return -ENODEV;
+    return NULL;
 }
 
 void ksbb_inner_kscan_callback(const struct device *dev, uint32_t row, uint32_t column,
                                bool pressed) {
-    struct ksbb_entry *entry = NULL;
-    const struct device *ksbb = NULL;
-
-    if (find_ksbb_for_inner(dev, &ksbb) >= 0) {
+    const struct device *ksbb = find_ksbb_for_inner(dev);
+    if (ksbb) {
         struct ksbb_data *data = ksbb->data;
-        if (find_sideband_behavior(ksbb, row, column, &entry) >= 0) {
+
+        struct ksbb_entry *entry = find_sideband_behavior(ksbb, row, column);
+        if (entry) {
             struct zmk_behavior_binding_event event = {.position = INT32_MAX,
                                                        .timestamp = k_uptime_get()};
 
@@ -159,8 +156,6 @@ static int ksbb_pm_action(const struct device *dev, enum pm_device_action action
 
 #endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
-#define JUST_ONE(_id) 1
-
 #define ENTRY(e)                                                                                   \
     {                                                                                              \
         .row = DT_PROP(e, row), .column = DT_PROP(e, column),                                      \
@@ -173,7 +168,7 @@ static int ksbb_pm_action(const struct device *dev, enum pm_device_action action
     const struct ksbb_config ksbb_config_##n = {                                                   \
         .kscan = DEVICE_DT_GET(DT_INST_PHANDLE(n, kscan)),                                         \
         .entries = entries_##n,                                                                    \
-        .entries_len = DT_INST_FOREACH_CHILD_STATUS_OKAY_SEP(n, JUST_ONE, (+)),                    \
+        .entries_len = ARRAY_SIZE(entries_##n),                                                    \
     };                                                                                             \
     struct ksbb_data ksbb_data_##n = {};                                                           \
     PM_DEVICE_DT_INST_DEFINE(n, ksbb_pm_action);                                                   \

@@ -522,7 +522,7 @@ if ZMK_KSCAN_SIDEBAND_BEHAVIORS
 
 config ZMK_KSCAN_SIDEBAND_BEHAVIORS_INIT_PRIORITY
     int "Keyboard scan sideband behaviors driver init priority"
-    # The default kscan init priority is 90, so be sure we are lower.
+    # The default kscan init priority is 90, so be sure we are initialized later.
     default 95
 
 endif # ZMK_KSCAN_SIDEBAND_BEHAVIORS
