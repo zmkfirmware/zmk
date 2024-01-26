@@ -109,7 +109,7 @@ Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the s
 
 ### Split keyboards
 
-Following split keyboard settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig) (generic) and [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/bluetooth/Kconfig) (bluetooth).
+Following split keyboard settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig) (generic) and [zmk/app/src/split/bluetooth/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/bluetooth/Kconfig) (bluetooth).
 
 | Config                                                  | Type | Description                                                                | Default                                    |
 | ------------------------------------------------------- | ---- | -------------------------------------------------------------------------- | ------------------------------------------ |
