@@ -157,7 +157,7 @@ jobs:
           fi
 
       - name: Archive (${{ env.display_name }})
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.archive_name }}
           path: ${{ env.build_dir }}/artifacts
