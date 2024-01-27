@@ -10,7 +10,7 @@
 #include <dt-bindings/zmk/rgb.h>
 
 / {
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&left_encoder &right_encoder>;
         triggers-per-rotation = <20>;

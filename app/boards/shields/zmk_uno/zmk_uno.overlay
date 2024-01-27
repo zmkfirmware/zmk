@@ -10,7 +10,7 @@
     chosen {
         zmk,matrix-transform = &matrix_transform;
     };
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&encoder>;
         triggers-per-rotation = <20>;

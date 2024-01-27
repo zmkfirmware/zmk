@@ -53,9 +53,9 @@
         b-gpios = <&arduino_header 14 GPIO_PULL_UP>;
     };
 
-     sensors {
-         compatible = "zmk,keymap-sensors";
-         sensors = <&encoder &right_encoder>;
-         triggers-per-rotation = <20>;
-     };
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&encoder &right_encoder>;
+        triggers-per-rotation = <20>;
+    };
  };
