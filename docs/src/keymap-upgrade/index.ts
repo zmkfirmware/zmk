@@ -55,7 +55,11 @@ function getLineBreakPositions(text: string) {
 }
 
 function positionToLineNumber(position: number, lineBreaks: number[]) {
-  const line = lineBreaks.findIndex((lineBreak) => position <= lineBreak);
+  if (position >= lineBreaks[lineBreaks.length - 1]) {
+    return lineBreaks.length + 1;
+  }
+
+  const line = lineBreaks.findIndex((lineBreak) => position < lineBreak);
 
   return line < 0 ? 0 : line + 1;
 }
