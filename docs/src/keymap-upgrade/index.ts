@@ -2,6 +2,7 @@ import { createParser } from "./parser";
 import { applyEdits, Range } from "./textedit";
 
 import { upgradeBehaviors } from "./behaviors";
+import { upgradeEncoderResolution } from "./encoder";
 import { upgradeHeaders } from "./headers";
 import { upgradeKeycodes } from "./keycodes";
 import { upgradeNodeNames } from "./nodes";
@@ -11,6 +12,7 @@ export { initParser } from "./parser";
 
 const upgradeFunctions = [
   upgradeBehaviors,
+  upgradeEncoderResolution,
   upgradeHeaders,
   upgradeKeycodes,
   upgradeNodeNames,
