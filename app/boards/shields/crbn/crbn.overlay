@@ -46,7 +46,7 @@
         status = "okay";
     };
 
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&encoder>;
     };
