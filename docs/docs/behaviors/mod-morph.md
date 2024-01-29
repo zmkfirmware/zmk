@@ -86,3 +86,10 @@ For example, the following configuration morphs `LEFT_SHIFT` + `BACKSPACE` into 
     };
 };
 ```
+
+:::note Karabiner-Elements (macOS) and interference with Mod-Morph
+
+If the first modified keypress sends the modifier along with the morphed keycode and [Karabiner-Elements](https://karabiner-elements.pqrs.org/) is running, disable `Modify Events` from Karabiners "Devices" settings page for the keyboard running ZMK.
+
+:::
+
