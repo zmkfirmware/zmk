@@ -22,16 +22,10 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-struct caps_word_continue_item {
-    uint32_t id;
-    uint16_t page;
-    uint8_t implicit_modifiers;
-};
-
 struct behavior_caps_word_config {
     zmk_mod_flags_t mods;
     uint16_t continuations_count;
-    struct caps_word_continue_item continuations[];
+    struct zmk_key_param continuations[];
 };
 
 struct behavior_caps_word_data {
@@ -88,14 +82,13 @@ static bool caps_word_is_caps_includelist(const struct behavior_caps_word_config
                                           uint16_t usage_page, uint8_t usage_id,
                                           uint8_t implicit_modifiers) {
     for (int i = 0; i < config->continuations_count; i++) {
-        const struct caps_word_continue_item *continuation = &config->continuations[i];
+        const struct zmk_key_param *continuation = &config->continuations[i];
         LOG_DBG("Comparing with 0x%02X - 0x%02X (with implicit mods: 0x%02X)", continuation->page,
-                continuation->id, continuation->implicit_modifiers);
+                continuation->id, continuation->modifiers);
 
         if (continuation->page == usage_page && continuation->id == usage_id &&
-            (continuation->implicit_modifiers &
-             (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
-                continuation->implicit_modifiers) {
+            (continuation->modifiers & (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
+                continuation->modifiers) {
             LOG_DBG("Continuing capsword, found included usage: 0x%02X - 0x%02X", usage_page,
                     usage_id);
             return true;
@@ -173,13 +166,7 @@ static int behavior_caps_word_init(const struct device *dev) { return 0; }
 
 #define CAPS_WORD_LABEL(i, _n) DT_INST_LABEL(i)
 
-#define PARSE_CONTINUATION(i)                                                                      \
-    {                                                                                              \
-        .page = ZMK_HID_USAGE_PAGE(i), .id = ZMK_HID_USAGE_ID(i),                                  \
-        .implicit_modifiers = SELECT_MODS(i)                                                       \
-    }
-
-#define CONTINUATION_ITEM(i, n) PARSE_CONTINUATION(DT_INST_PROP_BY_IDX(n, continue_list, i))
+#define CONTINUATION_ITEM(i, n) ZMK_KEY_PARAM_DECODE(DT_INST_PROP_BY_IDX(n, continue_list, i))
 
 #define KP_INST(n)                                                                                 \
     static struct behavior_caps_word_data behavior_caps_word_data_##n = {.active = false};         \
