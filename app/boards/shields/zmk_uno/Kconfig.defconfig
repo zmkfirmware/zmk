@@ -6,6 +6,8 @@ if SHIELD_ZMK_UNO_BASE
 config SHIELD_ZMK_UNO_PM
     bool "ZMK Uno Automatic Power Management"
     default y
+    select ZMK_POWER_DOMAINS
+    select ZMK_POWER_DOMAINS_DYNAMIC_DEFAULT
     select PM_DEVICE
     select PM_DEVICE_POWER_DOMAIN
     select PM_DEVICE_RUNTIME

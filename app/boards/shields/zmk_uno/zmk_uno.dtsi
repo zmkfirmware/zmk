@@ -11,22 +11,6 @@
 
 &arduino_i2c {
     status = "okay";
-
-    oled: ssd1306@3c {
-        compatible = "solomon,ssd1306fb";
-        reg = <0x3c>;
-        label = "DISPLAY";
-        width = <128>;
-        height = <64>;
-        segment-offset = <0>;
-        page-offset = <0>;
-        display-offset = <0>;
-        multiplex-ratio = <63>;
-        prechargep = <0x22>;
-
-        power-domain = <&core_power_domain>;
-        zephyr,pm-device-runtime-auto;
-    };
 };
 
 nice_view_spi: &arduino_spi {
@@ -68,10 +52,13 @@ nice_view_spi: &arduino_spi {
         zmk,backlight = &backlight;
         zmk,underglow = &led_strip;
         zephyr,display = &oled;
+        zmk,display-default-power-domain = &core_power_domain;
     };
 
     core_power_domain: core_power_domain {
-        compatible = "power-domain-gpio";
+        // The "power-domain" compatible is needed for any PDs used for that have dynamic deps,
+        // e.g. for displays or RGB not assigned to the PD in the devicetree statically.
+        compatible = "power-domain-gpio", "power-domain";
         startup-delay-us = <2000>;
         off-on-delay-us = <2000>;
         enable-gpios = <&arduino_header 0 GPIO_ACTIVE_LOW>;
