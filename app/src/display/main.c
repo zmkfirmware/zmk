@@ -111,6 +111,13 @@ static void initialize_theme() {
 #endif // CONFIG_LV_USE_THEME_MONO
 }
 
+#define HAS_DISPLAY_PD                                                                             \
+    (DT_HAS_CHOSEN(zmk_display_default_power_domain) || DT_HAS_CHOSEN(zmk_default_power_domain))
+#define GET_DISPLAY_PD                                                                             \
+    DEVICE_DT_GET(COND_CODE_1(DT_HAS_CHOSEN(zmk_display_default_power_domain),                     \
+                              (DT_CHOSEN(zmk_display_default_power_domain)),                       \
+                              (DT_CHOSEN(zmk_default_power_domain))))
+
 void initialize_display(struct k_work *work) {
     LOG_DBG("");
 
@@ -119,17 +126,14 @@ void initialize_display(struct k_work *work) {
         return;
     }
 
-#if IS_ENABLED(CONFIG_ZMK_DISPLAY_DEFAULT_POWER_DOMAIN) && DT_HAS_CHOSEN(zmk_default_power_domain)
-
+#if IS_ENABLED(CONFIG_ZMK_DISPLAY_DEFAULT_POWER_DOMAIN) && HAS_DISPLAY_PD
     pm_device_runtime_enable(display);
     if (!pm_device_on_power_domain(display)) {
-        int rc =
-            pm_device_power_domain_add(display, DEVICE_DT_GET(DT_CHOSEN(zmk_default_power_domain)));
+        int rc = pm_device_power_domain_add(display, GET_DISPLAY_PD);
         if (rc < 0) {
             LOG_ERR("Failed to add the display to the default power domain (0x%02x)", -rc);
         }
     }
-
 #endif
 
     initialized = true;

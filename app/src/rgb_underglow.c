@@ -62,7 +62,7 @@ struct rgb_underglow_state {
     bool on;
 };
 
-static const struct device *led_strip;
+static const struct device *led_strip = DEVICE_DT_GET(STRIP_CHOSEN);
 
 static struct led_rgb pixels[STRIP_NUM_PIXELS];
 
@@ -245,9 +245,15 @@ static void zmk_rgb_underglow_save_state_work(struct k_work *_work) {
 static struct k_work_delayable underglow_save_work;
 #endif
 
-static int zmk_rgb_underglow_init(void) {
-    led_strip = DEVICE_DT_GET(STRIP_CHOSEN);
+#define HAS_RGB_UG_PD                                                                              \
+    (DT_HAS_CHOSEN(zmk_rgb_underglow_default_power_domain) ||                                      \
+     DT_HAS_CHOSEN(zmk_default_power_domain))
+#define GET_RGB_UG_PD                                                                              \
+    DEVICE_DT_GET(COND_CODE_1(DT_HAS_CHOSEN(zmk_rgb_underglow_default_power_domain),               \
+                              (DT_CHOSEN(zmk_rgb_underglow_default_power_domain)),                 \
+                              (DT_CHOSEN(zmk_default_power_domain))))
 
+static int zmk_rgb_underglow_init(void) {
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
     if (!device_is_ready(ext_power)) {
         LOG_ERR("External power device \"%s\" is not ready", ext_power->name);
@@ -255,13 +261,11 @@ static int zmk_rgb_underglow_init(void) {
     }
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_DEFAULT_POWER_DOMAIN) &&                                   \
-    DT_HAS_CHOSEN(zmk_default_power_domain)
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_DEFAULT_POWER_DOMAIN) && HAS_RGB_UG_PD
 
     pm_device_runtime_enable(led_strip);
     if (!pm_device_on_power_domain(led_strip)) {
-        int rc = pm_device_power_domain_add(led_strip,
-                                            DEVICE_DT_GET(DT_CHOSEN(zmk_default_power_domain)));
+        int rc = pm_device_power_domain_add(led_strip, GET_RGB_UG_PD);
         if (rc < 0) {
             LOG_ERR("Failed to add the LED strip to the default power domain (0x%02x)", -rc);
         }
@@ -315,12 +319,8 @@ int zmk_rgb_underglow_get_state(bool *on_off) {
 }
 
 int zmk_rgb_underglow_on(void) {
-    if (!led_strip)
-        return -ENODEV;
-    }
-
     // Newer PM device approach to ensuring powered on when used.
-    const int rc = pm_device_runtime_get(led_strip);
+    int rc = pm_device_runtime_get(led_strip);
     if (rc < 0) {
         LOG_ERR("Failed to enable/get the PM device (%d)", rc);
         return rc;
