@@ -465,6 +465,7 @@ config ZMK_POWER_DOMAINS_DYNAMIC_DEFAULT
     default n
     depends on ZMK_POWER_DOMAINS
     select PM_DEVICE_POWER_DOMAIN_DYNAMIC
+    select DEVICE_DEPS_DYNAMIC
 
 # Default this to 2, the most common scenario for this for ZMK is RGB + OLED
 config PM_DEVICE_POWER_DOMAIN_DYNAMIC_NUM
