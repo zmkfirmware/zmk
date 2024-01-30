@@ -20,5 +20,3 @@ properties:
   color_mode:
     type: uint8-array
     default: [0x04]
-
-
