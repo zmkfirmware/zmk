@@ -34,7 +34,7 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 | `CONFIG_ZMK_HID_REPORT_TYPE_HKRO` | Enable `CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE` key roll over.                                           |
 | `CONFIG_ZMK_HID_REPORT_TYPE_NKRO` | Enable full N-key roll over. This may prevent the keyboard from working with some BIOS/UEFI versions. |
 
-:::note NKRO usages
+:::note[NKRO usages]
 
 By default the NKRO max usage is set so as to maximize compatibility, however certain less frequently used keys (F13-F24 and INTL1-8) will not work with it. One solution is to set `CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT=y`, however this is known to break compatibility with Android and thus not enabled by default.
 
@@ -69,7 +69,14 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 | `CONFIG_USB_DEVICE_MANUFACTURER`  | string | The manufacturer name advertised to USB | `"ZMK Project"` |
 | `CONFIG_USB_HID_POLL_INTERVAL_MS` | int    | USB polling interval in milliseconds    | 1               |
 | `CONFIG_ZMK_USB`                  | bool   | Enable ZMK as a USB keyboard            |                 |
+| `CONFIG_ZMK_USB_BOOT`             | bool   | Enable USB Boot protocol support        | n               |
 | `CONFIG_ZMK_USB_INIT_PRIORITY`    | int    | USB init priority                       | 50              |
+
+:::note[USB Boot protocol support]
+
+By default USB Boot protocol support is disabled, however certain situations such as the input of Bitlocker pins or FileVault passwords may require it to be enabled.
+
+:::
 
 ### Bluetooth
 
@@ -102,7 +109,7 @@ Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the s
 
 ### Split keyboards
 
-Following split keyboard settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig) (generic) and [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/bluetooth/Kconfig) (bluetooth).
+Following split keyboard settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig) (generic) and [zmk/app/src/split/bluetooth/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/bluetooth/Kconfig) (bluetooth).
 
 | Config                                                  | Type | Description                                                                | Default                                    |
 | ------------------------------------------------------- | ---- | -------------------------------------------------------------------------- | ------------------------------------------ |

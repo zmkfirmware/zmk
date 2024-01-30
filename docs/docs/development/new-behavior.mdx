@@ -3,14 +3,14 @@ title: New Behavior
 sidebar_label: New Behavior
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 ## Overview
 
 This document outlines how to develop a behavior for ZMK and prepare the changes for a pull request.
 
-Behaviors are assigned to key positions and determine what happens when they are pressed and released. They are implemented in Zephyr as "devices": they consist of a devicetree binding file, which specifies the properties of the behavior, and a driver written in C code. This allows for the ability to create unique instances of these behaviors in [keymaps](../features/keymaps.md) or devicetree-source-include files (`.dtsi`). While instances of behaviors stored in keymaps are created by end-users for their personal needs, the instances that live in the .dtsi files are stored and documented in ZMK directly, which removes the need for end-users to set up common use-cases of these behaviors in their personal keymaps.
+Behaviors are assigned to key positions and determine what happens when they are pressed and released. They are implemented in Zephyr as "devices": they consist of a devicetree binding file, which specifies the properties of the behavior, and a driver written in C code. This allows for the ability to create unique instances of these behaviors in [keymaps](../features/keymaps.mdx) or devicetree-source-include files (`.dtsi`). While instances of behaviors stored in keymaps are created by end-users for their personal needs, the instances that live in the .dtsi files are stored and documented in ZMK directly, which removes the need for end-users to set up common use-cases of these behaviors in their personal keymaps.
 
 The general process for developing behaviors is:
 
@@ -192,7 +192,7 @@ The dependencies required for any ZMK behavior are:
 
 - `device.h`: [Zephyr Device APIs](https://docs.zephyrproject.org/apidoc/latest/group__device__model.html)
 - `drivers/behavior.h`: ZMK Behavior Functions (e.g. [`locality`](#api-structure), `behavior_keymap_binding_pressed`, `behavior_keymap_binding_released`, `behavior_sensor_keymap_binding_triggered`)
-- `logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/latest/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](usb-logging.md)).
+- `logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/latest/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](usb-logging.mdx)).
 - `zmk/behavior.h`: ZMK Behavior Information (e.g. parameters, position and timestamp of events)
   - `return` values:
     - `ZMK_BEHAVIOR_OPAQUE`: Used to terminate `on_<behavior_name>_binding_pressed` and `on_<behavior_name>_binding_released` functions that accept `(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event)` as parameters
@@ -316,7 +316,7 @@ The configuration `struct` stores the properties declared from the behavior's `.
 
 The fifth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if instance-specific configurations are not required.
 
-:::caution
+:::warning
 Remember that `.c` files should be formatted according to `clang-format` to ensure that checks run smoothly once the pull request is submitted.
 :::
 
@@ -382,7 +382,7 @@ For the purpose of this section, we will discuss the structure of `app/dts/behav
 
 The format of a behavior's `.dtsi` file is identical to declaring an instance of the behavior in a user's keymap. The only major difference is that the value `/omit-if-no-ref/` should be placed adjacent to the label and name of the behavior, as seen in line 11 of the `gresc` example.
 
-:::caution
+:::warning
 
 If your behavior has its [`locality`](#api-structure) property set to anything other than `BEHAVIOR_LOCALITY_CENTRAL`, then the name of the node must be at most 8 characters long, or it will fail to be invoked on the peripheral half of a split keyboard.
 
@@ -433,7 +433,7 @@ Zephyr currently does not support logging over Bluetooth, so any use of the seri
 :::info
 
 - See [Tests](tests.md) for more information on how to create virtual test sets.
-- For hardware-based testing, see [USB Logging](usb-logging.md).
+- For hardware-based testing, see [USB Logging](usb-logging.mdx).
 
 :::
 
@@ -444,7 +444,7 @@ Consider the following prompts when writing documentation for new behaviors:
 - What does it do? Describe some general use-cases for the behavior.
 - Which properties included in the [devicetree binding](#creating-the-devicetree-binding-yaml) should be configured manually by the user? What do they do, and if applicable, what are their default values?
 - What does an example implementation in a keymap look like? Include a code-snippet of the example implementation in the keymap file's `behaviors` node.
-  - Are there any [common use-cases of the behavior](#defining-common-use-cases-for-the-behavior-dtsi-optional)? Consider making a separate documentation page for these predefined variations, like how the [mod-tap](../behaviors/mod-tap.md) has a separate page from the [hold-tap](../behaviors/hold-tap.md).
+  - Are there any [common use-cases of the behavior](#defining-common-use-cases-for-the-behavior-dtsi-optional)? Consider making a separate documentation page for these predefined variations, like how the [mod-tap](../behaviors/mod-tap.md) has a separate page from the [hold-tap](../behaviors/hold-tap.mdx).
 - How does the behavior perform in edge cases? For example, tap-dances invoke the last binding in its list of `bindings` once the maximum number of keypresses has been reached.
 
 Consider also including visual aids alongside written documentation if it adds clarity.
@@ -486,7 +486,7 @@ values={[
 </TabItem>
 </Tabs>
 
-:::caution
+:::warning
 Remember to change the copyright year (`XXXX`) to the current year when adding the copyright headers to your newly created files.
 :::
 

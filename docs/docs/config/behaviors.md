@@ -49,7 +49,7 @@ You can use the following nodes to tweak the default behaviors:
 
 Creates a custom behavior that triggers one behavior when a key is held or a different one when the key is tapped.
 
-See the [hold-tap behavior](../behaviors/hold-tap.md) documentation for more details and examples.
+See the [hold-tap behavior](../behaviors/hold-tap.mdx) documentation for more details and examples.
 
 ### Devicetree
 
@@ -77,7 +77,7 @@ The `flavor` property may be one of:
 - `"tap-preferred"`
 - `"tap-unless-interrupted"`
 
-See the [hold-tap behavior documentation](../behaviors/hold-tap.md) for an explanation of each flavor.
+See the [hold-tap behavior documentation](../behaviors/hold-tap.mdx) for an explanation of each flavor.
 
 `hold-trigger-key-positions` is an array of zero-based key position indices.
 
@@ -243,7 +243,7 @@ You can use the following nodes to tweak the default behaviors:
 
 Creates a custom behavior that triggers a different behavior corresponding to the number of times the key is tapped.
 
-See the [tap dance behavior](../behaviors/tap-dance.md) documentation for more details and examples.
+See the [tap dance behavior](../behaviors/tap-dance.mdx) documentation for more details and examples.
 
 ### Devicetree
 

@@ -217,7 +217,7 @@ config BT_GATT_NOTIFY_MULTIPLE
     default n
 
 config BT_GATT_AUTO_SEC_REQ
-    default n
+    default (ZMK_SPLIT_BLE && !ZMK_SPLIT_ROLE_CENTRAL)
 
 config BT_DEVICE_APPEARANCE
     default 961
@@ -595,7 +595,7 @@ endmenu
 endmenu
 
 config HEAP_MEM_POOL_SIZE
-    default 8192
+    default 8192 if ZMK_DISPLAY
 
 config KERNEL_BIN_NAME
     default "zmk"
@@ -605,6 +605,9 @@ config REBOOT
 
 config USB_DEVICE_STACK
     default y if HAS_HW_NRF_USBD
+
+config FPU
+    default CPU_HAS_FPU
 
 config ZMK_WPM
     bool "Calculate WPM"

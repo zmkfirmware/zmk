@@ -22,14 +22,14 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | User Configuration Repositories                                                                                                    | ✅  |           |     |
 | Split Keyboard Support                                                                                                             | ✅  |    ✅     | ✅  |
 | [Keymaps and Layers](behaviors/layers.md)                                                                                          | ✅  |    ✅     | ✅  |
-| [Hold-Tap](behaviors/hold-tap.md) (which includes [Mod-Tap](behaviors/mod-tap.md) and [Layer-Tap](behaviors/layers.md/#layer-tap)) | ✅  |    ✅     | ✅  |
-| [Tap-Dance](behaviors/tap-dance.md)                                                                                                | ✅  |  ✅[^2]   | ✅  |
+| [Hold-Tap](behaviors/hold-tap.mdx) (which includes [Mod-Tap](behaviors/mod-tap.md) and [Layer-Tap](behaviors/layers.md#layer-tap)) | ✅  |    ✅     | ✅  |
+| [Tap-Dance](behaviors/tap-dance.mdx)                                                                                               | ✅  |  ✅[^2]   | ✅  |
 | [Keyboard Codes](codes/index.mdx#keyboard)                                                                                         | ✅  |    ✅     | ✅  |
 | [Media](codes/index.mdx#media-controls) & [Consumer](codes/index.mdx#consumer-controls) Codes                                      | ✅  |    ✅     | ✅  |
 | [Encoders](features/encoders.md)                                                                                                   | ✅  |    ✅     | ✅  |
 | [Display Support](features/displays.md)[^1]                                                                                        | 🚧  |    🚧     | ✅  |
 | [RGB Underglow](features/underglow.md)                                                                                             | ✅  |    ✅     | ✅  |
-| [Backlight](features/backlight.md)                                                                                                 | ✅  |    ✅     | ✅  |
+| [Backlight](features/backlight.mdx)                                                                                                | ✅  |    ✅     | ✅  |
 | One Shot Keys                                                                                                                      | ✅  |    ✅     | ✅  |
 | [Combo Keys](features/combos.md)                                                                                                   | ✅  |           | ✅  |
 | [Macros](behaviors/macros.md)                                                                                                      | ✅  |    ✅     | ✅  |

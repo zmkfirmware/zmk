@@ -30,7 +30,7 @@ Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/guides/dts/in
 | Property               | Type | Description                                                   |
 | ---------------------- | ---- | ------------------------------------------------------------- |
 | `zmk,kscan`            | path | The node for the keyboard scan driver to use                  |
-| `zmk,matrix_transform` | path | The node for the [matrix transform](#matrix-transform) to use |
+| `zmk,matrix-transform` | path | The node for the [matrix transform](#matrix-transform) to use |
 
 ## Demux Driver
 
@@ -320,7 +320,7 @@ Transforms should be used any time the physical layout of a keyboard's keys does
 
 Transforms can also be used for keyboards with multiple layouts. You can define multiple matrix transform nodes, one for each layout, and users can select which one they want from the `/chosen` node in their keymaps.
 
-See the [new shield guide](../development/new-shield.md#optional-matrix-transform) for more documentation on how to define a matrix transform.
+See the [new shield guide](../development/new-shield.mdx#optional-matrix-transform) for more documentation on how to define a matrix transform.
 
 ### Devicetree
 
@@ -347,7 +347,7 @@ Any keyboard which is not a grid of 1 unit keys will likely have some unused pos
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 
     kscan0: kscan {
@@ -407,7 +407,7 @@ Consider a keyboard with a [duplex matrix](https://wiki.ai03.com/books/pcb-desig
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 
     kscan0: kscan {
@@ -446,7 +446,7 @@ Note that the entire addressable space does not need to be mapped.
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 
     kscan0: kscan {

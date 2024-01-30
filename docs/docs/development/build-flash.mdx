@@ -3,21 +3,6 @@ title: Building and Flashing
 sidebar_label: Building and Flashing
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-export const OsTabs = (props) => (<Tabs
-groupId="operating-systems"
-defaultValue="debian"
-values={[
-{label: 'Debian/Ubuntu', value: 'debian'},
-{label: 'Raspberry OS', value: 'raspberryos'},
-{label: 'Fedora', value: 'fedora'},
-{label: 'Windows', value: 'win'},
-{label: 'macOS', value: 'mac'},
-]
-}>{props.children}</Tabs>);
-
 ## Building
 
 From here on, building and flashing ZMK should all be done from the `app/` subdirectory of the ZMK checkout:
@@ -31,7 +16,7 @@ an onboard MCU, or one that uses an MCU board addon.
 
 ### Keyboard (Shield) + MCU Board
 
-ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/2.5.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/2.5.0/guides/porting/board_porting.html)
+ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/3.2.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/3.2.0/guides/porting/board_porting.html)
 
 Given the following:
 
@@ -47,7 +32,7 @@ west build -b proton_c -- -DSHIELD=kyria_left
 
 ### Keyboard With Onboard MCU
 
-Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/2.5.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
+Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/3.2.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
 
 Given the following:
 
@@ -110,7 +95,7 @@ west build -b nice_nano_v2 -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Use
 
 ### Building from `zmk-config` Folder
 
-Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup.md#github-repo) by adding
+Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup.mdx#github-repo) by adding
 `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build` command. **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
@@ -119,7 +104,7 @@ For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder
 west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
 
-:::caution
+:::warning
 The above command must still be invoked from the `zmk/app` directory as noted above, rather than the config directory. Otherwise, you will encounter errors such as `ERROR: source directory "." does not contain a CMakeLists.txt; is this really what you want to build?`. Alternatively you can add the `-s /path/to/zmk/app` flag to your `west` command.
 :::
 

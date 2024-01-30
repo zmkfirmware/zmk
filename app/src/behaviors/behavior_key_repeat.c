@@ -43,7 +43,7 @@ static int on_key_repeat_binding_pressed(struct zmk_behavior_binding *binding,
            sizeof(struct zmk_keycode_state_changed));
     data->current_keycode_pressed.timestamp = k_uptime_get();
 
-    ZMK_EVENT_RAISE(new_zmk_keycode_state_changed(data->current_keycode_pressed));
+    raise_zmk_keycode_state_changed(data->current_keycode_pressed);
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
@@ -60,7 +60,7 @@ static int on_key_repeat_binding_released(struct zmk_behavior_binding *binding,
     data->current_keycode_pressed.timestamp = k_uptime_get();
     data->current_keycode_pressed.state = false;
 
-    ZMK_EVENT_RAISE(new_zmk_keycode_state_changed(data->current_keycode_pressed));
+    raise_zmk_keycode_state_changed(data->current_keycode_pressed);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 

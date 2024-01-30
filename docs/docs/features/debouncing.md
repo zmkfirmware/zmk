@@ -26,7 +26,7 @@ Currently the `zmk,kscan-gpio-matrix` and `zmk,kscan-gpio-direct` [drivers](../c
 ### Global Options
 
 You can set these options in your `.conf` file to control debouncing globally.
-Values must be <= 16383.
+Values must be `<= 16383`.
 
 - `CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS`: Debounce time for key press in milliseconds. Default = 5.
 - `CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS`: Debounce time for key release in milliseconds. Default = 5.
@@ -43,7 +43,7 @@ CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS=3
 ### Per-driver Options
 
 You can add these Devicetree properties to a kscan node to control debouncing for
-that instance of the driver. Values must be <= 16383.
+that instance of the driver. Values must be `<= 16383`.
 
 - `debounce-press-ms`: Debounce time for key press in milliseconds. Default = 5.
 - `debounce-release-ms`: Debounce time for key release in milliseconds. Default = 5.

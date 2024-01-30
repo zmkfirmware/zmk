@@ -30,7 +30,7 @@ macOS 13.0 (Ventura) Finder may report an error code 100093 when copying `<firmw
 ### CMake Error
 
 An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
-For more information, click [here](../docs/development/setup.md#environment-variables).
+For more information, see [toolchain setup documentation](../docs/development/setup.mdx).
 
 ### West Build Errors
 

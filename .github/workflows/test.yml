@@ -6,11 +6,13 @@ on:
       - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
+      - "app/include/**"
   pull_request:
     paths:
       - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
+      - "app/include/**"
 
 jobs:
   collect-tests:
@@ -19,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Find test directories
         id: test-dirs
         run: |
@@ -36,9 +38,9 @@ jobs:
       image: docker.io/zmkfirmware/zmk-build-arm:3.2
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache west modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           cache-name: cache-zephyr-modules
         with:

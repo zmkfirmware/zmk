@@ -56,6 +56,11 @@ module.exports = {
           position: "left",
         },
         {
+          to: "keymap-upgrader",
+          label: "Keymap Upgrader",
+          position: "left",
+        },
+        {
           href: "https://github.com/zmkfirmware/zmk",
           label: "GitHub",
           position: "right",
@@ -157,4 +162,11 @@ module.exports = {
       },
     ],
   ],
+  markdown: {
+    mdx1Compat: {
+      comments: false,
+      admonitions: false,
+      headingIds: true,
+    },
+  },
 };

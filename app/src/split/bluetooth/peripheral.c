@@ -83,8 +83,8 @@ K_WORK_DEFINE(advertising_work, advertising_cb);
 static void connected(struct bt_conn *conn, uint8_t err) {
     is_connected = (err == 0);
 
-    ZMK_EVENT_RAISE(new_zmk_split_peripheral_status_changed(
-        (struct zmk_split_peripheral_status_changed){.connected = is_connected}));
+    raise_zmk_split_peripheral_status_changed(
+        (struct zmk_split_peripheral_status_changed){.connected = is_connected});
 
     if (err == BT_HCI_ERR_ADV_TIMEOUT) {
         low_duty_advertising = true;
@@ -101,8 +101,8 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
 
     is_connected = false;
 
-    ZMK_EVENT_RAISE(new_zmk_split_peripheral_status_changed(
-        (struct zmk_split_peripheral_status_changed){.connected = is_connected}));
+    raise_zmk_split_peripheral_status_changed(
+        (struct zmk_split_peripheral_status_changed){.connected = is_connected});
 
     low_duty_advertising = false;
     k_work_submit(&advertising_work);

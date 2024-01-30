@@ -346,8 +346,7 @@ static void update_current_endpoint(void) {
         zmk_endpoint_instance_to_str(current_instance, endpoint_str, sizeof(endpoint_str));
         LOG_INF("Endpoint changed: %s", endpoint_str);
 
-        ZMK_EVENT_RAISE(
-            new_zmk_endpoint_changed((struct zmk_endpoint_changed){.endpoint = current_instance}));
+        raise_zmk_endpoint_changed((struct zmk_endpoint_changed){.endpoint = current_instance});
     }
 }
 

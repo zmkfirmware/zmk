@@ -2,9 +2,9 @@
 title: New Keyboard Shield
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-import KeymapExampleFile from '../keymap-example-file.md';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import KeymapExampleFile from "../keymap-example-file.md";
 
 import InterconnectTabs from "@site/src/components/interconnect-tabs";
 import Metadata from "@site/src/data/hardware-metadata.json";
@@ -79,7 +79,7 @@ config SHIELD_MY_BOARD
     def_bool $(shields_list_contains,my_board)
 ```
 
-This will make sure that a new configuration value named `SHIELD_MY_BOARD` is set to true whenever `my_board` is used as the shield name, either as the `SHIELD` variable [in a local build](build-flash.md) or in your `build.yaml` file [when using Github Actions](../customization). Note that this configuration value will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
+This will make sure that a new configuration value named `SHIELD_MY_BOARD` is set to true whenever `my_board` is used as the shield name, either as the `SHIELD` variable [in a local build](build-flash.mdx) or in your `build.yaml` file [when using Github Actions](../customization). Note that this configuration value will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
 
 **For split boards**, you will need to add configurations for the left and right sides. For example, if your split halves are named `my_board_left` and `my_board_right`, it would look like this:
 
@@ -100,7 +100,7 @@ which controls the display name of the device over USB and BLE.
 
 The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file. Here's the simplest example file.
 
-:::warning
+:::danger
 The keyboard name must be less than or equal to 16 characters in length, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your device.
 :::
 
@@ -140,7 +140,7 @@ endif
 
 ## Shield Overlays
 
-<InterconnectTabs items={Metadata}/>
+<InterconnectTabs items={Metadata} />
 
 To use GPIO pins that are not part of the interconnects as described above, you can use the GPIO labels that are specific to each controller type.
 For instance, pins numbered `PX.Y` in nRF52840-based boards can be referred to via `&gpioX Y` labels.
@@ -201,7 +201,7 @@ For `col2row` directed boards like the iris, the shared .dtsi file may look like
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 
     default_transform: keymap_transform_0 {
@@ -336,7 +336,7 @@ Here is an example for the [nice60](https://github.com/Nicell/nice60), which use
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 
     default_transform: keymap_transform_0 {
@@ -362,7 +362,7 @@ Some important things to note:
 
 - The `#include <dt-bindings/zmk/matrix_transform.h>` is critical. The `RC` macro is used to generate the internal storage in the matrix transform, and is actually replaced by a C preprocessor before the final devicetree is compiled into ZMK.
 - `RC(row, column)` is placed sequentially to define what row and column values that position corresponds to.
-- If you have a keyboard with options for `2u` keys in certain positions, or break away portions, it is a good idea to set the chosen `zmk,matrix_transform` to the default arrangement, and include _other_ possible matrix transform nodes in the devicetree that users can select in their user config by overriding the chosen node.
+- If you have a keyboard with options for `2u` keys in certain positions, or break away portions, it is a good idea to set the chosen `zmk,matrix-transform` to the default arrangement, and include _other_ possible matrix transform nodes in the devicetree that users can select in their user config by overriding the chosen node.
 
 See the [matrix transform section](../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for details and more examples of matrix transforms.
 
@@ -374,7 +374,7 @@ Each keyboard should provide a default keymap to be used when building the firmw
 
 Here is an example simple keymap for the Kyria, with only one layer:
 
-<KeymapExampleFile/>
+<KeymapExampleFile />
 
 :::note
 The two `#include` lines at the top of the keymap are required in order to bring in the default set of behaviors to make them available to bind, and to import a set of defines for the key codes, so keymaps can use parameters like `N2` or `K` instead of the raw keycode numeric values.
@@ -530,7 +530,7 @@ Add the following line to your keymap file to add default encoder behavior bindi
 sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 ```
 
-Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](../features/encoders.md) and [Keymap](../features/keymaps.md) feature documentation for more details.
+Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](../features/encoders.md) and [Keymap](../features/keymaps.mdx) feature documentation for more details.
 
 </TabItem>
 </Tabs>
@@ -539,7 +539,7 @@ Add additional bindings as necessary to match the default number of encoders on 
 
 ### GitHub Actions
 
-Using GitHub Actions to build your new firmware can save you from doing any local [development setup](./setup.md),
+Using GitHub Actions to build your new firmware can save you from doing any local [development setup](./setup.mdx),
 at the expense of a longer feedback loop if there are issues. To push your changes and trigger a build:
 
 - Add all your pending changes with `git add .`
@@ -551,7 +551,7 @@ Once pushed, click on the "Actions" tab of the repo you created in the first ste
 ### Local Build
 
 :::note
-To build locally, be sure you've followed the [development setup](./setup.md) guide first.
+To build locally, be sure you've followed the [development setup](./setup.mdx) guide first.
 :::
 
 Once you've fully created the new keyboard shield definition,
@@ -562,7 +562,7 @@ west build --pristine -b nice_nano_v2 -- -DSHIELD=<my_shield> -DZMK_EXTRA_MODULE
 # replace <my_shield> with e.g. <my_shield>_left for split keyboards, then repeat for <my_shield>_right
 ```
 
-The above build command generates a `build/zephyr/zmk.uf2` file that you can flash using the steps from the following section. See the dedicated [building and flashing page](build-flash.md) for more details.
+The above build command generates a `build/zephyr/zmk.uf2` file that you can flash using the steps from the following section. See the dedicated [building and flashing page](build-flash.mdx) for more details.
 
 ### Flashing
 
@@ -581,9 +581,9 @@ west flash
 ```
 
 Please have a look at documentation specific to
-[building and flashing](build-flash.md) for additional information.
+[building and flashing](build-flash.mdx) for additional information.
 
 :::note
 Further testing your keyboard shield without altering the root keymap file can be done with the use of `-DZMK_CONFIG` in your `west build` command,
-shown [here](build-flash.md#building-from-zmk-config-folder)
+shown [here](build-flash.mdx#building-from-zmk-config-folder)
 :::

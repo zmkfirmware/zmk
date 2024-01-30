@@ -43,7 +43,7 @@ Here is a table describing the action for each define:
 - Parameter #1: The RGB action define, e.g. `RGB_TOG` or `RGB_BRI`
 - Parameter #2: Only applies to `RGB_COLOR_HSB` and is the HSB representation of the color to set (see below for an example)
 
-:::note HSB Values
+:::note[HSB Values]
 
 When specifying HSB values you'll need to use `RGB_COLOR_HSB(h, s, b)` in your keymap file.
 
@@ -55,7 +55,7 @@ Value Limits:
 
 :::
 
-:::note RGB settings persistence
+:::note[RGB settings persistence]
 The RGB settings that are changed via the `&rgb_ug` behavior will be saved to flash storage and hence persist across restarts and firmware flashes.
 They will also override the start values set by [`CONFIG_ZMK_RGB_*_START` settings](../config/underglow.md#kconfig).
 However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.

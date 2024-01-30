@@ -21,7 +21,7 @@ struct zmk_keycode_state_changed {
 
 ZMK_EVENT_DECLARE(zmk_keycode_state_changed);
 
-static inline struct zmk_keycode_state_changed_event *
+static inline struct zmk_keycode_state_changed
 zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t timestamp) {
     uint16_t page = ZMK_HID_USAGE_PAGE(encoded);
     uint16_t id = ZMK_HID_USAGE_ID(encoded);
@@ -38,11 +38,16 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
         implicit_modifiers = SELECT_MODS(encoded);
     }
 
-    return new_zmk_keycode_state_changed(
-        (struct zmk_keycode_state_changed){.usage_page = page,
-                                           .keycode = id,
-                                           .implicit_modifiers = implicit_modifiers,
-                                           .explicit_modifiers = explicit_modifiers,
-                                           .state = pressed,
-                                           .timestamp = timestamp});
+    return (struct zmk_keycode_state_changed){.usage_page = page,
+                                              .keycode = id,
+                                              .implicit_modifiers = implicit_modifiers,
+                                              .explicit_modifiers = explicit_modifiers,
+                                              .state = pressed,
+                                              .timestamp = timestamp};
+}
+
+static inline int raise_zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed,
+                                                               int64_t timestamp) {
+    return raise_zmk_keycode_state_changed(
+        zmk_keycode_state_changed_from_encoded(encoded, pressed, timestamp));
 }

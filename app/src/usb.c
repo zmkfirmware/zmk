@@ -22,8 +22,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static enum usb_dc_status_code usb_status = USB_DC_UNKNOWN;
 
 static void raise_usb_status_changed_event(struct k_work *_work) {
-    ZMK_EVENT_RAISE(new_zmk_usb_conn_state_changed(
-        (struct zmk_usb_conn_state_changed){.conn_state = zmk_usb_get_conn_state()}));
+    raise_zmk_usb_conn_state_changed(
+        (struct zmk_usb_conn_state_changed){.conn_state = zmk_usb_get_conn_state()});
 }
 
 K_WORK_DEFINE(usb_status_notifier_work, raise_usb_status_changed_event);

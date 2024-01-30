@@ -3,8 +3,8 @@ title: Hold-Tap Behavior
 sidebar_label: Hold-Tap
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 ## Summary
 
@@ -132,7 +132,7 @@ the hold-tap. For homerow mods, this is not always ideal, because it prevents co
 
 #### Using different behavior types with hold-taps
 
-You can create instances of hold-taps invoking most [behavior types](../features/keymaps.md#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
+You can create instances of hold-taps invoking most [behavior types](../features/keymaps.mdx#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
 The two parameters that are passed to the hold-tap in your keymap will be forwarded to the referred behaviors, first one to the hold behavior and second one to the tap.
 
 If you use behaviors that accept no parameters such as [mod-morphs](mod-morph.md) or [macros](macros.md), you can pass a dummy parameter value such as `0` to the hold-tap when you use it in your keymap.
@@ -289,7 +289,7 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 
 <TabItem value="mo_tog">
 
-This hold-tap example implements a [momentary-layer](layers.md/#momentary-layer) when the keybind is held and a [toggle-layer](layers.md/#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
+This hold-tap example implements a [momentary-layer](layers.md#momentary-layer) when the keybind is held and a [toggle-layer](layers.md#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
 
 ```dts title="Hold-Tap Example: Momentary layer on Hold, Toggle layer on Tap"
 #include <dt-bindings/zmk/keys.h>

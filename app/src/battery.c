@@ -63,8 +63,8 @@ static int zmk_battery_update(const struct device *battery) {
             return rc;
         }
 #endif
-        rc = ZMK_EVENT_RAISE(new_zmk_battery_state_changed(
-            (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge}));
+        rc = raise_zmk_battery_state_changed(
+            (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge});
     }
 
     return rc;
@@ -87,7 +87,9 @@ static void zmk_battery_timer(struct k_timer *timer) {
 K_TIMER_DEFINE(battery_timer, zmk_battery_timer, NULL);
 
 static void zmk_battery_start_reporting() {
-    k_timer_start(&battery_timer, K_NO_WAIT, K_SECONDS(CONFIG_ZMK_BATTERY_REPORT_INTERVAL));
+    if (device_is_ready(battery)) {
+        k_timer_start(&battery_timer, K_NO_WAIT, K_SECONDS(CONFIG_ZMK_BATTERY_REPORT_INTERVAL));
+    }
 }
 
 static int zmk_battery_init(const struct device *_arg) {
