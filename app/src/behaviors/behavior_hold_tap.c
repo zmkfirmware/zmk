@@ -396,9 +396,8 @@ static int press_hold_binding(struct active_hold_tap *hold_tap) {
         .timestamp = hold_tap->timestamp,
     };
 
-    struct zmk_behavior_binding binding = {0};
-    binding.behavior_dev = hold_tap->config->hold_behavior_dev;
-    binding.param1 = hold_tap->param_hold;
+    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
+                                           .param1 = hold_tap->param_hold};
     return behavior_keymap_binding_pressed(&binding, event);
 }
 
@@ -408,9 +407,8 @@ static int press_tap_binding(struct active_hold_tap *hold_tap) {
         .timestamp = hold_tap->timestamp,
     };
 
-    struct zmk_behavior_binding binding = {0};
-    binding.behavior_dev = hold_tap->config->tap_behavior_dev;
-    binding.param1 = hold_tap->param_tap;
+    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
+                                           .param1 = hold_tap->param_tap};
     store_last_hold_tapped(hold_tap);
     return behavior_keymap_binding_pressed(&binding, event);
 }
@@ -421,9 +419,8 @@ static int release_hold_binding(struct active_hold_tap *hold_tap) {
         .timestamp = hold_tap->timestamp,
     };
 
-    struct zmk_behavior_binding binding = {0};
-    binding.behavior_dev = hold_tap->config->hold_behavior_dev;
-    binding.param1 = hold_tap->param_hold;
+    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
+                                           .param1 = hold_tap->param_hold};
     return behavior_keymap_binding_released(&binding, event);
 }
 
@@ -433,9 +430,8 @@ static int release_tap_binding(struct active_hold_tap *hold_tap) {
         .timestamp = hold_tap->timestamp,
     };
 
-    struct zmk_behavior_binding binding = {0};
-    binding.behavior_dev = hold_tap->config->tap_behavior_dev;
-    binding.param1 = hold_tap->param_tap;
+    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
+                                           .param1 = hold_tap->param_tap};
     return behavior_keymap_binding_released(&binding, event);
 }
 
