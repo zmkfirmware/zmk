@@ -177,6 +177,7 @@ static int il0323_clear_and_write_buffer(const struct device *dev, uint8_t patte
 
     line = k_malloc(IL0323_NUMOF_PAGES);
     if (line == NULL) {
+        LOG_ERR("Failed to allocate memory for the clear");
         return -ENOMEM;
     }
 
