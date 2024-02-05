@@ -599,9 +599,6 @@ endmenu
 #ZMK
 endmenu
 
-config HEAP_MEM_POOL_SIZE
-    default 8192 if ZMK_DISPLAY
-
 config KERNEL_BIN_NAME
     default "zmk"
 
