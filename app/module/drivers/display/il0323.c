@@ -341,7 +341,7 @@ static int il0323_controller_init(const struct device *dev) {
 static int il0323_init(const struct device *dev) {
     const struct il0323_cfg *cfg = dev->config;
 
-    if (!spi_is_ready(&cfg->spi)) {
+    if (!spi_is_ready_dt(&cfg->spi)) {
         LOG_ERR("SPI device not ready for IL0323");
         return -EIO;
     }
