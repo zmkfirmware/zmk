@@ -6,7 +6,6 @@
  */
 
 #include <zephyr/kernel.h>
-#include <zephyr/bluetooth/services/bas.h>
 #include <zephyr/random/rand32.h>
 
 #include <zephyr/logging/log.h>
