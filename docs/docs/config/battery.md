@@ -30,7 +30,7 @@ On macOS the BLE battery reporting packets can cause the computer to wakeup from
 
 ### Devicetree
 
-Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/guides/dts/intro.html#aliases-and-chosen-nodes)
+Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/guides/dts/intro.html#aliases-and-chosen-nodes)
 
 | Property      | Type | Description                                   |
 | ------------- | ---- | --------------------------------------------- |
@@ -44,7 +44,7 @@ Driver for reading the voltage of a battery using an ADC connected to a voltage 
 
 Applies to: `compatible = "zmk,battery-voltage-divider"`
 
-See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/latest/build/dts/api/bindings/adc/voltage-divider.html).
+See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/adc/voltage-divider.html).
 
 ## nRF VDDH Battery Sensor
 

@@ -46,22 +46,22 @@ The docker container already includes `west`. Skip past the following section to
 </TabItem>
 <TabItem value="debian">
 
-Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html) and follow the instructions under these sections:
+Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
 
-- [Select and Update OS](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#select-and-update-os)
-- [Install Dependencies](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#install-dependencies)
-- [Install Zephyr SDK](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#install-zephyr-sdk)
+- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
+- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+- [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk)
 
 Return to this guide once you are finished with each section.
 
 </TabItem>
 <TabItem value="win">
 
-Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html) and follow the instructions under these sections:
+Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
 
-- [Select and Update OS](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#select-and-update-os)
-- [Install Dependencies](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#install-dependencies)
-- [Install Zephyr SDK](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#install-zephyr-sdk)
+- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
+- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+- [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk)
 
 Return to this guide once you are finished with each section.
 
@@ -70,11 +70,11 @@ Return to this guide once you are finished with each section.
 </TabItem>
 <TabItem value="mac">
 
-Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html) and follow the instructions under these sections:
+Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
 
-- [Select and Update OS](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#select-and-update-os)
-- [Install Dependencies](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#install-dependencies)
-- [Install Zephyr SDK](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#install-zephyr-sdk)
+- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
+- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+- [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk)
 
 Return to this guide once you are finished with each section.
 
@@ -83,16 +83,16 @@ Return to this guide once you are finished with each section.
 
 #### Install Base Dependencies
 
-Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html) and follow the instructions for Ubuntu under these sections:
+Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions for Ubuntu under these sections:
 
-- [Select and Update OS](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#select-and-update-os)
-- [Install Dependencies](https://docs.zephyrproject.org/3.2.0/develop/getting_started/index.html#install-dependencies)
+- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
+- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
 
 Return to this guide once you are finished with each section.
 
 #### Install Cross-Compile Toolchain
 
-Because Raspberry OS runs on the same architecture (but different ABI) as ARM keyboard MCUs, the operating system's installed [cross compilers](https://docs.zephyrproject.org/3.2.0/develop/toolchains/other_x_compilers.html) can be used to target the different ABI. Building for non-ARM MCUs has not been tested.
+Because Raspberry OS runs on the same architecture (but different ABI) as ARM keyboard MCUs, the operating system's installed [cross compilers](https://docs.zephyrproject.org/3.5.0/develop/toolchains/other_x_compilers.html) can be used to target the different ABI. Building for non-ARM MCUs has not been tested.
 
 First, the cross compiler should be installed:
 
@@ -100,7 +100,7 @@ First, the cross compiler should be installed:
 sudo apt install gcc-arm-none-eabi
 ```
 
-Next, we'll configure Zephyr with some [environment variables](https://docs.zephyrproject.org/3.2.0/develop/env_vars.html#env-vars) needed to find the cross compiler. Create a file named `~/.zephyrrc` if it doesn't exist, and add these lines to it:
+Next, we'll configure Zephyr with some [environment variables](https://docs.zephyrproject.org/3.5.0/develop/env_vars.html#env-vars) needed to find the cross compiler. Create a file named `~/.zephyrrc` if it doesn't exist, and add these lines to it:
 
 ```sh
 export ZEPHYR_TOOLCHAIN_VARIANT=cross-compile
@@ -110,16 +110,16 @@ export CROSS_COMPILE=/usr/bin/arm-none-eabi-
 </TabItem>
 <TabItem value="fedora">
 
-Follow Zephyr's [Install Linux Host Dependencies](https://docs.zephyrproject.org/3.2.0/develop/getting_started/installation_linux.html) documentation for Fedora.
+Follow Zephyr's [Install Linux Host Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/installation_linux.html) documentation for Fedora.
 
 </TabItem>
 </OsTabs>
 
 ### Install West
 
-`west` is the [Zephyr® Project's meta-tool](https://docs.zephyrproject.org/3.2.0/develop/west/index.html) used to configure and build Zephyr OS applications.
+`west` is the [Zephyr® Project's meta-tool](https://docs.zephyrproject.org/3.5.0/develop/west/index.html) used to configure and build Zephyr OS applications.
 
-West can be installed by using the `pip` python package manager. The [Zephyr™ instructions](https://docs.zephyrproject.org/3.2.0/develop/west/install.html) are summarized here:
+West can be installed by using the `pip` python package manager. The [Zephyr™ instructions](https://docs.zephyrproject.org/3.5.0/develop/west/install.html) are summarized here:
 
 <Tabs
 defaultValue="linux"

@@ -80,7 +80,7 @@ By default USB Boot protocol support is disabled, however certain situations suc
 
 ### Bluetooth
 
-See [Zephyr's Bluetooth stack architecture documentation](https://docs.zephyrproject.org/latest/guides/bluetooth/bluetooth-arch.html)
+See [Zephyr's Bluetooth stack architecture documentation](https://docs.zephyrproject.org/3.5.0/connectivity/bluetooth/bluetooth-arch.html)
 for more information on configuring Bluetooth.
 
 | Config                                      | Type | Description                                                           | Default |
