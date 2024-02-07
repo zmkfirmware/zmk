@@ -24,7 +24,7 @@ The `CONFIG_ZMK_USB_LOGGING` Kconfig enables USB logging. This can be set at the
 file if you are using a [user config repository](user-setup.mdx). It can also be enabled at the ZMK level using the `app/prj.conf` file, or other
 search locations described in the [configuration overview](config/index.md#config-file-locations).
 
-Logging can be further configured using Kconfig described in [the Zephyr documentation](https://docs.zephyrproject.org/3.2.0/services/logging/index.html).
+Logging can be further configured using Kconfig described in [the Zephyr documentation](https://docs.zephyrproject.org/3.5.0/services/logging/index.html).
 For instance, setting `CONFIG_LOG_PROCESS_THREAD_STARTUP_DELAY_MS` to a large value such as `8000` might help catch issues that happen near keyboard
 boot, before you can connect to view the logs.
 

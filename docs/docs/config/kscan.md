@@ -25,7 +25,7 @@ If the debounce press/release values are set to any value other than `-1`, they 
 
 ### Devicetree
 
-Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/guides/dts/intro.html#aliases-and-chosen-nodes)
+Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/guides/dts/intro.html#aliases-and-chosen-nodes)
 
 | Property               | Type | Description                                                   |
 | ---------------------- | ---- | ------------------------------------------------------------- |
@@ -84,7 +84,7 @@ By default, a switch will drain current through the internal pull up/down resist
 
 `toggle-mode` applies to all switches handled by the instance of the driver. To use a toggle switch with other, non-toggle, direct GPIO switches, create two instances of the direct GPIO driver, one with `toggle-mode` and the other without. Then, use a [composite driver](#composite-driver) to combine them.
 
-Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](https://docs.zephyrproject.org/3.2.0/hardware/peripherals/gpio.html#api-reference) for the elements in `input-gpios` should be `(GPIO_ACTIVE_LOW | GPIO_PULL_UP)`:
+Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html#api-reference) for the elements in `input-gpios` should be `(GPIO_ACTIVE_LOW | GPIO_PULL_UP)`:
 
 ```dts
     kscan0: kscan {
@@ -131,7 +131,7 @@ The `diode-direction` property must be one of:
 | `"row2col"` | Diodes point from rows to columns (cathodes are connected to columns) |
 | `"col2row"` | Diodes point from columns to rows (cathodes are connected to rows)    |
 
-Given the `diode-direction`, the [GPIO flags](https://docs.zephyrproject.org/3.2.0/hardware/peripherals/gpio.html#api-reference) for the elements in `row-` and `col-gpios` should be set appropriately.
+Given the `diode-direction`, the [GPIO flags](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html#api-reference) for the elements in `row-` and `col-gpios` should be set appropriately.
 The output pins (e.g. columns for `col2row`) should have the flag `GPIO_ACTIVE_HIGH`, and input pins (e.g. rows for `col2row`) should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`:
 
 ```dts
