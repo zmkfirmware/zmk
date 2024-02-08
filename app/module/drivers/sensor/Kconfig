@@ -6,5 +6,6 @@ if SENSOR
 rsource "battery/Kconfig"
 rsource "ec11/Kconfig"
 rsource "max17048/Kconfig"
+rsource "joystick/Kconfig"
 
 endif # SENSOR

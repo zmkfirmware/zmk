@@ -1,0 +1,56 @@
+# Copyright (c) 2020-2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+menuconfig JOYSTICK
+    bool "Joystick Sensor"
+    help
+      Enable driver for Joystick sensor
+
+if JOYSTICK
+
+config JOYSTICK_THB
+    bool "THB001 joystick sensor"
+    select ADC
+    help
+        Enable joystick driver for THB001 sensor from C-K switches
+
+if JOYSTICK_THB
+
+choice
+    prompt "Trigger mode"
+    default JOYSTICK_THB_TRIGGER_NONE
+    help
+      Type of trigger mode used by the driver.
+
+config JOYSTICK_THB_TRIGGER_NONE
+    bool "No trigger"
+
+config JOYSTICK_THB_TRIGGER_SYSTEM_QUEUE
+    bool "Use system queue for triggering"
+    select JOYSTICK_THB_TRIGGER
+
+config JOYSTICK_THB_TRIGGER_DEDICATED_QUEUE
+    bool "Use a dedicated queue for triggering"
+    select JOYSTICK_THB_TRIGGER
+
+endchoice
+
+config JOYSTICK_THB_TRIGGER
+    bool
+
+config THB_WORKQUEUE_PRIORITY
+    int "Workqueue priority"
+    depends on JOYSTICK_THB_TRIGGER_DEDICATED_QUEUE
+    default 10
+    help
+      Priority of thread used by the workqueue
+
+config THB_WORKQUEUE_STACK_SIZE
+    int "Workqueue stack size"
+    depends on JOYSTICK_THB_TRIGGER_DEDICATED_QUEUE
+    default 1024
+    help
+      Stack size of thread used by the workqueue
+
+endif # JOYSTICK_THB
+endif # JOYSTICK

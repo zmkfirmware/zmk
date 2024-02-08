@@ -1,0 +1,33 @@
+description: |
+  Sensor driver for the C-K THB001 joystick
+
+compatible: "ck,thb"
+
+include: base.yaml
+
+properties:
+    io-channels:
+      required: true
+      description: |
+        Channels available with this divider configuration.
+
+    io-channel-names:
+      required: true
+      description: |
+        Channels names, use "X-AXIS" and "Y-AXIS" accordingly
+
+    min-mv:
+      type: int
+      required: false
+      description: |
+        Minimum voltage output on the potentiometer
+
+        If absent, a default 0 value will be used
+
+    max-mv:
+      type: int
+      required: true
+      description: |
+        Maximum voltage output on the potentiometer
+
+        max-mv - min-mv will be the full range of potentiometer output
