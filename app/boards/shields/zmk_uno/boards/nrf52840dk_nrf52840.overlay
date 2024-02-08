@@ -20,5 +20,6 @@ encoder: &qdec0 {
     led-pre = <0>;
     steps = <80>;
     pinctrl-0 = <&qdec_default>;
-    pinctrl-names = "default";
+    pinctrl-1 = <&qdec_default>;
+    pinctrl-names = "default", "sleep";
 };
