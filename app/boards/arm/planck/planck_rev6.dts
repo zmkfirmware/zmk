@@ -44,6 +44,20 @@
             ;
     };
 
+    encoder: encoder {
+        compatible = "alps,ec11";
+        a-gpios = <&gpiob 12 GPIO_PULL_UP>;
+        b-gpios = <&gpiob 13 GPIO_PULL_UP>;
+        steps = <80>;
+        status = "disabled";
+    };
+
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&encoder>;
+        triggers-per-rotation = <20>;
+    };
+
 layout_grid_transform:
     keymap_transform_0 {
         compatible = "zmk,matrix-transform";
