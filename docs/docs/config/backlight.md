@@ -26,7 +26,7 @@ The `*_START` settings only determine the initial backlight state. Any changes y
 
 ## Devicetree
 
-Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intro.html#aliases-and-chosen-nodes)
+Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)
 
 | Property        | Type | Description                                  |
 | --------------- | ---- | -------------------------------------------- |
