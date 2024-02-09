@@ -18,6 +18,15 @@
       "type": "string",
       "pattern": "^[a-z0-9_]+$"
     },
+    "revisions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "default_revision": {
+      "type": "string"
+    },
     "keyboard_siblings": {
       "type": "array",
       "items": {
@@ -133,6 +142,12 @@
         "type": {
           "type": "string",
           "const": "interconnect"
+        },
+        "revisions": {
+          "type": "#/$defs/revisions"
+        },
+        "default_revision": {
+          "type": "#/$defs/default_revision"
         }
       }
     },
@@ -202,6 +217,12 @@
         },
         "exposes": {
           "$ref": "#/$defs/interconnects"
+        },
+        "revisions": {
+          "type": "#/$defs/revisions"
+        },
+        "default_revision": {
+          "type": "#/$defs/default_revision"
         }
       }
     },
@@ -255,6 +276,12 @@
         },
         "exposes": {
           "$ref": "#/$defs/interconnects"
+        },
+        "revisions": {
+          "type": "#/$defs/revisions"
+        },
+        "default_revision": {
+          "type": "#/$defs/default_revision"
         }
       }
     }
