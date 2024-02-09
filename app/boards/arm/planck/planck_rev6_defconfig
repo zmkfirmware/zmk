@@ -14,3 +14,7 @@ CONFIG_GPIO=y
 CONFIG_CLOCK_CONTROL=y
 
 CONFIG_ZMK_USB=y
+
+# Uncomment these two lines to add support for encoder to your firmware
+#CONFIG_EC11=y
+#CONFIG_EC11_TRIGGER_OWN_THREAD=y
