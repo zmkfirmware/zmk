@@ -9,7 +9,7 @@ As a best-in-class RTOS, Zephyr™ brings many [benefits](https://www.zephyrproj
 
 - A _single_ platform [supporting](https://docs.zephyrproject.org/3.5.0/boards/index.html) many architectures, processors and boards.
 - Optimization for low-powered, small memory footprint devices.
-- Powerful hardware abstraction and configuration using [DeviceTree](https://docs.zephyrproject.org/3.5.0/guides/dts/index.html) and [Kconfig](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html).
+- Powerful hardware abstraction and configuration using [DeviceTree](https://docs.zephyrproject.org/3.5.0/build/dts/index.html) and [Kconfig](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html).
 - A BLE stack that periodically obtains [qualification](https://docs.zephyrproject.org/3.5.0/connectivity/bluetooth/bluetooth-qual.html) listings, making it easier for final products to obtain qualification from the Bluetooth® SIG.
 - Multi-processor support, which is critical for power efficiency in upcoming MCUs.
 - Permissive licensing with its Apache 2.0 open source [license](https://www.apache.org/licenses/LICENSE-2.0).

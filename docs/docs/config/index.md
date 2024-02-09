@@ -149,7 +149,7 @@ The part before the colon, `kscan0`, is a label. This is optional, and it provid
 The `compatible` property indicates what type of node it is. Search this documentation for the text inside the quotes to see which properties the node
 supports. You can also search ZMK for a file whose name is the value of the `compatible` property with a `.yaml` file extension.
 
-To set a property, see below for examples for common property types, or see [Zephyr's Devicetree documentation](https://docs.zephyrproject.org/3.5.0/build/dts/intro.html#writing-property-values) for more details on the syntax for properties.
+To set a property, see below for examples for common property types, or see [Zephyr's Devicetree documentation](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#writing-property-values) for more details on the syntax for properties.
 
 To change a property for an existing node, first find the node you want to change and find its label. Next, outside of any other node, write an ampersand (`&`)
 followed by the node's label, an opening curly brace (`{`), one or more new property values, a closing curly brace (`}`), and a semicolon (`;`).
