@@ -17,13 +17,13 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
+        zephyr,console = &cdc_acm_uart;
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &layout_grid_transform;
+        zmk,matrix-transform = &layout_grid_transform;
     };
 
     kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
         diode-direction = "col2row";
         row-gpios
             = <&gpioa 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
@@ -96,7 +96,6 @@
     status = "okay";
 cdc_acm_uart: cdc_acm_uart {
         compatible = "zephyr,cdc-acm-uart";
-        label = "CDC_ACM_0";
     };
 };
 
@@ -132,7 +131,6 @@ cdc_acm_uart: cdc_acm_uart {
 
         /* Set 6Kb of storage at the end of the 256Kb of flash */
         storage_partition: partition@3e800 {
-            label = "storage";
             reg = <0x0003e800 0x00001800>;
         };
     };

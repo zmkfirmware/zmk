@@ -41,25 +41,18 @@ export const toc = [
 ];
 
 With the solid technical foundation of Zephyr™ RTOS, ZMK can support a wide diversity of hardware targets.
-That being said, there are currently only a few specific [boards](/docs/faq#what-is-a-board)/[shields](faq.md#what-is-a-shield) that have been implemented and tested by the ZMK contributors.
+That being said, there are specific [boards](faq.md#what-is-a-board) /
+[shields](faq.md#what-is-a-shield) that have been implemented and tested by the ZMK contributors, listed below.
 
 <HardwareList items={Metadata} />
 
-<Heading as="h2" id="other-hardware">
-  Other Hardware
-</Heading>
+{/* prettier-ignore */}
+<Heading as="h2" id="other-hardware">Other Hardware</Heading>
 
-In addition to the basic keyboard functionality, there is some initial support for additional keyboard hardware:
+In addition to the basic keyboard functionality, there is also support for additional keyboard hardware such as encoders, RGB underglow, backlight and displays.
+Please see pages under the "Features" header in the sidebar for details.
 
-- Encoders
-- Displays
-- RGB Underglow
-- Backlight
+{/* prettier-ignore */}
+<Heading as="h2" id="contributing">Contributing</Heading>
 
-Until detailed documentation is available, feel free to ask questions about how these are supported in the [Discord server](https://zmk.dev/community/discord/invite).
-
-<Heading as="h2" id="contributing">
-  Contributing
-</Heading>
-
-If you'd like to add support for a new keyboard shield, head over to the [New Keyboard Shield](development/new-shield.md) documentation.
+If you'd like to add support for a new keyboard shield, head over to the [New Keyboard Shield](development/new-shield.mdx) documentation and note the [clean room design requirements](development/clean-room.md).

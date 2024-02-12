@@ -48,7 +48,7 @@ The check commands can be run with the following procedure in a terminal that's 
 3. Run `npm run lint`
 4. Run `npm run build`
 
-:::warning
+:::danger
 If any of the above steps throw an error, they need to be addressed and all of the checks re-run prior to submitting a pull request.
 :::
 

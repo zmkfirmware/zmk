@@ -6,9 +6,8 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ mt: behavior_mod_tap {
+        /omit-if-no-ref/ mt: mod_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "MOD_TAP";
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;

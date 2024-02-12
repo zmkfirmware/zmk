@@ -12,7 +12,6 @@
     macros {
         slash_macro: slash_macro {
             #binding-cells = <2>;
-            label = "ZM_SLASH";
             compatible = "zmk,behavior-macro-two-param";
             wait-ms = <40>;
             tap-ms = <40>;
@@ -24,7 +23,6 @@
 
         to_second_macro: to_second_macro {
             #binding-cells = <2>;
-            label = "ZMK_TO_SECOND";
             compatible = "zmk,behavior-macro-two-param";
             wait-ms = <40>;
             tap-ms = <40>;
@@ -35,7 +33,6 @@
 
         quote_letter_macro: quote_letter_macro {
             #binding-cells = <1>;
-            label = "ZMK_QLET";
             compatible = "zmk,behavior-macro-one-param";
             wait-ms = <40>;
             tap-ms = <40>;
@@ -48,7 +45,6 @@
 
     keymap {
         compatible = "zmk,keymap";
-        label = "Default keymap";
 
         default_layer {
             bindings = <

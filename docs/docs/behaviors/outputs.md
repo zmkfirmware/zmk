@@ -12,7 +12,7 @@ keyboard to USB for power but outputting to a different device over bluetooth.
 By default, output is sent to USB when both USB and BLE are connected.
 Once you select a different output, it will be remembered until you change it again.
 
-:::note Powering the keyboard via USB
+:::note[Powering the keyboard via USB]
 ZMK is not always able to detect if the other end of a USB connection accepts keyboard input or not.
 So if you are using USB only to power your keyboard (for example with a charger or a portable power bank), you will want
 to select the BLE output through below behavior to be able to send keystrokes to the selected bluetooth profile.
@@ -44,7 +44,7 @@ The output selection behavior changes the preferred output on press.
 - Reference: `&out`
 - Parameter #1: Command, e.g. `OUT_BLE`
 
-:::note External power state persistence
+:::note[Output selection persistence]
 The endpoint that is selected by the `&out` behavior will be saved to flash storage and hence persist across restarts and firmware flashes.
 However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
 :::

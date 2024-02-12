@@ -13,7 +13,6 @@
 
     vbatt: vbatt {
         compatible = "zmk,battery-voltage-divider";
-        label = "BATTERY";
         io-channels = <&adc 7>;
         power-gpios = <&gpio0 14 (GPIO_OPEN_DRAIN | GPIO_ACTIVE_LOW)>;
         output-ohms = <510000>;
@@ -28,10 +27,28 @@
 &usbd {
     cdc_acm_uart: cdc_acm_uart {
         compatible = "zephyr,cdc-acm-uart";
-        label = "CDC_ACM_0";
     };
 };
 
 &qspi {
-    status = "disabled";
+    status = "okay";
+    pinctrl-0 = <&qspi_default>;
+    pinctrl-1 = <&qspi_sleep>;
+    pinctrl-names = "default", "sleep";
+    p25q16h: p25q16h@0 {
+        compatible = "nordic,qspi-nor";
+        reg = <0>;
+        sck-frequency = <104000000>;
+        quad-enable-requirements = "S2B1v1";
+        jedec-id = [85 60 15];
+        sfdp-bfp = [
+            e5 20 f1 ff  ff ff ff 00  44 eb 08 6b  08 3b 80 bb
+            ee ff ff ff  ff ff 00 ff  ff ff 00 ff  0c 20 0f 52
+            10 d8 08 81
+        ];
+        size = <16777216>;
+        has-dpd;
+        t-enter-dpd = <3000>;
+        t-exit-dpd = <8000>;
+    };
 };

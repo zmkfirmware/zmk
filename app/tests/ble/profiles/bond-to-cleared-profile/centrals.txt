@@ -1,0 +1,2 @@
+./ble_test_central.exe -d=2 -halt_after_bonding
+./ble_test_central.exe -d=3 -wait_on_start=1300

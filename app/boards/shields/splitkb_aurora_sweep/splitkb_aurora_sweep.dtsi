@@ -10,7 +10,7 @@
 
     chosen {
         zephyr,display = &oled;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 
     default_transform: keymap_transform_0 {
@@ -27,35 +27,32 @@
 
     left_encoder1: left_encoder1 {
         compatible = "alps,ec11";
-        label = "L_ENCODER1";
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
     left_encoder2: left_encoder2 {
         compatible = "alps,ec11";
-        label = "L_ENCODER2";
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
     right_encoder1: right_encoder1 {
         compatible = "alps,ec11";
-        label = "R_ENCODER1";
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
     right_encoder2: right_encoder2 {
         compatible = "alps,ec11";
-        label = "R_ENCODER2";
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&left_encoder1 &right_encoder1>;
+        triggers-per-rotation = <20>;
     };
 };
 
@@ -65,7 +62,6 @@
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
-        label = "DISPLAY";
         width = <128>;
         height = <32>;
         segment-offset = <0>;
@@ -75,6 +71,7 @@
         segment-remap;
         com-invdir;
         com-sequential;
+        inversion-on;
         prechargep = <0x22>;
     };
 };

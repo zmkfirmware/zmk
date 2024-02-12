@@ -25,12 +25,6 @@ config ZMK_SPLIT
 config BT_CTLR
     default BT
 
-config ZMK_BLE
-    default y
-
-config ZMK_USB
-    default y
-
 if USB
 
 config USB_NRFX
@@ -62,6 +56,13 @@ config IL0323
 
 config ZMK_DISPLAY_BLANK_ON_IDLE
     default n
+
+# Needed for the IL0323 driver which allocs memory to clear the display
+config HEAP_MEM_POOL_SIZE
+    default 1024
+
+ config LV_Z_MEM_POOL_SIZE
+     default 4096
 
 endif # ZMK_DISPLAY
 

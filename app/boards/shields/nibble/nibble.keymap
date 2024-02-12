@@ -9,16 +9,17 @@
 #include <dt-bindings/zmk/bt.h>
 
 / {
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&encoder_1>;
+        triggers-per-rotation = <20>;
     };
 
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
-            label = "Default";
+            display-name = "Default";
 
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
 
@@ -31,7 +32,7 @@
             >;
         };
         function_layer {
-            label = "Function";
+            display-name = "Function";
 
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
 

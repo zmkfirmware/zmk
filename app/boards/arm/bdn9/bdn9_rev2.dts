@@ -23,7 +23,6 @@
 
     kscan: kscan {
         compatible = "zmk,kscan-gpio-direct";
-        label = "KSCAN";
 
         input-gpios
             = <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
@@ -40,26 +39,23 @@
 
     left_encoder: encoder_left {
         compatible = "alps,ec11";
-        label = "LEFT_ENCODER";
         a-gpios = <&gpioa 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&gpioa 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
     mid_encoder: encoder_mid {
         compatible = "alps,ec11";
-        label = "MID_ENCODER";
         a-gpios = <&gpioa 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&gpioa 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
     right_encoder: encoder_right {
         compatible = "alps,ec11";
-        label = "RIGHT_ENCODER";
         a-gpios = <&gpioa 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&gpiob 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
@@ -67,6 +63,7 @@
         compatible = "zmk,keymap-sensors";
         status = "disabled";
         sensors = <>;
+        triggers-per-rotation = <20>;
     };
 };
 
@@ -77,7 +74,6 @@
 
     led_strip: ws2812@0 {
         compatible = "worldsemi,ws2812-spi";
-        label = "WS2812";
 
         /* SPI */
         reg = <0>; /* ignored, but necessary for SPI bindings */
@@ -116,7 +112,6 @@
     pinctrl-names = "default";
     cdc_acm_uart: cdc_acm_uart {
         compatible = "zephyr,cdc-acm-uart";
-        label = "CDC_ACM_0";
     };
 };
 
@@ -136,7 +131,6 @@
 
         /* Set 6Kb of storage at the end of the 128Kb of flash */
         storage_partition: partition@1e800 {
-            label = "storage";
             reg = <0x0001e800 0x00001800>;
         };
     };

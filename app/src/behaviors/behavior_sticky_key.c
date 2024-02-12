@@ -24,6 +24,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+#define KEY_PRESS DEVICE_DT_NAME(DT_INST(0, zmk_behavior_key_press))
+
 #define ZMK_BHV_STICKY_KEY_MAX_HELD 10
 
 #define ZMK_BHV_STICKY_KEY_POSITION_FREE UINT32_MAX
@@ -129,7 +131,7 @@ static int stop_timer(struct active_sticky_key *sticky_key) {
 
 static int on_sticky_key_binding_pressed(struct zmk_behavior_binding *binding,
                                          struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_sticky_key_config *cfg = dev->config;
     struct active_sticky_key *sticky_key;
     sticky_key = find_sticky_key(event.position);
@@ -202,7 +204,7 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
             continue;
         }
 
-        if (strcmp(sticky_key->config->behavior.behavior_dev, "KEY_PRESS") == 0 &&
+        if (strcmp(sticky_key->config->behavior.behavior_dev, KEY_PRESS) == 0 &&
             ZMK_HID_USAGE_ID(sticky_key->param1) == ev_copy.keycode &&
             ZMK_HID_USAGE_PAGE(sticky_key->param1) == ev_copy.usage_page &&
             SELECT_MODS(sticky_key->param1) == ev_copy.implicit_modifiers) {
@@ -234,7 +236,9 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
                 if (sticky_key->config->quick_release) {
                     // immediately release the sticky key after the key press is handled.
                     if (!event_reraised) {
-                        ZMK_EVENT_RAISE_AFTER(eh, behavior_sticky_key);
+                        struct zmk_keycode_state_changed_event dupe_ev =
+                            copy_raised_zmk_keycode_state_changed(ev);
+                        ZMK_EVENT_RAISE_AFTER(dupe_ev, behavior_sticky_key);
                         event_reraised = true;
                     }
                     release_sticky_key_behavior(sticky_key, ev_copy.timestamp);
@@ -258,8 +262,9 @@ static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh) {
 }
 
 void behavior_sticky_key_timer_handler(struct k_work *item) {
+    struct k_work_delayable *d_work = k_work_delayable_from_work(item);
     struct active_sticky_key *sticky_key =
-        CONTAINER_OF(item, struct active_sticky_key, release_timer);
+        CONTAINER_OF(d_work, struct active_sticky_key, release_timer);
     if (sticky_key->position == ZMK_BHV_STICKY_KEY_POSITION_FREE) {
         return;
     }
@@ -293,9 +298,9 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
         .ignore_modifiers = DT_INST_PROP(n, ignore_modifiers),                                     \
         .quick_release = DT_INST_PROP(n, quick_release),                                           \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_sticky_key_init, NULL, &behavior_sticky_key_data,            \
-                          &behavior_sticky_key_config_##n, APPLICATION,                            \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sticky_key_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_sticky_key_init, NULL, &behavior_sticky_key_data,          \
+                            &behavior_sticky_key_config_##n, POST_KERNEL,                          \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sticky_key_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

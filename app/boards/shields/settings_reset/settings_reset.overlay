@@ -8,12 +8,11 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan0;
+        zmk,kscan = &settings_reset_kscan;
     };
 
-    kscan0: kscan {
+    settings_reset_kscan: settings_reset_kscan {
         compatible = "zmk,kscan-mock";
-        label = "KSCAN";
         columns = <1>;
         rows = <0>;
 

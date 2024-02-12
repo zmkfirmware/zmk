@@ -3,7 +3,7 @@ title: Backlight Configuration
 sidebar_label: Backlight
 ---
 
-See the [backlight feature page](../features/backlight.md) for more details, including instructions for adding backlight support to a board.
+See the [backlight feature page](../features/backlight.mdx) for more details, including instructions for adding backlight support to a board.
 
 See [Configuration Overview](index.md) for instructions on how to change these settings.
 
@@ -26,7 +26,7 @@ The `*_START` settings only determine the initial backlight state. Any changes y
 
 ## Devicetree
 
-Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/build/dts/intro.html#aliases-and-chosen-nodes)
+Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)
 
 | Property        | Type | Description                                  |
 | --------------- | ---- | -------------------------------------------- |
@@ -34,7 +34,7 @@ Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/build/dts/int
 
 See the Zephyr devicetree bindings for LED drivers:
 
-- [gpio-leds](https://docs.zephyrproject.org/3.0.0/reference/devicetree/bindings/gpio/gpio-leds.html)
-- [pwm-leds](https://docs.zephyrproject.org/latest/build/dts/api/bindings/led/pwm-leds.html)
+- [gpio-leds](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/led/gpio-leds.html)
+- [pwm-leds](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/led/pwm-leds.html)
 
-See the [backlight feature page](../features/backlight.md) for examples of the properties that must be set to enable backlighting.
+See the [backlight feature page](../features/backlight.mdx) for examples of the properties that must be set to enable backlighting.

@@ -1,0 +1,78 @@
+name: BLE Tests
+
+on:
+  push:
+    paths:
+      - ".github/workflows/ble-test.yml"
+      - "app/tests/ble/**"
+      - "app/src/**"
+      - "app/run-ble-test.sh"
+  pull_request:
+    paths:
+      - ".github/workflows/ble-test.yml"
+      - "app/tests/ble/**"
+      - "app/src/**"
+      - "app/run-ble-test.sh"
+
+jobs:
+  collect-tests:
+    outputs:
+      test-dirs: ${{ steps.test-dirs.outputs.test-dirs }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Find test directories
+        id: test-dirs
+        run: |
+          cd app/tests/ble
+          export TESTS=$(ls -d * | grep -v central | jq -R -s -c 'split("\n")[:-1]')
+          echo "test-dirs=${TESTS}" > $GITHUB_OUTPUT
+  run-tests:
+    needs: collect-tests
+    strategy:
+      matrix:
+        test: ${{ fromJSON(needs.collect-tests.outputs.test-dirs) }}
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/zmkfirmware/zmk-build-arm:3.5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Cache west modules
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-zephyr-modules
+        with:
+          path: |
+            modules/
+            tools/
+            zephyr/
+            bootloader/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+        timeout-minutes: 2
+        continue-on-error: true
+      - name: Initialize workspace (west init)
+        run: west init -l app
+      - name: Enable babblesim group filter
+        run: west config manifest.group-filter -- +babblesim
+      - name: Update modules (west update)
+        run: west update
+      - name: Export Zephyr CMake package (west zephyr-export)
+        run: west zephyr-export
+      - name: Build BabbleSim components
+        working-directory: tools/bsim
+        run: make everything
+      - name: Test ${{ matrix.test }}
+        working-directory: app
+        run: BSIM_COMPONENTS_PATH="${GITHUB_WORKSPACE}/tools/bsim/components" BSIM_OUT_PATH="${GITHUB_WORKSPACE}/tools/bsim" ./run-ble-test.sh tests/ble/${{ matrix.test }}
+      - name: Archive artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.test }}-log-files"
+          path: app/build/**/*.log

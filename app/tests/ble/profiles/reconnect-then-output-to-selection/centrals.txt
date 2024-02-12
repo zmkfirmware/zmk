@@ -1,0 +1,1 @@
+./ble_test_central.exe -d=2 -disconnect_and_reconnect

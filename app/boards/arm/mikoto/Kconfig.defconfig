@@ -21,15 +21,6 @@ endif # USB
 config BT_CTLR
     default BT
 
-config ZMK_BLE
-    default y
-
-config ZMK_USB
-    default y
-
-config PINMUX
-    default y
-
 choice BOARD_MIKOTO_CHARGER_CURRENT
     default BOARD_MIKOTO_CHARGER_CURRENT_100MA
 endchoice

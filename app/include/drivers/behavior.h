@@ -56,6 +56,46 @@ __subsystem struct behavior_driver_api {
  * @endcond
  */
 
+struct zmk_behavior_ref {
+    const struct device *device;
+};
+
+/**
+ * Registers @p node_id as a behavior.
+ */
+#define BEHAVIOR_DEFINE(node_id)                                                                   \
+    static const STRUCT_SECTION_ITERABLE(zmk_behavior_ref,                                         \
+                                         _CONCAT(zmk_behavior_, DEVICE_DT_NAME_GET(node_id))) = {  \
+        .device = DEVICE_DT_GET(node_id),                                                          \
+    }
+
+/**
+ * @brief Like DEVICE_DT_DEFINE(), but also registers the device as a behavior.
+ *
+ * @param node_id The devicetree node identifier.
+ * @param ... Other parameters as expected by DEVICE_DT_DEFINE.
+ */
+#define BEHAVIOR_DT_DEFINE(node_id, ...)                                                           \
+    DEVICE_DT_DEFINE(node_id, __VA_ARGS__);                                                        \
+    BEHAVIOR_DEFINE(node_id)
+
+/**
+ * @brief Like DEVICE_DT_INST_DEFINE(), but also registers the device as a behavior.
+ *
+ * @param inst Instance number.
+ * @param ... Other parameters as expected by DEVICE_DT_DEFINE.
+ */
+#define BEHAVIOR_DT_INST_DEFINE(inst, ...)                                                         \
+    DEVICE_DT_INST_DEFINE(inst, __VA_ARGS__);                                                      \
+    BEHAVIOR_DEFINE(DT_DRV_INST(inst))
+
+/**
+ * Syscall wrapper for zmk_behavior_get_binding().
+ *
+ * Use zmk_behavior_get_binding() in application code instead.
+ */
+__syscall const struct device *behavior_get_binding(const char *name);
+
 /**
  * @brief Handle the keymap binding which needs to be converted from relative "toggle" to absolute
  * "turn on"
@@ -70,7 +110,7 @@ __syscall int behavior_keymap_binding_convert_central_state_dependent_params(
 
 static inline int z_impl_behavior_keymap_binding_convert_central_state_dependent_params(
     struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
 
     if (api->binding_convert_central_state_dependent_params == NULL) {
@@ -116,7 +156,7 @@ __syscall int behavior_keymap_binding_pressed(struct zmk_behavior_binding *bindi
 
 static inline int z_impl_behavior_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                                          struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
 
     if (dev == NULL) {
         return -EINVAL;
@@ -144,7 +184,7 @@ __syscall int behavior_keymap_binding_released(struct zmk_behavior_binding *bind
 
 static inline int z_impl_behavior_keymap_binding_released(struct zmk_behavior_binding *binding,
                                                           struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
 
     if (dev == NULL) {
         return -EINVAL;
@@ -178,7 +218,7 @@ static inline int z_impl_behavior_sensor_keymap_binding_accept_data(
     struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
     const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
     const struct zmk_sensor_channel_data *channel_data) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
 
     if (dev == NULL) {
         return -EINVAL;
@@ -214,7 +254,7 @@ static inline int
 z_impl_behavior_sensor_keymap_binding_process(struct zmk_behavior_binding *binding,
                                               struct zmk_behavior_binding_event event,
                                               enum behavior_sensor_binding_process_mode mode) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
 
     if (dev == NULL) {
         return -EINVAL;

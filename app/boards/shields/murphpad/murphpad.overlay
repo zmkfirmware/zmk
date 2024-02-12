@@ -14,7 +14,6 @@
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
 
         diode-direction = "col2row";
         row-gpios
@@ -36,19 +35,17 @@
 
     encoder_1: encoder_1 {
         compatible = "alps,ec11";
-        label = "Encoder 1";
         a-gpios = <&pro_micro 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
     encoder_2: encoder_2 {
         compatible = "alps,ec11";
-        label = "Encoder 2";
         a-gpios = <&pro_micro 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         b-gpios = <&pro_micro 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
     };
 
@@ -60,7 +57,6 @@
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
-        label = "DISPLAY";
         width = <128>;
         height = <32>;
         segment-offset = <0>;
@@ -70,6 +66,7 @@
         segment-remap;
         com-invdir;
         com-sequential;
+        inversion-on;
         prechargep = <0x22>;
     };
 };

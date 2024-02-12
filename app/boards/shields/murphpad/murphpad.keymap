@@ -45,9 +45,10 @@
         };
     };
 
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&encoder_1 &encoder_2>;
+        triggers-per-rotation = <20>;
     };
 
 
@@ -55,7 +56,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
-            label = "default layer";
+            display-name = "default layer";
             bindings = <
                 &bt BT_CLR       &kp TAB      &kp F5          &kp LC(LA(C))     &kp LG(D)
                 &rgb_ug RGB_TOG  &kp ESC      &kp KP_DIVIDE   &kp KP_MULTIPLY   &kp KP_MINUS
@@ -69,7 +70,7 @@
         };
 
         fn_layer {
-            label = "fn layer";
+            display-name = "fn layer";
             bindings = <
                 &trans      &trans     &trans        &trans          &trans
                 &trans      &kp KP_NUM &trans        &trans          &trans

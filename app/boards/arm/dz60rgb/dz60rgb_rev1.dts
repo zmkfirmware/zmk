@@ -18,7 +18,7 @@
         zephyr,flash = &flash0;
         zephyr,console = &cdc_acm_uart;
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 
     default_transform: keymap_transform_0 {
@@ -36,7 +36,6 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                     RC(
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
 
         diode-direction = "col2row";
         row-gpios
@@ -70,7 +69,6 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                     RC(
     status = "okay";
     cdc_acm_uart: cdc_acm_uart {
         compatible = "zephyr,cdc-acm-uart";
-        label = "CDC_ACM_0";
     };
 };
 
@@ -86,7 +84,6 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                     RC(
 
         /* Set 6Kb of storage at the end of the 256Kb of flash */
         storage_partition: partition@3e800 {
-            label = "storage";
             reg = <0x0003e800 0x00001800>;
         };
     };

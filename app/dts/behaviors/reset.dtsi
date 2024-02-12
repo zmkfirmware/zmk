@@ -8,15 +8,15 @@
 
 / {
     behaviors {
-        sys_reset: behavior_reset {
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        sys_reset: sysreset {
             compatible = "zmk,behavior-reset";
-            label = "SYSRESET";
             #binding-cells = <0>;
         };
 
-        bootloader: behavior_reset_dfu {
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        bootloader: bootload {
             compatible = "zmk,behavior-reset";
-            label = "BOOTLOAD";
             type = <RST_UF2>;
             #binding-cells = <0>;
         };

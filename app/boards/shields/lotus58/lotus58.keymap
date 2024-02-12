@@ -23,21 +23,18 @@
     behaviors {
         fofunc: four_ffour {
             compatible = "zmk,behavior-mod-morph";
-            label = "FOUR_FUNCFOUR";
             #binding-cells = <0>;
             bindings = <&kp N4>, <&kp F4>;
             mods = <(MOD_LALT|MOD_RALT)>;
         };
         sleft: s_left {
             compatible = "zmk,behavior-mod-morph";
-            label = "S_LEFT";
             #binding-cells = <0>;
             bindings = <&kp S>, <&kp LEFT>;
             mods = <(MOD_LGUI|MOD_RGUI)>;
         };
         fright: f_right {
             compatible = "zmk,behavior-mod-morph";
-            label = "R_RIGHT";
             #binding-cells = <0>;
             bindings = <&kp F>, <&kp RIGHT>;
             mods = <(MOD_LGUI|MOD_RGUI)>;

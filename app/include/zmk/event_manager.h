@@ -38,7 +38,8 @@ struct zmk_event_subscription {
         zmk_event_t header;                                                                        \
         struct event_type data;                                                                    \
     };                                                                                             \
-    struct event_type##_event *new_##event_type(struct event_type);                                \
+    struct event_type##_event copy_raised_##event_type(const struct event_type *ev);               \
+    int raise_##event_type(struct event_type);                                                     \
     struct event_type *as_##event_type(const zmk_event_t *eh);                                     \
     extern const struct zmk_event_type zmk_event_##event_type;
 
@@ -46,12 +47,14 @@ struct zmk_event_subscription {
     const struct zmk_event_type zmk_event_##event_type = {.name = STRINGIFY(event_type)};          \
     const struct zmk_event_type *zmk_event_ref_##event_type __used                                 \
         __attribute__((__section__(".event_type"))) = &zmk_event_##event_type;                     \
-    struct event_type##_event *new_##event_type(struct event_type data) {                          \
-        struct event_type##_event *ev =                                                            \
-            (struct event_type##_event *)k_malloc(sizeof(struct event_type##_event));              \
-        ev->header.event = &zmk_event_##event_type;                                                \
-        ev->data = data;                                                                           \
-        return ev;                                                                                 \
+    struct event_type##_event copy_raised_##event_type(const struct event_type *ev) {              \
+        struct event_type##_event *outer = CONTAINER_OF(ev, struct event_type##_event, data);      \
+        return *outer;                                                                             \
+    };                                                                                             \
+    int raise_##event_type(struct event_type data) {                                               \
+        struct event_type##_event ev = {.data = data,                                              \
+                                        .header = {.event = &zmk_event_##event_type}};             \
+        return ZMK_EVENT_RAISE(ev);                                                                \
     };                                                                                             \
     struct event_type *as_##event_type(const zmk_event_t *eh) {                                    \
         return (eh->event == &zmk_event_##event_type) ? &((struct event_type##_event *)eh)->data   \
@@ -68,17 +71,14 @@ struct zmk_event_subscription {
             .listener = &zmk_listener_##mod,                                                       \
     };
 
-#define ZMK_EVENT_RAISE(ev) zmk_event_manager_raise((zmk_event_t *)ev);
+#define ZMK_EVENT_RAISE(ev) zmk_event_manager_raise(&(ev).header)
 
 #define ZMK_EVENT_RAISE_AFTER(ev, mod)                                                             \
-    zmk_event_manager_raise_after((zmk_event_t *)ev, &zmk_listener_##mod);
+    zmk_event_manager_raise_after(&(ev).header, &zmk_listener_##mod)
 
-#define ZMK_EVENT_RAISE_AT(ev, mod)                                                                \
-    zmk_event_manager_raise_at((zmk_event_t *)ev, &zmk_listener_##mod);
+#define ZMK_EVENT_RAISE_AT(ev, mod) zmk_event_manager_raise_at(&(ev).header, &zmk_listener_##mod)
 
-#define ZMK_EVENT_RELEASE(ev) zmk_event_manager_release((zmk_event_t *)ev);
-
-#define ZMK_EVENT_FREE(ev) k_free((void *)ev);
+#define ZMK_EVENT_RELEASE(ev) zmk_event_manager_release(&(ev).header)
 
 int zmk_event_manager_raise(zmk_event_t *event);
 int zmk_event_manager_raise_after(zmk_event_t *event, const struct zmk_listener *listener);

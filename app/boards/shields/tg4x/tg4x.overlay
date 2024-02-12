@@ -9,7 +9,6 @@
 / {
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
 
         diode-direction = "col2row";
 
@@ -50,6 +49,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,4)                                 RC(3,5) RC(7,1) 
 
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 };

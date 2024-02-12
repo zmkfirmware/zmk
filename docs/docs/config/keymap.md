@@ -17,11 +17,11 @@ The `zmk,keymap` node itself has no properties. It should have one child node pe
 
 Each child node can have the following properties:
 
-| Property          | Type          | Description                                                            |
-| ----------------- | ------------- | ---------------------------------------------------------------------- |
-| `label`           | string        | Unique label for the node                                              |
-| `bindings`        | phandle-array | List of [key behaviors](../features/keymaps.md#behaviors), one per key |
-| `sensor-bindings` | phandle-array | List of sensor behaviors, one per sensor                               |
+| Property          | Type          | Description                                                             |
+| ----------------- | ------------- | ----------------------------------------------------------------------- |
+| `display-name`    | string        | Name for the layer on displays                                          |
+| `bindings`        | phandle-array | List of [key behaviors](../features/keymaps.mdx#behaviors), one per key |
+| `sensor-bindings` | phandle-array | List of sensor behaviors, one per sensor                                |
 
 Items for `bindings` must be listed in the order the keys are defined in the [keyboard scan configuration](kscan.md).
 

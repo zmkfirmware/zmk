@@ -6,9 +6,9 @@
 
  / {
     behaviors {
-        /omit-if-no-ref/ bl: behavior_backlight {
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        /omit-if-no-ref/ bl: bcklight {
             compatible = "zmk,behavior-backlight";
-            label = "BCKLGHT";
             #binding-cells = <2>;
         };
     };

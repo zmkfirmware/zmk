@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define DT_DRV_COMPAT maxim_max17048
+#define DT_DRV_COMPAT zmk_maxim_max17048
 
 #include <zephyr/device.h>
 #include <zephyr/kernel.h>

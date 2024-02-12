@@ -6,14 +6,13 @@
  */
 
 #include <zephyr/kernel.h>
-#include <zephyr/bluetooth/services/bas.h>
-#include <zephyr/random/rand32.h>
+#include <zephyr/random/random.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#include <zmk/battery.h>
 #include <zmk/display.h>
-#include "peripheral_status.h"
 #include <zmk/events/usb_conn_state_changed.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/battery_state_changed.h>
@@ -21,6 +20,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/split_peripheral_status_changed.h>
 #include <zmk/usb.h>
 #include <zmk/ble.h>
+
+#include "peripheral_status.h"
 
 LV_IMG_DECLARE(balloon);
 LV_IMG_DECLARE(mountain);
@@ -71,7 +72,7 @@ static void battery_status_update_cb(struct battery_status_state state) {
 
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
     return (struct battery_status_state) {
-        .level = bt_bas_get_battery_level(),
+        .level = zmk_battery_state_of_charge(),
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
         .usb_present = zmk_usb_is_powered(),
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */

@@ -7,7 +7,9 @@
 #include <zephyr/device.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
-#include <zephyr/pm/pm.h>
+#include <zephyr/pm/device.h>
+#include <zephyr/pm/device_runtime.h>
+#include <zephyr/sys/poweroff.h>
 
 #include <zephyr/logging/log.h>
 
@@ -24,7 +26,64 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/usb.h>
 #endif
 
-bool is_usb_power_present() {
+// Reimplement some of the device work from Zephyr PM to work with the new `sys_poweroff` API.
+// TODO: Tweak this to smarter runtime PM of subsystems on sleep.
+
+#ifdef CONFIG_PM_DEVICE
+TYPE_SECTION_START_EXTERN(const struct device *, zmk_pm_device_slots);
+
+#if !defined(CONFIG_PM_DEVICE_RUNTIME_EXCLUSIVE)
+/* Number of devices successfully suspended. */
+static size_t zmk_num_susp;
+
+static int zmk_pm_suspend_devices(void) {
+    const struct device *devs;
+    size_t devc;
+
+    devc = z_device_get_all_static(&devs);
+
+    zmk_num_susp = 0;
+
+    for (const struct device *dev = devs + devc - 1; dev >= devs; dev--) {
+        int ret;
+
+        /*
+         * Ignore uninitialized devices, busy devices, wake up sources, and
+         * devices with runtime PM enabled.
+         */
+        if (!device_is_ready(dev) || pm_device_is_busy(dev) || pm_device_state_is_locked(dev) ||
+            pm_device_wakeup_is_enabled(dev) || pm_device_runtime_is_enabled(dev)) {
+            continue;
+        }
+
+        ret = pm_device_action_run(dev, PM_DEVICE_ACTION_SUSPEND);
+        /* ignore devices not supporting or already at the given state */
+        if ((ret == -ENOSYS) || (ret == -ENOTSUP) || (ret == -EALREADY)) {
+            continue;
+        } else if (ret < 0) {
+            LOG_ERR("Device %s did not enter %s state (%d)", dev->name,
+                    pm_device_state_str(PM_DEVICE_STATE_SUSPENDED), ret);
+            return ret;
+        }
+
+        TYPE_SECTION_START(zmk_pm_device_slots)[zmk_num_susp] = dev;
+        zmk_num_susp++;
+    }
+
+    return 0;
+}
+
+static void zmk_pm_resume_devices(void) {
+    for (int i = (zmk_num_susp - 1); i >= 0; i--) {
+        pm_device_action_run(TYPE_SECTION_START(zmk_pm_device_slots)[i], PM_DEVICE_ACTION_RESUME);
+    }
+
+    zmk_num_susp = 0;
+}
+#endif /* !CONFIG_PM_DEVICE_RUNTIME_EXCLUSIVE */
+#endif /* CONFIG_PM_DEVICE */
+
+bool is_usb_power_present(void) {
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     return zmk_usb_is_powered();
 #else
@@ -42,9 +101,9 @@ static uint32_t activity_last_uptime;
 #define MAX_SLEEP_MS CONFIG_ZMK_IDLE_SLEEP_TIMEOUT
 #endif
 
-int raise_event() {
-    return ZMK_EVENT_RAISE(new_zmk_activity_state_changed(
-        (struct zmk_activity_state_changed){.state = activity_state}));
+int raise_event(void) {
+    return raise_zmk_activity_state_changed(
+        (struct zmk_activity_state_changed){.state = activity_state});
 }
 
 int set_state(enum zmk_activity_state state) {
@@ -55,7 +114,7 @@ int set_state(enum zmk_activity_state state) {
     return raise_event();
 }
 
-enum zmk_activity_state zmk_activity_get_state() { return activity_state; }
+enum zmk_activity_state zmk_activity_get_state(void) { return activity_state; }
 
 int activity_event_listener(const zmk_event_t *eh) {
     activity_last_uptime = k_uptime_get();
@@ -70,7 +129,14 @@ void activity_work_handler(struct k_work *work) {
     if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
         // Put devices in suspend power mode before sleeping
         set_state(ZMK_ACTIVITY_SLEEP);
-        pm_state_force(0U, &(struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0});
+
+        if (zmk_pm_suspend_devices() < 0) {
+            LOG_ERR("Failed to suspend all the devices");
+            zmk_pm_resume_devices();
+            return;
+        }
+
+        sys_poweroff();
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
@@ -80,11 +146,11 @@ void activity_work_handler(struct k_work *work) {
 
 K_WORK_DEFINE(activity_work, activity_work_handler);
 
-void activity_expiry_function() { k_work_submit(&activity_work); }
+void activity_expiry_function(struct k_timer *_timer) { k_work_submit(&activity_work); }
 
 K_TIMER_DEFINE(activity_timer, activity_expiry_function, NULL);
 
-int activity_init() {
+static int activity_init(void) {
     activity_last_uptime = k_uptime_get();
 
     k_timer_start(&activity_timer, K_SECONDS(1), K_SECONDS(1));

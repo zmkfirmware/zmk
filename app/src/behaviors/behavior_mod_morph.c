@@ -36,7 +36,7 @@ struct behavior_mod_morph_data {
 
 static int on_mod_morph_binding_pressed(struct zmk_behavior_binding *binding,
                                         struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_mod_morph_config *cfg = dev->config;
     struct behavior_mod_morph_data *data = dev->data;
 
@@ -56,7 +56,7 @@ static int on_mod_morph_binding_pressed(struct zmk_behavior_binding *binding,
 
 static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
                                          struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     struct behavior_mod_morph_data *data = dev->data;
 
     if (data->pressed_binding == NULL) {
@@ -81,7 +81,7 @@ static int behavior_mod_morph_init(const struct device *dev) { return 0; }
 
 #define _TRANSFORM_ENTRY(idx, node)                                                                \
     {                                                                                              \
-        .behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(node, bindings, idx), label),               \
+        .behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),               \
         .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param1), (0),       \
                               (DT_INST_PHA_BY_IDX(node, bindings, idx, param1))),                  \
         .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(node, bindings, idx, param2), (0),       \
@@ -97,9 +97,9 @@ static int behavior_mod_morph_init(const struct device *dev) { return 0; }
                                    (DT_INST_PROP(n, mods) & ~DT_INST_PROP(n, keep_mods))),         \
     };                                                                                             \
     static struct behavior_mod_morph_data behavior_mod_morph_data_##n = {};                        \
-    DEVICE_DT_INST_DEFINE(n, behavior_mod_morph_init, NULL, &behavior_mod_morph_data_##n,          \
-                          &behavior_mod_morph_config_##n, APPLICATION,                             \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mod_morph_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_mod_morph_init, NULL, &behavior_mod_morph_data_##n,        \
+                            &behavior_mod_morph_config_##n, POST_KERNEL,                           \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mod_morph_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

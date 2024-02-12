@@ -13,7 +13,7 @@
   compatible = "polarityworks,bt60_v2";
 
   chosen {
-    zmk,matrix_transform = &ansi_transform;
+    zmk,matrix-transform = &ansi_transform;
   };
 
 

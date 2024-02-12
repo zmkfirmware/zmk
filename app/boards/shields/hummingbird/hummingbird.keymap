@@ -19,7 +19,6 @@
     behaviors {
         hm: homerow_mods {
             compatible = "zmk,behavior-hold-tap";
-            label = "homerow mods";
             #binding-cells = <2>;
             tapping_term_ms = <225>;
             flavor = "tap-preferred";
@@ -66,7 +65,7 @@
         };
 
         nav_layer {
-            label = "Nav";
+            display-name = "Nav";
             bindings = <
                 &trans     &trans     &trans      &trans          &trans       &trans           &kp HOME       &kp UARW &kp PG_UP  &trans
                 &trans     &trans     &trans      &trans          &trans       &trans           &kp LARW       &kp DARW &kp RARW   &trans
@@ -76,7 +75,7 @@
         };
 
         num_layer {
-            label = "Num";
+            display-name = "Num";
             bindings = <
                 &kp LBKT   &kp N7     &kp N8      &kp N9          &kp RBKT      &trans          &trans         &trans      &trans     &trans
                 &kp SEMI   &kp N4     &kp N5      &kp N6          &kp EQUAL     &trans          &trans         &trans      &trans     &trans
@@ -86,7 +85,7 @@
         };
 
         sym_layer {
-            label = "Sym";
+            display-name = "Sym";
             bindings = <
                 &kp LBRC   &kp LS(N7) &kp LS(N8)  &kp LS(N9)      &kp RBRC      &trans          &trans         &trans      &trans     &trans
                 &kp COLON  &kp LS(N4) &kp LS(N5)  &kp LS(N6)      &kp PLUS      &trans          &trans         &trans      &trans     &trans

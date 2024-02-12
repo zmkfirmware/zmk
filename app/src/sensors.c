@@ -87,12 +87,12 @@ static void trigger_sensor_data_for_position(uint32_t sensor_index) {
         return;
     }
 
-    ZMK_EVENT_RAISE(new_zmk_sensor_event(
+    raise_zmk_sensor_event(
         (struct zmk_sensor_event){.sensor_index = item->sensor_index,
                                   .channel_data_size = 1,
                                   .channel_data = {(struct zmk_sensor_channel_data){
                                       .value = value, .channel = item->trigger.chan}},
-                                  .timestamp = k_uptime_get()}));
+                                  .timestamp = k_uptime_get()});
 }
 
 static void run_sensors_data_trigger(struct k_work *work) {
@@ -140,7 +140,7 @@ static void zmk_sensors_init_item(uint8_t i) {
 
 #define SENSOR_INIT(idx, _t) zmk_sensors_init_item(idx);
 
-static int zmk_sensors_init(const struct device *_arg) {
+static int zmk_sensors_init(void) {
     LISTIFY(ZMK_KEYMAP_SENSORS_LEN, SENSOR_INIT, (), 0)
 
     return 0;

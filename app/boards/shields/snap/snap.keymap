@@ -10,16 +10,17 @@
 #include <dt-bindings/zmk/rgb.h>
 
 / {
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&left_encoder &right_encoder>;
+        triggers-per-rotation = <20>;
     };
 
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
-            label = "Default";
+            display-name = "Default";
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp C_VOL_UP C_VOL_DN>;
             bindings = <
              &kp ESC     &kp F1   &kp F2   &kp F3   &kp F4   &kp F5   &kp F6     &kp F7   &kp F8   &kp F9    &kp F10  &kp F11     &kp F12     &kp KP_NUM   &kp PAUSE_BREAK
@@ -32,7 +33,7 @@
         };
 
         function_layer {
-            label = "Function";
+            display-name = "Function";
             sensor-bindings = <&inc_dec_kp C_NEXT C_PREV &inc_dec_kp C_NEXT C_PREV>;
             bindings = <
              &bootloader &trans   &trans   &trans   &trans   &trans   &trans     &trans   &trans   &trans   &trans    &trans      &trans      &trans       &bootloader

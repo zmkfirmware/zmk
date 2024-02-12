@@ -6,9 +6,8 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ kt: behavior_key_toggle {
+        /omit-if-no-ref/ kt: key_toggle {
             compatible = "zmk,behavior-key-toggle";
-            label = "KEY_TOGGLE";
             #binding-cells = <1>;
         };
     };

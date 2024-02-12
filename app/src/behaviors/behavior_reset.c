@@ -25,7 +25,7 @@ static int behavior_reset_init(const struct device *dev) { return 0; };
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_reset_config *cfg = dev->config;
 
     // TODO: Correct magic code for going into DFU?
@@ -43,9 +43,9 @@ static const struct behavior_driver_api behavior_reset_driver_api = {
 #define RST_INST(n)                                                                                \
     static const struct behavior_reset_config behavior_reset_config_##n = {                        \
         .type = DT_INST_PROP(n, type)};                                                            \
-    DEVICE_DT_INST_DEFINE(n, behavior_reset_init, NULL, NULL, &behavior_reset_config_##n,          \
-                          APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
-                          &behavior_reset_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_reset_init, NULL, NULL, &behavior_reset_config_##n,        \
+                            POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
+                            &behavior_reset_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(RST_INST)
 

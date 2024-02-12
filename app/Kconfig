@@ -37,6 +37,17 @@ config BT_DIS_MODEL
 config BT_DIS_MANUF
     default "ZMK Project"
 
+# Hardware specific overrides
+
+if SOC_SERIES_NRF52X
+
+# Default on for our usage until boards implement retained bootmode.
+config NRF_STORE_REBOOT_TYPE_GPREGRET
+    bool
+    default y
+
+endif
+
 menu "HID"
 
 choice ZMK_HID_REPORT_TYPE
@@ -53,9 +64,18 @@ config ZMK_HID_REPORT_TYPE_NKRO
     help
       Enable full N-Key Roll Over for HID output. This selection will prevent the keyboard
       from working with some BIOS/UEFI versions that only support "boot keyboard" support.
-      This option also prevents using some infrequently used higher range HID usages.
+      This option also prevents using some infrequently used higher range HID usages (notably F13-F24 and INTL1-9)
+      These usages can be re enabled with ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT.
 
 endchoice
+
+config ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT
+    bool "Enable extended NKRO reporting"
+    depends on ZMK_HID_REPORT_TYPE_NKRO
+    help
+      Enables higher usage range for NKRO (F13-F24 and INTL1-9).
+      Please note this is not compatible with Android currently and you will get no input
+
 
 if ZMK_HID_REPORT_TYPE_HKRO
 
@@ -87,13 +107,26 @@ config ZMK_HID_CONSUMER_REPORT_USAGES_BASIC
 
 endchoice
 
+config ZMK_HID_INDICATORS
+    bool "HID Indicators"
+    help
+      Enable HID indicators, used for detecting state of Caps/Scroll/Num Lock,
+      Kata, and Compose.
+
 menu "Output Types"
 
 config ZMK_USB
     bool "USB"
+    depends on (!ZMK_SPLIT || (ZMK_SPLIT && ZMK_SPLIT_ROLE_CENTRAL))
     select USB
     select USB_DEVICE_STACK
     select USB_DEVICE_HID
+
+config ZMK_USB_BOOT
+    bool "USB Boot Protocol Support"
+    depends on ZMK_USB
+    select USB_HID_BOOT_PROTOCOL
+    select USB_DEVICE_SOF
 
 if ZMK_USB
 
@@ -114,20 +147,48 @@ menuconfig ZMK_BLE
     select BT_SMP_APP_PAIRING_ACCEPT
     select BT_PERIPHERAL
     select BT_DIS
-    select BT_SETTINGS
-    select SETTINGS
-    imply ZMK_BATTERY_REPORTING
+    imply BT_SETTINGS if !ARCH_POSIX
+    imply SETTINGS if !ARCH_POSIX
+    imply ZMK_BATTERY_REPORTING if !ARCH_POSIX
 
 if ZMK_BLE
+
+config ZMK_BLE_EXPERIMENTAL_CONN
+    bool "Experimental BLE connection changes"
+    help
+      Enables a combination of settings that are planned to be default in future versions of ZMK
+      to improve connection stability. This includes changes to timing on BLE pairing initation,
+      restores use of the updated/new LLCP implementation, and disables 2M PHY support.
+
+config ZMK_BLE_EXPERIMENTAL_SEC
+    bool "Experimental BLE security changes"
+    imply BT_SMP_ALLOW_UNAUTH_OVERWRITE
+    help
+      Enables a combination of settings that are planned to be officially supported in the future.
+      This includes enabling BT Secure Connection passkey entry, and allows overwrite of keys from
+      previously paired hosts.
+
+config ZMK_BLE_EXPERIMENTAL_FEATURES
+    bool "Experimental BLE connection and security settings/features"
+    select ZMK_BLE_EXPERIMENTAL_CONN
+    select ZMK_BLE_EXPERIMENTAL_SEC
+    help
+      Enables experimental connection changes and security features.
+
+config ZMK_BLE_PASSKEY_ENTRY
+    bool "Require passkey entry on the keyboard to complete pairing"
+    default n
+    select RING_BUFFER
+
+config BT_SMP_ALLOW_UNAUTH_OVERWRITE
+    imply ZMK_BLE_PASSKEY_ENTRY
+
+config BT_CTLR_PHY_2M
+    default n if ZMK_BLE_EXPERIMENTAL_CONN
 
 # BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
 config BT_TINYCRYPT_ECC
     default y if BT_HCI && !BT_CTLR
-
-choice BT_LL_SW_LLCP_IMPL
-    default BT_LL_SW_LLCP_LEGACY
-
-endchoice
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
     default 4096 if SOC_RP2040
@@ -149,6 +210,10 @@ config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
     int "Max number of consumer HID reports to queue for sending over BLE"
     default 5
 
+config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
+    int "Max number of mouse HID reports to queue for sending over BLE"
+    default 20
+
 config ZMK_BLE_CLEAR_BONDS_ON_START
     bool "Configuration that clears all bond information from the keyboard on startup."
     default n
@@ -163,15 +228,10 @@ config BT_GATT_NOTIFY_MULTIPLE
     default n
 
 config BT_GATT_AUTO_SEC_REQ
-    default n
+    default (ZMK_SPLIT_BLE && !ZMK_SPLIT_ROLE_CENTRAL)
 
 config BT_DEVICE_APPEARANCE
     default 961
-
-config ZMK_BLE_PASSKEY_ENTRY
-    bool "Require passkey entry on the keyboard to complete pairing"
-    default n
-    select RING_BUFFER
 
 config BT_PERIPHERAL_PREF_MIN_INT
     default 6
@@ -206,6 +266,7 @@ rsource "src/display/Kconfig"
 menuconfig ZMK_RGB_UNDERGLOW
     bool "RGB Adressable LED Underglow"
     select LED_STRIP
+    select ZMK_LOW_PRIORITY_WORK_QUEUE
 
 if ZMK_RGB_UNDERGLOW
 
@@ -313,13 +374,23 @@ endif
 #Display/LED Options
 endmenu
 
+menu "Mouse Options"
+
+config ZMK_MOUSE
+    bool "Enable ZMK mouse emulation"
+    default n
+
+#Mouse Options
+endmenu
+
 menu "Power Management"
 
 config ZMK_BATTERY_REPORTING
     bool "Battery level detection/reporting"
     default n
     select SENSOR
-    select BT_BAS if ZMK_BLE
+    select ZMK_LOW_PRIORITY_WORK_QUEUE
+    imply BT_BAS if ZMK_BLE
 
 config ZMK_IDLE_TIMEOUT
     int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
@@ -327,6 +398,8 @@ config ZMK_IDLE_TIMEOUT
 
 config ZMK_SLEEP
     bool "Enable deep sleep support"
+    depends on HAS_POWEROFF
+    select POWEROFF
     imply USB
 
 if ZMK_SLEEP
@@ -513,6 +586,11 @@ config ZMK_BATTERY_REPORT_INTERVAL
     int "Battery level report interval in seconds"
     default 60
 
+config ZMK_LOW_PRIORITY_WORK_QUEUE
+    bool "Work queue for low priority items"
+
+if ZMK_LOW_PRIORITY_WORK_QUEUE
+
 config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
     int "Low priority thread stack size"
     default 768
@@ -521,14 +599,13 @@ config ZMK_LOW_PRIORITY_THREAD_PRIORITY
     int "Low priority thread priority"
     default 10
 
+endif
+
 #Advanced
 endmenu
 
 #ZMK
 endmenu
-
-config HEAP_MEM_POOL_SIZE
-    default 8192
 
 config KERNEL_BIN_NAME
     default "zmk"
@@ -538,6 +615,9 @@ config REBOOT
 
 config USB_DEVICE_STACK
     default y if HAS_HW_NRF_USBD
+
+config FPU
+    default CPU_HAS_FPU
 
 config ZMK_WPM
     bool "Calculate WPM"
@@ -580,4 +660,3 @@ osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
 
 source "Kconfig.zephyr"
-

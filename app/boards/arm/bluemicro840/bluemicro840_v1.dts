@@ -25,20 +25,18 @@
         compatible = "gpio-leds";
         blue_led: led_0 {
             gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
-            label = "Blue LED";
         };
     };
 
-    ext-power {
+    // Node name must match original "EXT_POWER" label to preserve user settings.
+    EXT_POWER {
         compatible = "zmk,ext-power-generic";
-        label = "EXT_POWER";
         init-delay-ms = <20>;
         control-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
     };
 
     vbatt: vbatt {
         compatible = "zmk,battery-voltage-divider";
-        label = "BATTERY";
         io-channels = <&adc 7>;
         output-ohms = <2000000>;
         full-ohms = <(2000000 + 806000)>;
@@ -81,7 +79,6 @@
     status = "okay";
     cdc_acm_uart: cdc_acm_uart {
         compatible = "zephyr,cdc-acm-uart";
-        label = "CDC_ACM_0";
     };
 };
 
@@ -97,11 +94,9 @@
         #size-cells = <1>;
 
         sd_partition: partition@0 {
-            label = "softdevice";
             reg = <0x00000000 0x00026000>;
         };
         code_partition: partition@26000 {
-            label = "code_partition";
             reg = <0x00026000 0x000c6000>;
         };
 
@@ -115,12 +110,10 @@
          * if enabled.
          */
         storage_partition: partition@ec000 {
-            label = "storage";
             reg = <0x000ec000 0x00008000>;
         };
 
         boot_partition: partition@f4000 {
-            label = "adafruit_boot";
             reg = <0x000f4000 0x0000c000>;
         };
     };

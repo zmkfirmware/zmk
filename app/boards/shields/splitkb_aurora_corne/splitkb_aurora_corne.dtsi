@@ -10,7 +10,7 @@
 
     chosen {
         zephyr,display = &oled;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 
     default_transform: keymap_transform_0 {
@@ -47,8 +47,7 @@ RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10
 
     left_encoder: left_encoder {
         compatible = "alps,ec11";
-        label = "L_ENCODER";
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
 
         a-gpios = <&pro_micro 4 GPIO_PULL_UP>;
@@ -57,17 +56,17 @@ RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10
 
     right_encoder: right_encoder {
         compatible = "alps,ec11";
-        label = "R_ENCODER";
-        resolution = <4>;
+        steps = <80>;
         status = "disabled";
 
         a-gpios = <&pro_micro 19 GPIO_PULL_UP>;
         b-gpios = <&pro_micro 18 GPIO_PULL_UP>;
     };
 
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&left_encoder &right_encoder>;
+        triggers-per-rotation = <20>;
     };
 };
 
@@ -77,7 +76,6 @@ RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
         reg = <0x3c>;
-        label = "DISPLAY";
         width = <128>;
         height = <32>;
         segment-offset = <0>;
@@ -87,6 +85,7 @@ RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10
         segment-remap;
         com-invdir;
         com-sequential;
+        inversion-on;
         prechargep = <0x22>;
     };
 };

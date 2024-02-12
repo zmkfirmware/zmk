@@ -1,0 +1,9 @@
+file_format: "1"
+id: blackpill_f401cc
+name: BlackPill F401CC
+type: board
+arch: arm
+outputs:
+  - usb
+url: https://github.com/WeActStudio/WeActStudio.MiniSTM32F4x1
+exposes: [blackpill]

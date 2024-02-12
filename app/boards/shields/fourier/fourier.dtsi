@@ -9,7 +9,7 @@
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,matrix-transform = &default_transform;
     };
 
     /*
@@ -30,7 +30,6 @@ RC(3,0)   RC(3,1) RC(3,2) RC(3,3) RC(3,4)            /**/  RC(3,6)        RC(3,9
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
 
         diode-direction = "col2row";
         row-gpios

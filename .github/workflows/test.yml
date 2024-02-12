@@ -6,11 +6,13 @@ on:
       - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
+      - "app/include/**"
   pull_request:
     paths:
       - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
+      - "app/include/**"
 
 jobs:
   collect-tests:
@@ -19,13 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Find test directories
         id: test-dirs
         run: |
           cd app/tests/
-          export TESTS=$(ls -d * | jq -R -s -c 'split("\n")[:-1]')
-          echo "::set-output name=test-dirs::${TESTS}"
+          export TESTS=$(ls -d * | grep -v ble | jq -R -s -c 'split("\n")[:-1]')
+          echo "test-dirs=${TESTS}" >> $GITHUB_OUTPUT
   run-tests:
     needs: collect-tests
     strategy:
@@ -33,12 +35,12 @@ jobs:
         test: ${{ fromJSON(needs.collect-tests.outputs.test-dirs) }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:3.2
+      image: docker.io/zmkfirmware/zmk-build-arm:3.5
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Cache west modules
-        uses: actions/cache@v3.0.2
+        uses: actions/cache@v4
         env:
           cache-name: cache-zephyr-modules
         with:
@@ -65,7 +67,7 @@ jobs:
         run: west test tests/${{ matrix.test }}
       - name: Archive artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: "log-files"
+          name: "${{ matrix.test }}-log-files"
           path: app/build/**/*.log

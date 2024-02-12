@@ -7,12 +7,19 @@ child-binding:
   description: "A layer to be used in a keymap"
 
   properties:
-    label:
+    display-name:
       type: string
       required: false
+      description: The name of this layer to show on displays
     bindings:
       type: phandle-array
       required: true
     sensor-bindings:
       type: phandle-array
       required: false
+
+    label:
+      type: string
+      required: false
+      deprecated: true
+      description: Deprecated. Use "name" instead.

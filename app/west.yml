@@ -7,7 +7,7 @@ manifest:
   projects:
     - name: zephyr
       remote: zmkfirmware
-      revision: v3.2.0+zmk-fixes
+      revision: v3.5.0+zmk-fixes
       clone-depth: 1
       import:
         name-blocklist:
@@ -29,6 +29,5 @@ manifest:
           - openthread
           - edtt
           - trusted-firmware-m
-          - sof
   self:
     west-commands: scripts/west-commands.yml

@@ -34,7 +34,6 @@ Once you have the sensor driver defined, add a `zmk,battery` property to the `ch
 
     vbatt: vbatt {
         compatible = "zmk,battery-nrf-vddh";
-        label = "VBATT";
     };
 }
 ```

@@ -15,7 +15,6 @@
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
 
         diode-direction = "col2row";
         row-gpios
@@ -39,7 +38,6 @@
         compatible = "gpio-leds";
         blue_led: led_0 {
             gpios = <&gpio0 16 GPIO_ACTIVE_HIGH>;
-            label = "Blue LED";
         };
     };
 };
@@ -88,7 +86,6 @@
 
     fuelgauge: bq274xx@55 {
         compatible = "ti,bq274xx";
-        label = "BATTERY";
         reg = <0x55>;
         design-voltage = <3700>; //Battery Design Volatge in mV
         design-capacity = <180>; //Battery Design Capacity in mAh
@@ -109,7 +106,6 @@
     epd: il0323@0 {
         compatible = "gooddisplay,il0323";
         reg =  <0>;
-        label = "DISPLAY";
         width = <80>;
         height = <128>;
         spi-max-frequency = <4000000>;

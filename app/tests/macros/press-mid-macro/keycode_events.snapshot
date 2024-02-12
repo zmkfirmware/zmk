@@ -1,8 +1,8 @@
-pos_state: layer: 0 position: 0, binding name: ZM_abc_macro
+pos_state: layer: 0 position: 0, binding name: abc_macro
 kp_pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
-pos_state: layer: 0 position: 0, binding name: ZM_abc_macro
-pos_state: layer: 0 position: 1, binding name: MO
-pos_state: layer: 0 position: 1, binding name: MO
+pos_state: layer: 0 position: 0, binding name: abc_macro
+pos_state: layer: 0 position: 1, binding name: momentary_layer
+pos_state: layer: 0 position: 1, binding name: momentary_layer
 kp_released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
 kp_pressed: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
 kp_released: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00

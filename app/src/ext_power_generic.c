@@ -39,14 +39,14 @@ static void ext_power_save_state_work(struct k_work *work) {
     const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
     struct ext_power_generic_data *data = ext_power->data;
 
-    snprintf(setting_path, 40, "ext_power/state/%s", DT_INST_PROP(0, label));
+    snprintf(setting_path, sizeof(setting_path), "ext_power/state/%s", ext_power->name);
     settings_save_one(setting_path, &data->status, sizeof(data->status));
 }
 
 static struct k_work_delayable ext_power_save_work;
 #endif
 
-int ext_power_save_state() {
+int ext_power_save_state(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     int ret = k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
     return MIN(ret, 0);
@@ -86,38 +86,38 @@ static int ext_power_generic_get(const struct device *dev) {
 }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
+static int ext_power_settings_set_status(const struct device *dev, size_t len,
+                                         settings_read_cb read_cb, void *cb_arg) {
+    struct ext_power_generic_data *data = dev->data;
+
+    if (len != sizeof(data->status)) {
+        return -EINVAL;
+    }
+
+    int rc = read_cb(cb_arg, &data->status, sizeof(data->status));
+    if (rc >= 0) {
+        data->settings_init = true;
+
+        if (data->status) {
+            ext_power_generic_enable(dev);
+        } else {
+            ext_power_generic_disable(dev);
+        }
+
+        return 0;
+    }
+    return rc;
+}
+
 static int ext_power_settings_set(const char *name, size_t len, settings_read_cb read_cb,
                                   void *cb_arg) {
+    const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
+
     const char *next;
-    int rc;
-
-    if (settings_name_steq(name, DT_INST_PROP(0, label), &next) && !next) {
-        const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
-        struct ext_power_generic_data *data = ext_power->data;
-
-        if (len != sizeof(data->status)) {
-            return -EINVAL;
-        }
-
-        rc = read_cb(cb_arg, &data->status, sizeof(data->status));
-        if (rc >= 0) {
-            data->settings_init = true;
-
-            if (ext_power == NULL) {
-                LOG_ERR("Unable to retrieve ext_power device: %s", DT_INST_PROP(0, label));
-                return -EIO;
-            }
-
-            if (data->status) {
-                ext_power_generic_enable(ext_power);
-            } else {
-                ext_power_generic_disable(ext_power);
-            }
-
-            return 0;
-        }
-        return rc;
+    if (settings_name_steq(name, ext_power->name, &next) && !next) {
+        return ext_power_settings_set_status(ext_power, len, read_cb, cb_arg);
     }
+
     return -ENOENT;
 }
 

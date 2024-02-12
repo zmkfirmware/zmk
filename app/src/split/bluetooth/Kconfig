@@ -16,11 +16,35 @@ config ZMK_SPLIT_ROLE_CENTRAL
     select BT_GATT_AUTO_DISCOVER_CCC
     select BT_SCAN_WITH_IDENTITY
 
+# Bump this value needed for concurrent GATT discovery of splits
+config BT_L2CAP_TX_BUF_COUNT
+    default 5 if ZMK_SPLIT_ROLE_CENTRAL
+
 if ZMK_SPLIT_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
     int "Number of peripherals that will connect to the central."
     default 1
+
+menuconfig ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
+    bool "Fetch Peripheral Battery Level Info"
+    help
+      Adds internal support for fetching the battery levels from peripherals
+      and generating events in the ZMK eventing system.
+
+if ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
+
+config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_QUEUE_SIZE
+    int "Max number of battery level events to queue when received from peripherals"
+    default ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+
+config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY
+    bool "Proxy Peripheral Battery Level Info"
+    help
+      Adds support for reporting the battery levels of connected split
+      peripherals through an additional Battery Level service.
+
+endif
 
 config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
     int "Max number of key position state events to queue when received from peripherals"
@@ -61,9 +85,6 @@ config ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY
 config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
     int "Max number of key position state events to queue to send to the central"
     default 10
-
-config ZMK_USB
-    default n
 
 config BT_MAX_PAIRED
     default 1

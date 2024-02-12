@@ -13,19 +13,19 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ### General
 
-| Config                               | Type   | Description                                                                   | Default |
-| ------------------------------------ | ------ | ----------------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_KEYBOARD_NAME`           | string | The name of the keyboard (max 16 characters)                                  |         |
-| `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`  | int    | Milliseconds to wait after a setting change before writing it to flash memory | 60000   |
-| `CONFIG_ZMK_WPM`                     | bool   | Enable calculating words per minute                                           | n       |
-| `CONFIG_HEAP_MEM_POOL_SIZE`          | int    | Size of the heap memory pool                                                  | 8192    |
-| `CONFIG_ZMK_BATTERY_REPORT_INTERVAL` | int    | Battery level report interval in seconds                                      | 60      |
+| Config                              | Type   | Description                                                                   | Default |
+| ----------------------------------- | ------ | ----------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_KEYBOARD_NAME`          | string | The name of the keyboard (max 16 characters)                                  |         |
+| `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE` | int    | Milliseconds to wait after a setting change before writing it to flash memory | 60000   |
+| `CONFIG_ZMK_WPM`                    | bool   | Enable calculating words per minute                                           | n       |
+| `CONFIG_HEAP_MEM_POOL_SIZE`         | int    | Size of the heap memory pool                                                  | 8192    |
 
 ### HID
 
-| Config                                | Type | Description                                       | Default |
-| ------------------------------------- | ---- | ------------------------------------------------- | ------- |
-| `CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE` | int  | Number of consumer keys simultaneously reportable | 6       |
+| Config                                | Type | Description                                                    | Default |
+| ------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_HID_INDICATORS`           | bool | Enable reciept of HID/LED indicator state from connected hosts | n       |
+| `CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE` | int  | Number of consumer keys simultaneously reportable              | 6       |
 
 Exactly zero or one of the following options may be set to `y`. The first is used if none are set.
 
@@ -34,11 +34,23 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 | `CONFIG_ZMK_HID_REPORT_TYPE_HKRO` | Enable `CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE` key roll over.                                           |
 | `CONFIG_ZMK_HID_REPORT_TYPE_NKRO` | Enable full N-key roll over. This may prevent the keyboard from working with some BIOS/UEFI versions. |
 
+:::note[NKRO usages]
+
+By default the NKRO max usage is set so as to maximize compatibility, however certain less frequently used keys (F13-F24 and INTL1-8) will not work with it. One solution is to set `CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT=y`, however this is known to break compatibility with Android and thus not enabled by default.
+
+:::
+
 If `CONFIG_ZMK_HID_REPORT_TYPE_HKRO` is enabled, it may be configured with the following options:
 
 | Config                                | Type | Description                                       | Default |
 | ------------------------------------- | ---- | ------------------------------------------------- | ------- |
 | `CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE` | int  | Number of keyboard keys simultaneously reportable | 6       |
+
+If `CONFIG_ZMK_HID_REPORT_TYPE_NKRO` is enabled, it may be configured with the following options:
+
+| Config                                         | Type | Description                                                          | Default |
+| ---------------------------------------------- | ---- | -------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT` | bool | Enable less frequently used key usages, at the cost of compatibility | n       |
 
 Exactly zero or one of the following options may be set to `y`. The first is used if none are set.
 
@@ -57,16 +69,24 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 | `CONFIG_USB_DEVICE_MANUFACTURER`  | string | The manufacturer name advertised to USB | `"ZMK Project"` |
 | `CONFIG_USB_HID_POLL_INTERVAL_MS` | int    | USB polling interval in milliseconds    | 1               |
 | `CONFIG_ZMK_USB`                  | bool   | Enable ZMK as a USB keyboard            |                 |
+| `CONFIG_ZMK_USB_BOOT`             | bool   | Enable USB Boot protocol support        | n               |
 | `CONFIG_ZMK_USB_INIT_PRIORITY`    | int    | USB init priority                       | 50              |
+
+:::note[USB Boot protocol support]
+
+By default USB Boot protocol support is disabled, however certain situations such as the input of Bitlocker pins or FileVault passwords may require it to be enabled.
+
+:::
 
 ### Bluetooth
 
-See [Zephyr's Bluetooth stack architecture documentation](https://docs.zephyrproject.org/latest/guides/bluetooth/bluetooth-arch.html)
+See [Zephyr's Bluetooth stack architecture documentation](https://docs.zephyrproject.org/3.5.0/connectivity/bluetooth/bluetooth-arch.html)
 for more information on configuring Bluetooth.
 
 | Config                                      | Type | Description                                                           | Default |
 | ------------------------------------------- | ---- | --------------------------------------------------------------------- | ------- |
 | `CONFIG_BT`                                 | bool | Enable Bluetooth support                                              |         |
+| `CONFIG_BT_BAS`                             | bool | Enable the Bluetooth BAS (battery reporting service)                  | y       |
 | `CONFIG_BT_MAX_CONN`                        | int  | Maximum number of simultaneous Bluetooth connections                  | 5       |
 | `CONFIG_BT_MAX_PAIRED`                      | int  | Maximum number of paired Bluetooth devices                            | 5       |
 | `CONFIG_ZMK_BLE`                            | bool | Enable ZMK as a Bluetooth keyboard                                    |         |
@@ -90,16 +110,20 @@ Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the s
 
 ### Split keyboards
 
-Following split keyboard settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig) (generic) and [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/bluetooth/Kconfig) (bluetooth).
+Following split keyboard settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig) (generic) and [zmk/app/src/split/bluetooth/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/bluetooth/Kconfig) (bluetooth).
 
-| Config                                                | Type | Description                                                             | Default |
-| ----------------------------------------------------- | ---- | ----------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_SPLIT`                                    | bool | Enable split keyboard support                                           | n       |
-| `CONFIG_ZMK_SPLIT_BLE`                                | bool | Use BLE to communicate between split keyboard halves                    | y       |
-| `CONFIG_ZMK_SPLIT_ROLE_CENTRAL`                       | bool | `y` for central device, `n` for peripheral                              |         |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE`    | int  | Max number of key state events to queue when received from peripherals  | 5       |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE`   | int  | Stack size of the BLE split central write thread                        | 512     |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE`   | int  | Max number of behavior run events to queue to send to the peripheral(s) | 5       |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE`          | int  | Stack size of the BLE split peripheral notify thread                    | 650     |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY`            | int  | Priority of the BLE split peripheral notify thread                      | 5       |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE` | int  | Max number of key state events to queue to send to the central          | 10      |
+| Config                                                  | Type | Description                                                                | Default                                    |
+| ------------------------------------------------------- | ---- | -------------------------------------------------------------------------- | ------------------------------------------ |
+| `CONFIG_ZMK_SPLIT`                                      | bool | Enable split keyboard support                                              | n                                          |
+| `CONFIG_ZMK_SPLIT_ROLE_CENTRAL`                         | bool | `y` for central device, `n` for peripheral                                 |                                            |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS`            | bool | Enable split keyboard support for passing indicator state to peripherals   | n                                          |
+| `CONFIG_ZMK_SPLIT_BLE`                                  | bool | Use BLE to communicate between split keyboard halves                       | y                                          |
+| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING`   | bool | Enable fetching split peripheral battery levels to the central side        | n                                          |
+| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY`      | bool | Enable central reporting of split battery levels to hosts                  | n                                          |
+| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_QUEUE_SIZE` | int  | Max number of battery level events to queue when received from peripherals | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS` |
+| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE`      | int  | Max number of key state events to queue when received from peripherals     | 5                                          |
+| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE`     | int  | Stack size of the BLE split central write thread                           | 512                                        |
+| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE`     | int  | Max number of behavior run events to queue to send to the peripheral(s)    | 5                                          |
+| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE`            | int  | Stack size of the BLE split peripheral notify thread                       | 650                                        |
+| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY`              | int  | Priority of the BLE split peripheral notify thread                         | 5                                          |
+| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE`   | int  | Max number of key state events to queue to send to the central             | 10                                         |

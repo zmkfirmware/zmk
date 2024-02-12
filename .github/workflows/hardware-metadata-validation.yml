@@ -18,9 +18,9 @@ jobs:
   validate-metadata:
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-dev-arm:3.2
+      image: docker.io/zmkfirmware/zmk-dev-arm:3.5
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: pip install -r app/scripts/requirements.txt
       - name: West init

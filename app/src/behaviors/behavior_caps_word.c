@@ -55,7 +55,7 @@ static void deactivate_caps_word(const struct device *dev) {
 
 static int on_caps_word_binding_pressed(struct zmk_behavior_binding *binding,
                                         struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     struct behavior_caps_word_data *data = dev->data;
 
     if (data->active) {
@@ -181,9 +181,9 @@ static int behavior_caps_word_init(const struct device *dev) {
         .continuations = {LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, (, ), n)},       \
         .continuations_count = DT_INST_PROP_LEN(n, continue_list),                                 \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_caps_word_init, NULL, &behavior_caps_word_data_##n,          \
-                          &behavior_caps_word_config_##n, APPLICATION,                             \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_caps_word_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_caps_word_init, NULL, &behavior_caps_word_data_##n,        \
+                            &behavior_caps_word_config_##n, POST_KERNEL,                           \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_caps_word_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

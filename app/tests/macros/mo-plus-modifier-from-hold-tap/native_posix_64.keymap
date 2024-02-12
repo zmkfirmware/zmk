@@ -24,7 +24,6 @@
     behaviors {
         mth: macro_tap_hold {
             compatible = "zmk,behavior-hold-tap";
-            label = "MACRO_TAP_HOLD";
             #binding-cells = <2>;
             flavor = "tap-unless-interrupted";
             tapping-term-ms = <200>;
@@ -34,7 +33,6 @@
 
     keymap {
         compatible = "zmk,keymap";
-        label ="Default keymap";
 
         default_layer {
             bindings = <

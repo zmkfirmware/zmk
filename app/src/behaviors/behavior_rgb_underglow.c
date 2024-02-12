@@ -149,7 +149,7 @@ static const struct behavior_driver_api behavior_rgb_underglow_driver_api = {
     .locality = BEHAVIOR_LOCALITY_GLOBAL,
 };
 
-DEVICE_DT_INST_DEFINE(0, behavior_rgb_underglow_init, NULL, NULL, NULL, APPLICATION,
-                      CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_rgb_underglow_driver_api);
+BEHAVIOR_DT_INST_DEFINE(0, behavior_rgb_underglow_init, NULL, NULL, NULL, POST_KERNEL,
+                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_rgb_underglow_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

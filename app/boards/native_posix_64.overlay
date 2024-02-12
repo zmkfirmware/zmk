@@ -4,15 +4,24 @@
 
 / {
     chosen {
+        zephyr,console = &uart0;
         zmk,kscan = &kscan;
     };
 
     kscan: kscan {
         compatible = "zmk,kscan-mock";
-        label = "KSCAN_MOCK";
 
         rows = <2>;
         columns = <2>;
         exit-after;
+    };
+
+    uart0: uart {
+        status = "okay";
+        compatible = "zephyr,native-posix-uart";
+        /* Dummy current-speed entry to comply with serial
+         * DTS binding
+         */
+        current-speed = <0>;
     };
 };

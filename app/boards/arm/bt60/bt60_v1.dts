@@ -11,7 +11,7 @@
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix_transform = &ansi_transform;
+        zmk,matrix-transform = &ansi_transform;
     };
 
     ansi_transform: keymap_transform_0 {
@@ -81,7 +81,6 @@
 
     kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
         diode-direction = "col2row";
 
         col-gpios

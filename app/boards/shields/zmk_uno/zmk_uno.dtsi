@@ -1,0 +1,172 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/led/led.h>
+#include <dt-bindings/zmk/matrix_transform.h>
+
+&arduino_i2c {
+    status = "okay";
+};
+
+nice_view_spi: &arduino_spi {
+    status = "okay";
+
+    cs-gpios = <&arduino_header 16 GPIO_ACTIVE_HIGH>;
+
+    // Needed so the nice_view shield will enhance the existing node which falls *first*
+    // on the bus, properly picking up the first `cs-gpios` specifier.
+    ls0xx@0 {
+        reg = <0>;
+    };
+
+    led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-spi";
+
+        /* SPI */
+        reg = <0>; /* ignored, but necessary for SPI bindings */
+        spi-max-frequency = <4000000>;
+
+        /* WS2812 */
+        chain-length = <7>; /* 4 underglow + 3 per-key LEDs */
+        spi-one-frame = <0x70>;
+        spi-zero-frame = <0x40>;
+
+        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+    };
+};
+
+/ {
+    chosen {
+        zmk,kscan = &kscan_matrix_comp;
+        zmk,backlight = &backlight;
+        zmk,underglow = &led_strip;
+        zmk,matrix-transform = &matrix_transform;
+    };
+
+    // Commented out until we add more powerful power domain support
+    // external_power {
+        //  compatible = "zmk,ext-power-generic";
+        //  init-delay-ms = <200>;
+        //  control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
+    // };
+
+    rgb_power {
+        compatible = "zmk,ext-power-generic";
+        init-delay-ms = <200>;
+        control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
+    };
+
+    backlight: gpioleds {
+        compatible = "gpio-leds";
+        gpio_led_0 {
+            gpios = <&arduino_header 12 GPIO_ACTIVE_HIGH>;
+        };
+    };
+
+    matrix_transform: matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <3>;
+        columns = <4>;
+
+        map = <
+        RC(0,0) RC(0,1)
+        RC(1,0) RC(1,1)
+        RC(2,0) RC(2,1) RC(2,2)
+        >;
+    };
+
+    direct_matrix_transform: direct_matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <3>;
+        columns = <4>;
+
+        map = <
+        RC(0,0) RC(0,1)
+        RC(0,2) RC(0,3)
+        RC(1,0) RC(1,1) RC(1,2)
+        >;
+    };
+
+
+    kscan_matrix_comp: kscan_matrix_comp {
+        compatible = "zmk,kscan-composite";
+        rows = <1>;
+        columns = <7>;
+
+        matrix {
+            kscan = <&kscan_matrix>;
+        };
+
+        toggle {
+            kscan = <&kscan_sp3t_toggle>;
+            row-offset = <2>;
+        };
+
+    };
+
+    kscan_direct_comp: kscan_direct_comp {
+        compatible = "zmk,kscan-composite";
+        status = "disabled";
+
+        matrix {
+            kscan = <&kscan_direct>;
+        };
+
+        toggle {
+            kscan = <&kscan_sp3t_toggle>;
+            row-offset = <1>;
+        };
+
+    };
+
+    kscan_matrix: kscan_matrix {
+        compatible = "zmk,kscan-gpio-matrix";
+
+        diode-direction = "col2row";
+
+        col-gpios
+        = <&arduino_header 10 GPIO_ACTIVE_HIGH>
+        , <&arduino_header 9  GPIO_ACTIVE_HIGH>
+        ;
+
+        row-gpios
+        = <&arduino_header 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&arduino_header 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        ;
+
+    };
+
+    kscan_direct: kscan_direct {
+        compatible = "zmk,kscan-gpio-direct";
+        status = "disabled";
+
+        input-gpios
+        = <&arduino_header 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        ;
+
+    };
+
+    kscan_sp3t_toggle: kscan_sp3t_toggle {
+        compatible = "zmk,kscan-gpio-direct";
+        toggle-mode;
+
+        input-gpios
+        = <&arduino_header 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&arduino_header 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        ;
+    };
+
+    encoder: encoder {
+        steps = <80>;
+        compatible = "alps,ec11";
+        a-gpios = <&arduino_header 15 GPIO_PULL_UP>;
+        b-gpios = <&arduino_header 14 GPIO_PULL_UP>;
+    };
+};

@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+ #include "zmk_uno.dtsi"
+
+ left_encoder: &encoder {
+    status = "disabled";
+ };
+
+ / {
+    chosen {
+        zmk,matrix-transform = &split_matrix_transform;
+    };
+
+    split_matrix_transform: split_matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <3>;
+        columns = <4>;
+
+        map = <
+        RC(0,0) RC(0,1)
+        RC(1,0) RC(1,1)
+        RC(2,0) RC(2,1) RC(2,2)
+        RC(3,0) RC(3,1)
+        RC(4,0) RC(4,1)
+        RC(5,0) RC(5,1) RC(5,2)
+        >;
+    };
+
+    split_direct_matrix_transform: split_direct_matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <3>;
+        columns = <4>;
+
+        map = <
+        RC(0,0) RC(0,1)
+        RC(0,2) RC(0,3)
+        RC(1,0) RC(1,1) RC(1,2)
+        RC(2,0) RC(2,1)
+        RC(2,2) RC(2,3)
+        RC(3,0) RC(3,1) RC(3,2)
+        >;
+    };
+
+    right_encoder: right_encoder {
+        steps = <80>;
+        status = "disabled";
+        compatible = "alps,ec11";
+        a-gpios = <&arduino_header 15 GPIO_PULL_UP>;
+        b-gpios = <&arduino_header 14 GPIO_PULL_UP>;
+    };
+
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&encoder &right_encoder>;
+        triggers-per-rotation = <20>;
+    };
+ };

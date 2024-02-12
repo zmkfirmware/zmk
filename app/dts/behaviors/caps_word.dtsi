@@ -8,9 +8,8 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ caps_word: behavior_caps_word {
+        /omit-if-no-ref/ caps_word: caps_word {
             compatible = "zmk,behavior-caps-word";
-            label = "CAPS_WORD";
             #binding-cells = <0>;
             continue-list = <UNDERSCORE BACKSPACE DELETE>;
         };

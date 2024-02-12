@@ -23,8 +23,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
     bool pressed = zmk_hid_is_pressed(binding->param1);
-    return ZMK_EVENT_RAISE(
-        zmk_keycode_state_changed_from_encoded(binding->param1, !pressed, event.timestamp));
+    return raise_zmk_keycode_state_changed_from_encoded(binding->param1, !pressed, event.timestamp);
 }
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
@@ -38,7 +37,7 @@ static const struct behavior_driver_api behavior_key_toggle_driver_api = {
 };
 
 #define KT_INST(n)                                                                                 \
-    DEVICE_DT_INST_DEFINE(n, behavior_key_toggle_init, NULL, NULL, NULL, APPLICATION,              \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_toggle_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_key_toggle_init, NULL, NULL, NULL, POST_KERNEL,            \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_toggle_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KT_INST)
