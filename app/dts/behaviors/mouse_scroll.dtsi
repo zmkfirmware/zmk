@@ -11,4 +11,9 @@
             acceleration-exponent = <0>;
         };
     };
+
+    msc_input_listener {
+        compatible = "zmk,input-listener";
+        device = <&msc>;
+    };
 };
