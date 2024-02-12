@@ -11,4 +11,9 @@
             acceleration-exponent = <1>;
         };
     };
+
+    mmv_input_listener {
+        compatible = "zmk,input-listener";
+        device = <&mmv>;
+    };
 };
