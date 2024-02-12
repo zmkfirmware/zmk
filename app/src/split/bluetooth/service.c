@@ -103,7 +103,7 @@ static void split_svc_data_xfer_callback(struct k_work *work) {
     LOG_DBG("Size correct, raising event");
     struct zmk_split_data_xfer_event event;
     memcpy(&event.data_xfer, &data_xfer_payload, sizeof(struct zmk_split_data_xfer_data));
-    ZMK_EVENT_RAISE(new_zmk_split_data_xfer_event(event));
+    raise_zmk_split_data_xfer_event(event);
 }
 
 static K_WORK_DEFINE(split_svc_data_xfer_work, split_svc_data_xfer_callback);
