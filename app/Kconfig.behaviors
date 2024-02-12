@@ -14,7 +14,6 @@ config ZMK_BEHAVIOR_MOUSE_KEY_PRESS
 
 config ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
     bool
-    default n
 
 config ZMK_BEHAVIOR_SENSOR_ROTATE
     bool

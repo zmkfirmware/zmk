@@ -3,7 +3,6 @@
 
 menuconfig ZMK_DISPLAY
     bool "Enable ZMK Display"
-    default n
     select DISPLAY
     select LVGL
     select LV_CONF_MINIMAL
