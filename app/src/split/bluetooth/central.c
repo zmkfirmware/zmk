@@ -455,10 +455,6 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
         slot->batt_lvl_read_params.single.offset = 0;
         bt_gatt_read(conn, &slot->batt_lvl_read_params);
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
-    }
-
-    bool subscribed = slot->run_behavior_handle && slot->subscribe_params.value_handle;
-
     } else if (bt_uuid_cmp(chrc_uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_DATA_XFER_UUID)) == 0) {
         LOG_DBG("Found data transfer handle");
         slot->discover_params.uuid = NULL;
@@ -918,7 +914,7 @@ int zmk_split_central_send_data(enum data_tag tag, uint8_t size, uint8_t *data) 
     return split_bt_data_xfer_payload(payload);
 }
 
-int zmk_split_bt_central_init(const struct device *_arg) {
+int zmk_split_bt_central_init(void) {
     k_work_queue_start(&split_central_split_run_q, split_central_split_run_q_stack,
                        K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
                        CONFIG_ZMK_BLE_THREAD_PRIORITY, NULL);
