@@ -177,7 +177,6 @@ config ZMK_BLE_EXPERIMENTAL_FEATURES
 
 config ZMK_BLE_PASSKEY_ENTRY
     bool "Require passkey entry on the keyboard to complete pairing"
-    default n
     select RING_BUFFER
 
 config BT_SMP_ALLOW_UNAUTH_OVERWRITE
@@ -216,7 +215,6 @@ config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
 
 config ZMK_BLE_CLEAR_BONDS_ON_START
     bool "Configuration that clears all bond information from the keyboard on startup."
-    default n
 
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
@@ -373,7 +371,6 @@ menu "Mouse Options"
 
 config ZMK_MOUSE
     bool "Enable ZMK mouse emulation"
-    default n
 
 #Mouse Options
 endmenu
@@ -382,7 +379,6 @@ menu "Power Management"
 
 config ZMK_BATTERY_REPORTING
     bool "Battery level detection/reporting"
-    default n
     select SENSOR
     select ZMK_LOW_PRIORITY_WORK_QUEUE
     imply BT_BAS if ZMK_BLE
@@ -616,7 +612,6 @@ config FPU
 
 config ZMK_WPM
     bool "Calculate WPM"
-    default n
 
 config ZMK_KEYMAP_SENSORS
     bool "Enable Keymap Sensors support"
