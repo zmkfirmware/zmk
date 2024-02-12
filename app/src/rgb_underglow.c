@@ -177,7 +177,7 @@ static void zmk_rgb_underglow_effect_swirl(void) {
     state.animation_step = state.animation_step % HUE_MAX;
 }
 
-static void zmk_rgb_underglow_effect_battery() {
+static void zmk_rgb_underglow_effect_battery(void) {
     struct zmk_led_hsb hsb = state.color;
 
     // Only set lights if battery information available, otherwise set to blue
