@@ -1,0 +1,21 @@
+description: |
+  Listener to subscribe to input events and send HID updates after processing
+
+compatible: "zmk,input-listener"
+
+properties:
+  device:
+    type: phandle
+    required: true
+  xy-swap:
+    type: boolean
+  x-invert:
+    type: boolean
+  y-invert:
+    type: boolean
+  scale-multiplier:
+    type: int
+    default: 1
+  scale-divisor:
+    type: int
+    default: 1
