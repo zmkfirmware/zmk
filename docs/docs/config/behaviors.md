@@ -224,7 +224,6 @@ Applies to: `compatible = "zmk,behavior-momentary-layer-lock"`
 
 | Property         | Type          | Description                                             |
 | ---------------- | ------------- | ------------------------------------------------------- |
-| `label`          | string        | Unique label for the node                               |
 | `#binding-cells` | int           | Must be `0`                                             |
 | `bindings`       | phandle array | A behavior to trigger if no momentary layers are active |
 

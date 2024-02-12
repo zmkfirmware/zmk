@@ -73,7 +73,7 @@ static int mo_lock_keymap_binding_released(struct zmk_behavior_binding *binding,
     static struct behavior_mo_lock_config behavior_mo_lock_config_##n = {                          \
         .fallback_binding =                                                                        \
             {                                                                                      \
-                .behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 0), label),            \
+                .behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(n, bindings, 0)),            \
                 .param1 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(n, bindings, 0, param1), (0),    \
                                       (DT_INST_PHA_BY_IDX(n, bindings, 0, param1))),               \
                 .param2 = COND_CODE_0(DT_INST_PHA_HAS_CELL_AT_IDX(n, bindings, 0, param2), (0),    \
@@ -82,9 +82,9 @@ static int mo_lock_keymap_binding_released(struct zmk_behavior_binding *binding,
     };                                                                                             \
     static struct behavior_mo_lock_data behavior_mo_lock_data_##n;                                 \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(n, behavior_mo_lock_init, NULL, &behavior_mo_lock_data_##n,              \
-                          &behavior_mo_lock_config_##n, APPLICATION,                               \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mo_lock_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_mo_lock_init, NULL, &behavior_mo_lock_data_##n,            \
+                            &behavior_mo_lock_config_##n, POST_KERNEL,                             \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mo_lock_driver_api);
 
 static const struct behavior_driver_api behavior_mo_lock_driver_api = {
     .binding_pressed = mo_lock_keymap_binding_pressed,
