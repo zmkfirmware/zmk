@@ -153,7 +153,7 @@ It is possible to use "toggle layer" to have keys that raise and lower the layer
 
 Even if you mostly use [momentary layers](#momentary-layer) instead of `&to` or `&tog`, it's occasionally useful to permanently enable a layer without needing to hold anything down. Instead of creating an additional `&tog` or `&to` binding for each such layer, you can use `&molock`.
 
-If `&molock` is pressed while any number of `&mo` bindings are being held, those momentary layers will not be deactivated when the corresponding `&mo` key is released. As a result, those momentary layers become "locked" until that `&mo` key is pressed and released a second time or the layer becomes deactivated by some other means (e.g. a `&tog` binding for that layer or a `&to` binding for a lower one).
+If `&molock` is pressed while any number of `&mo` bindings are being held, those momentary layers will not be deactivated when the corresponding `&mo` key is released. As a result, those momentary layers become "locked" until that `&mo` key is pressed and released a second time or the layer becomes deactivated by some other means (e.g. a `&tog` binding for that layer or a `&to` binding for any other one).
 
 If `&molock` is pressed while no `&mo` bindings are being held, it triggers a user-configurable fallback behavior. The default fallback behavior returns to the base layer (`&to 0`), deactivating any locked momentary layers in the process.
 
@@ -187,12 +187,9 @@ Lock a symbol layer:
 };
 ```
 
-:::info
 Holding down the leftmost key (`&mo SYMS`), then pressing and releasing the rightmost key (`&molock`), will lock the symbol layer. Even after releasing the leftmost key, the symbol layer remains active.
 
 To return to the base layer, press and release either the leftmost key (triggering the `&mo SYMS` behavior a second time) or the rightmost key (triggering the default fallback behavior for `&molock`).
-
-:::
 
 ### Configuration
 
@@ -210,7 +207,6 @@ You can also create any number of custom `&molock` behaviors by using `compatibl
 // Presses F if triggered while no momentary layers are active
 kp_molock: kp_molock {
     compatible = "zmk,behavior-momentary-layer-lock";
-    label = "KP_MOLOCK";
     bindings = <&kp F>;
 };
 ```
