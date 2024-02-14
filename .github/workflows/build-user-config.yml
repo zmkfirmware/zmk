@@ -68,7 +68,8 @@ jobs:
         run: |
           if [ -e zephyr/module.yml ]; then
             export zmk_load_arg=" -DZMK_EXTRA_MODULES='${GITHUB_WORKSPACE}'"
-            export new_tmp_dir=$(mktemp -d)
+            new_tmp_dir="${TMPDIR:-/tmp}/zmk-config"
+            mkdir -p "${new_tmp_dir}"
             echo "base_dir=${new_tmp_dir}" >> $GITHUB_ENV
           else
             echo "base_dir=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
