@@ -1,0 +1,11 @@
+file_format: "1"
+id: float
+name: float
+type: shield
+url: https://github.com/foostan/crkbd/
+requires: [nice_nano]
+features:
+  - keys
+siblings:
+  - float_left
+  - float_right
