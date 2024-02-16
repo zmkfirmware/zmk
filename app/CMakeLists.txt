@@ -5,7 +5,7 @@ set(CONFIG_APPLICATION_DEFINED_SYSCALL true)
 set(ZEPHYR_EXTRA_MODULES "${ZMK_EXTRA_MODULES};${CMAKE_CURRENT_SOURCE_DIR}/module;${CMAKE_CURRENT_SOURCE_DIR}/keymap-module")
 
 # Find Zephyr. This also loads Zephyr's build system.
-find_package(Zephyr REQUIRED HINTS ../zephyr)
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(zmk)
 
 if(CONFIG_ZMK_SLEEP)
