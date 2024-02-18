@@ -5,7 +5,7 @@ sidebar_label: Battery Level
 
 If your keyboard has a battery sensor, ZMK will report its battery level to the connected bluetooth host and show it on the keyboard's display, if it has one.
 
-For split keyboards, only the battery level of the central (usually left) side is reported over bluetooth.
+For split keyboards, only the battery level of the central (usually left) side is reported over bluetooth by default. ZMK can be [configured to report the battery levels for peripherals](../config/battery.md#peripheral-battery-monitoring), but not many host systems will display this information without additional configuration or the use of third party utilities.
 
 :::note
 
