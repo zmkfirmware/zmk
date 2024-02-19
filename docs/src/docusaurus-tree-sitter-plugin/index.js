@@ -6,6 +6,7 @@
 
 module.exports = function () {
   return {
+    name: "tree-sitter",
     configureWebpack(config, isServer) {
       let rules = [];
 

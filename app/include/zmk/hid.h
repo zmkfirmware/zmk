@@ -25,6 +25,22 @@
 #define ZMK_HID_KEYBOARD_NKRO_MAX_USAGE HID_USAGE_KEY_KEYPAD_EQUAL
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
+#define ZMK_HID_CONSUMER_MAX_USAGE 0xFF
+#elif IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL)
+#define ZMK_HID_CONSUMER_MAX_USAGE 0xFFF
+#else
+#error "Unknown consumer report usages configuration"
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+#define ZMK_HID_KEYBOARD_MAX_USAGE ZMK_HID_KEYBOARD_NKRO_MAX_USAGE
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+#define ZMK_HID_KEYBOARD_MAX_USAGE 0xFF
+#else
+#error "Unknown keyboard report usages configuration"
+#endif
+
 #define ZMK_HID_MOUSE_NUM_BUTTONS 0x05
 
 // See https://www.usb.org/sites/default/files/hid1_11.pdf section 6.2.2.4 Main Items
