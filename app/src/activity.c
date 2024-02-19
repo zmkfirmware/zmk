@@ -7,8 +7,6 @@
 #include <zephyr/device.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
-#include <zephyr/pm/device.h>
-#include <zephyr/pm/device_runtime.h>
 #include <zephyr/sys/poweroff.h>
 
 #include <zephyr/logging/log.h>
@@ -20,68 +18,13 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
 
+#include <zmk/pm.h>
+
 #include <zmk/activity.h>
 
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
 #include <zmk/usb.h>
 #endif
-
-// Reimplement some of the device work from Zephyr PM to work with the new `sys_poweroff` API.
-// TODO: Tweak this to smarter runtime PM of subsystems on sleep.
-
-#ifdef CONFIG_PM_DEVICE
-TYPE_SECTION_START_EXTERN(const struct device *, zmk_pm_device_slots);
-
-#if !defined(CONFIG_PM_DEVICE_RUNTIME_EXCLUSIVE)
-/* Number of devices successfully suspended. */
-static size_t zmk_num_susp;
-
-static int zmk_pm_suspend_devices(void) {
-    const struct device *devs;
-    size_t devc;
-
-    devc = z_device_get_all_static(&devs);
-
-    zmk_num_susp = 0;
-
-    for (const struct device *dev = devs + devc - 1; dev >= devs; dev--) {
-        int ret;
-
-        /*
-         * Ignore uninitialized devices, busy devices, wake up sources, and
-         * devices with runtime PM enabled.
-         */
-        if (!device_is_ready(dev) || pm_device_is_busy(dev) || pm_device_state_is_locked(dev) ||
-            pm_device_wakeup_is_enabled(dev) || pm_device_runtime_is_enabled(dev)) {
-            continue;
-        }
-
-        ret = pm_device_action_run(dev, PM_DEVICE_ACTION_SUSPEND);
-        /* ignore devices not supporting or already at the given state */
-        if ((ret == -ENOSYS) || (ret == -ENOTSUP) || (ret == -EALREADY)) {
-            continue;
-        } else if (ret < 0) {
-            LOG_ERR("Device %s did not enter %s state (%d)", dev->name,
-                    pm_device_state_str(PM_DEVICE_STATE_SUSPENDED), ret);
-            return ret;
-        }
-
-        TYPE_SECTION_START(zmk_pm_device_slots)[zmk_num_susp] = dev;
-        zmk_num_susp++;
-    }
-
-    return 0;
-}
-
-static void zmk_pm_resume_devices(void) {
-    for (int i = (zmk_num_susp - 1); i >= 0; i--) {
-        pm_device_action_run(TYPE_SECTION_START(zmk_pm_device_slots)[i], PM_DEVICE_ACTION_RESUME);
-    }
-
-    zmk_num_susp = 0;
-}
-#endif /* !CONFIG_PM_DEVICE_RUNTIME_EXCLUSIVE */
-#endif /* CONFIG_PM_DEVICE */
 
 bool is_usb_power_present(void) {
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)

@@ -64,7 +64,7 @@ static const struct behavior_driver_api behavior_soft_off_driver_api = {
     };                                                                                             \
     static struct behavior_soft_off_data bso_data_##n = {};                                        \
     BEHAVIOR_DT_INST_DEFINE(0, behavior_soft_off_init, NULL, &bso_data_##n, &bso_config_##n,       \
-                            APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
+                            POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
                             &behavior_soft_off_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(BSO_INST)
