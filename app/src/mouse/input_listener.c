@@ -154,7 +154,7 @@ static void input_handler(const struct input_listener_config *config,
 
         if (data->button_clear != 0) {
             for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
-                if ((data->button_set & BIT(i)) != 0) {
+                if ((data->button_clear & BIT(i)) != 0) {
                     zmk_hid_mouse_button_release(i);
                 }
             }
