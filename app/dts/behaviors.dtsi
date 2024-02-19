@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <behaviors/key_press.dtsi>
 #include <behaviors/key_toggle.dtsi>
 #include <behaviors/transparent.dtsi>
@@ -19,6 +25,4 @@
 #include <behaviors/key_repeat.dtsi>
 #include <behaviors/backlight.dtsi>
 #include <behaviors/macros.dtsi>
-#include <behaviors/mouse_key_press.dtsi>
 #include <behaviors/soft_off.dtsi>
-#include <behaviors/macros.dtsi>
