@@ -194,7 +194,7 @@ static void update_work_scheduling(const struct device *dev) {
     }
 }
 
-int zmk_input_synth_pointer_adjust_speed(const struct device *dev, int16_t dx, int16_t dy) {
+int behavior_input_two_axis_adjust_speed(const struct device *dev, int16_t dx, int16_t dy) {
     struct behavior_input_two_axis_data *data = dev->data;
 
     LOG_DBG("Adjusting: %d %d", dx, dy);
@@ -207,15 +207,6 @@ int zmk_input_synth_pointer_adjust_speed(const struct device *dev, int16_t dx, i
 
     return 0;
 }
-
-// static void process_key_state(const struct device *dev, int32_t val, bool pressed) {
-//     for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
-//         if (val & BIT(i)) {
-//             WRITE_BIT(val, i, 0);
-//             input_report_key(dev, INPUT_BTN_0 + i, pressed ? 1 : 0, val == 0, K_FOREVER);
-//         }
-//     }
-// }
 
 static int behavior_input_two_axis_init(const struct device *dev) {
     struct behavior_input_two_axis_data *data = dev->data;
@@ -236,7 +227,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     int16_t x = MOVE_X_DECODE(binding->param1);
     int16_t y = MOVE_Y_DECODE(binding->param1);
 
-    zmk_input_synth_pointer_adjust_speed(behavior_dev, x, y);
+    behavior_input_two_axis_adjust_speed(behavior_dev, x, y);
     return 0;
 }
 
@@ -249,7 +240,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
     int16_t x = MOVE_X_DECODE(binding->param1);
     int16_t y = MOVE_Y_DECODE(binding->param1);
 
-    zmk_input_synth_pointer_adjust_speed(behavior_dev, -x, -y);
+    behavior_input_two_axis_adjust_speed(behavior_dev, -x, -y);
     return 0;
 }
 
