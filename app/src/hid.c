@@ -249,8 +249,9 @@ static inline int check_keyboard_usage(zmk_key_t usage) {
 #endif
 
 #define TOGGLE_CONSUMER(match, val)                                                                \
-    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC),                           \
-                (if (val > 0xFF) { return -ENOTSUP; }), ())                                        \
+    if (val > ZMK_HID_CONSUMER_MAX_USAGE) {                                                        \
+        return -ENOTSUP;                                                                           \
+    }                                                                                              \
     for (int idx = 0; idx < CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE; idx++) {                          \
         if (consumer_report.body.keys[idx] != match) {                                             \
             continue;                                                                              \
