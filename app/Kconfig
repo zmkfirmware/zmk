@@ -258,6 +258,8 @@ rsource "src/split/Kconfig"
 #Basic Keyboard Setup
 endmenu
 
+rsource "src/studio/Kconfig"
+
 menu "Display/LED Options"
 
 rsource "src/display/Kconfig"

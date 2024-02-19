@@ -29,5 +29,13 @@ manifest:
           - openthread
           - edtt
           - trusted-firmware-m
+    - name: nanopb
+      revision: 65cbefb4695bc7af1cb733ced99618afb3586b20
+      path: modules/lib/nanopb
+      remote: zephyrproject-rtos
+    - name: zmk-studio-messages
+      revision: 42446798e357e8021c5202a01ea250a34a776e85
+      path: modules/msgs/zmk-studio-messages
+      remote: zmkfirmware
   self:
     west-commands: scripts/west-commands.yml
