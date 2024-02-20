@@ -433,9 +433,11 @@ config ZMK_PM_DEVICE_SUSPEND_RESUME
 
 config ZMK_PM_SOFT_OFF
     bool "Soft-off support"
+    depends on HAS_POWEROFF
     select ZMK_PM
     select PM_DEVICE
     select ZMK_PM_DEVICE_SUSPEND_RESUME
+    select POWEROFF
 
 config ZMK_GPIO_KEY_WAKEUP_TRIGGER
     bool "Hardware supported wakeup (GPIO)"
