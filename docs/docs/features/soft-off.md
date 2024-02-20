@@ -37,11 +37,28 @@ The simplest way to achieve this is with a push button between a GPIO pin and gr
 
 #### Matrix-Integrated Hardware Combo
 
-Another, more complicated option is to tie two of the switch outputs in the matrix together through an AND gate and connect that to the dedicated GPIO pin. This way you can use a key combination in your existing keyboard matrix to trigger soft on/off. To make this work best, the two switches used should both be driven by the same matrix input pin so that both will be active simultaneously on the AND gate inputs. The alternative is to use a combination of diodes and capacitors to ensure both pins are active/high at the same time even if scanning sets them high at different times. Support for this mode will be coming soon.
+Another, more complicated option is to tie two of the switch outputs in the matrix together through an AND gate and connect that to the dedicated GPIO pin. This way you can use a key combination in your existing keyboard matrix to trigger soft on/off. To make this work best, the two switches used should both be driven by the same matrix input pin so that both will be active simultaneously on the AND gate inputs. The alternative is to connect the switch to two MOSFETs that trigger both the regular matrix connect and the connect to the AND gate to ensure both pins are active/high at the same time even if scanning sets them high at different times.
 
 ### Firmware Changes
 
-Several items work together to make both triggering soft off properly, and setting up the device to _wake_ from soft off work as expected.
+Several items work together to make both triggering soft off properly, and setting up the device to _wake_ from soft off work as expected. In addition, some small changes are needed to keep the regular idle deep sleep functionality working.
+
+#### Wakeup Sources
+
+Zephyr has general support for the concept of a device as a "wakeup source", which ZMK has not previously used. Adding soft off requires properly updating the existing `kscan` devices with the `wakeup-source` property to ensure they will still work to wake the device from regular inactive deep sleep, e.g.:
+
+```
+/ {
+    kscan0: kscan_0 {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";
+        wakeup-source;
+
+        ...
+    };
+};
+```
 
 #### GPIO Key
 
@@ -61,55 +78,6 @@ Zephyr's basic GPIO Key concept is used to configure the GPIO pin that will be u
 GPIO keys are defined using child nodes under the `gpio-keys` compatible node. Each child needs just one property defined:
 
 - The `gpios` property should be a phandle-array with a fully defined GPIO pin and with the correct pull up/down and active high/low flags set. In the above example the soft on/off would be triggered by pulling the specified pin low, typically by pressing a switch that has the other leg connected to ground.
-
-#### Behavior Key
-
-Next, we will create a new "behavior key". Behavior keys are an easy way to tie a keymap behavior to a GPIO key outside of the normal keymap processing. They do _not_ do the normal keymap processing, so they are only suitable for use with basic behaviors, not complicated macros, hold-taps, etc.
-
-In this case, we will be creating a dedicated instance of the [Soft Off Behavior](../behaviors/soft-off.md) that will be used only for our hardware on/off button, then binding it to our key:
-
-```
-/ {
-    behaviors {
-        hw_soft_off: hw_soft_off {
-            compatible = "zmk,behavior-soft-off";
-            #binding-cells = <0>;
-            hold-time-ms = <5000>;
-        };
-    };
-
-    soft_off_behavior_key {
-        compatible = "zmk,gpio-key-behavior-trigger";
-        bindings = <&hw_soft_off>;
-        key = <&wakeup_key>;
-    };
-};
-```
-
-Here are the properties for the behavior key node:
-
-- The `compatible` property for the node must be `zmk,gpio-key-behavior-trigger`.
-- The `bindings` property is a phandle to the soft off behavior defined above.
-- The `key` property is a phandle to the GPIO key defined earlier.
-
-If you have set up your on/off to be controlled by a matrix-integrated combo, the behavior key will need to be integrated into your existing kscan setup. Full details to come when this is supported.
-
-#### Wakeup Sources
-
-Zephyr has general support for the concept of a device as a "wakeup source", which ZMK has not previously used. Adding soft off requires properly updating the existing `kscan` devices with the `wakeup-source` property, e.g.:
-
-```
-/ {
-    kscan0: kscan_0 {
-        compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
-        diode-direction = "col2row";
-        wakeup-source;
-
-        ...
-    };
-};
-```
 
 #### Soft Off Waker
 
@@ -148,3 +116,140 @@ Here are the properties for the node:
 
 - The `compatible` property for the node must be `zmk,soft-off-wakeup-sources`.
 - The `wakeup-sources` property is a [phandle array](../config/index.md#devicetree-property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
+
+#### Soft Off Behavior Instance
+
+To use the [soft off behavior](../behaviors/soft-off.md) outside of a keymap, add an instance of the behavior to your `.overlay`/`.dts` file:
+
+```
+/ {
+    behaviors {
+        hw_soft_off: hw_soft_off {
+            compatible = "zmk,behavior-soft-off";
+            #binding-cells = <0>;
+            hold-time-ms = <5000>;
+        };
+    };
+};
+```
+
+#### KScan Sideband Behavior
+
+The kscan sideband behavior driver will be used to trigger the [soft off behavior](../behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver. What kscan driver will vary for simple direct pin vs. matrix-integrated hardware combo.
+
+##### Simple Direct Pin
+
+With a simple direct pin setup, the The [direct kscan](../config/kscan.md) driver can be used with a GPIO key, to make a small "side matrix":
+
+```
+    soft_off_direct_scan: soft_off_direct_scan {
+        compatible = "zmk,kscan-gpio-direct";
+        input-keys = <&wakeup_key>;
+    };
+```
+
+With that in place, the kscan sideband behavior will wrap the new driver:
+
+```
+/ {
+    side_band_behavior_triggers: side_band_behavior_triggers {
+        compatible = "zmk,kscan-sideband-behaviors";
+
+        kscan = <&soft_off_direct_scan>;
+        wakeup-source;
+
+        soft_off {
+            column = <0>;
+            row = <0>;
+            bindings = <&hw_soft_off>;
+        };
+    };
+};
+```
+
+##### Matrix-Integrated Hardware Combo
+
+For this case, you will supplement the existing kscan matrix, by adding the additional pin as another entry in
+the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state. For example, for an existing matrix like:
+
+```
+    kscan: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+        label = "KSCAN";
+        debounce-press-ms = <1>;
+        debounce-release-ms = <5>;
+
+        diode-direction = "col2row";
+
+        col-gpios
+            = <&gpio0 12 (GPIO_ACTIVE_HIGH)>
+            , <&gpio1 9  (GPIO_ACTIVE_HIGH)>
+            ;
+        row-gpios
+            = <&gpio0 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+```
+
+you would add another row value:
+
+```
+    kscan: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+        label = "KSCAN";
+        debounce-press-ms = <1>;
+        debounce-release-ms = <5>;
+
+        diode-direction = "col2row";
+
+        col-gpios
+            = <&gpio0 12 (GPIO_ACTIVE_HIGH)>
+            , <&gpio1 9  (GPIO_ACTIVE_HIGH)>
+            ;
+        row-gpios
+            = <&gpio0 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 2  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+```
+
+With that in place, you would decorate the kscan driver:
+
+```
+    side_band_behavior_triggers: side_band_behavior_triggers {
+        compatible = "zmk,kscan-sideband-behaviors";
+        wakeup-source;
+        kscan = <&kscan>;
+        soft_off {
+            column = <0>;
+            row = <3>;
+            bindings = <&hw_soft_off>;
+        };
+    };
+```
+
+Critically, the `column` and `row` values would correspond to the location of the added entry.
+
+Lastly, which is critical, you would update the `zmk,kscan` chosen value to point to the new kscan instance:
+
+```
+    chosen {
+        ...
+        zmk,kscan = &side_band_behavior_triggers;
+        ...
+    };
+```
+
+Here are the properties for the kscan sideband behaviors node:
+
+- The `compatible` property for the node must be `zmk,kscan-sideband-behaviors`.
+- The `kscan` property is a phandle to the inner kscan instance that will have press/release events intercepted.
+
+The child nodes allow setting up the behaviors to invoke directly for a certain row and column:
+
+- The `row` and `column` properties set the values to intercept and trigger the behavior for.
+- The `bindings` property references the behavior that should be triggered when the matching row and column event triggers.
