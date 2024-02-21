@@ -19,4 +19,12 @@ properties:
 
   color_mode:
     type: uint8-array
-    default: [0x04]
+    default: [0x02]
+
+  rotation:
+    type: int
+    default: 0
+
+  reverse:
+    type: int
+    default: 0

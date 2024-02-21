@@ -22,7 +22,7 @@ LOG_MODULE_REGISTER(display_lpm009m360a, CONFIG_DISPLAY_LOG_LEVEL);
 #define LPM009M360A_EXIT_SLEEP_TIME K_MSEC(1)
 
 struct lpm009m360a_data {
-    uint8_t buf[72 * 144 / 2];
+    uint8_t buf[9 * 144];
 };
 
 struct lpm009m360a_config {
@@ -31,6 +31,8 @@ struct lpm009m360a_config {
     struct gpio_dt_spec disp;
     uint16_t height;
     uint16_t width;
+    int rotation;
+    int reverse;
 
     uint8_t color_mode[1];
 };
@@ -116,58 +118,40 @@ static int lpm009m360a_read(const struct device *dev, const uint16_t x, const ui
 #define RGB565_RGB111(s) ((s & 0x8000) >> 12) | ((s & 0x0400) >> 8) | ((s & 0x0010) >> 3)
 static int lpm009m360a_write(const struct device *dev, const uint16_t x, const uint16_t y,
                              const struct display_buffer_descriptor *desc, const void *buf) {
-    const uint16_t *source_buf = (uint16_t *)buf;
+    // const uint16_t *source_buf = (uint16_t *)buf;
     const uint8_t *source_buf8 = (uint8_t *)buf;
     const struct lpm009m360a_config *config = dev->config;
     struct lpm009m360a_data *data = dev->data;
     int ret = 0;
     uint8_t cmd = LPM009M360A_CMD_UPDATE | (config->color_mode[0] << 2);
     size_t len = (config->color_mode[0] == 0x02) ? 9 : 36;
-    uint8_t cnt = desc->height;
-    if (config->color_mode[0] == 0x04) {
-        if (x % 2) {
-            for (uint8_t i = 0; i < desc->height; i++) {
-                for (uint8_t j = 0; j < desc->width;) {
-                    data->buf[(y + i) * 36 + (x + j) / 2] &= 0xf0;
-                    data->buf[(y + i) * 36 + (x + j) / 2] |=
-                        (0x0f & (RGB565_RGB111(source_buf[(i * desc->width) + j])));
-                    j++;
-                    if (j < desc->width) {
-                        data->buf[(y + i) * 36 + (x + j) / 2] &= 0x0f;
-                        data->buf[(y + i) * 36 + (x + j) / 2] |=
-                            (0x0f & (RGB565_RGB111(source_buf[i * desc->width + j]))) << 4;
-                        j++;
-                    }
-                }
-            }
-        } else {
-            for (uint8_t i = 0; i < desc->height; i++) {
-                for (uint8_t j = 0; j < desc->width;) {
-                    data->buf[(y + i) * 36 + (x + j) / 2] &= 0x0f;
-                    data->buf[(y + i) * 36 + (x + j) / 2] |=
-                        (0x0f & (RGB565_RGB111(source_buf[(i * desc->width) + j]))) << 4;
-                    j++;
-                    if (j < desc->width) {
-                        data->buf[(y + i) * 36 + (x + j) / 2] &= 0xf0;
-                        data->buf[(y + i) * 36 + (x + j) / 2] |=
-                            (0x0f & (RGB565_RGB111(source_buf[i * desc->width + j])));
-                        j++;
-                    }
-                }
-            }
-        }
-    } else {
+    uint8_t cnt;
+    if (config->rotation == 0) {
+        cnt = desc->height;
         for (uint8_t i = 0; i < desc->height; i++) {
             for (uint8_t j = 0; j < desc->width; j++) {
                 data->buf[(y + i) * 9 + (x / 8 + j)] = source_buf8[i * 9 + j];
             }
         }
+        // LOG_INF("x:%d, y:%d, w:%d, h:%d", x, y, desc->width, desc->height);
+        for (uint8_t i = 0; i < cnt; i++) {
+            ret = lpm009m360a_transmit_hold(dev, cmd, i + y + 1,
+                                            (uint8_t *)&data->buf[(y + i) * len], len);
+        }
+    } else if (config->rotation == 1) {
+        cnt = desc->width;
+        for (uint8_t i = 0; i < (desc->height) / 8; i++) {
+            for (uint8_t j = 0; j < desc->width; j++) {
+                data->buf[(143 - x - j) * 9 + y / 8 + i] = source_buf8[i * desc->width + j];
+            }
+        }
+        // LOG_INF("x:%d, y:%d, w:%d, h:%d", x, y, desc->width, desc->height);
+        for (uint8_t i = 0; i < cnt; i++) {
+            ret = lpm009m360a_transmit_hold(dev, cmd, 143 - x - i + 1,
+                                            (uint8_t *)&data->buf[(143 - x - i) * len], len);
+        }
     }
-    // LOG_INF("x:%d, y:%d, w:%d, h:%d", x, y, desc->width, desc->height);
-    for (uint8_t i = 0; i < cnt; i++) {
-        ret = lpm009m360a_transmit_hold(dev, cmd, i + y + 1, (uint8_t *)&data->buf[(y + i) * len],
-                                        len);
-    }
+
     ret = lpm009m360a_transmit_hold(dev, LPM009M360A_CMD_NO_UPDATE, 0, NULL, 0);
     ret = lpm009m360a_transmit_hold(dev, LPM009M360A_CMD_NO_UPDATE, 0, NULL, 0);
     spi_release_dt(&config->bus);
@@ -192,13 +176,15 @@ static void lpm009m360a_get_capabilities(const struct device *dev,
     capabilities->x_resolution = config->width;
     capabilities->y_resolution = config->height;
 
-    capabilities->supported_pixel_formats = PIXEL_FORMAT_RGB_565 | PIXEL_FORMAT_MONO10;
-    if (config->color_mode[0] == 0x04) {
-        capabilities->current_pixel_format = PIXEL_FORMAT_RGB_565;
-    } else {
+    capabilities->supported_pixel_formats = PIXEL_FORMAT_MONO01 | PIXEL_FORMAT_MONO10;
+    if (config->reverse)
+        capabilities->current_pixel_format = PIXEL_FORMAT_MONO01;
+    else
         capabilities->current_pixel_format = PIXEL_FORMAT_MONO10;
+    if (config->rotation == 0)
         capabilities->screen_info = SCREEN_INFO_X_ALIGNMENT_WIDTH | SCREEN_INFO_MONO_MSB_FIRST;
-    }
+    else if (config->rotation == 1)
+        capabilities->screen_info = SCREEN_INFO_MONO_VTILED | SCREEN_INFO_MONO_MSB_FIRST;
     capabilities->current_orientation = DISPLAY_ORIENTATION_NORMAL;
 }
 
@@ -311,6 +297,8 @@ static const struct display_driver_api lpm009m360a_api = {
         .width = DT_INST_PROP(inst, width),                                                        \
         .height = DT_INST_PROP(inst, height),                                                      \
         .color_mode = DT_INST_PROP(inst, color_mode),                                              \
+        .rotation = DT_INST_PROP(inst, rotation),                                                  \
+        .reverse = DT_INST_PROP(inst, reverse),                                                    \
     };                                                                                             \
     static struct lpm009m360a_data lpm009m360a_data_##inst = {0};                                  \
                                                                                                    \
