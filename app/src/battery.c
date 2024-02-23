@@ -29,6 +29,13 @@ static bool last_battery_is_charging = false;
 
 uint8_t zmk_battery_state_of_charge(void) { return last_state_of_charge; }
 bool zmk_battery_is_charging(void) { return last_battery_is_charging; }
+bool zmk_is_externally_powered(void) {
+    bool ret = zmk_battery_is_charging();
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+    ret |= zmk_usb_is_powered();
+#endif
+    return ret;
+}
 
 #if DT_HAS_CHOSEN(zmk_battery)
 static const struct device *const battery = DEVICE_DT_GET(DT_CHOSEN(zmk_battery));
