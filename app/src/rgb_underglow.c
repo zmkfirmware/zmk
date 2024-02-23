@@ -82,7 +82,7 @@ static struct zmk_led_hsb hsb_scale_zero_max(struct zmk_led_hsb hsb) {
 }
 
 static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
-    float r, g, b;
+    float r = 0, g = 0, b = 0;
 
     uint8_t i = hsb.h / 60;
     float v = hsb.b / ((float)BRT_MAX);
