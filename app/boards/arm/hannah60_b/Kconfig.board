@@ -1,0 +1,6 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_HANNAH60_B
+	bool "Hannah60_B"
+	depends on SOC_NRF52840_QIAA

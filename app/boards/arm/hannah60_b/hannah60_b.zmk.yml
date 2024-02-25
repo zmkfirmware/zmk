@@ -1,0 +1,12 @@
+file_format: "1"
+id: hannah60b
+name: hannah60_b
+type: board
+arch: arm
+features:
+  - keys
+  - underglow
+outputs:
+  - usb
+  - ble
+url: https://mechlovin.studio/
