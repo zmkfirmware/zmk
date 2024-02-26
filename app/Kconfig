@@ -390,7 +390,7 @@ menu "Joystick Options"
 config ZMK_JOYSTICK
     bool "Enable ZMK joystick emulation"
 
-#Mouse Options
+#Joystick Options
 endmenu
 
 menu "Power Management"
