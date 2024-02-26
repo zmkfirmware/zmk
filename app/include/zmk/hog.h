@@ -15,3 +15,7 @@ int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *body);
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *body);
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+
+#if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
+int zmk_hog_send_joystick_report(struct zmk_hid_joystick_report_body *body);
+#endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)

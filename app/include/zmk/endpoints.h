@@ -75,3 +75,7 @@ int zmk_endpoints_send_mouse_report();
 #endif // IS_ENABLE(CONFIG_ZMK_MOUSE)
 
 void zmk_endpoints_clear_current(void);
+
+#if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
+int zmk_endpoints_send_joystick_report();
+#endif // IS_ENABLE(CONFIG_ZMK_JOYSTICK)

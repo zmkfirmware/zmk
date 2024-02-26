@@ -219,6 +219,10 @@ config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
     int "Max number of mouse HID reports to queue for sending over BLE"
     default 20
 
+config ZMK_BLE_JOYSTICK_REPORT_QUEUE_SIZE
+    int "Max number of joystick HID reports to queue for sending over BLE"
+    default 20
+
 config ZMK_BLE_CLEAR_BONDS_ON_START
     bool "Configuration that clears all bond information from the keyboard on startup."
 
@@ -377,6 +381,14 @@ menu "Mouse Options"
 
 config ZMK_MOUSE
     bool "Enable ZMK mouse emulation"
+
+#Mouse Options
+endmenu
+
+menu "Joystick Options"
+
+config ZMK_JOYSTICK
+    bool "Enable ZMK joystick emulation"
 
 #Mouse Options
 endmenu

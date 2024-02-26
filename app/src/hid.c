@@ -32,6 +32,13 @@ static struct zmk_hid_mouse_report mouse_report = {.report_id = ZMK_HID_REPORT_I
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
+#if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
+
+static struct zmk_hid_joystick_report joystick_report = {.report_id = ZMK_HID_REPORT_ID_JOYSTICK,
+                                                         .body = {.x = 0, .y = 0, .z = 0}};
+
+#endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)
+
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
 static int explicit_modifier_counts[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -434,18 +441,28 @@ void zmk_hid_mouse_clear(void) { memset(&mouse_report.body, 0, sizeof(mouse_repo
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) {
-    return &keyboard_report;
-}
+#if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
+void zmk_hid_joystick_set(uint8_t x, uint8_t y, uint8_t z) {
+    joystick_report.body.x = x;
+    joystick_report.body.y = y;
+    joystick_report.body.z = z;
+};
 
-struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) {
-    return &consumer_report;
+void zmk_hid_joystick_clear(void) {
+    memset(&joystick_report.body, 0, sizeof(joystick_report.body));
 }
+#endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)
+
+struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyboard_report; }
+
+struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) {
-    return &mouse_report;
-}
+struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_report; }
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+
+#if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
+struct zmk_hid_joystick_report *zmk_hid_get_joystick_report(void) { return &joystick_report; };
+#endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)
