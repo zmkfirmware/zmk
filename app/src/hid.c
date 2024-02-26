@@ -453,16 +453,24 @@ void zmk_hid_joystick_clear(void) {
 }
 #endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)
 
-struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyboard_report; }
+struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) {
+    return &keyboard_report;
+}
 
-struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
+struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) {
+    return &consumer_report;
+}
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_report; }
+struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) {
+    return &mouse_report;
+}
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
 #if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
-struct zmk_hid_joystick_report *zmk_hid_get_joystick_report(void) { return &joystick_report; };
+struct zmk_hid_joystick_report *zmk_hid_get_joystick_report(void) {
+    return &joystick_report;
+};
 #endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)
