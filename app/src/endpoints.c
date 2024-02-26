@@ -116,7 +116,9 @@ int zmk_endpoints_toggle_transport(void) {
     return zmk_endpoints_select_transport(new_transport);
 }
 
-struct zmk_endpoint_instance zmk_endpoints_selected(void) { return current_instance; }
+struct zmk_endpoint_instance zmk_endpoints_selected(void) {
+    return current_instance;
+}
 
 static int send_keyboard_report(void) {
     switch (current_instance.transport) {
