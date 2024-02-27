@@ -36,6 +36,19 @@ Failure to manage the profiles can result in unexpected/broken behavior with hos
 
 Management of the bluetooth in ZMK is accomplished using the [`&bt` behavior](../behaviors/bluetooth.md). Be sure to refer to that documentation to learn how to manage profiles, switch between connected hosts, etc.
 
+## Refreshing the HID Descriptor
+
+Enabling certain features or behaviors in ZMK changes the data structure that ZMK sends over USB or BLE to host devices.
+This in turn requires [HID report descriptors](https://docs.kernel.org/hid/hidintro.html) to be modified for the reports to be parsed correctly.
+Firmware changes that would modify the descriptor include the following:
+
+- Changing any of the settings under the [HID category](../config/system.md#hid), including enabling/disabling NKRO or HID indicators
+- Enabling mouse features, such as adding [mouse keys](../behaviors/mouse-emulation.md) to your keymap
+
+While the descriptor refresh happens on boot for USB, hosts will frequently cache this descriptor for BLE devices.
+In order to refresh this cache, you need to remove the keyboard from the host device, clear the profile associated with the host on the keyboard, then pair again.
+For Windows systems you might need to follow the instructions in [this troubleshooting section](#windows-connected-but-not-working) below.
+
 ## Troubleshooting
 
 ### Connectivity Issues
