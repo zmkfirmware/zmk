@@ -23,6 +23,12 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ### HID
 
+:::warning[Refreshing the HID descriptor]
+
+Making changes to any of the settings in this section modifies the HID report descriptor and requires it to be [refreshed](../features/bluetooth.md#refreshing-the-hid-descriptor).
+
+:::
+
 | Config                                | Type | Description                                                    | Default |
 | ------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
 | `CONFIG_ZMK_HID_INDICATORS`           | bool | Enable reciept of HID/LED indicator state from connected hosts | n       |

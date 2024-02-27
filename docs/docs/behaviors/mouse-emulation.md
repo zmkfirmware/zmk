@@ -8,7 +8,12 @@ sidebar_label: Mouse Emulation
 Mouse emulation behaviors send mouse events. Currently, only mouse button presses are supported, but movement
 and scroll action support is planned for the future.
 
-Whenever the Mouse Emulation feature is turned on or off, the HID protocol used to communicate events to hosts changes. Unfortunately, those changes are not always detected automatically, and might require re-pairing your keyboard to your devices to work over bluetooth. If mouse behaviors are still not recognized by your device after doing that, you can try [these troubleshooting steps](../features/bluetooth.md#windows-connected-but-not-working).
+:::warning[Refreshing the HID descriptor]
+
+Enabling or disabling the mouse emulation feature modifies the HID report descriptor and requires it to be [refreshed](../features/bluetooth.md#refreshing-the-hid-descriptor).
+The mouse functionality will not work over BLE until that is done.
+
+:::
 
 ## Configuration Option
 
