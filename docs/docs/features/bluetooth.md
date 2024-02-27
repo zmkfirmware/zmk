@@ -56,18 +56,6 @@ This setting can also improve the connection strength between the keyboard halve
 
 If you want to test bluetooth output on your keyboard and are powering it through the USB connection rather than a battery, you will be able to pair with a host device but may not see keystrokes sent. In this case you need to use the [output selection behavior](../behaviors/outputs.md) to prefer sending keystrokes over bluetooth rather than USB. This might be necessary even if you are not powering from a device capable of receiving USB inputs, such as a USB charger.
 
-## Known Issues
-
-There are a few known issues related to BLE and ZMK:
-
-### Windows Battery Reporting
-
-There is a known issue with Windows failing to update the battery information after connecting to a ZMK keyboard. You can work around this Windows bug by overriding a [Bluetooth config variable](../config/bluetooth.md) to force battery notifications even if a host neglects to subscribe to them:
-
-```ini
-CONFIG_BT_GATT_ENFORCE_SUBSCRIPTION=n
-```
-
 ### macOS Connected But Not Working
 
 If you attempt to pair a ZMK keyboard from macOS in a way that causes a bonding issue, macOS may report the keyboard as connected, but fail to actually work. If this occurs:
