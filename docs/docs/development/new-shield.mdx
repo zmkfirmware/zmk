@@ -348,6 +348,8 @@ Here is an example for the [nice60](https://github.com/Nicell/nice60), which use
         zmk,matrix-transform = &default_transform;
     };
 
+    /* define kscan node with label `kscan0`... */
+
     default_transform: keymap_transform_0 {
         compatible = "zmk,matrix-transform";
         columns = <8>;
@@ -365,6 +367,9 @@ RC(6,0)       RC(6,1) RC(6,2) RC(6,3) RC(5,3) RC(6,4) RC(5,4) RC(6,5) RC(5,5) RC
 RC(7,0)    RC(7,1)   RC(7,2)                     RC(7,3)                    RC(7,5)    RC(7,6)    RC(6,7)    RC(7,7)
         >;
     };
+
+    /* potentially other overlay nodes... */
+};
 ```
 
 Some important things to note:
