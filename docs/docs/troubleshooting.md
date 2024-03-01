@@ -42,7 +42,7 @@ If you are reviewing these errors in the GitHub Actions tab, they can be found i
 
 #### Keymap error
 
-If you get an error stating `Keymap node not found, check a keymap is available and is has compatible = "zmk,keymap" set` this is an indication that the build process cannot find the keymap. Double check that the `<keyboard>.keymap` file is present and has been discovered by the build process. This can be checked by looking for a line in the build log stating `-- Using keymap file: /path/to/keymap/file/<keyboard>.keymap`. Inside the keymap file ensure the keymap node has `compatible = zmk,keymap` and it's not misspelled. For more information see the [Keymap](features/keymaps.mdx) and [Config](config) documentation.
+If you get an error stating `Keymap node not found, check a keymap is available and is has compatible = "zmk,keymap" set` this is an indication that the build process cannot find the keymap. Double check that the `<keyboard>.keymap` file is present and has been discovered by the build process. This can be checked by looking for a line in the build log stating `-- Using keymap file: /path/to/keymap/file/<keyboard>.keymap`. Inside the keymap file ensure the keymap node has `compatible = zmk,keymap` and it's not misspelled. For more information see the [Keymap](features/keymaps.mdx) and [Config](config/index.md) documentation.
 
 #### devicetree error
 
