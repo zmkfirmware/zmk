@@ -1,11 +1,6 @@
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-config ZMK_BEHAVIOR_BACKLIGHT
-    bool
-    default y
-    depends on DT_HAS_ZMK_BEHAVIOR_BACKLIGHT_ENABLED && ZMK_BACKLIGHT
-
 config ZMK_BEHAVIOR_BLUETOOTH
     bool
     default y
@@ -15,11 +10,6 @@ config ZMK_BEHAVIOR_CAPS_WORD
     bool
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_CAPS_WORD_ENABLED
-
-config ZMK_BEHAVIOR_EXT_POWER
-    bool
-    default y
-    depends on DT_HAS_ZMK_BEHAVIOR_EXT_POWER_ENABLED && ZMK_EXT_POWER
 
 config ZMK_BEHAVIOR_HOLD_TAP
     bool
@@ -71,16 +61,6 @@ config ZMK_BEHAVIOR_OUTPUTS
     bool
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_OUTPUTS_ENABLED
-
-config ZMK_BEHAVIOR_RESET
-    bool
-    default y
-    depends on DT_HAS_ZMK_BEHAVIOR_RESET_ENABLED
-
-config ZMK_BEHAVIOR_RGB_UNDERGLOW
-    bool
-    default y
-    depends on DT_HAS_ZMK_BEHAVIOR_RGB_UNDERGLOW_ENABLED && ZMK_RGB_UNDERGLOW
 
 config ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
     bool
