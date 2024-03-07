@@ -27,6 +27,10 @@ Variations of the warnings shown below occur when flashing the `<firmware>.uf2` 
 
 macOS 13.0 (Ventura) Finder may report an error code 100093 when copying `<firmware>.uf2` files into microcontrollers. This bug is limited to the operating system's Finder. You can work around it by copying on Terminal command line or use a third party file manager. Issue is fixed in macOS version 13.1.
 
+### macOS Sonoma error
+
+macOS 14.x (Sonoma) Finder may report an "Error code -36" when copying `<firmware>.uf2` files into microcontrollers. A similar "fcopyfile failed: Input/output error" will also be reported when copying is performed using Terminal command line. These errors can be ignored because they are reported when the bootloader disconnects automatically after the uf2 file is copied successfully.
+
 ### CMake Error
 
 An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
