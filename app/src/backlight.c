@@ -9,6 +9,7 @@
 #include <zephyr/drivers/led.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
+#include <zephyr/sys/util.h>
 
 #include <zephyr/logging/log.h>
 #include <zephyr/settings/settings.h>
@@ -30,7 +31,23 @@ static const struct device *const backlight_dev = DEVICE_DT_GET(DT_CHOSEN(zmk_ba
 #define CHILD_COUNT(...) +1
 #define DT_NUM_CHILD(node_id) (DT_FOREACH_CHILD(node_id, CHILD_COUNT))
 
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_MAP)
+BUILD_ASSERT(DT_HAS_CHOSEN(zmk_backlight_map),
+             "CONFIG_ZMK_BACKLIGHT_MAP is enabled but no zmk,backlight-map chosen node found");
+
+#define BACKLIGHT_NUM_LEDS DT_PROP_LEN(DT_CHOSEN(zmk_backlight_map), led_channels)
+
+#define GET_LED_CHANNEL_INDEX(idx, node_id) DT_PROP(DT_PHANDLE_BY_IDX(node_id, led_channels, idx), index)
+
+static uint32_t backlight_map_array[] = {
+    LISTIFY(BACKLIGHT_NUM_LEDS, GET_LED_CHANNEL_INDEX, (,), DT_CHOSEN(zmk_backlight_map))
+};
+
+#else
+
 #define BACKLIGHT_NUM_LEDS (DT_NUM_CHILD(DT_CHOSEN(zmk_backlight)))
+
+#endif
 
 #define BRT_MAX 100
 
@@ -44,8 +61,17 @@ static struct backlight_state state = {.brightness = CONFIG_ZMK_BACKLIGHT_BRT_ST
 
 static int zmk_backlight_update(void) {
     uint8_t brt = zmk_backlight_get_brt();
+    LOG_DBG("Length: %d", BACKLIGHT_NUM_LEDS);
     LOG_DBG("Update backlight brightness: %d%%", brt);
-
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_MAP)
+    for (int i = 0; i < BACKLIGHT_NUM_LEDS; i++) {
+        int rc = led_set_brightness(backlight_dev, backlight_map_array[i], brt);
+        if (rc != 0) {
+            LOG_ERR("Failed to update backlight LED %d: %d", i, rc);
+            return rc;
+        }
+    }
+#else
     for (int i = 0; i < BACKLIGHT_NUM_LEDS; i++) {
         int rc = led_set_brightness(backlight_dev, i, brt);
         if (rc != 0) {
@@ -53,6 +79,7 @@ static int zmk_backlight_update(void) {
             return rc;
         }
     }
+#endif
     return 0;
 }
 
