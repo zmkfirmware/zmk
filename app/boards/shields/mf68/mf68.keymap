@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/ext_power.h>
+
+/ {
+	keymap0: keymap {
+		compatible = "zmk,keymap";
+
+// ,--------------------------------------------------------------------------------------------------------.
+// |GRESC|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   | |INSERT| PGUP |
+// | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |    \    | |DELETE| PGDN |
+// | CAPS  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |               |
+// |  SHIFT  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |      SHIFT       | |  UP  |      |
+// |  CTRL |  WIN  |  ALT  |            SPACE               |  ALT  |  FN   |  CTRL |  | LEFT | DOWN |RIGHT |
+// `--------------------------------------------------------------------------------------------------------'
+
+		default_layer {
+			bindings = <
+	&gresc    &kp N1   &kp N2   &kp N3 &kp N4 &kp N5 &kp N6 &kp N7   &kp N8    &kp N9    &kp N0    &kp MINUS &kp EQUAL &kp BSPC    &kp INS  &kp PG_UP
+	&kp TAB   &kp Q    &kp W    &kp E  &kp R  &kp T  &kp Y  &kp U    &kp I     &kp O     &kp P     &kp LBKT  &kp RBKT  &kp BSLH    &kp DEL  &kp PG_DN
+	&kp CLCK  &kp A    &kp S    &kp D  &kp F  &kp G  &kp H  &kp J    &kp K     &kp L     &kp SEMI  &kp SQT   &kp RET
+	&kp LSHFT &kp Z    &kp X    &kp C  &kp V  &kp B  &kp N  &kp M    &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT                       &kp UP
+	&kp LCTRL &kp LGUI &kp LALT        &kp SPACE                                         &kp RALT  &mo 1     &kp RCTRL     &kp LEFT &kp DOWN &kp RIGHT
+			>;
+		};
+
+// ,--------------------------------------------------------------------------------------------------------.
+// |GRAVE| F1  | F2  | F3  | F4  | F5  | F6  | F7  | F8  | F9  | F10 | F11 | F12 |BOOTLOADER| | PLAY | HOME |
+// | TAB  | USB | BLE | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |  RESET  | | PRTSC| END  |
+// | CAPS  | BT1 | BT2 | BT3 | BT4 | --- | --- | --- | --- | --- | --- | --- |     ENTER    |               |
+// |  SHIFT  |EXTPW|BTCLR| --- | --- | --- | --- | --- | --- | --- | --- |      SHIFT       | |  UP  |      |
+// |  CTRL |  WIN  |  ALT  |            SPACE               |  ALT  |  FN   |  CTRL |  | LEFT | DOWN |RIGHT |
+// `--------------------------------------------------------------------------------------------------------'
+
+		fn_layer {
+			bindings = <
+	&kp GRAVE &kp F1            &kp F2       &kp F3       &kp F4       &kp F5 &kp F6 &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &bootloader    &kp K_PP  &kp HOME
+	&trans    &out OUT_USB      &out OUT_BLE &none        &none        &none  &none  &none  &none  &none  &none   &none   &none   &reset         &kp PSCRN &kp END
+	&trans    &bt BT_SEL 0      &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &none  &none  &none  &none  &none  &none   &none   &trans
+	&trans    &ext_power EP_TOG &bt BT_CLR   &none        &none        &none  &none  &none  &none  &none  &none   &trans                         &trans
+	&trans    &trans            &trans                    &trans                                   &trans &trans  &trans                  &trans &trans    &trans
+			>;
+		};
+	};
+};
