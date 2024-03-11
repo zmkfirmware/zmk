@@ -157,15 +157,17 @@ if [ "$keyboard_shield" == "y" ]; then
 
     if [ -n "${boards_revisions[$board_index]}" ]; then
         read -a _valid_revisions <<< "${boards_revisions[$board_index]}"
+
+        _rev_choices=("${_valid_revisions[@]}")
         for (( _i=0; _i<${#_valid_revisions}; _i++ )); do
             if [ "${boards_default_revision[board_index]}" = "${_valid_revisions[_i]}" ]; then
-                _valid_revisions[_i]+=" (default)"
+                _rev_choices[_i]+=" (default)"
             fi
         done
 
         echo ""
         echo "MCU Board Revision:"
-        select opt in "${_valid_revisions[@]}" "Quit"; do
+        select opt in "${_rev_choices[@]}" "Quit"; do
             case "$REPLY" in
                 ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
 
