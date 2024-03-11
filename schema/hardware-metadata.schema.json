@@ -137,15 +137,6 @@
         "type": {
           "type": "string",
           "const": "interconnect"
-        },
-        "revisions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/revision"
-          }
-        },
-        "default_revision": {
-          "$ref": "#/$defs/revision"
         }
       }
     },
@@ -277,15 +268,6 @@
         },
         "exposes": {
           "$ref": "#/$defs/interconnects"
-        },
-        "revisions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/revision"
-          }
-        },
-        "default_revision": {
-          "$ref": "#/$defs/revision"
         }
       }
     }
