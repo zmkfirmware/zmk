@@ -32,9 +32,8 @@
     pinctrl-names = "default", "sleep";
 
     builtin_fuel_gauge: max17048@36 {
-        compatible = "maxim,max17048";
+        compatible = "zmk,maxim-max17048";
         status = "okay";
-        label = "max17048";
         reg = <0x36>;
     };
 };
