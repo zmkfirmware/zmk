@@ -166,20 +166,22 @@ if [ "$keyboard_shield" == "y" ]; then
         echo ""
         echo "MCU Board Revision:"
         select opt in "${_valid_revisions[@]}" "Quit"; do
-            ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
+            case "$REPLY" in
+                ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
 
-            $(( ${#_valid_revisions[@]}+1 )) ) echo "Goodbye!"; exit 1;;
-            *)
-                if [ $REPLY -gt $(( ${#_valid_revisions[@]}+1 )) ] || [ $REPLY -lt 0 ]; then
-                    echo "Invalid option. Try another one."
-                    continue
-                fi
+                $(( ${#_valid_revisions[@]}+1 )) ) echo "Goodbye!"; exit 1;;
+                *)
+                    if [ $REPLY -gt $(( ${#_valid_revisions[@]}+1 )) ] || [ $REPLY -lt 0 ]; then
+                        echo "Invalid option. Try another one."
+                        continue
+                    fi
 
-                _rev_index=$(( $REPLY-1 ))
-                board="${board_ids[$board_index]}@${_valid_revisions[_rev_index]}"
-                boards=( "${board}" )
-                break
-            ;;
+                    _rev_index=$(( $REPLY-1 ))
+                    board="${board_ids[$board_index]}@${_valid_revisions[_rev_index]}"
+                    boards=( "${board}" )
+                    break
+                ;;
+            esac
         done
     fi
 else
