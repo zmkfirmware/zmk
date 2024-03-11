@@ -161,13 +161,15 @@ if ($keyboard_type -eq "shield") {
 
     if ($($($boards_revisions.values)[$choice]).count -gt 0) {
         $valid_revisions = $($($boards_revisions.values)[$choice])
+        $revision_choices = @() + $valid_revisions
+
         for ($i = 0; $i -lt $valid_revisions.count; $i += 1) {
             if ($valid_revisions[$i] -eq $($($boards_default_revision.values)[$choice])) {
-                $valid_revisions[$i] += " (default)"
+                $revision_choices[$i] += " (default)"
             }
         }
 
-        $revision_choice = Get-Choice-From-Options -Options $valid_revisions -Prompt $prompt
+        $revision_choice = Get-Choice-From-Options -Options $revision_choices -Prompt $prompt
         $board = $board + "@" + $valid_revisions[$revision_choice]
         $boards = ( $board )
     }
