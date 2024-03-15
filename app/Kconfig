@@ -383,6 +383,20 @@ config ZMK_BATTERY_REPORTING
     select ZMK_LOW_PRIORITY_WORK_QUEUE
     imply BT_BAS if ZMK_BLE
 
+if ZMK_BATTERY_REPORTING
+
+choice ZMK_BATTERY_REPORTING_FETCH_MODE
+    prompt "Battery Reporting Fetch Mode"
+
+config ZMK_BATTERY_REPORTING_FETCH_MODE_STATE_OF_CHARGE
+    bool "State of charge"
+
+config ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE
+    bool "Lithium Voltage"
+
+endchoice
+endif
+
 config ZMK_IDLE_TIMEOUT
     int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
     default 30000
