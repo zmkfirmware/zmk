@@ -18,11 +18,12 @@ In the deep sleep state, the keyboard additionally disconnects from Bluetooth an
 
 Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 
-| Config                          | Type | Description                                           | Default |
-| ------------------------------- | ---- | ----------------------------------------------------- | ------- |
-| `CONFIG_ZMK_IDLE_TIMEOUT`       | int  | Milliseconds of inactivity before entering idle state | 30000   |
-| `CONFIG_ZMK_SLEEP`              | bool | Enable deep sleep support                             | n       |
-| `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT` | int  | Milliseconds of inactivity before entering deep sleep | 900000  |
+| Config                                 | Type | Description                                           | Default |
+| -------------------------------------- | ---- | ----------------------------------------------------- | ------- |
+| `CONFIG_ZMK_IDLE_TIMEOUT`              | int  | Milliseconds of inactivity before entering idle state | 30000   |
+| `CONFIG_ZMK_SLEEP`                     | bool | Enable deep sleep support                             | n       |
+| `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT`        | int  | Milliseconds of inactivity before entering deep sleep | 900000  |
+| `CONFIG_ZMK_AWAKE_WHILE_BLE_CONNECTED` | bool | Whether to stay awake while BLE is connected          | n       |
 
 ## External Power Control
 
