@@ -45,8 +45,18 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
     struct behavior_soft_off_data *data = dev->data;
     const struct behavior_soft_off_config *config = dev->config;
 
-    if (config->hold_time_ms == 0 || (k_uptime_get() - data->press_start) >= config->hold_time_ms) {
+    if (config->hold_time_ms == 0) {
+        LOG_DBG("No hold time set, triggering soft off");
         zmk_pm_soft_off();
+    } else {
+        uint32_t hold_time = k_uptime_get() - data->press_start;
+
+        if (hold_time > config->hold_time_ms) {
+            zmk_pm_soft_off();
+        } else {
+            LOG_INF("Not triggering soft off: held for %d and hold time is %d", hold_time,
+                    config->hold_time_ms);
+        }
     }
 
     return ZMK_BEHAVIOR_OPAQUE;
