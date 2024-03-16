@@ -24,26 +24,24 @@ For existing designs, using soft off is as simple as placing the [Soft Off Behav
 
 You can then wake up the keyboard by pressing the reset button once, and repeating this for each side for split keyboards.
 
-## Adding Dedicated Soft On/Off GPIO Pin To New Designs
-
-### Hardware Design
+## Hardware Changes For New Designs
 
 ZMK's dedicated soft on/off pin feature requires a dedicated GPIO pin to be used to trigger powering off, and to wake the core from the
 soft off state when it goes active again later.
 
-#### Simple Direct Pin
+### Simple Direct Pin
 
 The simplest way to achieve this is with a push button between a GPIO pin and ground.
 
-#### Matrix-Integrated Hardware Combo
+### Matrix-Integrated Hardware Combo
 
 Another, more complicated option is to tie two of the switch outputs in the matrix together through an AND gate and connect that to the dedicated GPIO pin. This way you can use a key combination in your existing keyboard matrix to trigger soft on/off. To make this work best, the two switches used should both be driven by the same matrix input pin so that both will be active simultaneously on the AND gate inputs. The alternative is to connect the switch to two MOSFETs that trigger both the regular matrix connect and the connect to the AND gate to ensure both pins are active/high at the same time even if scanning sets them high at different times.
 
-### Firmware Changes
+## Firmware Changes For New Designs
 
 Several items work together to make both triggering soft off properly, and setting up the device to _wake_ from soft off work as expected. In addition, some small changes are needed to keep the regular idle deep sleep functionality working.
 
-#### Wakeup Sources
+### Wakeup Sources
 
 Zephyr has general support for the concept of a device as a "wakeup source", which ZMK has not previously used. Adding soft off requires properly updating the existing `kscan` devices with the `wakeup-source` property to ensure they will still work to wake the device from regular inactive deep sleep, e.g.:
 
@@ -60,7 +58,7 @@ Zephyr has general support for the concept of a device as a "wakeup source", whi
 };
 ```
 
-#### GPIO Key
+### GPIO Key
 
 Zephyr's basic GPIO Key concept is used to configure the GPIO pin that will be used for both triggering soft off and waking the device later. Here is an example for a keyboard with a dedicated on/off push button that is a direct wire between the GPIO pin and ground:
 
@@ -79,7 +77,7 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
 
 - The `gpios` property should be a phandle-array with a fully defined GPIO pin and with the correct pull up/down and active high/low flags set. In the above example the soft on/off would be triggered by pulling the specified pin low, typically by pressing a switch that has the other leg connected to ground.
 
-#### Soft Off Waker
+### Soft Off Waker
 
 Next, we need to add another device which will be enabled only when the keyboard is going into soft off state, and will configure the previously declared GPIO key with the correct interrupt configuration to wake the device from soft off once it is pressed.
 
@@ -99,7 +97,7 @@ Here are the properties for the node:
 - The `compatible` property for the node must be `zmk,gpio-key-wakeup-trigger`.
 - The `trigger` property is a phandle to the GPIO key defined earlier.
 - The `wakeup-source` property signals to Zephyr this device should not be suspended during the shutdown procedure.
-- An optional `output-gpios` property contains a list of GPIO pins (including the appropriate flags) to set active before going into power off, if needed to ensure the GPIO pin will trigger properly to wake the keyboard. This is only needed for matrix integrated combos. For those keyboards, the list should include the matrix output needs needed so the combo hardware is properly "driven" when the keyboard is off.
+- An optional `extra-gpios` property contains a list of GPIO pins (including the appropriate flags) to set active before going into power off, if needed to ensure the GPIO pin will trigger properly to wake the keyboard. This is only needed for matrix integrated combos. For those keyboards, the list should include the matrix output needs needed so the combo hardware is properly "driven" when the keyboard is off.
 
 Once that is declared, we will list it in an additional configuration section so that the ZMK soft off process knows it needs to enable this device as part of the soft off processing:
 
@@ -117,7 +115,7 @@ Here are the properties for the node:
 - The `compatible` property for the node must be `zmk,soft-off-wakeup-sources`.
 - The `wakeup-sources` property is a [phandle array](../config/index.md#devicetree-property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
 
-#### Soft Off Behavior Instance
+### Soft Off Behavior Instance
 
 To use the [soft off behavior](../behaviors/soft-off.md) outside of a keymap, add an instance of the behavior to your `.overlay`/`.dts` file:
 
@@ -133,11 +131,11 @@ To use the [soft off behavior](../behaviors/soft-off.md) outside of a keymap, ad
 };
 ```
 
-#### KScan Sideband Behavior
+### KScan Sideband Behavior
 
 The kscan sideband behavior driver will be used to trigger the [soft off behavior](../behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver. What kscan driver will vary for simple direct pin vs. matrix-integrated hardware combo.
 
-##### Simple Direct Pin
+#### Simple Direct Pin
 
 With a simple direct pin setup, the The [direct kscan](../config/kscan.md) driver can be used with a GPIO key, to make a small "side matrix":
 
@@ -167,7 +165,7 @@ With that in place, the kscan sideband behavior will wrap the new driver:
 };
 ```
 
-##### Matrix-Integrated Hardware Combo
+#### Matrix-Integrated Hardware Combo
 
 For this case, you will supplement the existing kscan matrix, by adding the additional pin as another entry in
 the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state. For example, for an existing matrix like:
