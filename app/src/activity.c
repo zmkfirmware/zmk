@@ -135,7 +135,11 @@ void activity_work_handler(struct k_work *work) {
 #if IS_ENABLED(CONFIG_ZMK_AWAKE_WHILE_BLE_CONNECTED)
         // if user inactive and no USB
         // keyboard will sleep as soon as BLE is disconnected
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
         && !zmk_ble_active_profile_is_connected()
+#else
+        && !zmk_split_bt_peripheral_is_connected()
+#endif
 #endif
     ) {
         // Put devices in suspend power mode before sleeping
