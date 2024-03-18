@@ -26,7 +26,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/usb.h>
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_AWAKE_WHILE_BLE_CONNECTED)
+#if IS_ENABLED(CONFIG_ZMK_NO_SLEEP_WHILE_BLE_CONNECTED)
 #include <zmk/ble.h>
 #endif
 
@@ -130,11 +130,11 @@ void activity_work_handler(struct k_work *work) {
     int32_t current = k_uptime_get();
     int32_t inactive_time = current - activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
-    if (inactive_time > MAX_SLEEP_MS &&
-        !is_usb_power_present()
-#if IS_ENABLED(CONFIG_ZMK_AWAKE_WHILE_BLE_CONNECTED)
-        // if user inactive and no USB
-        // keyboard will sleep as soon as BLE is disconnected
+    if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()
+#if IS_ENABLED(CONFIG_ZMK_NO_SLEEP_WHILE_BLE_CONNECTED)
+    /* if user inactive and USB is not connected,
+     * keyboard will sleep as soon as BLE is disconnected
+     */
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
         && !zmk_ble_active_profile_is_connected()
 #else

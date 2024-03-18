@@ -402,8 +402,8 @@ config ZMK_IDLE_SLEEP_TIMEOUT
     int "Milliseconds of inactivity before entering deep sleep"
     default 900000
 
-config ZMK_AWAKE_WHILE_BLE_CONNECTED
-    bool "Whether to stay awake while BLE is connected"
+config ZMK_NO_SLEEP_WHILE_BLE_CONNECTED
+    bool "Prevent deep sleep while BLE is connected"
     depends on ZMK_BLE
 
 #ZMK_SLEEP
