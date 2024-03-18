@@ -40,6 +40,10 @@ West build errors usually indicate syntax problems in the `<keyboard>.keymap` fi
 If you are reviewing these errors in the GitHub Actions tab, they can be found in the `West Build` step of the build process.
 :::
 
+#### Keymap error
+
+If you get an error stating `Keymap node not found, check a keymap is available and is has compatible = "zmk,keymap" set` this is an indication that the build process cannot find the keymap. Double check that the `<keyboard>.keymap` file is present and has been discovered by the build process. This can be checked by looking for a line in the build log stating `-- Using keymap file: /path/to/keymap/file/<keyboard>.keymap`. Inside the keymap file ensure the keymap node has `compatible = zmk,keymap` and it's not misspelled. For more information see the [Keymap](features/keymaps.mdx) and [Config](config/index.md) documentation.
+
 #### devicetree error
 
 A `devicetree error` followed by a reference to the line number on `<keyboard>.keymap` refers to an issue at the exact line position in that file. For example, below error message indicates a missing `;` at line 109 of the `cradio.keymap` file:

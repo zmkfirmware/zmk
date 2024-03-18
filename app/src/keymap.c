@@ -31,6 +31,12 @@ static uint8_t _zmk_keymap_layer_default = 0;
 
 #define DT_DRV_COMPAT zmk_keymap
 
+#if !DT_NODE_EXISTS(DT_DRV_INST(0))
+
+#error "Keymap node not found, check a keymap is available and is has compatible = "zmk,keymap" set"
+
+#endif
+
 #define TRANSFORMED_LAYER(node)                                                                    \
     { LISTIFY(DT_PROP_LEN(node, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), node) }
 
