@@ -568,6 +568,19 @@ if SETTINGS
 config ZMK_SETTINGS_RESET_ON_START
     bool "Delete all persistent settings when the keyboard boots"
 
+if ZMK_SETTINGS_RESET_ON_START
+
+config ZMK_SETTINGS_RESET_ON_START_INIT_PRIORITY
+    int "Settings Reset ON Start Initialization Priority"
+    default 60
+    help
+      Initialization priority for the settings reset on start. Must be lower priority/
+      higher value than FLASH_INIT_PRIORITY if using the NVS/Flash settings backend.
+
+
+endif
+
+
 config ZMK_SETTINGS_SAVE_DEBOUNCE
     int "Milliseconds to debounce settings saves"
     default 60000

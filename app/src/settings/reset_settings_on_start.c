@@ -10,4 +10,4 @@
 
 // Reset after the kernel is initialized but before any application code to
 // ensure settings are cleared before anything tries to use them.
-SYS_INIT(zmk_settings_erase, POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
+SYS_INIT(zmk_settings_erase, POST_KERNEL, CONFIG_ZMK_SETTINGS_RESET_ON_START_INIT_PRIORITY);
