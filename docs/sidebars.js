@@ -22,6 +22,7 @@ module.exports = {
       "features/beta-testing",
     ],
     Behaviors: [
+      "behaviors/index",
       "behaviors/key-press",
       "behaviors/layers",
       "behaviors/misc",
