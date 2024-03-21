@@ -35,7 +35,46 @@ struct bvd_data {
     struct adc_channel_cfg acc;
     struct adc_sequence as;
     struct battery_value value;
+#if DT_INST_NODE_HAS_PROP(0, chg_gpios)
+    const struct device *dev;
+    const struct sensor_trigger *data_ready_trigger;
+    struct gpio_callback gpio_cb;
+    sensor_trigger_handler_t data_ready_handler;
+    struct k_work work;
+#endif
 };
+
+#if DT_INST_NODE_HAS_PROP(0, chg_gpios)
+static void set_int(const struct device *dev, const bool en) {
+    const struct bvd_config *drv_cfg = dev->config;
+    int ret =
+        gpio_pin_interrupt_configure_dt(&drv_cfg->chg, en ? GPIO_INT_EDGE_BOTH : GPIO_INT_DISABLE);
+    if (ret < 0) {
+        LOG_ERR("can't set interrupt");
+    }
+}
+
+static int bvd_trigger_set(const struct device *dev, const struct sensor_trigger *trig,
+                           sensor_trigger_handler_t handler) {
+    struct bvd_data *drv_data = dev->data;
+
+    set_int(dev, false);
+    if (trig->type != SENSOR_TRIG_DATA_READY) {
+        return -ENOTSUP;
+    }
+    drv_data->data_ready_trigger = trig;
+    drv_data->data_ready_handler = handler;
+    set_int(dev, true);
+    return 0;
+}
+
+static void bvd_int_cb(const struct device *dev) {
+    struct bvd_data *drv_data = dev->data;
+    drv_data->data_ready_handler(dev, drv_data->data_ready_trigger);
+    LOG_DBG("Setting int on %d", 0);
+    set_int(dev, true);
+}
+#endif
 
 static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) {
     struct bvd_data *drv_data = dev->data;
@@ -116,7 +155,22 @@ static int bvd_channel_get(const struct device *dev, enum sensor_channel chan,
     return battery_channel_get(&drv_data->value, chan, val);
 }
 
+#if DT_INST_NODE_HAS_PROP(0, chg_gpios)
+static void bvd_work_cb(struct k_work *work) {
+    struct bvd_data *drv_data = CONTAINER_OF(work, struct bvd_data, work);
+    bvd_int_cb(drv_data->dev);
+}
+static void bvd_gpio_cb(const struct device *port, struct gpio_callback *cb, uint32_t pins) {
+    struct bvd_data *drv_data = CONTAINER_OF(cb, struct bvd_data, gpio_cb);
+    set_int(drv_data->dev, false);
+    k_work_submit(&drv_data->work);
+}
+#endif
+
 static const struct sensor_driver_api bvd_api = {
+#if DT_INST_NODE_HAS_PROP(0, chg_gpios)
+    .trigger_set = bvd_trigger_set,
+#endif
     .sample_fetch = bvd_sample_fetch,
     .channel_get = bvd_channel_get,
 };
@@ -154,6 +208,15 @@ static int bvd_init(const struct device *dev) {
         LOG_ERR("Failed to set chg feed %u: %d", drv_cfg->chg.pin, rc);
         return rc;
     }
+
+    drv_data->dev = dev;
+    gpio_init_callback(&drv_data->gpio_cb, bvd_gpio_cb, BIT(drv_cfg->chg.pin));
+    int ret = gpio_add_callback(drv_cfg->chg.port, &drv_data->gpio_cb);
+    if (ret < 0) {
+        LOG_ERR("Failed to set chg callback: %d", ret);
+        return -EIO;
+    }
+    k_work_init(&drv_data->work, bvd_work_cb);
 #endif // DT_INST_NODE_HAS_PROP(0, chg_gpios)
 
     drv_data->as = (struct adc_sequence){
