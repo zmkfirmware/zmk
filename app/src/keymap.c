@@ -114,14 +114,14 @@ int zmk_keymap_layer_set_default(uint8_t layer) {
 
     ret = set_layer_state(layer, true);
     if (ret < 0) {
-        LOG_WRN("Could not turn on the new default layer, bailing out.");
+        LOG_WRN("Failed to activate the new default layer; aborting changes.");
         return ret;
     }
 
     _zmk_keymap_layer_default = layer;
     ret = set_layer_state(prev_default, false);
     if (ret < 0) {
-        LOG_WRN("Could not disable current default layer, undoing changes.");
+        LOG_WRN("Unable to deactivate the current default layer; reverting changes.");
         _zmk_keymap_layer_default = prev_default;
         set_layer_state(layer, false);
         return ret;
