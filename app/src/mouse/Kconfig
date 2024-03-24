@@ -1,8 +1,19 @@
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-config ZMK_MOUSE
+menuconfig ZMK_MOUSE
     bool "Mouse Emulation"
     select INPUT
     select INPUT_THREAD_PRIORITY_OVERRIDE
+    select USB_COMPOSITE_DEVICE if ZMK_USB
 
+if ZMK_MOUSE
+
+if ZMK_USB
+
+config USB_HID_DEVICE_COUNT
+    default 2
+
+endif
+
+endif # ZMK_MOUSE

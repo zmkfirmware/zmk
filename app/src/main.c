@@ -17,10 +17,6 @@ LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/display.h>
 #include <drivers/ext_power.h>
 
-#ifdef CONFIG_ZMK_MOUSE
-#include <zmk/mouse.h>
-#endif /* CONFIG_ZMK_MOUSE */
-
 int main(void) {
     LOG_INF("Welcome to ZMK!\n");
 

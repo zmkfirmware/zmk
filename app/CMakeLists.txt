@@ -100,5 +100,6 @@ target_sources(app PRIVATE src/main.c)
 
 add_subdirectory(src/display/)
 add_subdirectory_ifdef(CONFIG_SETTINGS src/settings/)
+add_subdirectory(src/mouse/)
 
 zephyr_cc_option(-Wfatal-errors)

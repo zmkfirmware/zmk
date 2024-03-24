@@ -11,7 +11,7 @@
 #include <zephyr/logging/log.h>
 
 #include <zmk/behavior.h>
-#include <zmk/hid.h>
+#include <zmk/mouse/hid.h>
 #include <zephyr/input/input.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
@@ -22,7 +22,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static int behavior_mouse_key_press_init(const struct device *dev) { return 0; };
 
 static void process_key_state(const struct device *dev, int32_t val, bool pressed) {
-    for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
+    for (int i = 0; i < ZMK_MOUSE_HID_NUM_BUTTONS; i++) {
         if (val & BIT(i)) {
             WRITE_BIT(val, i, 0);
             input_report_key(dev, INPUT_BTN_0 + i, pressed ? 1 : 0, val == 0, K_FOREVER);
