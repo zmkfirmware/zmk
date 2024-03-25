@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2023 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#define ZMK_SEND_STRING(name, string, ...) \
+name: name { \
+    compatible = "zmk,behavior-send-string"; \
+    #binding-cells = <0>; \
+    text = string; \
+    __VA_ARGS__ \
+};
