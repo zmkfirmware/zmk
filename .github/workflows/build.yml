@@ -413,7 +413,9 @@ jobs:
       board-changes: ${{ steps.board-changes.outputs.result }}
       core-changes: ${{ steps.core-changes.outputs.result }}
     steps:
-      - uses: tj-actions/changed-files@v42
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: tj-actions/changed-files@v44
         id: changed-files
         with:
           json: true
