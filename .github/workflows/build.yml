@@ -12,6 +12,10 @@ on:
   schedule:
     - cron: "22 4 * * *"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'schedule' }}
+  cancel-in-progress: true
+
 permissions: {}
 
 jobs:
@@ -135,7 +139,7 @@ jobs:
               throw new Error('Failed to build one or more configurations');
             }
   compile-matrix:
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     needs: [core-coverage, board-changes, nightly]
     outputs:
@@ -290,7 +294,7 @@ jobs:
               });
             }))).flat();
   nightly:
-    if: ${{ github.event_name == 'schedule' }}
+    if: ${{ github.event_name == 'schedule' && github.repository_owner == 'zmkfirmware' }}
     runs-on: ubuntu-latest
     needs: get-grouped-hardware
     outputs:
