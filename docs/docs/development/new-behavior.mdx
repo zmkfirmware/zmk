@@ -8,7 +8,7 @@ import TabItem from "@theme/TabItem";
 
 ## Overview
 
-This document outlines how to develop a behavior for ZMK and prepare the changes for a pull request.
+This document outlines how to develop a [behavior](../behaviors/index.mdx) for ZMK and prepare the changes for a pull request.
 
 Behaviors are assigned to key positions and determine what happens when they are pressed and released. They are implemented in Zephyr as "devices": they consist of a devicetree binding file, which specifies the properties of the behavior, and a driver written in C code. This allows for the ability to create unique instances of these behaviors in [keymaps](../features/keymaps.mdx) or devicetree-source-include files (`.dtsi`). While instances of behaviors stored in keymaps are created by end-users for their personal needs, the instances that live in the .dtsi files are stored and documented in ZMK directly, which removes the need for end-users to set up common use-cases of these behaviors in their personal keymaps.
 
