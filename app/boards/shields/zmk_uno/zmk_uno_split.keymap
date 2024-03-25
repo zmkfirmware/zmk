@@ -21,7 +21,7 @@
 // / {
 //     chosen {
 //         zmk,matrix-transform = &split_direct_matrix_transform;
-//         zmk,kscan = &kscan_direct_comp;
+//         zmk,kscan = &kscan_direct;
 //     };
 // };
 
