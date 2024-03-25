@@ -182,7 +182,7 @@ Define the transform with a [matrix transform](#matrix-transform). The row is al
 For example, in `RC(5,0)` power flows from the 6th pin in `gpios` to the 1st pin in `gpios`.
 Exclude all positions where the row and column are the same as these pairs will never be triggered, since no pin can be both input and output at the same time.
 
-The `gpio` pins should have the flag `GPIO_ACTIVE_HIGH`, and interrupt pins set in `interrupt-gpios` should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`.
+The [GPIO flags](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html#api-reference) for the elements in `gpios` should be `GPIO_ACTIVE_HIGH`, and interrupt pins set in `interrupt-gpios` should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`.
 
 ## Composite Driver
 
