@@ -13,7 +13,6 @@
 #include <zmk/behavior.h>
 
 #include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 const struct device *zmk_behavior_get_binding(const char *name) {
     return behavior_get_binding(name);
@@ -40,6 +39,8 @@ const struct device *z_impl_behavior_get_binding(const char *name) {
 }
 
 #if IS_ENABLED(CONFIG_LOG)
+LOG_MODULE_REGISTER(zmk_behavior, CONFIG_ZMK_BEHAVIORS_LOG_LEVEL);
+
 static int check_behavior_names(void) {
     // Behavior names must be unique, but we don't have a good way to enforce this
     // at compile time, so log an error at runtime if they aren't unique.

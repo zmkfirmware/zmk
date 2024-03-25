@@ -15,9 +15,9 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
-
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+LOG_MODULE_REGISTER(DT_DRV_COMPAT, CONFIG_ZMK_BEHAVIOR_KEY_REPEAT_LOG_LEVEL);
 
 struct behavior_key_repeat_config {
     uint8_t index;

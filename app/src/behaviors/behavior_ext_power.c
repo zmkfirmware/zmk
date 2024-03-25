@@ -14,9 +14,10 @@
 #include <dt-bindings/zmk/ext_power.h>
 
 #include <zephyr/logging/log.h>
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+LOG_MODULE_REGISTER(DT_DRV_COMPAT, CONFIG_ZMK_BEHAVIOR_EXT_POWER_LOG_LEVEL);
 
 static int
 on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_binding *binding,

@@ -14,9 +14,10 @@
 
 #include <zmk/behavior.h>
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
-
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+LOG_MODULE_REGISTER(DT_DRV_COMPAT, CONFIG_ZMK_BEHAVIOR_RESET_LOG_LEVEL);
+
 struct behavior_reset_config {
     int type;
 };

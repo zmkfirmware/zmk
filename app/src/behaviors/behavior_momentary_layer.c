@@ -13,7 +13,7 @@
 #include <zmk/keymap.h>
 #include <zmk/behavior.h>
 
-LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+LOG_MODULE_REGISTER(DT_DRV_COMPAT, CONFIG_ZMK_BEHAVIOR_MOMENTARY_LAYER_LOG_LEVEL);
 
 struct behavior_mo_config {};
 struct behavior_mo_data {};
