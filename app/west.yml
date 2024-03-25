@@ -2,12 +2,12 @@ manifest:
   remotes:
     - name: zephyrproject-rtos
       url-base: https://github.com/zephyrproject-rtos
-    - name: zmkfirmware
-      url-base: https://github.com/zmkfirmware
+    - name: rtkconnectivity
+      url-base: git@github.com:rtkconnectivity
   projects:
     - name: zephyr
-      remote: zmkfirmware
-      revision: v3.5.0+zmk-fixes
+      remote: rtkconnectivity
+      revision: realtek-main-v3.5.0
       clone-depth: 1
       import:
         name-blocklist:
