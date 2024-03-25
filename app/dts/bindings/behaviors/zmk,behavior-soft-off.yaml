@@ -12,3 +12,6 @@ properties:
     type: int
     required: false
     description: Number of milliseconds the behavior must be held before releasing will actually trigger a soft-off.
+  split-peripheral-off-on-press:
+    type: boolean
+    description: When built for a split peripheral, turn off on press, not release

@@ -35,10 +35,9 @@ encoder: &qdec0 {
 
 / {
     behaviors {
-        soft_off: soft_off {
+        hw_soft_off: hw_soft_off {
             compatible = "zmk,behavior-soft-off";
             #binding-cells = <0>;
-            status = "okay";
         };
     };
 
@@ -54,7 +53,7 @@ encoder: &qdec0 {
         soft_off {
             row = <0>;
             column = <0>;
-            bindings = <&soft_off>;
+            bindings = <&hw_soft_off>;
         };
     };
 
