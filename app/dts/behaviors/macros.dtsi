@@ -77,5 +77,10 @@ name: name { \
             compatible = "zmk,macro-param-2to2";
             #binding-cells = <0>;
         };
+
+        macro_pause_for_layer: macro_pause_for_layer {
+            compatible = "zmk,macro-pause-for-layer";
+            #binding-cells = <0>;
+        };
     };
 };
