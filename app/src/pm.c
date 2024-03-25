@@ -21,7 +21,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 // TODO: Tweak this to smarter runtime PM of subsystems on sleep.
 
 #ifdef CONFIG_ZMK_PM_DEVICE_SUSPEND_RESUME
-TYPE_SECTION_START_EXTERN(const struct device *, zmk_pm_device_slots);
+TYPE_SECTION_START_EXTERN(const struct device *, pm_device_slots);
 
 #if !defined(CONFIG_PM_DEVICE_RUNTIME_EXCLUSIVE)
 /* Number of devices successfully suspended. */
@@ -57,7 +57,7 @@ int zmk_pm_suspend_devices(void) {
             return ret;
         }
 
-        TYPE_SECTION_START(zmk_pm_device_slots)[zmk_num_susp] = dev;
+        TYPE_SECTION_START(pm_device_slots)[zmk_num_susp] = dev;
         zmk_num_susp++;
     }
 
@@ -66,7 +66,7 @@ int zmk_pm_suspend_devices(void) {
 
 void zmk_pm_resume_devices(void) {
     for (int i = (zmk_num_susp - 1); i >= 0; i--) {
-        pm_device_action_run(TYPE_SECTION_START(zmk_pm_device_slots)[i], PM_DEVICE_ACTION_RESUME);
+        pm_device_action_run(TYPE_SECTION_START(pm_device_slots)[i], PM_DEVICE_ACTION_RESUME);
     }
 
     zmk_num_susp = 0;
