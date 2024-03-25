@@ -66,7 +66,7 @@ Zephyr's basic GPIO Key concept is used to configure the GPIO pin that will be u
 / {
     keys {
         compatible = "gpio-keys";
-        wakeup_key: wakeup_key {
+        soft_off_key: soft_off_key {
             gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         };
     };
@@ -76,44 +76,6 @@ Zephyr's basic GPIO Key concept is used to configure the GPIO pin that will be u
 GPIO keys are defined using child nodes under the `gpio-keys` compatible node. Each child needs just one property defined:
 
 - The `gpios` property should be a phandle-array with a fully defined GPIO pin and with the correct pull up/down and active high/low flags set. In the above example the soft on/off would be triggered by pulling the specified pin low, typically by pressing a switch that has the other leg connected to ground.
-
-### Soft Off Waker
-
-Next, we need to add another device which will be enabled only when the keyboard is going into soft off state, and will configure the previously declared GPIO key with the correct interrupt configuration to wake the device from soft off once it is pressed.
-
-```
-/ {
-    wakeup_source: wakeup_source {
-        compatible = "zmk,gpio-key-wakeup-trigger";
-
-        trigger = <&wakeup_key>;
-        wakeup-source;
-    };
-};
-```
-
-Here are the properties for the node:
-
-- The `compatible` property for the node must be `zmk,gpio-key-wakeup-trigger`.
-- The `trigger` property is a phandle to the GPIO key defined earlier.
-- The `wakeup-source` property signals to Zephyr this device should not be suspended during the shutdown procedure.
-- An optional `extra-gpios` property contains a list of GPIO pins (including the appropriate flags) to set active before going into power off, if needed to ensure the GPIO pin will trigger properly to wake the keyboard. This is only needed for matrix integrated combos. For those keyboards, the list should include the matrix output needs needed so the combo hardware is properly "driven" when the keyboard is off.
-
-Once that is declared, we will list it in an additional configuration section so that the ZMK soft off process knows it needs to enable this device as part of the soft off processing:
-
-```
-/ {
-    soft_off_wakers {
-        compatible = "zmk,soft-off-wakeup-sources";
-        wakeup-sources = <&wakeup_source>;
-    };
-};
-```
-
-Here are the properties for the node:
-
-- The `compatible` property for the node must be `zmk,soft-off-wakeup-sources`.
-- The `wakeup-sources` property is a [phandle array](../config/index.md#devicetree-property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
 
 ### Soft Off Behavior Instance
 
@@ -143,6 +105,7 @@ With a simple direct pin setup, the The [direct kscan](../config/kscan.md) drive
     soft_off_direct_scan: soft_off_direct_scan {
         compatible = "zmk,kscan-gpio-direct";
         input-keys = <&wakeup_key>;
+        wakeup-source;
     };
 ```
 
@@ -164,6 +127,22 @@ With that in place, the kscan sideband behavior will wrap the new driver:
     };
 };
 ```
+
+Finally, we will list the kscan instance in an additional configuration section so that the ZMK soft off process knows it needs to enable this device as part of the soft off processing so it can _also_ wake the keyboard from soft off when pressed:
+
+```
+/ {
+    soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        wakeup-sources = <&soft_off_direct_scan>;
+    };
+};
+```
+
+Here are the properties for the node:
+
+- The `compatible` property for the node must be `zmk,soft-off-wakeup-sources`.
+- The `wakeup-sources` property is a [phandle array](../config/index.md#devicetree-property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
 
 #### Matrix-Integrated Hardware Combo
 
@@ -251,3 +230,41 @@ The child nodes allow setting up the behaviors to invoke directly for a certain 
 
 - The `row` and `column` properties set the values to intercept and trigger the behavior for.
 - The `bindings` property references the behavior that should be triggered when the matching row and column event triggers.
+
+### Soft Off Waker
+
+Next, we need to add another device which will be enabled only when the keyboard is going into soft off state, and will configure the previously declared GPIO key with the correct interrupt configuration to wake the device from soft off once it is pressed.
+
+```
+/ {
+    wakeup_source: wakeup_source {
+        compatible = "zmk,gpio-key-wakeup-trigger";
+
+        trigger = <&wakeup_key>;
+        wakeup-source;
+    };
+};
+```
+
+Here are the properties for the node:
+
+- The `compatible` property for the node must be `zmk,gpio-key-wakeup-trigger`.
+- The `trigger` property is a phandle to the GPIO key defined earlier.
+- The `wakeup-source` property signals to Zephyr this device should not be suspended during the shutdown procedure.
+- An optional `extra-gpios` property contains a list of GPIO pins (including the appropriate flags) to set active before going into power off, if needed to ensure the GPIO pin will trigger properly to wake the keyboard. This is only needed for matrix integrated combos. For those keyboards, the list should include the matrix output needs needed so the combo hardware is properly "driven" when the keyboard is off.
+
+Once that is declared, we will list it in an additional configuration section so that the ZMK soft off process knows it needs to enable this device as part of the soft off processing:
+
+```
+/ {
+    soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        wakeup-sources = <&wakeup_source>;
+    };
+};
+```
+
+Here are the properties for the node:
+
+- The `compatible` property for the node must be `zmk,soft-off-wakeup-sources`.
+- The `wakeup-sources` property is a [phandle array](../config/index.md#devicetree-property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
