@@ -17,6 +17,12 @@ config ZMK_BEHAVIOR_SOFT_OFF
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_SOFT_OFF_ENABLED && ZMK_PM_SOFT_OFF
 
+config ZMK_BEHAVIOR_MIDI_KEY_PRESS
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_MIDI_KEY_PRESS_ENABLED
+    imply ZMK_MIDI
+
 config ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
     bool
 
