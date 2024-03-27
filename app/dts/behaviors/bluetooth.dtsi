@@ -9,6 +9,7 @@
         /omit-if-no-ref/ bt: bluetooth {
             compatible = "zmk,behavior-bluetooth";
             #binding-cells = <2>;
+            friendly-name = "Bluetooth";
         };
     };
 };

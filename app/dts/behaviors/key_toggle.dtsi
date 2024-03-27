@@ -9,6 +9,7 @@
         /omit-if-no-ref/ kt: key_toggle {
             compatible = "zmk,behavior-key-toggle";
             #binding-cells = <1>;
+            friendly-name = "Key Toggle";
         };
     };
 };

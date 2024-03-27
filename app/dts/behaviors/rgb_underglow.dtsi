@@ -10,6 +10,7 @@
         rgb_ug: rgb_ug {
             compatible = "zmk,behavior-rgb-underglow";
             #binding-cells = <2>;
+            friendly-name = "Underglow";
         };
     };
 };

@@ -1,6 +1,10 @@
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+config ZMK_BEHAVIOR_METADATA
+    bool "Metadata"
+    default y
+
 config ZMK_BEHAVIOR_KEY_TOGGLE
     bool
     default y

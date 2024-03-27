@@ -9,6 +9,7 @@
         /omit-if-no-ref/ mo: momentary_layer {
             compatible = "zmk,behavior-momentary-layer";
             #binding-cells = <1>;
+            friendly-name = "Momentary Layer";
         };
     };
 };

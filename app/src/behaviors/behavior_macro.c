@@ -209,9 +209,72 @@ static int on_macro_binding_released(struct zmk_behavior_binding *binding,
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static int get_macro_parameter_domains(const struct device *macro,
+                                       struct behavior_parameter_metadata *param_metadata) {
+    const struct behavior_macro_config *cfg = macro->config;
+    struct behavior_macro_trigger_state state = {0};
+
+    bool param1_found = false, param2_found = false;
+
+    for (int i = 0; (i < cfg->count) && (!param1_found || !param2_found); i++) {
+        LOG_DBG("i %d", i);
+        if (!handle_control_binding(&state, &cfg->bindings[i])) {
+            LOG_DBG("checking %d for the given state", i);
+            const struct zmk_behavior_binding *binding = &cfg->bindings[i];
+
+            if (state.param1_source != PARAM_SOURCE_BINDING ||
+                state.param2_source != PARAM_SOURCE_BINDING) {
+                LOG_DBG("Found a parameter that's from somewhere else!");
+                struct behavior_parameter_metadata binding_meta;
+                int err = behavior_get_parameter_domains(
+                    zmk_behavior_get_binding(binding->behavior_dev), &binding_meta);
+                if (err < 0) {
+                    LOG_WRN("Failed to fetch macro binding parameter details %d", err);
+                    continue;
+                }
+
+                if (binding_meta.type != BEHAVIOR_PARAMETER_METADATA_STANDARD) {
+                    LOG_WRN("Macro metadata for custom child behavior not yet supported");
+                    return -ENOTSUP;
+                }
+
+                param_metadata->type = BEHAVIOR_PARAMETER_METADATA_STANDARD;
+
+                if (state.param1_source == PARAM_SOURCE_MACRO_1ST) {
+                    param_metadata->standard.param1 = binding_meta.standard.param1;
+                    param1_found = true;
+                } else if (state.param1_source == PARAM_SOURCE_MACRO_2ND) {
+                    param_metadata->standard.param2 = binding_meta.standard.param1;
+                    param2_found = true;
+                }
+
+                if (state.param2_source == PARAM_SOURCE_MACRO_1ST) {
+                    param_metadata->standard.param1 = binding_meta.standard.param2;
+                    param1_found = true;
+                } else if (state.param2_source == PARAM_SOURCE_MACRO_2ND) {
+                    param_metadata->standard.param2 = binding_meta.standard.param2;
+                    param2_found = true;
+                }
+
+                state.param1_source = PARAM_SOURCE_BINDING;
+                state.param2_source = PARAM_SOURCE_BINDING;
+            }
+        }
+    }
+
+    return 0;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
 static const struct behavior_driver_api behavior_macro_driver_api = {
     .binding_pressed = on_macro_binding_pressed,
     .binding_released = on_macro_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_domains = get_macro_parameter_domains,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 #define TRANSFORMED_BEHAVIORS(n)                                                                   \

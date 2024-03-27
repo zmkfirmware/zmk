@@ -35,6 +35,9 @@ static int to_keymap_binding_released(struct zmk_behavior_binding *binding,
 static const struct behavior_driver_api behavior_to_driver_api = {
     .binding_pressed = to_keymap_binding_pressed,
     .binding_released = to_keymap_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .param1_standard_domain = BEHAVIOR_PARAMETER_STANDARD_DOMAIN_LAYER_INDEX,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 BEHAVIOR_DT_INST_DEFINE(0, behavior_to_init, NULL, NULL, NULL, POST_KERNEL,

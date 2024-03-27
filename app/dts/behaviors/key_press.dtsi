@@ -10,6 +10,7 @@
         /omit-if-no-ref/ cp: kp: key_press {
             compatible = "zmk,behavior-key-press";
             #binding-cells = <1>;
+            friendly-name = "Key Press";
         };
     };
 };

@@ -12,6 +12,7 @@
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
             bindings = <&mo>, <&kp>;
+            friendly-name = "Layer-Tap";
         };
     };
 };
