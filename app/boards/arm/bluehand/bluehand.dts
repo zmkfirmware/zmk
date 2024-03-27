@@ -1,0 +1,116 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+
+/dts-v1/;
+#include <nordic/nrf52840_qiaa.dtsi>
+
+/ {
+	model = "BlueHand";
+	compatible = "blue,hand";
+
+    chosen {
+		zephyr,code-partition = &code_partition;
+        zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,console = &cdc_acm_uart;
+		zmk,kscan = &kscan0;
+		zmk,battery = &vbatt;
+    };
+
+    kscan0: kscan_0 {
+        compatible = "zmk,kscan-gpio-direct";
+		label = "KSCAN";
+
+        input-gpios
+			= <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 2  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 28 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 3  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			, <&gpio0 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+			;
+    };
+
+    leds {
+		compatible = "gpio-leds";
+		powerled: led_r {
+			gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+			label = "PWR LED";
+		};
+
+		activityled: led_b {
+			gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+			label = "Blue LED";
+		};
+	};
+
+	vbatt: vbatt {
+        compatible = "zmk,battery-nrf-vddh";
+    };
+
+};
+&adc {
+	status = "okay";
+};
+
+&gpiote {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&usbd {
+    status = "okay";
+    cdc_acm_uart: cdc_acm_uart {
+        compatible = "zephyr,cdc-acm-uart";
+    };
+};
+
+
+&flash0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		sd_partition: partition@0 {
+			label = "softdevice";
+			reg = <0x00000000 0x00026000>;
+		};
+		code_partition: partition@26000 {
+			label = "code_partition";
+			reg = <0x00026000 0x000c6000>;
+		};
+
+		/*
+		 * The flash starting at 0x000ec000 and ending at
+		 * 0x000f3fff is reserved for use by the application.
+		 */
+
+		/*
+		 * Storage partition will be used by FCB/LittleFS/NVS
+		 * if enabled.
+		 */
+		storage_partition: partition@ec000 {
+			label = "storage";
+			reg = <0x000ec000 0x00008000>;
+		};
+
+		boot_partition: partition@f4000 {
+			label = "adafruit_boot";
+			reg = <0x000f4000 0x0000c000>;
+		};
+	};
+};
