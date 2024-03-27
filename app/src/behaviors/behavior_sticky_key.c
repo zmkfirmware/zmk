@@ -121,7 +121,7 @@ static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_k
     return behavior_keymap_binding_released(&binding, event);
 }
 
-static inline int on_sticky_key_timeout(struct active_sticky_key *sticky_key) {
+static inline void on_sticky_key_timeout(struct active_sticky_key *sticky_key) {
     // If the key is lazy, a release is not needed on timeout
     if (sticky_key->config->lazy) {
         clear_sticky_key(sticky_key);
