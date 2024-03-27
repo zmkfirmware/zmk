@@ -12,7 +12,7 @@
 #define ZMK_BEHAVIOR_TRANSPARENT 1
 
 struct zmk_behavior_binding {
-    char *behavior_dev;
+    const char *behavior_dev;
     uint32_t param1;
     uint32_t param2;
 };

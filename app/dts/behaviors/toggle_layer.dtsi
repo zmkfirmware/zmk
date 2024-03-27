@@ -9,6 +9,7 @@
         /omit-if-no-ref/ tog: toggle_layer {
             compatible = "zmk,behavior-toggle-layer";
             #binding-cells = <1>;
+            display-name = "Toggle Layer";
         };
     };
 };
