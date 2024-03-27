@@ -20,10 +20,16 @@ nice_view_spi: &arduino_spi {
     // on the bus, properly picking up the first `cs-gpios` specifier.
     ls0xx@0 {
         reg = <0>;
+
+        power-domain = <&core_power_domain>;
+        zephyr,pm-device-runtime-auto;
     };
 
     led_strip: ws2812@0 {
         compatible = "worldsemi,ws2812-spi";
+
+        power-domain = <&rgb_power>;
+        zephyr,pm-device-runtime-auto;
 
         /* SPI */
         reg = <0>; /* ignored, but necessary for SPI bindings */
@@ -35,6 +41,7 @@ nice_view_spi: &arduino_spi {
         spi-zero-frame = <0x40>;
 
         color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+
     };
 };
 
@@ -44,19 +51,27 @@ nice_view_spi: &arduino_spi {
         zmk,backlight = &backlight;
         zmk,underglow = &led_strip;
         zmk,matrix-transform = &matrix_transform;
+
+        zmk,display-default-power-domain = &core_power_domain;
     };
 
-    // Commented out until we add more powerful power domain support
-    // external_power {
-        //  compatible = "zmk,ext-power-generic";
-        //  init-delay-ms = <200>;
-        //  control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
-    // };
+    core_power_domain: core_power_domain {
+        // The "power-domain" compatible is needed for any PDs used for that have dynamic deps,
+        // e.g. for displays or RGB not assigned to the PD in the devicetree statically.
+        compatible = "power-domain-gpio", "power-domain";
+        startup-delay-us = <2000>;
+        off-on-delay-us = <2000>;
+        enable-gpios = <&arduino_header 0 GPIO_ACTIVE_LOW>;
+        zephyr,pm-device-runtime-auto;
+    };
 
-    rgb_power {
-        compatible = "zmk,ext-power-generic";
-        init-delay-ms = <200>;
-        control-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
+    rgb_power: rgb_power {
+        compatible = "power-domain-gpio";
+        startup-delay-us = <200>;
+        off-on-delay-us = <2000>;
+        enable-gpios = <&arduino_header 1 GPIO_ACTIVE_LOW>;
+        power-domain = <&core_power_domain>;
+        zephyr,pm-device-runtime-auto;
     };
 
     backlight: gpioleds {
