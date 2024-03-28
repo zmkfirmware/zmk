@@ -7,6 +7,8 @@ sidebar_label: Soft Off
 
 The soft off behavior is used to force the keyboard into an off state. Depending on the specific keyboard hardware, the keyboard can be turned back on again either with a dedicated on/off button that is available, or using the reset button found on the device.
 
+Refer to the [soft off config](../config/power.md#soft-off) for details on enabling soft off in order to use this behavior.
+
 For more information, see the [Soft Off Feature](../features/soft-off.md) page.
 
 ### Behavior Binding

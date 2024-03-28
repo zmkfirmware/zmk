@@ -73,7 +73,7 @@ Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-direct.yaml](
 
 | Property                  | Type       | Description                                                                                                 | Default |
 | ------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- | ------- |
-| `input-gpios`             | GPIO array | Input GPIOs (one per key)                                                                                   |         |
+| `input-gpios`             | GPIO array | Input GPIOs (one per key). Can be either direct GPIO pin or `gpio-key` references.                          |         |
 | `debounce-press-ms`       | int        | Debounce time for key press in milliseconds. Use 0 for eager debouncing.                                    | 5       |
 | `debounce-release-ms`     | int        | Debounce time for key release in milliseconds.                                                              | 5       |
 | `debounce-scan-period-ms` | int        | Time between reads in milliseconds when any key is pressed.                                                 | 1       |
