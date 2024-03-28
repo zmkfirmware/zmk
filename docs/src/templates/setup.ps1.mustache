@@ -131,6 +131,19 @@ if ($keyboard_type -eq "shield") {
         {{/boards}}
     }
 
+    $boards_revisions = [ordered]@{
+        {{#boards}}
+        {{id}} = @({{#revisions}}
+            "{{.}}"{{/revisions}});
+        {{/boards}}
+    }
+
+    $boards_default_revision=[ordered]@{
+        {{#boards}}
+        {{id}} = "{{{default_revision}}}";
+        {{/boards}}
+    }
+
     Write-Host "$title"
     Write-Host ""
     Write-Host "MCU Board Selection:"
@@ -145,6 +158,22 @@ if ($keyboard_type -eq "shield") {
     $shields = $keyboard_siblings
     $board = $($($boards.keys)[$choice])
     $boards = ( $board )
+
+    if ($($($boards_revisions.values)[$choice]).count -gt 0) {
+        $valid_revisions = $($($boards_revisions.values)[$choice])
+        $revision_choices = @() + $valid_revisions
+
+        for ($i = 0; $i -lt $valid_revisions.count; $i += 1) {
+            if ($valid_revisions[$i] -eq $($($boards_default_revision.values)[$choice])) {
+                $revision_choices[$i] += " (default)"
+            }
+        }
+
+        $revision_choice = Get-Choice-From-Options -Options $revision_choices -Prompt $prompt
+        $board = $board + "@" + $valid_revisions[$revision_choice]
+        $boards = ( $board )
+    }
+
 } else {
     $boards = ( $keyboard_siblings )
     $shields = @( )
