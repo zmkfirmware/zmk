@@ -187,6 +187,8 @@ Define the transform with a [matrix transform](#matrix-transform). The row is al
 For example, in `RC(5,0)` power flows from the 6th pin in `gpios` to the 1st pin in `gpios`.
 Exclude all positions where the row and column are the same as these pairs will never be triggered, since no pin can be both input and output at the same time.
 
+The [GPIO flags](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html#api-reference) for the elements in `gpios` should be `GPIO_ACTIVE_HIGH`, and interrupt pins set in `interrupt-gpios` should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`.
+
 ## Composite Driver
 
 Keyboard scan driver which combines multiple other keyboard scan drivers.
@@ -460,11 +462,11 @@ Note that the entire addressable space does not need to be mapped.
 
         interrupt-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >;
         gpios
-          = <&pro_micro 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
-          , <&pro_micro 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
-          , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
-          , <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
-          , <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN) >
+          = <&pro_micro 16 GPIO_ACTIVE_HIGH>
+          , <&pro_micro 17 GPIO_ACTIVE_HIGH>
+          , <&pro_micro 18 GPIO_ACTIVE_HIGH>
+          , <&pro_micro 19 GPIO_ACTIVE_HIGH>
+          , <&pro_micro 20 GPIO_ACTIVE_HIGH>
           ; // addressable space is 5x5, (minus paired values)
     };
 
