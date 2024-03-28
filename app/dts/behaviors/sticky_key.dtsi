@@ -12,6 +12,7 @@
             release-after-ms = <1000>;
             bindings = <&kp>;
             ignore-modifiers;
+            friendly-name = "Sticky Key";
         };
         /omit-if-no-ref/ sl: sticky_layer {
             compatible = "zmk,behavior-sticky-key";
@@ -19,6 +20,7 @@
             release-after-ms = <1000>;
             bindings = <&mo>;
             quick-release;
+            friendly-name = "Sticky Layer";
         };
     };
 

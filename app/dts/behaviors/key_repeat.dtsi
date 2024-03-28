@@ -12,6 +12,7 @@
             compatible = "zmk,behavior-key-repeat";
             #binding-cells = <0>;
             usage-pages = <HID_USAGE_KEY>;
+            friendly-name = "Key Repeat";
         };
     };
 };

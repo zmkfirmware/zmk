@@ -188,9 +188,64 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static int sticky_key_parameter_domains(const struct device *sk,
+                                        struct behavior_parameter_metadata *param_metadata) {
+    const struct behavior_sticky_key_config *cfg = sk->config;
+
+    struct behavior_parameter_metadata child_metadata;
+
+    int err = behavior_get_parameter_domains(zmk_behavior_get_binding(cfg->behavior.behavior_dev),
+                                             &child_metadata);
+    if (err < 0) {
+        LOG_WRN("Failed to get the sticky key bound behavior parameter: %d", err);
+    }
+
+    switch (child_metadata.type) {
+    case BEHAVIOR_PARAMETER_METADATA_STANDARD:
+        if (child_metadata.standard.param2 != 0) {
+            LOG_WRN("Sticky-key bound to behavior that expects 2 params");
+            return -ENOTSUP;
+        }
+
+        break;
+    case BEHAVIOR_PARAMETER_METADATA_CUSTOM:
+        if (!child_metadata.custom) {
+            LOG_WRN("Child reports custom metadata but none provided");
+            return -ENODEV;
+        }
+
+        for (int s = 0; s < child_metadata.custom->sets_len; s++) {
+            const struct behavior_parameter_metadata_custom_set *set =
+                &child_metadata.custom->sets[s];
+
+            for (int v = 0; v < set->values_len; v++) {
+                if (set->values[v].position != 0) {
+                    LOG_WRN("Sticky-key bound behavior has custom metadata for two parameters");
+                    return -ENOTSUP;
+                }
+            }
+        }
+        break;
+    default:
+        LOG_ERR("Unexpected parameter metadata type %d", child_metadata.type);
+        return -ENOTSUP;
+    }
+
+    *param_metadata = child_metadata;
+
+    return 0;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
 static const struct behavior_driver_api behavior_sticky_key_driver_api = {
     .binding_pressed = on_sticky_key_binding_pressed,
     .binding_released = on_sticky_key_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_domains = sticky_key_parameter_domains,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh);

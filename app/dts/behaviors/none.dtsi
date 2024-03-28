@@ -9,6 +9,7 @@
         /omit-if-no-ref/ none: none {
             compatible = "zmk,behavior-none";
             #binding-cells = <0>;
+            friendly-name = "None";
         };
     };
 };

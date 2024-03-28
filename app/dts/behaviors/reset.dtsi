@@ -12,6 +12,7 @@
         sys_reset: sysreset {
             compatible = "zmk,behavior-reset";
             #binding-cells = <0>;
+            friendly-name = "Reset";
         };
 
         // Behavior can be invoked on peripherals, so name must be <= 8 characters.
@@ -19,6 +20,7 @@
             compatible = "zmk,behavior-reset";
             type = <RST_UF2>;
             #binding-cells = <0>;
+            friendly-name = "Bootloader";
         };
     };
 };

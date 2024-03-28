@@ -9,6 +9,7 @@
         /omit-if-no-ref/ trans: transparent {
             compatible = "zmk,behavior-transparent";
             #binding-cells = <0>;
+            friendly-name = "Transparent";
         };
     };
 };

@@ -10,6 +10,7 @@
         ext_power: extpower {
             compatible = "zmk,behavior-ext-power";
             #binding-cells = <1>;
+            friendly-name = "External Power";
         };
     };
 };

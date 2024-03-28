@@ -12,6 +12,7 @@
             compatible = "zmk,behavior-caps-word";
             #binding-cells = <0>;
             continue-list = <UNDERSCORE BACKSPACE DELETE>;
+            friendly-name = "Caps Word";
         };
     };
 };

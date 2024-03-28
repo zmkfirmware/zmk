@@ -9,6 +9,7 @@
         /omit-if-no-ref/ out: outputs {
             compatible = "zmk,behavior-outputs";
             #binding-cells = <1>;
+            friendly-name = "Output Selection";
         };
     };
 };

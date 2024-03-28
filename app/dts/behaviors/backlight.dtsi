@@ -10,6 +10,7 @@
         /omit-if-no-ref/ bl: bcklight {
             compatible = "zmk,behavior-backlight";
             #binding-cells = <2>;
+            friendly-name = "Backlight";
         };
     };
 };

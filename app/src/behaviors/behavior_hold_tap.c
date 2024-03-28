@@ -652,9 +652,58 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+static int hold_tap_parameter_domains(const struct device *hold_tap,
+                                      struct behavior_parameter_metadata *param_metadata) {
+    const struct behavior_hold_tap_config *cfg = hold_tap->config;
+    int err;
+    struct behavior_parameter_metadata child_meta;
+
+    err = behavior_get_parameter_domains(zmk_behavior_get_binding(cfg->hold_behavior_dev),
+                                         &child_meta);
+    if (err < 0) {
+        LOG_WRN("Failed to get the hold behavior parameter: %d", err);
+        return err;
+    }
+
+    switch (child_meta.type) {
+    case BEHAVIOR_PARAMETER_METADATA_STANDARD:
+        param_metadata->type = BEHAVIOR_PARAMETER_METADATA_STANDARD;
+        param_metadata->standard.param1 = child_meta.standard.param1;
+        break;
+    default:
+        LOG_WRN("No handling for hold-taps with custom behaviors (yet)");
+        return -ENOTSUP;
+    }
+
+    err = behavior_get_parameter_domains(zmk_behavior_get_binding(cfg->tap_behavior_dev),
+                                         &child_meta);
+    if (err < 0) {
+        LOG_WRN("Failed to get the tap behavior parameter: %d", err);
+        return err;
+    }
+
+    switch (child_meta.type) {
+    case BEHAVIOR_PARAMETER_METADATA_STANDARD:
+        param_metadata->type = BEHAVIOR_PARAMETER_METADATA_STANDARD;
+        param_metadata->standard.param2 = child_meta.standard.param1;
+        break;
+    default:
+        LOG_WRN("No handling for hold-taps with custom behaviors (yet)");
+        return -ENOTSUP;
+    }
+
+    return 0;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
 static const struct behavior_driver_api behavior_hold_tap_driver_api = {
     .binding_pressed = on_hold_tap_binding_pressed,
     .binding_released = on_hold_tap_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_domains = hold_tap_parameter_domains,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int position_state_changed_listener(const zmk_event_t *eh) {

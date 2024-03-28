@@ -37,6 +37,9 @@ static int tog_keymap_binding_released(struct zmk_behavior_binding *binding,
 static const struct behavior_driver_api behavior_tog_driver_api = {
     .binding_pressed = tog_keymap_binding_pressed,
     .binding_released = tog_keymap_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .param1_standard_domain = BEHAVIOR_PARAMETER_STANDARD_DOMAIN_LAYER_INDEX,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static const struct behavior_tog_config behavior_tog_config = {};
