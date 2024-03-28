@@ -97,10 +97,14 @@ static inline int set_layer_state(uint8_t layer, bool state) {
     // Don't send state changes unless there was an actual change
     if (old_state != _zmk_keymap_layer_state) {
         LOG_DBG("layer_changed: layer %d state %d", layer, state);
-        ret = raise_layer_state_changed(layer, state);
-        if (ret < 0) {
-            LOG_WRN("Failed to raise layer state changed (%d)", ret);
+        raise_layer_state_changed(layer, state);
+#if ZMK_BLE_IS_CENTRAL
+        int err = zmk_split_central_send_data(DATA_TAG_KEYMAP_STATE, sizeof(uint32_t),
+                                              (uint8_t *)&_zmk_keymap_layer_state);
+        if (err) {
+            LOG_ERR("Keymap send failed (err %d)", err);
         }
+#endif
     }
 
     return ret;
