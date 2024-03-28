@@ -6,6 +6,7 @@
 
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
+#include <zephyr/pm/device.h>
 #include <zephyr/bluetooth/addr.h>
 #include <zephyr/drivers/kscan.h>
 #include <zephyr/logging/log.h>
@@ -72,6 +73,12 @@ int zmk_kscan_init(const struct device *dev) {
     }
 
     k_work_init(&msg_processor.work, zmk_kscan_process_msgq);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+    if (pm_device_wakeup_is_capable(dev)) {
+        pm_device_wakeup_enable(dev, true);
+    }
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
     kscan_config(dev, zmk_kscan_callback);
     kscan_enable_callback(dev);

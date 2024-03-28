@@ -171,6 +171,7 @@ this might look something like:
     kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
+        wakeup-source;
 
         col-gpios
             = <&pro_micro 15 GPIO_ACTIVE_HIGH>
@@ -386,7 +387,7 @@ The two `#include` lines at the top of the keymap are required in order to bring
 
 ### Keymap Behaviors
 
-For the full documentation on the available behaviors for use in keymaps, start with reviewing [`kp`](../behaviors/key-press.md) and then use the sidebar to review the others available within ZMK.
+For documentation on the available behaviors for use in keymaps, see the [overview page for behaviors](../behaviors/index.mdx).
 
 ## Metadata
 

@@ -1,0 +1,36 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/* this test ensures that timing out while the other key is being held results in correct behavior */
+
+&sk {
+    lazy;
+    release-after-ms = <50>;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &sk LEFT_CONTROL &kp A
+                &sk LEFT_SHIFT &sk LEFT_ALT>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        /* tap sk LEFT_CONTROL */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        /* tap A */
+        ZMK_MOCK_PRESS(0,1,60)
+        ZMK_MOCK_RELEASE(0,1,10)
+        /* tap A */
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+    >;
+};
