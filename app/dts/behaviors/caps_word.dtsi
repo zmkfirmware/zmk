@@ -13,6 +13,13 @@
             #binding-cells = <0>;
             continue-list = <UNDERSCORE BACKSPACE DELETE>;
         };
+
+        /omit-if-no-ref/ prog_word: prog_word {
+            compatible = "zmk,behavior-caps-word";
+            #binding-cells = <0>;
+            continue-list = <UNDERSCORE BACKSPACE DELETE>;
+            shift-list = <MINUS>;
+        };
     };
 };
 
