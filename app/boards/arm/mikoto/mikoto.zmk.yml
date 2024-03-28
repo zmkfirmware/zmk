@@ -1,6 +1,6 @@
 file_format: "1"
-id: mikoto_520
-name: Mikoto 5.20
+id: mikoto
+name: Mikoto
 type: board
 arch: arm
 outputs:
@@ -8,3 +8,8 @@ outputs:
   - ble
 url: https://github.com/zhiayang/mikoto
 exposes: [pro_micro]
+revisions:
+  - "5.20"
+  - "7.1"
+  - "7.3"
+default_revision: "5.20"

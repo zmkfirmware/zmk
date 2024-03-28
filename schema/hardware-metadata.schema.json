@@ -16,7 +16,11 @@
   "$defs": {
     "id": {
       "type": "string",
-      "pattern": "^[a-z0-9_]+$"
+      "pattern": "^[a-z0-9_]+(@([A-Z]|[0-9]+|([0-9]+(\\.[0-9]+){1,2})))?$"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "[A-Z]|[0-9]+|([0-9]+(\\.[0-9]+){1,2})"
     },
     "keyboard_siblings": {
       "type": "array",
@@ -202,6 +206,15 @@
         },
         "exposes": {
           "$ref": "#/$defs/interconnects"
+        },
+        "revisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/revision"
+          }
+        },
+        "default_revision": {
+          "$ref": "#/$defs/revision"
         }
       }
     },
