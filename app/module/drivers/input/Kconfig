@@ -1,0 +1,19 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+DT_COMPAT_ZMK_INPUT_PS2_MOUSE := zmk,input-mouse-ps2
+
+config ZMK_INPUT_MOUSE_PS2
+	bool
+	default $(dt_compat_enabled,$(DT_COMPAT_ZMK_INPUT_PS2_MOUSE))
+    depends on (!ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL)
+	select ZMK_MOUSE
+    select PS2
+
+if ZMK_INPUT_MOUSE_PS2
+
+config ZMK_INPUT_MOUSE_PS2_ENABLE_ERROR_MITIGATION
+    bool "Tries to mitigate transmission errors. Only useful when using a PS2 driver that is prone to miscommunication like the GPIO bitbanging driver."
+	default n
+
+endif # ZMK_INPUT_MOUSE_PS2

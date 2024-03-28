@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+	behaviors {
+		mms: behavior_mouse_setting {
+			compatible = "zmk,behavior-mouse-setting";
+			#binding-cells = <1>;
+		};
+	};
+};
