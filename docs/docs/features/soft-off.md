@@ -18,6 +18,10 @@ Once powered off, the keyboard will only wake up when:
 - You press the same button/sequence that you pressed to power off the keyboard, or
 - You press a reset button found on the keyboard.
 
+## Config
+
+Refer to the [soft off config](../config/power.md#soft-off) for details on enabling soft off.
+
 ## Soft Off With Existing Designs
 
 For existing designs, using soft off is as simple as placing the [Soft Off Behavior](../behaviors/soft-off.md) in your keymap and then invoking it.
@@ -104,7 +108,7 @@ With a simple direct pin setup, the The [direct kscan](../config/kscan.md) drive
 ```
     soft_off_direct_scan: soft_off_direct_scan {
         compatible = "zmk,kscan-gpio-direct";
-        input-keys = <&wakeup_key>;
+        input-keys = <&on_off_key>;
         wakeup-source;
     };
 ```
@@ -240,7 +244,7 @@ Next, we need to add another device which will be enabled only when the keyboard
     wakeup_source: wakeup_source {
         compatible = "zmk,gpio-key-wakeup-trigger";
 
-        trigger = <&wakeup_key>;
+        trigger = <&on_off_key>;
         wakeup-source;
     };
 };
