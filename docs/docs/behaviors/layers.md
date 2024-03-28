@@ -149,6 +149,68 @@ Example:
 
 It is possible to use "toggle layer" to have keys that raise and lower the layers as well.
 
+## Momentary Layer Lock
+
+Even if you mostly use [momentary layers](#momentary-layer) instead of `&to` or `&tog`, it's occasionally useful to permanently enable a layer without needing to hold anything down. Instead of creating an additional `&tog` or `&to` binding for each such layer, you can use `&molock`.
+
+If `&molock` is pressed while any number of `&mo` bindings are being held, those momentary layers will not be deactivated when the corresponding `&mo` key is released. As a result, those momentary layers become "locked" until that `&mo` key is pressed and released a second time or the layer becomes deactivated by some other means (e.g. a `&tog` binding for that layer or a `&to` binding for any other one).
+
+If `&molock` is pressed while no `&mo` bindings are being held, it triggers a user-configurable fallback behavior. The default fallback behavior returns to the base layer (`&to 0`), deactivating any locked momentary layers in the process.
+
+### Behavior Binding
+
+- Reference: `&molock`
+
+Example:
+
+```dts
+&molock
+```
+
+Lock a symbol layer:
+
+```dts
+#define BASE 0
+#define SYMS 1
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        base_layer {
+            bindings = <&mo SYMS  &kp Z     &kp M      &kp K  >;
+        };
+        symbol_layer {
+            bindings = <&trans    &kp PLUS  &kp MINUS  &molock>;
+        };
+    };
+};
+```
+
+Holding down the leftmost key (`&mo SYMS`), then pressing and releasing the rightmost key (`&molock`), will lock the symbol layer. Even after releasing the leftmost key, the symbol layer remains active.
+
+To return to the base layer, press and release either the leftmost key (triggering the `&mo SYMS` behavior a second time) or the rightmost key (triggering the default fallback behavior for `&molock`).
+
+### Configuration
+
+You can configure a different fallback behavior by overriding the `bindings` property of the built-in `&molock` behavior. For example, to return to layer 1 (instead of layer 0):
+
+```dts
+&molock {
+    bindings = <&to 1>;
+};
+```
+
+You can also create any number of custom `&molock` behaviors by using `compatible = "zmk,behavior-momentary-layer-lock"` like so:
+
+```dts
+// Presses F if triggered while no momentary layers are active
+kp_molock: kp_molock {
+    compatible = "zmk,behavior-momentary-layer-lock";
+    bindings = <&kp F>;
+};
+```
+
 ## Conditional Layers
 
 The "conditional layers" feature enables a particular layer when all layers in a specified set are active.

@@ -1,0 +1,9 @@
+mo_pressed: position 1 layer 1
+layer_changed: layer 1 state 1
+mo_released: position 1 layer 1
+kp_pressed: usage_page 0x07 keycode 0x1E implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x1E implicit_mods 0x00 explicit_mods 0x00
+mo_pressed: position 1 layer 1
+mo_released: position 1 layer 1
+kp_pressed: usage_page 0x07 keycode 0x1E implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x1E implicit_mods 0x00 explicit_mods 0x00
