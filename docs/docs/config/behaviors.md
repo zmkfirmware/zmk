@@ -203,12 +203,21 @@ Definition files:
 - [zmk/app/dts/bindings/behaviors/zmk,behavior-sensor-rotate.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-sensor-rotate.yaml)
 - [zmk/app/dts/bindings/behaviors/zmk,behavior-sensor-rotate-var.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-sensor-rotate-var.yaml)
 
-| Property                | Type                                                                                              | Description                                                                                                                                                                        | Default |
-| ----------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `compatible`            | string                                                                                            | Sensor rotation type, **must be _one_ of**: <ul><li>`"zmk,behavior-sensor-rotate"`</li><li>`"zmk,behavior-sensor-rotate-var"`</li></ul>                                            |         |
-| `#sensor-binding-cells` | int                                                                                               | Must be <ul><li>`<0>` if `compatible = "zmk,behavior-sensor-rotate"`</li><li>`<2>` if `compatible = "zmk,behavior-sensor-rotate-var"`</li></ul>                                    |         |
-| `bindings`              | phandles for `"zmk,behavior-sensor-rotate"`, phandle array for `"zmk,behavior-sensor-rotate-var"` | A list of two behaviors to trigger for each rotation direction, must include parameters for `"zmk,behavior-sensor-rotate"` and exclude them for `"zmk,behavior-sensor-rotate-var"` |         |
-| `tap-ms`                | int                                                                                               | The tap duration (between press and release events) in milliseconds for behaviors in `bindings`                                                                                    | 5       |
+Applies to: `compatible = "zmk,behavior-sensor-rotate"`
+
+| Property                | Type     | Description                                                                                            | Default |
+| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------ | ------- |
+| `#sensor-binding-cells` | int      | Must be `<0>`                                                                                          |         |
+| `bindings`              | phandles | A list of two behaviors to trigger for each rotation direction, must _include_ any behavior parameters |         |
+| `tap-ms`                | int      | The tap duration (between press and release events) in milliseconds for behaviors in `bindings`        | 5       |
+
+Applies to: `compatible = "zmk,behavior-sensor-rotate-var"`
+
+| Property                | Type          | Description                                                                                            | Default |
+| ----------------------- | ------------- | ------------------------------------------------------------------------------------------------------ | ------- |
+| `#sensor-binding-cells` | int           | Must be `<2>`                                                                                          |         |
+| `bindings`              | phandle array | A list of two behaviors to trigger for each rotation direction, must _exclude_ any behavior parameters |         |
+| `tap-ms`                | int           | The tap duration (between press and release events) in milliseconds for behaviors in `bindings`        | 5       |
 
 With `compatible = "zmk,behavior-sensor-rotate-var"`, this behavior forwards the first parameter it receives to the parameter of the first behavior specified in `bindings`, and second parameter to the parameter of the second behavior.
 
