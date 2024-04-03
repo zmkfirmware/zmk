@@ -7,7 +7,7 @@
 #include <zephyr/device.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
-#include <zephyr/pm/pm.h>
+#include <zephyr/sys/poweroff.h>
 
 #include <zephyr/logging/log.h>
 
@@ -17,6 +17,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
+
+#include <zmk/pm.h>
 
 #include <zmk/activity.h>
 
@@ -70,7 +72,14 @@ void activity_work_handler(struct k_work *work) {
     if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
         // Put devices in suspend power mode before sleeping
         set_state(ZMK_ACTIVITY_SLEEP);
-        pm_state_force(0U, &(struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0});
+
+        if (zmk_pm_suspend_devices() < 0) {
+            LOG_ERR("Failed to suspend all the devices");
+            zmk_pm_resume_devices();
+            return;
+        }
+
+        sys_poweroff();
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
@@ -84,7 +93,7 @@ void activity_expiry_function(struct k_timer *_timer) { k_work_submit(&activity_
 
 K_TIMER_DEFINE(activity_timer, activity_expiry_function, NULL);
 
-int activity_init(const struct device *_device) {
+static int activity_init(void) {
     activity_last_uptime = k_uptime_get();
 
     k_timer_start(&activity_timer, K_SECONDS(1), K_SECONDS(1));

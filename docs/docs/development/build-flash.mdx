@@ -16,7 +16,7 @@ an onboard MCU, or one that uses an MCU board addon.
 
 ### Keyboard (Shield) + MCU Board
 
-ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/3.2.0/guides/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/3.2.0/guides/porting/board_porting.html)
+ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html)
 
 Given the following:
 
@@ -32,7 +32,7 @@ west build -b proton_c -- -DSHIELD=kyria_left
 
 ### Keyboard With Onboard MCU
 
-Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/3.2.0/guides/porting/board_porting.html) as far as Zephyr™ is concerned.
+Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html) as far as Zephyr™ is concerned.
 
 Given the following:
 
@@ -79,7 +79,7 @@ Build times can be significantly reduced after the initial build by omitting all
 
 ### Building with external modules
 
-ZMK supports loading additional boards, shields, code, etc. from [external Zephyr modules](https://docs.zephyrproject.org/3.2.0/develop/modules.html), facilitating out-of-tree management and versioning independent of the ZMK repository. To build with any additional modules, use the `ZMK_EXTRA_MODULES` define added to your `west build` command.
+ZMK supports loading additional boards, shields, code, etc. from [external Zephyr modules](https://docs.zephyrproject.org/3.5.0/develop/modules.html), facilitating out-of-tree management and versioning independent of the ZMK repository. To build with any additional modules, use the `ZMK_EXTRA_MODULES` define added to your `west build` command.
 
 For instance, building with the `my-vendor-keebs-module` checked out to your documents directory, you would build like:
 
@@ -144,7 +144,7 @@ west flash
 
 ## Multi-CPU and Dual-Chip Bluetooth Boards
 
-Zephyr supports running the Bluetooth host and controller on separate processors. In such a configuration, ZMK always runs on the host processor, but you may need to build and flash separate firmware for the controller. Zephyr provides sample code which can be used as the controller firmware for Bluetooth HCI over [RPMsg](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_rpmsg/README.html), [SPI](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_spi/README.html), [UART](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_uart/README.html), and [USB](https://docs.zephyrproject.org/3.2.0/samples/bluetooth/hci_usb/README.html). See [Zephyr's Bluetooth Stack Architecture documentation](https://docs.zephyrproject.org/3.2.0/connectivity/bluetooth/bluetooth-arch.html) for more details.
+Zephyr supports running the Bluetooth host and controller on separate processors. In such a configuration, ZMK always runs on the host processor, but you may need to build and flash separate firmware for the controller. Zephyr provides sample code which can be used as the controller firmware for Bluetooth HCI over [RPMsg](https://docs.zephyrproject.org/3.5.0/samples/bluetooth/hci_rpmsg/README.html), [SPI](https://docs.zephyrproject.org/3.5.0/samples/bluetooth/hci_spi/README.html), [UART](https://docs.zephyrproject.org/3.5.0/samples/bluetooth/hci_uart/README.html), and [USB](https://docs.zephyrproject.org/3.5.0/samples/bluetooth/hci_usb/README.html). See [Zephyr's Bluetooth Stack Architecture documentation](https://docs.zephyrproject.org/3.5.0/connectivity/bluetooth/bluetooth-arch.html) for more details.
 
 The following documentation shows how to build and flash ZMK for boards that use a dual-chip configuration.
 

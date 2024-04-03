@@ -1109,7 +1109,7 @@
 #define HID_USAGE_CONSUMER_AC_RENAME (0x298)                                  // Sel
 #define HID_USAGE_CONSUMER_AC_MERGE (0x299)                                   // Sel
 #define HID_USAGE_CONSUMER_AC_SPLIT (0x29A)                                   // Sel
-#define HID_USAGE_CONSUMER_AC_DISRIBUTE_HORIZONTALLY (0x29B)                  // Sel
+#define HID_USAGE_CONSUMER_AC_DISTRIBUTE_HORIZONTALLY (0x29B)                 // Sel
 #define HID_USAGE_CONSUMER_AC_DISTRIBUTE_VERTICALLY (0x29C)                   // Sel
 #define HID_USAGE_CONSUMER_AC_NEXT_KEYBOARD_LAYOUT_SELECT (0x29D)             // Sel
 #define HID_USAGE_CONSUMER_AC_NAVIGATION_GUIDANCE (0x29E)                     // Sel

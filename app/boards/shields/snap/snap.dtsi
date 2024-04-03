@@ -76,6 +76,7 @@ RC(5,7) RC(5,6) RC(5,5) RC(5,4)         RC(5,2)         RC(5,0)    RC(5,15)     
         display-offset = <0>;
         multiplex-ratio = <31>;
         com-sequential;
+        inversion-on;
         prechargep = <0x22>;
     };
 };

@@ -1,0 +1,17 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Soft-Off Behavior
+
+compatible: "zmk,behavior-soft-off"
+
+include: zero_param.yaml
+
+properties:
+  hold-time-ms:
+    type: int
+    required: false
+    description: Number of milliseconds the behavior must be held before releasing will actually trigger a soft-off.
+  split-peripheral-off-on-press:
+    type: boolean
+    description: When built for a split peripheral, turn off on press, not release

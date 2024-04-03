@@ -40,9 +40,7 @@ const struct device *z_impl_behavior_get_binding(const char *name) {
 }
 
 #if IS_ENABLED(CONFIG_LOG)
-static int check_behavior_names(const struct device *dev) {
-    ARG_UNUSED(dev);
-
+static int check_behavior_names(void) {
     // Behavior names must be unique, but we don't have a good way to enforce this
     // at compile time, so log an error at runtime if they aren't unique.
     ptrdiff_t count;

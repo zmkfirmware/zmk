@@ -28,6 +28,8 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | `CONFIG_ZMK_RGB_UNDERGLOW_SPD_START`     | int  | Default effect speed (1-5)                                | 3       |
 | `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`     | int  | Default effect index from the effect list (see below)     | 0       |
 | `CONFIG_ZMK_RGB_UNDERGLOW_ON_START`      | bool | Default on state                                          | y       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN`       | int  | Minimum brightness in percent (0-100)                     | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX`       | int  | Maximum brightness in percent (0-100)                     | 100     |
 
 Values for `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`:
 

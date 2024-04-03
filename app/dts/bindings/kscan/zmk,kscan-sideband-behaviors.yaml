@@ -1,0 +1,30 @@
+# Copyright (c) 2023, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  kscan sideband behavior runner. Only basic system behaviors should be used,
+  since no keymap processing occurs when using them. Primarily, that means avoiding
+  using tap-holds, sticky keys, etc. as sideband behaviors.
+
+compatible: "zmk,kscan-sideband-behaviors"
+
+include: kscan.yaml
+
+properties:
+  kscan:
+    type: phandle
+    required: true
+
+child-binding:
+  description: "A sideband behavior tied to a row/column pair"
+
+  properties:
+    row:
+      type: int
+      default: 0
+    column:
+      type: int
+      required: true
+    bindings:
+      type: phandle-array
+      required: true

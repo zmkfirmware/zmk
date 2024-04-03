@@ -398,7 +398,7 @@ int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *report) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-int zmk_hog_init(const struct device *_arg) {
+static int zmk_hog_init(void) {
     static const struct k_work_queue_config queue_config = {.name = "HID Over GATT Send Work"};
     k_work_queue_start(&hog_work_q, hog_q_stack, K_THREAD_STACK_SIZEOF(hog_q_stack),
                        CONFIG_ZMK_BLE_THREAD_PRIORITY, &queue_config);

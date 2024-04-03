@@ -39,7 +39,7 @@ static const struct behavior_driver_api behavior_mouse_key_press_driver_api = {
     .binding_pressed = on_keymap_binding_pressed, .binding_released = on_keymap_binding_released};
 
 #define MKP_INST(n)                                                                                \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_mouse_key_press_init, NULL, NULL, NULL, APPLICATION,       \
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_mouse_key_press_init, NULL, NULL, NULL, POST_KERNEL,       \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                   \
                             &behavior_mouse_key_press_driver_api);
 

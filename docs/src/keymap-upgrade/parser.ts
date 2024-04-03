@@ -57,9 +57,15 @@ export function captureHasText(
 
 /**
  * Get a list of SyntaxNodes representing a devicetree node with the given path.
- * (The same node may be listed multiple times within a file.)
+ * The same node may be listed multiple times within a file.
  *
- * @param path Absolute path to the node (must start with "/")
+ * This function does not evaluate which node a reference points to, so given
+ * a file containing "/ { foo: bar {}; }; &foo {};" searching for "&foo" will
+ * return the "&foo {}" node but not "foo: bar {}".
+ *
+ * @param path Path to the node to find. May be an absolute path such as
+ * "/foo/bar", a node reference such as "&foo", or a node reference followed by
+ * a relative path such as "&foo/bar".
  */
 export function findDevicetreeNode(
   tree: Parser.Tree,
@@ -81,6 +87,64 @@ export function findDevicetreeNode(
   return result;
 }
 
+export interface FindPropertyOptions {
+  /** Search in children of the given node as well */
+  recursive?: boolean;
+}
+
+/**
+ * Find all instances of a devicetree property with the given name which are
+ * descendants of the given syntax node.
+ *
+ * @param node Any syntax node
+ */
+export function findDevicetreeProperty(
+  node: Parser.SyntaxNode,
+  name: string,
+  options: FindPropertyOptions & { recursive: true }
+): Parser.SyntaxNode[];
+
+/**
+ * Find a devicetree node's property with the given name, or null if it doesn't
+ * have one.
+ *
+ * @note If the node contains multiple instances of the same property, this
+ * returns the last once, since that is the one that will actually be applied.
+ *
+ * @param node A syntax node for a devicetree node
+ */
+export function findDevicetreeProperty(
+  node: Parser.SyntaxNode,
+  name: string,
+  options?: FindPropertyOptions
+): Parser.SyntaxNode | null;
+
+export function findDevicetreeProperty(
+  node: Parser.SyntaxNode,
+  name: string,
+  options?: FindPropertyOptions
+): Parser.SyntaxNode[] | Parser.SyntaxNode | null {
+  const query = Devicetree.query(
+    `(property name: (identifier) @name (#eq? @name "${name}")) @prop`
+  );
+  const matches = query.matches(node);
+  const props = matches.map(({ captures }) => findCapture("prop", captures)!);
+
+  if (options?.recursive) {
+    return props;
+  }
+
+  // The query finds all descendants. Filter to just the properties that belong
+  // to the given devicetree node.
+  const childProps = props.filter((prop) =>
+    getContainingDevicetreeNode(prop)?.equals(node)
+  );
+
+  // Sort in descending order to select the last instance of the property.
+  childProps.sort((a, b) => b.startIndex - a.startIndex);
+  return childProps[0] ?? null;
+}
+
 export function getDevicetreeNodePath(node: Parser.SyntaxNode | null) {
   const parts = getDevicetreeNodePathParts(node);
 
@@ -99,9 +163,7 @@ export function getDevicetreeNodePath(node: Parser.SyntaxNode | null) {
   return parts[0] === "/" ? path.substring(1) : path;
 }
 
-export function getDevicetreeNodePathParts(
-  node: Parser.SyntaxNode | null
-): string[] {
+function getDevicetreeNodePathParts(node: Parser.SyntaxNode | null): string[] {
   // There may be intermediate syntax nodes between devicetree nodes, such as
   // #if blocks, so if we aren't currently on a "node" node, traverse up the
   // tree until we find one.
@@ -115,7 +177,7 @@ export function getDevicetreeNodePathParts(
   return [...getDevicetreeNodePathParts(dtnode.parent), name];
 }
 
-function getContainingDevicetreeNode(node: Parser.SyntaxNode | null) {
+export function getContainingDevicetreeNode(node: Parser.SyntaxNode | null) {
   while (node && node.type !== "node") {
     node = node.parent;
   }

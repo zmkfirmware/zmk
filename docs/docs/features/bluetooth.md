@@ -36,6 +36,19 @@ Failure to manage the profiles can result in unexpected/broken behavior with hos
 
 Management of the bluetooth in ZMK is accomplished using the [`&bt` behavior](../behaviors/bluetooth.md). Be sure to refer to that documentation to learn how to manage profiles, switch between connected hosts, etc.
 
+## Refreshing the HID Descriptor
+
+Enabling certain features or behaviors in ZMK changes the data structure that ZMK sends over USB or BLE to host devices.
+This in turn requires [HID report descriptors](https://docs.kernel.org/hid/hidintro.html) to be modified for the reports to be parsed correctly.
+Firmware changes that would modify the descriptor include the following:
+
+- Changing any of the settings under the [HID category](../config/system.md#hid), including enabling/disabling NKRO or HID indicators
+- Enabling mouse features, such as adding [mouse keys](../behaviors/mouse-emulation.md) to your keymap
+
+While the descriptor refresh happens on boot for USB, hosts will frequently cache this descriptor for BLE devices.
+In order to refresh this cache, you need to remove the keyboard from the host device, clear the profile associated with the host on the keyboard, then pair again.
+For Windows systems you might need to follow the instructions in [this troubleshooting section](#windows-connected-but-not-working) below.
+
 ## Troubleshooting
 
 ### Connectivity Issues
@@ -46,7 +59,7 @@ Some users may experience a poor connection between the keyboard and the host. T
 CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
 ```
 
-For the `nRF52840`, the value `PLUS_8` can be set to any multiple of four between `MINUS_20` and `PLUS_8`. The default value for this config is `0`, but if you are having connection issues it is recommended to set it to `PLUS_8` because the power consumption difference is negligible. For more information on changing the transmit power of your BLE device, please refer to [the Zephyr docs.](https://docs.zephyrproject.org/latest/kconfig.html#CONFIG_BT_CTLR_TX_PWR)
+For the `nRF52840`, the value `PLUS_8` can be set to any multiple of four between `MINUS_20` and `PLUS_8`. The default value for this config is `0`, but if you are having connection issues it is recommended to set it to `PLUS_8` because the power consumption difference is negligible. For more information on changing the transmit power of your BLE device, please refer to [the Zephyr docs.](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_BT_CTLR_TX_PWR)
 
 :::info
 This setting can also improve the connection strength between the keyboard halves for split keyboards.
@@ -56,17 +69,10 @@ This setting can also improve the connection strength between the keyboard halve
 
 If you want to test bluetooth output on your keyboard and are powering it through the USB connection rather than a battery, you will be able to pair with a host device but may not see keystrokes sent. In this case you need to use the [output selection behavior](../behaviors/outputs.md) to prefer sending keystrokes over bluetooth rather than USB. This might be necessary even if you are not powering from a device capable of receiving USB inputs, such as a USB charger.
 
-## Known Issues
+### Issues with dual boot setups
 
-There are a few known issues related to BLE and ZMK:
-
-### Windows Battery Reporting
-
-There is a known issue with Windows failing to update the battery information after connecting to a ZMK keyboard. You can work around this Windows bug by overriding a [Bluetooth config variable](../config/bluetooth.md) to force battery notifications even if a host neglects to subscribe to them:
-
-```ini
-CONFIG_BT_GATT_ENFORCE_SUBSCRIPTION=n
-```
+Since ZMK associates pairing/bond keys with hardware addresses of hosts, you cannot pair to two different operating systems in a dual boot system at the same time.
+While you can find [documented workarounds](https://wiki.archlinux.org/title/bluetooth#Dual_boot_pairing) that involve copying pairing keys across operating systems and use both OS with a single profile, they can be fairly involved and should be followed with caution.
 
 ### macOS Connected But Not Working
 

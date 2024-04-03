@@ -28,9 +28,20 @@ On macOS the BLE battery reporting packets can cause the computer to wakeup from
 
 :::
 
+### Peripheral battery monitoring
+
+You can [configure ZMK to allow support for peripheral battery monitoring over BLE](system.md#split-keyboards) (e.g. when having a split keyboard with two independent and wirelessly connected sides).
+If you want to report the battery levels of both sides of a split keyboard, you should have both `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY` and `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING` set to `y`.
+
+:::note[Displaying both battery levels on your host]
+
+Host support for multiple battery levels is undefined. It appears that in most of the cases only the main battery is being reported. In order to correctly display all the battery values, you probably need a special application or script.
+
+:::
+
 ### Devicetree
 
-Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/guides/dts/intro.html#aliases-and-chosen-nodes)
+Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)
 
 | Property      | Type | Description                                   |
 | ------------- | ---- | --------------------------------------------- |
@@ -44,7 +55,7 @@ Driver for reading the voltage of a battery using an ADC connected to a voltage 
 
 Applies to: `compatible = "zmk,battery-voltage-divider"`
 
-See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/latest/build/dts/api/bindings/adc/voltage-divider.html).
+See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/iio/afe/voltage-divider.html).
 
 ## nRF VDDH Battery Sensor
 

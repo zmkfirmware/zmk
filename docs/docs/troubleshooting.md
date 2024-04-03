@@ -27,6 +27,10 @@ Variations of the warnings shown below occur when flashing the `<firmware>.uf2` 
 
 macOS 13.0 (Ventura) Finder may report an error code 100093 when copying `<firmware>.uf2` files into microcontrollers. This bug is limited to the operating system's Finder. You can work around it by copying on Terminal command line or use a third party file manager. Issue is fixed in macOS version 13.1.
 
+### macOS Sonoma error
+
+macOS 14.x (Sonoma) Finder may report an "Error code -36" when copying `<firmware>.uf2` files into microcontrollers. A similar "fcopyfile failed: Input/output error" will also be reported when copying is performed using Terminal command line. These errors can be ignored because they are reported when the bootloader disconnects automatically after the uf2 file is copied successfully.
+
 ### CMake Error
 
 An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
@@ -40,6 +44,10 @@ West build errors usually indicate syntax problems in the `<keyboard>.keymap` fi
 If you are reviewing these errors in the GitHub Actions tab, they can be found in the `West Build` step of the build process.
 :::
 
+#### Keymap error
+
+If you get an error stating `Keymap node not found, check a keymap is available and is has compatible = "zmk,keymap" set` this is an indication that the build process cannot find the keymap. Double check that the `<keyboard>.keymap` file is present and has been discovered by the build process. This can be checked by looking for a line in the build log stating `-- Using keymap file: /path/to/keymap/file/<keyboard>.keymap`. Inside the keymap file ensure the keymap node has `compatible = zmk,keymap` and it's not misspelled. For more information see the [Keymap](features/keymaps.mdx) and [Config](config/index.md) documentation.
+
 #### devicetree error
 
 A `devicetree error` followed by a reference to the line number on `<keyboard>.keymap` refers to an issue at the exact line position in that file. For example, below error message indicates a missing `;` at line 109 of the `cradio.keymap` file:
@@ -47,6 +55,14 @@ A `devicetree error` followed by a reference to the line number on `<keyboard>.k
 ```
 devicetree error: /__w/zmk-config/zmk-config/config/cradio.keymap:109 (column 4): parse error: expected ';' or ','
 ```
+
+A `devicetree error` followed by an `empty_file.c` reference with `lacks #binding-cells` string indicates possible problems with improper parameters for specific bindings:
+
+```
+devicetree error: <Node /soc/gpio@50000300 in '/tmp/tmp.vJq9sMwkcY/zephyr/misc/empty_file.c'> lacks #binding-cells
+```
+
+This error can be triggered by incorrect binding syntax such as `&kp BT_SEL 0` instead of `&bt BT_SEL 0`.
 
 #### devicetree_unfixed.h error
 
@@ -68,7 +84,20 @@ A common mistake that leads to this error is to use [key press keycodes](behavio
 
 ### Split Keyboard Halves Unable to Pair
 
-Split keyboard halves pairing issue can be resolved by flashing a settings reset firmware to both controllers. You will first need to acquire the reset UF2 image file with one of the following options:
+Split keyboard halves will automatically pair with one another, but there are some cases where this breaks, and the pairing needs to be reset, for example:
+
+- Switching which halves are the central/peripheral.
+- Replacing the controller for one of the halves.
+
+These issues can be resolved by flashing a settings reset firmware to both controllers.
+
+:::warning
+
+This procedure will erase all settings, such as Bluetooth profiles, output selection, RGB underglow color, etc.
+
+:::
+
+First, acquire the reset UF2 image file with one of the following options:
 
 #### Option 1: Build Reset UF2 in 'zmk-config'
 
@@ -101,8 +130,16 @@ Save the file, commit the changes and push them to GitHub. Download the new firm
 Perform the following steps to reset both halves of your split keyboard:
 
 1. Put each half of the split keyboard into bootloader mode.
-1. Flash one of the halves of the split with the downloaded settings reset UF2 image. Immediately after flashing the chosen half, put it into bootloader mode to avoid accidental bonding between the halves.
+1. Flash one of the halves of the split with the downloaded settings reset UF2 image.
 1. Repeat step 2 with the other half of the split keyboard.
 1. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
 
 After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.
+
+Once this is done, you can remove/forget the keyboard on each host device and pair it again.
+
+:::info
+
+The settings reset firmware has Bluetooth disabled to prevent the two sides from automatically re-pairing until you are done resetting them both. You will not be able to pair your keyboard or see it in any Bluetooth device lists until you have flashed the normal firmware again.
+
+:::

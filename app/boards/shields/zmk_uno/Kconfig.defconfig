@@ -20,4 +20,7 @@ config ZMK_RGB_UNDERGLOW
     select WS2812_STRIP
     select SPI
 
+config ZMK_PM_SOFT_OFF
+    default y if BOARD_NRF52840DK_NRF52840
+
 endif

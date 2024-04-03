@@ -13,14 +13,21 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ### General
 
-| Config                              | Type   | Description                                                                   | Default |
-| ----------------------------------- | ------ | ----------------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_KEYBOARD_NAME`          | string | The name of the keyboard (max 16 characters)                                  |         |
-| `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE` | int    | Milliseconds to wait after a setting change before writing it to flash memory | 60000   |
-| `CONFIG_ZMK_WPM`                    | bool   | Enable calculating words per minute                                           | n       |
-| `CONFIG_HEAP_MEM_POOL_SIZE`         | int    | Size of the heap memory pool                                                  | 8192    |
+| Config                               | Type   | Description                                                                   | Default |
+| ------------------------------------ | ------ | ----------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_KEYBOARD_NAME`           | string | The name of the keyboard (max 16 characters)                                  |         |
+| `CONFIG_ZMK_SETTINGS_RESET_ON_START` | bool   | Clears all persistent settings from the keyboard at startup                   | n       |
+| `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`  | int    | Milliseconds to wait after a setting change before writing it to flash memory | 60000   |
+| `CONFIG_ZMK_WPM`                     | bool   | Enable calculating words per minute                                           | n       |
+| `CONFIG_HEAP_MEM_POOL_SIZE`          | int    | Size of the heap memory pool                                                  | 8192    |
 
 ### HID
+
+:::warning[Refreshing the HID descriptor]
+
+Making changes to any of the settings in this section modifies the HID report descriptor and requires it to be [refreshed](../features/bluetooth.md#refreshing-the-hid-descriptor).
+
+:::
 
 | Config                                | Type | Description                                                    | Default |
 | ------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
@@ -80,7 +87,7 @@ By default USB Boot protocol support is disabled, however certain situations suc
 
 ### Bluetooth
 
-See [Zephyr's Bluetooth stack architecture documentation](https://docs.zephyrproject.org/latest/guides/bluetooth/bluetooth-arch.html)
+See [Zephyr's Bluetooth stack architecture documentation](https://docs.zephyrproject.org/3.5.0/connectivity/bluetooth/bluetooth-arch.html)
 for more information on configuring Bluetooth.
 
 | Config                                      | Type | Description                                                           | Default |

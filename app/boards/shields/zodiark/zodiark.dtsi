@@ -33,6 +33,7 @@ RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4)      RC(4,5)    RC(4,6)   RC(4,7)      R
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
 
         diode-direction = "col2row";
         row-gpios
@@ -80,5 +81,6 @@ RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4)      RC(4,5)    RC(4,6)   RC(4,7)      R
         display-offset = <0>;
         multiplex-ratio = <31>;
         prechargep = <0x22>;
+        inversion-on;
     };
 };

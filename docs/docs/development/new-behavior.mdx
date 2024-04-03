@@ -8,7 +8,7 @@ import TabItem from "@theme/TabItem";
 
 ## Overview
 
-This document outlines how to develop a behavior for ZMK and prepare the changes for a pull request.
+This document outlines how to develop a [behavior](../behaviors/index.mdx) for ZMK and prepare the changes for a pull request.
 
 Behaviors are assigned to key positions and determine what happens when they are pressed and released. They are implemented in Zephyr as "devices": they consist of a devicetree binding file, which specifies the properties of the behavior, and a driver written in C code. This allows for the ability to create unique instances of these behaviors in [keymaps](../features/keymaps.mdx) or devicetree-source-include files (`.dtsi`). While instances of behaviors stored in keymaps are created by end-users for their personal needs, the instances that live in the .dtsi files are stored and documented in ZMK directly, which removes the need for end-users to set up common use-cases of these behaviors in their personal keymaps.
 
@@ -28,8 +28,8 @@ Before developing new behaviors, developers should have a working knowledge of t
 The following resources are provided for those seeking further understanding:
 
 - [Embedded Linux Wiki - Device Tree Usage](https://elinux.org/Device_Tree_Usage)
-- [Zephyr Devicetree API](https://docs.zephyrproject.org/latest/build/dts/api/api.html)
-- [Zephyr Device Driver Model](https://docs.zephyrproject.org/latest/kernel/drivers/index.html)
+- [Zephyr Devicetree API](https://docs.zephyrproject.org/3.5.0/build/dts/api/api.html)
+- [Zephyr Device Driver Model](https://docs.zephyrproject.org/3.5.0/kernel/drivers/index.html)
 
 :::
 
@@ -116,7 +116,7 @@ These are additional variables required to configure a particular instance of a 
 - `phandles`
 
 :::info
-For more information on additional `properties`, refer to [Zephyr's documentation on Devicetree bindings](https://docs.zephyrproject.org/latest/build/dts/bindings.html#properties).
+For more information on additional `properties`, refer to [Zephyr's documentation on Devicetree bindings](https://docs.zephyrproject.org/3.5.0/build/dts/bindings-syntax.html#properties).
 :::
 
 ### Creating the driver (`.c`)
@@ -124,8 +124,8 @@ For more information on additional `properties`, refer to [Zephyr's documentatio
 :::info
 Developing drivers for behaviors in ZMK makes extensive use of the Zephyr Devicetree API and Device Driver Model. Links to the Zephyr Project Documentation for both of these concepts can be found below:
 
-- [Zephyr Devicetree API](https://docs.zephyrproject.org/latest/build/dts/api/api.html)
-- [Zephyr Device Driver Model](https://docs.zephyrproject.org/latest/kernel/drivers/index.html)
+- [Zephyr Devicetree API](https://docs.zephyrproject.org/3.5.0/build/dts/api/api.html)
+- [Zephyr Device Driver Model](https://docs.zephyrproject.org/3.5.0/kernel/drivers/index.html)
 
 :::
 
@@ -175,7 +175,7 @@ BEHAVIOR_DT_INST_DEFINE(0,                                                    //
                                                                               //                  Equal to n for behaviors that do make use of multiple instances)
                         <behavior_name>_init, NULL,                           // Initialization Function, Power Management Device Pointer
                         &<behavior_name>_data, &<behavior_name>_config,       // Behavior Data Pointer, Behavior Configuration Pointer (Both Optional)
-                        APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,     // Initialization Level, Device Priority
+                        POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,     // Initialization Level, Device Priority
                         &<behavior_name>_driver_api);                         // API Structure
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */
@@ -192,7 +192,7 @@ The dependencies required for any ZMK behavior are:
 
 - `device.h`: [Zephyr Device APIs](https://docs.zephyrproject.org/apidoc/latest/group__device__model.html)
 - `drivers/behavior.h`: ZMK Behavior Functions (e.g. [`locality`](#api-structure), `behavior_keymap_binding_pressed`, `behavior_keymap_binding_released`, `behavior_sensor_keymap_binding_triggered`)
-- `logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/latest/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](usb-logging.mdx)).
+- `logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/3.5.0/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](usb-logging.mdx)).
 - `zmk/behavior.h`: ZMK Behavior Information (e.g. parameters, position and timestamp of events)
   - `return` values:
     - `ZMK_BEHAVIOR_OPAQUE`: Used to terminate `on_<behavior_name>_binding_pressed` and `on_<behavior_name>_binding_released` functions that accept `(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event)` as parameters
@@ -249,7 +249,7 @@ Listeners, defined by the `ZMK_LISTENER(mod, cb)` function, take in a listener n
 `BEHAVIOR_DT_INST_DEFINE` is a special ZMK macro. It forwards all the parameters to Zephyr's `DEVICE_DT_INST_DEFINE` macro to define the driver instance, then it adds the driver to a list of ZMK behaviors so they can be found by `zmk_behavior_get_binding()`.
 
 :::info
-For more information on this function, refer to [Zephyr's documentation on the Device Driver Model](https://docs.zephyrproject.org/latest/kernel/drivers/index.html#c.DEVICE_DT_INST_DEFINE).
+For more information on this function, refer to [Zephyr's documentation on the Device Driver Model](https://docs.zephyrproject.org/3.5.0/kernel/drivers/index.html#c.DEVICE_DT_INST_DEFINE).
 :::
 
 The example `BEHAVIOR_DT_INST_DEFINE` call can be left as is with the first parameter, the instance number, equal to `0` for behaviors that only require a single instance (e.g. external power, backlighting, accessing layers). For behaviors that can have multiple instances (e.g. hold-taps, tap-dances, sticky-keys), `BEHAVIOR_DT_INST_DEFINE` can be placed inside a `#define` statement, usually formatted as `#define <ABBREVIATED BEHAVIOR NAME>_INST(n)`, that sets up any [data pointers](#data-pointers-optional) and/or [configuration pointers](#configuration-pointers-optional) that are unique to each instance.
@@ -312,7 +312,7 @@ The fourth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if ins
 
 ##### Configuration Pointers (Optional)
 
-The configuration `struct` stores the properties declared from the behavior's `.yaml` for **each new instance** of the behavior. As seen in the `#define KP_INST(n)` of the hold-tap example, the configuration `struct`, `behavior_<behavior_name>_config_##n`, for each instance number, `n`, can be initialized using the [Zephyr Devicetree Instance-based APIs](https://docs.zephyrproject.org/latest/build/dts/api/api.html#instance-based-apis), which extract the values from the `properties` of each instance of the [devicetree binding](#creating-the-devicetree-binding-yaml) from a user's keymap or [predefined use-case `.dtsi` files](#defining-common-use-cases-for-the-behavior-dtsi-optional) stored in `app/dts/behaviors/`. We illustrate this further by comparing the [`#define KP_INST(n)` from the hold-tap driver](#behavior_dt_inst_define) and the [`properties` of the hold-tap devicetree binding.](#creating-the-devicetree-binding-yaml)
+The configuration `struct` stores the properties declared from the behavior's `.yaml` for **each new instance** of the behavior. As seen in the `#define KP_INST(n)` of the hold-tap example, the configuration `struct`, `behavior_<behavior_name>_config_##n`, for each instance number, `n`, can be initialized using the [Zephyr Devicetree Instance-based APIs](https://docs.zephyrproject.org/3.5.0/build/dts/api/api.html#instance-based-apis), which extract the values from the `properties` of each instance of the [devicetree binding](#creating-the-devicetree-binding-yaml) from a user's keymap or [predefined use-case `.dtsi` files](#defining-common-use-cases-for-the-behavior-dtsi-optional) stored in `app/dts/behaviors/`. We illustrate this further by comparing the [`#define KP_INST(n)` from the hold-tap driver](#behavior_dt_inst_define) and the [`properties` of the hold-tap devicetree binding.](#creating-the-devicetree-binding-yaml)
 
 The fifth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if instance-specific configurations are not required.
 

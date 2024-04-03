@@ -11,9 +11,7 @@
 #include <zephyr/sys/sys_io.h>
 #include <zephyr/devicetree.h>
 
-static int pinmux_nrfmicro_init(const struct device *port) {
-    ARG_UNUSED(port);
-
+static int pinmux_nrfmicro_init(void) {
 #if (CONFIG_BOARD_NRFMICRO_13 || CONFIG_BOARD_NRFMICRO_13_52833)
     const struct device *p0 = DEVICE_DT_GET(DT_NODELABEL(gpio0));
 #if CONFIG_BOARD_NRFMICRO_CHARGER

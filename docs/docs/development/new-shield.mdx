@@ -15,7 +15,7 @@ This guide will walk through the steps necessary to add ZMK support for a keyboa
 
 The high level steps are:
 
-- From a template, create a new [Zephyr module](https://docs.zephyrproject.org/3.2.0/develop/modules.html) housed in a git repository containing one or more custom shields.
+- From a template, create a new [Zephyr module](https://docs.zephyrproject.org/3.5.0/develop/modules.html) housed in a git repository containing one or more custom shields.
 - Create a new shield directory.
 - Add the base Kconfig files.
 - Add the shield overlay file to define the KSCAN driver for detecting key press/release.
@@ -25,7 +25,7 @@ The high level steps are:
 - Update the `build.yaml` file from the repository template to have some sample builds of the firmware to test.
 - Add support for features such as encoders, OLED displays, or RGB underglow.
 
-It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.2.0/guides/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
+It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
 :::note
 ZMK support for split keyboards requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
@@ -78,6 +78,10 @@ The `Kconfig.shield` file defines any additional Kconfig settings that may be re
 config SHIELD_MY_BOARD
     def_bool $(shields_list_contains,my_board)
 ```
+
+:::warning
+Kconfig uses only commas for delimiters, and keeps all whitespaces in the function call. Therefore do not add a whitespace after the comma when configuring your shield as this would be treated as <code>&nbsp;my_board</code> (with a leading whitespace) and will cause issues.
+:::
 
 This will make sure that a new configuration value named `SHIELD_MY_BOARD` is set to true whenever `my_board` is used as the shield name, either as the `SHIELD` variable [in a local build](build-flash.mdx) or in your `build.yaml` file [when using Github Actions](../customization). Note that this configuration value will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
 
@@ -167,6 +171,7 @@ this might look something like:
     kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
+        wakeup-source;
 
         col-gpios
             = <&pro_micro 15 GPIO_ACTIVE_HIGH>
@@ -382,7 +387,7 @@ The two `#include` lines at the top of the keymap are required in order to bring
 
 ### Keymap Behaviors
 
-For the full documentation on the available behaviors for use in keymaps, start with reviewing [`kp`](../behaviors/key-press.md) and then use the sidebar to review the others available within ZMK.
+For documentation on the available behaviors for use in keymaps, see the [overview page for behaviors](../behaviors/index.mdx).
 
 ## Metadata
 

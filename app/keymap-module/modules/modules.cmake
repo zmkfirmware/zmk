@@ -63,6 +63,13 @@ if(DEFINED SHIELD)
     string(REPLACE " " ";" SHIELD_AS_LIST "${SHIELD}")
 endif()
 
+string(FIND "${BOARD}" "@" REVISION_SEPARATOR_INDEX)
+if(NOT (REVISION_SEPARATOR_INDEX EQUAL -1))
+    math(EXPR BOARD_REVISION_INDEX "${REVISION_SEPARATOR_INDEX} + 1")
+    string(SUBSTRING ${BOARD} ${BOARD_REVISION_INDEX} -1 BOARD_REVISION)
+    string(SUBSTRING ${BOARD} 0 ${REVISION_SEPARATOR_INDEX} BOARD)
+endif()
+
 foreach(root ${BOARD_ROOT})
     set(shield_dir ${root}/boards/shields)
     # Match the Kconfig.shield files in the shield directories to make sure we are
@@ -106,6 +113,21 @@ foreach(root ${BOARD_ROOT})
         endforeach()
     endif()
 endforeach()
+
+if(EXISTS ${BOARD_DIR}/revision.cmake)
+    # Board provides revision handling.
+    include(${BOARD_DIR}/revision.cmake)
+elseif(BOARD_REVISION)
+    message(WARNING "Board revision ${BOARD_REVISION} specified for ${BOARD}, \
+                     but board has no revision so revision will be ignored.")
+endif()
+
+if(DEFINED BOARD_REVISION)
+    string(REPLACE "." "_" BOARD_REVISION_STRING ${BOARD_REVISION})
+    set(KEYMAP_BOARD_REVISION_PREFIX "${BOARD}_${BOARD_REVISION_STRING}")
+else()
+    set(KEYMAP_BOARD_REVISION_PREFIX "")
+endif()
 
 # Give a shield like `kyria_rev2_left` we want to use `kyria_rev2` and `kyria` as candidate names for
 # overlay/conf/keymap files.
@@ -178,7 +200,7 @@ endif()
 
 if(NOT KEYMAP_FILE)
     foreach(keymap_dir ${KEYMAP_DIRS})
-        foreach(keymap_prefix ${shield_candidate_names} ${SHIELD_AS_LIST} ${SHIELD_DIR} ${BOARD} ${BOARD_DIR_NAME})
+        foreach(keymap_prefix ${shield_candidate_names} ${SHIELD_AS_LIST} ${SHIELD_DIR} ${KEYMAP_BOARD_REVISION_PREFIX} ${BOARD} ${BOARD_DIR_NAME})
             if (EXISTS ${keymap_dir}/${keymap_prefix}.keymap)
                 set(KEYMAP_FILE "${keymap_dir}/${keymap_prefix}.keymap" CACHE STRING "Selected keymap file")
                 message(STATUS "Using keymap file: ${KEYMAP_FILE}")

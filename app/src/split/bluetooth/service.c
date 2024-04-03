@@ -265,7 +265,7 @@ int zmk_split_bt_sensor_triggered(uint8_t sensor_index,
 }
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
-int service_init(const struct device *_arg) {
+static int service_init(void) {
     static const struct k_work_queue_config queue_config = {
         .name = "Split Peripheral Notification Queue"};
     k_work_queue_start(&service_work_q, service_q_stack, K_THREAD_STACK_SIZEOF(service_q_stack),

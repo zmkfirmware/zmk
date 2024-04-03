@@ -31,6 +31,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
 
         diode-direction = "col2row";
         row-gpios
@@ -73,7 +74,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
         status = "disabled";
     };
 
-    sensors {
+    sensors: sensors {
         compatible = "zmk,keymap-sensors";
         triggers-per-rotation = <20>;
         sensors = <
@@ -100,5 +101,6 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
         display-offset = <0>;
         multiplex-ratio = <63>;
         prechargep = <0x22>;
+        inversion-on;
     };
 };

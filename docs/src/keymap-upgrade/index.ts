@@ -2,6 +2,7 @@ import { createParser } from "./parser";
 import { applyEdits, Range } from "./textedit";
 
 import { upgradeBehaviors } from "./behaviors";
+import { upgradeEncoderResolution } from "./encoder";
 import { upgradeHeaders } from "./headers";
 import { upgradeKeycodes } from "./keycodes";
 import { upgradeNodeNames } from "./nodes";
@@ -11,6 +12,7 @@ export { initParser } from "./parser";
 
 const upgradeFunctions = [
   upgradeBehaviors,
+  upgradeEncoderResolution,
   upgradeHeaders,
   upgradeKeycodes,
   upgradeNodeNames,
@@ -55,7 +57,11 @@ function getLineBreakPositions(text: string) {
 }
 
 function positionToLineNumber(position: number, lineBreaks: number[]) {
-  const line = lineBreaks.findIndex((lineBreak) => position <= lineBreak);
+  if (position >= lineBreaks[lineBreaks.length - 1]) {
+    return lineBreaks.length + 1;
+  }
+
+  const line = lineBreaks.findIndex((lineBreak) => position < lineBreak);
 
   return line < 0 ? 0 : line + 1;
 }

@@ -78,7 +78,7 @@ static void backlight_save_work_handler(struct k_work *work) {
 static struct k_work_delayable backlight_save_work;
 #endif
 
-static int zmk_backlight_init(const struct device *_arg) {
+static int zmk_backlight_init(void) {
     if (!device_is_ready(backlight_dev)) {
         LOG_ERR("Backlight device \"%s\" is not ready", backlight_dev->name);
         return -ENODEV;

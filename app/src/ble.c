@@ -19,7 +19,7 @@
 #include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/gatt.h>
-#include <zephyr/bluetooth/hci_err.h>
+#include <zephyr/bluetooth/hci_types.h>
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 
@@ -98,7 +98,7 @@ bool zmk_ble_active_profile_is_open(void) {
 }
 
 void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
-    char setting_name[15];
+    char setting_name[17];
     char addr_str[BT_ADDR_LE_STR_LEN];
 
     bt_addr_le_to_str(addr, addr_str, sizeof(addr_str));
@@ -629,7 +629,7 @@ static void zmk_ble_ready(int err) {
     update_advertising();
 }
 
-static int zmk_ble_init(const struct device *_arg) {
+static int zmk_ble_init(void) {
     int err = bt_enable(NULL);
 
     if (err) {
