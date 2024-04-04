@@ -35,7 +35,7 @@ static const struct device *battery;
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE)
-static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
+static uint8_t lithium_ion_mv_to_pct(int bat_mv) {
     // Simple linear approximation of a battery based off adafruit's discharge graph:
     // https://learn.adafruit.com/li-ion-and-lipoly-batteries/voltages
 
@@ -48,51 +48,60 @@ static uint8_t lithium_ion_mv_to_pct(int16_t bat_mv) {
     return bat_mv * 2 / 15 - 459;
 }
 
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE)
-
-static int zmk_battery_update(const struct device *battery) {
-    struct sensor_value state_of_charge;
-    int rc;
-
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_STATE_OF_CHARGE)
-
-    rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE);
+static int get_state_of_charge(uint8_t *result) {
+    int rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_VOLTAGE);
     if (rc != 0) {
-        LOG_DBG("Failed to fetch battery values: %d", rc);
-        return rc;
-    }
-
-    rc = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE, &state_of_charge);
-
-    if (rc != 0) {
-        LOG_DBG("Failed to get battery state of charge: %d", rc);
-        return rc;
-    }
-#elif IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE)
-    rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_VOLTAGE);
-    if (rc != 0) {
-        LOG_DBG("Failed to fetch battery values: %d", rc);
+        LOG_DBG("Failed to fetch sensor value: %d", rc);
         return rc;
     }
 
     struct sensor_value voltage;
     rc = sensor_channel_get(battery, SENSOR_CHAN_VOLTAGE, &voltage);
-
     if (rc != 0) {
         LOG_DBG("Failed to get battery voltage: %d", rc);
         return rc;
     }
 
-    uint16_t mv = voltage.val1 * 1000 + (voltage.val2 / 1000);
-    state_of_charge.val1 = lithium_ion_mv_to_pct(mv);
+    int millivolts = voltage.val1 * 1000 + (voltage.val2 / 1000);
+    *result = lithium_ion_mv_to_pct(millivolts);
 
-    LOG_DBG("State of change %d from %d mv", state_of_charge.val1, mv);
+    LOG_DBG("Battery voltage = %d mv -> %u%%", millivolts, *result);
+    return 0;
+}
+
+#elif IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_STATE_OF_CHARGE)
+
+static int get_state_of_charge(uint8_t *result) {
+    struct sensor_value state_of_charge;
+    int rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE);
+    if (rc != 0) {
+        LOG_DBG("Failed to fetch sensor value: %d", rc);
+        return rc;
+    }
+
+    rc = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_STATE_OF_CHARGE, &state_of_charge);
+    if (rc != 0) {
+        LOG_DBG("Failed to get battery state of charge: %d", rc);
+        return rc;
+    }
+
+    *result = state_of_charge.val1;
+    return 0;
+}
+
 #else
-#error "Not a supported reporting fetch mode"
+#error "Unsupported reporting fetch mode"
 #endif
 
-    if (last_state_of_charge != state_of_charge.val1) {
-        last_state_of_charge = state_of_charge.val1;
+static int zmk_battery_update(const struct device *battery) {
+    uint8_t new_state_of_charge = 0;
+    int rc = get_state_of_charge(&new_state_of_charge);
+    if (rc != 0) {
+        return rc;
+    }
+
+    if (new_state_of_charge != last_state_of_charge) {
+        last_state_of_charge = new_state_of_charge;
 #if IS_ENABLED(CONFIG_BT_BAS)
         LOG_DBG("Setting BAS GATT battery level to %d.", last_state_of_charge);
 

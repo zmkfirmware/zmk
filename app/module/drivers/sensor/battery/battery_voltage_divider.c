@@ -41,8 +41,7 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
     struct adc_sequence *as = &drv_data->as;
 
     // Make sure selected channel is supported
-    if (chan != SENSOR_CHAN_GAUGE_VOLTAGE && chan != SENSOR_CHAN_GAUGE_STATE_OF_CHARGE &&
-        chan != SENSOR_CHAN_ALL) {
+    if (chan != SENSOR_CHAN_VOLTAGE && chan != SENSOR_CHAN_ALL) {
         LOG_DBG("Selected channel is not supported: %d.", chan);
         return -ENOTSUP;
     }
@@ -74,11 +73,8 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
 
         uint16_t millivolts = val * (uint64_t)drv_cfg->full_ohm / drv_cfg->output_ohm;
         LOG_DBG("ADC raw %d ~ %d mV => %d mV", drv_data->value.adc_raw, val, millivolts);
-        uint8_t percent = lithium_ion_mv_to_pct(millivolts);
-        LOG_DBG("Percent: %d", percent);
 
         drv_data->value.millivolts = millivolts;
-        drv_data->value.state_of_charge = percent;
     } else {
         LOG_DBG("Failed to read ADC: %d", rc);
     }

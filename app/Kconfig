@@ -388,11 +388,17 @@ if ZMK_BATTERY_REPORTING
 choice ZMK_BATTERY_REPORTING_FETCH_MODE
     prompt "Battery Reporting Fetch Mode"
 
-config ZMK_BATTERY_REPORTING_FETCH_MODE_STATE_OF_CHARGE
-    bool "State of charge"
-
 config ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE
     bool "Lithium Voltage"
+    help
+        Estimate the battery level by reading the voltage of a Lithium battery.
+        zmk,battery chosen node should be a sensor driver that implements SENSOR_CHAN_VOLTAGE.
+
+config ZMK_BATTERY_REPORTING_FETCH_MODE_STATE_OF_CHARGE
+    bool "State of charge"
+    help
+        Read the battery level from a fuel gauge sensor.
+        zmk,battery chosen node should be a sensor driver that implements SENSOR_CHAN_GAUGE_STATE_OF_CHARGE.
 
 endchoice
 endif
