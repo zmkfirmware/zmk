@@ -340,7 +340,7 @@ static int zmk_endpoints_init(void) {
     return 0;
 }
 
-static void disconnect_current_endpoint(void) {
+void zmk_endpoints_clear_current(void) {
     zmk_hid_keyboard_clear();
     zmk_hid_consumer_clear();
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
@@ -356,7 +356,7 @@ static void update_current_endpoint(void) {
 
     if (!zmk_endpoint_instance_eq(new_instance, current_instance)) {
         // Cancel all current keypresses so keys don't stay held on the old endpoint.
-        disconnect_current_endpoint();
+        zmk_endpoints_clear_current();
 
         current_instance = new_instance;
 

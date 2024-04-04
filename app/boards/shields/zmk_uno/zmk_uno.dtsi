@@ -40,7 +40,7 @@ nice_view_spi: &arduino_spi {
 
 / {
     chosen {
-        zmk,kscan = &kscan_matrix_comp;
+        zmk,kscan = &kscan_matrix;
         zmk,backlight = &backlight;
         zmk,underglow = &led_strip;
         zmk,matrix-transform = &matrix_transform;
@@ -74,7 +74,6 @@ nice_view_spi: &arduino_spi {
         map = <
         RC(0,0) RC(0,1)
         RC(1,0) RC(1,1)
-        RC(2,0) RC(2,1) RC(2,2)
         >;
     };
 
@@ -86,44 +85,12 @@ nice_view_spi: &arduino_spi {
         map = <
         RC(0,0) RC(0,1)
         RC(0,2) RC(0,3)
-        RC(1,0) RC(1,1) RC(1,2)
         >;
-    };
-
-
-    kscan_matrix_comp: kscan_matrix_comp {
-        compatible = "zmk,kscan-composite";
-        rows = <1>;
-        columns = <7>;
-
-        matrix {
-            kscan = <&kscan_matrix>;
-        };
-
-        toggle {
-            kscan = <&kscan_sp3t_toggle>;
-            row-offset = <2>;
-        };
-
-    };
-
-    kscan_direct_comp: kscan_direct_comp {
-        compatible = "zmk,kscan-composite";
-        status = "disabled";
-
-        matrix {
-            kscan = <&kscan_direct>;
-        };
-
-        toggle {
-            kscan = <&kscan_sp3t_toggle>;
-            row-offset = <1>;
-        };
-
     };
 
     kscan_matrix: kscan_matrix {
         compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
 
         diode-direction = "col2row";
 
@@ -141,6 +108,7 @@ nice_view_spi: &arduino_spi {
 
     kscan_direct: kscan_direct {
         compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
         status = "disabled";
 
         input-gpios

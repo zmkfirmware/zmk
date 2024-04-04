@@ -122,6 +122,9 @@ if [ "$keyboard_shield" == "y" ]; then
     board_ids=({{#boards}}"{{id}}" {{/boards}})
     boards_usb_only=({{#boards}}"{{#usb_only}}y{{/usb_only}}{{^usb_only}}n{{/usb_only}}" {{/boards}})
 
+    boards_revisions=({{#boards}}"{{#revisions}}{{.}} {{/revisions}}" {{/boards}})
+    boards_default_revision=({{#boards}}"{{{default_revision}}}" {{/boards}})
+
     echo ""
     echo "MCU Board Selection:"
     PS3="$prompt "
@@ -151,6 +154,38 @@ if [ "$keyboard_shield" == "y" ]; then
 
         esac
     done
+
+    if [ -n "${boards_revisions[$board_index]}" ]; then
+        read -a _valid_revisions <<< "${boards_revisions[$board_index]}"
+
+        _rev_choices=("${_valid_revisions[@]}")
+        for (( _i=0; _i<${#_valid_revisions}; _i++ )); do
+            if [ "${boards_default_revision[board_index]}" = "${_valid_revisions[_i]}" ]; then
+                _rev_choices[_i]+=" (default)"
+            fi
+        done
+
+        echo ""
+        echo "MCU Board Revision:"
+        select opt in "${_rev_choices[@]}" "Quit"; do
+            case "$REPLY" in
+                ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
+
+                $(( ${#_valid_revisions[@]}+1 )) ) echo "Goodbye!"; exit 1;;
+                *)
+                    if [ $REPLY -gt $(( ${#_valid_revisions[@]}+1 )) ] || [ $REPLY -lt 0 ]; then
+                        echo "Invalid option. Try another one."
+                        continue
+                    fi
+
+                    _rev_index=$(( $REPLY-1 ))
+                    board="${board_ids[$board_index]}@${_valid_revisions[_rev_index]}"
+                    boards=( "${board}" )
+                    break
+                ;;
+            esac
+        done
+    fi
 else
     board=${keyboard}
     boards=$keyboard_siblings
