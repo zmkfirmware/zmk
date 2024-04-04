@@ -1,0 +1,8 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Behavior to change default layer for current endpoint
+
+compatible: "zmk,behavior-default-layer"
+
+include: one_param.yaml

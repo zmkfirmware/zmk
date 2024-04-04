@@ -127,7 +127,7 @@ int zmk_keymap_layer_set_default(uint8_t layer) {
         return ret;
     }
 
-    LOG_DBG("default_layer_changed: %d", layer);
+    LOG_DBG("Default layer changed to: %d", layer);
     return 0;
 }
 

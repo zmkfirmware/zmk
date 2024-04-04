@@ -153,3 +153,29 @@ It is possible to use "toggle layer" to have keys that raise and lower the layer
 
 The "conditional layers" feature enables a particular layer when all layers in a specified set are active.
 For more information, see [conditional layers](../features/conditional-layers.md).
+
+## Default Layer
+
+The default layer behavior allows configuring a different default layer, for example to test DVORAK while keeping QWERTY on another layer, or moving a couple keycodes around for Windows/Mac usage.
+
+This is stored on a per-endpoint basis, so you can configure USB to use QWERTY, and the first BLE endpoint to use DVORAK.
+
+The stored settings are read and applied when the keyboard boots (receives powers) and also when the selected endpoint changes.
+
+### Behavior Binding
+
+- Reference: `&df`
+- Parameter: The layer number to set as default for current endpoint, e.g. `1`
+
+Example:
+
+```dts
+&df DVORAK
+```
+
+For a keymap with:
+
+```dts
+#define QWERTY 0
+#define DVORAK 1
+```
