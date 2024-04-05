@@ -1,0 +1,4 @@
+name: studio-rpc-usb-uart
+append:
+  EXTRA_DTC_OVERLAY_FILE: studio-rpc-usb-uart.overlay
+  EXTRA_CONF_FILE: studio-rpc-usb-uart.conf
