@@ -16,9 +16,18 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | `CONFIG_ZMK_BATTERY_REPORTING`       | bool | Enables/disables all battery level detection/reporting | n       |
 | `CONFIG_ZMK_BATTERY_REPORT_INTERVAL` | int  | Battery level report interval in seconds               | 60      |
 
+If `CONFIG_ZMK_BATTERY_REPORTING` is enabled, exactly zero or one of the following options may be set to `y`. The first is used if none are set. This should be set to match the type of sensor that is selected for the `zmk,battery` chosen node.
+
+| Config                                                    | Description                                                                                                  |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE` | Read a sensor that supports `SENSOR_CHAN_VOLTAGE` and estimate state of charge for a Li-Ion or LiPo battery. |
+| `CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_STATE_OF_CHARGE` | Read a sensor that supports `SENSOR_CHAN_GAUGE_STATE_OF_CHARGE`.                                             |
+
+ZMK does not yet support Zephyr's recently added fuel gauge API.
+
 :::note[Default setting]
 
-While `CONFIG_ZMK_BATTERY_REPORTING` is disabled by default it is implied by `CONFIG_ZMK_BLE`, thus any board with BLE enabled will have this automatically enabled unless explicitly overriden.
+While `CONFIG_ZMK_BATTERY_REPORTING` is disabled by default, it is implied by `CONFIG_ZMK_BLE`, thus any board with BLE enabled will have this automatically enabled unless explicitly overriden.
 
 :::
 
@@ -47,19 +56,25 @@ Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intr
 | ------------- | ---- | --------------------------------------------- |
 | `zmk,battery` | path | The node for the battery sensor driver to use |
 
-## Battery Voltage Divider Sensor
+## Voltage Divider Sensor
 
 Driver for reading the voltage of a battery using an ADC connected to a voltage divider.
 
+Set `CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE=y` when using this driver.
+
 ### Devicetree
 
-Applies to: `compatible = "zmk,battery-voltage-divider"`
+Applies to: `compatible = "voltage-divider"`
 
 See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/iio/afe/voltage-divider.html).
+
+ZMK also provides a `compatible = "zmk,battery-voltage-divider"` driver, which is deprecated. Use the improved driver from Zephyr instead.
 
 ## nRF VDDH Battery Sensor
 
 Driver for reading the voltage of a battery using a Nordic nRF52's VDDH pin.
+
+Set `CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE=y` when using this driver.
 
 ### Devicetree
 
