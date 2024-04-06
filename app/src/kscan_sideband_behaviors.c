@@ -93,7 +93,6 @@ void ksbb_inner_kscan_callback(const struct device *dev, uint32_t row, uint32_t 
 }
 
 static int ksbb_configure(const struct device *dev, kscan_callback_t callback) {
-    const struct ksbb_config *cfg = dev->config;
     struct ksbb_data *data = dev->data;
 
     data->callback = callback;
