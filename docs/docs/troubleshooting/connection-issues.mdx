@@ -61,8 +61,8 @@ Save the file, commit the changes and push them to GitHub. Download the new firm
 </TabItem>
 
 <TabItem value="download">
-1. [Open the GitHub `Actions` tab and select the `Build` workflow](https://github.com/zmkfirmware/zmk/actions?query=workflow%3ABuild+branch%3Amain+event%3Apush).
-1. Find one of the 'results' for which the core-coverage job was successfully run, indicated by a green checkmark in the core-coverage bubble like the image example below.
+1. [Open the `Build` workflow](https://github.com/zmkfirmware/zmk/actions/workflows/build.yml?query=event%3Apush+branch%3Amain+is%3Asuccess) from the `Actions` tab of the ZMK GitHub repository.
+1. Find one of the results for which the `core-coverage` job ran successfully, indicated by a green checkmark in the "core-coverage" bubble like the image example below.
 1. From the next page under "Artifacts", download and unzip the `<board_name>-settings_reset-zmk` zip file for the UF2 image.
 
 | ![Successful core-coverage Job](../../docs/assets/troubleshooting/splitpairing/corecoverage.png) |
