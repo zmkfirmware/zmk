@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <zephyr/sys/util.h>
+
 #include <zephyr/usb/usb_device.h>
 #include <zephyr/usb/class/usb_hid.h>
 
@@ -200,7 +202,7 @@ struct zmk_hid_keyboard_report_body {
     zmk_mod_flags_t modifiers;
     uint8_t _reserved;
 #if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
-    uint8_t keys[(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1) / 8];
+    uint8_t keys[DIV_ROUND_UP(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1, 8)];
 #elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
     uint8_t keys[CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE];
 #endif
