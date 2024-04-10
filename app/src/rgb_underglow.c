@@ -469,27 +469,30 @@ int zmk_rgb_underglow_change_spd(int direction) {
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE) ||                                          \
     IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
 struct rgb_underglow_sleep_state {
-    bool sleeping;
-    bool pre_sleep;
+    bool is_awake;
+    bool rgb_state_before_sleeping;
 };
 
-static int rgb_underglow_auto_state(bool is_wakeup_event) {
-    static struct rgb_underglow_sleep_state sleep_state = {sleeping : false, pre_sleep : false};
+static int rgb_underglow_auto_state(bool target_wake_state) {
+    static struct rgb_underglow_sleep_state sleep_state = {
+        is_awake : true,
+        rgb_state_before_sleeping : false
+    };
 
     // wake up event while awake, or sleep event while sleeping -> no-op
-    if (!is_wakeup_event == sleep_state.sleeping) {
+    if (target_wake_state == sleep_state.is_awake) {
         return 0;
     }
-    sleep_state.sleeping = !is_wakeup_event;
+    sleep_state.is_awake = target_wake_state;
 
-    if (is_wakeup_event) {
-        if (sleep_state.pre_sleep) {
+    if (sleep_state.is_awake) {
+        if (sleep_state.rgb_state_before_sleeping) {
             return zmk_rgb_underglow_on();
         } else {
             return zmk_rgb_underglow_off();
         }
     } else {
-        sleep_state.pre_sleep = sleep_state.on;
+        sleep_state.rgb_state_before_sleeping = sleep_state.on;
         return zmk_rgb_underglow_off();
     }
 }
