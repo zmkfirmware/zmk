@@ -7,8 +7,11 @@ menuconfig ZMK_STUDIO
     # These two save stack size
     imply NANOPB_NO_ERRMSG
     imply  NANOPB_WITHOUT_64BIT
+    select SETTINGS
     select ZMK_BEHAVIOR_METADATA
     select ZMK_BEHAVIOR_LOCAL_IDS
+    select ZMK_KEYMAP_SETTINGS_STORAGE
+    select ZMK_KEYMAP_LAYER_REORDERING
     help
       Add firmware support for realtime keymap updates (ZMK Studio
 
@@ -69,7 +72,7 @@ endmenu
 
 config ZMK_STUDIO_RPC_THREAD_STACK_SIZE
     int "RPC Thread Stack Size"
-    default 1800
+    default 2048
 
 config ZMK_STUDIO_RPC_RX_BUF_SIZE
     int "RX Buffer Size"
