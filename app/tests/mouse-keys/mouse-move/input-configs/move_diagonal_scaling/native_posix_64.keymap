@@ -1,8 +1,12 @@
 #include <behaviors.dtsi>
-#include <behaviors/mouse_move.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/kscan_mock.h>
 #include <dt-bindings/zmk/mouse.h>
+
+&mmv_input_listener {
+    scale-multiplier = <5>;
+    scale-divisor = <3>;
+};
 
 / {
     keymap {
@@ -14,16 +18,6 @@
                 &mmv MOVE_LEFT &mmv MOVE_UP
                 &none &none
             >;
-        };
-    };
-
-    input_configs {
-        compatible = "zmk,input-configs";
-
-        mmv {
-            device = <&mmv>;
-            scale-multiplier = <5>;
-            scale-divisor = <3>;
         };
     };
 };

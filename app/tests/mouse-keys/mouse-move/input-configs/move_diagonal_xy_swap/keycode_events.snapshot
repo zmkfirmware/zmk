@@ -1,4 +1,4 @@
-movement_set: Mouse movement set to -1/0
+movement_set: Mouse movement set to 0/-1
 scroll_set: Mouse scroll set to 0/0
 movement_set: Mouse movement set to 0/0
 movement_set: Mouse movement set to -2/-2
@@ -7,12 +7,12 @@ movement_set: Mouse movement set to 0/0
 movement_set: Mouse movement set to -2/-2
 scroll_set: Mouse scroll set to 0/0
 movement_set: Mouse movement set to 0/0
-movement_set: Mouse movement set to -3/-2
+movement_set: Mouse movement set to -2/-3
 scroll_set: Mouse scroll set to 0/0
 movement_set: Mouse movement set to 0/0
 movement_set: Mouse movement set to -3/-3
 scroll_set: Mouse scroll set to 0/0
 movement_set: Mouse movement set to 0/0
-movement_set: Mouse movement set to 0/-3
+movement_set: Mouse movement set to -3/0
 scroll_set: Mouse scroll set to 0/0
 movement_set: Mouse movement set to 0/0
