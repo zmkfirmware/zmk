@@ -21,26 +21,14 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct default_layer_settings_t {
-    uint8_t usb[ZMK_ENDPOINT_USB_COUNT];
-    uint8_t ble[ZMK_ENDPOINT_BLE_COUNT];
+    uint8_t endpoint_defaults[ZMK_ENDPOINT_COUNT];
 };
 
 static struct default_layer_settings_t default_layers = {0};
 
 static int apply_default_layer_config(struct zmk_endpoint_instance endpoint) {
-    uint8_t layer = 0;
-
-    switch (endpoint.transport) {
-    case ZMK_TRANSPORT_USB:
-        __ASSERT(ZMK_ENDPOINT_USB_COUNT == 1, "Unreachable");
-        layer = default_layers.usb[0];
-        break;
-
-    case ZMK_TRANSPORT_BLE:
-        __ASSERT(endpoint.ble.profile_index < ZMK_ENDPOINT_BLE_COUNT, "Unreachable");
-        layer = default_layers.ble[endpoint.ble.profile_index];
-        break;
-    }
+    uint8_t index = zmk_endpoint_instance_to_index(endpoint);
+    uint8_t layer = default_layers.endpoint_defaults[index];
 
     int ret = zmk_keymap_layer_set_default(layer);
     if (ret < 0) {
@@ -100,17 +88,8 @@ static int save_default_layer_setting(uint8_t layer, struct zmk_endpoint_instanc
         return -EINVAL;
     }
 
-    switch (endpoint.transport) {
-    case ZMK_TRANSPORT_USB:
-        __ASSERT(ZMK_ENDPOINT_USB_COUNT == 1, "Unreachable");
-        default_layers.usb[0] = layer;
-        break;
-
-    case ZMK_TRANSPORT_BLE:
-        __ASSERT(endpoint.ble.profile_index < ZMK_ENDPOINT_BLE_COUNT, "Unreachable");
-        default_layers.ble[endpoint.ble.profile_index] = layer;
-        break;
-    }
+    uint8_t index = zmk_endpoint_instance_to_index(endpoint);
+    default_layers.endpoint_defaults[index] = layer;
 
     int ret = settings_save_one("default_layer/settings", &default_layers, sizeof(default_layers));
     if (ret < 0) {
@@ -118,12 +97,7 @@ static int save_default_layer_setting(uint8_t layer, struct zmk_endpoint_instanc
         return ret;
     }
 
-    if (endpoint.transport == ZMK_TRANSPORT_USB) {
-        LOG_INF("Updated default layer (%d) for USB endpoint.", layer);
-    } else {
-        LOG_INF("Updated default layer (%d) for BLE endpoint %d.", layer,
-                endpoint.ble.profile_index);
-    }
+    LOG_INF("Updated default layer (%d) for endpoint (%d).", layer, index);
     return 0;
 }
 
