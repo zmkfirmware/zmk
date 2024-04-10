@@ -56,6 +56,12 @@ struct zmk_rpc_subsystem_handler {
     enum zmk_studio_rpc_handler_security security;
 };
 
+typedef int (*zmk_rpc_subsystem_settings_reset_func)(void);
+
+struct zmk_rpc_subsystem_settings_reset {
+    zmk_rpc_subsystem_settings_reset_func callback;
+};
+
 /**
  * @brief Generate a "meta" subsystem response indicating an "empty" response to an RPC request.
  */
@@ -102,6 +108,14 @@ struct zmk_rpc_subsystem_handler {
         .request_choice = zmk_##prefix##_Request_##request_id##_tag,                               \
         .security = _security,                                                                     \
     };
+
+#define ZMK_RPC_SUBSYSTEM_SETTINGS_RESET(prefix, _callback)                                        \
+    STRUCT_SECTION_ITERABLE(zmk_rpc_subsystem_settings_reset, _##prefix##_settings_reset) = {      \
+        .callback = _callback,                                                                     \
+    };
+
+#define ZMK_RPC_SUBSYSTEM_SETTINGS_RESET_FOREACH(_var)                                             \
+    STRUCT_SECTION_FOREACH(zmk_rpc_subsystem_settings_reset, _var)
 
 /**
  * @brief Create a zmk_studio_Notification struct for the given subsystem and type, including
