@@ -53,10 +53,6 @@
 #define ZMK_HID_REPORT_ID_LEDS 0x01
 #define ZMK_HID_REPORT_ID_CONSUMER 0x02
 
-// Needed until Zephyr offers a 2 byte usage macro
-#define HID_USAGE16(idx)                                                                           \
-    HID_ITEM(HID_ITEM_TAG_USAGE, HID_ITEM_TYPE_LOCAL, 2), (idx & 0xFF), (idx >> 8 & 0xFF)
-
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
     HID_USAGE(HID_USAGE_GD_KEYBOARD),
