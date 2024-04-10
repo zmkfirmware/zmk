@@ -61,8 +61,21 @@ zmk_studio_Response get_lock_state(const zmk_studio_Request *req) {
     return CORE_RESPONSE(get_lock_state, resp);
 }
 
+zmk_studio_Response reset_settings(const zmk_studio_Request *req) {
+    ZMK_RPC_SUBSYSTEM_SETTINGS_RESET_FOREACH(sub) {
+        int ret = sub->callback();
+        if (ret < 0) {
+            LOG_ERR("Failed to reset settings: %d", ret);
+            return CORE_RESPONSE(reset_settings, false);
+        }
+    }
+
+    return CORE_RESPONSE(reset_settings, true);
+}
+
 ZMK_RPC_SUBSYSTEM_HANDLER(core, get_device_info, ZMK_STUDIO_RPC_HANDLER_UNSECURED);
 ZMK_RPC_SUBSYSTEM_HANDLER(core, get_lock_state, ZMK_STUDIO_RPC_HANDLER_UNSECURED);
+ZMK_RPC_SUBSYSTEM_HANDLER(core, reset_settings, ZMK_STUDIO_RPC_HANDLER_SECURED);
 
 static int core_event_mapper(const zmk_event_t *eh, zmk_studio_Notification *n) {
     struct zmk_studio_core_lock_state_changed *lock_ev = as_zmk_studio_core_lock_state_changed(eh);
