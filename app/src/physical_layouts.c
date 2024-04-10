@@ -72,9 +72,17 @@ struct position_map_entry {
     const uint32_t positions[ZMK_POS_MAP_LEN];
 };
 
+#define ZMK_POS_MAP_LEN_CHECK(node_id)                                                             \
+    BUILD_ASSERT(ZMK_POS_MAP_LEN == DT_PROP_LEN(node_id, positions),                               \
+                 "Position maps must all have the same number of entries")
+
+DT_FOREACH_CHILD_SEP(DT_INST(0, POS_MAP_COMPAT), ZMK_POS_MAP_LEN_CHECK, (;));
+
 #define ZMK_POS_MAP_ENTRY(node_id)                                                                 \
     {                                                                                              \
-        .layout = &_CONCAT(_zmk_physical_layout_, DT_PHANDLE(node_id, physical_layout)),           \
+        .layout = COND_CODE_1(                                                                     \
+            DT_HAS_COMPAT_STATUS_OKAY(DT_PHANDLE(node_id, physical_layout)),                       \
+            (&_CONCAT(_zmk_physical_layout_, DT_PHANDLE(node_id, physical_layout))), (NULL)),      \
         .positions = DT_PROP(node_id, positions),                                                  \
     }
 
@@ -275,13 +283,15 @@ int zmk_physical_layouts_save_selected(void) {
 
 int zmk_physical_layouts_revert_selected(void) { return zmk_physical_layouts_select_initial(); }
 
-int zmk_physical_layouts_get_position_map(uint8_t source, uint8_t dest, uint32_t *map) {
+int zmk_physical_layouts_get_position_map(uint8_t source, uint8_t dest, size_t map_size,
+                                          uint32_t map[map_size]) {
     if (source >= ARRAY_SIZE(layouts) || dest >= ARRAY_SIZE(layouts)) {
         return -EINVAL;
     }
 
     const struct zmk_physical_layout *src_layout = layouts[source];
     const struct zmk_physical_layout *dest_layout = layouts[dest];
+    int max_kp = dest_layout->keys_len;
 
 #if HAVE_POS_MAP
     const struct position_map_entry *src_pos_map = NULL;
@@ -296,11 +306,24 @@ int zmk_physical_layouts_get_position_map(uint8_t source, uint8_t dest, uint32_t
             dest_pos_map = &positions_maps[pm];
         }
     }
+
+    // Maps can place items "off the end" of other layouts so they are
+    // preserved but not visible, so adjust our max here if that is being used.
+    if (src_pos_map && dest_pos_map) {
+        for (int mp = 0; mp < ZMK_POS_MAP_LEN; mp++) {
+            max_kp =
+                MAX(max_kp, MAX(src_pos_map->positions[mp] + 1, dest_pos_map->positions[mp] + 1));
+        }
+    }
 #endif
 
-    memset(map, UINT32_MAX, dest_layout->keys_len);
+    if (map_size < max_kp) {
+        return -EINVAL;
+    }
 
-    for (int b = 0; b < dest_layout->keys_len; b++) {
+    memset(map, UINT32_MAX, map_size);
+
+    for (int b = 0; b < max_kp; b++) {
         bool found = false;
 
 #if HAVE_POS_MAP
@@ -329,13 +352,9 @@ int zmk_physical_layouts_get_position_map(uint8_t source, uint8_t dest, uint32_t
             }
         }
 #endif
-
-        if (!found || map[b] >= src_layout->keys_len) {
-            map[b] = UINT32_MAX;
-        }
     }
 
-    return dest_layout->keys_len;
+    return max_kp;
 }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
