@@ -9,9 +9,12 @@ menuconfig ZMK_STUDIO
     imply NANOPB_WITHOUT_64BIT
     imply ZMK_STUDIO_LOCKING if !ARCH_POSIX
     select CBPRINTF_LIBC_SUBSTS if ARCH_POSIX
+    select SETTINGS
     select ZMK_BEHAVIOR_METADATA
     select ZMK_BEHAVIOR_LOCAL_IDS
     select RING_BUFFER
+    select ZMK_KEYMAP_SETTINGS_STORAGE
+    select ZMK_KEYMAP_LAYER_REORDERING
     help
       Add firmware support for realtime keymap updates (ZMK Studio)
 

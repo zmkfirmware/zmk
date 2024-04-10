@@ -34,7 +34,7 @@ manifest:
       path: modules/lib/nanopb
       remote: zephyrproject-rtos
     - name: zmk-studio-messages
-      revision: 42446798e357e8021c5202a01ea250a34a776e85
+      revision: f7c53ad1e7b9d8dc1f0037359db3c38d9d3e4b0e
       path: modules/msgs/zmk-studio-messages
       remote: zmkfirmware
   self:
