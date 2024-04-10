@@ -15,6 +15,13 @@
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
 
+#define ONE_IF_DEV_OK(n)                                                                           \
+    COND_CODE_1(DT_NODE_HAS_STATUS(DT_INST_PHANDLE(n, device), okay), (1 +), (0 +))
+
+#define VALID_LISTENER_COUNT (DT_INST_FOREACH_STATUS_OKAY(ONE_IF_DEV_OK) 0)
+
+#if VALID_LISTENER_COUNT > 0
+
 enum input_listener_xy_data_mode {
     INPUT_LISTENER_XY_DATA_MODE_NONE,
     INPUT_LISTENER_XY_DATA_MODE_REL,
@@ -171,18 +178,23 @@ static void input_handler(const struct input_listener_config *config,
     }
 }
 
+#endif // VALID_LISTENER_COUNT > 0
+
 #define IL_INST(n)                                                                                 \
-    static const struct input_listener_config config_##n = {                                       \
-        .xy_swap = DT_INST_PROP(n, xy_swap),                                                       \
-        .x_invert = DT_INST_PROP(n, x_invert),                                                     \
-        .y_invert = DT_INST_PROP(n, y_invert),                                                     \
-        .scale_multiplier = DT_INST_PROP(n, scale_multiplier),                                     \
-        .scale_divisor = DT_INST_PROP(n, scale_divisor),                                           \
-    };                                                                                             \
-    static struct input_listener_data data_##n = {};                                               \
-    void input_handler_##n(struct input_event *evt) {                                              \
-        input_handler(&config_##n, &data_##n, evt);                                                \
-    }                                                                                              \
-    INPUT_CALLBACK_DEFINE(DEVICE_DT_GET(DT_INST_PHANDLE(n, device)), input_handler_##n);
+    COND_CODE_1(                                                                                   \
+        DT_NODE_HAS_STATUS(DT_INST_PHANDLE(n, device), okay),                                      \
+        (static const struct input_listener_config config_##n =                                    \
+             {                                                                                     \
+                 .xy_swap = DT_INST_PROP(n, xy_swap),                                              \
+                 .x_invert = DT_INST_PROP(n, x_invert),                                            \
+                 .y_invert = DT_INST_PROP(n, y_invert),                                            \
+                 .scale_multiplier = DT_INST_PROP(n, scale_multiplier),                            \
+                 .scale_divisor = DT_INST_PROP(n, scale_divisor),                                  \
+             };                                                                                    \
+         static struct input_listener_data data_##n = {};                                          \
+         void input_handler_##n(struct input_event *evt) {                                         \
+             input_handler(&config_##n, &data_##n, evt);                                           \
+         } INPUT_CALLBACK_DEFINE(DEVICE_DT_GET(DT_INST_PHANDLE(n, device)), input_handler_##n);),  \
+        ())
 
 DT_INST_FOREACH_STATUS_OKAY(IL_INST)

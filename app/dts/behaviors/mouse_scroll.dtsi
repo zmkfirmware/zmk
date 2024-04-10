@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2024 The ZMK Contributors
  *
@@ -18,7 +19,7 @@
         };
     };
 
-    msc_input_listener {
+    msc_input_listener: msc_input_listener {
         compatible = "zmk,input-listener";
         device = <&msc>;
     };

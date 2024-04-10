@@ -26,3 +26,4 @@
 #include <behaviors/backlight.dtsi>
 #include <behaviors/macros.dtsi>
 #include <behaviors/soft_off.dtsi>
+#include <behaviors/mouse_keys.dtsi>
