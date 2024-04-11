@@ -22,7 +22,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static const struct device *hid_dev;
 
-static K_SEM_DEFINE(hid_sem, 1, 1);
+static K_SEM_DEFINE(hid_sem, 0, 1);
 
 static void in_ready_cb(const struct device *dev) { k_sem_give(&hid_sem); }
 
@@ -136,11 +136,9 @@ static int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
     case USB_DC_UNKNOWN:
         return -ENODEV;
     default:
-        k_sem_take(&hid_sem, K_MSEC(30));
         int err = hid_int_ep_write(hid_dev, report, len, NULL);
-
-        if (err) {
-            k_sem_give(&hid_sem);
+        if (!err) {
+            k_sem_take(&hid_sem, K_MSEC(30));
         }
 
         return err;
