@@ -86,7 +86,7 @@ void activity_work_handler(struct k_work *work) {
     prevent_sleep = prevent_sleep || zmk_split_bt_peripheral_is_connected();
 #endif
 #endif
-    if (inactive_time > MAX_SLEEP_MX && !prevent_sleep) {
+    if (inactive_time > MAX_SLEEP_MS && !prevent_sleep) {
         // Put devices in suspend power mode before sleeping
         set_state(ZMK_ACTIVITY_SLEEP);
 
