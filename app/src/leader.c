@@ -7,10 +7,11 @@
 #define DT_DRV_COMPAT zmk_leader_sequences
 
 #include <zephyr/device.h>
-#include <drivers/behavior.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/dlist.h>
 #include <zephyr/kernel.h>
+
+#include <drivers/behavior.h>
 
 #include <zmk/behavior.h>
 #include <zmk/event_manager.h>
@@ -18,22 +19,25 @@
 #include <zmk/hid.h>
 #include <zmk/matrix.h>
 #include <zmk/keymap.h>
+#include <zmk/virtual_key_position.h>
 #include <zmk/leader.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-bool leader_status;
-int32_t press_count;
-int32_t release_count;
-int32_t timeout_ms;
-int32_t active_leader_position;
-int8_t layer;
-bool first_release;
-struct k_work_delayable release_timer;
-int64_t release_at;
-bool timer_started;
-bool timer_cancelled;
-bool timerless;
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+static bool leader_status;
+static int32_t press_count;
+static int32_t release_count;
+static int32_t timeout_ms;
+static int32_t active_leader_position;
+static int8_t layer;
+static bool first_release;
+static struct k_work_delayable release_timer;
+static int64_t release_at;
+// static bool timer_started;
+static bool timer_cancelled;
+static bool timerless;
 
 struct leader_seq_cfg {
     int32_t key_positions[CONFIG_ZMK_LEADER_MAX_KEYS_PER_SEQUENCE];
@@ -52,17 +56,17 @@ struct leader_seq_cfg {
 // leader_pressed_keys is filled with an event when a key is pressed.
 // The keys are removed from this array when they are released.
 // Once this array is empty, the behavior is released.
-const struct zmk_position_state_changed
+static const struct zmk_position_state_changed
     *leader_pressed_keys[CONFIG_ZMK_LEADER_MAX_KEYS_PER_SEQUENCE] = {NULL};
 
-uint32_t current_sequence[CONFIG_ZMK_LEADER_MAX_KEYS_PER_SEQUENCE] = {-1};
+static uint32_t current_sequence[CONFIG_ZMK_LEADER_MAX_KEYS_PER_SEQUENCE] = {-1};
 // the set of candidate leader based on the currently leader_pressed_keys
-int num_candidates;
-struct leader_seq_cfg *sequence_candidates[CONFIG_ZMK_LEADER_MAX_SEQUENCES_PER_KEY];
-int num_comp_candidates;
-struct leader_seq_cfg *completed_sequence_candidates[CONFIG_ZMK_LEADER_MAX_SEQUENCES_PER_KEY];
+static int num_candidates;
+static struct leader_seq_cfg *sequence_candidates[CONFIG_ZMK_LEADER_MAX_SEQUENCES_PER_KEY];
+static int num_comp_candidates;
+static struct leader_seq_cfg *completed_sequence_candidates[CONFIG_ZMK_LEADER_MAX_SEQUENCES_PER_KEY];
 // a lookup dict that maps a key position to all sequences on that position
-struct leader_seq_cfg *sequence_lookup[ZMK_KEYMAP_LEN][CONFIG_ZMK_LEADER_MAX_SEQUENCES_PER_KEY] = {
+static struct leader_seq_cfg *sequence_lookup[ZMK_KEYMAP_LEN][CONFIG_ZMK_LEADER_MAX_SEQUENCES_PER_KEY] = {
     NULL};
 
 // Store the leader key pointer in the leader array, one pointer for each key position
@@ -339,7 +343,7 @@ ZMK_SUBSCRIPTION(leader, zmk_position_state_changed);
 
 #define LEADER_INST(n)                                                                             \
     static struct leader_seq_cfg sequence_config_##n = {                                           \
-        .virtual_key_position = ZMK_KEYMAP_LEN + __COUNTER__,                                      \
+        .virtual_key_position = ZMK_VIRTUAL_KEY_POSITION_LEADER(__COUNTER__),                      \
         .immediate_trigger = DT_PROP(n, immediate_trigger),                                        \
         .is_pressed = false,                                                                       \
         .key_positions = DT_PROP(n, key_positions),                                                \
@@ -349,14 +353,16 @@ ZMK_SUBSCRIPTION(leader, zmk_position_state_changed);
         .layers_len = DT_PROP_LEN(n, layers),                                                      \
     };
 
-DT_INST_FOREACH_CHILD(0, LEADER_INST)
-
 #define INTITIALIAZE_LEADER_SEQUENCES(n) intitialiaze_leader_sequences(&sequence_config_##n);
 
-static int leader_init() {
+DT_INST_FOREACH_CHILD(0, LEADER_INST)
+
+static int leader_init(void) {
     k_work_init_delayable(&release_timer, behavior_leader_key_timer_handler);
     DT_INST_FOREACH_CHILD(0, INTITIALIAZE_LEADER_SEQUENCES);
     return 0;
 }
 
 SYS_INIT(leader_init, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
+
+#endif
