@@ -210,9 +210,9 @@ static int dynamic_macro_keycode_state_changed_listener(const zmk_event_t *eh) {
         .recording = false, .count = 0};                                                           \
     static struct behavior_dynamic_macro_config behavior_dynamic_macro_config_##n = {              \
         .wait_ms = DT_INST_PROP_OR(n, wait_ms, -1), .no_output = DT_INST_PROP(n, no_output)};      \
-    DEVICE_DT_INST_DEFINE(n, behavior_dynamic_macro_init, NULL, &behavior_dynamic_macro_state_##n, \
-                          &behavior_dynamic_macro_config_##n, APPLICATION,                         \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                     \
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_dynamic_macro_init, NULL,                                  \
+                          &behavior_dynamic_macro_state_##n, &behavior_dynamic_macro_config_##n,   \
+                          POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
                           &behavior_dynamic_macro_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(DYNAMIC_MACRO_INST)
