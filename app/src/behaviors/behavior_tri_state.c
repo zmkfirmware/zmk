@@ -72,7 +72,8 @@ void trigger_end_behavior(struct active_tri_state *si) {
 
 void behavior_tri_state_timer_handler(struct k_work *item) {
     struct k_work_delayable *d_work = k_work_delayable_from_work(item);
-    struct active_tri_state *tri_state = CONTAINER_OF(d_work, struct active_tri_state, release_timer);
+    struct active_tri_state *tri_state =
+        CONTAINER_OF(d_work, struct active_tri_state, release_timer);
     if (!tri_state->is_active || tri_state->timer_cancelled || tri_state->is_pressed) {
         return;
     }
@@ -289,9 +290,9 @@ static int tri_state_layer_state_changed_listener(const zmk_event_t *eh) {
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .behaviors = behavior_tri_state_config_##n##_bindings,                                     \
         .behavior_count = DT_INST_PROP_LEN(n, bindings)};                                          \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_tri_state_init, NULL, NULL, &behavior_tri_state_config_##n,\
-                          POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                        \
-                          &behavior_tri_state_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_tri_state_init, NULL, NULL,                                \
+                            &behavior_tri_state_config_##n, POST_KERNEL,                           \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_tri_state_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(TRI_STATE_INST)
 
