@@ -7,6 +7,35 @@ config ZMK_BEHAVIOR_METADATA
       Enabling this option adds APIs for documenting and fetching
       metadata describing a behaviors name, and supported parameters.
 
+config ZMK_BEHAVIOR_LOCAL_IDS
+    bool "Local IDs"
+
+if ZMK_BEHAVIOR_LOCAL_IDS
+
+choice ZMK_BEHAVIOR_LOCAL_ID_TYPE
+    prompt "Local ID Type"
+
+config ZMK_BEHAVIOR_LOCAL_ID_TYPE_SETTINGS_TABLE
+    bool "Settings Table"
+    depends on SETTINGS
+    help
+      Use persistent entries in the settings subsystem to identify
+      behaviors by local ID, which uses the device name to generate
+      a new settings entry tying a presistant local ID to that name.
+      This guarantees stable, colllision-free local IDs at the expense
+      of settings storage used.
+
+config ZMK_BEHAVIOR_LOCAL_ID_TYPE_CRC16
+    bool "CRC16 Hash"
+    help
+      Use the CRC16-ANSI hash of behavior device names to generate
+      stable behavior local IDs. This saves on settings storage at
+      the expense of (highly unlikely) risk of collisions.
+
+endchoice
+
+endif
+
 config ZMK_BEHAVIOR_KEY_TOGGLE
     bool
     default y

@@ -108,6 +108,15 @@ struct zmk_behavior_ref {
     const struct zmk_behavior_metadata metadata;
 };
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS)
+
+struct zmk_behavior_local_id_map {
+    const struct device *device;
+    zmk_behavior_local_id_t local_id;
+};
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS)
+
 #define ZMK_BEHAVIOR_REF_DT_NAME(node_id) _CONCAT(zmk_behavior_, DEVICE_DT_NAME_GET(node_id))
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
@@ -125,9 +134,17 @@ struct zmk_behavior_ref {
 #define ZMK_BEHAVIOR_REF_INITIALIZER(node_id, _dev)                                                \
     { .device = _dev, .metadata = ZMK_BEHAVIOR_METADATA_INITIALIZER(node_id), }
 
+#define ZMK_BEHAVIOR_LOCAL_ID_MAP_INITIALIZER(node_id, _dev)                                       \
+    { .device = _dev, }
+
 #define ZMK_BEHAVIOR_REF_DEFINE(name, node_id, _dev)                                               \
     static const STRUCT_SECTION_ITERABLE(zmk_behavior_ref, name) =                                 \
-        ZMK_BEHAVIOR_REF_INITIALIZER(node_id, _dev)
+        ZMK_BEHAVIOR_REF_INITIALIZER(node_id, _dev);                                               \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS),                                         \
+                (static const STRUCT_SECTION_ITERABLE(zmk_behavior_local_id_map,                   \
+                                                      _CONCAT(_zmk_behavior_local_id_map, name)) = \
+                     ZMK_BEHAVIOR_LOCAL_ID_MAP_INITIALIZER(node_id, _dev)),                        \
+                ());
 
 #define ZMK_BEHAVIOR_REF_DT_DEFINE(node_id)                                                        \
     ZMK_BEHAVIOR_REF_DEFINE(ZMK_BEHAVIOR_REF_DT_NAME(node_id), node_id, DEVICE_DT_GET(node_id))

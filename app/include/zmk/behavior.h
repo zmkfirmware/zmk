@@ -23,6 +23,8 @@ struct zmk_behavior_binding_event {
     int64_t timestamp;
 };
 
+typedef uint16_t zmk_behavior_local_id_t;
+
 /**
  * @brief Get a const struct device* for a behavior from its @p name field.
  *
@@ -36,3 +38,23 @@ struct zmk_behavior_binding_event {
  * unrelated node which shares the same name as a behavior.
  */
 const struct device *zmk_behavior_get_binding(const char *name);
+
+/**
+ * @brief Get a local ID for a behavior from its @p name field.
+ *
+ * @param name Behavior name to search for.
+ *
+ * @retval The local ID value that can be used to reference the behavior later, across reboots.
+ * @retval UINT16_MAX if the behavior is not found or its initialization function failed.
+ */
+zmk_behavior_local_id_t zmk_behavior_get_local_id(const char *name);
+
+/**
+ * @brief Get a behavior name for a behavior from its @p local_id .
+ *
+ * @param local_id Behavior local ID used to search for the behavior
+ *
+ * @retval The name of the behavior that is associated with that local ID.
+ * @retval NULL if the behavior is not found or its initialization function failed.
+ */
+const char *zmk_behavior_find_behavior_name_from_local_id(zmk_behavior_local_id_t local_id);
