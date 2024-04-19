@@ -268,7 +268,6 @@ static int ble_save_profile(void) {
 int zmk_ble_prof_select(uint8_t index) {
     if (index == 255) {
         index = last_profile;
-        last_profile = active_profile;
     }
 
     if (index >= ZMK_BLE_PROFILE_COUNT) {
@@ -280,6 +279,7 @@ int zmk_ble_prof_select(uint8_t index) {
         return 0;
     }
 
+    last_profile = active_profile;
     active_profile = index;
     ble_save_profile();
 
