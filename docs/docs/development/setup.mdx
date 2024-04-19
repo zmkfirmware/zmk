@@ -52,6 +52,16 @@ Return to this guide once you are finished with all four sections.
 
 Zephyr's [Install Linux Host Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/installation_linux.html) page may be of use for distributions which are not based on Ubuntu.
 
+:::info
+ZMK does not need all of the additional dependencies found in Zephyr's `requirements.txt`, only those found in `requirements-base.txt`
+
+```diff
+- pip3 install -r zephyr/scripts/requirements.txt
++ pip3 install -r zephyr/scripts/requirements-base.txt
+```
+
+:::
+
 </TabItem>
 <TabItem value="win">
 
@@ -66,6 +76,16 @@ Return to this guide once you are finished with all four sections.
 
 `dfu-util` is required to flash devices that use DFU, but there is currently no maintained package for it on Chocolatey. [QMK Toolbox](https://github.com/qmk/qmk_toolbox) contains a working version of it though.
 
+:::info
+ZMK does not need all of the additional dependencies found in Zephyr's `requirements.txt`, only those found in `requirements-base.txt`
+
+```diff
+- pip3 install -r zephyr/scripts/requirements.txt
++ pip3 install -r zephyr/scripts/requirements-base.txt
+```
+
+:::
+
 </TabItem>
 <TabItem value="mac">
 
@@ -77,6 +97,16 @@ Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/devel
 4. [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk)
 
 Return to this guide once you are finished with all four sections.
+
+:::info
+ZMK does not need all of the additional dependencies found in Zephyr's `requirements.txt`, only those found in `requirements-base.txt`
+
+```diff
+- pip3 install -r zephyr/scripts/requirements.txt
++ pip3 install -r zephyr/scripts/requirements-base.txt
+```
+
+:::
 
 </TabItem>
 <TabItem value="raspberryos">
@@ -91,6 +121,16 @@ Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/devel
 4. [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk)
 
 Return to this guide once you are finished with all four sections.
+
+:::info
+ZMK does not need all of the additional dependencies found in Zephyr's `requirements.txt`, only those found in `requirements-base.txt`
+
+```diff
+- pip3 install -r zephyr/scripts/requirements.txt
++ pip3 install -r zephyr/scripts/requirements-base.txt
+```
+
+:::
 
 #### Install Cross-Compile Toolchain
 

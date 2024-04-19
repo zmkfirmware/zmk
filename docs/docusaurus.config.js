@@ -31,6 +31,7 @@ module.exports = {
         "linker-script",
         "log",
         "powershell",
+        "diff",
       ],
       theme,
       darkTheme,
