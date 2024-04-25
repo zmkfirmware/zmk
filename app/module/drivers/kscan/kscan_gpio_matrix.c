@@ -405,6 +405,44 @@ static int kscan_matrix_init_outputs(const struct device *dev) {
     return 0;
 }
 
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+
+static int kscan_matrix_disconnect_inputs(const struct device *dev) {
+    const struct kscan_matrix_data *data = dev->data;
+
+    for (int i = 0; i < data->inputs.len; i++) {
+        const struct gpio_dt_spec *gpio = &data->inputs.gpios[i].spec;
+        int err = gpio_pin_configure_dt(gpio, GPIO_DISCONNECTED);
+        if (err) {
+            return err;
+        }
+    }
+
+    return 0;
+}
+
+static int kscan_matrix_disconnect_outputs(const struct device *dev) {
+    const struct kscan_matrix_config *config = dev->config;
+
+    for (int i = 0; i < config->outputs.len; i++) {
+        const struct gpio_dt_spec *gpio = &config->outputs.gpios[i].spec;
+        int err = gpio_pin_configure_dt(gpio, GPIO_DISCONNECTED);
+        if (err) {
+            return err;
+        }
+    }
+
+    return 0;
+}
+
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
+static void kscan_matrix_setup_pins(const struct device *dev) {
+    kscan_matrix_init_inputs(dev);
+    kscan_matrix_init_outputs(dev);
+    kscan_matrix_set_all_outputs(dev, 0);
+}
+
 static int kscan_matrix_init(const struct device *dev) {
     struct kscan_matrix_data *data = dev->data;
 
@@ -413,11 +451,18 @@ static int kscan_matrix_init(const struct device *dev) {
     // Sort inputs by port so we can read each port just once per scan.
     kscan_gpio_list_sort_by_port(&data->inputs);
 
-    kscan_matrix_init_inputs(dev);
-    kscan_matrix_init_outputs(dev);
-    kscan_matrix_set_all_outputs(dev, 0);
-
     k_work_init_delayable(&data->work, kscan_matrix_work_handler);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_init_suspended(dev);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_enable(dev);
+#endif
+
+#else
+    kscan_matrix_setup_pins(dev);
+#endif
 
     return 0;
 }
@@ -427,8 +472,12 @@ static int kscan_matrix_init(const struct device *dev) {
 static int kscan_matrix_pm_action(const struct device *dev, enum pm_device_action action) {
     switch (action) {
     case PM_DEVICE_ACTION_SUSPEND:
+        kscan_matrix_disconnect_inputs(dev);
+        kscan_matrix_disconnect_outputs(dev);
+
         return kscan_matrix_disable(dev);
     case PM_DEVICE_ACTION_RESUME:
+        kscan_matrix_setup_pins(dev);
         return kscan_matrix_enable(dev);
     default:
         return -ENOTSUP;
