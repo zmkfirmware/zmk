@@ -1,0 +1,24 @@
+#
+# Copyright (c) 2024 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+
+description: |
+  The physical attributes of a key, including size, location, and rotation
+
+compatible: "zmk,key-physical-attrs"
+
+properties:
+  "#key-cells":
+    type: int
+    required: true
+    const: 7
+
+key-cells:
+  - width
+  - height
+  - x
+  - y
+  - r
+  - rx
+  - ry
