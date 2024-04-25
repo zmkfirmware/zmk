@@ -492,7 +492,7 @@ static int rgb_underglow_auto_state(bool target_wake_state) {
             return zmk_rgb_underglow_off();
         }
     } else {
-        sleep_state.rgb_state_before_sleeping = sleep_state.on;
+        sleep_state.rgb_state_before_sleeping = state.on;
         return zmk_rgb_underglow_off();
     }
 }
