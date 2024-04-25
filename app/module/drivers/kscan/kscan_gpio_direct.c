@@ -294,6 +294,24 @@ static int kscan_direct_init_input_inst(const struct device *dev, const struct g
     return 0;
 }
 
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+
+static int kscan_direct_disconnect_inputs(const struct device *dev) {
+    const struct kscan_direct_data *data = dev->data;
+
+    for (int i = 0; i < data->inputs.len; i++) {
+        const struct gpio_dt_spec *gpio = &data->inputs.gpios[i].spec;
+        int err = gpio_pin_configure_dt(gpio, GPIO_DISCONNECTED);
+        if (err) {
+            return err;
+        }
+    }
+
+    return 0;
+}
+
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
 static int kscan_direct_init_inputs(const struct device *dev) {
     const struct kscan_direct_data *data = dev->data;
     const struct kscan_direct_config *config = dev->config;
@@ -317,9 +335,20 @@ static int kscan_direct_init(const struct device *dev) {
     // Sort inputs by port so we can read each port just once per scan.
     kscan_gpio_list_sort_by_port(&data->inputs);
 
+    k_work_init_delayable(&data->work, kscan_direct_work_handler);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_init_suspended(dev);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_enable(dev);
+#endif
+
+#else
+
     kscan_direct_init_inputs(dev);
 
-    k_work_init_delayable(&data->work, kscan_direct_work_handler);
+#endif
 
     return 0;
 }
@@ -329,8 +358,10 @@ static int kscan_direct_init(const struct device *dev) {
 static int kscan_direct_pm_action(const struct device *dev, enum pm_device_action action) {
     switch (action) {
     case PM_DEVICE_ACTION_SUSPEND:
+        kscan_direct_disconnect_inputs(dev);
         return kscan_direct_disable(dev);
     case PM_DEVICE_ACTION_RESUME:
+        kscan_direct_init_inputs(dev);
         return kscan_direct_enable(dev);
     default:
         return -ENOTSUP;
