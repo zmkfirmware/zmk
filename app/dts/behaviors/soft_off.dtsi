@@ -6,7 +6,7 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ soft_off: keymap_soft_off {
+        /omit-if-no-ref/ soft_off: z_so_off {
             compatible = "zmk,behavior-soft-off";
             #binding-cells = <0>;
             split-peripheral-off-on-press;
