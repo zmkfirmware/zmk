@@ -181,7 +181,7 @@ static void release_captured_events() {
     //
     // Events for different mod-tap instances are separated by a NULL pointer.
     //
-    // The first event popped will never be catched by the next active hold-tap
+    // The first event popped will never be caught by the next active hold-tap
     // because to start capturing a mod-tap-key-down event must first completely
     // go through the events queue.
     //

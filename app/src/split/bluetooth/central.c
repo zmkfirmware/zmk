@@ -585,7 +585,7 @@ static bool split_central_eir_found(const bt_addr_le_t *addr) {
         return false;
     }
 
-    LOG_DBG("Initiating new connnection");
+    LOG_DBG("Initiating new connection");
     struct bt_le_conn_param *param =
         BT_LE_CONN_PARAM(CONFIG_ZMK_SPLIT_BLE_PREF_INT, CONFIG_ZMK_SPLIT_BLE_PREF_INT,
                          CONFIG_ZMK_SPLIT_BLE_PREF_LATENCY, CONFIG_ZMK_SPLIT_BLE_PREF_TIMEOUT);
