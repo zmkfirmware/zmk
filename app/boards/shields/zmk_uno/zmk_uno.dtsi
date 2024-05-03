@@ -125,9 +125,9 @@ nice_view_spi: &arduino_spi {
         toggle-mode;
 
         input-gpios
-        = <&arduino_header 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-        , <&arduino_header 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-        , <&arduino_header 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        = <&arduino_header 4 GPIO_ACTIVE_LOW>
+        , <&arduino_header 3 GPIO_ACTIVE_LOW>
+        , <&arduino_header 2 GPIO_ACTIVE_LOW>
         ;
     };
 
