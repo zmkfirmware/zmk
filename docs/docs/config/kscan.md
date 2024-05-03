@@ -98,7 +98,7 @@ By default, a switch will drain current through the internal pull up/down resist
 
 `toggle-mode` applies to all switches handled by the instance of the driver. To use a toggle switch with other, non-toggle, direct GPIO switches, create two instances of the direct GPIO driver, one with `toggle-mode` and the other without. Then, use a [composite driver](#composite-driver) to combine them. The state of the switch is read on power on, so if the switch is moved whilst the board is off this will get correctly interpreted by the driver.
 
-When using `toggle-mode` the pull resistors get automatically set by the driver and should not be set in the devicetree. Assuming the common pole of the switch is connected to ground with an SP3T switch:
+When using `toggle-mode` the pull resistors get automatically set by the driver and should not be set in the devicetree via GPIO flags. Assuming the common pole of the switch is connected to ground with an SP3T switch:
 
 ```dts
     kscan_sp3t_toggle: kscan_sp3t_toggle {
