@@ -49,7 +49,7 @@ If you want to disable this functionality, you can create a behavior, for exampl
     behaviors {
         soff: soft_off {
             compatible = "zmk,behavior-soft-off";
-            #binding-cells = <0>;s           
+            #binding-cells = <0>;s
             hold-time-ms = <5000>; // Only turn off if the key is held for 5 seconds or longer.
         };
     };
