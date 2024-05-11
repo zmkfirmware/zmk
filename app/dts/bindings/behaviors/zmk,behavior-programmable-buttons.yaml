@@ -1,0 +1,8 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Programmable buttons press/release behavior
+
+compatible: "zmk,behavior-programmable-buttons"
+
+include: one_param.yaml

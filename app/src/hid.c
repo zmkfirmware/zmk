@@ -18,6 +18,11 @@ static struct zmk_hid_keyboard_report keyboard_report = {
 static struct zmk_hid_consumer_report consumer_report = {.report_id = ZMK_HID_REPORT_ID_CONSUMER,
                                                          .body = {.keys = {0}}};
 
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+static struct zmk_hid_programmable_buttons_report programmable_buttons_report = {.report_id = ZMK_HID_REPORT_ID_PROGRAMMABLE_BUTTONS,
+                                                         .body = 0};
+#endif /* IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS) */
+
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 
 static zmk_hid_boot_report_t boot_report = {.modifiers = 0, ._reserved = 0, .keys = {0}};
@@ -369,6 +374,27 @@ bool zmk_hid_is_pressed(uint32_t usage) {
     return false;
 }
 
+
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+
+int zmk_hid_programmable_button_press(uint8_t index){
+    if (index < 1 || index > 32) {
+        return -EINVAL;
+    }
+    WRITE_BIT(programmable_buttons_report.body, index - 1, true);
+    return 0;
+}
+int zmk_hid_programmable_button_release(uint8_t index){
+    if (index < 1 || index > 32) {
+        return -EINVAL;
+    }
+    WRITE_BIT(programmable_buttons_report.body, index -1, false);
+    return 0;
+}
+
+void zmk_hid_programmable_buttons_clear(void) { programmable_buttons_report.body = 0; }
+#endif /* IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS) */
+
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
 // Keep track of how often a button was pressed.
@@ -441,6 +467,12 @@ struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) {
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) {
     return &consumer_report;
 }
+
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+struct zmk_hid_programmable_buttons_report *zmk_hid_get_programmable_buttons_report(void) {
+    return &programmable_buttons_report;
+}
+#endif // IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 

@@ -164,6 +164,19 @@ int zmk_usb_hid_send_consumer_report(void) {
     return zmk_usb_hid_send_report((uint8_t *)report, sizeof(*report));
 }
 
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+int zmk_usb_hid_send_programmable_buttons_report(void) {
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    if (hid_protocol == HID_PROTOCOL_BOOT) {
+        return -ENOTSUP;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
+
+    struct zmk_hid_programmable_buttons_report *report = zmk_hid_get_programmable_buttons_report();
+    return zmk_usb_hid_send_report((uint8_t *)report, sizeof(*report));
+}
+#endif // IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 int zmk_usb_hid_send_mouse_report() {
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)

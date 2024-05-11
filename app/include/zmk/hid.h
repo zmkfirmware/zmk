@@ -60,6 +60,7 @@
 #define ZMK_HID_REPORT_ID_LEDS 0x01
 #define ZMK_HID_REPORT_ID_CONSUMER 0x02
 #define ZMK_HID_REPORT_ID_MOUSE 0x03
+#define ZMK_HID_REPORT_ID_PROGRAMMABLE_BUTTONS 0x04
 
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
@@ -145,6 +146,25 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),
     HID_END_COLLECTION,
 
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+    HID_USAGE_PAGE(HID_USAGE_CONSUMER),
+    HID_USAGE(HID_USAGE_CONSUMER_CONSUMER_CONTROL),
+    HID_COLLECTION(HID_COLLECTION_APPLICATION),
+    HID_REPORT_ID(ZMK_HID_REPORT_ID_PROGRAMMABLE_BUTTONS),
+    HID_USAGE(HID_USAGE_CONSUMER_PROGRAMMABLE_BUTTONS),
+    HID_COLLECTION(HID_COLLECTION_NAMED_ARRAY),
+    HID_USAGE_PAGE(HID_USAGE_BUTTON),
+    HID_USAGE_MIN8(0x1),
+    HID_USAGE_MAX8(0x20),
+    HID_LOGICAL_MIN8(0x00),
+    HID_LOGICAL_MAX8(0x01),
+    HID_REPORT_SIZE(0x01),
+    HID_REPORT_COUNT(0x20),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+    HID_END_COLLECTION,
+    HID_END_COLLECTION,
+#endif //IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+       
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
     HID_USAGE_PAGE(HID_USAGE_GD),
     HID_USAGE(HID_USAGE_GD_MOUSE),
@@ -239,6 +259,13 @@ struct zmk_hid_consumer_report {
     struct zmk_hid_consumer_report_body body;
 } __packed;
 
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+struct zmk_hid_programmable_buttons_report {
+    uint8_t report_id;
+    uint32_t body;
+} __packed;
+#endif // IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 struct zmk_hid_mouse_report_body {
     zmk_mouse_button_flags_t buttons;
@@ -280,6 +307,12 @@ int zmk_hid_press(uint32_t usage);
 int zmk_hid_release(uint32_t usage);
 bool zmk_hid_is_pressed(uint32_t usage);
 
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+int zmk_hid_programmable_button_press(uint8_t index);
+int zmk_hid_programmable_button_release(uint8_t index);
+void zmk_hid_programmable_buttons_clear(void);
+#endif // IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 int zmk_hid_mouse_button_press(zmk_mouse_button_t button);
 int zmk_hid_mouse_button_release(zmk_mouse_button_t button);
@@ -294,6 +327,10 @@ struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void);
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report();
 #endif
+
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+struct zmk_hid_programmable_buttons_report *zmk_hid_get_programmable_buttons_report(void);
+#endif // IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 struct zmk_hid_mouse_report *zmk_hid_get_mouse_report();

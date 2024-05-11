@@ -203,6 +203,37 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
     return -ENOTSUP;
 }
 
+
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+int zmk_endpoints_send_programmable_buttons_report() {
+    switch (current_instance.transport) {
+#if IS_ENABLED(CONFIG_ZMK_USB)
+    case ZMK_TRANSPORT_USB: {
+        int err = zmk_usb_hid_send_programmable_buttons_report();
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER USB: %d", err);
+        }
+        return err;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_USB) */
+
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    case ZMK_TRANSPORT_BLE: {
+        struct zmk_hid_programmable_buttons_report *programmable_buttons_report = zmk_hid_get_programmable_buttons_report();
+        int err = zmk_hog_send_programmable_buttons_report(programmable_buttons_report->body);
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
+        }
+        return err;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
+    }
+
+    LOG_ERR("Unsupported endpoint transport %d", current_instance.transport);
+    return -ENOTSUP;
+}
+#endif // IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 int zmk_endpoints_send_mouse_report() {
     switch (current_instance.transport) {
@@ -343,6 +374,9 @@ static int zmk_endpoints_init(void) {
 void zmk_endpoints_clear_current(void) {
     zmk_hid_keyboard_clear();
     zmk_hid_consumer_clear();
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+    zmk_hid_programmable_buttons_clear();
+#endif // IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
     zmk_hid_mouse_clear();
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
