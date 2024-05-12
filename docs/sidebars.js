@@ -82,9 +82,8 @@ module.exports = {
         collapsed: false,
         items: [
           "development/setup/getting-started",
-          "development/setup/docker-vscode",
+          "development/setup/docker",
           "development/setup/native",
-          "development/setup/zmk",
         ],
       },
       "development/build-flash",
