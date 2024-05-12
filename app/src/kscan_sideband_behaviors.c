@@ -173,7 +173,7 @@ static int ksbb_pm_action(const struct device *dev, enum pm_device_action action
     struct ksbb_data ksbb_data_##n = {};                                                           \
     PM_DEVICE_DT_INST_DEFINE(n, ksbb_pm_action);                                                   \
     DEVICE_DT_INST_DEFINE(n, ksbb_init, PM_DEVICE_DT_INST_GET(n), &ksbb_data_##n,                  \
-                          &ksbb_config_##n, POST_KERNEL,                                           \
+                          &ksbb_config_##n, APPLICATION,                                           \
                           CONFIG_ZMK_KSCAN_SIDEBAND_BEHAVIORS_INIT_PRIORITY, &ksbb_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSBB_INST)

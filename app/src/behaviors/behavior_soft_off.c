@@ -80,7 +80,7 @@ static const struct behavior_driver_api behavior_soft_off_driver_api = {
             DT_INST_PROP_OR(n, split_peripheral_off_on_press, false),                              \
     };                                                                                             \
     static struct behavior_soft_off_data bso_data_##n = {};                                        \
-    BEHAVIOR_DT_INST_DEFINE(0, behavior_soft_off_init, NULL, &bso_data_##n, &bso_config_##n,       \
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_soft_off_init, NULL, &bso_data_##n, &bso_config_##n,       \
                             POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
                             &behavior_soft_off_driver_api);
 
