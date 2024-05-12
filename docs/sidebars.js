@@ -76,7 +76,17 @@ module.exports = {
       "development/clean-room",
       "development/pre-commit",
       "development/documentation",
-      "development/setup",
+      {
+        type: "category",
+        label: "Setup",
+        collapsed: false,
+        items: [
+          "development/setup/getting-started",
+          "development/setup/docker-vscode",
+          "development/setup/native",
+          "development/setup/zmk",
+        ],
+      },
       "development/build-flash",
       "development/boards-shields-keymaps",
       "development/posix-board",
