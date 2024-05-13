@@ -81,10 +81,6 @@ Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-direct.yaml](
 | `toggle-mode`             | bool       | Use toggle switch mode.                                                                                     | n       |
 | `wakeup-source`           | bool       | Mark this kscan instance as able to wake the keyboard from deep sleep                                       | n       |
 
-By default, a switch will drain current through the internal pull up/down resistor whenever it is pressed. This is not ideal for a toggle switch, where the switch may be left in the "pressed" state for a long time. Enabling `toggle-mode` will make the driver flip between pull up and down as the switch is toggled to optimize for power.
-
-`toggle-mode` applies to all switches handled by the instance of the driver. To use a toggle switch with other, non-toggle, direct GPIO switches, create two instances of the direct GPIO driver, one with `toggle-mode` and the other without. Then, use a [composite driver](#composite-driver) to combine them.
-
 Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html#api-reference) for the elements in `input-gpios` should be `(GPIO_ACTIVE_LOW | GPIO_PULL_UP)`:
 
 ```dts
@@ -95,6 +91,25 @@ Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](http
             = <&pro_micro 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&pro_micro 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             ;
+    };
+```
+
+By default, a switch will drain current through the internal pull up/down resistor whenever it is pressed. This is not ideal for a toggle switch, where the switch may be left in the "pressed" state for a long time. Enabling `toggle-mode` will make the driver enable and disable the internal pull up/down resistor as needed when the switch is toggled to minimise power draw. For `toggle-mode` to work correctly each pole of the switch needs a dedicated GPIO pin.
+
+`toggle-mode` applies to all switches handled by the instance of the driver. To use a toggle switch with other, non-toggle, direct GPIO switches, create two instances of the direct GPIO driver, one with `toggle-mode` and the other without. Then, use a [composite driver](#composite-driver) to combine them. The state of the switch is read on power on, so if the switch is moved whilst the board is off this will get correctly interpreted by the driver.
+
+When using `toggle-mode` the pull resistors get automatically set by the driver and should not be set in the devicetree via GPIO flags. Assuming the common pole of the switch is connected to ground with an SP3T switch:
+
+```dts
+    kscan_sp3t_toggle: kscan_sp3t_toggle {
+        compatible = "zmk,kscan-gpio-direct";
+        toggle-mode;
+
+        input-gpios
+        = <&pro_micro 4 GPIO_ACTIVE_LOW>
+        , <&pro_micro 3 GPIO_ACTIVE_LOW>
+        , <&pro_micro 2 GPIO_ACTIVE_LOW>
+        ;
     };
 ```
 
