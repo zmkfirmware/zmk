@@ -58,7 +58,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
 
         if (hold_time > config->hold_time_ms) {
             if (IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)) {
-                k_usleep(K_MSEC(100));
+                k_sleep(K_MSEC(100));
             }
             zmk_pm_soft_off();
         } else {
