@@ -5,7 +5,7 @@ type: interconnect
 url: https://wiki.seeedstudio.com/Seeeduino-XIAO/
 manufacturer: Seeed
 description: |
-  The Seeed(uino) XIAO is a popular smaller format micro-controller, that has gained popularity as an alterative
+  The Seeed(uino) XIAO is a popular smaller format micro-controller, that has gained popularity as an alternative
   to the SparkFun Pro Micro. Since its creation, several pin compatible controllers, such
   as the Seeeduino XIAO BLE, Adafruit QT Py and Adafruit QT Py RP2040, have become available.
 node_labels:

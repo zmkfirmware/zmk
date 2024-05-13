@@ -157,7 +157,7 @@ config ZMK_BLE_EXPERIMENTAL_CONN
     bool "Experimental BLE connection changes"
     help
       Enables a combination of settings that are planned to be default in future versions of ZMK
-      to improve connection stability. This includes changes to timing on BLE pairing initation,
+      to improve connection stability. This includes changes to timing on BLE pairing initiation,
       restores use of the updated/new LLCP implementation, and disables 2M PHY support.
 
 config ZMK_BLE_EXPERIMENTAL_SEC
@@ -257,7 +257,7 @@ menu "Display/LED Options"
 rsource "src/display/Kconfig"
 
 menuconfig ZMK_RGB_UNDERGLOW
-    bool "RGB Adressable LED Underglow"
+    bool "RGB Addressable LED Underglow"
     select LED_STRIP
     select ZMK_LOW_PRIORITY_WORK_QUEUE
 

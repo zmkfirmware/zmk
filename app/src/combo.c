@@ -162,7 +162,7 @@ static int setup_candidates_for_first_keypress(int32_t position, int64_t timesta
 
 static int filter_candidates(int32_t position) {
     // this code iterates over candidates and the lookup together to filter in O(n)
-    // assuming they are both sorted on key_position_len, virtal_key_position
+    // assuming they are both sorted on key_position_len, virtual_key_position
     int matches = 0, lookup_idx = 0, candidate_idx = 0;
     while (lookup_idx < CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY &&
            candidate_idx < CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY) {
