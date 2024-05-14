@@ -17,23 +17,6 @@ These commands should be run in a terminal such as Bash (Linux/MacOS/Docker), Po
 We recommend reading through the setup process before following it step by step, to ensure that you are happy with installing the required dependencies.
 :::
 
-### Source Code
-
-First, you'll need to clone the ZMK source repository if you haven't already. Open a terminal and navigate to the folder you would like to place your `zmk` directory in, then run the following command:
-
-```sh
-git clone https://github.com/zmkfirmware/zmk.git
-```
-
-:::warning
-
-#### Windows Users
-
-If you're using the Docker environment on Windows, you _must_ checkout the sources to a folder within `C:\Users\[your_user_here]` to avoid a potential permissions issue.
-
-If you're using the WSL2 filesystem the sources should go under `~/` to avoid potential permissions issues.
-:::
-
 ## Environment Setup
 
 There are two ways to setup the ZMK development environment:

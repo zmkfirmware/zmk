@@ -7,44 +7,120 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 export const OsTabs = (props) => (
-  <Tabs
-    groupId="operating-systems"
-    defaultValue="linux"
+    <Tabs
+    groupId="operating-system"
+    defaultValue="ubuntu"
     values={[
-      { label: "Linux", value: "linux" },
+      { label: "Ubuntu", value: "ubuntu" },
       { label: "Windows", value: "win" },
-      { label: "macOS", value: "mac" },
+      { label: "Mac OS", value: "mac" },
       { label: "Raspberry OS", value: "raspberryos" },
     ]}
   >
     {/* eslint-disable-next-line */}
     {props.children}
   </Tabs>
+
 );
 
-First, step into the `zmk` directory that you cloned in [Getting Started](/docs/development/setup/getting-started).
+export const EnvTabs = (props) => (
+    <Tabs
+    groupId="python-environment"
+    defaultValue="venv"
+    values={[
+      { label: "Install within Virtual Environment", value: "venv" },
+      { label: "Install globally", value: "glob" },
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
+
+export const WinTermTabs = (props) => (
+    <Tabs
+    groupId="windows-terminal-choice"
+    defaultValue="cmd"
+    values={[
+      { label: "Command Prompt", value: "cmd" },
+      { label: "Powershell", value: "ps" },
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
+
+## 1. Install Zephyr Dependencies
+
+Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
+
+- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
+- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+
+:::info
+Zephyr's [Install Linux Host Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/installation_linux.html) page may be of use for users of Linux distributions which are not based on Ubuntu.
+:::
+
+## 2. Source Code
+
+Next, you'll need to clone the ZMK source repository if you haven't already. Open a terminal and navigate to the folder you would like to place your `zmk` directory in, then run the following command:
+
+```sh
+git clone https://github.com/zmkfirmware/zmk.git
+```
+
+Then step into the repository.
 
 ```sh
 cd zmk
 ```
 
+## 3. Get Zephyr and install Python dependencies
+
+:::note
+These steps are very similar to Zephyr's [Get Zephyr and install Python dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#get-zephyr-and-install-python-dependencies) instructions, but specialised for ZMK.
+:::
+
 <OsTabs>
-<TabItem value="linux">
+<TabItem value="ubuntu">
 
-## Install Zephyr and West
+<EnvTabs>
+<TabItem value="venv">
 
-1. Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
+1. Use `apt` to install Python `venv` package:
 
-- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
-- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+```sh
+sudo apt install python3-venv
+```
 
-  :::info
-  Zephyr's [Install Linux Host Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/installation_linux.html) page may be of use for distributions which are not based on Ubuntu.
-  :::
+2. Create a new virtual environment:
 
-2. Next, follow steps 1-4 from [Get Zephyr and install Python dependencies](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#get-zephyr-and-install-python-dependencies).
+```sh
+python3 -m venv .venv
+```
 
-3. ZMK comes with its own copy of Zephyr, so you don't need to add a fresh copy to a separate directory.
+3. Activate the virtual environment:
+
+```sh
+source .venv/bin/activate
+```
+
+Once activated your shell will be prefixed with `(.venv)`. The virtual environment can be deactivated at any time by running `deactivate`.
+
+:::note
+Remember to activate the virtual environment every time you start working.
+:::
+
+4. Install west:
+
+```sh
+pip3 install west
+```
+
+5. Initialise the application (This provides ZMK with its own copy of Zephyr):
 
 ```sh
 west init -l app/
@@ -55,35 +131,105 @@ west update
 This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
 :::
 
-4. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+6. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
 
 ```sh
 west zephyr-export
 ```
 
-5. ZMK does not need all of the additional dependencies found in Zephyr's `requirements.txt`, but it does need those found in `requirements-base.txt`
+7. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
 
 ```sh
 pip3 install -r zephyr/scripts/requirements-base.txt
 ```
 
-6. Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk)
+</TabItem>
+<TabItem value="glob">
+
+1. Install `west`, and make sure `~/.local/bin` is on your `PATH` environment variable:
+
+```sh
+pip3 install --user -U west
+echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+2. Initialise the application (This provides ZMK with its own copy of Zephyr):
+
+```sh
+west init -l app/
+west update
+```
+
+:::tip
+This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
+:::
+
+3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+
+```sh
+west zephyr-export
+```
+
+4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+
+```sh
+pip3 install --user -r zephyr/scripts/requirements-base.txt
+```
+
+</TabItem>
+</EnvTabs>
+
+## 4. Install Zephyr SDK
+
+Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk).
 
 Your setup is now complete.
 
 </TabItem>
 <TabItem value="win">
 
-## Install Zephyr and West
+<EnvTabs>
+<TabItem value="venv">
 
-1. Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
+1. Create a new virtual environment:
 
-- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
-- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+```sh
+python -m venv .venv
+```
 
-2. Next, follow steps 1-4 from [Get Zephyr and install Python dependencies](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#get-zephyr-and-install-python-dependencies).
+2. Activate the virtual environment:
 
-3. ZMK comes with its own copy of Zephyr, so you don't need to add a fresh copy to a separate directory.
+<WinTermTabs>
+<TabItem value="cmd">
+
+```sh
+.venv\Scripts\activate.bat
+```
+
+</TabItem>
+<TabItem value="ps">
+
+```sh
+.venv\Scripts\Activate.ps1
+```
+
+</TabItem>
+</WinTermTabs>
+
+Once activated your shell will be prefixed with `(.venv)`. The virtual environment can be deactivated at any time by running `deactivate`.
+
+:::note
+Remember to activate the virtual environment every time you start working.
+:::
+
+3. Install west:
+
+```sh
+pip install west
+```
+
+4. Initialise the application (This provides ZMK with its own copy of Zephyr):
 
 ```sh
 west init -l app/
@@ -94,19 +240,56 @@ west update
 This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
 :::
 
-4. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+5. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
 
 ```sh
 west zephyr-export
 ```
 
-5. ZMK does not need all of the additional dependencies found in Zephyr's `requirements.txt`, but it does need those found in `requirements-base.txt`
+6. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
 
 ```sh
-pip3 install -r zephyr/scripts/requirements-base.txt
+pip install -r zephyr/scripts/requirements-base.txt
 ```
 
-6. Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk)
+</TabItem>
+<TabItem value="glob">
+
+1. Install `west`, and make sure `~/.local/bin` is on your `PATH` environment variable:
+
+```sh
+pip install -U west
+```
+
+2. Initialise the application (This provides ZMK with its own copy of Zephyr):
+
+```sh
+west init -l app/
+west update
+```
+
+:::tip
+This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
+:::
+
+3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+
+```sh
+west zephyr-export
+```
+
+4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+
+```sh
+pip install -r zephyr/scripts/requirements-base.txt
+```
+
+</TabItem>
+</EnvTabs>
+
+## 4. Install Zephyr SDK
+
+Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk).
 
 :::note
 `dfu-util` is required to flash devices that use DFU, but there is currently no maintained package for it on Chocolatey. [QMK Toolbox](https://github.com/qmk/qmk_toolbox) contains a working version of it though.
@@ -117,16 +300,33 @@ Your setup is now complete.
 </TabItem>
 <TabItem value="mac">
 
-## Install Zephyr and West
+<EnvTabs>
+<TabItem value="venv">
+1. Create a new virtual environment:
 
-1. Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
+```sh
+python3 -m venv .venv
+```
 
-- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
-- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+2. Activate the virtual environment:
 
-2. Next, follow steps 1-4 from [Get Zephyr and install Python dependencies](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#get-zephyr-and-install-python-dependencies).
+```sh
+source .venv/bin/activate
+```
 
-3. ZMK comes with its own copy of Zephyr, so you don't need to add a fresh copy to a separate directory.
+Once activated your shell will be prefixed with `(.venv)`. The virtual environment can be deactivated at any time by running `deactivate`.
+
+:::note
+Remember to activate the virtual environment every time you start working.
+:::
+
+3. Install west:
+
+```sh
+pip3 install west
+```
+
+4. Initialise the application (This provides ZMK with its own copy of Zephyr)
 
 ```sh
 west init -l app/
@@ -137,35 +337,92 @@ west update
 This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
 :::
 
-4. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+5. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
 
 ```sh
 west zephyr-export
 ```
 
-5. ZMK does not need all of the additional dependencies found in Zephyr's `requirements.txt`, but it does need those found in `requirements-base.txt`
+6. Install the additional dependencies found in Zephyr's `requirements-base.txt`.
 
 ```sh
 pip3 install -r zephyr/scripts/requirements-base.txt
 ```
 
-6. Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk)
+</TabItem>
+<TabItem value="glob">
 
-Your setup is now complete.
+1. Install `west`
+
+```sh
+pip3 install -U west
+```
+
+2. Initialise the application (This provides ZMK with its own copy of Zephyr)
+
+```sh
+west init -l app/
+west update
+```
+
+:::tip
+This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
+:::
+
+3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+
+```sh
+west zephyr-export
+```
+
+4. Install the additional dependencies found in Zephyr's `requirements-base.txt`.
+
+```sh
+pip3 install -r ~/zephyrproject/zephyr/scripts/requirements-base.txt
+```
+
+</TabItem>
+</EnvTabs>
+## 4. Install Zephyr SDK
+
+Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk).
 
 </TabItem>
 <TabItem value="raspberryos">
+<EnvTabs>
+<TabItem value="venv">
 
-## Install Zephyr and West
+1. Use `apt` to install Python `venv` package:
 
-1. Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
+```sh
+sudo apt install python3-venv
+```
 
-- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
-- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+2. Create a new virtual environment:
 
-2. Next, follow steps 1-4 from [Get Zephyr and install Python dependencies](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#get-zephyr-and-install-python-dependencies).
+```sh
+python3 -m venv .venv
+```
 
-3. ZMK comes with its own copy of Zephyr, so you don't need to add a fresh copy to a separate directory.
+3. Activate the virtual environment:
+
+```sh
+source .venv/bin/activate
+```
+
+Once activated your shell will be prefixed with `(.venv)`. The virtual environment can be deactivated at any time by running `deactivate`.
+
+:::note
+Remember to activate the virtual environment every time you start working.
+:::
+
+4. Install west:
+
+```sh
+pip3 install west
+```
+
+5. Initialise the application (This provides ZMK with its own copy of Zephyr):
 
 ```sh
 west init -l app/
@@ -176,21 +433,60 @@ west update
 This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
 :::
 
-4. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+6. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
 
 ```sh
 west zephyr-export
 ```
 
-5. ZMK does not need all of the additional dependencies found in Zephyr's `requirements.txt`, but it does need those found in `requirements-base.txt`
+7. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
 
 ```sh
 pip3 install -r zephyr/scripts/requirements-base.txt
 ```
 
-6. Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk)
+</TabItem>
+<TabItem value="glob">
 
-#### Install Cross-Compile Toolchain
+1. Install `west`, and make sure `~/.local/bin` is on your `PATH` environment variable:
+
+```sh
+pip3 install --user -U west
+echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+2. Initialise the application (This provides ZMK with its own copy of Zephyr):
+
+```sh
+west init -l app/
+west update
+```
+
+:::tip
+This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
+:::
+
+3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+
+```sh
+west zephyr-export
+```
+
+4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+
+```sh
+pip3 install --user -r ~/zephyrproject/zephyr/scripts/requirements-base.txt
+```
+
+</TabItem>
+</EnvTabs>
+
+## 4. Install Zephyr SDK
+
+Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk).
+
+## 5. Install Cross-Compile Toolchain
 
 Because Raspberry OS runs on the same architecture (but different ABI) as ARM keyboard MCUs, the operating system's installed [cross compilers](https://docs.zephyrproject.org/3.5.0/develop/toolchains/other_x_compilers.html) can be used to target the different ABI. Building for non-ARM MCUs has not been tested.
 

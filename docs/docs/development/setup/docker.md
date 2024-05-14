@@ -7,11 +7,28 @@ sidebar_label: Docker
 Currently the Docker approach is only documented for VSCode, Microsoft's proprietary version of [Code OSS](https://github.com/microsoft/vscode) - See [here](https://github.com/microsoft/vscode/wiki/Differences-between-the-repository-and-Visual-Studio-Code) for more info on different versions. There is an alternative approach using [devcontainers](https://containers.dev/), but this is not documented yet - contributions are welcome!
 :::
 
+### Source Code
+
+First, you'll need to clone the ZMK source repository if you haven't already. Open a terminal and navigate to the folder you would like to place your `zmk` directory in, then run the following command:
+
+```sh
+git clone https://github.com/zmkfirmware/zmk.git
+```
+
+:::warning
+
+#### Windows Users
+
+If you're using the Docker environment on Windows, you _must_ checkout the sources to a folder within `C:\Users\[your_user_here]` to avoid a potential permissions issue.
+
+If you're using the WSL2 filesystem the sources should go under `~/` to avoid potential permissions issues.
+:::
+
 ## Installing Development Tools
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your operating system.
-2. Install [VS Code](https://code.visualstudio.com/)
-3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+2. Install [VS Code](https://code.visualstudio.com/).
+3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 
 ### Initialize & Update Zephyr Workspace
 
