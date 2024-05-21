@@ -4,7 +4,7 @@ sidebar_label: Docker
 ---
 
 :::note
-Currently the Docker approach is only documented for VSCode, Microsoft's proprietary version of [Code OSS](https://github.com/microsoft/vscode) - See [here](https://github.com/microsoft/vscode/wiki/Differences-between-the-repository-and-Visual-Studio-Code) for more info on different versions. There is an alternative approach using [devcontainers](https://containers.dev/), but this is not documented yet - contributions are welcome!
+Currently the Docker approach is only documented for [VS Code](https://github.com/microsoft/vscode). While it can be replicated using [devcontainers](https://containers.dev/) this is not documented yet - contributions are welcome!
 :::
 
 ### Source Code
