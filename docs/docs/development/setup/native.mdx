@@ -100,8 +100,8 @@ These steps are very similar to Zephyr's [Get Zephyr and install Python dependen
 
 <EnvTabs>
 <TabItem value="venv">
-<OsTabs>
-<TabItem value="ubuntu">
+<Tabs groupId="operating-systems" defaultValue="ubuntu">
+  <TabItem value="ubuntu" label="Ubuntu">
 
 1. Use `apt` to install Python `venv` package:
 
@@ -117,8 +117,7 @@ source .venv/bin/activate
 ```
 
 </TabItem>
-<TabItem value="win">
-
+  <TabItem value="win" label="Windows">
 1. Create a new virtual environment:
 
 ```sh
@@ -144,7 +143,8 @@ python -m venv .venv
 </TabItem>
 </WinTermTabs>
 </TabItem>
-<TabItem value="mac">
+ <TabItem value="mac" label="Mac OS">
+
 1. Create a new virtual environment:
 
 ```sh
@@ -158,7 +158,7 @@ source .venv/bin/activate
 ```
 
 </TabItem>
-</OsTabs>
+</Tabs>
 
 Once activated your shell will be prefixed with `(.venv)`. The virtual environment can be deactivated at any time by running `deactivate`.
 
@@ -197,8 +197,8 @@ pip install -r zephyr/scripts/requirements-base.txt
 
 </TabItem>
 <TabItem value="glob">
-<OsTabs>
-<TabItem value="ubuntu">
+<Tabs groupId="operating-systems" defaultValue="ubuntu">
+  <TabItem value="ubuntu" label="Ubuntu">
 1. Install `west`, and make sure `~/.local/bin` is on your `PATH` environment variable:
 
 ```sh
@@ -207,6 +207,28 @@ echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
+
+</TabItem>
+  <TabItem value="win" label="Windows">
+1. Install `west`, and make sure `~/.local/bin` is on your `PATH` environment variable:
+
+```sh
+pip install -U west
+```
+
+</TabItem>
+  <TabItem value="mac" label="Mac OS">
+
+
+
+1. Install `west`
+
+```sh
+pip3 install -U west
+```
+</TabItem>
+</Tabs>
+
 2. Initialize the application and update to fetch modules, including Zephyr:
 
 ```sh
@@ -223,6 +245,9 @@ This step pulls down quite a bit of tooling, be patient!
 ```sh
 west zephyr-export
 ```
+
+<Tabs groupId="operating-systems" defaultValue="ubuntu" className="secrettabs">
+  <TabItem value="ubuntu" label="Ubuntu">
 
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
 
@@ -231,29 +256,8 @@ pip3 install --user -r zephyr/scripts/requirements-base.txt
 ```
 
 </TabItem>
-<TabItem value="win">
-1. Install `west`, and make sure `~/.local/bin` is on your `PATH` environment variable:
+  <TabItem value="win" label="Windows">
 
-```sh
-pip install -U west
-```
-
-2. Initialize the application and update to fetch modules, including Zephyr:
-
-```sh
-west init -l app/
-west update
-```
-
-:::tip
-This step pulls down quite a bit of tooling, be patient!
-:::
-
-3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
-
-```sh
-west zephyr-export
-```
 
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
 
@@ -262,39 +266,15 @@ pip install -r zephyr/scripts/requirements-base.txt
 ```
 
 </TabItem>
-<TabItem value="mac">
-
-1. Install `west`
-
-```sh
-pip3 install -U west
-```
-
-2. Initialize the application and update to fetch modules, including Zephyr:
-
-```sh
-west init -l app/
-west update
-```
-
-:::tip
-This step pulls down quite a bit of tooling, be patient!
-:::
-
-3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
-
-```sh
-west zephyr-export
-```
-
+  <TabItem value="mac" label="Mac OS">
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`.
 
 ```sh
-pip3 install -r ~/zephyrproject/zephyr/scripts/requirements-base.txt
+pip3 install -r zephyr/scripts/requirements-base.txt
 ```
 
 </TabItem>
-</OsTabs>
+</Tabs>
 </TabItem>
 </EnvTabs>
 
