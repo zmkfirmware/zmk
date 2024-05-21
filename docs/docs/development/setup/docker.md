@@ -33,13 +33,9 @@ Open the `zmk` checkout folder in VS Code. The repository includes a configurati
 
 ![VS Code Dev Container Configuration Alert](../../assets/dev-setup/vscode_devcontainer.png)
 
-Click `Reopen in Container` in order to reopen the VS Code with the running container.
+Click `Reopen in Container` in order to reopen the VS Code with the running container. If the alert fails to pop up or you accidentally close it, you can perform the same action by pressing `ctrl+shift+p` and selecting `Remote: Show Remote Menu`.
 
 The first time you do this on your machine, it will pull the docker image down from the registry and build the container. Subsequent launches are much faster!
-
-:::note
-If the alert fails to pop up or you accidentally close it, you can perform the same action from the remote menu: `ctrl+shift+p` and invoke `Remote: Show Remote Menu`.
-:::
 
 :::caution
 All subsequent steps must be performed from the VS Code terminal _inside_ the container.
