@@ -1,5 +1,6 @@
 board:
   - nice_nano_v2
+  - nice_nano
   - nrfmicro_13
   - proton_c
 shield:

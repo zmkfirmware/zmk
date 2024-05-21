@@ -1,4 +1,4 @@
-if SHIELD_CORNE_LEFT
+if SHIELD_FLOAT_LEFT
 
 config ZMK_KEYBOARD_NAME
     default "float"
@@ -8,20 +8,10 @@ config ZMK_SPLIT_ROLE_CENTRAL
 
 endif
 
-if SHIELD_CORNE_LEFT || SHIELD_CORNE_RIGHT
+if SHIELD_FLOAT_LEFT || SHIELD_FLOAT_RIGHT
 
 config ZMK_SPLIT
     default y
-
-if ZMK_DISPLAY
-
-config I2C
-    default y
-
-config SSD1306
-    default y
-
-endif # ZMK_DISPLAY
 
 if LVGL
 
