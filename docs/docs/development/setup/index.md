@@ -9,7 +9,7 @@ We recommend reading through the setup process before following it step by step,
 
 ## Environment Setup
 
-There are two ways to setup the ZMK development environment:
+There are two ways to set up the ZMK development environment:
 
 - [Docker](/docs/development/setup/docker) ;
 - [Native](/docs/development/setup/native), i.e. using the operating system directly.
