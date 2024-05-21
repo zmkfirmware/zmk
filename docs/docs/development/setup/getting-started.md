@@ -28,4 +28,4 @@ The Docker approach is a self-contained development environment while the native
 
 The native approach installs the toolchain and dependencies on your system directly. This typically runs slightly faster than the Docker approach, and can be preferable for users who already have the dependencies on their system.
 
-Please see the [Docker](/docs/development/setup/docker) instructions or [native](/docs/development/setup/native) instructions to continue setup.
+Please see the [Docker](docker.md) instructions or [native](native.mdx) instructions to continue setup.
