@@ -3,16 +3,6 @@ title: Getting Started
 sidebar_label: Getting Started
 ---
 
-:::info
-Throughout this documentation you will see commands like
-
-```sh
-sudo apt update
-```
-
-These commands should be run in a terminal such as Bash (Linux/MacOS/Docker), PowerShell, or Command Prompt (Windows).
-:::
-
 :::tip
 We recommend reading through the setup process before following it step by step, to ensure that you are happy with installing the required dependencies.
 :::
@@ -28,4 +18,4 @@ The Docker approach is a self-contained development environment while the native
 
 The native approach installs the toolchain and dependencies on your system directly. This typically runs slightly faster than the Docker approach, and can be preferable for users who already have the dependencies on their system.
 
-Please see the [Docker](docker.md) instructions or [native](native.mdx) instructions to continue setup.
+Please see the [Docker](/docs/development/setup/docker) instructions or [native](/docs/development/setup/native) instructions to continue setup.

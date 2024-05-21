@@ -80,7 +80,7 @@ module.exports = {
             },
             {
               label: "Development",
-              to: "docs/development/setup/getting-started",
+              to: "docs/development/setup",
             },
           ],
         },

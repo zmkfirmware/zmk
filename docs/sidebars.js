@@ -81,7 +81,7 @@ module.exports = {
         label: "Setup",
         collapsed: false,
         items: [
-          "development/setup/getting-started",
+          "development/setup/index",
           "development/setup/docker",
           "development/setup/native",
         ],

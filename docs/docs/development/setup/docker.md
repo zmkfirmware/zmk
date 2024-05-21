@@ -4,7 +4,7 @@ sidebar_label: Docker
 ---
 
 :::note
-Currently the Docker approach is only documented for [VS Code](https://github.com/microsoft/vscode). While it can be replicated using [devcontainers](https://containers.dev/) this is not documented yet - contributions are welcome!
+Currently the Docker approach is only documented for [VS Code](https://github.com/microsoft/vscode) (not [Code OSS](https://github.com/microsoft/vscode/wiki/Differences-between-the-repository-and-Visual-Studio-Code)). While it can be replicated using [devcontainers](https://containers.dev/) this is not documented yet - contributions are welcome!
 :::
 
 ### Source Code
@@ -14,15 +14,6 @@ First, you'll need to clone the ZMK source repository if you haven't already. Op
 ```sh
 git clone https://github.com/zmkfirmware/zmk.git
 ```
-
-:::warning
-
-#### Windows Users
-
-If you're using the Docker environment on Windows, you _must_ checkout the sources to a folder within `C:\Users\[your_user_here]` to avoid a potential permissions issue.
-
-If you're using the WSL2 filesystem the sources should go under `~/` to avoid potential permissions issues.
-:::
 
 ## Installing Development Tools
 
@@ -67,7 +58,7 @@ west update
 ```
 
 :::tip
-This step pulls down quite a bit of tooling. Go grab a cup of coffee, it can take 10-15 minutes even on a good internet connection!
+This step pulls down quite a bit of tooling, be patient!
 :::
 
 :::info
