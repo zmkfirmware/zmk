@@ -199,33 +199,63 @@ pip install -r zephyr/scripts/requirements-base.txt
 <TabItem value="glob">
 <Tabs groupId="operating-systems" defaultValue="ubuntu">
   <TabItem value="ubuntu" label="Ubuntu">
-1. Install `west`, and make sure `~/.local/bin` is on your `PATH` environment variable:
+1. Install `west`:
 
 ```sh
 pip3 install --user -U west
+```
+
+:::note
+You need `~/.local/bin` to be on your `PATH` environment variable; verify that it is by running
+
+```sh
+west --version
+```
+
+If this prints an error rather than a `west` version number, then add `~/.local/bin` to your `PATH`:
+
+```sh
 echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
+:::
 
 </TabItem>
   <TabItem value="win" label="Windows">
-1. Install `west`, and make sure `~/.local/bin` is on your `PATH` environment variable:
+1. Install `west`:
 
 ```sh
 pip install -U west
 ```
 
+:::note
+You need the Python scripts directory to be on your PATH environment variable; verify that it is by running
+
+```sh
+west --version
+```
+
+If this prints an error rather than a `west` version number, then add said directory to your `PATH` with PowerShell:
+
+```powershell
+$Scripts = python -c "import sysconfig; print(sysconfig.get_path('scripts'))"
+$Path = [Environment]::GetEnvironmentVariable('PATH', 'User')
+[Environment]::SetEnvironmentVariable('PATH', "$Path;$Scripts", 'User')
+$env:PATH += ";$Scripts"
+```
+
+:::
+
 </TabItem>
   <TabItem value="mac" label="Mac OS">
 
-
-
-1. Install `west`
+1. Install `west`:
 
 ```sh
 pip3 install -U west
 ```
+
 </TabItem>
 </Tabs>
 
@@ -257,7 +287,6 @@ pip3 install --user -r zephyr/scripts/requirements-base.txt
 
 </TabItem>
   <TabItem value="win" label="Windows">
-
 
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
 

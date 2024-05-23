@@ -17,7 +17,4 @@ There are two ways to set up the ZMK development environment:
 - [Native](/docs/development/setup/native):\
   This uses your operating system directly. Usually runs slightly faster than the Docker approach, and can be preferable for users who already have the dependencies on their system.
 
-
-
-
 Please see the [Docker](/docs/development/setup/docker) instructions or [native](/docs/development/setup/native) instructions to continue setup.
