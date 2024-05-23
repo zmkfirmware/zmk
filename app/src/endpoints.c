@@ -41,7 +41,7 @@ static struct k_work_delayable endpoints_save_work;
 #endif
 
 static int endpoints_save_preferred(void) {
-#if IS_ENABLED(CONFIG_SETTINGS)
+#if IS_ENABLED(CONFIG_ZMK_SETTINGS_SAVE_ENDPOINTS)
     return k_work_reschedule(&endpoints_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
     return 0;
