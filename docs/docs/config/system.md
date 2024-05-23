@@ -20,6 +20,8 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`  | int    | Milliseconds to wait after a setting change before writing it to flash memory | 60000   |
 | `CONFIG_ZMK_WPM`                     | bool   | Enable calculating words per minute                                           | n       |
 | `CONFIG_HEAP_MEM_POOL_SIZE`          | int    | Size of the heap memory pool                                                  | 8192    |
+| `CONFIG_ZMK_SETTINGS_SAVE_ENDPOINTS` | bool   | Enable automatic saving of the selected endpoint (USB / BT)                   | y       |
+| `CONFIG_ZMK_SETTINGS_SAVE_EXT_POWER` | bool   | Enable automatic saving of the selected ext_power persistance state           | y       |
 
 ### HID
 
