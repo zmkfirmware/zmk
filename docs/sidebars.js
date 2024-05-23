@@ -79,7 +79,7 @@ module.exports = {
       {
         type: "category",
         label: "Setup",
-        collapsed: false,
+        collapsed: true,
         items: [
           "development/setup/index",
           "development/setup/docker",
