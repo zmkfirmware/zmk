@@ -3,7 +3,7 @@ id: float
 name: float
 type: shield
 url: https://github.com/foostan/crkbd/
-requires: [nice_nano]
+requires: [nice_nano_v2]
 features:
   - keys
 siblings:
