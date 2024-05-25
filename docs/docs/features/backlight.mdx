@@ -58,7 +58,7 @@ config LED_PWM
 endif # ZMK_BACKLIGHT
 ```
 
-Create a `<board>-pinctrl.dtsi` file if it does not already exist, and include it at the beginning of the `<board>.dts` file. `CONFIG_PINCTRL=y` must be added to to `<board>_defconfig` if it isn't already enabled.
+Create a `<board>-pinctrl.dtsi` file if it does not already exist, and include it at the beginning of the `<board>.dts` file. `CONFIG_PINCTRL=y` must be added to `<board>_defconfig` if it isn't already enabled.
 
 The pinctrl file has a `&pinctrl` node that encompasses all pinctrl settings, including I2C or SPI peripherals (e.g. WS2812 LEDs, Battery fuel gauges):
 
