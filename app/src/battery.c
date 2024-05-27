@@ -69,14 +69,14 @@ static int zmk_battery_update(const struct device *battery) {
         return rc;
     }
 #elif IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE)
-    rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_VOLTAGE);
+    rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_GAUGE_VOLTAGE);
     if (rc != 0) {
         LOG_DBG("Failed to fetch battery values: %d", rc);
         return rc;
     }
 
     struct sensor_value voltage;
-    rc = sensor_channel_get(battery, SENSOR_CHAN_VOLTAGE, &voltage);
+    rc = sensor_channel_get(battery, SENSOR_CHAN_GAUGE_VOLTAGE, &voltage);
 
     if (rc != 0) {
         LOG_DBG("Failed to get battery voltage: %d", rc);
