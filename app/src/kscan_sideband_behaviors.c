@@ -93,12 +93,12 @@ void ksbb_inner_kscan_callback(const struct device *dev, uint32_t row, uint32_t 
 }
 
 static int ksbb_configure(const struct device *dev, kscan_callback_t callback) {
-    const struct ksbb_config *cfg = dev->config;
     struct ksbb_data *data = dev->data;
 
     data->callback = callback;
 
 #if IS_ENABLED(CONFIG_PM_DEVICE)
+    const struct ksbb_config *cfg = dev->config;
     if (pm_device_wakeup_is_enabled(dev) && pm_device_wakeup_is_capable(cfg->kscan)) {
         pm_device_wakeup_enable(cfg->kscan, true);
     }
