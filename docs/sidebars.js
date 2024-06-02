@@ -76,7 +76,16 @@ module.exports = {
       "development/clean-room",
       "development/pre-commit",
       "development/documentation",
-      "development/setup",
+      {
+        type: "category",
+        label: "Setup",
+        collapsed: true,
+        items: [
+          "development/setup/index",
+          "development/setup/docker",
+          "development/setup/native",
+        ],
+      },
       "development/build-flash",
       "development/boards-shields-keymaps",
       "development/posix-board",

@@ -40,7 +40,7 @@ If you need to, a review of [Learn The Basics Of Git In Under 10 Minutes](https:
 :::
 
 :::note
-It is also possible to build firmware locally on your computer by following the [toolchain setup](development/setup.mdx) and
+It is also possible to build firmware locally on your computer by following the [toolchain setup](development/setup/index.md) and
 [building instructions](development/build-flash.mdx), which includes pointers to
 [building using your `zmk-config` folder](development/build-flash.mdx#building-from-zmk-config-folder).
 :::
