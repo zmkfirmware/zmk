@@ -116,7 +116,8 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-</TabItem>
+  </TabItem>
+
   <TabItem value="win" label="Windows">
 1. Create a new virtual environment:
 
@@ -126,24 +127,27 @@ python -m venv .venv
 
 2. Activate the virtual environment:
 
-<WinTermTabs>
-<TabItem value="cmd">
+  <WinTermTabs>
+    <TabItem value="cmd">
 
 ```sh
 .venv\Scripts\activate.bat
 ```
 
-</TabItem>
-<TabItem value="ps">
+    </TabItem>
+
+    <TabItem value="ps">
 
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-</TabItem>
-</WinTermTabs>
-</TabItem>
- <TabItem value="mac" label="Mac OS">
+    </TabItem>
+
+  </WinTermTabs>
+  </TabItem>
+
+  <TabItem value="mac" label="Mac OS">
 
 1. Create a new virtual environment:
 
@@ -157,7 +161,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-</TabItem>
+  </TabItem>
 </Tabs>
 
 Once activated your shell will be prefixed with `(.venv)`. The virtual environment can be deactivated at any time by running `deactivate`.
@@ -221,7 +225,8 @@ source ~/.bashrc
 
 :::
 
-</TabItem>
+  </TabItem>
+
   <TabItem value="win" label="Windows">
 1. Install `west`:
 
@@ -247,7 +252,8 @@ $env:PATH += ";$Scripts"
 
 :::
 
-</TabItem>
+  </TabItem>
+
   <TabItem value="mac" label="Mac OS">
 
 1. Install `west`:
@@ -256,7 +262,7 @@ $env:PATH += ";$Scripts"
 pip3 install -U west
 ```
 
-</TabItem>
+  </TabItem>
 </Tabs>
 
 2. Initialize the application and update to fetch modules, including Zephyr:
@@ -285,7 +291,8 @@ west zephyr-export
 pip3 install --user -r zephyr/scripts/requirements-base.txt
 ```
 
-</TabItem>
+  </TabItem>
+
   <TabItem value="win" label="Windows">
 
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
@@ -294,7 +301,8 @@ pip3 install --user -r zephyr/scripts/requirements-base.txt
 pip install -r zephyr/scripts/requirements-base.txt
 ```
 
-</TabItem>
+  </TabItem>
+
   <TabItem value="mac" label="Mac OS">
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`.
 
@@ -302,7 +310,7 @@ pip install -r zephyr/scripts/requirements-base.txt
 pip3 install -r zephyr/scripts/requirements-base.txt
 ```
 
-</TabItem>
+  </TabItem>
 </Tabs>
 </TabItem>
 </EnvTabs>
@@ -314,7 +322,6 @@ Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.z
 ### OS specific notes
 
 <OsNoteTabs>
-
 <TabItem value="win">
   `dfu-util` is required to flash devices that use DFU, but there is currently
   no maintained package for it on Chocolatey. [QMK
@@ -341,7 +348,6 @@ export CROSS_COMPILE=/usr/bin/arm-none-eabi-
 ```
 
 </TabItem>
-
 </OsNoteTabs>
 
 Your setup is now complete.
