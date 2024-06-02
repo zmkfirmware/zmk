@@ -15,19 +15,13 @@ First, you'll need to clone the ZMK source repository if you haven't already. Op
 git clone https://github.com/zmkfirmware/zmk.git
 ```
 
-## Installing Development Tools
+### Installing Development Tools
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your operating system.
 2. Install [VS Code](https://code.visualstudio.com/).
 3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 
 ### Initialize & Update Zephyr Workspace
-
-Since ZMK is built as a Zephyr™ application, the next step is
-to use `west` to initialize and update your workspace. The ZMK
-Zephyr™ application is in the `app/` source directory:
-
-#### Step into the repository
 
 Open the `zmk` checkout folder in VS Code. The repository includes a configuration for containerized development, so an alert will pop up:
 
@@ -38,18 +32,13 @@ Click `Reopen in Container` in order to reopen the VS Code with the running cont
 The first time you do this on your machine, it will pull the docker image down from the registry and build the container. Subsequent launches are much faster!
 
 :::caution
-All subsequent steps must be performed from the VS Code terminal _inside_ the container.
+The following step and any future [build commands](../build-flash.mdx) must be executed from the VS Code terminal _inside_ the container.
 :::
 
-#### Initialize West
+Initialize the application and update to fetch modules, including Zephyr:
 
 ```sh
 west init -l app/
-```
-
-#### Update To Fetch Modules
-
-```sh
 west update
 ```
 
