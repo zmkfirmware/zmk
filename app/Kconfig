@@ -179,6 +179,13 @@ config ZMK_BLE_PASSKEY_ENTRY
     bool "Require passkey entry on the keyboard to complete pairing"
     select RING_BUFFER
 
+config ZMK_BLE_PERSIST_PROFILE_ON_CHANGE
+    bool "Persist the active BLE profile on change"
+    default y
+    help
+      Enables persisting the active BLE profile on change (after ZMK_SETTINGS_SAVE_DEBOUNCE ms),
+      ensuring it is active on startup.
+
 config BT_SMP_ALLOW_UNAUTH_OVERWRITE
     imply ZMK_BLE_PASSKEY_ENTRY
 
