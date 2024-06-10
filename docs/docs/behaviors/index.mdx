@@ -9,7 +9,7 @@ sidebar_label: Overview
 
 Below is a summary of pre-defined behavior bindings and user-definable behaviors available in ZMK, with references to documentation pages describing them.
 
-## Key press behaviors
+## Key Press Behaviors
 
 | Binding       | Behavior                                      | Description                                                                                                                                                                                                                                       |
 | ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -21,14 +21,14 @@ Below is a summary of pre-defined behavior bindings and user-definable behaviors
 | `&caps_word`  | [Caps Word](caps-word.md)                     | Behaves similar to caps lock, but automatically deactivates when any key not in a continue list is pressed, or if the caps word key is pressed again                                                                                              |
 | `&key_repeat` | [Key Repeat](key-repeat.md)                   | Sends again whatever keycode was last sent                                                                                                                                                                                                        |
 
-## Miscellaneous behaviors
+## Miscellaneous Behaviors
 
 | Binding  | Behavior                           | Description                                                                                                                           |
 | -------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `&trans` | [Transparent](misc.md#transparent) | Passes the key press down to the next active layer in the stack for processing                                                        |
 | `&none`  | [None](misc.md#none)               | Swallows and stops the key press, no keycode will be sent nor will the key press be passed down to the next active layer in the stack |
 
-## Layer navigation behaviors
+## Layer Navigation Behaviors
 
 | Binding | Behavior                                     | Description                                                                                              |
 | ------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -38,41 +38,41 @@ Below is a summary of pre-defined behavior bindings and user-definable behaviors
 | `&tog`  | [Toggle Layer](layers.md#toggle-layer)       | Enables a layer until the layer is manually disabled                                                     |
 | `&sl`   | [Sticky Layer](sticky-layer.md)              | Activates a layer until another key is pressed, then deactivates it                                      |
 
-## Mouse emulation behaviors
+## Mouse Emulation Behaviors
 
 | Binding | Behavior                                                    | Description                     |
 | ------- | ----------------------------------------------------------- | ------------------------------- |
 | `&mkp`  | [Mouse Button Press](mouse-emulation.md#mouse-button-press) | Emulates pressing mouse buttons |
 
-## Reset behaviors
+## Reset Behaviors
 
 | Binding       | Behavior                                | Description                                                                              |
 | ------------- | --------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `&sys_reset`  | [Reset](reset.md#reset)                 | Resets the keyboard and re-runs the firmware flashed to the device                       |
 | `&bootloader` | [Bootloader](reset.md#bootloader-reset) | Resets the keyboard and puts it into bootloader mode, allowing you to flash new firmware |
 
-## Output selection behaviors
+## Output Selection Behaviors
 
 | Binding | Behavior                                                 | Description                                                                                        |
 | ------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `&bt`   | [Bluetooth](bluetooth.md#bluetooth-behavior)             | Completes a bluetooth action given on press, for example switching between devices                 |
 | `&out`  | [Output Selection](outputs.md#output-selection-behavior) | Allows selecting whether output is sent to the USB or bluetooth connection when both are connected |
 
-## Lighting behaviors
+## Lighting Behaviors
 
 | Binding   | Behavior                                       | Description                                                                  |
 | --------- | ---------------------------------------------- | ---------------------------------------------------------------------------- |
 | `&rgb_ug` | [RGB Underglow](underglow.md#behavior-binding) | Controls the RGB underglow, usually placed underneath the keyboard           |
 | `&bl`     | [Backlight](backlight.md#behavior-binding)     | Controls the keyboard backlighting, usually placed through or under switches |
 
-## Power management behaviors
+## Power Management Behaviors
 
 | Binding      | Behavior                                      | Description                                                     |
 | ------------ | --------------------------------------------- | --------------------------------------------------------------- |
 | `&ext_power` | [Power management](power.md#behavior-binding) | Allows enabling or disabling the VCC power output to save power |
 | `&soft_off`  | [Soft off](soft-off.md#behavior-binding)      | Turns the keyboard off.                                         |
 
-## User-defined behaviors
+## User-Defined Behaviors
 
 | Behavior                            | Description                                                                                                                                                        |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

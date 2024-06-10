@@ -23,7 +23,7 @@ Example:
 
 ### Configuration
 
-#### Hold Time
+#### Hold time
 
 By default, the keyboard will be turned off as soon as the key bound to the behavior is released, even if the key is only tapped briefly. If you would prefer that the key need be held a certain amount of time before releasing, you can set the `hold-time-ms` to a non-zero value in your keymap:
 
