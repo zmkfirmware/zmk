@@ -8,7 +8,7 @@ sidebar_label: Layers
 Often, you may want a certain key position to alter which layers are enabled, change the default layer, etc.
 Some of those behaviors are still in the works; the ones that are working now are documented here.
 
-## Defines To Refer To Layers
+## Defines to Refer to Layers
 
 When working with layers, you may have several different key positions with bindings that enable/disable those layers.
 To make it easier to refer to those layers in your key bindings, and to change which layers are where later, you can
@@ -41,7 +41,7 @@ Example:
 &mo LOWER
 ```
 
-## Layer-tap
+## Layer-Tap
 
 The "layer-tap" behavior enables a layer when a key is held, and outputs a [keypress](key-press.md) when the key is only tapped for a short time.
 
