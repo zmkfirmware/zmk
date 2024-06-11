@@ -12,7 +12,7 @@ Configuration for entering low power modes when the keyboard is idle.
 
 In the idle state, peripherals such as displays and lighting are disabled, but the keyboard remains connected to Bluetooth so it can immediately respond when you press a key.
 
-In the deep sleep state, the keyboard additionally disconnects from Bluetooth and any external power output is disabled. This state uses very little power, but it may take a few seconds to reconnect after waking.
+In the deep sleep state, the keyboard additionally disconnects from Bluetooth and any external power output is disabled. This state uses very little power, but it may take a few seconds to reconnect after waking. To allow a device to wake from deep sleep, the `wakeup-source` property needs to be applied to the `kscan` driver of said device. See [soft off](../features/soft-off.md#wakeup-sources) for an example.
 
 ### Kconfig
 
