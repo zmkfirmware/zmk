@@ -58,7 +58,6 @@ Zephyr has general support for the concept of a device as a "wakeup source", whi
 / {
     kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
         diode-direction = "col2row";
         wakeup-source;
 
@@ -162,7 +161,6 @@ the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         wakeup-source;
-        label = "KSCAN";
         debounce-press-ms = <1>;
         debounce-release-ms = <5>;
 
@@ -185,7 +183,6 @@ you would add another row value:
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         wakeup-source;
-        label = "KSCAN";
         debounce-press-ms = <1>;
         debounce-release-ms = <5>;
 
@@ -248,7 +245,6 @@ Next, we need to add another device which will be enabled only when the keyboard
 / {
     wakeup_source: wakeup_source {
         compatible = "zmk,gpio-key-wakeup-trigger";
-
         trigger = <&on_off_key>;
         wakeup-source;
     };
