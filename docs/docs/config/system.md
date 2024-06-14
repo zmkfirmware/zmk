@@ -29,10 +29,11 @@ Making changes to any of the settings in this section modifies the HID report de
 
 :::
 
-| Config                                | Type | Description                                                    | Default |
-| ------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_HID_INDICATORS`           | bool | Enable receipt of HID/LED indicator state from connected hosts | n       |
-| `CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE` | int  | Number of consumer keys simultaneously reportable              | 6       |
+| Config                                       | Type | Description                                                    | Default |
+| -------------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_HID_INDICATORS`                  | bool | Enable receipt of HID/LED indicator state from connected hosts | n       |
+| `CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE`        | int  | Number of consumer keys simultaneously reportable              | 6       |
+| `CONFIG_ZMK_HID_SEPARATE_MOD_RELEASE_REPORT` | bool | Release the Modifiers separate from and after the modified key | n       |
 
 Exactly zero or one of the following options may be set to `y`. The first is used if none are set.
 
