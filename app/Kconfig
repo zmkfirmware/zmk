@@ -113,6 +113,12 @@ config ZMK_HID_INDICATORS
       Enable HID indicators, used for detecting state of Caps/Scroll/Num Lock,
       Kata, and Compose.
 
+config ZMK_HID_SEPARATE_MOD_RELEASE_REPORT
+    bool "Release Modifiers Separately"
+    help
+      Send a separate release event for the modifiers, to make sure the release
+      of the modifier doesn't get recognized before the actual key's release event.
+
 menu "Output Types"
 
 config ZMK_USB
