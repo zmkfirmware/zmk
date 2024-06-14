@@ -56,8 +56,8 @@ enum advertising_type {
 #define CURR_ADV(adv) (adv << 4)
 
 #define ZMK_ADV_CONN_NAME                                                                          \
-    BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_ONE_TIME, BT_GAP_ADV_FAST_INT_MIN_2, \
-                    BT_GAP_ADV_FAST_INT_MAX_2, NULL)
+    BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_ONE_TIME | BT_LE_ADV_OPT_USE_NAME,   \
+                    BT_GAP_ADV_FAST_INT_MIN_2, BT_GAP_ADV_FAST_INT_MAX_2, NULL)
 
 static struct zmk_ble_profile profiles[ZMK_BLE_PROFILE_COUNT];
 static uint8_t active_profile;
@@ -65,10 +65,9 @@ static uint8_t active_profile;
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
-BUILD_ASSERT(DEVICE_NAME_LEN <= 16, "ERROR: BLE device name is too long. Max length: 16");
+BUILD_ASSERT(DEVICE_NAME_LEN <= 27, "ERROR: BLE device name is too long. Max length: 27");
 
-static const struct bt_data zmk_ble_ad[] = {
-    BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
+static struct bt_data zmk_ble_ad[] = {
     BT_DATA_BYTES(BT_DATA_GAP_APPEARANCE, 0xC1, 0x03),
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
     BT_DATA_BYTES(BT_DATA_UUID16_SOME, 0x12, 0x18, /* HID Service */
@@ -319,6 +318,21 @@ int zmk_ble_prof_disconnect(uint8_t index) {
 bt_addr_le_t *zmk_ble_active_profile_addr(void) { return &profiles[active_profile].peer; }
 
 char *zmk_ble_active_profile_name(void) { return profiles[active_profile].name; }
+
+void zmk_ble_set_device_name(char *name) {
+    // Copy new name to advertising parameters
+    bt_set_name(name);
+    LOG_DBG("New device name: %s", name);
+    if (advertising_status == ZMK_ADV_CONN) {
+        // Stop current advertising so it can restart with new name
+        int err = bt_le_adv_stop();
+        advertising_status = ZMK_ADV_NONE;
+        if (err) {
+            LOG_ERR("Failed to stop advertising (err %d)", err);
+        }
+    }
+    update_advertising();
+}
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
