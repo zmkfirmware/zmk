@@ -21,7 +21,6 @@
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zephyr,console = &cdc_acm_uart;
         zmk,kscan = &kscan0;
         zmk,backlight = &backlight;
         zmk,battery = &vbatt;
@@ -90,11 +89,8 @@
     status = "okay";
 };
 
-&usbd {
+zephyr_udc0: &usbd {
     status = "okay";
-    cdc_acm_uart: cdc_acm_uart {
-        compatible = "zephyr,cdc-acm-uart";
-    };
 };
 
 &flash0 {
