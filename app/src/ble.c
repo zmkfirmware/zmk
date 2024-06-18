@@ -319,19 +319,24 @@ bt_addr_le_t *zmk_ble_active_profile_addr(void) { return &profiles[active_profil
 
 char *zmk_ble_active_profile_name(void) { return profiles[active_profile].name; }
 
-void zmk_ble_set_device_name(char *name) {
+int zmk_ble_set_device_name(char *name) {
     // Copy new name to advertising parameters
-    bt_set_name(name);
+    int err = bt_set_name(name);
     LOG_DBG("New device name: %s", name);
+    if (err) {
+        LOG_ERR("Failed to set new device name (err %d)", err);
+        return err;
+    }
     if (advertising_status == ZMK_ADV_CONN) {
         // Stop current advertising so it can restart with new name
-        int err = bt_le_adv_stop();
+        err = bt_le_adv_stop();
         advertising_status = ZMK_ADV_NONE;
         if (err) {
             LOG_ERR("Failed to stop advertising (err %d)", err);
+            return err;
         }
     }
-    update_advertising();
+    return update_advertising();
 }
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
