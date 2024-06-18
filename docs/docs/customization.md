@@ -40,7 +40,7 @@ If you need to, a review of [Learn The Basics Of Git In Under 10 Minutes](https:
 :::
 
 :::note
-It is also possible to build firmware locally on your computer by following the [toolchain setup](development/setup.mdx) and
+It is also possible to build firmware locally on your computer by following the [toolchain setup](development/setup/index.md) and
 [building instructions](development/build-flash.mdx), which includes pointers to
 [building using your `zmk-config` folder](development/build-flash.mdx#building-from-zmk-config-folder).
 :::
@@ -50,7 +50,7 @@ It is also possible to build firmware locally on your computer by following the 
 For normal keyboards, follow the same flashing instructions as before to flash your updated firmware.
 
 For split keyboards, only the central (left) side will need to be reflashed if you are just updating your keymap.
-More troubleshooting information for split keyboards can be found [here](troubleshooting.md#split-keyboard-halves-unable-to-pair).
+More troubleshooting information for split keyboards can be found [here](troubleshooting/connection-issues.mdx#split-keyboard-halves-unable-to-pair).
 
 ## Building Additional Keyboards
 

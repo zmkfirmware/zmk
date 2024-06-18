@@ -29,7 +29,7 @@ If `CONFIG_EC11` is enabled, exactly one of the following options must be set to
 
 ### Devicetree
 
-#### Keymap Sensor Config
+#### Keymap sensor config
 
 For shields/boards that export a `sensors` node configuration label, both global and per-sensor settings can be set by overriding the properties there.
 
@@ -69,7 +69,7 @@ Definition file: [zmk/app/drivers/zephyr/dts/bindings/zmk,keymap-sensors.yaml](h
 | ----------------------- | ---- | --------------------------------------------------------------- | ------- |
 | `triggers-per-rotation` | int  | Number of times to trigger the bound behavior per full rotation |         |
 
-#### EC11 Nodes
+#### EC11 nodes
 
 Applies to: `compatible = "alps,ec11"`
 

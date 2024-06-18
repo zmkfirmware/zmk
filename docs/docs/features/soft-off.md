@@ -101,7 +101,7 @@ To use the [soft off behavior](../behaviors/soft-off.md) outside of a keymap, ad
 
 The kscan sideband behavior driver will be used to trigger the [soft off behavior](../behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver. What kscan driver will vary for simple direct pin vs. matrix-integrated hardware combo.
 
-#### Simple Direct Pin
+#### Simple direct pin
 
 With a simple direct pin setup, the The [direct kscan](../config/kscan.md) driver can be used with a GPIO key, to make a small "side matrix":
 
@@ -148,7 +148,7 @@ Here are the properties for the node:
 - The `compatible` property for the node must be `zmk,soft-off-wakeup-sources`.
 - The `wakeup-sources` property is a [phandle array](../config/index.md#devicetree-property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
 
-#### Matrix-Integrated Hardware Combo
+#### Matrix-integrated hardware combo
 
 For this case, you will supplement the existing kscan matrix, by adding the additional pin as another entry in
 the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state. For example, for an existing matrix like:
