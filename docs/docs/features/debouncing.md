@@ -40,7 +40,7 @@ CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS=3
 CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS=3
 ```
 
-### Per-driver Options
+### Per-Driver Options
 
 You can add these Devicetree properties to a kscan node to control debouncing for
 that instance of the driver. Values must be `<= 16383`.

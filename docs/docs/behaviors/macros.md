@@ -223,7 +223,7 @@ Common examples are enabling one or more modifiers when the layer is active, or 
 
 To achieve this, a combination of a 0ms wait time and splitting the press and release between a `&macro_pause_for_release` is used:
 
-#### Layer + Modifier
+#### Layer + modifier
 
 ```dts
 /**
@@ -256,7 +256,7 @@ lm: lm {
 };
 ```
 
-#### Layer + Underglow Color
+#### Layer + underglow color
 
 To trigger a different underglow when the macro is pressed, and when it is released, we use the macro "press" activation mode whenever triggering the `&rgb_ug` behavior:
 
