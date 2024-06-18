@@ -1,0 +1,48 @@
+---
+title: Extra Modifiers
+sidebar_label: Extra Modifiers
+hide_title: true
+---
+
+import OsLegend from "@site/src/components/codes/OsLegend";
+import ToastyContainer from "@site/src/components/codes/ToastyContainer";
+import Table from "@site/src/components/codes/Table";
+
+<OsLegend />
+<ToastyContainer />
+
+## Extra Modifiers
+
+Extra modifiers are combinations of the special keyboard keys: _shift_, _alt_, _control_ & _GUI_.
+
+Extra Modifiers can be used in two forms within ZMK:
+
+- Modifier [Keys](#modifier-keys) → `HYPL`
+- Modifier [Functions](#modifier-functions) → `HYPLK(code)`
+
+The combination of all modifiers `SHIFT`, `GUI`, `ALT` and `CONTROL` is traditionally refered to as `HYPER`. A dedicated _hyper_ key can be found on the Space Cadet Keyboard.
+On Windows some combinations with `HYPER` are bound to start Office (web) applications. On other operating systems all combinations of hyper can be used for other purposes.
+The combination of the modifiers, SHIFT, `ALT` and `CONTROL` is referred to as `MEH`. Combinations without `GUI`.
+
+Other combinations are sometimes used for special keys, e.g. `LSG(F23)`, for pressing left _shift_ _gui_ and _F23_ is used for the 'Copilot' key on Windows systems.
+
+<Table group="keyboard-extra-modifiers" />
+
+### Extra Modifier Keys
+
+These act like any other key code.
+
+- e.g. `&kp HYPL` pushes and releases the combination of the left modifiers SHIFT, GUI, ALT and CONTROL key.
+
+### Extra Modifier Functions
+
+Modifier functions add one or more modifiers to a code.
+
+These functions take the form: `XX(code)`
+
+- Modifier functions apply a modifier to a code:
+  - `&kp LSG(A)` = `LEFT_SHIFT`+`LEFT GUI` +`A` (a capitalized **A**).
+- There are left- and right-handed versions of each exta modifier (also see table above):
+  - `LSGK(x)`, `LSCK(x)`, `LSAK(x)`, `HYPK(x)`, `RSGK(x)`, `RSCK(x)`, `RSAK(x)`, `RHYPK(x)`
+- Modified keys can safely be rolled-over. Modifier functions are released when another key is pressed.
+  - Press `&kp LHYPK(A)`, then press `&kp B`, release `&kp LHYPK(A)` and release `&kp B` results in **?b**. Whatever hyper A does followed by a b.

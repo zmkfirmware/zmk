@@ -64,6 +64,7 @@ module.exports = {
       "codes/index",
       "codes/keyboard-keypad",
       "codes/modifiers",
+      "codes/extra_modifiers",
       "codes/editing",
       "codes/media",
       "codes/applications",
