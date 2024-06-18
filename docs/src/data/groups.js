@@ -278,7 +278,7 @@ export default {
   ],
   "keyboard-extra-modifiers": [
     "LHYP",
-    "RHYP",  
+    "RHYP",
     "LMEH",
     "RMEH",
     "LSG",
