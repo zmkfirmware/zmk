@@ -1,0 +1,9 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_MINIVAN_STUDIO_TESTER
+
+config ZMK_KEYBOARD_NAME
+    default "MiniVan Tester"
+
+endif
