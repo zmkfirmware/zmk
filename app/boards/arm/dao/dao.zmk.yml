@@ -1,0 +1,14 @@
+file_format: "1"
+id: dao
+name: Dao
+url: https://github.com/yumagulovrn/dao-choc-ble
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+  - ble
+siblings:
+  - dao_left
+  - dao_right
