@@ -45,6 +45,7 @@ module.exports = {
       "behaviors/mod-morph",
       "behaviors/macros",
       "behaviors/key-toggle",
+      "behaviors/turbo",
       "behaviors/sticky-key",
       "behaviors/sticky-layer",
       "behaviors/tap-dance",
