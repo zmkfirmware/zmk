@@ -490,7 +490,11 @@ if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
     int "USB Init Priority"
-    default 50
+    default 94
+
+config ZMK_USB_HID_INIT_PRIORITY
+    int "USB HID Init Priority"
+    default 95
 
 #USB
 endif
