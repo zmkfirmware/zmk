@@ -1,0 +1,169 @@
+---
+title: Hardware Metadata Files
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+export const TypeTabs = (props) => (
+    <Tabs
+    groupId="metadata-types"
+    defaultValue="board"
+    values={[
+      { label: "Board", value: "board" },
+      { label: "Shield", value: "shield" },
+      { label: "Interconnect", value: "Interconnect" },
+      { label: "Alias", value: "Alias" },
+      { label: "Enhancement", value: "Enhancement" },
+      { label: "Animation", value: "Animation" },
+      { label: "Driver", value: "Driver" },
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
+
+# Overview
+
+ZMK makes use of an additional metadata YAML file providing high level information about all boards, shields, and other modules. The metadata is used for multiple purposes:
+
+- Building using Github Actions
+- Setup scripts and utilities
+- References in the `zmk-modules` repository
+- Tools making use of the `zmk-modules` repository
+- Website hardware list
+
+There are two valid file formats for this metadata. Version 1 contains all of the metadata required to build firmware using Github Actions, completely describing a board or shield. Version 2 is backwards compatible with version 1, and is required for a module to be included in the `zmk-modules` repository. Version 1 is depricated and no longer documented.
+
+# Schema
+
+ZMK uses a [JSON Schema](https://github.com/zmkfirmware/zmk/blob/main/schema/hardware-metadata.schema.json) file to validate metadata files and sure all required properties are present, and all other optional properties provided conform to the expected format. You can validate all metadata files in the repository by running `west metadata check` from your configured ZMK repository.
+
+# File Format
+
+The first three lines of a ZMK metadata file are
+
+```yaml
+file_format: <format version number (as string)>
+id: <identifier string>
+name: <Human readable identifier string>
+```
+
+Valid file formats are either `"1"` or `"2"`, depending on which version is used. Each file must have a unique identifier string `id`, which can include version information but excludes suffixes (ex. `_left`/`_right`) for hardware devices split into multiple parts. Examples of `id` strings are `corne` or `nrfmicro_11`. The naming convention for metadata files is `{id}.zmk.yml`, where the `id` is the same as the identifier `id` found within the file, i.e. `corne.zmk.yml` or `nrfmicro_11.zmk.yml`.
+
+The `name` property is merely a human readable name, to be displayed in various UI locations.
+
+:::note
+
+ZMK may when necessary expand on the set of metadata properties, while maintaining backwards compatibility. New _optional_ properties may be added to existing file formats as time progress, or on larger changes a new (backwards compatible) version of the file format may be created.
+
+:::
+
+## URLs
+
+The `url` property should contain the canonical URL used to learn more about the module. If the module defines a board/shield, then this could be the main vendor website or GitHub repository for a given keyboard/controller. If the module defines a driver, then this could be a link to the datasheet of the hardware component.
+
+```yaml
+url: https://github.com/foostan/crkbd/
+```
+
+The `murl` property should contain the URL linking to the repository containing an appropriate module, if the type of the metadata demands it. Note that there can be some duplication between `url` and `murl`, and also between `murl` of different metadata files, e.g. if two shields are defined within the same module.
+
+The `commit` property should specify a commit from the `murl` repository which should be used. This property **must** be set when `murl` is set, and **cannot** point to `HEAD`, though it can point to the commit that `HEAD` is set to at the time of writing. This is to help prevent sudden breaking or malicious changes to remote repositories from affecting the users and tools of `zmk-modules`.
+
+## Item Types
+
+Each metadata file includes a `type` property uniquely identifying the type of the item the file is describing. The following are valid `type` assignments:
+
+| `type` assignment    | Description                                                                           | `murl` |
+| -------------------- | ------------------------------------------------------------------------------------- | ------ |
+| `type: board`        | The module found at `murl` contains a board.                                          | Yes    |
+| `type: shield`       | The module found at `murl` contains a shield making use of some defined interconnect. | Yes    |
+| `type: interconnect` | Defines an interconnect standard between boards and shields.                          | No     |
+| `type: alias`        | Describes a board/shield using an existing module.                                    | No     |
+| `type: enhancement`  | A module which adds an additional feature to ZMK, such as a new behaviour.            | Yes    |
+| `type: animation`    | A module containing visual effects, e.g. widgets for screens.                         | Yes    |
+| `type: driver`       | A module defining a new driver for ZMK.                                               | Yes    |
+
+## Description
+
+The `description` property should contain a short human-readable description as a string, about 1-2 sentences. Longer descriptions are recommended to be located in the external URL.
+
+## Varying Properties
+
+Depending upon the item type, the remainder of the properties can vary.
+
+<TypeTabs>
+
+<TabItem value="board"></TabItem>
+<TabItem value="shield"></TabItem>
+<TabItem value="interconnect"></TabItem>
+<TabItem value="alias"></TabItem>
+<TabItem value="enhancement"></TabItem>
+<TabItem value="animation"></TabItem>
+<TabItem value="driver"></TabItem>
+
+</TypeTabs>
+
+### Interconnect Requires/Exposes
+
+For boards and shields, one of the key pieces of high level information is compatibility between the two items. In particular, a board usually exposes one ore more "interconnects", the physical location/type of connections available, and their assigned possible uses (e.g. GPIO, power, ground, i2c, etc). Similarly, a shield is usually designed around one (or sometimes more) "interconnects" that allow it to connect to one of those boards.
+
+In ZMK, we encode both of those scenarios with the `exposes` and `requires` properties, respectively. For example, for a Corne shield that requires a Pro Micro compatible controller to function, and simultaneously exposes a four pin header to be used by standard i2c OLED modules, the metadata file contains:
+
+```yaml
+requires:
+  - pro_micro
+exposes:
+  - i2c_oled
+```
+
+### Features
+
+Boards and shields should document the sets of hardware features found on them using the `features` array. There is a fixed enum of possible values to use here, which will be expanded over time. The current set of possible `features` values is:
+
+- `keys` - Any board or shield that contains keyboard keys should include this feature. It is a central feature used to determine if we have a "complete combination" for ZMK to produce a keyboard firmware when performing setup.
+- `display` - Indicates the hardware includes a display for use with the ZMK display functionality.
+- `encoder` - Indicates the hardware contains one or more rotary encoders.
+- `underglow` - Indicates the hardware includes underglow LEDs.
+- `backlight` - Indicates the hardware includes backlight LEDs.
+- `pointer` (future) - Used to indicate the hardware includes one or more pointer inputs, e.g. joystick, touchpad, or trackpoint.
+
+### Siblings
+
+The `siblings` array is used to identify multiple hardware items designed to be used together as one logical device. Right now, that primarily is used to identify the two halves of a split keyboard, but future enhancements will include more complicated and flexible combinations.
+
+The array should contain the complete hardware IDs of the siblings that combine in the logical device, e.g. with the `corne.zmk.yml` file:
+
+```yaml
+id: corne
+siblings:
+  - corne_left
+  - corne_right
+```
+
+Future versions of the metadata file format will be expanded to allow documenting any specifics of each sibling that are unique, e.g. if only the left side contains the `encoder` feature.
+
+## Example File
+
+Here is a sample `corne.zmk.yml` file from the repository:
+
+```yaml
+file_format: "1"
+id: corne
+name: Corne
+type: shield
+url: https://github.com/foostan/crkbd/
+requires:
+  - pro_micro
+exposes:
+  - i2c_oled
+features:
+  - keys
+  - display
+siblings:
+  - corne_left
+  - corne_right
+```
