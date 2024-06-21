@@ -16,9 +16,19 @@
 #include <zmk/activity.h>
 #include <zmk/backlight.h>
 #include <zmk/usb.h>
+#include <zmk/ble.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
+#include <zmk/events/split_peripheral_status_changed.h>
+#include <zmk/workqueue.h>
+
+// Pull data sending framework if central, data receiving eventt if peripheral(s)
+#if ZMK_BLE_IS_CENTRAL
+#include <zmk/split/bluetooth/central.h>
+#elif IS_ENABLED(CONFIG_ZMK_SPLIT)
+#include <zmk/events/split_data_xfer_event.h>
+#endif
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -42,7 +52,25 @@ struct backlight_state {
 static struct backlight_state state = {.brightness = CONFIG_ZMK_BACKLIGHT_BRT_START,
                                        .on = IS_ENABLED(CONFIG_ZMK_BACKLIGHT_ON_START)};
 
+#if ZMK_BLE_IS_CENTRAL
+
+static void zmk_backlight_send_state(struct k_work *work) {
+    LOG_HEXDUMP_DBG(&state, sizeof(struct backlight_state), "backlight state");
+    int err = zmk_split_central_send_data(DATA_TAG_BACKLIGHT_STATE, sizeof(struct backlight_state),
+                                          (uint8_t *)&state);
+    if (err) {
+        LOG_ERR("send failed (err %d)", err);
+    }
+}
+
+K_WORK_DEFINE(backlight_send_state_work, zmk_backlight_send_state);
+
+#endif
+
 static int zmk_backlight_update(void) {
+#if ZMK_BLE_IS_CENTRAL
+    k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &backlight_send_state_work);
+#endif
     uint8_t brt = zmk_backlight_get_brt();
     LOG_DBG("Update backlight brightness: %d%%", brt);
 
@@ -157,7 +185,10 @@ static int backlight_auto_state(bool *prev_state, bool new_state) {
     *prev_state = !new_state;
     return zmk_backlight_update();
 }
+#endif
 
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_IDLE) ||                                              \
+    IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB) || ZMK_BLE_IS_CENTRAL
 static int backlight_event_listener(const zmk_event_t *eh) {
 
 #if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_IDLE)
@@ -174,12 +205,19 @@ static int backlight_event_listener(const zmk_event_t *eh) {
     }
 #endif
 
+#if ZMK_BLE_IS_CENTRAL
+    if (as_zmk_split_peripheral_status_changed(eh)) {
+        // TODO: Have this only update when connected
+        k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &backlight_send_state_work);
+    }
+#endif
+
     return -ENOTSUP;
 }
 
 ZMK_LISTENER(backlight, backlight_event_listener);
 #endif // IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_IDLE) ||
-       // IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB)
+       // IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB) || ZMK_BLE_IS_CENTRAL
 
 #if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_IDLE)
 ZMK_SUBSCRIPTION(backlight, zmk_activity_state_changed);
@@ -187,6 +225,29 @@ ZMK_SUBSCRIPTION(backlight, zmk_activity_state_changed);
 
 #if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB)
 ZMK_SUBSCRIPTION(backlight, zmk_usb_conn_state_changed);
+#endif
+
+#if ZMK_BLE_IS_CENTRAL
+ZMK_SUBSCRIPTION(backlight, zmk_split_peripheral_status_changed);
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT) && !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+
+static int backlight_data_event_listener(const zmk_event_t *eh) {
+    const struct zmk_split_data_xfer_event *ev = as_zmk_split_data_xfer_event(eh);
+    if (ev->data_xfer.data_tag == DATA_TAG_BACKLIGHT_STATE) {
+        LOG_DBG("Backlight Data received of size: %d", ev->data_xfer.data_size);
+        LOG_HEXDUMP_DBG(ev->data_xfer.data, sizeof(struct zmk_split_data_xfer_event),
+                        "received event:");
+        memcpy(&state, ev->data_xfer.data, sizeof(struct backlight_state));
+        LOG_HEXDUMP_DBG(&state, sizeof(struct backlight_state), "backlight state");
+        zmk_backlight_update_and_save();
+    }
+    return 0;
+}
+
+ZMK_LISTENER(backlight_data, backlight_data_event_listener);
+ZMK_SUBSCRIPTION(backlight_data, zmk_split_data_xfer_event);
 #endif
 
 SYS_INIT(zmk_backlight_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
