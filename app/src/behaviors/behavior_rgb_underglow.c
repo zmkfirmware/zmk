@@ -18,6 +18,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+static uint8_t old_effect;
+
 static int behavior_rgb_underglow_init(const struct device *dev) { return 0; }
 
 static int
@@ -123,6 +125,9 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         return zmk_rgb_underglow_change_spd(-1);
     case RGB_EFS_CMD:
         return zmk_rgb_underglow_select_effect(binding->param2);
+    case RGB_MEFS_CMD:
+        old_effect = zmk_rgb_underglow_calc_effect(0);
+        return zmk_rgb_underglow_select_effect(binding->param2);
     case RGB_EFF_CMD:
         return zmk_rgb_underglow_cycle_effect(1);
     case RGB_EFR_CMD:
@@ -138,6 +143,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
+    if (binding->param1 == RGB_MEFS_CMD)
+        return zmk_rgb_underglow_select_effect(old_effect);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
