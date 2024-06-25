@@ -1,0 +1,9 @@
+file_format: "1"
+id: rpi_pico
+name: Raspberry Pi Pico
+type: board
+arch: arm
+outputs:
+  - usb
+url: https://www.raspberrypi.com/products/raspberry-pi-pico
+exposes: [rpi_pico]
