@@ -1,0 +1,72 @@
+description: PS2 mouse configuration
+
+compatible: "zmk,input-mouse-ps2"
+
+properties:
+  ps2-device:
+    type: phandle
+    required: true
+    description: |
+      The ps2 device the mouse should use.
+
+  rst-gpios:
+    type: phandle-array
+    required: false
+    description: GPIO to which the RST pin of the device is connected and on which the Power-On-Reset will be performed.
+
+  sampling-rate:
+    type: int
+    description: Adjusts the sensitivity setting on trackpoint devices. The allowed values are 10, 20, 40, 60, 80, 100, 200 and the default is 100.
+    enum:
+      - 10
+      - 20
+      - 40
+      - 60
+      - 80
+      - 100
+      - 200
+
+  scroll-mode:
+    type: boolean
+    description: Enables scroll wheel on mouse devices supporting the Intellimouse extension.
+
+  disable-clicking:
+    type: boolean
+    description: Disables clicking. Useful when using a PS2 driver that is prone to erros in transmissions to reduce accidental clicks.
+
+  tp-press-to-select:
+    type: boolean
+    description: Enables mouse clicking by pressing hard on the trackpoint. Not all trackpoints support this feature.
+
+  tp-press-to-select-threshold:
+    type: int
+    description: Adjusts how sensitive the press-to-select feature is. The range is 0 - 255 and the default is 8. You can also adjust this setting at runtime without recompiling using the &mms behavior. If this setting is enabled, then the runtime behavior won't be saved into the runtime settings.
+
+  tp-sensitivity:
+    type: int
+    description: Adjusts the sensitivity setting on trackpoint devices. The range is 0 - 255 and the default is 128. You can also adjust this setting at runtime without recompiling using the &mms behavior. If this setting is enabled, then the runtime behavior won't be saved into the runtime settings.
+
+  tp-neg-inertia:
+    type: int
+    description: Adjusts the negative inertia setting on trackpoint devices. The range is 0 - 255 and the default is 6. You can also adjust this setting at runtime without recompiling using the &mms behavior. If this setting is enabled, then the runtime behavior won't be saved into the runtime settings.
+
+  tp-val6-upper-speed:
+    type: int
+    description: Adjusts the negative value0 upper plateau speed setting on trackpoint devices. The range is 0 - 255 and the default is 97. You can also adjust this setting at runtime without recompiling using the &mms behavior. If this setting is enabled, then the runtime behavior won't be saved into the runtime settings.
+
+  tp-x-invert:
+    type: boolean
+    description: Enables x axis inversion on the trackpoint. Only works with some trackpoint devices, but is properly considered by the trackpoint's acceleration features (which may or may not have an impact). Alternatively consider achieving the same effect using the `zmk,input-configs` feature.
+
+  tp-y-invert:
+    type: boolean
+    description: Enables y axis inversion on the trackpoint. Only works with some trackpoint devices, but is properly considered by the trackpoint's acceleration features (which may or may not have an impact). Alternatively consider achieving the same effect using the `zmk,input-configs` feature.
+
+  tp-xy-swap:
+    type: boolean
+    description: Swaps the x and y axis on the trackpoint. Only works with some trackpoint devices, but may properly considered by the trackpoint's acceleration features (which may or may not have an impact). Alternatively consider achieving the same effect using the `zmk,input-configs` feature.
+
+  layer-toggle:
+    type: int
+    required: false
+    description: The layer that should be toggled when the mouse is moved.

@@ -1,0 +1,6 @@
+description: Mouse Setting
+
+compatible: "zmk,behavior-mouse-setting"
+
+include: one_param.yaml
+

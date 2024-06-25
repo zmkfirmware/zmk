@@ -1,0 +1,25 @@
+description: Two axis input behavior
+
+compatible: "zmk,behavior-input-two-axis"
+
+include: one_param.yaml
+
+properties:
+  x-input-code:
+    type: int
+    required: true
+  y-input-code:
+    type: int
+    required: true
+  trigger-period-ms:
+    type: int
+    default: 16
+    description: The time (in ms) between generated inputs when an input has non-zero speed.
+  delay-ms:
+    type: int
+  time-to-max-speed-ms:
+    type: int
+    required: true
+  acceleration-exponent:
+    type: int
+    default: 1
