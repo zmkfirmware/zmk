@@ -75,6 +75,9 @@ static int on_caps_word_binding_released(struct zmk_behavior_binding *binding,
 static const struct behavior_driver_api behavior_caps_word_driver_api = {
     .binding_pressed = on_caps_word_binding_pressed,
     .binding_released = on_caps_word_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh);
