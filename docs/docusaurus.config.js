@@ -31,6 +31,7 @@ module.exports = {
         "linker-script",
         "log",
         "powershell",
+        "diff",
       ],
       theme,
       darkTheme,
@@ -79,7 +80,7 @@ module.exports = {
             },
             {
               label: "Development",
-              to: "docs/development/setup/",
+              to: "docs/development/setup",
             },
           ],
         },

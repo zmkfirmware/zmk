@@ -9,6 +9,7 @@
         /omit-if-no-ref/ to: to_layer {
             compatible = "zmk,behavior-to-layer";
             #binding-cells = <1>;
+            display-name = "To Layer";
         };
     };
 };

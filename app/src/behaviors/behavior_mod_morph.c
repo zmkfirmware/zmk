@@ -75,6 +75,9 @@ static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
 static const struct behavior_driver_api behavior_mod_morph_driver_api = {
     .binding_pressed = on_mod_morph_binding_pressed,
     .binding_released = on_mod_morph_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int behavior_mod_morph_init(const struct device *dev) { return 0; }

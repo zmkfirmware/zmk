@@ -1,6 +1,12 @@
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+config ZMK_BEHAVIOR_METADATA
+    bool "Metadata"
+    help
+      Enabling this option adds APIs for documenting and fetching
+      metadata describing a behaviors name, and supported parameters.
+
 config ZMK_BEHAVIOR_KEY_TOGGLE
     bool
     default y
