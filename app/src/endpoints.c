@@ -373,6 +373,10 @@ static int endpoint_listener(const zmk_event_t *eh) {
     return 0;
 }
 
+bool zmk_endpoints_preferred_transport_is_active(void) {
+    return preferred_transport == get_selected_transport();
+}
+
 ZMK_LISTENER(endpoint_listener, endpoint_listener);
 #if IS_ENABLED(CONFIG_ZMK_USB)
 ZMK_SUBSCRIPTION(endpoint_listener, zmk_usb_conn_state_changed);
