@@ -27,3 +27,4 @@
 #include <behaviors/macros.dtsi>
 #include <behaviors/soft_off.dtsi>
 #include <behaviors/mouse_keys.dtsi>
+#include <behaviors/studio_unlock.dtsi>
