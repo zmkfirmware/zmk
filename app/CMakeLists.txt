@@ -24,9 +24,9 @@ target_include_directories(app PRIVATE include)
 target_sources(app PRIVATE src/stdlib.c)
 target_sources(app PRIVATE src/activity.c)
 target_sources(app PRIVATE src/behavior.c)
-target_sources(app PRIVATE src/kscan.c)
 target_sources_ifdef(CONFIG_ZMK_KSCAN_SIDEBAND_BEHAVIORS app PRIVATE src/kscan_sideband_behaviors.c)
 target_sources(app PRIVATE src/matrix_transform.c)
+target_sources(app PRIVATE src/physical_layouts.c)
 target_sources(app PRIVATE src/sensors.c)
 target_sources_ifdef(CONFIG_ZMK_WPM app PRIVATE src/wpm.c)
 target_sources(app PRIVATE src/event_manager.c)
@@ -36,6 +36,7 @@ target_sources_ifdef(CONFIG_ZMK_GPIO_KEY_WAKEUP_TRIGGER app PRIVATE src/gpio_key
 target_sources(app PRIVATE src/events/activity_state_changed.c)
 target_sources(app PRIVATE src/events/position_state_changed.c)
 target_sources(app PRIVATE src/events/sensor_event.c)
+
 target_sources(app PRIVATE src/events/mouse_button_state_changed.c)
 target_sources_ifdef(CONFIG_ZMK_WPM app PRIVATE src/events/wpm_state_changed.c)
 target_sources_ifdef(CONFIG_USB_DEVICE_STACK app PRIVATE src/events/usb_conn_state_changed.c)
@@ -63,6 +64,7 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_SENSOR_ROTATE_VAR app PRIVATE src/behaviors/behavior_sensor_rotate_var.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON app PRIVATE src/behaviors/behavior_sensor_rotate_common.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_MOUSE_KEY_PRESS app PRIVATE src/behaviors/behavior_mouse_key_press.c)
+  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_STUDIO_UNLOCK app PRIVATE src/behaviors/behavior_studio_unlock.c)
   target_sources(app PRIVATE src/combo.c)
   target_sources(app PRIVATE src/behaviors/behavior_tap_dance.c)
   target_sources(app PRIVATE src/behavior_queue.c)
@@ -104,5 +106,29 @@ target_sources(app PRIVATE src/main.c)
 
 add_subdirectory(src/display/)
 add_subdirectory_ifdef(CONFIG_SETTINGS src/settings/)
+
+if (CONFIG_ZMK_STUDIO)
+  # For some reason this is failing if run from a different sub-file.
+  list(APPEND CMAKE_MODULE_PATH ${ZEPHYR_BASE}/modules/nanopb)
+
+  include(nanopb)
+
+    # Turn off the default nanopb behavior
+  set(NANOPB_GENERATE_CPP_STANDALONE OFF)
+
+  message(${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR})
+  nanopb_generate_cpp(proto_srcs proto_hdrs RELPATH ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/studio.proto
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/meta.proto
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/core.proto
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/behaviors.proto
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/keymap.proto
+  )
+
+  target_include_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+  target_sources(app PRIVATE ${proto_srcs} ${proto_hdrs})
+
+  add_subdirectory(src/studio)
+endif()
 
 zephyr_cc_option(-Wfatal-errors)

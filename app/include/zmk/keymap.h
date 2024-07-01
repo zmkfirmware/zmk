@@ -24,6 +24,28 @@ int zmk_keymap_layer_toggle(uint8_t layer);
 int zmk_keymap_layer_to(uint8_t layer);
 const char *zmk_keymap_layer_name(uint8_t layer);
 
+const struct zmk_behavior_binding *zmk_keymap_get_layer_binding_at_idx(uint8_t layer,
+                                                                       uint8_t binding_idx);
+int zmk_keymap_set_layer_binding_at_idx(uint8_t layer, uint8_t binding_idx,
+                                        const struct zmk_behavior_binding binding);
+
+#if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
+
+int zmk_keymap_move_layer(uint8_t layer, uint8_t dest);
+
+#endif
+
+/**
+ * @brief Check if there are any unsaved keymap changes.
+ *
+ * @retval 0 if there are no changes.
+ * @retval 1 if there are changes.
+ */
+int zmk_keymap_check_unsaved_changes(void);
+
+int zmk_keymap_save_changes(void);
+int zmk_keymap_discard_changes(void);
+
 int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
                                       int64_t timestamp);
 

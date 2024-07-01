@@ -258,6 +258,20 @@ rsource "src/split/Kconfig"
 #Basic Keyboard Setup
 endmenu
 
+menu "Keymaps"
+
+config ZMK_KEYMAP_LAYER_REORDERING
+    bool "Layer Reordering Support"
+
+config ZMK_KEYMAP_SETTINGS_STORAGE
+    bool "Settings Save/Load"
+    depends on SETTINGS
+    depends on ZMK_BEHAVIOR_LOCAL_IDS
+
+endmenu # Keymaps
+
+rsource "src/studio/Kconfig"
+
 menu "Display/LED Options"
 
 rsource "src/display/Kconfig"
