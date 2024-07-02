@@ -5,11 +5,13 @@ description: Underglow indicators
 
 compatible: "zmk,underglow-indicators"
 
+child-binding:
+  child-binding:
+    properties:
+      peripheral-battery:
+        type: array
+
 properties:
-  bat-lhs:
-    type: array
-  bat-rhs:
-    type: array
   num-lock:
     type: int
   caps-lock:

@@ -130,8 +130,9 @@ static struct led_rgb *zmk_led_blend_status_pixels(int blend) {
 #if defined(DT_N_S_underglow_indicators_EXISTS)
 
 #define UNDERGLOW_INDICATORS DT_PATH(underglow_indicators)
-#define HAS_INDICATORS_BAT_LHS DT_NODE_HAS_PROP(UNDERGLOW_INDICATORS, bat_lhs)
-#define HAS_INDICATORS_BAT_RHS DT_NODE_HAS_PROP(UNDERGLOW_INDICATORS, bat_rhs)
+#define UNDERGLOW_INDICATORS_PERIPHERALS DT_PATH(underglow_indicators, peripherals)
+
+#define HAS_INDICATORS_PERIPHERALS DT_NODE_EXISTS(UNDERGLOW_INDICATORS_PERIPHERALS)
 #define HAS_INDICATORS_NUM_LOCK DT_NODE_HAS_PROP(UNDERGLOW_INDICATORS, num_lock)
 #define HAS_INDICATORS_CAPS_LOCK DT_NODE_HAS_PROP(UNDERGLOW_INDICATORS, caps_lock)
 #define HAS_INDICATORS_SCROLL_LOCK DT_NODE_HAS_PROP(UNDERGLOW_INDICATORS, scroll_lock)
@@ -150,6 +151,7 @@ static struct led_rgb *zmk_led_blend_status_pixels(int blend) {
 static const struct led_rgb status_color_batt_low = HEXRGB(0xff, 0x00, 0x00);         // red
 static const struct led_rgb status_color_batt_med = HEXRGB(0xff, 0xff, 0x00);         // yellow
 static const struct led_rgb status_color_batt_high = HEXRGB(0x00, 0xff, 0x00);        // green
+static const struct led_rgb status_color_batt_not_conn = HEXRGB(0xff, 0x00, 0x00);    // red
 static const struct led_rgb status_color_hid = HEXRGB(0xff, 0x00, 0x00);              // red
 static const struct led_rgb status_color_layer = HEXRGB(0xff, 0x00, 0xff);            // magenta
 static const struct led_rgb status_color_ble_active = HEXRGB(0xff, 0xff, 0xff);       // white
@@ -190,31 +192,52 @@ static void zmk_status_batt_level(struct led_rgb *led_buffer, int bat_level,
  * Update a buffer with the appropriate pixels set for the battery levels on both the lhs and rhs
  */
 static void zmk_status_batt_pixels(struct led_rgb *buffer) {
-#if HAS_INDICATORS_BAT_LHS
-    static const uint8_t bat_lhs_indicators[] = DT_PROP(UNDERGLOW_INDICATORS, bat_lhs);
-    static const int bat_lhs_indicator_count = DT_PROP_LEN(UNDERGLOW_INDICATORS, bat_lhs);
+#if HAS_INDICATORS_PERIPHERALS
+#define ZMK_STATUS_PERIPHERAL_PLUS_ONE(n) 1 +
+#define ZMK_STATUS_PERIPHERAL_COUNT                                                                \
+    (DT_FOREACH_CHILD(UNDERGLOW_INDICATORS_PERIPHERALS, ZMK_STATUS_PERIPHERAL_PLUS_ONE) 0)
+#define ZMK_STATUS_PERIPHERAL_LED_COUNT(node_id) DT_PROP_LEN(node_id, peripheral_battery),
+#define ZMK_STATUS_PERIPHERAL_LED_LIST(node_id, prop, idx) DT_PROP_BY_IDX(node_id, prop, idx),
+#define ZMK_STATUS_PERIPHERAL_LEDS(node_id)                                                        \
+    DT_FOREACH_PROP_ELEM(node_id, peripheral_battery, ZMK_STATUS_PERIPHERAL_LED_LIST)
 
-    zmk_status_batt_level(buffer, zmk_battery_state_of_charge(), bat_lhs_indicators,
-                          bat_lhs_indicator_count);
-#endif
+    // Array with all the led-addresses for each peripheral
+    static const int peripheral_led_count[] = {
+        DT_FOREACH_CHILD(UNDERGLOW_INDICATORS_PERIPHERALS, ZMK_STATUS_PERIPHERAL_LED_COUNT)};
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) && HAS_INDICATORS_BAT_RHS
-    static const uint8_t bat_rhs_indicators[] = DT_PROP(UNDERGLOW_INDICATORS, bat_rhs);
-    static const int bat_rhs_indicator_count = DT_PROP_LEN(UNDERGLOW_INDICATORS, bat_rhs);
+    static const uint8_t peripheral_led_addresses[] = {
+        DT_FOREACH_CHILD(UNDERGLOW_INDICATORS_PERIPHERALS, ZMK_STATUS_PERIPHERAL_LEDS)};
 
-    uint8_t peripheral_level = 0;
-    int rc = zmk_split_get_peripheral_battery_level(0, &peripheral_level);
-
-    if (rc == 0) {
-        zmk_status_batt_level(buffer, zmk_battery_state_of_charge(), bat_rhs_indicators,
-                              bat_rhs_indicator_count);
-    } else if (rc == -ENOTCONN) {
-        // Set all pixels to red
-        for (int i = 0; i < bat_rhs_indicator_count; i++) {
-            buffer[bat_rhs_indicators[i]] = HEXRGB(0xff, 0x00, 0x00); // red
+    for (int i = 0; i < ZMK_STATUS_PERIPHERAL_COUNT; i++) {
+        int offset = 0;
+        for (int j = 0; j < i; j++) {
+            offset += peripheral_led_count[j];
         }
-    } else if (rc == -EINVAL) {
-        LOG_ERR("Invalid peripheral index requested for battery level read: 0");
+
+        const uint8_t *addresses = &peripheral_led_addresses[offset];
+        int address_count = peripheral_led_count[i];
+
+        if (i == 0) { // Central peripheral
+            zmk_status_batt_level(buffer, zmk_battery_state_of_charge(), addresses, address_count);
+
+        } else {
+            // Non-central peripherals require this config option to report battery level
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+            uint8_t peripheral_level = 0;
+            int rc = zmk_split_get_peripheral_battery_level(i - 1, &peripheral_level);
+
+            if (rc == 0) {
+                zmk_status_batt_level(buffer, peripheral_level, addresses, address_count);
+            } else if (rc == -ENOTCONN) {
+                // Set all pixels to red
+                for (int j = 0; j < address_count; j++) {
+                    buffer[addresses[j]] = status_color_batt_not_conn;
+                }
+            } else if (rc == -EINVAL) {
+                LOG_ERR("Invalid peripheral index requested for battery level read: 0");
+            }
+#endif
+        }
     }
 #endif
 }
