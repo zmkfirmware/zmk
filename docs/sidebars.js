@@ -60,6 +60,13 @@ module.exports = {
       "behaviors/power",
       "behaviors/soft-off",
     ],
+    Recipes: [
+      "recipes/adjust-layer",
+      "recipes/callum-mods",
+      "recipes/home-row-mods",
+      "recipes/multiple-base-layers",
+      "recipes/os-profile-layer",
+    ],
     Codes: [
       "codes/index",
       "codes/keyboard-keypad",
