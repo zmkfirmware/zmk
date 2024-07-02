@@ -108,6 +108,29 @@ static inline int set_layer_state(uint8_t layer, bool state) {
 
 uint8_t zmk_keymap_layer_default(void) { return _zmk_keymap_layer_default; }
 
+int zmk_keymap_layer_set_default(uint8_t layer) {
+    int ret = 0;
+    uint8_t prev_default = _zmk_keymap_layer_default;
+
+    ret = set_layer_state(layer, true);
+    if (ret < 0) {
+        LOG_WRN("Failed to activate the new default layer; aborting changes.");
+        return ret;
+    }
+
+    _zmk_keymap_layer_default = layer;
+    ret = set_layer_state(prev_default, false);
+    if (ret < 0) {
+        LOG_WRN("Unable to deactivate the current default layer; reverting changes.");
+        _zmk_keymap_layer_default = prev_default;
+        set_layer_state(layer, false);
+        return ret;
+    }
+
+    LOG_DBG("Default layer changed to: %d", layer);
+    return 0;
+}
+
 zmk_keymap_layers_state_t zmk_keymap_layer_state(void) { return _zmk_keymap_layer_state; }
 
 bool zmk_keymap_layer_active_with_state(uint8_t layer, zmk_keymap_layers_state_t state_to_test) {
