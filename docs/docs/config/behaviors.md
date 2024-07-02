@@ -221,6 +221,29 @@ Applies to: `compatible = "zmk,behavior-sensor-rotate-var"`
 
 With `compatible = "zmk,behavior-sensor-rotate-var"`, this behavior forwards the first parameter it receives to the parameter of the first behavior specified in `bindings`, and second parameter to the parameter of the second behavior.
 
+## Momentary Layer Lock
+
+Creates a custom behavior that locks any active momentary layers or triggers the fallback behavior specified in `bindings` if none are active.
+
+See the [momentary layer lock](../behaviors/layers.md#momentary-layer-lock) documentation for more details and examples.
+
+### Devicetree
+
+Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-momentary-layer-lock.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-momentary-layer-lock.yaml)
+
+Applies to: `compatible = "zmk,behavior-momentary-layer-lock"`
+
+| Property         | Type          | Description                                             |
+| ---------------- | ------------- | ------------------------------------------------------- |
+| `#binding-cells` | int           | Must be `0`                                             |
+| `bindings`       | phandle array | A behavior to trigger if no momentary layers are active |
+
+You can use the following nodes to tweak the default behaviors:
+
+| Node      | Behavior                                                            |
+| --------- | ------------------------------------------------------------------- |
+| `&molock` | [Momentary Layer Lock](../behaviors/layers.md#momentary-layer-lock) |
+
 ## Sticky Key
 
 Creates a custom behavior that triggers a behavior and keeps it pressed it until another key is pressed and released.

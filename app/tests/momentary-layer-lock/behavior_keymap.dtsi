@@ -1,0 +1,27 @@
+/ {
+    behaviors{
+        kp_molock: kp_molock {
+            compatible = "zmk,behavior-momentary-layer-lock";
+            label = "KP_MOLOCK";
+            #binding-cells = <0>;
+            bindings = <&kp F>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &kp N0 &mo 1
+                &molock &kp_molock>;
+        };
+
+        layer_1 {
+            bindings = <
+                &kp N1 &trans
+                &trans &trans>;
+        };
+    };
+};
