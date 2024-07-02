@@ -69,6 +69,15 @@ static struct hids_report consumer_input = {
     .type = HIDS_INPUT,
 };
 
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+
+static struct hids_report programmable_buttons_input = {
+    .id = ZMK_HID_REPORT_ID_PROGRAMMABLE_BUTTONS,
+    .type = HIDS_INPUT,
+};
+
+#endif // IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
 static struct hids_report mouse_input = {
@@ -143,6 +152,15 @@ static ssize_t read_hids_consumer_input_report(struct bt_conn *conn,
                              sizeof(struct zmk_hid_consumer_report_body));
 }
 
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+static ssize_t read_hids_programmable_buttons_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
+                                            void *buf, uint16_t len, uint16_t offset) {
+    uint32_t report_body = zmk_hid_get_programmable_buttons_report()->body;
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, &report_body,
+                             sizeof(uint32_t));
+}
+#endif // IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 static ssize_t read_hids_mouse_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                             void *buf, uint16_t len, uint16_t offset) {
@@ -199,6 +217,14 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
     BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
                        NULL, &consumer_input),
+
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                           BT_GATT_PERM_READ_ENCRYPT, read_hids_programmable_buttons_input_report, NULL, NULL),
+    BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
+    BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
+                       NULL, &programmable_buttons_input),
+#endif // IS_ENABLED(CONFIG_ZMK_PROGAMMABLE_BUTTONS)
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
@@ -327,6 +353,60 @@ int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
 
     return 0;
 };
+
+#if IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
+
+K_MSGQ_DEFINE(zmk_hog_programmable_buttons_msgq, sizeof(uint32_t),
+              CONFIG_ZMK_BLE_PROGRAMMABLE_BUTTONS_REPORT_QUEUE_SIZE, 4);
+
+void send_programmable_buttons_report_callback(struct k_work *work) {
+    uint32_t report;
+    while (k_msgq_get(&zmk_hog_programmable_buttons_msgq, &report, K_NO_WAIT) == 0) {
+        struct bt_conn *conn = destination_connection();
+        if (conn == NULL) {
+            return;
+        }
+
+        struct bt_gatt_notify_params notify_params = {
+            .attr = &hog_svc.attrs[13],
+            .data = &report,
+            .len = sizeof(report),
+        };
+
+        int err = bt_gatt_notify_cb(conn, &notify_params);
+        if (err == -EPERM) {
+            bt_conn_set_security(conn, BT_SECURITY_L2);
+        } else if (err) {
+            LOG_DBG("Error notifying %d", err);
+        }
+
+        bt_conn_unref(conn);
+    }
+};
+
+K_WORK_DEFINE(hog_programmable_buttons_work, send_programmable_buttons_report_callback);
+
+int zmk_hog_send_programmable_buttons_report(uint32_t report) {
+    int err = k_msgq_put(&zmk_hog_programmable_buttons_msgq, &report, K_MSEC(100));
+    if (err) {
+        switch (err) {
+        case -EAGAIN: {
+            LOG_WRN("Consumer message queue full, popping first message and queueing again");
+            uint32_t discarded_report;
+            k_msgq_get(&zmk_hog_programmable_buttons_msgq, &discarded_report, K_NO_WAIT);
+            return zmk_hog_send_programmable_buttons_report(report);
+        }
+        default:
+            LOG_WRN("Failed to queue mouse report to send (%d)", err);
+            return err;
+        }
+    }
+
+    k_work_submit_to_queue(&hog_work_q, &hog_programmable_buttons_work);
+
+    return 0;
+};
+#endif //IS_ENABLED(CONFIG_ZMK_PROGRAMMABLE_BUTTONS)
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
