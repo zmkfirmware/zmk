@@ -21,3 +21,4 @@
 #include <behaviors/macros.dtsi>
 #include <behaviors/mouse_key_press.dtsi>
 #include <behaviors/soft_off.dtsi>
+#include <behaviors/leader_key.dtsi>
