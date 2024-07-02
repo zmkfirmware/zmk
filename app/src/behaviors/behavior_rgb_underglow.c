@@ -198,19 +198,39 @@ on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_bin
     case RGB_EFF_CMD: {
         binding->param1 = RGB_EFS_CMD;
         binding->param2 = zmk_rgb_underglow_calc_effect(1);
+        // Set the start date for the effect to begin to be 50ms in the future.
+        // This gives us time to get things ready on the both halves.
+        // TODO(PT): This is just to convey the idea, I'm unsure if the timescale here is actually milliseconds.
+        binding->param3 = k_uptime_get() + 50;
         break;
     }
     default:
         return 0;
     }
 
-    LOG_DBG("RGB relative convert to absolute (%d/%d)", binding->param1, binding->param2);
+    LOG_DBG("RGB relative convert to absolute (%d/%d, %d)", binding->param1, binding->param2, binding->param3);
 
     return 0;
 };
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
+    if (binding->param3 > 0) {
+        // TODO(PT): Here, both halves would wait until the start date specified by param3 has been
+        // reached.
+        // In my testing, however, it appears that this is invoked on the main half before the BLE
+        // command is sent to the peripheral half, so I think more rearranging would be needed
+        // (or perhaps this isn't the right place for this at all).
+        // Also, importantly, the clock here is currently just the uptime of this half, which isn't
+        // synchronized between the halves. If this were a real feature, each half would need to be
+        // synchronized with an external clock (or just each other's clocks). This perhaps could be
+        // pulled from the host?
+        LOG_WRN("Sleeping until timestamp is reached...");
+        while (k_uptime_get() < binding->param3) {
+            // TODO(PT): Perhaps Zephyr has some kind of utility for a gentle spinloop?
+        }
+        LOG_WRN("Timestamp has elapsed! Timestamp: %d, Now: %d", binding->param3, k_uptime_get());
+    }
     switch (binding->param1) {
     case RGB_TOG_CMD:
         return zmk_rgb_underglow_toggle();
