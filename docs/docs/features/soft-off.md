@@ -3,7 +3,7 @@ title: Soft Off Feature
 sidebar_label: Soft Off
 ---
 
-Similar to the deep sleep feature that sends the keyboard into a low power state after a certain period of inactivity, the soft off feature is used to turn the keyboard on and off explicitly. Depending on the keyboard, this may be through a dedicated on/off push button, or merely through an additional binding in the keymap to turn the device off and the existing reset button to turn the device back on.
+Similar to the deep sleep feature that sends the keyboard into a low power state after a certain period of inactivity, the soft off feature is used to turn the keyboard on and off explicitly. Depending on the keyboard, this may be through a dedicated on/off push button defined in hardware, or merely through an additional binding in the keymap to turn the device off and an existing reset button to turn the device back on.
 
 The feature is intended as an alternative to using a hardware switch to physically cut power from the battery to the keyboard. This can be useful for existing PCBs not designed for wireless that don't have a power switch, or for new designs that favor a push button on/off like found on other devices.
 
@@ -13,10 +13,15 @@ The power off is accomplished by putting the MCU into a "soft off" state. Power 
 
 :::
 
-Once powered off, the keyboard will only wake up when:
+Causing a device to enter the soft-off state is done by:
 
-- You press the same button/sequence that you pressed to power off the keyboard, or
-- You press a reset button found on the keyboard.
+- Triggering a hardware-defined dedicated GPIO pin, if one exists;
+- Triggering the [Soft Off Behavior](../behaviors/soft-off.md) from the keymap.
+
+Once in the soft-off state, the device will only wake up when:
+
+- A hardware-defined dedicated GPIO pin is triggered, if one exists;
+- A reset button found on the device is pressed.
 
 ## Config
 
@@ -53,7 +58,6 @@ Zephyr has general support for the concept of a device as a "wakeup source", whi
 / {
     kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
         diode-direction = "col2row";
         wakeup-source;
 
@@ -157,7 +161,6 @@ the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         wakeup-source;
-        label = "KSCAN";
         debounce-press-ms = <1>;
         debounce-release-ms = <5>;
 
@@ -180,7 +183,6 @@ you would add another row value:
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         wakeup-source;
-        label = "KSCAN";
         debounce-press-ms = <1>;
         debounce-release-ms = <5>;
 
@@ -243,7 +245,6 @@ Next, we need to add another device which will be enabled only when the keyboard
 / {
     wakeup_source: wakeup_source {
         compatible = "zmk,gpio-key-wakeup-trigger";
-
         trigger = <&on_off_key>;
         wakeup-source;
     };
