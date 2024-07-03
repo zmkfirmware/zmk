@@ -11,7 +11,12 @@
 #define ZMK_BEHAVIOR_OPAQUE 0
 #define ZMK_BEHAVIOR_TRANSPARENT 1
 
+typedef uint16_t zmk_behavior_local_id_t;
+
 struct zmk_behavior_binding {
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS)
+    zmk_behavior_local_id_t local_id;
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS)
     const char *behavior_dev;
     uint32_t param1;
     uint32_t param2;
@@ -22,8 +27,6 @@ struct zmk_behavior_binding_event {
     uint32_t position;
     int64_t timestamp;
 };
-
-typedef uint16_t zmk_behavior_local_id_t;
 
 /**
  * @brief Get a const struct device* for a behavior from its @p name field.

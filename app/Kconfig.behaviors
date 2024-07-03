@@ -12,12 +12,16 @@ config ZMK_BEHAVIOR_LOCAL_IDS
 
 if ZMK_BEHAVIOR_LOCAL_IDS
 
+config ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS
+    bool "Track in behavior bindings"
+
 choice ZMK_BEHAVIOR_LOCAL_ID_TYPE
     prompt "Local ID Type"
 
 config ZMK_BEHAVIOR_LOCAL_ID_TYPE_SETTINGS_TABLE
     bool "Settings Table"
     depends on SETTINGS
+    select ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS
     help
       Use persistent entries in the settings subsystem to identify
       behaviors by local ID, which uses the device name to generate
