@@ -229,6 +229,8 @@ static int behavior_local_id_init(void) {
     return 0;
 }
 
+SYS_INIT(behavior_local_id_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
+
 #elif IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_ID_TYPE_SETTINGS_TABLE)
 
 static zmk_behavior_local_id_t largest_local_id = 0;
@@ -239,7 +241,7 @@ static int behavior_handle_set(const char *name, size_t len, settings_read_cb re
 
     if (settings_name_steq(name, "local_id", &next) && next) {
         char *endptr;
-        uint8_t local_id = strtoul(next, &endptr, 10);
+        zmk_behavior_local_id_t local_id = strtoul(next, &endptr, 10);
         if (*endptr != '\0') {
             LOG_WRN("Invalid behavior local ID: %s with endptr %s", next, endptr);
             return -EINVAL;
@@ -302,21 +304,11 @@ static int behavior_handle_commit(void) {
 SETTINGS_STATIC_HANDLER_DEFINE(behavior, "behavior", NULL, behavior_handle_set,
                                behavior_handle_commit, NULL);
 
-static int behavior_local_id_init(void) {
-    settings_subsys_init();
-
-    settings_load_subtree("behavior");
-
-    return 0;
-}
-
 #else
 
 #error "A behavior local ID mechanism must be selected"
 
 #endif
-
-SYS_INIT(behavior_local_id_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
 
 #endif
 
