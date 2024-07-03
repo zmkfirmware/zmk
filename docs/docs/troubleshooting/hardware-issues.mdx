@@ -1,0 +1,210 @@
+---
+title: Hardware Issues
+sidebar_label: Hardware Issues
+description: Troubleshooting common hardware issues.
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+This page focuses on troubleshooting some commonly encountered hardware issues. Hardware issues can cause a vast number of problems, and depending on the issue it can be difficult to tell whether a problem is caused by hardware, software, or some combination of both.
+
+The advice presented here makes the following assumptions:
+
+<details>
+  <summary>
+    You did not design the device yourself, the device was successfully tested
+    and manufactured by someone else.
+  </summary>
+  If you designed the device yourself, then you should have the experience necessary
+  to make educated guesses about whether an issue is caused by hardware or software.
+  Please thoroughly check your design, and ask other communities with a focus on
+  hardware for help when it comes to hardware issues.
+</details>
+
+<details>
+  <summary>
+    You have access to the schematic of the device, possibly also the board
+    design files.
+  </summary>
+  For DIY devices, you may need to download and install a program such as KiCAD to
+  view these files. If you do not have access to the schematic, much less the board
+  design files, then please turn to the designer or vendor of the device for assistance.
+</details>
+
+<details>
+  <summary>
+    You own or otherwise have access to a multimeter.
+    {/*This needs a comment, otherwise prettier breaks it*/}
+  </summary>
+  If this does not apply, obtain a multimeter. A multimeter is an essential tool
+  for troubleshooting hardware issues, and a cheap one will suffice for most people.
+</details>
+
+## Electrical Net Connection Issues
+
+An electrical net is a term used to describe a set of points in a circuit that
+are all connected together by wires or other conductive paths and have the same
+electrical voltage.
+
+This grouping covers both shorts between electrical nets and missing connections between electrical nets. Common "symptoms" of this hardware issue include:
+
+- Some keys (commonly an entire column or row) of a keyboard aren't working
+- Multiple keystrokes are triggering on the same key/GPIO
+- A part of the keyboard is hot to touch
+
+For through-hole components this issue can often be identified with a visual inspection followed by some soldering (You will need a soldering iron):
+
+![A helpful soldering infographic. Source: Sparkfun](https://cdn.sparkfun.com/assets/c/d/a/a/9/523b1189757b7fb36e8b456b.jpg)
+
+:::tip
+The above image was taken from [Sparkfun's guide on soldering through-hole components](https://learn.sparkfun.com/tutorials/how-to-solder-through-hole-soldering), which may be of use if you are less experienced with soldering.
+:::
+
+### Testing Connections Using a Multimeter
+
+:::tip
+If you are unfamiliar with the use of a multimeter, [Sparkfun's guide](https://learn.sparkfun.com/tutorials/how-to-use-a-multimeter) may prove a helpful resource.
+:::
+
+<Tabs
+  defaultValue="short"
+  values={[
+    { label: "Testing for shorts", value: "short" },
+    { label: "Testing for missing connection", value: "lack" },
+  ]}
+>
+  <TabItem value="short">
+    To test for shorts, set your multimeter to continuity mode. You can then
+    follow along the schematic (using the board design files as aid if
+    necessary) to test the affected connections for shorts. **Please make sure to unpower your device when testing for shorts.**
+
+    Once a short has been identified, remove any solder causing the short. Depending on the nature of the short, the short may have damaged some of the MCU's GPIO pins, or caused the device to cease functioning entirely. In the event of minor damage, the device may be able to be rescued using [bodge wires](hardware-issues.mdx#fixing-missing-connections-with-bodge-wires). Otherwise, you will need to replace your MCU - potentially even the entire device.
+
+    Here is an example of testing @SOMETHING@ for a short. The schematic (INSERT IMAGE) shows that THIS and THAT are not meant to be on the same net. Using continuity mode, the device is tested for a short between THIS and THAT (INSERT IMAGE).
+
+  </TabItem>
+  <TabItem value="lack">
+   Testing for a missing connection is best done with a variety of different modes, depending on where a suspected missing connection is. Depending on which mode is used, the device should be unpowered or powered. For example, when checking whether a diode was soldered properly, it is best to switch your multimeter to "diode mode", unpower the device, and test the solder pads of other components attached to the same net:
+
+(INSERT IMAGE)
+
+By testing the pads of COMPONENT_A and COMPONENT_B directly, both of the solder connections of the diode are tested simultaneously - one does not need to be concerned about whether the multimeter probes are touching the solder or the pad.
+
+This same methodology can be used for many different components. One notably tricky component to test with this approach is the MCU of a device (or the board, if the device consists of a board and a shield). If your device can turn on (i.e. the power pins of the MCU/board are all connected properly), then a neat trick to testing the GPIO pins of the device is to set them to `output-high` or `output-low` in the firmware. You can then test the voltage of the pins when the device is turned on, to check that they are soldered correctly.
+
+To set for example the GPIO pin `P0.16` of the `nRF52840` to `output-high` in your firmware, add the following to your device's `.keymap` file:
+
+```
+&gpio0 {
+  pin_sixteen {
+    gpio-hog;
+    gpios = <16 output-high>;
+  };
+};
+```
+
+This should be placed at the root level of the file, like so:
+
+```
+#include <...>
+...
+
+&gpio0 {
+  pin_sixteen {
+    gpio-hog;
+    gpios = <16 output-high>;
+  };
+};
+
+/ {
+    keymap {
+    ...
+    };
+};
+```
+
+You will also need to add the following line to your config:
+
+```
+CONFIG_GPIO_HOGS=y
+```
+
+This method can also help identify a broken GPIO pin - whether a particular pin is broken or is simply soldered incorrectly cannot be concluded without the help of an x-ray machine (unless the device was working fine previously, then it is most likely a broken GPIO pin). You can merely attempt to reflow/redo the related solder joints and see if the problem improves. If you conclude that a particular pin is broken, the issue might be resolvable by using a [bodge wire](hardware-issues.mdx#fixing-missing-connections-with-bodge-wires).
+
+  </TabItem>
+</Tabs>
+
+### Fixing Missing Connections With Bodge Wires
+
+If a missing connection has been identified and cannot be otherwise fixed, perhaps due to a lifted pad or a fried GPIO pin, then often a _bodge wire_ can be used to fix the connection. A bodge wire refers to soldering an additional wire between the points to fix the connection. If the bodge is necessary due to a lifted pad, then simply solder a bodge wire between the corresponding part of the component and any other point in the same net (check the schematic, follow traces on the board/check board design files if necessary).
+
+If the bodge wire is necessary due to a fried GPIO pin, then things get slightly more involved. First, you will need to identify a spare GPIO pin that you can solder the bodge wire onto. Next, bodge the fried GPIO pin together with the working spare. Finally, you will need to adjust the definition of the keyboard slightly to account for the bodge. This can be done from your `zmk-config`, by imitating the following example:
+
+This example will assume that you have a keyboard using the `cradio` shield running off of a `nice!nano`, of which pin (D)`1` on the left half is no longer functioning, so you have bodged a wire from `1` to `P1.07`.
+
+1. Navigate to wherever the board/shield you are using is defined (for `cradio` this is [here](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields/cradio)).
+2. Search for the location where the corresponding kscan is defined. This will be a `.dts`, `.dtsi` or a `.overlay` file.
+3. Make a `cradio_left.overlay` (or the corresponding for whichever keyboard/half you are changing) file in your `zmk-config`. Then copy the contents of the kscan node over. For `cradio`, this is
+
+```
+kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+
+        input-gpios
+        = <&pro_micro  7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        ;
+    };
+```
+
+4. Edit the node to replace the broken pin with the replacement pin:
+
+```
+kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+
+        input-gpios
+        = <&pro_micro  7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&gpio1  7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&pro_micro  9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        ;
+    };
+```
+
+You can then build and flash using your config as usual.
+
+## Hardware Antenna Issues
+
+Any metal near a wireless antenna will interfere with it. More interference decreases the effective range, and may require [more power being provided to the antenna](connection-issues.mdx#unreliableweak-connection). If there is too much metal near the antenna, then even those measures will not suffice. Testing whether this problem is present is as easy (or complex) as removing all nearby metal from the device - if the antenna is on a socketed board, then removing the board to test is generally the best approach.
