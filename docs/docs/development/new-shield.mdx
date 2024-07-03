@@ -19,7 +19,8 @@ The high level steps are:
 - Create a new shield directory.
 - Add the base Kconfig files.
 - Add the shield overlay file to define the KSCAN driver for detecting key press/release.
-- (Optional) Add the matrix transform for mapping KSCAN row/column values to sane key positions. This is needed for non-rectangular keyboards, or where the underlying row/column pin arrangement does not map one to one with logical locations on the keyboard.
+- Add the matrix transform for mapping KSCAN row/column values to key positions in the keymap.
+- Add a physical layout definition to select the matrix transform and KSCAN instance.
 - Add a default keymap, which users can override in their own configs as needed.
 - Add a `<my_shield>.zmk.yml` metadata file to document the high level details of your shield, and the features it supports.
 - Update the `build.yaml` file from the repository template to have some sample builds of the firmware to test.
@@ -318,7 +319,7 @@ The shared configuration in `my_awesome_split_board.conf` is only applied when y
 </TabItem>
 </Tabs>
 
-## (Optional) Matrix Transform
+## Matrix Transform
 
 Internally ZMK translates all row/column events into "key position" events to maintain a consistent model that works no matter what any possible GPIO matrix may look like for a certain keyboard. This is particularly helpful when:
 
@@ -328,15 +329,7 @@ Internally ZMK translates all row/column events into "key position" events to ma
 A "key position" is the numeric index (zero-based) of a given key, which identifies
 the logical key location as perceived by the end user. All _keymap_ mappings actually bind behaviors to _key positions_, not to row/column values.
 
-_Without_ a matrix transform, that intentionally map each key position to the row/column pair that position corresponds to, the default equation to determine that is:
-
-```c
-($row * NUMBER_OF_COLUMNS) + $column
-```
-
-Which effectively amounts to numbering the key positions by traversing each row from top to bottom and assigning numerically incrementing key positions.
-
-Whenever that default key position mapping is insufficient, the `<shield_name>.overlay` file should _also_ include a matrix transform.
+The `<shield_name>.overlay` must include a matrix transform that defines this mapping from row/column values to key positions.
 
 Here is an example for the [nice60](https://github.com/Nicell/nice60), which uses an efficient 8x8 GPIO matrix, and uses a transform:
 
@@ -344,11 +337,6 @@ Here is an example for the [nice60](https://github.com/Nicell/nice60), which use
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-    chosen {
-        zmk,kscan = &kscan0;
-        zmk,matrix-transform = &default_transform;
-    };
-
     /* define kscan node with label `kscan0`... */
 
     default_transform: keymap_transform_0 {
@@ -377,9 +365,57 @@ Some important things to note:
 
 - The `#include <dt-bindings/zmk/matrix_transform.h>` is critical. The `RC` macro is used to generate the internal storage in the matrix transform, and is actually replaced by a C preprocessor before the final devicetree is compiled into ZMK.
 - `RC(row, column)` is placed sequentially to define what row and column values that position corresponds to.
-- If you have a keyboard with options for `2u` keys in certain positions, or break away portions, it is a good idea to set the chosen `zmk,matrix-transform` to the default arrangement, and include _other_ possible matrix transform nodes in the devicetree that users can select in their user config by overriding the chosen node.
+- If you have a keyboard with options for `2u` keys in certain positions, ANSI vs. ISO layouts, or break away portions, define one matrix transform for each possible arrangement to be used in the physical layouts. This will allow the users to select the right layout in their keymap files.
 
 See the [matrix transform section](../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for details and more examples of matrix transforms.
+
+## Physical Layout
+
+The physical layout is the top level entity that aggregates all details about a certain possible layout for a keyboard: the matrix transform that defines the set of key positions and what row/column they correspond to, what kscan driver is used for that layout, etc.
+For keyboards that support multiple layouts, setting a `chosen` node to a defined physical layout in your keymap will allow selecting the specific layout that you've built.
+
+A physical layout is very basic, e.g.:
+
+```
+/ {
+    default_layout: default_layout {
+        compatible = "zmk,physical-layout";
+        transform = <&default_transform>;
+        kscan = <&kscan0>;
+    };
+};
+```
+
+When supporting multiple layouts, define the multiple layout nodes and then set a `chosen` for the default:
+
+```
+/ {
+    chosen {
+        zmk,physical-layout = &default_layout;
+        ...
+    };
+
+    default_layout: default_layout {
+        compatible = "zmk,physical-layout";
+        transform = <&default_transform>;
+        kscan = <&kscan0>;
+    };
+
+    alt_layout: alt_layout {
+        compatible = "zmk,physical-layout";
+        transform = <&alt_transform>;
+        kscan = <&alt_kscan0>;
+    };
+};
+```
+
+This way, users can select a different layout by overriding the `zmk,physical-layout` chosen node in their keymap file.
+
+:::note
+Some keyboards use different GPIO pins for different layouts, and need different kscan nodes created for each layout.
+However, if all of your physical layouts use the same `kscan` node under the hood, you can skip setting the `kscan` property on each
+layout and instead assign the `zmk,kscan` chosen node to your single kscan instance.
+:::
 
 ## Default Keymap
 
