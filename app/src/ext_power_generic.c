@@ -151,10 +151,10 @@ static int ext_power_generic_init(const struct device *dev) {
 
 #if IS_ENABLED(CONFIG_SETTINGS)
     k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
-#else
-    // Default to the ext_power being open when no settings
-    ext_power_enable(dev);
 #endif
+
+    // Enable by default. We may get disabled again once settings load.
+    ext_power_enable(dev);
 
     if (config->init_delay_ms) {
         k_msleep(config->init_delay_ms);
