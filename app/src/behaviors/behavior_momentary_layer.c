@@ -20,7 +20,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static const struct behavior_parameter_value_metadata param_values[] = {
     {
         .display_name = "Layer",
-        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_INDEX,
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_ID,
     },
 };
 
