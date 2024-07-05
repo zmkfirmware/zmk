@@ -36,8 +36,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
 static const struct behavior_parameter_value_metadata param_values[] = {
     {
         .display_name = "Key",
-        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_STANDARD,
-        .standard = BEHAVIOR_PARAMETER_STANDARD_DOMAIN_HID_USAGE,
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_HID_USAGE,
     },
 };
 
