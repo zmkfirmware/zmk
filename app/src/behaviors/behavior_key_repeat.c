@@ -19,27 +19,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
-
-static const struct behavior_parameter_value_metadata param_values[] = {
-    {
-        .display_name = "Key",
-        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_HID_USAGE,
-    },
-};
-
-static const struct behavior_parameter_metadata_set param_metadata_set[] = {{
-    .param1_values = param_values,
-    .param1_values_len = ARRAY_SIZE(param_values),
-}};
-
-static const struct behavior_parameter_metadata metadata = {
-    .sets_len = ARRAY_SIZE(param_metadata_set),
-    .sets = param_metadata_set,
-};
-
-#endif
-
 struct behavior_key_repeat_config {
     uint8_t index;
     uint8_t usage_pages_count;
@@ -89,7 +68,7 @@ static const struct behavior_driver_api behavior_key_repeat_driver_api = {
     .binding_pressed = on_key_repeat_binding_pressed,
     .binding_released = on_key_repeat_binding_released,
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
-    .parameter_metadata = &metadata,
+    .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
