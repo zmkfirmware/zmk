@@ -26,6 +26,7 @@ jobs:
       image: docker.io/zmkfirmware/zmk-build-arm:3.5
     needs: compile-matrix
     strategy:
+      fail-fast: false
       matrix:
         include: ${{ fromJSON(needs.compile-matrix.outputs.include-list) }}
     steps:
