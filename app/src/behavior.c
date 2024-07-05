@@ -99,7 +99,7 @@ static int check_param_matches_value(const struct behavior_parameter_value_metad
         }
 
         break;
-    case BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_INDEX:
+    case BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_ID:
         if (param >= 0 && param < ZMK_KEYMAP_LEN) {
             return PARAM_MATCHES;
         }
