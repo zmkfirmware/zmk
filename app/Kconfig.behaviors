@@ -31,6 +31,7 @@ config ZMK_BEHAVIOR_LOCAL_ID_TYPE_SETTINGS_TABLE
 
 config ZMK_BEHAVIOR_LOCAL_ID_TYPE_CRC16
     bool "CRC16 Hash"
+    select CRC
     help
       Use the CRC16-ANSI hash of behavior device names to generate
       stable behavior local IDs. This saves on settings storage at
