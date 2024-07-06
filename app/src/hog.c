@@ -224,22 +224,41 @@ K_THREAD_STACK_DEFINE(hog_q_stack, CONFIG_ZMK_BLE_THREAD_STACK_SIZE);
 
 struct k_work_q hog_work_q;
 
-K_MSGQ_DEFINE(zmk_hog_keyboard_msgq, sizeof(struct zmk_hid_keyboard_report_body),
-              CONFIG_ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE, 4);
+static int hog_send_report(struct k_msgq *msgq, struct k_work *work, void *body) {
+    int err = k_msgq_put(msgq, body, K_MSEC(100));
+    if (err) {
+        switch (err) {
+        case -EAGAIN: {
+            LOG_WRN("Message queue full, popping first message and queueing again");
+            struct zmk_hid_keyboard_report_body discard;
+            k_msgq_get(msgq, &discard, K_NO_WAIT);
+            return hog_send_report(msgq, work, body);
+        }
+        default:
+            LOG_WRN("Failed to queue report to send (%d)", err);
+            return err;
+        }
+    }
 
-void send_keyboard_report_callback(struct k_work *work) {
-    struct zmk_hid_keyboard_report_body report;
+    k_work_submit_to_queue(&hog_work_q, work);
 
-    while (k_msgq_get(&zmk_hog_keyboard_msgq, &report, K_NO_WAIT) == 0) {
+    return 0;
+};
+
+static void send_report_callback(struct k_msgq *msgq, const struct bt_gatt_attr *attr,
+                                 uint8_t len) {
+    uint8_t body[sizeof(struct zmk_hid_report_body)];
+
+    while (k_msgq_get(msgq, &body, K_NO_WAIT) == 0) {
         struct bt_conn *conn = zmk_ble_active_profile_conn();
         if (conn == NULL) {
             return;
         }
 
         struct bt_gatt_notify_params notify_params = {
-            .attr = &hog_svc.attrs[5],
-            .data = &report,
-            .len = sizeof(report),
+            .attr = attr,
+            .len = len,
+            .data = &body,
         };
 
         int err = bt_gatt_notify_cb(conn, &notify_params);
@@ -253,135 +272,53 @@ void send_keyboard_report_callback(struct k_work *work) {
     }
 }
 
-K_WORK_DEFINE(hog_keyboard_work, send_keyboard_report_callback);
+K_MSGQ_DEFINE(hog_keyboard_msgq, sizeof(struct zmk_hid_keyboard_report_body),
+              CONFIG_ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE, 4);
 
-int zmk_hog_send_keyboard_report(struct zmk_hid_keyboard_report_body *report) {
-    int err = k_msgq_put(&zmk_hog_keyboard_msgq, report, K_MSEC(100));
-    if (err) {
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Keyboard message queue full, popping first message and queueing again");
-            struct zmk_hid_keyboard_report_body discarded_report;
-            k_msgq_get(&zmk_hog_keyboard_msgq, &discarded_report, K_NO_WAIT);
-            return zmk_hog_send_keyboard_report(report);
-        }
-        default:
-            LOG_WRN("Failed to queue keyboard report to send (%d)", err);
-            return err;
-        }
-    }
-
-    k_work_submit_to_queue(&hog_work_q, &hog_keyboard_work);
-
-    return 0;
-};
-
-K_MSGQ_DEFINE(zmk_hog_consumer_msgq, sizeof(struct zmk_hid_consumer_report_body),
+K_MSGQ_DEFINE(hog_consumer_msgq, sizeof(struct zmk_hid_consumer_report_body),
               CONFIG_ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE, 4);
 
-void send_consumer_report_callback(struct k_work *work) {
-    struct zmk_hid_consumer_report_body report;
+#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+K_MSGQ_DEFINE(hog_mouse_msgq, sizeof(struct zmk_hid_mouse_report_body),
+              CONFIG_ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE, 4);
+#endif
 
-    while (k_msgq_get(&zmk_hog_consumer_msgq, &report, K_NO_WAIT) == 0) {
-        struct bt_conn *conn = zmk_ble_active_profile_conn();
-        if (conn == NULL) {
-            return;
-        }
+static void send_keyboard_report_callback(struct k_work *work) {
+    send_report_callback(&hog_keyboard_msgq, &hog_svc.attrs[5],
+                         sizeof(struct zmk_hid_keyboard_report_body));
+}
 
-        struct bt_gatt_notify_params notify_params = {
-            .attr = &hog_svc.attrs[9],
-            .data = &report,
-            .len = sizeof(report),
-        };
+K_WORK_DEFINE(hog_keyboard_work, send_keyboard_report_callback);
 
-        int err = bt_gatt_notify_cb(conn, &notify_params);
-        if (err == -EPERM) {
-            bt_conn_set_security(conn, BT_SECURITY_L2);
-        } else if (err) {
-            LOG_DBG("Error notifying %d", err);
-        }
-
-        bt_conn_unref(conn);
-    }
+static void send_consumer_report_callback(struct k_work *work) {
+    send_report_callback(&hog_consumer_msgq, &hog_svc.attrs[9],
+                         sizeof(struct zmk_hid_consumer_report_body));
 };
 
 K_WORK_DEFINE(hog_consumer_work, send_consumer_report_callback);
 
-int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
-    int err = k_msgq_put(&zmk_hog_consumer_msgq, report, K_MSEC(100));
-    if (err) {
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Consumer message queue full, popping first message and queueing again");
-            struct zmk_hid_consumer_report_body discarded_report;
-            k_msgq_get(&zmk_hog_consumer_msgq, &discarded_report, K_NO_WAIT);
-            return zmk_hog_send_consumer_report(report);
-        }
-        default:
-            LOG_WRN("Failed to queue consumer report to send (%d)", err);
-            return err;
-        }
-    }
-
-    k_work_submit_to_queue(&hog_work_q, &hog_consumer_work);
-
-    return 0;
-};
-
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
-
-K_MSGQ_DEFINE(zmk_hog_mouse_msgq, sizeof(struct zmk_hid_mouse_report_body),
-              CONFIG_ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE, 4);
-
-void send_mouse_report_callback(struct k_work *work) {
-    struct zmk_hid_mouse_report_body report;
-    while (k_msgq_get(&zmk_hog_mouse_msgq, &report, K_NO_WAIT) == 0) {
-        struct bt_conn *conn = zmk_ble_active_profile_conn();
-        if (conn == NULL) {
-            return;
-        }
-
-        struct bt_gatt_notify_params notify_params = {
-            .attr = &hog_svc.attrs[13],
-            .data = &report,
-            .len = sizeof(report),
-        };
-
-        int err = bt_gatt_notify_cb(conn, &notify_params);
-        if (err == -EPERM) {
-            bt_conn_set_security(conn, BT_SECURITY_L2);
-        } else if (err) {
-            LOG_DBG("Error notifying %d", err);
-        }
-
-        bt_conn_unref(conn);
-    }
+static void send_mouse_report_callback(struct k_work *work) {
+    send_report_callback(&hog_mouse_msgq, &hog_svc.attrs[13],
+                         sizeof(struct zmk_hid_mouse_report_body));
 };
 
 K_WORK_DEFINE(hog_mouse_work, send_mouse_report_callback);
+#endif
 
-int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *report) {
-    int err = k_msgq_put(&zmk_hog_mouse_msgq, report, K_MSEC(100));
-    if (err) {
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Consumer message queue full, popping first message and queueing again");
-            struct zmk_hid_mouse_report_body discarded_report;
-            k_msgq_get(&zmk_hog_mouse_msgq, &discarded_report, K_NO_WAIT);
-            return zmk_hog_send_mouse_report(report);
-        }
-        default:
-            LOG_WRN("Failed to queue mouse report to send (%d)", err);
-            return err;
-        }
-    }
-
-    k_work_submit_to_queue(&hog_work_q, &hog_mouse_work);
-
-    return 0;
+int zmk_hog_send_keyboard_report(struct zmk_hid_keyboard_report_body *body) {
+    return hog_send_report(&hog_keyboard_msgq, &hog_keyboard_work, body);
 };
 
-#endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *body) {
+    return hog_send_report(&hog_consumer_msgq, &hog_consumer_work, body);
+};
+
+#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *body) {
+    return hog_send_report(&hog_mouse_msgq, &hog_mouse_work, body);
+};
+#endif
 
 static int zmk_hog_init(void) {
     static const struct k_work_queue_config queue_config = {.name = "HID Over GATT Send Work"};
