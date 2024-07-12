@@ -121,12 +121,27 @@ static int ext_power_settings_set(const char *name, size_t len, settings_read_cb
     return -ENOENT;
 }
 
-struct settings_handler ext_power_conf = {.name = "ext_power/state",
-                                          .h_set = ext_power_settings_set};
+static int ext_power_settings_commit() {
+    const struct device *dev = DEVICE_DT_GET(DT_DRV_INST(0));
+    struct ext_power_generic_data *data = dev->data;
+
+    if (!data->settings_init) {
+
+        data->status = true;
+        k_work_schedule(&ext_power_save_work, K_NO_WAIT);
+
+        ext_power_enable(dev);
+    }
+
+    return 0;
+}
+
+SETTINGS_STATIC_HANDLER_DEFINE(ext_power, "ext_power/state", NULL, ext_power_settings_set,
+                               ext_power_settings_commit, NULL);
+
 #endif
 
 static int ext_power_generic_init(const struct device *dev) {
-    struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
     if (gpio_pin_configure_dt(&config->control, GPIO_OUTPUT_INACTIVE)) {
@@ -135,29 +150,11 @@ static int ext_power_generic_init(const struct device *dev) {
     }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
-    settings_subsys_init();
-
-    int err = settings_register(&ext_power_conf);
-    if (err) {
-        LOG_ERR("Failed to register the ext_power settings handler (err %d)", err);
-        return err;
-    }
-
     k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
-
-    // Set default value (on) if settings isn't set
-    settings_load_subtree("ext_power");
-    if (!data->settings_init) {
-
-        data->status = true;
-        k_work_schedule(&ext_power_save_work, K_NO_WAIT);
-
-        ext_power_enable(dev);
-    }
-#else
-    // Default to the ext_power being open when no settings
-    ext_power_enable(dev);
 #endif
+
+    // Enable by default. We may get disabled again once settings load.
+    ext_power_enable(dev);
 
     if (config->init_delay_ms) {
         k_msleep(config->init_delay_ms);
