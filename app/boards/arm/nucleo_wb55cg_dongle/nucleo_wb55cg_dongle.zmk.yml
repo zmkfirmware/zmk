@@ -1,0 +1,9 @@
+file_format: "1"
+id: nucleo_wb55cg_dongle
+name: ST Nucleo WB55CG Dongle
+type: board
+arch: arm
+outputs:
+  - usb
+url: https://www.st.com/en/evaluation-tools/p-nucleo-wb55.html
+exposes: [nucleo_wb55cg_dongle]
