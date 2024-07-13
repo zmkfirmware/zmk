@@ -1443,3 +1443,6 @@
 /* Apple Globe key */
 #define C_AC_NEXT_KEYBOARD_LAYOUT_SELECT (ZMK_HID_USAGE(HID_USAGE_CONSUMER, 0x029D))
 #define GLOBE (C_AC_NEXT_KEYBOARD_LAYOUT_SELECT)
+
+/* Microsoft Copilot key */
+#define COPILOT LS(LG(F23))

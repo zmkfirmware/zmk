@@ -26,3 +26,20 @@
 #define RS(keycode) APPLY_MODS(MOD_RSFT, keycode)
 #define RA(keycode) APPLY_MODS(MOD_RALT, keycode)
 #define RG(keycode) APPLY_MODS(MOD_RGUI, keycode)
+
+#define LEFT_HYPER LS(LC(LA(LGUI)))
+#define LH(key) LS(LC(LA(LG(key))))
+#define LHYPER LEFT_HYPER
+#define OFFICE LEFT_HYPER
+
+#define LEFT_MEH LS(LC(LALT))
+#define LM(key) LS(LC(LA(key)))
+#define LMEH LEFT_MEH
+
+#define RIGHT_HYPER RS(RC(RA(RGUI)))
+#define RH(key) RS(RC(RA(RG(key))))
+#define RHYPER RIGHT_HYPER
+
+#define RIGHT_MEH RS(RC(RALT))
+#define RM(key) RS(RC(RA(key)))
+#define RMEH RIGHT_MEH
