@@ -380,6 +380,7 @@ A physical layout is very basic, e.g.:
 / {
     default_layout: default_layout {
         compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
         transform = <&default_transform>;
         kscan = <&kscan0>;
     };
@@ -397,12 +398,14 @@ When supporting multiple layouts, define the multiple layout nodes and then set 
 
     default_layout: default_layout {
         compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
         transform = <&default_transform>;
         kscan = <&kscan0>;
     };
 
     alt_layout: alt_layout {
         compatible = "zmk,physical-layout";
+        display-name = "Alternate Layout";
         transform = <&alt_transform>;
         kscan = <&alt_kscan0>;
     };
