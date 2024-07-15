@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+ / {
+    behaviors {
+        /omit-if-no-ref/ leader: leader_key {
+            compatible = "zmk,behavior-leader-key";
+            label = "LEADER";
+            #binding-cells = <0>;
+        };
+    };
+};
