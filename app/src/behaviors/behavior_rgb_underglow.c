@@ -18,6 +18,119 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static const struct behavior_parameter_value_metadata no_arg_values[] = {
+    {
+        .display_name = "Toggle On/Off",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_TOG_CMD,
+    },
+    {
+        .display_name = "Turn On",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_ON_CMD,
+    },
+    {
+        .display_name = "Turn OFF",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_OFF_CMD,
+    },
+    {
+        .display_name = "Hue Up",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_HUI_CMD,
+    },
+    {
+        .display_name = "Hue Down",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_HUD_CMD,
+    },
+    {
+        .display_name = "Saturation Up",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_SAI_CMD,
+    },
+    {
+        .display_name = "Saturation Down",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_SAD_CMD,
+    },
+    {
+        .display_name = "Brightness Up",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_BRI_CMD,
+    },
+    {
+        .display_name = "Brightness Down",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_BRD_CMD,
+    },
+    {
+        .display_name = "Speed Up",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_SPI_CMD,
+    },
+    {
+        .display_name = "Speed Down",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_SPD_CMD,
+    },
+    {
+        .display_name = "Next Effect",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_EFF_CMD,
+    },
+    {
+        .display_name = "Previous Effect",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_EFR_CMD,
+    },
+};
+
+static const struct behavior_parameter_metadata_set no_args_set = {
+    .param1_values = no_arg_values,
+    .param1_values_len = ARRAY_SIZE(no_arg_values),
+};
+
+/*
+static const struct behavior_parameter_value_metadata hsv_p1_value_metadata_values[] = {
+    {
+        .display_name = "Set Color",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_COLOR_HSB_CMD,
+    },
+};
+
+static const struct behavior_parameter_value_metadata hsv_p2_value_metadata_values[] = {
+    {
+        .display_name = "Color",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_STANDARD,
+        .standard = BEHAVIOR_PARAMETER_STANDARD_DOMAIN_HSV,
+    },
+};
+
+static const struct behavior_parameter_metadata_set hsv_value_metadata_set = {
+    .param1_values = hsv_p1_value_metadata_values,
+    .param1_values_len = ARRAY_SIZE(hsv_p1_value_metadata_values),
+    .param_values = hsv_p2_value_metadata_values,
+    .param_values_len = ARRAY_SIZE(hsv_p2_value_metadata_values),
+};
+
+*/
+
+static const struct behavior_parameter_metadata_set sets[] = {
+    no_args_set,
+    // hsv_value_metadata_set,
+};
+
+static const struct behavior_parameter_metadata metadata = {
+    .sets_len = ARRAY_SIZE(sets),
+    .sets = sets,
+};
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
 static int behavior_rgb_underglow_init(const struct device *dev) { return 0; }
 
 static int
@@ -147,6 +260,9 @@ static const struct behavior_driver_api behavior_rgb_underglow_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
     .binding_released = on_keymap_binding_released,
     .locality = BEHAVIOR_LOCALITY_GLOBAL,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &metadata,
+#endif
 };
 
 BEHAVIOR_DT_INST_DEFINE(0, behavior_rgb_underglow_init, NULL, NULL, NULL, POST_KERNEL,

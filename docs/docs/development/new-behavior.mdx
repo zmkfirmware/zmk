@@ -35,7 +35,7 @@ The following resources are provided for those seeking further understanding:
 
 ## Creating the Behavior
 
-### Creating the devicetree binding (`.yaml`)
+### Creating the Devicetree Binding (`.yaml`)
 
 The properties of the behavior are listed in the behavior's devicetree binding, which comes in the form of a `.yaml` file. Devicetree bindings are stored in the directory `app/dts/bindings/behaviors/` and are labelled in lowercase, beginning with the prefix `zmk,behavior-`, and ending with the behavior's name, using dashes to separate multiple words. For example, the directory for the hold-tap's devicetree binding would be located at `app/dts/bindings/behaviors/zmk,behavior-hold-tap.yaml`, which is shown below as a reference:
 
@@ -119,7 +119,7 @@ These are additional variables required to configure a particular instance of a 
 For more information on additional `properties`, refer to [Zephyr's documentation on Devicetree bindings](https://docs.zephyrproject.org/3.5.0/build/dts/bindings-syntax.html#properties).
 :::
 
-### Creating the driver (`.c`)
+### Creating the Driver (`.c`)
 
 :::info
 Developing drivers for behaviors in ZMK makes extensive use of the Zephyr Devicetree API and Device Driver Model. Links to the Zephyr Project Documentation for both of these concepts can be found below:
@@ -203,7 +203,7 @@ The dependencies required for any ZMK behavior are:
 
 Other common dependencies include `zmk/keymap.h`, which allows behaviors to access layer information and extract behavior bindings from keymaps, and `zmk/event_manager.h` which is detailed below.
 
-##### ZMK Event Manager
+##### ZMK event manager
 
 Including `zmk/event_manager.h` is required for the following dependencies to function properly.
 
@@ -213,7 +213,7 @@ Including `zmk/event_manager.h` is required for the following dependencies to fu
 
 Events can be used similarly to hardware interrupts, through the use of [listeners](#listeners-and-subscriptions).
 
-###### Listeners and Subscriptions
+###### Listeners and subscriptions
 
 The condensed form of lines 192-225 of the tap-dance driver, shown below, does an excellent job of showcasing the function of listeners and subscriptions with respect to the [ZMK Event Manager](#zmk-event-manager).
 
@@ -279,11 +279,11 @@ Note that in the hold-tap example, the instance number, `0`, has been replaced b
 
 Behaviors also require the following parameters of `BEHAVIOR_DT_INST_DEFINE` to be changed:
 
-##### Initialization Function
+##### Initialization function
 
 Comes in the form `static int <behavior_name>_init(const struct device *dev)`. Initialization functions preconfigure any data, like resetting timers and position for hold-taps and tap-dances. All initialization functions `return 0;` once complete.
 
-##### API Structure
+##### API structure
 
 Comes in the form `static const struct behavior_driver_api <behavior_name>_driver_api)`. Common items to include in the API Structure are:
 
@@ -297,7 +297,7 @@ Comes in the form `static const struct behavior_driver_api <behavior_name>_drive
     For unibody keyboards, all locality values perform the same as `BEHAVIOR_LOCALITY_GLOBAL`.
     :::
 
-##### Data Pointers (Optional)
+##### Data pointers (optional)
 
 The data `struct` stores additional data required for **each new instance** of the behavior. Regardless of the instance number, `n`, `behavior_<behavior_name>_data_##n` is typically initialized as an empty `struct`. The data respective to each instance of the behavior can be accessed in functions like [`on_<behavior_name>_binding_pressed(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event)`](#dependencies) by extracting the behavior device from the keybind like so:
 
@@ -310,7 +310,7 @@ The variables stored inside the data `struct`, `data`, can be then modified as n
 
 The fourth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if instance-specific data is not required.
 
-##### Configuration Pointers (Optional)
+##### Configuration pointers (optional)
 
 The configuration `struct` stores the properties declared from the behavior's `.yaml` for **each new instance** of the behavior. As seen in the `#define KP_INST(n)` of the hold-tap example, the configuration `struct`, `behavior_<behavior_name>_config_##n`, for each instance number, `n`, can be initialized using the [Zephyr Devicetree Instance-based APIs](https://docs.zephyrproject.org/3.5.0/build/dts/api/api.html#instance-based-apis), which extract the values from the `properties` of each instance of the [devicetree binding](#creating-the-devicetree-binding-yaml) from a user's keymap or [predefined use-case `.dtsi` files](#defining-common-use-cases-for-the-behavior-dtsi-optional) stored in `app/dts/behaviors/`. We illustrate this further by comparing the [`#define KP_INST(n)` from the hold-tap driver](#behavior_dt_inst_define) and the [`properties` of the hold-tap devicetree binding.](#creating-the-devicetree-binding-yaml)
 
@@ -320,7 +320,7 @@ The fifth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if inst
 Remember that `.c` files should be formatted according to `clang-format` to ensure that checks run smoothly once the pull request is submitted.
 :::
 
-### Updating `app/CmakeLists.txt` to include the new driver
+### Updating `app/CmakeLists.txt` to Include the New Driver
 
 Most behavior drivers' are invoked according to the central half's [locality](#api-structure), and are therefore stored after the line `if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)` in the form, `target_sources(app PRIVATE src/behaviors/<behavior_name>.c)`, as shown below.
 
@@ -353,7 +353,7 @@ For behaviors that do not require central locality, the following options for up
 - Behavior applies to _only_ peripheral half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT AND (NOT CONFIG_ZMK_SPLIT_ROLE_CENTRAL))`
 - Behavior requires certain condition in a keyboard's `.conf` file to be met: use `target_sources_ifdef(CONFIG_<Configuration Requirement> app PRIVATE <behavior_name>.c)` instead of `target_sources(<behavior_name>.c)`
 
-### Defining common use-cases for the behavior (`.dtsi`) (Optional)
+### Defining Common Use-Cases for the Behavior (`.dtsi`) (Optional)
 
 `.dtsi` files, found in the directory `app/dts/behaviors/`, are only necessary for behaviors with more common use-cases. A common example is the mod-tap (`&mt`), which is a predefined type of hold-tap that takes a modifier key as the hold parameter and another key as the tap parameter.
 
@@ -422,7 +422,7 @@ After creating the `.dtsi` from above, update `app/dts/behaviors.dtsi` to includ
 #include <behaviors/new_behavior_instance.dtsi>
 ```
 
-## Testing changes locally
+## Testing Changes Locally
 
 Create a new folder in `app/tests/` to develop virtual test sets for all common use cases of the behavior. Behaviors should be tested thoroughly on both virtual testing environments using `west test` and real hardware.
 
@@ -437,7 +437,7 @@ Zephyr currently does not support logging over Bluetooth, so any use of the seri
 
 :::
 
-## Documenting behavior functionality
+## Documenting Behavior Functionality
 
 Consider the following prompts when writing documentation for new behaviors:
 
@@ -453,7 +453,7 @@ Consider also including visual aids alongside written documentation if it adds c
 See [Documentation](documentation.md) for more information on writing, testing, and formatting ZMK documentation.
 :::
 
-## Submitting a pull request
+## Submitting a Pull Request
 
 Once the above sections are complete, the behavior is almost ready to submit as a pull request. New [devicetree bindings](#creating-the-devicetree-binding-yaml), new [drivers](#creating-the-driver-c), and [predefined use-cases](#defining-common-use-cases-for-the-behavior-dtsi-optional) of the new behavior must contain the appropriate copyright headers, which can be copied and pasted from the tabs below.
 

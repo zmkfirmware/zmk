@@ -5,7 +5,7 @@ sidebar_label: Documentation
 
 This document outlines how to test your documentation changes locally and prepare the changes for a pull request.
 
-The documentation is written with [Docusaurus](https://docusaurus.io/). The ZMK source code has all of the necessary Docusaurus dependencies included but referencing their documentation can be helpful at times.
+The documentation is written with [Docusaurus](https://docusaurus.io/). The ZMK source code has all of the necessary Docusaurus dependencies included, but referencing their documentation can be helpful at times.
 
 The general process for updating the ZMK documentation is:
 
@@ -50,6 +50,12 @@ The check commands can be run with the following procedure in a terminal that's 
 
 :::danger
 If any of the above steps throw an error, they need to be addressed and all of the checks re-run prior to submitting a pull request.
+:::
+
+:::note
+The documentation uses American English spelling and grammar conventions. Title case is used for the first three heading levels, with sentence case used beyond that.
+
+Please make sure your changes conform to these conventions - prettier and lint are unfortunately unable to do this automatically.
 :::
 
 ## Submitting a Pull Request

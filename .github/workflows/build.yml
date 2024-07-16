@@ -12,6 +12,12 @@ on:
   schedule:
     - cron: "22 4 * * *"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'schedule' }}
+  cancel-in-progress: true
+
+permissions: {}
+
 jobs:
   build:
     if: ${{ always() }}
@@ -25,6 +31,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Cache west modules
         uses: actions/cache@v4
         env:
@@ -131,7 +139,7 @@ jobs:
               throw new Error('Failed to build one or more configurations');
             }
   compile-matrix:
-    if: ${{ always() }}
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     needs: [core-coverage, board-changes, nightly]
     outputs:
@@ -179,6 +187,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -284,7 +294,7 @@ jobs:
               });
             }))).flat();
   nightly:
-    if: ${{ github.event_name == 'schedule' }}
+    if: ${{ github.event_name == 'schedule' && github.repository_owner == 'zmkfirmware' }}
     runs-on: ubuntu-latest
     needs: get-grouped-hardware
     outputs:
@@ -335,6 +345,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -413,7 +425,11 @@ jobs:
       board-changes: ${{ steps.board-changes.outputs.result }}
       core-changes: ${{ steps.core-changes.outputs.result }}
     steps:
-      - uses: tj-actions/changed-files@v42
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: tj-actions/changed-files@v44
         id: changed-files
         with:
           json: true

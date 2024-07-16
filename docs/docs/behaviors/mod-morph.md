@@ -65,7 +65,7 @@ Example:
 mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
 ```
 
-### Advanced configuration
+### Advanced Configuration
 
 `keep-mods`
 

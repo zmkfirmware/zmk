@@ -6,7 +6,20 @@ module.exports = {
       "faq",
       "user-setup",
       "customization",
-      "troubleshooting",
+      {
+        type: "category",
+        label: "Troubleshooting",
+        link: {
+          type: "doc",
+          id: "troubleshooting/index",
+        },
+        collapsed: true,
+        items: [
+          "troubleshooting/building-issues",
+          "troubleshooting/flashing-issues",
+          "troubleshooting/connection-issues",
+        ],
+      },
     ],
     Features: [
       "features/keymaps",

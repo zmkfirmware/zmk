@@ -38,7 +38,7 @@ Key positions are numbered like the keys in your keymap, starting at 0. So, if t
 
 :::
 
-### Advanced usage
+### Advanced Usage
 
 - Partially overlapping combos like `0 1` and `0 2` are supported.
 - Fully overlapping combos like `0 1` and `0 1 2` are supported.

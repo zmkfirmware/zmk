@@ -21,7 +21,7 @@ Example:
 
 ### Configuration
 
-#### Continue List
+#### Continue list
 
 By default, the caps word will remain active when any alphanumeric character or underscore (`UNDERSCORE`), backspace (`BACKSPACE`), or delete (`DELETE`) characters are pressed. Any other non-modifier keycode sent will turn off caps word. If you would like to override this, you can set a new array of keys in the `continue-list` property in your keymap:
 
@@ -37,7 +37,7 @@ By default, the caps word will remain active when any alphanumeric character or 
 };
 ```
 
-#### Applied Modifier(s)
+#### Applied modifier(s)
 
 In addition, if you would like _multiple_ modifiers, instead of just `MOD_LSFT`, you can override the `mods` property:
 

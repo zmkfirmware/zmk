@@ -188,9 +188,41 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static int sticky_key_parameter_domains(const struct device *sk,
+                                        struct behavior_parameter_metadata *param_metadata) {
+    const struct behavior_sticky_key_config *cfg = sk->config;
+
+    struct behavior_parameter_metadata child_metadata;
+
+    int err = behavior_get_parameter_metadata(zmk_behavior_get_binding(cfg->behavior.behavior_dev),
+                                              &child_metadata);
+    if (err < 0) {
+        LOG_WRN("Failed to get the sticky key bound behavior parameter: %d", err);
+    }
+
+    for (int s = 0; s < child_metadata.sets_len; s++) {
+        const struct behavior_parameter_metadata_set *set = &child_metadata.sets[s];
+
+        if (set->param2_values_len > 0) {
+            return -ENOTSUP;
+        }
+    }
+
+    *param_metadata = child_metadata;
+
+    return 0;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
 static const struct behavior_driver_api behavior_sticky_key_driver_api = {
     .binding_pressed = on_sticky_key_binding_pressed,
     .binding_released = on_sticky_key_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = sticky_key_parameter_domains,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int sticky_key_keycode_state_changed_listener(const zmk_event_t *eh);
@@ -337,7 +369,7 @@ struct behavior_sticky_key_data {};
 static struct behavior_sticky_key_data behavior_sticky_key_data;
 
 #define KP_INST(n)                                                                                 \
-    static struct behavior_sticky_key_config behavior_sticky_key_config_##n = {                    \
+    static const struct behavior_sticky_key_config behavior_sticky_key_config_##n = {              \
         .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, DT_DRV_INST(n)),                                 \
         .release_after_ms = DT_INST_PROP(n, release_after_ms),                                     \
         .quick_release = DT_INST_PROP(n, quick_release),                                           \

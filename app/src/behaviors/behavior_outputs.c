@@ -20,6 +20,42 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static const struct behavior_parameter_value_metadata std_values[] = {
+    {
+        .value = OUT_TOG,
+        .display_name = "Toggle Outputs",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+    },
+#if IS_ENABLED(CONFIG_ZMK_USB)
+    {
+        .value = OUT_USB,
+        .display_name = "USB Output",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+    },
+#endif // IS_ENABLED(CONFIG_ZMK_USB)
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    {
+        .value = OUT_BLE,
+        .display_name = "BLE Output",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+    },
+#endif // IS_ENABLED(CONFIG_ZMK_BLE)
+};
+
+static const struct behavior_parameter_metadata_set std_set = {
+    .param1_values = std_values,
+    .param1_values_len = ARRAY_SIZE(std_values),
+};
+
+static const struct behavior_parameter_metadata metadata = {
+    .sets_len = 1,
+    .sets = &std_set,
+};
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
@@ -40,6 +76,9 @@ static int behavior_out_init(const struct device *dev) { return 0; }
 
 static const struct behavior_driver_api behavior_outputs_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 BEHAVIOR_DT_INST_DEFINE(0, behavior_out_init, NULL, NULL, NULL, POST_KERNEL,
