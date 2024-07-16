@@ -1,0 +1,355 @@
+---
+title: Low Power State Features
+sidebar_label: Low Power States
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+## Idle
+
+In the idle state, peripherals such as displays and lighting are disabled, but the keyboard remains connected to Bluetooth so it can immediately respond when you press a key. Idle is entered automatically after a timeout period ([default 30s](../config/power.md#low-power-states)).
+
+## Deep Sleep
+
+In the deep sleep state, the keyboard additionally disconnects from Bluetooth and any external power output is disabled. This state uses very little power, but it may take a few seconds to reconnect after waking.
+
+### Config
+
+Deep sleep must be enabled via the [config](../config/power.md#low-power-states).
+
+### Wakeup Sources
+
+Zephyr has general support for the concept of a device as a "wakeup source". Using deep sleep requires `kscan` nodes to have the `wakeup-source` property to enable them to wake the keyboard, e.g.:
+
+```
+/ {
+    kscan: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "col2row";
+        wakeup-source;
+
+        ...
+    };
+};
+```
+
+It is recommended to add the `wakeup-source` property to `kscan` devices even if the deep sleep feature is not used - there is no downside to it.
+
+## Soft-Off
+
+The soft off feature is used to turn the keyboard on and off explicitly, rather than through a timeout like the deep sleep feature. Depending on the keyboard, this may be through a dedicated on/off push button defined in hardware, or merely through an additional binding in the keymap to turn the device off and an existing reset button to turn the device back on.
+
+The feature is intended as an alternative to using a hardware switch to physically cut power from the battery to the keyboard. This can be useful for existing PCBs not designed for wireless that don't have a power switch, or for new designs that favor a push button on/off like found on other devices. Any power savings compared to deep sleep are negligible.
+
+:::note
+
+The power off is accomplished by putting the MCU into a "soft off" state. Power is _not_ technically removed from the entire system, but the device will only be woken from the state by a few possible events.
+
+:::
+
+Causing a device to enter the soft-off state is done by:
+
+- Triggering a hardware-defined dedicated GPIO pin, if one exists;
+- Triggering the [Soft Off Behavior](../behaviors/soft-off.md) from the keymap.
+
+Once in the soft-off state, the device will only wake up when:
+
+- Triggering any GPIO pin specified to enable waking from sleep, if one exists;
+- A reset button found on the device is pressed.
+
+Some keyboards make use of hardware to integrate the dedicated GPIO pin into the keyboard matrix. In this case, a predefined combo of keys is pressed to turn the keyboard on and off.
+
+### Config
+
+Soft off must be enabled via the [low power states config](../config/power.md#low-power-states) before it can be used.
+
+### Using Soft Off
+
+If your keyboard has hardware designed to take advantage of soft off, refer to your keyboard's documentation.
+
+For keyboards which do not have such hardware, using soft off is as simple as placing the [Soft Off Behavior](../behaviors/soft-off.md) in your keymap and then invoking it.
+
+You can then wake up the keyboard by pressing the reset button once, and repeating this for each side for split keyboards. Alternatively, you can designate a single key on your keyboard to be used to wake the device. This can be useful if the keyboard lacks a reset button, but is comparatively more likely to be accidentally pressed (e.g. during transit).
+
+## Adding Soft Off to a Design
+
+### Hardware Changes
+
+ZMK's soft on/off feature requires specifying a GPIO pin to wake the core from the
+soft off state. This is typically a dedicated GPIO pin which is used to trigger both powering off and waking up.
+
+#### Simple direct pin
+
+The simplest way to achieve this is with a push button between a dedicated GPIO pin and ground.
+
+#### Matrix-integrated hardware combo
+
+Another, more complicated option is to tie multiple switch outputs in the matrix together through AND gates and connect the result to the dedicated GPIO pin. This way you can use a (hardware defined) key combination in your existing keyboard matrix to trigger soft on/off. Ideally the switches used should be driven by the same matrix output pin so that both will be active simultaneously on the AND gate inputs. The alternative is to connect the switch to two MOSFETs that trigger both the regular matrix connect and the connect to the AND gate to ensure both pins are active/high at the same time even if scanning sets them high at different times.
+
+#### Wakeup only pin
+
+If a dedicated pin is not available, a key from the keyboard can be specified to wake the device. This requires no hardware changes, but requires the [Soft Off Behavior](../behaviors/soft-off.md) to be triggered from the keymap to enter the soft off state.
+
+### Firmware Changes
+
+Several items work together to make both triggering soft off properly, and setting up the device to _wake_ from soft off work as expected. These items are slightly different depending on whether the direct pin or matrix integrated approach is used. To set a key for waking only, follow the direct pin guide if your key uses a direct kscan, or the matrix-integrated guide if your key is part of a keyboard matrix.
+
+{/* Moving the tab selector here looks nicer. The content which changes is later on. */}
+
+<Tabs groupId="hardware-changes" defaultValue="direct">
+  <TabItem value="direct" label="Direct Pin"></TabItem>
+  <TabItem value="matrix" label="Matrix Integrated Pin"></TabItem>
+</Tabs>
+
+#### Soft Off behavior instance
+
+Behind the scenes, a hardware dedicated GPIO pin is going to be using the [Soft Off Behavior](../behaviors/soft-off.md) to trigger entering the soft-off state. To use said behaviour outside of a keymap, add an instance of the behavior to your `.overlay`/`.dts` file:
+
+```
+/ {
+    behaviors {
+        hw_soft_off: hw_soft_off {
+            compatible = "zmk,behavior-soft-off";
+            #binding-cells = <0>;
+            hold-time-ms = <2000>; // Only turn off if the key is held for 2 seconds or longer.
+        };
+    };
+};
+```
+
+For wakeup-only pins, this behaviour should be triggered from the keymap.
+
+#### GPIO key
+
+Zephyr's basic [GPIO Key](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/input/gpio-keys.html) concept is used to configure the GPIO pin that will be used for both triggering soft off and waking the device later.
+{/* secrettabs hides this tab selector. GPIO key changes its "orientation" between simple pin and matrix integrated. */}
+
+<Tabs groupId="hardware-changes" defaultValue="direct" className="secrettabs">
+<TabItem value="direct" label="Direct Pin">
+Here is an example for a keyboard with a dedicated on/off push button that is a direct wire between the GPIO pin and ground:
+```
+/ {
+    keys {
+        compatible = "gpio-keys";
+        soft_off_key: soft_off_key {
+            gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        };
+    };
+};
+```
+In the above example the soft on/off would be triggered by pulling the specified pin low, typically by pressing a switch that has the other leg connected to ground.
+</TabItem>
+<TabItem value="matrix" label="Matrix Integrated Pin">
+Here is an example for a keyboard with a GPIO pin that reads from the matrix:
+```
+/ {
+    keys {
+        compatible = "gpio-keys";
+        soft_off_key: soft_off_key {
+            gpios = <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        };
+    };
+};
+```
+Matrix inputs are triggered by pulling the specified pin high, typically by pressing some combination of switches which connects the matrix input to a matrix output.
+</TabItem>
+</Tabs>
+
+GPIO keys are defined using child nodes under the `gpio-keys` compatible node. Each child needs just one property defined:
+
+- The `gpios` property should be a [phandle-array](https://docs.zephyrproject.org/3.5.0/build/dts/phandles.html#zero-or-more-nodes-with-metadata-phandle-array-type) with a fully defined GPIO pin and with the correct pull up/down and active high/low flags set.
+
+If the wakeup-only approach is used, then the GPIO pin specified should correspond to that of the desired key to be used for waking the device.
+
+#### KScan sideband behavior
+
+The kscan sideband behavior driver will be used to trigger the [soft off behavior](../behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver.
+
+<Tabs groupId="hardware-changes" defaultValue="direct" className="secrettabs">
+  <TabItem value="direct" label="Direct Pin">
+
+With a simple direct pin setup, the [direct kscan](../config/kscan.md) driver can be used with a [GPIO key](#gpio-key), to make a small "side matrix":
+
+```
+/{
+    wakeup_scan: wakeup_scan {
+        compatible = "zmk,kscan-gpio-direct";
+        input-keys = <&soft_off_key>;
+        wakeup-source;
+    };
+};
+```
+
+With that in place, the kscan sideband behavior will wrap the new driver:
+
+```
+/ {
+    side_band_behavior_triggers: side_band_behavior_triggers {
+        compatible = "zmk,kscan-sideband-behaviors";
+
+        kscan = <&wakeup_scan>;
+        auto-enable;
+        wakeup-source;
+
+        soft_off {
+            column = <0>;
+            row = <0>;
+            bindings = <&hw_soft_off>;
+        };
+    };
+};
+```
+
+Here are the properties for the kscan sideband behaviors node:
+
+- The `compatible` property for the node must be `zmk,kscan-sideband-behaviors`.
+- The `kscan` property is a phandle to `wakeup_scan`, which is a direct kscan with a single element.
+
+The child nodes allow setting up behaviors to invoke directly for a certain row and column from the kscan:
+
+- The `row` and `column` properties set the values to intercept and trigger the behavior for.
+- The `bindings` property references the behavior that should be triggered when the matching row and column event triggers.
+
+As the kscan used only has a single key, both column and row are set to 0. When using the wakeup-only approach, all `soft_off` child nodes should be omitted.
+
+</TabItem>
+<TabItem value="matrix" label="Matrix Integrated Pin">
+
+For the matrix-integrated approach you will supplement the existing kscan matrix, by adding the additional pin as another entry in
+the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state. This approach requires a matrix transform to be present. To supplement an existing kscan matrix such as:
+
+```
+    kscan: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+        debounce-press-ms = <1>;
+        debounce-release-ms = <5>;
+
+        diode-direction = "col2row";
+
+        col-gpios
+            = <&gpio0 12 (GPIO_ACTIVE_HIGH)>
+            , <&gpio1 9  (GPIO_ACTIVE_HIGH)>
+            ;
+        row-gpios
+            = <&gpio0 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+```
+
+you would add another row value (without changing the matrix transform):
+
+```
+/{
+    kscan: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+        debounce-press-ms = <1>;
+        debounce-release-ms = <5>;
+
+        diode-direction = "col2row";
+
+        col-gpios
+            = <&gpio0 12 (GPIO_ACTIVE_HIGH)>
+            , <&gpio1 9  (GPIO_ACTIVE_HIGH)>
+            ;
+        row-gpios
+            = <&gpio0 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 2  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+};
+```
+
+If the wakeup-only approach is used, then the above addition is skipped.
+
+With that in place, you would decorate the kscan driver:
+
+```
+/{
+    side_band_behavior_triggers: side_band_behavior_triggers {
+        compatible = "zmk,kscan-sideband-behaviors";
+        wakeup-source;
+        kscan = <&kscan>;
+        soft_off {
+            column = <0>;
+            row = <2>;
+            bindings = <&hw_soft_off>;
+        };
+    };
+};
+```
+
+Critically, the `column` and `row` values would correspond to the location of the added entry.
+
+Here are the properties for the kscan sideband behaviors node:
+
+- The `compatible` property for the node must be `zmk,kscan-sideband-behaviors`.
+- The `kscan` property is a phandle to the inner kscan instance that will have press/release events intercepted.
+
+The child nodes allow setting up the behaviors to invoke directly for a certain row and column:
+
+- The `row` and `column` properties set the values to intercept and trigger the behavior for.
+- The `bindings` property references the behavior that should be triggered when the matching row and column event triggers.
+
+For the wakeup-only approach, all soft_off child nodes are omitted.
+
+Lastly, which is critical, you would update the `zmk,kscan` chosen value to point to the new kscan instance:
+
+```
+/{
+    chosen {
+        ...
+        zmk,kscan = &side_band_behavior_triggers;
+        ...
+    };
+};
+```
+
+#### Soft Off Waker
+
+We need to add another device which will be enabled only when the keyboard is going into soft off state, and will configure the previously declared GPIO key with the correct interrupt configuration to wake the device from soft off once it is pressed.
+
+```
+/ {
+    wakeup_scan: wakeup_scan {
+        compatible = "zmk,gpio-key-wakeup-trigger";
+        trigger = <&soft_off_key>;
+        wakeup-source;
+        extra-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>
+    };
+};
+```
+
+Here are the properties for the node:
+
+- The `compatible` property for the node must be `zmk,gpio-key-wakeup-trigger`.
+- The `trigger` property is a phandle to the GPIO key defined earlier.
+- The `wakeup-source` property signals to Zephyr this device should not be suspended during the shutdown procedure.
+- An optional `extra-gpios` property contains a list of GPIO pins (including the appropriate flags) to set active before going into power off, if needed to ensure the GPIO pin will trigger properly to wake the keyboard. This is only needed for matrix integrated combos. For those keyboards, the list should include the matrix output needs needed so the combo hardware is properly "driven" when the keyboard is off.
+
+</TabItem>
+</Tabs>
+
+Finally, we will list the `wakeup_scan` device in an additional configuration section so that the ZMK soft off process knows it needs to enable this device as part of the soft off processing so it can wake the keyboard from soft off when pressed:
+
+```
+/ {
+    soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        wakeup-sources = <&wakeup_scan>;
+    };
+};
+```
+
+Here are the properties for the node:
+
+- The `compatible` property for the node must be `zmk,soft-off-wakeup-sources`.
+- The `wakeup-sources` property is a [phandle array](../config/index.md#devicetree-property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
+
+:::tip
+If you add your kscan to the `wakeup-sources` array, then your keyboard will wake upon pressing any key in your kscan. Essentially, this causes `&soft_off` to behave as one would expect `&sleep` to behave. If you choose to do so, then you can omit everything aside from the `soft_off_wakers` node.
+:::

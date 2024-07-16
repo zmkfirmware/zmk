@@ -42,7 +42,7 @@ module.exports = {
         "features/underglow",
         "features/backlight",
         "features/battery",
-        "features/soft-off",
+        "features/low-power-states",
       ],
     },
     {
