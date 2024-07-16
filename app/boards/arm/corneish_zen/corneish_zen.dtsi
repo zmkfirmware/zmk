@@ -20,7 +20,6 @@
         zephyr,flash = &flash0;
         zmk,kscan = &kscan0;
         zmk,display = &epd;
-        zephyr,console = &cdc_acm_uart;
         zmk,matrix-transform = &default_transform;
     };
 
@@ -76,11 +75,8 @@
     status = "okay";
 };
 
-&usbd {
+zephyr_udc0: &usbd {
     status = "okay";
-    cdc_acm_uart: cdc_acm_uart {
-        compatible = "zephyr,cdc-acm-uart";
-    };
 };
 
 &flash0 {

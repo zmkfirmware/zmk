@@ -121,6 +121,7 @@ With that in place, the kscan sideband behavior will wrap the new driver:
         compatible = "zmk,kscan-sideband-behaviors";
 
         kscan = <&soft_off_direct_scan>;
+        auto-enable;
         wakeup-source;
 
         soft_off {

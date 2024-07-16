@@ -4,6 +4,4 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "usb_console.dtsi"
-
 &pro_micro_serial { status = "disabled"; };

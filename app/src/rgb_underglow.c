@@ -221,6 +221,10 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
 
         rc = read_cb(cb_arg, &state, sizeof(state));
         if (rc >= 0) {
+            if (state.on) {
+                k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
+            }
+
             return 0;
         }
 
@@ -230,7 +234,7 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
     return -ENOENT;
 }
 
-struct settings_handler rgb_conf = {.name = "rgb/underglow", .h_set = rgb_settings_set};
+SETTINGS_STATIC_HANDLER_DEFINE(rgb_underglow, "rgb/underglow", NULL, rgb_settings_set, NULL, NULL);
 
 static void zmk_rgb_underglow_save_state_work(struct k_work *_work) {
     settings_save_one("rgb/underglow/state", &state, sizeof(state));
@@ -262,17 +266,7 @@ static int zmk_rgb_underglow_init(void) {
     };
 
 #if IS_ENABLED(CONFIG_SETTINGS)
-    settings_subsys_init();
-
-    int err = settings_register(&rgb_conf);
-    if (err) {
-        LOG_ERR("Failed to register the ext_power settings handler (err %d)", err);
-        return err;
-    }
-
     k_work_init_delayable(&underglow_save_work, zmk_rgb_underglow_save_state_work);
-
-    settings_load_subtree("rgb/underglow");
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)

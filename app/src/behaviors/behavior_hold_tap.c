@@ -68,6 +68,12 @@ struct behavior_hold_tap_config {
     int32_t hold_trigger_key_positions[];
 };
 
+struct behavior_hold_tap_data {
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    struct behavior_parameter_metadata_set set;
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+};
+
 // this data is specific for each hold-tap
 struct active_hold_tap {
     int32_t position;
@@ -652,9 +658,52 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+static int hold_tap_parameter_metadata(const struct device *hold_tap,
+                                       struct behavior_parameter_metadata *param_metadata) {
+    const struct behavior_hold_tap_config *cfg = hold_tap->config;
+    struct behavior_hold_tap_data *data = hold_tap->data;
+    int err;
+    struct behavior_parameter_metadata child_meta;
+
+    err = behavior_get_parameter_metadata(zmk_behavior_get_binding(cfg->hold_behavior_dev),
+                                          &child_meta);
+    if (err < 0) {
+        LOG_WRN("Failed to get the hold behavior parameter: %d", err);
+        return err;
+    }
+
+    if (child_meta.sets_len > 0) {
+        data->set.param1_values = child_meta.sets[0].param1_values;
+        data->set.param1_values_len = child_meta.sets[0].param1_values_len;
+    }
+
+    err = behavior_get_parameter_metadata(zmk_behavior_get_binding(cfg->tap_behavior_dev),
+                                          &child_meta);
+    if (err < 0) {
+        LOG_WRN("Failed to get the tap behavior parameter: %d", err);
+        return err;
+    }
+
+    if (child_meta.sets_len > 0) {
+        data->set.param2_values = child_meta.sets[0].param1_values;
+        data->set.param2_values_len = child_meta.sets[0].param1_values_len;
+    }
+
+    param_metadata->sets = &data->set;
+    param_metadata->sets_len = 1;
+
+    return 0;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
 static const struct behavior_driver_api behavior_hold_tap_driver_api = {
     .binding_pressed = on_hold_tap_binding_pressed,
     .binding_released = on_hold_tap_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = hold_tap_parameter_metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int position_state_changed_listener(const zmk_event_t *eh) {
@@ -791,7 +840,7 @@ static int behavior_hold_tap_init(const struct device *dev) {
 }
 
 #define KP_INST(n)                                                                                 \
-    static struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                        \
+    static const struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                  \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
         .hold_behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(n, bindings, 0)),               \
         .tap_behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(n, bindings, 1)),                \
@@ -807,9 +856,10 @@ static int behavior_hold_tap_init(const struct device *dev) {
         .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
         .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, NULL, &behavior_hold_tap_config_##n,  \
-                            POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
-                            &behavior_hold_tap_driver_api);
+    static struct behavior_hold_tap_data behavior_hold_tap_data_##n = {};                          \
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_hold_tap_init, NULL, &behavior_hold_tap_data_##n,          \
+                            &behavior_hold_tap_config_##n, POST_KERNEL,                            \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_hold_tap_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

@@ -16,7 +16,6 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zephyr,console = &cdc_acm_uart;
         zmk,kscan = &kscan;
         zmk,underglow = &led_strip;
     };
@@ -106,13 +105,10 @@
     apb1-prescaler = <1>;
 };
 
-&usb {
+zephyr_udc0: &usb {
     status = "okay";
     pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
     pinctrl-names = "default";
-    cdc_acm_uart: cdc_acm_uart {
-        compatible = "zephyr,cdc-acm-uart";
-    };
 };
 
 &rtc {

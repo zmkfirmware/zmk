@@ -263,7 +263,8 @@ static int endpoints_handle_set(const char *name, size_t len, settings_read_cb r
     return 0;
 }
 
-struct settings_handler endpoints_handler = {.name = "endpoints", .h_set = endpoints_handle_set};
+SETTINGS_STATIC_HANDLER_DEFINE(endpoints, "endpoints", NULL, endpoints_handle_set, NULL, NULL);
+
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
 static bool is_usb_ready(void) {
@@ -322,17 +323,7 @@ static struct zmk_endpoint_instance get_selected_instance(void) {
 
 static int zmk_endpoints_init(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    settings_subsys_init();
-
-    int err = settings_register(&endpoints_handler);
-    if (err) {
-        LOG_ERR("Failed to register the endpoints settings handler (err %d)", err);
-        return err;
-    }
-
     k_work_init_delayable(&endpoints_save_work, endpoints_save_preferred_work);
-
-    settings_load_subtree("endpoints");
 #endif
 
     current_instance = get_selected_instance();

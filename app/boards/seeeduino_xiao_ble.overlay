@@ -7,7 +7,6 @@
 
 / {
     chosen {
-        zephyr,console = &cdc_acm_uart;
         zmk,battery = &vbatt;
     };
 
@@ -22,12 +21,6 @@
 
 &adc {
     status = "okay";
-};
-
-&usbd {
-    cdc_acm_uart: cdc_acm_uart {
-        compatible = "zephyr,cdc-acm-uart";
-    };
 };
 
 &qspi {

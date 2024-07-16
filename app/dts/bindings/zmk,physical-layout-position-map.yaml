@@ -1,0 +1,23 @@
+#
+# Copyright (c) 2024 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+
+description: |
+  Describes how to correlate equivalent keys between layouts that don't have the exact same X,Y location.
+
+compatible: "zmk,physical-layout-position-map"
+
+properties:
+  complete:
+    type: boolean
+    description: If the mapping complete describes the key mapping, and no position based mapping should be used.
+
+child-binding:
+  properties:
+    physical-layout:
+      type: phandle
+      description: The physical layout that corresponds to this mapping entry.
+    positions:
+      type: array
+      description: Array of key positions that match the same array entry in the other sibling nodes.

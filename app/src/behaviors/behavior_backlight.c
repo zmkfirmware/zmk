@@ -18,6 +18,82 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static const struct behavior_parameter_value_metadata no_arg_values[] = {
+    {
+        .display_name = "Toggle On/Off",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BL_TOG_CMD,
+    },
+    {
+        .display_name = "Turn On",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BL_ON_CMD,
+    },
+    {
+        .display_name = "Turn OFF",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BL_OFF_CMD,
+    },
+    {
+        .display_name = "Increase Brightness",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BL_INC_CMD,
+    },
+    {
+        .display_name = "Decrease Brightness",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BL_DEC_CMD,
+    },
+    {
+        .display_name = "Cycle Brightness",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BL_CYCLE_CMD,
+    },
+};
+
+static const struct behavior_parameter_value_metadata one_arg_p1_values[] = {
+    {
+        .display_name = "Set Brightness",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BL_SET_CMD,
+    },
+};
+
+static const struct behavior_parameter_value_metadata one_arg_p2_values[] = {
+    {
+        .display_name = "Brightness",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_RANGE,
+        .range =
+            {
+                .min = 0,
+                .max = 255,
+            },
+    },
+};
+
+static const struct behavior_parameter_metadata_set no_args_set = {
+    .param1_values = no_arg_values,
+    .param1_values_len = ARRAY_SIZE(no_arg_values),
+};
+
+static const struct behavior_parameter_metadata_set one_args_set = {
+    .param1_values = one_arg_p1_values,
+    .param1_values_len = ARRAY_SIZE(one_arg_p1_values),
+    .param2_values = one_arg_p2_values,
+    .param2_values_len = ARRAY_SIZE(one_arg_p2_values),
+};
+
+static const struct behavior_parameter_metadata_set sets[] = {no_args_set, one_args_set};
+
+static const struct behavior_parameter_metadata metadata = {
+    .sets_len = ARRAY_SIZE(sets),
+    .sets = sets,
+};
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
 static int behavior_backlight_init(const struct device *dev) { return 0; }
 
 static int
@@ -89,6 +165,9 @@ static const struct behavior_driver_api behavior_backlight_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
     .binding_released = on_keymap_binding_released,
     .locality = BEHAVIOR_LOCALITY_GLOBAL,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &metadata,
+#endif
 };
 
 BEHAVIOR_DT_INST_DEFINE(0, behavior_backlight_init, NULL, NULL, NULL, POST_KERNEL,
