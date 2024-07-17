@@ -1,0 +1,145 @@
+---
+title: Modules
+sidebar_label: Modules
+---
+
+ZMK makes use of [Zephyr modules]() to include additional source code or configuration files into its build. The most common uses of this feature are:
+
+- Building firmware for a keyboard external to ZMK's tree
+- Adding functionality to ZMK, such as a driver or a behaviour
+
+A common ZMK setup thus consists of the following separate Git repositories:
+
+- A single ZMK config maintained by the user, containing the `.conf` and `.keymap` files for one or multiple keyboards. This is also where files from ZMK or modules should be overridden/modified, if there is a need.
+- Any number of ZMK modules, maintained by the module's owner. Some modules may contain multiple keyboards or functionalities. If all of your keyboards and functionalities are internal to ZMK's tree, then no modules are necessary.
+- The ZMK firmware itself, maintained by its contributors.
+
+Further information on creating modules for ZMK and ZMK's overall file structure can be found [in the corresponding section]().
+
+:::note
+The shift to using modules for keyboards is a relatively recent one, and not all designs may be properly configured to be used as a module. If this is the case for your keyboard, then we would strongly suggest asking your vendor or designer to rectify this.
+:::
+
+## Building With Modules
+
+Adding modules to your ZMK build is as simple as modifying the `west.yml` found in your `zmk-config`'s `config` directory. You will need to:
+1. Find and add the URL base for the module. 
+
+### Example
+
+<Tabs
+defaultValue="zmk"
+values={[
+{label: 'Default', value: 'zmk'},
+{label: 'Module A', value: 'ma'},
+{label: 'Modules A + B', value: 'mab'},
+]}>
+<TabItem value="zmk">
+
+```yaml
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: main
+      import: app/west.yml
+  self:
+    path: config
+```
+
+</TabItem>
+<TabItem value="alt">
+
+```yaml
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: forkedzmk
+      url-base: https://github.com/forkedzmk
+  projects:
+    - name: zmk
+      remote: forkedzmk
+      revision: specificpr
+      import: app/west.yml
+  self:
+    path: config
+```
+
+</TabItem>
+</Tabs>
+
+## Beta Testing
+
+You may find that there are some features which you desire for which there is a [Pull Request](https://github.com/zmkfirmware/zmk/pulls), but no module. If this is the case, you can still make use of the feature.
+
+### Developer Repositories and Branches
+
+For a developer to submit a pull request to ZMK, they must first clone the original ZMK repository. After they have a copy
+of the source code, they may create a feature branch to work within. When they have finished, they will publish the feature
+branch and create the pull request.
+
+#### Finding the repository page from the Pull Request
+
+![PR Repository](../assets/features/beta-testing/pr-repo-branch.png)
+
+#### Finding the repository URL
+
+![Repository URL](../assets/features/beta-testing/repo-url.png)
+
+#### Finding the repository branch
+
+![Repository URL](../assets/features/beta-testing/repo-branch.png)
+
+### Testing Features
+
+Once you have obtained the correct URL, modify the `west.yml` file simiarly to [Building With Modules](#building-with-modules). Add the remote for the branch like in said section. The difference is that you will need to change the selected remote and revision (or branch) for the `zmk` project.
+
+#### Example
+
+<Tabs
+defaultValue="zmk"
+values={[
+{label: 'Default', value: 'zmk'},
+{label: 'Alterative', value: 'alt'},
+]}>
+<TabItem value="zmk">
+
+```yaml
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: main
+      import: app/west.yml
+  self:
+    path: config
+```
+
+</TabItem>
+<TabItem value="alt">
+
+```yaml
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: forkedzmk
+      url-base: https://github.com/forkedzmk
+  projects:
+    - name: zmk
+      remote: forkedzmk
+      revision: specificpr
+      import: app/west.yml
+  self:
+    path: config
+```
+
+</TabItem>
+</Tabs>
