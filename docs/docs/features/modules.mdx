@@ -3,7 +3,10 @@ title: Modules
 sidebar_label: Modules
 ---
 
-ZMK makes use of [Zephyr modules]() to include additional source code or configuration files into its build. The most common uses of this feature are:
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+ZMK makes use of [Zephyr modules](https://docs.zephyrproject.org/3.5.0/develop/modules.html) to include additional source code or configuration files into its build. You can think of them as similar to plugins or themes. The most common uses of this feature are:
 
 - Building firmware for a keyboard external to ZMK's tree
 - Adding functionality to ZMK, such as a driver or a behaviour
@@ -14,18 +17,21 @@ A common ZMK setup thus consists of the following separate Git repositories:
 - Any number of ZMK modules, maintained by the module's owner. Some modules may contain multiple keyboards or functionalities. If all of your keyboards and functionalities are internal to ZMK's tree, then no modules are necessary.
 - The ZMK firmware itself, maintained by its contributors.
 
-Further information on creating modules for ZMK and ZMK's overall file structure can be found [in the corresponding section]().
-
 :::note
 The shift to using modules for keyboards is a relatively recent one, and not all designs may be properly configured to be used as a module. If this is the case for your keyboard, then we would strongly suggest asking your vendor or designer to rectify this.
 :::
 
 ## Building With Modules
 
-Adding modules to your ZMK build is as simple as modifying the `west.yml` found in your `zmk-config`'s `config` directory. You will need to:
-1. Find and add the URL base for the module. 
+Adding modules to your ZMK build is as simple as modifying the `west.yml` found in your `zmk-config`'s `config` directory. The recommended way of doing so is:
 
-### Example
+1. Find the URL base (the parent URL) for the module and add it as an entry to the [remotes](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html#remotes).
+2. Add the module as an entry to the [projects](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html#projects).
+   Aside from the mandatory `name`, `remote`, and the commonly used `revision` properties, take note of the `import` property under `projects`. Some modules may have other modules as dependencies. This property allows the specifying of an additional west manifest file found in the tree of the module, which will automatically import all dependencies.
+
+For more information on `west.yml`, see [West Manifests](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html).
+
+### Examples
 
 <Tabs
 defaultValue="zmk"
@@ -51,20 +57,51 @@ manifest:
 ```
 
 </TabItem>
-<TabItem value="alt">
+<TabItem value="ma">
 
 ```yaml
 manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    - name: forkedzmk
-      url-base: https://github.com/forkedzmk
+    - name: module_a_base
+      url-base: https://github.com/alice
   projects:
     - name: zmk
-      remote: forkedzmk
-      revision: specificpr
+      remote: zmkfirmware
+      revision: main
       import: app/west.yml
+    - name: module_a
+      remote: module_a_base
+      revision: main
+  self:
+    path: config
+```
+
+</TabItem>
+<TabItem value="mab">
+
+```yaml
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: module_a_base
+      url-base: https://github.com/alice
+    - name: module_b_base
+      url-base: https://github.com/bob
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: main
+      import: app/west.yml
+    - name: module_a
+      remote: module_a_base
+      revision: main
+    - name: module_b
+      remote: module_b_base
+      revision: main
+      import: west.yml
   self:
     path: config
 ```
