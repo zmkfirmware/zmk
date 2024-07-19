@@ -1,0 +1,8 @@
+identifier: adafruit_feather_nrf52840
+name: Adafruit Feather nRF52840 Express
+type: mcu
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://www.adafruit.com/product/4062
