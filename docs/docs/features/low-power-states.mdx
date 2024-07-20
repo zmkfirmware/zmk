@@ -53,10 +53,10 @@ A device can be put in the soft off state by:
 - Triggering a hardware-defined dedicated GPIO pin, if one exists;
 - Triggering the [soft off Behavior](../behaviors/soft-off.md) from the keymap.
 
-Once in the soft-off state, the device will only wake up when:
+Once in the soft off state, the device can only be woken up by:
 
 - Triggering any GPIO pin specified to enable waking from sleep, if one exists;
-- A reset button found on the device is pressed.
+- Pressing a reset button found on the device.
 
 Some keyboards make use of hardware to integrate the dedicated GPIO pin into the keyboard matrix. In this case, a predefined combo of keys is pressed to turn the keyboard on and off.
 
