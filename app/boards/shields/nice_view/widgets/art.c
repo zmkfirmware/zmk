@@ -228,9 +228,6 @@ const lv_img_dsc_t mountain = {
     .data = mountain_map,
 };
 
-#define LV_ATTRIBUTE_MEM_ALIGN
-#endif
-
 #ifndef LV_ATTRIBUTE_IMG_TREE_GONDOR_ROTATED_INVERTED
 #define LV_ATTRIBUTE_IMG_TREE_GONDOR_ROTATED_INVERTED
 #endif
