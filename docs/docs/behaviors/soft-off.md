@@ -9,7 +9,7 @@ The soft off behavior is used to force the keyboard into an off state. Depending
 
 Refer to the [low power states config](../config/power.md#low-power-states) for details on enabling soft off in order to use this behavior.
 
-For more information, see the [Soft Off Feature](../features/low-power-states#soft-off) page.
+For more information, see the [soft off section](../features/low-power-states#soft-off) of the low power states feature page.
 
 ### Behavior Binding
 
