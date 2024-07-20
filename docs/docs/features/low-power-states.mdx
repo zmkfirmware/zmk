@@ -222,15 +222,12 @@ the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state
 ```
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        wakeup-source;
-        debounce-press-ms = <1>;
-        debounce-release-ms = <5>;
-
         diode-direction = "col2row";
+        wakeup-source;
 
         col-gpios
-            = <&gpio0 12 (GPIO_ACTIVE_HIGH)>
-            , <&gpio1 9  (GPIO_ACTIVE_HIGH)>
+            = <&gpio0 12 GPIO_ACTIVE_HIGH>
+            , <&gpio1 9  GPIO_ACTIVE_HIGH>
             ;
         row-gpios
             = <&gpio0 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
