@@ -8,7 +8,7 @@ change these settings.
 
 ## Low Power States
 
-Configuration for entering [low power states](../features/low-power-states.mdx) when the keyboard is idle.
+Configuration for entering [low power states](../features/low-power-states/low-power-states.mdx) when the keyboard is idle.
 
 ### Kconfig
 

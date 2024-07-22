@@ -32,7 +32,7 @@ module.exports = {
       "features/underglow",
       "features/backlight",
       "features/battery",
-      "features/low-power-states",
+      "features/low-power-states/low-power-states",
       "features/beta-testing",
     ],
     Behaviors: [

@@ -1,0 +1,2 @@
+- The `compatible` property for the node must be `zmk,kscan-sideband-behaviors`.
+- The `kscan` property is a phandle to `wakeup_scan`, which is a direct kscan with a single element.
