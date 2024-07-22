@@ -113,12 +113,14 @@ More advanced methods of adding soft off to a keyboard are detailed below. The f
 
   </TabItem>
   <TabItem value="matrix" label="Matrix Integrated Pin">
-    To integrate the dedicated GPIO pin into your matrix, you will need to tie multiple switch outputs in the matrix together through AND gates and connect the result to the dedicated GPIO pin. This way you can use a (hardware defined) key combination in your existing keyboard matrix to trigger soft on/off. 
-    
+    To integrate the dedicated GPIO pin into your matrix, you will need to tie multiple switch outputs in the matrix together through AND gates and connect the result to the dedicated GPIO pin. This way you can use a (hardware defined) key combination in your existing keyboard matrix to trigger soft on/off.
+
     Ideally the switches used should be driven by the same matrix output pin so that both will be active simultaneously on the AND gate inputs. The alternative is to connect the switch to two MOSFETs that trigger both the regular matrix connect and the connect to the AND gate to ensure both pins are active/high at the same time even if scanning sets them high at different times.
+
   </TabItem>
   <TabItem value="wakeup" label="Wakeup-only Keyswitch">
     No hardware changes are necessary for this approach.
+    
   </TabItem>
 </Tabs>
 
