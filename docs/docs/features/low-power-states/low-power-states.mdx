@@ -64,14 +64,14 @@ The power off is accomplished by putting the MCU into a "soft off" state. Power 
 A device can be put in the soft off state by:
 
 - Triggering a hardware-defined dedicated GPIO pin, if one exists;
-- Triggering the [soft off Behavior](../../behaviors/soft-off.md) from the keymap.
+- Triggering the [soft off behavior](../../behaviors/soft-off.md) from the keymap.
 
 Once in the soft off state, the device can only be woken up by:
 
 - Triggering any GPIO pin specified to enable waking from sleep, if one exists;
 - Pressing a reset button found on the device.
 
-The GPIO pin used to wake from sleep can be a hardware-defined one, such as for a dedicated on-off push button, or it can be a single specific keyswitch reused for waking up(may be pressed accidentally during transit). To allow the simultaneous pressing of multiple keyswitches to trigger and exit soft off, some keyboards make use of additional hardware to integrate the dedicated GPIO pin into the keyboard matrix.
+The GPIO pin used to wake from sleep can be a hardware-defined one, such as for a dedicated on-off push button, or it can be a single specific key switch reused for waking up (which may be accidentally pressed, e.g. while the device is being carried in a bag). To allow the simultaneous pressing of multiple keyswitches to trigger and exit soft off, some keyboards make use of additional hardware to integrate the dedicated GPIO pin into the keyboard matrix.
 
 ### Config
 
@@ -81,7 +81,7 @@ Soft off must be enabled via [its corresponding config](../../config/power.md#lo
 
 If your keyboard has hardware designed to take advantage of soft off, refer to your keyboard's documentation.
 
-For keyboards which do not have such hardware, using soft off is as simple as placing the [Soft Off Behavior](../../behaviors/soft-off.md) in your keymap and then invoking it.
+For keyboards which do not have such hardware, using soft off is as simple as placing the [soft off behavior](../../behaviors/soft-off.md) in your keymap and then invoking it.
 
 You can then wake up the keyboard by pressing the reset button once, and repeating this for each side for split keyboards.
 
@@ -102,6 +102,7 @@ More advanced methods of adding soft off to a keyboard are detailed below. The f
     </Tabs>
   </TabItem>
 </Tabs>
+
 ### Hardware Changes
 
 <Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
@@ -135,6 +136,7 @@ Several items work together to make both triggering soft off properly, and setti
     <SoftOffBehaviour />
   </TabItem>
   <TabItem value="wakeup" label="Wakeup-only Keyswitch">
+
 #### Soft off behavior
 
 For this approach, you will need to make sure that the [soft off behavior](../../behaviors/soft-off.md) is present in your keymap, to trigger soft off.
@@ -210,7 +212,7 @@ Here are the properties for the kscan sideband behaviors node:
 <Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
   <TabItem value="direct" label="Direct Pin"></TabItem>
   <TabItem value="matrix" label="Matrix Integrated Pin">
-  You also need to update the `zmk,kscan` chosen value to point to the new kscan instance:
+    You also need to update the `zmk,kscan` chosen value to point to the new kscan instance:
 
 ```
 / {
@@ -222,7 +224,7 @@ Here are the properties for the kscan sideband behaviors node:
 };
 ```
 
-  <SoftOffWaker />
+    <SoftOffWaker />
   </TabItem>
   <TabItem value="wakeup" label="Wakeup-only Keyswitch">
     <Tabs groupId="kscan-type" defaultValue="mkscan" className="secrettabs">

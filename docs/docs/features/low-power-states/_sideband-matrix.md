@@ -44,8 +44,6 @@ To supplement it with a soft off input, you would add another row value (without
 };
 ```
 
-If the wakeup-only approach is used, then the above addition is skipped.
-
 With that in place, you would decorate the kscan driver:
 
 ```
