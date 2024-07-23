@@ -1,6 +1,6 @@
 Here is an example for a keyboard with a GPIO pin reused from a matrix kscan:
 
-```
+```dts
 / {
     keys {
         compatible = "gpio-keys";

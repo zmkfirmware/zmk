@@ -1,6 +1,6 @@
 Here is an example for a keyboard with a GPIO pin that reads from the matrix:
 
-```
+```dts
 / {
     keys {
         compatible = "gpio-keys";

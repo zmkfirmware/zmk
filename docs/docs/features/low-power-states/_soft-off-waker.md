@@ -2,7 +2,7 @@
 
 We need to add another device which will be enabled only when the keyboard is going into soft off state, and will configure the previously declared GPIO key with the correct interrupt configuration to wake the device from soft off once it is pressed.
 
-```
+```dts
 / {
     wakeup_scan: wakeup_scan {
         compatible = "zmk,gpio-key-wakeup-trigger";

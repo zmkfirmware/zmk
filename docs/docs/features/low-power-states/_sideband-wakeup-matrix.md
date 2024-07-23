@@ -1,6 +1,6 @@
 The kscan sideband behavior needs to wrap the kscan due to technical reasons:
 
-```
+```dts
 / {
     side_band_behavior_triggers: side_band_behavior_triggers {
         compatible = "zmk,kscan-sideband-behaviors";

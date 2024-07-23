@@ -6,7 +6,7 @@ sidebar_label: Low Power States
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-import SoftOffBehaviour from "./_soft-off-behaviour.md";
+import SoftOffBehavior from "./_soft-off-behavior.md";
 import SoftOffWaker from "./_soft-off-waker.md";
 import PropsSidebandDirect from "./_props-kscan-sideband-direct.md";
 import PropsSidebandMatrix from "./_props-kscan-sideband-matrix.md";
@@ -35,7 +35,7 @@ Deep sleep must be enabled via its corresponding [config](../../config/power.md#
 
 Zephyr has general support for the concept of a device as a "wakeup source". Using deep sleep requires `kscan` nodes to have the `wakeup-source` property to enable them to wake the keyboard, e.g.:
 
-```
+```dts
 / {
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
@@ -71,7 +71,7 @@ Once in the soft off state, the device can only be woken up by:
 - Triggering any GPIO pin specified to enable waking from sleep, if one exists;
 - Pressing a reset button found on the device.
 
-The GPIO pin used to wake from sleep can be a hardware-defined one, such as for a dedicated on-off push button, or it can be a single specific key switch reused for waking up (which may be accidentally pressed, e.g. while the device is being carried in a bag). To allow the simultaneous pressing of multiple keyswitches to trigger and exit soft off, some keyboards make use of additional hardware to integrate the dedicated GPIO pin into the keyboard matrix.
+The GPIO pin used to wake from sleep can be a hardware-defined one, such as for a dedicated on-off push button, or it can be a single specific key switch reused for waking up (which may be accidentally pressed, e.g. while the device is being carried in a bag). To allow the simultaneous pressing of multiple key switches to trigger and exit soft off, some keyboards make use of additional hardware to integrate the dedicated GPIO pin into the keyboard matrix.
 
 ### Config
 
@@ -87,14 +87,14 @@ You can then wake up the keyboard by pressing the reset button once, and repeati
 
 ## Adding Soft Off to a Keyboard
 
-More advanced methods of adding soft off to a keyboard are detailed below. The first two tabs describe methods involving hardware changes, while the last describes the firmware changes necessary to define a single specific keyswitch for waking up.
+More advanced methods of adding soft off to a keyboard are detailed below. The first two tabs describe methods involving hardware changes, while the last describes the firmware changes necessary to define a single specific key switch for waking up.
 
 <Tabs groupId="advanced-methods" defaultValue="direct">
   <TabItem value="direct" label="Direct Pin"></TabItem>
   <TabItem value="matrix" label="Matrix Integrated Pin"></TabItem>
-  <TabItem value="wakeup" label="Wakeup-only Keyswitch">
-    The exact method of reusing a keyswitch to wake from the soft off state
-    differs depending on whether said keyswitch is part of a direct GPIO kscan
+  <TabItem value="wakeup" label="Wakeup-only Key Switch">
+    The exact method of reusing a key switch to wake from the soft off state
+    differs depending on whether said key switch is part of a direct GPIO kscan
     or part of a matrix kscan.
     <Tabs groupId="kscan-type" defaultValue="mkscan">
       <TabItem value="dkscan" label="Direct GPIO kscan"></TabItem>
@@ -110,7 +110,7 @@ More advanced methods of adding soft off to a keyboard are detailed below. The f
 
     Add a direct push button between a GPIO pin and ground. This button will act as an on/off switch.
 
-    Alternatively, if you wish to integrate a dedicated GPIO pin into a keyswitch combination using a direct kscan, tie all of the MCU pins that you wish to combine to the dedicated GPIO pin through an OR gate. All firmware changes then follow identically to the direct push button.
+    Alternatively, if you wish to integrate a dedicated GPIO pin into a key switch combination using a direct kscan, tie all of the MCU pins that you wish to combine to the dedicated GPIO pin through an OR gate. All firmware changes then follow identically to the direct push button.
 
   </TabItem>
   <TabItem value="matrix" label="Matrix Integrated Pin">
@@ -119,7 +119,7 @@ More advanced methods of adding soft off to a keyboard are detailed below. The f
     Ideally the switches used should be driven by the same matrix output pin so that both will be active simultaneously on the AND gate inputs. The alternative is to connect the switch to two MOSFETs that trigger both the regular matrix connect and the connect to the AND gate to ensure both pins are active/high at the same time even if scanning sets them high at different times.
 
   </TabItem>
-  <TabItem value="wakeup" label="Wakeup-only Keyswitch">
+  <TabItem value="wakeup" label="Wakeup-only Key Switch">
     No hardware changes are necessary for this approach.
   </TabItem>
 </Tabs>
@@ -130,12 +130,12 @@ Several items work together to make both triggering soft off properly, and setti
 
 <Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
   <TabItem value="direct" label="Direct Pin">
-    <SoftOffBehaviour />
+    <SoftOffBehavior />
   </TabItem>
   <TabItem value="matrix" label="Matrix Integrated Pin">
-    <SoftOffBehaviour />
+    <SoftOffBehavior />
   </TabItem>
-  <TabItem value="wakeup" label="Wakeup-only Keyswitch">
+  <TabItem value="wakeup" label="Wakeup-only Key Switch">
 
 #### Soft off behavior
 
@@ -156,7 +156,7 @@ Zephyr's basic [GPIO Key](https://docs.zephyrproject.org/3.5.0/build/dts/api/bin
   <TabItem value="matrix" label="Matrix Integrated Pin">
     <GpioKeyMatrix />
   </TabItem>
-  <TabItem value="wakeup" label="Wakeup-only Keyswitch">
+  <TabItem value="wakeup" label="Wakeup-only Key Switch">
     <GpioKeyWakeup />
   </TabItem>
 </Tabs>
@@ -174,7 +174,7 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
   <TabItem value="matrix" label="Matrix Integrated Pin">
     <SidebandMatrix />
   </TabItem>
-  <TabItem value="wakeup" label="Wakeup-only Keyswitch">
+  <TabItem value="wakeup" label="Wakeup-only Key Switch">
     <Tabs groupId="kscan-type" defaultValue="mkscan" className="secrettabs">
       <TabItem value="dkscan" label="Direct GPIO kscan">
         <SidebandWakeupDirect />
@@ -197,7 +197,7 @@ Here are the properties for the kscan sideband behaviors node:
     <PropsSidebandMatrix />
     <PropsSidebandChildren />
   </TabItem>
-  <TabItem value="wakeup" label="Wakeup-only Keyswitch">
+  <TabItem value="wakeup" label="Wakeup-only Key Switch">
     <Tabs groupId="kscan-type" defaultValue="mkscan" className="secrettabs">
       <TabItem value="dkscan" label="Direct GPIO kscan">
         <PropsSidebandDirect />
@@ -214,7 +214,7 @@ Here are the properties for the kscan sideband behaviors node:
   <TabItem value="matrix" label="Matrix Integrated Pin">
     You also need to update the `zmk,kscan` chosen value to point to the new kscan instance:
 
-```
+```dts
 / {
     chosen {
         ...
@@ -225,8 +225,9 @@ Here are the properties for the kscan sideband behaviors node:
 ```
 
     <SoftOffWaker />
+
   </TabItem>
-  <TabItem value="wakeup" label="Wakeup-only Keyswitch">
+  <TabItem value="wakeup" label="Wakeup-only Key Switch">
     <Tabs groupId="kscan-type" defaultValue="mkscan" className="secrettabs">
         <TabItem value="dkscan" label="Direct GPIO kscan"></TabItem>
         <TabItem value="mkscan" label="Matrix kscan"><SoftOffWaker /></TabItem>
@@ -236,7 +237,7 @@ Here are the properties for the kscan sideband behaviors node:
 
 Finally, we will list the `wakeup_scan` device in an additional configuration section so that the ZMK soft off process knows it needs to enable this device as part of the soft off processing so it can wake the keyboard from soft off when pressed:
 
-```
+```dts
 / {
     soft_off_wakers {
         compatible = "zmk,soft-off-wakeup-sources";

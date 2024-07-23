@@ -2,7 +2,7 @@
 
 Behind the scenes, a hardware dedicated GPIO pin utilizes the [soft off behavior](../../behaviors/soft-off.md) to trigger entering the soft-off state. To use said behavior outside of a keymap, add an instance of the behavior to your `.overlay`/`.dts` file:
 
-```
+```dts
 / {
     behaviors {
         hw_soft_off: hw_soft_off {

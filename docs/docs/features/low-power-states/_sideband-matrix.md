@@ -3,7 +3,7 @@ The kscan sideband behavior driver will be used to trigger the [soft off behavio
 For the matrix-integrated approach you will supplement the existing kscan matrix by adding the additional pin as another entry in
 the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state. This approach requires a matrix transform to be present. As an example, consider the following existing kscan matrix:
 
-```
+```dts
 / {
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
@@ -24,7 +24,7 @@ the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state
 
 To supplement it with a soft off input, you would add another row value (without changing the matrix transform):
 
-```
+```dts
 / {
     kscan: kscan {
         compatible = "zmk,kscan-gpio-matrix";
@@ -46,7 +46,7 @@ To supplement it with a soft off input, you would add another row value (without
 
 With that in place, you would decorate the kscan driver:
 
-```
+```dts
 / {
     side_band_behavior_triggers: side_band_behavior_triggers {
         compatible = "zmk,kscan-sideband-behaviors";

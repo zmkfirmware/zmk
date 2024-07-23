@@ -1,6 +1,6 @@
 Here is an example for a keyboard with a dedicated on/off push button that is a direct wire between the GPIO pin and ground:
 
-```
+```dts
 / {
     keys {
         compatible = "gpio-keys";

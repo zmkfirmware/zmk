@@ -2,7 +2,7 @@ The kscan sideband behavior driver will be used to trigger the [soft off behavio
 
 With a simple direct pin setup, the [direct kscan](../../config/kscan.md) driver can be used with a [GPIO key](#gpio-key), to make a small "side matrix":
 
-```
+```dts
 / {
     wakeup_scan: wakeup_scan {
         compatible = "zmk,kscan-gpio-direct";
@@ -14,7 +14,7 @@ With a simple direct pin setup, the [direct kscan](../../config/kscan.md) driver
 
 With that in place, the kscan sideband behavior will wrap the new driver:
 
-```
+```dts
 / {
     side_band_behavior_triggers: side_band_behavior_triggers {
         compatible = "zmk,kscan-sideband-behaviors";
