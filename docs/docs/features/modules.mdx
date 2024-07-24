@@ -9,9 +9,9 @@ import TabItem from "@theme/TabItem";
 ZMK makes use of [Zephyr modules](https://docs.zephyrproject.org/3.5.0/develop/modules.html) to include additional source code or configuration files into its build. You can think of them as similar to plugins or themes. The most common uses of this feature are:
 
 - Building firmware for a keyboard external to ZMK's tree
-- Adding functionality to ZMK, such as a driver or a behaviour
+- Adding functionality to ZMK, such as a driver or a behavior
 
-A common ZMK setup thus consists of the following separate Git repositories:
+A common ZMK setup thus consists of the following separate components, commonly housed in their respective Git repositories:
 
 - A single ZMK config maintained by the user, containing the `.conf` and `.keymap` files for one or multiple keyboards. This is also where files from ZMK or modules should be overridden/modified, if there is a need.
 - Any number of ZMK modules, maintained by the module's owner. Some modules may contain multiple keyboards or functionalities. If all of your keyboards and functionalities are internal to ZMK's tree, then no modules are necessary.

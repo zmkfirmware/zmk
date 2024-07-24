@@ -35,7 +35,7 @@ ZMK will search for config files in:
 - `<module>/boards/arm/<board>`
 - `zmk-config/config/boards/arm/<board>` (For backwards compatibility only, do not use.)
 
-...where `<board>` is the name of the board and `<module>` is the root directory of any [included module](#../features/modules.mdx). These files describe the hardware of the board.
+...where `<board>` is the name of the board and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the board.
 
 ZMK will search the board folder for the following config files:
 
@@ -57,7 +57,7 @@ When building with a shield, ZMK will search for config files in:
 - `<module>/boards/shields/<shield>`
 - `zmk-config/config/boards/shields/<shield>` (For backwards compatibility only, do not use.)
 
-...where `<shield>` is the name of the shield and `<module>` is the root directory of any [included module](#../features/modules.mdx). These files describe the hardware of the shield that the board is plugged into.
+...where `<shield>` is the name of the shield and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the shield that the board is plugged into.
 
 ZMK will search the shield folder for the following config files:
 
