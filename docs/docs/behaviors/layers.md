@@ -9,7 +9,7 @@ Often, you may want a certain key position to alter which layers are enabled, ch
 Some of those behaviors are still in the works; the ones that are working now are documented here.
 
 :::note
-Activating a layer will not disable layers higher up in the "layer stack". See [Layers](../features/keymaps.mdx#layers) for more information.
+Multiple layers can be active at the same time and activating a layer will not deactivate layers higher up in the "layer stack". See [Layers](../features/keymaps.mdx#layers) for more information.
 :::
 
 ## Defines to Refer to Layers

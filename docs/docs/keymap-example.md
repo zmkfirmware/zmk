@@ -29,7 +29,5 @@
                 &kp LCTRL    &kp LALT    &trans
             >;
         };
-
-
     };
 ```

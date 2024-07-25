@@ -46,9 +46,11 @@ in ZMK contains a set of bindings that bind a certain behavior to a certain key 
 
 All layers are assigned and referred to by a natural number, with the base layer being layer `0`. It is common to [use the C preprocessor to "name" layers](../behaviors/layers.md#defines-to-refer-to-layers), making them more legible.
 
-The default layer (usually the base layer) is always enabled. Certain bound behaviors may enable/disable additional layers.
+The default layer (the base layer with index 0) is always enabled. Certain bound behaviors may enable/disable additional layers.
 
 When a key location is pressed/released, the _highest-valued currently active_ layer is used. The press/release event is sent to the behavior bound at that position in said layer, for it to perform whatever actions it wants to in reaction to the event. The behavior can choose to "consume" the event, or "pass it along" and let the next highest-valued active layer _also_ get the event (whose behavior may continue "passing it along").
+
+Note that the _activation_ order isn't relevant for determining the priority of active layers, it is determined _only_ by the definition order.
 
 ## Behavior Bindings
 
@@ -132,7 +134,7 @@ Each layer of your keymap will be nested under the keymap node. Here is an examp
                 &kp A    &kp B    &kp C
             >;
         };
-    }
+    };
 ```
 
 Each layer should have:
@@ -149,7 +151,7 @@ Here is an example of a trio of layers for a simple 6-key macropad:
 <KeymapExample />
 
 :::note
-Even if layer `1` was to be activated after `2`, layer `2` would still have priority as it is higher valued. Behaviors such as [`&to`](../behaviors/layers.md#to-layer) can be used to enable one layer _and disable all other non-default layers_, though.
+Even if layer `1` was to be activated after `2`, layer `2` would still have priority as it is higher valued. Behaviors such as [To Layer (`&to`)](../behaviors/layers.md#to-layer) can be used to enable one layer _and disable all other non-default layers_, though.
 :::
 
 ### Complete Example
