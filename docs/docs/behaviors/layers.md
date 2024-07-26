@@ -37,7 +37,7 @@ again.
 ### Behavior Binding
 
 - Reference: `&mo`
-- Parameter: The layer number to enable/disable, e.g. `1`
+- Parameter: The layer number to enable while held, e.g. `1`
 
 Example:
 
@@ -52,7 +52,7 @@ The "layer-tap" behavior enables a layer when a key is held, and outputs a [keyp
 ### Behavior Binding
 
 - Reference: `&lt`
-- Parameter: The layer number to enable when held, e.g. `1`
+- Parameter: The layer number to enable while held, e.g. `1`
 - Parameter: The keycode to send when tapped, e.g. `A`
 
 Example:
@@ -103,7 +103,7 @@ Example:
 
 ## Toggle Layer
 
-The "toggle layer" behavior enables a layer until the layer is manually disabled.
+The "toggle layer" behavior enables a layer if it is currently disabled, or disables it if enabled.
 
 ### Behavior Binding
 
@@ -115,43 +115,6 @@ Example:
 ```dts
 &tog LOWER
 ```
-
-"Toggle layer" for a :
-
-```dts
-#define DEFAULT 0
-#define NAVI    1
-
-#define NONE 0
-
-/ {
-    keymap {
-        compatible = "zmk,keymap";
-
-        default_layer {
-            bindings = <
-                &tog NAVI       &kp KP_DIVIDE   &kp KP_MULTIPLY &kp KP_MINUS
-                &kp NUMBER_7    &kp NUMBER_8    &kp NUMBER_9    &kp KP_PLUS
-                &kp NUMBER_4    &kp NUMBER_5    &kp NUMBER_6    &kp KP_PLUS
-                &kp NUMBER_1    &kp NUMBER_2    &kp NUMBER_3    &kp RETURN
-                &kp NUMBER_0    &kp NUMBER_0    &kp DOT         &kp RETURN
-            >;
-        };
-
-        nav_layer {
-            bindings = <
-                &tog NAVI       &kp KP_DIVIDE   &kp KP_MULTIPLY &kp KP_MINUS
-                &kp HOME        &kp UP          &kp PAGE_UP     &kp KP_PLUS
-                &kp LEFT        &none           &kp RIGHT       &kp KP_PLUS
-                &kp END         &kp DOWN        &kp PAGE_DOWN   &kp RETURN
-                &kp INSERT      &kp INSERT      &kp DEL         &kp RETURN
-            >;
-        };
-    };
-};
-```
-
-It is possible to use "toggle layer" to have keys that raise and lower the layers as well.
 
 ## Conditional Layers
 
