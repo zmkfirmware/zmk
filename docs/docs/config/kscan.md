@@ -342,7 +342,7 @@ Transforms should be used any time the physical layout of a keyboard's keys does
 
 Transforms can also be used for keyboards with multiple layouts. You can define multiple matrix transform nodes, one for each layout, and users can select which one they want from the `/chosen` node in their keymaps.
 
-See the [new shield guide](../development/new-shield.mdx#optional-matrix-transform) for more documentation on how to define a matrix transform.
+See the [new shield guide](../development/new-shield.mdx#matrix-transform) for more documentation on how to define a matrix transform.
 
 ### Devicetree
 
