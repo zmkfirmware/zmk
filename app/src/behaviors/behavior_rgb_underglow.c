@@ -18,6 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+static uint8_t old_effect;
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 
 static const struct behavior_parameter_value_metadata no_arg_values[] = {
@@ -93,6 +94,38 @@ static const struct behavior_parameter_metadata_set no_args_set = {
     .param1_values_len = ARRAY_SIZE(no_arg_values),
 };
 
+static const struct behavior_parameter_value_metadata eff_p1_value_metadata_values[] = {
+    {
+        .display_name = "Set Effect",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_EFS_CMD,
+    },
+    {
+        .display_name = "Momentary Set Effect",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = RGB_MEFS_CMD,
+    },
+};
+
+static const struct behavior_parameter_value_metadata eff_p2_value_metadata_values[] = {
+    {
+        .display_name = "Effect",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_RANGE,
+        .range =
+            {
+                .min = 0,
+                .max = 3,
+            },
+    },
+};
+
+static const struct behavior_parameter_metadata_set eff_value_metadata_set = {
+    .param1_values = eff_p1_value_metadata_values,
+    .param1_values_len = ARRAY_SIZE(eff_p1_value_metadata_values),
+    .param_values = eff_p2_value_metadata_values,
+    .param_values_len = ARRAY_SIZE(eff_p2_value_metadata_values),
+};
+
 /*
 static const struct behavior_parameter_value_metadata hsv_p1_value_metadata_values[] = {
     {
@@ -120,7 +153,7 @@ static const struct behavior_parameter_metadata_set hsv_value_metadata_set = {
 */
 
 static const struct behavior_parameter_metadata_set sets[] = {
-    no_args_set,
+    no_args_set, eff_value_metadata_set,
     // hsv_value_metadata_set,
 };
 
@@ -236,6 +269,9 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         return zmk_rgb_underglow_change_spd(-1);
     case RGB_EFS_CMD:
         return zmk_rgb_underglow_select_effect(binding->param2);
+    case RGB_MEFS_CMD:
+        old_effect = zmk_rgb_underglow_calc_effect(0);
+        return zmk_rgb_underglow_select_effect(binding->param2);
     case RGB_EFF_CMD:
         return zmk_rgb_underglow_cycle_effect(1);
     case RGB_EFR_CMD:
@@ -251,6 +287,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
+    if (binding->param1 == RGB_MEFS_CMD)
+        return zmk_rgb_underglow_select_effect(old_effect);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
