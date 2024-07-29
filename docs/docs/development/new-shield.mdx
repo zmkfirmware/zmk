@@ -51,6 +51,13 @@ Follow these steps to create your new repository:
   - Select Public or Private, depending on your preference.
 - Click the green "Create repository" button
 
+The repository is a combination of the directories and files required of a ZMK config, and those required of a shield module. To create a shield module, the following components are needed:
+
+- The `boards/shields` directory, where the keyboard's files will go
+- The `zephyr/module.yml` file, which identifies and describes the module. See the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/develop/modules.html#module-yaml-file-description) for details on customising this file. For the purposes of creating a shield module, the default found in the template can be left untouched.
+
+Neither of these should be moved out of their parent directory. The other files and directories such as `config` are not necessary for the purposes of a shield module, but rather intended to be used for user configuration and testing.
+
 ## New Shield Directory
 
 :::note

@@ -91,6 +91,20 @@ The settings reset firmware has Bluetooth disabled to prevent the two sides from
 
 :::
 
+## Unable to Connect to Device
+
+### Additional Bluetooth Options
+
+Some devices and operating systems may have additional restrictions that they require be met before allowing a bluetooth peripheral to pair with them. If your keyboard is visible to your host but you are having issues trouble connecting or no input is registered, this might be the cause. Some of ZMK's [experimental bluetooth settings](../config/bluetooth.md) may suffice to resolve the issue. In particular:
+
+- Disabling PHY 2Mbps ([`CONFIG_BT_CTLR_PHY_2M=n`](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_BT_CTLR_PHY_2M)) helps to pair and connect for certain wireless chipset firmware versions, particularly on Windows (Realtek and Intel chips) and older Intel Macs with Broadcom chipsets.
+- Enabling passkey entry ([`CONFIG_ZMK_BLE_PASSKEY_ENTRY=y`](../config/bluetooth.md)) helps for certain Windows computers (work-managed ones in particular). This may also manifest in not sending keystrokes.
+
+### Issues With Dual Boot Setups
+
+Since ZMK associates pairing/bond keys with hardware addresses of hosts, you cannot pair to two different operating systems in a dual boot system at the same time.
+While you can find [documented workarounds](https://wiki.archlinux.org/title/bluetooth#Dual_boot_pairing) that involve copying pairing keys across operating systems and use both OS with a single profile, they can be fairly involved and should be followed with caution.
+
 ## Issues While Connected
 
 ### Unreliable/Weak Connection
@@ -110,11 +124,6 @@ This setting can also improve the connection strength between the keyboard halve
 ### Using Bluetooth Output With USB Power
 
 If you want to test Bluetooth output on your keyboard and are powering it through the USB connection rather than a battery, you will be able to pair with a host device but may not see keystrokes sent. In this case you need to use the [output selection behavior](../behaviors/outputs.md) to prefer sending keystrokes over Bluetooth rather than USB. This might be necessary even if you are not powering from a device capable of receiving USB inputs, such as a USB charger.
-
-### Issues With Dual Boot Setups
-
-Since ZMK associates pairing/bond keys with hardware addresses of hosts, you cannot pair to two different operating systems in a dual boot system at the same time.
-While you can find [documented workarounds](https://wiki.archlinux.org/title/bluetooth#Dual_boot_pairing) that involve copying pairing keys across operating systems and use both OS with a single profile, they can be fairly involved and should be followed with caution.
 
 ### macOS Connected but Not Working
 
@@ -138,3 +147,5 @@ If this doesn't help, try following the procedure above but replace step 3 with 
 
 - Restart the Windows device
 - Open "Device Manager," turn on "Show hidden devices" from the "View" menu, then find and delete the keyboard under the "Bluetooth" item
+
+Some Windows devices may also require passkey entry, described under ["Unable to Connect to Device"](#unable-to-connect-to-device).
