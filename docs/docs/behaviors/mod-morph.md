@@ -86,6 +86,34 @@ For example, the following configuration morphs `LEFT_SHIFT` + `BACKSPACE` into 
 };
 ```
 
+#### Trigger conditions with multiple modifiers
+
+Any modifier used in the `mods` property will activate a mod-morph; it isn't possible to require that multiple modifiers are held _together_ in order to activate it.
+However, you can nest multiple mod-morph behaviors to achieve more complex decision logic, where you use one (or two) mod-morph behaviors in the `bindings` fields of another mod-morph.
+
+As an example, consider the following two mod-morphs:
+
+```dts
+/ {
+    behaviors {
+        morph_BC: morph_BC {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp B>, <&kp C>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+        morph_ABC: morph_ABC {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp A>, <&morph_BC>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+    };
+};
+```
+
+When you assign `&morph_ABC` to a key position and press it, it will output `A` by default. If you press it while a shift modifier is held it will output `B`, and if you are also holding a control modifier it will output `C` instead.
+
 :::note[Karabiner-Elements (macOS) interfering with mod-morphs]
 
 If the first modified key press sends the modifier along with the morphed keycode and [Karabiner-Elements](https://karabiner-elements.pqrs.org/) is running, disable the "Modify Events" toggle from Karabiner's "Devices" settings page for the keyboard running ZMK.
