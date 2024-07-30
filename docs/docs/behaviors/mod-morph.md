@@ -64,6 +64,12 @@ Example:
 mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
 ```
 
+:::tip[Advanced trigger conditions]
+Any modifier used in the `mods` property will activate a mod-morph and it isn't possible to require that multiple modifiers are held _together_ in order to activate it.
+However you can nest multiple mod-morph behaviors to achieve more complex decision logic, where you use one (or two) mod-morph behaviors in the `bindings` fields of another mod-morph.
+For instance, a mod-morph with `bindings = <&kp A>, <&morph_BC>;` and `mods = <MOD_LSFT>;` referring to `&morph_BC` with `bindings = <&kp B>, <&kp C>;` and `mods = <MOD_LCTL>;` will output `A` by default, `B` with left shift held, and `C` with both left shift and control held.
+:::
+
 ### Advanced Configuration
 
 #### `keep-mods`
