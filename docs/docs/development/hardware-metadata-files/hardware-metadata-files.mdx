@@ -1,0 +1,344 @@
+---
+title: Hardware Metadata Files
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Keyboards from "./_keyboards.md";
+import BoardShield from "./_board-shield.md";
+import RequiresExposes from "./_requires-exposes.md"
+
+export const TypeTabs = (props) => (
+    <Tabs
+    groupId="metadata-types"
+    defaultValue="board"
+    values={[
+      { label: "Board", value: "board" },
+      { label: "Shield", value: "shield" },
+      { label: "Interconnect", value: "interconnect" },
+      { label: "Alias", value: "alias" },
+      { label: "Enhancement", value: "enhancement" },
+      { label: "Animation", value: "animation" },
+      { label: "Driver", value: "driver" },
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
+
+ZMK makes use of an additional metadata YAML file providing high level information about all boards, shields, and other modules. The metadata is used for multiple purposes:
+
+- Building using Github Actions
+- Setup scripts and utilities
+- References in the `zmk-modules` repository
+- Tools making use of the `zmk-modules` repository
+- Website Documentation
+
+:::note
+There are two valid file formats for this metadata. Version 1 contains all of the metadata required to build firmware using Github Actions, completely describing a board or shield. Version 2 is backwards compatible with version 1, and is required for a module to be included in the `zmk-modules` repository. Version 1 is deprecated and no longer documented.
+:::
+
+## Schema
+
+ZMK uses a [JSON Schema](https://github.com/zmkfirmware/zmk/blob/main/schema/hardware-metadata.schema.json) file to validate metadata files and sure all required properties are present, and all other optional properties provided conform to the expected format. You can validate all metadata files in the repository by running `west metadata check` from your configured ZMK repository.
+
+# File Format
+
+The first three lines of a ZMK metadata file are
+
+```yaml
+file_format: <format version number (as string)>
+id: <identifier string>
+name: <Human readable identifier string>
+```
+
+Valid file formats are either `"1"` or `"2"`, depending on which version is used. Each file must have a unique identifier string `id`, which can include version information but excludes suffixes (ex. `_left`/`_right`) for hardware devices split into multiple parts. Examples of `id` strings are `corne` or `nrfmicro_11`. The naming convention for metadata files is `{id}.zmk.yml`, where the `id` is the same as the identifier `id` found within the file, i.e. `corne.zmk.yml` or `nrfmicro_11.zmk.yml`.
+
+The `name` property is merely a human readable name, to be displayed in various UI locations.
+
+:::note
+
+ZMK may when necessary expand on the set of metadata properties, while maintaining backwards compatibility. New _optional_ properties may be added to existing file formats as time progress, or on larger changes a new (backwards compatible) version of the file format may be created.
+
+:::
+
+## URLs
+
+The `url` property should contain the canonical URL used to learn more about the module. If the module defines a board/shield, then this could be the main vendor website or GitHub repository for a given keyboard/controller. If the module defines a driver, then this could be a link to the datasheet of the hardware component.
+
+```yaml
+url: https://github.com/foostan/crkbd/
+```
+
+The `murl` property should contain the URL linking to the repository containing an appropriate module, if the type of the metadata demands it. Note that there can be some duplication between `url` and `murl`, and also between `murl` of different metadata files, e.g. if two shields are defined within the same module.
+
+```yaml
+murl: https://github.com/infused-kim/kb_zmk_ps2_mouse_trackpoint_driver
+```
+
+The `commit` property should specify a commit from the `murl` repository which should be used. This property **must** be set when `murl` is set, and **cannot** point to `HEAD`, though it can point to the commit that `HEAD` is set to at the time of writing. This is to help prevent sudden breaking or malicious changes to remote repositories from affecting the users and tools of `zmk-modules`.
+
+```yaml
+commit: c43a0365183c58f74c285c585e0cbc1ea99f8a12
+```
+
+The optional `outdated` property tracks whether the module is outdated with respect to the HEAD of the zmk version it uses. It is usually omitted, as it defaults to `False`.
+
+```yaml
+outdated: True
+```
+
+## Item Types
+
+Each metadata file includes a `type` property uniquely identifying the type of the item the file is describing. The following are valid `type` assignments:
+
+| `type` assignment    | Description                                                                           | `murl` |
+| -------------------- | ------------------------------------------------------------------------------------- | ------ |
+| `type: board`        | The module found at `murl` contains a board.                                          | Yes    |
+| `type: shield`       | The module found at `murl` contains a shield making use of some defined interconnect. | Yes    |
+| `type: interconnect` | Defines an interconnect standard between boards and shields.                          | No     |
+| `type: alias`        | Describes a board/shield using an existing module.                                    | No     |
+| `type: enhancement`  | A module which adds an additional feature to ZMK, such as a new behaviour.            | Yes    |
+| `type: animation`    | A module containing visual effects, e.g. widgets for screens.                         | Yes    |
+| `type: driver`       | A module defining a new driver for ZMK.                                               | Yes    |
+
+## Description
+
+The `description` property should contain a short human-readable description as a string, about 1-2 sentences.
+
+The `documentation` property optionally contains the filepath to a Markdown or Markdown Extended file. This file may contain a longer description, to be pulled into this or other documentation resources. The optional `docs-repo` property is used to point to the repository where the `documentation` is found. This is optional, as it defaults to `murl`, or `zmk-modules` if `murl` is undefined.
+
+```yaml
+description: "This is an example description. The documentation can be found at murl/README.md"
+documentation: README.md
+```
+
+## Dependencies
+
+The optional `pull-request` property can point to a ZMK pull request, if the module depends on the branch found there.
+
+```yaml
+pull-request: 2027
+```
+
+The optional `depends` property is an array of `id` metadata, pointing to modules which a particular module depends on. For example, a shield may depend on a module for a driver for a component.
+
+```yaml
+depends:
+  - ps2-trackpoint
+```
+
+:::note
+There is no support in the metadata to mark a module as depending on an external fork of ZMK.
+:::
+
+## Varying Properties
+
+Depending upon the item type, the remainder of the properties can vary.
+
+<TypeTabs>
+
+<TabItem value="board">
+<RequiresExposes />
+<BoardShield />
+
+### Outputs
+
+The `outputs` array tracks the type of outputs that a keyboard can have. It includes
+
+- `usb` if the board is capable of outputting HID events to a host over USB
+- `ble` if the board is capable of outputting HID events to a host over BLE
+
+### Architecture
+
+The optional `arch` property describes the architecture that the MCU of a board uses.
+
+:::note
+The following metadata properties are generally used for boards which are also keyboards. MCU-only boards usually do not make use of the below properties.
+:::
+
+<Keyboards />
+
+### Example File
+
+Here is a sample `mikoto.zmk.yml` file from the repository:
+
+```yaml
+file_format: "2"
+id: mikoto
+name: Mikoto
+type: board
+arch: arm
+url: https://github.com/zhiayang/mikoto
+murl: https://github.com/Nick-Munnich/carryover-zmk-tree-items
+description: "A pro micro form factor wireless MCU board that accepts external power input, "
+documentation: README.md
+commit: "1234567890abcdefghijklmnopqrstuvwxyz1234"
+outdated: False
+outputs:
+  - usb
+  - ble
+exposes:
+  - pro_micro
+revisions:
+  - "5.20"
+  - "7.1"
+  - "7.3"
+```
+
+</TabItem>
+<TabItem value="shield">
+
+<RequiresExposes />
+<BoardShield />
+<Keyboards />
+
+### Example File
+
+Here is a sample `corne.zmk.yml` file from the repository:
+
+```yaml
+file_format: "2"
+id: corne
+name: Corne
+type: shield
+url: https://github.com/foostan/crkbd/
+murl: https://github.com/Nick-Munnich/carryover-zmk-tree-items
+description: "A popular 42 key keyboard designed by foostan"
+documentation: README.md
+commit: "1234567890abcdefghijklmnopqrstuvwxyz1234"
+outdated: False
+requires:
+  - pro_micro
+exposes:
+  - i2c_oled
+features:
+  - keys
+  - display
+siblings:
+  - corne_left
+  - corne_right
+layouts:
+  - "42-key"
+  - "36-key"
+```
+
+</TabItem>
+<TabItem value="interconnect">
+
+<RequiresExposes />
+
+### Node Labels
+
+The `node_labels` property is used to define a naming convention for shields to refer to the nodes of the board, without needing to know the underlying properties of the node. This property can have a number of subproperties, each referring to a new name for a particular type of node:
+
+- `gpio`
+- `i2c`
+- `spi`
+- `uart`
+- `adc`
+
+The `design_guideline` property is used to provide additional information to designers of shields using said interconnect.
+
+### Example File
+
+Here is a sample `pro_micro.zmk.yml` file from the repository:
+
+```yaml
+file_format: "2"
+id: pro_micro
+name: Pro Micro
+type: interconnect
+url: https://www.sparkfun.com/products/12640
+outdated: False
+manufacturer: SparkFun
+description: |
+  The SparkFun Pro Micro grew popular as a low cost ATmega32U4 board with sufficient GPIO and peripherals
+  to work for many keyboard needs. Since the original Pro Micro, many pin compatible boards have appeared,
+  with various changes or improvements, such as the Elite-C w/ USB-C, nice!nano with nRF52840 wireless.
+
+  Note: ZMK doesn't support boards with AVR 8-bit processors, such as the ATmega32U4, because Zephyr™ only
+  supports 32-bit and 64-bit platforms. As a result, controllers like the SparkFun Pro Micro and the Elite-C
+  are *not* supported by ZMK.
+node_labels:
+  gpio: pro_micro
+  i2c: pro_micro_i2c
+  spi: pro_micro_spi
+  uart: pro_micro_serial
+design_guideline: |
+  ZMK uses the blue color coded "Arduino" pin names to generate devicetree node references. 
+  For example, to refer to the pin labeled `0` in the diagram, use `&pro_micro 0` in the devicetree files.
+```
+
+</TabItem>
+<TabItem value="alias">
+
+### Parent
+
+An alias is used to describe a board/shield which uses the identical configuration as another board/shield. Hence all that is necessary in addition to the standard properties is the inclusion of `parent` and `parent-revision` properties, which are assigned an `id` and `revision` found in another `.zmk.yml` file respectively.
+
+### Example File
+
+Here is a sample `supermini-nrf.zmk.yml` file from the repository:
+
+```yaml
+file_format: "2"
+id: supermini-nrf
+name: "Supermini nRF52840"
+type: alias
+url: https://wiki.icbbuy.com/doku.php?id=developmentboard:nrf52840
+description: "A cheap yet somewhat unreliable knockoff version of the Nice!Nano version 2 development board."
+parent: "nice_nano"
+parent_revision: "v2"
+```
+
+</TabItem>
+<TabItem value="enhancement">
+
+### Example File
+
+Here is a sample `zmk-split-peripheral-output-relay.zmk.yml` file from the repository:
+
+```yaml
+file_format: "2"
+id: zmk-split-peripheral-output-relay
+name: "ZMK Split Peripheral Output Relay"
+type: enhancement
+url: https://github.com/badjeff/zmk-split-peripheral-output-relay
+murl: https://github.com/badjeff/zmk-split-peripheral-output-relay
+commit: eb7e41f465339077a285af4c05f93798ebb7ac27
+description: "This module adds an output relay for ZMK. This is an add-on for zmk-output-behavior-listener to broadcast output events to split peripheral(s) via BLE."
+documentation: README.md
+depends:
+  - zmk-output-behavior-listener
+```
+
+</TabItem>
+<TabItem value="animation">
+:::note
+Currently ZMK does not have the features in place for any animation modules to exist. This is merely a placeholder for when the lighting and display features of ZMK are mature enough. When this happens, the properties that this type of module has will be fleshed out and this page will be updated.
+:::
+</TabItem>
+<TabItem value="driver">
+
+### Example File
+
+Here is a sample `ps2-trackpoint.zmk.yml` file from the repository:
+
+```yaml
+file_format: "2"
+id: ps2-trackpoint
+name: "PS/2 Trackpoint Driver"
+type: driver
+url: https://github.com/infused-kim/kb_zmk_ps2_mouse_trackpoint_driver
+murl: https://github.com/infused-kim/kb_zmk_ps2_mouse_trackpoint_driver
+commit: c43a0365183c58f74c285c585e0cbc1ea99f8a12
+description: "A driver module that adds support for PS/2 mouse-pointing devices to DIY keyboards running the zmk firmware."
+documentation: README.md
+pull-request: 2027
+```
+
+</TabItem>
+</TypeTabs>
