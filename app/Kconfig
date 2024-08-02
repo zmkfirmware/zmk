@@ -163,7 +163,7 @@ config ZMK_BLE_EXPERIMENTAL_CONN
     bool "Experimental BLE connection changes"
     help
       Enables a combination of settings that are planned to be default in future versions of ZMK
-      to improve connection stability. 
+      to improve connection stability.
 
 config ZMK_BLE_EXPERIMENTAL_SEC
     bool "Experimental BLE security changes"
