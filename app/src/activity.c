@@ -101,10 +101,9 @@ void activity_work_handler(struct k_work *work) {
             const struct device *ext_power = device_get_binding("EXT_POWER");
             if (ext_power == NULL) {
                 LOG_ERR("Unable to retrieve ext_power device on entering idle.");
-                return;
+            } else {
+                ext_power_disable(ext_power);
             }
-
-            ext_power_disable(ext_power);
 #endif /* IS_ENABLED(CONFIG_ZMK_EXT_POWER_IDLE_OFF) */
             set_state(ZMK_ACTIVITY_IDLE);
         }
