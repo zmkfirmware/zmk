@@ -62,7 +62,6 @@ enum zmk_activity_state zmk_activity_get_state(void) { return activity_state; }
 
 int activity_event_listener(const zmk_event_t *eh) {
 #if IS_ENABLED(CONFIG_ZMK_EXT_POWER_IDLE_OFF)
-    activity_last_uptime = k_uptime_get();
     if (activity_state == ZMK_ACTIVITY_IDLE) {
         const struct device *ext_power = device_get_binding("EXT_POWER");
         if (ext_power == NULL) {
@@ -71,9 +70,8 @@ int activity_event_listener(const zmk_event_t *eh) {
             ext_power_enable(ext_power);
         }
     }
-#else
-    activity_last_uptime = k_uptime_get();
 #endif /* IS_ENABLED(CONFIG_ZMK_EXT_POWER_IDLE_OFF) */
+    activity_last_uptime = k_uptime_get();
     return set_state(ZMK_ACTIVITY_ACTIVE);
 }
 
@@ -94,7 +92,11 @@ void activity_work_handler(struct k_work *work) {
         sys_poweroff();
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
-        if (inactive_time > MAX_IDLE_MS) {
+        if (inactive_time > MAX_IDLE_MS
+#if !IS_ENABLED(CONFIG_ZMK_IDLE_USB)
+            && !is_usb_power_present()
+#endif /* IS_ENABLED(CONFIG_ZMK_IDLE_USB) */
+        ) {
 #if IS_ENABLED(CONFIG_ZMK_EXT_POWER_IDLE_OFF)
             const struct device *ext_power = device_get_binding("EXT_POWER");
             if (ext_power == NULL) {

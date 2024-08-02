@@ -21,7 +21,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | Config                          | Type | Description                                           | Default |
 | ------------------------------- | ---- | ----------------------------------------------------- | ------- |
 | `CONFIG_ZMK_IDLE_TIMEOUT`       | int  | Milliseconds of inactivity before entering idle state | 30000   |
-| `CONFIG_ZMK_EXT_POWER_IDLE_OFF` | bool | Turn off external power while idle                    | n       |
+| `CONFIG_ZMK_IDLE_USB`           | bool | Enable idling while connected to USB power            | y       |
 | `CONFIG_ZMK_SLEEP`              | bool | Enable deep sleep support                             | n       |
 | `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT` | int  | Milliseconds of inactivity before entering deep sleep | 900000  |
 
@@ -45,9 +45,10 @@ Driver for enabling or disabling power to peripherals such as displays and light
 
 Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 
-| Config                 | Type | Description                                     | Default |
-| ---------------------- | ---- | ----------------------------------------------- | ------- |
-| `CONFIG_ZMK_EXT_POWER` | bool | Enable support to control external power output | y       |
+| Config                          | Type | Description                                     | Default |
+| ------------------------------- | ---- | ----------------------------------------------- | ------- |
+| `CONFIG_ZMK_EXT_POWER`          | bool | Enable support to control external power output | y       |
+| `CONFIG_ZMK_EXT_POWER_IDLE_OFF` | bool | Turn off external power while idle              | n       |
 
 ### Devicetree
 
