@@ -19,6 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/sensor_event.h>
 
 #include <zmk/pm.h>
+#include <drivers/ext_power.h>
 
 #include <zmk/activity.h>
 
@@ -60,8 +61,19 @@ int set_state(enum zmk_activity_state state) {
 enum zmk_activity_state zmk_activity_get_state(void) { return activity_state; }
 
 int activity_event_listener(const zmk_event_t *eh) {
+#if IS_ENABLED(CONFIG_ZMK_EXT_POWER_IDLE_OFF)
     activity_last_uptime = k_uptime_get();
-
+    if (activity_state == ZMK_ACTIVITY_IDLE) {
+        const struct device *ext_power = device_get_binding("EXT_POWER");
+        if (ext_power == NULL) {
+            LOG_ERR("Unable to retrieve ext_power device on idle wake.");
+        } else {
+            ext_power_enable(ext_power);
+        }
+    }
+#else
+    activity_last_uptime = k_uptime_get();
+#endif /* IS_ENABLED(CONFIG_ZMK_EXT_POWER_IDLE_OFF) */
     return set_state(ZMK_ACTIVITY_ACTIVE);
 }
 
@@ -83,6 +95,15 @@ void activity_work_handler(struct k_work *work) {
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
+#if IS_ENABLED(CONFIG_ZMK_EXT_POWER_IDLE_OFF)
+            const struct device *ext_power = device_get_binding("EXT_POWER");
+            if (ext_power == NULL) {
+                LOG_ERR("Unable to retrieve ext_power device on entering idle.");
+                return;
+            }
+
+            ext_power_disable(ext_power);
+#endif /* IS_ENABLED(CONFIG_ZMK_EXT_POWER_IDLE_OFF) */
             set_state(ZMK_ACTIVITY_IDLE);
         }
 }

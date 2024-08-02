@@ -163,8 +163,7 @@ config ZMK_BLE_EXPERIMENTAL_CONN
     bool "Experimental BLE connection changes"
     help
       Enables a combination of settings that are planned to be default in future versions of ZMK
-      to improve connection stability. This includes changes to timing on BLE pairing initiation,
-      restores use of the updated/new LLCP implementation, and disables 2M PHY support.
+      to improve connection stability. 
 
 config ZMK_BLE_EXPERIMENTAL_SEC
     bool "Experimental BLE security changes"
@@ -429,6 +428,10 @@ endif
 config ZMK_EXT_POWER
     bool "Enable support to control external power output"
     default y
+
+config ZMK_EXT_POWER_IDLE_OFF
+    bool "Turn off external power while idle"
+    depends on ZMK_EXT_POWER
 
 config ZMK_PM
     bool
