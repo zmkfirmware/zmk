@@ -10,7 +10,7 @@ With a simple direct pin setup, the [direct kscan](../../config/kscan.md) driver
 };
 ```
 
-The kscan sideband behavior needs to wrap the new driver due to technical reasons:
+The kscan sideband behavior needs to wrap the new driver to enable it:
 
 ```dts
 / {

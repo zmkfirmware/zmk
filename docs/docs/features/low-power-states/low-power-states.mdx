@@ -17,7 +17,6 @@ import GpioKeyWakeup from "./_gpio-key-wakeup.md";
 import SidebandDirect from "./_sideband-direct.md";
 import SidebandMatrix from "./_sideband-matrix.md";
 import SidebandWakeupDirect from "./_sideband-wakeup-direct.md";
-import SidebandWakeupMatrix from "./_sideband-wakeup-matrix.md";
 
 ## Idle
 
@@ -165,47 +164,35 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
 
 - The `gpios` property should be a [phandle-array](https://docs.zephyrproject.org/3.5.0/build/dts/phandles.html#zero-or-more-nodes-with-metadata-phandle-array-type) with a fully defined GPIO pin and with the correct pull up/down and active high/low flags set.
 
-#### KScan sideband behavior
-
 <Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
   <TabItem value="direct" label="Direct Pin">
+    #### KScan sideband behavior
     <SidebandDirect />
-  </TabItem>
-  <TabItem value="matrix" label="Matrix Integrated Pin">
-    <SidebandMatrix />
-  </TabItem>
-  <TabItem value="wakeup" label="Wakeup-only Key Switch">
-    <Tabs groupId="kscan-type" defaultValue="mkscan" className="secrettabs">
-      <TabItem value="dkscan" label="Direct GPIO kscan">
-        <SidebandWakeupDirect />
-      </TabItem>
-      <TabItem value="mkscan" label="Matrix kscan">
-        <SidebandWakeupMatrix />
-      </TabItem>
-    </Tabs>
-  </TabItem>
-</Tabs>
 
-Here are the properties for the kscan sideband behaviors node:
-
-<Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
-  <TabItem value="direct" label="Direct Pin">
     <PropsSidebandDirect />
     <PropsSidebandChildren />
+
   </TabItem>
   <TabItem value="matrix" label="Matrix Integrated Pin">
+    #### KScan sideband behavior
+    <SidebandMatrix />
+
     <PropsSidebandMatrix />
     <PropsSidebandChildren />
+
   </TabItem>
   <TabItem value="wakeup" label="Wakeup-only Key Switch">
     <Tabs groupId="kscan-type" defaultValue="mkscan" className="secrettabs">
       <TabItem value="dkscan" label="Direct GPIO kscan">
+        #### KScan sideband behavior
+        <SidebandWakeupDirect />
+
         <PropsSidebandDirect />
       </TabItem>
       <TabItem value="mkscan" label="Matrix kscan">
-        <PropsSidebandMatrix />
       </TabItem>
     </Tabs>
+
   </TabItem>
 </Tabs>
 
