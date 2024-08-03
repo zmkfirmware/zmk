@@ -9,10 +9,14 @@
 #include <zephyr/device.h>
 #include <zephyr/kernel.h>
 #include <zephyr/input/input.h>
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
+
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
-#include <zmk/mouse.h>
 #include <zmk/endpoints.h>
+#include <zmk/mouse.h>
 #include <zmk/hid.h>
 
 #define ONE_IF_DEV_OK(n)                                                                           \
@@ -35,11 +39,15 @@ struct input_listener_xy_data {
 };
 
 struct input_listener_data {
-    struct input_listener_xy_data data;
-    struct input_listener_xy_data wheel_data;
+    union {
+        struct {
+            struct input_listener_xy_data data;
+            struct input_listener_xy_data wheel_data;
 
-    uint8_t button_set;
-    uint8_t button_clear;
+            uint8_t button_set;
+            uint8_t button_clear;
+        } mouse;
+    };
 };
 
 struct input_listener_config {
@@ -53,27 +61,31 @@ struct input_listener_config {
 static void handle_rel_code(struct input_listener_data *data, struct input_event *evt) {
     switch (evt->code) {
     case INPUT_REL_X:
-        data->data.mode = INPUT_LISTENER_XY_DATA_MODE_REL;
-        data->data.x += evt->value;
+        data->mouse.data.mode = INPUT_LISTENER_XY_DATA_MODE_REL;
+        data->mouse.data.x += evt->value;
         break;
     case INPUT_REL_Y:
-        data->data.mode = INPUT_LISTENER_XY_DATA_MODE_REL;
-        data->data.y += evt->value;
+        data->mouse.data.mode = INPUT_LISTENER_XY_DATA_MODE_REL;
+        data->mouse.data.y += evt->value;
         break;
     case INPUT_REL_WHEEL:
-        data->wheel_data.mode = INPUT_LISTENER_XY_DATA_MODE_REL;
-        data->wheel_data.y += evt->value;
+        data->mouse.wheel_data.mode = INPUT_LISTENER_XY_DATA_MODE_REL;
+        data->mouse.wheel_data.y += evt->value;
         break;
     case INPUT_REL_HWHEEL:
-        data->wheel_data.mode = INPUT_LISTENER_XY_DATA_MODE_REL;
-        data->wheel_data.x += evt->value;
+        data->mouse.wheel_data.mode = INPUT_LISTENER_XY_DATA_MODE_REL;
+        data->mouse.wheel_data.x += evt->value;
         break;
     default:
         break;
     }
 }
 
-static void handle_key_code(struct input_listener_data *data, struct input_event *evt) {
+static void handle_abs_code(const struct input_listener_config *config,
+                            struct input_listener_data *data, struct input_event *evt) {}
+
+static void handle_key_code(const struct input_listener_config *config,
+                            struct input_listener_data *data, struct input_event *evt) {
     int8_t btn;
 
     switch (evt->code) {
@@ -84,9 +96,9 @@ static void handle_key_code(struct input_listener_data *data, struct input_event
     case INPUT_BTN_4:
         btn = evt->code - INPUT_BTN_0;
         if (evt->value > 0) {
-            WRITE_BIT(data->button_set, btn, 1);
+            WRITE_BIT(data->mouse.button_set, btn, 1);
         } else {
-            WRITE_BIT(data->button_clear, btn, 1);
+            WRITE_BIT(data->mouse.button_clear, btn, 1);
         }
         break;
     default:
@@ -105,6 +117,14 @@ static void swap_xy(struct input_event *evt) {
     }
 }
 
+static inline bool is_x_data(const struct input_event *evt) {
+    return evt->type == INPUT_EV_REL && evt->code == INPUT_REL_X;
+}
+
+static inline bool is_y_data(const struct input_event *evt) {
+    return evt->type == INPUT_EV_REL && evt->code == INPUT_REL_Y;
+}
+
 static void filter_with_input_config(const struct input_listener_config *cfg,
                                      struct input_event *evt) {
     if (!evt->dev) {
@@ -115,8 +135,7 @@ static void filter_with_input_config(const struct input_listener_config *cfg,
         swap_xy(evt);
     }
 
-    if ((cfg->x_invert && evt->code == INPUT_REL_X) ||
-        (cfg->y_invert && evt->code == INPUT_REL_Y)) {
+    if ((cfg->x_invert && is_x_data(evt)) || (cfg->y_invert && is_y_data(evt))) {
         evt->value = -(evt->value);
     }
 
@@ -137,31 +156,34 @@ static void input_handler(const struct input_listener_config *config,
     case INPUT_EV_REL:
         handle_rel_code(data, evt);
         break;
+    case INPUT_EV_ABS:
+        handle_abs_code(config, data, evt);
+        break;
     case INPUT_EV_KEY:
-        handle_key_code(data, evt);
+        handle_key_code(config, data, evt);
         break;
     }
 
     if (evt->sync) {
-        if (data->wheel_data.mode == INPUT_LISTENER_XY_DATA_MODE_REL) {
-            zmk_hid_mouse_scroll_set(data->wheel_data.x, data->wheel_data.y);
+        if (data->mouse.wheel_data.mode == INPUT_LISTENER_XY_DATA_MODE_REL) {
+            zmk_hid_mouse_scroll_set(data->mouse.wheel_data.x, data->mouse.wheel_data.y);
         }
 
-        if (data->data.mode == INPUT_LISTENER_XY_DATA_MODE_REL) {
-            zmk_hid_mouse_movement_set(data->data.x, data->data.y);
+        if (data->mouse.data.mode == INPUT_LISTENER_XY_DATA_MODE_REL) {
+            zmk_hid_mouse_movement_set(data->mouse.data.x, data->mouse.data.y);
         }
 
-        if (data->button_set != 0) {
+        if (data->mouse.button_set != 0) {
             for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
-                if ((data->button_set & BIT(i)) != 0) {
+                if ((data->mouse.button_set & BIT(i)) != 0) {
                     zmk_hid_mouse_button_press(i);
                 }
             }
         }
 
-        if (data->button_clear != 0) {
+        if (data->mouse.button_clear != 0) {
             for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
-                if ((data->button_clear & BIT(i)) != 0) {
+                if ((data->mouse.button_clear & BIT(i)) != 0) {
                     zmk_hid_mouse_button_release(i);
                 }
             }
@@ -171,10 +193,10 @@ static void input_handler(const struct input_listener_config *config,
         zmk_hid_mouse_scroll_set(0, 0);
         zmk_hid_mouse_movement_set(0, 0);
 
-        clear_xy_data(&data->data);
-        clear_xy_data(&data->wheel_data);
+        clear_xy_data(&data->mouse.data);
+        clear_xy_data(&data->mouse.wheel_data);
 
-        data->button_set = data->button_clear = 0;
+        data->mouse.button_set = data->mouse.button_clear = 0;
     }
 }
 
