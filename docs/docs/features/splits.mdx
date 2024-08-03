@@ -1,0 +1,102 @@
+---
+title: Split boards with Dongles
+sidebar_label: Split & Dongle
+---
+
+ZMK supports split keyboards that communicate wirelessly using BLE. Commonly these keyboards are split into two halves, each with its own microcontroller and battery. 
+Usually the left half of the keyboard is given the split role of central, and the right half is given the split role of peripheral. 
+The central half is responsible for communicating with the peripheral half and the host device.
+
+Using this setup does have one drawback: the central half of the keyboard usually runs out of battery faster than the peripheral half. 
+This is because the central half is responsible for maintaining the connection with the peripheral half and the host device.
+
+To solve this problem, a third microcontroller can be used as the new central or as more widely known a dongle. 
+The dongle will act as a central device and communicate with the keyboard halves which will both act as peripherals.
+Dongles are usually connected to the host device using USB. This way the central half of the keyboard can be powered by the host device, 
+and the peripheral halves can be powered by their own batteries. This setup allows both halves of the keyboard to have a longer battery life.
+
+:::info
+For more information on how to set up a split keyboard, refer to [New Keyboard Shield](../development/new-shield.mdx) under Guides.
+:::
+
+## Building a Split Keyboard shield with a Dongle
+
+:::note
+Because we will be changing the roles of the keyboard halves, we will also need to flash the reset firmware to the keyboard halves.
+Information about the reset firmware can be found under Troubleshooting [Reset firmware](../troubleshooting/connection-issues.mdx#acquiring-a-reset-uf2)
+:::
+
+### Kconfig.shield
+
+First we will introduce a third split to our keyboard configuration. This will be used as the dongle.
+
+```kconfig
+config SHIELD_MY_BOARD_DONGLE
+    def_bool $(shields_list_contains,my_board_dongle)
+
+config SHIELD_MY_BOARD_LEFT
+    def_bool $(shields_list_contains,my_board_left)
+
+config SHIELD_MY_BOARD_RIGHT
+    def_bool $(shields_list_contains,my_board_right)
+```
+
+### Kconfig.defconfig
+
+Next we will define the roles of the keyboard halves. The left and right halves will be set as peripherals, and the dongle will be set as the central.
+We will also only give the dongle the keyboard name.
+
+```kconfig
+if SHIELD_MY_BOARD_DONGLE
+
+config ZMK_KEYBOARD_NAME
+    default "My Board"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_MY_BOARD_DONGLE || SHIELD_MY_BOARD_LEFT || SHIELD_MY_BOARD_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+endif
+```
+
+### my_board_dongle.conf
+
+Finally, we will define the dongle configuration. We want to set the number of peripherals to 2 and disable sleep mode for the dongle since it will be connected to the host device.
+In case you want to use the dongle with a battery, you can enable sleep mode for the dongle. Since the dongle will be connected to the host device, we will also increase the broadcast power.
+
+```conf
+CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS=2
+
+CONFIG_ZMK_SLEEP=n
+# Uncomment if sleep is enabled
+# CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=3600000
+# Make the dongle broadcast with more power
+CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
+```
+
+### my_board_dongle.overlay
+
+In most common cases the dongle will not have any keys, in that case we can instead use a mock kscan module to simulate the keys.
+
+```dts
+
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+        // zmk,kscan = &kscan0;
+    };
+
+    mock_kscan: kscan_0 {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+};
+```
