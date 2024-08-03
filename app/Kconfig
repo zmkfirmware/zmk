@@ -153,6 +153,7 @@ menuconfig ZMK_BLE
     select BT_SMP_APP_PAIRING_ACCEPT
     select BT_PERIPHERAL
     select BT_DIS
+    imply BT_DEVICE_NAME_DYNAMIC
     imply BT_SETTINGS if !ARCH_POSIX
     imply SETTINGS if !ARCH_POSIX
     imply ZMK_BATTERY_REPORTING if !ARCH_POSIX
