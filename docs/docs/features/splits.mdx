@@ -15,9 +15,42 @@ The dongle will act as a central device and communicate with the keyboard halves
 Dongles are usually connected to the host device using USB. This way the central half of the keyboard can be powered by the host device, 
 and the peripheral halves can be powered by their own batteries. This setup allows both halves of the keyboard to have a longer battery life.
 
+Here is an example diagram of a split keyboard with a dongle:
+
+```mermaid
+graph TD;
+    A[Computer/Host Device] <-- USB/BLE --> DONGLE[Dongle/Central];
+    DONGLE -. BLE .-> LEFT[Left Half/Peripheral];
+    DONGLE -. BLE .-> RIGHT[Right Half/Peripheral];
+```
+
+Dotted lines represent BLE connections.
+Solid lines represent USB connections.
+
 :::info
-For more information on how to set up a split keyboard, refer to [New Keyboard Shield](../development/new-shield.mdx) under Guides.
+For more information on how to set up a two split keyboard, refer to [New Keyboard Shield](../development/new-shield.mdx) under Guides.
+After setting up the split keyboard, you can follow the steps below to add a dongle to the setup.
 :::
+
+## Benefits/Disadvantages of using a Dongle/Split setup
+
+Benefits:
+
+- Longer battery life for peripheral halves of the keyboard.
+- Dongle can be powered by the host device and no long wires are needed.
+- Easier to connect to the host device.
+- Only the central side needs to reflashed for keymap updates
+
+Disadvantages:
+
+- More complex setup.
+- More components needed.
+- Added latency due to the extra hop between the host device and the keyboard halves.
+- Each half of the keyboard needs its own firmware (ex: left, right, and dongle).
+
+:::warning[Reset/Bootloader behavior]
+When using a combo to trigger reset/bootloader, only the central side will be affected. To avoid this, you can avoid using the combo and instead use a physical reset button on the central half.
+That will allow you to locally reset the central/peripheral side without affecting other halves.
 
 ## Building a Split Keyboard shield with a Dongle
 
@@ -65,12 +98,12 @@ config ZMK_SPLIT
 endif
 ```
 
-### my_board_dongle.conf
+### Dongle configuration
 
 Finally, we will define the dongle configuration. We want to set the number of peripherals to 2 and disable sleep mode for the dongle since it will be connected to the host device.
 In case you want to use the dongle with a battery, you can enable sleep mode for the dongle. Since the dongle will be connected to the host device, we will also increase the broadcast power.
 
-```conf
+```ini title="my_board_dongle.conf"
 CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS=2
 
 CONFIG_ZMK_SLEEP=n
@@ -80,11 +113,11 @@ CONFIG_ZMK_SLEEP=n
 CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
 ```
 
-### my_board_dongle.overlay
+### Dongle Overlay
 
 In most common cases the dongle will not have any keys, in that case we can instead use a mock kscan module to simulate the keys.
 
-```dts
+```dts title="my_board_dongle.overlay"
 
 / {
     chosen {
