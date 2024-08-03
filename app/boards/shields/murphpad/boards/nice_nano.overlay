@@ -31,7 +31,7 @@
         spi-max-frequency = <4000000>;
 
         /* WS2812 */
-        chain-length = <10>; /* arbitrary; change at will */
+        chain-length = <8>; /* number of SMD LED footprints on PCB */
         spi-one-frame = <0x70>;
         spi-zero-frame = <0x40>;
 
