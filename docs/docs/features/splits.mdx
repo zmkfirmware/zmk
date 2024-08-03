@@ -135,3 +135,28 @@ In most common cases the dongle will not have any keys, in that case we can inst
     };
 };
 ```
+
+### Building the firmware
+
+After writing the configuration files, you can modify the `build.yml` file to include the dongle configuration.
+
+```yaml
+---
+include:
+  - board: nice_nano_v2
+    shield: my_board_left
+  - board: nice_nano_v2
+    shield: my_board_right
+  - board: nice_nano_v2
+    shield: my_board_dongle
+  - board: nice_nano_v2
+    shield: settings_reset
+```
+
+After creating your fresh new firmware files, 
+you can go ahead and flash the settings_reset firmware for each half of the keyboard (including the dongle).
+Flash the dongle firmware to the dongle and the left and right firmware to the respective halves.
+
+:::note
+More information about reseting split keyboards can be found under [Troubleshooting Connection Issues](../troubleshooting/connection-issues.mdx##reset-split-keyboard-procedure)
+:::
