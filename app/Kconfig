@@ -381,6 +381,14 @@ config ZMK_MOUSE
 #Mouse Options
 endmenu
 
+menu "USB MIDI Options"
+
+config ZMK_MIDI
+    bool "Enable ZMK midi emulation"
+
+#MIDI Options
+endmenu
+
 menu "Power Management"
 
 config ZMK_BATTERY_REPORTING
