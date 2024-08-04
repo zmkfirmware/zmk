@@ -1,0 +1,78 @@
+---
+title: Displays
+sidebar_label: Displays
+---
+
+import NiceNanoPInout from "../assets/features/displays/pro_micro_pinout.png";
+
+Displays in ZMK are currently a proof of concept and official support is coming soon.
+
+## Display Support Status
+
+:::info
+Although ZMK-powered keyboards _are_ capable of utilizing OLED and ePaper displays, the Displays feature is not yet considered production-ready due to an issue where the display remains blank after resuming from [external power cutoff](../behaviors/power.md#external-power-control). The reason this issue is significant, is due to the increased power draw when certain MCU boards utilize this This issue can be tracked on GitHub at [zmkfirmware/zmk #674](https://github.com/zmkfirmware/zmk/issues/674).
+:::
+
+Despite the above status warning, display support is feature complete.
+
+## Troubleshooting
+
+### For: PCB Designers & Creators
+
+When creating a custom PCB, it is not required, but is recommended to setup SPI protocol connections to your MCU's SPI interface pins.
+
+:::info
+For example, on the _Arduino Pro Micro_, the pins for an SPI interface connection are `D15` (SCLK), `D14` (MISO), `D16` (MOSI).
+
+<img src={NiceNanoPInout} style={{ width: 450 }} />
+![Nice!Nano Pinout](../assets/features/displays/pro_micro_pinout.png =250x250) :::
+
+However, if you happened to use other pins, you can force ZMK to "re-pin" the SPI interface by appending the following snippet in the `.keymap` file:
+
+```c
+&pinctrl {
+    spi0_default: spi0_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 8)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 10)>,
+                <NRF_PSEL(SPIM_MISO, 0, 11)>;
+        };
+    };
+    spi0_sleep: spi0_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 0, 8)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 10)>,
+                <NRF_PSEL(SPIM_MISO, 0, 11)>;
+            low-power-enable;
+        };
+    };
+};
+```
+
+:::warning
+When inputting the new pin numbers, be sure to use the _"Low Frequency"_ pin numbers, _NOT_ the digital pin number.
+
+In the case above, `D0` is `P0.08`, so the lines for `SPIM_SCK` is set to `8` instead of `0`
+:::
+
+### For: Owners & Regular Users
+
+If you're noticing your display performing with wierd "glitches" that you might describe as "noise", it's very possible that you're experiencing an issue where the pins used for the display are shared with an EC11 encoder or other peripheral that requires full power. This is particularly noticable on certain [_Corne_ boards](https://discord.com/channels/719497620560543766/1160593207848091658/1160593207848091658).
+
+<b>TL;DR</b>, look for the `.overlay` files that for the left- and right-hand
+halves, and if using a board that only supports one _OR_ the other, consider
+changing the SPI pins as mentioned above in the [PCB Designers &
+Creators](#for-pcb-designers--creators) section, or disabling the encoders /
+peripheral utilizing the same pins.
+
+## Specific Display Information
+
+### Nice!View
+
+Append the following line to your `.keymap` file if your `CS` pin is not the default `D01` pin on the _Arduino Pro Micro_ or _Nice!Nano v2_, then change the `10` to whichever _DIGITAL_ pin is used for `CS`:
+
+```c
+&nice_view_spi {
+    cs-gpios = <&pro_micro 10 GPIO_ACTIVE_HIGH>;
+};
+```
