@@ -38,40 +38,34 @@ For more information on how to set up a two split keyboard, refer to [New Keyboa
 After setting up the split keyboard, you can follow the steps below to add a dongle to the setup.
 :::
 
-## Benefits/Disadvantages of using a Dongle/Split setup
+## Benefits/Disadvantages of using a Dongle
 
 Benefits:
 
-- Longer battery life for peripheral halves of the keyboard.
-- Dongle can be powered by the host device and no long wires are needed.
+- Adding a dongle, enables both keyboard halves to act as peripherals, meaning equal battery life for both halves.
 - Easier to connect to the host device.
-- Only the central side needs to reflashed for keymap updates
 
 Disadvantages:
 
 - More complex setup.
-- More components needed.
+- Extra microcontroller needed
+- Keyboard is unusable without the dongle.
 - Added latency due to the extra hop between the host device and the keyboard halves.
-- Each half of the keyboard needs its own firmware (ex: left, right, and dongle).
 
-:::warning[Reset/Bootloader behavior]
-When using a combo to trigger reset/bootloader, only the central side will be affected. To avoid this, you can avoid using the combo and instead use a physical reset button on the central half.
-That will allow you to locally reset the central/peripheral side without affecting other halves. 
-Further explanation can be found under [Behavior Reset#split-keyboards](../behaviors/reset.md#split-keyboards)
-:::
 
-## Building a Split Keyboard shield with a Dongle
+
+## Defining a Dongle for a Keyboard 
+
 
 :::note
-Because we will be changing the roles of the keyboard halves, we will also need to flash the reset firmware to the keyboard halves.
-Information about the reset firmware can be found under Troubleshooting [Reset firmware](../troubleshooting/connection-issues.mdx#acquiring-a-reset-uf2)
+In the examples below, we will be referencing the New Split Keyboard Shield guide files and will be building on top of that.
 :::
 
-### Kconfig.shield
+### Keyboard Shield
 
 First we will introduce a third split to our keyboard configuration. This will be used as the dongle.
 
-```kconfig
+```kconfig title="Kconfig.shield"
 config SHIELD_MY_BOARD_DONGLE
     def_bool $(shields_list_contains,my_board_dongle)
 
@@ -82,12 +76,14 @@ config SHIELD_MY_BOARD_RIGHT
     def_bool $(shields_list_contains,my_board_right)
 ```
 
-### Kconfig.defconfig
+### Keyboard Defconfig
 
 Next we will define the roles of the keyboard halves. The left and right halves will be set as peripherals, and the dongle will be set as the central.
 We will also only give the dongle the keyboard name.
 
-```kconfig
+There is also an option to still use the left half as the central, and the right half as the peripheral. In that case the dongle will not be used.
+
+```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_BOARD_DONGLE
 
 config ZMK_KEYBOARD_NAME
@@ -95,6 +91,24 @@ config ZMK_KEYBOARD_NAME
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
+
+config ZMK_SLEEP
+    default n
+
+config BT_CLTR_TX_PWR_PLUS_8
+    default y
+
+endif
+
+if SHIELD_MY_BOARD_LEFT
+# Setting this to y will make the left half the central and the right half the peripheral
+config ZMK_SPLIT_ROLE_CENTRAL
+    default n
+
+if ZMK_SPLIT_ROLE_CENTRAL
+    config ZMK_KEYBOARD_NAME
+        default "My Board"
+endif # ZMK_SPLIT_ROLE_CENTRAL
 
 endif
 
@@ -110,15 +124,13 @@ endif
 
 Finally, we will define the dongle configuration. We want to set the number of peripherals to 2 and disable sleep mode for the dongle since it will be connected to the host device.
 In case you want to use the dongle with a battery, you can enable sleep mode for the dongle. Since the dongle will be connected to the host device, we will also increase the broadcast power.
+If the dongle is sleeping, keystrokes will not be sent to the host device, until the dongle wakes up.
 
 ```ini title="my_board_dongle.conf"
 CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS=2
 
-CONFIG_ZMK_SLEEP=n
 # Uncomment if sleep is enabled
 # CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=3600000
-# Make the dongle broadcast with more power
-CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
 ```
 
 ### Dongle Overlay
@@ -147,9 +159,9 @@ In most common cases the dongle will not have any keys, in that case we can inst
 After writing the configuration files, you can modify the `build.yml` file to include the dongle configuration.
 
 Please keep in mind that the dongle does not have to be the same microcontroller as the keyboard halves.
+Any microcontroller can be used as the dongle that supports BLE.
 
 ```yaml
----
 include:
   - board: nice_nano_v2
     shield: my_board_left
