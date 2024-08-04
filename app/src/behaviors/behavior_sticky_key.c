@@ -200,6 +200,7 @@ static int sticky_key_parameter_domains(const struct device *sk,
                                               &child_metadata);
     if (err < 0) {
         LOG_WRN("Failed to get the sticky key bound behavior parameter: %d", err);
+        return err;
     }
 
     for (int s = 0; s < child_metadata.sets_len; s++) {
