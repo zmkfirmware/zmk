@@ -1,0 +1,37 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/*
+ * Press and release in sequence WASD, then DSAW.
+ * Non-overlap keys that remain pressed should be re-pressed in the correct order.
+ */
+
+&nkp {
+    keep-active-size = <4>;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &nkp A &nkp W
+                &nkp D &nkp S>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(0,1,10) // W
+    >;
+};

@@ -1,0 +1,101 @@
+---
+title: Non-overlap Behavior
+sidebar_label: Non-overlap
+---
+
+## Summary
+
+This behavior allows only one key to be pressed at a time.
+
+### Behavior Binding
+
+The default non-overlap `&nkp` uses [key press](key-press.md) binding `&kp`.
+Any [keycode](../codes/index.mdx) from the usage page should work.
+
+The following keymap prevents `A` and `D` from overlapping each other.
+
+```dts
+/ {
+    keymap {
+        default_layer {
+            bindings = <
+                &kp  Q &kp W &kp  E
+                &nkp A &kp S &nkp D>;
+        };
+    };
+};
+```
+
+When `&nkp A` is being pressed, pressing `&nkp D` will release `&kp A` (the binding of `&nkp A`).
+After `&nkp D` is released, `&kp A` will be pressed again.
+
+### Configuration
+
+#### `keep-active-size`
+
+Non-overlap behavior tries to re-press any remaining active keys
+in the exact order they were pressed.
+`keep-active-size` limits the number of active keys this behavior can handle.
+The default is 10.
+
+In this example, when you press and release keys in sequence ASDF-FDSA, only F is re-pressed
+as the behavior only keeps track of the two most recent key presses, D and F.
+
+```dts
+&nkp {
+    keep-active-size = <2>;
+};
+
+/ {
+    keymap {
+        default_layer {
+            bindings = <
+                &nkp A &nkp S
+                &nkp D &nkp F>;
+        };
+    };
+};
+```
+
+#### `no-active`
+
+When `no-active` is enabled, the behavior will not track pressed keys and no re-press will be made.
+`no-active` is disabled by default.
+
+```dts
+&nkp {
+    no-active;
+};
+
+/ {
+    keymap {
+        ...
+    };
+};
+```
+
+You can also set `keep-active-size = <1>` to achieve the same effect.
+
+### Multiple instances
+
+The following example creates a new non-overlap group that works separately from the default `&nkp`.
+
+```dts
+/ {
+    behaviors {
+        nkp2: non_overlap_key_press_2 {
+            compatible = "zmk,behavior-non-overlap";
+            #binding-cells = <1>;
+            bindings = <&kp>;
+        };
+    };
+
+    keymap {
+        default_layer {
+            bindings = <
+                &kp  Q &nkp2 W &kp  E
+                &nkp A &nkp2 S &nkp D>;
+        };
+    };
+};
+```

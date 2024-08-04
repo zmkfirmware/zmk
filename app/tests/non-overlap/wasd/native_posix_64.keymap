@@ -1,0 +1,31 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/* Non-overlap keys and normal keys do not interfere with one another. */
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &nkp A &kp W
+                &nkp D &kp S>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        // Hold &kp W
+        ZMK_MOCK_PRESS(0,1,10)
+        // Basic non-overlap test
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        // Release &kp W
+        ZMK_MOCK_RELEASE(0,1,10)
+    >;
+};
