@@ -19,13 +19,13 @@ Dongles are usually connected to the host device using USB. This way the central
 and the peripheral halves can be powered by their own batteries. This setup allows both halves of the keyboard to have a longer battery life.
 
 
-![Mermaid Connection](../assets/splits/mermaid-connection.svg)
+![Mermaid Connection](../assets/splits/mermaid-connection.png)
 
 {/* Here is an example diagram of a split keyboard with a dongle:
 
 ```mermaid
 graph TD;
-    A[Computer/Host Device] <-- USB/BLE --> DONGLE[Dongle/Central];
+    A[Computer/Host Device] <-- USB or BLE --> DONGLE[Dongle/Central];
     DONGLE -. BLE .-> LEFT[Left Half/Peripheral];
     DONGLE -. BLE .-> RIGHT[Right Half/Peripheral];
 ```
