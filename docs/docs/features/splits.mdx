@@ -79,9 +79,17 @@ config SHIELD_MY_BOARD_RIGHT
 ### Keyboard Defconfig
 
 Next we will define the roles of the keyboard halves. The left and right halves will be set as peripherals, and the dongle will be set as the central.
-We will also only give the dongle the keyboard name.
+We will also only give the central device the keyboard name.
+
+For the dongle configuration we also want to specify that we are expecting 2 peripherals, one for the left half and one for the right half.
+We will also set the `ZMK_SLEEP` to `n` to prevent the dongle from going to sleep. 
+If the dongle is sleeping, keystrokes will not be sent to the host device, until the dongle wakes up.
+
+Finally, we will set the `BT_CLTR_TX_PWR_PLUS_8` to `y` to increase the transmit power of the dongle.
+Normally this would drain the battery faster, but since the dongle is connected to the host device, it will not be a problem.
 
 There is also an option to still use the left half as the central, and the right half as the peripheral. In that case the dongle will not be used.
+
 
 ```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_BOARD_DONGLE
@@ -91,6 +99,9 @@ config ZMK_KEYBOARD_NAME
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
+
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    default 2
 
 config ZMK_SLEEP
     default n
@@ -118,19 +129,6 @@ config ZMK_SPLIT
     default y
 
 endif
-```
-
-### Dongle configuration
-
-Finally, we will define the dongle configuration. We want to set the number of peripherals to 2 and disable sleep mode for the dongle since it will be connected to the host device.
-In case you want to use the dongle with a battery, you can enable sleep mode for the dongle. Since the dongle will be connected to the host device, we will also increase the broadcast power.
-If the dongle is sleeping, keystrokes will not be sent to the host device, until the dongle wakes up.
-
-```ini title="my_board_dongle.conf"
-CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS=2
-
-# Uncomment if sleep is enabled
-# CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=3600000
 ```
 
 ### Dongle Overlay
