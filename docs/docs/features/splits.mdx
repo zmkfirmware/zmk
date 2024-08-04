@@ -11,9 +11,15 @@ Using this setup does have one drawback: the central half of the keyboard usuall
 This is because the central half is responsible for maintaining the connection with the peripheral half and the host device.
 
 To solve this problem, a third microcontroller can be used as the new central or as more widely known a dongle. 
+For example, if you are using nice!nano v2 as your keyboard halves, you can use any other microcontroller as the dongle. 
+Meaning that the dongle does not have to be the same microcontroller as the keyboard halves, but it can be.
+
 The dongle will act as a central device and communicate with the keyboard halves which will both act as peripherals.
 Dongles are usually connected to the host device using USB. This way the central half of the keyboard can be powered by the host device, 
 and the peripheral halves can be powered by their own batteries. This setup allows both halves of the keyboard to have a longer battery life.
+
+
+![Mermaid Connection](../assets/splits/mermaid-connection.svg)
 
 {/* Here is an example diagram of a split keyboard with a dongle:
 
@@ -139,6 +145,8 @@ In most common cases the dongle will not have any keys, in that case we can inst
 ### Building the firmware
 
 After writing the configuration files, you can modify the `build.yml` file to include the dongle configuration.
+
+Please keep in mind that the dongle does not have to be the same microcontroller as the keyboard halves.
 
 ```yaml
 ---
