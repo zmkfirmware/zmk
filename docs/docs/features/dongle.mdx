@@ -7,20 +7,15 @@ sidebar_label: Keyboard Dongle
 This implementation is experimental and subject to change.
 :::
 
-ZMK supports split keyboards that communicate wirelessly using BLE. Commonly these keyboards are split into two halves, each with its own microcontroller and battery. 
-Usually the left half of the keyboard is given the split role of central, and the right half is given the split role of peripheral. 
-The central half is responsible for communicating with the peripheral half and the host device.
+ZMK split keyboards use BLE for wireless communication. These keyboards consist of two halves, each with its own microcontroller and battery. 
+Usually the left half serves as the central role, communicating with the peripheral half and the host device. 
+However, the central half tends to deplete its battery faster due to its connection maintenance.
 
-Using this setup does have one drawback: the central half of the keyboard usually runs out of battery faster than the peripheral half. 
-This is because the central half is responsible for maintaining the connection with the peripheral half and the host device.
+To address this, a third microcontroller (the dongle) can act as the new central. It communicates with both keyboard halves (acting as peripherals). 
+The dongle connects to the host device via USB, allowing the central half to draw power from the host while the peripheral halves use their own batteries, resulting in extended battery life.
 
-To solve this problem, a third microcontroller can be used as the new central or as more widely known a dongle. 
-For example, if you are using nice!nano v2 as your keyboard halves, you can use any other microcontroller as the dongle. 
-Meaning that the dongle does not have to be the same microcontroller as the keyboard halves, but it can be.
-
-The dongle will act as a central device and communicate with the keyboard halves which will both act as peripherals.
-Dongles are usually connected to the host device using USB. This way the central half of the keyboard can be powered by the host device, 
-and the peripheral halves can be powered by their own batteries. This setup allows both halves of the keyboard to have a longer battery life.
+The primary advantage of using a dongle is equalizing battery life for both keyboard halves. 
+This ensures that both halves can operate efficiently, with some cases extending from a week to several months.
 
 
 ![Mermaid Connection](../assets/dongle/mermaid-connection.png)
@@ -46,15 +41,14 @@ After setting up the split keyboard, you can follow the steps below to add a don
 
 Benefits:
 
-- Adding a dongle, enables both keyboard halves to act as peripherals, meaning equal battery life for both halves.
+- Using a dongle significantly boosts battery life for keyboard halves, as they both act as peripherals.
 - Easier to connect to the host device.
 
 Disadvantages:
 
-- More complex setup.
 - Extra microcontroller needed
 - Keyboard is unusable without the dongle.
-- Added latency due to the extra hop between the host device and the keyboard halves.
+- Added latency due to the extra hop between the host device and the keyboard halves compared to a USB connected non-dongle setup.
 
 
 
@@ -85,13 +79,6 @@ config SHIELD_MY_BOARD_RIGHT
 Next we will define the roles of the keyboard halves. The left and right halves will be set as peripherals, and the dongle will be set as the central.
 We will also only give the central device the keyboard name.
 
-For the dongle configuration we also want to specify that we are expecting 2 peripherals, one for the left half and one for the right half.
-We will also set the `ZMK_SLEEP` to `n` to prevent the dongle from going to sleep. 
-If the dongle is sleeping, keystrokes will not be sent to the host device, until the dongle wakes up.
-
-Finally, we will set the `BT_CLTR_TX_PWR_PLUS_8` to `y` to increase the transmit power of the dongle.
-Normally this would drain the battery faster, but since the dongle is connected to the host device, it will not be a problem.
-
 There is also an option to still use the left half as the central, and the right half as the peripheral. In that case the dongle will not be used.
 
 
@@ -107,9 +94,11 @@ config ZMK_SPLIT_ROLE_CENTRAL
 config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
     default 2
 
+# Prevent the dongle from going to sleep
 config ZMK_SLEEP
     default n
 
+# Increase the transmit power of the dongle
 config BT_CLTR_TX_PWR_PLUS_8
     default y
 
@@ -196,9 +185,7 @@ include:
     shield: settings_reset
 ```
 
-After creating your fresh new firmware files, 
-you can go ahead and flash the settings_reset firmware for each half of the keyboard (including the dongle).
-Flash the dongle firmware to the dongle and the left and right firmware to the respective halves.
+Start by flashing the `settings_reset` firmware on all the devices.
 
 :::note
 More information about reseting split keyboards can be found under [Troubleshooting Connection Issues](../troubleshooting/connection-issues.mdx#reset-split-keyboard-procedure)
