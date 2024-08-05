@@ -65,7 +65,7 @@ ZMK may when necessary expand on the set of metadata properties, while maintaini
 
 :::
 
-## URLs
+## URL
 
 The `url` property should contain the canonical URL used to learn more about the module. If the module defines a board/shield, then this could be the main vendor website or GitHub repository for a given keyboard/controller. If the module defines a driver, then this could be a link to the datasheet of the hardware component.
 
@@ -73,22 +73,19 @@ The `url` property should contain the canonical URL used to learn more about the
 url: https://github.com/foostan/crkbd/
 ```
 
-The `murl` property should contain the URL linking to the repository containing an appropriate module, if the type of the metadata demands it. Note that there can be some duplication between `url` and `murl`, and also between `murl` of different metadata files, e.g. if two shields are defined within the same module.
+## module
+
+The `module` property has three children:
+
+- `url` pointing to the repository containing an appropriate module, if the type of the metadata demands it. This can be the same as `url`, and can be shared with other metadata files e.g. if multiple shields are defined in one module.
+-`commit` specifying a commit from the `url` repository which should be used. This property **cannot** point to `HEAD`, though it can point to the commit that `HEAD` is set to at the time of writing. This is to help prevent sudden breaking or malicious changes to remote repositories from affecting the users and tools of `zmk-modules`.
+- `outdated` is an optional child. If it is not present, it is assumed that the module is up-to-date with ZMK's `HEAD`. If it is present, then it points to the most recently working ZMK commit.
 
 ```yaml
-murl: https://github.com/infused-kim/kb_zmk_ps2_mouse_trackpoint_driver
-```
-
-The `commit` property should specify a commit from the `murl` repository which should be used. This property **must** be set when `murl` is set, and **cannot** point to `HEAD`, though it can point to the commit that `HEAD` is set to at the time of writing. This is to help prevent sudden breaking or malicious changes to remote repositories from affecting the users and tools of `zmk-modules`.
-
-```yaml
-commit: c43a0365183c58f74c285c585e0cbc1ea99f8a12
-```
-
-The optional `outdated` property tracks whether the module is outdated with respect to the HEAD of the zmk version it uses. It is usually omitted, as it defaults to `False`.
-
-```yaml
-outdated: True
+module:
+  murl: https://github.com/infused-kim/kb_zmk_ps2_mouse_trackpoint_driver
+  commit: c43a0365183c58f74c285c585e0cbc1ea99f8a12
+  outdated: thisisjustanexamplethemoduleisindate1234
 ```
 
 ## Item Types
@@ -118,22 +115,12 @@ documentation: README.md
 
 ## Dependencies
 
-The optional `pull-request` property can point to a ZMK pull request, if the module depends on the branch found there.
-
-```yaml
-pull-request: 2027
-```
-
 The optional `depends` property is an array of `id` metadata, pointing to modules which a particular module depends on. For example, a shield may depend on a module for a driver for a component.
 
 ```yaml
 depends:
   - ps2-trackpoint
 ```
-
-:::note
-There is no support in the metadata to mark a module as depending on an external fork of ZMK.
-:::
 
 ## Varying Properties
 
