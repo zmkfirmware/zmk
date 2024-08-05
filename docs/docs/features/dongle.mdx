@@ -139,12 +139,16 @@ endif
 
 In most common cases the dongle will not have any keys, in that case we can instead use a mock kscan module to simulate the keys.
 
+Here we will define a mock kscan module with no keys and a default matrix transform.
+The matrix map needs to match the keyboard halves matrix maps.
+
 ```dts title="my_board_dongle.overlay"
+#include <dt-bindings/zmk/matrix_transform.h>
 
 / {
     chosen {
         zmk,kscan = &mock_kscan;
-        // zmk,kscan = &kscan0;
+        zmk,matrix-transform = &default_transform;
     };
 
     mock_kscan: kscan_0 {
@@ -153,8 +157,25 @@ In most common cases the dongle will not have any keys, in that case we can inst
         rows = <0>;
         events = <0>;
     };
+
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <3>;
+        rows = <3>;
+        map = <
+                RC(0, 0) RC(0, 1) RC(3, 0)
+                RC(1, 0) RC(1, 1) RC(1, 2)
+                RC(2, 0) RC(2, 1) RC(2, 2)
+        >;
+    };
 };
 ```
+
+:::note
+Without the matrix transform, the dongle will not be able to communicate with the keyboard halves.
+You will get an error message similar to `zmk: No behavior assigned to 7 on layer 0`.
+:::
+
 
 ### Building the firmware
 
