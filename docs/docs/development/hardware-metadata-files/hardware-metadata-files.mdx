@@ -78,7 +78,7 @@ url: https://github.com/foostan/crkbd/
 The `module` property has three children:
 
 - `url` pointing to the repository containing an appropriate module, if the type of the metadata demands it. This can be the same as `url`, and can be shared with other metadata files e.g. if multiple shields are defined in one module.
--`commit` specifying a commit from the `url` repository which should be used. This property **cannot** point to `HEAD`, though it can point to the commit that `HEAD` is set to at the time of writing. This is to help prevent sudden breaking or malicious changes to remote repositories from affecting the users and tools of `zmk-modules`.
+- `commit` specifying a commit from the `url` repository which should be used. This property **cannot** point to `HEAD`, though it can point to the commit that `HEAD` is set to at the time of writing. This is to help prevent sudden breaking or malicious changes to remote repositories from affecting the users and tools of `zmk-modules`.
 - `outdated` is an optional child. If it is not present, it is assumed that the module is up-to-date with ZMK's `HEAD`. If it is present, then it points to the most recently working ZMK commit.
 
 ```yaml
