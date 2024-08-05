@@ -1,7 +1,11 @@
 ---
-title: Split boards with Dongles
-sidebar_label: Split & Dongle
+title: Keyboard Dongle
+sidebar_label: Keyboard Dongle
 ---
+
+:::warning
+This implementation is experimental and subject to change.
+:::
 
 ZMK supports split keyboards that communicate wirelessly using BLE. Commonly these keyboards are split into two halves, each with its own microcontroller and battery. 
 Usually the left half of the keyboard is given the split role of central, and the right half is given the split role of peripheral. 
@@ -19,7 +23,7 @@ Dongles are usually connected to the host device using USB. This way the central
 and the peripheral halves can be powered by their own batteries. This setup allows both halves of the keyboard to have a longer battery life.
 
 
-![Mermaid Connection](../assets/splits/mermaid-connection.png)
+![Mermaid Connection](../assets/dongle/mermaid-connection.png)
 
 {/* Here is an example diagram of a split keyboard with a dongle:
 
