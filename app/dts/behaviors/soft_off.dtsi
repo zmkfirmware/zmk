@@ -4,9 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <dt-bindings/zmk/behaviors.h>
+
 / {
     behaviors {
-        /omit-if-no-ref/ soft_off: z_so_off {
+#if ZMK_BEHAVIOR_OMIT(SOFT_OFF)
+        /omit-if-no-ref/
+#endif
+        soft_off: z_so_off {
             compatible = "zmk,behavior-soft-off";
             #binding-cells = <0>;
             split-peripheral-off-on-press;

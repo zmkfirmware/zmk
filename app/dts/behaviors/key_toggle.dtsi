@@ -4,9 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <dt-bindings/zmk/behaviors.h>
+
 / {
     behaviors {
-        /omit-if-no-ref/ kt: key_toggle {
+#if ZMK_BEHAVIOR_OMIT(KT)
+    /omit-if-no-ref/
+#endif
+        kt: key_toggle {
             compatible = "zmk,behavior-key-toggle";
             #binding-cells = <1>;
             display-name = "Key Toggle";

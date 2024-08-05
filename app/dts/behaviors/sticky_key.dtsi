@@ -4,9 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <dt-bindings/zmk/behaviors.h>
+
 / {
     behaviors {
-        /omit-if-no-ref/ sk: sticky_key {
+#if ZMK_BEHAVIOR_OMIT(SK)
+        /omit-if-no-ref/
+#endif
+        sk: sticky_key {
             compatible = "zmk,behavior-sticky-key";
             #binding-cells = <1>;
             release-after-ms = <1000>;
@@ -14,7 +19,10 @@
             ignore-modifiers;
             display-name = "Sticky Key";
         };
-        /omit-if-no-ref/ sl: sticky_layer {
+#if ZMK_BEHAVIOR_OMIT(STICKY_LAYER)
+        /omit-if-no-ref/
+#endif
+        sl: sticky_layer {
             compatible = "zmk,behavior-sticky-key";
             #binding-cells = <1>;
             release-after-ms = <1000>;

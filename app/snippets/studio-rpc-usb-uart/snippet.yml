@@ -3,5 +3,6 @@
 
 name: studio-rpc-usb-uart
 append:
+  DTS_EXTRA_CPPFLAGS: -DZMK_BEHAVIORS_KEEP_ALL
   EXTRA_DTC_OVERLAY_FILE: studio-rpc-usb-uart.overlay
   EXTRA_CONF_FILE: studio-rpc-usb-uart.conf
