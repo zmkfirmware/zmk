@@ -346,7 +346,7 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 endif()
 ```
 
-For behaviors that do not require central locality, the following options for updating `app/CmakeLists.txt` also exist:
+For behaviors that do not require [central locality](../features/split-keyboards.md#behaviors-with-locality), the following options for updating `app/CMakeLists.txt` also exist:
 
 - Behavior applies to unibody, or central or peripheral half of keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` line _before_ `if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)`
 - Behavior applies to _only_ central half of split keyboard: place `target_sources(app PRIVATE <behavior_name>.c)` after `if (CONFIG_ZMK_SPLIT AND CONFIG_ZMK_SPLIT_ROLE_CENTRAL)`

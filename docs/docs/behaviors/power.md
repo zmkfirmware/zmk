@@ -70,4 +70,4 @@ However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../con
 
 ## Split Keyboards
 
-Power management behaviors are global: This means that when triggered, they affects both the central and peripheral side of split keyboards.
+Power management behaviors are [global](../features/split-keyboards.md#global-locality-behaviors): This means that when triggered, they affects both the central and peripheral side of split keyboards.
