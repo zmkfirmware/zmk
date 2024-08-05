@@ -23,8 +23,8 @@ Definition files:
 | `CONFIG_ZMK_WIDGET_BATTERY_STATUS_SHOW_PERCENTAGE` | bool   | If battery widget is enabled, show percentage instead of icons | n       |
 | `CONFIG_ZMK_WIDGET_OUTPUT_STATUS`                  | bool   | Enable a widget to show the current output (USB/BLE)           | y       |
 | `CONFIG_ZMK_WIDGET_WPM_STATUS`                     | bool   | Enable a widget to show words per minute                       | n       |
-| `ZMK_WIDGET_LABEL`                                 | bool   | Enable a widget to display custom messages                     | n       |
-| `ZMK_WIDGET_LABEL_TEXT`                            | string | Custom message to display                                      | ZMK     |
+| `CONFIG_ZMK_WIDGET_LABEL`                          | bool   | Enable a widget to display custom messages                     | n       |
+| `CONFIG_ZMK_WIDGET_LABEL_TEXT`                     | string | Custom message to display                                      | ZMK     |
 
 Note that `CONFIG_ZMK_DISPLAY_INVERT` setting might not work as expected with custom status screens that utilize images.
 
