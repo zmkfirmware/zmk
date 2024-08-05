@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ trans: transparent {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_TRANS)
+        /omit-if-no-ref/
+#endif
+        trans: transparent {
             compatible = "zmk,behavior-transparent";
             #binding-cells = <0>;
             display-name = "Transparent";

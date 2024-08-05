@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ none: none {
+#if !defined(ZMK_STUDIO_BUILD)
+        /omit-if-no-ref/
+#endif
+        none: none {
             compatible = "zmk,behavior-none";
             #binding-cells = <0>;
             display-name = "None";

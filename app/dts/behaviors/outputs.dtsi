@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ out: outputs {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_OUT)
+        /omit-if-no-ref/
+#endif
+        out: outputs {
             compatible = "zmk,behavior-outputs";
             #binding-cells = <1>;
             display-name = "Output Selection";

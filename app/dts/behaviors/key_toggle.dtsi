@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ kt: key_toggle {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_KEY_TOGGLE)
+        /omit-if-no-ref/
+#endif
+        kt: key_toggle {
             compatible = "zmk,behavior-key-toggle";
             #binding-cells = <1>;
             display-name = "Key Toggle";

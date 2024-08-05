@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: MIT
  */
 
+#define ZMK_STUDIO_BEHAVIORS_KEEP_ALL 1
+
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 

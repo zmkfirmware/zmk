@@ -6,9 +6,14 @@
 
 #include <dt-bindings/zmk/keys.h>
 
+#define ZMK_STUDIO_BEHAVIORS_KEEP_CAPS_WORD BALES
+
 / {
     behaviors {
-        /omit-if-no-ref/ caps_word: caps_word {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_CAPS_WORD)
+        /omit-if-no-ref/
+#endif
+        caps_word: caps_word {
             compatible = "zmk,behavior-caps-word";
             #binding-cells = <0>;
             continue-list = <UNDERSCORE BACKSPACE DELETE>;

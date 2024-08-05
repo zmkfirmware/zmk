@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ bt: bluetooth {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_BT)
+        /omit-if-no-ref/
+#endif
+        bt: bluetooth {
             compatible = "zmk,behavior-bluetooth";
             #binding-cells = <2>;
             display-name = "Bluetooth";

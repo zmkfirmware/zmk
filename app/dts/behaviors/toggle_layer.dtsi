@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ tog: toggle_layer {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_TOGGLE_LAYER)
+        /omit-if-no-ref/
+#endif
+        tog: toggle_layer {
             compatible = "zmk,behavior-toggle-layer";
             #binding-cells = <1>;
             display-name = "Toggle Layer";
