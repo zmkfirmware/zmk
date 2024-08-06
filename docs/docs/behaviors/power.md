@@ -21,6 +21,10 @@ The following boards currently support this feature:
 
 ## External Power Control Command Defines
 
+:::info
+No longer required as long as your keymap includes [`dt-bindings/zmk/params.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/all.h).
+:::
+
 External power control command defines are provided through the [`dt-bindings/zmk/ext_power.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/ext_power.h) header,
 which is added at the top of the keymap file:
 

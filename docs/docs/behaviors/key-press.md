@@ -24,11 +24,11 @@ For advanced users, user-defined HID usages are also supported but must be encod
 ## Keycode Defines
 
 To make it easier to encode the HID keycode numeric values, most keymaps include
-the [`dt-bindings/zmk/keys.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/keys.h) header
+the [`dt-bindings/zmk/params.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/all.h) header
 provided by ZMK near the top:
 
 ```dts
-#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/params.h>
 ```
 
 Doing so makes a set of defines such as `A`, `N1`, etc. available for use with these behaviors
