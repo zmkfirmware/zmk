@@ -22,9 +22,13 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/activity.h>
 #include <zmk/workqueue.h>
 
+#include <drivers/sensor/battery/battery_charging.h>
+
 static uint8_t last_state_of_charge = 0;
+static bool charging = 0;
 
 uint8_t zmk_battery_state_of_charge(void) { return last_state_of_charge; }
+bool zmk_battery_charging(void) { return charging; }
 
 #if DT_HAS_CHOSEN(zmk_battery)
 static const struct device *const battery = DEVICE_DT_GET(DT_CHOSEN(zmk_battery));
@@ -91,8 +95,31 @@ static int zmk_battery_update(const struct device *battery) {
 #error "Not a supported reporting fetch mode"
 #endif
 
-    if (last_state_of_charge != state_of_charge.val1) {
+#if DT_NODE_HAS_PROP(DT_CHOSEN(zmk_battery), chg_gpios)
+
+    rc = sensor_sample_fetch_chan(battery, SENSOR_CHAN_CHARGING);
+
+    if (rc != 0) {
+        LOG_DBG("Failed to fetch charging value: %d", rc);
+        return rc;
+    }
+    struct sensor_value charging_state;
+    rc = sensor_channel_get(battery, SENSOR_CHAN_CHARGING, &charging_state);
+    if (rc != 0) {
+        LOG_DBG("Failed to get battery charging status: %d", rc);
+        return rc;
+    }
+#endif
+
+    if (last_state_of_charge != state_of_charge.val1
+#if DT_NODE_HAS_PROP(DT_CHOSEN(zmk_battery), chg_gpios)
+        || charging != charging_state.val1
+#endif
+    ) {
         last_state_of_charge = state_of_charge.val1;
+#if DT_NODE_HAS_PROP(DT_CHOSEN(zmk_battery), chg_gpios)
+        charging = charging_state.val1;
+#endif
 #if IS_ENABLED(CONFIG_BT_BAS)
         LOG_DBG("Setting BAS GATT battery level to %d.", last_state_of_charge);
 
@@ -103,8 +130,8 @@ static int zmk_battery_update(const struct device *battery) {
             return rc;
         }
 #endif
-        rc = raise_zmk_battery_state_changed(
-            (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge});
+        rc = raise_zmk_battery_state_changed((struct zmk_battery_state_changed){
+            .state_of_charge = last_state_of_charge, .charging = charging});
     }
 
     return rc;
@@ -131,7 +158,11 @@ static void zmk_battery_start_reporting() {
         k_timer_start(&battery_timer, K_NO_WAIT, K_SECONDS(CONFIG_ZMK_BATTERY_REPORT_INTERVAL));
     }
 }
-
+#if DT_NODE_HAS_PROP(DT_CHOSEN(zmk_battery), chg_gpios)
+static void handle_chg_trig(const struct device *dev, const struct sensor_trigger *trig) {
+    zmk_battery_update(dev);
+}
+#endif
 static int zmk_battery_init(void) {
 #if !DT_HAS_CHOSEN(zmk_battery)
     battery = device_get_binding("BATTERY");
@@ -147,6 +178,16 @@ static int zmk_battery_init(void) {
         LOG_ERR("Battery device \"%s\" is not ready", battery->name);
         return -ENODEV;
     }
+
+#if DT_NODE_HAS_PROP(DT_CHOSEN(zmk_battery), chg_gpios)
+    struct sensor_trigger trigger = {
+        .type = SENSOR_TRIG_DATA_READY,
+        .chan = SENSOR_CHAN_ALL,
+    };
+    if (sensor_trigger_set(battery, &trigger, handle_chg_trig) < 0) {
+        LOG_ERR("can't set batt chg trigger");
+    };
+#endif
 
     zmk_battery_start_reporting();
     return 0;

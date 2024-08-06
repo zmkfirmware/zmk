@@ -6,3 +6,9 @@ description: Battery SoC monitoring using voltage divider
 compatible: "zmk,battery-voltage-divider"
 
 include: voltage-divider.yaml
+
+properties:
+  chg-gpios:
+    required: false
+    type: phandle-array
+    description: "A GPIO pin to report charging state to"
