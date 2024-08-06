@@ -5,7 +5,7 @@
  */
 
 #include <behaviors.dtsi>
-#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/params.h>
 
 #define DEF_L 0
 #define NAV_L 1
