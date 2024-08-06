@@ -3,19 +3,18 @@ title: Keyboard Dongle
 sidebar_label: Keyboard Dongle
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 :::warning
 This implementation is experimental and subject to change.
 :::
 
-ZMK split keyboards use BLE for wireless communication. These keyboards consist of two halves, each with its own microcontroller and battery. 
-Usually the left half serves as the central role, communicating with the peripheral half and the host device. 
-However, the central half tends to deplete its battery faster due to its connection maintenance.
+ZMK split and unibody keyboards use BLE for wireless communication. Split keyboards consist of two halves, each with its own microcontroller and battery. The left half usually serves as the central role, which drains its battery faster.
+A dongle can act as a new central microcontroller, communicating with both halves and connecting to the host via USB. This allows the central half to draw power from the host, extending battery life.
+For unibody keyboards, the dongle also helps by setting the unibody keyboard as peripheral, optimizing battery usage.
 
-To address this, a third microcontroller (the dongle) can act as the new central. It communicates with both keyboard halves (acting as peripherals). 
-The dongle connects to the host device via USB, allowing the central half to draw power from the host while the peripheral halves use their own batteries, resulting in extended battery life.
-
-The primary advantage of using a dongle is equalizing battery life for both keyboard halves. 
-This ensures that both halves can operate efficiently, with some cases extending from a few weeks to several months.
+The main benefit of using a dongle is extended and balanced battery life, in some cases extending from a few weeks to several months.
 
 
 ![Mermaid Connection](../assets/dongle/mermaid-connection.png)
@@ -56,10 +55,21 @@ Disadvantages:
 
 
 :::note
-In the examples below, we will be referencing the New Split Keyboard Shield guide files and will be building on top of that.
+In the examples below, we will be referencing the New Keyboard Shield guide files and will be building on top of that.
+Both split and unibody keyboards can be used with a dongle.
 :::
 
 ### Keyboard Shield
+
+<Tabs
+defaultValue="split"
+values={[
+{label: 'Split Keyboard', value: 'split'},
+{label: 'Unibody Keyboard', value: 'unibody'},
+]}
+>
+
+<TabItem value="split">
 
 First we will introduce a third split to our keyboard configuration. This will be used as the dongle.
 
@@ -73,8 +83,32 @@ config SHIELD_MY_BOARD_LEFT
 config SHIELD_MY_BOARD_RIGHT
     def_bool $(shields_list_contains,my_board_right)
 ```
+</TabItem>
+<TabItem value="unibody">
+We will add a dongle to the unibody keyboard configuration. 
+
+```kconfig title="Kconfig.shield"
+config SHIELD_MY_BOARD_DONGLE
+    def_bool $(shields_list_contains,my_board_dongle)
+
+config SHIELD_MY_BOARD
+    def_bool $(shields_list_contains,my_board)
+
+```
+</TabItem>
+</Tabs>
 
 ### Keyboard Defconfig
+
+<Tabs
+defaultValue="split"
+values={[
+{label: 'Split Keyboard', value: 'split'},
+{label: 'Unibody Keyboard', value: 'unibody'},
+]}
+>
+
+<TabItem value="split">
 
 Next we will define the roles of the keyboard halves. The left and right halves will be set as peripherals, and the dongle will be set as the central.
 We will also only give the central device the keyboard name.
@@ -124,12 +158,65 @@ config ZMK_SPLIT
 endif
 ```
 
+</TabItem>
+<TabItem value="unibody">
+
+Next we will define the roles for the unibody keyboard. The keyboard will be set as the peripheral and the dongle will be set as the central.
+
+There is also an option to still use the keyboard as the central, and the dongle will not be used.
+
+```kconfig title="Kconfig.defconfig"
+if SHIELD_MY_BOARD_DONGLE
+
+config ZMK_KEYBOARD_NAME
+    default "My Board"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+config ZMK_SPLIT
+    default y
+
+# Prevent the dongle from going to sleep
+config ZMK_SLEEP
+    default n
+
+# Increase the transmit power of the dongle
+config BT_CLTR_TX_PWR_PLUS_8
+    default y
+
+endif
+
+if SHIELD_MY_BOARD
+# Setting this to y will make the unibody keyboard the central and the dongle is not used
+config ZMK_SPLIT_ROLE_CENTRAL
+    default n
+
+if ZMK_SPLIT_ROLE_CENTRAL
+    config ZMK_KEYBOARD_NAME
+        default "My Board"
+
+config ZMK_SPLIT
+    default n
+
+endif # ZMK_SPLIT_ROLE_CENTRAL
+
+endif
+```
+
+</TabItem>
+</Tabs>
+
 ### Dongle Overlay
+
+:::note
+Dongle overlay configuration is same for both split and unibody keyboards.
+:::
 
 In most common cases the dongle will not have any keys, in that case we can instead use a mock kscan module to simulate the keys.
 
 Here we will define a mock kscan module with no keys and a default matrix transform.
-The matrix map needs to match the keyboard halves matrix maps.
+The matrix map needs to match the keyboard matrix map.
 
 ```dts title="my_board_dongle.overlay"
 #include <dt-bindings/zmk/matrix_transform.h>
@@ -161,13 +248,21 @@ The matrix map needs to match the keyboard halves matrix maps.
 ```
 
 :::note
-Without the matrix transform, the dongle will not be able to communicate with the keyboard halves.
+Without the matrix transform, the dongle will not be able to communicate with the keyboard.
 You will get an error message similar to `zmk: No behavior assigned to 7 on layer 0`.
 :::
 
 
 ### Building the firmware
 
+<Tabs
+defaultValue="split"
+values={[
+{label: 'Split Keyboard', value: 'split'},
+{label: 'Unibody Keyboard', value: 'unibody'},
+]}>
+
+<TabItem value="split">
 After writing the configuration files, you can modify the `build.yml` file to include the dongle configuration.
 
 Please keep in mind that the dongle does not have to be the same microcontroller as the keyboard halves.
@@ -190,3 +285,21 @@ Start by flashing the `settings_reset` firmware on all the devices.
 :::note
 More information about reseting split keyboards can be found under [Troubleshooting Connection Issues](../troubleshooting/connection-issues.mdx#reset-split-keyboard-procedure)
 :::
+</TabItem>
+<TabItem value="unibody">
+After writing the configuration files, you can modify the `build.yml` file to include the dongle configuration.
+
+Please keep in mind that the dongle does not have to be the same microcontroller as the unibody keyboard microcontroller.
+Any microcontroller can be used as the dongle that supports BLE.
+
+```yaml
+include:
+  - board: nice_nano_v2
+    shield: my_board
+  - board: nice_nano_v2
+    shield: my_board_dongle
+  - board: nice_nano_v2
+    shield: settings_reset
+```
+</TabItem>
+</Tabs>
