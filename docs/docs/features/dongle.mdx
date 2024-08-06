@@ -100,6 +100,11 @@ config SHIELD_MY_BOARD
 
 ### Keyboard Defconfig
 
+:::note
+In the shield defconfig we will assume that the user does not want to use the dongle by default.
+This is done so that the user can easily enable the dongle in the user configuration without having to modify the shield configuration.
+:::
+
 <Tabs
 defaultValue="split"
 values={[
@@ -119,41 +124,46 @@ There is also an option to still use the left half as the central, and the right
 ```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_BOARD_DONGLE
 
-config ZMK_KEYBOARD_NAME
-    default "My Board"
-
-config ZMK_SPLIT_ROLE_CENTRAL
-    default y
-
-config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
-    default 2
-
-# Prevent the dongle from going to sleep
-config ZMK_SLEEP
-    default n
-
-# Increase the transmit power of the dongle
-config BT_CLTR_TX_PWR_PLUS_8
-    default y
-
-endif
-
-if SHIELD_MY_BOARD_LEFT
-# Setting this to y will make the left half the central and the right half the peripheral
-config ZMK_SPLIT_ROLE_CENTRAL
-    default n
-
-if ZMK_SPLIT_ROLE_CENTRAL
     config ZMK_KEYBOARD_NAME
         default "My Board"
-endif # ZMK_SPLIT_ROLE_CENTRAL
+
+    config ZMK_SPLIT_ROLE_CENTRAL
+        default y
+
+    config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+        default 2
+
+    # Prevent the dongle from going to sleep
+    config ZMK_SLEEP
+        default n
+
+    # Increase the transmit power of the dongle
+    config BT_CLTR_TX_PWR_PLUS_8
+        default y
 
 endif
+
+
+if SHIELD_MY_BOARD_LEFT
+
+    # Setting this to y will make the left half the central
+    # We want it to be the central when dongle is not used
+    config ZMK_SPLIT_ROLE_CENTRAL
+        default y
+
+# Check if the left half is the central
+    if ZMK_SPLIT_ROLE_CENTRAL
+        config ZMK_KEYBOARD_NAME
+            default "My Board"
+            
+    endif # ZMK_SPLIT_ROLE_CENTRAL
+
+endif # SHIELD_MY_BOARD_LEFT
 
 if SHIELD_MY_BOARD_DONGLE || SHIELD_MY_BOARD_LEFT || SHIELD_MY_BOARD_RIGHT
 
-config ZMK_SPLIT
-    default y
+    config ZMK_SPLIT
+        default y
 
 endif
 ```
@@ -161,46 +171,38 @@ endif
 </TabItem>
 <TabItem value="unibody">
 
-Next we will define the roles for the unibody keyboard. The keyboard will be set as the peripheral and the dongle will be set as the central.
-
-There is also an option to still use the keyboard as the central, and the dongle will not be used.
+Now we will add the dongle configuration to the unibody keyboard.
+We will default the unibody keyboard to not use the dongle configuration.
 
 ```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_BOARD_DONGLE
 
-config ZMK_KEYBOARD_NAME
-    default "My Board"
+    config ZMK_KEYBOARD_NAME
+        default "My Board"
 
-config ZMK_SPLIT_ROLE_CENTRAL
-    default y
+    config ZMK_SPLIT_ROLE_CENTRAL
+        default y
 
-config ZMK_SPLIT
-    default y
+    config ZMK_SPLIT
+        default y
 
-# Prevent the dongle from going to sleep
-config ZMK_SLEEP
-    default n
+    # Prevent the dongle from going to sleep
+    config ZMK_SLEEP
+        default n
 
-# Increase the transmit power of the dongle
-config BT_CLTR_TX_PWR_PLUS_8
-    default y
+    # Increase the transmit power of the dongle
+    config BT_CLTR_TX_PWR_PLUS_8
+        default y
 
 endif
 
 if SHIELD_MY_BOARD
-# Setting this to y will make the unibody keyboard the central and the dongle is not used
-config ZMK_SPLIT_ROLE_CENTRAL
-    default n
-
-if ZMK_SPLIT_ROLE_CENTRAL
     config ZMK_KEYBOARD_NAME
         default "My Board"
-
-config ZMK_SPLIT
-    default n
-
-endif # ZMK_SPLIT_ROLE_CENTRAL
-
+    
+    config ZMK_SPLIT
+        default n
+    
 endif
 ```
 
@@ -252,6 +254,35 @@ Without the matrix transform, the dongle will not be able to communicate with th
 You will get an error message similar to `zmk: No behavior assigned to 7 on layer 0`.
 :::
 
+### Setting user configuration
+
+Now that we have defined the default shield configuration, we can easily enable the dongle in the user configuration.
+If we do not want to use the dongle, this step can be skipped.
+
+
+<Tabs
+defaultValue="split"
+values={[
+{label: 'Split Keyboard', value: 'split'},
+{label: 'Unibody Keyboard', value: 'unibody'},
+]}>
+
+<TabItem value="split">
+
+```kconfig title="config/my_board_left.conf"
+# Disable central role to use dongle
+CONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
+```
+
+</TabItem>
+<TabItem value="unibody">
+
+```kconfig title="config/my_board.conf"
+# Enable split functionality, this will put the unibody keyboard in peripheral mode
+CONFIG_ZMK_SPLIT=y
+```
+</TabItem>
+</Tabs>
 
 ### Building the firmware
 
