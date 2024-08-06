@@ -32,15 +32,16 @@ Dotted lines represent BLE connections.
 Solid lines represent USB connections. */}
 
 :::info
-For more information on how to set up a two split keyboard, refer to [New Keyboard Shield](../development/new-shield.mdx) under Guides.
-After setting up the split keyboard, you can follow the steps below to add a dongle to the setup.
+For more information on how to set up a unibody or split keyboard, refer to [New Keyboard Shield](../development/new-shield.mdx) under Guides.
+After that is done, you can follow the steps below to add a dongle to the setup.
 :::
 
 ## Benefits/Disadvantages of using a Dongle
 
 Benefits:
 
-- Using a dongle significantly boosts battery life for keyboard halves, as they both act as peripherals.
+- For unibody keyboards, the dongle sets the unibody keyboard as peripheral, improving battery life.
+- For split keyboards, adding a dongle enables both keyboard halves to act as peripherals, meaning equal improved battery life for both halves.
 - Easier to connect to the host device.
 
 Disadvantages:
@@ -100,7 +101,7 @@ config SHIELD_MY_BOARD
 
 ### Keyboard Defconfig
 
-:::note
+:::info
 In the shield defconfig we will assume that the user does not want to use the dongle by default.
 This is done so that the user can easily enable the dongle in the user configuration without having to modify the shield configuration.
 :::
@@ -151,7 +152,7 @@ if SHIELD_MY_BOARD_LEFT
     config ZMK_SPLIT_ROLE_CENTRAL
         default y
 
-# Check if the left half is the central
+    # Check if the left half is the central
     if ZMK_SPLIT_ROLE_CENTRAL
         config ZMK_KEYBOARD_NAME
             default "My Board"
@@ -274,6 +275,9 @@ values={[
 CONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
 ```
 
+When using a split keyboard, you can use a single file without the `_left` or `_right` suffix to configure both sides. 
+For example, `corne.conf` and `corne.keymap` will apply to both `corne_left` and `corne_right`. If a shared config file exists, any left or right files will be ignored.
+
 </TabItem>
 <TabItem value="unibody">
 
@@ -283,6 +287,10 @@ CONFIG_ZMK_SPLIT=y
 ```
 </TabItem>
 </Tabs>
+
+:::note
+More information about [User Config Folder](../config/index.md#user-config-folder)
+:::
 
 ### Building the firmware
 
@@ -314,7 +322,7 @@ include:
 Start by flashing the `settings_reset` firmware on all the devices.
 
 :::note
-More information about reseting split keyboards can be found under [Troubleshooting Connection Issues](../troubleshooting/connection-issues.mdx#reset-split-keyboard-procedure)
+More information about reseting split keyboards can be found under [troubleshooting Connection Issues](../troubleshooting/connection-issues.mdx#reset-split-keyboard-procedure)
 :::
 </TabItem>
 <TabItem value="unibody">
@@ -332,5 +340,10 @@ include:
   - board: nice_nano_v2
     shield: settings_reset
 ```
+
+:::note
+More information about troubleshooting keyboards can be found under [troubleshooting Connection Issues](../troubleshooting/connection-issues.mdx#reset-split-keyboard-procedure)
+:::
+
 </TabItem>
 </Tabs>
