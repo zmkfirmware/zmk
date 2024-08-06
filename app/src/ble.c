@@ -162,6 +162,13 @@ bool zmk_ble_active_profile_is_connected(void) {
     advertising_status = ZMK_ADV_CONN;
 
 int update_advertising(void) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS == CONFIG_BT_MAX_CONN) {
+        LOG_INF("skipped advertising, no connections allocated for profiles");
+        return 0;
+    }
+#endif
+
     int err = 0;
     bt_addr_le_t *addr;
     struct bt_conn *conn;
