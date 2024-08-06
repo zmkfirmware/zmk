@@ -9,6 +9,10 @@ This page contains [RGB Underglow](../../features/underglow.md) behaviors suppor
 
 ## RGB Action Defines
 
+:::info
+No longer required as long as your keymap includes [`dt-bindings/zmk/params.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/all.h).
+:::
+
 RGB actions defines are provided through the [`dt-bindings/zmk/rgb.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/rgb.h) header,
 which is added at the top of the keymap file:
 

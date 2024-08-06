@@ -9,6 +9,10 @@ This page contains [backlight](../../features/backlight.mdx) behaviors supported
 
 ## Backlight Action Defines
 
+:::info
+No longer required as long as your keymap includes [`dt-bindings/zmk/params.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/all.h).
+:::
+
 Backlight actions defines are provided through the [`dt-bindings/zmk/backlight.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/backlight.h) header,
 which is added at the top of the keymap file:
 

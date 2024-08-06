@@ -20,6 +20,10 @@ to select the BLE output through below behavior to be able to send keystrokes to
 
 ## Output Command Defines
 
+:::info
+No longer required as long as your keymap includes [`dt-bindings/zmk/params.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/all.h).
+:::
+
 Output command defines are provided through the [`dt-bindings/zmk/outputs.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/outputs.h)
 header, which is added at the top of the keymap file:
 
