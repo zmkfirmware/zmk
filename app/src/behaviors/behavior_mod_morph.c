@@ -52,7 +52,7 @@ static int on_mod_morph_binding_pressed(struct zmk_behavior_binding *binding,
     } else {
         data->pressed_binding = (struct zmk_behavior_binding *)&cfg->normal_binding;
     }
-    return zmk_trigger_behavior_callbacks(data->pressed_binding, event, true);
+    return zmk_invoke_behavior_binding(data->pressed_binding, event, true);
 }
 
 static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
@@ -68,7 +68,7 @@ static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
     struct zmk_behavior_binding *pressed_binding = data->pressed_binding;
     data->pressed_binding = NULL;
     int err;
-    err = zmk_trigger_behavior_callbacks(pressed_binding, event, false);
+    err = zmk_invoke_behavior_binding(pressed_binding, event, false);
     zmk_hid_masked_modifiers_clear();
     return err;
 }

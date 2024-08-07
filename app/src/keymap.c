@@ -186,11 +186,11 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
 
     LOG_DBG("layer: %d position: %d, binding name: %s", layer, position, binding.behavior_dev);
 
-    return zmk_trigger_behavior_callbacks(&binding, event, pressed);
+    return zmk_invoke_behavior_binding(&binding, event, pressed);
 }
 
-int zmk_trigger_behavior_callbacks(struct zmk_behavior_binding *binding,
-                                   struct zmk_behavior_binding_event event, bool pressed) {
+int zmk_invoke_behavior_binding(struct zmk_behavior_binding *binding,
+                                struct zmk_behavior_binding_event event, bool pressed) {
     const struct device *behavior = zmk_behavior_get_binding(binding->behavior_dev);
 
     if (!behavior) {

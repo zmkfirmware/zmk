@@ -37,9 +37,9 @@ static void behavior_queue_process_next(struct k_work *work) {
             .position = item.position, .timestamp = k_uptime_get(), .source = item.source};
 
         if (item.press) {
-            zmk_trigger_behavior_callbacks(&item.binding, event, true);
+            zmk_invoke_behavior_binding(&item.binding, event, true);
         } else {
-            zmk_trigger_behavior_callbacks(&item.binding, event, false);
+            zmk_invoke_behavior_binding(&item.binding, event, false);
         }
 
         LOG_DBG("Processing next queued behavior in %dms", item.wait);

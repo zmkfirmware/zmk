@@ -113,7 +113,7 @@ static inline int press_tap_dance_behavior(struct active_tap_dance *tap_dance, i
         .timestamp = timestamp,
         .source = tap_dance->source,
     };
-    return zmk_trigger_behavior_callbacks(&binding, event, true);
+    return zmk_invoke_behavior_binding(&binding, event, true);
 }
 
 static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
@@ -125,7 +125,7 @@ static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
         .source = tap_dance->source,
     };
     clear_tap_dance(tap_dance);
-    return zmk_trigger_behavior_callbacks(&binding, event, false);
+    return zmk_invoke_behavior_binding(&binding, event, false);
 }
 
 static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,

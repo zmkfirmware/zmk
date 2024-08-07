@@ -105,7 +105,7 @@ static inline int press_sticky_key_behavior(struct active_sticky_key *sticky_key
         .timestamp = timestamp,
         .source = sticky_key->source,
     };
-    return zmk_trigger_behavior_callbacks(&binding, event, true);
+    return zmk_invoke_behavior_binding(&binding, event, true);
 }
 
 static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_key,
@@ -122,7 +122,7 @@ static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_k
     };
 
     clear_sticky_key(sticky_key);
-    return zmk_trigger_behavior_callbacks(&binding, event, false);
+    return zmk_invoke_behavior_binding(&binding, event, false);
 }
 
 static inline void on_sticky_key_timeout(struct active_sticky_key *sticky_key) {
