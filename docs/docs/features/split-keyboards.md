@@ -68,8 +68,7 @@ However, certain behaviors have "global" or "source" localities, where they can 
 
 ### Global Locality Behaviors
 
-These are behaviors that affect all keyboard parts, such as changing lighting effects.
-Currently these are the following behaviors:
+These are behaviors that affect all keyboard parts, such as changing lighting effects:
 
 - [RGB underglow behaviors](../behaviors/underglow.md)
 - [Backlight behaviors](../behaviors/backlight.md)
@@ -78,9 +77,14 @@ Currently these are the following behaviors:
 
 ### Source Locality Behaviors
 
-These behaviors only affect the keyboard part that they are invoked from, given that they were invoked from a plain behavior binding (i.e. not nested inside another behavior) on a keymap layer. These behaviors include:
+These behaviors only affect the keyboard part that they are invoked from:
 
 - [Reset behaviors](../behaviors/reset.md)
+
+:::warning[Nesting behaviors with locality]
+Currently there is [an issue](https://github.com/zmkfirmware/zmk/issues/1494) preventing both global and source locality behaviors from working as expected if they are invoked from another behavior, such as a hold-tap, tap dance or a mod-morph.
+For this reason it is recommended that these behaviors are placed directly on a keymap layer.
+:::
 
 :::note[Peripheral invocation]
 Peripherals must be paired and connected to the central in order to be able to activate these behaviors, even if it is possible to trigger the behavior using only keys on a particular peripheral.
