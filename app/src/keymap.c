@@ -219,7 +219,7 @@ int zmk_trigger_behavior_callbacks(struct zmk_behavior_binding *binding,
         if (source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
             return invoke_locally(binding, event, pressed);
         } else {
-            return zmk_split_bt_invoke_behavior(source, &binding, event, pressed);
+            return zmk_split_bt_invoke_behavior(source, binding, event, pressed);
         }
 #else
         return invoke_locally(binding, event, pressed);
