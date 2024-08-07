@@ -186,9 +186,7 @@ endif
 Dongle overlay configuration is same for both split and unibody keyboards.
 :::
 
-In most common cases the dongle will not have any keys, in that case we can instead use a mock kscan module to simulate the keys.
-
-Here we will define a mock kscan module with no keys and a default matrix transform.
+The dongle needs to have a mock keyboard scan for technical reasons. 
 The matrix map needs to match the keyboard matrix map.
 
 ```dts title="my_board_dongle.overlay"
