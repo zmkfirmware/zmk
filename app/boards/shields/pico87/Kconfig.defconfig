@@ -1,0 +1,9 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_PICO87
+
+config ZMK_KEYBOARD_NAME
+    default "Pico 87"
+
+endif
