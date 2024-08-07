@@ -10,26 +10,7 @@ import TabItem from "@theme/TabItem";
 This implementation is experimental and subject to change.
 :::
 
-ZMK split and unibody keyboards use BLE for wireless communication. Split keyboards consist of two halves, each with its own microcontroller and battery. The left half usually serves as the central role, which drains its battery faster.
-A dongle can act as a new central microcontroller, communicating with both halves and connecting to the host via USB. This allows the central half to draw power from the host, extending battery life.
-For unibody keyboards, the dongle also helps by setting the unibody keyboard as peripheral, optimizing battery usage.
-
-The main benefit of using a dongle is extended and balanced battery life, in some cases extending from a few weeks to several months.
-
-
-![Mermaid Connection](../assets/dongle/mermaid-connection.png)
-
-{/* Here is an example diagram of a split keyboard with a dongle:
-
-```mermaid
-graph TD;
-    A[Computer/Host Device] <-- USB or BLE --> DONGLE[Dongle/Central];
-    DONGLE -. BLE .-> LEFT[Left Half/Peripheral];
-    DONGLE -. BLE .-> RIGHT[Right Half/Peripheral];
-```
-
-Dotted lines represent BLE connections.
-Solid lines represent USB connections. */}
+A bluetooth dongle can be added to any keyboard running ZMK. The result is a split keyboard with the dongle as "central". There are a number of advantages to adding a dongle, but also some disadvantages:
 
 :::info
 For more information on how to set up a unibody or split keyboard, refer to [New Keyboard Shield](../development/new-shield.mdx) under Guides.
