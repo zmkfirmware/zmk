@@ -15,6 +15,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct q_item {
     uint32_t position;
+    uint8_t source;
     struct zmk_behavior_binding binding;
     bool press : 1;
     uint32_t wait : 31;
@@ -32,13 +33,13 @@ static void behavior_queue_process_next(struct k_work *work) {
         LOG_DBG("Invoking %s: 0x%02x 0x%02x", item.binding.behavior_dev, item.binding.param1,
                 item.binding.param2);
 
-        struct zmk_behavior_binding_event event = {.position = item.position,
-                                                   .timestamp = k_uptime_get()};
+        struct zmk_behavior_binding_event event = {
+            .position = item.position, .timestamp = k_uptime_get(), .source = item.source};
 
         if (item.press) {
-            zmk_trigger_behavior_callbacks(&item.binding, event, 0, true);
+            zmk_trigger_behavior_callbacks(&item.binding, event, true);
         } else {
-            zmk_trigger_behavior_callbacks(&item.binding, event, 0, false);
+            zmk_trigger_behavior_callbacks(&item.binding, event, false);
         }
 
         LOG_DBG("Processing next queued behavior in %dms", item.wait);
@@ -50,9 +51,10 @@ static void behavior_queue_process_next(struct k_work *work) {
     }
 }
 
-int zmk_behavior_queue_add(uint32_t position, const struct zmk_behavior_binding binding, bool press,
-                           uint32_t wait) {
-    struct q_item item = {.press = press, .binding = binding, .wait = wait};
+int zmk_behavior_queue_add(uint32_t position, uint8_t source,
+                           const struct zmk_behavior_binding binding, bool press, uint32_t wait) {
+    struct q_item item = {
+        .press = press, .binding = binding, .wait = wait, .position = position, .source = source};
 
     const int ret = k_msgq_put(&zmk_behavior_queue_msgq, &item, K_NO_WAIT);
     if (ret < 0) {

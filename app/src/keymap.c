@@ -181,16 +181,16 @@ int zmk_keymap_apply_position_state(uint8_t source, int layer, uint32_t position
         .layer = layer,
         .position = position,
         .timestamp = timestamp,
+        .source = source,
     };
 
     LOG_DBG("layer: %d position: %d, binding name: %s", layer, position, binding.behavior_dev);
 
-    return zmk_trigger_behavior_callbacks(&binding, event, source, pressed);
+    return zmk_trigger_behavior_callbacks(&binding, event, pressed);
 }
 
 int zmk_trigger_behavior_callbacks(struct zmk_behavior_binding *binding,
-                                   struct zmk_behavior_binding_event event, uint8_t source,
-                                   bool pressed) {
+                                   struct zmk_behavior_binding_event event, bool pressed) {
     const struct device *behavior = zmk_behavior_get_binding(binding->behavior_dev);
 
     if (!behavior) {
@@ -216,10 +216,10 @@ int zmk_trigger_behavior_callbacks(struct zmk_behavior_binding *binding,
         return invoke_locally(binding, event, pressed);
     case BEHAVIOR_LOCALITY_EVENT_SOURCE:
 #if ZMK_BLE_IS_CENTRAL
-        if (source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
+        if (event.source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
             return invoke_locally(binding, event, pressed);
         } else {
-            return zmk_split_bt_invoke_behavior(source, binding, event, pressed);
+            return zmk_split_bt_invoke_behavior(event.source, binding, event, pressed);
         }
 #else
         return invoke_locally(binding, event, pressed);

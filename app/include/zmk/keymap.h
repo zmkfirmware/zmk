@@ -29,8 +29,7 @@ int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pr
                                       int64_t timestamp);
 
 int zmk_trigger_behavior_callbacks(struct zmk_behavior_binding *binding,
-                                   struct zmk_behavior_binding_event event, uint8_t source,
-                                   bool pressed);
+                                   struct zmk_behavior_binding_event event, bool pressed);
 
 #define ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst)                                                  \
     {                                                                                              \
