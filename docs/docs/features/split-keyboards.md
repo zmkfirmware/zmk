@@ -23,6 +23,11 @@ They will not present as keyboard devices when connected over USB and will not a
 
 By convention, for a keyboard split into two "halves" the left half is set as the central and the right as a peripheral.
 
+:::info[Battery life impact]
+For BLE-based split keyboards, the central uses significantly more power than the peripherals because its radio needs to periodically wake up to check for incoming transmissions.
+You can refer to the [power profiler](/power-profiler) to see battery life estimates for different roles.
+:::
+
 ### Configuration
 
 The [new shield guide](../development/new-shield.mdx) details how to define a split keyboard shield with two parts, enabling the split feature and setting up the necessary roles for each part.
