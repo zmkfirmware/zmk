@@ -7,6 +7,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/init.h>
 #include <zephyr/device.h>
+#include <zephyr/pm/device.h>
+#include <zephyr/pm/device_runtime.h>
 #include <zephyr/devicetree.h>
 
 #include <zephyr/logging/log.h>
@@ -55,7 +57,16 @@ void display_timer_cb() { k_work_submit_to_queue(zmk_display_work_q(), &display_
 K_TIMER_DEFINE(display_timer, display_timer_cb, NULL);
 
 void unblank_display_cb(struct k_work *work) {
+    int err = pm_device_runtime_get(display);
+    if (err < 0) {
+        LOG_ERR("Failed to get the display device PM (%d)", err);
+        return;
+    }
+
     display_blanking_off(display);
+
+    lv_obj_invalidate(lv_scr_act());
+
     k_timer_start(&display_timer, K_MSEC(TICK_MS), K_MSEC(TICK_MS));
 }
 
@@ -64,6 +75,7 @@ void unblank_display_cb(struct k_work *work) {
 void blank_display_cb(struct k_work *work) {
     k_timer_stop(&display_timer);
     display_blanking_on(display);
+    pm_device_runtime_put(display);
 }
 K_WORK_DEFINE(blank_display_work, blank_display_cb);
 K_WORK_DEFINE(unblank_display_work, unblank_display_cb);
@@ -99,6 +111,13 @@ static void initialize_theme() {
 #endif // CONFIG_LV_USE_THEME_MONO
 }
 
+#define HAS_DISPLAY_PD                                                                             \
+    (DT_HAS_CHOSEN(zmk_display_default_power_domain) || DT_HAS_CHOSEN(zmk_default_power_domain))
+#define GET_DISPLAY_PD                                                                             \
+    DEVICE_DT_GET(COND_CODE_1(DT_HAS_CHOSEN(zmk_display_default_power_domain),                     \
+                              (DT_CHOSEN(zmk_display_default_power_domain)),                       \
+                              (DT_CHOSEN(zmk_default_power_domain))))
+
 void initialize_display(struct k_work *work) {
     LOG_DBG("");
 
@@ -106,6 +125,16 @@ void initialize_display(struct k_work *work) {
         LOG_ERR("Failed to find display device");
         return;
     }
+
+#if IS_ENABLED(CONFIG_ZMK_DISPLAY_DEFAULT_POWER_DOMAIN) && HAS_DISPLAY_PD
+    pm_device_runtime_enable(display);
+    if (!pm_device_on_power_domain(display)) {
+        int rc = pm_device_power_domain_add(display, GET_DISPLAY_PD);
+        if (rc < 0) {
+            LOG_ERR("Failed to add the display to the default power domain (0x%02x)", -rc);
+        }
+    }
+#endif
 
     initialized = true;
 

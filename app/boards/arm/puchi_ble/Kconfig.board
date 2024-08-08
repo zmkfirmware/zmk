@@ -5,4 +5,6 @@
 
 config BOARD_PUCHI_BLE_v1
     bool "puchi_ble_v1"
+    imply ZMK_POWER_DOMAINS
+    imply ZMK_POWER_DOMAINS_DYNAMIC_DEFAULT
     depends on SOC_NRF52840_QIAA
