@@ -1,0 +1,5 @@
+Here are the properties for the kscan sideband behaviors node:
+
+- The `compatible` property for the node must be `zmk,kscan-sideband-behaviors`.
+- The `kscan` property is a phandle to `wakeup_scan`, which is a direct kscan with a single element.
+- The `auto-enable` property enables the sideband instance on startup unconditionally, instead of waiting for an external activation source, e.g. being assigned as the chosen `zmk,kscan`.
