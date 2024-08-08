@@ -77,4 +77,4 @@ However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNC
 
 ## Split Keyboards
 
-RGB underglow behaviors are global: This means that when triggered, they affect both the central and peripheral side of split keyboards.
+RGB underglow behaviors are [global](../features/split-keyboards.md#global-locality-behaviors): This means that when triggered, they affect both the central and peripheral side of split keyboards.

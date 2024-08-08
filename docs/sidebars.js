@@ -33,6 +33,7 @@ module.exports = {
       Features: [
         "features/keymaps",
         "features/bluetooth",
+        "features/split-keyboards",
         "features/combos",
         "features/conditional-layers",
         "features/debouncing",

@@ -24,7 +24,7 @@ When building with a `zmk-config` folder, ZMK will search the `zmk-config/config
 
 These files hold your personal settings for the keyboard. All files are optional. If present, they override any configuration set in the board or shield folders. Otherwise, the default configuration and/or keymap is used.
 
-When using a split keyboard, you can use a single file without the `_left` or `_right` suffix to configure both sides. For example, `corne.conf` and `corne.keymap` will apply to both `corne_left` and `corne_right`. If a shared config file exists, any left or right files will be ignored.
+When using a [split keyboard](../features/split-keyboards.md), you can use a single file without the `_left` or `_right` suffix to configure both sides. For example, `corne.conf` and `corne.keymap` will apply to both `corne_left` and `corne_right`. If a shared config file exists, any left or right files will be ignored.
 
 ### Board Folder
 
