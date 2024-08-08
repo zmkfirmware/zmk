@@ -5,18 +5,17 @@ sidebar_label: Mod-Morph
 
 ## Summary
 
-The Mod-Morph behavior sends a different keypress, depending on whether a specified modifier is being held during the keypress.
+The mod-morph behavior invokes a different behavior depending on whether any of the specified modifiers are being held during the key press.
 
-- If you tap the key by itself, the first keycode is sent.
-- If you tap the key while holding the specified modifier, the second keycode is sent.
+- If you tap the key by itself, the first behavior binding is activated.
+- If you tap the key while holding (any of) the specified modifier(s), the second behavior binding is activated.
 
 ## Mod-Morph
 
-The Mod-Morph behavior acts as one of two keycodes, depending on if the required modifier is being held during the keypress.
-
 ### Configuration
 
-An example of how to implement the mod-morph "Grave Escape":
+Below is an example of how to implement the mod-morph "Grave Escape". When assigned to a key, pressing the key on its own will send an
+Escape keycode but pressing it while a shift or GUI modifier is held sends the grave `` ` `` keycode instead:
 
 ```dts
 / {
@@ -31,7 +30,7 @@ An example of how to implement the mod-morph "Grave Escape":
 };
 ```
 
-Note that this specific mod-morph exists in ZMK by default using code `&gresc`.
+Note that this specific mod-morph exists in ZMK by default using the binding `&gresc`.
 
 ### Behavior Binding
 
@@ -65,9 +64,15 @@ Example:
 mods = <(MOD_LGUI|MOD_LSFT|MOD_RGUI|MOD_RSFT)>;
 ```
 
+:::tip[Advanced trigger conditions]
+Any modifier used in the `mods` property will activate a mod-morph and it isn't possible to require that multiple modifiers are held _together_ in order to activate it.
+However you can nest multiple mod-morph behaviors to achieve more complex decision logic, where you use one (or two) mod-morph behaviors in the `bindings` fields of another mod-morph.
+For instance, a mod-morph with `bindings = <&kp A>, <&morph_BC>;` and `mods = <MOD_LSFT>;` referring to `&morph_BC` with `bindings = <&kp B>, <&kp C>;` and `mods = <MOD_LCTL>;` will output `A` by default, `B` with left shift held, and `C` with both left shift and control held.
+:::
+
 ### Advanced Configuration
 
-`keep-mods`
+#### `keep-mods`
 
 When a modifier specified in `mods` is being held, it won't be sent along with the morphed keycode unless it is also specified in `keep-mods`. By default `keep-mods` equals `0`, which means no modifier specified in `mods` will be sent along with the morphed keycode.
 
