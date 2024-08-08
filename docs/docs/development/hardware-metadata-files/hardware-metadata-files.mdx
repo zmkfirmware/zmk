@@ -145,6 +145,7 @@ The optional `arch` property describes the architecture that the MCU of a board 
 ### Power
 
 The optional `power_supply` property is used to describe the power consumption characteristics of the board, for use with [ZMK's power profiler]. It has the following children:
+
 - `psu_type` is set to either `LDO` or `SWITCHING`
 - `psu_output_voltage` is set to the output voltage of the power supply (in mV)
 - `psu_quiescent` is set to the quiescent of the power supply (in uA)
