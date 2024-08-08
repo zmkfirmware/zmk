@@ -1,0 +1,19 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+/* Basic non-overlap test. */
+
+&kscan {
+    events = <
+        // Press &nkp A
+        ZMK_MOCK_PRESS(0,0,10)
+        // Tap &nkp D
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        // &kp A is re-pressed after releasing &nkp D
+        // &kp A remains pressed until &nkp A is released
+        ZMK_MOCK_RELEASE(0,0,10)
+    >;
+};

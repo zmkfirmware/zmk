@@ -1,0 +1,236 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/*
+ * Press in sequence WASD. Release in every possible way.
+ * Non-overlap keys that remain pressed should be re-pressed in the correct order.
+ */
+
+&nkp {
+    keep-active-size = <4>;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &nkp A &nkp W
+                &nkp D &nkp S>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        // Release DSWA. Re-press SA.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        // Release DASW. Re-press SW.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        // Release DAWS. Re-press S.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        // Release DWSA. Re-press SA.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        // Release DWAS. Re-press S.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        // Release SDAW. Re-press AW.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        // Release SDWA. Re-press A.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        // Release SADW. Re-press W.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        // Release SAWD. No re-press.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        // Release SWDA. Re-press A.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        // Release SWAD. No re-press.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        // Release ADSW. Re-press SW.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        // Release ADWS. Re-press S.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        // Release ASDW. Re-press W.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        // Release ASWD. No re-press.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        // Release AWDS. Re-press S.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        // Release AWSD. No re-press.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        // Release WDSA. Re-press SA.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        // Release WDAS. Re-press S.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        // Release WSDA. Re-press A.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        // Release WSAD. No re-press.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        // Release WADS. Re-press S.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        // Release WASD. No re-press.
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(0,1,10) // W
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(1,0,10) // D
+    >;
+};

@@ -1,0 +1,17 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Non-overlap behavior
+
+compatible: "zmk,behavior-non-overlap"
+
+include: one_param.yaml
+
+properties:
+  bindings:
+    type: phandles
+    required: true
+  keep-active-size:
+    type: int
+  no-active:
+    type: boolean

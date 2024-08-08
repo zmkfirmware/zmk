@@ -1,0 +1,65 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/*
+ * Queue operations should work correctly within a limited space linked list.
+ *
+ * This test barely validates that the linked list is implemented correctly.
+ * Further work should provide a way to generate and evaluate all possible cases.
+ */
+
+&nkp {
+    keep-active-size = <3>;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &nkp A &nkp W
+                &nkp D &nkp S>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,1,10)   // W W__      These 3 characters represent how
+        ZMK_MOCK_PRESS(0,0,10)   // A WA_      the array should look like.
+        ZMK_MOCK_RELEASE(0,0,10) // A W__      _ represents an empty space.
+        ZMK_MOCK_PRESS(0,0,10)   // A WA_ 130  These numbers show the order of
+        ZMK_MOCK_PRESS(1,1,10)   // S WAS 123  each key press.
+        ZMK_MOCK_RELEASE(1,1,10) // S WA_ 130  0 means empty.
+        ZMK_MOCK_PRESS(1,1,10)   // S WAS 123  1 is head. 2 is mid. 3 is tail.
+        ZMK_MOCK_PRESS(1,0,10)   // D DAS 312  Limit reached. First in first out.
+        ZMK_MOCK_RELEASE(1,0,10) // D _AS 013  Test release tail.
+        ZMK_MOCK_PRESS(1,0,10)   // D DAS 312
+        ZMK_MOCK_RELEASE(1,1,10) // S DA_ 310  Test release mid.
+        ZMK_MOCK_PRESS(1,1,10)   // S DAS 213
+        ZMK_MOCK_RELEASE(0,0,10) // A D_S 103  Test release head.
+        ZMK_MOCK_PRESS(0,0,10)   // A DAS 132
+        ZMK_MOCK_RELEASE(1,1,10) // S DA_ 130  Test release mid
+        ZMK_MOCK_RELEASE(0,0,10) // A D__ 100  and then tail.
+        ZMK_MOCK_PRESS(1,1,10)   // S DS_ 130
+        ZMK_MOCK_PRESS(0,0,10)   // A DSA 123
+        ZMK_MOCK_RELEASE(1,0,10) // D _SA 013  Test release head
+        ZMK_MOCK_RELEASE(1,1,10) // S __A 001  twice.
+        ZMK_MOCK_PRESS(1,1,10)   // S S_A 301
+        ZMK_MOCK_PRESS(1,0,10)   // D SDA 231
+        ZMK_MOCK_RELEASE(1,1,10) // S _DA 031  Test release mid
+        ZMK_MOCK_RELEASE(0,0,10) // A _D_ 010  and then head.
+        ZMK_MOCK_PRESS(0,0,10)   // A AD_ 310
+        ZMK_MOCK_PRESS(1,1,10)   // S ADS 213
+        ZMK_MOCK_RELEASE(1,0,10) // D A_S 103  Test release head
+        ZMK_MOCK_RELEASE(1,1,10) // S A__ 100  and then tail.
+        ZMK_MOCK_PRESS(1,1,10)   // S AS_
+        ZMK_MOCK_PRESS(1,0,10)   // D ASD
+        ZMK_MOCK_RELEASE(1,0,10) // D AS_      Test release all tails.
+        ZMK_MOCK_RELEASE(1,1,10) // S A__
+        ZMK_MOCK_RELEASE(0,0,10) // A ___
+        ZMK_MOCK_RELEASE(0,1,10) // W ___
+    >;
+};

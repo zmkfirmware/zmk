@@ -68,6 +68,7 @@ module.exports = {
         "behaviors/tap-dance",
         "behaviors/caps-word",
         "behaviors/key-repeat",
+        "behaviors/non-overlap",
         "behaviors/sensor-rotate",
         "behaviors/mouse-emulation",
         "behaviors/reset",

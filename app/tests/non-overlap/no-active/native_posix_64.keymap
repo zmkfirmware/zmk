@@ -1,0 +1,25 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+/*
+ * Keep no record of previous key presses.
+ * Previous non-overlap key presses will not be re-pressed.
+ */
+
+&nkp {
+    no-active;
+};
+
+&kscan {
+    events = <
+        // Press &nkp A
+        ZMK_MOCK_PRESS(0,0,10)
+        // Tap &nkp D
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        // &kp A is not re-pressed
+        ZMK_MOCK_RELEASE(0,0,10)
+    >;
+};

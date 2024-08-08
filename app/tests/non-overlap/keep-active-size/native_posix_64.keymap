@@ -1,0 +1,37 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/*
+ * Press in sequence WASD, then release backward DSAW.
+ * Only keep track of the few most recent key presses.
+ */
+
+&nkp {
+    keep-active-size = <2>;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &nkp A &nkp W
+                &nkp D &nkp S>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,1,10)   // W
+        ZMK_MOCK_PRESS(0,0,10)   // A
+        ZMK_MOCK_PRESS(1,1,10)   // S
+        ZMK_MOCK_PRESS(1,0,10)   // D
+        ZMK_MOCK_RELEASE(1,0,10) // D
+        ZMK_MOCK_RELEASE(1,1,10) // S
+        ZMK_MOCK_RELEASE(0,0,10) // A
+        ZMK_MOCK_RELEASE(0,1,10) // W
+    >;
+};
