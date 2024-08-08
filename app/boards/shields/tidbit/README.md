@@ -1,41 +1,6 @@
-# Building ZMK for the Tidbit
+# TIDBIT Compatibility Notes
 
-Some general notes/commands for building standard tidbit layouts from the assembly documentation.
-
-## Standard "Non Dense" Build
-
-```
-west build -p -d build/tidbit/default --board nice_nano -- -DSHIELD=tidbit
-```
-
-## Dense "19 keys" Build
-
-```
-west build -p -d build/tidbit/19_key --board nice_nano -- -DSHIELD=tidbit_19key
-```
-
-## LED Notes
-
-If you built your tidbit without the LEDs _and_ are using a nice!nano board, you'll need to change the following in your local tidbit config or add them to the end of the file.
-
-```
-CONFIG_ZMK_RGB_UNDERGLOW=n
-CONFIG_WS2812_STRIP=n
-```
-
-## Encoder Notes
-
-If you built your tidbit without encoders, you'll need to change the following in your local tidbit config or add them to the end of the file.
-
-```
-CONFIG_EC11=n
-CONFIG_EC11_TRIGGER_GLOBAL_THREAD=n
-```
-
-## OLED Builds
-
-If using an OLED screen, you'll need to change the following in your local tidbit config or add them to the end of the file.
-
-```
-CONFIG_ZMK_DISPLAY=y
-```
+- The top-left and top-right encoders share the same pins. Install only one, and enable/include EITHER `encoder_1` OR `encoder_1_top_row` in your keymap; not both.
+- `encoder_3` cannot be used at the same time as the OLED and/or HT16K33 modules, as it is wired to the same pins.
+  - While the HT16K33 hardware is supported by Zephyr, functionality may not have been implemented in ZMK for it.
+- `encoder_4` cannot be used at the same time as the TRRS jack, as it is wired to the same pins.
