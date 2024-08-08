@@ -44,6 +44,7 @@ module.exports = {
         "features/backlight",
         "features/battery",
         "features/soft-off",
+        "features/dongle",
       ],
     },
     {
