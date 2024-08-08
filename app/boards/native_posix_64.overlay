@@ -8,7 +8,7 @@
         zmk,kscan = &kscan;
     };
 
-    kscan: kscan {
+    kscan: native_posix_64_kscan_mock {
         compatible = "zmk,kscan-mock";
 
         rows = <2>;
