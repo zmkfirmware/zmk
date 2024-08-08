@@ -645,6 +645,14 @@ config ZMK_SETTINGS_SAVE_DEBOUNCE
     int "Milliseconds to debounce settings saves"
     default 60000
 
+config ZMK_SETTINGS_SAVE_ENDPOINTS
+    bool "save endpoints configuration"
+    default y
+
+config ZMK_SETTINGS_SAVE_EXT_POWER
+    bool "save ext power state"
+    default y
+
 #SETTINGS
 endif
 
