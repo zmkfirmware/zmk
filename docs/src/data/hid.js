@@ -4252,6 +4252,90 @@ export default [
     footnotes: {},
   },
   {
+    names: ["LEFT_HYPER", "LHYPER", "OFFICE", "LH(code)"],
+    description: "Left Hyper: Left SHIFT, GUI, ALT, CONTROL",
+    context: "Keyboard",
+    clarify: false,
+    usages: [
+      {
+        application: keyboardApplication,
+        item: usage(keyPage, 0xe1),
+      },
+    ],
+    documentation: "",
+    os: {
+      windows: true,
+      linux: true,
+      android: true,
+      macos: null,
+      ios: null,
+    },
+    footnotes: {},
+  },
+  {
+    names: ["RIGHT_HYPER", "RHYPER", "RH(code)"],
+    description: "Right HYPER: Right SHIFT, GUI, ALT, CONTROL",
+    context: "Keyboard",
+    clarify: false,
+    usages: [
+      {
+        application: keyboardApplication,
+        item: usage(keyPage, 0xe1),
+      },
+    ],
+    documentation: "",
+    os: {
+      windows: true,
+      linux: true,
+      android: true,
+      macos: null,
+      ios: null,
+    },
+    footnotes: {},
+  },
+  {
+    names: ["LEFT_MEH", "LM(code)"],
+    description: "Left MEH: Left SHIFT, ALT, CONTROL",
+    context: "Keyboard",
+    clarify: false,
+    usages: [
+      {
+        application: keyboardApplication,
+        item: usage(keyPage, 0xe1),
+      },
+    ],
+    documentation: "",
+    os: {
+      windows: true,
+      linux: true,
+      android: true,
+      macos: null,
+      ios: null,
+    },
+    footnotes: {},
+  },
+  {
+    names: ["RIGHT_MEH", "RM(code)"],
+    description: "Right MEH: Right SHIFT, ALT, CONTROL",
+    context: "Keyboard",
+    clarify: false,
+    usages: [
+      {
+        application: keyboardApplication,
+        item: usage(keyPage, 0xe1),
+      },
+    ],
+    documentation: "",
+    os: {
+      windows: true,
+      linux: true,
+      android: true,
+      macos: null,
+      ios: null,
+    },
+    footnotes: {},
+  },
+  {
     names: ["K_PLAY_PAUSE", "K_PP"],
     description: "Play / Pause",
     context: "Keyboard",
@@ -7887,5 +7971,26 @@ export default [
     footnotes: {
       macos: ["globe"],
     },
+  },
+  {
+    names: ["COPILOT"],
+    description: "Microsoft Copilot shortcut LS(LG(F23))",
+    context: "Keyboard",
+    clarify: false,
+    usages: [
+      {
+        application: keyboardApplication,
+        item: usage(keyPage, 0x72),
+      },
+    ],
+    documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=86",
+    os: {
+      windows: true,
+      linux: null,
+      android: null,
+      macos: null,
+      ios: null,
+    },
+    footnotes: {},
   },
 ];

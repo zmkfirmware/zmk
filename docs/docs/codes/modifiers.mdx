@@ -46,3 +46,33 @@ These functions take the form: `XX(code)`
   - `LS(x)`, `LC(x)`, `LA(x)`, `LG(x)`, `RS(x)`, `RC(x)`, `RA(x)`, `RG(x)`
 - Modified keys can safely be rolled-over. Modifier functions are released when another key is pressed.
   - Press `&kp LS(A)`, then press `&kp B`, release `&kp LS(A)` and release `&kp B` results in **Ab**. Only the A is capitalized.
+
+### Extra Modifiers
+
+Extra modifiers are combinations of the special keyboard keys: _shift_, _alt_, _control_ & _GUI_.
+
+Extra Modifiers can be used in the following forms within ZMK:
+
+- `LHYPER`
+- `LH(code)`
+
+<Table group="keyboard-extra-modifiers" />
+
+The combination of all modifiers `SHIFT`, `GUI`, `ALT` and `CONTROL` is colloquially known as `HYPER`.
+Similarly, the combination of `SHIFT`, `ALT` and `CONTROL` (without `GUI`) is referred to as `MEH`.
+
+### Extra Modifier Keys
+
+These act like any other key code.
+
+- e.g. `&kp LHYPER` pushes and releases the combination of the left modifiers SHIFT, GUI, ALT and CONTROL.
+
+### Extra Modifier Functions
+
+Modifier functions add one or more modifiers to a code.
+
+These functions take the form: `XX(code)`
+
+- Modifier functions apply a modifier to a code:
+  - `&kp LH(W)` = `LEFT SHIFT` + `LEFT GUI` + `LEFT CONTROL` + `LEFT ALT` + `W`; in recent versions of Windows, this will open Microsoft Word.
+- There are left- and right-handed versions of each extra modifier (also see table above).

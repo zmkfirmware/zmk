@@ -276,6 +276,12 @@ export default {
     "LEFT_GUI",
     "RIGHT_GUI",
   ],
+  "keyboard-extra-modifiers": [
+    "LEFT_MEH",
+    "RIGHT_MEH",
+    "LEFT_HYPER",
+    "RIGHT_HYPER",
+  ],
   "keyboard-navigation": [
     "HOME",
     "END",
