@@ -6,6 +6,7 @@
 
 #include <zmk/behavior_queue.h>
 #include <zmk/virtual_key_position.h>
+#include <zmk/events/position_state_changed.h>
 
 #include "behavior_sensor_rotate_common.h"
 
@@ -90,8 +91,10 @@ int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *bindi
     LOG_DBG("Sensor binding: %s", binding->behavior_dev);
 
     for (int i = 0; i < triggers; i++) {
-        zmk_behavior_queue_add(event.position, event.source, triggered_binding, true, cfg->tap_ms);
-        zmk_behavior_queue_add(event.position, event.source, triggered_binding, false, 0);
+        zmk_behavior_queue_add(event.position, ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
+                               triggered_binding, true, cfg->tap_ms);
+        zmk_behavior_queue_add(event.position, ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
+                               triggered_binding, false, 0);
     }
 
     return ZMK_BEHAVIOR_OPAQUE;
