@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ sk: sticky_key {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_STICKY_KEY)
+        /omit-if-no-ref/
+#endif
+        sk: sticky_key {
             compatible = "zmk,behavior-sticky-key";
             #binding-cells = <1>;
             release-after-ms = <1000>;
@@ -14,7 +17,10 @@
             ignore-modifiers;
             display-name = "Sticky Key";
         };
-        /omit-if-no-ref/ sl: sticky_layer {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_STICKY_LAYER)
+        /omit-if-no-ref/
+#endif
+        sl: sticky_layer {
             compatible = "zmk,behavior-sticky-key";
             #binding-cells = <1>;
             release-after-ms = <1000>;

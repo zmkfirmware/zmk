@@ -1,6 +1,9 @@
 / {
     behaviors {
-        /omit-if-no-ref/ mkp: mouse_key_press {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_MOUSE_KEY_PRESS)
+        /omit-if-no-ref/
+#endif
+        mkp: mouse_key_press {
             compatible = "zmk,behavior-mouse-key-press";
             #binding-cells = <1>;
         };

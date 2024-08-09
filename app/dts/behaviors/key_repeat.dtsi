@@ -8,7 +8,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ key_repeat: key_repeat {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_KEY_REPEAT)
+        /omit-if-no-ref/
+#endif
+        key_repeat: key_repeat {
             compatible = "zmk,behavior-key-repeat";
             #binding-cells = <0>;
             usage-pages = <HID_USAGE_KEY>;

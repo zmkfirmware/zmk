@@ -6,8 +6,10 @@
 
 / {
     behaviors {
-        /* DEPRECATED: `cp` will be removed in the future */
-        /omit-if-no-ref/ cp: kp: key_press {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_KEY_PRESS)
+        /omit-if-no-ref/
+#endif
+        kp: key_press {
             compatible = "zmk,behavior-key-press";
             #binding-cells = <1>;
             display-name = "Key Press";

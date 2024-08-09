@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ soft_off: z_so_off {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_SOFT_OFF)
+        /omit-if-no-ref/
+#endif
+        soft_off: z_so_off {
             compatible = "zmk,behavior-soft-off";
             #binding-cells = <0>;
             split-peripheral-off-on-press;

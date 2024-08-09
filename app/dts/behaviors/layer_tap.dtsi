@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ lt: layer_tap {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_LAYER_TAP)
+        /omit-if-no-ref/
+#endif
+        lt: layer_tap {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";

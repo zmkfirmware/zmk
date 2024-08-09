@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ to: to_layer {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_TO_LAYER)
+        /omit-if-no-ref/
+#endif
+        to: to_layer {
             compatible = "zmk,behavior-to-layer";
             #binding-cells = <1>;
             display-name = "To Layer";

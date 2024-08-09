@@ -6,7 +6,10 @@
 
 / {
     behaviors {
-        /omit-if-no-ref/ mo: momentary_layer {
+#if !defined(ZMK_STUDIO_BEHAVIORS_KEEP_ALL) && !defined(ZMK_STUDIO_BEHAVIORS_KEEP_MOMENTARY_LAYER)
+        /omit-if-no-ref/
+#endif
+        mo: momentary_layer {
             compatible = "zmk,behavior-momentary-layer";
             #binding-cells = <1>;
             display-name = "Momentary Layer";

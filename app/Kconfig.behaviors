@@ -31,6 +31,7 @@ config ZMK_BEHAVIOR_LOCAL_ID_TYPE_SETTINGS_TABLE
 
 config ZMK_BEHAVIOR_LOCAL_ID_TYPE_CRC16
     bool "CRC16 Hash"
+    select CRC
     help
       Use the CRC16-ANSI hash of behavior device names to generate
       stable behavior local IDs. This saves on settings storage at
@@ -70,6 +71,11 @@ config ZMK_BEHAVIOR_SENSOR_ROTATE_VAR
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_SENSOR_ROTATE_VAR_ENABLED
     select ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
+
+config ZMK_BEHAVIOR_STUDIO_UNLOCK
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_STUDIO_UNLOCK_ENABLED && ZMK_STUDIO
 
 config ZMK_BEHAVIOR_MACRO
     bool
