@@ -816,6 +816,7 @@ int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *bi
                                                          .param1 = binding->param1,
                                                          .param2 = binding->param2,
                                                          .position = event.position,
+                                                         .source = event.source,
                                                          .state = state ? 1 : 0,
                                                      }};
     const size_t payload_dev_size = sizeof(payload.behavior_dev);

@@ -26,6 +26,7 @@ struct zmk_behavior_binding_event {
     int layer;
     uint32_t position;
     int64_t timestamp;
+    uint8_t source;
 };
 
 /**

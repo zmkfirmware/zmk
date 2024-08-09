@@ -90,8 +90,8 @@ int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *bindi
     LOG_DBG("Sensor binding: %s", binding->behavior_dev);
 
     for (int i = 0; i < triggers; i++) {
-        zmk_behavior_queue_add(event.position, triggered_binding, true, cfg->tap_ms);
-        zmk_behavior_queue_add(event.position, triggered_binding, false, 0);
+        zmk_behavior_queue_add(event.position, event.source, triggered_binding, true, cfg->tap_ms);
+        zmk_behavior_queue_add(event.position, event.source, triggered_binding, false, 0);
     }
 
     return ZMK_BEHAVIOR_OPAQUE;

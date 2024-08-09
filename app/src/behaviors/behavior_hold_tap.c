@@ -77,6 +77,7 @@ struct behavior_hold_tap_data {
 // this data is specific for each hold-tap
 struct active_hold_tap {
     int32_t position;
+    uint8_t source;
     uint32_t param_hold;
     uint32_t param_tap;
     int64_t timestamp;
@@ -250,14 +251,16 @@ static struct active_hold_tap *find_hold_tap(uint32_t position) {
     return NULL;
 }
 
-static struct active_hold_tap *store_hold_tap(uint32_t position, uint32_t param_hold,
-                                              uint32_t param_tap, int64_t timestamp,
+static struct active_hold_tap *store_hold_tap(uint32_t position, uint8_t source,
+                                              uint32_t param_hold, uint32_t param_tap,
+                                              int64_t timestamp,
                                               const struct behavior_hold_tap_config *config) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
         if (active_hold_taps[i].position != ZMK_BHV_HOLD_TAP_POSITION_NOT_USED) {
             continue;
         }
         active_hold_taps[i].position = position;
+        active_hold_taps[i].source = source;
         active_hold_taps[i].status = STATUS_UNDECIDED;
         active_hold_taps[i].config = config;
         active_hold_taps[i].param_hold = param_hold;
@@ -400,45 +403,49 @@ static int press_hold_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding_event event = {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .source = hold_tap->source,
     };
 
     struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
                                            .param1 = hold_tap->param_hold};
-    return behavior_keymap_binding_pressed(&binding, event);
+    return zmk_invoke_behavior_binding(&binding, event, true);
 }
 
 static int press_tap_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding_event event = {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .source = hold_tap->source,
     };
 
     struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
                                            .param1 = hold_tap->param_tap};
     store_last_hold_tapped(hold_tap);
-    return behavior_keymap_binding_pressed(&binding, event);
+    return zmk_invoke_behavior_binding(&binding, event, true);
 }
 
 static int release_hold_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding_event event = {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .source = hold_tap->source,
     };
 
     struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
                                            .param1 = hold_tap->param_hold};
-    return behavior_keymap_binding_released(&binding, event);
+    return zmk_invoke_behavior_binding(&binding, event, false);
 }
 
 static int release_tap_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding_event event = {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .source = hold_tap->source,
     };
 
     struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
                                            .param1 = hold_tap->param_tap};
-    return behavior_keymap_binding_released(&binding, event);
+    return zmk_invoke_behavior_binding(&binding, event, false);
 }
 
 static int press_binding(struct active_hold_tap *hold_tap) {
@@ -597,8 +604,8 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
         return ZMK_BEHAVIOR_OPAQUE;
     }
 
-    struct active_hold_tap *hold_tap =
-        store_hold_tap(event.position, binding->param1, binding->param2, event.timestamp, cfg);
+    struct active_hold_tap *hold_tap = store_hold_tap(event.position, event.source, binding->param1,
+                                                      binding->param2, event.timestamp, cfg);
     if (hold_tap == NULL) {
         LOG_ERR("unable to store hold-tap info, did you press more than %d hold-taps?",
                 ZMK_BHV_HOLD_TAP_MAX_HELD);
