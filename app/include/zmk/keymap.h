@@ -28,7 +28,7 @@ const char *zmk_keymap_layer_name(uint8_t layer);
 int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
                                       int64_t timestamp);
 
-int zmk_invoke_behavior_binding(struct zmk_behavior_binding *binding,
+int zmk_invoke_behavior_binding(const struct zmk_behavior_binding *src_binding,
                                 struct zmk_behavior_binding_event event, bool pressed);
 
 #define ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst)                                                  \
