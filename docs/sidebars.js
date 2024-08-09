@@ -135,6 +135,7 @@ module.exports = {
         "development/tests",
         "development/usb-logging",
         "development/ide-integration",
+        "development/studio-rpc-protocol",
         {
           type: "category",
           label: "Guides",

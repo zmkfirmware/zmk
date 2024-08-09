@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    behaviors {
+        studio_unlock: studio_unlock {
+            compatible = "zmk,behavior-studio-unlock";
+            #binding-cells = <0>;
+            display-name = "Studio Unlock";
+        };
+    };
+};
