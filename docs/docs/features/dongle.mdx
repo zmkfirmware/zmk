@@ -3,182 +3,206 @@ title: Keyboard Dongle
 sidebar_label: Keyboard Dongle
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 :::warning
 This implementation is experimental and subject to change.
 :::
 
-ZMK supports split keyboards that communicate wirelessly using BLE. Commonly these keyboards are split into two halves, each with its own microcontroller and battery. 
-Usually the left half of the keyboard is given the split role of central, and the right half is given the split role of peripheral. 
-The central half is responsible for communicating with the peripheral half and the host device.
-
-Using this setup does have one drawback: the central half of the keyboard usually runs out of battery faster than the peripheral half. 
-This is because the central half is responsible for maintaining the connection with the peripheral half and the host device.
-
-To solve this problem, a third microcontroller can be used as the new central or as more widely known a dongle. 
-For example, if you are using nice!nano v2 as your keyboard halves, you can use any other microcontroller as the dongle. 
-Meaning that the dongle does not have to be the same microcontroller as the keyboard halves, but it can be.
-
-The dongle will act as a central device and communicate with the keyboard halves which will both act as peripherals.
-Dongles are usually connected to the host device using USB. This way the central half of the keyboard can be powered by the host device, 
-and the peripheral halves can be powered by their own batteries. This setup allows both halves of the keyboard to have a longer battery life.
+A bluetooth dongle can be added to any keyboard running ZMK. The result is a split keyboard with the dongle as "central". There are a number of advantages to adding a dongle, but also some disadvantages:
 
 
-![Mermaid Connection](../assets/dongle/mermaid-connection.png)
-
-{/* Here is an example diagram of a split keyboard with a dongle:
-
-```mermaid
-graph TD;
-    A[Computer/Host Device] <-- USB or BLE --> DONGLE[Dongle/Central];
-    DONGLE -. BLE .-> LEFT[Left Half/Peripheral];
-    DONGLE -. BLE .-> RIGHT[Right Half/Peripheral];
-```
-
-Dotted lines represent BLE connections.
-Solid lines represent USB connections. */}
-
-:::info
-For more information on how to set up a two split keyboard, refer to [New Keyboard Shield](../development/new-shield.mdx) under Guides.
-After setting up the split keyboard, you can follow the steps below to add a dongle to the setup.
-:::
-
-## Benefits/Disadvantages of using a Dongle
 
 Benefits:
 
-- Adding a dongle, enables both keyboard halves to act as peripherals, meaning equal battery life for both halves.
-- Easier to connect to the host device.
+- The "central" dongle results in increased battery life for the keyboard/former "central", as it is now a peripheral.
+- It is easier to connect to the host device.
 
 Disadvantages:
 
-- More complex setup.
-- Extra microcontroller needed
-- Keyboard is unusable without the dongle.
-- Added latency due to the extra hop between the host device and the keyboard halves.
+- An extra microcontroller is needed.
+- The keyboard becomes unusable without the dongle.
 
 
 
-## Defining a Dongle for a Keyboard 
+## Editing a Keyboard Definition to Support a Dongle
 
 
-:::note
-In the examples below, we will be referencing the New Split Keyboard Shield guide files and will be building on top of that.
-:::
+In the examples below, we will be modifying the [New Keyboard Shield](../development/new-shield.mdx) guide files and will be building on top of that.
+
+We will add the dongle in a way that it can be easily enabled, but is disabled by default.
 
 ### Keyboard Shield
 
-First we will introduce a third split to our keyboard configuration. This will be used as the dongle.
+
+Lets start by adding the dongle body to the shield configuration.
 
 ```kconfig title="Kconfig.shield"
-config SHIELD_MY_BOARD_DONGLE
-    def_bool $(shields_list_contains,my_board_dongle)
-
-config SHIELD_MY_BOARD_LEFT
-    def_bool $(shields_list_contains,my_board_left)
-
-config SHIELD_MY_BOARD_RIGHT
-    def_bool $(shields_list_contains,my_board_right)
+config SHIELD_MY_KEYBOARD_DONGLE
+    def_bool $(shields_list_contains,my_keyboard_dongle)
 ```
 
 ### Keyboard Defconfig
 
-Next we will define the roles of the keyboard halves. The left and right halves will be set as peripherals, and the dongle will be set as the central.
-We will also only give the central device the keyboard name.
 
-For the dongle configuration we also want to specify that we are expecting 2 peripherals, one for the left half and one for the right half.
-We will also set the `ZMK_SLEEP` to `n` to prevent the dongle from going to sleep. 
-If the dongle is sleeping, keystrokes will not be sent to the host device, until the dongle wakes up.
+<Tabs
+defaultValue="unibody"
+values={[
+{label: 'Unibody Keyboard', value: 'unibody'},
+{label: 'Split Keyboard', value: 'split'},
+]}
+>
+<TabItem value="unibody">
 
-Finally, we will set the `BT_CLTR_TX_PWR_PLUS_8` to `y` to increase the transmit power of the dongle.
-Normally this would drain the battery faster, but since the dongle is connected to the host device, it will not be a problem.
-
-There is also an option to still use the left half as the central, and the right half as the peripheral. In that case the dongle will not be used.
-
+Next we will modify the following lines
 
 ```kconfig title="Kconfig.defconfig"
-if SHIELD_MY_BOARD_DONGLE
+if SHIELD_MY_KEYBOARD_DONGLE
 
-config ZMK_KEYBOARD_NAME
-    default "My Board"
-
-config ZMK_SPLIT_ROLE_CENTRAL
-    default y
-
-config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
-    default 2
-
-config ZMK_SLEEP
-    default n
-
-config BT_CLTR_TX_PWR_PLUS_8
-    default y
-
-endif
-
-if SHIELD_MY_BOARD_LEFT
-# Setting this to y will make the left half the central and the right half the peripheral
-config ZMK_SPLIT_ROLE_CENTRAL
-    default n
-
-if ZMK_SPLIT_ROLE_CENTRAL
     config ZMK_KEYBOARD_NAME
         default "My Board"
-endif # ZMK_SPLIT_ROLE_CENTRAL
+
+    config ZMK_SPLIT_ROLE_CENTRAL
+        default y
+
+    config ZMK_SPLIT
+        default y
+
+    # Prevent the dongle from going to sleep
+    config ZMK_SLEEP
+        default n
+
+    # Increase the transmit power of the dongle
+    config BT_CLTR_TX_PWR_PLUS_8
+        default y
 
 endif
 
-if SHIELD_MY_BOARD_DONGLE || SHIELD_MY_BOARD_LEFT || SHIELD_MY_BOARD_RIGHT
+if SHIELD_MY_KEYBOARD
+    config ZMK_KEYBOARD_NAME
+        default "My Board"
+    
+endif
+```
 
-config ZMK_SPLIT
-    default y
+</TabItem>
+<TabItem value="split">
+
+Next we will modify the following lines
+
+```kconfig title="Kconfig.defconfig"
+if SHIELD_MY_KEYBOARD_DONGLE
+
+    config ZMK_KEYBOARD_NAME
+        default "My Keyboard"
+
+    config ZMK_SPLIT_ROLE_CENTRAL
+        default y
+
+    config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+        default 2
+
+    # Increase the transmit power of the dongle
+    config BT_CLTR_TX_PWR_PLUS_8
+        default y
+
+endif
+
+
+if SHIELD_MY_KEYBOARD_LEFT
+
+    # Setting this to y will make the left half the central
+    # We want it to be the central when dongle is not used
+    config ZMK_SPLIT_ROLE_CENTRAL
+        default y
+
+    # Check if the left half is the central
+    if ZMK_SPLIT_ROLE_CENTRAL
+        config ZMK_KEYBOARD_NAME
+            default "My Keyboard"
+            
+    endif # ZMK_SPLIT_ROLE_CENTRAL
+
+endif # SHIELD_MY_KEYBOARD_LEFT
+
+if SHIELD_MY_KEYBOARD_DONGLE || SHIELD_MY_KEYBOARD_LEFT || SHIELD_MY_KEYBOARD_RIGHT
+
+    config ZMK_SPLIT
+        default y
 
 endif
 ```
+
+</TabItem>
+</Tabs>
 
 ### Dongle Overlay
 
-In most common cases the dongle will not have any keys, in that case we can instead use a mock kscan module to simulate the keys.
+We will replace the `kscan` with `kscan-mock` in the dongle overlay.
 
-```dts title="my_board_dongle.overlay"
+```dts title="my_keyboard_dongle.overlay"
+// import the default shield configuration
+#include "my_keyboard.dtsi"
 
-/ {
-    chosen {
-        zmk,kscan = &mock_kscan;
-        // zmk,kscan = &kscan0;
-    };
+&kscan {
+    compatible = "zmk,kscan-mock";
 
-    mock_kscan: kscan_0 {
-        compatible = "zmk,kscan-mock";
-        columns = <0>;
-        rows = <0>;
-        events = <0>;
-    };
-};
+    columns = <0>;
+    rows = <0>;
+    events = <0>;
+}
+
 ```
 
-### Building the firmware
 
-After writing the configuration files, you can modify the `build.yml` file to include the dongle configuration.
+## Enabling the Dongle
 
-Please keep in mind that the dongle does not have to be the same microcontroller as the keyboard halves.
-Any microcontroller can be used as the dongle that supports BLE.
+Now that we have defined the default shield configuration, we can easily enable the dongle in the user configuration.
+
+For a split keyboard, change this
+
+```kconfig title="config/my_keyboard_left.conf"
+# Disable central role to use dongle
+CONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
+```
+
+For a unibody keyboard, change this
+
+```kconfig title="config/my_keyboard.conf"
+# Enable split functionality, this will put the unibody keyboard in peripheral mode
+CONFIG_ZMK_SPLIT=y
+```
+
+
+## Building the firmware
+
+:::note
+Start by flashing the `settings_reset` firmware on all the devices.
+:::
+
+For a split keyboard, you can modify the `build.yml` file to include the dongle configuration.
 
 ```yaml
 include:
   - board: nice_nano_v2
-    shield: my_board_left
+    shield: my_keyboard_left
   - board: nice_nano_v2
-    shield: my_board_right
+    shield: my_keyboard_right
   - board: nice_nano_v2
-    shield: my_board_dongle
+    shield: my_keyboard_dongle
   - board: nice_nano_v2
     shield: settings_reset
 ```
 
-After creating your fresh new firmware files, 
-you can go ahead and flash the settings_reset firmware for each half of the keyboard (including the dongle).
-Flash the dongle firmware to the dongle and the left and right firmware to the respective halves.
+For a unibody keyboard, you can modify the `build.yml` file to include the dongle configuration.
 
-:::note
-More information about reseting split keyboards can be found under [Troubleshooting Connection Issues](../troubleshooting/connection-issues.mdx#reset-split-keyboard-procedure)
-:::
+```yaml
+include:
+  - board: nice_nano_v2
+    shield: my_keyboard
+  - board: nice_nano_v2
+    shield: my_keyboard_dongle
+  - board: nice_nano_v2
+    shield: settings_reset
+```
