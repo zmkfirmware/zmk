@@ -8,6 +8,8 @@ import TabItem from "@theme/TabItem";
 
 :::warning
 This implementation is experimental and subject to change.
+
+The information below is for [shield+board](../faq.md#why-boards-and-shields-why-not-just-keyboard) configuration, [board](../faq.md#what-is-a-board) builds is not documented.
 :::
 
 A bluetooth dongle can be added to any keyboard running ZMK. The result is a [split keyboard](./split-keyboards.md) with the dongle as "central". There are a number of advantages to adding a dongle, but also some disadvantages:
@@ -22,28 +24,31 @@ Disadvantages:
 - An extra microcontroller is needed.
 - The keyboard becomes unusable without the dongle.
 
+:::note
+Depending on how the dongle is used, there are some additional [latency considerations](./split-keyboards.md#latency-considerations) to keep in mind. 
+:::
 
 
 ## Editing a Keyboard Definition to Support a Dongle
 
-
-In the examples below, we will be modifying the [New Keyboard Shield](../development/new-shield.mdx) guide files and will be building on top of that.
-
-We will add the dongle in a way that it can be easily enabled, but is disabled by default.
+You will modify the [files defining your keyboard](../config/index.md#shield-folder) to support a dongle. 
+The recommended approach to doing so (found below) allows you to easily enable a dongle, but it is disabled by default. 
+This is done to ensure that backwards compatibility is maintained for users who do not wish to use a dongle.
 
 ### Shield Configuration Files
 
 
-Lets start by adding the dongle body to the shield configuration.
+Start by adding the dongle body to the shield configuration.
 
 ```kconfig title="Kconfig.shield"
 config SHIELD_MY_KEYBOARD_DONGLE
     def_bool $(shields_list_contains,my_keyboard_dongle)
 ```
 
-### Keyboard Defconfig
+### Shield Defconfig Files
 
-Next, you will need to add the dongle configuration to your keyboard's `Kconfig.defconfig`.
+Next, add the dongle configuration to your keyboard's `Kconfig.defconfig`.
+
 <Tabs
 defaultValue="unibody"
 values={[
@@ -85,9 +90,16 @@ endif
 </TabItem>
 <TabItem value="split">
 
-Next we will modify the following lines
+Add the following to your `Kconfig.defconfig` file.
 
 ```kconfig title="Kconfig.defconfig"
+if SHIELD_MY_KEYBOARD_DONGLE || SHIELD_MY_KEYBOARD_LEFT || SHIELD_MY_KEYBOARD_RIGHT
+
+    config ZMK_SPLIT
+        default y
+
+endif
+
 if SHIELD_MY_KEYBOARD_DONGLE
 
     config ZMK_KEYBOARD_NAME
@@ -104,7 +116,11 @@ if SHIELD_MY_KEYBOARD_DONGLE
         default y
 
 endif
+```
 
+Modify the `Kconfig.defconfig` file to include the following:
+
+```kconfig title="Kconfig.defconfig"
 
 if SHIELD_MY_KEYBOARD_LEFT
 
@@ -121,21 +137,18 @@ if SHIELD_MY_KEYBOARD_LEFT
     endif # ZMK_SPLIT_ROLE_CENTRAL
 
 endif # SHIELD_MY_KEYBOARD_LEFT
-
-if SHIELD_MY_KEYBOARD_DONGLE || SHIELD_MY_KEYBOARD_LEFT || SHIELD_MY_KEYBOARD_RIGHT
-
-    config ZMK_SPLIT
-        default y
-
-endif
 ```
 
 </TabItem>
 </Tabs>
 
-### Dongle Overlay
+### Dongle Overlay File
 
-We will replace the `kscan` with `kscan-mock` in the dongle overlay.
+Replace the `kscan` with `kscan-mock` in the dongle overlay.
+
+:::warning
+Matrix transform must be included here or in the `my_keyboard.dtsi` file.
+:::
 
 ```dts title="my_keyboard_dongle.overlay"
 // import the default shield configuration
@@ -154,7 +167,7 @@ We will replace the `kscan` with `kscan-mock` in the dongle overlay.
 
 ## Enabling the Dongle
 
-Now that we have defined the default shield configuration, we can easily enable the dongle in the user configuration.
+Now it is possible to enable the dongle in the user configuration.
 
 For a split keyboard, change this
 
@@ -173,10 +186,6 @@ CONFIG_ZMK_SPLIT=y
 
 ## Building the firmware
 
-:::warning
-Before flashing your new firmware, flash the `settings_reset` firmware on all devices.
-:::
-
 Add the appropriate lines to your `build.yml` file to build the firmware for your dongle, in addition to the other parts of your keyboard.
 
 ```yaml
@@ -186,4 +195,14 @@ include:
 # -----------------------------------------
   - board: nice_nano_v2
     shield: my_keyboard_dongle
+  - board: nice_nano_v2
+    shield: settings_reset
 ```
+
+:::note
+Any microcontroller with BLE support can be used as a dongle.
+:::
+
+:::warning
+Before flashing your new firmware, flash the `settings_reset` [UF2 firmware](../troubleshooting/connection-issues.mdx#acquiring-a-reset-uf2) on all devices.
+:::
