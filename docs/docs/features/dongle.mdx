@@ -43,7 +43,7 @@ config SHIELD_MY_KEYBOARD_DONGLE
 
 ### Keyboard Defconfig
 
-
+Next, you will need to add the dongle configuration to your keyboard's `Kconfig.defconfig`.
 <Tabs
 defaultValue="unibody"
 values={[
@@ -52,8 +52,6 @@ values={[
 ]}
 >
 <TabItem value="unibody">
-
-Next we will modify the following lines
 
 ```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_KEYBOARD_DONGLE
