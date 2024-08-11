@@ -114,9 +114,11 @@ While you can find [documented workarounds](https://wiki.archlinux.org/title/blu
 Rarely, due to a manufacturing error, a device may have a faulty oscillator. This prevents it from functioning correctly wirelessly, and can be difficult to diagnose. Some microcontrollers, such as the `nRF52840`, allow for the usage of an internal oscillator instead of an external one. This results in increased power draw, but can be a solution if your device does indeed have a faulty oscillator.
 
 For the `nRF52840`, the flag to set to use the internal oscillator is:
+
 ```
 CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y
 ```
+
 Other microcontrollers may have similar configuration options [found in the Zephyr documentation](https://docs.zephyrproject.org/3.5.0/search.html?q=CONFIG_CLOCK_CONTROL&check_keywords=yes&area=default). Do note that not all microcontrollers allow for the use of an internal oscillator, though.
 
 ## Issues While Connected
