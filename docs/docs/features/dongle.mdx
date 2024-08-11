@@ -179,28 +179,13 @@ CONFIG_ZMK_SPLIT=y
 Before flashing your new firmware, flash the `settings_reset` firmware on all devices.
 :::
 
-For a split keyboard, you can modify the `build.yml` file to include the dongle configuration.
+Add the appropriate lines to your `build.yml` file to build the firmware for your dongle, in addition to the other parts of your keyboard.
 
 ```yaml
 include:
-  - board: nice_nano_v2
-    shield: my_keyboard_left
-  - board: nice_nano_v2
-    shield: my_keyboard_right
-  - board: nice_nano_v2
-    shield: my_keyboard_dongle
-  - board: nice_nano_v2
-    shield: settings_reset
-```
-
-For a unibody keyboard, you can modify the `build.yml` file to include the dongle configuration.
-
-```yaml
-include:
-  - board: nice_nano_v2
-    shield: my_keyboard
+# -----------------------------------------
+# Your other keyboard parts here
+# -----------------------------------------
   - board: nice_nano_v2
     shield: my_keyboard_dongle
-  - board: nice_nano_v2
-    shield: settings_reset
 ```
