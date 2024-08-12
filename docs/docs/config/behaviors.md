@@ -51,6 +51,13 @@ Creates a custom behavior that triggers one behavior when a key is held or a dif
 
 See the [hold-tap behavior](../behaviors/hold-tap.mdx) documentation for more details and examples.
 
+### Kconfig
+
+| Config                                             | Type | Description                                                                                   | Default |
+| -------------------------------------------------- | ---- | --------------------------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD`            | int  | Maximum number of simultaneous held hold-taps.                                                | 10      |
+| `CONFIG_ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS` | int  | Maximum number of system events to capture while deferring a hold or tap decision resolution. | 40      |
+
 ### Devicetree
 
 Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-hold-tap.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-hold-tap.yaml)
@@ -226,6 +233,12 @@ With `compatible = "zmk,behavior-sensor-rotate-var"`, this behavior forwards the
 Creates a custom behavior that triggers a behavior and keeps it pressed it until another key is pressed and released.
 
 See the [sticky key behavior](../behaviors/sticky-key.md) and [sticky layer behavior](../behaviors/sticky-layer.md) documentation for more details and examples.
+
+### Kconfig
+
+| Config                                    | Type | Description                                      | Default |
+| ----------------------------------------- | ---- | ------------------------------------------------ | ------- |
+| `CONFIG_ZMK_BEHAVIOR_STICKY_KEY_MAX_HELD` | int  | Maximum number of simultaneous held sticky keys. | 10      |
 
 ### Devicetree
 
