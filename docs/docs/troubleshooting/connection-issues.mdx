@@ -109,7 +109,7 @@ Some devices and operating systems may have additional restrictions that they re
 Since ZMK associates pairing/bond keys with hardware addresses of hosts, you cannot pair to two different operating systems in a dual boot system at the same time.
 While you can find [documented workarounds](https://wiki.archlinux.org/title/bluetooth#Dual_boot_pairing) that involve copying pairing keys across operating systems and use both OS with a single profile, they can be fairly involved and should be followed with caution.
 
-### Mitigating Faulty Oscillator
+### Mitigating a Faulty Oscillator
 
 Rarely, due to a manufacturing error, a device may have a faulty oscillator. This prevents it from functioning correctly wirelessly, and can be difficult to diagnose. Some microcontrollers, such as the `nRF52840`, allow for the usage of an internal oscillator instead of an external one. This results in increased power draw, but can be a solution if your device does indeed have a faulty oscillator.
 
