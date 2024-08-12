@@ -53,10 +53,10 @@ See the [hold-tap behavior](../behaviors/hold-tap.mdx) documentation for more de
 
 ### Kconfig
 
-| Config                                             | Type | Description                                                                                   | Default |
-| -------------------------------------------------- | ---- | --------------------------------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD`            | int  | Maximum number of simultaneous held hold-taps.                                                | 10      |
-| `CONFIG_ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS` | int  | Maximum number of system events to capture while deferring a hold or tap decision resolution. | 40      |
+| Config                                             | Type | Description                                                                                  | Default |
+| -------------------------------------------------- | ---- | -------------------------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD`            | int  | Maximum number of simultaneous held hold-taps                                                | 10      |
+| `CONFIG_ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS` | int  | Maximum number of system events to capture while deferring a hold or tap decision resolution | 40      |
 
 ### Devicetree
 
@@ -236,9 +236,9 @@ See the [sticky key behavior](../behaviors/sticky-key.md) and [sticky layer beha
 
 ### Kconfig
 
-| Config                                    | Type | Description                                      | Default |
-| ----------------------------------------- | ---- | ------------------------------------------------ | ------- |
-| `CONFIG_ZMK_BEHAVIOR_STICKY_KEY_MAX_HELD` | int  | Maximum number of simultaneous held sticky keys. | 10      |
+| Config                                    | Type | Description                                     | Default |
+| ----------------------------------------- | ---- | ----------------------------------------------- | ------- |
+| `CONFIG_ZMK_BEHAVIOR_STICKY_KEY_MAX_HELD` | int  | Maximum number of simultaneous held sticky keys | 10      |
 
 ### Devicetree
 
