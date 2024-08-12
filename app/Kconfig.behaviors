@@ -40,6 +40,29 @@ endchoice
 
 endif
 
+
+config ZMK_BEHAVIOR_HOLD_TAP
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_HOLD_TAP_ENABLED
+
+if ZMK_BEHAVIOR_HOLD_TAP
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD
+    int "Hold Tap Max Held"
+    default 10
+    help
+      Max number of simultaneously held hold-taps
+
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS
+    int "Hold Tap Max Captured Events"
+    default 40
+    help
+      Max number of captured system events while waiting to resolve hold taps
+
+endif
+
 config ZMK_BEHAVIOR_KEY_TOGGLE
     bool
     default y
@@ -50,6 +73,21 @@ config ZMK_BEHAVIOR_MOUSE_KEY_PRESS
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_MOUSE_KEY_PRESS_ENABLED
     imply ZMK_MOUSE
+
+config ZMK_BEHAVIOR_STICKY_KEY
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_STICKY_KEY_ENABLED
+
+if ZMK_BEHAVIOR_STICKY_KEY
+
+config ZMK_BEHAVIOR_STICKY_KEY_MAX_HELD
+    int "Sticky Key Max Held"
+    default 10
+    help
+      Max number of simultaneously held sticky keys
+
+endif
 
 config ZMK_BEHAVIOR_SOFT_OFF
     bool
