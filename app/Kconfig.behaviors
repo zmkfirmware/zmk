@@ -54,7 +54,6 @@ config ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD
     help
       Max number of simultaneously held hold-taps
 
-
 config ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS
     int "Hold Tap Max Captured Events"
     default 40
