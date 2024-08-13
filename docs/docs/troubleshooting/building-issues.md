@@ -29,6 +29,8 @@ A `devicetree error` followed by a reference to the line number on `<keyboard>.k
 devicetree error: /__w/zmk-config/zmk-config/config/cradio.keymap:109 (column 4): parse error: expected ';' or ','
 ```
 
+Note that the provided number for the column corresponds to the numbering after the preprocessor expansion and it will likely not match the column numbers in your keymap.
+
 A `devicetree error` followed by an `empty_file.c` reference with `lacks #binding-cells` string indicates possible problems with improper parameters for specific bindings:
 
 ```
