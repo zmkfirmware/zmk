@@ -37,11 +37,9 @@ ZMK will search for config files in:
 
 ...where `<board>` is the name of the board and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the board.
 
-ZMK will search the board folder for the following config files:
+ZMK will search the board folder for the following config files _in addition_ to [Zephyr board-defining files](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html#create-your-board-directory):
 
-- `<board>_defconfig` (Kconfig)
 - `<board>.conf` (Kconfig)
-- `<board>.dts` (Devicetree)
 - `<board>.keymap` (Devicetree, keyboards with onboard controllers only)
 
 Shared config files (excluding any `_left` or `_right` suffix) are not currently supported in board folders.
@@ -59,10 +57,9 @@ When building with a shield, ZMK will search for config files in:
 
 ...where `<shield>` is the name of the shield and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the shield that the board is plugged into.
 
-ZMK will search the shield folder for the following config files:
+ZMK will search the shield folder for the following config files _in addition_ to [Zephyr shield-defining files](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shield-porting-and-configuration):
 
 - `<shield>.conf` (Kconfig)
-- `<shield>.overlay` (Devicetree)
 - `<shield>.keymap` (Devicetree)
 
 Shared config files (excluding any `_left` or `_right` suffix) are not currently supported in shield folders.
