@@ -22,6 +22,10 @@ export const Uf2Tabs = (props) => (
 
 );
 
+:::tip
+[USB logging](../development/usb-logging.mdx) can be very helpful for diagnosing issues with ZMK. However, when connected to USB your ZMK device will output to USB by default. To troubleshoot wireless connection issues using logging, you will need to [change the preferred output endpoint](../behaviors/outputs.md).
+:::
+
 ## Split Keyboard Halves Unable to Pair
 
 [Split keyboard](../features/split-keyboards.md) halves will automatically pair with one another, but there are some cases where this breaks, and the pairing needs to be reset, for example:
@@ -104,6 +108,18 @@ Some devices and operating systems may have additional restrictions that they re
 
 Since ZMK associates pairing/bond keys with hardware addresses of hosts, you cannot pair to two different operating systems in a dual boot system at the same time.
 While you can find [documented workarounds](https://wiki.archlinux.org/title/bluetooth#Dual_boot_pairing) that involve copying pairing keys across operating systems and use both OS with a single profile, they can be fairly involved and should be followed with caution.
+
+### Mitigating a Faulty Oscillator
+
+Rarely, due to a manufacturing error, a device may have a faulty oscillator. This prevents it from functioning correctly wirelessly and can be difficult to diagnose. Some microcontrollers such as the `nRF52840` allow for the usage of an internal oscillator instead of an external one. This results in increased power draw but can be a solution if your device does indeed have a faulty oscillator.
+
+For the `nRF52840`, the flag to set to use the internal oscillator is:
+
+```
+CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y
+```
+
+Other microcontrollers may have similar configuration options [found in the Zephyr documentation](https://docs.zephyrproject.org/3.5.0/search.html?q=CONFIG_CLOCK_CONTROL&check_keywords=yes&area=default). Do note that not all microcontrollers allow for the use of an internal oscillator, though.
 
 ## Issues While Connected
 
