@@ -1,0 +1,31 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/backlight.h>
+
+/ {
+    chosen {
+        zmk,backlight = &backlight;
+    };
+
+    backlight: leds {
+        compatible = "gpio-leds";
+        led_0 {
+            gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
+        };
+        led_1 {
+            gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &bl BL_INC &bl BL_DEC
+                &bl BL_ON  &bl BL_OFF
+            >;
+        };
+    };
+};

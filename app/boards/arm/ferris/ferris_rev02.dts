@@ -1,0 +1,161 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+#include <st/f0/stm32f072Xb.dtsi>
+#include <st/f0/stm32f072v(8-b)tx-pinctrl.dtsi>
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    model = "Ferris rev0.2";
+    compatible = "ferris,rev02", "st,stm32f072";
+
+    chosen {
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+        zmk,kscan = &kscan;
+        zmk,matrix-transform = &transform;
+        /* TODO: Enable once we support the IC for underglow
+        zmk,underglow = &led_strip;
+         */
+    };
+
+    transform: transform {
+        compatible = "zmk,matrix-transform";
+        rows = <4>;
+        columns = <10>;
+
+        map = <
+        RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4)     RC(0,5) RC(0,6) RC(0,7) RC(0,8) RC(0,9)
+        RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)     RC(1,5) RC(1,6) RC(1,7) RC(1,8) RC(1,9)
+        RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4)     RC(2,5) RC(2,6) RC(2,7) RC(2,8) RC(2,9)
+        RC(3,3)  RC(3,4)     RC(3,5) RC(3,6)
+        >;
+    };
+
+    kscan: kscan {
+        compatible = "zmk,kscan-composite";
+        rows = <4>;
+        columns = <10>;
+
+        left {
+            kscan = <&kscan_left>;
+        };
+
+        right {
+            kscan = <&kscan_right>;
+            column-offset = <5>;
+        };
+    };
+
+    kscan_left: kscan_left {
+        compatible = "zmk,kscan-gpio-matrix";
+
+        diode-direction = "col2row";
+
+        col-gpios
+        = <&gpiob 8 (GPIO_ACTIVE_HIGH)>
+        , <&gpiob 4 (GPIO_ACTIVE_HIGH)>
+        , <&gpiob 3 (GPIO_ACTIVE_HIGH)>
+        , <&gpioa 15 (GPIO_ACTIVE_HIGH)>
+        , <&gpioa 14 (GPIO_ACTIVE_HIGH)>
+        ;
+        row-gpios
+        = <&gpiob 7  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpiob 6  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpiob 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpioa 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        ;
+    };
+
+    kscan_right: kscan_right {
+        compatible = "zmk,kscan-gpio-matrix";
+
+        diode-direction = "row2col";
+
+        col-gpios
+        = <&right_io 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&right_io 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&right_io 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&right_io 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        , <&right_io 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+        ;
+        row-gpios
+        = <&right_io 8  (GPIO_ACTIVE_LOW)>
+        , <&right_io 9  (GPIO_ACTIVE_LOW)>
+        , <&right_io 10 (GPIO_ACTIVE_LOW)>
+        , <&right_io 11 (GPIO_ACTIVE_LOW)>
+        ;
+    };
+};
+
+&i2c2 {
+    pinctrl-0 = <&i2c2_scl_pb10 &i2c2_sda_pb11>;
+    pinctrl-names = "default";
+    status = "okay";
+    clock-frequency = <I2C_BITRATE_FAST>;
+
+    right_io: mcp23017@20 {
+        compatible = "microchip,mcp230xx";
+        status = "okay";
+        gpio-controller;
+        reg = <0x20>;
+        #gpio-cells = <2>;
+        ngpios = <16>;
+    };
+};
+
+zephyr_udc0: &usb {
+    status = "okay";
+
+    pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
+    pinctrl-names = "default";
+};
+
+&clk_hsi {
+    status = "okay";
+};
+
+&clk_hsi48 {
+    status = "okay";
+};
+
+&pll {
+    prediv = <1>;
+    mul = <6>;
+    clocks = <&clk_hsi>;
+    status = "okay";
+};
+
+&rcc {
+    clocks = <&pll>;
+    clock-frequency = <DT_FREQ_M(48)>;
+    ahb-prescaler = <1>;
+    apb1-prescaler = <1>;
+};
+
+
+&rtc {
+    status = "okay";
+};
+
+&flash0 {
+    /*
+     * For more information, see:
+     * http: //docs.zephyrproject.org/latest/guides/dts/index.html#flash-partitions
+     */
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        /* Set 6Kb of storage at the end of the 128Kb of flash */
+        storage_partition: partition@3e800 {
+            reg = <0x0001e800 0x00001800>;
+        };
+    };
+};

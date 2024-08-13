@@ -1,0 +1,8 @@
+# Ferris board configuration
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_FERRIS
+    bool "Ferris rev 0.2"
+    depends on SOC_STM32F072XB

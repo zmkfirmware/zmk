@@ -5,11 +5,12 @@
  */
 
 / {
-	behaviors {
-		/omit-if-no-ref/ ext_power: behavior_ext_power {
-			compatible = "zmk,behavior-ext-power";
-			label = "EXT_POWER_BEHAVIOR";
-			#binding-cells = <1>;
-		};
-	};
+    behaviors {
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        ext_power: extpower {
+            compatible = "zmk,behavior-ext-power";
+            #binding-cells = <1>;
+            display-name = "External Power";
+        };
+    };
 };

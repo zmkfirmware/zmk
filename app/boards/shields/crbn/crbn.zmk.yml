@@ -1,0 +1,9 @@
+file_format: "1"
+id: crbn
+name: CRBN Featherlight
+type: shield
+url: https://github.com/PolarityWorks/CRBN-Featherlight
+requires: [pro_micro]
+features:
+  - keys
+  - encoder

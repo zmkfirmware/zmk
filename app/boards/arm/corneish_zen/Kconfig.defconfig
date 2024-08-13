@@ -1,0 +1,88 @@
+#
+# Copyright (c) 2022 Darryl deHaan
+# SPDX-License-Identifier: MIT
+#
+
+if BOARD_CORNEISH_ZEN_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Corne-ish Zen"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif # BOARD_CORNEISH_ZEN_LEFT
+
+
+if BOARD_CORNEISH_ZEN_LEFT || BOARD_CORNEISH_ZEN_RIGHT
+
+config BOARD
+    default "corneish_zen"
+
+config ZMK_SPLIT
+    default y
+
+config BT_CTLR
+    default BT
+
+if USB
+
+config USB_NRFX
+    default y
+
+config USB_DEVICE_STACK
+    default y
+
+endif # USB
+
+config ZMK_DISPLAY
+    select LV_USE_CONT
+    select LV_FONT_MONTSERRAT_26
+    select LV_FONT_MONTSERRAT_16
+    select LV_USE_LABEL
+    select LV_USE_IMG
+
+choice ZMK_DISPLAY_STATUS_SCREEN
+    default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+endchoice
+
+if ZMK_DISPLAY
+
+config SPI
+    default y
+
+config IL0323
+    default y
+
+config ZMK_DISPLAY_BLANK_ON_IDLE
+    default n
+
+# Needed for the IL0323 driver which allocs memory to clear the display
+config HEAP_MEM_POOL_SIZE
+    default 1024
+
+ config LV_Z_MEM_POOL_SIZE
+     default 4096
+
+endif # ZMK_DISPLAY
+
+menuconfig CUSTOM_WIDGET_BATTERY_STATUS
+    bool "custom battery status widget"
+
+menuconfig CUSTOM_WIDGET_OUTPUT_STATUS
+    bool "custom output status widget"
+
+menuconfig CUSTOM_WIDGET_LAYER_STATUS
+    bool "custom layer status widget"
+
+menuconfig CUSTOM_WIDGET_PERIPHERAL_STATUS
+    bool "custom peripheral status widget"
+
+endif # BOARD_CORNEISH_ZEN_LEFT || BOARD_CORNEISH_ZEN_RIGHT
+
+if BOARD_CORNEISH_ZEN_V1_LEFT || BOARD_CORNEISH_ZEN_V1_RIGHT
+
+config BQ274XX
+    default y
+
+endif # BOARD_CORNEISH_ZEN_V1_LEFT || BOARD_CORNEISH_ZEN_V1_RIGHT

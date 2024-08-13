@@ -1,0 +1,24 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+&kscan {
+    events =
+    <ZMK_MOCK_PRESS(1,1,1000)
+    ZMK_MOCK_RELEASE(1,1,2000)
+    ZMK_MOCK_PRESS(0,0,100)
+    ZMK_MOCK_RELEASE(0,0,1000)>;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+            &kp A &kp B
+            &bt BT_SEL 0 &bt BT_CLR>;
+        };
+    };
+};

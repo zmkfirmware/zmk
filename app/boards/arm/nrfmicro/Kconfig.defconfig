@@ -3,41 +3,26 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if BOARD_NRFMICRO_11 || BOARD_NRFMICRO_11_FLIPPED || BOARD_NRFMICRO_13
+if BOARD_NRFMICRO_11 || BOARD_NRFMICRO_11_FLIPPED || BOARD_NRFMICRO_13 || BOARD_NRFMICRO_13_52833
 
 config BOARD
-	default "nrfmicro"
+    default "nrfmicro"
 
-if USB
+if USB_DEVICE_STACK
 
 config USB_NRFX
-	default y
+    default y
 
-config USB_DEVICE_STACK
-	default y
-
-endif # USB
+endif # USB_DEVICE_STACK
 
 config BT_CTLR
-	default BT
+    default BT
 
-config ZMK_BLE
-	default y
-
-config ZMK_USB
-	default y
-
-config PINMUX
-	default y
-
-if BOARD_NRFMICRO_13
+if BOARD_NRFMICRO_13 || BOARD_NRFMICRO_13_52833
 
 config BOARD_NRFMICRO_CHARGER
-	default y
+    default y
 
-config ZMK_BATTERY_VOLTAGE_DIVIDER
-	default y
+endif # BOARD_NRFMICRO_13 || BOARD_NRFMICRO_13_52833
 
-endif # BOARD_NRFMICRO_13
-
-endif # BOARD_NRFMICRO_11 || BOARD_NRFMICRO_11_FLIPPED || BOARD_NRFMICRO_13
+endif # BOARD_NRFMICRO_11 || BOARD_NRFMICRO_11_FLIPPED || BOARD_NRFMICRO_13 || BOARD_NRFMICRO_13_52833

@@ -5,7 +5,7 @@ sidebar_label: Documentation
 
 This document outlines how to test your documentation changes locally and prepare the changes for a pull request.
 
-The documentation is written with [Docusaurus](https://docusaurus.io/). The ZMK source code has all of the necessary Docusaurus dependencies included but referencing their documentation can be helpful at times.
+The documentation is written with [Docusaurus](https://docusaurus.io/). The ZMK source code has all of the necessary Docusaurus dependencies included, but referencing their documentation can be helpful at times.
 
 The general process for updating the ZMK documentation is:
 
@@ -19,7 +19,7 @@ If you are working with the documentation from within VS Code+Docker please be a
 :::
 
 :::note
-You will need `Node.js` and `npm` installed to update the documentation. If you're using the ZMK dev container (Docker) the necessary dependencies are already installed.
+You will need `Node.js` and `npm` installed to update the documentation. If you're using the ZMK dev container (Docker) the necessary dependencies are already installed. Otherwise, you must install these dependencies yourself. Since `Node.js` packages in Linux distributions tend to be outdated, it's recommended to install the current version from a repository like [NodeSource](https://github.com/nodesource/distributions) to avoid build errors.
 :::
 
 ## Testing Documentation Updates Locally
@@ -48,8 +48,14 @@ The check commands can be run with the following procedure in a terminal that's 
 3. Run `npm run lint`
 4. Run `npm run build`
 
-:::warning
+:::danger
 If any of the above steps throw an error, they need to be addressed and all of the checks re-run prior to submitting a pull request.
+:::
+
+:::note
+The documentation uses American English spelling and grammar conventions. Title case is used for the first three heading levels, with sentence case used beyond that.
+
+Please make sure your changes conform to these conventions - prettier and lint are unfortunately unable to do this automatically.
 :::
 
 ## Submitting a Pull Request

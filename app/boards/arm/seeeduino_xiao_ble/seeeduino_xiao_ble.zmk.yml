@@ -1,0 +1,10 @@
+file_format: "1"
+id: seeeduino_xiao_ble
+name: Seeeduino XIAO BLE
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://wiki.seeedstudio.com/XIAO_BLE/
+exposes: [seeed_xiao]

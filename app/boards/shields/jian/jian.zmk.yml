@@ -1,0 +1,11 @@
+file_format: "1"
+id: jian
+name: Jian
+type: shield
+url: https://github.com/KGOH/Jian-Info
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - jian_left
+  - jian_right

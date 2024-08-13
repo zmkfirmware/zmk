@@ -1,2 +1,1 @@
 s/.*hid_listener_keycode_//p
-s/.*combo/combo/p

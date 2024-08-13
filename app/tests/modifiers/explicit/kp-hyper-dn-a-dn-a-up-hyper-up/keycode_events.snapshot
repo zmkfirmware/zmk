@@ -1,4 +1,4 @@
-pressed: usage_page 0x07 keycode 0xe0 implicit_mods 0x00 explicit_mods 0x0e
+pressed: usage_page 0x07 keycode 0xE0 implicit_mods 0x00 explicit_mods 0x0E
 reg: Modifier 0 count 1
 reg: Modifiers set to 0x01
 reg: Modifier 1 count 1
@@ -6,19 +6,19 @@ reg: Modifiers set to 0x03
 reg: Modifier 2 count 1
 reg: Modifiers set to 0x07
 reg: Modifier 3 count 1
-reg: Modifiers set to 0x0f
-mods: Modifiers set to 0x0f
+reg: Modifiers set to 0x0F
+mods: Modifiers set to 0x0F
 pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
-mods: Modifiers set to 0x0f
+mods: Modifiers set to 0x0F
 released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
-mods: Modifiers set to 0x0f
-released: usage_page 0x07 keycode 0xe0 implicit_mods 0x00 explicit_mods 0x0e
+mods: Modifiers set to 0x0F
+released: usage_page 0x07 keycode 0xE0 implicit_mods 0x00 explicit_mods 0x0E
 unreg: Modifier 0 count: 0
 unreg: Modifier 0 released
-unreg: Modifiers set to 0x0e
+unreg: Modifiers set to 0x0E
 unreg: Modifier 1 count: 0
 unreg: Modifier 1 released
-unreg: Modifiers set to 0x0c
+unreg: Modifiers set to 0x0C
 unreg: Modifier 2 count: 0
 unreg: Modifier 2 released
 unreg: Modifiers set to 0x08

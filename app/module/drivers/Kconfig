@@ -1,0 +1,8 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+rsource "gpio/Kconfig"
+rsource "kscan/Kconfig"
+rsource "led_strip/Kconfig"
+rsource "sensor/Kconfig"
+rsource "display/Kconfig"

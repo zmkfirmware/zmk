@@ -1,0 +1,112 @@
+---
+title: "Community Spotlight Series #1: Keymap Editor"
+author: Cem Aksoylar
+author_title: Documentation maintainer
+author_url: https://github.com/caksoylar
+author_image_url: https://avatars.githubusercontent.com/u/7876996
+tags: [keyboards, firmware, community]
+---
+
+import ThemedImage from "@theme/ThemedImage";
+
+<ThemedImage
+  alt="Shows a screenshot of the Keymap Editor application featuring a graphical layout of the Corne Keyboard with a keymap loaded from the nickcoutsos/keymap-editor-demo-crkbd GitHub repository."
+  sources={{
+    light:
+      require("./assets/2023-11-09-keymap-editor/editor-screenshot-light.png")
+        .default,
+    dark: require("./assets/2023-11-09-keymap-editor/editor-screenshot-dark.png")
+      .default,
+  }}
+/>
+
+This blog post is the first in a series of posts where we highlight projects within the ZMK ecosystem that we think are cool and that the users might benefit from knowing about them. We are starting the series with a big one, [Keymap Editor] by [Nick Coutsos](https://github.com/nickcoutsos)!
+
+In the rest of the post we leave it to Nick himself to introduce the project, detail his goals and motivation in developing such a tool, and talk about the future of the project. Stay tuned for future installments in the series!
+
+## What is Keymap Editor?
+
+_[Keymap Editor]_ is a web based graphical editor for ZMK keymaps. It provides a visual way to manage the contents of your keymap and if nothing else offers two critical features:
+
+1. Automatic formatting of the keymap file, so that bindings arrays remain readable
+2. Searchable behaviors, keycodes, commands, etc, so you won't have to remember if it's `LCTL` or `LCTRL` (I just had to double check myself and I guessed wrong, apparently)
+
+## What can Keymap Editor do?
+
+- Render [devicetree keymaps](/docs/features/keymaps) using pre-defined, auto-generated, or side-loadable keyboard layouts
+- Integrate with a GitHub repo to streamline firmware builds, or FileSystem/Clipboard if you'd still rather build locally
+- Edit [combos](/docs/features/combos), [behaviors](/docs/behaviors/key-press), [macros](/docs/behaviors/macros), [conditional layers](/docs/features/conditional-layers) and [rotary encoder bindings](/docs/behaviors/sensor-rotate)
+- Manage references: moving a layer or renaming a behavior will look for references throughout your keymap and update them.
+
+But check back regularly, because I update pretty often. A recent significant achievement was enabling [parameterized macros](/docs/behaviors/macros#parameterized-macros) and tying it in with my existing parameter type resolution so, yeah, you can finally create that reusable macro combining bluetooth profile selection with RGB backlight colour. Or use it for an actual useful thing, even. _(See also: [Using Parameterized Macros in Keymap Editor](https://github.com/nickcoutsos/keymap-editor/wiki/Using-Parameterized-Macros-in-Keymap-Editor))_
+
+My goals are, broadly:
+
+- **Treat code as a first-class entity:** as long as ZMK keymaps are described in devicetree code then an editor needs to produce readable devicetree code.
+- **Flexibly support ZMK features:** use of any ZMK keymap feature should theoretically be achievable within the app. In some cases this can mean more initial setup _(See also: [my thoughts on implementing "autoshift"](https://github.com/nickcoutsos/keymap-editor/wiki/Autoshift-using-ZMK-behaviors))_ but having that foundation makes its easier to add shortcuts and niceties &mdash; something I do quite often now.
+- **Don't get in the way of not-yet-supported features:** If a new ZMK feature is released and the app isn't able to add it natively, you can always edit your keymap file directly. While the app may not _recognize_ the new features, further changes through the app should not break your keymap.
+
+## History of Keymap Editor
+
+When I started writing Keymap Editor I had a handwired Dactyl variant running QMK. Manually editing keymap code was fine, but keeping things readable was important to me, and automating that was the best way to ensure consistency. Programmatically modifying source code was beyond me at the time so the first version persisted keymap data in JSON and spat out formatted versions of both the JSON and C keymaps.
+
+After switching to ZMK I added a few more features, I guess as a pandemic project, and then gradually migrated from generating a templated keymap file to manipulating devicetree syntax directly, and that has made a big difference in adding new ZMK features.
+
+## Why am I doing this?
+
+It started out as a useful tool for me. I shared it with the ZMK community and gained a little traction, and then apparently quite a bit of traction &mdash; turns out it's useful for a lot of people.
+
+I'm a software developer because I enjoy building things. Much of my day-to-day work isn't user facing, so seeing how helpful the keymap editor has been for people in the ZMK community is a big motivator to keep improving it.
+
+## Future plans
+
+### Runtime updates
+
+Streamlining the keymap update process is probably top of mind for most users, but that involves a really big _firmware_ feature, and I'm the wrong person to tackle it.
+
+That said, once there's a protocol I would _absolutely_ be down to integrate it as an additional keymap source. Being able to pull data directly from the keyboard should unlock a lot of possibilities and ease some of the constraints imposed by using devicetree code as a medium.
+
+### Simplifying behavior use
+
+I think a lot of people would like to see the concept of behaviors abstracted away for new users and to prompt them with
+
+- _"When the key is tapped..."_,
+- _"When the key is held..."_,
+- _"When the key is double-tapped..."_ and so on.
+
+Users who are less familiar with ZMK's behaviors and how they are composed may find these prompts to be more intuitive, and their answers could be mapped to an appropriate combination of behaviors managed internally by an editor.
+
+### Uh, what else?
+
+This has been long enough already, if you're looking for a feature I haven't mentioned don't assume I won't add it. Feel free to make feature requests on the GitHub repo, and I'd be happy to discuss it!
+
+## About Me And My Keebs
+
+I like computers and write software. Many in this field enjoy using mechanical
+keyboards for their feel or aesthetics, but what piqued my interest was the
+Dactyl keyboard. I think, ergonomics aside, I'm more interested in the DIY/maker
+aspect than the collecting of keyboards and switches.
+
+So [I made a Dactyl](https://github.com/nickcoutsos/dactyl-flatpacked/), and
+then [I made another Dactyl](https://github.com/nickcoutsos/dactyl-deskmount/)
+and I made a third Dactyl that isn't interesting enough to photograph, but now
+I'm using ZMK so I left room for 18650 cells.
+
+That last Dactyl (with MX browns and a cheap blank XDA keycap set) serves me
+well the eight or so hours a day I'll spend at my desk, but I also spend a good
+deal of time computing on my couch where I'll use... my Macbook's built-in
+keyboard.
+
+In case that's not surprising enough I'll leave you with this: despite all of
+the work and testing I've put into the keymap editor project, I've only updated
+an actual keymap once in the last year.
+
+Thank you and good night.
+
+## More information
+
+- [Keymap Editor Wiki](https://github.com/nickcoutsos/keymap-editor/wiki)
+- [Keymap Editor Discussions](https://github.com/nickcoutsos/keymap-editor/discussions)
+- (YouTube video) [Ben Frain's overview of the Keymap Editor](https://www.youtube.com/watch?v=Vy7IoQAe3oU)
+
+[Keymap Editor]: http://nickcoutsos.github.io/keymap-editor

@@ -3,8 +3,8 @@ kp_released: usage_page 0x07 keycode 0x16 implicit_mods 0x00 explicit_mods 0x00
 to_pressed: position 1 layer 1
 layer_changed: layer 1 state 1
 to_released: position 1 layer 1
-kp_pressed: usage_page 0x07 keycode 0x0e implicit_mods 0x00 explicit_mods 0x00
-kp_released: usage_page 0x07 keycode 0x0e implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x0E implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x0E implicit_mods 0x00 explicit_mods 0x00
 to_pressed: position 0 layer 0
 layer_changed: layer 1 state 0
 layer_changed: layer 0 state 1

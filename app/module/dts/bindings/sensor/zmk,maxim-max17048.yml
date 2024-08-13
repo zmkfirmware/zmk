@@ -1,0 +1,12 @@
+#
+# Copyright (c) 2022 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+#
+
+description: >
+  This is a representation of the Maxim max17048 I2C Fuel Gauge.
+
+compatible: "zmk,maxim-max17048"
+
+include: [i2c-device.yaml]

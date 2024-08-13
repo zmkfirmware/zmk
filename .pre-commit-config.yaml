@@ -1,12 +1,28 @@
 fail_fast: false
 repos:
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.1
+    hooks:
+      - id: remove-tabs
+        exclude: "vendor-prefixes\\.txt$"
   - repo: https://github.com/pocc/pre-commit-hooks
-    rev: v1.1.1
+    rev: v1.3.5
     hooks:
       - id: clang-format
         args:
           - -i
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.2.1
+    rev: v2.7.1
     hooks:
       - id: prettier
+        # Workaround for https://github.com/pre-commit/mirrors-prettier/issues/29
+        additional_dependencies:
+          - prettier@2.8.7
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-shebang-scripts-are-executable
+        exclude: "\\.mustache$"

@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/backlight.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/rgb.h>
+
+// Uncomment the following lines if using the "Direct Wire" jumper to switch the matrix to a direct wire.
+
+// / {
+//     chosen {
+//         zmk,physical-layout = &direct_physical_layout;
+//     };
+// };
+
+/ {
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp A &bl BL_TOG
+                &rgb_ug RGB_EFF &bt BT_CLR
+
+                &kp C &kp D
+                &kp E &kp F
+           >;
+
+           sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+        };
+    };
+};

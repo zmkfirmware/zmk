@@ -5,7 +5,7 @@
  */
 
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -17,56 +17,82 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/endpoints.h>
 
 static int hid_listener_keycode_pressed(const struct zmk_keycode_state_changed *ev) {
-    int err;
+    int err, explicit_mods_changed, implicit_mods_changed;
+
+    if (!is_mod(ev->usage_page, ev->keycode) &&
+        zmk_hid_is_pressed(ZMK_HID_USAGE(ev->usage_page, ev->keycode))) {
+        LOG_DBG("unregistering usage_page 0x%02X keycode 0x%02X since it was already pressed",
+                ev->usage_page, ev->keycode);
+        err = zmk_hid_release(ZMK_HID_USAGE(ev->usage_page, ev->keycode));
+        if (err < 0) {
+            LOG_DBG("Unable to pre-release keycode (%d)", err);
+            return err;
+        }
+        err = zmk_endpoints_send_report(ev->usage_page);
+        if (err < 0) {
+            LOG_ERR("Failed to send key report for pre-releasing keycode (%d)", err);
+        }
+    }
+
     LOG_DBG("usage_page 0x%02X keycode 0x%02X implicit_mods 0x%02X explicit_mods 0x%02X",
             ev->usage_page, ev->keycode, ev->implicit_modifiers, ev->explicit_modifiers);
-    switch (ev->usage_page) {
-    case HID_USAGE_KEY:
-        err = zmk_hid_keyboard_press(ev->keycode);
-        if (err) {
-            LOG_ERR("Unable to press keycode");
-            return err;
-        }
-        break;
-    case HID_USAGE_CONSUMER:
-        err = zmk_hid_consumer_press(ev->keycode);
-        if (err) {
-            LOG_ERR("Unable to press keycode");
-            return err;
-        }
-        break;
+    err = zmk_hid_press(ZMK_HID_USAGE(ev->usage_page, ev->keycode));
+    if (err < 0) {
+        LOG_DBG("Unable to press keycode");
+        return err;
     }
-    zmk_hid_register_mods(ev->explicit_modifiers);
-    zmk_hid_implicit_modifiers_press(ev->implicit_modifiers);
+    explicit_mods_changed = zmk_hid_register_mods(ev->explicit_modifiers);
+    implicit_mods_changed = zmk_hid_implicit_modifiers_press(ev->implicit_modifiers);
+    if (ev->usage_page != HID_USAGE_KEY &&
+        (explicit_mods_changed > 0 || implicit_mods_changed > 0)) {
+        err = zmk_endpoints_send_report(HID_USAGE_KEY);
+        if (err < 0) {
+            LOG_ERR("Failed to send key report for changed mofifiers for consumer page event (%d)",
+                    err);
+        }
+    }
+
     return zmk_endpoints_send_report(ev->usage_page);
 }
 
 static int hid_listener_keycode_released(const struct zmk_keycode_state_changed *ev) {
-    int err;
+    int err, explicit_mods_changed, implicit_mods_changed;
+
     LOG_DBG("usage_page 0x%02X keycode 0x%02X implicit_mods 0x%02X explicit_mods 0x%02X",
             ev->usage_page, ev->keycode, ev->implicit_modifiers, ev->explicit_modifiers);
-    switch (ev->usage_page) {
-    case HID_USAGE_KEY:
-        err = zmk_hid_keyboard_release(ev->keycode);
-        if (err) {
-            LOG_ERR("Unable to release keycode");
-            return err;
-        }
-        break;
-    case HID_USAGE_CONSUMER:
-        err = zmk_hid_consumer_release(ev->keycode);
-        if (err) {
-            LOG_ERR("Unable to release keycode");
-            return err;
-        }
+    err = zmk_hid_release(ZMK_HID_USAGE(ev->usage_page, ev->keycode));
+    if (err < 0) {
+        LOG_DBG("Unable to release keycode");
+        return err;
     }
-    zmk_hid_unregister_mods(ev->explicit_modifiers);
+
+#if IS_ENABLED(CONFIG_ZMK_HID_SEPARATE_MOD_RELEASE_REPORT)
+
+    // send report of normal key release early to fix the issue
+    // of some programs recognizing the implicit_mod release before the actual key release
+    err = zmk_endpoints_send_report(ev->usage_page);
+    if (err < 0) {
+        LOG_ERR("Failed to send key report for the released keycode (%d)", err);
+    }
+
+#endif // IS_ENABLED(CONFIG_ZMK_HID_SEPARATE_MOD_RELEASE_REPORT)
+
+    explicit_mods_changed = zmk_hid_unregister_mods(ev->explicit_modifiers);
     // There is a minor issue with this code.
     // If LC(A) is pressed, then LS(B), then LC(A) is released, the shift for B will be released
     // prematurely. This causes if LS(B) to repeat like Bbbbbbbb when pressed for a long time.
     // Solving this would require keeping track of which key's implicit modifiers are currently
     // active and only releasing modifiers at that time.
-    zmk_hid_implicit_modifiers_release();
+    implicit_mods_changed = zmk_hid_implicit_modifiers_release();
+
+    if (ev->usage_page != HID_USAGE_KEY &&
+        (explicit_mods_changed > 0 || implicit_mods_changed > 0)) {
+        err = zmk_endpoints_send_report(HID_USAGE_KEY);
+        if (err < 0) {
+            LOG_ERR("Failed to send key report for changed mofifiers for consumer page event (%d)",
+                    err);
+        }
+    }
     return zmk_endpoints_send_report(ev->usage_page);
 }
 

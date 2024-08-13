@@ -14,20 +14,23 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: bahmutov/npm-install@v1
         with:
           working-directory: docs
       - name: ESLint
         run: npm run lint
         working-directory: docs
-  prettier:
+  typecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: bahmutov/npm-install@v1
         with:
           working-directory: docs
-      - name: Prettier check
-        run: npm run prettier:check
+      - name: Build
+        run: npm run build
+        working-directory: docs
+      - name: TypeScript check
+        run: npm run typecheck
         working-directory: docs

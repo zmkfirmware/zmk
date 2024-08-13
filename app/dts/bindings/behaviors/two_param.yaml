@@ -1,10 +1,13 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+include: behavior-metadata.yaml
+
 properties:
   label:
     type: string
-    required: true
+    required: false
+    deprecated: true
   "#binding-cells":
     type: int
     required: true

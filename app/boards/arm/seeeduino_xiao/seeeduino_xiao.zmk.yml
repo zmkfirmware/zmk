@@ -1,0 +1,9 @@
+file_format: "1"
+id: seeeduino_xiao
+name: Seeeduino XIAO
+type: board
+arch: arm
+outputs:
+  - usb
+url: https://wiki.seeedstudio.com/Seeeduino-XIAO/
+exposes: [seeed_xiao]

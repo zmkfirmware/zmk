@@ -1,0 +1,18 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Driver for a dedicated key for waking the device from sleep
+
+compatible: "zmk,gpio-key-wakeup-trigger"
+
+include: base.yaml
+
+properties:
+  trigger:
+    type: phandle
+    required: true
+    description: The GPIO key that triggers wake via interrupt
+  extra-gpios:
+    type: phandle-array
+    description: Optional set of pins that should be set active before sleeping.

@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+ / {
+    behaviors {
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        /omit-if-no-ref/ bl: bcklight {
+            compatible = "zmk,behavior-backlight";
+            #binding-cells = <2>;
+            display-name = "Backlight";
+        };
+    };
+};

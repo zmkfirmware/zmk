@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <kernel.h>
+#include <zephyr/kernel.h>
 #include <zmk/events/sensor_event.h>
 
 ZMK_EVENT_IMPL(zmk_sensor_event);

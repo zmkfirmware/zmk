@@ -1,0 +1,4 @@
+s/.*hid_listener_keycode_//p
+s/.*hid_implicit_modifiers_//p
+s/.*caps_word_enhance_usage/enhance_usage/p
+s/.*caps_word_is_caps_includelist/caps_includelist/p

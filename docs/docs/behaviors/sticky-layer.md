@@ -16,7 +16,7 @@ By default, sticky layers stay pressed for a second if you don't press any other
 
 Example:
 
-```
+```dts
 &sl 1
 ```
 
@@ -24,7 +24,7 @@ Example:
 
 You can configure a different `release-after-ms` in your keymap:
 
-```
+```dts
 &sl {
     release-after-ms = <2000>;
 };
@@ -32,13 +32,13 @@ You can configure a different `release-after-ms` in your keymap:
 / {
     keymap {
         ...
-    }
-}
+    };
+};
 ```
 
-### Advanced usage
+### Advanced Usage
 
-Sticky layers behave slightly different from sticky keys. They are configured to `quick-release`. This means that the layer is released immediately when another key is pressed. "Normal" sticky keys are not `quick-release`; they are released when the next key is released. This makes it possible to combine sticky layers and sticky keys as such: tap `&sl 1`, tap `&sk LSHFT` on layer 1, tap `&kp A` on base layer to output shift+A.
+Sticky layers behave slightly different from sticky keys. They are configured to `quick-release`. This means that the layer is released immediately when another key is pressed. "Normal" sticky keys are not `quick-release`; they are released when the next key is released. This makes it possible to combine sticky layers and sticky keys as such: tap `&sl 1`, tap `&sk LSHIFT` on layer 1, tap `&kp A` on base layer to output shift+A.
 
 ### Comparison to QMK
 

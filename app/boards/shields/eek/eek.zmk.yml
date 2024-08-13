@@ -1,0 +1,8 @@
+file_format: "1"
+id: eek
+name: eek!
+type: shield
+url: https://github.com/Klackygears/eek_doc
+requires: [pro_micro]
+features:
+  - keys

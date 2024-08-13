@@ -7,3 +7,8 @@ west-commands:
       - name: test
         class: Test
         help: run ZMK testsuite
+  - file: scripts/west_commands/metadata.py
+    commands:
+      - name: metadata
+        class: Metadata
+        help: Operate on ZMK metadata files

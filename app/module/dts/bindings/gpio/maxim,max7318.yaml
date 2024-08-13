@@ -1,0 +1,26 @@
+#
+# Copyright (c) 2022 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+#
+
+description: >
+  This is a representation of the Maxim MAX7318 I2C Gpio Expander.
+
+compatible: "maxim,max7318"
+
+include: [gpio-controller.yaml, i2c-device.yaml]
+
+properties:
+  "#gpio-cells":
+    const: 2
+
+  ngpios:
+    type: int
+    required: true
+    const: 16
+    description: Number of gpios supported
+
+gpio-cells:
+  - pin
+  - flags

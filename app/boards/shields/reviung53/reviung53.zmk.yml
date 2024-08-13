@@ -1,0 +1,9 @@
+file_format: "1"
+id: reviung53
+name: REVIUNG53
+type: shield
+url: https://github.com/gtips/reviung/tree/master/reviung53
+requires: [pro_micro]
+features:
+  - keys
+  - underglow

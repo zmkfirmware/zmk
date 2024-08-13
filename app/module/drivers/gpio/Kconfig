@@ -1,0 +1,7 @@
+
+if GPIO
+
+rsource "Kconfig.max7318"
+rsource "Kconfig.595"
+
+endif # GPIO
