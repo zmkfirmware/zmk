@@ -23,6 +23,8 @@ If you get an error stating `Keymap node not found, check a keymap is available 
 
 ### Devicetree Errors
 
+#### "parse error"
+
 A `devicetree error` followed by a reference to the line number on `<keyboard>.keymap` refers to an issue at the exact line position in that file. For example, below error message indicates a missing `;` at line 109 of the `cradio.keymap` file:
 
 ```
@@ -31,6 +33,8 @@ devicetree error: /__w/zmk-config/zmk-config/config/cradio.keymap:109 (column 4)
 
 Note that the provided number for the column corresponds to the numbering after the preprocessor expansion and it will likely not match the column numbers in your keymap.
 
+#### "lacks #binding-cells"
+
 A `devicetree error` followed by an `empty_file.c` reference with `lacks #binding-cells` string indicates possible problems with improper parameters for specific bindings:
 
 ```
@@ -38,6 +42,8 @@ devicetree error: <Node /soc/gpio@50000300 in '/tmp/tmp.vJq9sMwkcY/zephyr/misc/e
 ```
 
 This error can be triggered by incorrect binding syntax such as `&kp BT_SEL 0` instead of `&bt BT_SEL 0`.
+
+#### "devicetree_generated.h[...] undeclared here"
 
 A `devicetree_generated.h` error that follows with an "undeclared here" string indicates a problem with key bindings, like behavior nodes (e.g. `&kp` or `&mt`) with incorrect number of parameters:
 
