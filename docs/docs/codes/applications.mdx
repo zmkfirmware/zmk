@@ -6,10 +6,12 @@ hide_title: true
 
 import OsLegend from "@site/src/components/codes/OsLegend";
 import ToastyContainer from "@site/src/components/codes/ToastyContainer";
+import KeyboardConsumer from "@site/src/components/codes/KeyboardConsumer";
 import Content, { toc as contentToc } from "./_applications.mdx";
 
 export const toc = contentToc;
 
+<KeyboardConsumer />
 <OsLegend />
 <ToastyContainer />
 <Content />
