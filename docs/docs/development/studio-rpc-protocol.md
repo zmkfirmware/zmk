@@ -1,5 +1,5 @@
 ---
-title: Studio RPC Protocol
+title: ZMK Studio RPC Protocol
 ---
 
 :::warning[Alpha Feature]
@@ -20,13 +20,13 @@ The protocol consists of [protocol buffer](https://protobuf.dev/programming-guid
 
 ## Protobuf Messages
 
-The messages for ZMK Studio are defined in a dedicated [zmk-studio-messages](https://github.com/zmkfirmware/zmk-studio-messages) repository. Fundamentally, the [`Request`](https://github.com/zmkfirmware/zmk-studio-messages/blob/main/proto/zmk/studio.proto#L11) message is used to send any requests from the Studio client to the ZMK device, and the [`Response`](https://github.com/zmkfirmware/zmk-studio-messages/blob/main/proto/zmk/studio.proto#L21) messages are sent from the ZMK device to the Studio client.
+The messages for ZMK Studio are defined in a dedicated [zmk-studio-messages](https://github.com/zmkfirmware/zmk-studio-messages) repository. Fundamentally, the [`Request`](https://github.com/zmkfirmware/zmk-studio-messages/blob/main/proto/zmk/studio.proto#L11) message is used to send any requests from the ZMK Studio client to the ZMK device, and the [`Response`](https://github.com/zmkfirmware/zmk-studio-messages/blob/main/proto/zmk/studio.proto#L21) messages are sent from the ZMK device to the Studio client.
 
-Responses can either be [`RequestResponses`](https://github.com/zmkfirmware/zmk-studio-messages/blob/main/proto/zmk/studio.proto#L28) that are sent in response to an incoming `Request` or a [`Notification`](https://github.com/zmkfirmware/zmk-studio-messages/blob/main/proto/zmk/studio.proto#L38) which is sent at any point from the ZMK device to the Studio client to inform the client about state changes on the device, e.g. that the device is unlocked.
+Responses can either be [`RequestResponses`](https://github.com/zmkfirmware/zmk-studio-messages/blob/main/proto/zmk/studio.proto#L28) that are sent in response to an incoming `Request` or a [`Notification`](https://github.com/zmkfirmware/zmk-studio-messages/blob/main/proto/zmk/studio.proto#L38) which is sent at any point from the ZMK device to the ZMK Studio client to inform the client about state changes on the device, e.g. that the device is unlocked.
 
 ## Message Framing
 
-Studio uses a simple framing protocol to easily identify the start and end of a given message, with basic escaping to allow for unrestricted content.
+ZMK Studio uses a simple framing protocol to easily identify the start and end of a given message, with basic escaping to allow for unrestricted content.
 
 The following special bytes are used for the framing protocol:
 
@@ -136,7 +136,7 @@ Two transports are available right now, over USB or Bluetooth connections.
 
 ### USB (Serial)
 
-The USB transport is actually a basic serial/UART transport, that happens to use the CDC/ACM USB class for a serial connection. Framed messages are sent between Studio client and ZMK device using simple UART transmission.
+The USB transport is actually a basic serial/UART transport, that happens to use the CDC/ACM USB class for a serial connection. Framed messages are sent between ZMK Studio client and ZMK device using simple UART transmission.
 
 ### Bluetooth (GATT)
 
