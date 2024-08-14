@@ -29,7 +29,7 @@ The high level steps are:
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
 :::note
-ZMK support for split keyboards requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
+ZMK support for [split keyboards](../features/split-keyboards.md) requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
 :::
 
 ## New Zephyr Module Repository
@@ -50,6 +50,13 @@ Follow these steps to create your new repository:
   - A brief description, e.g. `ZMK Support For MyShield Keyboard`.
   - Select Public or Private, depending on your preference.
 - Click the green "Create repository" button
+
+The repository is a combination of the directories and files required of a ZMK config, and those required of a shield module. To create a shield module, the following components are needed:
+
+- The `boards/shields` directory, where the keyboard's files will go
+- The `zephyr/module.yml` file, which identifies and describes the module. See the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/develop/modules.html#module-yaml-file-description) for details on customising this file. For the purposes of creating a shield module, the default found in the template can be left untouched.
+
+Neither of these should be moved out of their parent directory. The other files and directories such as `config` are not necessary for the purposes of a shield module, but rather intended to be used for user configuration and testing.
 
 ## New Shield Directory
 

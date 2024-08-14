@@ -3,7 +3,7 @@ title: Bluetooth
 sidebar_label: Bluetooth
 ---
 
-ZMK's bluetooth functionality allows users to connect their keyboards to hosts using Bluetooth Low Energy (BLE) technology. It also is used for split keyboards to connect the two halves wirelessly.
+ZMK's bluetooth functionality allows users to connect their keyboards to hosts using Bluetooth Low Energy (BLE) technology. It also is used for [split keyboards](split-keyboards.md) to connect the two halves wirelessly.
 
 :::note
 
