@@ -5,8 +5,6 @@ hide_title: true
 slug: ./
 ---
 
-import SpellingCaution from "@site/src/components/codes/SpellingCaution";
-import KeyboardConsumer from "@site/src/components/codes/KeyboardConsumer";
 import OsLegend from "@site/src/components/codes/OsLegend";
 import ToastyContainer from "@site/src/components/codes/ToastyContainer";
 import Key, { toc as keyToc } from "./_keyboard-keypad.mdx";
@@ -15,6 +13,7 @@ import Media, { toc as mediaToc } from "./_media.mdx";
 import Applications, { toc as applicationsToc } from "./_applications.mdx";
 import InputAssist, { toc as inputAssistToc } from "./_input-assist.mdx";
 import Power, { toc as powerToc } from "./_power.mdx";
+import KeyboardConsumer from "./_keyboard-consumer.md";
 
 export const toc = [
   ...keyToc,
@@ -25,7 +24,11 @@ export const toc = [
   ...powerToc,
 ];
 
-<SpellingCaution />
+:::warning
+Take extra notice of the spelling of the keycodes, especially the shorthand spelling.
+Otherwise, it will result in an elusive parsing error!
+:::
+
 <KeyboardConsumer />
 <OsLegend />
 <ToastyContainer />
