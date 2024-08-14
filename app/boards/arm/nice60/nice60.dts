@@ -110,7 +110,8 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
     compatible = "nordic,nrf-spim";
 
     pinctrl-0 = <&spi3_default>;
-    pinctrl-names = "default";
+    pinctrl-1 = <&spi3_sleep>;
+    pinctrl-names = "default", "sleep";
     status = "okay";
 
     led_strip: ws2812@0 {
