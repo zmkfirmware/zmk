@@ -41,6 +41,7 @@ module.exports = {
         "features/displays",
         "features/backlight",
         "features/underglow",
+        "features/studio",
       ],
     },
     {
@@ -83,6 +84,7 @@ module.exports = {
             "keymaps/behaviors/backlight",
             "keymaps/behaviors/power",
             "keymaps/behaviors/soft-off",
+            "keymaps/behaviors/studio-unlock",
           ],
         },
         "keymaps/modifiers",
@@ -112,6 +114,7 @@ module.exports = {
         "config/power",
         "config/underglow",
         "config/system",
+        "config/studio",
       ],
     },
     {
@@ -124,6 +127,7 @@ module.exports = {
             "development/hardware-integration/new-shield",
             "development/hardware-integration/hardware-metadata-files",
             "development/hardware-integration/boards-shields-keymaps",
+            "development/hardware-integration/studio-setup",
           ],
         },
         {
