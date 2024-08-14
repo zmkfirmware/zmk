@@ -80,8 +80,14 @@ module.exports = {
       ],
     },
     {
-      Codes: [
-        "codes/index",
+      type: "category",
+      label: "Codes",
+      link: {
+        type: "doc",
+        id: "codes/index",
+      },
+      collapsed: true,
+      items: [
         "codes/keyboard-keypad",
         "codes/modifiers",
         "codes/editing",
@@ -122,12 +128,12 @@ module.exports = {
         {
           type: "category",
           label: "Setup",
+          link: {
+            type: "doc",
+            id: "development/setup/index",
+          },
           collapsed: true,
-          items: [
-            "development/setup/index",
-            "development/setup/docker",
-            "development/setup/native",
-          ],
+          items: ["development/setup/docker", "development/setup/native"],
         },
         "development/build-flash",
         "development/boards-shields-keymaps",
