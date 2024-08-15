@@ -2,8 +2,8 @@
 title: Studio RPC Protocol
 ---
 
-:::warning[Alpha Feature
-]
+:::warning[Alpha Feature]
+
 ZMK Studio is still in active development, and the below information is for development purposes only. For up to date information, join the [ZMK Discord](https://zmk.dev/community/discord/invite) server and discuss in `#studio-development`.
 
 :::
