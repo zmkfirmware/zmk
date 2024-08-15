@@ -27,8 +27,9 @@ static uint8_t keys_held = 0;
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-static struct zmk_hid_mouse_report mouse_report = {.report_id = ZMK_HID_REPORT_ID_MOUSE,
-                                                   .body = {.buttons = 0}};
+static struct zmk_hid_mouse_report mouse_report = {
+    .report_id = ZMK_HID_REPORT_ID_MOUSE,
+    .body = {.buttons = 0, .d_x = 0, .d_y = 0, .d_scroll_y = 0}};
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
@@ -430,7 +431,37 @@ int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons) {
     }
     return 0;
 }
-void zmk_hid_mouse_clear(void) { memset(&mouse_report.body, 0, sizeof(mouse_report.body)); }
+
+void zmk_hid_mouse_movement_set(int16_t x, int16_t y) {
+    mouse_report.body.d_x = x;
+    mouse_report.body.d_y = y;
+    LOG_DBG("Mouse movement set to %d/%d", mouse_report.body.d_x, mouse_report.body.d_y);
+}
+
+void zmk_hid_mouse_movement_update(int16_t x, int16_t y) {
+    mouse_report.body.d_x += x;
+    mouse_report.body.d_y += y;
+    LOG_DBG("Mouse movement updated to %d/%d", mouse_report.body.d_x, mouse_report.body.d_y);
+}
+
+void zmk_hid_mouse_scroll_set(int8_t x, int8_t y) {
+    mouse_report.body.d_scroll_x = x;
+    mouse_report.body.d_scroll_y = y;
+    LOG_DBG("Mouse scroll set to %d/%d", mouse_report.body.d_scroll_x,
+            mouse_report.body.d_scroll_y);
+}
+
+void zmk_hid_mouse_scroll_update(int8_t x, int8_t y) {
+    mouse_report.body.d_scroll_x += x;
+    mouse_report.body.d_scroll_y += y;
+    LOG_DBG("Mouse scroll updated to X: %d/%d", mouse_report.body.d_scroll_x,
+            mouse_report.body.d_scroll_y);
+}
+
+void zmk_hid_mouse_clear(void) {
+    LOG_DBG("Mouse report cleared");
+    memset(&mouse_report.body, 0, sizeof(mouse_report.body));
+}
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 

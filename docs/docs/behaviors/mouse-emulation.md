@@ -5,8 +5,7 @@ sidebar_label: Mouse Emulation
 
 ## Summary
 
-Mouse emulation behaviors send mouse events. Currently, only mouse button presses are supported, but movement
-and scroll action support is planned for the future.
+Mouse emulation behaviors send mouse events, including mouse button presses, cursor movement and scrolling.
 
 :::warning[Refreshing the HID descriptor]
 
@@ -17,13 +16,11 @@ The mouse functionality will not work over BLE until that is done.
 
 ## Configuration Option
 
-This feature can be enabled or disabled explicitly via a config option:
+To use any of the behaviors documented here, the ZMK mouse feature must be enabled explicitly via a config option:
 
 ```
 CONFIG_ZMK_MOUSE=y
 ```
-
-If you use the mouse key press behavior in your keymap, the feature will automatically be enabled for you.
 
 ## Mouse Button Defines
 
@@ -68,4 +65,68 @@ This example will send press of the fourth mouse button when the binding is trig
 
 ```
 &mkp MB4
+```
+
+## Mouse Move
+
+This behavior sends mouse X/Y movement events to the connected host.
+
+### Behavior Binding
+
+- Reference: `&mmv`
+- Parameter: A `uint32` with 16-bits each used for vertical and horizontal velocity.
+
+The following defines can be passed for the parameter:
+
+| Define       | Action     |
+| :----------- | :--------- |
+| `MOVE_UP`    | Move up    |
+| `MOVE_DOWN`  | Move down  |
+| `MOVE_LEFT`  | Move left  |
+| `MOVE_RIGHT` | Move right |
+
+### Examples
+
+The following will send a scroll down event to the host when pressed/held:
+
+```
+&mmv MOVE_DOWN
+```
+
+The following will send a scroll left event to the host when pressed/held:
+
+```
+&mmv MOVE_LEFT
+```
+
+## Mouse Scroll
+
+This behavior sends vertical and horizontal scroll events to the connected host.
+
+### Behavior Binding
+
+- Reference: `&msc`
+- Parameter: A `uint32` with 16-bits each used for vertical and horizontal velocity.
+
+The following defines can be passed for the parameter:
+
+| Define       | Action     |
+| :----------- | :--------- |
+| `MOVE_UP`    | Move up    |
+| `MOVE_DOWN`  | Move down  |
+| `MOVE_LEFT`  | Move left  |
+| `MOVE_RIGHT` | Move right |
+
+### Examples
+
+The following will send a scroll down event to the host when pressed/held:
+
+```
+&msc MOVE_DOWN
+```
+
+The following will send a scroll left event to the host when pressed/held:
+
+```
+&msc MOVE_LEFT
 ```
