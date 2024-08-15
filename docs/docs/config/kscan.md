@@ -94,6 +94,8 @@ Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](http
     };
 ```
 
+A direct pin defined in the `input-gpios` property is considered a column when used in a [matrix transform](#matrix-transform); e.g. the 5th pin on the list can be referred to using `RC(0,4)`.
+
 By default, a switch will drain current through the internal pull up/down resistor whenever it is pressed. This is not ideal for a toggle switch, where the switch may be left in the "pressed" state for a long time. Enabling `toggle-mode` will make the driver enable and disable the internal pull up/down resistor as needed when the switch is toggled to minimise power draw. For `toggle-mode` to work correctly each pole of the switch needs a dedicated GPIO pin.
 
 `toggle-mode` applies to all switches handled by the instance of the driver. To use a toggle switch with other, non-toggle, direct GPIO switches, create two instances of the direct GPIO driver, one with `toggle-mode` and the other without. Then, use a [composite driver](#composite-driver) to combine them. The state of the switch is read on power on, so if the switch is moved whilst the board is off this will get correctly interpreted by the driver.
