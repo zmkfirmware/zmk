@@ -49,7 +49,7 @@ Here is a table describing the command for each define:
 
 :::note[Selected profile persistence]
 The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be saved to flash storage and hence persist across restarts and firmware flashes.
-However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
 
 ## Bluetooth Behavior
@@ -103,5 +103,5 @@ Please note there are five available Bluetooth profiles by default. If you need 
 :::
 
 :::note
-If you clear bond of a paired profile, make sure you do the same thing on the peer device as well (typically achieved by _removing_ or _forgetting_ the bluetooth connection). Otherwise the peer will try to connect to your keyboard whenever it discovers it. But while the MAC address of both devices could remain the same, the security key no longer match: the peer device still possess the old key negotiated in the previous pairing procedure, but our keyboard firmware has deleted that key. So the connection will fail. If you [enabled USB logging](../development/usb-logging.mdx), you might see a lot of failed connection attempts due to the reason of “Security failed”.
+If you clear bond of a paired profile, make sure you do the same thing on the peer device as well (typically achieved by _removing_ or _forgetting_ the bluetooth connection). Otherwise the peer will try to connect to your keyboard whenever it discovers it. But while the MAC address of both devices could remain the same, the security key no longer match: the peer device still possess the old key negotiated in the previous pairing procedure, but our keyboard firmware has deleted that key. So the connection will fail. If you [enabled USB logging](../../development/usb-logging.mdx), you might see a lot of failed connection attempts due to the reason of “Security failed”.
 :::

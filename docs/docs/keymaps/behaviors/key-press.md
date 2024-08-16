@@ -10,14 +10,14 @@ a certain key.
 
 The categories of supported codes are:
 
-- [Keyboard & Keypad](../codes/keyboard-keypad.mdx)
-- [Editing](../codes/editing.mdx)
-- [Media](../codes/media.mdx)
-- [Applications](../codes/applications.mdx)
-- [Input Assist](../codes/input-assist.mdx)
-- [Power](../codes/power.mdx)
-
-Please visit the [codes](../codes/index.mdx) section for a comprehensive list.
+- [Keyboard](../list-of-codes.mdx#keyboard)
+- [Modifiers](../list-of-codes.mdx#modifiers)
+- [Keypad](../list-of-codes.mdx#keypad)
+- [Editing](../list-of-codes.mdx#editing)
+- [Media](../list-of-codes.mdx#media)
+- [Applications](../list-of-codes.mdx#applications)
+- [Input Assist](../list-of-codes.mdx#input-assist)
+- [Power & Lock](../list-of-codes.mdx#power--lock)
 
 For advanced users, user-defined HID usages are also supported but must be encoded, please see [`dt-bindings/zmk/keys.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/keys.h) for further insight.
 

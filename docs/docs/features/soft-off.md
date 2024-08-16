@@ -24,7 +24,7 @@ Refer to the [soft off config](../config/power.md#soft-off) for details on enabl
 
 ## Soft Off With Existing Designs
 
-For existing designs, using soft off is as simple as placing the [Soft Off Behavior](../behaviors/soft-off.md) in your keymap and then invoking it.
+For existing designs, using soft off is as simple as placing the [Soft Off Behavior](../keymaps/behaviors/soft-off.md) in your keymap and then invoking it.
 
 You can then wake up the keyboard by pressing the reset button once, and repeating this for each side for split keyboards.
 
@@ -83,7 +83,7 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
 
 ### Soft Off Behavior Instance
 
-To use the [soft off behavior](../behaviors/soft-off.md) outside of a keymap, add an instance of the behavior to your `.overlay`/`.dts` file:
+To use the [soft off behavior](../keymaps/behaviors/soft-off.md) outside of a keymap, add an instance of the behavior to your `.overlay`/`.dts` file:
 
 ```
 / {
@@ -99,7 +99,7 @@ To use the [soft off behavior](../behaviors/soft-off.md) outside of a keymap, ad
 
 ### KScan Sideband Behavior
 
-The kscan sideband behavior driver will be used to trigger the [soft off behavior](../behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver. What kscan driver will vary for simple direct pin vs. matrix-integrated hardware combo.
+The kscan sideband behavior driver will be used to trigger the [soft off behavior](../keymaps/behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver. What kscan driver will vary for simple direct pin vs. matrix-integrated hardware combo.
 
 #### Simple direct pin
 
