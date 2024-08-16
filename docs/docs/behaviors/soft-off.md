@@ -38,3 +38,14 @@ By default, the keyboard will be turned off as soon as the key bound to the beha
     };
 };
 ```
+
+#### Split Peripheral Off On Press
+
+`split-peripheral-off-on-press` is enabled by default on split keyboards. This means the peripheral will transition to soft-off mode as soon as the key is pressed, regardless of what `hold-time-ms` is set to.
+If you want to disable this functionality, you can modify the behavior:
+
+```dts
+&soft_off {
+    /delete-property/ split-peripheral-off-on-press;
+};
+```
