@@ -29,7 +29,7 @@
     #ifdef ANSI
     default_layer {
         // ------------------------------------------------------------------------------------------------
-        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   | DEL |
+        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   | DEL |
         // | TAB   |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   \    | INS |
         // | CAPS   |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |    ENTER    | PGUP|
         // |  SHIFT   |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |   SHIFT   | UP  | PGDN|
@@ -65,7 +65,7 @@
     #elif defined(ISO)
     default_layer {
         // ------------------------------------------------------------------------------------------------
-        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   | DEL |
+        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   | DEL |
         // | TAB   |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |        | INS |
         // | CAPS   |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |  #  | ENTER | PGUP|
         // |SHIFT |  \  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |  SHIFT  | UP  | PGDN|
@@ -101,7 +101,7 @@
     #elif defined(ALL_1U)
     default_layer {
         // -------------------------------------------------------------------------------------------------
-        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |BKSP | DEL | HOME|
+        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |BSPC | DEL | HOME|
         // | TAB    |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   \    | END |
         // | CAPS    |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER   | PGUP|
         // |SHIFT|NONE |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |SHIFT|NONE |  UP | PGDN|
@@ -136,7 +136,7 @@
     #elif defined(HHKB)
     default_layer {
         // ------------------------------------------------------------------------------------------------
-        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   | DEL |
+        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   | DEL |
         // | TAB   |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   \    | HOME|
         // | CAPS   |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |    ENTER    | END |
         // |  SHIFT   |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |      SHIFT      | PGUP|
