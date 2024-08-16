@@ -27,7 +27,7 @@
     default_layer {
         // ------------------------------------------------------------------------------------------------
         // | ESC | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F9  | F9  | F10 | F11 | F12 |PSCRN|HOME| END |
-        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   | DEL |
+        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   | DEL |
         // | TAB   |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   \    | INS |
         // | CAPS   |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |    ENTER    | PGUP|
         // |  SHIFT   |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |   SHIFT   | UP  | PGDN|
@@ -66,7 +66,7 @@
     default_layer {
         // ------------------------------------------------------------------------------------------------
         // | ESC | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F9  | F9  | F10 | F11 | F12 |PSCRN|HOME| END |
-        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   | DEL |
+        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   | DEL |
         // | TAB   |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |        | INS |
         // | CAPS   |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |  #  | ENTER | PGUP|
         // |SHIFT |  \  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |  SHIFT  | UP  | PGDN|
@@ -105,7 +105,7 @@
     default_layer {
         // -------------------------------------------------------------------------------------------------
         // | ESC | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F9  | F9  | F10 | F11 | F12 |PSCRN| P_B | INS |
-        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |BKSP | DEL | HOME|
+        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |BSPC | DEL | HOME|
         // | TAB    |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   \    | END |
         // | CAPS    |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER   | PGUP|
         // |SHIFT|NONE |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |SHIFT|NONE |  UP | PGDN|

@@ -22,7 +22,7 @@
 // |  GUI |   ~  |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  |  [   | GUI/] |
 //        | CTRL |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  |CTRL/'|
 //        | LALT |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | RALT |
-//                           | RSE | SPC | LWR |   | LWR | BKSP | RSE |
+//                           | RSE | SPC | LWR |   | LWR | BSPC | RSE |
                         bindings = <
    &kp LWIN &kp GRAVE &kp Q &kp W &kp E &kp R &kp T &kp Y         &kp U  &kp I     &kp O   &kp P    &kp LBKT &mt RWIN RBKT
             &kp LCTRL &kp A &kp S &kp D &kp F &kp G &kp H         &kp J  &kp K     &kp L   &kp SEMI &mt RCTRL SQT
