@@ -80,7 +80,7 @@ You can configure a different tapping term or tweak other properties noted in th
 :::info
 Functionally, the layer-tap is a [hold-tap](hold-tap.mdx) of the ["tap-preferred" flavor](hold-tap.mdx#flavors) and a [`tapping-term-ms`](hold-tap.mdx#tapping-term-ms) of 200 that takes in a [`momentary layer`](#momentary-layer) and a [keypress](key-press.md) as its "hold" and "tap" parameters, respectively.
 
-For users who want to send a different [keycode](../list-of-codes.mdx) depending on if the same key is held or tapped, see [Mod-Tap](mod-tap.md).
+For users who want to send a different [keycode](../list-of-keycodes.mdx) depending on if the same key is held or tapped, see [Mod-Tap](mod-tap.md).
 
 Similarly, for users looking to create a keybind like the layer-tap that depending on how long the key is held, invokes behaviors like [sticky keys](sticky-key.md) or [key toggles](key-toggle.md), see [Hold-Tap](hold-tap.mdx).
 

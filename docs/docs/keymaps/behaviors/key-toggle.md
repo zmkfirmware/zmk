@@ -14,7 +14,7 @@ Example uses for key toggle include shift lock, or `ALT-TAB` window switching wi
 ### Behavior Binding
 
 - Reference: `&kt`
-- Parameter: The [keycode](../list-of-codes.mdx), e.g. `LALT` or `DOWN_ARROW`
+- Parameter: The [keycode](../list-of-keycodes.mdx), e.g. `LALT` or `DOWN_ARROW`
 
 Example:
 

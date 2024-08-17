@@ -88,7 +88,7 @@ module.exports = {
         "keymaps/modifiers",
         "keymaps/combos",
         "keymaps/conditional-layers",
-        "keymaps/list-of-codes",
+        "keymaps/list-of-keycodes",
       ],
     },
     {
