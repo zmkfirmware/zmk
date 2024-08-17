@@ -26,7 +26,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | [Tap-Dance](keymaps/behaviors/tap-dance.mdx)                                                                                                               | ✅  |  ✅[^2]   | ✅  |
 | [Keyboard Codes](keymaps/list-of-codes.mdx#keyboard)                                                                                                       | ✅  |    ✅     | ✅  |
 | [Media](keymaps/list-of-codes.mdx#media-controls) & [Consumer](keymaps/list-of-codes.mdx#consumer-controls) Codes                                          | ✅  |    ✅     | ✅  |
-| [Encoders](keymaps/encoders.md)                                                                                                                            | ✅  |    ✅     | ✅  |
+| [Encoders](features/encoders.md)                                                                                                                           | ✅  |    ✅     | ✅  |
 | [Display Support](features/displays.md)[^1]                                                                                                                | 🚧  |    🚧     | ✅  |
 | [RGB Underglow](features/underglow.md)                                                                                                                     | ✅  |    ✅     | ✅  |
 | [Backlight](features/backlight.mdx)                                                                                                                        | ✅  |    ✅     | ✅  |

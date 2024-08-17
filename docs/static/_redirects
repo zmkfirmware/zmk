@@ -3,6 +3,6 @@
 /docs/features/combos /docs/keymaps/combos 301
 /docs/features/conditional-layers /docs/keymaps/conditional-layers 301
 /docs/features/encoders /docs/keymaps/encoders 301
+/docs/codes/modifiers /docs/keymaps/modifiers 301
 /docs/codes/* /docs/keymaps/list-of-codes 301
-/docs/troubleshooting#split-keyboard-halves-unable-to-pair /docs/troubleshooting/connection-issues#split-keyboard-halves-unable-to-pair 301
-/docs/features/beta-testing /docs/features/modules 301
+/docs/features/beta-testing /docs/features/modules#beta-testing 301
