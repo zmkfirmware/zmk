@@ -76,10 +76,9 @@ if SHIELD_MY_KEYBOARD_DONGLE
 
 endif
 
-if SHIELD_MY_KEYBOARD
+if SHIELD_MY_KEYBOARD && !ZMK_SPLIT
     config ZMK_KEYBOARD_NAME
         default "My Board"
-    
 endif
 ```
 
