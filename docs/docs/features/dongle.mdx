@@ -150,13 +150,19 @@ Your keyboard's matrix transform must be both defined and selected under the `ch
 // import the default shield configuration
 #include "my_keyboard.dtsi"
 
-&kscan {
-    compatible = "zmk,kscan-mock";
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+    };
 
-    columns = <0>;
-    rows = <0>;
-    events = <0>;
-}
+    mock_kscan: kscan_1 {
+        compatible = "zmk,kscan-mock";
+        
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+};
 
 ```
 
