@@ -26,8 +26,8 @@ Disadvantages:
 
 :::note
 Depending on how the dongle is used, there are some additional [latency considerations](./split-keyboards.md#latency-considerations) to keep in mind. 
+On average, the latency increase is around 3.75ms, in worst case scenario, the latency increase can be up to 7.5ms compared to a unibody keyboard.
 :::
-
 
 ## Editing a Keyboard Definition to Support a Dongle
 
@@ -37,14 +37,12 @@ This is done to ensure that backwards compatibility is maintained for users who 
 
 ### Shield Configuration Files
 
-
 Start by adding the dongle body to the shield configuration.
 
 ```kconfig title="Kconfig.shield"
 config SHIELD_MY_KEYBOARD_DONGLE
     def_bool $(shields_list_contains,my_keyboard_dongle)
 ```
-
 
 Next, add the dongle configuration to your keyboard's `Kconfig.defconfig`.
 
@@ -60,56 +58,57 @@ values={[
 ```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_KEYBOARD_DONGLE
 
-    config ZMK_KEYBOARD_NAME
-        default "My Board"
+config ZMK_KEYBOARD_NAME
+    default "My Board"
 
-    config ZMK_SPLIT_ROLE_CENTRAL
-        default y
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
 
-    config ZMK_SPLIT
-        default y
+config ZMK_SPLIT
+    default y
 
 
-    # Increase the transmit power of the dongle
-    config BT_CLTR_TX_PWR_PLUS_8
-        default y
+# Increase the transmit power of the dongle
+choice BT_CTLR_TX_PWR
+    default BT_CTLR_TX_PWR_PLUS_8
+endchoice
 
 endif
 
 if SHIELD_MY_KEYBOARD && !ZMK_SPLIT
-    config ZMK_KEYBOARD_NAME
-        default "My Board"
+config ZMK_KEYBOARD_NAME
+    default "My Board"
 endif
 ```
 
 </TabItem>
 <TabItem value="split">
 
-Add the following to your `Kconfig.defconfig` file.
+Modify the following `Kconfig.defconfig` file to include the dongle in the split keyboard configuration.
 
 ```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_KEYBOARD_DONGLE || SHIELD_MY_KEYBOARD_LEFT || SHIELD_MY_KEYBOARD_RIGHT
 
-    config ZMK_SPLIT
-        default y
+config ZMK_SPLIT
+    default y
 
 endif
 
 if SHIELD_MY_KEYBOARD_DONGLE
 
-    config ZMK_KEYBOARD_NAME
-        default "My Keyboard"
+config ZMK_KEYBOARD_NAME
+    default "My Keyboard"
 
-    config ZMK_SPLIT_ROLE_CENTRAL
-        default y
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
 
-    config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
-        default 2
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    default 2
 
-    # Increase the transmit power of the dongle
-    choice BT_CTLR_TX_PWR
-        default BT_CTLR_TX_PWR_PLUS_8
-    endchoice
+# Increase the transmit power of the dongle
+choice BT_CTLR_TX_PWR
+    default BT_CTLR_TX_PWR_PLUS_8
+endchoice
 
 endif
 ```
@@ -120,17 +119,17 @@ Modify the `Kconfig.defconfig` file to include the following:
 
 if SHIELD_MY_KEYBOARD_LEFT
 
-    # Setting this to y will make the left half the central
-    # We want it to be the central when dongle is not used
-    config ZMK_SPLIT_ROLE_CENTRAL
-        default y
+# Setting this to y will make the left half the central
+# We want it to be the central when dongle is not used
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
 
-    # Check if the left half is the central
-    if ZMK_SPLIT_ROLE_CENTRAL
-        config ZMK_KEYBOARD_NAME
-            default "My Keyboard"
-            
-    endif # ZMK_SPLIT_ROLE_CENTRAL
+# Check if the left half is the central
+if ZMK_SPLIT_ROLE_CENTRAL
+config ZMK_KEYBOARD_NAME
+    default "My Keyboard"
+        
+endif # ZMK_SPLIT_ROLE_CENTRAL
 
 endif # SHIELD_MY_KEYBOARD_LEFT
 ```
@@ -166,10 +165,11 @@ Your keyboard's matrix transform must be both defined and selected under the `ch
 
 ```
 
-
 ## Enabling the Dongle
 
-Now it is possible to enable the dongle in the user configuration.
+When the above has been implemented in the keyboard definition. 
+
+The dongle can be enabled by implementing the following changes in the user config file.
 
 For a split keyboard, change this
 
@@ -184,7 +184,6 @@ For a unibody keyboard, change this
 # Enable split functionality, this will put the unibody keyboard in peripheral mode
 CONFIG_ZMK_SPLIT=y
 ```
-
 
 ## Building the firmware
 
@@ -201,10 +200,10 @@ include:
     shield: settings_reset
 ```
 
+:::warning
+Before flashing your new firmware, flash the `settings_reset` [UF2 firmware](../troubleshooting/connection-issues.mdx#acquiring-a-reset-uf2) on all devices.
+:::
 :::note
 Any microcontroller with BLE support can be used as a dongle.
 :::
 
-:::warning
-Before flashing your new firmware, flash the `settings_reset` [UF2 firmware](../troubleshooting/connection-issues.mdx#acquiring-a-reset-uf2) on all devices.
-:::
