@@ -142,7 +142,7 @@ endif # SHIELD_MY_KEYBOARD_LEFT
 Replace the `kscan` with `kscan-mock` in the dongle overlay.
 
 :::warning
-Matrix transform must be included here or in the `my_keyboard.dtsi` file.
+Your keyboard's matrix transform must be both defined and selected under the `chosen` node either here or in a `my_keyboard.dtsi` file.
 :::
 
 ```dts title="my_keyboard_dongle.overlay"
