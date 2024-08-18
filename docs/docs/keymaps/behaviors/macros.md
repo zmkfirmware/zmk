@@ -50,7 +50,7 @@ with [modifier functions](../modifiers.mdx#modifier-functions) can be used inste
 
 ### Bindings
 
-Like [hold-taps](hold-tap.md), macros are created by composing other behaviors, and any of those behaviors can
+Like [hold-taps](hold-tap.mdx), macros are created by composing other behaviors, and any of those behaviors can
 be added to the `bindings` list, e.g.:
 
 ```dts
