@@ -107,8 +107,9 @@ if SHIELD_MY_KEYBOARD_DONGLE
         default 2
 
     # Increase the transmit power of the dongle
-    config BT_CLTR_TX_PWR_PLUS_8
-        default y
+    choice BT_CTLR_TX_PWR
+        default BT_CTLR_TX_PWR_PLUS_8
+    endchoice
 
 endif
 ```
