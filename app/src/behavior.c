@@ -95,7 +95,7 @@ int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
     case BEHAVIOR_LOCALITY_CENTRAL:
         return invoke_locally(&binding, event, pressed);
     case BEHAVIOR_LOCALITY_EVENT_SOURCE:
-#if ZMK_BLE_IS_CENTRAL
+#if ZMK_BLE_IS_CENTRAL // source is a member of event because CONFIG_ZMK_SPLIT is enabled
         if (event.source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
             return invoke_locally(&binding, event, pressed);
         } else {

@@ -586,7 +586,9 @@ int zmk_keymap_apply_position_state(uint8_t source, zmk_keymap_layer_id_t layer_
         .layer = layer_id,
         .position = position,
         .timestamp = timestamp,
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = source,
+#endif
     };
 
     LOG_DBG("layer_id: %d position: %d, binding name: %s", layer_id, position,
