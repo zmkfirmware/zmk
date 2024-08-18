@@ -50,7 +50,7 @@ with [modifier functions](../modifiers.mdx#modifier-functions) can be used inste
 
 ### Bindings
 
-Like [hold-taps](hold-tap), macros are created by composing other behaviors, and any of those behaviors can
+Like [hold-taps](hold-tap.md), macros are created by composing other behaviors, and any of those behaviors can
 be added to the `bindings` list, e.g.:
 
 ```dts
@@ -218,7 +218,7 @@ Below are some examples of how the macro behavior can be used for various useful
 
 ### Layer Activation + More
 
-Macros make it easy to combine a [layer behavior](layers), e.g. `&mo` with another behavior at the same time.
+Macros make it easy to combine a [layer behavior](layers.md), e.g. `&mo` with another behavior at the same time.
 Common examples are enabling one or more modifiers when the layer is active, or changing the RBG underglow color.
 
 To achieve this, a combination of a 0ms wait time and splitting the press and release between a `&macro_pause_for_release` is used:
