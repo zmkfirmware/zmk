@@ -13,7 +13,7 @@ Applies to: `compatible = "zmk,keymap"`
 
 Definition file: [zmk/app/dts/bindings/zmk,keymap.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk%2Ckeymap.yaml)
 
-The `zmk,keymap` node itself has no properties. It should have one child node per layer of the keymap, starting with the default layer (layer 0).
+The `zmk,keymap` node itself has no properties. It should have one child node per layer of the keymap, the first one being the default layer (until changed with [`&df`](layers.md#default-layer)).
 
 Each child node can have the following properties:
 

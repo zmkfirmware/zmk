@@ -20,11 +20,21 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
 struct default_layer_settings_t {
+    bool using_global_setting;
+    uint8_t global_default;
     uint8_t endpoint_defaults[ZMK_ENDPOINT_COUNT];
 };
 
 static struct default_layer_settings_t default_layers = {0};
+
+static struct k_work_delayable df_layers_save_work;
+
+static void zmk_default_layers_save_state_work(struct k_work *_work) {
+    settings_save_one("default_layer/settings", &default_layers, sizeof(default_layers));
+}
 
 static int apply_default_layer_config(struct zmk_endpoint_instance endpoint) {
     uint8_t index = zmk_endpoint_instance_to_index(endpoint);
@@ -75,13 +85,13 @@ static int default_layer_init(void) {
         return ret;
     }
 
+    k_work_init_delayable(&df_layers_save_work, zmk_default_layers_save_state_work);
+
     settings_load_subtree("default_layer");
 
     return apply_default_layer_config(zmk_endpoints_selected());
 }
 SYS_INIT(default_layer_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
-
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
 static int save_default_layer_setting(uint8_t layer, struct zmk_endpoint_instance endpoint) {
     if (layer >= ZMK_KEYMAP_LAYERS_LEN) {
@@ -91,14 +101,12 @@ static int save_default_layer_setting(uint8_t layer, struct zmk_endpoint_instanc
     uint8_t index = zmk_endpoint_instance_to_index(endpoint);
     default_layers.endpoint_defaults[index] = layer;
 
-    int ret = settings_save_one("default_layer/settings", &default_layers, sizeof(default_layers));
-    if (ret < 0) {
-        LOG_WRN("Could not update the settings.");
-        return ret;
-    }
+    char endpoint_str[ZMK_ENDPOINT_STR_LEN];
+    zmk_endpoint_instance_to_str(endpoint, endpoint_str, sizeof(endpoint_str));
+    LOG_INF("Updated default layer (%d) for %s.", layer, endpoint_str);
 
-    LOG_INF("Updated default layer (%d) for endpoint (%d).", layer, index);
-    return 0;
+    int ret = k_work_reschedule(&df_layers_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return MIN(0, ret);
 }
 
 static int behavior_default_layer_init(const struct device *dev) { return 0; }

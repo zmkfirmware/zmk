@@ -156,9 +156,16 @@ For more information, see [conditional layers](../features/conditional-layers.md
 
 ## Default Layer
 
-The default layer behavior allows configuring a different default layer, for example to test DVORAK while keeping QWERTY on another layer, or moving a couple keycodes around for Windows/Mac usage.
+?> What is the default layer?
 
-This is stored on a per-endpoint basis, so you can configure USB to use QWERTY, and the first BLE endpoint to use DVORAK.
+It is the first one you define on your keymap (unless changed using this behavior). It is _special_ in two aspects:
+
+- It can't be disabled by other behaviors.
+- It is the only one active when the board starts running.
+
+This behavior allows configuring a different default layer, for example to test DVORAK while keeping QWERTY on another layer, or moving a couple keycodes around for Windows/Mac usage.
+
+This setting is stored on a per-endpoint basis, so you can configure USB to use QWERTY, and the first BLE endpoint to use DVORAK.
 
 The stored settings are read and applied when the keyboard boots (receives powers) and also when the selected endpoint changes.
 
