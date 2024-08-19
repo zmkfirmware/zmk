@@ -64,6 +64,7 @@ struct zmk_event_subscription {
 #define ZMK_LISTENER(mod, cb) const struct zmk_listener zmk_listener_##mod = {.callback = cb};
 
 #define ZMK_SUBSCRIPTION(mod, ev_type)                                                             \
+    extern const struct zmk_listener zmk_listener_##mod;                                           \
     const Z_DECL_ALIGN(struct zmk_event_subscription)                                              \
         _CONCAT(_CONCAT(zmk_event_sub_, mod), ev_type) __used                                      \
         __attribute__((__section__(".event_subscription"))) = {                                    \

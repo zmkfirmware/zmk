@@ -177,9 +177,9 @@ push the initial commit.
 
 :::
 
-## Installing The Firmware
+## Installing the Firmware
 
-### Download The Archive
+### Download the Archive
 
 Once the setup script is complete and the new user config repository has been pushed, GitHub will automatically run the action
 to build your keyboard firmware files. You can view the actions by clicking on the "Actions" tab on your GitHub repository.
@@ -209,6 +209,7 @@ connect to it wirelessly.
 For split keyboards, only the central half (typically the left side) will send keyboard outputs over USB or advertise to other devices
 over bluetooth. Peripheral half will only send keystrokes to the central once they are paired and connected. For this reason it is
 recommended to test the left half of a split keyboard first.
+Please refer to [split keyboards documentation](features/split-keyboards.md) for more information.
 
 :::
 
@@ -221,11 +222,12 @@ ZMK supports multiple BLE “profiles”, which allows you to connect to and swi
 ### Connecting Split Keyboard Halves
 
 For split keyboards, after flashing each half individually you can connect them together by resetting them at the same time. Within a few seconds of resetting, both halves should automatically connect to each other.
+Please refer to [the pairing section in the split keyboards documentation](features/split-keyboards.md#pairing-for-wireless-split-keyboards) for more information.
 
 :::note
 
 If you have issues connecting the halves, make sure that both sides are getting powered properly through USB or batteries, then follow the
-[recommended troubleshooting procedure](troubleshooting.md#split-keyboard-halves-unable-to-pair). This is typically necessary if you
+[recommended troubleshooting procedure](troubleshooting/connection-issues.mdx#split-keyboard-halves-unable-to-pair). This is typically necessary if you
 swapped firmware sides between controllers, like flashing left side firmware to the same controller after flashing the right, or vice versa.
 
 :::

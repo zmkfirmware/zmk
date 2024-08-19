@@ -13,8 +13,6 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zephyr,console = &cdc_acm_uart;
-        zephyr,shell-uart = &cdc_acm_uart;
         zephyr,code-partition = &code_partition;
         zmk,kscan = &kscan0;
         zmk,matrix-transform = &default_transform;
@@ -108,11 +106,8 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
 };
 
 
-&usbd {
+zephyr_udc0: &usbd {
   status = "okay";
-  cdc_acm_uart: cdc_acm_uart {
-    compatible = "zephyr,cdc-acm-uart";
-  };
 };
 
 

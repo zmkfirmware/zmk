@@ -189,6 +189,9 @@ void behavior_tap_dance_timer_handler(struct k_work *item) {
 static const struct behavior_driver_api behavior_tap_dance_driver_api = {
     .binding_pressed = on_tap_dance_binding_pressed,
     .binding_released = on_tap_dance_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int tap_dance_position_state_changed_listener(const zmk_event_t *eh);

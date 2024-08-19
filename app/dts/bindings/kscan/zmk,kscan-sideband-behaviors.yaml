@@ -11,6 +11,9 @@ compatible: "zmk,kscan-sideband-behaviors"
 include: kscan.yaml
 
 properties:
+  auto-enable:
+    type: boolean
+
   kscan:
     type: phandle
     required: true

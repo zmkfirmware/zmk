@@ -126,7 +126,7 @@ zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
     memset(&boot_report.keys, 0, HID_BOOT_KEY_LEN);
     int ix = 0;
     uint8_t base_code = 0;
-    for (int i = 0; i < (ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1) / 8; ++i) {
+    for (int i = 0; i < sizeof(keyboard_report.body.keys); ++i) {
         if (ix == keys_held) {
             break;
         }
@@ -249,8 +249,9 @@ static inline int check_keyboard_usage(zmk_key_t usage) {
 #endif
 
 #define TOGGLE_CONSUMER(match, val)                                                                \
-    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC),                           \
-                (if (val > 0xFF) { return -ENOTSUP; }), ())                                        \
+    if (val > ZMK_HID_CONSUMER_MAX_USAGE) {                                                        \
+        return -ENOTSUP;                                                                           \
+    }                                                                                              \
     for (int idx = 0; idx < CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE; idx++) {                          \
         if (consumer_report.body.keys[idx] != match) {                                             \
             continue;                                                                              \

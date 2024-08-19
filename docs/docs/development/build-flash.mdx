@@ -77,7 +77,7 @@ This produces `left` and `right` subfolders under the `build` directory and two 
 Build times can be significantly reduced after the initial build by omitting all build arguments except the build directory, e.g. `west build -d build/left`. The additional options and intermediate build outputs from your initial build are cached and reused for unchanged files.
 :::
 
-### Building with external modules
+### Building With External Modules
 
 ZMK supports loading additional boards, shields, code, etc. from [external Zephyr modules](https://docs.zephyrproject.org/3.5.0/develop/modules.html), facilitating out-of-tree management and versioning independent of the ZMK repository. To build with any additional modules, use the `ZMK_EXTRA_MODULES` define added to your `west build` command.
 
@@ -106,6 +106,10 @@ west build -b nice_nano -- -DSHIELD=kyria_left -DZMK_CONFIG="C:/Users/myUser/Doc
 
 :::warning
 The above command must still be invoked from the `zmk/app` directory as noted above, rather than the config directory. Otherwise, you will encounter errors such as `ERROR: source directory "." does not contain a CMakeLists.txt; is this really what you want to build?`. Alternatively you can add the `-s /path/to/zmk/app` flag to your `west` command.
+:::
+
+:::warning
+If your config is also a [module](../features/modules.mdx), then you should also add the root (the folder in which the `zephyr` folder is found) of your `zmk-config` as an [external module to build with](#building-with-external-modules).
 :::
 
 In order to make your `zmk-config` folder available when building within the VSCode Remote Container, you need to create a docker volume named `zmk-config`

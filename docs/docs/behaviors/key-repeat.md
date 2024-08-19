@@ -19,7 +19,7 @@ Example:
 
 ### Configuration
 
-#### Usage Pages
+#### Usage pages
 
 By default, the key repeat will only track the last pressed key from the HID "Key" usage page, and ignore events from other usages, e.g. Consumer page.
 

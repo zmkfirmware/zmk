@@ -308,6 +308,6 @@ if ($github_repo -ne "") {
 
     if ($github_repo -imatch "https") {
         $actions = "$($github_repo.substring(0, $github_repo.length - 4))/actions"
-        Write-Host "Your firmware should be availalbe from GitHub Actions shortly: $actions"
+        Write-Host "Your firmware should be available from GitHub Actions shortly: $actions"
     }
 }

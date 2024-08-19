@@ -1,0 +1,8 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Studio Unlock Behavior
+
+compatible: "zmk,behavior-studio-unlock"
+
+include: zero_param.yaml
