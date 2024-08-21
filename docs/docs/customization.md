@@ -28,7 +28,7 @@ Refer to the [Configuration](/docs/config) documentation for more details on thi
 ## Keymap
 
 Once you have the basic user config completed, you can find the keymap file in `config/<keyboard>.keymap` and customize from there.
-Refer to the [Keymap](features/keymaps.mdx) documentation to learn more.
+Refer to the [Keymaps](keymaps/index.mdx) documentation to learn more.
 
 ## Publishing
 

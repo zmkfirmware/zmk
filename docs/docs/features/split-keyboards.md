@@ -68,23 +68,23 @@ If the central keyboard part is either advertising for a pairing or waiting for 
 
 ## Behaviors with Locality
 
-Most ZMK [behaviors](../behaviors/index.mdx) are processed exclusively on the central of the split keyboard as it handles the keymap state and any communication with the host devices.
+Most ZMK [behaviors](../keymaps/behaviors/index.mdx) are processed exclusively on the central of the split keyboard as it handles the keymap state and any communication with the host devices.
 However, certain behaviors have "global" or "source" localities, where they can affect the peripherals when invoked.
 
 ### Global Locality Behaviors
 
 These are behaviors that affect all keyboard parts, such as changing lighting effects:
 
-- [RGB underglow behaviors](../behaviors/underglow.md)
-- [Backlight behaviors](../behaviors/backlight.md)
-- [Power management behaviors](../behaviors/power.md)
-- [Soft off behavior](../behaviors/soft-off.md)
+- [RGB underglow behaviors](../keymaps/behaviors/underglow.md)
+- [Backlight behaviors](../keymaps/behaviors/backlight.md)
+- [Power management behaviors](../keymaps/behaviors/power.md)
+- [Soft off behavior](../keymaps/behaviors/soft-off.md)
 
 ### Source Locality Behaviors
 
 These behaviors only affect the keyboard part that they are invoked from:
 
-- [Reset behaviors](../behaviors/reset.md)
+- [Reset behaviors](../keymaps/behaviors/reset.md)
 
 :::warning[Nesting behaviors with locality]
 Currently there is [an issue](https://github.com/zmkfirmware/zmk/issues/1494) preventing both global and source locality behaviors from working as expected if they are invoked from another behavior, such as a hold-tap, tap dance or a mod-morph.
@@ -97,5 +97,5 @@ This is because the key bindings are processed on the central side which would t
 :::
 
 :::note[Combos]
-[Combos](combos.md) always invoke behaviors with source locality on the central.
+[Combos](../keymaps/combos.md) always invoke behaviors with source locality on the central.
 :::

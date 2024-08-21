@@ -8,16 +8,16 @@ sidebar_label: Key Press
 The most basic of behaviors, is the ability to send certain keycode presses and releases in response to activating
 a certain key.
 
-The categories of supported codes are:
+The categories of supported keycodes are:
 
-- [Keyboard & Keypad](../codes/keyboard-keypad.mdx)
-- [Editing](../codes/editing.mdx)
-- [Media](../codes/media.mdx)
-- [Applications](../codes/applications.mdx)
-- [Input Assist](../codes/input-assist.mdx)
-- [Power](../codes/power.mdx)
-
-Please visit the [codes](../codes/index.mdx) section for a comprehensive list.
+- [Keyboard](../list-of-keycodes.mdx#keyboard)
+- [Modifiers](../list-of-keycodes.mdx#modifiers)
+- [Keypad](../list-of-keycodes.mdx#keypad)
+- [Editing](../list-of-keycodes.mdx#editing)
+- [Media](../list-of-keycodes.mdx#media)
+- [Applications](../list-of-keycodes.mdx#applications)
+- [Input Assist](../list-of-keycodes.mdx#input-assist)
+- [Power & Lock](../list-of-keycodes.mdx#power--lock)
 
 For advanced users, user-defined HID usages are also supported but must be encoded, please see [`dt-bindings/zmk/keys.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/keys.h) for further insight.
 

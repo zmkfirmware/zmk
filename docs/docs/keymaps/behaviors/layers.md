@@ -9,7 +9,7 @@ Often, you may want a certain key position to alter which layers are enabled, ch
 Some of those behaviors are still in the works; the ones that are working now are documented here.
 
 :::note
-Multiple layers can be active at the same time and activating a layer will not deactivate layers higher up in the "layer stack". See [Layers](../features/keymaps.mdx#layers) for more information.
+Multiple layers can be active at the same time and activating a layer will not deactivate layers higher up in the "layer stack". See [Layers](../index.mdx#layers) for more information.
 :::
 
 ## Defines to Refer to Layers
@@ -80,7 +80,7 @@ You can configure a different tapping term or tweak other properties noted in th
 :::info
 Functionally, the layer-tap is a [hold-tap](hold-tap.mdx) of the ["tap-preferred" flavor](hold-tap.mdx#flavors) and a [`tapping-term-ms`](hold-tap.mdx#tapping-term-ms) of 200 that takes in a [`momentary layer`](#momentary-layer) and a [keypress](key-press.md) as its "hold" and "tap" parameters, respectively.
 
-For users who want to send a different [keycode](../codes/index.mdx) depending on if the same key is held or tapped, see [Mod-Tap](mod-tap.md).
+For users who want to send a different [keycode](../list-of-keycodes.mdx) depending on if the same key is held or tapped, see [Mod-Tap](mod-tap.md).
 
 Similarly, for users looking to create a keybind like the layer-tap that depending on how long the key is held, invokes behaviors like [sticky keys](sticky-key.md) or [key toggles](key-toggle.md), see [Hold-Tap](hold-tap.mdx).
 
@@ -119,4 +119,4 @@ Example:
 ## Conditional Layers
 
 The "conditional layers" feature enables a particular layer when all layers in a specified set are active.
-For more information, see [conditional layers](../features/conditional-layers.md).
+For more information, see [conditional layers](../conditional-layers.md).

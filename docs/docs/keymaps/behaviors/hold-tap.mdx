@@ -16,11 +16,11 @@ Simply put, the hold-tap key will output the 'hold' behavior if it's held for a 
 
 The graph below shows how the hold-tap decides between a 'tap' and a 'hold'.
 
-![Simple behavior](../assets/hold-tap/case1_2.svg)
+![Simple behavior](../../assets/hold-tap/case1_2.svg)
 
 By default, the hold-tap is configured to also select the 'hold' functionality if another key is tapped while it's active:
 
-![Hold preferred behavior](../assets/hold-tap/case_hold_preferred.svg)
+![Hold preferred behavior](../../assets/hold-tap/case_hold_preferred.svg)
 
 We call this the 'hold-preferred' flavor of hold-taps. While this flavor may work very well for a ctrl/escape key, it's not very well suited for home-row mods or layer-taps. That's why there are two more flavors to choose from: 'tap-preferred' and 'balanced'.
 
@@ -33,7 +33,7 @@ We call this the 'hold-preferred' flavor of hold-taps. While this flavor may wor
 
 When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
 
-![Hold-tap comparison](../assets/hold-tap/comparison.svg)
+![Hold-tap comparison](../../assets/hold-tap/comparison.svg)
 
 ### Basic Usage
 
@@ -144,7 +144,7 @@ the hold-tap. For homerow mods, this is not always ideal, because it prevents co
 
 #### Using different behavior types with hold-taps
 
-You can create instances of hold-taps invoking most [behavior types](../features/keymaps.mdx#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
+You can create instances of hold-taps invoking most [behavior types](../index.mdx#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
 The two parameters that are passed to the hold-tap in your keymap will be forwarded to the referred behaviors, first one to the hold behavior and second one to the tap.
 
 If you use behaviors that accept no parameters such as [mod-morphs](mod-morph.md) or [macros](macros.md), you can pass a dummy parameter value such as `0` to the hold-tap when you use it in your keymap.
@@ -155,7 +155,7 @@ For instance, a hold-tap with node label `caps` and `bindings = <&kp>, <&caps_wo
 ```
 
 :::info
-You cannot use behaviors that expect more than one parameter such as [`&bt`](bluetooth.md) and [`&rgb_ug`](underglow.md) with hold-taps, due to the limitations of the [devicetree keymap format](../config/index.md#devicetree-files).
+You cannot use behaviors that expect more than one parameter such as [`&bt`](bluetooth.md) and [`&rgb_ug`](underglow.md) with hold-taps, due to the limitations of the [devicetree keymap format](../../config/index.md#devicetree-files).
 One workaround is to create a [macro](macros.md) that invokes those behaviors and use the macro as the hold or tap action.
 :::
 

@@ -50,7 +50,7 @@ condition in another configuration, possibly repeatedly.
 :::warning
 When configured as a `then-layer`, a layer's activation status is entirely controlled by the
 conditional layers feature. Even if the layer is activated for another reason (such as a
-[momentary layer](../behaviors/layers.md#momentary-layer) behavior), it will be immediately
+[momentary layer](behaviors/layers.md#momentary-layer) behavior), it will be immediately
 deactivated if the associated `then-layers` configuration is not met. As such, we recommend
 avoiding using regular layer behaviors for `then-layer` targets.
 :::
