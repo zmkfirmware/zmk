@@ -9,7 +9,7 @@ Mouse emulation behaviors send mouse events, including mouse button presses, cur
 
 :::warning[Refreshing the HID descriptor]
 
-Enabling or disabling the mouse emulation feature modifies the HID report descriptor and requires it to be [refreshed](../features/bluetooth.md#refreshing-the-hid-descriptor).
+Enabling or disabling the mouse emulation feature modifies the HID report descriptor and requires it to be [refreshed](../../features/bluetooth.md#refreshing-the-hid-descriptor).
 The mouse functionality will not work over BLE until that is done.
 
 :::

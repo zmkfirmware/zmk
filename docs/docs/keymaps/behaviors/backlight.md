@@ -5,7 +5,7 @@ sidebar_label: Backlight
 
 ## Summary
 
-This page contains [backlight](../features/backlight.mdx) behaviors supported by ZMK.
+This page contains [backlight](../../features/backlight.mdx) behaviors supported by ZMK.
 
 ## Backlight Action Defines
 
@@ -38,8 +38,8 @@ Here is a table describing the action for each define:
 
 :::note[Backlight settings persistence]
 The backlight settings that are changed via the `&bl` behavior will be saved to flash storage and hence persist across restarts and firmware flashes.
-They will also override the start values set by [`CONFIG_ZMK_BACKLIGHT_*_START` settings](../config/backlight.md#kconfig).
-However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+They will also override the start values set by [`CONFIG_ZMK_BACKLIGHT_*_START` settings](../../config/backlight.md#kconfig).
+However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
 
 ### Examples
@@ -58,4 +58,4 @@ However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNC
 
 ## Split Keyboards
 
-Backlight behaviors are [global](../features/split-keyboards.md#global-locality-behaviors): This means that when triggered, they affect both the central and peripheral side of split keyboards.
+Backlight behaviors are [global](../../features/split-keyboards.md#global-locality-behaviors): This means that when triggered, they affect both the central and peripheral side of split keyboards.

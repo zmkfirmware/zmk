@@ -23,7 +23,7 @@ export const Uf2Tabs = (props) => (
 );
 
 :::tip
-[USB logging](../development/usb-logging.mdx) can be very helpful for diagnosing issues with ZMK. However, when connected to USB your ZMK device will output to USB by default. To troubleshoot wireless connection issues using logging, you will need to [change the preferred output endpoint](../behaviors/outputs.md).
+[USB logging](../development/usb-logging.mdx) can be very helpful for diagnosing issues with ZMK. However, when connected to USB your ZMK device will output to USB by default. To troubleshoot wireless connection issues using logging, you will need to [change the preferred output endpoint](../keymaps/behaviors/outputs.md).
 :::
 
 ## Split Keyboard Halves Unable to Pair
@@ -139,7 +139,7 @@ This setting can also improve the connection strength between the keyboard halve
 
 ### Using Bluetooth Output With USB Power
 
-If you want to test Bluetooth output on your keyboard and are powering it through the USB connection rather than a battery, you will be able to pair with a host device but may not see keystrokes sent. In this case you need to use the [output selection behavior](../behaviors/outputs.md) to prefer sending keystrokes over Bluetooth rather than USB. This might be necessary even if you are not powering from a device capable of receiving USB inputs, such as a USB charger.
+If you want to test Bluetooth output on your keyboard and are powering it through the USB connection rather than a battery, you will be able to pair with a host device but may not see keystrokes sent. In this case you need to use the [output selection behavior](../keymaps/behaviors/outputs.md) to prefer sending keystrokes over Bluetooth rather than USB. This might be necessary even if you are not powering from a device capable of receiving USB inputs, such as a USB charger.
 
 ### macOS Connected but Not Working
 

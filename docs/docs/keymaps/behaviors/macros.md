@@ -45,12 +45,12 @@ The macro can then be bound in your keymap by referencing it by the label `&zed_
 
 :::note
 For use cases involving sending a single keycode with modifiers, for instance ctrl+tab, the [key press behavior](key-press.md)
-with [modifier functions](../codes/modifiers.mdx#modifier-functions) can be used instead of a macro.
+with [modifier functions](../modifiers.mdx#modifier-functions) can be used instead of a macro.
 :::
 
 ### Bindings
 
-Like [hold-taps](/docs/behaviors/hold-tap), macros are created by composing other behaviors, and any of those behaviors can
+Like [hold-taps](hold-tap.mdx), macros are created by composing other behaviors, and any of those behaviors can
 be added to the `bindings` list, e.g.:
 
 ```dts
@@ -111,7 +111,7 @@ bindings
 ### Wait Time
 
 The wait time setting controls how long of a delay is introduced between behaviors in the `bindings` list. The initial wait time for a macro,
-which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS`](../config/behaviors.md#macro) by default, can
+which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS`](../../config/behaviors.md#macro) by default, can
 be set by assigning a value to the `wait-ms` property of the macro, e.g. `wait-ms = <20>;`. If you want to update the wait time at any
 point in the macro bindings list, use `&macro_wait_time`, e.g. `&macro_wait_time 30`. A full example:
 
@@ -127,7 +127,7 @@ bindings
 ### Tap Time
 
 The tap time setting controls how long a tapped behavior is held in the `bindings` list. The initial tap time for a macro,
-which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`](../config/behaviors.md#macro) by default, can
+which is equal to the value of [`CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`](../../config/behaviors.md#macro) by default, can
 be set by assigning a value to the `tap-ms` property of the macro, e.g. `tap-ms = <20>;`. If you want to update the tap time at any
 point in a macro bindings list, use `&macro_tap_time`, e.g. `&macro_tap_time 30`. A full example:
 
@@ -144,9 +144,9 @@ bindings
 
 Macros use an internal queue to invoke each behavior in the bindings list when triggered, which has a size of 64 by default. Bindings in "press" and "release" modes correspond to one event in the queue, whereas "tap" mode bindings correspond to two (one for press and one for release). As a result, the effective number of actions processed might be less than 64 and this can cause problems for long macros.
 
-To prevent issues with longer macros, you can change the size of this queue via the `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` setting in your configuration, [typically through your `.conf` file](../config/index.md). For example, `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` would allow your macro to type about 256 characters.
+To prevent issues with longer macros, you can change the size of this queue via the `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` setting in your configuration, [typically through your `.conf` file](../../config/index.md). For example, `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE=512` would allow your macro to type about 256 characters.
 
-Another limit worth noting is that the maximum number of bindings you can pass to a `bindings` field in the [Devicetree](../config/index.md#devicetree-files) is 256, which also constrains how many behaviors can be invoked by a macro.
+Another limit worth noting is that the maximum number of bindings you can pass to a `bindings` field in the [Devicetree](../../config/index.md#devicetree-files) is 256, which also constrains how many behaviors can be invoked by a macro.
 
 ## Parameterized Macros
 
@@ -218,7 +218,7 @@ Below are some examples of how the macro behavior can be used for various useful
 
 ### Layer Activation + More
 
-Macros make it easy to combine a [layer behavior](/docs/behaviors/layers), e.g. `&mo` with another behavior at the same time.
+Macros make it easy to combine a [layer behavior](layers.md), e.g. `&mo` with another behavior at the same time.
 Common examples are enabling one or more modifiers when the layer is active, or changing the RBG underglow color.
 
 To achieve this, a combination of a 0ms wait time and splitting the press and release between a `&macro_pause_for_release` is used:

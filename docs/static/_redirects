@@ -1,0 +1,8 @@
+/docs/behaviors/* /docs/keymaps/behaviors/:splat 301
+/docs/features/keymaps /docs/keymaps 301
+/docs/features/combos /docs/keymaps/combos 301
+/docs/features/conditional-layers /docs/keymaps/conditional-layers 301
+/docs/features/encoders /docs/keymaps/encoders 301
+/docs/codes/modifiers /docs/keymaps/modifiers 301
+/docs/codes/* /docs/keymaps/list-of-keycodes 301
+/docs/features/beta-testing /docs/features/modules#beta-testing 301
