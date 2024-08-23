@@ -21,6 +21,11 @@
         ;
 };
 
+// Настройки для пробуждения устройства
+    soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        wakeup-sources = <&right_encoder>;  // Указываем только правый энкодер как источник пробуждения
+    };
 &right_encoder {
     status = "okay";
 };
