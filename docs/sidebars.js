@@ -125,7 +125,7 @@ module.exports = {
         id: "advanced-guides/index",
       },
       collapsed: true,
-      items: [],
+      items: ["advanced-guides/soft-off-setup"],
     },
     {
       Development: [
