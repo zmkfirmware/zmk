@@ -115,6 +115,16 @@ module.exports = {
       ],
     },
     {
+      type: "category",
+      label: "Advanced Guides",
+      link: {
+        type: "doc",
+        id: "advanced-guides/index",
+      },
+      collapsed: true,
+      items: [],
+    },
+    {
       Development: [
         "development/clean-room",
         "development/pre-commit",
