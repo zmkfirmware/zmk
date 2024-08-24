@@ -122,7 +122,7 @@ module.exports = {
         id: "advanced-guides/index",
       },
       collapsed: true,
-      items: [],
+      items: ["advanced-guides/making-modules"],
     },
     {
       Development: [
