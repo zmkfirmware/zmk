@@ -1,0 +1,147 @@
+---
+title: Making ZMK Modules
+sidebar_label: Making ZMK Modules
+---
+
+[ZMK modules](../features/modules.mdx) are the recommended method of adding content to ZMK, whenever it is possible. This page will guide you through creating a module for ZMK, beginning from an empty git repository. Distinction is made between modules used for different purposes:
+
+- Modules containing one or more keyboard-related definitions (boards, shields, interconnects, etc.)
+- Modules containing behaviors & features
+- Modules containing drivers
+
+In general, it is recommended that you create one module per item - one behavior per module, one driver per module, etc. Keyboard definitions can be an exception: Multiple keyboards belonging to the same "family" can exist within the same module. Here "family" could refer to a series with similar names, or even all keyboards from a particular designer.
+
+:::tip
+For keyboard-related modules specifically, the simplest approach is to use the [unified zmk config template](https://github.com/zmkfirmware/unified-zmk-config-template) as a template, and then make the appropriate edits.
+:::
+
+## Zephyr Module File
+
+A repository is made into a module with the presence of a `<module root>/zephyr/module.yaml` file. This file describes the module. A full description of this file can be found in the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/develop/modules.html), the most commonly used parts of which are presented here.
+
+### Module Name
+
+A name can be assigned to the module through the use of the `name` property:
+
+```yaml title="<module root>/zephyr/module.yaml"
+name: <name>
+```
+
+Your module _can_ function without being named, but we recommend that you give it a name for organisational purposes. Names should be lowercase alphanumeric and `-` only.
+
+The naming convention we recommend is `zmk-<type>-<username>-<description>`, where:
+
+- `type` is one of `keyboards`, `behavior`, `driver`, `feature`
+- `username` is a username that you go by, or alternatively the name of your company/organisation
+- `description` is a short description of what the module contains
+
+Do note that the name denoted in the `module.yaml` file **does not** have to be the same as the name of the module's git repository.
+
+For example:
+
+```yaml title="cirque-input-module/zephyr/module.yaml"
+name: `zmk-driver-petejohanson-cirque-pinnacle`
+```
+
+### Build Configuration
+
+The `build` property is used to specify a number of settings to be used when including your module in the final build.
+
+#### Dependencies
+
+The `depends` child property is used to specify a list of modules which the module depends on. The dependencies are referred to by their [module name](#module-name).
+
+```yaml title="<module root>/zephyr/module.yaml"
+build:
+  depends:
+    - <module>
+```
+
+#### Build files
+
+The `cmake` and `kconfig` child properties are used to identify the `CMakeLists.txt` and `Kconfig` which are used to build the module.
+
+- `cmake` points to the _directory_ in which the `CMakeLists.txt` is found.
+- `kconfig` points to the _path_ of the `Kconfig` file.
+
+Here's an example where both of these files are found at the root of the module:
+
+```yaml title="<module root>/zephyr/module.yaml"
+build:
+  cmake: .
+  kconfig: Kconfig
+```
+
+#### Build settings
+
+Additional build settings fall under the `settings` property, which itself is a child of the `build` property. Particularly relevant settings are:
+
+- `board_root` which points to a directory containing a `boards` directory, which contains additional board/shield definitions.
+- `dts_root` which points to a directory containing a `dts` directory, which contains additional devicetree bindings.
+
+A full list of build settings can be found [here](https://docs.zephyrproject.org/3.5.0/develop/modules.html#build-settings). Here's an example where both of these directories are found at the root of the module:
+
+```yaml title="<module root>/zephyr/module.yaml"
+build:
+  settings:
+    board_root: .
+    dts_root: .
+```
+
+### Examples
+
+The following are some examples of `module.yaml` files as they are commonly used in ZMK.
+
+#### Keyboard module example
+
+```yaml title="lpgalaxy-keyboards/zephyr/module.yaml"
+name: "zmk-keyboards-lpgalaxy"
+build:
+  settings:
+    board_root: .
+```
+
+#### Behavior module example
+
+```yaml title="auto-layer-module/zephyr/module.yaml"
+name: "zmk-behavior-urob-autolayer"
+build:
+  cmake: .
+  settings:
+    dts_root: .
+```
+
+## Optional Files
+
+While the `zephyr/module.yaml` file is the only file _necessary_ for a module, there are a number of files which can be helpful to have.
+
+### West Manifest
+
+A [West Manifest](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html) file can be included to specify the locations of module dependencies, so that they can be automatically discovered and imported when your module is used. The typical format used in ZMK-related content is
+
+```yaml title="config/west.yml"
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    # Additional modules containing boards/shields/custom code can be listed here as well
+    # See https://docs.zephyrproject.org/3.2.0/develop/west/manifest.html#projects
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: main
+      import: app/west.yml
+  self:
+    path: config
+```
+
+The above file describes a west manifest file called `west.yml` located in a directory named `config`, naming `zmk` as a module dependency.
+See the [modules feature page](../features/modules.mdx) for additional information on using west manifest files.
+
+### GitHub Actions
+
+If your module contains keyboard definitions and is hosted on GitHub, it may be useful to include a `build.yaml` in the root of your directory and the standard `.github/workflows/build.yml` file used to build keyboard firmware via GitHub actions. This would allow potential users to simply download the firmware from your module, and can be particularly useful as [ZMK Studio](../development/studio-rpc-protocol.md) increases in use.
+
+### Other Files
+
+It is recommended that you include a `LICENSE` file and a `README.md`, as is typical of Git repositories.
