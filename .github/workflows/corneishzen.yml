@@ -1,0 +1,63 @@
+name: Build ZMK Firmware
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Set up Zephyr environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends cmake ninja-build gperf \
+          ccache dfu-util device-tree-compiler wget \
+          python3-pip python3-setuptools python3-wheel xz-utils file make gcc \
+          gcc-multilib
+
+        # Set up Zephyr SDK
+        wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.0/zephyr-sdk-0.16.0-setup.run
+        chmod +x zephyr-sdk-0.16.0-setup.run
+        ./zephyr-sdk-0.16.0-setup.run -- -y
+
+        export ZEPHYR_TOOLCHAIN_VARIANT=zephyr
+        export ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk
+
+    - name: Install west and other dependencies
+      run: |
+        pip3 install west
+        west init -l app/
+        west update
+        west zephyr-export
+
+    - name: Build Firmware for Left Side
+      run: |
+        west build -p -d build/left -b corneish_zen_v2_left -- -DZMK_CONFIG=`pwd`/config
+
+    - name: Build Firmware for Right Side
+      run: |
+        west build -p -d build/right -b corneish_zen_v2_right -- -DZMK_CONFIG=`pwd`/config
+
+    - name: Upload Firmware Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: zmk-firmware
+        path: |
+          build/left/zephyr/zmk.uf2
+          build/right/zephyr/zmk.uf2
+
