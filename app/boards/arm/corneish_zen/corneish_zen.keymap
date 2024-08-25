@@ -16,53 +16,100 @@
     };
 };
 
+
 / {
     keymap {
         compatible = "zmk,keymap";
-
-        default_layer {
-            display-name = "QWERTY";
-// --------------------------------------------------------------------------------
-// |  TAB |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U   |  I  |  O  |  P  | BKSP |
-// | CTRL |  A  |  S  |  D  |  F  |  G  |   |  H  |  J   |  K  |  L  |  ;  |  '   |
-// | SHFT |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M   |  ,  |  .  |  /  | ESC  |
-//                    | GUI | LWR | SPC |   | ENT | RSE  | ALT |
-            bindings = <
-&kp TAB   &kp Q &kp W &kp E &kp R &kp T   &kp Y &kp U  &kp I     &kp O   &kp P    &kp BSPC
-&kp LCTRL &kp A &kp S &kp D &kp F &kp G   &kp H &kp J  &kp K     &kp L   &kp SEMI &kp SQT
-&kp LSHFT &kp Z &kp X &kp C &kp V &kp B   &kp N &kp M  &kp COMMA &kp DOT &kp FSLH &kp ESC
-               &kp LGUI &mo 1 &kp SPACE   &kp RET &mo 2 &kp RALT
-            >;
-        };
-
-        lower_layer {
-            display-name = "NUMBER";
+default_layer {
+    display-name = "BASE";
+    bindings = <
 // -----------------------------------------------------------------------------------------
-// |  TAB |  1  |  2  |  3  |  4  |  5  |   |  6  |  7  |  8  |  9  |  0  | BKSP |
-// | BTCLR| BT1 | BT2 | BT3 | BT4 | BT5 |   | LFT | DWN |  UP | RGT |     |      |
-// | SHFT |     |     |     |     |     |   |     |     |     |     |     |      |
-//                    | GUI |     | SPC |   | ENT |     | ALT |
-            bindings = <
-&kp TAB    &kp N1       &kp N2       &kp N3       &kp N4       &kp N5         &kp N6   &kp N7   &kp N8 &kp N9    &kp N0 &kp BSPC
-&bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4   &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
-&kp LSHFT  &trans       &trans       &trans       &trans       &trans         &trans   &trans   &trans &trans    &trans &trans
-                                     &kp LGUI     &trans       &kp SPACE      &kp RET  &trans   &kp RALT
-            >;
-        };
+// | 0:LBKT |  1:Q  |  2:W  |  3:E  |  4:R  |  5:T  |   |  6:Y  |  7:U   |  8:I  |  9:O  | 10:P  | 11:RBKT |
+// | 12:LPAR|  13:A |  14:S |  15:D |  16:F |  17:G |   |  18:H |  19:J  | 20:K  | 21:L  | 22:;  | 23:RPAR |
+// | 24:LBRC|  25:Z |  26:X |  27:C |  28:V |  29:B |   |  30:N |  31:M  | 32:,  | 33:.  | 34:/  | 35:RBRC |
+//                  |36:TAB |37:BSPC|38:ENT |   |39:SPC|40:DEL |41:ESC |
+    &kp LBKT &kp Q &kp W &kp E &kp R &kp T   &kp Y &kp U  &kp I     &kp O   &kp P    &kp RBKT
+    &kp LPAR &kp A &kp S &kp D &kp F &kp G   &kp H &kp J  &kp K     &kp L   &kp SEMI &kp RPAR
+    &kp LBRC &kp Z &kp X &kp C &kp V &kp B   &kp N &kp M  &kp COMMA &kp DOT &kp FSLH &kp RBRC
+                    &lt 3 TAB &lt 1 BSPC &lt 2 ENTER   &lt 2 SPACE &lt 1 DEL &lt 3 ESC
+    >;
+};
 
-        raise_layer {
-            display-name = "SYMBOL";
+nav_layer {
+    display-name = "NAV";
+    bindings = <
 // -----------------------------------------------------------------------------------------
-// |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BKSP |
-// | CTRL |     |     |     |     |     |   |  -  |  =  |  [  |  ]  |  \  |  `   |
-// | SHFT |     |     |     |     |     |   |  _  |  +  |  {  |  }  | "|" |  ~   |
-//                    | GUI |     | SPC |   | ENT |     | ALT |
-            bindings = <
-&kp  TAB  &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT   &kp CARET &kp AMPS  &kp ASTRK &kp LPAR &kp RPAR &kp BSPC
-&kp LCTRL &trans   &trans &trans   &trans   &trans      &kp MINUS &kp EQUAL &kp LBKT  &kp RBKT &kp BSLH &kp GRAVE
-&kp LSHFT &trans   &trans &trans   &trans   &trans      &kp UNDER &kp PLUS  &kp LBRC  &kp RBRC &kp PIPE &kp TILDE
-                          &kp LGUI &trans   &kp SPACE   &kp RET   &trans    &kp RALT
-            >;
-        };
+// |  0:    |  1:   |  2:   |  3:   |  4:   |  5:   |   |  6:   |  7:    |  8:   |  9:   | 10:   | 11:    |
+// |12:LCTRL|13:LALT|14:LGUI|15:LSFT| 16:   | 17:   |   |18:LEFT|19:DOWN |20:UP  |21:RGHT| 22:   | 23:    |
+// | 24:    | 25:   | 26:   | 27:   | 28:   | 29:   |   | 30:   |31:HOME |32:PGDN|33:PGUP|34:END | 35:    |
+//                  | 36:   | 37:   | 38:   |   |39:ENT |40:BSPC|41:DEL |
+    &trans    &trans   &trans    &trans    &trans  &trans      &trans  &trans    &trans    &trans     &trans    &trans
+    &kp LCTRL &kp LALT &kp LGUI  &kp LSHFT &trans  &trans      &kp LEFT &kp DOWN  &kp UP    &kp RIGHT  &trans    &trans
+    &trans    &trans   &trans    &trans    &trans  &trans      &trans   &kp HOME  &kp PG_DN &kp PG_UP  &kp END   &trans
+                        &trans    &trans    &trans      &kp ENTER &kp BSPC &kp DEL
+    >;
+};
+
+sym_layer {
+    display-name = "SYM";
+    bindings = <
+// -----------------------------------------------------------------------------------------
+// |  0:!  |  1:@  |  2:#  |  3:$  |  4:%  |  5:   |   |  6:   |  7:^  |  8:&  |  9:*  | 10:(  | 11:)  |
+// | 12:\  | 13:-  | 14:=  | 15:[  | 16:]  | 17:   |   | 18:   | 19:: |20:LSFT|21:LGUI|22:LALT|23:LCTL|
+// | 24:`  | 25:_  | 26:+  | 27:{  | 28:}  | 29:   |   | 30:   | 31:~ | 32:   | 33:   | 34:   | 35:   |
+//                 | 36:   | 37:   | 38:   |   | 39:   | 40:   | 41:   |
+    &kp EXCL  &kp AT    &kp HASH  &kp DLLR  &kp PRCNT &trans     &trans &kp CARET &kp AMPS  &kp ASTRK &kp LPAR  &kp RPAR
+    &kp BSLH  &kp MINUS &kp EQUAL &kp LBKT  &kp RBKT  &trans     &trans &kp COLON &kp LSHFT &kp LGUI  &kp LALT  &kp LCTRL
+    &kp GRAVE &kp UNDER &kp PLUS  &kp LBRC  &kp RBRC  &trans     &trans &kp TILDE &trans    &trans    &trans    &trans
+                        &trans    &trans    &trans     &trans &trans &trans
+    >;
+};
+
+num_layer {
+    display-name = "NUM";
+    bindings = <
+// -----------------------------------------------------------------------------------------
+// |  0:[  |  1:7  |  2:8  |  3:9  |  4:]  |  5:   |   |  6:   |  7:   |  8:   |  9:   | 10:   | 11:   |
+// | 12:;  | 13:4  | 14:5  | 15:6  | 16:=  | 17:   |   | 18:   |19:LSFT|20:LGUI|21:LALT|22:LCTL| 23:   |
+// | 24:`  | 25:1  | 26:2  | 27:3  | 28:\  | 29:   |   | 30:   | 31:   | 32:   | 33:   | 34:   | 35:   |
+//                 | 36:   | 37:0  | 38:-  |   | 39:   | 40:   | 41:   |
+    &kp LBKT  &kp N7 &kp N8 &kp N9 &kp RBKT  &trans     &trans &trans   &trans    &trans    &trans    &trans
+    &kp SEMI  &kp N4 &kp N5 &kp N6 &kp EQUAL &trans     &trans &kp LSHFT &kp LGUI  &kp LALT  &kp LCTRL &trans
+    &kp GRAVE &kp N1 &kp N2 &kp N3 &kp BSLH  &trans     &trans &trans   &trans    &trans    &trans    &trans
+                      &trans &kp N0 &kp MINUS   &trans &trans &trans
+    >;
+};
+
+fun_layer {
+    display-name = "FUN";
+    bindings = <
+// -----------------------------------------------------------------------------------------
+// | 0:F12 | 1:F7  | 2:F8  | 3:F9  |4:PSCRN| 5:    |   |  6:   |  7:   |  8:   |  9:   | 10:   | 11:   |
+// | 12:F11| 13:F4 | 14:F5 | 15:F6 |16:SLCK| 17:   |   | 18:   |19:LSFT|20:LGUI|21:LALT|22:LCTL| 23:   |
+// | 24:F10| 25:F1 | 26:F2 | 27:F3 |28:PAUS| 29:   |   | 30:   | 31:   | 32:   | 33:   | 34:   | 35:   |
+//                 | 36:   | 37:   | 38:   |   | 39:   | 40:   | 41:   |
+    &kp F12 &kp F7 &kp F8 &kp F9 &kp PSCRN &trans   &trans &trans   &trans    &trans    &trans    &trans
+    &kp F11 &kp F4 &kp F5 &kp F6 &kp SLCK  &trans   &trans &kp LSHFT &kp LGUI  &kp LALT  &kp LCTRL &trans
+    &kp F10 &kp F1 &kp F2 &kp F3 &kp PAUSE_BREAK &trans   &trans &trans   &trans    &trans    &trans    &trans
+                    &trans &trans &trans   &trans &trans &trans
+    >;
+};
+
+media_layer {
+    display-name = "MEDIA";
+    bindings = <
+// -----------------------------------------------------------------------------------------
+// |  0:   |  1:   |  2:   |  3:   |  4:   |  5:   |   |  6:   |  7:   |  8:   |  9:   | 10:   | 11:   |
+// | 12:   | 13:   | 14:   | 15:   | 16:   | 17:   |   |18:PREV|19:VOLDN|20:VOLUP|21:NEXT| 22:  | 23:   |
+// | 24:   | 25:   | 26:   | 27:   | 28:   | 29:   |   | 30:   | 31:   | 32:   | 33:   | 34:   | 35:   |
+//                 | 36:   | 37:   | 38:   |   |39:STOP|40:PLAY|41:MUTE|
+    &trans &trans &trans &trans &trans &trans   &trans &trans      &trans       &trans      &trans &trans
+    &trans &trans &trans &trans &trans &trans   &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT &trans &trans
+    &trans &trans &trans &trans &trans &trans   &trans &trans      &trans       &trans      &trans &trans
+                  &trans &trans &trans   &kp C_STOP &kp C_PP &kp C_MUTE
+    >;
+};
+
     };
 };
+
