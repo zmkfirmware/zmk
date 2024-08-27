@@ -49,8 +49,8 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
     keys {
         compatible = "gpio-keys";
         wakeup_key: wakeup_key {
-            row-gpios = <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
-            col-gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        
         wakeup-source;
         };
     };
