@@ -63,7 +63,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
     side_band_behavior_triggers: side_band_behavior_triggers {
         compatible = "zmk,kscan-sideband-behaviors";
         wakeup-source;
-        kscan = <&kscan>;
+        kscan = <&kscan0>;
         soft_off {
             column = <0>;
             row = <0>;
