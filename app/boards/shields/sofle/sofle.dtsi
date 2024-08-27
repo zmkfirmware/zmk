@@ -9,8 +9,7 @@
 / {
     chosen {
         zephyr,display = &oled;
-        // zmk,kscan = &kscan0;
-        zmk,kscan = &side_band_behavior_triggers, &kscan1;
+        zmk,kscan = &kscan0;
         zmk,matrix-transform = &default_transform;
     };
 
@@ -45,56 +44,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
             , <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
     };
-// start soft-off
-    kscan1: kscan1 {
-            compatible = "zmk,kscan-gpio-matrix";
-            wakeup-source;
-    
-            diode-direction = "col2row";
-            row-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
-            col-gpios = <&pro_micro 10 GPIO_ACTIVE_HIGH>;
-        };
-    keys {
-        compatible = "gpio-keys";
-        wakeup_key: wakeup_key {
-            gpios = <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
-        };
-    };
 
-    behaviors {
-        hw_soft_off: hw_soft_off {
-            compatible = "zmk,behavior-soft-off";
-            #binding-cells = <0>;
-            hold-time-ms = <2000>;
-        };
-    };
-
-    side_band_behavior_triggers: side_band_behavior_triggers {
-        compatible = "zmk,kscan-sideband-behaviors";
-        wakeup-source;
-        kscan = <&kscan0>;
-        soft_off {
-            column = <5>;
-            row = <4>;
-            bindings = <&hw_soft_off>;
-        };
-    };
-
-    wakeup_source: wakeup_source {
-        compatible = "zmk,gpio-key-wakeup-trigger";
-
-        trigger = <&kscan1>;
-        wakeup-source;
-       // extra-gpios
-       //     = <&gpio0 18 GPIO_ACTIVE_HIGH>
-       //     ;
-    };
-
-    soft_off_wakers {
-        compatible = "zmk,soft-off-wakeup-sources";
-        wakeup-sources = <&wakeup_source>;
-    };
-// end soft-off
     left_encoder: encoder_left {
         compatible = "alps,ec11";
         a-gpios = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
