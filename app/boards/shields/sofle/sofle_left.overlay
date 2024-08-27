@@ -49,7 +49,7 @@
     wakeup_source: wakeup_source {
         compatible = "zmk,gpio-key-wakeup-trigger";
 
-        trigger = <&side_band_behavior_triggers;
+        trigger = <&hw_soft_off>;
         wakeup-source;
     };
 
