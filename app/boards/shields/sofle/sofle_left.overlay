@@ -16,7 +16,19 @@
         , <&pro_micro 10 GPIO_ACTIVE_HIGH>
         ;
 };
+/ {
+wakeup_source: wakeup_source {
+        compatible = "zmk,gpio-key-wakeup-trigger";
 
+        trigger = <&left_encoder>;
+        wakeup-source;
+    };
+
+soft_off_wakers {
+    compatible = "zmk,soft-off-wakeup-sources";
+    wakeup-sources = <&wakeup_source>;
+    };
+};
 
 &left_encoder {
     status = "okay";
