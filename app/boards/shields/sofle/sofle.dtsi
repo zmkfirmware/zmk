@@ -67,7 +67,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
         kscan = <&kscan0>;
         soft_off {
             column = <0>;
-            row = <0>;
+            row = <1>;
             bindings = <&hw_soft_off>;
         };
     };
@@ -77,9 +77,9 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
 
         trigger = <&wakeup_key>;
         wakeup-source;
-        extra-gpios
-            = <&gpio0 18 GPIO_ACTIVE_HIGH>
-            ;
+       // extra-gpios
+       //     = <&gpio0 18 GPIO_ACTIVE_HIGH>
+       //     ;
     };
 
     soft_off_wakers {
