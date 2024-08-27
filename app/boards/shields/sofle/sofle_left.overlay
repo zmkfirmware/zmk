@@ -5,6 +5,13 @@
  */
 
 #include "sofle.dtsi"
+/ {
+    chosen {
+        zephyr,display = &oled;
+        zmk,kscan = &side_band_behavior_triggers;
+        zmk,matrix-transform = &default_transform;
+    };
+};
 
 &kscan0 {
     col-gpios
@@ -15,6 +22,41 @@
         , <&pro_micro 16 GPIO_ACTIVE_HIGH>
         , <&pro_micro 10 GPIO_ACTIVE_HIGH>
         ;
+};
+
+// start soft-off
+ 
+/{
+    behaviors {
+        hw_soft_off: hw_soft_off {
+            compatible = "zmk,behavior-soft-off";
+            #binding-cells = <0>;
+            hold-time-ms = <3000>;
+        };
+    };
+
+    side_band_behavior_triggers: side_band_behavior_triggers {
+        compatible = "zmk,kscan-sideband-behaviors";
+        wakeup-source;
+        kscan = <&kscan0>;
+        soft_off {
+            column = <5>;
+            row = <4>;
+            bindings = <&hw_soft_off>;
+        };
+    };
+
+    wakeup_source: wakeup_source {
+        compatible = "zmk,gpio-key-wakeup-trigger";
+
+        trigger = <&side_band_behavior_triggers;
+        wakeup-source;
+    };
+
+    soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        wakeup-sources = <&wakeup_source>;
+    };
 };
 
 &left_encoder {
