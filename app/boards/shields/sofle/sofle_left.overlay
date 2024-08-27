@@ -16,7 +16,10 @@
         , <&pro_micro 10 GPIO_ACTIVE_HIGH>
         ;
 };
-
+ soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        wakeup-sources = <&kscan0 RC(0,0)>;
+    };
 &left_encoder {
     status = "okay";
 };
