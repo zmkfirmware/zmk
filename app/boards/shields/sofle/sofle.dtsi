@@ -9,7 +9,8 @@
 / {
     chosen {
         zephyr,display = &oled;
-        zmk,kscan = &kscan0;
+        // zmk,kscan = &kscan0;
+        zmk,kscan = &side_band_behavior_triggers;
         zmk,matrix-transform = &default_transform;
     };
 
@@ -77,7 +78,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
         trigger = <&wakeup_key>;
         wakeup-source;
         extra-gpios
-            = <&gpio0 19 GPIO_ACTIVE_HIGH>
+            = <&gpio0 18 GPIO_ACTIVE_HIGH>
             ;
     };
 
