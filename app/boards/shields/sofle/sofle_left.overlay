@@ -19,7 +19,7 @@
 / {
  soft_off_wakers {
         compatible = "zmk,soft-off-wakeup-sources";
-        wakeup-sources = <&kscan0 RC(0,0)>;
+        wakeup-sources = <&left_encoder>;
     };
 };
 &left_encoder {
