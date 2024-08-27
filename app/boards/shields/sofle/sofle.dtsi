@@ -10,7 +10,7 @@
     chosen {
         zephyr,display = &oled;
         // zmk,kscan = &kscan0;
-        zmk,kscan = &side_band_behavior_triggers &kscan1;
+        zmk,kscan = &side_band_behavior_triggers, &kscan1;
         zmk,matrix-transform = &default_transform;
     };
 
