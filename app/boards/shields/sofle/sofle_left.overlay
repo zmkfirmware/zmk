@@ -43,7 +43,7 @@
             bindings = <&hw_soft_off>;
         };
     };
-
+/*
     wakeup_source: wakeup_source {
         compatible = "zmk,gpio-key-wakeup-trigger";
 
@@ -55,6 +55,7 @@
         compatible = "zmk,soft-off-wakeup-sources";
         wakeup-sources = <&wakeup_source>;
     };
+*/
 };
 
 &left_encoder {
