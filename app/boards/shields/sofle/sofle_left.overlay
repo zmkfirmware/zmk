@@ -7,10 +7,8 @@
 #include "sofle.dtsi"
 / {
     chosen {
-        zephyr,display = &oled;
         zmk,kscan = &side_band_behavior_triggers;
-        zmk,matrix-transform = &default_transform;
-    };
+        };
 };
 
 &kscan0 {
@@ -49,7 +47,7 @@
     wakeup_source: wakeup_source {
         compatible = "zmk,gpio-key-wakeup-trigger";
 
-        trigger = <&hw_soft_off>;
+        trigger = <&kscan0>;
         wakeup-source;
     };
 
