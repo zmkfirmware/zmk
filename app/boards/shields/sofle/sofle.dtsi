@@ -46,12 +46,18 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
             ;
     };
 // start soft-off
+    kscan1: kscan {
+            compatible = "zmk,kscan-gpio-matrix";
+            wakeup-source;
+    
+            diode-direction = "col2row";
+            row-gpios = <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+            col-gpios = <&pro_micro 10 GPIO_ACTIVE_HIGH>;
+        };
     keys {
         compatible = "gpio-keys";
         wakeup_key: wakeup_key {
             gpios = <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
-        
-        wakeup-source;
         };
     };
 
@@ -77,7 +83,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
     wakeup_source: wakeup_source {
         compatible = "zmk,gpio-key-wakeup-trigger";
 
-        trigger = <&wakeup_key>;
+        trigger = <&kscan1>;
         wakeup-source;
        // extra-gpios
        //     = <&gpio0 18 GPIO_ACTIVE_HIGH>
