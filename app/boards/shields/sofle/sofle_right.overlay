@@ -13,8 +13,8 @@
 / {
     chosen {
         zmk,kscan = &side_band_behavior_triggers;
- };
-
+ 	};
+};
 &kscan0 {
     col-gpios
         = <&pro_micro 10 GPIO_ACTIVE_HIGH>
