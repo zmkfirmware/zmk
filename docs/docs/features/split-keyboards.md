@@ -55,7 +55,7 @@ Any changes in ZMK related to split keyboard features might also necessitate doi
 
 Split keyboards with BLE-based split communications (i.e. all officially supported split keyboards) have an internal pairing procedure between the central and each peripheral.
 When the central has an open slot for a peripheral, it will advertise for connections (which will not be visible to non-ZMK devices).
-Then, any peripheral that has not yet bonded to a peripheral will pair to it.
+Then, any peripheral that has not yet bonded to a central will pair to it.
 Similar to how [bluetooth profiles](bluetooth.md) are managed between the keyboard and host devices, the bonding information will be stored with the corresponding hardware addresses of the other keyboard part, on both the central and peripheral.
 
 In practice, this means that your split keyboard parts will automatically pair and work the first time they are all on at the same time.
