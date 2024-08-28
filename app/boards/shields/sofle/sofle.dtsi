@@ -9,7 +9,8 @@
 / {
     chosen {
         zephyr,display = &oled;
-        zmk,kscan = &kscan0;
+        //zmk,kscan = &kscan0;
+        zmk,kscan = &side_band_behavior_triggers;
         zmk,matrix-transform = &default_transform;
     };
 
@@ -42,8 +43,40 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,5) RC(4,6) RC(3,6) RC(3,7) 
             , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             , <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             , <&pro_micro 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
     };
+
+    behaviors {
+		hw_soft_off: behavior_hw_soft_off {
+			compatible = "zmk,behavior-soft-off";
+			#binding-cells = <0>;
+			hold-time-ms = <2000>;
+		};
+	};
+
+	side_band_behavior_triggers: side_band_behavior_triggers {
+		compatible = "zmk,kscan-sideband-behaviors";
+		wakeup-source;
+		kscan = <&kscan0>;
+		soft_off {
+			column = <0>;
+			row = <5>;
+			bindings = <&hw_soft_off>;
+		};
+	};
+
+
+    keys {
+        compatible = "gpio-keys";
+        wakeup_key: wakeup_key {
+            gpios = <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        };
+    };
+
+
+
+
 
     left_encoder: encoder_left {
         compatible = "alps,ec11";
