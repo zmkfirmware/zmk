@@ -21,9 +21,6 @@ chosen {
         ;
 };
 
-// start soft-off
- 
-
 /{
 	side_band_behavior_triggers: side_band_behavior_triggers {
 		compatible = "zmk,kscan-sideband-behaviors";
