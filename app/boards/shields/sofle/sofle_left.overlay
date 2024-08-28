@@ -5,11 +5,6 @@
  */
 
 #include "sofle.dtsi"
-/ {
-    chosen {
-        zmk,kscan = &side_band_behavior_triggers;
-        };
-};
 
 &kscan0 {
     col-gpios
@@ -24,38 +19,21 @@
 
 // start soft-off
  
-/{
-    behaviors {
-        hw_soft_off: hw_soft_off {
-            compatible = "zmk,behavior-soft-off";
-            #binding-cells = <0>;
-            hold-time-ms = <3000>;
-        };
-    };
 
-    side_band_behavior_triggers: side_band_behavior_triggers {
-        compatible = "zmk,kscan-sideband-behaviors";
-        wakeup-source;
-        kscan = <&kscan0>;
-        soft_off {
-            column = <5>;
-            row = <4>;
-            bindings = <&hw_soft_off>;
-        };
-    };
-/*
+/{
     wakeup_source: wakeup_source {
         compatible = "zmk,gpio-key-wakeup-trigger";
 
-        trigger = <&kscan0>;
-        wakeup-source;
+        trigger = <&wakeup_key>;
+		wakeup-source;
+		extra-gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
     };
 
     soft_off_wakers {
         compatible = "zmk,soft-off-wakeup-sources";
         wakeup-sources = <&wakeup_source>;
     };
-*/
+
 };
 
 &left_encoder {
