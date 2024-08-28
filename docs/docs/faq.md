@@ -57,7 +57,7 @@ For keyboards, this is one of two options:
 
 ### What is a “shield”?
 
-In ZMK, a _shield_ is a _PCB_ or _hardwired set of components_ that when combined with a MCU only [board](#what-is-a-board) like the Proton-C or nice!nano, results in a complete usable keyboard. Examples would be keyboard PCBs like the Kyria or Corne. The _shield_ is usually the big PCB containing all the keys.
+In ZMK, a _shield_ is a _PCB_ or _hardwired set of components_ that when combined with an MCU-only [board](#what-is-a-board), like the Proton-C or nice!nano, results in a complete usable keyboard. Examples would be keyboard PCBs like the Kyria or Lily58. The _shield_ is usually the big PCB containing all the keys.
 
 ### Why _boards_ and _shields_? Why not just “keyboard”?
 
