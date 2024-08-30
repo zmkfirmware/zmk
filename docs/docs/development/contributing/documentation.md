@@ -3,6 +3,10 @@ title: Documentation
 sidebar_label: Documentation
 ---
 
+:::danger
+Before reading this section, it is **vital** that you read through our [clean room policy](clean-room.md).
+:::
+
 This document outlines how to test your documentation changes locally and prepare the changes for a pull request.
 
 The documentation is written with [Docusaurus](https://docusaurus.io/). The ZMK source code has all of the necessary Docusaurus dependencies included, but referencing their documentation can be helpful at times.

@@ -9,6 +9,10 @@ import KeymapExampleFile from "../../keymap-example-file.md";
 import InterconnectTabs from "@site/src/components/interconnect-tabs";
 import Metadata from "@site/src/data/hardware-metadata.json";
 
+:::danger
+Before reading this section, it is **vital** that you read through our [clean room policy](../contributing/clean-room.md).
+:::
+
 ## Overview
 
 This guide will walk through the steps necessary to add ZMK support for a keyboard that uses an add-on MCU board (e.g. Pro Micro compatible) to provide the microprocessor.
@@ -59,13 +63,6 @@ The repository is a combination of the directories and files required of a ZMK c
 Neither of these should be moved out of their parent directory. The other files and directories such as `config` are not necessary for the purposes of a shield module, but rather intended to be used for user configuration and testing.
 
 ## New Shield Directory
-
-:::note
-This guide describes how to add a shield to an independently managed Zephyr module repository. This is the
-preferred way to handle boards and shields moving forward in ZMK, although the tooling to make this easier
-for users is still improving. ZMK does have a collection of boards/shields in the ZMK main repository, which are planned to be phased out, but until that is complete, there _may_ be a few select scenarios where adding your keyboard to ZMK itself is preferred. Due the volume of PRs and the focus of ZMK development not being merging of keyboard PRs, you are highly encouraged to use an out-of-tree Zephyr module repository to manage your definitions. Should you choose to try to get your keyboard included in ZMK main repository, the paths in the rest of the guide would be nested under the `app/` folder there instead. For example, `boards/shields/<keyboard_name>` should now be
-`app/boards/shields/<keyboard_name>`.
-:::
 
 Shields in Zephyr module "board root" go into the `boards/shields/` directory; that means the new shield directory in your module repository should be:
 
