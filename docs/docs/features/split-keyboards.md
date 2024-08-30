@@ -30,7 +30,7 @@ You can refer to the [power profiler](/power-profiler) to see battery life estim
 
 ### Configuration
 
-The [new shield guide](../development/new-shield.mdx) details how to define a split keyboard shield with two parts, enabling the split feature and setting up the necessary roles for each part.
+The [new shield guide](../development/hardware-integration/new-shield.mdx) details how to define a split keyboard shield with two parts, enabling the split feature and setting up the necessary roles for each part.
 
 Also see the reference section on [split keyboards configuration](../config/system.md#split-keyboards) where the relevant symbols include `CONFIG_ZMK_SPLIT` that enables the feature, `CONFIG_ZMK_SPLIT_ROLE_CENTRAL` which sets the central role and `CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS` that sets the number of peripherals.
 
