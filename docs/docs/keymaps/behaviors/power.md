@@ -21,21 +21,6 @@ The following boards currently support this feature:
 
 ## External Power Control Command Defines
 
-:::info
-No longer required as long as your keymap includes [`dt-bindings/zmk/params.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/all.h).
-:::
-
-External power control command defines are provided through the [`dt-bindings/zmk/ext_power.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/ext_power.h) header,
-which is added at the top of the keymap file:
-
-```dts
-#include <dt-bindings/zmk/ext_power.h>
-```
-
-This will allow you to reference the actions defined in this header such as `EXT_POWER_OFF_CMD`.
-
-Here is a table describing the command for each define:
-
 | Define                 | Action                      | Alias    |
 | ---------------------- | --------------------------- | -------- |
 | `EXT_POWER_OFF_CMD`    | Disable the external power. | `EP_OFF` |

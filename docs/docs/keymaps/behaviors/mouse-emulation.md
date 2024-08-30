@@ -25,20 +25,6 @@ CONFIG_ZMK_MOUSE=y
 
 If you use the mouse key press behavior in your keymap, the feature will automatically be enabled for you.
 
-## Mouse Button Defines
-
-:::info
-No longer required as long as your keymap includes [`dt-bindings/zmk/params.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/all.h).
-:::
-
-To make it easier to encode the HID mouse button numeric values, include
-the [`dt-bindings/zmk/mouse.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/mouse.h) header
-provided by ZMK near the top:
-
-```
-#include <dt-bindings/zmk/mouse.h>
-```
-
 ## Mouse Button Press
 
 This behavior can press/release up to 5 mouse buttons.
