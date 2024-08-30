@@ -115,10 +115,14 @@ module.exports = {
       ],
     },
     {
-      Development: [
-        "development/making-modules",
-        "development/studio-rpc-protocol",
-        "development/new-behavior",
+      type: "category",
+      label: "Development",
+      link: {
+        type: "doc",
+        id: "development/index",
+      },
+      collapsed: true,
+      items: [
         {
           type: "category",
           label: "Hardware Integration",
@@ -131,15 +135,6 @@ module.exports = {
             "development/hardware-integration/new-shield",
             "development/hardware-integration/hardware-metadata-files",
             "development/hardware-integration/boards-shields-keymaps",
-          ],
-        },
-        {
-          type: "category",
-          label: "Contributing",
-          collapsed: true,
-          items: [
-            "development/contributing/clean-room",
-            "development/contributing/documentation",
           ],
         },
         {
@@ -168,6 +163,9 @@ module.exports = {
             "development/local-toolchain/posix-board",
           ],
         },
+        "development/studio-rpc-protocol",
+        "development/new-behavior",
+        "development/documentation",
       ],
     },
   ],

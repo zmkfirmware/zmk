@@ -95,7 +95,7 @@ west build -b nice_nano_v2 -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Use
 
 ### Building from `zmk-config` Folder
 
-Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../user-setup.mdx#github-repo) by adding
+Instead of building .uf2 files using the default keymap and config files, you can build directly from your [`zmk-config` folder](../../user-setup.mdx#github-repo) by adding
 `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build` command. **Notice that this path should point to the folder labelled `config` within your `zmk-config` folder.**
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder on Windows 10 may look something like this:
@@ -109,7 +109,7 @@ The above command must still be invoked from the `zmk/app` directory as noted ab
 :::
 
 :::warning
-If your config is also a [module](../features/modules.mdx), then you should also add the root (the folder in which the `zephyr` folder is found) of your `zmk-config` as an [external module to build with](#building-with-external-modules).
+If your config is also a [module](../../features/modules.mdx), then you should also add the root (the folder in which the `zephyr` folder is found) of your `zmk-config` as an [external module to build with](#building-with-external-modules).
 :::
 
 In order to make your `zmk-config` folder available when building within the VSCode Remote Container, you need to create a docker volume named `zmk-config`
