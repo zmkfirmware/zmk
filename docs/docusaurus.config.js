@@ -81,7 +81,7 @@ module.exports = {
             },
             {
               label: "Development",
-              to: "docs/development",
+              to: "docs/development/contributing/clean-room",
             },
           ],
         },

@@ -115,14 +115,7 @@ module.exports = {
       ],
     },
     {
-      type: "category",
-      label: "Development",
-      link: {
-        type: "doc",
-        id: "development/index",
-      },
-      collapsed: true,
-      items: [
+      Development: [
         {
           type: "category",
           label: "Hardware Integration",
@@ -135,6 +128,15 @@ module.exports = {
             "development/hardware-integration/new-shield",
             "development/hardware-integration/hardware-metadata-files",
             "development/hardware-integration/boards-shields-keymaps",
+          ],
+        },
+        {
+          type: "category",
+          label: "Contributing",
+          collapsed: true,
+          items: [
+            "development/contributing/clean-room",
+            "development/contributing/documentation",
           ],
         },
         {
@@ -165,7 +167,6 @@ module.exports = {
         },
         "development/studio-rpc-protocol",
         "development/new-behavior",
-        "development/documentation",
       ],
     },
   ],
