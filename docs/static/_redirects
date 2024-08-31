@@ -9,11 +9,12 @@
 /docs/development/setup /docs/development/local-toolchain/setup 301
 /docs/development/boards-shields-keymaps /docs/development/hardware-integration/boards-shields-keymaps 301
 /docs/development/hardware-metadata-files /docs/development/hardware-integration/hardware-metadata-files 301
+/docs/development/clean-room /docs/development/contributing/clean-room 301
+/docs/development/documentation /docs/development/contributing/documentation 301
 /docs/development/new-shield /docs/development/hardware-integration/new-shield 301
 /docs/development/build-flash /docs/development/local-toolchain/build-flash 301
 /docs/development/ide-integration /docs/development/local-toolchain/ide-integration 301
 /docs/development/posix-board /docs/development/local-toolchain/posix-board 301
 /docs/development/pre-commit /docs/development/local-toolchain/pre-commit 301
 /docs/development/tests /docs/development/local-toolchain/tests 301
-/docs/development/usb-logging /docs/development/local-toolchain/usb-logging 301
 /docs/development/guides/new-behavior /docs/development/new-behavior 301
