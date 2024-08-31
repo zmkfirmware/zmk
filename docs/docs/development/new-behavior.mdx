@@ -196,7 +196,7 @@ The dependencies required for any ZMK behavior are:
 
 - `device.h`: [Zephyr Device APIs](https://docs.zephyrproject.org/apidoc/latest/group__device__model.html)
 - `drivers/behavior.h`: ZMK Behavior Functions (e.g. [`locality`](#api-structure), `behavior_keymap_binding_pressed`, `behavior_keymap_binding_released`, `behavior_sensor_keymap_binding_triggered`)
-- `logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/3.5.0/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](local-toolchain/usb-logging.mdx)).
+- `logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/3.5.0/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](usb-logging.mdx)).
 - `zmk/behavior.h`: ZMK Behavior Information (e.g. parameters, position and timestamp of events)
   - `return` values:
     - `ZMK_BEHAVIOR_OPAQUE`: Used to terminate `on_<behavior_name>_binding_pressed` and `on_<behavior_name>_binding_released` functions that accept `(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event)` as parameters
@@ -437,7 +437,7 @@ Zephyr currently does not support logging over Bluetooth, so any use of the seri
 :::info
 
 - See [Tests](local-toolchain/tests.md) for more information on how to create virtual test sets.
-- For hardware-based testing, see [USB Logging](local-toolchain/usb-logging.mdx).
+- For hardware-based testing, see [USB Logging](usb-logging.mdx).
 
 :::
 

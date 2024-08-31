@@ -119,10 +119,6 @@ module.exports = {
         {
           type: "category",
           label: "Hardware Integration",
-          link: {
-            type: "doc",
-            id: "development/hardware-integration/index",
-          },
           collapsed: true,
           items: [
             "development/hardware-integration/new-shield",
@@ -158,13 +154,13 @@ module.exports = {
               ],
             },
             "development/local-toolchain/build-flash",
-            "development/local-toolchain/usb-logging",
             "development/local-toolchain/pre-commit",
             "development/local-toolchain/ide-integration",
             "development/local-toolchain/tests",
             "development/local-toolchain/posix-board",
           ],
         },
+        "development/usb-logging",
         "development/studio-rpc-protocol",
         "development/new-behavior",
       ],
