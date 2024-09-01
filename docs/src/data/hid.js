@@ -4463,7 +4463,7 @@ export default [
     documentation:
       "https://source.android.com/devices/input/keyboard-devices#hid-keyboard-and-keypad-page-0x07",
     os: {
-      windows: null,
+      windows: false,
       linux: true,
       android: true,
       macos: false,
@@ -4485,7 +4485,7 @@ export default [
     documentation:
       "https://source.android.com/devices/input/keyboard-devices#hid-keyboard-and-keypad-page-0x07",
     os: {
-      windows: null,
+      windows: false,
       linux: true,
       android: true,
       macos: false,
@@ -7311,7 +7311,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=150",
     os: {
-      windows: null,
+      windows: true,
       linux: true,
       android: true,
       macos: null,
@@ -7332,7 +7332,7 @@ export default [
     ],
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=150",
     os: {
-      windows: null,
+      windows: true,
       linux: true,
       android: true,
       macos: null,
