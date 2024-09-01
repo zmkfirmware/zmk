@@ -257,12 +257,12 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,2) RC(4,9) RC(3,6) RC(3,7) 
 ```
 
 :::note
-Notice that in addition to the common `row-gpios` that are declared in the kscan, the [matrix transform](#optional-matrix-transform) is defined in the .dtsi.
+Notice that in addition to the common `row-gpios` that are declared in the kscan, the [matrix transform](#matrix-transform) is defined in the .dtsi.
 :::
 
 The missing `col-gpios` would be defined in your `<boardname>_left.overlay` and `<boardname>_right.overlay` files.
 Keep in mind that the mirrored position of the GPIOs means that the `col-gpios` will appear reversed when the .overlay files are compared to one another.
-Furthermore, the column offset for the [matrix transform](#optional-matrix-transform) should be added to the right half of the keyboard's overlay
+Furthermore, the column offset for the [matrix transform](#matrix-transform) should be added to the right half of the keyboard's overlay
 because the keyboard's switch matrix is read from left to right, top to bottom.
 This is exemplified with the iris .overlay files.
 
