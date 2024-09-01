@@ -7,6 +7,8 @@ tags: [firmware, zephyr, core]
 As preparation for completing the [work](https://github.com/zmkfirmware/zmk/pull/1143) to upgrade ZMK to [Zephyr 3.0](https://docs.zephyrproject.org/3.0.0/releases/release-notes-3.0.html), users with user config repositories who wish to avoid future build failures with their GitHub Actions workflows can take steps to adjust
 their repositories now.
 
+<!-- truncate -->
+
 GitHub Actions needs to use our latest Docker image to ensure continued compatibility with the ZMK codebase on Zephyr 3.0 (and beyond). You should:
 
 - Open `.github/workflows/build.yml` in your editor/IDE

@@ -9,6 +9,8 @@ Recently I was able to fix the "stuck in the bootloader" issue in
 for quite some time. I want to go over what the issue was, how the issue was
 diagnosed, and how it was fixed.
 
+<!-- truncate -->
+
 ## Background
 
 What exactly is the "stuck in the bootloader" issue? Seemingly randomly, users'
