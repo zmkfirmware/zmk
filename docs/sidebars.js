@@ -124,6 +124,7 @@ module.exports = {
             "development/hardware-integration/new-shield",
             "development/hardware-integration/hardware-metadata-files",
             "development/hardware-integration/boards-shields-keymaps",
+            "development/hardware-integration/shift-registers",
           ],
         },
         {
