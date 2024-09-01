@@ -1,9 +1,6 @@
 ---
 title: "Community Spotlight Series #2: Node-free Config"
-author: Cem Aksoylar
-author_title: Documentation maintainer
-author_url: https://github.com/caksoylar
-author_image_url: https://avatars.githubusercontent.com/u/7876996
+authors: caksoylar
 tags: [keyboards, firmware, community]
 ---
 

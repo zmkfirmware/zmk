@@ -1,9 +1,6 @@
 ---
 title: "Zephyr 3.0 Update Preparation"
-author: Pete Johanson
-author_title: Project Creator
-author_url: https://gitlab.com/petejohanson
-author_image_url: https://www.gravatar.com/avatar/2001ceff7e9dc753cf96fcb2e6f41110
+authors: petejohanson
 tags: [firmware, zephyr, core]
 ---
 
