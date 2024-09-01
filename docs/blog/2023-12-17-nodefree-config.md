@@ -14,6 +14,8 @@ by [urob](https://github.com/urob) that contains helper methods that utilizes th
 for users who prefer editing and maintaining their ZMK config directly using the Devicetree
 syntax format.
 
+<!-- truncate -->
+
 In the rest of the post we leave it to urob to introduce and explain the motivations of the
 project, and various ways it can be used to help maintain ZMK keymaps. Stay tuned for future
 installments in the series!
