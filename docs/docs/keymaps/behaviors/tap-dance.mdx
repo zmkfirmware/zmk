@@ -20,7 +20,7 @@ Defines the maximum elapsed time after the last tap-dance keybind press before a
 
 #### `bindings`
 
-An array of one or more keybinds. This list can include [any ZMK keycode](../list-of-keycodes.mdx) and any listed ZMK behavior, like [hold-taps](hold-tap.mdx), or [sticky keys](sticky-key.md). The index of a keybind in the `bindings` array corresponds to the number of times the tap-dance binding is pressed. For example, in the [basic tap-dance counter](#basic-example-counter) shown below, `&kp N2` is the second binding in the array of `bindings`: we then see an output of `2` when the `td0` binding is pressed twice.
+An array of one or more keybinds. This list can include [any ZMK keycode](../list-of-keycodes.mdx) and any listed ZMK behavior, like [hold-taps](hold-tap.mdx), or [sticky keys](sticky-key.md). The index of a keybind in the `bindings` array corresponds to the number of times the tap-dance binding is pressed. For example, in the basic tap-dance counter shown below, `&kp N2` is the second binding in the array of `bindings`: we then see an output of `2` when the `td0` binding is pressed twice.
 
 The number of bindings in this array also determines the tap-dance's maximum number of keypresses. When a tap-dance reaches its maximum number of keypresses, it will immediately invoke the last behavior in its list of `bindings`, rather than waiting for [`tapping-term-ms`](#tapping-term-ms) to expire before the output is displayed.
 
