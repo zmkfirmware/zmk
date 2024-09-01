@@ -1,9 +1,6 @@
 ---
 title: Fixing the Mysterious Broken Bootloader
-author: Nick Winans
-author_title: Contributor
-author_url: https://github.com/Nicell
-author_image_url: https://avatars1.githubusercontent.com/u/9439650
+authors: nickwinans
 tags: [bootloader, keyboards, firmware, oss, ble]
 ---
 
