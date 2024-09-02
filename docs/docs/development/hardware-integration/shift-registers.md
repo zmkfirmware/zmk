@@ -6,7 +6,7 @@ sidebar_label: Shift Registers
 Shift registers are the recommended method of adding additional GPIO pins to MCUs and boards, when a standard matrix results in an insufficient number of keys. They are recommended because they simultaneously have very low power consumption and are quite cheap. This page serves as a (brief) introduction to shift registers, how to use them in your design, and how to configure ZMK to use them correctly.
 
 :::note
-This page assumes that the part you are using has the code 74HC595. Other shift registers can work as well, but this is the most commonly used one.
+This page assumes that the part you are using has part number 74HC595. Other shift registers can work as well but this is the most commonly used one.
 :::
 
 :::tip
@@ -17,9 +17,9 @@ To understand how shift registers work, we recommend reading through ["How does 
 
 The shift register output pins should be connected to the output pins of a keyboard matrix, while the input pins should be connected directly to the MCU/board. This is to allow the input pins to trigger "interrupts" on the MCU/board, upon which it will begin scanning the keys. Using a shift register for input pins is also possible, but requires you to use a different part and will harm your battery life.
 
-Identifying the output pins of your keyboard matrix is easy - these are the pins connected to the [anodes of your diodes](https://learn.sparkfun.com/tutorials/diodes/all#ideal-diodes). You most likely will need to rearrange your matrix to have significantly more inputs than outputs.
+Identifying the output pins of your keyboard matrix is easy -- these are the pins connected to the [anodes of your diodes](https://learn.sparkfun.com/tutorials/diodes/all#ideal-diodes). You might need to rearrange your matrix to have significantly more inputs than outputs in order to reduce the number of needed GPIO pins.
 
-You will want to make sure that the data and clock pins of the shift register are connected to high frequency/SPI-capable pins on your MCU. Make sure that these lie on the same SPI bus for your microcontroller, if applicable (rp2040 yes, nRF52840 no). It is generally recommended that you use the pre-defined pins for SPI, if your board comes with them.
+You will want to make sure that the data and clock pins of the shift register are connected to high frequency/SPI-capable pins on your MCU. Make sure that these lie on the same SPI bus for your microcontroller, if applicable -- for instance RP2040 controllers require this, while nRF52840 ones do not. It is generally recommended that you use the pre-defined pins for SPI, if your board comes with them.
 
 For daisy chaining purposes, ZMK allows you to chain a maximum of four shift registers together.
 
@@ -29,7 +29,7 @@ In ZMK, the SPI bus of your MCU is used to communicate with shift registers, wit
 
 ### Configuring the SPI bus
 
-Configuring the pins directly varys depending on your architecture. Presented are methods for overwriting the default SPI bus definitions for boards running the `nRF52840`. Alternative MCUs will be similar; refer to the[Zephyr documentation](https://docs.zephyrproject.org/3.5.0/index.html) for these. Also refer to said documentation if you are defining a new bus rather than overwriting an existing one.
+Configuring the pins directly varies depending on your architecture. Presented are methods for overwriting the default SPI bus definitions for boards running the nRF52840 MCU. Alternative MCUs will be similar; refer to the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/index.html) for these. Also refer to said documentation if you are defining a new bus rather than overwriting an existing one.
 
 This section can be skipped if you are using the default pins for SPI of a board, e.g. for the Seeed Studio Xiao the pin D8 for the clock signal and D10 for the data signal. However, if you are not making use of the MISO pin and wish to use said pin for alternative purposes, you will need to override the definition.
 
@@ -38,7 +38,7 @@ First, identify the high frequency pins that you are using for SPI by their port
 - Your SPI clock pin is port 1, pin 11
 - Your SPI MOSI pin is port 1, pin 12
 
-Next, you'll need to identify the node label of the SPI bus you're overwriting. Look through your board's devicetree files, following the includes, for a node with `compatible = "nordic,nrf-spi";`. This node should have some properties marked as `pinctrl-X`, where `X` is a number. For example, you might find
+Next, you'll need to identify the node label of the SPI bus you're overwriting. Look through your board's devicetree files, following the includes, for a node with `compatible = "nordic,nrf-spi";`. This node should have some properties marked as `pinctrl-X`, where `X` is a number. For example, you might find a node like below:
 
 ```dts title="boards/arm/seeeduino_xiao_ble/seeeduino_xiao_ble.dts"
 &spi2 {
@@ -49,7 +49,7 @@ Next, you'll need to identify the node label of the SPI bus you're overwriting. 
 };
 ```
 
-You will need to overwrite the pinctrl nodes to use your desired pins. Look through the devicetree files once again, this time looking for `spi2_default` and `spi2_sleep` (or the equivalently named nodes for your board). You should find something like this:
+You will need to overwrite the pinctrl nodes to use your desired pins. Look through the devicetree files once again, this time looking for `spi2_default` and `spi2_sleep` (or the equivalently named nodes for your board). You should find nodes that look similar to below:
 
 ```dts title="boards/arm/seeeduino_xiao_ble/seeeduino_xiao_ble-pinctrl.dtsi"
 spi2_default: spi2_default {
@@ -88,10 +88,10 @@ Overwrite the pin definitions like so:
 };
 ```
 
-Note that for convenience, ZMK gives the `spi2` node of the Seeed Studio XIAO series the name `xiao_spi`.
+Note that for convenience, ZMK gives the `spi2` node of the Seeed Studio XIAO series the label `xiao_spi`.
 
 :::tip
-If you are making a shield, rather than editing the board's files directly, add a `<your shield folder>/boards/<your board>.overlay` file. This will then be included in your board's definition when you build your shield.
+If you are making a shield, add a `<your shield folder>/boards/<your board>.overlay` file rather than editing the board's files directly. This will then be included in your board's definition when you build with your shield.
 :::
 
 ### Enable SPI
@@ -132,7 +132,7 @@ If there is more than one device on the SPI bus, you will need to add additional
 
 ### Using Shift Register Pins In Kscan
 
-Once all of this is set up, you can refer to pins from the shift register using `&shifterX`, where X is the pin number. Use this to define your kscan, for example:
+Once all of this is set up, you can refer to pins from the shift register using `&shifter X` where X is the pin number. Use this to define your kscan, for example:
 
 ```dts title="<your shield>.overlay"
 kscan0: kscan_0 {
