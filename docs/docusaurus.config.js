@@ -165,6 +165,7 @@ module.exports = {
     ],
   ],
   markdown: {
+    format: "detect",
     mermaid: true,
     mdx1Compat: {
       comments: false,
