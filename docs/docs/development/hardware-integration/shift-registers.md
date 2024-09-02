@@ -102,16 +102,11 @@ If you are making a shield, add a `<your shield folder>/boards/<your board>.over
 
 ### Enable SPI
 
-Add the following line to your board's configuration files:
+Add the following line to `<your device>.defconfig`, inside of your device's `if` block:
 
-```kconfig title="<your shield folder>/boards/<your board>.conf"
-CONFIG_SPI=y
-```
-
-If you're editing your board's files directly, you should alternatively enable it like so:
-
-```kconfig title="<your board folder>/<your board>_defconfig"
-CONFIG_SPI=y
+```kconfig title="<your device>.defconfig"
+config SPI
+    default y
 ```
 
 ### Shift Register SPI Device
