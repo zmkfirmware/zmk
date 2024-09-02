@@ -129,7 +129,7 @@ To add your shift register as a SPI device, you'll need to overwrite your board'
 };
 ```
 
-If there is more than one device on the SPI bus, you will need to add additional pins to the `cs-gpios` phandle array - one for each device. The `@0` number marks the index of the `cs-gpios` pin used to control a device. If you have daisy chained multiple shift registers, you'll also want to increase the number of GPIOs that the shift register provides by editing the `ngpios` node - set this to your number of output pins (should be one of 8, 16, 24, 32).
+If there is more than one device on the SPI bus, you will need to add additional pins to the `cs-gpios` phandle array - one for each device. The `@0` number marks the index of the `cs-gpios` pin used to control a device. If you have daisy chained multiple shift registers, you'll also want to increase the number of GPIOs that the shift register provides by editing the `ngpios` node - set this to your number of output pins (should be one of 8, 16, 24, 32). You may also need to increase `spi-max-frequency` to a higher value if you have daisy chained shift registers, otherwise quick keypresses may on occasion not trigger.
 
 ### Using Shift Register Pins In Kscan
 
