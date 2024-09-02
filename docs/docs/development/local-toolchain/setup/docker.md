@@ -25,7 +25,7 @@ git clone https://github.com/zmkfirmware/zmk.git
 
 Open the `zmk` checkout folder in VS Code. The repository includes a configuration for containerized development, so an alert will pop up:
 
-![VS Code Dev Container Configuration Alert](../../assets/dev-setup/vscode_devcontainer.png)
+![VS Code Dev Container Configuration Alert](../../../assets/dev-setup/vscode_devcontainer.png)
 
 Click `Reopen in Container` in order to reopen the VS Code with the running container. If the alert fails to pop up or you accidentally close it, you can perform the same action by pressing `ctrl+shift+p` and selecting `Remote: Show Remote Menu`.
 

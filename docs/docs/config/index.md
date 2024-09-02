@@ -64,7 +64,7 @@ ZMK will search the shield folder for the following config files _in addition_ t
 
 Shared config files (excluding any `_left` or `_right` suffix) are not currently supported in shield folders.
 
-For more documentation on creating and configuring a new shield, see [Zephyr's shield documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html) and [ZMK's new keyboard shield](../development/new-shield.mdx) guide.
+For more documentation on creating and configuring a new shield, see [Zephyr's shield documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html) and [ZMK's new keyboard shield](../development/hardware-integration/new-shield.mdx) guide.
 
 ## Kconfig Files
 
