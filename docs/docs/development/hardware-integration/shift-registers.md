@@ -6,7 +6,7 @@ sidebar_label: Shift Registers
 Shift registers are the recommended method of adding additional GPIO pins to MCUs and boards, when a standard matrix results in an insufficient number of keys. They are recommended because they simultaneously have very low power consumption and are quite cheap. This page serves as a (brief) introduction to shift registers, how to use them in your design, and how to configure ZMK to use them correctly.
 
 :::note
-This page assumes that the part you are using has part number 74HC595. Other shift registers can work as well but this is the most commonly used one.
+This page assumes that you are using a SIPO shift register with the part number 74HC595. Other shift registers can work as well but this is the most commonly used one.
 :::
 
 :::tip
@@ -15,23 +15,29 @@ To understand how shift registers work, we recommend reading through ["How does 
 
 ## Design Guidelines
 
-The shift register output pins should be connected to the output pins of a keyboard matrix, while the input pins should be connected directly to the MCU/board. This is to allow the input pins to trigger "interrupts" on the MCU/board, upon which it will begin scanning the keys. Using a shift register for input pins is also possible, but requires you to use a different part and will harm your battery life.
+The shift register output pins should act as MCU outputs in your design. All MCU inputs should remain connected directly to MCU/board pins. This is to allow the inputs to trigger "interrupts" on the MCU/board, upon which it will begin scanning the keys. Using a shift register for MCU inputs is also possible, but requires you to use a SOPI shift register and will harm your battery life. Note that a [direct kscan](../../config/kscan.md#direct-gpio-driver) keyboard does not have any MCU output pins, but a diodeless keyboard is still possible by making use of a single row pin and using the [matrix kscan](../../config/kscan.md#matrix-driver) driver.
 
-Identifying the output pins of your keyboard matrix is easy -- these are the pins connected to the [anodes of your diodes](https://learn.sparkfun.com/tutorials/diodes/all#ideal-diodes). You might need to rearrange your matrix to have significantly more inputs than outputs in order to reduce the number of needed GPIO pins.
+:::info
+In a diode matrix, MCU output pins are those connected to the [anodes of your diodes](https://learn.sparkfun.com/tutorials/diodes/all#ideal-diodes). You most likely will need to rearrange your matrix to maximize the use of shift register output pins, in order to reduce the total number of GPIO pins connected to your MCU. For example, a 9 column 5 row `col2row` matrix could be rearranged to use 16 columns and 3 rows.
+:::
 
 You will want to make sure that the data and clock pins of the shift register are connected to high frequency/SPI-capable pins on your MCU. Make sure that these lie on the same SPI bus for your microcontroller, if applicable -- for instance RP2040 controllers require this, while nRF52840 ones do not. It is generally recommended that you use the pre-defined pins for SPI, if your board comes with them.
 
-For daisy chaining purposes, ZMK allows you to chain a maximum of four shift registers together.
+For daisy chaining purposes, ZMK allows you to chain a maximum of four shift registers together. Below is a fragment of a schematic showing two shift registers daisy chained together.
+
+![A fragment of a schematic featuring two shift registers daisy chained together.](../../assets/hardware-integration/shift-register-daisy.png)
 
 ## Configuration
 
-In ZMK, the SPI bus of your MCU is used to communicate with shift registers, without using MISO. Thus you will first need to ensure that your board has SPI configured accordingly. Some boards, such as Seeed Studio's Xiao series, already has particular pins defined and configured for SPI (these can be changed if the MCU allows for alternative selections of SPI pins). Others, such as the nice!nano or any custom board, will need to be configured by you manually. Shift registers can share the SPI bus with other devices with no issues.
+In ZMK, the SPI bus of your MCU is used to communicate with shift registers, using MOSI for SIPO shift registers and MISO for SOPI shift reigsters. Thus you will first need to ensure that your board has SPI configured accordingly. Some boards, such as Seeed Studio's Xiao series, already has particular pins defined and configured for SPI (these can be changed if the MCU allows for alternative selections of SPI pins). Others, such as the nice!nano or any custom board, will need to be configured by you manually. Shift registers can share the SPI bus with other devices with no issues.
 
 ### Configuring the SPI bus
 
 Configuring the pins directly varies depending on your architecture. Presented are methods for overwriting the default SPI bus definitions for boards running the nRF52840 MCU. Alternative MCUs will be similar; refer to the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/index.html) for these. Also refer to said documentation if you are defining a new bus rather than overwriting an existing one.
 
+:::info
 This section can be skipped if you are using the default pins for SPI of a board, e.g. for the Seeed Studio Xiao the pin D8 for the clock signal and D10 for the data signal. However, if you are not making use of the MISO pin and wish to use said pin for alternative purposes, you will need to override the definition.
+:::
 
 First, identify the high frequency pins that you are using for SPI by their port and pin number. This example will assume that:
 
