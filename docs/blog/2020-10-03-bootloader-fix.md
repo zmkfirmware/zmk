@@ -1,9 +1,6 @@
 ---
 title: Fixing the Mysterious Broken Bootloader
-author: Nick Winans
-author_title: Contributor
-author_url: https://github.com/Nicell
-author_image_url: https://avatars1.githubusercontent.com/u/9439650
+authors: nickwinans
 tags: [bootloader, keyboards, firmware, oss, ble]
 ---
 
@@ -11,6 +8,8 @@ Recently I was able to fix the "stuck in the bootloader" issue in
 [#322](https://github.com/zmkfirmware/zmk/pull/322) that had been plaguing us
 for quite some time. I want to go over what the issue was, how the issue was
 diagnosed, and how it was fixed.
+
+<!-- truncate -->
 
 ## Background
 

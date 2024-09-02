@@ -1,9 +1,6 @@
 ---
 title: "Community Spotlight Series #2: Node-free Config"
-author: Cem Aksoylar
-author_title: Documentation maintainer
-author_url: https://github.com/caksoylar
-author_image_url: https://avatars.githubusercontent.com/u/7876996
+authors: caksoylar
 tags: [keyboards, firmware, community]
 ---
 
@@ -16,6 +13,8 @@ highlighting the [`zmk-nodefree-config` project](https://github.com/urob/zmk-nod
 by [urob](https://github.com/urob) that contains helper methods that utilizes this fact
 for users who prefer editing and maintaining their ZMK config directly using the Devicetree
 syntax format.
+
+<!-- truncate -->
 
 In the rest of the post we leave it to urob to introduce and explain the motivations of the
 project, and various ways it can be used to help maintain ZMK keymaps. Stay tuned for future
