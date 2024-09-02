@@ -4,10 +4,14 @@ title: New Keyboard Shield
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import KeymapExampleFile from "../keymap-example-file.md";
+import KeymapExampleFile from "../../keymap-example-file.md";
 
 import InterconnectTabs from "@site/src/components/interconnect-tabs";
 import Metadata from "@site/src/data/hardware-metadata.json";
+
+:::danger
+Before reading this section, it is **vital** that you read through our [clean room policy](../contributing/clean-room.md).
+:::
 
 ## Overview
 
@@ -29,7 +33,7 @@ The high level steps are:
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
 :::note
-ZMK support for [split keyboards](../features/split-keyboards.md) requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
+ZMK support for [split keyboards](../../features/split-keyboards.md) requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
 :::
 
 ## New Zephyr Module Repository
@@ -60,13 +64,6 @@ Neither of these should be moved out of their parent directory. The other files 
 
 ## New Shield Directory
 
-:::note
-This guide describes how to add a shield to an independently managed Zephyr module repository. This is the
-preferred way to handle boards and shields moving forward in ZMK, although the tooling to make this easier
-for users is still improving. ZMK does have a collection of boards/shields in the ZMK main repository, which are planned to be phased out, but until that is complete, there _may_ be a few select scenarios where adding your keyboard to ZMK itself is preferred. Due the volume of PRs and the focus of ZMK development not being merging of keyboard PRs, you are highly encouraged to use an out-of-tree Zephyr module repository to manage your definitions. Should you choose to try to get your keyboard included in ZMK main repository, the paths in the rest of the guide would be nested under the `app/` folder there instead. For example, `boards/shields/<keyboard_name>` should now be
-`app/boards/shields/<keyboard_name>`.
-:::
-
 Shields in Zephyr module "board root" go into the `boards/shields/` directory; that means the new shield directory in your module repository should be:
 
 ```bash
@@ -76,7 +73,7 @@ mkdir boards/shields/<keyboard_name>
 ## Base Kconfig Files
 
 :::tip[Example shields]
-You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) in the ZMK repo that houses [the in-tree supported shields](../hardware.mdx) in order to copy and modify as a starting point.
+You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) in the ZMK repo that houses [the in-tree supported shields](../../hardware.mdx) in order to copy and modify as a starting point.
 :::
 
 There are two required Kconfig files that need to be created for your new keyboard
@@ -95,7 +92,7 @@ config SHIELD_MY_BOARD
 Kconfig uses only commas for delimiters, and keeps all whitespaces in the function call. Therefore do not add a whitespace after the comma when configuring your shield as this would be treated as <code>&nbsp;my_board</code> (with a leading whitespace) and will cause issues.
 :::
 
-This will make sure that a new configuration value named `SHIELD_MY_BOARD` is set to true whenever `my_board` is used as the shield name, either as the `SHIELD` variable [in a local build](build-flash.mdx) or in your `build.yaml` file [when using Github Actions](../customization). Note that this configuration value will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
+This will make sure that a new configuration value named `SHIELD_MY_BOARD` is set to true whenever `my_board` is used as the shield name, either as the `SHIELD` variable [in a local build](../local-toolchain/build-flash.mdx) or in your `build.yaml` file [when using Github Actions](../../customization.md). Note that this configuration value will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
 
 **For split boards**, you will need to add configurations for the left and right sides. For example, if your split halves are named `my_board_left` and `my_board_right`, it would look like this:
 
@@ -200,7 +197,7 @@ this might look something like:
 };
 ```
 
-See the [Keyboard Scan configuration documentation](../config/kscan.md) for details on configuring the KSCAN driver.
+See the [Keyboard Scan configuration documentation](../../config/kscan.md) for details on configuring the KSCAN driver.
 
 </TabItem>
 
@@ -301,7 +298,7 @@ This is exemplified with the iris .overlay files.
 
 ```
 
-See the [Keyboard Scan configuration documentation](../config/kscan.md) for details on configuring the KSCAN driver.
+See the [Keyboard Scan configuration documentation](../../config/kscan.md) for details on configuring the KSCAN driver.
 
 ### .conf files (Split Shields)
 
@@ -320,7 +317,7 @@ CONFIG_ZMK_SLEEP=y
 ```
 
 :::note
-The shared configuration in `my_awesome_split_board.conf` is only applied when you are building with a [`zmk-config` folder](build-flash#building-from-zmk-config-folder) and when it is present at `config/my_awesome_split_board.conf`. If you are not using a `zmk-config` folder, you will need to include the shared configuration in both `my_awesome_split_board_left.conf` and `my_awesome_split_board_right.conf` files.
+The shared configuration in `my_awesome_split_board.conf` is only applied when you are building with a [`zmk-config` folder](../local-toolchain/build-flash.mdx#building-from-zmk-config-folder) and when it is present at `config/my_awesome_split_board.conf`. If you are not using a `zmk-config` folder, you will need to include the shared configuration in both `my_awesome_split_board_left.conf` and `my_awesome_split_board_right.conf` files.
 :::
 
 </TabItem>
@@ -374,7 +371,7 @@ Some important things to note:
 - `RC(row, column)` is placed sequentially to define what row and column values that position corresponds to.
 - If you have a keyboard with options for `2u` keys in certain positions, ANSI vs. ISO layouts, or break away portions, define one matrix transform for each possible arrangement to be used in the physical layouts. This will allow the users to select the right layout in their keymap files.
 
-See the [matrix transform section](../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for details and more examples of matrix transforms.
+See the [matrix transform section](../../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for details and more examples of matrix transforms.
 
 ## Physical Layout
 
@@ -443,7 +440,7 @@ The two `#include` lines at the top of the keymap are required in order to bring
 
 ### Keymap Behaviors
 
-For documentation on the available behaviors for use in keymaps, see the [overview page for behaviors](../keymaps/behaviors/index.mdx).
+For documentation on the available behaviors for use in keymaps, see the [overview page for behaviors](../../keymaps/behaviors/index.mdx).
 
 ## Metadata
 
@@ -469,7 +466,7 @@ siblings:
   - corne_right
 ```
 
-You should place a properly named `foo.zmk.yml` file in the directory next to your other shield values, and fill it out completely and accurately. See [Hardware Metadata Files](/docs/development/hardware-metadata-files) for the full details.
+You should place a properly named `foo.zmk.yml` file in the directory next to your other shield values, and fill it out completely and accurately. See [Hardware Metadata Files](hardware-metadata-files.md) for the full details.
 
 ## Build File
 
@@ -567,7 +564,7 @@ Once you have defined the encoder sensors, you will have to add them to the list
 
 In this example, a left_encoder and right_encoder are both added. Additional encoders can be added with spaces separating each, and the order they are added here determines the order in which you define their behavior in your keymap.
 
-In addition, a default value for the number of times the sensors trigger the bound behavior per full rotation is set via the `triggers-per-rotation` property. See [Encoders Config](../config/encoders.md#devicetree) for more details.
+In addition, a default value for the number of times the sensors trigger the bound behavior per full rotation is set via the `triggers-per-rotation` property. See [Encoders Config](../../config/encoders.md#devicetree) for more details.
 
 </TabItem>
 <TabItem value = "overlay">
@@ -591,7 +588,7 @@ Add the following line to your keymap file to add default encoder behavior bindi
 sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 ```
 
-Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](../features/encoders.md) and [Keymaps](../keymaps/index.mdx) documentation pages for more details.
+Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](../../features/encoders.md) and [Keymaps](../../keymaps/index.mdx) documentation pages for more details.
 
 </TabItem>
 </Tabs>
@@ -600,7 +597,7 @@ Add additional bindings as necessary to match the default number of encoders on 
 
 ### GitHub Actions
 
-Using GitHub Actions to build your new firmware can save you from doing any local [development setup](./setup/index.md),
+Using GitHub Actions to build your new firmware can save you from doing any local [development setup](../local-toolchain/setup/index.md),
 at the expense of a longer feedback loop if there are issues. To push your changes and trigger a build:
 
 - Add all your pending changes with `git add .`
@@ -612,7 +609,7 @@ Once pushed, click on the "Actions" tab of the repo you created in the first ste
 ### Local Build
 
 :::note
-To build locally, be sure you've followed the [development setup](./setup/index.md) guide first.
+To build locally, be sure you've followed the [development setup](../local-toolchain/setup/index.md) guide first.
 :::
 
 Once you've fully created the new keyboard shield definition,
@@ -623,7 +620,7 @@ west build --pristine -b nice_nano_v2 -- -DSHIELD=<my_shield> -DZMK_EXTRA_MODULE
 # replace <my_shield> with e.g. <my_shield>_left for split keyboards, then repeat for <my_shield>_right
 ```
 
-The above build command generates a `build/zephyr/zmk.uf2` file that you can flash using the steps from the following section. See the dedicated [building and flashing page](build-flash.mdx) for more details.
+The above build command generates a `build/zephyr/zmk.uf2` file that you can flash using the steps from the following section. See the dedicated [building and flashing page](../local-toolchain/build-flash.mdx) for more details.
 
 ### Flashing
 
@@ -642,9 +639,9 @@ west flash
 ```
 
 Please have a look at documentation specific to
-[building and flashing](build-flash.mdx) for additional information.
+[building and flashing](../local-toolchain/build-flash.mdx) for additional information.
 
 :::note
 Further testing your keyboard shield without altering the root keymap file can be done with the use of `-DZMK_CONFIG` in your `west build` command,
-shown [here](build-flash.mdx#building-from-zmk-config-folder)
+shown [here](../local-toolchain/build-flash.mdx#building-from-zmk-config-folder)
 :::

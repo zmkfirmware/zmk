@@ -8,6 +8,10 @@ ZMK Studio is still in active development, and the below information is for deve
 
 :::
 
+:::danger
+Before reading this section, it is **vital** that you read through our [clean room policy](./contributing/clean-room.md).
+:::
+
 ## Overview
 
 The ZMK Studio UI communicates with ZMK devices using a custom RPC protocol developed to be robust and reliable, while remaining simple and easy to extend with future enhancements.
