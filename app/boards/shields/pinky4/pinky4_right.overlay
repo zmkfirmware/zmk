@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2022 Shawn Rutledge
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "pinky4.dtsi"
+
+&default_transform {
+	col-offset = <7>;
+};
+
+&kscan0 {
+	col-gpios
+		= <&pro_micro 16 GPIO_ACTIVE_HIGH> // col6 in the schematic
+		, <&pro_micro 14 GPIO_ACTIVE_HIGH> // col5
+		, <&pro_micro 15 GPIO_ACTIVE_HIGH> // col4
+		, <&pro_micro 18 GPIO_ACTIVE_HIGH> // col3
+		, <&pro_micro 19 GPIO_ACTIVE_HIGH> // col2
+		, <&pro_micro 20 GPIO_ACTIVE_HIGH> // col1
+		, <&pro_micro 21 GPIO_ACTIVE_HIGH> // col0
+		;
+};
