@@ -9,17 +9,6 @@ This page contains [RGB Underglow](../../features/underglow.md) behaviors suppor
 
 ## RGB Action Defines
 
-RGB actions defines are provided through the [`dt-bindings/zmk/rgb.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/rgb.h) header,
-which is added at the top of the keymap file:
-
-```dts
-#include <dt-bindings/zmk/rgb.h>
-```
-
-This will allow you to reference the actions defined in this header such as `RGB_TOG`.
-
-Here is a table describing the action for each define:
-
 | Define          | Action                                                                                         |
 | --------------- | ---------------------------------------------------------------------------------------------- |
 | `RGB_ON`        | Turns the RGB feature on                                                                       |
