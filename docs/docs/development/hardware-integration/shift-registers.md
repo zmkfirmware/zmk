@@ -33,7 +33,7 @@ In ZMK, the SPI bus of your MCU is used to communicate with shift registers, usi
 
 ### Configuring the SPI bus
 
-Configuring the pins directly varies depending on your architecture. Presented are methods for overwriting the default SPI bus definitions for boards running the nRF52840 MCU. Alternative MCUs will be similar; refer to the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/index.html) for these. Also refer to said documentation if you are defining a new bus rather than reconfiguring an existing one.
+Configuring the pins directly varies depending on your architecture. Presented are methods for overwriting the default SPI bus definitions for boards running the nRF52840 MCU. Alternative MCUs will be similar; refer to the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/hardware/pinctrl/index.html) for these. Also refer to [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/hardware/pinctrl/index.html) if you are defining a new bus rather than reconfiguring an existing one.
 
 :::info
 This section can be skipped if you are using the default pins for SPI of a board, e.g. for the Seeed Studio Xiao the pin D8 for the clock signal and D10 for the data signal. However, if you are not making use of the MISO pin and wish to use said pin for alternative purposes, you will need to override the definition.
