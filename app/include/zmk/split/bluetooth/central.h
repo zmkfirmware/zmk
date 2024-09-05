@@ -22,3 +22,9 @@ int zmk_split_bt_update_hid_indicator(zmk_hid_indicators_t indicators);
 int zmk_split_get_peripheral_battery_level(uint8_t source, uint8_t *level);
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+
+int zmk_split_bt_sync_activity(int32_t inactive_duration);
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)

@@ -17,6 +17,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
+#include <zmk/events/sync_activity_event.h>
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#include <zmk/split/bluetooth/central.h>
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
 
 #include <zmk/pm.h>
 
@@ -37,6 +42,12 @@ bool is_usb_power_present(void) {
 static enum zmk_activity_state activity_state;
 
 static uint32_t activity_last_uptime;
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&                                      \
+    IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+static uint32_t last_sync_time;
+#define SLEEP_TIMERS_SYNC_MS CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_INTERVAL_MS
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&
+       // IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
 #define MAX_IDLE_MS CONFIG_ZMK_IDLE_TIMEOUT
 
@@ -68,6 +79,7 @@ int activity_event_listener(const zmk_event_t *eh) {
 void activity_work_handler(struct k_work *work) {
     int32_t current = k_uptime_get();
     int32_t inactive_time = current - activity_last_uptime;
+
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
     if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
         // Put devices in suspend power mode before sleeping
@@ -83,8 +95,17 @@ void activity_work_handler(struct k_work *work) {
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
-            set_state(ZMK_ACTIVITY_IDLE);
-        }
+        set_state(ZMK_ACTIVITY_IDLE);
+    }
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&                                      \
+    IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (current - last_sync_time > SLEEP_TIMERS_SYNC_MS) {
+        last_sync_time = current;
+        zmk_split_bt_sync_activity(inactive_time);
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&
+       // IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 }
 
 K_WORK_DEFINE(activity_work, activity_work_handler);
@@ -103,5 +124,29 @@ static int activity_init(void) {
 ZMK_LISTENER(activity, activity_event_listener);
 ZMK_SUBSCRIPTION(activity, zmk_position_state_changed);
 ZMK_SUBSCRIPTION(activity, zmk_sensor_event);
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&                                      \
+    !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+int sync_activity_event_listener(const zmk_event_t *eh) {
+    struct zmk_sync_activity_event *ev = as_zmk_sync_activity_event(eh);
+    if (ev == NULL) {
+        LOG_ERR("Invalid event type");
+        return -ENOTSUP;
+    }
+    int32_t central_activity_last_uptime = k_uptime_get() - ev->central_inactive_duration;
+    activity_last_uptime = central_activity_last_uptime;
+    int32_t new_inactive_time = k_uptime_get() - activity_last_uptime;
+
+    if (activity_state == ZMK_ACTIVITY_IDLE && new_inactive_time < MAX_IDLE_MS) {
+        LOG_DBG("Syncing state to active to match central device.");
+        return set_state(ZMK_ACTIVITY_ACTIVE);
+    }
+    return 0;
+}
+
+ZMK_LISTENER(sync_activity, sync_activity_event_listener);
+ZMK_SUBSCRIPTION(sync_activity, zmk_sync_activity_event);
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&
+       // !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
 SYS_INIT(activity_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

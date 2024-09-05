@@ -26,6 +26,21 @@ config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     help
       Enable propagating the HID (LED) Indicator state to the split peripheral(s).
 
+config ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING
+    bool "Sync last activity timing across all devices"
+    default n
+    help
+        Sync central device last activity timing to the split peripheral(s).
+        Does not help to wake up peripheral devices that have gone to deep sleep.
+
+if ZMK_SPLIT_ROLE_CENTRAL && ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING
+config ZMK_SPLIT_SYNC_LAST_ACTIVITY_INTERVAL_MS
+    int "Last activity time sync interval in milliseconds"
+    default 30000
+
+#ZMK_SPLIT_ROLE_CENTRAL && ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING
+endif
+
 #ZMK_SPLIT
 endif
 
