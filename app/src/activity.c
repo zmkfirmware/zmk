@@ -44,8 +44,10 @@ static enum zmk_activity_state activity_state;
 static uint32_t activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&                                      \
     IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-static uint32_t last_sync_time;
-#define SLEEP_TIMERS_SYNC_MS CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_INTERVAL_MS
+static uint32_t last_periodic_sync_time;
+#if ZMK_SPLIT_SYNC_KEY_PRESS_INTERVAL_MS > 0
+static uint32_t last_event_sync_time;
+#endif // ZMK_SPLIT_SYNC_KEY_PRESS_INTERVAL_MS > 0
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&
        // IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
@@ -73,6 +75,15 @@ enum zmk_activity_state zmk_activity_get_state(void) { return activity_state; }
 int activity_event_listener(const zmk_event_t *eh) {
     activity_last_uptime = k_uptime_get();
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&                                      \
+    IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) && ZMK_SPLIT_SYNC_KEY_PRESS_INTERVAL_MS > 0
+    if (current - last_event_sync_time > ZMK_SPLIT_SYNC_EVENT_MIN_INTERVAL_MS) {
+        last_event_sync_time = current;
+        zmk_split_bt_queue_sync_activity(0);
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&
+       // IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) && ZMK_SPLIT_SYNC_KEY_PRESS_INTERVAL_MS > 0
+
     return set_state(ZMK_ACTIVITY_ACTIVE);
 }
 
@@ -95,14 +106,14 @@ void activity_work_handler(struct k_work *work) {
     } else
 #endif /* IS_ENABLED(CONFIG_ZMK_SLEEP) */
         if (inactive_time > MAX_IDLE_MS) {
-        set_state(ZMK_ACTIVITY_IDLE);
-    }
+            set_state(ZMK_ACTIVITY_IDLE);
+        }
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&                                      \
     IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-    if (current - last_sync_time > SLEEP_TIMERS_SYNC_MS) {
-        last_sync_time = current;
-        zmk_split_bt_sync_activity(inactive_time);
+    if (current - last_periodic_sync_time > CONFIG_ZMK_SPLIT_SYNC_PERIODIC_INTERVAL_MS) {
+        last_periodic_sync_time = current;
+        zmk_split_bt_queue_sync_activity(inactive_time);
     }
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&
        // IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)

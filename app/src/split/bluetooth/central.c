@@ -925,7 +925,7 @@ static void split_central_sync_activity_with_delay() {
     k_timer_start(&split_central_sync_activity_delay_timer, K_SECONDS(1), K_SECONDS(1));
 }
 
-int zmk_split_bt_sync_activity(int32_t inactive_duration) {
+int zmk_split_bt_queue_sync_activity(int32_t inactive_duration) {
     activity_inactive_duration = inactive_duration;
     return k_work_submit_to_queue(&split_central_split_run_q, &split_central_sync_activity);
 }

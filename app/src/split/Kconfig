@@ -34,9 +34,13 @@ config ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING
         Does not help to wake up peripheral devices that have gone to deep sleep.
 
 if ZMK_SPLIT_ROLE_CENTRAL && ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING
-config ZMK_SPLIT_SYNC_LAST_ACTIVITY_INTERVAL_MS
-    int "Last activity time sync interval in milliseconds"
+config ZMK_SPLIT_SYNC_PERIODIC_INTERVAL_MS
+    int "Last activity time periodic sync interval in milliseconds"
     default 30000
+
+config ZMK_SPLIT_SYNC_EVENT_MIN_INTERVAL_MS
+    int "Last activity time sync interval in milliseconds"
+    default 0
 
 #ZMK_SPLIT_ROLE_CENTRAL && ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING
 endif

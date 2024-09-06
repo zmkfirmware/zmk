@@ -25,6 +25,6 @@ int zmk_split_get_peripheral_battery_level(uint8_t source, uint8_t *level);
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
 
-int zmk_split_bt_sync_activity(int32_t inactive_duration);
+int zmk_split_bt_queue_sync_activity(int32_t inactive_duration);
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
