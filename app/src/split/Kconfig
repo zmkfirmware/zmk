@@ -39,7 +39,7 @@ config ZMK_SPLIT_SYNC_PERIODIC_INTERVAL_MS
     default 30000
 
 config ZMK_SPLIT_SYNC_EVENT_MIN_INTERVAL_MS
-    int "Last activity time sync interval in milliseconds"
+    int "Sync timings on events (key/sensors presses) as well, 0 to disable. Represents minimum interval in milliseconds"
     default 0
 
 #ZMK_SPLIT_ROLE_CENTRAL && ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING

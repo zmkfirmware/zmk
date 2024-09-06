@@ -45,9 +45,9 @@ static uint32_t activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&                                      \
     IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 static uint32_t last_periodic_sync_time;
-#if ZMK_SPLIT_SYNC_KEY_PRESS_INTERVAL_MS > 0
+#if CONFIG_ZMK_SPLIT_SYNC_EVENT_MIN_INTERVAL_MS > 0
 static uint32_t last_event_sync_time;
-#endif // ZMK_SPLIT_SYNC_KEY_PRESS_INTERVAL_MS > 0
+#endif // CONFIG_ZMK_SPLIT_SYNC_EVENT_MIN_INTERVAL_MS > 0
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&
        // IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
@@ -76,13 +76,14 @@ int activity_event_listener(const zmk_event_t *eh) {
     activity_last_uptime = k_uptime_get();
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&                                      \
-    IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) && ZMK_SPLIT_SYNC_KEY_PRESS_INTERVAL_MS > 0
-    if (current - last_event_sync_time > ZMK_SPLIT_SYNC_EVENT_MIN_INTERVAL_MS) {
-        last_event_sync_time = current;
+    IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) && CONFIG_ZMK_SPLIT_SYNC_EVENT_MIN_INTERVAL_MS > 0
+    if (activity_last_uptime - last_event_sync_time > CONFIG_ZMK_SPLIT_SYNC_EVENT_MIN_INTERVAL_MS) {
+        last_event_sync_time = activity_last_uptime;
         zmk_split_bt_queue_sync_activity(0);
     }
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING) &&
-       // IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) && ZMK_SPLIT_SYNC_KEY_PRESS_INTERVAL_MS > 0
+       // IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) && CONFIG_ZMK_SPLIT_SYNC_EVENT_MIN_INTERVAL_MS >
+       // 0
 
     return set_state(ZMK_ACTIVITY_ACTIVE);
 }
@@ -90,7 +91,6 @@ int activity_event_listener(const zmk_event_t *eh) {
 void activity_work_handler(struct k_work *work) {
     int32_t current = k_uptime_get();
     int32_t inactive_time = current - activity_last_uptime;
-
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
     if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
         // Put devices in suspend power mode before sleeping
