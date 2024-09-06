@@ -4,10 +4,15 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <dt-bindings/zmk/behaviors.h>
+
  / {
     behaviors {
+#if ZMK_BEHAVIOR_OMIT(BL)
+        /omit-if-no-ref/
+#endif
         // Behavior can be invoked on peripherals, so name must be <= 8 characters.
-        /omit-if-no-ref/ bl: bcklight {
+        bl: bcklight {
             compatible = "zmk,behavior-backlight";
             #binding-cells = <2>;
             display-name = "Backlight";

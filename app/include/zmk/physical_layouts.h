@@ -8,6 +8,13 @@
 
 #include <zephyr/kernel.h>
 #include <zmk/matrix_transform.h>
+#include <zmk/event_manager.h>
+
+struct zmk_physical_layout_selection_changed {
+    uint8_t selection;
+};
+
+ZMK_EVENT_DECLARE(zmk_physical_layout_selection_changed);
 
 struct zmk_key_physical_attrs {
     int16_t width;
@@ -40,4 +47,5 @@ int zmk_physical_layouts_check_unsaved_selection(void);
 int zmk_physical_layouts_save_selected(void);
 int zmk_physical_layouts_revert_selected(void);
 
-int zmk_physical_layouts_get_position_map(uint8_t source, uint8_t dest, uint32_t *map);
+int zmk_physical_layouts_get_position_map(uint8_t source, uint8_t dest, size_t map_size,
+                                          uint32_t map[map_size]);

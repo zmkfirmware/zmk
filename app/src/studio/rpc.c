@@ -245,7 +245,7 @@ static void refresh_selected_transport(void) {
     k_mutex_lock(&rpc_transport_mutex, K_FOREVER);
 
     if (selected_transport && selected_transport->transport == transport) {
-        return;
+        goto exit_refresh;
     }
 
     if (selected_transport) {
@@ -272,6 +272,7 @@ static void refresh_selected_transport(void) {
         LOG_WRN("Failed to select a transport!");
     }
 
+exit_refresh:
     k_mutex_unlock(&rpc_transport_mutex);
 }
 

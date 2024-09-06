@@ -4,11 +4,16 @@
  * SPDX-License-Identifier: MIT
  */
 
+
+#include <dt-bindings/zmk/behaviors.h>
 #include <dt-bindings/zmk/keys.h>
 
 / {
     behaviors {
-        /omit-if-no-ref/ gresc: grave_escape {
+#if ZMK_BEHAVIOR_OMIT(GRESC)
+        /omit-if-no-ref/
+#endif
+        gresc: grave_escape {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
             bindings = <&kp ESC>, <&kp GRAVE>;
