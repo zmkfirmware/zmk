@@ -68,7 +68,7 @@ static const struct behavior_parameter_value_metadata one_arg_p2_values[] = {
         .range =
             {
                 .min = 0,
-                .max = 255,
+                .max = 100,
             },
     },
 };
