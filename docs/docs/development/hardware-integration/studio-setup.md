@@ -15,7 +15,7 @@ to properly to display the physical layouts available for the particular keyboar
 
 # Physical Layout Positions
 
-Physical layouts are described as part of the [new shield guide](./new-shield.mdx#physical-layouts) with the exception of the `keys` property that is required for ZMK Studio support. This is used to describe the physical attributes of each key position present in that layout and its items are listed in the same order as keymap bindings, matrix transforms, etc. The properties available are:
+Physical layouts are described as part of the [new shield guide](./new-shield.mdx#physical-layout) with the exception of the `keys` property that is required for ZMK Studio support. This is used to describe the physical attributes of each key position present in that layout and its items are listed in the same order as keymap bindings, matrix transforms, etc. The properties available are:
 
 | Property   | Type     | Description                          | Unit                                                    |
 | ---------- | -------- | ------------------------------------ | ------------------------------------------------------- |
