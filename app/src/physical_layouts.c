@@ -22,8 +22,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 
-ZMK_EVENT_IMPL(zmk_physical_layout_selection_changed);
-
 #define DT_DRV_COMPAT zmk_physical_layout
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
@@ -229,14 +227,7 @@ int zmk_physical_layouts_select(uint8_t index) {
         return -EINVAL;
     }
 
-    int ret = zmk_physical_layouts_select_layout(layouts[index]);
-
-    if (ret >= 0) {
-        raise_zmk_physical_layout_selection_changed(
-            (struct zmk_physical_layout_selection_changed){.selection = index});
-    }
-
-    return ret;
+    return zmk_physical_layouts_select_layout(layouts[index]);
 }
 
 int zmk_physical_layouts_get_selected(void) {
