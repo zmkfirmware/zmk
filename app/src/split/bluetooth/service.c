@@ -25,9 +25,13 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 #include <zmk/events/hid_indicators_changed.h>
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING_PERIODIC) ||                             \
+    IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING_ON_EVENT)
 #include <zmk/events/sync_activity_event.h>
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#define SYNC_LAST_ACTIVITY_TIMING 1
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING_PERIODIC) ||
+       // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING_ON_EVENT)
 
 #include <zmk/events/sensor_event.h>
 #include <zmk/sensors.h>
@@ -141,7 +145,7 @@ static ssize_t split_svc_update_indicators(struct bt_conn *conn, const struct bt
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#if IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 static int32_t central_inactive_duration;
 
 static void split_svc_sync_activity_callback(struct k_work *work) {
@@ -163,7 +167,7 @@ static ssize_t split_svc_sync_activity(struct bt_conn *conn, const struct bt_gat
 
     return len;
 }
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#endif // IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 
 BT_GATT_SERVICE_DEFINE(
     split_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SERVICE_UUID)),
@@ -188,11 +192,11 @@ BT_GATT_SERVICE_DEFINE(
                            split_svc_update_indicators, NULL),
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#if IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
     BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_SYNC_ACTIVITY_UUID),
                            BT_GATT_CHRC_WRITE_WITHOUT_RESP, BT_GATT_PERM_WRITE_ENCRYPT, NULL,
                            split_svc_sync_activity, NULL),
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#endif // IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 
 );
 

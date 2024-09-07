@@ -35,6 +35,12 @@ static int start_scanning(void);
 
 #define POSITION_STATE_DATA_LEN 16
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING_PERIODIC) ||                             \
+    IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING_ON_EVENT)
+#define SYNC_LAST_ACTIVITY_TIMING 1
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING_PERIODIC) ||
+       // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING_ON_EVENT)
+
 enum peripheral_slot_state {
     PERIPHERAL_SLOT_STATE_OPEN,
     PERIPHERAL_SLOT_STATE_CONNECTING,
@@ -49,9 +55,9 @@ struct peripheral_slot {
     struct bt_gatt_subscribe_params sensor_subscribe_params;
     struct bt_gatt_discover_params sub_discover_params;
     uint16_t run_behavior_handle;
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#if IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
     uint16_t sync_activity_handle;
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#endif // IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
     struct bt_gatt_subscribe_params batt_lvl_subscribe_params;
     struct bt_gatt_read_params batt_lvl_read_params;
@@ -69,10 +75,10 @@ static bool is_scanning = false;
 
 static const struct bt_uuid_128 split_service_uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#if IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 static int32_t activity_inactive_duration;
 static void split_central_sync_activity_with_delay();
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#endif // IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 
 K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
               CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
@@ -152,9 +158,9 @@ int release_peripheral_slot(int index) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     slot->update_hid_indicators = 0;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#if IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
     slot->sync_activity_handle = 0;
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#endif // IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 
     return 0;
 }
@@ -476,13 +482,13 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
         slot->batt_lvl_read_params.single.offset = 0;
         bt_gatt_read(conn, &slot->batt_lvl_read_params);
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#if IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
     } else if (!bt_uuid_cmp(chrc_uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_SYNC_ACTIVITY_UUID))) {
         LOG_DBG("Found sync activity handle");
         slot->discover_params.uuid = NULL;
         slot->discover_params.start_handle = attr->handle + 2;
         slot->sync_activity_handle = bt_gatt_attr_value_handle(attr);
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#endif // IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
     }
 
     bool subscribed = slot->run_behavior_handle && slot->subscribe_params.value_handle;
@@ -494,9 +500,9 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     subscribed = subscribed && slot->update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#if IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
     subscribed = subscribed && slot->sync_activity_handle;
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#endif // IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
     subscribed = subscribed && slot->batt_lvl_subscribe_params.value_handle;
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
@@ -735,9 +741,11 @@ static void split_central_connected(struct bt_conn *conn, uint8_t conn_err) {
     confirm_peripheral_slot_conn(conn);
     split_central_process_connection(conn);
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#if IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
+    // Bluetooth discovery is done only after connection, so a delay is
+    /// added here to compensate for that before syncing the activity time
     split_central_sync_activity_with_delay();
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#endif // IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 }
 
 static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
@@ -891,7 +899,7 @@ int zmk_split_bt_update_hid_indicator(zmk_hid_indicators_t indicators) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#if IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 
 static void split_central_sync_activity_callback(struct k_work *work) {
     for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
@@ -920,8 +928,6 @@ K_TIMER_DEFINE(split_central_sync_activity_delay_timer,
                split_central_sync_activity_delay_timer_callback, NULL);
 
 static void split_central_sync_activity_with_delay() {
-    // Bluetooth discovery is done only after connection, so a delay is added here to compensate
-    // for that, before syncing the sleep timers
     k_timer_start(&split_central_sync_activity_delay_timer, K_SECONDS(1), K_SECONDS(1));
 }
 
@@ -930,7 +936,7 @@ int zmk_split_bt_queue_sync_activity(int32_t inactive_duration) {
     return k_work_submit_to_queue(&split_central_split_run_q, &split_central_sync_activity);
 }
 
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_SYNC_LAST_ACTIVITY_TIMING)
+#endif // IS_ENABLED(SYNC_LAST_ACTIVITY_TIMING)
 
 static int finish_init() {
     return IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START) ? 0 : start_scanning();
