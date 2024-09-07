@@ -1,6 +1,6 @@
 ### KScan sideband behavior
 
-The kscan sideband behavior driver will be used to trigger the [soft off behavior](../../keymaps/behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver.
+The kscan sideband behavior driver will be used to trigger the [soft off behavior](../../../keymaps/behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver.
 
 For the matrix-integrated approach you will supplement the existing kscan matrix by adding the additional pin as another entry in
 the `row-gpios`/`col-gpios` for whichever pins are used to read the matrix state. This approach requires a matrix transform to be present. As an example, consider the following existing kscan matrix:
@@ -63,4 +63,4 @@ With that in place, you would decorate the kscan driver:
 };
 ```
 
-Critically, the `column` and `row` values would correspond to the location of the added entry. The properties of the `kscan-sideband-behaviors` node can be found in the [appropriate configuration section](../../config/kscan.md#kscan-sideband-behavior-driver).
+Critically, the `column` and `row` values would correspond to the location of the added entry. The properties of the `kscan-sideband-behaviors` node can be found in the [appropriate configuration section](../../../config/kscan.md#kscan-sideband-behavior-driver).

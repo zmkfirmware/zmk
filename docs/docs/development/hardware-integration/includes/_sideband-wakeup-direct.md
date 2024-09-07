@@ -1,6 +1,6 @@
 ### KScan sideband behavior
 
-With a simple direct pin setup, the [direct kscan](../../config/kscan.md) driver can be used with a [GPIO key](#gpio-key), to make a small "side matrix":
+With a simple direct pin setup, the [direct kscan](../../../config/kscan.md) driver can be used with a [GPIO key](#gpio-key), to make a small "side matrix":
 
 ```dts
 / {
@@ -25,4 +25,4 @@ The kscan sideband behavior needs to wrap the new driver to enable it:
 };
 ```
 
-The properties of the `kscan-sideband-behaviors` node can be found in the [appropriate configuration section](../../config/kscan.md#kscan-sideband-behavior-driver).
+The properties of the `kscan-sideband-behaviors` node can be found in the [appropriate configuration section](../../../config/kscan.md#kscan-sideband-behavior-driver).

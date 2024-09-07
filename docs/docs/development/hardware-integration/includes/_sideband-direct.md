@@ -1,8 +1,8 @@
 ### KScan sideband behavior
 
-The kscan sideband behavior driver will be used to trigger the [soft off behavior](../../keymaps/behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver.
+The kscan sideband behavior driver will be used to trigger the [soft off behavior](../../../keymaps/behaviors/soft-off.md) "out of band" from the normal keymap processing. To do so, it will decorate/wrap an underlying kscan driver.
 
-With a simple direct pin setup, the [direct kscan](../../config/kscan.md) driver can be used with a [GPIO key](#gpio-key), to make a small "side matrix":
+With a simple direct pin setup, the [direct kscan](../../../config/kscan.md) driver can be used with a [GPIO key](#gpio-key), to make a small "side matrix":
 
 ```dts
 / {
@@ -34,4 +34,4 @@ With that in place, the kscan sideband behavior will wrap the new driver:
 };
 ```
 
-As the kscan used only has a single key, both column and row are set to 0. The properties of the `kscan-sideband-behaviors` node can be found in the [appropriate configuration section](../../config/kscan.md#kscan-sideband-behavior-driver).
+As the kscan used only has a single key, both column and row are set to 0. The properties of the `kscan-sideband-behaviors` node can be found in the [appropriate configuration section](../../../config/kscan.md#kscan-sideband-behavior-driver).

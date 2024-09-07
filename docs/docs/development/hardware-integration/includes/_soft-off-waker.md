@@ -13,4 +13,4 @@ We need to add another device which will be enabled only when the keyboard is go
 };
 ```
 
-The properties for the `gpio-key-wakeup-trigger` node can be found in the [appropriate configuration section](../../config/power.md#gpio-key-wakeup-trigger).
+The properties for the `gpio-key-wakeup-trigger` node can be found in the [appropriate configuration section](../../../config/power.md#gpio-key-wakeup-trigger).
