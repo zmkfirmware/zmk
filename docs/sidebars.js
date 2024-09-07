@@ -118,16 +118,6 @@ module.exports = {
       ],
     },
     {
-      type: "category",
-      label: "Advanced Guides",
-      link: {
-        type: "doc",
-        id: "advanced-guides/index",
-      },
-      collapsed: true,
-      items: ["advanced-guides/soft-off-setup"],
-    },
-    {
       Development: [
         {
           type: "category",
@@ -138,6 +128,7 @@ module.exports = {
             "development/hardware-integration/hardware-metadata-files",
             "development/hardware-integration/boards-shields-keymaps",
             "development/hardware-integration/studio-setup",
+            "development/hardware-integration/soft-off-setup",
           ],
         },
         {
