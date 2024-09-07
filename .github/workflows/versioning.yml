@@ -1,0 +1,51 @@
+name: Versioning and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  versioning:
+    runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Authenticate with GitHub
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+      - name: Run version update script
+        id: run_version_update
+        run: ./version_update.sh
+
+      - name: Read version from file
+        if: ${{ env.RUN_TAG_RELEASE  == 'true' }}
+        id: read_version
+        run: |
+          source VERSION
+          echo "VERSION=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_ENV
+
+      - name: Create new tag
+        if: ${{ env.RUN_TAG_RELEASE == 'true' }}
+        run: |
+          git tag -a "v${{ env.VERSION }}" -m "${{ env.VERSION }}: ${{ github.event.head_commit.message }}"
+          git push origin "v${{ env.VERSION }}"
+
+      - name: Create a Release
+        if: ${{ env.RUN_TAG_RELEASE == 'true' }}
+        uses: elgohr/Github-Release-Action@v5
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          title: "${{ env.VERSION }}: ${{ github.event.head_commit.message }}"
+          tag: "v${{ env.VERSION }}"
