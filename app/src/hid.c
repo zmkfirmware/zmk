@@ -18,6 +18,9 @@ static struct zmk_hid_keyboard_report keyboard_report = {
 static struct zmk_hid_consumer_report consumer_report = {.report_id = ZMK_HID_REPORT_ID_CONSUMER,
                                                          .body = {.keys = {0}}};
 
+static struct zmk_hid_generic_desktop_report generic_desktop_report = {
+    .report_id = ZMK_HID_REPORT_ID_GENERIC_DESKTOP, .body = {.data = 0}};
+
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 
 static zmk_hid_boot_report_t boot_report = {.modifiers = 0, ._reserved = 0, .keys = {0}};
@@ -340,12 +343,37 @@ bool zmk_hid_consumer_is_pressed(zmk_key_t key) {
     return false;
 }
 
+int my_pressed = 0;
+int zmk_hid_generic_desktop_press(zmk_key_t code) {
+    LOG_DBG("Code 0x%02X pressed", code);
+    generic_desktop_report.body.data = 0xFF;
+
+    return 0;
+}
+
+int zmk_hid_generic_desktop_release(zmk_key_t code) {
+    LOG_DBG("Code 0x%02X released", code);
+    generic_desktop_report.body.data = 0x00;
+
+    return 0;
+}
+
+void zmk_hid_generic_desktop_clear(void) {
+    memset(&generic_desktop_report.body, 0, sizeof(generic_desktop_report.body));
+}
+
+bool zmk_hid_generic_desktop_is_pressed(zmk_key_t code) {
+    return generic_desktop_report.body.data == 0xFF;
+}
+
 int zmk_hid_press(uint32_t usage) {
     switch (ZMK_HID_USAGE_PAGE(usage)) {
     case HID_USAGE_KEY:
         return zmk_hid_keyboard_press(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_press(ZMK_HID_USAGE_ID(usage));
+    case HID_USAGE_GD:
+        return zmk_hid_generic_desktop_press(ZMK_HID_USAGE_ID(usage));
     }
     return -EINVAL;
 }
@@ -356,6 +384,8 @@ int zmk_hid_release(uint32_t usage) {
         return zmk_hid_keyboard_release(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_release(ZMK_HID_USAGE_ID(usage));
+    case HID_USAGE_GD:
+        return zmk_hid_generic_desktop_release(ZMK_HID_USAGE_ID(usage));
     }
     return -EINVAL;
 }
@@ -365,6 +395,8 @@ bool zmk_hid_is_pressed(uint32_t usage) {
     case HID_USAGE_KEY:
         return zmk_hid_keyboard_is_pressed(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
+        return zmk_hid_consumer_is_pressed(ZMK_HID_USAGE_ID(usage));
+    case HID_USAGE_GD:
         return zmk_hid_consumer_is_pressed(ZMK_HID_USAGE_ID(usage));
     }
     return false;
@@ -441,6 +473,10 @@ struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) {
 
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) {
     return &consumer_report;
+}
+
+struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void) {
+    return &generic_desktop_report;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)

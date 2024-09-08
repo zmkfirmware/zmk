@@ -76,39 +76,40 @@
 #define ZMK_HID_REPORT_ID_LEDS 0x01
 #define ZMK_HID_REPORT_ID_CONSUMER 0x02
 #define ZMK_HID_REPORT_ID_MOUSE 0x03
+#define ZMK_HID_REPORT_ID_GENERIC_DESKTOP 0x04
 
 static const uint8_t zmk_hid_report_desc[] = {
-    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
-    HID_USAGE(HID_USAGE_GD_KEYBOARD),
-    HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_KEYBOARD),
-    HID_USAGE_PAGE(HID_USAGE_KEY),
-    HID_USAGE_MIN8(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),
-    HID_USAGE_MAX8(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI),
-    HID_LOGICAL_MIN8(0x00),
+    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP), // HID Usage page item following usage are within gen
+                                           // desktop page
+    HID_USAGE(HID_USAGE_GD_KEYBOARD),      // 0x06 specify usage of keyboard
+    // Start of keyboard collection
+    HID_COLLECTION(HID_COLLECTION_APPLICATION), // keyboard collection? Start collection (group)
+    HID_REPORT_ID(ZMK_HID_REPORT_ID_KEYBOARD),  // 0x01 Set zmk id, doesn't matter
+
+    // Modifier keys // [ Account for 1st byte in report ]
+    HID_USAGE_PAGE(HID_USAGE_KEY), HID_USAGE_MIN8(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),
+    HID_USAGE_MAX8(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI), HID_LOGICAL_MIN8(0x00),
     HID_LOGICAL_MAX8(0x01),
+    HID_REPORT_SIZE(0x01),  // Number of bits in 1 field (1)
+    HID_REPORT_COUNT(0x08), // Number of data fields included in the report (8), so 8x1bits = 1 byte
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR |
+              ZMK_HID_MAIN_VAL_ABS), // Input (Data, Variable, Absolute)
 
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x08),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-
-    HID_USAGE_PAGE(HID_USAGE_KEY),
-    HID_REPORT_SIZE(0x08),
-    HID_REPORT_COUNT(0x01),
-    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+    // Reserved byte [ Account for 2nd in report ]
+    HID_USAGE_PAGE(HID_USAGE_KEY), // New usage page
+    HID_REPORT_SIZE(0x08),         // Each field is 8 bits
+    HID_REPORT_COUNT(0x01),        // Only 1 field
+                                   // Reserved byte?
+    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR |
+              ZMK_HID_MAIN_VAL_ABS), // Input field for reserved byte (Const, Variable, Absolute)
 
 #if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
 
-    HID_USAGE_PAGE(HID_USAGE_LED),
-    HID_USAGE_MIN8(HID_USAGE_LED_NUM_LOCK),
-    HID_USAGE_MAX8(HID_USAGE_LED_KANA),
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x05),
+    HID_USAGE_PAGE(HID_USAGE_LED), HID_USAGE_MIN8(HID_USAGE_LED_NUM_LOCK),
+    HID_USAGE_MAX8(HID_USAGE_LED_KANA), HID_REPORT_SIZE(0x01), HID_REPORT_COUNT(0x05),
     HID_OUTPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 
-    HID_USAGE_PAGE(HID_USAGE_LED),
-    HID_REPORT_SIZE(0x03),
-    HID_REPORT_COUNT(0x01),
+    HID_USAGE_PAGE(HID_USAGE_LED), HID_REPORT_SIZE(0x03), HID_REPORT_COUNT(0x01),
     HID_OUTPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 
 #endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
@@ -116,19 +117,13 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_KEY),
 
 #if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x01),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX8(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE),
-    HID_REPORT_SIZE(0x01),
+    HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX8(0x01), HID_USAGE_MIN8(0x00),
+    HID_USAGE_MAX8(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE), HID_REPORT_SIZE(0x01),
     HID_REPORT_COUNT(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1),
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 #elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX16(0xFF, 0x00),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX8(0xFF),
-    HID_REPORT_SIZE(0x08),
+    HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX16(0xFF, 0x00), HID_USAGE_MIN8(0x00),
+    HID_USAGE_MAX8(0xFF), HID_REPORT_SIZE(0x08),
     HID_REPORT_COUNT(CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE),
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),
 #else
@@ -136,24 +131,17 @@ static const uint8_t zmk_hid_report_desc[] = {
 #endif
 
     HID_END_COLLECTION,
-    HID_USAGE_PAGE(HID_USAGE_CONSUMER),
-    HID_USAGE(HID_USAGE_CONSUMER_CONSUMER_CONTROL),
-    HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_CONSUMER),
+
+    HID_USAGE_PAGE(HID_USAGE_CONSUMER), HID_USAGE(HID_USAGE_CONSUMER_CONSUMER_CONTROL),
+    HID_COLLECTION(HID_COLLECTION_APPLICATION), HID_REPORT_ID(ZMK_HID_REPORT_ID_CONSUMER),
     HID_USAGE_PAGE(HID_USAGE_CONSUMER),
 
 #if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX16(0xFF, 0x00),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX8(0xFF),
-    HID_REPORT_SIZE(0x08),
+    HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX16(0xFF, 0x00), HID_USAGE_MIN8(0x00),
+    HID_USAGE_MAX8(0xFF), HID_REPORT_SIZE(0x08),
 #elif IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX16(0xFF, 0x0F),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX16(0xFF, 0x0F),
-    HID_REPORT_SIZE(0x10),
+    HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX16(0xFF, 0x0F), HID_USAGE_MIN8(0x00),
+    HID_USAGE_MAX16(0xFF, 0x0F), HID_REPORT_SIZE(0x10),
 #else
 #error "A proper consumer HID report usage range must be selected"
 #endif
@@ -162,37 +150,75 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_END_COLLECTION,
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
-    HID_USAGE_PAGE(HID_USAGE_GD),
-    HID_USAGE(HID_USAGE_GD_MOUSE),
-    HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_MOUSE),
-    HID_USAGE(HID_USAGE_GD_POINTER),
-    HID_COLLECTION(HID_COLLECTION_PHYSICAL),
-    HID_USAGE_PAGE(HID_USAGE_BUTTON),
-    HID_USAGE_MIN8(0x1),
-    HID_USAGE_MAX8(ZMK_HID_MOUSE_NUM_BUTTONS),
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x01),
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x5),
+    HID_USAGE_PAGE(HID_USAGE_GD), HID_USAGE(HID_USAGE_GD_MOUSE),
+    HID_COLLECTION(HID_COLLECTION_APPLICATION), HID_REPORT_ID(ZMK_HID_REPORT_ID_MOUSE),
+    HID_USAGE(HID_USAGE_GD_POINTER), HID_COLLECTION(HID_COLLECTION_PHYSICAL),
+    HID_USAGE_PAGE(HID_USAGE_BUTTON), HID_USAGE_MIN8(0x1),
+    HID_USAGE_MAX8(ZMK_HID_MOUSE_NUM_BUTTONS), HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX8(0x01),
+    HID_REPORT_SIZE(0x01), HID_REPORT_COUNT(0x5),
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
     // Constant padding for the last 3 bits.
-    HID_REPORT_SIZE(0x03),
-    HID_REPORT_COUNT(0x01),
+    HID_REPORT_SIZE(0x03), HID_REPORT_COUNT(0x01),
     HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
     // Some OSes ignore pointer devices without X/Y data.
-    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
-    HID_USAGE(HID_USAGE_GD_X),
-    HID_USAGE(HID_USAGE_GD_Y),
-    HID_USAGE(HID_USAGE_GD_WHEEL),
-    HID_LOGICAL_MIN8(-0x7F),
-    HID_LOGICAL_MAX8(0x7F),
-    HID_REPORT_SIZE(0x08),
-    HID_REPORT_COUNT(0x03),
+    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP), HID_USAGE(HID_USAGE_GD_X), HID_USAGE(HID_USAGE_GD_Y),
+    HID_USAGE(HID_USAGE_GD_WHEEL), HID_LOGICAL_MIN8(-0x7F), HID_LOGICAL_MAX8(0x7F),
+    HID_REPORT_SIZE(0x08), HID_REPORT_COUNT(0x03),
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
-    HID_END_COLLECTION,
-    HID_END_COLLECTION,
+    HID_END_COLLECTION, HID_END_COLLECTION,
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+
+    // my attempt
+    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),            // GEN DESKTOP PAGE
+    HID_USAGE(HID_USAGE_GD_SYSTEM_CONTROL),           // System control - Collection Application
+    HID_COLLECTION(HID_COLLECTION_APPLICATION),       // Start of System control collection
+    HID_REPORT_ID(ZMK_HID_REPORT_ID_GENERIC_DESKTOP), // Set UID
+
+    HID_USAGE(HID_USAGE_GD_SYSTEM_SLEEP), // System Sleep Usage
+
+    HID_USAGE_MIN8(HID_USAGE_GD_SYSTEM_POWER_DOWN),
+    HID_LOGICAL_MIN8(0x00), // Logical Minimum (Off)
+    HID_LOGICAL_MAX8(0x01), // Logical Maximum (On)
+    HID_REPORT_SIZE(0x01),  // Each field is 1 bit
+    HID_REPORT_COUNT(0x01), // One field for the sleep control
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+
+    HID_REPORT_SIZE(0x01),  // Each field is 1 bit
+    HID_REPORT_COUNT(0x07), // 7 bits of padding
+    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+    HID_END_COLLECTION,
+    /*
+    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),              // Generic Desktop Page
+    HID_USAGE(HID_USAGE_GD_SYSTEM_CONTROL),             // System Control Collection
+    HID_COLLECTION(HID_COLLECTION_APPLICATION),         // Start of System control collection
+    HID_REPORT_ID(ZMK_HID_REPORT_ID_GENERIC_DESKTOP),   // Set Report ID
+
+    HID_USAGE(HID_USAGE_GD_SYSTEM_SLEEP),               // System Sleep Usage
+    HID_LOGICAL_MIN8(0x00),                             // Logical Minimum (Off)
+    HID_LOGICAL_MAX8(0x01),                             // Logical Maximum (On)
+    HID_REPORT_SIZE(0x01),                              // Each field is 1 bit
+    HID_REPORT_COUNT(0x01),                             // One field for the sleep control
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+
+    HID_REPORT_SIZE(0x07),                              // 7 bits of padding
+    HID_REPORT_COUNT(0x01),                             // One field of padding
+    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+    HID_END_COLLECTION,
+
+    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR |
+              ZMK_HID_MAIN_VAL_ABS), // Input field for reserved byte (Const, Variable, Absolute)
+
+    A One Shot Control is a push button that triggers a single event or action. A One Shot Control
+    is encoded into a 1-bit value and declared as a Relative, Preferred, Main item with a Logical
+    Minimum and Logical Maximum of 0 and 1, respectively. A 0 to 1 transition initiates an event.
+    Nothing occurs on a 1 to 0 transition but it is required before another event can occur. An
+    example is degauss
+
+    Generic Desktop Page
+    81 System Power Down OSC 4.5
+    82 System Sleep OSC 4.5
+    83 System Wake Up OSC 4.5
+    */
 };
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
@@ -227,6 +253,15 @@ struct zmk_hid_keyboard_report_body {
 struct zmk_hid_keyboard_report {
     uint8_t report_id;
     struct zmk_hid_keyboard_report_body body;
+} __packed;
+
+struct zmk_hid_generic_desktop_report_body {
+    uint8_t data;
+} __packed;
+
+struct zmk_hid_generic_desktop_report {
+    uint8_t report_id;
+    struct zmk_hid_generic_desktop_report_body body;
 } __packed;
 
 #if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
@@ -290,6 +325,7 @@ bool zmk_hid_keyboard_is_pressed(zmk_key_t key);
 int zmk_hid_consumer_press(zmk_key_t key);
 int zmk_hid_consumer_release(zmk_key_t key);
 void zmk_hid_consumer_clear(void);
+void zmk_hid_generic_desktop_clear(void);
 bool zmk_hid_consumer_is_pressed(zmk_key_t key);
 
 int zmk_hid_press(uint32_t usage);
@@ -306,6 +342,7 @@ void zmk_hid_mouse_clear(void);
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void);
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void);
+struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void);
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report();
