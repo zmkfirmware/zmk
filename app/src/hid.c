@@ -19,7 +19,7 @@ static struct zmk_hid_consumer_report consumer_report = {.report_id = ZMK_HID_RE
                                                          .body = {.keys = {0}}};
 
 static struct zmk_hid_generic_desktop_report generic_desktop_report = {
-    .report_id = ZMK_HID_REPORT_ID_GENERIC_DESKTOP, .body = {.data = 0}};
+    .report_id = ZMK_HID_REPORT_ID_GENERIC_DESKTOP, .body = {.keys = {0}}};
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 
@@ -345,15 +345,22 @@ bool zmk_hid_consumer_is_pressed(zmk_key_t key) {
 
 int my_pressed = 0;
 int zmk_hid_generic_desktop_press(zmk_key_t code) {
-    LOG_DBG("Code 0x%02X pressed", code);
-    generic_desktop_report.body.data = 0xFF;
+    int32_t offset = code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
+    LOG_DBG("Code 0x%02X pressed, offset 0x%02X", code, offset);
+    WRITE_BIT(generic_desktop_report.body.keys[offset / 8], offset % 8, 1);
 
+    // generic_desktop_report.body.keys[0] = 0x00;
+    // generic_desktop_report.body.keys[1] = 0x20;
     return 0;
 }
 
 int zmk_hid_generic_desktop_release(zmk_key_t code) {
-    LOG_DBG("Code 0x%02X released", code);
-    generic_desktop_report.body.data = 0x00;
+    int32_t offset = code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
+    LOG_DBG("Code 0x%02X released, offset 0x%02X", code, offset);
+    WRITE_BIT(generic_desktop_report.body.keys[offset / 8], offset % 8, 0);
+
+    // generic_desktop_report.body.keys[0] = 0x00;
+    // generic_desktop_report.body.keys[1] = 0x00;
 
     return 0;
 }
@@ -363,7 +370,8 @@ void zmk_hid_generic_desktop_clear(void) {
 }
 
 bool zmk_hid_generic_desktop_is_pressed(zmk_key_t code) {
-    return generic_desktop_report.body.data == 0xFF;
+    int32_t offset = code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
+    return generic_desktop_report.body.keys[offset / 8] & (1 << (offset % 8));
 }
 
 int zmk_hid_press(uint32_t usage) {
@@ -397,7 +405,7 @@ bool zmk_hid_is_pressed(uint32_t usage) {
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_is_pressed(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_GD:
-        return zmk_hid_consumer_is_pressed(ZMK_HID_USAGE_ID(usage));
+        return zmk_hid_generic_desktop_is_pressed(ZMK_HID_USAGE_ID(usage));
     }
     return false;
 }
@@ -467,13 +475,9 @@ void zmk_hid_mouse_clear(void) { memset(&mouse_report.body, 0, sizeof(mouse_repo
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) {
-    return &keyboard_report;
-}
+struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyboard_report; }
 
-struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) {
-    return &consumer_report;
-}
+struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
 
 struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void) {
     return &generic_desktop_report;
@@ -481,8 +485,6 @@ struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void) 
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) {
-    return &mouse_report;
-}
+struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_report; }
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)

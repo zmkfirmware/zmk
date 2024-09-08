@@ -174,17 +174,16 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_COLLECTION(HID_COLLECTION_APPLICATION),       // Start of System control collection
     HID_REPORT_ID(ZMK_HID_REPORT_ID_GENERIC_DESKTOP), // Set UID
 
-    HID_USAGE(HID_USAGE_GD_SYSTEM_SLEEP), // System Sleep Usage
-
     HID_USAGE_MIN8(HID_USAGE_GD_SYSTEM_POWER_DOWN),
+    HID_USAGE_MAX8(HID_USAGE_GD_SYSTEM_CONTEXT_MENU),
     HID_LOGICAL_MIN8(0x00), // Logical Minimum (Off)
     HID_LOGICAL_MAX8(0x01), // Logical Maximum (On)
     HID_REPORT_SIZE(0x01),  // Each field is 1 bit
-    HID_REPORT_COUNT(0x01), // One field for the sleep control
+    HID_REPORT_COUNT(0x04), // 4 fields
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 
-    HID_REPORT_SIZE(0x01),  // Each field is 1 bit
-    HID_REPORT_COUNT(0x07), // 7 bits of padding
+    HID_REPORT_SIZE(0x03),  // Each field is 3 bit
+    HID_REPORT_COUNT(0x01), // 1 field of padding
     HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
     HID_END_COLLECTION,
     /*
@@ -256,7 +255,7 @@ struct zmk_hid_keyboard_report {
 } __packed;
 
 struct zmk_hid_generic_desktop_report_body {
-    uint8_t data;
+    uint8_t keys[2];
 } __packed;
 
 struct zmk_hid_generic_desktop_report {
