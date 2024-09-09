@@ -203,23 +203,25 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_END_COLLECTION,
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
     HID_USAGE(HID_USAGE_GD_SYSTEM_CONTROL),
     HID_COLLECTION(HID_COLLECTION_APPLICATION),
     HID_REPORT_ID(ZMK_HID_REPORT_ID_GENERIC_DESKTOP),
 
     HID_USAGE_MIN8(HID_USAGE_GD_SYSTEM_POWER_DOWN),
-    HID_USAGE_MAX8(HID_USAGE_GD_SYSTEM_CONTEXT_MENU),
+    HID_USAGE_MAX8(HID_USAGE_GD_SYSTEM_WAKE_UP),
     HID_LOGICAL_MIN8(0x00),
     HID_LOGICAL_MAX8(0x01),
     HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x04),
+    HID_REPORT_COUNT(0x03),
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 
-    HID_REPORT_SIZE(0x03),
+    HID_REPORT_SIZE(0x05),
     HID_REPORT_COUNT(0x01),
     HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
     HID_END_COLLECTION,
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 };
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
@@ -256,14 +258,16 @@ struct zmk_hid_keyboard_report {
     struct zmk_hid_keyboard_report_body body;
 } __packed;
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 struct zmk_hid_generic_desktop_report_body {
-    uint8_t keys[2];
+    uint8_t keys;
 } __packed;
 
 struct zmk_hid_generic_desktop_report {
     uint8_t report_id;
     struct zmk_hid_generic_desktop_report_body body;
 } __packed;
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
 #if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
 
@@ -326,7 +330,6 @@ bool zmk_hid_keyboard_is_pressed(zmk_key_t key);
 int zmk_hid_consumer_press(zmk_key_t key);
 int zmk_hid_consumer_release(zmk_key_t key);
 void zmk_hid_consumer_clear(void);
-void zmk_hid_generic_desktop_clear(void);
 bool zmk_hid_consumer_is_pressed(zmk_key_t key);
 
 int zmk_hid_press(uint32_t usage);
@@ -341,9 +344,16 @@ int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons);
 void zmk_hid_mouse_clear(void);
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+void zmk_hid_generic_desktop_clear(void);
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void);
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void);
+
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void);
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report();

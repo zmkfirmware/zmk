@@ -116,9 +116,7 @@ int zmk_endpoints_toggle_transport(void) {
     return zmk_endpoints_select_transport(new_transport);
 }
 
-struct zmk_endpoint_instance zmk_endpoints_selected(void) {
-    return current_instance;
-}
+struct zmk_endpoint_instance zmk_endpoints_selected(void) { return current_instance; }
 
 static int send_keyboard_report(void) {
     switch (current_instance.transport) {
@@ -188,6 +186,7 @@ static int send_consumer_report(void) {
     return -ENOTSUP;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 static int send_generic_desktop_report(void) {
     switch (current_instance.transport) {
     case ZMK_TRANSPORT_USB: {
@@ -204,14 +203,25 @@ static int send_generic_desktop_report(void) {
     }
 
     case ZMK_TRANSPORT_BLE: {
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+        struct zmk_hid_generic_desktop_report *generic_desktop_report =
+            zmk_hid_get_generic_desktop_report();
+        int err = zmk_hog_send_generic_desktop_report(&generic_desktop_report->body);
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
+        }
+        return err;
+#else
         LOG_ERR("BLE HOG endpoint is not supported");
         return -ENOTSUP;
+#endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
     }
     }
 
     LOG_ERR("Unhandled endpoint transport %d", current_instance.transport);
     return -ENOTSUP;
 }
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
 int zmk_endpoints_send_report(uint16_t usage_page) {
 
@@ -223,8 +233,10 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
     case HID_USAGE_CONSUMER:
         return send_consumer_report();
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
     case HID_USAGE_GD:
         return send_generic_desktop_report();
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
     }
 
     LOG_ERR("Unsupported usage page %d", usage_page);
@@ -362,10 +374,12 @@ static int zmk_endpoints_init(void) {
 void zmk_endpoints_clear_current(void) {
     zmk_hid_keyboard_clear();
     zmk_hid_consumer_clear();
-    zmk_hid_generic_desktop_clear();
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
     zmk_hid_mouse_clear();
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+    zmk_hid_generic_desktop_clear();
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
     zmk_endpoints_send_report(HID_USAGE_KEY);
     zmk_endpoints_send_report(HID_USAGE_CONSUMER);

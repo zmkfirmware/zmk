@@ -119,6 +119,12 @@ config ZMK_HID_SEPARATE_MOD_RELEASE_REPORT
       Send a separate release event for the modifiers, to make sure the release
       of the modifier doesn't get recognized before the actual key's release event.
 
+config ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS
+    bool "Power-related Generic Desktop HID Usage Support"
+    help
+      Enable only 3 Generic Desktop ID values, "Power Down", "Sleep", "Wake up", to be
+      sent to hosts.
+
 menu "Output Types"
 
 config ZMK_USB

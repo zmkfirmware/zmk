@@ -18,9 +18,6 @@ static struct zmk_hid_keyboard_report keyboard_report = {
 static struct zmk_hid_consumer_report consumer_report = {.report_id = ZMK_HID_REPORT_ID_CONSUMER,
                                                          .body = {.keys = {0}}};
 
-static struct zmk_hid_generic_desktop_report generic_desktop_report = {
-    .report_id = ZMK_HID_REPORT_ID_GENERIC_DESKTOP, .body = {.keys = {0}}};
-
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 
 static zmk_hid_boot_report_t boot_report = {.modifiers = 0, ._reserved = 0, .keys = {0}};
@@ -34,6 +31,13 @@ static struct zmk_hid_mouse_report mouse_report = {.report_id = ZMK_HID_REPORT_I
                                                    .body = {.buttons = 0}};
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+
+static struct zmk_hid_generic_desktop_report generic_desktop_report = {
+    .report_id = ZMK_HID_REPORT_ID_GENERIC_DESKTOP, .body = {.keys = 0}};
+
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
@@ -343,25 +347,22 @@ bool zmk_hid_consumer_is_pressed(zmk_key_t key) {
     return false;
 }
 
-int my_pressed = 0;
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 int zmk_hid_generic_desktop_press(zmk_key_t code) {
+    if (code < HID_USAGE_GD_SYSTEM_POWER_DOWN || code > HID_USAGE_GD_SYSTEM_WAKE_UP) {
+        return -ENOTSUP;
+    }
     int32_t offset = code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
-    LOG_DBG("Code 0x%02X pressed, offset 0x%02X", code, offset);
-    WRITE_BIT(generic_desktop_report.body.keys[offset / 8], offset % 8, 1);
-
-    // generic_desktop_report.body.keys[0] = 0x00;
-    // generic_desktop_report.body.keys[1] = 0x20;
+    WRITE_BIT(generic_desktop_report.body.keys, offset, 1);
     return 0;
 }
 
 int zmk_hid_generic_desktop_release(zmk_key_t code) {
+    if (code < HID_USAGE_GD_SYSTEM_POWER_DOWN || code > HID_USAGE_GD_SYSTEM_WAKE_UP) {
+        return -ENOTSUP;
+    }
     int32_t offset = code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
-    LOG_DBG("Code 0x%02X released, offset 0x%02X", code, offset);
-    WRITE_BIT(generic_desktop_report.body.keys[offset / 8], offset % 8, 0);
-
-    // generic_desktop_report.body.keys[0] = 0x00;
-    // generic_desktop_report.body.keys[1] = 0x00;
-
+    WRITE_BIT(generic_desktop_report.body.keys, offset, 0);
     return 0;
 }
 
@@ -370,9 +371,13 @@ void zmk_hid_generic_desktop_clear(void) {
 }
 
 bool zmk_hid_generic_desktop_is_pressed(zmk_key_t code) {
+    if (code < HID_USAGE_GD_SYSTEM_POWER_DOWN || code > HID_USAGE_GD_SYSTEM_WAKE_UP) {
+        return false;
+    }
     int32_t offset = code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
-    return generic_desktop_report.body.keys[offset / 8] & (1 << (offset % 8));
+    return generic_desktop_report.body.keys & (1 << offset);
 }
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
 int zmk_hid_press(uint32_t usage) {
     switch (ZMK_HID_USAGE_PAGE(usage)) {
@@ -380,8 +385,10 @@ int zmk_hid_press(uint32_t usage) {
         return zmk_hid_keyboard_press(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_press(ZMK_HID_USAGE_ID(usage));
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
     case HID_USAGE_GD:
         return zmk_hid_generic_desktop_press(ZMK_HID_USAGE_ID(usage));
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
     }
     return -EINVAL;
 }
@@ -392,8 +399,10 @@ int zmk_hid_release(uint32_t usage) {
         return zmk_hid_keyboard_release(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_release(ZMK_HID_USAGE_ID(usage));
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
     case HID_USAGE_GD:
         return zmk_hid_generic_desktop_release(ZMK_HID_USAGE_ID(usage));
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
     }
     return -EINVAL;
 }
@@ -404,8 +413,10 @@ bool zmk_hid_is_pressed(uint32_t usage) {
         return zmk_hid_keyboard_is_pressed(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_is_pressed(ZMK_HID_USAGE_ID(usage));
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
     case HID_USAGE_GD:
         return zmk_hid_generic_desktop_is_pressed(ZMK_HID_USAGE_ID(usage));
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
     }
     return false;
 }
@@ -479,9 +490,11 @@ struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyb
 
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void) {
     return &generic_desktop_report;
 }
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
