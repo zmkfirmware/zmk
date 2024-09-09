@@ -2,7 +2,6 @@
 <dbg> ble_central: main: [Bluetooth initialized]
 <dbg> ble_central: start_scan: [Scanning successfully started]
 <dbg> ble_central: device_found: [DEVICE]: FD:9E:B2:48:47:39 (random), AD evt type 0, AD data len 15, RSSI -59
-<dbg> ble_central: eir_found: [AD]: 9 data_len 0
 <dbg> ble_central: eir_found: [AD]: 25 data_len 2
 <dbg> ble_central: eir_found: [AD]: 1 data_len 1
 <dbg> ble_central: eir_found: [AD]: 2 data_len 4
@@ -12,7 +11,6 @@
 <dbg> ble_central: disconnected: [Disconnected]: FD:9E:B2:48:47:39 (random) (reason 0x16)
 <dbg> ble_central: start_scan: [Scanning successfully started]
 <dbg> ble_central: device_found: [DEVICE]: FD:9E:B2:48:47:39 (random), AD evt type 0, AD data len 15, RSSI -59
-<dbg> ble_central: eir_found: [AD]: 9 data_len 0
 <dbg> ble_central: eir_found: [AD]: 25 data_len 2
 <dbg> ble_central: eir_found: [AD]: 1 data_len 1
 <dbg> ble_central: eir_found: [AD]: 2 data_len 4
