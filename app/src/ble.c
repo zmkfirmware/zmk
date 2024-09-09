@@ -659,7 +659,7 @@ static int zmk_ble_complete_startup(void) {
         char setting_name[15];
         sprintf(setting_name, "ble/profiles/%d", i);
 
-        err = settings_delete(setting_name);
+        int err = settings_delete(setting_name);
         if (err) {
             LOG_ERR("Failed to delete setting: %d", err);
         }
