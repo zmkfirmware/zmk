@@ -206,6 +206,7 @@ module.exports = {
             "development/local-toolchain/posix-board",
           ],
         },
+        "development/module-creation",
         "development/usb-logging",
         "development/studio-rpc-protocol",
         "development/new-behavior",
