@@ -12,6 +12,7 @@
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/gatt.h>
 #include <zephyr/bluetooth/hci.h>
+#include <zephyr/settings/settings.h>
 #include <zephyr/sys/byteorder.h>
 
 #include <zephyr/logging/log.h>
@@ -865,13 +866,34 @@ int zmk_split_bt_update_hid_indicator(zmk_hid_indicators_t indicators) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 
+static int finish_init() {
+    return IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START) ? 0 : start_scanning();
+}
+
+#if IS_ENABLED(CONFIG_SETTINGS)
+
+static int central_ble_handle_set(const char *name, size_t len, settings_read_cb read_cb,
+                                  void *cb_arg) {
+    return 0;
+}
+
+static struct settings_handler ble_central_settings_handler = {
+    .name = "ble_central", .h_set = central_ble_handle_set, .h_commit = finish_init};
+
+#endif // IS_ENABLED(CONFIG_SETTINGS)
+
 static int zmk_split_bt_central_init(void) {
     k_work_queue_start(&split_central_split_run_q, split_central_split_run_q_stack,
                        K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
                        CONFIG_ZMK_BLE_THREAD_PRIORITY, NULL);
     bt_conn_cb_register(&conn_callbacks);
 
-    return IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START) ? 0 : start_scanning();
+#if IS_ENABLED(CONFIG_SETTINGS)
+    settings_register(&ble_central_settings_handler);
+    return 0;
+#else
+    return finish_init();
+#endif // IS_ENABLED(CONFIG_SETTINGS)
 }
 
 SYS_INIT(zmk_split_bt_central_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);

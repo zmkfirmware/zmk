@@ -32,9 +32,33 @@ static int to_keymap_binding_released(struct zmk_behavior_binding *binding,
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static const struct behavior_parameter_value_metadata param_values[] = {
+    {
+        .display_name = "Layer",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_ID,
+    },
+};
+
+static const struct behavior_parameter_metadata_set param_metadata_set[] = {{
+    .param1_values = param_values,
+    .param1_values_len = ARRAY_SIZE(param_values),
+}};
+
+static const struct behavior_parameter_metadata metadata = {
+    .sets_len = ARRAY_SIZE(param_metadata_set),
+    .sets = param_metadata_set,
+};
+
+#endif
+
 static const struct behavior_driver_api behavior_to_driver_api = {
     .binding_pressed = to_keymap_binding_pressed,
     .binding_released = to_keymap_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 BEHAVIOR_DT_INST_DEFINE(0, behavior_to_init, NULL, NULL, NULL, POST_KERNEL,

@@ -1,8 +1,0 @@
-/*
- * Copyright (c) 2020 The ZMK Contributors
- *
- * SPDX-License-Identifier: MIT
- */
-
-#include "tidbit.dtsi"
-#include "tidbit_19key.keymap"

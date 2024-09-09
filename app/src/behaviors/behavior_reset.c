@@ -38,6 +38,9 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 static const struct behavior_driver_api behavior_reset_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
     .locality = BEHAVIOR_LOCALITY_EVENT_SOURCE,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 #define RST_INST(n)                                                                                \

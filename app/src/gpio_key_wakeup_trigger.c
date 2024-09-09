@@ -36,7 +36,12 @@ static int zmk_gpio_key_wakeup_trigger_init(const struct device *dev) {
 static int gpio_key_wakeup_trigger_pm_resume(const struct device *dev) {
     const struct gpio_key_wakeup_trigger_config *config = dev->config;
 
-    int ret = gpio_pin_interrupt_configure_dt(&config->trigger, GPIO_INT_LEVEL_ACTIVE);
+    int ret = gpio_pin_configure_dt(&config->trigger, GPIO_INPUT);
+    if (ret < 0) {
+        LOG_ERR("Failed to configure wakeup trigger key GPIO pin as input (%d)", ret);
+        return ret;
+    }
+    ret = gpio_pin_interrupt_configure_dt(&config->trigger, GPIO_INT_LEVEL_ACTIVE);
     if (ret < 0) {
         LOG_ERR("Failed to configure wakeup trigger key GPIO pin interrupt (%d)", ret);
         return ret;

@@ -12,6 +12,7 @@ module.exports = {
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
   plugins: [
+    "@docusaurus/theme-mermaid",
     path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin"),
     path.resolve(__dirname, "src/hardware-metadata-collection-plugin"),
     path.resolve(__dirname, "src/hardware-metadata-static-plugin"),
@@ -80,7 +81,7 @@ module.exports = {
             },
             {
               label: "Development",
-              to: "docs/development/setup",
+              to: "docs/development/contributing/clean-room",
             },
           ],
         },
@@ -164,6 +165,8 @@ module.exports = {
     ],
   ],
   markdown: {
+    format: "detect",
+    mermaid: true,
     mdx1Compat: {
       comments: false,
       admonitions: false,

@@ -18,25 +18,32 @@ It is recommended to only enable logging when needed, and not leaving it on by d
 
 :::
 
-## Kconfig
+## USB Logging Snippet
 
-The `CONFIG_ZMK_USB_LOGGING` Kconfig enables USB logging. This can be set at the keyboard level, typically in the `config/<your_keyboard>.conf`
-file if you are using a [user config repository](user-setup.mdx). It can also be enabled at the ZMK level using the `app/prj.conf` file, or other
-search locations described in the [configuration overview](config/index.md#config-file-locations).
+The `zmk-usb-logging` snippet is used to enable logging.
+
+If using GitHub Actions to build your firmware, enabling logging
+requires adding a `snippet: zmk-usb-logging` to your `build.yaml` file for any build you want logging enabled, e.g.
+
+```yaml
+---
+include:
+  - board: nice_nano_v2
+    shield: corne_left
+    snippet: zmk-usb-logging
+```
+
+When building locally, the `-S`/`--snippet` flag can be passed to `west build` to enable the snippet, e.g.
+
+```sh
+west build -b nice_nano_v2 -S zmk-usb-logging -- -DSHIELD="corne_left"
+```
+
+### Additional Config
 
 Logging can be further configured using Kconfig described in [the Zephyr documentation](https://docs.zephyrproject.org/3.5.0/services/logging/index.html).
 For instance, setting `CONFIG_LOG_PROCESS_THREAD_STARTUP_DELAY_MS` to a large value such as `8000` might help catch issues that happen near keyboard
 boot, before you can connect to view the logs.
-
-:::note
-In Github Actions, you can check the `<Keyboard> Kconfig file` step output to verify the options above have been enabled
-for you successfully.
-:::
-
-```ini
-# Turn on logging, and set ZMK logging to debug output
-CONFIG_ZMK_USB_LOGGING=y
-```
 
 ## Viewing Logs
 
@@ -89,27 +96,29 @@ From there, you should see the various log messages from ZMK and Zephyr, dependi
 
 Standard boards such as the nice!nano and Seeeduino XIAO family have the necessary configuration for logging already added, however if you are developing your own standalone board you may wish to add the ability to use USB logging in the future.
 
-To add USB logging to a board you need to define the USB CDC ACM device that the serial output gets piped to, as well as adding the console in the `chosen` node inside `<board>.dts`.
+To do so, you need to follow the upstream Zephyr [`cdc-acm-console` snippet requirements](https://docs.zephyrproject.org/3.5.0/snippets/cdc-acm-console/README.html#requirements) steps.
 
-Inside the USB device (`&usbd`), add the CDC ACM node:
+Usually, this just requires ensuring that the USB node has been tagged with the `zephyr_udc0` label, e.g.
 
 ```dts
-&usbd {
+zephyr_udc0: &usbd {
     status = "okay";
-    cdc_acm_uart: cdc_acm_uart {
-        compatible = "zephyr,cdc-acm-uart";
-    };
 };
 ```
 
-Then you can add the `zephyr,console` binding in the `chosen` node:
+## Enabling Logging on Older Boards
 
-```dts
-/ {
-    chosen {
-        ...
-        zephyr,console = &cdc_acm_uart;
-    };
-    ...
-};
+Previously, enabling logging required setting the `CONFIG_ZMK_USB_LOGGING` Kconfig symbol. If for whatever reason
+a custom board definition does not support the new `zmk-usb-logging` snippet, you can try setting this symbol at the keyboard level, typically in the `config/<your_keyboard>.conf`
+file if you are using a [user config repository](user-setup.mdx). It can also be enabled at the ZMK level using the `app/prj.conf` file, or other
+search locations described in the [configuration overview](config/index.md#config-file-locations).
+
+:::note
+In Github Actions, you can check the `<Keyboard> Kconfig file` step output to verify the options above have been enabled
+for you successfully.
+:::
+
+```ini
+# Turn on logging, and set ZMK logging to debug output
+CONFIG_ZMK_USB_LOGGING=y
 ```

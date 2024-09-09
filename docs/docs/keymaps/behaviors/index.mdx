@@ -1,0 +1,89 @@
+---
+title: Behavior Overview
+sidebar_label: Overview
+---
+
+# Behaviors Overview
+
+"Behaviors" are bindings that are assigned to and triggered by key positions on keymap layers, sensors (like an encoder) or combos. They describe what happens e.g. when a certain key position is pressed or released, or an encoder triggers a rotation event. They can also be recursively invoked by other behaviors, such as macros.
+
+Below is a summary of pre-defined behavior bindings and user-definable behaviors available in ZMK, with references to documentation pages describing them.
+
+## Key Press Behaviors
+
+| Binding       | Behavior                                      | Description                                                                                                                                                                                                                                       |
+| ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `&kp`         | [Key Press](key-press.md)                     | Send keycodes to the connected host when a key is pressed                                                                                                                                                                                         |
+| `&mt`         | [Mod Tap](mod-tap.md)                         | Sends a different key press depending on whether a key is held or tapped                                                                                                                                                                          |
+| `&kt`         | [Key Toggle](key-toggle.md)                   | Toggles the press of a key. If the key is not currently pressed, key toggle will press it, holding it until the key toggle is pressed again or the key is released in some other way. If the key is currently pressed, key toggle will release it |
+| `&sk`         | [Sticky Key](sticky-key.md)                   | Stays pressed until another key is pressed, then is released. It is often used for modifier keys like shift, which allows typing capital letters without holding it down                                                                          |
+| `&gresc`      | [Grave Escape](mod-morph.md#behavior-binding) | Sends Grave Accent `` ` `` keycode if shift or GUI is held, sends Escape keycode otherwise                                                                                                                                                        |
+| `&caps_word`  | [Caps Word](caps-word.md)                     | Behaves similar to caps lock, but automatically deactivates when any key not in a continue list is pressed, or if the caps word key is pressed again                                                                                              |
+| `&key_repeat` | [Key Repeat](key-repeat.md)                   | Sends again whatever keycode was last sent                                                                                                                                                                                                        |
+
+## Miscellaneous Behaviors
+
+| Binding  | Behavior                           | Description                                                                                                                           |
+| -------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `&trans` | [Transparent](misc.md#transparent) | Passes the key press down to the next active layer in the stack for processing                                                        |
+| `&none`  | [None](misc.md#none)               | Swallows and stops the key press, no keycode will be sent nor will the key press be passed down to the next active layer in the stack |
+
+## Layer Navigation Behaviors
+
+| Binding | Behavior                                     | Description                                                                                              |
+| ------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `&mo`   | [Momentary Layer](layers.md#momentary-layer) | Enables a layer while a key is pressed                                                                   |
+| `&lt`   | [Layer-tap](layers.md#layer-tap)             | Enables a layer when a key is held, and outputs a key press when the key is only tapped for a short time |
+| `&to`   | [To Layer](layers.md#to-layer)               | Enables a layer and disables all other layers except the default layer                                   |
+| `&tog`  | [Toggle Layer](layers.md#toggle-layer)       | Enables a layer until the layer is manually disabled                                                     |
+| `&sl`   | [Sticky Layer](sticky-layer.md)              | Activates a layer until another key is pressed, then deactivates it                                      |
+
+## Mouse Emulation Behaviors
+
+| Binding | Behavior                                                    | Description                     |
+| ------- | ----------------------------------------------------------- | ------------------------------- |
+| `&mkp`  | [Mouse Button Press](mouse-emulation.md#mouse-button-press) | Emulates pressing mouse buttons |
+
+## Reset Behaviors
+
+| Binding       | Behavior                                | Description                                                                              |
+| ------------- | --------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `&sys_reset`  | [Reset](reset.md#reset)                 | Resets the keyboard and re-runs the firmware flashed to the device                       |
+| `&bootloader` | [Bootloader](reset.md#bootloader-reset) | Resets the keyboard and puts it into bootloader mode, allowing you to flash new firmware |
+
+## Output Selection Behaviors
+
+| Binding | Behavior                                                 | Description                                                                                        |
+| ------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `&bt`   | [Bluetooth](bluetooth.md#bluetooth-behavior)             | Completes a bluetooth action given on press, for example switching between devices                 |
+| `&out`  | [Output Selection](outputs.md#output-selection-behavior) | Allows selecting whether output is sent to the USB or bluetooth connection when both are connected |
+
+## Lighting Behaviors
+
+| Binding   | Behavior                                       | Description                                                                  |
+| --------- | ---------------------------------------------- | ---------------------------------------------------------------------------- |
+| `&rgb_ug` | [RGB Underglow](underglow.md#behavior-binding) | Controls the RGB underglow, usually placed underneath the keyboard           |
+| `&bl`     | [Backlight](backlight.md#behavior-binding)     | Controls the keyboard backlighting, usually placed through or under switches |
+
+## Power Management Behaviors
+
+| Binding      | Behavior                                      | Description                                                     |
+| ------------ | --------------------------------------------- | --------------------------------------------------------------- |
+| `&ext_power` | [Power management](power.md#behavior-binding) | Allows enabling or disabling the VCC power output to save power |
+| `&soft_off`  | [Soft off](soft-off.md#behavior-binding)      | Turns the keyboard off.                                         |
+
+## ZMK Studio Behaviors
+
+| Binding          | Behavior                                               | Description                                               |
+| ---------------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| `&studio_unlock` | [ZMK Studio Unlock](studio-unlock.md#behavior-binding) | Unlocks the device so that ZMK Studio UI can make changes |
+
+## User-Defined Behaviors
+
+| Behavior                            | Description                                                                                                                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Macros](macros.md)                 | Allows configuring a list of other behaviors to invoke when the key is pressed and/or released                                                                     |
+| [Hold-Tap](hold-tap.mdx)            | Invokes different behaviors depending on key press duration or interrupting keys. This is the basis for [layer-tap](layers.md#layer-tap) and [mod-tap](mod-tap.md) |
+| [Tap Dance](tap-dance.mdx)          | Invokes different behaviors corresponding to how many times a key is pressed                                                                                       |
+| [Mod-Morph](mod-morph.md)           | Invokes different behaviors depending on whether a specified modifier is held during a key press                                                                   |
+| [Sensor Rotation](sensor-rotate.md) | Invokes different behaviors depending on whether a sensor is rotated clockwise or counter-clockwise                                                                |

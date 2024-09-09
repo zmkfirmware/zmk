@@ -21,7 +21,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | `CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB`  | bool | Turn off backlight when USB is disconnected           | n       |
 
 :::note
-The `*_START` settings only determine the initial backlight state. Any changes you make with the [backlight behavior](../behaviors/backlight.md) are saved to flash after a one minute delay and will be used after that.
+The `*_START` settings only determine the initial backlight state. Any changes you make with the [backlight behavior](../keymaps/behaviors/backlight.md) are saved to flash after a one minute delay and will be used after that.
 :::
 
 ## Devicetree

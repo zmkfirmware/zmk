@@ -64,5 +64,5 @@ static int profile_listener(const zmk_event_t *eh) {
     return 0;
 }
 
-static ZMK_LISTENER(profile_listener, profile_listener);
-static ZMK_SUBSCRIPTION(profile_listener, zmk_endpoint_changed);
+ZMK_LISTENER(profile_listener, profile_listener);
+ZMK_SUBSCRIPTION(profile_listener, zmk_endpoint_changed);

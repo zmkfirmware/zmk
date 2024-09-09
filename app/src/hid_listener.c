@@ -66,6 +66,17 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
         return err;
     }
 
+#if IS_ENABLED(CONFIG_ZMK_HID_SEPARATE_MOD_RELEASE_REPORT)
+
+    // send report of normal key release early to fix the issue
+    // of some programs recognizing the implicit_mod release before the actual key release
+    err = zmk_endpoints_send_report(ev->usage_page);
+    if (err < 0) {
+        LOG_ERR("Failed to send key report for the released keycode (%d)", err);
+    }
+
+#endif // IS_ENABLED(CONFIG_ZMK_HID_SEPARATE_MOD_RELEASE_REPORT)
+
     explicit_mods_changed = zmk_hid_unregister_mods(ev->explicit_modifiers);
     // There is a minor issue with this code.
     // If LC(A) is pressed, then LS(B), then LC(A) is released, the shift for B will be released
@@ -73,7 +84,7 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
     // Solving this would require keeping track of which key's implicit modifiers are currently
     // active and only releasing modifiers at that time.
     implicit_mods_changed = zmk_hid_implicit_modifiers_release();
-    ;
+
     if (ev->usage_page != HID_USAGE_KEY &&
         (explicit_mods_changed > 0 || implicit_mods_changed > 0)) {
         err = zmk_endpoints_send_report(HID_USAGE_KEY);

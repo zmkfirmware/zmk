@@ -11,6 +11,10 @@ project(zmk)
 zephyr_linker_sources(SECTIONS include/linker/zmk-behaviors.ld)
 zephyr_linker_sources(RODATA include/linker/zmk-events.ld)
 
+if(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS)
+  zephyr_linker_sources(DATA_SECTIONS include/linker/zmk-behavior-local-id-map.ld)
+endif()
+
 zephyr_syscall_header(${APPLICATION_SOURCE_DIR}/include/drivers/behavior.h)
 zephyr_syscall_header(${APPLICATION_SOURCE_DIR}/include/drivers/ext_power.h)
 
@@ -20,9 +24,9 @@ target_include_directories(app PRIVATE include)
 target_sources(app PRIVATE src/stdlib.c)
 target_sources(app PRIVATE src/activity.c)
 target_sources(app PRIVATE src/behavior.c)
-target_sources(app PRIVATE src/kscan.c)
 target_sources_ifdef(CONFIG_ZMK_KSCAN_SIDEBAND_BEHAVIORS app PRIVATE src/kscan_sideband_behaviors.c)
 target_sources(app PRIVATE src/matrix_transform.c)
+target_sources(app PRIVATE src/physical_layouts.c)
 target_sources(app PRIVATE src/sensors.c)
 target_sources_ifdef(CONFIG_ZMK_WPM app PRIVATE src/wpm.c)
 target_sources(app PRIVATE src/event_manager.c)
@@ -43,8 +47,8 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   target_sources_ifdef(CONFIG_ZMK_MOUSE app PRIVATE src/mouse.c)
   target_sources(app PRIVATE src/behaviors/behavior_key_press.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_KEY_TOGGLE app PRIVATE src/behaviors/behavior_key_toggle.c)
-  target_sources(app PRIVATE src/behaviors/behavior_hold_tap.c)
-  target_sources(app PRIVATE src/behaviors/behavior_sticky_key.c)
+  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_HOLD_TAP app PRIVATE src/behaviors/behavior_hold_tap.c)
+  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_STICKY_KEY app PRIVATE src/behaviors/behavior_sticky_key.c)
   target_sources(app PRIVATE src/behaviors/behavior_caps_word.c)
   target_sources(app PRIVATE src/behaviors/behavior_key_repeat.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_MACRO app PRIVATE src/behaviors/behavior_macro.c)
@@ -59,6 +63,7 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_SENSOR_ROTATE_VAR app PRIVATE src/behaviors/behavior_sensor_rotate_var.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON app PRIVATE src/behaviors/behavior_sensor_rotate_common.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_MOUSE_KEY_PRESS app PRIVATE src/behaviors/behavior_mouse_key_press.c)
+  target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_STUDIO_UNLOCK app PRIVATE src/behaviors/behavior_studio_unlock.c)
   target_sources(app PRIVATE src/combo.c)
   target_sources(app PRIVATE src/behaviors/behavior_tap_dance.c)
   target_sources(app PRIVATE src/behavior_queue.c)
@@ -100,5 +105,28 @@ target_sources(app PRIVATE src/main.c)
 
 add_subdirectory(src/display/)
 add_subdirectory_ifdef(CONFIG_SETTINGS src/settings/)
+
+if (CONFIG_ZMK_STUDIO_RPC)
+  # For some reason this is failing if run from a different sub-file.
+  list(APPEND CMAKE_MODULE_PATH ${ZEPHYR_BASE}/modules/nanopb)
+
+  include(nanopb)
+
+    # Turn off the default nanopb behavior
+  set(NANOPB_GENERATE_CPP_STANDALONE OFF)
+
+  nanopb_generate_cpp(proto_srcs proto_hdrs RELPATH ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/studio.proto
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/meta.proto
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/core.proto
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/behaviors.proto
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/keymap.proto
+  )
+
+  target_include_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+  target_sources(app PRIVATE ${proto_srcs} ${proto_hdrs})
+
+  add_subdirectory(src/studio)
+endif()
 
 zephyr_cc_option(-Wfatal-errors)

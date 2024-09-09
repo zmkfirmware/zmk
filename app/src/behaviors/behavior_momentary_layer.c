@@ -15,6 +15,27 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static const struct behavior_parameter_value_metadata param_values[] = {
+    {
+        .display_name = "Layer",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_ID,
+    },
+};
+
+static const struct behavior_parameter_metadata_set param_metadata_set[] = {{
+    .param1_values = param_values,
+    .param1_values_len = ARRAY_SIZE(param_values),
+}};
+
+static const struct behavior_parameter_metadata metadata = {
+    .sets_len = ARRAY_SIZE(param_metadata_set),
+    .sets = param_metadata_set,
+};
+
+#endif
+
 struct behavior_mo_config {};
 struct behavior_mo_data {};
 
@@ -33,7 +54,12 @@ static int mo_keymap_binding_released(struct zmk_behavior_binding *binding,
 }
 
 static const struct behavior_driver_api behavior_mo_driver_api = {
-    .binding_pressed = mo_keymap_binding_pressed, .binding_released = mo_keymap_binding_released};
+    .binding_pressed = mo_keymap_binding_pressed,
+    .binding_released = mo_keymap_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+};
 
 static const struct behavior_mo_config behavior_mo_config = {};
 
