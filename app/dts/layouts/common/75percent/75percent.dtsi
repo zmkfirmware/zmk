@@ -1,0 +1,59 @@
+#include <layouts/common/75percent/ansi.dtsi>
+#include <layouts/common/75percent/iso.dtsi>
+#include <layouts/common/75percent/all1u.dtsi>
+
+&layout_75_ansi {
+    status = "disabled";
+};
+
+&layout_75_iso {
+    status = "disabled";
+};
+
+&layout_75_all1u {
+    status = "disabled";
+};
+
+/ {
+    layouts_common_75_percent_position_map: layouts_common_75_percent_position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        complete;
+
+        layout_75_all1u {
+            physical-layout = <&layout_75_all1u>;
+            positions
+                = < 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15>
+                , <16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31>
+                , <32 33 34 35 36 37 38 39 40 41 42 43 44 45 46>
+                , <47 48 49 50 51 52 53 54 55 56 57 58 59 60>
+                , <61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76>
+                , <77 78 79 80 81 82 83 84 85 86>
+                ;
+        };
+
+        layout_75_ansi {
+            physical-layout = <&layout_75_ansi>;
+            positions
+                = < 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15>
+                , <16 17 18 19 20 21 22 23 24 25 26 27 28 29 84 30>
+                , <31 32 33 34 35 36 37 38 39 40 41 42 43 44 45>
+                , <46 47 48 49 50 51 52 53 54 55 56 57 58 59>
+                , <60 85 61 62 63 64 65 66 67 68 69 70 71 86 72 73>
+                , <74 75 76 77 78 79 80 81 82 83>
+                ;
+        };
+
+        layout_75_iso {
+            physical-layout = <&layout_75_iso>;
+            positions
+                = < 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15>
+                , <16 17 18 19 20 21 22 23 24 25 26 27 28 29 85 30>
+                , <31 32 33 34 35 36 37 38 39 40 41 42 43 86 44>
+                , <45 46 47 48 49 50 51 52 53 54 55 56 58 59>
+                , <60 61 62 63 64 65 66 67 68 69 70 71 72 57 73 74>
+                , <75 76 77 78 79 80 81 82 83 84>
+                ;
+        };
+    };
+};
