@@ -1,0 +1,56 @@
+#include <layouts/common/ortho_5x12/1x2u.dtsi>
+#include <layouts/common/ortho_5x12/2x2u.dtsi>
+#include <layouts/common/ortho_5x12/all1u.dtsi>
+
+&layout_ortho_5x12_all1u {
+    status = "disabled";
+};
+
+&layout_ortho_5x12_1x2u {
+    status = "disabled";
+};
+
+&layout_ortho_5x12_2x2u {
+    status = "disabled";
+};
+
+/ {
+    layouts_common_ortho_5x12_position_map: layouts_common_ortho_5x12_position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        complete;
+
+        layout_ortho_5x12_all1u {
+            physical-layout = <&layout_ortho_5x12_all1u>;
+            positions
+                = < 0  1  2  3  4  5  6  7  8  9 10 11>
+                , <12 13 14 15 16 17 18 19 20 21 22 23>
+                , <24 25 26 27 28 29 30 31 32 33 34 35>
+                , <36 37 38 39 40 41 42 43 44 45 46 47>
+                , <48 49 50 51 52 53 54 55 56 57 58 59>
+                ;
+        };
+
+        layout_ortho_5x12_2x2u {
+            physical-layout = <&layout_ortho_5x12_2x2u>;
+            positions
+                = < 0  1  2  3  4  5  6  7  8  9 10 11>
+                , <12 13 14 15 16 17 18 19 20 21 22 23>
+                , <24 25 26 27 28 29 30 31 32 33 34 35>
+                , <36 37 38 39 40 41 42 43 44 45 46 47>
+                , <48 49 50 51 52 58 59 53 54 55 56 57>
+                ;
+        };
+
+        layout_ortho_5x12_1x2u {
+            physical-layout = <&layout_ortho_5x12_1x2u>;
+            positions
+                = < 0  1  2  3  4  5  6  7  8  9 10 11>
+                , <12 13 14 15 16 17 18 19 20 21 22 23>
+                , <24 25 26 27 28 29 30 31 32 33 34 35>
+                , <36 37 38 39 40 41 42 43 44 45 46 47>
+                , <48 49 50 51 52 53 59 54 55 56 57 58>
+                ;
+        };
+    };
+};
