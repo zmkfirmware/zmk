@@ -5,6 +5,8 @@
 /zephyr
 /zmk-config
 /build
+/.direnv
+/.vscode
 
 # macOS
 *.DS_Store
