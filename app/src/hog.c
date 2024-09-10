@@ -78,6 +78,15 @@ static struct hids_report mouse_input = {
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+
+static struct hids_report generic_desktop_input = {
+    .id = ZMK_HID_REPORT_ID_MOUSE,
+    .type = HIDS_INPUT,
+};
+
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+
 static bool host_requests_notification = false;
 static uint8_t ctrl_point;
 // static uint8_t proto_mode;
@@ -384,6 +393,35 @@ int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *report) {
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
 #if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+
+K_MSGQ_DEFINE(zmk_hog_generic_desktop_msgq, sizeof(struct zmk_hid_generic_desktop_report_body),
+              CONFIG_ZMK_BLE_GENERIC_DESKTOP_REPORT_QUEUE_SIZE, 1);
+
+void send_generic_desktop_report_callback(struct k_work *work) {
+    struct zmk_hid_generic_desktop_report_body report;
+    while (k_msgq_get(&zmk_hog_generic_desktop_msgq, &report, K_NO_WAIT) == 0) {
+        struct bt_conn *conn = zmk_ble_active_profile_conn();
+        if (conn == NULL) {
+            return;
+        }
+
+        struct bt_gatt_notify_params notify_params = {
+            .attr = &hog_svc.attrs[13],
+            .data = &report,
+            .len = sizeof(report),
+        };
+
+        int err = bt_gatt_notify_cb(conn, &notify_params);
+        if (err == -EPERM) {
+            bt_conn_set_security(conn, BT_SECURITY_L2);
+        } else if (err) {
+            LOG_DBG("Error notifying %d", err);
+        }
+
+        bt_conn_unref(conn);
+    }
+};
+
 int zmk_hog_send_generic_desktop_report(struct zmk_hid_generic_desktop_report_body *body) {
     return 0;
 }

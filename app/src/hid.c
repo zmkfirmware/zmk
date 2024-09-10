@@ -35,7 +35,7 @@ static struct zmk_hid_mouse_report mouse_report = {.report_id = ZMK_HID_REPORT_I
 #if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
 static struct zmk_hid_generic_desktop_report generic_desktop_report = {
-    .report_id = ZMK_HID_REPORT_ID_GENERIC_DESKTOP, .body = {.keys = 0}};
+    .report_id = ZMK_HID_REPORT_ID_GENERIC_DESKTOP, .body = {.keys = {0}}};
 
 #endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
@@ -348,21 +348,32 @@ bool zmk_hid_consumer_is_pressed(zmk_key_t key) {
 }
 
 #if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+#define TOGGLE_STUFF(code, val) WRITE_BIT(generic_desktop_report.body.keys[code / 8], code % 8, val)
+#define GENERIC_DESKTOP_CODE_IN_RANGE(code)
+
+int32_t zmk_hid_generic_desktop_code_to_offset(zmk_key_t code) {
+    if (HID_USAGE_GD_SYSTEM_POWER_DOWN <= code && code <= HID_USAGE_GD_SYSTEM_WARM_RESTART) {
+        return code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
+    }
+
+    return -ENOTSUP;
+}
+
 int zmk_hid_generic_desktop_press(zmk_key_t code) {
-    if (code < HID_USAGE_GD_SYSTEM_POWER_DOWN || code > HID_USAGE_GD_SYSTEM_WAKE_UP) {
+    int32_t offset = zmk_hid_generic_desktop_code_to_offset(code);
+    if (offset == -ENOTSUP) {
         return -ENOTSUP;
     }
-    int32_t offset = code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
-    WRITE_BIT(generic_desktop_report.body.keys, offset, 1);
+    TOGGLE_STUFF(offset, 1);
     return 0;
 }
 
 int zmk_hid_generic_desktop_release(zmk_key_t code) {
-    if (code < HID_USAGE_GD_SYSTEM_POWER_DOWN || code > HID_USAGE_GD_SYSTEM_WAKE_UP) {
+    int32_t offset = zmk_hid_generic_desktop_code_to_offset(code);
+    if (offset == -ENOTSUP) {
         return -ENOTSUP;
     }
-    int32_t offset = code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
-    WRITE_BIT(generic_desktop_report.body.keys, offset, 0);
+    TOGGLE_STUFF(offset, 0);
     return 0;
 }
 
@@ -371,11 +382,11 @@ void zmk_hid_generic_desktop_clear(void) {
 }
 
 bool zmk_hid_generic_desktop_is_pressed(zmk_key_t code) {
-    if (code < HID_USAGE_GD_SYSTEM_POWER_DOWN || code > HID_USAGE_GD_SYSTEM_WAKE_UP) {
-        return false;
+    int32_t offset = zmk_hid_generic_desktop_code_to_offset(code);
+    if (offset == -ENOTSUP) {
+        return -false;
     }
-    int32_t offset = code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
-    return generic_desktop_report.body.keys & (1 << offset);
+    return generic_desktop_report.body.keys[offset / 8] & (1 << (offset % 8));
 }
 #endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
 
