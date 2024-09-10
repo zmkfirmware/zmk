@@ -185,9 +185,6 @@ static ssize_t read_hids_generic_desktop_input_report(struct bt_conn *conn,
                              sizeof(struct zmk_hid_generic_desktop_report_body));
 }
 #endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
-
-#define MOUSE_ATTR_SIZE COND_CODE_1(IS_ENABLED(CONFIG_ZMK_MOUSE), (1), (0))
-
 // static ssize_t write_proto_mode(struct bt_conn *conn,
 //                                 const struct bt_gatt_attr *attr,
 //                                 const void *buf, uint16_t len, uint16_t offset,

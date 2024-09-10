@@ -503,14 +503,14 @@ struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyb
 
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
 
-#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
-struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void) {
-    return &generic_desktop_report;
-}
-#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
-
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 
 struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_report; }
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void) {
+    return &generic_desktop_report;
+}
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)

@@ -79,31 +79,22 @@
 #define ZMK_HID_REPORT_ID_GENERIC_DESKTOP 0x04
 
 static const uint8_t zmk_hid_report_desc[] = {
-    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP), // HID Usage page item following usage are within gen
-                                           // desktop page
-    HID_USAGE(HID_USAGE_GD_KEYBOARD),      // 0x06 specify usage of keyboard
-    // Start of keyboard collection
-    HID_COLLECTION(HID_COLLECTION_APPLICATION), // keyboard collection? Start collection (group)
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_KEYBOARD),  // 0x01 Set zmk id, doesn't matter
-
-    // Modifier keys // [ Account for 1st byte in report ]
+    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
+    HID_USAGE(HID_USAGE_GD_KEYBOARD),
+    HID_COLLECTION(HID_COLLECTION_APPLICATION),
+    HID_REPORT_ID(ZMK_HID_REPORT_ID_KEYBOARD),
     HID_USAGE_PAGE(HID_USAGE_KEY),
     HID_USAGE_MIN8(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),
     HID_USAGE_MAX8(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI),
     HID_LOGICAL_MIN8(0x00),
     HID_LOGICAL_MAX8(0x01),
-    HID_REPORT_SIZE(0x01),  // Number of bits in 1 field (1)
-    HID_REPORT_COUNT(0x08), // Number of data fields included in the report (8), so 8x1bits = 1 byte
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR |
-              ZMK_HID_MAIN_VAL_ABS), // Input (Data, Variable, Absolute)
-
-    // Reserved byte [ Account for 2nd in report ]
-    HID_USAGE_PAGE(HID_USAGE_KEY), // New usage page
-    HID_REPORT_SIZE(0x08),         // Each field is 8 bits
-    HID_REPORT_COUNT(0x01),        // Only 1 field
-                                   // Reserved byte?
-    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR |
-              ZMK_HID_MAIN_VAL_ABS), // Input field for reserved byte (Const, Variable, Absolute)
+    HID_REPORT_SIZE(0x01),
+    HID_REPORT_COUNT(0x08),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+    HID_USAGE_PAGE(HID_USAGE_KEY),
+    HID_REPORT_SIZE(0x08),
+    HID_REPORT_COUNT(0x01),
+    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 
 #if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
 
