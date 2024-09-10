@@ -55,6 +55,20 @@ static struct hids_report input = {
     .type = HIDS_INPUT,
 };
 
+#define ATTR_SIZE_BASE 5
+#define ATTR_SIZE_KEYBOARD 4
+#define ATTR_SIZE_CONSUMER 4
+#define ATTR_SIZE_MOUSE COND_CODE_1(IS_ENABLED(CONFIG_ZMK_MOUSE), (4), (0))
+#define ATTR_SIZE_HID_INDICATORS COND_CODE_1(IS_ENABLED(CONFIG_ZMK_HID_INDICATORS), (3), (0))
+#define ATTR_SIZE_GENERIC_DESKTOP                                                                  \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC), (4), (0))
+
+#define CHRC_INDEX_KEYBOARD (ATTR_SIZE_BASE)
+#define CHRC_INDEX_CONSUMER (CHRC_INDEX_KEYBOARD + ATTR_SIZE_KEYBOARD)
+#define CHRC_INDEX_MOUSE (CHRC_INDEX_CONSUMER + ATTR_SIZE_CONSUMER)
+#define CHRC_INDEX_HID_INDICATORS (CHRC_INDEX_MOUSE + ATTR_SIZE_MOUSE)
+#define CHRC_INDEX_GENERIC_DESKTOP (CHRC_INDEX_HID_INDICATORS + ATTR_SIZE_HID_INDICATORS)
+
 #if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
 
 static struct hids_report led_indicators = {
@@ -202,35 +216,23 @@ static ssize_t write_ctrl_point(struct bt_conn *conn, const struct bt_gatt_attr 
 
 /* HID Service Declaration */
 BT_GATT_SERVICE_DEFINE(
-    hog_svc,
-    BT_GATT_PRIMARY_SERVICE(BT_UUID_HIDS), // Attr 0
+    hog_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_HIDS),
     //    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_PROTOCOL_MODE, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
     //                           BT_GATT_PERM_WRITE, NULL, write_proto_mode, &proto_mode),
-    // Attr 1 and Attr 2
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_INFO, BT_GATT_CHRC_READ, BT_GATT_PERM_READ, read_hids_info,
                            NULL, &info),
-    // Attr 3 and Attr 4
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT_MAP, BT_GATT_CHRC_READ, BT_GATT_PERM_READ_ENCRYPT,
                            read_hids_report_map, NULL, NULL),
 
-    // Attr 5,6 - read_hids_input_report -> write keyboard report
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ_ENCRYPT, read_hids_input_report, NULL, NULL),
-    // Attr 7 (keyboard CCC??? ???? ???)
     BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
-
-    // Attr 8, Read HID keyboard input ref - input -> .id = ZMK_HID_REPORT_ID_KEYBOARD
     BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
                        NULL, &input),
 
-    // Attr 9, 10 - read hid consumer inputreport -> write read_hids_consumer_input_report
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ_ENCRYPT, read_hids_consumer_input_report, NULL, NULL),
-
-    // Attr 11 (consumer CCC??? ???? ???)
     BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
-
-    // Attr 12 - GATT Descriptor -> consumer_input
     BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
                        NULL, &consumer_input),
 
@@ -279,10 +281,8 @@ void send_keyboard_report_callback(struct k_work *work) {
             return;
         }
 
-        LOG_DBG("Attr count: %d", sizeof(attr_hog_svc) / sizeof(struct bt_gatt_attr));
-
         struct bt_gatt_notify_params notify_params = {
-            .attr = &hog_svc.attrs[5],
+            .attr = &hog_svc.attrs[CHRC_INDEX_KEYBOARD],
             .data = &report,
             .len = sizeof(report),
         };
@@ -334,7 +334,7 @@ void send_consumer_report_callback(struct k_work *work) {
         }
 
         struct bt_gatt_notify_params notify_params = {
-            .attr = &hog_svc.attrs[9],
+            .attr = &hog_svc.attrs[CHRC_INDEX_CONSUMER],
             .data = &report,
             .len = sizeof(report),
         };
@@ -387,7 +387,7 @@ void send_mouse_report_callback(struct k_work *work) {
         }
 
         struct bt_gatt_notify_params notify_params = {
-            .attr = &hog_svc.attrs[13],
+            .attr = &hog_svc.attrs[CHRC_INDEX_MOUSE],
             .data = &report,
             .len = sizeof(report),
         };
@@ -441,15 +441,8 @@ void send_generic_desktop_report_callback(struct k_work *work) {
             return;
         }
 
-        LOG_DBG("Attr counter: %d", sizeof(attr_hog_svc) / sizeof(struct bt_gatt_attr));
-        int attr_count = sizeof(attr_hog_svc) / sizeof(struct bt_gatt_attr);
-        for (int i = 0; i < attr_count; ++i) {
-            LOG_DBG("Attr index: %d", i);
-            LOG_DBG("  Attr uuid: %d", ((const struct bt_uuid_16 *)(attr_hog_svc[i].uuid))->val);
-        }
-        //        for (int i = 0; i <)
         struct bt_gatt_notify_params notify_params = {
-            .attr = &hog_svc.attrs[13],
+            .attr = &hog_svc.attrs[CHRC_INDEX_GENERIC_DESKTOP],
             .data = &report,
             .len = sizeof(report),
         };

@@ -360,25 +360,12 @@ int32_t zmk_hid_generic_desktop_code_to_offset(zmk_key_t code) {
     return -ENOTSUP;
 }
 
-bool zmk_hid_generic_desktop_is_pressed(zmk_key_t code) {
-    int32_t offset = zmk_hid_generic_desktop_code_to_offset(code);
-    if (offset == -ENOTSUP) {
-        LOG_DBG("Bad mojo 0x%02X", code);
-        return false;
-    }
-    LOG_DBG("Key pressed 0x%02X offset: %d is pressed: %d %d", code, offset,
-            generic_desktop_report.body.keys[offset / 8] & (1 << (offset % 8)),
-            generic_desktop_report.body.keys[0]);
-    return generic_desktop_report.body.keys[offset / 8] & (1 << (offset % 8));
-}
-
 int zmk_hid_generic_desktop_press(zmk_key_t code) {
     int32_t offset = zmk_hid_generic_desktop_code_to_offset(code);
     if (offset == -ENOTSUP) {
         return -ENOTSUP;
     }
     TOGGLE_GENERIC_DESKTOP(offset, 1);
-    zmk_hid_generic_desktop_is_pressed(code);
     return 0;
 }
 
@@ -388,12 +375,19 @@ int zmk_hid_generic_desktop_release(zmk_key_t code) {
         return -ENOTSUP;
     }
     TOGGLE_GENERIC_DESKTOP(offset, 0);
-    zmk_hid_generic_desktop_is_pressed(code);
     return 0;
 }
 
 void zmk_hid_generic_desktop_clear(void) {
     memset(&generic_desktop_report.body, 0, sizeof(generic_desktop_report.body));
+}
+
+bool zmk_hid_generic_desktop_is_pressed(zmk_key_t code) {
+    int32_t offset = zmk_hid_generic_desktop_code_to_offset(code);
+    if (offset == -ENOTSUP) {
+        return false;
+    }
+    return generic_desktop_report.body.keys[offset / 8] & (1 << (offset % 8));
 }
 
 #endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
