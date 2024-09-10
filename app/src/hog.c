@@ -78,14 +78,14 @@ static struct hids_report mouse_input = {
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
 
 static struct hids_report generic_desktop_input = {
-    .id = ZMK_HID_REPORT_ID_MOUSE,
+    .id = ZMK_HID_REPORT_ID_GENERIC_DESKTOP,
     .type = HIDS_INPUT,
 };
 
-#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
 
 static bool host_requests_notification = false;
 static uint8_t ctrl_point;
@@ -161,6 +161,19 @@ static ssize_t read_hids_mouse_input_report(struct bt_conn *conn, const struct b
 }
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+static ssize_t read_hids_generic_desktop_input_report(struct bt_conn *conn,
+                                                      const struct bt_gatt_attr *attr, void *buf,
+                                                      uint16_t len, uint16_t offset) {
+    struct zmk_hid_generic_desktop_report_body *report_body =
+        &zmk_hid_get_generic_desktop_report()->body;
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
+                             sizeof(struct zmk_hid_generic_desktop_report_body));
+}
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+
+#define MOUSE_ATTR_SIZE COND_CODE_1(IS_ENABLED(CONFIG_ZMK_MOUSE), (1), (0))
+
 // static ssize_t write_proto_mode(struct bt_conn *conn,
 //                                 const struct bt_gatt_attr *attr,
 //                                 const void *buf, uint16_t len, uint16_t offset,
@@ -189,23 +202,35 @@ static ssize_t write_ctrl_point(struct bt_conn *conn, const struct bt_gatt_attr 
 
 /* HID Service Declaration */
 BT_GATT_SERVICE_DEFINE(
-    hog_svc, BT_GATT_PRIMARY_SERVICE(BT_UUID_HIDS),
+    hog_svc,
+    BT_GATT_PRIMARY_SERVICE(BT_UUID_HIDS), // Attr 0
     //    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_PROTOCOL_MODE, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
     //                           BT_GATT_PERM_WRITE, NULL, write_proto_mode, &proto_mode),
+    // Attr 1 and Attr 2
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_INFO, BT_GATT_CHRC_READ, BT_GATT_PERM_READ, read_hids_info,
                            NULL, &info),
+    // Attr 3 and Attr 4
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT_MAP, BT_GATT_CHRC_READ, BT_GATT_PERM_READ_ENCRYPT,
                            read_hids_report_map, NULL, NULL),
 
+    // Attr 5,6 - read_hids_input_report -> write keyboard report
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ_ENCRYPT, read_hids_input_report, NULL, NULL),
+    // Attr 7 (keyboard CCC??? ???? ???)
     BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
+
+    // Attr 8, Read HID keyboard input ref - input -> .id = ZMK_HID_REPORT_ID_KEYBOARD
     BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
                        NULL, &input),
 
+    // Attr 9, 10 - read hid consumer inputreport -> write read_hids_consumer_input_report
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
                            BT_GATT_PERM_READ_ENCRYPT, read_hids_consumer_input_report, NULL, NULL),
+
+    // Attr 11 (consumer CCC??? ???? ???)
     BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
+
+    // Attr 12 - GATT Descriptor -> consumer_input
     BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
                        NULL, &consumer_input),
 
@@ -226,6 +251,15 @@ BT_GATT_SERVICE_DEFINE(
                        NULL, &led_indicators),
 #endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+    BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_REPORT, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                           BT_GATT_PERM_READ_ENCRYPT, read_hids_generic_desktop_input_report, NULL,
+                           NULL),
+    BT_GATT_CCC(input_ccc_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
+    BT_GATT_DESCRIPTOR(BT_UUID_HIDS_REPORT_REF, BT_GATT_PERM_READ_ENCRYPT, read_hids_report_ref,
+                       NULL, &generic_desktop_input),
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+
     BT_GATT_CHARACTERISTIC(BT_UUID_HIDS_CTRL_POINT, BT_GATT_CHRC_WRITE_WITHOUT_RESP,
                            BT_GATT_PERM_WRITE, NULL, write_ctrl_point, &ctrl_point));
 
@@ -244,6 +278,8 @@ void send_keyboard_report_callback(struct k_work *work) {
         if (conn == NULL) {
             return;
         }
+
+        LOG_DBG("Attr count: %d", sizeof(attr_hog_svc) / sizeof(struct bt_gatt_attr));
 
         struct bt_gatt_notify_params notify_params = {
             .attr = &hog_svc.attrs[5],
@@ -392,7 +428,7 @@ int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *report) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
-#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
 
 K_MSGQ_DEFINE(zmk_hog_generic_desktop_msgq, sizeof(struct zmk_hid_generic_desktop_report_body),
               CONFIG_ZMK_BLE_GENERIC_DESKTOP_REPORT_QUEUE_SIZE, 1);
@@ -405,6 +441,13 @@ void send_generic_desktop_report_callback(struct k_work *work) {
             return;
         }
 
+        LOG_DBG("Attr counter: %d", sizeof(attr_hog_svc) / sizeof(struct bt_gatt_attr));
+        int attr_count = sizeof(attr_hog_svc) / sizeof(struct bt_gatt_attr);
+        for (int i = 0; i < attr_count; ++i) {
+            LOG_DBG("Attr index: %d", i);
+            LOG_DBG("  Attr uuid: %d", ((const struct bt_uuid_16 *)(attr_hog_svc[i].uuid))->val);
+        }
+        //        for (int i = 0; i <)
         struct bt_gatt_notify_params notify_params = {
             .attr = &hog_svc.attrs[13],
             .data = &report,
@@ -422,10 +465,28 @@ void send_generic_desktop_report_callback(struct k_work *work) {
     }
 };
 
-int zmk_hog_send_generic_desktop_report(struct zmk_hid_generic_desktop_report_body *body) {
+K_WORK_DEFINE(hog_generic_desktop_work, send_generic_desktop_report_callback);
+
+int zmk_hog_send_generic_desktop_report(struct zmk_hid_generic_desktop_report_body *report) {
+    int err = k_msgq_put(&zmk_hog_generic_desktop_msgq, report, K_MSEC(100));
+    if (err) {
+        switch (err) {
+        case -EAGAIN: {
+            LOG_WRN("Generic desktop message queue full, popping first message and queuing again");
+            struct zmk_hid_generic_desktop_report_body discarded_report;
+            k_msgq_get(&zmk_hog_generic_desktop_msgq, &discarded_report, K_NO_WAIT);
+            return zmk_hog_send_generic_desktop_report(report);
+        }
+        default:
+            LOG_WRN("Failed to queue mouse report to send (%d)", err);
+            return err;
+        }
+    }
+
+    k_work_submit_to_queue(&hog_work_q, &hog_generic_desktop_work);
     return 0;
 }
-#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_POWER_CONTROLS)
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
 
 static int zmk_hog_init(void) {
     static const struct k_work_queue_config queue_config = {.name = "HID Over GATT Send Work"};
