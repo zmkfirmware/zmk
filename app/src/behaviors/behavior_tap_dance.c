@@ -245,7 +245,7 @@ static int behavior_tap_dance_init(const struct device *dev) {
 #define _TRANSFORM_ENTRY(idx, node) ZMK_KEYMAP_EXTRACT_BINDING(idx, node)
 
 #define TRANSFORMED_BINDINGS(node)                                                                 \
-    { LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, (, ), DT_DRV_INST(node)) }
+    {LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, (, ), DT_DRV_INST(node))}
 
 #define KP_INST(n)                                                                                 \
     static struct zmk_behavior_binding                                                             \

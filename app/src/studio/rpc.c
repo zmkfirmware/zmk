@@ -77,9 +77,7 @@ static enum studio_framing_state rpc_framing_state;
 static K_MUTEX_DEFINE(rpc_transport_mutex);
 static struct zmk_rpc_transport *selected_transport;
 
-struct ring_buf *zmk_rpc_get_rx_buf(void) {
-    return &rpc_rx_buf;
-}
+struct ring_buf *zmk_rpc_get_rx_buf(void) { return &rpc_rx_buf; }
 
 void zmk_rpc_rx_notify(void) { k_sem_give(&rpc_rx_sem); }
 
@@ -118,9 +116,7 @@ static pb_istream_t pb_istream_for_rx_ring_buf() {
 
 RING_BUF_DECLARE(rpc_tx_buf, CONFIG_ZMK_STUDIO_RPC_TX_BUF_SIZE);
 
-struct ring_buf *zmk_rpc_get_tx_buf(void) {
-    return &rpc_tx_buf;
-}
+struct ring_buf *zmk_rpc_get_tx_buf(void) { return &rpc_tx_buf; }
 
 static bool rpc_tx_buffer_write(pb_ostream_t *stream, const uint8_t *buf, size_t count) {
     void *user_data = stream->state;
