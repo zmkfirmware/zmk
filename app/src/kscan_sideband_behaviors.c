@@ -183,7 +183,8 @@ static const struct kscan_driver_api ksbb_api = {
 
 #define ENTRY(e)                                                                                   \
     {                                                                                              \
-        .row = DT_PROP(e, row), .column = DT_PROP(e, column),                                      \
+        .row = DT_PROP(e, row),                                                                    \
+        .column = DT_PROP(e, column),                                                              \
         .binding = ZMK_KEYMAP_EXTRACT_BINDING(0, e),                                               \
     }
 

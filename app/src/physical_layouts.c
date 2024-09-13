@@ -139,7 +139,9 @@ struct zmk_kscan_event {
     uint32_t state;
 };
 
-static struct zmk_kscan_msg_processor { struct k_work work; } msg_processor;
+static struct zmk_kscan_msg_processor {
+    struct k_work work;
+} msg_processor;
 
 K_MSGQ_DEFINE(physical_layouts_kscan_msgq, sizeof(struct zmk_kscan_event),
               CONFIG_ZMK_KSCAN_EVENT_QUEUE_SIZE, 4);

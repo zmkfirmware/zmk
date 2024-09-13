@@ -40,11 +40,9 @@ static zmk_keymap_layer_id_t _zmk_keymap_layer_default = 0;
 #endif
 
 #define TRANSFORMED_LAYER(node)                                                                    \
-    {                                                                                              \
-        COND_CODE_1(                                                                               \
-            DT_NODE_HAS_PROP(node, bindings),                                                      \
-            (LISTIFY(DT_PROP_LEN(node, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), node)), ())    \
-    }
+    {COND_CODE_1(DT_NODE_HAS_PROP(node, bindings),                                                 \
+                 (LISTIFY(DT_PROP_LEN(node, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), node)),   \
+                 ())}
 
 #if ZMK_KEYMAP_HAS_SENSORS
 #define _TRANSFORM_SENSOR_ENTRY(idx, layer)                                                        \
@@ -841,11 +839,12 @@ static int keymap_handle_set(const char *name, size_t len, settings_read_cb read
                     binding_setting.behavior_local_id);
         }
 
-        zmk_keymap[layer][key_position] = (struct zmk_behavior_binding) {
+        zmk_keymap[layer][key_position] = (struct zmk_behavior_binding){
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS)
             .local_id = binding_setting.behavior_local_id,
 #endif
-            .behavior_dev = name, .param1 = binding_setting.param1,
+            .behavior_dev = name,
+            .param1 = binding_setting.param1,
             .param2 = binding_setting.param2,
         };
     }
