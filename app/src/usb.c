@@ -20,6 +20,7 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static enum usb_dc_status_code usb_status = USB_DC_UNKNOWN;
+static bool is_configured = false;
 
 static void raise_usb_status_changed_event(struct k_work *_work) {
     raise_zmk_usb_conn_state_changed(
@@ -33,8 +34,11 @@ enum usb_dc_status_code zmk_usb_get_status(void) { return usb_status; }
 enum zmk_usb_conn_state zmk_usb_get_conn_state(void) {
     LOG_DBG("state: %d", usb_status);
     switch (usb_status) {
+    case USB_DC_SUSPEND:
     case USB_DC_CONFIGURED:
     case USB_DC_RESUME:
+    case USB_DC_CLEAR_HALT:
+    case USB_DC_SOF:
         return ZMK_USB_CONN_HID;
 
     case USB_DC_DISCONNECTED:
@@ -44,6 +48,11 @@ enum zmk_usb_conn_state zmk_usb_get_conn_state(void) {
     default:
         return ZMK_USB_CONN_POWERED;
     }
+}
+
+bool zmk_usb_is_hid_ready(void) {
+    LOG_DBG("is_configured: %d", is_configured);
+    return zmk_usb_get_conn_state() == ZMK_USB_CONN_HID && is_configured;
 }
 
 void usb_status_cb(enum usb_dc_status_code status, const uint8_t *params) {
@@ -59,6 +68,11 @@ void usb_status_cb(enum usb_dc_status_code status, const uint8_t *params) {
     }
 #endif
     usb_status = status;
+    if (zmk_usb_get_conn_state() == ZMK_USB_CONN_HID) {
+        is_configured |= usb_status == USB_DC_CONFIGURED;
+    } else {
+        is_configured = false;
+    }
     k_work_submit(&usb_status_notifier_work);
 };
 
