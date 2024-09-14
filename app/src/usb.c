@@ -20,7 +20,7 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static enum usb_dc_status_code usb_status = USB_DC_UNKNOWN;
-static bool is_configured = false;
+static bool is_configured;
 
 static void raise_usb_status_changed_event(struct k_work *_work) {
     raise_zmk_usb_conn_state_changed(
