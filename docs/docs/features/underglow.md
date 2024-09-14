@@ -130,30 +130,54 @@ If your board/shield uses LEDs that require the data sent in a different order, 
 
 ### Other Boards
 
-For other boards, you must select an SPI definition that has the `MOSI` pin as your data pin going to your LED strip.
+Be sure to check the Zephyr documentation for the LED strip and necessary hardware bindings. Not every board has an `spi3` node, or configures `pinctrl` the same way. Reconcile this with any hardware restrictions found in the manufacturer's datasheet. Additional hardware interfaces may need to be enabled via Kconfig.
 
-Here's another example for a non-nRF52 board on `spi3`:
+For example: the `sparkfun_pro_micro_rp2040` board can utilize SPI via PIO to run a WS2812 strip on `GP0`:
 
 ```dts
 #include <dt-bindings/led/led.h>
 
-&spi3 {
+&pinctrl {
+    pio0_spi0_default: pio0_spi0_default {
+        group1 {
+            pinmux = <PIO0_P0>;
+        };
+    };
+};
 
-  led_strip: ws2812@0 {
-    compatible = "worldsemi,ws2812-spi";
+&pio0 {
+    status = "okay";
 
-    /* SPI */
-    reg = <0>;
-    spi-max-frequency = <5250000>;
+    pio0_spi0: pio0_spi0 {
+        pinctrl-0 = <&pio0_spi0_default>;
+        pinctrl-names = "default";
 
-    /* WS2812 */
-    chain-length = <10>; /* number of LEDs */
-    spi-one-frame = <0x70>; /* make sure to configure this properly for your SOC */
-    spi-zero-frame = <0x40>; /* make sure to configure this properly for your SOC */
-    color-mapping = <LED_COLOR_ID_GREEN
-                          LED_COLOR_ID_RED
-                          LED_COLOR_ID_BLUE>;
-  };
+        compatible = "raspberrypi,pico-spi-pio";
+        #address-cells = <1>;
+        #size-cells = <0>;
+        clocks = <&system_clk>;
+        clock-frequency = <4000000>;
+
+        clk-gpios = <&gpio0 10 GPIO_ACTIVE_HIGH>;     /* Must be defined. Select a pin that is not used elsewhere. */
+        mosi-gpios = <&pro_micro 1 GPIO_ACTIVE_HIGH>; /* Data In pin. */
+        miso-gpios = <&pro_micro 1 GPIO_ACTIVE_HIGH>; /* Must be defined. Re-using the DI pin is OK for WS2812. */
+
+        led_strip: ws2812@0 {
+            compatible = "worldsemi,ws2812-spi";
+
+            /* SPI */
+            reg = <0>; /* ignored, but necessary for SPI bindings */
+            spi-max-frequency = <4000000>;
+
+            /* WS2812 */
+            chain-length = <10>; /* number of LEDs */
+            spi-one-frame = <0x70>;
+            spi-zero-frame = <0x40>;
+            color-mapping = <LED_COLOR_ID_GREEN
+                             LED_COLOR_ID_RED
+                             LED_COLOR_ID_BLUE>;
+        };
+    };
 };
 ```
 
