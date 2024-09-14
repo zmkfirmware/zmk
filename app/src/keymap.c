@@ -791,12 +791,14 @@ static int keymap_handle_set(const char *name, size_t len, settings_read_cb read
             LOG_WRN("Found layer name for invalid layer ID %d", layer);
         }
 
-        int err = read_cb(cb_arg, zmk_keymap_layer_names[layer],
+        int ret = read_cb(cb_arg, zmk_keymap_layer_names[layer],
                           MIN(len, CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN - 1));
-        if (err <= 0) {
-            LOG_ERR("Failed to handle keymap layer name from settings (err %d)", err);
-            return err;
+        if (ret <= 0) {
+            LOG_ERR("Failed to handle keymap layer name from settings (err %d)", ret);
+            return ret;
         }
+
+        zmk_keymap_layer_names[layer][ret] = 0;
     } else if (settings_name_steq(name, "l", &next) && next) {
         char *endptr;
         uint8_t layer = strtoul(next, &endptr, 10);
