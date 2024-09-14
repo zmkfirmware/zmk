@@ -51,7 +51,6 @@ enum zmk_usb_conn_state zmk_usb_get_conn_state(void) {
 }
 
 bool zmk_usb_is_hid_ready(void) {
-    LOG_DBG("is_configured: %d", is_configured);
     return zmk_usb_get_conn_state() == ZMK_USB_CONN_HID && is_configured;
 }
 
