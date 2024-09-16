@@ -393,10 +393,9 @@ static int zmk_physical_layouts_init(void) {
 #if IS_ENABLED(CONFIG_PM_DEVICE)
     for (int l = 0; l < ARRAY_SIZE(layouts); l++) {
         const struct zmk_physical_layout *pl = layouts[l];
-        if (pl->kscan) {
-            if (pm_device_wakeup_is_capable(pl->kscan)) {
-                pm_device_wakeup_enable(pl->kscan, true);
-            }
+        if (pl->kscan && pm_device_wakeup_is_capable(pl->kscan) &&
+            !pm_device_wakeup_enable(pl->kscan, true)) {
+            LOG_WRN("Failed to wakeup enable %s", pl->kscan->name);
         }
     }
 #endif // IS_ENABLED(CONFIG_PM_DEVICE)
