@@ -111,6 +111,9 @@ static int ksbb_enable(const struct device *dev) {
         pm_device_runtime_get(config->kscan);
     }
 #elif IS_ENABLED(CONFIG_PM_DEVICE)
+    if (pm_device_wakeup_is_capable(config->kscan)) {
+        pm_device_wakeup_enable(config->kscan, true);
+    }
     pm_device_action_run(config->kscan, PM_DEVICE_ACTION_RESUME);
 #endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
@@ -132,6 +135,10 @@ static int ksbb_disable(const struct device *dev) {
         pm_device_runtime_put(config->kscan);
     }
 #elif IS_ENABLED(CONFIG_PM_DEVICE)
+    if (pm_device_wakeup_is_capable(config->kscan) && !pm_device_wakeup_is_enabled(dev) &&
+        pm_device_wakeup_is_enabled(config->kscan)) {
+        pm_device_wakeup_enable(config->kscan, false);
+    }
     pm_device_action_run(config->kscan, PM_DEVICE_ACTION_SUSPEND);
 #endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
