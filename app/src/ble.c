@@ -671,7 +671,7 @@ static int zmk_ble_complete_startup(void) {
         char setting_name[32];
         sprintf(setting_name, "ble/peripheral_addresses/%d", i);
 
-        err = settings_delete(setting_name);
+        int err = settings_delete(setting_name);
         if (err) {
             LOG_ERR("Failed to delete setting: %d", err);
         }
