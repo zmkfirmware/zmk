@@ -81,7 +81,8 @@ DT_FOREACH_CHILD_SEP(DT_INST(0, POS_MAP_COMPAT), ZMK_POS_MAP_LEN_CHECK, (;));
 #define ZMK_POS_MAP_ENTRY(node_id)                                                                 \
     {                                                                                              \
         .layout = COND_CODE_1(                                                                     \
-            DT_HAS_COMPAT_STATUS_OKAY(DT_PHANDLE(node_id, physical_layout)),                       \
+            UTIL_AND(DT_NODE_HAS_COMPAT(DT_PHANDLE(node_id, physical_layout), DT_DRV_COMPAT),      \
+                     DT_NODE_HAS_STATUS(DT_PHANDLE(node_id, physical_layout), okay)),              \
             (&_CONCAT(_zmk_physical_layout_, DT_PHANDLE(node_id, physical_layout))), (NULL)),      \
         .positions = DT_PROP(node_id, positions),                                                  \
     }
