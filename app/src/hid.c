@@ -25,6 +25,15 @@ static uint8_t keys_held = 0;
 
 #endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
 
+
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+
+static struct zmk_hid_plover_report plover_report = {.report_id = PLOVER_HID_REPORT_ID,
+                                                   .body = {.buttons = {0}}};
+
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
+
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 
 static struct zmk_hid_mouse_report mouse_report = {
@@ -347,6 +356,10 @@ int zmk_hid_press(uint32_t usage) {
         return zmk_hid_keyboard_press(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_press(ZMK_HID_USAGE_ID(usage));
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+    case HID_USAGE_VENDOR_PLOVER & 0xFF:
+        return zmk_hid_plover_press(ZMK_HID_USAGE_ID(usage));
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
     }
     return -EINVAL;
 }
@@ -357,6 +370,10 @@ int zmk_hid_release(uint32_t usage) {
         return zmk_hid_keyboard_release(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_release(ZMK_HID_USAGE_ID(usage));
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+    case HID_USAGE_VENDOR_PLOVER & 0xFF:
+        return zmk_hid_plover_release(ZMK_HID_USAGE_ID(usage));
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
     }
     return -EINVAL;
 }
@@ -370,6 +387,21 @@ bool zmk_hid_is_pressed(uint32_t usage) {
     }
     return false;
 }
+
+
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+int zmk_hid_plover_press(zmk_key_t code) {
+    plover_report.body.buttons[code / 8] |= ( 1 << (7 - (code % 8)));
+    return 0;
+};
+
+int zmk_hid_plover_release(zmk_key_t code) {
+    plover_report.body.buttons[code / 8] &= ~( 1 << (7 - (code % 8)));
+    return 0;
+};
+
+void zmk_hid_plover_clear() { memset(&plover_report.body, 0, sizeof(plover_report.body)); }
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
 
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 
@@ -472,8 +504,11 @@ struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyb
 
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
 
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+struct zmk_hid_plover_report *zmk_hid_get_plover_report() { return &plover_report; }
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
-
 struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_report; }
-
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
+
