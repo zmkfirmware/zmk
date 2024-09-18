@@ -201,6 +201,35 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
     return -ENOTSUP;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+static int send_plover_report() {
+    struct zmk_hid_plover_report *plover_report = zmk_hid_get_plover_report();
+    switch (current_endpoint) {
+#if IS_ENABLED(CONFIG_ZMK_USB)
+    case ZMK_ENDPOINT_USB: {
+        int err = zmk_usb_hid_send_report((uint8_t *)plover_report, sizeof(*plover_report));
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER USB: %d", err);
+        }
+        return err;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_USB) */
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    case ZMK_ENDPOINT_BLE: {
+        int err = zmk_hog_send_plover_report(&plover_report->body);
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
+        }
+        return err;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
+    default:
+        LOG_ERR("Unsupported endpoint %d", current_endpoint);
+        return -ENOTSUP;
+    }
+}
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 int zmk_endpoints_send_mouse_report() {
     switch (current_instance.transport) {
