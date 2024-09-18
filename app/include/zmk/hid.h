@@ -100,6 +100,13 @@
 #define HID_USAGE16(a, b) HID_ITEM(HID_ITEM_TAG_USAGE, HID_ITEM_TYPE_LOCAL, 2), a, b
 
 #define HID_USAGE16_SINGLE(a) HID_USAGE16((a & 0xFF), ((a >> 8) & 0xFF))
+#define ZMK_HID_PLOVER_SIZE 8
+
+// As a workaround for limitations in how some operating systems expose hid
+// descriptors to user level code the Plover HID protocol hard codes a report
+// id of 0x50 so that the plover side can distinguish between Plover HID
+// reports and other reports from the device.
+#define PLOVER_HID_REPORT_ID 0x50
 
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
@@ -253,6 +260,34 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_END_COLLECTION,
     HID_END_COLLECTION,
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
+
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+    /* USAGE (\xffPLV) */
+    HID_ITEM(HID_ITEM_TAG_USAGE_PAGE, HID_ITEM_TYPE_GLOBAL, 2),
+    0x50, 0xff,
+    HID_ITEM(HID_ITEM_TAG_USAGE, HID_ITEM_TYPE_LOCAL, 2),
+    0x56, 0x4c,
+    HID_COLLECTION(HID_COLLECTION_APPLICATION),
+    /* REPORT ID (80) */
+    HID_REPORT_ID(PLOVER_HID_REPORT_ID),
+    /* LOGICAL MINIMUM (0) */
+    HID_LOGICAL_MIN8(0x00),
+    /* LOGICAL MAXIMUM (1) */
+    HID_LOGICAL_MAX8(0x01),
+    /* REPORT SIZE (1) */
+    HID_REPORT_SIZE(0x01),
+    /* REPORT COUNT (64) */
+    HID_REPORT_COUNT(0x40),
+    /* USAGE PAGE (Ordinal) */
+    HID_USAGE_PAGE(0x0A),
+    /* USAGE MINIMUM (0) */
+    HID_USAGE_MIN8(0x00),
+    /* USAGE MAXIMUM (63) */
+    HID_USAGE_MAX8(63),
+    /* INPUT (Cnst,Var,Abs) */
+    HID_INPUT(0x02),
+    HID_END_COLLECTION
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
 };
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
@@ -315,6 +350,18 @@ struct zmk_hid_consumer_report {
     struct zmk_hid_consumer_report_body body;
 } __packed;
 
+
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+struct zmk_hid_plover_report_body {
+    uint8_t buttons[ZMK_HID_PLOVER_SIZE];
+} __packed;
+
+struct zmk_hid_plover_report {
+    uint8_t report_id;
+    struct zmk_hid_plover_report_body body;
+} __packed;
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 struct zmk_hid_mouse_report_body {
     zmk_mouse_button_flags_t buttons;
@@ -371,6 +418,12 @@ int zmk_hid_press(uint32_t usage);
 int zmk_hid_release(uint32_t usage);
 bool zmk_hid_is_pressed(uint32_t usage);
 
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+int zmk_hid_plover_press(zmk_key_t key);
+int zmk_hid_plover_release(zmk_key_t key);
+void zmk_hid_plover_clear();
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 int zmk_hid_mouse_button_press(zmk_mouse_button_t button);
 int zmk_hid_mouse_button_release(zmk_mouse_button_t button);
@@ -390,6 +443,10 @@ struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void);
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report();
 #endif
+
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+struct zmk_hid_plover_report *zmk_hid_get_plover_report();
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
 
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 struct zmk_hid_mouse_report *zmk_hid_get_mouse_report();
