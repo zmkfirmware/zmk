@@ -24,7 +24,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define DT_DRV_COMPAT zmk_physical_layout
 
-#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+#define USE_PHY_LAYOUTS                                                                            \
+    (DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) && !DT_HAS_CHOSEN(zmk_matrix_transform))
+
+#if USE_PHY_LAYOUTS
 
 #define ZKPA_INIT(i, n)                                                                            \
     (const struct zmk_key_physical_attrs) {                                                        \
@@ -99,6 +102,13 @@ static const struct zmk_physical_layout *const layouts[] = {
 
 #elif DT_HAS_CHOSEN(zmk_matrix_transform)
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+#warning                                                                                           \
+    "Ignoring the physical layouts and using the chosen matrix transform. Consider setting a chosen physical layout instead."
+
+#endif
+
 ZMK_MATRIX_TRANSFORM_EXTERN(DT_CHOSEN(zmk_matrix_transform));
 
 static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, chosen) = {
@@ -110,6 +120,13 @@ static const struct zmk_physical_layout *const layouts[] = {
     &_CONCAT(_zmk_physical_layout_, chosen)};
 
 #elif DT_HAS_CHOSEN(zmk_kscan)
+
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+#warning                                                                                           \
+    "Ignoring the physical layouts and using the chosen kscan with a synthetic transform. Consider setting a chosen physical layout instead."
+
+#endif
 
 ZMK_MATRIX_TRANSFORM_DEFAULT_EXTERN();
 static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, chosen) = {
@@ -252,7 +269,7 @@ static int8_t saved_selected_index = -1;
 int zmk_physical_layouts_select_initial(void) {
     const struct zmk_physical_layout *initial;
 
-#if DT_HAS_CHOSEN(zmk_physical_layout)
+#if USE_PHY_LAYOUTS && DT_HAS_CHOSEN(zmk_physical_layout)
     initial = &_CONCAT(_zmk_physical_layout_, DT_CHOSEN(zmk_physical_layout));
 #else
     initial = layouts[0];
