@@ -195,6 +195,11 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
 
     case HID_USAGE_CONSUMER:
         return send_consumer_report();
+
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+    case (HID_USAGE_VENDOR_PLOVER & 0xFF):
+        return send_plover_report();
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
     }
 
     LOG_ERR("Unsupported usage page %d", usage_page);
@@ -214,6 +219,7 @@ static int send_plover_report() {
         return err;
     }
 #endif /* IS_ENABLED(CONFIG_ZMK_USB) */
+
 #if IS_ENABLED(CONFIG_ZMK_BLE)
     case ZMK_ENDPOINT_BLE: {
         int err = zmk_hog_send_plover_report(&plover_report->body);
@@ -361,12 +367,21 @@ static int zmk_endpoints_init(void) {
 void zmk_endpoints_clear_current(void) {
     zmk_hid_keyboard_clear();
     zmk_hid_consumer_clear();
+
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+    zmk_hid_plover_clear();
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
     zmk_hid_mouse_clear();
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
     zmk_endpoints_send_report(HID_USAGE_KEY);
     zmk_endpoints_send_report(HID_USAGE_CONSUMER);
+    zmk_endpoints_send_report(HID_USAGE_VENDOR_PLOVER);
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
 }
 
 static void update_current_endpoint(void) {
