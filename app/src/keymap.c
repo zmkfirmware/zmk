@@ -182,13 +182,20 @@ bool zmk_keymap_layer_active(zmk_keymap_layer_id_t layer) {
     return zmk_keymap_layer_active_with_state(layer, _zmk_keymap_layer_state);
 };
 
-zmk_keymap_layer_id_t zmk_keymap_highest_layer_active(void) {
-    for (uint8_t layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer > 0; layer--) {
-        if (zmk_keymap_layer_active(layer)) {
-            return layer;
+zmk_keymap_layer_index_t zmk_keymap_highest_layer_active(void) {
+    for (int layer_idx = ZMK_KEYMAP_LAYERS_LEN - 1;
+         layer_idx >= LAYER_ID_TO_INDEX(_zmk_keymap_layer_default); layer_idx--) {
+        zmk_keymap_layer_id_t layer_id = LAYER_INDEX_TO_ID(layer_idx);
+
+        if (layer_id == ZMK_KEYMAP_LAYER_ID_INVAL) {
+            continue;
+        }
+        if (zmk_keymap_layer_active(layer_id)) {
+            return LAYER_ID_TO_INDEX(layer_id);
         }
     }
-    return zmk_keymap_layer_default();
+
+    return LAYER_ID_TO_INDEX(zmk_keymap_layer_default());
 }
 
 int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer) { return set_layer_state(layer, true); };
