@@ -175,13 +175,13 @@ zmk_studio_Response save_changes(const zmk_studio_Request *req) {
     int ret = zmk_physical_layouts_save_selected();
 
     if (ret < 0) {
-        LOG_WRN("Failed to save selected physical layout (0x%02x)", ret);
+        LOG_WRN("Failed to save selected physical layout (%d)", ret);
         return ZMK_RPC_SIMPLE_ERR(GENERIC);
     }
 
     ret = zmk_keymap_save_changes();
     if (ret < 0) {
-        LOG_WRN("Failed to save keymap changes (0x%02x)", ret);
+        LOG_WRN("Failed to save keymap changes (%d)", ret);
         return ZMK_RPC_SIMPLE_ERR(GENERIC);
     }
 
