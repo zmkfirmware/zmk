@@ -27,7 +27,7 @@ static void set_layer_symbol(lv_obj_t *label, struct layer_status_state state) {
     const char *layer_label = state.label;
     zmk_keymap_layer_index_t active_layer_index = state.index;
 
-    if (layer_label == NULL) {
+    if (layer_label == NULL || strlen(layer_label) == 0) {
         char text[6] = {};
 
         sprintf(text, " %i", active_layer_index);
