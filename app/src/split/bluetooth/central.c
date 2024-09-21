@@ -24,7 +24,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/behavior.h>
 #include <zmk/sensors.h>
 #include <zmk/split/bluetooth/uuid.h>
-#include <zmk/split/bluetooth/service.h>
+#include <zmk/split/central.h>
+#include <zmk/split/service.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
@@ -65,19 +66,6 @@ static struct peripheral_slot peripherals[ZMK_SPLIT_BLE_PERIPHERAL_COUNT];
 static bool is_scanning = false;
 
 static const struct bt_uuid_128 split_service_uuid = BT_UUID_INIT_128(ZMK_SPLIT_BT_SERVICE_UUID);
-
-K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
-              CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
-
-void peripheral_event_work_callback(struct k_work *work) {
-    struct zmk_position_state_changed ev;
-    while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
-        LOG_DBG("Trigger key position state change for %d", ev.position);
-        raise_zmk_position_state_changed(ev);
-    }
-}
-
-K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
 
 int peripheral_slot_index_for_conn(struct bt_conn *conn) {
     for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
@@ -126,9 +114,7 @@ int release_peripheral_slot(int index) {
                                                         .position = position,
                                                         .state = false,
                                                         .timestamp = k_uptime_get()};
-
-                k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-                k_work_submit(&peripheral_event_work);
+                zmk_position_state_change_handle(&ev);
             }
         }
     }
@@ -182,19 +168,6 @@ int confirm_peripheral_slot_conn(struct bt_conn *conn) {
 }
 
 #if ZMK_KEYMAP_HAS_SENSORS
-K_MSGQ_DEFINE(peripheral_sensor_event_msgq, sizeof(struct zmk_sensor_event),
-              CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
-
-void peripheral_sensor_event_work_callback(struct k_work *work) {
-    struct zmk_sensor_event ev;
-    while (k_msgq_get(&peripheral_sensor_event_msgq, &ev, K_NO_WAIT) == 0) {
-        LOG_DBG("Trigger sensor change for %d", ev.sensor_index);
-        raise_zmk_sensor_event(ev);
-    }
-}
-
-K_WORK_DEFINE(peripheral_sensor_event_work, peripheral_sensor_event_work_callback);
-
 static uint8_t split_central_sensor_notify_func(struct bt_conn *conn,
                                                 struct bt_gatt_subscribe_params *params,
                                                 const void *data, uint16_t length) {
@@ -220,8 +193,7 @@ static uint8_t split_central_sensor_notify_func(struct bt_conn *conn,
 
     memcpy(ev.channel_data, sensor_event.channel_data,
            sizeof(struct zmk_sensor_channel_data) * sensor_event.channel_data_size);
-    k_msgq_put(&peripheral_sensor_event_msgq, &ev, K_NO_WAIT);
-    k_work_submit(&peripheral_sensor_event_work);
+    zmk_sensor_event_handle(&ev);
 
     return BT_GATT_ITER_CONTINUE;
 }
@@ -261,9 +233,7 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
                                                         .position = position,
                                                         .state = pressed,
                                                         .timestamp = k_uptime_get()};
-
-                k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-                k_work_submit(&peripheral_event_work);
+                zmk_position_state_change_handle(&ev);
             }
         }
     }
@@ -744,89 +714,24 @@ static struct bt_conn_cb conn_callbacks = {
     .disconnected = split_central_disconnected,
 };
 
-K_THREAD_STACK_DEFINE(split_central_split_run_q_stack,
-                      CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE);
-
-struct k_work_q split_central_split_run_q;
-
-struct zmk_split_run_behavior_payload_wrapper {
-    uint8_t source;
-    struct zmk_split_run_behavior_payload payload;
-};
-
-K_MSGQ_DEFINE(zmk_split_central_split_run_msgq,
-              sizeof(struct zmk_split_run_behavior_payload_wrapper),
-              CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE, 4);
-
-void split_central_split_run_callback(struct k_work *work) {
-    struct zmk_split_run_behavior_payload_wrapper payload_wrapper;
-
-    LOG_DBG("");
-
-    while (k_msgq_get(&zmk_split_central_split_run_msgq, &payload_wrapper, K_NO_WAIT) == 0) {
-        if (peripherals[payload_wrapper.source].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
-            LOG_ERR("Source not connected");
-            continue;
-        }
-        if (!peripherals[payload_wrapper.source].run_behavior_handle) {
-            LOG_ERR("Run behavior handle not found");
-            continue;
-        }
-
-        int err = bt_gatt_write_without_response(
-            peripherals[payload_wrapper.source].conn,
-            peripherals[payload_wrapper.source].run_behavior_handle, &payload_wrapper.payload,
-            sizeof(struct zmk_split_run_behavior_payload), true);
-
-        if (err) {
-            LOG_ERR("Failed to write the behavior characteristic (err %d)", err);
-        }
+void send_split_run_impl(struct zmk_split_run_behavior_payload_wrapper *payload_wrapper) {
+    if (peripherals[payload_wrapper->source].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+        LOG_ERR("Source not connected");
+        return;
     }
-}
+    if (!peripherals[payload_wrapper->source].run_behavior_handle) {
+        LOG_ERR("Run behavior handle not found");
+        return;
+    }
 
-K_WORK_DEFINE(split_central_split_run_work, split_central_split_run_callback);
+    int err = bt_gatt_write_without_response(
+        peripherals[payload_wrapper->source].conn,
+        peripherals[payload_wrapper->source].run_behavior_handle, &payload_wrapper->payload,
+        sizeof(struct zmk_split_run_behavior_payload), true);
 
-static int
-split_bt_invoke_behavior_payload(struct zmk_split_run_behavior_payload_wrapper payload_wrapper) {
-    LOG_DBG("");
-
-    int err = k_msgq_put(&zmk_split_central_split_run_msgq, &payload_wrapper, K_MSEC(100));
     if (err) {
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Consumer message queue full, popping first message and queueing again");
-            struct zmk_split_run_behavior_payload_wrapper discarded_report;
-            k_msgq_get(&zmk_split_central_split_run_msgq, &discarded_report, K_NO_WAIT);
-            return split_bt_invoke_behavior_payload(payload_wrapper);
-        }
-        default:
-            LOG_WRN("Failed to queue behavior to send (%d)", err);
-            return err;
-        }
+        LOG_ERR("Failed to write the behavior characteristic (err %d)", err);
     }
-
-    k_work_submit_to_queue(&split_central_split_run_q, &split_central_split_run_work);
-
-    return 0;
-};
-
-int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *binding,
-                                 struct zmk_behavior_binding_event event, bool state) {
-    struct zmk_split_run_behavior_payload payload = {.data = {
-                                                         .param1 = binding->param1,
-                                                         .param2 = binding->param2,
-                                                         .position = event.position,
-                                                         .state = state ? 1 : 0,
-                                                     }};
-    const size_t payload_dev_size = sizeof(payload.behavior_dev);
-    if (strlcpy(payload.behavior_dev, binding->behavior_dev, payload_dev_size) >=
-        payload_dev_size) {
-        LOG_ERR("Truncated behavior label %s to %s before invoking peripheral behavior",
-                binding->behavior_dev, payload.behavior_dev);
-    }
-
-    struct zmk_split_run_behavior_payload_wrapper wrapper = {.source = source, .payload = payload};
-    return split_bt_invoke_behavior_payload(wrapper);
 }
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -883,9 +788,6 @@ static struct settings_handler ble_central_settings_handler = {
 #endif // IS_ENABLED(CONFIG_SETTINGS)
 
 static int zmk_split_bt_central_init(void) {
-    k_work_queue_start(&split_central_split_run_q, split_central_split_run_q_stack,
-                       K_THREAD_STACK_SIZEOF(split_central_split_run_q_stack),
-                       CONFIG_ZMK_BLE_THREAD_PRIORITY, NULL);
     bt_conn_cb_register(&conn_callbacks);
 
 #if IS_ENABLED(CONFIG_SETTINGS)
@@ -896,4 +798,4 @@ static int zmk_split_bt_central_init(void) {
 #endif // IS_ENABLED(CONFIG_SETTINGS)
 }
 
-SYS_INIT(zmk_split_bt_central_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);
+SYS_INIT(zmk_split_bt_central_init, APPLICATION, CONFIG_ZMK_SPLIT_INIT_PRIORITY);
