@@ -11,13 +11,20 @@
             key-positions = <0 1>;
             bindings = <&kp D>;
         };
+
+        // not actuated combo to test behavior
+        combo_g {
+            timeout-ms = <50>;
+            key-positions = <2 3>;
+            bindings = <&kp G>;
+        };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
-            bindings = <&kp A &kp B &kp C>;
+            bindings = <&kp A &kp B &kp C &kp D>;
         };
     };
 };
