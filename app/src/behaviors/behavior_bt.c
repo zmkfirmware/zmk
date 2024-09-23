@@ -34,6 +34,11 @@ static const struct behavior_parameter_value_metadata no_arg_values[] = {
         .value = BT_PRV_CMD,
     },
     {
+        .display_name = "Previously Used Profile",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BT_PRV_DEV_CMD,
+    },
+    {
         .display_name = "Clear All Profiles",
         .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
         .value = BT_CLR_ALL_CMD,
@@ -98,6 +103,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         return zmk_ble_prof_next();
     case BT_PRV_CMD:
         return zmk_ble_prof_prev();
+    case BT_PRV_DEV_CMD:
+        return zmk_ble_prof_prev_dev();
     case BT_SEL_CMD:
         return zmk_ble_prof_select(binding->param2);
     case BT_CLR_ALL_CMD:

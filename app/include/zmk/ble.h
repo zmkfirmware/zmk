@@ -23,6 +23,7 @@
 void zmk_ble_clear_bonds(void);
 int zmk_ble_prof_next(void);
 int zmk_ble_prof_prev(void);
+int zmk_ble_prof_prev_dev(void);
 int zmk_ble_prof_select(uint8_t index);
 void zmk_ble_clear_all_bonds(void);
 int zmk_ble_prof_disconnect(uint8_t index);
