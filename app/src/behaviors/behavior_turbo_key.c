@@ -71,8 +71,9 @@ static void reset_timer(struct behavior_turbo_data *data, struct zmk_behavior_bi
 }
 
 static void behavior_turbo_timer_handler(struct k_work *item) {
+    struct k_work_delayable *d_work = k_work_delayable_from_work(item);
     struct behavior_turbo_data *data =
-        CONTAINER_OF(item, struct behavior_turbo_data, release_timer);
+        CONTAINER_OF(d_work, struct behavior_turbo_data, release_timer);
     if (!data->is_active) {
         return;
     }
