@@ -33,6 +33,7 @@ static bool encode_behavior_summaries(pb_ostream_t *stream, const pb_field_t *fi
 }
 
 zmk_studio_Response list_all_behaviors(const zmk_studio_Request *req) {
+    LOG_DBG("");
     zmk_behaviors_ListAllBehaviorsResponse beh_resp =
         zmk_behaviors_ListAllBehaviorsResponse_init_zero;
     beh_resp.behaviors.funcs.encode = encode_behavior_summaries;
@@ -164,8 +165,9 @@ static struct encode_metadata_sets_state state = {};
 
 zmk_studio_Response get_behavior_details(const zmk_studio_Request *req) {
     uint32_t behavior_id = req->subsystem.behaviors.request_type.get_behavior_details.behavior_id;
-
     const char *behavior_name = zmk_behavior_find_behavior_name_from_local_id(behavior_id);
+
+    LOG_DBG("behavior_id %d, name %s", behavior_id, behavior_name);
 
     if (!behavior_name) {
         LOG_WRN("No behavior found for ID %d", behavior_id);

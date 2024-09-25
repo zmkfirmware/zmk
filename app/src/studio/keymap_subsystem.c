@@ -98,6 +98,7 @@ static bool encode_keymap_layers(pb_ostream_t *stream, const pb_field_t *field, 
 }
 
 zmk_studio_Response get_keymap(const zmk_studio_Request *req) {
+    LOG_DBG("");
     zmk_keymap_Keymap resp = zmk_keymap_Keymap_init_zero;
 
     resp.layers.funcs.encode = encode_keymap_layers;
@@ -117,6 +118,7 @@ zmk_studio_Response get_keymap(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response set_layer_binding(const zmk_studio_Request *req) {
+    LOG_DBG("");
     const zmk_keymap_SetLayerBindingRequest *set_req =
         &req->subsystem.keymap.request_type.set_layer_binding;
 
@@ -165,6 +167,7 @@ zmk_studio_Response set_layer_binding(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response check_unsaved_changes(const zmk_studio_Request *req) {
+    LOG_DBG("");
     int layout_changes = zmk_physical_layouts_check_unsaved_selection();
     int keymap_changes = zmk_keymap_check_unsaved_changes();
 
@@ -172,6 +175,7 @@ zmk_studio_Response check_unsaved_changes(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response save_changes(const zmk_studio_Request *req) {
+    LOG_DBG("");
     int ret = zmk_physical_layouts_save_selected();
 
     if (ret < 0) {
@@ -192,6 +196,7 @@ zmk_studio_Response save_changes(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response discard_changes(const zmk_studio_Request *req) {
+    LOG_DBG("");
     int ret = zmk_physical_layouts_revert_selected();
     if (ret < 0) {
         return ZMK_RPC_SIMPLE_ERR(GENERIC);
@@ -288,6 +293,7 @@ static bool encode_layouts(pb_ostream_t *stream, const pb_field_t *field, void *
 }
 
 zmk_studio_Response get_physical_layouts(const zmk_studio_Request *req) {
+    LOG_DBG("");
     zmk_keymap_PhysicalLayouts resp = zmk_keymap_PhysicalLayouts_init_zero;
     resp.active_layout_index = zmk_physical_layouts_get_selected();
     resp.layouts.funcs.encode = encode_layouts;
@@ -336,6 +342,7 @@ static void migrate_keymap(const uint8_t old) {
 }
 
 zmk_studio_Response set_active_physical_layout(const zmk_studio_Request *req) {
+    LOG_DBG("");
     uint8_t index = (uint8_t)req->subsystem.keymap.request_type.set_active_physical_layout;
     int old = zmk_physical_layouts_get_selected();
 
@@ -364,6 +371,7 @@ zmk_studio_Response set_active_physical_layout(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response move_layer(const zmk_studio_Request *req) {
+    LOG_DBG("");
     const zmk_keymap_MoveLayerRequest *move_req = &req->subsystem.keymap.request_type.move_layer;
 
     zmk_keymap_MoveLayerResponse resp = zmk_keymap_MoveLayerResponse_init_zero;
@@ -386,6 +394,7 @@ zmk_studio_Response move_layer(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response add_layer(const zmk_studio_Request *req) {
+    LOG_DBG("");
     // Use a static here to keep the value valid during serialization
     static zmk_keymap_layer_id_t layer_id = 0;
 
@@ -428,6 +437,7 @@ zmk_studio_Response add_layer(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response remove_layer(const zmk_studio_Request *req) {
+    LOG_DBG("");
     const zmk_keymap_RemoveLayerRequest *rm_req = &req->subsystem.keymap.request_type.remove_layer;
 
     zmk_keymap_RemoveLayerResponse resp = zmk_keymap_RemoveLayerResponse_init_zero;
@@ -456,6 +466,7 @@ zmk_studio_Response remove_layer(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response restore_layer(const zmk_studio_Request *req) {
+    LOG_DBG("");
     const zmk_keymap_RestoreLayerRequest *restore_req =
         &req->subsystem.keymap.request_type.restore_layer;
 
@@ -492,6 +503,7 @@ zmk_studio_Response restore_layer(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response set_layer_props(const zmk_studio_Request *req) {
+    LOG_DBG("");
     const zmk_keymap_SetLayerPropsRequest *set_req =
         &req->subsystem.keymap.request_type.set_layer_props;
 
