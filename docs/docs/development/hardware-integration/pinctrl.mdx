@@ -244,27 +244,21 @@ values={[
 ]}>
 <TabItem value="nrf52840">
 ```dts title="<board>.dts"
-#include "<board>-pinctrl.dtsi"
-
 &spi0 {
-compatible = "nordic,nrf-spim";
-pinctrl-0 = <&spi0_default>;
-pinctrl-1 = <&spi0_sleep>;
-pinctrl-names = "default", "sleep";
+    compatible = "nordic,nrf-spim";
+    pinctrl-0 = <&spi0_default>;
+    pinctrl-1 = <&spi0_sleep>;
+    pinctrl-names = "default", "sleep";
 };
-
-````
+```
 </TabItem>
 <TabItem value="rp2040">
 ```dts title="<board>.dts"
-#include "<board>-pinctrl.dtsi"
-
 &spi0 {
     pinctrl-0 = <&spi0_default>;
     pinctrl-names = "default";
 };
-````
-
+```
 </TabItem>
 </Tabs>
 This assigns the pins defined in the previous section's examples to the `spi0` node.
@@ -284,7 +278,7 @@ You may wish to provide an alias to the node for various reasons:
 Aliases are assigned like so:
 
 ```dts
-my_alias_spi: &spi0 {};
+    &my_alias_spi: &spi0 {};
 ```
 
 ### Usage
