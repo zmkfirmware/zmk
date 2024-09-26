@@ -106,6 +106,10 @@ The corresponding file for the rp2040 (`rpi_pico/rp2040.dtsi`), however, does no
 
 If you are configuring pin control for a [shield](#boards-shields-and-modules), then this file may already be imported by the board's definition, in which case you shouldn't re-include it here.
 
+:::info
+Some MCUs/SoCs may have their headers located in a Zephyr HAL module. See for example the [NXP HAL module](https://github.com/zephyrproject-rtos/hal_nxp/tree/master/dts/nxp/nxp_imx/rt).
+:::
+
 ### Pinctrl Node
 
 All of your configuration will happen by adjusting the `pinctrl` node. Changes are made like so:
