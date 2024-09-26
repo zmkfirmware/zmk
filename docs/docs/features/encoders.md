@@ -41,4 +41,4 @@ Here, the left encoder is configured to control volume up and down while the rig
 
 ## Adding Encoder Support
 
-See the [New Keyboard Shield](../development/hardware-integration/new-shield.mdx#encoders) documentation for how to add or modify additional encoders to your shield.
+See the [Encoders](../development/hardware-integration/encoders.md) page for instruction on adding to your shield or modifying existing ones.
