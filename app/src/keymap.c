@@ -581,7 +581,7 @@ int zmk_keymap_reset_settings(void) { return -ENOTSUP; }
 
 int zmk_keymap_apply_position_state(uint8_t source, zmk_keymap_layer_id_t layer_id,
                                     uint32_t position, bool pressed, int64_t timestamp) {
-    struct zmk_behavior_binding *binding = &zmk_keymap[layer_id][position];
+    const struct zmk_behavior_binding *binding = &zmk_keymap[layer_id][position];
     struct zmk_behavior_binding_event event = {
         .layer = layer_id,
         .position = position,
