@@ -75,6 +75,10 @@ include:
 
 Save the file, commit the changes and push them to GitHub. Download the new firmware zip file build by the latest GitHub Actions job. In it you will find an additional `tester_pro_micro` UF2 image file. Flash this file to your board.
 
+The pinout of the pro micro interconnect is shown below:
+
+![Pro Micro Interconnect pinout](../assets/interconnects/pro_micro/pinout.png)
+
 </TabItem>
 <TabItem value="xiao">
 Find the `build.yaml` file in your `zmk-config` folder and add an additional `tester_xiao` build for your board:
@@ -90,9 +94,13 @@ include:
 
 Save the file, commit the changes and push them to GitHub. Download the new firmware zip file build by the latest GitHub Actions job. In it you will find an additional `tester_xiao` UF2 image file. Flash this file to your board.
 
+The pinout of the seeeduino xiao interconnect is shown below:
+
+![Seeeduino Xiao Interconnect pinout](../assets/interconnects/seeed_xiao/pinout.png)
+
 </TabItem>
 </TesterTabs>
-After flashing, open a text editor of your choice. Shorting a GPIO pin to ground (with e.g. a wire or tweezers, hold one end go ground and tap the pin with the other end) will now trigger the keyboard to send an informative message on which pins were triggered.
+After flashing, open a text editor of your choice. Shorting a GPIO pin (**NOT** a 5V/RAW, 3V3/VCC, or battery pin) to ground (with e.g. a wire or tweezers, hold one end go ground and tap the pin with the other end) will now trigger the keyboard to send an informative message on which pins were triggered.
 - If one pin was triggered, then the pin is working fine.
 - If two were triggered at once, then these pins are shorted together on your device.
 - If no pin was triggered, try shorting a working pin to the pin you were trying to trigger to test if it is shorted to ground on your device. Otherwise, the pin is disconnected or broken.
