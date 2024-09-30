@@ -1,3 +1,4 @@
+#include <layouts/common/65percent/position_map.dtsi>
 #include <physical_layouts.dtsi>
 
 / {
@@ -71,6 +72,19 @@
             , <&key_physical_attrs 100 100 1250  400       0     0     0>
             , <&key_physical_attrs 150 100 1350  400       0     0     0>
             , <&key_physical_attrs 100 100 1500  400       0     0     0>
+            ;
+    };
+};
+
+&layouts_common_65_percent_position_map {
+    layout_65_hhkb {
+        physical-layout = <&layout_65_hhkb>;
+        positions
+            = < 0  1  2  3  4  5  6  7  8  9 10 11 12 13 65 14>
+            , <15 16 17 18 19 20 21 22 23 24 25 26 27 28 29>
+            , <30 31 32 33 34 35 36 37 38 39 40 41 42 43>
+            , <44 66 45 46 47 48 49 50 51 52 53 54 55 67 68 56>
+            , <57 58 59 60 61 62 63 69 70 64>
             ;
     };
 };

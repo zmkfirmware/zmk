@@ -6,7 +6,9 @@
 
 /dts-v1/;
 #include "ckp.dtsi"
-#include <layouts/common/75percent/75percent.dtsi>
+#include <layouts/common/75percent/all1u.dtsi>
+#include <layouts/common/75percent/ansi.dtsi>
+#include <layouts/common/75percent/iso.dtsi>
 
 
 / {
@@ -62,16 +64,13 @@
 };
 
 &layout_75_ansi {
-  status = "okay";
   transform = <&ansi_transform>;
 };
 
 &layout_75_iso {
-  status = "okay";
   transform = <&iso_transform>;
 };
 
 &layout_75_all1u {
-  status = "okay";
   transform = <&all_1u_transform>;
 };

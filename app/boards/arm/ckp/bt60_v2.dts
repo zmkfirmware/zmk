@@ -6,7 +6,10 @@
 
 /dts-v1/;
 #include "ckp.dtsi"
-#include <layouts/common/60percent/60percent.dtsi>
+#include <layouts/common/60percent/all1u.dtsi>
+#include <layouts/common/60percent/ansi.dtsi>
+#include <layouts/common/60percent/hhkb.dtsi>
+#include <layouts/common/60percent/iso.dtsi>
 
 
 / {
@@ -72,21 +75,17 @@
 };
 
 &layout_60_ansi {
-  status = "okay";
   transform = <&ansi_transform>;
 };
 
 &layout_60_iso {
-  status = "okay";
   transform = <&iso_transform>;
 };
 
 &layout_60_all1u {
-  status = "okay";
   transform = <&all_1u_transform>;
 };
 
 &layout_60_hhkb {
-  status = "okay";
   transform = <&hhkb_transform>;
 };
