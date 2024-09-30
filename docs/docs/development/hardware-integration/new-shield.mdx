@@ -438,7 +438,7 @@ You can also apply row offsets with `row-offset`.
 The matrix transform is also used to "correct" pin orderings into something that more closely matches the physical order of keys. Causes of abnormal pin orderings include:
 
 - To reduce the used pins, an "efficient" number of rows/columns for the GPIO matrix is used, that does _not_ match the physical layout of rows/columns of the actual key switches.
-- For non rectangular keyboards with thumb clusters, non `1u` locations, etc.
+- For non-rectangular keyboards with thumb clusters, non `1u` locations, etc.
 
 See the [in-tree keyboards](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) that ZMK defines for examples of more complex matrix transformations.
 
