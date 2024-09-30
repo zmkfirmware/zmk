@@ -106,19 +106,26 @@ You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree
 There are two required [Kconfig](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html) files that need to be created for your new keyboard shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
 
 <SplitTabs></SplitTabs>
+
 ### Kconfig.shield
+
 The `Kconfig.shield` file defines the shield name used to build your keyboard.
+
 <SplitInvisTabs>
 <TabItem value="unibody">
+
 ```kconfig title="Kconfig.shield"
 # No whitespace after the comma or in your keyboard name!
 config SHIELD_MY_KEYBOARD
     def_bool $(shields_list_contains,my_keyboard)
 ```
+
 This will set the `SHIELD_MY_KEYBOARD` flag to `y` whenever `my_keyboard` is used as the shield name.
 The `SHIELD_MY_KEYBOARD` flag will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
+
 </TabItem>
 <TabItem value="split">
+
 Split keyboards have multiple shield names defined, one for each part.
 For example, if your keyboard consists of two halves named `my_keyboard_left` and `my_keyboard_right`, it would look like this:
 
@@ -138,6 +145,7 @@ The `SHIELD_MY_KEYBOARD_LEFT` and `SHIELD_MY_KEYBOARD_RIGHT` flags will be used 
 
 </TabItem>
 </SplitInvisTabs>
+
 ### Kconfig.defconfig
 
 The `Kconfig.defconfig` file is used to set new defaults for configuration settings when this shield is used.
@@ -160,6 +168,7 @@ endif
 
 </TabItem>
 <TabItem value="split">
+
 For split keyboards, a central side (usually the left) is specified via the configuration in this file.
 For that side, the keyboard name is assigned and the central config is set.
 The peripheral side is not assigned a name.
@@ -204,10 +213,13 @@ The case for which this is necessary is due to be eliminated in the future, maki
 <SplitInvisTabs>
 <TabItem value="unibody"></TabItem>
 <TabItem value="split">
+
 Split keyboards can have multiple `.conf` files, one for each part. For example:
+
 - `my_keyboard.conf` - Configuration elements affect both halves
 - `my_keyboard_left.conf` - Configuration elements only affect left half
 - `my_keyboard_left.conf` - Configuration elements only affect right half
+
 In most case you'll only need to use the .conf file that affects both halves of a split board.
 
 :::note
@@ -230,11 +242,15 @@ There are three main things that need to be defined in this file:
 
 <SplitInvisTabs>
 <TabItem value="unibody">
+
 A unibody keyboard will have a single overlay file named `my_keyboard.overlay`, where `my_keyboard` is the shield name defined in the [Kconfig.shield file](#Kconfig.shield).
+
 </TabItem>
 <TabItem value="split">
+
 A split keyboard will have an overlay file defined for each split part.
 For example, if the keyboard is split into a left and a right half, these can be named:
+
 - `my_keyboard_left.overlay`
 - `my_keyboard_right.overlay`
 
@@ -249,6 +265,7 @@ The standard approach is to have a core `my_keyboard.dtsi` (devicetree include) 
 ### Kscan
 
 The kscan node defines the controller GPIO pins that are used to scan for key press and release events. The pins are referred to using the GPIO labels noted in the pinouts below:
+
 <InterconnectTabs items={Metadata} />
 
 To use GPIO pins that are not part of the interconnects as described above, you can use the GPIO labels that are specific to each controller type.
@@ -259,6 +276,7 @@ The [Keyboard Scan configuration documentation](../../config/kscan.md) has the f
 
 <SplitTabs>
 <TabItem value="unibody">
+
 For a simple 3x3 macropad matrix, the kscan might look something like:
 
 ```dts title="my_keyboard.overlay"
@@ -285,6 +303,7 @@ For a simple 3x3 macropad matrix, the kscan might look something like:
 
 </TabItem>
 <TabItem value="split">
+
 For split keyboards you should define your kscan in `my_keyboard.dtsi`.
 If your `row-gpios` or your `col-gpios` (or both) are identical between the parts, then they should also be defined in `my_keyboard.dtsi`.
 For example, for a `col2row` 2-part split keyboard (18 keys split into a 3x3 macropad on both halves) where the "row" GPIOs used are the same for both halves:
@@ -347,6 +366,7 @@ This key position will in turn have a behavior binding associated with it in the
 
 <SplitTabs>
 <TabItem value="unibody">
+
 The `my_keyboard.overlay` must include a matrix transform that defines this mapping from row/column values to key positions.
 Add `#include <dt-bindings/zmk/matrix_transform.h>` to the top of the file.
 
@@ -374,6 +394,7 @@ Here is an example of a matrix transform for the previous 3x3 macropad:
 
 </TabItem>
 <TabItem value="split">
+
 Split keyboards should define their matrix transform in the shared `my_keyboard.dtsi`. Add `#include <dt-bindings/zmk/matrix_transform.h>` to the top of the file.
 
 Here is an example of a matrix transform for the previous example (18-key double macropad):
@@ -409,13 +430,19 @@ To allow the kscan matrices to be joined in the matrix transform, an offset is a
 
 This offset means that when the right half of the keyboard has a key event triggered by the GPIO pins at the indices `0,0` of its `row-gpios` and `col-gpios` arrays respectively, it will interpret it as an `RC(0,3)` event rather than an `RC(0,0)` event.
 Additional peripherals would need their columns to be offset by an ever increasing number equal to the sum of the columns in the central + any peripherals that came before it.
-
-Note that you can also apply row offsets with `row-offset`.
+You can also apply row offsets with `row-offset`.
 
 </TabItem>
 </SplitTabs>
 
-See the [matrix transform section](../../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for further details and examples of matrix transforms.
+The matrix transform is also used to "correct" pin orderings into something that more closely matches the physical order of keys. Causes of abnormal pin orderings include:
+
+- To reduce the used pins, an "efficient" number of rows/columns for the GPIO matrix is used, that does _not_ match the physical layout of rows/columns of the actual key switches.
+- For non rectangular keyboards with thumb clusters, non `1u` locations, etc.
+
+See the [in-tree keyboards](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) that ZMK defines for examples of more complex matrix transformations.
+
+Also see the [matrix transform section](../../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for further details and examples of matrix transforms.
 
 ### Physical Layout
 
@@ -521,6 +548,7 @@ Here is an example simple keymap for a 3x3 macropad, with only one layer:
  };
 ```
 
+The keymap should match the order of the keys in the [matrix transform](#matrix-transform) exactly, left to right, top to bottom (they are both 1 dimensional arrays rearranged with newline characters for better legibility).
 See [Keymaps](../../keymaps/index.mdx) for information on defining keymaps in ZMK.
 
 ## Metadata
