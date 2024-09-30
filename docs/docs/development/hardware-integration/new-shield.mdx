@@ -201,7 +201,7 @@ endif
 
 In addition to the `Kconfig.shield` and `Kconfig.defconfig` files, many shields will also define a user configuration file called `my_keyboard.conf`.
 This file exists to provide "suggestions" of [configuration settings](../../config/index.md) for a user to select, such as enabling deep sleep.
-Note that the name should match the shield/part name defined in the [Kconfig.shield file](#Kconfig.shield).
+Note that the name should match the shield/part name defined in the [Kconfig.shield file](#kconfigshield).
 
 :::warning
 This file can also be used to set configuration options.
@@ -243,7 +243,7 @@ There are three main things that need to be defined in this file:
 <SplitInvisTabs>
 <TabItem value="unibody">
 
-A unibody keyboard will have a single overlay file named `my_keyboard.overlay`, where `my_keyboard` is the shield name defined in the [Kconfig.shield file](#Kconfig.shield).
+A unibody keyboard will have a single overlay file named `my_keyboard.overlay`, where `my_keyboard` is the shield name defined in the [Kconfig.shield file](#kconfigshield).
 
 </TabItem>
 <TabItem value="split">
@@ -254,7 +254,7 @@ For example, if the keyboard is split into a left and a right half, these can be
 - `my_keyboard_left.overlay`
 - `my_keyboard_right.overlay`
 
-Here `my_keyboard_left` and `my_keyboard_right` are the shield names defined in the [Kconfig.shield file](#Kconfig.shield).
+Here `my_keyboard_left` and `my_keyboard_right` are the shield names defined in the [Kconfig.shield file](#kconfigshield).
 
 Split keyboards often share some of their devicetree description.
 The standard approach is to have a core `my_keyboard.dtsi` (devicetree include) file, which is included into each of the shield overlays.
