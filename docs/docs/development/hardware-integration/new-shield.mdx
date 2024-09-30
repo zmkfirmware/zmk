@@ -4,36 +4,62 @@ title: New Keyboard Shield
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import KeymapExampleFile from "../../keymap-example-file.md";
-
 import InterconnectTabs from "@site/src/components/interconnect-tabs";
 import Metadata from "@site/src/data/hardware-metadata.json";
+
+export const SplitTabs = (props) => (
+    <Tabs
+    groupId="keyboard-type"
+    defaultValue="unibody"
+    values={[
+      { label: "Unibody Keyboard", value: "unibody" },
+      { label: "Split Keyboard", value: "split" }
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
+
+export const SplitInvisTabs = (props) => (
+    <Tabs
+    groupId="keyboard-type"
+    defaultValue="unibody"
+    className="secrettabs"
+    values={[
+      { label: "Unibody Keyboard", value: "unibody" },
+      { label: "Split Keyboard", value: "split" }
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
 
 :::danger
 Before reading this section, it is **vital** that you read through our [clean room policy](../contributing/clean-room.md).
 :::
 
-## Overview
-
 This guide will walk through the steps necessary to add ZMK support for a keyboard that uses an add-on MCU board (e.g. Pro Micro compatible) to provide the microprocessor.
 
 The high level steps are:
 
-- From a template, create a new [Zephyr module](https://docs.zephyrproject.org/3.5.0/develop/modules.html) housed in a git repository containing one or more custom shields.
+- Create a new [Zephyr module](https://docs.zephyrproject.org/3.5.0/develop/modules.html) to contain your shield.
 - Create a new shield directory.
 - Add the base Kconfig files.
-- Add the shield overlay file to define the KSCAN driver for detecting key press/release.
-- Add the matrix transform for mapping KSCAN row/column values to key positions in the keymap.
-- Add a physical layout definition to select the matrix transform and KSCAN instance.
+- Add the shield overlay file defining:
+  - The keyboard scan driver for detecting key press/release.
+  - The matrix transform for mapping keyboard scan row/column values to key positions in the keymap.
+  - The physical layout definition to select the matrix transform and keyboard scan instance.
 - Add a default keymap, which users can override in their own configs as needed.
 - Add a `<my_shield>.zmk.yml` metadata file to document the high level details of your shield, and the features it supports.
-- Update the `build.yaml` file from the repository template to have some sample builds of the firmware to test.
 
-After adding ZMK support for a basic shield using this guide, check the sidebar for guides on adding any additional features (such as encoders) that your keyboard has. It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
+Many of the above files will differ depending on whether your keyboard is a unibody or is [split into multiple parts](../../features/split-keyboards.md).
 
-:::note
-ZMK support for [split keyboards](../../features/split-keyboards.md) requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
-:::
+After adding ZMK support for a basic shield using this guide, check the sidebar for guides on adding any additional features (such as encoders) that your keyboard has.
+It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
 ## New Zephyr Module Repository
 
@@ -54,12 +80,14 @@ Follow these steps to create your new repository:
   - Select Public or Private, depending on your preference.
 - Click the green "Create repository" button
 
-The repository is a combination of the directories and files required of a ZMK config, and those required of a shield module. To create a shield module, the following components are needed:
+The repository is a combination of the directories and files required of a ZMK config, and those required of a shield module.
+To create a shield module, the following components are needed:
 
 - The `boards/shields` directory, where the keyboard's files will go
 - The `zephyr/module.yml` file, which identifies and describes the module. See the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/develop/modules.html#module-yaml-file-description) for details on customising this file. For the purposes of creating a shield module, the default found in the template can be left untouched.
 
-Neither of these should be moved out of their parent directory. The other files and directories such as `config` are not necessary for the purposes of a shield module, but rather intended to be used for user configuration and testing.
+Neither of these should be moved out of their parent directory.
+The other files and directories such as `config` are not necessary for the purposes of a shield module, but rather intended to be used for user configuration and testing.
 
 ## New Shield Directory
 
@@ -75,74 +103,90 @@ mkdir boards/shields/<keyboard_name>
 You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) in the ZMK repo that houses [the in-tree supported shields](../../hardware.mdx) in order to copy and modify as a starting point.
 :::
 
-There are two required Kconfig files that need to be created for your new keyboard
-shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
+There are two required [Kconfig](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html) files that need to be created for your new keyboard shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
+
+<SplitTabs></SplitTabs>
 
 ### Kconfig.shield
 
-The `Kconfig.shield` file defines any additional Kconfig settings that may be relevant when using this keyboard. For most keyboards, there is just one additional configuration value for the shield itself.
+The `Kconfig.shield` file defines the shield name used to build your keyboard.
 
-```kconfig
-config SHIELD_MY_BOARD
-    def_bool $(shields_list_contains,my_board)
+<SplitInvisTabs>
+<TabItem value="unibody">
+
+```kconfig title="Kconfig.shield"
+# No whitespace after the comma or in your keyboard name!
+config SHIELD_MY_KEYBOARD
+    def_bool $(shields_list_contains,my_keyboard)
 ```
 
-:::warning
-Kconfig uses only commas for delimiters, and keeps all whitespaces in the function call. Therefore do not add a whitespace after the comma when configuring your shield as this would be treated as <code>&nbsp;my_board</code> (with a leading whitespace) and will cause issues.
-:::
+This will set the `SHIELD_MY_KEYBOARD` flag to `y` whenever `my_keyboard` is used as the shield name.
+The `SHIELD_MY_KEYBOARD` flag will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
 
-This will make sure that a new configuration value named `SHIELD_MY_BOARD` is set to true whenever `my_board` is used as the shield name, either as the `SHIELD` variable [in a local build](../local-toolchain/build-flash.mdx) or in your `build.yaml` file [when using Github Actions](../../customization.md). Note that this configuration value will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
+</TabItem>
+<TabItem value="split">
 
-**For split boards**, you will need to add configurations for the left and right sides. For example, if your split halves are named `my_board_left` and `my_board_right`, it would look like this:
+Split keyboards have multiple shield names defined, one for each part.
+For example, if your keyboard consists of two halves named `my_keyboard_left` and `my_keyboard_right`, it would look like this:
 
-```kconfig
-config SHIELD_MY_BOARD_LEFT
-    def_bool $(shields_list_contains,my_board_left)
+```kconfig title="Kconfig.shield"
+# No whitespace after the comma or in your part name!
+config SHIELD_MY_KEYBOARD_LEFT
+    def_bool $(shields_list_contains,my_keyboard_left)
 
-config SHIELD_MY_BOARD_RIGHT
-    def_bool $(shields_list_contains,my_board_right)
+# No whitespace after the comma or in your part name!
+config SHIELD_MY_KEYBOARD_RIGHT
+    def_bool $(shields_list_contains,my_keyboard_right)
 ```
+
+This will set the `SHIELD_MY_KEYBOARD_LEFT` flag to `y` whenever `my_keyboard_left` is used as the shield name.
+Likewise, when `my_keyboard_right` is used as the shield name the `SHIELD_MY_KEYBOARD_RIGHT` flag is set to `y`.
+The `SHIELD_MY_KEYBOARD_LEFT` and `SHIELD_MY_KEYBOARD_RIGHT` flags will be used in `Kconfig.defconfig` to set other properties about your shields, so make sure that they match.
+
+</TabItem>
+</SplitInvisTabs>
 
 ### Kconfig.defconfig
 
-The `Kconfig.defconfig` file is where overrides for various configuration settings
-that make sense to have different defaults when this shield is used. One main item
-that usually has a new default value set here is the `ZMK_KEYBOARD_NAME` value,
-which controls the display name of the device over USB and BLE.
+The `Kconfig.defconfig` file is used to set new defaults for configuration settings when this shield is used.
+One main item that usually has a new default value set here is the `ZMK_KEYBOARD_NAME` value, which controls the display name of the device over USB and BLE.
 
-The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file. Here's the simplest example file.
+The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file.
 
-:::danger
-The keyboard name must be less than or equal to 16 characters in length, otherwise the bluetooth advertising might fail and you will not be able to find your keyboard from your device.
-:::
+<SplitInvisTabs>
+<TabItem value="unibody">
 
-```kconfig
-if SHIELD_MY_BOARD
+```kconfig title="Kconfig.defconfig"
+if SHIELD_MY_KEYBOARD
 
+# Name must be less than 16 characters long!
 config ZMK_KEYBOARD_NAME
-    default "My Board"
+    default "My Keyboard"
 
 endif
 ```
 
-For split keyboards, `Kconfig.defconfig` needs to specify a few more options.
-Which side is central (usually the left) is determined via the configuration in this file.
+</TabItem>
+<TabItem value="split">
+
+For split keyboards, a central side (usually the left) is specified via the configuration in this file.
 For that side, the keyboard name is assigned and the central config is set.
-The peripheral side is typically not assigned a name since only the central will be advertising for connections to other devices.
+The peripheral side is not assigned a name.
 Finally, the split config needs to be set for both sides:
 
-```kconfig
-if SHIELD_MY_BOARD_LEFT
+```kconfig title="Kconfig.defconfig"
+if SHIELD_MY_KEYBOARD_LEFT
 
+# Name must be less than 16 characters long!
 config ZMK_KEYBOARD_NAME
-    default "My Board"
+    default "My Keyboard"
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
 endif
 
-if SHIELD_MY_BOARD_LEFT || SHIELD_MY_BOARD_RIGHT
+if SHIELD_MY_KEYBOARD_LEFT || SHIELD_MY_KEYBOARD_RIGHT
 
 config ZMK_SPLIT
     default y
@@ -150,7 +194,77 @@ config ZMK_SPLIT
 endif
 ```
 
+</TabItem>
+</SplitInvisTabs>
+
+### User Configuration Files
+
+In addition to the `Kconfig.shield` and `Kconfig.defconfig` files, many shields will also define a user configuration file called `my_keyboard.conf`.
+This file exists to provide "suggestions" of [configuration settings](../../config/index.md) for a user to select, such as enabling deep sleep.
+Note that the name should match the shield/part name defined in the [Kconfig.shield file](#Kconfig.shield).
+
+:::warning
+This file can also be used to set configuration options.
+However, if a flag is set in this file, **the user can no longer change it**.
+Though sometimes necessary, this method of setting configuration options is discouraged.
+The case for which this is necessary is due to be eliminated in the future, making this method redundant.
+:::
+
+<SplitInvisTabs>
+<TabItem value="unibody"></TabItem>
+<TabItem value="split">
+
+Split keyboards can have multiple `.conf` files, one for each part. For example:
+
+- `my_keyboard.conf` - Configuration elements affect both halves
+- `my_keyboard_left.conf` - Configuration elements only affect left half
+- `my_keyboard_left.conf` - Configuration elements only affect right half
+
+In most case you'll only need to use the .conf file that affects both halves of a split board.
+
+:::note
+The shared configuration in `my_keyboard.conf` is only applied when you are building with a [`zmk-config` folder](../local-toolchain/build-flash.mdx#building-from-zmk-config-folder) and it is present at `config/my_keyboard.conf`.
+:::
+
+</TabItem>
+</SplitInvisTabs>
+
 ## Shield Overlays
+
+<SplitTabs></SplitTabs>
+
+Shield overlay files contain a devicetree description that is merged with the primary board devicetree description during the firmware building process.
+There are three main things that need to be defined in this file:
+
+- Your keyboard scan (kscan) driver, which determines which GPIO pins to scan for key press events
+- Your matrix transform, which acts as a "bridge" between the kscan and the keymap
+- Your physical layout, which aggregates the above and (optionally) defines physical key positions so that the keyboard can be used with [ZMK Studio](../../features/studio.md).
+
+<SplitInvisTabs>
+<TabItem value="unibody">
+
+A unibody keyboard will have a single overlay file named `my_keyboard.overlay`, where `my_keyboard` is the shield name defined in the [Kconfig.shield file](#Kconfig.shield).
+
+</TabItem>
+<TabItem value="split">
+
+A split keyboard will have an overlay file defined for each split part.
+For example, if the keyboard is split into a left and a right half, these can be named:
+
+- `my_keyboard_left.overlay`
+- `my_keyboard_right.overlay`
+
+Here `my_keyboard_left` and `my_keyboard_right` are the shield names defined in the [Kconfig.shield file](#Kconfig.shield).
+
+Split keyboards often share some of their devicetree description.
+The standard approach is to have a core `my_keyboard.dtsi` (devicetree include) file, which is included into each of the shield overlays.
+
+</TabItem>
+</SplitInvisTabs>
+
+### Kscan
+
+The kscan node defines the controller GPIO pins that are used to scan for key press and release events. The pins are referred to using the GPIO labels noted in the pinouts below:
 
 <InterconnectTabs items={Metadata} />
 
@@ -158,25 +272,16 @@ To use GPIO pins that are not part of the interconnects as described above, you 
 For instance, pins numbered `PX.Y` in nRF52840-based boards can be referred to via `&gpioX Y` labels.
 An example is `&gpio1 7` for the `P1.07` pin that the nice!nano exposes in the middle of the board.
 
-<Tabs
-defaultValue="unibody"
-values={[
-{label: 'Unibody Shields', value: 'unibody'},
-{label: 'Split Shields', value: 'split'},
-]}>
+The [Keyboard Scan configuration documentation](../../config/kscan.md) has the full details on configuring the kscan driver.
 
+<SplitTabs>
 <TabItem value="unibody">
 
-The `<shield_name>.overlay` is the devicetree description of the keyboard shield that is merged with the primary board devicetree description before the build. For ZMK, this file at a minimum should include the chosen node named `zmk,kscan` that references a KSCAN driver instance. For a simple 3x3 macropad matrix,
-this might look something like:
+For a simple 3x3 macropad matrix, the kscan might look something like:
 
-```dts
+```dts title="my_keyboard.overlay"
 / {
-    chosen {
-        zmk,kscan = &kscan0;
-    };
-
-    kscan0: kscan_0 {
+    kscan0: kscan0 {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
         wakeup-source;
@@ -196,190 +301,162 @@ this might look something like:
 };
 ```
 
-See the [Keyboard Scan configuration documentation](../../config/kscan.md) for details on configuring the KSCAN driver.
-
 </TabItem>
-
 <TabItem value="split">
 
-### .dtsi files and Shield Overlays (Split Shields)
+For split keyboards you should define your kscan in `my_keyboard.dtsi`.
+If your `row-gpios` or your `col-gpios` (or both) are identical between the parts, then they should also be defined in `my_keyboard.dtsi`.
+For example, for a `col2row` 2-part split keyboard (18 keys split into a 3x3 macropad on both halves) where the "row" GPIOs used are the same for both halves:
 
-Unlike unibody keyboards, split keyboards have a core .dtsi file with shield overlays for each half of the keyboard.
-It is preferred to define only the `col-gpios` or `row-gpios` in the common shield .dtsi, depending on the `diode-direction` value.
-For `col2row` directed boards like the iris, the shared .dtsi file may look like this:
-
-```dts
-#include <dt-bindings/zmk/matrix_transform.h>
-
+```dts title="my_keyboard.dtsi"
 / {
-    chosen {
-        zmk,kscan = &kscan0;
-        zmk,matrix-transform = &default_transform;
-    };
-
-    default_transform: keymap_transform_0 {
-        compatible = "zmk,matrix-transform";
-        columns = <16>;
-        rows = <4>;
-// | SW6  | SW5  | SW4  | SW3  | SW2  | SW1  |                 | SW1  | SW2  | SW3  | SW4  | SW5  | SW6  |
-// | SW12 | SW11 | SW10 | SW9  | SW8  | SW7  |                 | SW7  | SW8  | SW9  | SW10 | SW11 | SW12 |
-// | SW18 | SW17 | SW16 | SW15 | SW14 | SW13 |                 | SW13 | SW14 | SW15 | SW16 | SW17 | SW18 |
-// | SW24 | SW23 | SW22 | SW21 | SW20 | SW19 | SW25 |   | SW25 | SW19 | SW20 | SW21 | SW22 | SW23 | SW24 |
-//                      | SW29 | SW28 | SW27 | SW26 |   | SW26 | SW27 | SW28 | SW29 |
-        map = <
-RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5)                 RC(0,6) RC(0,7) RC(0,8) RC(0,9) RC(0,10) RC(0,11)
-RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5)                 RC(1,6) RC(1,7) RC(1,8) RC(1,9) RC(1,10) RC(1,11)
-RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)                 RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10) RC(2,11)
-RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,2) RC(4,9) RC(3,6) RC(3,7) RC(3,8) RC(3,9) RC(3,10) RC(3,11)
-                                RC(4,3) RC(4,4) RC(4,5) RC(4,6) RC(4,7) RC(4,8)
-        >;
-    };
-
-    kscan0: kscan {
+    kscan0: kscan0 {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
         wakeup-source;
 
         row-gpios
-            = <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row A from the schematic file
-            , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row B from the schematic file
-            , <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row C from the schematic file
-            , <&pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row D from the schematic file
-            , <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // Row E from the schematic file
+            = <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
 
     };
 };
 ```
 
-:::note
-Notice that in addition to the common `row-gpios` that are declared in the kscan, the [matrix transform](#matrix-transform) is defined in the .dtsi.
-:::
+The missing `col-gpios` would be defined in your `my_keyboard_left.overlay` and `my_keyboard_right.overlay` files.
 
-The missing `col-gpios` would be defined in your `<boardname>_left.overlay` and `<boardname>_right.overlay` files.
-Keep in mind that the mirrored position of the GPIOs means that the `col-gpios` will appear reversed when the .overlay files are compared to one another.
-Furthermore, the column offset for the [matrix transform](#matrix-transform) should be added to the right half of the keyboard's overlay
-because the keyboard's switch matrix is read from left to right, top to bottom.
-This is exemplified with the iris .overlay files.
+```dts title="my_keyboard_left.overlay"
+#include "my_keyboard.dtsi" // The shared dtsi file is included in the overlay
 
-```dts title=iris_left.overlay
-#include "iris.dtsi" // Notice that the main dtsi files are included in the overlay.
-
+// Label of the kscan node in the dtsi
 &kscan0 {
     col-gpios
-        = <&pro_micro 19 GPIO_ACTIVE_HIGH> // col1 in the schematic
-        , <&pro_micro 18 GPIO_ACTIVE_HIGH> // col2 in the schematic
-        , <&pro_micro 15 GPIO_ACTIVE_HIGH> // col3 in the schematic
-        , <&pro_micro 14 GPIO_ACTIVE_HIGH> // col4 in the schematic
-        , <&pro_micro 16 GPIO_ACTIVE_HIGH> // col5 in the schematic
-        , <&pro_micro 10 GPIO_ACTIVE_HIGH> // col6 in the schematic
+        = <&pro_micro 19 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 18 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 15 GPIO_ACTIVE_HIGH>
         ;
 };
 ```
 
-```dts title=iris_right.overlay
-#include "iris.dtsi"
+```dts title="my_keyboard_right.overlay"
+#include "my_keyboard.dtsi" // The shared dtsi file is included in the overlay
 
-&default_transform { // The matrix transform for this board is 6 columns over because the left half is 6 columns wide according to the matrix.
-    col-offset = <6>;
-};
-
+// Label of the kscan node in the dtsi
 &kscan0 {
     col-gpios
-        = <&pro_micro 10 GPIO_ACTIVE_HIGH> // col6 in the schematic
-        , <&pro_micro 16 GPIO_ACTIVE_HIGH> // col5 in the schematic
-        , <&pro_micro 14 GPIO_ACTIVE_HIGH> // col4 in the schematic
-        , <&pro_micro 15 GPIO_ACTIVE_HIGH> // col3 in the schematic
-        , <&pro_micro 18 GPIO_ACTIVE_HIGH>  // col2 in the schematic
-        , <&pro_micro 19 GPIO_ACTIVE_HIGH>  // col1 in the schematic
+        = <&pro_micro 10 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 11 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 13 GPIO_ACTIVE_HIGH>
         ;
 };
-
 ```
-
-See the [Keyboard Scan configuration documentation](../../config/kscan.md) for details on configuring the KSCAN driver.
-
-### .conf files (Split Shields)
-
-While unibody boards only have one .conf file that applies configuration characteristics to the entire keyboard,
-split keyboards are unique in that they contain multiple .conf files with different scopes.
-For example, a split board called `my_awesome_split_board` would have the following files:
-
-- `my_awesome_split_board.conf` - Configuration elements affect both halves
-- `my_awesome_split_board_left.conf` - Configuration elements only affect left half
-- `my_awesome_split_board_right.conf` - Configuration elements only affect right half
-
-In most case you'll only need to use the .conf file that affects both halves of a split board. It's used for adding features like deep-sleep or rotary encoders.
-
-```ini title=my_awesome_split_board.conf
-CONFIG_ZMK_SLEEP=y
-```
-
-:::note
-The shared configuration in `my_awesome_split_board.conf` is only applied when you are building with a [`zmk-config` folder](../local-toolchain/build-flash.mdx#building-from-zmk-config-folder) and when it is present at `config/my_awesome_split_board.conf`. If you are not using a `zmk-config` folder, you will need to include the shared configuration in both `my_awesome_split_board_left.conf` and `my_awesome_split_board_right.conf` files.
-:::
 
 </TabItem>
-</Tabs>
+</SplitTabs>
 
-## Matrix Transform
+### Matrix Transform
 
-Internally ZMK translates all row/column events into "key position" events to maintain a consistent model that works no matter what any possible GPIO matrix may look like for a certain keyboard. This is particularly helpful when:
+The matrix transform is used to transform row/column events into "key position" events.
 
-1. To reduce the used pins, an "efficient" number of rows/columns for the GPIO matrix is used, that does _not_ match the physical layout of rows/columns of the actual key switches.
-1. For non rectangular keyboards with thumb clusters, non `1u` locations, etc.
+When a key is pressed, a kscan event is generated from it with a `row` and a `column` value corresponding to the zero-based indices of the `row-gpios` and `col-gpios` pins that triggered the event, respectively.
+Then, the "key position" triggered is the index of the `RC(row, column)` in the matrix transform where `row` and `column` are the indices as mentioned above.
+This key position will in turn have a behavior binding associated with it in the keymap.
 
-A "key position" is the numeric index (zero-based) of a given key, which identifies
-the logical key location as perceived by the end user. All _keymap_ mappings actually bind behaviors to _key positions_, not to row/column values.
+<SplitTabs>
+<TabItem value="unibody">
 
-The `<shield_name>.overlay` must include a matrix transform that defines this mapping from row/column values to key positions.
+The `my_keyboard.overlay` must include a matrix transform that defines this mapping from row/column values to key positions.
+Add `#include <dt-bindings/zmk/matrix_transform.h>` to the top of the file.
 
-Here is an example for the [nice60](https://github.com/Nicell/nice60), which uses an efficient 8x8 GPIO matrix, and uses a transform:
+Here is an example of a matrix transform for the previous 3x3 macropad:
 
-```dts
-#include <dt-bindings/zmk/matrix_transform.h>
+```dts title="my_keyboard.overlay"
+#include <dt-bindings/zmk/matrix_transform.h> // Put this with the other includes at the top of your overlay
 
 / {
-    /* define kscan node with label `kscan0`... */
-
-    default_transform: keymap_transform_0 {
+    default_transform: keymap_transform0 {
         compatible = "zmk,matrix-transform";
-        columns = <8>;
-        rows = <8>;
-// | MX1  | MX2  | MX3  | MX4  | MX5  | MX6  | MX7  | MX8  | MX9  | MX10 | MX11 | MX12 | MX13 |    MX14     |
-// |   MX15   | MX16 | MX17 | MX18 | MX19 | MX20 | MX21 | MX22 | MX23 | MX34 | MX25 | MX26 | MX27 |  MX28   |
-// |    MX29    | MX30 | MX31 | MX32 | MX33 | MX34 | MX35 | MX36 | MX37 | MX38 | MX39 | MX40 |     MX41     |
-// |     MX42      | MX43 | MX44 | MX45 | MX46 | MX47 | MX48 | MX49 | MX50 | MX51 | MX52 |       MX53       |
-// |  MX54  |  MX55  |  MX56  |                  MX57                   |  MX58  |  MX59  |  MX60  |  MX61  |
+        columns = <3>; // Length of the "col-gpios" array
+        rows = <3>; // Length of the "row-gpios" array
         map = <
-RC(3,0)  RC(2,0) RC(1,0) RC(0,0) RC(1,1) RC(0,1) RC(0,2) RC(1,3) RC(0,3) RC(1,4) RC(0,4) RC(0,5) RC(1,6)     RC(1,7)
-RC(4,0)    RC(4,1) RC(3,1) RC(2,1) RC(2,2) RC(1,2) RC(2,3) RC(3,4) RC(2,4) RC(2,5) RC(1,5) RC(2,6) RC(2,7)   RC(3,7)
-RC(5,0)     RC(5,1) RC(5,2) RC(4,2) RC(3,2) RC(4,3) RC(3,3) RC(4,4) RC(4,5) RC(3,5) RC(4,6) RC(3,6)          RC(4,7)
-RC(6,0)       RC(6,1) RC(6,2) RC(6,3) RC(5,3) RC(6,4) RC(5,4) RC(6,5) RC(5,5) RC(6,6) RC(5,6)                RC(5,7)
-RC(7,0)    RC(7,1)   RC(7,2)                     RC(7,3)                    RC(7,5)    RC(7,6)    RC(6,7)    RC(7,7)
+        //   Key 1 | Key 2 | Key 3
+            RC(0,0) RC(0,1) RC(0,2)
+        //   Key 4 | Key 5 | Key 6
+            RC(1,0) RC(1,1) RC(1,2)
+        //   Key 7 | Key 8 | Key 9
+            RC(2,0) RC(2,1) RC(2,2)
         >;
     };
-
-    /* potentially other overlay nodes... */
 };
 ```
 
-Some important things to note:
+</TabItem>
+<TabItem value="split">
 
-- The `#include <dt-bindings/zmk/matrix_transform.h>` is critical. The `RC` macro is used to generate the internal storage in the matrix transform, and is actually replaced by a C preprocessor before the final devicetree is compiled into ZMK.
-- `RC(row, column)` is placed sequentially to define what row and column values that position corresponds to.
-- If you have a keyboard with options for `2u` keys in certain positions, ANSI vs. ISO layouts, or break away portions, define one matrix transform for each possible arrangement to be used in the physical layouts. This will allow the users to select the right layout in their keymap files.
+Split keyboards should define their matrix transform in the shared `my_keyboard.dtsi`. Add `#include <dt-bindings/zmk/matrix_transform.h>` to the top of the file.
 
-See the [matrix transform section](../../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for details and more examples of matrix transforms.
+Here is an example of a matrix transform for the previous example (18-key double macropad):
 
-## Physical Layout
+```dts title="my_keyboard.dtsi"
+#include <dt-bindings/zmk/matrix_transform.h> // Put this with the other includes at the top of your dtsi
 
-The physical layout is the top level entity that aggregates all details about a certain possible layout for a keyboard: the matrix transform that defines the set of key positions and what row/column they correspond to, what kscan driver is used for that layout, etc.
-For keyboards that support multiple layouts, setting a `chosen` node to a defined physical layout in your keymap will allow selecting the specific layout that you've built.
+/ {
+    default_transform: keymap_transform0 {
+        compatible = "zmk,matrix-transform";
+        columns = <6>;
+        rows = <3>;
+        map = <
+        //  LKey 1 |LKey 2 |LKey 3      RKey 1 |RKey 2 |RKey 3
+            RC(0,0) RC(0,1) RC(0,2)     RC(0,3) RC(0,4) RC(0,5)
+        //  LKey 4 |LKey 5 |LKey 6      RKey 4 |RKey 5 |RKey 6
+            RC(1,0) RC(1,1) RC(1,2)     RC(1,3) RC(1,4) RC(1,5)
+        //  LKey 7 |LKey 8 |LKey 9      RKey 7 |RKey 8 |RKey 9
+            RC(2,0) RC(2,1) RC(2,2)     RC(2,3) RC(2,4) RC(2,5)
+        >;
+    };
+};
+```
+
+The above transform has 6 columns and three rows, while each half of the keyboard only has three columns and three rows.
+To allow the kscan matrices to be joined in the matrix transform, an offset is applied to the matrix transform of peripherals.
+
+```dts title="my_keyboard_right.overlay"
+&default_transform { // Offset of 3 because the left side has 3 columns
+    col-offset = <3>;
+};
+```
+
+This offset means that when the right half of the keyboard has a key event triggered by the GPIO pins at the indices `0,0` of its `row-gpios` and `col-gpios` arrays respectively, it will interpret it as an `RC(0,3)` event rather than an `RC(0,0)` event.
+Additional peripherals would need their columns to be offset by an ever increasing number equal to the sum of the columns in the central + any peripherals that came before it.
+You can also apply row offsets with `row-offset`.
+
+</TabItem>
+</SplitTabs>
+
+The matrix transform is also used to "correct" pin orderings into something that more closely matches the physical order of keys. Causes of abnormal pin orderings include:
+
+- To reduce the used pins, an "efficient" number of rows/columns for the GPIO matrix is used, that does _not_ match the physical layout of rows/columns of the actual key switches.
+- For non-rectangular keyboards with thumb clusters, non `1u` locations, etc.
+
+See the [in-tree keyboards](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) that ZMK defines for examples of more complex matrix transformations.
+
+Also see the [matrix transform section](../../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for further details and examples of matrix transforms.
+
+### Physical Layout
+
+The physical layout is the top level entity that aggregates all details about a certain possible layout:
+
+- Your keyboard scan (kscan) driver
+- Your matrix transform
+- (Optional) Physical key positions
+
+The physical layout should be placed in the same file as the matrix transform, i.e. `my_keyboard.overlay` for unibodies and `my_keyboard.dtsi` for split keyboards.
 
 A physical layout is very basic, e.g.:
 
-```
+```dts
 / {
     default_layout: default_layout {
         compatible = "zmk,physical-layout";
@@ -390,15 +467,11 @@ A physical layout is very basic, e.g.:
 };
 ```
 
-When supporting multiple layouts, define the multiple layout nodes and then set a `chosen` for the default:
+If a keyboard has multiple possible layouts (ex. you can snap off an outer column), then you should define multiple matrix transformations and multiple physical layouts.
+If necessary, you can also define multiple kscan instances.
 
-```
+```dts
 / {
-    chosen {
-        zmk,physical-layout = &default_layout;
-        ...
-    };
-
     default_layout: default_layout {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
@@ -415,37 +488,72 @@ When supporting multiple layouts, define the multiple layout nodes and then set 
 };
 ```
 
-This way, users can select a different layout by overriding the `zmk,physical-layout` chosen node in their keymap file.
+See [ZMK Studio Setup](./studio-setup.md) for information on defining the `keys` property for physical key positions that lets you enable [ZMK Studio](../../features/studio.md) for your keyboard.
+
+### Chosen Node
+
+Set the `chosen` node to a defined "default" physical layout. This should also be placed in the same file as the physical layout, i.e. `my_keyboard.overlay` for unibodies and `my_keyboard.dtsi` for split keyboards.
+
+```dts
+/ {
+    chosen {
+        zmk,physical-layout = &default_layout;
+        // Other chosen items
+    };
+};
+```
+
+If you define multiple physical layouts, users can select a different layout by overriding the `zmk,physical-layout` chosen node in their keymap file.
 
 :::note
-Some keyboards use different GPIO pins for different layouts, and need different kscan nodes created for each layout.
-However, if all of your physical layouts use the same `kscan` node under the hood, you can skip setting the `kscan` property on each
-layout and instead assign the `zmk,kscan` chosen node to your single kscan instance.
+If all of your physical layouts use the same `kscan` node under the hood, you can skip setting the `kscan` property on each layout and instead assign the `zmk,kscan` chosen node to your single kscan instance:
+
+```dts
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &default_layout;
+        // Other chosen items
+    };
+};
+```
+
 :::
 
 ## Default Keymap
 
-Each keyboard should provide a default keymap to be used when building the firmware, which can be overridden and customized by user configs. For "shield keyboards", this should be placed in the `boards/shields/<shield_name>/<shield_name>.keymap` file. The keymap is configured as an additional devicetree overlay that includes the following:
+Each keyboard should provide a default keymap to be used when building the firmware, which can be overridden and customized by user configs.
+For "shield keyboards", this should be placed in the `boards/shields/my_keyboard/my_keyboard.keymap` file.
+The keymap is configured as an additional devicetree overlay that includes the following:
 
-- A node with `compatible = "zmk,keymap"` where each child node is a layer with a `bindings` array that binds each key position to a given behavior (e.g. key press, momentary layer, etc).
+Here is an example simple keymap for a 3x3 macropad, with only one layer:
 
-Here is an example simple keymap for the Kyria, with only one layer:
+```dts title="my_keyboard.keymap"
+/ {
+    keymap {
+        compatible = "zmk,keymap";
 
-<KeymapExampleFile />
+        default_layer { // Layer 0
+            // -------------------------------------
+            // |     Z     |     M     |     K     |
+            // |     A     |     B     |     C     |
+            // |     D     |     E     |     F     |
+            bindings = <
+                &kp Z    &kp M    &kp K
+                &kp A    &kp B    &kp C
+                &kp D    &kp E    &kp F
+            >;
+        };
+    };
+ };
+```
 
-:::note
-The two `#include` lines at the top of the keymap are required in order to bring in the default set of behaviors to make them available to bind, and to import a set of defines for the key codes, so keymaps can use parameters like `N2` or `K` instead of the raw keycode numeric values.
-:::
-
-### Keymap Behaviors
-
-For documentation on the available behaviors for use in keymaps, see the [overview page for behaviors](../../keymaps/behaviors/index.mdx).
+The keymap should match the order of the keys in the [matrix transform](#matrix-transform) exactly, left to right, top to bottom (they are both 1 dimensional arrays rearranged with newline characters for better legibility).
+See [Keymaps](../../keymaps/index.mdx) for information on defining keymaps in ZMK.
 
 ## Metadata
 
 ZMK makes use of an additional metadata YAML file for all boards and shields to provide high level information about the hardware to be incorporated into setup scripts/utilities, website hardware list, etc.
-
-The naming convention for metadata files is `{item_id}.zmk.yml`, where the `item_id` is the board/shield identifier, including version information but excluding any optional split `_left`/`_right` suffix, e.g. `corne.zmk.yml` or `nrfmicro_11.zmk.yml`.
 
 Here is a sample `corne.zmk.yml` file from the repository:
 
@@ -465,91 +573,23 @@ siblings:
   - corne_right
 ```
 
-You should place a properly named `foo.zmk.yml` file in the directory next to your other shield values, and fill it out completely and accurately. See [Hardware Metadata Files](hardware-metadata-files.md) for the full details.
-
-## Build File
-
-To help you test/verify your firmware, update the `build.yaml` to list your particular board/shield combinations you want built whenever changes are published to GitHub. Open `build.yaml` with your editor and add a combination, e.g.:
-
-```yaml
-# This file generates the GitHub Actions matrix
-# For simple board + shield combinations, add them
-# to the top level board and shield arrays, for more
-# control, add individual board + shield combinations to
-# the `include` property, e.g:
-#
-# board: [ "nice_nano_v2" ]
-# shield: [ "corne_left", "corne_right" ]
-# include:
-#   - board: bdn9_rev2
-#   - board: nice_nano_v2
-#     shield: reviung41
-#
----
-include:
-  - board: nice_nano_v2
-    shield: <my_shield>
-```
-
-For split keyboards, you will need to specify the halves/siblings separately, e.g.:
-
-```yaml
-include:
-  - board: mikoto_520
-    shield: <my_shield>_left
-  - board: mikoto_520
-    shield: <my_shield>_right
-```
+You should place a properly named `my_keyboard.zmk.yml` file in the directory next to your other shield values, and fill it out completely and accurately.
+See [Hardware Metadata Files](hardware-metadata-files.md) for the full details.
 
 ## Testing
 
+Once you've defined everything as described above, you can build your firmware to make sure everything is working.
+
 ### GitHub Actions
 
-Using GitHub Actions to build your new firmware can save you from doing any local [development setup](../local-toolchain/setup/index.md),
-at the expense of a longer feedback loop if there are issues. To push your changes and trigger a build:
+To use GitHub Actions to test, push the files defining the keyboard to GitHub.
+Next, [update the `build.yaml`](../../customization.md#building-additional-keyboards) of your `zmk-config` to build your keyboard.
 
-- Add all your pending changes with `git add .`
-- Commit your changes with `git commit -m "Initial shield"`
-- Push the changes to GitHub with `git push`
+- If your shield is defined in your `zmk-config`, then the shield should start building.
+- If the shield is defined in a separate module, you will need to [adjust your `west.yml` to reference the module](https://zmk.dev/docs/features/modules#building-with-modules).
 
-Once pushed, click on the "Actions" tab of the repo you created in the first step, and you should see a new build running. If the build is successful, there will be a new `firmware.zip` artifact shown on the summary screen you can download that will contain the new `.uf2` files that can be flashed to the device.
+### Local Toolchain
 
-### Local Build
-
-:::note
-To build locally, be sure you've followed the [development setup](../local-toolchain/setup/index.md) guide first.
-:::
-
-Once you've fully created the new keyboard shield definition,
-you should be able to test with a build command like:
-
-```sh
-west build --pristine -b nice_nano_v2 -- -DSHIELD=<my_shield> -DZMK_EXTRA_MODULES=/full/path/to/your/module
-# replace <my_shield> with e.g. <my_shield>_left for split keyboards, then repeat for <my_shield>_right
-```
-
-The above build command generates a `build/zephyr/zmk.uf2` file that you can flash using the steps from the following section. See the dedicated [building and flashing page](../local-toolchain/build-flash.mdx) for more details.
-
-### Flashing
-
-If your board
-supports USB Flashing Format (UF2), copy that file onto the root of the USB mass
-storage device for your board. The controller should flash your built firmware
-and automatically restart once flashing is complete. If you need to flash an updated
-UF2 file with fixes, you can re-enter the bootloader by double tapping the reset button.
-
-Alternatively, if your board supports flashing and you're not developing from
-within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on
-your board and run the following command to test your build:
-
-```sh
-west flash
-```
-
-Please have a look at documentation specific to
-[building and flashing](../local-toolchain/build-flash.mdx) for additional information.
-
-:::note
-Further testing your keyboard shield without altering the root keymap file can be done with the use of `-DZMK_CONFIG` in your `west build` command,
-shown [here](../local-toolchain/build-flash.mdx#building-from-zmk-config-folder)
-:::
+You can also use a local toolchain setup to test your keyboard.
+Follow [our guide for getting set up](../local-toolchain/setup/index.md), then follow the [instructions for building and flashing locally](../local-toolchain/build-flash.mdx).
+You will need to specify the module of your keyboard when building.
