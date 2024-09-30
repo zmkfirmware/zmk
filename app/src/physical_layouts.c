@@ -29,6 +29,11 @@ ZMK_EVENT_IMPL(zmk_physical_layout_selection_changed);
 #define USE_PHY_LAYOUTS                                                                            \
     (DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) && !DT_HAS_CHOSEN(zmk_matrix_transform))
 
+BUILD_ASSERT(
+    !IS_ENABLED(CONFIG_ZMK_STUDIO) || USE_PHY_LAYOUTS,
+    "ZMK Studio requires physical layouts with key positions, and no chosen zmk,matrix-transform. "
+    "See https://zmk.dev/docs/development/hardware-integration/studio-setup");
+
 #if USE_PHY_LAYOUTS
 
 #define ZKPA_INIT(i, n)                                                                            \
@@ -43,6 +48,9 @@ ZMK_EVENT_IMPL(zmk_physical_layout_selection_changed);
     }
 
 #define ZMK_LAYOUT_INST(n)                                                                         \
+    BUILD_ASSERT(!IS_ENABLED(CONFIG_ZMK_STUDIO) || DT_INST_NODE_HAS_PROP(n, keys),                 \
+                 "ZMK Studio requires physical layouts with key positions. See "                   \
+                 "https://zmk.dev/docs/development/hardware-integration/studio-setup");            \
     static const struct zmk_key_physical_attrs const _CONCAT(                                      \
         _zmk_physical_layout_keys_, n)[DT_INST_PROP_LEN_OR(n, keys, 0)] = {                        \
         LISTIFY(DT_INST_PROP_LEN_OR(n, keys, 0), ZKPA_INIT, (, ), n)};                             \
