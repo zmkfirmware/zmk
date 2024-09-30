@@ -3,7 +3,7 @@
 / {
     foostan_corne_6col_layout: foostan_corne_6col_layout {
         compatible = "zmk,physical-layout";
-        display-name = "6-column";
+        display-name = "6 Column";
 
         keys  //                     w   h    x    y     rot    rx    ry
             = <&key_physical_attrs 100 100    0   37       0     0     0>
@@ -53,7 +53,7 @@
 
     foostan_corne_5col_layout: foostan_corne_5col_layout {
         compatible = "zmk,physical-layout";
-        display-name = "5-column";
+        display-name = "5 Column";
 
         keys  //                     w   h    x    y     rot    rx    ry
             = <&key_physical_attrs 100 100    0   37       0     0     0>
