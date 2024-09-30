@@ -122,12 +122,12 @@ The `SHIELD_MY_KEYBOARD` flag will be used in `Kconfig.defconfig` to set other p
 Split keyboards have multiple shield names defined, one for each part.
 For example, if your keyboard consists of two halves named `my_keyboard_left` and `my_keyboard_right`, it would look like this:
 
-```kconfig
-# No whitespace after the comma or in your board name!
+```kconfig title="Kconfig.shield"
+# No whitespace after the comma or in your part name!
 config SHIELD_MY_KEYBOARD_LEFT
     def_bool $(shields_list_contains,my_keyboard_left)
 
-# No whitespace after the comma or in your board name!
+# No whitespace after the comma or in your part name!
 config SHIELD_MY_KEYBOARD_RIGHT
     def_bool $(shields_list_contains,my_keyboard_right)
 ```
@@ -191,8 +191,8 @@ endif
 ### User Configuration Files
 
 In addition to the `Kconfig.shield` and `Kconfig.defconfig` files, many shields will also define a user configuration file called `my_keyboard.conf`.
-This file exists to provide "suggestions" of [configuration settings](../../config/index.md) for a user to select, such as enabling deep-sleep.
-Note that the name should match the shield name defined in the [Kconfig.defconfig section](#Kconfig.defconfig).
+This file exists to provide "suggestions" of [configuration settings](../../config/index.md) for a user to select, such as enabling deep sleep.
+Note that the name should match the shield/part name defined in the [Kconfig.shield file](#Kconfig.shield).
 
 :::warning
 This file can also be used to set configuration options.
@@ -224,20 +224,21 @@ The shared configuration in `my_keyboard.conf` is only applied when you are buil
 Shield overlay files contain a devicetree description that is merged with the primary board devicetree description during the firmware building process.
 There are three main things that need to be defined in this file:
 
-- Your keyboard scan (kscan) driver, which determines which GPIO pins to scan for keypress events
+- Your keyboard scan (kscan) driver, which determines which GPIO pins to scan for key press events
 - Your matrix transform, which acts as a "bridge" between the kscan and the keymap
 - Your physical layout, which aggregates the above and (optionally) defines physical key positions so that the keyboard can be used with [ZMK Studio](../../features/studio.md).
 
 <SplitInvisTabs>
 <TabItem value="unibody">
-A unibody keyboard will have a single overlay file named `my_keyboard.overlay`, where `my_keyboard` is the shield name defined in the [Kconfig.defconfig section](#Kconfig.defconfig).
+A unibody keyboard will have a single overlay file named `my_keyboard.overlay`, where `my_keyboard` is the shield name defined in the [Kconfig.shield file](#Kconfig.shield).
 </TabItem>
 <TabItem value="split">
 A split keyboard will have an overlay file defined for each split part.
-For example, if the keyboard is split into a left and a right half:
+For example, if the keyboard is split into a left and a right half, these can be named:
 - `my_keyboard_left.overlay`
 - `my_keyboard_right.overlay`
-  Here `my_keyboard_left` and `my_keyboard_right` are the shield names defined in the [Kconfig.defconfig section](#Kconfig.defconfig).
+
+Here `my_keyboard_left` and `my_keyboard_right` are the shield names defined in the [Kconfig.shield file](#Kconfig.shield).
 
 Split keyboards often share some of their devicetree description.
 The standard approach is to have a core `my_keyboard.dtsi` (devicetree include) file, which is included into each of the shield overlays.
@@ -247,6 +248,7 @@ The standard approach is to have a core `my_keyboard.dtsi` (devicetree include) 
 
 ### Kscan
 
+The kscan node defines the controller GPIO pins that are used to scan for key press and release events. The pins are referred to using the GPIO labels noted in the pinouts below:
 <InterconnectTabs items={Metadata} />
 
 To use GPIO pins that are not part of the interconnects as described above, you can use the GPIO labels that are specific to each controller type.
@@ -285,7 +287,7 @@ For a simple 3x3 macropad matrix, the kscan might look something like:
 <TabItem value="split">
 For split keyboards you should define your kscan in `my_keyboard.dtsi`.
 If your `row-gpios` or your `col-gpios` (or both) are identical between the parts, then they should also be defined in `my_keyboard.dtsi`.
-For example, for a `col2row` 2-part split keyboard (18 keys split into a 3x3 macropad on both halves) where the "row" GPIOs used are the same for both  halves:
+For example, for a `col2row` 2-part split keyboard (18 keys split into a 3x3 macropad on both halves) where the "row" GPIOs used are the same for both halves:
 
 ```dts title="my_keyboard.dtsi"
 / {
@@ -307,7 +309,7 @@ For example, for a `col2row` 2-part split keyboard (18 keys split into a 3x3 mac
 The missing `col-gpios` would be defined in your `my_keyboard_left.overlay` and `my_keyboard_right.overlay` files.
 
 ```dts title="my_keyboard_left.overlay"
-#include "my_keyboard.dtsi" // The main dtsi files are included in the overlay.
+#include "my_keyboard.dtsi" // The shared dtsi file is included in the overlay
 
 // Label of the kscan node in the dtsi
 &kscan0 {
@@ -320,7 +322,7 @@ The missing `col-gpios` would be defined in your `my_keyboard_left.overlay` and 
 ```
 
 ```dts title="my_keyboard_right.overlay"
-#include "my_keyboard.dtsi" // The main dtsi files are included in the overlay.
+#include "my_keyboard.dtsi" // The shared dtsi file is included in the overlay
 
 // Label of the kscan node in the dtsi
 &kscan0 {
@@ -339,8 +341,9 @@ The missing `col-gpios` would be defined in your `my_keyboard_left.overlay` and 
 
 The matrix transform is used to transform row/column events into "key position" events.
 
-When a key is pressed, a kscan event is generated from it with a row value and a column value corresponding to the index (from 0) of the `row-gpios` pin and `col-gpios` pin respectively that triggered the event.
-The "key position" triggered is the index of the `RC(row, column)` in the matrix transform that correponds to the kscan event.
+When a key is pressed, a kscan event is generated from it with a `row` and a `column` value corresponding to the zero-based indices of the `row-gpios` and `col-gpios` pins that triggered the event, respectively.
+Then, the "key position" triggered is the index of the `RC(row, column)` in the matrix transform where `row` and `column` are the indices as mentioned above.
+This key position will in turn have a behavior binding associated with it in the keymap.
 
 <SplitTabs>
 <TabItem value="unibody">
@@ -396,7 +399,7 @@ Here is an example of a matrix transform for the previous example (18-key double
 ```
 
 The above transform has 6 columns and three rows, while each half of the keyboard only has three columns and three rows.
-To allow the kscan matricies to be joined in the matrix transform, an offset is applied to the matrix transform of peripherals.
+To allow the kscan matrices to be joined in the matrix transform, an offset is applied to the matrix transform of peripherals.
 
 ```dts title="my_keyboard_right.overlay"
 &default_transform { // Offset of 3 because the left side has 3 columns
@@ -404,7 +407,7 @@ To allow the kscan matricies to be joined in the matrix transform, an offset is 
 };
 ```
 
-This offset means that when the right half of the keyboard has a keypress event triggered by the GPIO pins at the indicies `0,0` of its `row-gpios` and `col-gpios` arrays respectively, it will interpret it as an `RC(0,3)` event rather than an `RC(0,0)` event.
+This offset means that when the right half of the keyboard has a key event triggered by the GPIO pins at the indices `0,0` of its `row-gpios` and `col-gpios` arrays respectively, it will interpret it as an `RC(0,3)` event rather than an `RC(0,0)` event.
 Additional peripherals would need their columns to be offset by an ever increasing number equal to the sum of the columns in the central + any peripherals that came before it.
 
 Note that you can also apply row offsets with `row-offset`.
@@ -458,11 +461,11 @@ If necessary, you can also define multiple kscan instances.
 };
 ```
 
-See [Studio Setup](./studio-setup.md) for information on defining the physical key positions enabling [ZMK Studio](../../features/studio.md) for your keyboard.
+See [ZMK Studio Setup](./studio-setup.md) for information on defining the `keys` property for physical key positions that lets you enable [ZMK Studio](../../features/studio.md) for your keyboard.
 
 ### Chosen Node
 
-Set the `chosen` node to a defined "default" physical layout.
+Set the `chosen` node to a defined "default" physical layout. This should also be placed in the same file as the physical layout, i.e. `my_keyboard.overlay` for unibodies and `my_keyboard.dtsi` for split keyboards.
 
 ```dts
 / {
