@@ -28,9 +28,8 @@ The high level steps are:
 - Add a default keymap, which users can override in their own configs as needed.
 - Add a `<my_shield>.zmk.yml` metadata file to document the high level details of your shield, and the features it supports.
 - Update the `build.yaml` file from the repository template to have some sample builds of the firmware to test.
-- Add support for features such as encoders, OLED displays, or RGB underglow.
 
-It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
+After adding ZMK support for a basic shield using this guide, check the sidebar for guides on adding any additional features (such as encoders) that your keyboard has. It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
 :::note
 ZMK support for [split keyboards](../../features/split-keyboards.md) requires a few more files than single boards to ensure proper connectivity between the central and peripheral units. Check the following guides thoroughly to ensure that all the files are in place.
@@ -501,97 +500,6 @@ include:
   - board: mikoto_520
     shield: <my_shield>_right
 ```
-
-## Adding Features
-
-### Encoders
-
-EC11 encoder support can be added to your board or shield by adding the appropriate lines to your board/shield's configuration (.conf), device tree (.dtsi), overlay (.overlay), and keymap (.keymap) files.
-
-<Tabs
-defaultValue="conf"
-values={[
-{label: '.conf', value: 'conf'},
-{label: '.dtsi', value: 'dtsi'},
-{label: '.overlay', value: 'overlay'},
-{label: '.keymap', value: 'keymap'},
-]}>
-<TabItem value="conf">
-
-In your configuration file you will need to add the following lines so that the encoders can be enabled/disabled:
-
-```ini
-# Uncomment to enable encoder
-# CONFIG_EC11=y
-# CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y
-```
-
-These should be commented by default for encoders that are optional/can be swapped with switches, but can be uncommented if encoders are part of the default design.
-
-:::note
-If building locally for split boards, you may need to add these lines to the specific half's configuration file as well as the combined configuration file.
-:::
-
-</TabItem>
-<TabItem value = "dtsi">
-In your device tree file you will need to add the following lines to define the encoder sensor:
-
-```dts
-    left_encoder: encoder_left {
-        compatible = "alps,ec11";
-        a-gpios = <PIN_A (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        b-gpios = <PIN_B (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        steps = <80>;
-        status = "disabled";
-    };
-```
-
-Here you need to replace `PIN_A` and `PIN_B` with the appropriate pins that your PCB utilizes for the encoder(s). See [shield overlays section above](#shield-overlays) on the appropriate node label and pin number to use for GPIOs.
-
-The `steps` property should corresponded to the documented pulses per rotation for the encoders used on the keyboard, typically found on the datasheet of the component. If users use different encoders when they build, the value can be overridden in their keymap.
-
-Add additional encoders as necessary by duplicating the above lines, replacing `left` with whatever you would like to call your encoder, and updating the pins. Note that support for peripheral (right) side sensors over BLE is still in progress.
-
-Once you have defined the encoder sensors, you will have to add them to the list of sensors:
-
-```dts
-    sensors: sensors {
-        compatible = "zmk,keymap-sensors";
-        sensors = <&left_encoder &right_encoder>;
-        triggers-per-rotation = <20>;
-    };
-```
-
-In this example, a left_encoder and right_encoder are both added. Additional encoders can be added with spaces separating each, and the order they are added here determines the order in which you define their behavior in your keymap.
-
-In addition, a default value for the number of times the sensors trigger the bound behavior per full rotation is set via the `triggers-per-rotation` property. See [Encoders Config](../../config/encoders.md#devicetree) for more details.
-
-</TabItem>
-<TabItem value = "overlay">
-Add the following lines to your overlay file(s) to enable the encoder:
-
-```dts
-&left_encoder {
-    status = "okay";
-};
-```
-
-:::note
-For split keyboards, make sure to add left hand encoders to the left .overlay file and right hand encoders to the right .overlay file.
-:::
-
-</TabItem>
-<TabItem value = "keymap">
-Add the following line to your keymap file to add default encoder behavior bindings:
-
-```dts
-sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-```
-
-Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](../../features/encoders.md) and [Keymaps](../../keymaps/index.mdx) documentation pages for more details.
-
-</TabItem>
-</Tabs>
 
 ## Testing
 

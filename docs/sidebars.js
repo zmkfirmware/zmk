@@ -129,6 +129,7 @@ module.exports = {
             "development/hardware-integration/boards-shields-keymaps",
             "development/hardware-integration/studio-setup",
             "development/hardware-integration/shift-registers",
+            "development/hardware-integration/encoders",
           ],
         },
         {
