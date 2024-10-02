@@ -139,7 +139,7 @@ values={[
     spi0_default: spi0_default {
         /* group 1 (name is arbitrary) */
         group1 {
-            /* main role: configure P0.1 as SPI clock, P0.2 as SPI MOSI, P0.3 as SPI MISO */
+            /* main role: configure P0.01 as SPI clock, P0.02 as SPI MOSI, P0.03 as SPI MISO */
             psels = <NRF_PSEL(SPIM_SCK, 0, 1)>,
                     <NRF_PSEL(SPIM_MOSI, 0, 2)>,
                     <NRF_PSEL(SPIM_MISO, 0, 3)>;
@@ -150,7 +150,7 @@ values={[
     spi0_sleep: spi0_sleep {
         /* group 1 */
         group1 {
-            /* main role: configure P0.1 as SPI clock, P0.2 as SPI MOSI, P0.3 as SPI MISO */
+            /* main role: configure P0.01 as SPI clock, P0.02 as SPI MOSI, P0.03 as SPI MISO */
             psels = <NRF_PSEL(SPIM_SCK, 0, 1)>,
                     <NRF_PSEL(SPIM_MOSI, 0, 2)>,
                     <NRF_PSEL(SPIM_MISO, 0, 3)>;
@@ -164,7 +164,7 @@ values={[
 Pins are always selected via assignments to `psels`. `NRF_PSEL` is a helper macro with the following arguments:
 - Pin function configuration. This is the `name` portion of one of the `NRF_FUNC_{name}` macros found in `zephyr/include/zephyr/dt-bindings/pinctrl/nrf-pinctrl.h`.
 - Port (0 or 1).
-- Pin (0..31).
+- Pin (0 to 31).
 
 The following pin properties can be assigned to groups:
 
@@ -221,7 +221,7 @@ The following pin properties can be assigned to groups:
 - bias-pull-up: Enable pull-up resistor.
 - bias-pull-down: Enable pull-down resistor.
 - input-enable: Enable input from the pin.
-- input-schmitt-enable: Enable input hysteresys.
+- input-schmitt-enable: Enable input hysteresis.
 - drive-strength: Set the drive strength of the pin, in milliamps. Possible values are: 2, 4, 8, 12 (default: 4mA)
 - slew-rate: If set to 0, slew rate is set to slow. If set to 1, it is set to fast.
 
