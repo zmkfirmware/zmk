@@ -13,7 +13,7 @@ This page exists to provide a guide to [Pin Control](https://docs.zephyrproject.
 A basic keyboard design as introduced in the [new shield guide](./new-shield.mdx) only uses its pins for the keyboard matrix. Many keyboard designs make use of advanced components or functionality, such as displays or shift registers. This results in the keyboard making use of communication protocols such as (but not limited to) SPI, I2C, or UART. Configuring pins for the usage of advanced functionality such as drivers for the previously named protocols is referred to as "Pin Control".
 
 :::warning
-The details of pin control can vary from vendor to vendor. An attempt was made to be as general as possible, but it isn't possible to cover all possible cases. The approaches for the nRF52840 and rp2040 MCUs/SoCs are documented in their entirety below. For other MCUs/SoCs, please refer to the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/index.html) and the examples and other files found in-tree of [ZMK](https://github.com/zmkfirmware/zmk/tree/main/app/boards) and [ZMK's fork of Zephyr](https://github.com/zmkfirmware/zephyr).
+The details of pin control can vary from vendor to vendor. An attempt was made to be as general as possible, but it isn't possible to cover all possible cases. The approaches for the nRF52840 and RP2040 MCUs/SoCs are documented in their entirety below. For other MCUs/SoCs, please refer to the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/index.html) and the examples and other files found in-tree of [ZMK](https://github.com/zmkfirmware/zmk/tree/main/app/boards) and [ZMK's fork of Zephyr](https://github.com/zmkfirmware/zephyr).
 :::
 
 ## Boards, Shields, and Modules
@@ -63,12 +63,12 @@ It is _strongly_ recommended that in addition to doing the above as a "temporary
 
 ## Pin Selection
 
-Prior to setting up pin control, you will want to make sure that the pins you use are suitable for the driver that you are using. For this purpose, you will most likely need to consult the datasheet of your MCU/SoC directly. Different MCUs/SoCs have different restrictions in regards to this. The nRF52840 and rp2040 are excellent examples:
+Prior to setting up pin control, you will want to make sure that the pins you use are suitable for the driver that you are using. For this purpose, you will most likely need to consult the datasheet of your MCU/SoC directly. Different MCUs/SoCs have different restrictions in regards to this. The nRF52840 and RP2040 are excellent examples:
 
 - The nRF52840 has its pins marked as either low frequency or high frequency.
   - Low frequency pins are limited to a frequency of 10KHz, making them unusable for I2C, UART, and (most of) SPI.
   - High frequency pins can be used for almost all protocols that the nRF52840 is capable of, without restrictions. The exception is QSPI, which is restricted to specific high frequency pins (QSPI is mostly irrelevant for keyboard designs).
-- The rp2040 supports two SPI buses labeled SPI0 and SPI1, two I2C buses labeled I2C0 and I2C1, and two UART buses labeled UART0 and UART1. It restricts its pins to particular functions for each of these. For example, pin 0 can be used as the RX pin of SPI0, the TX pin of UART0, or the SDA pin of I2C0. <br/><br/> You will need to make sure that the pins you select all lie on the same bus and fulfil each of the functions necessary for the bus to function. So for a fully functioning SPI0 bus, you would need to select a SPI0 RX pin, a SPI0 TX pin, and a SPI0 SCK pin.<br/><br/> The rp2040 also comes with programmable input/output blocks (PIO) that can be used to emulate protocols such as (but not limited to) the previously named protocols. Using PIO adds some complexity though, and there are a limited number of PIO blocks, so it is recommended that you stick to the predefined buses where possible.
+- The RP2040 supports two SPI buses labeled SPI0 and SPI1, two I2C buses labeled I2C0 and I2C1, and two UART buses labeled UART0 and UART1. It restricts its pins to particular functions for each of these. For example, pin 0 can be used as the RX pin of SPI0, the TX pin of UART0, or the SDA pin of I2C0. <br/><br/> You will need to make sure that the pins you select all lie on the same bus and fulfil each of the functions necessary for the bus to function. So for a fully functioning SPI0 bus, you would need to select a SPI0 RX pin, a SPI0 TX pin, and a SPI0 SCK pin.<br/><br/> The RP2040 also comes with programmable input/output blocks (PIO) that can be used to emulate protocols such as (but not limited to) the previously named protocols. Using PIO adds some complexity though, and there are a limited number of PIO blocks, so it is recommended that you stick to the predefined buses where possible.
 
 Note that not all peripherals require all pins to be defined - for example, there are plenty of SPI devices which do not require either the MISO (Main In, Sub Out) or the MOSI (Main Out, Sub In) pin.
 
@@ -77,7 +77,7 @@ Note that not all peripherals require all pins to be defined - for example, ther
 Pin control consists of two parts:
 
 1. Defining and grouping the pins together for a driver
-2. Defining a driver node and assigning pin groups to it
+2. Augmenting a driver/bus node and assigning pin groups to it
 
 It is standard to do this in two separate files. Create a file called `<my-board>-pinctrl.dtsi`, which will be used for the first part. This file will later be imported into your board's `.dts`. To avoid namespace collisions, if you are configuring pin control for a [shield](#boards-shields-and-modules), then you should write the contents of both parts into the `.overlay` file directly.
 
@@ -86,7 +86,7 @@ It is standard to do this in two separate files. Create a file called `<my-board
 The specifics of pin control for a particular MCU/SoC are presented via a [devicetree bindings](https://docs.zephyrproject.org/latest/build/dts/bindings-intro.html) file, found under `zephyr/dts/bindings/pinctrl/`.
 
 - The nRF52840 uses the `zephyr/dts/bindings/pinctrl/nordic,nrf-pinctrl.yaml` file.
-- The rp2040 uses the `zephyr/dts/bindings/pinctrl/raspberrypi,pico-pinctrl.yaml` file.
+- The RP2040 uses the `zephyr/dts/bindings/pinctrl/raspberrypi,pico-pinctrl.yaml` file.
 
 These files often contain useful comments on pin control for their devices, and so can be worth a read in addition to this page.
 
@@ -98,7 +98,7 @@ MCUs/SoCs will also have pinctrl header files found under `zephyr/include/zephyr
 nrf-pinctrl.h -> nrf_common.dtsi -> nrf52840.dtsi -> nrf52840_qiaa.dtsi
 ```
 
-The corresponding file for the rp2040 (`rpi_pico/rp2040.dtsi`), however, does not include the pinctrl header. Hence you will need to import said header at the top of your `<my-board>-pinctrl.dtsi` file:
+The corresponding file for the RP2040 (`rpi_pico/rp2040.dtsi`), however, does not include the pinctrl header. Hence you will need to import said header at the top of your `<my-board>-pinctrl.dtsi` file:
 
 ```dts title="<my-board>-pinctrl.dtsi"
 #include <dt-bindings/pinctrl/rpi-pico-rp2040-pinctrl.h>
@@ -124,13 +124,13 @@ Within said node, you will configure one or more child nodes for the buses. You 
 The child nodes that you define should be named appropriately. The common naming schema is `usageNumber_state`. For example, `uart0_default`.
 
 Child nodes are (generally, there are[exceptions](https://docs.zephyrproject.org/3.5.0/hardware/pinctrl/index.html#pin-configuration)) expected to contain one or more subnodes typically named "groupX". These are for grouping together pins that should be assigned the same state, such as enabling an internal pull-up.
-Below are some examples of SPI child nodes for the nRF52840 and the rp2040. Further examples are contained within the comments of the respecting `pinctrl.yaml` files.
+Below are some examples of SPI child nodes for the nRF52840 and the RP2040. Further examples are contained within the comments of the respecting `pinctrl.yaml` files.
 
 <Tabs
 defaultValue="nrf52840"
 values={[
 {label: 'nRF52840', value: 'nrf52840'},
-{label: 'rp2040', value: 'rp2040'},
+{label: 'RP2040', value: 'rp2040'},
 ]}>
 <TabItem value="nrf52840">
 ```dts title="<board>-pinctrl.dtsi"
@@ -217,13 +217,13 @@ The values that can be listed in `pinmux` to assign functionality to pins are li
 
 The following pin properties can be assigned to groups:
 
-- bias-disable: Disable pull-up/down (default, not required).
-- bias-pull-up: Enable pull-up resistor.
-- bias-pull-down: Enable pull-down resistor.
-- input-enable: Enable input from the pin.
-- input-schmitt-enable: Enable input hysteresis.
-- drive-strength: Set the drive strength of the pin, in milliamps. Possible values are: 2, 4, 8, 12 (default: 4mA)
-- slew-rate: If set to 0, slew rate is set to slow. If set to 1, it is set to fast.
+- `bias-disable`: Disable pull-up/down (default, not required).
+- `bias-pull-up`: Enable pull-up resistor.
+- `bias-pull-down`: Enable pull-down resistor.
+- `input-enable`: Enable input from the pin.
+- `input-schmitt-enable`: Enable input hysteresis.
+- `drive-strength`: Set the drive strength of the pin, in milliamps. Possible values are: 2, 4, 8, 12 (default: 4mA)
+- `slew-rate`: If set to 0, slew rate is set to slow. If set to 1, it is set to fast.
 
 </TabItem>
 </Tabs>
@@ -236,7 +236,7 @@ Once pin control for a driver/bus has been defined, you'll need to adjust anothe
 - If defining boards with multiple revisions/versions that share pin control, `<board>-common.dtsi` (which is then included by each `<board>_<revision>.dtsi`)
 - If [configuring boards for a shield](#boards-shields-and-modules), directly in the `<board>.overlay` file
 
-You'll want to identify the correct node for you to be changing. The nRF52840 has nodes defined in `dts/arm/nordic/nrf52840.dtsi`, while the rp2040 has nodes defined in `dts/arm/rpi_pico/rp2040.dtsi`. **Make sure the node that you're using is not already in use elsewhere.**
+You'll want to identify the correct node for you to be changing. The nRF52840 has nodes defined in `dts/arm/nordic/nrf52840.dtsi`, while the RP2040 has nodes defined in `dts/arm/rpi_pico/rp2040.dtsi`. **Make sure the node that you're using is not already in use elsewhere.**
 
 Adjust the node like so:
 
@@ -244,7 +244,7 @@ Adjust the node like so:
 defaultValue="nrf52840"
 values={[
 {label: 'nRF52840', value: 'nrf52840'},
-{label: 'rp2040', value: 'rp2040'},
+{label: 'RP2040', value: 'rp2040'},
 ]}>
 <TabItem value="nrf52840">
 ```dts title="<board>.dts"
@@ -267,9 +267,9 @@ values={[
 </Tabs>
 This assigns the pins defined in the previous section's examples to the `spi0` node.
 
-Notice that the nRF52840 assigns two items. This is because nodes making use of pin control come with two states by default (though they can have more), a `default` state and a `sleep` state. The nRF52840 can put pins into a "low power state", to reduce power consumption while on sleep. If the rp2040 node made use of pullup or pulldown resistors which had a risk of power leakage while asleep, then it would also define an additional `pinctrl` child node and assign it like in the nRF52840 example.
+Notice that the nRF52840 assigns two items. This is because nodes making use of pin control come with two states by default (though they can have more), a `default` state and a `sleep` state. The nRF52840 can put pins into a "low power state", to reduce power consumption while on sleep. If the RP2040 node made use of pullup or pulldown resistors which had a risk of power leakage while asleep, then it would also define an additional `pinctrl` child node and assign it like in the nRF52840 example.
 
-The nRF52840 example also changes the `compatible` assignment to use SPIM rather than SPI, since it is taking on the "main" role. Check the datasheet for more information about SPIM. The rp2040 makes no such distinction.
+The nRF52840 example also changes the `compatible` assignment to use SPIM rather than SPI, since it is taking on the "main" role. Check the datasheet for more information about SPIM. The RP2040 makes no such distinction.
 
 ### Alias
 
@@ -319,7 +319,7 @@ Additional information on configuring specific SPI buses can be found in other p
 
 ### RP2040 PIO
 
-The [previous rp2040 example](#pinctrl-node) also configured pins for use with an RP2040 PIO block. To use PIO with SPI (or another purpose) you'll need to adjust the `pio0` or `pio1` nodes as follows:
+The [previous RP2040 example](#pinctrl-node) also configured pins for use with an RP2040 PIO block. To use PIO with SPI (or another purpose) you'll need to adjust the `pio0` or `pio1` nodes as follows:
 
 ```dts title="<board>.dts"
 #include "<board>-pinctrl.dtsi"
