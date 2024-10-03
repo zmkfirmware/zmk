@@ -110,6 +110,7 @@ module.exports = {
         "config/displays",
         "config/encoders",
         "config/keymap",
+        "config/layout",
         "config/kscan",
         "config/power",
         "config/underglow",
