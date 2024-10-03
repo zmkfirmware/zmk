@@ -442,19 +442,15 @@ The matrix transform is also used to "correct" pin orderings into something that
 
 See the [in-tree keyboards](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) that ZMK defines for examples of more complex matrix transformations.
 
-Also see the [matrix transform section](../../config/kscan.md#matrix-transform) in the Keyboard Scan configuration documentation for further details and examples of matrix transforms.
+Also see the [matrix transform section](../../config/layout.md#matrix-transform) in the Keyboard Scan configuration documentation for further details and examples of matrix transforms.
 
 ### Physical Layout
 
-The physical layout is the top level entity that aggregates all details about a certain possible layout:
+Your keyboard will need to have a physical layout defined.
+Read through our [dedicated page on physical layouts](./physical-layouts.md) for information on how to define a physical layout.
+Physical layouts should be placed in the same file as the matrix transform, i.e. `my_keyboard.overlay` for unibodies and `my_keyboard.dtsi` for split keyboards.
 
-- Your keyboard scan (kscan) driver
-- Your matrix transform
-- (Optional) Physical key positions
-
-The physical layout should be placed in the same file as the matrix transform, i.e. `my_keyboard.overlay` for unibodies and `my_keyboard.dtsi` for split keyboards.
-
-A physical layout is very basic, e.g.:
+A very basic physical layout looks like this:
 
 ```dts
 / {
@@ -466,29 +462,6 @@ A physical layout is very basic, e.g.:
     };
 };
 ```
-
-If a keyboard has multiple possible layouts (ex. you can snap off an outer column), then you should define multiple matrix transformations and multiple physical layouts.
-If necessary, you can also define multiple kscan instances.
-
-```dts
-/ {
-    default_layout: default_layout {
-        compatible = "zmk,physical-layout";
-        display-name = "Default Layout";
-        transform = <&default_transform>;
-        kscan = <&kscan0>;
-    };
-
-    alt_layout: alt_layout {
-        compatible = "zmk,physical-layout";
-        display-name = "Alternate Layout";
-        transform = <&alt_transform>;
-        kscan = <&alt_kscan0>;
-    };
-};
-```
-
-See [ZMK Studio Setup](./studio-setup.md) for information on defining the `keys` property for physical key positions that lets you enable [ZMK Studio](../../features/studio.md) for your keyboard.
 
 ### Chosen Node
 
@@ -503,7 +476,7 @@ Set the `chosen` node to a defined "default" physical layout. This should also b
 };
 ```
 
-If you define multiple physical layouts, users can select a different layout by overriding the `zmk,physical-layout` chosen node in their keymap file.
+If you define multiple physical layouts, users can select a different layout by overriding the `zmk,physical-layout` chosen node in their keymap file or by using [ZMK Studio](../../features/studio.md) if your board is compatible with it.
 
 :::note
 If all of your physical layouts use the same `kscan` node under the hood, you can skip setting the `kscan` property on each layout and instead assign the `zmk,kscan` chosen node to your single kscan instance:
@@ -550,6 +523,7 @@ Here is an example simple keymap for a 3x3 macropad, with only one layer:
 
 The keymap should match the order of the keys in the [matrix transform](#matrix-transform) exactly, left to right, top to bottom (they are both 1 dimensional arrays rearranged with newline characters for better legibility).
 See [Keymaps](../../keymaps/index.mdx) for information on defining keymaps in ZMK.
+If you wish to use [ZMK Studio](../../features/studio.md) with your keyboard, make sure to assign the [ZMK Studio unlocking behavior](../../keymaps/behaviors/studio-unlock.md) to a key in your keymap.
 
 ## Metadata
 
