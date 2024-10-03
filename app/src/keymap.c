@@ -432,7 +432,7 @@ int zmk_keymap_check_unsaved_changes(void) {
 #define LAYER_NAME_SETTINGS_KEY "keymap/l_n/%d"
 #define LAYER_BINDING_SETTINGS_KEY "keymap/l/%d/%d"
 
-static void save_bindings(void) {
+static int save_bindings(void) {
     for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
         uint8_t *pending = zmk_keymap_layer_pending_changes[l];
 
@@ -461,45 +461,64 @@ static void save_bindings(void) {
                 char setting_name[20];
                 sprintf(setting_name, LAYER_BINDING_SETTINGS_KEY, l, kp);
 
-                settings_save_one(setting_name, &binding_setting, len);
+                int ret = settings_save_one(setting_name, &binding_setting, len);
+                if (ret < 0) {
+                    LOG_ERR("Failed to save keymap binding at %d on layer %d (%d)", l, kp, ret);
+                    return ret;
+                }
             }
         }
 
         *pending = 0;
     }
+
+    return 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
-static void save_layer_orders(void) {
-    settings_save_one(LAYER_ORDER_SETTINGS_KEY, keymap_layer_orders,
-                      ARRAY_SIZE(keymap_layer_orders));
+static int save_layer_orders(void) {
+    int ret = settings_save_one(LAYER_ORDER_SETTINGS_KEY, keymap_layer_orders,
+                                ARRAY_SIZE(keymap_layer_orders));
+    if (ret < 0) {
+        return ret;
+    }
+
     memcpy(settings_layer_orders, keymap_layer_orders, ARRAY_SIZE(keymap_layer_orders));
+    return 0;
 }
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
-static void save_layer_names(void) {
+static int save_layer_names(void) {
     for (int id = 0; id < ZMK_KEYMAP_LAYERS_LEN; id++) {
         if (changed_layer_names & BIT(id)) {
             char setting_name[14];
             sprintf(setting_name, LAYER_NAME_SETTINGS_KEY, id);
-            settings_save_one(setting_name, zmk_keymap_layer_names[id],
-                              strlen(zmk_keymap_layer_names[id]));
+            int ret = settings_save_one(setting_name, zmk_keymap_layer_names[id],
+                                        strlen(zmk_keymap_layer_names[id]));
+            if (ret < 0) {
+                return ret;
+            }
         }
     }
 
     changed_layer_names = 0;
+    return 0;
 }
 
 int zmk_keymap_save_changes(void) {
-    save_bindings();
+    int ret = save_bindings();
+    if (ret < 0) {
+        return ret;
+    }
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
-    save_layer_orders();
+    ret = save_layer_orders();
+    if (ret < 0) {
+        return ret;
+    }
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
-    save_layer_names();
-
-    return 0;
+    return save_layer_names();
 }
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)

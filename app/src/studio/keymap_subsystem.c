@@ -103,6 +103,7 @@ zmk_studio_Response get_keymap(const zmk_studio_Request *req) {
 
     resp.layers.funcs.encode = encode_keymap_layers;
 
+    resp.max_layer_name_length = CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN;
     resp.available_layers = 0;
 
     for (zmk_keymap_layer_index_t index = 0; index < ZMK_KEYMAP_LAYERS_LEN; index++) {
@@ -174,25 +175,47 @@ zmk_studio_Response check_unsaved_changes(const zmk_studio_Request *req) {
     return KEYMAP_RESPONSE(check_unsaved_changes, layout_changes > 0 || keymap_changes > 0);
 }
 
+static void map_errno_to_save_resp(int err, zmk_keymap_SaveChangesResponse *resp) {
+    resp->which_result = zmk_keymap_SaveChangesResponse_err_tag;
+
+    switch (err) {
+    case -ENOTSUP:
+        resp->result.err = zmk_keymap_SaveChangesErrorCode_SAVE_CHANGES_ERR_NOT_SUPPORTED;
+        break;
+    case -ENOSPC:
+        resp->result.err = zmk_keymap_SaveChangesErrorCode_SAVE_CHANGES_ERR_NO_SPACE;
+        break;
+    default:
+        resp->result.err = zmk_keymap_SaveChangesErrorCode_SAVE_CHANGES_ERR_GENERIC;
+        break;
+    }
+}
+
 zmk_studio_Response save_changes(const zmk_studio_Request *req) {
+    zmk_keymap_SaveChangesResponse resp = zmk_keymap_SaveChangesResponse_init_zero;
+    resp.which_result = zmk_keymap_SaveChangesResponse_ok_tag;
+    resp.result.ok = true;
+
     LOG_DBG("");
     int ret = zmk_physical_layouts_save_selected();
 
     if (ret < 0) {
         LOG_WRN("Failed to save selected physical layout (%d)", ret);
-        return ZMK_RPC_SIMPLE_ERR(GENERIC);
+        map_errno_to_save_resp(ret, &resp);
+        return KEYMAP_RESPONSE(save_changes, resp);
     }
 
     ret = zmk_keymap_save_changes();
     if (ret < 0) {
         LOG_WRN("Failed to save keymap changes (%d)", ret);
-        return ZMK_RPC_SIMPLE_ERR(GENERIC);
+        map_errno_to_save_resp(ret, &resp);
+        return KEYMAP_RESPONSE(save_changes, resp);
     }
 
     raise_zmk_studio_rpc_notification((struct zmk_studio_rpc_notification){
         .notification = KEYMAP_NOTIFICATION(unsaved_changes_status_changed, false)});
 
-    return KEYMAP_RESPONSE(save_changes, true);
+    return KEYMAP_RESPONSE(save_changes, resp);
 }
 
 zmk_studio_Response discard_changes(const zmk_studio_Request *req) {
