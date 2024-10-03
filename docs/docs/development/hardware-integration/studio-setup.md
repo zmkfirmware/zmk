@@ -12,6 +12,8 @@ This guide will walk you through enabling ZMK Studio support for a keyboard.
 
 The main additional pieces needed for ZMK Studio support involve additional metadata needed in order
 to properly to display the physical layouts available for the particular keyboard.
+In addition to the layout metadata, the default keymap should be updated to include a binding for the
+[Studio Unlock](../../keymaps/behaviors/studio-unlock.md) behavior.
 
 # Physical Layout Positions
 
@@ -138,3 +140,8 @@ Here is a fixed up Corne mapping:
 ```
 
 Notice how the outer column positions in the 6-column layout are mapped to positions 36, 37, etc. in the 5-column layout. The 5-column layout only uses key positions up to 35, so those bindings in the outer columns will get migrated into the "extra space" that is ignored by the smaller layout, preserved to get mapped back in place when the user switches back.
+
+# Studio Unlock Keymap Update
+
+The stock keymap should be updated to include a way to unlock the device for studio updates, by adding a [`&studio_unlock`](../../keymaps/behaviors/studio-unlock.md) binding to the
+keymap in some unused location.
