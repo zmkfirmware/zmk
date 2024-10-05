@@ -94,6 +94,7 @@
 #define HID_USAGE_GD_APPLICATION_DEBUGGER_BREAK (0xA6)                 // OSC
 #define HID_USAGE_GD_SYSTEM_SPEAKER_MUTE (0xA7)                        // OSC
 #define HID_USAGE_GD_SYSTEM_HIBERNATE (0xA8)                           // OSC
+#define HID_USAGE_GD_SYSTEM_MICROPHONE_MUTE (0xA9)                     // OOC
 #define HID_USAGE_GD_SYSTEM_DISPLAY_INVERT (0xB0)                      // OSC
 #define HID_USAGE_GD_SYSTEM_DISPLAY_INTERNAL (0xB1)                    // OSC
 #define HID_USAGE_GD_SYSTEM_DISPLAY_EXTERNAL (0xB2)                    // OSC
