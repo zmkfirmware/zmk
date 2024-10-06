@@ -103,7 +103,7 @@ for more information on configuring Bluetooth.
 | `CONFIG_ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE` | int  | Max number of keyboard HID reports to queue for sending over BLE      | 20      |
 | `CONFIG_ZMK_BLE_INIT_PRIORITY`              | int  | BLE init priority                                                     | 50      |
 | `CONFIG_ZMK_BLE_THREAD_PRIORITY`            | int  | Priority of the BLE notify thread                                     | 5       |
-| `CONFIG_ZMK_BLE_THREAD_STACK_SIZE`          | int  | Stack size of the BLE notify thread                                   | 512     |
+| `CONFIG_ZMK_BLE_THREAD_STACK_SIZE`          | int  | Stack size of the BLE notify thread                                   | 768     |
 | `CONFIG_ZMK_BLE_PASSKEY_ENTRY`              | bool | Experimental: require typing passkey from host to pair BLE connection | n       |
 
 Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the same value. On a split keyboard they should only be set for the central and must be set to one greater than the desired number of bluetooth profiles.
