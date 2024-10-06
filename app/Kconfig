@@ -16,26 +16,8 @@ config USB_DEVICE_PRODUCT
 config BT_DEVICE_NAME
     default ZMK_KEYBOARD_NAME
 
-config USB_DEVICE_VID
-    default 0x1D50
-
-config USB_DEVICE_PID
-    default 0x615E
-
-config USB_DEVICE_MANUFACTURER
-    default "ZMK Project"
-
-config BT_DIS_PNP_VID
-    default 0x1D50
-
-config BT_DIS_PNP_PID
-    default 0x615E
-
 config BT_DIS_MODEL
     default ZMK_KEYBOARD_NAME
-
-config BT_DIS_MANUF
-    default "ZMK Project"
 
 # Hardware specific overrides
 
@@ -81,14 +63,11 @@ if ZMK_HID_REPORT_TYPE_HKRO
 
 config ZMK_HID_KEYBOARD_REPORT_SIZE
     int "# Keyboard Keys Reportable"
-    default 6
 
 endif
 
 config ZMK_HID_CONSUMER_REPORT_SIZE
     int "# Consumer Keys Reportable"
-    default 6
-
 
 choice ZMK_HID_CONSUMER_REPORT_USAGES
     prompt "HID Report Type"
@@ -199,23 +178,18 @@ config SYSTEM_WORKQUEUE_STACK_SIZE
 
 config ZMK_BLE_THREAD_STACK_SIZE
     int "BLE notify thread stack size"
-    default 768
 
 config ZMK_BLE_THREAD_PRIORITY
     int "BLE notify thread priority"
-    default 5
 
 config ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE
     int "Max number of keyboard HID reports to queue for sending over BLE"
-    default 20
 
 config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
     int "Max number of consumer HID reports to queue for sending over BLE"
-    default 5
 
 config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
     int "Max number of mouse HID reports to queue for sending over BLE"
-    default 20
 
 config ZMK_BLE_CLEAR_BONDS_ON_START
     bool "Configuration that clears all bond information from the keyboard on startup."
@@ -289,67 +263,51 @@ menuconfig ZMK_RGB_UNDERGLOW
 
 if ZMK_RGB_UNDERGLOW
 
-# This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
-config SPI
-    default y
-
 config ZMK_RGB_UNDERGLOW_EXT_POWER
     bool "RGB underglow toggling also controls external power"
-    default y
 
 config ZMK_RGB_UNDERGLOW_BRT_MIN
     int "RGB underglow minimum brightness in percent"
     range 0 100
-    default 0
 
 config ZMK_RGB_UNDERGLOW_BRT_MAX
     int "RGB underglow maximum brightness in percent"
     range ZMK_RGB_UNDERGLOW_BRT_MIN 100
-    default 100
 
 config ZMK_RGB_UNDERGLOW_HUE_STEP
     int "RGB underglow hue step in degrees"
     range 0 359
-    default 10
 
 config ZMK_RGB_UNDERGLOW_SAT_STEP
     int "RGB underglow saturation step in percent"
     range 0 100
-    default 10
 
 config ZMK_RGB_UNDERGLOW_BRT_STEP
     int "RGB underglow brightness step in percent"
     range 0 100
-    default 10
 
 config ZMK_RGB_UNDERGLOW_HUE_START
     int "RGB underglow start hue value in degrees"
     range 0 359
-    default 0
 
 config ZMK_RGB_UNDERGLOW_SAT_START
     int "RGB underglow start saturations value in percent"
     range 0 100
-    default 100
 
 config ZMK_RGB_UNDERGLOW_BRT_START
     int "RGB underglow start brightness value in percent"
     range ZMK_RGB_UNDERGLOW_BRT_MIN ZMK_RGB_UNDERGLOW_BRT_MAX
-    default ZMK_RGB_UNDERGLOW_BRT_MAX
 
 config ZMK_RGB_UNDERGLOW_SPD_START
     int "RGB underglow start animation speed value"
     range 1 5
-    default 3
 
 config ZMK_RGB_UNDERGLOW_EFF_START
     int "RGB underglow start effect int value related to the effect enum list"
     range 0 3
-    default 0
 
 config ZMK_RGB_UNDERGLOW_ON_START
     bool "RGB underglow starts on by default"
-    default y
 
 config ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE
     bool "Turn off RGB underglow when keyboard goes into idle state"
@@ -370,16 +328,13 @@ if ZMK_BACKLIGHT
 config ZMK_BACKLIGHT_BRT_STEP
     int "Brightness step in percent"
     range 1 100
-    default 20
 
 config ZMK_BACKLIGHT_BRT_START
     int "Default brightness in percent"
     range 1 100
-    default 40
 
 config ZMK_BACKLIGHT_ON_START
     bool "Default backlight state"
-    default y
 
 config ZMK_BACKLIGHT_AUTO_OFF_IDLE
     bool "Turn off backlight when keyboard goes into idle state"
@@ -448,7 +403,6 @@ endif
 
 config ZMK_EXT_POWER
     bool "Enable support to control external power output"
-    default y
 
 config ZMK_PM
     bool
@@ -516,11 +470,9 @@ if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
     int "USB Init Priority"
-    default 94
 
 config ZMK_USB_HID_INIT_PRIORITY
     int "USB HID Init Priority"
-    default 95
 
 #USB
 endif
@@ -529,7 +481,6 @@ if ZMK_BLE || ZMK_SPLIT_BLE
 
 config ZMK_BLE_INIT_PRIORITY
     int "BLE Init Priority"
-    default 50
 
 #ZMK_BLE || ZMK_SPLIT_BLE
 endif
@@ -546,7 +497,6 @@ if ZMK_KSCAN
 
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
     int "Size of the event queue for KSCAN events to buffer events"
-    default 4
 
 endif # ZMK_KSCAN
 
@@ -671,7 +621,6 @@ endif
 config ZMK_BATTERY_REPORT_INTERVAL
     depends on ZMK_BATTERY_REPORTING
     int "Battery level report interval in seconds"
-    default 60
 
 config ZMK_LOW_PRIORITY_WORK_QUEUE
     bool "Work queue for low priority items"
@@ -680,11 +629,9 @@ if ZMK_LOW_PRIORITY_WORK_QUEUE
 
 config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
     int "Low priority thread stack size"
-    default 768
 
 config ZMK_LOW_PRIORITY_THREAD_PRIORITY
     int "Low priority thread priority"
-    default 10
 
 endif
 
@@ -744,5 +691,6 @@ rsource "boards/shields/*/Kconfig.shield"
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
+rsource "Kconfig.defaults"
 
 source "Kconfig.zephyr"

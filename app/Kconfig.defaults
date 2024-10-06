@@ -1,0 +1,168 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+# Basic Keyboard Setup
+
+# IDs can be overridden if vendor obtains a USB VID
+config USB_DEVICE_VID
+    default 0x1D50
+
+config USB_DEVICE_PID
+    default 0x615E
+
+config USB_DEVICE_MANUFACTURER
+    default "ZMK Project"
+
+config BT_DIS_PNP_VID
+    default 0x1D50
+
+config BT_DIS_PNP_PID
+    default 0x615E
+
+config BT_DIS_MANUF
+    default "ZMK Project"
+
+# HID
+if ZMK_HID_REPORT_TYPE_HKRO
+
+config ZMK_HID_KEYBOARD_REPORT_SIZE
+    default 6
+
+endif
+
+config ZMK_HID_CONSUMER_REPORT_SIZE
+    default 6
+
+# BLE
+if ZMK_BLE
+
+config ZMK_BLE_THREAD_STACK_SIZE
+    default 768
+
+config ZMK_BLE_THREAD_PRIORITY
+    default 5
+
+config ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE
+    default 20
+
+config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
+    default 5
+
+config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
+    default 20
+
+#ZMK_BLE
+endif
+
+# Underglow
+if ZMK_RGB_UNDERGLOW
+
+# This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
+config SPI
+    default y
+
+config ZMK_RGB_UNDERGLOW_EXT_POWER
+    default y
+
+config ZMK_RGB_UNDERGLOW_BRT_MIN
+    default 0
+
+config ZMK_RGB_UNDERGLOW_BRT_MAX
+    default 100
+
+config ZMK_RGB_UNDERGLOW_HUE_STEP
+    default 10
+
+config ZMK_RGB_UNDERGLOW_SAT_STEP
+    default 10
+
+config ZMK_RGB_UNDERGLOW_BRT_STEP
+    default 10
+
+config ZMK_RGB_UNDERGLOW_HUE_START
+    default 0
+
+config ZMK_RGB_UNDERGLOW_SAT_START
+    default 100
+
+config ZMK_RGB_UNDERGLOW_BRT_START
+    default ZMK_RGB_UNDERGLOW_BRT_MAX
+
+config ZMK_RGB_UNDERGLOW_SPD_START
+    default 3
+
+config ZMK_RGB_UNDERGLOW_EFF_START
+    default 0
+
+config ZMK_RGB_UNDERGLOW_ON_START
+    default y
+
+#ZMK_RGB_UNDERGLOW
+endif
+
+# Backlight
+if ZMK_BACKLIGHT
+
+config ZMK_BACKLIGHT_BRT_STEP
+    default 20
+
+config ZMK_BACKLIGHT_BRT_START
+    default 40
+
+config ZMK_BACKLIGHT_ON_START
+    default y
+
+#ZMK_BACKLIGHT
+endif
+
+# Ext_power
+config ZMK_EXT_POWER
+    default y
+
+# USB
+if USB_DEVICE_STACK
+
+config ZMK_USB_INIT_PRIORITY
+    default 94
+
+config ZMK_USB_HID_INIT_PRIORITY
+    default 95
+
+#USB
+endif
+
+if ZMK_BLE || ZMK_SPLIT_BLE
+
+config ZMK_BLE_INIT_PRIORITY
+    default 50
+
+#ZMK_BLE || ZMK_SPLIT_BLE
+endif
+
+# Keyboard scan
+if ZMK_KSCAN
+
+config ZMK_KSCAN_EVENT_QUEUE_SIZE
+    default 4
+
+endif # ZMK_KSCAN
+
+# Battery
+config ZMK_BATTERY_REPORT_INTERVAL
+    default 60
+
+# Low priority
+if ZMK_LOW_PRIORITY_WORK_QUEUE
+
+config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
+    default 768
+
+config ZMK_LOW_PRIORITY_THREAD_PRIORITY
+    default 10
+
+endif
+
+# Imports
+rsource "src/split/Kconfig.defaults"
+rsource "src/studio/Kconfig.defaults"
+rsource "src/display/Kconfig.defaults"

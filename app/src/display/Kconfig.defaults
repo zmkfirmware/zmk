@@ -1,0 +1,16 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if ZMK_DISPLAY
+
+if ZMK_DISPLAY_WORK_QUEUE_DEDICATED
+
+config ZMK_DISPLAY_DEDICATED_THREAD_STACK_SIZE
+    default 2048
+
+config ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY
+    default 5
+
+endif # ZMK_DISPLAY_WORK_QUEUE_DEDICATED
+
+endif # ZMK_DISPLAY
