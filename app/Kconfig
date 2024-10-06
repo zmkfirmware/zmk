@@ -163,17 +163,14 @@ if ZMK_BLE
 config ZMK_BLE_EXPERIMENTAL_CONN
     bool "Experimental BLE connection changes"
     help
-      Enables a combination of settings that are planned to be default in future versions of ZMK
-      to improve connection stability. This includes changes to timing on BLE pairing initiation,
-      restores use of the updated/new LLCP implementation, and disables 2M PHY support.
+      Enables settings that are planned to be default in future versions of ZMK
+      to improve connection stability.
 
 config ZMK_BLE_EXPERIMENTAL_SEC
     bool "Experimental BLE security changes"
     imply BT_SMP_ALLOW_UNAUTH_OVERWRITE
     help
-      Enables a combination of settings that are planned to be officially supported in the future.
-      This includes enabling BT Secure Connection passkey entry, and allows overwrite of keys from
-      previously paired hosts.
+      Enables security settings that are planned to be officially supported in the future.
 
 config ZMK_BLE_EXPERIMENTAL_FEATURES
     bool "Experimental BLE connection and security settings/features"
