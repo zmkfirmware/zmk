@@ -21,6 +21,11 @@
 #include <zmk/events/endpoint_changed.h>
 
 #include <zephyr/logging/log.h>
+
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+static int send_plover_report();
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define DEFAULT_TRANSPORT                                                                          \
