@@ -216,7 +216,7 @@ static int send_plover_report() {
     struct zmk_hid_plover_report *plover_report = zmk_hid_get_plover_report();
     switch (current_instance.transport) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
-    case ZMK_ENDPOINT_USB: {
+    case ZMK_TRANSPORT_USB: {
         int err = zmk_usb_hid_send_report((uint8_t *)plover_report, sizeof(*plover_report));
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
@@ -226,7 +226,7 @@ static int send_plover_report() {
 #endif /* IS_ENABLED(CONFIG_ZMK_USB) */
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
-    case ZMK_ENDPOINT_BLE: {
+    case ZMK_TRANSPORT_BLE: {
         int err = zmk_hog_send_plover_report(&plover_report->body);
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
