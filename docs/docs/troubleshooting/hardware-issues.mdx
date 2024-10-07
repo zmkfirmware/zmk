@@ -39,9 +39,11 @@ export const PinTabs = (props) => (
 );
 
 :::warning
-This page contains _general advice_ for troubleshooting hardware issues. ZMK **does not** provide any sort of hardware support. If the below points are unable to resolve your problem, contact your vendor/manufacturer for assistance.
+This page contains _general advice_ for troubleshooting hardware issues.
+ZMK is a _firmware_ project, not hardware.
+Your first move should always be to reach out to the product's vendor or manufacturer.
 
-You can contact ZMK for assistance with resolving firmware issues _after_ resolving your hardware issues, if your vendor/manufacturer is unable to provide said support.
+ZMK contributors cannot provide official support for hardware products they did not create, though the wider community may be able to help as a last resort.
 :::
 
 ## Electrical Net Connections
@@ -97,7 +99,12 @@ The pinout of the seeeduino xiao interconnect is shown below:
 
 </TabItem>
 </TesterTabs>
-After flashing, open a text editor of your choice. Shorting a GPIO pin (**NOT** a 5V/RAW, 3V3/VCC, or battery pin) to ground (with e.g. a wire or tweezers, hold one end go ground and tap the pin with the other end) will now trigger the keyboard to send an informative message on which pins were triggered.
+:::danger
+Do not short a positive voltage pin (5V, RAW, 3V3, VCC, Battery+ aka B+) to ground or GPIO pins when using the tester. Doing so may permanently damage your device or even cause battery fires.
+:::
+
+After flashing, open a text editor of your choice. Shorting a GPIO pin to ground (with e.g. a wire or tweezers, hold one end go ground and tap the pin with the other end) will now trigger the keyboard to send an informative message on which pins were triggered.
+
 - If one pin was triggered, then the pin is working fine.
 - If two were triggered at once, then these pins are shorted together on your device.
 - If no pin was triggered, try shorting a working pin to the pin you were trying to trigger to test if it is shorted to ground on your device. Otherwise, the pin is disconnected or broken.
