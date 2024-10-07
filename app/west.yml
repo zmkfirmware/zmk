@@ -4,6 +4,8 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: zmk-plover-hid
       url-base: https://github.com/phuertay
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
   projects:
     - name: zephyr
       remote: zmk-plover-hid
