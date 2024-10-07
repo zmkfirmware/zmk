@@ -220,7 +220,7 @@ static int behavior_antecedent_morph_init(const struct device *dev) {
   };									                                              \
   DEVICE_DT_INST_DEFINE(n,behavior_antecedent_morph_init,NULL,&behavior_antecedent_morph_data_##n,   		      \
 			&behavior_antecedent_morph_config_##n,		                                              \
-			APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                             \
+			POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                             \
 			&behavior_antecedent_morph_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
