@@ -427,7 +427,7 @@ void send_plover_report_callback(struct k_work *work) {
     struct zmk_hid_plover_report_body report;
 
     while (k_msgq_get(&zmk_hog_plover_msgq, &report, K_NO_WAIT) == 0) {
-        struct bt_conn *conn = destination_connection();
+        struct bt_conn *conn = zmk_ble_active_profile_conn();
         if (conn == NULL) {
             return;
         }
