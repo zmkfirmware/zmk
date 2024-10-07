@@ -197,6 +197,7 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
         return send_consumer_report();
 
 #if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
+    static int send_plover_report();
     case (HID_USAGE_VENDOR_PLOVER & 0xFF):
         return send_plover_report();
 #endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
