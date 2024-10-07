@@ -46,7 +46,7 @@ You can contact ZMK for assistance with resolving firmware issues _after_ resolv
 
 ## Electrical Net Connections
 
-Problems with your electrical net can manifest itself in a number of ways. The most common way is through one or more keyswitches not working, often an entire row or column. If this is the case, then (assuming you have access to it) you could use your keyboard's schematic to help identify which pins you need to check.
+Problems with your electrical net can manifest in a number of ways. The most common way is through one or more keyswitches not working, often an entire row or column. If this is the case, then (assuming you have access to it) you could use your keyboard's schematic to help identify which pins you need to check.
 
 ### Identifying Issues
 
@@ -54,11 +54,8 @@ There are three general approaches we recommend for identifying potential issues
 
 <PinTabs>
 <TabItem value="shield">
-ZMK comes with built-in "tester" shields for [pro micro combatible boards](https://cdn.sparkfun.com/assets/9/c/3/c/4/523a1765757b7f5c6e8b4567.png) and [Seeed Studio XIAO combatible boards](https://files.seeedstudio.com/wiki/Seeeduino-XIAO/img/Seeeduino-XIAO-pinout-1.jpg).
-:::warning
-These shields allow for easy testing of GPIO pins, but cannot be used to troubleshoot power pins.
-:::
-#### Acquiring a tester uf2
+ZMK's main repository currently has "tester" shields for [Pro Micro](https://cdn.sparkfun.com/assets/9/c/3/c/4/523a1765757b7f5c6e8b4567.png) and [Seeed Studio XIAO](https://files.seeedstudio.com/wiki/Seeeduino-XIAO/img/Seeeduino-XIAO-pinout-1.jpg) compatible boards. These will help you test your GPIO pins, but cannot be used to troubleshoot power pins.
+#### Acquiring tester firmware
 
 <TesterTabs>
 <TabItem value="promicro">
@@ -69,7 +66,7 @@ include:
   # -------------------
   # Your keyboards here
   # -------------------
-  - board: nice_nano_v2 # Replace with your board of use
+  - board: nice_nano_v2 # Replace with the Pro Micro-compatible board you're using
     shield: tester_pro_micro
 ```
 
@@ -88,7 +85,7 @@ include:
   # -------------------
   # Your keyboards here
   # -------------------
-  - board: seeeduino_xiao_ble # Replace with your board of use
+  - board: seeeduino_xiao_ble # Replace with the Xiao-compatible board you're using
     shield: tester_xiao
 ```
 
@@ -109,11 +106,9 @@ Once you have identified _which_ pins have issues, if any, it is recommended tha
 
 </TabItem>
 <TabItem value="multimeter">
-:::tip
-If you are unfamiliar with the use of a multimeter, [Sparkfun's guide](https://learn.sparkfun.com/tutorials/how-to-use-a-multimeter) may prove a helpful resource.
-:::
+A multimeter is the most reliable tool for troubleshooting hardware issues. If you're not familiar with how to use one or just need a refresher, consider reading through SparkFun's [*How to Use a Multimeter*](https://learn.sparkfun.com/tutorials/how-to-use-a-multimeter) tutorial.
 
-A multimeter is the most reliable tool for troubleshooting hardware issues. Here is a helpful checklist for you to use while probing your device with the multimeter:
+Here is a checklist for you to use while probing your device with the multimeter:
 
 - Are any of the pins shorted that shouldn't be shorted?
 - Are all the diodes/components working and in the correct orientation?
@@ -150,7 +145,7 @@ Many issues can be resolved by reworking the affected solder joints (Look up a t
 
 Once you have done so, you will need to adjust the `kscan` of your keyboard slightly. The recommended approach to doing so is via your `zmk-config`:
 
-1. Search through the files defining your board/shield for the definition of the keyboard's `kscan`. This is typically a`.dts`, `.dtsi`, or an `.overlay` file.
+1. Search through the files defining your board/shield for the definition of the keyboard's `kscan`. This is typically a `.dts`, `.dtsi`, or an `.overlay` file.
 2. Add a [phandle](https://docs.zephyrproject.org/latest/build/dts/phandles.html) to your `.keymap` pointing at your `kscan`, copying in the property of your `kscan` where the broken GPIO pin appears. Depending on your `kscan` driver this could be `input-gpios`, `row-gpios`, etc.
 3. Edit the node to replace the old GPIO key with the new. For example:
 
@@ -166,7 +161,7 @@ Once you have done so, you will need to adjust the `kscan` of your keyboard slig
 
 could have the pin `&pro_micro 6` (D6 in the [Pro Micro pinout](../development/hardware-integration/new-shield.mdx#shield-overlays)) replaced with `&gpio0 8` (P0.08 for nRF MCUs).
 
-```dts title="<my_keyboard>.overlay"
+```dts title="<my_keyboard>.keymap"
 &kscan0 {
     input-gpios
         = <&pro_micro 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>

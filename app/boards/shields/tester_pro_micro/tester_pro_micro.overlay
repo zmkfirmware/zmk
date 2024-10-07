@@ -8,7 +8,6 @@
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-direct";
-        toggle-mode;
         wakeup-source;
         debounce-press-ms = <10>;
         debounce-release-ms = <10>;
