@@ -217,7 +217,7 @@ static int send_plover_report() {
     switch (current_instance.transport) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
     case ZMK_TRANSPORT_USB: {
-        int err = zmk_usb_hid_send_report((uint8_t *)plover_report, sizeof(*plover_report));
+        int err = zmk_usb_hid_send_keyboard_report((uint8_t *)plover_report, sizeof(*plover_report));
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
         }
