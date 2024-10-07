@@ -23,6 +23,8 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+static int send_plover_report();
+
 #define DEFAULT_TRANSPORT                                                                          \
     COND_CODE_1(IS_ENABLED(CONFIG_ZMK_BLE), (ZMK_TRANSPORT_BLE), (ZMK_TRANSPORT_USB))
 
@@ -197,7 +199,6 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
         return send_consumer_report();
 
 #if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
-    static int send_plover_report();
     case (HID_USAGE_VENDOR_PLOVER & 0xFF):
         return send_plover_report();
 #endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
