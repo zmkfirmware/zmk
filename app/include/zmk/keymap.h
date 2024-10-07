@@ -80,4 +80,4 @@ int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pr
                               (DT_PHA_BY_IDX(drv_inst, bindings, idx, param1))),                   \
         .param2 = COND_CODE_0(DT_PHA_HAS_CELL_AT_IDX(drv_inst, bindings, idx, param2), (0),        \
                               (DT_PHA_BY_IDX(drv_inst, bindings, idx, param2))),                   \
-    }
+}
