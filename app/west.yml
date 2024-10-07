@@ -2,13 +2,11 @@ manifest:
   remotes:
     - name: zephyrproject-rtos
       url-base: https://github.com/zephyrproject-rtos
-    - name: zmk-plover-hid
-      url-base: https://github.com/phuertay
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
   projects:
     - name: zephyr
-      remote: zmk-plover-hid
+      remote: zmkfirmware
       revision: v3.5.0+zmk-fixes
       clone-depth: 1
       import:
