@@ -182,7 +182,7 @@ static const struct hid_ops ops = {
     .set_report = set_report_cb,
 };
 
-static int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
+int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
     switch (zmk_usb_get_status()) {
     case USB_DC_SUSPEND:
         return usb_wakeup_request();
