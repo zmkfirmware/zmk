@@ -5,60 +5,6 @@ sidebar_label: Layout
 
 See [Configuration Overview](index.md) for instructions on how to change these settings.
 
-## Physical Layout
-
-Defines a keyboard layout by joining together a [matrix transform](#matrix-transform), a [keyboard scan](./kscan.md), and a list of physical key properties.
-Multiple physical layouts can be defined for keyboards with multiple physical key layouts.
-Read through the [page on physical layouts](../development/hardware-integration/physical-layouts.md) for more information.
-
-### Devicetree
-
-Applies to: `compatible = zmk,physical-layout`
-
-Definition file: [zmk/app/dts/bindings/zmk,physical-layout.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk%2Cphysical-layout.yaml)
-
-| Property       | Type          | Description                                                                                                            | Default |
-| -------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------- | ------- |
-| `display-name` | string        | The name of this layout, for display purposes                                                                          |         |
-| `transform`    | phandle       | The matrix transform to use along with this layout                                                                     |         |
-| `kscan`        | phandle       | The kscan to use along with this layout. The `zmk,kscan` chosen will be used as a fallback if this property is omitted |         |
-| `keys`         | phandle-array | Array of key physical attributes.                                                                                      |         |
-
-Each element of the `keys` array has the shape `<&key_physical_attrs w h x y r rx ry>`, with the following properties:
-
-| Property   | Type     | Description                          | Unit                                                    |
-| ---------- | -------- | ------------------------------------ | ------------------------------------------------------- |
-| Width      | int (>0) | Key(cap) width                       | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
-| Height     | int (>0) | Key(cap) height                      | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
-| X          | uint     | Key X position (top-left point)      | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
-| Y          | uint     | Key Y position (top-left point)      | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
-| Rotation   | int      | Key rotation (positive => clockwise) | [centi-](https://en.wikipedia.org/wiki/Centi-)degree    |
-| Rotation X | int      | Rotation origin X position           | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
-| Rotation Y | int      | Rotation origin Y position           | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
-
-The `key_physical_attrs` node is defined in [`dts/physical_layouts.dtsi`](https://github.com/zmkfirmware/zmk/blob/main/app/dts/physical_layouts.dtsi) and is mandatory.
-
-## Physical Layout Position Map
-
-Defines a mapping between [physical layouts](#physical-layout), allowing key mappings to be preserved in the same locations as previously when using [ZMK Studio](../features/studio.md). Read through the [page on physical layouts](../development/hardware-integration/physical-layouts.md) for more information.
-
-### Devicetree
-
-Applies to: `compatible = zmk,physical-layout-position-map`
-
-Definition file: [zmk/app/dts/bindings/zmk,physical-layout-position-map.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk%2Cphysical-layout-position-map.yaml)
-
-| Property   | Type    | Description                                                                                      | Default |
-| ---------- | ------- | ------------------------------------------------------------------------------------------------ | ------- |
-| `complete` | boolean | If the mapping complete describes the key mapping, and no position based mapping should be used. |         |
-
-The `zmk,physical-layout-position-map` node should have one child node per physical layout. Each child node should have the following properties:
-
-| Property          | Type    | Description                                                                       | Default |
-| ----------------- | ------- | --------------------------------------------------------------------------------- | ------- |
-| `physical-layout` | phandle | The physical layout that corresponds to this mapping entry                        |         |
-| `positions`       | array   | Array of key positions that match the same array entry in the other sibling nodes |         |
-
 ## Matrix Transform
 
 Defines a mapping from keymap logical positions to physical [kscan](./kscan.md) positions.
@@ -223,3 +169,57 @@ Note that the entire addressable space does not need to be mapped.
     };
 };
 ```
+
+## Physical Layout
+
+Defines a keyboard layout by joining together a [matrix transform](#matrix-transform), a [keyboard scan](./kscan.md), and a list of physical key properties.
+Multiple physical layouts can be defined for keyboards with multiple physical key layouts.
+Read through the [page on physical layouts](../development/hardware-integration/physical-layouts.md) for more information.
+
+### Devicetree
+
+Applies to: `compatible = zmk,physical-layout`
+
+Definition file: [zmk/app/dts/bindings/zmk,physical-layout.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk%2Cphysical-layout.yaml)
+
+| Property       | Type          | Description                                                                                                            | Default |
+| -------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------- | ------- |
+| `display-name` | string        | The name of this layout, for display purposes                                                                          |         |
+| `transform`    | phandle       | The matrix transform to use along with this layout                                                                     |         |
+| `kscan`        | phandle       | The kscan to use along with this layout. The `zmk,kscan` chosen will be used as a fallback if this property is omitted |         |
+| `keys`         | phandle-array | Array of key physical attributes.                                                                                      |         |
+
+Each element of the `keys` array has the shape `<&key_physical_attrs w h x y r rx ry>`, with the following properties:
+
+| Property   | Type     | Description                          | Unit                                                    |
+| ---------- | -------- | ------------------------------------ | ------------------------------------------------------- |
+| Width      | int (>0) | Key(cap) width                       | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
+| Height     | int (>0) | Key(cap) height                      | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
+| X          | uint     | Key X position (top-left point)      | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
+| Y          | uint     | Key Y position (top-left point)      | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
+| Rotation   | int      | Key rotation (positive => clockwise) | [centi-](https://en.wikipedia.org/wiki/Centi-)degree    |
+| Rotation X | int      | Rotation origin X position           | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
+| Rotation Y | int      | Rotation origin Y position           | [centi-](https://en.wikipedia.org/wiki/Centi-)"keyunit" |
+
+The `key_physical_attrs` node is defined in [`dts/physical_layouts.dtsi`](https://github.com/zmkfirmware/zmk/blob/main/app/dts/physical_layouts.dtsi) and is mandatory.
+
+## Physical Layout Position Map
+
+Defines a mapping between [physical layouts](#physical-layout), allowing key mappings to be preserved in the same locations as previously when using [ZMK Studio](../features/studio.md). Read through the [page on physical layouts](../development/hardware-integration/physical-layouts.md) for more information.
+
+### Devicetree
+
+Applies to: `compatible = zmk,physical-layout-position-map`
+
+Definition file: [zmk/app/dts/bindings/zmk,physical-layout-position-map.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk%2Cphysical-layout-position-map.yaml)
+
+| Property   | Type    | Description                                                                                      | Default |
+| ---------- | ------- | ------------------------------------------------------------------------------------------------ | ------- |
+| `complete` | boolean | If the mapping complete describes the key mapping, and no position based mapping should be used. |         |
+
+The `zmk,physical-layout-position-map` node should have one child node per physical layout. Each child node should have the following properties:
+
+| Property          | Type    | Description                                                                       | Default |
+| ----------------- | ------- | --------------------------------------------------------------------------------- | ------- |
+| `physical-layout` | phandle | The physical layout that corresponds to this mapping entry                        |         |
+| `positions`       | array   | Array of key positions that match the same array entry in the other sibling nodes |         |

@@ -26,7 +26,7 @@ A basic physical layout without the `keys` property looks like this:
 
 It is given a name, a matrix transform, and a kscan. If all of your physical layouts share the same kscan, then the `kscan` property can be omitted - in this case it needs to be set in the [`chosen` node](./new-shield.mdx#chosen-node). See the [configuration section on physical layouts](../../config/) for reference.
 
-## Keys Property
+## (Optional) Keys Property
 
 :::warning[Alpha Feature]
 
