@@ -23,7 +23,9 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
 static int send_plover_report();
+#endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
 
 #define DEFAULT_TRANSPORT                                                                          \
     COND_CODE_1(IS_ENABLED(CONFIG_ZMK_BLE), (ZMK_TRANSPORT_BLE), (ZMK_TRANSPORT_USB))
@@ -211,9 +213,9 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
 #if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
 static int send_plover_report() {
     struct zmk_hid_plover_report *plover_report = zmk_hid_get_plover_report();
-    switch (current_endpoint) {
+    switch (current_instance.transport) {
 #if IS_ENABLED(CONFIG_ZMK_USB)
-    case ZMK_ENDPOINT_USB: {
+    case ZMK_TRANSPORT_USB: {
         int err = zmk_usb_hid_send_report((uint8_t *)plover_report, sizeof(*plover_report));
         if (err) {
             LOG_ERR("FAILED TO SEND OVER USB: %d", err);
@@ -223,7 +225,7 @@ static int send_plover_report() {
 #endif /* IS_ENABLED(CONFIG_ZMK_USB) */
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
-    case ZMK_ENDPOINT_BLE: {
+    case ZMK_TRANSPORT_BLE: {
         int err = zmk_hog_send_plover_report(&plover_report->body);
         if (err) {
             LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
@@ -232,7 +234,7 @@ static int send_plover_report() {
     }
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
     default:
-        LOG_ERR("Unsupported endpoint %d", current_endpoint);
+        LOG_ERR("Unhandled endpoint transport %d", current_instance.transport);
         return -ENOTSUP;
     }
 }
