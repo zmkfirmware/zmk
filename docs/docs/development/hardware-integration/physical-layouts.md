@@ -228,7 +228,7 @@ Next, you'll need to write child nodes for every other layout, deriving the posi
 
 Consider the following macropad/numpad with two physical layouts:
 
-![A 4x5 numpad/macropad](../../assets/hardware-integration/numpad.png)
+![A 4x5 numpad/macropad](../../assets/hardware-integration/numpad.svg)
 
 Let us first consider each side individually. The "reference" position map of the left side would look like this:
 
