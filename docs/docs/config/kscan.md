@@ -216,10 +216,10 @@ Applies to : `compatible = "zmk,kscan-composite"`
 
 Definition file: [zmk/app/dts/bindings/zmk,kscan-composite.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk,kscan-composite.yaml)
 
-| Property | Type | Description                                   | Default |
-| -------- | ---- | --------------------------------------------- | ------- |
-| `rows`   | int  | The number of rows in the composite matrix    |         |
-| `cols`   | int  | The number of columns in the composite matrix |         |
+| Property  | Type | Description                                   | Default |
+| --------- | ---- | --------------------------------------------- | ------- |
+| `rows`    | int  | The number of rows in the composite matrix    |         |
+| `columns` | int  | The number of columns in the composite matrix |         |
 
 The `zmk,kscan-composite` node should have one child node per keyboard scan driver that should be composited. Each child node can have the following properties:
 
@@ -331,7 +331,7 @@ Definition file: [zmk/app/dts/bindings/zmk,kscan-mock.yaml](https://github.com/z
 | `event-period` | int   | Milliseconds between each generated event     |         |
 | `events`       | array | List of key events to simulate                |         |
 | `rows`         | int   | The number of rows in the composite matrix    |         |
-| `cols`         | int   | The number of columns in the composite matrix |         |
+| `columns`      | int   | The number of columns in the composite matrix |         |
 | `exit-after`   | bool  | Exit the program after running all events     | false   |
 
 The `events` array should be defined using the macros from [app/module/include/dt-bindings/zmk/kscan_mock.h](https://github.com/zmkfirmware/zmk/blob/main/app/module/include/dt-bindings/zmk/kscan_mock.h).
