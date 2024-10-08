@@ -179,7 +179,7 @@ static void draw_bottom(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
 
     // Draw layer
-    if (state->layer_label == NULL) {
+    if (state->layer_label == NULL || strlen(state->layer_label) == 0) {
         char text[10] = {};
 
         sprintf(text, "LAYER %i", state->layer_index);
