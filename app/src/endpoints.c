@@ -25,7 +25,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 
 #if IS_ENABLED(CONFIG_ZMK_PLOVER_HID)
-int send_plover_report();
+static int send_plover_report();
 #endif /* IS_ENABLED(CONFIG_ZMK_PLOVER_HID) */
 
 
