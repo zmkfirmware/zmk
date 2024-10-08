@@ -324,7 +324,53 @@ The "missing" positions are filled with the "spare" numbers of the layout with m
 
 The above example is "lossy" because (unlike the "lossless" example) if a user switches from the macropad layout to the numpad layout _and then_ switches from the numpad layout back to the macropad layout, the assignments to the keys present but not listed in the macropad's map are lost.
 
-#### Example 2: corne
+#### Example non-`complete` position map
+
+Consider the above device again - most of the positions have identical `keys` properties. For example, the numpad's `15` key and the macropad's `16` key would have the same physical property, and be mapped to each other automatically. The keys whose mappings are unable to be determined automatically are those with different physical characteristics - the 2u high and 2u wide keys, and their corresponding 1u counterparts.
+
+A non-`complete` position map can be used to assign mappings to only these particular keys:
+
+```dts
+/ {
+    keypad_lossy_position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        macropad_map: macropad {
+            physical-layout = <&macropad_layout>;
+            positions = <7 15 16>;
+        };
+
+        numpad_map: numpad {
+            physical-layout = <&numpad_layout>;
+            positions = <7 14 15>;
+        };
+    };
+};
+```
+
+This is noticably simpler to write, and can be a useful way of saving flash space for memory-constrained devices. The above is a "lossy" mapping, though. While "lossless" non-`complete` mappings are possible, they can be counter-intuitive enough that it may be easier to write the full position map instead.
+
+For completion, the equivalent "lossless" non-`complete` position map is shown below:
+
+```dts
+/ {
+    keypad_lossy_position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        macropad_map: macropad {
+            physical-layout = <&macropad_layout>;
+            positions = <7 11 15 19 16 17>;
+        };
+
+        numpad_map: numpad {
+            physical-layout = <&numpad_layout>;
+            positions = <7 17 14 19 15 18>;
+        };
+    };
+};
+```
+
+#### Additional example: corne
 
 The following is an example of a "lossless" position map which maps the 5-column and 6-column Corne keymap layouts. The 6 column layout is the reference layout.
 
