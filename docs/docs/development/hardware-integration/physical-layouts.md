@@ -58,9 +58,6 @@ A key description has the shape `<&key_physical_attrs w h x y r rx ry>` with the
 You can specify negative values in devicetree using parentheses around it, e.g. `(-3000)` for a 30 degree counterclockwise rotation.
 :::
 
-ZMK defines a number of popular physical layouts in-tree at [`app/dts/layouts`](https://github.com/zmkfirmware/zmk/tree/main/app/dts/layouts).
-To use such layouts, import them and assign their `transform` and (optionally) `kscan` properties.
-
 ### Physical Layout with Keys Example
 
 Here is an example of a physical layout for a 2x2 macropad:
@@ -84,7 +81,24 @@ Here is an example of a physical layout for a 2x2 macropad:
 };
 ```
 
-### Predefined Layout Usage Example
+## Using Predefined Layouts
+
+ZMK defines a number of popular physical layouts in-tree at [`app/dts/layouts`](https://github.com/zmkfirmware/zmk/tree/main/app/dts/layouts).
+To use such layouts, import them and assign their `transform` and (optionally) `kscan` properties.
+
+Here is an example of using the predefined physical layouts for a keyboard with the same layout as the "ferris":
+
+```dts
+#include <layouts/cuddlykeyboards/ferris.dtsi>
+
+// Assigning suitable kscan and matrix transforms
+&cuddlykeyboards_ferris_layout {
+    transform = <&default_transform>;
+    kscan = <&kscan0>;
+};
+```
+
+Shared physical layouts found in the same folder are defined such that they can be used together, to define [multiple physical layout](#multiple-physical-layouts) options. See below for more information on multiple physical layouts.
 
 Here is an example of using the predefined physical layouts for a 60% keyboard:
 
@@ -149,6 +163,23 @@ If necessary, you can also define multiple kscan instances.
 
 A position map is used for precise mapping between layouts. It is used to allow [ZMK Studio](../../features/studio.md) to accurately retain keymaps when switching layouts. A keyboard's position map has a child node for every potential layout of the keyboard, with the corresponding entries in `positions` property will be used to determine the mapping between layouts. A position map looks something like this:
 
+```dts
+/ {
+    position_map {
+        compatible = "zmk,physical-layout-position-map";
+        complete; // Not necessary, but generally recommended if you use position maps
+        layout1: layout1 {
+            physical-layout = <&physical_layout1>;
+            positions = <...>; // List of positions to map
+        };
+        layout2: layout2 {
+            physical-layout = <&physical_layout2>;
+            positions = <...>; // List of positions to map
+        };
+    };
+};
+```
+
 Position maps are optional; if a position map is not present, [ZMK Studio](../../features/studio.md) will automatically determine a (potentially inaccurate) mapping based on the physical key properties. This approach is also used as a fallback for positions not specified in the map if the `complete` property is not set.
 
 See also the [configuration section on position maps](../../config/layout.md#physical-layout-position-map).
@@ -183,7 +214,7 @@ Next, select a layout to be the "reference" layout. It is recommended that this 
 Create the child node for the "reference" layout, and fill the `positions` array by iterating through the keys in your layout in the same order as the matrix transform. For a 2x2 macropad the child node would be
 
 ```dts
-macropad {
+macropad_map: macropad {
     physical-layout = <&macropad_layout>;
     positions // This is equivalent to `positions = <0 1 2 3>;`, reshaped for readability
         = < 0  1 >
@@ -202,7 +233,7 @@ Consider the following macropad/numpad with two physical layouts:
 Let us first consider each side individually. The "reference" position map of the left side would look like this:
 
 ```dts
-macropad {
+macropad_map: macropad {
     physical-layout = <&macropad_layout>;
     positions
         = < 0  1  2  3>
@@ -216,7 +247,7 @@ macropad {
 Meanwhile, the "reference" position map of the right side with fewer keys would look like this:
 
 ```dts
-numpad {
+numpad_map: numpad {
     physical-layout = <&numpad_layout>;
     positions
         = < 0  1  2  3>
@@ -237,7 +268,7 @@ If the left side with more keys was used as the reference layout, then the overa
         compatible = "zmk,physical-layout-position-map";
         complete;
 
-        macropad {
+        macropad_map: macropad {
             physical-layout = <&macropad_layout>;
             positions
                 = < 0  1  2  3>
@@ -247,7 +278,7 @@ If the left side with more keys was used as the reference layout, then the overa
                 , <16 17 18 19>;
         };
 
-        numpad {
+        numpad_map: numpad {
             physical-layout = <&numpad_layout>;
             positions
                 = < 0  1  2  3>
@@ -268,7 +299,7 @@ The "missing" positions are filled with the "spare" numbers of the layout with m
         compatible = "zmk,physical-layout-position-map";
         complete;
 
-        macropad {
+        macropad_map: macropad {
             physical-layout = <&macropad_layout>;
             positions
                 = < 0  1  2  3>
@@ -278,7 +309,7 @@ The "missing" positions are filled with the "spare" numbers of the layout with m
                 , <16    18   >;
         };
 
-        numpad {
+        numpad_map: numpad {
             physical-layout = <&numpad_layout>;
             positions
                 = < 0  1  2  3>
@@ -291,6 +322,8 @@ The "missing" positions are filled with the "spare" numbers of the layout with m
 };
 ```
 
+The above example is "lossy" because (unlike the "lossless" example) if a user switches from the macropad layout to the numpad layout _and then_ switches from the numpad layout back to the macropad layout, the assignments to the keys present but not listed in the macropad's map are lost.
+
 #### Example 2: corne
 
 The following is an example of a "lossless" position map which maps the 5-column and 6-column Corne keymap layouts. The 6 column layout is the reference layout.
@@ -301,7 +334,7 @@ The following is an example of a "lossless" position map which maps the 5-column
 
         complete;
 
-        twelve {
+        twelve_map: twelve {
             physical-layout = <&foostan_corne_6col_layout>;
             positions
                 = < 0  1  2  3  4  5  6  7  8  9 10 11>
@@ -310,7 +343,7 @@ The following is an example of a "lossless" position map which maps the 5-column
                 , <         36 37 38 39 40 41         >;
         };
 
-        ten {
+        ten_map: ten {
             physical-layout = <&foostan_corne_5col_layout>;
             positions
                 = <36  0  1  2  3  4  5  6  7  8  9 37>
@@ -329,7 +362,7 @@ Meanwhile, the "lossy" version of the same position map with the 5 column versio
 
         complete;
 
-        twelve {
+        twelve_map: twelve {
             physical-layout = <&foostan_corne_6col_layout>;
             positions
                 = < 1  2  3  4  5  6  7  8  9 10>
@@ -338,7 +371,7 @@ Meanwhile, the "lossy" version of the same position map with the 5 column versio
                 , <      36 37 38 39 40 41      >;
         };
 
-        ten {
+        ten_map: ten {
             physical-layout = <&foostan_corne_5col_layout>;
             positions
                 = < 0  1  2  3  4  5  6  7  8  9>
