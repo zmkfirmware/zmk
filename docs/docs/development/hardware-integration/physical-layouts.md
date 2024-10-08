@@ -258,7 +258,7 @@ numpad_map: numpad {
 };
 ```
 
-As a reminder, the ordering of the physical layout and the position map is the same as in the matrix transform and the keymap (all are just one-dimensional arrays presented nicely through the use of whitespace).
+As a reminder, the `positions` property is a one-dimensional array like the `keys` propertly, presented nicely through the use of whitespace.
 
 If the left side with more keys was used as the reference layout, then the overall position map of the keyboard would look like this:
 
