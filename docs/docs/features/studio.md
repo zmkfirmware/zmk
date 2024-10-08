@@ -109,3 +109,11 @@ By default, a build with ZMK Studio enabled will only allow as many layers as ar
 ```
 
 The reserved layers will be ignored during regular ZMK builds but will become available for ZMK Studio enabled builds.
+
+## Enabling ZMK Studio for a Keyboard
+
+To allow ZMK Studio to be used with a keyboard, the keyboard will need to have a physical layout with the `keys` property defined. Relevant information can be found in:
+
+- The [dedicated page on physical layouts](../development/hardware-integration/physical-layouts.md), informing you how to define one
+- The [new shield guide](../development/hardware-integration/new-shield.mdx), informing you how to select a physical layout once defined
+- The corresponding [configuration page](../config/layout.md#physical-layout), for reference
