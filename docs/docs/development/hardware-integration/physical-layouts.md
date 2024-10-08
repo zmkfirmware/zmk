@@ -322,11 +322,11 @@ The "missing" positions are filled with the "spare" numbers of the layout with m
 };
 ```
 
-The above example is "lossy" because (unlike the "lossless" example) if a user switches from the macropad layout to the numpad layout _and then_ switches from the numpad layout back to the macropad layout, the assignments to the keys present but not listed in the macropad's map are lost.
+The above example is "lossy" because (unlike the previous "lossless" example) if a user switches from the macropad layout to the numpad layout _and then_ switches from the numpad layout back to the macropad layout, the assignments to the keys present but not listed in the macropad's map are lost.
 
 #### Example non-`complete` position map
 
-Consider the above device again - most of the positions have identical `keys` properties. For example, the numpad's `15` key and the macropad's `16` key would have the same physical property, and be mapped to each other automatically. The keys whose mappings are unable to be determined automatically are those with different physical characteristics - the 2u high and 2u wide keys, and their corresponding 1u counterparts.
+Consider the above device again -- most of the positions have identical `keys` properties. For example, the macropad's `12` key and the numpad's `11` key would have the same physical property, and be mapped to each other automatically. The keys whose mappings are unable to be determined automatically are those with different physical characteristics: the 2u high and 2u wide keys, and their corresponding 1u counterparts.
 
 A non-`complete` position map can be used to assign mappings to only these particular keys:
 
