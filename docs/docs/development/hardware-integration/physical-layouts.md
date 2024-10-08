@@ -258,7 +258,7 @@ numpad_map: numpad {
 };
 ```
 
-As a reminder, the `positions` property is a one-dimensional array like the `keys` propertly, presented nicely through the use of whitespace.
+As a reminder, the `positions` property is a one-dimensional array like the `keys` property, formatted nicely through the use of whitespace and angle bracket groupings.
 
 If the left side with more keys was used as the reference layout, then the overall position map of the keyboard would look like this:
 
@@ -350,7 +350,7 @@ A non-`complete` position map can be used to assign mappings to only these parti
 
 This is noticably simpler to write, and can be a useful way of saving flash space for memory-constrained devices. The above is a "lossy" mapping, though. While "lossless" non-`complete` mappings are possible, they can be counter-intuitive enough that it may be easier to write the full position map instead.
 
-For completion, the equivalent "lossless" non-`complete` position map is shown below:
+For completeness, the equivalent "lossless" non-`complete` position map is shown below:
 
 ```dts
 / {
