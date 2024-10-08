@@ -24,7 +24,7 @@ A basic physical layout without the `keys` property looks like this:
 };
 ```
 
-It is given a name, a matrix transform, and a kscan. If all of your physical layouts share the same kscan, then the `kscan` property can be omitted - in this case it needs to be set in the [`chosen` node](./new-shield.mdx#chosen-node). See the [configuration section on physical layouts](../../config/) for reference.
+It is given a name, a matrix transform, and a kscan. If all of your physical layouts share the same kscan, then the `kscan` property can be omitted - in this case it needs to be set in the [`chosen` node](./new-shield.mdx#chosen-node). See the [configuration section on physical layouts](../../config/index.md) for reference.
 
 ## (Optional) Keys Property
 
@@ -89,14 +89,13 @@ Here is an example of a physical layout for a 2x2 macropad:
 Here is an example of using the predefined physical layouts for a 60% keyboard:
 
 ```dts
-
 #include <layouts/common/60percent/all1u.dtsi>
 #include <layouts/common/60percent/ansi.dtsi>
 #include <layouts/common/60percent/hhkb.dtsi>
 #include <layouts/common/60percent/iso.dtsi>
 
 
-\\ Assigning the suitable matrix transforms
+// Assigning suitable kscan and matrix transforms
 &layout_60_ansi {
     transform = <&ansi_transform>;
     kscan = <&ansi_kscan>;
@@ -120,7 +119,7 @@ Here is an example of using the predefined physical layouts for a 60% keyboard:
 
 ## Multiple Physical Layouts
 
-If a keyboard has multiple possible layouts (ex. you can snap off an outer column), then you should define multiple matrix transformations and multiple physical layouts - one for each possible layout.
+If a keyboard has multiple possible layouts (e.g. you can snap off an outer column), then you should define multiple matrix transformations and multiple physical layouts, one for each possible layout.
 If necessary, you can also define multiple kscan instances.
 
 ```dts
@@ -133,7 +132,7 @@ If necessary, you can also define multiple kscan instances.
         display-name = "Default Layout";
         transform = <&default_transform>;
         kscan = <&kscan0>;
-        keys = // List of key positions, optional
+        keys = <...>; // List of key positions, optional
     };
 
     alt_layout: alt_layout {
@@ -141,7 +140,7 @@ If necessary, you can also define multiple kscan instances.
         display-name = "Alternate Layout";
         transform = <&alt_transform>;
         kscan = <&alt_kscan0>;
-        keys = // List of key positions, optional
+        keys = <...>; // List of key positions, optional
     };
 };
 ```
