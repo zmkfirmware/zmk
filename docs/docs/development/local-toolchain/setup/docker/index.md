@@ -37,18 +37,35 @@ In case you have a `zmk-config` or want to build with additional modules, it is
 necessary to first make those available to the Docker container. This can be
 done by mounting them as volumes.
 
+But before you do so first check that no ZMK related containers and the
+`zmk-config` and `zmk-module` volumes exist. This can be done with:
+
+```sh
+docker container ps                    # List active containers
+docker container stop "<container-id>" # Stop the container
+docker container rm   "<container-id>" # Remove the container
+
+docker volume ls                 # List volumes
+docker volume rm "<volume-name>" # Remove volume
+```
+
+:::note
+You can also use `docker container prune` to remove all containers if no others
+are running.
+:::
+
 #### `zmk-config`
 
 ```sh
 docker volume create --driver local -o o=bind -o type=none \
-  -o device="/path/to/zmk-config/" zmk-config
+  -o device="/absolute/path/to/zmk-config/" zmk-config
 ```
 
 #### Modules
 
 ```sh
 docker volume create --driver local -o o=bind -o type=none -o \
-  device="/path/to/zmk-module/" zmk-module
+  device="/absolute/path/to/zmk-module/" zmk-module
 ```
 
 :::tip
