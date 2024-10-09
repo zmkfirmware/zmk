@@ -161,13 +161,15 @@ If necessary, you can also define multiple kscan instances.
 
 ### Position Map
 
-A position map is used for precise mapping between layouts. It is used to allow [ZMK Studio](../../features/studio.md) to accurately retain keymaps when switching layouts. A keyboard's position map has a child node for every potential layout of the keyboard, with the corresponding entries in `positions` property will be used to determine the mapping between layouts. A position map looks something like this:
+When switching between layouts using [ZMK Studio](../../features/studio.md), an attempt is made to automatically infer bindings for the keys in the new layout from the old layout. Keys with the same physical key properties are given the same binding. This approach has some limitations, though, so for more accurate transference of bindings a position map is used.
+
+A position map looks something like this:
 
 ```dts
 / {
     position_map {
         compatible = "zmk,physical-layout-position-map";
-        complete; // Not necessary, but generally recommended if you use position maps
+        complete; // Optional, see 'Example non-complete position map'
         layout1: layout1 {
             physical-layout = <&physical_layout1>;
             positions = <...>; // List of positions to map
@@ -176,19 +178,18 @@ A position map is used for precise mapping between layouts. It is used to allow 
             physical-layout = <&physical_layout2>;
             positions = <...>; // List of positions to map
         };
+        // Additonal layout child nodes
     };
 };
 ```
 
-Position maps are optional; if a position map is not present, [ZMK Studio](../../features/studio.md) will automatically determine a (potentially inaccurate) mapping based on the physical key properties. This approach is also used as a fallback for positions not specified in the map if the `complete` property is not set.
+A child node is defined for every layout the keyboard can have. The `positions` properties each contain an array of indicies, which are used to refer to keys in the `keys` array of their corresponding physical layout. A `0` in the `positions` property refers to the first key in the `keys` array, a `1` refers to the second, and so on.
+
+When switching from one layout to another, say from layout 1 to layout 2, the _orderings_ found in the `positions` arrays are used. The first key in the `positions` array of layout 2 is given the binding assigned to the first key in the `positions` array of layout 1, the second key in the `positions` array of layout 2 is given the binding assigned to the second key in the `positions` array of layout 1, and so on.
+
+The position map should be marked as `complete` if all desired binding transfers are defined within it. Otherwise, [ZMK Studio](../../features/studio.md) will continue to automatically determine assignments for keys not listed in the position map. See ['Example non-complete position map'](#example-non-complete-position-map) for an example of how this could be useful.
 
 See also the [configuration section on position maps](../../config/layout.md#physical-layout-position-map).
-
-:::info
-
-Key positions in the maps are numbered like the keys in your keymap, starting at 0. So the first position in the layout is position `0`, the next key position is `1`, etc.
-
-:::
 
 #### Writing a position map
 
@@ -196,9 +197,9 @@ Start by creating the parent node defining the position map:
 
 ```dts
 / {
-    keypad_lossless_position_map {
+    keypad_position_map {
         compatible = "zmk,physical-layout-position-map";
-        complete; // Not necessary, but generally recommended if you use position maps
+        complete; // Optional, see 'Example non-complete position map'
 
         // Child node 1 here
 
@@ -209,20 +210,26 @@ Start by creating the parent node defining the position map:
 };
 ```
 
-Next, select a layout to be the "reference" layout. This should be the layout with the most keys, as that allows creating a map where no key bindings are lost when switching to a layout with fewer keys and back.
+It is easiest to write the position map by considering one layout to be the "reference" layout, and defining all other position maps with respect to it. The reference layout should usually be the one with the most keys, as that creates a position map where no key bindings are lost when switching to a layout with fewer keys and back.
 
-Create the child node for the "reference" layout, and fill the `positions` array by iterating through the keys in your layout in the same order as the matrix transform. For a 2x2 macropad the child node would be
+Create the child node for the "reference" layout, and fill the `positions` array by counting upwards, giving it the same order and number of keys as the `keys` property of its physical layout. For a 2x2 macropad the child node would be
 
 ```dts
-macropad_map: macropad {
-    physical-layout = <&macropad_layout>;
-    positions // This is equivalent to `positions = <0 1 2 3>;`, reshaped for readability
-        = < 0  1 >
-        , < 2  3 >;
+/ {
+    keypad_position_map {
+        // Other properties
+
+        macropad_map: macropad {
+            physical-layout = <&macropad_layout>;
+            positions // This is equivalent to `positions = <0 1 2 3>;`, reshaped for readability
+                = < 0  1 >
+                , < 2  3 >;
+        };
+    };
 };
 ```
 
-Next, you'll need to write child nodes for every other layout, deriving the position map from the reference. Start by deleting any keys which aren't present in your layout, then reassign the numbers so that they match the matrix transform. Finally, (if the reference layout has more keys) add numbers back into the "empty"/"spare"/"nonexistent" positions so that both position maps count up to the same number. The below examples show this process more clearly.
+Next write the child nodes for every other layout with respect to the reference. For keys present in the reference which aren't present in the layout you're writing the child node for, count backwards: The first key that isn't present is given the highest number found in the `positions` array of the reference, the second key that isn't present is given the second highest number, and so on. The below examples show this process more clearly.
 
 #### Example larger position map
 
@@ -233,28 +240,40 @@ Consider the following macropad/numpad with two physical layouts:
 Let us first consider each side individually. The "reference" position map of the left side would look like this:
 
 ```dts
-macropad_map: macropad {
-    physical-layout = <&macropad_layout>;
-    positions
-        = < 0  1  2  3>
-        , < 4  5  6  7>
-        , < 8  9 10 11>
-        , <12 13 14 15>
-        , <16 17 18 19>;
+/ {
+    keypad_position_map {
+        // Other properties
+
+        macropad_map: macropad {
+            physical-layout = <&macropad_layout>;
+            positions
+                = < 0  1  2  3>
+                , < 4  5  6  7>
+                , < 8  9 10 11>
+                , <12 13 14 15>
+                , <16 17 18 19>;
+        };
+    };
 };
 ```
 
 Meanwhile, the "reference" position map of the right side with fewer keys would look like this:
 
 ```dts
-numpad_map: numpad {
-    physical-layout = <&numpad_layout>;
-    positions
-        = < 0  1  2  3>
-        , < 4  5  6  7>
-        , < 8  9 10   >
-        , <11 12 13 14>
-        , <15    16   >;
+/ {
+    keypad_position_map {
+        // Other properties
+
+        numpad_map: numpad {
+            physical-layout = <&numpad_layout>;
+            positions
+                = < 0  1  2  3>
+                , < 4  5  6  7>
+                , < 8  9 10   >
+                , <11 12 13 14>
+                , <15    16   >;
+        };
+    };
 };
 ```
 
@@ -283,15 +302,17 @@ If the left side with more keys was used as the reference layout, then the overa
             positions
                 = < 0  1  2  3>
                 , < 4  5  6  7>
-                , < 8  9 10 17>
+                , < 8  9 10 19>
                 , <11 12 13 14>
-                , <15 18 16 19>;
+                , <15 18 16 17>;
         };
     };
 };
 ```
 
-The "missing" positions are filled with the "spare" numbers of the layout with more keys. Meanwhile, if the right side with fewer keys is used as a reference, then the overall position map would look like this:
+The "missing" positions are filled with the "spare" numbers of the layout with more keys. The order in which the "spare" keys are used is irrelevant; counting backwards is merely a convenient way of doing so.
+
+If the right side with fewer keys were used as a reference instead, then the overall position map would look like this:
 
 ```dts
 / {
@@ -364,7 +385,7 @@ For completeness, the equivalent "lossless" non-`complete` position map is shown
 
         numpad_map: numpad {
             physical-layout = <&numpad_layout>;
-            positions = <7 17 14 19 15 18>;
+            positions = <7 19 14 18 15 17>;
         };
     };
 };
@@ -392,9 +413,9 @@ The following is an example of a "lossless" position map which maps the 5-column
         ten_map: ten {
             physical-layout = <&foostan_corne_5col_layout>;
             positions
-                = <36  0  1  2  3  4  5  6  7  8  9 37>
-                , <38 10 11 12 13 14 15 16 17 18 19 39>
-                , <40 20 21 22 23 24 25 26 27 28 29 41>
+                = <41  0  1  2  3  4  5  6  7  8  9 40>
+                , <39 10 11 12 13 14 15 16 17 18 19 38>
+                , <37 20 21 22 23 24 25 26 27 28 29 36>
                 , <         30 31 32 33 34 35         >;
         };
     };
