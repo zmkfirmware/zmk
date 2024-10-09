@@ -644,6 +644,11 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
     update_advertising();
 };
 
+static void auth_pairing_failed(struct bt_conn *conn, enum bt_security_err err) {
+    LOG_DBG("Pairing failed (reason %d). Disconnecting", err);
+    bt_conn_disconnect(conn, BT_SECURITY_ERR_AUTH_FAIL);
+}
+
 static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
     .pairing_accept = auth_pairing_accept,
 // .passkey_display = auth_passkey_display,
@@ -656,6 +661,7 @@ static struct bt_conn_auth_cb zmk_ble_auth_cb_display = {
 
 static struct bt_conn_auth_info_cb zmk_ble_auth_info_cb_display = {
     .pairing_complete = auth_pairing_complete,
+    .pairing_failed = auth_pairing_failed,
 };
 
 static void zmk_ble_ready(int err) {
