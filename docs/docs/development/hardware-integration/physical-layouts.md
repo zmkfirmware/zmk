@@ -209,7 +209,7 @@ Start by creating the parent node defining the position map:
 };
 ```
 
-Next, select a layout to be the "reference" layout. It is recommended that this be the layout which has the highest number of keys, as that prevents key mappings from being "lost" when switching back and forth between layouts.
+Next, select a layout to be the "reference" layout. This should be the layout with the most keys, as that allows creating a map where no key bindings are lost when switching to a layout with fewer keys and back.
 
 Create the child node for the "reference" layout, and fill the `positions` array by iterating through the keys in your layout in the same order as the matrix transform. For a 2x2 macropad the child node would be
 
