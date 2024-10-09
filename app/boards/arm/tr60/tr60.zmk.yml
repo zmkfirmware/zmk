@@ -1,0 +1,11 @@
+file_format: "1"
+id: tr60
+name: tr60
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+  - ble
+url: https://github.com/hw-tinkerers/TR-60
