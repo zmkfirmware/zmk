@@ -337,8 +337,8 @@ config ZMK_RGB_UNDERGLOW_SAT_START
 
 config ZMK_RGB_UNDERGLOW_BRT_START
     int "RGB underglow start brightness value in percent"
-    range ZMK_RGB_UNDERGLOW_BRT_MIN ZMK_RGB_UNDERGLOW_BRT_MAX
-    default ZMK_RGB_UNDERGLOW_BRT_MAX
+    range 0 100
+    default 100
 
 config ZMK_RGB_UNDERGLOW_SPD_START
     int "RGB underglow start animation speed value"
