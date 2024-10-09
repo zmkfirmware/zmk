@@ -161,7 +161,7 @@ If necessary, you can also define multiple kscan instances.
 
 ### Position Map
 
-When switching between layouts using [ZMK Studio](../../features/studio.md), an attempt is made to automatically infer bindings for the keys in the new layout from the old layout. Keys with the same physical key properties are given the same binding. This approach has some limitations, though, so for more accurate transference of bindings a position map is used.
+When switching between layouts using [ZMK Studio](../../features/studio.md), an attempt is made to automatically infer bindings for the keys in the new layout from the old layout. Keys with the same physical key properties are given the same binding. This approach has some limitations, so for more accurate transference of bindings a position map is used.
 
 A position map looks something like this:
 
@@ -178,16 +178,16 @@ A position map looks something like this:
             physical-layout = <&physical_layout2>;
             positions = <...>; // List of positions to map
         };
-        // Additonal layout child nodes
+        // Additional layout child nodes
     };
 };
 ```
 
-A child node is defined for every layout the keyboard can have. The `positions` properties each contain an array of indicies, which are used to refer to keys in the `keys` array of their corresponding physical layout. A `0` in the `positions` property refers to the first key in the `keys` array, a `1` refers to the second, and so on.
+A child node is defined for every layout the keyboard can have. The `positions` properties each contain an array of indices, which are used to refer to keys in the `keys` array of their corresponding physical layout. A `0` in the `positions` property refers to the first key in the `keys` array, a `1` refers to the second, and so on.
 
 When switching from one layout to another, say from layout 1 to layout 2, the _orderings_ found in the `positions` arrays are used. The first key in the `positions` array of layout 2 is given the binding assigned to the first key in the `positions` array of layout 1, the second key in the `positions` array of layout 2 is given the binding assigned to the second key in the `positions` array of layout 1, and so on.
 
-The position map should be marked as `complete` if all desired binding transfers are defined within it. Otherwise, [ZMK Studio](../../features/studio.md) will continue to automatically determine assignments for keys not listed in the position map. See ['Example non-complete position map'](#example-non-complete-position-map) for an example of how this could be useful.
+The position map should be marked as `complete` if all desired binding transfers are defined within it. Otherwise, [ZMK Studio](../../features/studio.md) will continue to automatically determine assignments for keys not listed in the position map. See [this example non-complete position map](#example-non-complete-position-map) for why this could be useful.
 
 See also the [configuration section on position maps](../../config/layout.md#physical-layout-position-map).
 
@@ -212,7 +212,7 @@ Start by creating the parent node defining the position map:
 
 It is easiest to write the position map by considering one layout to be the "reference" layout, and defining all other position maps with respect to it. The reference layout should usually be the one with the most keys, as that creates a position map where no key bindings are lost when switching to a layout with fewer keys and back.
 
-Create the child node for the "reference" layout, and fill the `positions` array by counting upwards, giving it the same order and number of keys as the `keys` property of its physical layout. For a 2x2 macropad the child node would be
+Create the child node for the reference layout, and fill the `positions` array by counting upwards, giving it the same order and number of keys as the `keys` property of its physical layout. For a 2x2 macropad the child node would be
 
 ```dts
 / {
@@ -310,7 +310,7 @@ If the left side with more keys was used as the reference layout, then the overa
 };
 ```
 
-The "missing" positions are filled with the "spare" numbers of the layout with more keys. The order in which the "spare" keys are used is irrelevant; counting backwards is merely a convenient way of doing so.
+The "missing" positions are filled with the "spare" numbers of the layout with more keys. The order in which the spare keys are used is arbitrary and counting backwards is a convenient way to assign them.
 
 If the right side with fewer keys were used as a reference instead, then the overall position map would look like this:
 
