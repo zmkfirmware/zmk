@@ -14,6 +14,12 @@ ZMK Studio provides runtime update functionality to ZMK powered devices, allowin
 
 To unlock your keyboard to allow ZMK Studio to make changes, you'll need to add a [`&studio_unlock`](../keymaps/behaviors/studio-unlock.md) binding to the keymap.
 
+## Accessing ZMK Studio
+
+You can use ZMK Studio with Chrome/Edge at https://zmk.studio/.
+
+To use the native app for Linux, macOS, or Windows, download the appropriate file from the [latest release](https://github.com/zmkfirmware/zmk-studio/releases).
+
 ## Building
 
 Building for ZMK Studio involves two main additional items.

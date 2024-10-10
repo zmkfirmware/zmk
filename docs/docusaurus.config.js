@@ -63,6 +63,11 @@ module.exports = {
           position: "left",
         },
         {
+          href: "https://zmk.studio/",
+          label: "ZMK Studio",
+          position: "right",
+        },
+        {
           href: "https://github.com/zmkfirmware/zmk",
           label: "GitHub",
           position: "right",
