@@ -33,27 +33,6 @@ endif
 config ZMK_HID_CONSUMER_REPORT_SIZE
     default 6
 
-# BLE
-if ZMK_BLE
-
-config ZMK_BLE_THREAD_STACK_SIZE
-    default 768
-
-config ZMK_BLE_THREAD_PRIORITY
-    default 5
-
-config ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE
-    default 20
-
-config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
-    default 5
-
-config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
-    default 20
-
-#ZMK_BLE
-endif
-
 # Underglow
 if ZMK_RGB_UNDERGLOW
 
@@ -119,50 +98,9 @@ endif
 config ZMK_EXT_POWER
     default y
 
-# USB
-if USB_DEVICE_STACK
-
-config ZMK_USB_INIT_PRIORITY
-    default 94
-
-config ZMK_USB_HID_INIT_PRIORITY
-    default 95
-
-#USB
-endif
-
-if ZMK_BLE || ZMK_SPLIT_BLE
-
-config ZMK_BLE_INIT_PRIORITY
-    default 50
-
-#ZMK_BLE || ZMK_SPLIT_BLE
-endif
-
-# Keyboard scan
-if ZMK_KSCAN
-
-config ZMK_KSCAN_EVENT_QUEUE_SIZE
-    default 4
-
-endif # ZMK_KSCAN
-
 # Battery
 config ZMK_BATTERY_REPORT_INTERVAL
     default 60
 
-# Low priority
-if ZMK_LOW_PRIORITY_WORK_QUEUE
-
-config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
-    default 768
-
-config ZMK_LOW_PRIORITY_THREAD_PRIORITY
-    default 10
-
-endif
-
 # Imports
 rsource "src/split/Kconfig.defaults"
-rsource "src/studio/Kconfig.defaults"
-rsource "src/display/Kconfig.defaults"

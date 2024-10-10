@@ -35,6 +35,7 @@ if ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
 
 config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_QUEUE_SIZE
     int "Max number of battery level events to queue when received from peripherals"
+    default ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
 
 config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY
     bool "Proxy Peripheral Battery Level Info"
@@ -46,12 +47,15 @@ endif
 
 config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
     int "Max number of key position state events to queue when received from peripherals"
+    default 5
 
 config ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE
     int "BLE split central write thread stack size"
+    default 512
 
 config ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE
     int "Max number of behavior run events to queue to send to the peripheral(s)"
+    default 5
 
 config ZMK_SPLIT_BLE_PREF_INT
     int "Connection interval to use for split central/peripheral connection"
@@ -71,12 +75,15 @@ if !ZMK_SPLIT_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE
     int "BLE split peripheral notify thread stack size"
+    default 756
 
 config ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY
     int "BLE split peripheral notify thread priority"
+    default 5
 
 config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
     int "Max number of key position state events to queue to send to the central"
+    default 10
 
 config BT_MAX_PAIRED
     default 1

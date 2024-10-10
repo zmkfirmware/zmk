@@ -178,18 +178,23 @@ config SYSTEM_WORKQUEUE_STACK_SIZE
 
 config ZMK_BLE_THREAD_STACK_SIZE
     int "BLE notify thread stack size"
+    default 768
 
 config ZMK_BLE_THREAD_PRIORITY
     int "BLE notify thread priority"
+    default 5
 
 config ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE
     int "Max number of keyboard HID reports to queue for sending over BLE"
+    default 20
 
 config ZMK_BLE_CONSUMER_REPORT_QUEUE_SIZE
     int "Max number of consumer HID reports to queue for sending over BLE"
+    default 5
 
 config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
     int "Max number of mouse HID reports to queue for sending over BLE"
+    default 20
 
 config ZMK_BLE_CLEAR_BONDS_ON_START
     bool "Configuration that clears all bond information from the keyboard on startup."
@@ -470,9 +475,11 @@ if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
     int "USB Init Priority"
+    default 94
 
 config ZMK_USB_HID_INIT_PRIORITY
     int "USB HID Init Priority"
+    default 95
 
 #USB
 endif
@@ -481,6 +488,7 @@ if ZMK_BLE || ZMK_SPLIT_BLE
 
 config ZMK_BLE_INIT_PRIORITY
     int "BLE Init Priority"
+    default 50
 
 #ZMK_BLE || ZMK_SPLIT_BLE
 endif
@@ -497,6 +505,7 @@ if ZMK_KSCAN
 
 config ZMK_KSCAN_EVENT_QUEUE_SIZE
     int "Size of the event queue for KSCAN events to buffer events"
+    default 4
 
 endif # ZMK_KSCAN
 
@@ -629,9 +638,11 @@ if ZMK_LOW_PRIORITY_WORK_QUEUE
 
 config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
     int "Low priority thread stack size"
+    default 768
 
 config ZMK_LOW_PRIORITY_THREAD_PRIORITY
     int "Low priority thread priority"
+    default 10
 
 endif
 

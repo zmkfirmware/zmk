@@ -73,6 +73,7 @@ config BT_CONN_TX_MAX
 
 config ZMK_STUDIO_TRANSPORT_BLE_PREF_LATENCY
     int "BLE Transport preferred latency"
+    default 10
     help
       When the studio UI is connected, a lower latency can be requested in order
       to make the interactions between keyboard and studio faster.
@@ -81,12 +82,15 @@ endmenu
 
 config ZMK_STUDIO_RPC_THREAD_STACK_SIZE
     int "RPC Thread Stack Size"
+    default 4096
 
 config ZMK_STUDIO_RPC_RX_BUF_SIZE
     int "RX Buffer Size"
+    default 30
 
 config ZMK_STUDIO_RPC_TX_BUF_SIZE
     int "TX Buffer Size"
+    default 64
 
 endif
 
