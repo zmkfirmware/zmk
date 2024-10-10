@@ -80,7 +80,7 @@
 };
 
 &layouts_common_65_percent_position_map {
-    layout_65_ansi {
+    layout_65_ansi_posmap: layout_65_ansi {
         physical-layout = <&layout_65_ansi>;
         positions
             = < 0  1  2  3  4  5  6  7  8  9 10 11 12 13 68 14>

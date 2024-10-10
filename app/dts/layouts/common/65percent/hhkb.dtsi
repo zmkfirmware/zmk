@@ -77,7 +77,7 @@
 };
 
 &layouts_common_65_percent_position_map {
-    layout_65_hhkb {
+    layout_65_hhkb_posmap: layout_65_hhkb {
         physical-layout = <&layout_65_hhkb>;
         positions
             = < 0  1  2  3  4  5  6  7  8  9 10 11 12 13 65 14>
