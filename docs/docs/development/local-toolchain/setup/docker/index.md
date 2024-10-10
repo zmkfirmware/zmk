@@ -37,7 +37,7 @@ In case you have a `zmk-config` or want to build with additional modules, it is
 necessary to first make those available to the Docker container. This can be
 done by mounting them as volumes.
 
-But before you do so first check that no ZMK related containers and the
+But before you do so, first check that neither ZMK related containers nor the
 `zmk-config` and `zmk-module` volumes exist. This can be done with:
 
 ```sh

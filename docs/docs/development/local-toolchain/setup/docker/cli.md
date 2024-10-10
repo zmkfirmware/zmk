@@ -11,7 +11,7 @@ sidebar_label: Dev Container CLI
 
 ### Initialize & Update Zephyr Workspace
 
-Open up your Terminal an make sure that the
+Open up your Terminal and make sure that the
 [Dev Container CLI](https://github.com/devcontainers/cli) is installed by
 running:
 
