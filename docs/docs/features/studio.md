@@ -2,9 +2,9 @@
 title: ZMK Studio
 ---
 
-:::warning[Alpha Feature]
+:::warning[Beta Feature]
 
-ZMK Studio support is in alpha. Although best efforts are being made, keeping compatibility during active development is not guaranteed.
+ZMK Studio is in beta. Although every effort has been made to provide a stable experience, you may still encounter issues during use. Please report any issues to [GitHub Issues](https://github.com/zmkfirmware/zmk-studio/issues).
 
 :::
 

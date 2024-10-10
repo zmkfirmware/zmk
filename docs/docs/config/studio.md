@@ -3,9 +3,9 @@ title: ZMK Studio Configuration
 sidebar_label: ZMK Studio
 ---
 
-:::warning[Alpha Feature]
+:::warning[Beta Feature]
 
-ZMK Studio is still in active development and the below information is for development purposes only. For up to date information, join the [ZMK Discord](https://zmk.dev/community/discord/invite) server and discuss in `#studio-development`.
+ZMK Studio is in beta. Although every effort has been made to provide a stable experience, you may still encounter issues during use. Please report any issues to [GitHub Issues](https://github.com/zmkfirmware/zmk-studio/issues).
 
 :::
 
