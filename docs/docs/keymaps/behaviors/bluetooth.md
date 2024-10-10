@@ -46,6 +46,9 @@ Here is a table describing the command for each define:
 | `BT_PRV`     | Switch to the previous profile, cycling through to the last one when the beginning is reached.                                                                                     |
 | `BT_SEL`     | Select the 0-indexed profile by number; must include a number as an argument in the keymap to work correctly, e.g. `BT_SEL 0`.                                                     |
 | `BT_DISC`    | Disconnect from the 0-indexed profile by number, if it's currently connected and inactive; must include a number as an argument in the keymap to work correctly, e.g. `BT_DISC 0`. |
+| `ADV_OFF`    | Disconnect from all profiles and disable advertising (The device will not show up as connectable on host devices)                                                                  |
+| `ADV_ON`     | Enable Bluetooth advertising, the device will show up as connectable                                                                                                               |
+| `ADV_TOG`    | Toggle advertising on and off                                                                                                                                                      |
 
 :::note[Selected profile persistence]
 The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be saved to flash storage and hence persist across restarts and firmware flashes.
