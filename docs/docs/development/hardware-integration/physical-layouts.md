@@ -35,7 +35,7 @@ It is given a name, a matrix transform, and a kscan. If all of your physical lay
 
 :::
 
-The `keys` property is required for [ZMK Studio](../../features/studio.md) support. It is used to describe the physical attributes of each key position present in that layout. If this property is used, then you should define the physical layouts and any [position maps](#position-map) in a file called `<your keyboard>-layouts.dtsi`. This file should then be imported by the appropriate file (A `.overlay`, `.dts`, or a `.dtsi` which is itself imported by one of the previous).
+The `keys` property is required for [ZMK Studio](../../features/studio.md) support. It is used to describe the physical attributes of each key position present in that layout. If this property is used, then you should define the physical layouts and any [position maps](#position-map) in a file called `<your keyboard>-layouts.dtsi`. This file should then be imported by the appropriate file, such as an `.overlay`, `.dts`, or a `.dtsi` (last of which is itself imported by one of the previous).
 
 To pull in the necessary definition for creating physical layouts with the `keys` property, a new include should be added to the top of the devicetree file:
 
