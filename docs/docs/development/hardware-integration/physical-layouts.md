@@ -29,9 +29,9 @@ It is given a name, a matrix transform, and a kscan. If all of your physical lay
 
 ## (Optional) Keys Property
 
-:::warning[Alpha Feature]
+:::warning[Beta Feature]
 
-[ZMK Studio](../../features/studio.md) support is in alpha. Although best efforts are being made, backwards compatibility during active development is not guaranteed.
+ZMK Studio is in beta. Although every effort has been made to provide a stable experience, you may still encounter issues during use. Please report any issues to [GitHub Issues](https://github.com/zmkfirmware/zmk-studio/issues).
 
 :::
 
