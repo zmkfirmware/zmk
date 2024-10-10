@@ -110,7 +110,7 @@ By default, a build with ZMK Studio enabled will only allow as many layers as ar
 
 The reserved layers will be ignored during regular ZMK builds but will become available for ZMK Studio enabled builds.
 
-## Enabling ZMK Studio for a Keyboard
+## Adding ZMK Studio Support to a Keyboard
 
 To allow ZMK Studio to be used with a keyboard, the keyboard will need to have a physical layout with the `keys` property defined. Relevant information can be found in:
 
