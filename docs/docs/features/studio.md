@@ -10,6 +10,10 @@ ZMK Studio support is in alpha. Although best efforts are being made, keeping co
 
 ZMK Studio provides runtime update functionality to ZMK powered devices, allowing users to change their keymap layers without flashing new firmware to their keyboards. Studio is still under active development, and is not yet ready for casual end user use.
 
+## Keymap Changes
+
+To unlock your keyboard to allow ZMK Studio to make changes, you'll need to add a [`&studio_unlock`](../keymaps/behaviors/studio-unlock.md) binding to the keymap.
+
 ## Building
 
 Building for ZMK Studio involves two main additional items.
@@ -109,3 +113,11 @@ By default, a build with ZMK Studio enabled will only allow as many layers as ar
 ```
 
 The reserved layers will be ignored during regular ZMK builds but will become available for ZMK Studio enabled builds.
+
+## Adding ZMK Studio Support to a Keyboard
+
+To allow ZMK Studio to be used with a keyboard, the keyboard will need to have a physical layout with the `keys` property defined. Relevant information can be found in:
+
+- The [dedicated page on physical layouts](../development/hardware-integration/physical-layouts.md), informing you how to define one
+- The [new shield guide](../development/hardware-integration/new-shield.mdx), informing you how to select a physical layout once defined
+- The corresponding [configuration page](../config/layout.md#physical-layout), for reference
