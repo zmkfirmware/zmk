@@ -10,6 +10,10 @@ ZMK Studio support is in alpha. Although best efforts are being made, keeping co
 
 ZMK Studio provides runtime update functionality to ZMK powered devices, allowing users to change their keymap layers without flashing new firmware to their keyboards. Studio is still under active development, and is not yet ready for casual end user use.
 
+## Keymap Changes
+
+To unlock your keyboard to allow ZMK Studio to make changes, you'll need to add a [`&studio_unlock`](../keymaps/behaviors/studio-unlock.md) binding to the keymap.
+
 ## Building
 
 Building for ZMK Studio involves two main additional items.
