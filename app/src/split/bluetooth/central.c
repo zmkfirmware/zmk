@@ -885,6 +885,7 @@ int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *bi
     struct zmk_split_run_behavior_payload payload = {.data = {
                                                          .param1 = binding->param1,
                                                          .param2 = binding->param2,
+                                                         .param3 = binding->param3,
                                                          .position = event.position,
                                                          .source = event.source,
                                                          .state = state ? 1 : 0,

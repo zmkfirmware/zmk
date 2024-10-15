@@ -24,6 +24,7 @@ struct zmk_split_run_behavior_data {
     uint8_t state;
     uint32_t param1;
     uint32_t param2;
+    uint32_t param3;
 } __packed;
 
 struct zmk_split_run_behavior_payload {
