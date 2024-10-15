@@ -8,10 +8,28 @@ config ZMK_MOUSE
 
 if ZMK_MOUSE
 
+config INPUT_THREAD_STACK_SIZE
+    default 1024 if ZMK_SPLIT && !ZMK_SPLIT_ROLE_CENTRAL
+
+if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+
 config ZMK_MOUSE_SMOOTH_SCROLLING
     bool "Smooth Scrolling"
     help
       Enable smooth scrolling, with hosts that support HID Resolution Multipliers
+
+config ZMK_INPUT_LISTENER
+    bool "Input listener for processing input events in the system"
+    default y
+    depends on DT_HAS_ZMK_INPUT_LISTENER_ENABLED
+
+
+config ZMK_INPUT_PROCESSOR_TEMP_LAYER
+    bool "Temporary Layer Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_TEMP_LAYER_ENABLED
+
+endif
 
 config ZMK_INPUT_PROCESSOR_TRANSFORM
     bool "Transform Input Processor"
@@ -23,15 +41,14 @@ config ZMK_INPUT_PROCESSOR_SCALER
     default y
     depends on DT_HAS_ZMK_INPUT_PROCESSOR_SCALER_ENABLED
 
-config ZMK_INPUT_PROCESSOR_TEMP_LAYER
-    bool "Temporary Layer Input Processor"
-    default y
-    depends on DT_HAS_ZMK_INPUT_PROCESSOR_TEMP_LAYER_ENABLED
-
 config ZMK_INPUT_PROCESSOR_CODE_MAPPER
     bool "Code Mapper Input Processor"
     default y
     depends on DT_HAS_ZMK_INPUT_PROCESSOR_CODE_MAPPER_ENABLED
 
+config ZMK_INPUT_SPLIT
+    bool "Split input support"
+    default y
+    depends on DT_HAS_ZMK_INPUT_SPLIT_ENABLED && ZMK_SPLIT
 
 endif

@@ -1,0 +1,15 @@
+include: [base.yaml]
+
+compatible: "zmk,input-split"
+
+description: Device to wire up an input device for split use.
+
+properties:
+  reg:
+    required: true
+
+  device:
+    type: phandle
+
+  input-processors:
+    type: phandle-array
