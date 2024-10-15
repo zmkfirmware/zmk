@@ -12,6 +12,7 @@
 
 #include <zmk/event_manager.h>
 #include <zmk/events/keycode_state_changed.h>
+#include <zmk/hid.h>
 #include <zmk/behavior.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -37,18 +38,30 @@ static const struct behavior_parameter_metadata metadata = {
 
 #endif
 
+struct behavior_key_press_config {
+    bool invert_if_active;
+};
+
 static int behavior_key_press_init(const struct device *dev) { return 0; };
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-    return raise_zmk_keycode_state_changed_from_encoded(binding->param1, true, event.timestamp);
+    bool pressed = zmk_hid_is_pressed(binding->param1);
+    const struct behavior_key_press_config *cfg =
+        zmk_behavior_get_binding(binding->behavior_dev)->config;
+    return raise_zmk_keycode_state_changed_from_encoded(
+        binding->param1, !(cfg->invert_if_active & pressed), event.timestamp);
 }
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
-    return raise_zmk_keycode_state_changed_from_encoded(binding->param1, false, event.timestamp);
+    bool pressed = zmk_hid_is_pressed(binding->param1);
+    const struct behavior_key_press_config *cfg =
+        zmk_behavior_get_binding(binding->behavior_dev)->config;
+    return raise_zmk_keycode_state_changed_from_encoded(
+        binding->param1, cfg->invert_if_active & !pressed, event.timestamp);
 }
 
 static const struct behavior_driver_api behavior_key_press_driver_api = {
@@ -60,7 +73,11 @@ static const struct behavior_driver_api behavior_key_press_driver_api = {
 };
 
 #define KP_INST(n)                                                                                 \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_key_press_init, NULL, NULL, NULL, POST_KERNEL,             \
+    static const struct behavior_key_press_config behavior_key_press_config_##n = {                \
+        DT_INST_PROP_OR(n, invert_if_active, false),                                               \
+    };                                                                                             \
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_key_press_init, NULL, NULL,                                \
+                            &behavior_key_press_config_##n, POST_KERNEL,                           \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_press_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
