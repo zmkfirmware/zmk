@@ -1,27 +1,6 @@
 # Copyright (c) 2024 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-# Basic Keyboard Setup
-
-# IDs can be overridden if vendor obtains a USB VID
-config USB_DEVICE_VID
-    default 0x1D50
-
-config USB_DEVICE_PID
-    default 0x615E
-
-config USB_DEVICE_MANUFACTURER
-    default "ZMK Project"
-
-config BT_DIS_PNP_VID
-    default 0x1D50
-
-config BT_DIS_PNP_PID
-    default 0x615E
-
-config BT_DIS_MANUF
-    default "ZMK Project"
-
 # HID
 if ZMK_HID_REPORT_TYPE_HKRO
 
