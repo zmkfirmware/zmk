@@ -155,19 +155,7 @@ module.exports = {
               },
               collapsed: true,
               items: [
-                {
-                  type: "category",
-                  label: "Docker",
-                  link: {
-                    type: "doc",
-                    id: "development/local-toolchain/setup/docker/index",
-                  },
-                  collapsed: true,
-                  items: [
-                    "development/local-toolchain/setup/docker/vscode",
-                    "development/local-toolchain/setup/docker/cli",
-                  ],
-                },
+                "development/local-toolchain/setup/docker",
                 "development/local-toolchain/setup/native",
               ],
             },
