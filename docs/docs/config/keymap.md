@@ -19,7 +19,7 @@ Each child node can have the following properties:
 
 | Property          | Type          | Description                                                          |
 | ----------------- | ------------- | -------------------------------------------------------------------- |
-| `display-name`    | string        | Name for the layer on displays                                       |
+| `display-name`    | string        | Name for the layer in ZMK Studio and on displays                     |
 | `bindings`        | phandle-array | List of [key behaviors](../keymaps/index.mdx#behaviors), one per key |
 | `sensor-bindings` | phandle-array | List of sensor behaviors, one per sensor                             |
 
