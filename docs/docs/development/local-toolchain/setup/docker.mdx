@@ -6,7 +6,7 @@ sidebar_label: Docker
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-### Source Code
+## Source Code
 
 First, you'll need to clone the ZMK source repository if you haven't already.
 Open a terminal and navigate to the folder you would like to place your `zmk`
@@ -16,153 +16,39 @@ directory in, then run the following command:
 git clone https://github.com/zmkfirmware/zmk.git
 ```
 
-### Docker Setup
+## Installing Development Tools
 
-<Tabs defaultValue="vsCode"
+<Tabs groupId="dev-container"
+      defaultValue="vsCode"
       values={[
         {label: 'VS Code', value: 'vsCode'},
         {label: 'Dev Container CLI', value: 'cli'}
       ]}>
   <TabItem value="vsCode">
-:::note
-This approach is documented for
-[VS Code](https://github.com/microsoft/vscode) not
-[Code OSS](https://github.com/microsoft/vscode/wiki/Differences-between-the-repository-and-Visual-Studio-Code).
-:::
+    :::note
+    This approach is documented for
+    [VS Code](https://github.com/microsoft/vscode) not
+    [Code OSS](https://github.com/microsoft/vscode/wiki/Differences-between-the-repository-and-Visual-Studio-Code).
+    :::
 
-#### Installing Development Tools
-
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for
-   your operating system.
-2. Install [VS Code](https://code.visualstudio.com/).
-3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
-
-#### Initialize & Update Zephyr Workspace
-
-Open the `zmk` checkout directory in VS Code. The repository includes a
-configuration for containerized development. Therefore, an alert will pop up:
-
-![VS Code Dev Container Configuration Alert](../../../assets/dev-setup/vscode_devcontainer.png)
-
-Click `Reopen in Container` to reopen the VS Code with the running container. If
-the alert fails to pop up or you accidentally close it, you can perform the same
-action by pressing the following keys based on your operating system and
-selecting `Remote: Show Remote Menu`:
-
-- **Windows/Linux**: `Ctrl + Shift + P`
-- **MacOs**: `Cmd + Shift + P`
-
-The first time you do this on your machine, it will pull down the Docker image
-from the registry and build the container. **Subsequent launches are much
-faster!**
-
-:::caution
-The following step and any future [build commands](../build-flash.mdx) must be
-executed from the VS Code terminal _inside_ the container.
-:::
-
-Initialize the application and update modules, including Zephyr:
-
-```sh
-west init -l app/
-west update
-```
-
-:::tip
-This step pulls down quite a bit of tooling, be patient!
-:::
-
-:::info
-You must restart the container at this point. The easiest way to do this is to
-close the VS Code window, verify that the container has stopped in the Docker
-Dashboard, and reopen the container with VS Code.
-
-Your setup is complete once your container has restarted.
-:::
+    1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+       for your operating system.
+    2. Install [VS Code](https://code.visualstudio.com/).
+    3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 
   </TabItem>
   <TabItem value="cli">
-#### Installing Development Tools
-
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
-   for your operating system.
-2. Install the [Dev Container CLI](https://github.com/devcontainers/cli).
-
-#### Initialize & Update Zephyr Workspace
-
-Open up your Terminal and make sure that the
-[Dev Container CLI](https://github.com/devcontainers/cli) is installed by
-running:
-
-```sh
-devcontainer --version
-```
-
-To be able to execute commands, the
-[Dev Container CLI](https://github.com/devcontainers/cli) has to know where the
-`devcontainer.json` is located. This can be done using the `--workspace-folder`
-option, which is available for all commands and will automatically look up the
-file relative to the path. Therefore, the container can be started by executing:
-
-```sh
-devcontainer up --workspace-folder "/absolute/path/to/zmk"
-```
-
-The first time you do this on your machine, it will pull down the Docker image
-from the registry and build the container. **Subsequent launches are much
-faster!**
-
-Once the command is finished, the development environment is available.
-Furthermore, the path is mounted under `/workspaces/zmk/`. It can then be used
-to initialize the application and update modules, including Zephyr.
-
-```sh
-devcontainer exec --workspace-folder "/absolute/path/to/zmk" \
-  west init -l "/workspaces/zmk/app"
-devcontainer exec --workspace-folder "/absolute/path/to/zmk" \
-  west update
-```
-
-:::tip
-This step pulls down quite a bit of tooling, be patient!
-:::
-
-:::info
-You must restart the container at this point. This can be done by using:
-
-```sh
-docker container ps                    # List active containers
-docker container stop "<container-id>" # Stop the container
-```
-
-Your setup is complete once your container has been restarted.
-:::
-
+    1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+       for your operating system.
+    2. Install the [Dev Container CLI](https://github.com/devcontainers/cli).
   </TabItem>
 </Tabs>
 
-### Volume Setup
+## Creating Volumes
 
 In case you have a `zmk-config` or want to build with additional modules, it is
-necessary to first make those available to the Docker container. This can be
-done by mounting them as volumes.
-
-But before you do so, first check that neither ZMK related containers nor the
-`zmk-config` and `zmk-modules` volumes exist. This can be done with:
-
-```sh
-docker container ps                    # List active containers
-docker container stop "<container-id>" # Stop the container
-docker container rm   "<container-id>" # Remove the container
-
-docker volume ls                 # List volumes
-docker volume rm "<volume-name>" # Remove volume
-```
-
-:::note
-You can also use `docker container prune` to remove all containers if no others
-are running.
-:::
+necessary to first make them available by creating volumes. When setting up the
+Dev Container, those then will automatically be mounted to the Docker container.
 
 <Tabs
   defaultValue="config"
@@ -172,12 +58,20 @@ are running.
   ]}
 >
   <TabItem value="config">
-    ```sh docker volume create --driver local -o o=bind -o type=none \ -o
-    device="/absolute/path/to/zmk-config/" zmk-config ```
+
+    ```sh
+    docker volume create --driver local -o o=bind -o type=none \ -o
+    device="/absolute/path/to/zmk-config/" zmk-config
+    ```
+
   </TabItem>
   <TabItem value="modules">
-    ```sh docker volume create --driver local -o o=bind -o type=none -o \
-    device="/absolute/path/to/zmk-modules/parent/" zmk-modules ```
+
+    ```sh
+    docker volume create --driver local -o o=bind -o type=none -o \
+    device="/absolute/path/to/zmk-modules/parent/" zmk-modules
+    ```
+
   </TabItem>
 </Tabs>
 
@@ -188,3 +82,105 @@ using their full path like it is shown in the
 [build commands](../build-flash.mdx), since these are the locations they were
 mounted to in the container.
 :::
+
+:::note
+When changing the configuration or modules directory, new volumes have to be
+created and mounted. Accordingly, you first have to remove the old ones.
+
+```sh
+docker container ps                    # List containers
+docker container stop "<container-id>" # Stop the container
+docker container rm   "<container-id>" # Remove the container
+
+docker volume ls                 # List volumes
+docker volume rm "<volume-name>" # Remove volume
+```
+
+:::
+
+## Initialize Dev Container
+
+<Tabs groupId="dev-container"
+      defaultValue="vsCode"
+      values={[
+        {label: 'VS Code', value: 'vsCode'},
+        {label: 'Dev Container CLI', value: 'cli'}
+      ]}>
+  <TabItem value="vsCode">
+    Open the `zmk` checkout directory in VS Code. The repository includes a
+    configuration for containerized development. Therefore, an alert will pop
+    up:
+
+    ![VS Code Dev Container Configuration Alert](../../../assets/dev-setup/vscode_devcontainer.png)
+
+    Click `Reopen in Container` to reopen the VS Code with the running
+    container. If the alert fails to pop up or you accidentally close it, you
+    can perform the same action by pressing the following keys based on your
+    operating system and selecting `Remote: Show Remote Menu`:
+
+    - **Windows/Linux**: `Ctrl + Shift + P`
+    - **MacOs**: `Cmd + Shift + P`
+
+    The first time you do this on your machine, it will pull down the Docker
+    image from the registry and build the container. **Subsequent launches are
+    much faster!**
+
+  </TabItem>
+  <TabItem value="cli">
+    First, make sure that the
+    [Dev Container CLI](https://github.com/devcontainers/cli) is installed by
+    running:
+
+    ```sh
+    devcontainer --version
+    ```
+
+    To be able to start the [Dev Container](https://containers.dev/), the
+    [Dev Container CLI](https://github.com/devcontainers/cli) has to know where
+    the `devcontainer.json` is located. This can be done using the
+    `--workspace-folder` option:
+
+    ```sh
+    devcontainer up --workspace-folder "/absolute/path/to/zmk"
+    ```
+
+    The first time you do this on your machine, it will pull down the Docker
+    image from the registry and build the container. **Subsequent launches are
+    much faster!**
+
+    Once the container is running, you can connect to it by using its container
+    ID. This allows you to execute commands inside the container:
+
+    ```sh
+    docker container ps                                         # List containers
+    docker exec -w /workspaces/zmk -it <container_id> /bin/bash # Connect
+    ```
+
+  </TabItem>
+</Tabs>
+
+## Configure Zephyr Workspace
+
+:::caution
+The following step and any future [build commands](../build-flash.mdx) must be
+executed from the command line _inside_ the container.
+:::
+
+```sh
+west init -l app/ # Initialization
+west update       # Update modules
+```
+
+:::tip
+This step pulls down quite a bit of tooling, be patient!
+:::
+
+After this is done, you have to restart the container using the following
+commands:
+
+```sh
+docker container ps                    # List containers
+docker container stop "<container-id>" # Stop the container
+```
+
+Your setup is complete once your container has been restarted.
