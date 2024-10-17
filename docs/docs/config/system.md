@@ -135,3 +135,51 @@ Following [split keyboard](../features/split-keyboards.md) settings are defined 
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE`            | int  | Stack size of the BLE split peripheral notify thread                       | 650                                        |
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY`              | int  | Priority of the BLE split peripheral notify thread                         | 5                                          |
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE`   | int  | Max number of key state events to queue to send to the central             | 10                                         |
+
+## Snippets
+
+[Snippets](https://docs.zephyrproject.org/3.5.0/build/snippets/index.html) are a way to save common configuration separately when it applies to multiple different applications.
+
+Enable snippets by adding `snippet: <snippet>` to your `build.yaml` for the appropriate board:
+
+```yaml
+- board: nrfmicro_13_52833
+  snippet: nrf52833-nosd
+  shield: corne_left
+```
+
+For local builds, add `-S <snippet>` to your build command. For example:
+
+```sh
+west build -b nrfmicro_13_52833 -S nrf52833-nosd -- -DSHIELD=corne_left
+```
+
+ZMK implements the following system configuration snippets:
+
+### nrf52833-nosd
+
+Definition: [zmk/app/snippets/nrf52833-nosd](https://github.com/zmkfirmware/zmk/blob/main/app/snippets/nrf52833-nosd)
+
+On memory-constrained nRF52833 boards this snippet will extend the code partition to overwrite the Nordic SoftDevice.
+This gives 428KB for the code partition as opposed to 280KB with the Nordic SoftDevice.
+
+The added memory allows the nRF52833 to fit displays and other memory-intensive features.
+
+### nrf52840-nosd
+
+Definition: [zmk/app/snippets/nrf52840-nosd](https://github.com/zmkfirmware/zmk/blob/main/app/snippets/nrf52840-nosd)
+
+On nRF52840 boards this snippet will overwrite the Nordic SoftDevice, extending both the code and storage partitions.
+This gives 844KB/128KB for the code/storage partitions as opposed to 792KB/32KB with the Nordic SoftDevice.
+
+Firmware built with this snippet can work on boards after accidentally erasing the SoftDevice.
+It can also be useful for especially memory-intensive applications.
+
+:::danger
+Erasing the SoftDevice will prevent the board from using firmware built without these snippets.
+
+Flashing such firmware **will** totally brick the board, disabling the USB flashing functionality.
+The only way to restore functionality after that is to re-flash the bootloader.
+
+Re-flashing a bootloader built without the SoftDevice will require firmware built with these snippets.
+:::
