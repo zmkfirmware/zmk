@@ -3,7 +3,8 @@ title: Building and Flashing
 sidebar_label: Building and Flashing
 ---
 
-## Building
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 From here on, building and flashing ZMK should all be done from the `app/`
 subdirectory of the ZMK checkout:
@@ -17,40 +18,107 @@ If this is not done, you will encounter errors such as: `ERROR: source directory
 "." does not contain a CMakeLists.txt; is this really what you want to build?`
 :::
 
-To build for your particular keyboard, the behavior varies slightly depending on
-if you are building for a keyboard with an onboard MCU, or one that uses an MCU
-board addon.
+## Building
 
-### Keyboard (Shield) + MCU Board
+Building a particular keyboard is done using the
+[`west build`](https://docs.zephyrproject.org/3.5.0/develop/west/build-flash-debug.html#building-west-build)
+command. Its usage slightly changes depending on if your build is for a keyboard
+with an onboard MCU or one that uses an MCU board add-on.
 
-ZMK treats keyboards that take an MCU addon board as [shields](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html), and treats the smaller MCU board as the true [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html)
+<Tabs defaultValue="onboardMcu"
+      values={[
+        {label: 'Onboard MCU', value: 'onboardMcu'},
+        {label: 'Addon MCU', value: 'addonMcu'}
+      ]}>
+  <TabItem value="onboardMcu">
+    Keyboards with onboard MCU chips are simply treated as the
+    [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html)
+    as far as Zephyr™ is concerned.
 
-Given the following:
+    Given the following:
 
-- MCU Board: Proton-C
-- Keyboard PCB: kyria_left
-- Keymap: default
+    - Keyboard: Planck (rev6)
+    - Keymap: default
 
-You can build ZMK with the following:
+    you can build ZMK with the following:
 
-```sh
-west build -b proton_c -- -DSHIELD=kyria_left
-```
+    ```sh
+    west build -b planck_rev6
+    ```
 
-### Keyboard With Onboard MCU
+  </TabItem>
+  <TabItem value="addonMcu">
+    ZMK treats keyboards that take an MCU addon board as
+    [shields](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html),
+    and treats the smaller MCU board as the true
+    [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html).
 
-Keyboards with onboard MCU chips are simply treated as the [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html) as far as Zephyr™ is concerned.
+    Given the following:
 
-Given the following:
+    - MCU Board: Proton-C
+    - Keyboard PCB: kyria_left
+    - Keymap: default
 
-- Keyboard: Planck (rev6)
-- Keymap: default
+    You can build ZMK with the following:
 
-you can build ZMK with the following:
+    ```sh
+    west build -b proton_c -- -DSHIELD=kyria_left
+    ```
 
-```sh
-west build -b planck_rev6
-```
+  </TabItem>
+</Tabs>
+
+### CMake Arguments
+
+For creating a build system, the `west build` command uses
+[CMake](https://cmake.org/). This allows for additional arguments to be added to
+its invocations. There are two possible ways to do that.
+
+<Tabs defaultValue="oneTime"
+      values={[
+        {label: 'One-Time', value: 'oneTime'},
+        {label: 'Permanent', value: 'permanent'}
+      ]}>
+  <TabItem value="oneTime">
+    The simplest way to use CMake arguments is by adding `--` after the
+    `west build` command and listing them afterward. For example, the
+    above-shown command for building a keyboard with an MCU board add-on uses
+    them in the form of `-DSHIELD=kyra_left`.
+
+    :::tip
+    Once the first generation of the build directory using one-time CMake
+    arguments is done, you can execute subsequent builds by using:
+
+    ```sh
+    west build -d <build_dir>
+    ```
+    :::
+  </TabItem>
+  <TabItem value="permanent">
+    The `west build` command can be configured using
+    [`west config`](https://docs.zephyrproject.org/3.5.0/develop/west/config.html#west-config-cmd).
+    This makes it possible to add permanent CMake arguments, which are invoked
+    whenever a new build system is generated. To do this, we make use of its
+    `build.cmake-args` configuration option.
+
+    ```sh
+    west config build.cmake-args -- -DSHIELD=kyra_left
+    ```
+
+    For adding multiple arguments a string can be used:
+
+    ```sh
+    west config build.cmake-args \
+      -- "-DSHIELD=kyra_left -DZMK_CONFIG=/absolute/path/to/zmk-config"
+    ```
+
+    :::note
+    New build systems are only generated with `west build` when they are
+    currently is non-available. Therefore, either delete the build directory or
+    do a **pristine build**.
+    :::
+  </TabItem>
+</Tabs>
 
 ### Pristine Building
 
