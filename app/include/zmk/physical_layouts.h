@@ -49,3 +49,5 @@ int zmk_physical_layouts_revert_selected(void);
 
 int zmk_physical_layouts_get_position_map(uint8_t source, uint8_t dest, size_t map_size,
                                           uint32_t map[map_size]);
+
+int zmk_physical_layouts_get_selected_to_stock_position_map(uint32_t **map);
