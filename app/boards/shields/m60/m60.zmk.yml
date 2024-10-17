@@ -6,3 +6,4 @@ url: https://makerdiary.com/pages/m60-mechanical-keyboard
 requires: [makerdiary_nrf52840_m2]
 features:
   - keys
+  - studio
