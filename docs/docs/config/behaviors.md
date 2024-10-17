@@ -13,9 +13,17 @@ See the [zmk/app/dts/behaviors/](https://github.com/zmkfirmware/zmk/tree/main/ap
 
 ### Kconfig
 
-| Config                            | Type | Description                                                                          | Default |
-| --------------------------------- | ---- | ------------------------------------------------------------------------------------ | ------- |
-| `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` | int  | Maximum number of behaviors to allow queueing from a macro or other complex behavior | 64      |
+| Config                            | Type | Description                                                                          | Default                                             |
+| --------------------------------- | ---- | ------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` | int  | Maximum number of behaviors to allow queueing from a macro or other complex behavior | 256 if [send string](#send-string) is used, else 64 |
+
+### Devicetree
+
+Applies to: [`/chosen` node](https://docs.zephyrproject.org/latest/guides/dts/intro.html#aliases-and-chosen-nodes)
+
+| Property      | Type | Description                                                                                  |
+| ------------- | ---- | -------------------------------------------------------------------------------------------- |
+| `zmk,charmap` | path | The default [character map](#character-map) to use for [send string](#send-string) behaviors |
 
 ## Caps Word
 
@@ -196,6 +204,57 @@ You can use the following nodes to tweak the default behaviors:
 | Node     | Behavior                                          |
 | -------- | ------------------------------------------------- |
 | `&gresc` | [Grave escape](../keymaps/behaviors/mod-morph.md) |
+
+## Send String
+
+Creates a custom behavior that types a text string.
+
+See the [send string behavior](../keymaps/behaviors/send-string.md) documentation for more details and examples.
+
+### Kconfig
+
+| Config                                   | Type | Description                                           | Default |
+| ---------------------------------------- | ---- | ----------------------------------------------------- | ------- |
+| `CONFIG_ZMK_SEND_STRING_DEFAULT_WAIT_MS` | int  | Default value for `wait-ms` in send string behaviors. | 0       |
+| `CONFIG_ZMK_SEND_STRING_DEFAULT_TAP_MS`  | int  | Default value for `tap-ms` in send string behaviors.  | 5       |
+
+### Devicetree
+
+Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-send-string.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-send-string.yaml)
+
+Applies to: `compatible = "zmk,send-string"`
+
+| Property         | Type    | Description                                                                              | Default                                  |
+| ---------------- | ------- | ---------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `#binding-cells` | int     | Must be `<0>`                                                                            |                                          |
+| `text`           | string  | The text to send                                                                         |                                          |
+| `charmap`        | phandle | The [character map](#character-map) to use                                               | `zmk,charmap` chosen node.               |
+| `wait-ms`        | int     | The time to wait (in milliseconds) before pressing the next key in the text              | `CONFIG_ZMK_SEND_STRING_DEFAULT_WAIT_MS` |
+| `tap-ms`         | int     | The time to wait (in milliseconds) between the press and release of each key in the text | `CONFIG_ZMK_SEND_STRING_DEFAULT_TAP_MS`  |
+
+### Character Map
+
+Maps Unicode [code points](https://en.wikipedia.org/wiki/List_of_Unicode_characters) to key codes for [send string behaviors](#send-string).
+
+See the [send string behavior](../keymaps/behaviors/send-string.md#character-maps) documentation for more details and examples.
+
+#### Devicetree
+
+Definition file: [zmk/app/drivers/zephyr/dts/bindings/character_map/zmk,character-map.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/character_map/zmk%2Ccharacter-map.yaml)
+
+Applies to: `compatible = "zmk,character-map"`
+
+| Property            | Type    | Description                                                                                                                       |
+| ------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `behavior`          | phandle | Behavior to use for a code point in the map (typically should be `<&kp>`)                                                         |
+| `fallback-behavior` | phandle | Optional behavior which will be sent any code points not in the map                                                               |
+| `map`               | array   | List of `<codepoint keycode>` pairs which give the [key code](../keymaps/list-of-keycodes.mdx) to use for each Unicode code point |
+
+You can use the following nodes to tweak the default behaviors:
+
+| Node          | Description                          |
+| ------------- | ------------------------------------ |
+| `&charmap_us` | Character map for US keyboard layout |
 
 ## Sensor Rotation
 
