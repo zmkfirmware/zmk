@@ -323,47 +323,6 @@ zmk_studio_Response get_physical_layouts(const zmk_studio_Request *req) {
     return KEYMAP_RESPONSE(get_physical_layouts, resp);
 }
 
-static void migrate_keymap(const uint8_t old) {
-    int new = zmk_physical_layouts_get_selected();
-
-    uint32_t new_to_old_map[ZMK_KEYMAP_LEN];
-    int layout_size =
-        zmk_physical_layouts_get_position_map(old, new, ZMK_KEYMAP_LEN, new_to_old_map);
-
-    if (layout_size < 0) {
-        return;
-    }
-
-    for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
-        struct zmk_behavior_binding new_layer[ZMK_KEYMAP_LEN];
-
-        for (int b = 0; b < layout_size; b++) {
-            uint32_t old_b = new_to_old_map[b];
-
-            if (old_b == UINT32_MAX) {
-                memset(&new_layer[b], 0, sizeof(struct zmk_behavior_binding));
-                continue;
-            }
-
-            const struct zmk_behavior_binding *binding =
-                zmk_keymap_get_layer_binding_at_idx(l, old_b);
-
-            if (!binding) {
-                memset(&new_layer[b], 0, sizeof(struct zmk_behavior_binding));
-                continue;
-            }
-
-            memcpy(&new_layer[b], binding, sizeof(struct zmk_behavior_binding));
-        }
-
-        for (int b = 0; b < layout_size; b++) {
-            zmk_keymap_set_layer_binding_at_idx(l, b, new_layer[b]);
-        }
-    }
-
-    // TODO: Migrate combos?
-}
-
 zmk_studio_Response set_active_physical_layout(const zmk_studio_Request *req) {
     LOG_DBG("");
     uint8_t index = (uint8_t)req->subsystem.keymap.request_type.set_active_physical_layout;
@@ -379,9 +338,7 @@ zmk_studio_Response set_active_physical_layout(const zmk_studio_Request *req) {
     }
 
     int ret = zmk_physical_layouts_select(index);
-    if (ret >= 0) {
-        migrate_keymap(old);
-    } else {
+    if (ret < 0) {
         resp.which_result = zmk_keymap_SetActivePhysicalLayoutResponse_err_tag;
         resp.result.err =
             zmk_keymap_SetActivePhysicalLayoutErrorCode_SET_ACTIVE_PHYSICAL_LAYOUT_ERR_GENERIC;

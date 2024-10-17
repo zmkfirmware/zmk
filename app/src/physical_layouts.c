@@ -18,6 +18,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#include <zmk/matrix.h>
 #include <zmk/physical_layouts.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
@@ -213,6 +214,35 @@ static void zmk_physical_layouts_kscan_process_msgq(struct k_work *item) {
     }
 }
 
+static const struct zmk_physical_layout *get_default_layout(void) {
+    const struct zmk_physical_layout *initial;
+
+#if USE_PHY_LAYOUTS && DT_HAS_CHOSEN(zmk_physical_layout)
+    initial = &_CONCAT(_zmk_physical_layout_, DT_CHOSEN(zmk_physical_layout));
+#else
+    initial = layouts[0];
+#endif
+
+    return initial;
+}
+
+static int get_index_of_layout(const struct zmk_physical_layout *layout) {
+    for (int i = 0; i < ARRAY_SIZE(layouts); i++) {
+        if (layouts[i] == layout) {
+            return i;
+        }
+    }
+
+    return -ENODEV;
+}
+
+static uint32_t selected_to_stock_map[ZMK_KEYMAP_LEN];
+
+int zmk_physical_layouts_get_selected_to_stock_position_map(uint32_t const **map) {
+    *map = selected_to_stock_map;
+    return ZMK_KEYMAP_LEN;
+}
+
 int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_layout) {
     if (!dest_layout) {
         return -ENODEV;
@@ -231,6 +261,15 @@ int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_la
             pm_device_action_run(active->kscan, PM_DEVICE_ACTION_SUSPEND);
 #endif
         }
+    }
+
+    int new_idx = get_index_of_layout(dest_layout);
+    int stock_idx = get_index_of_layout(get_default_layout());
+    int ret = zmk_physical_layouts_get_position_map(stock_idx, new_idx, ZMK_KEYMAP_LEN,
+                                                    selected_to_stock_map);
+    if (ret < 0) {
+        LOG_ERR("Failed to refresh the selected to stock mapping (%d)", ret);
+        return ret;
     }
 
     active = dest_layout;
@@ -284,15 +323,7 @@ static int8_t saved_selected_index = -1;
 #endif
 
 int zmk_physical_layouts_select_initial(void) {
-    const struct zmk_physical_layout *initial;
-
-#if USE_PHY_LAYOUTS && DT_HAS_CHOSEN(zmk_physical_layout)
-    initial = &_CONCAT(_zmk_physical_layout_, DT_CHOSEN(zmk_physical_layout));
-#else
-    initial = layouts[0];
-#endif
-
-    int ret = zmk_physical_layouts_select_layout(initial);
+    int ret = zmk_physical_layouts_select_layout(get_default_layout());
 
     return ret;
 }
@@ -324,6 +355,14 @@ int zmk_physical_layouts_get_position_map(uint8_t source, uint8_t dest, size_t m
                                           uint32_t map[map_size]) {
     if (source >= ARRAY_SIZE(layouts) || dest >= ARRAY_SIZE(layouts)) {
         return -EINVAL;
+    }
+
+    if (source == dest) {
+        for (int i = 0; i < map_size; i++) {
+            map[i] = i;
+        }
+
+        return 0;
     }
 
     const struct zmk_physical_layout *src_layout = layouts[source];
@@ -434,6 +473,11 @@ static int zmk_physical_layouts_init(void) {
         }
     }
 #endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
+    // Initialize a sane mapping
+    for (int i = 0; i < ZMK_KEYMAP_LEN; i++) {
+        selected_to_stock_map[i] = i;
+    }
 
     return zmk_physical_layouts_select_initial();
 }
