@@ -11,6 +11,7 @@
 / {
     chosen {
         zmk,kscan = &kscan0;
+        zmk,physical-layout = &layout_0;
     };
 
     default_transform: keymap_transform_0 {
