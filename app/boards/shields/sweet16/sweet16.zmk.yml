@@ -1,0 +1,9 @@
+file_format: "1"
+id: sweet16
+name: Sweet 16
+type: shield
+url: https://1upkeyboards.com/shop/keyboard-kits/macro-pads/sweet16-macro-pad-white/
+requires: [pro_micro]
+features:
+  - keys
+  - underglow

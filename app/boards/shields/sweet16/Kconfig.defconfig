@@ -1,0 +1,9 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_SWEET16
+
+config ZMK_KEYBOARD_NAME
+    default "Sweet 16"
+
+endif
