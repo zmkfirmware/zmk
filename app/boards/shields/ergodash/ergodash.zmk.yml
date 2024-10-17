@@ -4,8 +4,11 @@ name: Ergodash
 type: shield
 url: https://github.com/omkbd/ErgoDash
 requires: [pro_micro]
+exposes: [i2c_oled]
 features:
   - keys
+  - display
+  - underglow
 siblings:
   - ergodash_left
   - ergodash_right
