@@ -1,11 +1,11 @@
-# Copyright (c) 2022 The ZMK Contributors
-# SPDX-License-Identifier: MIT
+#Copyright(c) 2022 The ZMK Contributors
+#SPDX - License - Identifier : MIT
 
 if ZMK_SPLIT && ZMK_SPLIT_BLE
 
 menu "BLE Transport"
 
-# Added for backwards compatibility. New shields/board should set `ZMK_SPLIT_ROLE_CENTRAL` only.
+#Added for backwards compatibility.New shields / board should set `ZMK_SPLIT_ROLE_CENTRAL` only.
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
     bool
     select ZMK_SPLIT_ROLE_CENTRAL
@@ -16,7 +16,7 @@ config ZMK_SPLIT_ROLE_CENTRAL
     select BT_GATT_AUTO_DISCOVER_CCC
     select BT_SCAN_WITH_IDENTITY
 
-# Bump this value needed for concurrent GATT discovery of splits
+#Bump this value needed for concurrent GATT discovery of splits
 config BT_L2CAP_TX_BUF_COUNT
     default 5 if ZMK_SPLIT_ROLE_CENTRAL
 
@@ -24,7 +24,6 @@ if ZMK_SPLIT_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
     int "Number of peripherals that will connect to the central."
-    default 1
 
 menuconfig ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
     bool "Fetch Peripheral Battery Level Info"
@@ -92,7 +91,7 @@ config BT_MAX_PAIRED
 config BT_MAX_CONN
     default 1
 
-# Allow central to specify connection parameters.
+#Allow central to specify connection parameters.
 config BT_GAP_AUTO_UPDATE_CONN_PARAMS
     default n
 
@@ -103,32 +102,3 @@ endmenu
 
 #ZMK_SPLIT_BLE
 endif
-
-
-if ZMK_BLE
-
-if ZMK_SPLIT_BLE && ZMK_SPLIT_ROLE_CENTRAL
-
-config BT_MAX_CONN
-    default 6
-
-config BT_MAX_PAIRED
-    default 6
-
-#ZMK_SPLIT_BLE && ZMK_SPLIT_ROLE_CENTRAL
-endif
-
-if !ZMK_SPLIT_BLE
-
-config BT_MAX_CONN
-    default 5
-
-config BT_MAX_PAIRED
-    default 5
-
-#!ZMK_SPLIT_BLE
-endif
-
-#ZMK_BLE
-endif
-

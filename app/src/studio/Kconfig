@@ -1,5 +1,5 @@
-# Copyright (c) 2024 The ZMK Contributors
-# SPDX-License-Identifier: MIT
+#Copyright(c) 2024 The ZMK Contributors
+#SPDX - License - Identifier : MIT
 
 menuconfig ZMK_STUDIO
     bool "Studio Support"
@@ -32,7 +32,7 @@ endif
 menuconfig ZMK_STUDIO_RPC
     bool "Remote Procedure Calls (RPC)"
     select NANOPB
-    # These two save stack size
+#These two save stack size
     imply NANOPB_NO_ERRMSG
     imply NANOPB_WITHOUT_64BIT
     imply NANOPB_NO_ENCODE_SIZE_CHECK
