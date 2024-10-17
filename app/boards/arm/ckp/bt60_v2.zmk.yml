@@ -8,6 +8,7 @@ features:
   - encoder
   - underglow
   - backlight
+  - studio
 outputs:
   - usb
   - ble
