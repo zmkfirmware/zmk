@@ -6,3 +6,7 @@ description: Key press/release behavior
 compatible: "zmk,behavior-key-press"
 
 include: one_param.yaml
+
+properties:
+  invert-if-active:
+    type: boolean
