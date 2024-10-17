@@ -20,6 +20,12 @@
 #define ZMK_BLE_PROFILE_COUNT CONFIG_BT_MAX_PAIRED
 #endif
 
+enum advertising_type {
+    ZMK_ADV_NONE,
+    ZMK_ADV_DIR,
+    ZMK_ADV_CONN,
+};
+
 void zmk_ble_clear_bonds(void);
 int zmk_ble_prof_next(void);
 int zmk_ble_prof_prev(void);
@@ -40,6 +46,9 @@ char *zmk_ble_active_profile_name(void);
 int zmk_ble_unpair_all(void);
 
 int zmk_ble_set_device_name(char *name);
+
+void zmk_ble_adv_mode_set(bool mode);
+enum advertising_type zmk_ble_adv_mode_get();
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 int zmk_ble_put_peripheral_addr(const bt_addr_le_t *addr);
