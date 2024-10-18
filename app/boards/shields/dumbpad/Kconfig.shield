@@ -1,0 +1,8 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_DUMBPAD
+	def_bool $(shields_list_contains,dumbpad)
+
+config SHIELD_DUMBPAD_OLED_TOP
+	def_bool $(shields_list_contains,dumbpad_oled_top)
