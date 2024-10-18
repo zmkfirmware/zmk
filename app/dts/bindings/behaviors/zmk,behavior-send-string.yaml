@@ -1,0 +1,26 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Send String Behavior
+
+compatible: "zmk,behavior-send-string"
+
+include: zero_param.yaml
+
+properties:
+  text:
+    type: string
+    required: true
+    description: The text to send.
+
+  wait-ms:
+    type: int
+    description: The time to wait (in milliseconds) before pressing the next key in the text.
+
+  tap-ms:
+    type: int
+    description: The time to wait (in milliseconds) between the press and release of each key in the text.
+
+  charmap:
+    type: phandle
+    description: A zmk,character-map instance to use. If omitted, the zmk,charmap chosen node is used.

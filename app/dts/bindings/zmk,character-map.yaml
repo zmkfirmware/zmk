@@ -1,0 +1,28 @@
+# Copyright (c) 2023, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Unicode codepoint to behavior binding mapping
+
+compatible: "zmk,character-map"
+
+properties:
+  behavior:
+    type: phandle
+    required: true
+    description: |
+      Behavior to use for a code point in the mapping (typically <&kp>).
+      The behavior is given one parameter which is the value for the code point
+      from the "map" property.
+
+  unicode-behavior:
+    type: phandle
+    description: |
+      Optional behavior to use for a code point not in the mapping.
+      The behavior is given one parameter which is the code point.
+
+  map:
+    type: array
+    required: true
+    description: |
+      List of <codepoint param> pairs. Each pair maps a codepoint to a parameter
+      given to "behavior" to type that code point.
