@@ -608,13 +608,45 @@ int zmk_keymap_discard_changes(void) {
     return ret;
 }
 
+static int keymap_track_changed_bindings(const char *key, size_t len, settings_read_cb read_cb,
+                                         void *cb_arg, void *param) {
+    const char *next;
+    if (settings_name_steq(key, "l", &next) && next) {
+        uint8_t(*state)[ZMK_KEYMAP_LAYERS_LEN][PENDING_ARRAY_SIZE] =
+            (uint8_t(*)[ZMK_KEYMAP_LAYERS_LEN][PENDING_ARRAY_SIZE])param;
+        char *endptr;
+        uint8_t layer = strtoul(next, &endptr, 10);
+        if (*endptr != '/') {
+            LOG_WRN("Invalid layer number: %s with endptr %s", next, endptr);
+            return -EINVAL;
+        }
+
+        uint8_t key_position = strtoul(endptr + 1, &endptr, 10);
+
+        if (*endptr != '\0') {
+            LOG_WRN("Invalid key_position number: %s with endptr %s", next, endptr);
+            return -EINVAL;
+        }
+
+        WRITE_BIT((*state)[layer][key_position / 8], key_position % 8, 1);
+    }
+    return 0;
+}
+
 int zmk_keymap_reset_settings(void) {
     settings_delete(LAYER_ORDER_SETTINGS_KEY);
+
+    uint8_t zmk_keymap_layer_changes[ZMK_KEYMAP_LAYERS_LEN][PENDING_ARRAY_SIZE];
+
+    settings_load_subtree_direct("keymap", keymap_track_changed_bindings,
+                                 &zmk_keymap_layer_changes);
 
     for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
         char layer_name_setting_name[14];
         sprintf(layer_name_setting_name, LAYER_NAME_SETTINGS_KEY, l);
         settings_delete(layer_name_setting_name);
+
+        uint8_t *changes = zmk_keymap_layer_changes[l];
 
         for (int k = 0; k < ZMK_KEYMAP_LEN; k++) {
             if (memcmp(&zmk_keymap[l][k], &zmk_stock_keymap[l][k],
@@ -622,9 +654,12 @@ int zmk_keymap_reset_settings(void) {
                 continue;
             }
 
-            char setting_name[20];
-            sprintf(setting_name, LAYER_BINDING_SETTINGS_KEY, l, k);
-            settings_delete(setting_name);
+            if (changes[k / 8] & BIT(k % 8)) {
+                LOG_WRN("CLEAR %d on %d layer", k, l);
+                char setting_name[20];
+                sprintf(setting_name, LAYER_BINDING_SETTINGS_KEY, l, k);
+                settings_delete(setting_name);
+            }
         }
     }
 
