@@ -6,7 +6,6 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
-#include "arduino_pro_micro_pins.dtsi"
 #include "puchi_ble_v1-pinctrl.dtsi"
 
 / {
@@ -18,6 +17,7 @@
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
         zmk,battery = &vbatt;
+        zmk,default-power-domain = &core_power_domain;
     };
 
     leds {
@@ -31,6 +31,14 @@
     EXT_POWER {
         compatible = "zmk,ext-power-generic";
         control-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+    };
+
+    core_power_domain: core_power_domain {
+        compatible = "power-domain-gpio", "power-domain";
+        startup-delay-us = <50000>;
+        off-on-delay-us = <50000>;
+        enable-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+        zephyr,pm-device-runtime-auto;
     };
 
     vbatt: vbatt {
@@ -79,7 +87,7 @@ zephyr_udc0: &usbd {
 &flash0 {
     /*
      * For more information, see:
-     * http://docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
+     * http: //docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
      */
     partitions {
         compatible = "fixed-partitions";
@@ -111,3 +119,6 @@ zephyr_udc0: &usbd {
         };
     };
 };
+
+// Included at the end to ensure the power domain DTS node exists
+#include "arduino_pro_micro_pins.dtsi"
