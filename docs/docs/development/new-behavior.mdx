@@ -293,6 +293,8 @@ Comes in the form `static const struct behavior_driver_api <behavior_name>_drive
 
 - `.binding_pressed`: Used for behaviors that invoke an action on its keybind press. Set `.binding_pressed` equal to the function typically named [`on_<behavior_name>_binding_pressed`](#dependencies).
 - `.binding_released`: Same as above, except for activating on keybind release events. Set `.binding_released` equal to the function typically named [`on_<behavior_name>_binding_released`](#dependencies).
+- `.parameter_metadata`: Defined in `<drivers/behavior.h>`. Pointer to metadata describing the parameters to use with the behavior so the behavior may be used with [ZMK Studio](../features/studio.md).
+- `.get_parameter_metadata`: Defined in `<drivers/behavior.h>`. Callback function that can dynamically provide/populate the metadata describing the parameters to use with the behavior so the behavior may be used with [ZMK Studio](../features/studio.md).
 - `.locality`: Defined in `<drivers/behavior.h>`. Describes how the behavior affects parts of a _split_ keyboard.
   - `BEHAVIOR_LOCALITY_CENTRAL`: Behavior only affects the central half, which is the case for most keymap-related behavior.
   - `BEHAVIOR_LOCALITY_EVENT_SOURCE`: Behavior affects only the central _or_ peripheral half depending on which side invoked the behavior binding, such as [reset behaviors](../keymaps/behaviors/reset.md).
@@ -300,6 +302,111 @@ Comes in the form `static const struct behavior_driver_api <behavior_name>_drive
     :::note
     For unibody keyboards, all locality values perform the same as `BEHAVIOR_LOCALITY_GLOBAL`.
     :::
+
+##### Behavior metadata
+
+Behavior metadata documents the possible combinations of parameters that can be used with the behavior when added to your keymap. The metadata structure allows flexibility to specify different kinds of well known parameter types, such as a HID usage, different second parameters passed on the selected first parameter, etc.
+
+You can see a few examples of how the metadata is implemented in practice for:
+
+- [Key press](https://github.com/zmkfirmware/zmk/blob/main/app/src/behaviors/behavior_key_press.c#L21)
+- [RGB underglow](https://github.com/zmkfirmware/zmk/blob/main/app/src/behaviors/behavior_rgb_underglow.c#L23)
+- [Hold-tap](https://github.com/zmkfirmware/zmk/blob/main/app/src/behaviors/behavior_hold_tap.c#L680), which is dynamic based on what behaviors are set up in the hold-tap bindings
+
+Behavior metadata consists of one or more metadata sets, where each metadata set has a set of values for the parameter(s) used with the behavior.
+
+For example, a common approach for behaviors is to have a set of possible first parameters that identify the "command" to invoke for the behavior, and the second parameter is a detail/sub-parameter to the action. You can see this with the `&bt` behavior.
+In that scenario, all `&bt` "commands" that take a BT profile as a second parameter are grouped into one set, and all commands that take no arguments are grouped into another.
+
+This allows the ZMK Studio UI to properly show a input for a profile only when the appropriate first "command" selection is made in the UI. Here is a snippet of that setup from the [behavior_bt.c](https://github.com/zmkfirmware/zmk/blob/main/app/src/behaviors/behavior_bt.c#L25) code:
+
+```c
+
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+// Set up the values for commands that take no additional parameter.
+static const struct behavior_parameter_value_metadata no_arg_values[] = {
+    {
+        .display_name = "Next Profile",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BT_NXT_CMD,
+    },
+    {
+        .display_name = "Previous Profile",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BT_PRV_CMD,
+    },
+    {
+        .display_name = "Clear All Profiles",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BT_CLR_ALL_CMD,
+    },
+    {
+        .display_name = "Clear Selected Profile",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BT_CLR_CMD,
+    },
+};
+
+// Set up the "no arg" metadata set.
+static const struct behavior_parameter_metadata_set no_args_set = {
+    .param1_values = no_arg_values,
+    .param1_values_len = ARRAY_SIZE(no_arg_values),
+};
+
+// Set up the possible param1 values for commands that take a profile index for param2
+static const struct behavior_parameter_value_metadata prof_index_param1_values[] = {
+    {
+        .display_name = "Select Profile",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BT_SEL_CMD,
+    },
+    {
+        .display_name = "Disconnect Profile",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+        .value = BT_DISC_CMD,
+    },
+};
+
+// Set up the param2 value metadata for the valid range of possible profiles to pick from.
+static const struct behavior_parameter_value_metadata prof_index_param2_values[] = {
+    {
+        .display_name = "Profile",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_RANGE,
+        .range = {.min = 0, .max = ZMK_BLE_PROFILE_COUNT},
+    },
+};
+
+// Set up the metadata set for the commands that take a profile for the second parameter.
+static const struct behavior_parameter_metadata_set profile_index_metadata_set = {
+    .param1_values = prof_index_param1_values,
+    .param1_values_len = ARRAY_SIZE(prof_index_param1_values),
+    .param2_values = prof_index_param2_values,
+    .param2_values_len = ARRAY_SIZE(prof_index_param2_values),
+};
+
+// Finally, expose all the sets in the top level aggregate structure.
+static const struct behavior_parameter_metadata_set metadata_sets[] = {no_args_set,
+                                                                       profile_index_metadata_set};
+
+static const struct behavior_parameter_metadata metadata = {
+    .sets_len = ARRAY_SIZE(metadata_sets),
+    .sets = metadata_sets,
+};
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+... Rest of the behavior implementation
+
+// Add the metadata to the driver API conditionally:
+
+static const struct behavior_driver_api behavior_bt_driver_api = {
+    .binding_pressed = on_keymap_binding_pressed,
+    .binding_released = on_keymap_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+};
+```
 
 ##### Data pointers (optional)
 

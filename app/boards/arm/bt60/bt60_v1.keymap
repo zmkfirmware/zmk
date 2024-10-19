@@ -2,26 +2,25 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 
-#define ANSI true
-//#define HHKB true
-//#define ISO true
-//#define ALL_1U true
-//#define SPLIT_BKSP_RSHFT true
+#define ANSI
+//#define HHKB
+//#define ISO
+//#define ALL_1U
 
 
 
 / {
     chosen {
     #ifdef ANSI
-        zmk,matrix-transform = &ansi_transform;
-    #elif defined(HHKB)
-        zmk,matrix-transform = &hhkb_transform;
+        zmk,physical-layout = &layout_60_ansi;
     #elif defined(ISO)
-        zmk,matrix-transform = &iso_transform;
+        zmk,physical-layout = &layout_60_iso;
     #elif defined(ALL_1U)
-        zmk,matrix-transform = &all_1u_transform;
+        zmk,physical-layout = &layout_60_all1u;
+    #elif defined(HHKB)
+        zmk,physical-layout = &layout_60_hhkb;
     #else
-        zmk,matrix-transform = &split_transform;
+    #error "Layout not defined, please define a layout by uncommenting the appropriate line in bt60_v1.keymap"
     #endif
     };
 
@@ -148,33 +147,7 @@
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
         };
         #else
-        default_layer {
-                // ------------------------------------------------------------------------------------------
-                // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |BSPC| DEL |
-                // | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |    \    |
-                // | CAPS  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |
-                // |  SHIFT    |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  | /   |   SHIFT  |  1  |
-                // |  CTL  |  WIN  |  ALT  |                     SPACE               |   ALT   |  1  | CTRL |
-                // ------------------------------------------------------------------------------------------
-            bindings = <
-                &kp ESC &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp  N8   &kp  N9 &kp  N0  &kp MINUS &kp EQUAL &kp BSPC &kp DEL
-                &kp TAB  &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp  I    &kp  O  &kp  P   &kp LBKT &kp RBKT  &kp BSLH
-                &kp CLCK  &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp  K    &kp  L  &kp SEMI &kp SQT           &kp RET
-                &kp LSHFT  &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH    &kp RSHFT    &mo 1
-                &kp LCTRL &kp LGUI &kp LALT            &kp SPACE                          &kp RALT &kp RGUI &kp C_MENU &kp RCTRL
-            >;
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-        };
-        raise {
-            bindings = <
-                &kp GRAVE &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp F7 &kp  F8   &kp  F9 &kp  F10  &kp F11 &kp F12   &kp DEL &trans
-                &trans &trans &kp UP &trans &trans &trans &trans &trans &kp INS &trans &kp PSCRN &kp SLCK &kp PAUSE_BREAK &sys_reset
-                &trans    &kp LEFT &kp DOWN &kp RIGHT &trans &trans &trans &trans &trans &trans &kp HOME  &kp PG_UP   &bootloader
-                &kp C_PREV &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &trans &trans &trans &trans &trans &kp END &kp PG_DN  &kp C_NEXT &trans
-                &bt BT_PRV &bt BT_NXT  &trans                       &trans                            &trans  &trans &trans &bt BT_CLR
-            >;
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-        };
+        #error "Layout not defined, please define a layout by uncommenting the appropriate line in bt60_v2.keymap"
         #endif
     };
 };

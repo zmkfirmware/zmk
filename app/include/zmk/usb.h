@@ -24,6 +24,4 @@ enum zmk_usb_conn_state zmk_usb_get_conn_state(void);
 static inline bool zmk_usb_is_powered(void) {
     return zmk_usb_get_conn_state() != ZMK_USB_CONN_NONE;
 }
-static inline bool zmk_usb_is_hid_ready(void) {
-    return zmk_usb_get_conn_state() == ZMK_USB_CONN_HID;
-}
+bool zmk_usb_is_hid_ready(void);

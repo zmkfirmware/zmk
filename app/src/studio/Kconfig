@@ -35,6 +35,7 @@ menuconfig ZMK_STUDIO_RPC
     # These two save stack size
     imply NANOPB_NO_ERRMSG
     imply NANOPB_WITHOUT_64BIT
+    imply NANOPB_NO_ENCODE_SIZE_CHECK
     imply ZMK_STUDIO_LOCKING if !ARCH_POSIX
     select CBPRINTF_LIBC_SUBSTS if ARCH_POSIX
     select SETTINGS

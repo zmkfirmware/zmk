@@ -16,6 +16,7 @@
 
     chosen {
         zephyr,display = &oled;
+        zmk,physical-layout = &josefadamcik_sofle_layout;
     };
 
     default_transform: keymap_transform_0 {

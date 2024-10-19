@@ -1,0 +1,7 @@
+/ {
+    layouts_joric_jorne_position_map: layouts_joric_jorne_position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        complete;
+    };
+};

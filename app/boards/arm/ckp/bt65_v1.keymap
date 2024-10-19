@@ -12,13 +12,13 @@
 / {
   chosen {
   #ifdef ANSI
-    zmk,matrix-transform = &ansi_transform;
+    zmk,physical-layout = &layout_65_ansi;
   #elif defined(ISO)
-    zmk,matrix-transform = &iso_transform;
+    zmk,physical-layout = &layout_65_iso;
   #elif defined(ALL_1U)
-    zmk,matrix-transform = &all_1u_transform;
+    zmk,physical-layout = &layout_65_all1u;
   #elif defined(HHKB)
-    zmk,matrix-transform = &hhkb_transform;
+    zmk,physical-layout = &layout_65_hhkb;
   #else
   #error "Layout not defined, please define a layout by uncommenting the appropriate line in bt65_v1.keymap"
   #endif

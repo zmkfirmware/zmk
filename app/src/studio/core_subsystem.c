@@ -45,6 +45,7 @@ static bool encode_device_info_serial_number(pb_ostream_t *stream, const pb_fiel
 #endif // IS_ENABLED(CONFIG_HWINFO)
 
 zmk_studio_Response get_device_info(const zmk_studio_Request *req) {
+    LOG_DBG("");
     zmk_core_GetDeviceInfoResponse resp = zmk_core_GetDeviceInfoResponse_init_zero;
 
     resp.name.funcs.encode = encode_device_info_name;
@@ -56,12 +57,14 @@ zmk_studio_Response get_device_info(const zmk_studio_Request *req) {
 }
 
 zmk_studio_Response get_lock_state(const zmk_studio_Request *req) {
+    LOG_DBG("");
     zmk_core_LockState resp = zmk_studio_core_get_lock_state();
 
     return CORE_RESPONSE(get_lock_state, resp);
 }
 
 zmk_studio_Response reset_settings(const zmk_studio_Request *req) {
+    LOG_DBG("");
     ZMK_RPC_SUBSYSTEM_SETTINGS_RESET_FOREACH(sub) {
         int ret = sub->callback();
         if (ret < 0) {

@@ -6,6 +6,7 @@ url: https://github.com/Ladniy/jiran
 requires: [pro_micro]
 features:
   - keys
+  - studio
 siblings:
   - jiran_left
   - jiran_right

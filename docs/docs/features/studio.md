@@ -2,13 +2,31 @@
 title: ZMK Studio
 ---
 
-:::warning[Alpha Feature]
+:::warning[Beta Feature]
 
-ZMK Studio support is in alpha. Although best efforts are being made, keeping compatibility during active development is not guaranteed.
+ZMK Studio is in beta. Although every effort has been made to provide a stable experience, you may still encounter issues during use. Please report any issues to [GitHub Issues](https://github.com/zmkfirmware/zmk-studio/issues).
 
 :::
 
 ZMK Studio provides runtime update functionality to ZMK powered devices, allowing users to change their keymap layers without flashing new firmware to their keyboards. Studio is still under active development, and is not yet ready for casual end user use.
+
+## Keymap Changes
+
+To unlock your keyboard to allow ZMK Studio to make changes, you'll need to add a [`&studio_unlock`](../keymaps/behaviors/studio-unlock.md) binding to the keymap.
+
+:::note
+
+Once using ZMK Studio to manage your keymap, any future changes made to the `.keymap` file for your keyboard will not be applied unless you perform a "Restore Stock Settings" action from the ZMK Studio UI.
+
+Generally, if you intend to use ZMK Studio, then you should not make any further changes to the `.keymap` file (with the exception of adding new empty layers to then use within ZMK Studio).
+
+:::
+
+## Accessing ZMK Studio
+
+You can use ZMK Studio with Chrome/Edge at https://zmk.studio/.
+
+To use the native app for Linux, macOS, or Windows, download the appropriate file from the [latest release](https://github.com/zmkfirmware/zmk-studio/releases).
 
 ## Building
 
@@ -109,3 +127,11 @@ By default, a build with ZMK Studio enabled will only allow as many layers as ar
 ```
 
 The reserved layers will be ignored during regular ZMK builds but will become available for ZMK Studio enabled builds.
+
+## Adding ZMK Studio Support to a Keyboard
+
+To allow ZMK Studio to be used with a keyboard, the keyboard will need to have a physical layout with the `keys` property defined. Relevant information can be found in:
+
+- The [dedicated page on physical layouts](../development/hardware-integration/physical-layouts.md), informing you how to define one
+- The [new shield guide](../development/hardware-integration/new-shield.mdx), informing you how to select a physical layout once defined
+- The corresponding [configuration page](../config/layout.md#physical-layout), for reference
