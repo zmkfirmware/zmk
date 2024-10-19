@@ -5,6 +5,8 @@ sidebar_label: Pin Control
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import InterconnectTabs from "@site/src/components/interconnect-tabs";
+import Metadata from "@site/src/data/hardware-metadata.json";
 
 :::info
 This page exists to provide a guide to [Pin Control](https://docs.zephyrproject.org/3.5.0/hardware/pinctrl/index.html#pin-control) for ZMK users and designers. Refer to [Zephyr's page on Pin Control](https://docs.zephyrproject.org/3.5.0/hardware/pinctrl/index.html#pin-control) for elaboration and more details on any of the points raised here.
@@ -37,29 +39,18 @@ Pin control is always defined for a _board_, never for a shield:
   ```
   Note that you will need to define a separate overlay _for each_ of the boards to be used with the shield.
 
-### External Shields
-
-:::danger
-I have not tested this to verify. I _think_ it is correct. If it is not, then we should recommend forking the source, editing it, and using the fork to build while waiting for a PR to be approved.
+:::info
+Assume that the shield that you are using is found in-tree of ZMK or within an external module, and _does not_ contain the overlay for the board that you wish to use.
+If this is the case, then you should fork the source repository and add the overlay to the fork. Use said fork to build your firmware, and potentially submit a PR to upstream.
 :::
 
-If the shield that you are using is found in-tree of ZMK or within an external module, and _does not_ contain the overlay for the board that you are using, then you can still define the overlay in your local zmk-config. For example, if you wanted to use the "mikoto_520" with the "sofle" shield, then your ZMK config would contain the following structure (with the folders and files other than the `boards` folder populated as usual):
+## Predefined Nodes
 
-```plaintext
-zmk-config/
-├── boards/
-│   ├── shields/
-│   │   ├──sofle/boards/
-│   │   │   └── mikoto_520.overlay
-│   │   └── <other shields>
-│   └── <other boards>
-```
+Many boards will already have some pins configured for particular protocols. We recommend using these pins whenever possible.
 
-You would then need to make sure that the bus node defined in `mikoto_520.overlay` has the same label as in the other board overlay files of the "sofle".
+<InterconnectTabs items={Metadata} gpio={false} />
 
-:::note
-It is _strongly_ recommended that in addition to doing the above as a "temporary" fix, you submit a pull request to ZMK or the external module adding the additional board overlay.
-:::
+Note that some boards may have these pins configured to fit the above pinouts, rather than the capabilities of the MCU. Most notably, boards using the nRF52840 often end up putting low-frequency pins at the locations of the SPI buses above. More on low-frequency pins in the next section.
 
 ## Pin Selection
 
