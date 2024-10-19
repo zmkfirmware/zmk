@@ -392,6 +392,14 @@ int zmk_ble_put_peripheral_addr(const bt_addr_le_t *addr) {
     return -ENOMEM;
 }
 
+bt_addr_le_t *zmk_ble_get_peripheral_addr(uint8_t index) {
+    if (index < ZMK_SPLIT_BLE_PERIPHERAL_COUNT) {
+        return &peripheral_addrs[index];
+    }
+    // Peripheral index out of range
+    return (bt_addr_le_t *)BT_ADDR_LE_NONE;
+}
+
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) */
 
 #if IS_ENABLED(CONFIG_SETTINGS)
