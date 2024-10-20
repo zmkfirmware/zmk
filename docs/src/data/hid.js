@@ -5184,7 +5184,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: false,
+      android: true,
       macos: null,
       ios: null,
     },
