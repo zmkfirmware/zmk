@@ -3590,7 +3590,7 @@ export default [
     os: {
       windows: null,
       linux: true,
-      android: true,
+      android: false,
       macos: null,
       ios: null,
     },
