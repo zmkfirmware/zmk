@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+.editor {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: var(--ifm-font-size-base);
+  line-height: var(--ifm-pre-line-height);
+  tab-size: 4;
+
+  color: var(--ifm-pre-color);
+  background-color: var(--ifm-pre-background);
+
+  border: none;
+  border-radius: var(--ifm-pre-border-radius);
+
+  width: 100%;
+  min-height: 10em;
+  padding: var(--ifm-pre-padding);
+}
+
+.result {
+  tab-size: 4;
+}

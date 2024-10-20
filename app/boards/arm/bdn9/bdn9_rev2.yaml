@@ -1,0 +1,14 @@
+identifier: bdn9
+name: keeb.io BDN9
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 40
+supported:
+  - encoders
+  - switches
+  - underglow
+  - per_key

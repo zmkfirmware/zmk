@@ -7,12 +7,12 @@ sidebar_label: FAQs
 
 As a best-in-class RTOS, Zephyr™ brings many [benefits](https://www.zephyrproject.org/benefits) to ZMK, such as:
 
-- A _single_ platform [supporting](https://docs.zephyrproject.org/latest/boards) many architectures, processors and boards.
+- A _single_ platform [supporting](https://docs.zephyrproject.org/3.5.0/boards/index.html) many architectures, processors and boards.
 - Optimization for low-powered, small memory footprint devices.
-- Powerful hardware abstraction and configuration using [DeviceTree](https://docs.zephyrproject.org/latest/guides/dts/index.html) and [Kconfig](https://docs.zephyrproject.org/latest/guides/kconfig/index.html).
-- A BLE stack that periodically obtains [qualification](https://docs.zephyrproject.org/latest/guides/bluetooth/bluetooth-qual.html) listings, making it easier for final products to obtain qualification from the Bluetooth® SIG.
+- Powerful hardware abstraction and configuration using [DeviceTree](https://docs.zephyrproject.org/3.5.0/build/dts/index.html) and [Kconfig](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html).
+- A BLE stack that periodically obtains [qualification](https://docs.zephyrproject.org/3.5.0/connectivity/bluetooth/bluetooth-qual.html) listings, making it easier for final products to obtain qualification from the Bluetooth® SIG.
 - Multi-processor support, which is critical for power efficiency in upcoming MCUs.
-- Permissive licencing with its Apache 2.0 open source [license](https://www.apache.org/licenses/LICENSE-2.0).
+- Permissive licensing with its Apache 2.0 open source [license](https://www.apache.org/licenses/LICENSE-2.0).
 - A buzzing developer [community](https://github.com/zephyrproject-rtos/zephyr) including many leading [embedded technology](https://www.zephyrproject.org/project-members) companies.
 - Long term support (LTS) with security updates.
 
@@ -23,7 +23,7 @@ That’s an excellent question! There are already great keyboard firmwares avail
 - Zephyr™
   - See [Why Zephyr™?](#why-zephyr)
 - Licensing
-  - Just like other open source firmware, ZMK is all about the free and the sharing. However, some other projects use the GPL licence which prevents integration of libraries and drivers whose licenses are not GPL-compatible (such as some embedded BLE drivers). ZMK uses the permissive [MIT](https://github.com/zmkfirmware/zmk/blob/main/LICENSE) license which doesn’t have this limitation.
+  - Just like other open source firmware, ZMK is all about the free and the sharing. However, some other projects use the GPL license which prevents integration of libraries and drivers whose licenses are not GPL-compatible (such as some embedded BLE drivers). ZMK uses the permissive [MIT](https://github.com/zmkfirmware/zmk/blob/main/LICENSE) license which doesn’t have this limitation.
 - Wireless First
   - ZMK is designed for the future, and we believe the future is wireless. So power efficiency plays a critical role in every design decision, just like in Zephyr™.
 
@@ -37,7 +37,7 @@ ZMK uses the MIT [license](https://github.com/zmkfirmware/zmk/blob/main/LICENSE)
 
 ZMK has the potential to run on any platform supported by Zephyr™. However, it’s impractical for the ZMK contributors to test all possible hardware.
 
-The Zephyr™ [documentation](https://docs.zephyrproject.org/latest/boards/index.html) describes which hardware is currently natively supported by the Zephyr™ platform. _Similar documentation covering which keyboards have been integrated into ZMK is currently being planned._
+The Zephyr™ [documentation](https://docs.zephyrproject.org/3.5.0/boards/index.html) describes which hardware is currently natively supported by the Zephyr™ platform. _Similar documentation covering which keyboards have been integrated into ZMK is currently being planned._
 
 ### Does ZMK compile for AVR?
 
@@ -57,7 +57,7 @@ For keyboards, this is one of two options:
 
 ### What is a “shield”?
 
-In ZMK, a _shield_ is a _PCB_ or _hardwired set of components_ that when combined with a MCU only [board](#what-is-a-board) like the Proton-C or nice!nano, results in a complete usable keyboard. Examples would be keyboard PCBs like the Kyria or Corne. The _shield_ is usually the big PCB containing all the keys.
+In ZMK, a _shield_ is a _PCB_ or _hardwired set of components_ that when combined with an MCU-only [board](#what-is-a-board), like the Proton-C or nice!nano, results in a complete usable keyboard. Examples would be keyboard PCBs like the Kyria or Lily58. The _shield_ is usually the big PCB containing all the keys.
 
 ### Why _boards_ and _shields_? Why not just “keyboard”?
 
@@ -80,9 +80,17 @@ Please note, many keyboards only have a single PCB which includes the “brains�
 
 Currently, ZMK only supports wireless split, but wired split is possible and we welcome contributions!
 
+### How is the latency?
+
+The latency of ZMK is comparable to other firmware offerings. ZMK is equipped with a variety of scanning methods and [debounce algorithms](features/debouncing.md) that can affect the final measured latency. [This video](https://www.youtube.com/watch?v=jWL4nU-vtWs) shows a latency comparison of ZMK and other keyboard firmwares.
+
+### Any chance for 2.4GHz dongle implementation?
+
+At this time, there are no current plans to implement 2.4GHz dongle mode. This is because utilizing Nordic's proprietary 2.4GHz low level protocols requires use of the Nordic Connect SDK, which is licensed with a more restrictive license than ZMK's MIT license. However, ZMK does plan to implement dongle mode using BLE (with encryption). This will result in a 3.75ms average latency from the protocol itself.
+
 ### What bootloader does ZMK use?
 
-ZMK isn’t designed for any particular bootloader, and supports flashing different boards with different flash utilities (e.g. OpenOCD, nrfjprog, etc.). So if you have any difficulties, please let us know on [Discord](https://zmkfirmware.dev/community/discord/invite)!
+ZMK isn’t designed for any particular bootloader, and supports flashing different boards with different flash utilities (e.g. OpenOCD, nrfjprog, etc.). So if you have any difficulties, please let us know on [Discord](https://zmk.dev/community/discord/invite)!
 
 ### Can I contribute?
 
@@ -90,11 +98,11 @@ Of course! Please use the developer [documentation](/docs) to get started!
 
 ### I have an idea! What should I do?
 
-Please join us on [Discord](https://zmkfirmware.dev/community/discord/invite) and discuss it with us!
+Please join us on [Discord](https://zmk.dev/community/discord/invite) and discuss it with us!
 
 ### I want to add a new keyboard! What should I do?
 
-The exact process for the management of all the possible hardware is still being finalized, but any developer looking to contribute new keyboard definitions should chat with us on [Discord](https://zmkfirmware.dev/community/discord/invite) to get started.
+The exact process for the management of all the possible hardware is still being finalized, but any developer looking to contribute new keyboard definitions should chat with us on [Discord](https://zmk.dev/community/discord/invite) to get started.
 
 ### Does ZMK have a Code of Conduct?
 

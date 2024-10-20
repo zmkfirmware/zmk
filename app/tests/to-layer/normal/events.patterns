@@ -1,0 +1,3 @@
+s/.*hid_listener_keycode/kp/p
+s/.*to_keymap_binding/to/p
+s/.*layer_changed/layer_changed/p

@@ -1,0 +1,80 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#undef ZMK_BEHAVIORS_KEEP_ALL
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define NAV_L 1
+#define OTHER_L 2
+#define NUM_L 3
+#define SYM_L 4
+
+// Using layer taps on thumbs, having quick tap as well helps w/ repeating space/backspace
+&lt { quick-tap-ms = <200>; };
+
+/ {
+    behaviors {
+        hm: homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp Q      &kp W      &kp E       &kp R          &kp T         &kp Y            &kp U          &kp I       &kp O      &kp P
+                &hm LGUI A &hm LALT S &hm LCTRL D &hm LSHFT F    &kp G         &kp H            &hm RSHFT J    &hm RCTRL K &hm LALT L &hm LGUI SQT
+                &kp Z      &kp X      &kp C       &kp V          &kp B         &kp N            &kp M          &kp COMMA   &kp DOT    &kp FSLH
+                                                  &lt NAV_L TAB  &kp ENTER     &lt NUM_L SPACE  &lt SYM_L BSPC
+            >;
+        };
+
+        nav_layer {
+            bindings = <
+                &trans     &trans     &trans      &trans          &trans       &trans           &trans         &trans      &trans     &trans
+                &trans     &trans     &trans      &trans          &trans       &trans           &kp LEFT       &kp DOWN    &kp UP   &kp RIGHT
+                &trans     &trans     &trans      &trans          &trans       &trans           &kp HOME       &kp PG_DN   &kp PG_UP  &kp END
+                                                  &trans          &trans       &kp ESC          &kp DEL
+            >;
+        };
+
+        other_layer {
+            bindings = <
+                &trans     &trans     &trans      &trans          &trans       &trans           &trans         &trans      &trans     &trans
+                &trans     &trans     &trans      &trans          &trans       &trans           &trans         &trans      &trans     &trans
+                &trans     &trans     &trans      &trans          &trans       &trans           &kp HOME       &trans      &trans     &trans
+                                                  &trans          &trans       &trans           &trans
+            >;
+        };
+
+        num_layer {
+            bindings = <
+                &kp LBKT   &kp N7     &kp N8      &kp N9          &kp RBKT      &trans          &trans         &trans      &trans     &trans
+                &kp SEMI   &kp N4     &kp N5      &kp N6          &kp EQUAL     &trans          &trans         &trans      &trans     &trans
+                &kp GRAVE  &kp N1     &kp N2      &kp N3          &kp BSLH      &trans          &trans         &trans      &trans     &trans
+                                                  &kp N0          &kp MINUS     &trans          &trans
+            >;
+        };
+
+        sym_layer {
+            bindings = <
+                &kp LBRC     &kp LS(N7)  &kp LS(N8)  &kp LS(N9) &kp RBRC       &trans &trans   &trans    &trans    &trans
+                &kp COLON     &kp LS(N4)  &kp LS(N5)  &kp LS(N6) &kp PLUS       &trans &trans   &trans    &trans    &trans
+                &kp TILDE     &kp LS(N1)  &kp LS(N2)  &kp LS(N3) &kp LS(BSLH)       &trans &trans   &trans    &trans    &trans
+                                                   &kp LS(N0) &kp UNDER   &trans &trans
+            >;
+        };
+    };
+};

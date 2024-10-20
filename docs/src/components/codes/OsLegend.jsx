@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: CC-BY-NC-SA-4.0
  */
 
-import React from "react";
 import operatingSystems from "@site/src/data/operating-systems";
 
 export default function OsLegend() {

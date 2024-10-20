@@ -1,0 +1,21 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &to 0  &to 1
+                &kp A &kp S>;
+        };
+
+        second_layer {
+            bindings = <
+                &to 0 &to 1
+                &kp J  &kp K>;
+        };
+    };
+};

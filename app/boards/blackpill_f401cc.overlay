@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    blackpill: connector {
+        compatible = "blackpill";
+        #gpio-cells = <2>;
+        gpio-map-mask = <0xffffffff 0xffffffc0>;
+        gpio-map-pass-thru = <0 0x3f>;
+        gpio-map
+            = <2  0 &gpioc 13 0>    /* PC13 */
+            , <3  0 &gpioc 14 0>    /* PC14 */
+            , <4  0 &gpioc 15 0>    /* PC15 */
+            , <10 0 &gpioa 0  0>    /* PA0  */
+            , <11 0 &gpioa 1  0>    /* PA1  */
+            , <12 0 &gpioa 2  0>    /* PA2  */
+            , <13 0 &gpioa 3  0>    /* PA3  */
+            , <14 0 &gpioa 4  0>    /* PA4  */
+            , <15 0 &gpioa 5  0>    /* PA5  */
+            , <16 0 &gpioa 6  0>    /* PA6  */
+            , <17 0 &gpioa 7  0>    /* PA7  */
+            , <18 0 &gpiob 0  0>    /* PB0  */
+            , <19 0 &gpiob 1  0>    /* PB1  */
+            , <20 0 &gpiob 2  0>    /* PB2  */
+            , <21 0 &gpiob 10 0>    /* PB10 */
+            , <25 0 &gpiob 12 0>    /* PB12 */
+            , <26 0 &gpiob 13 0>    /* PB13 */
+            , <27 0 &gpiob 14 0>    /* PB14 */
+            , <28 0 &gpiob 15 0>    /* PB15 */
+            , <29 0 &gpioa 8  0>    /* PA8  */
+            , <30 0 &gpioa 9  0>    /* PA9  */
+            , <31 0 &gpioa 10 0>    /* PA10 */
+            , <38 0 &gpioa 15 0>    /* PA15 */
+            , <39 0 &gpiob 3  0>    /* PB3  */
+            , <40 0 &gpiob 4  0>    /* PB4  */
+            , <41 0 &gpiob 5  0>    /* PB5  */
+            , <42 0 &gpiob 6  0>    /* PB6  */
+            , <43 0 &gpiob 7  0>    /* PB7  */
+            , <45 0 &gpiob 8  0>    /* PB8  */
+            , <46 0 &gpiob 9  0>    /* PB9  */
+            ;
+    };
+};
+
+blackpill_i2c: &i2c1 {};
+blackpill_spi: &spi1 {};
+blackpill_serial: &usart1 {};

@@ -1,7 +1,5 @@
-#
-# Copyright (c) 2020, The ZMK Contributors
+# Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
-#
 
 description: |
   Generic driver for controlling the external power output
@@ -16,5 +14,9 @@ properties:
     required: true
   label:
     type: string
-    required: true
-
+    required: false
+    deprecated: true
+  init-delay-ms:
+    type: int
+    description: Number of milliseconds to delay after initializing driver
+    required: false

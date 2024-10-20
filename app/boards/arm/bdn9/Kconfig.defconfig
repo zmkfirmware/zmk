@@ -1,0 +1,18 @@
+# keeb.io BDN9 board configuration
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_BDN9
+
+config BOARD
+    default "bdn9_rev2"
+
+config ZMK_KEYBOARD_NAME
+    default "BDN9 Rev2"
+
+config ZMK_RGB_UNDERGLOW
+    select SPI
+    select WS2812_STRIP
+
+endif # BOARD_BDN9

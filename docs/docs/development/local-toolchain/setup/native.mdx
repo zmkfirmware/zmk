@@ -1,0 +1,353 @@
+---
+title: Native Setup
+sidebar_label: Native
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+export const OsTabs = (props) => (
+    <Tabs
+    groupId="operating-system"
+    defaultValue="ubuntu"
+    values={[
+      { label: "Ubuntu", value: "ubuntu" },
+      { label: "Windows", value: "win" },
+      { label: "Mac OS", value: "mac" }
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
+
+export const OsNoteTabs = (props) => (
+    <Tabs
+    groupId="operating-system"
+    defaultValue="win"
+    values={[
+      { label: "Windows", value: "win" },
+      { label: "Raspberry OS", value: "raspberryos" },
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
+
+export const EnvTabs = (props) => (
+    <Tabs
+    groupId="python-environment"
+    defaultValue="venv"
+    values={[
+      { label: "Install within Virtual Environment", value: "venv" },
+      { label: "Install globally", value: "glob" },
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
+
+export const WinTermTabs = (props) => (
+    <Tabs
+    groupId="windows-terminal-choice"
+    defaultValue="cmd"
+    values={[
+      { label: "Command Prompt", value: "cmd" },
+      { label: "Powershell", value: "ps" },
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+
+);
+
+## 1. Install Zephyr Dependencies
+
+Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
+
+- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
+- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+
+:::info
+Zephyr's [Install Linux Host Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/installation_linux.html) page may be of use for users of Linux distributions which are not based on Ubuntu.
+:::
+
+## 2. Source Code
+
+Next, you'll need to clone the ZMK source repository if you haven't already. Open a terminal and navigate to the folder you would like to place your `zmk` directory in, then run the following command:
+
+```sh
+git clone https://github.com/zmkfirmware/zmk.git
+```
+
+Then step into the repository.
+
+```sh
+cd zmk
+```
+
+## 3. Get Zephyr and install Python dependencies
+
+:::note
+These steps are very similar to Zephyr's [Get Zephyr and install Python dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#get-zephyr-and-install-python-dependencies) instructions, but specialized for ZMK.
+:::
+
+<EnvTabs>
+<TabItem value="venv">
+<Tabs groupId="operating-systems" defaultValue="ubuntu">
+  <TabItem value="ubuntu" label="Ubuntu">
+
+1. Use `apt` to install Python `venv` package:
+
+```sh
+sudo apt install python3-venv
+```
+
+2. Create a new virtual environment and activate it:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+  </TabItem>
+
+  <TabItem value="win" label="Windows">
+1. Create a new virtual environment:
+
+```sh
+python -m venv .venv
+```
+
+2. Activate the virtual environment:
+
+  <WinTermTabs>
+    <TabItem value="cmd">
+
+```sh
+.venv\Scripts\activate.bat
+```
+
+    </TabItem>
+
+    <TabItem value="ps">
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+    </TabItem>
+
+  </WinTermTabs>
+  </TabItem>
+
+  <TabItem value="mac" label="Mac OS">
+
+1. Create a new virtual environment:
+
+```sh
+python3 -m venv .venv
+```
+
+2. Activate the virtual environment:
+
+```sh
+source .venv/bin/activate
+```
+
+  </TabItem>
+</Tabs>
+
+Once activated your shell will be prefixed with `(.venv)`. The virtual environment can be deactivated at any time by running `deactivate`.
+
+:::note
+Remember to activate the virtual environment every time you start working.
+:::
+
+4. Install west:
+
+```sh
+pip install west
+```
+
+5. Initialize the application and update to fetch modules, including Zephyr:
+
+```sh
+west init -l app/
+west update
+```
+
+:::tip
+This step pulls down quite a bit of tooling, be patient!
+:::
+
+6. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+
+```sh
+west zephyr-export
+```
+
+7. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+
+```sh
+pip install -r zephyr/scripts/requirements-base.txt
+```
+
+</TabItem>
+<TabItem value="glob">
+<Tabs groupId="operating-systems" defaultValue="ubuntu">
+  <TabItem value="ubuntu" label="Ubuntu">
+1. Install `west`:
+
+```sh
+pip3 install --user -U west
+```
+
+:::note
+You need `~/.local/bin` to be on your `PATH` environment variable; verify that it is by running
+
+```sh
+west --version
+```
+
+If this prints an error rather than a `west` version number, then add `~/.local/bin` to your `PATH`:
+
+```sh
+echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+:::
+
+  </TabItem>
+
+  <TabItem value="win" label="Windows">
+1. Install `west`:
+
+```sh
+pip install -U west
+```
+
+:::note
+You need the Python scripts directory to be on your PATH environment variable; verify that it is by running
+
+```sh
+west --version
+```
+
+If this prints an error rather than a `west` version number, then add said directory to your `PATH` with PowerShell:
+
+```powershell
+$Scripts = python -c "import sysconfig; print(sysconfig.get_path('scripts'))"
+$Path = [Environment]::GetEnvironmentVariable('PATH', 'User')
+[Environment]::SetEnvironmentVariable('PATH', "$Path;$Scripts", 'User')
+$env:PATH += ";$Scripts"
+```
+
+:::
+
+  </TabItem>
+
+  <TabItem value="mac" label="Mac OS">
+
+1. Install `west`:
+
+```sh
+pip3 install -U west
+```
+
+  </TabItem>
+</Tabs>
+
+2. Initialize the application and update to fetch modules, including Zephyr:
+
+```sh
+west init -l app/
+west update
+```
+
+:::tip
+This step pulls down quite a bit of tooling, be patient!
+:::
+
+3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+
+```sh
+west zephyr-export
+```
+
+<Tabs groupId="operating-systems" defaultValue="ubuntu" className="secrettabs">
+  <TabItem value="ubuntu" label="Ubuntu">
+
+4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+
+```sh
+pip3 install --user -r zephyr/scripts/requirements-base.txt
+```
+
+  </TabItem>
+
+  <TabItem value="win" label="Windows">
+
+4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+
+```sh
+pip install -r zephyr/scripts/requirements-base.txt
+```
+
+  </TabItem>
+
+  <TabItem value="mac" label="Mac OS">
+4. Install the additional dependencies found in Zephyr's `requirements-base.txt`.
+
+```sh
+pip3 install -r zephyr/scripts/requirements-base.txt
+```
+
+  </TabItem>
+</Tabs>
+</TabItem>
+</EnvTabs>
+
+## 4. Install Zephyr SDK
+
+Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk).
+
+### OS-Specific Notes
+
+<OsNoteTabs>
+<TabItem value="win">
+  `dfu-util` is required to flash devices that use DFU, but there is currently
+  no maintained package for it on Chocolatey. [QMK
+  Toolbox](https://github.com/qmk/qmk_toolbox) contains a working version of it
+  though.
+</TabItem>
+
+<TabItem value="raspberryos">
+#### Install cross-compile toolchain
+
+Because Raspberry OS runs on the same architecture (but different ABI) as ARM keyboard MCUs, the operating system's installed [cross compilers](https://docs.zephyrproject.org/3.5.0/develop/toolchains/other_x_compilers.html) can be used to target the different ABI. Building for non-ARM MCUs has not been tested.
+
+First, the cross compiler should be installed:
+
+```sh
+sudo apt install gcc-arm-none-eabi
+```
+
+Next, we'll configure Zephyr with some [environment variables](https://docs.zephyrproject.org/3.5.0/develop/env_vars.html#env-vars) needed to find the cross compiler. Create a file named `~/.zephyrrc` if it doesn't exist, and add these lines to it:
+
+```sh
+export ZEPHYR_TOOLCHAIN_VARIANT=cross-compile
+export CROSS_COMPILE=/usr/bin/arm-none-eabi-
+```
+
+</TabItem>
+</OsNoteTabs>
+
+Your setup is now complete.

@@ -1,0 +1,10 @@
+file_format: "1"
+id: bluemicro840_v1
+name: BlueMicro840 v1
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://nrf52.jpconstantineau.com/docs/bluemicro840_v1/
+exposes: [pro_micro]

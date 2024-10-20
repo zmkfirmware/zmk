@@ -1,0 +1,26 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_ZMK_UNO_BASE
+
+config ZMK_KEYBOARD_NAME
+    default "ZMK Uno"
+
+config ZMK_BACKLIGHT
+    select LED
+    select LED_GPIO
+
+config SHIELD_SSD1306_128X64
+    select ZMK_DISPLAY
+
+config SHIELD_SSD1306_128X32
+    select ZMK_DISPLAY
+
+config ZMK_RGB_UNDERGLOW
+    select WS2812_STRIP
+    select SPI
+
+config ZMK_PM_SOFT_OFF
+    default y if BOARD_NRF52840DK_NRF52840
+
+endif

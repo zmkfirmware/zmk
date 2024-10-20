@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(KT)
+    /omit-if-no-ref/
+#endif
+        kt: key_toggle {
+            compatible = "zmk,behavior-key-toggle";
+            #binding-cells = <1>;
+            display-name = "Key Toggle";
+        };
+    };
+};

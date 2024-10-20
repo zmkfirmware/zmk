@@ -1,0 +1,8 @@
+file_format: "1"
+id: pancake
+name: Pancake
+type: shield
+url: https://github.com/Spaceboards/SpaceboardsHardware/tree/master/Keyboards/Pancake/V1
+requires: [pro_micro]
+features:
+  - keys

@@ -2,19 +2,16 @@ manifest:
   remotes:
     - name: zephyrproject-rtos
       url-base: https://github.com/zephyrproject-rtos
-    - name: petejohanson
-      url-base: https://github.com/petejohanson
-    - name: microsoft
-      url-base: https://github.com/microsoft
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
   projects:
     - name: zephyr
-      remote: petejohanson
-      revision: zmk-v2.3.0-with-fixes
+      remote: zmkfirmware
+      revision: v3.5.0+zmk-fixes
+      clone-depth: 1
       import:
-        # TODO: Rename once upstream offers option like `exclude` or `denylist`
-        name-blacklist:
+        name-blocklist:
           - ci-tools
-          - hal_atmel
           - hal_altera
           - hal_cypress
           - hal_infineon
@@ -29,12 +26,16 @@ manifest:
           - mcuboot
           - mcumgr
           - net-tools
-          - segger
           - openthread
           - edtt
           - trusted-firmware-m
-    - name: uf2
-      remote: microsoft
-      path: tools/uf2
+    - name: nanopb
+      revision: 0a21c7ca2a98c5821d2836e41cc5c520e43fd0c0
+      path: modules/lib/nanopb
+      remote: zmkfirmware
+    - name: zmk-studio-messages
+      revision: 6cb4c283e76209d59c45fbcb218800cd19e9339d
+      path: modules/msgs/zmk-studio-messages
+      remote: zmkfirmware
   self:
     west-commands: scripts/west-commands.yml

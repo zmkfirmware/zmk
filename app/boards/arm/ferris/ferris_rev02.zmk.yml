@@ -1,0 +1,10 @@
+file_format: "1"
+id: ferris_rev02
+name: Ferris 0.2
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+url: https://github.com/pierrechevalier83/ferris/tree/main/0.2

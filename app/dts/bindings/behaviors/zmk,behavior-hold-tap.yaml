@@ -11,8 +11,23 @@ properties:
   bindings:
     type: phandles
     required: true
+  tapping-term-ms:
+    type: int
   tapping_term_ms:
     type: int
+    deprecated: true
+  quick-tap-ms:
+    type: int
+    default: -1
+  quick_tap_ms:
+    type: int
+    deprecated: true
+  global-quick-tap:
+    type: boolean
+    deprecated: true
+  require-prior-idle-ms:
+    type: int
+    default: -1
   flavor:
     type: string
     required: false
@@ -21,3 +36,16 @@ properties:
       - "hold-preferred"
       - "balanced"
       - "tap-preferred"
+      - "tap-unless-interrupted"
+  hold-while-undecided:
+    type: boolean
+  hold-while-undecided-linger:
+    type: boolean
+  retro-tap:
+    type: boolean
+  hold-trigger-key-positions:
+    type: array
+    required: false
+    default: []
+  hold-trigger-on-release:
+    type: boolean

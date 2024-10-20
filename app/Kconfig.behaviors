@@ -1,0 +1,120 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config ZMK_BEHAVIOR_METADATA
+    bool "Metadata"
+    help
+      Enabling this option adds APIs for documenting and fetching
+      metadata describing a behaviors name, and supported parameters.
+
+config ZMK_BEHAVIOR_LOCAL_IDS
+    bool "Local IDs"
+
+if ZMK_BEHAVIOR_LOCAL_IDS
+
+config ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS
+    bool "Track in behavior bindings"
+
+choice ZMK_BEHAVIOR_LOCAL_ID_TYPE
+    prompt "Local ID Type"
+
+config ZMK_BEHAVIOR_LOCAL_ID_TYPE_SETTINGS_TABLE
+    bool "Settings Table"
+    depends on SETTINGS
+    select ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS
+    help
+      Use persistent entries in the settings subsystem to identify
+      behaviors by local ID, which uses the device name to generate
+      a new settings entry tying a presistant local ID to that name.
+      This guarantees stable, colllision-free local IDs at the expense
+      of settings storage used.
+
+config ZMK_BEHAVIOR_LOCAL_ID_TYPE_CRC16
+    bool "CRC16 Hash"
+    select CRC
+    help
+      Use the CRC16-ANSI hash of behavior device names to generate
+      stable behavior local IDs. This saves on settings storage at
+      the expense of (highly unlikely) risk of collisions.
+
+endchoice
+
+endif
+
+
+config ZMK_BEHAVIOR_HOLD_TAP
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_HOLD_TAP_ENABLED
+
+if ZMK_BEHAVIOR_HOLD_TAP
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD
+    int "Hold Tap Max Held"
+    default 10
+    help
+      Max number of simultaneously held hold-taps
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS
+    int "Hold Tap Max Captured Events"
+    default 40
+    help
+      Max number of captured system events while waiting to resolve hold taps
+
+endif
+
+config ZMK_BEHAVIOR_KEY_TOGGLE
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_KEY_TOGGLE_ENABLED
+
+config ZMK_BEHAVIOR_MOUSE_KEY_PRESS
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_MOUSE_KEY_PRESS_ENABLED
+    imply ZMK_MOUSE
+
+config ZMK_BEHAVIOR_STICKY_KEY
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_STICKY_KEY_ENABLED
+
+if ZMK_BEHAVIOR_STICKY_KEY
+
+config ZMK_BEHAVIOR_STICKY_KEY_MAX_HELD
+    int "Sticky Key Max Held"
+    default 10
+    help
+      Max number of simultaneously held sticky keys
+
+endif
+
+config ZMK_BEHAVIOR_SOFT_OFF
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_SOFT_OFF_ENABLED && ZMK_PM_SOFT_OFF
+
+config ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
+    bool
+
+config ZMK_BEHAVIOR_SENSOR_ROTATE
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_SENSOR_ROTATE_ENABLED
+    select ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
+
+config ZMK_BEHAVIOR_SENSOR_ROTATE_VAR
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_SENSOR_ROTATE_VAR_ENABLED
+    select ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
+
+config ZMK_BEHAVIOR_STUDIO_UNLOCK
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_STUDIO_UNLOCK_ENABLED && ZMK_STUDIO
+
+config ZMK_BEHAVIOR_MACRO
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_MACRO_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_ONE_PARAM_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_TWO_PARAM_ENABLED

@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+            zmk,kscan = &kscan0;
+            zmk,matrix-transform = &default_transform;
+    };
+
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <5>;
+        rows = <1>;
+
+        map = <RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4)>;
+    };
+
+    kscan0: kscan_0 {
+            compatible = "zmk,kscan-gpio-matrix";
+            wakeup-source;
+            diode-direction = "col2row";
+
+            col-gpios
+                = <&pro_micro 4 GPIO_ACTIVE_HIGH>
+                , <&pro_micro 5 GPIO_ACTIVE_HIGH>
+                , <&pro_micro 6 GPIO_ACTIVE_HIGH>
+                , <&pro_micro 7 GPIO_ACTIVE_HIGH>
+                , <&pro_micro 8 GPIO_ACTIVE_HIGH>
+                ;
+
+            row-gpios
+                = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+                ;
+    };
+
+    encoder: encoder {
+        compatible = "alps,ec11";
+        a-gpios = <&pro_micro 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <80>;
+        status = "okay";
+    };
+
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&encoder>;
+        triggers-per-rotation = <20>;
+    };
+};

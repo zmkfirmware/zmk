@@ -13,6 +13,9 @@ properties:
   col-offset:
     type: int
     default: 0
+  row-offset:
+    type: int
+    default: 0
   map:
     type: array
     required: true

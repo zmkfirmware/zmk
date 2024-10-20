@@ -1,0 +1,1 @@
+s/.*\(hid_listener_keycode_pressed\|filter_timed_out_candidates\): //p

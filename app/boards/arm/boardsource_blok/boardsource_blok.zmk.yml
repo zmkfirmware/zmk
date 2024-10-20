@@ -1,0 +1,9 @@
+file_format: "1"
+id: boardsource_blok
+name: BoardSource blok
+type: board
+arch: arm
+outputs:
+  - usb
+url: https://peg.software/docs/blok
+exposes: [pro_micro]

@@ -6,17 +6,21 @@
 
 #pragma once
 
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 #include <dt-bindings/zmk/keys.h>
 
-typedef u32_t zmk_key;
-typedef u8_t zmk_action;
-typedef u8_t zmk_mod;
-typedef u8_t zmk_mod_flags;
+typedef uint32_t zmk_key_t;
+typedef uint8_t zmk_mod_t;
+typedef uint8_t zmk_mod_flags_t;
 
 struct zmk_key_event {
-    u32_t column;
-    u32_t row;
-    zmk_key key;
+    uint32_t column;
+    uint32_t row;
+    zmk_key_t key;
     bool pressed;
 };
+
+static inline bool is_mod(uint8_t usage_page, uint32_t keycode) {
+    return (keycode >= HID_USAGE_KEY_KEYBOARD_LEFTCONTROL &&
+            keycode <= HID_USAGE_KEY_KEYBOARD_RIGHT_GUI && usage_page == HID_USAGE_KEY);
+}

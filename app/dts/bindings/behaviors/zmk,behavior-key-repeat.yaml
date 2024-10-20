@@ -1,0 +1,13 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Key repeat behavior
+
+compatible: "zmk,behavior-key-repeat"
+
+include: zero_param.yaml
+
+properties:
+  usage-pages:
+    type: array
+    required: true

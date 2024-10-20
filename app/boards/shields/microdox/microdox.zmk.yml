@@ -1,0 +1,13 @@
+file_format: "1"
+id: microdox
+name: Microdox
+type: shield
+url: https://boardsource.xyz/store/5f2e7e4a2902de7151494f92
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+siblings:
+  - microdox_left
+  - microdox_right

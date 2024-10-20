@@ -47,7 +47,9 @@ export default {
     "C_AC_DEL",
     "C_AC_VIEW_TOGGLE",
     "C_AC_DESKTOP_SHOW_ALL_WINDOWS",
+    "C_AC_DESKTOP_SHOW_ALL_APPLICATIONS",
     "C_VOICE_COMMAND",
+    "C_AC_NEXT_KEYBOARD_LAYOUT_SELECT",
   ],
   applications: [
     "C_AL_NEXT_TASK",

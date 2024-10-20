@@ -1,0 +1,66 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/* this test verifies that lazy sticky keys work similarly to regular sticky keys, and includes cases from 10-callum-mods and 8-lsk-osk.
+   the only difference is that the lazy key does not exit the sticky layer */
+
+&sk {
+    lazy;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &sk LEFT_CONTROL &sl 1
+                &kp A &mo 1>;
+        };
+
+        lower_layer {
+            bindings = <
+                &sk LEFT_CONTROL &kp X
+                &sk LEFT_SHIFT  &kp Z>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        /* tap LEFT_CONTROL on base layer */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        /* tap A */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+
+        /* tap sl lower_layer */
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        /* tap sk LEFT_CONTROL */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        /* tap Z */
+        ZMK_MOCK_PRESS(1,1,10)
+        ZMK_MOCK_RELEASE(1,1,10)
+
+        /* press mo lower_layer */
+        ZMK_MOCK_PRESS(1,1,10)
+        /* tap sk LEFT_CONTROL */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        /* tap sk LEFT_SHIFT */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        /* release mo lower_layer */
+        ZMK_MOCK_RELEASE(1,1,10)
+        /* tap A (with left control and left shift enabled) */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        /* tap A (no sticky keys anymore) */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+    >;
+};

@@ -1,0 +1,98 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+menuconfig ZMK_STUDIO
+    bool "Studio Support"
+    select ZMK_STUDIO_RPC if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    select PM_DEVICE # Needed for physical layout switching
+    help
+      Add firmware support for realtime keymap updates (ZMK Studio)
+
+if ZMK_STUDIO
+
+module = ZMK_STUDIO
+module-str = zmk_studio
+source "subsys/logging/Kconfig.template.log_config"
+
+menuconfig ZMK_STUDIO_LOCKING
+    bool "Lock Support"
+
+if ZMK_STUDIO_LOCKING
+
+config ZMK_STUDIO_LOCK_IDLE_TIMEOUT_SEC
+    int "Idle Timeout"
+    default 600
+
+config ZMK_STUDIO_LOCK_ON_DISCONNECT
+    bool "Lock On Disconnect"
+    default y
+
+endif
+
+menuconfig ZMK_STUDIO_RPC
+    bool "Remote Procedure Calls (RPC)"
+    select NANOPB
+    # These two save stack size
+    imply NANOPB_NO_ERRMSG
+    imply NANOPB_WITHOUT_64BIT
+    imply NANOPB_NO_ENCODE_SIZE_CHECK
+    imply ZMK_STUDIO_LOCKING if !ARCH_POSIX
+    select CBPRINTF_LIBC_SUBSTS if ARCH_POSIX
+    select SETTINGS
+    select ZMK_BEHAVIOR_METADATA
+    select ZMK_BEHAVIOR_LOCAL_IDS
+    select RING_BUFFER
+    select ZMK_KEYMAP_SETTINGS_STORAGE
+    select ZMK_KEYMAP_LAYER_REORDERING
+    help
+      Add firmware support for studio RPC protocol
+
+if ZMK_STUDIO_RPC
+
+menu "Transports"
+
+config ZMK_STUDIO_TRANSPORT_UART
+    bool "Serial"
+    select SERIAL
+    select RING_BUFFER
+    default y if ZMK_USB || ARCH_POSIX
+
+config ZMK_STUDIO_TRANSPORT_UART_RX_STACK_SIZE
+    int "RX Stack Size"
+    depends on !UART_INTERRUPT_DRIVEN
+    default 512
+
+config ZMK_STUDIO_TRANSPORT_BLE
+    bool "BLE (GATT)"
+    select RING_BUFFER
+    select BT_USER_DATA_LEN_UPDATE
+    depends on ZMK_BLE
+    default y
+
+config BT_CONN_TX_MAX
+    default 64 if ZMK_STUDIO_TRANSPORT_BLE
+
+config ZMK_STUDIO_TRANSPORT_BLE_PREF_LATENCY
+    int "BLE Transport preferred latency"
+    default 10
+    help
+      When the studio UI is connected, a lower latency can be requested in order
+      to make the interactions between keyboard and studio faster.
+
+endmenu
+
+config ZMK_STUDIO_RPC_THREAD_STACK_SIZE
+    int "RPC Thread Stack Size"
+    default 4096
+
+config ZMK_STUDIO_RPC_RX_BUF_SIZE
+    int "RX Buffer Size"
+    default 30
+
+config ZMK_STUDIO_RPC_TX_BUF_SIZE
+    int "TX Buffer Size"
+    default 64
+
+endif
+
+endif

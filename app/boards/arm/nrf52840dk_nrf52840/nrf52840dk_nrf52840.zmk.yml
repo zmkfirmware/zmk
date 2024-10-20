@@ -1,0 +1,10 @@
+file_format: "1"
+id: nrf52840dk_nrf52840
+name: Nordic nRF52840 DK
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://www.nordicsemi.com/Products/Development-hardware/nrf52840-dk
+exposes: [arduino_uno]

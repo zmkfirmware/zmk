@@ -1,0 +1,22 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Sticky key behavior
+
+compatible: "zmk,behavior-sticky-key"
+
+include: one_param.yaml
+
+properties:
+  bindings:
+    type: phandles
+    required: true
+  release-after-ms:
+    type: int
+    required: true
+  quick-release:
+    type: boolean
+  lazy:
+    type: boolean
+  ignore-modifiers:
+    type: boolean

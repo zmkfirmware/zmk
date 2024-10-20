@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(SK)
+        /omit-if-no-ref/
+#endif
+        sk: sticky_key {
+            compatible = "zmk,behavior-sticky-key";
+            #binding-cells = <1>;
+            release-after-ms = <1000>;
+            bindings = <&kp>;
+            ignore-modifiers;
+            display-name = "Sticky Key";
+        };
+#if ZMK_BEHAVIOR_OMIT(STICKY_LAYER)
+        /omit-if-no-ref/
+#endif
+        sl: sticky_layer {
+            compatible = "zmk,behavior-sticky-key";
+            #binding-cells = <1>;
+            release-after-ms = <1000>;
+            bindings = <&mo>;
+            quick-release;
+            display-name = "Sticky Layer";
+        };
+    };
+
+};
+

@@ -1,28 +1,46 @@
+name: Tests
+
 on:
   push:
     paths:
+      - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
+      - "app/include/**"
   pull_request:
     paths:
+      - ".github/workflows/test.yml"
       - "app/tests/**"
       - "app/src/**"
-
-name: Test
+      - "app/include/**"
 
 jobs:
-  integration_test:
+  collect-tests:
+    outputs:
+      test-dirs: ${{ steps.test-dirs.outputs.test-dirs }}
     runs-on: ubuntu-latest
-    name: Integration Tests
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+      - name: Find test directories
+        id: test-dirs
+        run: |
+          cd app/tests/
+          export TESTS=$(ls -d * | grep -v ble | jq -R -s -c 'split("\n")[:-1]')
+          echo "test-dirs=${TESTS}" >> $GITHUB_OUTPUT
+  run-tests:
+    needs: collect-tests
+    strategy:
+      matrix:
+        test: ${{ fromJSON(needs.collect-tests.outputs.test-dirs) }}
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/zmkfirmware/zmk-build-arm:3.5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Cache west modules
-        timeout-minutes: 2
-        continue-on-error: true
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         env:
           cache-name: cache-zephyr-modules
         with:
@@ -31,40 +49,25 @@ jobs:
             tools/
             zephyr/
             bootloader/
-          key: 2-${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
           restore-keys: |
-            2-${{ runner.os }}-build-${{ env.cache-name }}-
-            2-${{ runner.os }}-build-
-            2-${{ runner.os }}-
-      - name: West Init
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-init
-        with:
-          args: 'init "-l app"'
-      - name: West Update
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-update
-        with:
-          args: "update"
-      - name: West Config Zephyr Base
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-config
-        with:
-          args: 'config "--global zephyr.base-prefer configfile"'
-      - name: West Zephyr Export
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-zephyr-export
-        with:
-          args: "zephyr-export"
-      - name: Test All
-        uses: "docker://zmkfirmware/zephyr-west-action-arm:latest"
-        id: west-build
-        with:
-          entrypoint: /bin/bash
-          args: '-c "west test"'
-      - name: Archive Build
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+        timeout-minutes: 2
+        continue-on-error: true
+      - name: Initialize workspace (west init)
+        run: west init -l app
+      - name: Update modules (west update)
+        run: west update
+      - name: Export Zephyr CMake package (west zephyr-export)
+        run: west zephyr-export
+      - name: Test ${{ matrix.test }}
+        working-directory: app
+        run: west test tests/${{ matrix.test }}
+      - name: Archive artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: "log-files"
+          name: "${{ matrix.test }}-log-files"
           path: app/build/**/*.log

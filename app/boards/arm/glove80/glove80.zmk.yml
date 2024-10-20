@@ -1,0 +1,17 @@
+file_format: "1"
+id: glove80
+name: Glove80
+type: board
+arch: arm
+url: https://www.moergo.com/
+features:
+  - keys
+  - underglow
+  - backlight
+  - studio
+outputs:
+  - usb
+  - ble
+siblings:
+  - glove80_lh
+  - glove80_rh

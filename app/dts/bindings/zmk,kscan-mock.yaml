@@ -6,6 +6,8 @@ compatible: "zmk,kscan-mock"
 properties:
   label:
     type: string
+    required: false
+    deprecated: true
   event-period:
     type: int
     description: Milliseconds between each generated event
