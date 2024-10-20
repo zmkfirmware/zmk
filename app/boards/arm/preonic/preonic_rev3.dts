@@ -9,9 +9,7 @@
 #include <st/f3/stm32f303c(b-c)tx-pinctrl.dtsi>
 #include <dt-bindings/zmk/matrix_transform.h>
 
-#include <layouts/common/ortho_5x12/1x2u.dtsi>
-#include <layouts/common/ortho_5x12/2x2u.dtsi>
-#include <layouts/common/ortho_5x12/all1u.dtsi>
+#include "preonic_rev3-layouts.dtsi"
 
 / {
     model = "Preonic PCD, rev3";
@@ -133,16 +131,4 @@ zephyr_udc0: &usb {
             reg = <0x0003e800 0x00001800>;
         };
     };
-};
-
-&layout_ortho_5x12_all1u {
-    transform = <&layout_grid_transform>;
-};
-
-&layout_ortho_5x12_1x2u {
-    transform = <&layout_mit_transform>;
-};
-
-&layout_ortho_5x12_2x2u {
-    transform = <&layout_2x2u_transform>;
 };

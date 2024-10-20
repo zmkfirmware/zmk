@@ -1,0 +1,5 @@
+#include <layouts/cuddlykeyboards/ferris.dtsi>
+
+&cuddlykeyboards_ferris_layout {
+    transform = <&default_transform>;
+};

@@ -1,0 +1,5 @@
+#include <layouts/common/60percent/ansi.dtsi>
+
+&layout_60_ansi {
+    transform = <&default_transform>;
+};

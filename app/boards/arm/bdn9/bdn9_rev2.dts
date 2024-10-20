@@ -11,7 +11,7 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
-#include <physical_layouts.dtsi>
+#include "bdn9_rev2-layouts.dtsi"
 
 / {
     model = "Keeb.io BDN9 rev2";
@@ -20,8 +20,8 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zmk,kscan = &kscan;
         zmk,underglow = &led_strip;
+        zmk,physical-layout = &default_layout;
     };
 
     matrix_transform: matrix_transform {
@@ -35,25 +35,6 @@
             RC(0,3) RC(0,4) RC(0,5)
             RC(0,6) RC(0,7) RC(0,8)
         >;
-    };
-
-    physical_layout {
-        compatible = "zmk,physical-layout";
-
-        display-name = "BDN9";
-        transform = <&matrix_transform>;
-
-        keys  //                     w   h    x    y     rot    rx    ry
-            = <&key_physical_attrs 100 100    0    0       0     0     0>
-            , <&key_physical_attrs 100 100  100    0       0     0     0>
-            , <&key_physical_attrs 100 100  200    0       0     0     0>
-            , <&key_physical_attrs 100 100    0  100       0     0     0>
-            , <&key_physical_attrs 100 100  100  100       0     0     0>
-            , <&key_physical_attrs 100 100  200  100       0     0     0>
-            , <&key_physical_attrs 100 100    0  200       0     0     0>
-            , <&key_physical_attrs 100 100  100  200       0     0     0>
-            , <&key_physical_attrs 100 100  200  200       0     0     0>
-            ;
     };
 
     kscan: kscan {

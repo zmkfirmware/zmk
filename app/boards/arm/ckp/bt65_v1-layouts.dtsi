@@ -1,0 +1,20 @@
+#include <layouts/common/65percent/all1u.dtsi>
+#include <layouts/common/65percent/ansi.dtsi>
+#include <layouts/common/65percent/iso.dtsi>
+#include <layouts/common/65percent/hhkb.dtsi>
+
+&layout_65_ansi {
+  transform = <&ansi_transform>;
+};
+
+&layout_65_iso {
+  transform = <&iso_transform>;
+};
+
+&layout_65_all1u {
+  transform = <&all_1u_transform>;
+};
+
+&layout_65_hhkb {
+  transform = <&hhkb_transform>;
+};

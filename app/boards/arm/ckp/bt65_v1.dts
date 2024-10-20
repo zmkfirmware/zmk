@@ -6,11 +6,7 @@
 
 /dts-v1/;
 #include "ckp.dtsi"
-#include <layouts/common/65percent/all1u.dtsi>
-#include <layouts/common/65percent/ansi.dtsi>
-#include <layouts/common/65percent/iso.dtsi>
-#include <layouts/common/65percent/hhkb.dtsi>
-
+#include "bt65_v1-layouts.dtsi"
 
 / {
   model = "BT65_V1";
@@ -72,20 +68,4 @@
       RC(5,0)   RC(5,1)   RC(5,2)                         RC(5,6)                           RC(5,11)     RC(5,12)     RC(5,13)     RC(5,15)
     >;
   };
-};
-
-&layout_65_ansi {
-  transform = <&ansi_transform>;
-};
-
-&layout_65_iso {
-  transform = <&iso_transform>;
-};
-
-&layout_65_all1u {
-  transform = <&all_1u_transform>;
-};
-
-&layout_65_hhkb {
-  transform = <&hhkb_transform>;
 };

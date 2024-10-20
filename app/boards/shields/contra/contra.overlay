@@ -5,8 +5,7 @@
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
-
-#include <layouts/common/ortho_4x12/all1u.dtsi>
+#include "contra-layouts.dtsi"
 
 / {
     chosen {
@@ -54,8 +53,4 @@
             , <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
     };
-};
-
-&layout_ortho_4x12_all1u {
-    transform = <&matrix_transform_40_all1u>;
 };

@@ -1,0 +1,5 @@
+#include <layouts/kata0510/lily58.dtsi>
+
+&kata0510_lily58_layout {
+    transform = <&default_transform>;
+};

@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
- #include "zmk_uno.dtsi"
+#include "zmk_uno.dtsi"
+#include "zmk_uno-layouts.dtsi"
 
 #include <behaviors.dtsi>
-#include <physical_layouts.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
 
@@ -60,35 +60,6 @@
         };
     };
 
-    matrix_physical_layout: matrix_physical_layout {
-        compatible = "zmk,physical-layout";
-        display-name = "Matrix Layout";
 
-        kscan = <&kscan_matrix>;
-        transform = <&matrix_transform>;
-
-        keys
-            = <&key_physical_attrs 100 100 0   0 0 0 0>
-            , <&key_physical_attrs 100 100 100 0 0 0 0>
-            , <&key_physical_attrs 100 100 0   100 0 0 0>
-            , <&key_physical_attrs 100 100 100 100 0 0 0>
-            ;
-    };
-
-    direct_physical_layout: direct_physical_layout {
-        compatible = "zmk,physical-layout";
-
-        display-name = "Direct Wire Layout";
-
-        kscan = <&kscan_direct>;
-        transform = <&direct_matrix_transform>;
-
-        keys
-            = <&key_physical_attrs 100 100 0   0 0 0 0>
-            , <&key_physical_attrs 100 100 100 0 0 0 0>
-            , <&key_physical_attrs 100 100 0   100 0 0 0>
-            , <&key_physical_attrs 100 100 100 100 0 0 0>
-            ;
-    };
 
 };

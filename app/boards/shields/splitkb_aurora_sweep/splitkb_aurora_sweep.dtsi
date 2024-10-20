@@ -5,12 +5,7 @@
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
-
-#include <layouts/cuddlykeyboards/ferris.dtsi>
-
-&cuddlykeyboards_ferris_layout {
-    transform = <&default_transform>;
-};
+#include "splitkb_aurora_sweep-layouts.dtsi"
 
 / {
     chosen {

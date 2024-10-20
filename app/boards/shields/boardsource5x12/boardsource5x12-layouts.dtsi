@@ -1,0 +1,5 @@
+#include <layouts/common/ortho_5x12/all1u.dtsi>
+
+&layout_ortho_5x12_all1u {
+    transform = <&matrix_transform_50_all1u>;
+};

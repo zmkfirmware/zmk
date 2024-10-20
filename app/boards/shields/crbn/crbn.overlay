@@ -5,8 +5,7 @@
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
-
-#include <layouts/common/ortho_4x12/all1u.dtsi>
+#include "crbn-layouts.dtsi"
 
 / {
     chosen {
@@ -68,8 +67,4 @@
         sensors = <&encoder>;
         triggers-per-rotation = <20>;
     };
-};
-
-&layout_ortho_4x12_all1u {
-    transform = <&matrix_transform_40_all1u>;
 };

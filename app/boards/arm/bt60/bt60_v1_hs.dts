@@ -6,7 +6,7 @@
 
 /dts-v1/;
 #include "bt60.dtsi"
-#include <layouts/common/60percent/ansi.dtsi>
+#include "bt60_v1_hs-layouts.dtsi"
 
 / {
     chosen {
@@ -59,8 +59,4 @@
             , <&gpio0 23 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
     };
-};
-
-&layout_60_ansi {
-    transform = <&default_transform>;
 };

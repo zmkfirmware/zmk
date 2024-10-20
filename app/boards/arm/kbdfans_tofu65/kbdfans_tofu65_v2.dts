@@ -7,8 +7,7 @@
 
 #include <rpi_pico/rp2040.dtsi>
 #include <dt-bindings/zmk/matrix_transform.h>
-
-#include <layouts/common/65percent/ansi.dtsi>
+#include "kbdfans_tofu65_v2-layouts.dtsi"
 
 / {
 
@@ -115,8 +114,4 @@ zephyr_udc0: &usbd {
 
 &gpio0 {
     status = "okay";
-};
-
-&layout_65_ansi {
-    transform = <&default_transform>;
 };

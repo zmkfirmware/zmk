@@ -10,6 +10,8 @@ It contains:
 - A [matrix transform](../../config/layout.md#matrix-transform)
 - (Optional) [Physical key positions](#physical-layout-positions)
 
+By convention, physical layouts and any [position maps](#position-map) are defined in a separate file called `<your keyboard>-layouts.dtsi`. This file should then be imported by the appropriate file, such as an `.overlay`, `.dts`, or a `.dtsi` (the last of which is itself imported by one of the previous).
+
 ## Basic Physical Layout
 
 A basic physical layout without the `keys` property looks like this:
@@ -35,7 +37,7 @@ ZMK Studio is in beta. Although every effort has been made to provide a stable e
 
 :::
 
-The `keys` property is required for [ZMK Studio](../../features/studio.md) support. It is used to describe the physical attributes of each key position present in that layout. If this property is used, then you should define the physical layouts and any [position maps](#position-map) in a file called `<your keyboard>-layouts.dtsi`. This file should then be imported by the appropriate file, such as an `.overlay`, `.dts`, or a `.dtsi` (last of which is itself imported by one of the previous).
+The `keys` property is required for [ZMK Studio](../../features/studio.md) support. It is used to describe the physical attributes of each key position present in that layout.
 
 To pull in the necessary definition for creating physical layouts with the `keys` property, a new include should be added to the top of the devicetree file:
 

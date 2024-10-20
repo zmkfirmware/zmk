@@ -1,0 +1,15 @@
+#include <layouts/common/ortho_5x12/1x2u.dtsi>
+#include <layouts/common/ortho_5x12/2x2u.dtsi>
+#include <layouts/common/ortho_5x12/all1u.dtsi>
+
+&layout_ortho_5x12_all1u {
+    transform = <&layout_grid_transform>;
+};
+
+&layout_ortho_5x12_1x2u {
+    transform = <&layout_mit_transform>;
+};
+
+&layout_ortho_5x12_2x2u {
+    transform = <&layout_2x2u_transform>;
+};

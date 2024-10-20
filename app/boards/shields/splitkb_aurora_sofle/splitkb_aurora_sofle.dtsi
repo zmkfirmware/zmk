@@ -5,12 +5,7 @@
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
-
-#include <layouts/josefadamcik/sofle.dtsi>
-
-&josefadamcik_sofle_layout {
-    transform = <&default_transform>;
-};
+#include "splitkb_aurora_sofle-layouts.dtsi"
 
 / {
 

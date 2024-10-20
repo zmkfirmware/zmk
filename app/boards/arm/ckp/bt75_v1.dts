@@ -6,10 +6,7 @@
 
 /dts-v1/;
 #include "ckp.dtsi"
-#include <layouts/common/75percent/all1u.dtsi>
-#include <layouts/common/75percent/ansi.dtsi>
-#include <layouts/common/75percent/iso.dtsi>
-
+#include "bt75_v1-layouts.dtsi"
 
 / {
   model = "BT75_V1";
@@ -61,16 +58,4 @@
       RC(5,0)   RC(5,1)   RC(5,2)                        RC(5,6)                      RC(5,10) RC(5,11) RC(5,12) RC(5,13) RC(5,14) RC(5,15)
     >;
   };
-};
-
-&layout_75_ansi {
-  transform = <&ansi_transform>;
-};
-
-&layout_75_iso {
-  transform = <&iso_transform>;
-};
-
-&layout_75_all1u {
-  transform = <&all_1u_transform>;
 };

@@ -6,11 +6,7 @@
 
 /dts-v1/;
 #include "bt60.dtsi"
-#include <layouts/common/60percent/all1u.dtsi>
-#include <layouts/common/60percent/ansi.dtsi>
-#include <layouts/common/60percent/hhkb.dtsi>
-#include <layouts/common/60percent/iso.dtsi>
-
+#include "bt60_v1-layouts.dtsi"
 
 / {
     chosen {
@@ -102,20 +98,4 @@
             , <&gpio1 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
             ;
     };
-};
-
-&layout_60_ansi {
-    transform = <&ansi_transform>;
-};
-
-&layout_60_iso {
-    transform = <&iso_transform>;
-};
-
-&layout_60_all1u {
-    transform = <&all_1u_transform>;
-};
-
-&layout_60_hhkb {
-    transform = <&hhkb_transform>;
 };
