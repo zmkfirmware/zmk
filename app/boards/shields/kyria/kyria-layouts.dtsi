@@ -4,6 +4,7 @@
     splitkb_kyria_6col_layout: splitkb_kyria_6col_layout {
         compatible = "zmk,physical-layout";
         display-name = "6 Column";
+        transform = <&default_transform>;
 
         keys  //                     w   h    x    y     rot    rx    ry
             = <&key_physical_attrs 100 100    0   75       0     0     0>
@@ -62,6 +63,7 @@
     splitkb_kyria_5col_layout: splitkb_kyria_5col_layout {
         compatible = "zmk,physical-layout";
         display-name = "5 Column";
+        transform = <&five_column_transform>;
 
         keys  //                     w   h    x    y     rot    rx    ry
             = <&key_physical_attrs 100 100    0   75       0     0     0>

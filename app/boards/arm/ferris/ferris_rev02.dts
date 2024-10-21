@@ -9,12 +9,7 @@
 #include <st/f0/stm32f072v(8-b)tx-pinctrl.dtsi>
 
 #include <dt-bindings/zmk/matrix_transform.h>
-
-#include <layouts/cuddlykeyboards/ferris.dtsi>
-
-&cuddlykeyboards_ferris_layout {
-    transform = <&transform>;
-};
+#include "ferris_rev02-layouts.dtsi"
 
 / {
     model = "Ferris rev0.2";
@@ -24,6 +19,7 @@
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
         zmk,kscan = &kscan;
+        zmk,physical-layout = &cuddlykeyboards_ferris_layout;
         /* TODO: Enable once we support the IC for underglow
         zmk,underglow = &led_strip;
          */

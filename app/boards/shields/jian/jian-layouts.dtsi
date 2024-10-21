@@ -1,0 +1,15 @@
+#include <layouts/kgoh/jian/full.dtsi>
+#include <layouts/kgoh/jian/6column.dtsi>
+#include <layouts/kgoh/jian/5column.dtsi>
+
+&kgoh_jian_full_layout {
+    transform = <&default_transform>;
+};
+
+&kgoh_jian_6col_layout {
+    transform = <&crkbd_transform>;
+};
+
+&kgoh_jian_5col_layout {
+    transform = <&five_column_transform>;
+};

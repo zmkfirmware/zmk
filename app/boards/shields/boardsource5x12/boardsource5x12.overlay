@@ -5,8 +5,7 @@
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
-
-#include <layouts/common/ortho_5x12/all1u.dtsi>
+#include "boardsource5x12-layouts.dtsi"
 
 / {
     chosen {
@@ -56,8 +55,4 @@
             , <&pro_micro 6 GPIO_ACTIVE_HIGH>
             ;
     };
-};
-
-&layout_ortho_5x12_all1u {
-    transform = <&matrix_transform_50_all1u>;
 };

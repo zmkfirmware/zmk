@@ -5,22 +5,7 @@
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
-
-#include "layouts/full.dtsi"
-#include "layouts/jian.dtsi"
-#include "layouts/6column.dtsi"
-
-&ladniy_jiran_full_layout {
-    transform = <&default_transform>;
-};
-
-&kgoh_jian_full_layout {
-    transform = <&jian_transform>;
-};
-
-&kgoh_jian_6col_layout {
-    transform = <&crkbd_transform>;
-};
+#include "jiran-layouts.dtsi"
 
 / {
     chosen {
