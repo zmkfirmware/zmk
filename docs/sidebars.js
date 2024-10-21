@@ -25,6 +25,7 @@ module.exports = {
             "troubleshooting/building-issues",
             "troubleshooting/flashing-issues",
             "troubleshooting/connection-issues",
+            "troubleshooting/hardware-issues",
           ],
         },
       ],
