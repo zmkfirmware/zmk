@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "mf68.dtsi"
+
+&kscan0 {
+	row-gpios
+		= <&gpio0 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>	/* A0  */
+		, <&gpio1 9  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>	/* D13 */
+		, <&gpio0 8  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>	/* D12 */
+		, <&gpio0 6  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>	/* D11 */
+		, <&gpio0 27 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>	/* D10 */
+		, <&gpio0 26 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>	/* D9  */
+		, <&gpio0 7  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>	/* D6  */
+		, <&gpio1 8  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>	/* D5  */
+		;
+	col-gpios
+		= <&gpio0 30 GPIO_ACTIVE_HIGH>		/* A2   */
+		, <&gpio0 28 GPIO_ACTIVE_HIGH>		/* A3   */
+		, <&gpio0 2  GPIO_ACTIVE_HIGH>		/* A4   */
+		, <&gpio0 3  GPIO_ACTIVE_HIGH>		/* A5   */
+		, <&gpio0 14 GPIO_ACTIVE_HIGH>		/* SCK  */
+		, <&gpio0 13 GPIO_ACTIVE_HIGH>		/* MOSI */
+		, <&gpio0 15 GPIO_ACTIVE_HIGH>		/* MISO */
+		, <&gpio0 24 GPIO_ACTIVE_HIGH>		/* RXD  */
+		, <&gpio0 25 GPIO_ACTIVE_HIGH>		/* TXD  */
+		;
+};
