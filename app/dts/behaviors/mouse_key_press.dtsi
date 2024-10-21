@@ -16,4 +16,9 @@
             #binding-cells = <1>;
         };
     };
+
+    mkp_input_listener: mkp_input_listener {
+        compatible = "zmk,input-listener";
+        device = <&mkp>;
+    };
 };
