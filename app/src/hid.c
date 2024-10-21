@@ -32,6 +32,13 @@ static struct zmk_hid_mouse_report mouse_report = {.report_id = ZMK_HID_REPORT_I
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+
+static struct zmk_hid_generic_desktop_report generic_desktop_report = {
+    .report_id = ZMK_HID_REPORT_ID_GENERIC_DESKTOP, .body = {.keys = {0}}};
+
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
 static int explicit_modifier_counts[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -340,12 +347,61 @@ bool zmk_hid_consumer_is_pressed(zmk_key_t key) {
     return false;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+#define TOGGLE_GENERIC_DESKTOP(code, val)                                                          \
+    WRITE_BIT(generic_desktop_report.body.keys[code / 8], code % 8, val)
+
+int32_t zmk_hid_generic_desktop_code_to_offset(zmk_key_t code) {
+    if (HID_USAGE_GD_SYSTEM_POWER_DOWN <= code && code <= HID_USAGE_GD_SYSTEM_WARM_RESTART) {
+        return code - HID_USAGE_GD_SYSTEM_POWER_DOWN;
+    }
+
+    LOG_ERR("Unhandled generic desktop code 0x%02X", code);
+    return -ENOTSUP;
+}
+
+int zmk_hid_generic_desktop_press(zmk_key_t code) {
+    int32_t offset = zmk_hid_generic_desktop_code_to_offset(code);
+    if (offset == -ENOTSUP) {
+        return -ENOTSUP;
+    }
+    TOGGLE_GENERIC_DESKTOP(offset, 1);
+    return 0;
+}
+
+int zmk_hid_generic_desktop_release(zmk_key_t code) {
+    int32_t offset = zmk_hid_generic_desktop_code_to_offset(code);
+    if (offset == -ENOTSUP) {
+        return -ENOTSUP;
+    }
+    TOGGLE_GENERIC_DESKTOP(offset, 0);
+    return 0;
+}
+
+void zmk_hid_generic_desktop_clear(void) {
+    memset(&generic_desktop_report.body, 0, sizeof(generic_desktop_report.body));
+}
+
+bool zmk_hid_generic_desktop_is_pressed(zmk_key_t code) {
+    int32_t offset = zmk_hid_generic_desktop_code_to_offset(code);
+    if (offset == -ENOTSUP) {
+        return false;
+    }
+    return generic_desktop_report.body.keys[offset / 8] & (1 << (offset % 8));
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+
 int zmk_hid_press(uint32_t usage) {
     switch (ZMK_HID_USAGE_PAGE(usage)) {
     case HID_USAGE_KEY:
         return zmk_hid_keyboard_press(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_press(ZMK_HID_USAGE_ID(usage));
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+    case HID_USAGE_GD:
+        return zmk_hid_generic_desktop_press(ZMK_HID_USAGE_ID(usage));
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
     }
     return -EINVAL;
 }
@@ -356,6 +412,10 @@ int zmk_hid_release(uint32_t usage) {
         return zmk_hid_keyboard_release(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_release(ZMK_HID_USAGE_ID(usage));
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+    case HID_USAGE_GD:
+        return zmk_hid_generic_desktop_release(ZMK_HID_USAGE_ID(usage));
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
     }
     return -EINVAL;
 }
@@ -366,6 +426,10 @@ bool zmk_hid_is_pressed(uint32_t usage) {
         return zmk_hid_keyboard_is_pressed(ZMK_HID_USAGE_ID(usage));
     case HID_USAGE_CONSUMER:
         return zmk_hid_consumer_is_pressed(ZMK_HID_USAGE_ID(usage));
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+    case HID_USAGE_GD:
+        return zmk_hid_generic_desktop_is_pressed(ZMK_HID_USAGE_ID(usage));
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
     }
     return false;
 }
@@ -444,3 +508,9 @@ struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &cons
 struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_report; }
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void) {
+    return &generic_desktop_report;
+}
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
