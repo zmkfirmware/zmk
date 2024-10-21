@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    chosen {
+        zmk,charmap = &charmap_us;
+    };
+
+    behaviors {
+        ZMK_SEND_STRING(hello_world, "Hello, world!")
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &hello_world    &none
+                &none           &none
+            >;
+        };
+    };
+};
