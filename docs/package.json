@@ -63,6 +63,6 @@
     "prettier": "^3.3.3",
     "string-replace-loader": "^3.1.0",
     "typescript": "^5.0.4",
-    "webpack": "^5.94.0"
+    "webpack": "^5.95.0"
   }
 }
