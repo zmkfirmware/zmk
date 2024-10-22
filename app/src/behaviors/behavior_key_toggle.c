@@ -20,7 +20,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 enum toggle_mode {
     ON,
     OFF,
-    ON_OFF,
+    FLIP,
 };
 
 struct behavior_key_toggle_config {
@@ -40,7 +40,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     case OFF:
         return raise_zmk_keycode_state_changed_from_encoded(binding->param1, false,
                                                             event.timestamp);
-    case ON_OFF:
+    case FLIP:
         bool pressed = zmk_hid_is_pressed(binding->param1);
         return raise_zmk_keycode_state_changed_from_encoded(binding->param1, !pressed,
                                                             event.timestamp);

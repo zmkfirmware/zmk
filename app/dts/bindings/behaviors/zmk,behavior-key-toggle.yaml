@@ -11,8 +11,8 @@ properties:
   toggle-mode:
     type: string
     required: false
-    default: "on-off"
+    default: "flip"
     enum:
       - "on"
       - "off"
-      - "on-off"
+      - "flip"

@@ -20,7 +20,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 enum toggle_mode {
     ON,
     OFF,
-    ON_OFF,
+    FLIP,
 };
 
 struct behavior_tog_config {
@@ -39,7 +39,7 @@ static int tog_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         return zmk_keymap_layer_activate(binding->param1);
     case OFF:
         return zmk_keymap_layer_deactivate(binding->param1);
-    case ON_OFF:
+    case FLIP:
         return zmk_keymap_layer_toggle(binding->param1);
     default:
         return -ENOTSUP;
