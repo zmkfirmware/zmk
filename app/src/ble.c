@@ -47,11 +47,7 @@ RING_BUF_DECLARE(passkey_entries, PASSKEY_DIGITS);
 
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY) */
 
-enum advertising_type {
-    ZMK_ADV_NONE,
-    ZMK_ADV_DIR,
-    ZMK_ADV_CONN,
-} advertising_status;
+enum advertising_type advertising_status;
 
 #define CURR_ADV(adv) (adv << 4)
 
@@ -62,6 +58,8 @@ enum advertising_type {
 
 static struct zmk_ble_profile profiles[ZMK_BLE_PROFILE_COUNT];
 static uint8_t active_profile;
+
+static bool permit_adv = true;
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
@@ -167,9 +165,9 @@ int update_advertising(void) {
     struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
-    if (zmk_ble_active_profile_is_open()) {
+    if (permit_adv && zmk_ble_active_profile_is_open()) {
         desired_adv = ZMK_ADV_CONN;
-    } else if (!zmk_ble_active_profile_is_connected()) {
+    } else if (permit_adv && !zmk_ble_active_profile_is_connected()) {
         desired_adv = ZMK_ADV_CONN;
         // Need to fix directed advertising for privacy centrals. See
         // https://github.com/zephyrproject-rtos/zephyr/pull/14984 char
@@ -209,6 +207,28 @@ int update_advertising(void) {
 static void update_advertising_callback(struct k_work *work) { update_advertising(); }
 
 K_WORK_DEFINE(update_advertising_work, update_advertising_callback);
+
+void zmk_ble_adv_mode_set(bool mode) {
+    if (mode) {
+        if (advertising_status != ZMK_ADV_CONN) {
+            permit_adv = true;
+            LOG_DBG("Enabling adv");
+        }
+        update_advertising();
+    } else {
+        permit_adv = false;
+        LOG_DBG("Disabling adv and disconnecting");
+        for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
+            int err = zmk_ble_prof_disconnect(i);
+            if (err) {
+                LOG_DBG("Failed to disconnect profile %d : %d", i, err);
+            }
+        }
+        update_advertising();
+    }
+}
+
+enum advertising_type zmk_ble_adv_mode_get() { return advertising_status; }
 
 static void clear_profile_bond(uint8_t profile) {
     if (bt_addr_le_cmp(&profiles[profile].peer, BT_ADDR_LE_ANY)) {
