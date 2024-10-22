@@ -45,4 +45,4 @@ Define a new behavior and assign `"on"` or `"off"` to `toggle-mode`:
 };
 ```
 
-You can then use `&kt_on` in place of `&kt` whenever you wish to only toggle a key on, and not toggle it off. The `"off"` version is analogous.
+You can then use `&kt_on` in place of `&kt` whenever you wish to only toggle a key on, and not toggle it off. An `"off"` version of the behavior can be defined similarly.
