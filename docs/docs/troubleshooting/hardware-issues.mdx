@@ -194,6 +194,9 @@ Under ideal conditions, a Bluetooth connection can be stable at even a 100 meter
 - Not enough [power being provided to the antenna](connection-issues.mdx#unreliableweak-connection)
 - A missing external antenna for motherboard-integrated or PCIe wireless adapters
 - Interference from [USB 3 devices](https://www.bluetoothandusb3.com/the-explanation)
+- Keyboard design flaws, including
+  - Using low frequency nRF52840 pins for high frequency purposes such as WS2812 RGB LEDs
+  - Improperly tuned antenna
 
 It is expected that your antenna will have some interference -- hence why most household devices using Bluetooth have an effective range of 5-10 meters.
 
