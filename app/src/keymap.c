@@ -7,21 +7,16 @@
 #include <drivers/behavior.h>
 #include <zephyr/sys/util.h>
 #include <zephyr/settings/settings.h>
-#include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/stdlib.h>
 #include <zmk/behavior.h>
 #include <zmk/keymap.h>
+#include <zmk/physical_layouts.h>
 #include <zmk/matrix.h>
 #include <zmk/sensors.h>
 #include <zmk/virtual_key_position.h>
-
-#include <zmk/ble.h>
-#if ZMK_BLE_IS_CENTRAL
-#include <zmk/split/bluetooth/central.h>
-#endif
 
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
@@ -40,11 +35,9 @@ static zmk_keymap_layer_id_t _zmk_keymap_layer_default = 0;
 #endif
 
 #define TRANSFORMED_LAYER(node)                                                                    \
-    {                                                                                              \
-        COND_CODE_1(                                                                               \
-            DT_NODE_HAS_PROP(node, bindings),                                                      \
-            (LISTIFY(DT_PROP_LEN(node, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), node)), ())    \
-    }
+    {COND_CODE_1(DT_NODE_HAS_PROP(node, bindings),                                                 \
+                 (LISTIFY(DT_PROP_LEN(node, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), node)),   \
+                 ())}
 
 #if ZMK_KEYMAP_HAS_SENSORS
 #define _TRANSFORM_SENSOR_ENTRY(idx, layer)                                                        \
@@ -85,7 +78,7 @@ static uint8_t keymap_layer_orders[ZMK_KEYMAP_LAYERS_LEN];
                     (DT_INST_FOREACH_CHILD_SEP(0, TRANSFORMED_LAYER, (, ))),                       \
                     (DT_INST_FOREACH_CHILD_STATUS_OKAY_SEP(0, TRANSFORMED_LAYER, (, ))))};
 
-KEYMAP_VAR(zmk_keymap, )
+KEYMAP_VAR(zmk_keymap, COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE), (), (const)))
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
 
@@ -184,13 +177,20 @@ bool zmk_keymap_layer_active(zmk_keymap_layer_id_t layer) {
     return zmk_keymap_layer_active_with_state(layer, _zmk_keymap_layer_state);
 };
 
-zmk_keymap_layer_id_t zmk_keymap_highest_layer_active(void) {
-    for (uint8_t layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer > 0; layer--) {
-        if (zmk_keymap_layer_active(layer)) {
-            return layer;
+zmk_keymap_layer_index_t zmk_keymap_highest_layer_active(void) {
+    for (int layer_idx = ZMK_KEYMAP_LAYERS_LEN - 1;
+         layer_idx >= LAYER_ID_TO_INDEX(_zmk_keymap_layer_default); layer_idx--) {
+        zmk_keymap_layer_id_t layer_id = LAYER_INDEX_TO_ID(layer_idx);
+
+        if (layer_id == ZMK_KEYMAP_LAYER_ID_INVAL) {
+            continue;
+        }
+        if (zmk_keymap_layer_active(layer_id)) {
+            return LAYER_ID_TO_INDEX(layer_id);
         }
     }
-    return zmk_keymap_layer_default();
+
+    return LAYER_ID_TO_INDEX(zmk_keymap_layer_default());
 }
 
 int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer) { return set_layer_state(layer, true); };
@@ -231,7 +231,26 @@ zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t bind
 
     ASSERT_LAYER_VAL(layer_id, NULL)
 
-    return &zmk_keymap[layer_id][binding_idx];
+    const uint32_t *pos_map;
+    int ret = zmk_physical_layouts_get_selected_to_stock_position_map(&pos_map);
+    if (ret < 0) {
+        LOG_WRN("Failed to get the position map, can't find the right binding to return (%d)", ret);
+        return NULL;
+    }
+
+    if (binding_idx >= ret) {
+        LOG_WRN("Can't return binding for unmapped binding index %d", binding_idx);
+        return NULL;
+    }
+
+    uint32_t mapped_idx = pos_map[binding_idx];
+
+    if (mapped_idx >= ZMK_KEYMAP_LEN) {
+        LOG_WRN("Binding index %d mapped to an invalid key position %d", binding_idx, mapped_idx);
+        return NULL;
+    }
+
+    return &zmk_keymap[layer_id][mapped_idx];
 }
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
@@ -239,8 +258,6 @@ zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t bind
 #define PENDING_ARRAY_SIZE DIV_ROUND_UP(ZMK_KEYMAP_LEN, 8)
 
 static uint8_t zmk_keymap_layer_pending_changes[ZMK_KEYMAP_LAYERS_LEN][PENDING_ARRAY_SIZE];
-
-#endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
 
 int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t binding_idx,
                                         struct zmk_behavior_binding binding) {
@@ -250,18 +267,49 @@ int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t 
 
     ASSERT_LAYER_VAL(layer_id, -EINVAL)
 
-#if IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
+    const uint32_t *pos_map;
+    int ret = zmk_physical_layouts_get_selected_to_stock_position_map(&pos_map);
+    if (ret < 0) {
+        LOG_WRN("Failed to get the mapping to determine where to set the binding (%d)", ret);
+        return ret;
+    }
+
+    if (binding_idx >= ret) {
+        LOG_WRN("Unable to set binding at index %d which isn't mapped", binding_idx);
+        return -EINVAL;
+    }
+
+    uint32_t storage_binding_idx = pos_map[binding_idx];
+
+    if (storage_binding_idx >= ZMK_KEYMAP_LEN) {
+        LOG_WRN("Can't set layer binding at unmapped/invalid index %d", binding_idx);
+        return -EINVAL;
+    }
+
+    if (memcmp(&zmk_keymap[layer_id][storage_binding_idx], &binding, sizeof(binding)) == 0) {
+        LOG_DBG("Not setting, no change to layer %d at index %d (%d)", layer_id, binding_idx,
+                storage_binding_idx);
+        return 0;
+    }
+
     uint8_t *pending = zmk_keymap_layer_pending_changes[layer_id];
 
     WRITE_BIT(pending[binding_idx / 8], binding_idx % 8, 1);
-#endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
 
     // TODO: Need a mutex to protect access to the keymap data?
-    memcpy(&zmk_keymap[layer_id][binding_idx], &binding, sizeof(binding));
+    memcpy(&zmk_keymap[layer_id][storage_binding_idx], &binding, sizeof(binding));
 
     return 0;
 }
 
+#else
+
+int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t binding_idx,
+                                        struct zmk_behavior_binding binding) {
+    return -ENOTSUP;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
@@ -429,7 +477,7 @@ int zmk_keymap_check_unsaved_changes(void) {
 #define LAYER_NAME_SETTINGS_KEY "keymap/l_n/%d"
 #define LAYER_BINDING_SETTINGS_KEY "keymap/l/%d/%d"
 
-static void save_bindings(void) {
+static int save_bindings(void) {
     for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
         uint8_t *pending = zmk_keymap_layer_pending_changes[l];
 
@@ -437,7 +485,8 @@ static void save_bindings(void) {
             if (pending[kp / 8] & BIT(kp % 8)) {
                 LOG_DBG("Pending save for layer %d at key position %d", l, kp);
 
-                struct zmk_behavior_binding *binding = &zmk_keymap[l][kp];
+                const struct zmk_behavior_binding *binding =
+                    zmk_keymap_get_layer_binding_at_idx(l, kp);
                 struct zmk_behavior_binding_setting binding_setting = {
                     .behavior_local_id = zmk_behavior_get_local_id(binding->behavior_dev),
                     .param1 = binding->param1,
@@ -458,45 +507,64 @@ static void save_bindings(void) {
                 char setting_name[20];
                 sprintf(setting_name, LAYER_BINDING_SETTINGS_KEY, l, kp);
 
-                settings_save_one(setting_name, &binding_setting, len);
+                int ret = settings_save_one(setting_name, &binding_setting, len);
+                if (ret < 0) {
+                    LOG_ERR("Failed to save keymap binding at %d on layer %d (%d)", l, kp, ret);
+                    return ret;
+                }
             }
         }
 
         *pending = 0;
     }
+
+    return 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
-static void save_layer_orders(void) {
-    settings_save_one(LAYER_ORDER_SETTINGS_KEY, keymap_layer_orders,
-                      ARRAY_SIZE(keymap_layer_orders));
+static int save_layer_orders(void) {
+    int ret = settings_save_one(LAYER_ORDER_SETTINGS_KEY, keymap_layer_orders,
+                                ARRAY_SIZE(keymap_layer_orders));
+    if (ret < 0) {
+        return ret;
+    }
+
     memcpy(settings_layer_orders, keymap_layer_orders, ARRAY_SIZE(keymap_layer_orders));
+    return 0;
 }
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
-static void save_layer_names(void) {
+static int save_layer_names(void) {
     for (int id = 0; id < ZMK_KEYMAP_LAYERS_LEN; id++) {
         if (changed_layer_names & BIT(id)) {
             char setting_name[14];
             sprintf(setting_name, LAYER_NAME_SETTINGS_KEY, id);
-            settings_save_one(setting_name, zmk_keymap_layer_names[id],
-                              strlen(zmk_keymap_layer_names[id]));
+            int ret = settings_save_one(setting_name, zmk_keymap_layer_names[id],
+                                        strlen(zmk_keymap_layer_names[id]));
+            if (ret < 0) {
+                return ret;
+            }
         }
     }
 
     changed_layer_names = 0;
+    return 0;
 }
 
 int zmk_keymap_save_changes(void) {
-    save_bindings();
+    int ret = save_bindings();
+    if (ret < 0) {
+        return ret;
+    }
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
-    save_layer_orders();
+    ret = save_layer_orders();
+    if (ret < 0) {
+        return ret;
+    }
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
-    save_layer_names();
-
-    return 0;
+    return save_layer_names();
 }
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
@@ -542,6 +610,7 @@ int zmk_keymap_discard_changes(void) {
 
 int zmk_keymap_reset_settings(void) {
     settings_delete(LAYER_ORDER_SETTINGS_KEY);
+
     for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
         char layer_name_setting_name[14];
         sprintf(layer_name_setting_name, LAYER_NAME_SETTINGS_KEY, l);
@@ -576,76 +645,23 @@ int zmk_keymap_reset_settings(void) { return -ENOTSUP; }
 
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
 
-int invoke_locally(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
-                   bool pressed) {
-    if (pressed) {
-        return behavior_keymap_binding_pressed(binding, event);
-    } else {
-        return behavior_keymap_binding_released(binding, event);
-    }
-}
-
 int zmk_keymap_apply_position_state(uint8_t source, zmk_keymap_layer_id_t layer_id,
                                     uint32_t position, bool pressed, int64_t timestamp) {
-    // We want to make a copy of this, since it may be converted from
-    // relative to absolute before being invoked
-
-    ASSERT_LAYER_VAL(layer_id, -EINVAL);
-
-    struct zmk_behavior_binding binding = zmk_keymap[layer_id][position];
-    const struct device *behavior;
+    const struct zmk_behavior_binding *binding =
+        zmk_keymap_get_layer_binding_at_idx(layer_id, position);
     struct zmk_behavior_binding_event event = {
         .layer = layer_id,
         .position = position,
         .timestamp = timestamp,
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+        .source = source,
+#endif
     };
 
     LOG_DBG("layer_id: %d position: %d, binding name: %s", layer_id, position,
-            binding.behavior_dev);
+            binding->behavior_dev);
 
-    behavior = zmk_behavior_get_binding(binding.behavior_dev);
-
-    if (!behavior) {
-        LOG_WRN("No behavior assigned to %d on layer %d", position, layer_id);
-        return 1;
-    }
-
-    int err = behavior_keymap_binding_convert_central_state_dependent_params(&binding, event);
-    if (err) {
-        LOG_ERR("Failed to convert relative to absolute behavior binding (err %d)", err);
-        return err;
-    }
-
-    enum behavior_locality locality = BEHAVIOR_LOCALITY_CENTRAL;
-    err = behavior_get_locality(behavior, &locality);
-    if (err) {
-        LOG_ERR("Failed to get behavior locality %d", err);
-        return err;
-    }
-
-    switch (locality) {
-    case BEHAVIOR_LOCALITY_CENTRAL:
-        return invoke_locally(&binding, event, pressed);
-    case BEHAVIOR_LOCALITY_EVENT_SOURCE:
-#if ZMK_BLE_IS_CENTRAL
-        if (source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
-            return invoke_locally(&binding, event, pressed);
-        } else {
-            return zmk_split_bt_invoke_behavior(source, &binding, event, pressed);
-        }
-#else
-        return invoke_locally(&binding, event, pressed);
-#endif
-    case BEHAVIOR_LOCALITY_GLOBAL:
-#if ZMK_BLE_IS_CENTRAL
-        for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
-            zmk_split_bt_invoke_behavior(i, &binding, event, pressed);
-        }
-#endif
-        return invoke_locally(&binding, event, pressed);
-    }
-
-    return -ENOTSUP;
+    return zmk_behavior_invoke_binding(binding, event, pressed);
 }
 
 int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
@@ -789,12 +805,14 @@ static int keymap_handle_set(const char *name, size_t len, settings_read_cb read
             LOG_WRN("Found layer name for invalid layer ID %d", layer);
         }
 
-        int err = read_cb(cb_arg, zmk_keymap_layer_names[layer],
+        int ret = read_cb(cb_arg, zmk_keymap_layer_names[layer],
                           MIN(len, CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN - 1));
-        if (err <= 0) {
-            LOG_ERR("Failed to handle keymap layer name from settings (err %d)", err);
-            return err;
+        if (ret <= 0) {
+            LOG_ERR("Failed to handle keymap layer name from settings (err %d)", ret);
+            return ret;
         }
+
+        zmk_keymap_layer_names[layer][ret] = 0;
     } else if (settings_name_steq(name, "l", &next) && next) {
         char *endptr;
         uint8_t layer = strtoul(next, &endptr, 10);
@@ -841,11 +859,12 @@ static int keymap_handle_set(const char *name, size_t len, settings_read_cb read
                     binding_setting.behavior_local_id);
         }
 
-        zmk_keymap[layer][key_position] = (struct zmk_behavior_binding) {
+        zmk_keymap[layer][key_position] = (struct zmk_behavior_binding){
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS)
             .local_id = binding_setting.behavior_local_id,
 #endif
-            .behavior_dev = name, .param1 = binding_setting.param1,
+            .behavior_dev = name,
+            .param1 = binding_setting.param1,
             .param2 = binding_setting.param2,
         };
     }

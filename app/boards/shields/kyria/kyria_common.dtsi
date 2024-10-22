@@ -6,11 +6,13 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
+#include "kyria-layout.dtsi"
+
 / {
     chosen {
         zephyr,display = &oled;
         zmk,kscan = &kscan0;
-        zmk,matrix-transform = &default_transform;
+        zmk,physical-layout = &splitkb_kyria_6col_layout;
     };
 
     kscan0: kscan {

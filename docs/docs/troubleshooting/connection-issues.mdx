@@ -4,24 +4,6 @@ sidebar_label: Connection Issues
 description: Troubleshooting wireless connection issues of ZMK devices.
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-
-export const Uf2Tabs = (props) => (
-    <Tabs
-    groupId="operating-system"
-    defaultValue="build"
-    values={[
-      { label: "Build using 'zmk-config'", value: "build" },
-      { label: "Download from ZMK Workflow", value: "download" },
-    ]}
-  >
-    {/* eslint-disable-next-line */}
-    {props.children}
-  </Tabs>
-
-);
-
 :::tip
 [USB logging](../development/usb-logging.mdx) can be very helpful for diagnosing issues with ZMK. However, when connected to USB your ZMK device will output to USB by default. To troubleshoot wireless connection issues using logging, you will need to [change the preferred output endpoint](../keymaps/behaviors/outputs.md).
 :::
@@ -41,14 +23,9 @@ This procedure will erase all settings, such as Bluetooth profiles, output selec
 
 :::
 
-### Acquiring a Reset UF2
+### Building a Reset Firmware
 
-First, acquire the reset UF2 image file with one of the following options:
-
-<Uf2Tabs>
-<TabItem value="build">
-
-Find the `build.yaml` file in your `zmk-config` folder and add an additional settings reset build for the board used by your split keyboard. For example assuming that the config repo is setup for nice!nano v2 with Corne, append the `settings_reset` shield to the `build.yaml` file as follows:
+If you are using GitHub Actions to build your firmware as described in the [user setup](../user-setup.mdx), find the `build.yaml` file in your `zmk-config` folder and add an additional settings reset build for the board used by your split keyboard. For example, assuming that the config repo is setup for nice!nano v2 with Corne, append the `settings_reset` shield to the `build.yaml` file as follows:
 
 ```yml
 include:
@@ -60,28 +37,18 @@ include:
     shield: settings_reset
 ```
 
-Save the file, commit the changes and push them to GitHub. Download the new firmware zip file build by the latest GitHub Actions job. In it you will find an additional `settings_reset` UF2 image file.
+If you are building for an onboard controller keyboard that doesn't use a shield, add a new `shield:` field to its `board:` entry.
 
-</TabItem>
+Save the file, commit the changes and push them to GitHub. Download the new firmware zip file that is built by the latest GitHub Actions job. In it you will find an additional `settings_reset` firmware file.
 
-<TabItem value="download">
-1. [Open the `Build` workflow](https://github.com/zmkfirmware/zmk/actions/workflows/build.yml?query=event%3Apush+branch%3Amain+is%3Asuccess) from the `Actions` tab of the ZMK GitHub repository.
-1. Find one of the results for which the `core-coverage` job ran successfully, indicated by a green checkmark in the "core-coverage" bubble like the image example below.
-1. From the next page under "Artifacts", download and unzip the `<board_name>-settings_reset-zmk` zip file for the UF2 image.
-
-| ![Successful core-coverage Job](../../docs/assets/troubleshooting/splitpairing/corecoverage.png) |
-| :----------------------------------------------------------------------------------------------: |
-|    An example of a successful core-coverage job which will produce a settings_reset firmware.    |
-
-</TabItem>
-</Uf2Tabs>
+If you use a [local development environment](../development/local-toolchain/setup/index.md) to build firmware instead of GitHub Actions, pass the `-DSHIELD=settings_reset` argument when [building](../development/local-toolchain/build-flash.mdx), omitting all other `-DSHIELD` arguments.
 
 ### Reset Split Keyboard Procedure
 
 Perform the following steps to reset **_both_** halves of your split keyboard:
 
 1. Put each half of the split keyboard into bootloader mode.
-1. Flash one of the halves of the split with the downloaded settings reset UF2 image.
+1. Flash one of the halves of the split with the settings reset firmware.
 1. Repeat step 2 with the other half of the split keyboard.
 1. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
 
@@ -96,6 +63,10 @@ The settings reset firmware has Bluetooth disabled to prevent the two sides from
 :::
 
 ## Unable to Connect to Device
+
+### Bluetooth Profiles
+
+A very common issue is that the wrong Bluetooth profile has been selected, or the Bluetooth profile already has a saved connection. Learn more about Bluetooth profiles [here](../features/bluetooth.md), and learn how to adjust Bluetooth profiles via the `&bt` behavior [here](../keymaps/behaviors/bluetooth.md).
 
 ### Additional Bluetooth Options
 

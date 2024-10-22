@@ -11,11 +11,11 @@
 / {
   chosen {
   #ifdef ANSI
-    zmk,matrix-transform = &ansi_transform;
+    zmk,physical-layout = &layout_75_ansi;
   #elif defined(ISO)
-    zmk,matrix-transform = &iso_transform;
+    zmk,physical-layout = &layout_75_iso;
   #elif defined(ALL_1U)
-    zmk,matrix-transform = &all_1u_transform;
+    zmk,physical-layout = &layout_75_all1u;
   #else
   #error "Layout not defined, please define a layout using by uncommenting the appropriate line in bt75_v1.keymap"
   #endif

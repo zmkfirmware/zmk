@@ -86,11 +86,6 @@ These behaviors only affect the keyboard part that they are invoked from:
 
 - [Reset behaviors](../keymaps/behaviors/reset.md)
 
-:::warning[Nesting behaviors with locality]
-Currently there is [an issue](https://github.com/zmkfirmware/zmk/issues/1494) preventing both global and source locality behaviors from working as expected if they are invoked from another behavior, such as a hold-tap, tap dance or a mod-morph.
-For this reason it is recommended that these behaviors are placed directly on a keymap layer.
-:::
-
 :::note[Peripheral invocation]
 Peripherals must be paired and connected to the central in order to be able to activate these behaviors, even if it is possible to trigger the behavior using only keys on a particular peripheral.
 This is because the key bindings are processed on the central side which would then instruct the peripheral side to run the behavior's effect.

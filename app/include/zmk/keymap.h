@@ -34,7 +34,7 @@ zmk_keymap_layer_id_t zmk_keymap_layer_index_to_id(zmk_keymap_layer_index_t laye
 zmk_keymap_layer_id_t zmk_keymap_layer_default(void);
 zmk_keymap_layers_state_t zmk_keymap_layer_state(void);
 bool zmk_keymap_layer_active(zmk_keymap_layer_id_t layer);
-zmk_keymap_layer_id_t zmk_keymap_highest_layer_active(void);
+zmk_keymap_layer_index_t zmk_keymap_highest_layer_active(void);
 int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer);
 int zmk_keymap_layer_deactivate(zmk_keymap_layer_id_t layer);
 int zmk_keymap_layer_toggle(zmk_keymap_layer_id_t layer);

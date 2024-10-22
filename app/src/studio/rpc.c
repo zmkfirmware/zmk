@@ -11,6 +11,7 @@
 
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
+#include <zephyr/debug/thread_analyzer.h>
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(zmk_studio, CONFIG_ZMK_STUDIO_LOG_LEVEL);
@@ -77,9 +78,7 @@ static enum studio_framing_state rpc_framing_state;
 static K_MUTEX_DEFINE(rpc_transport_mutex);
 static struct zmk_rpc_transport *selected_transport;
 
-struct ring_buf *zmk_rpc_get_rx_buf(void) {
-    return &rpc_rx_buf;
-}
+struct ring_buf *zmk_rpc_get_rx_buf(void) { return &rpc_rx_buf; }
 
 void zmk_rpc_rx_notify(void) { k_sem_give(&rpc_rx_sem); }
 
@@ -118,9 +117,7 @@ static pb_istream_t pb_istream_for_rx_ring_buf() {
 
 RING_BUF_DECLARE(rpc_tx_buf, CONFIG_ZMK_STUDIO_RPC_TX_BUF_SIZE);
 
-struct ring_buf *zmk_rpc_get_tx_buf(void) {
-    return &rpc_tx_buf;
-}
+struct ring_buf *zmk_rpc_get_tx_buf(void) { return &rpc_tx_buf; }
 
 static bool rpc_tx_buffer_write(pb_ostream_t *stream, const uint8_t *buf, size_t count) {
     void *user_data = stream->state;
@@ -219,6 +216,9 @@ static void rpc_main(void) {
     for (;;) {
         pb_istream_t stream = pb_istream_for_rx_ring_buf();
         zmk_studio_Request req = zmk_studio_Request_init_zero;
+#if IS_ENABLED(CONFIG_THREAD_ANALYZER)
+        thread_analyzer_print();
+#endif // IS_ENABLED(CONFIG_THREAD_ANALYZER)
         bool status = pb_decode(&stream, &zmk_studio_Request_msg, &req);
 
         rpc_framing_state = FRAMING_STATE_IDLE;
@@ -227,6 +227,9 @@ static void rpc_main(void) {
             zmk_studio_Response resp = handle_request(&req);
 
             int err = send_response(&resp);
+#if IS_ENABLED(CONFIG_THREAD_ANALYZER)
+            thread_analyzer_print();
+#endif // IS_ENABLED(CONFIG_THREAD_ANALYZER)
             if (err < 0) {
                 LOG_ERR("Failed to send the RPC response %d", err);
             }
