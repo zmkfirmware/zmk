@@ -16,16 +16,11 @@ function mapInterconnect(interconnect: Interconnect, gpio: Boolean) {
     <TabItem value={interconnect.id} key={interconnect.id}>
       <img src={imageUrl.default} />
       {gpio && <content.default />}
-      {interconnect.node_labels && (
+      {interconnect.node_labels && !gpio && (
         <>
-          {!gpio && <br></br>}
+          <br></br>
           The following node labels are available:
           <ul>
-            {gpio && (
-              <li>
-                GPIO: <code>&{interconnect.node_labels.gpio}</code>
-              </li>
-            )}
             {interconnect.node_labels.i2c && (
               <li>
                 I2C bus: <code>&{interconnect.node_labels.i2c}</code>
