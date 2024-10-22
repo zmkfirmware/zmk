@@ -266,7 +266,7 @@ The standard approach is to have a core `my_keyboard.dtsi` (devicetree include) 
 
 The kscan node defines the controller GPIO pins that are used to scan for key press and release events. The pins are referred to using the GPIO labels noted in the pinouts below:
 
-<InterconnectTabs items={Metadata} />
+<InterconnectTabs items={Metadata} gpio={true} />
 
 To use GPIO pins that are not part of the interconnects as described above, you can use the GPIO labels that are specific to each controller type.
 For instance, pins numbered `PX.Y` in nRF52840-based boards can be referred to via `&gpioX Y` labels.
