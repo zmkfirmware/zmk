@@ -1,6 +1,6 @@
 ---
-title: Docker
-sidebar_label: Docker
+title: Container
+sidebar_label: Container
 ---
 
 import Tabs from "@theme/Tabs";
@@ -18,11 +18,12 @@ git clone https://github.com/zmkfirmware/zmk.git
 
 ## Installing Development Tools
 
-<Tabs groupId="dev-container"
+<Tabs groupId="container"
       defaultValue="vsCode"
       values={[
         {label: 'VS Code', value: 'vsCode'},
-        {label: 'Dev Container CLI', value: 'cli'}
+        {label: 'Dev Container CLI', value: 'cli'},
+        {label: 'Podman', value: 'podman'}
       ]}>
   <TabItem value="vsCode">
     :::note
@@ -42,34 +43,63 @@ git clone https://github.com/zmkfirmware/zmk.git
        for your operating system.
     2. Install the [Dev Container CLI](https://github.com/devcontainers/cli).
   </TabItem>
+  <TabItem value="podman">
+    1. Install Podman for your operating system:
+        - [Podman CLI](https://podman.io/docs/installation)
+        - [Podman Desktop](https://podman-desktop.io/docs/installation)
+
+    :::warning
+    Please follow the installation instructions carefully. If you do not have
+    an working **Podman machine**, executing the commands below won't be
+    possible.
+    :::
+
+  </TabItem>
 </Tabs>
 
 ## Creating Volumes
 
 In case you have a `zmk-config` or want to build with additional modules, it is
-necessary to first make them available by creating volumes. When setting up the
-Dev Container, those then will automatically be mounted to the Docker container.
+necessary to first make them available by creating volumes.
 
 <Tabs
-  defaultValue="config"
+  groupId="container"
+  defaultValue="vsCode"
   values={[
-    { label: "Zmk-Config", value: "config" },
-    { label: "Modules", value: "modules" },
+    { label: "Docker", value: "vsCode" },
+    { label: "Podman", value: "podman" },
   ]}
 >
-  <TabItem value="config">
+  <TabItem value="vsCode">
+    When setting up the container, either using
+    [VS Code](https://code.visualstudio.com/) or the
+    [Dev Container CLI](https://github.com/devcontainers/cli), the volumes will
+    automatically be mounted.
 
+    #### Zmk-Config
     ```sh
-    docker volume create --driver local -o o=bind -o type=none \ -o
-    device="/absolute/path/to/zmk-config/" zmk-config
+    docker volume create --driver local -o o=bind -o type=none \
+      -o device="/absolute/path/to/zmk-config/" zmk-config
+    ```
+
+    #### Modules
+    ```sh
+    docker volume create --driver local -o o=bind -o type=none \
+      -o device="/absolute/path/to/zmk-modules/parent/" zmk-modules
     ```
 
   </TabItem>
-  <TabItem value="modules">
-
+  <TabItem value="podman">
+    #### Zmk-Config
     ```sh
-    docker volume create --driver local -o o=bind -o type=none -o \
-    device="/absolute/path/to/zmk-modules/parent/" zmk-modules
+    podman volume create --driver local -o o=bind -o type=none \
+     -o device="/absolute/path/to/zmk-config/" zmk-config
+    ```
+
+    #### Modules
+    ```sh
+    podman volume create --driver local -o o=bind -o type=none \
+      -o device="/absolute/path/to/zmk-modules/parent/" zmk-modules
     ```
 
   </TabItem>
@@ -87,24 +117,49 @@ mounted to in the container.
 When changing the configuration or modules directory, new volumes have to be
 created and mounted. Accordingly, you first have to remove the old ones.
 
-```sh
-docker container ps                    # List containers
-docker container stop "<container-id>" # Stop the container
-docker container rm   "<container-id>" # Remove the container
+<Tabs
+  groupId="container"
+  defaultValue="vsCode"
+  values={[
+    { label: "Docker", value: "vsCode" },
+    { label: "Podman", value: "podman" },
+  ]}
+>
+  <TabItem value="vsCode">
 
-docker volume ls                 # List volumes
-docker volume rm "<volume-name>" # Remove volume
-```
+    ```sh
+    docker ps                    # List containers
+    docker stop "<container-id>" # Stop the container
+    docker rm   "<container-id>" # Remove the container
 
+    docker volume ls                 # List volumes
+    docker volume rm "<volume-name>" # Remove volume
+    ```
+
+  </TabItem>
+  <TabItem value="podman">
+
+    ```sh
+    podman ps                    # List containers
+    podman stop "<container-id>" # Stop the container
+    podman rm   "<container-id>" # Remove the container
+
+    podman volume ls                 # List volumes
+    podman volume rm "<volume-name>" # Remove volume
+    ```
+
+  </TabItem>
+</Tabs>
 :::
 
-## Initialize Dev Container
+## Initialize Container
 
-<Tabs groupId="dev-container"
+<Tabs groupId="container"
       defaultValue="vsCode"
       values={[
         {label: 'VS Code', value: 'vsCode'},
-        {label: 'Dev Container CLI', value: 'cli'}
+        {label: 'Dev Container CLI', value: 'cli'},
+        {label: 'Podman', value: 'podman'}
       ]}>
   <TabItem value="vsCode">
     Open the `zmk` checkout directory in VS Code. The repository includes a
@@ -152,8 +207,39 @@ docker volume rm "<volume-name>" # Remove volume
     ID. This allows you to execute commands inside the container:
 
     ```sh
-    docker container ps                                         # List containers
+    docker ps                                                   # List containers
     docker exec -w /workspaces/zmk -it <container_id> /bin/bash # Connect
+    ```
+
+  </TabItem>
+  <TabItem value="podman">
+    First, make sure that Podman is installed by running:
+
+    ```sh
+    podman --version
+    ```
+
+    Since Podman is largely compatible with Docker, it is possible to use the
+    Dockerfile provided for use with Dev Containers for building a container
+    image.
+
+    ```sh
+    podman build -t <container-name> -f Dockerfile </path/to/.devcontainer>
+    ```
+
+    Once this is done, the container can be started with the `podman run`
+    command. Depending on which volumes you are using, you might have to remove
+    mounting options.
+
+    ```sh
+    podman run -it --rm \
+      --security-opt label=disable \
+      --workdir /workspaces/zmk \
+      -v /path/to/zmk:/workspaces/zmk \
+      -v /path/to/zmk-config:/workspaces/zmk-config \   # Removeable
+      -v /path/to/zmk-modules:/workspaces/zmk-modules \ # Removeable
+      -p 3000:3000 \
+      <container-name> /bin/bash
     ```
 
   </TabItem>
@@ -175,12 +261,13 @@ west update       # Update modules
 This step pulls down quite a bit of tooling, be patient!
 :::
 
-After this is done, you have to restart the container using the following
-commands:
+:::note
+If you are using a Docker-based approach, you have to restart the container at
+this point. Stopping it is possible with these commands.
 
 ```sh
-docker container ps                    # List containers
-docker container stop "<container-id>" # Stop the container
+docker ps                    # List containers
+docker stop "<container-id>" # Stop the container
 ```
 
-Your setup is complete once your container has been restarted.
+:::
