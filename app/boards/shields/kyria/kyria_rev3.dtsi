@@ -6,9 +6,7 @@
 
 #include "kyria_common.dtsi"
 
-&splitkb_kyria_5col_layout {
-    status = "disabled";
-};
+/delete-node/ &splitkb_kyria_5col_layout;
 
 / {
     default_transform: keymap_transform_0 {
