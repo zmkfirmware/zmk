@@ -5,15 +5,12 @@
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
-#include <layouts/cuddlykeyboards/ferris.dtsi>
-
-&cuddlykeyboards_ferris_layout {
-    transform = <&default_transform>;
-};
+#include "cradio-layouts.dtsi"
 
 / {
     chosen {
         zmk,kscan = &kscan0;
+        zmk,physical-layout = &cuddlykeyboards_ferris_layout;
     };
 
     default_transform: keymap_transform_0 {

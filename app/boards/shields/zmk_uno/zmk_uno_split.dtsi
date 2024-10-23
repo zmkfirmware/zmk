@@ -4,15 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
- #include "zmk_uno.dtsi"
+#include "zmk_uno.dtsi"
+#include "zmk_uno_split-layouts.dtsi"
 
- #include <physical_layouts.dtsi>
-
- left_encoder: &encoder {
+left_encoder: &encoder {
     status = "disabled";
- };
+};
 
- / {
+/ {
     chosen {
         zmk,physical-layout = &matrix_physical_layout;
     };
@@ -45,45 +44,6 @@
         >;
     };
 
-    matrix_physical_layout: matrix_physical_layout {
-        compatible = "zmk,physical-layout";
-        display-name = "Matrix Layout";
-
-        kscan = <&kscan_matrix>;
-        transform = <&split_matrix_transform>;
-
-        keys
-            = <&key_physical_attrs 100 100   0   0 0 0 0>
-            , <&key_physical_attrs 100 100 100   0 0 0 0>
-            , <&key_physical_attrs 100 100   0 100 0 0 0>
-            , <&key_physical_attrs 100 100 100 100 0 0 0>
-            , <&key_physical_attrs 100 100   0 200 0 0 0>
-            , <&key_physical_attrs 100 100 100 200 0 0 0>
-            , <&key_physical_attrs 100 100   0 300 0 0 0>
-            , <&key_physical_attrs 100 100 100 300 0 0 0>
-            ;
-    };
-
-    direct_physical_layout: direct_physical_layout {
-        compatible = "zmk,physical-layout";
-
-        display-name = "Direct Wire Layout";
-
-        kscan = <&kscan_direct>;
-        transform = <&split_direct_matrix_transform>;
-
-        keys
-            = <&key_physical_attrs 100 100   0   0 0 0 0>
-            , <&key_physical_attrs 100 100 100   0 0 0 0>
-            , <&key_physical_attrs 100 100   0 100 0 0 0>
-            , <&key_physical_attrs 100 100 100 100 0 0 0>
-            , <&key_physical_attrs 100 100   0 200 0 0 0>
-            , <&key_physical_attrs 100 100 100 200 0 0 0>
-            , <&key_physical_attrs 100 100   0 300 0 0 0>
-            , <&key_physical_attrs 100 100 100 300 0 0 0>
-            ;
-    };
-
     right_encoder: right_encoder {
         steps = <80>;
         status = "disabled";
@@ -97,4 +57,4 @@
         sensors = <&encoder &right_encoder>;
         triggers-per-rotation = <20>;
     };
- };
+};

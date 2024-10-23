@@ -6,11 +6,7 @@
 
 /dts-v1/;
 #include "ckp.dtsi"
-#include <layouts/common/60percent/all1u.dtsi>
-#include <layouts/common/60percent/ansi.dtsi>
-#include <layouts/common/60percent/hhkb.dtsi>
-#include <layouts/common/60percent/iso.dtsi>
-
+#include "bt60_v2-layouts.dtsi"
 
 / {
   model = "BT60_V2";
@@ -72,20 +68,4 @@
       RC(5,0)    RC(5,1)    RC(5,2)                       RC(5,6)                     RC(5,11)      RC(5,12)       RC(5,13)
     >;
   };
-};
-
-&layout_60_ansi {
-  transform = <&ansi_transform>;
-};
-
-&layout_60_iso {
-  transform = <&iso_transform>;
-};
-
-&layout_60_all1u {
-  transform = <&all_1u_transform>;
-};
-
-&layout_60_hhkb {
-  transform = <&hhkb_transform>;
 };

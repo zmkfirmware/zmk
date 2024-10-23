@@ -1,0 +1,16 @@
+#include <layouts/common/75percent/all1u.dtsi>
+#include <layouts/common/75percent/ansi.dtsi>
+#include <layouts/common/75percent/iso.dtsi>
+
+&layout_75_ansi {
+  transform = <&ansi_transform>;
+};
+
+&layout_75_iso {
+  transform = <&iso_transform>;
+};
+
+&layout_75_all1u {
+  transform = <&all_1u_transform>;
+};
+

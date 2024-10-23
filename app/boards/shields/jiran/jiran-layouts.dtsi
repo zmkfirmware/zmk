@@ -1,11 +1,25 @@
+#include <layouts/kgoh/jian/6column.dtsi>
+#include <layouts/kgoh/jian/full.dtsi>
 #include <physical_layouts.dtsi>
 
-#include "position_map.dtsi"
+&layouts_kgoh_jian_position_map {
+    status = "disabled";
+};
+
+&kgoh_jian_full_layout {
+    display-name = "Jian (with pinky)";
+    transform = <&jian_transform>;
+};
+
+&kgoh_jian_6col_layout {
+    transform = <&crkbd_transform>;
+};
 
 / {
     ladniy_jiran_full_layout: ladniy_jiran_full_layout {
         compatible = "zmk,physical-layout";
         display-name = "Full (with pinky/numbers)";
+        transform = <&default_transform>;
 
         keys  //                     w   h    x    y     rot    rx    ry
             = <&key_physical_attrs 100 100  100   75       0     0     0>
@@ -66,16 +80,39 @@
             , <&key_physical_attrs 100 100 1100  425       0     0     0>
         ;
     };
-};
 
-&layouts_ladniy_jiran_position_map {
-    ladniy_jiran_full_posmap: full {
-        physical-layout = <&ladniy_jiran_full_layout>;
-        positions
-            = <    0  1  2  3  4  5        6  7  8  9 10 11   >
-            , <12 13 14 15 16 17 18       19 20 21 22 23 24 25>
-            , <   26 27 28 29 30 31       32 33 34 35 36 37   >
-            , <   38 39 40 41 42 43       44 45 46 47 48 49   >
-            , <               50 51 52 53 54 55               >;
+    layouts_ladniy_jiran_position_map: layouts_ladniy_jiran_position_map {
+        compatible = "zmk,physical-layout-position-map";
+        complete;
+
+        ladniy_jiran_full_posmap: full {
+            physical-layout = <&ladniy_jiran_full_layout>;
+            positions
+                = <    0  1  2  3  4  5        6  7  8  9 10 11   >
+                , <12 13 14 15 16 17 18       19 20 21 22 23 24 25>
+                , <   26 27 28 29 30 31       32 33 34 35 36 37   >
+                , <   38 39 40 41 42 43       44 45 46 47 48 49   >
+                , <               50 51 52 53 54 55               >;
+        };
+
+        ladniy_jiran_6col_posmap: six {
+            physical-layout = <&kgoh_jian_6col_layout>;
+            positions
+                = <   42 43 44 45 46 47       48 49 50 51 52 53   >
+                , <54  0  1  2  3  4  5        6  7  8  9 10 11 55>
+                , <   12 13 14 15 16 17       18 19 20 21 22 23   >
+                , <   24 25 26 27 28 29       30 31 32 33 34 35   >
+                , <               36 37 38 39 40 41               >;
+        };
+
+        ladniy_jiran_jian_posmap: jian {
+            physical-layout = <&kgoh_jian_full_layout>;
+            positions
+                = <   44 45 46 47 48 49       50 51 52 53 54 55   >
+                , < 0  1  2  3  4  5  6        7  8  9 10 11 12 13>
+                , <   14 15 16 17 18 19       20 21 22 23 24 25   >
+                , <   26 27 28 29 30 31       32 33 34 35 36 37   >
+                , <               38 39 40 41 42 43               >;
+        };
     };
 };

@@ -5,12 +5,7 @@
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
-
-#include <layouts/gtips/reviung41.dtsi>
-
-&gtips_reviung41_layout {
-    transform = <&default_transform>;
-};
+#include "reviung41-layouts.dtsi"
 
 / {
     chosen {
