@@ -145,6 +145,9 @@ config USB_HID_POLL_INTERVAL_MS
 #ZMK_USB
 endif
 
+config ZMK_ENDPOINT_DISABLE_FALLBACK
+    bool "Disable automatic endpoint fallback when preferred endpoint is unavailable"
+
 menuconfig ZMK_BLE
     bool "BLE (HID over GATT)"
     select BT
