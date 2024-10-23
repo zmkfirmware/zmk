@@ -1,0 +1,14 @@
+
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    /omit-if-no-ref/ zip_xy_code_mapper: zip_xy_code_mapper {
+        compatible = "zmk,input-processor-code-mapper";
+        #input-processor-cells = <0>;
+        type = <INPUT_EV_REL>;
+        map
+            = <INPUT_REL_Y INPUT_REL_X>
+            , <INPUT_REL_X INPUT_REL_Y>
+            ;
+    };
+};

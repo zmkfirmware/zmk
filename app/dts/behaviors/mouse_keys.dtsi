@@ -1,0 +1,9 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "mouse_key_press.dtsi"
+#include "mouse_move.dtsi"
+#include "mouse_scroll.dtsi"

@@ -26,6 +26,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/usb.h>
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+#include <zephyr/input/input.h>
+#endif
+
 bool is_usb_power_present(void) {
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     return zmk_usb_is_powered();
@@ -59,11 +63,13 @@ int set_state(enum zmk_activity_state state) {
 
 enum zmk_activity_state zmk_activity_get_state(void) { return activity_state; }
 
-int activity_event_listener(const zmk_event_t *eh) {
+static int note_activity(void) {
     activity_last_uptime = k_uptime_get();
 
     return set_state(ZMK_ACTIVITY_ACTIVE);
 }
+
+static int activity_event_listener(const zmk_event_t *eh) { return note_activity(); }
 
 void activity_work_handler(struct k_work *work) {
     int32_t current = k_uptime_get();
@@ -103,5 +109,17 @@ static int activity_init(void) {
 ZMK_LISTENER(activity, activity_event_listener);
 ZMK_SUBSCRIPTION(activity, zmk_position_state_changed);
 ZMK_SUBSCRIPTION(activity, zmk_sensor_event);
+
+#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+
+static void note_activity_work_cb(struct k_work *_work) { note_activity(); }
+
+K_WORK_DEFINE(note_activity_work, note_activity_work_cb);
+
+static void activity_input_listener(struct input_event *ev) { k_work_submit(&note_activity_work); }
+
+INPUT_CALLBACK_DEFINE(NULL, activity_input_listener);
+
+#endif
 
 SYS_INIT(activity_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

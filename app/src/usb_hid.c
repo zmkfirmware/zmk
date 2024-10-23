@@ -13,9 +13,15 @@
 #include <zmk/usb.h>
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
+
+#if IS_ENABLED(CONFIG_ZMK_MOUSE_SMOOTH_SCROLLING)
+#include <zmk/mouse/resolution_multipliers.h>
+#endif // IS_ENABLED(CONFIG_ZMK_MOUSE_SMOOTH_SCROLLING)
+
 #if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
 #include <zmk/hid_indicators.h>
 #endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+
 #include <zmk/event_manager.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -56,31 +62,56 @@ static uint8_t *get_keyboard_report(size_t *len) {
 
 static int get_report_cb(const struct device *dev, struct usb_setup_packet *setup, int32_t *len,
                          uint8_t **data) {
+    switch (setup->wValue & HID_GET_REPORT_TYPE_MASK) {
+    case HID_REPORT_TYPE_FEATURE:
+        switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
+#if IS_ENABLED(CONFIG_ZMK_MOUSE_SMOOTH_SCROLLING)
+        case ZMK_HID_REPORT_ID_MOUSE:
+            static struct zmk_hid_mouse_resolution_feature_report res_feature_report;
 
-    /*
-     * 7.2.1 of the HID v1.11 spec is unclear about handling requests for reports that do not exist
-     * For requested reports that aren't input reports, return -ENOTSUP like the Zephyr subsys does
-     */
-    if ((setup->wValue & HID_GET_REPORT_TYPE_MASK) != HID_REPORT_TYPE_INPUT) {
+            struct zmk_endpoint_instance endpoint = {
+                .transport = ZMK_TRANSPORT_USB,
+            };
+
+            *len = sizeof(struct zmk_hid_mouse_resolution_feature_report);
+            struct zmk_mouse_resolution_multipliers mult =
+                zmk_mouse_resolution_multipliers_get_profile(endpoint);
+
+            res_feature_report.body.wheel_res = mult.wheel;
+            res_feature_report.body.hwheel_res = mult.hor_wheel;
+            *data = (uint8_t *)&res_feature_report;
+            break;
+#endif // IS_ENABLED(CONFIG_ZMK_MOUSE_SMOOTH_SCROLLING)
+        default:
+            return -ENOTSUP;
+        }
+        break;
+    case HID_REPORT_TYPE_INPUT:
+        switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
+        case ZMK_HID_REPORT_ID_KEYBOARD: {
+            *data = get_keyboard_report(len);
+            break;
+        }
+        case ZMK_HID_REPORT_ID_CONSUMER: {
+            struct zmk_hid_consumer_report *report = zmk_hid_get_consumer_report();
+            *data = (uint8_t *)report;
+            *len = sizeof(*report);
+            break;
+        }
+        default:
+            LOG_ERR("Invalid report ID %d requested", setup->wValue & HID_GET_REPORT_ID_MASK);
+            return -EINVAL;
+        }
+        break;
+    default:
+        /*
+         * 7.2.1 of the HID v1.11 spec is unclear about handling requests for reports that do not
+         * exist For requested reports that aren't input reports, return -ENOTSUP like the Zephyr
+         * subsys does
+         */
         LOG_ERR("Unsupported report type %d requested", (setup->wValue & HID_GET_REPORT_TYPE_MASK)
                                                             << 8);
         return -ENOTSUP;
-    }
-
-    switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
-    case ZMK_HID_REPORT_ID_KEYBOARD: {
-        *data = get_keyboard_report(len);
-        break;
-    }
-    case ZMK_HID_REPORT_ID_CONSUMER: {
-        struct zmk_hid_consumer_report *report = zmk_hid_get_consumer_report();
-        *data = (uint8_t *)report;
-        *len = sizeof(*report);
-        break;
-    }
-    default:
-        LOG_ERR("Invalid report ID %d requested", setup->wValue & HID_GET_REPORT_ID_MASK);
-        return -EINVAL;
     }
 
     return 0;
@@ -88,30 +119,55 @@ static int get_report_cb(const struct device *dev, struct usb_setup_packet *setu
 
 static int set_report_cb(const struct device *dev, struct usb_setup_packet *setup, int32_t *len,
                          uint8_t **data) {
-    if ((setup->wValue & HID_GET_REPORT_TYPE_MASK) != HID_REPORT_TYPE_OUTPUT) {
-        LOG_ERR("Unsupported report type %d requested",
-                (setup->wValue & HID_GET_REPORT_TYPE_MASK) >> 8);
-        return -ENOTSUP;
-    }
+    switch (setup->wValue & HID_GET_REPORT_TYPE_MASK) {
+    case HID_REPORT_TYPE_FEATURE:
+        switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
+#if IS_ENABLED(CONFIG_ZMK_MOUSE_SMOOTH_SCROLLING)
+        case ZMK_HID_REPORT_ID_MOUSE:
+            if (*len != sizeof(struct zmk_hid_mouse_resolution_feature_report)) {
+                return -EINVAL;
+            }
 
-    switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
-#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
-    case ZMK_HID_REPORT_ID_LEDS:
-        if (*len != sizeof(struct zmk_hid_led_report)) {
-            LOG_ERR("LED set report is malformed: length=%d", *len);
-            return -EINVAL;
-        } else {
-            struct zmk_hid_led_report *report = (struct zmk_hid_led_report *)*data;
+            struct zmk_hid_mouse_resolution_feature_report *report =
+                (struct zmk_hid_mouse_resolution_feature_report *)*data;
             struct zmk_endpoint_instance endpoint = {
                 .transport = ZMK_TRANSPORT_USB,
             };
-            zmk_hid_indicators_process_report(&report->body, endpoint);
+
+            zmk_mouse_resolution_multipliers_process_report(&report->body, endpoint);
+
+            break;
+#endif // IS_ENABLED(CONFIG_ZMK_MOUSE_SMOOTH_SCROLLING)
+        default:
+            return -ENOTSUP;
         }
         break;
+
+    case HID_REPORT_TYPE_OUTPUT:
+        switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
+#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+        case ZMK_HID_REPORT_ID_LEDS:
+            if (*len != sizeof(struct zmk_hid_led_report)) {
+                LOG_ERR("LED set report is malformed: length=%d", *len);
+                return -EINVAL;
+            } else {
+                struct zmk_hid_led_report *report = (struct zmk_hid_led_report *)*data;
+                struct zmk_endpoint_instance endpoint = {
+                    .transport = ZMK_TRANSPORT_USB,
+                };
+                zmk_hid_indicators_process_report(&report->body, endpoint);
+            }
+            break;
 #endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+        default:
+            LOG_ERR("Invalid report ID %d requested", setup->wValue & HID_GET_REPORT_ID_MASK);
+            return -EINVAL;
+        }
+        break;
     default:
-        LOG_ERR("Invalid report ID %d requested", setup->wValue & HID_GET_REPORT_ID_MASK);
-        return -EINVAL;
+        LOG_ERR("Unsupported report type %d requested",
+                (setup->wValue & HID_GET_REPORT_TYPE_MASK) >> 8);
+        return -ENOTSUP;
     }
 
     return 0;

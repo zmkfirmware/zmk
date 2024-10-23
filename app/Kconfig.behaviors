@@ -71,8 +71,7 @@ config ZMK_BEHAVIOR_KEY_TOGGLE
 config ZMK_BEHAVIOR_MOUSE_KEY_PRESS
     bool
     default y
-    depends on DT_HAS_ZMK_BEHAVIOR_MOUSE_KEY_PRESS_ENABLED
-    imply ZMK_MOUSE
+    depends on DT_HAS_ZMK_BEHAVIOR_MOUSE_KEY_PRESS_ENABLED && ZMK_MOUSE
 
 config ZMK_BEHAVIOR_STICKY_KEY
     bool
@@ -93,6 +92,11 @@ config ZMK_BEHAVIOR_SOFT_OFF
     bool
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_SOFT_OFF_ENABLED && ZMK_PM_SOFT_OFF
+
+config ZMK_BEHAVIOR_INPUT_TWO_AXIS
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_INPUT_TWO_AXIS_ENABLED && ZMK_MOUSE
 
 config ZMK_BEHAVIOR_SENSOR_ROTATE_COMMON
     bool
