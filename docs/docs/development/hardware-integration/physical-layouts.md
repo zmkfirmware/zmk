@@ -8,7 +8,7 @@ It contains:
 
 - A [keyboard scan (kscan) driver](../../config/kscan.md)
 - A [matrix transform](../../config/layout.md#matrix-transform)
-- (Optional) [Physical key positions](#physical-layout-positions)
+- (Optional) [Physical key positions](#optional-keys-property)
 
 ## Basic Physical Layout
 
