@@ -75,3 +75,5 @@ int zmk_endpoints_send_mouse_report();
 #endif // IS_ENABLE(CONFIG_ZMK_MOUSE)
 
 void zmk_endpoints_clear_current(void);
+
+bool zmk_endpoints_preferred_transport_is_active();
