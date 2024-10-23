@@ -5,6 +5,8 @@
  */
 
 #include "kyria_common.dtsi"
+#include "layouts/kyria_6col-layout.dtsi"
+#include "layouts/kyria_5col-layout.dtsi"
 
 / {
     default_transform: keymap_transform_0 {

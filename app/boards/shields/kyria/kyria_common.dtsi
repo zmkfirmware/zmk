@@ -6,8 +6,6 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
-#include "kyria-layouts.dtsi"
-
 / {
     chosen {
         zephyr,display = &oled;

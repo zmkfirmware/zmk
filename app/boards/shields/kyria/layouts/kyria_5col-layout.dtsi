@@ -1,0 +1,68 @@
+#include <physical_layouts.dtsi>
+#include "position_map.dtsi"
+
+/{
+    splitkb_kyria_5col_layout: splitkb_kyria_5col_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "5 Column";
+        transform = <&five_column_transform>;
+
+        keys  //                     w   h    x    y     rot    rx    ry
+            = <&key_physical_attrs 100 100    0   75       0     0     0>
+            , <&key_physical_attrs 100 100  100   25       0     0     0>
+            , <&key_physical_attrs 100 100  200    0       0     0     0>
+            , <&key_physical_attrs 100 100  300   25       0     0     0>
+            , <&key_physical_attrs 100 100  400   37       0     0     0>
+            , <&key_physical_attrs 100 100 1000   37       0     0     0>
+            , <&key_physical_attrs 100 100 1100   25       0     0     0>
+            , <&key_physical_attrs 100 100 1200    0       0     0     0>
+            , <&key_physical_attrs 100 100 1300   25       0     0     0>
+            , <&key_physical_attrs 100 100 1400   75       0     0     0>
+            , <&key_physical_attrs 100 100    0  175       0     0     0>
+            , <&key_physical_attrs 100 100  100  125       0     0     0>
+            , <&key_physical_attrs 100 100  200  100       0     0     0>
+            , <&key_physical_attrs 100 100  300  125       0     0     0>
+            , <&key_physical_attrs 100 100  400  137       0     0     0>
+            , <&key_physical_attrs 100 100 1000  137       0     0     0>
+            , <&key_physical_attrs 100 100 1100  125       0     0     0>
+            , <&key_physical_attrs 100 100 1200  100       0     0     0>
+            , <&key_physical_attrs 100 100 1300  125       0     0     0>
+            , <&key_physical_attrs 100 100 1400  175       0     0     0>
+            , <&key_physical_attrs 100 100    0  275       0     0     0>
+            , <&key_physical_attrs 100 100  100  225       0     0     0>
+            , <&key_physical_attrs 100 100  200  200       0     0     0>
+            , <&key_physical_attrs 100 100  300  225       0     0     0>
+            , <&key_physical_attrs 100 100  400  237       0     0     0>
+            , <&key_physical_attrs 100 100  250  225    3000   300   792>
+            , <&key_physical_attrs 100 100  250  225    4500   300   792>
+            , <&key_physical_attrs 100 100 1150  225 (-4500)  1200   792>
+            , <&key_physical_attrs 100 100 1150  225 (-3000)  1200   792>
+            , <&key_physical_attrs 100 100 1000  237       0     0     0>
+            , <&key_physical_attrs 100 100 1100  225       0     0     0>
+            , <&key_physical_attrs 100 100 1200  200       0     0     0>
+            , <&key_physical_attrs 100 100 1300  225       0     0     0>
+            , <&key_physical_attrs 100 100 1400  275       0     0     0>
+            , <&key_physical_attrs 100 100  150  325       0     0     0>
+            , <&key_physical_attrs 100 100  250  325       0     0     0>
+            , <&key_physical_attrs 100 100  250  325    1500   300   792>
+            , <&key_physical_attrs 100 100  250  325    3000   300   792>
+            , <&key_physical_attrs 100 100  250  325    4500   300   792>
+            , <&key_physical_attrs 100 100 1150  325 (-4500)  1200   792>
+            , <&key_physical_attrs 100 100 1150  325 (-3000)  1200   792>
+            , <&key_physical_attrs 100 100 1150  325 (-1500)  1200   792>
+            , <&key_physical_attrs 100 100 1150  325       0     0     0>
+            , <&key_physical_attrs 100 100 1250  325       0     0     0>
+            ;
+    };
+};
+
+&splitkb_kyria_position_map {
+    ten {
+        physical-layout = <&splitkb_kyria_5col_layout>;
+        positions
+            = <44  0  1  2  3  4              5  6  7  8  9 47>
+            , <45 10 11 12 13 14             15 16 17 18 19 48>
+            , <46 20 21 22 23 24 25 26 27 28 29 30 31 32 33 49>
+            , <      34 35 36 37 38 39 40 41 42 43            >;
+    };
+};

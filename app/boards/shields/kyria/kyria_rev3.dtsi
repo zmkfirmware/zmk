@@ -5,8 +5,7 @@
  */
 
 #include "kyria_common.dtsi"
-
-/delete-node/ &splitkb_kyria_5col_layout;
+#include "layouts/kyria_6col-layout.dtsi"
 
 / {
     default_transform: keymap_transform_0 {

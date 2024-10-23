@@ -1,0 +1,6 @@
+/{
+    splitkb_kyria_position_map: splitkb_kyria_position_map {
+        compatible = "zmk,physical-layout-position-map";
+        complete;
+    };
+};
