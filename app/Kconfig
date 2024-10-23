@@ -495,11 +495,12 @@ endmenu
 
 menu "Behavior Options"
 
+rsource "Kconfig.behaviors"
+
 config ZMK_BEHAVIORS_QUEUE_SIZE
     int "Maximum number of behaviors to allow queueing from a macro or other complex behavior"
+    default 256 if ZMK_BEHAVIOR_SEND_STRING
     default 64
-
-rsource "Kconfig.behaviors"
 
 config ZMK_MACRO_DEFAULT_WAIT_MS
     int "Default time to wait (in milliseconds) before triggering the next behavior in macros"
@@ -508,6 +509,14 @@ config ZMK_MACRO_DEFAULT_WAIT_MS
 config ZMK_MACRO_DEFAULT_TAP_MS
     int "Default time to wait (in milliseconds) between the press and release events of a tapped behavior in macros"
     default 30
+
+config ZMK_SEND_STRING_DEFAULT_WAIT_MS
+    int "Default time to wait (in milliseconds) before pressing the next key in the text"
+    default 0
+
+config ZMK_SEND_STRING_DEFAULT_TAP_MS
+    int "Default time to wait (in milliseconds) between the press and release for each key in the text"
+    default 5
 
 endmenu
 
@@ -708,6 +717,14 @@ config USB_DEVICE_STACK
 
 config FPU
     default CPU_HAS_FPU
+
+config ZMK_SEND_STRING
+    bool "Enable send string function"
+
+config ZMK_CHARACTER_MAP
+    bool
+    default y
+    depends on DT_HAS_ZMK_CHARACTER_MAP_ENABLED
 
 config ZMK_WPM
     bool "Calculate WPM"
