@@ -50,7 +50,7 @@ git clone https://github.com/zmkfirmware/zmk.git
 
     :::warning
     Please follow the installation instructions carefully. If you do not have
-    an working **Podman machine**, executing the commands below won't be
+    a working **Podman machine**, executing the commands below won't be
     possible.
     :::
 
@@ -59,8 +59,8 @@ git clone https://github.com/zmkfirmware/zmk.git
 
 ## Creating Volumes
 
-In case you have a `zmk-config` or want to build with additional modules, it is
-necessary to first make them available by creating volumes.
+To build from a `zmk-config` or with additional modules, it is necessary to
+first make them available by creating volumes.
 
 <Tabs
   groupId="container"
@@ -105,13 +105,11 @@ necessary to first make them available by creating volumes.
   </TabItem>
 </Tabs>
 
-:::tip
 Once this is done, you can refer to the `zmk-config` with
 `/workspace/zmk-config` and `/workspace/zmk-modules` to the modules instead of
 using their full path like it is shown in the
 [build commands](../build-flash.mdx), since these are the locations they were
 mounted to in the container.
-:::
 
 :::note
 When changing the configuration or modules directory, new volumes have to be
@@ -257,11 +255,6 @@ west init -l app/ # Initialization
 west update       # Update modules
 ```
 
-:::tip
-This step pulls down quite a bit of tooling, be patient!
-:::
-
-:::note
 If you are using a Docker-based approach, you have to restart the container at
 this point. Stopping it is possible with these commands.
 
@@ -269,5 +262,3 @@ this point. Stopping it is possible with these commands.
 docker ps                    # List containers
 docker stop "<container-id>" # Stop the container
 ```
-
-:::

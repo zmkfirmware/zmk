@@ -72,55 +72,42 @@ with an onboard MCU or one that uses an MCU board add-on.
 
 For creating a build system, the `west build` command uses
 [CMake](https://cmake.org/). This allows for additional arguments to be added to
-its invocations. There are two possible ways to do that.
+its invocations.
 
-<Tabs defaultValue="oneTime"
-      values={[
-        {label: 'One-Time', value: 'oneTime'},
-        {label: 'Permanent', value: 'permanent'}
-      ]}>
-  <TabItem value="oneTime">
-    The simplest way to use CMake arguments is by adding `--` after the
-    `west build` command and listing them afterward. For example, the
-    above-shown command for building a keyboard with an MCU board add-on uses
-    them in the form of `-DSHIELD=kyra_left`.
+This is done by adding `--` after the `west build` command and listing the CMake
+arguments afterward. The previous section shows one example of this with
+`-DSHIELD=kyria_left`. Another example use case is passing Kconfig flags:
 
-    :::tip
-    Once the first generation of the build directory using one-time CMake
-    arguments is done, you can execute subsequent builds by using:
+```sh
+west build -b planck_rev6 -- -DCONFIG_ZMK_SLEEP=y
+```
 
-    ```sh
-    west build -d <build_dir>
-    ```
-    :::
+:::tip
+Once the first generation of the build directory using one-time CMake arguments
+is done, you can omit the CMake arguments and board selection, instead building
+with the command:
 
-  </TabItem>
-  <TabItem value="permanent">
-    The `west build` command can be configured using
-    [`west config`](https://docs.zephyrproject.org/3.5.0/develop/west/config.html#west-config-cmd).
-    This makes it possible to add permanent CMake arguments, which are invoked
-    whenever a new build system is generated. To do this, we make use of its
-    `build.cmake-args` configuration option.
+```sh
+west build -d <build_dir>
+```
 
-    ```sh
-    west config build.cmake-args -- -DSHIELD=kyra_left
-    ```
+:::
 
-    For adding multiple arguments a string can be used:
+You can also add permanent CMake arguments to `west build` by using the
+[`west config`](https://docs.zephyrproject.org/3.5.0/develop/west/config.html#west-config-cmd)
+command. These are invoked whenever a new build system is generated. To add
+permanent arguments, set the `build.cmake-args` configuration option.
 
-    ```sh
-    west config build.cmake-args \
-      -- "-DSHIELD=kyra_left -DZMK_CONFIG=/absolute/path/to/zmk-config"
-    ```
+```sh
+west config build.cmake-args -- -DSHIELD=kyra_left
+```
 
-    :::note
-    New build systems are only generated with `west build` when they are
-    currently is non-available. Therefore, either delete the build directory or
-    do a **pristine build**.
-    :::
+Multiple arguments are added by assigning a string to the configuration option:
 
-  </TabItem>
-</Tabs>
+```sh
+west config build.cmake-args \
+  -- "-DSHIELD=kyra_left -DZMK_CONFIG=/absolute/path/to/zmk-config"
+```
 
 ### Pristine Building
 
@@ -173,9 +160,9 @@ west build -b nice_nano_v2 -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Use
 ### Building from `zmk-config` Folder
 
 Instead of building .uf2 files using the default keymap and config files, you
-can build directly from your [`zmk-config` folder](../../user-setup.mdx#github-repo)
+can build using files from your [`zmk-config` folder](../../user-setup.mdx#github-repo)
 by adding `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build`
-command. **Notice that this path should point to the folder labelled `config`
+command. **Notice that this path should point to the folder labeled `config`
 within your `zmk-config` folder.**
 
 For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder
