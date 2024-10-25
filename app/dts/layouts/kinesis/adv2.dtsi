@@ -1,12 +1,9 @@
 #include <physical_layouts.dtsi>
 
 / {
-    layout_0: layout_0 {
+    adv2_layout: adv2_layout {
         compatible = "zmk,physical-layout";
         display-name = "Default";
-
-        kscan = <&kscan_0>;
-        transform = <&matrix_transform_0>;
 
         keys  //                     w   h    x    y     rot    rx    ry
             = <&key_physical_attrs  69  85    0    0       0     0     0>
