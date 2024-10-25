@@ -1,0 +1,26 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+CONFIG_SOC_SERIES_RP2XXX=y
+CONFIG_SOC_RP2040=y
+CONFIG_BOARD_RP2040_ZERO=y
+
+CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC=125000000
+CONFIG_RESET=y
+
+# Enable GPIO
+CONFIG_GPIO=y
+
+# Code partition needed to target the correct flash range
+CONFIG_USE_DT_CODE_PARTITION=y
+
+# Output UF2 by default, native bootloader supports it.
+CONFIG_BUILD_OUTPUT_UF2=y
+
+CONFIG_MPU_ALLOW_FLASH_WRITE=y
+CONFIG_NVS=y
+CONFIG_FLASH=y
+CONFIG_FLASH_PAGE_LAYOUT=y
+CONFIG_FLASH_MAP=y
+
+CONFIG_ZMK_USB=y
