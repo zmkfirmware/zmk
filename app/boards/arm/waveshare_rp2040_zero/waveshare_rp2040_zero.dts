@@ -7,7 +7,7 @@
 /dts-v1/;
 
 #include <rpi_pico/rp2040.dtsi>
-#include "waveshare_rp2040_zero-pinctrl.dtsi"
+#include "waveshare_rp2040_zero_pinctrl.dtsi"
 #include <freq.h>
 
 / {
