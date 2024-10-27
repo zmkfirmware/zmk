@@ -124,7 +124,7 @@ values={[
 &pinctrl {
     /* configuration for spi0 device, default state */
     spi0_default: spi0_default {
-        /* group 1 (name is arbitrary) */
+        /* node name is arbitrary */
         group1 {
             /* main role: configure P0.01 as SPI clock, P0.02 as SPI MOSI, P0.03 as SPI MISO */
             psels = <NRF_PSEL(SPIM_SCK, 0, 1)>,
@@ -135,7 +135,6 @@ values={[
 
     /* configuration for spi0 device, sleep state */
     spi0_sleep: spi0_sleep {
-        /* group 1 */
         group1 {
             /* main role: configure P0.01 as SPI clock, P0.02 as SPI MOSI, P0.03 as SPI MISO */
             psels = <NRF_PSEL(SPIM_SCK, 0, 1)>,
@@ -169,12 +168,10 @@ There is an additional child node for the "sleep" state, configuring the pins fo
 &pinctrl {
     /* configuration for spi0 device, default state */
     spi0_default: spi0_default {
-        /* group 1 */
         group1 {
             /* configure P18 as SPI0 clock, P19 as SPI0 MOSI */
             pinmux = <SPI0_SCK_P18>, <SPI0_TX_P19>;
         };
-        /* group 2 */
         group2 {
             /* configure P16 as SPI0 MISO */
             pinmux = <SPI0_RX_P16>;
@@ -185,12 +182,10 @@ There is an additional child node for the "sleep" state, configuring the pins fo
 
     /* configuration for an spi device using PIO0, default state  */
     pio0_spi_default: pio0_spi_default {
-        /* group 1 */
         group1 {
             /* Configure P13 and P14 for PIO, to be used for MOSI and SCK */
             pinmux = <PIO0_P13>, <PIO0_P14>;
         };
-        /* group 2 */
         group2 {
             /* Configure P16 for PIO to be used for MISO with input */
             pinmux = <PIO0_P12>;
@@ -348,12 +343,10 @@ In the pin control file:
 &pinctrl {
     /* configuration for uart0 device, default state */
     uart0_default: uart0_default {
-        /* group 1 */
         group1 {
             /* configure P0.1 as UART_TX and P0.2 as UART_RTS */
             psels = <NRF_PSEL(UART_TX, 0, 1)>, <NRF_PSEL(UART_RTS, 0, 2)>;
         };
-        /* group 2 */
         group2 {
             /* configure P0.3 as UART_RX and P0.4 as UART_CTS */
             psels = <NRF_PSEL(UART_RX, 0, 3)>, <NRF_PSEL(UART_CTS, 0, 4)>;
@@ -385,12 +378,10 @@ In the pin control file:
 &pinctrl {
     /* configuration for the usart0 "default" state */
     uart0_default: uart0_default {
-        /* group 1 */
         group1 {
             /* configure P0 as UART0 TX */
             pinmux = <UART0_TX_P0>;
             };
-        /* group 2 */
         group2 {
             /* configure P1 as UART0 RX */
             pinmux = <UART0_RX_P1>;
@@ -412,7 +403,7 @@ In the main file:
 };
 ```
 
-#### UART rp2040 PIO
+#### UART RP2040 PIO
 
 In the pin control file:
 
@@ -500,7 +491,7 @@ In the main file:
 };
 ```
 
-#### I2C rp2040
+#### I2C RP2040
 
 In the pin control file:
 
@@ -534,6 +525,6 @@ In the main file:
 };
 ```
 
-#### I2C rp2040 PIO
+#### I2C RP2040 PIO
 
-Zephyr currently does not have support for I2C using rp2040 PIO.
+Zephyr currently does not have support for I2C using RP2040 PIO.
