@@ -157,7 +157,7 @@ module.exports = {
               },
               collapsed: true,
               items: [
-                "development/local-toolchain/setup/docker",
+                "development/local-toolchain/setup/container",
                 "development/local-toolchain/setup/native",
               ],
             },
