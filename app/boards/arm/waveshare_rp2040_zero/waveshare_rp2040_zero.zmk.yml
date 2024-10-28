@@ -1,6 +1,7 @@
-identifier: waveshare_rp2040_zero
+file_format: "1"
+id: waveshare_rp2040_zero
 name: RP2040-Zero
-type: mcu
+type: board
 arch: arm
 flash: 2048
 ram: 264
@@ -10,3 +11,6 @@ toolchain:
   - xtools
 supported:
   - serial
+outputs:
+  - usb
+exposes: [waveshare_rp2040_zero]
