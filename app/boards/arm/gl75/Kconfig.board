@@ -1,0 +1,12 @@
+# BT60 board configuration
+
+# Copyright (c) 2021 Polarity Works
+# SPDX-License-Identifier: MIT
+
+config BOARD_GL75_V1
+    bool "gl75"
+    depends on SOC_NRF52840_QIAA
+
+config BOARD_GL75_V1_HS
+    bool "gl75 hotswap"
+    depends on SOC_NRF52840_QIAA
