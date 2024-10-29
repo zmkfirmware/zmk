@@ -3,14 +3,7 @@ id: waveshare_rp2040_zero
 name: RP2040-Zero
 type: board
 arch: arm
-flash: 2048
-ram: 264
-toolchain:
-  - zephyr
-  - gnuarmemb
-  - xtools
-supported:
-  - serial
 outputs:
   - usb
+url: https://www.waveshare.com/rp2040-zero.htm
 exposes: [waveshare_rp2040_zero]
