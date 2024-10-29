@@ -58,11 +58,9 @@
 };
 
 &uart1 {
-    compatible = "nordic,nrf-uarte";
     current-speed = <115200>;
     pinctrl-0 = <&uart1_default>;
-    pinctrl-1 = <&uart1_sleep>;
-    pinctrl-names = "default", "sleep";
+    pinctrl-names = "default";
 };
 
 &spi0 {
