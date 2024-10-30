@@ -127,8 +127,10 @@ Do note that as you need to have access to both sides of a connection, you canno
 
 :::tip
 To check a solder joint, it is best to probe the two points either side of it if you can. For example:
-![A section of a schematic with a particular joint marked in green](../assets/troubleshooting/multimeter/schematic_probe_example.png)
-To check if the joint marked in red is faulty, you would first check that the diode is working, and then test whether the joint is faulty by probing the two purple joints. If you get the same results as probing the diode directly, then there is no problem with the joint.
+
+![A 3D PCB render with three circled solder joints.](../assets/troubleshooting/multimeter/schematic_probe_example.png)
+
+To check if the joint marked in red is faulty, measure [the forward voltage drop](https://www.fluke.com/en-us/learn/blog/digital-multimeters/how-to-test-diodes) of the diode, then take the same measurement between the joints circled in purple. If you get the same results as probing the diode directly, there is no problem with the joint.
 :::
 
 </TabItem>
