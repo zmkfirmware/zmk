@@ -1,8 +1,5 @@
-/*
- * Copyright (c) 2024 The ZMK Contributors
- *
- * SPDX-License-Identifier: Apache-2.0
- */
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: Apache-2.0
 
 /dts-v1/;
 
@@ -26,35 +23,35 @@
 };
 
 &flash0 {
-	/* 2MB of flash minus the 0x100 used for
-	 * the second stage bootloader
+    /* 2MB of flash minus the 0x100 used for
+     * the second stage bootloader
+     */
+    reg = <0x10000000 DT_SIZE_M(2)>;
+
+    partitions {
+        compatible = "fixed-partitions";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+        /*
+	 * Start at the beginning of usable flash, 8MB minus the
+	 * second stage space and the 16 KiB reserved for settings
 	 */
-	reg = <0x10000000 DT_SIZE_M(2)>;
-
-	partitions {
-		compatible = "fixed-partitions";
-		#address-cells = <1>;
-		#size-cells = <1>;
-
-		/*
-		 * Start at the beginning of usable flash, 8MB minus the
-		 * second stage space and the 16 KiB reserved for settings
-		 */
-		code_partition: partition@100 {
-			label = "code";
-			reg = <0x100 (DT_SIZE_M(2) - DT_SIZE_K(16))>;
-			read-only;
-		};
-
-		/*
-		 * The final 16 KiB is reserved for the application.
-		 * Storage partition may be used by FCB or LittleFS.
-		 */
-		storage_partition: partition@7fbe00 {
-			label = "storage";
-			reg = <0x007fbe00 DT_SIZE_K(16)>;
-		};
+	code_partition: partition@100 {
+	    label = "code";
+	    reg = <0x100 (DT_SIZE_M(2) - DT_SIZE_K(16))>;
+	    read-only;
 	};
+
+        /*
+	 * The final 16 KiB is reserved for the application.
+	 * Storage partition may be used by FCB or LittleFS.
+	 */
+        storage_partition: partition@7fbe00 {
+	    label = "storage";
+	    reg = <0x007fbe00 DT_SIZE_K(16)>;
+	};
+    };
 };
 
 &uart1 {
