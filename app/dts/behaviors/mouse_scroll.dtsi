@@ -1,0 +1,12 @@
+/ {
+	behaviors {
+		/omit-if-no-ref/ mwh: msc: behavior_mouse_scroll {
+			compatible = "zmk,behavior-mouse-scroll";
+			label = "MOUSE_SCROLL";
+			#binding-cells = <1>;
+			delay-ms = <0>;
+			time-to-max-speed-ms = <300>;
+			acceleration-exponent = <0>;
+		};
+	};
+};
