@@ -160,7 +160,7 @@ Many issues can be resolved by reworking the affected solder joints (Look up a t
 Once you have done so, you will need to adjust the `kscan` of your keyboard slightly. The recommended approach to doing so is via your `zmk-config`:
 
 1. Search through the files defining your board/shield for the definition of the keyboard's `kscan`. This is typically a `.dts`, `.dtsi`, or an `.overlay` file.
-2. Add a [phandle](https://docs.zephyrproject.org/latest/build/dts/phandles.html) to your `.keymap` pointing at your `kscan`, copying in the property of your `kscan` where the broken GPIO pin appears. Depending on your `kscan` driver this could be `input-gpios`, `row-gpios`, etc. If you are using a [split keyboard](../features/split-keyboards.md) and the issue is only affecting one part, you'll need to create separate keymap files for each part (`keyboard_left.keymap` and `keyboard_right.keymap`, for example) and only edit the affected one.
+2. Add a [phandle](https://docs.zephyrproject.org/latest/build/dts/phandles.html) to your `.keymap` pointing at your `kscan`, copying in the property of your `kscan` where the broken GPIO pin appears. Depending on your `kscan` driver this could be `input-gpios`, `row-gpios`, etc. If you are using a [split keyboard](../features/split-keyboards.md) and the issue is only affecting one part, you'll need to create separate keymap files for each part (`keyboard_left.keymap` and `keyboard_right.keymap`, for example), removing the shared one, and only edit the affected one.
 3. Edit the node to replace the old GPIO key with the new. For example:
 
 ```dts
