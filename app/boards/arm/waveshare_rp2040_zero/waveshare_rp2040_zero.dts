@@ -1,7 +1,9 @@
 # Copyright (c) 2024 The ZMK Contributors
 # SPDX-License-Identifier: Apache-2.0
 
+/*
 /dts-v1/;
+*/
 
 #include <rpi_pico/rp2040.dtsi>
 #include "waveshare_rp2040_zero_pinctrl.dtsi"
