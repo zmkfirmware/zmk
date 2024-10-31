@@ -22,7 +22,7 @@
 #include <behaviors/mouse_key_press.dtsi>
 #include <behaviors/soft_off.dtsi>
 #include <behaviors/studio_unlock.dtsi>
-#include <behaviors/macros.dtsi>
+
 #include <behaviors/mouse_key_press.dtsi>
 #include <behaviors/mouse_move.dtsi>
 #include <behaviors/mouse_scroll.dtsi>
