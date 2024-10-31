@@ -1,0 +1,7 @@
+/ {
+    layouts_ladniy_jiran_position_map: layouts_ladniy_jiran_position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        complete;
+    };
+};

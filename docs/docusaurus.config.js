@@ -63,6 +63,11 @@ module.exports = {
           position: "left",
         },
         {
+          href: "https://zmk.studio/",
+          label: "ZMK Studio",
+          position: "right",
+        },
+        {
           href: "https://github.com/zmkfirmware/zmk",
           label: "GitHub",
           position: "right",
@@ -97,6 +102,10 @@ module.exports = {
               href:
                 (process.env.URL || "https://zmk.dev") +
                 "/community/discord/invite",
+            },
+            {
+              label: "Mastodon",
+              href: "https://fosstodon.org/@zmk",
             },
             {
               label: "Twitter",

@@ -9,6 +9,7 @@
   font-size: var(--ifm-font-size-base);
   line-height: var(--ifm-pre-line-height);
   tab-size: 4;
+  resize: vertical;
 
   color: var(--ifm-pre-color);
   background-color: var(--ifm-pre-background);

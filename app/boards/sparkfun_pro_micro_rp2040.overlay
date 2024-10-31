@@ -5,3 +5,19 @@
  */
 
 &pro_micro_serial { status = "disabled"; };
+
+// We override to 2MB for maximum compatibility
+&code_partition {
+    reg = <0x100 (DT_SIZE_M(2) - 0x100 - DT_SIZE_K(512))>;
+};
+
+&flash0 {
+    reg = <0x10000000 DT_SIZE_M(2)>;
+
+    partitions {
+        storage_partition: partition@180000 {
+            reg = <0x180000 DT_SIZE_K(512)>;
+            read-only;
+        };
+    };
+};

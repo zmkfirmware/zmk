@@ -11,11 +11,11 @@
 / {
   chosen {
   #ifdef ANSI
-    zmk,matrix-transform = &ansi_transform;
+    zmk,physical-layout = &layout_75_ansi;
   #elif defined(ISO)
-    zmk,matrix-transform = &iso_transform;
+    zmk,physical-layout = &layout_75_iso;
   #elif defined(ALL_1U)
-    zmk,matrix-transform = &all_1u_transform;
+    zmk,physical-layout = &layout_75_all1u;
   #else
   #error "Layout not defined, please define a layout using by uncommenting the appropriate line in bt75_v1.keymap"
   #endif
@@ -27,7 +27,7 @@
     default_layer {
         // ------------------------------------------------------------------------------------------------
         // | ESC | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F9  | F9  | F10 | F11 | F12 |PSCRN|HOME| END |
-        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   | DEL |
+        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   | DEL |
         // | TAB   |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   \    | INS |
         // | CAPS   |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |    ENTER    | PGUP|
         // |  SHIFT   |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |   SHIFT   | UP  | PGDN|
@@ -35,7 +35,7 @@
         // ------------------------------------------------------------------------------------------------
       bindings = <
         &kp ESC &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp F7 &kp  F8   &kp  F9 &kp  F10  &kp F11 &kp F12   &kp PSCRN &kp HOME &kp END
-        &kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp  N8   &kp  N9   &kp N0 &kp MINUS &kp EQUAL &kp BKSP &kp DEL
+        &kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp  N8   &kp  N9   &kp N0 &kp MINUS &kp EQUAL &kp BSPC &kp DEL
         &kp TAB   &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp  I    &kp  O  &kp  P   &kp LBKT &kp RBKT &kp BSLH &kp INS
         &kp CLCK   &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp  K    &kp  L  &kp SEMI &kp SQT         &kp RET &kp PG_UP
         &kp LSHFT     &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH   &kp RSHFT   &kp UP &kp PG_DN
@@ -66,7 +66,7 @@
     default_layer {
         // ------------------------------------------------------------------------------------------------
         // | ESC | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F9  | F9  | F10 | F11 | F12 |PSCRN|HOME| END |
-        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   | DEL |
+        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   | DEL |
         // | TAB   |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |        | INS |
         // | CAPS   |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |  #  | ENTER | PGUP|
         // |SHIFT |  \  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |  SHIFT  | UP  | PGDN|
@@ -74,7 +74,7 @@
         // ------------------------------------------------------------------------------------------------
       bindings = <
         &kp ESC &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp F7 &kp  F8   &kp  F9 &kp  F10  &kp F11 &kp F12   &kp PSCRN &kp HOME &kp END
-        &kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp  N8   &kp  N9   &kp N0 &kp MINUS &kp EQUAL &kp BKSP &kp DEL
+        &kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp  N8   &kp  N9   &kp N0 &kp MINUS &kp EQUAL &kp BSPC &kp DEL
         &kp TAB   &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp  I    &kp  O  &kp  P   &kp LBKT &kp RBKT          &kp INS
         &kp CLCK   &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp  K    &kp  L  &kp SEMI &kp SQT &kp NON_US_HASH &kp RET &kp PG_UP
         &kp LSHFT &kp NON_US_BSLH &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH   &kp RSHFT   &kp UP &kp PG_DN
@@ -105,7 +105,7 @@
     default_layer {
         // -------------------------------------------------------------------------------------------------
         // | ESC | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F9  | F9  | F10 | F11 | F12 |PSCRN| P_B | INS |
-        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |BKSP | DEL | HOME|
+        // |GRAVE|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |BSPC | DEL | HOME|
         // | TAB    |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   \    | END |
         // | CAPS    |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER   | PGUP|
         // |SHIFT|NONE |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |SHIFT|NONE |  UP | PGDN|

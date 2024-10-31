@@ -95,6 +95,7 @@ Boards and shields should document the sets of hardware features found on them u
 - `encoder` - Indicates the hardware contains one or more rotary encoders.
 - `underglow` - Indicates the hardware includes underglow LEDs.
 - `backlight` - Indicates the hardware includes backlight LEDs.
+- `studio` - Indicates the keyboard is ready to use with [ZMK Studio](../../features/studio.md).
 - `pointer` (future) - Used to indicate the hardware includes one or more pointer inputs, e.g. joystick, touchpad, or trackpoint.
 
 ### Siblings

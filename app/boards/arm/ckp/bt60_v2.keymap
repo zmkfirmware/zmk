@@ -12,13 +12,13 @@
 / {
   chosen {
   #ifdef ANSI
-    zmk,matrix-transform = &ansi_transform;
+    zmk,physical-layout = &layout_60_ansi;
   #elif defined(ISO)
-    zmk,matrix-transform = &iso_transform;
+    zmk,physical-layout = &layout_60_iso;
   #elif defined(ALL_1U)
-    zmk,matrix-transform = &all_1u_transform;
+    zmk,physical-layout = &layout_60_all1u;
   #elif defined(HHKB)
-    zmk,matrix-transform = &hhkb_transform;
+    zmk,physical-layout = &layout_60_hhkb;
   #else
   #error "Layout not defined, please define a layout by uncommenting the appropriate line in bt60_v2.keymap"
   #endif
@@ -29,7 +29,7 @@
     #ifdef ANSI
     default_layer {
         // ------------------------------------------------------------------------------------------
-        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   |
+        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   |
         // | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   \     |
         // | CAPS  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |
         // |  SHIFT    |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  | /   |      SHIFT     |
@@ -65,7 +65,7 @@
     #elif defined(ISO)
     default_layer {
         // ------------------------------------------------------------------------------------------
-        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |    BKSP   |
+        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |    BSPC   |
         // |   TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |        |
         // |  CAPS   |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |  #  | ENTER |
         // | SHIFT |  \  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  | /   |     SHIFT     |
@@ -101,7 +101,7 @@
     #elif defined(ALL_1U)
     default_layer {
         // ------------------------------------------------------------------------------------------
-        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |BKSP | DEL |
+        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |BSPC | DEL |
         // | TAB   |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |    \    |
         // | CAPS   |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |
         // | SHFT  |NONE|  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  | /   | SHFT | UP |  1 |
@@ -118,7 +118,7 @@
     };
     raise {
         // ------------------------------------------------------------------------------------------
-        // |GRAVE| F1  | F2  | F3  | F4  | F5  | F6  | F7  | F8  | F9  | F10 | F11 | F12 |BKSP | DEL |
+        // |GRAVE| F1  | F2  | F3  | F4  | F5  | F6  | F7  | F8  | F9  | F10 | F11 | F12 |BSPC | DEL |
         // | TAB  |  Q  |  W  |  E  | HUI | HUD |  Y  |  U  | INS |  O  |PSCRN| SLCK| P_B | RGB_TOG  |
         // | CAPS  |  A  |  S  |  D  | BRI | BRD |  H  |  J  |  K  |  L  | HOME| PGUP|      BOOT     |
         // | SHFT |NONE|VOLDN|VOLUP|MUTE|BLINC|BLDEC|  N  |  M  |  ,  | END | PGDN | SHFT|BL_TOG| 1  |
@@ -136,7 +136,7 @@
     #elif defined(HHKB)
     default_layer {
         // ------------------------------------------------------------------------------------------
-        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BKSP   |
+        // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   |
         // | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |   \     |
         // | CAPS  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |
         // |  SHIFT    |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  | /   |      SHIFT     |

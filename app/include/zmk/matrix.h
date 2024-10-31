@@ -13,10 +13,6 @@
 
 #if DT_HAS_COMPAT_STATUS_OKAY(zmk_physical_layout)
 
-#if ZMK_MATRIX_HAS_TRANSFORM
-#error "To use physical layouts, remove the chosen `zmk,matrix-transform` value."
-#endif
-
 #define ZMK_PHYSICAL_LAYOUT_BYTE_ARRAY(node_id)                                                    \
     uint8_t _CONCAT(prop_, node_id)[DT_PROP_LEN(DT_PHANDLE(node_id, transform), map)];
 

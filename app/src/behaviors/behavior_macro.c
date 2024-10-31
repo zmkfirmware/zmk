@@ -158,7 +158,8 @@ static void replace_params(struct behavior_macro_trigger_state *state,
     state->param2_source = PARAM_SOURCE_BINDING;
 }
 
-static void queue_macro(uint32_t position, const struct zmk_behavior_binding bindings[],
+static void queue_macro(struct zmk_behavior_binding_event *event,
+                        const struct zmk_behavior_binding bindings[],
                         struct behavior_macro_trigger_state state,
                         const struct zmk_behavior_binding *macro_binding) {
     LOG_DBG("Iterating macro bindings - starting: %d, count: %d", state.start_index, state.count);
@@ -169,14 +170,14 @@ static void queue_macro(uint32_t position, const struct zmk_behavior_binding bin
 
             switch (state.mode) {
             case MACRO_MODE_TAP:
-                zmk_behavior_queue_add(position, binding, true, state.tap_ms);
-                zmk_behavior_queue_add(position, binding, false, state.wait_ms);
+                zmk_behavior_queue_add(event, binding, true, state.tap_ms);
+                zmk_behavior_queue_add(event, binding, false, state.wait_ms);
                 break;
             case MACRO_MODE_PRESS:
-                zmk_behavior_queue_add(position, binding, true, state.wait_ms);
+                zmk_behavior_queue_add(event, binding, true, state.wait_ms);
                 break;
             case MACRO_MODE_RELEASE:
-                zmk_behavior_queue_add(position, binding, false, state.wait_ms);
+                zmk_behavior_queue_add(event, binding, false, state.wait_ms);
                 break;
             default:
                 LOG_ERR("Unknown macro mode: %d", state.mode);
@@ -197,7 +198,7 @@ static int on_macro_binding_pressed(struct zmk_behavior_binding *binding,
                                                          .start_index = 0,
                                                          .count = state->press_bindings_count};
 
-    queue_macro(event.position, cfg->bindings, trigger_state, binding);
+    queue_macro(&event, cfg->bindings, trigger_state, binding);
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
@@ -208,7 +209,7 @@ static int on_macro_binding_released(struct zmk_behavior_binding *binding,
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
 
-    queue_macro(event.position, cfg->bindings, state->release_state, binding);
+    queue_macro(&event, cfg->bindings, state->release_state, binding);
 
     return ZMK_BEHAVIOR_OPAQUE;
 }

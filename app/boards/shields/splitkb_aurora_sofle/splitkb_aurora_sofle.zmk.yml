@@ -10,6 +10,7 @@ features:
   - display
   - encoder
   - underglow
+  - studio
 siblings:
   - splitkb_aurora_sofle_left
   - splitkb_aurora_sofle_right
