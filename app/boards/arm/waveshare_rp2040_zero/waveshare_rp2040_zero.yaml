@@ -9,4 +9,13 @@ toolchain:
   - gnuarmemb
   - xtools
 supported:
-  - serial
+  - uart
+  - gpio
+  - adc
+  - i2c
+  - spi
+  - hwinfo
+  - watchdog
+  - flash
+  - dma
+  - counter
