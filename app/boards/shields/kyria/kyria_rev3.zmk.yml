@@ -10,6 +10,7 @@ features:
   - display
   - encoder
   - underglow
+  - studio
 siblings:
   - kyria_rev3_left
   - kyria_rev3_right

@@ -9,6 +9,7 @@ features:
   - keys
   - display
   - underglow
+  - studio
 siblings:
   - corne_left
   - corne_right

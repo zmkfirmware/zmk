@@ -6,6 +6,9 @@ if SHIELD_MURPHPAD
 config ZMK_KEYBOARD_NAME
     default "MurphPad"
 
+config ZMK_DISPLAY
+    default y
+
 if ZMK_DISPLAY
 
 config I2C

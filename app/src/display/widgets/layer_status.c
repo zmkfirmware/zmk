@@ -18,12 +18,12 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
 struct layer_status_state {
-    uint8_t index;
+    zmk_keymap_layer_index_t index;
     const char *label;
 };
 
 static void set_layer_symbol(lv_obj_t *label, struct layer_status_state state) {
-    if (state.label == NULL) {
+    if (state.label == NULL || strlen(state.label) == 0) {
         char text[8] = {};
 
         snprintf(text, sizeof(text), LV_SYMBOL_KEYBOARD " %i", state.index);
@@ -44,8 +44,9 @@ static void layer_status_update_cb(struct layer_status_state state) {
 }
 
 static struct layer_status_state layer_status_get_state(const zmk_event_t *eh) {
-    uint8_t index = zmk_keymap_highest_layer_active();
-    return (struct layer_status_state){.index = index, .label = zmk_keymap_layer_name(index)};
+    zmk_keymap_layer_index_t index = zmk_keymap_highest_layer_active();
+    return (struct layer_status_state){
+        .index = index, .label = zmk_keymap_layer_name(zmk_keymap_layer_index_to_id(index))};
 }
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_layer_status, struct layer_status_state, layer_status_update_cb,

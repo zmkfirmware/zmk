@@ -30,6 +30,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/sensor_event.h>
 #include <zmk/events/battery_state_changed.h>
 #include <zmk/hid_indicators_types.h>
+#include <zmk/physical_layouts.h>
 
 static int start_scanning(void);
 
@@ -56,6 +57,7 @@ struct peripheral_slot {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     uint16_t update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+    uint16_t selected_physical_layout_handle;
     uint8_t position_state[POSITION_STATE_DATA_LEN];
     uint8_t changed_positions[POSITION_STATE_DATA_LEN];
 };
@@ -141,6 +143,7 @@ int release_peripheral_slot(int index) {
     // Clean up previously discovered handles;
     slot->subscribe_params.value_handle = 0;
     slot->run_behavior_handle = 0;
+    slot->selected_physical_layout_handle = 0;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     slot->update_hid_indicators = 0;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -392,6 +395,46 @@ static int split_central_subscribe(struct bt_conn *conn, struct bt_gatt_subscrib
     return err;
 }
 
+static int update_peripheral_selected_layout(struct peripheral_slot *slot, uint8_t layout_idx) {
+    if (slot->state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+        return -ENOTCONN;
+    }
+
+    if (slot->selected_physical_layout_handle == 0) {
+        // It appears that sometimes the peripheral is considered connected
+        // before the GATT characteristics have been discovered. If this is
+        // the case, the selected_physical_layout_handle will not yet be set.
+        return -EAGAIN;
+    }
+
+    if (bt_conn_get_security(slot->conn) < BT_SECURITY_L2) {
+        return -EAGAIN;
+    }
+
+    int err = bt_gatt_write_without_response(slot->conn, slot->selected_physical_layout_handle,
+                                             &layout_idx, sizeof(layout_idx), true);
+
+    if (err < 0) {
+        LOG_ERR("Failed to write physical layout index to peripheral (err %d)", err);
+    }
+
+    return err;
+}
+
+static void update_peripherals_selected_physical_layout(struct k_work *_work) {
+    uint8_t layout_idx = zmk_physical_layouts_get_selected();
+    for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
+        if (peripherals[i].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+            continue;
+        }
+
+        update_peripheral_selected_layout(&peripherals[i], layout_idx);
+    }
+}
+
+K_WORK_DEFINE(update_peripherals_selected_layouts_work,
+              update_peripherals_selected_physical_layout);
+
 static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
                                                  const struct bt_gatt_attr *attr,
                                                  struct bt_gatt_discover_params *params) {
@@ -442,6 +485,11 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
         slot->discover_params.uuid = NULL;
         slot->discover_params.start_handle = attr->handle + 2;
         slot->run_behavior_handle = bt_gatt_attr_value_handle(attr);
+    } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                            BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SELECT_PHYS_LAYOUT_UUID))) {
+        LOG_DBG("Found select physical layout handle");
+        slot->selected_physical_layout_handle = bt_gatt_attr_value_handle(attr);
+        k_work_submit(&update_peripherals_selected_layouts_work);
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                             BT_UUID_DECLARE_128(ZMK_SPLIT_BT_UPDATE_HID_INDICATORS_UUID))) {
@@ -467,7 +515,8 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
     }
 
-    bool subscribed = slot->run_behavior_handle && slot->subscribe_params.value_handle;
+    bool subscribed = slot->run_behavior_handle && slot->subscribe_params.value_handle &&
+                      slot->selected_physical_layout_handle;
 
 #if ZMK_KEYMAP_HAS_SENSORS
     subscribed = subscribed && slot->sensor_subscribe_params.value_handle;
@@ -739,9 +788,30 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
     start_scanning();
 }
 
+static void split_central_security_changed(struct bt_conn *conn, bt_security_t level,
+                                           enum bt_security_err err) {
+    struct peripheral_slot *slot = peripheral_slot_for_conn(conn);
+    if (!slot || !slot->selected_physical_layout_handle) {
+        return;
+    }
+
+    if (err > 0) {
+        LOG_DBG("Skipping updating the physical layout for peripheral with security error");
+        return;
+    }
+
+    if (level < BT_SECURITY_L2) {
+        LOG_DBG("Skipping updating the physical layout for peripheral with insufficient security");
+        return;
+    }
+
+    k_work_submit(&update_peripherals_selected_layouts_work);
+}
+
 static struct bt_conn_cb conn_callbacks = {
     .connected = split_central_connected,
     .disconnected = split_central_disconnected,
+    .security_changed = split_central_security_changed,
 };
 
 K_THREAD_STACK_DEFINE(split_central_split_run_q_stack,
@@ -816,6 +886,7 @@ int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *bi
                                                          .param1 = binding->param1,
                                                          .param2 = binding->param2,
                                                          .position = event.position,
+                                                         .source = event.source,
                                                          .state = state ? 1 : 0,
                                                      }};
     const size_t payload_dev_size = sizeof(payload.behavior_dev);
@@ -897,3 +968,13 @@ static int zmk_split_bt_central_init(void) {
 }
 
 SYS_INIT(zmk_split_bt_central_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);
+
+static int zmk_split_bt_central_listener_cb(const zmk_event_t *eh) {
+    if (as_zmk_physical_layout_selection_changed(eh)) {
+        k_work_submit(&update_peripherals_selected_layouts_work);
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(zmk_split_bt_central, zmk_split_bt_central_listener_cb);
+ZMK_SUBSCRIPTION(zmk_split_bt_central, zmk_physical_layout_selection_changed);
