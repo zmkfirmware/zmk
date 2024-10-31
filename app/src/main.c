@@ -9,6 +9,10 @@
 #include <zephyr/devicetree.h>
 #include <zephyr/settings/settings.h>
 
+#ifdef CONFIG_ZMK_MOUSE
+#include <zmk/mouse.h>
+#endif /* CONFIG_ZMK_MOUSE */
+
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -26,5 +30,8 @@ int main(void) {
     zmk_display_init();
 #endif /* CONFIG_ZMK_DISPLAY */
 
+#ifdef CONFIG_ZMK_MOUSE
+    zmk_mouse_init();
+#endif /* CONFIG_ZMK_MOUSE */
     return 0;
 }
