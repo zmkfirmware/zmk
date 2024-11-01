@@ -294,7 +294,7 @@ int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t 
 
     uint8_t *pending = zmk_keymap_layer_pending_changes[layer_id];
 
-    WRITE_BIT(pending[binding_idx / 8], binding_idx % 8, 1);
+    WRITE_BIT(pending[storage_binding_idx / 8], storage_binding_idx % 8, 1);
 
     // TODO: Need a mutex to protect access to the keymap data?
     memcpy(&zmk_keymap[layer_id][storage_binding_idx], &binding, sizeof(binding));
@@ -483,10 +483,11 @@ static int save_bindings(void) {
 
         for (int kp = 0; kp < ZMK_KEYMAP_LEN; kp++) {
             if (pending[kp / 8] & BIT(kp % 8)) {
-                LOG_DBG("Pending save for layer %d at key position %d", l, kp);
 
-                const struct zmk_behavior_binding *binding =
-                    zmk_keymap_get_layer_binding_at_idx(l, kp);
+                const struct zmk_behavior_binding *binding = &zmk_keymap[l][kp];
+                LOG_DBG("Pending save for layer %d at key position %d: %s with %d, %d", l, kp,
+                        binding->behavior_dev, binding->param1, binding->param2);
+
                 struct zmk_behavior_binding_setting binding_setting = {
                     .behavior_local_id = zmk_behavior_get_local_id(binding->behavior_dev),
                     .param1 = binding->param1,
@@ -512,10 +513,10 @@ static int save_bindings(void) {
                     LOG_ERR("Failed to save keymap binding at %d on layer %d (%d)", l, kp, ret);
                     return ret;
                 }
+
+                WRITE_BIT(pending[kp / 8], kp % 8, 0);
             }
         }
-
-        *pending = 0;
     }
 
     return 0;
