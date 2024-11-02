@@ -13,7 +13,7 @@ In the deep sleep state, the keyboard enters a software power-off state. Among o
 
 - Disconnects the keyboard from all Bluetooth connections
 - Disables any peripherals such as displays and lighting
-- If possible, external power output is disabled
+- If possible, disables external power output
 - Clears the contents of RAM, including any unsaved [Studio](studio.md) changes
 
 This state uses very little power, but it may take a few seconds to reconnect after waking. A [wakeup source](#wakeup-sources) is required to wake from deep sleep.
@@ -48,7 +48,7 @@ The feature is intended as an alternative to using a hardware switch to physical
 
 :::note
 
-The device enters the same software power-off state as in deep sleep, but is significantly more restrictive in the sources which can wake it. Power is _not_ technically removed from the entire system.
+The device enters the same software power-off state as in deep sleep, but is significantly more restrictive in the sources which can wake it. Power is _not_ technically removed from the entire system, unlike a hardware switch.
 
 :::
 
