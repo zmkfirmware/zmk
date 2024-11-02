@@ -37,7 +37,7 @@ module.exports = {
         "features/split-keyboards",
         "features/debouncing",
         "features/battery",
-        "features/soft-off",
+        "features/low-power-states",
         "features/encoders",
         "features/displays",
         "features/backlight",
@@ -133,6 +133,7 @@ module.exports = {
             "development/hardware-integration/pinctrl",
             "development/hardware-integration/shift-registers",
             "development/hardware-integration/encoders",
+            "development/hardware-integration/soft-off-setup",
           ],
         },
         {
