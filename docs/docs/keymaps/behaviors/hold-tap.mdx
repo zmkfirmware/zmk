@@ -73,7 +73,7 @@ Note that the greater the value of `require-prior-idle-ms` is, the harder it wil
 
 #### `retro-tap`
 
-If `retro-tap` is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime.
+If `retro-tap` is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime. The hold key does not activate until another key is pressed, meaning that it cannot be used for mouse events like Shift Click to select from your cursor position to mouse position.
 
 For example, if you press `&mt LEFT_SHIFT A` and then release it without pressing another key, it will output `a`.
 
