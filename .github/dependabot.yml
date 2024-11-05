@@ -9,18 +9,47 @@ updates:
     schedule:
       interval: "daily"
     groups:
-      production-version-major:
+      production-major:
         applies-to: "version-updates"
         dependency-type: "production"
+        exclude-patterns:
+          - "@docusaurus/*"
+          - "tree-sitter-devicetree"
+          - "web-tree-sitter"
         update-types:
           - "major"
-      production-version-minor-patch:
+      production-minor-patch:
         applies-to: "version-updates"
         dependency-type: "production"
+        exclude-patterns:
+          - "@docusaurus/*"
+          - "tree-sitter-devicetree"
+          - "web-tree-sitter"
         update-types:
           - "minor"
           - "patch"
-      development-version:
+      docusaurus-major:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        patterns:
+          - "@docusaurus/*"
+        update-types:
+          - "major"
+      docusaurus-minor-patch:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        patterns:
+          - "@docusaurus/*"
+        update-types:
+          - "minor"
+          - "patch"
+      tree-sitter:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        patterns:
+          - "tree-sitter-devicetree"
+          - "web-tree-sitter"
+      development:
         applies-to: "version-updates"
         dependency-type: "development"
         update-types:
