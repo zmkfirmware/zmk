@@ -6,12 +6,10 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
-#include "layouts/full.dtsi"
-#include "layouts/6column.dtsi"
-#include "layouts/5column.dtsi"
+#include "jorne-layouts.dtsi"
 
 &joric_jorne_full_layout {
-    transform = <&default_transform>;
+    transform = <&jorne_transform>;
 };
 
 &foostan_corne_6col_layout {
@@ -29,7 +27,7 @@
         zmk,physical-layout = &joric_jorne_full_layout;
     };
 
-    default_transform: keymap_transform_0 {
+    jorne_transform: keymap_transform_0 {
         compatible = "zmk,matrix-transform";
         columns = <12>;
         rows = <4>;

@@ -79,7 +79,7 @@
 };
 
 /* For right hand, the columns are offset by 7 */
-&default_transform {
+&matrix_transform0 {
     col-offset = <7>;
 };
 
