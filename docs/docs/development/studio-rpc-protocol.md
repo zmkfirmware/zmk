@@ -2,12 +2,6 @@
 title: ZMK Studio RPC Protocol
 ---
 
-:::warning[Beta Feature]
-
-ZMK Studio is in beta. Although every effort has been made to provide a stable experience, you may still encounter issues during use. Please report any issues to [GitHub Issues](https://github.com/zmkfirmware/zmk-studio/issues).
-
-:::
-
 :::danger
 Before reading this section, it is **vital** that you read through our [clean room policy](./contributing/clean-room.md).
 :::

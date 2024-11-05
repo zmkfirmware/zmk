@@ -39,12 +39,6 @@ The `kscan` property only needs to be assigned if some of your physical layouts 
 
 ## (Optional) Keys Property
 
-:::warning[Beta Feature]
-
-ZMK Studio is in beta. Although every effort has been made to provide a stable experience, you may still encounter issues during use. Please report any issues to [GitHub Issues](https://github.com/zmkfirmware/zmk-studio/issues).
-
-:::
-
 The `keys` property is required for [ZMK Studio](../../features/studio.md) support. It is used to describe the physical attributes of each key position present in that layout.
 
 To pull in the necessary definition for creating physical layouts with the `keys` property, a new include should be added to the top of the devicetree file:
