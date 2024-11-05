@@ -8,3 +8,21 @@ updates:
     directory: "/docs"
     schedule:
       interval: "daily"
+    groups:
+      production-version-major:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        update-types:
+          - "major"
+      production-version-minor-patch:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      development-version:
+        applies-to: "version-updates"
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
