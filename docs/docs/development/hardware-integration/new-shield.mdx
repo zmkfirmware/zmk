@@ -448,19 +448,10 @@ Also see the [matrix transform section](../../config/layout.md#matrix-transform)
 
 Your keyboard will need to have a physical layout defined.
 Read through our [dedicated page on physical layouts](./physical-layouts.md) for information on how to define a physical layout.
-Physical layouts should be placed in the same file as the matrix transform, i.e. `my_keyboard.overlay` for unibodies and `my_keyboard.dtsi` for split keyboards.
-
-A very basic physical layout looks like this:
+Once you have finished creating your physical layout, you should import the file in which it was created:
 
 ```dts
-/ {
-    default_layout: default_layout {
-        compatible = "zmk,physical-layout";
-        display-name = "Default Layout";
-        transform = <&default_transform>;
-        kscan = <&kscan0>;
-    };
-};
+#include "my_keyboard-layouts.dtsi"
 ```
 
 ### Chosen Node
@@ -470,7 +461,7 @@ Set the `chosen` node to a defined "default" physical layout. This should also b
 ```dts
 / {
     chosen {
-        zmk,physical-layout = &default_layout;
+        zmk,physical-layout = &physical_layout0;
         // Other chosen items
     };
 };
@@ -485,7 +476,7 @@ If all of your physical layouts use the same `kscan` node under the hood, you ca
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,physical-layout = &default_layout;
+        zmk,physical-layout = &physical_layout0;
         // Other chosen items
     };
 };
