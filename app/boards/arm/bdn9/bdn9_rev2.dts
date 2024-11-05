@@ -11,7 +11,11 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
-#include <physical_layouts.dtsi>
+#include "bdn9_rev2-layouts.dtsi"
+
+&physical_layout0 {
+    transform = <&matrix_transform0>;
+};
 
 / {
     model = "Keeb.io BDN9 rev2";
@@ -20,13 +24,12 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zmk,kscan = &kscan;
         zmk,underglow = &led_strip;
+        zmk,physical-layout = &physical_layout0;
+        zmk,kscan = &kscan0;
     };
 
-    matrix_transform: matrix_transform {
-        compatible = "zmk,matrix-transform";
-
+    matrix_transform0: matrix_transform_0 {
         compatible = "zmk,matrix-transform";
         columns = <3>;
         rows = <3>;
@@ -37,26 +40,7 @@
         >;
     };
 
-    physical_layout {
-        compatible = "zmk,physical-layout";
-
-        display-name = "BDN9";
-        transform = <&matrix_transform>;
-
-        keys  //                     w   h    x    y     rot    rx    ry
-            = <&key_physical_attrs 100 100    0    0       0     0     0>
-            , <&key_physical_attrs 100 100  100    0       0     0     0>
-            , <&key_physical_attrs 100 100  200    0       0     0     0>
-            , <&key_physical_attrs 100 100    0  100       0     0     0>
-            , <&key_physical_attrs 100 100  100  100       0     0     0>
-            , <&key_physical_attrs 100 100  200  100       0     0     0>
-            , <&key_physical_attrs 100 100    0  200       0     0     0>
-            , <&key_physical_attrs 100 100  100  200       0     0     0>
-            , <&key_physical_attrs 100 100  200  200       0     0     0>
-            ;
-    };
-
-    kscan: kscan {
+    kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-direct";
 
         input-gpios

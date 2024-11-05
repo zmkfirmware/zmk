@@ -6,12 +6,10 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
-#include "layouts/full.dtsi"
-#include "layouts/jian.dtsi"
-#include "layouts/6column.dtsi"
+#include "jiran-layouts.dtsi"
 
 &ladniy_jiran_full_layout {
-    transform = <&default_transform>;
+    transform = <&jiran_transform>;
 };
 
 &kgoh_jian_full_layout {
@@ -28,7 +26,7 @@
         zmk,physical-layout = &ladniy_jiran_full_layout;
     };
 
-    default_transform: keymap_transform_0 {
+    jiran_transform: keymap_transform_0 {
         compatible = "zmk,matrix-transform";
         columns = <12>;
         rows = <5>;
