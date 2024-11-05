@@ -10,22 +10,32 @@ It contains:
 - A [matrix transform](../../config/layout.md#matrix-transform)
 - (Optional) [Physical key positions](#optional-keys-property)
 
+By convention, physical layouts and any [position maps](#position-map) are defined in a separate file called `<your keyboard>-layouts.dtsi`.
+This file should then be imported by the appropriate file, such as an `.overlay`, `.dts`, or a `.dtsi` (the last of which is itself imported by one of the previous).
+
 ## Basic Physical Layout
 
-A basic physical layout without the `keys` property looks like this:
+A bare physical layout without the `keys` property looks like this:
 
-```dts
+```dts title="<your keyboard>-layouts.dtsi"
 / {
-    default_layout: default_layout {
+    physical_layout0: physical_layout_0 {
         compatible = "zmk,physical-layout";
         display-name = "Default Layout";
-        transform = <&default_transform>;
-        kscan = <&kscan0>;
     };
 };
 ```
 
-It is given a name, a matrix transform, and a kscan. If all of your physical layouts share the same kscan, then the `kscan` property can be omitted - in this case it needs to be set in the [`chosen` node](./new-shield.mdx#chosen-node). See the [configuration section on physical layouts](../../config/index.md) for reference.
+Every physical layout needs a matrix transform, and optionally can also have a kscan. By convention, these are assigned to the physical layout in the file where the matrix transform and kscan are defined:
+
+```dts title="<your keyboard>.dts | <your keyboard>.dtsi | <your keyboard>.overlay"
+&physical_layout0 {
+    kscan = <&kscan0>;
+    transform = <&matrix_transform0>;
+};
+```
+
+The `kscan` property only needs to be assigned if some of your physical layouts use different kscans. Otherwise, it can be omitted and the `kscan` can be assigned in the [`chosen` node](./new-shield.mdx#chosen-node) instead. See the [configuration section on physical layouts](../../config/layout.md#physical-layout) for reference.
 
 ## (Optional) Keys Property
 
@@ -35,11 +45,11 @@ ZMK Studio is in beta. Although every effort has been made to provide a stable e
 
 :::
 
-The `keys` property is required for [ZMK Studio](../../features/studio.md) support. It is used to describe the physical attributes of each key position present in that layout. If this property is used, then you should define the physical layouts and any [position maps](#position-map) in a file called `<your keyboard>-layouts.dtsi`. This file should then be imported by the appropriate file, such as an `.overlay`, `.dts`, or a `.dtsi` (last of which is itself imported by one of the previous).
+The `keys` property is required for [ZMK Studio](../../features/studio.md) support. It is used to describe the physical attributes of each key position present in that layout.
 
 To pull in the necessary definition for creating physical layouts with the `keys` property, a new include should be added to the top of the devicetree file:
 
-```
+```dts title="<your keyboard>-layouts.dtsi"
 #include <physical_layouts.dtsi>
 ```
 
@@ -64,7 +74,7 @@ You can specify negative values in devicetree using parentheses around it, e.g. 
 
 Here is an example of a physical layout for a 2x2 macropad:
 
-```dts
+```dts title="macropad-layouts.dtsi"
 #include <physical_layouts.dtsi>
 
 / {
@@ -90,7 +100,7 @@ To use such layouts, import them and assign their `transform` and (optionally) `
 
 Here is an example of using the predefined physical layouts for a keyboard with the same layout as the "ferris":
 
-```dts
+```dts title="ferris.dtsi"
 #include <layouts/cuddlykeyboards/ferris.dtsi>
 
 // Assigning suitable kscan and matrix transforms
@@ -104,7 +114,7 @@ Shared physical layouts found in the same folder are defined such that they can 
 
 Here is an example of using the predefined physical layouts for a 60% keyboard:
 
-```dts
+```dts title="bt60_v1.dts"
 #include <layouts/common/60percent/all1u.dtsi>
 #include <layouts/common/60percent/ansi.dtsi>
 #include <layouts/common/60percent/hhkb.dtsi>
