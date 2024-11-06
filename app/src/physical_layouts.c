@@ -62,7 +62,7 @@ BUILD_ASSERT(
         .matrix_transform = ZMK_MATRIX_TRANSFORM_T_FOR_NODE(DT_INST_PHANDLE(n, transform)),        \
         .keys = _CONCAT(_zmk_physical_layout_keys_, n),                                            \
         .keys_len = DT_INST_PROP_LEN_OR(n, keys, 0),                                               \
-        .kscan = DEVICE_DT_GET(COND_CODE_1(DT_INST_PROP_LEN(n, kscan),                             \
+        .kscan = DEVICE_DT_GET(COND_CODE_1(DT_INST_NODE_HAS_PROP(n, kscan),                        \
                                            (DT_INST_PHANDLE(n, kscan)), (DT_CHOSEN(zmk_kscan))))};
 
 DT_INST_FOREACH_STATUS_OKAY(ZMK_LAYOUT_INST)
