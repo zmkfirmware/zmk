@@ -22,12 +22,14 @@ Now that pre-commit is installed on your PC, you need to install it into the ZMK
 
 ```bash
 pre-commit install
+pre-commit install --hook-type commit-msg
 ```
 
 This should print a message such as
 
 ```
-pre-commit installed at .git\hooks\pre-commit
+pre-commit installed at .git/hooks/pre-commit
+pre-commit installed at .git/hooks/commit-msg
 ```
 
 Pre-commit will now automatically check your changes whenever you run `git commit`. If it detects a problem, it will describe the problem and cancel the commit. For simple problems such as incorrect formatting, it will also automatically fix the files so you can just `git add` them and try again.
