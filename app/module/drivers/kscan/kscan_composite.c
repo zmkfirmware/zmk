@@ -25,7 +25,7 @@ struct kscan_composite_child_config {
 #define CHILD_CONFIG(inst)                                                                         \
     {.child = DEVICE_DT_GET(DT_PHANDLE(inst, kscan)),                                              \
      .row_offset = DT_PROP(inst, row_offset),                                                      \
-     .column_offset = DT_PROP(inst, column_offset)},
+     .column_offset = DT_PROP_OR(inst, col_offset, DT_PROP(inst, column_offset))},
 
 struct kscan_composite_config {
     const struct kscan_composite_child_config *children;

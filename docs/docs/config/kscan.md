@@ -223,11 +223,11 @@ Definition file: [zmk/app/dts/bindings/zmk,kscan-composite.yaml](https://github.
 
 The `zmk,kscan-composite` node should have one child node per keyboard scan driver that should be composited. Each child node can have the following properties:
 
-| Property        | Type    | Description                                                                    | Default |
-| --------------- | ------- | ------------------------------------------------------------------------------ | ------- |
-| `kscan`         | phandle | Label of the kscan driver to include                                           |         |
-| `row-offset`    | int     | Shifts row 0 of the included driver to a new row in the composite matrix       | 0       |
-| `column-offset` | int     | Shifts column 0 of the included driver to a new column in the composite matrix | 0       |
+| Property     | Type    | Description                                                                    | Default |
+| ------------ | ------- | ------------------------------------------------------------------------------ | ------- |
+| `kscan`      | phandle | Label of the kscan driver to include                                           |         |
+| `row-offset` | int     | Shifts row 0 of the included driver to a new row in the composite matrix       | 0       |
+| `col-offset` | int     | Shifts column 0 of the included driver to a new column in the composite matrix | 0       |
 
 ### Example Configuration
 
