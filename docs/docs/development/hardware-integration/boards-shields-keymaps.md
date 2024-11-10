@@ -42,8 +42,8 @@ In that directory you'll have the following files, where there can be multiple `
 
 ## Composite Keyboard
 
-Keyboards that require a (usually Pro Micro compatible) add-on board to operate are [composite keyboards](../../hardware.mdx#composite), where the ZMK integration pieces are placed in the _shield_ definition for that keyboard.
-This allows users to swap in different boards that use the same interconnect (e.g. Proton-C, or nice!nano) and build a firmware the matches their actual combination of physical components.
+Keyboards that require an add-on board to operate are [composite keyboards](../../hardware.mdx#composite), where the ZMK integration pieces are placed in the _shield_ definition for that keyboard.
+This allows users to swap in different boards that use the same interconnect (e.g. Pro Micro RP2040, or nice!nano) and build a firmware the matches their actual combination of physical components.
 
 With this type of keyboard, the partial definition for the keyboard exists in the `app/boards/shields/<keyboard_name>` directory, e.g. `app/boards/shields/clueboard_california/`.
 In that directory, you'll have the following files, where there can be multiple `<shield_name>`s, corresponding to each keyboard part for [split keyboards](../../features/split-keyboards.md):
