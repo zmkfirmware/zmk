@@ -13,3 +13,11 @@ CONFIG_ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN=y
 CONFIG_ZMK_LV_FONT_DEFAULT_SMALL_MONTSERRAT_26=y
 CONFIG_LV_FONT_DEFAULT_MONTSERRAT_26=y
 ```
+
+## Rotate screen
+
+You can rotate the custom widget by 180 degrees To use add the following item to your `.conf` file:
+
+```
+CONFIG_NICE_VIEW_ROTATE_180=y
+```
