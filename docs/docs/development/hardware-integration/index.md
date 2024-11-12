@@ -3,6 +3,9 @@ title: Hardware Integration
 sidebar_label: Overview
 ---
 
+This section of the documentation describes steps necessary to get ZMK running on a keyboard.
+Please see pages in the sidebar for guides and reference that describe different aspects of this integration.
+
 The foundational elements needed to get a specific keyboard working with ZMK can be broken down into:
 
 - A [physical layout](physical-layouts.md) that describes the electrical and physical structure of the keyboard, referring to:
@@ -10,16 +13,19 @@ The foundational elements needed to get a specific keyboard working with ZMK can
   - A [matrix transform](../../config/layout.md), which defines how the kscan row/column events are translated into logical "key positions".
   - An [optional description](physical-layouts.md#optional-keys-property) of physical key positions and sizes, in order to visualize the keyboard accurately in [ZMK Studio](../../features/studio.md).
 - A [keymap](../../keymaps/index.mdx), which binds each key position to a behavior, e.g. key press, mod-tap, momentary layer, in a set of layers.
-- Other, optional configuration items for features such as encoders or lighting systems.
+- Other, optional configuration items to support features such as encoders or lighting systems.
 
 These core architectural elements are defined per-keyboard, and _where_ they are defined depends on the specifics of how that keyboard is built.
 For an overview on the general concepts of boards and shields, also see the [FAQs on boards and shields](../../faq.md#why-boards-and-shields-why-not-just-keyboard).
 
-## Self-Contained Keyboard
+## Organizational Overview
 
-For a [self-contained keyboard](../../hardware.mdx#onboard) that includes the microprocessor, all of the above architecture components are included in the Zephyr _board_ definition. You can see an example for the [Planck V6](https://github.com/zmkfirmware/zmk/tree/main/app/boards/arm/planck) board directory.
+### Self-Contained Keyboard
 
-With this type of keyboard, the full ZMK definition for the keyboard exists in the `app/boards/<arch>/<keyboard_name>` directory, e.g. `app/boards/arm/planck/`.
+For a [self-contained keyboard](../../hardware.mdx#onboard) that includes the microprocessor, all of the above architecture components are included in the Zephyr _board_ definition.
+You can see an example for the [Planck V6](https://github.com/zmkfirmware/zmk/tree/main/app/boards/arm/planck) board directory.
+
+With this type of keyboard, the full ZMK definition for the keyboard exists in the `<board_root>/boards/<arch>/<keyboard_name>` directory where `<board_root>` is `zmk/app` or a [module](../../features/modules.mdx) root, e.g. `zmk/app/boards/arm/planck/`.
 In that directory you'll have the following files, where there can be multiple `<board_name>`s, corresponding to each keyboard part for [split keyboards](../../features/split-keyboards.md):
 
 - A `Kconfig.board` file that defines the toplevel [Kconfig](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html) items for the board, including which SoC Kconfig setting it depends on.
@@ -39,12 +45,12 @@ In that directory you'll have the following files, where there can be multiple `
     Parts of these files can live in separate `.dtsi` files (typically in the same directory) that are then `#include`d in the files, to reduce duplication or improve organization.
     For instance, a shared `<keyboard_name>.dtsi` file is used for split keyboards that contains devicetree definitions that are shared across keyboard parts.
 
-## Composite Keyboard
+### Composite Keyboard
 
 Keyboards that require an add-on board to operate are [composite keyboards](../../hardware.mdx#composite), where the ZMK integration pieces are placed in the _shield_ definition for that keyboard.
 This allows users to swap in different boards that use the same interconnect (e.g. Pro Micro RP2040, or nice!nano) and build a firmware the matches their actual combination of physical components.
 
-With this type of keyboard, the partial definition for the keyboard exists in the `app/boards/shields/<keyboard_name>` directory, e.g. `app/boards/shields/clueboard_california/`.
+With this type of keyboard, the partial definition for the keyboard exists in the `<board_root>/boards/shields/<keyboard_name>` directory where `<board_root>` is `zmk/app` or a [module](../../features/modules.mdx) root, e.g. `zmk/app/boards/shields/clueboard_california/`.
 In that directory, you'll have the following files, where there can be multiple `<shield_name>`s, corresponding to each keyboard part for [split keyboards](../../features/split-keyboards.md):
 
 - A `Kconfig.shield` that defines the toplevel Kconfig value for the shield, which uses a supplied utility to function to default the value based on the shield list, e.g. `def_bool $(shields_list_contains,clueboard_california)`.
