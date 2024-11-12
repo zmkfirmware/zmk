@@ -51,6 +51,12 @@ You can use ZMK Studio with Chrome/Edge at https://zmk.studio/.
 
 To use the native app for Linux, macOS, or Windows, download the appropriate file from the [latest release](https://github.com/zmkfirmware/zmk-studio/releases).
 
+:::warning
+
+To use ZMK Studio over USB, you need permission to access the USB serial port. This most commonly occurs on Linux, with various distributions having different methods of resolving the error. For example, you may need to be added to a `uucp` or a `dialout` group. Refer to your operating system's documentation for more information.
+
+:::
+
 ## Building
 
 Building for ZMK Studio involves two main additional items.
