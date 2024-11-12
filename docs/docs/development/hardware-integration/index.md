@@ -1,8 +1,7 @@
 ---
-title: Boards, Shields, and Keymaps
+title: Hardware Integration
+sidebar_label: Overview
 ---
-
-## Architecture Overview
 
 The foundational elements needed to get a specific keyboard working with ZMK can be broken down into:
 
