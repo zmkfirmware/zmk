@@ -3,6 +3,9 @@ title: Hardware Integration
 sidebar_label: Overview
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 This section of the documentation describes steps necessary to get ZMK running on a keyboard.
 Please see pages in the sidebar for guides and reference that describe different aspects of this integration.
 
@@ -39,7 +42,14 @@ he shield is usually the big PCB containing all the keys.
 
 ## Organization Overview
 
-### Self-Contained Keyboards
+<Tabs
+defaultValue="self-contained"
+values={[
+{label: 'Self-contained keyboards', value: 'self-contained'},
+{label: 'Composite keyboards', value: 'composite'},
+]}>
+
+<TabItem value="self-contained">
 
 For a [self-contained keyboard](../../hardware.mdx#onboard) that includes the microprocessor, all of the above architecture components are included in the Zephyr _board_ definition and no shield is defined.
 You can see an example for the [Planck V6](https://github.com/zmkfirmware/zmk/tree/main/app/boards/arm/planck) board directory.
@@ -78,7 +88,8 @@ With these files in place, the final folder structure can look like the followin
     Parts of these files can live in separate `.dtsi` files (typically in the same directory) that are then `#include`d in the files, to reduce duplication or improve organization.
     For instance, a shared `<keyboard_name>.dtsi` file is used for split keyboards that contains devicetree definitions that are shared across keyboard parts.
 
-### Composite Keyboards
+</TabItem>
+<TabItem value="composite">
 
 Keyboards that require an add-on board to operate are [composite keyboards](../../hardware.mdx#composite), where the ZMK integration pieces are placed in the _shield_ definition for that keyboard.
 This allows users to swap in different boards that use the same interconnect (e.g. Pro Micro RP2040, or nice!nano) and build a firmware the matches their actual combination of physical components.
@@ -106,3 +117,6 @@ With these files in place, the final folder structure can look like the followin
 ```
 
 See the [new keyboard shield guide](new-shield.mdx) for documentation that walks you through creating these files to define a new composite keyboard.
+
+</TabItem>
+</Tabs>

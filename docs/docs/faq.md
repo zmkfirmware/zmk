@@ -49,9 +49,9 @@ ZMK is still in its infancy, so thereâ€™s a learning curve involved. But if youâ
 
 ### Why _boards_ and _shields_? Why not just "keyboard"?
 
-If you haven't already done so, please read the [explainer on boards & shields](development/hardware-integration/index.md#boards--shields) first.
+If you haven't already done so, please read the [explainer on boards & shields](development/hardware-integration/index.mdx#boards--shields) first.
 
-When a keyboard accepts a small "PCB MCU module" (e.g. _Arduino Pro Micro_) for its "brains", then it's important to conceptually separate the hardware into a [board](development/hardware-integration/index.md#what-is-a-board) PCB and a [shield](development/hardware-integration/index.md#what-is-a-shield) PCB.
+When a keyboard accepts a small "PCB MCU module" (e.g. _Arduino Pro Micro_) for its "brains", then it's important to conceptually separate the hardware into a [board](development/hardware-integration/index.mdx#what-is-a-board) PCB and a [shield](development/hardware-integration/index.mdx#what-is-a-shield) PCB.
 
 The shield is a brainless shell containing all the keys, RGB LEDs, encoders etc. It maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
 
