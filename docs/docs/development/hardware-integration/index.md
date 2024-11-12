@@ -15,14 +15,33 @@ The foundational elements needed to get a specific keyboard working with ZMK can
 - A [keymap](../../keymaps/index.mdx), which binds each key position to a behavior, e.g. key press, mod-tap, momentary layer, in a set of layers.
 - Other, optional configuration items to support features such as encoders or lighting systems.
 
-These core architectural elements are defined per-keyboard, and _where_ they are defined depends on the specifics of how that keyboard is built.
-For an overview on the general concepts of boards and shields, also see the [FAQs on boards and shields](../../faq.md#why-boards-and-shields-why-not-just-keyboard).
+These core architectural elements are defined per-keyboard, and _where_ they are defined depends on the specifics of how that keyboard is structured.
 
-## Organizational Overview
+## Boards & Shields
 
-### Self-Contained Keyboard
+ZMK uses the Zephyr concepts of "boards" and "shields" to refer to different parts of a keyboard build, that in turn get combined during a firmware build.
+This provides the modularity to be able to use [composite keyboards](#composite-keyboards) with different compatible controllers.
+Also see the "Why boards and shields" question in the [FAQ](../../faq.md#why-boards-and-shields-why-not-just-keyboard) for a longer explanation.
 
-For a [self-contained keyboard](../../hardware.mdx#onboard) that includes the microprocessor, all of the above architecture components are included in the Zephyr _board_ definition.
+### What is a "board"?
+
+In ZMK, a _board_ defines the _PCB_ that _includes the microcontroller unit (MCU)_.
+For keyboards, this is one of two options:
+
+- Complete keyboard PCBs that include the MCU (e.g. the Planck or Preonic).
+- Small MCU boards (e.g. the nice!nano or Seeed Studio Xiao RP2040) that expose pins and are designed to be combined with larger keyboard PCBs, or hand-wired to switches to create the final keyboard.
+
+### What is a "shield"?
+
+In ZMK, a _shield_ is a _PCB_ or _hardwired set of components_ that when combined with an MCU-only board, like the SparkFun Pro Micro RP2040 or nice!nano, results in a complete usable keyboard.
+Examples would be keyboard PCBs like the Kyria or Lily58.
+he shield is usually the big PCB containing all the keys.
+
+## Organization Overview
+
+### Self-Contained Keyboards
+
+For a [self-contained keyboard](../../hardware.mdx#onboard) that includes the microprocessor, all of the above architecture components are included in the Zephyr _board_ definition and no shield is defined.
 You can see an example for the [Planck V6](https://github.com/zmkfirmware/zmk/tree/main/app/boards/arm/planck) board directory.
 
 With this type of keyboard, the full ZMK definition for the keyboard exists in the `<board_root>/boards/<arch>/<keyboard_name>` directory where `<board_root>` is `zmk/app` or a [module](../../features/modules.mdx) root, e.g. `zmk/app/boards/arm/planck/`.
@@ -45,7 +64,7 @@ In that directory you'll have the following files, where there can be multiple `
     Parts of these files can live in separate `.dtsi` files (typically in the same directory) that are then `#include`d in the files, to reduce duplication or improve organization.
     For instance, a shared `<keyboard_name>.dtsi` file is used for split keyboards that contains devicetree definitions that are shared across keyboard parts.
 
-### Composite Keyboard
+### Composite Keyboards
 
 Keyboards that require an add-on board to operate are [composite keyboards](../../hardware.mdx#composite), where the ZMK integration pieces are placed in the _shield_ definition for that keyboard.
 This allows users to swap in different boards that use the same interconnect (e.g. Pro Micro RP2040, or nice!nano) and build a firmware the matches their actual combination of physical components.
