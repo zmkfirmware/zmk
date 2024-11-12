@@ -59,6 +59,20 @@ In that directory you'll have the following files, where there can be multiple `
   - A [chosen](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes) node including `zmk,physical-layout` property among others, where each property references the nodes defined in the file.
 - A `board.cmake` file with CMake directives for how to flash to the device.
 - A `<keyboard_name>.keymap` file that includes the default keymap for that keyboard. Users will be able to override this keymap in their user configs.
+- A `<keyboard_name>.zmk.yml` file containing [metadata](hardware-metadata-files.md) for the keyboard.
+
+With these files in place, the final folder structure can look like the following for a basic non-split keyboard:
+
+```
+<keyboard_name>
+├── Kconfig.board
+├── Kconfig.defconfig
+├── board.cmake
+├── <board_name>.dts
+├── <board_name>_defconfig
+├── <keyboard_name>.keymap
+└── <keyboard_name>.zmk.yml
+```
 
 [^1]:
     Parts of these files can live in separate `.dtsi` files (typically in the same directory) that are then `#include`d in the files, to reduce duplication or improve organization.
@@ -78,5 +92,17 @@ In that directory, you'll have the following files, where there can be multiple 
   - Kscan, matrix transform and physical layout devicetree nodes as described above, where the kscan node uses the interconnect [nexus node](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#gpio-nexus-nodes) aliases such as `&pro_micro` for GPIO pins.
   - A [chosen](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes) node including at least the `zmk,physical-layout` property, referring to the defined node.
 - A `<keyboard_name>.keymap` file that includes the default keymap for that keyboard. Users will be able to override this keymap in their user configs.
+- A `<keyboard_name>.zmk.yml` file containing [metadata](hardware-metadata-files.md) for the keyboard.
+
+With these files in place, the final folder structure can look like the following for a basic non-split keyboard:
+
+```
+<keyboard_name>
+├── Kconfig.defconfig
+├── Kconfig.shield
+├── <keyboard_name>.keymap
+├── <keyboard_name>.zmk.yml
+└── <shield_name>.overlay
+```
 
 See the [new keyboard shield guide](new-shield.mdx) for documentation that walks you through creating these files to define a new composite keyboard.
