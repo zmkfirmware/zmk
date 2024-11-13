@@ -12,22 +12,6 @@ Some of those behaviors are still in the works; the ones that are working now ar
 Multiple layers can be active at the same time and activating a layer will not deactivate layers higher up in the "layer stack". See [Layers](../index.mdx#layers) for more information.
 :::
 
-## Defines to Refer to Layers
-
-When working with layers, you may have several different key positions with bindings that enable/disable those layers.
-To make it easier to refer to those layers in your key bindings, and to change which layers are where later, you can
-add a set of `#define`s at the top of your keymap file, and use those layer in your keymap.
-
-For example, if you have three layers, you can add the following to the top of your keymap:
-
-```dts
-#define DEFAULT 0
-#define LOWER   1
-#define RAISE   2
-```
-
-This allows you to use those defines, e.g. `LOWER` later in your keymap.
-
 ## Momentary Layer
 
 The "momentary layer" behavior enables a layer while a certain key is pressed. Immediately upon
@@ -42,7 +26,7 @@ again.
 Example:
 
 ```dts
-&mo LOWER
+&mo 3
 ```
 
 ## Layer-Tap
@@ -58,7 +42,7 @@ The "layer-tap" behavior enables a layer when a key is held, and outputs a [keyp
 Example:
 
 ```dts
-&lt LOWER SPACE
+&lt 3 SPACE
 ```
 
 ### Configuration
@@ -113,10 +97,30 @@ The "toggle layer" behavior enables a layer if it is currently disabled, or disa
 Example:
 
 ```dts
-&tog LOWER
+&tog 3
 ```
 
 ## Conditional Layers
 
 The "conditional layers" feature enables a particular layer when all layers in a specified set are active.
 For more information, see [conditional layers](../conditional-layers.md).
+
+## Defines to Refer to Layers
+
+When working with layers, you may have several different key positions with bindings that enable/disable those layers.
+To make it easier to refer to those layers in your key bindings, and to change which layers are where later, you can
+add a set of `#define`s at the top of your keymap file, and use those defines in your keymap.
+
+For example, if you have three layers, you can add the following to the top of your keymap:
+
+```dts
+#define DEFAULT 0
+#define LOWER   1
+#define RAISE   2
+```
+
+This allows you to use those defines, e.g. `LOWER` later in your keymap.
+
+```dts
+&mo LOWER  // equivalent to &mo 1
+```
