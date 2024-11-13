@@ -391,7 +391,7 @@ A non-`complete` position map can be used to assign mappings to only these parti
 };
 ```
 
-This is noticably simpler to write, and can be a useful way of saving flash space for memory-constrained devices.
+This is noticeably simpler to write, and can be a useful way of saving flash space for memory-constrained devices.
 
 #### Additional example: corne
 

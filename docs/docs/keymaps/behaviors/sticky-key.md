@@ -38,7 +38,7 @@ Some typists may find that using a sticky shift key interspersed with rapid typi
 
 By default, sticky keys are activated on press until another key is pressed. You can enable the `lazy` setting to instead activate the sticky key right _before_ the other key is pressed. This is useful for mouse interaction or situations where you don't want the host to see anything during a sticky-key timeout, for example `&sk LGUI`, which can trigger a menu if pressed alone.
 
-Note that tapping a lazy sticky key will not trigger other behaviors such as the release of other sticky keys or layers. If you want to use a lazy sticky key to activate the release of a sticky layer, potential solutions include wrappping the sticky key in a simple macro which presses the sticky behavior around the sticky key press, doing the same with `&mo LAYER`, or triggering a tap of some key like `K_CANCEL` on sticky key press.
+Note that tapping a lazy sticky key will not trigger other behaviors such as the release of other sticky keys or layers. If you want to use a lazy sticky key to activate the release of a sticky layer, potential solutions include wrapping the sticky key in a simple macro which presses the sticky behavior around the sticky key press, doing the same with `&mo LAYER`, or triggering a tap of some key like `K_CANCEL` on sticky key press.
 
 #### `ignore-modifiers`
 

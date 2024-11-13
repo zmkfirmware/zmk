@@ -78,7 +78,7 @@ block-beta
 
 ### Example Encoding (Escaping)
 
-When the message content includes any of the special bytes, those bytes are escaped whe framed
+When the message content includes any of the special bytes, those bytes are escaped when framed
 
 ```mermaid
 block-beta
