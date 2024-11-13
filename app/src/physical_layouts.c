@@ -32,8 +32,11 @@ ZMK_EVENT_IMPL(zmk_physical_layout_selection_changed);
 
 BUILD_ASSERT(
     !IS_ENABLED(CONFIG_ZMK_STUDIO) || USE_PHY_LAYOUTS,
-    "ZMK Studio requires physical layouts with key positions, and no chosen zmk,matrix-transform. "
-    "See https://zmk.dev/docs/development/hardware-integration/studio-setup");
+    "ISSUE FOUND: Keyboards require additional configuration to allow for firmware with ZMK "
+    "Studio enabled. You have attempted to build a keyboard lacking such configuration. Please see "
+    "https://zmk.dev/docs/features/studio#adding-zmk-studio-support-to-a-keyboard for "
+    "more information on how to resolve this error, or contact the maintainer of your keyboard's "
+    "firmware for assistance.");
 
 #if USE_PHY_LAYOUTS
 
