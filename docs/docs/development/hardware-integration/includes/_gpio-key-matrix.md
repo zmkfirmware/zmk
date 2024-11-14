@@ -11,4 +11,4 @@ Here is an example for a keyboard with a GPIO pin that reads from the matrix:
 };
 ```
 
-Matrix inputs are triggered by pulling the specified pin high, typically by pressing some combination of switches which connects the matrix input to a matrix output.
+MCU inputs are triggered by pulling the specified pin high, typically by pressing some combination of switches which connects the MCU input to an MCU output.
