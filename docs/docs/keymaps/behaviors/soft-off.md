@@ -38,3 +38,13 @@ By default, the keyboard will be turned off as soon as the key bound to the beha
     };
 };
 ```
+
+The peripheral half of a [split keyboard](../../features/split-keyboards.md) will always enter the soft off state immediately when triggering the behavior, regardless of the `hold-time-ms` setting. This is to ensure reliability, as otherwise the central may enter the soft off state before notifying the peripheral that it should also do so.
+
+If you wish to change this setting, and thus accept the potential for reliability issues, you may remove the `split-peripheral-off-on-press` flag from the behavior:
+
+```dts
+&soft_off {
+    /delete-property/ split-peripheral-off-on-press;
+};
+```

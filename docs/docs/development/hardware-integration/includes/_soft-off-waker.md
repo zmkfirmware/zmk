@@ -14,3 +14,4 @@ We need to add another device which will be enabled only when the keyboard is go
 ```
 
 The properties for the `gpio-key-wakeup-trigger` node can be found in the [appropriate configuration section](../../../config/power.md#gpio-key-wakeup-trigger).
+In particular, note the `extra-gpios` property containing the MCU output pins of any keys used to wake the keyboard (for a `col2row` matrix, these are your columns).
