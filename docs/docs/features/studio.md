@@ -72,9 +72,10 @@ Building for ZMK Studio involves two main additional items.
 
 ### GitHub Actions
 
-First add a `studio-rpc-usb-uart` to the `snippet` property of your build configuration. For a split keyboard, you should do this _only_ for your central/left side, e.g.:
+First add a `studio-rpc-usb-uart` to the `snippet` property of your build configuration, in the `build.yaml` file at the root of your user config.
+For a split keyboard, you should do this _only_ for your central/left side, e.g.:
 
-```
+```yaml title="build.yaml"
 ---
 include:
   - board: nice_nano_v2
