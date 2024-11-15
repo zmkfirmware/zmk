@@ -89,26 +89,6 @@ static int setup_pin_dir(const struct device *dev, uint32_t pin, int flags) {
     return 0;
 }
 
-static int reg_595_pin_config(const struct device *dev, gpio_pin_t pin, gpio_flags_t flags) {
-    int ret;
-
-    /* Can't do SPI bus operations from an ISR */
-    if (k_is_in_isr()) {
-        return -EWOULDBLOCK;
-    }
-
-    if ((flags & GPIO_OPEN_DRAIN) != 0U) {
-        return -ENOTSUP;
-    };
-
-    ret = setup_pin_dir(dev, pin, flags);
-    if (ret) {
-        LOG_ERR("595: error setting pin direction (%d)", ret);
-    }
-
-    return ret;
-}
-
 static int reg_595_port_get_raw(const struct device *dev, uint32_t *value) { return -ENOTSUP; }
 
 static int reg_595_port_set_masked_raw(const struct device *dev, uint32_t mask, uint32_t value) {
@@ -158,6 +138,32 @@ static int reg_595_port_toggle_bits(const struct device *dev, uint32_t mask) {
     ret = reg_595_write_registers(dev, buf);
 
     k_sem_give(&drv_data->lock);
+    return ret;
+}
+
+static int reg_595_pin_config(const struct device *dev, gpio_pin_t pin, gpio_flags_t flags) {
+    int ret;
+
+    /* Can't do SPI bus operations from an ISR */
+    if (k_is_in_isr()) {
+        return -EWOULDBLOCK;
+    }
+
+    if ((flags & GPIO_OPEN_DRAIN) != 0U) {
+        return -ENOTSUP;
+    };
+
+    ret = setup_pin_dir(dev, pin, flags);
+    if (ret) {
+        LOG_ERR("595: error setting pin direction (%d)", ret);
+    }
+
+    if ((flags & GPIO_OUTPUT_INIT_LOW) != 0) {
+        return reg_595_port_clear_bits_raw(dev, BIT(pin));
+    } else if ((flags & GPIO_OUTPUT_INIT_HIGH) != 0) {
+        return reg_595_port_set_bits_raw(dev, BIT(pin));
+    }
+
     return ret;
 }
 
