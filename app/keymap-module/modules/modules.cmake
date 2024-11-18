@@ -65,12 +65,33 @@ if(DEFINED SHIELD)
     string(REPLACE " " ";" SHIELD_AS_LIST "${SHIELD}")
 endif()
 
-string(FIND "${BOARD}" "@" REVISION_SEPARATOR_INDEX)
-if(NOT (REVISION_SEPARATOR_INDEX EQUAL -1))
-    math(EXPR BOARD_REVISION_INDEX "${REVISION_SEPARATOR_INDEX} + 1")
-    string(SUBSTRING ${BOARD} ${BOARD_REVISION_INDEX} -1 BOARD_REVISION)
-    string(SUBSTRING ${BOARD} 0 ${REVISION_SEPARATOR_INDEX} BOARD)
-endif()
+# Helper function for parsing a board's name, revision, and qualifiers,
+# from one input variable to three separate output variables.
+function(parse_board_components board_in name_out revision_out qualifiers_out)
+  if(NOT "${${board_in}}" MATCHES "^([^@/]+)(@[^@/]+)?(/[^@]+)?$")
+    message(FATAL_ERROR
+      "Invalid revision / qualifiers format for ${board_in} (${${board_in}}). "
+      "Valid format is: <board>@<revision>/<qualifiers>"
+    )
+  endif()
+  string(REPLACE "@" "" board_revision "${CMAKE_MATCH_2}")
+
+  set(${name_out}       ${CMAKE_MATCH_1}  PARENT_SCOPE)
+  set(${revision_out}   ${board_revision} PARENT_SCOPE)
+  set(${qualifiers_out} ${CMAKE_MATCH_3}  PARENT_SCOPE)
+endfunction()
+
+parse_board_components(
+  BOARD
+  BOARD BOARD_REVISION BOARD_QUALIFIERS
+)
+
+# string(FIND "${BOARD}" "@" REVISION_SEPARATOR_INDEX)
+# if(NOT (REVISION_SEPARATOR_INDEX EQUAL -1))
+#     math(EXPR BOARD_REVISION_INDEX "${REVISION_SEPARATOR_INDEX} + 1")
+#     string(SUBSTRING ${BOARD} ${BOARD_REVISION_INDEX} -1 BOARD_REVISION)
+#     string(SUBSTRING ${BOARD} 0 ${REVISION_SEPARATOR_INDEX} BOARD)
+# endif()
 
 foreach(root ${BOARD_ROOT})
     set(shield_dir ${root}/boards/shields)
