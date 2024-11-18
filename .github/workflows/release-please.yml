@@ -1,0 +1,38 @@
+on:
+  push:
+    branches:
+      - main
+      - "v*.*-branch"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+name: release-please
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}
+          target-branch: ${{ github.ref_name }}
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.release_created }}
+      - name: create major, minor branch
+        if: ${{ steps.release.outputs.release_created && steps.release.outputs.patch == '0' }}
+        run: |
+          git remote add gh-token-branch "https://x-access-token:${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}@github.com/${{ github.repository }}.git"
+          git checkout -b v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}-branch
+          git push gh-token-branch v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}-branch
+      - name: tag major and minor versions
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git remote add gh-token "https://x-access-token:${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}@github.com/${{ github.repository }}.git"
+          git tag -d v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
+          git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
+          git push --force gh-token v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}

@@ -1,15 +1,8 @@
-<!-- If you're adding a board/shield please fill out this check-list, otherwise you can delete it -->
+<!-- Note: ZMK is generally not accepting PRs for new keyboards. New generic controller PRs *may* still be accepted, please discuss on the Discord server first. -->
 
-## Board/Shield Check-list
+## PR check-list
 
-- [ ] This board/shield is tested working on real hardware
-- [ ] Definitions follow the general style of other shields/boards upstream ([Reference](https://zmk.dev/docs/development/new-shield))
-- [ ] `.zmk.yml` metadata file added
+- [ ] Branch has a [clean commit history](https://zmk.dev/docs/development/contributing/pull-requests#clean-commit-history)
+- [ ] Additional tests are included, if changing behaviors/core code that is testable.
 - [ ] Proper Copyright + License headers added to applicable files (Generally, we stick to "The ZMK Contributors" for copyrights to help avoid churn when files get edited)
-- [ ] General consistent formatting of DeviceTree files
-- [ ] Keymaps do not use deprecated key defines (Check using the [upgrader tool](https://zmk.dev/docs/codes/keymap-upgrader))
-- [ ] `&pro_micro` used in favor of `&pro_micro_d/a` if applicable
-- [ ] If split, no name added for the right/peripheral half
-- [ ] Kconfig.defconfig file correctly wraps _all_ configuration in conditional on the shield symbol
-- [ ] `.conf` file has optional extra features commented out
-- [ ] Keyboard/PCB is part of a shipped group buy or is generally available in stock to purchase (OSH/personal projects without general availability should create a zmk-config repo instead)
+- [ ] [Pre-commit](https://zmk.dev/docs/development/local-toolchain/pre-commit) used to check formatting of files, commit messages, etc.

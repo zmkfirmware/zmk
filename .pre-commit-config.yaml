@@ -16,7 +16,12 @@ repos:
     rev: v2.7.1
     hooks:
       - id: prettier
-        exclude: ".git/COMMIT_EDITMSG"
+        exclude: |
+          (?x)^(
+              .git/COMMIT_EDITMSG|
+              CHANGELOG.md|
+              .release-please-manifest.json
+          )$
         # Workaround for https://github.com/pre-commit/mirrors-prettier/issues/29
         additional_dependencies:
           - prettier@2.8.7
