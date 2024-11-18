@@ -185,10 +185,6 @@ config BT_SMP_ALLOW_UNAUTH_OVERWRITE
 config BT_CTLR_PHY_2M
     default n if ZMK_BLE_EXPERIMENTAL_CONN
 
-# BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
-config BT_TINYCRYPT_ECC
-    default y if BT_HCI && !BT_CTLR
-
 config ZMK_BLE_THREAD_STACK_SIZE
     int "BLE notify thread stack size"
     default 768
@@ -704,8 +700,6 @@ rsource "boards/shields/*/Kconfig.shield"
 # This loads custom shields defconfigs (from BOARD_ROOT)
 # Duplicated from Kconfig.zephyr
 osource "$(KCONFIG_BINARY_DIR)/Kconfig.shield.defconfig"
-
-source "$(BOARD_DIR)/Kconfig.defconfig"
 
 # This loads board and shield Kconfigs found under zmk-config/config/
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
