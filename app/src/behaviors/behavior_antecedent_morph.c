@@ -138,7 +138,7 @@ static int on_antecedent_morph_binding_pressed(struct zmk_behavior_binding *bind
     }
   }
 
-  return behavior_keymap_binding_pressed(data->pressed_binding, event);
+  return zmk_behavior_invoke_binding(data->pressed_binding,event,true);
 }
 
 // The release of the antecedent morph behavior considers the behavior that was recorded in the instance data and
@@ -159,7 +159,7 @@ static int on_antecedent_morph_binding_released(struct zmk_behavior_binding *bin
 
   struct zmk_behavior_binding *pressed_binding = data->pressed_binding;
   data->pressed_binding = NULL;
-  return behavior_keymap_binding_released(pressed_binding, event);
+  return zmk_behavior_invoke_binding(pressed_binding,event,false);
 }
 
 static const struct behavior_driver_api behavior_antecedent_morph_driver_api = {
