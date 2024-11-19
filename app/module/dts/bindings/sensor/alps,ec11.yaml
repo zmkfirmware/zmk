@@ -25,3 +25,11 @@ properties:
     type: int
     description: Number of pulses in one full rotation
     required: false
+  debounce-ms:
+    type: int
+    default: 5
+    description: Debounce time in milliseconds.
+  debounce-scan-period-ms:
+    type: int
+    default: 1
+    description: Time between reads in milliseconds when the encoder state is changed.
