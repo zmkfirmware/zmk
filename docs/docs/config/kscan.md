@@ -216,10 +216,11 @@ Applies to : `compatible = "zmk,kscan-composite"`
 
 Definition file: [zmk/app/dts/bindings/zmk,kscan-composite.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk,kscan-composite.yaml)
 
-| Property  | Type | Description                                   | Default |
-| --------- | ---- | --------------------------------------------- | ------- |
-| `rows`    | int  | The number of rows in the composite matrix    |         |
-| `columns` | int  | The number of columns in the composite matrix |         |
+| Property        | Type | Description                                                                                                                   | Default |
+| --------------- | ---- | ----------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `rows`          | int  | The number of rows in the composite matrix                                                                                    |         |
+| `columns`       | int  | The number of columns in the composite matrix                                                                                 |         |
+| `wakeup-source` | bool | Mark this kscan instance as able to wake the keyboard. Required to keep the child kscan devices from being suspended as well. |
 
 The `zmk,kscan-composite` node should have one child node per keyboard scan driver that should be composited. Each child node can have the following properties:
 

@@ -3,6 +3,8 @@ description: |
 
 compatible: "zmk,kscan-composite"
 
+include: kscan.yaml
+
 properties:
   label:
     type: string
