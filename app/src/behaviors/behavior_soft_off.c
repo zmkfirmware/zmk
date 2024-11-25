@@ -12,6 +12,7 @@
 
 #include <zmk/pm.h>
 #include <zmk/behavior.h>
+#include <zmk/split/bluetooth/peripheral.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -24,8 +25,6 @@ struct behavior_soft_off_data {
     uint32_t press_start;
 };
 
-#define IS_SPLIT_PERIPHERAL                                                                        \
-    (IS_ENABLED(CONFIG_ZMK_SPLIT) && !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
 
 static int behavior_soft_off_init(const struct device *dev) { return 0; };
 

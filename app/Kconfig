@@ -449,6 +449,19 @@ config ZMK_IDLE_SLEEP_TIMEOUT
 #ZMK_SLEEP
 endif
 
+config ZMK_SLEEP_ON_BLE_DISCONNECT
+    bool "Enable deep sleep on BLE disconnection"
+    depends on ZMK_SLEEP 
+
+if ZMK_SLEEP_ON_BLE_DISCONNECT
+
+config ZMK_SLEEP_DISCONNECT_TIMER
+    int "Milliseconds of disconnection before entering deep sleep"
+    default 600000
+
+# ZMK_SLEEP_ON_BLE_DISCONNECT
+endif
+
 config ZMK_EXT_POWER
     bool "Enable support to control external power output"
     default y
