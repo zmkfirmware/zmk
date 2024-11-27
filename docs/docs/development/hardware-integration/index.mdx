@@ -6,7 +6,7 @@ sidebar_label: Overview
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-This section of the documentation describes steps necessary to get ZMK running on a keyboard.
+This section of the documentation describes steps necessary to get ZMK running on a keyboard, including basic keyboard functionality as well as additional features such as encoders.
 Please see pages in the sidebar for guides and reference that describe different aspects of this integration.
 
 The foundational elements needed to get a specific keyboard working with ZMK can be broken down into:
@@ -23,8 +23,6 @@ These core architectural elements are defined per-keyboard, and _where_ they are
 ## Boards & Shields
 
 ZMK uses the Zephyr concepts of "boards" and "shields" to refer to different parts of a keyboard build, that in turn get combined during a firmware build.
-This provides the modularity to be able to use [composite keyboards](#composite-keyboards) with different compatible controllers.
-Also see the "Why boards and shields" question in the [FAQ](../../faq.md#why-boards-and-shields-why-not-just-keyboard) for a longer explanation.
 
 ### What is a "board"?
 
@@ -38,7 +36,23 @@ For keyboards, this is one of two options:
 
 In ZMK, a _shield_ is a _PCB_ or _hardwired set of components_ that when combined with an MCU-only board, like the SparkFun Pro Micro RP2040 or nice!nano, results in a complete usable keyboard.
 Examples would be keyboard PCBs like the Kyria or Lily58.
-he shield is usually the big PCB containing all the keys.
+The shield is usually the big PCB containing all the keys.
+
+### Why not just "keyboard"?
+
+["Composite" keyboards](../../hardware.mdx#composite) are keyboards which use a separate small PCB MCU module (e.g. _Arduino Pro Micro_) for its "brains".
+In such keyboards, the shield is a brainless shell containing all the keys, RGB LEDs, encoders etc.
+It typically maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
+
+To bring this brainless shield to life, you attach any MCU board matching the footprint.
+For instance, the _nice!nano_ is _pin-compatible_ with the _SparkFun Pro Micro RP2040_, so you can substitute either board onto the shield.
+But each board comes with its own features (MCU, flash, BLE, etc.) which must also be handled.
+
+Therefore in ZMK, board and shield are considered two different (but related) entities so that it is easier to mix and match them, and they are combined during a ZMK build.
+This provides the modularity to be able to use composite keyboards with different compatible controllers.
+
+Note that ["self-contained" keyboards](../../hardware.mdx#onboard) only have a single PCB which includes the "brains" (MCU) onboard.
+In ZMK, these have no shield, only a board.
 
 ## Organization Overview
 

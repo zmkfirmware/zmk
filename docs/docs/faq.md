@@ -47,19 +47,11 @@ Sorry, Zephyr™ only supports 32-bit and 64-bit platforms.
 
 ZMK is still in its infancy, so there’s a learning curve involved. But if you’d like to try it out, please check out the development [documentation](/docs) and the other FAQs. Please keep in mind that the project team is still small, so our support capability is limited whilst we focus on development. But we’ll try our best! Interested developers are also very welcome to contribute!
 
-### Why _boards_ and _shields_? Why not just "keyboard"?
+### What are _boards_ and _shields_? Why not just "keyboard"?
 
-If you haven't already done so, please read the [explainer on boards & shields](development/hardware-integration/index.mdx#boards--shields) first.
-
-When a keyboard accepts a small "PCB MCU module" (e.g. _Arduino Pro Micro_) for its "brains", then it's important to conceptually separate the hardware into a [board](development/hardware-integration/index.mdx#what-is-a-board) PCB and a [shield](development/hardware-integration/index.mdx#what-is-a-shield) PCB.
-
-The shield is a brainless shell containing all the keys, RGB LEDs, encoders etc. It maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
-
-To bring this brainless shield to life, you attach any MCU board matching the footprint. For instance, the _nice!nano_ is _pin-compatible_ with the _SparkFun Pro Micro RP2040_, so you can substitute either board onto the shield. But each board comes with its own features (MCU, flash, BLE, etc.) which must also be handled.
-
-Therefore in ZMK, board and shield are considered two different (but related) entities so that it's easier to mix and match them. They are combined during a ZMK build.
-
-Please note, many keyboards only have a single PCB which includes the "brains" (MCU) onboard. In ZMK, these have no shield, only a board.
+ZMK uses the Zephyr concepts of "boards" and "shields" to refer to different parts of a keyboard build, that in turn get combined during a firmware build.
+This provides the modularity to be able to use composite keyboards with different compatible controllers.
+Please see the [explainer on boards & shields](development/hardware-integration/index.mdx#boards--shields) for more details.
 
 ### Does ZMK support wired split?
 
