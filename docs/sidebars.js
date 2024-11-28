@@ -70,6 +70,7 @@ module.exports = {
             "keymaps/behaviors/mod-tap",
             "keymaps/behaviors/mod-morph",
             "keymaps/behaviors/macros",
+            "keymaps/behaviors/dynamic-macro",
             "keymaps/behaviors/key-toggle",
             "keymaps/behaviors/sticky-key",
             "keymaps/behaviors/sticky-layer",
