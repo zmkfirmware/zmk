@@ -124,12 +124,15 @@ module.exports = {
         {
           type: "category",
           label: "Hardware Integration",
+          link: {
+            type: "doc",
+            id: "development/hardware-integration/index",
+          },
           collapsed: true,
           items: [
             "development/hardware-integration/new-shield",
             "development/hardware-integration/physical-layouts",
             "development/hardware-integration/hardware-metadata-files",
-            "development/hardware-integration/boards-shields-keymaps",
             "development/hardware-integration/pinctrl",
             "development/hardware-integration/shift-registers",
             "development/hardware-integration/encoders",
