@@ -1,0 +1,28 @@
+# Copyright (c) 2020, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Underglow indicators
+
+compatible: "zmk,underglow-indicators"
+
+child-binding:
+  child-binding:
+    properties:
+      peripheral-battery:
+        type: array
+
+properties:
+  num-lock:
+    type: int
+  caps-lock:
+    type: int
+  scroll-lock:
+    type: int
+  layer-state:
+    type: array
+  ble-profiles:
+    type: array
+  usb-state:
+    type: int
+  output-fallback:
+    type: int
