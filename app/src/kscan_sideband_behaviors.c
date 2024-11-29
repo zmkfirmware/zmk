@@ -11,6 +11,7 @@
 #include <zephyr/drivers/kscan.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/pm/device.h>
+#include <zephyr/pm/device_runtime.h>
 
 #include <zmk/event_manager.h>
 #include <zmk/behavior.h>

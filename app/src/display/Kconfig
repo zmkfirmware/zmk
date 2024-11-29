@@ -13,6 +13,11 @@ config ZMK_DISPLAY_BLANK_ON_IDLE
     bool "Blank display on idle"
     default y if SSD1306
 
+config ZMK_DISPLAY_DEFAULT_POWER_DOMAIN
+    bool "Auto-assign the display to the default power domain"
+    default y
+    depends on ZMK_POWER_DOMAINS_DYNAMIC_DEFAULT
+
 if LV_USE_THEME_MONO
 
 config ZMK_DISPLAY_INVERT
