@@ -203,7 +203,10 @@ static void zmk_rgb_underglow_tick_handler(struct k_timer *timer) {
     if (!state.on) {
         return;
     }
-
+    if (zmk_activity_get_state() != ZMK_ACTIVITY_ACTIVE) {
+        zmk_rgb_underglow_off(); // Turn off LEDs in idle
+        return;
+    }
     k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &underglow_tick_work);
 }
 
@@ -282,6 +285,9 @@ static int zmk_rgb_underglow_init(void) {
 
 int zmk_rgb_underglow_save_state(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
+    if (!state.on || zmk_activity_get_state() != ZMK_ACTIVITY_ACTIVE) {
+        return 0;
+    }
     int ret = k_work_reschedule(&underglow_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
     return MIN(ret, 0);
 #else
@@ -477,18 +483,21 @@ static int rgb_underglow_auto_state(bool target_wake_state) {
     if (target_wake_state == sleep_state.is_awake) {
         return 0;
     }
-    sleep_state.is_awake = target_wake_state;
-
-    if (sleep_state.is_awake) {
+    if (target_wake_state) {
+        // Transition to awake
         if (sleep_state.rgb_state_before_sleeping) {
-            return zmk_rgb_underglow_on();
+            zmk_rgb_underglow_on(); // Restore LEDs if they were on before sleep
         } else {
-            return zmk_rgb_underglow_off();
+            zmk_rgb_underglow_off(); // Keep LEDs off if they were off before sleep
         }
     } else {
-        sleep_state.rgb_state_before_sleeping = state.on;
-        return zmk_rgb_underglow_off();
+        // Transition to sleep
+        sleep_state.rgb_state_before_sleeping = state.on; // Save current LED state
+        zmk_rgb_underglow_off(); // Turn off LEDs when entering sleep
     }
+
+    sleep_state.is_awake = target_wake_state;
+    return 0;
 }
 
 static int rgb_underglow_event_listener(const zmk_event_t *eh) {
