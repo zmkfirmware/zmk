@@ -1,0 +1,2 @@
+
+target_sources_ifdef(CONFIG_ZMK_BOOTMODE_TO_MAGIC_VALUE_MAPPER app PRIVATE bootmode_to_magic_mapper.c)
