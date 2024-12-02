@@ -1,0 +1,8 @@
+file_format: "1"
+id: pico87
+name: Pico 87
+type: shield
+url: https://github.com/mountainmannm/Bolt-Industries/
+requires: [rpi_pico]
+features:
+  - keys
