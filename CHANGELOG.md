@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/zmkfirmware/zmk/compare/v0.1.0...v0.1.1) (2024-12-04)
+
+
+### Bug Fixes
+
+* **Kconfig:** Added a name to EC11's trigger mode choice ([40925d4](https://github.com/zmkfirmware/zmk/commit/40925d48e67b3eeaeb3e848a2287ed628de9f674))
+
 ## 0.1.0 (2024-11-29)
 
 
