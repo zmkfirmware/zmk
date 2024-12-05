@@ -6,6 +6,7 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../zmk-config AND NOT DEFINED ZMK_CONFIG_L
   set(ZMK_CONFIG_LOCAL_MODULE ${CMAKE_CURRENT_SOURCE_DIR}/../zmk-config)
 endif()
 
+set(ZEPHYR_BOARD_ALIASES "boards/aliases.cmake")
 set(EXTRA_ZEPHYR_MODULES "${ZMK_EXTRA_MODULES};${CMAKE_CURRENT_SOURCE_DIR}/module;${CMAKE_CURRENT_SOURCE_DIR}/keymap-module;${ZMK_CONFIG_LOCAL_MODULE}")
 
 # Find Zephyr. This also loads Zephyr's build system.
