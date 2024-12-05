@@ -1,0 +1,6 @@
+manifest:
+  self:
+    import:
+      file: ../zmk-config/config/west.yml
+      name-blocklist: [zmk]
+      path-prefix: modules
