@@ -70,8 +70,10 @@ static int kscan_composite_disable_callback(const struct device *dev) {
         const struct kscan_composite_child_config *child_cfg = &cfg->children[i];
 
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME) || IS_ENABLED(CONFIG_PM_DEVICE)
-        if (pm_device_wakeup_is_enabled(dev) && pm_device_wakeup_is_enabled(child_cfg->child)) {
-            continue;
+        if (pm_device_wakeup_is_capable(child_cfg->child) &&
+            pm_device_wakeup_is_enabled(child_cfg->child) &&
+            !pm_device_wakeup_enable(child_cfg->child, false)) {
+            LOG_ERR("Failed to disable wakeup for %s", child_cfg->child->name);
         }
 #endif // IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME) || IS_ENABLED(CONFIG_PM_DEVICE)
 
