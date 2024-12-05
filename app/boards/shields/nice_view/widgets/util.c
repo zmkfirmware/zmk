@@ -30,6 +30,26 @@ void draw_battery(lv_obj_t *canvas, const struct status_state *state) {
     lv_draw_rect_dsc_t rect_white_dsc;
     init_rect_dsc(&rect_white_dsc, LVGL_FOREGROUND);
 
+#if IS_ENABLED(CONFIG_NICE_VIEW_BATTERY_SHOW_BIG_PERCENTAGE)
+    char big_text[4] = {};
+    sprintf(big_text, "%i%%", state->battery);
+    lv_draw_label_dsc_t big_label_dsc;
+    init_label_dsc(&big_label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_26, LV_TEXT_ALIGN_CENTER);
+    lv_canvas_draw_text(canvas, 0, 25, 68, &big_label_dsc, big_text);
+#endif
+
+#if IS_ENABLED(CONFIG_NICE_VIEW_BATTERY_SHOW_PERCENTAGE)
+    char text[4] = {};
+    sprintf(text, "%i%%", state->battery);
+    lv_draw_label_dsc_t label_dsc;
+    init_label_dsc(&label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_16, LV_TEXT_ALIGN_CENTER);
+    lv_canvas_draw_text(canvas, 0, 5, 68, &label_dsc, text);
+    if (state->charging) {
+        lv_draw_img_dsc_t img_dsc;
+        lv_draw_img_dsc_init(&img_dsc);
+        lv_canvas_draw_img(canvas, 1, -1, &bolt, &img_dsc);
+    }
+#else
     lv_canvas_draw_rect(canvas, 0, 2, 29, 12, &rect_white_dsc);
     lv_canvas_draw_rect(canvas, 1, 3, 27, 10, &rect_black_dsc);
     lv_canvas_draw_rect(canvas, 2, 4, (state->battery + 2) / 4, 8, &rect_white_dsc);
@@ -41,6 +61,7 @@ void draw_battery(lv_obj_t *canvas, const struct status_state *state) {
         lv_draw_img_dsc_init(&img_dsc);
         lv_canvas_draw_img(canvas, 9, -1, &bolt, &img_dsc);
     }
+#endif
 }
 
 void init_label_dsc(lv_draw_label_dsc_t *label_dsc, lv_color_t color, const lv_font_t *font,
