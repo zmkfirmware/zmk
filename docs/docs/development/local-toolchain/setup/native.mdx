@@ -92,6 +92,12 @@ Then step into the repository.
 cd zmk
 ```
 
+Clone your `zmk-config` into the repository, making sure that the local name for it is `zmk-config`.
+
+```sh
+git clone git@github.com:<Your Username>/zmk-config.git zmk-config
+```
+
 ## 3. Get Zephyr and install Python dependencies
 
 :::note
@@ -179,7 +185,7 @@ pip install west
 5. Initialize the application and update to fetch modules, including Zephyr:
 
 ```sh
-west init -l app/
+west init -l local/
 west update
 ```
 
@@ -268,7 +274,7 @@ pip3 install -U west
 2. Initialize the application and update to fetch modules, including Zephyr:
 
 ```sh
-west init -l app/
+west init -l local/
 west update
 ```
 

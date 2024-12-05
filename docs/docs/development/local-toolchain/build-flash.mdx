@@ -143,7 +143,11 @@ Build times can be significantly reduced after the initial build by omitting all
 
 ### Building With External Modules
 
-ZMK supports loading additional boards, shields, code, etc. from [external Zephyr modules](https://docs.zephyrproject.org/3.5.0/develop/modules.html), facilitating out-of-tree management and versioning independent of the ZMK repository. To build with any additional modules, use the `ZMK_EXTRA_MODULES` define added to your `west build` command.
+ZMK supports loading additional boards, shields, code, etc. from [external Zephyr modules](https://docs.zephyrproject.org/3.5.0/develop/modules.html), facilitating out-of-tree management and versioning independent of the ZMK repository.
+
+**Building with any modules specified in `zmk/zmk-config/config/west.yml` is done automatically.**
+
+To build with any additional modules beyond that, use the `ZMK_EXTRA_MODULES` define added to your `west build` command.
 
 For instance, building with the `my-vendor-keebs-module` checked out to your documents directory, you would build like:
 
@@ -157,27 +161,28 @@ When adding multiple modules, make sure they are separated by a semicolon, e.g.:
 west build -b nice_nano_v2 -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Users/myUser/Documents/my-vendor-keebs-module;C:/Users/myUser/Documents/my-other-keebs-module"
 ```
 
-### Building from `zmk-config` Folder
+### Building from Alternative `zmk-config` Folders
 
-Instead of building .uf2 files using the default keymap and config files, you
-can build using files from your [`zmk-config` folder](../../user-setup.mdx#github-repo)
-by adding `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build`
+ZMK will build using files from your []`zmk/zmk-config/config` folder](../../user-setup.mdx#github-repo) automatically.
+If you have an alternative `zmk-config` that you'd like to use instead, you can point to it with the `ZMK_CONFIG` CMake argument.
+
+Add the `-DZMK_CONFIG="C:/the/absolute/path/alternative/config"` to your `west build`
 command. **Notice that this path should point to the folder labeled `config`
-within your `zmk-config` folder.**
-
-For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder
-on Windows may look something like this:
+within your `zmk-config` folder.** For example:
 
 ```sh
 west build -b nice_nano -- -DSHIELD=kyria_left \
-  -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
+  -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config-two/config"
 ```
 
-:::warning
-If your config is also a [module](../../features/modules.mdx), then you should
-also add the root (the folder in which the `zephyr` folder is found) of your
-`zmk-config` as an [external module to build with](#building-with-external-modules).
-:::
+If this alternative config is also a [module](../../features/modules.mdx), you will need to mark it as such with the `ZMK_CONFIG_LOCAL_MODULE` flag.
+Note that this flag should point to the `zmk-config` root, _not_ the folder labeled `config`.
+
+```sh
+west build -b nice_nano -- -DSHIELD=kyria_left \
+  -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config-two/config" \
+  -DZMK_CONFIG_LOCAL_MODULE="C:/Users/myUser/Documents/Github/zmk-config-two"
+```
 
 ## Flashing
 
