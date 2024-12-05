@@ -1,0 +1,5 @@
+manifest:
+  self:
+    import:
+      - config-import.yml
+      - ../app/west.yml
