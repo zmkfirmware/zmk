@@ -23,8 +23,10 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if !IS_ENABLED(CONFIG_ZMK_ENDPOINT_DISABLE_FALLBACK)
 #define DEFAULT_TRANSPORT                                                                          \
     COND_CODE_1(IS_ENABLED(CONFIG_ZMK_BLE), (ZMK_TRANSPORT_BLE), (ZMK_TRANSPORT_USB))
+#endif
 
 static struct zmk_endpoint_instance current_instance = {};
 static enum zmk_transport preferred_transport =
@@ -54,6 +56,9 @@ bool zmk_endpoint_instance_eq(struct zmk_endpoint_instance a, struct zmk_endpoin
     }
 
     switch (a.transport) {
+    case ZMK_TRANSPORT_NONE:
+        return true;
+
     case ZMK_TRANSPORT_USB:
         return true;
 
@@ -67,6 +72,9 @@ bool zmk_endpoint_instance_eq(struct zmk_endpoint_instance a, struct zmk_endpoin
 
 int zmk_endpoint_instance_to_str(struct zmk_endpoint_instance endpoint, char *str, size_t len) {
     switch (endpoint.transport) {
+    case ZMK_TRANSPORT_NONE:
+        return snprintf(str, len, "None");
+
     case ZMK_TRANSPORT_USB:
         return snprintf(str, len, "USB");
 
@@ -78,11 +86,15 @@ int zmk_endpoint_instance_to_str(struct zmk_endpoint_instance endpoint, char *st
     }
 }
 
-#define INSTANCE_INDEX_OFFSET_USB 0
-#define INSTANCE_INDEX_OFFSET_BLE ZMK_ENDPOINT_USB_COUNT
+#define INSTANCE_INDEX_OFFSET_NONE 0
+#define INSTANCE_INDEX_OFFSET_USB (INSTANCE_INDEX_OFFSET_NONE + ZMK_ENDPOINT_NONE_COUNT)
+#define INSTANCE_INDEX_OFFSET_BLE (INSTANCE_INDEX_OFFSET_USB + ZMK_ENDPOINT_USB_COUNT)
 
 int zmk_endpoint_instance_to_index(struct zmk_endpoint_instance endpoint) {
     switch (endpoint.transport) {
+    case ZMK_TRANSPORT_NONE:
+        return INSTANCE_INDEX_OFFSET_NONE;
+
     case ZMK_TRANSPORT_USB:
         return INSTANCE_INDEX_OFFSET_USB;
 
@@ -118,6 +130,27 @@ int zmk_endpoints_toggle_transport(void) {
 
 struct zmk_endpoint_instance zmk_endpoints_selected(void) { return current_instance; }
 
+static struct zmk_endpoint_instance get_instance_from_transport(enum zmk_transport transport) {
+    struct zmk_endpoint_instance instance = {.transport = transport};
+    switch (instance.transport) {
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    case ZMK_TRANSPORT_BLE:
+        instance.ble.profile_index = zmk_ble_active_profile_index();
+        break;
+#endif // IS_ENABLED(CONFIG_ZMK_BLE)
+
+    default:
+        // No extra data for this transport.
+        break;
+    }
+
+    return instance;
+}
+
+struct zmk_endpoint_instance zmk_endpoints_preferred(void) {
+    return get_instance_from_transport(preferred_transport);
+}
+
 static int send_keyboard_report(void) {
     switch (current_instance.transport) {
     case ZMK_TRANSPORT_USB: {
@@ -146,6 +179,8 @@ static int send_keyboard_report(void) {
         return -ENOTSUP;
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
     }
+    case ZMK_TRANSPORT_NONE:
+        return 0;
     }
 
     LOG_ERR("Unhandled endpoint transport %d", current_instance.transport);
@@ -154,6 +189,9 @@ static int send_keyboard_report(void) {
 
 static int send_consumer_report(void) {
     switch (current_instance.transport) {
+    case ZMK_TRANSPORT_NONE:
+        return 0;
+
     case ZMK_TRANSPORT_USB: {
 #if IS_ENABLED(CONFIG_ZMK_USB)
         int err = zmk_usb_hid_send_consumer_report();
@@ -204,6 +242,9 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
 #if IS_ENABLED(CONFIG_ZMK_MOUSE)
 int zmk_endpoints_send_mouse_report() {
     switch (current_instance.transport) {
+    case ZMK_TRANSPORT_NONE:
+        return 0;
+
     case ZMK_TRANSPORT_USB: {
 #if IS_ENABLED(CONFIG_ZMK_USB)
         int err = zmk_usb_hid_send_mouse_report();
@@ -281,7 +322,28 @@ static bool is_ble_ready(void) {
 #endif
 }
 
+#if IS_ENABLED(CONFIG_ZMK_ENDPOINT_DISABLE_FALLBACK)
+
 static enum zmk_transport get_selected_transport(void) {
+    switch (preferred_transport) {
+    case ZMK_TRANSPORT_NONE:
+        return ZMK_TRANSPORT_NONE;
+
+    case ZMK_TRANSPORT_BLE:
+        return is_ble_ready() ? ZMK_TRANSPORT_BLE : ZMK_TRANSPORT_NONE;
+
+    case ZMK_TRANSPORT_USB:
+        return is_usb_ready() ? ZMK_TRANSPORT_USB : ZMK_TRANSPORT_NONE;
+    }
+
+    LOG_ERR("Unknown transport %d", preferred_transport);
+    return ZMK_TRANSPORT_NONE;
+}
+
+#else
+
+static enum zmk_transport get_selected_transport(void) {
+
     if (is_ble_ready()) {
         if (is_usb_ready()) {
             LOG_DBG("Both endpoint transports are ready. Using %d", preferred_transport);
@@ -300,23 +362,10 @@ static enum zmk_transport get_selected_transport(void) {
     LOG_DBG("No endpoint transports are ready.");
     return DEFAULT_TRANSPORT;
 }
+#endif
 
 static struct zmk_endpoint_instance get_selected_instance(void) {
-    struct zmk_endpoint_instance instance = {.transport = get_selected_transport()};
-
-    switch (instance.transport) {
-#if IS_ENABLED(CONFIG_ZMK_BLE)
-    case ZMK_TRANSPORT_BLE:
-        instance.ble.profile_index = zmk_ble_active_profile_index();
-        break;
-#endif // IS_ENABLED(CONFIG_ZMK_BLE)
-
-    default:
-        // No extra data for this transport.
-        break;
-    }
-
-    return instance;
+    return get_instance_from_transport(get_selected_transport());
 }
 
 static int zmk_endpoints_init(void) {
