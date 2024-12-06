@@ -1,0 +1,18 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+include: [base.yaml]
+
+compatible: "zmk,input-split"
+
+description: Device to wire up an input device for split use.
+
+properties:
+  reg:
+    required: true
+
+  device:
+    type: phandle
+
+  input-processors:
+    type: phandle-array
