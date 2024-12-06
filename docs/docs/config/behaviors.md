@@ -45,6 +45,26 @@ You can use the following nodes to tweak the default behaviors:
 | ------------ | ---------------------------------------------- |
 | `&caps_word` | [Caps Word](../keymaps/behaviors/caps-word.md) |
 
+## Dynamic-Macro
+
+Creates a custom behavior to record and play back dynamic macros.
+
+See the [dynamic-macro behavior](../keymaps/behaviors/dynamic-macro.md) documentation for more details and examples.
+
+### Kconfig
+
+| Config                                         | Type | Description                                                                                             | Default |
+| ---------------------------------------------- | ---- | ------------------------------------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_BEHAVIOR_DYNAMIC_MACRO_MAX_EVENTS` | int  | Maximum number of events a single dynamic macro can store. Press and release are separate events!       | 32      |
+| `CONFIG_ZMK_BEHAVIOR_DYNAMIC_MACRO_MAX_SLOTS`  | int  | Maximum number of dynamic macro slots that can be recorded to.                                          | 1       |
+| `CONFIG_ZMK_BEHAVIOR_DYNAMIC_MACRO_TAP_DELAY`  | int  | The delay between each event in the macro. This can help fix problems with events not being recognized. | 30      |
+
+### Devicetree
+
+Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-dynamic-macro.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-dynamic-macro.yaml)
+
+Applies to: `compatible = "zmk,behavior-dynamic-macro"`
+
 ## Hold-Tap
 
 Creates a custom behavior that triggers one behavior when a key is held or a different one when the key is tapped.
