@@ -270,6 +270,30 @@ struct zmk_hid_mouse_report {
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
+struct zmk_hid_report_body {
+    union {
+#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+        struct zmk_hid_mouse_report_body mouse;
+#endif
+
+        struct zmk_hid_keyboard_report_body keyboard;
+        struct zmk_hid_consumer_report_body consumer;
+    } __packed;
+} __packed;
+
+struct zmk_hid_report {
+    union {
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+        zmk_hid_boot_report_t boot;
+#endif
+
+        struct {
+            uint8_t report_id;
+            struct zmk_hid_report_body body;
+        } __packed;
+    } __packed;
+} __packed;
+
 zmk_mod_flags_t zmk_hid_get_explicit_mods(void);
 int zmk_hid_register_mod(zmk_mod_t modifier);
 int zmk_hid_unregister_mod(zmk_mod_t modifier);
