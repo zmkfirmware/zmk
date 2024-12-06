@@ -84,7 +84,7 @@ static bool encode_value_description(pb_ostream_t *stream, const pb_field_t *fie
         zmk_behaviors_BehaviorParameterValueDescription desc =
             zmk_behaviors_BehaviorParameterValueDescription_init_zero;
         desc.name.funcs.encode = encode_value_description_name;
-        desc.name.arg = val;
+        desc.name.arg = (void *)val;
 
         switch (val->type) {
         case BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE:
