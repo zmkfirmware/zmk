@@ -36,4 +36,17 @@ config ZMK_WIDGET_WPM_STATUS
     select LV_USE_LABEL
     select ZMK_WPM
 
+config ZMK_WIDGET_MODS_STATUS
+    bool "Widget for displaying active modifiers"
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    select LV_USE_LABEL
+
+if ZMK_WIDGET_MODS_STATUS
+
+config ZMK_WIDGET_MODS_STATUS_CHARACTERS
+    string "Characters to show for each modifier, corresponding to Control/Shift/Alt/GUI respectively"
+    default "CSAG"
+
+endif
+
 endmenu
