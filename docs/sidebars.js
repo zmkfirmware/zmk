@@ -134,6 +134,7 @@ module.exports = {
             "development/hardware-integration/physical-layouts",
             "development/hardware-integration/hardware-metadata-files",
             "development/hardware-integration/pinctrl",
+            "development/hardware-integration/dongle",
             "development/hardware-integration/shift-registers",
             "development/hardware-integration/encoders",
             "development/hardware-integration/soft-off-setup",
