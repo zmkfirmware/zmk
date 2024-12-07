@@ -44,6 +44,13 @@ static int kscan_composite_enable_callback(const struct device *dev) {
     for (int i = 0; i < cfg->children_len; i++) {
         const struct kscan_composite_child_config *child_cfg = &cfg->children[i];
 
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME) || IS_ENABLED(CONFIG_PM_DEVICE)
+        if (pm_device_wakeup_is_enabled(dev) && pm_device_wakeup_is_capable(child_cfg->child) &&
+            !pm_device_wakeup_enable(child_cfg->child, true)) {
+            LOG_ERR("Failed to enable wakeup for %s", child_cfg->child->name);
+        }
+#endif // IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME) || IS_ENABLED(CONFIG_PM_DEVICE)
+
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
         if (!pm_device_runtime_is_enabled(dev) && pm_device_runtime_is_enabled(child_cfg->child)) {
             pm_device_runtime_get(child_cfg->child);
@@ -61,6 +68,14 @@ static int kscan_composite_disable_callback(const struct device *dev) {
     const struct kscan_composite_config *cfg = dev->config;
     for (int i = 0; i < cfg->children_len; i++) {
         const struct kscan_composite_child_config *child_cfg = &cfg->children[i];
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME) || IS_ENABLED(CONFIG_PM_DEVICE)
+        if (pm_device_wakeup_is_capable(child_cfg->child) &&
+            pm_device_wakeup_is_enabled(child_cfg->child) &&
+            !pm_device_wakeup_enable(child_cfg->child, false)) {
+            LOG_ERR("Failed to disable wakeup for %s", child_cfg->child->name);
+        }
+#endif // IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME) || IS_ENABLED(CONFIG_PM_DEVICE)
 
         kscan_disable_callback(child_cfg->child);
 
