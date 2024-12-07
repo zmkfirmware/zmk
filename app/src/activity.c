@@ -4,10 +4,13 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "zephyr/sys/util_macro.h"
 #include <zephyr/device.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/sys/poweroff.h>
+#include <zmk/ble.h>
+#include <zmk/split/bluetooth/peripheral.h>
 
 #include <zephyr/logging/log.h>
 
@@ -26,8 +29,29 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/usb.h>
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_SLEEP_ON_BLE_DISCONNECT)
+#define MAX_DISCONNECT_MS CONFIG_ZMK_SLEEP_DISCONNECT_TIMER
+
+static uint32_t ble_last_time_connected;
+
+static uint32_t get_latest_ble_connection_active_timestamp(void) {
+#if ZMK_BLE_IS_CENTRAL || !IS_ENABLED(CONFIG_ZMK_SPLIT)
+    if (zmk_ble_active_profile_is_connected()) {
+        ble_last_time_connected = k_uptime_get();
+    }
+    return ble_last_time_connected;
+#elif IS_SPLIT_PERIPHERAL
+    if (zmk_split_bt_peripheral_is_connected()) {
+        ble_last_time_connected = k_uptime_get();
+    }
+    return ble_last_time_connected;
+#endif
+}
+#endif
+
 bool is_usb_power_present(void) {
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+    return false;
     return zmk_usb_is_powered();
 #else
     return false;
@@ -69,7 +93,11 @@ void activity_work_handler(struct k_work *work) {
     int32_t current = k_uptime_get();
     int32_t inactive_time = current - activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
-    if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
+    if ((inactive_time > MAX_SLEEP_MS && !is_usb_power_present())
+#if IS_ENABLED(CONFIG_ZMK_SLEEP_ON_BLE_DISCONNECT)
+        || (current - get_latest_ble_connection_active_timestamp()) > MAX_DISCONNECT_MS
+#endif
+    ) {
         // Put devices in suspend power mode before sleeping
         set_state(ZMK_ACTIVITY_SLEEP);
 
