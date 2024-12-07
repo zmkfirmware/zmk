@@ -76,6 +76,7 @@
 #define ZMK_HID_REPORT_ID_LEDS 0x01
 #define ZMK_HID_REPORT_ID_CONSUMER 0x02
 #define ZMK_HID_REPORT_ID_MOUSE 0x03
+#define ZMK_HID_REPORT_ID_GENERIC_DESKTOP 0x04
 
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
@@ -193,6 +194,47 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_END_COLLECTION,
     HID_END_COLLECTION,
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
+    HID_USAGE(HID_USAGE_GD_SYSTEM_CONTROL),
+    HID_COLLECTION(HID_COLLECTION_APPLICATION),
+    HID_REPORT_ID(ZMK_HID_REPORT_ID_GENERIC_DESKTOP),
+
+    // System Power down (0x81) to System Menu select (0x89), OSC, 9 bits
+    HID_USAGE_MIN8(HID_USAGE_GD_SYSTEM_POWER_DOWN),
+    HID_USAGE_MAX8(HID_USAGE_GD_SYSTEM_MENU_SELECT),
+    HID_LOGICAL_MIN8(0x00),
+    HID_LOGICAL_MAX8(0x01),
+    HID_REPORT_SIZE(0x01),
+    HID_REPORT_COUNT(0x09),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
+
+    // System Menu Right (0x8A) to System Menu Down (0x8D), RTC, 4 bits
+    HID_USAGE_MIN8(HID_USAGE_GD_SYSTEM_MENU_RIGHT),
+    HID_USAGE_MAX8(HID_USAGE_GD_SYSTEM_MENU_DOWN),
+    HID_LOGICAL_MIN8(0x00),
+    HID_LOGICAL_MAX8(0x01),
+    HID_REPORT_SIZE(0x01),
+    HID_REPORT_COUNT(0x04),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+
+    // System Cold Restart (0x8E) & System Warm Restart (0x8F), OSC, 2 bits
+    HID_USAGE_MIN8(HID_USAGE_GD_SYSTEM_COLD_RESTART),
+    HID_USAGE_MAX8(HID_USAGE_GD_SYSTEM_WARM_RESTART),
+    HID_LOGICAL_MIN8(0x00),
+    HID_LOGICAL_MAX8(0x01),
+    HID_REPORT_SIZE(0x01),
+    HID_REPORT_COUNT(0x02),
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
+
+    // 1 bit padding
+    HID_REPORT_SIZE(0x01),
+    HID_REPORT_COUNT(0x1),
+    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+
+    HID_END_COLLECTION,
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
 };
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
@@ -270,6 +312,17 @@ struct zmk_hid_mouse_report {
 
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+struct zmk_hid_generic_desktop_report_body {
+    uint8_t keys[2];
+} __packed;
+
+struct zmk_hid_generic_desktop_report {
+    uint8_t report_id;
+    struct zmk_hid_generic_desktop_report_body body;
+} __packed;
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+
 zmk_mod_flags_t zmk_hid_get_explicit_mods(void);
 int zmk_hid_register_mod(zmk_mod_t modifier);
 int zmk_hid_unregister_mod(zmk_mod_t modifier);
@@ -304,8 +357,16 @@ int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons);
 void zmk_hid_mouse_clear(void);
 #endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
 
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+void zmk_hid_generic_desktop_clear(void);
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void);
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void);
+
+#if IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
+struct zmk_hid_generic_desktop_report *zmk_hid_get_generic_desktop_report(void);
+#endif // IS_ENABLED(CONFIG_ZMK_HID_GENERIC_DESKTOP_USAGES_BASIC)
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report();
