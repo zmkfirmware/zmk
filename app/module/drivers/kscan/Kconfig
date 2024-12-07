@@ -70,7 +70,33 @@ config ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS
         scenario, set this value to a positive value to configure the number of
         ticks to wait after reading each column of keys.
 
+choice ZMK_KSCAN_GPIO_MATRIX_INTERRUPT_TYPE
+    prompt "Matrix interrupt type for key press detection"
+
+config ZMK_KSCAN_GPIO_MATRIX_INTERRUPT_TYPE_LEVEL
+    bool "Level active"
+
+config ZMK_KSCAN_GPIO_MATRIX_INTERRUPT_TYPE_EDGE
+    bool "Edge to active"
+
+endchoice
+
 endif # ZMK_KSCAN_GPIO_MATRIX
+
+if ZMK_KSCAN_GPIO_DIRECT
+
+choice ZMK_KSCAN_GPIO_DIRECT_INTERRUPT_TYPE
+    prompt "Direct interrupt type for key press detection"
+
+config ZMK_KSCAN_GPIO_DIRECT_INTERRUPT_TYPE_LEVEL
+    bool "Level active"
+
+config ZMK_KSCAN_GPIO_DIRECT_INTERRUPT_TYPE_EDGE
+    bool "Edge to active"
+
+endchoice
+
+endif
 
 if ZMK_KSCAN_GPIO_CHARLIEPLEX
 

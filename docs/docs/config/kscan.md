@@ -61,9 +61,11 @@ Keyboard scan driver where each key has a dedicated GPIO.
 
 Definition file: [zmk/app/module/drivers/kscan/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/module/drivers/kscan/Kconfig)
 
-| Config                            | Type | Description                                      | Default |
-| --------------------------------- | ---- | ------------------------------------------------ | ------- |
-| `CONFIG_ZMK_KSCAN_DIRECT_POLLING` | bool | Poll for key presses instead of using interrupts | n       |
+| Config                                              | Type | Description                                      | Default |
+| --------------------------------------------------- | ---- | ------------------------------------------------ | ------- |
+| `CONFIG_ZMK_KSCAN_DIRECT_POLLING`                   | bool | Poll for key presses instead of using interrupts | n       |
+| `CONFIG_ZMK_KSCAN_GPIO_DIRECT_INTERRUPT_TYPE_LEVEL` | bool | Use level active interrupts to detect presses    | y       |
+| `CONFIG_ZMK_KSCAN_GPIO_DIRECT_INTERRUPT_TYPE_EDGE`  | bool | Use edge to active interrupts to detect presses  | n       |
 
 ### Devicetree
 
@@ -121,11 +123,13 @@ Keyboard scan driver where keys are arranged on a matrix with one GPIO per row a
 
 Definition file: [zmk/app/module/drivers/kscan/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/module/drivers/kscan/Kconfig)
 
-| Config                                         | Type        | Description                                                               | Default |
-| ---------------------------------------------- | ----------- | ------------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_KSCAN_MATRIX_POLLING`              | bool        | Poll for key presses instead of using interrupts                          | n       |
-| `CONFIG_ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS`   | int (ticks) | How long to wait before reading input pins after setting output active    | 0       |
-| `CONFIG_ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS` | int (ticks) | How long to wait between each output to allow previous output to "settle" | 0       |
+| Config                                              | Type        | Description                                                               | Default |
+| --------------------------------------------------- | ----------- | ------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_KSCAN_MATRIX_POLLING`                   | bool        | Poll for key presses instead of using interrupts                          | n       |
+| `CONFIG_ZMK_KSCAN_MATRIX_WAIT_BEFORE_INPUTS`        | int (ticks) | How long to wait before reading input pins after setting output active    | 0       |
+| `CONFIG_ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS`      | int (ticks) | How long to wait between each output to allow previous output to "settle" | 0       |
+| `CONFIG_ZMK_KSCAN_GPIO_MATRIX_INTERRUPT_TYPE_LEVEL` | bool        | Use level active interrupts to detect presses                             | y       |
+| `CONFIG_ZMK_KSCAN_GPIO_MATRIX_INTERRUPT_TYPE_EDGE`  | bool        | Use edge to active interrupts to detect presses                           | n       |
 
 ### Devicetree
 
