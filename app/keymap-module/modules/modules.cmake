@@ -41,6 +41,10 @@ elseif(DEFINED ENV{ZMK_CONFIG})
 
 elseif(user_config_app_cmake_lists)
     set(ZMK_CONFIG ${user_config_app_cmake_lists})
+
+elseif(EXISTS ${APPLICATION_SOURCE_DIR}/../zmk-config/config)
+    set(ZMK_CONFIG ${APPLICATION_SOURCE_DIR}/../zmk-config/config)
+
 endif()
 
 # Store the selected user_config in the cache
@@ -50,10 +54,12 @@ if (ZMK_CONFIG)
     set(ENV{ZMK_CONFIG} "${ZMK_CONFIG}")
     if(EXISTS ${ZMK_CONFIG}/boards)
         message(STATUS "Adding ZMK config directory as board root: ${ZMK_CONFIG}")
+        message(DEPRECATION "Using the config folder as board root is deprecated.")
         list(APPEND BOARD_ROOT ${ZMK_CONFIG})
     endif()
     if(EXISTS ${ZMK_CONFIG}/dts)
         message(STATUS "Adding ZMK config directory as DTS root: ${ZMK_CONFIG}")
+        message(DEPRECATION "Using the config folder as DTS root is deprecated.")
         list(APPEND DTS_ROOT ${ZMK_CONFIG})
     endif()
 endif()
