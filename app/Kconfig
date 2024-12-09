@@ -626,6 +626,15 @@ config ZMK_SETTINGS_SAVE_DEBOUNCE
 
 endif # SETTINGS
 
+config ZMK_WORKAROUND_COPY_USB_TX_DATA_BUFFER
+    bool "Enable workaround for USB driver not copying data before transmit"
+    help
+      Work around some hardware USB drivers not copying the passed USB TX buffer
+      contents before beginning a transaction, causing corruption of the USB
+      message, by copying the TX data into a temporary buffer first. For
+      example, the NRFx family of Zephyr drivers suffer this issue.
+    default y if SOC_SERIES_NRF52X
+
 config ZMK_BATTERY_REPORT_INTERVAL
     depends on ZMK_BATTERY_REPORTING
     int "Battery level report interval in seconds"
