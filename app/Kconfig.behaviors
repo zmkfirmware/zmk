@@ -118,3 +118,27 @@ config ZMK_BEHAVIOR_MACRO
     bool
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_MACRO_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_ONE_PARAM_ENABLED || DT_HAS_ZMK_BEHAVIOR_MACRO_TWO_PARAM_ENABLED
+
+config ZMK_BEHAVIOR_DYNAMIC_MACRO
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_DYNAMIC_MACRO_ENABLED
+
+if ZMK_BEHAVIOR_DYNAMIC_MACRO
+
+config ZMK_BEHAVIOR_DYNAMIC_MACRO_TAP_DELAY
+    int
+    default 30
+    prompt "Dynamic Macro Tap Delay"
+
+config ZMK_BEHAVIOR_DYNAMIC_MACRO_MAX_SLOTS
+    int
+    default 1
+    prompt "Dynamic Macro Max Slots"
+
+config ZMK_BEHAVIOR_DYNAMIC_MACRO_MAX_EVENTS
+    int
+    default 32
+    prompt "Dynamic Macro Max Events"
+
+endif
