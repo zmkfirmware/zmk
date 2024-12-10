@@ -306,10 +306,10 @@ static bool encode_layouts(pb_ostream_t *stream, const pb_field_t *field, void *
         zmk_keymap_PhysicalLayout layout = zmk_keymap_PhysicalLayout_init_zero;
 
         layout.name.funcs.encode = encode_layout_name;
-        layout.name.arg = l;
+        layout.name.arg = (void *)l;
 
         layout.keys.funcs.encode = encode_layout_keys;
-        layout.keys.arg = l;
+        layout.keys.arg = (void *)l;
 
         if (!pb_encode_submessage(stream, &zmk_keymap_PhysicalLayout_msg, &layout)) {
             LOG_WRN("Failed to encode layout submessage");
@@ -465,10 +465,10 @@ zmk_studio_Response restore_layer(const zmk_studio_Request *req) {
         resp.result.ok.id = restore_req->layer_id;
 
         resp.result.ok.name.funcs.encode = encode_layer_name;
-        resp.result.ok.name.arg = &restore_req->layer_id;
+        resp.result.ok.name.arg = (void *)&restore_req->layer_id;
 
         resp.result.ok.bindings.funcs.encode = encode_layer_bindings;
-        resp.result.ok.bindings.arg = &restore_req->layer_id;
+        resp.result.ok.bindings.arg = (void *)&restore_req->layer_id;
 
         raise_zmk_studio_rpc_notification((struct zmk_studio_rpc_notification){
             .notification = KEYMAP_NOTIFICATION(unsaved_changes_status_changed, true)});
