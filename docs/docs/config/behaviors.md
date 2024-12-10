@@ -282,3 +282,23 @@ Applies to: `compatible = "zmk,behavior-tap-dance"`
 | `#binding-cells`  | int           | Must be `<0>`                                                                                |         |
 | `bindings`        | phandle array | A list of behaviors from which to select                                                     |         |
 | `tapping-term-ms` | int           | The maximum time (in milliseconds) between taps before an item from `bindings` is triggered. | 200     |
+
+## Two Axis Input
+
+This behavior is part of the core [pointing devices](../features/pointing.md) feature, and is used to generate X/Y and scroll input events. It is the underlying behavior used for the mouse [move](../keymaps/behaviors/mouse-emulation.md#mouse-move) and [scroll](../keymaps/behaviors/mouse-emulation.md#mouse-scroll) behaviors.
+
+### Devicetree
+
+Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-input-two-axis.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-input-two-axis.yaml)
+
+Applies to: `compatible = "zmk,behavior-input-two-axis"`
+
+| Property                | Type | Description                                                                                                                                                                                   | Default |
+| ----------------------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `#binding-cells`        | int  | Must be `<1>`                                                                                                                                                                                 |         |
+| `x-input-code`          | int  | The [relative event code](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L245) for generated input events for the X-axis. |         |
+| `y-input-code`          | int  | The [relative event code](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L245) for generated input events for the Y-axis. |         |
+| `trigger-period-ms`     | int  | How many milliseconds between generated input events based on the current speed/direction.                                                                                                    | 16      |
+| `delay-ms`              | int  | How many milliseconds to delay any processing or event generation when first pressed.                                                                                                         | 0       |
+| `time-to-max-speed-ms`  | int  | How many milliseconds it takes to accelerate to the curren max speed.                                                                                                                         | 0       |
+| `acceleration-exponent` | int  | The acceleration exponent to apply: `0` - uniform speed, `1` - uniform acceleration, `2` - linear acceleration                                                                                | 1       |
