@@ -289,7 +289,7 @@ static int il0323_controller_init(const struct device *dev) {
     k_msleep(IL0323_PON_DELAY);
     il0323_busy_wait(cfg);
 
-    /* Pannel settings, KW mode */
+    /* Panel settings, KW mode */
     tmp[0] = IL0323_PSR_UD | IL0323_PSR_SHL | IL0323_PSR_SHD | IL0323_PSR_RST;
 #if EPD_PANEL_WIDTH == 80
 

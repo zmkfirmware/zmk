@@ -188,7 +188,7 @@ struct zmk_behavior_local_id_map {
  * @param binding The behavior binding to validate.
  *
  * @retval 0 if the passed in binding is valid.
- * @retval -ENODEV if the binding references a non-existant behavior.
+ * @retval -ENODEV if the binding references a non-existent behavior.
  * @retval -EINVAL if parameters are not valid for the behavior metadata.
  */
 int zmk_behavior_validate_binding(const struct zmk_behavior_binding *binding);
