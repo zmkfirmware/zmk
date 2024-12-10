@@ -25,11 +25,11 @@ CONFIG_ZMK_POINTING=y
 ## Mouse Emulation Defines
 
 To make it easier to encode the HID mouse button and move/scroll speed numeric values, include
-the [`dt-bindings/zmk/mouse.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/mouse.h) header
+the [`dt-bindings/zmk/pointing.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/pointing.h) header
 provided by ZMK near the top:
 
 ```
-#include <dt-bindings/zmk/mouse.h>
+#include <dt-bindings/zmk/pointing.h>
 ```
 
 Should you wish to override the default movement or scrolling max velocities, you can define the defaults before including the header, e.g.:
@@ -38,7 +38,7 @@ Should you wish to override the default movement or scrolling max velocities, yo
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 1500  // default: 600
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // default: 10
 
-#include <dt-bindings/zmk/mouse.h>
+#include <dt-bindings/zmk/pointing.h>
 ```
 
 ## Mouse Button Press
