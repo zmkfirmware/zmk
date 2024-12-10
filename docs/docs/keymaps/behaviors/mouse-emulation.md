@@ -202,6 +202,6 @@ Both `&mmv` and `&msc` are instances of the `"zmk,behavior-input-two-axis"` beha
     x-input-code = <INPUT_REL_HWHEEL>;
     y-input-code = <INPUT_REL_WHEEL>;
     time-to-max-speed-ms = <300>;
-    acceleration-exponent = <1>;
+    acceleration-exponent = <0>;
 };
 ```
