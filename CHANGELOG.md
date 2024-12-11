@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.2.0](https://github.com/zmkfirmware/zmk/compare/v0.1.0...v0.2.0) (2024-12-11)
+
+
+### Features
+
+* **boards:** Update for mikoto board definition ([#1946](https://github.com/zmkfirmware/zmk/issues/1946)) ([b26058b](https://github.com/zmkfirmware/zmk/commit/b26058b6c7c83f8d1f095d2f9c6c3998b391a61b))
+* **Kconfig:** Allow overriding ZMK Kconfig defaults ([#2537](https://github.com/zmkfirmware/zmk/issues/2537)) ([40925d4](https://github.com/zmkfirmware/zmk/commit/40925d48e67b3eeaeb3e848a2287ed628de9f674))
+* **mouse:** Add mouse move and scroll support ([#2477](https://github.com/zmkfirmware/zmk/issues/2477)) ([6b40bfd](https://github.com/zmkfirmware/zmk/commit/6b40bfda53571f7a960ccc448aa87f29da7496ac))
+* **studio:** Add ortho_4x10 grid layout ([#2651](https://github.com/zmkfirmware/zmk/issues/2651)) ([7e8c542](https://github.com/zmkfirmware/zmk/commit/7e8c542c94908ac011ec7272a5f8ab10d2102632))
+
+
+### Bug Fixes
+
+* allow kscan-composite to wake up device. ([#2682](https://github.com/zmkfirmware/zmk/issues/2682)) ([a8f5ab6](https://github.com/zmkfirmware/zmk/commit/a8f5ab67b5d449a2624e2de7ddfb264da778ea6c))
+* Fix warnings in nanopb encoding code ([#2643](https://github.com/zmkfirmware/zmk/issues/2643)) ([7013158](https://github.com/zmkfirmware/zmk/commit/7013158a6715d94b34e8c471ce25bb5005f3bb49))
+* **Kconfig:** Added a name to EC11's trigger mode choice ([40925d4](https://github.com/zmkfirmware/zmk/commit/40925d48e67b3eeaeb3e848a2287ed628de9f674))
+* **pointing:** Complete header rename missed in refactor ([#2702](https://github.com/zmkfirmware/zmk/issues/2702)) ([84baf92](https://github.com/zmkfirmware/zmk/commit/84baf929c9bb95f255d4bafd0e57f2ec47455fca))
+* **studio:** Properly return complete keymap from RPC ([#2696](https://github.com/zmkfirmware/zmk/issues/2696)) ([0820991](https://github.com/zmkfirmware/zmk/commit/0820991901a95ab7a0eb1f1cc608a631d514e26c))
+
 ## 0.1.0 (2024-11-29)
 
 
