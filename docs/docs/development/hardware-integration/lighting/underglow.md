@@ -7,6 +7,7 @@ description: Lighting system that controls strips of RGB LEDs.
 Please see [RGB underglow feature page](../../../features/underglow.md) for an introduction on the feature.
 
 Support for RGB underglow is always added to a board, not a shield. This is because the LED strip drivers rely on hardware-specific interfaces (e.g. SPI, I2S) and configurations, which shields do not control.
+See the documentation page on [pin control](../pinctrl.mdx) for detailed information on setting up pins for hardware protocols such as SPI or PIO that are used for LED strips.
 
 Shields written for boards which support RGB underglow should add a `boards/` folder underneath the shield folder. Inside this `boards/` folder, create a `<board>.overlay` for any of the boards the shield can be used with. Place all hardware-specific configurations in these `.overlay` files.
 
