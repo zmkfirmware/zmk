@@ -1,0 +1,11 @@
+file_format: "1"
+id: dumbpad_oled_top
+name: DumbPad oled top
+type: shield
+url: https://github.com/imchipwood/dumbpad
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
