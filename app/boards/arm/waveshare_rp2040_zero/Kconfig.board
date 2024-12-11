@@ -1,0 +1,6 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_WAVESHARE_RP2040_ZERO
+    bool "Waveshare RP2040 Zero Board"
+    depends on SOC_RP2040
