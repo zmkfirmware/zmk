@@ -1,30 +1,48 @@
 ---
 title: Pointing Devices
+toc_max_heading_level: 2
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-ZMK's pointing device support builds upon the Zephyr [input API](https://docs.zephyrproject.org/3.5.0/services/input/index.html) to offer pointing/mouse functionality with various hardware. A limited number of input drivers are available in the Zephyr version currently used by ZMK, but additional drivers can be found in [external modules](../../features/modules.mdx) for a variety of hardware.
+ZMK's pointing device support builds upon the Zephyr [input API](https://docs.zephyrproject.org/3.5.0/services/input/index.html) to offer pointing/mouse functionality with various hardware.
+A limited number of input drivers are available in the Zephyr version currently used by ZMK, but additional drivers can be found in [external modules](../../features/modules.mdx) for a variety of hardware.
 
-The details will depend on if you are adding a pointing device to a [split peripheral](../../features/split-keyboards.md#central-and-peripheral-roles) as opposed to a unibody keyboard or split central part:
+Pointing devices are also supported on split peripherals, with some additional configuration using the [input split device](../../config/pointing.md#input-split).
+The configuration details will depend on if you are adding a pointing device to a [split peripheral](../../features/split-keyboards.md#central-and-peripheral-roles) as opposed to a unibody keyboard or split central part.
 
-<Tabs
-  defaultValue="central"
-  values={[
-    { label: "Unibody or Split Central", value: "central" },
-    { label: "Split Peripheral", value: "peripheral" },
-  ]}
->
-  <TabItem value="central">
+export const SplitTabs = (props) => (
+  <Tabs
+    groupId="part-type"
+    defaultValue="central"
+    values={[
+      { label: "Unibody or Split Central", value: "central" },
+      { label: "Split Peripheral", value: "peripheral" },
+    ]}
+  >
+
+    {/* eslint-disable-next-line */}
+    {props.children}
+
+  </Tabs>
+
+);
 
 ## Input Device
 
-First, we must define the pointing device itself. The specifics of where this node goes will depend on the specific hardware. _Most_ pointing hardware uses either SPI or I2C for communication, and will be nested under a properly configured bus node, e.g. `&pro_micro_i2c` or for a complete onboard setup, `&i2c3`. See the documentation on [pin control](./pinctrl.mdx) if you need to configure the pins for an I2C or SPI bus.
+First, we must define the pointing device itself. The specifics of where this node goes will depend on the specific hardware.
+_Most_ pointing hardware uses either SPI or I2C for communication, and will be nested under a properly configured bus node, e.g. `&pro_micro_i2c` or for a complete onboard setup, `&i2c3`.
+See the documentation on [pin control](./pinctrl.mdx) if you need to configure the pins for an I2C or SPI bus.
 
-For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml), you may have a node like:
+This node should always be set up in the `.overlay`/`.dts` file for the keyboard side that has the device attached to it.
 
-```dts
+<SplitTabs>
+  <TabItem value="central">
+
+For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml), a node like following would be added to the `.overlay`/`.dts` file for the unibody or central part:
+
+```dts title="<central>.overlay"
 &pro_micro_spi {
     status = "okay";
     cs-gpios = <&pro_micro 19 GPIO_ACTIVE_LOW>;
@@ -43,33 +61,50 @@ For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr
 };
 ```
 
-The specifics of the properties required to set for a given driver will vary; always consult the devicetree bindings file for the specific driver to see what properties can be set.
+  </TabItem>
+  <TabItem value="peripheral">
 
-## Listener
+For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml), a node like following would be added to the `.overlay`/`.dts` file for the peripheral part:
 
-Every input device needs an associated listener added that listens for events from the device and processes them before sending the events to the host using a HID mouse report. See [input listener configuration](../../config/pointing.md#input-listener) for the full details. For example, to add a listener for the above device:
+```dts title="<peripheral>.overlay"
+&pro_micro_spi {
+    status = "okay";
+    cs-gpios = <&pro_micro 19 GPIO_ACTIVE_LOW>;
 
-```dts
-/ {
-    glidepoint_listener {
-        compatible = "zmk,input-listener";
-        device = <&glidepoint>;
+    glidepoint: glidepoint@0 {
+        compatible = "cirque,pinnacle";
+        reg = <0>;
+        spi-max-frequency = <1000000>;
+        status = "okay";
+        dr-gpios = <&pro_micro 5 (GPIO_ACTIVE_HIGH)>;
+
+        sensitivity = "4x";
+        sleep;
+        no-taps;
     };
 };
 ```
 
-## Input Processors
+  </TabItem>
+</SplitTabs>
 
-Some physical pointing devices may be generating input events that need adjustment before being sent to hosts. For example a trackpad might be integrated into a keyboard rotated 90° and need the X/Y data adjusted appropriately. This can be accomplished with [input processors](../../keymaps/input-processors/index.md). As an example, you could enhance the above listener with the following input processor that inverts and swaps the X/Y axes:
+The specifics of the properties required to set for a given driver will vary; always consult the devicetree bindings file for the specific driver to see what properties can be set.
 
-```dts
-#include <dt-bindings/zmk/input_transform.h>
+## Listener
 
+Every input device needs an associated listener added that listens for events from the device and processes them before sending the events to the host using a HID mouse report.
+See [input listener configuration](../../config/pointing.md#input-listener) for the full details.
+
+<SplitTabs>
+  <TabItem value="central">
+
+For example, to add a listener for the above device, add to your `.overlay`/`.dts` file for the unibody or central part a node like the following:
+
+```dts title="<central>.overlay"
 / {
     glidepoint_listener {
         compatible = "zmk,input-listener";
         device = <&glidepoint>;
-        input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
     };
 };
 ```
@@ -77,21 +112,21 @@ Some physical pointing devices may be generating input events that need adjustme
   </TabItem>
   <TabItem value="peripheral">
 
-## Split
+### Shared Configuration
 
-Pointing devices are supported on split peripherals, with some additional configuration using the [input split device](../../config/pointing.md#input-split). All split pointers are identified using a unique integer value, which is specified using the `reg` property and in the `@#` suffix for the node. If adding multiple peripheral pointers, be sure that each is given a unique identifier.
+When a pointing device is on a peripheral, both peripheral and central make use of a `zmk,input-split` device, which functions differently depending on where it is used.
+To avoid duplicating work, this node can be defined in a common `.dtsi` file that is included into both central and peripheral `.overlay`/`.dts` files.
 
-### Shared
+All split pointers are identified using a unique integer value, which is specified using the `reg` property and in the `@#` suffix for the node. If adding multiple peripheral pointers, be sure that each is given a unique identifier.
 
-Both peripheral and central make use of a `zmk,input-split` device, which functions differently depending on where it is used. To avoid duplicating work, this node can be defined in a common `.dtsi` file that is included into both central and peripheral `.overlay`/`.dts` files. Second, the input listener for the central side is added here, but disabled, so that keymaps (which are included for central and peripheral builds) can reference the listener to add input processors without issue.
-
+Second, the input listener for the central side is added here, but disabled, so that keymaps (which are included for central and peripheral builds) can reference the listener to add input processors without issue.
 :::note
 
 Input splits need to be nested under a parent node that properly sets `#address-cells = <1>` and `#size-cells = <0>`. These settings are what allow us to use a single integer number for the `reg` value.
 
 :::
 
-```dts
+```dts title="<keyboard>-pointing.dtsi"
 / {
     split_inputs {
         #address-cells = <1>;
@@ -111,17 +146,18 @@ Input splits need to be nested under a parent node that properly sets `#address-
 };
 ```
 
-### Peripheral
+### Peripheral Configuration
 
 In the peripheral .overlay/.dts file, we do the following:
 
 - Include the shared .dtsi file.
-- Add the device node for the physical pointer.
 - Update the input split with a reference to the new device node that should be proxied.
 
-```dts
-#include "common.dtsi"
+```dts title="<peripheral>.overlay"
+// Pull in the shared configuration
+#include "<keyboard>-pointing.dtsi"
 
+// Node added in Input Device section above
 &pro_micro_spi {
     status = "okay";
     cs-gpios = <&pro_micro 19 GPIO_ACTIVE_LOW>;
@@ -139,6 +175,7 @@ In the peripheral .overlay/.dts file, we do the following:
     };
 };
 
+// Overrides for the input-split child node
 &glidepoint_split {
     device = <&glidepoint>;
 
@@ -146,18 +183,15 @@ In the peripheral .overlay/.dts file, we do the following:
 };
 ```
 
-The `input-processors` property on the input split is optional, and only necessary if the input needs to be fixed up before it is sent to the central.
+The [`input-processors` property](#input-processors) on the input split is optional, and only necessary if the input needs to be fixed up before it is sent to the central.
 
-The specifics of where the pointing device node goes will depend on the specific hardware. _Most_ pointing hardware uses either SPI or I2C for communication, and will be nested under a properly configured bus node, e.g. `&pro_micro_i2c` or for a complete onboard setup, `&i2c3`. See the documentation on [pin control](./pinctrl.mdx) if you need to configure the pins for an I2C or SPI bus.
+### Central Configuration
 
-The specifics of the properties required to set for a given driver will vary; always consult the devicetree bindings file for the specific driver to see what properties can be set.
+On the central, the input split acts as an input device, receiving events from the peripheral and raising them locally.
+Here we first include the shared file, and then enable the [input listener](#listener) that is created, but disabled, in our shared file:
 
-### Central
-
-On the central, the input split acts as an input device, receiving events from the peripheral and raising them locally. First, include the shared file, and then enabled the [input listener](#listener) that is created, but disabled, in our shared file:
-
-```dts
-#include "common.dtsi"
+```dts title="<central>.overlay"
+#include "<keyboard>-pointing.dtsi"
 
 &glidepoint_listener {
     status = "okay";
@@ -165,4 +199,23 @@ On the central, the input split acts as an input device, receiving events from t
 ```
 
   </TabItem>
-</Tabs>
+</SplitTabs>
+
+## Input Processors
+
+Some physical pointing devices may be generating input events that need adjustment before being sent to hosts.
+For example a trackpad might be integrated into a keyboard rotated 90° and need the X/Y data adjusted appropriately.
+This can be accomplished with [input processors](../../keymaps/input-processors/index.md).
+As an example, you could enhance the listener defined in the previous section with an input processor that inverts and swaps the X/Y axes:
+
+```dts
+#include <dt-bindings/zmk/input_transform.h>
+
+/ {
+    glidepoint_listener {
+        compatible = "zmk,input-listener";
+        device = <&glidepoint>;
+        input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
+    };
+};
+```
