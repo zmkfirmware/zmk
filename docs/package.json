@@ -30,7 +30,7 @@
     "react-dom": "^18.0.0",
     "react-toastify": "^10.0.6",
     "tree-sitter-devicetree": "^0.12.1",
-    "web-tree-sitter": "^0.24.3"
+    "web-tree-sitter": "^0.24.4"
   },
   "browserslist": {
     "production": [
