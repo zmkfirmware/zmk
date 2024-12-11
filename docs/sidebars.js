@@ -156,6 +156,20 @@ module.exports = {
             "development/hardware-integration/encoders",
             "development/hardware-integration/soft-off-setup",
             "development/hardware-integration/pointing",
+            "development/hardware-integration/battery",
+            {
+              type: "category",
+              label: "Lighting",
+              link: {
+                type: "doc",
+                id: "development/hardware-integration/lighting/index",
+              },
+              collapsed: true,
+              items: [
+                "development/hardware-integration/lighting/underglow",
+                "development/hardware-integration/lighting/backlight",
+              ],
+            },
           ],
         },
         {
