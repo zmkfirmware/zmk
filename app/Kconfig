@@ -473,6 +473,8 @@ endmenu
 
 menu "Advanced"
 
+rsource "src/boot/Kconfig"
+
 menu "Initialization Priorities"
 
 if USB_DEVICE_STACK
