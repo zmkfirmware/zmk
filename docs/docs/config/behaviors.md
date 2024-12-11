@@ -17,6 +17,14 @@ See the [zmk/app/dts/behaviors/](https://github.com/zmkfirmware/zmk/tree/main/ap
 | --------------------------------- | ---- | ------------------------------------------------------------------------------------ | ------- |
 | `CONFIG_ZMK_BEHAVIORS_QUEUE_SIZE` | int  | Maximum number of behaviors to allow queueing from a macro or other complex behavior | 64      |
 
+### Devicetree
+
+Definition file: [zmk/app/dts/bindings/behaviors/behavior-metadata.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/behavior-metadata.yaml)
+
+| Property       | Type   | Description                                                                      | Default |
+| -------------- | ------ | -------------------------------------------------------------------------------- | ------- |
+| `display-name` | string | Name of the layer, for use with a display or [ZMK Studio](../features/studio.md) |         |
+
 ## Caps Word
 
 Creates a custom behavior that behaves similar to a caps lock but deactivates when any key not in a continue list is pressed.
@@ -122,6 +130,52 @@ You can use the following nodes to tweak the default behaviors:
 | Node          | Behavior                                         |
 | ------------- | ------------------------------------------------ |
 | `&key_repeat` | [Key repeat](../keymaps/behaviors/key-repeat.md) |
+
+## Key Toggle
+
+Creates a custom behavior that toggles a key code on, off, or switches between the two states.
+
+See the [key toggle behavior](../keymaps/behaviors/key-toggle.md) documentation for more details and examples.
+
+### Devicetree
+
+Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-key-toggle.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-key-toggle.yaml)
+
+Applies to: `compatible = "zmk,behavior-key-toggle"`
+
+| Property         | Type | Description                    | Default |
+| ---------------- | ---- | ------------------------------ | ------- |
+| `#binding-cells` | int  | Must be `<1>`                  |         |
+| `toggle-mode`    |      | One of `on`, `off`, and `flip` | `flip`  |
+
+You can use the following node to tweak the default behavior:
+
+| Node  | Behavior                                         |
+| ----- | ------------------------------------------------ |
+| `&kt` | [Key toggle](../keymaps/behaviors/key-toggle.md) |
+
+## Layer Toggle
+
+Creates a custom behavior that toggles a layer on, off, or switches between the two states.
+
+See the [layer toggle behavior](../keymaps/behaviors/layers.md#toggle-layer) documentation for more details and examples.
+
+### Devicetree
+
+Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-layer-toggle.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-layer-toggle.yaml)
+
+Applies to: `compatible = "zmk,behavior-layer-toggle"`
+
+| Property         | Type | Description                    | Default |
+| ---------------- | ---- | ------------------------------ | ------- |
+| `#binding-cells` | int  | Must be `<1>`                  |         |
+| `toggle-mode`    |      | One of `on`, `off`, and `flip` | `flip`  |
+
+You can use the following node to tweak the default behavior:
+
+| Node   | Behavior                                                    |
+| ------ | ----------------------------------------------------------- |
+| `&tog` | [Layer toggle](../keymaps/behaviors/layers.md#toggle-layer) |
 
 ## Macro
 
