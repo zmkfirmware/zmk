@@ -29,7 +29,7 @@ ZMK is currently missing some features found in other popular firmware. This tab
 | [Encoders](features/encoders.md)                                                                                                                           | ✅  |    ✅     | ✅  |
 | [Display Support](features/displays.md)[^1]                                                                                                                | 🚧  |    🚧     | ✅  |
 | [RGB Underglow](features/underglow.md)                                                                                                                     | ✅  |    ✅     | ✅  |
-| [Backlight](features/backlight.mdx)                                                                                                                        | ✅  |    ✅     | ✅  |
+| [Backlight](features/backlight.md)                                                                                                                         | ✅  |    ✅     | ✅  |
 | One Shot Keys                                                                                                                                              | ✅  |    ✅     | ✅  |
 | [Combo Keys](keymaps/combos.md)                                                                                                                            | ✅  |           | ✅  |
 | [Macros](keymaps/behaviors/macros.md)                                                                                                                      | ✅  |    ✅     | ✅  |
