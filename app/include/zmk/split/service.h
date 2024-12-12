@@ -10,6 +10,7 @@
 #include <zmk/sensors.h>
 
 #define ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN 9
+#define ZMK_SPLIT_POS_STATE_LEN 16
 
 struct sensor_event {
     uint8_t sensor_index;
@@ -31,6 +32,11 @@ struct zmk_split_run_behavior_payload {
     char behavior_dev[ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN];
 } __packed;
 
+struct zmk_split_run_behavior_payload_wrapper {
+    uint8_t source;
+    struct zmk_split_run_behavior_payload payload;
+};
+
 struct zmk_split_input_event_payload {
     uint8_t type;
     uint16_t code;
@@ -38,10 +44,14 @@ struct zmk_split_input_event_payload {
     uint8_t sync;
 } __packed;
 
-int zmk_split_bt_position_pressed(uint8_t position);
-int zmk_split_bt_position_released(uint8_t position);
-int zmk_split_bt_sensor_triggered(uint8_t sensor_index,
-                                  const struct zmk_sensor_channel_data channel_data[],
-                                  size_t channel_data_size);
+int zmk_split_position_pressed(uint8_t position);
+int zmk_split_position_released(uint8_t position);
+int zmk_split_sensor_triggered(uint8_t sensor_index,
+                               const struct zmk_sensor_channel_data channel_data[],
+                               size_t channel_data_size);
+int zmk_split_report_input(uint8_t reg, uint8_t type, uint16_t code, int32_t value, bool sync);
 
-int zmk_split_bt_report_input(uint8_t reg, uint8_t type, uint16_t code, int32_t value, bool sync);
+void send_position_state_impl(uint8_t *state, int len);
+#if ZMK_KEYMAP_HAS_SENSORS
+void send_sensor_state_impl(struct sensor_event *event, int len);
+#endif
