@@ -37,3 +37,26 @@ repos:
       - id: check-added-large-files
       - id: check-shebang-scripts-are-executable
         exclude: "\\.mustache$"
+  - repo: https://github.com/Quard/license-header-checker
+    rev: v0.2.1
+    hooks:
+      - id: license-header-checker
+        files: \.(c|h|dtsi|dts|overlay|keymap)$
+        exclude: ^((app/boards/)|(app/tests/))
+        args:
+          - --comment-style
+          - "/*| *| */"
+          - --license
+          - "\\nCopyright \\(c\\) \\d{4}(-\\d{4})? The ZMK Contributors\\n\\nSPDX-License-Identifier: MIT\\n"
+          - --auto-populate
+          - .pre-commit/license_header.tmpl
+      - id: license-header-checker
+        files: (\.yaml)|(CMakeLists.txt)|(Kconfig)$
+        exclude: ^((app/boards/)|(app/tests/)|(\.pre-commit-config.yaml))
+        args:
+          - --comment-style
+          - "#"
+          - --license
+          - "\\s*Copyright \\(c\\) \\d{4}(-\\d{4})? The ZMK Contributors\\n\\s*SPDX-License-Identifier: MIT"
+          - --auto-populate
+          - .pre-commit/license_header.tmpl
