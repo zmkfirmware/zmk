@@ -88,6 +88,7 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 endif()
 
 target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/behaviors/behavior_rgb_underglow.c)
+target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/events/underglow_state_changed.c)
 
 target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/behaviors/behavior_backlight.c)
 target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/events/backlight_state_changed.c)

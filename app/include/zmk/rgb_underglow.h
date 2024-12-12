@@ -12,6 +12,14 @@ struct zmk_led_hsb {
     uint8_t b;
 };
 
+struct zmk_underglow_state {
+    struct zmk_led_hsb color;
+    uint8_t animation_speed;
+    uint8_t current_effect;
+    uint16_t animation_step;
+    bool on;
+};
+
 int zmk_rgb_underglow_toggle(void);
 int zmk_rgb_underglow_get_state(bool *state);
 int zmk_rgb_underglow_on(void);
