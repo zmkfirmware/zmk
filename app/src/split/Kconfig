@@ -26,7 +26,6 @@ config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     help
       Enable propagating the HID (LED) Indicator state to the split peripheral(s).
 
-#ZMK_SPLIT
-endif
+endif # ZMK_SPLIT
 
 rsource "bluetooth/Kconfig"

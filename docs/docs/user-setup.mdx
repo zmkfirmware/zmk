@@ -12,6 +12,10 @@ core ZMK Firmware source repository.
 
 In addition to this, most users will not need to install any complicated toolchains or tools to build ZMK. GitHub Actions is used instead to automatically build the user's configured firmware for them.
 
+:::info
+ZMK currently has an **experimental** command line program set to replace the below steps. It is designed to automate a number of steps for you and be easier to use. Give it a try by following the instructions found [here](user-setup-cli.mdx). Feedback and bug reports are very much welcome.
+:::
+
 ## Summary
 
 The following steps can be taken to obtain an installable firmware image for your device, without the need
@@ -108,7 +112,7 @@ If you are building firmware for a new keyboard that is not included in the buil
 list of keyboards, you can choose any keyboard from the list that is similar to yours
 (e.g. in terms of unibody/split and [onboard controller](hardware.mdx#onboard) /
 [composite](hardware.mdx#composite)) to generate the repository,
-and edit / add necessary files. You can follow the [new shield guide](development/new-shield.mdx) if you are adding support for a composite keyboard.
+and edit / add necessary files. You can follow the [new shield guide](development/hardware-integration/new-shield.mdx) if you are adding support for a composite keyboard.
 :::
 
 ### MCU Board Selection
@@ -209,6 +213,7 @@ connect to it wirelessly.
 For split keyboards, only the central half (typically the left side) will send keyboard outputs over USB or advertise to other devices
 over bluetooth. Peripheral half will only send keystrokes to the central once they are paired and connected. For this reason it is
 recommended to test the left half of a split keyboard first.
+Please refer to [split keyboards documentation](features/split-keyboards.md) for more information.
 
 :::
 
@@ -216,11 +221,12 @@ recommended to test the left half of a split keyboard first.
 
 ZMK will automatically advertise itself as connectable if it is not currently connected to a device. You should be able to see your keyboard from the bluetooth scanning view of your computer or phone / tablet. It is reported by some users that the connections with Android / iOS devices are generally smoother than with laptops, so if you have trouble connecting, you could try to connect from your phone or tablet first to eliminate any potential hardware issues with bluetooth receivers.
 
-ZMK supports multiple BLE “profiles”, which allows you to connect to and switch among multiple devices. Please refer to the [Bluetooth behavior](behaviors/bluetooth.md) section for detailed explanations on how to use them. If you don't make use of the mentioned behaviors you will have issues pairing your keyboard to other devices.
+ZMK supports multiple BLE “profiles”, which allows you to connect to and switch among multiple devices. Please refer to the [Bluetooth behavior](keymaps/behaviors/bluetooth.md) section for detailed explanations on how to use them. If you don't make use of the mentioned behaviors you will have issues pairing your keyboard to other devices.
 
 ### Connecting Split Keyboard Halves
 
 For split keyboards, after flashing each half individually you can connect them together by resetting them at the same time. Within a few seconds of resetting, both halves should automatically connect to each other.
+Please refer to [the pairing section in the split keyboards documentation](features/split-keyboards.md#pairing-for-wireless-split-keyboards) for more information.
 
 :::note
 

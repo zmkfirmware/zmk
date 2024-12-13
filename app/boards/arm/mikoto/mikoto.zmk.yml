@@ -1,0 +1,16 @@
+file_format: "1"
+id: mikoto
+name: Mikoto
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://github.com/zhiayang/mikoto
+exposes: [pro_micro]
+revisions:
+  - "5.20"
+  - "6.1"
+  - "6.3"
+  - "7.2"
+default_revision: "5.20"

@@ -37,6 +37,21 @@
     vbatt: vbatt {
         compatible = "zmk,battery-nrf-vddh";
     };
+
+    glove80_ext: connector {
+        compatible = "moergo,glove80-ext";
+        #gpio-cells = <2>;
+        gpio-map-mask = <0xffffffff 0xffffffc0>;
+        gpio-map-pass-thru = <0 0x3f>;
+        gpio-map
+            = <1 0 &gpio0 21 0>     /* EXT1 */
+            , <2 0 &gpio0 24 0>     /* EXT2 */
+            , <3 0 &gpio0 20 0>     /* EXT3 */
+            , <4 0 &gpio0 25 0>     /* EXT4 */
+            , <5 0 &gpio0 22 0>     /* EXT5 */
+            , <6 0 &gpio1 00 0>     /* EXT6 */
+            ;
+    };
 };
 
 &spi3 {
@@ -79,7 +94,7 @@
 };
 
 /* For right hand, the columns are offset by 7 */
-&default_transform {
+&matrix_transform0 {
     col-offset = <7>;
 };
 

@@ -1,6 +1,6 @@
 file_format: "1"
 id: bt75_v1
-name: BT75_V1
+name: BT75 V1
 type: board
 arch: arm
 features:
@@ -8,6 +8,7 @@ features:
   - encoder
   - underglow
   - backlight
+  - studio
 outputs:
   - usb
   - ble

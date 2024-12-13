@@ -113,7 +113,7 @@ manifest:
 
 ### Building Locally
 
-To add a module to your build when building locally, you will need to clone/copy said module into your local file tree. You can then build using the module as described in [Building with External Modules](../development/build-flash.mdx#building-with-external-modules).
+To add a module to your build when building locally, you will need to clone/copy said module into your local file tree. You can then build using the module as described in [Building with External Modules](../development/local-toolchain/build-flash.mdx#building-with-external-modules).
 
 ## Beta Testing
 
@@ -149,7 +149,7 @@ When [using GitHub Actions to build ZMK](../user-setup.mdx), once you have obtai
 defaultValue="zmk"
 values={[
 {label: 'Default', value: 'zmk'},
-{label: 'Alterative', value: 'alt'},
+{label: 'Alternative', value: 'alt'},
 ]}>
 <TabItem value="zmk">
 
@@ -191,4 +191,4 @@ manifest:
 
 ### Building Locally
 
-When building from a pull request locally, you'll need to [perform the local user setup](../development/setup/index.md), but using the repository of the pull request rather than the official ZMK repository. You can then [build and flash](../development/build-flash.mdx) as usual.
+When building from a pull request locally, you'll need to [perform the local user setup](../development/local-toolchain/setup/index.md), but using the repository of the pull request rather than the official ZMK repository. You can then [build and flash](../development/local-toolchain/build-flash.mdx) as usual.

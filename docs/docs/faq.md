@@ -47,34 +47,11 @@ Sorry, Zephyr™ only supports 32-bit and 64-bit platforms.
 
 ZMK is still in its infancy, so there’s a learning curve involved. But if you’d like to try it out, please check out the development [documentation](/docs) and the other FAQs. Please keep in mind that the project team is still small, so our support capability is limited whilst we focus on development. But we’ll try our best! Interested developers are also very welcome to contribute!
 
-### What is a “board”?
+### What are _boards_ and _shields_? Why not just "keyboard"?
 
-In ZMK, a _board_ defines the _PCB_ that _includes the MCU_.
-For keyboards, this is one of two options:
-
-- Complete keyboard PCBs that include the MCU (e.g. the Planck or Preonic).
-- Small MCU boards (e.g. the Proton-C or nice!nano) that expose pins and are designed to be combined with larger keyboard PCBs, or hand wired to switches to create the final keyboard.
-
-### What is a “shield”?
-
-In ZMK, a _shield_ is a _PCB_ or _hardwired set of components_ that when combined with a MCU only [board](#what-is-a-board) like the Proton-C or nice!nano, results in a complete usable keyboard. Examples would be keyboard PCBs like the Kyria or Corne. The _shield_ is usually the big PCB containing all the keys.
-
-### Why _boards_ and _shields_? Why not just “keyboard”?
-
-If you haven't already done so, please read these FAQs first:
-
-- [What is a “board”?](#what-is-a-board)
-- [What is a "shield"?](#what-is-a-shield)
-
-When a keyboard accepts a small “PCB MCU module” (e.g. _Arduino Pro Micro_) for its “brains”, then it's important to conceptually separate the hardware into a [board](#what-is-a-board) PCB and a [shield](#what-is-a-shield) PCB.
-
-The [shield](#what-is-a-shield) is a brainless shell containing all the keys, RGB LEDs, encoders etc. It maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
-
-To bring this brainless [shield](#what-is-a-shield) to life, you attach any MCU [board](#what-is-a-board) matching the footprint. For instance, the _nice!nano_ is _pin-compatible_ with the _Arduino Pro Micro_, so you can substitute either [board](#what-is-a-board) onto the [shield](#what-is-a-shield). But each [board](#what-is-a-board) comes with its own features (MCU, flash, BLE, etc.) which must also be handled.
-
-Therefore in ZMK, [board](#what-is-a-board) and [shield](#what-is-a-shield) are considered two different (but related) entities so that it’s easier to mix and match them. They are combined during a ZMK build.
-
-Please note, many keyboards only have a single PCB which includes the “brains” (MCU) onboard. In ZMK, these have no [shield](#what-is-a-shield), only a [board](#what-is-a-board).
+ZMK uses the Zephyr concepts of "boards" and "shields" to refer to different parts of a keyboard build, that in turn get combined during a firmware build.
+This provides the modularity to be able to use composite keyboards with different compatible controllers.
+Please see the [explainer on boards & shields](development/hardware-integration/index.mdx#boards--shields) for more details.
 
 ### Does ZMK support wired split?
 

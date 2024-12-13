@@ -41,7 +41,7 @@ Values for `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`:
 | 3     | Swirl       |
 
 :::note
-The `*_START` settings only determine the initial underglow state. Any changes you make with the [underglow behavior](../behaviors/underglow.md) are saved to flash after a one minute delay and will be used after that.
+The `*_START` settings only determine the initial underglow state. Any changes you make with the [underglow behavior](../keymaps/behaviors/underglow.md) are saved to flash after a one minute delay and will be used after that.
 :::
 
 ## Devicetree
