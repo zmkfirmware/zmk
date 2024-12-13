@@ -1,0 +1,77 @@
+/*
+ * Copyright (c) 2023 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+
+/ {
+    chosen {
+        // 34 keys.
+        zmk,matrix-transform = &dual_1u_transform;
+
+        // 33 keys. Center two thumb keys replaced by a single 2u key. Remember to adjust your
+        // keymap accordingly!
+        // zmk,matrix-transform = &single_2u_transform;
+    };
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        base {
+            display-name = "Base";
+            bindings = <
+&kp Q       &kp W       &kp E      &kp R &kp T    &kp Y      &kp U       &kp I          &kp O         &kp P
+&kp A       &kp S       &kp D      &kp F &kp G    &kp H      &kp J       &kp K          &kp L         &kp SEMI
+&mt LSHFT Z &mt LCTRL X &mt LALT C &kp V &kp B    &kp N      &kp M       &mt RALT COMMA &mt RCTRL DOT &mt RSHFT SLASH
+                                   &kp LGUI       &lt 1 BSPC &lt 2 SPACE &mo 3
+            >;
+        };
+
+        lower {
+            display-name = "Lower";
+            bindings = <
+&kp EXCL &kp AT    &kp HASH &kp DLLR &kp PRCNT &kp CARET &kp AMPS  &kp ASTRK &kp LPAR &kp RPAR
+&trans   &kp TILDE &kp DQT  &kp PIPE &trans    &trans    &kp UNDER &kp PLUS  &kp LBRC &kp RBRC
+&trans   &trans    &trans   &trans   &trans    &trans    &trans    &trans    &trans   &trans
+                            &trans   &trans    &mo 4    &trans
+            >;
+        };
+
+        upper {
+            display-name = "Upper";
+            bindings = <
+&kp N1 &kp N2    &kp N3  &kp N4   &kp N5 &kp N6 &kp N7    &kp N8    &kp N9   &kp N0
+&trans &kp GRAVE &kp SQT &kp BSLH &trans &trans &kp MINUS &kp EQUAL &kp LBKT &kp RBKT
+&trans &trans    &trans  &trans   &trans &trans &trans    &trans    &trans   &trans
+                         &trans   &mo 4  &trans  &trans
+            >;
+        };
+
+        function {
+            display-name = "Function";
+            bindings = <
+&kp TAB &trans       &kp C_VOL_UP &trans       &trans    &trans &trans   &trans   &trans &kp ENTER
+&kp ESC &kp C_BRI_DN &kp C_VOL_DN &kp C_BRI_UP &trans    &trans &kp LEFT &kp DOWN &kp UP &kp RIGHT
+&trans  &trans       &trans       &trans       &trans    &trans &trans   &trans   &trans &trans
+                                  &trans       &kp C_PWR &trans &trans
+            >;
+        };
+
+        meta {
+            display-name = "Meta";
+            bindings = <
+&rgb_ug RGB_HUI &rgb_ug RGB_SAI &rgb_ug RGB_BRI &rgb_ug RGB_SPI &rgb_ug RGB_EFF &none        &none        &none        &none        &none
+&rgb_ug RGB_HUD &rgb_ug RGB_SAD &rgb_ug RGB_BRD &rgb_ug RGB_SPD &rgb_ug RGB_EFR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4
+&none           &none           &rgb_ug RGB_TOG &none           &none           &none        &none        &bt BT_CLR   &none        &none
+                                &none           &trans          &trans          &none
+            >;
+        };
+    };
+};

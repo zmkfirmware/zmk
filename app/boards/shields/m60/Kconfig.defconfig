@@ -4,6 +4,6 @@
 if SHIELD_M60
 
 config ZMK_KEYBOARD_NAME
-	default "m60"
+    default "m60"
 
 endif

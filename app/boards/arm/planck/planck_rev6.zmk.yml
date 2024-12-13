@@ -5,6 +5,7 @@ type: board
 arch: arm
 features:
   - keys
+  - encoder
 outputs:
   - usb
 url: https://olkb.com/collections/planck

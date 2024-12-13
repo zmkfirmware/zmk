@@ -4,15 +4,20 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <dt-bindings/zmk/behaviors.h>
+
 / {
-	behaviors {
-		/omit-if-no-ref/ mt: behavior_mod_tap {
-			compatible = "zmk,behavior-hold-tap";
-			label = "MOD_TAP";
-			#binding-cells = <2>;
-			flavor = "hold-preferred";
-			tapping-term-ms = <200>;
-			bindings = <&kp>, <&kp>;
-		};
-	};
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(MT)
+        /omit-if-no-ref/
+#endif
+        mt: mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&kp>, <&kp>;
+            display-name = "Mod-Tap";
+        };
+    };
 };

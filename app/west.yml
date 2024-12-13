@@ -7,11 +7,10 @@ manifest:
   projects:
     - name: zephyr
       remote: zmkfirmware
-      revision: v3.0.0+zmk-fixes
+      revision: v3.5.0+zmk-fixes
       clone-depth: 1
       import:
-        # TODO: Rename once upstream offers option like `exclude` or `denylist`
-        name-blacklist:
+        name-blocklist:
           - ci-tools
           - hal_altera
           - hal_cypress
@@ -27,9 +26,16 @@ manifest:
           - mcuboot
           - mcumgr
           - net-tools
-          - segger
           - openthread
           - edtt
           - trusted-firmware-m
+    - name: nanopb
+      revision: 8c60555d6277a0360c876bd85d491fc4fb0cd74a
+      path: modules/lib/nanopb
+      remote: zmkfirmware
+    - name: zmk-studio-messages
+      revision: 6cb4c283e76209d59c45fbcb218800cd19e9339d
+      path: modules/msgs/zmk-studio-messages
+      remote: zmkfirmware
   self:
     west-commands: scripts/west-commands.yml

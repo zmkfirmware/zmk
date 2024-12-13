@@ -5,26 +5,24 @@
 
 
 / {
-	behaviors {
-		ht_tui: behavior_hold_tap_tap_unless_interrupted {
-			compatible = "zmk,behavior-hold-tap";
-			label = "hold_tap_tap_unless_interrupted";
-			#binding-cells = <2>;
-			flavor = "tap-unless-interrupted";
-			tapping-term-ms = <300>;
-			quick-tap-ms = <200>;
-			bindings = <&kp>, <&kp>;
-		};
-	};
+    behaviors {
+        ht_tui: behavior_hold_tap_tap_unless_interrupted {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <300>;
+            quick-tap-ms = <200>;
+            bindings = <&kp>, <&kp>;
+        };
+    };
 
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
 
-		default_layer {
-			bindings = <
-				&ht_tui LEFT_SHIFT F      &ht_tui LEFT_CONTROL J
-				&kp D      &kp RIGHT_CONTROL>;
-		};
-	};
+        default_layer {
+            bindings = <
+                &ht_tui LEFT_SHIFT F      &ht_tui LEFT_CONTROL J
+                &kp D      &kp RIGHT_CONTROL>;
+        };
+    };
 };

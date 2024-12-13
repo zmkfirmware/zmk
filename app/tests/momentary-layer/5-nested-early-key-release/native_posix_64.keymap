@@ -3,37 +3,36 @@
 #include <dt-bindings/zmk/kscan_mock.h>
 
 / {
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
 
-		default_layer {
-			bindings = <
-				&none &mo 1
-				&none &none>;
-		};
+        default_layer {
+            bindings = <
+                &none &mo 1
+                &none &none>;
+        };
 
-		layer_1 {
-			bindings = <
-				&mo 2 &none
-				&none &none>;
-		};
+        layer_1 {
+            bindings = <
+                &mo 2 &none
+                &none &none>;
+        };
 
-		layer_2 {
-			bindings = <
-				&none &none
-				&kp B &none>;
-		};
-	};
+        layer_2 {
+            bindings = <
+                &none &none
+                &kp B &none>;
+        };
+    };
 };
 
 &kscan {
-	events = <
-		ZMK_MOCK_PRESS(0,1,10)
-		ZMK_MOCK_PRESS(0,0,10)
-		ZMK_MOCK_PRESS(1,0,10)
-		ZMK_MOCK_RELEASE(0,1,10)
-		ZMK_MOCK_RELEASE(0,0,10)
-		ZMK_MOCK_RELEASE(1,0,10)
-	>;
+    events = <
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+    >;
 };

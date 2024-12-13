@@ -5,16 +5,16 @@
 if SHIELD_FOURIER_LEFT
 
 config ZMK_KEYBOARD_NAME
-	default "Fourier"
+    default "Fourier"
 
-config ZMK_SPLIT_BLE_ROLE_CENTRAL
-	default y
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
 
 endif
 
 if SHIELD_FOURIER_LEFT || SHIELD_FOURIER_RIGHT
 
 config ZMK_SPLIT
-	default y
+    default y
 
 endif

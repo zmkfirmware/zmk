@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: CC-BY-NC-SA-4.0
  */
 
-import React from "react";
 import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import { CopyToClipboard } from "react-copy-to-clipboard";

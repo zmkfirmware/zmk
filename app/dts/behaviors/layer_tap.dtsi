@@ -4,15 +4,20 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <dt-bindings/zmk/behaviors.h>
+
 / {
-	behaviors {
-		/omit-if-no-ref/ lt: behavior_layer_tap {
-			compatible = "zmk,behavior-hold-tap";
-			label = "LAYER_TAP";
-			#binding-cells = <2>;
-			flavor = "tap-preferred";
-			tapping-term-ms = <200>;
-			bindings = <&mo>, <&kp>;
-		};
-	};
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(LT)
+        /omit-if-no-ref/
+#endif
+        lt: layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&kp>;
+            display-name = "Layer-Tap";
+        };
+    };
 };

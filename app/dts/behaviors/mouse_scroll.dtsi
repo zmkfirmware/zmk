@@ -1,0 +1,26 @@
+
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    behaviors {
+        /omit-if-no-ref/ msc: mouse_scroll {
+            compatible = "zmk,behavior-input-two-axis";
+            #binding-cells = <1>;
+            x-input-code = <INPUT_REL_HWHEEL>;
+            y-input-code = <INPUT_REL_WHEEL>;
+            time-to-max-speed-ms = <300>;
+            acceleration-exponent = <0>;
+        };
+    };
+
+    msc_input_listener: msc_input_listener {
+        compatible = "zmk,input-listener";
+        device = <&msc>;
+    };
+};

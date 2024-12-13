@@ -7,22 +7,22 @@
 #include "romac_plus.dtsi"
 
 / {
-	chosen {
-		zmk,kscan = &kscan0;
-	};
+    chosen {
+        zmk,kscan = &kscan0;
+    };
 
-	kscan0: kscan {
-		compatible = "zmk,kscan-gpio-matrix";
-		label = "KSCAN";
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
 
-		diode-direction = "col2row";
+        diode-direction = "col2row";
 
-		col-gpios
-			= <&pro_micro 19 GPIO_ACTIVE_HIGH>
-			, <&pro_micro 20 GPIO_ACTIVE_HIGH>
-			, <&pro_micro 21 GPIO_ACTIVE_HIGH>
-			;
-	};
+        col-gpios
+            = <&pro_micro 19 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 20 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 21 GPIO_ACTIVE_HIGH>
+            ;
+    };
 
 };
 

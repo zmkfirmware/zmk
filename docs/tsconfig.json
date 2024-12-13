@@ -1,14 +1,14 @@
 {
-  "extends": "@tsconfig/docusaurus/tsconfig.json",
+  "extends": "@docusaurus/tsconfig",
   "include": ["src/"],
   "compilerOptions": {
-    "jsx": "react",
-    "moduleResolution": "Node",
+    "types": ["node", "@docusaurus/theme-classic"],
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "strict": true,
     "noEmit": true,
     "target": "ES6",
-    "lib": ["ES2019.Array", "DOM", "DOM.Iterable"]
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
   }
 }

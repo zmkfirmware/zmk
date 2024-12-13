@@ -19,13 +19,19 @@ socket or using some sharp tweezers to bend the contacts back together.
 
 ## Debounce Configuration
 
+:::note
+Currently the `zmk,kscan-gpio-matrix` and `zmk,kscan-gpio-direct` [drivers](../config/kscan.md) supports these options, while `zmk,kscan-gpio-demux` driver does not.
+:::
+
 ### Global Options
 
 You can set these options in your `.conf` file to control debouncing globally.
-Values must be <= 127.
+Values must be `<= 16383`.
 
 - `CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS`: Debounce time for key press in milliseconds. Default = 5.
 - `CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS`: Debounce time for key release in milliseconds. Default = 5.
+
+If one of these options is set, it overrides the matching per-driver option described below.
 
 For example, this would shorten the debounce time for both press and release:
 
@@ -34,10 +40,10 @@ CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS=3
 CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS=3
 ```
 
-### Per-driver Options
+### Per-Driver Options
 
 You can add these Devicetree properties to a kscan node to control debouncing for
-that instance of the driver. Values must be <= 127.
+that instance of the driver. Values must be `<= 16383`.
 
 - `debounce-press-ms`: Debounce time for key press in milliseconds. Default = 5.
 - `debounce-release-ms`: Debounce time for key release in milliseconds. Default = 5.
@@ -50,7 +56,7 @@ per-driver option.
 For example, if your board/shield has a kscan driver labeled `kscan0` in its
 `.overlay`, `.dts`, or `.dtsi` files,
 
-```devicetree
+```dts
 kscan0: kscan {
     compatible = "zmk,kscan-gpio-matrix";
     ...
@@ -59,7 +65,7 @@ kscan0: kscan {
 
 then you could add this to your `.keymap`:
 
-```devicetree
+```dts
 &kscan0 {
     debounce-press-ms = <3>;
     debounce-release-ms = <3>;
@@ -93,8 +99,6 @@ one millisecond of latency but protects against short noise spikes.
 
 ZMK's default debouncing is similar to QMK's `sym_defer_pk` algorithm.
 
-Setting `CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS=0` for eager debouncing would be similar
-to QMK's (unimplemented as of this writing) `asym_eager_defer_pk`.
+Setting `CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS=0` for eager debouncing would be similar to QMK's `asym_eager_defer_pk`.
 
-See [QMK's Debounce API documentation](https://beta.docs.qmk.fm/using-qmk/software-features/feature_debounce_type)
-for more information.
+See [QMK's Debounce API documentation](https://docs.qmk.fm/#/feature_debounce_type) for more information.

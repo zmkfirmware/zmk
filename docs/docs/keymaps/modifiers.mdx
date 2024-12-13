@@ -1,0 +1,32 @@
+---
+title: Modifiers
+sidebar_label: Modifiers
+---
+
+Modifiers are the special keyboard keys: _shift_, _alt_, _control_ & _GUI_. Their keycodes can be found in the [list of keycodes](./list-of-keycodes.mdx#modifiers).
+Modifiers can be used both as [keys](#modifier-keys) and as [functions](#modifier-functions).
+
+### Modifier Keys
+
+These act like any other keycode.
+
+- e.g. `&kp LEFT_GUI` pushes and releases the left GUI key.
+
+### Modifier Functions
+
+Modifier functions add one or more modifiers to a code.
+
+These functions take the form: `XX(code)`
+
+- Modifier functions apply a modifier to a code:
+  - `&kp LS(A)` = `LEFT_SHIFT`+`A` (a capitalized **A**).
+- They can be combined:
+  - `&kp LC(RA(B))` = `LEFT_CONTROL`+`RIGHT_ALT`+`B`
+- They can be applied to a modifier keycode to create combined modifier keys:
+  - `&kp LS(LALT)` = `LEFT_SHIFT` + `LEFT_ALT`
+- Some basic keycodes already include a modifier function in their definition:
+  - `DOLLAR` = `LS(NUMBER_4)`
+- There are left- and right-handed versions of each modifier (also see [table in the list of keycodes](./list-of-keycodes.mdx#modifiers)):
+  - `LS(x)`, `LC(x)`, `LA(x)`, `LG(x)`, `RS(x)`, `RC(x)`, `RA(x)`, `RG(x)`
+- Modified keys can safely be rolled-over. Modifier functions are released when another key is pressed.
+  - Press `&kp LS(A)`, then press `&kp B`, release `&kp LS(A)` and release `&kp B` results in **Ab**. Only the A is capitalized.

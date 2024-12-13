@@ -5,7 +5,7 @@ sidebar_label: Battery Level
 
 If your keyboard has a battery sensor, ZMK will report its battery level to the connected bluetooth host and show it on the keyboard's display, if it has one.
 
-For split keyboards, only the battery level of the central (usually left) side is reported over bluetooth.
+For [split keyboards](split-keyboards.md), only the battery level of the central (usually left) side is reported over bluetooth by default. ZMK can be [configured to report the battery levels for peripherals](../config/battery.md#peripheral-battery-monitoring), but not many host systems will display this information without additional configuration or the use of third party utilities.
 
 :::note
 
@@ -20,11 +20,13 @@ To enable a battery sensor on a new board, add the driver for the sensor to your
 - `zmk,battery-voltage-divider`: Reads the voltage on an analog input pin.
 - `zmk,battery-nrf-vddh`: Reads the power supply voltage on a Nordic nRF52's VDDH pin.
 
+See the [battery level configuration page](../config/battery.md) for the configuration supported by each driver provided by ZMK.
+
 Zephyr also provides some drivers for fuel gauge ICs such as the TI bq274xx series and Maxim MAX17xxx series. If you use a battery sensor that does not have an existing driver, you will need to write a new driver that supports the `SENSOR_CHAN_GAUGE_STATE_OF_CHARGE` sensor channel and contribute it to Zephyr or ZMK.
 
 Once you have the sensor driver defined, add a `zmk,battery` property to the `chosen` node and set it to reference the sensor node. For example:
 
-```
+```dts
 / {
     chosen {
       zmk,battery = &vbatt;
@@ -32,7 +34,6 @@ Once you have the sensor driver defined, add a `zmk,battery` property to the `ch
 
     vbatt: vbatt {
         compatible = "zmk,battery-nrf-vddh";
-        label = "VBATT";
     };
 }
 ```

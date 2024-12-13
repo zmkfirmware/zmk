@@ -1,0 +1,18 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Key toggle behavior
+
+compatible: "zmk,behavior-key-toggle"
+
+include: one_param.yaml
+
+properties:
+  toggle-mode:
+    type: string
+    required: false
+    default: "flip"
+    enum:
+      - "on"
+      - "off"
+      - "flip"

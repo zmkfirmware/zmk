@@ -7,18 +7,17 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-	chosen {
-		zmk,kscan = &kscan0;
-	};
+    chosen {
+        zmk,kscan = &settings_reset_kscan;
+    };
 
-	kscan0: kscan {
-		compatible = "zmk,kscan-gpio-direct";
-		label = "KSCAN";
+    settings_reset_kscan: settings_reset_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <1>;
+        rows = <0>;
 
-		input-gpios
-			= <&pro_micro 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-			;
-	};
+        events = <>;
+    };
 
 };
 

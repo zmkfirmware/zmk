@@ -6,9 +6,9 @@
 
 #define DT_DRV_COMPAT zmk_behavior_key_repeat
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/hid.h>
 
@@ -32,7 +32,7 @@ struct behavior_key_repeat_data {
 
 static int on_key_repeat_binding_pressed(struct zmk_behavior_binding *binding,
                                          struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     struct behavior_key_repeat_data *data = dev->data;
 
     if (data->last_keycode_pressed.usage_page == 0) {
@@ -43,14 +43,14 @@ static int on_key_repeat_binding_pressed(struct zmk_behavior_binding *binding,
            sizeof(struct zmk_keycode_state_changed));
     data->current_keycode_pressed.timestamp = k_uptime_get();
 
-    ZMK_EVENT_RAISE(new_zmk_keycode_state_changed(data->current_keycode_pressed));
+    raise_zmk_keycode_state_changed(data->current_keycode_pressed);
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static int on_key_repeat_binding_released(struct zmk_behavior_binding *binding,
                                           struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     struct behavior_key_repeat_data *data = dev->data;
 
     if (data->current_keycode_pressed.usage_page == 0) {
@@ -60,13 +60,16 @@ static int on_key_repeat_binding_released(struct zmk_behavior_binding *binding,
     data->current_keycode_pressed.timestamp = k_uptime_get();
     data->current_keycode_pressed.state = false;
 
-    ZMK_EVENT_RAISE(new_zmk_keycode_state_changed(data->current_keycode_pressed));
+    raise_zmk_keycode_state_changed(data->current_keycode_pressed);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static const struct behavior_driver_api behavior_key_repeat_driver_api = {
     .binding_pressed = on_key_repeat_binding_pressed,
     .binding_released = on_key_repeat_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int key_repeat_keycode_state_changed_listener(const zmk_event_t *eh);
@@ -116,9 +119,9 @@ static int behavior_key_repeat_init(const struct device *dev) {
         .usage_pages = DT_INST_PROP(n, usage_pages),                                               \
         .usage_pages_count = DT_INST_PROP_LEN(n, usage_pages),                                     \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_key_repeat_init, NULL, &behavior_key_repeat_data_##n,        \
-                          &behavior_key_repeat_config_##n, APPLICATION,                            \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_repeat_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_key_repeat_init, NULL, &behavior_key_repeat_data_##n,      \
+                            &behavior_key_repeat_config_##n, POST_KERNEL,                          \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_repeat_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KR_INST)
 

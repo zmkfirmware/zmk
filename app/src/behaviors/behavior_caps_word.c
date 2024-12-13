@@ -6,9 +6,9 @@
 
 #define DT_DRV_COMPAT zmk_behavior_caps_word
 
-#include <device.h>
+#include <zephyr/device.h>
 #include <drivers/behavior.h>
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 #include <zmk/behavior.h>
 
 #include <zmk/endpoints.h>
@@ -16,6 +16,7 @@
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/events/modifiers_state_changed.h>
+#include <zmk/keys.h>
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
 
@@ -54,7 +55,7 @@ static void deactivate_caps_word(const struct device *dev) {
 
 static int on_caps_word_binding_pressed(struct zmk_behavior_binding *binding,
                                         struct zmk_behavior_binding_event event) {
-    const struct device *dev = device_get_binding(binding->behavior_dev);
+    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     struct behavior_caps_word_data *data = dev->data;
 
     if (data->active) {
@@ -74,6 +75,9 @@ static int on_caps_word_binding_released(struct zmk_behavior_binding *binding,
 static const struct behavior_driver_api behavior_caps_word_driver_api = {
     .binding_pressed = on_caps_word_binding_pressed,
     .binding_released = on_caps_word_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh);
@@ -92,7 +96,9 @@ static bool caps_word_is_caps_includelist(const struct behavior_caps_word_config
                 continuation->id, continuation->implicit_modifiers);
 
         if (continuation->page == usage_page && continuation->id == usage_id &&
-            continuation->implicit_modifiers == implicit_modifiers) {
+            (continuation->implicit_modifiers &
+             (implicit_modifiers | zmk_hid_get_explicit_mods())) ==
+                continuation->implicit_modifiers) {
             LOG_DBG("Continuing capsword, found included usage: 0x%02X - 0x%02X", usage_page,
                     usage_id);
             return true;
@@ -143,6 +149,7 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
         caps_word_enhance_usage(config, ev);
 
         if (!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode) &&
+            !is_mod(ev->usage_page, ev->keycode) &&
             !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
                                            ev->implicit_modifiers)) {
             LOG_DBG("Deactivating caps_word for 0x%02X - 0x%02X", ev->usage_page, ev->keycode);
@@ -162,9 +169,7 @@ static int behavior_caps_word_init(const struct device *dev) {
 #define CAPS_WORD_LABEL(i, _n) DT_INST_LABEL(i)
 
 #define PARSE_BREAK(i)                                                                             \
-    {.page = (ZMK_HID_USAGE_PAGE(i) & 0xFF),                                                       \
-     .id = ZMK_HID_USAGE_ID(i),                                                                    \
-     .implicit_modifiers = SELECT_MODS(i)},
+    {.page = ZMK_HID_USAGE_PAGE(i), .id = ZMK_HID_USAGE_ID(i), .implicit_modifiers = SELECT_MODS(i)}
 
 #define BREAK_ITEM(i, n) PARSE_BREAK(DT_INST_PROP_BY_IDX(n, continue_list, i))
 
@@ -173,12 +178,12 @@ static int behavior_caps_word_init(const struct device *dev) {
     static struct behavior_caps_word_config behavior_caps_word_config_##n = {                      \
         .index = n,                                                                                \
         .mods = DT_INST_PROP_OR(n, mods, MOD_LSFT),                                                \
-        .continuations = {UTIL_LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, n)},        \
+        .continuations = {LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, (, ), n)},       \
         .continuations_count = DT_INST_PROP_LEN(n, continue_list),                                 \
     };                                                                                             \
-    DEVICE_DT_INST_DEFINE(n, behavior_caps_word_init, NULL, &behavior_caps_word_data_##n,          \
-                          &behavior_caps_word_config_##n, APPLICATION,                             \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_caps_word_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_caps_word_init, NULL, &behavior_caps_word_data_##n,        \
+                            &behavior_caps_word_config_##n, POST_KERNEL,                           \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_caps_word_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)
 

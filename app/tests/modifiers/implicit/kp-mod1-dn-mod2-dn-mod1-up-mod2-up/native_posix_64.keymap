@@ -4,24 +4,23 @@
 
 
 &kscan {
-	events = <
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_PRESS(0,0,10) 
-		ZMK_MOCK_RELEASE(0,1,10)
-		ZMK_MOCK_RELEASE(0,0,10) 
-	>;
+    events = <
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+    >;
 };
 
 / {
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
 
-		default_layer {
-			bindings = <
-				&kp LC(A) &kp LS(B)
-				&kp LEFT_CONTROL &none
-			>;
-		};
-	};
+        default_layer {
+            bindings = <
+                &kp LC(A) &kp LS(B)
+                &kp LEFT_CONTROL &none
+            >;
+        };
+    };
 };

@@ -1,6 +1,6 @@
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
-#include <dt-bindings/zmk/kscan-mock.h>
+#include <dt-bindings/zmk/kscan_mock.h>
 
 /*
  sticky layers should quick-release.
@@ -8,45 +8,44 @@
 */
 
 / {
-	keymap {
-		compatible = "zmk,keymap";
-		label ="Default keymap";
+    keymap {
+        compatible = "zmk,keymap";
 
-		default_layer {
-			bindings = <
-				&sk E &sl 1
-				&kp A &kp B>;
-		};
+        default_layer {
+            bindings = <
+                &sk E &sl 1
+                &kp A &kp B>;
+        };
 
-		lower_layer {
-			bindings = <
-				&sk LEFT_CONTROL &kp X
-				&kp Y  &kp Z>;
-		};
-	};
+        lower_layer {
+            bindings = <
+                &sk LEFT_CONTROL &kp X
+                &kp Y  &kp Z>;
+        };
+    };
 };
 
 &kscan {
-	events = <
-		/* press sl 1 */
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_RELEASE(0,1,10) 
-		/* press X */
-		ZMK_MOCK_PRESS(0,1,10)
-		/* press A */
-		ZMK_MOCK_PRESS(1,0,10)
-		ZMK_MOCK_RELEASE(0,1,10)
-		ZMK_MOCK_RELEASE(1,0,10)
+    events = <
+        /* press sl 1 */
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        /* press X */
+        ZMK_MOCK_PRESS(0,1,10)
+        /* press A */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(1,0,10)
 
-		/* repeat test to check if cleanup is done correctly */
-		/* press sl 1 */
-		ZMK_MOCK_PRESS(0,1,10) 
-		ZMK_MOCK_RELEASE(0,1,10) 
-		/* press X */
-		ZMK_MOCK_PRESS(0,1,10)
-		/* press Y */
-		ZMK_MOCK_PRESS(1,0,10)
-		ZMK_MOCK_RELEASE(0,1,10)
-		ZMK_MOCK_RELEASE(1,0,10)
-	>;
+        /* repeat test to check if cleanup is done correctly */
+        /* press sl 1 */
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        /* press X */
+        ZMK_MOCK_PRESS(0,1,10)
+        /* press Y */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+    >;
 };

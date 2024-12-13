@@ -1,0 +1,28 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD
+    default "bt60_v2" if BOARD_BT60_V2
+    default "bt65_v1" if BOARD_BT65_V1
+    default "bt75_v1" if BOARD_BT75_V1
+config ZMK_KEYBOARD_NAME
+    default "BT60 V2" if BOARD_BT60_V2
+    default "BT65" if BOARD_BT65_V1
+    default "BT75" if BOARD_BT75_V1
+
+if BOARD_BT60_V2 || BOARD_BT65_V1 || BOARD_BT75_V1
+
+if USB
+
+config USB_NRFX
+    default y
+
+config USB_DEVICE_STACK
+    default y
+
+endif # USB
+
+config BT_CTLR
+    default BT
+
+endif # BOARD_BT60_V2 || BOARD_BT65_V1 || BOARD_BT75_V1

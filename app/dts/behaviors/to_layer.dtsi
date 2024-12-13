@@ -4,12 +4,17 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <dt-bindings/zmk/behaviors.h>
+
 / {
-	behaviors {
-		/omit-if-no-ref/ to: behavior_to_layer {
-			compatible = "zmk,behavior-to-layer";
-			label = "TO_LAYER";
-			#binding-cells = <1>;
-		};
-	};
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(TO)
+        /omit-if-no-ref/
+#endif
+        to: to_layer {
+            compatible = "zmk,behavior-to-layer";
+            #binding-cells = <1>;
+            display-name = "To Layer";
+        };
+    };
 };

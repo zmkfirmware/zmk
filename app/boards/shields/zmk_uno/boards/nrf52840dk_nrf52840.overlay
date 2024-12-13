@@ -1,0 +1,66 @@
+
+/ {
+    // First, delete the existing basic GPIO based instance.
+    /delete-node/ encoder;
+};
+
+&pinctrl {
+    qdec_default: qdec_default {
+        group1 {
+            psels = <NRF_PSEL(QDEC_A, 1, 11)>,
+                    <NRF_PSEL(QDEC_B, 1, 10)>;
+            bias-pull-up;
+        };
+    };
+
+    qdec_sleep: qdec_sleep {
+        group1 {
+            psels = <NRF_PSEL(QDEC_A, 1, 11)>,
+                    <NRF_PSEL(QDEC_B, 1, 10)>;
+            bias-pull-up;
+            low-power-enable;
+        };
+    };
+};
+
+// Set up the QDEC hardware based driver and give it the same label as the deleted node.
+encoder: &qdec0 {
+    status = "okay";
+    led-pre = <0>;
+    steps = <80>;
+    pinctrl-0 = <&qdec_default>;
+    pinctrl-1 = <&qdec_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+/ {
+    behaviors {
+        hw_soft_off: hw_soft_off {
+            compatible = "zmk,behavior-soft-off";
+            #binding-cells = <0>;
+        };
+    };
+
+    soft_off_direct_kscan: soft_off_direct_kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        input-keys = <&button0>;
+        wakeup-source;
+    };
+
+    soft_off_sideband_behaviors {
+        compatible = "zmk,kscan-sideband-behaviors";
+        kscan = <&soft_off_direct_kscan>;
+        soft_off {
+            row = <0>;
+            column = <0>;
+            bindings = <&hw_soft_off>;
+        };
+    };
+
+    soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        status = "okay";
+
+        wakeup-sources = <&soft_off_direct_kscan>;
+    };
+};

@@ -5,9 +5,6 @@ CONFIG_SOC_STM32F303XC=y
 # 72MHz system clock
 CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC=72000000
 
-
-# enable pinmux
-CONFIG_PINMUX=y
 CONFIG_PINCTRL=y
 
 # enable GPIO
@@ -15,3 +12,9 @@ CONFIG_GPIO=y
 
 # clock configuration
 CONFIG_CLOCK_CONTROL=y
+
+CONFIG_ZMK_USB=y
+
+# Uncomment these two lines to add support for encoder to your firmware
+#CONFIG_EC11=y
+#CONFIG_EC11_TRIGGER_OWN_THREAD=y

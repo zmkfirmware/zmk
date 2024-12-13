@@ -97,7 +97,7 @@ select opt in "${options[@]}" "Quit"; do
             keyboard_arch=${keyboards_arch[$keyboard_index]}
             keyboard_basedir=${keyboards_basedir[$keyboard_index]}
             keyboard_title=${options[$keyboard_index]}
-            keyboard_sibling_var=${keyboard}_siblings[@]                                                  
+            keyboard_sibling_var=${keyboard}_siblings[@]
             keyboard_sibling_first=${keyboard}_siblings[0]
             if [ -n "${!keyboard_sibling_first}" ]; then
                 keyboard_siblings=${!keyboard_sibling_var}
@@ -120,6 +120,10 @@ if [ "$keyboard_shield" == "y" ]; then
     prompt="Pick an MCU board:"
     options=({{#boards}}"{{{name}}}" {{/boards}})
     board_ids=({{#boards}}"{{id}}" {{/boards}})
+    boards_usb_only=({{#boards}}"{{#usb_only}}y{{/usb_only}}{{^usb_only}}n{{/usb_only}}" {{/boards}})
+
+    boards_revisions=({{#boards}}"{{#revisions}}{{.}} {{/revisions}}" {{/boards}})
+    boards_default_revision=({{#boards}}"{{{default_revision}}}" {{/boards}})
 
     echo ""
     echo "MCU Board Selection:"
@@ -134,7 +138,14 @@ if [ "$keyboard_shield" == "y" ]; then
                     echo "Invalid option. Try another one."
                     continue
                 fi
+
                 board_index=$(( $REPLY-1 ))
+
+                if [ -n "${!keyboard_sibling_first}" ] && [ "${boards_usb_only[$board_index]}" = "y" ] ; then
+                    echo "Wired split is not yet supported by ZMK."
+                    exit 1
+                fi
+
                 board=${board_ids[$board_index]}
                 board_title=${options[$board_index]}
                 boards=( "${board}" )
@@ -143,6 +154,38 @@ if [ "$keyboard_shield" == "y" ]; then
 
         esac
     done
+
+    if [ -n "${boards_revisions[$board_index]}" ]; then
+        read -a _valid_revisions <<< "${boards_revisions[$board_index]}"
+
+        _rev_choices=("${_valid_revisions[@]}")
+        for (( _i=0; _i<${#_valid_revisions}; _i++ )); do
+            if [ "${boards_default_revision[board_index]}" = "${_valid_revisions[_i]}" ]; then
+                _rev_choices[_i]+=" (default)"
+            fi
+        done
+
+        echo ""
+        echo "MCU Board Revision:"
+        select opt in "${_rev_choices[@]}" "Quit"; do
+            case "$REPLY" in
+                ''|*[!0-9]*) echo "Invalid option. Try another one."; continue;;
+
+                $(( ${#_valid_revisions[@]}+1 )) ) echo "Goodbye!"; exit 1;;
+                *)
+                    if [ $REPLY -gt $(( ${#_valid_revisions[@]}+1 )) ] || [ $REPLY -lt 0 ]; then
+                        echo "Invalid option. Try another one."
+                        continue
+                    fi
+
+                    _rev_index=$(( $REPLY-1 ))
+                    board="${board_ids[$board_index]}@${_valid_revisions[_rev_index]}"
+                    boards=( "${board}" )
+                    break
+                ;;
+            esac
+        done
+    fi
 else
     board=${keyboard}
     boards=$keyboard_siblings
@@ -197,19 +240,23 @@ cd ${repo_name}
 pushd config
 
 if [ "$keyboard_shield" == "y" ]; then
-    config_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${keyboard_basedir}/${shield}.conf"
-    
-    keymap_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${keyboard_basedir}/${shield}.keymap"
+    url_base="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/shields/${keyboard_basedir}"
 else
-    config_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${keyboard_basedir}/${board}.conf"
-    keymap_file="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${keyboard_basedir}/${board}.keymap"
+    url_base="https://raw.githubusercontent.com/zmkfirmware/zmk/main/app/boards/${keyboard_arch}/${keyboard_basedir}"
 fi
 
-echo "Downloading config file (${config_file})"
-$download_command "${config_file}" || echo "# Put configuration options here" > "${keyboard}.conf"
+echo "Downloading config file (${url_base}/${keyboard}.conf)"
+if ! $download_command "${url_base}/${keyboard}.conf"; then
+    echo "Could not find it, falling back to ${url_base}/${keyboard_basedir}.conf"
+    $download_command "${url_base}/${keyboard_basedir}.conf" || echo "# Put configuration options here" > "${keyboard}.conf"
+fi
+
 if [ "$copy_keymap" == "yes" ]; then
-    echo "Downloading keymap file (${keymap_file})"
-    $download_command "${keymap_file}"
+    echo "Downloading keymap file (${url_base}/${keyboard}.keymap)"
+    if ! $download_command "${url_base}/${keyboard}.keymap"; then
+        echo "Could not find it, falling back to ${url_base}/${keyboard_basedir}.keymap"
+        $download_command "${url_base}/${keyboard_basedir}.keymap" || echo "Warning: Could not find a keymap file to download!"
+    fi
 fi
 
 popd
@@ -246,11 +293,11 @@ if [ -n "$github_repo" ]; then
         echo "    git remote rm origin"
         echo "    git remote add origin FIXED_URL"
         echo "    git push --set-upstream origin $(git symbolic-ref --short HEAD)"
-        echo "Once pushed, your firmware should be availalbe from GitHub Actions at: ${github_repo%.git}/actions"
+        echo "Once pushed, your firmware should be available from GitHub Actions at: ${github_repo%.git}/actions"
         exit 1
     fi
 
-    # TODO: Support determing the actions URL when non-https:// repo URL is used.
+    # TODO: Support determining the actions URL when non-https:// repo URL is used.
     if [ "${github_repo}" != "${github_repo#https://}" ]; then
         echo "Your firmware should be available from GitHub Actions shortly: ${github_repo%.git}/actions"
     fi

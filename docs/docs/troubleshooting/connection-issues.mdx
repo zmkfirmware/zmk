@@ -1,0 +1,142 @@
+---
+title: Connection Issues
+sidebar_label: Connection Issues
+description: Troubleshooting wireless connection issues of ZMK devices.
+---
+
+:::tip
+[USB logging](../development/usb-logging.mdx) can be very helpful for diagnosing issues with ZMK. However, when connected to USB your ZMK device will output to USB by default. To troubleshoot wireless connection issues using logging, you will need to [change the preferred output endpoint](../keymaps/behaviors/outputs.md).
+:::
+
+## Split Keyboard Halves Unable to Pair
+
+[Split keyboard](../features/split-keyboards.md) halves will automatically pair with one another, but there are some cases where this breaks, and the pairing needs to be reset, for example:
+
+- Switching which halves are the central/peripheral.
+- Replacing the controller for one of the halves.
+
+These issues can be resolved by flashing a settings reset firmware to both controllers.
+
+:::warning
+
+This procedure will erase all settings, such as Bluetooth profiles, output selection, RGB underglow color, etc.
+
+:::
+
+### Building a Reset Firmware
+
+If you are using GitHub Actions to build your firmware as described in the [user setup](../user-setup.mdx), find the `build.yaml` file in your `zmk-config` folder and add an additional settings reset build for the board used by your split keyboard. For example, assuming that the config repo is setup for nice!nano v2 with Corne, append the `settings_reset` shield to the `build.yaml` file as follows:
+
+```yml
+include:
+  - board: nice_nano_v2
+    shield: corne_left
+  - board: nice_nano_v2
+    shield: corne_right
+  - board: nice_nano_v2
+    shield: settings_reset
+```
+
+If you are building for an onboard controller keyboard that doesn't use a shield, add a new `shield:` field to its `board:` entry.
+
+Save the file, commit the changes and push them to GitHub. Download the new firmware zip file that is built by the latest GitHub Actions job. In it you will find an additional `settings_reset` firmware file.
+
+If you use a [local development environment](../development/local-toolchain/setup/index.md) to build firmware instead of GitHub Actions, pass the `-DSHIELD=settings_reset` argument when [building](../development/local-toolchain/build-flash.mdx), omitting all other `-DSHIELD` arguments.
+
+### Reset Split Keyboard Procedure
+
+Perform the following steps to reset **_both_** halves of your split keyboard:
+
+1. Put each half of the split keyboard into bootloader mode.
+1. Flash one of the halves of the split with the settings reset firmware.
+1. Repeat step 2 with the other half of the split keyboard.
+1. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
+
+After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.
+
+Once this is done, you can remove/forget the keyboard on each host device and pair it again.
+
+:::info
+
+The settings reset firmware has Bluetooth disabled to prevent the two sides from automatically re-pairing until you are done resetting them both. You will not be able to pair your keyboard or see it in any Bluetooth device lists until you have flashed the normal firmware again.
+
+:::
+
+## Unable to Connect to Device
+
+### Bluetooth Profiles
+
+A very common issue is that the wrong Bluetooth profile has been selected, or the Bluetooth profile already has a saved connection. Learn more about Bluetooth profiles [here](../features/bluetooth.md), and learn how to adjust Bluetooth profiles via the `&bt` behavior [here](../keymaps/behaviors/bluetooth.md).
+
+### Hardware Issues
+
+For connectivity problems caused by hardware, please see [the appropriate section of the hardware issues page](hardware-issues.mdx#hardware-related-wireless-connectivity-issues).
+
+### Additional Bluetooth Options
+
+Some devices and operating systems may have additional restrictions that they require be met before allowing a bluetooth peripheral to pair with them. If your keyboard is visible to your host but you are having issues trouble connecting or no input is registered, this might be the cause. Some of ZMK's [experimental bluetooth settings](../config/bluetooth.md) may suffice to resolve the issue. In particular:
+
+- Disabling PHY 2Mbps ([`CONFIG_BT_CTLR_PHY_2M=n`](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_BT_CTLR_PHY_2M)) helps to pair and connect for certain wireless chipset firmware versions, particularly on Windows (Realtek and Intel chips) and older Intel Macs with Broadcom chipsets.
+- Enabling passkey entry ([`CONFIG_ZMK_BLE_PASSKEY_ENTRY=y`](../config/bluetooth.md)) helps for certain Windows computers (work-managed ones in particular). This may also manifest in not sending keystrokes.
+
+### Issues With Dual Boot Setups
+
+Since ZMK associates pairing/bond keys with hardware addresses of hosts, you cannot pair to two different operating systems in a dual boot system at the same time.
+While you can find [documented workarounds](https://wiki.archlinux.org/title/bluetooth#Dual_boot_pairing) that involve copying pairing keys across operating systems and use both OS with a single profile, they can be fairly involved and should be followed with caution.
+
+### Mitigating a Faulty Oscillator
+
+Rarely, due to a manufacturing error, a device may have a faulty oscillator. This prevents it from functioning correctly wirelessly and can be difficult to diagnose. Some microcontrollers such as the `nRF52840` allow for the usage of an internal oscillator instead of an external one. This results in increased power draw but can be a solution if your device does indeed have a faulty oscillator.
+
+For the `nRF52840`, the flag to set to use the internal oscillator is:
+
+```
+CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y
+```
+
+Other microcontrollers may have similar configuration options [found in the Zephyr documentation](https://docs.zephyrproject.org/3.5.0/search.html?q=CONFIG_CLOCK_CONTROL&check_keywords=yes&area=default). Do note that not all microcontrollers allow for the use of an internal oscillator, though.
+
+## Issues While Connected
+
+### Unreliable/Weak Connection
+
+Some users may experience a poor connection between the keyboard and the host. This might be due to poor quality BLE hardware, a [metal enclosure on the keyboard or host](hardware-issues.mdx#hardware-related-wireless-connectivity-issues), or the distance between them. Increasing the transmit power of the keyboard's BLE radio may reduce the severity of this problem. To do this, set the `CONFIG_BT_CTLR_TX_PWR_PLUS_8` configuration value in the `.conf` file of your user config directory as such:
+
+```ini
+CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
+```
+
+For the `nRF52840`, the value `PLUS_8` can be set to any multiple of four between `MINUS_20` and `PLUS_8`. The default value for this config is `0`, but if you are having connection issues it is recommended to set it to `PLUS_8` because the power consumption difference is negligible. For more information on changing the transmit power of your BLE device, please refer to [the Zephyr docs.](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_BT_CTLR_TX_PWR)
+
+:::info
+This setting can also improve the connection strength between the keyboard halves for split keyboards.
+:::
+
+### Using Bluetooth Output With USB Power
+
+If you want to test Bluetooth output on your keyboard and are powering it through the USB connection rather than a battery, you will be able to pair with a host device but may not see keystrokes sent. In this case you need to use the [output selection behavior](../keymaps/behaviors/outputs.md) to prefer sending keystrokes over Bluetooth rather than USB. This might be necessary even if you are not powering from a device capable of receiving USB inputs, such as a USB charger.
+
+### macOS Connected but Not Working
+
+If you attempt to pair a ZMK keyboard from macOS in a way that causes a bonding issue, macOS may report the keyboard as connected, but fail to actually work. If this occurs:
+
+1. Remove the keyboard from macOS using the Bluetooth control panel.
+1. Invoke `&bt BT_CLR` on the keyboard while the profile associated with the macOS device is active, by pressing the correct keys for your particular keymap.
+1. Try connecting again from macOS.
+
+### Windows Connected but Not Working
+
+Occasionally pairing the keyboard to a Windows device might result in a state where the keyboard is connected but does not send any key strokes.
+If this occurs:
+
+1. Remove the keyboard from Windows using the Bluetooth settings.
+1. Invoke `&bt BT_CLR` on the keyboard while the profile associated with the Windows device is active, by pressing the correct keys for your particular keymap.
+1. Turn off Bluetooth from Windows settings, then turn it back on.
+1. Pair the keyboard to the Windows device.
+
+If this doesn't help, try following the procedure above but replace step 3 with one of the following:
+
+- Restart the Windows device
+- Open "Device Manager," turn on "Show hidden devices" from the "View" menu, then find and delete the keyboard under the "Bluetooth" item
+
+Some Windows devices may also require passkey entry, described under ["Unable to Connect to Device"](#unable-to-connect-to-device).

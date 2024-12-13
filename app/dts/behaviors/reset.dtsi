@@ -7,18 +7,20 @@
 #include <dt-bindings/zmk/reset.h>
 
 / {
-	behaviors {
-		reset: behavior_reset {
-			compatible = "zmk,behavior-reset";
-			label = "RESET";
-			#binding-cells = <0>;
-		};
+    behaviors {
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        sys_reset: sysreset {
+            compatible = "zmk,behavior-reset";
+            #binding-cells = <0>;
+            display-name = "Reset";
+        };
 
-		bootloader: behavior_reset_dfu {
-			compatible = "zmk,behavior-reset";
-			label = "BOOTLOAD";
-			type = <RST_UF2>;
-			#binding-cells = <0>;
-		};
-	};
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        bootloader: bootload {
+            compatible = "zmk,behavior-reset";
+            type = <RST_UF2>;
+            #binding-cells = <0>;
+            display-name = "Bootloader";
+        };
+    };
 };

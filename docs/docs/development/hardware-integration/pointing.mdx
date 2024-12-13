@@ -1,0 +1,168 @@
+---
+title: Pointing Devices
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+ZMK's pointing device support builds upon the Zephyr [input API](https://docs.zephyrproject.org/3.5.0/services/input/index.html) to offer pointing/mouse functionality with various hardware. A limited number of input drivers are available in the Zephyr version currently used by ZMK, but additional drivers can be found in [external modules](../../features/modules.mdx) for a variety of hardware.
+
+The details will depend on if you are adding a pointing device to a [split peripheral](../../features/split-keyboards.md#central-and-peripheral-roles) as opposed to a unibody keyboard or split central part:
+
+<Tabs
+  defaultValue="central"
+  values={[
+    { label: "Unibody or Split Central", value: "central" },
+    { label: "Split Peripheral", value: "peripheral" },
+  ]}
+>
+  <TabItem value="central">
+
+## Input Device
+
+First, we must define the pointing device itself. The specifics of where this node goes will depend on the specific hardware. _Most_ pointing hardware uses either SPI or I2C for communication, and will be nested under a properly configured bus node, e.g. `&pro_micro_i2c` or for a complete onboard setup, `&i2c3`. See the documentation on [pin control](./pinctrl.mdx) if you need to configure the pins for an I2C or SPI bus.
+
+For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml), you may have a node like:
+
+```dts
+&pro_micro_spi {
+    status = "okay";
+    cs-gpios = <&pro_micro 19 GPIO_ACTIVE_LOW>;
+
+    glidepoint: glidepoint@0 {
+        compatible = "cirque,pinnacle";
+        reg = <0>;
+        spi-max-frequency = <1000000>;
+        status = "okay";
+        dr-gpios = <&pro_micro 5 (GPIO_ACTIVE_HIGH)>;
+
+        sensitivity = "4x";
+        sleep;
+        no-taps;
+    };
+};
+```
+
+The specifics of the properties required to set for a given driver will vary; always consult the devicetree bindings file for the specific driver to see what properties can be set.
+
+## Listener
+
+Every input device needs an associated listener added that listens for events from the device and processes them before sending the events to the host using a HID mouse report. See [input listener configuration](../../config/pointing.md#input-listener) for the full details. For example, to add a listener for the above device:
+
+```dts
+/ {
+    glidepoint_listener {
+        compatible = "zmk,input-listener";
+        device = <&glidepoint>;
+    };
+};
+```
+
+## Input Processors
+
+Some physical pointing devices may be generating input events that need adjustment before being sent to hosts. For example a trackpad might be integrated into a keyboard rotated 90° and need the X/Y data adjusted appropriately. This can be accomplished with [input processors](../../keymaps/input-processors/index.md). As an example, you could enhance the above listener with the following input processor that inverts and swaps the X/Y axes:
+
+```dts
+#include <dt-bindings/zmk/input_transform.h>
+
+/ {
+    glidepoint_listener {
+        compatible = "zmk,input-listener";
+        device = <&glidepoint>;
+        input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
+    };
+};
+```
+
+  </TabItem>
+  <TabItem value="peripheral">
+
+## Split
+
+Pointing devices are supported on split peripherals, with some additional configuration using the [input split device](../../config/pointing.md#input-split). All split pointers are identified using a unique integer value, which is specified using the `reg` property and in the `@#` suffix for the node. If adding multiple peripheral pointers, be sure that each is given a unique identifier.
+
+### Shared
+
+Both peripheral and central make use of a `zmk,input-split` device, which functions differently depending on where it is used. To avoid duplicating work, this node can be defined in a common `.dtsi` file that is included into both central and peripheral `.overlay`/`.dts` files. Second, the input listener for the central side is added here, but disabled, so that keymaps (which are included for central and peripheral builds) can reference the listener to add input processors without issue.
+
+:::note
+
+Input splits need to be nested under a parent node that properly sets `#address-cells = <1>` and `#size-cells = <0>`. These settings are what allow us to use a single integer number for the `reg` value.
+
+:::
+
+```dts
+/ {
+    split_inputs {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        glidepoint_split: glidepoint_split@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
+    };
+
+    glidepoint_listener: glidepoint_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled";
+        device = <&glidepoint_split>;
+    };
+};
+```
+
+### Peripheral
+
+In the peripheral .overlay/.dts file, we do the following:
+
+- Include the shared .dtsi file.
+- Add the device node for the physical pointer.
+- Update the input split with a reference to the new device node that should be proxied.
+
+```dts
+#include "common.dtsi"
+
+&pro_micro_spi {
+    status = "okay";
+    cs-gpios = <&pro_micro 19 GPIO_ACTIVE_LOW>;
+
+    glidepoint: glidepoint@0 {
+        compatible = "cirque,pinnacle";
+        reg = <0>;
+        spi-max-frequency = <1000000>;
+        status = "okay";
+        dr-gpios = <&pro_micro 5 (GPIO_ACTIVE_HIGH)>;
+
+        sensitivity = "4x";
+        sleep;
+        no-taps;
+    };
+};
+
+&glidepoint_split {
+    device = <&glidepoint>;
+
+    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
+};
+```
+
+The `input-processors` property on the input split is optional, and only necessary if the input needs to be fixed up before it is sent to the central.
+
+The specifics of where the pointing device node goes will depend on the specific hardware. _Most_ pointing hardware uses either SPI or I2C for communication, and will be nested under a properly configured bus node, e.g. `&pro_micro_i2c` or for a complete onboard setup, `&i2c3`. See the documentation on [pin control](./pinctrl.mdx) if you need to configure the pins for an I2C or SPI bus.
+
+The specifics of the properties required to set for a given driver will vary; always consult the devicetree bindings file for the specific driver to see what properties can be set.
+
+### Central
+
+On the central, the input split acts as an input device, receiving events from the peripheral and raising them locally. First, include the shared file, and then enabled the [input listener](#listener) that is created, but disabled, in our shared file:
+
+```dts
+#include "common.dtsi"
+
+&glidepoint_listener {
+    status = "okay";
+};
+```
+
+  </TabItem>
+</Tabs>

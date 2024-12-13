@@ -12,12 +12,13 @@
 
 / {
 
-    /* This kscan is for the 65% right half the 60% right half 
+    /* This kscan is for the 65% right half the 60% right half
      * may require different column and row pins
      */
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-        label = "KSCAN";
+        wakeup-source;
+
         diode-direction = "col2row";
 
 

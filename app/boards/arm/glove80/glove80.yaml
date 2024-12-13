@@ -1,0 +1,19 @@
+identifier: glove80
+name: Glove80
+url: https://www.moergo.com/
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - adc
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - watchdog
+  - gpio
+  - i2c
+  - spi

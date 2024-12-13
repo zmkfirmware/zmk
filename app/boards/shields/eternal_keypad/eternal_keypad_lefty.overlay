@@ -1,0 +1,7 @@
+/*
+ * Copyright (c) 202 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "eternal_keypad.dtsi"

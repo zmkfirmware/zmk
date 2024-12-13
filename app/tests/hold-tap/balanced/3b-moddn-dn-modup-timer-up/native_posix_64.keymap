@@ -4,11 +4,11 @@
 #include "../behavior_keymap.dtsi"
 
 &kscan {
-	events = <
-		ZMK_MOCK_PRESS(1,1,10) /*ctrl*/
-		ZMK_MOCK_PRESS(0,0,50)  /*mt f-shift */
-		ZMK_MOCK_RELEASE(1,1,300)
-		/*timer*/
-		ZMK_MOCK_RELEASE(0,0,10) 
-	>;
+    events = <
+        ZMK_MOCK_PRESS(1,1,10) /*ctrl*/
+        ZMK_MOCK_PRESS(0,0,50)  /*mt f-shift */
+        ZMK_MOCK_RELEASE(1,1,300)
+        /*timer*/
+        ZMK_MOCK_RELEASE(0,0,10)
+    >;
 };

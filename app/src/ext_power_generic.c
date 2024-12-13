@@ -7,28 +7,27 @@
 #define DT_DRV_COMPAT zmk_ext_power_generic
 
 #include <stdio.h>
-#include <device.h>
-#include <pm/device.h>
-#include <init.h>
-#include <kernel.h>
-#include <settings/settings.h>
-#include <drivers/gpio.h>
+#include <zephyr/device.h>
+#include <zephyr/pm/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/settings/settings.h>
+#include <zephyr/drivers/gpio.h>
+
 #include <drivers/ext_power.h>
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct ext_power_generic_config {
-    const char *label;
-    const uint8_t pin;
-    const uint8_t flags;
+    const struct gpio_dt_spec *control;
+    const size_t control_gpios_count;
     const uint16_t init_delay_ms;
 };
 
 struct ext_power_generic_data {
-    const struct device *gpio;
     bool status;
 #if IS_ENABLED(CONFIG_SETTINGS)
     bool settings_init;
@@ -38,17 +37,17 @@ struct ext_power_generic_data {
 #if IS_ENABLED(CONFIG_SETTINGS)
 static void ext_power_save_state_work(struct k_work *work) {
     char setting_path[40];
-    const struct device *ext_power = device_get_binding(DT_INST_LABEL(0));
+    const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
     struct ext_power_generic_data *data = ext_power->data;
 
-    snprintf(setting_path, 40, "ext_power/state/%s", DT_INST_LABEL(0));
+    snprintf(setting_path, sizeof(setting_path), "ext_power/state/%s", ext_power->name);
     settings_save_one(setting_path, &data->status, sizeof(data->status));
 }
 
 static struct k_work_delayable ext_power_save_work;
 #endif
 
-int ext_power_save_state() {
+int ext_power_save_state(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     int ret = k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
     return MIN(ret, 0);
@@ -61,9 +60,12 @@ static int ext_power_generic_enable(const struct device *dev) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
-    if (gpio_pin_set(data->gpio, config->pin, 1)) {
-        LOG_WRN("Failed to set ext-power control pin");
-        return -EIO;
+    for (int i = 0; i < config->control_gpios_count; i++) {
+        const struct gpio_dt_spec *gpio = &config->control[i];
+        if (gpio_pin_set_dt(gpio, 1)) {
+            LOG_WRN("Failed to set ext-power control pin %d", i);
+            return -EIO;
+        }
     }
     data->status = true;
     return ext_power_save_state();
@@ -73,9 +75,12 @@ static int ext_power_generic_disable(const struct device *dev) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
-    if (gpio_pin_set(data->gpio, config->pin, 0)) {
-        LOG_WRN("Failed to clear ext-power control pin");
-        return -EIO;
+    for (int i = 0; i < config->control_gpios_count; i++) {
+        const struct gpio_dt_spec *gpio = &config->control[i];
+        if (gpio_pin_set_dt(gpio, 0)) {
+            LOG_WRN("Failed to clear ext-power control pin %d", i);
+            return -EIO;
+        }
     }
     data->status = false;
     return ext_power_save_state();
@@ -87,73 +92,45 @@ static int ext_power_generic_get(const struct device *dev) {
 }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
-static int ext_power_settings_set(const char *name, size_t len, settings_read_cb read_cb,
-                                  void *cb_arg) {
-    const char *next;
-    int rc;
-
-    if (settings_name_steq(name, DT_INST_LABEL(0), &next) && !next) {
-        const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
-        struct ext_power_generic_data *data = ext_power->data;
-
-        if (len != sizeof(data->status)) {
-            return -EINVAL;
-        }
-
-        rc = read_cb(cb_arg, &data->status, sizeof(data->status));
-        if (rc >= 0) {
-            data->settings_init = true;
-
-            if (ext_power == NULL) {
-                LOG_ERR("Unable to retrieve ext_power device: %s", DT_INST_LABEL(0));
-                return -EIO;
-            }
-
-            if (data->status) {
-                ext_power_generic_enable(ext_power);
-            } else {
-                ext_power_generic_disable(ext_power);
-            }
-
-            return 0;
-        }
-        return rc;
-    }
-    return -ENOENT;
-}
-
-struct settings_handler ext_power_conf = {.name = "ext_power/state",
-                                          .h_set = ext_power_settings_set};
-#endif
-
-static int ext_power_generic_init(const struct device *dev) {
+static int ext_power_settings_set_status(const struct device *dev, size_t len,
+                                         settings_read_cb read_cb, void *cb_arg) {
     struct ext_power_generic_data *data = dev->data;
-    const struct ext_power_generic_config *config = dev->config;
 
-    data->gpio = device_get_binding(config->label);
-    if (data->gpio == NULL) {
-        LOG_ERR("Failed to get ext-power control device");
+    if (len != sizeof(data->status)) {
         return -EINVAL;
     }
 
-    if (gpio_pin_configure(data->gpio, config->pin, config->flags | GPIO_OUTPUT)) {
-        LOG_ERR("Failed to configure ext-power control pin");
-        return -EIO;
+    int rc = read_cb(cb_arg, &data->status, sizeof(data->status));
+    if (rc >= 0) {
+        data->settings_init = true;
+
+        if (data->status) {
+            ext_power_generic_enable(dev);
+        } else {
+            ext_power_generic_disable(dev);
+        }
+
+        return 0;
+    }
+    return rc;
+}
+
+static int ext_power_settings_set(const char *name, size_t len, settings_read_cb read_cb,
+                                  void *cb_arg) {
+    const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
+
+    const char *next;
+    if (settings_name_steq(name, ext_power->name, &next) && !next) {
+        return ext_power_settings_set_status(ext_power, len, read_cb, cb_arg);
     }
 
-#if IS_ENABLED(CONFIG_SETTINGS)
-    settings_subsys_init();
+    return -ENOENT;
+}
 
-    int err = settings_register(&ext_power_conf);
-    if (err) {
-        LOG_ERR("Failed to register the ext_power settings handler (err %d)", err);
-        return err;
-    }
+static int ext_power_settings_commit() {
+    const struct device *dev = DEVICE_DT_GET(DT_DRV_INST(0));
+    struct ext_power_generic_data *data = dev->data;
 
-    k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
-
-    // Set default value (on) if settings isn't set
-    settings_load_subtree("ext_power");
     if (!data->settings_init) {
 
         data->status = true;
@@ -161,10 +138,32 @@ static int ext_power_generic_init(const struct device *dev) {
 
         ext_power_enable(dev);
     }
-#else
-    // Default to the ext_power being open when no settings
-    ext_power_enable(dev);
+
+    return 0;
+}
+
+SETTINGS_STATIC_HANDLER_DEFINE(ext_power, "ext_power/state", NULL, ext_power_settings_set,
+                               ext_power_settings_commit, NULL);
+
 #endif
+
+static int ext_power_generic_init(const struct device *dev) {
+    const struct ext_power_generic_config *config = dev->config;
+
+    for (int i = 0; i < config->control_gpios_count; i++) {
+        const struct gpio_dt_spec *gpio = &config->control[i];
+        if (gpio_pin_configure_dt(gpio, GPIO_OUTPUT_INACTIVE)) {
+            LOG_ERR("Failed to configure ext-power control pin %d", i);
+            return -EIO;
+        }
+    }
+
+#if IS_ENABLED(CONFIG_SETTINGS)
+    k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
+#endif
+
+    // Enable by default. We may get disabled again once settings load.
+    ext_power_enable(dev);
 
     if (config->init_delay_ms) {
         k_msleep(config->init_delay_ms);
@@ -176,10 +175,10 @@ static int ext_power_generic_init(const struct device *dev) {
 #ifdef CONFIG_PM_DEVICE
 static int ext_power_generic_pm_action(const struct device *dev, enum pm_device_action action) {
     switch (action) {
-    case PM_DEVICE_ACTION_TURN_ON:
+    case PM_DEVICE_ACTION_RESUME:
         ext_power_generic_enable(dev);
         return 0;
-    case PM_DEVICE_ACTION_TURN_OFF:
+    case PM_DEVICE_ACTION_SUSPEND:
         ext_power_generic_disable(dev);
         return 0;
     default:
@@ -188,10 +187,12 @@ static int ext_power_generic_pm_action(const struct device *dev, enum pm_device_
 }
 #endif /* CONFIG_PM_DEVICE */
 
+static const struct gpio_dt_spec ext_power_control_gpios[DT_INST_PROP_LEN(0, control_gpios)] = {
+    DT_INST_FOREACH_PROP_ELEM_SEP(0, control_gpios, GPIO_DT_SPEC_GET_BY_IDX, (, ))};
+
 static const struct ext_power_generic_config config = {
-    .label = DT_INST_GPIO_LABEL(0, control_gpios),
-    .pin = DT_INST_GPIO_PIN(0, control_gpios),
-    .flags = DT_INST_GPIO_FLAGS(0, control_gpios),
+    .control = ext_power_control_gpios,
+    .control_gpios_count = DT_INST_PROP_LEN(0, control_gpios),
     .init_delay_ms = DT_INST_PROP_OR(0, init_delay_ms, 0)};
 
 static struct ext_power_generic_data data = {
