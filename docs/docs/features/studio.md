@@ -72,7 +72,8 @@ Building for ZMK Studio involves two main additional items.
 
 ### GitHub Actions
 
-First add a `studio-rpc-usb-uart` to the `snippet` property of your build configuration, in the `build.yaml` file at the root of your user config.
+Add a `studio-rpc-usb-uart` to the `snippet` property of your build configuration, in the `build.yaml` file at the root of your user config. Enabling the `ZMK_STUDIO` Kconfig setting can also be done from the `build.yaml` file using the `cmake-args` property.
+
 For a split keyboard, you should do this _only_ for your central/left side, e.g.:
 
 ```yaml title="build.yaml"
@@ -81,14 +82,9 @@ include:
   - board: nice_nano_v2
     shield: corne_left
     snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y
   - board: nice_nano_v2
     shield: corne_right
-```
-
-Next, enable the `ZMK_STUDIO` Kconfig symbol, for example by adding the following line to your .conf file:
-
-```
-CONFIG_ZMK_STUDIO=y
 ```
 
 ### Local Build
