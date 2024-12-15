@@ -36,6 +36,7 @@ struct zmk_input_processor_entry {
     }
 
 struct zmk_input_processor_state {
+    uint8_t input_device_index;
     int16_t *remainder;
 };
 

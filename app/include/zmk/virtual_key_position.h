@@ -7,6 +7,8 @@
 #pragma once
 
 #include <zmk/matrix.h>
+#include <zmk/combos.h>
+#include <zmk/input_listeners.h>
 #include <zmk/sensors.h>
 
 /**
@@ -22,4 +24,9 @@
 /**
  * Gets the virtual key position to use for the combo with the given index.
  */
-#define ZMK_VIRTUAL_KEY_POSITION_COMBO(index) (ZMK_KEYMAP_LEN + ZMK_KEYMAP_SENSORS_LEN + (index))
+#define ZMK_VIRTUAL_KEY_POSITION_COMBO(index)                                                      \
+    (ZMK_VIRTUAL_KEY_POSITION_SENSOR(ZMK_KEYMAP_SENSORS_LEN) + (index))
+
+#define ZMK_VIRTUAL_KEY_POSITION_BEHAVIOR_INPUT_PROCESSOR(listener_index, processor_index)         \
+    (ZMK_VIRTUAL_KEY_POSITION_COMBO(ZMK_COMBOS_LEN) +                                              \
+     (ZMK_INPUT_LISTENERS_LEN * (processor_index)) + (listener_index))
