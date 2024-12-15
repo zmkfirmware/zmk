@@ -13,6 +13,9 @@
 #include <zephyr/device.h>
 #include <zephyr/input/input.h>
 
+#define ZMK_INPUT_PROC_CONTINUE 0
+#define ZMK_INPUT_PROC_STOP 1
+
 struct zmk_input_processor_entry {
     const struct device *dev;
     uint32_t param1;

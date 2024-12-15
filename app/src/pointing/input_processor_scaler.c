@@ -47,7 +47,7 @@ static int scaler_handle_event(const struct device *dev, struct input_event *eve
     const struct scaler_config *cfg = dev->config;
 
     if (event->type != cfg->type) {
-        return 0;
+        return ZMK_INPUT_PROC_CONTINUE;
     }
 
     for (int i = 0; i < cfg->codes_len; i++) {
@@ -56,7 +56,7 @@ static int scaler_handle_event(const struct device *dev, struct input_event *eve
         }
     }
 
-    return 0;
+    return ZMK_INPUT_PROC_CONTINUE;
 }
 
 static struct zmk_input_processor_driver_api scaler_driver_api = {
