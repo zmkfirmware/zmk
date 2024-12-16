@@ -43,12 +43,14 @@ zmk_keymap_layer_id_t zmk_keymap_layer_index_to_id(zmk_keymap_layer_index_t laye
 
 zmk_keymap_layer_id_t zmk_keymap_layer_default(void);
 zmk_keymap_layers_state_t zmk_keymap_layer_state(void);
+zmk_keymap_layers_state_t zmk_keymap_layer_locks(void);
 bool zmk_keymap_layer_active(zmk_keymap_layer_id_t layer);
+bool zmk_keymap_layer_locked(zmk_keymap_layer_id_t layer);
 zmk_keymap_layer_index_t zmk_keymap_highest_layer_active(void);
-int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer);
-int zmk_keymap_layer_deactivate(zmk_keymap_layer_id_t layer);
-int zmk_keymap_layer_toggle(zmk_keymap_layer_id_t layer);
-int zmk_keymap_layer_to(zmk_keymap_layer_id_t layer);
+int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer, bool locking);
+int zmk_keymap_layer_deactivate(zmk_keymap_layer_id_t layer, bool locking);
+int zmk_keymap_layer_toggle(zmk_keymap_layer_id_t layer, bool locking);
+int zmk_keymap_layer_to(zmk_keymap_layer_id_t layer, bool locking);
 const char *zmk_keymap_layer_name(zmk_keymap_layer_id_t layer);
 
 const struct zmk_behavior_binding *zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer,
