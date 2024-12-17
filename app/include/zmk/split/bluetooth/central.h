@@ -4,6 +4,12 @@
 #include <zephyr/bluetooth/addr.h>
 #include <zmk/behavior.h>
 
+enum zmk_split_bt_central_peripheral_source_state {
+    PERIPHERAL_SLOT_STATE_OPEN,
+    PERIPHERAL_SLOT_STATE_CONNECTING,
+    PERIPHERAL_SLOT_STATE_CONNECTED,
+};
+
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 #include <zmk/hid_indicators_types.h>
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
