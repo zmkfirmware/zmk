@@ -21,6 +21,7 @@
             , <INPUT_EV_REL INPUT_REL_Y 100 1>
             , <INPUT_EV_REL INPUT_REL_X 40 0>
             , <INPUT_EV_REL INPUT_REL_Y 50 1>
+            , <INPUT_EV_KEY INPUT_BTN_1 1 1>
             ;
         exit-after;
     };

@@ -122,7 +122,7 @@ void release_peripheral_input_subs(struct bt_conn *conn) {
     for (size_t i = 0; i < ARRAY_SIZE(peripheral_input_slots); i++) {
         if (peripheral_input_slots[i].conn == conn) {
             peripheral_input_slots[i].conn = NULL;
-            // memset(&peripheral_input_slots[i], 0, sizeof(struct peripheral_input_slot));
+            zmk_input_split_peripheral_disconnected(peripheral_input_slots[i].reg);
         }
     }
 }

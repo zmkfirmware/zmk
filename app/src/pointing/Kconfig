@@ -78,6 +78,11 @@ config ZMK_INPUT_SPLIT_INIT_PRIORITY
     int "Input Split initialization priority"
     default INPUT_INIT_PRIORITY
 
+
+config ZMK_INPUT_SPLIT_MAX_TRACKED_KEYS
+    int "Input Split max tracked keys to release on peripheral disconnect"
+    default 5
+
 endif # ZMK_INPUT_SPLIT
 
 endif # ZMK_POINTING
