@@ -71,6 +71,7 @@ struct input_listener_processor_data {
 };
 
 struct input_listener_config {
+    uint8_t listener_index;
     struct input_listener_config_entry base;
     size_t layer_overrides_len;
     struct input_listener_layer_override layer_overrides[];
@@ -152,9 +153,9 @@ static inline bool is_y_data(const struct input_event *evt) {
     return evt->type == INPUT_EV_REL && evt->code == INPUT_REL_Y;
 }
 
-static void apply_config(const struct input_listener_config_entry *cfg,
-                         struct input_listener_processor_data *processor_data,
-                         struct input_listener_data *data, struct input_event *evt) {
+static int apply_config(uint8_t listener_index, const struct input_listener_config_entry *cfg,
+                        struct input_listener_processor_data *processor_data,
+                        struct input_listener_data *data, struct input_event *evt) {
     size_t remainder_index = 0;
     for (size_t p = 0; p < cfg->processors_len; p++) {
         const struct zmk_input_processor_entry *proc_e = &cfg->processors[p];
@@ -183,15 +184,27 @@ static void apply_config(const struct input_listener_config_entry *cfg,
             }
         }
 
-        struct zmk_input_processor_state state = {.remainder = remainder};
+        LOG_DBG("LISTENER INDEX: %d", listener_index);
+        struct zmk_input_processor_state state = {.input_device_index = listener_index,
+                                                  .remainder = remainder};
 
-        zmk_input_processor_handle_event(proc_e->dev, evt, proc_e->param1, proc_e->param2, &state);
+        int ret = zmk_input_processor_handle_event(proc_e->dev, evt, proc_e->param1, proc_e->param2,
+                                                   &state);
+        switch (ret) {
+        case ZMK_INPUT_PROC_CONTINUE:
+            continue;
+        default:
+            return ret;
+        }
     }
+
+    return ZMK_INPUT_PROC_CONTINUE;
 }
-static void filter_with_input_config(const struct input_listener_config *cfg,
-                                     struct input_listener_data *data, struct input_event *evt) {
+
+static int filter_with_input_config(const struct input_listener_config *cfg,
+                                    struct input_listener_data *data, struct input_event *evt) {
     if (!evt->dev) {
-        return;
+        return -ENODEV;
     }
 
     for (size_t oi = 0; oi < cfg->layer_overrides_len; oi++) {
@@ -201,9 +214,14 @@ static void filter_with_input_config(const struct input_listener_config *cfg,
         uint8_t layer = 0;
         while (mask != 0) {
             if (mask & BIT(0) && zmk_keymap_layer_active(layer)) {
-                apply_config(&override->config, override_data, data, evt);
+                int ret =
+                    apply_config(cfg->listener_index, &override->config, override_data, data, evt);
+
+                if (ret < 0) {
+                    return ret;
+                }
                 if (!override->process_next) {
-                    return;
+                    return 0;
                 }
             }
 
@@ -212,7 +230,7 @@ static void filter_with_input_config(const struct input_listener_config *cfg,
         }
     }
 
-    apply_config(&cfg->base, &data->base_processor_data, data, evt);
+    return apply_config(cfg->listener_index, &cfg->base, &data->base_processor_data, data, evt);
 }
 
 static void clear_xy_data(struct input_listener_xy_data *data) {
@@ -247,8 +265,15 @@ static void apply_resolution_scaling(struct input_listener_data *data, struct in
 
 static void input_handler(const struct input_listener_config *config,
                           struct input_listener_data *data, struct input_event *evt) {
-    // First, filter to update the event data as needed.
-    filter_with_input_config(config, data, evt);
+    // First, process to update the event data as needed.
+    int ret = filter_with_input_config(config, data, evt);
+
+    if (ret < 0) {
+        LOG_ERR("Error applying input processors: %d", ret);
+        return;
+    } else if (ret == ZMK_INPUT_PROC_STOP) {
+        return;
+    }
 
 #if IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
     apply_resolution_scaling(data, evt);
@@ -355,6 +380,7 @@ static void input_handler(const struct input_listener_config *config,
          DT_INST_FOREACH_CHILD_VARGS(n, CHILD_CONFIG,                                              \
                                      n) static const struct input_listener_config config_##n =     \
              {                                                                                     \
+                 .listener_index = n,                                                              \
                  .base = IL_EXTRACT_CONFIG(DT_DRV_INST(n), n, base),                               \
                  .layer_overrides_len = (0 DT_INST_FOREACH_CHILD(n, IL_ONE)),                      \
                  .layer_overrides = {DT_INST_FOREACH_CHILD_SEP_VARGS(n, IL_OVERRIDE, (, ), n)},    \

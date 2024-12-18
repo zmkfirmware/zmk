@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    zip_button_behaviors: zip_button_behaviors {
+        compatible = "zmk,input-processor-behaviors";
+        #input-processor-cells = <0>;
+        codes =    <INPUT_BTN_0 INPUT_BTN_1 INPUT_BTN_2>;
+        bindings = <&none       &none       &none>;
+    };
+};

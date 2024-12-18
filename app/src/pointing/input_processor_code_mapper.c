@@ -25,7 +25,7 @@ static int cm_handle_event(const struct device *dev, struct input_event *event, 
     const struct cm_config *cfg = dev->config;
 
     if (event->type != cfg->type) {
-        return 0;
+        return ZMK_INPUT_PROC_CONTINUE;
     }
 
     for (int i = 0; i < cfg->mapping_size / 2; i++) {
@@ -37,7 +37,7 @@ static int cm_handle_event(const struct device *dev, struct input_event *event, 
         }
     }
 
-    return 0;
+    return ZMK_INPUT_PROC_CONTINUE;
 }
 
 static struct zmk_input_processor_driver_api cm_driver_api = {

@@ -162,7 +162,7 @@ static int temp_layer_handle_event(const struct device *dev, struct input_event 
         k_work_reschedule(&layer_disable_works[param1], K_MSEC(param2));
     }
 
-    return 0;
+    return ZMK_INPUT_PROC_CONTINUE;
 }
 
 static int temp_layer_init(const struct device *dev) {
