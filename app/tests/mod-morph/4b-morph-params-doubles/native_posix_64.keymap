@@ -1,0 +1,49 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        mm1: mod_morph_param1 {
+            compatible = "zmk,behavior-mod-morph-param";
+            #binding-cells = <2>;
+            bindings = <&mm PLACEHOLDER PLACEHOLDER>, <&mm PLACEHOLDER PLACEHOLDER>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            binding-params = <BINDING_PARAM(1,2) BINDING_PARAM(2,1)>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                &kp LEFT_CONTROL &mm1 E F
+                &kp LEFT_SHIFT   &mm A B
+            >;
+        };
+    };
+};
+
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+    >;
+};
