@@ -1,0 +1,8 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if LED_STRIP
+
+rsource "Kconfig.is31fl3743a"
+
+endif # LED_STRIP
