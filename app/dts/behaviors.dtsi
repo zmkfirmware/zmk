@@ -9,8 +9,9 @@
 #include <behaviors/transparent.dtsi>
 #include <behaviors/none.dtsi>
 #include <behaviors/mod_tap.dtsi>
-#include <behaviors/mod_morph.dtsi>
 #include <behaviors/layer_tap.dtsi>
+#include <behaviors/tap_dance.dtsi>
+#include <behaviors/mod_morph.dtsi>
 #include <behaviors/gresc.dtsi>
 #include <behaviors/sticky_key.dtsi>
 #include <behaviors/momentary_layer.dtsi>
