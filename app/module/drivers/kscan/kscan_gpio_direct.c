@@ -98,7 +98,9 @@ static int kscan_direct_interrupt_configure(const struct device *dev, const gpio
 
 #if USE_INTERRUPTS
 static int kscan_direct_interrupt_enable(const struct device *dev) {
-    return kscan_direct_interrupt_configure(dev, GPIO_INT_LEVEL_ACTIVE);
+    return kscan_direct_interrupt_configure(
+        dev, COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KSCAN_GPIO_DIRECT_INTERRUPT_TYPE_EDGE),
+                         (GPIO_INT_EDGE_TO_ACTIVE), (GPIO_INT_LEVEL_ACTIVE)));
 }
 #endif
 
