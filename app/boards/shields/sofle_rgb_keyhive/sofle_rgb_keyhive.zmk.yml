@@ -1,0 +1,15 @@
+file_format: "1"
+id: sofle_rgb_keyhive
+name: Sofle RGB Keyhive
+type: shield
+url: https://keyhive.xyz/shop/sofle
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+  - underglow
+siblings:
+  - sofle_rgb_keyhive_left
+  - sofle_rgb_keyhive_right
