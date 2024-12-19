@@ -15,7 +15,7 @@ Supporting split communication over wired protocols is planned, allowing for ZMK
 ## Central and Peripheral Roles
 
 In split keyboards running ZMK, one part is assigned the "central" role which receives key position and sensor events from the other parts that are called "peripherals."
-The central runs the necessary keymap logic to convert received events into HID events such as keycodes and then communicates with the connected host devices, e.g. over USB or bluetooth.
+The central runs the necessary keymap logic to convert received events into HID events such as keycodes and then communicates with the connected host devices, e.g. over USB or bluetooth. If the keyboard makes use of a [dongle](../development/hardware-integration/dongle.mdx), then the dongle takes on the role of central.
 
 The internal keyboard state (like active layers) is handled exclusively by the central.
 Peripherals _cannot_ communicate with host devices on their own, since they can only communicate with the central.
