@@ -5,14 +5,26 @@ module.exports = {
       label: "Getting Started",
       link: {
         type: "doc",
-        id: "intro",
+        id: "getting-started/intro",
       },
       collapsed: false,
       items: [
-        "hardware",
-        "faq",
-        "user-setup",
-        "customization",
+        "getting-started/hardware",
+        "getting-started/faq",
+        "getting-started/user-setup",
+        {
+          type: "category",
+          label: "Customisation",
+          link: {
+            type: "doc",
+            id: "getting-started/customisation/index",
+          },
+          collapsed: true,
+          items: [
+            "getting-started/customisation/devicetree",
+            "getting-started/customisation/kconfig",
+          ],
+        },
         {
           type: "category",
           label: "Troubleshooting",

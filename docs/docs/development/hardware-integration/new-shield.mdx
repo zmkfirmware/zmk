@@ -100,7 +100,7 @@ mkdir boards/shields/<keyboard_name>
 ## Base Kconfig Files
 
 :::tip[Example shields]
-You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) in the ZMK repo that houses [the in-tree supported shields](../../hardware.mdx) in order to copy and modify as a starting point.
+You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) in the ZMK repo that houses [the in-tree supported shields](../../getting-started/hardware.mdx) in order to copy and modify as a starting point.
 :::
 
 There are two required [Kconfig](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html) files that need to be created for your new keyboard shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
@@ -549,7 +549,7 @@ If you wish to test that your keyboard works with [ZMK Studio](../../features/st
 ### GitHub Actions
 
 To use GitHub Actions to test, push the files defining the keyboard to GitHub.
-Next, [update the `build.yaml`](../../customization.md#building-additional-keyboards) of your `zmk-config` to build your keyboard.
+Next, [update the `build.yaml`](../../getting-started/customisation/index.md) of your `zmk-config` to build your keyboard.
 
 - If your shield is defined in your `zmk-config`, then the shield should start building.
 - If the shield is defined in a separate module, you will need to [adjust your `west.yml` to reference the module](https://zmk.dev/docs/features/modules#building-with-modules).

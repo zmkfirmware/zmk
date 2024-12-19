@@ -41,7 +41,7 @@ The shield is usually the big PCB containing all the keys.
 
 ### Why not just "keyboard"?
 
-["Composite" keyboards](../../hardware.mdx#composite) are keyboards which use a separate small PCB MCU module for its "brains".
+["Composite" keyboards](../../getting-started/hardware.mdx#composite) are keyboards which use a separate small PCB MCU module for its "brains".
 In such keyboards, the [shield](#what-is-a-shield) is a brainless shell containing all the keys, RGB LEDs, encoders etc.
 It typically maps all of these features to a standard pin footprint, such as the Pro Micro pinout.
 
@@ -52,7 +52,7 @@ But each board comes with its own features (MCU, flash, BLE, etc.) which must al
 Therefore in ZMK, board and shield are considered two different (but related) entities so that it is easier to mix and match them, and they are combined during a ZMK build.
 This provides the modularity to be able to use composite keyboards with different compatible controllers.
 
-Note that ["self-contained" keyboards](../../hardware.mdx#onboard) only have a single PCB which includes the "brains" (MCU) onboard.
+Note that ["self-contained" keyboards](../../getting-started/hardware.mdx#onboard) only have a single PCB which includes the "brains" (MCU) onboard.
 In ZMK, these have no shield, only a board.
 
 ## Organization Overview
@@ -66,7 +66,7 @@ values={[
 
 <TabItem value="self-contained">
 
-For a [self-contained keyboard](../../hardware.mdx#onboard) that includes the microprocessor, all of the above architecture components are included in the Zephyr _board_ definition and no shield is defined.
+For a [self-contained keyboard](../../getting-started/hardware.mdx#onboard) that includes the microprocessor, all of the above architecture components are included in the Zephyr _board_ definition and no shield is defined.
 You can see an example for the [Planck V6](https://github.com/zmkfirmware/zmk/tree/main/app/boards/arm/planck) board directory.
 
 With this type of keyboard, the full ZMK definition for the keyboard exists in the `<board_root>/boards/<arch>/<keyboard_name>` directory where `<board_root>` is `zmk/app` or a [module](../../features/modules.mdx) root, e.g. `zmk/app/boards/arm/planck/`.
@@ -118,7 +118,7 @@ Also see the [new keyboard shield guide](new-shield.mdx#shield-overlays) for inf
 </TabItem>
 <TabItem value="composite">
 
-Keyboards that require an add-on board to operate are [composite keyboards](../../hardware.mdx#composite), where the ZMK integration pieces are placed in the _shield_ definition for that keyboard.
+Keyboards that require an add-on board to operate are [composite keyboards](../../getting-started/hardware.mdx#composite), where the ZMK integration pieces are placed in the _shield_ definition for that keyboard.
 This allows users to swap in different boards that use the same interconnect (e.g. Pro Micro RP2040, or nice!nano) and build a firmware the matches their actual combination of physical components.
 
 With this type of keyboard, the partial definition for the keyboard exists in the `<board_root>/boards/shields/<keyboard_name>` directory where `<board_root>` is `zmk/app` or a [module](../../features/modules.mdx) root, e.g. `zmk/app/boards/shields/clueboard_california/`.
