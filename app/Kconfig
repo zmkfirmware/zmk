@@ -279,6 +279,21 @@ menuconfig ZMK_RGB_UNDERGLOW
     select LED_STRIP
     select ZMK_LOW_PRIORITY_WORK_QUEUE
 
+config ZMK_LED_WIDGETS
+    bool "Display widgets on top of LEDs"
+
+if ZMK_LED_WIDGETS
+
+config ZMK_LED_WIDGETS_MAX_WIDGET_NUM
+    int "Maximum number of widgets for a event type"
+    default 5
+
+config ZMK_LED_WIDGETS_INIT_PRIORITY
+    int "LED widgets init priority"
+    default 99
+
+endif
+
 if ZMK_RGB_UNDERGLOW
 
 config ZMK_RGB_UNDERGLOW_EXT_POWER
