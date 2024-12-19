@@ -54,7 +54,7 @@ static void conditional_layer_activate(int8_t layer) {
     // the process will eventually terminate (at worst, when every layer is active).
     if (!zmk_keymap_layer_active(layer)) {
         LOG_DBG("layer %d", layer);
-        zmk_keymap_layer_activate(layer);
+        zmk_keymap_layer_activate(layer, false);
     }
 }
 
@@ -64,7 +64,7 @@ static void conditional_layer_deactivate(int8_t layer) {
     // &mo binding are held and then one is released, so it's probably not an issue in practice.
     if (zmk_keymap_layer_active(layer)) {
         LOG_DBG("layer %d", layer);
-        zmk_keymap_layer_deactivate(layer);
+        zmk_keymap_layer_deactivate(layer, false);
     }
 }
 
