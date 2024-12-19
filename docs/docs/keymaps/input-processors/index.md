@@ -19,7 +19,7 @@ Below is a summary of pre-defined input processors and user-definable input proc
 
 A set of predefined input processors is available by adding the following at the top of your keymap/overlay file:
 
-```
+```dts
 #include <input/processors.dtsi>
 ```
 

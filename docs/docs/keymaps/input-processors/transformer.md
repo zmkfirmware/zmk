@@ -13,7 +13,7 @@ The following transforms are available, by including
 the [`dt-bindings/zmk/input_transform.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/input_transform.h) header
 provided by ZMK near the top of your keymap/overlay:
 
-```
+```dts
 #include <dt-bindings/zmk/input_transform.h>
 ```
 
