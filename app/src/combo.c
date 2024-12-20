@@ -270,12 +270,25 @@ static int capture_pressed_key(const struct zmk_position_state_changed *ev) {
 
 const struct zmk_listener zmk_listener_combo;
 
-static int release_pressed_keys() {
+static int release_pressed_key(int32_t position) {
+    for (int i = 0; i < pressed_keys_count; i++) {
+        struct zmk_position_state_changed_event *ev = &pressed_keys[i];
+
+        if (ev->data.position == position) {
+            LOG_DBG("combo: releasing position event %d", ev->data.position);
+            return pressed_keys_count--;
+        }
+    }
+
+    return pressed_keys_count;
+}
+
+static int release_pressed_keys(bool release_first) {
     uint32_t count = pressed_keys_count;
     pressed_keys_count = 0;
     for (int i = 0; i < count; i++) {
         struct zmk_position_state_changed_event *ev = &pressed_keys[i];
-        if (i == 0) {
+        if (release_first && i == 0) {
             LOG_DBG("combo: releasing position event %d", ev->data.position);
             ZMK_EVENT_RELEASE(*ev);
         } else {
@@ -348,7 +361,7 @@ static void activate_combo(struct combo_cfg *combo) {
     struct active_combo *active_combo = store_active_combo(combo);
     if (active_combo == NULL) {
         // unable to store combo
-        release_pressed_keys();
+        release_pressed_keys(true);
         return;
     }
     move_pressed_keys_to_active_combo(active_combo);
@@ -406,8 +419,10 @@ static int cleanup() {
     if (fully_pressed_combo != NULL) {
         activate_combo(fully_pressed_combo);
         fully_pressed_combo = NULL;
+        return release_pressed_keys(false);
     }
-    return release_pressed_keys();
+
+    return release_pressed_keys(true);
 }
 
 static void update_timeout_task() {
@@ -459,19 +474,55 @@ static int position_state_down(const zmk_event_t *ev, struct zmk_position_state_
     }
 }
 
+static bool is_key_part_of_candidate(int32_t position) {
+    for (int i = 0; i < CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY; i++) {
+        struct combo_candidate *candidate = &candidates[i];
+        if (candidate->combo == NULL) {
+            continue;
+        }
+
+        for (int j = 0; j < candidate->combo->key_position_len; j++) {
+            if (candidate->combo->key_positions[j] == position) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+static bool is_key_part_of_active_combo(int32_t position) {
+    for (int i = 0; i < active_combo_count; i++) {
+        struct active_combo *active_combo = &active_combos[i];
+        for (int j = 0; j < active_combo->key_positions_pressed_count; j++) {
+            if (active_combo->key_positions_pressed[j].data.position == position) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+static bool is_key_part_of_any_combo(int32_t position) {
+    return is_key_part_of_candidate(position) || is_key_part_of_active_combo(position);
+}
+
 static int position_state_up(const zmk_event_t *ev, struct zmk_position_state_changed *data) {
-    int released_keys = cleanup();
-    if (release_combo_key(data->position, data->timestamp)) {
-        return ZMK_EV_EVENT_HANDLED;
+    // Check if the released key is part of any combo candidate or active combo
+    if (is_key_part_of_any_combo(data->position)) {
+        int released_keys = cleanup();
+        if (release_combo_key(data->position, data->timestamp)) {
+            return ZMK_EV_EVENT_HANDLED;
+        }
+        if (released_keys > 1) {
+            // The second and further key down events are re-raised. To preserve
+            // correct order for e.g. hold-taps, reraise the key up event too.
+            struct zmk_position_state_changed_event dupe_ev =
+                copy_raised_zmk_position_state_changed(data);
+            ZMK_EVENT_RAISE(dupe_ev);
+            return ZMK_EV_EVENT_CAPTURED;
+        }
     }
-    if (released_keys > 1) {
-        // The second and further key down events are re-raised. To preserve
-        // correct order for e.g. hold-taps, reraise the key up event too.
-        struct zmk_position_state_changed_event dupe_ev =
-            copy_raised_zmk_position_state_changed(data);
-        ZMK_EVENT_RAISE(dupe_ev);
-        return ZMK_EV_EVENT_CAPTURED;
-    }
+    release_pressed_key(data->position);
     return ZMK_EV_EVENT_BUBBLE;
 }
 
