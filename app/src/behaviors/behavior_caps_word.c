@@ -112,9 +112,10 @@ static bool caps_word_is_alpha(uint8_t usage_id) {
     return (usage_id >= HID_USAGE_KEY_KEYBOARD_A && usage_id <= HID_USAGE_KEY_KEYBOARD_Z);
 }
 
-static bool caps_word_is_numeric(uint8_t usage_id) {
+static bool caps_word_is_numeric(uint8_t usage_id, uint8_t implicit_modifiers) {
     return (usage_id >= HID_USAGE_KEY_KEYBOARD_1_AND_EXCLAMATION &&
-            usage_id <= HID_USAGE_KEY_KEYBOARD_0_AND_RIGHT_PARENTHESIS);
+            usage_id <= HID_USAGE_KEY_KEYBOARD_0_AND_RIGHT_PARENTHESIS &&
+            (implicit_modifiers | zmk_hid_get_explicit_mods()) == 0);
 }
 
 static void caps_word_enhance_usage(const struct behavior_caps_word_config *config,
@@ -148,7 +149,7 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
 
         caps_word_enhance_usage(config, ev);
 
-        if (!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode) &&
+        if (!caps_word_is_alpha(ev->keycode) && !caps_word_is_numeric(ev->keycode, ev->implicit_modifiers) &&
             !is_mod(ev->usage_page, ev->keycode) &&
             !caps_word_is_caps_includelist(config, ev->usage_page, ev->keycode,
                                            ev->implicit_modifiers)) {
