@@ -1,0 +1,2 @@
+config SHIELD_TESTER_NRF52840DK
+    def_bool $(shields_list_contains,tester_nrf52840dk)
