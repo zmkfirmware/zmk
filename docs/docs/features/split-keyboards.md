@@ -42,7 +42,7 @@ For the currently used BLE-based transport, split communication increases the av
 ## Building and Flashing Firmware
 
 ZMK split keyboards require building and flashing different firmware files for each split part.
-For instance when [using the GitHub workflow](../user-setup.mdx) to build two part split keyboards, two firmware files that typically contain `<keyboard>_left` and `<keyboard>_right` in the file names will be produced.
+For instance when [using the GitHub workflow](../getting-started/user-setup.mdx) to build two part split keyboards, two firmware files that typically contain `<keyboard>_left` and `<keyboard>_right` in the file names will be produced.
 These files need to be flashed to the respective controllers of the two halves.
 
 :::tip[Updating your keymap]

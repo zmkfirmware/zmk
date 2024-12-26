@@ -25,7 +25,7 @@ The shift to using modules for keyboards is a relatively recent one, and not all
 
 ### GitHub Actions
 
-When [using GitHub Actions to build ZMK](../user-setup.mdx), adding modules is as simple as modifying the `west.yml` found in your `zmk-config`'s `config` directory. The recommended way of doing so is:
+When [using GitHub Actions to build ZMK](../getting-started/user-setup.mdx), adding modules is as simple as modifying the `west.yml` found in your `zmk-config`'s `config` directory. The recommended way of doing so is:
 
 1. Find the URL base (the parent URL) for the module and add it as an entry to the [remotes](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html#remotes).
 2. Add the module as an entry to the [projects](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html#projects).
@@ -141,7 +141,7 @@ branch and create the pull request.
 
 ### GitHub Actions
 
-When [using GitHub Actions to build ZMK](../user-setup.mdx), once you have obtained the correct URL, you'll need to modify the `west.yml` file similarly to [Building With Modules](#building-with-modules). Add the remote for the branch like in said section. The difference is that you will need to change the selected remote and revision (or branch) for the `zmk` project.
+When [using GitHub Actions to build ZMK](../getting-started/user-setup.mdx), once you have obtained the correct URL, you'll need to modify the `west.yml` file similarly to [Building With Modules](#building-with-modules). Add the remote for the branch like in said section. The difference is that you will need to change the selected remote and revision (or branch) for the `zmk` project.
 
 #### Example
 

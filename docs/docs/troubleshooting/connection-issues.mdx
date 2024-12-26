@@ -25,7 +25,7 @@ This procedure will erase all settings, such as Bluetooth profiles, output selec
 
 ### Building a Reset Firmware
 
-If you are using GitHub Actions to build your firmware as described in the [user setup](../user-setup.mdx), find the `build.yaml` file in your `zmk-config` folder and add an additional settings reset build for the board used by your split keyboard. For example, assuming that the config repo is setup for nice!nano v2 with Corne, append the `settings_reset` shield to the `build.yaml` file as follows:
+If you are using GitHub Actions to build your firmware as described in the [user setup](../getting-started/user-setup.mdx), find the `build.yaml` file in your `zmk-config` folder and add an additional settings reset build for the board used by your split keyboard. For example, assuming that the config repo is setup for nice!nano v2 with Corne, append the `settings_reset` shield to the `build.yaml` file as follows:
 
 ```yml
 include:

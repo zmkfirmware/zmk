@@ -22,7 +22,7 @@ A future blog post will outline the complete Zephyr 3.0 changes once that work i
 
 If you created your user config repository a while ago, you may find that your `build.yml` file instead references
 a `zephyr-west-action-arm` custom GitHub Action instead. In this case, the upgrade is not as direct. We suggest that
-instead you [re-create your config repository](/docs/user-setup) to get an updated setup using the new automation
+instead you [re-create your config repository](/docs/getting-started/user-setup) to get an updated setup using the new automation
 approach.
 
 :::
