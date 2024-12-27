@@ -44,12 +44,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 BUILD_ASSERT(CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN <= CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX,
              "ERROR: RGB underglow maximum brightness is less than minimum brightness");
 
-enum rgb_underglow_effect {
-    UNDERGLOW_EFFECT_SOLID,
-    UNDERGLOW_EFFECT_BREATHE,
-    UNDERGLOW_EFFECT_SPECTRUM,
-    UNDERGLOW_EFFECT_SWIRL,
-    UNDERGLOW_EFFECT_NUMBER // Used to track number of underglow effects
+struct rgb_underglow_effect {
+    char unique_name[50];
+    void (*tick_function)(void);
+    void (*event_listener)(const zmk_event_t *);
 };
 
 struct rgb_underglow_state {
@@ -175,20 +173,16 @@ static void zmk_rgb_underglow_effect_swirl(void) {
     state.animation_step = state.animation_step % HUE_MAX;
 }
 
+static const struct rgb_underglow_effect effects[] = {
+    {"ZMK_BASE_SOLID", &zmk_rgb_underglow_effect_solid, NULL},
+    {"ZMK_BASE_BREATHE", &zmk_rgb_underglow_effect_breathe, NULL},
+    {"ZMK_BASE_SPECTRUM", &zmk_rgb_underglow_effect_spectrum, NULL},
+    {"ZMK_BASE_SWIRL", &zmk_rgb_underglow_effect_swirl, NULL},
+};
+
 static void zmk_rgb_underglow_tick(struct k_work *work) {
-    switch (state.current_effect) {
-    case UNDERGLOW_EFFECT_SOLID:
-        zmk_rgb_underglow_effect_solid();
-        break;
-    case UNDERGLOW_EFFECT_BREATHE:
-        zmk_rgb_underglow_effect_breathe();
-        break;
-    case UNDERGLOW_EFFECT_SPECTRUM:
-        zmk_rgb_underglow_effect_spectrum();
-        break;
-    case UNDERGLOW_EFFECT_SWIRL:
-        zmk_rgb_underglow_effect_swirl();
-        break;
+    if (effects[state.current_effect].tick_function != NULL) {
+        effects[state.current_effect].tick_function();
     }
 
     int err = led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
@@ -355,14 +349,16 @@ int zmk_rgb_underglow_off(void) {
 }
 
 int zmk_rgb_underglow_calc_effect(int direction) {
-    return (state.current_effect + UNDERGLOW_EFFECT_NUMBER + direction) % UNDERGLOW_EFFECT_NUMBER;
+    const int NUM_EFFECTS = sizeof(effects) / sizeof(effects[0]);
+    return (state.current_effect + NUM_EFFECTS + direction) % NUM_EFFECTS;
 }
 
 int zmk_rgb_underglow_select_effect(int effect) {
+    const int NUM_EFFECTS = sizeof(effects) / sizeof(effects[0]);
     if (!led_strip)
         return -ENODEV;
 
-    if (effect < 0 || effect >= UNDERGLOW_EFFECT_NUMBER) {
+    if (effect < 0 || effect >= NUM_EFFECTS) {
         return -EINVAL;
     }
 
