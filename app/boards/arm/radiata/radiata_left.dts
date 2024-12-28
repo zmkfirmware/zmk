@@ -15,33 +15,33 @@
             = <&gpio1 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 28 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&gpio1 00 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio1 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 22 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             
             , <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&gpio0 02 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 26 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             
             , <&gpio1 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&gpio0 03 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 31 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 27 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&gpio0 06 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             
             , <&gpio1 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio1 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 30 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&gpio0 05 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&gpio0 07 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
 
-            , <&gpio1 08 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            , <&gpio1 09 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio1 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio1 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             ;
     };
     /*

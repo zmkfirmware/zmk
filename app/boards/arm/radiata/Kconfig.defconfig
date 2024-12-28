@@ -31,7 +31,7 @@ config ZMK_SPLIT
 
 config SPI
     bool
-    default y
+    default n
 
 config BT_CTLR
     default BT
@@ -47,9 +47,9 @@ config USB_DEVICE_STACK
 endif # USB
 
 config ZMK_BATTERY_VOLTAGE_DIVIDER
-    default y
+    default n
 
 config SPI
-    default y
+    default n
 
 endif # BOARD_RADIATA_LEFT || BOARD_RADIATA_RIGHT
