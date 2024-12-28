@@ -18,5 +18,6 @@
   "[css][json][jsonc][html][markdown][yaml]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "cmake.sourceDirectory": "C:/Users/mirco/Desktop/zmk-merda/zmk/app"
 }
