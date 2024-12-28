@@ -1,0 +1,17 @@
+file_format: "1"
+id: radiata
+name: Homerow Radiata
+type: board
+url: https://github.com/mircopergreffi
+arch: arm
+features:
+  - keys
+  # - underglow
+  # - backlight
+  - studio
+outputs:
+  - usb
+  - ble
+siblings:
+  - radiata_left
+  - radiata_right
