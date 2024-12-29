@@ -65,6 +65,7 @@ struct rgb_underglow_state {
     uint8_t current_effect;
     uint16_t animation_step;
     bool on;
+    bool active;
 };
 
 static const struct device *led_strip;
@@ -77,6 +78,29 @@ static struct rgb_underglow_state state;
 static const struct device *const ext_power = DEVICE_DT_GET(DT_INST(0, zmk_ext_power_generic));
 #endif
 
+static void zmk_rgb_underglow_deactivate(void) {
+    state.active = false;
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
+    if (ext_power != NULL) {
+        int rc = ext_power_disable(ext_power);
+        if (rc != 0) {
+            LOG_ERR("Unable to disable EXT_POWER: %d", rc);
+        }
+    }
+#endif
+}
+
+static void zmk_rgb_underglow_activate(void) {
+    state.active = true;
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
+    if (ext_power != NULL) {
+        int rc = ext_power_enable(ext_power);
+        if (rc != 0) {
+            LOG_ERR("Unable to enable EXT_POWER: %d", rc);
+        }
+    }
+#endif
+}
 static struct zmk_led_hsb hsb_scale_min_max(struct zmk_led_hsb hsb) {
     hsb.b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN +
             (CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX - CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) * hsb.b / BRT_MAX;
@@ -157,11 +181,18 @@ static int keymap_pos_to_col(int pos) { return keymap_pos_to_led_index(pos) % ZM
 #endif
 
 static void fade_all_leds(void) {
+    int active_leds = 0;
     for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
         int r = (pixels[i].r > 5) ? pixels[i].r * 0.97 : 0;
         int g = (pixels[i].g > 5) ? pixels[i].g * 0.97 : 0;
         int b = (pixels[i].b > 5) ? pixels[i].b * 0.97 : 0;
         pixels[i] = (struct led_rgb){r : r, g : g, b : b};
+        if (r > 0 || g > 0 || b > 0) {
+            active_leds++;
+        }
+    }
+    if (state.active && active_leds == 0) {
+        zmk_rgb_underglow_deactivate();
     }
 }
 
@@ -182,6 +213,9 @@ static void set_led(int row, int col, struct led_rgb color) {
     int index = get_index(row, col);
     if (index < 0 || index > STRIP_NUM_PIXELS * 2) {
         return;
+    }
+    if (color.r > 0 || color.g > 0 || color.b > 0) {
+        zmk_rgb_underglow_activate();
     }
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
@@ -391,14 +425,7 @@ int zmk_rgb_underglow_on(void) {
     if (!led_strip)
         return -ENODEV;
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
-    if (ext_power != NULL) {
-        int rc = ext_power_enable(ext_power);
-        if (rc != 0) {
-            LOG_ERR("Unable to enable EXT_POWER: %d", rc);
-        }
-    }
-#endif
+    zmk_rgb_underglow_activate();
 
     state.on = true;
     state.animation_step = 0;
@@ -421,15 +448,7 @@ int zmk_rgb_underglow_off(void) {
     if (!led_strip)
         return -ENODEV;
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
-    if (ext_power != NULL) {
-        int rc = ext_power_disable(ext_power);
-        if (rc != 0) {
-            LOG_ERR("Unable to disable EXT_POWER: %d", rc);
-        }
-    }
-#endif
-
+    zmk_rgb_underglow_deactivate();
     k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &underglow_off_work);
 
     k_timer_stop(&underglow_tick);
