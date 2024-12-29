@@ -18,6 +18,7 @@
     chosen {
         zmk,kscan = &kscan0;
         zmk,physical-layout = &physical_layout0;
+        zmk,underglow-transform = &underglow_transform;
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
@@ -36,6 +37,22 @@
             RC(5,0) RC(5,1) RC(5,2) RC(5,3) RC(5,4)         RC(3,6) RC(4,6) RC(5,6)   RC(5,7) RC(4,7)  RC(3,7)         RC(5,9) RC(5,10) RC(5,11) RC(5,12) RC(5,13)
         >;
     };
+
+    underglow_transform: underglow_transform_0 {
+        compatible = "zmk,underglow-transform";
+        columns = <19>;
+        rows = <6>;
+        map = <  
+  34 28 22 16 10 (-1) (-1) (-1) (-1) (-1) (-1) (-1) (-1) (-1) 50 56 62 68 74
+  35 29 23 17 11   6  (-1) (-1) (-1) (-1) (-1) (-1) (-1)  46  51 57 63 69 75
+  36 30 24 18 12   7  (-1) (-1) (-1) (-1) (-1) (-1) (-1)  47  52 58 64 70 76
+  37 31 25 19 13   8  (-1) (-1) (-1) (-1) (-1) (-1) (-1)  48  53 59 65 71 77
+  38 32 26 20 14   9    0    1    2  (-1)  42   41   40   49  54 60 66 72 78
+  39 33 27 21 15   3    4    5  (-1) (-1) (-1)  45   44   43  55 61 67 73 79
+        >;
+     };
+    
+
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
