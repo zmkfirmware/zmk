@@ -46,6 +46,7 @@ BUILD_ASSERT(CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN <= CONFIG_ZMK_RGB_UNDERGLOW_BRT_MA
 
 struct rgb_underglow_effect {
     void (*tick_function)(void);
+    void (*event_listener)(const zmk_event_t *);
 };
 
 struct rgb_underglow_state {
@@ -175,6 +176,10 @@ static const struct rgb_underglow_effect effects[] = {{&zmk_rgb_underglow_effect
                                                       {&zmk_rgb_underglow_effect_breathe},
                                                       {&zmk_rgb_underglow_effect_spectrum},
                                                       {&zmk_rgb_underglow_effect_swirl}};
+static const struct rgb_underglow_effect effects[] = {
+    {&zmk_rgb_underglow_effect_solid, NULL},    {&zmk_rgb_underglow_effect_breathe, NULL},
+    {&zmk_rgb_underglow_effect_spectrum, NULL}, {&zmk_rgb_underglow_effect_swirl, NULL},
+};
 
 static void zmk_rgb_underglow_tick(struct k_work *work) {
     if (effects[state.current_effect].tick_function != NULL) {
@@ -511,5 +516,15 @@ ZMK_SUBSCRIPTION(rgb_underglow, zmk_activity_state_changed);
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
 ZMK_SUBSCRIPTION(rgb_underglow, zmk_usb_conn_state_changed);
 #endif
+
+static int zmk_underglow_position_event_listener(const zmk_event_t *eh) {
+    if (effects[state.current_effect].event_listener != NULL) {
+        effects[state.current_effect].event_listener(eh);
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(rgb_underglow_pos, zmk_underglow_position_event_listener);
+ZMK_SUBSCRIPTION(rgb_underglow_pos, zmk_position_state_changed);
 
 SYS_INIT(zmk_rgb_underglow_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
