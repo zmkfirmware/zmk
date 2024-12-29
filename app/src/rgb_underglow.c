@@ -48,6 +48,8 @@ static int underglow_transform[] = DT_PROP(ZMK_UNDERGLOW_TRANSFORM_NODE, map);
 #define HUE_MAX 360
 #define SAT_MAX 100
 #define BRT_MAX 100
+#define TICKS_PER_SECOND 30
+static struct led_rgb BLACK = (struct led_rgb){r : 0, g : 0, b : 0};
 
 BUILD_ASSERT(CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN <= CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX,
              "ERROR: RGB underglow maximum brightness is less than minimum brightness");
@@ -133,6 +135,91 @@ static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
     struct led_rgb rgb = {r : r * 255, g : g * 255, b : b * 255};
 
     return rgb;
+}
+
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+static int keymap_pos_to_led_index(int pos) {
+    int index = 0;
+    for (int i = 0; i < ZMK_UNDERGLOW_TRANSFORM_LENGTH; i++) {
+        if (underglow_transform[i] != -1 && underglow_transform[i] <= STRIP_NUM_PIXELS * 2) {
+            if (index == pos) {
+                return i;
+            }
+            index++;
+        }
+    }
+    return -1;
+}
+
+static int keymap_pos_to_row(int pos) { return keymap_pos_to_led_index(pos) / ZMK_UNDERGLOW_COLS; }
+
+static int keymap_pos_to_col(int pos) { return keymap_pos_to_led_index(pos) % ZMK_UNDERGLOW_COLS; }
+#endif
+
+static void fade_all_leds(void) {
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        int r = (pixels[i].r > 5) ? pixels[i].r * 0.97 : 0;
+        int g = (pixels[i].g > 5) ? pixels[i].g * 0.97 : 0;
+        int b = (pixels[i].b > 5) ? pixels[i].b * 0.97 : 0;
+        pixels[i] = (struct led_rgb){r : r, g : g, b : b};
+    }
+}
+
+static int get_index(int row, int col) {
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+    int transform_index = row * ZMK_UNDERGLOW_COLS + col;
+    if (transform_index >= ZMK_UNDERGLOW_TRANSFORM_LENGTH) {
+        return -EINVAL;
+    }
+    int index = underglow_transform[transform_index];
+#else
+    int index = row + col;
+#endif
+    return index;
+}
+
+static void set_led(int row, int col, struct led_rgb color) {
+    int index = get_index(row, col);
+    if (index < 0 || index > STRIP_NUM_PIXELS * 2) {
+        return;
+    }
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (index >= STRIP_NUM_PIXELS) {
+        pixels[index % STRIP_NUM_PIXELS] = color;
+    }
+#elif IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (index < STRIP_NUM_PIXELS) {
+        pixels[index] = color;
+    }
+#endif
+#else
+    pixels[index % STRIP_NUM_PIXELS] = color;
+#endif
+}
+
+static struct led_rgb get_led(int row, int col) {
+    int index = get_index(row, col);
+    if (index < 0) {
+        return BLACK;
+    }
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (index >= STRIP_NUM_PIXELS) {
+        return pixels[index % STRIP_NUM_PIXELS];
+    } else {
+        return BLACK;
+    }
+#elif IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (index < STRIP_NUM_PIXELS) {
+        return pixels[index];
+    } else {
+        return BLACK;
+    }
+#endif
+#else
+    return pixels[index];
+#endif
 }
 
 static void zmk_rgb_underglow_effect_solid(void) {
