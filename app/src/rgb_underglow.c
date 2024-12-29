@@ -301,10 +301,6 @@ static void zmk_rgb_underglow_effect_swirl(void) {
     state.animation_step = state.animation_step % HUE_MAX;
 }
 
-static const struct rgb_underglow_effect effects[] = {{&zmk_rgb_underglow_effect_solid},
-                                                      {&zmk_rgb_underglow_effect_breathe},
-                                                      {&zmk_rgb_underglow_effect_spectrum},
-                                                      {&zmk_rgb_underglow_effect_swirl}};
 static const struct rgb_underglow_effect effects[] = {
     {&zmk_rgb_underglow_effect_solid, NULL},    {&zmk_rgb_underglow_effect_breathe, NULL},
     {&zmk_rgb_underglow_effect_spectrum, NULL}, {&zmk_rgb_underglow_effect_swirl, NULL},
