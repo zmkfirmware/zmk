@@ -338,10 +338,27 @@ static void zmk_rgb_underglow_effect_matrix(void) {
     state.animation_step = state.animation_step % (num_pixels * 10);
 }
 
+static void glitter_position_state_changed(const zmk_event_t *eh) {
+    const struct zmk_position_state_changed *pos_ev;
+    if ((pos_ev = as_zmk_position_state_changed(eh)) != NULL && pos_ev->state) {
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+        int index = keymap_pos_to_led_index(pos_ev->position);
+        if (index == -1) {
+            return;
+        }
+#else
+        int index = pos_ev->position;
+#endif
+        struct zmk_led_hsb color = state.color;
+        color.h = rand() % 360;
+        set_led(0, index, hsb_to_rgb(hsb_scale_zero_max(color)));
+    }
+}
+
 static const struct rgb_underglow_effect effects[] = {
     {&zmk_rgb_underglow_effect_solid, NULL},    {&zmk_rgb_underglow_effect_breathe, NULL},
     {&zmk_rgb_underglow_effect_spectrum, NULL}, {&zmk_rgb_underglow_effect_swirl, NULL},
-    {&zmk_rgb_underglow_effect_matrix, NULL},
+    {&zmk_rgb_underglow_effect_matrix, NULL},   {&fade_all_leds, &glitter_position_state_changed},
 };
 
 static void zmk_rgb_underglow_tick(struct k_work *work) {
