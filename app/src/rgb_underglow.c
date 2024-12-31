@@ -22,6 +22,7 @@
 #include <zmk/activity.h>
 #include <zmk/usb.h>
 #include <zmk/event_manager.h>
+#include <zmk/events/position_state_changed.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
 #include <zmk/workqueue.h>
