@@ -18,6 +18,10 @@
 };
 
 / {
+    combos {
+        compatible = "zmk,combos";
+    };
+
     keymap {
         compatible = "zmk,keymap";
         label ="Default keymap";
