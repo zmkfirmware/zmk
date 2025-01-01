@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <zephyr/sys/util.h>
+
 #include <zephyr/device.h>
 #include <zephyr/init.h>
 
@@ -29,6 +31,17 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static const struct device *hid_dev;
 
 static K_SEM_DEFINE(hid_sem, 1, 1);
+
+#if IS_ENABLED(CONFIG_ZMK_WORKAROUND_COPY_USB_TX_DATA_BUFFER)
+static uint8_t hid_ep_write_buf[sizeof(struct zmk_hid_report)];
+
+static const uint8_t *prepare_report_buf(const uint8_t *report, size_t len) {
+    memcpy(hid_ep_write_buf, report, len);
+    return hid_ep_write_buf;
+}
+#else
+static const uint8_t *prepare_report_buf(const uint8_t *report, size_t len) { return report; }
+#endif
 
 static void in_ready_cb(const struct device *dev) { k_sem_give(&hid_sem); }
 
@@ -193,7 +206,8 @@ static int zmk_usb_hid_send_report(const uint8_t *report, size_t len) {
         return -ENODEV;
     default:
         k_sem_take(&hid_sem, K_MSEC(30));
-        int err = hid_int_ep_write(hid_dev, report, len, NULL);
+        const uint8_t *buf = prepare_report_buf(report, len);
+        int err = hid_int_ep_write(hid_dev, buf, len, NULL);
 
         if (err) {
             k_sem_give(&hid_sem);
