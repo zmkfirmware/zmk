@@ -1021,6 +1021,22 @@ static struct bt_conn_cb conn_callbacks = {
     .security_changed = split_central_security_changed,
 };
 
+bool zmk_split_bt_central_peripheral_is_connected(uint8_t index) {
+    // If index is out of range always not connected
+    if (index >= ZMK_SPLIT_BLE_PERIPHERAL_COUNT)
+        return false;
+    else
+        return (peripherals[index].state == PERIPHERAL_SLOT_STATE_CONNECTED);
+}
+
+bool zmk_split_bt_central_peripheral_is_bonded(uint8_t index) {
+    // If index is out of range always not bonded
+    if (index >= ZMK_SPLIT_BLE_PERIPHERAL_COUNT)
+        return false;
+    else
+        return (bt_addr_le_cmp(zmk_ble_get_peripheral_addr(index), BT_ADDR_LE_ANY) == 0);
+}
+
 K_THREAD_STACK_DEFINE(split_central_split_run_q_stack,
                       CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE);
 
