@@ -89,6 +89,8 @@ else
 fi
 
 exe_name=${testcase//\//_}
+# Remove trailing underscores
+exe_name=${exe_name%%_}
 
 start_dir=$(pwd)
 cp build/$testcase/zephyr/zmk.exe "${BSIM_OUT_PATH}/bin/${exe_name}"
