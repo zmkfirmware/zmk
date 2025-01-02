@@ -223,10 +223,12 @@ static void update_advertising_callback(struct k_work *work) { update_advertisin
 K_WORK_DEFINE(update_advertising_work, update_advertising_callback);
 
 #if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
-void advertising_timeout(struct k_timer *timer) {
+void set_advertising_inhibit(void) {
     advertising_inhibit = true;
     k_work_submit(&update_advertising_work);
 }
+
+void advertising_timeout(struct k_timer *timer) { set_advertising_inhibit(); }
 
 K_TIMER_DEFINE(advertising_timer, advertising_timeout, NULL);
 
@@ -350,6 +352,12 @@ int zmk_ble_prof_disconnect(uint8_t index) {
 
     bt_conn_unref(conn);
     return result;
+}
+
+void zmk_ble_stop_advertise(void) {
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
+    set_advertising_inhibit();
+#endif
 }
 
 bt_addr_le_t *zmk_ble_active_profile_addr(void) { return &profiles[active_profile].peer; }
