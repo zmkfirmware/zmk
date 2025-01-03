@@ -233,23 +233,28 @@ See the [mod-morph behavior](../keymaps/behaviors/mod-morph.md) documentation fo
 
 ### Devicetree
 
-Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-mod-morph.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-mod-morph.yaml)
+Definition files:
 
-Applies to: `compatible = "zmk,behavior-mod-morph"`
+- [zmk/app/dts/bindings/behaviors/zmk,behavior-mod-morph-param.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-mod-morph.yaml)
+- [zmk/app/dts/bindings/behaviors/zmk,behavior-mod-morph.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-mod-morph.yaml)
 
-| Property         | Type          | Description                                                                       |
-| ---------------- | ------------- | --------------------------------------------------------------------------------- |
-| `#binding-cells` | int           | Must be `<0>`                                                                     |
-| `bindings`       | phandle array | A list of two behaviors: one for normal press and one for mod morphed press       |
-| `mods`           | int           | A bit field of modifiers. The morph behavior is used if any of these are pressed. |
+| Property         | Type          | Description                                                                                                                               |
+| ---------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `compatible`     | string        | Mod-Morph variant, **must be _one_ of**:<ul><li>`"zmk,behavior-mod-morph-param"`</li><li>`"zmk,behavior-mod-morph"`</li></ul>             |
+| `#binding-cells` | int           | Must be <ul><li>`<2>` if `compatible = "zmk,behavior-mod-morph-param"`</li><li>`<0>` if `compatible = "zmk,behavior-mod-morph"`</li></ul> |
+| `bindings`       | phandle array | A list of two behaviors: one for normal press and one for mod morphed press                                                               |
+| `binding-params` | array         | A list of two param assignment maps. Only applies to `compatible = "zmk,behavior-mod-morph-param"`                                        |
+| `mods`           | int           | A bit field of modifiers. The morph behavior is used if any of these are pressed.                                                         |
 
 See [dt-bindings/zmk/modifiers.h](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/modifiers.h) for a list of modifiers.
+The `binding-params` array should be constructed using the `BINDING_PARAM` macro.
+See [here](../keymaps/behaviors/mod-morph.md#binding-parameters) for more details.
 
 You can use the following nodes to tweak the default behaviors:
 
-| Node     | Behavior                                          |
-| -------- | ------------------------------------------------- |
-| `&gresc` | [Grave escape](../keymaps/behaviors/mod-morph.md) |
+| Node  | Behavior                                                |
+| ----- | ------------------------------------------------------- |
+| `&mm` | [Mod Morph Keypress](../keymaps/behaviors/mod-morph.md) |
 
 ## Sensor Rotation
 
@@ -327,15 +332,28 @@ See the [tap dance behavior](../keymaps/behaviors/tap-dance.mdx) documentation f
 
 ### Devicetree
 
-Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-tap-dance.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-tap-dance.yaml)
+Definition files:
 
-Applies to: `compatible = "zmk,behavior-tap-dance"`
+- [zmk/app/dts/bindings/behaviors/zmk,behavior-tap-dance-param.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-tap-dance.yaml)
+- [zmk/app/dts/bindings/behaviors/zmk,behavior-tap-dance.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-tap-dance.yaml)
 
-| Property          | Type          | Description                                                                                  | Default |
-| ----------------- | ------------- | -------------------------------------------------------------------------------------------- | ------- |
-| `#binding-cells`  | int           | Must be `<0>`                                                                                |         |
-| `bindings`        | phandle array | A list of behaviors from which to select                                                     |         |
-| `tapping-term-ms` | int           | The maximum time (in milliseconds) between taps before an item from `bindings` is triggered. | 200     |
+| Property          | Type          | Description                                                                                                                               | Default |
+| ----------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `compatible`      | string        | Tap-Dance variant, **must be _one_ of**:<ul><li>`"zmk,behavior-tap-dance-param"`</li><li>`"zmk,behavior-tap-dance"`</li></ul>             |         |
+| `#binding-cells`  | int           | Must be <ul><li>`<2>` if `compatible = "zmk,behavior-tap-dance-param"`</li><li>`<0>` if `compatible = "zmk,behavior-tap-dance"`</li></ul> |         |
+| `bindings`        | phandle array | A list of behaviors from which to select                                                                                                  |         |
+| `binding-params`  | array         | A list of two param assignment maps. Only applies to `compatible = "zmk,behavior-tap-dance-param"`                                        |         |
+| `tapping-term-ms` | int           | The maximum time (in milliseconds) between taps before an item from `bindings` is triggered.                                              | 200     |
+
+See [dt-bindings/zmk/modifiers.h](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/modifiers.h) for a list of modifiers.
+The `binding-params` array should be constructed using the `BINDING_PARAM` macro.
+See [here](../keymaps/behaviors/tap-dance.mdx#binding-params) for more details.
+
+You can use the following nodes to tweak the default behaviors:
+
+| Node  | Behavior                                                 |
+| ----- | -------------------------------------------------------- |
+| `&td` | [Tap Dance Keypress](../keymaps/behaviors/tap-dance.mdx) |
 
 ## Two Axis Input
 
