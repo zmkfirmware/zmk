@@ -53,7 +53,7 @@ Additional properties can be set on child nodes, which allows changing the setti
 
 ## Input Split
 
-Input splits are used for [pointing devices on split peripherals](../development/hardware-integration/pointing.mdx#split).
+Input splits are used for [pointing devices on split peripherals](../development/hardware-integration/pointing.mdx#listener-and-input-split-device).
 
 ### Devicetree
 
