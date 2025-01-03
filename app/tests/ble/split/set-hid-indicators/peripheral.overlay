@@ -1,0 +1,8 @@
+
+#include <dt-bindings/zmk/kscan_mock.h>
+
+
+&kscan {
+    /delete-property/ exit-after;
+    events = <>;
+};
