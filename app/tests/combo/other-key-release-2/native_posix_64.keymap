@@ -1,0 +1,57 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/*
+Combo on positions 01 and 23.
+
+- press 2 and 3
+- press 0
+- release 2
+- press 1
+- release the rest
+
+Both combos should actuate.
+*/
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        combo_a {
+            timeout-ms = <50>;
+            key-positions = <0 1>;
+            bindings = <&kp A>;
+        };
+
+        combo_b {
+            timeout-ms = <50>;
+            key-positions = <2 3>;
+            bindings = <&kp B>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp N0 &kp N1
+                &kp N2 &kp N3
+            >;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_PRESS(1,1,10)
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(1,1,0)
+        ZMK_MOCK_RELEASE(0,0,0)
+        ZMK_MOCK_RELEASE(0,1,0)
+    >;
+};
