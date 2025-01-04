@@ -18,7 +18,7 @@ The mouse functionality will not work over BLE until that is done.
 
 To use any of the behaviors documented here, the ZMK mouse feature must be enabled explicitly via a config option:
 
-```
+```ini
 CONFIG_ZMK_POINTING=y
 ```
 
@@ -28,7 +28,7 @@ To make it easier to encode the HID mouse button and move/scroll speed numeric v
 the [`dt-bindings/zmk/pointing.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/pointing.h) header
 provided by ZMK near the top:
 
-```
+```dts
 #include <dt-bindings/zmk/pointing.h>
 ```
 
@@ -66,13 +66,13 @@ Mouse buttons 4 and 5 typically map to "back" and "forward" actions in most appl
 
 The following will send a left click press when the binding is triggered:
 
-```
+```dts
 &mkp LCLK
 ```
 
 This example will send press of the fourth mouse button when the binding is triggered:
 
-```
+```dts
 &mkp MB4
 ```
 
@@ -110,13 +110,13 @@ Additionally, if you want to pass a different max speed than the default for the
 
 The following will send a down mouse movement event to the host when pressed/held:
 
-```
+```dts
 &mmv MOVE_DOWN
 ```
 
 The following will send a left mouse movement event to the host when pressed/held:
 
-```
+```dts
 &mmv MOVE_LEFT
 ```
 
@@ -154,13 +154,13 @@ Additionally, if you want to pass a different max speed than the default for the
 
 The following will send a scroll down event to the host when pressed/held:
 
-```
+```dts
 &msc SCRL_DOWN
 ```
 
 The following will send a scroll left event to the host when pressed/held:
 
-```
+```dts
 &msc SCRL_LEFT
 ```
 
@@ -202,6 +202,6 @@ Both `&mmv` and `&msc` are instances of the `"zmk,behavior-input-two-axis"` beha
     x-input-code = <INPUT_REL_HWHEEL>;
     y-input-code = <INPUT_REL_WHEEL>;
     time-to-max-speed-ms = <300>;
-    acceleration-exponent = <1>;
+    acceleration-exponent = <0>;
 };
 ```
