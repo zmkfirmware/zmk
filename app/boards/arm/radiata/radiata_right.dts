@@ -18,21 +18,21 @@
             , <&gpio1 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 22 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            
+
             , <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 26 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            
+
             , <&gpio1 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 31 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 27 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-            
+
             , <&gpio1 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio1 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&gpio0 30 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
