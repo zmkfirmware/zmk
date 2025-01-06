@@ -9,8 +9,6 @@ on:
     paths:
       - ".github/workflows/build.yml"
       - "app/**"
-  schedule:
-    - cron: "22 4 * * *"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'schedule' }}
