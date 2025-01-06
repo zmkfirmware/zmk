@@ -367,6 +367,7 @@ zmk_studio_Response move_layer(const zmk_studio_Request *req) {
     if (ret >= 0) {
         resp.which_result = zmk_keymap_SetActivePhysicalLayoutResponse_ok_tag;
         resp.result.ok.layers.funcs.encode = encode_keymap_layers;
+        populate_keymap_extra_props(&resp.result.ok);
 
         raise_zmk_studio_rpc_notification((struct zmk_studio_rpc_notification){
             .notification = KEYMAP_NOTIFICATION(unsaved_changes_status_changed, true)});

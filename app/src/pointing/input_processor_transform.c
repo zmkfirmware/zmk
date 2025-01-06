@@ -42,7 +42,7 @@ static int ipt_handle_event(const struct device *dev, struct input_event *event,
     const struct ipt_config *cfg = dev->config;
 
     if (event->type != cfg->type) {
-        return 0;
+        return ZMK_INPUT_PROC_CONTINUE;
     }
 
     if (param1 & INPUT_TRANSFORM_XY_SWAP) {
@@ -65,7 +65,7 @@ static int ipt_handle_event(const struct device *dev, struct input_event *event,
         event->value = -event->value;
     }
 
-    return 0;
+    return ZMK_INPUT_PROC_CONTINUE;
 }
 
 static struct zmk_input_processor_driver_api ipt_driver_api = {

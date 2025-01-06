@@ -1,0 +1,18 @@
+# Copyright (c) 2024, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Input Processor for invoking behaviors on certain events
+
+compatible: "zmk,input-processor-behaviors"
+
+include: ip_zero_param.yaml
+
+properties:
+  type:
+    type: int
+  codes:
+    type: array
+    required: true
+  bindings:
+    type: phandle-array
+    required: true

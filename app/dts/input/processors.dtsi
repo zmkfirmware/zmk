@@ -8,3 +8,4 @@
 #include <input/processors/code_mapper.dtsi>
 #include <input/processors/transform.dtsi>
 #include <input/processors/temp_layer.dtsi>
+#include <input/processors/behaviors.dtsi>

@@ -687,13 +687,22 @@ module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
 
+# This loads ZMK's internal board and shield Kconfigs
 rsource "boards/Kconfig"
 rsource "boards/shields/*/Kconfig.defconfig"
 rsource "boards/shields/*/Kconfig.shield"
 
+# This loads custom shields defconfigs (from BOARD_ROOT)
+# Duplicated from Kconfig.zephyr
+osource "$(KCONFIG_BINARY_DIR)/Kconfig.shield.defconfig"
+
+source "$(BOARD_DIR)/Kconfig.defconfig"
+
+# This loads board and shield Kconfigs found under zmk-config/config/
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
+# This loads ZMK's sensible defaults
 rsource "Kconfig.defaults"
 
 source "Kconfig.zephyr"
