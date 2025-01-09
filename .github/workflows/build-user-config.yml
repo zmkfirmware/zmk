@@ -117,7 +117,7 @@ jobs:
 
       - name: West Update
         working-directory: ${{ env.base_dir }}
-        run: west update
+        run: west update --fetch-opt=--filter=tree:0
 
       - name: West Zephyr export
         working-directory: ${{ env.base_dir }}

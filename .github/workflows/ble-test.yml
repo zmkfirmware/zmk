@@ -61,7 +61,7 @@ jobs:
       - name: Enable babblesim group filter
         run: west config manifest.group-filter -- +babblesim
       - name: Update modules (west update)
-        run: west update
+        run: west update --fetch-opt=--filter=tree:0
       - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
       - name: Build BabbleSim components
