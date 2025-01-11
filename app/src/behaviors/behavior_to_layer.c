@@ -56,6 +56,7 @@ static const struct behavior_parameter_metadata metadata = {
 static const struct behavior_driver_api behavior_to_driver_api = {
     .binding_pressed = to_keymap_binding_pressed,
     .binding_released = to_keymap_binding_released,
+    .type = BEHAVIOR_TYPE_ACTION,
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
     .parameter_metadata = &metadata,
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)

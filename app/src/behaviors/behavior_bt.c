@@ -122,6 +122,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
 static const struct behavior_driver_api behavior_bt_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
     .binding_released = on_keymap_binding_released,
+    .type = BEHAVIOR_TYPE_ACTION,
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
     .parameter_metadata = &metadata,
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)

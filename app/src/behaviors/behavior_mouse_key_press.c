@@ -49,7 +49,10 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
 }
 
 static const struct behavior_driver_api behavior_mouse_key_press_driver_api = {
-    .binding_pressed = on_keymap_binding_pressed, .binding_released = on_keymap_binding_released};
+    .binding_pressed = on_keymap_binding_pressed,
+    .binding_released = on_keymap_binding_released,
+    .type = BEHAVIOR_TYPE_ACTION,
+};
 
 #define MKP_INST(n)                                                                                \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_mouse_key_press_init, NULL, NULL, NULL, POST_KERNEL,       \

@@ -28,6 +28,7 @@
 #include <zmk/matrix.h>
 
 #include <zmk/events/position_state_changed.h>
+#include <zmk/events/action_behavior_triggered.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -65,8 +66,8 @@ static int invoke_locally(struct zmk_behavior_binding *binding,
     }
 }
 
-int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
-                                struct zmk_behavior_binding_event event, bool pressed) {
+static int invoke_binding(const struct zmk_behavior_binding *src_binding,
+                          struct zmk_behavior_binding_event event, bool pressed) {
     // We want to make a copy of this, since it may be converted from
     // relative to absolute before being invoked
     struct zmk_behavior_binding binding = *src_binding;
@@ -115,6 +116,43 @@ int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
 
     return -ENOTSUP;
 }
+
+int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *binding,
+                                struct zmk_behavior_binding_event event, bool pressed) {
+    const struct device *behavior = zmk_behavior_get_binding(binding->behavior_dev);
+
+    if (!behavior) {
+        LOG_WRN("No behavior assigned to %d on layer %d", event.position, event.layer);
+        return 1;
+    }
+
+    enum behavior_type type = BEHAVIOR_TYPE_ACTION;
+    int err = behavior_get_type(behavior, &type);
+    if (err) {
+        LOG_ERR("Failed to get behavior type %d", err);
+        return err;
+    }
+    if (type == BEHAVIOR_TYPE_ACTION) {
+        err = raise_action_behavior_triggered(binding, event, pressed);
+        if (err) {
+            LOG_ERR("Failed to raise action behavior event %d", err);
+            return err;
+        }
+        return ZMK_BEHAVIOR_OPAQUE;
+    }
+    return invoke_binding(binding, event, pressed);
+}
+
+int behavior_action_behavior_triggered_listener(const zmk_event_t *eh) {
+    struct zmk_action_behavior_triggered *ev = as_zmk_action_behavior_triggered(eh);
+    if (ev != NULL) {
+        return invoke_binding(ev->binding, ev->event, ev->pressed);
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(behavior_action, behavior_action_behavior_triggered_listener);
+ZMK_SUBSCRIPTION(behavior_action, zmk_action_behavior_triggered);
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 
