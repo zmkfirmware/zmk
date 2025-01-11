@@ -1,0 +1,8 @@
+file_format: "1"
+id: moc_feather
+name: MOC FEATHER
+type: shield
+url: https://github.com/HerrNKD/moc_feather
+features:
+  - keys
+  - studio

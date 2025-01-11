@@ -1,0 +1,3 @@
+[console_scripts]
+pylink = pylink.__main__:main
+

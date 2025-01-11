@@ -1,0 +1,7 @@
+file_format: "1"
+id: mf68
+name: MF68
+type: shield
+url: https://github.com/di0ib/tmk_keyboard/tree/master/keyboard/mf68
+features:
+  - keys

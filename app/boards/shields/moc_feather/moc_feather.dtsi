@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+#include "moc_feather-layouts.dtsi"
+
+&feather_i2c    { status = "disabled"; };
+&feather_spi    { status = "disabled"; };
+
+&physical_layout0 {
+	transform = <&matrix_transform0>;
+};
+
+/ {
+	chosen {
+		zmk,kscan = &kscan0;
+		zmk,physical-layout = &physical_layout0;
+	};
+	
+	kscan0: kscan {
+		     compatible = "zmk,kscan-gpio-matrix";
+		          label = "KSCAN";
+		diode-direction = "col2row";
+	};
+	
+	matrix_transform0: keymap_transform_0 {
+		compatible = "zmk,matrix-transform";
+		   columns = <2>;
+		      rows = <2>;
+		       map = <
+                  RC(0,0) RC(1,0)
+                  RC(1,0) RC(1,1)
+           >;
+	};
+	
+};

@@ -1,0 +1,38 @@
+## A pykwalify schema for basic validation of the structure of a west
+## commands YAML file. This allows projects managed by west to provide
+## additional commands.
+##
+## By convention, this file is named west-commands.yml.
+
+# --------------------------------------------------------------
+#
+#  DO NOT CHANGE THIS FILE WITHOUT UPDATING THE DOCUMENTATION!
+#
+# --------------------------------------------------------------
+
+type: map
+mapping:
+  west-commands:
+    type: seq
+
+    sequence:
+      - type: map
+        mapping:
+          file:
+            required: true
+            type: str
+          commands:
+            required: true
+            type: seq
+            sequence:
+              - type: map
+                mapping:
+                  name:
+                    required: false
+                    type: str
+                  class:
+                    required: false
+                    type: str
+                  help:
+                    required: false
+                    type: str

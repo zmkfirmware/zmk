@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "moc_feather.dtsi"
+
+&kscan0 {
+   col-gpios
+       = <&feather_header 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+       , <&feather_header 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+       ;
+   row-gpios
+       = <&feather_header 11 GPIO_ACTIVE_HIGH>
+       , <&feather_header 10 GPIO_ACTIVE_HIGH>
+       ;
+};

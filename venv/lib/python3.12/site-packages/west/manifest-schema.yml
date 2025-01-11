@@ -1,0 +1,166 @@
+## A pykwalify schema for basic validation of the structure of a
+## manifest YAML file.  (Full validation would require additional work,
+## e.g. to validate that remote URLs obey the URL format specified in
+## rfc1738.)
+##
+## This schema has similar semantics to the repo XML format:
+##
+## https://gerrit.googlesource.com/git-repo/+/master/docs/manifest-format.md
+##
+## However, the features don't map 1:1.
+
+# --------------------------------------------------------------
+#
+#  DO NOT CHANGE THIS FILE WITHOUT:
+#
+#  - updating west.manifest.SCHEMA_VERSION and 
+#    west.manifest._VALID_SCHEMA_VERS
+#  - reviewing and updating sphinx documentation
+#
+# --------------------------------------------------------------
+
+schema;groups-schema:
+  type: seq
+  sequence:
+    - type: str
+    - type: int
+    - type: float
+  matching: any
+
+type: map
+mapping:
+  # The "version" key is optional. It's the minimum version manifest
+  # schema that is required to correctly parse the manifest data.
+  version:
+    required: false
+    type: text
+
+  # The "defaults" key specifies some default values used in the
+  # rest of the manifest.
+  defaults:
+    required: false
+    type: map
+    mapping:
+      # The name of the default remote.
+      remote:
+        required: false
+        type: str
+      # The default revision (master if not given).
+      revision:
+        required: false
+        type: str
+
+  # The "remotes" key specifies a sequence of remotes, each of which has a name
+  # and a fetch URL base. These URL bases are concatenated with project names
+  # (separated by a /) to form complete fetch URLs.
+  remotes:
+    required: false
+    type: seq
+    sequence:
+      - type: map
+        mapping:
+          name:
+            required: true
+            type: str
+          url-base:
+            required: true
+            type: str
+
+  # The "projects" key specifies a sequence of "projects", each of which has a
+  # remote, and may specify additional configuration.
+  #
+  # A manifest without projects was forbidden up through west 0.9.x,
+  # but it can be convenient to create such manifests at times, so it
+  # is now allowed.
+  projects:
+    required: false
+    type: seq
+    sequence:
+      - type: map
+        mapping:
+          # Project's unique name.
+          name:
+            required: true
+            type: str
+          # Project description. Has no effect.
+          description:
+            required: false
+            type: str
+          # Name of the project's remote. May not be combined with "url".
+          remote:
+            required: false
+            type: str
+          # If a remote is given, the project is fetched from this URL:
+          #
+          # remote.url-base + / + repo-path
+          #
+          # "repo-path" defaults to "name".
+          repo-path:
+            required: false
+            type: str
+          # Explicit project fetch URL. May not be combined with "remote".
+          url:
+            required: false
+            type: str
+          # Revision to check out. May be a branch, tag, or SHA.
+          revision:
+            required: false
+            type: text        # SHAs could be only numbers
+          # Path to check out, relative to the west installation root.
+          # The default is the name.
+          path:
+            required: false
+            type: str
+          # Submodules to checkout within the project
+          submodules:
+            required: false
+            type: any
+          # Limits the clone depth of the project if given.
+          clone-depth:
+            required: false
+            type: int
+          # Path to a west-commands.yml inside the project.
+          west-commands:
+            required: false
+            type: str
+          # Additional manifest data to import from the project.
+          import:
+            required: false
+            type: any
+          groups:
+            required: false
+            include: groups-schema
+          # Arbitrary project user data.
+          userdata:
+            required: false
+            type: any
+
+  # If present, a list of project groups to enable and disable. Prefix
+  # a group name with "-" to disable it; prefix with "+" to enable it.
+  group-filter:
+    required: false
+    include: groups-schema
+
+  # The "self" key specifies values for the project containing the manifest
+  # file (the "manifest repository").
+  self:
+    required: false
+    type: map
+    mapping:
+      path:
+        required: false
+        type: str
+      # The manifest repository may also contain additional west
+      # commands. See the above comment for details.
+      west-commands:
+        required: false
+        type: str
+      # Additional manifest data to import from the manifest
+      # repository.
+      import:
+        required: false
+        type: any
+      # Arbitrary user data for manifest repository
+      userdata:
+        required: false
+        type: any

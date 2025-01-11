@@ -1,0 +1,3 @@
+[console_scripts]
+pykwalify = pykwalify.cli:cli_entrypoint
+

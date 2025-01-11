@@ -1,0 +1,171 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+#include <nordic/nrf52840_qiaa.dtsi>
+#include "feather_connector.dtsi"
+
+/ {
+	model = "Adafruit Feather nRF52840 Express";
+	compatible = "adafruit,feather-nrf52840";
+
+	chosen {
+		zephyr,code-partition = &code_partition;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		led0: led_0 {
+			gpios = <&gpio1 15 0>;
+			label = "D3 LED";
+		};
+		led1: led_1 {
+			gpios = <&gpio1 10 0>;
+			label = "CONN LED";
+		};
+	};
+
+	vbatt {
+		compatible = "zmk,battery-voltage-divider";
+		label = "BATTERY";
+		io-channels = <&adc 6>;
+		// copy-pasted values because idk how to calculate them
+		output-ohms = <2000000>;
+		full-ohms = <(2000000 + 806000)>;
+	};
+
+	buttons {
+		compatible = "gpio-keys";
+		button0: button_0 {
+			gpios = <&gpio1 2 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "User switch";
+		};
+	};
+
+	/* These aliases are provided for compatibility with samples */
+	aliases {
+		led0 = &led0;
+		led1 = &led1;
+		sw0 = &button0;
+	};
+};
+
+&adc {
+	status = "okay";
+};
+
+&gpiote {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+/* Free TX/RX pins from UART
+&uart0 {
+	compatible = "nordic,nrf-uart";
+	current-speed = <115200>;
+	status = "okay";
+	tx-pin = <25>;
+	rx-pin = <24>;
+};
+*/
+
+/* Free SCL/SDA pins from I2C
+&i2c0 {
+	compatible = "nordic,nrf-twi";
+	status = "okay";
+	sda-pin = <12>;
+	scl-pin = <11>;
+};
+*/
+
+/* Free SCK, MO, and MI pins from SPI
+&spi1 {
+	compatible = "nordic,nrf-spi";
+	status = "okay";
+	sck-pin = <14>;
+	mosi-pin = <13>;
+	miso-pin = <15>;
+};
+*/
+
+/* You also probably don't need the QSPI flash
+&qspi {
+	status = "okay";
+	sck-pin = <19>;
+	io-pins = <17>, <22>, <23>, <21>;
+	csn-pins = <20>;
+	gd25q16: gd25q16@0 {
+		// NOTE: Quad mode not supported as driver does not handle
+		// QE bit setting in SR2. Ref. GD25Q16C, Rev 3.0, p. 12.
+		compatible = "nordic,qspi-nor";
+		reg = <0>;
+		writeoc = "pp2o";
+		readoc = "read2io";
+		sck-frequency = <16000000>;
+		label = "GD25Q16";
+		jedec-id = [c8 40 15];
+		size = <16777216>;
+		has-dpd;
+		t-enter-dpd = <20000>;
+		t-exit-dpd = <20000>;
+	};
+};
+*/
+
+&flash0 {
+	/*
+	 * Basically the same as the Nice!Nano, the original .dts from Zephyr
+	 * doesn't support UF2.
+	 * For more information about the memory map, see:
+	 * https://learn.adafruit.com/introducing-the-adafruit-nrf52840-feather/hathach-memory-map
+	 */
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		sd_partition: partition@0 {
+			label = "softdevice";
+			reg = <0x00000000 0x00026000>;
+		};
+		code_partition: partition@26000 {
+			label = "code_partition";
+			reg = <0x00026000 0x000c6000>;
+		};
+
+		/*
+		 * The flash starting at 0x000ec000 and ending at
+		 * 0x000f3fff is reserved for use by the application.
+		 */
+
+		/*
+		 * Storage partition will be used by FCB/LittleFS/NVS
+		 * if enabled.
+		 */
+		storage_partition: partition@ec000 {
+			label = "storage";
+			reg = <0x000ec000 0x00008000>;
+		};
+
+		boot_partition: partition@f4000 {
+			label = "adafruit_boot";
+			reg = <0x000f4000 0x0000c000>;
+		};
+	};
+};
+
+&usbd {
+	status = "okay";
+};
