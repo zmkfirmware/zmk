@@ -1,0 +1,24 @@
+# Copyright (C) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  GPIO pins exposed on the Glove80 internal extension header.
+
+  See https://docs.moergo.com/glove80-user-guide/appendix-more-customizations/
+
+  Both sides of the Glove80 split keyboard expose a set of 6 extra GPIO pins
+  for customization, with different underlying nRF52 pins used on each side.
+  This nexus node allows referencing the pins generically without being tied
+  to a specific left/right side pin assignment.
+
+
+      - GND                    VEXT  -
+      - VDDH                   EXT1  1
+      2 EXT2                   EXT3  3
+      4 EXT4                   EXT5  5
+      6 SWO_EXT6               RESET -
+      - SWDCLK                 SWDIO -
+
+compatible: "moergo,glove80-ext"
+
+include: [gpio-nexus.yaml, base.yaml]

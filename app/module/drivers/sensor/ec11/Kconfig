@@ -11,7 +11,7 @@ menuconfig EC11
 
 if EC11
 
-choice
+choice EC11_TRIGGER_MODE
     prompt "Trigger mode"
     default EC11_TRIGGER_NONE
     help

@@ -1,0 +1,2 @@
+./ble_test_central.exe -d=2 -wait_on_start=1300 -write_hid_indicators_on_discovery
+./tests_ble_split_set-hid-indicators_peripheral.exe -d=3

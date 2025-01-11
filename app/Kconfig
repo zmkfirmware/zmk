@@ -46,7 +46,7 @@ config NRF_STORE_REBOOT_TYPE_GPREGRET
     bool
     default y
 
-endif
+endif # SOC_SERIES_NRF52X
 
 menu "HID"
 
@@ -81,14 +81,11 @@ if ZMK_HID_REPORT_TYPE_HKRO
 
 config ZMK_HID_KEYBOARD_REPORT_SIZE
     int "# Keyboard Keys Reportable"
-    default 6
 
-endif
+endif # ZMK_HID_REPORT_TYPE_HKRO
 
 config ZMK_HID_CONSUMER_REPORT_SIZE
     int "# Consumer Keys Reportable"
-    default 6
-
 
 choice ZMK_HID_CONSUMER_REPORT_USAGES
     prompt "HID Report Type"
@@ -142,8 +139,7 @@ config USB_NUMOF_EP_WRITE_RETRIES
 config USB_HID_POLL_INTERVAL_MS
     default 1
 
-#ZMK_USB
-endif
+endif # ZMK_USB
 
 menuconfig ZMK_BLE
     bool "BLE (HID over GATT)"
@@ -163,17 +159,14 @@ if ZMK_BLE
 config ZMK_BLE_EXPERIMENTAL_CONN
     bool "Experimental BLE connection changes"
     help
-      Enables a combination of settings that are planned to be default in future versions of ZMK
-      to improve connection stability. This includes changes to timing on BLE pairing initiation,
-      restores use of the updated/new LLCP implementation, and disables 2M PHY support.
+      Enables settings that are planned to be default in future versions of ZMK
+      to improve connection stability.
 
 config ZMK_BLE_EXPERIMENTAL_SEC
     bool "Experimental BLE security changes"
     imply BT_SMP_ALLOW_UNAUTH_OVERWRITE
     help
-      Enables a combination of settings that are planned to be officially supported in the future.
-      This includes enabling BT Secure Connection passkey entry, and allows overwrite of keys from
-      previously paired hosts.
+      Enables security settings that are planned to be officially supported in the future.
 
 config ZMK_BLE_EXPERIMENTAL_FEATURES
     bool "Experimental BLE connection and security settings/features"
@@ -245,19 +238,15 @@ config BT_PERIPHERAL_PREF_LATENCY
 config BT_PERIPHERAL_PREF_TIMEOUT
     default 400
 
-#ZMK_BLE
-endif
+endif # ZMK_BLE
 
-#Output Types
-endmenu
+endmenu # Output Types
 
-# HID
-endmenu
+endmenu # HID
 
 rsource "src/split/Kconfig"
 
-#Basic Keyboard Setup
-endmenu
+endmenu # Basic Keyboard Setup
 
 menu "Keymaps"
 
@@ -275,7 +264,7 @@ config ZMK_KEYMAP_LAYER_NAME_MAX_LEN
     int "Max Layer Name Length"
     default 20
 
-endif
+endif # ZMK_KEYMAP_SETTINGS_STORAGE
 
 endmenu # Keymaps
 
@@ -292,67 +281,51 @@ menuconfig ZMK_RGB_UNDERGLOW
 
 if ZMK_RGB_UNDERGLOW
 
-# This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
-config SPI
-    default y
-
 config ZMK_RGB_UNDERGLOW_EXT_POWER
     bool "RGB underglow toggling also controls external power"
-    default y
 
 config ZMK_RGB_UNDERGLOW_BRT_MIN
     int "RGB underglow minimum brightness in percent"
     range 0 100
-    default 0
 
 config ZMK_RGB_UNDERGLOW_BRT_MAX
     int "RGB underglow maximum brightness in percent"
     range ZMK_RGB_UNDERGLOW_BRT_MIN 100
-    default 100
 
 config ZMK_RGB_UNDERGLOW_HUE_STEP
     int "RGB underglow hue step in degrees"
     range 0 359
-    default 10
 
 config ZMK_RGB_UNDERGLOW_SAT_STEP
     int "RGB underglow saturation step in percent"
     range 0 100
-    default 10
 
 config ZMK_RGB_UNDERGLOW_BRT_STEP
     int "RGB underglow brightness step in percent"
     range 0 100
-    default 10
 
 config ZMK_RGB_UNDERGLOW_HUE_START
     int "RGB underglow start hue value in degrees"
     range 0 359
-    default 0
 
 config ZMK_RGB_UNDERGLOW_SAT_START
     int "RGB underglow start saturations value in percent"
     range 0 100
-    default 100
 
 config ZMK_RGB_UNDERGLOW_BRT_START
     int "RGB underglow start brightness value in percent"
     range ZMK_RGB_UNDERGLOW_BRT_MIN ZMK_RGB_UNDERGLOW_BRT_MAX
-    default ZMK_RGB_UNDERGLOW_BRT_MAX
 
 config ZMK_RGB_UNDERGLOW_SPD_START
     int "RGB underglow start animation speed value"
     range 1 5
-    default 3
 
 config ZMK_RGB_UNDERGLOW_EFF_START
     int "RGB underglow start effect int value related to the effect enum list"
     range 0 3
-    default 0
 
 config ZMK_RGB_UNDERGLOW_ON_START
     bool "RGB underglow starts on by default"
-    default y
 
 config ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE
     bool "Turn off RGB underglow when keyboard goes into idle state"
@@ -361,8 +334,7 @@ config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
     bool "Turn off RGB underglow when USB is disconnected"
     depends on USB_DEVICE_STACK
 
-#ZMK_RGB_UNDERGLOW
-endif
+endif # ZMK_RGB_UNDERGLOW
 
 menuconfig ZMK_BACKLIGHT
     bool "LED backlight"
@@ -373,16 +345,13 @@ if ZMK_BACKLIGHT
 config ZMK_BACKLIGHT_BRT_STEP
     int "Brightness step in percent"
     range 1 100
-    default 20
 
 config ZMK_BACKLIGHT_BRT_START
     int "Default brightness in percent"
     range 1 100
-    default 40
 
 config ZMK_BACKLIGHT_ON_START
     bool "Default backlight state"
-    default y
 
 config ZMK_BACKLIGHT_AUTO_OFF_IDLE
     bool "Turn off backlight when keyboard goes into idle state"
@@ -390,19 +359,11 @@ config ZMK_BACKLIGHT_AUTO_OFF_IDLE
 config ZMK_BACKLIGHT_AUTO_OFF_USB
     bool "Turn off backlight when USB is disconnected"
 
-#ZMK_BACKLIGHT
-endif
+endif # ZMK_BACKLIGHT
 
-#Display/LED Options
-endmenu
+endmenu # Display/LED Options
 
-menu "Mouse Options"
-
-config ZMK_MOUSE
-    bool "Enable ZMK mouse emulation"
-
-#Mouse Options
-endmenu
+rsource "src/pointing/Kconfig"
 
 menu "Power Management"
 
@@ -424,7 +385,8 @@ config ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE
     bool "Lithium Voltage"
 
 endchoice
-endif
+
+endif # ZMK_BATTERY_REPORTING
 
 config ZMK_IDLE_TIMEOUT
     int "Milliseconds of inactivity before entering idle state (OLED shutoff, etc)"
@@ -446,12 +408,10 @@ config ZMK_IDLE_SLEEP_TIMEOUT
     int "Milliseconds of inactivity before entering deep sleep"
     default 900000
 
-#ZMK_SLEEP
-endif
+endif # ZMK_SLEEP
 
 config ZMK_EXT_POWER
     bool "Enable support to control external power output"
-    default y
 
 config ZMK_PM
     bool
@@ -473,7 +433,7 @@ config ZMK_GPIO_KEY_WAKEUP_TRIGGER
     default y
     depends on DT_HAS_ZMK_GPIO_KEY_WAKEUP_TRIGGER_ENABLED && ZMK_PM_SOFT_OFF
 
-#Power Management
+# Power Management
 endmenu
 
 menu "Combo options"
@@ -490,7 +450,7 @@ config ZMK_COMBO_MAX_KEYS_PER_COMBO
     int "Maximum number of keys per combo"
     default 4
 
-#Combo options
+# Combo options
 endmenu
 
 menu "Behavior Options"
@@ -525,8 +485,7 @@ config ZMK_USB_HID_INIT_PRIORITY
     int "USB HID Init Priority"
     default 95
 
-#USB
-endif
+endif # USB
 
 if ZMK_BLE || ZMK_SPLIT_BLE
 
@@ -534,11 +493,9 @@ config ZMK_BLE_INIT_PRIORITY
     int "BLE Init Priority"
     default 50
 
-#ZMK_BLE || ZMK_SPLIT_BLE
-endif
+endif # ZMK_BLE || ZMK_SPLIT_BLE
 
-#Initialization Priorities
-endmenu
+endmenu # Initialization Priorities
 
 menuconfig ZMK_KSCAN
     bool "ZMK KScan Integration"
@@ -612,8 +569,7 @@ config USB_CDC_ACM_RINGBUF_SIZE
 config LOG_PROCESS_THREAD_STARTUP_DELAY_MS
     default 1000
 
-#ZMK_USB_LOGGING
-endif
+endif # ZMK_USB_LOGGING
 
 config ZMK_RTT_LOGGING
     bool "Enable RTT logging to help debug"
@@ -629,8 +585,7 @@ if ZMK_RTT_LOGGING
 config SEGGER_RTT_BUFFER_SIZE_UP
     default 8192
 
-#ZMK_RTT_LOGGING
-endif
+endif # ZMK_RTT_LOGGING
 
 if ZMK_USB_LOGGING || ZMK_RTT_LOGGING
 
@@ -640,11 +595,9 @@ config LOG_BUFFER_SIZE
 config LOG_PROCESS_THREAD_SLEEP_MS
     default 100
 
-#ZMK_USB_LOGGING || ZMK_RTT_LOGGING
-endif
+endif # ZMK_USB_LOGGING || ZMK_RTT_LOGGING
 
-#Logging
-endmenu
+endmenu # Logging
 
 if SETTINGS
 
@@ -660,21 +613,17 @@ config ZMK_SETTINGS_RESET_ON_START_INIT_PRIORITY
       Initialization priority for the settings reset on start. Must be lower priority/
       higher value than FLASH_INIT_PRIORITY if using the NVS/Flash settings backend.
 
-
-endif
-
+endif # ZMK_SETTINGS_RESET_ON_START
 
 config ZMK_SETTINGS_SAVE_DEBOUNCE
     int "Milliseconds to debounce settings saves"
     default 60000
 
-#SETTINGS
-endif
+endif # SETTINGS
 
 config ZMK_BATTERY_REPORT_INTERVAL
     depends on ZMK_BATTERY_REPORTING
     int "Battery level report interval in seconds"
-    default 60
 
 config ZMK_LOW_PRIORITY_WORK_QUEUE
     bool "Work queue for low priority items"
@@ -689,13 +638,11 @@ config ZMK_LOW_PRIORITY_THREAD_PRIORITY
     int "Low priority thread priority"
     default 10
 
-endif
+endif # ZMK_LOW_PRIORITY_WORK_QUEUE
 
-#Advanced
-endmenu
+endmenu # Advanced
 
-#ZMK
-endmenu
+endmenu # ZMK
 
 config KERNEL_BIN_NAME
     default "zmk"
@@ -740,12 +687,22 @@ module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
 
+# This loads ZMK's internal board and shield Kconfigs
 rsource "boards/Kconfig"
 rsource "boards/shields/*/Kconfig.defconfig"
 rsource "boards/shields/*/Kconfig.shield"
 
+# This loads custom shields defconfigs (from BOARD_ROOT)
+# Duplicated from Kconfig.zephyr
+osource "$(KCONFIG_BINARY_DIR)/Kconfig.shield.defconfig"
+
+source "$(BOARD_DIR)/Kconfig.defconfig"
+
+# This loads board and shield Kconfigs found under zmk-config/config/
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.shield"
 
+# This loads ZMK's sensible defaults
+rsource "Kconfig.defaults"
 
 source "Kconfig.zephyr"

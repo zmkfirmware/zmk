@@ -1,0 +1,14 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+include: ip_common.yaml
+
+properties:
+  "#input-processor-cells":
+    type: int
+    required: true
+    const: 2
+
+input-processor-cells:
+  - param1
+  - param2

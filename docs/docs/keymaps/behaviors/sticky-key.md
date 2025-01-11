@@ -42,7 +42,7 @@ Note that tapping a lazy sticky key will not trigger other behaviors such as the
 
 #### `ignore-modifiers`
 
-This setting is enabled by default. It ensures that if a sticky key modifier is pressed before a previously pressed sticky key is released, the modifiers will get combined so you can add more sticky keys or press a regular key to apply the modifiers. This is to accommodate _callum-style mods_ where you are prone to rolling sticky keys. If you want sticky key modifiers to only chain after release, you can disable this setting. Please note that activating multiple modifiers via [modifier functions](../modifiers.mdx#modifier-functions) such as `&sk LS(LALT)`, require `ignore-modifiers` enabled in order to function properly.0
+This setting is enabled by default. It ensures that if a sticky key modifier is pressed before a previously pressed sticky key is released, the modifiers will get combined so you can add more sticky keys or press a regular key to apply the modifiers. This is to accommodate _callum-style mods_ where you are prone to rolling sticky keys. If you want sticky key modifiers to only chain after release, you can disable this setting. Please note that activating multiple modifiers via [modifier functions](../modifiers.mdx#modifier-functions) such as `&sk LS(LALT)`, require `ignore-modifiers` enabled in order to function properly.
 
 #### Example
 

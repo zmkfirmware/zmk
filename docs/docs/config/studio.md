@@ -3,12 +3,6 @@ title: ZMK Studio Configuration
 sidebar_label: ZMK Studio
 ---
 
-:::warning[Beta Feature]
-
-ZMK Studio is in beta. Although every effort has been made to provide a stable experience, you may still encounter issues during use. Please report any issues to [GitHub Issues](https://github.com/zmkfirmware/zmk-studio/issues).
-
-:::
-
 The following settings affect the ZMK Studio portions of ZMK. See the [ZMK Studio feature](../features/studio.md) for more information on enabling and building with ZMK Studio enabled.
 
 See [Configuration Overview](index.md) for instructions on how to change these settings.

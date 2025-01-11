@@ -54,7 +54,7 @@
 
         right {
             kscan = <&kscan_right>;
-            column-offset = <5>;
+            col-offset = <5>;
         };
     };
 

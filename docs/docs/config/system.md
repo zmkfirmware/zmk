@@ -103,7 +103,7 @@ for more information on configuring Bluetooth.
 | `CONFIG_ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE` | int  | Max number of keyboard HID reports to queue for sending over BLE      | 20      |
 | `CONFIG_ZMK_BLE_INIT_PRIORITY`              | int  | BLE init priority                                                     | 50      |
 | `CONFIG_ZMK_BLE_THREAD_PRIORITY`            | int  | Priority of the BLE notify thread                                     | 5       |
-| `CONFIG_ZMK_BLE_THREAD_STACK_SIZE`          | int  | Stack size of the BLE notify thread                                   | 512     |
+| `CONFIG_ZMK_BLE_THREAD_STACK_SIZE`          | int  | Stack size of the BLE notify thread                                   | 768     |
 | `CONFIG_ZMK_BLE_PASSKEY_ENTRY`              | bool | Experimental: require typing passkey from host to pair BLE connection | n       |
 
 Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the same value. On a split keyboard they should only be set for the central and must be set to one greater than the desired number of bluetooth profiles.
@@ -132,6 +132,55 @@ Following [split keyboard](../features/split-keyboards.md) settings are defined 
 | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE`      | int  | Max number of key state events to queue when received from peripherals     | 5                                          |
 | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE`     | int  | Stack size of the BLE split central write thread                           | 512                                        |
 | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE`     | int  | Max number of behavior run events to queue to send to the peripheral(s)    | 5                                          |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE`            | int  | Stack size of the BLE split peripheral notify thread                       | 650                                        |
+| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE`            | int  | Stack size of the BLE split peripheral notify thread                       | 756                                        |
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY`              | int  | Priority of the BLE split peripheral notify thread                         | 5                                          |
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE`   | int  | Max number of key state events to queue to send to the central             | 10                                         |
+
+## Snippets
+
+:::danger
+Using these snippets can erase the SoftDevice on your board.
+Erasing the SoftDevice will prevent the board from using firmware built without these snippets.
+
+Flashing such firmware **will** totally brick the board, disabling the USB flashing functionality.
+The only way to restore functionality after that is to re-flash the bootloader.
+
+Re-flashing a bootloader built without the SoftDevice will require firmware built with these snippets.
+:::
+
+[Snippets](https://docs.zephyrproject.org/3.5.0/build/snippets/index.html) are a way to save common configuration separately when it applies to multiple different applications.
+
+Enable snippets by adding `snippet: <snippet>` to your `build.yaml` for the appropriate board:
+
+```yaml
+- board: nrfmicro_13_52833
+  snippet: nrf52833-nosd
+  shield: corne_left
+```
+
+For local builds, add `-S <snippet>` to your build command. For example:
+
+```sh
+west build -b nrfmicro_13_52833 -S nrf52833-nosd -- -DSHIELD=corne_left
+```
+
+ZMK implements the following system configuration snippets:
+
+### nrf52833-nosd
+
+Definition: [zmk/app/snippets/nrf52833-nosd](https://github.com/zmkfirmware/zmk/blob/main/app/snippets/nrf52833-nosd)
+
+On memory-constrained nRF52833 boards this snippet will extend the code partition to overwrite the Nordic SoftDevice.
+This gives 428KB for the code partition as opposed to 280KB with the Nordic SoftDevice.
+
+The added memory allows the nRF52833 to fit displays and other memory-intensive features.
+
+### nrf52840-nosd
+
+Definition: [zmk/app/snippets/nrf52840-nosd](https://github.com/zmkfirmware/zmk/blob/main/app/snippets/nrf52840-nosd)
+
+On nRF52840 boards this snippet will overwrite the Nordic SoftDevice, extending both the code and storage partitions.
+This gives 844KB/128KB for the code/storage partitions as opposed to 792KB/32KB with the Nordic SoftDevice.
+
+Firmware built with this snippet can work on boards after accidentally erasing the SoftDevice.
+It can also be useful for especially memory-intensive applications.

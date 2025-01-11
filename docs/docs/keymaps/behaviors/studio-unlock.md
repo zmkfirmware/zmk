@@ -3,12 +3,6 @@ title: ZMK Studio Unlock Behavior
 sidebar_label: ZMK Studio Unlock
 ---
 
-:::warning[Beta Feature]
-
-ZMK Studio is in beta. Although every effort has been made to provide a stable experience, you may still encounter issues during use. Please report any issues to [GitHub Issues](https://github.com/zmkfirmware/zmk-studio/issues).
-
-:::
-
 ## Summary
 
 ## ZMK Studio Unlock

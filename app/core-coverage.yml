@@ -24,7 +24,7 @@ include:
     nickname: "display"
   - board: nice_nano_v2
     shield: kyria_left
-    cmake-args: "-DCONFIG_ZMK_MOUSE=y"
+    cmake-args: "-DCONFIG_ZMK_POINTING=y"
     nickname: "mouse"
   - board: sparkfun_pro_micro_rp2040
     shield: reviung41
