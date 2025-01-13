@@ -71,7 +71,7 @@ For split keyboards, set `chain-length` to the number of LEDs installed on each 
 
 ### Configuring RGB Underglow
 
-See [RGB underglow configuration](../config/underglow.md).
+See [RGB underglow configuration](../config/lighting.md#rgb-underglow).
 
 ### Adding RGB Underglow Support to a Keyboard
 
@@ -98,7 +98,7 @@ If your board or shield does not have backlight configured, refer to [Adding Bac
 ### Configuring Backlight
 
 There are various Kconfig options used to configure the backlight feature.
-See [backlight configuration](../config/backlight.md) for details.
+See [backlight configuration](../config/lighting.md#backlight) for details.
 
 ### Adding Backlight to a Board or a Shield
 
