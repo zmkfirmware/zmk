@@ -24,29 +24,16 @@
         };
     };
 
-    macros {
-        ZMK_MACRO(combo1_macro, bindings
-                = <&macro_press &mt LEFT_CONTROL A>
-                , <&macro_pause_for_release>
-                , <&macro_release &mt LEFT_CONTROL A>;
-                )
-        ZMK_MACRO(combo2_macro, bindings
-                = <&macro_press &mt RIGHT_CONTROL B>
-                , <&macro_pause_for_release>
-                , <&macro_release &mt RIGHT_CONTROL B>;
-                )
-    };
-
     behaviors {
-        combo1: combo_trigger1{
-            compatible = "zmk,behavior-combo-trigger";
-            #binding-cells = <2>;
-            fallback-behavior = <&combo1_macro>;
+        arr: behavior_array {
+            compatible = "zmk,behavior-array";
+            #binding-cells = <1>;
+            bindings = <&mt LEFT_CONTROL A &mt RIGHT_CONTROL B &none>;
         };
-        combo2: combo_trigger2{
+        combo: combo_trigger1{
             compatible = "zmk,behavior-combo-trigger";
             #binding-cells = <2>;
-            fallback-behavior = <&combo2_macro>;
+            fallback-behavior = <&arr>;
         };
     };
 
@@ -55,16 +42,13 @@
 
         default_layer {
             bindings = <
-            &combo1 0 0 &combo2 1 0 &none &none
+            &combo 0 0 &combo 1 1 &combo 2 2 &combo 3 2
             >;
         };
     };
 };
 
 &kscan {
-    // There is an issue with the test setup where it exits
-    // before timeout of the second press
-    // The third
     events = <
     ZMK_MOCK_PRESS(0,0,0)
     ZMK_MOCK_PRESS(0,1,300)
