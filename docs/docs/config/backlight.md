@@ -3,7 +3,7 @@ title: Backlight Configuration
 sidebar_label: Backlight
 ---
 
-See the [backlight feature page](../features/backlight.md) for more details, and [hardware integration page](../development/hardware-integration/lighting/backlight.mdx) for adding backlight support to a board.
+See the [backlight feature page](../features/lighting.md#backlight) for more details, and [hardware integration page](../development/hardware-integration/lighting/backlight.mdx) for adding backlight support to a board.
 
 See [Configuration Overview](index.md) for instructions on how to change these settings.
 

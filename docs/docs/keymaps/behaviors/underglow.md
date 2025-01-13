@@ -5,7 +5,7 @@ sidebar_label: RGB Underglow
 
 ## Summary
 
-This page contains [RGB Underglow](../../features/underglow.md) behaviors supported by ZMK.
+This page contains [RGB Underglow](../../features/lighting.md#rgb-underglow) behaviors supported by ZMK.
 
 ## RGB Action Defines
 

@@ -3,7 +3,7 @@ title: RGB Underglow Configuration
 sidebar_label: RGB Underglow
 ---
 
-See the [RGB Underglow feature page](../features/underglow.md) for more details, and [hardware integration page](../development/hardware-integration/lighting/underglow.md) for adding underglow support to a board.
+See the [RGB Underglow feature page](../features/lighting.md#rgb-underglow) for more details, and [hardware integration page](../development/hardware-integration/lighting/underglow.md) for adding underglow support to a board.
 
 See [Configuration Overview](index.md) for instructions on how to change these settings.
 
