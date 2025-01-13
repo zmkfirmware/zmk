@@ -16,6 +16,9 @@ profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 23
 profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 28
 profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 30
 profile 0 <dbg> ble_central: discover_func: [SUBSCRIBED]
+profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 32
+profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 34
+profile 0 <dbg> ble_central: discover_func: [CONSUMER SUBSCRIBED]
 profile 0 <dbg> ble_central: notify_func: payload
 profile 0                    00 00 04 00 00 00 00 00                          |........
 profile 0 <dbg> ble_central: notify_func: payload
@@ -32,9 +35,10 @@ profile 1 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 23
 profile 1 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 28
 profile 1 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 30
 profile 1 <dbg> ble_central: discover_func: [SUBSCRIBED]
+profile 1 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 32
+profile 1 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 34
+profile 1 <dbg> ble_central: discover_func: [CONSUMER SUBSCRIBED]
 profile 1 <dbg> ble_central: notify_func: payload
 profile 1                    00 00 05 00 00 00 00 00                          |........
-profile 1 <dbg> ble_central: notify_func: payload
-profile 1                    00 00 00 00 00 00 00 00                          |........
 profile 1 <dbg> ble_central: notify_func: payload
 profile 1                    00 00 00 00 00 00 00 00                          |........
