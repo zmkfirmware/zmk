@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(COMBO_KP)
+    /omit-if-no-ref/
+#endif
+        combo_kp: combo_trigger_or_key_press {
+            compatible = "zmk,behavior-combo-trigger";
+            #binding-cells = <2>;
+            display-name = "Combo or Key Press";
+            fallback-behavior = <&kp>;
+        };
+    };
+};

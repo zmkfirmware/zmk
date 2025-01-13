@@ -14,13 +14,39 @@
         compatible = "zmk,combos";
         combo_one {
             timeout-ms = <100>;
-            key-positions = <0 2>;
+            triggers = <0 2>;
             bindings = <&kp Y>;
         };
         combo_two {
             timeout-ms = <100>;
-            key-positions = <1 3>;
+            triggers = <1 3>;
             bindings = <&kp Z>;
+        };
+    };
+
+    macros {
+        ZMK_MACRO(combo1_macro, bindings
+                = <&macro_press &mt LEFT_CONTROL A>
+                , <&macro_pause_for_release>
+                , <&macro_release &mt LEFT_CONTROL A>;
+                )
+        ZMK_MACRO(combo2_macro, bindings
+                = <&macro_press &mt RIGHT_CONTROL B>
+                , <&macro_pause_for_release>
+                , <&macro_release &mt RIGHT_CONTROL B>;
+                )
+    };
+
+    behaviors {
+        combo1: combo_trigger1{
+            compatible = "zmk,behavior-combo-trigger";
+            #binding-cells = <2>;
+            fallback-behavior = <&combo1_macro>;
+        };
+        combo2: combo_trigger2{
+            compatible = "zmk,behavior-combo-trigger";
+            #binding-cells = <2>;
+            fallback-behavior = <&combo2_macro>;
         };
     };
 
@@ -29,14 +55,16 @@
 
         default_layer {
             bindings = <
-            &mt LEFT_CONTROL A &mt RIGHT_CONTROL B
-            &none &none
+            &combo1 0 0 &combo2 1 0 &none &none
             >;
         };
     };
 };
 
 &kscan {
+    // There is an issue with the test setup where it exits
+    // before timeout of the second press
+    // The third
     events = <
     ZMK_MOCK_PRESS(0,0,0)
     ZMK_MOCK_PRESS(0,1,300)

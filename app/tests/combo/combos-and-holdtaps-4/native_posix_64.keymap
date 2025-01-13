@@ -8,7 +8,7 @@
     combos { \
         compatible = "zmk,combos"; \
         combo_ ## name { \
-            key-positions = <keypos>; \
+            triggers = <keypos>; \
             bindings = <combo_bindings>; \
             timeout-ms = <combo_term>; \
         }; \
@@ -20,14 +20,34 @@ ZMK_COMBO(dllr,  &kp DLLR,      1 3, 50)
 ZMK_COMBO(tilde, &kp TILDE,     3 4, 50)
 
 / {
+
+    macros {
+        ZMK_MACRO(combo_macro, bindings
+                = <&macro_press &mt LSHFT T>
+                , <&macro_pause_for_release>
+                , <&macro_release &mt LSHFT T>;
+                )
+    };
+
+    behaviors {
+        combo1: combo_trigger1{
+            compatible = "zmk,behavior-combo-trigger";
+            #binding-cells = <2>;
+            fallback-behavior = <&none>;
+        };
+        combo_n: combo_trigger2{
+            compatible = "zmk,behavior-combo-trigger";
+            #binding-cells = <2>;
+            fallback-behavior = <&combo_macro>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             bindings = <
-            &none         &none
-            &kp A         &mt LSHFT T
-            &none
+            &combo1 0 0 &combo1 1 0 &combo_kp 2 A &combo_n 3 0 &combo1 4 0
             >;
         };
     };
