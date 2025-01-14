@@ -18,6 +18,8 @@ enum zmk_split_transport_peripheral_event_type {
 };
 
 struct zmk_split_transport_peripheral_event {
+    enum zmk_split_transport_peripheral_event_type type;
+
     union {
         struct {
             uint8_t position;
@@ -44,8 +46,6 @@ struct zmk_split_transport_peripheral_event {
             uint8_t level;
         } battery_event;
     } data;
-
-    enum zmk_split_transport_peripheral_event_type type;
 } __packed;
 
 enum zmk_split_transport_central_command_type {
@@ -56,6 +56,8 @@ enum zmk_split_transport_central_command_type {
 } __packed;
 
 struct zmk_split_transport_central_command {
+    enum zmk_split_transport_central_command_type type;
+
     union {
         struct {
             char behavior_dev[16];
@@ -73,6 +75,4 @@ struct zmk_split_transport_central_command {
             zmk_hid_indicators_t indicators;
         } set_hid_indicators;
     } data;
-
-    enum zmk_split_transport_central_command_type type;
 } __packed;
