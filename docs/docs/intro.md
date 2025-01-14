@@ -28,17 +28,17 @@ Below table lists major features/capabilities currently supported in ZMK, as wel
 | [Support for a Wide Range of ARM Chips](https://docs.zephyrproject.org/3.5.0/boards/index.html) |   ✅    |
 | Support for AVR/8-Bit Chips                                                                     |   ❌    |
 
-| Connectivity                                                                 | Support |
-| ---------------------------------------------------------------------------- | :-----: |
-| Low-Latency BLE Support                                                      |   ✅    |
-| [Multi-Device Simultaneous BLE Connectivity](features/bluetooth.md#profiles) |   ✅    |
-| [USB Connectivity](keymaps/behaviors/outputs.md)                             |   ✅    |
+| Connectivity                                                    | Support |
+| --------------------------------------------------------------- | :-----: |
+| Low-Latency BLE Support                                         |   ✅    |
+| [Multi-Device BLE Connectivity](features/bluetooth.md#profiles) |   ✅    |
+| [USB Connectivity](keymaps/behaviors/outputs.md)                |   ✅    |
 
 | Keymap Features                                                                                                                                        | Support |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------ | :-----: |
 | [User Configuration Repositories](user-setup.mdx)                                                                                                      |   ✅    |
 | [Keymaps and Layers](keymaps/index.mdx)                                                                                                                |   ✅    |
-| [Wide Range of Keycodes Including Media and Consumer Codes](keymaps/list-of-keycodes.mdx)                                                              |   ✅    |
+| [Wide Range of Keycodes (Including Media and Consumer)](keymaps/list-of-keycodes.mdx)                                                                  |   ✅    |
 | [Hold-Taps](keymaps/behaviors/hold-tap.mdx) (including [Mod-Tap](keymaps/behaviors/mod-tap.md) and [Layer-Tap](keymaps/behaviors/layers.md#layer-tap)) |   ✅    |
 | [Tap-Dances](keymaps/behaviors/tap-dance.mdx)                                                                                                          |   ✅    |
 | [Sticky (One Shot) Keys](keymaps/behaviors/sticky-key.md)                                                                                              |   ✅    |
