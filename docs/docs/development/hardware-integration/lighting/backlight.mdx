@@ -1,45 +1,18 @@
 ---
 title: Backlight
 sidebar_label: Backlight
+description: Lighting system that controls an array of single-color LEDs.
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-Backlight is a feature used to control an array of LEDs, usually placed through or under switches.
-
-:::info
-Unlike [RGB Underglow](underglow.md), backlight can only control single color LEDs. Additionally, because backlight LEDs all receive the same power, it's not possible to dim individual LEDs.
-:::
-
-## Enabling Backlight
-
-To enable backlight on your board or shield, add the following line to your `.conf` file of your user config directory as such:
-
-```ini
-CONFIG_ZMK_BACKLIGHT=y
-```
-
-If your board or shield does not have backlight configured, refer to [Adding Backlight to a board or a shield](#adding-backlight-to-a-board-or-a-shield).
-
-## Configuring Backlight
-
-There are various Kconfig options used to configure the backlight feature. These can all be set in the `.conf` file.
-
-| Option                               | Description                                           | Default |
-| ------------------------------------ | ----------------------------------------------------- | ------- |
-| `CONFIG_ZMK_BACKLIGHT_BRT_STEP`      | Brightness step in percent                            | 20      |
-| `CONFIG_ZMK_BACKLIGHT_BRT_START`     | Default brightness in percent                         | 40      |
-| `CONFIG_ZMK_BACKLIGHT_ON_START`      | Default backlight state                               | y       |
-| `CONFIG_ZMK_BACKLIGHT_AUTO_OFF_IDLE` | Turn off backlight when keyboard goes into idle state | n       |
-| `CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB`  | Turn off backlight when USB is disconnected           | n       |
-
-## Adding Backlight to a Board or a Shield
+Please see [lighting feature page](../../../features/lighting.md#backlight) for an introduction on the feature.
 
 <Tabs
-defaultValue="shieldpin"
-values={[
-{label: 'Adding to a board', value: 'boardpin'},{label: 'Adding to a shield', value: 'shieldpin'},
+  defaultValue="shieldpin"
+  values={[
+  {label: 'Adding to a board', value: 'boardpin'},{label: 'Adding to a shield', value: 'shieldpin'},
 ]}>
 
 <TabItem value="boardpin">
@@ -59,8 +32,9 @@ endif # ZMK_BACKLIGHT
 ```
 
 Create a `<board>-pinctrl.dtsi` file if it does not already exist, and include it at the beginning of the `<board>.dts` file. `CONFIG_PINCTRL=y` must be added to `<board>_defconfig` if it isn't already enabled.
+See the documentation page on [pin control](../pinctrl.mdx) for detailed information on setting up pins for hardware protocols such as PWM that is used for controlling backlight LEDs.
 
-The pinctrl file has a `&pinctrl` node that encompasses all pinctrl settings, including I2C or SPI peripherals (e.g. WS2812 LEDs, Battery fuel gauges):
+The pinctrl file has a `&pinctrl` node that encompasses all pinctrl settings, including I2C or SPI peripherals (e.g. WS2812 LEDs, battery fuel gauges):
 
 ```dts
 &pinctrl {
@@ -160,6 +134,8 @@ Then add the following lines to your `.overlay` file:
     };
 };
 ```
+
+See the documentation page on [pin control](../pinctrl.mdx) for detailed information on setting up pins for hardware protocols such as PWM that is used for controlling backlight LEDs.
 
 Pin numbers are handled differently depending on the MCU. On nRF MCUs pins are configured using `(PWM_OUTX, Y, Z)`, where `X` is the PWM channel used (usually 0), `Y` is the first part of the hardware port (_PY.01_) and `Z` is the second part of the hardware port (_P1.Z_).
 
