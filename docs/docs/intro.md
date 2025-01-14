@@ -16,14 +16,17 @@ Below table lists major features/capabilities currently supported in ZMK, as wel
 
 | Hardware                                                                                        | Support |
 | ----------------------------------------------------------------------------------------------- | :-----: |
-| [Split Keyboards](features/split-keyboards.md)                                                  |   ✅    |
+| [Wireless Split Keyboards](features/split-keyboards.md)                                         |   ✅    |
+| Wired Split Keyboards                                                                           |   🚧    |
 | [Low Active Power Usage](/power-profiler)                                                       |   ✅    |
 | [Encoders](features/encoders.md)                                                                |   ✅    |
 | [LED-based Lighting](features/lighting.md)                                                      |   ✅    |
 | [Displays](features/displays.md)                                                                |   🚧    |
 | [Pointing Devices](features/pointing.md)                                                        |   ✅    |
+| Multitouch Touchpads (PTP)                                                                      |   🚧    |
 | [Low Power Sleep States](features/low-power-states.md)                                          |   ✅    |
-| [Low Power Mode (VCC Shutoff)](keymaps/behaviors/power.md)                                      |   ✅    |
+| [Low Power Mode (VCC Shutoff) for Peripherals](keymaps/behaviors/power.md)                      |   ✅    |
+| Improved Power Handling for Multiple Peripherals                                                |   🚧    |
 | [Battery Level Reporting](features/battery.md)                                                  |   ✅    |
 | [Support for a Wide Range of ARM Chips](https://docs.zephyrproject.org/3.5.0/boards/index.html) |   ✅    |
 | Support for AVR/8-Bit Chips                                                                     |   ❌    |
