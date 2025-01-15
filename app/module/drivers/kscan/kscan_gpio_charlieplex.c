@@ -445,7 +445,7 @@ static const struct kscan_driver_api kscan_charlieplex_api = {
         .charlieplex_state = kscan_charlieplex_state_##n,                                          \
     };                                                                                             \
                                                                                                    \
-    static struct kscan_charlieplex_config kscan_charlieplex_config_##n = {                        \
+    static const struct kscan_charlieplex_config kscan_charlieplex_config_##n = {                  \
         .cells = KSCAN_GPIO_LIST(kscan_charlieplex_cells_##n),                                     \
         .debounce_config =                                                                         \
             {                                                                                      \
