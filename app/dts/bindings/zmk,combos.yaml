@@ -21,6 +21,9 @@ child-binding:
     require-prior-idle-ms:
       type: int
       default: -1
+    require-prior-idle-ignore:
+      type: array
+      default: []
     slow-release:
       type: boolean
     layers:
