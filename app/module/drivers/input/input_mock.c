@@ -68,13 +68,10 @@ int input_mock_init(const struct device *dev) {
     return 0;
 }
 
-#define GET_EVENT(n, inst)                                                                         \
-    {}
-
 #define INPUT_MOCK_INST(n)                                                                         \
-    struct input_mock_data input_mock_data_##n = {};                                               \
-    const uint32_t mock_data_##n[] = DT_INST_PROP(n, events);                                      \
-    const struct input_mock_config input_mock_cfg_##n = {                                          \
+    static struct input_mock_data input_mock_data_##n = {};                                        \
+    static const uint32_t mock_data_##n[] = DT_INST_PROP(n, events);                               \
+    static const struct input_mock_config input_mock_cfg_##n = {                                   \
         .events = mock_data_##n,                                                                   \
         .events_len = DT_INST_PROP_LEN(n, events),                                                 \
         .startup_delay = DT_INST_PROP(n, event_startup_delay),                                     \
