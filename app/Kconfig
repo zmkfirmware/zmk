@@ -497,6 +497,10 @@ endif # ZMK_BLE || ZMK_SPLIT_BLE
 
 endmenu # Initialization Priorities
 
+config ZMK_PHYSICAL_LAYOUT_KEY_ROTATION
+    bool "Support rotation of keys in physical layouts"
+    default y
+
 menuconfig ZMK_KSCAN
     bool "ZMK KScan Integration"
     default y
