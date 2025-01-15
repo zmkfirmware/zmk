@@ -203,6 +203,12 @@ Each element of the `keys` array has the shape `<&key_physical_attrs w h x y r r
 
 The `key_physical_attrs` node is defined in [`dts/physical_layouts.dtsi`](https://github.com/zmkfirmware/zmk/blob/main/app/dts/physical_layouts.dtsi) and is mandatory.
 
+## Kconfig
+
+| Config                                    | Type | Description                                                   | Default |
+| ----------------------------------------- | ---- | ------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_PHYSICAL_LAYOUT_KEY_ROTATION` | bool | Whether to store/support key rotation information internally. | y       |
+
 ## Physical Layout Position Map
 
 Defines a mapping between [physical layouts](#physical-layout), allowing key mappings to be preserved in the same locations as previously when using [ZMK Studio](../features/studio.md). Read through the [page on physical layouts](../development/hardware-integration/physical-layouts.md) for more information.

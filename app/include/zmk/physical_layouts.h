@@ -21,9 +21,11 @@ struct zmk_key_physical_attrs {
     int16_t height;
     int16_t x;
     int16_t y;
+#if IS_ENABLED(CONFIG_ZMK_PHYSICAL_LAYOUT_KEY_ROTATION)
     int16_t rx;
     int16_t ry;
     int16_t r;
+#endif
 };
 
 struct zmk_physical_layout {
