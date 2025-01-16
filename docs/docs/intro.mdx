@@ -4,6 +4,8 @@ sidebar_label: Introduction
 slug: /
 ---
 
+import { Columns, Column } from "@site/src/components/columns";
+
 ZMK Firmware is an open source (MIT) keyboard firmware built on the [Zephyr™ Project](https://zephyrproject.org/) Real Time Operating System (RTOS).
 ZMK's goal is to provide a modern and powerful firmware that is designed for power-efficiency, flexibility, and broad hardware support.
 ZMK is capable of being used for both wired and wireless input devices.
@@ -12,8 +14,17 @@ ZMK is capable of being used for both wired and wireless input devices.
 
 Below table lists major features/capabilities currently supported in ZMK, as well as ones that are currently under development and not planned.
 
+<Columns>
+  <Column className="full-width-table">
+
 | Legend: | ✅ Supported | 🚧 Under Development | ❌ Not Planned |
 | :------ | :----------- | :------------------- | -------------- |
+
+  </Column>
+</Columns>
+
+<Columns>
+  <Column className="full-width-table">
 
 | Hardware                                                                                                      | Support |
 | ------------------------------------------------------------------------------------------------------------- | :-----: |
@@ -31,6 +42,9 @@ Below table lists major features/capabilities currently supported in ZMK, as wel
 | [Battery Level Reporting](features/battery.md)                                                                |   ✅    |
 | [Support for a Wide Range of 32-bit Microcontrollers](https://docs.zephyrproject.org/3.5.0/boards/index.html) |   ✅    |
 | Support for AVR/8-bit Chips                                                                                   |   ❌    |
+
+  </Column>
+  <Column className="full-width-table">
 
 | Connectivity                                                    | Support |
 | --------------------------------------------------------------- | :-----: |
@@ -51,6 +65,9 @@ Below table lists major features/capabilities currently supported in ZMK, as wel
 | [Macros](keymaps/behaviors/macros.md)                                                                                                                  |   ✅    |
 | [Mouse Keys](keymaps/behaviors/mouse-emulation.md)                                                                                                     |   ✅    |
 | [Realtime Keymap Updating](features/studio.md)                                                                                                         |   🚧    |
+
+  </Column>
+</Columns>
 
 ## Code of Conduct
 
