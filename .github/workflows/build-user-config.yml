@@ -1,4 +1,4 @@
-name: Reusable user config build
+name: Depreciated build workflow
 
 on:
   workflow_call:
@@ -25,103 +25,13 @@ on:
         type: string
 
 jobs:
-  matrix:
-    runs-on: ubuntu-latest
-    name: Fetch Build Keyboards
-    outputs:
-      build_matrix: ${{ env.build_matrix }}
+  error:
+    runs-on: ubuntu-24.04
+    name: Depreciation notice
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-            submodules: recursive
-
-      - name: Install yaml2json
-        run: python3 -m pip install remarshal
-
-      - name: Fetch Build Matrix
+      - name: "You must update your zmk-config (click for details)"
         run: |
-          echo "build_matrix=$(yaml2json ${{ inputs.build_matrix_path }} | jq -c .)" >> $GITHUB_ENV
-          yaml2json ${{ inputs.build_matrix_path }} | jq
-
-  build:
-    runs-on: ubuntu-latest
-    container:
-      image: zmkfirmware/zmk-build-arm:stable
-    needs: matrix
-    name: Build
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.matrix.outputs.build_matrix) }}
-    steps:
-      - name: Prepare variables
-        shell: sh -x {0}
-        run: |
-          if [ -n "${{ matrix.shield }}" ]
-          then
-            echo "extra_cmake_args=-DSHIELD=\"${{ matrix.shield }}\"" >> $GITHUB_ENV
-            echo "artifact_name=${{ matrix.shield }}-${{ matrix.board }}-zmk" >> $GITHUB_ENV
-            echo "display_name=${{ matrix.shield }} - ${{ matrix.board }}" >> $GITHUB_ENV
-          else
-            echo "extra_cmake_args=" >> $GITHUB_ENV
-            echo "artifact_name=${{ matrix.board }}-zmk" >> $GITHUB_ENV
-            echo "display_name=${{ matrix.board }}" >> $GITHUB_ENV
-          fi
-          echo "zephyr_version=${ZEPHYR_VERSION}" >> $GITHUB_ENV
-
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-            submodules: recursive
-
-      - name: Cache west modules
-        uses: actions/cache@v3.0.11
-        continue-on-error: true
-        env:
-          cache_name: cache-zephyr-${{ env.zephyr_version }}-modules
-        with:
-          path: |
-            modules/
-            tools/
-            zephyr/
-            bootloader/
-            zmk/
-          key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('**/west.yml', '**/build.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache_name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - name: West Init
-        run: west init -l ${{ inputs.config_path }}
-
-      - name: West Update
-        run: west update
-
-      - name: West Zephyr export
-        run: west zephyr-export
-
-      - name: West Build (${{ env.display_name }})
-        shell: sh -x {0}
-        run: west build -s zmk/app -b ${{ matrix.board }} -- -DZMK_CONFIG=${GITHUB_WORKSPACE}/${{ inputs.config_path }} ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
-
-      - name: ${{ env.display_name }} Kconfig file
-        run: grep -v -e "^#" -e "^$" build/zephyr/.config | sort
-
-      - name: Rename artifacts
-        shell: sh -x {0}
-        run: |
-          mkdir build/artifacts
-          if [ -f build/zephyr/zmk.uf2 ]
-          then
-            cp build/zephyr/zmk.uf2 "build/artifacts/${{ env.artifact_name }}.uf2"
-          elif [ -f build/zephyr/zmk.${{ inputs.fallback_binary }} ]
-          then
-            cp build/zephyr/zmk.${{ inputs.fallback_binary }} "build/artifacts/${{ env.artifact_name }}.${{ inputs.fallback_binary }}"
-          fi
-
-      - name: Archive (${{ env.display_name }})
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ inputs.archive_name }}
-          path: build/artifacts
+          echo "This action is deprecated."
+          echo "Please update '.github/workflows/build.yml' in your zmk-config repository with:"
+          echo "https://github.com/zmkfirmware/unified-zmk-config-template/blob/main/.github/workflows/build.yml"
+          exit 1
