@@ -55,7 +55,7 @@ Generally, if you intend to use ZMK Studio, then you should not make any further
 
 You can use ZMK Studio with Chrome/Edge at https://zmk.studio/.
 
-To use the native app for Linux, macOS, or Windows, download the appropriate file from the [latest release](https://github.com/zmkfirmware/zmk-studio/releases).
+To use the native app for Linux, macOS, or Windows, visit the [download page](https://zmk.studio/download).
 
 :::warning
 
