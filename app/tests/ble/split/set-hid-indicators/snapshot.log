@@ -1,4 +1,3 @@
-peripheral 0 OS build 702e50c58f67 ***
 peripheral 0 <inf> bt_hci_core: HW Platform: Nordic Semiconductor (0x0002)
 peripheral 0 <inf> bt_hci_core: HW Variant: nRF52x (0x0002)
 peripheral 0 <inf> bt_hci_core: Firmware: Standard Bluetooth controller (0x00) Version 3.5 Build 0
