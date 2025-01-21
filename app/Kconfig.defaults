@@ -44,7 +44,7 @@ config ZMK_RGB_UNDERGLOW_SAT_START
     default 100
 
 config ZMK_RGB_UNDERGLOW_BRT_START
-    default ZMK_RGB_UNDERGLOW_BRT_MAX
+    default 100
 
 config ZMK_RGB_UNDERGLOW_SPD_START
     default 3
