@@ -5,7 +5,7 @@ sidebar_label: Keymaps
 
 import KeymapExample from "../keymap-example.md";
 
-ZMK uses a declarative approach to keymaps, using the devicetree syntax to configure them in a `<keyboard>.keymap` file.
+ZMK uses a declarative approach to keymaps, using devicetree syntax to configure them in a `<keyboard>.keymap` file.
 This declarative configuration defines the key mappings, behaviors used within them and the configuration of certain features.
 These keymaps can then be updated dynamically/at runtime using the [ZMK Studio](../features/studio.md) feature,
 which allows keymap modifications over USB or BLE.
@@ -15,7 +15,7 @@ which allows keymap modifications over USB or BLE.
 All keyboard definitions (complete boards or shields) include the _default_ keymap for that keyboard,
 so ZMK can produce a "stock" firmware for that keyboard without any further modifications.
 When users complete the [user setup](../user-setup.mdx), the stock `.keymap` file is copied to the
-user config directory, using which users [customize](../customization.md) the keymap to their liking.
+user config directory, which can be used to [customize](../customization.md) the keymap to each user's liking.
 
 ## Behaviors
 
