@@ -89,7 +89,7 @@ static int get_report_cb(const struct device *dev, struct usb_setup_packet *setu
     case HID_REPORT_TYPE_INPUT:
         switch (setup->wValue & HID_GET_REPORT_ID_MASK) {
         case ZMK_HID_REPORT_ID_KEYBOARD: {
-            *data = get_keyboard_report(len);
+            *data = get_keyboard_report((size_t *)len);
             break;
         }
         case ZMK_HID_REPORT_ID_CONSUMER: {
