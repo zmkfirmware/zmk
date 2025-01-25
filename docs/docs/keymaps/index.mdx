@@ -5,22 +5,17 @@ sidebar_label: Keymaps
 
 import KeymapExample from "../keymap-example.md";
 
-ZMK uses a declarative approach to keymaps instead of using C code for all keymap configuration.
-Right now, ZMK uses the devicetree syntax to declare those keymaps; future work is envisioned for
-supporting dynamic loading of declarative keymaps, e.g. over USB Mass Storage or via a custom BLE
-service.
+ZMK uses a declarative approach to keymaps, using devicetree syntax to configure them in a `<keyboard>.keymap` file.
+This declarative configuration defines the key mappings, behaviors used within them and the configuration of certain features.
+These keymaps can then be updated dynamically/at runtime using the [ZMK Studio](../features/studio.md) feature,
+which allows keymap modifications over USB or BLE.
 
-:::note
-For advanced users looking to implement custom behaviors for their keymaps, this will be possible
-in the future by allowing user configs to add to the CMake application built by Zephyr.
-:::
-
-## Big Picture
+## Stock and User Keymaps
 
 All keyboard definitions (complete boards or shields) include the _default_ keymap for that keyboard,
-so ZMK can produce a "stock" firmware for that keyboard without any further modifications. For users
-looking to customize their keyboard's behavior, they can copy the stock `.keymap` file into their
-user config directory, and customize the keymap to their liking.
+so ZMK can produce a "stock" firmware for that keyboard without any further modifications.
+When users complete the [user setup](../user-setup.mdx), the stock `.keymap` file is copied to the
+user config directory, which can be used to [customize](../customization.md) the keymap to each user's liking.
 
 ## Behaviors
 
@@ -40,7 +35,7 @@ Like many mechanical keyboard firmwares, ZMK keymaps are composed of a collectio
 minimum of at least one layer that is the default, usually near the bottom of the "layer stack". Each layer
 in ZMK contains a set of bindings that bind a certain behavior to a certain key position in that layer.
 
-|                                                   ![Diagram of three layers](../assets/features/keymaps/layer-diagram.png)                                                    |
+|                                                        ![Diagram of three layers](../assets/keymaps/layer-diagram.png)                                                        |
 | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | _A simplified diagram showing three layers. The layout of each layer is the same (they all contain four keys), but the behavior bindings within each layer can be different._ |
 
