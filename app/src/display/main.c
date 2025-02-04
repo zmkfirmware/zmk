@@ -56,13 +56,17 @@ K_TIMER_DEFINE(display_timer, display_timer_cb, NULL);
 
 void unblank_display_cb(struct k_work *work) {
     display_blanking_off(display);
+#if !IS_ENABLED(CONFIG_ARCH_POSIX)
     k_timer_start(&display_timer, K_MSEC(TICK_MS), K_MSEC(TICK_MS));
+#endif // !IS_ENABLED(CONFIG_ARCH_POSIX)
 }
 
 #if IS_ENABLED(CONFIG_ZMK_DISPLAY_BLANK_ON_IDLE)
 
 void blank_display_cb(struct k_work *work) {
+#if !IS_ENABLED(CONFIG_ARCH_POSIX)
     k_timer_stop(&display_timer);
+#endif // !IS_ENABLED(CONFIG_ARCH_POSIX)
     display_blanking_on(display);
 }
 K_WORK_DEFINE(blank_display_work, blank_display_cb);
@@ -132,7 +136,11 @@ int zmk_display_init() {
                        CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY, NULL);
 #endif
 
+#if IS_ENABLED(CONFIG_ARCH_POSIX)
+    initialize_display(NULL);
+#else
     k_work_submit_to_queue(zmk_display_work_q(), &init_work);
+#endif
 
     LOG_DBG("");
     return 0;
