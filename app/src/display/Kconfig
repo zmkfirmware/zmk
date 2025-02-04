@@ -5,7 +5,7 @@ menuconfig ZMK_DISPLAY
     bool "Enable ZMK Display"
     select DISPLAY
     select LVGL
-    select LV_CONF_MINIMAL
+    imply LV_CONF_MINIMAL
 
 if ZMK_DISPLAY
 
