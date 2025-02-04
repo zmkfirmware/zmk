@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2023 The ZMK Contributors
+# Copyright (c) 2025 Homerow
 # SPDX-License-Identifier: MIT
 #
 

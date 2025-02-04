@@ -8,7 +8,6 @@
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
 
-/*#include <dt-bindings/led/led.h>*/
 #include <dt-bindings/zmk/matrix_transform.h>
 
 #include "radiata-layouts.dtsi"
@@ -26,11 +25,9 @@
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        /*zmk,backlight = &backlight;
         zmk,battery = &vbatt;*/
         zmk,physical-layout = &physical_layout0;
         zmk,kscan = &kscan0;
-        /*zmk,underglow = &led_strip;*/
     };
 
     matrix_transform0: keymap_transform_0 {
@@ -55,42 +52,11 @@
 
         // >;
     };
-/*
-    // Node name must match original "EXT_POWER" label to preserve user settings.
-    EXT_POWER {
-        compatible = "zmk,ext-power-generic";
-        control-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
-    };
 
     vbatt: vbatt {
-        compatible = "zmk,battery-voltage-divider";
-        io-channels = <&adc 2>;
-        output-ohms = <100000>;
-        full-ohms = <(100000 + 100000)>;
+        compatible = "zmk,battery-nrf-vddh";
     };
-
-    backlight: pwmleds {
-        compatible = "pwm-leds";
-        pwm_led_0 {
-            pwms = <&pwm0 0 10000 PWM_POLARITY_NORMAL>;
-        };
-    };
-
-*/
 };
-
-/*
-&pwm0 {
-    status = "okay";
-    pinctrl-0 = <&pwm0_default>;
-    pinctrl-1 = <&pwm0_sleep>;
-    pinctrl-names = "default", "sleep";
-};
-
-&adc {
-    status = "okay";
-};
-*/
 
 &gpiote {
     status = "okay";
@@ -143,29 +109,3 @@ zephyr_udc0: &usbd {
         };
     };
 };
-
-
-// &spi3 {
-//     compatible = "nordic,nrf-spim";
-//     status = "okay";
-//     pinctrl-0 = <&spi3_default>;
-//     pinctrl-1 = <&spi3_sleep>;
-//     pinctrl-names = "default", "sleep";
-
-//     led_strip: ws2812@0 {
-//         compatible = "worldsemi,ws2812-spi";
-
-//         /* SPI */
-//         reg = <0>;
-//         spi-max-frequency = <4000000>;
-
-//         /* WS2812 */
-//         chain-length = <3>; /* number of LEDs */
-//         spi-one-frame = <0x70>;
-//         spi-zero-frame = <0x40>;
-
-//         color-mapping = <LED_COLOR_ID_GREEN
-//                         LED_COLOR_ID_RED
-//                         LED_COLOR_ID_BLUE>;
-//     };
-// };
