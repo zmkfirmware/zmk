@@ -25,17 +25,18 @@ A set of predefined input processors is available by adding the following at the
 
 Once included, you can use the following:
 
-| Binding                    | Processor                                                    | Description                                                         |
-| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------- |
-| `&zip_xy_scaler`           | [XY Scaler](scaler.md#pre-defined-instances)                 | Scale a the X/Y input events using a multiplier and divisor         |
-| `&zip_x_scaler`            | [X Scaler](scaler.md#pre-defined-instances)                  | Scale a the X input events using a multiplier and divisor           |
-| `&zip_y_scaler`            | [Y Scaler](scaler.md#pre-defined-instances)                  | Scale a the Y input events using a multiplier and divisor           |
-| `&zip_xy_transform`        | [XY Transform](transformer.md#pre-defined-instances)         | Transform X/Y values, e.g. inverting or swapping                    |
-| `&zip_scroll_transform`    | [Scroll Transform](transformer.md#pre-defined-instances)     | Transform wheel/horizontal wheel values, e.g. inverting or swapping |
-| `&zip_xy_to_scroll_mapper` | [XY To Scroll Mapper](code-mapper.md#pre-defined-instances)  | Map X/Y values to scroll wheel/horizontal wheel events              |
-| `&zip_xy_swap_mapper`      | [XY Swap Mapper](code-mapper.md#pre-defined-instances)       | Swap X/Y values                                                     |
-| `&zip_temp_layer`          | [Temporary Layer](temp-layer.md#pre-defined-instances)       | Temporarily enable a layer during pointer use                       |
-| `&zip_button_behaviors`    | [Mouse Button Behaviors](behaviors.md#pre-defined-instances) | Trigger behaviors when certain mouse buttons are pressed            |
+| Binding                    | Processor                                                    | Description                                                              |
+| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| `&zip_xy_scaler`           | [XY Scaler](scaler.md#pre-defined-instances)                 | Scale the X/Y input events using a multiplier and divisor                |
+| `&zip_x_scaler`            | [X Scaler](scaler.md#pre-defined-instances)                  | Scale the X input events using a multiplier and divisor                  |
+| `&zip_y_scaler`            | [Y Scaler](scaler.md#pre-defined-instances)                  | Scale the Y input events using a multiplier and divisor                  |
+| `&zip_scroll_scaler`       | [Scroll Scaler](scaler.md#pre-defined-instances)             | Scale wheel/horizontal wheel input events using a multiplier and divisor |
+| `&zip_xy_transform`        | [XY Transform](transformer.md#pre-defined-instances)         | Transform X/Y values, e.g. inverting or swapping                         |
+| `&zip_scroll_transform`    | [Scroll Transform](transformer.md#pre-defined-instances)     | Transform wheel/horizontal wheel values, e.g. inverting or swapping      |
+| `&zip_xy_to_scroll_mapper` | [XY To Scroll Mapper](code-mapper.md#pre-defined-instances)  | Map X/Y values to scroll wheel/horizontal wheel events                   |
+| `&zip_xy_swap_mapper`      | [XY Swap Mapper](code-mapper.md#pre-defined-instances)       | Swap X/Y values                                                          |
+| `&zip_temp_layer`          | [Temporary Layer](temp-layer.md#pre-defined-instances)       | Temporarily enable a layer during pointer use                            |
+| `&zip_button_behaviors`    | [Mouse Button Behaviors](behaviors.md#pre-defined-instances) | Trigger behaviors when certain mouse buttons are pressed                 |
 
 ### User-Defined Processors
 
