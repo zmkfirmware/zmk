@@ -1,25 +1,17 @@
 #
-# Copyright (c) 2023 The ZMK Contributors
+# Copyright (c) 2025 Homerow
 # SPDX-License-Identifier: MIT
 #
 
 if BOARD_RADIATA_LEFT
 
 config ZMK_KEYBOARD_NAME
-    default "Radiata left"
+    default "Radiata"
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
 endif # BOARD_RADIATA_LEFT
-
-if BOARD_RADIATA_RIGHT
-
-config ZMK_KEYBOARD_NAME
-    default "Radiata right"
-
-endif # BOARD_RADIATA_RIGHT
-
 
 if BOARD_RADIATA_LEFT || BOARD_RADIATA_RIGHT
 
@@ -28,10 +20,6 @@ config BOARD
 
 config ZMK_SPLIT
     default y
-
-config SPI
-    bool
-    default n
 
 config BT_CTLR
     default BT
@@ -45,9 +33,6 @@ config USB_DEVICE_STACK
     default y
 
 endif # USB
-
-config ZMK_BATTERY_VOLTAGE_DIVIDER
-    default n
 
 config SPI
     default n
