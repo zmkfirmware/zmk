@@ -6,8 +6,6 @@ url: https://github.com/mircopergreffi
 arch: arm
 features:
   - keys
-  # - underglow
-  # - backlight
   - studio
 outputs:
   - usb
