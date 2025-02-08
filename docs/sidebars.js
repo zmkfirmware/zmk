@@ -212,6 +212,7 @@ module.exports = {
         "development/devicetree",
         "development/studio-rpc-protocol",
         "development/new-behavior",
+        "development/events",
       ],
     },
   ],
