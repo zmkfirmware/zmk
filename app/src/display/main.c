@@ -13,6 +13,7 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zephyr/drivers/display.h>
+#include <zephyr/drivers/led.h>
 #include <lvgl.h>
 
 #include "theme.h"
@@ -22,6 +23,14 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/display/status_screen.h>
 
 static const struct device *display = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
+
+#if DT_HAS_CHOSEN(zmk_display_led)
+
+static const struct device *display_led = DEVICE_DT_GET(DT_PARENT(DT_CHOSEN(zmk_display_led)));
+static const uint8_t display_led_idx = DT_NODE_CHILD_IDX(DT_CHOSEN(zmk_display_led));
+
+#endif
+
 static bool initialized = false;
 
 static lv_obj_t *screen;
@@ -55,6 +64,9 @@ void display_timer_cb() { k_work_submit_to_queue(zmk_display_work_q(), &display_
 K_TIMER_DEFINE(display_timer, display_timer_cb, NULL);
 
 void unblank_display_cb(struct k_work *work) {
+#if DT_HAS_CHOSEN(zmk_display_led)
+    led_on(display_led, display_led_idx);
+#endif
     display_blanking_off(display);
 #if !IS_ENABLED(CONFIG_ARCH_POSIX)
     k_timer_start(&display_timer, K_MSEC(TICK_MS), K_MSEC(TICK_MS));
@@ -68,6 +80,9 @@ void blank_display_cb(struct k_work *work) {
     k_timer_stop(&display_timer);
 #endif // !IS_ENABLED(CONFIG_ARCH_POSIX)
     display_blanking_on(display);
+#if DT_HAS_CHOSEN(zmk_display_led)
+    led_off(display_led, display_led_idx);
+#endif
 }
 K_WORK_DEFINE(blank_display_work, blank_display_cb);
 K_WORK_DEFINE(unblank_display_work, unblank_display_cb);

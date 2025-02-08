@@ -62,3 +62,12 @@ See the Devicetree bindings for your display. Here are the bindings for common d
 - [SSD1306 (spi)](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/display/solomon,ssd1306fb-spi.html)
 
 A full list of drivers provided by Zephyr can be found in [Zephyr's Devicetree bindings index](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings.html).
+
+### Chosen nodes
+
+Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)
+
+| Property          | Type | Description                                                                                              |
+| ----------------- | ---- | -------------------------------------------------------------------------------------------------------- |
+| `zephyr,display`  | path | The display device to use.                                                                               |
+| `zmk,display-led` | path | The LED device to use for on/off blanking, if the hardware requires it. Can be a PWM or GPIO LED device. |
