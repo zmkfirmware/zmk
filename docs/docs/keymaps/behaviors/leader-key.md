@@ -39,4 +39,4 @@ To change the timeout term, you can update the existing behavior:
 
 #### `timerless`
 
-By default, the leader key will have a timeout, and will not wait for a sequence to be completed or another key to be pressed. Specify `timerless` if you want a timeout.
+By default, the leader key will have a timeout, and will not wait for a sequence to be completed or another key to be pressed. Specify `timerless` if you don't want a timeout.
