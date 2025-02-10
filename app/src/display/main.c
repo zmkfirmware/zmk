@@ -39,8 +39,6 @@ __attribute__((weak)) lv_obj_t *zmk_display_status_screen() { return NULL; }
 
 void display_tick_cb(struct k_work *work) { lv_task_handler(); }
 
-#define TICK_MS 10
-
 K_WORK_DEFINE(display_tick_work, display_tick_cb);
 
 #if IS_ENABLED(CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED)
@@ -69,7 +67,8 @@ void unblank_display_cb(struct k_work *work) {
 #endif
     display_blanking_off(display);
 #if !IS_ENABLED(CONFIG_ARCH_POSIX)
-    k_timer_start(&display_timer, K_MSEC(TICK_MS), K_MSEC(TICK_MS));
+    k_timer_start(&display_timer, K_MSEC(CONFIG_ZMK_DISPLAY_TICK_PERIOD_MS),
+                  K_MSEC(CONFIG_ZMK_DISPLAY_TICK_PERIOD_MS));
 #endif // !IS_ENABLED(CONFIG_ARCH_POSIX)
 }
 

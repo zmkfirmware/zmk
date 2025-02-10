@@ -13,6 +13,10 @@ config ZMK_DISPLAY_BLANK_ON_IDLE
     bool "Blank display on idle"
     default y if SSD1306
 
+config ZMK_DISPLAY_TICK_PERIOD_MS
+    int "Period (in ms) between display task execution"
+    default 10
+
 if LV_USE_THEME_MONO
 
 config ZMK_DISPLAY_INVERT
