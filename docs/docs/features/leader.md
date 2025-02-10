@@ -36,4 +36,4 @@ Key positions are numbered like the keys in your keymap, starting at 0. So, if t
 
 ### Advanced usage
 
-See [leader configuration](/docs/config/leader) for advanced configuration options.
+See [leader configuration](/docs/docs/config/leader.md) for advanced configuration options.
