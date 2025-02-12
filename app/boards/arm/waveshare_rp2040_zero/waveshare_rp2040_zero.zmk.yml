@@ -1,0 +1,9 @@
+file_format: "1"
+id: waveshare_rp2040_zero
+name: RP2040-Zero
+type: board
+arch: arm
+outputs:
+  - usb
+url: https://www.waveshare.com/rp2040-zero.htm
+exposes: [waveshare_rp2040_zero]
