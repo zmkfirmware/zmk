@@ -21,9 +21,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-// TODO: Active transport selection
-
-struct zmk_split_transport_central *active_transport;
+const struct zmk_split_transport_central *active_transport;
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
 
@@ -165,10 +163,65 @@ int zmk_split_central_get_peripheral_battery_level(uint8_t source, uint8_t *leve
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
 
-static int central_init(void) {
-    STRUCT_SECTION_GET(zmk_split_transport_central, 0, &active_transport);
+static int select_first_available_transport(void) {
+    // Transports are sorted by priority, so find the first
+    // One that's available, and enable it. Any transport that
+    // Doesn't support `get_status` is assumed to be always
+    // available and fully connected.
+    STRUCT_SECTION_FOREACH(zmk_split_transport_central, t) {
+        if (!t->api->get_status || t->api->get_status().available) {
+
+            if (active_transport == t) {
+                LOG_DBG("First available is already selected, moving on");
+                return 0;
+            }
+
+            if (active_transport && active_transport->api->set_enabled) {
+                int err = active_transport->api->set_enabled(false);
+                if (err < 0) {
+                    LOG_WRN("Error disabling previously selected split transport (%d)", err);
+                }
+            }
+
+            active_transport = t;
+            int err = 0;
+            if (active_transport->api->set_enabled) {
+                err = active_transport->api->set_enabled(true);
+            }
+
+            return err;
+        }
+    }
+
+    return -ENODEV;
+}
+
+static int transport_status_changed_cb(const struct zmk_split_transport_central *central,
+                                       struct zmk_split_transport_status status) {
+    if (central == active_transport) {
+        LOG_DBG("Central at %p changed status: enabled %d, available %d, connections %d", central,
+                status.enabled, status.available, status.connections);
+        if (status.connections == ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_DISCONNECTED) {
+            return select_first_available_transport();
+        }
+    } else {
+        // Just to be sure, in case a higher priority transport becomes available
+        select_first_available_transport();
+    }
 
     return 0;
+}
+
+static int central_init(void) {
+    STRUCT_SECTION_FOREACH(zmk_split_transport_central, t) {
+        if (!t->api->set_status_callback) {
+            continue;
+        }
+
+        t->api->set_status_callback(transport_status_changed_cb);
+    }
+
+    return select_first_available_transport();
 }
 
 SYS_INIT(central_init, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
