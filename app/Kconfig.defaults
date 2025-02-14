@@ -1,6 +1,10 @@
 # Copyright (c) 2024 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+config SYSTEM_WORKQUEUE_STACK_SIZE
+    default 2048 if SOC_RP2040
+    default 2048 if ZMK_BLE
+
 # HID
 if ZMK_HID_REPORT_TYPE_HKRO
 
