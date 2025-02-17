@@ -489,11 +489,13 @@ If all of your physical layouts use the same `kscan` node under the hood, you ca
 
 Each keyboard should provide a default keymap to be used when building the firmware, which can be overridden and customized by user configs.
 For "shield keyboards", this should be placed in the `boards/shields/my_keyboard/my_keyboard.keymap` file.
-The keymap is configured as an additional devicetree overlay that includes the following:
 
 Here is an example simple keymap for a 3x3 macropad, with only one layer:
 
 ```dts title="my_keyboard.keymap"
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
 / {
     keymap {
         compatible = "zmk,keymap";
