@@ -448,12 +448,38 @@ Also see the [matrix transform section](../../config/layout.md#matrix-transform)
 ### Physical Layout
 
 Your keyboard will need to have a physical layout defined.
-Read through our [dedicated page on physical layouts](./physical-layouts.md) for information on how to define a physical layout.
-Once you have finished creating your physical layout, you should import the file in which it was created:
+Physical layouts organize the matrix transform, kscan and optionally the physical description of key positions in a single entity.
+
+<Tabs groupId="physical-layouts" defaultValue="basic">
+  <TabItem value="basic" label="Basic">
+
+If you are not planning to add support for [ZMK Studio](../../features/studio.md), you can add a `zmk,physical-layout`-compatible node for each physical layout your keyboard supports:
+
+```dts
+/ {
+    physical_layout0: physical_layout_0 { // First physical layout, use different naming for other layouts
+        compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
+        kscan = <&kscan0>; // Label of the kscan node, optional if all layouts use the same
+        transform = <&default_transform>; // Label of the matrix transform for this layout
+    };
+};
+```
+
+These nodes should be placed in `my_keyboard.overlay` for unibody keyboards and the shared `my_keyboard.dtsi` for splits.
+
+  </TabItem>
+  <TabItem value="studio" label="With ZMK Studio Support">
+
+If you are planning to add support for [ZMK Studio](../../features/studio.md), you should follow the [physical layouts documentation](physical-layouts.md) to create a new file `my_keyboard-layouts.dtsi` which includes the physical layout definitions.
+Once you have finished defining your physical layouts, import the `my_keyboard-layouts.dtsi` file at the top of your `my_keyboard.overlay` file (unibody) or `my_keyboard.dtsi` file (split).
 
 ```dts
 #include "my_keyboard-layouts.dtsi"
 ```
+
+  </TabItem>
+</Tabs>
 
 ### Chosen Node
 
