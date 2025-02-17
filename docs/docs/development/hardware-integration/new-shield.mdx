@@ -46,7 +46,7 @@ This guide will walk through the steps necessary to add ZMK support for a keyboa
 
 The high level steps are:
 
-- Create a new [Zephyr module](https://docs.zephyrproject.org/3.5.0/develop/modules.html) to contain your shield.
+- Create a new [ZMK module](../module-creation.md) to contain your shield.
 - Create a new shield directory.
 - Add the base Kconfig files.
 - Add the shield overlay file defining:
@@ -61,9 +61,9 @@ Many of the above files will differ depending on whether your keyboard is a unib
 After adding ZMK support for a basic shield using this guide, check the sidebar for guides on adding any additional features (such as encoders) that your keyboard has.
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
-## New Zephyr Module Repository
+## New ZMK Module Repository
 
-The first step to creating the shield is to create a new Zephyr module repository from a template.
+The first step to creating the shield is to create a new ZMK module repository from a template.
 
 :::note
 This guide assumes you already have a configured GitHub account. If you don't yet have one, go ahead and [sign up](https://github.com/join) before continuing.
@@ -81,13 +81,14 @@ Follow these steps to create your new repository:
 - Click the green "Create repository" button
 
 The repository is a combination of the directories and files required of a ZMK config, and those required of a shield module.
-To create a shield module, the following components are needed:
+This enables the use of GitHub Actions to test that the shield is defined correctly.
+See also the page on [module creation](../module-creation.md) for a reference on exactly which file structure and files are required for a ZMK keyboard module.
 
-- The `boards/shields` directory, where the keyboard's files will go
-- The `zephyr/module.yml` file, which identifies and describes the module. See the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/develop/modules.html#module-yaml-file-description) for details on customising this file. For the purposes of creating a shield module, the default found in the template can be left untouched.
+We recommend that you take this moment to name your module according to our [convention](../module-creation.md), i.e. your `zephyr/module.yml` file should begin with
 
-Neither of these should be moved out of their parent directory.
-The other files and directories such as `config` are not necessary for the purposes of a shield module, but rather intended to be used for user configuration and testing.
+```yaml title="zephyr/module.yml"
+name: zmk-keyboard-<keyboard_name>
+```
 
 ## New Shield Directory
 
