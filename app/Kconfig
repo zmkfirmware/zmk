@@ -238,6 +238,11 @@ config BT_PERIPHERAL_PREF_LATENCY
 config BT_PERIPHERAL_PREF_TIMEOUT
     default 400
 
+# The device name should be 16 characters or less so it fits within the
+# advertising data.
+config BT_DEVICE_NAME_MAX
+    default 16
+
 endif # ZMK_BLE
 
 endmenu # Output Types
