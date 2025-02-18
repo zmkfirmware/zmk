@@ -81,7 +81,10 @@ enum behavior_locality {
     BEHAVIOR_LOCALITY_GLOBAL
 };
 
+enum behavior_type { BEHAVIOR_TYPE_CONTROL_FLOW, BEHAVIOR_TYPE_ACTION };
+
 __subsystem struct behavior_driver_api {
+    enum behavior_type type;
     enum behavior_locality locality;
     behavior_keymap_binding_callback_t binding_convert_central_state_dependent_params;
     behavior_keymap_binding_callback_t binding_pressed;
@@ -310,6 +313,27 @@ static inline int z_impl_behavior_get_locality(const struct device *behavior,
 
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)behavior->api;
     *locality = api->locality;
+
+    return 0;
+}
+
+/**
+ * @brief Determine what type the behavior is
+ * @param behavior Pointer to the device structure for the driver instance.
+ *
+ * @retval Zero if successful.
+ * @retval Negative errno code if failure.
+ */
+__syscall int behavior_get_type(const struct device *behavior, enum behavior_type *type);
+
+static inline int z_impl_behavior_get_type(const struct device *behavior,
+                                           enum behavior_type *type) {
+    if (behavior == NULL) {
+        return -EINVAL;
+    }
+
+    const struct behavior_driver_api *api = (const struct behavior_driver_api *)behavior->api;
+    *type = api->type;
 
     return 0;
 }

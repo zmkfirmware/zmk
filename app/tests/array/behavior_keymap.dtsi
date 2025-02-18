@@ -1,0 +1,32 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        arr: behavior_array {
+            compatible = "zmk,behavior-array";
+            #binding-cells = <1>;
+            bindings = <&mt LEFT_SHIFT A &kp B &kp C &gresc>;
+        };
+
+        ht_bal: behavior_hold_tap_balanced {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            bindings = <&arr>, <&arr>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &arr 0 &arr 1
+                &ht_bal 2 3 &arr 3
+            >;
+        };
+    };
+};

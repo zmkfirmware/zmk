@@ -12,8 +12,22 @@
         compatible = "zmk,combos";
         combo_two {
             timeout-ms = <100>;
-            key-positions = <0 1>;
+            triggers = <0 1>;
             bindings = <&kp Y>;
+        };
+    };
+
+    behaviors {
+        arr: behavior_array {
+            compatible = "zmk,behavior-array";
+            #binding-cells = <1>;
+            bindings = <&mt LEFT_CONTROL A>;
+        };
+        combo: combo_trigger_with_array {
+            compatible = "zmk,behavior-combo-trigger";
+            #binding-cells = <2>;
+            display-name = "Combo or Mod Tap";
+            fallback-behavior = <&arr>;
         };
     };
 
@@ -22,7 +36,7 @@
 
         default_layer {
             bindings = <
-                &mt LEFT_CONTROL A &kp B
+                &combo 0 0 &combo_kp 1 B
                 &kp C &none
             >;
         };

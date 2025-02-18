@@ -1,0 +1,13 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Combo Trigger
+
+compatible: "zmk,behavior-combo-trigger"
+
+include: two_param.yaml
+
+properties:
+  fallback-behavior:
+    type: phandle
+    required: true

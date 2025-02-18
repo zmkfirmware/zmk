@@ -13,6 +13,7 @@
 #include <zmk/keymap.h>
 #include <zmk/matrix.h>
 #include <zmk/event_manager.h>
+#include <zmk/events/action_behavior_triggered.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/hid.h>
@@ -34,7 +35,10 @@ struct behavior_tap_dance_config {
 struct active_tap_dance {
     // Tap Dance Data
     int counter;
-    uint32_t position;
+    // First position is the "proper" position.
+    // All others are to track tap-dances inside of combos correctly
+    uint32_t positions[CONFIG_ZMK_COMBO_MAX_TRIGGERS_PER_COMBO + 1];
+    uint8_t positions_len;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
     uint8_t source;
 #endif
@@ -51,11 +55,24 @@ struct active_tap_dance {
     struct k_work_delayable release_timer;
 };
 
+uint32_t potential_positions[CONFIG_ZMK_COMBO_MAX_TRIGGERS_PER_COMBO] = {};
+uint8_t potential_positions_len = 0;
+
+static inline int add_to_potential_positions(uint32_t position) {
+    if (potential_positions_len == CONFIG_ZMK_COMBO_MAX_TRIGGERS_PER_COMBO) {
+        LOG_ERR("tap dance: Failed to store potential tap dance position %d", position);
+        return -ENOMEM;
+    }
+    potential_positions[potential_positions_len++] = position;
+    return 0;
+}
+
 struct active_tap_dance active_tap_dances[ZMK_BHV_TAP_DANCE_MAX_HELD] = {};
 
 static struct active_tap_dance *find_tap_dance(uint32_t position) {
     for (int i = 0; i < ZMK_BHV_TAP_DANCE_MAX_HELD; i++) {
-        if (active_tap_dances[i].position == position && !active_tap_dances[i].timer_cancelled) {
+        if (active_tap_dances[i].positions[0] == position &&
+            !active_tap_dances[i].timer_cancelled) {
             return &active_tap_dances[i];
         }
     }
@@ -65,11 +82,12 @@ static struct active_tap_dance *find_tap_dance(uint32_t position) {
 static int new_tap_dance(struct zmk_behavior_binding_event *event,
                          const struct behavior_tap_dance_config *config,
                          struct active_tap_dance **tap_dance) {
+
     for (int i = 0; i < ZMK_BHV_TAP_DANCE_MAX_HELD; i++) {
         struct active_tap_dance *const ref_dance = &active_tap_dances[i];
-        if (ref_dance->position == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
+        if (ref_dance->positions[0] == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
             ref_dance->counter = 0;
-            ref_dance->position = event->position;
+            ref_dance->positions[0] = event->position;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
             ref_dance->source = event->source;
 #endif
@@ -79,6 +97,11 @@ static int new_tap_dance(struct zmk_behavior_binding_event *event,
             ref_dance->timer_started = true;
             ref_dance->timer_cancelled = false;
             ref_dance->tap_dance_decided = false;
+            for (int i = 1; i < potential_positions_len + 1; i++) {
+                ref_dance->positions[i] = potential_positions[i];
+            }
+            ref_dance->positions_len = 1 + potential_positions_len;
+            potential_positions_len = 0;
             *tap_dance = ref_dance;
             return 0;
         }
@@ -87,7 +110,7 @@ static int new_tap_dance(struct zmk_behavior_binding_event *event,
 }
 
 static void clear_tap_dance(struct active_tap_dance *tap_dance) {
-    tap_dance->position = ZMK_BHV_TAP_DANCE_POSITION_FREE;
+    tap_dance->positions[0] = ZMK_BHV_TAP_DANCE_POSITION_FREE;
 }
 
 static int stop_timer(struct active_tap_dance *tap_dance) {
@@ -105,7 +128,7 @@ static void reset_timer(struct active_tap_dance *tap_dance,
     int32_t ms_left = tap_dance->release_at - k_uptime_get();
     if (ms_left > 0) {
         k_work_schedule(&tap_dance->release_timer, K_MSEC(ms_left));
-        LOG_DBG("Successfully reset timer at position %d", tap_dance->position);
+        LOG_DBG("Successfully reset timer at position %d", tap_dance->positions[0]);
     }
 }
 
@@ -113,7 +136,7 @@ static inline int press_tap_dance_behavior(struct active_tap_dance *tap_dance, i
     tap_dance->tap_dance_decided = true;
     struct zmk_behavior_binding binding = tap_dance->config->behaviors[tap_dance->counter - 1];
     struct zmk_behavior_binding_event event = {
-        .position = tap_dance->position,
+        .position = tap_dance->positions[0],
         .timestamp = timestamp,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = tap_dance->source,
@@ -126,7 +149,7 @@ static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
                                              int64_t timestamp) {
     struct zmk_behavior_binding binding = tap_dance->config->behaviors[tap_dance->counter - 1];
     struct zmk_behavior_binding_event event = {
-        .position = tap_dance->position,
+        .position = tap_dance->positions[0],
         .timestamp = timestamp,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = tap_dance->source,
@@ -185,7 +208,7 @@ void behavior_tap_dance_timer_handler(struct k_work *item) {
     struct k_work_delayable *d_work = k_work_delayable_from_work(item);
     struct active_tap_dance *tap_dance =
         CONTAINER_OF(d_work, struct active_tap_dance, release_timer);
-    if (tap_dance->position == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
+    if (tap_dance->positions[0] == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
         return;
     }
     if (tap_dance->timer_cancelled) {
@@ -207,12 +230,23 @@ static const struct behavior_driver_api behavior_tap_dance_driver_api = {
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
-static int tap_dance_position_state_changed_listener(const zmk_event_t *eh);
+static int position_state_changed_listener(const zmk_event_t *eh);
+static int action_behavior_triggered_listener(const zmk_event_t *eh);
 
-ZMK_LISTENER(behavior_tap_dance, tap_dance_position_state_changed_listener);
+int behavior_tap_dance_listener(const zmk_event_t *eh) {
+    if (as_zmk_action_behavior_triggered(eh) != NULL) {
+        return action_behavior_triggered_listener(eh);
+    } else if (as_zmk_position_state_changed(eh) != NULL) {
+        return position_state_changed_listener(eh);
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(behavior_tap_dance, behavior_tap_dance_listener);
+ZMK_SUBSCRIPTION(behavior_tap_dance, zmk_action_behavior_triggered);
 ZMK_SUBSCRIPTION(behavior_tap_dance, zmk_position_state_changed);
 
-static int tap_dance_position_state_changed_listener(const zmk_event_t *eh) {
+static int position_state_changed_listener(const zmk_event_t *eh) {
     struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
     if (ev == NULL) {
         return ZMK_EV_EVENT_BUBBLE;
@@ -223,22 +257,35 @@ static int tap_dance_position_state_changed_listener(const zmk_event_t *eh) {
     }
     for (int i = 0; i < ZMK_BHV_TAP_DANCE_MAX_HELD; i++) {
         struct active_tap_dance *tap_dance = &active_tap_dances[i];
-        if (tap_dance->position == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
+        bool tap_dance_at_position = false;
+        if (tap_dance->positions[0] == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
             continue;
         }
-        if (tap_dance->position == ev->position) {
-            continue;
-        }
-        stop_timer(tap_dance);
-        LOG_DBG("Tap dance interrupted, activating tap-dance at %d", tap_dance->position);
-        if (!tap_dance->tap_dance_decided) {
-            press_tap_dance_behavior(tap_dance, ev->timestamp);
-            if (!tap_dance->is_pressed) {
-                release_tap_dance_behavior(tap_dance, ev->timestamp);
+        // Need to check the whole positions array in case tap dance in a combo
+        for (int j = 0; j < tap_dance->positions_len; j++) {
+            if (tap_dance->positions[j] == ev->position) {
+                tap_dance_at_position = true;
+                break;
             }
-            return ZMK_EV_EVENT_BUBBLE;
+        }
+        if (!tap_dance_at_position) {
+            stop_timer(tap_dance);
+            LOG_DBG("Tap dance interrupted, activating tap-dance at %d", tap_dance->positions[0]);
+            if (!tap_dance->tap_dance_decided) {
+                press_tap_dance_behavior(tap_dance, ev->timestamp);
+                if (!tap_dance->is_pressed) {
+                    release_tap_dance_behavior(tap_dance, ev->timestamp);
+                }
+                return ZMK_EV_EVENT_BUBBLE;
+            }
         }
     }
+    add_to_potential_positions(ev->position);
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+static int action_behavior_triggered_listener(const zmk_event_t *eh) {
+    potential_positions_len = 0;
     return ZMK_EV_EVENT_BUBBLE;
 }
 

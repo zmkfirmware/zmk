@@ -17,7 +17,7 @@ first so the decision to hold or tap can be made.
 
         combo_two {
             timeout-ms = <100>;
-            key-positions = <1 2>;
+            triggers = <1 2>;
             bindings = <&kp Y>;
         };
     };
@@ -27,8 +27,8 @@ first so the decision to hold or tap can be made.
 
         default_layer {
             bindings = <
-                &mt LEFT_CONTROL A &kp B
-                &kp C &none
+                &mt LEFT_CONTROL A &combo_kp 1 B
+                &combo_kp 2 C &none
             >;
         };
     };

@@ -14,17 +14,17 @@
         // Intentionally out of order in the config, to make sure 'combo.c' handles it properly
         combo_40 {
             timeout-ms = <40>;
-            key-positions = <kA kD>;
+            triggers = <kA kD>;
             bindings = <&kp Z>;
         };
         combo_20 {
             timeout-ms = <20>;
-            key-positions = <kA kB>;
+            triggers = <kA kB>;
             bindings = <&kp X>;
         };
         combo_30 {
             timeout-ms = <30>;
-            key-positions = <kA kC>;
+            triggers = <kA kC>;
             bindings = <&kp Y>;
         };
 
@@ -35,8 +35,8 @@
 
         default_layer {
             bindings = <
-                &kp A &kp B
-                &kp C &kp D
+                &combo_kp 0 A &combo_kp 1 B
+                &combo_kp 2 C &combo_kp 3 D
             >;
         };
     };

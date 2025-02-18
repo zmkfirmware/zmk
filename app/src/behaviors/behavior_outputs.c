@@ -76,6 +76,7 @@ static int behavior_out_init(const struct device *dev) { return 0; }
 
 static const struct behavior_driver_api behavior_outputs_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
+    .type = BEHAVIOR_TYPE_ACTION,
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
     .parameter_metadata = &metadata,
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)

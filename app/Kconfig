@@ -438,16 +438,21 @@ endmenu
 
 menu "Combo options"
 
+config ZMK_COMBO_MAX_TRIGGER_NUM
+    int "Upper bound of numbers that can be passed to a combo trigger behavior"
+    default 20
+
 config ZMK_COMBO_MAX_PRESSED_COMBOS
     int "Maximum number of currently pressed combos"
     default 4
 
-config ZMK_COMBO_MAX_COMBOS_PER_KEY
-    int "Maximum number of combos per key"
-    default 5
+config ZMK_COMBO_MAX_COMBOS_PER_TRIGGER
+    int "Maximum number of combos per trigger"
+    default 8
 
-config ZMK_COMBO_MAX_KEYS_PER_COMBO
-    int "Maximum number of keys per combo"
+config ZMK_COMBO_MAX_TRIGGERS_PER_COMBO
+    int "Maximum number of triggers per combo"
+    range 1 63
     default 4
 
 # Combo options

@@ -1,0 +1,73 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/*
+ * This tests how multiple combos being pressed simultaneously interact
+ * Current expected behavior is that only one combo can be triggered at once
+ * Hence, interwoven key presses should output all 4 individual key presses
+ * Pressing combo 2 between combo 1's keys should result in a combo 1 key, then combo2, then the other combo1 key
+ * Pressing one combo directly after the other should result in both being output one after the other
+ */
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+        combo_one {
+            timeout-ms = <30>;
+            triggers = <0 1>;
+            bindings = <&kp X>;
+        };
+
+        combo_two {
+            timeout-ms = <30>;
+            triggers = <2 3>;
+            bindings = <&kp Y>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &combo_kp 0 A &combo_kp 1 B
+                &combo_kp 2 C &combo_kp 3 D
+            >;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        /* interwoven combo key presses */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_PRESS(1,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_RELEASE(1,1,10)
+
+        /* combo 2 between combo 1 presses */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_PRESS(1,1,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_RELEASE(1,1,10)
+
+        /* combo 2 after combo 1 */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_PRESS(1,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_RELEASE(1,1,10)
+    >;
+};

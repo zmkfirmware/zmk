@@ -18,19 +18,19 @@
         compatible = "zmk,combos";
         combo_one {
             timeout-ms = <TIMEOUT>;
-            key-positions = <0 1 2>;
+            triggers = <0 1 2>;
             bindings = <&kp X>;
         };
 
         combo_two {
             timeout-ms = <TIMEOUT>;
-            key-positions = <0 2>;
+            triggers = <0 2>;
             bindings = <&kp Y>;
         };
 
         combo_three {
             timeout-ms = <TIMEOUT>;
-            key-positions = <1>;
+            triggers = <1>;
             bindings = <&kp Z>;
         };
     };
@@ -40,8 +40,8 @@
 
         default_layer {
             bindings = <
-                &kp A &kp B
-                &kp C &none
+                &combo_kp 0 A &combo_kp 1 B
+                &combo_kp 2 C &none
             >;
         };
     };

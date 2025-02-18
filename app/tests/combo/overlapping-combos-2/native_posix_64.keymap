@@ -13,13 +13,13 @@
         compatible = "zmk,combos";
         combo_two {
             timeout-ms = <100>;
-            key-positions = <0 1>;
+            triggers = <0 1>;
             bindings = <&kp Y>;
         };
 
         combo_four {
             timeout-ms = <100>;
-            key-positions = <0 1 2 3>;
+            triggers = <0 1 2 3>;
             bindings = <&kp W>;
         };
 
@@ -30,8 +30,8 @@
 
         default_layer {
             bindings = <
-                &kp A &kp B
-                &kp C &none
+                &combo_kp 0 A &combo_kp 1 B
+                &combo_kp 2 C &none
             >;
         };
     };

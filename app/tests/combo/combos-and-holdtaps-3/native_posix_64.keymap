@@ -11,7 +11,7 @@
         compatible = "zmk,combos";
         combo_one {
             timeout-ms = <40>;
-            key-positions = <0 1>;
+            triggers = <0 1>;
             bindings = <&kp X>;
         };
     };
@@ -21,7 +21,7 @@
 
         default_layer {
             bindings = <
-            &kp A         &kp B
+            &combo_kp 0 A         &combo_kp 1 B
             &mt RSHFT RET &kp C
             >;
         };

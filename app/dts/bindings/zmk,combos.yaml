@@ -12,7 +12,7 @@ child-binding:
     bindings:
       type: phandle-array
       required: true
-    key-positions:
+    triggers:
       type: array
       required: true
     timeout-ms:
@@ -23,6 +23,3 @@ child-binding:
       default: -1
     slow-release:
       type: boolean
-    layers:
-      type: array
-      default: [-1]
