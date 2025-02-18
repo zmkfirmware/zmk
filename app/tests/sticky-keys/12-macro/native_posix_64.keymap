@@ -1,0 +1,36 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        ZMK_MACRO(sk_sl, wait-ms = <1>; tap-ms = <1>; bindings = <&sk LEFT_CONTROL &sl 1>;)
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &sk_sl &mo 1
+                &kp Y &kp B>;
+        };
+
+        upper_layer {
+            bindings = <
+                &kp T  &kp X
+                &kp A  &kp Z>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        /* tap sk_sl */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        /* tap A */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+    >;
+};
