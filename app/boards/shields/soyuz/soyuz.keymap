@@ -1,0 +1,25 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+//  -------------------------------------
+//  | NUMLOCK     | CAPSLOCK | * | BSPC |
+//  | 7           | 8        | 9 | -    |
+//  | 4           | 5        | 6 | +    |
+//  | 1           | 2        | 3 | =    |
+//  | PRINTSCREEN | 0        | . | =    |
+            bindings = <
+&kp LNLCK       &kp CAPS &kp STAR &kp BSPC
+&kp N7          &kp N8   &kp N9   &kp MINUS
+&kp N4          &kp N5   &kp N6   &kp PLUS
+&kp N1          &kp N2   &kp N3   &kp EQUAL
+&kp PRINTSCREEN &kp N0   &kp DOT  &kp RET
+            >;
+
+        };
+    };
+};
