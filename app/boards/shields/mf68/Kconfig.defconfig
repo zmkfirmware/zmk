@@ -1,0 +1,16 @@
+# Copyright (c) 2021 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_MF68
+
+config ZMK_KEYBOARD_NAME
+	default "MF68"
+
+endif
+
+if SHIELD_MF68_FEATHER
+
+config ZMK_KEYBOARD_NAME
+	default "MF68"
+
+endif
