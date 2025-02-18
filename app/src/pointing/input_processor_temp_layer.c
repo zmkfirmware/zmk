@@ -34,6 +34,7 @@ struct temp_layer_state {
 
 struct temp_layer_data {
     const struct device *dev;
+    struct k_mutex lock;
     struct temp_layer_state state;
 };
 
@@ -78,17 +79,51 @@ static void update_layer_state(struct temp_layer_state *state, bool activate) {
     }
 }
 
+struct layer_state_action {
+    uint8_t layer;
+    bool activate;
+};
+
+K_MSGQ_DEFINE(temp_layer_action_msgq, sizeof(struct layer_state_action),
+              CONFIG_ZMK_INPUT_PROCESSOR_TEMP_LAYER_MAX_ACTION_EVENTS, 4);
+
+static void layer_action_work_cb(struct k_work *work) {
+
+    const struct device *dev = DEVICE_DT_INST_GET(0);
+    struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
+
+    int ret = k_mutex_lock(&data->lock, K_FOREVER);
+    if (ret < 0) {
+        LOG_ERR("Error locking for updating %d", ret);
+        return;
+    }
+
+    struct layer_state_action action;
+
+    while (k_msgq_get(&temp_layer_action_msgq, &action, K_MSEC(10)) >= 0) {
+        if (!action.activate) {
+            if (zmk_keymap_layer_active(action.layer)) {
+                update_layer_state(&data->state, false);
+            }
+        } else {
+            update_layer_state(&data->state, true);
+        }
+    }
+
+    k_mutex_unlock(&data->lock);
+}
+
+static K_WORK_DEFINE(layer_action_work, layer_action_work_cb);
+
 /* Work Queue Callback */
 static void layer_disable_callback(struct k_work *work) {
     struct k_work_delayable *d_work = k_work_delayable_from_work(work);
     int layer_index = ARRAY_INDEX(layer_disable_works, d_work);
 
-    const struct device *dev = DEVICE_DT_INST_GET(0);
-    struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
+    struct layer_state_action action = {.layer = layer_index, .activate = false};
 
-    if (zmk_keymap_layer_active(layer_index)) {
-        update_layer_state(&data->state, false);
-    }
+    int ret = k_msgq_put(&temp_layer_action_msgq, &action, K_MSEC(10));
+    k_work_submit(&layer_action_work);
 }
 
 /* Event Handlers */
@@ -100,6 +135,11 @@ static int handle_position_state_changed(const zmk_event_t *eh) {
 
     const struct device *dev = DEVICE_DT_INST_GET(0);
     struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
+    int ret = k_mutex_lock(&data->lock, K_FOREVER);
+    if (ret < 0) {
+        return ret;
+    }
+
     const struct temp_layer_config *cfg = dev->config;
 
     if (data->state.is_active && cfg->excluded_positions && cfg->num_positions > 0) {
@@ -109,6 +149,8 @@ static int handle_position_state_changed(const zmk_event_t *eh) {
         }
     }
     LOG_DBG("Position excluded, continuing");
+
+    k_mutex_unlock(&data->lock);
 
     return ZMK_EV_EVENT_BUBBLE;
 }
@@ -121,8 +163,19 @@ static int handle_keycode_state_changed(const zmk_event_t *eh) {
 
     const struct device *dev = DEVICE_DT_INST_GET(0);
     struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
+
+    int ret = k_mutex_lock(&data->lock, K_FOREVER);
+    if (ret < 0) {
+        return ret;
+    }
+
     LOG_DBG("Setting last_tapped_timestamp to: %d", ev->timestamp);
     data->state.last_tapped_timestamp = ev->timestamp;
+
+    ret = k_mutex_unlock(&data->lock);
+    if (ret < 0) {
+        return ret;
+    }
 
     return ZMK_EV_EVENT_BUBBLE;
 }
@@ -149,23 +202,37 @@ static int temp_layer_handle_event(const struct device *dev, struct input_event 
     }
 
     struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
+
+    int ret = k_mutex_lock(&data->lock, K_FOREVER);
+    if (ret < 0) {
+        return ret;
+    }
+
     const struct temp_layer_config *cfg = dev->config;
 
     data->state.toggle_layer = param1;
 
     if (!data->state.is_active &&
         !should_quick_tap(cfg, data->state.last_tapped_timestamp, k_uptime_get())) {
-        update_layer_state(&data->state, true);
+        struct layer_state_action action = {.layer = param1, .activate = true};
+
+        int ret = k_msgq_put(&temp_layer_action_msgq, &action, K_MSEC(10));
+        k_work_submit(&layer_action_work);
     }
 
     if (param2 > 0) {
         k_work_reschedule(&layer_disable_works[param1], K_MSEC(param2));
     }
 
+    k_mutex_unlock(&data->lock);
+
     return ZMK_INPUT_PROC_CONTINUE;
 }
 
 static int temp_layer_init(const struct device *dev) {
+    struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
+    k_mutex_init(&data->lock);
+
     for (int i = 0; i < MAX_LAYERS; i++) {
         k_work_init_delayable(&layer_disable_works[i], layer_disable_callback);
     }

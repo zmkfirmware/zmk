@@ -40,6 +40,11 @@ config ZMK_INPUT_PROCESSOR_TEMP_LAYER
     default y
     depends on DT_HAS_ZMK_INPUT_PROCESSOR_TEMP_LAYER_ENABLED
 
+config ZMK_INPUT_PROCESSOR_TEMP_LAYER_MAX_ACTION_EVENTS
+    int "Temporary Layer Input Processor Max Action Events"
+    default 4
+    depends on ZMK_INPUT_PROCESSOR_TEMP_LAYER
+
 endif
 
 config ZMK_INPUT_PROCESSOR_TRANSFORM
