@@ -185,6 +185,18 @@ config BT_SMP_ALLOW_UNAUTH_OVERWRITE
 config BT_CTLR_PHY_2M
     default n if ZMK_BLE_EXPERIMENTAL_CONN
 
+config ZMK_BLE_ADVERTISING_TIMEOUT
+    bool "Enable BLE advertising timeout"
+    default n
+
+if ZMK_BLE_ADVERTISING_TIMEOUT
+
+config ZMK_BLE_ADVERTISING_TIMEOUT_SECONDS
+    int "BLE advertising timeout in seconds"
+    default 30
+
+endif
+
 # BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
 config BT_TINYCRYPT_ECC
     default y if BT_HCI && !BT_CTLR
