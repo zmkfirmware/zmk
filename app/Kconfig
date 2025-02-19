@@ -334,6 +334,10 @@ config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
     bool "Turn off RGB underglow when USB is disconnected"
     depends on USB_DEVICE_STACK
 
+config EXPERIMENTAL_RGB_LAYER
+    bool "Experimental per-key per-layer RGB underglow"
+    default n
+
 endif # ZMK_RGB_UNDERGLOW
 
 menuconfig ZMK_BACKLIGHT
