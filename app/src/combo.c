@@ -26,6 +26,12 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+struct combo_quick_tap_ignore_item {
+    uint16_t page;
+    uint32_t id;
+    uint8_t implicit_modifiers;
+};
+
 struct combo_cfg {
     int32_t key_positions[CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO];
     int32_t key_position_len;
@@ -39,7 +45,9 @@ struct combo_cfg {
     // it is necessary so hold-taps can uniquely identify a behavior.
     int32_t virtual_key_position;
     int32_t layers_len;
-    int8_t layers[];
+    int8_t layers[ZMK_KEYMAP_LAYERS_LEN];
+    int32_t quick_tap_ignore_len;
+    struct combo_quick_tap_ignore_item quick_tap_ignore[];
 };
 
 struct active_combo {
@@ -78,13 +86,15 @@ struct k_work_delayable timeout_task;
 int64_t timeout_task_timeout_at;
 
 // this keeps track of the last non-combo, non-mod key tap
-int64_t last_tapped_timestamp = INT32_MIN;
+struct zmk_keycode_state_changed last_tapped_key;
+
 // this keeps track of the last time a combo was pressed
 int64_t last_combo_timestamp = INT32_MIN;
 
-static void store_last_tapped(int64_t timestamp) {
-    if (timestamp > last_combo_timestamp) {
-        last_tapped_timestamp = timestamp;
+static void store_last_tapped(struct zmk_keycode_state_changed *ev) {
+    if (ev->timestamp > last_combo_timestamp) {
+        last_tapped_key = *ev;
+        last_tapped_key.implicit_modifiers |= zmk_hid_get_explicit_mods();
     }
 }
 
@@ -138,8 +148,20 @@ static bool combo_active_on_layer(struct combo_cfg *combo, uint8_t layer) {
     return false;
 }
 
+static bool is_last_tapped_key_quick_tap_ignored(struct combo_cfg *combo) {
+    for (int i = 0; i < combo->quick_tap_ignore_len; i++) {
+        const struct combo_quick_tap_ignore_item *ignore = &combo->quick_tap_ignore[i];
+        if (ignore->page == last_tapped_key.usage_page && ignore->id == last_tapped_key.keycode &&
+            ignore->implicit_modifiers == last_tapped_key.implicit_modifiers) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static bool is_quick_tap(struct combo_cfg *combo, int64_t timestamp) {
-    return (last_tapped_timestamp + combo->require_prior_idle_ms) > timestamp;
+    return ((last_tapped_key.timestamp + combo->require_prior_idle_ms) > timestamp) &&
+           !is_last_tapped_key_quick_tap_ignored(combo);
 }
 
 static int setup_candidates_for_first_keypress(int32_t position, int64_t timestamp) {
@@ -502,7 +524,7 @@ static int position_state_changed_listener(const zmk_event_t *ev) {
 static int keycode_state_changed_listener(const zmk_event_t *eh) {
     struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
     if (ev->state && !is_mod(ev->usage_page, ev->keycode)) {
-        store_last_tapped(ev->timestamp);
+        store_last_tapped(ev);
     }
     return ZMK_EV_EVENT_BUBBLE;
 }
@@ -520,6 +542,15 @@ ZMK_LISTENER(combo, behavior_combo_listener);
 ZMK_SUBSCRIPTION(combo, zmk_position_state_changed);
 ZMK_SUBSCRIPTION(combo, zmk_keycode_state_changed);
 
+#define PARSE_QUICK_TAP_IGNORE_ITEM(i)                                                             \
+    {                                                                                              \
+        .page = ZMK_HID_USAGE_PAGE(i), .id = ZMK_HID_USAGE_ID(i),                                  \
+        .implicit_modifiers = SELECT_MODS(i)                                                       \
+    }
+
+#define QUICK_TAP_IGNORE_ITEM(i, n)                                                                \
+    PARSE_QUICK_TAP_IGNORE_ITEM(DT_PROP_BY_IDX(n, require_prior_idle_ignore, i))
+
 #define COMBO_INST(n)                                                                              \
     static struct combo_cfg combo_config_##n = {                                                   \
         .timeout_ms = DT_PROP(n, timeout_ms),                                                      \
@@ -531,6 +562,9 @@ ZMK_SUBSCRIPTION(combo, zmk_keycode_state_changed);
         .slow_release = DT_PROP(n, slow_release),                                                  \
         .layers = DT_PROP(n, layers),                                                              \
         .layers_len = DT_PROP_LEN(n, layers),                                                      \
+        .quick_tap_ignore = {LISTIFY(DT_PROP_LEN(n, require_prior_idle_ignore),                    \
+                                     QUICK_TAP_IGNORE_ITEM, (, ), n)},                             \
+        .quick_tap_ignore_len = DT_PROP_LEN(n, require_prior_idle_ignore),                         \
     };
 
 #define INITIALIZE_COMBO(n) initialize_combo(&combo_config_##n);
