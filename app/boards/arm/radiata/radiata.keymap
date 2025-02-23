@@ -10,7 +10,7 @@
 
         default_layer {
             bindings = <
-                &kp N1      &kp N2      &kp N3      &kp N4      &kp N5      &bt BT_CLR
+                &kp N1      &kp N2      &kp N3      &kp N4      &studio_unlock      &bt BT_CLR
                 &kp A       &kp B       &kp C       &kp D       &kp E       &kp F
                 &kp G       &kp H       &kp I       &kp J       &kp K       &kp L
                 &kp M       &kp N       &kp O       &kp P       &kp Q       &kp R
