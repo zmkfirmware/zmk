@@ -72,6 +72,6 @@ include:
   - board: radiata_left
     snippet: studio-rpc-usb-uart
     cmake-args: "-DCONFIG_ZMK_STUDIO=y"
-    nickname: "split-left-studio"
   - board: radiata_right
-    nickname: "split-right-studio"
+    snippet: studio-rpc-usb-uart
+    cmake-args: "-DCONFIG_ZMK_STUDIO=y"
