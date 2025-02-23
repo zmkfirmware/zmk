@@ -12,6 +12,8 @@ include:
   - board: radiata_left
     snippet: studio-rpc-usb-uart
     cmake-args: "-DCONFIG_ZMK_STUDIO=y"
+    nickname: studio
   - board: radiata_right
     snippet: studio-rpc-usb-uart
     cmake-args: "-DCONFIG_ZMK_STUDIO=y"
+    nickname: studio
