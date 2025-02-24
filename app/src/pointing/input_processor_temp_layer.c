@@ -14,6 +14,7 @@
 #include <zmk/behavior.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
+#include <zmk/events/layer_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -127,13 +128,35 @@ static void layer_disable_callback(struct k_work *work) {
 }
 
 /* Event Handlers */
-static int handle_position_state_changed(const zmk_event_t *eh) {
+static int handle_layer_state_changed(const struct device *dev, const zmk_event_t *eh) {
+    LOG_WRN("OH NO, LAYER STUFF!");
+    struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
+    int ret = k_mutex_lock(&data->lock, K_FOREVER);
+    if (ret < 0) {
+        return ret;
+    }
+    if (data->state.toggle_layer == 0) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+    if (!zmk_keymap_layer_active(zmk_keymap_layer_index_to_id(data->state.toggle_layer))) {
+        LOG_DBG("Deactivating layer that was activated by this processor");
+        data->state.is_active = false;
+        k_work_cancel_delayable(&layer_disable_works[data->state.toggle_layer]);
+    }
+    ret = k_mutex_unlock(&data->lock);
+    if (ret < 0) {
+        return ret;
+    }
+
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+static int handle_position_state_changed(const struct device *dev, const zmk_event_t *eh) {
     const struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
     if (!ev->state) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    const struct device *dev = DEVICE_DT_INST_GET(0);
     struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
     int ret = k_mutex_lock(&data->lock, K_FOREVER);
     if (ret < 0) {
@@ -155,13 +178,12 @@ static int handle_position_state_changed(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
-static int handle_keycode_state_changed(const zmk_event_t *eh) {
+static int handle_keycode_state_changed(const struct device *dev, const zmk_event_t *eh) {
     const struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
     if (!ev->state) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    const struct device *dev = DEVICE_DT_INST_GET(0);
     struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
 
     int ret = k_mutex_lock(&data->lock, K_FOREVER);
@@ -180,16 +202,33 @@ static int handle_keycode_state_changed(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
-static int handle_state_changed_dispatcher(const zmk_event_t *eh) {
-    if (as_zmk_position_state_changed(eh) != NULL) {
+static int handle_state_changed_dispatcher(const struct device *dev, const zmk_event_t *eh) {
+    if (as_zmk_layer_state_changed(eh) != NULL) {
+        LOG_DBG("Dispatching handle_layer_state_changed");
+        return handle_layer_state_changed(dev, eh);
+    } else if (as_zmk_position_state_changed(eh) != NULL) {
         LOG_DBG("Dispatching handle_position_state_changed");
-        return handle_position_state_changed(eh);
+        return handle_position_state_changed(dev, eh);
     } else if (as_zmk_keycode_state_changed(eh) != NULL) {
         LOG_DBG("Dispatching handle_keycode_state_changed");
-        return handle_keycode_state_changed(eh);
+        return handle_keycode_state_changed(dev, eh);
     }
 
     return ZMK_EV_EVENT_BUBBLE;
+}
+
+#define DISPATCH_EVENT(inst)                                                                       \
+    {                                                                                              \
+        int err = handle_state_changed_dispatcher(DEVICE_DT_INST_GET(inst), eh);                   \
+        if (err < 0) {                                                                             \
+            return err;                                                                            \
+        }                                                                                          \
+    }
+
+static int handle_event_dispatcher(const zmk_event_t *eh) {
+    DT_INST_FOREACH_STATUS_OKAY(DISPATCH_EVENT)
+
+    return 0;
 }
 
 /* Driver Implementation */
@@ -250,10 +289,8 @@ static const struct zmk_input_processor_driver_api temp_layer_driver_api = {
 #define NEEDS_KEYCODE_HANDLERS(n, ...) (DT_INST_PROP_OR(n, require_prior_idle_ms, 0) > 0)
 
 /* Event Handlers Registration */
-#if DT_INST_FOREACH_STATUS_OKAY_VARGS(NEEDS_POSITION_HANDLERS, ||) ||                              \
-    DT_INST_FOREACH_STATUS_OKAY_VARGS(NEEDS_KEYCODE_HANDLERS, ||)
-ZMK_LISTENER(processor_temp_layer, handle_state_changed_dispatcher);
-#endif
+ZMK_LISTENER(processor_temp_layer, handle_event_dispatcher);
+ZMK_SUBSCRIPTION(processor_temp_layer, zmk_layer_state_changed);
 
 /* Individual Subscriptions */
 #if DT_INST_FOREACH_STATUS_OKAY_VARGS(NEEDS_POSITION_HANDLERS, ||)
