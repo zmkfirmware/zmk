@@ -52,8 +52,7 @@ void zmk_split_wired_poll_out(struct ring_buf *tx_buf, const struct device *uart
 
 int zmk_split_wired_poll_in(struct ring_buf *rx_buf, const struct device *uart,
                             struct k_work *process_data_work,
-                            zmk_split_wired_process_tx_callback_t process_data_cb,
-                            size_t envelope_size);
+                            zmk_split_wired_process_tx_callback_t process_data_cb);
 
 #endif
 

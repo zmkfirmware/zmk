@@ -135,8 +135,7 @@ static void send_pending_tx_work_cb(struct k_work *work) {
 static K_WORK_DEFINE(send_pending_tx, send_pending_tx_work_cb);
 
 static void wired_peripheral_read_tick_cb(struct k_timer *timer) {
-    zmk_split_wired_poll_in(&chosen_rx_buf, uart, &publish_commands,
-                            sizeof(struct command_envelope));
+    zmk_split_wired_poll_in(&chosen_rx_buf, uart, NULL, process_tx_cb);
 }
 
 static K_TIMER_DEFINE(wired_peripheral_read_timer, wired_peripheral_read_tick_cb, NULL);

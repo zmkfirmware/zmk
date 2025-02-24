@@ -30,8 +30,7 @@ void zmk_split_wired_poll_out(struct ring_buf *tx_buf, const struct device *uart
 
 int zmk_split_wired_poll_in(struct ring_buf *rx_buf, const struct device *uart,
                             struct k_work *process_data_work,
-                            zmk_split_wired_process_tx_callback_t process_data_cb,
-                            size_t envelope_size) {
+                            zmk_split_wired_process_tx_callback_t process_data_cb) {
     uint8_t *buf;
     uint32_t read = 0;
     uint32_t claim_len = ring_buf_put_claim(rx_buf, &buf, ring_buf_space_get(rx_buf));
@@ -52,7 +51,7 @@ int zmk_split_wired_poll_in(struct ring_buf *rx_buf, const struct device *uart,
 
     ring_buf_put_finish(rx_buf, read);
 
-    if (ring_buf_size_get(rx_buf) >= envelope_size) {
+    if (ring_buf_size_get(rx_buf) >= 0) {
         if (process_data_work) {
             k_work_submit(process_data_work);
         } else if (process_data_cb) {

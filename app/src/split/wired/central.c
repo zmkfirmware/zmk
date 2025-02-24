@@ -103,6 +103,14 @@ static inline int can_tx(void) { return 0; }
 
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_POLLING)
+
+static void send_pending_tx_work_cb(struct k_work *work);
+
+static K_WORK_DEFINE(wired_central_tx_work, send_pending_tx_work_cb);
+
+#endif
+
 static void begin_tx(void) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
     uart_irq_tx_enable(uart);
@@ -233,11 +241,10 @@ static void send_pending_tx_work_cb(struct k_work *work) {
 }
 
 static void read_timer_cb(struct k_timer *_timer) {
-    zmk_split_wired_poll_in(&rx_buf, uart, &publish_events, sizeof(struct event_envelope));
+    zmk_split_wired_poll_in(&rx_buf, uart, &publish_events, NULL);
     // Check if we found any bytes, read some, or read all the bytes in the RX
 }
 
-static K_WORK_DEFINE(wired_central_tx_work, send_pending_tx_work_cb);
 static K_TIMER_DEFINE(wired_central_read_timer, read_timer_cb, NULL);
 
 #endif
