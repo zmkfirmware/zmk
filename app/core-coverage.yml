@@ -1,13 +1,6 @@
 board:
-  - nice_nano_v2
-  - nrfmicro_13
-  - proton_c
-shield:
-  - corne_left
-  - corne_right
-  - romac
-  - settings_reset
-  - tidbit
+  - radiata_left
+  - radiata_right
 include:
   - board: radiata_left
     snippet: studio-rpc-usb-uart
