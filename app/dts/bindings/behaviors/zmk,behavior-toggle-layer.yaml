@@ -10,9 +10,11 @@ include: one_param.yaml
 properties:
   toggle-mode:
     type: string
-    required: false
     default: "flip"
     enum:
       - "on"
       - "off"
       - "flip"
+  locking:
+    type: boolean
+    description: Whether to "lock" the layer active, preventing behaviors without the "locking" property from deactivating the layer
