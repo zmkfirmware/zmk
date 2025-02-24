@@ -51,7 +51,7 @@ int zmk_split_wired_poll_in(struct ring_buf *rx_buf, const struct device *uart,
 
     ring_buf_put_finish(rx_buf, read);
 
-    if (ring_buf_size_get(rx_buf) >= 0) {
+    if (ring_buf_size_get(rx_buf) > 0) {
         if (process_data_work) {
             k_work_submit(process_data_work);
         } else if (process_data_cb) {
