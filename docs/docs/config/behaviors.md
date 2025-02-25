@@ -325,6 +325,12 @@ Creates a custom behavior that triggers a different behavior corresponding to th
 
 See the [tap dance behavior](../keymaps/behaviors/tap-dance.mdx) documentation for more details and examples.
 
+### Kconfig
+
+| Config                                   | Type | Description                                    | Default |
+| ---------------------------------------- | ---- | ---------------------------------------------- | ------- |
+| `CONFIG_ZMK_BEHAVIOR_TAP_DANCE_MAX_HELD` | int  | Maximum number of simultaneous held tap-dances | 10      |
+
 ### Devicetree
 
 Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-tap-dance.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-tap-dance.yaml)
