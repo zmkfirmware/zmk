@@ -51,13 +51,11 @@ if ZMK_BEHAVIOR_HOLD_TAP
 
 config ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD
     int "Hold Tap Max Held"
-    default 10
     help
       Max number of simultaneously held hold-taps
 
 config ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS
     int "Hold Tap Max Captured Events"
-    default 40
     help
       Max number of captured system events while waiting to resolve hold taps
 
@@ -82,7 +80,6 @@ if ZMK_BEHAVIOR_STICKY_KEY
 
 config ZMK_BEHAVIOR_STICKY_KEY_MAX_HELD
     int "Sticky Key Max Held"
-    default 10
     help
       Max number of simultaneously held sticky keys
 
@@ -103,7 +100,6 @@ if ZMK_BEHAVIOR_TAP_DANCE
 
 config ZMK_BEHAVIOR_TAP_DANCE_MAX_HELD
     int "Tap-Dance Max Held"
-    default 10
     help
       Max number of simultaneously held taps-dances
 
