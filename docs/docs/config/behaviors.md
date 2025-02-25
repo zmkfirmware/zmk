@@ -169,7 +169,7 @@ Applies to: `compatible = "zmk,behavior-momentary-layer"`
 | Property         | Type | Description                                                     | Default |
 | ---------------- | ---- | --------------------------------------------------------------- | ------- |
 | `#binding-cells` | int  | Must be `<1>`                                                   |         |
-| `locking`        | bool | Whether the behavior can lock and unlock layers in the on state |         |
+| `locking`        | bool | Whether the behavior can lock and unlock layers in the on state | false   |
 
 You can use the following node to tweak the default behavior:
 
@@ -193,7 +193,7 @@ Applies to: `compatible = "zmk,behavior-layer-toggle"`
 | ---------------- | ---- | --------------------------------------------------------------- | ------- |
 | `#binding-cells` | int  | Must be `<1>`                                                   |         |
 | `toggle-mode`    |      | One of `on`, `off`, and `flip`                                  | `flip`  |
-| `locking`        | bool | Whether the behavior can lock and unlock layers in the on state |         |
+| `locking`        | bool | Whether the behavior can lock and unlock layers in the on state | false   |
 
 You can use the following node to tweak the default behavior:
 
@@ -216,7 +216,7 @@ Applies to: `compatible = "zmk,behavior-to-layer"`
 | Property         | Type | Description                                                     | Default |
 | ---------------- | ---- | --------------------------------------------------------------- | ------- |
 | `#binding-cells` | int  | Must be `<1>`                                                   |         |
-| `locking`        | bool | Whether the behavior can lock and unlock layers in the on state |         |
+| `locking`        | bool | Whether the behavior can lock and unlock layers in the on state | false   |
 
 You can use the following node to tweak the default behavior:
 
