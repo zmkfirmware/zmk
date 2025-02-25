@@ -175,7 +175,7 @@ static int behavior_caps_word_init(const struct device *dev) {
 
 #define KP_INST(n)                                                                                 \
     static struct behavior_caps_word_data behavior_caps_word_data_##n = {.active = false};         \
-    static struct behavior_caps_word_config behavior_caps_word_config_##n = {                      \
+    static const struct behavior_caps_word_config behavior_caps_word_config_##n = {                \
         .index = n,                                                                                \
         .mods = DT_INST_PROP_OR(n, mods, MOD_LSFT),                                                \
         .continuations = {LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, (, ), n)},       \
