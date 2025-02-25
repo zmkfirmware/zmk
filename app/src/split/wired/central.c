@@ -7,6 +7,8 @@
 #include <zephyr/types.h>
 #include <zephyr/init.h>
 
+#include <zephyr/pm/device.h>
+#include <zephyr/pm/device_runtime.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/sys/crc.h>
 #include <zephyr/sys/ring_buffer.h>
@@ -130,7 +132,12 @@ static void begin_tx(void) {
 }
 
 static void begin_rx(void) {
-    // PM call to enable the UART device
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_get(uart);
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_action_run(uart, PM_DEVICE_ACTION_RESUME);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
     uart_irq_rx_enable(uart);
 #elif IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
@@ -152,7 +159,11 @@ static void stop_rx(void) {
     k_timer_stop(&wired_central_read_timer);
 #endif
 
-    // TODO: PM API to actually disable the UART fully!
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_put(uart);
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_action_run(uart, PM_DEVICE_ACTION_SUSPEND);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
 }
 
 #endif // HAS_DETECT_GPIO
@@ -306,6 +317,12 @@ static int zmk_split_wired_central_init(void) {
     if (!device_is_ready(uart)) {
         return -ENODEV;
     }
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_put(uart);
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_action_run(uart, PM_DEVICE_ACTION_SUSPEND);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
 
