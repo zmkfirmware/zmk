@@ -18,14 +18,14 @@ import SidebandWakeupDirect from "./includes/_sideband-wakeup-direct.md";
 
 Advanced methods of adding [soft off](../../features/low-power-states.md#soft-off) to a keyboard are detailed below. The first two tabs describe methods involving hardware changes, while the last describes the firmware changes necessary to define a single specific key switch for waking up.
 
-<Tabs groupId="advanced-methods" defaultValue="direct">
+<Tabs groupId="advanced-methods" queryString defaultValue="direct">
   <TabItem value="direct" label="Direct Pin"></TabItem>
   <TabItem value="matrix" label="Matrix Integrated Pin"></TabItem>
   <TabItem value="wakeup" label="Wakeup-only Key Switch">
     The exact method of reusing a key switch to wake from the soft off state
     differs depending on whether said key switch is part of a direct GPIO kscan
     or part of a matrix kscan.
-    <Tabs groupId="kscan-type" defaultValue="mkscan">
+    <Tabs groupId="kscan-type" queryString defaultValue="mkscan">
       <TabItem value="dkscan" label="Direct GPIO kscan"></TabItem>
       <TabItem value="mkscan" label="Matrix kscan"></TabItem>
     </Tabs>
@@ -34,7 +34,7 @@ Advanced methods of adding [soft off](../../features/low-power-states.md#soft-of
 
 ## Hardware Changes
 
-<Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
+<Tabs groupId="advanced-methods" queryString defaultValue="direct" className="secrettabs">
   <TabItem value="direct" label="Direct Pin">
 
     Add a direct push button between a GPIO pin and ground. This button will act as an on/off switch.
@@ -57,7 +57,7 @@ Advanced methods of adding [soft off](../../features/low-power-states.md#soft-of
 
 Several items work together to make both triggering soft off properly, and setting up the device to _wake_ from soft off work as expected.
 
-<Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
+<Tabs groupId="advanced-methods" queryString defaultValue="direct" className="secrettabs">
   <TabItem value="direct" label="Direct Pin">
     <SoftOffBehavior />
   </TabItem>
@@ -78,7 +78,12 @@ For this approach, you will need to make sure that the [soft off behavior](../..
 Zephyr's basic [GPIO Key](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/input/gpio-keys.html) concept is used to configure the soft off GPIO pin.
 {/* secrettabs hides this tab selector. GPIO key changes its "orientation" between simple pin and matrix integrated. */}
 
-<Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
+<Tabs
+  groupId="advanced-methods"
+  queryString
+  defaultValue="direct"
+  className="secrettabs"
+>
   <TabItem value="direct" label="Direct Pin">
     <GpioKeyDirect />
   </TabItem>
@@ -94,7 +99,12 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
 
 - The `gpios` property should be a [phandle-array](https://docs.zephyrproject.org/3.5.0/build/dts/phandles.html#zero-or-more-nodes-with-metadata-phandle-array-type) with a fully defined GPIO pin and with the correct pull up/down and active high/low flags set.
 
-<Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
+<Tabs
+  groupId="advanced-methods"
+  queryString
+  defaultValue="direct"
+  className="secrettabs"
+>
   <TabItem value="direct" label="Direct Pin">
     <SidebandDirect />
   </TabItem>
@@ -102,7 +112,12 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
     <SidebandMatrix />
   </TabItem>
   <TabItem value="wakeup" label="Wakeup-only Key Switch">
-    <Tabs groupId="kscan-type" defaultValue="mkscan" className="secrettabs">
+    <Tabs
+      groupId="kscan-type"
+      queryString
+      defaultValue="mkscan"
+      className="secrettabs"
+    >
       <TabItem value="dkscan" label="Direct GPIO kscan">
         <SidebandWakeupDirect />
       </TabItem>
@@ -111,7 +126,7 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
   </TabItem>
 </Tabs>
 
-<Tabs groupId="advanced-methods" defaultValue="direct" className="secrettabs">
+<Tabs groupId="advanced-methods" queryString defaultValue="direct" className="secrettabs">
   <TabItem value="direct" label="Direct Pin"></TabItem>
   <TabItem value="matrix" label="Matrix Integrated Pin">
     You also need to update the `zmk,kscan` chosen value to point to the new kscan instance:
@@ -130,7 +145,7 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
 
   </TabItem>
   <TabItem value="wakeup" label="Wakeup-only Key Switch">
-    <Tabs groupId="kscan-type" defaultValue="mkscan" className="secrettabs">
+    <Tabs groupId="kscan-type" queryString defaultValue="mkscan" className="secrettabs">
         <TabItem value="dkscan" label="Direct GPIO kscan"></TabItem>
         <TabItem value="mkscan" label="Matrix kscan"><SoftOffWaker /></TabItem>
     </Tabs>

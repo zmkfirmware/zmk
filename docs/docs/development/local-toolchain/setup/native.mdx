@@ -9,6 +9,7 @@ import TabItem from "@theme/TabItem";
 export const OsTabs = (props) => (
     <Tabs
     groupId="operating-system"
+    queryString
     defaultValue="ubuntu"
     values={[
       { label: "Ubuntu", value: "ubuntu" },
@@ -25,6 +26,7 @@ export const OsTabs = (props) => (
 export const OsNoteTabs = (props) => (
     <Tabs
     groupId="operating-system"
+    queryString
     defaultValue="win"
     values={[
       { label: "Windows", value: "win" },
@@ -40,6 +42,7 @@ export const OsNoteTabs = (props) => (
 export const EnvTabs = (props) => (
     <Tabs
     groupId="python-environment"
+    queryString
     defaultValue="venv"
     values={[
       { label: "Install within Virtual Environment", value: "venv" },
@@ -55,6 +58,7 @@ export const EnvTabs = (props) => (
 export const WinTermTabs = (props) => (
     <Tabs
     groupId="windows-terminal-choice"
+    queryString
     defaultValue="cmd"
     values={[
       { label: "Command Prompt", value: "cmd" },
@@ -100,7 +104,7 @@ These steps are very similar to Zephyr's [Get Zephyr and install Python dependen
 
 <EnvTabs>
 <TabItem value="venv">
-<Tabs groupId="operating-systems" defaultValue="ubuntu">
+<Tabs groupId="operating-systems" queryString defaultValue="ubuntu">
   <TabItem value="ubuntu" label="Ubuntu">
 
 1. Use `apt` to install Python `venv` package:
@@ -201,7 +205,7 @@ pip install -r zephyr/scripts/requirements-base.txt
 
 </TabItem>
 <TabItem value="glob">
-<Tabs groupId="operating-systems" defaultValue="ubuntu">
+<Tabs groupId="operating-systems" queryString defaultValue="ubuntu">
   <TabItem value="ubuntu" label="Ubuntu">
 1. Install `west`:
 
@@ -282,7 +286,7 @@ This step pulls down quite a bit of tooling, be patient!
 west zephyr-export
 ```
 
-<Tabs groupId="operating-systems" defaultValue="ubuntu" className="secrettabs">
+<Tabs groupId="operating-systems" queryString defaultValue="ubuntu" className="secrettabs">
   <TabItem value="ubuntu" label="Ubuntu">
 
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
