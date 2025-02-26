@@ -165,7 +165,7 @@ struct behavior_<behavior_name>_config {
     bool example_config_param3;
 };
 
-// Initialization Function
+// Initialization Function (Optional)
 static int <behavior_name>_init(const struct device *dev) {
     return 0;
 };
@@ -177,7 +177,7 @@ static const struct behavior_driver_api <behavior_name>_driver_api = {
 
 BEHAVIOR_DT_INST_DEFINE(0,                                                    // Instance Number (Equal to 0 for behaviors that don't require multiple instances,
                                                                               //                  Equal to n for behaviors that do make use of multiple instances)
-                        <behavior_name>_init, NULL,                           // Initialization Function, Power Management Device Pointer
+                        <behavior_name>_init, NULL,                           // Initialization Function, Power Management Device Pointer (Both Optional)
                         &<behavior_name>_data, &<behavior_name>_config,       // Behavior Data Pointer, Behavior Configuration Pointer (Both Optional)
                         POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,     // Initialization Level, Device Priority
                         &<behavior_name>_driver_api);                         // API Structure
@@ -283,7 +283,7 @@ Note that in the hold-tap example, the instance number, `0`, has been replaced b
 
 Behaviors also require the following parameters of `BEHAVIOR_DT_INST_DEFINE` to be changed:
 
-##### Initialization function
+##### Initialization function (optional)
 
 Comes in the form `static int <behavior_name>_init(const struct device *dev)`. Initialization functions preconfigure any data, like resetting timers and position for hold-taps and tap-dances. All initialization functions `return 0;` once complete.
 

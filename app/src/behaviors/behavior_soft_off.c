@@ -27,8 +27,6 @@ struct behavior_soft_off_data {
 #define IS_SPLIT_PERIPHERAL                                                                        \
     (IS_ENABLED(CONFIG_ZMK_SPLIT) && !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
 
-static int behavior_soft_off_init(const struct device *dev) { return 0; };
-
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
@@ -86,8 +84,7 @@ static const struct behavior_driver_api behavior_soft_off_driver_api = {
             DT_INST_PROP_OR(n, split_peripheral_off_on_press, false),                              \
     };                                                                                             \
     static struct behavior_soft_off_data bso_data_##n = {};                                        \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_soft_off_init, NULL, &bso_data_##n, &bso_config_##n,       \
-                            POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
-                            &behavior_soft_off_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, &bso_data_##n, &bso_config_##n, POST_KERNEL,            \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_soft_off_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(BSO_INST)

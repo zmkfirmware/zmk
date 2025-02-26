@@ -27,8 +27,6 @@ struct behavior_tog_config {
     enum toggle_mode toggle_mode;
 };
 
-static int behavior_tog_init(const struct device *dev) { return 0; };
-
 static int tog_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
@@ -85,9 +83,8 @@ static const struct behavior_driver_api behavior_tog_driver_api = {
     static const struct behavior_tog_config behavior_tog_config_##n = {                            \
         .toggle_mode = DT_ENUM_IDX(DT_DRV_INST(n), toggle_mode),                                   \
     };                                                                                             \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_tog_init, NULL, NULL, &behavior_tog_config_##n,            \
-                            POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
-                            &behavior_tog_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, NULL, &behavior_tog_config_##n, POST_KERNEL,            \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_tog_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KT_INST)
 
