@@ -1,0 +1,13 @@
+# Copyright (c) 2024, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Set underglow color based on HID indicators
+
+compatible: "zmk,behavior-underglow-indicators"
+
+include: two_param.yaml
+
+properties:
+  indicator:
+    type: int
+    default: 0
