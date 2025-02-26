@@ -1,0 +1,121 @@
+/*
+ Copyright (c) 2024 The ZMK Contributors
+ SPDX-License-Identifier: MIT
+*/
+
+/dts-v1/;
+
+#include <rpi_pico/rp2040.dtsi>
+#include "rp2040_zero-pinctrl.dtsi"
+#include "rp2040_zero-connector.dtsi"
+#include <freq.h>
+
+
+/ {
+    model = "Waveshare RP2040 Zero Board";
+    compatible = "waveshare,rp2040-zero", "raspberrypi,rp2040";
+
+
+    chosen {
+        zephyr,code-partition = &code_partition;
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+        zephyr,flash-controller = &ssi;
+    };
+
+    // RGBLED is kept absent until such a time that we upgrade Zephyr and can use pio
+
+    xtal_clk: xtal-clk {
+        compatible = "fixed-clock";
+        clock-frequency = <12000000>;
+        #clock-cells = <0>;
+    };
+
+    aliases {
+        watchdog0 = &wdt0;
+    };
+};
+
+
+
+&flash0 {
+    /* 2MB of flash minus the 0x100 used for
+     * the second stage bootloader
+     */
+    reg = <0x10000000 DT_SIZE_M(2)>;
+
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        /* Reserved memory for the second stage bootloader */
+        second_stage_bootloader: partition@0 {
+            label = "second_stage_bootloader";
+            reg = <0x00000000 0x100>;
+            read-only;
+        };
+
+        /*
+         * Start at the beginning of usable flash.
+         * 1.5MiB minus reserved memory for bootloader
+         */
+        code_partition: partition@100 {
+            label = "code";
+            reg = <0x100 (DT_SIZE_M(2) - 0x100 - DT_SIZE_K(512))>;
+            read-only;
+        };
+
+        /*
+         * The final 512 KiB is reserved for the application.
+         * Storage partition may be used by FCB/LittleFS/NVS.
+         */
+        storage_partition: partition@17ff00 {
+            label = "storage";
+            reg = <0x0017FF00 DT_SIZE_K(512)>;
+        };
+    };
+};
+
+&uart0 {
+    status = "okay";
+    current-speed = <115200>;
+    pinctrl-0 = <&uart0_default>;
+    pinctrl-names = "default";
+};
+
+&spi0 {
+    status = "okay";
+    pinctrl-0 = <&spi0_default>;
+    pinctrl-names = "default";
+    clock-frequency = <DT_FREQ_M(2)>;
+};
+
+&adc {
+    status = "okay";
+    pinctrl-0 = <&adc_default>;
+    pinctrl-names = "default";
+};
+
+&i2c0 {
+    status = "okay";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-names = "default";
+    clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&timer {
+    status = "okay";
+};
+
+&wdt0 {
+    status = "okay";
+};
+
+zephyr_udc0: &usbd {
+    status = "okay";
+};
