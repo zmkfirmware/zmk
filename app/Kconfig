@@ -243,6 +243,10 @@ config BT_PERIPHERAL_PREF_TIMEOUT
 config BT_DEVICE_NAME_MAX
     default 16
 
+config ZMK_BLE_KEYBOARD_NAME_MAC
+    bool "Include MAC address in BLE device name"
+    depends on ZMK_SPLIT_ROLE_CENTRAL
+
 endif # ZMK_BLE
 
 endmenu # Output Types
