@@ -378,9 +378,6 @@ static int behavior_sticky_key_init(const struct device *dev) {
     return 0;
 }
 
-struct behavior_sticky_key_data {};
-static struct behavior_sticky_key_data behavior_sticky_key_data;
-
 #define KP_INST(n)                                                                                 \
     static const struct behavior_sticky_key_config behavior_sticky_key_config_##n = {              \
         .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, DT_DRV_INST(n)),                                 \
@@ -389,7 +386,7 @@ static struct behavior_sticky_key_data behavior_sticky_key_data;
         .lazy = DT_INST_PROP(n, lazy),                                                             \
         .ignore_modifiers = DT_INST_PROP(n, ignore_modifiers),                                     \
     };                                                                                             \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_sticky_key_init, NULL, &behavior_sticky_key_data,          \
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_sticky_key_init, NULL, NULL,                               \
                             &behavior_sticky_key_config_##n, POST_KERNEL,                          \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_sticky_key_driver_api);
 
