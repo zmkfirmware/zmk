@@ -10,6 +10,7 @@ import Metadata from "@site/src/data/hardware-metadata.json";
 export const SplitTabs = (props) => (
     <Tabs
     groupId="keyboard-type"
+    queryString
     defaultValue="unibody"
     values={[
       { label: "Unibody Keyboard", value: "unibody" },
@@ -25,6 +26,7 @@ export const SplitTabs = (props) => (
 export const SplitInvisTabs = (props) => (
     <Tabs
     groupId="keyboard-type"
+    queryString
     defaultValue="unibody"
     className="secrettabs"
     values={[
@@ -450,7 +452,7 @@ Also see the [matrix transform section](../../config/layout.md#matrix-transform)
 Your keyboard will need to have a physical layout defined.
 Physical layouts organize the matrix transform, kscan and optionally the physical description of key positions in a single entity.
 
-<Tabs groupId="physical-layouts" defaultValue="basic">
+<Tabs groupId="physical-layouts" queryString defaultValue="basic">
   <TabItem value="basic" label="Basic">
 
 If you are not planning to add support for [ZMK Studio](../../features/studio.md), you can add a `zmk,physical-layout`-compatible node for each physical layout your keyboard supports:
