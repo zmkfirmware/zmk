@@ -161,24 +161,36 @@ bool zmk_ble_active_profile_is_connected(void) {
     }                                                                                              \
     advertising_status = ZMK_ADV_CONN;
 
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
+static bool advertising_inhibit;
+#endif
+
 int update_advertising(void) {
     int err = 0;
     bt_addr_le_t *addr;
     struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
-    if (zmk_ble_active_profile_is_open()) {
-        desired_adv = ZMK_ADV_CONN;
-    } else if (!zmk_ble_active_profile_is_connected()) {
-        desired_adv = ZMK_ADV_CONN;
-        // Need to fix directed advertising for privacy centrals. See
-        // https://github.com/zephyrproject-rtos/zephyr/pull/14984 char
-        // addr_str[BT_ADDR_LE_STR_LEN]; bt_addr_le_to_str(zmk_ble_active_profile_addr(), addr_str,
-        // sizeof(addr_str));
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
+    // If the advertising timeout is enabled, inhibit advertising if the timeout is active
+    if (!advertising_inhibit) {
+#endif
+        if (zmk_ble_active_profile_is_open()) {
+            desired_adv = ZMK_ADV_CONN;
+        } else if (!zmk_ble_active_profile_is_connected()) {
+            desired_adv = ZMK_ADV_CONN;
+            // Need to fix directed advertising for privacy centrals. See
+            // https://github.com/zephyrproject-rtos/zephyr/pull/14984 char
+            // addr_str[BT_ADDR_LE_STR_LEN]; bt_addr_le_to_str(zmk_ble_active_profile_addr(),
+            // addr_str, sizeof(addr_str));
 
-        // LOG_DBG("Directed advertising to %s", addr_str);
-        // desired_adv = ZMK_ADV_DIR;
+            // LOG_DBG("Directed advertising to %s", addr_str);
+            // desired_adv = ZMK_ADV_DIR;
+        }
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
     }
+#endif
+
     LOG_DBG("advertising from %d to %d", advertising_status, desired_adv);
 
     switch (desired_adv + CURR_ADV(advertising_status)) {
@@ -210,6 +222,23 @@ static void update_advertising_callback(struct k_work *work) { update_advertisin
 
 K_WORK_DEFINE(update_advertising_work, update_advertising_callback);
 
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
+void set_advertising_inhibit(void) {
+    advertising_inhibit = true;
+    k_work_submit(&update_advertising_work);
+}
+
+void advertising_timeout(struct k_timer *timer) { set_advertising_inhibit(); }
+
+K_TIMER_DEFINE(advertising_timer, advertising_timeout, NULL);
+
+void advertising_timeout_timer_start(void) {
+    advertising_inhibit = false;
+    k_timer_start(&advertising_timer, K_SECONDS(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT_SECONDS),
+                  K_NO_WAIT);
+}
+#endif
+
 static void clear_profile_bond(uint8_t profile) {
     if (bt_addr_le_cmp(&profiles[profile].peer, BT_ADDR_LE_ANY)) {
         bt_unpair(BT_ID_DEFAULT, &profiles[profile].peer);
@@ -221,6 +250,9 @@ void zmk_ble_clear_bonds(void) {
     LOG_DBG("zmk_ble_clear_bonds()");
 
     clear_profile_bond(active_profile);
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
+    advertising_timeout_timer_start();
+#endif
     update_advertising();
 };
 
@@ -234,6 +266,9 @@ void zmk_ble_clear_all_bonds(void) {
 
     // Automatically switch to profile 0
     zmk_ble_prof_select(0);
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
+    advertising_timeout_timer_start();
+#endif
     update_advertising();
 };
 
@@ -277,6 +312,9 @@ int zmk_ble_prof_select(uint8_t index) {
     active_profile = index;
     ble_save_profile();
 
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
+    advertising_timeout_timer_start();
+#endif
     update_advertising();
 
     raise_profile_changed_event();
@@ -314,6 +352,12 @@ int zmk_ble_prof_disconnect(uint8_t index) {
 
     bt_conn_unref(conn);
     return result;
+}
+
+void zmk_ble_stop_advertise(void) {
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
+    set_advertising_inhibit();
+#endif
 }
 
 bt_addr_le_t *zmk_ble_active_profile_addr(void) { return &profiles[active_profile].peer; }
@@ -666,6 +710,9 @@ static void zmk_ble_ready(int err) {
         return;
     }
 
+#if IS_ENABLED(CONFIG_ZMK_BLE_ADVERTISING_TIMEOUT)
+    advertising_timeout_timer_start();
+#endif
     update_advertising();
 }
 
