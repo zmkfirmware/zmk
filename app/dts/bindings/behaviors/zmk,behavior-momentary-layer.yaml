@@ -6,3 +6,8 @@ description: Momentary layer on press/release behavior
 compatible: "zmk,behavior-momentary-layer"
 
 include: one_param.yaml
+
+properties:
+  locking:
+    type: boolean
+    description: Whether to "lock" the layer active, preventing behaviors without the "locking" property from deactivating the layer
