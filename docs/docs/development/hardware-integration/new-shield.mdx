@@ -513,6 +513,30 @@ If all of your physical layouts use the same `kscan` node under the hood, you ca
 
 :::
 
+### Wired Split
+
+<SplitTabs>
+<TabItem value="unibody">This is only required for wired split keyboards.</TabItem>
+<TabItem value="split">
+
+If testing the experimental [wired split](../../features/split-keyboards.md) support, you should assign a [predefined](./pinctrl.mdx#predefined-nodes) or [pinctrl configured](./pinctrl.mdx) UART to the `device` property of a new node with `compatible` value of `"zmk,wired-split"`:
+
+```dts
+/ {
+    wired_split {
+        compatible = "zmk,wired-split";
+        device = <&pro_micro_serial>;
+    };
+};
+```
+
+See the [wired split](../../config/split.md#wired-split) configuration for more details.
+
+For wireless split keyboards, this step should be skipped, especially since the UART pins on your controller might already be in use for other functionality.
+
+</TabItem>
+</SplitTabs>
+
 ## Default Keymap
 
 Each keyboard should provide a default keymap to be used when building the firmware, which can be overridden and customized by user configs.

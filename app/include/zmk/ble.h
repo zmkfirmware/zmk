@@ -10,8 +10,7 @@
 #include <zmk/ble/profile.h>
 
 #define ZMK_BLE_IS_CENTRAL                                                                         \
-    (IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_BLE) &&                                 \
-     IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
+    (IS_ENABLED(CONFIG_ZMK_SPLIT_BLE) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
 
 #if ZMK_BLE_IS_CENTRAL
 #define ZMK_BLE_PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS)
