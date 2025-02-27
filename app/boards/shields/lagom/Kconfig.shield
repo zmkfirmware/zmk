@@ -1,0 +1,2 @@
+config SHIELD_LAGOM
+    def_bool $(shields_list_contains,lagom)
