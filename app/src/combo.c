@@ -26,8 +26,20 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
+#if CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO > 0
+
+#warning                                                                                           \
+    "CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO is deprecated, and it auto-calculated from the devicetree now."
+
+#endif
+
+#define COMBOS_KEYS_BYTE_ARRAY(node_id)                                                            \
+    uint8_t _CONCAT(prop_, node_id)[DT_PROP_LEN(node_id, key_positions)];
+
+#define MAX_COMBO_KEYS sizeof(union {DT_INST_FOREACH_CHILD(0, COMBOS_KEYS_BYTE_ARRAY)})
+
 struct combo_cfg {
-    int32_t key_positions[CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO];
+    int32_t key_positions[MAX_COMBO_KEYS];
     int32_t key_position_len;
     struct zmk_behavior_binding behavior;
     int32_t timeout_ms;
@@ -48,8 +60,7 @@ struct active_combo {
     // The keys are removed from this array when they are released.
     // Once this array is empty, the behavior is released.
     uint32_t key_positions_pressed_count;
-    struct zmk_position_state_changed_event
-        key_positions_pressed[CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO];
+    struct zmk_position_state_changed_event key_positions_pressed[MAX_COMBO_KEYS];
 };
 
 struct combo_candidate {
@@ -62,7 +73,7 @@ struct combo_candidate {
 
 uint32_t pressed_keys_count = 0;
 // set of keys pressed
-struct zmk_position_state_changed_event pressed_keys[CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO] = {};
+struct zmk_position_state_changed_event pressed_keys[MAX_COMBO_KEYS] = {};
 // the set of candidate combos based on the currently pressed_keys
 struct combo_candidate candidates[CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY];
 // the last candidate that was completely pressed
