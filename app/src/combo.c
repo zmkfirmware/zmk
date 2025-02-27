@@ -105,9 +105,9 @@ struct combo_candidate {
 static const struct combo_cfg combos[] = {
     LISTIFY(10, COMBO_CONFIGS_WITH_MATCHING_POSITIONS_LEN, (), 0)};
 
-#define COMBO_ONE(n) 1
+#define COMBO_ONE(n) +1
 
-#define COMBO_CHILDREN_COUNT DT_INST_FOREACH_CHILD_SEP(0, COMBO_ONE, (+))
+#define COMBO_CHILDREN_COUNT (0 DT_INST_FOREACH_CHILD(0, COMBO_ONE))
 
 // TODO: Expand this more. Need an actual constant value to be used for LISTIFY later.
 #if COMBO_CHILDREN_COUNT > 32
