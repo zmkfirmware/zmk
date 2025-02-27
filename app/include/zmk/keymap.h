@@ -7,6 +7,7 @@
 #pragma once
 
 #include <zmk/events/position_state_changed.h>
+#include <zmk/events/behavior_binding_event.h>
 
 #define ZMK_LAYER_CHILD_LEN_PLUS_ONE(node) 1 +
 #define ZMK_KEYMAP_LAYERS_LEN                                                                      \
@@ -73,8 +74,9 @@ int zmk_keymap_save_changes(void);
 int zmk_keymap_discard_changes(void);
 int zmk_keymap_reset_settings(void);
 
-int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
-                                      int64_t timestamp);
+int zmk_keymap_raise_binding_event_at_layer_idx(zmk_keymap_layer_id_t layer_id, uint8_t source,
+                                                uint32_t position, enum trigger_type type,
+                                                int64_t timestamp);
 
 #define ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst)                                                  \
     {                                                                                              \
