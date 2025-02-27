@@ -56,7 +56,7 @@ struct input_listener_config_entry {
 };
 
 struct input_listener_layer_override {
-    uint32_t layer_mask;
+    uint64_t layer_mask;
     bool process_next;
     struct input_listener_config_entry config;
 };
@@ -210,7 +210,7 @@ static int filter_with_input_config(const struct input_listener_config *cfg,
     for (size_t oi = 0; oi < cfg->layer_overrides_len; oi++) {
         const struct input_listener_layer_override *override = &cfg->layer_overrides[oi];
         struct input_listener_processor_data *override_data = &data->layer_override_data[oi];
-        uint32_t mask = override->layer_mask;
+        uint64_t mask = override->layer_mask;
         uint8_t layer = 0;
         while (mask != 0) {
             if (mask & BIT(0) && zmk_keymap_layer_active(layer)) {
