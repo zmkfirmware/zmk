@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    chosen {
+        zephyr,console = &uart0;
+        zephyr,shell-uart = &uart0;
+        zephyr,uart-mcumgr = &uart0;
+        zephyr,bt-mon-uart = &uart0;
+        zephyr,bt-c2h-uart = &uart0;
+
+        zmk,battery = &vbatt;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 7>;
+        power-gpios = <&gpio0 14 (GPIO_OPEN_DRAIN | GPIO_ACTIVE_LOW)>;
+        output-ohms = <510000>;
+        full-ohms = <(1000000 + 510000)>;
+    };
+};
+
+&xiao_serial { status = "disabled"; };
+
+&xiao_i2c { status = "disabled"; };
+
+&xiao_spi { status = "disabled"; };
+
+&pwm0 { status = "disabled"; };
+
+&{/pwmleds} { status = "disabled"; };
+
+&ieee802154 { status = "disabled"; };
+
+/delete-node/ &usb_cdc_acm_uart;
