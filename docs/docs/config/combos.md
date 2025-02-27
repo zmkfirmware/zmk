@@ -11,12 +11,9 @@ See [Configuration Overview](index.md) for instructions on how to change these s
 
 Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 
-| Config                                | Type | Description                                                    | Default |
-| ------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS` | int  | Maximum number of combos that can be active at the same time   | 4       |
-| `CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY` | int  | Maximum number of active combos that use the same key position | 5       |
-
-If `CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY` is 5, you can have 5 separate combos that use position `0`, 5 combos that use position `1`, and so on.
+| Config                                | Type | Description                                                  | Default |
+| ------------------------------------- | ---- | ------------------------------------------------------------ | ------- |
+| `CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS` | int  | Maximum number of combos that can be active at the same time | 4       |
 
 ## Devicetree
 
