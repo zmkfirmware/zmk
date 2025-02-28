@@ -47,31 +47,23 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct combo_cfg {
     int32_t key_positions[MAX_COMBO_KEYS];
-    int32_t key_position_len;
-    struct zmk_behavior_binding behavior;
+    int16_t key_position_len;
+    int16_t require_prior_idle_ms;
     int32_t timeout_ms;
-    int32_t require_prior_idle_ms;
+    uint32_t layer_mask;
+    struct zmk_behavior_binding behavior;
     // if slow release is set, the combo releases when the last key is released.
     // otherwise, the combo releases when the first key is released.
     bool slow_release;
-    uint32_t layer_mask;
 };
 
 struct active_combo {
-    int32_t combo_idx;
+    int16_t combo_idx;
     // key_positions_pressed is filled with key_positions when the combo is pressed.
     // The keys are removed from this array when they are released.
     // Once this array is empty, the behavior is released.
-    uint32_t key_positions_pressed_count;
+    uint16_t key_positions_pressed_count;
     struct zmk_position_state_changed_event key_positions_pressed[MAX_COMBO_KEYS];
-};
-
-struct combo_candidate {
-    int32_t combo_idx;
-    // the time after which this behavior should be removed from candidates.
-    // by keeping track of when the candidate should be cleared there is no
-    // possibility of accidental releases.
-    int64_t timeout_at;
 };
 
 #define PROP_BIT_AT_IDX(n, prop, idx) BIT(DT_PROP_BY_IDX(n, prop, idx))
@@ -98,34 +90,36 @@ struct combo_candidate {
 
 #define COMBO_CONFIGS_WITH_MATCHING_POSITIONS_LEN(positions, _ignore)                              \
     DT_INST_FOREACH_CHILD_VARGS(0, COMBO_INST, positions)
+
+// We do some magic here to generate the `combos` array by "key position length", looping
+// by key position length and on each iteration, only include entries where the `key-positions`
+// length matches.
+// Doing so allows our bitmasks to be "shorted key positions list first" when searching for matches.
+// `20` is chosen as a reasonable limit, since the theoretical maximum number of keys you might
+// reasonably press simultaneously with 10 fingers is 20 keys, two keys per finger.
 static const struct combo_cfg combos[] = {
-    LISTIFY(10, COMBO_CONFIGS_WITH_MATCHING_POSITIONS_LEN, (), 0)};
+    LISTIFY(20, COMBO_CONFIGS_WITH_MATCHING_POSITIONS_LEN, (), 0)};
 
 #define COMBO_ONE(n) +1
 
 #define COMBO_CHILDREN_COUNT (0 DT_INST_FOREACH_CHILD(0, COMBO_ONE))
 
-// TODO: Expand this more. Need an actual constant value to be used for LISTIFY later.
-#if COMBO_CHILDREN_COUNT > 32
-#define BYTES_FOR_COMBOS_MASK 5
-#else
-// The smallest we can go is 4 bytes, to avoid unaligned access issues with bitfield ops
-#define BYTES_FOR_COMBOS_MASK 4
-#endif
+// We need at least 4 bytes to avoid alignment issues
+#define BYTES_FOR_COMBOS_MASK MAX(4, DIV_ROUND_UP(COMBO_CHILDREN_COUNT, 8))
 
-uint32_t pressed_keys_count = 0;
+uint8_t pressed_keys_count = 0;
 // set of keys pressed
 struct zmk_position_state_changed_event pressed_keys[MAX_COMBO_KEYS] = {};
 // the set of candidate combos based on the currently pressed_keys
 uint8_t candidates[BYTES_FOR_COMBOS_MASK];
 // the last candidate that was completely pressed
-int32_t fully_pressed_combo = INT32_MAX;
+int16_t fully_pressed_combo = INT16_MAX;
 // a lookup dict that maps a key position to all combos on that position
 uint8_t combo_lookup[ZMK_KEYMAP_LEN][BYTES_FOR_COMBOS_MASK] = {};
 // combos that have been activated and still have (some) keys pressed
 // this array is always contiguous from 0.
 struct active_combo active_combos[CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS] = {};
-int active_combo_count = 0;
+uint8_t active_combo_count = 0;
 
 struct k_work_delayable timeout_task;
 int64_t timeout_task_timeout_at;
@@ -256,12 +250,6 @@ static int filter_timed_out_candidates(int64_t timestamp) {
     return remaining_candidates;
 }
 
-static int clear_candidates() {
-    memset(candidates, 0, BYTES_FOR_COMBOS_MASK);
-
-    return MAX_COMBO_KEYS;
-}
-
 static int capture_pressed_key(const struct zmk_position_state_changed *ev) {
     if (pressed_keys_count == MAX_COMBO_KEYS) {
         return ZMK_EV_EVENT_BUBBLE;
@@ -274,7 +262,7 @@ static int capture_pressed_key(const struct zmk_position_state_changed *ev) {
 const struct zmk_listener zmk_listener_combo;
 
 static int release_pressed_keys() {
-    uint32_t count = pressed_keys_count;
+    uint8_t count = pressed_keys_count;
     pressed_keys_count = 0;
     for (int i = 0; i < count; i++) {
         struct zmk_position_state_changed_event *ev = &pressed_keys[i];
@@ -337,7 +325,7 @@ static void move_pressed_keys_to_active_combo(struct active_combo *active_combo)
 
 static struct active_combo *store_active_combo(int32_t combo_idx) {
     for (int i = 0; i < CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS; i++) {
-        if (active_combos[i].combo_idx == INT32_MAX) {
+        if (active_combos[i].combo_idx == INT16_MAX) {
             active_combos[i].combo_idx = combo_idx;
             active_combo_count++;
             return &active_combos[i];
@@ -368,7 +356,7 @@ static void deactivate_combo(int active_combo_index) {
                sizeof(struct active_combo));
     }
     active_combos[active_combo_count] = (struct active_combo){0};
-    active_combos[active_combo_count].combo_idx = INT32_MAX;
+    active_combos[active_combo_count].combo_idx = INT16_MAX;
 }
 
 /* returns true if a key was released. */
@@ -408,10 +396,10 @@ static bool release_combo_key(int32_t position, int64_t timestamp) {
 
 static int cleanup() {
     k_work_cancel_delayable(&timeout_task);
-    clear_candidates();
-    if (fully_pressed_combo != INT32_MAX) {
+    memset(candidates, 0, BYTES_FOR_COMBOS_MASK);
+    if (fully_pressed_combo != INT16_MAX) {
         activate_combo(fully_pressed_combo);
-        fully_pressed_combo = INT32_MAX;
+        fully_pressed_combo = INT16_MAX;
     }
     return release_pressed_keys();
 }
@@ -535,7 +523,7 @@ ZMK_SUBSCRIPTION(combo, zmk_keycode_state_changed);
 
 static int combo_init(void) {
     for (size_t i = 0; i < CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS; i++) {
-        active_combos[i].combo_idx = INT32_MAX;
+        active_combos[i].combo_idx = INT16_MAX;
     }
 
     k_work_init_delayable(&timeout_task, combo_timeout_handler);
