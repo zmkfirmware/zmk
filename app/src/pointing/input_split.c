@@ -59,7 +59,7 @@ int zmk_input_split_report_peripheral_event(uint8_t reg, uint8_t type, uint16_t 
             int ret = zmk_input_processor_handle_event(processors_##n[i].dev, evt,                 \
                                                        processors_##n[i].param1,                   \
                                                        processors_##n[i].param2, NULL);            \
-            if (ret == ZMK_INPUT_PROC_CONTINUE) { continue; } else { return; }                     \
+            if (ret != ZMK_INPUT_PROC_CONTINUE) { return; }                     \
         }                                                                                          \
         zmk_split_bt_report_input(DT_INST_REG_ADDR(n), evt->type, evt->code, evt->value,           \
                                   evt->sync);                                                      \
