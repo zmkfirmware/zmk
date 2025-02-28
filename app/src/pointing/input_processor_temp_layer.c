@@ -129,7 +129,6 @@ static void layer_disable_callback(struct k_work *work) {
 
 /* Event Handlers */
 static int handle_layer_state_changed(const struct device *dev, const zmk_event_t *eh) {
-    LOG_WRN("OH NO, LAYER STUFF!");
     struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
     int ret = k_mutex_lock(&data->lock, K_FOREVER);
     if (ret < 0) {
