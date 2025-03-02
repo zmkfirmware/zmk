@@ -84,7 +84,8 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh);
 ZMK_LISTENER(behavior_caps_word, caps_word_keycode_state_changed_listener);
 ZMK_SUBSCRIPTION(behavior_caps_word, zmk_keycode_state_changed);
 
-static const struct device *devs[] = {DT_INST_FOREACH_STATUS_OKAY(DEVICE_DT_INST_GET)};
+#define GET_DEV(inst) DEVICE_DT_INST_GET(inst),
+static const struct device *devs[] = {DT_INST_FOREACH_STATUS_OKAY(GET_DEV)};
 
 static bool caps_word_is_caps_includelist(const struct behavior_caps_word_config *config,
                                           uint16_t usage_page, uint8_t usage_id,
