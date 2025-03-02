@@ -1,0 +1,15 @@
+description: |
+  Defines a mapping from physical key positions to underglow pixel indexes, with (-1) values representing a key or space that doesn't have a corresponding LED.
+
+compatible: "zmk,underglow-transform"
+
+properties:
+  columns:
+    type: int
+    required: true
+  rows:
+    type: int
+    required: true
+  map:
+    type: array
+    required: true

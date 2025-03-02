@@ -22,6 +22,7 @@
 #include <zmk/activity.h>
 #include <zmk/usb.h>
 #include <zmk/event_manager.h>
+#include <zmk/events/position_state_changed.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
 #include <zmk/workqueue.h>
@@ -34,22 +35,29 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #endif
 
+#if DT_HAS_CHOSEN(zmk_underglow_transform)
+#define ZMK_UNDERGLOW_TRANSFORM_NODE DT_CHOSEN(zmk_underglow_transform)
+#define ZMK_UNDERGLOW_ROWS DT_PROP(ZMK_UNDERGLOW_TRANSFORM_NODE, rows)
+#define ZMK_UNDERGLOW_COLS DT_PROP(ZMK_UNDERGLOW_TRANSFORM_NODE, columns)
+#define ZMK_UNDERGLOW_TRANSFORM_LENGTH DT_PROP_LEN(ZMK_UNDERGLOW_TRANSFORM_NODE, map)
+static int underglow_transform[] = DT_PROP(ZMK_UNDERGLOW_TRANSFORM_NODE, map);
+#endif
+
 #define STRIP_CHOSEN DT_CHOSEN(zmk_underglow)
 #define STRIP_NUM_PIXELS DT_PROP(STRIP_CHOSEN, chain_length)
 
 #define HUE_MAX 360
 #define SAT_MAX 100
 #define BRT_MAX 100
+#define TICKS_PER_SECOND 30
+static struct led_rgb BLACK = (struct led_rgb){r : 0, g : 0, b : 0};
 
 BUILD_ASSERT(CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN <= CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX,
              "ERROR: RGB underglow maximum brightness is less than minimum brightness");
 
-enum rgb_underglow_effect {
-    UNDERGLOW_EFFECT_SOLID,
-    UNDERGLOW_EFFECT_BREATHE,
-    UNDERGLOW_EFFECT_SPECTRUM,
-    UNDERGLOW_EFFECT_SWIRL,
-    UNDERGLOW_EFFECT_NUMBER // Used to track number of underglow effects
+struct rgb_underglow_effect {
+    void (*tick_function)(void);
+    void (*event_listener)(const zmk_event_t *);
 };
 
 struct rgb_underglow_state {
@@ -58,6 +66,7 @@ struct rgb_underglow_state {
     uint8_t current_effect;
     uint16_t animation_step;
     bool on;
+    bool active;
 };
 
 static const struct device *led_strip;
@@ -70,6 +79,29 @@ static struct rgb_underglow_state state;
 static const struct device *const ext_power = DEVICE_DT_GET(DT_INST(0, zmk_ext_power_generic));
 #endif
 
+static void zmk_rgb_underglow_deactivate(void) {
+    state.active = false;
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
+    if (ext_power != NULL) {
+        int rc = ext_power_disable(ext_power);
+        if (rc != 0) {
+            LOG_ERR("Unable to disable EXT_POWER: %d", rc);
+        }
+    }
+#endif
+}
+
+static void zmk_rgb_underglow_activate(void) {
+    state.active = true;
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
+    if (ext_power != NULL) {
+        int rc = ext_power_enable(ext_power);
+        if (rc != 0) {
+            LOG_ERR("Unable to enable EXT_POWER: %d", rc);
+        }
+    }
+#endif
+}
 static struct zmk_led_hsb hsb_scale_min_max(struct zmk_led_hsb hsb) {
     hsb.b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN +
             (CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX - CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) * hsb.b / BRT_MAX;
@@ -130,6 +162,101 @@ static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
     return rgb;
 }
 
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+static int keymap_pos_to_led_index(int pos) {
+    int index = 0;
+    for (int i = 0; i < ZMK_UNDERGLOW_TRANSFORM_LENGTH; i++) {
+        if (underglow_transform[i] != -1 && underglow_transform[i] <= STRIP_NUM_PIXELS * 2) {
+            if (index == pos) {
+                return i;
+            }
+            index++;
+        }
+    }
+    return -1;
+}
+
+static int keymap_pos_to_row(int pos) { return keymap_pos_to_led_index(pos) / ZMK_UNDERGLOW_COLS; }
+
+static int keymap_pos_to_col(int pos) { return keymap_pos_to_led_index(pos) % ZMK_UNDERGLOW_COLS; }
+#endif
+
+static void fade_all_leds(void) {
+    int active_leds = 0;
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        int r = (pixels[i].r > 5) ? pixels[i].r * 0.97 : 0;
+        int g = (pixels[i].g > 5) ? pixels[i].g * 0.97 : 0;
+        int b = (pixels[i].b > 5) ? pixels[i].b * 0.97 : 0;
+        pixels[i] = (struct led_rgb){r : r, g : g, b : b};
+        if (r > 0 || g > 0 || b > 0) {
+            active_leds++;
+        }
+    }
+    if (state.active && active_leds == 0) {
+        zmk_rgb_underglow_deactivate();
+    }
+}
+
+static int get_index(int row, int col) {
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+    int transform_index = row * ZMK_UNDERGLOW_COLS + col;
+    if (transform_index >= ZMK_UNDERGLOW_TRANSFORM_LENGTH) {
+        return -EINVAL;
+    }
+    int index = underglow_transform[transform_index];
+#else
+    int index = row + col;
+#endif
+    return index;
+}
+
+static void set_led(int row, int col, struct led_rgb color) {
+    int index = get_index(row, col);
+    if (index < 0 || index > STRIP_NUM_PIXELS * 2) {
+        return;
+    }
+    if (color.r > 0 || color.g > 0 || color.b > 0) {
+        zmk_rgb_underglow_activate();
+    }
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (index >= STRIP_NUM_PIXELS) {
+        pixels[index % STRIP_NUM_PIXELS] = color;
+    }
+#elif IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (index < STRIP_NUM_PIXELS) {
+        pixels[index] = color;
+    }
+#endif
+#else
+    pixels[index % STRIP_NUM_PIXELS] = color;
+#endif
+}
+
+static struct led_rgb get_led(int row, int col) {
+    int index = get_index(row, col);
+    if (index < 0) {
+        return BLACK;
+    }
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (index >= STRIP_NUM_PIXELS) {
+        return pixels[index % STRIP_NUM_PIXELS];
+    } else {
+        return BLACK;
+    }
+#elif IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    if (index < STRIP_NUM_PIXELS) {
+        return pixels[index];
+    } else {
+        return BLACK;
+    }
+#endif
+#else
+    return pixels[index];
+#endif
+}
+
 static void zmk_rgb_underglow_effect_solid(void) {
     for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
         pixels[i] = hsb_to_rgb(hsb_scale_min_max(state.color));
@@ -175,20 +302,164 @@ static void zmk_rgb_underglow_effect_swirl(void) {
     state.animation_step = state.animation_step % HUE_MAX;
 }
 
+static bool just_dimmed(int row, int col) {
+    double window_start = 0.6;
+    double window_length = 0.1;
+    struct led_rgb led_val = get_led(row, col);
+    struct led_rgb state_col = hsb_to_rgb(hsb_scale_zero_max(state.color));
+    return led_val.r >= state_col.r * window_start && led_val.g >= state_col.g * window_start &&
+           led_val.b >= state_col.b * window_start &&
+           led_val.r <= state_col.r * (window_start + window_length) &&
+           led_val.g <= state_col.g * (window_start + window_length) &&
+           led_val.b <= state_col.b * (window_start + window_length);
+}
+
+static void zmk_rgb_underglow_effect_matrix(void) {
+    fade_all_leds();
+    int num_pixels = STRIP_NUM_PIXELS;
+    if (IS_ENABLED(CONFIG_ZMK_SPLIT)) {
+        num_pixels = num_pixels * 2;
+    }
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+    for (int col = 0; col < ZMK_UNDERGLOW_COLS; col++) {
+        for (int row = 0; row < ZMK_UNDERGLOW_ROWS; row++) {
+            if (just_dimmed(row, col) && row + 1 < ZMK_UNDERGLOW_ROWS) {
+                set_led(row + 1, col, hsb_to_rgb(hsb_scale_zero_max(state.color)));
+            } else if (row == 0 && rand() % 250 == 0) {
+                set_led(row, col, hsb_to_rgb(hsb_scale_zero_max(state.color)));
+            }
+        }
+    }
+#else
+    int index = state.animation_step / 10;
+    set_led(0, index, state.color);
+#endif
+
+    state.animation_step++;
+    state.animation_step = state.animation_step % (num_pixels * 10);
+}
+
+static void glitter_position_state_changed(const zmk_event_t *eh) {
+    const struct zmk_position_state_changed *pos_ev;
+    if ((pos_ev = as_zmk_position_state_changed(eh)) != NULL && pos_ev->state) {
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+        int index = keymap_pos_to_led_index(pos_ev->position);
+        if (index == -1) {
+            return;
+        }
+#else
+        int index = pos_ev->position;
+#endif
+        struct zmk_led_hsb color = state.color;
+        color.h = rand() % 360;
+        set_led(0, index, hsb_to_rgb(hsb_scale_zero_max(color)));
+    }
+}
+
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+static void light_circle_leds(int x_center, int y_center, int radius, struct led_rgb color) {
+    if (radius == 0) {
+        set_led(y_center, x_center, color);
+        return;
+    }
+    float num_pixels = 4 + (radius - 1) * 8;
+    for (int i = 0; i < num_pixels; i++) {
+        double angle = 2 * M_PI * (i / num_pixels);
+        int x = round(radius * cos(angle)) + x_center;
+        int y = round(radius * sin(angle)) + y_center;
+
+        if (x < ZMK_UNDERGLOW_COLS && y < ZMK_UNDERGLOW_ROWS && x >= 0 && y >= 0) {
+            set_led(y, x, color);
+        }
+    }
+}
+#endif
+
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+#define RIPPLE_STEPS 100
+#define RIPPLE_LENGTH 5
+#define MAX_RIPPLE_AGE                                                                             \
+    RIPPLE_STEPS *(fmax(ZMK_UNDERGLOW_COLS, ZMK_UNDERGLOW_ROWS) + (RIPPLE_LENGTH + 1) / 2)
+#define MAX_RIPPLES 3
+static int ripple_positions[MAX_RIPPLES];
+static int ripple_ages[MAX_RIPPLES];
+
+static int get_brightness(float stage, int radius) {
+    int x = radius;
+    if (x < fmax(stage - RIPPLE_LENGTH, 0) || x > stage) {
+        return 0;
+    }
+    float val = pow((x + RIPPLE_LENGTH - stage), 2) * log10f(-x + 1 + stage);
+    return fmin(val, RIPPLE_LENGTH) * 100 / RIPPLE_LENGTH;
+}
+
+#endif
+
+static void ripple_position_state_changed(const zmk_event_t *eh) {
+    const struct zmk_position_state_changed *pos_ev;
+    if ((pos_ev = as_zmk_position_state_changed(eh)) != NULL && pos_ev->state) {
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+        if (keymap_pos_to_row(pos_ev->position) >= 0 && keymap_pos_to_col(pos_ev->position) >= 0) {
+            for (int i = 0; i < MAX_RIPPLES; i++) {
+                if (ripple_positions[i] == -1) {
+                    ripple_positions[i] = pos_ev->position;
+                    ripple_ages[i] = MAX_RIPPLE_AGE;
+                    break;
+                }
+            }
+        }
+#else
+        int index = pos_ev->position;
+        struct zmk_led_hsb color = state.color;
+        color.h = rand() % 360;
+        set_led(0, index, hsb_to_rgb(hsb_scale_zero_max(color)));
+#endif
+    }
+}
+
+static void ripple() {
+    fade_all_leds();
+#ifdef ZMK_UNDERGLOW_TRANSFORM_NODE
+    float seconds_per_ripple = 2;
+    struct zmk_led_hsb color = state.color;
+    color.h = state.animation_step % 360;
+    for (int i = 0; i < MAX_RIPPLES; i++) {
+        if (ripple_positions[i] != -1) {
+            ripple_ages[i] -= (int)(MAX_RIPPLE_AGE / TICKS_PER_SECOND / seconds_per_ripple);
+
+            int stage = (MAX_RIPPLE_AGE - ripple_ages[i]) / 100.0;
+            int min_radius = fmax(stage - RIPPLE_LENGTH, 0);
+
+            for (int j = 0; j < RIPPLE_LENGTH; j++) {
+                color.b = get_brightness(stage, min_radius + j);
+                light_circle_leds(keymap_pos_to_col(ripple_positions[i]),
+                                  keymap_pos_to_row(ripple_positions[i]), min_radius + j,
+                                  hsb_to_rgb(hsb_scale_zero_max(color)));
+            }
+
+            if (ripple_ages[i] < 0) {
+                ripple_positions[i] = -1;
+            }
+        }
+    }
+    state.animation_step = (state.animation_step + 1) % 360;
+#endif
+}
+
+static const struct rgb_underglow_effect effects[] = {
+    {&zmk_rgb_underglow_effect_solid, NULL},    {&zmk_rgb_underglow_effect_breathe, NULL},
+    {&zmk_rgb_underglow_effect_spectrum, NULL}, {&zmk_rgb_underglow_effect_swirl, NULL},
+    {&zmk_rgb_underglow_effect_matrix, NULL},   {&fade_all_leds, &glitter_position_state_changed},
+    {&ripple, &ripple_position_state_changed},
+};
+
 static void zmk_rgb_underglow_tick(struct k_work *work) {
-    switch (state.current_effect) {
-    case UNDERGLOW_EFFECT_SOLID:
-        zmk_rgb_underglow_effect_solid();
-        break;
-    case UNDERGLOW_EFFECT_BREATHE:
-        zmk_rgb_underglow_effect_breathe();
-        break;
-    case UNDERGLOW_EFFECT_SPECTRUM:
-        zmk_rgb_underglow_effect_spectrum();
-        break;
-    case UNDERGLOW_EFFECT_SWIRL:
-        zmk_rgb_underglow_effect_swirl();
-        break;
+    if (effects[state.current_effect].tick_function != NULL) {
+        effects[state.current_effect].tick_function();
     }
 
     int err = led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
@@ -301,14 +572,7 @@ int zmk_rgb_underglow_on(void) {
     if (!led_strip)
         return -ENODEV;
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
-    if (ext_power != NULL) {
-        int rc = ext_power_enable(ext_power);
-        if (rc != 0) {
-            LOG_ERR("Unable to enable EXT_POWER: %d", rc);
-        }
-    }
-#endif
+    zmk_rgb_underglow_activate();
 
     state.on = true;
     state.animation_step = 0;
@@ -331,15 +595,7 @@ int zmk_rgb_underglow_off(void) {
     if (!led_strip)
         return -ENODEV;
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
-    if (ext_power != NULL) {
-        int rc = ext_power_disable(ext_power);
-        if (rc != 0) {
-            LOG_ERR("Unable to disable EXT_POWER: %d", rc);
-        }
-    }
-#endif
-
+    zmk_rgb_underglow_deactivate();
     k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &underglow_off_work);
 
     k_timer_stop(&underglow_tick);
@@ -349,14 +605,16 @@ int zmk_rgb_underglow_off(void) {
 }
 
 int zmk_rgb_underglow_calc_effect(int direction) {
-    return (state.current_effect + UNDERGLOW_EFFECT_NUMBER + direction) % UNDERGLOW_EFFECT_NUMBER;
+    const int NUM_EFFECTS = sizeof(effects) / sizeof(effects[0]);
+    return (state.current_effect + NUM_EFFECTS + direction) % NUM_EFFECTS;
 }
 
 int zmk_rgb_underglow_select_effect(int effect) {
+    const int NUM_EFFECTS = sizeof(effects) / sizeof(effects[0]);
     if (!led_strip)
         return -ENODEV;
 
-    if (effect < 0 || effect >= UNDERGLOW_EFFECT_NUMBER) {
+    if (effect < 0 || effect >= NUM_EFFECTS) {
         return -EINVAL;
     }
 
@@ -519,5 +777,15 @@ ZMK_SUBSCRIPTION(rgb_underglow, zmk_activity_state_changed);
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
 ZMK_SUBSCRIPTION(rgb_underglow, zmk_usb_conn_state_changed);
 #endif
+
+static int zmk_underglow_position_event_listener(const zmk_event_t *eh) {
+    if (effects[state.current_effect].event_listener != NULL) {
+        effects[state.current_effect].event_listener(eh);
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(rgb_underglow_pos, zmk_underglow_position_event_listener);
+ZMK_SUBSCRIPTION(rgb_underglow_pos, zmk_position_state_changed);
 
 SYS_INIT(zmk_rgb_underglow_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
