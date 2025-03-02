@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/zmkfirmware/zmk/compare/v0.2.0...v0.2.1) (2025-03-02)
+
+
+### Bug Fixes
+
+* **behaviors:** Proper comma separated device list ([#2850](https://github.com/zmkfirmware/zmk/issues/2850)) ([f20e6ea](https://github.com/zmkfirmware/zmk/commit/f20e6ea7594b49eef1e3acc017529073a0409962))
+
 ## [0.2.0](https://github.com/zmkfirmware/zmk/compare/v0.1.0...v0.2.0) (2025-03-01)
 
 
