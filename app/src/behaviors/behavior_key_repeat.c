@@ -77,7 +77,8 @@ static int key_repeat_keycode_state_changed_listener(const zmk_event_t *eh);
 ZMK_LISTENER(behavior_key_repeat, key_repeat_keycode_state_changed_listener);
 ZMK_SUBSCRIPTION(behavior_key_repeat, zmk_keycode_state_changed);
 
-static const struct device *devs[] = {DT_INST_FOREACH_STATUS_OKAY(DEVICE_DT_INST_GET)};
+#define GET_DEV(inst) DEVICE_DT_INST_GET(inst),
+static const struct device *devs[] = {DT_INST_FOREACH_STATUS_OKAY(GET_DEV)};
 
 static int key_repeat_keycode_state_changed_listener(const zmk_event_t *eh) {
     struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
