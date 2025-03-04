@@ -10,6 +10,7 @@ import Metadata from "@site/src/data/hardware-metadata.json";
 export const SplitTabs = (props) => (
     <Tabs
     groupId="keyboard-type"
+    queryString
     defaultValue="unibody"
     values={[
       { label: "Unibody Keyboard", value: "unibody" },
@@ -25,6 +26,7 @@ export const SplitTabs = (props) => (
 export const SplitInvisTabs = (props) => (
     <Tabs
     groupId="keyboard-type"
+    queryString
     defaultValue="unibody"
     className="secrettabs"
     values={[
@@ -46,7 +48,7 @@ This guide will walk through the steps necessary to add ZMK support for a keyboa
 
 The high level steps are:
 
-- Create a new [Zephyr module](https://docs.zephyrproject.org/3.5.0/develop/modules.html) to contain your shield.
+- Create a new [ZMK module](../module-creation.md) to contain your shield.
 - Create a new shield directory.
 - Add the base Kconfig files.
 - Add the shield overlay file defining:
@@ -61,9 +63,9 @@ Many of the above files will differ depending on whether your keyboard is a unib
 After adding ZMK support for a basic shield using this guide, check the sidebar for guides on adding any additional features (such as encoders) that your keyboard has.
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
-## New Zephyr Module Repository
+## New ZMK Module Repository
 
-The first step to creating the shield is to create a new Zephyr module repository from a template.
+The first step to creating the shield is to create a new ZMK module repository from a template.
 
 :::note
 This guide assumes you already have a configured GitHub account. If you don't yet have one, go ahead and [sign up](https://github.com/join) before continuing.
@@ -81,13 +83,14 @@ Follow these steps to create your new repository:
 - Click the green "Create repository" button
 
 The repository is a combination of the directories and files required of a ZMK config, and those required of a shield module.
-To create a shield module, the following components are needed:
+This enables the use of GitHub Actions to test that the shield is defined correctly.
+See also the page on [module creation](../module-creation.md) for a reference on exactly which file structure and files are required for a ZMK keyboard module.
 
-- The `boards/shields` directory, where the keyboard's files will go
-- The `zephyr/module.yml` file, which identifies and describes the module. See the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/develop/modules.html#module-yaml-file-description) for details on customising this file. For the purposes of creating a shield module, the default found in the template can be left untouched.
+We recommend that you take this moment to name your module according to our [convention](../module-creation.md), i.e. your `zephyr/module.yml` file should begin with
 
-Neither of these should be moved out of their parent directory.
-The other files and directories such as `config` are not necessary for the purposes of a shield module, but rather intended to be used for user configuration and testing.
+```yaml title="zephyr/module.yml"
+name: zmk-keyboard-<keyboard_name>
+```
 
 ## New Shield Directory
 
@@ -447,12 +450,38 @@ Also see the [matrix transform section](../../config/layout.md#matrix-transform)
 ### Physical Layout
 
 Your keyboard will need to have a physical layout defined.
-Read through our [dedicated page on physical layouts](./physical-layouts.md) for information on how to define a physical layout.
-Once you have finished creating your physical layout, you should import the file in which it was created:
+Physical layouts organize the matrix transform, kscan and optionally the physical description of key positions in a single entity.
+
+<Tabs groupId="physical-layouts" queryString defaultValue="basic">
+  <TabItem value="basic" label="Basic">
+
+If you are not planning to add support for [ZMK Studio](../../features/studio.md), you can add a `zmk,physical-layout`-compatible node for each physical layout your keyboard supports:
+
+```dts
+/ {
+    physical_layout0: physical_layout_0 { // First physical layout, use different naming for other layouts
+        compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
+        kscan = <&kscan0>; // Label of the kscan node, optional if all layouts use the same
+        transform = <&default_transform>; // Label of the matrix transform for this layout
+    };
+};
+```
+
+These nodes should be placed in `my_keyboard.overlay` for unibody keyboards and the shared `my_keyboard.dtsi` for splits.
+
+  </TabItem>
+  <TabItem value="studio" label="With ZMK Studio Support">
+
+If you are planning to add support for [ZMK Studio](../../features/studio.md), you should follow the [physical layouts documentation](physical-layouts.md) to create a new file `my_keyboard-layouts.dtsi` which includes the physical layout definitions.
+Once you have finished defining your physical layouts, import the `my_keyboard-layouts.dtsi` file at the top of your `my_keyboard.overlay` file (unibody) or `my_keyboard.dtsi` file (split).
 
 ```dts
 #include "my_keyboard-layouts.dtsi"
 ```
+
+  </TabItem>
+</Tabs>
 
 ### Chosen Node
 
@@ -488,11 +517,13 @@ If all of your physical layouts use the same `kscan` node under the hood, you ca
 
 Each keyboard should provide a default keymap to be used when building the firmware, which can be overridden and customized by user configs.
 For "shield keyboards", this should be placed in the `boards/shields/my_keyboard/my_keyboard.keymap` file.
-The keymap is configured as an additional devicetree overlay that includes the following:
 
 Here is an example simple keymap for a 3x3 macropad, with only one layer:
 
 ```dts title="my_keyboard.keymap"
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
 / {
     keymap {
         compatible = "zmk,keymap";

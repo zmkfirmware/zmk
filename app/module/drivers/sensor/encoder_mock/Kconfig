@@ -1,0 +1,7 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config ZMK_SENSOR_ENCODER_MOCK
+    bool "Mock Encoder Sensor"
+    default y
+    depends on DT_HAS_ZMK_SENSOR_ENCODER_MOCK_ENABLED

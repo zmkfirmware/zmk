@@ -82,6 +82,12 @@ The list of available settings is determined by various files in ZMK whose names
 
 See [Zephyr's Kconfig documentation](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html) for more details on Kconfig files.
 
+:::tip
+
+You can investigate the [final set of configuration settings](../troubleshooting/building-issues.md#configuration-setting-issues) that are in effect during a build to diagnose any issues with changing Kconfig settings.
+
+:::
+
 ### KConfig Value Types
 
 #### bool
@@ -130,6 +136,12 @@ Devicetree files look like this:
 Devicetree properties apply to specific nodes in the tree instead of globally. The properties that can be set for each node are determined by `.yaml` files in ZMK in the various `dts/bindings` folders.
 
 See [Zephyr's Devicetree guide](https://docs.zephyrproject.org/3.5.0/build/dts/index.html) for more details on Devicetree files.
+
+:::tip
+
+You can investigate the [final combined Devicetree](../troubleshooting/building-issues.md#devicetree-related-issues) produced during a build to diagnose any issues with changing Devicetree nodes.
+
+:::
 
 ### Changing Devicetree Properties
 

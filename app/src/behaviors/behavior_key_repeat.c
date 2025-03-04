@@ -77,7 +77,8 @@ static int key_repeat_keycode_state_changed_listener(const zmk_event_t *eh);
 ZMK_LISTENER(behavior_key_repeat, key_repeat_keycode_state_changed_listener);
 ZMK_SUBSCRIPTION(behavior_key_repeat, zmk_keycode_state_changed);
 
-static const struct device *devs[DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT)];
+#define GET_DEV(inst) DEVICE_DT_INST_GET(inst),
+static const struct device *devs[] = {DT_INST_FOREACH_STATUS_OKAY(GET_DEV)};
 
 static int key_repeat_keycode_state_changed_listener(const zmk_event_t *eh) {
     struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
@@ -85,11 +86,8 @@ static int key_repeat_keycode_state_changed_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    for (int i = 0; i < DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT); i++) {
+    for (int i = 0; i < ARRAY_SIZE(devs); i++) {
         const struct device *dev = devs[i];
-        if (dev == NULL) {
-            continue;
-        }
 
         struct behavior_key_repeat_data *data = dev->data;
         const struct behavior_key_repeat_config *config = dev->config;
@@ -106,20 +104,13 @@ static int key_repeat_keycode_state_changed_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
-static int behavior_key_repeat_init(const struct device *dev) {
-    const struct behavior_key_repeat_config *config = dev->config;
-    devs[config->index] = dev;
-    return 0;
-}
-
 #define KR_INST(n)                                                                                 \
     static struct behavior_key_repeat_data behavior_key_repeat_data_##n = {};                      \
     static struct behavior_key_repeat_config behavior_key_repeat_config_##n = {                    \
-        .index = n,                                                                                \
         .usage_pages = DT_INST_PROP(n, usage_pages),                                               \
         .usage_pages_count = DT_INST_PROP_LEN(n, usage_pages),                                     \
     };                                                                                             \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_key_repeat_init, NULL, &behavior_key_repeat_data_##n,      \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, &behavior_key_repeat_data_##n,                          \
                             &behavior_key_repeat_config_##n, POST_KERNEL,                          \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_repeat_driver_api);
 

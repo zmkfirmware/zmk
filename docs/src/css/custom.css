@@ -50,3 +50,8 @@
 .secrettabs {
   display: none;
 }
+
+.full-width-table table {
+  width: 100%;
+  display: table;
+}

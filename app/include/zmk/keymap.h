@@ -10,7 +10,10 @@
 
 #define ZMK_LAYER_CHILD_LEN_PLUS_ONE(node) 1 +
 #define ZMK_KEYMAP_LAYERS_LEN                                                                      \
-    (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), ZMK_LAYER_CHILD_LEN_PLUS_ONE) 0)
+    (COND_CODE_1(                                                                                  \
+        IS_ENABLED(CONFIG_ZMK_STUDIO),                                                             \
+        (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), ZMK_LAYER_CHILD_LEN_PLUS_ONE)),                  \
+        (DT_FOREACH_CHILD_STATUS_OKAY(DT_INST(0, zmk_keymap), ZMK_LAYER_CHILD_LEN_PLUS_ONE))) 0)
 
 /**
  * @brief A layer ID is a stable identifier to refer to a layer, regardless of ordering.

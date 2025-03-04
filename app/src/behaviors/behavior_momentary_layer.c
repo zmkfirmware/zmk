@@ -36,11 +36,6 @@ static const struct behavior_parameter_metadata metadata = {
 
 #endif
 
-struct behavior_mo_config {};
-struct behavior_mo_data {};
-
-static int behavior_mo_init(const struct device *dev) { return 0; };
-
 static int mo_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
@@ -61,9 +56,5 @@ static const struct behavior_driver_api behavior_mo_driver_api = {
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
-static const struct behavior_mo_config behavior_mo_config = {};
-
-static struct behavior_mo_data behavior_mo_data;
-
-BEHAVIOR_DT_INST_DEFINE(0, behavior_mo_init, NULL, &behavior_mo_data, &behavior_mo_config,
-                        POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mo_driver_api);
+BEHAVIOR_DT_INST_DEFINE(0, NULL, NULL, NULL, NULL, POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+                        &behavior_mo_driver_api);

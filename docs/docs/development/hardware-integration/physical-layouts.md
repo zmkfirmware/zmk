@@ -30,8 +30,8 @@ Every physical layout needs a matrix transform, and optionally can also have a k
 
 ```dts title="<your keyboard>.dts | <your keyboard>.dtsi | <your keyboard>.overlay"
 &physical_layout0 {
-    kscan = <&kscan0>;
-    transform = <&matrix_transform0>;
+    kscan = <&kscan0>; // Label of the kscan node this layout uses
+    transform = <&default_transform>; // Label of the matrix transform this layout uses
 };
 ```
 
@@ -64,7 +64,7 @@ You can specify negative values in devicetree using parentheses around it, e.g. 
 
 :::tip
 
-We recommend the use of [this tool](https://zmk-physical-layout-converter.streamlit.app/) for writing a physical layout or converting one from a QMK JSON definition. If your keyboard already has a physical layout defined for the use with KLE, we recommend using [this other tool](https://nickcoutsos.github.io/keymap-layout-tools/) first to convert your existing layout into QMK JSON.
+We recommend the use of [this tool](https://zmk-physical-layout-converter.streamlit.app/) for writing a physical layout or converting one from a QMK JSON definition. If your keyboard already has a physical layout defined for the use with KLE, we recommend using [this other tool](https://nickcoutsos.github.io/keymap-layout-tools/) first to convert your existing layout into QMK JSON. The second tool can also import the position data from KiCAD, if said program was used to design the keyboard.
 
 :::
 
@@ -146,7 +146,7 @@ Here is an example of using the predefined physical layouts for a 60% keyboard:
 If a keyboard has multiple possible layouts (e.g. you can snap off an outer column), then you should define multiple matrix transformations and multiple physical layouts, one for each possible layout.
 If necessary, you can also define multiple kscan instances.
 
-```dts
+```dts title="<your keyboard>-layouts.dtsi"
 // Needed if and only if keys property is used
 #include <physical_layouts.dtsi>
 
@@ -181,7 +181,7 @@ Keys whose positions can neither be inferred from the default layout nor have bi
 
 A position map looks something like this:
 
-```dts
+```dts title="<your keyboard>-layouts.dtsi"
 / {
     position_map {
         compatible = "zmk,physical-layout-position-map";
@@ -217,7 +217,7 @@ We recommend the use of [this tool](https://zmk-layout-helper.netlify.app/), dis
 
 Start by creating the parent node defining the position map:
 
-```dts
+```dts title="<your keyboard>-layouts.dtsi"
 / {
     keypad_position_map {
         compatible = "zmk,physical-layout-position-map";
@@ -236,7 +236,7 @@ It is easiest to write the position map by considering one layout to be the "ref
 
 Create the child node for the reference layout, and fill the `positions` array by counting upwards, giving it the same order and number of keys as the `keys` property of its physical layout. For a 2x2 macropad the child node would be
 
-```dts
+```dts title="2x2macropad-layouts.dtsi"
 / {
     keypad_position_map {
         // Other properties
@@ -261,7 +261,7 @@ Consider the following macropad/numpad with two physical layouts:
 
 Let us first consider each side individually. The "reference" position map of the left side would look like this:
 
-```dts
+```dts title="macropad-layouts.dtsi"
 / {
     keypad_position_map {
         // Other properties
@@ -281,7 +281,7 @@ Let us first consider each side individually. The "reference" position map of th
 
 Meanwhile, the "reference" position map of the right side with fewer keys would look like this:
 
-```dts
+```dts title="macropad-layouts.dtsi"
 / {
     keypad_position_map {
         // Other properties
@@ -303,7 +303,7 @@ As a reminder, the `positions` property is a one-dimensional array like the `key
 
 If the left side with more keys was used as the reference layout, then the overall position map of the keyboard would look like this:
 
-```dts
+```dts title="macropad-layouts.dtsi"
 / {
     keypad_position_map1 {
         compatible = "zmk,physical-layout-position-map";
@@ -336,7 +336,7 @@ The "missing" positions are filled with the "spare" numbers of the layout with m
 
 If the right side with fewer keys were used as a reference instead, then the overall position map would look like this:
 
-```dts
+```dts title="macropad-layouts.dtsi"
 / {
     keypad_position_map2 {
         compatible = "zmk,physical-layout-position-map";
@@ -373,7 +373,7 @@ Consider the above device again -- most of the positions have identical `keys` p
 
 A non-`complete` position map can be used to assign mappings to only these particular keys:
 
-```dts
+```dts title="macropad-layouts.dtsi"
 / {
     keypad_position_map3 {
         compatible = "zmk,physical-layout-position-map";
@@ -422,3 +422,5 @@ The following is an example of a position map which maps the 5-column and 6-colu
         };
     };
 ```
+
+The above position map is in actuality spread over [multiple files](https://github.com/zmkfirmware/zmk/tree/main/app/dts/layouts/foostan/corne), as one of our predefined layouts.

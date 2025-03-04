@@ -1,0 +1,9 @@
+
+if INPUT
+
+config ZMK_INPUT_MOCK
+    bool "Input Mock"
+    default y
+    depends on DT_HAS_ZMK_INPUT_MOCK_ENABLED
+
+endif

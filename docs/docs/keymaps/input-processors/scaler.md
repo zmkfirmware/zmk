@@ -33,11 +33,12 @@ A maximum value of `16` should be used for the multiplier and divisor parameters
 
 Three pre-defined instance of the scaler input processor are available:
 
-| Reference        | Description                                   |
-| ---------------- | --------------------------------------------- |
-| `&zip_xy_scaler` | Scale X- and Y-axis values by the same amount |
-| `&zip_x_scaler`  | Scale X-axis values                           |
-| `&zip_y_scaler`  | Scale Y-axis values                           |
+| Reference            | Description                                   |
+| -------------------- | --------------------------------------------- |
+| `&zip_xy_scaler`     | Scale X- and Y-axis values by the same amount |
+| `&zip_x_scaler`      | Scale X-axis values                           |
+| `&zip_y_scaler`      | Scale Y-axis values                           |
+| `&zip_scroll_scaler` | Scale wheel and horizontal wheel values       |
 
 ## User-Defined Instances
 

@@ -582,7 +582,7 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
 
     LOG_DBG("[ATTRIBUTE] handle %u", attr->handle);
     switch (params->type) {
-    case BT_GATT_DISCOVER_CHARACTERISTIC:
+    case BT_GATT_DISCOVER_CHARACTERISTIC: {
         const struct bt_uuid *chrc_uuid = ((struct bt_gatt_chrc *)attr->user_data)->uuid;
 
         if (bt_uuid_cmp(chrc_uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_POSITION_STATE_UUID)) ==
@@ -665,6 +665,7 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
         }
         break;
+    }
     case BT_GATT_DISCOVER_STD_CHAR_DESC:
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
         if (bt_uuid_cmp(slot->discover_params.uuid, BT_UUID_GATT_CCC) == 0) {

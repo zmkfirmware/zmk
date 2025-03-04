@@ -36,6 +36,7 @@ ZMK Studio currently has the following capabilities:
 |   ✅   | Renaming layers & enabling [extra layers](#including-extra-layers)                                                                        |
 |   ❌   | Adding more layers than specified by devicetree                                                                                           |
 |   💡   | Host locale selection                                                                                                                     |
+|   💡   | Importing and exporting keymaps                                                                                                           |
 
 Items listed as "planned", "under development", "low priority", or "not planned" can be configured using [devicetree](../config/index.md#devicetree-files) instead.
 
@@ -55,7 +56,7 @@ Generally, if you intend to use ZMK Studio, then you should not make any further
 
 You can use ZMK Studio with Chrome/Edge at https://zmk.studio/.
 
-To use the native app for Linux, macOS, or Windows, download the appropriate file from the [latest release](https://github.com/zmkfirmware/zmk-studio/releases).
+To use the native app for Linux, macOS, or Windows, visit the [download page](https://zmk.studio/download).
 
 :::warning
 

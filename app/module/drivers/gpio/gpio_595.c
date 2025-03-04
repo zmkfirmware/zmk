@@ -202,7 +202,7 @@ static int reg_595_init(const struct device *dev) {
     GPIO_PORT_PIN_MASK_FROM_NGPIOS(DT_INST_PROP(inst, ngpios))
 
 #define REG_595_INIT(n)                                                                            \
-    static struct reg_595_config reg_595_##n##_config = {                                          \
+    static const struct reg_595_config reg_595_##n##_config = {                                    \
         .common =                                                                                  \
             {                                                                                      \
                 .port_pin_mask = GPIO_PORT_PIN_MASK_FROM_DT_INST(n),                               \

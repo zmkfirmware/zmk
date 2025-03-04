@@ -12,6 +12,32 @@ endif
 config ZMK_HID_CONSUMER_REPORT_SIZE
     default 6
 
+# Behaviors
+
+if ZMK_BEHAVIOR_HOLD_TAP
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD
+    default 10
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS
+    default 40
+
+endif
+
+if ZMK_BEHAVIOR_STICKY_KEY
+
+config ZMK_BEHAVIOR_STICKY_KEY_MAX_HELD
+    default 10
+
+endif
+
+if ZMK_BEHAVIOR_TAP_DANCE
+
+config ZMK_BEHAVIOR_TAP_DANCE_MAX_HELD
+    default 10
+
+endif
+
 # Underglow
 if ZMK_RGB_UNDERGLOW
 

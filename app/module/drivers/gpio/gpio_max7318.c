@@ -322,7 +322,7 @@ static int max7318_init(const struct device *dev) {
     GPIO_PORT_PIN_MASK_FROM_NGPIOS(DT_INST_PROP(inst, ngpios))
 
 #define MAX7318_INIT(inst)                                                                         \
-    static struct max7318_config max7318_##inst##_config = {                                       \
+    static const struct max7318_config max7318_##inst##_config = {                                 \
         .common = {.port_pin_mask = GPIO_PORT_PIN_MASK_FROM_DT_INST(inst)},                        \
         .i2c_bus = I2C_DT_SPEC_INST_GET(inst)};                                                    \
                                                                                                    \

@@ -1,0 +1,25 @@
+profile 0 <wrn> bt_id: No static addresses stored in controller
+profile 0 <dbg> ble_central: main: [Bluetooth initialized]
+profile 0 <dbg> ble_central: start_scan: [Scanning successfully started]
+profile 0 <dbg> ble_central: device_found: [DEVICE]: FD:9E:B2:48:47:39 (random), AD evt type 0, AD data len 15, RSSI -56
+profile 0 <dbg> ble_central: eir_found: [AD]: 25 data_len 2
+profile 0 <dbg> ble_central: eir_found: [AD]: 1 data_len 1
+profile 0 <dbg> ble_central: eir_found: [AD]: 2 data_len 4
+profile 0 <dbg> ble_central: connected: [Connected]: FD:9E:B2:48:47:39 (random)
+profile 0 <dbg> ble_central: connected: [Setting the security for the connection]
+profile 0 <dbg> ble_central: pairing_complete: Pairing complete
+profile 0 <dbg> ble_central: discover_conn: [Discovery started for conn]
+profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 23
+profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 28
+profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 30
+profile 0 <dbg> ble_central: discover_func: [SUBSCRIBED]
+profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 32
+profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 34
+profile 0 <dbg> ble_central: discover_func: [CONSUMER SUBSCRIBED]
+profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 36
+profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 38
+profile 0 <dbg> ble_central: discover_func: [MOUSE SUBSCRIBED]
+profile 0 <dbg> ble_central: notify_func: payload
+profile 0                    00 64 00 64 00 00 00 00  00                      |.d.d.... .
+profile 0 <dbg> ble_central: notify_func: payload
+profile 0                    00 28 00 32 00 00 00 00  00                      |.(.2.... .

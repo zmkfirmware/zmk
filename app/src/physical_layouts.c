@@ -46,9 +46,11 @@ BUILD_ASSERT(
         .height = (int16_t)(int32_t)DT_INST_PHA_BY_IDX(n, keys, i, height),                        \
         .x = (int16_t)(int32_t)DT_INST_PHA_BY_IDX(n, keys, i, x),                                  \
         .y = (int16_t)(int32_t)DT_INST_PHA_BY_IDX(n, keys, i, y),                                  \
-        .rx = (int16_t)(int32_t)DT_INST_PHA_BY_IDX(n, keys, i, rx),                                \
-        .ry = (int16_t)(int32_t)DT_INST_PHA_BY_IDX(n, keys, i, ry),                                \
-        .r = (int16_t)(int32_t)DT_INST_PHA_BY_IDX(n, keys, i, r),                                  \
+        COND_CODE_1(IS_ENABLED(CONFIG_ZMK_PHYSICAL_LAYOUT_KEY_ROTATION),                           \
+                    (.rx = (int16_t)(int32_t)DT_INST_PHA_BY_IDX(n, keys, i, rx),                   \
+                     .ry = (int16_t)(int32_t)DT_INST_PHA_BY_IDX(n, keys, i, ry),                   \
+                     .r = (int16_t)(int32_t)DT_INST_PHA_BY_IDX(n, keys, i, r), ),                  \
+                    ())                                                                            \
     }
 
 #define ZMK_LAYOUT_INST(n)                                                                         \
