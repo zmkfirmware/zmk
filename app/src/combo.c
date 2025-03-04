@@ -105,7 +105,7 @@ static const struct combo_cfg combos[] = {
 #define COMBO_CHILDREN_COUNT (0 DT_INST_FOREACH_CHILD(0, COMBO_ONE))
 
 // We need at least 4 bytes to avoid alignment issues
-#define BYTES_FOR_COMBOS_MASK MAX(4, DIV_ROUND_UP(COMBO_CHILDREN_COUNT, 32))
+#define BYTES_FOR_COMBOS_MASK DIV_ROUND_UP(COMBO_CHILDREN_COUNT, 32)
 
 uint8_t pressed_keys_count = 0;
 // set of keys pressed
