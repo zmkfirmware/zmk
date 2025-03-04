@@ -105,17 +105,17 @@ static const struct combo_cfg combos[] = {
 #define COMBO_CHILDREN_COUNT (0 DT_INST_FOREACH_CHILD(0, COMBO_ONE))
 
 // We need at least 4 bytes to avoid alignment issues
-#define BYTES_FOR_COMBOS_MASK MAX(4, DIV_ROUND_UP(COMBO_CHILDREN_COUNT, 8))
+#define BYTES_FOR_COMBOS_MASK MAX(4, DIV_ROUND_UP(COMBO_CHILDREN_COUNT, 32))
 
 uint8_t pressed_keys_count = 0;
 // set of keys pressed
 struct zmk_position_state_changed_event pressed_keys[MAX_COMBO_KEYS] = {};
 // the set of candidate combos based on the currently pressed_keys
-uint8_t candidates[BYTES_FOR_COMBOS_MASK];
+uint32_t candidates[BYTES_FOR_COMBOS_MASK];
 // the last candidate that was completely pressed
 int16_t fully_pressed_combo = INT16_MAX;
 // a lookup dict that maps a key position to all combos on that position
-uint8_t combo_lookup[ZMK_KEYMAP_LEN][BYTES_FOR_COMBOS_MASK] = {};
+uint32_t combo_lookup[ZMK_KEYMAP_LEN][BYTES_FOR_COMBOS_MASK] = {};
 // combos that have been activated and still have (some) keys pressed
 // this array is always contiguous from 0.
 struct active_combo active_combos[CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS] = {};
@@ -178,24 +178,21 @@ static int setup_candidates_for_first_keypress(int32_t position, int64_t timesta
     return number_of_combo_candidates;
 }
 
+static uint8_t number_of_set_bits(uint32_t field) {
+    uint8_t count = 0;
+    while (field) {
+        field &= (field - 1);
+        count++;
+    }
+
+    return count;
+}
+
 static int filter_candidates(int32_t position) {
     int matches = 0;
-    for (int i = 0; i < ARRAY_SIZE(combos); i++) {
-        if (sys_bitfield_test_bit((mem_addr_t)&candidates, i)) {
-            const struct combo_cfg *candidate = &combos[i];
-            bool found = false;
-            for (int kp = 0; kp < candidate->key_position_len; kp++) {
-                if (candidate->key_positions[kp] == position) {
-                    matches++;
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                sys_bitfield_clear_bit((mem_addr_t)&candidates, i);
-            }
-        }
+    for (int i = 0; i < BYTES_FOR_COMBOS_MASK; i++) {
+        candidates[i] &= combo_lookup[position][i];
+        matches += number_of_set_bits(candidates[i]);
     }
 
     LOG_DBG("combo matches after filter %d", matches);
