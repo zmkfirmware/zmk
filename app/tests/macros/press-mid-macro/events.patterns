@@ -1,2 +1,2 @@
 s/.*hid_listener_keycode/kp/p
-s/.*raise_binding_event_at_layer_idx/binding_ev/p
+s/.*raise_binding_event_at_layer_index/binding_ev/p

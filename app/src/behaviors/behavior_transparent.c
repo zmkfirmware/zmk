@@ -19,8 +19,13 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static int on_keymap_binding_trigger(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
-    return zmk_keymap_raise_binding_event_at_layer_idx(event.layer - 1, event.source,
-                                                       event.position, event.type, event.timestamp);
+    // Avoid uint8_t overflow resulting in an infinite loop
+    if (LAYER_ID_TO_INDEX(event.layer) == 0) {
+        return 0;
+    }
+    return zmk_keymap_raise_binding_event_at_layer_index(LAYER_ID_TO_INDEX(event.layer) - 1,
+                                                         event.source, event.position, event.type,
+                                                         event.timestamp);
 }
 
 static const struct behavior_driver_api behavior_transparent_driver_api = {
