@@ -508,7 +508,6 @@ static int position_state_changed_listener(const zmk_event_t *ev) {
 static int keycode_state_changed_listener(const zmk_event_t *eh) {
     struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
     if (ev->state && !is_mod(ev->usage_page, ev->keycode)) {
-        LOG_DBG("help");
         store_last_tapped(ev->timestamp);
     }
     return ZMK_EV_EVENT_BUBBLE;

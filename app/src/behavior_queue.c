@@ -39,19 +39,14 @@ static void behavior_queue_process_next(struct k_work *work) {
         struct zmk_behavior_binding_event event = {.binding = &item.binding,
                                                    .position = item.position,
                                                    .timestamp = k_uptime_get(),
+                                                   .type = item.press ? PRESS : RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
                                                    .source = item.source
 #endif
         };
-
-        if (item.press) {
-            event.type = PRESS;
-        } else {
-            event.type = RELEASE;
-        }
         ret = raise_zmk_behavior_binding_event(event);
         if (ret < 0) {
-            LOG_DBG("Error %d occurred while processing behavior in queue.", ret);
+            LOG_ERR("Error %d occurred while processing behavior in queue.", ret);
         }
         LOG_DBG("Processing next queued behavior in %dms", item.wait);
 

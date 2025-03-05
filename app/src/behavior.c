@@ -94,6 +94,7 @@ static int invoke_locally(struct zmk_behavior_binding *binding,
 int behavior_listener(const zmk_event_t *eh) {
     struct zmk_behavior_binding_event *event = as_zmk_behavior_binding_event(eh);
     if (event == NULL) {
+        LOG_ERR("An invalid event was passed as an argument somehow.");
         return -EINVAL;
     }
 
@@ -129,9 +130,8 @@ int behavior_listener(const zmk_event_t *eh) {
 #if ZMK_BLE_IS_CENTRAL // source is a member of event because CONFIG_ZMK_SPLIT is enabled
         if (event->source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
             return invoke_locally(&binding, event);
-        } else {
-            return zmk_split_bt_invoke_behavior(event->source, &binding, event);
         }
+        return zmk_split_bt_invoke_behavior(event->source, &binding, event);
 #else
         return invoke_locally(&binding, event);
 #endif
