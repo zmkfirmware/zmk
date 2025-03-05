@@ -605,6 +605,15 @@
 #define HID_USAGE_LED_PLAYER_7 (0x67)                   // Sel
 #define HID_USAGE_LED_PLAYER_8 (0x68)                   // Sel
 
+
+#define HID_USAGE_BUTTON_UNDEFINED (0x00)
+#define HID_USAGE_BUTTON_BUTTON1 (0x01)                 // MC
+#define HID_USAGE_BUTTON_BUTTON2 (0x02)                 // MC
+#define HID_USAGE_BUTTON_BUTTON3 (0x03)                 // MC
+#define HID_USAGE_BUTTON_BUTTON4 (0x04)                 // MC
+#define HID_USAGE_BUTTON_BUTTON5 (0x05)                 // MC
+
+
 /* Page 0x0B: Telephony Device */
 #define HID_USAGE_TELEPHONY_UNDEFINED (0x00)
 #define HID_USAGE_TELEPHONY_PHONE (0x01)                        // CA
