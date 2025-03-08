@@ -702,6 +702,24 @@ static int zmk_ble_complete_startup(void) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START)
 
+#if IS_ENABLED(CONFIG_ZMK_BLE_KEYBOARD_NAME_MAC)
+    bt_addr_le_t addrs[CONFIG_BT_ID_MAX];
+    size_t id_count;
+    bt_id_get(addrs, &id_count);
+    if (id_count < 1) {
+        LOG_ERR("Failed to get Bluetooth device address");
+    } else {
+        // The generated name can be a maximum of 29 bytes (plus NULL) since
+        // CONFIG_BT_DEVICE_NAME is 16 bytes at most.
+        char name[30] = {};
+        uint8_t *a = addrs[0].a.val;
+        snprintf(name, sizeof(name), "%s %02X%02X%02X%02X%02X%02X", CONFIG_BT_DEVICE_NAME, a[5],
+                 a[4], a[3], a[2], a[1], a[0]);
+        name[CONFIG_BT_DEVICE_NAME_MAX] = '\0';
+        zmk_ble_set_device_name(name);
+    }
+#endif
+
     bt_conn_cb_register(&conn_callbacks);
     bt_conn_auth_cb_register(&zmk_ble_auth_cb_display);
     bt_conn_auth_info_cb_register(&zmk_ble_auth_info_cb_display);
