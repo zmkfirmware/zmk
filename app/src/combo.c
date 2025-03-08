@@ -178,9 +178,9 @@ static int setup_candidates_for_first_keypress(int32_t position, int64_t timesta
     return number_of_combo_candidates;
 }
 
-static uint8_t number_of_set_bits(uint32_t field) {
+static uint8_t zero_one_or_more_bits(uint32_t field) {
     uint8_t count = 0;
-    while (field) {
+    while (field && count < 2) {
         field &= (field - 1);
         count++;
     }
@@ -192,7 +192,9 @@ static int filter_candidates(int32_t position) {
     int matches = 0;
     for (int i = 0; i < BYTES_FOR_COMBOS_MASK; i++) {
         candidates[i] &= combo_lookup[position][i];
-        matches += number_of_set_bits(candidates[i]);
+        if (matches < 2) {
+            matches += zero_one_or_more_bits(candidates[i]);
+        }
     }
 
     LOG_DBG("combo matches after filter %d", matches);
