@@ -20,27 +20,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/behavior.h>
 #include <zmk/keymap.h>
 
-struct zmk_sensor_data sensor_data[ZMK_KEYMAP_SENSORS_LEN] = {};
-
-struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx) {
-    if (sensor_idx >= ZMK_KEYMAP_SENSORS_LEN) {
-        return NULL;
-    }
-    return &sensor_data[sensor_idx];
-};
-
-void zmk_sensor_set_num_triggers(uint32_t sensor_idx, int num_triggers) {
-    if (sensor_idx < ZMK_KEYMAP_SENSORS_LEN) {
-        sensor_data[sensor_idx].num_triggers = num_triggers;
-    }
-};
-
-void zmk_sensor_set_remainder(uint32_t sensor_idx, struct sensor_value remainder) {
-    if (sensor_idx < ZMK_KEYMAP_SENSORS_LEN) {
-        sensor_data[sensor_idx].remainder = remainder;
-    }
-};
-
 #if ZMK_KEYMAP_HAS_SENSORS
 
 struct sensors_item_cfg {
@@ -77,6 +56,26 @@ static struct zmk_sensor_config configs[] = {
 };
 
 static struct sensors_item_cfg sensors[] = {LISTIFY(ZMK_KEYMAP_SENSORS_LEN, SENSOR_ITEM, (, ), 0)};
+struct zmk_sensor_data sensor_data[ZMK_KEYMAP_SENSORS_LEN] = {};
+
+struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx) {
+    if (sensor_idx >= ZMK_KEYMAP_SENSORS_LEN) {
+        return NULL;
+    }
+    return &sensor_data[sensor_idx];
+};
+
+void zmk_sensor_set_num_triggers(uint32_t sensor_idx, int num_triggers) {
+    if (sensor_idx < ZMK_KEYMAP_SENSORS_LEN) {
+        sensor_data[sensor_idx].num_triggers = num_triggers;
+    }
+};
+
+void zmk_sensor_set_remainder(uint32_t sensor_idx, struct sensor_value remainder) {
+    if (sensor_idx < ZMK_KEYMAP_SENSORS_LEN) {
+        sensor_data[sensor_idx].remainder = remainder;
+    }
+};
 
 static ATOMIC_DEFINE(pending_sensors, ZMK_KEYMAP_SENSORS_LEN);
 
