@@ -1,0 +1,33 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/hid_indicators.h>
+
+/ {
+    behaviors {
+        ug_nl: ugnumlk {
+            compatible = "zmk,behavior-underglow-indicators";
+            indicator = <NUM_LOCK>;
+            #binding-cells = <2>;
+            display-name = "Underglow NumLock indicator";
+        };
+
+        ug_cl: ugcapslk {
+            compatible = "zmk,behavior-underglow-indicators";
+            indicator = <CAPS_LOCK>;
+            #binding-cells = <2>;
+            display-name = "Underglow CapsLock indicator";
+        };
+
+        ug_sl: ugscrllk {
+            compatible = "zmk,behavior-underglow-indicators";
+            indicator = <SCROLL_LOCK>;
+            #binding-cells = <2>;
+            display-name = "Underglow ScrollLock indicator";
+        };
+
+    };
+};

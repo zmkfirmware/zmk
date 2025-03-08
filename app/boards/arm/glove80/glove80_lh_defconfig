@@ -79,6 +79,13 @@ CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB=y
 # space.
 CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC=y
 
+# Enable USB boot protocol support
+CONFIG_ZMK_USB_BOOT=y
+CONFIG_ZMK_HID_INDICATORS=y
+
+# Send HID indicator to peripherals
+CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS=y
+
 # Turn on debugging to disable optimization. Debug messages can result in larger
 # stacks, so enable stack protection and particularly a larger BLE peripheral stack.
 # CONFIG_DEBUG=y
