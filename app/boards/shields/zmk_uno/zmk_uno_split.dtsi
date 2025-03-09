@@ -11,9 +11,18 @@ left_encoder: &encoder {
     status = "disabled";
 };
 
+&arduino_serial {
+    status = "okay";
+};
+
 / {
     chosen {
         zmk,physical-layout = &split_matrix_physical_layout;
+    };
+
+    wired_split {
+        compatible = "zmk,wired-split";
+        device = <&arduino_serial>;
     };
 
     split_matrix_transform: split_matrix_transform {
