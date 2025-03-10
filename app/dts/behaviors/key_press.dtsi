@@ -17,4 +17,9 @@
             display-name = "Key Press";
         };
     };
+
+    kp_input_listener: kp_input_listener {
+        compatible = "zmk,input-listener";
+        device = <&kp>;
+    };
 };
