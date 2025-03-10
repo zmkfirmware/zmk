@@ -1089,14 +1089,23 @@ split_bt_invoke_behavior_payload(struct zmk_split_run_behavior_payload_wrapper p
 };
 
 int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *binding,
-                                 struct zmk_behavior_binding_event event, bool state) {
+                                 struct zmk_behavior_binding_event *event) {
     struct zmk_split_run_behavior_payload payload = {.data = {
                                                          .param1 = binding->param1,
                                                          .param2 = binding->param2,
-                                                         .position = event.position,
-                                                         .source = event.source,
-                                                         .state = state ? 1 : 0,
+                                                         .position = event->position,
+                                                         .source = event->source,
                                                      }};
+    switch (event->type) {
+    case PRESS:
+        payload.data.state = 1;
+        break;
+    case RELEASE:
+        payload.data.state = 0;
+        break;
+    default:
+        return -EINVAL;
+    }
     const size_t payload_dev_size = sizeof(payload.behavior_dev);
     if (strlcpy(payload.behavior_dev, binding->behavior_dev, payload_dev_size) >=
         payload_dev_size) {

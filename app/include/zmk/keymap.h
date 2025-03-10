@@ -7,6 +7,7 @@
 #pragma once
 
 #include <zmk/events/position_state_changed.h>
+#include <zmk/events/behavior_binding_event.h>
 
 #define ZMK_LAYER_CHILD_LEN_PLUS_ONE(node) 1 +
 #define ZMK_KEYMAP_LAYERS_LEN                                                                      \
@@ -58,6 +59,13 @@ int zmk_keymap_restore_layer(zmk_keymap_layer_id_t id, zmk_keymap_layer_index_t 
 int zmk_keymap_move_layer(zmk_keymap_layer_index_t start_idx, zmk_keymap_layer_index_t dest_idx);
 
 int zmk_keymap_set_layer_name(zmk_keymap_layer_id_t id, const char *name, size_t size);
+uint8_t zmk_keymap_map_layer_id_to_index(zmk_keymap_layer_id_t layer_id);
+
+#define LAYER_ID_TO_INDEX(_layer) zmk_keymap_map_layer_id_to_index(_layer)
+
+#else
+
+#define LAYER_ID_TO_INDEX(_layer) _layer
 
 #endif
 
@@ -73,8 +81,9 @@ int zmk_keymap_save_changes(void);
 int zmk_keymap_discard_changes(void);
 int zmk_keymap_reset_settings(void);
 
-int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
-                                      int64_t timestamp);
+int zmk_keymap_raise_binding_event_at_layer_index(zmk_keymap_layer_id_t layer_index, uint8_t source,
+                                                  uint32_t position, enum trigger_type type,
+                                                  int64_t timestamp);
 
 #define ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst)                                                  \
     {                                                                                              \
