@@ -17,6 +17,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/matrix.h>
 #include <zmk/sensors.h>
 #include <zmk/virtual_key_position.h>
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
+#include <zmk/split/bluetooth/central.h>
+#endif
 
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
@@ -155,6 +158,9 @@ static inline int set_layer_state(zmk_keymap_layer_id_t layer_id, bool state) {
         if (ret < 0) {
             LOG_WRN("Failed to raise layer state changed (%d)", ret);
         }
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
+        zmk_split_bt_update_layers(_zmk_keymap_layer_state);
+#endif
     }
 
     return ret;

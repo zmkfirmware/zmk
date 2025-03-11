@@ -63,6 +63,10 @@ CONFIG_ZMK_RGB_UNDERGLOW_HUE_START=285
 CONFIG_ZMK_RGB_UNDERGLOW_SAT_START=75
 CONFIG_ZMK_RGB_UNDERGLOW_BRT_START=16
 
+# Enable HID indicators on peripheral
+CONFIG_ZMK_HID_INDICATORS=y
+CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS=y
+
 # The power LED is implemented as a backlight
 # For now, the power LED is acting as a "USB connected" indicator
 CONFIG_ZMK_BACKLIGHT=y

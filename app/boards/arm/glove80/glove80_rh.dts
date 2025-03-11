@@ -20,6 +20,14 @@
         zmk,battery   = &vbatt;
     };
 
+    underglow-layer {
+        compatible  = "zmk,underglow-layer";
+        pixel-lookup = <57>, <56>, <55>, <74>, <73>, <72>, <16>, <28>, <40>, <58>, <5>,  <17>, <29>, <41>,
+                    <59>, <75>, <6>,  <18>, <30>, <42>, <60>, <76>, <7>,  <19>, <31>, <43>, <61>, <77>,
+                    <8>,  <20>, <32>, <44>, <62>, <78>, <9>,  <21>, <33>, <45>, <63>, <79>;
+    };
+
+
     back_led_backlight: pwmleds {
         compatible = "pwm-leds";
         pwm_led_0 {
