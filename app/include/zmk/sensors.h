@@ -14,6 +14,18 @@
 
 #if ZMK_KEYMAP_HAS_SENSORS
 #define ZMK_KEYMAP_SENSORS_LEN DT_PROP_LEN(ZMK_KEYMAP_SENSORS_NODE, sensors)
+
+struct zmk_sensor_data {
+    struct sensor_value remainder;
+    int num_triggers;
+};
+
+struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx);
+
+void zmk_sensor_set_num_triggers(uint32_t sensor_idx, int num_triggers);
+
+void zmk_sensor_set_remainder(uint32_t sensor_idx, struct sensor_value remainder);
+
 #else
 #define ZMK_KEYMAP_SENSORS_LEN 0
 #endif
