@@ -1,0 +1,14 @@
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(IND)
+        /omit-if-no-ref/
+#endif
+        ind: indic {
+            compatible = "zmk,behavior-indicators";
+            #binding-cells = <1>;
+            display-name = "Indicators";
+        };
+    };
+};

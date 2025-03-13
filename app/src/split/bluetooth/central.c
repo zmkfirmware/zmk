@@ -59,6 +59,7 @@ struct peripheral_slot {
     uint16_t update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     uint16_t selected_physical_layout_handle;
+    uint8_t udpate_bat_st;
     uint8_t position_state[POSITION_STATE_DATA_LEN];
     uint8_t changed_positions[POSITION_STATE_DATA_LEN];
 };
@@ -213,7 +214,7 @@ int release_peripheral_slot(int index) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     slot->update_hid_indicators = 0;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-
+    slot->udpate_bat_st = 0;
     return 0;
 }
 
@@ -646,6 +647,12 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
             LOG_DBG("Found update HID indicators handle");
             slot->update_hid_indicators = bt_gatt_attr_value_handle(attr);
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+
+        } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                            BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CALL_BAT_ST_ASKED_UUID))) {
+            LOG_DBG("Found update bat asked handle");
+            slot->udpate_bat_st = bt_gatt_attr_value_handle(attr);
+
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
         } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                                 BT_UUID_BAS_BATTERY_LEVEL)) {
@@ -1065,8 +1072,6 @@ K_WORK_DEFINE(split_central_split_run_work, split_central_split_run_callback);
 
 static int
 split_bt_invoke_behavior_payload(struct zmk_split_run_behavior_payload_wrapper payload_wrapper) {
-    LOG_DBG("");
-
     int err = k_msgq_put(&zmk_split_central_split_run_msgq, &payload_wrapper, K_MSEC(100));
     if (err) {
         switch (err) {
@@ -1082,6 +1087,7 @@ split_bt_invoke_behavior_payload(struct zmk_split_run_behavior_payload_wrapper p
         }
     }
 
+    LOG_DBG("Submit to queue");
     k_work_submit_to_queue(&split_central_split_run_q, &split_central_split_run_work);
 
     return 0;
@@ -1089,6 +1095,7 @@ split_bt_invoke_behavior_payload(struct zmk_split_run_behavior_payload_wrapper p
 
 int zmk_split_bt_invoke_behavior(uint8_t source, struct zmk_behavior_binding *binding,
                                  struct zmk_behavior_binding_event event, bool state) {
+    LOG_DBG("Invoke BT behavior");
     struct zmk_split_run_behavior_payload payload = {.data = {
                                                          .param1 = binding->param1,
                                                          .param2 = binding->param2,
@@ -1143,6 +1150,27 @@ int zmk_split_bt_update_hid_indicator(zmk_hid_indicators_t indicators) {
 }
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+
+
+static uint8_t bat_d = 0;
+static void split_central_bat_st_asked_callback(struct k_work *work) {
+    for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
+        if (peripherals[i].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+        // if (peripherals[i].state != PERIPHERAL_SLOT_STATE_CONNECTED || peripherals[i].udpate_bat_st == 0) {
+            LOG_DBG("Skip battery status asked for unconnected peripheral %d %d", peripherals[i].state, peripherals[i].udpate_bat_st);
+            continue;
+        }
+        int err = bt_gatt_write_without_response(peripherals[i].conn, peripherals[i].udpate_bat_st, &bat_d, sizeof(bat_d), true);
+        if (err) {
+            LOG_ERR("Failed to send battery status asked to peripheral (err %d)", err);
+        }
+    }
+}
+static K_WORK_DEFINE(split_central_bat_st_asked, split_central_bat_st_asked_callback);
+int zmk_split_bt_call_bat_st_asked() {
+    return k_work_submit_to_queue(&split_central_split_run_q, &split_central_bat_st_asked);
+}
+
 
 static int finish_init() {
     return IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START) ? 0 : start_scanning();

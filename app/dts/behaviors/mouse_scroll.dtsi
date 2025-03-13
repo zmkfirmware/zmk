@@ -16,6 +16,7 @@
             y-input-code = <INPUT_REL_WHEEL>;
             time-to-max-speed-ms = <300>;
             acceleration-exponent = <0>;
+            display-name = "Mouse Scroll";
         };
     };
 

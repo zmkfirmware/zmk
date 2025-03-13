@@ -33,7 +33,6 @@ static bool encode_behavior_summaries(pb_ostream_t *stream, const pb_field_t *fi
 }
 
 zmk_studio_Response list_all_behaviors(const zmk_studio_Request *req) {
-    LOG_DBG("");
     zmk_behaviors_ListAllBehaviorsResponse beh_resp =
         zmk_behaviors_ListAllBehaviorsResponse_init_zero;
     beh_resp.behaviors.funcs.encode = encode_behavior_summaries;

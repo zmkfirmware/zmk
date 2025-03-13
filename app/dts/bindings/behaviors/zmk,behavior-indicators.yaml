@@ -1,0 +1,5 @@
+description: Indicators Behavior
+
+compatible: "zmk,behavior-indicators"
+
+include: one_param.yaml

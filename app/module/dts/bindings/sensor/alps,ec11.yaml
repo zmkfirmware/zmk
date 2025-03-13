@@ -25,3 +25,30 @@ properties:
     type: int
     description: Number of pulses in one full rotation
     required: false
+  # positive-values:
+  #   type: array
+  #   description: List of `uint8_t` values that should be considered as positive rotations
+  #   required: false
+  #   default: [1, 7, 14, 8]
+  # negative-values:
+  #   type: array
+  #   description: List of `uint8_t` values that should be considered as negative rotations
+  #   required: false
+  #   default: [2, 4, 13, 11]
+  # consistent:
+  #   type: int
+  #   description: AAAA
+  #   required: false
+  #   default: 0
+  debounce-ms:
+    type: int
+    default: 5
+    description: Debounce time in milliseconds.
+  debounce-scan-period-ms:
+    type: int
+    default: 1
+    description: Time between reads in milliseconds when the encoder state is changed.
+  model:
+    type: string
+    required: false
+    default: ec11

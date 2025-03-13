@@ -71,6 +71,8 @@ int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
     // relative to absolute before being invoked
     struct zmk_behavior_binding binding = *src_binding;
 
+    LOG_DBG("Get behavior binding");
+
     const struct device *behavior = zmk_behavior_get_binding(binding.behavior_dev);
 
     if (!behavior) {
@@ -92,25 +94,30 @@ int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
     }
 
     switch (locality) {
-    case BEHAVIOR_LOCALITY_CENTRAL:
-        return invoke_locally(&binding, event, pressed);
-    case BEHAVIOR_LOCALITY_EVENT_SOURCE:
-#if ZMK_BLE_IS_CENTRAL // source is a member of event because CONFIG_ZMK_SPLIT is enabled
-        if (event.source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
+        case BEHAVIOR_LOCALITY_CENTRAL:
+            LOG_DBG("BEHAVIOR_LOCALITY_CENTRAL");
             return invoke_locally(&binding, event, pressed);
-        } else {
-            return zmk_split_bt_invoke_behavior(event.source, &binding, event, pressed);
-        }
-#else
-        return invoke_locally(&binding, event, pressed);
-#endif
-    case BEHAVIOR_LOCALITY_GLOBAL:
-#if ZMK_BLE_IS_CENTRAL
-        for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
-            zmk_split_bt_invoke_behavior(i, &binding, event, pressed);
-        }
-#endif
-        return invoke_locally(&binding, event, pressed);
+
+        case BEHAVIOR_LOCALITY_EVENT_SOURCE:
+            LOG_DBG("BEHAVIOR_LOCALITY_EVENT_SOURCE");
+    #if ZMK_BLE_IS_CENTRAL // source is a member of event because CONFIG_ZMK_SPLIT is enabled
+            if (event.source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
+                return invoke_locally(&binding, event, pressed);
+            } else {
+                return zmk_split_bt_invoke_behavior(event.source, &binding, event, pressed);
+            }
+    #else
+            return invoke_locally(&binding, event, pressed);
+    #endif
+
+        case BEHAVIOR_LOCALITY_GLOBAL:
+            LOG_DBG("BEHAVIOR_LOCALITY_GLOBAL");
+    #if ZMK_BLE_IS_CENTRAL
+            for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
+                zmk_split_bt_invoke_behavior(i, &binding, event, pressed);
+            }
+    #endif
+            return invoke_locally(&binding, event, pressed);
     }
 
     return -ENOTSUP;

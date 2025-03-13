@@ -20,6 +20,8 @@ properties:
   tap-ms:
     type: int
     default: 5
+  display-name:
+    type: string
 
 sensor-binding-cells:
   - param1

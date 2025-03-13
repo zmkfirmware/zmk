@@ -41,6 +41,7 @@ target_sources(app PRIVATE src/events/sensor_event.c)
 target_sources_ifdef(CONFIG_ZMK_WPM app PRIVATE src/events/wpm_state_changed.c)
 target_sources_ifdef(CONFIG_USB_DEVICE_STACK app PRIVATE src/events/usb_conn_state_changed.c)
 target_sources(app PRIVATE src/behaviors/behavior_reset.c)
+target_sources(app PRIVATE src/behaviors/behavior_indicators.c)
 target_sources_ifdef(CONFIG_ZMK_EXT_POWER app PRIVATE src/behaviors/behavior_ext_power.c)
 target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_SOFT_OFF app PRIVATE src/behaviors/behavior_soft_off.c)
 add_subdirectory_ifdef(CONFIG_ZMK_POINTING src/pointing/)
@@ -92,6 +93,13 @@ target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/behaviors/behavior_bac
 
 target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/events/battery_state_changed.c)
 target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/battery.c)
+
+if (CONFIG_ZMK_BEHAVIOR_INDICATORS)
+  target_sources(app PRIVATE src/events/indicators_changed.c)
+  target_sources(app PRIVATE src/behaviors/behavior_indicators.c)
+endif()
+
+target_sources_ifdef(CONFIG_ZMK_LED_WIDGETS app PRIVATE src/led_widgets.c)
 
 target_sources_ifdef(CONFIG_ZMK_HID_INDICATORS app PRIVATE src/events/hid_indicators_changed.c)
 
