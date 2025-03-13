@@ -1,0 +1,12 @@
+file_format: "1"
+id: harper
+name: Harper
+type: board
+arch: arm
+features:
+  - keys
+  - studio
+outputs:
+  - usb
+  - ble
+url: https://github.com/

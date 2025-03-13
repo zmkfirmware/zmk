@@ -1,0 +1,10 @@
+config BOARD_HALLIE_LEFT
+	bool "hallie_left"
+	depends on SOC_NRF52840_QIAA
+
+config BOARD_HALLIE_RIGHT
+	bool "hallie_right"
+	depends on SOC_NRF52840_QIAA
+
+config TEST_MODE
+	bool "test_mode"

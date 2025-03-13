@@ -1,0 +1,18 @@
+identifier: harper
+name: Harper
+type: keyboard
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - gpio
+  - counter
+  - spi
+  - usb_device
+  - lsm303dlhc
+  - nvs
+  - can
+  - kscan
+  - ble

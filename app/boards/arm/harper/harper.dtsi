@@ -1,0 +1,315 @@
+
+/dts-v1/;
+
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 180
+
+#include <nordic/nrf52840_qiaa.dtsi>
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <dt-bindings/led/led.h>
+
+#include "harper.pinctrl.dtsi"
+#include "harper.layouts.dtsi"
+
+&spi3 {
+	compatible = "nordic,nrf-spim";
+	status = "okay";
+
+	pinctrl-0 = <&spi3_default>;
+	pinctrl-1 = <&spi3_sleep>;
+	pinctrl-names = "default", "sleep";
+
+	led_strip: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+
+		// SPI
+		reg = <0>; // ignored, but necessary for SPI bindings
+		spi-max-frequency = <4000000>;
+
+		// WS2812
+		chain-length = <39>; // Leds count. There are per-key RGB, but the first 8 are underglow
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+		color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+	};
+};
+
+&pinctrl {
+	spi3_default: spi3_default {
+		group1 {
+			psels = <NRF_PSEL(SPIM_MOSI, 0, 20)>;
+		};
+	};
+
+	spi3_sleep: spi3_sleep {
+		group1 {
+			psels = <NRF_PSEL(SPIM_MOSI, 0, 20)>;
+			low-power-enable;
+		};
+	};
+};
+
+&harper_layout {
+    transform = <&default_transform>;
+};
+
+/ {
+	model = "harper";
+	compatible = "harper";
+
+	chosen {
+		zephyr,code-partition = &code_partition;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zmk,kscan = &kscan0;
+		zmk,physical-layout = &harper_layout;
+        zephyr,console = &cdc_acm_uart;
+		zmk,battery = &vbatt;
+		zmk,underglow = &led_strip;
+		zmk,led-widgets-dev = &leds;
+	};
+
+	default_transform: keymap_transform_0 {
+      		compatible = "zmk,matrix-transform";
+      		columns = <14>;
+      		rows = <5>;
+    // | SW6  | SW5  | SW4  | SW3  | SW2  | SW1  |                         | SW1  | SW2  | SW3  | SW4  | SW5  | SW6  |
+	// | SW12 | SW11 | SW10 | SW9  | SW8  | SW7  |                         | SW7  | SW8  | SW9  | SW10 | SW11 | SW12 |
+	// | SW18 | SW17 | SW16 | SW15 | SW14 | SW13 |                         | SW13 | SW14 | SW15 | SW16 | SW17 | SW18 |
+	// | SW24 | SW23 | SW22 | SW21 | SW20 | SW19 | ENCL |           | ENCR | SW19 | SW20 | SW21 | SW22 | SW23 | SW24 |
+	// | SW32 | SW31 | SW30 | SW29 | SW28 | SW27 | SW26 |           | SW26 | SW27 | SW28 | SW29 | SW30 | SW31 | SW32 |
+      		map = <
+		RC(0,5) RC(0,4) RC(0,3) RC(0,2) RC(0,1) RC(0,0)                     RC(0,7)  RC(0,8) RC(0,9) RC(0,10) RC(0,11) RC(0,12)
+		RC(1,5) RC(1,4) RC(1,3) RC(1,2) RC(1,1) RC(1,0)                     RC(1,7)  RC(1,8) RC(1,9) RC(1,10) RC(1,11) RC(1,12)
+		RC(2,5) RC(2,4) RC(2,3) RC(2,2) RC(2,1) RC(2,0)                     RC(2,7)  RC(2,8) RC(2,9) RC(2,10) RC(2,11) RC(2,12)
+		RC(3,5) RC(3,4) RC(3,3) RC(3,2) RC(3,1) RC(3,0) RC(5,7)    RC(5,13) RC(3,7)  RC(3,8) RC(3,9) RC(3,10) RC(3,11) RC(3,12)
+ 		RC(4,5) RC(4,4) RC(4,3) RC(4,2) RC(4,1) RC(4,0) RC(4,6)    RC(4,13) RC(4,7) RC(4,8) RC(4,9) RC(4,10) RC(4,11) RC(4,12)
+      		>;
+	};
+
+	kscan0: kscan {
+		compatible = "zmk,kscan-gpio-matrix";
+		diode-direction = "col2row";
+		wakeup-source;
+		row-gpios
+			= <&gpio0 28 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio0 30 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio0 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio1 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio0 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> //encoder
+			;
+
+	};
+
+	ext-power {
+		compatible = "zmk,ext-power-generic";
+		control-gpios = <&gpio0 29 GPIO_ACTIVE_LOW>;
+		init-delay-ms = <50>;
+	};
+
+	leds: leds {
+		compatible = "gpio-leds";
+		status_led: led_0 {
+			gpios = <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+		};
+		bat_led_1: led_b_1 {
+			gpios = <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+		};
+		bat_led_2: led_b_2 {
+			gpios = <&gpio0 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+		};
+		bat_led_3: led_b_3 {
+			gpios = <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+		};
+	};
+
+	vbatt: vbatt {
+		compatible = "zmk,battery-voltage-divider";
+		io-channels = <&adc 0>;
+		output-ohms = <2000000>;
+		full-ohms = <(2000000 + 820000)>;
+	};
+
+	left_encoder: encoder_left {
+		compatible = "alps,ec11";
+		steps = <30>;
+		a-gpios = <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		b-gpios = <&gpio1  0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		status = "disabled";
+	};
+
+	right_encoder: encoder_right {
+		compatible = "alps,ec11";
+		steps = <30>;
+		a-gpios = <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		b-gpios = <&gpio1  0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+		status = "disabled";
+	};
+
+	sensors {
+		compatible = "zmk,keymap-sensors";
+		sensors = <&left_encoder &right_encoder>;
+	};
+
+
+
+	// led-widgets {
+    //     compatible = "zmk,led-widgets";
+    //     boot {
+    //         boot {
+    //             priority = <100>;
+    //             blue { len-ms = <100>; brightness = <0 0 50>; };
+    //             off { len-ms = <100>; };
+    //             blue2 { len-ms = <100>; brightness = <0 0 50>; };
+    //         };
+    //     };
+    //     battery {
+    //         low {
+    //             arg = <30>;
+    //             priority = <50>;
+    //             period-ms = <30000>;
+    //             green { len-ms = <100>; brightness = <0 20 0>; };
+    //             red { len-ms = <200>; brightness = <100 0 0>; };
+    //         };
+    //         mid {
+    //             arg = <70>;
+    //             priority = <50>;
+    //             period-ms = <30000>;
+    //             green { len-ms = <100>; brightness = <0 20 0>; };
+    //             yellow { len-ms = <200>; brightness = <100 100 0>; };
+    //         };
+    //         high {
+    //             arg = <100>;
+    //             priority = <50>;
+    //             period-ms = <30000>;
+    //             green { len-ms = <50>; brightness = <0 100 0>; };
+    //         };
+    //     };
+    //     layer {
+    //         lower {
+    //             arg = <1>;
+    //             priority = <20>;
+    //             stat { brightness = <0 0 20>; };
+    //         };
+    //         raise {
+    //             arg = <2>;
+    //             priority = <20>;
+    //             stat { brightness = <0 20 0>; };
+    //         };
+    //         game {
+    //             arg = <3>;
+    //             priority = <20>;
+    //             stat { brightness = <0 0 50>; };
+    //         };
+    //         steno {
+    //             arg = <4>;
+    //             priority = <20>;
+    //             stat { brightness = <50 0 0>; };
+    //         };
+    //     };
+    //     output {
+    //         usb {
+    //             arg = <0>;
+    //             priority = <100>;
+    //             stat { len-ms = <200>; brightness = <0 75 0>; };
+    //         };
+    //         ble {
+    //             arg = <1>;
+    //             priority = <100>;
+    //             stat { len-ms = <200>; brightness = <0 0 100>; };
+    //         };
+    //     };
+    //     profile {
+    //         0 {
+    //             arg = <0>;
+    //             priority = <90>;
+    //             head { len-ms = <50>; brightness = <0 0 50>; };
+    //             off { len-ms = <150>; };
+    //             tail { len-ms = <100>; brightness = <100 0 0>; };
+    //         };
+    //         1 {
+    //             arg = <1>;
+    //             priority = <90>;
+    //             head { len-ms = <50>; brightness = <0 0 50>; };
+    //             off { len-ms = <150>; };
+    //             tail { len-ms = <100>; brightness = <0 100 0>; };
+    //         };
+    //         2 {
+    //             arg = <2>;
+    //             priority = <90>;
+    //             head { len-ms = <50>; brightness = <0 0 50>; };
+    //             off { len-ms = <150>; };
+    //             tail { len-ms = <100>; brightness = <0 0 100>; };
+    //         };
+    //     };
+    // };
+
+
+};
+
+&adc {
+	status = "okay";
+};
+
+&gpiote {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&usbd {
+  status = "okay";
+  cdc_acm_uart: cdc_acm_uart {
+    compatible = "zephyr,cdc-acm-uart";
+  };
+};
+
+zephyr_udc0: &usbd {
+    status = "okay";
+};
+
+&flash0 {
+	/*
+	 * For more information, see:
+	 * http://docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
+	 */
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		sd_partition: partition@0 {
+			label = "softdevice";
+			reg = <0x00000000 0x00026000>;
+		};
+		code_partition: partition@26000 {
+			label = "code_partition";
+			reg = <0x00026000 0x000c6000>;
+		};
+
+		/*
+		 * The flash starting at 0x000ec000 and ending at
+		 * 0x000f3fff is reserved for use by the application.
+		 */
+
+		/*
+		 * Storage partition will be used by FCB/LittleFS/NVS
+		 * if enabled.
+		 */
+		storage_partition: partition@ec000 {
+			label = "storage";
+			reg = <0x000ec000 0x00008000>;
+		};
+
+		boot_partition: partition@f4000 {
+			label = "adafruit_boot";
+			reg = <0x000f4000 0x0000c000>;
+		};
+	};
+};
