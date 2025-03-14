@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 The ZMK Contributors
+ * Copyright (c) 2025 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -28,3 +28,4 @@
 #include <behaviors/soft_off.dtsi>
 #include <behaviors/studio_unlock.dtsi>
 #include <behaviors/mouse_keys.dtsi>
+#include <behaviors/set_sleep.dtsi>
