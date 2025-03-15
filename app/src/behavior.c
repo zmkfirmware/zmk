@@ -17,9 +17,8 @@
 
 #endif
 
-#include <zmk/ble.h>
-#if ZMK_BLE_IS_CENTRAL
-#include <zmk/split/bluetooth/central.h>
+#if IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+#include <zmk/split/central.h>
 #endif
 
 #include <drivers/behavior.h>
@@ -95,19 +94,19 @@ int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
     case BEHAVIOR_LOCALITY_CENTRAL:
         return invoke_locally(&binding, event, pressed);
     case BEHAVIOR_LOCALITY_EVENT_SOURCE:
-#if ZMK_BLE_IS_CENTRAL // source is a member of event because CONFIG_ZMK_SPLIT is enabled
+#if IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
         if (event.source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
             return invoke_locally(&binding, event, pressed);
         } else {
-            return zmk_split_bt_invoke_behavior(event.source, &binding, event, pressed);
+            return zmk_split_central_invoke_behavior(event.source, &binding, event, pressed);
         }
 #else
         return invoke_locally(&binding, event, pressed);
 #endif
     case BEHAVIOR_LOCALITY_GLOBAL:
-#if ZMK_BLE_IS_CENTRAL
-        for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
-            zmk_split_bt_invoke_behavior(i, &binding, event, pressed);
+#if IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+        for (int i = 0; i < ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT; i++) {
+            zmk_split_central_invoke_behavior(i, &binding, event, pressed);
         }
 #endif
         return invoke_locally(&binding, event, pressed);

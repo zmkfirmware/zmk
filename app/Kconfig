@@ -189,10 +189,6 @@ config BT_CTLR_PHY_2M
 config BT_TINYCRYPT_ECC
     default y if BT_HCI && !BT_CTLR
 
-config SYSTEM_WORKQUEUE_STACK_SIZE
-    default 4096 if SOC_RP2040
-    default 2048
-
 config ZMK_BLE_THREAD_STACK_SIZE
     int "BLE notify thread stack size"
     default 768
