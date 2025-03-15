@@ -11,15 +11,9 @@ See [Configuration Overview](index.md) for instructions on how to change these s
 
 Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 
-| Config                                | Type | Description                                                    | Default |
-| ------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS` | int  | Maximum number of combos that can be active at the same time   | 4       |
-| `CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY` | int  | Maximum number of active combos that use the same key position | 5       |
-| `CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO` | int  | Maximum number of keys to press to activate a combo            | 4       |
-
-If `CONFIG_ZMK_COMBO_MAX_COMBOS_PER_KEY` is 5, you can have 5 separate combos that use position `0`, 5 combos that use position `1`, and so on.
-
-If you want a combo that triggers when pressing 5 keys, you must set `CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO` to 5.
+| Config                                | Type | Description                                                  | Default |
+| ------------------------------------- | ---- | ------------------------------------------------------------ | ------- |
+| `CONFIG_ZMK_COMBO_MAX_PRESSED_COMBOS` | int  | Maximum number of combos that can be active at the same time | 4       |
 
 ## Devicetree
 
@@ -39,5 +33,3 @@ Each child node can have the following properties:
 | `require-prior-idle-ms` | int           | If any non-modifier key is pressed within `require-prior-idle-ms` before a key in the combo, the key will not be considered for the combo | -1 (disabled) |
 | `slow-release`          | bool          | Releases the combo when all keys are released instead of when any key is released                                                         | false         |
 | `layers`                | array         | A list of layers on which the combo may be triggered. `-1` allows all layers.                                                             | `<-1>`        |
-
-The `key-positions` array must not be longer than the `CONFIG_ZMK_COMBO_MAX_KEYS_PER_COMBO` setting, which defaults to 4. If you want a combo that triggers when pressing 5 keys, then you must change the setting to 5.
