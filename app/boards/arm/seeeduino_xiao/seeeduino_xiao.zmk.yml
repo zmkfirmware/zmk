@@ -1,6 +1,6 @@
 file_format: "1"
 id: seeeduino_xiao
-name: Seeeduino XIAO
+name: Seeed Studio XIAO SAMD21
 type: board
 arch: arm
 outputs:
