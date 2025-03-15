@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0](https://github.com/zmkfirmware/zmk/compare/v0.2.1...v0.3.0) (2025-03-15)
+
+
+### Features
+
+* **shields:** Add physical layouts for tester_xiao and tester_pro_micro ([#2852](https://github.com/zmkfirmware/zmk/issues/2852)) ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **shields:** Add tester_pro_micro layouts ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **shields:** Add tester_xiao layouts ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+
+
+### Bug Fixes
+
+* **ci:** pin tj-actions/changed-files due to compromise ([#2874](https://github.com/zmkfirmware/zmk/issues/2874)) ([4da89bd](https://github.com/zmkfirmware/zmk/commit/4da89bd99716bf6c1d7d788f3cdaec4cee7403e9))
+
 ## [0.2.1](https://github.com/zmkfirmware/zmk/compare/v0.2.0...v0.2.1) (2025-03-02)
 
 
