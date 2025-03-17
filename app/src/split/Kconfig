@@ -6,19 +6,59 @@ menuconfig ZMK_SPLIT
 
 if ZMK_SPLIT
 
+config ZMK_SPLIT_INIT_PRIORITY
+    int "Split Init Priority"
+    default 50
+
 config ZMK_SPLIT_ROLE_CENTRAL
     bool "Split central device"
 
-choice ZMK_SPLIT_TRANSPORT
-    prompt "Split transport"
+if ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_SPLIT_CENTRAL_POSITION_QUEUE_SIZE
+    int "Max number of key position state events to queue when received from peripherals"
+    default 5
+
+config ZMK_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE
+    int "Split central write thread stack size"
+    default 512
+
+config ZMK_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE
+    int "Max number of behavior run events to queue to send to the peripheral(s)"
+    default 5
+
+config ZMK_SPLIT_CENTRAL_PRIORITY
+    int "Split central thread priority"
+    default 5
+
+endif # ZMK_SPLIT_ROLE_CENTRAL
+
+if !ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_SPLIT_PERIPHERAL_STACK_SIZE
+    int "Split peripheral notify thread stack size"
+    default 756
+
+config ZMK_SPLIT_PERIPHERAL_PRIORITY
+    int "Split peripheral notify thread priority"
+    default 5
+
+config ZMK_SPLIT_PERIPHERAL_POSITION_QUEUE_SIZE
+    int "Max number of key position state events to queue to send to the central"
+    default 10
+
+endif #!ZMK_SPLIT_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE
     bool "BLE"
+    default ZMK_SPLIT && ZMK_BLE
     depends on ZMK_BLE
     select BT_USER_PHY_UPDATE
     select BT_AUTO_PHY_UPDATE
 
-endchoice
+config ZMK_SPLIT_SERIAL
+    bool "Serial"
+    select RING_BUFFER
 
 config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     bool "Peripheral HID Indicators"
@@ -29,3 +69,4 @@ config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
 endif # ZMK_SPLIT
 
 rsource "bluetooth/Kconfig"
+rsource "serial/Kconfig"
