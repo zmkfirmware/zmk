@@ -32,6 +32,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/pointing/input_split.h>
 #include <zmk/hid_indicators_types.h>
 #include <zmk/physical_layouts.h>
+#include <zmk/events/split_peripheral_layer_changed.h>
 
 static int start_scanning(void);
 
@@ -59,6 +60,8 @@ struct peripheral_slot {
     uint16_t update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     uint16_t selected_physical_layout_handle;
+    uint16_t update_layers_handle;
+
     uint8_t position_state[POSITION_STATE_DATA_LEN];
     uint8_t changed_positions[POSITION_STATE_DATA_LEN];
 };
@@ -213,6 +216,7 @@ int release_peripheral_slot(int index) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     slot->update_hid_indicators = 0;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+    slot->update_layers_handle = 0;
 
     return 0;
 }
@@ -646,6 +650,10 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
             LOG_DBG("Found update HID indicators handle");
             slot->update_hid_indicators = bt_gatt_attr_value_handle(attr);
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+        } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                                BT_UUID_DECLARE_128(ZMK_SPLIT_BT_UPDATE_LAYERS_UUID))) {
+            LOG_DBG("Found update Layers handle");
+            slot->update_layers_handle = bt_gatt_attr_value_handle(attr);
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
         } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                                 BT_UUID_BAS_BATTERY_LEVEL)) {
@@ -732,6 +740,8 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
         }
     }
 #endif // IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
+
+    subscribed = subscribed && slot->update_layers_handle;
 
     return subscribed ? BT_GATT_ITER_STOP : BT_GATT_ITER_CONTINUE;
 }
@@ -1160,6 +1170,42 @@ static struct settings_handler ble_central_settings_handler = {
     .name = "ble_central", .h_set = central_ble_handle_set, .h_commit = finish_init};
 
 #endif // IS_ENABLED(CONFIG_SETTINGS)
+
+static uint32_t layers_for_peripheral = 0;
+
+static void split_central_update_layers_callback(struct k_work *work) {
+    uint32_t layers = layers_for_peripheral;
+    for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
+        if (peripherals[i].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+            continue;
+        }
+
+        if (peripherals[i].update_layers_handle == 0) {
+            continue;
+        }
+
+        int err =
+            bt_gatt_write_without_response(peripherals[i].conn, peripherals[i].update_layers_handle,
+                                           &layers, sizeof(layers), true);
+
+        if (err) {
+            LOG_ERR("Failed to send layers to peripheral (err %d)", err);
+        } else {
+            LOG_DBG("Sent Layers over to peripheral");
+            raise_zmk_split_peripheral_layer_changed(
+                (struct zmk_split_peripheral_layer_changed){.layers = layers});
+        }
+    }
+}
+
+static K_WORK_DEFINE(split_central_update_layers, split_central_update_layers_callback);
+
+int zmk_split_bt_update_layers(uint32_t new_layers) {
+    layers_for_peripheral = new_layers;
+    return k_work_submit_to_queue(&split_central_split_run_q, &split_central_update_layers);
+}
+
+// valdur layers done
 
 static int zmk_split_bt_central_init(void) {
     k_work_queue_start(&split_central_split_run_q, split_central_split_run_q_stack,
