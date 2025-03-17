@@ -25,10 +25,12 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/sensors.h>
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/split/bluetooth/service.h>
+#include <zmk/split/bluetooth/central.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
 #include <zmk/events/battery_state_changed.h>
+#include <zmk/events/split_central_peripheral_status_changed.h>
 #include <zmk/pointing/input_split.h>
 #include <zmk/hid_indicators_types.h>
 #include <zmk/physical_layouts.h>
@@ -37,14 +39,8 @@ static int start_scanning(void);
 
 #define POSITION_STATE_DATA_LEN 16
 
-enum peripheral_slot_state {
-    PERIPHERAL_SLOT_STATE_OPEN,
-    PERIPHERAL_SLOT_STATE_CONNECTING,
-    PERIPHERAL_SLOT_STATE_CONNECTED,
-};
-
 struct peripheral_slot {
-    enum peripheral_slot_state state;
+    enum zmk_split_bt_central_peripheral_source_state state;
     struct bt_conn *conn;
     struct bt_gatt_discover_params discover_params;
     struct bt_gatt_subscribe_params subscribe_params;
@@ -966,6 +962,10 @@ static void split_central_connected(struct bt_conn *conn, uint8_t conn_err) {
 
     confirm_peripheral_slot_conn(conn);
     split_central_process_connection(conn);
+    raise_zmk_split_central_peripheral_status_changed(
+        (struct zmk_split_central_peripheral_status_changed){
+            .state = peripherals[peripheral_slot_index_for_conn(conn)].state,
+            .source = peripheral_slot_index_for_conn(conn)});
 }
 
 static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
@@ -988,6 +988,11 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
 #endif
 
     err = release_peripheral_slot_for_conn(conn);
+
+    raise_zmk_split_central_peripheral_status_changed(
+        (struct zmk_split_central_peripheral_status_changed){
+            .state = peripherals[peripheral_slot_index_for_conn(conn)].state,
+            .source = peripheral_slot_index_for_conn(conn)});
 
     if (err < 0) {
         return;
