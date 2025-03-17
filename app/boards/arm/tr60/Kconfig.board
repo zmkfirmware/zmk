@@ -1,0 +1,6 @@
+# Copyright (c) 2023 Srishtik Bhandarkar
+# SPDX-License-Identifier: MIT
+
+config BOARD_TR60
+    bool "TR60"
+    depends on SOC_NRF52840_QIAA
