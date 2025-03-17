@@ -71,16 +71,12 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   target_sources(app PRIVATE src/behavior_queue.c)
   target_sources(app PRIVATE src/conditional_layer.c)
   target_sources(app PRIVATE src/endpoints.c)
-  target_sources(app PRIVATE src/events/endpoint_changed.c)
   target_sources(app PRIVATE src/hid_listener.c)
   target_sources(app PRIVATE src/keymap.c)
-  target_sources(app PRIVATE src/events/layer_state_changed.c)
-  target_sources(app PRIVATE src/events/modifiers_state_changed.c)
   target_sources(app PRIVATE src/events/keycode_state_changed.c)
   target_sources_ifdef(CONFIG_ZMK_HID_INDICATORS app PRIVATE src/hid_indicators.c)
 
   if (CONFIG_ZMK_BLE)
-    target_sources(app PRIVATE src/events/ble_active_profile_changed.c)
     target_sources(app PRIVATE src/behaviors/behavior_bt.c)
     target_sources(app PRIVATE src/ble.c)
     target_sources(app PRIVATE src/hog.c)
@@ -95,7 +91,14 @@ target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/battery.c)
 
 target_sources_ifdef(CONFIG_ZMK_HID_INDICATORS app PRIVATE src/events/hid_indicators_changed.c)
 
+target_sources_ifdef(CONFIG_ZMK_BLE app PRIVATE src/events/ble_active_profile_changed.c)
+
 target_sources_ifdef(CONFIG_ZMK_SPLIT app PRIVATE src/events/split_peripheral_status_changed.c)
+
+target_sources(app PRIVATE src/events/layer_state_changed.c)
+target_sources(app PRIVATE src/events/modifiers_state_changed.c)
+target_sources(app PRIVATE src/events/endpoint_changed.c)
+
 add_subdirectory(src/split)
 
 target_sources_ifdef(CONFIG_USB_DEVICE_STACK app PRIVATE src/usb.c)
