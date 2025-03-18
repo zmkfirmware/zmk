@@ -30,24 +30,24 @@ static K_WORK_DELAYABLE_DEFINE(queue_work, behavior_queue_process_next);
 
 static void behavior_queue_process_next(struct k_work *work) {
     struct q_item item = {.wait = 0};
+    int ret;
 
     while (k_msgq_get(&zmk_behavior_queue_msgq, &item, K_NO_WAIT) == 0) {
         LOG_DBG("Invoking %s: 0x%02x 0x%02x", item.binding.behavior_dev, item.binding.param1,
                 item.binding.param2);
 
-        struct zmk_behavior_binding_event event = {.position = item.position,
+        struct zmk_behavior_binding_event event = {.binding = &item.binding,
+                                                   .position = item.position,
                                                    .timestamp = k_uptime_get(),
+                                                   .type = item.press ? PRESS : RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
                                                    .source = item.source
 #endif
         };
-
-        if (item.press) {
-            zmk_behavior_invoke_binding(&item.binding, event, true);
-        } else {
-            zmk_behavior_invoke_binding(&item.binding, event, false);
+        ret = raise_zmk_behavior_binding_event(event);
+        if (ret < 0) {
+            LOG_ERR("Error %d occurred while processing behavior in queue.", ret);
         }
-
         LOG_DBG("Processing next queued behavior in %dms", item.wait);
 
         if (item.wait > 0) {

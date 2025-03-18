@@ -3,19 +3,28 @@
 #include <dt-bindings/zmk/kscan_mock.h>
 
 / {
+    behaviors {
+        ht_bal: behavior_hold_tap_balanced {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <300>;
+            bindings = <&kp>, <&trans>;
+        };
+    };
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             bindings = <
                 &trans &mo 1
-                &kp A &none>;
+                &kp A &kp B>;
         };
 
         lower_layer {
             bindings = <
                 &trans &trans
-                &trans  &kp A>;
+                &trans  &ht_bal C 0>;
         };
     };
 };
