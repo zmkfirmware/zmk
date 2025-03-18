@@ -15,6 +15,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/sensors.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/sensor_event.h>
+#include <zmk/events/position_state_changed.h>
+#include <zmk/virtual_key_position.h>
+#include <zmk/behavior.h>
+#include <zmk/keymap.h>
 
 #if ZMK_KEYMAP_HAS_SENSORS
 
@@ -52,6 +56,26 @@ static struct zmk_sensor_config configs[] = {
 };
 
 static struct sensors_item_cfg sensors[] = {LISTIFY(ZMK_KEYMAP_SENSORS_LEN, SENSOR_ITEM, (, ), 0)};
+struct zmk_sensor_data sensor_data[ZMK_KEYMAP_SENSORS_LEN] = {};
+
+struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx) {
+    if (sensor_idx >= ZMK_KEYMAP_SENSORS_LEN) {
+        return NULL;
+    }
+    return &sensor_data[sensor_idx];
+};
+
+void zmk_sensor_set_num_triggers(uint32_t sensor_idx, int num_triggers) {
+    if (sensor_idx < ZMK_KEYMAP_SENSORS_LEN) {
+        sensor_data[sensor_idx].num_triggers = num_triggers;
+    }
+};
+
+void zmk_sensor_set_remainder(uint32_t sensor_idx, struct sensor_value remainder) {
+    if (sensor_idx < ZMK_KEYMAP_SENSORS_LEN) {
+        sensor_data[sensor_idx].remainder = remainder;
+    }
+};
 
 static ATOMIC_DEFINE(pending_sensors, ZMK_KEYMAP_SENSORS_LEN);
 
@@ -117,6 +141,49 @@ static void zmk_sensors_trigger_handler(const struct device *dev,
         trigger_sensor_data_for_position(sensor_index);
     }
 }
+
+#if (!IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
+
+int sensor_listener(const zmk_event_t *eh) {
+    const struct zmk_sensor_event *sensor_ev = as_zmk_sensor_event(eh);
+    if (sensor_ev == NULL) {
+        return -EINVAL;
+    }
+    uint32_t sensor_index = sensor_ev->sensor_index;
+    const struct sensor_value value = sensor_ev->channel_data[0].value;
+    struct zmk_sensor_data *data = zmk_sensor_get_data(sensor_index);
+    const struct zmk_sensor_config *sensor_config = zmk_sensors_get_config_at_index(sensor_index);
+    data->remainder.val1 += value.val1;
+    data->remainder.val2 += value.val2;
+
+    if (data->remainder.val2 >= 1000000 || data->remainder.val2 <= 1000000) {
+        data->remainder.val1 += data->remainder.val2 / 1000000;
+        data->remainder.val2 %= 1000000;
+    }
+
+    int trigger_degrees = 360 / sensor_config->triggers_per_rotation;
+    int triggers = data->remainder.val1 / trigger_degrees;
+    data->remainder.val1 %= trigger_degrees;
+    zmk_sensor_set_remainder(sensor_index, data->remainder);
+    zmk_sensor_set_num_triggers(sensor_index, triggers);
+
+    LOG_DBG("val1: %d, val2: %d, remainder: %d/%d triggers: %d", value.val1, value.val2,
+            data->remainder.val1, data->remainder.val2, triggers);
+
+    int position = ZMK_VIRTUAL_KEY_POSITION_SENSOR(sensor_index);
+    // Source is set to local for the time being, to be improved in the future
+    int ret = zmk_keymap_raise_binding_event_at_layer_index(ZMK_KEYMAP_LAYERS_LEN - 1,
+                                                            ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
+                                                            position, SENSOR, sensor_ev->timestamp);
+    if (ret < 0) {
+        LOG_DBG("Behavior returned error: %d", ret);
+    }
+    return ret;
+}
+
+ZMK_LISTENER(sensors, sensor_listener);
+ZMK_SUBSCRIPTION(sensors, zmk_sensor_event);
+#endif
 
 static void zmk_sensors_init_item(uint8_t i) {
     LOG_DBG("Init sensor at index %d", i);

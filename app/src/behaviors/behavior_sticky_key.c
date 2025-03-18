@@ -40,6 +40,7 @@ struct behavior_sticky_key_config {
 
 struct active_sticky_key {
     uint32_t position;
+    uint8_t layer;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
     uint8_t source;
 #endif
@@ -67,6 +68,7 @@ static struct active_sticky_key *store_sticky_key(struct zmk_behavior_binding_ev
             continue;
         }
         sticky_key->position = event->position;
+        sticky_key->layer = event->layer;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         sticky_key->source = event->source;
 #endif
@@ -108,13 +110,16 @@ static inline int press_sticky_key_behavior(struct active_sticky_key *sticky_key
         .param1 = sticky_key->param1,
     };
     struct zmk_behavior_binding_event event = {
+        .binding = &binding,
         .position = sticky_key->position,
+        .layer = sticky_key->layer,
         .timestamp = timestamp,
+        .type = PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = sticky_key->source,
 #endif
     };
-    return zmk_behavior_invoke_binding(&binding, event, true);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_key,
@@ -124,15 +129,18 @@ static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_k
         .param1 = sticky_key->param1,
     };
     struct zmk_behavior_binding_event event = {
+        .binding = &binding,
         .position = sticky_key->position,
+        .layer = sticky_key->layer,
         .timestamp = timestamp,
+        .type = RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = sticky_key->source,
 #endif
     };
 
     clear_sticky_key(sticky_key);
-    return zmk_behavior_invoke_binding(&binding, event, false);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static inline void on_sticky_key_timeout(struct active_sticky_key *sticky_key) {
