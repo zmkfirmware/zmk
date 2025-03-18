@@ -209,4 +209,8 @@ static int zmk_sensors_init(void) {
 
 SYS_INIT(zmk_sensors_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
 
+#else  /* ZMK_KEYMAP_HAS_SENSORS */
+struct zmk_sensor_data sensor_data[0] = {};
+
+struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx) { return NULL; };
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
