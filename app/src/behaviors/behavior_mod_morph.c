@@ -80,8 +80,6 @@ static const struct behavior_driver_api behavior_mod_morph_driver_api = {
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
-static int behavior_mod_morph_init(const struct device *dev) { return 0; }
-
 #define _TRANSFORM_ENTRY(idx, node)                                                                \
     {                                                                                              \
         .behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(node, bindings, idx)),               \
@@ -100,7 +98,7 @@ static int behavior_mod_morph_init(const struct device *dev) { return 0; }
                                    (DT_INST_PROP(n, mods) & ~DT_INST_PROP(n, keep_mods))),         \
     };                                                                                             \
     static struct behavior_mod_morph_data behavior_mod_morph_data_##n = {};                        \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_mod_morph_init, NULL, &behavior_mod_morph_data_##n,        \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, &behavior_mod_morph_data_##n,                           \
                             &behavior_mod_morph_config_##n, POST_KERNEL,                           \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mod_morph_driver_api);
 

@@ -1,0 +1,43 @@
+
+#include <dt-bindings/zmk/input_transform.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+#include <behaviors.dtsi>
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/pointing.h>
+
+&mmv_input_listener {
+    input-processors = <&zip_temp_layer 1 500>;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &mmv MOVE_LEFT &mmv MOVE_UP
+                &mo 1 &none
+            >;
+        };
+
+        mkp_layer {
+            bindings = <&mkp LCLK &mkp RCLK &trans &trans>;
+        };
+    };
+};
+
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,0,100)
+        ZMK_MOCK_RELEASE(0,0,150)
+        ZMK_MOCK_PRESS(1,0,100)
+        ZMK_MOCK_RELEASE(1,0,100)
+        ZMK_MOCK_PRESS(0,0,100)
+        ZMK_MOCK_RELEASE(0,0,150)
+    >;
+};

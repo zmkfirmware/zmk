@@ -65,7 +65,7 @@ name: <your module name>
 
 Next, you need to define the options to build your module. These also go into `zephyr/module.yml`, as children of the `build` property. Commonly used options are:
 
-- The `depends` child property is used to specify a list of modules which the module depends on. The dependencies are referred to by their [module name](#module-name).
+- The `depends` child property is used to specify a list of modules which the module depends on. The dependencies are referred to by their [module name](#name).
 - The `cmake` child property is used to identify a folder containing a `CMakeLists.txt` file that lists the CMake commands used to build source files.
 - The `kconfig` child property is used to identify the `Kconfig` file that defines configuration settings used by the module.
 - `settings` is a child property containing additional child properties, two of which are particularly relevant:

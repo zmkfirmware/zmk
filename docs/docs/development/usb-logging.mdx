@@ -50,6 +50,7 @@ boot, before you can connect to view the logs.
 After flashing the updated ZMK image, the board should expose a USB CDC ACM device that you can connect to and view the logs.
 
 <Tabs
+queryString="operating-system"
 defaultValue="linux"
 values={[
 {label: 'Linux', value: 'linux'},
@@ -94,7 +95,7 @@ From there, you should see the various log messages from ZMK and Zephyr, dependi
 
 ## Adding USB Logging to a Board
 
-Standard boards such as the nice!nano and Seeeduino XIAO family have the necessary configuration for logging already added, however if you are developing your own standalone board you may wish to add the ability to use USB logging in the future.
+Standard boards such as the nice!nano and Seeed Studio XIAO family have the necessary configuration for logging already added, however if you are developing your own standalone board you may wish to add the ability to use USB logging in the future.
 
 To do so, you need to follow the upstream Zephyr [`cdc-acm-console` snippet requirements](https://docs.zephyrproject.org/3.5.0/snippets/cdc-acm-console/README.html#requirements) steps.
 

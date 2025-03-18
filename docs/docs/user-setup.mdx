@@ -63,11 +63,12 @@ Before running the setup script, you will first need to create a new GitHub repo
 To start the setup process, run the following from your command line prompt:
 
 <Tabs
+queryString="command"
 defaultValue="curl"
 values={[
 {label: 'Using curl', value: 'curl'},
 {label: 'Using wget', value: 'wget'},
-{label: 'Using PowerShell', value: 'PowerShell'},
+{label: 'Using PowerShell', value: 'powershell'},
 ]}>
 <TabItem value="curl">
 
@@ -83,7 +84,7 @@ bash -c "$(wget https://zmk.dev/setup.sh -O -)" '' --wget
 ```
 
 </TabItem>
-<TabItem value="PowerShell">
+<TabItem value="powershell">
 
 ```powershell
 powershell -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://zmk.dev/setup.ps1'))"
@@ -123,8 +124,8 @@ When prompted, enter the number for the corresponding MCU board you would like t
 ```
 MCU Board Selection:
 1) BlueMicro840 v1           5) nRF52840 M.2 Module      9) QMK Proton-C
-2) Mikoto 5.20               6) nRFMicro 1.1 (flipped)  10) Seeeduino XIAO
-3) nice!nano v1              7) nRFMicro 1.1/1.2        11) Seeeduino XIAO BLE
+2) Mikoto 5.20               6) nRFMicro 1.1 (flipped)  10) Seeed Studio XIAO SAMD21
+3) nice!nano v1              7) nRFMicro 1.1/1.2        11) Seeed Studio XIAO nRF52840
 4) nice!nano v2              8) nRFMicro 1.3/1.4        12) Quit
 Pick an MCU board:
 ```

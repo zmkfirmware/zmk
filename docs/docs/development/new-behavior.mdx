@@ -165,7 +165,7 @@ struct behavior_<behavior_name>_config {
     bool example_config_param3;
 };
 
-// Initialization Function
+// Initialization Function (Optional)
 static int <behavior_name>_init(const struct device *dev) {
     return 0;
 };
@@ -177,7 +177,7 @@ static const struct behavior_driver_api <behavior_name>_driver_api = {
 
 BEHAVIOR_DT_INST_DEFINE(0,                                                    // Instance Number (Equal to 0 for behaviors that don't require multiple instances,
                                                                               //                  Equal to n for behaviors that do make use of multiple instances)
-                        <behavior_name>_init, NULL,                           // Initialization Function, Power Management Device Pointer
+                        <behavior_name>_init, NULL,                           // Initialization Function, Power Management Device Pointer (Both Optional)
                         &<behavior_name>_data, &<behavior_name>_config,       // Behavior Data Pointer, Behavior Configuration Pointer (Both Optional)
                         POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,     // Initialization Level, Device Priority
                         &<behavior_name>_driver_api);                         // API Structure
@@ -262,7 +262,7 @@ An example of this can be seen below, taking the `#define KP_INST(n)` from the h
 
 ```c
 #define KP_INST(n)                                                                                 \
-    static struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                        \
+    static const struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                  \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
         .hold_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 0), label),               \
         .tap_behavior_dev = DT_PROP(DT_INST_PHANDLE_BY_IDX(n, bindings, 1), label),                \
@@ -283,7 +283,7 @@ Note that in the hold-tap example, the instance number, `0`, has been replaced b
 
 Behaviors also require the following parameters of `BEHAVIOR_DT_INST_DEFINE` to be changed:
 
-##### Initialization function
+##### Initialization function (optional)
 
 Comes in the form `static int <behavior_name>_init(const struct device *dev)`. Initialization functions preconfigure any data, like resetting timers and position for hold-taps and tap-dances. All initialization functions `return 0;` once complete.
 
@@ -423,7 +423,8 @@ The fourth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if ins
 
 ##### Configuration pointers (optional)
 
-The configuration `struct` stores the properties declared from the behavior's `.yaml` for **each new instance** of the behavior. As seen in the `#define KP_INST(n)` of the hold-tap example, the configuration `struct`, `behavior_<behavior_name>_config_##n`, for each instance number, `n`, can be initialized using the [Zephyr Devicetree Instance-based APIs](https://docs.zephyrproject.org/3.5.0/build/dts/api/api.html#instance-based-apis), which extract the values from the `properties` of each instance of the [devicetree binding](#creating-the-devicetree-binding-yaml) from a user's keymap or [predefined use-case `.dtsi` files](#defining-common-use-cases-for-the-behavior-dtsi-optional) stored in `app/dts/behaviors/`. We illustrate this further by comparing the [`#define KP_INST(n)` from the hold-tap driver](#behavior_dt_inst_define) and the [`properties` of the hold-tap devicetree binding.](#creating-the-devicetree-binding-yaml)
+The configuration `struct` stores the properties declared from the behavior's `.yaml` for **each new instance** of the behavior. As seen in the `#define KP_INST(n)` of the hold-tap example, the configuration `struct`, `behavior_<behavior_name>_config_##n`, for each instance number, `n`, can be initialized using the [Zephyr Devicetree Instance-based APIs](https://docs.zephyrproject.org/3.5.0/build/dts/api/api.html#instance-based-apis), which extract the values from the `properties` of each instance of the [devicetree binding](#creating-the-devicetree-binding-yaml) from a user's keymap or [predefined use-case `.dtsi` files](#defining-common-use-cases-for-the-behavior-dtsi-optional) stored in `app/dts/behaviors/`. We illustrate this further by comparing the [`#define KP_INST(n)` from the hold-tap driver](#behavior_dt_inst_define) and the [`properties` of the hold-tap devicetree binding](#creating-the-devicetree-binding-yaml). The config structure instances should always be declared `const`
+so they are placed into flash, not RAM, by the linker.
 
 The fifth cell of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead if instance-specific configurations are not required.
 

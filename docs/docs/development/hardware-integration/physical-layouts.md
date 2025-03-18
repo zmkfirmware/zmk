@@ -30,8 +30,8 @@ Every physical layout needs a matrix transform, and optionally can also have a k
 
 ```dts title="<your keyboard>.dts | <your keyboard>.dtsi | <your keyboard>.overlay"
 &physical_layout0 {
-    kscan = <&kscan0>;
-    transform = <&matrix_transform0>;
+    kscan = <&kscan0>; // Label of the kscan node this layout uses
+    transform = <&default_transform>; // Label of the matrix transform this layout uses
 };
 ```
 
