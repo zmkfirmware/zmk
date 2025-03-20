@@ -104,7 +104,7 @@ You can use the following nodes to tweak the default behaviors:
 | Node  | Behavior                                              |
 | ----- | ----------------------------------------------------- |
 | `&lt` | [Layer-tap](../keymaps/behaviors/layers.md#layer-tap) |
-| `&mt` | [Mod-tap](../keymaps/behaviors/mod-tap.md)            |
+| `&mt` | [Mod-tap](../keymaps/behaviors/hold-tap.mdx#mod-tap)  |
 
 ## Key Repeat
 

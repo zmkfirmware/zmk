@@ -34,44 +34,8 @@ Example:
 
 ## Layer-Tap
 
-The "layer-tap" behavior enables a layer when a key is held, and outputs a [keypress](key-press.md) when the key is only tapped for a short time.
-
-### Behavior Binding
-
-- Reference: `&lt`
-- Parameter: The layer number to enable while held, e.g. `1`
-- Parameter: The keycode to send when tapped, e.g. `A`
-
-Example:
-
-```dts
-&lt 3 SPACE
-```
-
-### Configuration
-
-You can configure a different tapping term or tweak other properties noted in the [hold-tap](hold-tap.mdx#advanced-configuration) documentation page in your keymap:
-
-```dts
-&lt {
-    tapping-term-ms = <200>;
-};
-
-/ {
-    keymap {
-        ...
-    };
-};
-```
-
-:::info
-Functionally, the layer-tap is a [hold-tap](hold-tap.mdx) of the ["tap-preferred" flavor](hold-tap.mdx#flavors) and a [`tapping-term-ms`](hold-tap.mdx#tapping-term-ms) of 200 that takes in a [`momentary layer`](#momentary-layer) and a [keypress](key-press.md) as its "hold" and "tap" parameters, respectively.
-
-For users who want to send a different [keycode](../list-of-keycodes.mdx) depending on if the same key is held or tapped, see [Mod-Tap](mod-tap.md).
-
-Similarly, for users looking to create a keybind like the layer-tap that depending on how long the key is held, invokes behaviors like [sticky keys](sticky-key.md) or [key toggles](key-toggle.md), see [Hold-Tap](hold-tap.mdx).
-
-:::
+The ["layer-tap" behavior](hold-tap.mdx#layer-tap) enables a layer when a key is held, and outputs a [key press](key-press.md) when the key is only tapped for a short time.
+See linked documentation for details.
 
 ## To Layer
 

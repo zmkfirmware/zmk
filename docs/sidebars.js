@@ -67,7 +67,6 @@ module.exports = {
             "keymaps/behaviors/layers",
             "keymaps/behaviors/misc",
             "keymaps/behaviors/hold-tap",
-            "keymaps/behaviors/mod-tap",
             "keymaps/behaviors/mod-morph",
             "keymaps/behaviors/macros",
             "keymaps/behaviors/key-toggle",

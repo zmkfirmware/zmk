@@ -14,7 +14,7 @@ Below is a summary of pre-defined behavior bindings and user-definable behaviors
 | Binding       | Behavior                                      | Description                                                                                                                                                                                                                                       |
 | ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `&kp`         | [Key Press](key-press.md)                     | Send keycodes to the connected host when a key is pressed                                                                                                                                                                                         |
-| `&mt`         | [Mod Tap](mod-tap.md)                         | Sends a different key press depending on whether a key is held or tapped                                                                                                                                                                          |
+| `&mt`         | [Mod Tap](hold-tap.mdx#mod-tap)               | Sends a different key press depending on whether a key is held or tapped                                                                                                                                                                          |
 | `&kt`         | [Key Toggle](key-toggle.md)                   | Toggles the press of a key. If the key is not currently pressed, key toggle will press it, holding it until the key toggle is pressed again or the key is released in some other way. If the key is currently pressed, key toggle will release it |
 | `&sk`         | [Sticky Key](sticky-key.md)                   | Stays pressed until another key is pressed, then is released. It is often used for modifier keys like shift, which allows typing capital letters without holding it down                                                                          |
 | `&gresc`      | [Grave Escape](mod-morph.md#behavior-binding) | Sends Grave Accent `` ` `` keycode if shift or GUI is held, sends Escape keycode otherwise                                                                                                                                                        |
@@ -82,10 +82,10 @@ Below is a summary of pre-defined behavior bindings and user-definable behaviors
 
 ## User-Defined Behaviors
 
-| Behavior                            | Description                                                                                                                                                        |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [Macros](macros.md)                 | Allows configuring a list of other behaviors to invoke when the key is pressed and/or released                                                                     |
-| [Hold-Tap](hold-tap.mdx)            | Invokes different behaviors depending on key press duration or interrupting keys. This is the basis for [layer-tap](layers.md#layer-tap) and [mod-tap](mod-tap.md) |
-| [Tap Dance](tap-dance.mdx)          | Invokes different behaviors corresponding to how many times a key is pressed                                                                                       |
-| [Mod-Morph](mod-morph.md)           | Invokes different behaviors depending on whether a specified modifier is held during a key press                                                                   |
-| [Sensor Rotation](sensor-rotate.md) | Invokes different behaviors depending on whether a sensor is rotated clockwise or counter-clockwise                                                                |
+| Behavior                            | Description                                                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------- |
+| [Macros](macros.md)                 | Allows configuring a list of other behaviors to invoke when the key is pressed and/or released      |
+| [Hold-Tap](hold-tap.mdx)            | Invokes different behaviors depending on key press duration or interrupting keys.                   |
+| [Tap Dance](tap-dance.mdx)          | Invokes different behaviors corresponding to how many times a key is pressed                        |
+| [Mod-Morph](mod-morph.md)           | Invokes different behaviors depending on whether a specified modifier is held during a key press    |
+| [Sensor Rotation](sensor-rotate.md) | Invokes different behaviors depending on whether a sensor is rotated clockwise or counter-clockwise |
