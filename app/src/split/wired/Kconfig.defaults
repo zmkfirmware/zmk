@@ -3,6 +3,9 @@
 
 if ZMK_SPLIT_WIRED
 
+config ZMK_SPLIT_WIRED_PRIORITY
+    default 0
+
 config ZMK_SPLIT_WIRED_CMD_BUFFER_ITEMS
     default 4
 
