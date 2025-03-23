@@ -42,11 +42,13 @@ Once included, you can use the following:
 
 Several of the input processors that have predefined instances, e.g. `&zip_xy_scaler` or `&zip_xy_to_scroll_mapper` can also have new instances created with custom properties around which input codes to scale, or which codes to map, etc.
 
-| Compatible                        | Processor                                            | Description                                         |
-| --------------------------------- | ---------------------------------------------------- | --------------------------------------------------- |
-| `zmk,input-processor-transform`   | [Transform](transformer.md#user-defined-instances)   | Perform various transforms like inverting values    |
-| `zmk,input-processor-code-mapper` | [Code Mapper](code-mapper.md#user-defined-instances) | Map one event code to another type                  |
-| `zmk,input-processor-behaviors`   | [Behaviors](behaviors.md#user-defined-instances)     | Trigger behaviors for certain matching input events |
+| Compatible                        | Processor                                               | Description                                               |
+| --------------------------------- | ------------------------------------------------------- | --------------------------------------------------------- |
+| `zmk,input-processor-scaler`      | [Scaler](scaler.md#user-defined-instances)              | Scale value of input events                               |
+| `zmk,input-processor-transform`   | [Transform](transformer.md#user-defined-instances)      | Perform various transforms like inverting values          |
+| `zmk,input-processor-code-mapper` | [Code Mapper](code-mapper.md#user-defined-instances)    | Map one event code to another type                        |
+| `zmk,input-processor-behaviors`   | [Behaviors](behaviors.md#user-defined-instances)        | Trigger behaviors for certain matching input events       |
+| `zmk,input-processor-temp-layer`  | [Temporary layer](temp-layer.md#user-defined-instances) | Temporarily enable a layer when input events are received |
 
 ## External Processors
 
