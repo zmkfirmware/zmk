@@ -8,6 +8,8 @@
 #include <rpi_pico/rp2040.dtsi>
 #include <dt-bindings/zmk/matrix_transform.h>
 
+#include <common/rp2-boot-mode-retention.dtsi>
+
 #include <layouts/common/65percent/ansi.dtsi>
 
 / {
