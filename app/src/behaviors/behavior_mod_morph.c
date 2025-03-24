@@ -119,9 +119,9 @@ static const struct behavior_driver_api behavior_mod_morph_driver_api = {
                                         (DT_PROP_BY_IDX(inst, binding_params, 1))))),              \
     };                                                                                             \
     static struct behavior_mod_morph_data behavior_mod_morph_data_##inst = {};                     \
-    BEHAVIOR_DT_INST_DEFINE(inst, NULL, NULL, &behavior_mod_morph_data_##inst,                     \
-                            &behavior_mod_morph_config_##inst, POST_KERNEL,                        \
-                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mod_morph_driver_api);
+    BEHAVIOR_DT_DEFINE(inst, NULL, NULL, &behavior_mod_morph_data_##inst,                          \
+                       &behavior_mod_morph_config_##inst, POST_KERNEL,                             \
+                       CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mod_morph_driver_api);
 
 DT_FOREACH_STATUS_OKAY(zmk_behavior_mod_morph, MM_INST)
 DT_FOREACH_STATUS_OKAY(zmk_behavior_mod_morph_param, MM_INST)
