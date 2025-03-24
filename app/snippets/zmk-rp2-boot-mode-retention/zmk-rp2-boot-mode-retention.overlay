@@ -1,0 +1,6 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <common/rp2-boot-mode-retention.dtsi>
