@@ -110,4 +110,5 @@ config ZMK_BATTERY_REPORT_INTERVAL
     default 60
 
 # Imports
+rsource "src/boot/Kconfig.defaults"
 rsource "src/split/Kconfig.defaults"
