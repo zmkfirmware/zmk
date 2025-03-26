@@ -195,10 +195,7 @@ static void draw_bottom(lv_obj_t *widget, lv_color_t cbuf[], const struct status
 
 static void set_battery_status(struct zmk_widget_status *widget,
                                struct battery_status_state state) {
-#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
-    widget->state.charging = state.usb_present;
-#endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
-
+    widget->state.charging = state.is_charging;
     widget->state.battery = state.level;
 
     draw_top(widget->obj, widget->cbuf, &widget->state);
@@ -214,9 +211,7 @@ static struct battery_status_state battery_status_get_state(const zmk_event_t *e
 
     return (struct battery_status_state){
         .level = (ev != NULL) ? ev->state_of_charge : zmk_battery_state_of_charge(),
-#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
-        .usb_present = zmk_usb_is_powered(),
-#endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
+        .is_charging = (ev != NULL) ? ev->is_charging : zmk_battery_is_charging(),
     };
 }
 
@@ -224,9 +219,6 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_battery_status, struct battery_status_state,
                             battery_status_update_cb, battery_status_get_state)
 
 ZMK_SUBSCRIPTION(widget_battery_status, zmk_battery_state_changed);
-#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
-ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
-#endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 
 static void set_output_status(struct zmk_widget_status *widget,
                               const struct output_status_state *state) {
