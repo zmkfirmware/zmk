@@ -38,18 +38,22 @@ This will allow you to reference the actions defined in this header such as `BT_
 
 Here is a table describing the command for each define:
 
-| Define       | Action                                                                                                                                                                             |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BT_CLR`     | Clear bond information between the keyboard and host for the selected profile.                                                                                                     |
-| `BT_CLR_ALL` | Clear bond information between the keyboard and host for all profiles.                                                                                                             |
-| `BT_NXT`     | Switch to the next profile, cycling through to the first one when the end is reached.                                                                                              |
-| `BT_PRV`     | Switch to the previous profile, cycling through to the last one when the beginning is reached.                                                                                     |
-| `BT_SEL`     | Select the 0-indexed profile by number; must include a number as an argument in the keymap to work correctly, e.g. `BT_SEL 0`.                                                     |
-| `BT_DISC`    | Disconnect from the 0-indexed profile by number, if it's currently connected and inactive; must include a number as an argument in the keymap to work correctly, e.g. `BT_DISC 0`. |
+| Define       | Action                                                                                                                                                                                                                                           |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `BT_CLR`     | Clear bond information between the keyboard and host for the selected profile.                                                                                                                                                                   |
+| `BT_CLR_ALL` | Clear bond information between the keyboard and host for all profiles.                                                                                                                                                                           |
+| `BT_NXT`     | Switch to the next profile, cycling through to the first one when the end is reached.                                                                                                                                                            |
+| `BT_PRV`     | Switch to the previous profile, cycling through to the last one when the beginning is reached.                                                                                                                                                   |
+| `BT_SEL`     | Select the 0-indexed profile by number; must include a number as an argument in the keymap to work correctly, e.g. `BT_SEL 0`.                                                                                                                   |
+| `BT_DISC`    | Disconnect from the 0-indexed profile by number, if it's currently connected and inactive; must include a number as an argument in the keymap to work correctly, e.g. `BT_DISC 0`.                                                               |
+| `BT_SAVE`    | Saves the currently selected profile, ensuring it is active at startup. <br/><br/>Note: This is only useful if `ZMK_CONFIG_BLE_PERSIST_PROFILE_ON_CHANGE` is disabled. Per default the active profile will be persisted on change automatically. |
 
 :::note[Selected profile persistence]
 The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be saved to flash storage and hence persist across restarts and firmware flashes.
+
 However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+
+[`CONFIG_ZMK_BLE_PERSIST_PROFILE_ON_CHANGE`](../../config/bluetooth.md) can be used to disable automatic saving of the selected profile to flash storage. In this case `BT_SAVE` can be used to manually persist the currently selected profile to change the active profile at startup.
 :::
 
 ## Bluetooth Behavior
