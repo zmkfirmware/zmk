@@ -64,7 +64,7 @@ static zmk_keymap_layer_id_t _zmk_keymap_layer_default = 0;
 // When a behavior handles a key position "down" event, we record the layer state
 // here so that even if that layer is deactivated before the "up", event, we
 // still send the release event to the behavior in that layer also.
-static uint32_t zmk_keymap_active_behavior_layer[ZMK_KEYMAP_LEN];
+static uint64_t zmk_keymap_active_behavior_layer[ZMK_KEYMAP_LEN];
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
@@ -91,7 +91,7 @@ KEYMAP_VAR(zmk_stock_keymap, const, 0)
 static char zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN][CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN] = {
     DT_INST_FOREACH_CHILD_SEP(0, LAYER_NAME, (, ))};
 
-static uint32_t changed_layer_names = 0;
+static uint64_t changed_layer_names = 0;
 
 #else
 
@@ -135,6 +135,20 @@ uint8_t map_layer_id_to_index(zmk_keymap_layer_id_t layer_id) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
+/**
+ * @brief Set or clear a bit depending on a boolean value
+ *
+ * The argument @p var is a variable whose value is written to as a
+ * side effect.
+ *
+ * @param var Variable to be altered
+ * @param bit Bit number
+ * @param set if 0, clears @p bit in @p var; any other value sets @p bit
+ */
+#define WRITE_BIT64(var, bit, set) \
+    ((var) = (set) ? ((var) | BIT64(bit)) : ((var) & ~BIT64(bit)))
+
+
 static inline int set_layer_state(zmk_keymap_layer_id_t layer_id, bool state) {
     int ret = 0;
     if (layer_id >= ZMK_KEYMAP_LAYERS_LEN) {
@@ -147,7 +161,7 @@ static inline int set_layer_state(zmk_keymap_layer_id_t layer_id, bool state) {
     }
 
     zmk_keymap_layers_state_t old_state = _zmk_keymap_layer_state;
-    WRITE_BIT(_zmk_keymap_layer_state, layer_id, state);
+    WRITE_BIT64(_zmk_keymap_layer_state, layer_id, state);
     // Don't send state changes unless there was an actual change
     if (old_state != _zmk_keymap_layer_state) {
         LOG_DBG("layer_changed: layer %d state %d", layer_id, state);
@@ -174,7 +188,7 @@ bool zmk_keymap_layer_active_with_state(zmk_keymap_layer_id_t layer,
                                         zmk_keymap_layers_state_t state_to_test) {
     // The default layer is assumed to be ALWAYS ACTIVE so we include an || here to ensure nobody
     // breaks up that assumption by accident
-    return (state_to_test & (BIT(layer))) == (BIT(layer)) || layer == _zmk_keymap_layer_default;
+    return (state_to_test & (BIT64(layer))) == (BIT64(layer)) || layer == _zmk_keymap_layer_default;
 };
 
 bool zmk_keymap_layer_active(zmk_keymap_layer_id_t layer) {
@@ -350,19 +364,19 @@ int zmk_keymap_move_layer(zmk_keymap_layer_index_t start_idx, zmk_keymap_layer_i
 }
 
 int zmk_keymap_add_layer(void) {
-    uint32_t seen_layer_ids = 0;
+    uint64_t seen_layer_ids = 0;
     LOG_HEXDUMP_DBG(keymap_layer_orders, ZMK_KEYMAP_LAYERS_LEN, "Order");
 
     for (int index = 0; index < ZMK_KEYMAP_LAYERS_LEN; index++) {
         zmk_keymap_layer_id_t id = LAYER_INDEX_TO_ID(index);
 
         if (id != ZMK_KEYMAP_LAYER_ID_INVAL) {
-            WRITE_BIT(seen_layer_ids, id, 1);
+            WRITE_BIT64(seen_layer_ids, id, 1);
             continue;
         }
 
         for (int candidate_id = 0; candidate_id < ZMK_KEYMAP_LAYERS_LEN; candidate_id++) {
-            if (!(seen_layer_ids & BIT(candidate_id))) {
+            if (!(seen_layer_ids & BIT64(candidate_id))) {
                 keymap_layer_orders[index] = candidate_id;
                 return index;
             }
@@ -421,7 +435,7 @@ int zmk_keymap_set_layer_name(zmk_keymap_layer_id_t id, const char *name, size_t
         zmk_keymap_layer_names[id][size] = 0;
     }
 
-    WRITE_BIT(changed_layer_names, id, 1);
+    WRITE_BIT64(changed_layer_names, id, 1);
 
     return 0;
 }
@@ -541,7 +555,7 @@ static int save_layer_orders(void) {
 
 static int save_layer_names(void) {
     for (int id = 0; id < ZMK_KEYMAP_LAYERS_LEN; id++) {
-        if (changed_layer_names & BIT(id)) {
+        if (changed_layer_names & BIT64(id)) {
             char setting_name[14];
             sprintf(setting_name, LAYER_NAME_SETTINGS_KEY, id);
             int ret = settings_save_one(setting_name, zmk_keymap_layer_names[id],
