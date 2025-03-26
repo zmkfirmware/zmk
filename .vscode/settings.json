@@ -3,7 +3,6 @@
     "*.overlay": "dts",
     "*.keymap": "dts"
   },
-  "python.formatting.provider": "black",
   "[c]": {
     "editor.formatOnSave": true
   },
@@ -13,7 +12,7 @@
   },
   "[python]": {
     "editor.formatOnSave": true,
-    "editor.defaultFormatter": "ms-python.python"
+    "editor.defaultFormatter": "ms-python.black-formatter"
   },
   "[css][json][jsonc][html][markdown][yaml]": {
     "editor.formatOnSave": true,
