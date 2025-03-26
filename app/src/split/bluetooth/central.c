@@ -358,8 +358,8 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
     for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
         slot->changed_positions[i] = ((uint8_t *)data)[i] ^ slot->position_state[i];
         slot->position_state[i] = ((uint8_t *)data)[i];
-        LOG_DBG("data: %d", slot->position_state[i]);
     }
+    LOG_HEXDUMP_DBG(slot->position_state, POSITION_STATE_DATA_LEN, "data");
 
     for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
         for (int j = 0; j < 8; j++) {
