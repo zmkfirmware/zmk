@@ -25,7 +25,7 @@ fi
 ZMK_BUILD_DIR=${ZMK_BUILD_DIR:-${ZMK_SRC_DIR:-.}/build}
 mkdir -p ${ZMK_BUILD_DIR}/tests
 
-testcases=$(find $path -name native_posix_64.keymap -exec dirname \{\} \;)
+testcases=$(find $path -name native_sim.keymap -exec dirname \{\} \;)
 num_cases=$(echo "$testcases" | wc -l)
 if [ $num_cases -gt 1 ] || [ "$testcases" != "$path" ]; then
     echo "" >${ZMK_BUILD_DIR}/tests/pass-fail.log
@@ -39,7 +39,7 @@ testcase=$(realpath $path | sed -n -e "s|.*/tests/||p")
 echo "Running $testcase:"
 
 build_cmd="west build ${ZMK_SRC_DIR:+-s $ZMK_SRC_DIR} -d ${ZMK_BUILD_DIR}/tests/$testcase \
-    -b native_posix_64 -p -- -DCONFIG_ASSERT=y -DZMK_CONFIG="$(realpath $path)" \
+    -b native_sim/native/64 -p -- -DCONFIG_ASSERT=y -DZMK_CONFIG="$(realpath $path)" \
     ${ZMK_EXTRA_MODULES:+-DZMK_EXTRA_MODULES="$(realpath ${ZMK_EXTRA_MODULES})"}"
 
 if [ -z ${ZMK_TESTS_VERBOSE} ]; then
