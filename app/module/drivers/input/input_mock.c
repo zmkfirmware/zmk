@@ -48,10 +48,15 @@ static void input_mock_work_cb(struct k_work *work) {
         }
     }
 
+    bool sync = cfg->events[base_idx + 3];
     input_report(dev, cfg->events[base_idx], cfg->events[base_idx + 1], cfg->events[base_idx + 2],
-                 cfg->events[base_idx + 3], K_NO_WAIT);
+                 sync, K_NO_WAIT);
 
-    k_work_schedule(&data->work, K_MSEC(cfg->event_period));
+    if (sync) {
+        k_work_schedule(&data->work, K_MSEC(cfg->event_period));
+    } else {
+        k_work_schedule(&data->work, K_NO_WAIT);
+    }
 }
 
 int input_mock_init(const struct device *dev) {

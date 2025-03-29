@@ -9,6 +9,7 @@
 #include <zephyr/pm/device.h>
 #include <zephyr/pm/device_runtime.h>
 #include <zephyr/drivers/kscan.h>
+#include <zephyr/input/input.h>
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 #include <zephyr/settings/settings.h>
@@ -26,6 +27,16 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 ZMK_EVENT_IMPL(zmk_physical_layout_selection_changed);
 
 #define DT_DRV_COMPAT zmk_physical_layout
+
+#define MATRIX_INPUT_SUPPORT                                                                       \
+    UTIL_AND(IS_ENABLED(CONFIG_INPUT),                                                             \
+             UTIL_OR(DT_ANY_INST_HAS_PROP_STATUS_OKAY(input), DT_HAS_CHOSEN(zmk_matrix_input)))
+
+#if MATRIX_INPUT_SUPPORT
+
+static void zmk_physical_layout_input_event_cb(struct input_event *evt, void *user_data);
+
+#endif
 
 #define USE_PHY_LAYOUTS                                                                            \
     (DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) && !DT_HAS_CHOSEN(zmk_matrix_transform))
@@ -53,6 +64,10 @@ BUILD_ASSERT(
                     ())                                                                            \
     }
 
+#define INPUT_FOR_INST(n)                                                                          \
+    DEVICE_DT_GET(COND_CODE_1(DT_INST_PROP_LEN(n, input), (DT_INST_PHANDLE(n, input)),             \
+                              (DT_CHOSEN(zmk_matrix_input))))
+
 #define ZMK_LAYOUT_INST(n)                                                                         \
     BUILD_ASSERT(!IS_ENABLED(CONFIG_ZMK_STUDIO) || DT_INST_NODE_HAS_PROP(n, keys),                 \
                  "ZMK Studio requires physical layouts with key positions. See "                   \
@@ -67,8 +82,18 @@ BUILD_ASSERT(
         .matrix_transform = ZMK_MATRIX_TRANSFORM_T_FOR_NODE(DT_INST_PHANDLE(n, transform)),        \
         .keys = _CONCAT(_zmk_physical_layout_keys_, n),                                            \
         .keys_len = DT_INST_PROP_LEN_OR(n, keys, 0),                                               \
-        .kscan = DEVICE_DT_GET(COND_CODE_1(DT_INST_PROP_LEN(n, kscan),                             \
-                                           (DT_INST_PHANDLE(n, kscan)), (DT_CHOSEN(zmk_kscan))))};
+        COND_CODE_1(UTIL_AND(MATRIX_INPUT_SUPPORT, DT_INST_PROP_LEN(n, input)),                    \
+                    (.input = INPUT_FOR_INST(n)), ())                                              \
+            COND_CODE_1(UTIL_OR(DT_HAS_CHOSEN(zmk_kscan), DT_INST_PROP_LEN(n, kscan)),             \
+                        (.kscan = DEVICE_DT_GET(COND_CODE_1(DT_INST_PROP_LEN(n, kscan),            \
+                                                            (DT_INST_PHANDLE(n, kscan)),           \
+                                                            (DT_CHOSEN(zmk_kscan))))),             \
+                        ())};                                                                      \
+    COND_CODE_1(                                                                                   \
+        UTIL_AND(MATRIX_INPUT_SUPPORT, DT_INST_PROP_LEN(n, input)),                                \
+        (INPUT_CALLBACK_DEFINE(INPUT_FOR_INST(n), zmk_physical_layout_input_event_cb,              \
+                               (void *)&(_CONCAT(_zmk_physical_layout_, DT_DRV_INST(n))));),       \
+        ())
 
 DT_INST_FOREACH_STATUS_OKAY(ZMK_LAYOUT_INST)
 
@@ -135,12 +160,12 @@ static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, chosen) =
 static const struct zmk_physical_layout *const layouts[] = {
     &_CONCAT(_zmk_physical_layout_, chosen)};
 
-#elif DT_HAS_CHOSEN(zmk_kscan)
+#elif UTIL_OR(DT_HAS_CHOSEN(zmk_kscan), DT_HAS_CHOSEN(zmk_matrix_input))
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
 #warning                                                                                           \
-    "Ignoring the physical layouts and using the chosen kscan with a synthetic transform. Consider setting a chosen physical layout instead."
+    "Ignoring the physical layouts and using the chosen kscan/matrix-input with a synthetic transform. Consider setting a chosen physical layout instead."
 
 #endif
 
@@ -148,8 +173,18 @@ ZMK_MATRIX_TRANSFORM_DEFAULT_EXTERN();
 static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, chosen) = {
     .display_name = "Default",
     .matrix_transform = &zmk_matrix_transform_default,
+#if DT_HAS_CHOSEN(zmk_matrix_input)
+    .input = DEVICE_DT_GET(DT_CHOSEN(zmk_matrix_input)),
+#elif DT_HAS_CHOSEN(zmk_kscan)
     .kscan = DEVICE_DT_GET(DT_CHOSEN(zmk_kscan)),
+#endif
 };
+
+#if DT_HAS_CHOSEN(zmk_matrix_input)
+INPUT_CALLBACK_DEFINE(DEVICE_DT_GET(DT_CHOSEN(zmk_matrix_input)),
+                      zmk_physical_layout_input_event_cb,
+                      (void *)&(_CONCAT(_zmk_physical_layout_, chosen)));
+#endif
 
 static const struct zmk_physical_layout *const layouts[] = {
     &_CONCAT(_zmk_physical_layout_, chosen)};
@@ -179,6 +214,55 @@ static struct zmk_kscan_msg_processor {
 
 K_MSGQ_DEFINE(physical_layouts_kscan_msgq, sizeof(struct zmk_kscan_event),
               CONFIG_ZMK_KSCAN_EVENT_QUEUE_SIZE, 4);
+
+#if MATRIX_INPUT_SUPPORT
+
+static struct zmk_kscan_event pending_input_event;
+
+static void zmk_physical_layout_input_event_cb(struct input_event *evt, void *user_data) {
+    const struct zmk_physical_layout *layout = (const struct zmk_physical_layout *)user_data;
+    if (layout != active) {
+        LOG_WRN("Ignoring input event from non-active layout");
+        return;
+    }
+
+    switch (evt->type) {
+    case INPUT_EV_ABS:
+        switch (evt->code) {
+        case INPUT_ABS_X:
+            pending_input_event.column = evt->value;
+            break;
+        case INPUT_ABS_Y:
+            pending_input_event.row = evt->value;
+            break;
+        default:
+            LOG_WRN("Unknown abs code");
+            return;
+        }
+        break;
+    case INPUT_EV_KEY:
+        switch (evt->code) {
+        case INPUT_BTN_TOUCH:
+            pending_input_event.state =
+                (evt->value ? ZMK_KSCAN_EVENT_STATE_PRESSED : ZMK_KSCAN_EVENT_STATE_RELEASED);
+            break;
+        default:
+            LOG_WRN("Unknown key code");
+            return;
+        }
+        break;
+    default:
+        LOG_WRN("Unknown type");
+        return;
+    }
+
+    if (evt->sync) {
+        k_msgq_put(&physical_layouts_kscan_msgq, &pending_input_event, K_NO_WAIT);
+        k_work_submit(&msg_processor.work);
+    }
+}
+
+#endif
 
 static void zmk_physical_layout_kscan_callback(const struct device *dev, uint32_t row,
                                                uint32_t column, bool pressed) {
