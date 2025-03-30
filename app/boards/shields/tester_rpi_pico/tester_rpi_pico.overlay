@@ -1,0 +1,63 @@
+#include <dt-bindings/zmk/matrix_transform.h>
+#include "tester_rpi_pico-layouts.dtsi"
+
+&physical_layout0 {
+    transform = <&transform0>;
+};
+
+&physical_layout1 {
+    transform = <&transform0>;
+};
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &physical_layout0;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+        debounce-press-ms = <10>;
+        debounce-release-ms = <10>;
+        input-gpios
+            = <&pico_header 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 22 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 26 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 27 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&pico_header 28 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            ;
+    };
+
+    transform0: keymap_transform {
+        compatible = "zmk,matrix-transform";
+        columns = <26>;
+        rows = <1>;
+        map = <
+        RC(0,0)  RC(0,1)  RC(0,2)  RC(0,3)  RC(0,4)  RC(0,5)  RC(0,6)  RC(0,7)  RC(0,8)  RC(0,9)
+        RC(0,10) RC(0,11)  RC(0,12)  RC(0,13)  RC(0,14)  RC(0,15)  RC(0,16)  RC(0,17) RC(0,18) RC(0,19)
+        RC(0,20) RC(0,21) RC(0,22) RC(0,23) RC(0,24) RC(0,25)
+        >;
+    };
+};
