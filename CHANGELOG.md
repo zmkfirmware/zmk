@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.3.0](https://github.com/zmkfirmware/zmk/compare/v0.2.1...v0.3.0) (2025-04-04)
+
+
+### Features
+
+* Full-Duplex Wired Split ([#2766](https://github.com/zmkfirmware/zmk/issues/2766)) ([147c340](https://github.com/zmkfirmware/zmk/commit/147c340c6e8d377304acfdd64dc86cf83ebdfef2))
+* **shields:** Add physical layouts for tester_xiao and tester_pro_micro ([#2852](https://github.com/zmkfirmware/zmk/issues/2852)) ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **shields:** Add tester_pro_micro layouts ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **shields:** Add tester_xiao layouts ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **split:** Add full-duplex wired split support ([147c340](https://github.com/zmkfirmware/zmk/commit/147c340c6e8d377304acfdd64dc86cf83ebdfef2))
+
+
+### Bug Fixes
+
+* **ci:** pin tj-actions/changed-files due to compromise ([#2874](https://github.com/zmkfirmware/zmk/issues/2874)) ([4da89bd](https://github.com/zmkfirmware/zmk/commit/4da89bd99716bf6c1d7d788f3cdaec4cee7403e9))
+* Properly override stack size on RP2040 ([147c340](https://github.com/zmkfirmware/zmk/commit/147c340c6e8d377304acfdd64dc86cf83ebdfef2))
+* **split:** add source to battery event ([#2901](https://github.com/zmkfirmware/zmk/issues/2901)) ([6f85f48](https://github.com/zmkfirmware/zmk/commit/6f85f48b19afae04f98e9abacb36ce1425b61f78))
+* **split:** Conditionally build all split code ([#2884](https://github.com/zmkfirmware/zmk/issues/2884)) ([5bb39ec](https://github.com/zmkfirmware/zmk/commit/5bb39ec3eae23055593350cb3689a8240028181e))
+
 ## [0.2.1](https://github.com/zmkfirmware/zmk/compare/v0.2.0...v0.2.1) (2025-03-02)
 
 
