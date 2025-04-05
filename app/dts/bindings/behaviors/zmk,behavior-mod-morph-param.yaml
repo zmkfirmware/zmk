@@ -1,0 +1,8 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Mod Morph Behavior
+
+compatible: "zmk,behavior-mod-morph-param"
+
+include: [two_param.yaml, mod_morph_base.yaml, binding_params.yaml]
