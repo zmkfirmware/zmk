@@ -5,7 +5,7 @@ import pluginReact from "eslint-plugin-react";
 import * as mdx from "eslint-plugin-mdx";
 
 export default defineConfig([
-  globalIgnores(["build/"]),
+  globalIgnores([".cache-loader/", ".docusaurus/", "build/"]),
   { files: ["**/*.{js,jsx,md,mdx}"] },
   {
     plugins: { js },
