@@ -22,6 +22,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/layer_state_changed.h>
 #include <zmk/events/sensor_event.h>
+#include <zmk/events/behavior_binding_event.h>
 
 static zmk_keymap_layers_state_t _zmk_keymap_layer_state = 0;
 static zmk_keymap_layer_id_t _zmk_keymap_layer_default = 0;
@@ -115,7 +116,7 @@ static struct zmk_behavior_binding
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
-uint8_t map_layer_id_to_index(zmk_keymap_layer_id_t layer_id) {
+uint8_t zmk_keymap_map_layer_id_to_index(zmk_keymap_layer_id_t layer_id) {
     for (uint8_t i = 0; i < ZMK_KEYMAP_LAYERS_LEN; i++) {
         if (keymap_layer_orders[i] == layer_id) {
             return i;
@@ -126,12 +127,10 @@ uint8_t map_layer_id_to_index(zmk_keymap_layer_id_t layer_id) {
 }
 
 #define LAYER_INDEX_TO_ID(_layer) keymap_layer_orders[_layer]
-#define LAYER_ID_TO_INDEX(_layer) map_layer_id_to_index(_layer)
 
 #else
 
 #define LAYER_INDEX_TO_ID(_layer) _layer
-#define LAYER_ID_TO_INDEX(_layer) _layer
 
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
@@ -685,120 +684,69 @@ int zmk_keymap_reset_settings(void) { return -ENOTSUP; }
 
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
 
-int zmk_keymap_apply_position_state(uint8_t source, zmk_keymap_layer_id_t layer_id,
-                                    uint32_t position, bool pressed, int64_t timestamp) {
-    const struct zmk_behavior_binding *binding =
-        zmk_keymap_get_layer_binding_at_idx(layer_id, position);
-    struct zmk_behavior_binding_event event = {
-        .layer = layer_id,
-        .position = position,
-        .timestamp = timestamp,
-#if IS_ENABLED(CONFIG_ZMK_SPLIT)
-        .source = source,
-#endif
-    };
-
-    LOG_DBG("layer_id: %d position: %d, binding name: %s", layer_id, position,
-            binding->behavior_dev);
-
-    return zmk_behavior_invoke_binding(binding, event, pressed);
-}
-
-int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
-                                      int64_t timestamp) {
-    if (pressed) {
-        zmk_keymap_active_behavior_layer[position] = _zmk_keymap_layer_state;
-    }
-
+int zmk_keymap_raise_binding_event_at_layer_index(zmk_keymap_layer_id_t layer_index, uint8_t source,
+                                                  uint32_t position, enum trigger_type type,
+                                                  int64_t timestamp) {
     // We use int here to be sure we don't loop layer_idx back to UINT8_MAX
-    for (int layer_idx = ZMK_KEYMAP_LAYERS_LEN - 1;
-         layer_idx >= LAYER_ID_TO_INDEX(_zmk_keymap_layer_default); layer_idx--) {
-        zmk_keymap_layer_id_t layer_id = LAYER_INDEX_TO_ID(layer_idx);
+    for (int layer_idx = layer_index; layer_idx >= 0; layer_idx--) {
+        zmk_keymap_layer_id_t candidate_layer = LAYER_INDEX_TO_ID(layer_idx);
 
-        if (layer_id == ZMK_KEYMAP_LAYER_ID_INVAL) {
+        if (candidate_layer >= ZMK_KEYMAP_LAYERS_LEN) {
             continue;
         }
-        if (zmk_keymap_layer_active_with_state(layer_id,
-                                               zmk_keymap_active_behavior_layer[position])) {
-            int ret =
-                zmk_keymap_apply_position_state(source, layer_id, position, pressed, timestamp);
-            if (ret > 0) {
-                LOG_DBG("behavior processing to continue to next layer");
-                continue;
-            } else if (ret < 0) {
-                LOG_DBG("Behavior returned error: %d", ret);
-                return ret;
+        if (zmk_keymap_layer_active_with_state(candidate_layer,
+                                               zmk_keymap_active_behavior_layer[position]) ||
+            (zmk_keymap_layer_active(candidate_layer) && (position >= ZMK_KEYMAP_LEN))) {
+            const struct zmk_behavior_binding *binding;
+            if (position >= ZMK_KEYMAP_LEN) {
+#if ZMK_KEYMAP_HAS_SENSORS
+                int sensor_index = ZMK_SENSOR_POSITION_FROM_VIRTUAL_KEY_POSITION(position);
+                binding = &zmk_sensor_keymap[candidate_layer][sensor_index];
+                if (!zmk_behavior_get_binding(binding->behavior_dev)) {
+                    LOG_DBG("No behavior assigned to sensor index %d on layer %d", sensor_index,
+                            candidate_layer);
+                    continue;
+                }
+                LOG_DBG("layer_id: %d sensor_index: %d, binding name: %s", candidate_layer,
+                        sensor_index, binding->behavior_dev);
+#else
+                return -ENOTSUP;
+#endif
             } else {
-                return ret;
+                binding = zmk_keymap_get_layer_binding_at_idx(candidate_layer, position);
+                LOG_DBG("layer_id: %d position: %d, binding name: %s", candidate_layer, position,
+                        binding->behavior_dev);
             }
+
+            return raise_zmk_behavior_binding_event((struct zmk_behavior_binding_event){
+                .binding = binding,
+                .layer = candidate_layer,
+                .position = position,
+                .timestamp = timestamp,
+                .type = type,
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+                .source = source,
+#endif
+            });
         }
     }
-
     return -ENOTSUP;
 }
 
-#if ZMK_KEYMAP_HAS_SENSORS
-int zmk_keymap_sensor_event(uint8_t sensor_index,
-                            const struct zmk_sensor_channel_data *channel_data,
-                            size_t channel_data_size, int64_t timestamp) {
-    bool opaque_response = false;
-
-    for (int layer_idx = ZMK_KEYMAP_LAYERS_LEN - 1; layer_idx >= 0; layer_idx--) {
-        uint8_t layer_id = LAYER_INDEX_TO_ID(layer_idx);
-
-        if (layer_id >= ZMK_KEYMAP_LAYERS_LEN) {
-            continue;
-        }
-
-        struct zmk_behavior_binding *binding = &zmk_sensor_keymap[layer_id][sensor_index];
-
-        LOG_DBG("layer idx: %d, layer id: %d sensor_index: %d, binding name: %s", layer_idx,
-                layer_id, sensor_index, binding->behavior_dev);
-
-        const struct device *behavior = zmk_behavior_get_binding(binding->behavior_dev);
-        if (!behavior) {
-            LOG_DBG("No behavior assigned to %d on layer %d", sensor_index, layer_id);
-            continue;
-        }
-
-        struct zmk_behavior_binding_event event = {
-            .layer = layer_id,
-            .position = ZMK_VIRTUAL_KEY_POSITION_SENSOR(sensor_index),
-            .timestamp = timestamp,
-        };
-
-        int ret = behavior_sensor_keymap_binding_accept_data(
-            binding, event, zmk_sensors_get_config_at_index(sensor_index), channel_data_size,
-            channel_data);
-
-        if (ret < 0) {
-            LOG_WRN("behavior data accept for behavior %s returned an error (%d). Processing to "
-                    "continue to next layer",
-                    binding->behavior_dev, ret);
-            continue;
-        }
-
-        enum behavior_sensor_binding_process_mode mode =
-            (!opaque_response && layer_idx >= LAYER_ID_TO_INDEX(_zmk_keymap_layer_default) &&
-             zmk_keymap_layer_active(layer_id))
-                ? BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_TRIGGER
-                : BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_DISCARD;
-
-        ret = behavior_sensor_keymap_binding_process(binding, event, mode);
-
-        if (ret == ZMK_BEHAVIOR_OPAQUE) {
-            LOG_DBG("sensor event processing complete, behavior response was opaque");
-            opaque_response = true;
-        } else if (ret < 0) {
-            LOG_DBG("Behavior returned error: %d", ret);
-            return ret;
-        }
+static int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
+                                             int64_t timestamp) {
+    if (pressed) {
+        zmk_keymap_active_behavior_layer[position] = _zmk_keymap_layer_state;
     }
+    enum trigger_type type = pressed ? PRESS : RELEASE;
 
-    return 0;
+    int ret = zmk_keymap_raise_binding_event_at_layer_index(ZMK_KEYMAP_LAYERS_LEN - 1, source,
+                                                            position, type, timestamp);
+    if (ret < 0) {
+        LOG_DBG("Behavior returned error: %d", ret);
+    }
+    return ret;
 }
-
-#endif /* ZMK_KEYMAP_HAS_SENSORS */
 
 int keymap_listener(const zmk_event_t *eh) {
     const struct zmk_position_state_changed *pos_ev;
@@ -806,24 +754,11 @@ int keymap_listener(const zmk_event_t *eh) {
         return zmk_keymap_position_state_changed(pos_ev->source, pos_ev->position, pos_ev->state,
                                                  pos_ev->timestamp);
     }
-
-#if ZMK_KEYMAP_HAS_SENSORS
-    const struct zmk_sensor_event *sensor_ev;
-    if ((sensor_ev = as_zmk_sensor_event(eh)) != NULL) {
-        return zmk_keymap_sensor_event(sensor_ev->sensor_index, sensor_ev->channel_data,
-                                       sensor_ev->channel_data_size, sensor_ev->timestamp);
-    }
-#endif /* ZMK_KEYMAP_HAS_SENSORS */
-
     return -ENOTSUP;
 }
 
 ZMK_LISTENER(keymap, keymap_listener);
 ZMK_SUBSCRIPTION(keymap, zmk_position_state_changed);
-
-#if ZMK_KEYMAP_HAS_SENSORS
-ZMK_SUBSCRIPTION(keymap, zmk_sensor_event);
-#endif /* ZMK_KEYMAP_HAS_SENSORS */
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
 
