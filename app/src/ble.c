@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2024 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -96,7 +96,11 @@ static void raise_profile_changed_event_callback(struct k_work *work) {
 K_WORK_DEFINE(raise_profile_changed_event_work, raise_profile_changed_event_callback);
 
 bool zmk_ble_active_profile_is_open(void) {
-    return !bt_addr_le_cmp(&profiles[active_profile].peer, BT_ADDR_LE_ANY);
+    return zmk_ble_profile_is_open(zmk_ble_active_profile_addr());
+}
+
+bool zmk_ble_profile_is_open(const bt_addr_le_t *addr) {
+    return !bt_addr_le_cmp(addr, BT_ADDR_LE_ANY);
 }
 
 void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
@@ -115,9 +119,12 @@ void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
 }
 
 bool zmk_ble_active_profile_is_connected(void) {
+    return zmk_ble_profile_is_connected(zmk_ble_active_profile_addr());
+}
+
+bool zmk_ble_profile_is_connected(const bt_addr_le_t *addr) {
     struct bt_conn *conn;
     struct bt_conn_info info;
-    bt_addr_le_t *addr = zmk_ble_active_profile_addr();
     if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
         return false;
     } else if ((conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr)) == NULL) {
@@ -248,6 +255,13 @@ int zmk_ble_profile_index(const bt_addr_le_t *addr) {
         }
     }
     return -ENODEV;
+}
+
+bt_addr_le_t *zmk_ble_profile_address(uint8_t index) {
+    if (index >= ZMK_BLE_PROFILE_COUNT) {
+        return (bt_addr_le_t *)(BT_ADDR_LE_NONE);
+    }
+    return &profiles[index].peer;
 }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
