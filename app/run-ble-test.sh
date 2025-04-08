@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
