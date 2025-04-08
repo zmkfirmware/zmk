@@ -430,7 +430,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: tj-actions/changed-files@9200e69727eb73eb060652b19946b8a2fdfb654b # pin to v45.0.8 due to https://github.com/tj-actions/changed-files/issues/2463 https://www.stepsecurity.io/blog/harden-runner-detection-tj-actions-changed-files-action-is-compromised
+      - uses: tj-actions/changed-files@cf2e39e86bf842d1f9bc5bca56c0a6b207cca792 # pin to v45.0.8 due to https://github.com/tj-actions/changed-files/issues/2463 https://www.stepsecurity.io/blog/harden-runner-detection-tj-actions-changed-files-action-is-compromised
         id: changed-files
         with:
           json: true
