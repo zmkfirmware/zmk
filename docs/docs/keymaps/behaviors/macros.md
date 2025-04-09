@@ -199,10 +199,10 @@ There are special macro controls which must be used in order to forward received
 For example, to pass the first parameter received into a `&kp` binding, you would use:
 
 ```dts
-bindings = <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+bindings = <&macro_param_1to1>, <&kp PLACEHOLDER>;
 ```
 
-Because `kp` takes one parameter, you can't simply make the second entry `<&kp>` in the `bindings` list. Whatever value you do pass in will be replaced when the macro is triggered, so you can put _any_ value there, e.g. `0`, `A` keycode, etc. To make it very obvious that the parameter there is not actually going to be used, you can use `MACRO_PLACEHOLDER` which is simply an alias for `0`.
+Because `kp` takes one parameter, you can't simply make the second entry `<&kp>` in the `bindings` list. Whatever value you do pass in will be replaced when the macro is triggered, so you can put _any_ value there, e.g. `0`, `A` keycode, etc. To make it very obvious that the parameter there is not actually going to be used, you can use `PLACEHOLDER` which is simply an alias for `0`.
 
 The available parameter controls are:
 
@@ -244,14 +244,14 @@ lm: lm {
     #binding-cells = <2>;
     bindings
         = <&macro_param_1to1>
-        , <&macro_press &mo MACRO_PLACEHOLDER>
+        , <&macro_press &mo PLACEHOLDER>
         , <&macro_param_2to1>
-        , <&macro_press &kp MACRO_PLACEHOLDER>
+        , <&macro_press &kp PLACEHOLDER>
         , <&macro_pause_for_release>
         , <&macro_param_2to1>
-        , <&macro_release &kp MACRO_PLACEHOLDER>
+        , <&macro_release &kp PLACEHOLDER>
         , <&macro_param_1to1>
-        , <&macro_release &mo MACRO_PLACEHOLDER>
+        , <&macro_release &mo PLACEHOLDER>
         ;
 };
 ```
