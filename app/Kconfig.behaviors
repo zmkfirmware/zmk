@@ -25,7 +25,7 @@ config ZMK_BEHAVIOR_LOCAL_ID_TYPE_SETTINGS_TABLE
     help
       Use persistent entries in the settings subsystem to identify
       behaviors by local ID, which uses the device name to generate
-      a new settings entry tying a presistant local ID to that name.
+      a new settings entry tying a persistent local ID to that name.
       This guarantees stable, colllision-free local IDs at the expense
       of settings storage used.
 

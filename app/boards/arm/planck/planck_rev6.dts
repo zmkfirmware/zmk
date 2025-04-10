@@ -15,7 +15,7 @@
 
 
 / {
-    model = "Plack PCD, rev6";
+    model = "Planck PCB, rev6";
     compatible = "planck,rev6", "st,stm32f303";
 
     chosen {
