@@ -6,3 +6,4 @@ url: https://boardsource.xyz/store/5ecb802c86879c9a0c22db61
 requires: [pro_micro]
 features:
   - keys
+  - studio

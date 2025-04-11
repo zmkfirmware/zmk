@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
- #include "zmk_uno.dtsi"
+#include "zmk_uno.dtsi"
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
@@ -12,8 +12,9 @@
 
 / {
     chosen {
-        zmk,matrix-transform = &matrix_transform;
+        zmk,physical-layout = &matrix_physical_layout;
     };
+
     sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&encoder>;
@@ -38,6 +39,8 @@
 
     endpoint_sideband_behaviors {
         compatible = "zmk,kscan-sideband-behaviors";
+
+        auto-enable;
         kscan = <&kscan_sp3t_toggle>;
 
         first_toggle_sideband: first_toggle_sideband {
@@ -55,5 +58,4 @@
             bindings = <&ble_one>;
         };
     };
-
 };

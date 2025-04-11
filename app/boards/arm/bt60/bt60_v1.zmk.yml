@@ -6,6 +6,7 @@ arch: arm
 features:
   - keys
   - encoder
+  - studio
 outputs:
   - usb
   - ble

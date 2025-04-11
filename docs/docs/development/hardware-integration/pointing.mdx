@@ -1,0 +1,330 @@
+---
+title: Pointing Devices
+toc_max_heading_level: 2
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+ZMK's pointing device support builds upon the Zephyr [input API](https://docs.zephyrproject.org/3.5.0/services/input/index.html) to offer pointing/mouse functionality with various hardware.
+A limited number of input drivers are available in the Zephyr version currently used by ZMK, but additional drivers can be found in [external modules](../../features/modules.mdx) for a variety of hardware.
+
+Pointing devices are also supported on split peripherals, with some additional configuration using the [input split device](../../config/pointing.md#input-split).
+The configuration details will thus vary depending on if you are adding a pointing device to a [split peripheral](../../features/split-keyboards.md#central-and-peripheral-roles) as opposed to a unibody keyboard or split central part.
+
+export const SplitTabs = (props) => (
+  <Tabs
+    groupId="part-type"
+    queryString
+    defaultValue="unibody"
+    values={[
+      { label: "Unibody", value: "unibody" },
+      { label: "Split Central", value: "central" },
+      { label: "Split Peripheral", value: "peripheral" },
+    ]}
+  >
+
+    {/* eslint-disable-next-line */}
+    {props.children}
+
+  </Tabs>
+
+);
+
+## Input Device
+
+First, we must define the pointing device itself. The specifics of where this node goes will depend on the specific hardware.
+_Most_ pointing hardware uses either SPI or I2C for communication, and will be nested under a properly configured bus node, e.g. `&pro_micro_i2c` or for a complete onboard setup, `&i2c3`.
+See the documentation on [pin control](./pinctrl.mdx) if you need to configure the pins for an I2C or SPI bus.
+
+This node should always be set up in the `.overlay`/`.dts` file for the keyboard side that has the device attached to it.
+
+<SplitTabs>
+  <TabItem value="unibody">
+
+For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml), a node like following would be added to the `.overlay`/`.dts` file for the keyboard, like `<keyboard>.overlay`:
+
+  </TabItem>
+  <TabItem value="central">
+
+For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml) on a central part, a node like following would be added to the `.overlay`/`.dts` file for the central part of the keyboard, like `<central>.overlay`:
+
+  </TabItem>
+  <TabItem value="peripheral">
+
+For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml) on one of the peripheral parts, a node like following would be added to the `.overlay`/`.dts` file for that peripheral part, like `<peripheral>.overlay`:
+
+  </TabItem>
+</SplitTabs>
+
+```dts
+&pro_micro_spi {
+    status = "okay";
+    cs-gpios = <&pro_micro 19 GPIO_ACTIVE_LOW>;
+
+    glidepoint: glidepoint@0 {
+        compatible = "cirque,pinnacle";
+        reg = <0>;
+        spi-max-frequency = <1000000>;
+        status = "okay";
+        dr-gpios = <&pro_micro 5 (GPIO_ACTIVE_HIGH)>;
+
+        sensitivity = "4x";
+        sleep;
+        no-taps;
+    };
+};
+```
+
+The specifics of the properties required to set for a given driver will vary; always consult the devicetree bindings file for the specific driver to see what properties can be set.
+
+## Listener and Input Split Device
+
+Every input device needs an associated listener added that listens for events from the device and processes them before sending the events to the host using a HID mouse report.
+See [input listener configuration](../../config/pointing.md#input-listener) for the full details.
+
+If your pointing device is on a split peripheral part, you also need to define and use an input split device on all keyboard parts.
+
+<SplitTabs>
+  <TabItem value="unibody">
+
+To add a listener for the above device, add to your `.overlay`/`.dts` file for the keyboard a node like the following:
+
+```dts title="<keyboard>.overlay"
+/ {
+    glidepoint_listener {
+        compatible = "zmk,input-listener";
+        device = <&glidepoint>;
+    };
+};
+```
+
+  </TabItem>
+  <TabItem value="central">
+
+### Shared Configuration
+
+The input listener that is used by the central side is added to the shared `.dtsi` file that is included into both central and peripheral `.overlay`/`.dts` files.
+
+The input listener is disabled by default, and will be enabled later in the central part's overlay. This is so that keymaps (which are included for both central and peripheral builds) can reference the listener to add input processors without failing with an undefined reference error.
+
+```dts title="<keyboard>.dtsi"
+/ {
+    glidepoint_listener: glidepoint_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled";
+    };
+};
+```
+
+If users want to add [input processors](#input-processors) to the listener node, they will use the corresponding node reference (here it is `&glidepoint_listener`) in their keymaps.
+
+### Central Configuration
+
+In the central, we do the following:
+
+- Include the shared .dtsi file.
+- Enable the input listener that is created in our shared file.
+- Assign the pointing device node to the listener.
+
+```dts title="<central>.overlay"
+// Pull in the shared configuration
+#include "<keyboard>.dtsi"
+
+// Node from the previous Input Device section
+&pro_micro_spi {
+    /* ... */
+
+    glidepoint: glidepoint@0 {
+        /* ... */
+    };
+};
+
+// Overrides for the input listener node
+&glidepoint_listener {
+    status = "okay";
+    device = <&glidepoint>;
+};
+```
+
+### Peripheral Configuration
+
+Finally, we include the shared file in all peripherals so that the listener node reference is available like mentioned above:
+
+```dts title="<peripheral>.overlay"
+#include "<keyboard>.dtsi"
+```
+
+  </TabItem>
+  <TabItem value="peripheral">
+
+### Shared Configuration
+
+When a pointing device is on a peripheral, both peripheral and central make use of a `zmk,input-split` device, which functions differently depending on where it is used.
+To avoid duplicating work, this node can be defined in the shared `.dtsi` file that is included into both central and peripheral `.overlay`/`.dts` files.
+
+All split pointers are identified using a unique integer value, which is specified using the `reg` property and in the `@#` suffix for the node. If adding multiple peripheral pointers, be sure that each is given a unique identifier.
+
+Second, the input listener that is used by the central side is added here but disabled by default. This is so that keymaps (which are included for both central and peripheral builds) can reference the listener to add input processors without failing with an undefined reference error.
+
+:::note
+
+Input splits need to be nested under a parent node that properly sets `#address-cells = <1>` and `#size-cells = <0>`. These settings are what allow us to use a single integer number for the `reg` value.
+
+:::
+
+```dts title="<keyboard>.dtsi"
+/ {
+    split_inputs {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        glidepoint_split: glidepoint_split@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
+    };
+
+    glidepoint_listener: glidepoint_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled";
+        device = <&glidepoint_split>;
+    };
+};
+```
+
+If users want to add [input processors](#input-processors) to the listener node, they will use the corresponding node reference (here it is `&glidepoint_listener`) in their keymaps.
+
+### Peripheral Configuration
+
+In the peripheral .overlay/.dts file, we do the following:
+
+- Include the shared .dtsi file.
+- Update the input split with a reference to the new device node that should be proxied.
+
+```dts title="<peripheral>.overlay"
+// Pull in the shared configuration
+#include "<keyboard>.dtsi"
+
+// Node from the previous Input Device section
+&pro_micro_spi {
+    /* ... */
+
+    glidepoint: glidepoint@0 {
+        /* ... */
+    };
+};
+
+// Overrides for the input-split child node
+&glidepoint_split {
+    device = <&glidepoint>;
+
+    // Optional
+    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
+};
+```
+
+The [`input-processors` property](#input-processors) on the input split is optional, and only necessary if the input needs to be fixed up before it is sent to the central.
+
+### Central Configuration
+
+On the central, the input split acts as an input device, receiving events from the peripheral and raising them locally.
+Here we first include the shared file, and then enable the input listener that is created, but disabled, in our shared file:
+
+```dts title="<central>.overlay"
+#include "<keyboard>.dtsi"
+
+&glidepoint_listener {
+    status = "okay";
+};
+```
+
+  </TabItem>
+</SplitTabs>
+
+## Input Processors
+
+Some physical pointing devices may be generating input events that need adjustment before being sent to hosts.
+For example a trackpad might be integrated into a keyboard rotated 90° and need the X/Y data adjusted appropriately.
+This can be accomplished with [input processors](../../keymaps/input-processors/index.md).
+As an example, you could enhance the listener defined in the previous section with an input processor that inverts and swaps the X/Y axes:
+
+```dts
+#include <dt-bindings/zmk/input_transform.h>
+
+/ {
+    glidepoint_listener {
+        compatible = "zmk,input-listener";
+        device = <&glidepoint>;
+        input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>;
+    };
+};
+```
+
+## Configuration Setting
+
+If your keyboard hardware includes a pointing device by default, you can enable the [`ZMK_POINTING` config](../../config/pointing.md#general) in your keyboard definition.
+You can do that in your [`Kconfig.defconfig` file](new-shield.mdx#kconfigdefconfig), where you can also enable the config for the communication protocol (e.g. [SPI](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_SPI), [I2C](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/i2c.html#configuration-options)) used by the pointing device:
+
+<SplitTabs>
+  <TabItem value="unibody">
+
+```kconfig title="Kconfig.defconfig"
+if SHIELD_MY_KEYBOARD
+
+# Other keyboard settings
+
+config ZMK_POINTING
+    default y
+
+# Assuming pointing device uses SPI
+config SPI
+    default y
+
+endif
+```
+
+  </TabItem>
+  <TabItem value="central">
+
+```kconfig title="Kconfig.defconfig"
+if SHIELD_MY_KEYBOARD_<CENTRAL>
+
+# Other settings
+
+config ZMK_POINTING
+    default y
+
+# Assuming pointing device uses SPI
+config SPI
+    default y
+
+endif
+```
+
+  </TabItem>
+  <TabItem value="peripheral">
+
+```kconfig title="Kconfig.defconfig"
+if SHIELD_MY_KEYBOARD_<CENTRAL> || SHIELD_MY_KEYBOARD_<PERIPHERAL>
+
+# Other keyboard settings
+
+config ZMK_POINTING
+    default y
+
+endif
+
+if SHIELD_MY_KEYBOARD_<PERIPHERAL>
+
+# Assuming pointing device uses SPI
+config SPI
+    default y
+
+endif
+```
+
+  </TabItem>
+</SplitTabs>
+
+If the hardware is optional, users should set `CONFIG_ZMK_POINTING=y` manually in their [user configuration file](new-shield.mdx#user-configuration-files), along with the config for the protocol.

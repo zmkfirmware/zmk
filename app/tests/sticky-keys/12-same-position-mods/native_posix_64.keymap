@@ -1,0 +1,39 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &sk LEFT_CONTROL &mo 1
+                &kp A &kp B>;
+        };
+
+        lower_layer {
+            bindings = <
+                &sk LEFT_SHIFT  &kp X
+                &kp Y  &kp Z>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        /* tap sk LEFT_CONTROL */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        /* switch to lower layer */
+        ZMK_MOCK_PRESS(0,1,10)
+        /* tap sk LEFT_SHIFT */
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        /* deactivate lower layer */
+        ZMK_MOCK_RELEASE(0,1,10)
+        /* tap A */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+    >;
+};

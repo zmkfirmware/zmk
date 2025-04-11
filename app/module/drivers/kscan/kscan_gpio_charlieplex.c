@@ -12,6 +12,7 @@
 #include <zephyr/drivers/kscan.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/pm/device.h>
 #include <zephyr/sys/__assert.h>
 #include <zephyr/sys/util.h>
 
@@ -166,6 +167,25 @@ static int kscan_charlieplex_set_all_outputs(const struct device *dev, const int
 
     return 0;
 }
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+
+static int kscan_charlieplex_disconnect_all(const struct device *dev) {
+    const struct kscan_charlieplex_config *config = dev->config;
+
+    for (int i = 0; i < config->cells.len; i++) {
+        const struct gpio_dt_spec *gpio = &config->cells.gpios[i];
+        int err = gpio_pin_configure_dt(gpio, GPIO_DISCONNECTED);
+        if (err) {
+            LOG_ERR("Unable to configure pin %u on %s for input", gpio->pin, gpio->port->name);
+            return err;
+        }
+    }
+
+    return 0;
+}
+
+#endif
 
 static int kscan_charlieplex_interrupt_configure(const struct device *dev,
                                                  const gpio_flags_t flags) {
@@ -359,11 +379,7 @@ static int kscan_charlieplex_init_interrupt(const struct device *dev) {
     return err;
 }
 
-static int kscan_charlieplex_init(const struct device *dev) {
-    struct kscan_charlieplex_data *data = dev->data;
-
-    data->dev = dev;
-
+static void kscan_charlieplex_setup_pins(const struct device *dev) {
     kscan_charlieplex_init_inputs(dev);
     kscan_charlieplex_set_all_outputs(dev, 0);
 
@@ -371,7 +387,46 @@ static int kscan_charlieplex_init(const struct device *dev) {
     if (config->use_interrupt) {
         kscan_charlieplex_init_interrupt(dev);
     }
+}
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+
+static int kscan_charlieplex_pm_action(const struct device *dev, enum pm_device_action action) {
+    switch (action) {
+    case PM_DEVICE_ACTION_SUSPEND:
+        kscan_charlieplex_interrupt_configure(dev, GPIO_INT_DISABLE);
+        kscan_charlieplex_disconnect_all(dev);
+
+        return kscan_charlieplex_disable(dev);
+    case PM_DEVICE_ACTION_RESUME:
+        kscan_charlieplex_setup_pins(dev);
+
+        return kscan_charlieplex_enable(dev);
+    default:
+        return -ENOTSUP;
+    }
+}
+
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
+static int kscan_charlieplex_init(const struct device *dev) {
+    struct kscan_charlieplex_data *data = dev->data;
+
+    data->dev = dev;
+
     k_work_init_delayable(&data->work, kscan_charlieplex_work_handler);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_init_suspended(dev);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_enable(dev);
+#endif
+
+#else
+    kscan_charlieplex_setup_pins(dev);
+#endif
+
     return 0;
 }
 
@@ -394,7 +449,7 @@ static const struct kscan_driver_api kscan_charlieplex_api = {
         .charlieplex_state = kscan_charlieplex_state_##n,                                          \
     };                                                                                             \
                                                                                                    \
-    static struct kscan_charlieplex_config kscan_charlieplex_config_##n = {                        \
+    static const struct kscan_charlieplex_config kscan_charlieplex_config_##n = {                  \
         .cells = KSCAN_GPIO_LIST(kscan_charlieplex_cells_##n),                                     \
         .debounce_config =                                                                         \
             {                                                                                      \
@@ -406,8 +461,10 @@ static const struct kscan_driver_api kscan_charlieplex_api = {
             COND_THIS_INTERRUPT(n, (.use_interrupt = INST_INTR_DEFINED(n), ))                      \
                 COND_THIS_INTERRUPT(n, (.interrupt = KSCAN_INTR_CFG_INIT(n), ))};                  \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(n, &kscan_charlieplex_init, NULL, &kscan_charlieplex_data_##n,           \
-                          &kscan_charlieplex_config_##n, POST_KERNEL, CONFIG_KSCAN_INIT_PRIORITY,  \
-                          &kscan_charlieplex_api);
+    PM_DEVICE_DT_INST_DEFINE(n, kscan_charlieplex_pm_action);                                      \
+                                                                                                   \
+    DEVICE_DT_INST_DEFINE(n, &kscan_charlieplex_init, PM_DEVICE_DT_INST_GET(n),                    \
+                          &kscan_charlieplex_data_##n, &kscan_charlieplex_config_##n, POST_KERNEL, \
+                          CONFIG_KSCAN_INIT_PRIORITY, &kscan_charlieplex_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSCAN_CHARLIEPLEX_INIT);

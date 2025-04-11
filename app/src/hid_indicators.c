@@ -12,7 +12,7 @@
 #include <zmk/hid_indicators.h>
 #include <zmk/events/hid_indicators_changed.h>
 #include <zmk/events/endpoint_changed.h>
-#include <zmk/split/bluetooth/central.h>
+#include <zmk/split/central.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -32,8 +32,8 @@ static void raise_led_changed_event(struct k_work *_work) {
 
     raise_zmk_hid_indicators_changed((struct zmk_hid_indicators_changed){.indicators = indicators});
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS) && IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
-    zmk_split_bt_update_hid_indicator(indicators);
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS) && IS_ENABLED(CONFIG_ZMK_SPLIT)
+    zmk_split_central_update_hid_indicator(indicators);
 #endif
 }
 
@@ -64,5 +64,5 @@ static int profile_listener(const zmk_event_t *eh) {
     return 0;
 }
 
-static ZMK_LISTENER(profile_listener, profile_listener);
-static ZMK_SUBSCRIPTION(profile_listener, zmk_endpoint_changed);
+ZMK_LISTENER(profile_listener, profile_listener);
+ZMK_SUBSCRIPTION(profile_listener, zmk_endpoint_changed);

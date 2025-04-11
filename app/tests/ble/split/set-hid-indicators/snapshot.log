@@ -1,0 +1,12 @@
+peripheral 0 <inf> bt_hci_core: HW Platform: Nordic Semiconductor (0x0002)
+peripheral 0 <inf> bt_hci_core: HW Variant: nRF52x (0x0002)
+peripheral 0 <inf> bt_hci_core: Firmware: Standard Bluetooth controller (0x00) Version 3.5 Build 0
+peripheral 0 <wrn> bt_id: No static addresses stored in controller
+peripheral 0 <inf> bt_hci_core: Identity: D1:0B:03:A3:ED:6F (random)
+peripheral 0 <inf> bt_hci_core: HCI: version 5.4 (0x0d) revision 0x0000, manufacturer 0x05f1
+peripheral 0 <inf> bt_hci_core: LMP: version 5.4 (0x0d) subver 0xffff
+peripheral 0 <inf> zmk: Welcome to ZMK!
+peripheral 0 <dbg> zmk: security_changed: Security changed: FD:9E:B2:48:47:39 (random) level 2
+peripheral 0 <dbg> zmk: split_svc_pos_state_ccc: value 1
+peripheral 0 <dbg> zmk: split_svc_select_phys_layout_callback: Selecting physical layout after GATT write of 0
+peripheral 0 <dbg> zmk: split_svc_update_indicators_callback: Raising HID indicators changed event: 7

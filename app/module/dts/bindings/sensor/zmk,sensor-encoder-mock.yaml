@@ -1,0 +1,21 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Allows defining a mock sensor driver that simulates periodic encoder rotation events.
+
+compatible: "zmk,sensor-encoder-mock"
+
+properties:
+  event-startup-delay:
+    type: int
+    default: 0
+    description: Milliseconds to delay before starting generating the events
+  event-period:
+    type: int
+    description: Milliseconds between each generated event
+  events:
+    type: array
+    description: List of angle events to generate
+  exit-after:
+    type: boolean

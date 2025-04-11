@@ -1,0 +1,27 @@
+#include <physical_layouts.dtsi>
+
+/ {
+    matrix_physical_layout: matrix_physical_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Matrix Layout";
+
+        keys
+            = <&key_physical_attrs 100 100 0   0 0 0 0>
+            , <&key_physical_attrs 100 100 100 0 0 0 0>
+            , <&key_physical_attrs 100 100 0   100 0 0 0>
+            , <&key_physical_attrs 100 100 100 100 0 0 0>
+            ;
+    };
+
+    direct_physical_layout: direct_physical_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Direct Wire Layout";
+
+        keys
+            = <&key_physical_attrs 100 100 0   0 0 0 0>
+            , <&key_physical_attrs 100 100 100 0 0 0 0>
+            , <&key_physical_attrs 100 100 0   100 0 0 0>
+            , <&key_physical_attrs 100 100 100 100 0 0 0>
+            ;
+    };
+};

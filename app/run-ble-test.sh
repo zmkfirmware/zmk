@@ -58,7 +58,25 @@ fi
 testcase="$path"
 echo "Running $testcase:"
 
-west build -d build/$testcase -b nrf52_bsim -- -DZMK_CONFIG="$(pwd)/$testcase" > /dev/null 2>&1
+shopt -s nullglob
+for file in $(pwd)/$testcase/peripheral*.overlay ; do
+    pn=$(basename -s .overlay ${file})
+    west build -d build/${testcase%%/}_${pn}/ -b nrf52_bsim -- -DZMK_CONFIG="$(pwd)/$testcase" -DEXTRA_DTC_OVERLAY_FILE="${file}" > /dev/null 2>&1
+
+    if [ $? -gt 0 ]; then
+        echo "FAILED: $testcase peripheral ${pn} did not build" | tee -a ./build/tests/pass-fail.log
+        exit 1
+    fi
+done
+shopt -u nullglob
+
+extra_cmake_args=""
+if ls $(pwd)/$testcase/peripheral*.overlay >/dev/null 2>&1; then
+    echo "Found peripheral overlays, building the test as a split central"
+    extra_cmake_args="-DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=y"
+fi
+
+west build -d build/$testcase -b nrf52_bsim -- -DZMK_CONFIG="$(pwd)/$testcase" ${extra_cmake_args} > /dev/null 2>&1
 if [ $? -gt 0 ]; then
     echo "FAILED: $testcase did not build" | tee -a ./build/tests/pass-fail.log
     exit 1
@@ -71,25 +89,35 @@ else
 fi
 
 exe_name=${testcase//\//_}
+# Remove trailing underscores
+exe_name=${exe_name%%_}
 
 start_dir=$(pwd)
 cp build/$testcase/zephyr/zmk.exe "${BSIM_OUT_PATH}/bin/${exe_name}"
+
+shopt -s nullglob
+for file in $(pwd)/$testcase/peripheral*.overlay ; do
+    pn=$(basename -s .overlay ${file})
+    cp ./build/${testcase%%/}_${pn}/zephyr/zmk.exe "${BSIM_OUT_PATH}/bin/${exe_name}_${pn}.exe"
+done
+shopt -u nullglob
+
 pushd "${BSIM_OUT_PATH}/bin" > /dev/null 2>&1
 if [ -e "${start_dir}/build/$testcase/output.log" ]; then
   rm "${start_dir}/build/$testcase/output.log"
 fi
 
-central_counts=$(wc -l ${start_dir}/${testcase}/centrals.txt | cut -d' ' -f1)
+sibling_counts=$(wc -l ${start_dir}/${testcase}/siblings.txt | cut -d' ' -f1)
 ./${exe_name} -d=0 -s=${exe_name} | tee -a "${start_dir}/build/$testcase/output.log" > "${output_dev}" &
 ./bs_device_handbrake -s=${exe_name} -d=1 -r=10 > "${output_dev}" &
 
-cat "${start_dir}/${testcase}/centrals.txt" |
+cat "${start_dir}/${testcase}/siblings.txt" |
 while IFS= read -r line
 do
   ${line} -s=${exe_name} | tee -a "${start_dir}/build/$testcase/output.log" > "${output_dev}" &
 done
 
-./bs_2G4_phy_v1 -s=${exe_name} -D=$(( 2 + central_counts )) -sim_length=50e6 > "${output_dev}" 2>&1
+./bs_2G4_phy_v1 -s=${exe_name} -D=$(( 2 + sibling_counts )) -sim_length=50e6 > "${output_dev}" 2>&1
 
 popd > /dev/null 2>&1
 

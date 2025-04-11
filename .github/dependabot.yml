@@ -8,3 +8,50 @@ updates:
     directory: "/docs"
     schedule:
       interval: "daily"
+    groups:
+      docusaurus-major:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        patterns:
+          - "@docusaurus/*"
+        update-types:
+          - "major"
+      docusaurus-minor-patch:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        patterns:
+          - "@docusaurus/*"
+        update-types:
+          - "minor"
+          - "patch"
+      tree-sitter:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        patterns:
+          - "tree-sitter-devicetree"
+          - "web-tree-sitter"
+      prod-other-major:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        exclude-patterns:
+          - "@docusaurus/*"
+          - "tree-sitter-devicetree"
+          - "web-tree-sitter"
+        update-types:
+          - "major"
+      prod-other-minor-patch:
+        applies-to: "version-updates"
+        dependency-type: "production"
+        exclude-patterns:
+          - "@docusaurus/*"
+          - "tree-sitter-devicetree"
+          - "web-tree-sitter"
+        update-types:
+          - "minor"
+          - "patch"
+      development:
+        applies-to: "version-updates"
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"

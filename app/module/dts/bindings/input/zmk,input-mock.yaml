@@ -1,0 +1,21 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Allows defining a mock input driver that simulates periodic input events.
+
+compatible: "zmk,input-mock"
+
+properties:
+  event-startup-delay:
+    type: int
+    default: 0
+    description: Milliseconds to delay before starting generating the events
+  event-period:
+    type: int
+    description: Milliseconds between each generated event
+  events:
+    type: array
+    description: List of tuples of (type, code, value, sync)
+  exit-after:
+    type: boolean

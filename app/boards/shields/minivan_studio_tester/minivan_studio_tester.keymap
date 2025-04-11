@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#define ZMK_BEHAVIORS_KEEP_ALL
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+#define NAV_L 1
+#define NUM_L 2
+#define MED_L 3
+#define FUN_L 4
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        base_layer {
+            display-name = "Base";
+            bindings = <
+ &kp TAB    &kp Q      &kp W      &kp E       &kp R          &kp T          &kp Y            &kp U          &kp I       &kp O      &kp P         &kp BKSP
+ &gresc    &kp A      &kp S      &kp D       &kp F          &kp G          &kp H            &kp J          &kp K       &kp L      &kp SEMI      &kp RET
+ &kp LSHFT  &kp Z      &kp X      &kp C       &kp V          &kp B          &kp N            &kp M          &kp COMMA   &kp DOT    &kp FSLH      &kp QUOT
+ &kp LGUI         &kp LALT &mo NAV_L        &kp LEFT_SHIFT      &kp SPACE        &mo NUM_L        &kp LALT          &kp RCTL
+            >;
+        };
+
+        nav_layer {
+            display-name = "Nav";
+            bindings = <
+&trans     &trans     &trans     &trans      &trans          &trans       &trans     &kp GRAVE      &kp TILDE   &trans     &trans     &kp DEL
+&trans     &trans     &trans     &trans      &trans          &trans       &trans     &kp LARW       &kp DARW    &kp UARW   &kp RARW   &trans
+&trans     &trans     &trans     &trans      &trans          &trans       &trans     &kp HOME       &kp PG_DN   &kp PG_UP  &kp END    &trans
+&trans  &trans        &trans                 &trans       &trans          &trans &trans &trans
+            >;
+        };
+
+        num_layer {
+            display-name = "Num";
+            bindings = <
+&trans     &trans    &kp N7     &kp N8      &kp N9          &kp RBKT     &trans      &trans    &trans     &trans      &trans       &trans
+&trans     &kp MINUS &kp N4     &kp N5      &kp N6          &kp EQUAL    &trans      &trans    &trans     &trans      &trans       &trans
+&kp PLUS   &kp N1    &kp N2     &kp N3      &kp N0          &trans       &trans      &trans    &trans     &trans      &trans       &trans
+&trans  &trans        &trans                 &trans       &trans          &kp ESC &trans &trans
+            >;
+        };
+
+        med_layer {
+            display-name = "Sym";
+            bindings = <
+&trans     &trans   &trans &trans  &trans   &trans  &trans     &trans    &trans       &trans       &trans     &trans
+&trans     &trans      &trans    &trans     &trans      &trans     &trans     &trans    &trans       &trans       &trans     &trans
+&trans     &trans      &trans    &trans     &trans      &trans     &trans     &trans    &trans       &trans       &trans     &trans
+&trans  &trans        &trans                 &trans       &trans          &trans  &trans &trans
+            >;
+        };
+    };
+};

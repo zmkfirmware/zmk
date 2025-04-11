@@ -1,0 +1,44 @@
+
+#include <dt-bindings/zmk/input_transform.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+#include <behaviors.dtsi>
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/pointing.h>
+
+
+&zip_button_behaviors {
+    bindings = <&kp A &kp B &kp C>;
+};
+
+&mkp_input_listener {
+    input-processors = <&zip_button_behaviors>;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &mkp LCLK &mkp RCLK
+                &mkp MCLK &none
+            >;
+        };
+    };
+};
+
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+    >;
+};

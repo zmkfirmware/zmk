@@ -15,10 +15,26 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-struct behavior_mo_config {};
-struct behavior_mo_data {};
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 
-static int behavior_mo_init(const struct device *dev) { return 0; };
+static const struct behavior_parameter_value_metadata param_values[] = {
+    {
+        .display_name = "Layer",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_ID,
+    },
+};
+
+static const struct behavior_parameter_metadata_set param_metadata_set[] = {{
+    .param1_values = param_values,
+    .param1_values_len = ARRAY_SIZE(param_values),
+}};
+
+static const struct behavior_parameter_metadata metadata = {
+    .sets_len = ARRAY_SIZE(param_metadata_set),
+    .sets = param_metadata_set,
+};
+
+#endif
 
 static int mo_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
@@ -33,11 +49,12 @@ static int mo_keymap_binding_released(struct zmk_behavior_binding *binding,
 }
 
 static const struct behavior_driver_api behavior_mo_driver_api = {
-    .binding_pressed = mo_keymap_binding_pressed, .binding_released = mo_keymap_binding_released};
+    .binding_pressed = mo_keymap_binding_pressed,
+    .binding_released = mo_keymap_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+};
 
-static const struct behavior_mo_config behavior_mo_config = {};
-
-static struct behavior_mo_data behavior_mo_data;
-
-BEHAVIOR_DT_INST_DEFINE(0, behavior_mo_init, NULL, &behavior_mo_data, &behavior_mo_config,
-                        POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mo_driver_api);
+BEHAVIOR_DT_INST_DEFINE(0, NULL, NULL, NULL, NULL, POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+                        &behavior_mo_driver_api);

@@ -1,0 +1,137 @@
+---
+title: List of Keycodes
+sidebar_label: List of Keycodes
+---
+
+import OsLegend from "@site/src/components/codes/OsLegend";
+import ToastyContainer from "@site/src/components/codes/ToastyContainer";
+import Table from "@site/src/components/codes/Table";
+
+This is the reference page for keycodes used by behaviors. Use the table of contents (on the right or the top) for easy navigation.
+
+:::warning
+Take extra notice of the spelling of the keycodes, especially the shorthand spelling.
+Otherwise, it will result in an elusive parsing error!
+:::
+
+:::info[Keyboard vs. Consumer keycodes]
+In the below tables, there are keycode pairs with similar names where one variant has a `K_` prefix and another `C_`.
+These variants correspond to similarly named usages from different [HID usage pages](https://usb.org/sites/default/files/hut1_2.pdf#page=16),
+namely the "keyboard/keypad" and "consumer" ones respectively.
+
+In practice, some OS and applications might listen to only one of the variants.
+You can use the values in the compatibility columns below to assist you in selecting which one to use.
+:::
+
+<OsLegend />
+<ToastyContainer />
+
+## Keyboard
+
+### Letters
+
+<Table group="keyboard-letters" />
+
+### Numbers
+
+<Table group="keyboard-numbers" />
+
+### Symbols / Punctuation
+
+<Table group="keyboard-symbols" />
+
+### Control & Whitespace
+
+<Table group="keyboard-control-whitespace" />
+
+### Navigation
+
+<Table group="keyboard-navigation" />
+
+### Locks
+
+<Table group="keyboard-locks" />
+
+### F Keys
+
+<Table group="keyboard-fkeys" />
+
+### International
+
+<Table group="keyboard-international" />
+
+### Language
+
+<Table group="keyboard-language" />
+
+### Miscellaneous
+
+<Table group="keyboard-miscellaneous" />
+
+## Modifiers
+
+The [Modifiers](modifiers.mdx) page includes further information.
+
+<Table group="keyboard-modifiers" />
+
+## Keypad
+
+<Table group="keypad" />
+
+### Numbers
+
+<Table group="keypad-numbers" />
+
+### Symbols / Operations
+
+<Table group="keypad-operations" />
+
+## Editing
+
+### Cut, Copy, Paste
+
+<Table group="cut-copy-paste" />
+
+### Undo, Redo
+
+<Table group="undo-redo" />
+
+## Media
+
+### Sound / Volume
+
+<Table group="sound" />
+
+### Display
+
+<Table group="display" />
+
+### Media Controls
+
+<Table group="media-controls" />
+
+### Consumer Menus
+
+<Table group="consumer-menus" />
+
+### Consumer Controls
+
+<Table group="consumer-controls" />
+
+## Applications
+
+### Application Controls
+
+<Table group="application-controls" />
+
+### Applications (Launch)
+
+<Table group="applications" />
+
+## Input Assist
+
+<Table group="input-assist" />
+
+## Power & Lock
+
+<Table group="power" />

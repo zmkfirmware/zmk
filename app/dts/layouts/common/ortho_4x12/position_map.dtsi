@@ -1,0 +1,7 @@
+/ {
+    layouts_common_ortho_4x12_position_map: layouts_common_ortho_4x12_position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        complete;
+    };
+};

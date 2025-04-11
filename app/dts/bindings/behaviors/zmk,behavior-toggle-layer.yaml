@@ -6,3 +6,13 @@ description: Toggle Layer
 compatible: "zmk,behavior-toggle-layer"
 
 include: one_param.yaml
+
+properties:
+  toggle-mode:
+    type: string
+    required: false
+    default: "flip"
+    enum:
+      - "on"
+      - "off"
+      - "flip"

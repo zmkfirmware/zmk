@@ -1,0 +1,26 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Listener to subscribe to input events and send HID updates after processing
+
+compatible: "zmk,input-listener"
+
+properties:
+  device:
+    type: phandle
+    required: true
+  input-processors:
+    type: phandle-array
+
+child-binding:
+  description: "Listener overrides for certain layers"
+
+  properties:
+    layers:
+      type: array
+      required: true
+    process-next:
+      type: boolean
+    input-processors:
+      type: phandle-array

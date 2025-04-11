@@ -1,0 +1,9 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_POSIX_PRO_MICRO
+
+config ZMK_STUDIO
+    select UART_NATIVE_POSIX_PORT_1_ENABLE
+
+endif

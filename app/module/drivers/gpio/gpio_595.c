@@ -89,26 +89,6 @@ static int setup_pin_dir(const struct device *dev, uint32_t pin, int flags) {
     return 0;
 }
 
-static int reg_595_pin_config(const struct device *dev, gpio_pin_t pin, gpio_flags_t flags) {
-    int ret;
-
-    /* Can't do SPI bus operations from an ISR */
-    if (k_is_in_isr()) {
-        return -EWOULDBLOCK;
-    }
-
-    if ((flags & GPIO_OPEN_DRAIN) != 0U) {
-        return -ENOTSUP;
-    };
-
-    ret = setup_pin_dir(dev, pin, flags);
-    if (ret) {
-        LOG_ERR("595: error setting pin direction (%d)", ret);
-    }
-
-    return ret;
-}
-
 static int reg_595_port_get_raw(const struct device *dev, uint32_t *value) { return -ENOTSUP; }
 
 static int reg_595_port_set_masked_raw(const struct device *dev, uint32_t mask, uint32_t value) {
@@ -161,6 +141,32 @@ static int reg_595_port_toggle_bits(const struct device *dev, uint32_t mask) {
     return ret;
 }
 
+static int reg_595_pin_config(const struct device *dev, gpio_pin_t pin, gpio_flags_t flags) {
+    int ret;
+
+    /* Can't do SPI bus operations from an ISR */
+    if (k_is_in_isr()) {
+        return -EWOULDBLOCK;
+    }
+
+    if ((flags & GPIO_OPEN_DRAIN) != 0U) {
+        return -ENOTSUP;
+    };
+
+    ret = setup_pin_dir(dev, pin, flags);
+    if (ret) {
+        LOG_ERR("595: error setting pin direction (%d)", ret);
+    }
+
+    if ((flags & GPIO_OUTPUT_INIT_LOW) != 0) {
+        return reg_595_port_clear_bits_raw(dev, BIT(pin));
+    } else if ((flags & GPIO_OUTPUT_INIT_HIGH) != 0) {
+        return reg_595_port_set_bits_raw(dev, BIT(pin));
+    }
+
+    return ret;
+}
+
 static const struct gpio_driver_api api_table = {
     .pin_configure = reg_595_pin_config,
     .port_get_raw = reg_595_port_get_raw,
@@ -196,7 +202,7 @@ static int reg_595_init(const struct device *dev) {
     GPIO_PORT_PIN_MASK_FROM_NGPIOS(DT_INST_PROP(inst, ngpios))
 
 #define REG_595_INIT(n)                                                                            \
-    static struct reg_595_config reg_595_##n##_config = {                                          \
+    static const struct reg_595_config reg_595_##n##_config = {                                    \
         .common =                                                                                  \
             {                                                                                      \
                 .port_pin_mask = GPIO_PORT_PIN_MASK_FROM_DT_INST(n),                               \

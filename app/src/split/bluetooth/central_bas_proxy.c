@@ -18,7 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/battery.h>
 #include <zmk/events/battery_state_changed.h>
-#include <zmk/split/bluetooth/central.h>
+#include <zmk/split/central.h>
 
 static void blvl_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value) {
     ARG_UNUSED(attr);
@@ -32,7 +32,7 @@ static ssize_t read_blvl(struct bt_conn *conn, const struct bt_gatt_attr *attr, 
                          uint16_t len, uint16_t offset) {
     const uint8_t source = (uint8_t)(uint32_t)attr->user_data;
     uint8_t level = 0;
-    int rc = zmk_split_get_peripheral_battery_level(source, &level);
+    int rc = zmk_split_central_get_peripheral_battery_level(source, &level);
 
     if (rc == -EINVAL) {
         LOG_ERR("Invalid peripheral index requested for battery level read: %d", source);

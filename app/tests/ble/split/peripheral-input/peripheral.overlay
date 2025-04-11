@@ -1,0 +1,31 @@
+
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+#include "shared.dtsi"
+
+&kscan {
+    events = <>;
+
+    /delete-property/ exit-after;
+};
+
+/ {
+    mock_input: mock_input {
+        compatible = "zmk,input-mock";
+        status = "okay";
+        event-startup-delay = <4000>;
+        event-period = <2000>;
+        events
+            = <INPUT_EV_REL INPUT_REL_X 100 0>
+            , <INPUT_EV_REL INPUT_REL_Y 100 1>
+            , <INPUT_EV_REL INPUT_REL_X 40 0>
+            , <INPUT_EV_REL INPUT_REL_Y 50 1>
+            ;
+        exit-after;
+    };
+};
+
+&split_input {
+    device = <&mock_input>;
+};

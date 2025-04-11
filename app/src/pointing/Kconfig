@@ -1,0 +1,85 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+menu "Pointing Options"
+
+# Deprecated old config, kept for backwards compat
+config ZMK_MOUSE
+    bool "(Deprecated) Mouse Support"
+
+config ZMK_POINTING
+    bool "Pointing Device Support"
+    default y if ZMK_MOUSE
+    select INPUT
+    select INPUT_THREAD_PRIORITY_OVERRIDE
+
+if ZMK_POINTING
+
+# Needed for anyone using gpio-keys for things like soft-off setup.
+config INPUT_GPIO_KEYS
+    default n
+
+config INPUT_THREAD_STACK_SIZE
+    default 1024 if ZMK_SPLIT && !ZMK_SPLIT_ROLE_CENTRAL
+
+if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_POINTING_SMOOTH_SCROLLING
+    bool "Smooth Scrolling"
+    help
+      Enable smooth scrolling, with hosts that support HID Resolution Multipliers
+
+config ZMK_INPUT_LISTENER
+    bool "Input listener for processing input events in the system"
+    default y
+    depends on DT_HAS_ZMK_INPUT_LISTENER_ENABLED
+
+
+config ZMK_INPUT_PROCESSOR_TEMP_LAYER
+    bool "Temporary Layer Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_TEMP_LAYER_ENABLED
+
+config ZMK_INPUT_PROCESSOR_TEMP_LAYER_MAX_ACTION_EVENTS
+    int "Temporary Layer Input Processor Max Action Events"
+    default 4
+    depends on ZMK_INPUT_PROCESSOR_TEMP_LAYER
+
+endif
+
+config ZMK_INPUT_PROCESSOR_TRANSFORM
+    bool "Transform Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_TRANSFORM_ENABLED
+
+config ZMK_INPUT_PROCESSOR_SCALER
+    bool "Scaling Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_SCALER_ENABLED
+
+config ZMK_INPUT_PROCESSOR_CODE_MAPPER
+    bool "Code Mapper Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_CODE_MAPPER_ENABLED
+
+config ZMK_INPUT_PROCESSOR_BEHAVIORS
+    bool "Behaviors Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_BEHAVIORS_ENABLED
+
+config ZMK_INPUT_SPLIT
+    bool "Split input support"
+    default y
+    depends on DT_HAS_ZMK_INPUT_SPLIT_ENABLED && ZMK_SPLIT
+
+if ZMK_INPUT_SPLIT
+
+config ZMK_INPUT_SPLIT_INIT_PRIORITY
+    int "Input Split initialization priority"
+    default INPUT_INIT_PRIORITY
+
+endif # ZMK_INPUT_SPLIT
+
+endif # ZMK_POINTING
+
+endmenu # Mouse Options

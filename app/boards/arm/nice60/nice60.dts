@@ -10,6 +10,8 @@
 #include <dt-bindings/led/led.h>
 #include <dt-bindings/zmk/matrix_transform.h>
 
+#include <layouts/common/60percent/ansi.dtsi>
+
 #include "nice60-pinctrl.dtsi"
 
 / {
@@ -20,10 +22,9 @@
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zephyr,console = &cdc_acm_uart;
         zmk,battery = &vbatt;
         zmk,kscan = &kscan0;
-        zmk,matrix-transform = &default_transform;
+        zmk,physical-layout = &layout_60_ansi;
         zmk,underglow = &led_strip;
     };
 
@@ -111,7 +112,8 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
     compatible = "nordic,nrf-spim";
 
     pinctrl-0 = <&spi3_default>;
-    pinctrl-names = "default";
+    pinctrl-1 = <&spi3_sleep>;
+    pinctrl-names = "default", "sleep";
     status = "okay";
 
     led_strip: ws2812@0 {
@@ -129,11 +131,8 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
     };
 };
 
-&usbd {
+zephyr_udc0: &usbd {
     status = "okay";
-    cdc_acm_uart: cdc_acm_uart {
-        compatible = "zephyr,cdc-acm-uart";
-    };
 };
 
 &flash0 {
@@ -171,4 +170,8 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
             reg = <0x000f4000 0x0000c000>;
         };
     };
+};
+
+&layout_60_ansi {
+    transform = <&default_transform>;
 };

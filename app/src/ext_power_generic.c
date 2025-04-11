@@ -22,7 +22,8 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct ext_power_generic_config {
-    const struct gpio_dt_spec control;
+    const struct gpio_dt_spec *control;
+    const size_t control_gpios_count;
     const uint16_t init_delay_ms;
 };
 
@@ -59,9 +60,12 @@ static int ext_power_generic_enable(const struct device *dev) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
-    if (gpio_pin_set_dt(&config->control, 1)) {
-        LOG_WRN("Failed to set ext-power control pin");
-        return -EIO;
+    for (int i = 0; i < config->control_gpios_count; i++) {
+        const struct gpio_dt_spec *gpio = &config->control[i];
+        if (gpio_pin_set_dt(gpio, 1)) {
+            LOG_WRN("Failed to set ext-power control pin %d", i);
+            return -EIO;
+        }
     }
     data->status = true;
     return ext_power_save_state();
@@ -71,10 +75,12 @@ static int ext_power_generic_disable(const struct device *dev) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
-    if (gpio_pin_set_dt(&config->control, 0)) {
-        LOG_WRN("Failed to set ext-power control pin");
-        LOG_WRN("Failed to clear ext-power control pin");
-        return -EIO;
+    for (int i = 0; i < config->control_gpios_count; i++) {
+        const struct gpio_dt_spec *gpio = &config->control[i];
+        if (gpio_pin_set_dt(gpio, 0)) {
+            LOG_WRN("Failed to clear ext-power control pin %d", i);
+            return -EIO;
+        }
     }
     data->status = false;
     return ext_power_save_state();
@@ -121,32 +127,10 @@ static int ext_power_settings_set(const char *name, size_t len, settings_read_cb
     return -ENOENT;
 }
 
-struct settings_handler ext_power_conf = {.name = "ext_power/state",
-                                          .h_set = ext_power_settings_set};
-#endif
-
-static int ext_power_generic_init(const struct device *dev) {
+static int ext_power_settings_commit() {
+    const struct device *dev = DEVICE_DT_GET(DT_DRV_INST(0));
     struct ext_power_generic_data *data = dev->data;
-    const struct ext_power_generic_config *config = dev->config;
 
-    if (gpio_pin_configure_dt(&config->control, GPIO_OUTPUT_INACTIVE)) {
-        LOG_ERR("Failed to configure ext-power control pin");
-        return -EIO;
-    }
-
-#if IS_ENABLED(CONFIG_SETTINGS)
-    settings_subsys_init();
-
-    int err = settings_register(&ext_power_conf);
-    if (err) {
-        LOG_ERR("Failed to register the ext_power settings handler (err %d)", err);
-        return err;
-    }
-
-    k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
-
-    // Set default value (on) if settings isn't set
-    settings_load_subtree("ext_power");
     if (!data->settings_init) {
 
         data->status = true;
@@ -154,10 +138,32 @@ static int ext_power_generic_init(const struct device *dev) {
 
         ext_power_enable(dev);
     }
-#else
-    // Default to the ext_power being open when no settings
-    ext_power_enable(dev);
+
+    return 0;
+}
+
+SETTINGS_STATIC_HANDLER_DEFINE(ext_power, "ext_power/state", NULL, ext_power_settings_set,
+                               ext_power_settings_commit, NULL);
+
 #endif
+
+static int ext_power_generic_init(const struct device *dev) {
+    const struct ext_power_generic_config *config = dev->config;
+
+    for (int i = 0; i < config->control_gpios_count; i++) {
+        const struct gpio_dt_spec *gpio = &config->control[i];
+        if (gpio_pin_configure_dt(gpio, GPIO_OUTPUT_INACTIVE)) {
+            LOG_ERR("Failed to configure ext-power control pin %d", i);
+            return -EIO;
+        }
+    }
+
+#if IS_ENABLED(CONFIG_SETTINGS)
+    k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
+#endif
+
+    // Enable by default. We may get disabled again once settings load.
+    ext_power_enable(dev);
 
     if (config->init_delay_ms) {
         k_msleep(config->init_delay_ms);
@@ -181,8 +187,12 @@ static int ext_power_generic_pm_action(const struct device *dev, enum pm_device_
 }
 #endif /* CONFIG_PM_DEVICE */
 
+static const struct gpio_dt_spec ext_power_control_gpios[DT_INST_PROP_LEN(0, control_gpios)] = {
+    DT_INST_FOREACH_PROP_ELEM_SEP(0, control_gpios, GPIO_DT_SPEC_GET_BY_IDX, (, ))};
+
 static const struct ext_power_generic_config config = {
-    .control = GPIO_DT_SPEC_INST_GET(0, control_gpios),
+    .control = ext_power_control_gpios,
+    .control_gpios_count = DT_INST_PROP_LEN(0, control_gpios),
     .init_delay_ms = DT_INST_PROP_OR(0, init_delay_ms, 0)};
 
 static struct ext_power_generic_data data = {

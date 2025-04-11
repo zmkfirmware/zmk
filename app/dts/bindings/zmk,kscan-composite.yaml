@@ -3,6 +3,8 @@ description: |
 
 compatible: "zmk,kscan-composite"
 
+include: kscan.yaml
+
 properties:
   label:
     type: string
@@ -26,6 +28,11 @@ child-binding:
     row-offset:
       type: int
       default: 0
+    col-offset:
+      type: int
+      default: 0
+
     column-offset:
       type: int
       default: 0
+      deprecated: true

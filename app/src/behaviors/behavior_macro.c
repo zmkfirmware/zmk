@@ -34,6 +34,10 @@ struct behavior_macro_trigger_state {
 struct behavior_macro_state {
     struct behavior_macro_trigger_state release_state;
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    struct behavior_parameter_metadata_set set;
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
     uint32_t press_bindings_count;
 };
 
@@ -154,7 +158,8 @@ static void replace_params(struct behavior_macro_trigger_state *state,
     state->param2_source = PARAM_SOURCE_BINDING;
 }
 
-static void queue_macro(uint32_t position, const struct zmk_behavior_binding bindings[],
+static void queue_macro(struct zmk_behavior_binding_event *event,
+                        const struct zmk_behavior_binding bindings[],
                         struct behavior_macro_trigger_state state,
                         const struct zmk_behavior_binding *macro_binding) {
     LOG_DBG("Iterating macro bindings - starting: %d, count: %d", state.start_index, state.count);
@@ -165,14 +170,14 @@ static void queue_macro(uint32_t position, const struct zmk_behavior_binding bin
 
             switch (state.mode) {
             case MACRO_MODE_TAP:
-                zmk_behavior_queue_add(position, binding, true, state.tap_ms);
-                zmk_behavior_queue_add(position, binding, false, state.wait_ms);
+                zmk_behavior_queue_add(event, binding, true, state.tap_ms);
+                zmk_behavior_queue_add(event, binding, false, state.wait_ms);
                 break;
             case MACRO_MODE_PRESS:
-                zmk_behavior_queue_add(position, binding, true, state.wait_ms);
+                zmk_behavior_queue_add(event, binding, true, state.wait_ms);
                 break;
             case MACRO_MODE_RELEASE:
-                zmk_behavior_queue_add(position, binding, false, state.wait_ms);
+                zmk_behavior_queue_add(event, binding, false, state.wait_ms);
                 break;
             default:
                 LOG_ERR("Unknown macro mode: %d", state.mode);
@@ -193,7 +198,7 @@ static int on_macro_binding_pressed(struct zmk_behavior_binding *binding,
                                                          .start_index = 0,
                                                          .count = state->press_bindings_count};
 
-    queue_macro(event.position, cfg->bindings, trigger_state, binding);
+    queue_macro(&event, cfg->bindings, trigger_state, binding);
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
@@ -204,14 +209,105 @@ static int on_macro_binding_released(struct zmk_behavior_binding *binding,
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
 
-    queue_macro(event.position, cfg->bindings, state->release_state, binding);
+    queue_macro(&event, cfg->bindings, state->release_state, binding);
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static void assign_values_to_set(enum param_source param_source,
+                                 struct behavior_parameter_metadata_set *set,
+                                 const struct behavior_parameter_value_metadata *values,
+                                 size_t values_len) {
+    if (param_source == PARAM_SOURCE_MACRO_1ST) {
+        set->param1_values = values;
+        set->param1_values_len = values_len;
+    } else {
+        set->param2_values = values;
+        set->param2_values_len = values_len;
+    }
+}
+
+// This function will dynamically determine the parameter metadata for a particular macro by
+// inspecting the macro *bindings* to see what behaviors in that list receive the macro parameters,
+// and then using the metadata from those behaviors for the macro itself.
+//
+// Care need be taken, where a behavior in the list takes two parameters, and the macro passes along
+// a value for the *second* parameter, we need to make sure we find the right metadata set for the
+// referenced behavior that matches the first parameter.
+static int get_macro_parameter_metadata(const struct device *macro,
+                                        struct behavior_parameter_metadata *param_metadata) {
+    const struct behavior_macro_config *cfg = macro->config;
+    struct behavior_macro_state *data = macro->data;
+    struct behavior_macro_trigger_state state = {0};
+
+    for (int i = 0; (i < cfg->count) && (!data->set.param1_values || !data->set.param2_values);
+         i++) {
+        if (handle_control_binding(&state, &cfg->bindings[i]) ||
+            (state.param1_source == PARAM_SOURCE_BINDING &&
+             state.param2_source == PARAM_SOURCE_BINDING)) {
+            continue;
+        }
+
+        LOG_DBG("checking %d for the given state", i);
+
+        struct behavior_parameter_metadata binding_meta;
+        int err = behavior_get_parameter_metadata(
+            zmk_behavior_get_binding(cfg->bindings[i].behavior_dev), &binding_meta);
+        if (err < 0 || binding_meta.sets_len == 0) {
+            LOG_WRN("Failed to fetch macro binding parameter details %d", err);
+            return -ENOTSUP;
+        }
+
+        // If both macro parameters get passed to this one entry, use
+        // the metadata for this behavior verbatim.
+        if (state.param1_source != PARAM_SOURCE_BINDING &&
+            state.param2_source != PARAM_SOURCE_BINDING) {
+            param_metadata->sets_len = binding_meta.sets_len;
+            param_metadata->sets = binding_meta.sets;
+            return 0;
+        }
+
+        if (state.param1_source != PARAM_SOURCE_BINDING) {
+            assign_values_to_set(state.param1_source, &data->set,
+                                 binding_meta.sets[0].param1_values,
+                                 binding_meta.sets[0].param1_values_len);
+        }
+
+        if (state.param2_source != PARAM_SOURCE_BINDING) {
+            // For the param2 metadata, we need to find a set that matches fully bound first
+            // parameter of our macro entry, and use the metadata from that set.
+            for (int s = 0; s < binding_meta.sets_len; s++) {
+                if (zmk_behavior_validate_param_values(binding_meta.sets[s].param1_values,
+                                                       binding_meta.sets[s].param1_values_len,
+                                                       cfg->bindings[i].param1) >= 0) {
+                    assign_values_to_set(state.param2_source, &data->set,
+                                         binding_meta.sets[s].param2_values,
+                                         binding_meta.sets[s].param2_values_len);
+                    break;
+                }
+            }
+        }
+
+        state.param1_source = PARAM_SOURCE_BINDING;
+        state.param2_source = PARAM_SOURCE_BINDING;
+    }
+
+    param_metadata->sets_len = 1;
+    param_metadata->sets = &data->set;
+
+    return 0;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
 static const struct behavior_driver_api behavior_macro_driver_api = {
     .binding_pressed = on_macro_binding_pressed,
     .binding_released = on_macro_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .get_parameter_metadata = get_macro_parameter_metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
 #define TRANSFORMED_BEHAVIORS(n)                                                                   \

@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
-        run: pip install -r app/scripts/requirements.txt
+        run: pip install --break-system-packages -r app/scripts/requirements.txt
       - name: West init
         run: west init -l app
       - name: Update modules (west update)

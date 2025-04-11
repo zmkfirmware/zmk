@@ -1,0 +1,30 @@
+#include "../behavior_keymap.dtsi"
+
+&kt {
+    toggle-mode = "on";
+};
+
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_PRESS(1,1,10)
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(1,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+    >;
+};
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kt B  &trans
+                &trans &kp B
+            >;
+        };
+    };
+};

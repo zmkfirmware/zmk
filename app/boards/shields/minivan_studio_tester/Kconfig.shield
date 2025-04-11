@@ -1,0 +1,9 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_MINIVAN_STUDIO_TESTER
+    def_bool $(shields_list_contains,minivan_studio_tester)
+    select ZMK_STUDIO
+    select UART_NATIVE_POSIX_PORT_1_ENABLE
+    select CBPRINTF_LIBC_SUBSTS
+    select ZMK_STUDIO_TRANSPORT_UART

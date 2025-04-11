@@ -1,13 +1,14 @@
 ---
 title: "Community Spotlight Series #1: Keymap Editor"
-author: Cem Aksoylar
-author_title: Documentation maintainer
-author_url: https://github.com/caksoylar
-author_image_url: https://avatars.githubusercontent.com/u/7876996
+authors: caksoylar
 tags: [keyboards, firmware, community]
 ---
 
 import ThemedImage from "@theme/ThemedImage";
+
+This blog post is the first in a series of posts where we highlight projects within the ZMK ecosystem that we think are cool and that the users might benefit from knowing about them. We are starting the series with a big one, [Keymap Editor](http://nickcoutsos.github.io/keymap-editor) by [Nick Coutsos](https://github.com/nickcoutsos)!
+
+{/* truncate */}
 
 <ThemedImage
   alt="Shows a screenshot of the Keymap Editor application featuring a graphical layout of the Corne Keyboard with a keymap loaded from the nickcoutsos/keymap-editor-demo-crkbd GitHub repository."
@@ -20,8 +21,6 @@ import ThemedImage from "@theme/ThemedImage";
   }}
 />
 
-This blog post is the first in a series of posts where we highlight projects within the ZMK ecosystem that we think are cool and that the users might benefit from knowing about them. We are starting the series with a big one, [Keymap Editor] by [Nick Coutsos](https://github.com/nickcoutsos)!
-
 In the rest of the post we leave it to Nick himself to introduce the project, detail his goals and motivation in developing such a tool, and talk about the future of the project. Stay tuned for future installments in the series!
 
 ## What is Keymap Editor?
@@ -33,12 +32,12 @@ _[Keymap Editor]_ is a web based graphical editor for ZMK keymaps. It provides a
 
 ## What can Keymap Editor do?
 
-- Render [devicetree keymaps](/docs/features/keymaps) using pre-defined, auto-generated, or side-loadable keyboard layouts
+- Render [devicetree keymaps](/docs/keymaps) using pre-defined, auto-generated, or side-loadable keyboard layouts
 - Integrate with a GitHub repo to streamline firmware builds, or FileSystem/Clipboard if you'd still rather build locally
-- Edit [combos](/docs/features/combos), [behaviors](/docs/behaviors/key-press), [macros](/docs/behaviors/macros), [conditional layers](/docs/features/conditional-layers) and [rotary encoder bindings](/docs/behaviors/sensor-rotate)
+- Edit [combos](/docs/keymaps/combos), [behaviors](/docs/keymaps/behaviors/key-press), [macros](/docs/keymaps/behaviors/macros), [conditional layers](/docs/keymaps/conditional-layers) and [rotary encoder bindings](/docs/keymaps/behaviors/sensor-rotate)
 - Manage references: moving a layer or renaming a behavior will look for references throughout your keymap and update them.
 
-But check back regularly, because I update pretty often. A recent significant achievement was enabling [parameterized macros](/docs/behaviors/macros#parameterized-macros) and tying it in with my existing parameter type resolution so, yeah, you can finally create that reusable macro combining bluetooth profile selection with RGB backlight colour. Or use it for an actual useful thing, even. _(See also: [Using Parameterized Macros in Keymap Editor](https://github.com/nickcoutsos/keymap-editor/wiki/Using-Parameterized-Macros-in-Keymap-Editor))_
+But check back regularly, because I update pretty often. A recent significant achievement was enabling [parameterized macros](/docs/keymaps/behaviors/macros#parameterized-macros) and tying it in with my existing parameter type resolution so, yeah, you can finally create that reusable macro combining bluetooth profile selection with RGB backlight colour. Or use it for an actual useful thing, even. _(See also: [Using Parameterized Macros in Keymap Editor](https://github.com/nickcoutsos/keymap-editor/wiki/Using-Parameterized-Macros-in-Keymap-Editor))_
 
 My goals are, broadly:
 

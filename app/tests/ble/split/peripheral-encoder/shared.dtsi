@@ -1,0 +1,12 @@
+/ {
+    mock_encoder: mock_encoder {
+        compatible = "zmk,sensor-encoder-mock";
+        status = "disabled";
+    };
+
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&mock_encoder>;
+        triggers-per-rotation = <20>;
+    };
+};

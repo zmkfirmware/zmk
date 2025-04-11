@@ -64,8 +64,6 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
-static int behavior_ext_power_init(const struct device *dev) { return 0; };
-
 static const struct behavior_driver_api behavior_ext_power_driver_api = {
     .binding_convert_central_state_dependent_params =
         on_keymap_binding_convert_central_state_dependent_params,
@@ -74,7 +72,7 @@ static const struct behavior_driver_api behavior_ext_power_driver_api = {
     .locality = BEHAVIOR_LOCALITY_GLOBAL,
 };
 
-BEHAVIOR_DT_INST_DEFINE(0, behavior_ext_power_init, NULL, NULL, NULL, POST_KERNEL,
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_ext_power_driver_api);
+BEHAVIOR_DT_INST_DEFINE(0, NULL, NULL, NULL, NULL, POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+                        &behavior_ext_power_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

@@ -58,17 +58,17 @@
         default_layer {
             bindings = <
                 &kp Q      &kp W      &kp E       &kp R           &kp T        &kp H            &kp U          &kp I       &kp O      &kp P
-                &hm LGUI A &hm LALT S &hm LCTRL D &hm LSHFT F     &kp G        &kp N            &hm RSHFT J    &hm RCTRL K &hm LALT L &hm RGUI QUOT
+                &hm LGUI A &hm LALT S &hm LCTRL D &hm LSHFT F     &kp G        &kp N            &hm RSHFT J    &hm RCTRL K &hm LALT L &hm RGUI SQT
                            &kp X      &kp C       &kp V                                         &kp M          &kp COMMA  &kp DOT
-                                                  &lt NAV_L TAB  &kp RET       &lt NUM_L SPACE  &lt SYM_L BKSP
+                                                  &lt NAV_L TAB  &kp RET       &lt NUM_L SPACE  &lt SYM_L BSPC
             >;
         };
 
         nav_layer {
             display-name = "Nav";
             bindings = <
-                &trans     &trans     &trans      &trans          &trans       &trans           &kp HOME       &kp UARW &kp PG_UP  &trans
-                &trans     &trans     &trans      &trans          &trans       &trans           &kp LARW       &kp DARW &kp RARW   &trans
+                &trans     &trans     &trans      &trans          &trans       &trans           &kp HOME       &kp UP &kp PG_UP  &trans
+                &trans     &trans     &trans      &trans          &trans       &trans           &kp LEFT       &kp DOWN &kp RIGHT   &trans
                            &trans     &trans      &trans                                        &kp END        &trans   &kp PG_DN
                                                   &trans          &trans       &kp ESC          &kp DEL
             >;

@@ -36,7 +36,7 @@ struct output_status_state {
 };
 
 struct layer_status_state {
-    uint8_t index;
+    zmk_keymap_layer_index_t index;
     const char *label;
 };
 
@@ -179,7 +179,7 @@ static void draw_bottom(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
 
     // Draw layer
-    if (state->layer_label == NULL) {
+    if (state->layer_label == NULL || strlen(state->layer_label) == 0) {
         char text[10] = {};
 
         sprintf(text, "LAYER %i", state->layer_index);
@@ -212,7 +212,7 @@ static void battery_status_update_cb(struct battery_status_state state) {
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
     const struct zmk_battery_state_changed *ev = as_zmk_battery_state_changed(eh);
 
-    return (struct battery_status_state) {
+    return (struct battery_status_state){
         .level = (ev != NULL) ? ev->state_of_charge : zmk_battery_state_of_charge(),
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
         .usb_present = zmk_usb_is_powered(),
@@ -277,8 +277,9 @@ static void layer_status_update_cb(struct layer_status_state state) {
 }
 
 static struct layer_status_state layer_status_get_state(const zmk_event_t *eh) {
-    uint8_t index = zmk_keymap_highest_layer_active();
-    return (struct layer_status_state){.index = index, .label = zmk_keymap_layer_name(index)};
+    zmk_keymap_layer_index_t index = zmk_keymap_highest_layer_active();
+    return (struct layer_status_state){
+        .index = index, .label = zmk_keymap_layer_name(zmk_keymap_layer_index_to_id(index))};
 }
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_layer_status, struct layer_status_state, layer_status_update_cb,

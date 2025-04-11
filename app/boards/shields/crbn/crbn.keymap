@@ -17,12 +17,12 @@
             // |  TAB  |  Q   |  W   |  E   |  R   |  T   |   Y   |  U    |  I   |  O   |   P   | BSPC  |
             // |  ESC  |  A   |  S   |  D   |  F   |  G   |   H   |  J    |  K   |  L   |   ;   |  '    |
             // | SHIFT |  Z   |  X   |  C   |  V   |  B   |   N   |  M    |  ,   |  .   |   /   |  RET  |
-            // |       | LCTL | LALT | LGUI | LOWR |     SPACE    |  RAIS | LARW | DARW | UARW  |  RARW |
+            // |       | LCTRL | LALT | LGUI | LOWR |     SPACE    |  RAIS | LEFT | DOWN | UP  |  RIGHT |
             bindings = <
                 &kp TAB  &kp Q    &kp W &kp E &kp R &kp T  &kp Y   &kp U  &kp I    &kp O   &kp P    &kp BSPC
                 &kp ESC  &kp A    &kp S &kp D &kp F &kp G  &kp H   &kp J  &kp K    &kp L   &kp SEMI &kp SQT
                 &kp LSHFT &kp Z    &kp X &kp C &kp V &kp B  &kp N   &kp M  &kp COMMA &kp DOT &kp SLASH &kp RET
-                &trans   &kp LCTL &kp LALT &kp LGUI &mo 1 &kp SPACE &trans &mo 2 &kp LEFT &kp DOWN &kp UP &kp RIGHT
+                &trans   &kp LCTRL &kp LALT &kp LGUI &mo 1 &kp SPACE &trans &mo 2 &kp LEFT &kp DOWN &kp UP &kp RIGHT
             >;
 
             sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;

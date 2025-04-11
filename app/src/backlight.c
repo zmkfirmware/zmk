@@ -58,7 +58,7 @@ static int zmk_backlight_update(void) {
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 static int backlight_settings_load_cb(const char *name, size_t len, settings_read_cb read_cb,
-                                      void *cb_arg, void *param) {
+                                      void *cb_arg) {
     const char *next;
     if (settings_name_steq(name, "state", &next) && !next) {
         if (len != sizeof(state)) {
@@ -66,10 +66,17 @@ static int backlight_settings_load_cb(const char *name, size_t len, settings_rea
         }
 
         int rc = read_cb(cb_arg, &state, sizeof(state));
+        if (rc >= 0) {
+            rc = zmk_backlight_update();
+        }
+
         return MIN(rc, 0);
     }
     return -ENOENT;
 }
+
+SETTINGS_STATIC_HANDLER_DEFINE(backlight, "backlight", NULL, backlight_settings_load_cb, NULL,
+                               NULL);
 
 static void backlight_save_work_handler(struct k_work *work) {
     settings_save_one("backlight/state", &state, sizeof(state));
@@ -85,11 +92,6 @@ static int zmk_backlight_init(void) {
     }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
-    settings_subsys_init();
-    int rc = settings_load_subtree_direct("backlight", backlight_settings_load_cb, NULL);
-    if (rc != 0) {
-        LOG_ERR("Failed to load backlight settings: %d", rc);
-    }
     k_work_init_delayable(&backlight_save_work, backlight_save_work_handler);
 #endif
 #if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB)

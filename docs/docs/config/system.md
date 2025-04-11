@@ -29,10 +29,11 @@ Making changes to any of the settings in this section modifies the HID report de
 
 :::
 
-| Config                                | Type | Description                                                    | Default |
-| ------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_HID_INDICATORS`           | bool | Enable reciept of HID/LED indicator state from connected hosts | n       |
-| `CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE` | int  | Number of consumer keys simultaneously reportable              | 6       |
+| Config                                       | Type | Description                                                      | Default |
+| -------------------------------------------- | ---- | ---------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_HID_INDICATORS`                  | bool | Enable receipt of HID/LED indicator state from connected hosts   | n       |
+| `CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE`        | int  | Number of consumer keys simultaneously reportable                | 6       |
+| `CONFIG_ZMK_HID_SEPARATE_MOD_RELEASE_REPORT` | bool | Send modifier release event **after** non-modifier release event | n       |
 
 Exactly zero or one of the following options may be set to `y`. The first is used if none are set.
 
@@ -102,7 +103,7 @@ for more information on configuring Bluetooth.
 | `CONFIG_ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE` | int  | Max number of keyboard HID reports to queue for sending over BLE      | 20      |
 | `CONFIG_ZMK_BLE_INIT_PRIORITY`              | int  | BLE init priority                                                     | 50      |
 | `CONFIG_ZMK_BLE_THREAD_PRIORITY`            | int  | Priority of the BLE notify thread                                     | 5       |
-| `CONFIG_ZMK_BLE_THREAD_STACK_SIZE`          | int  | Stack size of the BLE notify thread                                   | 512     |
+| `CONFIG_ZMK_BLE_THREAD_STACK_SIZE`          | int  | Stack size of the BLE notify thread                                   | 768     |
 | `CONFIG_ZMK_BLE_PASSKEY_ENTRY`              | bool | Experimental: require typing passkey from host to pair BLE connection | n       |
 
 Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the same value. On a split keyboard they should only be set for the central and must be set to one greater than the desired number of bluetooth profiles.
@@ -114,22 +115,51 @@ Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the s
 | `CONFIG_ZMK_USB_LOGGING` | bool | Enable USB CDC ACM logging for debugging | n       |
 | `CONFIG_ZMK_LOG_LEVEL`   | int  | Log level for ZMK debug messages         | 4       |
 
-### Split keyboards
+## Snippets
 
-Following split keyboard settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig) (generic) and [zmk/app/src/split/bluetooth/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/bluetooth/Kconfig) (bluetooth).
+:::danger
+Using these snippets can erase the SoftDevice on your board.
+Erasing the SoftDevice will prevent the board from using firmware built without these snippets.
 
-| Config                                                  | Type | Description                                                                | Default                                    |
-| ------------------------------------------------------- | ---- | -------------------------------------------------------------------------- | ------------------------------------------ |
-| `CONFIG_ZMK_SPLIT`                                      | bool | Enable split keyboard support                                              | n                                          |
-| `CONFIG_ZMK_SPLIT_ROLE_CENTRAL`                         | bool | `y` for central device, `n` for peripheral                                 |                                            |
-| `CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS`            | bool | Enable split keyboard support for passing indicator state to peripherals   | n                                          |
-| `CONFIG_ZMK_SPLIT_BLE`                                  | bool | Use BLE to communicate between split keyboard halves                       | y                                          |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING`   | bool | Enable fetching split peripheral battery levels to the central side        | n                                          |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY`      | bool | Enable central reporting of split battery levels to hosts                  | n                                          |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_QUEUE_SIZE` | int  | Max number of battery level events to queue when received from peripherals | `CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS` |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE`      | int  | Max number of key state events to queue when received from peripherals     | 5                                          |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_STACK_SIZE`     | int  | Stack size of the BLE split central write thread                           | 512                                        |
-| `CONFIG_ZMK_SPLIT_BLE_CENTRAL_SPLIT_RUN_QUEUE_SIZE`     | int  | Max number of behavior run events to queue to send to the peripheral(s)    | 5                                          |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE`            | int  | Stack size of the BLE split peripheral notify thread                       | 650                                        |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY`              | int  | Priority of the BLE split peripheral notify thread                         | 5                                          |
-| `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE`   | int  | Max number of key state events to queue to send to the central             | 10                                         |
+Flashing such firmware **will** totally brick the board, disabling the USB flashing functionality.
+The only way to restore functionality after that is to re-flash the bootloader.
+
+Re-flashing a bootloader built without the SoftDevice will require firmware built with these snippets.
+:::
+
+[Snippets](https://docs.zephyrproject.org/3.5.0/build/snippets/index.html) are a way to save common configuration separately when it applies to multiple different applications.
+
+Enable snippets by adding `snippet: <snippet>` to your `build.yaml` for the appropriate board:
+
+```yaml
+- board: nrfmicro_13_52833
+  snippet: nrf52833-nosd
+  shield: corne_left
+```
+
+For local builds, add `-S <snippet>` to your build command. For example:
+
+```sh
+west build -b nrfmicro_13_52833 -S nrf52833-nosd -- -DSHIELD=corne_left
+```
+
+ZMK implements the following system configuration snippets:
+
+### nrf52833-nosd
+
+Definition: [zmk/app/snippets/nrf52833-nosd](https://github.com/zmkfirmware/zmk/blob/main/app/snippets/nrf52833-nosd)
+
+On memory-constrained nRF52833 boards this snippet will extend the code partition to overwrite the Nordic SoftDevice.
+This gives 428KB for the code partition as opposed to 280KB with the Nordic SoftDevice.
+
+The added memory allows the nRF52833 to fit displays and other memory-intensive features.
+
+### nrf52840-nosd
+
+Definition: [zmk/app/snippets/nrf52840-nosd](https://github.com/zmkfirmware/zmk/blob/main/app/snippets/nrf52840-nosd)
+
+On nRF52840 boards this snippet will overwrite the Nordic SoftDevice, extending both the code and storage partitions.
+This gives 844KB/128KB for the code/storage partitions as opposed to 792KB/32KB with the Nordic SoftDevice.
+
+Firmware built with this snippet can work on boards after accidentally erasing the SoftDevice.
+It can also be useful for especially memory-intensive applications.

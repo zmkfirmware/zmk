@@ -6,10 +6,16 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
+#include <layouts/gtips/reviung41.dtsi>
+
+&gtips_reviung41_layout {
+    transform = <&default_transform>;
+};
+
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix-transform = &default_transform;
+        zmk,physical-layout = &gtips_reviung41_layout;
     };
 
     default_transform: keymap_transform_0 {

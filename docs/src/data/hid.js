@@ -5024,7 +5024,7 @@ export default [
     os: {
       windows: false,
       linux: true,
-      android: null,
+      android: true,
       macos: null,
       ios: null,
     },
@@ -5150,7 +5150,7 @@ export default [
     os: {
       windows: false,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -5171,7 +5171,7 @@ export default [
     os: {
       windows: true,
       linux: true,
-      android: null,
+      android: true,
       macos: true,
       ios: true,
     },
@@ -5192,7 +5192,7 @@ export default [
     os: {
       windows: true,
       linux: true,
-      android: null,
+      android: true,
       macos: true,
       ios: true,
     },
@@ -5213,7 +5213,7 @@ export default [
     os: {
       windows: false,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -5234,7 +5234,7 @@ export default [
     os: {
       windows: false,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -5255,7 +5255,7 @@ export default [
     os: {
       windows: false,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -5276,7 +5276,7 @@ export default [
     os: {
       windows: false,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -6011,7 +6011,7 @@ export default [
     os: {
       windows: false,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -6179,7 +6179,7 @@ export default [
     os: {
       windows: false,
       linux: true,
-      android: null,
+      android: false,
       macos: null,
       ios: null,
     },
@@ -6453,8 +6453,8 @@ export default [
       windows: null,
       linux: true,
       android: true,
-      macos: null,
-      ios: null,
+      macos: false,
+      ios: false,
     },
     footnotes: {},
   },
@@ -6537,8 +6537,8 @@ export default [
       windows: null,
       linux: true,
       android: true,
-      macos: null,
-      ios: null,
+      macos: false,
+      ios: false,
     },
     footnotes: {},
   },

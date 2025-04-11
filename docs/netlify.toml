@@ -1,5 +1,5 @@
 [build]
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF . ../app/boards/"
+  ignore = "bash ./netlify-ignore-command.sh"
 
 [[redirects]]
   from = "/community/discord/invite"

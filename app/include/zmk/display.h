@@ -23,12 +23,12 @@ int zmk_display_init(void);
  *
  * @param listener THe ZMK Event manager listener name.
  * @param state_type The struct/enum type used to store/transfer state.
- * @param cb The callback to invoke in the dispaly queue context to update the UI. Should be `void
+ * @param cb The callback to invoke in the display queue context to update the UI. Should be `void
  * func(state_type)` signature.
  * @param state_func The callback function to invoke to fetch the updated state from ZMK core.
  * Should be `state type func(const zmk_event_t *eh)` signature.
- * @retval listner##_init Generates a function `listener##_init` that should be called by the widget
- * once ready to be updated.
+ * @retval listener##_init Generates a function `listener##_init` that should be called by the
+ * widget once ready to be updated.
  **/
 #define ZMK_DISPLAY_WIDGET_LISTENER(listener, state_type, cb, state_func)                          \
     K_MUTEX_DEFINE(listener##_mutex);                                                              \

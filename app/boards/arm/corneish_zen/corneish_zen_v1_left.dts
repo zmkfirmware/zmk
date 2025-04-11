@@ -88,7 +88,7 @@
     fuelgauge: bq274xx@55 {
         compatible = "ti,bq274xx";
         reg = <0x55>;
-        design-voltage = <3700>; //Battery Design Volatge in mV
+        design-voltage = <3700>; //Battery Design Voltage in mV
         design-capacity = <180>; //Battery Design Capacity in mAh
         taper-current = <2>; //Battery Taper current in mAh
         terminate-voltage = <2750>; //Battery Terminate Voltage in mV

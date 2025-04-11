@@ -12,6 +12,7 @@ module.exports = {
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
   plugins: [
+    "@docusaurus/theme-mermaid",
     path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin"),
     path.resolve(__dirname, "src/hardware-metadata-collection-plugin"),
     path.resolve(__dirname, "src/hardware-metadata-static-plugin"),
@@ -31,6 +32,7 @@ module.exports = {
         "linker-script",
         "log",
         "powershell",
+        "diff",
       ],
       theme,
       darkTheme,
@@ -61,6 +63,11 @@ module.exports = {
           position: "left",
         },
         {
+          href: "https://zmk.studio/",
+          label: "ZMK Studio",
+          position: "right",
+        },
+        {
           href: "https://github.com/zmkfirmware/zmk",
           label: "GitHub",
           position: "right",
@@ -79,7 +86,7 @@ module.exports = {
             },
             {
               label: "Development",
-              to: "docs/development/setup/",
+              to: "docs/development/contributing/clean-room",
             },
           ],
         },
@@ -95,6 +102,10 @@ module.exports = {
               href:
                 (process.env.URL || "https://zmk.dev") +
                 "/community/discord/invite",
+            },
+            {
+              label: "Mastodon",
+              href: "https://fosstodon.org/@zmk",
             },
             {
               label: "Twitter",
@@ -163,6 +174,8 @@ module.exports = {
     ],
   ],
   markdown: {
+    format: "detect",
+    mermaid: true,
     mdx1Compat: {
       comments: false,
       admonitions: false,

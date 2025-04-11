@@ -1,0 +1,19 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+
+&kscan {
+    /delete-property/ exit-after;
+    events = <>;
+};
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+            &kp A &kp B
+            &kp C &sys_reset>;
+        };
+    };
+};

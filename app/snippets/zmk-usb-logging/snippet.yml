@@ -1,0 +1,4 @@
+name: zmk-usb-logging
+append:
+  EXTRA_CONF_FILE: zmk-usb-logging.conf
+  EXTRA_DTC_OVERLAY_FILE: zmk-usb-logging.overlay

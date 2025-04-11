@@ -1,15 +1,14 @@
 ---
 title: "Major Encoder Refactor"
-author: Pete Johanson
-author_title: Project Creator
-author_url: https://gitlab.com/petejohanson
-author_image_url: https://www.gravatar.com/avatar/2001ceff7e9dc753cf96fcb2e6f41110
+authors: petejohanson
 tags: [firmware, zephyr, sensors, encoders]
 ---
 
 Today, we merged a significant change to the low level sensor code that is used to support encoders. In particular,
 this paves the way for completing the work on supporting split peripheral sensors/encoders, and other future sensors
 like pointing devices.
+
+<!-- truncate -->
 
 As part of the work, backwards compatibility for existing shields has been retained, but only for a grace period to allow out-of-tree shields to move to the new approach for encoders.
 

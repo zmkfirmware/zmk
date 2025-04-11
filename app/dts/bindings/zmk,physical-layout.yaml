@@ -1,0 +1,26 @@
+#
+# Copyright (c) 2024 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+
+description: |
+  Describe the physical layout of a keyboard, including deps like the transform and kscan
+  that are needed for that layout to work.
+
+compatible: "zmk,physical-layout"
+
+properties:
+  display-name:
+    type: string
+    required: true
+    description: The name of this layout to display in the UI
+  transform:
+    type: phandle
+    required: true
+    description: The matrix transform to use along with this layout.
+  kscan:
+    type: phandle
+    description: The kscan to use along with this layout. The `zmk,kscan` chosen will be used as a fallback if this property is omitted.
+  keys:
+    type: phandle-array
+    description: Array of key physical attributes.

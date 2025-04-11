@@ -18,7 +18,7 @@
 // |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   \   |
 // |  CTRL |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
 // | SHIFT |  Z  |  X  |  C   |  V   |  B   |                   |  N   |  M    |  ,    |  .   |   /   | SHIFT |
-// | LCTL  | LGUI  | LALT |  GRAV |  | EQL | DEL | BKSP|  | RET | SPC  | LBKT |  RBKT  | LBKT | HOME  |   END |
+// | LCTL  | LGUI  | LALT |  GRAV |  | EQL | DEL | BSPC|  | RET | SPC  | LBKT |  RBKT  | LBKT | HOME  |   END |
             bindings = <
 &kp ESC   &kp N1    &kp N2   &kp N3    &kp N4    &kp N5                    &kp N6    &kp N7   &kp N8    &kp N9    &kp N0   &kp MINUS
 &kp TAB   &kp Q     &kp W    &kp E     &kp R     &kp T                     &kp Y     &kp U    &kp I     &kp O     &kp P    &kp BSLH

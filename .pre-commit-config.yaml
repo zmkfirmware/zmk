@@ -4,20 +4,31 @@ repos:
     rev: v1.5.1
     hooks:
       - id: remove-tabs
-        exclude: "vendor-prefixes\\.txt$"
-  - repo: https://github.com/pocc/pre-commit-hooks
-    rev: v1.3.5
+        exclude: "vendor-prefixes\\.txt$|.git/COMMIT_EDITMSG"
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v18.1.8
     hooks:
       - id: clang-format
+        types_or: [c++, c]
         args:
           - -i
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.7.1
     hooks:
       - id: prettier
+        exclude: |
+          (?x)^(
+              .git/COMMIT_EDITMSG|
+              CHANGELOG.md|
+              .release-please-manifest.json
+          )$
         # Workaround for https://github.com/pre-commit/mirrors-prettier/issues/29
         additional_dependencies:
           - prettier@2.8.7
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+      - id: gitlint
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

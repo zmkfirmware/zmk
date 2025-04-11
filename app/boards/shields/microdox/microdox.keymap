@@ -28,7 +28,7 @@
                 nav_layer {
 // -----------------------------------------------------------------------------------------
 // |BTCLR|     | ESC |  ~   |     |   | TAB | HOME |  UP  | END | DEL  |
-// | BT1 | GUI | ALT | CTRL | NUM |   |  /  | LEFT | DOWN | RGT | BKSP |
+// | BT1 | GUI | ALT | CTRL | NUM |   |  /  | LEFT | DOWN | RGT | BSPC |
 // | BT2 |     |     |      |     |   |  \  | ENT  |      |     |      |
 //             |     |      |     |   |     |      |      |
                         bindings = <

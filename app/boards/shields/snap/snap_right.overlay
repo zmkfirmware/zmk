@@ -23,7 +23,7 @@ kscan_direct: kscan_direct {
         direct {
             kscan = <&kscan_direct>;
             row-offset = <1>;
-            column-offset = <8>;
+            col-offset = <8>;
     };
 };
 

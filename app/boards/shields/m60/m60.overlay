@@ -6,10 +6,12 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
+#include <layouts/common/60percent/ansi.dtsi>
+
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix-transform = &default_transform;
+        zmk,physical-layout = &layout_60_ansi;
     };
 
     kscan0: kscan {
@@ -58,3 +60,6 @@ RC(6,5)    RC(6,6)   RC(6,7)                     RC(7,0)                    RC(7
     };
 };
 
+&layout_60_ansi {
+    transform = <&default_transform>;
+};

@@ -26,6 +26,7 @@ struct ksbb_entry {
 
 struct ksbb_config {
     const struct device *kscan;
+    bool auto_enable;
     struct ksbb_entry *entries;
     size_t entries_len;
 };
@@ -93,33 +94,71 @@ void ksbb_inner_kscan_callback(const struct device *dev, uint32_t row, uint32_t 
 }
 
 static int ksbb_configure(const struct device *dev, kscan_callback_t callback) {
-    const struct ksbb_config *cfg = dev->config;
     struct ksbb_data *data = dev->data;
 
     data->callback = callback;
-
-#if IS_ENABLED(CONFIG_PM_DEVICE)
-    if (pm_device_wakeup_is_enabled(dev) && pm_device_wakeup_is_capable(cfg->kscan)) {
-        pm_device_wakeup_enable(cfg->kscan, true);
-    }
-#endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
     return 0;
 }
 
 static int ksbb_enable(const struct device *dev) {
     struct ksbb_data *data = dev->data;
+    const struct ksbb_config *config = dev->config;
     data->enabled = true;
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    if (!pm_device_runtime_is_enabled(dev) && pm_device_runtime_is_enabled(config->kscan)) {
+        pm_device_runtime_get(config->kscan);
+    }
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    if (pm_device_wakeup_is_capable(config->kscan)) {
+        pm_device_wakeup_enable(config->kscan, true);
+    }
+    pm_device_action_run(config->kscan, PM_DEVICE_ACTION_RESUME);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
+    kscan_config(config->kscan, &ksbb_inner_kscan_callback);
+    kscan_enable_callback(config->kscan);
 
     return 0;
 }
 
 static int ksbb_disable(const struct device *dev) {
     struct ksbb_data *data = dev->data;
+    const struct ksbb_config *config = dev->config;
     data->enabled = false;
+
+    kscan_disable_callback(config->kscan);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    if (!pm_device_runtime_is_enabled(dev) && pm_device_runtime_is_enabled(config->kscan)) {
+        pm_device_runtime_put(config->kscan);
+    }
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    if (pm_device_wakeup_is_capable(config->kscan) && !pm_device_wakeup_is_enabled(dev) &&
+        pm_device_wakeup_is_enabled(config->kscan)) {
+        pm_device_wakeup_enable(config->kscan, false);
+    }
+    pm_device_action_run(config->kscan, PM_DEVICE_ACTION_SUSPEND);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
     return 0;
 }
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+
+static int ksbb_pm_action(const struct device *dev, enum pm_device_action action) {
+    switch (action) {
+    case PM_DEVICE_ACTION_SUSPEND:
+        return ksbb_disable(dev);
+    case PM_DEVICE_ACTION_RESUME:
+        return ksbb_enable(dev);
+    default:
+        return -ENOTSUP;
+    }
+}
+
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
 static int ksbb_init(const struct device *dev) {
     const struct ksbb_config *config = dev->config;
@@ -129,8 +168,11 @@ static int ksbb_init(const struct device *dev) {
         return -ENODEV;
     }
 
-    kscan_config(config->kscan, &ksbb_inner_kscan_callback);
-    kscan_enable_callback(config->kscan);
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+    if (!config->auto_enable) {
+        pm_device_init_suspended(dev);
+    }
+#endif
 
     return 0;
 }
@@ -141,32 +183,29 @@ static const struct kscan_driver_api ksbb_api = {
     .disable_callback = ksbb_disable,
 };
 
-#if IS_ENABLED(CONFIG_PM_DEVICE)
-
-static int ksbb_pm_action(const struct device *dev, enum pm_device_action action) {
-    switch (action) {
-    case PM_DEVICE_ACTION_SUSPEND:
-        return ksbb_disable(dev);
-    case PM_DEVICE_ACTION_RESUME:
-        return ksbb_disable(dev);
-    default:
-        return -ENOTSUP;
-    }
-}
-
-#endif // IS_ENABLED(CONFIG_PM_DEVICE)
-
 #define ENTRY(e)                                                                                   \
     {                                                                                              \
-        .row = DT_PROP(e, row), .column = DT_PROP(e, column),                                      \
+        .row = DT_PROP(e, row),                                                                    \
+        .column = DT_PROP(e, column),                                                              \
         .binding = ZMK_KEYMAP_EXTRACT_BINDING(0, e),                                               \
     }
 
 #define KSBB_INST(n)                                                                               \
+    COND_CODE_1(DT_INST_PROP_OR(n, auto_enable, false), (static int ksbb_auto_enable_##n(void) {   \
+                    const struct device *dev = DEVICE_DT_GET(DT_DRV_INST(n));                      \
+                    COND_CODE_1(IS_ENABLED(CONFIG_PM_DEVICE),                                      \
+                                (ksbb_pm_action(dev, PM_DEVICE_ACTION_RESUME);),                   \
+                                (const struct ksbb_config *config = dev->config;                   \
+                                 kscan_config(config->kscan, &ksbb_inner_kscan_callback);          \
+                                 kscan_enable_callback(config->kscan);))                           \
+                    return 0;                                                                      \
+                } SYS_INIT(ksbb_auto_enable_##n, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);), \
+                ())                                                                                \
     static struct ksbb_entry entries_##n[] = {                                                     \
         DT_INST_FOREACH_CHILD_STATUS_OKAY_SEP(n, ENTRY, (, ))};                                    \
     const struct ksbb_config ksbb_config_##n = {                                                   \
         .kscan = DEVICE_DT_GET(DT_INST_PHANDLE(n, kscan)),                                         \
+        .auto_enable = DT_INST_PROP_OR(n, auto_enable, false),                                     \
         .entries = entries_##n,                                                                    \
         .entries_len = ARRAY_SIZE(entries_##n),                                                    \
     };                                                                                             \

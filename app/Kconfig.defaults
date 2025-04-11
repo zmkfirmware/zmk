@@ -1,0 +1,113 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SYSTEM_WORKQUEUE_STACK_SIZE
+    default 2048 if SOC_RP2040
+    default 2048 if ZMK_BLE
+
+# HID
+if ZMK_HID_REPORT_TYPE_HKRO
+
+config ZMK_HID_KEYBOARD_REPORT_SIZE
+    default 6
+
+endif
+
+config ZMK_HID_CONSUMER_REPORT_SIZE
+    default 6
+
+# Behaviors
+
+if ZMK_BEHAVIOR_HOLD_TAP
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD
+    default 10
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS
+    default 40
+
+endif
+
+if ZMK_BEHAVIOR_STICKY_KEY
+
+config ZMK_BEHAVIOR_STICKY_KEY_MAX_HELD
+    default 10
+
+endif
+
+if ZMK_BEHAVIOR_TAP_DANCE
+
+config ZMK_BEHAVIOR_TAP_DANCE_MAX_HELD
+    default 10
+
+endif
+
+# Underglow
+if ZMK_RGB_UNDERGLOW
+
+# This default value cuts down on tons of excess .conf files, if you're using GPIO, manually disable this
+config SPI
+    default y
+
+config ZMK_RGB_UNDERGLOW_EXT_POWER
+    default y
+
+config ZMK_RGB_UNDERGLOW_BRT_MIN
+    default 0
+
+config ZMK_RGB_UNDERGLOW_BRT_MAX
+    default 100
+
+config ZMK_RGB_UNDERGLOW_HUE_STEP
+    default 10
+
+config ZMK_RGB_UNDERGLOW_SAT_STEP
+    default 10
+
+config ZMK_RGB_UNDERGLOW_BRT_STEP
+    default 10
+
+config ZMK_RGB_UNDERGLOW_HUE_START
+    default 0
+
+config ZMK_RGB_UNDERGLOW_SAT_START
+    default 100
+
+config ZMK_RGB_UNDERGLOW_BRT_START
+    default ZMK_RGB_UNDERGLOW_BRT_MAX
+
+config ZMK_RGB_UNDERGLOW_SPD_START
+    default 3
+
+config ZMK_RGB_UNDERGLOW_EFF_START
+    default 0
+
+config ZMK_RGB_UNDERGLOW_ON_START
+    default y
+
+endif # ZMK_RGB_UNDERGLOW
+
+# Backlight
+if ZMK_BACKLIGHT
+
+config ZMK_BACKLIGHT_BRT_STEP
+    default 20
+
+config ZMK_BACKLIGHT_BRT_START
+    default 40
+
+config ZMK_BACKLIGHT_ON_START
+    default y
+
+endif # ZMK_BACKLIGHT
+
+# Ext_power
+config ZMK_EXT_POWER
+    default y
+
+# Battery
+config ZMK_BATTERY_REPORT_INTERVAL
+    default 60
+
+# Imports
+rsource "src/split/Kconfig.defaults"

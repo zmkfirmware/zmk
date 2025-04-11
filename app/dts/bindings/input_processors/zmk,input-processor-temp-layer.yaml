@@ -1,0 +1,21 @@
+# Copyright (c) 2024, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Input Processor for temporarily enabling a layer after input events
+
+compatible: "zmk,input-processor-temp-layer"
+
+include: ip_two_param.yaml
+
+properties:
+  require-prior-idle-ms:
+    type: int
+    required: false
+    default: 0
+    description: Time in milliseconds that must pass after the last keystroke before the layer can be toggled
+
+  excluded-positions:
+    type: array
+    required: false
+    default: []
+    description: Array of key positions that will NOT trigger layer deactivation when pressed

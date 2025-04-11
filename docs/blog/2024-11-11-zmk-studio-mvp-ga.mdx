@@ -1,0 +1,261 @@
+---
+title: "ZMK Studio MVP General Availability"
+authors: petejohanson
+tags: [firmware, studio, core]
+---
+
+import Metadata from "@site/src/data/hardware-metadata.json";
+
+import ThemedImage from "@theme/ThemedImage";
+
+import studioApp from "./assets/2024-11-11-zmk-studio-mvp-ga/zmk-studio-screenshot.png";
+import studioAppDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/zmk-studio-screenshot-dark-mode.png";
+
+import niceAndTyperactive from "./assets/2024-11-11-zmk-studio-mvp-ga/niceandtyperactive.png";
+import niceAndTyperactiveDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/niceandtyperactive-dark-mode.png";
+
+import kinesis from "./assets/2024-11-11-zmk-studio-mvp-ga/kinesis.png";
+import kinesisDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/kinesis-dark-mode.png";
+
+import cannonKeys from "./assets/2024-11-11-zmk-studio-mvp-ga/cannonkeys.png";
+import cannonKeysDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/cannonkeys-dark-mode.png";
+
+import keychron from "./assets/2024-11-11-zmk-studio-mvp-ga/keychron.png";
+import keychronDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/keychron-dark-mode.png";
+
+import littleKeyboards from "./assets/2024-11-11-zmk-studio-mvp-ga/littlekeyboards.avif";
+import littleKeyboardsDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/littlekeyboards-dark-mode.avif";
+
+import keebmaker from "./assets/2024-11-11-zmk-studio-mvp-ga/keebmaker.png";
+import keebmakerDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/keebmaker-dark-mode.png";
+
+import keebio from "./assets/2024-11-11-zmk-studio-mvp-ga/keebio.avif";
+
+import mode from "./assets/2024-11-11-zmk-studio-mvp-ga/mode.png";
+import modeDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/mode-dark-mode.png";
+
+import phaseByte from "./assets/2024-11-11-zmk-studio-mvp-ga/phasebyte.png";
+
+import deskHero from "./assets/2024-11-11-zmk-studio-mvp-ga/deskhero.webp";
+import deskHeroDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/deskhero-dark-mode.webp";
+
+import mechlovin from "./assets/2024-11-11-zmk-studio-mvp-ga/mechlovin.png";
+import mechlovinDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/mechlovin-dark-mode.png";
+
+import splitkb from "./assets/2024-11-11-zmk-studio-mvp-ga/splitkb.png";
+import splitkbDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/splitkb-dark-mode.png";
+
+import keycapsss from "./assets/2024-11-11-zmk-studio-mvp-ga/keycapsss.png";
+import keycapsssDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/keycapsss-dark-mode.png";
+
+import mekibo from "./assets/2024-11-11-zmk-studio-mvp-ga/mekibo.png";
+import mekiboDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/mekibo-dark-mode.png";
+
+I'm delighted to announce that after many months of work, the ZMK Studio Minimum Viable Product (MVP) has reached General Availability (GA) status. I'm very excited with the feature set and foundation we've gotten into this first release, and equally excited for the upcoming work to add even more features.
+
+ZMK Studio provides runtime keymap functionality for ZMK powered devices, allowing you to make changes without the need to flash new firmware. It is a combination of major firmware enhancements paired with a new frontend application for interacting with your keyboard.
+
+The app is available for compatible browsers, and as an installable desktop application for Linux, macOS, and Windows.
+
+<ThemedImage
+  alt="ZMK Studio Application"
+  sources={{
+    light: studioApp,
+    dark: studioAppDarkMode,
+  }}
+/>
+
+{/* truncate */}
+
+## Gratitude
+
+I'm extremely grateful for everyone who has helped make this release possible, which includes testers, code reviewers/contributors, including [Nick-Munnich], [joelspadin], and [caksoylar], as well as the collection of vendors who have directly sponsored my work on the project, allowing it to come to fruition _much_ faster than it would have taken me to do in my spare time.
+
+### Vendor Sponsors
+
+The following sponsors were instrumental in making ZMK Studio possible by sponsoring my work on the firmware and frontend application:
+
+{(function() {
+const sponsors = [
+{
+level: "Platinum",
+vendors: [
+{
+name: "nice!keyboards / typeractive",
+img: niceAndTyperactive,
+darkModeImg: niceAndTyperactiveDarkMode,
+url: "https://typeractive.xyz/",
+},
+{
+name: "Kinesis",
+img: kinesis,
+darkModeImg: kinesisDarkMode,
+url: "https://kinesis-ergo.com/",
+},
+],
+},
+{
+level: "Gold+",
+vendors: [
+{
+name: "CannonKeys",
+img: cannonKeys,
+darkModeImg: cannonKeysDarkMode,
+url: "https://cannonkeys.com/",
+},
+{
+name: "Keychron",
+img: keychron,
+darkModeImg: keychronDarkMode,
+url: "https://keychron.com/",
+},
+],
+},
+{
+level: "Gold",
+vendors: [
+{
+name: "Little Keyboards",
+img: littleKeyboards,
+darkModeImg: littleKeyboardsDarkMode,
+url: "https://littlekeyboards.com/",
+},
+{
+name: "Keebmaker",
+img: keebmaker,
+darkModeImg: keebmakerDarkMode,
+url: "https://keebmaker.com/",
+},
+],
+},
+{
+level: "Silver",
+vendors: [
+{
+name: "keeb.io",
+img: keebio,
+url: "https://keeb.io/",
+},
+{
+name: "Mode Designs",
+img: mode,
+darkModeImg: modeDarkMode,
+url: "https://modedesigns.com/",
+},
+],
+},
+{
+level: "Bronze",
+vendors: [
+{
+name: "deskhero",
+img: deskHero,
+darkModeImg: deskHeroDarkMode,
+url: "https://deskhero.ca/",
+},
+{
+name: "PhaseByte",
+img: phaseByte,
+url: "https://phasebyte.com/",
+},
+{
+name: "Mechlovin'",
+img: mechlovin,
+darkModeImg: mechlovinDarkMode,
+url: "https://mechlovin.studio/",
+},
+],
+},
+{
+level: "Additional",
+vendors: [
+{
+name: "splitkb.com",
+img: splitkb,
+darkModeImg: splitkbDarkMode,
+url: "https://splitkb.com/",
+},
+{
+name: "keycapsss",
+img: keycapsss,
+darkModeImg: keycapsssDarkMode,
+url: "https://keycapsss.com/",
+},
+{
+name: "mekibo",
+img: mekibo,
+darkModeImg: mekiboDarkMode,
+url: "https://mekibo.com/",
+},
+],
+},
+];
+
+return sponsors.map(g => {
+return (
+
+<div key={g.level}>
+  <h4>{g.level} Level</h4>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+      placeItems: "center",
+      gap: "2em 2em",
+    }}
+  >
+    {g.vendors.map((v) => {
+      return (
+        <a href={v.url} key={v.url}>
+          <ThemedImage
+            alt={v.name}
+            sources={{
+              light: v.img,
+              dark: v.darkModeImg || v.img,
+            }}
+          />
+        </a>
+      );
+    })}
+  </div>
+</div>
+); }); }())}
+
+## Using ZMK Studio
+
+:::note
+
+For keyboard maintainers, additional changes are needed to add metadata about the keyboard's physical layouts in order to use ZMK Studio. See the documentation on [physical layouts](/docs/development/hardware-integration/physical-layouts#optional-keys-property) for more information.
+:::
+
+To use ZMK Studio, you need to have a firmware for your keyboard with the feature enabled, as well as a small keymap change to add an unlock key. See [Building with ZMK Studio](/docs/features/studio#building) and [ZMK Studio keymap changes](/docs/features/studio#keymap-changes) for more details.
+
+See [Accessing ZMK Studio](/docs/features/studio#accessing-zmk-studio) for more details on the browser and desktop options for using the ZMK Studio application.
+Note: Depending on your browser, operating system, and app vs website selection, you may be limited to connecting over USB. See the previous link for details.
+
+## In-Tree Supported Keyboards
+
+The following in-tree keyboards have been updated to support ZMK Studio.
+If your keyboard is supported by an external module/config, check with the maintainer to see
+if support has been added.
+
+{(function() {
+return (
+
+<ul>
+  {Metadata.filter((m) => (m.features || []).includes("studio")).map((m) => {
+    return <li key={m.id}>{m.name}</li>;
+  })}
+</ul>
+); }())}
+
+## Next Steps
+
+The ZMK Studio MVP is truly that, a "minimum viable product". It establishes the core firmware functionality and frontend application infrastructure in order to validate the technology, prove the approaches, and get initial core features into user's hands as early as possible.
+
+There are many ZMK features that are not yet possible to update in ZMK Studio. For a better understanding of where ZMK Studio is today, and where we are headed, please have a look at the [ZMK Studio capabilities](/docs/features/studio#capabilities) table.
+
+[petejohanson]: https://github.com/petejohanson
+[caksoylar]: https://github.com/caksoylar
+[Nick-Munnich]: https://github.com/Nick-Munnich
+[joelspadin]: https://github.com/joelspadin

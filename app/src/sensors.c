@@ -26,28 +26,22 @@ struct sensors_item_cfg {
 };
 
 #define _SENSOR_ITEM(idx, node)                                                                    \
-    {                                                                                              \
-        .dev = DEVICE_DT_GET_OR_NULL(node),                                                        \
-        .trigger = {.type = SENSOR_TRIG_DATA_READY, .chan = SENSOR_CHAN_ROTATION},                 \
-        .config = &configs[idx], .sensor_index = idx                                               \
-    }
+    {.dev = DEVICE_DT_GET_OR_NULL(node),                                                           \
+     .trigger = {.type = SENSOR_TRIG_DATA_READY, .chan = SENSOR_CHAN_ROTATION},                    \
+     .config = &configs[idx],                                                                      \
+     .sensor_index = idx}
 #define SENSOR_ITEM(idx, _i) _SENSOR_ITEM(idx, ZMK_KEYMAP_SENSORS_BY_IDX(idx))
 
 #define PLUS_ONE(n) +1
 #define ZMK_KEYMAP_SENSORS_CHILD_COUNT (0 DT_FOREACH_CHILD(ZMK_KEYMAP_SENSORS_NODE, PLUS_ONE))
 #define SENSOR_CHILD_ITEM(node)                                                                    \
-    {                                                                                              \
-        .triggers_per_rotation =                                                                   \
-            DT_PROP_OR(node, triggers_per_rotation,                                                \
-                       DT_PROP_OR(ZMK_KEYMAP_SENSORS_NODE, triggers_per_rotation,                  \
-                                  CONFIG_ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION))        \
-    }
+    {.triggers_per_rotation =                                                                      \
+         DT_PROP_OR(node, triggers_per_rotation,                                                   \
+                    DT_PROP_OR(ZMK_KEYMAP_SENSORS_NODE, triggers_per_rotation,                     \
+                               CONFIG_ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION))}
 #define SENSOR_CHILD_DEFAULTS(idx, arg)                                                            \
-    {                                                                                              \
-        .triggers_per_rotation =                                                                   \
-            DT_PROP_OR(ZMK_KEYMAP_SENSORS_NODE, triggers_per_rotation,                             \
-                       CONFIG_ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION)                    \
-    }
+    {.triggers_per_rotation = DT_PROP_OR(ZMK_KEYMAP_SENSORS_NODE, triggers_per_rotation,           \
+                                         CONFIG_ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION)}
 
 static struct zmk_sensor_config configs[] = {
 #if ZMK_KEYMAP_SENSORS_CHILD_COUNT > 0

@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    /omit-if-no-ref/ zip_xy_swap_mapper: zip_xy_swap_mapper {
+        compatible = "zmk,input-processor-code-mapper";
+        #input-processor-cells = <0>;
+        type = <INPUT_EV_REL>;
+        map
+            = <INPUT_REL_Y INPUT_REL_X>
+            , <INPUT_REL_X INPUT_REL_Y>
+            ;
+    };
+
+    /omit-if-no-ref/ zip_xy_to_scroll_mapper: zip_xy_to_scroll_mapper {
+        compatible = "zmk,input-processor-code-mapper";
+        #input-processor-cells = <0>;
+        type = <INPUT_EV_REL>;
+        map
+            = <INPUT_REL_Y INPUT_REL_WHEEL>
+            , <INPUT_REL_X INPUT_REL_HWHEEL>
+            ;
+    };
+};

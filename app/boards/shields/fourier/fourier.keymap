@@ -14,7 +14,7 @@
         compatible = "zmk,keymap";
 
 // ----------------------------------------------      ----------------------------------------------
-// | ESC  |  Q  |  W  |  E  |  R  |  T  |              |  Y  |  U  |  I  |  O  |  P  |     |  BKSP  |
+// | ESC  |  Q  |  W  |  E  |  R  |  T  |              |  Y  |  U  |  I  |  O  |  P  |     |  BSPC  |
 // | TAB    |  A  |  S  |  D   |  F  |  G  |             |  H  |  J  |  K  |  L  |  '  |    ENTER   |
 // | SHIFT     |  Z  |  X  |  C  |  V  |  B  |              |  N  |  M  |  ,  |  .  |  /  |  RSHFT  |
 // | LCTRL   | LALT| LGUI |   SPACE        |             |   SPACE/L1  | L2 |  RGUI  |  RALT  |RCTRL|

@@ -19,13 +19,13 @@ Keyboards and macropads with encoder support will typically take the two EC11 pi
 
 ### Rotation
 
-Rotation is handled separately as a type of sensor. The behavior for this is set in `sensor-bindings`. See [Sensor Rotation](../behaviors/sensor-rotate.md) for customizing this behavior.
+Rotation is handled separately as a type of sensor. The behavior for this is set in `sensor-bindings`. See [Sensor Rotation](../keymaps/behaviors/sensor-rotate.md) for customizing this behavior.
 
 ```dts
 sensor-bindings = <BINDING [CW_KEY] [CCW_KEY]>;
 ```
 
-- `BINDING` is either a user-defined behavior, or `&inc_dec_kp` for key presses (see [Key Press](../behaviors/key-press.md) for details on available keycodes).
+- `BINDING` is either a user-defined behavior, or `&inc_dec_kp` for key presses (see [Key Press](../keymaps/behaviors/key-press.md) for details on available keycodes).
 - `CW_KEY` is the keycode activated by a clockwise turn.
 - `CCW_KEY` is the keycode activated by a counter-clockwise turn.
 
@@ -41,4 +41,4 @@ Here, the left encoder is configured to control volume up and down while the rig
 
 ## Adding Encoder Support
 
-See the [New Keyboard Shield](../development/new-shield.mdx#encoders) documentation for how to add or modify additional encoders to your shield.
+See the [Hardware Integration page for encoders](../development/hardware-integration/encoders.md) for instructions on adding them to your keyboard.

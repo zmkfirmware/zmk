@@ -1,0 +1,5 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config SHIELD_POSIX_SEEED_XIAO
+    def_bool $(shields_list_contains,posix_seeed_xiao)

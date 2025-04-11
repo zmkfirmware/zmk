@@ -1,0 +1,23 @@
+Dispatching handle_position_state_changed
+Position excluded, continuing
+layer_changed: layer 1 state 1
+Dispatching handle_layer_state_changed
+movement_set: Mouse movement set to -1/0
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
+movement_set: Mouse movement set to -2/0
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
+movement_set: Mouse movement set to -2/0
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
+movement_set: Mouse movement set to -3/0
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
+Dispatching handle_position_state_changed
+Dispatching handle_position_state_changed
+Position not excluded, deactivating layer
+layer_changed: layer 1 state 0
+Dispatching handle_layer_state_changed
+Position excluded, continuing
+Dispatching handle_position_state_changed

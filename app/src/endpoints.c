@@ -116,9 +116,7 @@ int zmk_endpoints_toggle_transport(void) {
     return zmk_endpoints_select_transport(new_transport);
 }
 
-struct zmk_endpoint_instance zmk_endpoints_selected(void) {
-    return current_instance;
-}
+struct zmk_endpoint_instance zmk_endpoints_selected(void) { return current_instance; }
 
 static int send_keyboard_report(void) {
     switch (current_instance.transport) {
@@ -203,7 +201,7 @@ int zmk_endpoints_send_report(uint16_t usage_page) {
     return -ENOTSUP;
 }
 
-#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+#if IS_ENABLED(CONFIG_ZMK_POINTING)
 int zmk_endpoints_send_mouse_report() {
     switch (current_instance.transport) {
     case ZMK_TRANSPORT_USB: {
@@ -237,7 +235,7 @@ int zmk_endpoints_send_mouse_report() {
     LOG_ERR("Unhandled endpoint transport %d", current_instance.transport);
     return -ENOTSUP;
 }
-#endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+#endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 
@@ -263,7 +261,8 @@ static int endpoints_handle_set(const char *name, size_t len, settings_read_cb r
     return 0;
 }
 
-struct settings_handler endpoints_handler = {.name = "endpoints", .h_set = endpoints_handle_set};
+SETTINGS_STATIC_HANDLER_DEFINE(endpoints, "endpoints", NULL, endpoints_handle_set, NULL, NULL);
+
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
 static bool is_usb_ready(void) {
@@ -322,17 +321,7 @@ static struct zmk_endpoint_instance get_selected_instance(void) {
 
 static int zmk_endpoints_init(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    settings_subsys_init();
-
-    int err = settings_register(&endpoints_handler);
-    if (err) {
-        LOG_ERR("Failed to register the endpoints settings handler (err %d)", err);
-        return err;
-    }
-
     k_work_init_delayable(&endpoints_save_work, endpoints_save_preferred_work);
-
-    settings_load_subtree("endpoints");
 #endif
 
     current_instance = get_selected_instance();
@@ -343,9 +332,9 @@ static int zmk_endpoints_init(void) {
 void zmk_endpoints_clear_current(void) {
     zmk_hid_keyboard_clear();
     zmk_hid_consumer_clear();
-#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+#if IS_ENABLED(CONFIG_ZMK_POINTING)
     zmk_hid_mouse_clear();
-#endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+#endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
     zmk_endpoints_send_report(HID_USAGE_KEY);
     zmk_endpoints_send_report(HID_USAGE_CONSUMER);

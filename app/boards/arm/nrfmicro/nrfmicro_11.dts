@@ -17,7 +17,6 @@
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zephyr,console = &cdc_acm_uart;
     };
 
     leds {
@@ -54,6 +53,13 @@
     pinctrl-names = "default", "sleep";
 };
 
+&spi1 {
+    compatible = "nordic,nrf-spim";
+    pinctrl-0 = <&spi1_default>;
+    pinctrl-1 = <&spi1_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
 &uart0 {
     compatible = "nordic,nrf-uarte";
     current-speed = <115200>;
@@ -62,11 +68,8 @@
     pinctrl-names = "default", "sleep";
 };
 
-&usbd {
+zephyr_udc0: &usbd {
     status = "okay";
-    cdc_acm_uart: cdc_acm_uart {
-        compatible = "zephyr,cdc-acm-uart";
-    };
 };
 
 

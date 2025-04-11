@@ -1,0 +1,7 @@
+/ {
+    layouts_kgoh_jian_position_map: layouts_kgoh_jian_position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        complete;
+    };
+};

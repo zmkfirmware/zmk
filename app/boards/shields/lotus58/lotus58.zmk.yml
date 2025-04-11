@@ -9,6 +9,7 @@ features:
   - keys
   - display
   - encoder
+  - studio
 siblings:
   - lotus58_left
   - lotus58_right
