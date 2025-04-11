@@ -31,19 +31,19 @@ int battery_channel_get(const struct battery_value *value, enum sensor_channel c
 
 uint8_t lithium_ion_mv_to_pct(int16_t batt_mv) {
     // Lookup table of slope formulas for calculating remaining battery capacity.
-    // The original values used to calculate slopes come from:
     //
-    //       https://blog.ampow.com/lipo-voltage-chart/
+    // The current set of values acheives the same as: bat_mv * 2 / 15 - 459;
     //
+    // Future updates sould include more complete lookup tables for different
+    // battery types slectable through config flags.
     struct lookup_point {
         int16_t millivolts;
         int16_t percent;
     };
 
     static const struct lookup_point battery_lookup[] = {
-        {.millivolts = 4200, .percent = 100}, {.millivolts = 3870, .percent = 60},
-        {.millivolts = 3690, .percent = 10},  {.millivolts = 3610, .percent = 5},
-        {.millivolts = 3270, .percent = 0},
+        {.millivolts = 4200, .percent = 100},
+        {.millivolts = 3450, .percent = 0},
     };
 
     if (batt_mv > battery_lookup[0].millivolts) {
