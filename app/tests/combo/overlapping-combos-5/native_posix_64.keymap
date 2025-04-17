@@ -1,0 +1,67 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/*
+combo on 01 and 34
+overlapping combo on 012 and 345
+
+press 01 and then 34 both in their combo terms
+should actuate both combos
+*/
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        combo_a {
+            timeout-ms = <50>;
+            key-positions = <0 1>;
+            bindings = <&kp A>;
+        };
+
+        combo_b {
+            timeout-ms = <50>;
+            key-positions = <3 4>;
+            bindings = <&kp B>;
+        };
+
+        combo_c {
+            timeout-ms = <100>;
+            key-positions = <0 1 2>;
+            bindings = <&kp C>;
+        };
+
+        combo_d {
+            timeout-ms = <100>;
+            key-positions = <3 4 5>;
+            bindings = <&kp D>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp N0 &kp N1 &kp N2
+                &kp N3 &kp N4 &kp N5
+            >;
+        };
+    };
+};
+
+&kscan {
+    rows = <2>;
+    columns = <3>;
+    events = <
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_PRESS(0,1,10)
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_PRESS(1,1,10)
+        ZMK_MOCK_RELEASE(0,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_RELEASE(1,1,10)
+    >;
+};
