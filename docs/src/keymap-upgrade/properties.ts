@@ -47,7 +47,7 @@ function isLayerLabel(node: SyntaxNode) {
     `(property
         name: (identifier) @name
         value: (string_literal) @value
-      ) @prop`
+      ) @prop`,
   );
   const matches = query.matches(maybeKeymap);
 

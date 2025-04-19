@@ -30,7 +30,7 @@ export function upgradeKeymap(text: string) {
 
 export function rangesToLineNumbers(
   text: string,
-  changedRanges: Range[]
+  changedRanges: Range[],
 ): string {
   const lineBreaks = getLineBreakPositions(text);
 

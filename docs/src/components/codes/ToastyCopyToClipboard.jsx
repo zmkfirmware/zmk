@@ -13,7 +13,7 @@ export default function ToastyCopyToClipboard({ children, text }) {
     toast(
       <span>
         📋 Copied <code>{text}</code>
-      </span>
+      </span>,
     );
   return (
     <div onClick={notify}>

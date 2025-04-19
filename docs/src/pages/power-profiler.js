@@ -58,7 +58,7 @@ function PowerProfiler() {
   const [disclaimerAcknowledged, setDisclaimerAcknowledged] = useState(
     typeof window !== "undefined"
       ? localStorage.getItem("zmkPowerProfilerDisclaimer") === "true"
-      : false
+      : false,
   );
 
   const currentBoard =

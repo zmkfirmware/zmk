@@ -12,7 +12,7 @@ const glob = require("glob");
 function generateHardwareMetadataAggregate() {
   glob("../app/boards/**/*.zmk.yml", (error, files) => {
     const aggregated = files.flatMap((f) =>
-      yaml.loadAll(fs.readFileSync(f, "utf8"))
+      yaml.loadAll(fs.readFileSync(f, "utf8")),
     );
 
     aggregated
@@ -26,13 +26,13 @@ function generateHardwareMetadataAggregate() {
         if (agg.design_guideline) {
           fs.writeFileSync(
             `${baseDir}/design_guideline.md`,
-            agg.design_guideline
+            agg.design_guideline,
           );
         }
       });
     fs.writeFileSync(
       "src/data/hardware-metadata.json",
-      JSON.stringify(aggregated)
+      JSON.stringify(aggregated),
     );
   });
 }

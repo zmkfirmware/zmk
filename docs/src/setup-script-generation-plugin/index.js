@@ -37,7 +37,7 @@ function generateSetupScripts() {
         }
         return agg;
       },
-      { keyboards: [], boards: [] }
+      { keyboards: [], boards: [] },
     );
 
     data.keyboards.sort((a, b) => a.name.localeCompare(b.name));
@@ -46,7 +46,7 @@ function generateSetupScripts() {
     for (let script_ext of ["sh", "ps1"]) {
       const templateBuffer = fs.readFileSync(
         `src/templates/setup.${script_ext}.mustache`,
-        "utf8"
+        "utf8",
       );
       const script = Mustache.render(templateBuffer, data);
       fs.writeFileSync(`static/setup.${script_ext}`, script);

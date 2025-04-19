@@ -31,7 +31,7 @@ export default function FootnoteRefs({ footnotes }) {
             {footnote.symbol}
           </FootnoteRef>
         )),
-        ", "
+        ", ",
       )}
     </span>
   );

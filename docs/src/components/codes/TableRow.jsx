@@ -48,7 +48,7 @@ export default function TableRow({
               ({ id }) =>
                 (Array.isArray(footnotes[key]) &&
                   footnotes[key].includes(id)) ||
-                footnotes[key] == id
+                footnotes[key] == id,
             )}
           />
         </td>
