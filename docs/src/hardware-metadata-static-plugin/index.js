@@ -22,9 +22,9 @@ const METADATA_GLOB = path.posix.join(BASE_DIR, "app/boards/**/*.zmk.yml");
  * @param {string} file
  */
 async function readMetadata(file) {
-  /** @type HardwareMetadata[] */
-  // @ts-ignore
-  const documents = yaml.loadAll(await fs.readFile(file, "utf-8"));
+  const documents = /** @type HardwareMetadata[] */ (
+    yaml.loadAll(await fs.readFile(file, "utf-8"))
+  );
 
   return documents.map(
     (metadata) =>
@@ -34,7 +34,7 @@ async function readMetadata(file) {
         // External tools need a way to locate this hardware within the repo.
         // Append each item's relative path.
         directory: path.posix.dirname(path.posix.relative(BASE_DIR, file)),
-      })
+      }),
   );
 }
 

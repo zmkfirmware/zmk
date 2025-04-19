@@ -8,6 +8,7 @@
     "resolveJsonModule": true,
     "strict": true,
     "noEmit": true,
+    "jsx": "react-jsx",
     "target": "ES6",
     "lib": ["ES2022", "DOM", "DOM.Iterable"]
   }

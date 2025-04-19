@@ -111,7 +111,7 @@ function keycodeReplaceHandler(node: SyntaxNode, replacement: string | null) {
 
   if (nodes.length === 0) {
     console.warn(
-      `Found deprecated code "${node.text}" but it is not a parameter to a behavior`
+      `Found deprecated code "${node.text}" but it is not a parameter to a behavior`,
     );
     return [TextEdit.fromNode(node, `/* "${node.text}" no longer exists */`)];
   }
@@ -142,7 +142,7 @@ function findBehaviorNodes(paramNode: SyntaxNode) {
   }
 
   // Walk forward from the behavior to collect all its parameters.
-  let nodes = [behavior];
+  const nodes = [behavior];
   let param = behavior.nextNamedSibling;
   while (param && param.type !== "reference") {
     nodes.push(param);

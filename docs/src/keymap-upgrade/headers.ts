@@ -1,4 +1,4 @@
-import type { SyntaxNode, Tree } from "web-tree-sitter";
+import type { Tree } from "web-tree-sitter";
 import { Devicetree, findCapture } from "./parser";
 import { getUpgradeEdits, MatchFunc, ReplaceFunc, TextEdit } from "./textedit";
 
@@ -11,7 +11,7 @@ export function upgradeHeaders(tree: Tree) {
   const edits: TextEdit[] = [];
 
   const query = Devicetree.query(
-    "(preproc_include path: [(string_literal) (system_lib_string)] @path)"
+    "(preproc_include path: [(string_literal) (system_lib_string)] @path)",
   );
   const matches = query.matches(tree.rootNode);
 
@@ -19,7 +19,7 @@ export function upgradeHeaders(tree: Tree) {
     const node = findCapture("path", captures);
     if (node) {
       edits.push(
-        ...getUpgradeEdits(node, HEADERS, headerReplaceHandler, isHeaderMatch)
+        ...getUpgradeEdits(node, HEADERS, headerReplaceHandler, isHeaderMatch),
       );
     }
   }
