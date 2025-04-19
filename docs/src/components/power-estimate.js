@@ -229,7 +229,7 @@ function PowerEstimate({
     batteryMilliAh * batVolt * lithiumIonDischargeEfficiency * 1000;
 
   const estimatedAvgMinutes = Math.round(
-    (estimatedAvgEffectiveMicroWH / totalUsage) * 60,
+    (estimatedAvgEffectiveMicroWH / totalUsage) * 60
   );
 
   // Calculate worst case for battery life
@@ -242,7 +242,7 @@ function PowerEstimate({
   const highestTotalUsage = totalUsage * (1 + measurementAccuracy);
 
   const estimatedWorstMinutes = Math.round(
-    (estimatedWorstEffectiveMicroWH / highestTotalUsage) * 60,
+    (estimatedWorstEffectiveMicroWH / highestTotalUsage) * 60
   );
 
   // Calculate range (+-) of minutes using average - worst

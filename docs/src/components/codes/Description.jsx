@@ -29,7 +29,7 @@ function renderSpecialCharacters(description) {
       <span key={i} className="symbol" title={meaning ?? ""}>
         <code>{description.substr(index + pos, chars.length)}</code>
         {meaning ? <span className="meaning">{meaning}</span> : undefined}
-      </span>,
+      </span>
     );
     lastIndex = index + str.length;
     return acc;

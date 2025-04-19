@@ -9,7 +9,7 @@ export default defineConfig([
   globalIgnores([".cache-loader/", ".docusaurus/", "build/"]),
   { files: ["**/*.{js,jsx,ts,tsx,md,mdx}"] },
   jseslint.configs.recommended,
-  tseslint.configs.recommended,
+  tseslint.configs.strict,
   mdx.flat,
   pluginReact.configs.flat.recommended,
   pluginReact.configs.flat["jsx-runtime"],

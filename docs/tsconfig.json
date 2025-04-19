@@ -4,6 +4,7 @@
   "compilerOptions": {
     "types": ["node", "@docusaurus/theme-classic"],
     "moduleResolution": "Bundler",
+    "module": "esnext",
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "strict": true,

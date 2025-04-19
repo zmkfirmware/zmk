@@ -23,7 +23,7 @@ export class TextEdit extends Range {
 export type MatchFunc = (node: SyntaxNode, text: string) => boolean;
 export type ReplaceFunc = (
   node: SyntaxNode,
-  replacement: string | null,
+  replacement: string | null
 ) => TextEdit[];
 
 /**
@@ -47,7 +47,7 @@ export function getUpgradeEdits(
   node: SyntaxNode,
   replacementMap: Record<string, string | null>,
   replaceHandler?: ReplaceFunc,
-  isMatch?: MatchFunc,
+  isMatch?: MatchFunc
 ) {
   const defaultReplace: ReplaceFunc = (node, replacement) => [
     TextEdit.fromNode(node, replacement ?? ""),
@@ -115,7 +115,7 @@ export function applyEdits(text: string, edits: TextEdit[]) {
         changedRanges: reduceChangedRanges(prev, current),
       };
     },
-    { text: "", changedRanges: [] },
+    { text: "", changedRanges: [] }
   );
 }
 

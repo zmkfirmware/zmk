@@ -111,7 +111,7 @@ function keycodeReplaceHandler(node: SyntaxNode, replacement: string | null) {
 
   if (nodes.length === 0) {
     console.warn(
-      `Found deprecated code "${node.text}" but it is not a parameter to a behavior`,
+      `Found deprecated code "${node.text}" but it is not a parameter to a behavior`
     );
     return [TextEdit.fromNode(node, `/* "${node.text}" no longer exists */`)];
   }

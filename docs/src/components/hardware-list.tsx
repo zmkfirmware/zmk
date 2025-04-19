@@ -22,7 +22,7 @@ function itemIds(item: HardwareMetadata) {
       .map((id) => <code key={id}>{id}</code>)
       .reduce(
         (prev, curr, index) => [...prev, index > 0 ? ", " : "", curr],
-        [] as ElementOrString[],
+        [] as ElementOrString[]
       );
     return <span key={item.id}>{nodes}</span>;
   } else {

@@ -34,7 +34,7 @@ async function readMetadata(file) {
         // External tools need a way to locate this hardware within the repo.
         // Append each item's relative path.
         directory: path.posix.dirname(path.posix.relative(BASE_DIR, file)),
-      }),
+      })
   );
 }
 
