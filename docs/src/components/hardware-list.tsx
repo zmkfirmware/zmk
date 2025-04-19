@@ -20,9 +20,9 @@ function itemIds(item: HardwareMetadata) {
   if (item.type == "board" || item.type == "shield") {
     const nodes = (item.siblings ?? [item.id])
       .map((id) => <code key={id}>{id}</code>)
-      .reduce(
+      .reduce<ElementOrString[]>(
         (prev, curr, index) => [...prev, index > 0 ? ", " : "", curr],
-        [] as ElementOrString[]
+        []
       );
     return <span key={item.id}>{nodes}</span>;
   } else {
