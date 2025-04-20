@@ -445,7 +445,7 @@ void zmk_hid_mouse_movement_update(int16_t hwheel, int16_t wheel) {
     LOG_DBG("Mouse movement updated to %d/%d", mouse_report.body.d_x, mouse_report.body.d_y);
 }
 
-void zmk_hid_mouse_scroll_set(int8_t hwheel, int8_t wheel) {
+void zmk_hid_mouse_scroll_set(int16_t hwheel, int16_t wheel) {
     mouse_report.body.d_scroll_x = hwheel;
     mouse_report.body.d_scroll_y = wheel;
 
@@ -453,7 +453,7 @@ void zmk_hid_mouse_scroll_set(int8_t hwheel, int8_t wheel) {
             mouse_report.body.d_scroll_y);
 }
 
-void zmk_hid_mouse_scroll_update(int8_t hwheel, int8_t wheel) {
+void zmk_hid_mouse_scroll_update(int16_t hwheel, int16_t wheel) {
     mouse_report.body.d_scroll_x += hwheel;
     mouse_report.body.d_scroll_y += wheel;
 
