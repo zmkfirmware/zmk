@@ -395,7 +395,7 @@ static bool release_combo_key(int32_t position, int64_t timestamp) {
 
 static int cleanup() {
     k_work_cancel_delayable(&timeout_task);
-    memset(candidates, 0, BYTES_FOR_COMBOS_MASK);
+    memset(candidates, 0, BYTES_FOR_COMBOS_MASK * sizeof(uint32_t));
     if (fully_pressed_combo != INT16_MAX) {
         activate_combo(fully_pressed_combo);
         fully_pressed_combo = INT16_MAX;
