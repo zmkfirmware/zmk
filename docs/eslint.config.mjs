@@ -6,7 +6,12 @@ import pluginReact from "eslint-plugin-react";
 import * as mdx from "eslint-plugin-mdx";
 
 export default defineConfig([
-  globalIgnores([".cache-loader/", ".docusaurus/", "build/"]),
+  globalIgnores([
+    ".cache-loader/",
+    ".docusaurus/",
+    "build/",
+    "src/hardware-metadata.d.ts",
+  ]),
   { files: ["**/*.{js,jsx,ts,tsx,md,mdx}"] },
   jseslint.configs.recommended,
   tseslint.configs.strict,
