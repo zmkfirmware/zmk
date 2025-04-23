@@ -1,7 +1,18 @@
 {
   "files.associations": {
+    "*.page-template": "vue",
+    "*.layout-template": "vue",
+    "*.vue": "vue",
+    "*.code-workspace": "jsonc",
+    ".env*": "dotenv",
+    "*.ts": "typescript",
+    "*.css": "tailwindcss",
     "*.overlay": "dts",
-    "*.keymap": "dts"
+    "*.keymap": "dts",
+    "stdlib.h": "c",
+    "conn.h": "c",
+    "bluetooth.h": "c",
+    "log.h": "c"
   },
   "python.analysis.include": ["app/scripts", "zephyr/scripts"],
   "[c]": {
@@ -18,5 +29,10 @@
   "[css][json][jsonc][html][markdown][yaml]": {
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  // ✅ Required for C++ IntelliSense
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+
+  // ✅ Tells CMake Tools to look inside `app/`
+  "cmake.sourceDirectory": "${workspaceFolder}/app"
 }

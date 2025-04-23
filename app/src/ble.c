@@ -712,6 +712,7 @@ static int zmk_ble_complete_startup(void) {
 }
 
 static int zmk_ble_init(void) {
+    LOG_DBG("Counter value: %d", counter);
     int err = bt_enable(NULL);
 
     if (err < 0 && err != -EALREADY) {
