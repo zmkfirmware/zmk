@@ -216,11 +216,10 @@ void send_position_state_callback(struct k_work *work) {
     uint8_t state[POS_STATE_LEN];
 
     while (k_msgq_get(&position_state_msgq, &state, K_NO_WAIT) == 0) {
-        int err = bt_gatt_notify(NULL, &split_svc.attrs[1], &state, sizeof(state));
+        int err = bt_gatt_notify(zmk_split_bt_peripheral_active_conn(), &split_svc.attrs[1], &state,
+                                 sizeof(state));
         if (err) {
             LOG_DBG("Error notifying %d", err);
-        } else {
-            LOG_DBG("Notified position state %d", state[0]);
         }
     }
 };
@@ -264,8 +263,8 @@ K_MSGQ_DEFINE(sensor_state_msgq, sizeof(struct sensor_event),
 
 void send_sensor_state_callback(struct k_work *work) {
     while (k_msgq_get(&sensor_state_msgq, &last_sensor_event, K_NO_WAIT) == 0) {
-        int err = bt_gatt_notify(NULL, &split_svc.attrs[8], &last_sensor_event,
-                                 sizeof(last_sensor_event));
+        int err = bt_gatt_notify(zmk_split_bt_peripheral_active_conn(), &split_svc.attrs[8],
+                                 &last_sensor_event, sizeof(last_sensor_event));
         if (err) {
             LOG_DBG("Error notifying %d", err);
         }
@@ -326,7 +325,8 @@ static int zmk_split_bt_report_input(uint8_t reg, uint8_t type, uint16_t code, i
                 .sync = sync ? 1 : 0,
             };
 
-            return bt_gatt_notify(NULL, &split_svc.attrs[i], &payload, sizeof(payload));
+            return bt_gatt_notify(zmk_split_bt_peripheral_active_conn(), &split_svc.attrs[i],
+                                  &payload, sizeof(payload));
         }
     }
     return -ENODEV;

@@ -37,10 +37,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 static bt_addr_le_t bonded_centrals[MAX_BONDS];
 static int bond_count = 0;
-static int current_bond_index = 0;
 static bool is_connected = false;
 static bool is_bonded = false;
-static bool rotating = true;
+
+static struct bt_conn *active_conn = NULL;
 
 static struct k_work_delayable advertising_work;
 
@@ -56,23 +56,15 @@ static void collect_bonded(const struct bt_bond_info *info, void *user_data) {
     }
 }
 
-static int start_advertising_to(bt_addr_le_t *addr, bool low_duty) {
-    struct bt_le_adv_param adv_param =
-        low_duty ? *BT_LE_ADV_CONN_DIR_LOW_DUTY(addr) : *BT_LE_ADV_CONN_DIR(addr);
-    return bt_le_adv_start(&adv_param, NULL, 0, NULL, 0);
-}
-
 static void advertising_cb(struct k_work *work) {
     if (is_connected || bond_count == 0)
         return;
 
     int err;
 
-    // Stop any previous advertising
     bt_le_adv_stop();
-
-    // Clear and repopulate the allowlist
     bt_le_whitelist_clear();
+
     for (int i = 0; i < bond_count; i++) {
         bt_le_whitelist_add(&bonded_centrals[i]);
         char addr_str[BT_ADDR_LE_STR_LEN];
@@ -100,7 +92,11 @@ K_WORK_DELAYABLE_DEFINE(advertising_work, advertising_cb);
 
 static void connected(struct bt_conn *conn, uint8_t err) {
     is_connected = (err == 0);
-    rotating = false;
+
+    if (is_connected) {
+        active_conn = bt_conn_ref(conn);
+        LOG_INF("Connected and stored active connection");
+    }
 
     raise_zmk_split_peripheral_status_changed(
         (struct zmk_split_peripheral_status_changed){.connected = is_connected});
@@ -112,7 +108,12 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
 static void disconnected(struct bt_conn *conn, uint8_t reason) {
     is_connected = false;
-    rotating = true;
+
+    if (active_conn) {
+        bt_conn_unref(active_conn);
+        active_conn = NULL;
+        LOG_INF("Connection dropped, cleared active connection");
+    }
 
     char addr[BT_ADDR_LE_STR_LEN];
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
@@ -157,6 +158,8 @@ static struct bt_conn_auth_info_cb zmk_peripheral_ble_auth_info_cb = {
 bool zmk_split_bt_peripheral_is_connected(void) { return is_connected; }
 
 bool zmk_split_bt_peripheral_is_bonded(void) { return is_bonded; }
+
+struct bt_conn *zmk_split_bt_peripheral_active_conn(void) { return active_conn; }
 
 static int zmk_peripheral_ble_complete_startup(void) {
 #if IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START)
