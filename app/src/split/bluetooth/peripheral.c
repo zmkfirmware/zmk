@@ -66,16 +66,18 @@ static void advertising_cb(struct k_work *work) {
     if (is_connected || bond_count == 0)
         return;
 
-    // Stop previous advertising
+    int err;
+
+    // Stop any previous advertising
     bt_le_adv_stop();
 
-    // Clear and set allowlist
+    // Clear and repopulate the allowlist
     bt_le_whitelist_clear();
     for (int i = 0; i < bond_count; i++) {
         bt_le_whitelist_add(&bonded_centrals[i]);
         char addr_str[BT_ADDR_LE_STR_LEN];
         bt_addr_le_to_str(&bonded_centrals[i], addr_str, sizeof(addr_str));
-        LOG_INF("Allowlist: %s", addr_str);
+        LOG_INF("Allowlist includes: %s", addr_str);
     }
 
     struct bt_le_adv_param adv_params = {
@@ -83,18 +85,15 @@ static void advertising_cb(struct k_work *work) {
         .interval_min = BT_GAP_ADV_FAST_INT_MIN_2,
         .interval_max = BT_GAP_ADV_FAST_INT_MAX_2,
         .id = BT_ID_DEFAULT,
-        .peer = NULL,
     };
 
-    int err = bt_le_adv_start(&adv_params, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
-    if (err) {
-        LOG_ERR("Failed to start filtered advertising (%d)", err);
-    } else {
-        LOG_INF("Advertising to all bonded centrals (whitelist)");
-    }
+    err = bt_le_adv_start(&adv_params, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
 
-    // Re-schedule only if you want to rotate in future
-    // k_work_schedule(&advertising_work, K_SECONDS(ADV_ROTATION_INTERVAL));
+    if (err) {
+        LOG_ERR("Failed to start advertising to allowlist (err %d)", err);
+    } else {
+        LOG_INF("Advertising to all bonded centrals using allowlist");
+    }
 }
 
 K_WORK_DELAYABLE_DEFINE(advertising_work, advertising_cb);
@@ -171,9 +170,8 @@ static int zmk_peripheral_ble_complete_startup(void) {
     bt_foreach_bond(BT_ID_DEFAULT, collect_bonded, NULL);
 
     if (bond_count > 0) {
-        LOG_INF("Found %d bonded centrals, starting advertising rotation", bond_count);
-        rotating = true;
-        k_work_schedule(&advertising_work, K_NO_WAIT);
+        LOG_INF("Found %d bonded centrals, starting filtered advertising", bond_count);
+        k_work_submit(&advertising_work.work);
     } else {
         LOG_INF("No bonded centrals found, starting generic advertising");
         bt_le_adv_start(BT_LE_ADV_CONN, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
