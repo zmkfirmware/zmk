@@ -12,7 +12,9 @@
     "stdlib.h": "c",
     "conn.h": "c",
     "bluetooth.h": "c",
-    "log.h": "c"
+    "log.h": "c",
+    "event_manager.h": "c",
+    "split_peripheral_status_changed.h": "c"
   },
   "python.analysis.include": ["app/scripts", "zephyr/scripts"],
   "[c]": {
