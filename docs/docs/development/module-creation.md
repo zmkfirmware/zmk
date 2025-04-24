@@ -108,7 +108,7 @@ The repository comes with a number of files and folders already positioned for y
 
 |                  | `keyboard` | `component` | `behavior` | `driver` | `feature` | `vfx` |
 | ---------------- | ---------- | ----------- | ---------- | -------- | --------- | ----- |
-| `board/`         | ✅         | ✅          | ❌         | ❌       | ❌        | ✅    |
+| `boards/`        | ✅         | ✅          | ❌         | ❌       | ❌        | ✅    |
 | `dts/`           | ❌         | ❌          | ✅         | ✅       | ✅        | ❌    |
 | `CMakeLists.txt` | ❌         | ❌          | ✅         | ✅       | ✅        | ✅    |
 | `Kconfig`        | ❌         | ❌          | ✅         | ✅       | ✅        | ✅    |
@@ -120,7 +120,7 @@ The below table reminds of the purpose of each of these files and folders, if yo
 
 | File or Folder   | Description                                                                           |
 | ---------------- | ------------------------------------------------------------------------------------- |
-| `board/`         | Folder containing definitions for boards, shields and interconnects                   |
+| `boards/`        | Folder containing definitions for boards, shields and interconnects                   |
 | `dts/`           | Folder containing devicetree bindings and includes with devicetree nodes (.dtsi)      |
 | `CMakeLists.txt` | CMake configuration to specify source files to build                                  |
 | `Kconfig`        | Kconfig file for the module                                                           |

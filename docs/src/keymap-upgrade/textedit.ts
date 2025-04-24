@@ -94,7 +94,7 @@ export function applyEdits(text: string, edits: TextEdit[]) {
   const chunks: TextChunk[] = [];
   let currentIndex = 0;
 
-  for (let edit of edits) {
+  for (const edit of edits) {
     if (edit.startIndex < currentIndex) {
       console.warn("discarding overlapping edit", edit);
       continue;
