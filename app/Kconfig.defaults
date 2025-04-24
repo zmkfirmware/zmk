@@ -1,6 +1,12 @@
 # Copyright (c) 2024 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+config ZMK_SPLIT_PERIPHERAL_MAX_BONDS
+    default 4
+
+config ZMK_SPLIT_PERIPHERAL_ADV_ROTATION_INTERVAL
+    default 5
+
 config SYSTEM_WORKQUEUE_STACK_SIZE
     default 2048 if SOC_RP2040
     default 2048 if ZMK_BLE

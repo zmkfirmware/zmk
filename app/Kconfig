@@ -478,6 +478,20 @@ endmenu
 
 menu "Advanced"
 
+menu "Multiple Centrals"
+config ZMK_SPLIT_PERIPHERAL_MAX_BONDS
+    int "Max bonded centrals to track"
+    default 4
+    help
+      The maximum number of bonded central devices (dongles) the peripheral should remember and rotate advertising for.
+
+config ZMK_SPLIT_PERIPHERAL_ADV_ROTATION_INTERVAL
+    int "Advertising rotation interval (seconds)"
+    default 5
+    help
+      Time (in seconds) between rotating directed advertising to known bonded centrals.
+endmenu # Multiple Centrals
+
 menu "Initialization Priorities"
 
 if USB_DEVICE_STACK
