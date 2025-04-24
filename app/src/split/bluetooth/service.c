@@ -219,6 +219,8 @@ void send_position_state_callback(struct k_work *work) {
         int err = bt_gatt_notify(NULL, &split_svc.attrs[1], &state, sizeof(state));
         if (err) {
             LOG_DBG("Error notifying %d", err);
+        } else {
+            LOG_DBG("Notified position state %d", state[0]);
         }
     }
 };
