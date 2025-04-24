@@ -63,19 +63,38 @@ static int start_advertising_to(bt_addr_le_t *addr, bool low_duty) {
 }
 
 static void advertising_cb(struct k_work *work) {
-    if (is_connected || !rotating || bond_count == 0)
+    if (is_connected || bond_count == 0)
         return;
 
-    int err = start_advertising_to(&bonded_centrals[current_bond_index], false);
+    // Stop previous advertising
+    bt_le_adv_stop();
 
-    if (err < 0) {
-        LOG_ERR("Failed advertising to bonded central %d (err: %d)", current_bond_index, err);
-    } else {
-        LOG_DBG("Advertising to bonded central %d", current_bond_index);
+    // Clear and set allowlist
+    bt_le_whitelist_clear();
+    for (int i = 0; i < bond_count; i++) {
+        bt_le_whitelist_add(&bonded_centrals[i]);
+        char addr_str[BT_ADDR_LE_STR_LEN];
+        bt_addr_le_to_str(&bonded_centrals[i], addr_str, sizeof(addr_str));
+        LOG_INF("Allowlist: %s", addr_str);
     }
 
-    current_bond_index = (current_bond_index + 1) % bond_count;
-    k_work_schedule(&advertising_work, K_SECONDS(ADV_ROTATION_INTERVAL));
+    struct bt_le_adv_param adv_params = {
+        .options = BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_FILTER_CONN,
+        .interval_min = BT_GAP_ADV_FAST_INT_MIN_2,
+        .interval_max = BT_GAP_ADV_FAST_INT_MAX_2,
+        .id = BT_ID_DEFAULT,
+        .peer = NULL,
+    };
+
+    int err = bt_le_adv_start(&adv_params, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
+    if (err) {
+        LOG_ERR("Failed to start filtered advertising (%d)", err);
+    } else {
+        LOG_INF("Advertising to all bonded centrals (whitelist)");
+    }
+
+    // Re-schedule only if you want to rotate in future
+    // k_work_schedule(&advertising_work, K_SECONDS(ADV_ROTATION_INTERVAL));
 }
 
 K_WORK_DELAYABLE_DEFINE(advertising_work, advertising_cb);
