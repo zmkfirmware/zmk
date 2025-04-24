@@ -86,7 +86,8 @@ int peripheral_batt_lvl_listener(const zmk_event_t *eh) {
     // on.
     int index = (PERIPH_BATT_LEVEL_ATTR_COUNT * ev->source) + PERIPH_BATT_LEVEL_ATTR_NOTIFY_IDX;
 
-    int rc = bt_gatt_notify(NULL, &bas_aux.attrs[index], &ev->state_of_charge, sizeof(uint8_t));
+    int rc = bt_gatt_notify(zmk_split_bt_peripheral_active_conn(), &bas_aux.attrs[index],
+                            &ev->state_of_charge, sizeof(uint8_t));
     if (rc < 0 && rc != -ENOTCONN) {
         LOG_WRN("Failed to notify hosts of peripheral battery level: %d", rc);
     }
