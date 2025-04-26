@@ -12,6 +12,7 @@
 
 #include <zmk/keymap.h>
 #include <zmk/behavior.h>
+#include <zmk/layer_lock_state.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -45,7 +46,11 @@ static int mo_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 static int mo_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
-    return zmk_keymap_layer_deactivate(binding->param1);
+    if (zmk_is_layer_locked(binding->param1)) {
+        return ZMK_BEHAVIOR_OPAQUE;
+    } else {
+        return zmk_keymap_layer_deactivate(binding->param1);
+    }
 }
 
 static const struct behavior_driver_api behavior_mo_driver_api = {

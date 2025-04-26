@@ -1,14 +1,17 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2025 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
+
+#include <dt-bindings/zmk/behaviors.h>
 
 / {
     behaviors {
         /omit-if-no-ref/ llck: layer_lock {
             compatible = "zmk,behavior-layer-lock";
-            label = "LAYER_LOCK";
+            #binding-cells = <0>;
         };
     };
 };
+
