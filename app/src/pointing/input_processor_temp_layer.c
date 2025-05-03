@@ -134,9 +134,6 @@ static int handle_layer_state_changed(const struct device *dev, const zmk_event_
     if (ret < 0) {
         return ret;
     }
-    if (data->state.toggle_layer == 0) {
-        return ZMK_EV_EVENT_BUBBLE;
-    }
     if (!zmk_keymap_layer_active(zmk_keymap_layer_index_to_id(data->state.toggle_layer))) {
         LOG_DBG("Deactivating layer that was activated by this processor");
         data->state.is_active = false;
