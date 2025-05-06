@@ -42,6 +42,7 @@
 #define HID_USAGE_MONITOR_VALUES (0x81) // Monitor Enumerated Values
 #define HID_USAGE_MONITOR_VESA (0x82)   // VESA Virtual Control
 #define HID_USAGE_POWER (0x84)          // Power
+#define HID_USAGE_BATTERY_SYSTEM (0x85) // Battery System
 #define HID_USAGE_POS_BARCODE (0x8C)    // Bar Code Scanner
 #define HID_USAGE_POS_SCALE (0x8D)      // Scale
 #define HID_USAGE_POS_MSR (0x8E)        // Magnetic Stripe Reading (MSR) Devices
