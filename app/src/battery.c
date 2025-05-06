@@ -9,7 +9,10 @@
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/sensor.h>
+
+#if IS_ENABLED(CONFIG_BT_BAS)
 #include <zephyr/bluetooth/services/bas.h>
+#endif
 
 #include <zephyr/logging/log.h>
 
@@ -21,6 +24,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/activity.h>
 #include <zmk/workqueue.h>
+
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#include <zmk/hid.h>
+#include <zmk/usb_hid.h>
+#endif
 
 static uint8_t last_state_of_charge = 0;
 
@@ -94,24 +102,26 @@ static int zmk_battery_update(const struct device *battery) {
     if (last_state_of_charge != state_of_charge.val1) {
         last_state_of_charge = state_of_charge.val1;
 
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID) && !IS_ENABLED(CONFIG_ZMK_SPLIT)
+        zmk_hid_battery_set(last_state_of_charge);
+        zmk_usb_hid_send_battery_report();
+#endif
+
         rc = raise_zmk_battery_state_changed(
             (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge});
-
-        if (rc != 0) {
-            LOG_ERR("Failed to raise battery state changed event: %d", rc);
-            return rc;
-        }
     }
 
 #if IS_ENABLED(CONFIG_BT_BAS)
     if (bt_bas_get_battery_level() != last_state_of_charge) {
-        LOG_DBG("Setting BAS GATT battery level to %d.", last_state_of_charge);
+        if (bt_bas_get_battery_level() != last_state_of_charge) {
+            LOG_DBG("Setting BAS GATT battery level to %d.", last_state_of_charge);
 
-        rc = bt_bas_set_battery_level(last_state_of_charge);
+            rc = bt_bas_set_battery_level(last_state_of_charge);
 
-        if (rc != 0) {
-            LOG_WRN("Failed to set BAS GATT battery level (err %d)", rc);
-            return rc;
+            if (rc != 0) {
+                LOG_WRN("Failed to set BAS GATT battery level (err %d)", rc);
+                return rc;
+            }
         }
     }
 #endif

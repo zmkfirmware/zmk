@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    chosen {
+        zmk,battery = &mock_battery_sensor;
+        zmk,battery-reporting = &battery_reporting;
+    };
+
+    mock_battery_sensor: mock_battery_sensor {
+        compatible = "zmk,battery-mock";
+    };
+
+    battery_reporting: battery_reporting {
+        compatible = "zmk,battery-reporting";
+
+        dongle {
+            display-name = "My Dongle";
+            cpf = <55>;
+        };
+        left {
+            // display-name = "Left";
+            // cpf = <50>;
+        };
+        // right{
+        //     display-name = "Right";
+        //     hidden;
+        // };
+        // pad{
+        //     display-name = "Extra Pad";
+        // };
+    };
+};
