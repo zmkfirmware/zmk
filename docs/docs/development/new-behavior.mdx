@@ -186,6 +186,9 @@ BEHAVIOR_DT_INST_DEFINE(0,                                                    //
 
 ```
 
+Most behaviors will also define a pair of functions named `on_<behavior_name>_binding_pressed` and `on_<behavior_name>_binding_released` that accept `(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event)` as parameters.
+These will be assigned to the API, to be called when the behavior is invoked with a press or a release respectively.
+
 #### `DT_DRV_COMPAT`
 
 Replace `zmk_<behavior_name>` in the `#define DT_DRV_COMPAT` statement with the name of your behavior. (e.g. `zmk_behavior_caps_word`)
@@ -195,22 +198,20 @@ Replace `zmk_<behavior_name>` in the `#define DT_DRV_COMPAT` statement with the 
 The dependencies required for any ZMK behavior are:
 
 - `device.h`: [Zephyr Device APIs](https://docs.zephyrproject.org/apidoc/latest/group__device__model.html)
-- `drivers/behavior.h`: ZMK Behavior Functions (e.g. [`locality`](#api-structure), `behavior_keymap_binding_pressed`, `behavior_keymap_binding_released`, `behavior_sensor_keymap_binding_triggered`)
+- `drivers/behavior.h`: ZMK Behavior Functions (e.g. [`locality`](#api-structure))
 - `logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/3.5.0/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](usb-logging.mdx)).
-- `zmk/behavior.h`: ZMK Behavior Information (e.g. parameters, position and timestamp of events)
-  - `return` values:
-    - `ZMK_BEHAVIOR_OPAQUE`: Used to terminate `on_<behavior_name>_binding_pressed` and `on_<behavior_name>_binding_released` functions that accept `(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event)` as parameters
-    - `ZMK_BEHAVIOR_TRANSPARENT`: Used in the `binding_pressed` and `binding_released` functions for the transparent (`&trans`) behavior
+- `zmk/events/zmk_behavior_binding_event.h`: ZMK Behavior Structs (e.g. parameters, position and timestamp of events)
   - `struct`s:
     - `zmk_behavior_binding`: Stores the name of the behavior device (`char *behavior_dev`) as a `string` and up to two additional parameters (`uint32_t param1`, `uint32_t param2`)
-    - `zmk_behavior_binding_event`: Contains layer, position, and timestamp data for an active `zmk_behavior_binding`
+    - `zmk_behavior_binding_event`: Contains a behavior binding, layer, position, source, event type (`PRESS`, `RELEASE`, or `SENSOR`), and timestamp data
 
 Other common dependencies include `zmk/keymap.h`, which allows behaviors to access layer information and extract behavior bindings from keymaps, and `zmk/event_manager.h` which is detailed below.
 
 ##### ZMK event manager
 
-Including `zmk/event_manager.h` is required for the following dependencies to function properly.
+Including `zmk/event_manager.h` is required to listen to or raise the following events:
 
+- `zmk/events/zmk_behavior_binding_event.h`: As described previously. Raise this event and return the result if your behavior should invoke another behavior. If your behavior wishes to invoke multiple behaviors, you should use `zmk/behavior_queue.h` instead.
 - `zmk/events/position_state_changed.h`: Position events' state (on/off), source, position, and timestamps
 - `zmk/events/keycode_state_changed.h`: Keycode events' state (on/off), usage page, keycode value, modifiers, and timestamps
 - `zmk/events/modifiers_state_changed.h`: Modifier events' state (on/off) and modifier value
@@ -291,8 +292,8 @@ Comes in the form `static int <behavior_name>_init(const struct device *dev)`. I
 
 Comes in the form `static const struct behavior_driver_api <behavior_name>_driver_api)`. Common items to include in the API Structure are:
 
-- `.binding_pressed`: Used for behaviors that invoke an action on its keybind press. Set `.binding_pressed` equal to the function typically named [`on_<behavior_name>_binding_pressed`](#dependencies).
-- `.binding_released`: Same as above, except for activating on keybind release events. Set `.binding_released` equal to the function typically named [`on_<behavior_name>_binding_released`](#dependencies).
+- `.binding_pressed`: Used for behaviors that invoke an action on its keybind press. Set `.binding_pressed` equal to the function typically named [`on_<behavior_name>_binding_pressed`](#creating-the-driver).
+- `.binding_released`: Same as above, except for activating on keybind release events. Set `.binding_released` equal to the function typically named [`on_<behavior_name>_binding_released`](#creating-the-driver).
 - `.parameter_metadata`: Defined in `<drivers/behavior.h>`. Pointer to metadata describing the parameters to use with the behavior so the behavior may be used with [ZMK Studio](../features/studio.md).
 - `.get_parameter_metadata`: Defined in `<drivers/behavior.h>`. Callback function that can dynamically provide/populate the metadata describing the parameters to use with the behavior so the behavior may be used with [ZMK Studio](../features/studio.md).
 - `.locality`: Defined in `<drivers/behavior.h>`. Describes how the behavior affects parts of a _split_ keyboard.
