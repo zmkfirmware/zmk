@@ -13,6 +13,7 @@ struct battery_value {
     uint16_t adc_raw;
     uint16_t millivolts;
     uint8_t state_of_charge;
+    bool charging;
 };
 
 int battery_channel_get(const struct battery_value *value, enum sensor_channel chan,
