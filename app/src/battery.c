@@ -9,7 +9,10 @@
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/sensor.h>
+
+#if IS_ENABLED(CONFIG_BT_BAS)
 #include <zephyr/bluetooth/services/bas.h>
+#endif
 
 #include <zephyr/logging/log.h>
 
@@ -21,6 +24,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/activity.h>
 #include <zmk/workqueue.h>
+
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#include <zmk/hid.h>
+#include <zmk/usb_hid.h>
+#endif
 
 static uint8_t last_state_of_charge = 0;
 
@@ -103,6 +111,12 @@ static int zmk_battery_update(const struct device *battery) {
             return rc;
         }
 #endif
+
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+        zmk_hid_battery_set(last_state_of_charge);
+        zmk_usb_hid_send_battery_report();
+#endif
+
         rc = raise_zmk_battery_state_changed(
             (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge});
     }
