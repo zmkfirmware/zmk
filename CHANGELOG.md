@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.3.0](https://github.com/zmkfirmware/zmk/compare/v0.2.1...v0.3.0) (2025-05-10)
+
+
+### Features
+
+* Full-Duplex Wired Split ([#2766](https://github.com/zmkfirmware/zmk/issues/2766)) ([147c340](https://github.com/zmkfirmware/zmk/commit/147c340c6e8d377304acfdd64dc86cf83ebdfef2))
+* **shield:** Add underglow for reviung5 ([#2191](https://github.com/zmkfirmware/zmk/issues/2191)) ([ad6a181](https://github.com/zmkfirmware/zmk/commit/ad6a181d7ec34fb6e31134f6bb991a9b2d0b8f78))
+* **shields:** Add physical layouts for tester_xiao and tester_pro_micro ([#2852](https://github.com/zmkfirmware/zmk/issues/2852)) ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **shields:** Add tester_pro_micro layouts ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **shields:** Add tester_xiao layouts ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **split:** Add full-duplex wired split support ([147c340](https://github.com/zmkfirmware/zmk/commit/147c340c6e8d377304acfdd64dc86cf83ebdfef2))
+
+
+### Bug Fixes
+
+* changed shebang to make scripts more platform independent ([#2893](https://github.com/zmkfirmware/zmk/issues/2893)) ([84772eb](https://github.com/zmkfirmware/zmk/commit/84772ebf14e5a7c67ba573a61f0a50048802c799))
+* **ci:** pin tj-actions/changed-files due to compromise ([#2874](https://github.com/zmkfirmware/zmk/issues/2874)) ([4da89bd](https://github.com/zmkfirmware/zmk/commit/4da89bd99716bf6c1d7d788f3cdaec4cee7403e9))
+* **combos:** Properly clean up all old candidates. ([#2928](https://github.com/zmkfirmware/zmk/issues/2928)) ([e3030bf](https://github.com/zmkfirmware/zmk/commit/e3030bfcc87b7f511b0ebe993fb1f1f06215982e))
+* **combos:** Restore prompts for two deprecated Kconfigs ([#2926](https://github.com/zmkfirmware/zmk/issues/2926)) ([00ff486](https://github.com/zmkfirmware/zmk/commit/00ff48693113ed74a3345aa1ac81fdea302b3a09))
+* **docs:** remove title as alt text ([#2922](https://github.com/zmkfirmware/zmk/issues/2922)) ([d9576c5](https://github.com/zmkfirmware/zmk/commit/d9576c55346acfc8eed36709aaae28f91e0d06ad))
+* **hid:** Fix scroll value truncation ([#2865](https://github.com/zmkfirmware/zmk/issues/2865)) ([2c0e7da](https://github.com/zmkfirmware/zmk/commit/2c0e7daced1421c34a9d417b7d3e9bccbf0ebd7f)), closes [#2864](https://github.com/zmkfirmware/zmk/issues/2864)
+* **pointing:** Avoids mutex leak for default layer toggle event ([#2934](https://github.com/zmkfirmware/zmk/issues/2934)) ([461f5c8](https://github.com/zmkfirmware/zmk/commit/461f5c832fb8854d87dca54d113d306323697219))
+* Properly override stack size on RP2040 ([147c340](https://github.com/zmkfirmware/zmk/commit/147c340c6e8d377304acfdd64dc86cf83ebdfef2))
+* **split:** add source to battery event ([#2901](https://github.com/zmkfirmware/zmk/issues/2901)) ([6f85f48](https://github.com/zmkfirmware/zmk/commit/6f85f48b19afae04f98e9abacb36ce1425b61f78))
+* **split:** Conditionally build all split code ([#2884](https://github.com/zmkfirmware/zmk/issues/2884)) ([5bb39ec](https://github.com/zmkfirmware/zmk/commit/5bb39ec3eae23055593350cb3689a8240028181e))
+
 ## [0.2.1](https://github.com/zmkfirmware/zmk/compare/v0.2.0...v0.2.1) (2025-03-02)
 
 
