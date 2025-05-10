@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2024 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -28,11 +28,14 @@ int zmk_ble_prof_disconnect(uint8_t index);
 
 int zmk_ble_active_profile_index(void);
 int zmk_ble_profile_index(const bt_addr_le_t *addr);
+bt_addr_le_t *zmk_ble_profile_address(uint8_t index);
 
 bt_addr_le_t *zmk_ble_active_profile_addr(void);
+bool zmk_ble_profile_is_open(const bt_addr_le_t *addr);
 struct bt_conn *zmk_ble_active_profile_conn(void);
 
 bool zmk_ble_active_profile_is_open(void);
+bool zmk_ble_profile_is_connected(const bt_addr_le_t *addr);
 bool zmk_ble_active_profile_is_connected(void);
 char *zmk_ble_active_profile_name(void);
 
