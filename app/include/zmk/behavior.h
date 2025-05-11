@@ -8,29 +8,10 @@
 
 #include <zephyr/device.h>
 
+// TODO: Remove this
+
 #define ZMK_BEHAVIOR_OPAQUE 0
-#define ZMK_BEHAVIOR_TRANSPARENT 1
-
-typedef uint16_t zmk_behavior_local_id_t;
-
-struct zmk_behavior_binding {
-#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS)
-    zmk_behavior_local_id_t local_id;
-#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS)
-    const char *behavior_dev;
-    uint32_t param1;
-    uint32_t param2;
-};
-
-struct zmk_behavior_binding_event {
-    int layer;
-    uint32_t position;
-    int64_t timestamp;
-#if IS_ENABLED(CONFIG_ZMK_SPLIT)
-    uint8_t source;
-#endif
-};
-
+#include <zmk/events/behavior_binding_event.h>
 /**
  * @brief Get a const struct device* for a behavior from its @p name field.
  *
@@ -54,6 +35,8 @@ const struct device *zmk_behavior_get_binding(const char *name);
  *
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
+ *
+ * Deprecated. Raise the event directly instead.
  */
 int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
                                 struct zmk_behavior_binding_event event, bool pressed);
