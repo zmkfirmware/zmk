@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(KTAP)
+    /omit-if-no-ref/
+#endif
+        ktap: key_tap {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            display-name = "Key Tap";
+            bindings = <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+        };
+    };
+};
