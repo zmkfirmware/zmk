@@ -7,7 +7,7 @@
 #include <dt-bindings/zmk/behaviors.h>
 
 / {
-    behaviors {
+    macros {
 #if ZMK_BEHAVIOR_OMIT(KTAP)
     /omit-if-no-ref/
 #endif
@@ -16,6 +16,7 @@
             #binding-cells = <1>;
             display-name = "Key Tap";
             bindings = <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+            tap-ms = <30>;
         };
     };
 };
