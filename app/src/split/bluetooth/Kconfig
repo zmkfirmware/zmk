@@ -5,6 +5,11 @@ if ZMK_SPLIT && ZMK_SPLIT_BLE
 
 menu "BLE Transport"
 
+config ZMK_SPLIT_BLE_PRIORITY
+    int "BLE transport priority"
+    help
+        Lower number priorities transports are favored over higher numbers.
+
 # Added for backwards compatibility. New shields / board should set `ZMK_SPLIT_ROLE_CENTRAL` only.
 config ZMK_SPLIT_BLE_ROLE_CENTRAL
     bool

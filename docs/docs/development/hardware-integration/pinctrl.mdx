@@ -372,6 +372,20 @@ In the main file:
 };
 ```
 
+On designs using wired split on nRF52840, the interrupt priority of the UART may need to be lowered to ensure that the interrupts used to handle timing sensitive BT interactions can repond when needed.
+
+This can be accomplished by overwriding the `interrupts` property and passing a larger number/lower priority for the second value, e.g.:
+
+```dts
+&uart0 {
+    pinctrl-0 = <&uart0_default>;
+    pinctrl-names = "default";
+    interrupts = <2 5>;
+};
+```
+
+The first number is the interrupt number, which needs to be unchanged. You can find the correct interrupt number for ths eelected UART by inspecting the Zephyr [`nRF52840.dtsi`](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/arm/nordic/nrf52840.dtsi#L101) file.
+
 #### UART rp2040
 
 In the pin control file:

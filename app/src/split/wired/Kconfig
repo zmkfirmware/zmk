@@ -3,6 +3,11 @@
 
 if ZMK_SPLIT_WIRED
 
+config ZMK_SPLIT_WIRED_PRIORITY
+    int "Wired transport priority"
+    help
+        Lower number priorities transports are favored over higher numbers.
+
 choice
     prompt "UART Mode"
 

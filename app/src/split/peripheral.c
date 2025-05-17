@@ -22,9 +22,7 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-// TODO: Active transport selection
-
-struct zmk_split_transport_peripheral *active_transport;
+const struct zmk_split_transport_peripheral *active_transport;
 
 int zmk_split_transport_peripheral_command_handler(
     const struct zmk_split_transport_peripheral *transport,
@@ -69,10 +67,65 @@ int zmk_split_peripheral_report_event(const struct zmk_split_transport_periphera
     return active_transport->api->report_event(event);
 }
 
-static int peripheral_init(void) {
-    STRUCT_SECTION_GET(zmk_split_transport_peripheral, 0, &active_transport);
+static int select_first_available_transport(void) {
+    // Transports are sorted by priority, so find the first
+    // One that's available, and enable it. Any transport that
+    // Doesn't support `get_status` is assumed to be always
+    // available and fully connected.
+    STRUCT_SECTION_FOREACH(zmk_split_transport_peripheral, t) {
+        if (!t->api->get_status || t->api->get_status().available) {
+            if (active_transport == t) {
+                LOG_DBG("First available is already selected, moving on");
+                return 0;
+            }
+
+            if (active_transport && active_transport->api->set_enabled) {
+                int err = active_transport->api->set_enabled(false);
+                if (err < 0) {
+                    LOG_WRN("Error disabling previously selected split transport (%d)", err);
+                }
+            }
+
+            active_transport = t;
+            int err = 0;
+            if (active_transport->api->set_enabled) {
+                err = active_transport->api->set_enabled(true);
+            }
+
+            return err;
+        }
+    }
+
+    return -ENODEV;
+}
+
+static int transport_status_changed_cb(const struct zmk_split_transport_peripheral *p,
+                                       struct zmk_split_transport_status status) {
+    if (p == active_transport) {
+        LOG_DBG("Peripheral at %p changed status: enabled %d, available %d, connections %d", p,
+                status.enabled, status.available, status.connections);
+        if (status.connections == ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_DISCONNECTED) {
+            LOG_DBG("Find us a new active transport!");
+
+            return select_first_available_transport();
+        }
+    } else {
+        select_first_available_transport();
+    }
 
     return 0;
+}
+
+static int peripheral_init(void) {
+    STRUCT_SECTION_FOREACH(zmk_split_transport_peripheral, t) {
+        if (!t->api->set_status_callback) {
+            continue;
+        }
+
+        t->api->set_status_callback(transport_status_changed_cb);
+    }
+
+    return select_first_available_transport();
 }
 
 SYS_INIT(peripheral_init, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
