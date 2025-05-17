@@ -358,6 +358,28 @@ In the pin control file:
             bias-pull-up;
         };
     };
+
+    uart0_default: uart0_default {
+        group1 {
+            psels = <NRF_PSEL(UART_TX, 0, 22)>, // EXT1
+                    <NRF_PSEL(UART_RX, 0, 21)>; // EXT2
+        };
+    };
+
+    uart0_sleep: uart0_sleep {
+        group1 {
+            /* configure P0.1 as UART_TX and P0.2 as UART_RTS */
+            psels = <NRF_PSEL(UART_TX, 0, 1)>, <NRF_PSEL(UART_RTS, 0, 2)>;
+            low-power-enable;
+        };
+        group2 {
+            /* configure P0.3 as UART_RX and P0.4 as UART_CTS */
+            psels = <NRF_PSEL(UART_RX, 0, 3)>, <NRF_PSEL(UART_CTS, 0, 4)>;
+            /* both P0.3 and P0.4 are configured with pull-up */
+            bias-pull-up;
+            low-power-enable;
+        };
+    };
 };
 ```
 
@@ -368,9 +390,34 @@ In the main file:
 
 &uart0 {
     pinctrl-0 = <&uart0_default>;
-    pinctrl-names = "default";
+    pinctrl-1 = <&uart0_sleep>;
+    pinctrl-names = "default", "sleep";
 };
 ```
+
+On designs using wired split on nRF52840, using asynchronous UART APIs with DMA will help ensure that the interrupts used to handle timing sensitive BT interactions can respond when needed.
+
+This can be accomplished by overwriding the `compatible` property to `"nordic,nrf-uarte"`, e.g.:
+
+```dts
+&uart0 {
+    compatible = "nordic,nrf-uarte";
+    pinctrl-0 = <&uart0_default>;
+    pinctrl-1 = <&uart0_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+```
+
+In addition to this `compatible` override, a setting needs to be tweaked to ensure that the UART isn't selected for interrupt mode when async is prefered.
+
+The following should be added to the board's/shield's `Kconfig.defconfig`:
+
+```dts
+config UART_0_INTERRUPT_DRIVEN
+    depends on !ZMK_SPLIT_WIRED_UART_MODE_ASYNC
+```
+
+for the correct `UART_#` prefix matching the numbered UART being used.
 
 #### UART rp2040
 
