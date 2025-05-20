@@ -19,6 +19,7 @@
 #include <zmk/events/ble_active_profile_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
 #include <zmk/events/endpoint_changed.h>
+#include <zmk/workqueue.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -42,7 +43,8 @@ static struct k_work_delayable endpoints_save_work;
 
 static int endpoints_save_preferred(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    return k_work_reschedule(&endpoints_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return k_work_reschedule_for_queue(zmk_main_work_q(), &endpoints_save_work,
+                                       K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
     return 0;
 #endif

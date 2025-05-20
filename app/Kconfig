@@ -649,6 +649,25 @@ config ZMK_LOW_PRIORITY_THREAD_PRIORITY
 
 endif # ZMK_LOW_PRIORITY_WORK_QUEUE
 
+choice ZMK_MAIN_WORK_QUEUE
+    prompt "Main Work Queue Selection"
+
+config ZMK_MAIN_WORK_QUEUE_SYSTEM
+    bool "System Work Queue"
+    help
+      Use the system work queue. This is a high priority non-preemptible queue,
+      so it may prevent other high priority work from being services in a
+      timely manner.
+
+config ZMK_MAIN_WORK_QUEUE_MAIN
+    bool "Main Thread Work Queue"
+    help
+      Use the a work queue processed by the main thread. This is a high priority
+      but preemptible queue, so it may be interrupted to have other high priority
+      work serviced in a timely manner.
+
+endchoice
+
 endmenu # Advanced
 
 endmenu # ZMK

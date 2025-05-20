@@ -12,6 +12,7 @@
 #include <zephyr/logging/log.h>
 #include <zmk/keymap.h>
 #include <zmk/behavior.h>
+#include <zmk/workqueue.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/events/layer_state_changed.h>
@@ -256,7 +257,8 @@ static int temp_layer_handle_event(const struct device *dev, struct input_event 
     }
 
     if (param2 > 0) {
-        k_work_reschedule(&layer_disable_works[param1], K_MSEC(param2));
+        k_work_reschedule_for_queue(zmk_main_work_q(), &layer_disable_works[param1],
+                                    K_MSEC(param2));
     }
 
     k_mutex_unlock(&data->lock);
