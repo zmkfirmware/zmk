@@ -22,6 +22,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/physical_layouts.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
+#include <zmk/workqueue.h>
 
 ZMK_EVENT_IMPL(zmk_physical_layout_selection_changed);
 
@@ -192,7 +193,7 @@ static void zmk_physical_layout_kscan_callback(const struct device *dev, uint32_
         .state = (pressed ? ZMK_KSCAN_EVENT_STATE_PRESSED : ZMK_KSCAN_EVENT_STATE_RELEASED)};
 
     k_msgq_put(&physical_layouts_kscan_msgq, &ev, K_NO_WAIT);
-    k_work_submit(&msg_processor.work);
+    k_work_submit_to_queue(zmk_main_work_q(), &msg_processor.work);
 }
 
 static void zmk_physical_layouts_kscan_process_msgq(struct k_work *item) {
