@@ -16,6 +16,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/wpm_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
 
+#include <zmk/workqueue.h>
 #include <zmk/wpm.h>
 
 #define WPM_UPDATE_INTERVAL_SECONDS 1
@@ -67,7 +68,9 @@ void wpm_work_handler(struct k_work *work) {
 
 K_WORK_DEFINE(wpm_work, wpm_work_handler);
 
-void wpm_expiry_function(struct k_timer *_timer) { k_work_submit(&wpm_work); }
+void wpm_expiry_function(struct k_timer *_timer) {
+    k_work_submit_to_queue(zmk_main_work_q(), &wpm_work);
+}
 
 K_TIMER_DEFINE(wpm_timer, wpm_expiry_function, NULL);
 

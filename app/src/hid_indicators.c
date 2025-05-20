@@ -13,6 +13,7 @@
 #include <zmk/events/hid_indicators_changed.h>
 #include <zmk/events/endpoint_changed.h>
 #include <zmk/split/central.h>
+#include <zmk/workqueue.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -48,7 +49,7 @@ void zmk_hid_indicators_set_profile(zmk_hid_indicators_t indicators,
     // or writes only one entry at a time, so it is safe to do these operations without a lock.
     hid_indicators[profile] = indicators;
 
-    k_work_submit(&led_changed_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &led_changed_work);
 }
 
 void zmk_hid_indicators_process_report(struct zmk_hid_led_report_body *report,
