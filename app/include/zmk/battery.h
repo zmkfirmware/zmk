@@ -7,3 +7,4 @@
 #pragma once
 
 uint8_t zmk_battery_state_of_charge(void);
+bool zmk_battery_charging(void);
