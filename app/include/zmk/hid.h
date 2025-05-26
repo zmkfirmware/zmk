@@ -289,8 +289,6 @@ struct zmk_hid_keyboard_report {
     struct zmk_hid_keyboard_report_body body;
 } __packed;
 
-#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
-
 struct zmk_hid_led_report_body {
     uint8_t leds;
 } __packed;
@@ -299,8 +297,6 @@ struct zmk_hid_led_report {
     uint8_t report_id;
     struct zmk_hid_led_report_body body;
 } __packed;
-
-#endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
 
 struct zmk_hid_consumer_report_body {
 #if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
