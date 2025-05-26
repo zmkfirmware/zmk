@@ -242,8 +242,6 @@ void rx_done_cb(struct k_work *work) {
                                          .type = ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_POLL_EVENTS,
                                      });
 
-    begin_tx();
-
     k_work_reschedule(&rx_done_work, K_MSEC(CONFIG_ZMK_SPLIT_WIRED_HALF_DUPLEX_RX_TIMEOUT));
 }
 
