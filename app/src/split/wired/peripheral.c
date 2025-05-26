@@ -104,15 +104,6 @@ static struct zmk_split_wired_async_state async_state = {
 };
 
 #endif
-#if HAS_DIR_GPIO
-
-static void set_dir(uint8_t tx) { gpio_pin_set_dt(&dir_gpio, tx); }
-
-#else
-
-static inline void set_dir(uint8_t tx) {}
-
-#endif
 
 static void begin_rx(void) {
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
@@ -164,11 +155,15 @@ static void serial_cb(const struct device *dev, void *user_data) {
                 uart_irq_tx_disable(dev);
             }
 
-            set_dir(0);
+#if HAS_DIR_GPIO
+            gpio_pin_set_dt(&dir_gpio, 0);
+#endif
         }
 
         if (uart_irq_tx_ready(dev)) {
-            set_dir(1);
+#if HAS_DIR_GPIO
+            gpio_pin_set_dt(&dir_gpio, 1);
+#endif
             zmk_split_wired_fifo_fill(dev, &chosen_tx_buf);
         }
     }

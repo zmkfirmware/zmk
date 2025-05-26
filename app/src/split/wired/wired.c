@@ -163,7 +163,7 @@ int zmk_split_wired_async_rx(struct zmk_split_wired_async_state *state) {
 }
 
 int zmk_split_wired_async_rx_cancel(struct zmk_split_wired_async_state *state) {
-    uart_rx_disable(state->uart);
+    return uart_rx_disable(state->uart);
 }
 
 static void restart_rx_work_cb(struct k_work *work) {
