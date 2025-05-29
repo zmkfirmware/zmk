@@ -649,6 +649,13 @@ endmenu # Advanced
 
 endmenu # ZMK
 
+if SOC_FAMILY_NORDIC_NRF
+
+config NRF_SOC_VALIDATE_HEADERS_DISABLED
+    default y
+
+endif
+
 config KERNEL_BIN_NAME
     default "zmk"
 
