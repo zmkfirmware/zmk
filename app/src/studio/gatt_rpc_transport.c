@@ -194,7 +194,7 @@ static void gatt_tx_notify(struct ring_buf *tx_buf, size_t added, bool msg_done,
 static struct gatt_write_state tx_state = {};
 
 static void *gatt_tx_user_data(void) {
-    memset(&tx_state, sizeof(tx_state), 0);
+    memset(&tx_state, 0, sizeof(tx_state));
 
     return &tx_state;
 }
