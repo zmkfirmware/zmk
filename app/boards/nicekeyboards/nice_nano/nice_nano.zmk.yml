@@ -1,6 +1,6 @@
 file_format: "1"
 id: nice_nano
-name: nice!nano v1
+name: nice!nano
 type: board
 arch: arm
 outputs:
@@ -8,3 +8,7 @@ outputs:
   - ble
 url: https://nicekeyboards.com/nice-nano
 exposes: [pro_micro]
+revisions:
+  - "1.0.0"
+  - "2.0.0"
+default_revision: "2.0.0"
