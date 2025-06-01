@@ -5,20 +5,6 @@ sidebar_label: Split Keyboards
 
 ZMK supports setups where a keyboard is split into two or more physical parts (also called "sides" or "halves" when split in two), each with their own controller running ZMK. The parts communicate with each other to work as a single keyboard device.
 
-:::note[Split communication protocols]
-ZMK supports split keyboards that communicate with each other wirelessly over BLE.
-
-Full-duplex UART, wired split support is currently experimental, and is available for advanced/technical users to test.
-
-Future single-wire, half-duplex UART support, which is planned, will allow using wired ZMK with designs like Corne, Sweep, etc. that use only a single GPIO pin for bidirectional communication between split sides.
-:::
-
-:::warning[Hot Plugging Cables]
-
-Many popular cables, in particular, TRRS/TRS cables, can cause irreparable damage to controllers if they are inserted or removed when power is already present on them. Whether or not you are using the wired split functionality or not, _never_ insert or remove such a cable when a controller is powered by USB _or_ battery.
-
-:::
-
 ## Central and Peripheral Roles
 
 In split keyboards running ZMK, one part is assigned the "central" role which receives key position and sensor events from the other parts that are called "peripherals."
@@ -45,6 +31,38 @@ Also see the reference section on [split keyboards configuration](../config/spli
 
 Since peripherals communicate through centrals, the key and sensor events originating from them will naturally have a larger latency, especially with a wireless split communication protocol.
 For the currently used BLE-based transport, split communication increases the average latency by 3.75ms with a worst case increase of 7.5ms.
+
+## Split Transports
+
+ZMK supports two transports for connecting split pieces: bluetooth and full-duplex wired UART. The full-duplex wired UART transport is a recent addition, and is intended for testing by early adopters. Only one transport can be active at a time, so designs involving some portions connected via Bluetooth and others via full-duplex wired are _not_ support.
+
+:::warning[Hot Plugging Cables]
+
+Many popular cables, in particular, TRRS/TRS cables, can cause irreparable damage to controllers if they are inserted or removed when power is already present on them. Whether or not you are using the wired split functionality or not, _never_ insert or remove such a cable when a controller is powered by USB _or_ battery.
+
+:::
+
+### Bluetooth
+
+Bluetooth is the most well tested, and fully support transport available in ZMK. It supports topologies with multiple peripherals, dongle mode, and all data passing currently supported by ZMK.
+
+This transport will be enabled for designs that set `CONFIG_ZMK_SPLIT=y` and have `CONFIG_ZMK_BLE=y` set by a supported MCU/controller.
+
+### Full-Duplex Wired (UART)
+
+The full-duplex wired UART transport allows for fully functional communicate between one central and one peripheral. Unlike the Bluetooth transport, topologies with multiple peripherals are _not_ yet supported by this transport.
+
+This transport will be enabled for designs that set `CONFIG_ZMK_SPLIT=y` and have a configured devicetree including a node with `compatible = "zmk,wired-split";`.
+
+:::note[Full Duplex vs Half Duplex]
+Future single-wire, half-duplex UART support, which is planned, will allow using wired ZMK with designs like Corne, Sweep, etc. that use only a single GPIO pin for bidirectional communication between split sides.
+
+Until half-duplex support is completed, those particular designs will not work with the wired split transport, and can only be used with the Bluetooth transport.
+:::
+
+### Runtime Switching
+
+For advanced designs, there is experimental support for switching between the two available transports. Supporting runtime switching is _not_ recommended for casual users or designers, as doing this right to avoid the damage from hot plugging cables is _non-trivial_ at best, and not implemented for classic designs like Corne, Sofle, etc. Attempting to use this functionality on those existing design _WILL_ damage your hardware. Currently, there are no open source/reference designs that implement this functionality, and only experienced designers with extensive EE knowledge should attempt to implement a design with this functionality.
 
 ## Building and Flashing Firmware
 
