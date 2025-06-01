@@ -15,7 +15,8 @@
 .powerEstimateBar {
   height: 64px;
   width: 100%;
-  box-shadow: rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
+  box-shadow:
+    rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
     rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
   border-radius: 64px;
   display: flex;

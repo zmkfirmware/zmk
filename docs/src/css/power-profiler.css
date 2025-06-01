@@ -9,7 +9,8 @@
   padding: 10px 20px;
   background: var(--ifm-background-surface-color);
   border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
+  box-shadow:
+    rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
     rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
 }
 
@@ -40,7 +41,8 @@ span[data-tooltip]::before {
   background: var(--ifm-background-surface-color);
   opacity: 0;
   visibility: hidden;
-  box-shadow: rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
+  box-shadow:
+    rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
     rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
   transition: opacity 0.2s ease;
   transform: translate(-50%, -100%);
@@ -180,7 +182,8 @@ select > option {
   padding: 20px 20px;
   background: var(--ifm-background-surface-color);
   border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
+  box-shadow:
+    rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
     rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
   width: 500px;
 }

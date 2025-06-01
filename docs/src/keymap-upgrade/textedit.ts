@@ -1,7 +1,10 @@
 import type { SyntaxNode } from "web-tree-sitter";
 
 export class Range {
-  constructor(public startIndex: number, public endIndex: number) {}
+  constructor(
+    public startIndex: number,
+    public endIndex: number
+  ) {}
 }
 
 export class TextEdit extends Range {
