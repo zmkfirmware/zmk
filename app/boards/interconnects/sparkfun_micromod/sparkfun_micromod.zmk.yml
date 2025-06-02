@@ -1,0 +1,8 @@
+file_format: "1"
+id: sparkfun_micromod
+name: SparkFun Micro Mod
+type: interconnect
+url: https://www.sparkfun.com/micromod
+manufacturer: SparkFun
+description: |
+  MicroMod is a modular interface developed by Sparkfun that uses an M.2 interface to connect a Processor board to a Carrier board.
