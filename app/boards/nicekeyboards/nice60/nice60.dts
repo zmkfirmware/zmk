@@ -92,6 +92,10 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
     };
 };
 
+&reg1 {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
 &adc {
     status = "okay";
 };
