@@ -1,6 +1,6 @@
 file_format: "1"
-id: nrfmicro_11
-name: nRFMicro 1.1/1.2
+id: nrfmicro/nrf52840/flipped
+name: nRFMicro nRF52840 (flipped)
 type: board
 arch: arm
 outputs:
@@ -8,3 +8,6 @@ outputs:
   - ble
 url: https://github.com/joric/nrfmicro/
 exposes: [pro_micro]
+revisions:
+  - "1.1.0"
+default_revision: "1.1.0"
