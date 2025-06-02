@@ -86,8 +86,10 @@ struct zmk_split_wired_async_state {
     const struct gpio_dt_spec *dir_gpio;
 };
 
-void zmk_split_wired_async_tx(struct zmk_split_wired_async_state *state);
 int zmk_split_wired_async_init(struct zmk_split_wired_async_state *state);
+void zmk_split_wired_async_tx(struct zmk_split_wired_async_state *state);
+int zmk_split_wired_async_rx(struct zmk_split_wired_async_state *state);
+int zmk_split_wired_async_rx_cancel(struct zmk_split_wired_async_state *state);
 
 #endif
 

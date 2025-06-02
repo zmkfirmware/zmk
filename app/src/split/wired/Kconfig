@@ -3,6 +3,11 @@
 
 if ZMK_SPLIT_WIRED
 
+config ZMK_SPLIT_WIRED_PRIORITY
+    int "Wired transport priority"
+    help
+        Lower number priorities transports are favored over higher numbers.
+
 choice
     prompt "UART Mode"
 
@@ -10,7 +15,7 @@ config ZMK_SPLIT_WIRED_UART_MODE_ASYNC
     bool "Async (DMA) Mode"
     # For now, don't use async/DMA on nRF52 due to RX bug (fixed
     # in newer Zephyr version?)
-    depends on SERIAL_SUPPORT_ASYNC && !SOC_FAMILY_NRF
+    depends on SERIAL_SUPPORT_ASYNC
     select UART_ASYNC_API
 
 config ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT
