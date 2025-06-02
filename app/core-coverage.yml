@@ -9,7 +9,7 @@ shield:
   - settings_reset
   - tidbit
 include:
-  - board: bdn9_rev2
+  - board: bdn9
   - board: nice60
   - board: xiao_ble
     shield: hummingbird

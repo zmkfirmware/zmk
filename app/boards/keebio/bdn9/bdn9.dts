@@ -11,7 +11,7 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
-#include "bdn9_rev2-layouts.dtsi"
+#include "bdn9-layouts.dtsi"
 
 &physical_layout0 {
     transform = <&matrix_transform0>;
