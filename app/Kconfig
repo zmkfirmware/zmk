@@ -372,7 +372,6 @@ config ZMK_BATTERY_REPORTING
     bool "Battery level detection/reporting"
     select SENSOR
     select ZMK_LOW_PRIORITY_WORK_QUEUE
-    imply BT_BAS if ZMK_BLE
 
 if ZMK_BATTERY_REPORTING
 
@@ -386,6 +385,42 @@ config ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE
     bool "Lithium Voltage"
 
 endchoice
+
+config ZMK_BATTERY_REPORTING_BAS
+    bool "Report Battery Level over BLE"
+    default y
+    depends on ZMK_BLE
+    select BT_BAS if (!ZMK_SPLIT || (ZMK_SPLIT && !ZMK_SPLIT_ROLE_CENTRAL))
+
+config ZMK_BATTERY_REPORTING_HID
+    bool "Report Battery Level over USB HID"
+    depends on ZMK_USB
+
+if ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_BATTERY_REPORTING_SPLIT_FETCHING
+    bool "Fetch Peripheral Battery Level Info"
+    default y if ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
+    help
+      Adds internal support for fetching the battery levels from peripherals
+      and generating events in the ZMK eventing system.
+
+config ZMK_BATTERY_REPORTING_SPLIT_PROXY
+    bool "Proxy Battery Level Info"
+    depends on ZMK_BATTERY_REPORTING_BAS
+    default y if ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY
+    help
+      Adds support for reporting the battery levels of connected split
+      peripherals through additional Battery Level services.
+
+config ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE
+    bool "Report the lowest charge of all batteries"
+    depends on ZMK_BATTERY_REPORTING_SPLIT_PROXY
+    default y
+    help
+      Report the lowest charge as the first battery level to hosts.
+
+endif # ZMK_SPLIT_ROLE_CENTRAL
 
 endif # ZMK_BATTERY_REPORTING
 
