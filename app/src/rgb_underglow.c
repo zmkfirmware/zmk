@@ -381,7 +381,7 @@ int zmk_rgb_underglow_set_hsb(struct zmk_led_hsb color) {
 
     state.color = color;
 
-    return 0;
+    return zmk_rgb_underglow_save_state();
 }
 
 struct zmk_led_hsb zmk_rgb_underglow_calc_hue(int direction) {
