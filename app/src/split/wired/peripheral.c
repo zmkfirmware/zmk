@@ -282,7 +282,7 @@ static void process_tx_cb(void) {
                     return;
                 }
 
-                k_work_submit(&publish_commands);
+                k_work_submit_to_queue(zmk_main_work_q(), &publish_commands);
             }
             break;
         case -EAGAIN:
