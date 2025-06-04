@@ -141,17 +141,25 @@ config USB_HID_POLL_INTERVAL_MS
 
 endif # ZMK_USB
 
+config ZMK_BLE_EXPERIMENTAL_ENABLE_LEGACY
+    bool "Experimental BLE just works"
+    help
+      Enables custom settings for just works pairing
+    default n
+
 config ZMK_BLE_EXPERIMENTAL_PAIR_JUST_WORKS
     bool "Experimental BLE just works"
     help
       Enables custom settings for just works pairing
+    depends on ZMK_SPLIT_ROLE_CENTRAL && CONFIG_ZMK_SPLIT
+    select ZMK_BLE_EXPERIMENTAL_ENABLE_LEGACY
     default n
 
 menuconfig ZMK_BLE
     bool "BLE (HID over GATT)"
     select BT
     select BT_SMP
-    select BT_SMP_SC_PAIR_ONLY if !ZMK_BLE_EXPERIMENTAL_PAIR_JUST_WORKS
+    select BT_SMP_SC_PAIR_ONLY if !ZMK_BLE_EXPERIMENTAL_ENABLE_LEGACY
     select BT_SMP_APP_PAIRING_ACCEPT
     select BT_PERIPHERAL
     select BT_DIS
@@ -193,7 +201,7 @@ config BT_CTLR_PHY_2M
 
 # BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
 config BT_TINYCRYPT_ECC
-    default n if ZMK_BLE_EXPERIMENTAL_PAIR_JUST_WORKS
+    default n if ZMK_BLE_EXPERIMENTAL_ENABLE_LEGACY
     default y if BT_HCI && !BT_CTLR
 
 config ZMK_BLE_THREAD_STACK_SIZE
