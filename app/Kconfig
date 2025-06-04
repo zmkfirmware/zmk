@@ -145,7 +145,7 @@ config ZMK_BLE_EXPERIMENTAL_PAIR_JUST_WORKS
     bool "Experimental BLE just works"
     help
       Enables custom settings for just works pairing
-    select ZMK_BLE_EXPERIMENTAL_ENABLE_LEGACY if (!ZMK_SPLIT || (ZMK_SPLIT && ZMK_SPLIT_ROLE_CENTRAL))
+    select ZMK_BLE_EXPERIMENTAL_ENABLE_LEGACY
     default n
 
 config ZMK_BLE_EXPERIMENTAL_ENABLE_LEGACY
