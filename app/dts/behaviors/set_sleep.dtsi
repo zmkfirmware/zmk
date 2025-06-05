@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(SLEEP)
+        /omit-if-no-ref/
+#endif
+        sleep: sleep {
+            compatible = "zmk,behavior-set-sleep";
+            #binding-cells = <1>;
+            display-name = "Sleep";
+        };
+    };
+};
