@@ -10,8 +10,12 @@ interface InterconnectTabsProps {
 }
 
 function mapInterconnect(interconnect: Interconnect, gpio: boolean) {
-  const content = require(`@site/src/data/interconnects/${interconnect.id}/design_guideline.md`);
-  const imageUrl = require(`@site/docs/assets/interconnects/${interconnect.id}/pinout.png`);
+  const content = require(
+    `@site/src/data/interconnects/${interconnect.id}/design_guideline.md`
+  );
+  const imageUrl = require(
+    `@site/docs/assets/interconnects/${interconnect.id}/pinout.png`
+  );
   return (
     <TabItem value={interconnect.id} key={interconnect.id}>
       <img src={imageUrl.default} />
