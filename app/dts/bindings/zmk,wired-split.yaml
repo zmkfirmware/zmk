@@ -12,6 +12,12 @@ properties:
     required: true
     description: The UART device for wired split communication
 
+  detect-gpios:
+    type: phandle-array
+    description: |
+      If your split includes support for an extra GPIO to detect presence of the split cable, set
+      this to the GPIO pin used to detect the connection.
+
   half-duplex:
     type: boolean
     description: "Experimental: Enable half-duplex protocol mode"
