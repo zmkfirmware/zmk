@@ -35,6 +35,7 @@ struct active_tap_dance {
     // Tap Dance Data
     int counter;
     uint32_t position;
+    uint8_t layer;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
     uint8_t source;
 #endif
@@ -70,6 +71,7 @@ static int new_tap_dance(struct zmk_behavior_binding_event *event,
         if (ref_dance->position == ZMK_BHV_TAP_DANCE_POSITION_FREE) {
             ref_dance->counter = 0;
             ref_dance->position = event->position;
+            ref_dance->layer = event->layer;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
             ref_dance->source = event->source;
 #endif
@@ -113,27 +115,34 @@ static inline int press_tap_dance_behavior(struct active_tap_dance *tap_dance, i
     tap_dance->tap_dance_decided = true;
     struct zmk_behavior_binding binding = tap_dance->config->behaviors[tap_dance->counter - 1];
     struct zmk_behavior_binding_event event = {
+        .binding = &binding,
         .position = tap_dance->position,
         .timestamp = timestamp,
+        .layer = tap_dance->layer,
+        .type = PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = tap_dance->source,
 #endif
     };
-    return zmk_behavior_invoke_binding(&binding, event, true);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
                                              int64_t timestamp) {
     struct zmk_behavior_binding binding = tap_dance->config->behaviors[tap_dance->counter - 1];
     struct zmk_behavior_binding_event event = {
+        .binding = &binding,
         .position = tap_dance->position,
         .timestamp = timestamp,
+        .layer = tap_dance->layer,
+        .type = RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = tap_dance->source,
 #endif
     };
+
     clear_tap_dance(tap_dance);
-    return zmk_behavior_invoke_binding(&binding, event, false);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,
