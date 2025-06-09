@@ -189,10 +189,6 @@ config BT_CTLR_PHY_2M
 config BT_TINYCRYPT_ECC
     default y if BT_HCI && !BT_CTLR
 
-config SYSTEM_WORKQUEUE_STACK_SIZE
-    default 4096 if SOC_RP2040
-    default 2048
-
 config ZMK_BLE_THREAD_STACK_SIZE
     int "BLE notify thread stack size"
     default 768
@@ -448,12 +444,16 @@ config ZMK_COMBO_MAX_PRESSED_COMBOS
     default 4
 
 config ZMK_COMBO_MAX_COMBOS_PER_KEY
-    int "Maximum number of combos per key"
-    default 5
+    int "Deprecated: Max combos per key"
+    default 0
+    help
+      Deprecated: Storage for combos is now determined automatically
 
 config ZMK_COMBO_MAX_KEYS_PER_COMBO
-    int "Maximum number of keys per combo"
-    default 4
+    int "Deprecated: Max keys per combo"
+    default 0
+    help
+       Deprecated: This is now auto-calculated based on `key-positions` in devicetree
 
 # Combo options
 endmenu

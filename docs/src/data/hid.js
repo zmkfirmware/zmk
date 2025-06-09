@@ -2376,7 +2376,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_1", "KP_N1"],
-    description: "1",
+    description: "Keypad 1 and End",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2397,7 +2397,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_2", "KP_N2"],
-    description: "2",
+    description: "Keypad 2 and Down Arrow",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2418,7 +2418,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_3", "KP_N3"],
-    description: "3",
+    description: "Keypad 3 and Page Down",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2439,7 +2439,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_4", "KP_N4"],
-    description: "4",
+    description: "Keypad 4 and Left Arrow",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2460,7 +2460,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_5", "KP_N5"],
-    description: "5",
+    description: "Keypad 5",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2481,7 +2481,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_6", "KP_N6"],
-    description: "6",
+    description: "Keypad 6 and Right Arrow",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2502,7 +2502,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_7", "KP_N7"],
-    description: "7",
+    description: "Keypad 7 and Home",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2523,7 +2523,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_8", "KP_N8"],
-    description: "8",
+    description: "Keypad 8 and Up Arrow",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2544,7 +2544,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_9", "KP_N9"],
-    description: "9",
+    description: "Keypad 9 and Page Up",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2565,7 +2565,7 @@ export default [
   },
   {
     names: ["KP_NUMBER_0", "KP_N0"],
-    description: "0",
+    description: "Keypad 0 and Insert",
     context: "Keypad",
     clarify: false,
     usages: [
@@ -2586,7 +2586,7 @@ export default [
   },
   {
     names: ["KP_DOT"],
-    description: ". [Dot]",
+    description: ". [Dot] and Delete",
     context: "Keypad",
     clarify: false,
     usages: [

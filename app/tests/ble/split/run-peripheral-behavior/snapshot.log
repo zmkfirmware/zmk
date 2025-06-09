@@ -13,10 +13,12 @@ peripheral 0 <dbg> zmk: split_svc_select_phys_layout_callback: Selecting physica
 peripheral 0 <dbg> zmk: kscan_mock_work_handler_0: ev 327680000 row 0 column 0 state 0
 peripheral 0 <dbg> zmk: kscan_mock_schedule_next_event_0: delaying next keypress: 5000
 peripheral 0 <dbg> zmk: zmk_physical_layouts_kscan_process_msgq: Row: 0, col: 0, position: 0, pressed: false
-peripheral 0 <dbg> zmk: split_listener:
+peripheral 0 <dbg> zmk: split_peripheral_listener:
 peripheral 0 <dbg> zmk: kscan_mock_work_handler_0: ev 2475163905 row 1 column 1 state 1
 peripheral 0 <dbg> zmk: kscan_mock_schedule_next_event_0: delaying next keypress: 5000
 peripheral 0 <dbg> zmk: zmk_physical_layouts_kscan_process_msgq: Row: 1, col: 1, position: 3, pressed: true
-peripheral 0 <dbg> zmk: split_listener:
+peripheral 0 <dbg> zmk: split_peripheral_listener:
 peripheral 0 <dbg> zmk: split_svc_run_behavior: offset 0 len 20
 peripheral 0 <dbg> zmk: split_svc_run_behavior: sysreset with params 0 0: pressed? 1
+peripheral 0 <dbg> zmk: zmk_split_transport_peripheral_command_handler:
+peripheral 0 <dbg> zmk: zmk_split_transport_peripheral_command_handler: sysreset with params 0 0: pressed? 1
