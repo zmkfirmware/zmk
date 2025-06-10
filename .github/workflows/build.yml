@@ -53,7 +53,7 @@ jobs:
       - name: Initialize workspace (west init)
         run: west init -l app
       - name: Update modules (west update)
-        run: west update
+        run: west update --fetch-opt=--filter=tree:0
       - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
       - name: Use Node.js
