@@ -36,6 +36,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
+#include <zmk/workqueue.h>
 
 #if IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY)
 #include <zmk/events/keycode_state_changed.h>
@@ -111,7 +112,7 @@ void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_save_one(setting_name, &profiles[index], sizeof(struct zmk_ble_profile));
 #endif
-    k_work_submit(&raise_profile_changed_event_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &raise_profile_changed_event_work);
 }
 
 bool zmk_ble_active_profile_is_connected(void) {
@@ -260,7 +261,8 @@ static struct k_work_delayable ble_save_work;
 
 static int ble_save_profile(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    return k_work_reschedule(&ble_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    return k_work_reschedule_for_queue(zmk_main_work_q(), &ble_save_work,
+                                       K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #else
     return 0;
 #endif
@@ -506,7 +508,7 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
     if (is_conn_active_profile(conn)) {
         LOG_DBG("Active profile connected");
-        k_work_submit(&raise_profile_changed_event_work);
+        k_work_submit_to_queue(zmk_main_work_q(), &raise_profile_changed_event_work);
     }
 }
 
@@ -527,11 +529,11 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
 
     // We need to do this in a work callback, otherwise the advertising update will still see the
     // connection for a profile as active, and not start advertising yet.
-    k_work_submit(&update_advertising_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &update_advertising_work);
 
     if (is_conn_active_profile(conn)) {
         LOG_DBG("Active profile disconnected");
-        k_work_submit(&raise_profile_changed_event_work);
+        k_work_submit_to_queue(zmk_main_work_q(), &raise_profile_changed_event_work);
     }
 }
 

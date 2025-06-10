@@ -16,6 +16,7 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
 #include <zmk/studio/rpc.h>
+#include <zmk/workqueue.h>
 
 #include "uuid.h"
 
@@ -186,7 +187,7 @@ static void gatt_tx_notify(struct ring_buf *tx_buf, size_t added, bool msg_done,
     atomic_t ns = atomic_get(&notify_size);
 
     if (msg_done || state->pending_notify > ns) {
-        k_work_submit(&notify_tx_work);
+        k_work_submit_to_queue(zmk_main_work_q(), &notify_tx_work);
         state->pending_notify = 0;
     }
 }

@@ -19,6 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/sensor_event.h>
 
 #include <zmk/pm.h>
+#include <zmk/workqueue.h>
 
 #include <zmk/activity.h>
 
@@ -95,7 +96,9 @@ void activity_work_handler(struct k_work *work) {
 
 K_WORK_DEFINE(activity_work, activity_work_handler);
 
-void activity_expiry_function(struct k_timer *_timer) { k_work_submit(&activity_work); }
+void activity_expiry_function(struct k_timer *_timer) {
+    k_work_submit_to_queue(zmk_main_work_q(), &activity_work);
+}
 
 K_TIMER_DEFINE(activity_timer, activity_expiry_function, NULL);
 
@@ -116,7 +119,9 @@ static void note_activity_work_cb(struct k_work *_work) { note_activity(); }
 
 K_WORK_DEFINE(note_activity_work, note_activity_work_cb);
 
-static void activity_input_listener(struct input_event *ev) { k_work_submit(&note_activity_work); }
+static void activity_input_listener(struct input_event *ev) {
+    k_work_submit_to_queue(zmk_main_work_q(), &note_activity_work);
+}
 
 INPUT_CALLBACK_DEFINE(NULL, activity_input_listener);
 

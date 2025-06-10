@@ -10,6 +10,7 @@
 #include <zephyr/drivers/uart.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
+#include <zmk/workqueue.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -53,7 +54,7 @@ int zmk_split_wired_poll_in(struct ring_buf *rx_buf, const struct device *uart,
 
     if (ring_buf_size_get(rx_buf) > 0) {
         if (process_data_work) {
-            k_work_submit(process_data_work);
+            k_work_submit_to_queue(zmk_main_work_q(), process_data_work);
         } else if (process_data_cb) {
             process_data_cb();
         }
@@ -88,7 +89,7 @@ void zmk_split_wired_fifo_read(const struct device *dev, struct ring_buf *buf,
     } while (last_read && last_read == len);
 
     if (process_work) {
-        k_work_submit(process_work);
+        k_work_submit_to_queue(zmk_main_work_q(), process_work);
     } else if (process_cb) {
         process_cb();
     }
@@ -197,7 +198,7 @@ static void async_uart_cb(const struct device *dev, struct uart_event *ev, void 
         if (state->process_tx_callback) {
             state->process_tx_callback();
         } else if (state->process_tx_work) {
-            k_work_submit(state->process_tx_work);
+            k_work_submit_to_queue(zmk_main_work_q(), state->process_tx_work);
         }
 
         break;

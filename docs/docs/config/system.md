@@ -115,6 +115,17 @@ Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the s
 | `CONFIG_ZMK_USB_LOGGING` | bool | Enable USB CDC ACM logging for debugging | n       |
 | `CONFIG_ZMK_LOG_LEVEL`   | int  | Log level for ZMK debug messages         | 4       |
 
+### System Processing
+
+The main processing of events/work in ZMK can be served two possible ways:
+
+| Config                              | Type | Description                                                                       | Default |
+| ----------------------------------- | ---- | --------------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_MAIN_WORK_QUEUE_SYSTEM` | bool | Process events/work using the high priority, cooperative system work queue thread | y       |
+| `CONFIG_ZMK_MAIN_WORK_QUEUE_MAIN`   | bool | Process events/work using the high priority, preemptible main thread work queue   | n       |
+
+Using the main thread work queue will allow processing to be interrupted by higher priority work, to ensure that work is serviced within the required service time, but selecting the option may break third party behaviors that expect the system work queue to be used.
+
 ## Snippets
 
 :::danger

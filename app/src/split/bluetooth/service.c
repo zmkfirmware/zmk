@@ -25,6 +25,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/split/transport/peripheral.h>
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/split/bluetooth/service.h>
+#include <zmk/workqueue.h>
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 #include <zmk/events/hid_indicators_changed.h>
@@ -94,7 +95,7 @@ static ssize_t split_svc_update_indicators(struct bt_conn *conn, const struct bt
 
     memcpy((uint8_t *)&hid_indicators + offset, buf, len);
 
-    k_work_submit(&split_svc_update_indicators_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &split_svc_update_indicators_work);
 
     return len;
 }
@@ -119,7 +120,7 @@ static ssize_t split_svc_select_phys_layout(struct bt_conn *conn, const struct b
 
     selected_phys_layout = *(uint8_t *)buf;
 
-    k_work_submit(&split_svc_select_phys_layout_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &split_svc_select_phys_layout_work);
 
     return len;
 }
