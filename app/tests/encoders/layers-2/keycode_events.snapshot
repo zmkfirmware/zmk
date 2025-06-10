@@ -1,0 +1,4 @@
+layer_changed: layer 1 state 1
+layer_changed: layer 2 state 1
+pressed: usage_page 0x07 keycode 0x06 implicit_mods 0x00 explicit_mods 0x00
+released: usage_page 0x07 keycode 0x06 implicit_mods 0x00 explicit_mods 0x00
