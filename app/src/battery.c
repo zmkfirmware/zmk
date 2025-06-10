@@ -19,12 +19,23 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/battery.h>
 #include <zmk/events/battery_state_changed.h>
 #include <zmk/events/activity_state_changed.h>
+#include <zmk/events/usb_conn_state_changed.h>
 #include <zmk/activity.h>
 #include <zmk/workqueue.h>
+#include <zmk/usb.h>
 
 static uint8_t last_state_of_charge = 0;
+static bool last_battery_is_charging = false;
 
 uint8_t zmk_battery_state_of_charge(void) { return last_state_of_charge; }
+bool zmk_battery_is_charging(void) { return last_battery_is_charging; }
+bool zmk_is_externally_powered(void) {
+    bool ret = zmk_battery_is_charging();
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+    ret |= zmk_usb_is_powered();
+#endif
+    return ret;
+}
 
 #if DT_HAS_CHOSEN(zmk_battery)
 static const struct device *const battery = DEVICE_DT_GET(DT_CHOSEN(zmk_battery));
@@ -91,8 +102,19 @@ static int zmk_battery_update(const struct device *battery) {
 #error "Not a supported reporting fetch mode"
 #endif
 
-    if (last_state_of_charge != state_of_charge.val1) {
+    // TODO: for now, battery charging is determined solely by USB being plugged in
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+    const bool batt_is_charging = zmk_usb_is_powered();
+#else
+    const bool batt_is_charging = false;
+#endif
+
+    if (last_state_of_charge != state_of_charge.val1 ||
+        last_battery_is_charging != batt_is_charging) {
+
         last_state_of_charge = state_of_charge.val1;
+        last_battery_is_charging = batt_is_charging;
+
 #if IS_ENABLED(CONFIG_BT_BAS)
         LOG_DBG("Setting BAS GATT battery level to %d.", last_state_of_charge);
 
@@ -103,8 +125,10 @@ static int zmk_battery_update(const struct device *battery) {
             return rc;
         }
 #endif
-        rc = raise_zmk_battery_state_changed(
-            (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge});
+        rc = raise_zmk_battery_state_changed((struct zmk_battery_state_changed){
+            .state_of_charge = last_state_of_charge,
+            .is_charging = batt_is_charging,
+        });
     }
 
     return rc;
@@ -167,11 +191,21 @@ static int battery_event_listener(const zmk_event_t *eh) {
             break;
         }
     }
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+    else if (as_zmk_usb_conn_state_changed(eh)) {
+        // update the battery on the workqueue if usb connection changed.
+        k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &battery_work);
+    }
+#endif
     return -ENOTSUP;
 }
 
 ZMK_LISTENER(battery, battery_event_listener);
 
 ZMK_SUBSCRIPTION(battery, zmk_activity_state_changed);
+
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+ZMK_SUBSCRIPTION(battery, zmk_usb_conn_state_changed);
+#endif
 
 SYS_INIT(zmk_battery_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
