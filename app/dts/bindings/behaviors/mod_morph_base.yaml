@@ -1,0 +1,13 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+properties:
+  bindings:
+    type: phandle-array
+    required: true
+  mods:
+    type: int
+    required: true
+  keep-mods:
+    type: int
+    required: false
