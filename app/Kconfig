@@ -131,6 +131,9 @@ config ZMK_USB_BOOT
     select USB_HID_BOOT_PROTOCOL
     select USB_DEVICE_SOF
 
+config USB_DEVICE_INITIALIZE_AT_BOOT
+    default n
+
 if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
@@ -486,7 +489,7 @@ if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
     int "USB Init Priority"
-    default 94
+    default 96
 
 config ZMK_USB_HID_INIT_PRIORITY
     int "USB HID Init Priority"
