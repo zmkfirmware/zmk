@@ -26,6 +26,7 @@ struct bvd_config {
     struct gpio_dt_spec power;
     uint32_t output_ohm;
     uint32_t full_ohm;
+    uint8_t oversampling;
 };
 
 struct bvd_data {
@@ -136,7 +137,7 @@ static int bvd_init(const struct device *dev) {
         .channels = ch_mask,
         .buffer = &drv_data->value.adc_raw,
         .buffer_size = sizeof(drv_data->value.adc_raw),
-        .oversampling = 4,
+        .oversampling = drv_cfg->oversampling,
         .calibrate = true,
     };
 
@@ -172,6 +173,7 @@ static const struct bvd_config bvd_cfg = {
 #endif
     .output_ohm = DT_INST_PROP(0, output_ohms),
     .full_ohm = DT_INST_PROP(0, full_ohms),
+    .oversampling = DT_INST_PROP_OR(0, oversampling, 4),
 };
 
 DEVICE_DT_INST_DEFINE(0, &bvd_init, NULL, &bvd_data, &bvd_cfg, POST_KERNEL,
