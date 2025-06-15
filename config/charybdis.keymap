@@ -1,0 +1,169 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/mouse.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
+
+#define U_TAPPING_TERM 200
+
+/ {
+    trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>;
+        input-processors = <&zip_xy_scaler 1 2>, <&zip_temp_layer 4 400>; // Switch to auto-mouse temp layer, decrease sensitivity
+        scroll {
+            layers = <5>; // SCROLL
+            input-processors = <&zip_xy_scaler 1 5>, <&zip_xy_to_scroll_mapper>, <&zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+
+        LeftClickRight {
+            bindings = <&mkp LCLK>;
+            key-positions = <19 20>;
+        };
+
+        RightClickRight {
+            bindings = <&mkp RCLK>;
+            key-positions = <20 21>;
+        };
+
+        MiddleClickRight {
+            bindings = <&mkp MCLK>;
+            key-positions = <21 22>;
+        };
+
+        ParaLeft {
+            bindings = <&kp LEFT_PARENTHESIS>;
+            key-positions = <4 16>;
+        };
+
+        ParaRight {
+            bindings = <&kp RIGHT_PARENTHESIS>;
+            key-positions = <7 19>;
+        };
+
+        BrakLeft {
+            bindings = <&kp LEFT_BRACKET>;
+            key-positions = <3 15>;
+        };
+
+        BrakRight {
+            bindings = <&kp RIGHT_BRACKET>;
+            key-positions = <8 20>;
+        };
+
+        BraceLeft {
+            bindings = <&kp LEFT_BRACE>;
+            key-positions = <2 14>;
+        };
+
+        BraceRight {
+            bindings = <&kp RIGHT_BRACE>;
+            key-positions = <9 21>;
+        };
+
+        Delete {
+            bindings = <&kp DELETE>;
+            key-positions = <8 9>;
+        };
+
+        CapsWord {
+            bindings = <&caps_word>;
+            key-positions = <17 18>;
+        };
+    };
+
+    behaviors {
+        u_mt: u_mt {
+            compatible = "zmk,behavior-hold-tap";
+            label = "u_mt";
+            #binding-cells = <2>;
+            tapping_term_ms = <U_TAPPING_TERM>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+
+        u_lt: u_lt {
+            compatible = "zmk,behavior-hold-tap";
+            label = "u_lt";
+            #binding-cells = <2>;
+            tapping_term_ms = <U_TAPPING_TERM>;
+            flavor = "tap-preferred";
+            bindings = <&mo>, <&kp>;
+        };
+
+        Shift_Enter: Shift_Enter {
+            compatible = "zmk,behavior-hold-tap";
+            label = "SHIFT_ENTER";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            hold-trigger-key-positions = <40>;
+            tapping-term-ms = <100>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        BASE {
+            bindings = <
+&kp ESC  &kp Q             &kp W             &kp E          &kp R               &kp T    &kp Y  &kp U               &kp I          &kp O              &kp P                 &kp BSPC
+&kp TAB  &u_mt LEFT_GUI A  &u_mt LEFT_ALT S  &u_mt LCTRL D  &u_mt LEFT_SHIFT F  &kp G    &kp H  &u_mt LEFT_SHIFT J  &u_mt RCTRL K  &u_mt RIGHT_ALT L  &u_mt RIGHT_GUI SEMI  &kp APOS
+&mo 5    &kp Z             &kp X             &kp C          &kp V               &kp B    &kp N  &kp M               &kp COMMA      &kp DOT            &kp FSLH              &mo 5
+                                             &kp LGUI       &kp SPACE           &mo 1    &mo 2  &kp RET
+            >;
+        };
+
+        NAV {
+            bindings = <
+&trans  &trans    &kp UP    &trans     &trans  &trans    &kp N7           &kp N8                &kp N9          &kp N0  &kp HOME  &kp F1
+&trans  &kp LEFT  &kp DOWN  &kp RIGHT  &trans  &trans    &kp N4           &u_mt RIGHT_SHIFT N5  &u_mt RCTRL N6  &trans  &trans    &kp F10
+&trans  &trans    &trans    &trans     &trans  &trans    &kp N1           &kp N2                &kp N3          &trans  &trans    &kp F20
+                            &trans     &trans  &trans    &lt 3 BACKSPACE  &kp LSHFT
+            >;
+        };
+
+        SYMNUM {
+            bindings = <
+&bt BT_CLR  &kp EXCL      &kp AT       &kp HASH    &kp DLLR  &kp PRCNT    &kp CARET  &kp AMPS                 &kp KP_MULTIPLY   &kp LPAR              &kp RPAR              &kp DEL
+&studio_unlock      &trans        &bt BT_PRV   &bt BT_NXT  &trans    &trans       &kp UNDER  &u_mt RIGHT_SHIFT EQUAL  &u_mt RCTRL LBKT  &u_mt RIGHT_ALT RBKT  &u_mt RIGHT_GUI BSLH  &kp GRAVE
+&trans      &out OUT_TOG  &bootloader  &trans      &trans    &trans       &kp MINUS  &kp PLUS                 &kp LBRC          &kp RBRC              &kp PIPE              &kp TILDE
+                                       &trans      &trans    &mo 3        &trans     &trans
+            >;
+        };
+
+        FUN {
+            bindings = <
+&trans  &trans   &kp F1  &kp F2   &kp F3   &kp F4     &bt BT_SEL 0  &bt BT_SEL 1      &bt BT_SEL 2       &bt BT_SEL 3     &bt BT_SEL 4  &bt BT_CLR
+&trans  &kp DEL  &kp F5  &kp F6   &kp F7   &kp F8     &out OUT_TOG  &kp K_PLAY_PAUSE  &kp C_VOLUME_DOWN  &kp C_VOLUME_UP  &kp C_MUTE    &kp LALT
+&trans  &trans   &kp F9  &kp F10  &kp F11  &kp F12    &trans        &trans            &trans             &trans           &trans        &to 0
+                         &trans   &trans   &trans     &trans        &trans
+            >;
+        };
+
+        AUTO-MOUSE {
+            bindings = <
+&trans  &trans  &trans  &trans     &trans  &trans       &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans     &trans  &trans       &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans     &trans  &trans       &trans  &trans  &trans  &trans  &trans  &trans
+                        &mkp LCLK  &trans  &mkp RCLK    &trans  &trans
+            >;
+        };
+
+        SCROLL {
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+                        &trans  &trans  &trans    &trans  &trans
+            >;
+        };
+    };
+};
