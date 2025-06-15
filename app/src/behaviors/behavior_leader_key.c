@@ -20,7 +20,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct behavior_leader_key_config {
     int32_t timeout_ms;
-    bool timerless;
 };
 
 static int behavior_leader_key_init(const struct device *dev) { return 0; }
@@ -30,7 +29,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct device *dev = device_get_binding(binding->behavior_dev);
     const struct behavior_leader_key_config *cfg = dev->config;
 
-    zmk_leader_activate(cfg->timeout_ms, cfg->timerless, event.position);
+    zmk_leader_activate(cfg->timeout_ms, event.position);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
@@ -46,7 +45,7 @@ static const struct behavior_driver_api behavior_leader_key_driver_api = {
 
 #define LEAD_INST(n)                                                                               \
     static struct behavior_leader_key_config behavior_leader_key_config_##n = {                    \
-        .timerless = DT_INST_PROP(n, timerless), .timeout_ms = DT_INST_PROP(n, timeout_ms)};       \
+        .timeout_ms = DT_INST_PROP(n, timeout_ms)};       \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_leader_key_init, NULL, NULL,                               \
                           &behavior_leader_key_config_##n, POST_KERNEL,                            \
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_leader_key_driver_api);

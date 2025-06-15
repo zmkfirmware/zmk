@@ -21,7 +21,7 @@ Example:
 
 #### `timeout-ms`
 
-Defines the amount of time to wait to trigger a completed leader sequence. Defaults to 200ms.
+Defines the amount of time to wait to trigger a completed leader sequence. Defaults to no timeout and will wait indefinitely.
 
 To change the timeout term, you can update the existing behavior:
 
@@ -36,7 +36,3 @@ To change the timeout term, you can update the existing behavior:
     };
 };
 ```
-
-#### `timerless`
-
-By default, the leader key will have a timeout, and will not wait for a sequence to be completed or another key to be pressed. Specify `timerless` if you don't want a timeout.

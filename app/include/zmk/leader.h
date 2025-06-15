@@ -6,5 +6,5 @@
 
 #pragma once
 
-void zmk_leader_activate(int32_t timeout, bool timeout_on_activation, uint32_t position);
+void zmk_leader_activate(int32_t timeout, uint32_t position);
 void zmk_leader_deactivate();
