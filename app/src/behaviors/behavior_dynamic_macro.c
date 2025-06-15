@@ -88,15 +88,17 @@ static int new_recording_macro(uint32_t position,
     return -ENOMEM;
 }
 
-static void queue_dynamic_macro(uint32_t position, uint32_t time,
+static void queue_dynamic_macro(struct zmk_behavior_binding_event event, uint32_t time,
                                 struct behavior_dynamic_macro_state *state) {
     LOG_DBG("Iterating dynamic macro bindings - count: %d", state->count);
     for (int i = 0; i < state->count; i++) {
         uint32_t wait_ms = time;
+
         if (time == -1) {
             wait_ms = state->bindings[i].wait_ms;
         }
-        zmk_behavior_queue_add(position, state->bindings[i].binding, state->bindings[i].pressed,
+
+        zmk_behavior_queue_add(&event, state->bindings[i].binding, state->bindings[i].pressed,
                                wait_ms);
     }
 }
@@ -112,7 +114,7 @@ static int on_dynamic_macro_binding_pressed(struct zmk_behavior_binding *binding
             LOG_ERR("Macro is currently recording, can't play");
         } else {
             LOG_DBG("Playing Dynamic Macro");
-            queue_dynamic_macro(event.position, cfg->wait_ms, state);
+            queue_dynamic_macro(event, cfg->wait_ms, state);
         }
     } else if (binding->param1 == RECORD) {
         state->recording = !state->recording;
@@ -172,12 +174,14 @@ static int dynamic_macro_keycode_state_changed_listener(const zmk_event_t *eh) {
             uint32_t eventTime = k_uptime_get();
             uint32_t elapsedTime = eventTime - macro->state->lastEventTime;
             macro->state->lastEventTime = eventTime;
+
             if (ev->state) {
                 macro->state->bindings[macro->count].pressed = true;
             } else {
                 macro->state->bindings[macro->count].pressed = false;
             }
-            macro->state->bindings[macro->count].binding.behavior_dev = "KEY_PRESS";
+
+            macro->state->bindings[macro->count].binding.behavior_dev = "key_press";
             macro->state->bindings[macro->count].binding.param1 = HID_KEY_USAGE_PAGE + ev->keycode;
             macro->state->bindings[macro->count].binding.param2 = 0;
 
