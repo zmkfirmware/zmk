@@ -2,11 +2,6 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/kscan_mock.h>
 
-&leader {
-    timeout-ms = <200>;
-    timerless;
-};
-
 / {
     leader-sequences {
         compatible = "zmk,leader-sequences";

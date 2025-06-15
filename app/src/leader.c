@@ -37,7 +37,6 @@ static struct k_work_delayable release_timer;
 static int64_t release_at;
 // static bool timer_started;
 static bool timer_cancelled;
-static bool timerless;
 
 struct leader_seq_cfg {
     int32_t key_positions[CONFIG_ZMK_LEADER_MAX_KEYS_PER_SEQUENCE];
@@ -234,7 +233,7 @@ static void reset_timer(int32_t timestamp) {
     }
 }
 
-void zmk_leader_activate(int32_t timeout, bool _timerless, uint32_t position) {
+void zmk_leader_activate(int32_t timeout, uint32_t position) {
     LOG_DBG("leader key activated");
     leader_status = true;
     press_count = 0;
@@ -243,10 +242,11 @@ void zmk_leader_activate(int32_t timeout, bool _timerless, uint32_t position) {
     active_leader_position = position;
     layer = zmk_keymap_highest_layer_active();
     first_release = false;
-    timerless = _timerless;
-    if (!timerless) {
+
+    if (timeout_ms > 0) {
         reset_timer(k_uptime_get());
     }
+
     for (int i = 0; i < CONFIG_ZMK_LEADER_MAX_KEYS_PER_SEQUENCE; i++) {
         leader_pressed_keys[i] = NULL;
     }
@@ -328,7 +328,8 @@ static int position_state_changed_listener(const zmk_event_t *ev) {
                     zmk_leader_deactivate();
                 }
             }
-            if (!timerless || num_comp_candidates < num_candidates) {
+
+            if (timeout_ms > 0 || num_comp_candidates < num_candidates) {
                 reset_timer(data->timestamp);
             }
         }
