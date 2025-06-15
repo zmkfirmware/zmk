@@ -8,7 +8,7 @@ We need to add another device which will be enabled only when the keyboard is go
         compatible = "zmk,gpio-key-wakeup-trigger";
         trigger = <&soft_off_gpio_key>;
         wakeup-source;
-        extra-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>
+        extra-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
     };
 };
 ```
