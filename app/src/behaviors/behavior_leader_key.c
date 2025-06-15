@@ -45,9 +45,9 @@ static const struct behavior_driver_api behavior_leader_key_driver_api = {
 
 #define LEAD_INST(n)                                                                               \
     static struct behavior_leader_key_config behavior_leader_key_config_##n = {                    \
-        .timeout_ms = DT_INST_PROP(n, timeout_ms)};       \
+        .timeout_ms = DT_INST_PROP(n, timeout_ms)};                                                \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_leader_key_init, NULL, NULL,                               \
-                          &behavior_leader_key_config_##n, POST_KERNEL,                            \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_leader_key_driver_api);
+                            &behavior_leader_key_config_##n, POST_KERNEL,                          \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_leader_key_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(LEAD_INST)
