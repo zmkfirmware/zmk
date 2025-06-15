@@ -11,3 +11,11 @@ properties:
   tap-ms:
     type: int
     description: The default time to wait (in milliseconds) between the press and release events on a tapped macro behavior binding
+  timeout-ms:
+    type: int
+    description: The time to wait (in milliseconds) before starting the macro for the first time.
+    default: 0
+  period-ms:
+    type: int
+    description: The time to wait (in milliseconds) before repeating the macro.
+    default: 0

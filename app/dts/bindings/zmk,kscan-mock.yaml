@@ -19,3 +19,7 @@ properties:
     type: int
   exit-after:
     type: boolean
+  exit-after-ms:
+    type: int
+    description: Number of milliseconds after which the driver will exit.
+    default: 0

@@ -7,6 +7,7 @@
 #include <zephyr/device.h>
 #include <drivers/behavior.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/sys/util.h>
 #include <zmk/behavior.h>
 #include <zmk/behavior_queue.h>
 #include <zmk/keymap.h>
@@ -38,12 +39,24 @@ struct behavior_macro_state {
     struct behavior_parameter_metadata_set set;
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+    bool is_running;
+    struct zmk_behavior_binding binding;
+    struct zmk_behavior_binding_event event;
+    struct k_timer timer;
+    struct k_work work;
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+
     uint32_t press_bindings_count;
 };
 
 struct behavior_macro_config {
     uint32_t default_wait_ms;
     uint32_t default_tap_ms;
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+    uint32_t timeout_ms;
+    uint32_t period_ms;
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
     uint32_t count;
     struct zmk_behavior_binding bindings[];
 };
@@ -111,12 +124,27 @@ static bool handle_control_binding(struct behavior_macro_trigger_state *state,
     return true;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+static inline bool is_macro_with_timer(const struct behavior_macro_config *cfg) {
+    return (cfg->timeout_ms > 0 || cfg->period_ms > 0);
+}
+
+static void on_macro_work_handler(struct k_work *work);
+static void on_macro_timer_handler(struct k_timer *timer_ptr);
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+
 static int behavior_macro_init(const struct device *dev) {
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
     state->press_bindings_count = cfg->count;
     state->release_state.start_index = cfg->count;
     state->release_state.count = 0;
+
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+    state->is_running = false;
+    k_timer_init(&state->timer, on_macro_timer_handler, NULL);
+    k_work_init(&state->work, on_macro_work_handler);
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
 
     LOG_DBG("Precalculate initial release state:");
     for (int i = 0; i < cfg->count; i++) {
@@ -187,11 +215,55 @@ static void queue_macro(struct zmk_behavior_binding_event *event,
     }
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+static void on_macro_work_handler(struct k_work *work) {
+    struct behavior_macro_state *state = CONTAINER_OF(work, struct behavior_macro_state, work);
+    const struct device *dev = zmk_behavior_get_binding(state->binding.behavior_dev);
+    const struct behavior_macro_config *cfg = dev->config;
+    struct behavior_macro_trigger_state trigger_state = {.mode = MACRO_MODE_TAP,
+                                                         .tap_ms = cfg->default_tap_ms,
+                                                         .wait_ms = cfg->default_wait_ms,
+                                                         .start_index = 0,
+                                                         .count = state->press_bindings_count};
+    struct zmk_behavior_binding_event event = state->event;
+
+    queue_macro(&event, cfg->bindings, trigger_state, &state->binding);
+}
+
+static void on_macro_timer_handler(struct k_timer *timer_ptr) {
+    struct behavior_macro_state *state =
+        CONTAINER_OF(timer_ptr, struct behavior_macro_state, timer);
+    k_work_submit(&state->work);
+}
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+
 static int on_macro_binding_pressed(struct zmk_behavior_binding *binding,
                                     struct zmk_behavior_binding_event event) {
     const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
+
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+    // Handle request to stop the timer.
+    if (state->is_running) {
+        state->is_running = false;
+        k_timer_stop(&state->timer);
+
+        return ZMK_BEHAVIOR_OPAQUE;
+    }
+
+    // Handle request to start the timer.
+    if (is_macro_with_timer(cfg)) {
+        state->is_running = true;
+        state->binding = *binding;
+        state->event = event;
+        k_timer_start(&state->timer, K_MSEC(cfg->timeout_ms), K_MSEC(cfg->period_ms));
+
+        return ZMK_BEHAVIOR_OPAQUE;
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+
+    // Defult behavior, without timer, is to run the macro on press.
     struct behavior_macro_trigger_state trigger_state = {.mode = MACRO_MODE_TAP,
                                                          .tap_ms = cfg->default_tap_ms,
                                                          .wait_ms = cfg->default_wait_ms,
@@ -208,6 +280,12 @@ static int on_macro_binding_released(struct zmk_behavior_binding *binding,
     const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
+
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+    if (is_macro_with_timer(cfg)) {
+        return ZMK_BEHAVIOR_OPAQUE;
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
 
     queue_macro(&event, cfg->bindings, state->release_state, binding);
 
@@ -313,6 +391,20 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
 #define TRANSFORMED_BEHAVIORS(n)                                                                   \
     {LISTIFY(DT_PROP_LEN(n, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), n)},
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
+#define MACRO_INST(inst)                                                                           \
+    static struct behavior_macro_state behavior_macro_state_##inst = {};                           \
+    static struct behavior_macro_config behavior_macro_config_##inst = {                           \
+        .default_wait_ms = DT_PROP_OR(inst, wait_ms, CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS),            \
+        .default_tap_ms = DT_PROP_OR(inst, tap_ms, CONFIG_ZMK_MACRO_DEFAULT_TAP_MS),               \
+        .timeout_ms = DT_PROP_OR(inst, timeout_ms, 0),                                             \
+        .period_ms = DT_PROP_OR(inst, period_ms, 0),                                               \
+        .count = DT_PROP_LEN(inst, bindings),                                                      \
+        .bindings = TRANSFORMED_BEHAVIORS(inst)};                                                  \
+    BEHAVIOR_DT_DEFINE(inst, behavior_macro_init, NULL, &behavior_macro_state_##inst,              \
+                       &behavior_macro_config_##inst, POST_KERNEL,                                 \
+                       CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_macro_driver_api);
+#else
 #define MACRO_INST(inst)                                                                           \
     static struct behavior_macro_state behavior_macro_state_##inst = {};                           \
     static struct behavior_macro_config behavior_macro_config_##inst = {                           \
@@ -323,6 +415,7 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
     BEHAVIOR_DT_DEFINE(inst, behavior_macro_init, NULL, &behavior_macro_state_##inst,              \
                        &behavior_macro_config_##inst, POST_KERNEL,                                 \
                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_macro_driver_api);
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_TIMER)
 
 DT_FOREACH_STATUS_OKAY(zmk_behavior_macro, MACRO_INST)
 DT_FOREACH_STATUS_OKAY(zmk_behavior_macro_one_param, MACRO_INST)

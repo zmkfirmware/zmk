@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    macros {
+        ZMK_MACRO(
+            repeating_macro,
+            wait-ms = <10>;
+            tap-ms = <50>;
+            timeout-ms = <500>;
+            period-ms = <250>;
+            bindings = <&kp A>;
+        )
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &repeating_macro &kp A
+                &kp B &kp C>;
+        };
+
+        extra_layer {
+            bindings = <
+                &kp D &kp E
+                &kp F &kp G>;
+
+        };
+
+    };
+};
+
+&kscan {
+    /delete-property/ exit-after;
+    exit-after-ms = <1000>;
+    // FIXME: scheduling an event at 1000ms prevents the timer from running.
+    // events = <ZMK_MOCK_PRESS(0,0,20) ZMK_MOCK_RELEASE(0,0,30) ZMK_MOCK_PRESS(0,0,1000) ZMK_MOCK_RELEASE(0,0,1010)>;
+    events = <ZMK_MOCK_PRESS(0,0,20) ZMK_MOCK_RELEASE(0,0,30)>;
+};

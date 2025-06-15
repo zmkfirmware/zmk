@@ -140,6 +140,37 @@ bindings
     ;
 ```
 
+### Repeating Macro
+
+The timeout time and period time combo allow for repeating a macro at a specified interval, until the macro is toggled off.
+With `timeout-ms` you can specify the time to wait before running the macro right after it is toggled on, and with `period-ms` you can specify the time to wait before running the macro again.
+For example, the following macro will run once after 1000ms, and then repeat every 500ms until toggled off:
+
+```dts
+/ {
+    macros {
+        my_repeating_macro: my_repeating_macro {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            timeout-ms = <1000>;
+            period-ms = <500>;
+            bindings
+                = <&kp A &kp B &kp C>
+                ;
+        };
+    };
+};
+```
+
+:::note
+The `&macro_pause_for_release` control is not compatible with the `timeout-ms` and `period-ms` properties. Any subsequent behaviors in the `bindings` list after a `&macro_pause_for_release` will not be processed neither by the timer nor on release.
+:::
+
+:::note
+From Zephyr's own documentation: note that the timer’s duration and period parameters specify minimum delays that will elapse.
+This means that it is possible for macros to be executed later than the specified time, but never earlier. Eventually some drift may occur so keep this in mind when using macros with very short timeouts or periods.
+:::
+
 ### Behavior Queue Limit
 
 Macros use an internal queue to invoke each behavior in the bindings list when triggered, which has a size of 64 by default. Bindings in "press" and "release" modes correspond to one event in the queue, whereas "tap" mode bindings correspond to two (one for press and one for release). As a result, the effective number of actions processed might be less than 64 and this can cause problems for long macros.

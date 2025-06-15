@@ -205,6 +205,8 @@ Definition files:
 | `bindings`       | phandle array | List of behaviors to trigger                                                                                                                                                                         |                                    |
 | `wait-ms`        | int           | The default time to wait (in milliseconds) before triggering the next behavior.                                                                                                                      | `CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS` |
 | `tap-ms`         | int           | The default time to wait (in milliseconds) between the press and release events of a tapped behavior.                                                                                                | `CONFIG_ZMK_MACRO_DEFAULT_TAP_MS`  |
+| `timeout-ms`     | int           | The time to wait (in milliseconds) before starting the macro for the first time. `CONFIG_ZMK_BEHAVIOR_TIMER` must be enabled.                                                                        |                                    |
+| `period-ms`      | int           | The time to wait (in milliseconds) before repeating the macro. `CONFIG_ZMK_BEHAVIOR_TIMER` must be enabled.                                                                                          |                                    |
 
 With `compatible = "zmk,behavior-macro-one-param"` or `compatible = "zmk,behavior-macro-two-param"`, this behavior forwards the parameters it receives according to the `&macro_param_*` control behaviors noted below.
 
