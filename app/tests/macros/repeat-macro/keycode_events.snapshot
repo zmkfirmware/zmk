@@ -1,0 +1,16 @@
+queue_macro: Iterating macro bindings - starting: 0, count: 1
+queue_process_next: Invoking key_press: 0x70004 0x00
+binding_pressed: position 0 keycode 0x70004
+kp_pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+queue_process_next: Processing next queued behavior in 50ms
+queue_process_next: Invoking key_press: 0x70004 0x00
+kp_released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+queue_process_next: Processing next queued behavior in 10ms
+queue_macro: Iterating macro bindings - starting: 0, count: 1
+queue_process_next: Invoking key_press: 0x70004 0x00
+binding_pressed: position 0 keycode 0x70004
+kp_pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+queue_process_next: Processing next queued behavior in 50ms
+queue_process_next: Invoking key_press: 0x70004 0x00
+kp_released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+queue_process_next: Processing next queued behavior in 10ms

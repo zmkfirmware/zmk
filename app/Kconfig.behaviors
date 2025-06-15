@@ -61,6 +61,13 @@ config ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS
 
 endif
 
+config ZMK_BEHAVIOR_TIMER
+    bool "Behavior Timer"
+    default n
+    help
+      Enables the timer behavior, which allows for repeating a macro
+      indefinitely every specified period of time.
+
 config ZMK_BEHAVIOR_KEY_TOGGLE
     bool
     default y

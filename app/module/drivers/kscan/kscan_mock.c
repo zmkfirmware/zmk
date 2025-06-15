@@ -21,6 +21,7 @@ struct kscan_mock_data {
 
     uint32_t event_index;
     struct k_work_delayable work;
+    struct k_work_delayable exit_work;
     const struct device *dev;
 };
 
@@ -48,6 +49,7 @@ static int kscan_mock_configure(const struct device *dev, kscan_callback_t callb
     struct kscan_mock_config_##n {                                                                 \
         uint32_t events[DT_INST_PROP_LEN(n, events)];                                              \
         bool exit_after;                                                                           \
+        uint32_t exit_after_ms;                                                                    \
     };                                                                                             \
     static void kscan_mock_schedule_next_event_##n(const struct device *dev) {                     \
         struct kscan_mock_data *data = dev->data;                                                  \
@@ -78,10 +80,16 @@ static int kscan_mock_configure(const struct device *dev, kscan_callback_t callb
         kscan_mock_schedule_next_event_##n(data->dev);                                             \
         data->event_index++;                                                                       \
     }                                                                                              \
+    static void kscan_mock_exit_handler_##n(struct k_work *work) { exit(0); }                      \
     static int kscan_mock_init_##n(const struct device *dev) {                                     \
         struct kscan_mock_data *data = dev->data;                                                  \
         data->dev = dev;                                                                           \
+        const struct kscan_mock_config_##n *cfg = data->dev->config;                               \
         k_work_init_delayable(&data->work, kscan_mock_work_handler_##n);                           \
+        if (cfg->exit_after_ms) {                                                                  \
+            k_work_init_delayable(&data->exit_work, kscan_mock_exit_handler_##n);                  \
+            k_work_schedule(&data->exit_work, K_MSEC(cfg->exit_after_ms));                         \
+        }                                                                                          \
         return 0;                                                                                  \
     }                                                                                              \
     static int kscan_mock_enable_callback_##n(const struct device *dev) {                          \
@@ -95,7 +103,9 @@ static int kscan_mock_configure(const struct device *dev, kscan_callback_t callb
     };                                                                                             \
     static struct kscan_mock_data kscan_mock_data_##n;                                             \
     static const struct kscan_mock_config_##n kscan_mock_config_##n = {                            \
-        .events = DT_INST_PROP(n, events), .exit_after = DT_INST_PROP(n, exit_after)};             \
+        .events = DT_INST_PROP(n, events),                                                         \
+        .exit_after = DT_INST_PROP(n, exit_after),                                                 \
+        .exit_after_ms = DT_INST_PROP(n, exit_after_ms)};                                          \
     DEVICE_DT_INST_DEFINE(n, kscan_mock_init_##n, NULL, &kscan_mock_data_##n,                      \
                           &kscan_mock_config_##n, POST_KERNEL, CONFIG_KSCAN_INIT_PRIORITY,         \
                           &mock_driver_api_##n);

@@ -1,0 +1,4 @@
+s/.*hid_listener_keycode/kp/p
+s/.*on_keymap_binding_pressed/binding_pressed/p
+s/.*behavior_queue_process_next/queue_process_next/p
+s/.*queue_macro/queue_macro/p
