@@ -10,6 +10,21 @@
 #include <zmk/sensors.h>
 #include <zephyr/sys/util.h>
 
+enum zmk_split_transport_connections_status {
+    ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_DISCONNECTED = 0,
+    ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_SOME_CONNECTED,
+    ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_ALL_CONNECTED,
+};
+
+struct zmk_split_transport_status {
+    bool available;
+    bool enabled;
+    enum zmk_split_transport_connections_status connections;
+};
+
+typedef struct zmk_split_transport_status (*zmk_split_transport_get_status_t)(void);
+typedef int (*zmk_split_transport_set_enabled_t)(bool enabled);
+
 enum zmk_split_transport_peripheral_event_type {
     ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_KEY_POSITION_EVENT,
     ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_SENSOR_EVENT,

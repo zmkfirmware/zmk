@@ -26,6 +26,8 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/split/bluetooth/service.h>
 
+#include "peripheral.h"
+
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 #include <zmk/events/hid_indicators_changed.h>
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -343,7 +345,8 @@ static int service_init(void) {
 
 SYS_INIT(service_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);
 
-static int zmk_peripheral_ble_report_event(const struct zmk_split_transport_peripheral_event *ev) {
+int zmk_split_transport_peripheral_bt_report_event(
+    const struct zmk_split_transport_peripheral_event *ev) {
     switch (ev->type) {
     case ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_KEY_POSITION_EVENT:
         if (ev->data.key_position_event.pressed) {
@@ -379,12 +382,6 @@ static int zmk_peripheral_ble_report_event(const struct zmk_split_transport_peri
 
     return 0;
 }
-
-static const struct zmk_split_transport_peripheral_api peripheral_api = {
-    .report_event = zmk_peripheral_ble_report_event,
-};
-
-ZMK_SPLIT_TRANSPORT_PERIPHERAL_REGISTER(bt_peripheral, &peripheral_api);
 
 static ssize_t split_svc_run_behavior(struct bt_conn *conn, const struct bt_gatt_attr *attrs,
                                       const void *buf, uint16_t len, uint16_t offset,
@@ -428,7 +425,8 @@ static ssize_t split_svc_run_behavior(struct bt_conn *conn, const struct bt_gatt
                 cmd.data.invoke_behavior.param1, cmd.data.invoke_behavior.param2,
                 cmd.data.invoke_behavior.state);
 
-        int err = zmk_split_transport_peripheral_command_handler(&bt_peripheral, cmd);
+        int err = zmk_split_transport_peripheral_command_handler(
+            zmk_split_transport_peripheral_bt(), cmd);
 
         if (err) {
             LOG_ERR("Failed to invoke behavior %s: %d", payload->behavior_dev, err);
