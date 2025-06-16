@@ -11,3 +11,5 @@ properties:
   type:
     type: int
     default: 0
+  bootloader:
+    type: boolean
