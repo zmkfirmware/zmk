@@ -110,10 +110,10 @@ static void initialize_theme() {
 #if IS_ENABLED(CONFIG_LV_USE_THEME_MONO)
     lv_disp_t *disp = lv_disp_get_default();
     lv_theme_t *theme =
-        lv_theme_mono_init(disp, IS_ENABLED(CONFIG_ZMK_DISPLAY_INVERT), CONFIG_LV_FONT_DEFAULT);
-    theme->font_small = CONFIG_ZMK_LV_FONT_DEFAULT_SMALL;
+        lv_theme_mono_init(disp, IS_ENABLED(CONFIG_ZMK_DISPLAY_INVERT), CONFIG_LV_FONT_DEFAULT,
+                           CONFIG_ZMK_LV_FONT_DEFAULT_SMALL, CONFIG_LV_FONT_DEFAULT);
 
-    disp->theme = theme;
+    lv_display_set_theme(disp, theme);
 #endif // CONFIG_LV_USE_THEME_MONO
 }
 
