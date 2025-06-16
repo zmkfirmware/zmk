@@ -458,6 +458,19 @@ config ZMK_COMBO_MAX_KEYS_PER_COMBO
 # Combo options
 endmenu
 
+menu "Leader Options"
+
+config ZMK_LEADER_MAX_KEYS_PER_SEQUENCE
+    int "Maximum number of key presses in a leader sequence"
+    default 4
+
+config ZMK_LEADER_MAX_SEQUENCES_PER_KEY
+    int "Maximum number of leader sequences that a key can belong to"
+    default 5
+
+#Leader options
+endmenu
+
 menu "Behavior Options"
 
 config ZMK_BEHAVIORS_QUEUE_SIZE
