@@ -7,6 +7,16 @@ sidebar_label: Leader Key
 
 The leader key behavior when triggered will capture all following key presses and trigger a leader sequence's behavior if pressed.
 
+### Behavior Binding
+
+- Reference: `&leader`
+
+Example:
+
+```
+&leader
+```
+
 ### Configuration
 
 #### `timeout-ms`
@@ -16,6 +26,28 @@ Defines the amount of time to wait to trigger a completed leader sequence. Defau
 #### `overlap-timeout-ms`
 
 Defines the amount of time to wait to trigger a completed leader sequence after an overlapping sequence is completed. Defaults to 200ms.
+
+### Leader Sequences
+
+#### Summary
+
+Leader sequences are a way to have a sequence of key presses to output a different key. For example, you can hit the leader key followed by Q, then W to output escape.
+
+#### Configuration
+
+Leader sequences are configured as child nodes of your leader key behavior(s). They are specified like this:
+
+```
+leader: leader {
+    compatible = "zmk,behavior-leader-key";
+    #binding-cells = <0>;
+
+    seq_esc {
+        key-positions = <0 1>;
+        bindings = <&kp ESC>;
+    };
+};
+```
 
 ### Leader Sequences
 
@@ -62,25 +94,6 @@ Sequence behaviors inherit their locality from the position of the leader key. F
 Add the same leader key to both sides to be able to reset either side.
 
 ::::
-
-### Example Usage
-
-```
-leader: leader {
-    compatible = "zmk,behavior-leader-key";
-    binding-cells = <0>;
-
-    seq_b {
-        key-positions = <1 1>;
-        bindings = <&kp B>;
-    };
-
-    seq_c {
-        key-positions = <1>;
-        bindings = <&kp C>;
-    };
-};
-```
 
 ### Advanced usage
 
