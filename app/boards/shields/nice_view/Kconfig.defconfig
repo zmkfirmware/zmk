@@ -20,9 +20,10 @@ choice ZMK_DISPLAY_WORK_QUEUE
     default ZMK_DISPLAY_WORK_QUEUE_DEDICATED
 endchoice
 
-choice ZMK_DISPLAY_STATUS_SCREEN
-    default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
-endchoice
+# TODO: Restore once we fix up custom status code
+# choice ZMK_DISPLAY_STATUS_SCREEN
+#     default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+# endchoice
 
 config LV_Z_MEM_POOL_SIZE
     default 4096 if ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
