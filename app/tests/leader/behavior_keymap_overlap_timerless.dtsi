@@ -3,8 +3,9 @@
 #include <dt-bindings/zmk/kscan_mock.h>
 
 / {
-    leader-sequences {
-        compatible = "zmk,leader-sequences";
+    leader: leader {
+        compatible = "zmk,behavior-leader-key";
+        #binding-cells = <0>;
 
         leader_seq_one {
             key-positions = <0>;
