@@ -52,14 +52,4 @@ config LED_PWM
 
 endif # ZMK_BACKLIGHT
 
-if ZMK_RGB_UNDERGLOW
-
-config SPI
-    default y
-
-config WS2812_STRIP
-    default y
-
-endif # ZMK_RGB_UNDERGLOW
-
 endif # BOARD_GLOVE80_LH || BOARD_GLOVE80_RH
