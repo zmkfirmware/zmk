@@ -82,8 +82,8 @@ static int layer_state_changed_listener(const zmk_event_t *ev) {
 
     while (conditional_layer_updates_needed) {
         int8_t max_then_layer = -1;
-        uint32_t then_layers = 0;
-        uint32_t then_layer_state = 0;
+        uint64_t then_layers = 0;
+        uint64_t then_layer_state = 0;
 
         conditional_layer_updates_needed = false;
 
