@@ -33,9 +33,7 @@ struct status_state {
 
 struct battery_status_state {
     uint8_t level;
-#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
-    bool usb_present;
-#endif
+    bool is_charging;
 };
 
 void rotate_canvas(lv_obj_t *canvas, lv_color_t cbuf[]);
