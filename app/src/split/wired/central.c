@@ -7,6 +7,8 @@
 #include <zephyr/types.h>
 #include <zephyr/init.h>
 
+#include <zephyr/pm/device.h>
+#include <zephyr/pm/device_runtime.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/sys/crc.h>
 #include <zephyr/sys/ring_buffer.h>
@@ -61,6 +63,14 @@ static const struct device *uart = DEVICE_DT_GET(DT_INST_PHANDLE(0, device));
 #if HAS_DIR_GPIO
 
 static const struct gpio_dt_spec dir_gpio = GPIO_DT_SPEC_INST_GET(0, dir_gpios);
+
+#endif
+
+#define HAS_DETECT_GPIO DT_INST_NODE_HAS_PROP(0, detect_gpios)
+
+#if HAS_DETECT_GPIO
+
+static const struct gpio_dt_spec detect_gpio = GPIO_DT_SPEC_INST_GET(0, detect_gpios);
 
 #endif
 
@@ -120,6 +130,43 @@ static void begin_tx(void) {
     k_work_submit(&wired_central_tx_work);
 #endif
 }
+
+static void begin_rx(void) {
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_get(uart);
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_action_run(uart, PM_DEVICE_ACTION_RESUME);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
+    uart_irq_rx_enable(uart);
+#elif IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
+    zmk_split_wired_async_rx(&async_state);
+#else
+    k_timer_start(&wired_central_read_timer, K_TICKS(CONFIG_ZMK_SPLIT_WIRED_POLLING_RX_PERIOD),
+                  K_TICKS(CONFIG_ZMK_SPLIT_WIRED_POLLING_RX_PERIOD));
+#endif
+}
+
+#if HAS_DETECT_GPIO
+
+static void stop_rx(void) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
+    uart_irq_rx_disable(uart);
+#elif IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
+    zmk_split_wired_async_rx_cancel(&async_state);
+#else
+    k_timer_stop(&wired_central_read_timer);
+#endif
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_put(uart);
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_action_run(uart, PM_DEVICE_ACTION_SUSPEND);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+}
+
+#endif // HAS_DETECT_GPIO
 
 static ssize_t get_payload_data_size(const struct zmk_split_transport_central_command *cmd) {
     switch (cmd->type) {
@@ -195,8 +242,6 @@ void rx_done_cb(struct k_work *work) {
                                          .type = ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_POLL_EVENTS,
                                      });
 
-    begin_tx();
-
     k_work_reschedule(&rx_done_work, K_MSEC(CONFIG_ZMK_SPLIT_WIRED_HALF_DUPLEX_RX_TIMEOUT));
 }
 
@@ -249,10 +294,33 @@ static K_TIMER_DEFINE(wired_central_read_timer, read_timer_cb, NULL);
 
 #endif
 
+#if HAS_DETECT_GPIO
+
+static void notify_transport_status(void);
+
+static struct gpio_callback detect_callback;
+
+static void notify_status_work_cb(struct k_work *_work) { notify_transport_status(); }
+
+static K_WORK_DEFINE(notify_status_work, notify_status_work_cb);
+
+static void detect_pin_irq_callback_handler(const struct device *port, struct gpio_callback *cb,
+                                            const gpio_port_pins_t pin) {
+    k_work_submit(&notify_status_work);
+}
+
+#endif
+
 static int zmk_split_wired_central_init(void) {
     if (!device_is_ready(uart)) {
         return -ENODEV;
     }
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_put(uart);
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_action_run(uart, PM_DEVICE_ACTION_SUSPEND);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
 
@@ -285,18 +353,29 @@ static int zmk_split_wired_central_init(void) {
 #if IS_HALF_DUPLEX_MODE
 
 #if HAS_DIR_GPIO
-    LOG_DBG("CONFIGURING AS OUTPUT");
     gpio_pin_configure_dt(&dir_gpio, GPIO_OUTPUT_INACTIVE);
 #endif
 
-    k_work_schedule(&rx_done_work, K_MSEC(CONFIG_ZMK_SPLIT_WIRED_HALF_DUPLEX_RX_TIMEOUT));
+#endif // IS_HALF_DUPLEX_MODE
 
-#endif
+#if HAS_DETECT_GPIO
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_POLLING)
-    k_timer_start(&wired_central_read_timer, K_TICKS(CONFIG_ZMK_SPLIT_WIRED_POLLING_RX_PERIOD),
-                  K_TICKS(CONFIG_ZMK_SPLIT_WIRED_POLLING_RX_PERIOD));
-#endif
+    gpio_pin_configure_dt(&detect_gpio, GPIO_INPUT);
+
+    gpio_init_callback(&detect_callback, detect_pin_irq_callback_handler, BIT(detect_gpio.pin));
+    int err = gpio_add_callback(detect_gpio.port, &detect_callback);
+    if (err) {
+        LOG_ERR("Error adding the callback to the detect pin: %i", err);
+        return err;
+    }
+
+    err = gpio_pin_interrupt_configure_dt(&detect_gpio, GPIO_INT_EDGE_BOTH);
+    if (err < 0) {
+        LOG_WRN("Failed to so configure interrupt for detection pin (%d)", err);
+        return err;
+    }
+
+#endif // HAS_DETECT_GPIO
 
     return 0;
 }
@@ -309,12 +388,78 @@ static int split_central_wired_get_available_source_ids(uint8_t *sources) {
     return 1;
 }
 
+static int split_central_wired_set_enabled(bool enabled) {
+    if (enabled) {
+        begin_rx();
+#if IS_HALF_DUPLEX_MODE
+        k_work_schedule(&rx_done_work, K_MSEC(CONFIG_ZMK_SPLIT_WIRED_HALF_DUPLEX_RX_TIMEOUT));
+#endif
+        return 0;
+#if HAS_DETECT_GPIO
+    } else {
+#if IS_HALF_DUPLEX_MODE
+        k_work_cancel_delayable(&rx_done_work);
+#endif
+        stop_rx();
+        return 0;
+#endif
+    }
+
+    return -ENOTSUP;
+}
+
+#if HAS_DETECT_GPIO
+
+static zmk_split_transport_central_status_changed_cb_t transport_status_cb;
+
+static int
+split_central_wired_set_status_callback(zmk_split_transport_central_status_changed_cb_t cb) {
+    transport_status_cb = cb;
+    return 0;
+}
+
+static struct zmk_split_transport_status split_central_wired_get_status() {
+    int detected = gpio_pin_get_dt(&detect_gpio);
+    if (detected > 0) {
+        return (struct zmk_split_transport_status){
+            .available = true,
+            .enabled = true, // Track this
+            .connections = ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_ALL_CONNECTED,
+
+        };
+    } else {
+        return (struct zmk_split_transport_status){
+            .available = false,
+            .enabled = true, // Track this
+            .connections = ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_DISCONNECTED,
+
+        };
+    }
+}
+
+#endif // HAS_DETECT_GPIO
+
 static const struct zmk_split_transport_central_api central_api = {
     .send_command = split_central_wired_send_command,
     .get_available_source_ids = split_central_wired_get_available_source_ids,
+    .set_enabled = split_central_wired_set_enabled,
+#if HAS_DETECT_GPIO
+    .set_status_callback = split_central_wired_set_status_callback,
+    .get_status = split_central_wired_get_status,
+#endif // HAS_DETECT_GPIO
 };
 
-ZMK_SPLIT_TRANSPORT_CENTRAL_REGISTER(wired_central, &central_api);
+ZMK_SPLIT_TRANSPORT_CENTRAL_REGISTER(wired_central, &central_api, CONFIG_ZMK_SPLIT_WIRED_PRIORITY);
+
+#if HAS_DETECT_GPIO
+
+static void notify_transport_status(void) {
+    if (transport_status_cb) {
+        transport_status_cb(&wired_central, split_central_wired_get_status());
+    }
+}
+
+#endif
 
 static void publish_events_work(struct k_work *work) {
 
