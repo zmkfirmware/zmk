@@ -7,35 +7,15 @@ sidebar_label: Leader Key
 
 The leader key behavior when triggered will capture all following key presses and trigger a leader sequence's behavior if pressed.
 
-### Behavior Binding
-
-- Reference: `&leader`
-
-Example:
-
-```
-&leader
-```
-
 ### Configuration
 
 #### `timeout-ms`
 
 Defines the amount of time to wait to trigger a completed leader sequence. Defaults to no timeout and will wait indefinitely.
 
-To change the timeout term, you can update the existing behavior:
+#### `overlap-timeout-ms`
 
-```
-&leader {
-    timeout-ms = <500>;
-};
-
-/ {
-    keymap {
-        ...
-    };
-};
-```
+Defines the amount of time to wait to trigger a completed leader sequence after an overlapping sequence is completed. Defaults to 200ms.
 
 ### Leader Sequences
 
@@ -82,6 +62,25 @@ Sequence behaviors inherit their locality from the position of the leader key. F
 Add the same leader key to both sides to be able to reset either side.
 
 ::::
+
+### Example Usage
+
+```
+leader: leader {
+    compatible = "zmk,behavior-leader-key";
+    binding-cells = <0>;
+
+    seq_b {
+        key-positions = <1 1>;
+        bindings = <&kp B>;
+    };
+
+    seq_c {
+        key-positions = <1>;
+        bindings = <&kp C>;
+    };
+};
+```
 
 ### Advanced usage
 
