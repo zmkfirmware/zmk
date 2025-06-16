@@ -13,7 +13,6 @@
 #include "behavior_sensor_rotate_common.h"
 
 static const struct behavior_driver_api behavior_sensor_rotate_var_driver_api = {
-    .sensor_binding_accept_data = zmk_behavior_sensor_rotate_common_accept_data,
     .sensor_binding_process = zmk_behavior_sensor_rotate_common_process};
 
 #define SENSOR_ROTATE_VAR_INST(n)                                                                  \
@@ -23,10 +22,8 @@ static const struct behavior_driver_api behavior_sensor_rotate_var_driver_api = 
         .tap_ms = DT_INST_PROP(n, tap_ms),                                                         \
         .override_params = true,                                                                   \
     };                                                                                             \
-    static struct behavior_sensor_rotate_data behavior_sensor_rotate_var_data_##n = {};            \
-    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, &behavior_sensor_rotate_var_data_##n,                   \
-                            &behavior_sensor_rotate_var_config_##n, POST_KERNEL,                   \
-                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                   \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, NULL, &behavior_sensor_rotate_var_config_##n,           \
+                            POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                      \
                             &behavior_sensor_rotate_var_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(SENSOR_ROTATE_VAR_INST)
