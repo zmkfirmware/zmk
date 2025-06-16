@@ -25,6 +25,7 @@ static bool leader_status;
 static int32_t press_count;
 static int32_t release_count;
 static int32_t timeout_ms;
+static int32_t overlap_timeout_ms;
 static int32_t active_leader_position;
 static bool first_release;
 static struct k_work_delayable release_timer;
@@ -52,6 +53,7 @@ struct leader_seq_cfg {
 
 struct behavior_leader_key_config {
     int32_t timeout_ms;
+    int32_t overlap_timeout_ms;
     struct leader_seq_cfg *sequences;
     size_t sequences_len;
 };
@@ -188,9 +190,16 @@ static int stop_timer() {
     return timer_cancel_result;
 }
 
-static void reset_timer(int32_t timestamp) {
-    release_at = timestamp + timeout_ms;
+static void reset_timer(int32_t timestamp, bool is_overlap) {
+    int32_t wait_time_ms = timeout_ms;
+
+    if (is_overlap) {
+        wait_time_ms = overlap_timeout_ms;
+    }
+
+    release_at = timestamp + wait_time_ms;
     int32_t ms_left = release_at - k_uptime_get();
+
     if (ms_left > 0) {
         k_work_schedule(&release_timer, K_MSEC(ms_left));
         LOG_DBG("Successfully reset leader timer");
@@ -204,12 +213,13 @@ static void activate_leader_key(const struct behavior_leader_key_config *cfg, ui
     press_count = 0;
     release_count = 0;
     timeout_ms = cfg->timeout_ms;
+    overlap_timeout_ms = cfg->overlap_timeout_ms;
     active_leader_position = position;
     first_release = false;
     active_leader_cfg = cfg;
 
     if (timeout_ms > 0) {
-        reset_timer(k_uptime_get());
+        reset_timer(k_uptime_get(), false);
     }
 
     for (int i = 0; i < CONFIG_ZMK_LEADER_MAX_KEYS_PER_SEQUENCE; i++) {
@@ -217,7 +227,7 @@ static void activate_leader_key(const struct behavior_leader_key_config *cfg, ui
     }
 };
 
-static void zmk_leader_deactivate() {
+static void deactivate_leader_key() {
     LOG_DBG("leader key deactivated");
     leader_status = false;
     clear_candidates();
@@ -227,17 +237,21 @@ static void behavior_leader_key_timer_handler(struct k_work *item) {
     if (!leader_status) {
         return;
     }
+
     if (timer_cancelled) {
         return;
     }
-    LOG_DBG("Leader deactivated due to timeout");
+
+    LOG_DBG("deactivating leader due to timeout");
+
     for (int i = 0; i < num_comp_candidates; i++) {
         if (!completed_sequence_candidates[i]->is_pressed) {
             press_leader_behavior(completed_sequence_candidates[i], k_uptime_get());
             release_leader_behavior(completed_sequence_candidates[i], k_uptime_get());
         }
     }
-    zmk_leader_deactivate();
+
+    deactivate_leader_key();
 }
 
 static int position_state_changed_listener(const zmk_event_t *ev) {
@@ -278,7 +292,7 @@ static int position_state_changed_listener(const zmk_event_t *ev) {
                 return 0;
             }
             if (num_candidates == 0) {
-                zmk_leader_deactivate();
+                deactivate_leader_key();
                 return ZMK_EV_EVENT_HANDLED;
             }
 
@@ -292,12 +306,16 @@ static int position_state_changed_listener(const zmk_event_t *ev) {
                     num_comp_candidates--;
                 }
                 if (num_candidates == 1 && num_comp_candidates == 0) {
-                    zmk_leader_deactivate();
+                    deactivate_leader_key();
                 }
             }
 
-            if (timeout_ms > 0 || num_comp_candidates < num_candidates) {
-                reset_timer(data->timestamp);
+            if (timeout_ms > 0) {
+                reset_timer(data->timestamp, false);
+            }
+
+            if (num_comp_candidates < num_candidates) {
+                reset_timer(data->timestamp, true);
             }
         }
         return ZMK_EV_EVENT_HANDLED;
@@ -343,7 +361,7 @@ ZMK_SUBSCRIPTION(leader, zmk_position_state_changed);
     {                                                                                              \
         .virtual_key_position = ZMK_VIRTUAL_KEY_POSITION_LEADER(__COUNTER__),                      \
         .is_pressed = false,                                                                       \
-        .immediate_trigger = DT_PROP(n, immediate_trigger), \
+        .immediate_trigger = DT_PROP(n, immediate_trigger),                                        \
         .key_position_len = DT_PROP_LEN(n, prop),                                                  \
         .key_positions = {LISTIFY(DT_PROP_LEN(n, prop), SEQUENCE_ITEM, (, ), n, prop)},            \
         .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, n),                                              \
@@ -353,7 +371,8 @@ ZMK_SUBSCRIPTION(leader, zmk_position_state_changed);
     static struct leader_seq_cfg leader_sequences_##n[] = {                                        \
         DT_INST_FOREACH_CHILD_STATUS_OKAY_SEP_VARGS(n, PROP_SEQUENCES, (, ), key_positions)};      \
     static struct behavior_leader_key_config behavior_leader_key_config_##n = {                    \
-        .timeout_ms = DT_INST_PROP(n, timeout_ms),                                                      \
+        .timeout_ms = DT_INST_PROP(n, timeout_ms),                                                 \
+        .overlap_timeout_ms = DT_INST_PROP(n, overlap_timeout_ms),                                 \
         .sequences = leader_sequences_##n,                                                         \
         .sequences_len = ARRAY_SIZE(leader_sequences_##n)};                                        \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_leader_key_init, NULL, NULL,                               \
