@@ -30,6 +30,10 @@ manifest:
           - openthread
           - edtt
           - trusted-firmware-m
+    - name: lvgl
+      revision: f1db87ee98f1810328a8419572fa42a3b5f352ae
+      path: modules/lib/gui/lvgl
+      remote: zmkfirmware
     - name: zmk-studio-messages
       revision: 6cb4c283e76209d59c45fbcb218800cd19e9339d
       path: modules/msgs/zmk-studio-messages
