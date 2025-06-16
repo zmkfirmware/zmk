@@ -82,12 +82,21 @@ Define a new behavior and assign `"on"` or `"off"` to `toggle-mode`:
             #binding-cells = <1>;
             display-name = "Toggle Layer On";
             toggle-mode = "on";
+            locking;
         };
     };
 };
 ```
 
 You can then use `&tog_on` in place of `&tog` whenever you wish to only toggle a layer on, and not toggle it off. An `"off"` version of the behavior can be defined similarly.
+
+## Layer Locking
+
+When the behaviors `&to` and `&tog` toggle a layer on, they will "lock" the layer in the active state. This prevents the layer from being deactivated by any behavior which is not a `&to` or a `&tog`.
+
+In particular, if you activate a layer momentarily using e.g. `&mo 1`, tapping e.g. `&tog 1` as defined above will prevent the layer from deactivating after releasing `&mo 1`. You can then press `&tog 1` again to deactivate the layer.
+
+For custom toggle, to, and momentary layer behaviors, this can be enabled by giving your behavior the `locking;` property.
 
 ## Conditional Layers
 
