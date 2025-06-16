@@ -199,6 +199,7 @@ static void reset_timer(int32_t timestamp) {
 
 static void activate_leader_key(const struct behavior_leader_key_config *cfg, uint32_t position) {
     LOG_DBG("leader key activated");
+
     leader_status = true;
     press_count = 0;
     release_count = 0;
@@ -342,6 +343,7 @@ ZMK_SUBSCRIPTION(leader, zmk_position_state_changed);
     {                                                                                              \
         .virtual_key_position = ZMK_VIRTUAL_KEY_POSITION_LEADER(__COUNTER__),                      \
         .is_pressed = false,                                                                       \
+        .immediate_trigger = DT_PROP(n, immediate_trigger), \
         .key_position_len = DT_PROP_LEN(n, prop),                                                  \
         .key_positions = {LISTIFY(DT_PROP_LEN(n, prop), SEQUENCE_ITEM, (, ), n, prop)},            \
         .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, n),                                              \
@@ -351,7 +353,9 @@ ZMK_SUBSCRIPTION(leader, zmk_position_state_changed);
     static struct leader_seq_cfg leader_sequences_##n[] = {                                        \
         DT_INST_FOREACH_CHILD_STATUS_OKAY_SEP_VARGS(n, PROP_SEQUENCES, (, ), key_positions)};      \
     static struct behavior_leader_key_config behavior_leader_key_config_##n = {                    \
-        .sequences = leader_sequences_##n, .sequences_len = ARRAY_SIZE(leader_sequences_##n)};     \
+        .timeout_ms = DT_INST_PROP(n, timeout_ms),                                                      \
+        .sequences = leader_sequences_##n,                                                         \
+        .sequences_len = ARRAY_SIZE(leader_sequences_##n)};                                        \
     BEHAVIOR_DT_INST_DEFINE(n, behavior_leader_key_init, NULL, NULL,                               \
                             &behavior_leader_key_config_##n, POST_KERNEL,                          \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_leader_key_driver_api);
