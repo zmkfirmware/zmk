@@ -697,12 +697,6 @@ choice CBPRINTF_IMPLEMENTATION
 
 endchoice
 
-DT_COMPAT_ZMK_BEHAVIOR_DYNAMIC_MACRO := zmk,behavior-dynamic-macro
-
-config ZMK_BEHAVIOR_DYNAMIC_MACRO
-    bool
-    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_BEHAVIOR_DYNAMIC_MACRO))
-
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
