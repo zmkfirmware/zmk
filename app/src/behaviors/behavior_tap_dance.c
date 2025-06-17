@@ -158,8 +158,8 @@ static int on_tap_dance_binding_pressed(struct zmk_behavior_binding *binding,
     if (tap_dance->counter < cfg->behavior_count) {
         tap_dance->counter++;
         if (cfg->trigger_each_binding) {
-            behavior_keymap_binding_pressed(&tap_dance->config->behaviors[tap_dance->counter - 1],
-                                            event);
+            zmk_behavior_invoke_binding(&tap_dance->config->behaviors[tap_dance->counter - 1],
+                                        event, true);
             reset_timer(tap_dance, event);
             return ZMK_BEHAVIOR_OPAQUE;
         }
@@ -183,8 +183,8 @@ static int on_tap_dance_binding_released(struct zmk_behavior_binding *binding,
     }
     tap_dance->is_pressed = false;
     if (tap_dance->config->trigger_each_binding && !tap_dance->tap_dance_decided) {
-        behavior_keymap_binding_released(&tap_dance->config->behaviors[tap_dance->counter - 1],
-                                         event);
+        zmk_behavior_invoke_binding(&tap_dance->config->behaviors[tap_dance->counter - 1], event,
+                                    false);
     }
     if (tap_dance->tap_dance_decided) {
         release_tap_dance_behavior(tap_dance, event.timestamp);
