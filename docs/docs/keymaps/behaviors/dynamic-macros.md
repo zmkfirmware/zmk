@@ -40,8 +40,7 @@ A dynamic macro definition looks like:
 ```
 / {
     macros {
-        dyn-macro: dyn-macro {
-            label = "ZM_dynamic-macro";
+        dm: dm {
             compatible = "zmk,behavior-dynamic-macro";
             #binding-cells = <1>;
         };
@@ -49,12 +48,12 @@ A dynamic macro definition looks like:
 };
 ```
 
-The macro can then be bound in your keymap by referencing it by the label `dyn-macro` followed by PLAY or RECORD, e.g.:
+The macro can then be bound in your keymap by referencing it by the label `dm` followed by PLAY or RECORD, e.g.:
 
 ```
     / {
     keymap {
-        &dyn-macro PLAY &dyn-macro RECORD
+        &dm PLAY &dm RECORD
         ...
     };
 };
