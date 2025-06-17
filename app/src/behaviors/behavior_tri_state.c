@@ -66,8 +66,12 @@ static void reset_timer(int32_t timestamp, struct active_tri_state *tri_state) {
 }
 
 void trigger_end_behavior(struct active_tri_state *si) {
-    zmk_behavior_queue_add(si->position, si->config->behaviors[2], true, si->config->tap_ms);
-    zmk_behavior_queue_add(si->position, si->config->behaviors[2], false, 0);
+    struct zmk_behavior_binding_event ev = {
+        .position = si->position,
+        .timestamp = k_uptime_get()
+    };
+    zmk_behavior_queue_add(&ev, si->config->behaviors[2], true, si->config->tap_ms);
+    zmk_behavior_queue_add(&ev, si->config->behaviors[2], false, 0);
 }
 
 void behavior_tri_state_timer_handler(struct k_work *item) {
