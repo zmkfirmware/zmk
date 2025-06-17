@@ -66,10 +66,7 @@ static void reset_timer(int32_t timestamp, struct active_tri_state *tri_state) {
 }
 
 void trigger_end_behavior(struct active_tri_state *si) {
-    struct zmk_behavior_binding_event ev = {
-        .position = si->position,
-        .timestamp = k_uptime_get()
-    };
+    struct zmk_behavior_binding_event ev = {.position = si->position, .timestamp = k_uptime_get()};
     zmk_behavior_queue_add(&ev, si->config->behaviors[2], true, si->config->tap_ms);
     zmk_behavior_queue_add(&ev, si->config->behaviors[2], false, 0);
 }
@@ -277,7 +274,7 @@ static int tri_state_layer_state_changed_listener(const zmk_event_t *eh) {
 #define _TRANSFORM_ENTRY(idx, node) ZMK_KEYMAP_EXTRACT_BINDING(idx, node)
 
 #define TRANSFORMED_BINDINGS(node)                                                                 \
-    { LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, (, ), DT_DRV_INST(node)) }
+    {LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, (, ), DT_DRV_INST(node))}
 
 #define IF_BIT(n, prop, i) BIT(DT_PROP_BY_IDX(n, prop, i)) |
 
