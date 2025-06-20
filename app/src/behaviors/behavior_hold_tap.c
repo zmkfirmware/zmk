@@ -525,6 +525,10 @@ static int release_binding(struct active_hold_tap *hold_tap) {
     if (hold_tap->status == STATUS_HOLD_TIMER || hold_tap->status == STATUS_HOLD_INTERRUPT) {
         return release_hold_binding(hold_tap);
     } else if (hold_tap->status == STATUS_RETRO_TAP) {
+        if (hold_tap->config->hold_while_undecided) {
+            release_hold_binding(hold_tap);
+        }
+
         press_retro_tap_binding(hold_tap);
         return release_retro_tap_binding(hold_tap);
     } else {
