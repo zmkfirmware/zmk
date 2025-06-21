@@ -10,7 +10,6 @@
     behaviors {
         /omit-if-no-ref/ last_dev: last_device {
             compatible = "zmk,behavior-last-device";
-            label = "LAST_DEVICE";
             #binding-cells = <0>;
         };
     };

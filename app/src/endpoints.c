@@ -31,6 +31,10 @@ static struct zmk_endpoint_instance last_instance = {};
 static enum zmk_transport preferred_transport =
     ZMK_TRANSPORT_USB; /* Used if multiple endpoints are ready */
 
+int zmk_preferred_transport() {
+    return preferred_transport;
+}
+
 static void update_current_endpoint(void);
 
 #if IS_ENABLED(CONFIG_SETTINGS)
