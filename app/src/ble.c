@@ -61,6 +61,7 @@ enum advertising_type {
                     BT_GAP_ADV_FAST_INT_MIN_2, BT_GAP_ADV_FAST_INT_MAX_2, NULL)
 
 static struct zmk_ble_profile profiles[ZMK_BLE_PROFILE_COUNT];
+static uint8_t last_profile;
 static uint8_t active_profile;
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
@@ -239,6 +240,7 @@ void zmk_ble_clear_all_bonds(void) {
     update_advertising();
 };
 
+int zmk_ble_last_profile_index() { return last_profile; }
 int zmk_ble_active_profile_index(void) { return active_profile; }
 
 int zmk_ble_profile_index(const bt_addr_le_t *addr) {
@@ -276,6 +278,7 @@ int zmk_ble_prof_select(uint8_t index) {
         return 0;
     }
 
+    last_profile = active_profile;
     active_profile = index;
     ble_save_profile();
 
