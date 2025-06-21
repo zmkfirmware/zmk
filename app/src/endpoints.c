@@ -52,9 +52,7 @@ static struct zmk_endpoint_instance last_instance = {};
 // Transport to use if multiple endpoints are ready
 static enum zmk_transport preferred_transport = DEFAULT_TRANSPORT;
 
-int zmk_preferred_transport() {
-    return preferred_transport;
-}
+int zmk_preferred_transport() { return preferred_transport; }
 
 static void update_current_endpoint(void);
 

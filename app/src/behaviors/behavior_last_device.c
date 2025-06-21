@@ -91,7 +91,8 @@ ZMK_SUBSCRIPTION(last_device_listener, zmk_endpoint_changed);
 ZMK_SUBSCRIPTION(last_device_listener, zmk_ble_active_profile_changed);
 
 #define LAST_DEVICE_INST(n)                                                                        \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_last_device_init, NULL, NULL, NULL, POST_KERNEL,             \
-                          CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_last_device_driver_api);
+    BEHAVIOR_DT_INST_DEFINE(n, behavior_last_device_init, NULL, NULL, NULL, POST_KERNEL,           \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                   \
+                            &behavior_last_device_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(LAST_DEVICE_INST)
