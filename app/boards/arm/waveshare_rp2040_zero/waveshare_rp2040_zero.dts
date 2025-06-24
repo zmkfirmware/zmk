@@ -1,0 +1,162 @@
+/dts-v1/;
+
+#include <rpi_pico/rp2040.dtsi>
+#include "waveshare_rp2040_zero_pinctrl.dtsi"
+#include <freq.h>
+#include <zephyr/dt-bindings/i2c/i2c.h>
+
+
+/ {
+    model = "Waveshare RP2040 Zero Board";
+    compatible = "waveshare,rp2040-zero", "raspberrypi,rp2040";
+
+
+    chosen {
+        zephyr,code-partition = &code_partition;
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        led: led_0 {
+            gpios = <&gpio0 16 GPIO_ACTIVE_LOW>;
+            label = "LED";
+        };
+    };
+
+    /* These aliases are provided for compatibility with samples */
+    aliases {
+        led0 = &led;
+    };
+
+    xtal_clk: xtal-clk {
+        compatible = "fixed-clock";
+        clock-frequency = <12000000>;
+        #clock-cells = <0>;
+    };
+
+    aliases {
+        watchdog0 = &wdt0;
+    };
+
+
+    zero_header: connector {
+        compatible = "raspberrypi,pico-header";
+	#gpio-cells = <2>;
+	gpio-map-mask = <0xffffffff 0xffffffc0>;
+	gpio-map-pass-thru = <0 0x3f>;
+	gpio-map = <0 0 &gpio0 0 0>,	/* GP0 */
+		<1 0 &gpio0 1 0>,	/* GP1 */
+		<2 0 &gpio0 2 0>,	/* GP2 */
+		<3 0 &gpio0 3 0>,	/* GP3 */
+		<4 0 &gpio0 4 0>,	/* GP4 */
+		<5 0 &gpio0 5 0>,	/* GP5 */
+		<6 0 &gpio0 6 0>,	/* GP6 */
+		<7 0 &gpio0 7 0>,	/* GP7 */
+		<8 0 &gpio0 8 0>,	/* GP8 */
+		<9 0 &gpio0 9 0>,	/* GP9 */
+		<10 0 &gpio0 10 0>,	/* GP10 */
+		<11 0 &gpio0 11 0>,	/* GP11 */
+		<12 0 &gpio0 12 0>,	/* GP12 */
+		<13 0 &gpio0 13 0>,	/* GP13 */
+		<14 0 &gpio0 14 0>,	/* GP14 */
+		<15 0 &gpio0 15 0>,	/* GP15 */
+		<16 0 &gpio0 16 0>,	/* GP16 */
+		<17 0 &gpio0 17 0>,	/* GP17 */
+		<18 0 &gpio0 18 0>,	/* GP18 */
+		<19 0 &gpio0 19 0>,	/* GP19 */
+		<20 0 &gpio0 20 0>,	/* GP20 */
+		<21 0 &gpio0 21 0>,	/* GP21 */
+		<22 0 &gpio0 22 0>,	/* GP22 */
+		<23 0 &gpio0 23 0>,	/* GP23 */
+		<24 0 &gpio0 24 0>,	/* GP24 */
+		<25 0 &gpio0 25 0>,	/* GP25 */
+		<26 0 &gpio0 26 0>,	/* GP26 */
+		<27 0 &gpio0 27 0>,	/* GP27 */
+		<28 0 &gpio0 28 0>,	/* GP28 */
+		<29 0 &gpio0 29 0>;	/* GP29 */
+    };
+
+};
+
+
+
+&flash0 {
+    /* 2MB of flash minus the 0x100 used for
+     * the second stage bootloader
+     */
+    reg = <0x10000000 DT_SIZE_M(2)>;
+
+    partitions {
+        compatible = "fixed-partitions";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+        /*
+	 * Start at the beginning of usable flash, 8MB minus the
+	 * second stage space and the 16 KiB reserved for settings
+	 */
+	code_partition: partition@100 {
+	    label = "code";
+	    reg = <0x100 (DT_SIZE_M(2) - DT_SIZE_K(16))>;
+	    read-only;
+	};
+
+        /*
+	 * The final 16 KiB is reserved for the application.
+	 * Storage partition may be used by FCB or LittleFS.
+	 */
+        storage_partition: partition@7fbe00 {
+	    label = "storage";
+	    reg = <0x007fbe00 DT_SIZE_K(16)>;
+	};
+    };
+};
+
+&uart0 {
+    current-speed = <115200>;
+    pinctrl-0 = <&uart0_default>;
+    pinctrl-names = "default";
+};
+
+&spi0 {
+    pinctrl-0 = <&spi0_default>;
+    pinctrl-names = "default";
+    clock-frequency = <DT_FREQ_M(8)>;
+};
+
+&adc {
+    status = "okay";
+    pinctrl-0 = <&adc_default>;
+    pinctrl-names = "default";
+};
+
+&i2c0 {
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-names = "default";
+    clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&timer {
+    status = "okay";
+};
+
+&wdt0 {
+    status = "okay";
+};
+
+zephyr_udc0: &usbd {
+    status = "okay";
+};
+
+// &vreg {
+// 	regulator-always-on;
+// 	regulator-allowed-modes = <REGULATOR_RPI_PICO_MODE_NORMAL>;
+// };
+
+// zero_spi: &spi0 {};

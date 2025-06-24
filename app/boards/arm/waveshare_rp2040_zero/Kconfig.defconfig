@@ -1,0 +1,15 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_WAVESHARE_RP2040_ZERO
+
+config BOARD
+    default "waveshare_rp2040_zero"
+
+config RP2_FLASH_W25Q080
+    default y
+
+config ZMK_USB
+    default y
+
+endif # BOARD_WAVESHARE_RP2040_ZERO
