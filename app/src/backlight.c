@@ -20,6 +20,16 @@
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
 
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_FIXED_POINT) ||                      \
+    IS_ENABLED(CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_TWO_POINT_TWO) ||                    \
+    IS_ENABLED(CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_SRGB)
+#define GAMMA_CORRECTION
+#define GAMMA_CORRECTION_EXPONENT_FLOAT
+#include <math.h>
+#elif IS_ENABLED(CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_TWO)
+#define GAMMA_CORRECTION
+#endif
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 BUILD_ASSERT(DT_HAS_CHOSEN(zmk_backlight),
@@ -42,8 +52,43 @@ struct backlight_state {
 static struct backlight_state state = {.brightness = CONFIG_ZMK_BACKLIGHT_BRT_START,
                                        .on = IS_ENABLED(CONFIG_ZMK_BACKLIGHT_ON_START)};
 
+#ifdef GAMMA_CORRECTION
+static uint8_t gamma_correct(uint8_t brightness) {
+#ifdef GAMMA_CORRECTION_EXPONENT_FLOAT
+
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_FIXED_POINT)
+    float gamma = ((float)CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_VALUE) / 65536.f;
+#elif IS_ENABLED(CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_TWO_POINT_TWO)
+    float gamma = 2.2f;
+#else // CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_SRGB
+    float gamma = 2.4f;
+#endif
+
+    float f_brightness = brightness / ((float)BRT_MAX);
+
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_SRGB)
+    float f_corrected = (f_brightness <= 0.04045f) ? (f_brightness / 12.92f)
+                                                   : powf((f_brightness + 0.055f) / 1.055f, gamma);
+#else
+    float f_corrected = powf(f_brightness, gamma);
+#endif
+
+    uint8_t corrected = (uint8_t)(f_corrected * BRT_MAX + 0.5f);
+#else // !GAMMA_CORRECTION_EXPONENT_FLOAT
+    uint8_t corrected = (brightness * brightness) / BRT_MAX;
+#endif
+
+    corrected = CLAMP(corrected, 0, BRT_MAX);
+    LOG_DBG("Backlight gamma correction: %d -> %d", brightness, corrected);
+    return corrected;
+}
+#endif // GAMMA_CORRECTION
+
 static int zmk_backlight_update(void) {
     uint8_t brt = zmk_backlight_get_brt();
+#ifdef GAMMA_CORRECTION
+    brt = gamma_correct(brt);
+#endif
     LOG_DBG("Update backlight brightness: %d%%", brt);
 
     for (int i = 0; i < BACKLIGHT_NUM_LEDS; i++) {

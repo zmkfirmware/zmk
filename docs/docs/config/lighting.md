@@ -77,6 +77,25 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 The `*_START` settings only determine the initial backlight state. Any changes you make with the [backlight behavior](../keymaps/behaviors/backlight.md) are saved to flash after a one minute delay and will be used after that.
 :::
 
+#### Backlight gamma correction
+
+The perceived brightness of the backlight LEDs is nonlinear. With a fixed step size, BL_INC/DEC give a linear change in brightness, which is too steep at low brightness and too shallow at high brightness.
+By enabling exectly one of the following options, a gamma correction will be applied to the linear brightness values before they are sent to the LED hardware.
+
+| Option                                                         | Type | Description                                        | Default |
+| -------------------------------------------------------------- | ---- | -------------------------------------------------- | ------- |
+| `CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_TWO`           | bool | Enable backlight gamma correction, exponent 2      | n       |
+| `CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_TWO_POINT_TWO` | bool | Enable backlight gamma correction, exponent 2.2    | n       |
+| `CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_SRGB`          | bool | Enable backlight gamma correction, sRGB curve      | n       |
+| `CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_FIXED_POINT`   | bool | Enable backlight gamma correction, custom exponent | n       |
+
+The `_TWO` option uses only integer math and may require fewer resources. It is the only option provided if the floating point math library is not available.
+The `_FIXED_POINT` option enables a further setting:
+
+| Option                                                 | Type | Description                                  | Default      |
+| ------------------------------------------------------ | ---- | -------------------------------------------- | ------------ |
+| `CONFIG_ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_VALUE` | int  | Backlight gamma correction exponent \* 65536 | 144179 (2.2) |
+
 ### Devicetree
 
 Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)

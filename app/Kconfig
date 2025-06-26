@@ -360,6 +360,45 @@ config ZMK_BACKLIGHT_AUTO_OFF_IDLE
 config ZMK_BACKLIGHT_AUTO_OFF_USB
     bool "Turn off backlight when USB is disconnected"
 
+choice ZMK_BACKLIGHT_GAMMA_CORRECTION
+    prompt "Backlight gamma correction"
+    optional
+
+config ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_TWO
+    bool "Backlight gamma correction exponent 2.0"
+    help
+      Exponent is fixed at 2.0.
+      Cheaper to calculate than the other options.
+
+config ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_TWO_POINT_TWO
+    bool "Backlight gamma correction exponent 2.2"
+    depends on !CONFIG_MINIMAL_LIBC
+    help
+      Exponent is fixed at 2.2.
+
+config ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_SRGB
+    bool "Backlight gamma correction exponent SRGB"
+    depends on !CONFIG_MINIMAL_LIBC
+    help
+      Gamma curve is the sRGB transfer function
+
+config ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_FIXED_POINT
+    bool "Backlight gamma correction exponent fixed point"
+    depends on !CONFIG_MINIMAL_LIBC
+    help
+      Exponent is a fixed point value given in
+      ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_VALUE
+
+endchoice
+
+if ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_FIXED_POINT
+
+config ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_VALUE
+    int "Gamma correction exponent (default 2.2) multiplied by 65536"
+    default 144179
+
+endif # ZMK_BACKLIGHT_GAMMA_CORRECTION_EXPONENT_FIXED_POINT
+
 endif # ZMK_BACKLIGHT
 
 endmenu # Display/LED Options
