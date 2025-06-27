@@ -102,7 +102,7 @@ static int zmk_battery_update(const struct device *battery) {
     if (last_state_of_charge != state_of_charge.val1) {
         last_state_of_charge = state_of_charge.val1;
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID) && !IS_ENABLED(CONFIG_ZMK_SPLIT)
         zmk_hid_battery_set(last_state_of_charge);
         zmk_usb_hid_send_battery_report();
 #endif
