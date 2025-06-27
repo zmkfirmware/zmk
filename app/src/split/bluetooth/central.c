@@ -52,10 +52,10 @@ struct peripheral_slot {
     struct bt_gatt_subscribe_params sensor_subscribe_params;
     struct bt_gatt_discover_params sub_discover_params;
     uint16_t run_behavior_handle;
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
     struct bt_gatt_subscribe_params batt_lvl_subscribe_params;
     struct bt_gatt_read_params batt_lvl_read_params;
-#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
+#endif /* IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING) */
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     uint16_t update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -391,7 +391,7 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
     return BT_GATT_ITER_CONTINUE;
 }
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
 
 static uint8_t split_central_battery_level_notify_func(struct bt_conn *conn,
                                                        struct bt_gatt_subscribe_params *params,
@@ -475,7 +475,7 @@ static uint8_t split_central_battery_level_read_func(struct bt_conn *conn, uint8
     return BT_GATT_ITER_CONTINUE;
 }
 
-#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
+#endif /* IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING) */
 
 static int split_central_subscribe(struct bt_conn *conn, struct bt_gatt_subscribe_params *params) {
     atomic_set(params->flags, BT_GATT_SUBSCRIBE_FLAG_NO_RESUB);
@@ -620,7 +620,7 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
             LOG_DBG("Found update HID indicators handle");
             slot->update_hid_indicators = bt_gatt_attr_value_handle(attr);
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
         } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                                 BT_UUID_BAS_BATTERY_LEVEL)) {
             LOG_DBG("Found battery level characteristics");
@@ -636,7 +636,7 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
             slot->batt_lvl_read_params.single.handle = bt_gatt_attr_value_handle(attr);
             slot->batt_lvl_read_params.single.offset = 0;
             bt_gatt_read(conn, &slot->batt_lvl_read_params);
-#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
+#endif /* IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING) */
         }
         break;
     }
@@ -695,9 +695,9 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     subscribed = subscribed && slot->update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
     subscribed = subscribed && slot->batt_lvl_subscribe_params.value_handle;
-#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
+#endif /* IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING) */
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
     for (size_t i = 0; i < ARRAY_SIZE(peripheral_input_slots); i++) {
         if (input_slot_is_open(i) || input_slot_is_pending(i)) {
@@ -956,7 +956,7 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
 
     LOG_DBG("Disconnected: %s (reason %d)", addr, reason);
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
     struct peripheral_event_wrapper ev = {
         .source = peripheral_slot_index_for_conn(conn),
         .event = {.type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT,
@@ -970,7 +970,7 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
     //     .source = peripheral_slot_index_for_conn(conn), .state_of_charge = 0};
     // k_msgq_put(&peripheral_batt_lvl_msgq, &ev, K_NO_WAIT);
     // k_work_submit(&peripheral_batt_lvl_work);
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
 
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
     release_peripheral_input_subs(conn);
