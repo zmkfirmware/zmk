@@ -335,6 +335,32 @@ config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
     bool "Turn off RGB underglow when USB is disconnected"
     depends on USB_DEVICE_STACK
 
+if ZMK_BATTERY_REPORTING
+config ZMK_RGB_UNDERGLOW_BATTERY_STATUS
+    bool "Reflect the battery status with underglow"
+    default n
+
+config ZMK_RGB_UNDERGLOW_BATTERY_CRIT
+    int "Threshold for showing the RGB value for critically low battery charge"
+    range 0 100
+    default 5
+
+config ZMK_RGB_UNDERGLOW_BATTERY_LOW
+    int "Threshold for showing the RGB value for low battery charge"
+    range 0 100
+    default 15
+
+#ZMK_BATTERY_REPORTING
+endif
+
+if ZMK_BLE
+config ZMK_RGB_UNDERGLOW_BLE_STATUS
+    bool "Reflect the ble connection states with underglow"
+    default n
+
+#ZMK_BLE
+endif
+
 endif # ZMK_RGB_UNDERGLOW
 
 menuconfig ZMK_BACKLIGHT
