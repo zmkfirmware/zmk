@@ -56,8 +56,9 @@ enum advertising_type {
 #define CURR_ADV(adv) (adv << 4)
 
 #define ZMK_ADV_CONN_NAME                                                                          \
-    BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_ONE_TIME, BT_GAP_ADV_FAST_INT_MIN_2, \
-                    BT_GAP_ADV_FAST_INT_MAX_2, NULL)
+    BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_ONE_TIME | BT_LE_ADV_OPT_USE_NAME |  \
+                        BT_LE_ADV_OPT_FORCE_NAME_IN_AD,                                            \
+                    BT_GAP_ADV_FAST_INT_MIN_2, BT_GAP_ADV_FAST_INT_MAX_2, NULL)
 
 static struct zmk_ble_profile profiles[ZMK_BLE_PROFILE_COUNT];
 static uint8_t active_profile;
@@ -65,10 +66,11 @@ static uint8_t active_profile;
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
-BUILD_ASSERT(DEVICE_NAME_LEN <= 16, "ERROR: BLE device name is too long. Max length: 16");
+BUILD_ASSERT(
+    DEVICE_NAME_LEN <= CONFIG_BT_DEVICE_NAME_MAX,
+    "ERROR: BLE device name is too long. Max length: " STRINGIFY(CONFIG_BT_DEVICE_NAME_MAX));
 
-static const struct bt_data zmk_ble_ad[] = {
-    BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
+static struct bt_data zmk_ble_ad[] = {
     BT_DATA_BYTES(BT_DATA_GAP_APPEARANCE, 0xC1, 0x03),
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
     BT_DATA_BYTES(BT_DATA_UUID16_SOME, 0x12, 0x18, /* HID Service */
@@ -76,7 +78,7 @@ static const struct bt_data zmk_ble_ad[] = {
                   ),
 };
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
 static bt_addr_le_t peripheral_addrs[ZMK_SPLIT_BLE_PERIPHERAL_COUNT];
 
@@ -335,7 +337,27 @@ struct bt_conn *zmk_ble_active_profile_conn(void) {
 
 char *zmk_ble_active_profile_name(void) { return profiles[active_profile].name; }
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+int zmk_ble_set_device_name(char *name) {
+    // Copy new name to advertising parameters
+    int err = bt_set_name(name);
+    LOG_DBG("New device name: %s", name);
+    if (err) {
+        LOG_ERR("Failed to set new device name (err %d)", err);
+        return err;
+    }
+    if (advertising_status == ZMK_ADV_CONN) {
+        // Stop current advertising so it can restart with new name
+        err = bt_le_adv_stop();
+        advertising_status = ZMK_ADV_NONE;
+        if (err) {
+            LOG_ERR("Failed to stop advertising (err %d)", err);
+            return err;
+        }
+    }
+    return update_advertising();
+}
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
 int zmk_ble_put_peripheral_addr(const bt_addr_le_t *addr) {
     for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
@@ -359,10 +381,11 @@ int zmk_ble_put_peripheral_addr(const bt_addr_le_t *addr) {
             LOG_DBG("Storing peripheral %s in slot %d", addr_str, i);
             bt_addr_le_copy(&peripheral_addrs[i], addr);
 
+#if IS_ENABLED(CONFIG_SETTINGS)
             char setting_name[32];
             sprintf(setting_name, "ble/peripheral_addresses/%d", i);
             settings_save_one(setting_name, addr, sizeof(bt_addr_le_t));
-
+#endif // IS_ENABLED(CONFIG_SETTINGS)
             return i;
         }
     }
@@ -423,7 +446,7 @@ static int ble_profiles_handle_set(const char *name, size_t len, settings_read_c
             return err;
         }
     }
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     else if (settings_name_steq(name, "peripheral_addresses", &next) && next) {
         if (len != sizeof(bt_addr_le_t)) {
             return -EINVAL;
@@ -659,7 +682,7 @@ static int zmk_ble_complete_startup(void) {
         char setting_name[15];
         sprintf(setting_name, "ble/profiles/%d", i);
 
-        err = settings_delete(setting_name);
+        int err = settings_delete(setting_name);
         if (err) {
             LOG_ERR("Failed to delete setting: %d", err);
         }
@@ -671,7 +694,7 @@ static int zmk_ble_complete_startup(void) {
         char setting_name[32];
         sprintf(setting_name, "ble/peripheral_addresses/%d", i);
 
-        err = settings_delete(setting_name);
+        int err = settings_delete(setting_name);
         if (err) {
             LOG_ERR("Failed to delete setting: %d", err);
         }

@@ -1,0 +1,268 @@
+---
+title: Container
+sidebar_label: Container
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+## Source Code
+
+First, you'll need to clone the ZMK source repository into your local file system if you haven't already.
+Open a terminal and navigate to the folder on your local machine where you would like to place your `zmk`
+directory, then run the following command:
+
+```sh
+git clone https://github.com/zmkfirmware/zmk.git
+```
+
+## Installing Development Tools
+
+<Tabs groupId="container"
+      queryString
+      defaultValue="vsCode"
+      values={[
+        {label: 'VS Code', value: 'vsCode'},
+        {label: 'Dev Container CLI', value: 'cli'},
+        {label: 'Podman', value: 'podman'}
+      ]}>
+  <TabItem value="vsCode">
+    :::note
+    This approach is documented for
+    [VS Code](https://github.com/microsoft/vscode) not
+    [Code OSS](https://github.com/microsoft/vscode/wiki/Differences-between-the-repository-and-Visual-Studio-Code).
+    :::
+
+    1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+       for your operating system.
+    2. Install [VS Code](https://code.visualstudio.com/).
+    3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+
+  </TabItem>
+  <TabItem value="cli">
+    1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+       for your operating system.
+    2. Install the [Dev Container CLI](https://github.com/devcontainers/cli).
+  </TabItem>
+  <TabItem value="podman">
+    1. Install Podman for your operating system:
+        - [Podman CLI](https://podman.io/docs/installation)
+        - [Podman Desktop](https://podman-desktop.io/docs/installation)
+
+    :::warning
+    Please follow the installation instructions carefully. If you do not have
+    a working **Podman machine**, executing the commands below won't be
+    possible.
+    :::
+
+  </TabItem>
+</Tabs>
+
+## Creating Volumes
+
+To build from a `zmk-config` or with additional modules, it is necessary to
+first make them available by creating volumes.
+
+<Tabs
+  groupId="container"
+  queryString
+  defaultValue="vsCode"
+  values={[
+    { label: "Docker", value: "vsCode" },
+    { label: "Podman", value: "podman" },
+  ]}
+>
+  <TabItem value="vsCode">
+    When setting up the container, either using
+    [VS Code](https://code.visualstudio.com/) or the
+    [Dev Container CLI](https://github.com/devcontainers/cli), the volumes will
+    automatically be mounted.
+
+    #### Zmk-Config
+    ```sh
+    docker volume create --driver local -o o=bind -o type=none \
+      -o device="/absolute/path/to/zmk-config/" zmk-config
+    ```
+
+    #### Modules
+    ```sh
+    docker volume create --driver local -o o=bind -o type=none \
+      -o device="/absolute/path/to/zmk-modules/parent/" zmk-modules
+    ```
+
+  </TabItem>
+  <TabItem value="podman">
+    #### Zmk-Config
+    ```sh
+    podman volume create --driver local -o o=bind -o type=none \
+     -o device="/absolute/path/to/zmk-config/" zmk-config
+    ```
+
+    #### Modules
+    ```sh
+    podman volume create --driver local -o o=bind -o type=none \
+      -o device="/absolute/path/to/zmk-modules/parent/" zmk-modules
+    ```
+
+  </TabItem>
+</Tabs>
+
+Once this is done, you can refer to the `zmk-config` with
+`/workspaces/zmk-config` and `/workspaces/zmk-modules` to the modules instead of
+using their full path like it is shown in the
+[build commands](../build-flash.mdx), since these are the locations they were
+mounted to in the container.
+
+:::note
+When changing the configuration or modules directory, new volumes have to be
+created and mounted. Accordingly, you first have to remove the old ones.
+
+<Tabs
+  groupId="container"
+  queryString
+  defaultValue="vsCode"
+  values={[
+    { label: "Docker", value: "vsCode" },
+    { label: "Podman", value: "podman" },
+  ]}
+>
+  <TabItem value="vsCode">
+
+    ```sh
+    docker ps                    # List containers
+    docker stop "<container-id>" # Stop the container
+    docker rm   "<container-id>" # Remove the container
+
+    docker volume ls                 # List volumes
+    docker volume rm "<volume-name>" # Remove volume
+    ```
+
+  </TabItem>
+  <TabItem value="podman">
+
+    ```sh
+    podman ps                    # List containers
+    podman stop "<container-id>" # Stop the container
+    podman rm   "<container-id>" # Remove the container
+
+    podman volume ls                 # List volumes
+    podman volume rm "<volume-name>" # Remove volume
+    ```
+
+  </TabItem>
+</Tabs>
+:::
+
+## Initialize Container
+
+<Tabs groupId="container"
+      queryString
+      defaultValue="vsCode"
+      values={[
+        {label: 'VS Code', value: 'vsCode'},
+        {label: 'Dev Container CLI', value: 'cli'},
+        {label: 'Podman', value: 'podman'}
+      ]}>
+  <TabItem value="vsCode">
+    Open the `zmk` checkout directory in VS Code. The repository includes a
+    configuration for containerized development. Therefore, an alert will pop
+    up:
+
+    ![VS Code Dev Container Configuration Alert](../../../assets/dev-setup/vscode_devcontainer.png)
+
+    Click `Reopen in Container` to reopen the VS Code with the running
+    container. If the alert fails to pop up or you accidentally close it, you
+    can perform the same action by pressing the following keys based on your
+    operating system and selecting `Remote: Show Remote Menu`:
+
+    - **Windows/Linux**: `Ctrl + Shift + P`
+    - **MacOs**: `Cmd + Shift + P`
+
+    The first time you do this on your machine, it will pull down the Docker
+    image from the registry and build the container. **Subsequent launches are
+    much faster!**
+
+  </TabItem>
+  <TabItem value="cli">
+    First, make sure that the
+    [Dev Container CLI](https://github.com/devcontainers/cli) is installed by
+    running:
+
+    ```sh
+    devcontainer --version
+    ```
+
+    To be able to start the [Dev Container](https://containers.dev/), the
+    [Dev Container CLI](https://github.com/devcontainers/cli) has to know where
+    the `devcontainer.json` is located. This can be done using the
+    `--workspace-folder` option:
+
+    ```sh
+    devcontainer up --workspace-folder "/absolute/path/to/zmk"
+    ```
+
+    The first time you do this on your machine, it will pull down the Docker
+    image from the registry and build the container. **Subsequent launches are
+    much faster!**
+
+    Once the container is running, you can connect to it by using its container
+    ID. This allows you to execute commands inside the container:
+
+    ```sh
+    docker ps                                                   # List containers
+    docker exec -w /workspaces/zmk -it <container_id> /bin/bash # Connect
+    ```
+
+  </TabItem>
+  <TabItem value="podman">
+    First, make sure that Podman is installed by running:
+
+    ```sh
+    podman --version
+    ```
+
+    Since Podman is largely compatible with Docker, it is possible to use the
+    Dockerfile provided for use with Dev Containers for building a container
+    image.
+
+    ```sh
+    podman build -t <container-name> -f Dockerfile </path/to/.devcontainer>
+    ```
+
+    Once this is done, the container can be started with the `podman run`
+    command. Depending on which volumes you are using, you might have to remove
+    mounting options.
+
+    ```sh
+    podman run -it --rm \
+      --security-opt label=disable \
+      --workdir /workspaces/zmk \
+      -v /path/to/zmk:/workspaces/zmk \
+      -v /path/to/zmk-config:/workspaces/zmk-config \   # Removeable
+      -v /path/to/zmk-modules:/workspaces/zmk-modules \ # Removeable
+      -p 3000:3000 \
+      <container-name> /bin/bash
+    ```
+
+  </TabItem>
+</Tabs>
+
+## Configure Zephyr Workspace
+
+:::caution
+The following step and any future [build commands](../build-flash.mdx) must be
+executed from the command line _inside_ the container.
+:::
+
+```sh
+west init -l app/ # Initialization
+west update       # Update modules
+```
+
+If you are using a Docker-based approach, you have to restart the container at
+this point. Stopping it is possible with these commands.
+
+```sh
+docker ps                    # List containers
+docker stop "<container-id>" # Stop the container
+```

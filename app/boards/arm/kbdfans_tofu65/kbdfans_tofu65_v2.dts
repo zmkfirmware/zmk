@@ -8,6 +8,8 @@
 #include <rpi_pico/rp2040.dtsi>
 #include <dt-bindings/zmk/matrix_transform.h>
 
+#include <layouts/common/65percent/ansi.dtsi>
+
 / {
 
     chosen {
@@ -15,7 +17,7 @@
         zephyr,flash = &flash0;
         zephyr,code-partition = &code_partition;
         zmk,kscan = &kscan0;
-        zmk,matrix-transform = &default_transform;
+        zmk,physical-layout = &layout_65_ansi;
     };
 
     xtal_clk: xtal-clk {
@@ -115,3 +117,6 @@ zephyr_udc0: &usbd {
     status = "okay";
 };
 
+&layout_65_ansi {
+    transform = <&default_transform>;
+};

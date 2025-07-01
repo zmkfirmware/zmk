@@ -1,0 +1,314 @@
+---
+title: Keyboard Dongle
+sidebar_label: Keyboard Dongle
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+A bluetooth dongle can be added to any wireless keyboard running ZMK. The result is a [split keyboard](../../features/split-keyboards.md) with the dongle as ["central"](../../features/split-keyboards.md#central-and-peripheral-roles). There are a number of advantages to adding a dongle, but also some disadvantages:
+
+Benefits:
+
+- For split keyboards, having the dongle for the "central" role results in [improved battery life](/power-profiler) for the former central part, as it is now a peripheral.
+- It is easier to connect to the host device since dongles are typically connected via USB.
+
+Disadvantages:
+
+- An extra [board](index.mdx#what-is-a-board) is needed (any BLE-capable board that ZMK supports will work).
+- The keyboard becomes unusable without the dongle.
+
+Depending on how the dongle is used, there are some additional [latency considerations](../../features/split-keyboards.md#latency-considerations) to keep in mind.
+The addition of the dongle adds an extra "hop" for the former central, increasing its latency to that of a peripheral. The other parts are unchanged latency-wise. There is also a commonly occurring case where the peripherals benefit.
+Assuming the dongle is connected to USB and the former central would have been connected via bluetooth to the host if the dongle wasn't present:
+
+- The former central will have its latency increased by about 1ms from the extra USB "hop"
+- The other parts will have their average latency _decreased_ by 6.5ms from the replacement of a BLE "hop" with a "USB" hop.
+
+As a result, for this common use case the average latency of the keyboard decreases.
+
+## Adding a Dongle
+
+The approach taken to adding a dongle is _generally_ the same[^1].
+Whether your keyboard consists of a [board and a shield](index.mdx#boards--shields) or is just a board is irrelevant.
+
+To add a dongle, you will create a simplified form of a [new shield](new-shield.mdx).
+The approach described below assumes the dongle will not have any keys assigned to itself, so it will not work for that scenario.
+If you want to understand the details of how it all works better, please read through the [new shield guide](new-shield.mdx).
+
+As there are a very large number of possible devices that could be used as a dongle, you will be defining your dongle as a personal shield intended for your exclusive use.
+
+Prior to adding a dongle to your keyboard, please test its functionality without a dongle. The below guide will assume that your keyboard is named `my_keyboard`, replace accordingly.
+
+### Dongle Folder
+
+First, make sure that your `zmk-config` matches the folder structure found in the [unified ZMK config template](https://github.com/zmkfirmware/unified-zmk-config-template) (extra files and folders are fine, but none should be missing).
+
+Next, navigate to the `zmk-config/boards/shields` directory. Create a subdirectory called `my_keyboard`, if one doesn't already exist. Unless otherwise specified, the below files should all be placed in said folder.
+
+### Kconfig Files
+
+#### Kconfig.shield
+
+Make a file called `Kconfig.shield`, if one does not exist already. Add the following lines to it, replacing `SHIELD_MY_KEYBOARD_DONGLE` and `my_keyboard_dongle` according to your keyboard:
+
+```kconfig title="Kconfig.shield"
+# No whitespace after the comma or in the keyboard name!
+config SHIELD_MY_KEYBOARD_DONGLE
+    def_bool $(shields_list_contains,my_keyboard_dongle)
+```
+
+#### Kconfig.defconfig
+
+Make a file called `Kconfig.defconfig`, if one does not exist already. Add the following lines to it where `SHIELD_MY_KEYBOARD_DONGLE` should match the previous section:
+
+```kconfig title="Kconfig.defconfig"
+if SHIELD_MY_KEYBOARD_DONGLE
+
+# Max 16 characters in keyboard name
+config ZMK_KEYBOARD_NAME
+    default "My Board"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+config ZMK_SPLIT
+    default y
+
+# Set this to the number of peripherals your dongle will have.
+# For a unibody, this would be 1. If you have left and right halves, set it to 2, etc.
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    default 1
+
+# Set this to ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS + your desired number of BT profiles (default is 5)
+config BT_MAX_CONN
+    default 6
+
+# Set this to the same number as BT_MAX_CONN
+config BT_MAX_PAIRED
+    default 6
+
+endif
+```
+
+### Dongle Overlay File
+
+Create a file called `my_keyboard_dongle.overlay` (renamed as appropriate).
+This file will include your keyboard's matrix transform and physical layout, allowing it to map key press events from the peripherals to behaviors.
+
+Add the following lines to the file you created, introducing a mock kscan for the dongle since it has no keys itself:
+
+```dts title="my_keyboard_dongle.overlay"
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+    };
+
+    mock_kscan: mock_kscan_0 {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+};
+```
+
+You will now need to find and copy your keyboard's matrix transform into the `my_keyboard_dongle.overlay` file.
+
+#### Matrix transform
+
+Navigate to the directory defining your keyboard (in-tree keyboards found [here](https://github.com/zmkfirmware/zmk/tree/main/app/boards), if your keyboard is a shield look under the `shields` subdirectory) and look through the [devicetree files](../../config/index.md) for nodes with `compatible = "zmk,matrix-transform";`.
+This should look something like this:
+
+```dts
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <14>;
+        rows = <5>;
+
+        map = <
+            // Lots of RC(r,c) macros
+        >;
+    };
+```
+
+Copy this node into your `my_keyboard_dongle.overlay` file. It should be a child node of the root node (put it inside the `/ { ... };`).
+If there are multiple matrix transformations, copy the one that matches your keyboard's layout.
+
+Make a note of the label that the transform has, it will be used later. In the example the label is `default_transform`.
+
+#### Physical layout
+
+A full physical layout is necessary to allow your dongle to be used with [ZMK Studio](../../features/studio.md).
+If your keyboard is not Studio-ready or you have no interest in using ZMK Studio with your dongle, then this section is simplified significantly.
+
+<Tabs
+    groupId="studio-ready"
+    queryString
+    defaultValue="studio"
+    values={[
+      { label: "Dongle with Studio", value: "studio" },
+      { label: "Dongle without Studio", value: "nostudio" }
+    ]}
+  >
+<TabItem value="studio">
+
+You will need to find your keyboard's physical layout, much like finding the matrix transform.
+Depending on your keyboard, the physical layout could be found in a variety of locations. Look for a node with `compatible = "zmk,physical-layout";`.
+There are three commonly found possibilities:
+
+- The physical layout is found in a file called `my_keyboard-layouts.dtsi`
+- The physical layout is found in the same file as the matrix transform and chosen node
+- The physical layout is imported from ZMK's shared layouts - `#include <layouts/<layout_name>.dtsi>` can be found at the top of one of the devicetree files.
+
+<Tabs
+    groupId="layout-locations"
+    queryString
+    defaultValue="layouts"
+    values={[
+      { label: "Layouts File", value: "layouts" },
+      { label: "Base File", value: "base" },
+      { label: "Imported", value: "imported" }
+    ]}
+  >
+<TabItem value="layouts">
+Copy the file into your dongle's folder. Then import the file, assign the matrix transform to it, and select it in the `chosen` node:
+
+```dts
+#import "my_keyboard-layouts.dtsi"
+
+&physical_layout0 {
+    transform = <&default_transform>;
+};
+
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+        zmk,physical-layout = &physical_layout0;
+    };
+};
+```
+
+Make sure that the labels `physical_layout0` and `default_transform` match those of the physical layout node defined in the file and the matrix transform respectively.
+
+:::note
+If there are multiple physical layouts in the file, you will need to copy over all of the remaining matrix transformations and assign them to their corresponding physical layout.
+:::
+
+</TabItem>
+<TabItem value="base">
+Copy the physical layout node into your `my_keyboard_dongle.overlay` file. Make sure the matrix transform is assigned to it, and select it in the `chosen` node.
+
+```dts
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+        zmk,physical-layout = &physical_layout0;
+    };
+
+    physical_layout0: physical_layout_0 {
+        compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
+        transform = <&default_transform>;
+        keys = <...>; // Long list of key positions
+    };
+};
+```
+
+Make sure that the labels `physical_layout0` and `default_transform` match those of the physical layout node and the matrix transform respectively.
+
+:::note
+If there are multiple physical layouts, you need only copy the one that applies to your keyboard.
+:::
+
+</TabItem>
+<TabItem value="imported">
+Include your desired layout at the top of the file. Then assign your matrix transform to it, taking care to match up the node labels correctly.
+
+```dts
+#include <layouts/<layout_name>.dtsi>
+
+&physical_layout0 {
+    transform = <&default_transform>;
+};
+```
+
+In this case your node label will _not_ be `physical_layout0`, make sure to adjust it accordingly.
+
+Finally, select your physical layout in the chosen node.
+
+```dts
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+        zmk,physical-layout = &physical_layout0;
+    };
+};
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="nostudio">
+Add a barebones [physical layout](physical-layouts.md) without the `keys` property to your `my_keyboard_dongle.overlay` file.
+
+```dts
+/ {
+    physical_layout0: physical_layout_0 {
+        compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
+        transform = <&default_transform>;
+    };
+};
+```
+
+Make sure that the `transform` property uses the same label as your matrix transform. Then select the physical layout in the same `chosen` node that was previously created:
+
+```dts
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+        zmk,physical-layout = &physical_layout0;  // New item added
+    };
+};
+```
+
+</TabItem>
+</Tabs>
+
+## Building the Firmware
+
+Add the appropriate lines to your `build.yml` file to build the firmware for your dongle. Also add some CMake arguments using `cmake-args` to the existing parts of your keyboard, turning them into peripherals for your dongle.[^2]
+
+```yaml
+include:
+  # -----------------------------------------
+  # Your other keyboard parts here
+  # -----------------------------------------
+  # Change the board appropriately, you can use any board
+  - board: nice_nano_v2
+    shield: my_keyboard_dongle
+  - board: nice_nano_v2
+    shield: settings_reset
+  # Add these cmake-args to the peripherals you wish to use with the dongle
+  - board: nice_nano_v2
+    shield: my_keyboard
+    cmake-args: -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
+```
+
+You can then flash the firmware to your device as detailed in our [user setup](../../user-setup.mdx#installing-the-firmware) and [split keyboard](../../features/split-keyboards.md#building-and-flashing-firmware) pages.
+
+:::warning
+Before flashing your new firmware, you need to flash `settings_reset` [firmware](../../troubleshooting/connection-issues.mdx#building-a-reset-firmware) on all devices to ensure they can pair to each other.
+:::
+
+To use your dongled keyboard with [ZMK Studio](../../features/studio.md), apply the instructions for [building with Studio](../../features/studio.md#building) to the dongle.
+
+If you ever want to "undongle" your keyboard, simply remove these CMake arguments and flash the resulting firmware (after a `settings_reset`).
+
+[^1]: If you have a custom dongle that uses an onboard MCU, then you will need to take a slightly different approach that isn't currently documented.
+
+[^2]: If you are building locally, you can append these flags to the end of the [build command](../local-toolchain/build-flash.mdx#cmake-arguments).

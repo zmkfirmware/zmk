@@ -1,0 +1,40 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if ZMK_BLE
+
+if ZMK_SPLIT_BLE
+
+config ZMK_SPLIT_BLE_PRIORITY
+    default 1
+
+if ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    default 1
+
+config BT_MAX_CONN
+    default 6
+
+config BT_MAX_PAIRED
+    default 6
+
+#ZMK_SPLIT_BLE && ZMK_SPLIT_ROLE_CENTRAL
+endif
+
+endif
+
+if !ZMK_SPLIT_BLE
+
+config BT_MAX_CONN
+    default 5
+
+config BT_MAX_PAIRED
+    default 5
+
+#!ZMK_SPLIT_BLE
+endif
+
+#ZMK_BLE
+endif
+

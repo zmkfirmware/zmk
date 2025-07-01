@@ -14,15 +14,17 @@ Definition files:
 - [zmk/app/src/display/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/display/Kconfig)
 - [zmk/app/src/display/widgets/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/display/widgets/Kconfig)
 
-| Config                                             | Type | Description                                                    | Default |
-| -------------------------------------------------- | ---- | -------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_DISPLAY`                               | bool | Enable support for displays                                    | n       |
-| `CONFIG_ZMK_DISPLAY_INVERT`                        | bool | Invert display colors from black-on-white to white-on-black    | n       |
-| `CONFIG_ZMK_WIDGET_LAYER_STATUS`                   | bool | Enable a widget to show the highest, active layer              | y       |
-| `CONFIG_ZMK_WIDGET_BATTERY_STATUS`                 | bool | Enable a widget to show battery charge information             | y       |
-| `CONFIG_ZMK_WIDGET_BATTERY_STATUS_SHOW_PERCENTAGE` | bool | If battery widget is enabled, show percentage instead of icons | n       |
-| `CONFIG_ZMK_WIDGET_OUTPUT_STATUS`                  | bool | Enable a widget to show the current output (USB/BLE)           | y       |
-| `CONFIG_ZMK_WIDGET_WPM_STATUS`                     | bool | Enable a widget to show words per minute                       | n       |
+| Config                                             | Type | Description                                                    | Default      |
+| -------------------------------------------------- | ---- | -------------------------------------------------------------- | ------------ |
+| `CONFIG_ZMK_DISPLAY`                               | bool | Enable support for displays                                    | n            |
+| `CONFIG_ZMK_DISPLAY_BLANK_ON_IDLE`                 | bool | Blank display on idle                                          | y if SSD1306 |
+| `CONFIG_ZMK_DISPLAY_TICK_PERIOD_MS`                | int  | Period (in ms) between display task execution                  | 10           |
+| `CONFIG_ZMK_DISPLAY_INVERT`                        | bool | Invert display colors from black-on-white to white-on-black    | n            |
+| `CONFIG_ZMK_WIDGET_LAYER_STATUS`                   | bool | Enable a widget to show the highest, active layer              | y            |
+| `CONFIG_ZMK_WIDGET_BATTERY_STATUS`                 | bool | Enable a widget to show battery charge information             | y            |
+| `CONFIG_ZMK_WIDGET_BATTERY_STATUS_SHOW_PERCENTAGE` | bool | If battery widget is enabled, show percentage instead of icons | n            |
+| `CONFIG_ZMK_WIDGET_OUTPUT_STATUS`                  | bool | Enable a widget to show the current output (USB/BLE)           | y            |
+| `CONFIG_ZMK_WIDGET_WPM_STATUS`                     | bool | Enable a widget to show words per minute                       | n            |
 
 Note that `CONFIG_ZMK_DISPLAY_INVERT` setting might not work as expected with custom status screens that utilize images.
 
@@ -62,3 +64,12 @@ See the Devicetree bindings for your display. Here are the bindings for common d
 - [SSD1306 (spi)](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/display/solomon,ssd1306fb-spi.html)
 
 A full list of drivers provided by Zephyr can be found in [Zephyr's Devicetree bindings index](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings.html).
+
+### Chosen nodes
+
+Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)
+
+| Property          | Type | Description                                                                                              |
+| ----------------- | ---- | -------------------------------------------------------------------------------------------------------- |
+| `zephyr,display`  | path | The display device to use.                                                                               |
+| `zmk,display-led` | path | The LED device to use for on/off blanking, if the hardware requires it. Can be a PWM or GPIO LED device. |

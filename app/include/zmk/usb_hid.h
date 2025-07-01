@@ -10,9 +10,9 @@
 
 int zmk_usb_hid_send_keyboard_report(void);
 int zmk_usb_hid_send_consumer_report(void);
-#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+#if IS_ENABLED(CONFIG_ZMK_POINTING)
 int zmk_usb_hid_send_mouse_report(void);
-#endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+#endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 #if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
 int zmk_usb_hid_send_joystick_report(void);
 #endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)

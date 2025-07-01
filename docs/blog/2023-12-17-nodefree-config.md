@@ -1,9 +1,6 @@
 ---
 title: "Community Spotlight Series #2: Node-free Config"
-author: Cem Aksoylar
-author_title: Documentation maintainer
-author_url: https://github.com/caksoylar
-author_image_url: https://avatars.githubusercontent.com/u/7876996
+authors: caksoylar
 tags: [keyboards, firmware, community]
 ---
 
@@ -16,6 +13,8 @@ highlighting the [`zmk-nodefree-config` project](https://github.com/urob/zmk-nod
 by [urob](https://github.com/urob) that contains helper methods that utilizes this fact
 for users who prefer editing and maintaining their ZMK config directly using the Devicetree
 syntax format.
+
+<!-- truncate -->
 
 In the rest of the post we leave it to urob to introduce and explain the motivations of the
 project, and various ways it can be used to help maintain ZMK keymaps. Stay tuned for future
@@ -44,7 +43,7 @@ define a collection of nested _nodes_, whereas each node in turn specifies a var
 _properties_ through which one can customize the keymap.
 
 For example, the following snippet sets up a
-[mod-morph](https://zmk.dev/docs/behaviors/mod-morph) behavior that sends <kbd>.</kbd>
+[mod-morph](https://zmk.dev/docs/keymaps/behaviors/mod-morph) behavior that sends <kbd>.</kbd>
 ("dot") when pressed by itself and sends <kbd>:</kbd> ("colon") when shifted:
 
 ```dts {6-7} showLineNumbers
@@ -102,8 +101,8 @@ the helper macros, the actual size is instead reduced to a more sane 12 kB.[^1]
 ## Simplifying "Position-based" Behaviors
 
 In ZMK, there are several features that are position-based. As of today, these
-are [combos](/docs/features/combos) and [positional
-hold-taps](/docs/behaviors/hold-tap#positional-hold-tap-and-hold-trigger-key-positions),
+are [combos](/docs/keymaps/combos) and [positional
+hold-taps](/docs/keymaps/behaviors/hold-tap#positional-hold-tap-and-hold-trigger-key-positions),
 with behaviors like the ["Swapper"](https://github.com/zmkfirmware/zmk/pull/1366) and [Leader
 key](https://github.com/zmkfirmware/zmk/pull/1380) currently
 developed by [Nick Conway](https://github.com/nickconway) in pull requests also utilizing them.

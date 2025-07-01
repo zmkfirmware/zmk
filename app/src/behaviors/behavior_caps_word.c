@@ -32,7 +32,6 @@ struct caps_word_continue_item {
 
 struct behavior_caps_word_config {
     zmk_mod_flags_t mods;
-    uint8_t index;
     uint8_t continuations_count;
     struct caps_word_continue_item continuations[];
 };
@@ -85,7 +84,8 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh);
 ZMK_LISTENER(behavior_caps_word, caps_word_keycode_state_changed_listener);
 ZMK_SUBSCRIPTION(behavior_caps_word, zmk_keycode_state_changed);
 
-static const struct device *devs[DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT)];
+#define GET_DEV(inst) DEVICE_DT_INST_GET(inst),
+static const struct device *devs[] = {DT_INST_FOREACH_STATUS_OKAY(GET_DEV)};
 
 static bool caps_word_is_caps_includelist(const struct behavior_caps_word_config *config,
                                           uint16_t usage_page, uint8_t usage_id,
@@ -133,11 +133,8 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-    for (int i = 0; i < DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT); i++) {
+    for (int i = 0; i < ARRAY_SIZE(devs); i++) {
         const struct device *dev = devs[i];
-        if (dev == NULL) {
-            continue;
-        }
 
         struct behavior_caps_word_data *data = dev->data;
         if (!data->active) {
@@ -160,31 +157,21 @@ static int caps_word_keycode_state_changed_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
-static int behavior_caps_word_init(const struct device *dev) {
-    const struct behavior_caps_word_config *config = dev->config;
-    devs[config->index] = dev;
-    return 0;
-}
-
 #define CAPS_WORD_LABEL(i, _n) DT_INST_LABEL(i)
 
 #define PARSE_BREAK(i)                                                                             \
-    {                                                                                              \
-        .page = ZMK_HID_USAGE_PAGE(i), .id = ZMK_HID_USAGE_ID(i),                                  \
-        .implicit_modifiers = SELECT_MODS(i)                                                       \
-    }
+    {.page = ZMK_HID_USAGE_PAGE(i), .id = ZMK_HID_USAGE_ID(i), .implicit_modifiers = SELECT_MODS(i)}
 
 #define BREAK_ITEM(i, n) PARSE_BREAK(DT_INST_PROP_BY_IDX(n, continue_list, i))
 
 #define KP_INST(n)                                                                                 \
     static struct behavior_caps_word_data behavior_caps_word_data_##n = {.active = false};         \
-    static struct behavior_caps_word_config behavior_caps_word_config_##n = {                      \
-        .index = n,                                                                                \
+    static const struct behavior_caps_word_config behavior_caps_word_config_##n = {                \
         .mods = DT_INST_PROP_OR(n, mods, MOD_LSFT),                                                \
         .continuations = {LISTIFY(DT_INST_PROP_LEN(n, continue_list), BREAK_ITEM, (, ), n)},       \
         .continuations_count = DT_INST_PROP_LEN(n, continue_list),                                 \
     };                                                                                             \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_caps_word_init, NULL, &behavior_caps_word_data_##n,        \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, &behavior_caps_word_data_##n,                           \
                             &behavior_caps_word_config_##n, POST_KERNEL,                           \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_caps_word_driver_api);
 

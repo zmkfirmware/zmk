@@ -6,6 +6,8 @@
 
 #include <dt-bindings/led/led.h>
 #include <dt-bindings/zmk/matrix_transform.h>
+#include "zmk_uno-layouts.dtsi"
+
 
 &arduino_i2c {
     status = "okay";
@@ -134,4 +136,14 @@ nice_view_spi: &arduino_spi {
         a-gpios = <&arduino_header 15 GPIO_PULL_UP>;
         b-gpios = <&arduino_header 14 GPIO_PULL_UP>;
     };
+};
+
+&matrix_physical_layout {
+    kscan = <&kscan_matrix>;
+    transform = <&matrix_transform>;
+};
+
+&direct_physical_layout {
+    kscan = <&kscan_direct>;
+    transform = <&direct_matrix_transform>;
 };

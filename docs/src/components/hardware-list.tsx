@@ -18,12 +18,11 @@ function itemHasMultiple(item: HardwareMetadata) {
 
 function itemIds(item: HardwareMetadata) {
   if (item.type == "board" || item.type == "shield") {
-    let nodes = (item.siblings ?? [item.id])
-      .map<ElementOrString>((id) => <code key={id}>{id}</code>)
-      .reduce(
-        (prev, curr, index) => [...prev, index > 0 ? ", " : "", curr],
-        [] as ElementOrString[]
-      );
+    const nodes = (item.siblings ?? [item.id])
+      .map((id) => <code key={id}>{id}</code>)
+      .reduce<
+        ElementOrString[]
+      >((prev, curr, index) => [...prev, index > 0 ? ", " : "", curr], []);
     return <span key={item.id}>{nodes}</span>;
   } else {
     return <code key={item.id}>{item.id}</code>;
@@ -81,7 +80,7 @@ function mapInterconnect({
 }
 
 function HardwareList({ items }: HardwareListProps) {
-  let grouped = groupedMetadata(items);
+  const grouped = groupedMetadata(items);
 
   return (
     <>

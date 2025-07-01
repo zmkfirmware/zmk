@@ -9,6 +9,14 @@
 #include <st/f0/stm32f072c(8-b)tx-pinctrl.dtsi>
 #include <dt-bindings/led/led.h>
 
+#include <dt-bindings/zmk/matrix_transform.h>
+
+#include "bdn9_rev2-layouts.dtsi"
+
+&physical_layout0 {
+    transform = <&matrix_transform0>;
+};
+
 / {
     model = "Keeb.io BDN9 rev2";
     compatible = "keebio,bdn9", "st,stm32f072";
@@ -16,11 +24,23 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zmk,kscan = &kscan;
         zmk,underglow = &led_strip;
+        zmk,physical-layout = &physical_layout0;
+        zmk,kscan = &kscan0;
     };
 
-    kscan: kscan {
+    matrix_transform0: matrix_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <3>;
+        rows = <3>;
+        map = <
+            RC(0,0) RC(0,1) RC(0,2)
+            RC(0,3) RC(0,4) RC(0,5)
+            RC(0,6) RC(0,7) RC(0,8)
+        >;
+    };
+
+    kscan0: kscan_0 {
         compatible = "zmk,kscan-gpio-direct";
 
         input-gpios
@@ -109,6 +129,9 @@ zephyr_udc0: &usb {
     status = "okay";
     pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
     pinctrl-names = "default";
+
+    // Overridden to lower RAM usage.
+    num-bidir-endpoints = <4>;
 };
 
 &rtc {

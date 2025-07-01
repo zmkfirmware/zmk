@@ -25,12 +25,13 @@ static uint8_t keys_held = 0;
 
 #endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
 
-#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+#if IS_ENABLED(CONFIG_ZMK_POINTING)
 
-static struct zmk_hid_mouse_report mouse_report = {.report_id = ZMK_HID_REPORT_ID_MOUSE,
-                                                   .body = {.buttons = 0}};
+static struct zmk_hid_mouse_report mouse_report = {
+    .report_id = ZMK_HID_REPORT_ID_MOUSE,
+    .body = {.buttons = 0, .d_x = 0, .d_y = 0, .d_scroll_y = 0}};
 
-#endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+#endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
 #if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
 
@@ -256,8 +257,9 @@ static inline int check_keyboard_usage(zmk_key_t usage) {
 #endif
 
 #define TOGGLE_CONSUMER(match, val)                                                                \
-    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC),                           \
-                (if (val > 0xFF) { return -ENOTSUP; }), ())                                        \
+    if (val > ZMK_HID_CONSUMER_MAX_USAGE) {                                                        \
+        return -ENOTSUP;                                                                           \
+    }                                                                                              \
     for (int idx = 0; idx < CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE; idx++) {                          \
         if (consumer_report.body.keys[idx] != match) {                                             \
             continue;                                                                              \
@@ -376,7 +378,7 @@ bool zmk_hid_is_pressed(uint32_t usage) {
     return false;
 }
 
-#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+#if IS_ENABLED(CONFIG_ZMK_POINTING)
 
 // Keep track of how often a button was pressed.
 // Only release the button if the count is 0.
@@ -437,9 +439,41 @@ int zmk_hid_mouse_buttons_release(zmk_mouse_button_flags_t buttons) {
     }
     return 0;
 }
-void zmk_hid_mouse_clear(void) { memset(&mouse_report.body, 0, sizeof(mouse_report.body)); }
 
-#endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+void zmk_hid_mouse_movement_set(int16_t hwheel, int16_t wheel) {
+    mouse_report.body.d_x = hwheel;
+    mouse_report.body.d_y = wheel;
+    LOG_DBG("Mouse movement set to %d/%d", mouse_report.body.d_x, mouse_report.body.d_y);
+}
+
+void zmk_hid_mouse_movement_update(int16_t hwheel, int16_t wheel) {
+    mouse_report.body.d_x += hwheel;
+    mouse_report.body.d_y += wheel;
+    LOG_DBG("Mouse movement updated to %d/%d", mouse_report.body.d_x, mouse_report.body.d_y);
+}
+
+void zmk_hid_mouse_scroll_set(int16_t hwheel, int16_t wheel) {
+    mouse_report.body.d_scroll_x = hwheel;
+    mouse_report.body.d_scroll_y = wheel;
+
+    LOG_DBG("Mouse scroll set to %d/%d", mouse_report.body.d_scroll_x,
+            mouse_report.body.d_scroll_y);
+}
+
+void zmk_hid_mouse_scroll_update(int16_t hwheel, int16_t wheel) {
+    mouse_report.body.d_scroll_x += hwheel;
+    mouse_report.body.d_scroll_y += wheel;
+
+    LOG_DBG("Mouse scroll updated to X: %d/%d", mouse_report.body.d_scroll_x,
+            mouse_report.body.d_scroll_y);
+}
+
+void zmk_hid_mouse_clear(void) {
+    LOG_DBG("Mouse report cleared");
+    memset(&mouse_report.body, 0, sizeof(mouse_report.body));
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
 #if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
 void zmk_hid_joystick_set(uint8_t x, uint8_t y, uint8_t z) {
@@ -453,24 +487,16 @@ void zmk_hid_joystick_clear(void) {
 }
 #endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)
 
-struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) {
-    return &keyboard_report;
-}
+struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyboard_report; }
 
-struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) {
-    return &consumer_report;
-}
+struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
 
-#if IS_ENABLED(CONFIG_ZMK_MOUSE)
+#if IS_ENABLED(CONFIG_ZMK_POINTING)
 
-struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) {
-    return &mouse_report;
-}
+struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_report; }
 
-#endif // IS_ENABLED(CONFIG_ZMK_MOUSE)
+#endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
 #if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
-struct zmk_hid_joystick_report *zmk_hid_get_joystick_report(void) {
-    return &joystick_report;
-};
+struct zmk_hid_joystick_report *zmk_hid_get_joystick_report(void) { return &joystick_report; };
 #endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)

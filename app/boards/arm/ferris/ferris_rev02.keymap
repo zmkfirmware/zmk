@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: MIT
  */
 
+#undef ZMK_BEHAVIORS_KEEP_ALL
+
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
@@ -33,16 +35,16 @@
         default_layer {
             bindings = <
                 &kp Q      &kp W      &kp E       &kp R          &kp T         &kp Y            &kp U          &kp I       &kp O      &kp P
-                &hm LGUI A &hm LALT S &hm LCTRL D &hm LSHFT F    &kp G         &kp H            &hm RSHFT J    &hm RCTRL K &hm LALT L &hm LGUI QUOT
+                &hm LGUI A &hm LALT S &hm LCTRL D &hm LSHFT F    &kp G         &kp H            &hm RSHFT J    &hm RCTRL K &hm LALT L &hm LGUI SQT
                 &kp Z      &kp X      &kp C       &kp V          &kp B         &kp N            &kp M          &kp COMMA   &kp DOT    &kp FSLH
-                                                  &lt NAV_L TAB  &kp ENTER     &lt NUM_L SPACE  &lt SYM_L BKSP
+                                                  &lt NAV_L TAB  &kp ENTER     &lt NUM_L SPACE  &lt SYM_L BSPC
             >;
         };
 
         nav_layer {
             bindings = <
                 &trans     &trans     &trans      &trans          &trans       &trans           &trans         &trans      &trans     &trans
-                &trans     &trans     &trans      &trans          &trans       &trans           &kp LARW       &kp DARW    &kp UARW   &kp RARW
+                &trans     &trans     &trans      &trans          &trans       &trans           &kp LEFT       &kp DOWN    &kp UP   &kp RIGHT
                 &trans     &trans     &trans      &trans          &trans       &trans           &kp HOME       &kp PG_DN   &kp PG_UP  &kp END
                                                   &trans          &trans       &kp ESC          &kp DEL
             >;

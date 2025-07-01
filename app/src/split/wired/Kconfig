@@ -1,0 +1,57 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if ZMK_SPLIT_WIRED
+
+config ZMK_SPLIT_WIRED_PRIORITY
+    int "Wired transport priority"
+    help
+        Lower number priorities transports are favored over higher numbers.
+
+choice
+    prompt "UART Mode"
+
+config ZMK_SPLIT_WIRED_UART_MODE_ASYNC
+    bool "Async (DMA) Mode"
+    # For now, don't use async/DMA on nRF52 due to RX bug (fixed
+    # in newer Zephyr version?)
+    depends on SERIAL_SUPPORT_ASYNC
+    select UART_ASYNC_API
+
+config ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT
+    bool "Interrupt Mode"
+    depends on SERIAL_SUPPORT_INTERRUPT
+    select UART_INTERRUPT_DRIVEN
+
+config ZMK_SPLIT_WIRED_UART_MODE_POLLING
+    bool "Polling Mode"
+
+endchoice
+
+if ZMK_SPLIT_WIRED_UART_MODE_POLLING
+
+config ZMK_SPLIT_WIRED_POLLING_RX_PERIOD
+    int "Ticks between RX polls"
+
+endif
+
+if ZMK_SPLIT_WIRED_UART_MODE_ASYNC
+
+config ZMK_SPLIT_WIRED_ASYNC_RX_TIMEOUT
+    int "RX Timeout (in microseconds) before reporting received data"
+
+endif
+
+config ZMK_SPLIT_WIRED_CMD_BUFFER_ITEMS
+    int "Number of central commands to buffer for TX/RX"
+
+config ZMK_SPLIT_WIRED_EVENT_BUFFER_ITEMS
+    int "Number of peripheral events to buffer for TX/RX"
+
+config ZMK_SPLIT_WIRED_HALF_DUPLEX_RX_TIMEOUT
+    int "RX timeout (in ms) when polling peripheral(s) and waiting for any response"
+
+config ZMK_SPLIT_WIRED_HALF_DUPLEX_RX_COMPLETE_TIMEOUT
+    int "RX complete timeout (in ticks) when polling peripheral(s) after receiving some response data"
+
+endif

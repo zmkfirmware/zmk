@@ -1,0 +1,18 @@
+# Copyright (c) 2024, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Input Processor for transforming values in various ways
+
+compatible: "zmk,input-processor-transform"
+
+include: ip_one_param.yaml
+
+properties:
+  type:
+    type: int
+  x-codes:
+    type: array
+    required: true
+  y-codes:
+    type: array
+    required: true

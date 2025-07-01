@@ -1,0 +1,462 @@
+---
+title: Hold-Tap Behavior
+sidebar_label: Hold-Tap
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+## Summary
+
+A hold-tap behavior is defined using a "hold" behavior and a "tap" behavior.
+When the key is held, then it will output the hold behavior, and when it is tapped it will output the tap behavior.
+
+Various configuration options exist to allow fine-tuning of whether a particular key press will resolve in a hold or in a tap.
+Such configuration options determine how to treat "interrupts" when one key is pressed while a hold-tap has not been released yet, or how long a key should be held before being treated as a hold instead of a tap, and so on.
+
+ZMK predefines two hold-tap behaviors: [mod-tap](#mod-tap) and [layer-tap](#layer-tap).
+
+## Mod-Tap
+
+The "mod-tap" behavior sends a different [key press](key-press.md), depending on whether it's held or tapped.
+
+- If you hold the key for longer than 200ms or press any other key while it is held, the first keycode ("mod") is sent.
+- If you tap the key (release before 200ms), the second keycode ("tap") is sent.
+
+![Simple behavior](../../assets/hold-tap/case1_2.svg)
+
+By default, mod-tap is configured with the ["hold-preferred" `flavor`](#interrupt-flavors).
+
+### Behavior Binding
+
+- Reference: `&mt`
+- Parameter #1: The keycode to be sent when held (usually a modifier), e.g. `LSHIFT`
+- Parameter #2: The keycode to sent when used as a tap, e.g. `A`, `B`.
+
+Example:
+
+```dts
+&mt LSHIFT A
+```
+
+### Configuration
+
+You can adjust the default [properties](#custom-hold-tap-configuration) of the mod-tap behavior using its node like so:
+
+```dts
+&mt {
+    tapping-term-ms = <200>; // This is the value already set by default
+};
+```
+
+Note that you can also [define a custom hold-tap](#custom-hold-tap-examples) and use that, instead of adjusting the properties of the mod-tap/`&mt` behavior.
+
+## Layer-Tap
+
+The "layer-tap" behavior works similarly to the mod-tap behavior, but instead of outputting one of two keys, it activates a specified layer as its "hold" action.
+
+By default, layer-tap is configured with the ["tap-preferred" `flavor`](#interrupt-flavors).
+
+### Behavior Binding
+
+- Reference: `&lt`
+- Parameter: The layer number to enable while held, e.g. `1`
+- Parameter: The keycode to send when tapped, e.g. `A`
+
+Example:
+
+```dts
+&lt 3 SPACE
+```
+
+### Configuration
+
+You can adjust the default [properties](#custom-hold-tap-configuration) of the layer-tap behavior using its node like so:
+
+```dts
+&lt {
+    tapping-term-ms = <200>; // This is the value already set by default
+};
+```
+
+Note that you can also [define a custom hold-tap](#custom-hold-tap-examples) and use that, instead of adjusting the properties of the layer-tap/`&lt` behavior.
+
+## Custom Hold-Tap Examples
+
+To see what specific configuration options do, please see the [configuration options](#custom-hold-tap-configuration).
+The below examples are intended for you to copy-paste as desired, and then tune with the configuration options.
+
+<Tabs
+queryString="examples"
+defaultValue="mlt"
+values={[
+{label: 'Mod/Layer-tap', value: 'mlt'},
+{label: 'Homerow Mods', value: 'home_row_mods'},
+{label: 'Autoshift', value: 'autoshift'},
+{label: 'Tog-Tap, Mo-Hold Layers', value: 'mo_tog'},
+]}>
+
+<TabItem value="mlt">
+
+The default configuration of mod-tap and layer-tap can be found below:
+
+```dts title="Mod-tap"
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+        mt: mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&kp>, <&kp>;
+            display-name = "Mod-Tap";
+        };
+    };
+};
+
+```
+
+```dts title="Layer-tap"
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+        lt: layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&kp>;
+            display-name = "Layer-Tap";
+        };
+    };
+};
+
+```
+
+If you copy-paste these as-is, you will overwrite the predefined behaviors.
+Name and label them something else, e.g. `my_mt: my_mod_tap`, to avoid this.
+You'll then be able to use your new behavior with `&my_mt`.
+
+</TabItem>
+<TabItem value="home_row_mods">
+
+The most popular form of home-row mods is known as "timeless home-row mods", configured to minimize the dependency on timing.
+Timeless home-row mods define both a "left hand" and a "right hand" behavior.
+
+Below is an example of a left hand behavior:
+
+```dts
+/ {
+    behaviors {
+        hml: home_row_mod_left {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            require-prior-idle-ms = <150>;
+            tapping-term-ms = <280>;
+            quick-tap-ms = <175>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = < ... >; // List of keys on the right side of the keyboard
+            hold-trigger-on-release;
+        };
+        hmr: home_row_mod_right {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            require-prior-idle-ms = <150>;
+            tapping-term-ms = <280>;
+            quick-tap-ms = <175>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = < ... >; // List of keys on the left side of the keyboard
+            hold-trigger-on-release;
+        };
+    };
+};
+```
+
+If you wish to use this configuration of home-row mods, you will need to define the corresponding left and right behaviors as above, then use `&hml` for home-row keys on the left side of the keyboard, and `&hmr` for ones on the right side.
+
+Below is a brief overview of the options set.
+
+- The ["balanced" flavor](#interrupt-flavors) produces a "hold" if another key is both pressed and released within the tapping-term.
+  This interrupt flavor is primarily used to decide between hold and tap, rather than using [tapping-term-ms](#tapping-term-ms).
+  This matches how modifiers are used a majority of the time (hold shift, tap a key, release shift).
+- [`require-prior-idle-ms`](#require-prior-idle-ms) is set to 125ms to resolve to taps immediately when typing at speed, which helps eliminate typing delay.
+- [Positional hold taps](#positional-hold-tap-and-hold-trigger-key-positions) with [`hold-trigger-on-release`] are used to avoid accidental hold resolutions when typing sequences of letters all with the same hand.
+- [`tapping-term-ms`](#tapping-term-ms) is set to a higher value of 280ms, but not unreasonably high, so that same hand modifiers can still be used with intention.
+- [`quick-tap-ms`](#quick-tap-ms) is set to 175ms, for the event where a tapped key may wish to be held down.
+
+Depending on your typing behavior, you may wish to adjust this configuration. For example, you can adjust the specific timings used, or define another set of hold-taps for more dextrous fingers like the index with different parameters. You may even want to switch the flavor to `tap-preferred` or `tap-unless-interrupted`.
+
+</TabItem>
+
+<TabItem value="autoshift">
+
+A popular method of implementing Autoshift in ZMK involves a C-preprocessor macro, commonly defined as `AS(keycode)`. This macro applies the `LSHIFT` modifier to the specified `keycode` when `AS(keycode)` is held, and simply performs a [keypress](key-press.md), `&kp keycode`, when the `AS(keycode)` binding is tapped. This simplifies the use of Autoshift in a keymap, as the complete hold-tap bindings for each desired Autoshift key, as in `&as LS(<keycode 1>) <keycode 1> &as LS(<keycode 2>) <keycode 2> ... &as LS(<keycode n>) <keycode n>`, can be quite cumbersome to use when applied to a large portion of the keymap.
+
+```dts title="Hold-Tap Example: Autoshift"
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+
+#define AS(keycode) &as LS(keycode) keycode     // Autoshift Macro
+
+/ {
+    behaviors {
+        as: auto_shift {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping_term_ms = <135>;
+            quick_tap_ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                AS(Q) AS(W) AS(E) AS(R) AS(T) AS(Y) // Autoshift applied for QWERTY keys
+            >;
+        };
+    };
+};
+```
+
+</TabItem>
+
+<TabItem value="mo_tog">
+
+This hold-tap example implements a [momentary-layer](layers.md#momentary-layer) when the keybind is held and a [toggle-layer](layers.md#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
+
+```dts title="Hold-Tap Example: Momentary layer on Hold, Toggle layer on Tap"
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+
+#define MO_TOG(layer) &mo_tog layer layer   // Macro to apply momentary-layer-on-hold/toggle-layer-on-tap to a specific layer
+
+/ {
+    behaviors {
+        mo_tog: behavior_mo_tog {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&tog>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                &mo_tog 2 1     // &mo 2 on hold, &tog 1 on tap
+                MO_TOG(3)       // &mo 3 on hold, &tog 3 on tap
+            >;
+        };
+    };
+};
+```
+
+</TabItem>
+
+</Tabs>
+
+## Custom Hold-Tap Configuration
+
+### `tapping-term-ms`
+
+This value defines how long a key must be pressed to trigger the "hold" behavior, alongside other factors described in [interrupt flavors](#interrupt-flavors). The default is 200ms.
+
+```dts
+&mt {
+    tapping-term-ms = <140>;
+};
+```
+
+### Using different behavior types with hold-taps
+
+You can create instances of hold-taps invoking most [behavior types](../index.mdx#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
+The two parameters that are passed to the hold-tap in your keymap will be forwarded to the referred behaviors, first one to the hold behavior and second one to the tap.
+
+If you use behaviors that accept no parameters such as [mod-morphs](mod-morph.md) or [tap-dances](tap-dance.mdx), you can pass a dummy parameter value such as `0` to the hold-tap when you use it in your keymap.
+For instance, a hold-tap with node label `caps` and `bindings = <&kp>, <&caps_word>;` can be used in the keymap as below to send the caps lock keycode on hold and invoke the [caps word behavior](caps-word.md) on tap:
+
+```dts
+&caps CAPS 0
+```
+
+:::info
+You cannot use behaviors that expect more than one parameter such as [`&bt`](bluetooth.md) and [`&rgb_ug`](underglow.md) with hold-taps, due to the limitations of the [devicetree keymap format](../../config/index.md#devicetree-files).
+One workaround is to create a [macro](macros.md) that invokes those behaviors and use the macro as the hold or tap action.
+:::
+
+### Interrupt Flavors
+
+By default, when another key is pressed while a hold-tap is held, it will trigger the "hold" behavior even if `tapping-term-ms` has not been exceeded yet.
+We refer to the interaction of pressing one key while another is held as the "interrupt", and the way the hold-tap resolves is referred to as its "interrupt flavor".
+
+This default interrupt flavor is called "hold-preferred". While this flavor may work well for a ctrl/escape key, but it might not be well suited for home-row mods or layer-taps. For this reason, ZMK defines multiple interrupt flavors which hold-tap behaviors can be configured with, listed below:
+
+- The "hold-preferred" flavor triggers the hold behavior when the `tapping-term-ms` has expired or another key is pressed.
+- The "balanced" flavor will trigger the hold behavior when the `tapping-term-ms` has expired or another key is pressed _and_ released while the hold-tap is held.
+- The "tap-preferred" flavor triggers the hold behavior when the `tapping-term-ms` has expired. Pressing another key within `tapping-term-ms` does not affect the decision.
+- The "tap-unless-interrupted" flavor triggers a hold behavior only when another key is pressed before `tapping-term-ms` has expired. It triggers the tap behavior in all other situations. Note that this flavor _inverts_ the decision logic with respect to the tapping term.
+
+When the hold-tap key is released and the hold behavior has not been triggered, the tap behavior will trigger.
+
+![Hold-tap comparison](../../assets/hold-tap/comparison.svg)
+
+#### Comparison to QMK
+
+The `hold-preferred` flavor works similar to the `HOLD_ON_OTHER_KEY_PRESS` setting in QMK.
+The `balanced` flavor is similar to the `PERMISSIVE_HOLD` setting, and the `tap-preferred` flavor is the QMK default.
+
+```dts
+&mt {
+    flavor = "balanced";
+};
+```
+
+### `quick-tap-ms`
+
+If you press a tapped hold-tap again within `quick-tap-ms` milliseconds of the first press, it will always trigger the tap behavior.
+This is useful for keys like backspace, where a quick tap-then-hold can be used to hold it down to delete long parts of text.
+By default this behavior is disabled.
+
+```dts
+&mt {
+    quick-tap-ms = <150>;
+};
+```
+
+### `require-prior-idle-ms`
+
+If a hold-tap is pressed within `require-prior-idle-ms` of another non-modifier _key_ (not behavior), then the hold-tap will always resolve in a tap.
+This effectively disables the hold-tap when typing quickly, which can be quite useful for home-row mods.
+It can also have the effect of removing the input delay when typing quickly, since the hold-tap immediately resolves to a tap on key press.
+
+  <details>
+    <summary>The following hold-tap configuration enables `require-prior-idle-ms` with a 125 millisecond term, alongside `quick-tap-ms` with a 200 millisecond term.</summary>
+```dts
+rpi: require_prior_idle {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    flavor = "tap-preferred";
+    tapping-term-ms = <200>;
+    quick-tap-ms = <200>;
+    require-prior-idle-ms = <125>;
+    bindings = <&kp>, <&kp>;
+};
+```
+
+If you press `&kp A` and then `&rpi LEFT_SHIFT B` **within** 125 ms, then `ab` will be output.
+Importantly, `b` will be output immediately since it was within the `require-prior-idle-ms`, without waiting for a timeout or an interrupting key.
+In other words, the `&rpi LEFT_SHIFT B` binding will only have its underlying hold-tap behavior if it is pressed 125 ms **after** the previous key press; otherwise it will act like `&kp B`.
+
+Note that the greater the value of `require-prior-idle-ms` is, the harder it will be to invoke the hold behavior, making this feature less applicable for use-cases like capitalizing letters while typing normally.
+However, if the hold behavior isn't used during fast typing, then it can be an effective way to mitigate misfires.
+
+  </details>
+
+### Positional hold-tap and `hold-trigger-key-positions`
+
+Including `hold-trigger-key-positions` in your hold-tap definition turns on the positional hold-tap feature. With positional hold-tap enabled, if you press any key **not** listed in `hold-trigger-key-positions` before `tapping-term-ms` expires, it will produce a tap.
+
+In all other situations, positional hold-tap will not modify the behavior of your hold-tap. Positional hold-tap is useful when used with home-row modifiers: for example, if you have a home-row modifier key in the left hand, by including only key positions from the right hand in `hold-trigger-key-positions`, you will only get hold behaviors during cross-hand key combinations unless you exceed `tapping-term-ms` when using "balanced" or "hold-preferred" flavors.
+
+For home-row mods, it is recommended to use this property with `hold-trigger-on-release` so that modifiers on the same hand can be combined.
+
+:::info
+`hold-trigger-key-positions` is an array of key position indexes. Key positions are numbered sequentially according to your keymap, starting with 0. So if the first key in your keymap is Q, this key is in position 0. The next key (probably W) will be in position 1, et cetera.
+:::
+
+<details>
+    <summary>The following example uses a hold-tap behavior definition configured with the `hold-preferred` flavor, and with positional hold-tap enabled:</summary>
+
+```dts
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+
+/ {
+    behaviors {
+        pht: positional_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <400>;
+            quick-tap-ms = <200>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <1>;    // <---[[the W key]]
+        };
+    };
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                //  position 0         position 1       position 2
+                &pht LEFT_SHIFT Q        &kp W            &kp E
+            >;
+        };
+    };
+};
+```
+
+- The sequence `(pht_down, E_down, E_up, pht_up)` produces `qe`. The normal hold behavior (LEFT_SHIFT) **IS** modified into a tap behavior (Q) by positional hold-tap because the first key pressed after the hold-tap key is the `E key`, which is in position 2, which **is NOT** included in `hold-trigger-key-positions`.
+- The sequence `(pht_down, W_down, W_up, pht_up)` produces `W`. The normal hold behavior (LEFT_SHIFT) **is NOT** modified into a tap behavior (Q) by positional hold-tap because the first key pressed after the hold-tap key is the `W key`, which is in position 1, which **IS** included in `hold-trigger-key-positions`.
+- If the `LEFT_SHIFT / Q key` is held by itself for longer than `tapping-term-ms`, a hold behavior is produced. This is because positional hold-tap only modifies the behavior of a hold-tap if another key is pressed before the `tapping-term-ms` period expires.
+
+By default, `hold-trigger-key-positions` are evaluated upon the first _key press_ after
+the hold-tap. For home-row mods, this is not always ideal, because it prevents combining multiple modifiers unless they are included in `hold-trigger-key-positions`. To overwrite this behavior, one can set `hold-trigger-on-release`. If set to true, the evaluation of `hold-trigger-key-positions` gets delayed until _key release_. This allows combining multiple modifiers when the next key is _held_, while still deciding the hold-tap in favor of a tap when the next key is _tapped_.
+
+  </details>
+#### `hold-trigger-on-release`
+
+If set, instead of the keys listed in `hold-trigger-key-positions` producing a tap when _pressed_ before `tapping-term-ms` expires, they instead produce a tap when _released_ before `tapping-term-ms` expires.
+
+```dts
+&mt {
+    hold-trigger-on-release;
+};
+```
+
+### `hold-while-undecided`
+
+If enabled, the hold behavior will immediately be held on hold-tap press, and will release before the behavior is sent in the event the hold-tap resolves into a tap. With most modifiers this will not affect typing, and is useful for using modifiers with the mouse.
+
+```dts
+&mt {
+    hold-while-undecided;
+};
+```
+
+#### `hold-while-undecided-linger`
+
+If your tap behavior activates the same modifier as the hold behavior, and you want to avoid a double tap when transitioning from the hold to the tap, you can use `hold-while-undecided-linger`. When enabled, the hold behavior will continue to be held until _after_ the tap behavior is released.
+
+For example, if the hold is `&kp LGUI` and the tap is `&sk LGUI`, then with `hold-while-undecided-linger` enabled, the host will see `LGUI` held down continuously until the sticky key is finished, instead of seeing a release and press when transitioning from hold to sticky key.
+
+```dts
+&mt {
+    hold-while-undecided-linger;
+};
+```
+
+:::info[Alt/Win/Cmd behavior]
+In some applications/desktop environments, pressing Alt keycodes by itself will have its own behavior like activate a menu and Gui keycodes will bring up the start menu or an application launcher.
+:::
+
+### `retro-tap`
+
+If `retro-tap` is enabled, the tap behavior is triggered when releasing the hold-tap key if no other key was pressed in the meantime. The hold key does not activate until another key is pressed, meaning that it cannot be used for mouse events like Shift Click to select from your cursor position to mouse position.
+
+For example, if you press `&mt LEFT_SHIFT A` and then release it without pressing another key, it will output `a`.
+
+```dts
+&mt {
+    retro-tap;
+};
+```

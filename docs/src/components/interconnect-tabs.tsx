@@ -2,29 +2,29 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 import { HardwareMetadata, Interconnect } from "../hardware-metadata";
-import { groupedMetadata, InterconnectDetails } from "./hardware-utils";
+import { groupedMetadata } from "./hardware-utils";
 
 interface InterconnectTabsProps {
   items: HardwareMetadata[];
+  gpio: boolean;
 }
 
-function mapInterconnect(interconnect: Interconnect) {
-  let content = require(`@site/src/data/interconnects/${interconnect.id}/design_guideline.md`);
-  let imageUrl = require(`@site/docs/assets/interconnects/${interconnect.id}/pinout.png`);
-
+function mapInterconnect(interconnect: Interconnect, gpio: boolean) {
+  const content = require(
+    `@site/src/data/interconnects/${interconnect.id}/design_guideline.md`
+  );
+  const imageUrl = require(
+    `@site/docs/assets/interconnects/${interconnect.id}/pinout.png`
+  );
   return (
     <TabItem value={interconnect.id} key={interconnect.id}>
       <img src={imageUrl.default} />
-
-      <content.default />
-
-      {interconnect.node_labels && (
+      {gpio && <content.default />}
+      {interconnect.node_labels && !gpio && (
         <>
+          <br></br>
           The following node labels are available:
           <ul>
-            <li>
-              GPIO: <code>&{interconnect.node_labels.gpio}</code>
-            </li>
             {interconnect.node_labels.i2c && (
               <li>
                 I2C bus: <code>&{interconnect.node_labels.i2c}</code>
@@ -56,15 +56,19 @@ function mapInterconnectValue(interconnect: Interconnect) {
   return { label: `${interconnect.name} Shields`, value: interconnect.id };
 }
 
-function InterconnectTabs({ items }: InterconnectTabsProps) {
-  let grouped = Object.values(groupedMetadata(items).interconnects)
+function InterconnectTabs({ items, gpio }: InterconnectTabsProps) {
+  const grouped = Object.values(groupedMetadata(items).interconnects)
     .map((i) => i?.interconnect as Interconnect)
     .filter((i) => i?.design_guideline)
     .sort((a, b) => a.id.localeCompare(b.id));
 
   return (
-    <Tabs defaultValue={"pro_micro"} values={grouped.map(mapInterconnectValue)}>
-      {grouped.map(mapInterconnect)}
+    <Tabs
+      queryString="interconnect"
+      defaultValue={"pro_micro"}
+      values={grouped.map(mapInterconnectValue)}
+    >
+      {grouped.map((items) => mapInterconnect(items, gpio))}
     </Tabs>
   );
 }

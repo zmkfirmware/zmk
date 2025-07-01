@@ -68,7 +68,7 @@ static const struct behavior_parameter_value_metadata one_arg_p2_values[] = {
         .range =
             {
                 .min = 0,
-                .max = 255,
+                .max = 100,
             },
     },
 };
@@ -93,8 +93,6 @@ static const struct behavior_parameter_metadata metadata = {
 };
 
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
-
-static int behavior_backlight_init(const struct device *dev) { return 0; }
 
 static int
 on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_binding *binding,
@@ -170,7 +168,7 @@ static const struct behavior_driver_api behavior_backlight_driver_api = {
 #endif
 };
 
-BEHAVIOR_DT_INST_DEFINE(0, behavior_backlight_init, NULL, NULL, NULL, POST_KERNEL,
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_backlight_driver_api);
+BEHAVIOR_DT_INST_DEFINE(0, NULL, NULL, NULL, NULL, POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+                        &behavior_backlight_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

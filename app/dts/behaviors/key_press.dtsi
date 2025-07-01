@@ -4,10 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <dt-bindings/zmk/behaviors.h>
+
 / {
     behaviors {
-        /* DEPRECATED: `cp` will be removed in the future */
-        /omit-if-no-ref/ cp: kp: key_press {
+#if ZMK_BEHAVIOR_OMIT(KP)
+    /omit-if-no-ref/
+#endif
+        kp: key_press {
             compatible = "zmk,behavior-key-press";
             #binding-cells = <1>;
             display-name = "Key Press";

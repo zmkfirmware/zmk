@@ -1,0 +1,6 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+rsource "bluetooth/Kconfig.defaults"
+rsource "wired/Kconfig.defaults"
+

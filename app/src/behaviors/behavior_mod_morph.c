@@ -51,7 +51,7 @@ static int on_mod_morph_binding_pressed(struct zmk_behavior_binding *binding,
     } else {
         data->pressed_binding = (struct zmk_behavior_binding *)&cfg->normal_binding;
     }
-    return behavior_keymap_binding_pressed(data->pressed_binding, event);
+    return zmk_behavior_invoke_binding(data->pressed_binding, event, true);
 }
 
 static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
@@ -67,7 +67,7 @@ static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
     struct zmk_behavior_binding *pressed_binding = data->pressed_binding;
     data->pressed_binding = NULL;
     int err;
-    err = behavior_keymap_binding_released(pressed_binding, event);
+    err = zmk_behavior_invoke_binding(pressed_binding, event, false);
     zmk_hid_masked_modifiers_clear();
     return err;
 }
@@ -79,8 +79,6 @@ static const struct behavior_driver_api behavior_mod_morph_driver_api = {
     .get_parameter_metadata = zmk_behavior_get_empty_param_metadata,
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
-
-static int behavior_mod_morph_init(const struct device *dev) { return 0; }
 
 #define _TRANSFORM_ENTRY(idx, node)                                                                \
     {                                                                                              \
@@ -100,7 +98,7 @@ static int behavior_mod_morph_init(const struct device *dev) { return 0; }
                                    (DT_INST_PROP(n, mods) & ~DT_INST_PROP(n, keep_mods))),         \
     };                                                                                             \
     static struct behavior_mod_morph_data behavior_mod_morph_data_##n = {};                        \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_mod_morph_init, NULL, &behavior_mod_morph_data_##n,        \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, &behavior_mod_morph_data_##n,                           \
                             &behavior_mod_morph_config_##n, POST_KERNEL,                           \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_mod_morph_driver_api);
 

@@ -5,6 +5,11 @@ const TREE_SITTER_WASM_URL = new URL(
   import.meta.url
 );
 
+const TREE_SITTER_DEVICETREE_WASM_URL = new URL(
+  "/node_modules/tree-sitter-devicetree/tree-sitter-devicetree.wasm",
+  import.meta.url
+);
+
 export let Devicetree: Parser.Language;
 
 export async function initParser() {
@@ -17,7 +22,7 @@ export async function initParser() {
       return prefix + path;
     },
   });
-  Devicetree = await Parser.Language.load("/tree-sitter-devicetree.wasm");
+  Devicetree = await Parser.Language.load(TREE_SITTER_DEVICETREE_WASM_URL.href);
 }
 
 export function createParser() {
@@ -128,7 +133,9 @@ export function findDevicetreeProperty(
     `(property name: (identifier) @name (#eq? @name "${name}")) @prop`
   );
   const matches = query.matches(node);
-  const props = matches.map(({ captures }) => findCapture("prop", captures)!);
+  const props = matches
+    .map(({ captures }) => findCapture("prop", captures))
+    .filter((node) => node !== null);
 
   if (options?.recursive) {
     return props;

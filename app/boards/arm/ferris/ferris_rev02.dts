@@ -10,6 +10,12 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
+#include <layouts/cuddlykeyboards/ferris.dtsi>
+
+&cuddlykeyboards_ferris_layout {
+    transform = <&matrix_transform0>;
+};
+
 / {
     model = "Ferris rev0.2";
     compatible = "ferris,rev02", "st,stm32f072";
@@ -17,14 +23,14 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zmk,kscan = &kscan;
-        zmk,matrix-transform = &transform;
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &cuddlykeyboards_ferris_layout;
         /* TODO: Enable once we support the IC for underglow
         zmk,underglow = &led_strip;
          */
     };
 
-    transform: transform {
+    matrix_transform0: matrix_transform0 {
         compatible = "zmk,matrix-transform";
         rows = <4>;
         columns = <10>;
@@ -37,7 +43,7 @@
         >;
     };
 
-    kscan: kscan {
+    kscan0: kscan0 {
         compatible = "zmk,kscan-composite";
         rows = <4>;
         columns = <10>;
@@ -48,7 +54,7 @@
 
         right {
             kscan = <&kscan_right>;
-            column-offset = <5>;
+            col-offset = <5>;
         };
     };
 
@@ -114,6 +120,9 @@ zephyr_udc0: &usb {
 
     pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
     pinctrl-names = "default";
+
+    // Overridden to lower RAM usage.
+    num-bidir-endpoints = <4>;
 };
 
 &clk_hsi {

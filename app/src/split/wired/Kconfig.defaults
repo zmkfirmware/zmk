@@ -1,0 +1,37 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if ZMK_SPLIT_WIRED
+
+config ZMK_SPLIT_WIRED_PRIORITY
+    default 0
+
+config ZMK_SPLIT_WIRED_CMD_BUFFER_ITEMS
+    default 4
+
+config ZMK_SPLIT_WIRED_EVENT_BUFFER_ITEMS
+    default 16
+
+
+if ZMK_SPLIT_WIRED_UART_MODE_POLLING
+
+config ZMK_SPLIT_WIRED_POLLING_RX_PERIOD
+    default 10
+
+endif
+
+
+if ZMK_SPLIT_WIRED_UART_MODE_ASYNC
+
+config ZMK_SPLIT_WIRED_ASYNC_RX_TIMEOUT
+    default 20
+
+endif
+
+config ZMK_SPLIT_WIRED_HALF_DUPLEX_RX_TIMEOUT
+    default 15
+
+config ZMK_SPLIT_WIRED_HALF_DUPLEX_RX_COMPLETE_TIMEOUT
+    default 20
+
+endif

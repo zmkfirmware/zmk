@@ -1,0 +1,18 @@
+
+#include <dt-bindings/zmk/kscan_mock.h>
+
+#include "shared.dtsi"
+
+&kscan {
+    events = <>;
+
+    /delete-property/ exit-after;
+};
+
+&mock_encoder {
+    status = "okay";
+
+    event-startup-delay = <2000>;
+    event-period = <2000>;
+    events = <18 (-18)>;
+};

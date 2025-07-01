@@ -10,8 +10,7 @@
 #include <zmk/ble/profile.h>
 
 #define ZMK_BLE_IS_CENTRAL                                                                         \
-    (IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_BLE) &&                                 \
-     IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
+    (IS_ENABLED(CONFIG_ZMK_SPLIT_BLE) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
 
 #if ZMK_BLE_IS_CENTRAL
 #define ZMK_BLE_PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS)
@@ -38,6 +37,8 @@ bool zmk_ble_active_profile_is_connected(void);
 char *zmk_ble_active_profile_name(void);
 
 int zmk_ble_unpair_all(void);
+
+int zmk_ble_set_device_name(char *name);
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 int zmk_ble_put_peripheral_addr(const bt_addr_le_t *addr);

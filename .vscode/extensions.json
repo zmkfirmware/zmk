@@ -1,9 +1,11 @@
 {
   "recommendations": [
     "esbenp.prettier-vscode",
+    "ms-python.black-formatter",
     "ms-python.python",
     "ms-vscode.cpptools",
     "plorefice.devicetree",
-    "twxs.cmake"
+    "twxs.cmake",
+    "unifiedjs.vscode-mdx"
   ]
 }

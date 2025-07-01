@@ -1,0 +1,27 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Complete specification of wired split connection
+
+compatible: "zmk,wired-split"
+
+properties:
+  device:
+    type: phandle
+    required: true
+    description: The UART device for wired split communication
+
+  detect-gpios:
+    type: phandle-array
+    description: |
+      If your split includes support for an extra GPIO to detect presence of the split cable, set
+      this to the GPIO pin used to detect the connection.
+
+  half-duplex:
+    type: boolean
+    description: "Experimental: Enable half-duplex protocol mode"
+
+  dir-gpios:
+    type: phandle-array
+    description: "Experimental: Set the communication direction. Used for RS-422 style comms."

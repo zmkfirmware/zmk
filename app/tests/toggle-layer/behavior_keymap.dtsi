@@ -9,7 +9,7 @@
         default_layer {
             bindings = <
                 &kp B &tog 1
-                &kp D &kp G>;
+                &kp D &to 1>;
         };
 
         lower_layer {

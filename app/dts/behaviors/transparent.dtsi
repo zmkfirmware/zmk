@@ -4,9 +4,14 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <dt-bindings/zmk/behaviors.h>
+
 / {
     behaviors {
-        /omit-if-no-ref/ trans: transparent {
+#if ZMK_BEHAVIOR_OMIT(TRANS)
+        /omit-if-no-ref/
+#endif
+        trans: transparent {
             compatible = "zmk,behavior-transparent";
             #binding-cells = <0>;
             display-name = "Transparent";

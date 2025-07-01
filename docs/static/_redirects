@@ -1,0 +1,25 @@
+/docs/behaviors/* /docs/keymaps/behaviors/:splat 301
+/docs/features/keymaps /docs/keymaps 301
+/docs/features/combos /docs/keymaps/combos 301
+/docs/features/conditional-layers /docs/keymaps/conditional-layers 301
+/docs/features/underglow /docs/features/lighting#rgb-underglow 301
+/docs/features/backlight /docs/features/lighting#backlight 301
+/docs/codes/modifiers /docs/keymaps/modifiers 301
+/docs/codes/* /docs/keymaps/list-of-keycodes 301
+/docs/config/backlight /docs/config/lighting#backlight 301
+/docs/config/underglow /docs/config/lighting#rgb-underglow 301
+/docs/features/beta-testing /docs/features/modules#beta-testing 301
+/docs/development/setup /docs/development/local-toolchain/setup 301
+/docs/development/boards-shields-keymaps /docs/development/hardware-integration/boards-shields-keymaps 301
+/docs/development/hardware-metadata-files /docs/development/hardware-integration/hardware-metadata-files 301
+/docs/development/clean-room /docs/development/contributing/clean-room 301
+/docs/development/documentation /docs/development/contributing/documentation 301
+/docs/development/new-shield /docs/development/hardware-integration/new-shield 301
+/docs/development/build-flash /docs/development/local-toolchain/build-flash 301
+/docs/development/ide-integration /docs/development/local-toolchain/ide-integration 301
+/docs/development/posix-board /docs/development/local-toolchain/posix-board 301
+/docs/development/pre-commit /docs/development/local-toolchain/pre-commit 301
+/docs/development/tests /docs/development/local-toolchain/tests 301
+/docs/development/guides/new-behavior /docs/development/new-behavior 301
+/docs/development/hardware-integration/studio-setup /docs/development/hardware-integration/physical-layouts 301
+/docs/keymaps/behaviors/mod-tap /docs/keymaps/behaviors/hold-tap#mod-tap

@@ -77,7 +77,7 @@
             bindings = <
 &kp Q      &kp W      &kp E      &kp R      &kp T                            &kp Y      &kp U      &kp I      &kp O      &kp P
 &kp A      &kp S      &kp D      &kp F      &kp G                            &kp H      &kp J      &kp K      &kp L      &kp SEMI
-&mt LSFT Z &kp X      &kp C      &kp V      &kp B     &mo QC_N    &kp RGUI   &kp N      &kp M      &kp COMMA  &kp DOT    &mt RSFT FSLH
+&mt LSHFT Z &kp X      &kp C      &kp V      &kp B     &mo QC_N    &kp RGUI   &kp N      &kp M      &kp COMMA  &kp DOT    &mt RSHFT FSLH
                   &kp LALT   &kp LCTRL  &lt 1 RET  &lt 2 MINUS    &lt 2 EQUAL  &lt 1 SPACE  &kp BSPC   &mo QC_B
             >;
 
@@ -88,7 +88,7 @@
             display-name = " Lower";
             bindings = <
 &kp N1     &kp N2     &kp N3     &kp N4     &kp N5                           &kp N6     &kp N7     &kp N8     &kp N9     &kp N0
-&trans     &trans     &trans     &trans     &trans                           &trans     &trans     &trans     &trans     &kp QUOT
+&trans     &trans     &trans     &trans     &trans                           &trans     &trans     &trans     &trans     &kp SQT
 &kp LSHFT  &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &kp RSHFT
                       &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans
             >;
@@ -101,7 +101,7 @@
             bindings = <
 &kp TAB    &trans     &trans     &trans     &trans                           &kp PG_UP  &kp HOME   &kp UP     &kp END    &kp BSLH
 &kp CAPS   &trans     &trans     &trans     &trans                           &kp PG_DN  &kp LEFT   &kp DOWN   &kp RIGHT  &kp GRAVE
-&trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &mt RSFT TILDE
+&trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &trans     &mt RSHFT TILDE
                       &trans     &trans     &trans     &trans     &trans     &trans     &kp DEL    &trans
             >;
 

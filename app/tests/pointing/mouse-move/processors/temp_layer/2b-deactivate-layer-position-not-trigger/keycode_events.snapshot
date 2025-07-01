@@ -1,0 +1,29 @@
+Dispatching handle_position_state_changed
+Position excluded, continuing
+layer_changed: layer 1 state 1
+Dispatching handle_layer_state_changed
+movement_set: Mouse movement set to -1/0
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
+movement_set: Mouse movement set to -2/0
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
+movement_set: Mouse movement set to -2/0
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
+movement_set: Mouse movement set to -3/0
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
+Dispatching handle_position_state_changed
+Dispatching handle_position_state_changed
+Position excluded, continuing
+button_press: Button 0 count 1
+button_press: Mouse buttons set to 0x01
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
+Dispatching handle_position_state_changed
+button_release: Button 0 count: 0
+button_release: Button 0 released
+button_release: Mouse buttons set to 0x00
+scroll_set: Mouse scroll set to 0/0
+movement_set: Mouse movement set to 0/0
