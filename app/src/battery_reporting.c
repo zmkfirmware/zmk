@@ -235,7 +235,7 @@ ZMK_BT_GATT_SERVICE_DEFINE(
 static void zmk_update_lowest_charge_work(struct k_work *work) {
     ARG_UNUSED(work);
 
-    uint8_t new_lowest_level = 100;
+    uint8_t new_lowest_level = 0;
 
     if (!battery_parts[0].hidden) {
         new_lowest_level = zmk_battery_state_of_charge();
