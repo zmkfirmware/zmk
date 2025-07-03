@@ -7,7 +7,7 @@
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
 #include "arduino_pro_micro_pins.dtsi"
-#include "puchi_ble_v1-pinctrl.dtsi"
+#include "puchi_ble-pinctrl.dtsi"
 
 / {
     model = "puchi_ble";
