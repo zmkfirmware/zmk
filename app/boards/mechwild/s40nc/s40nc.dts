@@ -6,6 +6,8 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
