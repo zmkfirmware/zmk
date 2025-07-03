@@ -3,7 +3,7 @@
 ## Standard Build
 
 ```
-west build -p -d build/ferris --board ferris_rev02
+west build -p -d build/ferris --board ferris
 ```
 
 ## Flashing

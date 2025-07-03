@@ -4,5 +4,4 @@
 # SPDX-License-Identifier: MIT
 
 config BOARD_FERRIS
-    bool "Ferris rev 0.2"
-    depends on SOC_STM32F072XB
+    select SOC_STM32F072XB

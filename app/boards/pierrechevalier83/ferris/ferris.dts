@@ -106,7 +106,7 @@
     clock-frequency = <I2C_BITRATE_FAST>;
 
     right_io: mcp23017@20 {
-        compatible = "microchip,mcp230xx";
+        compatible = "microchip,mcp23017";
         status = "okay";
         gpio-controller;
         reg = <0x20>;
