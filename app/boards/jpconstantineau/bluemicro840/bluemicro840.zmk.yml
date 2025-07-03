@@ -1,5 +1,5 @@
 file_format: "1"
-id: bluemicro840_v1
+id: bluemicro840
 name: BlueMicro840 v1
 type: board
 arch: arm
