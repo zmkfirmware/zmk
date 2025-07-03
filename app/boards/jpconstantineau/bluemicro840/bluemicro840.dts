@@ -6,8 +6,10 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+
 #include "arduino_pro_micro_pins.dtsi"
-#include "bluemicro840_v1-pinctrl.dtsi"
+#include "bluemicro840-pinctrl.dtsi"
 
 / {
     model = "BlueMicro840_V1";

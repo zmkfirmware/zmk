@@ -3,10 +3,7 @@
 # Copyright (c) 2020 Pete Johanson, Derek Schmell
 # SPDX-License-Identifier: MIT
 
-if BOARD_BLUEMICRO840_V1
-
-config BOARD
-    default "bluemicro840_v1"
+if BOARD_BLUEMICRO840
 
 if USB_DEVICE_STACK
 
@@ -18,4 +15,4 @@ endif # USB_DEVICE_STACK
 config BT_CTLR
     default BT
 
-endif # BOARD_BLUEMICRO840_V1
+endif # BOARD_BLUEMICRO840
