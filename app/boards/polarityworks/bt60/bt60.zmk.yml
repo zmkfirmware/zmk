@@ -1,6 +1,6 @@
 file_format: "1"
-id: bt75_v1
-name: BT75 V1
+id: bt60
+name: BT60 V2
 type: board
 arch: arm
 features:

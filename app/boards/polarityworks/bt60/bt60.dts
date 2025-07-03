@@ -5,7 +5,7 @@
 */
 
 /dts-v1/;
-#include "ckp.dtsi"
+#include "../common/ckp.dtsi"
 #include <layouts/common/60percent/all1u.dtsi>
 #include <layouts/common/60percent/ansi.dtsi>
 #include <layouts/common/60percent/hhkb.dtsi>
