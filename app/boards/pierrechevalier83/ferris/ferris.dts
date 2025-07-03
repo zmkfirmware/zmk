@@ -106,7 +106,7 @@
     clock-frequency = <I2C_BITRATE_FAST>;
 
     right_io: mcp23017@20 {
-        compatible = "microchip,mcp230xx";
+        compatible = "microchip,mcp23017";
         status = "okay";
         gpio-controller;
         reg = <0x20>;
@@ -147,9 +147,37 @@ zephyr_udc0: &usb {
     apb1-prescaler = <1>;
 };
 
-
 &rtc {
+    clocks = <&rcc STM32_CLOCK_BUS_APB1 0x10000000>,
+         <&rcc STM32_SRC_LSI RTC_SEL(2)>;
     status = "okay";
+
+    backup_regs {
+        status = "okay";
+    };
+};
+
+&bbram {
+    status = "okay";
+
+    retainedmem0: retainedmem {
+        compatible = "zephyr,retained-bbram";
+        status = "okay";
+                #address-cells = <1>;
+                #size-cells = <1>;
+
+                retention0: retention@0 {
+                        compatible = "zephyr,retention";
+                        status = "okay";
+                        reg = <0x0 0x1>;
+                };
+    };
+};
+
+/ {
+        chosen {
+                zephyr,boot-mode = &retention0;
+        };
 };
 
 &flash0 {
