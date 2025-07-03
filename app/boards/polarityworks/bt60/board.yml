@@ -1,0 +1,15 @@
+boards:
+  - name: bt60_hs
+    vendor: polarityworks
+    socs:
+      - name: nrf52840
+  - name: bt60
+    vendor: polarityworks
+    socs:
+      - name: nrf52840
+    revision:
+      format: major.minor.patch
+      default: 2.0.0
+      revisions:
+        - name: 1.0.0
+        - name: 2.0.0
