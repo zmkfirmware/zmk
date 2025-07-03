@@ -7,6 +7,8 @@
 /dts-v1/;
 
 #include <nordic/nrf52840_qiaa.dtsi>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+
 #include "pillbug-pinctrl.dtsi"
 #include "blackpill_pins.dtsi"
 
