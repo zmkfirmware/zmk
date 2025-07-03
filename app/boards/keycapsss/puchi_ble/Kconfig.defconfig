@@ -1,7 +1,7 @@
 # Copyright (c) 2022 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if BOARD_PUCHI_BLE_v1
+if BOARD_PUCHI_BLE
 
 config BOARD
     default "puchi_ble"
@@ -16,4 +16,4 @@ endif # USB_DEVICE_STACK
 config BT_CTLR
     default BT
 
-endif # BOARD_PUCHI_BLE_v1
+endif # BOARD_PUCHI_BLE
