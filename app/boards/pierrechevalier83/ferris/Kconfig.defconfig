@@ -5,9 +5,6 @@
 
 if BOARD_FERRIS
 
-config BOARD
-    default "ferris_rev02"
-
 config ZMK_KEYBOARD_NAME
     default "Ferris rev 0.2"
 
