@@ -1,5 +1,5 @@
-identifier: puchi_ble_v1
-name: puchi_ble_v1
+identifier: puchi_ble
+name: puchi_ble
 type: mcu
 arch: arm
 toolchain:
