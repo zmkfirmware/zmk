@@ -250,6 +250,13 @@ int zmk_ble_profile_index(const bt_addr_le_t *addr) {
     return -ENODEV;
 }
 
+bt_addr_le_t *zmk_ble_profile_address(uint8_t index) {
+    if (index >= ZMK_BLE_PROFILE_COUNT) {
+        return (bt_addr_le_t *)(BT_ADDR_LE_NONE);
+    }
+    return &profiles[index].peer;
+}
+
 #if IS_ENABLED(CONFIG_SETTINGS)
 static void ble_save_profile_work(struct k_work *work) {
     settings_save_one("ble/active_profile", &active_profile, sizeof(active_profile));
