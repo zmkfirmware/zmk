@@ -95,12 +95,10 @@ static void raise_profile_changed_event_callback(struct k_work *work) {
 
 K_WORK_DEFINE(raise_profile_changed_event_work, raise_profile_changed_event_callback);
 
-bool zmk_ble_active_profile_is_open(void) {
-    return zmk_ble_profile_is_open(zmk_ble_active_profile_addr());
-}
+bool zmk_ble_active_profile_is_open(void) { return zmk_ble_profile_is_open(active_profile); }
 
-bool zmk_ble_profile_is_open(const bt_addr_le_t *addr) {
-    return !bt_addr_le_cmp(addr, BT_ADDR_LE_ANY);
+bool zmk_ble_profile_is_open(uint8_t index) {
+    return !bt_addr_le_cmp(&profiles[index].peer, BT_ADDR_LE_ANY);
 }
 
 void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
@@ -119,12 +117,13 @@ void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
 }
 
 bool zmk_ble_active_profile_is_connected(void) {
-    return zmk_ble_profile_is_connected(zmk_ble_active_profile_addr());
+    return zmk_ble_profile_is_connected(active_profile);
 }
 
-bool zmk_ble_profile_is_connected(const bt_addr_le_t *addr) {
+bool zmk_ble_profile_is_connected(uint8_t index) {
     struct bt_conn *conn;
     struct bt_conn_info info;
+    bt_addr_le_t *addr = &profiles[index].peer;
     if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
         return false;
     } else if ((conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr)) == NULL) {
