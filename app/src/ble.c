@@ -98,6 +98,9 @@ K_WORK_DEFINE(raise_profile_changed_event_work, raise_profile_changed_event_call
 bool zmk_ble_active_profile_is_open(void) { return zmk_ble_profile_is_open(active_profile); }
 
 bool zmk_ble_profile_is_open(uint8_t index) {
+    if (index >= ZMK_BLE_PROFILE_COUNT) {
+        return false;
+    }
     return !bt_addr_le_cmp(&profiles[index].peer, BT_ADDR_LE_ANY);
 }
 
@@ -121,6 +124,9 @@ bool zmk_ble_active_profile_is_connected(void) {
 }
 
 bool zmk_ble_profile_is_connected(uint8_t index) {
+    if (index >= ZMK_BLE_PROFILE_COUNT) {
+        return false;
+    }
     struct bt_conn *conn;
     struct bt_conn_info info;
     bt_addr_le_t *addr = &profiles[index].peer;
