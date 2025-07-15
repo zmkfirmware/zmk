@@ -235,7 +235,7 @@ ZMK_BT_GATT_SERVICE_DEFINE(
 static void zmk_update_lowest_charge_work(struct k_work *work) {
     ARG_UNUSED(work);
 
-    uint8_t new_lowest_level = 0;
+    uint8_t new_lowest_level = UINT8_MAX;
 
     if (!battery_parts[0].hidden) {
         new_lowest_level = zmk_battery_state_of_charge();
@@ -253,6 +253,11 @@ static void zmk_update_lowest_charge_work(struct k_work *work) {
         if (level != 0 && level < new_lowest_level) {
             new_lowest_level = level;
         }
+    }
+
+    if (new_lowest_level == UINT8_MAX) {
+        new_lowest_level = 0;
+        LOG_DBG("No valid battery levels found, setting lowest to 0");
     }
 
     if (new_lowest_level != lowest_state_of_charge) {
