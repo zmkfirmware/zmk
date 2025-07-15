@@ -13,7 +13,13 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-static struct zmk_pointing_resolution_multipliers multipliers[ZMK_ENDPOINT_COUNT];
+static struct zmk_pointing_resolution_multipliers multipliers[ZMK_ENDPOINT_COUNT] = {
+    [0 ... ZMK_ENDPOINT_COUNT - 1] =
+        {
+            .wheel = 15,
+            .hor_wheel = 15,
+        },
+};
 
 struct zmk_pointing_resolution_multipliers
 zmk_pointing_resolution_multipliers_get_current_profile(void) {
