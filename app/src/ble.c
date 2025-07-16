@@ -164,6 +164,13 @@ bool zmk_ble_active_profile_is_connected(void) {
     advertising_status = ZMK_ADV_CONN;
 
 int update_advertising(void) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+#if !IS_ENABLED(CONFIG_ZMK_BLE_PROFILE_ADVERTISING)
+    LOG_INF("skipping advertising since profile advertising is disabled");
+    return 0;
+#endif
+#endif
+
     int err = 0;
     bt_addr_le_t *addr;
     struct bt_conn *conn;
