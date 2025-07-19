@@ -109,61 +109,61 @@ These steps are very similar to Zephyr's [Get Zephyr and install Python dependen
 
 1. Use `apt` to install Python `venv` package:
 
-   ```sh
-   sudo apt install python3-venv
-   ```
+```sh
+sudo apt install python3-venv
+```
 
 2. Create a new virtual environment and activate it:
 
-   ```sh
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
   </TabItem>
 
   <TabItem value="win" label="Windows">
 1. Create a new virtual environment:
 
-   ```sh
-   python -m venv .venv
-   ```
+```sh
+python -m venv .venv
+```
 
 2. Activate the virtual environment:
 
-   <WinTermTabs>
-     <TabItem value="cmd">
+  <WinTermTabs>
+    <TabItem value="cmd">
 
-   ```sh
-   .venv\Scripts\activate.bat
-   ```
+```sh
+.venv\Scripts\activate.bat
+```
 
-     </TabItem>
+    </TabItem>
 
-     <TabItem value="ps">
+    <TabItem value="ps">
 
-   ```powershell
-   .venv\Scripts\Activate.ps1
-   ```
+```powershell
+.venv\Scripts\Activate.ps1
+```
 
-     </TabItem>
+    </TabItem>
 
-   </WinTermTabs>
+  </WinTermTabs>
   </TabItem>
 
   <TabItem value="mac" label="Mac OS">
 
 1. Create a new virtual environment:
 
-   ```sh
-   python3 -m venv .venv
-   ```
+```sh
+python3 -m venv .venv
+```
 
 2. Activate the virtual environment:
 
-   ```sh
-   source .venv/bin/activate
-   ```
+```sh
+source .venv/bin/activate
+```
 
   </TabItem>
 </Tabs>
@@ -174,40 +174,40 @@ Once activated your shell will be prefixed with `(.venv)`. The virtual environme
 Remember to activate the virtual environment every time you start working.
 :::
 
-4. Install `west`:
+4. Install west:
 
-   ```sh
-   pip install west
-   ```
+```sh
+pip install west
+```
 
 5. Initialize the application and update to fetch modules, including Zephyr:
 
-   ```sh
-   west init -l app/
-   west update
-   ```
+```sh
+west init -l app/
+west update
+```
 
-   :::tip
-   This step pulls down quite a bit of tooling, be patient!
-   :::
+:::tip
+This step pulls down quite a bit of tooling, be patient!
+:::
 
 6. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
 
-   ```sh
-   west zephyr-export
-   ```
+```sh
+west zephyr-export
+```
 
 7. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
 
-   ```sh
-   pip install -r zephyr/scripts/requirements-base.txt
-   ```
+```sh
+pip install -r zephyr/scripts/requirements-base.txt
+```
 
-   If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extra.txt` dependencies:
+If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extra.txt` dependencies:
 
-   ```sh
-   pip install -r zephyr/scripts/requirements-extra.txt
-   ```
+```sh
+pip install -r zephyr/scripts/requirements-extra.txt
+```
 
 </TabItem>
 <TabItem value="glob">
@@ -215,52 +215,52 @@ Remember to activate the virtual environment every time you start working.
   <TabItem value="ubuntu" label="Ubuntu">
 1. Install `west`:
 
-   ```sh
-   pip3 install --user -U west
-   ```
+```sh
+pip3 install --user -U west
+```
 
-   :::note
-   You need `~/.local/bin` to be on your `PATH` environment variable; verify that it is by running
+:::note
+You need `~/.local/bin` to be on your `PATH` environment variable; verify that it is by running
 
-   ```sh
-   west --version
-   ```
+```sh
+west --version
+```
 
-   If this prints an error rather than a `west` version number, then add `~/.local/bin` to your `PATH`:
+If this prints an error rather than a `west` version number, then add `~/.local/bin` to your `PATH`:
 
-   ```sh
-   echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
-   source ~/.bashrc
-   ```
+```sh
+echo 'export PATH=~/.local/bin:"$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
 
-   :::
+:::
 
   </TabItem>
 
   <TabItem value="win" label="Windows">
 1. Install `west`:
 
-   ```sh
-   pip install -U west
-   ```
+```sh
+pip install -U west
+```
 
-   :::note
-   You need the Python scripts directory to be on your PATH environment variable; verify that it is by running
+:::note
+You need the Python scripts directory to be on your PATH environment variable; verify that it is by running
 
-   ```sh
-   west --version
-   ```
+```sh
+west --version
+```
 
-   If this prints an error rather than a `west` version number, then add said directory to your `PATH` with PowerShell:
+If this prints an error rather than a `west` version number, then add said directory to your `PATH` with PowerShell:
 
-   ```powershell
-   $Scripts = python -c "import sysconfig; print(sysconfig.get_path('scripts'))"
-   $Path = [Environment]::GetEnvironmentVariable('PATH', 'User')
-   [Environment]::SetEnvironmentVariable('PATH', "$Path;$Scripts", 'User')
-   $env:PATH += ";$Scripts"
-   ```
+```powershell
+$Scripts = python -c "import sysconfig; print(sysconfig.get_path('scripts'))"
+$Path = [Environment]::GetEnvironmentVariable('PATH', 'User')
+[Environment]::SetEnvironmentVariable('PATH', "$Path;$Scripts", 'User')
+$env:PATH += ";$Scripts"
+```
 
-   :::
+:::
 
   </TabItem>
 
@@ -268,44 +268,44 @@ Remember to activate the virtual environment every time you start working.
 
 1. Install `west`:
 
-   ```sh
-   pip3 install -U west
-   ```
+```sh
+pip3 install -U west
+```
 
   </TabItem>
 </Tabs>
 
 2. Initialize the application and update to fetch modules, including Zephyr:
 
-   ```sh
-   west init -l app/
-   west update
-   ```
+```sh
+west init -l app/
+west update
+```
 
-   :::tip
-   This step pulls down quite a bit of tooling, be patient!
-   :::
+:::tip
+This step pulls down quite a bit of tooling, be patient!
+:::
 
 3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
 
-   ```sh
-   west zephyr-export
-   ```
+```sh
+west zephyr-export
+```
 
 <Tabs groupId="operating-systems" queryString defaultValue="ubuntu" className="secrettabs">
   <TabItem value="ubuntu" label="Ubuntu">
 
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
 
-   ```sh
-   pip3 install --user -r zephyr/scripts/requirements-base.txt
-   ```
+```sh
+pip3 install --user -r zephyr/scripts/requirements-base.txt
+```
 
-   If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extra.txt` dependencies:
+If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extra.txt` dependencies:
 
-   ```sh
-   pip3 install -r zephyr/scripts/requirements-extra.txt
-   ```
+```sh
+pip3 install -r zephyr/scripts/requirements-extra.txt
+```
 
   </TabItem>
 
@@ -313,30 +313,30 @@ Remember to activate the virtual environment every time you start working.
 
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
 
-   ```sh
-   pip install -r zephyr/scripts/requirements-base.txt
-   ```
+```sh
+pip install -r zephyr/scripts/requirements-base.txt
+```
 
-   If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extra.txt` dependencies:
+If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extra.txt` dependencies:
 
-   ```sh
-   pip install -r zephyr/scripts/requirements-extra.txt
-   ```
+```sh
+pip install -r zephyr/scripts/requirements-extra.txt
+```
 
   </TabItem>
 
   <TabItem value="mac" label="Mac OS">
 4. Install the additional dependencies found in Zephyr's `requirements-base.txt`.
 
-   ```sh
-   pip3 install -r zephyr/scripts/requirements-base.txt
-   ```
+```sh
+pip3 install -r zephyr/scripts/requirements-base.txt
+```
 
-   If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extra.txt` dependencies:
+If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extra.txt` dependencies:
 
-   ```sh
-   pip3 install -r zephyr/scripts/requirements-extra.txt
-   ```
+```sh
+pip3 install -r zephyr/scripts/requirements-extra.txt
+```
 
   </TabItem>
 </Tabs>

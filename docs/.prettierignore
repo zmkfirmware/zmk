@@ -4,4 +4,3 @@ build
 *.mustache
 hardware-metadata.json
 src/hardware-metadata.d.ts
-docs/development/local-toolchain/setup/native.mdx
