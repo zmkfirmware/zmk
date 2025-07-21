@@ -64,6 +64,13 @@ To use ZMK Studio over USB, you need permission to access the USB serial port. T
 
 :::
 
+:::note
+
+If you are connected to the computer over both USB and BLE endpoints, you should set the keyboard output to the same endpoint that you connect to ZMK Studio using.
+For example, if you are connecting to ZMK Studio over USB, ensure that USB output is selected by invoking the `&out OUT_USB` [behavior](../keymaps/behaviors/outputs.md).
+
+:::
+
 ## Building
 
 Building for ZMK Studio involves two main additional items.
