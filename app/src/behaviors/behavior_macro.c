@@ -121,6 +121,11 @@ static int behavior_macro_init(const struct device *dev) {
     LOG_DBG("Precalculate initial release state:");
     for (int i = 0; i < cfg->count; i++) {
         if (handle_control_binding(&state->release_state, &cfg->bindings[i])) {
+            // each press state has a nested release state
+            // we partially set it up above, but need to explicitly fill in the states wait_ms
+            // because future callers expect it to already be present
+            state->release_state.wait_ms = cfg->default_wait_ms;
+            LOG_DBG("set precomputed release_state wait_ms: %d", state->release_state.wait_ms);
             // Updated state used for initial state on release.
         } else if (IS_PAUSE(cfg->bindings[i].behavior_dev)) {
             state->release_state.start_index = i + 1;
