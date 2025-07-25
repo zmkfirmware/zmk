@@ -1,0 +1,14 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Base Layer
+
+compatible: "zmk,behavior-base-layer"
+
+include: one_param.yaml
+
+properties:
+  base-layers:
+    type: array
+    required: false
+    default: []
