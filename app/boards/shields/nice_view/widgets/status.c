@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2023 The ZMK Contributors
+ * Copyright (c) 2025 The ZMK Contributors
  * SPDX-License-Identifier: MIT
  *
  */
@@ -33,6 +33,8 @@ struct output_status_state {
     int active_profile_index;
     bool active_profile_connected;
     bool active_profile_bonded;
+    bool profiles_connected[NICEVIEW_PROFILE_COUNT];
+    bool profiles_bonded[NICEVIEW_PROFILE_COUNT];
 };
 
 struct layer_status_state {
@@ -142,15 +144,24 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
 
     // Draw circles
-    int circle_offsets[5][2] = {
+    int circle_offsets[NICEVIEW_PROFILE_COUNT][2] = {
         {13, 13}, {55, 13}, {34, 34}, {13, 55}, {55, 55},
     };
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < NICEVIEW_PROFILE_COUNT; i++) {
         bool selected = i == state->active_profile_index;
 
-        lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13, 0, 360,
-                           &arc_dsc);
+        if (state->profiles_connected[i]) {
+            lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13, 0, 360,
+                               &arc_dsc);
+        } else if (state->profiles_bonded[i]) {
+            const int segments = 8;
+            const int gap = 20;
+            for (int j = 0; j < segments; ++j)
+                lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13,
+                                   360. / segments * j + gap / 2.0,
+                                   360. / segments * (j + 1) - gap / 2.0, &arc_dsc);
+        }
 
         if (selected) {
             lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 9, 0, 359,
@@ -234,6 +245,10 @@ static void set_output_status(struct zmk_widget_status *widget,
     widget->state.active_profile_index = state->active_profile_index;
     widget->state.active_profile_connected = state->active_profile_connected;
     widget->state.active_profile_bonded = state->active_profile_bonded;
+    for (int i = 0; i < NICEVIEW_PROFILE_COUNT; ++i) {
+        widget->state.profiles_connected[i] = state->profiles_connected[i];
+        widget->state.profiles_bonded[i] = state->profiles_bonded[i];
+    }
 
     draw_top(widget->obj, widget->cbuf, &widget->state);
     draw_middle(widget->obj, widget->cbuf2, &widget->state);
@@ -245,12 +260,17 @@ static void output_status_update_cb(struct output_status_state state) {
 }
 
 static struct output_status_state output_status_get_state(const zmk_event_t *_eh) {
-    return (struct output_status_state){
+    struct output_status_state state = {
         .selected_endpoint = zmk_endpoints_selected(),
         .active_profile_index = zmk_ble_active_profile_index(),
         .active_profile_connected = zmk_ble_active_profile_is_connected(),
         .active_profile_bonded = !zmk_ble_active_profile_is_open(),
     };
+    for (int i = 0; i < MIN(NICEVIEW_PROFILE_COUNT, ZMK_BLE_PROFILE_COUNT); ++i) {
+        state.profiles_connected[i] = zmk_ble_profile_is_connected(i);
+        state.profiles_bonded[i] = !zmk_ble_profile_is_open(i);
+    }
+    return state;
 }
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_output_status, struct output_status_state,
