@@ -1,0 +1,4 @@
+[codespell]
+skip = docs/package-lock.json,*.svg
+ignore-words = .codespellignorewords
+uri-ignore-words-list = *
