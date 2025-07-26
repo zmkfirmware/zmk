@@ -1,0 +1,12 @@
+kp_pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+layer_changed: layer 1 state 1
+layer_lock_pressed: locked layers mask 2
+kp_pressed: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x06 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x06 implicit_mods 0x00 explicit_mods 0x00
+layer_lock_pressed: unlocked layers mask 2
+layer_changed: layer 1 state 0
+kp_pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
