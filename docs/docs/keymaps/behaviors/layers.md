@@ -67,27 +67,14 @@ Example:
 &tog 3
 ```
 
-### Configuration
+### Toggle On and Toggle Off
 
-#### Toggle mode
+For state-independent toggles, there exist two further behaviors:
 
-If you wish to ensure that a layer is toggled on or off specifically, rather than switching between the two states, then you can do so with the `toggle-mode` property.
-Define a new behavior and assign `"on"` or `"off"` to `toggle-mode`:
+- `&tog_on`: Toggles a layer on, even if it is already on.
+- `&tog_off`: Toggles a layer off, even if it is already off.
 
-```dts
-/ {
-    behaviors {
-        tog_on: toggle_layer_on_only {
-            compatible = "zmk,behavior-toggle-layer";
-            #binding-cells = <1>;
-            display-name = "Toggle Layer On";
-            toggle-mode = "on";
-        };
-    };
-};
-```
-
-You can then use `&tog_on` in place of `&tog` whenever you wish to only toggle a layer on, and not toggle it off. An `"off"` version of the behavior can be defined similarly.
+Use these just as you would use `&tog`.
 
 ## Conditional Layers
 
