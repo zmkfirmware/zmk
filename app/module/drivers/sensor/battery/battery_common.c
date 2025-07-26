@@ -7,6 +7,8 @@
 #include <errno.h>
 #include <zephyr/drivers/sensor.h>
 
+#include <drivers/sensor/battery/battery_charging.h>
+
 #include "battery_common.h"
 
 int battery_channel_get(const struct battery_value *value, enum sensor_channel chan,
@@ -19,6 +21,11 @@ int battery_channel_get(const struct battery_value *value, enum sensor_channel c
 
     case SENSOR_CHAN_GAUGE_STATE_OF_CHARGE:
         val_out->val1 = value->state_of_charge;
+        val_out->val2 = 0;
+        break;
+
+    case SENSOR_CHAN_CHARGING:
+        val_out->val1 = value->charging;
         val_out->val2 = 0;
         break;
 
