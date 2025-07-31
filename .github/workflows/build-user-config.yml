@@ -34,13 +34,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install yaml2json
-        run: python3 -m pip install remarshal
-
       - name: Fetch Build Matrix
         run: |
-          echo "build_matrix=$(yaml2json '${{ inputs.build_matrix_path }}' | jq -c .)" >> $GITHUB_ENV
-          yaml2json "${{ inputs.build_matrix_path }}" | jq
+          echo "build_matrix=$(yq -oj -I0 '${{ inputs.build_matrix_path }}')" >> $GITHUB_ENV
+          yq -oj "${{ inputs.build_matrix_path }}"
 
   build:
     runs-on: ubuntu-latest
@@ -117,7 +114,7 @@ jobs:
 
       - name: West Update
         working-directory: ${{ env.base_dir }}
-        run: west update
+        run: west update --fetch-opt=--filter=tree:0
 
       - name: West Zephyr export
         working-directory: ${{ env.base_dir }}
