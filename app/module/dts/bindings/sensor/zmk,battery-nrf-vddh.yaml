@@ -4,3 +4,9 @@
 description: Battery SoC monitoring using nRF VDDH
 
 compatible: "zmk,battery-nrf-vddh"
+
+properties:
+  chg-gpios:
+    required: false
+    type: phandle-array
+    description: "A GPIO pin to report charging state to"
