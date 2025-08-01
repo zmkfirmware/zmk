@@ -78,7 +78,7 @@ CONFIG_EC11=y
 CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y
 ```
 
-The list of available settings is determined by various files in ZMK whose names start with `Kconfig`. Files ending with `_defconfig` use the same syntax, but are intended for setting configuration specific to the hardware which users typically won't need to change. Note that options are _not_ prefixed with `CONFIG_` in these files.
+The list of available settings is determined by various files in ZMK whose names start with `Kconfig`. Files ending with `_defconfig` use the same syntax, but are intended for setting configuration specific to the hardware which users typically won't need to change. 
 
 See [Zephyr's Kconfig documentation](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html) for more details on Kconfig files.
 
