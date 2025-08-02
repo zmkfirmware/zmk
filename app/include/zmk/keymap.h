@@ -30,7 +30,7 @@ typedef uint8_t zmk_keymap_layer_id_t;
  */
 typedef uint8_t zmk_keymap_layer_index_t;
 
-typedef uint32_t zmk_keymap_layers_state_t;
+typedef uint64_t zmk_keymap_layers_state_t;
 
 zmk_keymap_layer_id_t zmk_keymap_layer_index_to_id(zmk_keymap_layer_index_t layer_index);
 
