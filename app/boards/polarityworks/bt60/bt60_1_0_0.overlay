@@ -4,8 +4,7 @@
 * SPDX-License-Identifier: MIT
 */
 
-/dts-v1/;
-#include "bt60.dtsi"
+#include "bt60_1_0_0.dtsi"
 #include <layouts/common/60percent/all1u.dtsi>
 #include <layouts/common/60percent/ansi.dtsi>
 #include <layouts/common/60percent/hhkb.dtsi>

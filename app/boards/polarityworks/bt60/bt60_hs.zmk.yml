@@ -1,5 +1,5 @@
 file_format: "1"
-id: bt60_v1_hs
+id: bt60_hs
 name: BT60 V1 Hotswap
 type: board
 arch: arm

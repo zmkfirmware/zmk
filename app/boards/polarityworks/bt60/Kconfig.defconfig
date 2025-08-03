@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: MIT
 
 config ZMK_KEYBOARD_NAME
-    default "BT60" if BOARD_BT60
+    default "BT60" if BOARD_BT60 || BOARD_BT60_HS
 
-if BOARD_BT60
+if BOARD_BT60 || BOARD_BT60_HS
 
 if USB
 
@@ -19,4 +19,4 @@ endif # USB
 config BT_CTLR
     default BT
 
-endif # BOARD_BT60
+endif # BOARD_BT60 || BOARD_BT60_HS

@@ -1,0 +1,38 @@
+/*
+* Copyright (c) 2021 Polarity Works
+*
+* SPDX-License-Identifier: MIT
+*/
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    model = "BT60";
+    compatible = "polarityworks,bt60";
+
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&left_encoder>;
+        triggers-per-rotation = <20>;
+    };
+
+    left_encoder: encoder_left {
+        compatible = "alps,ec11";
+        a-gpios = <&gpio1 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio1 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <80>;
+        status = "okay";
+    };
+
+    leds {
+        compatible = "gpio-leds";
+        blue_led: led_0 {
+            gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
+        };
+    };
+};
+
+&vbatt {
+    output-ohms = <2000000>;
+    full-ohms = <(2000000 + 806000)>;
+};
