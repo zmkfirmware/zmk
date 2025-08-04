@@ -208,6 +208,7 @@ module.exports = {
         },
         "development/module-creation",
         "development/usb-logging",
+        "development/devicetree",
         "development/studio-rpc-protocol",
         "development/new-behavior",
       ],
