@@ -69,10 +69,10 @@ jobs:
             exit 1
           fi
 
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git clone "https://x-access-token:$ZMK_RELEASE_PLEASE_TOKEN@github.com/zmkfirmware/unified-zmk-config-template.git"
           cd unified-zmk-config-template
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           sed -i 's/^\(\s*\)revision: .*/\1revision: '"$VERSION"'/' config/west.yml
           sed -i 's|uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@.*|uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@'"$VERSION"'|' .github/workflows/build.yml
           git add .
