@@ -8,3 +8,4 @@
 
 int zmk_input_split_report_peripheral_event(uint8_t reg, uint8_t type, uint16_t code, int32_t value,
                                             bool sync);
+int zmk_input_split_peripheral_disconnected(uint8_t reg);
