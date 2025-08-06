@@ -5,7 +5,7 @@
 
 /dts-v1/;
 
-#include <rpi_pico/rp2040.dtsi>
+#include <raspberrypi/rpi_pico/rp2040.dtsi>
 #include <dt-bindings/zmk/matrix_transform.h>
 
 #include <layouts/common/65percent/ansi.dtsi>
@@ -15,15 +15,10 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
+        zephyr,flash-controller = &ssi;
         zephyr,code-partition = &code_partition;
         zmk,kscan = &kscan0;
         zmk,physical-layout = &layout_65_ansi;
-    };
-
-    xtal_clk: xtal-clk {
-        compatible = "fixed-clock";
-        clock-frequency = <12000000>;
-        #clock-cells = <0>;
     };
 
     default_transform: keymap_transform_0 {
@@ -107,11 +102,23 @@ RC(4,0) RC(4,1) RC(4,2)                         RC(4,6)         RC(4,8) RC(4,9) 
     };
 };
 
+&timer {
+  status = "okay";
+};
+
+&rtc {
+    clocks = <&clocks RPI_PICO_CLKID_CLK_RTC>;
+    status = "okay";
+};
 
 zephyr_udc0: &usbd {
   status = "okay";
 };
 
+&vreg {
+    regulator-always-on;
+    regulator-allowed-modes = <REGULATOR_RPI_PICO_MODE_NORMAL>;
+};
 
 &gpio0 {
     status = "okay";
