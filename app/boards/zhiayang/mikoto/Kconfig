@@ -1,15 +1,3 @@
-config BOARD_ENABLE_DCDC
-    bool "Enable DCDC mode"
-    select SOC_DCDC_NRF52X
-    default y
-    depends on (BOARD_MIKOTO)
-
-config BOARD_ENABLE_DCDC_HV
-    bool "High voltage DCDC converter"
-    select SOC_DCDC_NRF52X_HV
-    default n
-    depends on (BOARD_MIKOTO)
-
 choice BOARD_MIKOTO_CHARGER_CURRENT
     prompt "Charge current to supply to attached batteries"
     depends on (BOARD_MIKOTO)

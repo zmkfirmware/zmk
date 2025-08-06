@@ -5,9 +5,6 @@
 
 if BOARD_MIKOTO
 
-config BOARD
-    default "mikoto"
-
 if USB
 
 config USB_NRFX
