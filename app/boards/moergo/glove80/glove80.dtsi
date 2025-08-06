@@ -5,6 +5,7 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
 
 #include <dt-bindings/zmk/matrix_transform.h>
 #include "glove80-layouts.dtsi"
@@ -45,6 +46,10 @@
         debounce-press-ms = <4>;
         debounce-release-ms = <20>;
     };
+};
+
+&reg1 {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
 };
 
 &adc {
