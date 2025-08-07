@@ -57,6 +57,9 @@ struct zmk_event_subscription {
         return ZMK_EVENT_RAISE(ev);                                                                \
     };                                                                                             \
     struct event_type *as_##event_type(const zmk_event_t *eh) {                                    \
+        if (eh == NULL) {                                                                          \
+            return NULL;                                                                           \
+        }                                                                                          \
         return (eh->event == &zmk_event_##event_type) ? &((struct event_type##_event *)eh)->data   \
                                                       : NULL;                                      \
     };
