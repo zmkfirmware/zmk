@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/zmkfirmware/zmk/compare/v0.3.0...v0.4.0) (2025-08-08)
+
+
+### Features
+
+* **boards:** add support for nrf52840dongle_nrf52840 ([#3011](https://github.com/zmkfirmware/zmk/issues/3011)) ([c7fae18](https://github.com/zmkfirmware/zmk/commit/c7fae18ae122b2465080507380dd55d096edd666))
+
+
+### Bug Fixes
+
+* **ci:** Fix release please template bump ([#3021](https://github.com/zmkfirmware/zmk/issues/3021)) ([f3233c1](https://github.com/zmkfirmware/zmk/commit/f3233c1b60e4cb4c095572740bcbcaf7111eb804))
+* **docs:** Tweak layer tap example to be clearer ([#3023](https://github.com/zmkfirmware/zmk/issues/3023)) ([919bce7](https://github.com/zmkfirmware/zmk/commit/919bce7962db78139415ccf0e80fb858c89adb3d))
+
 ## [0.3.0](https://github.com/zmkfirmware/zmk/compare/v0.2.1...v0.3.0) (2025-08-01)
 
 
