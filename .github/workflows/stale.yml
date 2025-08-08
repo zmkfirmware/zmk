@@ -22,6 +22,7 @@ jobs:
             This PR was closed because it had no activity for over 10 months.
             Feel free to give a status update or re-open when it has been
             rebased and is ready for review (again).
+          days-before-issue-stale: 1000 # ~3 years
           days-before-issue-close: -1
           ascending: true # Process older PRs first
           operations-per-run: 30 # Default value, listed here again to make it explicit
