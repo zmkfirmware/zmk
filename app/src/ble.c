@@ -36,6 +36,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
+#include <zmk/events/ble_advertising_status_changed.h>
 
 #if IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY)
 #include <zmk/events/keycode_state_changed.h>
@@ -47,11 +48,7 @@ RING_BUF_DECLARE(passkey_entries, PASSKEY_DIGITS);
 
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY) */
 
-enum advertising_type {
-    ZMK_ADV_NONE,
-    ZMK_ADV_DIR,
-    ZMK_ADV_CONN,
-} advertising_status;
+enum zmk_ble_advertising_type advertising_status;
 
 #define CURR_ADV(adv) (adv << 4)
 
@@ -179,7 +176,8 @@ int update_advertising(void) {
     int err = 0;
     bt_addr_le_t *addr;
     struct bt_conn *conn;
-    enum advertising_type desired_adv = ZMK_ADV_NONE;
+    enum zmk_ble_advertising_type desired_adv = ZMK_ADV_NONE;
+    enum zmk_ble_advertising_type previous_adv = advertising_status;
 
     if (zmk_ble_active_profile_is_open()) {
         desired_adv = ZMK_ADV_CONN;
@@ -215,6 +213,11 @@ int update_advertising(void) {
     case ZMK_ADV_CONN + CURR_ADV(ZMK_ADV_NONE):
         CHECKED_OPEN_ADV();
         break;
+    }
+
+    if (previous_adv != advertising_status) {
+        raise_zmk_ble_advertising_status_changed(
+            (struct zmk_ble_advertising_status_changed){.advertising_status = advertising_status});
     }
 
     return 0;
