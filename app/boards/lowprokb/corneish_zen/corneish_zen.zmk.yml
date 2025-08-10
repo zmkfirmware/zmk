@@ -11,6 +11,9 @@ features:
 outputs:
   - usb
   - ble
+revisions:
+  - 2.0.0
+  - 1.0.0
 siblings:
-  - corneish_zen_v2_left
-  - corneish_zen_v2_right
+  - corneish_zen_left
+  - corneish_zen_right
