@@ -5,12 +5,10 @@
 *
 */
 
-#include "corneish_zen.dtsi"
-
 /{
     chosen {
         zephyr,display = &epd;
-        zmk,battery = &fuelgauge;
+        zmk,battery = &vbatt;
     };
 
     kscan0: kscan {
@@ -41,6 +39,13 @@
             gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>;
         };
     };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 0>;
+        output-ohms = <1960000>;
+        full-ohms = <(1960000 + 810000)>;
+    };
 };
 
 &default_transform {
@@ -52,7 +57,7 @@
 };
 
 &pinctrl {
-    spi2_default: spi2_default {
+    spi0_default: spi0_default {
         group1 {
             psels = <NRF_PSEL(SPIM_SCK, 0, 20)>,
                 <NRF_PSEL(SPIM_MOSI, 0, 24)>,
@@ -60,7 +65,7 @@
         };
     };
 
-    spi2_sleep: spi2_sleep {
+    spi0_sleep: spi0_sleep {
         group1 {
             psels = <NRF_PSEL(SPIM_SCK, 0, 20)>,
                 <NRF_PSEL(SPIM_MOSI, 0, 24)>,
@@ -68,47 +73,13 @@
             low-power-enable;
         };
     };
-
-    i2c0_default: i2c0_default {
-        group1 {
-            psels = <NRF_PSEL(TWIM_SDA, 0, 16)>,
-                <NRF_PSEL(TWIM_SCL, 0, 13)>;
-        };
-    };
-
-    i2c0_sleep: i2c0_sleep {
-        group1 {
-            psels = <NRF_PSEL(TWIM_SDA, 0, 16)>,
-                <NRF_PSEL(TWIM_SCL, 0, 13)>;
-            low-power-enable;
-        };
-    };
 };
 
-&i2c0 {
-    status = "okay";
-    compatible = "nordic,nrf-twim";
-    pinctrl-0 = <&i2c0_default>;
-    pinctrl-1 = <&i2c0_sleep>;
-    pinctrl-names = "default", "sleep";
-    clock-frequency = <100000>;
-
-    fuelgauge: bq274xx@55 {
-        compatible = "ti,bq274xx";
-        reg = <0x55>;
-        design-voltage = <3700>; //Battery Design Voltage in mV
-        design-capacity = <180>; //Battery Design Capacity in mAh
-        taper-current = <2>; //Battery Taper current in mAh 2.1
-        terminate-voltage = <2750>; //Battery Terminate Voltage in mV
-        int-gpios = <&gpio1 5 GPIO_ACTIVE_LOW>;
-    };
-};
-
-&spi2 {
+&spi0 {
     status = "okay";
     compatible = "nordic,nrf-spim";
-    pinctrl-0 = <&spi2_default>;
-    pinctrl-1 = <&spi2_sleep>;
+    pinctrl-0 = <&spi0_default>;
+    pinctrl-1 = <&spi0_sleep>;
     pinctrl-names = "default", "sleep";
     cs-gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
 
