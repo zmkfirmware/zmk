@@ -36,6 +36,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
+#include <zmk/events/ble_inactive_profile_changed.h>
 
 #if IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY)
 #include <zmk/events/keycode_state_changed.h>
@@ -95,6 +96,22 @@ static void raise_profile_changed_event_callback(struct k_work *work) {
 }
 
 K_WORK_DEFINE(raise_profile_changed_event_work, raise_profile_changed_event_callback);
+
+static void raise_inactive_profile_changed_event(uint8_t index) {
+    raise_zmk_ble_inactive_profile_changed(
+        (struct zmk_ble_inactive_profile_changed){.index = index, .profile = &profiles[index]});
+}
+
+struct raise_inactive_profile_changed_event_work {
+    struct k_work work;
+    uint8_t index;
+} raise_inactive_profile_changed_event_work;
+
+static void raise_inactive_profile_changed_event_callback(struct k_work *work) {
+    struct raise_inactive_profile_changed_event_work *info =
+        CONTAINER_OF(work, struct raise_inactive_profile_changed_event_work, work);
+    raise_inactive_profile_changed_event(info->index);
+}
 
 bool zmk_ble_active_profile_is_open(void) { return zmk_ble_profile_is_open(active_profile); }
 
@@ -527,6 +544,13 @@ static void connected(struct bt_conn *conn, uint8_t err) {
     if (is_conn_active_profile(conn)) {
         LOG_DBG("Active profile connected");
         k_work_submit(&raise_profile_changed_event_work);
+    } else {
+        const int profile_index = zmk_ble_profile_index(bt_conn_get_dst(conn));
+        if (profile_index > -1) {
+            LOG_DBG("Other profile connected");
+            raise_inactive_profile_changed_event_work.index = profile_index;
+            k_work_submit(&raise_inactive_profile_changed_event_work.work);
+        }
     }
 }
 
@@ -552,6 +576,13 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
     if (is_conn_active_profile(conn)) {
         LOG_DBG("Active profile disconnected");
         k_work_submit(&raise_profile_changed_event_work);
+    } else {
+        const int profile_index = zmk_ble_profile_index(bt_conn_get_dst(conn));
+        if (profile_index > -1) {
+            LOG_DBG("Other profile disconnected");
+            raise_inactive_profile_changed_event_work.index = profile_index;
+            k_work_submit(&raise_inactive_profile_changed_event_work.work);
+        }
     }
 }
 
@@ -742,6 +773,8 @@ static int zmk_ble_init(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_register(&profiles_handler);
     k_work_init_delayable(&ble_save_work, ble_save_profile_work);
+    k_work_init(&raise_inactive_profile_changed_event_work.work,
+                raise_inactive_profile_changed_event_callback);
 #else
     zmk_ble_complete_startup();
 #endif
