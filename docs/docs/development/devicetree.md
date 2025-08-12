@@ -119,7 +119,7 @@ How this property is used in practice will become more clear after the [devicetr
 
 In addition to _names_, nodes can also have _labels_. For the ZMK user/designer, labels are arguably more important than node names. Whereas node names are used within code to access individual nodes, labels are used to reference other nodes from within devicetree itself. Such a reference is called a _phandle_, and can be thought of as similar to a pointer in C.
 
-In the running example, `spc_ul` is the label given to the node `space_underscore`. The `bindings` property of the `default_layer` node is a "phandle-array" - an array of references to other nodes[^1]. Its first element is `&spc_ul` - a phandle to the node with label `spc_ul`, i.e. `space_underscore`. `&kp` is another example of a phandle. It points to the node
+In the running example, `spc_ul` is the label given to the node `space_underscore`. The `bindings` property of the `default_layer` node is a "phandle-array" - an array of references to other nodes[^1]. Its first element is `&spc_ul` - a phandle to the node with label `spc_ul`, i.e. `space_underscore`. `&kp` is another example of a phandle. It points to a node [defined as below](https://github.com/zmkfirmware/zmk/blob/main/app/dts/behaviors/key_press.dtsi):
 
 ```dts
 / {
@@ -133,15 +133,19 @@ In the running example, `spc_ul` is the label given to the node `space_underscor
 };
 ```
 
-which is imported from a different file - imports will be discussed later on. The `&kp` phandles found in the running example also show the concept of _parameters_ being passed to phandles. In this case, `Z`, `M`, and `K` are passed as parameters. When ZMK needs to trigger a behavior found at a location in the keymap, it uses the phandle to identify the node which needs to be triggered. It then triggers the code corresponding to the `compatible` property of said node, passing in parameters while doing so. Depending on the behavior, another phandle may need to be triggered, in which case the same process is used to identify the node and thus lines of code which need to be triggered.
+This node is imported from a different file -- imports will be discussed later on. The `&kp` phandles found in the running example also show the concept of _parameters_ being passed to phandles. In this case, `Z`, `M`, and `K` are passed as parameters.
+
+When ZMK needs to trigger a behavior found at a location in the keymap's `binding` property, it uses the phandle to identify the behavior node which needs to be called. It then executes the code determined by the `compatible` property of said node, passing in parameters while doing so[^2]. Depending on the behavior, another behavior phandle may need to be triggered, in which case the same process is used to identify the node and thus the parts of code which need to be executed.
 
 Essentially, each layer in a keymap consists of an array of phandles pointing to various behaviors (alongside parameters) that were defined elsewhere. If you do not need to define the behavior node yourself, that just means ZMK has already defined it for you.
 
 [^1]: A phandle array by definition also includes metadata, i.e. parameters. Strictly speaking, a list of phandles without metadata has type `phandles` rather than `phandle-array`. A property with a single phandle has type `phandle`.
 
+[^2]: The number of parameters passed to the behavior code (and skipped over to find the next behavior phandle) is determined by the `#binding-cells` property mentioned above.
+
 ## Devicetree Preprocessing
 
-Much of the complexity in `dts` files comes from preprocessing. To see the resulting devicetree after all preprocessing has finished, you can view the "Devicetree file" in the build log of your GitHub Action, or alternatively if building locally it can be found under `<build-directory>/zephyr/zephyr.dts`. For reasons that will make more sense later, your keymap and most of your customisations will be found near the bottom of the file.
+Much of the complexity in `dts` files comes from preprocessing. The resulting devicetree after all preprocessing has finished [can be inspected](../troubleshooting/building-issues.md#devicetree-related-issues) for both GitHub Actions and local builds. For reasons that will make more sense later, your keymap and most of your customisations will be found near the bottom of the file.
 
 Preprocessing comes from two sources:
 
@@ -169,7 +173,7 @@ The C preprocessor often gets leveraged by ZMK power users to reduce repetition 
 
 A devicetree is almost always constructed from multiple files. These files are generally speaking:
 
-- `.dtsi` files, which exist exclusively to be included via the C preprocessor (their contents get "pasted" at the location of the `#include` command).
+- `.dtsi` files, which exist exclusively to be included via the C preprocessor (their contents get "pasted" at the location of the `#include` command) and are not used by the build sytem otherwise.
 - A `.dts` file, which forms the "base" of the devicetree. A single one of these is always present when a devicetree is constructed. For ZMK, the `.dts` file contains the sections of the devicetree describing the [_board_](hardware-integration/index.mdx#what-is-a-board). This includes importing a number of `.dtsi` files describing the specific SoC that the board uses.
 - Any number of `.overlay` files. These files can come from various sources, such as [shields](hardware-integration/index.mdx#what-is-a-shield) or [snippets](https://docs.zephyrproject.org/3.5.0/build/snippets/index.html). An overlay is applied to a `.dts` file by appending its contents to the end of the `.dts` file, i.e. it is placed at the bottom of the file. Multiple overlays are applied by doing so repeatedly in a particular order. Without going into the details of the exact order in which overlays are applied, it is enough to know that if you specify e.g. `shield: corne_left nice_view_adapter nice_view` in your `build.yaml`, then the overlays are applied left to right.
 - A single `.keymap` file. This file being included is ZMK-specific, and is treated as the "final" `.overlay` file, appended after all other overlays.
