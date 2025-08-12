@@ -37,11 +37,15 @@ const LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_IMG_BLUETOOTH_CONNECTED_1 uint8_t
         0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-const lv_img_dsc_t bluetooth_connected_1 = {
-    .header.always_zero = 0,
-    .header.w = 54,
-    .header.h = 35,
-    .data_size = 254,
-    .header.cf = LV_IMG_CF_INDEXED_1BIT,
+const lv_image_dsc_t bluetooth_connected_1 = {
+    .header =
+        {
+            .magic = LV_IMAGE_HEADER_MAGIC,
+            .cf = LV_COLOR_FORMAT_I1,
+            .w = 54,
+            .h = 35,
+            .stride = 7,
+        },
+    .data_size = sizeof(bluetooth_connected_1_map),
     .data = bluetooth_connected_1_map,
 };

@@ -32,11 +32,15 @@ const LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_LARGE_CONST LV_ATTRIBUTE_IMG_BLUETOOTH
         0x00, 0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-const lv_img_dsc_t bluetooth_advertising = {
-    .header.always_zero = 0,
-    .header.w = 29,
-    .header.h = 35,
-    .data_size = 148,
-    .header.cf = LV_IMG_CF_INDEXED_1BIT,
+const lv_image_dsc_t bluetooth_advertising = {
+    .header =
+        {
+            .magic = LV_IMAGE_HEADER_MAGIC,
+            .cf = LV_COLOR_FORMAT_I1,
+            .w = 29,
+            .h = 35,
+            .stride = 4,
+        },
+    .data_size = sizeof(bluetooth_advertising_map),
     .data = bluetooth_advertising_map,
 };
