@@ -40,7 +40,7 @@ config ZMK_DISPLAY
     select LV_FONT_MONTSERRAT_26
     select LV_FONT_MONTSERRAT_16
     select LV_USE_LABEL
-    select LV_USE_IMG
+    select LV_USE_IMAGE
 
 choice ZMK_DISPLAY_STATUS_SCREEN
     default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM

@@ -45,17 +45,17 @@ static void set_battery_symbol(lv_obj_t *icon, struct battery_status_state state
 
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     if (level > 95) {
-        lv_img_set_src(icon, state.usb_present ? &batt_100_chg : &batt_100);
+        lv_image_set_src(icon, state.usb_present ? &batt_100_chg : &batt_100);
     } else if (level > 74) {
-        lv_img_set_src(icon, state.usb_present ? &batt_75_chg : &batt_75);
+        lv_image_set_src(icon, state.usb_present ? &batt_75_chg : &batt_75);
     } else if (level > 49) {
-        lv_img_set_src(icon, state.usb_present ? &batt_50_chg : &batt_50);
+        lv_image_set_src(icon, state.usb_present ? &batt_50_chg : &batt_50);
     } else if (level > 24) {
-        lv_img_set_src(icon, state.usb_present ? &batt_25_chg : &batt_25);
+        lv_image_set_src(icon, state.usb_present ? &batt_25_chg : &batt_25);
     } else if (level > 5) {
-        lv_img_set_src(icon, state.usb_present ? &batt_5_chg : &batt_5);
+        lv_image_set_src(icon, state.usb_present ? &batt_5_chg : &batt_5);
     } else {
-        lv_img_set_src(icon, state.usb_present ? &batt_0_chg : &batt_0);
+        lv_image_set_src(icon, state.usb_present ? &batt_0_chg : &batt_0);
     }
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 }
@@ -85,7 +85,7 @@ ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
 
 int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_img_create(parent);
+    widget->obj = lv_image_create(parent);
 
     sys_slist_append(&widgets, &widget->node);
     widget_battery_status_init();
