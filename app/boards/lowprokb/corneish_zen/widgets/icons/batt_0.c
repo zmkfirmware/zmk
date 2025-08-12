@@ -33,11 +33,15 @@ const LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_LARGE_CONST LV_ATTRIBUTE_IMG_BATT_0 ui
         0x00, 0x00, 0x7c, 0x00, 0x00,
 };
 
-const lv_img_dsc_t batt_0 = {
-    .header.always_zero = 0,
-    .header.w = 40,
-    .header.h = 31,
-    .data_size = 163,
-    .header.cf = LV_IMG_CF_INDEXED_1BIT,
+const lv_image_dsc_t batt_0 = {
+    .header =
+        {
+            .magic = LV_IMAGE_HEADER_MAGIC,
+            .cf = LV_COLOR_FORMAT_I1,
+            .w = 40,
+            .h = 31,
+            .stride = 5,
+        },
+    .data_size = sizeof(batt_0_map),
     .data = batt_0_map,
 };

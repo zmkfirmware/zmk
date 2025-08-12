@@ -54,7 +54,7 @@ static struct output_status_state get_state(const zmk_event_t *_eh) {
 static void set_status_symbol(lv_obj_t *icon, struct output_status_state state) {
     switch (state.selected_endpoint.transport) {
     case ZMK_TRANSPORT_USB:
-        lv_img_set_src(icon, &USB_connected);
+        lv_image_set_src(icon, &USB_connected);
         break;
     case ZMK_TRANSPORT_BLE:
         if (state.active_profile_bonded) {
@@ -62,40 +62,40 @@ static void set_status_symbol(lv_obj_t *icon, struct output_status_state state) 
                 // sprintf(text, LV_SYMBOL_BLUETOOTH "%i " LV_SYMBOL_OK, active_profile_index);
                 switch (state.selected_endpoint.ble.profile_index) {
                 case 0:
-                    lv_img_set_src(icon, &bluetooth_connected_1);
+                    lv_image_set_src(icon, &bluetooth_connected_1);
                     break;
                 case 1:
-                    lv_img_set_src(icon, &bluetooth_connected_2);
+                    lv_image_set_src(icon, &bluetooth_connected_2);
                     break;
                 case 2:
-                    lv_img_set_src(icon, &bluetooth_connected_3);
+                    lv_image_set_src(icon, &bluetooth_connected_3);
                     break;
                 case 3:
-                    lv_img_set_src(icon, &bluetooth_connected_4);
+                    lv_image_set_src(icon, &bluetooth_connected_4);
                     break;
                 case 4:
-                    lv_img_set_src(icon, &bluetooth_connected_5);
+                    lv_image_set_src(icon, &bluetooth_connected_5);
                     break;
                 }
             } else {
-                lv_img_set_src(icon, &bluetooth_disconnected_right);
+                lv_image_set_src(icon, &bluetooth_disconnected_right);
             }
         } else {
             switch (state.selected_endpoint.ble.profile_index) {
             case 0:
-                lv_img_set_src(icon, &bluetooth_advertising_1);
+                lv_image_set_src(icon, &bluetooth_advertising_1);
                 break;
             case 1:
-                lv_img_set_src(icon, &bluetooth_advertising_2);
+                lv_image_set_src(icon, &bluetooth_advertising_2);
                 break;
             case 2:
-                lv_img_set_src(icon, &bluetooth_advertising_3);
+                lv_image_set_src(icon, &bluetooth_advertising_3);
                 break;
             case 3:
-                lv_img_set_src(icon, &bluetooth_advertising_4);
+                lv_image_set_src(icon, &bluetooth_advertising_4);
                 break;
             case 4:
-                lv_img_set_src(icon, &bluetooth_advertising_5);
+                lv_image_set_src(icon, &bluetooth_advertising_5);
                 break;
             }
         }
@@ -118,7 +118,7 @@ ZMK_SUBSCRIPTION(widget_output_status, zmk_ble_active_profile_changed);
 #endif
 
 int zmk_widget_output_status_init(struct zmk_widget_output_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_img_create(parent);
+    widget->obj = lv_image_create(parent);
 
     sys_slist_append(&widgets, &widget->node);
 

@@ -30,11 +30,15 @@ const LV_ATTRIBUTE_MEM_ALIGN LV_ATTRIBUTE_LARGE_CONST LV_ATTRIBUTE_IMG_LAYERS2 u
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-const lv_img_dsc_t layers2 = {
-    .header.always_zero = 0,
-    .header.w = 78,
-    .header.h = 12,
-    .data_size = 128,
-    .header.cf = LV_IMG_CF_INDEXED_1BIT,
+const lv_image_dsc_t layers2 = {
+    .header =
+        {
+            .magic = LV_IMAGE_HEADER_MAGIC,
+            .cf = LV_COLOR_FORMAT_I1,
+            .w = 78,
+            .h = 12,
+            .stride = 10,
+        },
+    .data_size = sizeof(layers2_map),
     .data = layers2_map,
 };
