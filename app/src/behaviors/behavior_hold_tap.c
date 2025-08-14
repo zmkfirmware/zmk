@@ -76,6 +76,7 @@ struct behavior_hold_tap_data {
 // this data is specific for each hold-tap
 struct active_hold_tap {
     int32_t position;
+    uint8_t layer;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
     uint8_t source;
 #endif
@@ -260,6 +261,7 @@ static struct active_hold_tap *store_hold_tap(struct zmk_behavior_binding_event 
             continue;
         }
         active_hold_taps[i].position = event->position;
+        active_hold_taps[i].layer = event->layer;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         active_hold_taps[i].source = event->source;
 #endif
@@ -402,60 +404,72 @@ static inline const char *decision_moment_str(enum decision_moment decision_mome
 }
 
 static int press_hold_binding(struct active_hold_tap *hold_tap) {
+    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
+                                           .param1 = hold_tap->param_hold};
     struct zmk_behavior_binding_event event = {
+        .binding = &binding,
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .layer = hold_tap->layer,
+        .type = PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
     };
 
-    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
-                                           .param1 = hold_tap->param_hold};
-    return zmk_behavior_invoke_binding(&binding, event, true);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static int press_tap_binding(struct active_hold_tap *hold_tap) {
+    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
+                                           .param1 = hold_tap->param_tap};
     struct zmk_behavior_binding_event event = {
+        .binding = &binding,
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .layer = hold_tap->layer,
+        .type = PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
     };
-
-    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
-                                           .param1 = hold_tap->param_tap};
+    LOG_DBG("tapping on layer%d", hold_tap->layer);
     store_last_hold_tapped(hold_tap);
-    return zmk_behavior_invoke_binding(&binding, event, true);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static int release_hold_binding(struct active_hold_tap *hold_tap) {
+    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
+                                           .param1 = hold_tap->param_hold};
     struct zmk_behavior_binding_event event = {
+        .binding = &binding,
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .layer = hold_tap->layer,
+        .type = RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
     };
 
-    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
-                                           .param1 = hold_tap->param_hold};
-    return zmk_behavior_invoke_binding(&binding, event, false);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static int release_tap_binding(struct active_hold_tap *hold_tap) {
+    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
+                                           .param1 = hold_tap->param_tap};
     struct zmk_behavior_binding_event event = {
+        .binding = &binding,
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .layer = hold_tap->layer,
+        .type = RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
     };
 
-    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
-                                           .param1 = hold_tap->param_tap};
-    return zmk_behavior_invoke_binding(&binding, event, false);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static int press_binding(struct active_hold_tap *hold_tap) {
