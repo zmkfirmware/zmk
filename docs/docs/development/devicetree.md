@@ -68,6 +68,91 @@ In the running example, `behaviors` and `keymap` are child nodes of the root nod
 
 What properties a node may have varies drastically. Of the standard properties, there are two which are of particularly relevant to users and designers: `compatible` and `status`. Additional standard properties may be found in the [devicetree spec](https://github.com/devicetree-org/devicetree-specification/releases).
 
+#### Property types
+
+These are some of the property types you will see most often when working with ZMK. [Zephyr's Devicetree bindings documentation](https://docs.zephyrproject.org/3.5.0/build/dts/bindings.html) provides more detailed information and a full list of types.
+
+##### bool
+
+True or false. To set the property to true, list it with no value. To set it to false, do not list it.
+
+Example: `property;`
+
+If a property has already been set to true and you need to override it to false, use the following command to delete the existing property:
+
+```dts
+/delete-property/ the-property-name;
+```
+
+##### int
+
+A single integer surrounded by angle brackets. Also supports mathematical expressions.
+
+Example: `property = <42>;`
+
+##### string
+
+Text surrounded by double quotes.
+
+Example: `property = "foo";`
+
+##### array
+
+A list of integers surrounded by angle brackets and separated with spaces. Mathematical expressions can be used but must be surrounded by parenthesis.
+
+Example: `property = <1 2 3 4>;`
+
+Values can also be split into multiple blocks, e.g. `property = <1 2>, <3 4>;`
+
+##### phandle
+
+A single node reference surrounded by angle brackets. Phandles will be explained in more detail in a [later section](#labels-and-phandles).
+
+Example: `property = <&label>`
+
+##### phandles
+
+A list of node references surrounded by angle brackets. Phandles will be explained in more detail in a [later section](#labels-and-phandles).
+
+Example: `property = <&label1 &label2 &label3>`
+
+##### phandle array
+
+A list of node references and possibly numbers to associate with the node. Mathematical expressions can be used but must be surrounded by parenthesis. Phandles will be explained in more detail in a [later section](#labels-and-phandles).
+
+Example: `property = <&none &mo 1>;`
+
+Values can also be split into multiple blocks, e.g. `property = <&none>, <&mo 1>;`
+
+See the documentation for "phandle-array" in [Zephyr's Devicetree bindings documentation](https://docs.zephyrproject.org/3.5.0/build/dts/bindings.html)
+for more details on how parameters are associated with nodes.
+
+##### GPIO array
+
+This is just a phandle array. The documentation lists this as a different type to make it clear which properties expect an array of GPIOs.
+
+Each item in the array should be a label for a GPIO node (the names of which differ between hardware platforms) followed by an index and configuration flags. See [Zephyr's GPIO documentation](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html) for a full list of flags. Phandles and labels will be explained in more detail in a [later section](#labels-and-phandles).
+
+Example:
+
+```dts
+some-gpios =
+    <&gpio0 0 GPIO_ACTIVE_HIGH>,
+    <&gpio0 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+    ;
+```
+
+##### path
+
+A path to a node, either as a node reference or as a string. This will be explained in more detail in a [later section](#labels-and-phandles).
+
+Examples:
+
+```dts
+property = &label;
+property = "/path/to/some/node";
+```
+
 #### Compatible
 
 The most important property that a node has is generally the `compatible` property. This property is used to map code to nodes. There are some special cases, such as the node named `chosen`, where the node name is used rather than a `compatible` property.
@@ -177,8 +262,6 @@ A devicetree is almost always constructed from multiple files. These files are g
 - A `.dts` file, which forms the "base" of the devicetree. A single one of these is always present when a devicetree is constructed. For ZMK, the `.dts` file contains the sections of the devicetree describing the [_board_](hardware-integration/index.mdx#what-is-a-board). This includes importing a number of `.dtsi` files describing the specific SoC that the board uses.
 - Any number of `.overlay` files. These files can come from various sources, such as [shields](hardware-integration/index.mdx#what-is-a-shield) or [snippets](https://docs.zephyrproject.org/3.5.0/build/snippets/index.html). An overlay is applied to a `.dts` file by appending its contents to the end of the `.dts` file, i.e. it is placed at the bottom of the file. Multiple overlays are applied by doing so repeatedly in a particular order. Without going into the details of the exact order in which overlays are applied, it is enough to know that if you specify e.g. `shield: corne_left nice_view_adapter nice_view` in your `build.yaml`, then the overlays are applied left to right.
 - A single `.keymap` file. This file being included is ZMK-specific, and is treated as the "final" `.overlay` file, appended after all other overlays.
-
-In devicetree, parts written further down in the page have priority.
 
 #### Merging and overwriting nodes
 
