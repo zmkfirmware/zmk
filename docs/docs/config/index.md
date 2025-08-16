@@ -110,7 +110,7 @@ Example: `CONFIG_FOO="foo"`
 
 ## Devicetree Files
 
-Various Devicetree files are combined to build a tree that describes the hardware for a keyboard. They are also used to define keymaps. A full primer on Devicetree can be found [here](../development/devicetree.md) -- a shorter summary of some of the points can be found below.
+Various Devicetree files are combined to build a tree that describes the hardware for a keyboard. They are also used to define keymaps. A full primer on Devicetree can be found in the [Devicetree Overview page](../development/devicetree.md) -- a shorter summary of some of the points can be found below.
 
 ### Devicetree Overview
 
