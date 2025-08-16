@@ -13,13 +13,14 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ### General
 
-| Config                               | Type   | Description                                                                   | Default |
-| ------------------------------------ | ------ | ----------------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_KEYBOARD_NAME`           | string | The name of the keyboard (max 16 characters)                                  |         |
-| `CONFIG_ZMK_SETTINGS_RESET_ON_START` | bool   | Clears all persistent settings from the keyboard at startup                   | n       |
-| `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`  | int    | Milliseconds to wait after a setting change before writing it to flash memory | 60000   |
-| `CONFIG_ZMK_WPM`                     | bool   | Enable calculating words per minute                                           | n       |
-| `CONFIG_HEAP_MEM_POOL_SIZE`          | int    | Size of the heap memory pool                                                  | 8192    |
+| Config                                 | Type   | Description                                                                                   | Default |
+| -------------------------------------- | ------ | --------------------------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_KEYBOARD_NAME`             | string | The name of the keyboard (max 16 characters)                                                  |         |
+| `CONFIG_ZMK_SETTINGS_RESET_ON_START`   | bool   | Clears all persistent settings from the keyboard at startup                                   | n       |
+| `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`    | int    | Milliseconds to wait after a setting change before writing it to flash memory                 | 60000   |
+| `CONFIG_ZMK_WPM`                       | bool   | Enable calculating words per minute                                                           | n       |
+| `CONFIG_HEAP_MEM_POOL_SIZE`            | int    | Size of the heap memory pool                                                                  | 8192    |
+| `CONFIG_ZMK_ENDPOINT_DISABLE_FALLBACK` | bool   | Disable automatically falling back to the other endpoint if preferred endpoint is unavailable | n       |
 
 ### HID
 
