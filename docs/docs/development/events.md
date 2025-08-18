@@ -90,7 +90,7 @@ int behavior_hold_tap_listener(const zmk_event_t *eh) {
 }
 ```
 
-The priority of the listeners is determined by the order in which the linker links the files. Within ZMK, this is the order of the corresponding files in `CMakeLists.txt`. External modules targeting `app` are linked prior to any files within ZMK itself, making them the highest priority. It is thus the module maintainer's responsibility to both ensure that their module does not cause issues by being first in the listener queue. For example, [hold-tap](../keymaps/behaviors/hold-tap.mdx) is the first listener to `position_state_changed`, and may behave inconsistently if a behavior defined in a module listens to `position_state_changed` and calls `hold_tap`.
+The priority of the listeners is determined by the order in which the linker links the files. Within ZMK, this is the order of the corresponding files in `CMakeLists.txt`. External modules targeting `app` are linked prior to any files within ZMK itself, making them the highest priority. It is thus the module maintainer's responsibility to both ensure that their module does not cause issues by being first in the listener queue. For example, [hold-tap](../keymaps/behaviors/hold-tap.mdx) is the first listener to `position_state_changed`, and may behave inconsistently if a behavior defined in a module listens to `position_state_changed` and invokes a `hold-tap` (e.g. by calling `zmk_behavior_invoke_event` with a `hold-tap` as the binding).
 
 In addition, because modules listen to the events first, they should _never_ capture/handle an event defined in ZMK without releasing it later. Unless it is unavoidable, it is recommended to bubble events whenever possible.
 
