@@ -5,7 +5,7 @@ sidebar_label: ZMK Events
 
 ZMK makes use of events to decouple individual components such as behaviors and peripherals from the core functionality. For this purpose, ZMK has implemented its own event manager. This page is a (brief) overview of the functionality and methods exposed by the event manager. To see what events exist and what data they contain, it is best to view the corresponding [event header files](https://github.com/zmkfirmware/zmk/tree/main/app/include/zmk/events) directly.
 
-Including `zmk/event_manager.h` is required for any interaction with the event system.
+Including the event_manager header via `#include <zmk/event_manager.h>` is required for any interaction with the event system.
 
 ## Generic Events
 
@@ -18,7 +18,7 @@ typedef struct {
 } zmk_event_t;
 ```
 
-In memory, a raised event **always** consists of a `zmk_event_t` struct **followed immediately afterwards** by the struct containing the data for the actual event. The contents of `const struct zmk_event_type *event` allows us to identify which event a particular event actually is, so that we may safely access its data. The type of the combination of a `zmk_event_t` struct with a specific event data struct, e.g. `struct zmk_specific_thing_happened`, is `struct zmk_specific_thing_happened_event`:
+In memory, the struct for a specific raised event `struct zmk_specific_thing_happened_event` **always** consists of a `zmk_event_t` struct **followed immediately afterwards** by the struct containing the data for the actual event. 
 
 ```c
 struct zmk_specific_thing_happened_event {
@@ -27,7 +27,7 @@ struct zmk_specific_thing_happened_event {
 };
 ```
 
-To obtain the underlying data from a generic event, the following function is used:
+The contents of `header.event` allows us to identify which type a particular event actually is, so that we may safely access its data in `data`. This is handled by the following function, which allows us to obtain the underlying data from a generic event:
 
 ```c
 struct zmk_specific_thing_happened *as_specific_thing_happened(const zmk_event_t *eh);
@@ -73,16 +73,18 @@ The listener should return one of three values (which are of type `int`) back to
 - `ZMK_EV_EVENT_HANDLED`: Stop propagating the event `struct` to the next listener. The event manager still owns the `struct`'s memory, so it will be `free`d automatically. Do **not** free the memory in this function.
 - `ZMK_EV_EVENT_CAPTURED`: Stop propagating the event `struct` to the next listener. The event `struct`'s memory is now owned by your code, so the event manager will not free the event `struct` memory. Make sure your code will release or free the event at some point in the future. (Use the `ZMK_EVENT_*` macros described [below](#raising-events).)
 
-If an error occurs during the listener call, it should of course return the error.
+If an error occurs during the listener call, it should return a negative value indicating the appropriate error code.
 
 As mentioned previously, the same callback will be called when any event that is subscribed to occurs. To obtain the underlying event from the generic event passed to the listener, the previously described `as_zmk_specific_thing_happened` function should be used:
 
 ```c
 int behavior_hold_tap_listener(const zmk_event_t *eh) {
     if (as_zmk_position_state_changed(eh) != NULL) {
-        return position_state_changed_listener(eh);
+        // it is a position_state_changed event, handle it with my_position_state_handler
+        return my_position_state_handler(eh);
     } else if (as_zmk_keycode_state_changed(eh) != NULL) {
-        return keycode_state_changed_listener(eh);
+        // it is a keycode_state_changed event, handle it with my_keycode_state_handler
+        return my_keycode_state_handler(eh);
     }
     return ZMK_EV_EVENT_BUBBLE;
 }
@@ -100,7 +102,7 @@ There are several different ways to raise events, with slight differences betwee
 
 - `int raise_zmk_specific_thing_happened(struct zmk_specific_thing_happened event)`: This function will take an event data structure, add a header to it, and then start handling the event with the first registered event listener.
 
-The following macros can also be used. These will each take in an event `ev` which already consists of the header & data combination, i.e. `ev` has the type `struct zmk_specific_thing_happened_event`.
+The following macros can also be used for advanced use cases. These will each take in an event `ev` which already consists of the header & data combination, i.e. `ev` has the type `struct zmk_specific_thing_happened_event`.
 
 - `ZMK_EVENT_RAISE(ev)`: Start handling this event (`ev`) with the first registered event listener.
 - `ZMK_EVENT_RAISE_AFTER(ev, mod)`: Start handling this event (`ev`) after the event is captured by the named [event listener](#subscription-and-listener) (`mod`). The named event listener will be skipped as well.
@@ -129,7 +131,7 @@ static inline int raise_layer_state_changed(uint8_t layer, bool state) {
 Your event's header file should have four things:
 
 - A copyright comment
-- Any required header files (along with `#pragma once`)
+- Any required header includes (along with `#pragma once`)
 - The event's data struct
 - The macro `ZMK_EVENT_DECLARE`, called with the name of your event's data struct.
 
@@ -150,7 +152,7 @@ For example:
 #include <zmk/event_manager.h>
 
 struct zmk_endpoint_changed {
-struct zmk_endpoint_instance endpoint;
+    struct zmk_endpoint_instance endpoint;
 };
 
 ZMK_EVENT_DECLARE(zmk_endpoint_changed);
