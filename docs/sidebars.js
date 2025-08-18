@@ -130,6 +130,7 @@ module.exports = {
         "config/layout",
         "config/kscan",
         "config/power",
+        "config/settings",
         "config/split",
         "config/system",
         "config/studio",
