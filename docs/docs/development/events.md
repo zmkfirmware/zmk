@@ -3,9 +3,9 @@ title: ZMK Events
 sidebar_label: ZMK Events
 ---
 
-ZMK makes use of events to decouple individual components such as behaviors and peripherals from the core functionality. For this purpose, ZMK has implemented its own event manager. This page is a (brief) overview of the functionality and methods exposed by the event manager. To see what events exist and what data they contain, it is best to view the corresponding [event header files](https://github.com/zmkfirmware/zmk/tree/main/app/include/zmk/events) directly.
+ZMK makes use of events to decouple individual components such as behaviors and peripherals from the core functionality. For this purpose, ZMK has implemented its own event manager. This page is a (brief) overview of the functionality and methods exposed by the event manager, documenting its API. Its purpose is to aid module developers and contributors, such as for the development of [new behaviors](./new-behavior.mdx) or [new features](./module-creation.md). There is no value in reading this page as an end-user.
 
-Including the event_manager header via `#include <zmk/event_manager.h>` is required for any interaction with the event system.
+To see what events exist and what data they contain, it is best to view the corresponding [event header files](https://github.com/zmkfirmware/zmk/tree/main/app/include/zmk/events) directly. Including the event_manager header via `#include <zmk/event_manager.h>` is required for any interaction with the event system.
 
 ## Generic Events
 
@@ -18,7 +18,7 @@ typedef struct {
 } zmk_event_t;
 ```
 
-In memory, the struct for a specific raised event `struct zmk_specific_thing_happened_event` **always** consists of a `zmk_event_t` struct **followed immediately afterwards** by the struct containing the data for the actual event. 
+In memory, the struct for a specific raised event `struct zmk_specific_thing_happened_event` **always** consists of a `zmk_event_t` struct **followed immediately afterwards** by the struct containing the data for the actual event.
 
 ```c
 struct zmk_specific_thing_happened_event {
@@ -65,7 +65,7 @@ Of course, you will also need to import the corresponding event header at the to
 
 ### Listener Callback
 
-The listener will be passed a raised `zmk_event_t` pointer (as described previously) as an argument, and should have `int` as its return type. By convention, the `zmk_event_t` is called
+The listener will be passed a raised `zmk_event_t` pointer (as described previously) as an argument, and should have `int` as its return type.
 
 The listener should return one of three values (which are of type `int`) back to the event manager:
 

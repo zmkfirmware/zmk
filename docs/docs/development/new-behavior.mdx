@@ -217,6 +217,19 @@ Including `zmk/event_manager.h` is required for the following dependencies to fu
 
 Events can be used similarly to hardware interrupts. See [Events](events.md) for more information on using events.
 
+###### Listeners and subscriptions
+
+The condensed form of lines 192-225 of the tap-dance driver, shown below, does an excellent job of showcasing the function of listeners and subscriptions with respect to the [ZMK Event Manager](#zmk-event-manager).
+
+```c title="app/src/behaviors/behavior_tap_dance.c (Lines 192-197, 225)"
+static int tap_dance_position_state_changed_listener(const zmk_event_t *eh);
+ZMK_LISTENER(behavior_tap_dance, tap_dance_position_state_changed_listener);
+ZMK_SUBSCRIPTION(behavior_tap_dance, zmk_position_state_changed);
+static int tap_dance_position_state_changed_listener(const zmk_event_t *eh){
+    // Do stuff...
+}
+```
+
 #### `BEHAVIOR_DT_INST_DEFINE`
 
 `BEHAVIOR_DT_INST_DEFINE` is a special ZMK macro. It forwards all the parameters to Zephyr's `DEVICE_DT_INST_DEFINE` macro to define the driver instance, then it adds the driver to a list of ZMK behaviors so they can be found by `zmk_behavior_get_binding()`.
