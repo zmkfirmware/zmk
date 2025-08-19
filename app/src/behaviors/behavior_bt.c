@@ -105,6 +105,9 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         return 0;
     case BT_DISC_CMD:
         return zmk_ble_prof_disconnect(binding->param2);
+    case BT_SAVE_CMD:
+        zmk_ble_save_profile(true);
+        return 0;
     default:
         LOG_ERR("Unknown BT command: %d", binding->param1);
     }
