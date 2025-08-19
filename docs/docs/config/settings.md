@@ -44,7 +44,7 @@ In both cases, regular, non-reset firmware will need to be flashed afterwards fo
 :::warning
 
 Since pairing information between split keyboards are also cleared with this process, you will need to clear settings on all parts of a split keyboard.
-Please follow the full procedure described in [troubleshooting](../troubleshooting/connection-issues.mdx#split-keyboard-halves-unable-to-pair) so that the parts can pair correctly after clearing.
+Please follow the full procedure described in [troubleshooting](../troubleshooting/connection-issues.mdx#split-keyboard-parts-unable-to-pair) so that the parts can pair correctly after clearing.
 
 :::
 
