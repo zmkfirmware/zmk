@@ -41,6 +41,13 @@ See example for building firmware using this shield in the [troubleshooting docs
 
 In both cases, regular, non-reset firmware will need to be flashed afterwards for normal operation.
 
+:::warning
+
+Since pairing information between split keyboards are also cleared with this process, you will need to clear settings on all parts of a split keyboard.
+Please follow the full procedure described in [troubleshooting](../troubleshooting/connection-issues.mdx#split-keyboard-halves-unable-to-pair) so that the parts can pair correctly after clearing.
+
+:::
+
 :::tip
 
 [ZMK Studio](../features/studio.md)-specific settings can be easily cleared using the "Restore Stock Settings" button in the header of the Studio client.
