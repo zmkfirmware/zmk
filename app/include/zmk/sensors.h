@@ -24,9 +24,20 @@ struct zmk_sensor_config {
     uint16_t triggers_per_rotation;
 };
 
+struct zmk_sensor_data {
+    struct sensor_value remainder;
+    int num_triggers;
+};
+
 // This struct is also used for data transfer for splits, so any changes to the size, layout, etc
 // is a breaking change for the split GATT service protocol.
 struct zmk_sensor_channel_data {
     struct sensor_value value;
     enum sensor_channel channel;
 } __packed;
+
+struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx);
+
+void zmk_sensor_set_num_triggers(uint32_t sensor_idx, int num_triggers);
+
+void zmk_sensor_set_remainder(uint32_t sensor_idx, struct sensor_value remainder);
