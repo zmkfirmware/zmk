@@ -237,6 +237,42 @@ int zmk_endpoints_send_mouse_report() {
 }
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
+#if IS_ENABLED(CONFIG_ZMK_JOYSTICK)
+int zmk_endpoints_send_joystick_report() {
+    switch (current_instance.transport) {
+    case ZMK_TRANSPORT_USB: {
+#if IS_ENABLED(CONFIG_ZMK_USB)
+        int err = zmk_usb_hid_send_joystick_report();
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER USB: %d", err);
+        }
+        return err;
+#else
+        LOG_ERR("USB endpoint is not supported");
+        return -ENOTSUP;
+#endif /* IS_ENABLED(CONFIG_ZMK_USB) */
+    }
+
+    case ZMK_TRANSPORT_BLE: {
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+        struct zmk_hid_joystick_report *joystick_report = zmk_hid_get_joystick_report();
+        int err = zmk_hog_send_joystick_report(&joystick_report->body);
+        if (err) {
+            LOG_ERR("FAILED TO SEND OVER HOG: %d", err);
+        }
+        return err;
+#else
+        LOG_ERR("BLE HOG endpoint is not supported");
+        return -ENOTSUP;
+#endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
+    }
+    }
+
+    LOG_ERR("Unhandled endpoint transport %d", current_instance.transport);
+    return -ENOTSUP;
+}
+#endif // IS_ENABLED(CONFIG_ZMK_JOYSTICK)
+
 #if IS_ENABLED(CONFIG_SETTINGS)
 
 static int endpoints_handle_set(const char *name, size_t len, settings_read_cb read_cb,
