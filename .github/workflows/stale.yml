@@ -1,0 +1,28 @@
+name: "Mark and close stale PRs in the repo"
+on:
+  schedule:
+    - cron: "00 14 * * *" # runs daily at 14:00 https://crontab.guru/#00_14_*_*_*
+
+jobs:
+  stale:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/stale@v9.1.0
+        with:
+          days-before-pr-stale: 300 # ~10 months
+          stale-pr-label: "stale"
+          stale-pr-message: >
+            This PR has been automatically marked as stale because it has not
+            had activity in 10 months. It will be closed in 14 days if no
+            further activity occurs. Feel free to give a status update or
+            re-open when it has been rebased and is ready for review (again).
+            Thanks!
+          days-before-pr-close: 14
+          close-pr-message: >
+            This PR was closed because it had no activity for over 10 months.
+            Feel free to give a status update or re-open when it has been
+            rebased and is ready for review (again).
+          days-before-issue-stale: 1000 # ~3 years
+          days-before-issue-close: -1
+          ascending: true # Process older PRs first
+          operations-per-run: 30 # Default value, listed here again to make it explicit

@@ -11,28 +11,70 @@ permissions:
 name: release-please
 
 jobs:
-  release-please:
+  handle-commit:
+    name: Handle new commit
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      major: ${{ steps.release.outputs.major }}
+      minor: ${{ steps.release.outputs.minor }}
+      patch: ${{ steps.release.outputs.patch }}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
           token: ${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}
           target-branch: ${{ github.ref_name }}
+
+  release-new-version:
+    name: Release new version
+    needs: handle-commit
+    runs-on: ubuntu-latest
+    if: ${{ needs.handle-commit.outputs.release_created }}
+    env:
+      ZMK_RELEASE_PLEASE_TOKEN: ${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}
+      VERSION: v${{ needs.handle-commit.outputs.major }}.${{ needs.handle-commit.outputs.minor }}
+    steps:
       - uses: actions/checkout@v4
-        if: ${{ steps.release.outputs.release_created }}
-      - name: create major, minor branch
-        if: ${{ steps.release.outputs.release_created && steps.release.outputs.patch == '0' }}
+
+      - name: Create major.minor branch
+        if: ${{ needs.handle-commit.outputs.patch == '0' }}
         run: |
-          git remote add gh-token-branch "https://x-access-token:${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}@github.com/${{ github.repository }}.git"
-          git checkout -b v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}-branch
-          git push gh-token-branch v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}-branch
+          git remote add gh-token-branch "https://x-access-token:$ZMK_RELEASE_PLEASE_TOKEN@github.com/${{ github.repository }}.git"
+          git checkout -b $VERSION-branch
+          git push gh-token-branch $VERSION-branch
+
       - name: tag major and minor versions
-        if: ${{ steps.release.outputs.release_created }}
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git remote add gh-token "https://x-access-token:${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}@github.com/${{ github.repository }}.git"
-          git tag -d v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} || true
-          git tag -a v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }} -m "Release v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}"
-          git push --force gh-token v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}
+          git remote add gh-token "https://x-access-token:$ZMK_RELEASE_PLEASE_TOKEN@github.com/${{ github.repository }}.git"
+          git tag -d $VERSION || true
+          git tag -a $VERSION -m "Release $VERSION"
+          git push --force gh-token $VERSION
+
+  bump-user-config-template-version:
+    name: Bump user config template version
+    needs: handle-commit
+    runs-on: ubuntu-latest
+    if: ${{ needs.handle-commit.outputs.release_created }}
+    env:
+      ZMK_RELEASE_PLEASE_TOKEN: ${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}
+      VERSION: v${{ needs.handle-commit.outputs.major }}.${{ needs.handle-commit.outputs.minor }}
+    steps:
+      - name: Bump user config template
+        run: |
+          if [ -z "$VERSION" ]; then
+            echo "VERSION is not set, exiting."
+            exit 1
+          fi
+
+          git clone "https://x-access-token:$ZMK_RELEASE_PLEASE_TOKEN@github.com/zmkfirmware/unified-zmk-config-template.git"
+          cd unified-zmk-config-template
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          sed -i 's/^\(\s*\)revision: .*/\1revision: '"$VERSION"'/' config/west.yml
+          sed -i 's|uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@.*|uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@'"$VERSION"'|' .github/workflows/build.yml
+          git add .
+          git commit -m "Version bump to $VERSION"
+          git push origin main

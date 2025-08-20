@@ -8,14 +8,15 @@ description: Troubleshooting wireless connection issues of ZMK devices.
 [USB logging](../development/usb-logging.mdx) can be very helpful for diagnosing issues with ZMK. However, when connected to USB your ZMK device will output to USB by default. To troubleshoot wireless connection issues using logging, you will need to [change the preferred output endpoint](../keymaps/behaviors/outputs.md).
 :::
 
-## Split Keyboard Halves Unable to Pair
+## Split Keyboard Parts Unable to Pair
 
-[Split keyboard](../features/split-keyboards.md) halves will automatically pair with one another, but there are some cases where this breaks, and the pairing needs to be reset, for example:
+[Split keyboard](../features/split-keyboards.md) parts will automatically pair with one another, but there are some cases where this breaks and the pairing needs to be reset, for example:
 
-- Switching which halves are the central/peripheral.
-- Replacing the controller for one of the halves.
+- Changing which part is the central.
+- Replacing the controller for one of the parts.
 
-These issues can be resolved by flashing a settings reset firmware to both controllers.
+These issues can be resolved by flashing a settings reset firmware to both controllers to clear the stored pairing information.
+See [persistent settings documentation](../config/settings.md) for more information.
 
 :::warning
 
@@ -45,16 +46,16 @@ If you use a [local development environment](../development/local-toolchain/setu
 
 ### Reset Split Keyboard Procedure
 
-Perform the following steps to reset **_both_** halves of your split keyboard:
+Perform the following steps to reset **_all_** parts of your split keyboard:
 
-1. Put each half of the split keyboard into bootloader mode.
-1. Flash one of the halves of the split with the settings reset firmware.
-1. Repeat step 2 with the other half of the split keyboard.
-1. Flash the actual image for each half of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
+1. Put each part of the split keyboard into bootloader mode.
+1. Flash one of the parts of the split with the settings reset firmware.
+1. Repeat step 2 with the other parts of the split keyboard.
+1. Flash the actual image for each part of the split keyboard (e.g `my_board_left.uf2` to the left half, `my_board_right.uf2` to the right half).
 
-After completing these steps, pair the halves of the split keyboard together by resetting them at the same time. Most commonly, this is done by grounding the reset pins for each of your keyboard's microcontrollers or pressing the reset buttons at the same time.
+If the central and a peripheral has not paired after completing these steps, it can help to reset the central and the peripheral at around the same time. Most commonly, this is done by grounding the reset pins for each of your keyboard's microcontrollers or pressing the reset buttons, or turning both off then on with a power switch.
 
-Once this is done, you can remove/forget the keyboard on each host device and pair it again.
+Once this is done, you should remove/forget the keyboard on any paired host device and pair it again, since the pairing information for them will also have been cleared from the keyboard.
 
 :::info
 

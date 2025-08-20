@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.3.0](https://github.com/zmkfirmware/zmk/compare/v0.2.1...v0.3.0) (2025-08-01)
+
+
+### Features
+
+* **ble:** Add function to get profile address by index ([#2992](https://github.com/zmkfirmware/zmk/issues/2992)) ([9e905d6](https://github.com/zmkfirmware/zmk/commit/9e905d65936348824588dc3f424755353ac61186))
+* **ci:** Add stale GitHub Action to automatically close stale PRs ([#2924](https://github.com/zmkfirmware/zmk/issues/2924)) ([6d7bbc8](https://github.com/zmkfirmware/zmk/commit/6d7bbc8670d175fd63e8c834feb41f80e7b52e74))
+* **display:** nice!view individual profile status ([#2265](https://github.com/zmkfirmware/zmk/issues/2265)) ([d09087f](https://github.com/zmkfirmware/zmk/commit/d09087f4dc280b8fdb1d32d63b03cc10162b89ce))
+* Full-Duplex Wired Split ([#2766](https://github.com/zmkfirmware/zmk/issues/2766)) ([147c340](https://github.com/zmkfirmware/zmk/commit/147c340c6e8d377304acfdd64dc86cf83ebdfef2))
+* **metadata:** Add metadata to the mouse_key_press behavior ([#2950](https://github.com/zmkfirmware/zmk/issues/2950)) ([239baa4](https://github.com/zmkfirmware/zmk/commit/239baa487509ace108d36f0e5c627d61a3d95f53))
+* **pointing:** Allow peripheral input processing to stop propagation ([#2844](https://github.com/zmkfirmware/zmk/issues/2844)) ([462d48b](https://github.com/zmkfirmware/zmk/commit/462d48b78edac8bedb75666699ea4fa446d2152c))
+* **shield:** Add underglow for reviung5 ([#2191](https://github.com/zmkfirmware/zmk/issues/2191)) ([ad6a181](https://github.com/zmkfirmware/zmk/commit/ad6a181d7ec34fb6e31134f6bb991a9b2d0b8f78))
+* **shields:** Add a physical layout for a_dux ([#3000](https://github.com/zmkfirmware/zmk/issues/3000)) ([7292df0](https://github.com/zmkfirmware/zmk/commit/7292df02d4b05d783f432f8658de22d940909fe4))
+* **shields:** Add physical layouts for tester_xiao and tester_pro_micro ([#2852](https://github.com/zmkfirmware/zmk/issues/2852)) ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **shields:** Add tester_pro_micro layouts ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **shields:** Add tester_xiao layouts ([eb170c9](https://github.com/zmkfirmware/zmk/commit/eb170c930f56e3fb3df0b813d987abfd1dc31b9a))
+* **split:** Add full-duplex wired split support ([147c340](https://github.com/zmkfirmware/zmk/commit/147c340c6e8d377304acfdd64dc86cf83ebdfef2))
+* **split:** Runtime selection of split transport ([6b44d33](https://github.com/zmkfirmware/zmk/commit/6b44d33db2f4bad7d98e475e6f7968493b05af73))
+* **split:** Runtime selection of split transport ([#2886](https://github.com/zmkfirmware/zmk/issues/2886)) ([6b44d33](https://github.com/zmkfirmware/zmk/commit/6b44d33db2f4bad7d98e475e6f7968493b05af73))
+* **split:** Suspend/resume wired UART devices. ([6b44d33](https://github.com/zmkfirmware/zmk/commit/6b44d33db2f4bad7d98e475e6f7968493b05af73))
+
+
+### Bug Fixes
+
+* **behaviors:** Correct macro release state for parametrized ([1bac680](https://github.com/zmkfirmware/zmk/commit/1bac680c4fb4f07e43c01754b6f1e72dab455e50))
+* **behaviors:** Correct macro release state for parametrized macros ([#2942](https://github.com/zmkfirmware/zmk/issues/2942)) ([1bac680](https://github.com/zmkfirmware/zmk/commit/1bac680c4fb4f07e43c01754b6f1e72dab455e50))
+* **ble,hid:** Fix smooth scrolling over BLE ([#2998](https://github.com/zmkfirmware/zmk/issues/2998)) ([342d838](https://github.com/zmkfirmware/zmk/commit/342d83891301b1be53233a12c7723bb99cbe5ff6)), closes [#2957](https://github.com/zmkfirmware/zmk/issues/2957)
+* **boards:** Disable high voltage DC-DC by default ([#2995](https://github.com/zmkfirmware/zmk/issues/2995)) ([8059e67](https://github.com/zmkfirmware/zmk/commit/8059e671b24a261939401afb5a65c4fa756adc2d)), closes [#2990](https://github.com/zmkfirmware/zmk/issues/2990)
+* changed shebang to make scripts more platform independent ([#2893](https://github.com/zmkfirmware/zmk/issues/2893)) ([84772eb](https://github.com/zmkfirmware/zmk/commit/84772ebf14e5a7c67ba573a61f0a50048802c799))
+* **ci:** pin tj-actions/changed-files due to compromise ([#2874](https://github.com/zmkfirmware/zmk/issues/2874)) ([4da89bd](https://github.com/zmkfirmware/zmk/commit/4da89bd99716bf6c1d7d788f3cdaec4cee7403e9))
+* **combos:** Properly clean up all old candidates. ([#2928](https://github.com/zmkfirmware/zmk/issues/2928)) ([e3030bf](https://github.com/zmkfirmware/zmk/commit/e3030bfcc87b7f511b0ebe993fb1f1f06215982e))
+* **combos:** Restore prompts for two deprecated Kconfigs ([#2926](https://github.com/zmkfirmware/zmk/issues/2926)) ([00ff486](https://github.com/zmkfirmware/zmk/commit/00ff48693113ed74a3345aa1ac81fdea302b3a09))
+* **core:** Correctly sync BAS battery level ([#2977](https://github.com/zmkfirmware/zmk/issues/2977)) ([af96766](https://github.com/zmkfirmware/zmk/commit/af967667b0e139a963178e63028c7be341cade9e))
+* **display:** Make stock battery widget depend on the right symbol ([#2953](https://github.com/zmkfirmware/zmk/issues/2953)) ([9da5d3b](https://github.com/zmkfirmware/zmk/commit/9da5d3ba82b38b74ad798a82a838d84c52220bbe))
+* **docs:** Fix soft off waker configuration example ([#2960](https://github.com/zmkfirmware/zmk/issues/2960)) ([eb99b4e](https://github.com/zmkfirmware/zmk/commit/eb99b4ede06bc01674ce16217ebbad40bc11ec50))
+* **docs:** remove title as alt text ([#2922](https://github.com/zmkfirmware/zmk/issues/2922)) ([d9576c5](https://github.com/zmkfirmware/zmk/commit/d9576c55346acfc8eed36709aaae28f91e0d06ad))
+* Fix build with Studio and USB but not UART ([#2996](https://github.com/zmkfirmware/zmk/issues/2996)) ([cef7af4](https://github.com/zmkfirmware/zmk/commit/cef7af4408cc44c20fab93a0b2e20b3429d0a98e))
+* **hid:** Fix scroll value truncation ([#2865](https://github.com/zmkfirmware/zmk/issues/2865)) ([2c0e7da](https://github.com/zmkfirmware/zmk/commit/2c0e7daced1421c34a9d417b7d3e9bccbf0ebd7f)), closes [#2864](https://github.com/zmkfirmware/zmk/issues/2864)
+* **pointing:** Avoids mutex leak for default layer toggle event ([#2934](https://github.com/zmkfirmware/zmk/issues/2934)) ([461f5c8](https://github.com/zmkfirmware/zmk/commit/461f5c832fb8854d87dca54d113d306323697219))
+* Properly override stack size on RP2040 ([147c340](https://github.com/zmkfirmware/zmk/commit/147c340c6e8d377304acfdd64dc86cf83ebdfef2))
+* **split:** add source to battery event ([#2901](https://github.com/zmkfirmware/zmk/issues/2901)) ([6f85f48](https://github.com/zmkfirmware/zmk/commit/6f85f48b19afae04f98e9abacb36ce1425b61f78))
+* **split:** Compile and run properly in wired polling mode. ([#3012](https://github.com/zmkfirmware/zmk/issues/3012)) ([2ae5185](https://github.com/zmkfirmware/zmk/commit/2ae51854192aed92af95536f79547e2928cd1bf5))
+* **split:** Conditionally build all split code ([#2884](https://github.com/zmkfirmware/zmk/issues/2884)) ([5bb39ec](https://github.com/zmkfirmware/zmk/commit/5bb39ec3eae23055593350cb3689a8240028181e))
+* **split:** Enable wired split by default if DTS is set ([#3010](https://github.com/zmkfirmware/zmk/issues/3010)) ([1530ae3](https://github.com/zmkfirmware/zmk/commit/1530ae36c22e3e2285e895737c74de5d960a5ae4))
+* **split:** Minor wired split fixes. ([6b44d33](https://github.com/zmkfirmware/zmk/commit/6b44d33db2f4bad7d98e475e6f7968493b05af73))
+* Unconditionally define HID payloads to avoid error. ([6b44d33](https://github.com/zmkfirmware/zmk/commit/6b44d33db2f4bad7d98e475e6f7968493b05af73))
+
 ## [0.2.1](https://github.com/zmkfirmware/zmk/compare/v0.2.0...v0.2.1) (2025-03-02)
 
 

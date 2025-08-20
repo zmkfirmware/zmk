@@ -68,7 +68,7 @@ sudo tio /dev/ttyACM0
 </TabItem>
 <TabItem value="win">
 
-On Windows, you can use [PuTTY](https://www.putty.org/). Once installed, use Device Manager to figure out which COM port your controller is communicating on (listed under 'Ports (COM & LPT)') and specify that as the 'Serial line' in PuTTY.
+On Windows, you can use [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html). Once installed, use Device Manager to figure out which COM port your controller is communicating on (listed under 'Ports (COM & LPT)') and specify that as the 'Serial line' in PuTTY.
 
 ![Controller COM port](../assets/usb-logging/com.jpg)
 
@@ -86,7 +86,13 @@ You can connect to the device with [tio](https://tio.github.io/) (can be install
 sudo tio /dev/tty.usbmodem14401
 ```
 
-You should see tio printing `Disconnected` or `Connected` when you disconnect or reconnect the USB cable.
+Alternatively, `cu` should be preinstalled (see `man cu` for usage instructions):
+
+```sh
+sudo cu -l /dev/tty.usbmodem14401
+```
+
+You should see the console printing `Disconnected` or `Connected` when you disconnect or reconnect the USB cable.
 
 </TabItem>
 </Tabs>
