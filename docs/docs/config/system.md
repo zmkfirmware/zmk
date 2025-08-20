@@ -19,10 +19,10 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | `CONFIG_ZMK_WPM`            | bool   | Enable calculating words per minute          | n       |
 | `CONFIG_HEAP_MEM_POOL_SIZE` | int    | Size of the heap memory pool                 | 8192    |
 
-:::tip
+:::info
 
 Because ZMK enables [the Zephyr setting](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_BT_DEVICE_NAME_DYNAMIC) that allows for runtime modification of the device BT name,
-changing `CONFIG_ZMK_KEYBOARD_NAME` requires [clearing the stored settings](./settings.md) on the controller in order to take effect.
+changing `CONFIG_ZMK_KEYBOARD_NAME` requires [clearing the stored settings](./settings.md#clearing-persisted-settings) on the controller in order to take effect.
 
 :::
 

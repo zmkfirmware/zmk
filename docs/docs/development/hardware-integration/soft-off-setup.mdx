@@ -166,7 +166,7 @@ Finally, we will list the `wakeup_scan` device in an additional configuration se
 Here are the properties for the node:
 
 - The `compatible` property for the node must be `zmk,soft-off-wakeup-sources`.
-- The `wakeup-sources` property is a [phandle array](../../config/index.md#devicetree-property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
+- The `wakeup-sources` property is a [phandle array](../devicetree.md#property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
 
 :::tip
 If you add your kscan to the `wakeup-sources` array, then your keyboard will wake upon pressing any key in your kscan. Essentially, this causes `&soft_off` to behave like a behavior that puts the keyboard in deep sleep. If you choose to do so, then you can omit everything aside from the `soft_off_wakers` node.
