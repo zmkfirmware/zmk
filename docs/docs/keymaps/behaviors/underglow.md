@@ -56,7 +56,7 @@ Value Limits:
 :::
 
 :::note[RGB settings persistence]
-The RGB settings that are changed via the `&rgb_ug` behavior will be saved to flash storage and hence persist across restarts and firmware flashes.
+The RGB settings that are changed via the `&rgb_ug` behavior will be [saved to flash storage](../../config/settings.md) and hence persist across restarts and firmware flashes.
 They will also override the start values set by [`CONFIG_ZMK_RGB_*_START` settings](../../config/lighting.md#kconfig).
 However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
