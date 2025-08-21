@@ -14,3 +14,5 @@ properties:
   tapping-term-ms:
     type: int
     default: 200
+  trigger-each-binding:
+    type: boolean
