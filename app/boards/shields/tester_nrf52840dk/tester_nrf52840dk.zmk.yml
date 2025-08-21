@@ -1,0 +1,6 @@
+file_format: "1"
+id: tester_nrf52840dk
+name: TesternRF52840DK
+type: shield
+url: https://zmk.dev/docs/troubleshooting/hardware-issues
+requires: [nrf52840dk_nrf52840]
