@@ -7,13 +7,20 @@
 #pragma once
 
 #include <zmk/events/position_state_changed.h>
+#include <zephyr/sys/util.h>
+#include <zephyr/devicetree.h>
+
+#define ZMK_KEYMAP_LAYERS_FOREACH(_fn)                                                             \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_STUDIO), (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), _fn)),    \
+                (DT_FOREACH_CHILD_STATUS_OKAY(DT_INST(0, zmk_keymap), _fn)))
+
+#define ZMK_KEYMAP_LAYERS_FOREACH_SEP(_fn, _sep)                                                   \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_STUDIO),                                                     \
+                (DT_FOREACH_CHILD_SEP(DT_INST(0, zmk_keymap), _fn, _sep)),                         \
+                (DT_FOREACH_CHILD_STATUS_OKAY_SEP(DT_INST(0, zmk_keymap), _fn, _sep)))
 
 #define ZMK_LAYER_CHILD_LEN_PLUS_ONE(node) 1 +
-#define ZMK_KEYMAP_LAYERS_LEN                                                                      \
-    (COND_CODE_1(                                                                                  \
-        IS_ENABLED(CONFIG_ZMK_STUDIO),                                                             \
-        (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), ZMK_LAYER_CHILD_LEN_PLUS_ONE)),                  \
-        (DT_FOREACH_CHILD_STATUS_OKAY(DT_INST(0, zmk_keymap), ZMK_LAYER_CHILD_LEN_PLUS_ONE))) 0)
+#define ZMK_KEYMAP_LAYERS_LEN (ZMK_KEYMAP_LAYERS_FOREACH(ZMK_LAYER_CHILD_LEN_PLUS_ONE) 0)
 
 /**
  * @brief A layer ID is a stable identifier to refer to a layer, regardless of ordering.
