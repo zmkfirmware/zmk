@@ -1,5 +1,5 @@
 file_format: "1"
-id: nrf52840dk_nrf52840
+id: nrf52840dk/nrf52840
 name: Nordic nRF52840 DK
 type: board
 arch: arm
