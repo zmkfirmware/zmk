@@ -26,6 +26,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
+            display-name = "Default Layer";
             bindings = <
                 &kp A &bl BL_TOG
                 &rgb_ug RGB_EFF &bt BT_CLR
