@@ -38,6 +38,7 @@ PIN_MACRO(pin21, <&kp N2 &kp N1>)
         compatible = "zmk,keymap";
 
         default_layer {
+            display-name = "Default Layer";
             bindings = <&pin0
                         &pin1
                         &pin2
