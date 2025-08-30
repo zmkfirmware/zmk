@@ -119,6 +119,13 @@ static void send_pending_tx_work_cb(struct k_work *work);
 
 static K_WORK_DEFINE(wired_central_tx_work, send_pending_tx_work_cb);
 
+static void read_timer_cb(struct k_timer *_timer) {
+    zmk_split_wired_poll_in(&rx_buf, uart, &publish_events, NULL);
+    // Check if we found any bytes, read some, or read all the bytes in the RX
+}
+
+static K_TIMER_DEFINE(wired_central_read_timer, read_timer_cb, NULL);
+
 #endif
 
 static void begin_tx(void) {
@@ -284,13 +291,6 @@ static void serial_cb(const struct device *dev, void *user_data) {
 static void send_pending_tx_work_cb(struct k_work *work) {
     zmk_split_wired_poll_out(&tx_buf, uart);
 }
-
-static void read_timer_cb(struct k_timer *_timer) {
-    zmk_split_wired_poll_in(&rx_buf, uart, &publish_events, NULL);
-    // Check if we found any bytes, read some, or read all the bytes in the RX
-}
-
-static K_TIMER_DEFINE(wired_central_read_timer, read_timer_cb, NULL);
 
 #endif
 

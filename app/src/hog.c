@@ -168,9 +168,28 @@ static ssize_t read_hids_mouse_input_report(struct bt_conn *conn, const struct b
 
 static ssize_t read_hids_mouse_feature_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                               void *buf, uint16_t len, uint16_t offset) {
-    struct zmk_hid_mouse_report_body *report_body = &zmk_hid_get_mouse_report()->body;
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
-                             sizeof(struct zmk_hid_mouse_report_body));
+
+    int profile = zmk_ble_profile_index(bt_conn_get_dst(conn));
+    if (profile < 0) {
+        LOG_DBG("   BT_ATT_ERR_UNLIKELY");
+        return BT_GATT_ERR(BT_ATT_ERR_UNLIKELY);
+    }
+
+    struct zmk_endpoint_instance endpoint = {
+        .transport = ZMK_TRANSPORT_BLE,
+        .ble = {.profile_index = profile},
+    };
+
+    struct zmk_pointing_resolution_multipliers mult =
+        zmk_pointing_resolution_multipliers_get_profile(endpoint);
+
+    struct zmk_hid_mouse_resolution_feature_report_body report = {
+        .wheel_res = mult.wheel,
+        .hwheel_res = mult.hor_wheel,
+    };
+
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, &report,
+                             sizeof(struct zmk_hid_mouse_resolution_feature_report_body));
 }
 
 static ssize_t write_hids_mouse_feature_report(struct bt_conn *conn,

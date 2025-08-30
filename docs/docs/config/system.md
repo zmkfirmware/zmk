@@ -13,13 +13,18 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ### General
 
-| Config                               | Type   | Description                                                                   | Default |
-| ------------------------------------ | ------ | ----------------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_KEYBOARD_NAME`           | string | The name of the keyboard (max 16 characters)                                  |         |
-| `CONFIG_ZMK_SETTINGS_RESET_ON_START` | bool   | Clears all persistent settings from the keyboard at startup                   | n       |
-| `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`  | int    | Milliseconds to wait after a setting change before writing it to flash memory | 60000   |
-| `CONFIG_ZMK_WPM`                     | bool   | Enable calculating words per minute                                           | n       |
-| `CONFIG_HEAP_MEM_POOL_SIZE`          | int    | Size of the heap memory pool                                                  | 8192    |
+| Config                      | Type   | Description                                  | Default |
+| --------------------------- | ------ | -------------------------------------------- | ------- |
+| `CONFIG_ZMK_KEYBOARD_NAME`  | string | The name of the keyboard (max 16 characters) |         |
+| `CONFIG_ZMK_WPM`            | bool   | Enable calculating words per minute          | n       |
+| `CONFIG_HEAP_MEM_POOL_SIZE` | int    | Size of the heap memory pool                 | 8192    |
+
+:::info
+
+Because ZMK enables [the Zephyr setting](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_BT_DEVICE_NAME_DYNAMIC) that allows for runtime modification of the device BT name,
+changing `CONFIG_ZMK_KEYBOARD_NAME` requires [clearing the stored settings](./settings.md#clearing-persisted-settings) on the controller in order to take effect.
+
+:::
 
 ### HID
 

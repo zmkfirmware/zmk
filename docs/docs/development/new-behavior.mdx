@@ -215,7 +215,7 @@ Including `zmk/event_manager.h` is required for the following dependencies to fu
 - `zmk/events/keycode_state_changed.h`: Keycode events' state (on/off), usage page, keycode value, modifiers, and timestamps
 - `zmk/events/modifiers_state_changed.h`: Modifier events' state (on/off) and modifier value
 
-Events can be used similarly to hardware interrupts, through the use of [listeners](#listeners-and-subscriptions).
+Events can be used similarly to hardware interrupts. See [Events](events.md) for more information on using events.
 
 ###### Listeners and subscriptions
 
@@ -223,30 +223,12 @@ The condensed form of lines 192-225 of the tap-dance driver, shown below, does a
 
 ```c title="app/src/behaviors/behavior_tap_dance.c (Lines 192-197, 225)"
 static int tap_dance_position_state_changed_listener(const zmk_event_t *eh);
-
 ZMK_LISTENER(behavior_tap_dance, tap_dance_position_state_changed_listener);
 ZMK_SUBSCRIPTION(behavior_tap_dance, zmk_position_state_changed);
-
 static int tap_dance_position_state_changed_listener(const zmk_event_t *eh){
     // Do stuff...
 }
 ```
-
-Listeners, defined by the `ZMK_LISTENER(mod, cb)` function, take in a listener name (`mod`) and a callback function (`cb`) as their parameters. On the other hand subscriptions are defined by the `ZMK_SUBSCRIPTION(mod, ev_type)`, and determine what kind of event (`ev_type`) should invoke the callback function from the listener. In the tap-dance example, this listener executes code depending on a `zmk_position_state_changed` event, or simply, a change in key position. Other types of ZMK events can be found as the name of the `struct` inside each of the files located at `app/include/zmk/events/<Event Type>.h`. All control paths in a listener should `return` one of the [`ZMK_EV_EVENT_*` values](#return-values), which are shown below.
-
-###### `return` values:
-
-- `ZMK_EV_EVENT_BUBBLE`: Keep propagating the event `struct` to the next listener.
-- `ZMK_EV_EVENT_HANDLED`: Stop propagating the event `struct` to the next listener. The event manager still owns the `struct`'s memory, so it will be `free`d automatically. Do **not** free the memory in this function.
-- `ZMK_EV_EVENT_CAPTURED`: Stop propagating the event `struct` to the next listener. The event `struct`'s memory is now owned by your code, so the event manager will not free the event `struct` memory. Make sure your code will release or free the event at some point in the future. (Use the [`ZMK_EVENT_*` macros](#macros) described below.)
-
-###### Macros:
-
-- `ZMK_EVENT_RAISE(ev)`: Start handling this event (`ev`) with the first registered event listener.
-- `ZMK_EVENT_RAISE_AFTER(ev, mod)`: Start handling this event (`ev`) after the event is captured by the named [event listener](#listeners-and-subscriptions) (`mod`). The named event listener will be skipped as well.
-- `ZMK_EVENT_RAISE_AT(ev, mod)`: Start handling this event (`ev`) at the named [event listener](#listeners-and-subscriptions) (`mod`). The named event listener is the first handler to be invoked.
-- `ZMK_EVENT_RELEASE(ev)`: Continue handling this event (`ev`) at the next registered event listener.
-- `ZMK_EVENT_FREE(ev)`: Free the memory associated with the event (`ev`).
 
 #### `BEHAVIOR_DT_INST_DEFINE`
 

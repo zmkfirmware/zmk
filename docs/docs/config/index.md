@@ -78,7 +78,9 @@ CONFIG_EC11=y
 CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y
 ```
 
-The list of available settings is determined by various files in ZMK whose names start with `Kconfig`. Files ending with `_defconfig` use the same syntax, but are intended for setting configuration specific to the hardware which users typically won't need to change. Note that options are _not_ prefixed with `CONFIG_` in these files.
+Files ending with `_defconfig` use the same syntax as `.conf` files. They set the default configuration for the hardware, which is then overridden by anything in a `.conf` file.
+
+The list of available settings is determined by various files in ZMK whose names start with `Kconfig`. Note that options are _not_ prefixed with `CONFIG_` in these files.
 
 See [Zephyr's Kconfig documentation](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html) for more details on Kconfig files.
 
@@ -110,7 +112,9 @@ Example: `CONFIG_FOO="foo"`
 
 ## Devicetree Files
 
-Various Devicetree files are combined to build a tree that describes the hardware for a keyboard. They are also used to define keymaps.
+Various Devicetree files are combined to build a tree that describes the hardware for a keyboard. They are also used to define keymaps. A full primer on Devicetree can be found in the [Devicetree Overview page](../development/devicetree.md) -- a shorter summary of some of the points can be found below.
+
+### Devicetree Overview
 
 Devicetree files use various file extensions. These indicate the purpose of the file, but they have no effect on how the file is processed. Common file extensions for Devicetree files include:
 
@@ -183,89 +187,4 @@ If the node you want to edit doesn't have a label, you can also write a new tree
         debounce-press-ms = <0>;
     };
 };
-```
-
-### Devicetree Property Types
-
-These are some of the property types you will see most often when working with ZMK. [Zephyr's Devicetree bindings documentation](https://docs.zephyrproject.org/3.5.0/build/dts/bindings.html) provides more detailed information and a full list of types.
-
-#### bool
-
-True or false. To set the property to true, list it with no value. To set it to false, do not list it.
-
-Example: `property;`
-
-If a property has already been set to true and you need to override it to false, use the following command to delete the existing property:
-
-```dts
-/delete-property/ the-property-name;
-```
-
-#### int
-
-A single integer surrounded by angle brackets. Also supports mathematical expressions.
-
-Example: `property = <42>;`
-
-#### string
-
-Text surrounded by double quotes.
-
-Example: `property = "foo";`
-
-#### array
-
-A list of integers surrounded by angle brackets and separated with spaces. Mathematical expressions can be used but must be surrounded by parenthesis.
-
-Example: `property = <1 2 3 4>;`
-
-Values can also be split into multiple blocks, e.g. `property = <1 2>, <3 4>;`
-
-#### phandle
-
-A single node reference surrounded by angle brackets.
-
-Example: `property = <&label>`
-
-#### phandles
-
-A list of node references surrounded by angle brackets.
-
-Example: `property = <&label1 &label2 &label3>`
-
-#### phandle array
-
-A list of node references and possibly numbers to associate with the node. Mathematical expressions can be used but must be surrounded by parenthesis.
-
-Example: `property = <&none &mo 1>;`
-
-Values can also be split into multiple blocks, e.g. `property = <&none>, <&mo 1>;`
-
-See the documentation for "phandle-array" in [Zephyr's Devicetree bindings documentation](https://docs.zephyrproject.org/3.5.0/build/dts/bindings.html)
-for more details on how parameters are associated with nodes.
-
-#### GPIO array
-
-This is just a phandle array. The documentation lists this as a different type to make it clear which properties expect an array of GPIOs.
-
-Each item in the array should be a label for a GPIO node (the names of which differ between hardware platforms) followed by an index and configuration flags. See [Zephyr's GPIO documentation](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html) for a full list of flags.
-
-Example:
-
-```dts
-some-gpios =
-    <&gpio0 0 GPIO_ACTIVE_HIGH>,
-    <&gpio0 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
-    ;
-```
-
-#### path
-
-A path to a node, either as a node reference or as a string.
-
-Examples:
-
-```dts
-property = &label;
-property = "/path/to/some/node";
 ```
