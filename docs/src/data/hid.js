@@ -3582,7 +3582,8 @@ export default [
   },
   {
     names: ["LANGUAGE_2", "LANG2", "LANG_HANJA"],
-    description: "한자 (Language 2), on macOS 英数 (eisuu) for leaving Japanese mode",
+    description:
+      "한자 (Language 2), on macOS 英数 (eisuu) for leaving Japanese mode",
     context: "Keyboard",
     clarify: false,
     usages: [
