@@ -966,10 +966,6 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
 
     k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
     k_work_submit(&peripheral_event_work);
-    // struct zmk_peripheral_battery_state_changed ev = {
-    //     .source = peripheral_slot_index_for_conn(conn), .state_of_charge = 0};
-    // k_msgq_put(&peripheral_batt_lvl_msgq, &ev, K_NO_WAIT);
-    // k_work_submit(&peripheral_batt_lvl_work);
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
 
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
@@ -1288,8 +1284,7 @@ static int finish_init() {
 void peripheral_event_work_callback(struct k_work *work) {
     struct peripheral_event_wrapper ev;
     while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
-        LOG_DBG("Trigger key position state change for %d",
-                ev.event.data.key_position_event.position);
+        LOG_DBG("Trigger key position state change of type %d", ev.event.type);
         zmk_split_transport_central_peripheral_event_handler(&bt_central, ev.source, ev.event);
     }
 }

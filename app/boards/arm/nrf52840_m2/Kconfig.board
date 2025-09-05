@@ -1,9 +1,0 @@
-# Maker Diary nrf52840 M.2 board configuration
-
-# Copyright (c) 2020 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-config BOARD_NRF52840_M2
-    bool "nrf52480_m2"
-    depends on SOC_NRF52840_QIAA
-

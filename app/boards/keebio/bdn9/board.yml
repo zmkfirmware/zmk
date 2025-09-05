@@ -1,0 +1,10 @@
+board:
+  name: bdn9
+  vendor: keebio
+  socs:
+    - name: stm32f072xb
+  revision:
+    format: major.minor.patch
+    default: 2.0.0
+    revisions:
+      - name: 2.0.0

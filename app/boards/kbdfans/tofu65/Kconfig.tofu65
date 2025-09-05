@@ -1,0 +1,5 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_TOFU65
+    select SOC_RP2040

@@ -1,0 +1,23 @@
+boards:
+  - name: corneish_zen_left
+    vendor: lowprokb
+    socs:
+      - name: nrf52840
+    revision:
+      format: major.minor.patch
+      default: 2.0.0
+      exact: false
+      revisions:
+        - name: 2.0.0
+        - name: 1.0.0
+  - name: corneish_zen_right
+    vendor: lowprokb
+    socs:
+      - name: nrf52840
+    revision:
+      format: major.minor.patch
+      default: 2.0.0
+      exact: false
+      revisions:
+        - name: 2.0.0
+        - name: 1.0.0

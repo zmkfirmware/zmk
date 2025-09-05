@@ -8,7 +8,6 @@ If you built your nibble without the LEDs _and_ are using a nice!nano board, you
 
 ```
 CONFIG_ZMK_RGB_UNDERGLOW=n
-CONFIG_WS2812_STRIP=n
 ```
 
 ## Encoder Notes
