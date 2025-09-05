@@ -48,3 +48,5 @@
 blackpill_i2c: &i2c1 {};
 blackpill_spi: &spi1 {};
 blackpill_serial: &usart1 {};
+
+&blackpill_serial { status = "disabled"; };
