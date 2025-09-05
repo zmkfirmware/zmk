@@ -35,7 +35,7 @@ include:
     nickname: "display"
   - board: nice_nano
     shield: romac_plus
-    cmake-args: "-DCONFIG_ZMK_RGB_UNDERGLOW=y -DCONFIG_WS2812_STRIP=y"
+    cmake-args: "-DCONFIG_ZMK_RGB_UNDERGLOW=y"
     nickname: "underglow"
   - board: nice_nano
     shield: lily58_left nice_view_adapter nice_view
