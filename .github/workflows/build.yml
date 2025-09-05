@@ -63,7 +63,7 @@ jobs:
       - name: Install @actions/artifact
         run: npm install @actions/artifact
       - name: Build
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: boards-list
         with:
           script: |
@@ -95,7 +95,7 @@ jobs:
               throw new Error('Failed to build one or more configurations');
             }
       - name: Upload artifacts
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         continue-on-error: ${{ github.event_name == 'pull_request' }}
         id: boards-upload
         with:
@@ -146,7 +146,7 @@ jobs:
       include-list: ${{ steps.compile-list.outputs.result }}
     steps:
       - name: Join build lists
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: compile-list
         with:
           script: |
@@ -196,7 +196,7 @@ jobs:
           node-version: "14.x"
       - name: Install js-yaml
         run: npm install js-yaml
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v8
         id: core-list
         with:
           script: |
@@ -225,7 +225,7 @@ jobs:
           node-version: "14.x"
       - name: Install js-yaml
         run: npm install js-yaml
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v8
         id: boards-list
         with:
           script: |
@@ -302,7 +302,7 @@ jobs:
       nightly-include: ${{ steps.nightly-list.outputs.result }}
     steps:
       - name: Create nightly list
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: nightly-list
         with:
           script: |
@@ -355,7 +355,7 @@ jobs:
       - name: Install js-yaml
         run: npm install js-yaml
       - name: Aggregate Metadata
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: aggregate-metadata
         with:
           script: |
@@ -373,7 +373,7 @@ jobs:
           result-encoding: string
 
       - name: Organize Metadata
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: organize-metadata
         with:
           script: |
@@ -435,7 +435,7 @@ jobs:
         with:
           json: true
           escape_json: false
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v8
         id: board-changes
         with:
           script: |
@@ -443,7 +443,7 @@ jobs:
             const boardChanges = changedFiles.filter(f => f.startsWith('app/boards'));
             return boardChanges.length ? 'true' : 'false';
           result-encoding: string
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v8
         id: core-changes
         with:
           script: |
