@@ -1,0 +1,22 @@
+if SHIELD_SWAY_LEFT
+
+# Name must be less than 16 characters long!
+config ZMK_KEYBOARD_NAME
+    default "🍃Sway"
+
+
+# config ZMK_RGB_UNDERGLOW
+#     select WS2812_STRIP
+#     select SPI
+    
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_SWAY_LEFT || SHIELD_SWAY_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+endif

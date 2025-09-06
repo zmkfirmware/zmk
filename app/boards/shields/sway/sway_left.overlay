@@ -1,0 +1,18 @@
+#include "sway.dtsi"
+
+// &sensors {
+//     left_encoder {
+//         triggers-per-rotation = <15>;
+//     };
+// };
+
+
+&left_encoder {
+    status = "okay";
+};
+
+// // Overrides for the input listener node
+// &glidepoint_listener {
+//     status = "okay";
+//     device = <&glidepoint>;
+// };

@@ -1,0 +1,79 @@
+#include <physical_layouts.dtsi>
+
+/ {
+	// physical_layout0: physical_layout_0 { // First physical layout, use different naming for other layouts
+    //     compatible = "zmk,physical-layout";
+    //     display-name = "Default Layout";
+    //     kscan = <&kscan0>; // Label of the kscan node, optional if all layouts use the same
+    //     transform = <&default_transform>; // Label of the matrix transform for this layout
+    // };
+
+
+    sway_physical_layout: sway_physical_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
+        transform = <&default_transform>;
+        kscan = <&kscan0>;
+        keys  //                     w   h    x    y     rot    rx    ry
+
+        // row 0
+            = <&key_physical_attrs 100 100    0  100       8     0     0>
+            , <&key_physical_attrs 100 100  100   20       5     0     0>
+            , <&key_physical_attrs 100 100  200    0       0     0     0>
+            , <&key_physical_attrs 100 100  300   10       0     0     0>
+            , <&key_physical_attrs 100 100  400   50       0     0     0>
+           
+            , <&key_physical_attrs 100 100  800   50       0     0     0>
+            , <&key_physical_attrs 100 100  900   10       0     0     0>
+            , <&key_physical_attrs 100 100 1000    0       0     0     0>
+            , <&key_physical_attrs 100 100 1100   20       0     0     0>
+            , <&key_physical_attrs 100 100 1200  100       0     0     0>
+
+            
+        // row 1
+            , <&key_physical_attrs 100 100  0    200       8     0     0>
+            , <&key_physical_attrs 100 100  100  120       5     0     0>
+            , <&key_physical_attrs 100 100  200  100       0     0     0>
+            , <&key_physical_attrs 100 100  300  110       0     0     0>
+            , <&key_physical_attrs 100 100  400  150       0     0     0>
+            
+            , <&key_physical_attrs 100 100  800  150       0     0     0>
+            , <&key_physical_attrs 100 100  900  110       0     0     0>
+            , <&key_physical_attrs 100 100 1000  100       0     0     0>
+            , <&key_physical_attrs 100 100 1100  120       0     0     0>
+            , <&key_physical_attrs 100 100 1200  200       0     0     0>
+            
+           
+        // row 2
+            , <&key_physical_attrs 100 100  0    300       6     0     0>
+            , <&key_physical_attrs 100 100  100  220       5     0     0>
+            , <&key_physical_attrs 100 100  200  200       0     0     0>
+            , <&key_physical_attrs 100 100  300  210       0     0     0>
+            , <&key_physical_attrs 100 100  400  250       0     0     0>
+            
+            , <&key_physical_attrs 100 100  800  250       0     0     0>
+            , <&key_physical_attrs 100 100  900  210       0     0     0>
+            , <&key_physical_attrs 100 100 1000  200       0     0     0>
+            , <&key_physical_attrs 100 100 1100  220       0     0     0>
+            , <&key_physical_attrs 100 100 1200  300       0     0     0>
+
+           
+
+            // thumbs left
+            , <&key_physical_attrs 100 100 300  400       22     0     0>
+            , <&key_physical_attrs 100 100 400  400       44     0     0>
+            , <&key_physical_attrs 100 150 500  350       66     0     0>
+            
+            // thumbs right
+            , <&key_physical_attrs 100 150  700 350       0     0     0>
+            , <&key_physical_attrs 100 100  800 400       0     0     0>
+            , <&key_physical_attrs 100 100  900 400       0     0     0>
+
+
+            // encoders
+            , <&key_physical_attrs 100 100 500  200       0     0     0>
+            , <&key_physical_attrs 100 100 700  200       0     0     0>
+            ;
+    };
+
+};

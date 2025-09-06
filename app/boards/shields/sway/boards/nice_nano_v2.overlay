@@ -1,0 +1,3 @@
+#include <dt-bindings/led/led.h>
+
+#include "../modules/rgb.dtsi"

@@ -1,0 +1,17 @@
+#include "sway.dtsi"
+
+&sensors {
+    left_encoder {
+        triggers-per-rotation = <10>;
+    };
+};
+
+&right_encoder {
+    status = "okay";
+    // status = "disabled";
+
+};
+
+&default_transform { // Offset of 3 because the left side has 3 columns
+    col-offset = <5>;
+};

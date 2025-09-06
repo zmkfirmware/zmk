@@ -1,0 +1,13 @@
+file_format: "1"
+id: sway
+name: Sway
+type: shield
+url: https://kolev.io
+requires: [pro_micro]
+exposes: [spi_oled]
+features:
+  - keys
+  - display
+siblings:
+  - sway_left
+  - sway_right
