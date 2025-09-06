@@ -1,23 +1,501 @@
-/*
- * Copyright (c) 2022 The ZMK Contributors
- *
- * SPDX-License-Identifier: MIT
- */
- 
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 1000  // default: 600
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 2000    // default: 10
+#include <dt-bindings/zmk/pointing.h>
+
+#define BASE_L                   0
+#define QWERTY_L                 1
+#define MAC_L                    2
+#define NUM_L                    3
+#define NAV_L                    4
+
+#define MOUSE_SLOW               5
+#define MOUSE_FAST               6
+
+#define PROG_L                   7
+#define RGB_L                    8
+#define GAME_L                   9
+#define GAME_EXT_L              10
+#define FN_L                    11
+#define META_L                  12
+
+#include <dt-bindings/zmk/input_transform.h>
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/mouse.h>
 #include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/outputs.h>
+
+#include "behaviors.dtsi"
+
+#include "macros/macros_common.dtsi"
+#include "behaviors.dtsi"
+
+#include "combos/common.dtsi"
+#include <dt-bindings/zmk/rgb.h>
+
+// Causes the keyoard to still work when plugged to usb hub
+
+&led_strip {
+    chain-length = <18>;
+};
+
+&sk {
+    quick-release;
+};
+
+&mmv {
+  acceleration-exponent = <1>;
+  time-to-max-speed-ms = <500>;    
+  delay-ms = <0>;
+};
+
+&mt { 
+    tapping-term-ms = <200>; 
+};
+
+&sl { release-after-ms = <1000>; };
+
+&mmv_input_listener {
+    input-processors = <&zip_xy_scaler 1 1>;
+ 
+    custom_sensitivity {
+        layers = <MAC_L>;
+        input-processors = <&zip_xy_scaler 3 1>;
+        process-next;
+    };
+
+    fast {
+        layers = <MOUSE_FAST>;
+        input-processors = <&zip_xy_scaler 2 1>;
+        process-next;
+    };
+
+    slow {
+        layers = <MOUSE_SLOW>;
+        input-processors = <&zip_xy_scaler 1 2>;
+        process-next;
+    };
+
+};
 
 / {
-    keymap {
-        compatible = "zmk,keymap";
 
-        default_layer { // Layer 0
-        bindings = <
-            &kp Q       &kp W   &kp F   &kp P &kp B                  &kp J      &kp L  &kp U     &kp Y      &kp SEMI
-            &kp A       &kp R   &kp S   &kp T &kp G                  &kp M      &kp N  &kp E     &kp I      &kp O
-            &kp Z       &kp X   &kp C   &kp D &kp V  &kp B  &kp D    &kp K      &kp H  &kp COMMA &kp DOT    &kp SLASH
-                                &kp L   &kp Z &kp S                  &kp SPACE  &kp Z  &kp T
-        >;
+
+
+    rgb_encoder_brightness: rgb_encoder_brightness {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&rgb_ug RGB_BRD>, <&rgb_ug RGB_BRI>;
+        tap-ms = <20>;
+    };
+
+    
+    rgb_encoder_hue: rgb_encoder_hue {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&rgb_ug RGB_HUD>, <&rgb_ug RGB_HUI>;
+        tap-ms = <20>;
+  };
+
+    rgb_encoder_saturation: rgb_encoder_saturation {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&rgb_ug RGB_SAD>, <&rgb_ug RGB_SAI>;
+        tap-ms = <20>;
+    };
+
+    encoder_nav_words: encoder_nav_words {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&kp LC(LEFT)>, <&kp LC(RIGHT)>;
+        tap-ms = <20>;
+    };
+
+    encoder_nav_words_mac: encoder_nav_words_mac {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&kp LA(LEFT)>, <&kp LA(RIGHT)>;
+        tap-ms = <20>;
+    };
+
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+        tri_layer {
+            if-layers = <NAV_L NUM_L>;
+            then-layer = <RGB_L>;
         };
     };
- };
+
+    behaviors {
+        scroll_mouse_move_encoder: sensor_rotate_scroll {
+            compatible = "zmk,behavior-sensor-rotate-var";
+            #sensor-binding-cells = <2>;
+            bindings = <&msc>, <&msc>;
+            tap-ms = <20>;
+        };
+
+    };
+
+   keymap {
+      compatible = "zmk,keymap";
+      
+      BASE_L {
+        display-name = "BASE";
+// BASE
+// ┌─────┬─────┬─────┬─────┬─────┐┌─────┬─────┬─────┬─────┬─────┐
+// │  Q  │  W  │  F  │  P  │  B  ││  J  │  L  │  U  │  Y  │  ;  │
+// │─────┼─────┼─────┼─────┼─────┤│─────┼─────┼─────┼─────┼─────┤
+// │  A  │  R  │  S  │  T  │  G  ││  M  │  N  │  E  │  I  │  O  │
+// │─────┼─────┼─────┼─────┼─────┤│─────│─────┼─────┼─────┼─────┤
+// │  Z  │  X  │  C  │  D  │  V  ││  K  │  H  │  ,  │  .  │  /  │
+// └─────┴─────┴─────┼─────┤─────┤│─────│─────┼─────┼─────┼─────┴
+//             │ SHF │ ESC │SPACE││ SHF │ RET │ TAB │
+//             └─────┴─────┴─────┘└─────┴─────┴─────┘
+//                            ←→ || PP      
+
+        // bindings = <&macro_tap &kp LCTRL(RIGHT)>;
+
+    sensor-bindings = <&encoder_nav_words>, <&inc_dec_kp UP DOWN>;
+        
+        bindings = <
+// ┌─────────────┬────────┬────────────────┬────────────────┬──────────────┐   ┌───────────────────┬────────────────┬──────────────┬──────────────┬──────────────┐
+   &kp Q         &kp W    &kp F            &kp P            &mfl FN_L B        &kp J               &kp L            &kp U          &kp Y          &mfl FN_L SEMI
+// │─────────────┼────────┼────────────────┼────────────────┼──────────────┤   │───────────────────┼────────────────┼──────────────┼──────────────┼──────────────┤
+   &hsl LSHIFT A  &kp R    &bhm LALT S      &bhm LCTRL T     &bhm LMETA G       &bhm RMETA M        &bhm RCTRL N     &bhm RALT E    &kp I          &kp O
+// │─────────────┼────────┼────────────────┼────────────────┼──────────────┤   │───────────────────┼────────────────┼──────────────┼──────────────┤──────────────┤
+   &kp Z         &kp X    &kp C            &kp D            &kp V              &kp K               &kp H            &kp COMMA      &kp DOT        &kp SLASH
+// └─────────────┴────────┴────────────────┼────────────────┼─────────────┤    │───────────────────┼────────────────┼──────────────┴──────────────┴──────────────┘
+                          &lt META_L BSPC     &lt NAV_L ESC    &slts NUM_L SPACE  &sk LSHIFT  &lt PROG_L RET &kp TAB      
+//                        └────────────────┴────────────────┴─────────────┘    └──────────────────┴────────────────┴
+                                                            &lt META_L C_PLAY_PAUSE    &lt META_L C_NEXT 
+        >;
+    };
+
+    QWERTY_L {
+        display-name = "QWE";
+        bindings = <
+// ┌─────────┬─────────┬─────────┬────────┬──────┐    ┌────────┬────────┬─────────┬─────────┬──────┐
+   &kp Q    &kp W    &kp E    &kp R   &kp T      &kp Y   &kp U   &kp I   &kp O     &kp P
+// │─────────┼─────────┼─────────┼────────┼──────┤    │────────┼────────┼─────────┼─────────┼──────┤
+   &hsl LSHIFT A    &kp S    &bhm LALT D    &bhm LCTRL F   &bhm LMETA G      &bhm RMETA H   &bhm RCTRL J   &bhm RALT K   &kp L     &kp SEMI
+// │─────────┼─────────┼─────────┼────────┼──────┤    │────────│────────┼────────┼─────────┼───────┤
+   &kp Z    &kp X    &kp C    &kp V   &kp B      &kp N   &kp M   &kp COMMA   &kp DOT    &kp SLASH  
+// └─────────┴─────────┼─────────┼────────┼──────┤    │────────│────────┼────────┼─────────┴───────┘
+                       &trans    &trans   &trans      &trans   &trans   &trans   
+//                     └─────────┴────────┴──────┘    └────────┴────────┴────────┘
+                       &trans &trans
+      
+        >;
+    };
+
+    MAC_L {
+        sensor-bindings = <&encoder_nav_words_mac>, <&inc_dec_kp UP DOWN>;
+
+        display-name = "MAC";
+// ┌─────┬─────┬─────┬─────┬─────┐┌─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     ││     │     │     │     │     │
+// │─────┼─────┼─────┼─────┼─────┤│─────┼─────┼─────┼─────┼─────┤
+// │     │CTRL │ OPT │ CMD │     ││     │ CMD │ OPT │CTRL │     │
+// │─────┼─────┼─────┼─────┼─────┤│─────┼─────┼─────┼─────┼─────┤
+// │     │     │     │     │     ││     │     │     │     │     │
+// └─────┴─────┴─────┼─────┤─────┤│─────┼─────┼─────┴─────┴─────┘ 
+//             │     │     │     ││     │     │     │
+//             └─────┴─────┴─────┴└─────┴─────┴─────┴
+//                               ││
+
+        bindings = <
+// ┌────────┬────────────┬────────────────┬────────────┬─────┐    ┌────────────┬───────────────────┬────────────┬────────────┬──────┐
+   &trans   &trans       &trans           &trans       &trans     &trans       &trans              &trans       &trans       &trans 
+// │────────┼────────────┼────────────────┼────────────┼─────┤    │────────────┼───────────────────┼────────────┼────────────┼──────┤
+   &trans   &bhm LCTRL R &bhm LEFT_ALT S  &bhm LMETA T &trans     &trans       &bhm RMETA N        &bhm RALT E  &bhm RCTRL I &trans 
+// │────────┼────────────┼────────────────┼────────────┼─────┤    │────────────┼───────────────────┼────────────┼────────────┼──────┤
+   &trans   &trans       &trans           &trans       &trans     &trans       &trans              &trans       &trans       &trans 
+// └────────┴────────────┼────────────────┼────────────┼─────┤    │────────────┼───────────────────┼────────────┴────────────┴──────┘
+                         &trans           &trans       &trans     &trans       &trans  &trans
+//                       └────────────────┴────────────┴─────┘    └────────────┴───────────────────┴────┘
+                                                        &trans    &trans
+        >;
+    };
+
+    NUM_L {
+        display-name = "NUM";
+// NUMBERS And Symbols
+// ┌─────┬─────┬─────┬─────┬─────┐┌─────┬─────┬─────┬─────┬─────┐
+// │ TAB │  7  │  8  │  9  │  [  ││  ]  │  &  │  *  │  =  │ \ | │
+// │─────┼─────┼─────┼─────┼─────┤│─────┼─────┼─────┼─────┼─────┤
+// │  `  │  4  │  5  │  6  │  (  ││  )  │  $  │  %  │  ^  │ ' " │
+// │─────┼─────┼─────┼─────┼─────┤│─────┼─────┼─────┼─────┼─────┤
+// │  0  │  1  │  2  │  3  │  {  ││  }  │  !  │  @  │  #  │  -  │
+// └─────┴─────┼─────┼─────┤─────┤│─────┼─────┼─────┼─────┴─────┘ 
+//             │     │     │ [x] ││     │     │     │ 
+//             └─────┴─────┴─────┘└─────┴─────┴─────┘
+//                               ││
+
+        // sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;
+        sensor-bindings = <&scroll_mouse_move_encoder SCRL_DOWN SCRL_UP>, <&inc_dec_kp C_VOL_DN C_VOL_UP>;
+
+
+        bindings = <
+// ┌─────────┬──────┬──────┬──────┬──────┐              ┌──────────┬────────┬─────────┬─────────┬──────┐
+   &kp TAB    &kp N7 &kp N8 &kp N9 &kp LEFT_BRACKET     &kp RIGHT_BRACKET     &kp AMPS &kp STAR  &kp EQUAL    &kp BACKSLASH    // used to be just '
+// │─────────┼──────┼──────┼──────┼──────┤              │──────────┼────────┼─────────┼─────────┼──────┤
+   &kp GRAVE &kp N4 &kp N5 &kp N6 &kp LPAR              &kp RPAR     &kp DLLR &kp PRCNT &kp CARET &kp SINGLE_QUOTE // used to be just "
+// │─────────┼──────┼──────┼──────┼──────┤              │──────────┼────────┼─────────┼─────────┼──────┤
+   &kp N0  &kp N1 &kp N2 &kp N3   &kp LEFT_BRACE           &kp RIGHT_BRACE     &kp EXCL &kp AT    &kp HASH  &kp MINUS    // used to be backslash
+// └─────────┴──────┴──────┼──────┼──────┤              │──────────┼────────┼─────────┴─────────┴──────┘
+                    &kp N0 &trans &none                &trans    &trans   &trans    
+//                  └──────┴──────┴────┘                └──────────┴────────┴─────────┘
+                                        &trans     &trans
+         >;
+    };
+
+    NAV_L {
+        display-name = "NAV";
+// NAVIGATION
+// ┌─────┬─────┬─────┬─────┬─────┐┌─────┬─────┬─────┬─────┬─────┐
+// │ DEL │HOME │  ↑  │ END │SCRD ││PGDWN│ MB1 │ M↑  │ MB2 │     │
+// │─────┼─────┼─────┼─────┼─────┤│─────┼─────┼─────┼─────┼─────┤
+// │BSPC │  ←  │  ↓  │  →  │SCRU ││PGUP │ M←  │ M↓  │ M→  │     │
+// │─────┼─────┼─────┼─────┼─────┤│─────│─────┼─────┼─────┼─────│
+// │     │     │     │     │     ││SCRLR│SCRL │     │     │     │
+// └─────┴─────┼─────┼─────┤─────┤│─────┼─────┼─────┼─────┴─────┘ 
+//             │     │ [x] │     ││     │     │     │
+//             └─────┴─────┴─────┘└─────┴─────┴─────┘
+//                               //
+
+
+        // sensor-bindings = <&inc_dec_kp C_BRIGHTNESS_DEC C_BRIGHTNESS_INC>;
+        sensor-bindings = <&inc_dec_kp C_PREV C_NEXT>, <&inc_dec_kp C_VOL_DN C_VOL_UP>;
+        // sensor-bindings = <&scroll_mouse_move_encoder SCRL_DOWN SCRL_UP>, <&scroll_mouse_move_encoder SCRL_LEFT SCRL_RIGHT>;
+
+
+        bindings = <
+// ┌────────────┬──────────┬────────┬──────────┬─────────────┐     ┌────────────────┬───────────────┬───────────────┬────────────────┬───────────┐
+   &kp DELETE   &kp HOME   &kp UP   &kp END    &msc SCRL_DOWN      &kp PAGE_UP      &mkp MB1        &mmv MOVE_UP    &mkp MB2         &trans 
+// │────────────┼──────────┼────────┼──────────┼─────────────┤     │────────────────┼───────────────┼───────────────┼────────────────┼───────────┤
+   &kp BSPC     &kp LEFT   &kp DOWN &kp RIGHT  &msc SCRL_UP        &kp PAGE_DOWN    &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &trans
+// │────────────┼──────────┼────────┼──────────┼─────────────┤     │────────────────┼───────────────┼───────────────┼────────────────┼───────────┤
+   &trans       &trans     &trans   &trans     &trans              &msc SCRL_RIGHT  &msc SCRL_LEFT  &trans          &trans           &trans
+// └────────────┴──────────┼────────┼──────────┼─────────────┤     │────────────────│───────────────┼───────────────┼────────────────┴───────────┘
+                           &trans   &none     &mo NUM_L              &mo MOUSE_FAST   &mo MOUSE_SLOW           &trans
+//                         └────────┴──────────┴─────────────┘     └────────────────┴───────────────┴───────────────┘
+                &kp K_MUTE &mo RGB_L
+        >;
+    };
+
+
+    MOUSE_FAST {
+        display-name = "FAST";
+        bindings = <
+
+// ┌─────────┬─────────┬─────────┬────────┬──────┐    ┌────────┬────────┬─────────┬─────────┬──────┐
+   &trans    &trans    &trans    &trans   &trans      &trans   &trans   &trans   &trans     &trans
+// │─────────┼─────────┼─────────┼────────┼──────┤    │────────┼────────┼─────────┼─────────┼──────┤
+   &trans    &trans    &trans    &trans   &trans      &trans   &trans   &trans   &trans     &trans
+// │─────────┼─────────┼─────────┼────────┼──────┤    │────────│────────┼────────┼─────────┼───────┤
+   &trans    &trans    &trans    &trans   &trans      &trans   &trans   &trans   &trans    &trans    
+// └─────────┴─────────┼─────────┼────────┼──────┤    │────────│────────┼────────┼─────────┴───────┘
+                       &trans    &trans   &trans      &trans   &trans   &trans   
+//                     └─────────┴────────┴──────┘    └────────┴────────┴────────┘
+                                            &trans      &trans
+        >;
+    };
+
+        MOUSE_SLOW {
+        display-name = "SLOW";
+        bindings = <
+
+// ┌─────────┬─────────┬─────────┬────────┬──────┐    ┌────────┬────────┬─────────┬─────────┬──────┐
+   &trans    &trans    &trans    &trans   &trans      &trans   &trans   &trans   &trans     &trans
+// │─────────┼─────────┼─────────┼────────┼──────┤    │────────┼────────┼─────────┼─────────┼──────┤
+   &trans    &trans    &trans    &trans   &trans      &trans   &trans   &trans   &trans     &trans
+// │─────────┼─────────┼─────────┼────────┼──────┤    │────────│────────┼────────┼─────────┼───────┤
+   &trans    &trans    &trans    &trans   &trans      &trans   &trans   &trans   &trans    &trans    
+// └─────────┴─────────┼─────────┼────────┼──────┤    │────────│────────┼────────┼─────────┴───────┘
+                       &trans    &trans   &trans      &trans   &trans   &trans   
+//                     └─────────┴────────┴──────┘    └────────┴────────┴────────┘
+                                            &trans      &trans
+        >;
+    };
+
+
+    PROG_L {
+        display-name = "PROG";
+// Intellij MAC
+// ┌─────┬─────┬─────┬─────┬─────┐  ┌─────┬─────┬─────┬─────┬─────┐
+// │     │     │     │     │     │  │TEST │STOP │     │     │     │
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │     │     │     │     │     │  │ RUN │ DBG │EVAL │GOTO │GOOUT│
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │     │     │     │     │     │  │FIND │SRCH │CLOSE│TRGET│     │
+// └─────┴─────┴─────┼─────┤─────┤  │─────┼─────┼─────┴─────┴─────┘ 
+//                   │     │     │  │     │ [x] │
+//             └─────┴─────┴─────┘  └─────┴─────┴─────┘
+        sensor-bindings = <&inc_dec_kp LEFT RIGHT>, <&inc_dec_kp LEFT RIGHT>;
+
+        bindings = <
+// ┌───────┬───────┬───────┬───────┬─────┐                    ┌──────────────────────────┬──────────────────────┬────────────────────────────┬────────────────────────────┬─────┐
+    &vim_quit  &vim_write_quit  &trans  &trans  &trans                    &create_test_mac_intellij  &run_stop_mac_intellij &trans                       &trans                       &trans
+// │───────┼───────┼───────┼───────┼─────┤                    │──────────────────────────┼──────────────────────┼────────────────────────────┼────────────────────────────┼─────┤
+    &trans  &vim_write  &trans  &trans  &trans                    &run_mac_intellij          &run_debug_intellij    &evaluate_intellij           &goto_mac_intellij           &goout_mac_intellij
+// │───────┼───────┼───────┼───────┼─────┤                    │──────────────────────────┼──────────────────────┼────────────────────────────┼────────────────────────────┼─────┤
+    &trans  &trans  &trans  &trans  &trans                    &find_in_file_mac_intellij &search_intellij       &close_window_mac_intellij   &select_opened_file_intellij &trans
+// └───────┴───────┼───────┼───────┤─────┤                    │──────────────────────────┼──────────────────────┼────────────────────────────┴────────────────────────────┴─────┘ 
+                   &trans  &trans   &trans                                 &trans                     &trans                 &trans
+//                 └───────┴───────┴─────┘                    └──────────────────────────┴──────────────────────┴────────────────────────────┘
+            &trans &trans
+        >;
+    };
+
+    RGB_L {
+        display-name = "RGB";
+// RGB
+// ┌─────┬─────┬─────┬─────┬─────┐  ┌─────┬─────┬─────┬─────┬─────┐
+// │ONOFF│ ☼+  │ H+  │SPD+ │SAT+ │  │SAT+ │     │     │     │     │
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │ EFF │ ☼-  │ H-  │SPD- │ [x] │  │SAT- │     │     │     │     │
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │     │     │     │     │ [x] │  │     │     │     │     │     │
+// └─────┴─────┴─────┼─────┤─────┤  │─────┼─────┼─────┴─────┴─────┘ 
+//                   │     │     │  │     │     │
+//             └─────┴─────┴─────┘  └─────┴─────┴─────┘
+        sensor-bindings = <&rgb_encoder_brightness>, <&rgb_encoder_hue>;
+        bindings = <
+// ┌────────────────┬────────────────┬────────────────┬────────────────┬─────────────┐                     ┌────────────────┬───────┬───────┬───────┬─────┐
+   &rgb_ug RGB_TOG  &rgb_ug RGB_BRI  &rgb_ug RGB_HUI  &rgb_ug RGB_SPI  &rgb_ug RGB_SAI                              &rgb_ug RGB_SAI  &trans  &trans  &trans  &trans
+// │────────────────┼────────────────┼────────────────┼────────────────┼─────────────┤                     │────────────────┼───────┼───────┼───────┼─────┤
+   &rgb_ug RGB_EFF  &rgb_ug RGB_BRD  &rgb_ug RGB_HUD  &rgb_ug RGB_SPD  &rgb_ug RGB_SAD                               &rgb_ug RGB_SAD  &trans  &trans  &trans  &trans
+// │────────────────┼────────────────┼────────────────┼────────────────┼─────────────┤                     │────────────────┼───────┼───────┼───────┼─────┤
+   &trans           &trans           &trans           &trans           &none                               &trans           &trans  &trans  &trans  &trans
+// └────────────────┴────────────────┴────────────────┼────────────────┤─────────────┤                     │────────────────┼───────┼───────┴───────┴─────┘ 
+                                     &trans           &trans           &trans                              &trans           &trans  &trans  
+//                                   └────────────────┴────────────────┴─────────────┘                     └────────────────┴───────┴───────┘
+            &rgb_ug RGB_TOG &rgb_ug RGB_EFF
+        >;
+    };
+
+        GAME_L {
+            sensor-bindings = <&rgb_encoder_brightness>, <&rgb_encoder_saturation>;
+
+            display-name = "GAME";
+// GAMING
+// ┌─────┬─────┬─────┬─────┬─────┐  ┌─────┬─────┬─────┬─────┬─────┐
+// │ TAB │  W  │  F  │  P  │  B  │  │  J  │  L  │  U  │  Y  │  ;  │
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │LSHF │  R  │  S  │  T  │  G  │  │  M  │  N  │  E  │  I  │  O  │
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │LCTRL│  X  │  C  │  D  │  V  │  │  K  │  H  │  ,  │  .  │  /  │
+// └─────┴─────┴─────┼─────┤─────┤  │─────┼─────┼─────┴─────┴─────┘ 
+//               ESC │ ALT │ SPC │  │     │ RET │
+//             └─────┴─────┴─────┘  └─────┴─────┴─────┘
+        bindings = <
+// ┌──────────┬──────┬────────┬──────────────────────────┬────────┐    ┌──────────┬──────┬─────────┬─────────┬─────┐           
+   &kp TAB    &kp W  &kp F    &kp P                      &kp B         &kp J     &kp L   &kp U     &kp Y     &mfl FN_L SEMI
+// │──────────┼──────┼────────┼──────────────────────────┼────────┤    │─────────┼───────┼─────────┼─────────┼─────┤
+   &kp LSHIFT &kp R  &kp S    &kp T                      &kp G         &kp M     &kp N   &kp E     &kp I     &kp O
+// │──────────┼──────┼────────┼──────────────────────────┼────────┤    │─────────┼───────┼─────────┼─────────┼─────┤
+   &kp LCTRL  &kp X  &kp C    &kp D                      &kp V         &kp K     &kp H   &kp COMMA &kp DOT   &kp SLASH
+// └──────────┴──────┼────────┼──────────────────────────┤────────┤    │─────────┼───────┼─────────┴─────────┴─────┘ 
+                     &lt META_L ESC   &lt GAME_EXT_L H         &kp SPACE     &trans   &lt META_L RET &kp TAB    
+//                   └────────┴──────────────────────────┴────────┘    └─────────┴───────┴─────────┘
+                                                            &lt META_L C_PLAY_PAUSE    &lt META_L C_NEXT 
+                                                         
+        >;
+    };
+
+    GAME_EXT_L {
+        display-name = "GAME2";
+// ┌─────┬─────┬─────┬─────┬─────┐  ┌─────┬─────┬─────┬─────┬─────┐
+// │  Q  │     │  UP │  E  │     │  │     │     │     │     │     │
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │  A  │ LFT │ DWN │ RGT │     │  │     │     │     │     │     │
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │  Z  │     │     │  V  │  K  │  │     │     │     │     │     │
+// └─────┴─────┴─────┼─────┤─────┤  │─────┼─────┼─────┴─────┴─────┘ 
+//                   │ [x] │ TAB │  │     │     │
+//             └─────┴─────┴─────┘  └─────┴─────┴─────┘
+        bindings = <
+// ┌────────┬─────────┬─────────┬─────────┬─────┐                 ┌───────┬───────┬──────┬──────┬───┐
+   &kp Q    &trans    &kp UP    &kp E     &trans                  &trans  &trans  &trans &trans &trans
+// │────────┼─────────┼─────────┼─────────┼─────┤                 │───────┼───────┼──────┼──────┼───┤
+   &kp A    &kp LEFT  &kp DOWN  &kp RIGHT &kp N0                  &trans  &trans  &trans &trans &trans
+// │────────┼─────────┼─────────┼─────────┼─────┤─────┤   │───────┼───────┼──────┼──────┼───┤
+   &kp Z    &kp N1    &kp N2    &kp N3     &kp N4                   &trans  &trans  &trans &trans &trans
+// └────────┴─────────┴─────────┼─────────┤─────┤─────┤   │───────┼───────┼──────┴──────┴───┘ 
+                      &trans    &none     &kp TAB            &trans  &trans  &trans 
+//                    └─────────┴─────────┴─────┘                 └───────┴───────┴──────┘
+            &trans &trans
+        >;
+    };
+
+    FN_L {
+        display-name = "FN";
+
+// Function Keys
+// ┌─────┬─────┬─────┬─────┬─────┐  ┌─────┬─────┬─────┬─────┬─────┐
+// │     │ F7  │ F8  │ F9  │ [x] │  │     │PRSCR│SLCK │ PB  │ [x] │
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │     │ F4  │ F5  │ F6  │     │  │     │ INS │HOME │ PUP │     │
+// │─────┼─────┼─────┼─────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │     │ F1  │ F2  │ F3  │     │  │     │ DEL │ END │ PDW │     │
+// └─────┴─────┴─────┼─────┤─────┤  │─────┼─────┼─────┴─────┴─────┘ 
+//                   │     │     │  │     │     │
+//             └─────┴─────┴─────┘  └─────┴─────┴─────┘
+        bindings = <
+// ┌──────┬──────┬──────┬──────┬─────┐   ┌──────┬─────────┬─────────┬───────────────┬─────┐
+   &trans &kp F7 &kp F8 &kp F9 &kp F10   &trans &kp PSCRN &kp SLCK  &kp PAUSE_BREAK &trans
+// │──────┼──────┼──────┼──────┼─────┤   │──────┼─────────┼─────────┼───────────────┼─────┤
+   &trans &kp F4 &kp F5 &kp F6 &kp F11   &trans &kp INS   &kp HOME  &kp PAGE_UP     &trans
+// │──────┼──────┼──────┼──────┼─────┤   │──────┼─────────┼─────────┼───────────────┼─────┤
+   &trans &kp F1 &kp F2 &kp F3 &kp F12   &trans &kp DEL   &kp END   &kp PAGE_DOWN   &trans
+// └──────┴──────┴──────┼──────┤─────┤   │──────┼─────────┼─────────┴───────────────┴─────┘ 
+                 &trans &trans &trans    &trans &trans    &trans    
+//               └──────┴──────┴─────┘   └──────┴─────────┴─────────┘
+           &trans &trans
+            >;
+    };
+
+        META_L {
+            display-name = "META";
+            sensor-bindings = <&inc_dec_kp MOVE_Y(-1000) MOVE_Y(1000)>, <&inc_dec_kp MOVE_Y(-1000) MOVE_Y(1000)>;
+
+// Meta
+// ┌─────┬──────┬─────┬─────────┬─────┐  ┌─────┬─────┬─────┬─────┬─────┐
+// │ P0  │ P1   │ P2  │   P3    │ P4  │  │  P5 │  P6 │     │     │STUDI│
+// │─────┼──────┼─────┼─────────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │CLEAR│OUTTOG│     │  RESET  │     │  │     │     │     │     │     │
+// │─────┼──────┼─────┼─────────┼─────┤  │─────┼─────┼─────┼─────┼─────┤
+// │BASE │ MAC  │ GAME│         │     │  │     │     │     │     │     │
+// └─────┴──────┼─────┼─────────┤─────┤  │─────┼─────┼─────┴─────┴─────┘ 
+//              │     │         │     │  │     │     │     │
+//              └─────┴─────────┴─────┘  └─────┴─────┴─────┘
+//                                  BOOTLOADER BOOTLOADER
+            bindings = <
+// ┌────────────┬──────────────┬─────────────┬────────────────┬───────────┐   ┌──────┬──────┬──────┬──────┬───┐
+   &bt BT_SEL 0 &bt BT_SEL 1   &bt BT_SEL 2  &bt BT_SEL 3     &bt BT_SEL 4    &bt BT_SEL 5  &bt BT_SEL 6 &trans &trans &studio_unlock
+// │────────────┼──────────────┼─────────────┼────────────────┼───────────┤   │──────┼──────┼──────┼──────┼───┤
+   &bt BT_CLR   &out OUT_TOG   &trans        &sys_reset       &bootloader     &bootloader &sys_reset &trans &trans &trans
+// │────────────┼──────────────┼─────────────┼────────────────┼───────────┤   │──────┼──────┼──────┼──────┼───┤
+   &base_mode   &mac_mode      &to GAME_L    &to QWERTY_L           &none           &trans &trans &trans &trans &trans
+// └────────────┴──────────────┴─────────────┼────────────────┤───────────┤   │──────┼──────┼──────┴──────┴───┘ 
+                         &trans        &bt BT_CLR       &out OUT_TOG     &trans &trans &trans
+//                             └─────────────┴────────────────┴───────────┘   └──────┴──────┴──────┘
+                                                                &bootloader &bootloader
+            >;
+        };
+
+//       sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+// // ┌─────────┬─────────┬─────────┬────────┬──────┐    ┌────────┬────────┬─────────┬─────────┬──────┐
+//    &trans    &trans    &trans    &trans   &trans      &trans   &trans   &trans   &trans     &trans
+// // │─────────┼─────────┼─────────┼────────┼──────┤    │────────┼────────┼─────────┼─────────┼──────┤
+//    &trans    &trans    &trans    &trans   &trans      &trans   &trans   &trans   &trans     &trans
+// // │─────────┼─────────┼─────────┼────────┼──────┤    │────────│────────┼────────┼─────────┼───────┤
+//    &trans    &trans    &trans    &trans   &trans      &trans   &trans   &trans   &trans    &trans    
+// // └─────────┴─────────┼─────────┼────────┼──────┤    │────────│────────┼────────┼─────────┴───────┘
+//                        &trans    &trans   &trans      &trans   &trans   &trans   
+// //                     └─────────┴────────┴──────┘    └────────┴────────┴────────┘
+//                                             &trans      &trans
+    };
+
+};

@@ -1,0 +1,110 @@
+/ {
+    behaviors {
+        /omit-if-no-ref/
+
+        base_mode: base_mode {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_SEL 1>, <&to BASE_L>;
+        };
+
+        mac_mode: mac_mode {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&bt BT_SEL 4>, <&to MAC_L>;
+        };
+
+        media_controlls_left: tap_dance_0 {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&lt META_L C_PLAY_PAUSE>, <&kp C_NEXT>, <&kp C_PREV>;
+        };
+
+        sts: sticky_shift_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <50>;
+            bindings = <&sl>, <&sk>;
+            display-name = "Sticky Layer-Tap";
+        };
+
+        bhm: balanced_homerow_mods {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            // This value defines how long a key must be pressed to trigger the "hold" behavior, alongside other factors described in interrupt flavors. The default is 200ms.
+            tapping-term-ms = <150>; // 150 is good starting point    // <---[[moderate duration]]
+            quick-tap-ms = <150>;
+            flavor = "balanced";
+            bindings = <&kp>, <&kp>;
+
+            hold-trigger-key-positions = <11 12 13 16 17 18>;
+            require-prior-idle-ms = <200>; // 200 is good starting point
+        };
+
+        slt: sticky_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&sl>, <&kp>;
+
+            display-name = "Sticky Layer-Tap";
+        };
+
+        slts: slt_space {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&sl>, <&kp>;
+
+            display-name = "Sticky Layer-Tap";
+        };
+
+        hsl: holdshift_left {
+            compatible = "zmk,behavior-hold-tap";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <150>;
+            flavor = "tap-preferred";
+            hold-trigger-key-positions = <10>;
+            require-prior-idle-ms = <50>;
+            quick-tap-ms = <150>;
+        };
+
+        hsr: holdshift_right {
+            compatible = "zmk,behavior-hold-tap";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <150>;
+            flavor = "tap-preferred";
+            hold-trigger-key-positions = <19>;
+            require-prior-idle-ms = <50>;
+            quick-tap-ms = <150>;
+        };
+
+        mfl: slt_fn_layer {
+            compatible = "zmk,behavior-hold-tap";
+            bindings = <&mo>, <&kp>;
+
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <400>;
+            require-prior-idle-ms = <100>;
+            hold-trigger-key-positions = <9>;
+        };
+
+        sticky_bhm: sticky_bhm {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <150>;
+            flavor = "balanced";
+            bindings = <&sk>, <&kp>;
+        };
+    };
+};
