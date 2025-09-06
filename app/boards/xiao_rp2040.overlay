@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
+
 &xiao_serial { status = "disabled"; };
 
 &code_partition {
