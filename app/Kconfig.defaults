@@ -3,6 +3,7 @@
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
     default 2048 if SOC_RP2040
+    default 3072 if ZMK_DISPLAY
     default 2048 if ZMK_BLE
 
 # HID
