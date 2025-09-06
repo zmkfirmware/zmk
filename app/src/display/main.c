@@ -145,9 +145,14 @@ K_WORK_DEFINE(init_work, initialize_display);
 
 int zmk_display_init() {
 #if IS_ENABLED(CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED)
+    struct k_work_queue_config config = {
+#if IS_ENABLED(CONFIG_THREAD_NAME)
+        .name = "display queue",
+#endif
+    };
     k_work_queue_start(&display_work_q, display_work_stack_area,
                        K_THREAD_STACK_SIZEOF(display_work_stack_area),
-                       CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY, NULL);
+                       CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY, &config);
 #endif
 
 #if IS_ENABLED(CONFIG_ARCH_POSIX)
