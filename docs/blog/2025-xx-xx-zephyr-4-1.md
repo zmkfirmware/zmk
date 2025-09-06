@@ -259,7 +259,7 @@ A few other changes, unrelated to the HWMv2 move, may impact out-of-tree boards/
 
 ### Bootloader Setup
 
-With the version bump, the previous method to enable `&bootloader` has been disabled. Instead, ZMK is introducing _boot retention_, which as a side effect also enables `&bootloader` for SoCs which previously didn't work with said behavior, such as the STM32F072. To set up boot retention for your board, please read through [the dedicated page](/docs/development/hardware-integration/bootloader). No changes are needed for shields.
+With the version bump, the previous method to enable `&bootloader` has been disabled. Instead, ZMK is introducing _boot retention_, which as a side effect also enables `&bootloader` for SoCs which previously didn't work with said behavior, such as the STM32F072. To set up boot retention for your board, please read through [the dedicated page](/docs/development/hardware-integration/bootloader).
 
 ### nRF52840 NFC Pins as GPIO
 
