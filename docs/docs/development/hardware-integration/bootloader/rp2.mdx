@@ -1,0 +1,70 @@
+---
+title: RP2040/RP2350 Bootloader
+sidebar_label: RP2040/RP2350
+---
+
+import BaseConfig from "./_base-config.md";
+
+The RP2040/RP2350 Bootloader is a [jump-to type bootloader](./index.mdx#jump-to-bootloaders), with some extra setup used to integrate with it.
+
+By default, when integrating this bootloader, a ["double tap reset to enter the bootloader"](../../../config/system.md#double-tap-to-bootloader) feature will be enabled, to help with designs that do not easily expose a BOOTSEL pin.
+
+<BaseConfig />
+
+## Simple Include
+
+A simple shared file can be included in your board's devicetree to set up the necessary retained memory and retention nodes. Near the top of your file, add an include for `arm/raspberrypi/rp2040-boot-mode-retention.dtsi`, e.g.:
+
+```dts
+/dts-v1/;
+
+#include <raspberrypi/rpi_pico/rp2040.dtsi>
+#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
+```
+
+## Manual Changes
+
+The include mentioned above can be performed manually, if you so choose.
+
+First, we'll shrink the SRAM node, from the front, to create a 4-byte area that won't have anything placed in it by the normal Zephyr linking process:
+
+```dts
+&sram0 {
+    reg = <0x20000004 ((DT_SIZE_K(264)) - 4)>;
+};
+```
+
+Next, we'll define a _new_ 4-byte RAM region for that reserved space, and within that region, set up a Zephyr retained RAM node. Within that node, we'll create the actual retention _value_ that is used:
+
+```dts
+/ {
+    sram@20000000 {
+        compatible = "zephyr,memory-region", "mmio-sram";
+        reg = <0x20000000 0x4>;
+        zephyr,memory-region = "RetainedMem";
+        status = "okay";
+
+        retainedmem {
+            compatible = "zephyr,retained-ram";
+            status = "okay";
+            #address-cells = <1>;
+            #size-cells = <1>;
+            boot_mode: retention@0 {
+                compatible = "zephyr,retention";
+                status = "okay";
+                reg = <0x0 0x1>;
+            };
+        };
+    };
+};
+```
+
+Finally, we'll assign that new retention value node to the `zephyr,boot-mode` chosen property:
+
+```dts
+/ {
+    chosen {
+        zephyr,boot-mode = &boot_mode;
+    };
+};
+```

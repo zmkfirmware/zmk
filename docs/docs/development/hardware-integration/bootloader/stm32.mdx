@@ -1,0 +1,71 @@
+---
+title: STM32 ROM Bootloader
+sidebar_label: STM32 ROM
+toc_max_heading_level: 3
+---
+
+import BaseConfig from "./_base-config.md";
+
+The [STM32 ROM Bootloader](https://www.st.com/resource/en/application_note/an2606-stm32-microcontroller-system-memory-boot-mode-stmicroelectronics.pdf) is a [jump-to type bootloader](./index.mdx#jump-to-bootloaders), with some extra setup used to integrate with it.
+
+By default, when integrating this bootloader, a ["double tap reset to enter the bootloader"](../../../config/system.md#double-tap-to-bootloader) feature will be enabled, to help with designs that do not easily expose a BOOT pin.
+
+<BaseConfig />
+
+## Adjust Existing SRAM Node
+
+First, we'll adjust the existing SRAM node to shrink it by one byte so Zephyr will not interfere with the retained mem:
+
+```dts
+/* Reduce SRAM0 usage by 1 byte to account for non-init area */
+&sram0 {
+    reg = <0x20000000 0x3FFF>;
+};
+```
+
+Note:
+
+- The `0x20000000` address is the address of the RAM for the target. This is nearly always `0x20000000`
+- The exact value of `0x3FFF` will depend on the total RAM on the target. The value should be the total RAM, minus 1-bytes, in hex
+
+## New Memory Region & Nested Retained Mem
+
+```dts
+/ {
+    sram@20003FFF {
+        compatible = "zephyr,memory-region", "mmio-sram";
+        reg = <0x20003FFF 0x1>;
+        zephyr,memory-region = "RetainedMem";
+        status = "okay";
+
+        retainedmem {
+            compatible = "zephyr,retained-ram";
+            status = "okay";
+            #address-cells = <1>;
+            #size-cells = <1>;
+
+            retention0: retention@0 {
+                compatible = "zephyr,retention";
+                status = "okay";
+                reg = <0x0 0x1>;
+            };
+        };
+    };
+};
+```
+
+Note:
+
+- The node `sram@20003FFF` and the corresponding `reg` property values are obtained by adding the base RAM address (.e.g. `0x20000000`) to the shrunk RAM size (e.g. `0x3FFF`) to get the new start address for the area of reserved RAM.
+
+## Chosen Boot Mode Node
+
+Finally, we'll set a chosen property to select the created retention node:
+
+```dts
+/ {
+    chosen {
+        zephyr,boot-mode = &retention0;
+    };
+};
+```
