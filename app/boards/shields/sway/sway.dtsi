@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 #include <dt-bindings/zmk/matrix_transform.h> // Put this with the other includes at the top of your dtsi
 // #include "modules/drv2605l.dtsi"
 #include "modules/niceview.dtsi"

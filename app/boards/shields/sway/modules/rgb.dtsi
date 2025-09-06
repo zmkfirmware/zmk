@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
 &pinctrl {
     spi3_default: spi3_default {
         group1 {
