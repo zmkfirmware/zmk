@@ -3137,7 +3137,9 @@ export default [
       macos: true,
       ios: null,
     },
-    footnotes: {},
+    footnotes: {
+      macos: ["macosEditing"],
+    },
   },
   {
     names: ["K_COPY"],
@@ -3158,7 +3160,9 @@ export default [
       macos: true,
       ios: null,
     },
-    footnotes: {},
+    footnotes: {
+      macos: ["macosEditing"],
+    },
   },
   {
     names: ["K_PASTE"],
@@ -3179,7 +3183,9 @@ export default [
       macos: true,
       ios: null,
     },
-    footnotes: {},
+    footnotes: {
+      macos: ["macosEditing"],
+    },
   },
   {
     names: ["K_FIND"],
