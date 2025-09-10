@@ -13,6 +13,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
+            display-name = "Default Layer";
 // ---------------------------------------------------------------------------------------------------------------------------------
 // |  ESC  |  Q  |  W  |  E   |  R   |  T   |                                          |  Y   |  U    |  I    |  O   |   P   |   \  |
 // |  TAB  |  A  |  S  |  D   |  F   |  G   |                                          |  H   |  J    |  K    |  L   |   ;   |   '  |
@@ -28,6 +29,7 @@
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
         };
         function_layer {
+            display-name = "Function Layer";
 // ---------------------------------------------------------------------------------------------------------------------------------
 // |       |      |BT_CLR|BTSEL0|BTSEL1|BTSEL2|                                         |      |      |      |      |      |      |
 // |       |      |      |BTSEL3|BTSEL4|      |                                         |      |      |      |      |      |      |
