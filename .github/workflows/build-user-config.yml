@@ -18,6 +18,8 @@ on:
         default: "bin"
         required: false
         type: string
+      artifact_name:
+        description: "Artifact output file name"
       archive_name:
         description: "Archive output file name"
         default: "firmware"
