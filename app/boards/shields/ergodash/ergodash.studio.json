@@ -1,0 +1,12 @@
+{
+  "file_format": "1",
+  "id": "ergodash",
+  "name": "Ergodash",
+  "description": "A split ergonomic keyboard with support for ZMK Studio.",
+  "url": "https://github.com/omkbd/ErgoDash",
+  "image": "https://raw.githubusercontent.com/omkbd/ErgoDash/master/images/ergodash.jpg",
+  "features": ["keys", "studio"],
+  "studio": {
+    "physicalLayout": "ergodash_physical_layout"
+  }
+}
