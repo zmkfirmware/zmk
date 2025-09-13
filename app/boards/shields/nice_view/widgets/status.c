@@ -86,15 +86,15 @@ static void draw_top(lv_obj_t *widget, const struct status_state *state) {
         break;
     }
 
-    lv_canvas_draw_text(canvas, 0, 0, CANVAS_SIZE, &label_dsc, output_text);
+    canvas_draw_text(canvas, 0, 0, CANVAS_SIZE, &label_dsc, output_text);
 
     // Draw WPM
-    lv_canvas_draw_rect(canvas, 0, 21, 68, 42, &rect_white_dsc);
-    lv_canvas_draw_rect(canvas, 1, 22, 66, 40, &rect_black_dsc);
+    canvas_draw_rect(canvas, 0, 21, 68, 42, &rect_white_dsc);
+    canvas_draw_rect(canvas, 1, 22, 66, 40, &rect_black_dsc);
 
     char wpm_text[6] = {};
     snprintf(wpm_text, sizeof(wpm_text), "%d", state->wpm[9]);
-    lv_canvas_draw_text(canvas, 42, 52, 24, &label_dsc_wpm, wpm_text);
+    canvas_draw_text(canvas, 42, 52, 24, &label_dsc_wpm, wpm_text);
 
     int max = 0;
     int min = 256;
@@ -118,7 +118,7 @@ static void draw_top(lv_obj_t *widget, const struct status_state *state) {
         points[i].x = 2 + i * 7;
         points[i].y = 60 - (state->wpm[i] - min) * 36 / range;
     }
-    lv_canvas_draw_line(canvas, points, 10, &line_dsc);
+    canvas_draw_line(canvas, points, 10, &line_dsc);
 
     // Rotate canvas
     rotate_canvas(canvas);
@@ -152,26 +152,26 @@ static void draw_middle(lv_obj_t *widget, const struct status_state *state) {
         bool selected = i == state->active_profile_index;
 
         if (state->profiles_connected[i]) {
-            lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13, 0, 360,
-                               &arc_dsc);
+            canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13, 0, 360,
+                            &arc_dsc);
         } else if (state->profiles_bonded[i]) {
             const int segments = 8;
             const int gap = 20;
             for (int j = 0; j < segments; ++j)
-                lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13,
-                                   360. / segments * j + gap / 2.0,
-                                   360. / segments * (j + 1) - gap / 2.0, &arc_dsc);
+                canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13,
+                                360. / segments * j + gap / 2.0,
+                                360. / segments * (j + 1) - gap / 2.0, &arc_dsc);
         }
 
         if (selected) {
-            lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 9, 0, 359,
-                               &arc_dsc_filled);
+            canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 9, 0, 359,
+                            &arc_dsc_filled);
         }
 
         char label[2];
         snprintf(label, sizeof(label), "%d", i + 1);
-        lv_canvas_draw_text(canvas, circle_offsets[i][0] - 8, circle_offsets[i][1] - 10, 16,
-                            (selected ? &label_dsc_black : &label_dsc), label);
+        canvas_draw_text(canvas, circle_offsets[i][0] - 8, circle_offsets[i][1] - 10, 16,
+                         (selected ? &label_dsc_black : &label_dsc), label);
     }
 
     // Rotate canvas
@@ -195,9 +195,9 @@ static void draw_bottom(lv_obj_t *widget, const struct status_state *state) {
 
         sprintf(text, "LAYER %i", state->layer_index);
 
-        lv_canvas_draw_text(canvas, 0, 5, 68, &label_dsc, text);
+        canvas_draw_text(canvas, 0, 5, 68, &label_dsc, text);
     } else {
-        lv_canvas_draw_text(canvas, 0, 5, 68, &label_dsc, state->layer_label);
+        canvas_draw_text(canvas, 0, 5, 68, &label_dsc, state->layer_label);
     }
 
     // Rotate canvas
