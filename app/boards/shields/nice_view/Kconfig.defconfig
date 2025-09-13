@@ -20,13 +20,12 @@ choice ZMK_DISPLAY_WORK_QUEUE
     default ZMK_DISPLAY_WORK_QUEUE_DEDICATED
 endchoice
 
-# TODO: Restore once we fix up custom status code
-# choice ZMK_DISPLAY_STATUS_SCREEN
-#     default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
-# endchoice
+choice ZMK_DISPLAY_STATUS_SCREEN
+    default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+endchoice
 
 config LV_Z_MEM_POOL_SIZE
-    default 4096 if ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+    default 8192 if ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
 
 config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
     imply NICE_VIEW_WIDGET_STATUS
@@ -34,7 +33,7 @@ config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
 config NICE_VIEW_WIDGET_STATUS
     bool "Custom nice!view status widget"
     select LV_FONT_MONTSERRAT_16
-    select LV_USE_IMG
+    select LV_USE_IMAGE
     select LV_USE_CANVAS
 
 config NICE_VIEW_WIDGET_INVERTED
