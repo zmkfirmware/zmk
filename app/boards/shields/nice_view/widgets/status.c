@@ -46,7 +46,7 @@ struct wpm_status_state {
     uint8_t wpm;
 };
 
-static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
+static void draw_top(lv_obj_t *widget, const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 0);
 
     lv_draw_label_dsc_t label_dsc;
@@ -61,7 +61,7 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     init_line_dsc(&line_dsc, LVGL_FOREGROUND, 1);
 
     // Fill background
-    lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
+    lv_canvas_fill_bg(canvas, LVGL_BACKGROUND, LV_OPA_COVER);
 
     // Draw battery
     draw_battery(canvas, state);
@@ -121,10 +121,10 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     lv_canvas_draw_line(canvas, points, 10, &line_dsc);
 
     // Rotate canvas
-    rotate_canvas(canvas, cbuf);
+    rotate_canvas(canvas);
 }
 
-static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
+static void draw_middle(lv_obj_t *widget, const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 1);
 
     lv_draw_rect_dsc_t rect_black_dsc;
@@ -141,7 +141,7 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     init_label_dsc(&label_dsc_black, LVGL_BACKGROUND, &lv_font_montserrat_18, LV_TEXT_ALIGN_CENTER);
 
     // Fill background
-    lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
+    lv_canvas_fill_bg(canvas, LVGL_BACKGROUND, LV_OPA_COVER);
 
     // Draw circles
     int circle_offsets[NICEVIEW_PROFILE_COUNT][2] = {
@@ -175,10 +175,10 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     }
 
     // Rotate canvas
-    rotate_canvas(canvas, cbuf);
+    rotate_canvas(canvas);
 }
 
-static void draw_bottom(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
+static void draw_bottom(lv_obj_t *widget, const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 2);
 
     lv_draw_rect_dsc_t rect_black_dsc;
@@ -187,7 +187,7 @@ static void draw_bottom(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     init_label_dsc(&label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_14, LV_TEXT_ALIGN_CENTER);
 
     // Fill background
-    lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
+    lv_canvas_fill_bg(canvas, LVGL_BACKGROUND, LV_OPA_COVER);
 
     // Draw layer
     if (state->layer_label == NULL || strlen(state->layer_label) == 0) {
@@ -201,7 +201,7 @@ static void draw_bottom(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     }
 
     // Rotate canvas
-    rotate_canvas(canvas, cbuf);
+    rotate_canvas(canvas);
 }
 
 static void set_battery_status(struct zmk_widget_status *widget,
@@ -212,7 +212,7 @@ static void set_battery_status(struct zmk_widget_status *widget,
 
     widget->state.battery = state.level;
 
-    draw_top(widget->obj, widget->cbuf, &widget->state);
+    draw_top(widget->obj, &widget->state);
 }
 
 static void battery_status_update_cb(struct battery_status_state state) {
@@ -250,8 +250,8 @@ static void set_output_status(struct zmk_widget_status *widget,
         widget->state.profiles_bonded[i] = state->profiles_bonded[i];
     }
 
-    draw_top(widget->obj, widget->cbuf, &widget->state);
-    draw_middle(widget->obj, widget->cbuf2, &widget->state);
+    draw_top(widget->obj, &widget->state);
+    draw_middle(widget->obj, &widget->state);
 }
 
 static void output_status_update_cb(struct output_status_state state) {
@@ -288,7 +288,7 @@ static void set_layer_status(struct zmk_widget_status *widget, struct layer_stat
     widget->state.layer_index = state.index;
     widget->state.layer_label = state.label;
 
-    draw_bottom(widget->obj, widget->cbuf3, &widget->state);
+    draw_bottom(widget->obj, &widget->state);
 }
 
 static void layer_status_update_cb(struct layer_status_state state) {
@@ -313,7 +313,7 @@ static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_s
     }
     widget->state.wpm[9] = state.wpm;
 
-    draw_top(widget->obj, widget->cbuf, &widget->state);
+    draw_top(widget->obj, &widget->state);
 }
 
 static void wpm_status_update_cb(struct wpm_status_state state) {
@@ -334,13 +334,13 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     lv_obj_set_size(widget->obj, 160, 68);
     lv_obj_t *top = lv_canvas_create(widget->obj);
     lv_obj_align(top, LV_ALIGN_TOP_RIGHT, 0, 0);
-    lv_canvas_set_buffer(top, widget->cbuf, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
+    lv_canvas_set_buffer(top, widget->cbuf, CANVAS_SIZE, CANVAS_SIZE, CANVAS_COLOR_FORMAT);
     lv_obj_t *middle = lv_canvas_create(widget->obj);
     lv_obj_align(middle, LV_ALIGN_TOP_LEFT, 24, 0);
-    lv_canvas_set_buffer(middle, widget->cbuf2, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
+    lv_canvas_set_buffer(middle, widget->cbuf2, CANVAS_SIZE, CANVAS_SIZE, CANVAS_COLOR_FORMAT);
     lv_obj_t *bottom = lv_canvas_create(widget->obj);
     lv_obj_align(bottom, LV_ALIGN_TOP_LEFT, -44, 0);
-    lv_canvas_set_buffer(bottom, widget->cbuf3, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
+    lv_canvas_set_buffer(bottom, widget->cbuf3, CANVAS_SIZE, CANVAS_SIZE, CANVAS_COLOR_FORMAT);
 
     sys_slist_append(&widgets, &widget->node);
     widget_battery_status_init();
