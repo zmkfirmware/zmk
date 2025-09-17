@@ -530,9 +530,19 @@ If testing the experimental [wired split](../../features/split-keyboards.md) sup
 };
 ```
 
-See the [wired split](../../config/split.md#wired-split) configuration for more details.
+Your shield should also ensure that the UART device used in `zmk,wired-split` is enabled, as we disable the predefined UART devices by default.
 
-For wireless split keyboards, this step should be skipped, especially since the UART pins on your controller might already be in use for other functionality.
+```dts
+&pro_micro_serial {
+    status = "okay";
+};
+```
+
+Note that enabling the UART device will prevent its pins from being used for any other purpose. For split shields to be used by both BLE-capable and BLE-incapable boards, you should setup the wired split. If a BLE-capable board is selected, the split interconnect will default to BLE, otherwise it will fall back to the wired split transport.
+If you have an optional hardware add-on that makes use of the UART pins when used wirelessly, define said add-on in a separate shield and have that shield disable the UART device.
+The in-tree `nice_view_adapter` is an example of such a shield, disabling the UART device so that one of the pins can be used for SPI instead.
+
+See the [wired split](../../config/split.md#wired-split) configuration for more details.
 
 </TabItem>
 </SplitTabs>
