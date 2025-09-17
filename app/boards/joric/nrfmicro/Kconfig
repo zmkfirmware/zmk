@@ -1,0 +1,4 @@
+config BOARD_NRFMICRO_CHARGER
+    bool "Enable battery charger"
+    default y
+    depends on (BOARD_NRFMICRO && BOARD_REVISION = "1.3.0")

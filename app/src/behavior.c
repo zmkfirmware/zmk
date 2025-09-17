@@ -41,13 +41,13 @@ const struct device *z_impl_behavior_get_binding(const char *name) {
     }
 
     STRUCT_SECTION_FOREACH(zmk_behavior_ref, item) {
-        if (z_device_is_ready(item->device) && item->device->name == name) {
+        if (device_is_ready(item->device) && item->device->name == name) {
             return item->device;
         }
     }
 
     STRUCT_SECTION_FOREACH(zmk_behavior_ref, item) {
-        if (z_device_is_ready(item->device) && strcmp(item->device->name, name) == 0) {
+        if (device_is_ready(item->device) && strcmp(item->device->name, name) == 0) {
             return item->device;
         }
     }
@@ -267,7 +267,7 @@ zmk_behavior_local_id_t zmk_behavior_get_local_id(const char *name) {
     }
 
     STRUCT_SECTION_FOREACH(zmk_behavior_local_id_map, item) {
-        if (z_device_is_ready(item->device) && strcmp(item->device->name, name) == 0) {
+        if (device_is_ready(item->device) && strcmp(item->device->name, name) == 0) {
             return item->local_id;
         }
     }
@@ -277,7 +277,7 @@ zmk_behavior_local_id_t zmk_behavior_get_local_id(const char *name) {
 
 const char *zmk_behavior_find_behavior_name_from_local_id(zmk_behavior_local_id_t local_id) {
     STRUCT_SECTION_FOREACH(zmk_behavior_local_id_map, item) {
-        if (z_device_is_ready(item->device) && item->local_id == local_id) {
+        if (device_is_ready(item->device) && item->local_id == local_id) {
             return item->device->name;
         }
     }
