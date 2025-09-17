@@ -6,9 +6,8 @@
 
 #pragma once
 
-#include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/sys/util.h>
+#include <zephyr/drivers/sensor.h>
 
 struct ec11_config {
     const struct gpio_dt_spec a;
@@ -16,37 +15,29 @@ struct ec11_config {
 
     const uint16_t steps;
     const uint8_t resolution;
+    int32_t debounce_ms;
+    int32_t debounce_scan_period_ms;
 };
 
 struct ec11_data {
-    uint8_t ab_state;
     int8_t pulses;
     int8_t ticks;
     int8_t delta;
 
-#ifdef CONFIG_EC11_TRIGGER
     struct gpio_callback a_gpio_cb;
     struct gpio_callback b_gpio_cb;
     const struct device *dev;
 
+#ifdef CONFIG_EC11_TRIGGER
     sensor_trigger_handler_t handler;
     const struct sensor_trigger *trigger;
-
-#if defined(CONFIG_EC11_TRIGGER_OWN_THREAD)
-    K_THREAD_STACK_MEMBER(thread_stack, CONFIG_EC11_THREAD_STACK_SIZE);
-    struct k_sem gpio_sem;
-    struct k_thread thread;
-#elif defined(CONFIG_EC11_TRIGGER_GLOBAL_THREAD)
-    struct k_work work;
-#endif
-
 #endif /* CONFIG_EC11_TRIGGER */
+
+    bool running;       // timer running?
+    uint8_t prev_a;     // previous state (debounced)
+    uint8_t prev_b;
+    uint8_t samples;    // the window size
+    uint32_t hist_a;    // the moving window
+    uint32_t hist_b;
+    struct k_timer debouncer;
 };
-
-#ifdef CONFIG_EC11_TRIGGER
-
-int ec11_trigger_set(const struct device *dev, const struct sensor_trigger *trig,
-                     sensor_trigger_handler_t handler);
-
-int ec11_init_interrupt(const struct device *dev);
-#endif
