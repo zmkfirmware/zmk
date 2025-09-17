@@ -31,7 +31,7 @@ config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
     int "Number of peripherals that will connect to the central."
 
 menuconfig ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
-    bool "Fetch Peripheral Battery Level Info"
+    bool "Deprecated: Fetch Peripheral Battery Level Info"
     help
       Adds internal support for fetching the battery levels from peripherals
       and generating events in the ZMK eventing system.
@@ -39,11 +39,11 @@ menuconfig ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
 if ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
 
 config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_QUEUE_SIZE
-    int "Max number of battery level events to queue when received from peripherals"
+    int "Deprecated and unused: Max number of battery level events to queue when received from peripherals"
     default ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
 
 config ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY
-    bool "Proxy Peripheral Battery Level Info"
+    bool "Deprecated: Proxy Peripheral Battery Level Info"
     help
       Adds support for reporting the battery levels of connected split
       peripherals through an additional Battery Level service.
