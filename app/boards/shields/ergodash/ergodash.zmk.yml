@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2020 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+#
+
 file_format: "1"
 id: ergodash
 name: Ergodash
@@ -6,6 +12,7 @@ url: https://github.com/omkbd/ErgoDash
 requires: [pro_micro]
 features:
   - keys
+  - studio
 siblings:
   - ergodash_left
   - ergodash_right

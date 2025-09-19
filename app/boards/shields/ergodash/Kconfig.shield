@@ -3,6 +3,8 @@
 
 config SHIELD_ERGODASH_LEFT
     def_bool $(shields_list_contains,ergodash_left)
+    select ZMK_STUDIO
+    select ZMK_STUDIO_TRANSPORT_BLE
 
 config SHIELD_ERGODASH_RIGHT
     def_bool $(shields_list_contains,ergodash_right)
