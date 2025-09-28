@@ -1,0 +1,16 @@
+#include <dt-bindings/zmk/matrix_transform.h>
+
+#include "splitkb_aurora_sofle.dtsi"
+
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+    };
+
+    mock_kscan: mock_kscan_0 {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+};

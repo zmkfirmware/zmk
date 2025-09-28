@@ -1,8 +1,16 @@
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+# Central parts
+config SHIELD_SPLITKB_AURORA_SOFLE_DONGLE
+    def_bool $(shields_list_contains,splitkb_aurora_sofle_dongle)
+
 config SHIELD_SPLITKB_AURORA_SOFLE_LEFT
     def_bool $(shields_list_contains,splitkb_aurora_sofle_left)
+
+# Peripheral parts
+config SHIELD_SPLITKB_AURORA_SOFLE_PERIPHERAL_LEFT
+    def_bool $(shields_list_contains,splitkb_aurora_sofle_peripheral_left)
 
 config SHIELD_SPLITKB_AURORA_SOFLE_RIGHT
     def_bool $(shields_list_contains,splitkb_aurora_sofle_right)

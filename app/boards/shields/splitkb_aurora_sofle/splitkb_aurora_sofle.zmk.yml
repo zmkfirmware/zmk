@@ -12,5 +12,7 @@ features:
   - underglow
   - studio
 siblings:
+  - splitkb_aurora_sofle_dongle
+  - splitkb_aurora_sofle_peripheral_left
   - splitkb_aurora_sofle_left
   - splitkb_aurora_sofle_right
