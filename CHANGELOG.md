@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0](https://github.com/zmkfirmware/zmk/compare/v0.3.0...v0.4.0) (2025-09-30)
+
+
+### Features
+
+* **boards/shields:** Add settings for Rpi Pico and add tester_rpi_pico shield ([#2900](https://github.com/zmkfirmware/zmk/issues/2900)) ([ccf20a1](https://github.com/zmkfirmware/zmk/commit/ccf20a1f5c1534a197d32279abbe0eaf651099d8))
+* **boards:** add support for nrf52840dongle_nrf52840 ([#3011](https://github.com/zmkfirmware/zmk/issues/3011)) ([c7fae18](https://github.com/zmkfirmware/zmk/commit/c7fae18ae122b2465080507380dd55d096edd666))
+* **layouts:** Add physical layout for Redox shield ([61de01a](https://github.com/zmkfirmware/zmk/commit/61de01abb00a73349a188ef2e10ad1cd040d31b3))
+
+
+### Bug Fixes
+
+* **ci:** disable nrf5340dk from being built in our CI ([#3066](https://github.com/zmkfirmware/zmk/issues/3066)) ([522971f](https://github.com/zmkfirmware/zmk/commit/522971f41d62d7e5d6664eb61c84d190781feeb9))
+* **ci:** Fix release please template bump ([#3021](https://github.com/zmkfirmware/zmk/issues/3021)) ([f3233c1](https://github.com/zmkfirmware/zmk/commit/f3233c1b60e4cb4c095572740bcbcaf7111eb804))
+* **core:** Generate correct keymap layer names for all builds ([#3047](https://github.com/zmkfirmware/zmk/issues/3047)) ([0b5a103](https://github.com/zmkfirmware/zmk/commit/0b5a103c187ad337b9f50d824667866c4d7252e1)), closes [#3045](https://github.com/zmkfirmware/zmk/issues/3045)
+* **docs:** Tweak layer tap example to be clearer ([#3023](https://github.com/zmkfirmware/zmk/issues/3023)) ([919bce7](https://github.com/zmkfirmware/zmk/commit/919bce7962db78139415ccf0e80fb858c89adb3d))
+
 ## [0.3.0](https://github.com/zmkfirmware/zmk/compare/v0.2.1...v0.3.0) (2025-08-01)
 
 
