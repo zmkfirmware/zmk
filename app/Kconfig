@@ -360,6 +360,57 @@ config ZMK_BACKLIGHT_AUTO_OFF_IDLE
 config ZMK_BACKLIGHT_AUTO_OFF_USB
     bool "Turn off backlight when USB is disconnected"
 
+choice ZMK_BACKLIGHT_BRIGHTNESS_CURVE
+    prompt "Backlight brightness curve"
+    optional
+
+config ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_TWO
+    bool "Backlight brightness curve, gamma 2"
+    help
+      Exponent is fixed at 2
+      Only integer math needed
+
+config ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_TWO_POINT_TWO
+    bool "Backlight brightness curve, gamma 2.2"
+    depends on !CONFIG_MINIMAL_LIBC
+    help
+      Exponent is fixed at 2.2.
+
+config ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_THREE
+    bool "Backlight brightness curve, gamma 3"
+    help
+      Exponent is fixed at 3
+      Only integer math needed
+
+config ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_CUSTOM
+    bool "Backlight brightness curve, custom gamma"
+    depends on !CONFIG_MINIMAL_LIBC
+    help
+      Exponent is a fixed point value given in
+      ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_VALUE
+
+config ZMK_BACKLIGHT_BRIGHTNESS_CURVE_SRGB
+    bool "Backlight brightness curve, sRGB"
+    depends on !CONFIG_MINIMAL_LIBC
+    help
+      Curve is the sRGB transfer function
+
+config ZMK_BACKLIGHT_BRIGHTNESS_CURVE_CIE_L
+    bool "Backlight brightness curve, CIE_L"
+    depends on !CONFIG_MINIMAL_LIBC
+    help
+      Curve is the CIE Lightness function
+
+endchoice
+
+if ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_CUSTOM
+
+config ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_VALUE
+    int "Backlight brightness curve gamma * 1000"
+    default 2500
+
+endif # ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_CUSTOM
+
 endif # ZMK_BACKLIGHT
 
 endmenu # Display/LED Options
