@@ -54,5 +54,6 @@ config ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
 config NICE_VIEW_WPM_WIDGET
     bool "Enable/Disable WPM widget"
+    default y if NICE_VIEW_WIDGET_STATUS
 
 endif # SHIELD_NICE_VIEW
