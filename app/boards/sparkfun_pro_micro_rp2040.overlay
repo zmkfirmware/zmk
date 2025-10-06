@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
+
 &pro_micro_serial { status = "disabled"; };
 
 // We override to 2MB for maximum compatibility

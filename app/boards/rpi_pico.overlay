@@ -1,3 +1,4 @@
+#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
 
 &uart0 { status = "disabled"; };
 
