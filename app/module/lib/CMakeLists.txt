@@ -1,2 +1,3 @@
-
 add_subdirectory_ifdef(CONFIG_ZMK_DEBOUNCE zmk_debounce)
+add_subdirectory(zmk_layer_lock_state)
+
