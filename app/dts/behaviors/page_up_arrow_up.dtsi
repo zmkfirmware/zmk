@@ -1,0 +1,21 @@
+/ {
+  behaviors {
+    // Tap = Up Arrow, Hold = Page Up
+    up_hold_pgup: up_hold_pgup {
+      compatible = "zmk,behavior-hold-tap";
+      #binding-cells = <2>;
+      flavor = "tap-preferred";   // great for arrows; adjust if you like
+      tapping-term-ms = <200>;    // try 180–250ms to taste
+      bindings = <&kp>, <&kp>;    // 1st = HOLD action, 2nd = TAP action
+    };
+
+    // Tap = Down Arrow, Hold = Page Down
+    down_hold_pgdn: down_hold_pgdn {
+      compatible = "zmk,behavior-hold-tap";
+      #binding-cells = <2>;
+      flavor = "tap-preferred";
+      tapping-term-ms = <200>;
+      bindings = <&kp>, <&kp>;
+    };
+  };
+};
