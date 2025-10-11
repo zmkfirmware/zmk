@@ -197,16 +197,10 @@ This step pulls down quite a bit of tooling, be patient!
 west zephyr-export
 ```
 
-7. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+7. Install the additional Zephyr dependencies using `west`:
 
 ```sh
-pip install -r zephyr/scripts/requirements-base.txt
-```
-
-If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extras.txt` dependencies:
-
-```sh
-pip install -r zephyr/scripts/requirements-extras.txt
+west packages pip --install
 ```
 
 </TabItem>
@@ -295,47 +289,29 @@ west zephyr-export
 <Tabs groupId="operating-systems" queryString defaultValue="ubuntu" className="secrettabs">
   <TabItem value="ubuntu" label="Ubuntu">
 
-4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+4. Install the additional Zephyr dependencies using `west`:
 
 ```sh
-pip3 install --user -r zephyr/scripts/requirements-base.txt
-```
-
-If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extras.txt` dependencies:
-
-```sh
-pip3 install -r zephyr/scripts/requirements-extras.txt
+west packages pip --install
 ```
 
   </TabItem>
 
   <TabItem value="win" label="Windows">
 
-4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+4. Install the additional Zephyr dependencies using `west`:
 
 ```sh
-pip install -r zephyr/scripts/requirements-base.txt
-```
-
-If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extras.txt` dependencies:
-
-```sh
-pip install -r zephyr/scripts/requirements-extras.txt
+west packages pip --install
 ```
 
   </TabItem>
 
   <TabItem value="mac" label="Mac OS">
-4. Install the additional dependencies found in Zephyr's `requirements-base.txt`.
+4. Install the additional Zephyr dependencies using `west`:
 
 ```sh
-pip3 install -r zephyr/scripts/requirements-base.txt
-```
-
-If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extras.txt` dependencies:
-
-```sh
-pip3 install -r zephyr/scripts/requirements-extras.txt
+west packages pip --install
 ```
 
   </TabItem>

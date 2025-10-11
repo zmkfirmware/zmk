@@ -131,6 +131,9 @@ config ZMK_USB_BOOT
     select USB_HID_BOOT_PROTOCOL
     select USB_DEVICE_SOF
 
+config USB_DEVICE_INITIALIZE_AT_BOOT
+    default n
+
 if ZMK_USB
 
 config USB_NUMOF_EP_WRITE_RETRIES
@@ -186,8 +189,8 @@ config BT_CTLR_PHY_2M
     default n if ZMK_BLE_EXPERIMENTAL_CONN
 
 # BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
-config BT_TINYCRYPT_ECC
-    default y if BT_HCI && !BT_CTLR
+# config BT_TINYCRYPT_ECC
+    # default y if BT_HCI && !BT_CTLR
 
 config ZMK_BLE_THREAD_STACK_SIZE
     int "BLE notify thread stack size"
@@ -478,13 +481,15 @@ endmenu
 
 menu "Advanced"
 
+rsource "src/boot/Kconfig"
+
 menu "Initialization Priorities"
 
 if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
     int "USB Init Priority"
-    default 94
+    default 96
 
 config ZMK_USB_HID_INIT_PRIORITY
     int "USB HID Init Priority"
@@ -653,6 +658,13 @@ endmenu # Advanced
 
 endmenu # ZMK
 
+if SOC_FAMILY_NORDIC_NRF
+
+config NRF_SOC_VALIDATE_HEADERS_DISABLED
+    default y
+
+endif
+
 config KERNEL_BIN_NAME
     default "zmk"
 
@@ -705,7 +717,7 @@ rsource "boards/shields/*/Kconfig.shield"
 # Duplicated from Kconfig.zephyr
 osource "$(KCONFIG_BINARY_DIR)/Kconfig.shield.defconfig"
 
-source "$(BOARD_DIR)/Kconfig.defconfig"
+# source "$(BOARD_DIR)/Kconfig.defconfig"
 
 # This loads board and shield Kconfigs found under zmk-config/config/
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"

@@ -1,0 +1,13 @@
+file_format: "1"
+id: preonic
+name: Preonic Rev3
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+url: https://olkb.com/collections/preonic
+revisions:
+  - "3.0.0"
+default_revision: "3.0.0"
