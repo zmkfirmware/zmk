@@ -7,7 +7,7 @@ description: Troubleshooting issues when compiling ZMK firmware.
 ## CMake Error
 
 An error along the lines of `CMake Error at (zmk directory)/zephyr/cmake/generic_toolchain.cmake:64 (include): include could not find load file:` during firmware compilation indicates that the Zephyr Environment Variables are not properly defined.
-For more information, see [Zephyr's CMake Package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html).
+For more information, see [Zephyr's CMake Package](https://docs.zephyrproject.org/4.1.0/build/zephyr_cmake_package.html).
 
 ## West Build Errors
 

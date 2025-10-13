@@ -41,7 +41,7 @@ west build -b nice_nano_v2 -S zmk-usb-logging -- -DSHIELD="corne_left"
 
 ### Additional Config
 
-Logging can be further configured using Kconfig described in [the Zephyr documentation](https://docs.zephyrproject.org/3.5.0/services/logging/index.html).
+Logging can be further configured using Kconfig described in [the Zephyr documentation](https://docs.zephyrproject.org/4.1.0/services/logging/index.html).
 For instance, setting `CONFIG_LOG_PROCESS_THREAD_STARTUP_DELAY_MS` to a large value such as `8000` might help catch issues that happen near keyboard
 boot, before you can connect to view the logs.
 
@@ -103,7 +103,7 @@ From there, you should see the various log messages from ZMK and Zephyr, dependi
 
 Standard boards such as the nice!nano and Seeed Studio XIAO family have the necessary configuration for logging already added, however if you are developing your own standalone board you may wish to add the ability to use USB logging in the future.
 
-To do so, you need to follow the upstream Zephyr [`cdc-acm-console` snippet requirements](https://docs.zephyrproject.org/3.5.0/snippets/cdc-acm-console/README.html#requirements) steps.
+To do so, you need to follow the upstream Zephyr [`cdc-acm-console` snippet requirements](https://docs.zephyrproject.org/4.1.0/snippets/cdc-acm-console/README.html#requirements) steps.
 
 Usually, this just requires ensuring that the USB node has been tagged with the `zephyr_udc0` label, e.g.
 
