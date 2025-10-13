@@ -9,13 +9,13 @@ import InterconnectTabs from "@site/src/components/interconnect-tabs";
 import Metadata from "@site/src/data/hardware-metadata.json";
 
 :::info
-This page exists to provide a guide to [Pin Control](https://docs.zephyrproject.org/3.5.0/hardware/pinctrl/index.html#pin-control) for ZMK users and designers. Refer to [Zephyr's page on Pin Control](https://docs.zephyrproject.org/3.5.0/hardware/pinctrl/index.html#pin-control) for elaboration and more details on any of the points raised here.
+This page exists to provide a guide to [Pin Control](https://docs.zephyrproject.org/4.1.0/hardware/pinctrl/index.html#pin-control) for ZMK users and designers. Refer to [Zephyr's page on Pin Control](https://docs.zephyrproject.org/4.1.0/hardware/pinctrl/index.html#pin-control) for elaboration and more details on any of the points raised here.
 :::
 
 A basic keyboard design as introduced in the [new shield guide](./new-shield.mdx) only uses its pins for the keyboard matrix. Many keyboard designs make use of advanced components or functionality, such as displays or shift registers. This results in the keyboard making use of communication protocols such as (but not limited to) SPI, I2C, or UART. Configuring pins for the usage of advanced functionality such as drivers for the previously named protocols is referred to as "Pin Control".
 
 :::warning
-The details of pin control can vary from vendor to vendor. An attempt was made to be as general as possible, but it isn't possible to cover all possible cases. The approaches for the nRF52840 and RP2040 MCUs/SoCs are documented in their entirety below. For other MCUs/SoCs, please refer to the [Zephyr documentation](https://docs.zephyrproject.org/3.5.0/index.html) and the examples and other files found in-tree of [ZMK](https://github.com/zmkfirmware/zmk/tree/main/app/boards) and [ZMK's fork of Zephyr](https://github.com/zmkfirmware/zephyr).
+The details of pin control can vary from vendor to vendor. An attempt was made to be as general as possible, but it isn't possible to cover all possible cases. The approaches for the nRF52840 and RP2040 MCUs/SoCs are documented in their entirety below. For other MCUs/SoCs, please refer to the [Zephyr documentation](https://docs.zephyrproject.org/4.1.0/index.html) and the examples and other files found in-tree of [ZMK](https://github.com/zmkfirmware/zmk/tree/main/app/boards) and [ZMK's fork of Zephyr](https://github.com/zmkfirmware/zephyr).
 :::
 
 ## Boards, Shields, and Modules
@@ -110,7 +110,7 @@ All of your configuration will happen by adjusting the `pinctrl` node. Changes a
 Within said node, you will configure one or more child nodes for the buses. You will want to define the child nodes according to the instructions in the `pinctrl.yaml` file.
 The child nodes that you define should be named appropriately. The common naming schema is `usageNumber_state`. For example, `uart0_default`.
 
-Child nodes are (generally, there are [exceptions](https://docs.zephyrproject.org/3.5.0/hardware/pinctrl/index.html#pin-configuration)) expected to contain one or more subnodes typically named "groupX". These are for grouping together pins that should be assigned the same state, such as enabling an internal pull-up.
+Child nodes are (generally, there are [exceptions](https://docs.zephyrproject.org/4.1.0/hardware/pinctrl/index.html#pin-configuration)) expected to contain one or more subnodes typically named "groupX". These are for grouping together pins that should be assigned the same state, such as enabling an internal pull-up.
 Below are some examples of SPI child nodes for the nRF52840 and the RP2040. Further examples are contained within the comments of the respecting `pinctrl.yaml` files.
 
 <Tabs
@@ -281,7 +281,7 @@ Once you have defined your node, you make use of it by further adjusting the nod
 };
 ```
 
-You would then want to make any adjustments to the node that are necessary, for example adjusting the clock speed. See the Zephyr API documentation for your `compatible` property to see the available properties for customisation. It is recommended to read through the [description of important properties](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#dt-important-props), potentially with the addition of [this blog post](https://interrupt.memfault.com/blog/practical_zephyr_dt#zephyrs-dts-skeleton-and-addressing) if `#address-cells` is confusing you.
+You would then want to make any adjustments to the node that are necessary, for example adjusting the clock speed. See the Zephyr API documentation for your `compatible` property to see the available properties for customisation. It is recommended to read through the [description of important properties](https://docs.zephyrproject.org/4.1.0/build/dts/intro-syntax-structure.html#dt-important-props), potentially with the addition of [this blog post](https://interrupt.memfault.com/blog/practical_zephyr_dt#zephyrs-dts-skeleton-and-addressing) if `#address-cells` is confusing you.
 
 For SPI specifically, you would create a child node within your SPI bus for each device making use of the SPI bus.
 

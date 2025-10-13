@@ -37,14 +37,14 @@ ZMK will search for config files in:
 
 ...where `<board>` is the name of the board and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the board.
 
-ZMK will search the board folder for the following config files _in addition_ to [Zephyr board-defining files](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html#create-your-board-directory):
+ZMK will search the board folder for the following config files _in addition_ to [Zephyr board-defining files](https://docs.zephyrproject.org/4.1.0/hardware/porting/board_porting.html#create-your-board-directory):
 
 - `<board>.conf` (Kconfig)
 - `<board>.keymap` (Devicetree, keyboards with onboard controllers only)
 
 Shared config files (excluding any `_left` or `_right` suffix) are not currently supported in board folders.
 
-For more documentation on creating and configuring a new board, see [Zephyr's board porting guide](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html#write-kconfig-files).
+For more documentation on creating and configuring a new board, see [Zephyr's board porting guide](https://docs.zephyrproject.org/4.1.0/hardware/porting/board_porting.html#write-kconfig-files).
 
 ### Shield Folder
 
@@ -57,14 +57,14 @@ When building with a shield, ZMK will search for config files in:
 
 ...where `<shield>` is the name of the shield and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the shield that the board is plugged into.
 
-ZMK will search the shield folder for the following config files _in addition_ to [Zephyr shield-defining files](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shield-porting-and-configuration):
+ZMK will search the shield folder for the following config files _in addition_ to [Zephyr shield-defining files](https://docs.zephyrproject.org/4.1.0/hardware/porting/shields.html#shield-porting-and-configuration):
 
 - `<shield>.conf` (Kconfig)
 - `<shield>.keymap` (Devicetree)
 
 Shared config files (excluding any `_left` or `_right` suffix) are not currently supported in shield folders.
 
-For more documentation on creating and configuring a new shield, see [Zephyr's shield documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html) and [ZMK's new keyboard shield](../development/hardware-integration/new-shield.mdx) guide.
+For more documentation on creating and configuring a new shield, see [Zephyr's shield documentation](https://docs.zephyrproject.org/4.1.0/hardware/porting/shields.html) and [ZMK's new keyboard shield](../development/hardware-integration/new-shield.mdx) guide.
 
 ## Kconfig Files
 
@@ -82,7 +82,7 @@ Files ending with `_defconfig` use the same syntax as `.conf` files. They set th
 
 The list of available settings is determined by various files in ZMK whose names start with `Kconfig`. Note that options are _not_ prefixed with `CONFIG_` in these files.
 
-See [Zephyr's Kconfig documentation](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html) for more details on Kconfig files.
+See [Zephyr's Kconfig documentation](https://docs.zephyrproject.org/4.1.0/build/kconfig/index.html) for more details on Kconfig files.
 
 :::tip
 
@@ -139,7 +139,7 @@ Devicetree files look like this:
 
 Devicetree properties apply to specific nodes in the tree instead of globally. The properties that can be set for each node are determined by `.yaml` files in ZMK in the various `dts/bindings` folders.
 
-See [Zephyr's Devicetree guide](https://docs.zephyrproject.org/3.5.0/build/dts/index.html) for more details on Devicetree files.
+See [Zephyr's Devicetree guide](https://docs.zephyrproject.org/4.1.0/build/dts/index.html) for more details on Devicetree files.
 
 :::tip
 
@@ -166,7 +166,7 @@ The part before the colon, `kscan0`, is a label. This is optional, and it provid
 The `compatible` property indicates what type of node it is. Search this documentation for the text inside the quotes to see which properties the node
 supports. You can also search ZMK for a file whose name is the value of the `compatible` property with a `.yaml` file extension.
 
-To set a property, see below for examples for common property types, or see [Zephyr's Devicetree documentation](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#writing-property-values) for more details on the syntax for properties.
+To set a property, see below for examples for common property types, or see [Zephyr's Devicetree documentation](https://docs.zephyrproject.org/4.1.0/build/dts/intro-syntax-structure.html#writing-property-values) for more details on the syntax for properties.
 
 To change a property for an existing node, first find the node you want to change and find its label. Next, outside of any other node, write an ampersand (`&`)
 followed by the node's label, an opening curly brace (`{`), one or more new property values, a closing curly brace (`}`), and a semicolon (`;`).

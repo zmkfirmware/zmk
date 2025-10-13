@@ -3,7 +3,7 @@ title: Persistent Settings
 sidebar_label: Settings
 ---
 
-ZMK uses [Zephyr's settings subsystem](https://docs.zephyrproject.org/3.5.0/services/settings/index.html) to store certain runtime settings in the "storage" partition of the controller's flash memory.
+ZMK uses [Zephyr's settings subsystem](https://docs.zephyrproject.org/4.1.0/services/settings/index.html) to store certain runtime settings in the "storage" partition of the controller's flash memory.
 These settings will be saved after certain events and loaded on boot.
 For instance, bond information for [paired Bluetooth hosts](../features/bluetooth.md) are stored in this partition so that users do not need to pair to each device again after the controller loses power.
 

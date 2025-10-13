@@ -21,7 +21,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 :::info
 
-Because ZMK enables [the Zephyr setting](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_BT_DEVICE_NAME_DYNAMIC) that allows for runtime modification of the device BT name,
+Because ZMK enables [the Zephyr setting](https://docs.zephyrproject.org/4.1.0/kconfig.html#CONFIG_BT_DEVICE_NAME_DYNAMIC) that allows for runtime modification of the device BT name,
 changing `CONFIG_ZMK_KEYBOARD_NAME` requires [clearing the stored settings](./settings.md#clearing-persisted-settings) on the controller in order to take effect.
 
 :::
@@ -93,7 +93,7 @@ By default USB Boot protocol support is disabled, however certain situations suc
 
 ### Bluetooth
 
-See [Zephyr's Bluetooth stack architecture documentation](https://docs.zephyrproject.org/3.5.0/connectivity/bluetooth/bluetooth-arch.html)
+See [Zephyr's Bluetooth stack architecture documentation](https://docs.zephyrproject.org/4.1.0/connectivity/bluetooth/bluetooth-arch.html)
 for more information on configuring Bluetooth.
 
 | Config                                      | Type | Description                                                           | Default |
@@ -139,7 +139,7 @@ The only way to restore functionality after that is to re-flash the bootloader.
 Re-flashing a bootloader built without the SoftDevice will require firmware built with these snippets.
 :::
 
-[Snippets](https://docs.zephyrproject.org/3.5.0/build/snippets/index.html) are a way to save common configuration separately when it applies to multiple different applications.
+[Snippets](https://docs.zephyrproject.org/4.1.0/build/snippets/index.html) are a way to save common configuration separately when it applies to multiple different applications.
 
 Enable snippets by adding `snippet: <snippet>` to your `build.yaml` for the appropriate board:
 
