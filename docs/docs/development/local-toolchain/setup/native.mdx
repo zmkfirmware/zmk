@@ -82,6 +82,10 @@ Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/4.1.0/devel
 Zephyr's [Install Linux Host Dependencies](https://docs.zephyrproject.org/4.1.0/develop/getting_started/installation_linux.html) page may be of use for users of Linux distributions which are not based on Ubuntu.
 :::
 
+:::warning
+Some optional Zephyr modules, like `libmetal`, are not compatible with CMake v4, so we recommend installing the latest CMake v3 release when installing the Zephyr dependencies.
+:::
+
 ## 2. Source Code
 
 Next, you'll need to clone the ZMK source repository if you haven't already. Open a terminal and navigate to the folder you would like to place your `zmk` directory in, then run the following command:
