@@ -30,13 +30,13 @@ void draw_battery(lv_obj_t *canvas, const struct status_state *state) {
     lv_draw_rect_dsc_t rect_white_dsc;
     init_rect_dsc(&rect_white_dsc, LVGL_FOREGROUND);
 
-    #if IS_ENABLED(CONFIG_NICE_VIEW_BATTERY_SHOW_BIG_PERCENTAGE)
-        char big_text[4] = {};
-        sprintf(big_text, "%i%%", state->battery);
-        lv_draw_label_dsc_t big_label_dsc;
-        init_label_dsc(&big_label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_26, LV_TEXT_ALIGN_CENTER);
-        lv_canvas_draw_text(canvas, 0, 25, 68, &big_label_dsc, big_text);
-    #endif
+    // #if IS_ENABLED(CONFIG_NICE_VIEW_BATTERY_SHOW_BIG_PERCENTAGE)
+    char big_text[4] = {};
+    sprintf(big_text, "%i%%", state->battery);
+    lv_draw_label_dsc_t big_label_dsc;
+    init_label_dsc(&big_label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_26, LV_TEXT_ALIGN_CENTER);
+    lv_canvas_draw_text(canvas, 0, 25, 68, &big_label_dsc, big_text);
+    // #endif
 
 
 
