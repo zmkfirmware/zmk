@@ -119,11 +119,13 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     lv_img_set_src(art, random ? &balloon : &mountain);
 
     
-    #if IS_ENABLED(CONFIG_NICE_VIEW_BATTERY_SHOW_BIG_PERCENTAGE)
-        lv_obj_align(art, LV_ALIGN_TOP_LEFT, -48, 0);
-    #else
-        lv_obj_align(art, LV_ALIGN_TOP_LEFT, 0, 0);
-    #endif
+    // #if IS_ENABLED(CONFIG_NICE_VIEW_BATTERY_SHOW_BIG_PERCENTAGE)
+    //     lv_obj_align(art, LV_ALIGN_TOP_LEFT, -48, 0);
+    // #else
+    //     lv_obj_align(art, LV_ALIGN_TOP_LEFT, 0, 0);
+    // #endif
+
+    lv_obj_align(art, LV_ALIGN_TOP_LEFT, -48, 0);
 
     sys_slist_append(&widgets, &widget->node);
     widget_battery_status_init();
