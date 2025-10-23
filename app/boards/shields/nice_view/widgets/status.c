@@ -87,38 +87,39 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     }
 
     lv_canvas_draw_text(canvas, 0, 0, CANVAS_SIZE, &label_dsc, output_text);
-
-    // Draw WPM
-    lv_canvas_draw_rect(canvas, 0, 21, 68, 42, &rect_white_dsc);
-    lv_canvas_draw_rect(canvas, 1, 22, 66, 40, &rect_black_dsc);
-
-    char wpm_text[6] = {};
-    snprintf(wpm_text, sizeof(wpm_text), "%d", state->wpm[9]);
-    lv_canvas_draw_text(canvas, 42, 52, 24, &label_dsc_wpm, wpm_text);
-
-    int max = 0;
-    int min = 256;
-
-    for (int i = 0; i < 10; i++) {
-        if (state->wpm[i] > max) {
-            max = state->wpm[i];
+    #if !IS_ENABLED(CONFIG_NICE_VIEW_BATTERY_SHOW_BIG_PERCENTAGE)
+        // Draw WPM
+        lv_canvas_draw_rect(canvas, 0, 21, 68, 42, &rect_white_dsc);
+        lv_canvas_draw_rect(canvas, 1, 22, 66, 40, &rect_black_dsc);
+    
+        char wpm_text[6] = {};
+        snprintf(wpm_text, sizeof(wpm_text), "%d", state->wpm[9]);
+        lv_canvas_draw_text(canvas, 42, 52, 24, &label_dsc_wpm, wpm_text);
+    
+        int max = 0;
+        int min = 256;
+    
+        for (int i = 0; i < 10; i++) {
+            if (state->wpm[i] > max) {
+                max = state->wpm[i];
+            }
+            if (state->wpm[i] < min) {
+                min = state->wpm[i];
+            }
         }
-        if (state->wpm[i] < min) {
-            min = state->wpm[i];
+    
+        int range = max - min;
+        if (range == 0) {
+            range = 1;
         }
-    }
-
-    int range = max - min;
-    if (range == 0) {
-        range = 1;
-    }
-
-    lv_point_t points[10];
-    for (int i = 0; i < 10; i++) {
-        points[i].x = 2 + i * 7;
-        points[i].y = 60 - (state->wpm[i] - min) * 36 / range;
-    }
-    lv_canvas_draw_line(canvas, points, 10, &line_dsc);
+    
+        lv_point_t points[10];
+        for (int i = 0; i < 10; i++) {
+            points[i].x = 2 + i * 7;
+            points[i].y = 60 - (state->wpm[i] - min) * 36 / range;
+        }
+        lv_canvas_draw_line(canvas, points, 10, &line_dsc);
+    #endif
 
     // Rotate canvas
     rotate_canvas(canvas, cbuf);
