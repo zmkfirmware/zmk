@@ -11,6 +11,17 @@ on:
       - "app/**"
   schedule:
     - cron: "22 4 * * *"
+  workflow_dispatch:
+    inputs:
+      build_target:
+        description: 'Build target (all/core/boards)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - core
+          - boards
 
 
 concurrency:
