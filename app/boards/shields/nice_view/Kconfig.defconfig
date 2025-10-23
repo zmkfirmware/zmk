@@ -40,7 +40,6 @@ config NICE_VIEW_BATTERY_SHOW_BIG_PERCENTAGE
     bool "Show battery percentage instead of WPM widget"
     select LV_FONT_MONTSERRAT_26
 
-
 config NICE_VIEW_WIDGET_INVERTED
     bool "Invert custom status widget colors"
 
