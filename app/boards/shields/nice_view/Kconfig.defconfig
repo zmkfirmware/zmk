@@ -51,6 +51,7 @@ config NICE_VIEW_WIDGET_STATUS
     select LV_FONT_MONTSERRAT_14
     select LV_FONT_UNSCII_8
     select ZMK_WPM
+    select LV_FONT_MONTSERRAT_26
 
 endif # !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
 
