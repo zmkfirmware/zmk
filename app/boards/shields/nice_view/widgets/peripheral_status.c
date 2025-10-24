@@ -21,6 +21,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/usb.h>
 #include <zmk/ble.h>
 
+// Chris added
+#include <zmk/events/wpm_state_changed.h>
+
 #include "peripheral_status.h"
 
 LV_IMG_DECLARE(balloon);
