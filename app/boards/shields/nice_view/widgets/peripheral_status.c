@@ -18,10 +18,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/battery_state_changed.h>
 #include <zmk/split/bluetooth/peripheral.h>
 #include <zmk/events/split_peripheral_status_changed.h>
+#include <zmk/events/split_wpm_state_changed.h>
 #include <zmk/usb.h>
 #include <zmk/ble.h>
-#include <zmk/events/wpm_state_changed.h>
-#include <zmk/wpm.h>
 
 #include "peripheral_status.h"
 
@@ -40,14 +39,8 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
 
     lv_draw_label_dsc_t label_dsc;
     init_label_dsc(&label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_16, LV_TEXT_ALIGN_RIGHT);
-    lv_draw_label_dsc_t label_dsc_wpm;
-    init_label_dsc(&label_dsc_wpm, LVGL_FOREGROUND, &lv_font_unscii_8, LV_TEXT_ALIGN_RIGHT);
     lv_draw_rect_dsc_t rect_black_dsc;
     init_rect_dsc(&rect_black_dsc, LVGL_BACKGROUND);
-    lv_draw_rect_dsc_t rect_white_dsc;
-    init_rect_dsc(&rect_white_dsc, LVGL_FOREGROUND);
-    lv_draw_line_dsc_t line_dsc;
-    init_line_dsc(&line_dsc, LVGL_FOREGROUND, 1);
 
     // Fill background
     lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
@@ -167,7 +160,9 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_peripheral_status, struct peripheral_status_s
                             output_status_update_cb, get_state)
 ZMK_SUBSCRIPTION(widget_peripheral_status, zmk_split_peripheral_status_changed);
 
+// WPM listener - nhận data từ central
 static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_state state) {
+    // Shift mảng WPM
     for (int i = 0; i < 9; i++) {
         widget->state.wpm[i] = widget->state.wpm[i + 1];
     }
@@ -181,13 +176,14 @@ static void wpm_status_update_cb(struct wpm_status_state state) {
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_wpm_status(widget, state); }
 }
 
-struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
-    return (struct wpm_status_state){.wpm = zmk_wpm_get_state()};
-};
+static struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
+    const struct zmk_split_wpm_state_changed *ev = as_zmk_split_wpm_state_changed(eh);
+    return (struct wpm_status_state){.wpm = (ev != NULL) ? ev->wpm : 0};
+}
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state, wpm_status_update_cb,
                             wpm_status_get_state)
-ZMK_SUBSCRIPTION(widget_wpm_status, zmk_wpm_state_changed);
+ZMK_SUBSCRIPTION(widget_wpm_status, zmk_split_wpm_state_changed);
 
 int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
@@ -202,6 +198,11 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     lv_obj_t *wpm_canvas = lv_canvas_create(widget->obj);
     lv_obj_align(wpm_canvas, LV_ALIGN_TOP_LEFT, -48, 0);
     lv_canvas_set_buffer(wpm_canvas, widget->cbuf2, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
+
+    // Khởi tạo mảng WPM
+    for (int i = 0; i < 10; i++) {
+        widget->state.wpm[i] = 0;
+    }
 
     sys_slist_append(&widgets, &widget->node);
     widget_battery_status_init();
