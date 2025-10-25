@@ -56,6 +56,51 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     rotate_canvas(canvas, cbuf);
 }
 
+
+/* ================================================================== */
+/* DRAW WPM: vẽ lên canvas đã lưu */
+static void draw_wpm2(lv_color_t cbuf[], const struct status_state *state) {
+    if (!wpm_canvas) return;  // an toàn
+
+    lv_draw_label_dsc_t label_dsc_wpm;
+    init_label_dsc(&label_dsc_wpm, LVGL_FOREGROUND, &lv_font_unscii_8, LV_TEXT_ALIGN_RIGHT);
+    lv_draw_rect_dsc_t rect_black_dsc, rect_white_dsc;
+    init_rect_dsc(&rect_black_dsc, LVGL_BACKGROUND);
+    init_rect_dsc(&rect_white_dsc, LVGL_FOREGROUND);
+    lv_draw_line_dsc_t line_dsc;
+    init_line_dsc(&line_dsc, LVGL_FOREGROUND, 1);
+
+    // Xóa nền
+    lv_canvas_draw_rect(wpm_canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
+
+    // Viền + ô trong
+    lv_canvas_draw_rect(wpm_canvas, 0, 21, 68, 42, &rect_white_dsc);
+    lv_canvas_draw_rect(wpm_canvas, 1, 22, 66, 40, &rect_black_dsc);
+
+    // Số WPM
+    char wpm_text[6] = {};
+    snprintf(wpm_text, sizeof(wpm_text), "%d", state->wpm[9]);
+    lv_canvas_draw_text(wpm_text, 42, 52, 24, &label_dsc_wpm, wpm_text);
+
+    // Tính min/max
+    int max = 0, min = 256;
+    for (int i = 0; i < 10; i++) {
+        if (state->wpm[i] > max) max = state->wpm[i];
+        if (state->wpm[i] < min) min = state->wpm[i];
+    }
+    int range = max - min ? max - min : 1;
+
+    // Vẽ đồ thị
+    lv_point_t points[10];
+    for (int i = 0; i < 10; i++) {
+        points[i].x = 2 + i * 7;
+        points[i].y = 60 - (state->wpm[i] - min) * 36 / range;
+    }
+    lv_canvas_draw_line(wpm_canvas, points, 10, &line_dsc);
+
+    // Xoay canvas
+    rotate_canvas(wpm_canvas, cbuf);
+}
 static void draw_wpm(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 1);
 
@@ -220,6 +265,8 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     // Vẽ cả 2 canvas lần đầu
     draw_top(widget->obj, widget->cbuf, &widget->state);
     draw_wpm(widget->obj, widget->cbuf2, &widget->state);
+    for (int i = 0; i < 10; i++) widget->state.wpm[i] = 20 + i * 5;
+    draw_wpm2(widget->cbuf2, &widget->state);
 
     return 0;
 }
