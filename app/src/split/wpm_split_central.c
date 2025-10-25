@@ -11,7 +11,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/events/wpm_state_changed.h>
 #include <zmk/events/split_wpm_state_changed.h>
-//#include <zmk/split/bluetooth/central.h>
 #include <zmk/wpm.h>
 
 // Chỉ build file này cho CENTRAL
@@ -23,13 +22,12 @@ static int wpm_state_changed_listener(const zmk_event_t *eh) {
     
     LOG_DBG("Broadcasting WPM to peripherals: %d", wpm);
     
-    // Tạo event để broadcast
-    struct zmk_split_wpm_state_changed ev = {
-        .wpm = wpm
-    };
-    
     // Raise event - ZMK sẽ tự động broadcast đến peripherals
-    return ZMK_EV_EVENT_BUBBLE(&ev);
+    ZMK_EVENT_RAISE(new_zmk_split_wpm_state_changed((struct zmk_split_wpm_state_changed){
+        .wpm = wpm
+    }));
+    
+    return ZMK_EV_EVENT_BUBBLE;
 }
 
 ZMK_LISTENER(wpm_split_central, wpm_state_changed_listener);
