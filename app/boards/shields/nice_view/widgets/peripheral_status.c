@@ -29,6 +29,8 @@ static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 struct peripheral_status_state {
     bool connected;
 };
+/* LƯU CANVAS WPM – CHỈ 1 WIDGET */
+static lv_obj_t *wpm_canvas2;
 
 struct wpm_status_state {
     uint8_t wpm;
@@ -59,8 +61,8 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
 
 /* ================================================================== */
 /* DRAW WPM: vẽ lên canvas đã lưu */
-static void draw_wpm2(lv_color_t cbuf[], const struct status_state *state) {
-    if (!wpm_canvas) return;  // an toàn
+static void draw_wpm(lv_color_t cbuf[], const struct status_state *state) {
+    if (!wpm_canvas2) return;  // an toàn
 
     lv_draw_label_dsc_t label_dsc_wpm;
     init_label_dsc(&label_dsc_wpm, LVGL_FOREGROUND, &lv_font_unscii_8, LV_TEXT_ALIGN_RIGHT);
@@ -71,11 +73,11 @@ static void draw_wpm2(lv_color_t cbuf[], const struct status_state *state) {
     init_line_dsc(&line_dsc, LVGL_FOREGROUND, 1);
 
     // Xóa nền
-    lv_canvas_draw_rect(wpm_canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
+    lv_canvas_draw_rect(wpm_canvas2, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
 
     // Viền + ô trong
-    lv_canvas_draw_rect(wpm_canvas, 0, 21, 68, 42, &rect_white_dsc);
-    lv_canvas_draw_rect(wpm_canvas, 1, 22, 66, 40, &rect_black_dsc);
+    lv_canvas_draw_rect(wpm_canvas2, 0, 21, 68, 42, &rect_white_dsc);
+    lv_canvas_draw_rect(wpm_canvas2, 1, 22, 66, 40, &rect_black_dsc);
 
     // Số WPM
     char wpm_text[6] = {};
@@ -96,10 +98,10 @@ static void draw_wpm2(lv_color_t cbuf[], const struct status_state *state) {
         points[i].x = 2 + i * 7;
         points[i].y = 60 - (state->wpm[i] - min) * 36 / range;
     }
-    lv_canvas_draw_line(wpm_canvas, points, 10, &line_dsc);
+    lv_canvas_draw_line(wpm_canvas2, points, 10, &line_dsc);
 
     // Xoay canvas
-    rotate_canvas(wpm_canvas, cbuf);
+    rotate_canvas(wpm_canvas2, cbuf);
 }
 static void draw_wpm(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 1);
@@ -242,6 +244,9 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     lv_obj_align(top, LV_ALIGN_TOP_RIGHT, 0, 0);
     lv_canvas_set_buffer(top, widget->cbuf, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
 
+    /* Canvas WPM */
+    wpm_canvas2 = lv_canvas_create(widget->obj);
+    
     // WPM canvas - thay thế art image
     lv_obj_t *wpm_canvas = lv_canvas_create(widget->obj);
     lv_obj_align(wpm_canvas, LV_ALIGN_TOP_LEFT, -48, 0);  // Giữ nguyên -48
