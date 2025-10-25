@@ -309,16 +309,16 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_layer_status, struct layer_status_state, laye
 
 ZMK_SUBSCRIPTION(widget_layer_status, zmk_layer_state_changed);
 
-// === GỬI WPM TỪ CENTRAL SANG PERIPHERAL ===
-// #if IS_ENABLED(CONFIG_ZMK_SPLIT)
-static void send_wpm_to_peripheral(struct wpm_status_state state) {
-    if (zmk_split_is_central()) {
-        raise_zmk_split_wpm_state_changed((struct zmk_split_wpm_state_changed){
-            .wpm = state.wpm
-        });
-    }
-}
-// #endif
+// // === GỬI WPM TỪ CENTRAL SANG PERIPHERAL ===
+// // #if IS_ENABLED(CONFIG_ZMK_SPLIT)
+// static void send_wpm_to_peripheral(struct wpm_status_state state) {
+//     if (zmk_split_is_central()) {
+//         raise_zmk_split_wpm_state_changed((struct zmk_split_wpm_state_changed){
+//             .wpm = state.wpm
+//         });
+//     }
+// }
+// // #endif
 
 static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_state state) {
     for (int i = 0; i < 9; i++) {
@@ -327,9 +327,14 @@ static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_s
     widget->state.wpm[9] = state.wpm;
 
     draw_top(widget->obj, widget->cbuf, &widget->state);
-    // #if IS_ENABLED(CONFIG_ZMK_SPLIT)
-    send_wpm_to_peripheral(state);
-    // #endif
+
+    #if IS_ENABLED(CONFIG_ZMK_SPLIT)
+    if (!IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_PERIPHERAL)) {
+        raise_zmk_split_wpm_state_changed((struct zmk_split_wpm_state_changed){
+            .current_wpm = state.wpm  // ← SỬA: current_wpm
+        });
+    }
+    #endif
 
 static void wpm_status_update_cb(struct wpm_status_state state) {
     struct zmk_widget_status *widget;
