@@ -4,7 +4,7 @@
  */
 
 #include <zephyr/kernel.h>
-#include <zephyr/random/rand32.h>  // <--- THAY ĐỔI: dùng sys_rand32_get()
+#include <zephyr/random/random.h>  // <--- SỬA: include đúng
 #include <string.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -23,17 +23,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include "peripheral_status.h"
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
-
-/* CHỈ 1 CANVAS WPM */
 static lv_obj_t *wpm_canvas;
-
-struct peripheral_status_state {
-    bool connected;
-};
-
-struct wpm_status_state {
-    uint8_t wpm;
-};
 
 /* ================================================================== */
 /* DRAW TOP */
@@ -42,10 +32,10 @@ static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct status
 
     lv_draw_label_dsc_t label_dsc;
     init_label_dsc(&label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_16, LV_TEXT_ALIGN_RIGHT);
-    lv_draw_rect_dsc_t rect_black_dsc;
-    init_rect_dsc(&rect_black_dsc, LVGL_BACKGROUND);
+    lv_draw_rect_dsc_t rect_dsc;
+    init_rect_dsc(&rect_dsc, LVGL_BACKGROUND);
 
-    lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
+    lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_dsc);
     draw_battery(canvas, state);
     lv_canvas_draw_text(canvas, 0, 0, CANVAS_SIZE, &label_dsc,
                         state->connected ? LV_SYMBOL_WIFI : LV_SYMBOL_CLOSE);
@@ -68,7 +58,7 @@ static void test_draw_random_chars(lv_color_t cbuf[]) {
 
     char text[2] = {0};
     for (int i = 0; i < 8; i++) {
-        text[0] = 33 + (sys_rand32_get() % 94);  // <--- SỬA: sys_rand32_get()
+        text[0] = 33 + (sys_rand32_get() % 94);
         int x = 5 + (sys_rand32_get() % 50);
         int y = 15 + (sys_rand32_get() % 45);
         lv_canvas_draw_text(wpm_canvas, x, y, 20, &label_dsc, text);
@@ -105,7 +95,7 @@ static void battery_status_update_cb(struct battery_status_state state) {
 }
 
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
-    return (struct battery_status_state){  // <--- SỬA: thêm _state
+    return (struct battery_status_state){
         .level = zmk_battery_state_of_charge(),
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
         .usb_present = zmk_usb_is_powered(),
@@ -122,7 +112,7 @@ ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 
 /* ================================================================== */
 /* CONNECTION */
-static struct peripheral_status_state get_state(const zmk_event_t *_eh) {
+static struct peripheral_status_state get_peripheral_state(const zmk_event_t *_eh) {
     return (struct peripheral_status_state){.connected = zmk_split_bt_peripheral_is_connected()};
 }
 
@@ -131,17 +121,17 @@ static void set_connection_status(struct zmk_widget_status *widget, struct perip
     draw_top(widget->obj, widget->cbuf, &widget->state);
 }
 
-static void output_status_update_cb(struct peripheral_status_state state) {
+static void peripheral_status_update_cb(struct peripheral_status_state state) {
     struct zmk_widget_status *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_connection_status(widget, state); }
 }
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_peripheral_status, struct peripheral_status_state,
-                            output_status_update_cb, get_state)
+                            peripheral_status_update_cb, get_peripheral_state)
 ZMK_SUBSCRIPTION(widget_peripheral_status, zmk_split_peripheral_status_changed);
 
 /* ================================================================== */
-/* WPM LISTENER */
+/* WPM LISTENER – ĐÃ SỬA ĐÚNG */
 static struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
     const struct zmk_split_wpm_state_changed *ev = as_zmk_split_wpm_state_changed(eh);
     return (struct wpm_status_state){.wpm = (ev != NULL) ? ev->wpm : 0};
