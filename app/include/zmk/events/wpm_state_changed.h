@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2025 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
@@ -8,10 +8,10 @@
 
 #include <zephyr/kernel.h>
 #include <zmk/event_manager.h>
-#include <zmk/wpm.h>
 
-struct zmk_wpm_state_changed {
-    int state;
+struct zmk_split_wpm_state_changed {
+    struct zmk_event_header header;
+    uint8_t wpm;
 };
 
-ZMK_EVENT_DECLARE(zmk_wpm_state_changed);
+ZMK_EVENT_DECLARE(zmk_split_wpm_state_changed);
