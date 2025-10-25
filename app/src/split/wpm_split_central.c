@@ -22,11 +22,8 @@ static int wpm_state_changed_listener(const zmk_event_t *eh) {
     
     LOG_DBG("Broadcasting WPM to peripherals: %d", wpm);
     
-    // Tạo event trên stack
-    struct zmk_split_wpm_state_changed ev = {.wpm = wpm};
-    
-    // Raise event - ZMK sẽ tự động broadcast đến peripherals qua split
-    ZMK_EVENT_RAISE(ev);
+    // Raise event - ZMK event system sẽ tự động broadcast qua split
+    raise_zmk_split_wpm_state_changed((struct zmk_split_wpm_state_changed){.wpm = wpm});
     
     return ZMK_EV_EVENT_BUBBLE;
 }
