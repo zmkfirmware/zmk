@@ -327,9 +327,9 @@ static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_s
     widget->state.wpm[9] = state.wpm;
 
     draw_top(widget->obj, widget->cbuf, &widget->state);
-    //#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+    #if IS_ENABLED(CONFIG_ZMK_SPLIT)
     send_wpm_to_peripheral(state);
-    //#endif
+    #endif
 
 static void wpm_status_update_cb(struct wpm_status_state state) {
     struct zmk_widget_status *widget;
