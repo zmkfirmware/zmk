@@ -332,7 +332,7 @@ static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_s
     #if IS_ENABLED(CONFIG_ZMK_SPLIT)
     if (!IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_PERIPHERAL)) {
         raise_zmk_split_wpm_state_changed((struct zmk_split_wpm_state_changed){
-            .current_wpm = state.wpm  // ← SỬA: current_wpm
+            .wpm = state.wpm  // ← SỬA: current_wpm
         });
     }
     #endif
