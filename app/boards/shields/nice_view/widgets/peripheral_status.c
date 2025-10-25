@@ -5,7 +5,7 @@
 
 #include <zephyr/kernel.h>
 #include <zephyr/random/random.h>
-#include <zephyr/string.h>
+#include <string.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
