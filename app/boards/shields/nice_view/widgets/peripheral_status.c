@@ -4,7 +4,7 @@
  */
 
 #include <zephyr/kernel.h>
-#include <zephyr/random/random.h>  // <--- SỬA: include đúng
+#include <zephyr/random/random.h>
 #include <string.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -26,7 +26,7 @@ static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 static lv_obj_t *wpm_canvas;
 
 /* ================================================================== */
-/* DRAW TOP */
+/* DRAW TOP: battery + kết nối */
 static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(container, 0);
 
@@ -43,10 +43,11 @@ static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct status
 }
 
 /* ================================================================== */
-/* TEST: VẼ 8 KÝ TỰ NGẪU NHIÊN + VIỀN */
+/* TEST: VẼ 8 KÝ TỰ NGẪU NHIÊN + VIỀN ĐEN */
 static void test_draw_random_chars(lv_color_t cbuf[]) {
     if (!wpm_canvas) return;
 
+    // Nền trắng
     memset(cbuf, 0xFF, CANVAS_SIZE * CANVAS_SIZE * LV_COLOR_DEPTH / 8);
 
     lv_draw_label_dsc_t label_dsc;
@@ -54,11 +55,13 @@ static void test_draw_random_chars(lv_color_t cbuf[]) {
     lv_draw_rect_dsc_t rect_dsc;
     init_rect_dsc(&rect_dsc, LVGL_BACKGROUND);
 
+    // Viền đen
     lv_canvas_draw_rect(wpm_canvas, 0, 0, 68, 68, &rect_dsc);
 
+    // 8 ký tự ngẫu nhiên
     char text[2] = {0};
     for (int i = 0; i < 8; i++) {
-        text[0] = 33 + (sys_rand32_get() % 94);
+        text[0] = 33 + (sys_rand32_get() % 94);  // '!' -> '~'
         int x = 5 + (sys_rand32_get() % 50);
         int y = 15 + (sys_rand32_get() % 45);
         lv_canvas_draw_text(wpm_canvas, x, y, 20, &label_dsc, text);
@@ -91,14 +94,16 @@ static void set_battery_status(struct zmk_widget_status *widget, struct battery_
 
 static void battery_status_update_cb(struct battery_status_state state) {
     struct zmk_widget_status *widget;
-    SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_battery_status(widget, state); }
+    SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
+        set_battery_status(widget, state);
+    }
 }
 
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
     return (struct battery_status_state){
         .level = zmk_battery_state_of_charge(),
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
-        .usb_present = zmk_usb_is_powered(),
+        .usb_present = zmk_usb_is_power powered(),
 #endif
     };
 }
@@ -112,8 +117,10 @@ ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 
 /* ================================================================== */
 /* CONNECTION */
-static struct peripheral_status_state get_peripheral_state(const zmk_event_t *_eh) {
-    return (struct peripheral_status_state){.connected = zmk_split_bt_peripheral_is_connected()};
+static struct peripheral_status_state get_peripheral_state(const zmk_event_t *eh) {
+    return (struct peripheral_status_state){
+        .connected = zmk_split_bt_peripheral_is_connected()
+    };
 }
 
 static void set_connection_status(struct zmk_widget_status *widget, struct peripheral_status_state state) {
@@ -123,7 +130,9 @@ static void set_connection_status(struct zmk_widget_status *widget, struct perip
 
 static void peripheral_status_update_cb(struct peripheral_status_state state) {
     struct zmk_widget_status *widget;
-    SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_connection_status(widget, state); }
+    SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
+        set_connection_status(widget, state);
+    }
 }
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_peripheral_status, struct peripheral_status_state,
@@ -131,10 +140,12 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_peripheral_status, struct peripheral_status_s
 ZMK_SUBSCRIPTION(widget_peripheral_status, zmk_split_peripheral_status_changed);
 
 /* ================================================================== */
-/* WPM LISTENER – ĐÃ SỬA ĐÚNG */
+/* WPM LISTENER */
 static struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
     const struct zmk_split_wpm_state_changed *ev = as_zmk_split_wpm_state_changed(eh);
-    return (struct wpm_status_state){.wpm = (ev != NULL) ? ev->wpm : 0};
+    return (struct wpm_status_state){
+        .wpm = (ev != NULL) ? ev->wpm : 0
+    };
 }
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state,
@@ -147,24 +158,31 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
     lv_obj_set_size(widget->obj, 160, 68);
 
+    // Canvas top (battery + wifi)
     lv_obj_t *top = lv_canvas_create(widget->obj);
     lv_obj_align(top, LV_ALIGN_TOP_RIGHT, 0, 0);
     lv_canvas_set_buffer(top, widget->cbuf, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
 
+    // Canvas WPM
     wpm_canvas = lv_canvas_create(widget->obj);
     lv_obj_align(wpm_canvas, LV_ALIGN_TOP_LEFT, -48, 0);
     lv_canvas_set_buffer(wpm_canvas, widget->cbuf2, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
 
+    // Khởi tạo state
     widget->state.battery = 0;
     widget->state.charging = false;
     widget->state.connected = false;
-    for (int i = 0; i < 10; i++) widget->state.wpm[i] = 0;
+    for (int i = 0; i < 10; i++) {
+        widget->state.wpm[i] = 0;
+    }
 
     sys_slist_append(&widgets, &widget->node);
+
     widget_battery_status_init();
     widget_peripheral_status_init();
     widget_wpm_status_init();
 
+    // Vẽ lần đầu
     draw_top(widget->obj, widget->cbuf, &widget->state);
     test_draw_random_chars(widget->cbuf2);
 
