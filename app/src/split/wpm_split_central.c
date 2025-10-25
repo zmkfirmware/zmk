@@ -11,7 +11,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/events/wpm_state_changed.h>
 #include <zmk/events/split_wpm_state_changed.h>
-#include <zmk/split/bluetooth/central.h>
+//#include <zmk/split/bluetooth/central.h>
 #include <zmk/wpm.h>
 
 // Chỉ build file này cho CENTRAL
