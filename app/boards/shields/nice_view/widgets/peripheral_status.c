@@ -199,6 +199,11 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     lv_obj_align(wpm_canvas, LV_ALIGN_TOP_LEFT, -48, 0);
     lv_canvas_set_buffer(wpm_canvas, widget->cbuf2, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
 
+    // Khởi tạo state
+    widget->state.battery = 0;
+    widget->state.charging = false;
+    widget->state.connected = false;
+    
     // Khởi tạo mảng WPM
     for (int i = 0; i < 10; i++) {
         widget->state.wpm[i] = 0;
@@ -208,6 +213,10 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget_battery_status_init();
     widget_peripheral_status_init();
     widget_wpm_status_init();
+
+    // Vẽ cả 2 canvas lần đầu
+    draw_top(widget->obj, widget->cbuf, &widget->state);
+    draw_wpm(widget->obj, widget->cbuf2, &widget->state);
 
     return 0;
 }
