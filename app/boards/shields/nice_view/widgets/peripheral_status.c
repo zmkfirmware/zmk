@@ -61,7 +61,7 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
 
 /* ================================================================== */
 /* DRAW WPM: vẽ lên canvas đã lưu */
-static void draw_wpm(lv_color_t cbuf[], const struct status_state *state) {
+static void draw_wpm2(lv_color_t cbuf[], const struct status_state *state) {
     if (!wpm_canvas2) return;  // an toàn
 
     lv_draw_label_dsc_t label_dsc_wpm;
