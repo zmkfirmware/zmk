@@ -4,7 +4,7 @@
  */
 
 #include <zephyr/kernel.h>
-#include <zephyr/random/random.h>
+#include <zephyr/random/rand32.h>  // <--- THAY ĐỔI: dùng sys_rand32_get()
 #include <string.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -36,7 +36,7 @@ struct wpm_status_state {
 };
 
 /* ================================================================== */
-/* DRAW TOP: battery + kết nối */
+/* DRAW TOP */
 static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(container, 0);
 
@@ -53,11 +53,10 @@ static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct status
 }
 
 /* ================================================================== */
-/* TEST: VẼ 8 KÝ TỰ NGẪU NHIÊN + VIỀN ĐEN TRONG KHUNG 68x68 */
+/* TEST: VẼ 8 KÝ TỰ NGẪU NHIÊN + VIỀN */
 static void test_draw_random_chars(lv_color_t cbuf[]) {
     if (!wpm_canvas) return;
 
-    /* 1. XÓA NỀN TRẮNG (invert color) */
     memset(cbuf, 0xFF, CANVAS_SIZE * CANVAS_SIZE * LV_COLOR_DEPTH / 8);
 
     lv_draw_label_dsc_t label_dsc;
@@ -65,32 +64,28 @@ static void test_draw_random_chars(lv_color_t cbuf[]) {
     lv_draw_rect_dsc_t rect_dsc;
     init_rect_dsc(&rect_dsc, LVGL_BACKGROUND);
 
-    /* 2. VẼ VIỀN ĐEN */
     lv_canvas_draw_rect(wpm_canvas, 0, 0, 68, 68, &rect_dsc);
 
-    /* 3. VẼ 8 KÝ TỰ NGẪU NHIÊN */
     char text[2] = {0};
     for (int i = 0; i < 8; i++) {
-        text[0] = 33 + (k_sys_rand32_get() % 94);  // '!' đến '~'
-        int x = 5 + (k_sys_rand32_get() % 50);
-        int y = 15 + (k_sys_rand32_get() % 45);
+        text[0] = 33 + (sys_rand32_get() % 94);  // <--- SỬA: sys_rand32_get()
+        int x = 5 + (sys_rand32_get() % 50);
+        int y = 15 + (sys_rand32_get() % 45);
         lv_canvas_draw_text(wpm_canvas, x, y, 20, &label_dsc, text);
     }
 
-    /* 4. XOAY & CẬP NHẬT MÀN HÌNH */
     rotate_canvas(wpm_canvas, cbuf);
     lv_obj_invalidate(wpm_canvas);
 }
 
 /* ================================================================== */
-/* CẬP NHẬT WPM (hiện tại: chỉ test) */
+/* WPM UPDATE */
 static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_state state) {
     for (int i = 0; i < 9; i++) {
         widget->state.wpm[i] = widget->state.wpm[i + 1];
     }
     widget->state.wpm[9] = state.wpm;
 
-    /* GỌI TEST MỖI KHI CÓ WPM MỚI */
     test_draw_random_chars(widget->cbuf2);
 }
 
@@ -110,7 +105,7 @@ static void battery_status_update_cb(struct battery_status_state state) {
 }
 
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
-    return (struct battery_status_ state){
+    return (struct battery_status_state){  // <--- SỬA: thêm _state
         .level = zmk_battery_state_of_charge(),
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
         .usb_present = zmk_usb_is_powered(),
@@ -147,8 +142,13 @@ ZMK_SUBSCRIPTION(widget_peripheral_status, zmk_split_peripheral_status_changed);
 
 /* ================================================================== */
 /* WPM LISTENER */
+static struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
+    const struct zmk_split_wpm_state_changed *ev = as_zmk_split_wpm_state_changed(eh);
+    return (struct wpm_status_state){.wpm = (ev != NULL) ? ev->wpm : 0};
+}
+
 ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state,
-                            set_wpm_status, zmk_wpm_get_state)
+                            set_wpm_status, wpm_status_get_state)
 ZMK_SUBSCRIPTION(widget_wpm_status, zmk_split_wpm_state_changed);
 
 /* ================================================================== */
@@ -157,17 +157,14 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
     lv_obj_set_size(widget->obj, 160, 68);
 
-    /* Canvas top */
     lv_obj_t *top = lv_canvas_create(widget->obj);
     lv_obj_align(top, LV_ALIGN_TOP_RIGHT, 0, 0);
     lv_canvas_set_buffer(top, widget->cbuf, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
 
-    /* Canvas WPM */
     wpm_canvas = lv_canvas_create(widget->obj);
     lv_obj_align(wpm_canvas, LV_ALIGN_TOP_LEFT, -48, 0);
     lv_canvas_set_buffer(wpm_canvas, widget->cbuf2, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
 
-    /* Khởi tạo state */
     widget->state.battery = 0;
     widget->state.charging = false;
     widget->state.connected = false;
@@ -178,10 +175,7 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget_peripheral_status_init();
     widget_wpm_status_init();
 
-    /* Vẽ lần đầu */
     draw_top(widget->obj, widget->cbuf, &widget->state);
-
-    /* TEST: VẼ KÝ TỰ NGẪU NHIÊN */
     test_draw_random_chars(widget->cbuf2);
 
     return 0;
