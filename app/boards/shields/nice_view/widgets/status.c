@@ -336,6 +336,7 @@ static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_s
         });
     }
     #endif
+}
 
 static void wpm_status_update_cb(struct wpm_status_state state) {
     struct zmk_widget_status *widget;
