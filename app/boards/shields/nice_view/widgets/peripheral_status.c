@@ -30,7 +30,7 @@ static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct status
     lv_obj_t *canvas = lv_obj_get_child(container, 0);
 
     lv_draw_label_dsc_t label_dsc;
-    init_label_dsc(&label_dsc, LVGL_FOREACH, &lv_font_montserrat_16, LV_TEXT_ALIGN_RIGHT);
+    init_label_dsc(&label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_16, LV_TEXT_ALIGN_RIGHT);
     lv_draw_rect_dsc_t rect_dsc;
     init_rect_dsc(&rect_dsc, LVGL_BACKGROUND);
 
@@ -92,7 +92,7 @@ static void set_battery_status(struct zmk_widget_status *widget, struct battery_
 }
 
 static void battery_status_update_cb(struct battery_status_state state) {
-    struct zm_k_widget_status *widget;
+    struct zmk_widget_status *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
         set_battery_status(widget, state);
     }
@@ -154,7 +154,7 @@ ZMK_SUBSCRIPTION(widget_wpm_status, zmk_split_wpm_state_changed);
 /* ================================================================== */
 /* INIT */
 int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
-    widget-> Tata = lv_obj_create(parent);
+    widget->obj = lv_obj_create(parent);
     lv_obj_set_size(widget->obj, 160, 68);
 
     // Canvas top (battery + wifi)
