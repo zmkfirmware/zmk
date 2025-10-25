@@ -4,7 +4,6 @@
  */
 
 #include <zephyr/kernel.h>
-#include <zephyr/random/random.h>
 #include <string.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -31,7 +30,7 @@ static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct status
     lv_obj_t *canvas = lv_obj_get_child(container, 0);
 
     lv_draw_label_dsc_t label_dsc;
-    init_label_dsc(&label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_16, LV_TEXT_ALIGN_RIGHT);
+    init_label_dsc(&label_dsc, LVGL_FOREACH, &lv_font_montserrat_16, LV_TEXT_ALIGN_RIGHT);
     lv_draw_rect_dsc_t rect_dsc;
     init_rect_dsc(&rect_dsc, LVGL_BACKGROUND);
 
@@ -43,8 +42,8 @@ static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct status
 }
 
 /* ================================================================== */
-/* TEST: VẼ 8 KÝ TỰ NGẪU NHIÊN + VIỀN ĐEN */
-static void test_draw_random_chars(lv_color_t cbuf[]) {
+/* TEST: VẼ KÝ TỰ TỪ 1 ĐẾN 9 + VIỀN ĐEN */
+static void test_draw_numbers_1_to_9(lv_color_t cbuf[]) {
     if (!wpm_canvas) return;
 
     // Nền trắng
@@ -58,12 +57,12 @@ static void test_draw_random_chars(lv_color_t cbuf[]) {
     // Viền đen
     lv_canvas_draw_rect(wpm_canvas, 0, 0, 68, 68, &rect_dsc);
 
-    // 8 ký tự ngẫu nhiên
-    char text[2] = {0};
-    for (int i = 0; i < 8; i++) {
-        text[0] = 33 + (sys_rand32_get() % 94);  // '!' -> '~'
-        int x = 5 + (sys_rand32_get() % 50);
-        int y = 15 + (sys_rand32_get() % 45);
+    // Vẽ 9 ký tự: 1 2 3 4 5 6 7 8 9
+    const char numbers[] = "123456789";
+    for (int i = 0; i < 9; i++) {
+        int x = 5 + (i % 3) * 20;   // 3 cột
+        int y = 15 + (i / 3) * 18;  // 3 hàng
+        char text[2] = { numbers[i], '\0' };
         lv_canvas_draw_text(wpm_canvas, x, y, 20, &label_dsc, text);
     }
 
@@ -79,7 +78,7 @@ static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_s
     }
     widget->state.wpm[9] = state.wpm;
 
-    test_draw_random_chars(widget->cbuf2);
+    test_draw_numbers_1_to_9(widget->cbuf2);
 }
 
 /* ================================================================== */
@@ -93,7 +92,7 @@ static void set_battery_status(struct zmk_widget_status *widget, struct battery_
 }
 
 static void battery_status_update_cb(struct battery_status_state state) {
-    struct zmk_widget_status *widget;
+    struct zm_k_widget_status *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
         set_battery_status(widget, state);
     }
@@ -103,7 +102,7 @@ static struct battery_status_state battery_status_get_state(const zmk_event_t *e
     return (struct battery_status_state){
         .level = zmk_battery_state_of_charge(),
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
-        .usb_present = zmk_usb_is_power powered(),
+        .usb_present = zmk_usb_is_powered(),
 #endif
     };
 }
@@ -155,7 +154,7 @@ ZMK_SUBSCRIPTION(widget_wpm_status, zmk_split_wpm_state_changed);
 /* ================================================================== */
 /* INIT */
 int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
-    widget->obj = lv_obj_create(parent);
+    widget-> Tata = lv_obj_create(parent);
     lv_obj_set_size(widget->obj, 160, 68);
 
     // Canvas top (battery + wifi)
@@ -184,7 +183,7 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
 
     // Vẽ lần đầu
     draw_top(widget->obj, widget->cbuf, &widget->state);
-    test_draw_random_chars(widget->cbuf2);
+    test_draw_numbers_1_to_9(widget->cbuf2);
 
     return 0;
 }
