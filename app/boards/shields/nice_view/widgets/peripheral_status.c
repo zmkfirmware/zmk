@@ -71,14 +71,16 @@ static void draw_wpm(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     // Fill background
     lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
 
-    // Draw WPM widget
+    // Draw WPM widget border và inner box
     lv_canvas_draw_rect(canvas, 0, 21, 68, 42, &rect_white_dsc);
     lv_canvas_draw_rect(canvas, 1, 22, 66, 40, &rect_black_dsc);
 
+    // Draw WPM number
     char wpm_text[6] = {};
     snprintf(wpm_text, sizeof(wpm_text), "%d", state->wpm[9]);
     lv_canvas_draw_text(canvas, 42, 52, 24, &label_dsc_wpm, wpm_text);
 
+    // Calculate min/max for graph scaling
     int max = 0;
     int min = 256;
 
@@ -96,6 +98,7 @@ static void draw_wpm(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
         range = 1;
     }
 
+    // Draw graph line
     lv_point_t points[10];
     for (int i = 0; i < 10; i++) {
         points[i].x = 2 + i * 7;
@@ -196,7 +199,7 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
 
     // WPM canvas - thay thế art image
     lv_obj_t *wpm_canvas = lv_canvas_create(widget->obj);
-    lv_obj_align(wpm_canvas, LV_ALIGN_TOP_LEFT, -48, 0);
+    lv_obj_align(wpm_canvas, LV_ALIGN_TOP_LEFT, -48, 0);  // Giữ nguyên -48
     lv_canvas_set_buffer(wpm_canvas, widget->cbuf2, CANVAS_SIZE, CANVAS_SIZE, LV_IMG_CF_TRUE_COLOR);
 
     // Khởi tạo state
@@ -204,7 +207,7 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget->state.charging = false;
     widget->state.connected = false;
     
-    // Khởi tạo mảng WPM
+    // Khởi tạo mảng WPM với một số giá trị test để dễ thấy
     for (int i = 0; i < 10; i++) {
         widget->state.wpm[i] = 0;
     }
