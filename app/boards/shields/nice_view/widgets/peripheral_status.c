@@ -218,7 +218,7 @@ static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_s
     }
     widget->state.wpm[9] = state.wpm;
 
-    draw_wpm(widget->obj, widget->cbuf2, &widget->state);
+    //draw_wpm(widget->obj, widget->cbuf2, &widget->state);
 }
 
 static void wpm_status_update_cb(struct wpm_status_state state) {
@@ -269,7 +269,7 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
 
     // Vẽ cả 2 canvas lần đầu
     draw_top(widget->obj, widget->cbuf, &widget->state);
-    draw_wpm(widget->obj, widget->cbuf2, &widget->state);
+    //draw_wpm(widget->obj, widget->cbuf2, &widget->state);
     for (int i = 0; i < 10; i++) widget->state.wpm[i] = 20 + i * 5;
     draw_wpm2(widget->cbuf2, &widget->state);
 
