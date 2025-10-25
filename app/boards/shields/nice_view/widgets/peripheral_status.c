@@ -22,17 +22,12 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include "peripheral_status.h"
 
 /* ================================================================== */
-/* KHAI BÁO CẤU TRÚC TRƯỚC KHI DÙNG (SỬA LỖI "incomplete type") */
-struct wpm_status_state {
+/* KHAI BÁO CẤU TRÚC TRƯỚC KHI DÙNG (đổi tên để tránh trùng ZMK structs) */
+struct my_wpm_status_state {
     uint8_t wpm;
 };
 
-struct battery_status_state {
-    uint8_t level;
-    bool usb_present;
-};
-
-struct peripheral_status_state {
+struct my_peripheral_status_state {
     bool connected;
 };
 
@@ -42,7 +37,7 @@ static lv_obj_t *wpm_canvas;
 
 /* ================================================================== */
 /* DRAW TOP: battery + kết nối */
-static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct status_state *state) {
+static void draw_top(lv_obj_t *container, lv_color_t cbuf[], const struct zmk_widget_status *state) {
     lv_obj_t *canvas = lv_obj_get_child(container, 0);
 
     lv_draw_label_dsc_t label_dsc;
@@ -88,7 +83,7 @@ static void test_draw_numbers_1_to_9(lv_color_t cbuf[]) {
 
 /* ================================================================== */
 /* WPM UPDATE */
-static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_state state) {
+static void set_wpm_status(struct zmk_widget_status *widget, struct my_wpm_status_state state) {
     for (int i = 0; i < 9; i++) {
         widget->state.wpm[i] = widget->state.wpm[i + 1];
     }
@@ -103,7 +98,7 @@ static void set_battery_status(struct zmk_widget_status *widget, struct battery_
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     widget->state.charging = state.usb_present;
 #endif
-    widget->state.battery = state.level;
+    widget->state.battery = state.state_of_charge;
     draw_top(widget->obj, widget->cbuf, &widget->state);
 }
 
@@ -116,7 +111,7 @@ static void battery_status_update_cb(struct battery_status_state state) {
 
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
     return (struct battery_status_state){
-        .level = zmk_battery_state_of_charge(),
+        .state_of_charge = zmk_battery_state_of_charge(),
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
         .usb_present = zmk_usb_is_powered(),
 #endif
@@ -132,38 +127,38 @@ ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 
 /* ================================================================== */
 /* CONNECTION */
-static struct peripheral_status_state get_peripheral_state(const zmk_event_t *eh) {
-    return (struct peripheral_status_state){
+static struct my_peripheral_status_state get_peripheral_state(const zmk_event_t *eh) {
+    return (struct my_peripheral_status_state){
         .connected = zmk_split_bt_peripheral_is_connected()
     };
 }
 
-static void set_connection_status(struct zmk_widget_status *widget, struct peripheral_status_state state) {
+static void set_connection_status(struct zmk_widget_status *widget, struct my_peripheral_status_state state) {
     widget->state.connected = state.connected;
     draw_top(widget->obj, widget->cbuf, &widget->state);
 }
 
-static void peripheral_status_update_cb(struct peripheral_status_state state) {
+static void peripheral_status_update_cb(struct my_peripheral_status_state state) {
     struct zmk_widget_status *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
         set_connection_status(widget, state);
     }
 }
 
-ZMK_DISPLAY_WIDGET_LISTENER(widget_peripheral_status, struct peripheral_status_state,
+ZMK_DISPLAY_WIDGET_LISTENER(widget_peripheral_status, struct my_peripheral_status_state,
                             peripheral_status_update_cb, get_peripheral_state)
 ZMK_SUBSCRIPTION(widget_peripheral_status, zmk_split_peripheral_status_changed);
 
 /* ================================================================== */
 /* WPM LISTENER */
-static struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
+static struct my_wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
     const struct zmk_split_wpm_state_changed *ev = as_zmk_split_wpm_state_changed(eh);
-    return (struct wpm_status_state){
+    return (struct my_wpm_status_state){
         .wpm = (ev != NULL) ? ev->wpm : 0
     };
 }
 
-ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state,
+ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct my_wpm_status_state,
                             set_wpm_status, wpm_status_get_state)
 ZMK_SUBSCRIPTION(widget_wpm_status, zmk_split_wpm_state_changed);
 
