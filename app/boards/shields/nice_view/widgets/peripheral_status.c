@@ -271,7 +271,7 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     draw_top(widget->obj, widget->cbuf, &widget->state);
     //draw_wpm(widget->obj, widget->cbuf2, &widget->state);
     for (int i = 0; i < 10; i++) widget->state.wpm[i] = 20 + i * 5;
-    draw_wpm2(widget->cbuf2, &widget->state);
+    //draw_wpm2(widget->cbuf2, &widget->state);
 
     return 0;
 }
