@@ -21,6 +21,22 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include "peripheral_status.h"
 
+/* ================================================================== */
+/* KHAI BÁO CẤU TRÚC TRƯỚC KHI DÙNG (SỬA LỖI "incomplete type") */
+struct wpm_status_state {
+    uint8_t wpm;
+};
+
+struct battery_status_state {
+    uint8_t level;
+    bool usb_present;
+};
+
+struct peripheral_status_state {
+    bool connected;
+};
+
+/* ================================================================== */
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 static lv_obj_t *wpm_canvas;
 
