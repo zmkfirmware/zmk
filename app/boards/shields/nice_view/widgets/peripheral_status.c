@@ -175,15 +175,19 @@ ZMK_SUBSCRIPTION(widget_peripheral_status, zmk_split_peripheral_status_changed);
 // === WPM ===
 
 static void set_wpm_status(struct zmk_widget_status *widget, struct wpm_status_state state) {
+    LOG_INF("WPM received from central: %d", state.wpm);  // <-- THÊM LOGGING
+    
     for (int i = 0; i < MAX_WPM_POINTS - 1; i++) {
         widget->state.wpm[i] = widget->state.wpm[i + 1];
     }
     widget->state.wpm[MAX_WPM_POINTS - 1] = state.wpm;
 
+    LOG_INF("Drawing WPM graph with latest value: %d", widget->state.wpm[MAX_WPM_POINTS - 1]);
     draw_wpm(widget->obj, widget->cbuf2, &widget->state);
 }
 
 static void wpm_status_update_cb(struct wpm_status_state state) {
+    LOG_INF("WPM update callback triggered: %d", state.wpm);  // <-- THÊM LOGGING
     struct zmk_widget_status *widget;
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
         set_wpm_status(widget, state);
@@ -192,7 +196,9 @@ static void wpm_status_update_cb(struct wpm_status_state state) {
 
 static struct wpm_status_state wpm_status_get_state(const zmk_event_t *eh) {
     const struct zmk_split_wpm_state_changed *ev = as_zmk_split_wpm_state_changed(eh);
-    return (struct wpm_status_state){.wpm = (ev != NULL) ? ev->wpm : 0};
+    uint8_t wpm_value = (ev != NULL) ? ev->wpm : 0;
+    LOG_INF("Getting WPM state from event: %d", wpm_value);  // <-- THÊM LOGGING
+    return (struct wpm_status_state){.wpm = wpm_value};
 }
 
 ZMK_DISPLAY_WIDGET_LISTENER(widget_wpm_status, struct wpm_status_state, wpm_status_update_cb,
