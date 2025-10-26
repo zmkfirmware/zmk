@@ -31,7 +31,7 @@
 #pragma once
 
 #include <zephyr/kernel.h>
-#include <zmk/events.h>  // ✅ Quan trọng! Cần include file này để có struct zmk_event_header
+#include <zmk/events_manager.h>  // ✅ Quan trọng! Cần include file này để có struct zmk_event_header
 
 struct zmk_split_wpm_state_changed {
     struct zmk_event_header header;
