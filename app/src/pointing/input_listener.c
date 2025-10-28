@@ -128,6 +128,14 @@ static void handle_key_code(const struct input_listener_config *config,
     int8_t btn;
 
     switch (evt->code) {
+    case INPUT_BTN_TOUCH:
+        btn = 0;
+        if (evt->value > 0) {
+            WRITE_BIT(data->mouse.button_set, btn, 1);
+        } else {
+            WRITE_BIT(data->mouse.button_clear, btn, 1);
+        }
+        break;
     case INPUT_BTN_0:
     case INPUT_BTN_1:
     case INPUT_BTN_2:
