@@ -13,6 +13,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
+            display-name = "Default Layer";
 
             bindings = <
     &tog 1 &kp C_PREV   &kp C_PP &kp C_NEXT
@@ -23,6 +24,7 @@
         };
 
         num_layer {
+            display-name = "Num Layer";
             bindings = <
     &trans   &kp N7 &kp N8 &kp N9
     &trans   &kp N4 &kp N5 &kp N6
@@ -31,6 +33,7 @@
         };
 
         lower_layer {
+            display-name = "Lower Layer";
             bindings = <
     &bt BT_CLR &none        &sys_reset       &bootloader
     &trans     &bt BT_SEL 3 &bt BT_SEL 4 &none
@@ -39,6 +42,7 @@
         };
 
         raise_layer {
+            display-name = "Raise Layer";
             bindings = <
     &kp 0x68 &kp 0x69 &kp 0x6A &kp 0x6B
     &kp 0x6C &kp 0x6D &kp 0x6E &kp 0x6F
