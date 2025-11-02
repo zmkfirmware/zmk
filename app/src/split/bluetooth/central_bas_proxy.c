@@ -30,7 +30,7 @@ static void blvl_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value
 
 static ssize_t read_blvl(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf,
                          uint16_t len, uint16_t offset) {
-    const uint8_t source = (uint8_t)(uint32_t)attr->user_data;
+    const uint8_t source = *(uint8_t *)attr->user_data;
     uint8_t level = 0;
     int rc = zmk_split_central_get_peripheral_battery_level(source, &level);
 
@@ -60,7 +60,7 @@ static const struct bt_gatt_cpf aux_level_cpf = {
 
 #define PERIPH_BATT_LEVEL_ATTRS(i, _)                                                              \
     BT_GATT_CHARACTERISTIC(BT_UUID_BAS_BATTERY_LEVEL, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,     \
-                           BT_GATT_PERM_READ, read_blvl, NULL, i),                                 \
+                           BT_GATT_PERM_READ, read_blvl, NULL, ((uint8_t[]){i})),                  \
         BT_GATT_CCC(blvl_ccc_cfg_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),                 \
         BT_GATT_CPF(&aux_level_cpf), BT_GATT_CUD(PERIPH_CUD(i), BT_GATT_PERM_READ),
 
