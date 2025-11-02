@@ -12,6 +12,7 @@ CONFIG_PINCTRL=y
 # Poll to avoid interrupt overlap issues
 CONFIG_ZMK_KSCAN_DIRECT_POLLING=y
 
+CONFIG_SYSTEM_WORKQUEUE_STACK_SIZE=1536
 CONFIG_ISR_STACK_SIZE=1024
 
 # clock configuration

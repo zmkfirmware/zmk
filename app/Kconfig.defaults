@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
-    default 2048 if SOC_RP2040
     default 3072 if ZMK_DISPLAY
-    default 2048 if ZMK_BLE
+    default 2048
 
 # HID
 if ZMK_HID_REPORT_TYPE_HKRO
