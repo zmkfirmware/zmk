@@ -31,10 +31,10 @@ config BT_DIS_PNP_VID
 config BT_DIS_PNP_PID
     default 0x615E
 
-config BT_DIS_MODEL
+config BT_DIS_MODEL_NUMBER_STR
     default ZMK_KEYBOARD_NAME
 
-config BT_DIS_MANUF
+config BT_DIS_MANUF_NAME_STR
     default "ZMK Project"
 
 # Hardware specific overrides
