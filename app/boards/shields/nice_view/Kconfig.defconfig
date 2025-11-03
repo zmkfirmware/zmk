@@ -39,6 +39,9 @@ config NICE_VIEW_WIDGET_STATUS
 config NICE_VIEW_WIDGET_INVERTED
     bool "Invert custom status widget colors"
 
+config NICE_VIEW_WIDGET_BATTERY_SHOW_PERCENTAGE
+    bool "Show battery percentage in status widget"
+
 if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
 
 config NICE_VIEW_WIDGET_STATUS
