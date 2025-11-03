@@ -11,11 +11,16 @@
 
 #include <drivers/behavior.h>
 #include <zmk/behavior.h>
+#include <zmk/physical_layouts.h>
 
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
 #include <zmk/events/battery_state_changed.h>
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#include <zmk/events/hid_indicators_changed.h>
+#endif
 
 #include <zephyr/init.h>
 #include <zephyr/logging/log.h>
@@ -51,6 +56,15 @@ int zmk_split_transport_peripheral_command_handler(
             LOG_ERR("Failed to invoke behavior %s: %d", binding.behavior_dev, err);
         }
     }
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_PHYSICAL_LAYOUT: {
+        zmk_physical_layouts_select(cmd.data.set_physical_layout.layout_idx);
+    }
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS: {
+        raise_zmk_hid_indicators_changed((struct zmk_hid_indicators_changed){
+            .indicators = cmd.data.set_hid_indicators.indicators});
+    }
+#endif
     default:
         LOG_WRN("Unhandled command type %d", cmd.type);
         return -ENOTSUP;
