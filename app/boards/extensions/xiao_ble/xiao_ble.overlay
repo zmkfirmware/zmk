@@ -6,6 +6,9 @@
 
 #include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
 
+/* Add an sd_partition label for compatibility with the nosd snippet */
+sd_partition: &reserved_partition_0 { };
+
 / {
     chosen {
         zmk,battery = &vbatt;
