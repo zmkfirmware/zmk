@@ -695,11 +695,6 @@ config ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION
 
 endif # ZMK_KEYMAP_SENSORS
 
-choice CBPRINTF_IMPLEMENTATION
-    default CBPRINTF_NANO
-
-endchoice
-
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
