@@ -19,6 +19,8 @@
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
 
+#include <zmk/events/split_transport_changed.h>
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 const struct zmk_split_transport_central *active_transport;
@@ -198,6 +200,8 @@ static int select_first_available_transport(void) {
 
 static int transport_status_changed_cb(const struct zmk_split_transport_central *central,
                                        struct zmk_split_transport_status status) {
+    raise_zmk_split_transport_changed(
+        (struct zmk_split_transport_changed){.addr = (uint32_t)central, .status = status});
     if (central == active_transport) {
         LOG_DBG("Central at %p changed status: enabled %d, available %d, connections %d", central,
                 status.enabled, status.available, status.connections);
@@ -207,6 +211,16 @@ static int transport_status_changed_cb(const struct zmk_split_transport_central 
     } else {
         // Just to be sure, in case a higher priority transport becomes available
         select_first_available_transport();
+    }
+
+    return 0;
+}
+
+bool zmk_split_transport_get_available(uint32_t addr) {
+    STRUCT_SECTION_FOREACH(zmk_split_transport_central, t) {
+        if ((uint32_t)t == addr) {
+            return t->api->get_status().available;
+        }
     }
 
     return 0;
