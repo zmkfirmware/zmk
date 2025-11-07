@@ -226,6 +226,16 @@ bool zmk_split_transport_get_available(uint32_t addr) {
     return 0;
 }
 
+uint32_t zmk_split_get_transport_addr_at_index(uint8_t index) {
+    struct zmk_split_transport_central *t;
+    ptrdiff_t count;
+    STRUCT_SECTION_COUNT(zmk_split_transport_central, &count);
+    if ((ptrdiff_t)index > count)
+        return 0;
+    STRUCT_SECTION_GET(zmk_split_transport_central, index, &t);
+    return (uint32_t)t;
+}
+
 static int central_init(void) {
     STRUCT_SECTION_FOREACH(zmk_split_transport_central, t) {
         if (!t->api->set_status_callback) {
