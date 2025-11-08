@@ -72,12 +72,11 @@ BUILD_ASSERT(
     BUILD_ASSERT(!IS_ENABLED(CONFIG_ZMK_STUDIO) || DT_INST_NODE_HAS_PROP(n, keys),                 \
                  "ZMK Studio requires physical layouts with key positions. See "                   \
                  "https://zmk.dev/docs/development/hardware-integration/studio-setup");            \
-    static const struct zmk_key_physical_attrs const _CONCAT(                                      \
-        _zmk_physical_layout_keys_, n)[DT_INST_PROP_LEN_OR(n, keys, 0)] = {                        \
+    static const struct zmk_key_physical_attrs _CONCAT(_zmk_physical_layout_keys_,                 \
+                                                       n)[DT_INST_PROP_LEN_OR(n, keys, 0)] = {     \
         LISTIFY(DT_INST_PROP_LEN_OR(n, keys, 0), ZKPA_INIT, (, ), n)};                             \
     ZMK_MATRIX_TRANSFORM_EXTERN(DT_INST_PHANDLE(n, transform));                                    \
-    static const struct zmk_physical_layout const _CONCAT(_zmk_physical_layout_,                   \
-                                                          DT_DRV_INST(n)) = {                      \
+    static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, DT_DRV_INST(n)) = {     \
         .display_name = DT_INST_PROP_OR(n, display_name, "Layout #" #n),                           \
         .matrix_transform = ZMK_MATRIX_TRANSFORM_T_FOR_NODE(DT_INST_PHANDLE(n, transform)),        \
         .keys = _CONCAT(_zmk_physical_layout_keys_, n),                                            \
