@@ -1,0 +1,23 @@
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Antecedent Morph Behavior
+
+compatible: "zmk,behavior-antecedent-morph"
+
+include: zero_param.yaml
+
+properties:
+  defaults:
+    type: phandle-array
+    required: true
+    specifier-space: binding
+  bindings:
+    type: phandle-array
+    required: true
+  antecedents:
+    type: array
+    required: true
+  max-delay-ms:
+    type: int
+    default: -1
