@@ -81,6 +81,7 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
   if (CONFIG_ZMK_BLE)
     target_sources(app PRIVATE src/events/ble_active_profile_changed.c)
+    target_sources(app PRIVATE src/events/ble_other_profile_changed.c)
     target_sources(app PRIVATE src/behaviors/behavior_bt.c)
     target_sources(app PRIVATE src/ble.c)
     target_sources(app PRIVATE src/hog.c)
