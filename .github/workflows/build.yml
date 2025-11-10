@@ -30,7 +30,7 @@ jobs:
         include: ${{ fromJSON(needs.compile-matrix.outputs.include-list) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
       - name: Cache west modules
@@ -187,7 +187,7 @@ jobs:
       core-include: ${{ steps.core-list.outputs.result }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
       - name: Use Node.js
@@ -218,7 +218,7 @@ jobs:
       boards-include: ${{ steps.boards-list.outputs.result }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -345,7 +345,7 @@ jobs:
       organized-metadata: ${{ steps.organize-metadata.outputs.result }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
       - name: Use Node.js
@@ -427,7 +427,7 @@ jobs:
       core-changes: ${{ steps.core-changes.outputs.result }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           persist-credentials: false
       - uses: tj-actions/changed-files@9200e69727eb73eb060652b19946b8a2fdfb654b # pin to v45.0.8 due to https://github.com/tj-actions/changed-files/issues/2463 https://www.stepsecurity.io/blog/harden-runner-detection-tj-actions-changed-files-action-is-compromised
