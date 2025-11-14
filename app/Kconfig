@@ -25,6 +25,9 @@ config USB_DEVICE_PID
 config USB_DEVICE_MANUFACTURER
     default "ZMK Project"
 
+config BT_DEVICE_APPEARANCE
+    default 961
+
 config BT_DIS_PNP_VID
     default 0x1D50
 
