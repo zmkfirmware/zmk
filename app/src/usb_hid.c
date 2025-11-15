@@ -100,6 +100,14 @@ static int get_report_cb(const struct device *dev, struct usb_setup_packet *setu
             *len = sizeof(*report);
             break;
         }
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+        case ZMK_HID_REPORT_ID_BATTERY: {
+            struct zmk_hid_battery_report *report = zmk_hid_get_battery_report();
+            *data = (uint8_t *)report;
+            *len = sizeof(*report);
+            break;
+        }
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
         default:
             LOG_ERR("Invalid report ID %d requested", setup->wValue & HID_GET_REPORT_ID_MASK);
             return -EINVAL;
@@ -234,6 +242,19 @@ int zmk_usb_hid_send_mouse_report() {
     return zmk_usb_hid_send_report((uint8_t *)report, sizeof(*report));
 }
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
+
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+int zmk_usb_hid_send_battery_report() {
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    if (hid_protocol == HID_PROTOCOL_BOOT) {
+        return -ENOTSUP;
+    }
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
+
+    struct zmk_hid_battery_report *report = zmk_hid_get_battery_report();
+    return zmk_usb_hid_send_report((uint8_t *)report, sizeof(*report));
+}
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
 
 static int zmk_usb_hid_init(void) {
     hid_dev = device_get_binding("HID_0");

@@ -90,8 +90,11 @@ endif()
 target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/behaviors/behavior_rgb_underglow.c)
 target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/behaviors/behavior_backlight.c)
 
-target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/events/battery_state_changed.c)
-target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/battery.c)
+if(CONFIG_ZMK_BATTERY_REPORTING)
+  target_sources(app PRIVATE src/events/battery_state_changed.c)
+  target_sources(app PRIVATE src/battery.c)
+  target_sources_ifndef(CONFIG_BT_BAS app PRIVATE src/battery_reporting.c)
+endif()
 
 target_sources_ifdef(CONFIG_ZMK_HID_INDICATORS app PRIVATE src/events/hid_indicators_changed.c)
 
