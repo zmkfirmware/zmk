@@ -108,6 +108,11 @@ int zmk_pm_soft_off(void) {
     for (int i = 0; i < device_count; i++) {
         const struct device *dev = &devs[i];
 
+        if (!device_is_ready(dev) || pm_device_is_busy(dev) || pm_device_state_is_locked(dev) ||
+            pm_device_runtime_is_enabled(dev)) {
+            continue;
+        }
+
         if (pm_device_wakeup_is_enabled(dev)) {
             pm_device_wakeup_enable(dev, false);
         }
