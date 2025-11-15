@@ -6,7 +6,7 @@ toc_max_heading_level: 2
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-ZMK's pointing device support builds upon the Zephyr [input API](https://docs.zephyrproject.org/3.5.0/services/input/index.html) to offer pointing/mouse functionality with various hardware.
+ZMK's pointing device support builds upon the Zephyr [input API](https://docs.zephyrproject.org/4.1.0/services/input/index.html) to offer pointing/mouse functionality with various hardware.
 A limited number of input drivers are available in the Zephyr version currently used by ZMK, but additional drivers can be found in [external modules](../../features/modules.mdx) for a variety of hardware.
 
 Pointing devices are also supported on split peripherals, with some additional configuration using the [input split device](../../config/pointing.md#input-split).
@@ -42,17 +42,17 @@ This node should always be set up in the `.overlay`/`.dts` file for the keyboard
 <SplitTabs>
   <TabItem value="unibody">
 
-For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml), a node like following would be added to the `.overlay`/`.dts` file for the keyboard, like `<keyboard>.overlay`:
+For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml), a node like following would be added to the `.overlay`/`.dts` file for the keyboard, like `<keyboard>.overlay`:
 
   </TabItem>
   <TabItem value="central">
 
-For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml) on a central part, a node like following would be added to the `.overlay`/`.dts` file for the central part of the keyboard, like `<central>.overlay`:
+For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml) on a central part, a node like following would be added to the `.overlay`/`.dts` file for the central part of the keyboard, like `<central>.overlay`:
 
   </TabItem>
   <TabItem value="peripheral">
 
-For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml) on one of the peripheral parts, a node like following would be added to the `.overlay`/`.dts` file for that peripheral part, like `<peripheral>.overlay`:
+For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml) on one of the peripheral parts, a node like following would be added to the `.overlay`/`.dts` file for that peripheral part, like `<peripheral>.overlay`:
 
   </TabItem>
 </SplitTabs>
@@ -264,7 +264,7 @@ As an example, you could enhance the listener defined in the previous section wi
 ## Configuration Setting
 
 If your keyboard hardware includes a pointing device by default, you can enable the [`ZMK_POINTING` config](../../config/pointing.md#general) in your keyboard definition.
-You can do that in your [`Kconfig.defconfig` file](new-shield.mdx#kconfigdefconfig), where you can also enable the config for the communication protocol (e.g. [SPI](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_SPI), [I2C](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/i2c.html#configuration-options)) used by the pointing device:
+You can do that in your [`Kconfig.defconfig` file](new-shield.mdx#kconfigdefconfig), where you can also enable the config for the communication protocol (e.g. [SPI](https://docs.zephyrproject.org/4.1.0/kconfig.html#CONFIG_SPI), [I2C](https://docs.zephyrproject.org/4.1.0/hardware/peripherals/i2c.html#configuration-options)) used by the pointing device:
 
 <SplitTabs>
   <TabItem value="unibody">

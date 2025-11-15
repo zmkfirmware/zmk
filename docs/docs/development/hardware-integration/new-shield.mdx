@@ -61,7 +61,7 @@ The high level steps are:
 Many of the above files will differ depending on whether your keyboard is a unibody or is [split into multiple parts](../../features/split-keyboards.md).
 
 After adding ZMK support for a basic shield using this guide, check the sidebar for guides on adding any additional features (such as encoders) that your keyboard has.
-It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
+It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/4.1.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
 ## New ZMK Module Repository
 
@@ -106,7 +106,7 @@ mkdir boards/shields/<keyboard_name>
 You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) in the ZMK repo that houses [the in-tree supported shields](../../hardware.mdx) in order to copy and modify as a starting point.
 :::
 
-There are two required [Kconfig](https://docs.zephyrproject.org/3.5.0/build/kconfig/index.html) files that need to be created for your new keyboard shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
+There are two required [Kconfig](https://docs.zephyrproject.org/4.1.0/build/kconfig/index.html) files that need to be created for your new keyboard shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
 
 <SplitTabs></SplitTabs>
 

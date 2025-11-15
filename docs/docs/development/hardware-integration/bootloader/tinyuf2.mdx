@@ -1,0 +1,102 @@
+---
+title: TinyUF2 Bootloader
+sidebar_label: TinyUF2
+---
+
+import BaseConfig from "./_base-config.md";
+
+The [TinyUF2 Bootloader](https://github.com/adafruit/tinyuf2) is a [magic value type bootloader](./index.mdx#magic-value-bootloaders), with some extra setup used to integrate with it.
+
+<BaseConfig />
+
+## Adjust The Existing RAM node
+
+For TinyUF2, we'll first adjust the SRAM to ensure Zephyr does not overwrite the memory location the bootloader inspect to determine if it should enter bootloader mode:
+
+```dts
+&sram0 {
+    reg = <0x20000000 0x1FFFC>;
+};
+```
+
+Note:
+
+- The `0x20000000` address is the address of the RAM for the target. This is nearly always `0x20000000`
+- The exact value of `0x1FFFC` will depend on the total RAM on the target. The value should be the total RAM, minus 4-bytes, in hex
+
+## Add a New Memory Region Node with Retainer RAM
+
+```dts
+/ {
+    sram@2001FFFC {
+        compatible = "zephyr,memory-region", "mmio-sram";
+        reg = <0x2001FFFC 0x4>;
+        zephyr,memory-region = "RetainedMem";
+        status = "okay";
+
+        retainedmem {
+            compatible = "zephyr,retained-ram";
+            status = "okay";
+            #address-cells = <1>;
+            #size-cells = <1>;
+
+            magic_retention: retention@0 {
+                compatible = "zephyr,retention";
+                status = "okay";
+                reg = <0x0 0x4>;
+            };
+        };
+    };
+};
+```
+
+Note:
+
+- The node `sram@2001FFFC` and the corresponding `reg` property values are obtained by adding the base RAM address (.e.g. `0x20000000`) to the shrunk RAM size (e.g. `0x1FFFC`) to get the new start address for the area of reserved RAM.
+- The magic values in TinyUF2 are 32-bits (4 bytes), so the second `reg` size value is `0x4`.
+
+## Magic Mapper node
+
+Next, we'll set up our mapping retained mem driver, which will map from the Zephyr boot mode values to the values the bootloader is looking for:
+
+```dts
+/ {
+    magic_mapper {
+        compatible = "zmk,bootmode-to-magic-mapper";
+        status = "okay";
+
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        boot_retention: retention@0 {
+            compatible = "zephyr,retention";
+            status = "okay";
+            reg = <0x0 0x1>;
+        };
+    };
+};
+```
+
+## Assign Chosen Properties
+
+Finally, we'll assign two `chosen` properties for the two nodes that have been defined:
+
+```dts
+/ {
+    chosen {
+        zephyr,boot-mode = &boot_retention;
+        zmk,magic-boot-mode = &magic_retention;
+    };
+};
+```
+
+## Magic Value Type Kconfig
+
+Lastly, one Kconfig choice needs to be set, e.g. in `Kconfig.defaults` for the board:
+
+```
+choice ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE
+    default ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE_TINYUF2
+
+endchoice
+```
