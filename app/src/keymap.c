@@ -466,12 +466,6 @@ int zmk_keymap_set_layer_name(zmk_keymap_layer_id_t id, const char *name, size_t
 
 static uint8_t zmk_keymap_layer_pending_changes[ZMK_KEYMAP_LAYERS_LEN][PENDING_ARRAY_SIZE];
 
-struct zmk_behavior_binding_setting {
-    zmk_behavior_local_id_t behavior_local_id;
-    uint32_t param1;
-    uint32_t param2;
-} __packed;
-
 bool zmk_keymap_check_unsaved_changes(void) {
     for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
         uint8_t *pending = zmk_keymap_layer_pending_changes[l];
