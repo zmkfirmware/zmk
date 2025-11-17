@@ -33,6 +33,13 @@ static struct zmk_hid_mouse_report mouse_report = {
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+
+static struct zmk_hid_battery_report battery_report = {
+    .report_id = ZMK_HID_REPORT_ID_BATTERY, .charging = 0, .battery_level = 0};
+
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
 static int explicit_modifier_counts[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -468,6 +475,17 @@ void zmk_hid_mouse_clear(void) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+
+void zmk_hid_battery_set(uint8_t battery_level) {
+    if (battery_level > 100) {
+        battery_report.battery_level = 100;
+    }
+    battery_report.battery_level = battery_level;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyboard_report; }
 
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
@@ -477,3 +495,8 @@ struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &cons
 struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_report; }
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
+
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+// zmk_hid_get_battery_report
+struct zmk_hid_battery_report *zmk_hid_get_battery_report(void) { return &battery_report; }
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
