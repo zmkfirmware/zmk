@@ -7,6 +7,7 @@
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
 #include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+#include "nrf52840_m2-pinctrl.dtsi"
 
 / {
     model = "Makerdiary nRF52840 M.2 module";
@@ -17,18 +18,23 @@
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
         zmk,battery = &vbatt;
+        zmk,backlight = &backlight;
+        zmk,led = &is31fl3733;
     };
 
     leds {
         compatible = "gpio-leds";
-        red_led: led_0 {
+        led1_red: led_1 {
             gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+            label = "Red LED 1";
         };
-        green_led: led_1 {
+        led1_green: led_2 {
             gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+            label = "Green LED 1";
         };
-        blue_led: led_2 {
+        led1_blue: led_3 {
             gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
+            label = "Blue LED 1";
         };
     };
 
@@ -39,6 +45,18 @@
         full-ohms = <(1000000 + 1000000)>;
     };
 
+    backlight: pwmleds {
+        compatible = "pwm-leds";
+        red_pwm_led: pwm_led_0 {
+            pwms = <&pwm0 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+        };
+        green_pwm_led: pwm_led_1 {
+            pwms = <&pwm0 1 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+        };
+        blue_pwm_led: pwm_led_2 {
+            pwms = <&pwm0 2 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+        };
+    };
 };
 
 &adc {
@@ -57,11 +75,31 @@
     status = "okay";
 };
 
+&pwm0 {
+    status = "okay";
+    pinctrl-0 = <&pwm0_default>;
+    pinctrl-1 = <&pwm0_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+&i2c0 {
+    compatible = "nordic,nrf-twim";
+    status = "okay";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
+    clock-frequency = <I2C_BITRATE_FAST>;
+    is31fl3733: is31fl3733@50 {
+        compatible = "issi,is31fl3733";
+        reg = <0x50>;
+        sdb-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+    };
+};
+
 zephyr_udc0: &usbd {
     compatible = "nordic,nrf-usbd";
     status = "okay";
 };
-
 
 &flash0 {
     /*
