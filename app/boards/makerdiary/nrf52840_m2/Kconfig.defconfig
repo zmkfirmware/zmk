@@ -13,4 +13,14 @@ endif # USB_DEVICE_STACK
 config BT_CTLR
     default BT
 
+if ZMK_BACKLIGHT
+
+config PWM
+    default y
+
+config LED_PWM
+    default y
+
+endif # ZMK_BACKLIGHT
+
 endif # BOARD_NRF52840_M2
