@@ -52,4 +52,8 @@ endif # !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
 config ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
     select LV_FONT_MONTSERRAT_26
 
+config NICE_VIEW_WPM_WIDGET
+    bool "Enable/Disable WPM widget"
+    default y if NICE_VIEW_WIDGET_STATUS
+
 endif # SHIELD_NICE_VIEW
