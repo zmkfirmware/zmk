@@ -3,7 +3,7 @@
 
 zephyr_linker_sources(DATA_SECTIONS ../../include/linker/zmk-rpc-subsystems.ld)
 zephyr_linker_sources(SECTIONS ../../include/linker/zmk-rpc-subsystem-handlers.ld)
-zephyr_linker_sources(SECTIONS ../../include/linker/zmk-rpc-subsystem-settings-reset.ld)
+zephyr_linker_sources(SECTIONS ../../include/linker/zmk-rpc-subsystem-persistence.ld)
 zephyr_linker_sources(SECTIONS ../../include/linker/zmk-rpc-event-mappers.ld)
 zephyr_linker_sources(SECTIONS ../../include/linker/zmk-rpc-transport.ld)
 

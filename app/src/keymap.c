@@ -472,23 +472,23 @@ struct zmk_behavior_binding_setting {
     uint32_t param2;
 } __packed;
 
-int zmk_keymap_check_unsaved_changes(void) {
+bool zmk_keymap_check_unsaved_changes(void) {
     for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
         uint8_t *pending = zmk_keymap_layer_pending_changes[l];
         for (int kp = 0; kp < ZMK_KEYMAP_LEN; kp++) {
             if (pending[kp / 8] & BIT(kp % 8)) {
-                return 1;
+                return true;
             }
         }
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
         if (settings_layer_orders[l] != keymap_layer_orders[l]) {
-            return 1;
+            return true;
         }
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
     }
 
-    return 0;
+    return false;
 }
 
 #define LAYER_ORDER_SETTINGS_KEY "keymap/layer_order"
