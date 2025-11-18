@@ -7,6 +7,7 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/backlight.h>
 
 / {
     keymap0: keymap {
@@ -41,7 +42,7 @@
     // ╭─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────────╮
     // |  `  | F1  | F2  | F3  | F4  | F5  | F6  | F7  | F8  | F9  | F10 | F11 | F12 |  BOOT   |
     // |─────┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───────|
-    // |  ─>|  | BTc |     |     |     |     |     |     |     |     |     |     |     | reset |
+    // |  ─>|  | BTc | BLt | BLc |     |     |     |     |     |     |     |     |     | reset |
     // |───────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴───────|
     // | CAPS   | BT0 | BT1 | BT2 | BT3 | BT4 | ←  |  ↓  |  ↑  |  → |     |     |     ↵     |
     // |────────┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴─┬───┴────────────|
@@ -51,7 +52,7 @@
     // ╰──────┴──────┴─────┴────────────────────────────────────┴───────┴──────┴──────┴────────╯
             bindings = <
 &kp GRAVE  &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12    &bootloader
-&trans         &bt BT_CLR &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &sys_reset
+&trans         &bt BT_CLR &bl BL_TOG &bl BL_CYCLE      &none      &none      &none      &none      &none      &none      &none      &none      &none      &sys_reset
 &trans           &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &kp LEFT   &kp DOWN   &kp UP   &kp RIGHT   &none      &none      &trans
 &trans                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &trans
 &trans       &trans       &trans       &trans                                                                     &trans     &trans     &trans     &trans
