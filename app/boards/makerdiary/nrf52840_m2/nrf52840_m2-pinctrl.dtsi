@@ -1,26 +1,4 @@
 &pinctrl {
-    /* configuration for spi0 device, default state */
-    spi0_default: spi0_default {
-        /* node name is arbitrary */
-        group1 {
-            /* main role: configure P1.11 as SPI clock, P0.02 as SPI MOSI, P0.03 as SPI MISO */
-            psels = <NRF_PSEL(SPIM_SCK, 1, 11)>,
-                    <NRF_PSEL(SPIM_MOSI, 1, 10)>,
-                    <NRF_PSEL(SPIM_MISO, 1, 12)>;
-        };
-    };
-
-    /* configuration for spi0 device, sleep state */
-    spi0_sleep: spi0_sleep {
-        group1 {
-            /* main role: configure P1.11 as SPI clock, P0.02 as SPI MOSI, P0.03 as SPI MISO */
-            psels = <NRF_PSEL(SPIM_SCK, 1, 11)>,
-                    <NRF_PSEL(SPIM_MOSI, 1, 10)>,
-                    <NRF_PSEL(SPIM_MISO, 1, 12)>;
-            low-power-enable;
-        };
-    };
-
     /* configuration for pwm device, default state */
     pwm0_default: pwm0_default {
         group1 {
