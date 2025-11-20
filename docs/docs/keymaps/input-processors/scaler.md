@@ -73,5 +73,5 @@ The scaler input processor uses a `compatible` property of `"zmk,input-processor
 
 ### User Properties
 
-- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to scale. Usually, this is `INPUT_EV_REL` for relative events.
-- `codes` - The specific codes within the given type to scale, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L245)
+- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to scale. Usually, this is `INPUT_EV_REL` for relative events.
+- `codes` - The specific codes within the given type to scale, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L258)

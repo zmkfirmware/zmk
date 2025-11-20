@@ -176,7 +176,7 @@ To allow ZMK Studio to be used with a keyboard, the keyboard will need to have a
 - The [new shield guide](../development/hardware-integration/new-shield.mdx), informing you how to select a physical layout once defined
 - The corresponding [configuration page](../config/layout.md#physical-layout), for reference
 
-To use the `studio-rpc-usb-uart` snippet, the keyboard also needs to be configured to allow CDC-ACM console snippets (this is also used for [USB logging](../development/usb-logging.mdx)). If your keyboard is a composite keyboard, consisting of an in-tree board and a shield, then you can skip this step as the board will already be configured properly. Relevant information on that can be found [in the Zephyr documentation](https://docs.zephyrproject.org/3.5.0/snippets/cdc-acm-console/README.html).
+To use the `studio-rpc-usb-uart` snippet, the keyboard also needs to be configured to allow CDC-ACM console snippets (this is also used for [USB logging](../development/usb-logging.mdx)). If your keyboard is a composite keyboard, consisting of an in-tree board and a shield, then you can skip this step as the board will already be configured properly. Relevant information on that can be found [in the Zephyr documentation](https://docs.zephyrproject.org/4.1.0/snippets/cdc-acm-console/README.html).
 
 Firmware with ZMK Studio enabled require significantly more RAM. Some MCUs, such as the STM32F072 series, will require fine tuning of various settings in order to reduce the RAM consumption enough for a Studio enabled build to fit.
 
