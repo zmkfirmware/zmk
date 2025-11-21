@@ -26,6 +26,7 @@ struct bvd_config {
     struct gpio_dt_spec power;
     uint32_t output_ohm;
     uint32_t full_ohm;
+    uint8_t oversampling;
 };
 
 struct bvd_data {
@@ -110,6 +111,7 @@ static const struct sensor_driver_api bvd_api = {
 static int bvd_init(const struct device *dev) {
     struct bvd_data *drv_data = dev->data;
     const struct bvd_config *drv_cfg = dev->config;
+    uint32_t ch_mask = 0;
 
     if (drv_data->adc == NULL) {
         LOG_ERR("ADC failed to retrieve ADC driver");
@@ -130,11 +132,12 @@ static int bvd_init(const struct device *dev) {
     }
 #endif // DT_INST_NODE_HAS_PROP(0, power_gpios)
 
+    ch_mask |= BIT(drv_cfg->io_channel.channel);
     drv_data->as = (struct adc_sequence){
-        .channels = BIT(0),
+        .channels = ch_mask,
         .buffer = &drv_data->value.adc_raw,
         .buffer_size = sizeof(drv_data->value.adc_raw),
-        .oversampling = 4,
+        .oversampling = drv_cfg->oversampling,
         .calibrate = true,
     };
 
@@ -143,6 +146,7 @@ static int bvd_init(const struct device *dev) {
         .gain = ADC_GAIN_1_6,
         .reference = ADC_REF_INTERNAL,
         .acquisition_time = ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40),
+        .channel_id = drv_cfg->io_channel.channel,
         .input_positive = SAADC_CH_PSELP_PSELP_AnalogInput0 + drv_cfg->io_channel.channel,
     };
 
@@ -169,6 +173,7 @@ static const struct bvd_config bvd_cfg = {
 #endif
     .output_ohm = DT_INST_PROP(0, output_ohms),
     .full_ohm = DT_INST_PROP(0, full_ohms),
+    .oversampling = DT_INST_PROP_OR(0, oversampling, 4),
 };
 
 DEVICE_DT_INST_DEFINE(0, &bvd_init, NULL, &bvd_data, &bvd_cfg, POST_KERNEL,
