@@ -55,13 +55,14 @@ int zmk_split_transport_peripheral_command_handler(
         if (err) {
             LOG_ERR("Failed to invoke behavior %s: %d", binding.behavior_dev, err);
         }
+        return err;
     }
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_PHYSICAL_LAYOUT: {
-        zmk_physical_layouts_select(cmd.data.set_physical_layout.layout_idx);
+        return zmk_physical_layouts_select(cmd.data.set_physical_layout.layout_idx);
     }
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS: {
-        raise_zmk_hid_indicators_changed((struct zmk_hid_indicators_changed){
+        return raise_zmk_hid_indicators_changed((struct zmk_hid_indicators_changed){
             .indicators = cmd.data.set_hid_indicators.indicators});
     }
 #endif
