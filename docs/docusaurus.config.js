@@ -1,6 +1,34 @@
+const { execSync } = require("child_process");
 const path = require("path");
 const theme = require("./src/theme/prism/themes/github");
 const darkTheme = require("./src/theme/prism/themes/github-dark-dimmed");
+const { releaseVersions } = require("./versions.js");
+
+const gitBranch =
+  process.env.BRANCH ||
+  execSync("git branch --show-current", { encoding: "utf-8" }).trim();
+const isDevelopmentVersion =
+  gitBranch === "main" || !/^v\d+\.\d+-branch$/.test(gitBranch);
+const versionNavbarItems = [
+  {
+    label: "Pre-Release",
+    description: "Current active development branch (main)",
+    href: "https://zmk.dev/docs/",
+  },
+  ...releaseVersions.map((r) => ({
+    label: "v" + r,
+    description: "Stable release v" + r,
+    href: `https://v${r.replaceAll(".", "-")}-branch.zmk.dev/docs/`,
+  })),
+];
+
+const versionDropDownLabel = isDevelopmentVersion
+  ? versionNavbarItems[0].label
+  : versionNavbarItems.find((item) => {
+      return item.label === gitBranch.replace("-branch", "");
+    });
+
+console.error(versionDropDownLabel);
 
 module.exports = {
   title: "ZMK Firmware",
@@ -11,6 +39,10 @@ module.exports = {
   trailingSlash: "false",
   organizationName: "zmkfirmware", // Usually your GitHub org/user name.
   projectName: "zmk", // Usually your repo name.
+  customFields: {
+    isDevelopmentVersion,
+    releaseVersions,
+  },
   plugins: [
     "@docusaurus/theme-mermaid",
     path.resolve(__dirname, "src/docusaurus-tree-sitter-plugin"),
@@ -51,16 +83,29 @@ module.exports = {
           label: "Docs",
           position: "left",
         },
-        { to: "blog", label: "Blog", position: "left" },
+        isDevelopmentVersion
+          ? { to: "blog", label: "Blog", position: "left" }
+          : { href: "https://zmk.dev/blog", label: "Blog", position: "left" },
         {
-          to: "power-profiler",
-          label: "Power Profiler",
+          type: "dropdown",
+          label: "Tools",
           position: "left",
+          items: [
+            {
+              to: "power-profiler",
+              label: "Power Profiler",
+            },
+            {
+              to: "keymap-upgrader",
+              label: "Keymap Upgrader",
+            },
+          ],
         },
         {
-          to: "keymap-upgrader",
-          label: "Keymap Upgrader",
-          position: "left",
+          type: "dropdown",
+          label: versionDropDownLabel,
+          position: "right",
+          items: versionNavbarItems,
         },
         {
           href: "https://zmk.studio/",
@@ -69,7 +114,8 @@ module.exports = {
         },
         {
           href: "https://github.com/zmkfirmware/zmk",
-          label: "GitHub",
+          "aria-label": "ZMK GitHub Repository",
+          className: "header-github-link",
           position: "right",
         },
       ],
