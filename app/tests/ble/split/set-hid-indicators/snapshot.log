@@ -9,4 +9,5 @@ peripheral 0 <inf> zmk: Welcome to ZMK!
 peripheral 0 <dbg> zmk: security_changed: Security changed: FD:9E:B2:48:47:39 (random) level 2
 peripheral 0 <dbg> zmk: split_svc_pos_state_ccc: value 1
 peripheral 0 <dbg> zmk: split_svc_select_phys_layout_callback: Selecting physical layout after GATT write of 0
+peripheral 0 <dbg> zmk: split_svc_update_indicators_callback: Raising HID indicators changed event: 0
 peripheral 0 <dbg> zmk: split_svc_update_indicators_callback: Raising HID indicators changed event: 7

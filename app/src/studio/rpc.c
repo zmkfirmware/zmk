@@ -243,7 +243,7 @@ K_THREAD_DEFINE(studio_rpc_thread, CONFIG_ZMK_STUDIO_RPC_THREAD_STACK_SIZE, rpc_
                 NULL, K_LOWEST_APPLICATION_THREAD_PRIO, 0, 0);
 
 static void refresh_selected_transport(void) {
-    enum zmk_transport transport = zmk_endpoints_selected().transport;
+    enum zmk_transport transport = zmk_endpoint_get_selected().transport;
 
     k_mutex_lock(&rpc_transport_mutex, K_FOREVER);
 
