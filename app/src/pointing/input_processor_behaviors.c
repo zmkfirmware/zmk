@@ -45,7 +45,8 @@ static int ip_behaviors_handle_event(const struct device *dev, struct input_even
                 .position = ZMK_VIRTUAL_KEY_POSITION_BEHAVIOR_INPUT_PROCESSOR(
                     state->input_device_index, cfg->index),
                 .timestamp = k_uptime_get(),
-                .type = event->value ? PRESS : RELEASE,
+                .type =
+                    event->value ? ZMK_BEHAVIOR_TRIG_TYPE_PRESS : ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
                 .source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
 #endif

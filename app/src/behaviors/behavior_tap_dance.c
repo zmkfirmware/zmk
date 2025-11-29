@@ -119,7 +119,7 @@ static inline int press_tap_dance_behavior(struct active_tap_dance *tap_dance, i
         .position = tap_dance->position,
         .timestamp = timestamp,
         .layer = tap_dance->layer,
-        .type = PRESS,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = tap_dance->source,
 #endif
@@ -135,7 +135,7 @@ static inline int release_tap_dance_behavior(struct active_tap_dance *tap_dance,
         .position = tap_dance->position,
         .timestamp = timestamp,
         .layer = tap_dance->layer,
-        .type = RELEASE,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = tap_dance->source,
 #endif
