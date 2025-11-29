@@ -94,16 +94,18 @@ int zmk_split_central_invoke_behavior(uint8_t source, struct zmk_behavior_bindin
                             .param1 = binding->param1,
                             .param2 = binding->param2,
                             .position = event->position,
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
                             .event_source = event->source,
-                            .state = (event->type == PRESS) ? 1 : 0,
+#endif
+                            .state = (event->type == ZMK_BEHAVIOR_TRIG_TYPE_PRESS) ? 1 : 0,
                         },
                 },
         };
     switch (event->type) {
-    case PRESS:
+    case ZMK_BEHAVIOR_TRIG_TYPE_PRESS:
         command.data.invoke_behavior.state = 1;
         break;
-    case RELEASE:
+    case ZMK_BEHAVIOR_TRIG_TYPE_RELEASE:
         command.data.invoke_behavior.state = 0;
         break;
     default:

@@ -36,7 +36,7 @@ struct zmk_sensor_channel_data {
     enum sensor_channel channel;
 } __packed;
 
-struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx);
+const struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx);
 
 void zmk_sensor_set_num_triggers(uint32_t sensor_idx, int num_triggers);
 

@@ -285,7 +285,7 @@ static inline int press_combo_behavior(int combo_idx, const struct combo_cfg *co
         .layer = 0, // Combos don't have layers, so their layer is set to be the base layer.
         .position = ZMK_VIRTUAL_KEY_POSITION_COMBO(combo_idx),
         .timestamp = timestamp,
-        .type = PRESS,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
 #endif
@@ -303,7 +303,7 @@ static inline int release_combo_behavior(int combo_idx, const struct combo_cfg *
         .layer = 0, // Combos don't have layers, so their layer is set to be the base layer.
         .position = ZMK_VIRTUAL_KEY_POSITION_COMBO(combo_idx),
         .timestamp = timestamp,
-        .type = RELEASE,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
 #endif

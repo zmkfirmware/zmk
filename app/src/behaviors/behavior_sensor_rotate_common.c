@@ -19,7 +19,7 @@ int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *bindi
 
     const int sensor_index = ZMK_SENSOR_POSITION_FROM_VIRTUAL_KEY_POSITION(event.position);
 
-    struct zmk_sensor_data *data = zmk_sensor_get_data(sensor_index);
+    const struct zmk_sensor_data *data = zmk_sensor_get_data(sensor_index);
     int triggers = data->num_triggers;
 
     struct zmk_behavior_binding triggered_binding;

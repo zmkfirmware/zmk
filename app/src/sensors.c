@@ -58,7 +58,7 @@ static struct zmk_sensor_config configs[] = {
 static struct sensors_item_cfg sensors[] = {LISTIFY(ZMK_KEYMAP_SENSORS_LEN, SENSOR_ITEM, (, ), 0)};
 struct zmk_sensor_data sensor_data[ZMK_KEYMAP_SENSORS_LEN] = {};
 
-struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx) {
+const struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx) {
     if (sensor_idx >= ZMK_KEYMAP_SENSORS_LEN) {
         return NULL;
     }
@@ -151,7 +151,7 @@ int sensor_listener(const zmk_event_t *eh) {
     }
     uint32_t sensor_index = sensor_ev->sensor_index;
     const struct sensor_value value = sensor_ev->channel_data[0].value;
-    struct zmk_sensor_data *data = zmk_sensor_get_data(sensor_index);
+    const struct zmk_sensor_data *data = zmk_sensor_get_data(sensor_index);
     const struct zmk_sensor_config *sensor_config = zmk_sensors_get_config_at_index(sensor_index);
     data->remainder.val1 += value.val1;
     data->remainder.val2 += value.val2;
@@ -176,7 +176,8 @@ int sensor_listener(const zmk_event_t *eh) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
                                                             ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
 #endif
-                                                            position, SENSOR, sensor_ev->timestamp);
+                                                            position, ZMK_BEHAVIOR_TRIG_TYPE_SENSOR,
+                                                            sensor_ev->timestamp);
     if (ret < 0) {
         LOG_DBG("Behavior returned error: %d", ret);
     }
@@ -214,5 +215,5 @@ SYS_INIT(zmk_sensors_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
 #else  /* ZMK_KEYMAP_HAS_SENSORS */
 struct zmk_sensor_data sensor_data[0] = {};
 
-struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx) { return NULL; };
+const struct zmk_sensor_data *zmk_sensor_get_data(uint32_t sensor_idx) { return NULL; };
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
