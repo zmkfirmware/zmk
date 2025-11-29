@@ -21,15 +21,21 @@ struct zmk_behavior_binding {
     uint32_t param2;
 };
 
-enum trigger_type { PRESS, RELEASE, SENSOR };
+enum zmk_behavior_trigger_type {
+    ZMK_BEHAVIOR_TRIG_TYPE_PRESS,
+    ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
+    ZMK_BEHAVIOR_TRIG_TYPE_SENSOR,
+};
 
 struct zmk_behavior_binding_event {
     const struct zmk_behavior_binding *binding;
-    int layer;
     uint32_t position;
     int64_t timestamp;
-    enum trigger_type type;
+    enum zmk_behavior_trigger_type type;
+    uint8_t layer;
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
     uint8_t source;
+#endif
 };
 
 ZMK_EVENT_DECLARE(zmk_behavior_binding_event);

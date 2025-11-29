@@ -173,7 +173,9 @@ int sensor_listener(const zmk_event_t *eh) {
     int position = ZMK_VIRTUAL_KEY_POSITION_SENSOR(sensor_index);
     // Source is set to local for the time being, to be improved in the future
     int ret = zmk_keymap_raise_binding_event_at_layer_index(ZMK_KEYMAP_LAYERS_LEN - 1,
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
                                                             ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
+#endif
                                                             position, SENSOR, sensor_ev->timestamp);
     if (ret < 0) {
         LOG_DBG("Behavior returned error: %d", ret);

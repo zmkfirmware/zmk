@@ -36,12 +36,13 @@ static void behavior_queue_process_next(struct k_work *work) {
         LOG_DBG("Invoking %s: 0x%02x 0x%02x", item.binding.behavior_dev, item.binding.param1,
                 item.binding.param2);
 
-        struct zmk_behavior_binding_event event = {.binding = &item.binding,
-                                                   .position = item.position,
-                                                   .timestamp = k_uptime_get(),
-                                                   .type = item.press ? PRESS : RELEASE,
+        struct zmk_behavior_binding_event event = {
+            .binding = &item.binding,
+            .position = item.position,
+            .timestamp = k_uptime_get(),
+            .type = item.press ? ZMK_BEHAVIOR_TRIG_TYPE_PRESS : ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
-                                                   .source = item.source
+            .source = item.source
 #endif
         };
         ret = raise_zmk_behavior_binding_event(event);

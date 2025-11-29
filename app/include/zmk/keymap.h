@@ -91,8 +91,12 @@ int zmk_keymap_save_changes(void);
 int zmk_keymap_discard_changes(void);
 int zmk_keymap_reset_settings(void);
 
-int zmk_keymap_raise_binding_event_at_layer_index(zmk_keymap_layer_id_t layer_index, uint8_t source,
-                                                  uint32_t position, enum trigger_type type,
+int zmk_keymap_raise_binding_event_at_layer_index(zmk_keymap_layer_id_t layer_index,
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+                                                  uint8_t source,
+#endif
+                                                  uint32_t position,
+                                                  enum zmk_behavior_trigger_type type,
                                                   int64_t timestamp);
 
 #define ZMK_KEYMAP_EXTRACT_BINDING(idx, drv_inst)                                                  \
