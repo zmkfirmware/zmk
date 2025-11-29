@@ -411,7 +411,7 @@ static int press_hold_binding(struct active_hold_tap *hold_tap) {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
         .layer = hold_tap->layer,
-        .type = PRESS,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
@@ -428,7 +428,7 @@ static int press_tap_binding(struct active_hold_tap *hold_tap) {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
         .layer = hold_tap->layer,
-        .type = PRESS,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
@@ -446,7 +446,7 @@ static int release_hold_binding(struct active_hold_tap *hold_tap) {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
         .layer = hold_tap->layer,
-        .type = RELEASE,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
@@ -463,7 +463,7 @@ static int release_tap_binding(struct active_hold_tap *hold_tap) {
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
         .layer = hold_tap->layer,
-        .type = RELEASE,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif

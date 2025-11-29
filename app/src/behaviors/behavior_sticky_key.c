@@ -114,7 +114,7 @@ static inline int press_sticky_key_behavior(struct active_sticky_key *sticky_key
         .position = sticky_key->position,
         .layer = sticky_key->layer,
         .timestamp = timestamp,
-        .type = PRESS,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = sticky_key->source,
 #endif
@@ -133,7 +133,7 @@ static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_k
         .position = sticky_key->position,
         .layer = sticky_key->layer,
         .timestamp = timestamp,
-        .type = RELEASE,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = sticky_key->source,
 #endif
