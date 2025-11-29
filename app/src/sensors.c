@@ -150,25 +150,27 @@ int sensor_listener(const zmk_event_t *eh) {
         return -EINVAL;
     }
     uint32_t sensor_index = sensor_ev->sensor_index;
-    const struct sensor_value value = sensor_ev->channel_data[0].value;
+    const struct sensor_value previous_value = sensor_ev->channel_data[0].value;
     const struct zmk_sensor_data *data = zmk_sensor_get_data(sensor_index);
     const struct zmk_sensor_config *sensor_config = zmk_sensors_get_config_at_index(sensor_index);
-    data->remainder.val1 += value.val1;
-    data->remainder.val2 += value.val2;
+    struct sensor_value new_value = {
+        .val1 = data->remainder.val1 + previous_value.val1,
+        .val2 = data->remainder.val2 + previous_value.val2,
+    };
 
-    if (data->remainder.val2 >= 1000000 || data->remainder.val2 <= 1000000) {
-        data->remainder.val1 += data->remainder.val2 / 1000000;
-        data->remainder.val2 %= 1000000;
+    if (new_value.val2 >= 1000000 || new_value.val2 <= 1000000) {
+        new_value.val1 += new_value.val2 / 1000000;
+        new_value.val2 %= 1000000;
     }
 
     int trigger_degrees = 360 / sensor_config->triggers_per_rotation;
-    int triggers = data->remainder.val1 / trigger_degrees;
-    data->remainder.val1 %= trigger_degrees;
-    zmk_sensor_set_remainder(sensor_index, data->remainder);
+    int triggers = new_value.val1 / trigger_degrees;
+    new_value.val1 %= trigger_degrees;
+    zmk_sensor_set_remainder(sensor_index, new_value);
     zmk_sensor_set_num_triggers(sensor_index, triggers);
 
-    LOG_DBG("val1: %d, val2: %d, remainder: %d/%d triggers: %d", value.val1, value.val2,
-            data->remainder.val1, data->remainder.val2, triggers);
+    LOG_DBG("val1: %d, val2: %d, remainder: %d/%d triggers: %d", previous_value.val1,
+            previous_value.val2, new_value.val1, new_value.val2, triggers);
 
     int position = ZMK_VIRTUAL_KEY_POSITION_SENSOR(sensor_index);
     // Source is set to local for the time being, to be improved in the future
