@@ -58,16 +58,17 @@ const struct device *z_impl_behavior_get_binding(const char *name) {
 }
 
 // TODO: Delete this method as part of a breaking release
-int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
-                                struct zmk_behavior_binding_event event, bool pressed) {
-    LOG_DBG("`zmk_behavior_invoke_binding` is deprecated. Please raise a "
+__deprecated int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
+                                             struct zmk_behavior_binding_event event,
+                                             bool pressed) {
+    LOG_WRN("`zmk_behavior_invoke_binding` is deprecated. Please raise a "
             "`zmk_behavior_binding_event` instead.");
     return raise_zmk_behavior_binding_event((struct zmk_behavior_binding_event){
         .binding = src_binding,
         .layer = event.layer,
         .position = event.position,
         .timestamp = event.timestamp,
-        .type = pressed ? PRESS : RELEASE,
+        .type = pressed ? ZMK_BEHAVIOR_TRIG_TYPE_PRESS : ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = event.source,
 #endif
@@ -79,11 +80,11 @@ int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
 static int invoke_locally(struct zmk_behavior_binding *binding,
                           struct zmk_behavior_binding_event *event) {
     switch (event->type) {
-    case PRESS:
+    case ZMK_BEHAVIOR_TRIG_TYPE_PRESS:
         return behavior_keymap_binding_pressed(binding, *event);
-    case RELEASE:
+    case ZMK_BEHAVIOR_TRIG_TYPE_RELEASE:
         return behavior_keymap_binding_released(binding, *event);
-    case SENSOR:
+    case ZMK_BEHAVIOR_TRIG_TYPE_SENSOR:
         return behavior_sensor_keymap_binding_process(binding, *event);
     default:
         return -EINVAL;

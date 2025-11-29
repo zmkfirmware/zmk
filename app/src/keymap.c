@@ -698,8 +698,12 @@ int zmk_keymap_reset_settings(void) { return -ENOTSUP; }
 
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
 
-int zmk_keymap_raise_binding_event_at_layer_index(zmk_keymap_layer_id_t layer_index, uint8_t source,
-                                                  uint32_t position, enum trigger_type type,
+int zmk_keymap_raise_binding_event_at_layer_index(zmk_keymap_layer_id_t layer_index,
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+                                                  uint8_t source,
+#endif
+                                                  uint32_t position,
+                                                  enum zmk_behavior_trigger_type type,
                                                   int64_t timestamp) {
     // We use int here to be sure we don't loop layer_idx back to UINT8_MAX
     for (int layer_idx = layer_index; layer_idx >= 0; layer_idx--) {
@@ -752,9 +756,13 @@ static int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, 
     if (pressed) {
         zmk_keymap_active_behavior_layer[position] = _zmk_keymap_layer_state;
     }
-    enum trigger_type type = pressed ? PRESS : RELEASE;
+    enum zmk_behavior_trigger_type type =
+        pressed ? ZMK_BEHAVIOR_TRIG_TYPE_PRESS : ZMK_BEHAVIOR_TRIG_TYPE_RELEASE;
 
-    int ret = zmk_keymap_raise_binding_event_at_layer_index(ZMK_KEYMAP_LAYERS_LEN - 1, source,
+    int ret = zmk_keymap_raise_binding_event_at_layer_index(ZMK_KEYMAP_LAYERS_LEN - 1,
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+                                                            source,
+#endif
                                                             position, type, timestamp);
     if (ret < 0) {
         LOG_DBG("Behavior returned error: %d", ret);
