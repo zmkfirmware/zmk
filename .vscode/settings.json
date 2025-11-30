@@ -1,8 +1,7 @@
 {
   "files.associations": {
     "*.overlay": "dts",
-    "*.keymap": "dts",
-    "regex": "c"
+    "*.keymap": "dts"
   },
   "python.analysis.include": ["app/scripts", "zephyr/scripts"],
   "[c]": {

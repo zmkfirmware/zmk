@@ -517,15 +517,12 @@ For example, the Caps Word behavior's devicetree binding lists `compatible: "zmk
 The dependencies required for any ZMK behavior are:
 
 - `zephyr/device.h`: [Zephyr Device APIs](https://docs.zephyrproject.org/apidoc/3.5.0/group__device__model.html)
-- `drivers/behavior.h`: ZMK Behavior Functions (e.g. [locality](#zmk-api-struct), `behavior_keymap_binding_pressed`, `behavior_keymap_binding_released`, `behavior_sensor_keymap_binding_triggered`)
+- `drivers/behavior.h`: ZMK Behavior Functions (e.g. [locality](#zmk-api-struct))
 - `zephyr/logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/3.5.0/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](usb-logging.mdx)).
-- `zmk/behavior.h`: ZMK Behavior Information (e.g. parameters, position and timestamp of events)
-  - `return` values:
-    - `ZMK_BEHAVIOR_OPAQUE`: Used to terminate `on_<name_of_behavior>_binding_pressed` and `on_<name_of_behavior>_binding_released` functions that accept `(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event)` as parameters
-    - `ZMK_BEHAVIOR_TRANSPARENT`: Used in the `binding_pressed` and `binding_released` functions for the transparent (`&trans`) behavior
+- `zmk/events/zmk_behavior_binding_event.h`: ZMK Behavior Structs (e.g. parameters, position and timestamp of events)
   - `struct`s:
     - `zmk_behavior_binding`: Stores the name of the behavior device (`char *behavior_dev`) as a `string` and up to two additional parameters (`uint32_t param1`, `uint32_t param2`)
-    - `zmk_behavior_binding_event`: Contains layer, position, and timestamp data for an active `zmk_behavior_binding`
+    - `zmk_behavior_binding_event`: Contains a behavior binding, layer, position, event type (`ZMK_BEHAVIOR_TRIG_TYPE_PRESS`, `ZMK_BEHAVIOR_TRIG_TYPE_RELEASE`, or `ZMK_BEHAVIOR_TRIG_TYPE_SENSOR`), and timestamp data. For split keyboards (`CONFIG_ZMK_SPLIT` is true), this event also includes the event source.
 
 Other common dependencies include `zmk/keymap.h`, which allows behaviors to access layer information and extract behavior bindings from keymaps, and `zmk/event_manager.h` which is detailed below.
 
@@ -799,6 +796,7 @@ Some examples of events that are the most relevant to behavior development can b
 
 | Event                      | Description                                                                                       |
 | -------------------------- | ------------------------------------------------------------------------------------------------- |
+| `behavior_binding_event.h` | See the next section for more details                                                             |
 | `hid_indicators_changed.h` | The current HID indicators (Num Lock, Caps Lock, Scroll Lock, Compose, Kana) as a bitmask         |
 | `keycode_state_changed.h`  | [Keycode events' state (on/off)](#keycodes), usage page, keycode value, modifiers, and timestamps |
 | `layer_state_changed.h`    | [Layer events' state (bitmask)](#layers), layer index, and timestamps                             |
@@ -811,19 +809,24 @@ For more information on how to interact with events and the event manager, see [
 
 ### Interacting with other behaviors and the ZMK Behavior Queue
 
-This section will refer to features found in `behavior.h` and `behavior_queue.h`.
+This section will refer to features found in `behavior_binding_event.h`, `behavior.h`, and `behavior_queue.h`.
 
 #### `#include <zmk/behavior.h>`
 
-These functions work with behaviors at a **device** level.
-They are used to retrieve the device associated with a keymap binding, or invoke other behaviors, such as ones provided as a parameter to the current behavior.
+These structs are used to describe behavior bindings and the events that invoke them. To invoke another event from within a behavior, raise a `zmk_behavior_binding_event` using the event manager.
 
-| Function                                                                                                                             | Description                                                                                                                                                                                                     |
-| ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `struct zmk_behavior_binding`                                                                                                        | A `struct` containing the behavior binding's name stored as a C-string, and its parameters.                                                                                                                     |
-| `struct zmk_behavior_binding_event`                                                                                                  | A `struct` describing where and when a behavior binding is invoked based on its the layer, key position, and timestamp. For split keyboards, this also includes which part of the keyboard invoked the binding. |
-| `zmk_behavior_get_binding(const char *name)`                                                                                         | Get a `const struct device*` for a behavior from its name field.                                                                                                                                                |
-| `zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding, struct zmk_behavior_binding_event event, bool pressed)` | Invoke a behavior given its binding and invoking event details.                                                                                                                                                 |
+| Function                            | Description                                                                                                                                                                                                     |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `struct zmk_behavior_binding`       | A `struct` containing the behavior binding's name stored as a C-string, and its parameters.                                                                                                                     |
+| `struct zmk_behavior_binding_event` | A `struct` describing where and when a behavior binding is invoked based on its the layer, key position, and timestamp. For split keyboards, this also includes which part of the keyboard invoked the binding. |
+
+#### `#include <zmk/behavior.h>`
+
+This function works with behaviors at a **device** level.
+
+| Function                                     | Description                                                      |
+| -------------------------------------------- | ---------------------------------------------------------------- |
+| `zmk_behavior_get_binding(const char *name)` | Get a `const struct device*` for a behavior from its name field. |
 
 #### `#include <zmk/behavior_queue.h>`
 
