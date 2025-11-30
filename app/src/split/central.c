@@ -79,7 +79,7 @@ int zmk_split_transport_central_peripheral_event_handler(
 }
 
 int zmk_split_central_invoke_behavior(uint8_t source, struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event, bool state) {
+                                      struct zmk_behavior_binding_event *event) {
     if (!active_transport || !active_transport->api || !active_transport->api->send_command) {
         return -ENODEV;
     }
@@ -93,12 +93,24 @@ int zmk_split_central_invoke_behavior(uint8_t source, struct zmk_behavior_bindin
                         {
                             .param1 = binding->param1,
                             .param2 = binding->param2,
-                            .position = event.position,
-                            .event_source = event.source,
-                            .state = state ? 1 : 0,
+                            .position = event->position,
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+                            .event_source = event->source,
+#endif
+                            .state = (event->type == ZMK_BEHAVIOR_TRIG_TYPE_PRESS) ? 1 : 0,
                         },
                 },
         };
+    switch (event->type) {
+    case ZMK_BEHAVIOR_TRIG_TYPE_PRESS:
+        command.data.invoke_behavior.state = 1;
+        break;
+    case ZMK_BEHAVIOR_TRIG_TYPE_RELEASE:
+        command.data.invoke_behavior.state = 0;
+        break;
+    default:
+        return -EINVAL;
+    }
 
     const size_t payload_dev_size = sizeof(command.data.invoke_behavior.behavior_dev);
     if (strlcpy(command.data.invoke_behavior.behavior_dev, binding->behavior_dev,
