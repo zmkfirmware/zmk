@@ -93,10 +93,7 @@ static int invoke_locally(struct zmk_behavior_binding *binding,
 
 int behavior_listener(const zmk_event_t *eh) {
     struct zmk_behavior_binding_event *event = as_zmk_behavior_binding_event(eh);
-    if (event == NULL) {
-        LOG_ERR("An invalid event was passed as an argument somehow.");
-        return -EINVAL;
-    }
+    __ASSERT(event != NULL, "An invalid event was passed as an argument somehow.");
 
     const struct device *behavior = zmk_behavior_get_binding(event->binding->behavior_dev);
     if (!behavior) {
