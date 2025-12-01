@@ -81,7 +81,7 @@
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
 &trans        &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &bootloader   &sys_reset    &trans
-&trans        &bt BT_PRV    &bt BT_NXT    &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
+&trans        &none         &none         &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
                         >;
                 };
         };
