@@ -460,3 +460,18 @@ For example, if you press `&mt LEFT_SHIFT A` and then release it without pressin
     retro-tap;
 };
 ```
+
+### `fire-hold-as-tap`
+
+If `fire-hold-as-tap` is enabled, the hold behavior will send both press and release immediately when the hold condition is met, instead of waiting for key release.  
+This prevents operating system key repeat behavior for hold actions that are intended to be momentary, such as triggering shortcut key combinations.
+
+For example, if you press and hold `&mt KC_PGUP KC_PGDN` with `fire-hold-as-tap` enabled, it will send a single `KC_PGUP` event when the hold condition triggers, and will not repeat or send additional events on key release.
+
+```dts
+&mt {
+    fire-hold-as-tap;
+};
+```
+
+**Note:** This option has no effect on the tap behavior. It only changes the way the hold action is sent.
