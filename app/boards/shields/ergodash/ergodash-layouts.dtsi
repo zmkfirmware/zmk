@@ -19,7 +19,8 @@
         kscan = <&kscan0>;
         transform = <&default_transform>;
 
-        keys  //                     w   h    x    y     rot    rx    ry
+        keys//                      w   h    x    y     rot    rx    ry
+            // row0
             = <&key_physical_attrs 100 100    0   38       0     0     0>
             , <&key_physical_attrs 100 100  100   38       0     0     0>
             , <&key_physical_attrs 100 100  200   12       0     0     0>
@@ -34,6 +35,7 @@
             , <&key_physical_attrs 100 100 1550   12       0     0     0>
             , <&key_physical_attrs 100 100 1650   38       0     0     0>
             , <&key_physical_attrs 100 100 1750   38       0     0     0>
+            // row1
             , <&key_physical_attrs 100 100    0  138       0     0     0>
             , <&key_physical_attrs 100 100  100  138       0     0     0>
             , <&key_physical_attrs 100 100  200  112       0     0     0>
@@ -48,6 +50,7 @@
             , <&key_physical_attrs 100 100 1550  112       0     0     0>
             , <&key_physical_attrs 100 100 1650  138       0     0     0>
             , <&key_physical_attrs 100 100 1750  138       0     0     0>
+            // row2
             , <&key_physical_attrs 100 100    0  238       0     0     0>
             , <&key_physical_attrs 100 100  100  238       0     0     0>
             , <&key_physical_attrs 100 100  200  212       0     0     0>
@@ -62,6 +65,7 @@
             , <&key_physical_attrs 100 100 1550  212       0     0     0>
             , <&key_physical_attrs 100 100 1650  238       0     0     0>
             , <&key_physical_attrs 100 100 1750  238       0     0     0>
+            // row3
             , <&key_physical_attrs 100 100    0  338       0     0     0>
             , <&key_physical_attrs 100 100  100  338       0     0     0>
             , <&key_physical_attrs 100 100  200  312       0     0     0>
@@ -76,6 +80,7 @@
             , <&key_physical_attrs 100 100 1550  312       0     0     0>
             , <&key_physical_attrs 100 100 1650  338       0     0     0>
             , <&key_physical_attrs 100 100 1750  338       0     0     0>
+            // row4
             , <&key_physical_attrs 100 100    0  438       0     0     0>
             , <&key_physical_attrs 100 100  100  438       0     0     0>
             , <&key_physical_attrs 100 100  200  412       0     0     0>
@@ -179,7 +184,7 @@
         display-name = "LAYOUT_3key_2us";
 
         kscan = <&kscan0>;
-        transform = <&keymap_transform_0>; // NOTE: SW28 and SW39 are not used here
+        transform = <&default_transform_3key>; // NOTE: SW28 and SW39 are not used here
 
         keys  //                     w   h    x    y     rot    rx    ry
             = <&key_physical_attrs 100 100    0   38       0     0     0>
