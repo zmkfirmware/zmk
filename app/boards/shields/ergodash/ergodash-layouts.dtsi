@@ -179,7 +179,7 @@
         display-name = "LAYOUT_3key_2us";
 
         kscan = <&kscan0>;
-        transform = <&default_transform_3key>;
+        transform = <&keymap_transform_0>; // NOTE: SW28 and SW39 are not used here
 
         keys  //                     w   h    x    y     rot    rx    ry
             = <&key_physical_attrs 100 100    0   38       0     0     0>

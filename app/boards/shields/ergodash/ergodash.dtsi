@@ -13,7 +13,7 @@
 
 
     // NOTE: Thumb cluster electrical connections:
-    //       Bellow you can find phicial key positions as well as their
+    //       Bellow you can find physical key positions as well as their
     //       corresponding switch numbers (SWxx) based on the rev 1.2 schema
     //
     //  | SW28 1u --> SW39 1u | row 3 col 6 (this means you need to use at least one 2u key on the thumb cluster)
