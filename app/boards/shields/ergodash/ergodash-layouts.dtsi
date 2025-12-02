@@ -184,7 +184,7 @@
         display-name = "LAYOUT_3key_2us";
 
         kscan = <&kscan0>;
-        transform = <&default_transform>; // NOTE: SW28 and SW39 are not used here
+        transform = <&default_transform_3key_alt>;
 
         keys  //                     w   h    x    y     rot    rx    ry
             // row0
@@ -238,8 +238,6 @@
             , <&key_physical_attrs 100 100  200  312       0     0     0>
             , <&key_physical_attrs 100 100  300  300       0     0     0>
             , <&key_physical_attrs 100 100  400  312       0     0     0>
-            , <&key_physical_attrs 0   0    0    0         0     0     0> // stub for unused key
-            , <&key_physical_attrs 0   0    0    0         0     0     0> // stub for unused key
             , <&key_physical_attrs 100 100  500  325       0     0     0>
             , <&key_physical_attrs 100 100 1250  325       0     0     0>
             , <&key_physical_attrs 100 100 1350  312       0     0     0>
