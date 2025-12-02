@@ -11,6 +11,19 @@
         zmk,kscan = &kscan0;
     };
 
+
+    // NOTE: Thumb cluster electrical connections:
+    //       Bellow you can find phicial key positions as well as their
+    //       corresponding switch numbers (SWxx) based on the rev 1.2 schema
+    //
+    //  | SW28 1u --> SW39 1u | row 3 col 6 (this means you need to use at least one 2u key on the thumb cluster)
+    //  | SW36 2u  |  SW41 2u | SW36 + SW35 are connected to row 4 col 5
+    //  |   V      |    V     | SW41 + SW40 is connected to row 4 col 6
+    //  | SW35 1u  |  SW40 1u |
+    //
+
+
+    // 4key thumb cluster layout transform
     default_transform: keymap_transform_0 {
         compatible = "zmk,matrix-transform";
         columns = <14>;
