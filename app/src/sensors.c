@@ -73,7 +73,7 @@ static void trigger_sensor_data_for_position(uint32_t sensor_index) {
         return;
     }
 
-    struct sensor_value value;
+    struct sensor_value value = {0};
     err = sensor_channel_get(item->dev, item->trigger.chan, &value);
 
     if (err) {

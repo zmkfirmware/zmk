@@ -59,5 +59,5 @@ The code mapper input processor uses a `compatible` property of `"zmk,input-proc
 
 ### User Properties
 
-- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to scale. Usually, this is `INPUT_EV_REL` for relative events and `INPUT_EV_KEY` for key/button events.
-- `map` - The specific codes of the given type to map, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L245). This list must be an even number of entries which is processed as a list of pairs of codes. The first code in the pair is the source code, and the second is the code to map it to.
+- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to scale. Usually, this is `INPUT_EV_REL` for relative events and `INPUT_EV_KEY` for key/button events.
+- `map` - The specific codes of the given type to map, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L258). This list must be an even number of entries which is processed as a list of pairs of codes. The first code in the pair is the source code, and the second is the code to map it to.

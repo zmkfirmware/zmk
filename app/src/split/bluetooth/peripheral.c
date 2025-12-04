@@ -68,7 +68,7 @@ static int start_advertising(bool low_duty) {
         return bt_le_adv_start(&adv_param, NULL, 0, NULL, 0);
     } else {
         is_bonded = false;
-        return bt_le_adv_start(BT_LE_ADV_CONN, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
+        return bt_le_adv_start(BT_LE_ADV_CONN_FAST_2, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);
     }
 };
 
@@ -96,6 +96,13 @@ static void connected(struct bt_conn *conn, uint8_t err) {
     }
 }
 
+static void recycled(void) {
+    if (enabled) {
+        low_duty_advertising = false;
+        k_work_submit(&advertising_work);
+    }
+}
+
 static void disconnected(struct bt_conn *conn, uint8_t reason) {
     char addr[BT_ADDR_LE_STR_LEN];
 
@@ -107,11 +114,6 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
 
     raise_zmk_split_peripheral_status_changed(
         (struct zmk_split_peripheral_status_changed){.connected = is_connected});
-
-    if (enabled) {
-        low_duty_advertising = false;
-        k_work_submit(&advertising_work);
-    }
 }
 
 static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_security_err err) {
@@ -138,6 +140,7 @@ static void le_param_updated(struct bt_conn *conn, uint16_t interval, uint16_t l
 static struct bt_conn_cb conn_callbacks = {
     .connected = connected,
     .disconnected = disconnected,
+    .recycled = recycled,
     .security_changed = security_changed,
     .le_param_updated = le_param_updated,
 };

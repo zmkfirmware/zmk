@@ -1,0 +1,14 @@
+board:
+  name: mikoto
+  vendor: zhiayang
+  revision:
+    format: major.minor.patch
+    default: 5.20.0
+    exact: false
+    revisions:
+      - name: 5.20.0
+      - name: 6.1.0
+      - name: 6.3.0
+      - name: 7.2.0
+  socs:
+    - name: nrf52840

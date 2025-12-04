@@ -70,7 +70,7 @@ What properties a node may have varies drastically. Of the standard properties, 
 
 #### Property types
 
-These are some of the property types you will see most often when working with ZMK. [Zephyr's Devicetree bindings documentation](https://docs.zephyrproject.org/3.5.0/build/dts/bindings.html) provides more detailed information and a full list of types.
+These are some of the property types you will see most often when working with ZMK. [Zephyr's Devicetree bindings documentation](https://docs.zephyrproject.org/4.1.0/build/dts/bindings.html) provides more detailed information and a full list of types.
 
 ##### bool
 
@@ -124,14 +124,14 @@ Example: `property = <&none &mo 1>;`
 
 Values can also be split into multiple blocks, e.g. `property = <&none>, <&mo 1>;`
 
-See the documentation for "phandle-array" in [Zephyr's Devicetree bindings documentation](https://docs.zephyrproject.org/3.5.0/build/dts/bindings.html)
+See the documentation for "phandle-array" in [Zephyr's Devicetree bindings documentation](https://docs.zephyrproject.org/4.1.0/build/dts/bindings.html)
 for more details on how parameters are associated with nodes.
 
 ##### GPIO array
 
 This is just a phandle array. The documentation lists this as a different type to make it clear which properties expect an array of GPIOs.
 
-Each item in the array should be a label for a GPIO node (the names of which differ between hardware platforms) followed by an index and configuration flags. See [Zephyr's GPIO documentation](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html) for a full list of flags. Phandles and labels will be explained in more detail in a [later section](#labels-and-phandles).
+Each item in the array should be a label for a GPIO node (the names of which differ between hardware platforms) followed by an index and configuration flags. See [Zephyr's GPIO documentation](https://docs.zephyrproject.org/4.1.0/hardware/peripherals/gpio.html) for a full list of flags. Phandles and labels will be explained in more detail in a [later section](#labels-and-phandles).
 
 Example:
 
@@ -187,7 +187,7 @@ properties:
     required: false
 ```
 
-The properties the node can have are listed under `properties`. Some additional properties are imported from [zero_param.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zero_param.yaml). Bindings files are **the authority** on node properties, with our [documentation of said properties](https://zmk.dev/docs/config/behaviors#devicetree-7) sometimes omitting things like the `#binding-cells` property (imported from the previously mentioned file, describing the number of parameters that the behavior accepts). A full description of the bindings file syntax can be found in [Zephyr's documentation](https://docs.zephyrproject.org/3.5.0/build/dts/bindings-syntax.html).
+The properties the node can have are listed under `properties`. Some additional properties are imported from [zero_param.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zero_param.yaml). Bindings files are **the authority** on node properties, with our [documentation of said properties](https://zmk.dev/docs/config/behaviors#devicetree-7) sometimes omitting things like the `#binding-cells` property (imported from the previously mentioned file, describing the number of parameters that the behavior accepts). A full description of the bindings file syntax can be found in [Zephyr's documentation](https://docs.zephyrproject.org/4.1.0/build/dts/bindings-syntax.html).
 
 Note that binding files can also specify properties for children, like the [`zmk,keymap.yaml` bindings file](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk%2Ckeymap.yaml) specifying properties for layers in the keymap.
 
@@ -260,7 +260,7 @@ A devicetree is almost always constructed from multiple files. These files are g
 
 - `.dtsi` files, which exist exclusively to be included via the C preprocessor (their contents get "pasted" at the location of the `#include` command) and are not used by the build sytem otherwise.
 - A `.dts` file, which forms the "base" of the devicetree. A single one of these is always present when a devicetree is constructed. For ZMK, the `.dts` file contains the sections of the devicetree describing the [_board_](hardware-integration/index.mdx#what-is-a-board). This includes importing a number of `.dtsi` files describing the specific SoC that the board uses.
-- Any number of `.overlay` files. These files can come from various sources, such as [shields](hardware-integration/index.mdx#what-is-a-shield) or [snippets](https://docs.zephyrproject.org/3.5.0/build/snippets/index.html). An overlay is applied to a `.dts` file by appending its contents to the end of the `.dts` file, i.e. it is placed at the bottom of the file. Multiple overlays are applied by doing so repeatedly in a particular order. Without going into the details of the exact order in which overlays are applied, it is enough to know that if you specify e.g. `shield: corne_left nice_view_adapter nice_view` in your `build.yaml`, then the overlays are applied left to right.
+- Any number of `.overlay` files. These files can come from various sources, such as [shields](hardware-integration/index.mdx#what-is-a-shield) or [snippets](https://docs.zephyrproject.org/4.1.0/build/snippets/index.html). An overlay is applied to a `.dts` file by appending its contents to the end of the `.dts` file, i.e. it is placed at the bottom of the file. Multiple overlays are applied by doing so repeatedly in a particular order. Without going into the details of the exact order in which overlays are applied, it is enough to know that if you specify e.g. `shield: corne_left nice_view_adapter nice_view` in your `build.yaml`, then the overlays are applied left to right.
 - A single `.keymap` file. This file being included is ZMK-specific, and is treated as the "final" `.overlay` file, appended after all other overlays.
 
 #### Merging and overwriting nodes

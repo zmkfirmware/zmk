@@ -1,0 +1,5 @@
+board:
+  name: tofu65
+  vendor: kbdfans
+  socs:
+    - name: rp2040

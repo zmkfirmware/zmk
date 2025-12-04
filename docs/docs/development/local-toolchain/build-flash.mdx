@@ -21,7 +21,7 @@ If this is not done, you will encounter errors such as: `ERROR: source directory
 ## Building
 
 Building a particular keyboard is done using the
-[`west build`](https://docs.zephyrproject.org/3.5.0/develop/west/build-flash-debug.html#building-west-build)
+[`west build`](https://docs.zephyrproject.org/4.1.0/develop/west/build-flash-debug.html#building-west-build)
 command. Its usage slightly changes depending on if your build is for a keyboard
 with an onboard MCU or one that uses an MCU board add-on.
 
@@ -32,7 +32,7 @@ with an onboard MCU or one that uses an MCU board add-on.
       ]}>
   <TabItem value="onboardMcu">
     Keyboards with onboard MCU chips are simply treated as the
-    [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html)
+    [board](https://docs.zephyrproject.org/4.1.0/hardware/porting/board_porting.html)
     as far as Zephyr™ is concerned.
 
     Given the following:
@@ -49,9 +49,9 @@ with an onboard MCU or one that uses an MCU board add-on.
   </TabItem>
   <TabItem value="addonMcu">
     ZMK treats keyboards that take an MCU addon board as
-    [shields](https://docs.zephyrproject.org/3.5.0/hardware/porting/shields.html),
+    [shields](https://docs.zephyrproject.org/4.1.0/hardware/porting/shields.html),
     and treats the smaller MCU board as the true
-    [board](https://docs.zephyrproject.org/3.5.0/hardware/porting/board_porting.html).
+    [board](https://docs.zephyrproject.org/4.1.0/hardware/porting/board_porting.html).
 
     Given the following:
 
@@ -94,7 +94,7 @@ west build -d <build_dir>
 :::
 
 You can also add permanent CMake arguments to `west build` by using the
-[`west config`](https://docs.zephyrproject.org/3.5.0/develop/west/config.html#west-config-cmd)
+[`west config`](https://docs.zephyrproject.org/4.1.0/develop/west/config.html#west-config-cmd)
 command. These are invoked whenever a new build system is generated. To add
 permanent arguments, set the `build.cmake-args` configuration option.
 
@@ -198,7 +198,7 @@ west flash
 
 ## Multi-CPU and Dual-Chip Bluetooth Boards
 
-Zephyr supports running the Bluetooth host and controller on separate processors. In such a configuration, ZMK always runs on the host processor, but you may need to build and flash separate firmware for the controller. Zephyr provides sample code which can be used as the controller firmware for Bluetooth HCI over [RPMsg](https://docs.zephyrproject.org/3.5.0/samples/bluetooth/hci_rpmsg/README.html), [SPI](https://docs.zephyrproject.org/3.5.0/samples/bluetooth/hci_spi/README.html), [UART](https://docs.zephyrproject.org/3.5.0/samples/bluetooth/hci_uart/README.html), and [USB](https://docs.zephyrproject.org/3.5.0/samples/bluetooth/hci_usb/README.html). See [Zephyr's Bluetooth Stack Architecture documentation](https://docs.zephyrproject.org/3.5.0/connectivity/bluetooth/bluetooth-arch.html) for more details.
+Zephyr supports running the Bluetooth host and controller on separate processors. In such a configuration, ZMK always runs on the host processor, but you may need to build and flash separate firmware for the controller. Zephyr provides sample code which can be used as the controller firmware for Bluetooth HCI over [RPMsg](https://docs.zephyrproject.org/4.1.0/samples/bluetooth/hci_rpmsg/README.html), [SPI](https://docs.zephyrproject.org/4.1.0/samples/bluetooth/hci_spi/README.html), [UART](https://docs.zephyrproject.org/4.1.0/samples/bluetooth/hci_uart/README.html), and [USB](https://docs.zephyrproject.org/4.1.0/samples/bluetooth/hci_usb/README.html). See [Zephyr's Bluetooth Stack Architecture documentation](https://docs.zephyrproject.org/4.1.0/connectivity/bluetooth/bluetooth-arch.html) for more details.
 
 The following documentation shows how to build and flash ZMK for boards that use a dual-chip configuration.
 

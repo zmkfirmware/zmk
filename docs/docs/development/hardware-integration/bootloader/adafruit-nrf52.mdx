@@ -1,0 +1,84 @@
+---
+title: Adafuit nRF52 Bootloader
+sidebar_label: Adafuit nRF52
+---
+
+import BaseConfig from "./_base-config.md";
+
+The [Adafruit nRF52 Bootloader](https://github.com/adafruit/Adafruit_nRF52_Bootloader/) is a [magic value type bootloader](./index.mdx#magic-value-bootloaders), with some extra setup used to integrate with it.
+
+<BaseConfig />
+
+## Magic Value Type Kconfig
+
+In addition to the core Kconfig symbols already set up, one additional Kconfig choice needs to be set, e.g. in `Kconfig.defaults` for the board:
+
+```
+choice ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE
+    default ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE_ADAFRUIT_NRF52
+
+endchoice
+```
+
+This ensures the correct magic value is stored in the retained memory.
+
+## Devicetree Simple Include
+
+A simple shared file can be included in your board's devicetree to set up the retained memory and retention nodes. Near the top of your file, add an include for `common/nordic/nrf52840_uf2_boot_mode.dtsi`, e.g.:
+
+```dts
+/dts-v1/;
+
+#include <nordic/nrf52840_qiaa.dtsi>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+```
+
+## Devicetree Manual Changes
+
+### GPREGRET Setup
+
+Nordic nRF52840 has a dedicated register that can be used to store data to persist across resets. Zephyr has a retained mem driver over this register, so we'll add the boot mode retention to that existing node:
+
+```dts
+&gpregret1 {
+    adafruit_boot_retention: retention@0 {
+        compatible = "zephyr,retention";
+        status = "okay";
+        reg = <0x0 0x1>;
+    };
+};
+```
+
+### Magic Value Mapper
+
+Next, we'll set up our mapping retained mem driver, which will map from the Zephyr boot mode values to the values the bootloader is looking for:
+
+```dts
+/ {
+    magic_mapper {
+        compatible = "zmk,bootmode-to-magic-mapper";
+        status = "okay";
+
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        boot_retention: retention@0 {
+            compatible = "zephyr,retention";
+            status = "okay";
+            reg = <0x0 0x1>;
+        };
+    };
+};
+```
+
+### Chosen Node Properties
+
+Finally, we'll assign two `chosen` properties for the two nodes that have been defined:
+
+```dts
+/ {
+    chosen {
+        zephyr,boot-mode = &boot_retention;
+        zmk,magic-boot-mode = &adafruit_boot_retention;
+    };
+```
