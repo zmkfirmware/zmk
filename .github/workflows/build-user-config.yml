@@ -23,10 +23,15 @@ on:
         default: "firmware"
         required: false
         type: string
+      runner-type:
+        required: true
+        type: string
+        default: "ubuntu-latest" # Provide a default if desired
 
 jobs:
   matrix:
-    runs-on: ubuntu-22.04
+    # Use the input value for runs-on
+    runs-on: ${{ inputs.runner-type }}
     name: Fetch Build Keyboards
     outputs:
       build_matrix: ${{ env.build_matrix }}
@@ -40,7 +45,8 @@ jobs:
           yq -oj "${{ inputs.build_matrix_path }}"
 
   build:
-    runs-on: ubuntu-latest
+    # Use the input value for runs-on
+    runs-on: ${{ inputs.runner-type }}
     container:
       image: zmkfirmware/zmk-build-arm:stable
     needs: matrix
@@ -167,7 +173,8 @@ jobs:
           path: ${{ env.build_dir }}/artifacts
 
   merge:
-    runs-on: ubuntu-latest
+    # Use the input value for runs-on
+    runs-on: ${{ inputs.runner-type }}
     needs: build
     name: Merge Output Artifacts
     steps:
