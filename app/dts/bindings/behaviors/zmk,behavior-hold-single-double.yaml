@@ -1,0 +1,16 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Hold / Single / Double behavior
+
+compatible: "zmk,behavior-hold-single-double"
+
+include: zero_param.yaml
+
+properties:
+  bindings:
+    type: phandle-array
+    required: true
+  tapping-term-ms:
+    type: int
+    default: 200

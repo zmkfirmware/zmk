@@ -1,0 +1,22 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        hsd: behavior_hold_single_double {
+            compatible = "zmk,behavior-hold-single-double";
+            label = "HOLD_SINGLE_DOUBLE";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp C>, <&kp D>, <&kp E>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <&hsd>;
+        };
+    };
+};

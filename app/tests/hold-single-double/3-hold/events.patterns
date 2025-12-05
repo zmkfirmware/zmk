@@ -1,0 +1,3 @@
+s/.*hid_listener_keycode/kp/p
+s/.*on_hsd_binding/hsd_binding/p
+s/.*decide_hold_single_double/hsd_decide/p

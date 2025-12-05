@@ -105,6 +105,21 @@ config ZMK_BEHAVIOR_TAP_DANCE_MAX_HELD
 
 endif
 
+config ZMK_BEHAVIOR_HOLD_SINGLE_DOUBLE
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_HOLD_SINGLE_DOUBLE_ENABLED
+
+if ZMK_BEHAVIOR_HOLD_SINGLE_DOUBLE
+
+config ZMK_BEHAVIOR_HOLD_SINGLE_DOUBLE_MAX_HELD
+    int "Hold Single Double Max Held"
+    default 10
+    help
+      Max number of simultaneously held hold-single-double keys
+
+endif
+
 config ZMK_BEHAVIOR_INPUT_TWO_AXIS
     bool
     default y
