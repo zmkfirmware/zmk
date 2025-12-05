@@ -25,7 +25,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 /* forward declare listener symbol so ZMK_EVENT_RAISE_AT can reference it from helpers */
 extern const struct zmk_listener zmk_listener_behavior_hsd;
 
-#define ZMK_BHV_HSD_MAX_HELD 10
+#define ZMK_BHV_HSD_MAX_HELD CONFIG_ZMK_BEHAVIOR_HOLD_SINGLE_DOUBLE_MAX_HELD
 #define ZMK_BHV_HSD_POSITION_FREE UINT32_MAX
 
 struct behavior_hsd_config {
