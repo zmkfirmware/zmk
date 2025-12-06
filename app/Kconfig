@@ -25,9 +25,6 @@ config USB_DEVICE_PID
 config USB_DEVICE_MANUFACTURER
     default "ZMK Project"
 
-config BT_DEVICE_APPEARANCE
-    default 961
-
 config BT_DIS_PNP_VID
     default 0x1D50
 
@@ -221,9 +218,6 @@ config BT_GATT_NOTIFY_MULTIPLE
 
 config BT_GATT_AUTO_SEC_REQ
     default (ZMK_SPLIT_BLE && !ZMK_SPLIT_ROLE_CENTRAL)
-
-config BT_DEVICE_APPEARANCE
-    default 961
 
 config BT_PERIPHERAL_PREF_MIN_INT
     default 6
