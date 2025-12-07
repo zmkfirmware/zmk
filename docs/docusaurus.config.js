@@ -22,11 +22,13 @@ const versionNavbarItems = [
   })),
 ];
 
-const versionDropDownLabel = isDevelopmentVersion
-  ? versionNavbarItems[0].label
-  : versionNavbarItems.find((item) => {
-      return item.label === gitBranch.replace("-branch", "");
-    });
+const versionDropDownLabel = (
+  isDevelopmentVersion
+    ? versionNavbarItems[0]
+    : versionNavbarItems.find((item) => {
+        return item.label === gitBranch.replace("-branch", "");
+      })
+).label;
 
 module.exports = {
   title: "ZMK Firmware",
