@@ -57,35 +57,14 @@ const struct device *z_impl_behavior_get_binding(const char *name) {
     return NULL;
 }
 
-// TODO: Delete this method as part of a breaking release
-__deprecated int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
-                                             struct zmk_behavior_binding_event event,
-                                             bool pressed) {
-    LOG_WRN("`zmk_behavior_invoke_binding` is deprecated. Please raise a "
-            "`zmk_behavior_binding_event` instead.");
-    return raise_zmk_behavior_binding_event((struct zmk_behavior_binding_event){
-        .binding = src_binding,
-        .layer = event.layer,
-        .position = event.position,
-        .timestamp = event.timestamp,
-        .type = pressed ? ZMK_BEHAVIOR_TRIG_TYPE_PRESS : ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
-#if IS_ENABLED(CONFIG_ZMK_SPLIT)
-        .source = event.source,
-#endif
-    });
-}
-
-// TODO: Pass the event in as pointers, rather than copying in the struct
-// Make this change as part of a breaking release
-static int invoke_locally(struct zmk_behavior_binding *binding,
-                          struct zmk_behavior_binding_event *event) {
+static int invoke_locally(struct zmk_behavior_binding_event *event) {
     switch (event->type) {
     case ZMK_BEHAVIOR_TRIG_TYPE_PRESS:
-        return behavior_keymap_binding_pressed(binding, *event);
+        return behavior_keymap_binding_pressed(event);
     case ZMK_BEHAVIOR_TRIG_TYPE_RELEASE:
-        return behavior_keymap_binding_released(binding, *event);
+        return behavior_keymap_binding_released(event);
     case ZMK_BEHAVIOR_TRIG_TYPE_SENSOR:
-        return behavior_sensor_keymap_binding_process(binding, *event);
+        return behavior_sensor_keymap_binding_process(event);
     default:
         return -EINVAL;
     }
@@ -95,19 +74,13 @@ int behavior_listener(const zmk_event_t *eh) {
     struct zmk_behavior_binding_event *event = as_zmk_behavior_binding_event(eh);
     __ASSERT(event != NULL, "An invalid event was passed as an argument somehow.");
 
-    const struct device *behavior = zmk_behavior_get_binding(event->binding->behavior_dev);
+    const struct device *behavior = zmk_behavior_get_binding(event->behavior_dev);
     if (!behavior) {
         LOG_WRN("No behavior assigned to %d on layer %d", event->position, event->layer);
         return 0;
     }
 
-    /*
-     * Copying the behavior is necessary so that
-     * behavior_keymap_binding_convert_central_state_dependent_params (used for e.g. certain
-     * RGB behaviors) does not modify it, e.g. if the behavior is stored in a combo_cfg
-     */
-    struct zmk_behavior_binding binding = *(event->binding);
-    int err = behavior_keymap_binding_convert_central_state_dependent_params(&binding, *event);
+    int err = behavior_keymap_binding_convert_central_state_dependent_params(event);
     if (err) {
         LOG_ERR("Failed to convert relative to absolute behavior binding (err %d)", err);
         return err;
@@ -122,23 +95,23 @@ int behavior_listener(const zmk_event_t *eh) {
 
     switch (locality) {
     case BEHAVIOR_LOCALITY_CENTRAL:
-        return invoke_locally(&binding, event);
+        return invoke_locally(event);
     case BEHAVIOR_LOCALITY_EVENT_SOURCE:
 #if IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
         if (event->source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
-            return invoke_locally(&binding, event);
+            return invoke_locally(event);
         }
-        return zmk_split_central_invoke_behavior(event->source, &binding, event);
+        return zmk_split_central_invoke_behavior(event->source, event);
 #else
-        return invoke_locally(&binding, event);
+        return invoke_locally(event);
 #endif
     case BEHAVIOR_LOCALITY_GLOBAL:
 #if IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
         for (int i = 0; i < ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT; i++) {
-            zmk_split_central_invoke_behavior(i, &binding, event);
+            zmk_split_central_invoke_behavior(i, event);
         }
 #endif
-        return invoke_locally(&binding, event);
+        return invoke_locally(event);
     default:
         return -ENOTSUP;
     }

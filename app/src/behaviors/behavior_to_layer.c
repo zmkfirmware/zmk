@@ -21,17 +21,15 @@ struct behavior_to_config {
     bool locking;
 };
 
-static int to_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d layer %d", event.position, binding->param1);
-    const struct behavior_to_config *cfg = zmk_behavior_get_binding(binding->behavior_dev)->config;
-    zmk_keymap_layer_to(binding->param1, cfg->locking);
+static int to_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    LOG_DBG("position %d layer %d", event->position, event->param1);
+    const struct behavior_to_config *cfg = zmk_behavior_get_binding(event->behavior_dev)->config;
+    zmk_keymap_layer_to(event->param1, cfg->locking);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
-static int to_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d layer %d", event.position, binding->param1);
+static int to_keymap_binding_released(struct zmk_behavior_binding_event *event) {
+    LOG_DBG("position %d layer %d", event->position, event->param1);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 

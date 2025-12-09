@@ -31,9 +31,8 @@ struct behavior_reset_config {
 #endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
 };
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     const struct behavior_reset_config *cfg = dev->config;
 
 #if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)

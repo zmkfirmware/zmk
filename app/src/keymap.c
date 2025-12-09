@@ -737,7 +737,9 @@ int zmk_keymap_raise_binding_event_at_layer_index(zmk_keymap_layer_id_t layer_in
             }
 
             return raise_zmk_behavior_binding_event((struct zmk_behavior_binding_event){
-                .binding = binding,
+                .behavior_dev = binding->behavior_dev,
+                .param1 = binding->param1,
+                .param2 = binding->param2,
                 .layer = candidate_layer,
                 .position = position,
                 .timestamp = timestamp,

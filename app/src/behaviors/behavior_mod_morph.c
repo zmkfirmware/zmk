@@ -34,9 +34,8 @@ struct behavior_mod_morph_data {
     struct zmk_behavior_binding *pressed_binding;
 };
 
-static int on_mod_morph_binding_pressed(struct zmk_behavior_binding *binding,
-                                        struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_mod_morph_binding_pressed(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     const struct behavior_mod_morph_config *cfg = dev->config;
     struct behavior_mod_morph_data *data = dev->data;
 
@@ -51,13 +50,11 @@ static int on_mod_morph_binding_pressed(struct zmk_behavior_binding *binding,
     } else {
         data->pressed_binding = (struct zmk_behavior_binding *)&cfg->normal_binding;
     }
-    event.binding = data->pressed_binding;
-    return raise_zmk_behavior_binding_event(event);
+    return reraise_behavior_binding_event_with_new_binding(data->pressed_binding, event);
 }
 
-static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
-                                         struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_mod_morph_binding_released(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     struct behavior_mod_morph_data *data = dev->data;
 
     if (data->pressed_binding == NULL) {
@@ -68,8 +65,7 @@ static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
     struct zmk_behavior_binding *pressed_binding = data->pressed_binding;
     data->pressed_binding = NULL;
     int err;
-    event.binding = pressed_binding;
-    err = raise_zmk_behavior_binding_event(event);
+    err = reraise_behavior_binding_event_with_new_binding(pressed_binding, event);
     zmk_hid_masked_modifiers_clear();
     return err;
 }

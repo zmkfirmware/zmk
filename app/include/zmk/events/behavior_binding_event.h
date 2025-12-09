@@ -28,9 +28,11 @@ enum zmk_behavior_trigger_type {
 };
 
 struct zmk_behavior_binding_event {
-    const struct zmk_behavior_binding *binding;
-    uint32_t position;
     int64_t timestamp;
+    const char *behavior_dev;
+    uint32_t param1;
+    uint32_t param2;
+    uint32_t position;
     enum zmk_behavior_trigger_type type;
     uint8_t layer;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
@@ -39,3 +41,17 @@ struct zmk_behavior_binding_event {
 };
 
 ZMK_EVENT_DECLARE(zmk_behavior_binding_event);
+
+static inline int
+reraise_behavior_binding_event_with_new_binding(const struct zmk_behavior_binding *new_binding,
+                                                struct zmk_behavior_binding_event *event) {
+    return raise_zmk_behavior_binding_event((struct zmk_behavior_binding_event){
+        .timestamp = event->timestamp,
+        .behavior_dev = new_binding->behavior_dev,
+        .param1 = new_binding->param1,
+        .param2 = new_binding->param2,
+        .position = event->position,
+        .type = event->type,
+        .layer = event->layer,
+    });
+}

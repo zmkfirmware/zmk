@@ -88,9 +88,8 @@ static const struct behavior_parameter_metadata metadata = {
 
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    switch (binding->param1) {
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    switch (event->param1) {
     case BT_CLR_CMD:
         zmk_ble_clear_bonds();
         return 0;
@@ -99,21 +98,20 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     case BT_PRV_CMD:
         return zmk_ble_prof_prev();
     case BT_SEL_CMD:
-        return zmk_ble_prof_select(binding->param2);
+        return zmk_ble_prof_select(event->param2);
     case BT_CLR_ALL_CMD:
         zmk_ble_clear_all_bonds();
         return 0;
     case BT_DISC_CMD:
-        return zmk_ble_prof_disconnect(binding->param2);
+        return zmk_ble_prof_disconnect(event->param2);
     default:
-        LOG_ERR("Unknown BT command: %d", binding->param1);
+        LOG_ERR("Unknown BT command: %d", event->param1);
     }
 
     return -ENOTSUP;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
     return ZMK_BEHAVIOR_OPAQUE;
 }
 

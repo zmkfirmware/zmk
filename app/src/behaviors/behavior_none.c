@@ -16,13 +16,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
