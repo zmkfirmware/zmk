@@ -150,9 +150,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
     return -ENOTSUP;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
-    return ZMK_BEHAVIOR_OPAQUE;
-}
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) { return 0; }
 
 static const struct behavior_driver_api behavior_backlight_driver_api = {
     .binding_convert_central_state_dependent_params =

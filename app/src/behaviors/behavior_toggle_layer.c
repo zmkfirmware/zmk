@@ -46,7 +46,7 @@ static int tog_keymap_binding_pressed(struct zmk_behavior_binding_event *event) 
 
 static int tog_keymap_binding_released(struct zmk_behavior_binding_event *event) {
     LOG_DBG("position %d layer %d", event->position, event->param1);
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)

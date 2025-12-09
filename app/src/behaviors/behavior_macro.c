@@ -196,7 +196,7 @@ static int on_macro_binding_pressed(struct zmk_behavior_binding_event *event) {
 
     queue_macro(event, cfg->bindings, trigger_state);
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 static int on_macro_binding_released(struct zmk_behavior_binding_event *event) {
@@ -206,7 +206,7 @@ static int on_macro_binding_released(struct zmk_behavior_binding_event *event) {
 
     queue_macro(event, cfg->bindings, state->release_state);
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)

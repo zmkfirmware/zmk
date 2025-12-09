@@ -39,7 +39,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
     int ret = bootmode_set(cfg->boot_mode);
     if (ret < 0) {
         LOG_ERR("Failed to set the bootloader mode (%d)", ret);
-        return ZMK_BEHAVIOR_OPAQUE;
+        return 0;
     }
 
     sys_reboot(SYS_REBOOT_WARM);
@@ -49,7 +49,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
     sys_reboot(cfg->type);
 #endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 static const struct behavior_driver_api behavior_reset_driver_api = {

@@ -7,10 +7,6 @@
 #pragma once
 
 #include <zephyr/device.h>
-
-// TODO: Remove this
-
-#define ZMK_BEHAVIOR_OPAQUE 0
 #include <zmk/events/behavior_binding_event.h>
 /**
  * @brief Get a const struct device* for a behavior from its @p name field.
