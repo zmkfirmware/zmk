@@ -17,19 +17,18 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-static int on_keymap_binding_trigger(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_trigger(struct zmk_behavior_binding_event *event) {
     // Avoid uint8_t overflow resulting in an infinite loop
-    zmk_keymap_layer_id_t layer_index = LAYER_ID_TO_INDEX(event.layer);
+    zmk_keymap_layer_id_t layer_index = LAYER_ID_TO_INDEX(event->layer);
     if (layer_index == 0) {
         return 0;
     }
     return zmk_keymap_raise_binding_event_at_layer_index(layer_index - 1,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
-                                                         event.source,
+                                                         event->source,
 #endif
-                                                         event.position, event.type,
-                                                         event.timestamp);
+                                                         event->position, event->type,
+                                                         event->timestamp);
 }
 
 static const struct behavior_driver_api behavior_transparent_driver_api = {

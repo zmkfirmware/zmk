@@ -27,21 +27,6 @@
 const struct device *zmk_behavior_get_binding(const char *name);
 
 /**
- * @brief Invoke a behavior given its binding and invoking event details.
- *
- * @param src_binding Behavior binding to invoke.
- * @param event The binding event struct containing details of the event that invoked it.
- * @param pressed Whether the binding is pressed or released.
- *
- * @retval 0 If successful.
- * @retval Negative errno code if failure.
- *
- * Deprecated. Raise the event directly instead.
- */
-int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
-                                struct zmk_behavior_binding_event event, bool pressed);
-
-/**
  * @brief Get a local ID for a behavior from its @p name field.
  *
  * @param name Behavior name to search for.

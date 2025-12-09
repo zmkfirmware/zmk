@@ -59,7 +59,6 @@ struct active_sticky_key {
 struct active_sticky_key active_sticky_keys[ZMK_BHV_STICKY_KEY_MAX_HELD] = {};
 
 static struct active_sticky_key *store_sticky_key(struct zmk_behavior_binding_event *event,
-                                                  uint32_t param1,
                                                   const struct behavior_sticky_key_config *config) {
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
         struct active_sticky_key *const sticky_key = &active_sticky_keys[i];
@@ -72,7 +71,7 @@ static struct active_sticky_key *store_sticky_key(struct zmk_behavior_binding_ev
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         sticky_key->source = event->source;
 #endif
-        sticky_key->param1 = param1;
+        sticky_key->param1 = event->param1;
         sticky_key->config = config;
         sticky_key->release_at = 0;
         sticky_key->timer_cancelled = false;
@@ -90,11 +89,11 @@ static void clear_sticky_key(struct active_sticky_key *sticky_key) {
     sticky_key->position = ZMK_BHV_STICKY_KEY_POSITION_FREE;
 }
 
-static struct active_sticky_key *
-find_sticky_key(uint32_t position, struct zmk_behavior_binding behavior, uint32_t binding_param) {
+static struct active_sticky_key *find_sticky_key(uint32_t position, const char *behavior_dev,
+                                                 uint32_t binding_param) {
     for (int i = 0; i < ZMK_BHV_STICKY_KEY_MAX_HELD; i++) {
         if (active_sticky_keys[i].position == position &&
-            active_sticky_keys[i].config->behavior.behavior_dev == behavior.behavior_dev &&
+            active_sticky_keys[i].config->behavior.behavior_dev == behavior_dev &&
             active_sticky_keys[i].param1 == binding_param &&
             !active_sticky_keys[i].timer_cancelled) {
             return &active_sticky_keys[i];
@@ -105,12 +104,9 @@ find_sticky_key(uint32_t position, struct zmk_behavior_binding behavior, uint32_
 
 static inline int press_sticky_key_behavior(struct active_sticky_key *sticky_key,
                                             int64_t timestamp) {
-    struct zmk_behavior_binding binding = {
+    struct zmk_behavior_binding_event event = {
         .behavior_dev = sticky_key->config->behavior.behavior_dev,
         .param1 = sticky_key->param1,
-    };
-    struct zmk_behavior_binding_event event = {
-        .binding = &binding,
         .position = sticky_key->position,
         .layer = sticky_key->layer,
         .timestamp = timestamp,
@@ -124,12 +120,9 @@ static inline int press_sticky_key_behavior(struct active_sticky_key *sticky_key
 
 static inline int release_sticky_key_behavior(struct active_sticky_key *sticky_key,
                                               int64_t timestamp) {
-    struct zmk_behavior_binding binding = {
+    struct zmk_behavior_binding_event event = {
         .behavior_dev = sticky_key->config->behavior.behavior_dev,
         .param1 = sticky_key->param1,
-    };
-    struct zmk_behavior_binding_event event = {
-        .binding = &binding,
         .position = sticky_key->position,
         .layer = sticky_key->layer,
         .timestamp = timestamp,
@@ -161,38 +154,36 @@ static int stop_timer(struct active_sticky_key *sticky_key) {
     return timer_cancel_result;
 }
 
-static int on_sticky_key_binding_pressed(struct zmk_behavior_binding *binding,
-                                         struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_sticky_key_binding_pressed(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     const struct behavior_sticky_key_config *cfg = dev->config;
     struct active_sticky_key *sticky_key;
-    sticky_key = find_sticky_key(event.position, cfg->behavior, binding->param1);
+    sticky_key = find_sticky_key(event->position, cfg->behavior.behavior_dev, event->param1);
     if (sticky_key != NULL) {
-        LOG_DBG("found same sticky key pressed at position %d, release it first", event.position);
+        LOG_DBG("found same sticky key pressed at position %d, release it first", event->position);
         stop_timer(sticky_key);
-        release_sticky_key_behavior(sticky_key, event.timestamp);
+        release_sticky_key_behavior(sticky_key, event->timestamp);
     }
-    sticky_key = store_sticky_key(&event, binding->param1, cfg);
+    sticky_key = store_sticky_key(event, cfg);
     if (sticky_key == NULL) {
         LOG_ERR("unable to store sticky key, did you press more than %d sticky_key?",
                 ZMK_BHV_STICKY_KEY_MAX_HELD);
         return ZMK_BEHAVIOR_OPAQUE;
     }
 
-    LOG_DBG("%d new sticky_key", event.position);
+    LOG_DBG("%d new sticky_key", event->position);
     if (!sticky_key->config->lazy) {
         // press the key now if it's not lazy
-        press_sticky_key_behavior(sticky_key, event.timestamp);
+        press_sticky_key_behavior(sticky_key, event->timestamp);
     }
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
-static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
-                                          struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_sticky_key_binding_released(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     const struct behavior_sticky_key_config *cfg = dev->config;
     struct active_sticky_key *sticky_key =
-        find_sticky_key(event.position, cfg->behavior, binding->param1);
+        find_sticky_key(event->position, cfg->behavior.behavior_dev, event->param1);
     if (sticky_key == NULL) {
         LOG_ERR("ACTIVE STICKY KEY CLEARED TOO EARLY");
         return ZMK_BEHAVIOR_OPAQUE;
@@ -200,12 +191,12 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
 
     if (sticky_key->modified_key_usage_page != 0 && sticky_key->modified_key_keycode != 0) {
         LOG_DBG("Another key was pressed while the sticky key was pressed. Act like a normal key.");
-        return release_sticky_key_behavior(sticky_key, event.timestamp);
+        return release_sticky_key_behavior(sticky_key, event->timestamp);
     }
 
     // No other key was pressed. Start the timer.
     sticky_key->timer_started = true;
-    sticky_key->release_at = event.timestamp + sticky_key->config->release_after_ms;
+    sticky_key->release_at = event->timestamp + sticky_key->config->release_after_ms;
     // adjust timer in case this behavior was queued by a hold-tap
     int32_t ms_left = sticky_key->release_at - k_uptime_get();
     if (ms_left > 0) {

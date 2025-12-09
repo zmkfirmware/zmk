@@ -281,7 +281,9 @@ static int release_pressed_keys() {
 static inline int press_combo_behavior(int combo_idx, const struct combo_cfg *combo,
                                        int32_t timestamp) {
     struct zmk_behavior_binding_event event = {
-        .binding = &combo->behavior,
+        .behavior_dev = combo->behavior.behavior_dev,
+        .param1 = combo->behavior.param1,
+        .param2 = combo->behavior.param2,
         .layer = 0, // Combos don't have layers, so their layer is set to be the base layer.
         .position = ZMK_VIRTUAL_KEY_POSITION_COMBO(combo_idx),
         .timestamp = timestamp,
@@ -299,7 +301,9 @@ static inline int press_combo_behavior(int combo_idx, const struct combo_cfg *co
 static inline int release_combo_behavior(int combo_idx, const struct combo_cfg *combo,
                                          int32_t timestamp) {
     struct zmk_behavior_binding_event event = {
-        .binding = &combo->behavior,
+        .behavior_dev = combo->behavior.behavior_dev,
+        .param1 = combo->behavior.param1,
+        .param2 = combo->behavior.param2,
         .layer = 0, // Combos don't have layers, so their layer is set to be the base layer.
         .position = ZMK_VIRTUAL_KEY_POSITION_COMBO(combo_idx),
         .timestamp = timestamp,

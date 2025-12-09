@@ -41,7 +41,9 @@ static int ip_behaviors_handle_event(const struct device *dev, struct input_even
     for (size_t i = 0; i < cfg->size; i++) {
         if (cfg->codes[i] == event->code) {
             struct zmk_behavior_binding_event behavior_event = {
-                .binding = &cfg->bindings[i],
+                .behavior_dev = cfg->bindings[i].behavior_dev,
+                .param1 = cfg->bindings[i].param1,
+                .param2 = cfg->bindings[i].param2,
                 .position = ZMK_VIRTUAL_KEY_POSITION_BEHAVIOR_INPUT_PROCESSOR(
                     state->input_device_index, cfg->index),
                 .timestamp = k_uptime_get(),
@@ -53,8 +55,7 @@ static int ip_behaviors_handle_event(const struct device *dev, struct input_even
             };
 
             LOG_DBG("FOUND A MATCHING CODE, invoke %s for position %d with %d listeners",
-                    cfg->bindings[i].behavior_dev, behavior_event.position,
-                    ZMK_INPUT_LISTENERS_LEN);
+                    behavior_event.behavior_dev, behavior_event.position, ZMK_INPUT_LISTENERS_LEN);
             int ret = raise_zmk_behavior_binding_event(behavior_event);
             if (ret < 0) {
                 return ret;
