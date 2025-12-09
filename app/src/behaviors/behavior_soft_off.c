@@ -38,7 +38,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
         data->press_start = k_uptime_get();
     }
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
@@ -63,7 +63,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) 
         }
     }
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 static const struct behavior_driver_api behavior_soft_off_driver_api = {

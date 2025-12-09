@@ -156,7 +156,7 @@ static int on_tap_dance_binding_pressed(struct zmk_behavior_binding_event *event
     if (tap_dance == NULL) {
         if (new_tap_dance(event, cfg, &tap_dance) == -ENOMEM) {
             LOG_ERR("Unable to create new tap dance. Insufficient space in active_tap_dances[].");
-            return ZMK_BEHAVIOR_OPAQUE;
+            return 0;
         }
         LOG_DBG("%d created new tap dance", event->position);
     }
@@ -174,7 +174,7 @@ static int on_tap_dance_binding_pressed(struct zmk_behavior_binding_event *event
         return ZMK_EV_EVENT_BUBBLE;
     }
     reset_timer(tap_dance, event->timestamp);
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 static int on_tap_dance_binding_released(struct zmk_behavior_binding_event *event) {
@@ -182,13 +182,13 @@ static int on_tap_dance_binding_released(struct zmk_behavior_binding_event *even
     struct active_tap_dance *tap_dance = find_tap_dance(event->position);
     if (tap_dance == NULL) {
         LOG_ERR("ACTIVE TAP DANCE CLEARED TOO EARLY");
-        return ZMK_BEHAVIOR_OPAQUE;
+        return 0;
     }
     tap_dance->is_pressed = false;
     if (tap_dance->tap_dance_decided) {
         release_tap_dance_behavior(tap_dance, event->timestamp);
     }
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 void behavior_tap_dance_timer_handler(struct k_work *item) {

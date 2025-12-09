@@ -45,9 +45,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
     };
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
-    return ZMK_BEHAVIOR_OPAQUE;
-}
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) { return 0; }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 

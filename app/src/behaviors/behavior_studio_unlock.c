@@ -20,12 +20,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
     zmk_studio_core_unlock();
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
-    return ZMK_BEHAVIOR_OPAQUE;
-}
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) { return 0; }
 
 static const struct behavior_driver_api behavior_studio_unlock_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,

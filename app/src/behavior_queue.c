@@ -21,7 +21,7 @@ struct q_item {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
     uint8_t source;
 #endif
-    bool press;
+    bool press : 1;
     uint32_t wait : 31;
 };
 

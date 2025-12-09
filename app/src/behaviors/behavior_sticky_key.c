@@ -168,7 +168,7 @@ static int on_sticky_key_binding_pressed(struct zmk_behavior_binding_event *even
     if (sticky_key == NULL) {
         LOG_ERR("unable to store sticky key, did you press more than %d sticky_key?",
                 ZMK_BHV_STICKY_KEY_MAX_HELD);
-        return ZMK_BEHAVIOR_OPAQUE;
+        return 0;
     }
 
     LOG_DBG("%d new sticky_key", event->position);
@@ -176,7 +176,7 @@ static int on_sticky_key_binding_pressed(struct zmk_behavior_binding_event *even
         // press the key now if it's not lazy
         press_sticky_key_behavior(sticky_key, event->timestamp);
     }
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 static int on_sticky_key_binding_released(struct zmk_behavior_binding_event *event) {
@@ -186,7 +186,7 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding_event *eve
         find_sticky_key(event->position, cfg->behavior.behavior_dev, event->param1);
     if (sticky_key == NULL) {
         LOG_ERR("ACTIVE STICKY KEY CLEARED TOO EARLY");
-        return ZMK_BEHAVIOR_OPAQUE;
+        return 0;
     }
 
     if (sticky_key->modified_key_usage_page != 0 && sticky_key->modified_key_keycode != 0) {
@@ -202,7 +202,7 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding_event *eve
     if (ms_left > 0) {
         k_work_schedule(&sticky_key->release_timer, K_MSEC(ms_left));
     }
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)

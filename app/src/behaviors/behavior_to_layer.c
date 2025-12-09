@@ -25,12 +25,12 @@ static int to_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
     LOG_DBG("position %d layer %d", event->position, event->param1);
     const struct behavior_to_config *cfg = zmk_behavior_get_binding(event->behavior_dev)->config;
     zmk_keymap_layer_to(event->param1, cfg->locking);
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 static int to_keymap_binding_released(struct zmk_behavior_binding_event *event) {
     LOG_DBG("position %d layer %d", event->position, event->param1);
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
