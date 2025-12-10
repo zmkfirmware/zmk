@@ -1,0 +1,43 @@
+
+config ZMK_DBL_TAP_BOOTLOADER
+    bool "Double Tap To Enter Bootloader"
+    depends on RETENTION_BOOT_MODE
+
+if ZMK_DBL_TAP_BOOTLOADER
+
+config ZMK_DBL_TAP_BOOTLOADER_TIMEOUT_MS
+    int "Double Tap Timeout (ms)"
+
+config ZMK_DBL_TAP_BOOTLOADER_INIT_PRIORITY
+    int "Double Tap Init Priority"
+
+endif
+
+config ZMK_BOOTMODE_TO_MAGIC_VALUE_MAPPER
+    bool "Magic Value Mapper"
+    default y
+    depends on DT_HAS_ZMK_BOOTMODE_TO_MAGIC_MAPPER_ENABLED
+
+if ZMK_BOOTMODE_TO_MAGIC_VALUE_MAPPER
+
+choice ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE
+    prompt "Magic Value Bootloader Type"
+
+config ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE_UNKNOWN
+    bool "Unknown"
+
+config ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE_TINYUF2
+    bool "tinyuf2"
+
+config ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE_ADAFRUIT_BOSSA
+    bool "Adafruit BOSSA"
+
+config ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE_ADAFRUIT_NRF52
+    bool "Adafruit nRF52"
+
+endchoice
+
+config ZMK_BOOTMODE_BOOTLOADER_MAGIC_VALUE
+    hex
+
+endif

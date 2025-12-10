@@ -1,0 +1,13 @@
+file_format: "1"
+id: nrfmicro/nrf52840/flipped
+name: nRFMicro nRF52840 (flipped)
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://github.com/joric/nrfmicro/
+exposes: [pro_micro]
+revisions:
+  - "1.1.0"
+default_revision: "1.1.0"

@@ -1,0 +1,7 @@
+# Preonic V3 board configuration
+
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_PREONIC
+    select SOC_STM32F303XC

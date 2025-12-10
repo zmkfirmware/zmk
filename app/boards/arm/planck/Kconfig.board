@@ -1,8 +1,0 @@
-# Planck V6 board configuration
-
-# Copyright (c) 2020 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-config BOARD_PLANCK_REV6
-    bool "Planck V6 Keyboard"
-    depends on SOC_STM32F303XC

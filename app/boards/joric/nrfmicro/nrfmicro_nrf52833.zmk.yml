@@ -1,0 +1,13 @@
+file_format: "1"
+id: nrfmicro/nrf52833
+name: nRFMicro (nRF52833)
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://github.com/joric/nrfmicro/
+exposes: [pro_micro]
+revisions:
+  - "1.3.0"
+default_revision: "1.3.0"

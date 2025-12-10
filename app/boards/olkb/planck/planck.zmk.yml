@@ -1,0 +1,14 @@
+file_format: "1"
+id: planck
+name: Planck (Rev6)
+type: board
+arch: arm
+features:
+  - keys
+  - encoder
+outputs:
+  - usb
+url: https://olkb.com/collections/planck
+revisions:
+  - "6.0.0"
+default_revision: "6.0.0"

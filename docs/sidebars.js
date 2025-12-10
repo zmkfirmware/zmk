@@ -159,6 +159,22 @@ module.exports = {
             "development/hardware-integration/battery",
             {
               type: "category",
+              label: "Bootloader",
+              link: {
+                type: "doc",
+                id: "development/hardware-integration/bootloader/index",
+              },
+              collapsed: true,
+              items: [
+                "development/hardware-integration/bootloader/adafruit-nrf52",
+                "development/hardware-integration/bootloader/tinyuf2",
+                "development/hardware-integration/bootloader/samd21-uf2",
+                "development/hardware-integration/bootloader/rp2",
+                "development/hardware-integration/bootloader/stm32",
+              ],
+            },
+            {
+              type: "category",
               label: "Lighting",
               link: {
                 type: "doc",

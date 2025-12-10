@@ -77,7 +77,7 @@ For connectivity problems caused by hardware, please see [the appropriate sectio
 
 Some devices and operating systems may have additional restrictions that they require be met before allowing a bluetooth peripheral to pair with them. If your keyboard is visible to your host but you are having issues trouble connecting or no input is registered, this might be the cause. Some of ZMK's [experimental bluetooth settings](../config/bluetooth.md) may suffice to resolve the issue. In particular:
 
-- Disabling PHY 2Mbps ([`CONFIG_BT_CTLR_PHY_2M=n`](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_BT_CTLR_PHY_2M)) helps to pair and connect for certain wireless chipset firmware versions, particularly on Windows (Realtek and Intel chips) and older Intel Macs with Broadcom chipsets.
+- Disabling PHY 2Mbps ([`CONFIG_BT_CTLR_PHY_2M=n`](https://docs.zephyrproject.org/4.1.0/kconfig.html#CONFIG_BT_CTLR_PHY_2M)) helps to pair and connect for certain wireless chipset firmware versions, particularly on Windows (Realtek and Intel chips) and older Intel Macs with Broadcom chipsets.
 - Enabling passkey entry ([`CONFIG_ZMK_BLE_PASSKEY_ENTRY=y`](../config/bluetooth.md)) helps for certain Windows computers (work-managed ones in particular). This may also manifest in not sending keystrokes.
 
 ### Issues With Dual Boot Setups
@@ -95,7 +95,7 @@ For the `nRF52840`, the flag to set to use the internal oscillator is:
 CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y
 ```
 
-Other microcontrollers may have similar configuration options [found in the Zephyr documentation](https://docs.zephyrproject.org/3.5.0/search.html?q=CONFIG_CLOCK_CONTROL&check_keywords=yes&area=default). Do note that not all microcontrollers allow for the use of an internal oscillator, though.
+Other microcontrollers may have similar configuration options [found in the Zephyr documentation](https://docs.zephyrproject.org/4.1.0/search.html?q=CONFIG_CLOCK_CONTROL&check_keywords=yes&area=default). Do note that not all microcontrollers allow for the use of an internal oscillator, though.
 
 ## Issues While Connected
 
@@ -107,7 +107,7 @@ Some users may experience a poor connection between the keyboard and the host. T
 CONFIG_BT_CTLR_TX_PWR_PLUS_8=y
 ```
 
-For the `nRF52840`, the value `PLUS_8` can be set to any multiple of four between `MINUS_20` and `PLUS_8`. The default value for this config is `0`, but if you are having connection issues it is recommended to set it to `PLUS_8` because the power consumption difference is negligible. For more information on changing the transmit power of your BLE device, please refer to [the Zephyr docs.](https://docs.zephyrproject.org/3.5.0/kconfig.html#CONFIG_BT_CTLR_TX_PWR)
+For the `nRF52840`, the value `PLUS_8` can be set to any multiple of four between `MINUS_20` and `PLUS_8`. The default value for this config is `0`, but if you are having connection issues it is recommended to set it to `PLUS_8` because the power consumption difference is negligible. For more information on changing the transmit power of your BLE device, please refer to [the Zephyr docs.](https://docs.zephyrproject.org/4.1.0/kconfig.html#CONFIG_BT_CTLR_TX_PWR)
 
 :::info
 This setting can also improve the connection strength between the keyboard halves for split keyboards.

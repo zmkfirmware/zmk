@@ -25,7 +25,7 @@ If the debounce press/release values are set to any value other than `-1`, they 
 
 ### Devicetree
 
-Applies to: [`/chosen` node](https://docs.zephyrproject.org/3.5.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)
+Applies to: [`/chosen` node](https://docs.zephyrproject.org/4.1.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)
 
 | Property               | Type | Description                                                            |
 | ---------------------- | ---- | ---------------------------------------------------------------------- |
@@ -81,7 +81,7 @@ Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-direct.yaml](
 | `toggle-mode`             | bool       | Use toggle switch mode                                                                                     | n       |
 | `wakeup-source`           | bool       | Mark this kscan instance as able to wake the keyboard                                                      | n       |
 
-Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html#api-reference) for the elements in `input-gpios` should be `(GPIO_ACTIVE_LOW | GPIO_PULL_UP)`:
+Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](https://docs.zephyrproject.org/4.1.0/hardware/peripherals/gpio.html#api-reference) for the elements in `input-gpios` should be `(GPIO_ACTIVE_LOW | GPIO_PULL_UP)`:
 
 ```dts
     kscan0: kscan {
@@ -151,7 +151,7 @@ The `diode-direction` property must be one of:
 | `"row2col"` | Diodes point from rows to columns (cathodes are connected to columns) |
 | `"col2row"` | Diodes point from columns to rows (cathodes are connected to rows)    |
 
-Given the `diode-direction`, the [GPIO flags](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html#api-reference) for the elements in `row-` and `col-gpios` should be set appropriately.
+Given the `diode-direction`, the [GPIO flags](https://docs.zephyrproject.org/4.1.0/hardware/peripherals/gpio.html#api-reference) for the elements in `row-` and `col-gpios` should be set appropriately.
 The output pins (e.g. columns for `col2row`) should have the flag `GPIO_ACTIVE_HIGH`, and input pins (e.g. rows for `col2row`) should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`:
 
 ```dts
@@ -204,7 +204,7 @@ Define the transform with a [matrix transform](layout.md#matrix-transform). The 
 For example, in `RC(5,0)` power flows from the 6th pin in `gpios` to the 1st pin in `gpios`.
 Exclude all positions where the row and column are the same as these pairs will never be triggered, since no pin can be both input and output at the same time.
 
-The [GPIO flags](https://docs.zephyrproject.org/3.5.0/hardware/peripherals/gpio.html#api-reference) for the elements in `gpios` should be `GPIO_ACTIVE_HIGH`, and interrupt pins set in `interrupt-gpios` should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`.
+The [GPIO flags](https://docs.zephyrproject.org/4.1.0/hardware/peripherals/gpio.html#api-reference) for the elements in `gpios` should be `GPIO_ACTIVE_HIGH`, and interrupt pins set in `interrupt-gpios` should have the flags `(GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)`.
 
 ## Composite Driver
 

@@ -23,7 +23,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #ifdef CONFIG_ZMK_PM_DEVICE_SUSPEND_RESUME
 TYPE_SECTION_START_EXTERN(const struct device *, pm_device_slots);
 
-#if !defined(CONFIG_PM_DEVICE_RUNTIME_EXCLUSIVE)
+#if defined(CONFIG_PM_DEVICE_SYSTEM_MANAGED)
 /* Number of devices successfully suspended. */
 static size_t zmk_num_susp;
 
@@ -42,8 +42,8 @@ int zmk_pm_suspend_devices(void) {
          * Ignore uninitialized devices, busy devices, wake up sources, and
          * devices with runtime PM enabled.
          */
-        if (!device_is_ready(dev) || pm_device_is_busy(dev) || pm_device_state_is_locked(dev) ||
-            pm_device_wakeup_is_enabled(dev) || pm_device_runtime_is_enabled(dev)) {
+        if (!device_is_ready(dev) || pm_device_is_busy(dev) || pm_device_wakeup_is_enabled(dev) ||
+            pm_device_runtime_is_enabled(dev)) {
             continue;
         }
 

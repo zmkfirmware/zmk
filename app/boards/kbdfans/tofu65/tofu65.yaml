@@ -1,0 +1,15 @@
+identifier: tofu65
+name: KBDfans Tofu65 2.0
+type: mcu
+arch: arm
+flash: 16384
+ram: 264
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - gpio
+  - usb_device
+  - hwinfo
+  - pwm

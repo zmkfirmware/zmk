@@ -128,6 +128,14 @@ static void handle_key_code(const struct input_listener_config *config,
     int8_t btn;
 
     switch (evt->code) {
+    case INPUT_BTN_TOUCH:
+        btn = 0;
+        if (evt->value > 0) {
+            WRITE_BIT(data->mouse.button_set, btn, 1);
+        } else {
+            WRITE_BIT(data->mouse.button_clear, btn, 1);
+        }
+        break;
     case INPUT_BTN_0:
     case INPUT_BTN_1:
     case INPUT_BTN_2:
@@ -391,9 +399,10 @@ static void input_handler(const struct input_listener_config *config,
                  .layer_override_data = {DT_INST_FOREACH_CHILD_SEP_VARGS(n, IL_OVERRIDE_DATA,      \
                                                                          (, ), n)},                \
              };                                                                                    \
-         void input_handler_##n(struct input_event *evt) {                                         \
+         void input_handler_##n(struct input_event *evt, void *user_data) {                        \
              input_handler(&config_##n, &data_##n, evt);                                           \
-         } INPUT_CALLBACK_DEFINE(DEVICE_DT_GET(DT_INST_PHANDLE(n, device)), input_handler_##n);),  \
+         } INPUT_CALLBACK_DEFINE(DEVICE_DT_GET(DT_INST_PHANDLE(n, device)), input_handler_##n,     \
+                                 NULL);),                                                          \
         ())
 
 DT_INST_FOREACH_STATUS_OKAY(IL_INST)

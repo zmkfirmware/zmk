@@ -75,7 +75,7 @@ For this approach, you will need to make sure that the [soft off behavior](../..
 
 ### GPIO key
 
-Zephyr's basic [GPIO Key](https://docs.zephyrproject.org/3.5.0/build/dts/api/bindings/input/gpio-keys.html) concept is used to configure the soft off GPIO pin.
+Zephyr's basic [GPIO Key](https://docs.zephyrproject.org/4.1.0/build/dts/api/bindings/input/gpio-keys.html) concept is used to configure the soft off GPIO pin.
 {/* secrettabs hides this tab selector. GPIO key changes its "orientation" between simple pin and matrix integrated. */}
 
 <Tabs
@@ -97,7 +97,7 @@ Zephyr's basic [GPIO Key](https://docs.zephyrproject.org/3.5.0/build/dts/api/bin
 
 GPIO keys are defined using child nodes under the `gpio-keys` compatible node. Each child needs just one property defined:
 
-- The `gpios` property should be a [phandle-array](https://docs.zephyrproject.org/3.5.0/build/dts/phandles.html#zero-or-more-nodes-with-metadata-phandle-array-type) with a fully defined GPIO pin and with the correct pull up/down and active high/low flags set.
+- The `gpios` property should be a [phandle-array](https://docs.zephyrproject.org/4.1.0/build/dts/phandles.html#zero-or-more-nodes-with-metadata-phandle-array-type) with a fully defined GPIO pin and with the correct pull up/down and active high/low flags set.
 
 <Tabs
   groupId="advanced-methods"

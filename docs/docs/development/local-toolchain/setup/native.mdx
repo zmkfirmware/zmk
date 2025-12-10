@@ -73,13 +73,17 @@ export const WinTermTabs = (props) => (
 
 ## 1. Install Zephyr Dependencies
 
-Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html) and follow the instructions under these sections:
+Open Zephyr's [Getting Started Guide](https://docs.zephyrproject.org/4.1.0/develop/getting_started/index.html) and follow the instructions under these sections:
 
-- [Select and Update OS](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#select-and-update-os)
-- [Install Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-dependencies)
+- [Select and Update OS](https://docs.zephyrproject.org/4.1.0/develop/getting_started/index.html#select-and-update-os)
+- [Install Dependencies](https://docs.zephyrproject.org/4.1.0/develop/getting_started/index.html#install-dependencies)
 
 :::info
-Zephyr's [Install Linux Host Dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/installation_linux.html) page may be of use for users of Linux distributions which are not based on Ubuntu.
+Zephyr's [Install Linux Host Dependencies](https://docs.zephyrproject.org/4.1.0/develop/getting_started/installation_linux.html) page may be of use for users of Linux distributions which are not based on Ubuntu.
+:::
+
+:::warning
+Some optional Zephyr modules, like `libmetal`, are not compatible with CMake v4, so we recommend installing the latest CMake v3 release when installing the Zephyr dependencies.
 :::
 
 ## 2. Source Code
@@ -99,7 +103,7 @@ cd zmk
 ## 3. Get Zephyr and install Python dependencies
 
 :::note
-These steps are very similar to Zephyr's [Get Zephyr and install Python dependencies](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#get-zephyr-and-install-python-dependencies) instructions, but specialized for ZMK.
+These steps are very similar to Zephyr's [Get Zephyr and install Python dependencies](https://docs.zephyrproject.org/4.1.0/develop/getting_started/index.html#get-zephyr-and-install-python-dependencies) instructions, but specialized for ZMK.
 :::
 
 <EnvTabs>
@@ -191,22 +195,16 @@ west update
 This step pulls down quite a bit of tooling, be patient!
 :::
 
-6. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+6. Export a [Zephyr CMake package](https://docs.zephyrproject.org/4.1.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
 
 ```sh
 west zephyr-export
 ```
 
-7. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+7. Install the additional Zephyr dependencies using `west`:
 
 ```sh
-pip install -r zephyr/scripts/requirements-base.txt
-```
-
-If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extras.txt` dependencies:
-
-```sh
-pip install -r zephyr/scripts/requirements-extras.txt
+west packages pip --install
 ```
 
 </TabItem>
@@ -286,7 +284,7 @@ west update
 This step pulls down quite a bit of tooling, be patient!
 :::
 
-3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/3.5.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
+3. Export a [Zephyr CMake package](https://docs.zephyrproject.org/4.1.0/build/zephyr_cmake_package.html#cmake-pkg). This allows CMake to automatically load boilerplate code required for building Zephyr applications.
 
 ```sh
 west zephyr-export
@@ -295,47 +293,29 @@ west zephyr-export
 <Tabs groupId="operating-systems" queryString defaultValue="ubuntu" className="secrettabs">
   <TabItem value="ubuntu" label="Ubuntu">
 
-4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+4. Install the additional Zephyr dependencies using `west`:
 
 ```sh
-pip3 install --user -r zephyr/scripts/requirements-base.txt
-```
-
-If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extras.txt` dependencies:
-
-```sh
-pip3 install -r zephyr/scripts/requirements-extras.txt
+west packages pip --install
 ```
 
   </TabItem>
 
   <TabItem value="win" label="Windows">
 
-4. Install the additional dependencies found in Zephyr's `requirements-base.txt`:
+4. Install the additional Zephyr dependencies using `west`:
 
 ```sh
-pip install -r zephyr/scripts/requirements-base.txt
-```
-
-If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extras.txt` dependencies:
-
-```sh
-pip install -r zephyr/scripts/requirements-extras.txt
+west packages pip --install
 ```
 
   </TabItem>
 
   <TabItem value="mac" label="Mac OS">
-4. Install the additional dependencies found in Zephyr's `requirements-base.txt`.
+4. Install the additional Zephyr dependencies using `west`:
 
 ```sh
-pip3 install -r zephyr/scripts/requirements-base.txt
-```
-
-If you are going to build firmware with [ZMK Studio](../../../features/studio.md), also install `requirements-extras.txt` dependencies:
-
-```sh
-pip3 install -r zephyr/scripts/requirements-extras.txt
+west packages pip --install
 ```
 
   </TabItem>
@@ -345,7 +325,7 @@ pip3 install -r zephyr/scripts/requirements-extras.txt
 
 ## 4. Install Zephyr SDK
 
-Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/3.5.0/develop/getting_started/index.html#install-zephyr-sdk).
+Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.zephyrproject.org/4.1.0/develop/getting_started/index.html#install-zephyr-sdk).
 
 ### OS-Specific Notes
 
@@ -360,7 +340,7 @@ Return to Zephyr's Getting Started Guide and [Install Zephyr SDK](https://docs.z
 <TabItem value="raspberryos">
 #### Install cross-compile toolchain
 
-Because Raspberry OS runs on the same architecture (but different ABI) as ARM keyboard MCUs, the operating system's installed [cross compilers](https://docs.zephyrproject.org/3.5.0/develop/toolchains/other_x_compilers.html) can be used to target the different ABI. Building for non-ARM MCUs has not been tested.
+Because Raspberry OS runs on the same architecture (but different ABI) as ARM keyboard MCUs, the operating system's installed [cross compilers](https://docs.zephyrproject.org/4.1.0/develop/toolchains/other_x_compilers.html) can be used to target the different ABI. Building for non-ARM MCUs has not been tested.
 
 First, the cross compiler should be installed:
 
@@ -368,7 +348,7 @@ First, the cross compiler should be installed:
 sudo apt install gcc-arm-none-eabi
 ```
 
-Next, we'll configure Zephyr with some [environment variables](https://docs.zephyrproject.org/3.5.0/develop/env_vars.html#env-vars) needed to find the cross compiler. Create a file named `~/.zephyrrc` if it doesn't exist, and add these lines to it:
+Next, we'll configure Zephyr with some [environment variables](https://docs.zephyrproject.org/4.1.0/develop/env_vars.html#env-vars) needed to find the cross compiler. Create a file named `~/.zephyrrc` if it doesn't exist, and add these lines to it:
 
 ```sh
 export ZEPHYR_TOOLCHAIN_VARIANT=cross-compile

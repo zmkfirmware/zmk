@@ -19,6 +19,7 @@ profile 0 <dbg> ble_central: discover_func: [CONSUMER SUBSCRIBED]
 profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 36
 profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 38
 profile 0 <dbg> ble_central: discover_func: [MOUSE SUBSCRIBED]
+profile 0 <dbg> ble_central: discover_func: [Discover complete]
 profile 0 <dbg> ble_central: notify_func: payload
 profile 0                    00 64 00 64 00 00 00 00  00                      |.d.d.... .
 profile 0 <dbg> ble_central: notify_func: payload
