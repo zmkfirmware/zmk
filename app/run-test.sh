@@ -8,7 +8,6 @@
 #  ZMK_SRC_DIR:             Path to zmk/app (default is ./)
 #  ZMK_BUILD_DIR:           Path to build directory (default is $ZMK_SRC_DIR/build)
 #  ZMK_EXTRA_MODULES:       Path to at most one module (in addition to any in west.yml)
-#  ZMK_TESTS_VERBOSE:       Be more verbose
 #  ZMK_TESTS_AUTO_ACCEPT:   Replace snapshot files with new key events
 #  J:                       Number of parallel jobs (default is 4)
 
@@ -42,16 +41,16 @@ build_cmd="west build ${ZMK_SRC_DIR:+-s $ZMK_SRC_DIR} -d ${ZMK_BUILD_DIR}/tests/
     -b native_sim/native/64 -p -- -DCONFIG_ASSERT=y -DZMK_CONFIG="$(realpath $path)" \
     ${ZMK_EXTRA_MODULES:+-DZMK_EXTRA_MODULES="$(realpath ${ZMK_EXTRA_MODULES})"}"
 
-if [ -z ${ZMK_TESTS_VERBOSE} ]; then
-    $build_cmd >/dev/null 2>&1
-else
-    echo "ZMK_SRC_DIR:   ${ZMK_SRC_DIR:-.}"
-    echo "ZMK_BUILD_DIR: $ZMK_BUILD_DIR"
-    $build_cmd
-fi
+build_log_tmp="${ZMK_BUILD_DIR}/tmp/$testcase/build.log"
+build_log="${ZMK_BUILD_DIR}/tests/$testcase/build.log"
+mkdir -p $(dirname $build_log_tmp)
+$build_cmd >"$build_log_tmp" 2>&1
+build_exit_code=$?
+mv "$build_log_tmp" "$build_log"
+rmdir -p $(dirname $build_log_tmp) 2>/dev/null || true
 
-if [ $? -gt 0 ]; then
-    echo "FAILED: $testcase did not build" | tee -a ${ZMK_BUILD_DIR}/tests/pass-fail.log
+if [ $build_exit_code -gt 0 ]; then
+    echo "FAILED: $testcase did not build (see ${build_log})" | tee -a ${ZMK_BUILD_DIR}/tests/pass-fail.log
     exit 1
 fi
 
