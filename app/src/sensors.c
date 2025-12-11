@@ -158,7 +158,7 @@ int sensor_listener(const zmk_event_t *eh) {
         .val2 = data->remainder.val2 + previous_value.val2,
     };
 
-    if (new_value.val2 >= 1000000 || new_value.val2 <= 1000000) {
+    if (abs(new_value.val2) >= 1000000) {
         new_value.val1 += new_value.val2 / 1000000;
         new_value.val2 %= 1000000;
     }
