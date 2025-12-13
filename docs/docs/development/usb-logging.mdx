@@ -28,7 +28,7 @@ requires adding a `snippet: zmk-usb-logging` to your `build.yaml` file for any b
 ```yaml
 ---
 include:
-  - board: nice_nano_v2
+  - board: nice_nano
     shield: corne_left
     snippet: zmk-usb-logging
 ```
@@ -36,7 +36,7 @@ include:
 When building locally, the `-S`/`--snippet` flag can be passed to `west build` to enable the snippet, e.g.
 
 ```sh
-west build -b nice_nano_v2 -S zmk-usb-logging -- -DSHIELD="corne_left"
+west build -b nice_nano -S zmk-usb-logging -- -DSHIELD="corne_left"
 ```
 
 ### Additional Config
