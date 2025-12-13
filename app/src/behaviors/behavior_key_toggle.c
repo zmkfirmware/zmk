@@ -27,28 +27,25 @@ struct behavior_key_toggle_config {
     enum toggle_mode toggle_mode;
 };
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    LOG_DBG("position %d keycode 0x%02X", event->position, event->param1);
     const struct behavior_key_toggle_config *cfg =
-        zmk_behavior_get_binding(binding->behavior_dev)->config;
+        zmk_behavior_get_binding(event->behavior_dev)->config;
     switch (cfg->toggle_mode) {
     case ON:
-        return raise_zmk_keycode_state_changed_from_encoded(binding->param1, true, event.timestamp);
+        return raise_zmk_keycode_state_changed_from_encoded(event->param1, true, event->timestamp);
     case OFF:
-        return raise_zmk_keycode_state_changed_from_encoded(binding->param1, false,
-                                                            event.timestamp);
+        return raise_zmk_keycode_state_changed_from_encoded(event->param1, false, event->timestamp);
     case FLIP:
-        bool pressed = zmk_hid_is_pressed(binding->param1);
-        return raise_zmk_keycode_state_changed_from_encoded(binding->param1, !pressed,
-                                                            event.timestamp);
+        bool pressed = zmk_hid_is_pressed(event->param1);
+        return raise_zmk_keycode_state_changed_from_encoded(event->param1, !pressed,
+                                                            event->timestamp);
     default:
         return -ENOTSUP;
     };
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
