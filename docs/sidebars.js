@@ -13,6 +13,7 @@ module.exports = {
         "faq",
         "user-setup",
         "customization",
+        "zmk-cli",
         {
           type: "category",
           label: "Troubleshooting",
