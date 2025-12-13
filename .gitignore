@@ -1,6 +1,7 @@
 /.west
 /bootloader
 /modules
+/optional
 /tools
 /zephyr
 /zmk-config
