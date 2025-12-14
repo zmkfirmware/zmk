@@ -87,11 +87,11 @@ For a split keyboard, you should do this _only_ for your central/left side, e.g.
 ```yaml title="build.yaml"
 ---
 include:
-  - board: nice_nano_v2
+  - board: nice_nano
     shield: corne_left
     snippet: studio-rpc-usb-uart
     cmake-args: -DCONFIG_ZMK_STUDIO=y
-  - board: nice_nano_v2
+  - board: nice_nano
     shield: corne_right
 ```
 
@@ -100,7 +100,7 @@ include:
 When building locally, use the `-S` parameter to include the `studio-rpc-usb-uart` snippet. Instead of adding it to your config file, you can also append the `ZMK_STUDIO` Kconfig as an additional CMake argument, e.g.:
 
 ```bash
-west build -d build/cl_studio -b nice_nano_v2 \
+west build -d build/cl_studio -b nice_nano \
   -S studio-rpc-usb-uart -- -DSHIELD=corne_left -DCONFIG_ZMK_STUDIO=y
 ```
 
