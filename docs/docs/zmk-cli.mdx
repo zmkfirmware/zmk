@@ -1,167 +1,24 @@
 ---
-title: (EXPERIMENTAL) Installing ZMK
-sidebar_label: (EXPERIMENTAL) Installing ZMK
+title: ZMK CLI
+sidebar_label: ZMK CLI
 ---
 
-This is an **experimental** command line program to help set up ZMK. [Click here to return to the main documentation](user-setup.mdx).
+ZMK CLI is a command line tool which helps with setting up a ZMK config repo and automates some common tasks such as adding new keyboards to your repository.
 
-ZMK CLI walks you through installing ZMK and setting up a GitHub repository to store and build custom firmware. It also automates some common tasks such as adding new keyboards to your repository.
-
-The instructions below contain commands that need to be run in a terminal program. On Windows, use the [Windows Terminal](https://apps.microsoft.com/detail/9n0dx20hk701) or PowerShell. On other operating systems, the terminal program is usually just named "Terminal".
-
-:::info
-If you use this program, any bug reports are highly appreciated. We are happy to help you fix your setup if you encounter a bug through the usage of this program.
-:::
-
-## Installation
-
-### Preliminaries
-
-#### Make sure you have Git installed
-
-The below commands should print a version number if the program is installed.
-
-```sh
-git --version
-```
-
-<details>
-  <summary>I don't have Git installed.</summary>
-
-Install Git from https://git-scm.com/downloads.
-
-If you have Windows 11, you can instead open a terminal and run:
-
-```sh
-winget install git.git
-```
-
-Re-open your terminal and test to make sure it is now installed.
-
-</details>
-
-#### Make sure you have Python installed
-
-ZMK CLI requires Python 3.10 or newer.
-
-```sh
-python3 --version
-```
-
-Note that some operating systems may use `python` in place of `python3`.
-
-<details>
-  <summary>I don't have Python 3.10 or newer installed.</summary>
-
-##### On Windows and macOS
-
-Install the latest version of Python from https://www.python.org/downloads/.
-
-If you have Windows 11, you can instead open a terminal and run:
-
-```sh
-winget install python3
-```
-
-Re-open your terminal and test to make sure it is now installed.
-
-##### On Linux
-
-Install `python3` with your package manager.
-
-If the version is older than 3.10, you will need to find and install a package for a newer version of Python. On Ubuntu 20.04 and older, you can get Python 3.10 from the deadsnakes PPA with the following commands:
-
-```sh
-sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt install python3.10
-```
-
-You will then need to replace `python3` with `python3.10` in the rest of the installation instructions.
-
-Re-open your terminal and test to make sure it is now installed.
-
-</details>
-
-#### (Recommended) Make sure you have pipx installed
-
-ZMK CLI can be installed with pip, but using [pipx](https://github.com/pypa/pipx) is recommended to avoid conflicts between Python packages.
-
-```sh
-pipx --version
-```
-
-<details>
-  <summary>I don't have pipx installed.</summary>
-
-### On Windows and Linux
-
-Open a terminal and run:
-
-```sh
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
-```
-
-Some Linux distributions may disallow installing packages with pip. If this gives you an error, see the [install instructions](https://github.com/pypa/pipx?tab=readme-ov-file#on-linux) specific to your distribution.
-
-Re-open your terminal and test to make sure it is now installed.
-
-### On macOS
-
-Open Terminal and run:
-
-```sh
-brew install pipx
-pipx ensurepath
-```
-
-Re-open your terminal and test to make sure it is now installed.
-
-</details>
-
-### Install ZMK CLI
-
-Run the following commands:
-
-```sh
-pipx install zmk
-zmk --help
-```
-
-It should print a help message if everything installed correctly.
-
-On Linux, you may get an error saying you need to install another package such as `python3.10-venv`. If so, follow the instructions in the error message, then try the above commands again.
+See the [ZMK installation guide](user-setup.mdx#prerequisites) for instructions on installing ZMK CLI.
 
 ## Using ZMK CLI
+
+The instructions below contain commands that need to be run in a terminal program.
+
+- On Windows, use [Windows Terminal](https://apps.microsoft.com/detail/9n0dx20hk701) or PowerShell.
+- On other operating systems, the terminal program is usually just named "Terminal".
 
 All ZMK CLI commands start with `zmk`. Run `zmk --help` for general usage instructions. For help with a specific subcommand, add `--help` after the subcommand, e.g. `zmk init --help`.
 
 ### Initialize a Repository
 
-:::warning
-If you have already created a repo and cloned it to your computer, you do not need to run this command. Set the [user.home](#userhome) setting to point to the existing repo instead.
-:::
-
-The `zmk init` command walks you through creating a GitHub repository, then clones it to your computer so you can edit it.
-
-Open a terminal and use the `cd` command to move to a directory where you'd like to place the ZMK files, then run `zmk init`. For example:
-
-```sh
-cd ~/Documents
-zmk init
-```
-
-Follow the instructions it gives you. If you already have a ZMK config repo, you can enter its URL when prompted, for example:
-
-```
-Repository URL: https://github.com/myusername/zmk-config
-```
-
-Otherwise, leave this first prompt blank and press <kbd>Enter</kbd>, and it will walk you through creating a new repo.
-
-Once you finish following all the instructions, you will have a copy of the repo stored on your computer. All `zmk` commands will run on this repo (unless the working directory is inside a different repo). If you ever forget where the repo is located, you can run `zmk cd` to find it.
-
-Now that you have a repo created, see the instructions below for how ZMK CLI can automate some common tasks, or see [Customizing ZMK](customization.md) for more hands-on customization information.
+The `zmk init` command walks you through creating a GitHub repository, then clones it to your computer so you can edit it. See the [ZMK installation guide](user-setup.mdx#config-repo-setup) for more details on this command.
 
 ### Keyboard Management
 
@@ -194,11 +51,18 @@ This won't walk you through all of the details of adding support for a new keybo
 [Modules](features/modules.mdx) can add support for new keyboards, behaviors, and other features to ZMK. Use the `zmk module` command to install modules into your repo:
 
 ```sh
-zmk module add     # Add a module
-zmk module remove  # Remove an installed module
-zmk module list    # List the installed modules
-zmk update         # Update the local copies of ZMK and modules to their latest versions
+zmk module add        # Add a module
+zmk module add <url>  # Add a module given the URL of the repo
+zmk module remove     # Remove an installed module
+zmk module list       # List the installed modules
+zmk update            # Update the local copies of ZMK and modules to their latest versions
 ```
+
+:::note
+
+ZMK CLI stores a copy of ZMK and any modules in a `.zmk` folder so it can read board and shield information from them. This folder is only used by ZMK CLI and is not necessary for building firmware, therefore ZMK CLI will automatically add it to your repo's `.gitignore` file.
+
+:::
 
 ### Edit Keymap and Config Files
 
