@@ -77,7 +77,7 @@ If you are building locally, this file can be found inside the build folder at `
 Additionally, the build command (in "West Build (`<keyboard>`)" step in GitHub Actions) logs what configuration files were found and used in the build:
 
 ```
-+ west build -s zmk/app -d /tmp/tmp.8cJefinXCb -b corneish_zen_v2_left -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/__w/zmk-config/zmk-config
++ west build -s zmk/app -d /tmp/tmp.8cJefinXCb -b corneish_zen_left@2 -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/__w/zmk-config/zmk-config
 ...
 -- ZMK Config Kconfig: /tmp/zmk-config/config/corneish_zen.conf
 ...
@@ -98,9 +98,10 @@ If you are building locally, this file can be found inside the build folder at `
 Additionally, the build command (in "West Build (`<keyboard>`)" step in GitHub Actions) logs what devicetree files were found and used in the build:
 
 ```
-+ west build -s zmk/app -d /tmp/tmp.8cJefinXCb -b corneish_zen_v2_left -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/__w/zmk-config/zmk-config
++ west build -s zmk/app -d /tmp/tmp.8cJefinXCb -b corneish_zen_left@2 -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/__w/zmk-config/zmk-config
 ...
--- Found BOARD.dts: /tmp/zmk-config/zmk/app/boards/arm/corneish_zen/corneish_zen_v2_left.dts
+-- Found BOARD.dts: /tmp/zmk-config/zmk/app/boards/lowprokb/corneish_zen/corneish_zen_left.dts
+-- Found devicetree overlay: /tmp/zmk-config/zmk/app/boards/lowprokb/corneish_zen/corneish_zen_left_2_0_0.overlay
 -- Found devicetree overlay: /tmp/zmk-config/config/corneish_zen.keymap
 ...
 ```
