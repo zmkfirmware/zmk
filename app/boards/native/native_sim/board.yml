@@ -1,0 +1,7 @@
+board:
+  extend: native_sim
+  variants:
+    - name: zmk_display_testing
+      qualifier: native
+    - name: zmk_test_mock
+      qualifier: native

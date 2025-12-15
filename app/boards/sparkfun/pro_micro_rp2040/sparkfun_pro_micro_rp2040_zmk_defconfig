@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MIT
+
+CONFIG_SYS_CLOCK_HW_CYCLES_PER_SEC=125000000
+
+CONFIG_RESET=y
+
+# Enable clock control by default
+CONFIG_CLOCK_CONTROL=y
+
+# Code partition needed to target the correct flash range
+CONFIG_USE_DT_CODE_PARTITION=y
+
+# Output UF2 by default, native bootloader supports it.
+CONFIG_BUILD_OUTPUT_UF2=y
+
+# USB HID
+CONFIG_ZMK_USB=y
+
+# Settings Support
+CONFIG_MPU_ALLOW_FLASH_WRITE=y
+CONFIG_NVS=y
+CONFIG_SETTINGS_NVS=y
+CONFIG_FLASH=y
+CONFIG_FLASH_PAGE_LAYOUT=y
+CONFIG_FLASH_MAP=y
+
+# Bootloader Support
+CONFIG_RETAINED_MEM=y
+CONFIG_RETENTION=y
+CONFIG_RETENTION_BOOT_MODE=y

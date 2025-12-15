@@ -1,0 +1,5 @@
+board:
+  extend: sparkfun_pro_micro_rp2040
+  variants:
+    - name: zmk
+      qualifier: rp2040
