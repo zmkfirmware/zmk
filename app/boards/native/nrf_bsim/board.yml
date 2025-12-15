@@ -1,0 +1,5 @@
+board:
+  extend: nrf52_bsim
+  variants:
+    - name: zmk_test_mock
+      qualifier: native

@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2026 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <../boards/boardsource/blok/boardsource_blok.dts>
+#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
+
+&pro_micro_serial { status = "disabled"; };
+
+&code_partition {
+    reg = <0x100 (DT_SIZE_M(16) - 0x100 - DT_SIZE_K(512))>;
+};
+
+&flash0 {
+    partitions {
+        storage_partition: partition@f80000 {
+            reg = <0xf80000 DT_SIZE_K(512)>;
+            read-only;
+        };
+    };
+};

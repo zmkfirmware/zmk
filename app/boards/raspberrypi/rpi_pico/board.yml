@@ -1,0 +1,5 @@
+board:
+  extend: rpi_pico
+  variants:
+    - name: zmk
+      qualifier: rp2040

@@ -11,7 +11,7 @@ shield:
 include:
   - board: bdn9
   - board: nice60
-  - board: xiao_ble
+  - board: xiao_ble//zmk
     shield: hummingbird
   - board: nrf52840_m2
     shield: m60
@@ -26,7 +26,7 @@ include:
     shield: kyria_left
     cmake-args: "-DCONFIG_ZMK_POINTING=y"
     nickname: "mouse"
-  - board: sparkfun_pro_micro_rp2040
+  - board: sparkfun_pro_micro_rp2040//zmk
     shield: reviung41
     cmake-args: "-DSNIPPET='zmk-usb-logging'"
   - board: nice_nano
@@ -59,12 +59,12 @@ include:
     snippet: studio-rpc-usb-uart
     cmake-args: "-DCONFIG_ZMK_STUDIO=y"
     nickname: "split-right-studio"
-  - board: sparkfun_pro_micro_rp2040
+  - board: sparkfun_pro_micro_rp2040//zmk
     shield: reviung41
     snippet: studio-rpc-usb-uart
     cmake-args: "-DCONFIG_ZMK_STUDIO=y"
     nickname: "rp2040-studio"
-  - board: seeeduino_xiao
+  - board: seeeduino_xiao//zmk
     shield: hummingbird
     snippet: studio-rpc-usb-uart
     cmake-args: "-DCONFIG_ZMK_STUDIO=y"
