@@ -1,5 +1,5 @@
 file_format: "1"
-id: blackpill_f401cc
+id: blackpill_f401cc//zmk
 name: BlackPill F401CC
 type: board
 arch: arm
