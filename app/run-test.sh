@@ -38,7 +38,7 @@ testcase=$(realpath $path | sed -n -e "s|.*/tests/||p")
 echo "Running $testcase:"
 
 build_cmd="west build ${ZMK_SRC_DIR:+-s $ZMK_SRC_DIR} -d ${ZMK_BUILD_DIR}/tests/$testcase \
-    -b native_sim/native/64 -p -- -DCONFIG_ASSERT=y -DZMK_CONFIG="$(realpath $path)" \
+    -b native_sim//zmk_test_mock -p -- -DCONFIG_ASSERT=y -DZMK_CONFIG="$(realpath $path)" \
     ${ZMK_EXTRA_MODULES:+-DZMK_EXTRA_MODULES="$(realpath ${ZMK_EXTRA_MODULES})"}"
 
 # Add extra cmake arguments from file if it exists
