@@ -29,12 +29,12 @@ struct ext_power_generic_config {
 
 struct ext_power_generic_data {
     bool status;
-#if IS_ENABLED(CONFIG_SETTINGS)
+#if IS_ENABLED(CONFIG_SETTINGS) && !IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
     bool settings_init;
 #endif
 };
 
-#if IS_ENABLED(CONFIG_SETTINGS)
+#if IS_ENABLED(CONFIG_SETTINGS) && !IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
 static void ext_power_save_state_work(struct k_work *work) {
     char setting_path[40];
     const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
@@ -48,7 +48,7 @@ static struct k_work_delayable ext_power_save_work;
 #endif
 
 int ext_power_save_state(void) {
-#if IS_ENABLED(CONFIG_SETTINGS)
+#if IS_ENABLED(CONFIG_SETTINGS) && !IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
     int ret = k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
     return MIN(ret, 0);
 #else
@@ -91,7 +91,7 @@ static int ext_power_generic_get(const struct device *dev) {
     return data->status;
 }
 
-#if IS_ENABLED(CONFIG_SETTINGS)
+#if IS_ENABLED(CONFIG_SETTINGS) && !IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
 static int ext_power_settings_set_status(const struct device *dev, size_t len,
                                          settings_read_cb read_cb, void *cb_arg) {
     struct ext_power_generic_data *data = dev->data;
@@ -158,7 +158,7 @@ static int ext_power_generic_init(const struct device *dev) {
         }
     }
 
-#if IS_ENABLED(CONFIG_SETTINGS)
+#if IS_ENABLED(CONFIG_SETTINGS) && !IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
     k_work_init_delayable(&ext_power_save_work, ext_power_save_state_work);
 #endif
 
@@ -197,7 +197,7 @@ static const struct ext_power_generic_config config = {
 
 static struct ext_power_generic_data data = {
     .status = false,
-#if IS_ENABLED(CONFIG_SETTINGS)
+#if IS_ENABLED(CONFIG_SETTINGS) && !IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
     .settings_init = false,
 #endif
 };
