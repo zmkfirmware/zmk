@@ -68,33 +68,33 @@ values={[
 <TabItem value="self-contained">
 
 For a [self-contained keyboard](../../hardware.mdx#onboard) that includes the microprocessor, all of the above architecture components are included in the Zephyr _board_ definition and no shield is defined.
-You can see an example for the [Planck V6](https://github.com/zmkfirmware/zmk/tree/main/app/boards/arm/planck) board directory.
+You can see an example for the [Planck V6](https://github.com/zmkfirmware/zmk/tree/main/app/boards/olkb/planck) board directory.
 
-With this type of keyboard, the full ZMK definition for the keyboard exists in the `<board_root>/boards/<arch>/<keyboard_name>` directory where `<board_root>` is `zmk/app` or a [module](../../features/modules.mdx) root, e.g. `zmk/app/boards/arm/planck/`.
+With this type of keyboard, the full ZMK definition for the keyboard exists in the `<board_root>/boards/<vendor or designer>/<keyboard_name>` directory where `<board_root>` is `zmk/app` or a [module](../../features/modules.mdx) root, e.g. `zmk/app/boards/olkb/planck/`.
 In that directory you'll have the following files, where there can be multiples of files with `<board_name>`s, corresponding to each keyboard part for [split keyboards](../../features/split-keyboards.md):
 
 ```
 <keyboard_name>
-├── Kconfig.board
 ├── Kconfig.defconfig
+├── Kconfig.<board_name>
 ├── <board_name>_defconfig
 ├── <board_name>.dts
 ├── <keyboard_name>.keymap
 ├── board.cmake
+├── board.yml
 └── <keyboard_name>.zmk.yml
 ```
 
 These files include [base Kconfig files](https://docs.zephyrproject.org/4.1.0/build/kconfig/index.html):
 
-- A `Kconfig.board` file that defines the toplevel [Kconfig](https://docs.zephyrproject.org/4.1.0/build/kconfig/index.html) items for the board, including which SoC Kconfig setting it depends on.
+- A `Kconfig.<board_name>` file that defines the toplevel [Kconfig](https://docs.zephyrproject.org/4.1.0/build/kconfig/index.html) items for the board, including selecting the corresponding SoC Kconfig setting.
 - A `Kconfig.defconfig` file that sets some initial defaults when building this keyboard. This usually includes:
-  - Setting [`ZMK_KEYBOARD_NAME`](../../config/system.md#general) to a value, for the product name to be used for USB/BLE info,
-  - Setting [`ZMK_USB`](../../config/system.md#usb) and/or [`ZMK_BLE`](../../config/system.md#bluetooth) for the default values for which HID transport(s) to enable by default
+  - Setting [`ZMK_KEYBOARD_NAME`](../../config/system.md#general) to a value, for the product name to be used for USB/BLE info
 
 [Configuration files](../../config/index.md#kconfig-files) that set the visible Kconfig symbols:
 
 - A `<board_name>_defconfig` file that forces specific Kconfig settings that are specific to this hardware configuration.
-  These are mostly SoC settings around the specific hardware configuration.
+  These tend to be settings enabling various drivers or features, e.g. GPIO, USB support, or memory settings for ZMK Studio.
 
 [Devicetree files](../../config/index.md#devicetree-files):
 
@@ -107,6 +107,7 @@ These files include [base Kconfig files](https://docs.zephyrproject.org/4.1.0/bu
 And other miscellaneous ones:
 
 - A `board.cmake` file with CMake directives for how to flash to the device.
+- A [`board.yml`](https://docs.zephyrproject.org/4.1.0/hardware/porting/board_porting.html#write-your-board-yaml) file containing information about the board and variants.
 - A `<keyboard_name>.zmk.yml` file containing [metadata](hardware-metadata-files.md) for the keyboard.
 
 See Zephyr's [board porting guide](https://docs.zephyrproject.org/4.1.0/hardware/porting/board_porting.html) for information on creating a new board.
