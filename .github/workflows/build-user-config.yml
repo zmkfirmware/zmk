@@ -49,6 +49,12 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.matrix.outputs.build_matrix) }}
     steps:
+      - name: Act Workaround # https://github.com/nektos/act/issues/973
+        if: ${{ env.ACT }}
+        run: |
+          apt-get update && apt-get install -y curl unzip
+          curl -fsSL https://deb.nodesource.com/setup_22.x | bash && apt install -y nodejs
+
       - name: Checkout
         uses: actions/checkout@v4
 
