@@ -33,12 +33,12 @@ static struct zmk_hid_mouse_report mouse_report = {
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 
 static struct zmk_hid_battery_report battery_report = {
-    .report_id = ZMK_HID_REPORT_ID_BATTERY, .charging = 0, .battery_level = 0};
+    .report_id = ZMK_HID_REPORT_ID_BATTERY, .battery_level = 0, .charging = 0};
 
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
@@ -475,7 +475,7 @@ void zmk_hid_mouse_clear(void) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 
 void zmk_hid_battery_set(uint8_t battery_level) {
     if (battery_level > 100) {
@@ -484,7 +484,7 @@ void zmk_hid_battery_set(uint8_t battery_level) {
     battery_report.battery_level = battery_level;
 }
 
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyboard_report; }
 
@@ -496,7 +496,6 @@ struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_repo
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
-// zmk_hid_get_battery_report
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 struct zmk_hid_battery_report *zmk_hid_get_battery_report(void) { return &battery_report; }
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)

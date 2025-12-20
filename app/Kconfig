@@ -381,13 +381,13 @@ config ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE
 
 endchoice
 
-config ZMK_BATTERY_REPORTING_BAS
-    bool "Report Battery Level over BLE"
+config ZMK_BATTERY_REPORTING_BLE
+    bool "Report Battery Level over BLE Battery Service"
     default y
     depends on ZMK_BLE
     select BT_BAS if (!ZMK_SPLIT || (ZMK_SPLIT && !ZMK_SPLIT_ROLE_CENTRAL))
 
-config ZMK_BATTERY_REPORTING_HID
+config ZMK_BATTERY_REPORTING_USB
     bool "Report Battery Level over USB HID"
     depends on ZMK_USB
 
@@ -395,14 +395,12 @@ if ZMK_SPLIT_ROLE_CENTRAL
 
 config ZMK_BATTERY_REPORTING_SPLIT_FETCHING
     bool "Fetch Peripheral Battery Level Info"
-    default y if ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
     help
       Adds internal support for fetching the battery levels from peripherals
       and generating events in the ZMK eventing system.
 
 config ZMK_BATTERY_REPORTING_SPLIT_PROXY
     bool "Proxy Battery Level Info"
-    depends on ZMK_BATTERY_REPORTING_BAS
     default y if ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY
     help
       Adds support for reporting the battery levels of connected split

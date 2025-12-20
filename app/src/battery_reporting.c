@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <zephyr/kernel.h>
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 #include <zephyr/bluetooth/gatt.h>
 #endif
 
@@ -25,29 +25,32 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/battery_state_changed.h>
 #include <zmk/split/central.h>
 #include <zmk/workqueue.h>
+#include <zmk/battery_names.h>
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 #include <zmk/hid.h>
 #include <zmk/usb_hid.h>
 #endif
 
+// TODO before merging: is this needed? or just use a bool array or even bitfield?
+// Only `hidden` is used right now, is this information useful elsewhere? For screens?
 struct battery_part {
     char *display_name;
     uint16_t cpf;
     bool hidden;
 };
 
+#define BAS_LOWEST_CHARGE_INDEX UINT8_MAX
 #define BAS_CENTRAL_INDEX 0
-#define BAS_PERIPH_OFFSET 1
-#define BAS_LEN UTIL_INC(CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS)
+#define BAS_PERIPHERAL_INDEX_OFFSET 1
+
+#define KEYBOARD_PARTS_NUM UTIL_INC(CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
-
 static uint8_t lowest_state_of_charge = 0;
-
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 static void blvl_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value) {
     ARG_UNUSED(attr);
@@ -61,7 +64,7 @@ static ssize_t read_blvl(struct bt_conn *conn, const struct bt_gatt_attr *attr, 
     uint8_t level = 0;
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
-    if (index == UINT8_MAX) {
+    if (index == BAS_LOWEST_CHARGE_INDEX) {
         return bt_gatt_attr_read(conn, attr, buf, len, offset, &lowest_state_of_charge,
                                  sizeof(uint8_t));
     }
@@ -71,64 +74,72 @@ static ssize_t read_blvl(struct bt_conn *conn, const struct bt_gatt_attr *attr, 
         level = zmk_battery_state_of_charge();
     } else {
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
-        int rc = zmk_split_central_get_peripheral_battery_level(index - BAS_PERIPH_OFFSET, &level);
+        int rc = zmk_split_central_get_peripheral_battery_level(index - BAS_PERIPHERAL_INDEX_OFFSET,
+                                                                &level);
 
         if (rc == -EINVAL) {
             LOG_ERR("Invalid peripheral index requested for battery level read: %d", index);
             return -EINVAL;
         }
 #else
-        level = 0;
         LOG_WRN("Battery level read requested for peripheral %d, but split fetching is disabled",
                 index);
-        return 0;
+        return -EINVAL;
 #endif
     }
 
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, &level, sizeof(uint8_t));
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, &level, sizeof(level));
 }
 
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
-
-#define CPF_DESC_BASE                                                                              \
-    COND_CODE_1(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE, (0x0001), (0x0000))
-
-#define PERIPH_CUD(x) PERIPH_CUD_(x)
-#define PERIPH_CUD_(x) "Peripheral " #x
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #define ZMK_BT_GATT_SERVICE_DEFINE(_name, ...)                                                     \
     const struct bt_gatt_attr UTIL_CAT(attr_, _name)[] = {__VA_ARGS__};                            \
     const STRUCT_SECTION_ITERABLE(bt_gatt_service_static, _name) =                                 \
         BT_GATT_SERVICE(UTIL_CAT(attr_, _name))
 
-#if DT_HAS_CHOSEN(DT_DRV_COMPAT)
+// Get default CPF description as a literal number for a keyboard part.
+// For the central (part 0), default is "main" (0x0106, 262) unless reporting lowest charge, in
+// which case use "first" (1). For peripherals, always start from "second" (2) onwards.
+#define BAT_REPORT_GET_DEFAULT_CPF_DESC(idx)                                                       \
+    COND_CODE_0(                                                                                   \
+        idx, (COND_CODE_1(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE, (1), (262))),   \
+        (UTIL_INC(idx)))
 
-#define ONE(...) 1
-#define BATTERY_INFO_LEN (DT_FOREACH_CHILD_SEP(DT_CHOSEN(DT_DRV_COMPAT), ONE, (+)))
-BUILD_ASSERT(BAS_LEN == BATTERY_INFO_LEN,
+// Get default display name for a keyboard part.
+#define BAT_REPORT_GET_DEFAULT_DISPLAY_NAME(idx)                                                   \
+    GET_BATTERY_DISPLAY_NAME_BY_CPF(BAT_REPORT_GET_DEFAULT_CPF_DESC(idx))
+
+#if DT_HAS_CHOSEN(DT_DRV_COMPAT)
+// Use info from devicetree chosen node
+
+BUILD_ASSERT(KEYBOARD_PARTS_NUM == DT_CHILD_NUM(DT_CHOSEN(DT_DRV_COMPAT)),
              "Number of battery info set in /chosen/zmk,battery-reporting must match the number of "
              "split parts in this keyboard.");
 
-#define BAS_NAME(node_id) UTIL_CAT(bas, DT_NODE_CHILD_IDX(node_id))
+// Get CPF description as a literal number for a keyboard part from devicetree.
+// Use configured cpf property if set, otherwise use default based on index.
+#define BAT_REPORT_GET_DT_CPF_DESC(node_id)                                                        \
+    DT_PROP_OR(node_id, cpf, BAT_REPORT_GET_DEFAULT_CPF_DESC(DT_NODE_CHILD_IDX(node_id)))
 
-#define GET_BATT_DISPLAY_NAME(node_id)                                                             \
+// Get display name for a keyboard part from devicetree.
+// Use configured display-name property if set, otherwise use name based on CPF.
+#define BAT_REPORT_GET_DT_DISPLAY_NAME(node_id)                                                    \
     DT_PROP_OR(node_id, display_name,                                                              \
-               (DT_NODE_CHILD_IDX(node_id) ? PERIPH_CUD(DT_NODE_CHILD_IDX(node_id)) : "Central"))
+               GET_BATTERY_DISPLAY_NAME_BY_CPF(BAT_REPORT_GET_DT_CPF_DESC(node_id)))
 
-#define GET_BATT_CPF_DESC(node_id)                                                                 \
-    DT_PROP_OR(node_id, cpf,                                                                       \
-               (DT_NODE_CHILD_IDX(node_id)                                                         \
-                    ? (CPF_DESC_BASE + DT_NODE_CHILD_IDX(node_id)) /* "first" + index */           \
-                    : (COND_CODE_1(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE,        \
-                                   (0x0001), (0x0106))))) /* "first", or "main" */
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
+// Identifier for GATT service instance for a keyboard part.
+// Note: This will only sort correctly for up to 10 keyboard parts (single digit index)
+#define BAS_GATT_SERVICE_IDENTIFIER(node_id) UTIL_CAT(bas, DT_NODE_CHILD_IDX(node_id))
 
-#define DEFINE_BAS_INSTANCE(node_id)                                                               \
+// Define a BAS instance for each non-hidden part.
+#define DEFINE_BAS_INSTANCE_DT(node_id)                                                            \
     COND_CODE_0(                                                                                   \
         DT_PROP(node_id, hidden),                                                                  \
         (ZMK_BT_GATT_SERVICE_DEFINE(                                                               \
-            BAS_NAME(node_id), BT_GATT_PRIMARY_SERVICE(BT_UUID_BAS),                               \
+            BAS_GATT_SERVICE_IDENTIFIER(node_id), BT_GATT_PRIMARY_SERVICE(BT_UUID_BAS),            \
             BT_GATT_CHARACTERISTIC(BT_UUID_BAS_BATTERY_LEVEL,                                      \
                                    BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY, BT_GATT_PERM_READ,     \
                                    read_blvl, NULL, ((uint8_t[]){DT_NODE_CHILD_IDX(node_id)})),    \
@@ -138,111 +149,111 @@ BUILD_ASSERT(BAS_LEN == BATTERY_INFO_LEN,
                 .exponent = 0x0,    /* */                                                          \
                 .unit = 0x27AD,     /* Percentage */                                               \
                 .name_space = 0x01, /* Bluetooth SIG */                                            \
-                .description = GET_BATT_CPF_DESC(node_id),                                         \
+                .description = BAT_REPORT_GET_DT_CPF_DESC(node_id),                                \
             }})),                                                                                  \
-            BT_GATT_CUD(GET_BATT_DISPLAY_NAME(node_id), BT_GATT_PERM_READ))),                      \
+            BT_GATT_CUD(BAT_REPORT_GET_DT_DISPLAY_NAME(node_id), BT_GATT_PERM_READ))),             \
         ());
 
-DT_FOREACH_CHILD(DT_CHOSEN(DT_DRV_COMPAT), DEFINE_BAS_INSTANCE)
+DT_FOREACH_CHILD(DT_CHOSEN(DT_DRV_COMPAT), DEFINE_BAS_INSTANCE_DT)
 
-#define BAS_PTR(node_id) COND_CODE_0(DT_PROP(node_id, hidden), (&BAS_NAME(node_id)), (NULL))
+#define BAS_PTR_DT(node_id)                                                                        \
+    COND_CODE_0(DT_PROP(node_id, hidden), (&BAS_GATT_SERVICE_IDENTIFIER(node_id)), (NULL))
 
 static const struct bt_gatt_service_static *bas[] = {
-    DT_FOREACH_CHILD_SEP(DT_CHOSEN(DT_DRV_COMPAT), BAS_PTR, (, ))};
+    DT_FOREACH_CHILD_SEP(DT_CHOSEN(DT_DRV_COMPAT), BAS_PTR_DT, (, ))};
 
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
-#define BATTERY_PART(node_id)                                                                      \
+#define BATTERY_PART_DT(node_id)                                                                   \
     {                                                                                              \
-        .display_name = GET_BATT_DISPLAY_NAME(node_id),                                            \
-        .cpf = GET_BATT_CPF_DESC(node_id),                                                         \
+        .display_name = BAT_REPORT_GET_DT_DISPLAY_NAME(node_id),                                   \
+        .cpf = BAT_REPORT_GET_DT_CPF_DESC(node_id),                                                \
         .hidden = DT_PROP(node_id, hidden),                                                        \
     }
 
 static const struct battery_part battery_parts[] = {
-    DT_FOREACH_CHILD_SEP(DT_CHOSEN(DT_DRV_COMPAT), BATTERY_PART, (, ))};
+    DT_FOREACH_CHILD_SEP(DT_CHOSEN(DT_DRV_COMPAT), BATTERY_PART_DT, (, ))};
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
 
 #else // if DT_HAS_CHOSEN(DT_DRV_COMPAT)
+// No chosen devicetree node, use defaults
 
-#define GET_BATT_DISPLAY_NAME(INDEX) (INDEX ? PERIPH_CUD(INDEX) : "Central")
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
-#define GET_BATT_CPF_DESC(INDEX)                                                                   \
-    (INDEX ? (CPF_DESC_BASE + INDEX) /* "first" + index */                                         \
-           : (COND_CODE_1(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE, (0x0001),       \
-                          (0x0106)))) /* "first", or "main" */
+#define BAS_GATT_SERVICE_IDENTIFIER(idx) UTIL_CAT(bas, idx)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
-
-#define DEFINE_BAS_SERVICE(INDEX, _)                                                               \
+#define DEFINE_BAS_SERVICE_IDX(idx, _)                                                             \
     ZMK_BT_GATT_SERVICE_DEFINE(                                                                    \
-        bas##INDEX, BT_GATT_PRIMARY_SERVICE(BT_UUID_BAS),                                          \
+        BAS_GATT_SERVICE_IDENTIFIER(idx), BT_GATT_PRIMARY_SERVICE(BT_UUID_BAS),                    \
         BT_GATT_CHARACTERISTIC(BT_UUID_BAS_BATTERY_LEVEL, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY, \
-                               BT_GATT_PERM_READ, read_blvl, NULL, ((uint8_t[]){INDEX})),          \
+                               BT_GATT_PERM_READ, read_blvl, NULL, ((uint8_t[]){idx})),            \
         BT_GATT_CCC(blvl_ccc_cfg_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),                 \
         BT_GATT_CPF(((struct bt_gatt_cpf[]){{                                                      \
             .format = 0x04, /* uint8 */                                                            \
             .exponent = 0x0,                                                                       \
             .unit = 0x27AD,     /* Percentage */                                                   \
             .name_space = 0x01, /* Bluetooth SIG */                                                \
-            .description = GET_BATT_CPF_DESC(INDEX),                                               \
+            .description = BAT_REPORT_GET_DEFAULT_CPF_DESC(idx),                                   \
         }})),                                                                                      \
-        BT_GATT_CUD(GET_BATT_DISPLAY_NAME(INDEX), BT_GATT_PERM_READ));
+        BT_GATT_CUD(BAT_REPORT_GET_DEFAULT_DISPLAY_NAME(idx), BT_GATT_PERM_READ));
 
-LISTIFY(BAS_LEN, DEFINE_BAS_SERVICE, ())
+LISTIFY(KEYBOARD_PARTS_NUM, DEFINE_BAS_SERVICE_IDX, ())
 
-#define BAS_PTR(INDEX, _) &bas##INDEX
+#define BAS_PTR_IDX(idx, _) &BAS_GATT_SERVICE_IDENTIFIER(idx)
 
-static const struct bt_gatt_service_static *bas[] = {LISTIFY(BAS_LEN, BAS_PTR, (, ))};
+static const struct bt_gatt_service_static *bas[] = {
+    LISTIFY(KEYBOARD_PARTS_NUM, BAS_PTR_IDX, (, ))};
 
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
-#define BATTERY_PART(INDEX, _)                                                                     \
+#define BATTERY_PART_IDX(idx, _)                                                                   \
     {                                                                                              \
-        .display_name = GET_BATT_DISPLAY_NAME(INDEX),                                              \
-        .cpf = GET_BATT_CPF_DESC(INDEX),                                                           \
+        .display_name = BAT_REPORT_GET_DEFAULT_DISPLAY_NAME(idx),                                  \
+        .cpf = BAT_REPORT_GET_DEFAULT_CPF_DESC(idx),                                               \
         .hidden = false,                                                                           \
     }
 
-static const struct battery_part battery_parts[] = {LISTIFY(BAS_LEN, BATTERY_PART, (, ))};
+static const struct battery_part battery_parts[] = {
+    LISTIFY(KEYBOARD_PARTS_NUM, BATTERY_PART_IDX, (, ))};
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
 
-#endif // else DT_HAS_CHOSEN(DT_DRV_COMPAT)
+#endif // if DT_HAS_CHOSEN(DT_DRV_COMPAT) .. else ..
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
-
-// note: the order of the services are based on their name.
-ZMK_BT_GATT_SERVICE_DEFINE(
-    aggr_bas_lowest, BT_GATT_PRIMARY_SERVICE(BT_UUID_BAS),
-    BT_GATT_CHARACTERISTIC(BT_UUID_BAS_BATTERY_LEVEL, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
-                           BT_GATT_PERM_READ, read_blvl, NULL, ((uint8_t[]){UINT8_MAX})),
-    BT_GATT_CCC(blvl_ccc_cfg_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-    BT_GATT_CPF(((struct bt_gatt_cpf[]){{
-        .format = 0x04, /* uint8 */
-        .exponent = 0x0,
-        .unit = 0x27AD,        /* Percentage */
-        .name_space = 0x01,    /* Bluetooth SIG */
-        .description = 0x0106, /* "main" */
-    }})),
-    BT_GATT_CUD("Lowest Charge", BT_GATT_PERM_READ));
-
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
+// Hote: the order of services are based on their name, so we prefix it with "a" to ensure it
+// appears first.
+ZMK_BT_GATT_SERVICE_DEFINE(abas_lowest, BT_GATT_PRIMARY_SERVICE(BT_UUID_BAS),
+                           BT_GATT_CHARACTERISTIC(BT_UUID_BAS_BATTERY_LEVEL,
+                                                  BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                                                  BT_GATT_PERM_READ, read_blvl, NULL,
+                                                  ((uint8_t[]){BAS_LOWEST_CHARGE_INDEX})),
+                           BT_GATT_CCC(blvl_ccc_cfg_changed,
+                                       BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+                           BT_GATT_CPF(((struct bt_gatt_cpf[]){{
+                               .format = 0x04, /* uint8 */
+                               .exponent = 0x0,
+                               .unit = 0x27AD,        /* Percentage */
+                               .name_space = 0x01,    /* Bluetooth SIG */
+                               .description = 0x0106, /* "main" */
+                           }})),
+                           BT_GATT_CUD("Lowest Charge", BT_GATT_PERM_READ));
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 static void zmk_update_lowest_charge_work(struct k_work *work) {
     ARG_UNUSED(work);
 
     uint8_t new_lowest_level = UINT8_MAX;
 
-    if (!battery_parts[0].hidden) {
+    if (!battery_parts[BAS_CENTRAL_INDEX].hidden) {
         new_lowest_level = zmk_battery_state_of_charge();
     }
 
     for (size_t i = 0; i < CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS; i++) {
-        if (battery_parts[i + BAS_PERIPH_OFFSET].hidden) {
+        if (battery_parts[i + BAS_PERIPHERAL_INDEX_OFFSET].hidden) {
             continue;
         }
         uint8_t level = 0;
@@ -265,17 +276,15 @@ static void zmk_update_lowest_charge_work(struct k_work *work) {
 
         LOG_DBG("Lowest state of charge: %d", lowest_state_of_charge);
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
-
-        int rc = bt_gatt_notify(NULL, &aggr_bas_lowest.attrs[2], &lowest_state_of_charge,
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
+        int rc = bt_gatt_notify(NULL, &abas_lowest.attrs[2], &lowest_state_of_charge,
                                 sizeof(lowest_state_of_charge));
         if (rc < 0 && rc != -ENOTCONN) {
             LOG_WRN("Notify failed for lowest battery level: %d", rc);
         }
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
-
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
         zmk_hid_battery_set(lowest_state_of_charge);
         zmk_usb_hid_send_battery_report();
 #endif
@@ -304,8 +313,8 @@ int peripheral_batt_report_lvl_listener(const zmk_event_t *eh) {
 
     LOG_DBG("Peripheral %d battery level: %u", ev->source, ev->state_of_charge);
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
-    const struct bt_gatt_service_static *svc = bas[ev->source + BAS_PERIPH_OFFSET];
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
+    const struct bt_gatt_service_static *svc = bas[ev->source + BAS_PERIPHERAL_INDEX_OFFSET];
 
     if (svc) {
         int rc = bt_gatt_notify(NULL, &svc->attrs[2], &ev->state_of_charge, sizeof(uint8_t));
@@ -315,10 +324,17 @@ int peripheral_batt_report_lvl_listener(const zmk_event_t *eh) {
     } else {
         LOG_DBG("No service found for peripheral %d", ev->source);
     }
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
-    submit_lowest_charge_work();
+    if (ev->state_of_charge != 0) {
+        // Ugly workaround to not wake up the host on keyboard part disconnect, so users don't need
+        // to turn off their keyboard parts before sleeping/hibernating their computer. We ideally
+        // should differentiate between disconnect and 0% charge. This shouldn't be an issue for
+        // most users, if a part is dead due to low battery, it likely was reporting <5% before
+        // disconnecting so user is already aware.
+        submit_lowest_charge_work();
+    }
 #endif
 
     return ZMK_EV_EVENT_BUBBLE;
@@ -333,7 +349,7 @@ int central_batt_state_changed_listener(const zmk_event_t *eh) {
         return ZMK_EV_EVENT_BUBBLE;
     }
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
     const struct bt_gatt_service_static *svc = bas[BAS_CENTRAL_INDEX];
 
     if (svc) {
@@ -344,16 +360,18 @@ int central_batt_state_changed_listener(const zmk_event_t *eh) {
     } else {
         LOG_DBG("No service found for central battery");
     }
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BAS)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_HID) &&                                                \
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB) &&                                                \
     !IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
     zmk_hid_battery_set(ev->state_of_charge);
     zmk_usb_hid_send_battery_report();
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
-    submit_lowest_charge_work();
+    if (battery_parts[BAS_CENTRAL_INDEX].hidden == false) {
+        submit_lowest_charge_work();
+    }
 #endif
 
     return ZMK_EV_EVENT_BUBBLE;
