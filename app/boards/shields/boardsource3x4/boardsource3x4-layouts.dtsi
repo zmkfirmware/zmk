@@ -1,0 +1,49 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <physical_layouts.dtsi>
+
+/ {
+    horizontal_physical_layout: horizontal_physical_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Horizontal Layout";
+
+        keys
+            = <&key_physical_attrs 100 100      0   0    0 0 0>
+            , <&key_physical_attrs 100 100    100   0    0 0 0>
+            , <&key_physical_attrs 100 100    200   0    0 0 0>
+            , <&key_physical_attrs 100 100    300   0    0 0 0>
+            , <&key_physical_attrs 100 100      0 100    0 0 0>
+            , <&key_physical_attrs 100 100    100 100    0 0 0>
+            , <&key_physical_attrs 100 100    200 100    0 0 0>
+            , <&key_physical_attrs 100 100    300 100    0 0 0>
+            , <&key_physical_attrs 100 100      0 200    0 0 0>
+            , <&key_physical_attrs 100 100    100 200    0 0 0>
+            , <&key_physical_attrs 100 100    200 200    0 0 0>
+            , <&key_physical_attrs 100 100    300 200    0 0 0>
+            ;
+    };
+
+    vertical_physical_layout: vertical_physical_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Vertical Layout";
+
+        keys
+            = <&key_physical_attrs 100 100      0   0    0 0 0>
+            , <&key_physical_attrs 100 100    100   0    0 0 0>
+            , <&key_physical_attrs 100 100    200   0    0 0 0>
+            , <&key_physical_attrs 100 100      0 100    0 0 0>
+            , <&key_physical_attrs 100 100    100 100    0 0 0>
+            , <&key_physical_attrs 100 100    200 100    0 0 0>
+            , <&key_physical_attrs 100 100      0 200    0 0 0>
+            , <&key_physical_attrs 100 100    100 200    0 0 0>
+            , <&key_physical_attrs 100 100    200 200    0 0 0>
+            , <&key_physical_attrs 100 100      0 300    0 0 0>
+            , <&key_physical_attrs 100 100    100 300    0 0 0>
+            , <&key_physical_attrs 100 100    200 300    0 0 0>
+            ;
+    };
+};
