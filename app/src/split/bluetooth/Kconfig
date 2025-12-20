@@ -31,7 +31,8 @@ config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
     int "Number of peripherals that will connect to the central."
 
 menuconfig ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING
-    bool "Deprecated: Fetch Peripheral Battery Level Info"
+    bool "Fetch Peripheral Battery Level Info"
+    select ZMK_BATTERY_REPORTING_SPLIT_FETCHING
     help
       Adds internal support for fetching the battery levels from peripherals
       and generating events in the ZMK eventing system.
