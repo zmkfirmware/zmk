@@ -25,12 +25,12 @@
             // display-name = "Left";
             // cpf = <50>;
         };
-        // right{
-        //     display-name = "Right";
-        //     hidden;
-        // };
-        // pad{
-        //     display-name = "Extra Pad";
-        // };
+        right{
+            display-name = "Right";
+            hidden;
+        };
+        pad{
+            display-name = "Extra Pad";
+        };
     };
 };
