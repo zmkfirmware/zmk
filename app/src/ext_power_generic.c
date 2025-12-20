@@ -59,7 +59,7 @@ int ext_power_save_state(void) {
 #endif
 }
 
-static int ext_power_generic_enable(const struct device *dev) {
+static int ext_power_generic_enable(const struct device *dev, bool save_state) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
@@ -71,10 +71,14 @@ static int ext_power_generic_enable(const struct device *dev) {
         }
     }
     data->status = true;
-    return ext_power_save_state();
+    return save_state ? ext_power_save_state() : 0;
 }
 
-static int ext_power_generic_disable(const struct device *dev) {
+static int ext_power_stateful_enable(const struct device *dev) {
+    return ext_power_generic_enable(dev, true);
+}
+
+static int ext_power_generic_disable(const struct device *dev, bool save_state) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
@@ -86,7 +90,11 @@ static int ext_power_generic_disable(const struct device *dev) {
         }
     }
     data->status = false;
-    return ext_power_save_state();
+    return save_state ? ext_power_save_state() : 0;
+}
+
+static int ext_power_stateful_disable(const struct device *dev) {
+    return ext_power_generic_disable(dev, true);
 }
 
 static int ext_power_generic_get(const struct device *dev) {
@@ -108,9 +116,9 @@ static int ext_power_settings_set_status(const struct device *dev, size_t len,
         data->settings_init = true;
 
         if (data->status) {
-            ext_power_generic_enable(dev);
+            ext_power_stateful_enable(dev);
         } else {
-            ext_power_generic_disable(dev);
+            ext_power_stateful_disable(dev);
         }
 
         return 0;
@@ -179,10 +187,10 @@ static int ext_power_generic_init(const struct device *dev) {
 static int ext_power_generic_pm_action(const struct device *dev, enum pm_device_action action) {
     switch (action) {
     case PM_DEVICE_ACTION_RESUME:
-        ext_power_generic_enable(dev);
+        ext_power_generic_enable(dev, false);
         return 0;
     case PM_DEVICE_ACTION_SUSPEND:
-        ext_power_generic_disable(dev);
+        ext_power_generic_disable(dev, false);
         return 0;
     default:
         return -ENOTSUP;
@@ -205,8 +213,8 @@ static struct ext_power_generic_data data = {
 #endif
 };
 
-static const struct ext_power_api api = {.enable = ext_power_generic_enable,
-                                         .disable = ext_power_generic_disable,
+static const struct ext_power_api api = {.enable = ext_power_stateful_enable,
+                                         .disable = ext_power_stateful_disable,
                                          .get = ext_power_generic_get};
 
 #define ZMK_EXT_POWER_INIT_PRIORITY 81
