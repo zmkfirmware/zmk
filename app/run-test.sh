@@ -38,8 +38,15 @@ testcase=$(realpath $path | sed -n -e "s|.*/tests/||p")
 echo "Running $testcase:"
 
 build_cmd="west build ${ZMK_SRC_DIR:+-s $ZMK_SRC_DIR} -d ${ZMK_BUILD_DIR}/tests/$testcase \
-    -b native_sim/native/64 -p -- -DCONFIG_ASSERT=y -DZMK_CONFIG="$(realpath $path)" \
+    -b native_sim/native/64 -p -- -DCONFIG_ASSERT=y -DCONFIG_ZMK_TEST_BEHAVIORS=y \
+    -DZMK_CONFIG="$(realpath $path)" \
     ${ZMK_EXTRA_MODULES:+-DZMK_EXTRA_MODULES="$(realpath ${ZMK_EXTRA_MODULES})"}"
+
+# Add extra cmake arguments from file if it exists
+if [ -f "$path/extra-cmake-args" ]; then
+    extra_args=$(cat "$path/extra-cmake-args" | tr '\n' ' ')
+    build_cmd="$build_cmd $extra_args"
+fi
 
 build_log_tmp="${ZMK_BUILD_DIR}/tmp/$testcase/build.log"
 build_log="${ZMK_BUILD_DIR}/tests/$testcase/build.log"

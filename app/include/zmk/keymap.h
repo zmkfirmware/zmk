@@ -11,11 +11,12 @@
 #include <zephyr/devicetree.h>
 
 #define ZMK_KEYMAP_LAYERS_FOREACH(_fn)                                                             \
-    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_STUDIO), (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), _fn)),    \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING),                                    \
+                (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), _fn)),                                   \
                 (DT_FOREACH_CHILD_STATUS_OKAY(DT_INST(0, zmk_keymap), _fn)))
 
 #define ZMK_KEYMAP_LAYERS_FOREACH_SEP(_fn, _sep)                                                   \
-    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_STUDIO),                                                     \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING),                                    \
                 (DT_FOREACH_CHILD_SEP(DT_INST(0, zmk_keymap), _fn, _sep)),                         \
                 (DT_FOREACH_CHILD_STATUS_OKAY_SEP(DT_INST(0, zmk_keymap), _fn, _sep)))
 
