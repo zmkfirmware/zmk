@@ -1,0 +1,18 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    chosen {
+        zmk,battery = &vbatt;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 0>;
+        output-ohms = <1000000>;
+        full-ohms = <(1000000 + 1000000)>;
+    };
+};
