@@ -122,6 +122,13 @@ jobs:
         working-directory: ${{ env.base_dir }}
         run: west update --fetch-opt=--filter=tree:0
 
+      - name: Check ZMK revision
+        working-directory: ${{ env.base_dir }}
+        run: |
+          zmk_revision=$(west list -f "{revision}" zmk)
+          echo "zmk_revision=${zmk_revision}" >> $GITHUB_ENV
+          echo "ZMK revision: ${zmk_revision}"
+
       - name: West Zephyr export
         working-directory: ${{ env.base_dir }}
         run: west zephyr-export
@@ -130,6 +137,15 @@ jobs:
         working-directory: ${{ env.base_dir }}
         shell: sh -x {0}
         run: west build -s zmk/app -d "${{ env.build_dir }}" -b "${{ matrix.board }}" ${{ env.extra_west_args }} -- -DZMK_CONFIG=${{ env.base_dir }}/${{ inputs.config_path }} ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
+
+      - name: Warn about building from main if build fails
+        if: failure() && env.zmk_revision == 'main'
+        run: |
+          echo "# Consider Pinning ZMK" >> $GITHUB_STEP_SUMMARY
+          echo "Your recent build failure might be the result of breaking changes made to ZMK's main branch." >> $GITHUB_STEP_SUMMARY
+          echo "Consider [pinning your ZMK version](https://zmk.dev/blog/2025/06/20/pinned-zmk) to a release for increased stability." >> $GITHUB_STEP_SUMMARY
+          echo "See also the [list of released versions](https://github.com/zmkfirmware/zmk/releases)." >> $GITHUB_STEP_SUMMARY
+          echo "If you wish to stay on main, check the most recent pending release PR for breaking changes. [Our blog](https://zmk.dev/blog) may have upgrade information if breaking changes are significant." >> $GITHUB_STEP_SUMMARY
 
       - name: ${{ env.display_name }} Kconfig file
         run: |
