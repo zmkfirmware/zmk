@@ -1,0 +1,26 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+// Test removing layer 0: layer 1 becomes bottom layer
+&kscan {
+    events = <
+    // toggle layer 1 on
+    ZMK_MOCK_PRESS(0,1,10)
+    ZMK_MOCK_RELEASE(0,1,10)
+    // remove layer 0
+    ZMK_MOCK_PRESS(1,0,10)
+    ZMK_MOCK_RELEASE(1,0,10)
+    // press position 0,0 - should output B (layer 1)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    // try to toggle layer 1 off
+    ZMK_MOCK_PRESS(0,1,10)
+    ZMK_MOCK_RELEASE(0,1,10)
+    // press position 0,0 - should output B
+    // (layer 1 is now the bottom layer, so shouldn't be disabled)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    >;
+};

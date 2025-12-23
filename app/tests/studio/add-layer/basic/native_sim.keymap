@@ -1,0 +1,23 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+// Test adding a layer, setting a binding, activating it, and pressing the binding
+&kscan {
+    events = <
+    // add a new layer
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    // set binding A at layer 1, position 0
+    ZMK_MOCK_PRESS(0,1,10)
+    ZMK_MOCK_RELEASE(0,1,10)
+    // activate layer 1 with momentary
+    ZMK_MOCK_PRESS(1,0,10)
+    // press position 0 on new layer (should be A)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    // release momentary layer 1
+    ZMK_MOCK_RELEASE(1,0,10)
+    >;
+};
