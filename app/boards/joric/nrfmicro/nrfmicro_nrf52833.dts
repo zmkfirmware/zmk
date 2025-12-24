@@ -6,6 +6,8 @@
 
 /dts-v1/;
 #include <nordic/nrf52833_qiaa.dtsi>
+#include <common/nordic/nrf52833_uf2_boot_mode.dtsi>
+
 #include "arduino_pro_micro_pins_52833.dtsi"
 #include "nrfmicro-pinctrl.dtsi"
 
