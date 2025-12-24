@@ -9,7 +9,7 @@
 
 
 &horizontal_physical_layout {
-    transform = <&default_transform>;
+    transform = <&horizontal_transform>;
 };
 &vertical_physical_layout {
     transform = <&vertical_transform>;
@@ -21,7 +21,7 @@
         zmk,physical-layout = &horizontal_physical_layout;
     };
 
-    default_transform: default_transform {
+    horizontal_transform: horizontal_transform {
         compatible = "zmk,matrix-transform";
         columns = <4>;
         rows = <3>;
