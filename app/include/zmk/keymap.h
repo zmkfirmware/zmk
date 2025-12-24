@@ -73,10 +73,10 @@ int zmk_keymap_set_layer_name(zmk_keymap_layer_id_t id, const char *name, size_t
 /**
  * @brief Check if there are any unsaved keymap changes.
  *
- * @retval 0 if there are no changes.
- * @retval 1 if there are changes.
+ * @retval true if there are no changes.
+ * @retval false if there are changes.
  */
-int zmk_keymap_check_unsaved_changes(void);
+bool zmk_keymap_check_unsaved_changes(void);
 
 int zmk_keymap_save_changes(void);
 int zmk_keymap_discard_changes(void);

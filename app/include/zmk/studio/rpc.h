@@ -56,10 +56,16 @@ struct zmk_rpc_subsystem_handler {
     enum zmk_studio_rpc_handler_security security;
 };
 
-typedef int (*zmk_rpc_subsystem_settings_reset_func)(void);
+typedef int (*zmk_rpc_subsystem_reset_settings_func_t)(void);
+typedef int (*zmk_rpc_subsystem_discard_changes_func_t)(void);
+typedef bool (*zmk_rpc_subsystem_check_unsaved_changes_func_t)(void);
+typedef int (*zmk_rpc_subsystem_save_changes_func_t)(void);
 
-struct zmk_rpc_subsystem_settings_reset {
-    zmk_rpc_subsystem_settings_reset_func callback;
+struct zmk_rpc_subsystem_persistence {
+    zmk_rpc_subsystem_reset_settings_func_t reset_settings;
+    zmk_rpc_subsystem_check_unsaved_changes_func_t check_unsaved_changes;
+    zmk_rpc_subsystem_save_changes_func_t save_changes;
+    zmk_rpc_subsystem_discard_changes_func_t discard_changes;
 };
 
 /**
@@ -109,13 +115,12 @@ struct zmk_rpc_subsystem_settings_reset {
         .security = _security,                                                                     \
     };
 
-#define ZMK_RPC_SUBSYSTEM_SETTINGS_RESET(prefix, _callback)                                        \
-    STRUCT_SECTION_ITERABLE(zmk_rpc_subsystem_settings_reset, _##prefix##_settings_reset) = {      \
-        .callback = _callback,                                                                     \
-    };
+#define ZMK_RPC_SUBSYSTEM_PERSISTENCE(prefix, ...)                                                 \
+    STRUCT_SECTION_ITERABLE(zmk_rpc_subsystem_persistence,                                         \
+                            _##prefix##_settings_reset) = {__VA_ARGS__};
 
-#define ZMK_RPC_SUBSYSTEM_SETTINGS_RESET_FOREACH(_var)                                             \
-    STRUCT_SECTION_FOREACH(zmk_rpc_subsystem_settings_reset, _var)
+#define ZMK_RPC_SUBSYSTEM_PERSISTENCE_FOREACH(_var)                                                \
+    STRUCT_SECTION_FOREACH(zmk_rpc_subsystem_persistence, _var)
 
 /**
  * @brief Create a zmk_studio_Notification struct for the given subsystem and type, including
