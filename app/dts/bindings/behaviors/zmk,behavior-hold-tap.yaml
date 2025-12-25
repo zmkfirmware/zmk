@@ -43,6 +43,15 @@ properties:
     type: boolean
   retro-tap:
     type: boolean
+  retro-tap-behavior:
+    type: string
+    default: ""
+  retro-tap-param1:
+    type: int
+    default: 0
+  retro-tap-param2:
+    type: int
+    default: 0
   hold-trigger-key-positions:
     type: array
     required: false
