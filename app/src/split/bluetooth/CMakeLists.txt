@@ -8,7 +8,3 @@ endif()
 if (CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   target_sources(app PRIVATE central.c)
 endif()
-
-if (CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY)
-  target_sources(app PRIVATE central_bas_proxy.c)
-endif()
