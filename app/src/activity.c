@@ -10,6 +10,7 @@
 #include <zephyr/sys/poweroff.h>
 
 #include <zephyr/logging/log.h>
+#include <zephyr/settings/settings.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -46,7 +47,67 @@ static uint32_t activity_last_uptime;
 
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
 #define MAX_SLEEP_MS CONFIG_ZMK_IDLE_SLEEP_TIMEOUT
+
+struct runtime_sleep_state {
+    bool enabled;
+};
+
+static struct runtime_sleep_state sleep_state = {.enabled = true};
+
+#endif // IS_ENABLED(CONFIG_ZMK_SLEEP)
+
+#if IS_ENABLED(CONFIG_SETTINGS) && IS_ENABLED(CONFIG_ZMK_SLEEP)
+static int sleep_settings_load_cb(const char *name, size_t len, settings_read_cb read_cb,
+                                  void *cb_arg) {
+    const char *next;
+    if (settings_name_steq(name, "state", &next) && !next) {
+        if (len != sizeof(sleep_state)) {
+            return -EINVAL;
+        }
+
+        int rc = read_cb(cb_arg, &sleep_state, sizeof(sleep_state));
+        return MIN(rc, 0);
+    }
+    return -ENOENT;
+}
+
+SETTINGS_STATIC_HANDLER_DEFINE(sleep, "sleep", NULL, sleep_settings_load_cb, NULL, NULL);
+
+static void sleep_save_work_handler(struct k_work *work) {
+    settings_save_one("sleep/state", &sleep_state, sizeof(sleep_state));
+}
+
+static struct k_work_delayable sleep_save_work;
+
+#endif // IS_ENABLED(CONFIG_SETTINGS) && IS_ENABLED(CONFIG_ZMK_SLEEP)
+
+#if IS_ENABLED(CONFIG_ZMK_SLEEP)
+
+void zmk_enable_sleep(void) {
+    sleep_state.enabled = true;
+    LOG_DBG("Enabling sleep\n");
+#if IS_ENABLED(CONFIG_SETTINGS)
+    k_work_reschedule(&sleep_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
 #endif
+}
+
+void zmk_disable_sleep(void) {
+    sleep_state.enabled = false;
+    LOG_DBG("Disabling sleep\n");
+#if IS_ENABLED(CONFIG_SETTINGS)
+    k_work_reschedule(&sleep_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+#endif
+}
+
+void zmk_toggle_sleep(void) {
+    LOG_DBG("Toggle sleep\n");
+    sleep_state.enabled = !sleep_state.enabled;
+#if IS_ENABLED(CONFIG_SETTINGS)
+    k_work_reschedule(&sleep_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+#endif
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_SLEEP)
 
 int raise_event(void) {
     return raise_zmk_activity_state_changed(
@@ -75,7 +136,7 @@ void activity_work_handler(struct k_work *work) {
     int32_t current = k_uptime_get();
     int32_t inactive_time = current - activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
-    if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
+    if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present() && sleep_state.enabled) {
         // Put devices in suspend power mode before sleeping
         set_state(ZMK_ACTIVITY_SLEEP);
 
@@ -103,6 +164,11 @@ static int activity_init(void) {
     activity_last_uptime = k_uptime_get();
 
     k_timer_start(&activity_timer, K_SECONDS(1), K_SECONDS(1));
+
+#if IS_ENABLED(CONFIG_SETTINGS) && IS_ENABLED(CONFIG_ZMK_SLEEP)
+    k_work_init_delayable(&sleep_save_work, sleep_save_work_handler);
+#endif
+
     return 0;
 }
 
