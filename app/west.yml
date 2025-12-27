@@ -28,6 +28,12 @@ manifest:
           - openthread
           - edtt
           - trusted-firmware-m
+    - name: hal_stm32
+      revision: 4fcc3a3f32abe1c4cb76d9d1cef967728dd03908
+      path: modules/hal/stm32
+      remote: zmkfirmware
+      groups:
+        - hal
     - name: lvgl
       revision: f1db87ee98f1810328a8419572fa42a3b5f352ae
       path: modules/lib/gui/lvgl
