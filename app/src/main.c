@@ -18,14 +18,20 @@ LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <lvgl.h>
 
 #endif
+#if IS_ENABLED(CONFIG_SETTINGS)
+static int settings_init(const struct device *dev) {
+    ARG_UNUSED(dev);
+
+    settings_subsys_init();
+    settings_load();
+    return 0;
+}
+
+SYS_INIT(settings_init, POST_KERNEL, 0);
+#endif
 
 int main(void) {
     LOG_INF("Welcome to ZMK!\n");
-
-#if IS_ENABLED(CONFIG_SETTINGS)
-    settings_subsys_init();
-    settings_load();
-#endif
 
 #ifdef CONFIG_ZMK_DISPLAY
     zmk_display_init();
