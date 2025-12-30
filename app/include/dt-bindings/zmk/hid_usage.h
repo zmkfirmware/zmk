@@ -2322,6 +2322,13 @@
 #define HID_USAGE_MONITOR_VESA_DEGAUSS (0x01)
 #define HID_USAGE_MONITOR_VESA_SETTINGS (0xB0)
 
+/* Page 0x84: Power */
+#define HID_USAGE_POWER_POWER_SUPPLY (0x05) // CA
+
+/* Page 0x85: Battery System */
+#define HID_USAGE_BATTERY_SYSTEM_CHARGING (0x44)                 // SEL
+#define HID_USAGE_BATTERY_SYSTEM_ABSOLUTE_STATE_OF_CHARGE (0x65) // DV
+
 /* Page 0x8C: Bar Code Scanner */
 #define HID_USAGE_POS_BARCODE_UNDEFINED (0x00)
 #define HID_USAGE_POS_BARCODE_BAR_CODE_BADGE_READER (0x01)                             // CA
