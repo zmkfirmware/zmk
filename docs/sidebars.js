@@ -122,6 +122,7 @@ module.exports = {
         "config/battery",
         "config/behaviors",
         "config/bluetooth",
+        "config/bootloader",
         "config/combos",
         "config/displays",
         "config/encoders",
