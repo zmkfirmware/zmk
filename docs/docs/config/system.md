@@ -120,23 +120,6 @@ Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the s
 | `CONFIG_ZMK_USB_LOGGING` | bool | Enable USB CDC ACM logging for debugging | n       |
 | `CONFIG_ZMK_LOG_LEVEL`   | int  | Log level for ZMK debug messages         | 4       |
 
-### Double Tap To Bootloader
-
-| Config                                     | Type | Description                                                         | Default                     |
-| ------------------------------------------ | ---- | ------------------------------------------------------------------- | --------------------------- |
-| `CONFIG_ZMK_DBL_TAP_BOOTLOADER`            | bool | Enable the double-tap to enter bootloader functionality             | y if STM32 or RP2040/RP2350 |
-| `CONFIG_ZMK_DBL_TAP_BOOTLOADER_TIMEOUT_MS` | int  | Duration (in ms) to wait for a second reset to enter the bootloader | 500                         |
-
-### STM32 nBOOT_SEL Option Byte Setup
-
-Some newer STM32 series SoCs, in particular stm32c0 and stm32g0, enable the `nBOOT_SEL` bit of the option bytes by default. This bit prevents entering the system ROM bootloader by holding the BOOT0 pin/button during a reset/startup.
-
-To ensure the BOOT button on keyboard and controllers using these SoCs works as expected after being flashed with ZMK, we check the `nBOOT_SEL` bit on startup and clear it if it is set. Should you _not_ want that functionality, for some reason, this can be disabled.
-
-| Config                                    | Type | Description                           | Default                 |
-| ----------------------------------------- | ---- | ------------------------------------- | ----------------------- |
-| `CONFIG_ZMK_BOOT_STM32_ENFORCE_NBOOT_SEL` | bool | Ensure the `nBOOT_SEL` bit is not set | y if STM32CO or STM32G0 |
-
 ## Snippets
 
 :::danger
