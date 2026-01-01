@@ -63,10 +63,14 @@ int zmk_endpoint_instance_to_index(struct zmk_endpoint_instance endpoint);
 int zmk_endpoints_select_transport(enum zmk_transport transport);
 int zmk_endpoints_toggle_transport(void);
 
+int zmk_preferred_transport();
+
 /**
  * Gets the currently-selected endpoint.
  */
 struct zmk_endpoint_instance zmk_endpoints_selected(void);
+
+struct zmk_endpoint_instance zmk_last_endpoint();
 
 int zmk_endpoints_send_report(uint16_t usage_page);
 
