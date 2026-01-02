@@ -161,9 +161,14 @@ jobs:
             ];
             const combinedUnique = [...new Map(combined.map(el => [JSON.stringify(el), el])).values()];
 
+            console.log(combinedUnique);
+
             const perBoard = {};
+            idx = 0;
 
             for (const configuration of combinedUnique) {
+              console.log(idx++);
+              console.log(configuration);
               if (!perBoard[configuration.board])
                 perBoard[configuration.board] = [];
 
@@ -277,6 +282,7 @@ jobs:
                       );
                     } else {
                       console.error("Board without keys or interconnect");
+                      return [];
                     }
                     break;
                   case "shield":
