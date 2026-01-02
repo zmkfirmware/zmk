@@ -2,9 +2,9 @@
 title: New Board
 ---
 
-This guide will walk through the necessary steps to write a board suitable for use with ZMK. Boards used with ZMK fall into two categories:
+This guide will walk through the necessary steps to write a [board](./index.mdx#boards--shields) suitable for use with ZMK. Boards used with ZMK fall into two categories:
 
-- Boards with interconnects, such as `nice_nano` or `seeed_xiao`. Such boards will (active development of ZMK aside) always be used with a shield.
+- Boards with interconnects, such as `nice_nano` or `seeed_xiao`. Such boards will (active development of ZMK aside) always be used with a shield to create a keyboard.
 - Boards that are themselves keyboards, such as `bt75` or `ferris`.
 
 Some keyboards are boards but also have interconnects for modular add-ons. These are considered as keyboard-boards for the purpose of this guide. Details on adding an interconnect for modular add-ons are considered out of scope.
@@ -86,7 +86,13 @@ board:
 
 ### Add Kconfig for ZMK Variant
 
-Add a file to your board's folder called `<your-board>_zmk_defconfig`. This file will be used to set Kconfig flags specific to the ZMK variant. These flags are typically a subset of the following:
+Add a file to your board's folder called `<your-board>_zmk_defconfig`. This file will be used to set Kconfig flags specific to the ZMK variant.
+
+:::warning
+Make sure you know what each Kconfig flag does before you enable it. Some flags may be incompatible with certain hardware, or have other adverse effects.
+:::
+
+These flags are typically a subset of the following:
 
 ```yaml title="<your-board>_zmk_defconfig"
 # SPDX-License-Identifier: <your license>
@@ -138,7 +144,7 @@ CONFIG_GPIO=y
 CONFIG_ZMK_KSCAN_MATRIX_POLLING=y
 ```
 
-Note that none of our in-tree boards have all of the above flags set. We recommend copying the Kconfig flags from an existing in-tree board with the same SoC as the one you are using, rather than figuring out which ones you need yourself.
+Note that none of our in-tree boards have all of the above flags set. We recommend referencing the Kconfig flags from an existing in-tree board with the same SoC as the one you are using for your initial definition, making sure you understand what each flag does.
 
 ### Add Devicetree for ZMK Variant
 
@@ -149,15 +155,15 @@ Note that none of our in-tree boards have all of the above flags set. We recomme
  * SPDX-License-Identifier: <your license>
  */
 
-//include the base board definition
+// Include the base board definition
 #include <../boards/<vendor or you>/<board folder name>/<your board>.dts>
-//include predefined boot mode settings, e.g.
+// Include predefined boot mode settings, e.g.
 #include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
 
-//disable UART nodes if they are not actively in use (wired split) as they increase power draw
+// Disable UART nodes if they are not actively in use (wired split) as they increase power draw
 &uart0 { status = "disabled"; };
 
-//reduce the code partition section of the memory and add a storage partition to store ZMK Studio changes
+// Reduce the code partition section of the memory and add a storage partition to store ZMK Studio changes
 &code_partition {
     reg = <0x100 (DT_SIZE_M(2) - 0x100 - DT_SIZE_K(512))>;
 };
@@ -176,6 +182,6 @@ See [here](./bootloader/index.mdx) for bootloader instructions for other SoCs. D
 
 ## Next Steps
 
-If your board is a keyboard, continue from ["Kconfig.defconfig"](https://zmk.dev/docs/development/hardware-integration/new-shield?keyboard-type=unibody#kconfigdefconfig) of the new shield guide. Use your ZMK variant's devicetree instead of the overlay file which would be used for a shield.
+If your board is a keyboard, continue from [the `Kconfig.defconfig` step](https://zmk.dev/docs/development/hardware-integration/new-shield?keyboard-type=unibody#kconfigdefconfig) of the new shield guide. Use your ZMK variant's devicetree instead of the overlay file which would be used for a shield.
 
 If your board is a board with an interconnect, your next step should be to write a [tester shield](../../troubleshooting/hardware-issues.mdx#identifying-issues). Such a shield should be the bare minimum shield to verify that your board works with ZMK.

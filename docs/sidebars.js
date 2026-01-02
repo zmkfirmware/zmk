@@ -148,7 +148,6 @@ module.exports = {
           },
           collapsed: true,
           items: [
-            "development/hardware-integration/new-board",
             "development/hardware-integration/new-shield",
             "development/hardware-integration/physical-layouts",
             "development/hardware-integration/hardware-metadata-files",
@@ -158,6 +157,7 @@ module.exports = {
             "development/hardware-integration/encoders",
             "development/hardware-integration/soft-off-setup",
             "development/hardware-integration/pointing",
+            "development/hardware-integration/new-board",
             "development/hardware-integration/battery",
             {
               type: "category",
