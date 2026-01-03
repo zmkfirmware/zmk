@@ -4,10 +4,12 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
+    - name: petejohanson
+      url-base: https://github.com/petejohanson
   projects:
     - name: zephyr
-      remote: zmkfirmware
-      revision: v4.1.0+zmk-fixes
+      remote: petejohanson
+      revision: v4.1.0+zmk-c0-fixes
       clone-depth: 1
       import:
         name-blocklist:
@@ -28,6 +30,12 @@ manifest:
           - openthread
           - edtt
           - trusted-firmware-m
+    - name: hal_stm32
+      revision: 4fcc3a3f32abe1c4cb76d9d1cef967728dd03908
+      path: modules/hal/stm32
+      remote: zmkfirmware
+      groups:
+        - hal
     - name: lvgl
       revision: f1db87ee98f1810328a8419572fa42a3b5f352ae
       path: modules/lib/gui/lvgl
