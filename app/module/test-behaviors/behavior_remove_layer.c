@@ -20,14 +20,17 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static int on_remove_layer_binding_pressed(struct zmk_behavior_binding *binding,
                                            struct zmk_behavior_binding_event event) {
     int result = zmk_keymap_remove_layer(binding->param1);
-
+    if (result >= 0) {
+        LOG_DBG("Removed layer at index %d", binding->param1);
+        return 0;
+    }
     switch (result) {
     case -EINVAL:
         LOG_ERR("Layer at index %d not found", binding->param1);
         return -EINVAL;
     default:
-        LOG_DBG("Removed layer at index %d", binding->param1);
-        return 0;
+        LOG_DBG("Unknown error removing layer at index %d: %d", binding->param1, result);
+        return result;
     }
 }
 

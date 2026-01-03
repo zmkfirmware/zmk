@@ -20,13 +20,17 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static int on_add_layer_binding_pressed(struct zmk_behavior_binding *binding,
                                         struct zmk_behavior_binding_event event) {
     int new_layer = zmk_keymap_add_layer();
-    switch (new_layer) {
-    case -ENOSPC:
-        LOG_ERR("No more layers can be added");
-        return -ENOSPC;
-    default:
+    if (new_layer >= 0) {
         LOG_DBG("Added layer %d", new_layer);
         return 0;
+    }
+    switch (new_layer) {
+    case -ENOSPC:
+        LOG_ERR("No more layers can be added. Out of memory.");
+        return -ENOSPC;
+    default:
+        LOG_ERR("Unknown error adding layer: %d", new_layer);
+        return new_layer;
     }
 }
 
