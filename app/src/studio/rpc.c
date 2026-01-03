@@ -87,7 +87,7 @@ static bool rpc_read_cb(pb_istream_t *stream, uint8_t *buf, size_t count) {
 
     do {
         uint8_t *buffer;
-        uint32_t len = ring_buf_get_claim(&rpc_rx_buf, &buffer, count);
+        uint32_t len = ring_buf_get_claim(&rpc_rx_buf, &buffer, count - write_offset);
 
         if (len > 0) {
             for (int i = 0; i < len; i++) {
