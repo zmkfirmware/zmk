@@ -19,20 +19,47 @@
         };
         second_layer {
             bindings = <
-                &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans
-                &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans
-                &trans      &trans      &trans      &trans      &trans      &trans      &trans      &kp LEFT    &kp DOWN    &kp UP      &kp RIGHT   &trans
-                &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans
-                                                                &trans      &trans      &trans      &trans
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &kp LEFT    &kp DOWN    &kp UP      &kp RIGHT   &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                                                                &none      &none      &none      &none
             >;
         };
         third_layer {
             bindings = <
-                &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans
-                &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans
-                &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans
-                &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans
-                                                                &trans      &trans      &trans      &trans
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                                                                &none      &none      &none      &none
+            >;
+        };
+        fourth_layer {
+            bindings = <
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                                                                &none      &none      &none      &none
+            >;
+        };
+        fifth_layer {
+            bindings = <
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                                                                &none      &none      &none      &none
+            >;
+        };
+        sixth_layer {
+            bindings = <
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none
+                                                                &none      &none      &none      &none
             >;
         };
     };
