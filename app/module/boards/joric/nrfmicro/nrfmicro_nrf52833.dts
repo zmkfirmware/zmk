@@ -5,11 +5,11 @@
  */
 
 /dts-v1/;
-#include <nordic/nrf52840_qiaa.dtsi>
-#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+#include <nordic/nrf52833_qiaa.dtsi>
+#include <common/nordic/nrf52833_uf2_boot_mode.dtsi>
 
-#include "arduino_pro_micro_pins_flipped.dtsi"
-#include "nrfmicro-flipped-pinctrl.dtsi"
+#include "arduino_pro_micro_pins_52833.dtsi"
+#include "nrfmicro-pinctrl.dtsi"
 
 / {
     model = "nrfmicro";
@@ -24,20 +24,17 @@
     leds {
         compatible = "gpio-leds";
         blue_led: led_0 {
-            gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio0 25 GPIO_ACTIVE_HIGH>;
         };
-    };
-
-    // Node name must match original "EXT_POWER" label to preserve user settings.
-    EXT_POWER {
-        compatible = "zmk,ext-power-generic";
-        control-gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;
-        init-delay-ms = <50>;
     };
 };
 
 &reg1 {
     regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&adc {
+    status = "okay";
 };
 
 &gpiote {
@@ -93,24 +90,24 @@ zephyr_udc0: &usbd {
             reg = <0x00000000 0x00026000>;
         };
         code_partition: partition@26000 {
-            reg = <0x00026000 0x000c6000>;
+            reg = <0x00026000 0x00046000>;
         };
 
         /*
-         * The flash starting at 0x000ec000 and ending at
-         * 0x000f3fff is reserved for use by the application.
+         * The flash starting at 0x0006c000 and ending at
+         * 0x00073fff is reserved for use by the application.
          */
 
         /*
          * Storage partition will be used by FCB/LittleFS/NVS
          * if enabled.
          */
-        storage_partition: partition@ec000 {
-            reg = <0x000ec000 0x00008000>;
+        storage_partition: partition@6c000 {
+            reg = <0x0006c000 0x00008000>;
         };
 
-        boot_partition: partition@f4000 {
-            reg = <0x000f4000 0x0000c000>;
+        boot_partition: partition@74000 {
+            reg = <0x00074000 0x0000c000>;
         };
     };
 };
