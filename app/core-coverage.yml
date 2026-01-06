@@ -1,6 +1,6 @@
 board:
   - nice_nano
-  - nrfmicro/nrf52840
+  - nrfmicro/nrf52840/zmk
   - proton_c
 shield:
   - corne_left
