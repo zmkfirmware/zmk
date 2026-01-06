@@ -1,5 +1,5 @@
 file_format: "1"
-id: nrfmicro/nrf52833
+id: nrfmicro/nrf52833/zmk
 name: nRFMicro (nRF52833)
 type: board
 arch: arm

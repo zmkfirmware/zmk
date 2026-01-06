@@ -1,0 +1,9 @@
+# nrfmicro board configuration
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_NRFMICRO
+    select SOC_NRF52840_QIAA if BOARD_NRFMICRO_NRF52840
+    select SOC_NRF52840_QIAA if BOARD_NRFMICRO_NRF52840_FLIPPED
+    select SOC_NRF52833_QIAA if BOARD_NRFMICRO_NRF52833
