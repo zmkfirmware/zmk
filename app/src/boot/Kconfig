@@ -41,3 +41,11 @@ config ZMK_BOOTMODE_BOOTLOADER_MAGIC_VALUE
     hex
 
 endif
+
+config ZMK_BOOT_STM32_ENFORCE_NBOOT_SEL
+    bool
+    default y
+    depends on FLASH && (SOC_STM32C071XX || SOC_STM32G0B1XX)
+    select FLASH_EX_OP_ENABLED
+    select FLASH_STM32_OPTION_BYTES
+
