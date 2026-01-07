@@ -6,7 +6,6 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
-#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
 
 #include "arduino_pro_micro_pins.dtsi"
 #include "bluemicro840-pinctrl.dtsi"
@@ -19,7 +18,6 @@
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zmk,battery = &vbatt;
     };
 
     leds {
@@ -28,21 +26,6 @@
             gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
         };
     };
-
-    // Node name must match original "EXT_POWER" label to preserve user settings.
-    EXT_POWER {
-        compatible = "zmk,ext-power-generic";
-        init-delay-ms = <20>;
-        control-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
-    };
-
-    vbatt: vbatt {
-        compatible = "zmk,battery-voltage-divider";
-        io-channels = <&adc 7>;
-        output-ohms = <2000000>;
-        full-ohms = <(2000000 + 806000)>;
-    };
-
 };
 
 &adc {
