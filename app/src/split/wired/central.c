@@ -87,7 +87,7 @@ K_WORK_DEFINE(publish_events, publish_events_work);
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
 
-uint8_t async_rx_buf[RX_BUFFER_SIZE / 2][2];
+uint8_t async_rx_buf[2][RX_BUFFER_SIZE / 2];
 
 static struct zmk_split_wired_async_state async_state = {
     .process_tx_work = &publish_events,

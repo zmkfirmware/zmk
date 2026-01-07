@@ -89,7 +89,7 @@ K_MSGQ_DEFINE(cmd_msg_queue, sizeof(struct zmk_split_transport_central_command),
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
 
-uint8_t async_rx_buf[RX_BUFFER_SIZE / 2][2];
+uint8_t async_rx_buf[2][RX_BUFFER_SIZE / 2];
 
 static struct zmk_split_wired_async_state async_state = {
     .rx_bufs = {async_rx_buf[0], async_rx_buf[1]},
