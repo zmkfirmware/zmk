@@ -35,7 +35,7 @@ jobs:
       ZMK_RELEASE_PLEASE_TOKEN: ${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}
       VERSION: v${{ needs.handle-commit.outputs.major }}.${{ needs.handle-commit.outputs.minor }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Create major.minor branch
         if: ${{ needs.handle-commit.outputs.patch == '0' }}
