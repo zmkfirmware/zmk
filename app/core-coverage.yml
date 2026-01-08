@@ -9,7 +9,7 @@ shield:
   - settings_reset
   - tidbit
 include:
-  - board: bdn9
+  - board: bdn9//zmk
   - board: nice60
   - board: xiao_ble//zmk
     shield: hummingbird
@@ -40,7 +40,7 @@ include:
   - board: nice_nano
     shield: lily58_left nice_view_adapter nice_view
     nickname: "niceview"
-  - board: bdn9
+  - board: bdn9//zmk
     snippet: studio-rpc-usb-uart
     cmake-args: "-DCONFIG_ZMK_STUDIO=y"
     nickname: "stm32-studio"
