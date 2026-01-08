@@ -1,0 +1,4 @@
+s/.*on_add_layer_binding_pressed/add_layer/p
+s/.*on_set_layer_binding_at_idx_binding_pressed/set_layer_binding/p
+s/.*layer_changed/layer_changed/p
+s/.*hid_listener_keycode_//p
