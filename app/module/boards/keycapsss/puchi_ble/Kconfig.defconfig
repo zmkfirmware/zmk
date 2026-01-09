@@ -1,7 +1,10 @@
-# Copyright (c) 2022 The ZMK Contributors
+# Copyright (c) 2026 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
 if BOARD_PUCHI_BLE
+
+config BOARD
+    default "puchi_ble"
 
 if USB_DEVICE_STACK
 
