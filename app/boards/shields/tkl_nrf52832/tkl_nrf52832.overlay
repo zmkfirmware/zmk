@@ -1,0 +1,58 @@
+/* Custom TKL nRF52832 Keyboard Board Overlay */
+
+#include "tkl_nrf52832.dtsi"
+
+/ {
+    model = "Custom TKL nRF52832 Keyboard";
+    compatible = "tkl,nrf52832";
+
+    /* Input listener for trackpad */
+    trackpad_listener: trackpad_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackpad>;
+    };
+};
+
+/* nRF52832 QFAA (or QFAAB) configuration */
+&pinctrl {
+    compatible = "nordic,nrf-pinctrl";
+};
+
+/* I2C Configuration for Azoteq IQS5xx Trackpad */
+&i2c0 {
+    compatible = "nordic,nrf-twi";
+    status = "okay";
+
+    trackpad: iqs5xx@74 {
+        compatible = "azoteq,iqs5xx";
+        reg = <0x74>;
+        status = "okay";
+        
+        /* GPIO Pins:
+         * - RDY (Data Ready): P0.28 (interrupt pin, active high)
+         * - RESET: P0.25 (optional hardware reset, active low)
+         */
+        rdy-gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
+        reset-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
+        
+        /* Gesture Configuration */
+        one-finger-tap;           // Single tap → Left click
+        press-and-hold;           // Press & hold → Drag (left click held)
+        press-and-hold-time = <250>;  // Hold time in ms
+        two-finger-tap;           // Two finger tap → Right click
+        
+        /* Scrolling */
+        scroll;                   // Enable scroll gestures
+        natural-scroll-y;         // Natural vertical scrolling
+        // natural-scroll-x;      // Uncomment for natural horizontal scroll
+        
+        /* Axes Configuration */
+        // switch-xy;             // Uncomment to swap X/Y axes
+        // flip-x;                // Uncomment to invert X axis
+        // flip-y;                // Uncomment to invert Y axis
+        
+        /* Sensitivity Tuning */
+        bottom-beta = <5>;        // Filtering: 0=smooth/laggy, 255=responsive/jittery
+        stationary-threshold = <5>; // Movement threshold in pixels
+    };
+};

@@ -1,0 +1,193 @@
+/*
+ * TKL Keyboard with Bluetooth & System Switching
+ * 
+ * Features:
+ * - BLE Profiles: Switch between 5 paired devices (F13-F17)
+ * - Output Toggle: BLE/USB switching (F18)
+ * - Bluetooth Clear: Clear current profile pairing (F19)
+ * - Layer switching for additional functions
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+
+/ {
+    /* System-Specific Behaviors for Windows, Mac, Linux, Android */
+    behaviors {
+        // OS Mode Toggle: Tap to switch between Windows/Mac modes
+        os_mode: os_mode_toggle {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&to 0>, <&to 2>;  // Toggle between default and Mac layer
+        };
+
+        // Windows/Linux Copy (Ctrl+C)
+        win_copy: windows_copy {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp C>, <&kp LC(C)>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        // Mac Copy (Cmd+C)
+        mac_copy: mac_copy {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp C>, <&kp LG(C)>;
+            mods = <(MOD_LGUI|MOD_RGUI)>;
+        };
+
+        // Smart GUI/ALT key for cross-platform
+        smart_gui: smart_gui_key {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LGUI>, <&kp LALT>;
+            mods = <(MOD_LSFT)>;
+        };
+    };
+System Mode Switching:
+         * F9  = Windows/Linux Mode (Layer 0)
+         * F10 = Mac Mode (Layer 2)
+         * F11 = Android Mode (Layer 3)
+         * 
+         * Bluetooth Profile Selection:
+         * F1 = BLE Profile 0 (Device 1)
+         * F2 = BLE Profile 1 (Device 2)
+         * F3 = BLE Profile 2 (Device 3)
+         * F4 = BLE Profile 3 (Device 4)
+         * F5 = BLE Profile 4 (Device 5)
+         * F6 = Toggle Output (BLE/USB)
+         * F7 = Clear current BLE profile
+         * F8 = Clear ALL BLE profiles
+         */
+        function_layer {
+            bindings = <
+                /* Row 0: ESC, BT Controls + OS Mode Switching, DEL */
+                &trans    &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4  &out OUT_TOG  &bt BT_CLR  &bt BT_CLR_ALL  &to 0  &to 2  &to 3  &trans  &trans
+
+                /* Row 1: Media controls */
+                &trans    &kp C_MUTE  &kp C_VOL_DN  &kp C_VOL_UP  &kp C_PREV  &kp C_PP  &kp C_NEXT  &kp C_BRI_DN  &kp C_BRI_UP  &trans  &trans  &trans  &trans  &trans
+
+                /* Row 2: Additional controls */
+                &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+
+                /* Row 3 */
+                &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+
+                /* Row 4 */
+                &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+
+                /* Row 5 */
+                &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+
+                /* Row 6 */
+                &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+
+                /* Row 7 */
+                &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+            >;
+        };
+
+        /* Layer 2: Mac Mode
+         * Optimized for macOS with Cmd key behavior
+         * GUI and Alt keys are swapped for Mac layout
+         */
+        mac_layer {
+            bindings = <
+                /* Row 0: ESC, F1-F12, DEL */
+                &kp ESC   &kp F1    &kp F2    &kp F3    &kp F4    &kp F5    &kp F6    &kp F7    &kp F8    &kp F9    &kp F10   &kp F11   &kp F12   &kp DEL
+
+                /* Row 1: Grave, 1-0, Minus, Equal, Backspace */
+                &kp GRAVE &kp N1    &kp N2    &kp N3    &kp N4    &kp N5    &kp N6    &kp N7    &kp N8    &kp N9    &kp N0    &kp MINUS &kp EQUAL &kp BSPC
+
+                /* Row 2: Tab, Q-P, [, ], \ */
+                &kp TAB   &kp Q     &kp W     &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O     &kp P     &kp LBKT  &kp RBKT  &kp BSLH
+
+                /* Row 3: Caps, A-L, ;, ', Enter */
+                &kp CAPS  &kp A     &kp S     &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L     &kp SEMI  &kp SQT   &kp RET
+
+                /* Row 4: LShift, Z-M, ,, ., /, RShift, Up */
+                &kp LSHFT &kp Z     &kp X     &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT &kp UP
+
+                /* Row 5: LCtrl, LALT (Mac Option), LGUI (Mac Cmd), Space, RGUI (Mac Cmd), RALT, Menu, RCtrl, Navigation */
+                &kp LCTRL &kp LALT  &kp LGUI  &kp SPACE &kp RGUI  &kp RALT  &mo 1     &kp RCTRL &kp LEFT  &kp DOWN  &kp RIGHT
+
+                /* Row 6: NumLock, /, *, -, 7, 8, 9, +, Home, PgUp */
+                &kp KP_NUM &kp KP_DIVIDE &kp KP_MULTIPLY &kp KP_MINUS &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_PLUS &kp HOME &kp PG_UP
+
+                /* Row 7: 0, ., =, 1, 2, 3, 4, Ins, End, PgDn */
+                &kp KP_N0 &kp KP_DOT &kp EQUAL &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_N4 &kp INS &kp END &kp PG_DN
+            >;
+        };
+
+        /* Layer 3: Android/Chrome OS Mode
+         * Optimized for Android devices and Chromebooks
+         * Similar to Windows but with Android-specific shortcuts
+         */
+        android_layer {
+            bindings = <
+                /* Row 0: ESC, F1-F12, DEL */
+                &kp ESC   &kp F1    &kp F2    &kp F3    &kp F4    &kp F5    &kp F6    &kp F7    &kp F8    &kp F9    &kp F10   &kp F11   &kp F12   &kp DEL
+
+                /* Row 1: Grave, 1-0, Minus, Equal, Backspace */
+                &kp GRAVE &kp N1    &kp N2    &kp N3    &kp N4    &kp N5    &kp N6    &kp N7    &kp N8    &kp N9    &kp N0    &kp MINUS &kp EQUAL &kp BSPC
+
+                /* Row 2: Tab, Q-P, [, ], \ */
+                &kp TAB   &kp Q     &kp W     &kp E     &kp R     &kp T     &kp Y     &kp U     &kp I     &kp O     &kp P     &kp LBKT  &kp RBKT  &kp BSLH
+
+                /* Row 3: Caps, A-L, ;, ', Enter */
+                &kp CAPS  &kp A     &kp S     &kp D     &kp F     &kp G     &kp H     &kp J     &kp K     &kp L     &kp SEMI  &kp SQT   &kp RET
+
+                /* Row 4: LShift, Z-M, ,, ., /, RShift, Up */
+                &kp LSHFT &kp Z     &kp X     &kp C     &kp V     &kp B     &kp N     &kp M     &kp COMMA &kp DOT   &kp FSLH  &kp RSHFT &kp UP
+
+                /* Row 5: LCtrl, LGUI (Search), LAlt, Space, RAlt, RGUI, Menu, RCtrl, Navigation */
+                &kp LCTRL &kp LGUI  &kp LALT  &kp SPACE &kp RALT  &kp RGUI  &mo 1     &kp RCTRL &kp LEFT  &kp DOWN  &kp RIGHT
+
+                /* Row 6: NumLock, /, *, -, 7, 8, 9, +, Home, PgUp */
+                &kp KP_NUM &kp KP_DIVIDE &kp KP_MULTIPLY &kp KP_MINUS &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_PLUS &kp HOME &kp PG_UP
+
+                /* Row 7: 0, ., =, 1, 2, 3, 4, Ins, End, PgDn */
+                &kp KP_N0 &kp KP_DOT &kp EQUAL &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_N4 &kp INS &kp END &kp PG_DN
+            >;
+        };
+    };
+                /* Row 5 */
+                &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+
+                /* Row 6 */
+                &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+
+                /* Row 7 */
+                &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans    &trans
+            >;
+        };
+    };
+
+    /* Conditional Layers for OS-Specific Behaviors (Optional)
+     * Uncomment and configure if you need different key behaviors per OS
+     */
+    
+    /* 
+    behaviors {
+        // Windows/Linux GUI key
+        win_gui: windows_gui {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LGUI>, <&kp LALT>;
+            mods = <(MOD_LCTL)>;
+        };
+        
+        // Mac Command key behavior
+        mac_cmd: mac_command {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LGUI>, <&kp LALT>;
+            mods = <(MOD_LALT)>;
+        };
+    };
+    */
+};

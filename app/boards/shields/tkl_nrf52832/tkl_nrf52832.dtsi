@@ -1,0 +1,120 @@
+/* Custom TKL nRF52832 Keyboard with Azoteq Trackpad
+ *
+ * Matrix: 8 rows × 14 columns = 112 positions (99 keys defined)
+ * GPIO: Uses P0.03-P0.24 (22 pins) for matrix
+ * Peripherals: I2C (P0.26/27), Battery (P0.29), VBUS (P0.02), INT (P0.28), LED (P0.30)
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,matrix_transform = &transform;
+    };
+
+    /* TKL Keyboard Matrix - 8x14 configuration
+     * Optimized for nRF52832 QFAAB (32 GPIOs)
+     * Rows: P0.03-P0.10 (8 pins)
+     * Columns: P0.11-P0.24 (14 pins)
+     */
+    kscan: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";
+
+        /* ROW GPIO PINS */
+        row-gpios =
+            <&gpio0 3 GPIO_ACTIVE_HIGH>,   /* ROW0 */
+            <&gpio0 4 GPIO_ACTIVE_HIGH>,   /* ROW1 */
+            <&gpio0 5 GPIO_ACTIVE_HIGH>,   /* ROW2 */
+            <&gpio0 6 GPIO_ACTIVE_HIGH>,   /* ROW3 */
+            <&gpio0 7 GPIO_ACTIVE_HIGH>,   /* ROW4 */
+            <&gpio0 8 GPIO_ACTIVE_HIGH>,   /* ROW5 */
+            <&gpio0 9 GPIO_ACTIVE_HIGH>,   /* ROW6 */
+            <&gpio0 10 GPIO_ACTIVE_HIGH>;  /* ROW7 */
+
+        /* COLUMN GPIO PINS */
+        col-gpios =
+            <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL0 */
+            <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL1 */
+            <&gpio0 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL2 */
+            <&gpio0 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL3 */
+            <&gpio0 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL4 */
+            <&gpio0 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL5 */
+            <&gpio0 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL6 */
+            <&gpio0 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL7 */
+            <&gpio0 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL8 */
+            <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL9 */
+            <&gpio0 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL10 */
+            <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL11 */
+            <&gpio0 23 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,  /* COL12 */
+            <&gpio0 24 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;  /* COL13 */
+    };
+
+    /* Matrix Transform - Maps physical keys to keymap positions
+     * 8 rows × 14 columns = 112 positions
+     * Maps 99 keys for TKL + Numpad layout
+     */
+    transform: matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <8>;
+        columns = <14>;
+
+        map = <
+            /* Row 0: ESC, F1-F12, DEL */
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(0,6) RC(0,7) RC(0,8) RC(0,9) RC(0,10) RC(0,11) RC(0,12) RC(0,13)
+
+            /* Row 1: Grave, 1-0, Minus, Equal, Backspace */
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5) RC(1,6) RC(1,7) RC(1,8) RC(1,9) RC(1,10) RC(1,11) RC(1,12) RC(1,13)
+
+            /* Row 2: Tab, Q-P, [, ], \ */
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10) RC(2,11) RC(2,12) RC(2,13)
+
+            /* Row 3: Caps, A-L, ;, ', Enter */
+            RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(3,6) RC(3,7) RC(3,8) RC(3,9) RC(3,10) RC(3,11) RC(3,12)
+
+            /* Row 4: LShift, Z-M, ,, ., /, RShift, Up */
+            RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5) RC(4,6) RC(4,7) RC(4,8) RC(4,9) RC(4,10) RC(4,11) RC(4,12)
+
+            /* Row 5: LCtrl, LGUI, LAlt, Space, RAlt, RGUI, Menu, RCtrl, Left, Down, Right */
+            RC(5,0) RC(5,1) RC(5,2) RC(5,3) RC(5,4) RC(5,5) RC(5,6) RC(5,7) RC(5,8) RC(5,9) RC(5,10)
+
+            /* Row 6: NumLock, /, *, -, 7, 8, 9, +, Home, PgUp */
+            RC(6,0) RC(6,1) RC(6,2) RC(6,3) RC(6,4) RC(6,5) RC(6,6) RC(6,7) RC(6,8) RC(6,9)
+
+            /* Row 7: 0, ., =, 1, 2, 3, 4, Ins, End, PgDn */
+            RC(7,0) RC(7,1) RC(7,2) RC(7,3) RC(7,4) RC(7,5) RC(7,6) RC(7,7) RC(7,8) RC(7,9)
+        >;
+    };
+};
+
+/* I2C for Trackpad/Sensors
+ *
+ * For nrf52dk board: I2C is pre-configured on P0.26 (SDA) / P0.27 (SCL)
+ * The board definition already has pinctrl configured and i2c0 enabled.
+ *
+ * To add a pointing device, enable CONFIG_ZMK_POINTING in the .conf file
+ * and add a device node under &i2c0:
+ *
+ * &i2c0 {
+ *     // Supported Zephyr pointing devices:
+ *     // - cirque,pinnacle-i2c (Cirque Pinnacle trackpad)
+ *     // - pixart,pat912x (Optical navigation sensor)
+ *     // - cypress,cy8cmbr3xxx (Cypress trackpad)
+ *
+ *     trackpad: trackpad@2a {
+ *         compatible = "cirque,pinnacle-i2c";
+ *         reg = <0x2a>;
+ *         interrupt-gpios = <&gpio0 28 GPIO_ACTIVE_LOW>;
+ *     };
+ * };
+ *
+ * NOTE: Azoteq IQS550 requires a custom Zephyr driver since it's not
+ * natively supported. Consider using Cirque Pinnacle or another supported device.
+ */
+
+/* Enable GPIO */
+&gpio0 {
+    status = "okay";
+};

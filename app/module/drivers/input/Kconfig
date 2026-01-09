@@ -6,4 +6,25 @@ config ZMK_INPUT_MOCK
     default y
     depends on DT_HAS_ZMK_INPUT_MOCK_ENABLED
 
+menuconfig INPUT_AZOTEQ_IQS5XX
+    bool "Azoteq IQS5xx trackpads"
+    default y
+    depends on GPIO
+    depends on I2C
+    depends on INPUT
+    depends on DT_HAS_AZOTEQ_IQS5XX_ENABLED
+    help
+      Enable driver for Azoteq IQS5xx trackpads.
+
+if INPUT_AZOTEQ_IQS5XX
+
+config INPUT_AZOTEQ_IQS5XX_INIT_PRIORITY
+    int "Azoteq IQS5xx initialization priority"
+    default INPUT_INIT_PRIORITY
+    help
+      Driver initialization priority for the IQS5xx driver.
+      Lower values initialize earlier.
+
+endif # INPUT_AZOTEQ_IQS5XX
+
 endif

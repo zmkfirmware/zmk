@@ -1,0 +1,6 @@
+description: |
+  Sensor driver for Azoteq IQS5XX trackpads, using the I2C interface
+
+compatible: "azoteq,iqs5xx"
+
+include: ["i2c-device.yaml", "azoteq,iqs5xx-common.yaml"]

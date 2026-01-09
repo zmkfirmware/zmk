@@ -1,0 +1,207 @@
+Keycode,ShortNames,Description,Category,Compatibility
+A,"A",a and A,Letters,All platforms
+B,"B",b and B,Letters,All platforms
+C,"C",c and C,Letters,All platforms
+D,"D",d and D,Letters,All platforms
+E,"E",e and E,Letters,All platforms
+F,"F",f and F,Letters,All platforms
+G,"G",g and G,Letters,All platforms
+H,"H",h and H,Letters,All platforms
+I,"I",i and I,Letters,All platforms
+J,"J",j and J,Letters,All platforms
+K,"K",k and K,Letters,All platforms
+L,"L",l and L,Letters,All platforms
+M,"M",m and M,Letters,All platforms
+N,"N",n and N,Letters,All platforms
+O,"O",o and O,Letters,All platforms
+P,"P",p and P,Letters,All platforms
+Q,"Q",q and Q,Letters,All platforms
+R,"R",r and R,Letters,All platforms
+S,"S",s and S,Letters,All platforms
+T,"T",t and T,Letters,All platforms
+U,"U",u and U,Letters,All platforms
+V,"V",v and V,Letters,All platforms
+W,"W",w and W,Letters,All platforms
+X,"X",x and X,Letters,All platforms
+Y,"Y",y and Y,Letters,All platforms
+Z,"Z",z and Z,Letters,All platforms
+NUMBER_1,"N1",1 and ! Exclamation,Numbers,All platforms
+NUMBER_2,"N2",2 and @ At Sign,Numbers,All platforms
+NUMBER_3,"N3",3 and # Hash / Pound,Numbers,All platforms
+NUMBER_4,"N4",4 and $ Dollar,Numbers,All platforms
+NUMBER_5,"N5",5 and % Percent,Numbers,All platforms
+NUMBER_6,"N6",6 and ^ Caret,Numbers,All platforms
+NUMBER_7,"N7",7 and & Ampersand,Numbers,All platforms
+NUMBER_8,"N8",8 and * Asterisk / Star,Numbers,All platforms
+NUMBER_9,"N9",9 and ( Left Parenthesis,Numbers,All platforms
+NUMBER_0,"N0",0 and ) Right Parenthesis,Numbers,All platforms
+EXCLAMATION,"EXCL",! Exclamation,Symbols,All platforms
+AT_SIGN,"AT",@ At Sign,Symbols,All platforms
+HASH,"POUND",# Hash / Pound,Symbols,All platforms
+DOLLAR,"DLLR",$ Dollar,Symbols,All platforms
+PERCENT,"PRCNT",% Percent,Symbols,All platforms
+CARET,"",^ Caret,Symbols,All platforms
+AMPERSAND,"AMPS",& Ampersand,Symbols,All platforms
+ASTERISK,"ASTRK,STAR",* Asterisk / Star,Symbols,All platforms
+LEFT_PARENTHESIS,"LPAR",( Left Parenthesis,Symbols,All platforms
+RIGHT_PARENTHESIS,"RPAR",) Right Parenthesis,Symbols,All platforms
+EQUAL,"",= Equal and + Plus,Symbols,All platforms
+PLUS,"",+ Plus,Symbols,All platforms
+MINUS,"",- Minus and _ Underscore,Symbols,All platforms
+UNDERSCORE,"UNDER",_ Underscore,Symbols,All platforms
+SLASH,"FSLH",/ Forward Slash and ? Question Mark,Symbols,All platforms
+QUESTION,"QMARK",? Question Mark,Symbols,All platforms
+BACKSLASH,"BSLH",\ Backslash and | Pipe,Symbols,All platforms
+PIPE,"",| Pipe,Symbols,All platforms
+NON_US_BACKSLASH,"NON_US_BSLH,NUBS",Non-US \ Backslash and | Pipe,Symbols,All platforms
+PIPE2,"",| Pipe,Symbols,All platforms
+SEMICOLON,"SEMI","; Semicolon and : Colon",Symbols,All platforms
+COLON,"",": Colon",Symbols,All platforms
+SINGLE_QUOTE,"SQT,APOSTROPHE,APOS","' Apostrophe and \" Quote (Double)",Symbols,All platforms
+DOUBLE_QUOTES,"DQT","\" Quote (Double)",Symbols,All platforms
+COMMA,"","Comma and < Less Than",Symbols,All platforms
+LESS_THAN,"LT",< Less Than,Symbols,All platforms
+PERIOD,"DOT",. Period and > Greater Than,Symbols,All platforms
+GREATER_THAN,"GT",> Greater Than,Symbols,All platforms
+LEFT_BRACKET,"LBKT",[ Left Bracket and { Left Brace,Symbols,All platforms
+LEFT_BRACE,"LBRC",{ Left Brace,Symbols,All platforms
+RIGHT_BRACKET,"RBKT",] Right Bracket and } Right Brace,Symbols,All platforms
+RIGHT_BRACE,"RBRC",} Right Brace,Symbols,All platforms
+GRAVE,"",` Grave Accent and ~ Tilde,Symbols,All platforms
+TILDE,"",~ Tilde,Symbols,All platforms
+NON_US_HASH,"NUHS",Non-US # Hash/Pound and ~ Tilde,Symbols,All platforms
+TILDE2,"",~ Tilde,Symbols,All platforms
+ESCAPE,"ESC",Escape,Control,All platforms
+RETURN,"ENTER,RET",Return (Enter),Control,All platforms
+RETURN2,"RET2",Return,Control,Linux only
+SPACE,"",Space,Control,All platforms
+TAB,"",Tab,Control,All platforms
+BACKSPACE,"BSPC",Backspace,Control,All platforms
+DELETE,"DEL",Delete,Control,All platforms
+INSERT,"INS",Insert,Control,All platforms
+HOME,"",Home,Navigation,All platforms
+END,"",End,Navigation,All platforms
+PAGE_UP,"PG_UP",Page Up,Navigation,All platforms
+PAGE_DOWN,"PG_DN",Page Down,Navigation,All platforms
+UP_ARROW,"UP",⬆ Up Arrow,Navigation,All platforms
+DOWN_ARROW,"DOWN",⬇ Down Arrow,Navigation,All platforms
+LEFT_ARROW,"LEFT",⬅ Left Arrow,Navigation,All platforms
+RIGHT_ARROW,"RIGHT",⮕ Right Arrow,Navigation,All platforms
+K_APPLICATION,"K_APP,K_CONTEXT_MENU,K_CMENU",Application (Context Menu),Navigation,All platforms (iOS limited)
+CAPSLOCK,"CAPS,CLCK",Caps Lock,Locks,All platforms
+LOCKING_CAPS,"LCAPS",Locking Caps Lock,Locks,Windows only
+SCROLLLOCK,"SLCK",Scroll Lock,Locks,All platforms
+LOCKING_SCROLL,"LSLCK",Locking Scroll Lock,Locks,Windows only
+LOCKING_NUM,"LNLCK",Locking Num Lock,Locks,Linux only
+F1,"",F1,F-Keys,All platforms
+F2,"",F2,F-Keys,All platforms
+F3,"",F3,F-Keys,All platforms
+F4,"",F4,F-Keys,All platforms
+F5,"",F5,F-Keys,All platforms
+F6,"",F6,F-Keys,All platforms
+F7,"",F7,F-Keys,All platforms
+F8,"",F8,F-Keys,All platforms
+F9,"",F9,F-Keys,All platforms
+F10,"",F10,F-Keys,All platforms
+F11,"",F11,F-Keys,All platforms
+F12,"",F12,F-Keys,All platforms
+F13,"",F13,F-Keys,All platforms except Android
+F14,"",F14,F-Keys,All platforms except Android
+F15,"",F15,F-Keys,All platforms except Android
+F16,"",F16,F-Keys,All platforms except Android
+F17,"",F17,F-Keys,All platforms except Android
+F18,"",F18,F-Keys,All platforms except Android
+F19,"",F19,F-Keys,All platforms except Android
+F20,"",F20,F-Keys,All platforms except Android
+F21,"",F21,F-Keys,All platforms except Android
+F22,"",F22,F-Keys,All platforms except Android
+F23,"",F23,F-Keys,All platforms except Android
+F24,"",F24,F-Keys,All platforms except Android
+INTERNATIONAL_1,"INT1,INT_RO",ろ (International 1),International,Linux only
+INTERNATIONAL_2,"INT2,INT_KATAKANAHIRAGANA,INT_KANA",かな (International 2),International,Linux only
+INTERNATIONAL_3,"INT3,INT_YEN",¥ (International 3),International,Linux only
+INTERNATIONAL_4,"INT4,INT_HENKAN",変換 (International 4),International,Linux only
+INTERNATIONAL_5,"INT5,INT_MUHENKAN",無変換 (International 5),International,Linux only
+INTERNATIONAL_6,"INT6,INT_KPJPCOMMA",,カンマ (International 6),International,Linux only
+LANGUAGE_1,"LANG1,LANG_HANGEUL",한/영 (Language 1),Language,Windows and Linux
+LANGUAGE_2,"LANG2,LANG_HANJA",한자 (Language 2),Language,Windows and Linux
+LANGUAGE_3,"LANG3,LANG_KATAKANA",カタカナ (Language 3),Language,Linux only
+LANGUAGE_4,"LANG4,LANG_HIRAGANA",ひらがな (Language 4),Language,Linux only
+LANGUAGE_5,"LANG5,LANG_ZENKAKUHANKAKU",半角/全角 (Language 5),Language,Linux only
+PRINTSCREEN,"PSCRN",Print Screen,Miscellaneous,All platforms
+PAUSE_BREAK,"",Pause / Break,Miscellaneous,All platforms
+LEFT_SHIFT,"LSHIFT,LSHFT,LS",Left Shift ⇧,Modifiers,All platforms
+RIGHT_SHIFT,"RSHIFT,RSHFT,RS",Right Shift ⇧,Modifiers,All platforms
+LEFT_CONTROL,"LCTRL,LC",Left Control,Modifiers,All platforms
+RIGHT_CONTROL,"RCTRL,RC",Right Control,Modifiers,All platforms
+LEFT_ALT,"LALT,LA",Left Alt,Modifiers,All platforms
+RIGHT_ALT,"RALT,RA",Right Alt,Modifiers,All platforms
+LEFT_GUI,"LGUI,LG,LEFT_WIN,LWIN,LEFT_COMMAND,LCMD,LEFT_META,LMETA",Left GUI (Windows / Command / Meta),Modifiers,All platforms
+RIGHT_GUI,"RGUI,RG,RIGHT_WIN,RWIN,RIGHT_COMMAND,RCMD,RIGHT_META,RMETA",Right GUI (Windows / Command / Meta),Modifiers,All platforms
+KP_NUMLOCK,"KP_NUM,KP_NLCK",Numlock and Clear,Keypad,Windows Linux Android
+KP_CLEAR,"",Clear,Keypad,Linux only
+CLEAR2,"",Clear,Keypad,Linux only
+KP_ENTER,"",Enter,Keypad,All platforms
+KP_NUMBER_1,"KP_N1",Keypad 1 and End,Keypad,All platforms
+KP_NUMBER_2,"KP_N2",Keypad 2 and Down Arrow,Keypad,All platforms
+KP_NUMBER_3,"KP_N3",Keypad 3 and Page Down,Keypad,All platforms
+KP_NUMBER_4,"KP_N4",Keypad 4 and Left Arrow,Keypad,All platforms
+KP_NUMBER_5,"KP_N5",Keypad 5,Keypad,All platforms
+KP_NUMBER_6,"KP_N6",Keypad 6 and Right Arrow,Keypad,All platforms
+KP_NUMBER_7,"KP_N7",Keypad 7 and Home,Keypad,All platforms
+KP_NUMBER_8,"KP_N8",Keypad 8 and Up Arrow,Keypad,All platforms
+KP_NUMBER_9,"KP_N9",Keypad 9 and Page Up,Keypad,All platforms
+KP_NUMBER_0,"KP_N0",Keypad 0 and Insert,Keypad,All platforms
+KP_PLUS,"",+ Plus,Keypad,All platforms
+KP_MINUS,"KP_SUBTRACT",- Minus,Keypad,All platforms
+KP_MULTIPLY,"KP_ASTERISK",* Multiply,Keypad,All platforms
+KP_DIVIDE,"KP_SLASH",/ Divide,Keypad,All platforms
+KP_EQUAL,"",= Equal,Keypad,Linux Android macOS
+KP_DOT,"",. Dot and Delete,Keypad,All platforms
+KP_COMMA,"",, Comma,Keypad,Linux Android
+C_AC_CUT,"",Cut Consumer AC,Editing,Linux only
+K_CUT,"",Cut Keyboard,Editing,Linux macOS
+C_AC_COPY,"",Copy Consumer AC,Editing,Linux only
+K_COPY,"",Copy Keyboard,Editing,Linux macOS
+C_AC_PASTE,"",Paste Consumer AC,Editing,Linux only
+K_PASTE,"",Paste Keyboard,Editing,Linux macOS
+C_AC_UNDO,"",Undo Consumer AC,Editing,Linux only
+K_UNDO,"",Undo Keyboard,Editing,Linux macOS
+C_AC_REDO,"",Redo / Repeat Consumer AC,Editing,Linux only
+K_AGAIN,"K_REDO",Again Keyboard,Editing,Linux macOS
+C_VOLUME_UP,"C_VOL_UP",Volume Up Consumer,Media,All platforms
+K_VOLUME_UP,"K_VOL_UP",Volume Up Keyboard,Media,Linux Android macOS
+C_VOLUME_DOWN,"C_VOL_DN",Volume Down Consumer,Media,All platforms
+K_VOLUME_DOWN,"K_VOL_DN",Volume Down Keyboard,Media,Linux Android macOS
+C_MUTE,"",Mute Consumer,Media,All platforms
+K_MUTE,"",Mute Keyboard,Media,Linux Android macOS
+C_BRIGHTNESS_INC,"C_BRI_INC,C_BRI_UP",Increase Brightness Consumer,Media,All platforms
+C_BRIGHTNESS_DEC,"C_BRI_DEC,C_BRI_DN",Decrease Brightness Consumer,Media,All platforms
+C_PLAY_PAUSE,"C_PP",Play / Pause Consumer,Media,All platforms
+K_PLAY_PAUSE,"K_PP",Play / Pause Keyboard,Media,Linux Android
+C_NEXT,"",Next Consumer,Media,All platforms
+K_NEXT,"",Next Keyboard,Media,Linux Android
+C_PREVIOUS,"C_PREV",Previous Consumer,Media,All platforms
+K_PREVIOUS,"K_PREV",Previous Keyboard,Media,Linux Android
+C_FAST_FORWARD,"C_FF",Fast Forward Consumer,Media,All platforms
+C_REWIND,"C_RW",Rewind Consumer,Media,All platforms
+K_MENU,"",Menu Keyboard,Applications,Linux only
+C_AC_BACK,"",Back Consumer AC,Applications,All platforms
+K_BACK,"",Back Keyboard,Applications,Linux Android
+C_AC_FORWARD,"",Forward Consumer AC,Applications,All platforms
+K_FORWARD,"",Forward Keyboard,Applications,Linux Android
+C_AC_REFRESH,"",Refresh Consumer AC,Applications,Linux only
+K_REFRESH,"",Refresh Keyboard,Applications,Linux Android
+C_AC_SEARCH,"",Search Consumer AC,Applications,All platforms
+C_AL_WWW,"",Internet Browser Consumer AL,Applications,Linux Android
+K_WWW,"",Internet Browser Keyboard,Applications,Linux Android
+C_AL_EMAIL,"C_AL_MAIL",Email Reader Consumer AL,Applications,Linux Android
+C_AL_CALCULATOR,"C_AL_CALC",Calculator Consumer AL,Applications,Linux Android
+K_CALCULATOR,"K_CALC",Calculator Keyboard,Applications,Linux Android
+C_AC_BOOKMARKS,"C_AC_FAVORITES,C_AC_FAVOURITES",Bookmarks Consumer AC,Applications,All platforms
+C_POWER,"C_PWR",Power Consumer,Power,Linux macOS iOS
+K_POWER,"K_PWR",Power Keyboard,Power,Android macOS iOS
+C_SLEEP,"",Sleep Consumer,Power,Linux only
+K_SLEEP,"",Sleep Keyboard,Power,Linux Android
+C_AL_LOCK,"C_AL_SCREENSAVER,C_AL_COFFEE",Terminal Lock / Screensaver Consumer AL,Power,Linux Android
+K_LOCK,"K_SCREENSAVER,K_COFFEE",Lock Keyboard,Power,Linux Android

@@ -16,4 +16,5 @@ __pycache__
 .venv
 
 # clangd
+.cache/
 app/.cache/

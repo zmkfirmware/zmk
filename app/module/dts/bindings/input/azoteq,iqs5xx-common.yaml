@@ -1,0 +1,64 @@
+properties:
+  rdy-gpios:
+    type: phandle-array
+    required: true
+    description: "Data Ready pin for the Azoteq IQS5xx trackpad"
+  
+  reset-gpios:
+    type: phandle-array
+    description: "Reset pin for the Azoteq IQS5xx trackpad"
+
+  one-finger-tap:
+    type: boolean
+    description: "Register single finger tap gestures and report them as a left click"
+
+  press-and-hold:
+    type: boolean
+    description: "Register press and hold gestures and report them as a left click until released"
+  
+  press-and-hold-time:
+    type: int
+    description: "Time in ms (in addition to the tap time) it takes to register a press and hold gesture"
+    default: 250
+
+  two-finger-tap:
+    type: boolean
+    description: "Register two finger tap gestures and report them as a right click"
+  
+  scroll:
+    type: boolean
+    description: "Register and report scroll gestures, both vertical and horizontal scroll is supported"
+
+  natural-scroll-x:
+    type: boolean
+    description: "Whether content should track finger movement when scrolling on the x axis."
+
+  natural-scroll-y:
+    type: boolean
+    description: "Whether content should track finger movement when scrolling on the y axis."
+
+  switch-xy:
+    type: boolean
+    description: "Flip x and y axes"
+  
+  flip-x:
+    type: boolean
+    description: "Invert the direction of the x axis"
+
+  flip-y:
+    type: boolean
+    description: "Invert the direction of the y axis"
+
+  bottom-beta:
+    type: int
+    description: |
+      Amount of filtering applied at slow speeds.
+      0: Most filtering, smoother, but laggier.
+      255: Least filtering, least smooth, more responsive.
+    default: 5
+  
+  stationary-threshold:
+    type: int
+    description: |
+      How far a finger must move (in pixels) to not be considered stationary.
+    default: 5

@@ -1,0 +1,8 @@
+file_format: "1"
+id: tkl_nrf52832
+name: Custom TKL nRF52832 Keyboard
+type: shield
+url: https://github.com/zmkfirmware/zmk
+features:
+  - keys
+  - trackpad

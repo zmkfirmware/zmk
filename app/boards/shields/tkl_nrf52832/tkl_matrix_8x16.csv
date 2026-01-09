@@ -1,0 +1,129 @@
+# TKL Keyboard Matrix Layout - 8 Rows x 16 Columns (128 positions)
+# Optimized for nRF52832 QFAAB (32 GPIOs)
+# GPIO Usage: 8 rows + 16 cols + 8 peripherals = 32 GPIOs
+
+# Pin Assignment:
+# Rows: P0.03-P0.10 (8 pins)
+# Cols: P0.11-P0.21, P1.00-P1.04 (11 pins from P0, 4 pins from P1 if available, otherwise P0.22-P0.25)
+# I2C: P0.26, P0.27
+# UART: P0.23, P0.24
+# Battery: P0.29
+# VBUS: P0.02
+
+# Row 0 - ESC, F1-F12, PrintScreen, ScrollLock, Pause
+0,0,ESC,Escape
+0,1,F1,F1
+0,2,F2,F2
+0,3,F3,F3
+0,4,F4,F4
+0,5,F5,F5
+0,6,F6,F6
+0,7,F7,F7
+0,8,F8,F8
+0,9,F9,F9
+0,10,F10,F10
+0,11,F11,F11
+0,12,F12,F12
+0,13,PSCRN,Print Screen
+0,14,SLCK,Scroll Lock
+0,15,PAUSE,Break/Pause
+
+# Row 1 - Grave, 1-0, Minus, Equal, Backspace, Insert, Home, PageUp
+1,0,GRAVE,Grave/Accent
+1,1,KP_1,1
+1,2,KP_2,2
+1,3,KP_3,3
+1,4,KP_4,4
+1,5,KP_5,5
+1,6,KP_6,6
+1,7,KP_7,7
+1,8,KP_8,8
+1,9,KP_9,9
+1,10,KP_0,0
+1,11,MINUS,Minus
+1,12,EQUAL,Equal
+1,13,BKSP,Backspace
+1,14,INS,Insert
+1,15,PGUP,Page Up
+
+# Row 2 - Tab, Q-P, [, ], \, Delete, End, PageDown
+2,0,TAB,Tab
+2,1,Q,Q
+2,2,W,W
+2,3,E,E
+2,4,R,R
+2,5,T,T
+2,6,Y,Y
+2,7,U,U
+2,8,I,I
+2,9,O,O
+2,10,P,P
+2,11,LBKT,Left Bracket
+2,12,RBKT,Right Bracket
+2,13,BSLS,Backslash
+2,14,DEL,Delete
+2,15,PGDN,Page Down
+
+# Row 3 - Caps, A-L, ;, ', Enter
+3,0,CAPS,Caps Lock
+3,1,A,A
+3,2,S,S
+3,3,D,D
+3,4,F,F
+3,5,G,G
+3,6,H,H
+3,7,J,J
+3,8,K,K
+3,9,L,L
+3,10,SEMICOLON,Semicolon
+3,11,QUOTE,Single Quote
+3,12,RET,Enter
+
+# Row 4 - LShift, Z-M, ,, ., /, RShift (ISO key support)
+4,0,LSHIFT,Left Shift
+4,1,Z,Z
+4,2,X,X
+4,3,C,C
+4,4,V,V
+4,5,B,B
+4,6,N,N
+4,7,M,M
+4,8,COMMA,Comma
+4,9,DOT,Period
+4,10,FSLASH,Forward Slash
+4,11,RSHIFT,Right Shift
+4,12,NON_US_BSLS,ISO Backslash (optional)
+
+# Row 5 - LCtrl, LGUI, LAlt, Space, RAlt, RGUI (Fn), Menu, RCtrl
+5,0,LCTRL,Left Ctrl
+5,1,LGUI,Left Win/Meta
+5,2,LALT,Left Alt
+5,3,SPACE,Spacebar
+5,4,RALT,Right Alt
+5,5,RGUI,Right Win/Meta
+5,6,K_MENU,Menu/Application
+5,7,RCTRL,Right Ctrl
+
+# Row 6 - Arrow keys
+6,0,UP,Arrow Up
+6,1,LEFT,Arrow Left
+6,2,DOWN,Arrow Down
+6,3,RIGHT,Arrow Right
+
+# Row 7 - Numpad (if using numpad variant)
+7,0,NLCK,Num Lock
+7,1,KPSLS,Num /
+7,2,KP_ASTERISK,Num *
+7,3,KP_MINUS,Num -
+7,4,KP_7,Num 7
+7,5,KP_8,Num 8
+7,6,KP_9,Num 9
+7,7,KP_PLUS,Num +
+7,8,KP_4,Num 4
+7,9,KP_5,Num 5
+7,10,KP_6,Num 6
+7,11,KP_1,Num 1
+7,12,KP_2,Num 2
+7,13,KP_3,Num 3
+7,14,KP_0,Num 0
+7,15,KP_DOT,Num .
