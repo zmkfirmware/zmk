@@ -1,0 +1,31 @@
+&pinctrl {
+    /* configuration for i2c0 device, default state */
+    i2c0_default: i2c0_default {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 1, 5)>,
+                <NRF_PSEL(TWIM_SCL, 1, 6)>;
+        };
+    };
+
+    i2c0_sleep: i2c0_sleep {
+        group1 {
+            psels = <NRF_PSEL(TWIM_SDA, 1, 5)>,
+                <NRF_PSEL(TWIM_SCL, 1, 6)>;
+            low-power-enable;
+        };
+    };
+};
+
+&i2c0 {
+    compatible = "nordic,nrf-twim";
+    status = "okay";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
+    clock-frequency = <I2C_BITRATE_FAST>;
+    is31fl3733: is31fl3733@50 {
+        compatible = "issi,is31fl3733";
+        reg = <0x50>;
+        sdb-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+    };
+};
