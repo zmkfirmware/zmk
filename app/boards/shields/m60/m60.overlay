@@ -12,7 +12,6 @@
     chosen {
         zmk,kscan = &kscan0;
         zmk,physical-layout = &layout_60_ansi;
-        zmk,backlight = &pwmleds;
     };
 
     kscan0: kscan {
