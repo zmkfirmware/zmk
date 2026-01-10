@@ -15,20 +15,4 @@
             low-power-enable;
         };
     };
-
-    /* configuration for i2c0 device, default state */
-    i2c0_default: i2c0_default {
-        group1 {
-            psels = <NRF_PSEL(TWIM_SDA, 1, 5)>,
-                <NRF_PSEL(TWIM_SCL, 1, 6)>;
-        };
-    };
-
-    i2c0_sleep: i2c0_sleep {
-        group1 {
-            psels = <NRF_PSEL(TWIM_SDA, 1, 5)>,
-                <NRF_PSEL(TWIM_SCL, 1, 6)>;
-            low-power-enable;
-        };
-    };
 };
