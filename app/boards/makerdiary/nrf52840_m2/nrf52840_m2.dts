@@ -42,19 +42,6 @@
         output-ohms = <1000000>;
         full-ohms = <(1000000 + 1000000)>;
     };
-
-    pwmleds: pwmleds {
-        compatible = "pwm-leds";
-        red_pwm_led: pwm_led_0 {
-            pwms = <&pwm0 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
-        };
-        green_pwm_led: pwm_led_1 {
-            pwms = <&pwm0 1 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
-        };
-        blue_pwm_led: pwm_led_2 {
-            pwms = <&pwm0 2 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
-        };
-    };
 };
 
 &adc {
