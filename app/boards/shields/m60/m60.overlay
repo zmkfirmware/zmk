@@ -58,6 +58,19 @@ RC(6,4)       RC(6,3) RC(6,2) RC(6,1) RC(6,0) RC(5,7) RC(5,6) RC(5,5) RC(5,4) RC
 RC(6,5)    RC(6,6)   RC(6,7)                     RC(7,0)                    RC(7,1)    RC(7,2)    RC(7,3)    RC(7,4)
         >;
     };
+
+    pwmleds: pwmleds {
+        compatible = "pwm-leds";
+        red_pwm_led: pwm_led_0 {
+            pwms = <&pwm0 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+        };
+        green_pwm_led: pwm_led_1 {
+            pwms = <&pwm0 1 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+        };
+        blue_pwm_led: pwm_led_2 {
+            pwms = <&pwm0 2 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+        };
+    };
 };
 
 &layout_60_ansi {
