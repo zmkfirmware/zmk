@@ -54,7 +54,7 @@ More troubleshooting information for split keyboards can be found [here](trouble
 
 ## Building Additional Keyboards
 
-You can build additional keyboards with GitHub actions by appending them to `build.yml` in your `zmk-config` folder. For instance assume that we have set up a Corne shield with nice!nano during [initial setup](user-setup.mdx) and we want to add a Lily58 shield with nice!nano v2. The following is an example `build.yaml` file that would accomplish that:
+You can build additional keyboards with GitHub actions by appending them to `build.yaml` in your `zmk-config` folder. For instance assume that we have set up a Corne shield with nice!nano during [initial setup](user-setup.mdx) and we want to add a Lily58 shield with nice!nano v2. The following is an example `build.yaml` file that would accomplish that:
 
 ```yaml
 include:
