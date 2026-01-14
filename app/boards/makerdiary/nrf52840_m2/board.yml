@@ -1,5 +1,5 @@
 board:
-  name: nrf52840_m2
-  vendor: makerdiary
-  socs:
-    - name: nrf52840
+  extend: nrf52840_m2
+  variants:
+    - name: zmk
+      qualifier: nrf52840

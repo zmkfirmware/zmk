@@ -6,7 +6,6 @@
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
-#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
 
 / {
     model = "Makerdiary nRF52840 M.2 module";
@@ -16,7 +15,6 @@
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zmk,battery = &vbatt;
     };
 
     leds {
@@ -31,14 +29,6 @@
             gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
         };
     };
-
-    vbatt: vbatt {
-        compatible = "zmk,battery-voltage-divider";
-        io-channels = <&adc 0>;
-        output-ohms = <1000000>;
-        full-ohms = <(1000000 + 1000000)>;
-    };
-
 };
 
 &adc {
