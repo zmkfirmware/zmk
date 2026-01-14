@@ -1,5 +1,5 @@
 board:
   name: pillbug
-  vendor: mechwild
-  socs:
-    - name: nrf52840
+  variants:
+    - name: zmk
+      qualifier: nrf52840
