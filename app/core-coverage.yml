@@ -10,7 +10,7 @@ shield:
   - tidbit
 include:
   - board: bdn9//zmk
-  - board: nice60
+  - board: nice60//zmk
   - board: xiao_ble//zmk
     shield: hummingbird
   - board: nrf52840_m2//zmk
