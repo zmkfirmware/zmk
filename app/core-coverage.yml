@@ -1,7 +1,7 @@
 board:
   - nice_nano
   - nrfmicro/nrf52840/zmk
-  - proton_c
+  - proton_c//zmk
 shield:
   - corne_left
   - corne_right
@@ -16,7 +16,7 @@ include:
   - board: nrf52840_m2//zmk
     shield: m60
   - board: planck//zmk
-  - board: proton_c
+  - board: proton_c//zmk
     shield: clueboard_california
   - board: nice_nano
     shield: kyria_left

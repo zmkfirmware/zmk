@@ -1,5 +1,5 @@
 file_format: "1"
-id: proton_c//zmk
+id: proton_c
 name: QMK Proton-C
 type: board
 arch: arm
