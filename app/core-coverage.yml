@@ -15,7 +15,7 @@ include:
     shield: hummingbird
   - board: nrf52840_m2//zmk
     shield: m60
-  - board: planck
+  - board: planck//zmk
   - board: proton_c
     shield: clueboard_california
   - board: nice_nano
