@@ -13,7 +13,7 @@ include:
   - board: nice60
   - board: xiao_ble//zmk
     shield: hummingbird
-  - board: nrf52840_m2
+  - board: nrf52840_m2//zmk
     shield: m60
   - board: planck
   - board: proton_c
