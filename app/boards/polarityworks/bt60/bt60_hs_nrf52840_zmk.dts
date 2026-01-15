@@ -4,7 +4,7 @@
 * SPDX-License-Identifier: MIT
 */
 
-#include "bt60.dts"
+#include "bt60_nrf52840_zmk.dts"
 #include "bt60_1_0_0.dtsi"
 #include <layouts/common/60percent/ansi.dtsi>
 
