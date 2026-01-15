@@ -1,5 +1,5 @@
 file_format: "1"
-id: bt60
+id: bt60//zmk
 name: BT60 V2
 type: board
 arch: arm
