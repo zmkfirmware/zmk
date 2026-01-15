@@ -15,9 +15,6 @@ config USB_DEVICE_STACK
 
 endif # USB
 
-config BT_CTLR
-    default BT
-
 choice BOARD_MIKOTO_CHARGER_CURRENT
     default BOARD_MIKOTO_CHARGER_CURRENT_100MA
 endchoice
