@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    behaviors {
+        ug: ugcolor {
+            compatible = "zmk,behavior-underglow-color";
+            #binding-cells = <1>;
+            display-name = "Underglow Color";
+        };
+    };
+};
