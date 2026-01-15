@@ -29,6 +29,8 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
+#include <zmk/events/underglow_color_changed.h>
+
 #include <zmk/workqueue.h>
 #include <zmk/events/split_peripheral_layer_changed.h>
 
@@ -666,6 +668,15 @@ static int rgb_underglow_event_listener(const zmk_event_t *eh) {
         zmk_rgb_underglow_set_layer(layer, true);
         return 0;
     }
+    if (as_zmk_underglow_color_changed(eh)) {
+        const struct zmk_underglow_color_changed *ev = as_zmk_underglow_color_changed(eh);
+        uint8_t layer = rgb_underglow_top_layer();
+        LOG_DBG("refresh layers %d, current: %d, wakeup: %d", ev->layers, layer, ev->wakeup);
+        if ((ev->layers & (BIT(layer))) == BIT(layer)) {
+            zmk_rgb_underglow_set_layer(rgb_underglow_top_layer(), ev->wakeup);
+        }
+        return 0;
+    }
 #endif /* UNDERGLOW_LAYER_ENABLED */
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
@@ -692,6 +703,7 @@ ZMK_SUBSCRIPTION(rgb_underglow, zmk_usb_conn_state_changed);
 
 #if IS_ENABLED(UNDERGLOW_LAYER_ENABLED)
 ZMK_SUBSCRIPTION(rgb_underglow, zmk_split_peripheral_layer_changed);
+ZMK_SUBSCRIPTION(rgb_underglow, zmk_underglow_color_changed);
 #endif
 
 SYS_INIT(zmk_rgb_underglow_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
