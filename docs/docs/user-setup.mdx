@@ -7,20 +7,19 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 export const OsTabs = (props) => (
-    <Tabs
+  <Tabs
     groupId="operating-system"
     queryString
     defaultValue="linux"
     values={[
       { label: "Linux", value: "linux" },
       { label: "Windows", value: "win" },
-      { label: "Mac OS", value: "mac" }
+      { label: "macOS", value: "mac" },
     ]}
   >
     {/* eslint-disable-next-line */}
     {props.children}
   </Tabs>
-
 );
 
 Unlike other keyboard firmwares, ZMK Firmware has been built from the ground up to allow users to manage
@@ -54,10 +53,9 @@ Following the steps in this guide, you will:
 
 You will need to install a few tools before you can get started.
 
-Many instructions in this guide use commands that need to be run in a terminal application.
+Many instructions in this guide use commands that need to be run in a terminal application. On most operating systems, the program is simply named "Terminal".
 
-- On Windows, use [Windows Terminal](https://apps.microsoft.com/detail/9n0dx20hk701) or PowerShell.
-- On other operating systems, the terminal program is usually just named "Terminal".
+On Windows, get [Windows Terminal](https://apps.microsoft.com/detail/9n0dx20hk701) from the Microsoft Store if it isn't already installed.
 
 ### Install Git
 
@@ -67,7 +65,7 @@ Open a terminal and run the following command. If Git is already installed, it w
 git --version
 ```
 
-If it gives an error instead, install Git from https://git-scm.com/install/. Close and re-open your terminal and run the `git --version` command again to check if it installed correctly.
+If it prints an error instead, install Git from https://git-scm.com/install/. Close and reopen your terminal and run the `git --version` command again to check if it installed correctly.
 
 :::note
 This guide will have you run several more `git` commands later. If you aren't familiar with Git, check out [Learn The Basics Of Git In Under 10 Minutes](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/) to help you get started.
@@ -91,132 +89,131 @@ gh auth login
 
 Create a [personal access token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) and make sure to create it with the "workflow" scope option selected.
 
-When running `git` commands later in this guide, Git will ask for your username and password. Enter your GitHub username, but **do not enter your password**. Instead, paste your access token for the password. You won't be able to see the token again after you create it, so keep the page open until you've done this and/or copy it to a secure location. If you lose the token, simply create another one.
+When running `git` commands later in this guide, Git will ask for your username and password. Enter your GitHub username, but **do not enter your password**. Instead, paste your access token where it asks for the password. You won't be able to see the token again after you create it, so keep the page open until you've done this and/or copy it to a secure location. If you lose the token, simply create another one.
 
-### Install Python and pipx
+### Install uv
 
-ZMK CLI requires Python version 3.10 or above.
+[uv](https://github.com/astral-sh/uv) is a Python package manager which can install ZMK CLI and a supported version of Python if necessary. The instructions for installing uv differ depending on your operating system. Select the tab for your OS below.
 
-There are several ways you can install ZMK CLI, but for simplicity, this guide will use [pipx](https://pipx.pypa.io/stable/). (If you are already familiar with another Python package manager such as [uv](https://github.com/astral-sh/uv), you can install the `zmk` package with it instead, but that will not be covered in this guide.)
+If installation fails, see [https://docs.astral.sh/uv/getting-started/installation/](https://docs.astral.sh/uv/getting-started/installation/) for more detailed instructions and alternative installation methods.
 
-The instructions for installing Python and pipx differ depending on your operating system.
+<details>
+  <summary>Other package managers</summary>
+
+ZMK CLI can also be installed with other Python package managers such as [pipx](https://pipx.pypa.io/stable/). If you have a different package manager you prefer, install the ["zmk" package](https://pypi.org/project/zmk/) and skip to [Config Repo Setup](#config-repo-setup).
+
+</details>
 
 <OsTabs>
 <TabItem value="linux">
 
-Python comes preinstalled on most Linux distributions, but pipx needs to be installed separately. In case Python isn't already installed, this guide will have you install both. Pick the commands relevant to the distribution you are using:
+Open a terminal and run the following command:
 
-#### Ubuntu 23.04 or above
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+If you get an error like "curl: command not found", try using wget:
+
+```sh
+wget -qO- https://astral.sh/uv/install.sh | sh
+```
+
+If that doesn't work either, install [curl](https://curl.se/) and try again. For example, on Ubuntu and other Debian-based Linux distributions, run:
 
 ```sh
 sudo apt update
-sudo apt install python3 pipx
-pipx ensurepath
+sudo apt install curl
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-#### Ubuntu 22.04
+If the install script prints the following, close and reopen your terminal.
 
-```sh
-sudo apt update
-sudo apt install python3
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
 ```
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
 
-#### Ubuntu 20.04
-
-Ubuntu 20.04 comes with an older version of Python. You can install Python 3.10 from the deadsnakes PPA with the following commands:
-
-```sh
-sudo add-apt-repository ppa:deadsnakes/ppa
-sudo apt install python3.10
-python3.10 -m pip install --user pipx
-python3.10 -m pipx ensurepath
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
 ```
-
-You will then need to replace `python3` with `python3.10` in the rest of the installation instructions.
-
-#### Fedora 35 or above
-
-```sh
-sudo dnf install python3 pipx
-pipx ensurepath
-```
-
-If you have an older version of Fedora, you will need to update your operating system to a newer version or [build Python from source](https://docs.python.org/3/using/unix.html#building-python).
-
-#### Other distributions
-
-Install Python 3 and pipx using your distribution's package manager. If there is no package for pipx, install it with `pip` after installing Python:
-
-```sh
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
-```
-
-Check the version of Python you installed:
-
-```sh
-python3 --version
-```
-
-If this prints a version less than 3.10, you will need to update your operating system to a newer version or [build Python from source](https://docs.python.org/3/using/unix.html#building-python).
 
 </TabItem>
-
 <TabItem value="win">
 
-Open https://www.python.org/downloads/ and select "Download Python install manager". Run the installer, then open a terminal and run the following command to install the latest version of Python 3:
+Open a terminal and run the following command:
 
 ```sh
-py install 3
+winget install --id astral-sh.uv -e --source winget
 ```
 
-Next, install pipx:
+If this prints the text that is highlighted below, close and reopen your terminal.
 
-```sh
-py -m pip install --user pipx
-py -m pipx ensurepath
+```
+// highlight-next-line
+Path environment variable modified; restart your shell to use the new value.
+Command line alias added: "uvx"
+Command line alias added: "uv"
+Command line alias added: "uvm"
+Successfully installed
 ```
 
 </TabItem>
-
 <TabItem value="mac">
 
-First, install Homebrew from https://brew.sh/. Next, open a terminal and run:
+Open a terminal and run the following command:
 
 ```sh
-brew install pipx
-pipx ensurepath
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-This should automatically install Python 3 if it is missing.
+If the install script prints the following, close and reopen your terminal.
+
+```
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+```
 
 </TabItem>
 </OsTabs>
-
-### Verify pipx Install
-
-Close and re-open your terminal, then run:
-
-```sh
-pipx --version
-```
-
-It should print a version number. If not, go back to the previous step and make sure you installed pipx correctly. You can also try logging out of your computer and logging back in to make sure any environment variables changes made during installation take effect.
 
 ### Install ZMK CLI
 
 Finally, we'll install ZMK CLI. Open a terminal and run:
 
 ```sh
-pipx install zmk
-zmk --version
+uv tool install zmk
 ```
 
-It should print a version number if everything installed correctly.
+<details>
+  <summary>I get an "executable already exists" error</summary>
 
-On Linux, you may get an error saying you need to install another package such as `python3.10-venv`. If so, follow the instructions in the error message, then try the above commands again.
+Earlier versions of this guide used pipx. If you get an error like this...
+
+```
+error: Executable already exists: zmk.exe (use `--force` to overwrite)
+```
+
+...run the following commands to remove the pipx version and reinstall it with uv:
+
+```sh
+python3 -m pipx uninstall zmk
+uv tool install zmk
+```
+
+</details>
+
+This will likely print a message like ``warning: `/home/username/.local/bin` is not on your PATH``. To fix that, run:
+
+```sh
+uv tool update-shell
+```
+
+Close and reopen your terminal to apply the changes, then run the following command. It should print a version number if everything installed correctly.
+
+```sh
+zmk --version
+```
 
 ## Config Repo Setup
 
@@ -237,22 +234,22 @@ Then, [skip to the next step](#add-a-keyboard).
 
 </details>
 
-Open a terminal and use the `cd` command to move to a folder where you'd like to place the ZMK files (it will create a `zmk-config` subfolder in this location), then run `zmk init`. For example:
+Open a terminal and use the `cd` command to move to a folder where you'd like to place the ZMK files (it will create a new folder in this location), then run `zmk init`. For example:
 
 ```sh
 cd ~/Documents
 zmk init
 ```
 
-Follow the instructions it gives you. If you already have a ZMK config repo on GitHub, you can enter its URL when prompted, for example:
+Follow the instructions it gives you. If you already have a ZMK config repo on GitHub, select "Clone an existing repo" and enter its URL when prompted, for example:
 
 ```
 Repository URL: https://github.com/myusername/zmk-config
 ```
 
-Otherwise, leave this first prompt blank and press <kbd>Enter</kbd>, and it will walk you through creating a new repo.
+Otherwise, select "Create a new ZMK config repo", and follow the instructions to create a new repo.
 
-Once you finish following all the instructions, you will have a copy of the repo stored on your computer. All `zmk` commands will run on this repo (unless the working directory is inside a different repo). If you ever forget where the repo is located, you can run `zmk cd` to find it.
+After this finishes, you will have a copy of the repo stored on your computer. All `zmk` commands will run on this repo (unless the working directory is inside a different repo). If you ever forget where the repo is located, you can run `zmk cd` to find it.
 
 ### Add a Keyboard
 
@@ -328,7 +325,7 @@ The text after `-m` is the "commit message", which gives a name to the commit. T
 
 :::warning
 
-If the `git push` command asks you for a username and password, enter your GitHub username, but **do not enter your password**. Instead, paste your access token for the password. (Go back to the [GitHub account setup instructions](#set-up-a-github-account) if you need to create a token.)
+If the `git push` command asks you for a username and password, enter your GitHub username, but **do not enter your password**. Instead, paste your access token where it asks for the password. (Go back to the [GitHub account setup instructions](#set-up-a-github-account) if you need to create a token.)
 
 :::
 
@@ -346,10 +343,16 @@ Or, you can manually open your GitHub repository in your browser and click the "
 
 ![](./assets/user-setup/github-actions-link.png)
 
-Once you have loaded the Actions tab, select the top build from the list. Once you load it, the right side panel will include
+Once you have loaded the Actions tab, select the top build from the list. If the build was successful, the right side panel will include
 a link to download the `firmware` upload:
 
 ![](./assets/user-setup/firmware-archive.png)
+
+:::info[Fixing build errors]
+
+If you see a red X instead of a link to download the firmware, the build failed, likely due to an error in your repo. See the [troubleshooting page](./troubleshooting/building-issues.md) for help fixing the error. After making changes, [commit and push](#commit-and-push-to-github) again and GitHub will start a new build.
+
+:::
 
 Once downloaded, extract the zip and you can verify it should contain one or more `.uf2` or `.hex` files, which contain the firmware you need to write to your keyboard.
 
