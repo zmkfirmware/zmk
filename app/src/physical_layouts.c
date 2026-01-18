@@ -416,14 +416,12 @@ int zmk_physical_layouts_select_initial(void) {
     return ret;
 }
 
-int zmk_physical_layouts_check_unsaved_selection(void) {
+bool zmk_physical_layouts_check_unsaved_selection(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    return saved_selected_index < 0 ||
-                   saved_selected_index == (uint8_t)zmk_physical_layouts_get_selected()
-               ? 0
-               : 1;
+    return !(saved_selected_index < 0 ||
+             saved_selected_index == (uint8_t)zmk_physical_layouts_get_selected());
 #else
-    return -ENOTSUP;
+    return false;
 #endif
 }
 
