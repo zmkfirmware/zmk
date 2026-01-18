@@ -1,0 +1,5 @@
+board:
+  extend: seeeduino_xiao
+  variants:
+    - name: zmk
+      qualifier: samd21g18a

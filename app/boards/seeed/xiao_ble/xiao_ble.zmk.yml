@@ -1,5 +1,5 @@
 file_format: "1"
-id: xiao_ble
+id: xiao_ble//zmk
 name: Seeed Studio XIAO nRF52840
 type: board
 arch: arm

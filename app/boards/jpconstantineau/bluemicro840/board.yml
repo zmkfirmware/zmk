@@ -1,5 +1,5 @@
 board:
-  name: bluemicro840
-  vendor: jpconstantineau
-  socs:
-    - name: nrf52840
+  extend: bluemicro840
+  variants:
+    - name: zmk
+      qualifier: nrf52840
