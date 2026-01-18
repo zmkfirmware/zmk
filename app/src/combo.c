@@ -281,8 +281,13 @@ static int release_pressed_keys() {
 static inline int press_combo_behavior(int combo_idx, const struct combo_cfg *combo,
                                        int32_t timestamp) {
     struct zmk_behavior_binding_event event = {
+        .behavior_dev = combo->behavior.behavior_dev,
+        .param1 = combo->behavior.param1,
+        .param2 = combo->behavior.param2,
+        .layer = 0, // Combos don't have layers, so their layer is set to be the base layer.
         .position = ZMK_VIRTUAL_KEY_POSITION_COMBO(combo_idx),
         .timestamp = timestamp,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
 #endif
@@ -290,20 +295,25 @@ static inline int press_combo_behavior(int combo_idx, const struct combo_cfg *co
 
     last_combo_timestamp = timestamp;
 
-    return zmk_behavior_invoke_binding(&combo->behavior, event, true);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static inline int release_combo_behavior(int combo_idx, const struct combo_cfg *combo,
                                          int32_t timestamp) {
     struct zmk_behavior_binding_event event = {
+        .behavior_dev = combo->behavior.behavior_dev,
+        .param1 = combo->behavior.param1,
+        .param2 = combo->behavior.param2,
+        .layer = 0, // Combos don't have layers, so their layer is set to be the base layer.
         .position = ZMK_VIRTUAL_KEY_POSITION_COMBO(combo_idx),
         .timestamp = timestamp,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
 #endif
     };
 
-    return zmk_behavior_invoke_binding(&combo->behavior, event, false);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static void move_pressed_keys_to_active_combo(struct active_combo *active_combo) {
