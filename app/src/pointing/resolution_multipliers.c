@@ -23,7 +23,7 @@ static struct zmk_pointing_resolution_multipliers multipliers[ZMK_ENDPOINT_COUNT
 
 struct zmk_pointing_resolution_multipliers
 zmk_pointing_resolution_multipliers_get_current_profile(void) {
-    return zmk_pointing_resolution_multipliers_get_profile(zmk_endpoints_selected());
+    return zmk_pointing_resolution_multipliers_get_profile(zmk_endpoint_get_selected());
 }
 
 struct zmk_pointing_resolution_multipliers
