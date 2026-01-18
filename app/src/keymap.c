@@ -17,10 +17,14 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/matrix.h>
 #include <zmk/sensors.h>
 #include <zmk/virtual_key_position.h>
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
+#include <zmk/split/central.h>
+#endif
 
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/layer_state_changed.h>
+#include <zmk/events/split_peripheral_layer_changed.h>
 #include <zmk/events/sensor_event.h>
 
 static zmk_keymap_layers_state_t _zmk_keymap_layer_locks = 0;
@@ -161,6 +165,11 @@ static inline int set_layer_state(zmk_keymap_layer_id_t layer_id, bool state, bo
         if (ret < 0) {
             LOG_WRN("Failed to raise layer state changed (%d)", ret);
         }
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
+        zmk_split_central_update_layers(_zmk_keymap_layer_state);
+        raise_zmk_split_peripheral_layer_changed(
+            (struct zmk_split_peripheral_layer_changed){.layers = _zmk_keymap_layer_state});
+#endif
     }
 
     return ret;
