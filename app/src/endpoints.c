@@ -25,15 +25,30 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+// Name of the subtree for endpoint-related settings
+#define SETTING_SUBTREE "endpoints"
+
+// Key of the setting to store the preferred_transport value.
+#define SETTING_PREFERRED_TRANSPORT_KEY "preferred2"
+// Full name of the setting to store the preferred_transport value.
+#define SETTING_PREFERRED_TRANSPORT SETTING_SUBTREE "/" SETTING_PREFERRED_TRANSPORT_KEY
+
+// Key of the deprecated setting which stored preferred_transport with an older type.
+#define SETTING_PREFERRED_TRANSPORT_V1_KEY "preferred"
+// Full name of the deprecated setting which stored preferred_transport with an older type.
+#define SETTING_PREFERRED_TRANSPORT_V1 SETTING_SUBTREE "/" SETTING_PREFERRED_TRANSPORT_V1_KEY
+
 static struct zmk_endpoint_instance current_instance = {};
-static enum zmk_transport preferred_transport =
-    ZMK_TRANSPORT_USB; /* Used if multiple endpoints are ready */
+
+// Transport to use if multiple endpoints are ready
+static enum zmk_transport preferred_transport = ZMK_TRANSPORT_USB;
 
 static void update_current_endpoint(void);
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 static void endpoints_save_preferred_work(struct k_work *work) {
-    settings_save_one("endpoints/preferred", &preferred_transport, sizeof(preferred_transport));
+    settings_save_one(SETTING_PREFERRED_TRANSPORT, &preferred_transport,
+                      sizeof(preferred_transport));
 }
 
 static struct k_work_delayable endpoints_save_work;
@@ -279,29 +294,106 @@ int zmk_endpoint_send_mouse_report() {
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 
-static int endpoints_handle_set(const char *name, size_t len, settings_read_cb read_cb,
-                                void *cb_arg) {
-    LOG_DBG("Setting endpoint value %s", name);
+// Type for the deprecated SETTING_PREFERRED_TRANSPORT_V1 setting. To maintain backwards
+// compatibility when ZMK_TRANSPORT_NONE was inserted into the beginning of enum zmk_transport, the
+// setting was moved to SETTING_PREFERRED_TRANSPORT. If the deprecated setting exists, it must be
+// upgraded to the new type and setting name.
+enum transport_v1 {
+    TRANSPORT_V1_USB = 0,
+    TRANSPORT_V1_BLE = 1,
+};
 
-    if (settings_name_steq(name, "preferred", NULL)) {
-        if (len != sizeof(enum zmk_transport)) {
-            LOG_ERR("Invalid endpoint size (got %d expected %d)", len, sizeof(enum zmk_transport));
-            return -EINVAL;
-        }
+static enum zmk_transport upgrade_transport_v1(enum transport_v1 value) {
+    switch (value) {
+    case TRANSPORT_V1_USB:
+        return ZMK_TRANSPORT_USB;
 
-        int err = read_cb(cb_arg, &preferred_transport, sizeof(enum zmk_transport));
-        if (err <= 0) {
-            LOG_ERR("Failed to read preferred endpoint from settings (err %d)", err);
-            return err;
-        }
+    case TRANSPORT_V1_BLE:
+        return ZMK_TRANSPORT_BLE;
+    };
 
-        update_current_endpoint();
+    LOG_ERR("Invalid transport_v1 value: %d", value);
+    return ZMK_TRANSPORT_USB;
+}
+
+/**
+ * Loads the deprecated SETTING_PREFERRED_TRANSPORT_V1 setting and upgrades it to the new type,
+ * storing the value in SETTING_PREFERRED_TRANSPORT and deleting the original setting.
+ */
+static int endpoint_settings_load_preferred_v1(size_t len, settings_read_cb read_cb, void *cb_arg) {
+    enum transport_v1 value;
+
+    if (len != sizeof(value)) {
+        LOG_ERR("Invalid zmk_transport size (got %zu expected %zu)", len, sizeof(value));
+        return -EINVAL;
+    }
+
+    ssize_t len_read = read_cb(cb_arg, &value, sizeof(value));
+    if (len_read < 0) {
+        LOG_ERR("Failed to read preferred endpoint v1 from settings (err %d)", len_read);
+        return len_read;
+    }
+
+    preferred_transport = upgrade_transport_v1(value);
+
+    int err = settings_delete(SETTING_PREFERRED_TRANSPORT_V1);
+    if (err != 0) {
+        LOG_ERR("Failed to delete preferred endpoint v1 setting (err %d)", err);
+        return err;
+    }
+
+    err = settings_save_one(SETTING_PREFERRED_TRANSPORT, &preferred_transport,
+                            sizeof(preferred_transport));
+    if (err == 0) {
+        LOG_INF("Upgraded preferred endpoint setting");
+    } else {
+        LOG_ERR("Failed to save upgraded endpoint value (err %d)", err);
+    }
+
+    return err;
+}
+
+/**
+ * Loads the SETTING_PREFERRED_TRANSPORT setting.
+ */
+static int endpoint_settings_load_preferred_v2(size_t len, settings_read_cb read_cb, void *cb_arg) {
+    if (len != sizeof(preferred_transport)) {
+        LOG_ERR("Invalid zmk_transport size (got %zu expected %zu)", len,
+                sizeof(preferred_transport));
+        return -EINVAL;
+    }
+
+    ssize_t len_read = read_cb(cb_arg, &preferred_transport, sizeof(preferred_transport));
+    if (len_read < 0) {
+        LOG_ERR("Failed to read preferred endpoint from settings (err %d)", len_read);
+        return len_read;
     }
 
     return 0;
 }
 
-SETTINGS_STATIC_HANDLER_DEFINE(endpoints, "endpoints", NULL, endpoints_handle_set, NULL, NULL);
+static int endpoint_settings_set(const char *name, size_t len, settings_read_cb read_cb,
+                                 void *cb_arg) {
+    LOG_DBG("Setting endpoint value %s", name);
+
+    if (settings_name_steq(name, SETTING_PREFERRED_TRANSPORT_KEY, NULL)) {
+        return endpoint_settings_load_preferred_v2(len, read_cb, cb_arg);
+    }
+
+    if (settings_name_steq(name, SETTING_PREFERRED_TRANSPORT_V1_KEY, NULL)) {
+        return endpoint_settings_load_preferred_v1(len, read_cb, cb_arg);
+    }
+
+    return 0;
+}
+
+static int endpoint_settings_commit(void) {
+    update_current_endpoint();
+    return 0;
+}
+
+SETTINGS_STATIC_HANDLER_DEFINE(endpoints, SETTING_SUBTREE, NULL, endpoint_settings_set,
+                               endpoint_settings_commit, NULL);
 
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
