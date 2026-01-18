@@ -14,6 +14,8 @@
  */
 #define ZMK_ENDPOINT_STR_LEN 10
 
+#define ZMK_ENDPOINT_NONE_COUNT 1
+
 #ifdef CONFIG_ZMK_USB
 #define ZMK_ENDPOINT_USB_COUNT 1
 #else
@@ -33,7 +35,8 @@
  * Note that this value may change between firmware versions, so it should not
  * be used in any persistent storage.
  */
-#define ZMK_ENDPOINT_COUNT (ZMK_ENDPOINT_USB_COUNT + ZMK_ENDPOINT_BLE_COUNT)
+#define ZMK_ENDPOINT_COUNT                                                                         \
+    (ZMK_ENDPOINT_NONE_COUNT + ZMK_ENDPOINT_USB_COUNT + ZMK_ENDPOINT_BLE_COUNT)
 
 bool zmk_endpoint_instance_eq(struct zmk_endpoint_instance a, struct zmk_endpoint_instance b);
 
@@ -64,9 +67,14 @@ int zmk_endpoints_select_transport(enum zmk_transport transport);
 int zmk_endpoints_toggle_transport(void);
 
 /**
- * Gets the currently-selected endpoint.
+ * Gets the currently in use endpoint.
  */
 struct zmk_endpoint_instance zmk_endpoints_selected(void);
+
+/**
+ * Gets the preferred endpoint.
+ */
+struct zmk_endpoint_instance zmk_endpoints_preferred(void);
 
 int zmk_endpoints_send_report(uint16_t usage_page);
 

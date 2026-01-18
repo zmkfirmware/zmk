@@ -13,11 +13,12 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ### General
 
-| Config                      | Type   | Description                                  | Default |
-| --------------------------- | ------ | -------------------------------------------- | ------- |
-| `CONFIG_ZMK_KEYBOARD_NAME`  | string | The name of the keyboard (max 16 characters) |         |
-| `CONFIG_ZMK_WPM`            | bool   | Enable calculating words per minute          | n       |
-| `CONFIG_HEAP_MEM_POOL_SIZE` | int    | Size of the heap memory pool                 | 8192    |
+| Config                                 | Type   | Description                                                                                   | Default |
+| -------------------------------------- | ------ | --------------------------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_KEYBOARD_NAME`             | string | The name of the keyboard (max 16 characters)                                                  |         |
+| `CONFIG_ZMK_WPM`                       | bool   | Enable calculating words per minute                                                           | n       |
+| `CONFIG_HEAP_MEM_POOL_SIZE`            | int    | Size of the heap memory pool                                                                  | 8192    |
+| `CONFIG_ZMK_ENDPOINT_DISABLE_FALLBACK` | bool   | Disable automatically falling back to the other endpoint if preferred endpoint is unavailable | n       |
 
 :::info
 
