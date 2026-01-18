@@ -7,12 +7,19 @@ ZMK CLI is a command line tool which helps with setting up a ZMK config repo and
 
 See the [ZMK installation guide](user-setup.mdx#prerequisites) for instructions on installing ZMK CLI.
 
+The instructions below contain commands that need to be run in a terminal program. On most operating systems, the program is simply named "Terminal".
+
+On Windows, get [Windows Terminal](https://apps.microsoft.com/detail/9n0dx20hk701) from the Microsoft Store if it isn't already installed.
+
+## Updating ZMK CLI
+
+To update to the latest version of ZMK, run the following command in a terminal:
+
+```sh
+uv tool upgrade zmk
+```
+
 ## Using ZMK CLI
-
-The instructions below contain commands that need to be run in a terminal program.
-
-- On Windows, use [Windows Terminal](https://apps.microsoft.com/detail/9n0dx20hk701) or PowerShell.
-- On other operating systems, the terminal program is usually just named "Terminal".
 
 All ZMK CLI commands start with `zmk`. Run `zmk --help` for general usage instructions. For help with a specific subcommand, add `--help` after the subcommand, e.g. `zmk init --help`.
 
