@@ -88,10 +88,10 @@ zephyr_udc0: &usbd {
         #size-cells = <1>;
 
         sd_partition: partition@0 {
-            reg = <0x00000000 0x00026000>;
+            reg = <0x00000000 0x00027000>;
         };
-        code_partition: partition@26000 {
-            reg = <0x00026000 0x000c6000>;
+        code_partition: partition@27000 {
+            reg = <0x00027000 0x000c6000>;
         };
 
         /*
