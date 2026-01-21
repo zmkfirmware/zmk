@@ -6,11 +6,11 @@
 
 /dts-v1/;
 
-#include <nordic/nrf52840_qiaa.dtsi>
-#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+#include <nordic/nrf52833_qdaa.dtsi>
+#include <common/nordic/nrf52833_uf2_boot_mode.dtsi>
+
 #include "nice_nano-pinctrl.dtsi"
-//删除i2c和屏幕部分
-// #include "arduino_pro_micro_pins.dtsi"
+#include "arduino_pro_micro_pins.dtsi"
 
 
 / {
@@ -92,24 +92,24 @@ zephyr_udc0: &usbd {
             reg = <0x00000000 0x00027000>;
         };
         code_partition: partition@27000 {
-            reg = <0x00027000 0x000c6000>;
+            reg = <0x00027000 0x00046000>;
         };
 
-        /*
-         * The flash starting at 0x000ec000 and ending at
-         * 0x000f3fff is reserved for use by the application.
+      /*
+         * The flash starting at 0x0006c000 and ending at
+         * 0x00073fff is reserved for use by the application.
          */
 
         /*
          * Storage partition will be used by FCB/LittleFS/NVS
          * if enabled.
          */
-        storage_partition: partition@ec000 {
-            reg = <0x000ec000 0x00008000>;
+        storage_partition: partition@6c000 {
+            reg = <0x0006c000 0x00008000>;
         };
 
-        boot_partition: partition@f4000 {
-            reg = <0x000f4000 0x0000c000>;
+        boot_partition: partition@74000 {
+            reg = <0x00074000 0x0000c000>;
         };
     };
 };
