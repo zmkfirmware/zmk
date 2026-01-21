@@ -1,0 +1,3 @@
+zephyr_library()
+zephyr_library_sources_ifdef(CONFIG_BOARD_NRF52840_M2 keyboard_init_nrf52840_m2.c)
+zephyr_library_include_directories(${ZEPHYR_BASE}/drivers)
