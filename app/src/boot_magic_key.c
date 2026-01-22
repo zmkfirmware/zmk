@@ -17,6 +17,12 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 
+#if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)
+
+#include <zephyr/retention/bootmode.h>
+
+#endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct boot_key_config {
@@ -51,11 +57,19 @@ static void trigger_boot_key(const struct boot_key_config *config) {
 
     if (config->jump_to_bootloader) {
         LOG_INF("Boot key: jumping to bootloader");
+#if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)
+        zmk_reset(BOOT_MODE_TYPE_BOOTLOADER);
+#else
         zmk_reset(ZMK_RESET_BOOTLOADER);
+#endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
     } else if (config->reset_settings) {
         // If resetting settings but not jumping to bootloader, we need to reboot
         // to ensure all subsystems are properly reset.
+#if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)
+        zmk_reset(BOOT_MODE_TYPE_NORMAL);
+#else
         zmk_reset(ZMK_RESET_WARM);
+#endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
     }
 }
 

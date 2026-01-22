@@ -11,9 +11,10 @@
 
 /**
  * Reboot the system.
- * @param type A ZMK_RESET_* value indicating how to reboot.
+ * @param type If CONFIG_RETENTION_BOOT_MODE is set: A BOOT_MODE_TYPE_* value indicating which type
+ * of reboot. Otherwise, A ZMK_RESET_* value indicating how to reboot.
  */
-FUNC_NORETURN void zmk_reset(int type);
+void zmk_reset(int type);
 
 /**
  * Clear all persistent settings.

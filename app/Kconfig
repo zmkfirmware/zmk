@@ -691,11 +691,6 @@ config ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION
 
 endif # ZMK_KEYMAP_SENSORS
 
-choice CBPRINTF_IMPLEMENTATION
-    default CBPRINTF_NANO
-
-endchoice
-
 DT_COMPAT_ZMK_BOOT_MAGIC_KEY := zmk,boot-magic-key
 config ZMK_BOOT_MAGIC_KEY
     bool "Enable actions when keys are held at boot"

@@ -36,24 +36,11 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_reset_config *cfg = dev->config;
 
-<<<<<<< HEAD
 #if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)
-    int ret = bootmode_set(cfg->boot_mode);
-    if (ret < 0) {
-        LOG_ERR("Failed to set the bootloader mode (%d)", ret);
-        return ZMK_BEHAVIOR_OPAQUE;
-    }
-
-    sys_reboot(SYS_REBOOT_WARM);
+    zmk_reset(cfg->boot_mode);
 #else
-    // See
-    // https://github.com/adafruit/Adafruit_nRF52_Bootloader/blob/d6b28e66053eea467166f44875e3c7ec741cb471/src/main.c#L107
-    sys_reboot(cfg->type);
-#endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
-
-=======
     zmk_reset(cfg->type);
->>>>>>> 1d73fc26 (refactor: Move reset logic to a new function)
+#endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
