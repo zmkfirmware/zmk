@@ -64,6 +64,7 @@ echo "curr_folder_${curr_folder}"
     clear
 
 cd app
+rm -rf build
     start_time=$(date +%s)
 west build -b nice_nano -- -DSHIELD=corne_left
 echo "runing west build -b nice_nano -- -DSHIELD=corne_left"
