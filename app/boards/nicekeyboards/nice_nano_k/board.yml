@@ -2,7 +2,7 @@ board:
   name: nice_nano_k
   vendor: nicekeyboards
   socs:
-    - name: nrf52840
+    - name: nrf52833
   revision:
     format: major.minor.patch
     default: 2.0.0
