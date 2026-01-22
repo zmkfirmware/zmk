@@ -1,6 +1,0 @@
-file_format: "1"
-id: tester_rpi_pico
-name: TesterRpiPico
-type: shield
-url: https://zmk.dev/docs/troubleshooting/hardware-issues
-requires: [rpi_pico]

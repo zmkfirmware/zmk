@@ -1,8 +1,0 @@
-# Copyright (c) 2021 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-config SHIELD_ELEPHANT42_LEFT
-    def_bool $(shields_list_contains,elephant42_left)
-
-config SHIELD_ELEPHANT42_RIGHT
-    def_bool $(shields_list_contains,elephant42_right)

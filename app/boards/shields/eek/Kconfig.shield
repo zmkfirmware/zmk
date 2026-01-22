@@ -1,8 +1,0 @@
- #
- # Copyright (c) 2020 The ZMK Contributors
- #
- # SPDX-License-Identifier: MIT
- #
-
-config SHIELD_EEK
-    def_bool $(shields_list_contains,eek)

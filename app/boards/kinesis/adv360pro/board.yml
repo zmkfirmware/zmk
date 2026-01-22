@@ -1,9 +1,0 @@
-boards:
-  - name: adv360pro_left
-    vendor: kinesis
-    socs:
-      - name: nrf52840
-  - name: adv360pro_right
-    vendor: kinesis
-    socs:
-      - name: nrf52840

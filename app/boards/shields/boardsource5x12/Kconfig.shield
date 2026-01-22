@@ -1,5 +1,0 @@
-# Copyright (c) 2021 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-config SHIELD_BOARDSOURCE5X12
-    def_bool $(shields_list_contains,boardsource5x12)

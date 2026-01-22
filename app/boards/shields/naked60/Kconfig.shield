@@ -1,5 +1,0 @@
-# Copyright (c) 2020 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-config SHIELD_NAKED60
-    def_bool $(shields_list_contains,naked60)

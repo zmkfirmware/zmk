@@ -1,9 +1,0 @@
-# Copyright (c) 2021 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-if SHIELD_CHALICE
-
-config ZMK_KEYBOARD_NAME
-    default "Chalice"
-
-endif

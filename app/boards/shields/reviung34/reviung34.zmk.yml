@@ -1,9 +1,0 @@
-file_format: "1"
-id: reviung34
-name: REVIUNG34
-type: shield
-url: https://github.com/gtips/reviung/tree/master/reviung34
-requires: [pro_micro]
-features:
-  - keys
-  - underglow

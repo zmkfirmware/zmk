@@ -1,2 +1,0 @@
-config SHIELD_TESTER_XIAO
-    def_bool $(shields_list_contains,tester_xiao)

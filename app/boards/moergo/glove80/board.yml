@@ -1,9 +1,0 @@
-boards:
-  - name: glove80_rh
-    vendor: moergo
-    socs:
-      - name: nrf52840
-  - name: glove80_lh
-    vendor: moergo
-    socs:
-      - name: nrf52840

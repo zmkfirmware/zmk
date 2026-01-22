@@ -1,9 +1,0 @@
-file_format: "1"
-id: contra
-name: Contra
-type: shield
-url: https://github.com/ai03-2725/Contra
-requires: [pro_micro]
-features:
-  - keys
-  - studio

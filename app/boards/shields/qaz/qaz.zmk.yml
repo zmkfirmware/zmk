@@ -1,9 +1,0 @@
-file_format: "1"
-id: qaz
-name: QAZ
-type: shield
-url: https://www.cbkbd.com/product/qaz-keyboard-kit
-requires: [pro_micro]
-features:
-  - keys
-  - studio

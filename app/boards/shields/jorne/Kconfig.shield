@@ -1,8 +1,0 @@
-# Copyright (c) 2020 The ZMK Contributors
-# SPDX-License-Identifier: MIT
-
-config SHIELD_JORNE_LEFT
-    def_bool $(shields_list_contains,jorne_left)
-
-config SHIELD_JORNE_RIGHT
-    def_bool $(shields_list_contains,jorne_right)

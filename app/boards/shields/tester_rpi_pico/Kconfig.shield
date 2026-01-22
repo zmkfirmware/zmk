@@ -1,2 +1,0 @@
-config SHIELD_TESTER_RPI_PICO
-    def_bool $(shields_list_contains,tester_rpi_pico)

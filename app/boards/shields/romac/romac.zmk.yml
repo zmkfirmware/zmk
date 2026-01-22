@@ -1,8 +1,0 @@
-file_format: "1"
-id: romac
-name: Romac Macropad
-type: shield
-url: https://mechboards.co.uk/shop/kits/romac-macro-pad/
-requires: [pro_micro]
-features:
-  - keys

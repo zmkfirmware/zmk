@@ -1,8 +1,0 @@
-file_format: "1"
-id: two_percent_milk
-name: 2% Milk
-type: shield
-url: https://github.com/Spaceboards/SpaceboardsHardware/tree/master/Keyboards/2%25%20Milk
-requires: [pro_micro]
-features:
-  - keys

@@ -1,9 +1,0 @@
-file_format: "1"
-id: eternal_keypad_lefty
-name: Eternal Keypad Lefty
-type: shield
-url: https://github.com/duckyb/eternal-keypad
-requires: [pro_micro]
-features:
-  - keys
-  - underglow

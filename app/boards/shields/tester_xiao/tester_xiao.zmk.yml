@@ -1,6 +1,0 @@
-file_format: "1"
-id: tester_xiao
-name: TesterXiao
-type: shield
-url: https://zmk.dev/docs/troubleshooting/hardware-issues
-requires: [seeed_xiao]
