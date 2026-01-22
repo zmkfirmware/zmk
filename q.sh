@@ -64,9 +64,14 @@ echo "curr_folder_${curr_folder}"
     clear
 
 cd app
-rm -rf build
+ rm -rf build
     start_time=$(date +%s)
-west build -b nice_nano -- -DSHIELD=corne_left
+# west build -b nice_nano -- -DSHIELD=corne_left
+# west build -b nice_nano -- -DSHIELD=corne_left 
+# west build -b nice_nano -- -DSHIELD=corne_left -S studio-rpc-usb-uart
+
+west build -d build/cl_studio -b nice_nano \
+  -S studio-rpc-usb-uart -- -DSHIELD=corne_left -DCONFIG_ZMK_STUDIO=y
 echo "runing west build -b nice_nano -- -DSHIELD=corne_left"
 
     end_time=$(date +%s)
@@ -76,6 +81,7 @@ echo "runing west build -b nice_nano -- -DSHIELD=corne_left"
 
     
     polling_check
-   cp build/zephyr/zmk.uf2 E:/flash.uf2
+#    cp build/zephyr/zmk.uf2 E:/flash.uf2
+   cp build/cl_studio/zephyr/zmk.uf2 E:/flash.uf2
     exit 0
 
