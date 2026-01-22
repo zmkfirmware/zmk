@@ -1,5 +1,0 @@
-board:
-  name: bluemicro840
-  vendor: jpconstantineau
-  socs:
-    - name: nrf52840
