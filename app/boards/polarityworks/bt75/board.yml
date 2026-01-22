@@ -1,5 +1,0 @@
-board:
-  name: bt75
-  vendor: polarityworks
-  socs:
-    - name: nrf52840

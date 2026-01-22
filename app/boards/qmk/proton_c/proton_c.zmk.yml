@@ -1,9 +1,0 @@
-file_format: "1"
-id: proton_c
-name: QMK Proton-C
-type: board
-arch: arm
-outputs:
-  - usb
-url: https://qmk.fm/proton-c/
-exposes: [pro_micro]
