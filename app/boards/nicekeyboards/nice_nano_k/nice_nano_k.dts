@@ -6,7 +6,7 @@
 
 /dts-v1/;
 
-#include <nordic/nrf52833_qiaa.dtsi>
+#include <nordic/nrf52833_qdaa.dtsi>
 #include <common/nordic/nrf52833_uf2_boot_mode.dtsi>
 
 #include "nice_nano_k-pinctrl.dtsi"
@@ -32,7 +32,7 @@
 };
 
 &reg1 {
-    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+    regulator-initial-mode = <NRF5X_REG_MODE_LDO>;
 };
 
 &adc {

@@ -70,11 +70,11 @@ cd app
 # west build -b nice_nano -- -DSHIELD=corne_left 
 # west build -b nice_nano -- -DSHIELD=corne_left -S studio-rpc-usb-uart
 
-west build -d build/cl_studio -b nice_nano_k \
-  -S studio-rpc-usb-uart -- -DSHIELD=corne_left -DCONFIG_ZMK_STUDIO=y
+# west build -d build/cl_studio -b nice_nano_k \
+#   -S studio-rpc-usb-uart -- -DSHIELD=corne_left -DCONFIG_ZMK_STUDIO=y
 
 #   west build -b nice_nano -S zmk-usb-logging -- -DSHIELD="corne_left"
-#   west build -b nice_nano_k -- -DSHIELD=corne_left 
+  west build -b nice_nano_k -- -DSHIELD=corne_left 
 
 
     end_time=$(date +%s)
@@ -84,7 +84,7 @@ west build -d build/cl_studio -b nice_nano_k \
 
     
     polling_check
-#    cp build/zephyr/zmk.uf2 E:/flash.uf2
-   cp build/cl_studio/zephyr/zmk.uf2 E:/flash.uf2
+   cp build/zephyr/zmk.uf2 E:/flash.uf2
+#    cp build/cl_studio/zephyr/zmk.uf2 E:/flash.uf2
     exit 0
 
