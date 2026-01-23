@@ -5,7 +5,7 @@ description: |
   Triggers one or more actions if a specific key is held while the keyboard boots.
   This is typically used for recovering a keyboard in cases such as &bootloader
   being missing from the keymap or a split peripheral which isn't connected to
-  the central, and therefore can't process th ekeymap.
+  the central, and therefore can't process the keymap.
 
 compatible: "zmk,boot-magic-key"
 

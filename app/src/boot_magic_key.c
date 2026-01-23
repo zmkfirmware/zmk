@@ -26,7 +26,7 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 struct boot_key_config {
-    int key_position;
+    uint16_t key_position;
     bool jump_to_bootloader;
     bool reset_settings;
 };
