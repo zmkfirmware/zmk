@@ -154,6 +154,29 @@ You can use the following node to tweak the default behavior:
 | ----- | ------------------------------------------------ |
 | `&kt` | [Key toggle](../keymaps/behaviors/key-toggle.md) |
 
+## Momentary Layer
+
+Creates a custom behavior that toggles a layer on when pressed, and off when released.
+
+See the [momentary layer behavior](../keymaps/behaviors/layers.md#momentary-layer) documentation for more details and examples.
+
+### Devicetree
+
+Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-momentary-layer.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-momentary-layer.yaml)
+
+Applies to: `compatible = "zmk,behavior-momentary-layer"`
+
+| Property         | Type | Description                                                     | Default |
+| ---------------- | ---- | --------------------------------------------------------------- | ------- |
+| `#binding-cells` | int  | Must be `<1>`                                                   |         |
+| `locking`        | bool | Whether the behavior can lock and unlock layers in the on state | false   |
+
+You can use the following node to tweak the default behavior:
+
+| Node  | Behavior                                                          |
+| ----- | ----------------------------------------------------------------- |
+| `&mo` | [Momentary Layer](../keymaps/behaviors/layers.md#momentary-layer) |
+
 ## Layer Toggle
 
 Creates a custom behavior that toggles a layer on, off, or switches between the two states.
@@ -166,16 +189,40 @@ Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-layer-toggle.yaml]
 
 Applies to: `compatible = "zmk,behavior-layer-toggle"`
 
-| Property         | Type | Description                    | Default |
-| ---------------- | ---- | ------------------------------ | ------- |
-| `#binding-cells` | int  | Must be `<1>`                  |         |
-| `toggle-mode`    |      | One of `on`, `off`, and `flip` | `flip`  |
+| Property         | Type | Description                                                     | Default |
+| ---------------- | ---- | --------------------------------------------------------------- | ------- |
+| `#binding-cells` | int  | Must be `<1>`                                                   |         |
+| `toggle-mode`    |      | One of `on`, `off`, and `flip`                                  | `flip`  |
+| `locking`        | bool | Whether the behavior can lock and unlock layers in the on state | false   |
 
 You can use the following node to tweak the default behavior:
 
 | Node   | Behavior                                                    |
 | ------ | ----------------------------------------------------------- |
 | `&tog` | [Layer toggle](../keymaps/behaviors/layers.md#toggle-layer) |
+
+## To Layer
+
+Creates a custom behavior that toggles a layer on and toggles all other layers off, barring the default layer.
+
+See the [to layer behavior](../keymaps/behaviors/layers.md#to-layer) documentation for more details and examples.
+
+### Devicetree
+
+Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-to-layer.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-to-layer.yaml)
+
+Applies to: `compatible = "zmk,behavior-to-layer"`
+
+| Property         | Type | Description                                                     | Default |
+| ---------------- | ---- | --------------------------------------------------------------- | ------- |
+| `#binding-cells` | int  | Must be `<1>`                                                   |         |
+| `locking`        | bool | Whether the behavior can lock and unlock layers in the on state | false   |
+
+You can use the following node to tweak the default behavior:
+
+| Node  | Behavior                                            |
+| ----- | --------------------------------------------------- |
+| `&to` | [To Layer](../keymaps/behaviors/layers.md#to-layer) |
 
 ## Macro
 
@@ -356,8 +403,8 @@ Applies to: `compatible = "zmk,behavior-input-two-axis"`
 | Property                | Type | Description                                                                                                                                                                                   | Default |
 | ----------------------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | `#binding-cells`        | int  | Must be `<1>`                                                                                                                                                                                 |         |
-| `x-input-code`          | int  | The [relative event code](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L245) for generated input events for the X-axis. |         |
-| `y-input-code`          | int  | The [relative event code](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L245) for generated input events for the Y-axis. |         |
+| `x-input-code`          | int  | The [relative event code](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L258) for generated input events for the X-axis. |         |
+| `y-input-code`          | int  | The [relative event code](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L258) for generated input events for the Y-axis. |         |
 | `trigger-period-ms`     | int  | How many milliseconds between generated input events based on the current speed/direction.                                                                                                    | 16      |
 | `delay-ms`              | int  | How many milliseconds to delay any processing or event generation when first pressed.                                                                                                         | 0       |
 | `time-to-max-speed-ms`  | int  | How many milliseconds it takes to accelerate to the curren max speed.                                                                                                                         | 0       |

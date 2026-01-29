@@ -1,0 +1,2 @@
+This test fails because the keymap function handling position state changes doesn't work correctly when the default layer is removed.
+The iteration loop's end condition is incorrect.

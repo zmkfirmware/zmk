@@ -23,6 +23,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/layer_state_changed.h>
 #include <zmk/events/sensor_event.h>
 
+static zmk_keymap_layers_state_t _zmk_keymap_layer_locks = 0;
 static zmk_keymap_layers_state_t _zmk_keymap_layer_state = 0;
 static zmk_keymap_layer_id_t _zmk_keymap_layer_default = 0;
 
@@ -74,12 +75,7 @@ static uint8_t keymap_layer_orders[ZMK_KEYMAP_LAYERS_LEN];
 
 #define KEYMAP_VAR(_name, _opts, no_init)                                                          \
     static _opts struct zmk_behavior_binding _name[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_LEN] = {      \
-        COND_CODE_0(                                                                               \
-            no_init,                                                                               \
-            (COND_CODE_1(IS_ENABLED(CONFIG_ZMK_STUDIO),                                            \
-                         (DT_INST_FOREACH_CHILD_SEP(0, TRANSFORMED_LAYER, (, ))),                  \
-                         (DT_INST_FOREACH_CHILD_STATUS_OKAY_SEP(0, TRANSFORMED_LAYER, (, ))))),    \
-            (0))};
+        COND_CODE_0(no_init, (ZMK_KEYMAP_LAYERS_FOREACH_SEP(TRANSFORMED_LAYER, (, ))), (0))};
 
 KEYMAP_VAR(zmk_keymap, COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE), (), (const)),
            IS_ENABLED(CONFIG_ZMK_STUDIO))
@@ -89,14 +85,14 @@ KEYMAP_VAR(zmk_keymap, COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE
 KEYMAP_VAR(zmk_stock_keymap, const, 0)
 
 static char zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN][CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN] = {
-    DT_INST_FOREACH_CHILD_SEP(0, LAYER_NAME, (, ))};
+    ZMK_KEYMAP_LAYERS_FOREACH_SEP(LAYER_NAME, (, ))};
 
 static uint32_t changed_layer_names = 0;
 
 #else
 
 static const char *zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN] = {
-    DT_INST_FOREACH_CHILD_SEP(0, LAYER_NAME, (, ))};
+    ZMK_KEYMAP_LAYERS_FOREACH_SEP(LAYER_NAME, (, ))};
 
 #endif
 
@@ -135,7 +131,7 @@ uint8_t map_layer_id_to_index(zmk_keymap_layer_id_t layer_id) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
-static inline int set_layer_state(zmk_keymap_layer_id_t layer_id, bool state) {
+static inline int set_layer_state(zmk_keymap_layer_id_t layer_id, bool state, bool locking) {
     int ret = 0;
     if (layer_id >= ZMK_KEYMAP_LAYERS_LEN) {
         return -EINVAL;
@@ -146,12 +142,22 @@ static inline int set_layer_state(zmk_keymap_layer_id_t layer_id, bool state) {
         return 0;
     }
 
+    // Non-forcing disables should not change a locked active layer
+    if (!locking && !state && (_zmk_keymap_layer_locks & BIT(layer_id))) {
+        return ret;
+    }
+
     zmk_keymap_layers_state_t old_state = _zmk_keymap_layer_state;
+    zmk_keymap_layers_state_t old_locks = _zmk_keymap_layer_locks;
     WRITE_BIT(_zmk_keymap_layer_state, layer_id, state);
+    if (locking) {
+        WRITE_BIT(_zmk_keymap_layer_locks, layer_id, state);
+    }
     // Don't send state changes unless there was an actual change
-    if (old_state != _zmk_keymap_layer_state) {
-        LOG_DBG("layer_changed: layer %d state %d", layer_id, state);
-        ret = raise_layer_state_changed(layer_id, state);
+    if (old_state != _zmk_keymap_layer_state || old_locks != _zmk_keymap_layer_locks) {
+        LOG_DBG("layer_changed: layer %d state %d locked %d", layer_id, state, locking);
+
+        ret = raise_layer_state_changed(layer_id, state, locking);
         if (ret < 0) {
             LOG_WRN("Failed to raise layer state changed (%d)", ret);
         }
@@ -170,6 +176,8 @@ zmk_keymap_layer_id_t zmk_keymap_layer_default(void) { return _zmk_keymap_layer_
 
 zmk_keymap_layers_state_t zmk_keymap_layer_state(void) { return _zmk_keymap_layer_state; }
 
+zmk_keymap_layers_state_t zmk_keymap_layer_locks(void) { return _zmk_keymap_layer_locks; }
+
 bool zmk_keymap_layer_active_with_state(zmk_keymap_layer_id_t layer,
                                         zmk_keymap_layers_state_t state_to_test) {
     // The default layer is assumed to be ALWAYS ACTIVE so we include an || here to ensure nobody
@@ -180,6 +188,10 @@ bool zmk_keymap_layer_active_with_state(zmk_keymap_layer_id_t layer,
 bool zmk_keymap_layer_active(zmk_keymap_layer_id_t layer) {
     return zmk_keymap_layer_active_with_state(layer, _zmk_keymap_layer_state);
 };
+
+bool zmk_keymap_layer_locked(zmk_keymap_layer_id_t layer) {
+    return zmk_keymap_layer_active_with_state(layer, _zmk_keymap_layer_locks);
+}
 
 zmk_keymap_layer_index_t zmk_keymap_highest_layer_active(void) {
     for (int layer_idx = ZMK_KEYMAP_LAYERS_LEN - 1;
@@ -197,26 +209,28 @@ zmk_keymap_layer_index_t zmk_keymap_highest_layer_active(void) {
     return LAYER_ID_TO_INDEX(zmk_keymap_layer_default());
 }
 
-int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer) { return set_layer_state(layer, true); };
-
-int zmk_keymap_layer_deactivate(zmk_keymap_layer_id_t layer) {
-    return set_layer_state(layer, false);
+int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer, bool locking) {
+    return set_layer_state(layer, true, locking);
 };
 
-int zmk_keymap_layer_toggle(zmk_keymap_layer_id_t layer) {
-    if (zmk_keymap_layer_active(layer)) {
-        return zmk_keymap_layer_deactivate(layer);
+int zmk_keymap_layer_deactivate(zmk_keymap_layer_id_t layer, bool locking) {
+    return set_layer_state(layer, false, locking);
+};
+
+int zmk_keymap_layer_toggle(zmk_keymap_layer_id_t layer, bool locking) {
+    if (zmk_keymap_layer_active(layer) && (!locking || zmk_keymap_layer_locked(layer))) {
+        return zmk_keymap_layer_deactivate(layer, locking);
     }
 
-    return zmk_keymap_layer_activate(layer);
+    return zmk_keymap_layer_activate(layer, locking);
 };
 
-int zmk_keymap_layer_to(zmk_keymap_layer_id_t layer) {
+int zmk_keymap_layer_to(zmk_keymap_layer_id_t layer, bool locking) {
     for (int i = ZMK_KEYMAP_LAYERS_LEN - 1; i >= 0; i--) {
-        zmk_keymap_layer_deactivate(i);
+        zmk_keymap_layer_deactivate(i, locking);
     }
 
-    zmk_keymap_layer_activate(layer);
+    zmk_keymap_layer_activate(layer, locking);
 
     return 0;
 }
@@ -228,7 +242,7 @@ const char *zmk_keymap_layer_name(zmk_keymap_layer_id_t layer_id) {
 }
 
 const struct zmk_behavior_binding *
-zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t binding_idx) {
+zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t binding_idx) {
     if (binding_idx >= ZMK_KEYMAP_LEN) {
         return NULL;
     }
@@ -263,7 +277,7 @@ zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t bind
 
 static uint8_t zmk_keymap_layer_pending_changes[ZMK_KEYMAP_LAYERS_LEN][PENDING_ARRAY_SIZE];
 
-int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t binding_idx,
+int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t binding_idx,
                                         struct zmk_behavior_binding binding) {
     if (binding_idx >= ZMK_KEYMAP_LEN) {
         return -EINVAL;
@@ -308,7 +322,7 @@ int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t 
 
 #else
 
-int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint8_t binding_idx,
+int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t binding_idx,
                                         struct zmk_behavior_binding binding) {
     return -ENOTSUP;
 }

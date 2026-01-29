@@ -7,6 +7,8 @@
 #include <zephyr/types.h>
 #include <zephyr/init.h>
 
+#include <zephyr/pm/device.h>
+#include <zephyr/pm/device_runtime.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/sys/crc.h>
 #include <zephyr/sys/ring_buffer.h>
@@ -53,12 +55,21 @@ K_SEM_DEFINE(tx_sem, 0, 1);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-#define HAS_DIR_GPIO (DT_INST_NODE_HAS_PROP(0, dir_gpios))
 static const struct device *uart = DEVICE_DT_GET(DT_INST_PHANDLE(0, device));
+
+#define HAS_DIR_GPIO (DT_INST_NODE_HAS_PROP(0, dir_gpios))
 
 #if HAS_DIR_GPIO
 
 static const struct gpio_dt_spec dir_gpio = GPIO_DT_SPEC_INST_GET(0, dir_gpios);
+
+#endif
+
+#define HAS_DETECT_GPIO DT_INST_NODE_HAS_PROP(0, detect_gpios)
+
+#if HAS_DETECT_GPIO
+
+static const struct gpio_dt_spec detect_gpio = GPIO_DT_SPEC_INST_GET(0, detect_gpios);
 
 #endif
 
@@ -78,7 +89,7 @@ K_MSGQ_DEFINE(cmd_msg_queue, sizeof(struct zmk_split_transport_central_command),
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
 
-uint8_t async_rx_buf[RX_BUFFER_SIZE / 2][2];
+uint8_t async_rx_buf[2][RX_BUFFER_SIZE / 2];
 
 static struct zmk_split_wired_async_state async_state = {
     .rx_bufs = {async_rx_buf[0], async_rx_buf[1]},
@@ -93,15 +104,53 @@ static struct zmk_split_wired_async_state async_state = {
 };
 
 #endif
-#if HAS_DIR_GPIO
 
-static void set_dir(uint8_t tx) { gpio_pin_set_dt(&dir_gpio, tx); }
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_POLLING)
 
+static void wired_peripheral_read_tick_cb(struct k_timer *timer) {
+    zmk_split_wired_poll_in(&chosen_rx_buf, uart, NULL, process_tx_cb);
+}
+
+static K_TIMER_DEFINE(wired_peripheral_read_timer, wired_peripheral_read_tick_cb, NULL);
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_POLLING)
+
+static void begin_rx(void) {
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_get(uart);
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_action_run(uart, PM_DEVICE_ACTION_RESUME);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
+    uart_irq_rx_enable(uart);
+#elif IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
+    zmk_split_wired_async_rx(&async_state);
 #else
-
-static inline void set_dir(uint8_t tx) {}
-
+    k_timer_start(&wired_peripheral_read_timer, K_TICKS(CONFIG_ZMK_SPLIT_WIRED_POLLING_RX_PERIOD),
+                  K_TICKS(CONFIG_ZMK_SPLIT_WIRED_POLLING_RX_PERIOD));
 #endif
+}
+
+#if HAS_DETECT_GPIO
+
+static void stop_rx(void) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
+    uart_irq_rx_disable(uart);
+#elif IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
+    zmk_split_wired_async_rx_cancel(&async_state);
+#else
+    k_timer_stop(&wired_peripheral_read_timer);
+#endif
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_put(uart);
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_action_run(uart, PM_DEVICE_ACTION_SUSPEND);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
+}
+
+#endif // HAS_DETECT_GPIO
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
 
@@ -116,11 +165,15 @@ static void serial_cb(const struct device *dev, void *user_data) {
                 uart_irq_tx_disable(dev);
             }
 
-            set_dir(0);
+#if HAS_DIR_GPIO
+            gpio_pin_set_dt(&dir_gpio, 0);
+#endif
         }
 
         if (uart_irq_tx_ready(dev)) {
-            set_dir(1);
+#if HAS_DIR_GPIO
+            gpio_pin_set_dt(&dir_gpio, 1);
+#endif
             zmk_split_wired_fifo_fill(dev, &chosen_tx_buf);
         }
     }
@@ -134,11 +187,22 @@ static void send_pending_tx_work_cb(struct k_work *work) {
 
 static K_WORK_DEFINE(send_pending_tx, send_pending_tx_work_cb);
 
-static void wired_peripheral_read_tick_cb(struct k_timer *timer) {
-    zmk_split_wired_poll_in(&chosen_rx_buf, uart, NULL, process_tx_cb);
-}
+#endif
 
-static K_TIMER_DEFINE(wired_peripheral_read_timer, wired_peripheral_read_tick_cb, NULL);
+#if HAS_DETECT_GPIO
+
+static void notify_transport_status(void);
+
+static struct gpio_callback detect_callback;
+
+static void notify_status_work_cb(struct k_work *_work) { notify_transport_status(); }
+
+static K_WORK_DEFINE(notify_status_work, notify_status_work_cb);
+
+static void detect_pin_irq_callback_handler(const struct device *port, struct gpio_callback *cb,
+                                            const gpio_port_pins_t pin) {
+    k_work_submit(&notify_status_work);
+}
 
 #endif
 
@@ -146,6 +210,12 @@ static int zmk_split_wired_peripheral_init(void) {
     if (!device_is_ready(uart)) {
         return -ENODEV;
     }
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_put(uart);
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_action_run(uart, PM_DEVICE_ACTION_SUSPEND);
+#endif // IS_ENABLED(CONFIG_PM_DEVICE)
 
 #if HAS_DIR_GPIO
     gpio_pin_configure_dt(&dir_gpio, GPIO_OUTPUT_INACTIVE);
@@ -166,7 +236,6 @@ static int zmk_split_wired_peripheral_init(void) {
         return ret;
     }
 
-    uart_irq_rx_enable(uart);
 #elif IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
     async_state.uart = uart;
     int ret = zmk_split_wired_async_init(&async_state);
@@ -174,11 +243,26 @@ static int zmk_split_wired_peripheral_init(void) {
         LOG_ERR("Failed to set up async wired split UART (%d)", ret);
         return ret;
     }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
 
-#elif IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_POLLING)
-    k_timer_start(&wired_peripheral_read_timer, K_TICKS(CONFIG_ZMK_SPLIT_WIRED_POLLING_RX_PERIOD),
-                  K_TICKS(CONFIG_ZMK_SPLIT_WIRED_POLLING_RX_PERIOD));
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT)
+#if HAS_DETECT_GPIO
+
+    gpio_pin_configure_dt(&detect_gpio, GPIO_INPUT);
+
+    gpio_init_callback(&detect_callback, detect_pin_irq_callback_handler, BIT(detect_gpio.pin));
+    int err = gpio_add_callback(detect_gpio.port, &detect_callback);
+    if (err) {
+        LOG_ERR("Error adding the callback to the detect pin: %i", err);
+        return err;
+    }
+
+    err = gpio_pin_interrupt_configure_dt(&detect_gpio, GPIO_INT_EDGE_BOTH);
+    if (err < 0) {
+        LOG_WRN("Failed to so configure interrupt for detection pin (%d)", err);
+        return err;
+    }
+
+#endif // HAS_DETECT_GPIO
 
     return 0;
 }
@@ -260,11 +344,81 @@ split_peripheral_wired_report_event(const struct zmk_split_transport_peripheral_
     return 0;
 }
 
+static bool is_enabled;
+
+static int split_peripheral_wired_set_enabled(bool enabled) {
+    if (is_enabled == enabled) {
+        return 0;
+    }
+
+    is_enabled = enabled;
+
+    if (enabled) {
+        begin_rx();
+        return 0;
+#if HAS_DETECT_GPIO
+    } else {
+        stop_rx();
+        return 0;
+#endif
+    }
+
+    return -ENOTSUP;
+}
+
+#if HAS_DETECT_GPIO
+
+static zmk_split_transport_peripheral_status_changed_cb_t transport_status_cb;
+
+static int
+split_peripheral_wired_set_status_callback(zmk_split_transport_peripheral_status_changed_cb_t cb) {
+    transport_status_cb = cb;
+    return 0;
+}
+
+static struct zmk_split_transport_status split_peripheral_wired_get_status() {
+    int detected = gpio_pin_get_dt(&detect_gpio);
+    if (detected > 0) {
+        return (struct zmk_split_transport_status){
+            .available = true,
+            .enabled = true, // Track this
+            .connections = ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_ALL_CONNECTED,
+
+        };
+    } else {
+        return (struct zmk_split_transport_status){
+            .available = false,
+            .enabled = true, // Track this
+            .connections = ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_DISCONNECTED,
+
+        };
+    }
+}
+
+#endif // HAS_DETECT_GPIO
+
 static const struct zmk_split_transport_peripheral_api peripheral_api = {
     .report_event = split_peripheral_wired_report_event,
+    .set_enabled = split_peripheral_wired_set_enabled,
+#if HAS_DETECT_GPIO
+    .set_status_callback = split_peripheral_wired_set_status_callback,
+    .get_status = split_peripheral_wired_get_status,
+#endif // HAS_DETECT_GPIO
 };
 
-ZMK_SPLIT_TRANSPORT_PERIPHERAL_REGISTER(wired_peripheral, &peripheral_api);
+ZMK_SPLIT_TRANSPORT_PERIPHERAL_REGISTER(wired_peripheral, &peripheral_api,
+                                        CONFIG_ZMK_SPLIT_WIRED_PRIORITY);
+
+#if HAS_DETECT_GPIO
+
+static void notify_transport_status(void) {
+    if (transport_status_cb) {
+        LOG_DBG("Invoking the status CB");
+        transport_status_cb(&wired_peripheral, split_peripheral_wired_get_status());
+    }
+}
+
+#endif // HAS_DETECT_GPIO
 
 static void process_tx_cb(void) {
     while (ring_buf_size_get(&chosen_rx_buf) > MSG_EXTRA_SIZE) {

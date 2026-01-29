@@ -35,7 +35,7 @@ jobs:
         test: ${{ fromJSON(needs.collect-tests.outputs.test-dirs) }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:3.5
+      image: docker.io/zmkfirmware/zmk-build-arm:4.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
       - name: Enable babblesim group filter
         run: west config manifest.group-filter -- +babblesim
       - name: Update modules (west update)
-        run: west update
+        run: west update --fetch-opt=--filter=tree:0
       - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
       - name: Build BabbleSim components

@@ -18,7 +18,7 @@ config ZMK_SPLIT_BLE
 
 config ZMK_SPLIT_WIRED
     bool "Wired Split"
-    default y if !ZMK_SPLIT_BLE
+    default y
     depends on DT_HAS_ZMK_WIRED_SPLIT_ENABLED
     select SERIAL
     select RING_BUFFER

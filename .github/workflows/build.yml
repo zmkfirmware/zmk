@@ -23,7 +23,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:3.5
+      image: docker.io/zmkfirmware/zmk-build-arm:4.1
     needs: compile-matrix
     strategy:
       matrix:
@@ -53,7 +53,7 @@ jobs:
       - name: Initialize workspace (west init)
         run: west init -l app
       - name: Update modules (west update)
-        run: west update
+        run: west update --fetch-opt=--filter=tree:0
       - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
       - name: Use Node.js
@@ -123,7 +123,7 @@ jobs:
                 }
 
                 const cmakeName = shieldArgs['cmake-args'] ? '-' + (shieldArgs.nickname || shieldArgs['cmake-args'].split(' ').join('')) : '';
-                const artifactName = `${{ matrix.board }}${shieldArgs.shield ? '-' + shieldArgs.shield : ''}${cmakeName}-zmk`;
+                const artifactName = `${{ matrix.board }}${shieldArgs.shield ? '-' + shieldArgs.shield : ''}${cmakeName}-zmk`.replaceAll('/', '_');
 
                 await artifact.uploadArtifact(artifactName, files, rootDirectory, options);
               } catch (e) {

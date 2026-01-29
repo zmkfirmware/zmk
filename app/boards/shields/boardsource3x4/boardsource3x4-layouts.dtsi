@@ -1,0 +1,70 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <physical_layouts.dtsi>
+
+/ {
+    horizontal_physical_layout: horizontal_physical_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Horizontal Layout";
+
+        keys
+            = <&key_physical_attrs 100 100      0   0    0 0 0>
+            , <&key_physical_attrs 100 100    100   0    0 0 0>
+            , <&key_physical_attrs 100 100    200   0    0 0 0>
+            , <&key_physical_attrs 100 100    300   0    0 0 0>
+            , <&key_physical_attrs 100 100      0 100    0 0 0>
+            , <&key_physical_attrs 100 100    100 100    0 0 0>
+            , <&key_physical_attrs 100 100    200 100    0 0 0>
+            , <&key_physical_attrs 100 100    300 100    0 0 0>
+            , <&key_physical_attrs 100 100      0 200    0 0 0>
+            , <&key_physical_attrs 100 100    100 200    0 0 0>
+            , <&key_physical_attrs 100 100    200 200    0 0 0>
+            , <&key_physical_attrs 100 100    300 200    0 0 0>
+            ;
+    };
+
+    vertical_physical_layout: vertical_physical_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Vertical Layout";
+
+        keys
+            = <&key_physical_attrs 100 100      0   0    0 0 0>
+            , <&key_physical_attrs 100 100    100   0    0 0 0>
+            , <&key_physical_attrs 100 100    200   0    0 0 0>
+            , <&key_physical_attrs 100 100      0 100    0 0 0>
+            , <&key_physical_attrs 100 100    100 100    0 0 0>
+            , <&key_physical_attrs 100 100    200 100    0 0 0>
+            , <&key_physical_attrs 100 100      0 200    0 0 0>
+            , <&key_physical_attrs 100 100    100 200    0 0 0>
+            , <&key_physical_attrs 100 100    200 200    0 0 0>
+            , <&key_physical_attrs 100 100      0 300    0 0 0>
+            , <&key_physical_attrs 100 100    100 300    0 0 0>
+            , <&key_physical_attrs 100 100    200 300    0 0 0>
+            ;
+    };
+
+    position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        horizontal_map: horizontal {
+            // A  7  8  9
+            // B  4  5  6
+            // C  1  2  3
+            physical-layout = <&horizontal_physical_layout>;
+            positions = </* 0 */ 1 2 3 4 5 6 7 8 /* 9 10 11 */>;
+        };
+        vertical_map: verctical {
+            // A  B  C
+            // 7  8  9
+            // 4  5  6
+            // 1  2  3
+            physical-layout = <&vertical_physical_layout>;
+            positions = </* 0 */ 3 4 5 1 6 7 8 2 /* 9 10 11 */>;
+        };
+    };
+
+};

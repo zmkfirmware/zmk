@@ -19,7 +19,17 @@ profile 0 <dbg> ble_central: discover_func: [CONSUMER SUBSCRIBED]
 profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 36
 profile 0 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 38
 profile 0 <dbg> ble_central: discover_func: [MOUSE SUBSCRIBED]
+profile 0 <dbg> ble_central: discover_func: [Discover complete]
 profile 0 <dbg> ble_central: notify_func: payload
 profile 0                    00 64 00 64 00 00 00 00  00                      |.d.d.... .
 profile 0 <dbg> ble_central: notify_func: payload
 profile 0                    00 28 00 32 00 00 00 00  00                      |.(.2.... .
+mouse button press: Button 1 count 1
+mouse button press: Mouse buttons set to 0x02
+profile 0 <dbg> ble_central: notify_func: payload
+profile 0                    02 00 00 00 00 00 00 00  00                      |........ .
+mouse button release: Button 1 count: 0
+mouse button release: Button 1 released
+mouse button release: Mouse buttons set to 0x00
+profile 0 <dbg> ble_central: notify_func: payload
+profile 0                    00 00 00 00 00 00 00 00  00                      |........ .

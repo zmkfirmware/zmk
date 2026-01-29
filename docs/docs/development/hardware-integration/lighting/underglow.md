@@ -11,7 +11,7 @@ See the documentation page on [pin control](../pinctrl.mdx) for detailed informa
 
 Shields written for boards which support RGB underglow should add a `boards/` folder underneath the shield folder. Inside this `boards/` folder, create a `<board>.overlay` for any of the boards the shield can be used with. Place all hardware-specific configurations in these `.overlay` files.
 
-For example: the `kyria` shield has a [`boards/nice_nano_v2.overlay`](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/boards/nice_nano_v2.overlay) and a [`boards/nrfmicro_13.overlay`](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/boards/nrfmicro_13.overlay), which configure a WS2812 LED strip for the `nice_nano_v2` and `nrfmicro_13` boards respectively.
+For example: the `kyria` shield has a [`boards/nice_nano.overlay`](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/boards/nice_nano.overlay) and a [`boards/nrfmicro_13.overlay`](https://github.com/zmkfirmware/zmk/blob/main/app/boards/shields/kyria/boards/nrfmicro_13.overlay), which configure a WS2812 LED strip for the `nice_nano` and `nrfmicro_13` boards respectively.
 
 ### nRF52-Based Boards
 

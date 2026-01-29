@@ -1,0 +1,8 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Layer Adder Behavior
+
+compatible: "zmk,behavior-add-layer"
+
+include: zero_param.yaml

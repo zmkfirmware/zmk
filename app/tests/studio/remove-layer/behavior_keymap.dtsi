@@ -1,0 +1,34 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        remove_layer_behavior: remove_layer_behavior {
+            compatible = "zmk,behavior-remove-layer";
+            #binding-cells = <1>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp A &tog 1
+                &remove_layer_behavior 1 &tog 2>;
+        };
+
+        layer_1 {
+            bindings = <
+                &kp B &tog 1
+                &remove_layer_behavior 0 &trans>;
+        };
+
+        layer_2 {
+            bindings = <
+                &kp C &trans
+                &none &trans>;
+        };
+    };
+};

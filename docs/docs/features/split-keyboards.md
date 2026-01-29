@@ -5,20 +5,6 @@ sidebar_label: Split Keyboards
 
 ZMK supports setups where a keyboard is split into two or more physical parts (also called "sides" or "halves" when split in two), each with their own controller running ZMK. The parts communicate with each other to work as a single keyboard device.
 
-:::note[Split communication protocols]
-ZMK supports split keyboards that communicate with each other wirelessly over BLE.
-
-Full-duplex UART, wired split support is currently experimental, and is available for advanced/technical users to test.
-
-Future single-wire, half-duplex UART support, which is planned, will allow using wired ZMK with designs like Corne, Sweep, etc. that use only a single GPIO pin for bidirectional communication between split sides.
-:::
-
-:::warning[Hot Plugging Cables]
-
-Many popular cables, in particular, TRRS/TRS cables, can cause irreparable damage to controllers if they are inserted or removed when power is already present on them. Whether or not you are using the wired split functionality or not, _never_ insert or remove such a cable when a controller is powered by USB _or_ battery.
-
-:::
-
 ## Central and Peripheral Roles
 
 In split keyboards running ZMK, one part is assigned the "central" role which receives key position and sensor events from the other parts that are called "peripherals."
@@ -46,6 +32,40 @@ Also see the reference section on [split keyboards configuration](../config/spli
 Since peripherals communicate through centrals, the key and sensor events originating from them will naturally have a larger latency, especially with a wireless split communication protocol.
 For the currently used BLE-based transport, split communication increases the average latency by 3.75ms with a worst case increase of 7.5ms.
 
+## Split Transports
+
+ZMK supports two transports for connecting split parts: Bluetooth and full-duplex wired UART. Only one transport can be active at a time, so designs involving some portions connected via Bluetooth and others via full-duplex wired are _not_ supported.
+
+:::warning[Hot Plugging Cables]
+
+Many popular cables, in particular, TRRS/TRS cables, can cause irreparable damage to controllers if they are inserted or removed when power is already present on them. Whether or not you are using the wired split functionality or not, _never_ insert or remove such a cable when a controller is powered by USB _or_ battery.
+
+:::
+
+### Bluetooth
+
+[Bluetooth](./bluetooth.md) is the most well tested and flexible transport available in ZMK. Using Bluetooth, a central can connect to multiple peripherals, enabling the use of a [dongle](../development/hardware-integration/dongle.mdx) to improve battery life, or allowing for multi-part split keyboards.
+
+This transport will be enabled for designs that set `CONFIG_ZMK_SPLIT=y` and have `CONFIG_ZMK_BLE=y` set by a supported MCU/controller.
+
+### Full-Duplex Wired (UART)
+
+The full-duplex wired UART transport is a recent addition, and is intended for testing by early adopters. It allows for fully functional communication between one central and one peripheral. Unlike the Bluetooth transport, the central cannot currently have more than one peripheral connected via wired split.
+
+This transport will be enabled for designs that set `CONFIG_ZMK_SPLIT=y` and have a node with `compatible = "zmk,wired-split";` present in their devicetree configuration.
+
+:::note[Full Duplex vs Half Duplex]
+Full-duplex UART requires the use of two wires connecting the halves. Future half-duplex (single-wire) UART support, which is planned, will allow using wired ZMK with designs such as the Corne, Sweep, etc. that use only a single GPIO pin for bidirectional communication between split sides.
+
+Until half-duplex support is completed, those particular designs will not work with the wired split transport, and can only be used with the Bluetooth transport.
+:::
+
+### Runtime Switching
+
+ZMK features highly experimental support for switching between the two available transports. This requires specially designed hardware, and attempting to use this feature on a keyboard not explicitly designed for it (e.g. Corne, Sofle) _WILL_ cause permanent damage.
+
+Currently, there are no open source/reference designs that implement this functionality, and only experienced designers with extensive EE knowledge should attempt to implement a design with this functionality.
+
 ## Building and Flashing Firmware
 
 ZMK split keyboards require building and flashing different firmware files for each split part.
@@ -67,7 +87,7 @@ Similar to how [bluetooth profiles](bluetooth.md) are managed between the keyboa
 
 In practice, this means that your split keyboard parts will automatically pair and work the first time they are all on at the same time.
 However, if this process somehow went wrong or you used controllers in a different split keyboard configuration before, you will need to explicitly clear the stored bond information so that the parts can pair properly.
-For this, please follow [the specified procedure](../troubleshooting/connection-issues.mdx#split-keyboard-halves-unable-to-pair) in the troubleshooting section.
+For this, please follow [the specified procedure](../troubleshooting/connection-issues.mdx#split-keyboard-parts-unable-to-pair) in the troubleshooting section.
 
 :::warning
 If the central keyboard part is either advertising for a pairing or waiting for disconnected peripherals, it will consume more power and drain batteries faster.

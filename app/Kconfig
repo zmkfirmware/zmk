@@ -31,10 +31,10 @@ config BT_DIS_PNP_VID
 config BT_DIS_PNP_PID
     default 0x615E
 
-config BT_DIS_MODEL
+config BT_DIS_MODEL_NUMBER_STR
     default ZMK_KEYBOARD_NAME
 
-config BT_DIS_MANUF
+config BT_DIS_MANUF_NAME_STR
     default "ZMK Project"
 
 # Hardware specific overrides
@@ -129,7 +129,9 @@ config ZMK_USB_BOOT
     bool "USB Boot Protocol Support"
     depends on ZMK_USB
     select USB_HID_BOOT_PROTOCOL
-    select USB_DEVICE_SOF
+
+config USB_DEVICE_INITIALIZE_AT_BOOT
+    default n
 
 if ZMK_USB
 
@@ -185,10 +187,6 @@ config BT_SMP_ALLOW_UNAUTH_OVERWRITE
 config BT_CTLR_PHY_2M
     default n if ZMK_BLE_EXPERIMENTAL_CONN
 
-# BT_TINYCRYPT_ECC is required for BT_SMP_SC_PAIR_ONLY when using HCI
-config BT_TINYCRYPT_ECC
-    default y if BT_HCI && !BT_CTLR
-
 config ZMK_BLE_THREAD_STACK_SIZE
     int "BLE notify thread stack size"
     default 768
@@ -218,9 +216,6 @@ config BT_GATT_NOTIFY_MULTIPLE
 
 config BT_GATT_AUTO_SEC_REQ
     default (ZMK_SPLIT_BLE && !ZMK_SPLIT_ROLE_CENTRAL)
-
-config BT_DEVICE_APPEARANCE
-    default 961
 
 config BT_PERIPHERAL_PREF_MIN_INT
     default 6
@@ -478,13 +473,15 @@ endmenu
 
 menu "Advanced"
 
+rsource "src/boot/Kconfig"
+
 menu "Initialization Priorities"
 
 if USB_DEVICE_STACK
 
 config ZMK_USB_INIT_PRIORITY
     int "USB Init Priority"
-    default 94
+    default 96
 
 config ZMK_USB_HID_INIT_PRIORITY
     int "USB HID Init Priority"
@@ -653,6 +650,13 @@ endmenu # Advanced
 
 endmenu # ZMK
 
+if SOC_FAMILY_NORDIC_NRF
+
+config NRF_SOC_VALIDATE_HEADERS_DISABLED
+    default y
+
+endif
+
 config KERNEL_BIN_NAME
     default "zmk"
 
@@ -687,11 +691,6 @@ config ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION
 
 endif # ZMK_KEYMAP_SENSORS
 
-choice CBPRINTF_IMPLEMENTATION
-    default CBPRINTF_NANO
-
-endchoice
-
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
@@ -704,8 +703,6 @@ rsource "boards/shields/*/Kconfig.shield"
 # This loads custom shields defconfigs (from BOARD_ROOT)
 # Duplicated from Kconfig.zephyr
 osource "$(KCONFIG_BINARY_DIR)/Kconfig.shield.defconfig"
-
-source "$(BOARD_DIR)/Kconfig.defconfig"
 
 # This loads board and shield Kconfigs found under zmk-config/config/
 osource "$(ZMK_CONFIG)/boards/shields/*/Kconfig.defconfig"

@@ -2,8 +2,12 @@
 # SPDX-License-Identifier: MIT
 
 config SYSTEM_WORKQUEUE_STACK_SIZE
-    default 2048 if SOC_RP2040
-    default 2048 if ZMK_BLE
+    default 3072 if ZMK_DISPLAY
+    default 2048
+
+# Basic
+config BT_DEVICE_APPEARANCE
+    default 961
 
 # HID
 if ZMK_HID_REPORT_TYPE_HKRO
@@ -110,4 +114,5 @@ config ZMK_BATTERY_REPORT_INTERVAL
     default 60
 
 # Imports
+rsource "src/boot/Kconfig.defaults"
 rsource "src/split/Kconfig.defaults"

@@ -122,12 +122,15 @@ void release_peripheral_input_subs(struct bt_conn *conn) {
     for (size_t i = 0; i < ARRAY_SIZE(peripheral_input_slots); i++) {
         if (peripheral_input_slots[i].conn == conn) {
             peripheral_input_slots[i].conn = NULL;
-            // memset(&peripheral_input_slots[i], 0, sizeof(struct peripheral_input_slot));
+            zmk_input_split_peripheral_disconnected(peripheral_input_slots[i].reg);
         }
     }
 }
 
 #endif // IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
+
+static zmk_split_transport_central_status_changed_cb_t transport_status_cb;
+static bool is_enabled;
 
 static struct peripheral_slot peripherals[ZMK_SPLIT_BLE_PERIPHERAL_COUNT];
 
@@ -252,6 +255,12 @@ int confirm_peripheral_slot_conn(struct bt_conn *conn) {
     peripherals[idx].state = PERIPHERAL_SLOT_STATE_CONNECTED;
     return 0;
 }
+
+static void notify_transport_status(void);
+
+static void notify_status_work_cb(struct k_work *_work) { notify_transport_status(); }
+
+static K_WORK_DEFINE(notify_status_work, notify_status_work_cb);
 
 #if ZMK_KEYMAP_HAS_SENSORS
 
@@ -874,6 +883,11 @@ static void split_central_device_found(const bt_addr_le_t *addr, int8_t rssi, ui
 }
 
 static int start_scanning(void) {
+    if (!is_enabled) {
+        LOG_DBG("Not scanning, we're disabled");
+        return 0;
+    }
+
     // No action is necessary if central is already scanning.
     if (is_scanning) {
         LOG_DBG("Scanning already running");
@@ -931,6 +945,7 @@ static void split_central_connected(struct bt_conn *conn, uint8_t conn_err) {
 
     confirm_peripheral_slot_conn(conn);
     split_central_process_connection(conn);
+    k_work_submit(&notify_status_work);
 }
 
 static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
@@ -951,10 +966,6 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
 
     k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
     k_work_submit(&peripheral_event_work);
-    // struct zmk_peripheral_battery_state_changed ev = {
-    //     .source = peripheral_slot_index_for_conn(conn), .state_of_charge = 0};
-    // k_msgq_put(&peripheral_batt_lvl_msgq, &ev, K_NO_WAIT);
-    // k_work_submit(&peripheral_batt_lvl_work);
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
 
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
@@ -964,8 +975,10 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
     err = release_peripheral_slot_for_conn(conn);
 
     if (err < 0) {
-        return;
+        LOG_WRN("Failed to release peripheral slot (%d)", err);
     }
+
+    k_work_submit(&notify_status_work);
 
     start_scanning();
 }
@@ -1112,9 +1125,9 @@ static int split_bt_invoke_behavior_payload(struct central_cmd_wrapper payload_w
     return 0;
 };
 
-static int finish_init() {
-    return IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START) ? 0 : start_scanning();
-}
+static int finish_init();
+
+static bool settings_loaded = false;
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 
@@ -1189,18 +1202,89 @@ static int split_central_bt_get_available_source_ids(uint8_t *sources) {
     return count;
 }
 
+static int split_central_bt_set_enabled(bool enabled) {
+    is_enabled = enabled;
+    if (enabled) {
+        return start_scanning();
+    } else {
+        int err = stop_scanning();
+        if (err < 0) {
+            LOG_WRN("Failed to stop scanning for peripherals (%d)", err);
+        }
+
+        for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
+            if (peripherals[i].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+                continue;
+            }
+
+            err = bt_conn_disconnect(peripherals[i].conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
+            if (err < 0) {
+                LOG_WRN("Failed to disconnect a peripheral (%d)", err);
+            }
+        }
+
+        return 0;
+    }
+}
+
+static int
+split_central_bt_set_status_callback(zmk_split_transport_central_status_changed_cb_t cb) {
+    transport_status_cb = cb;
+    return 0;
+}
+
+static struct zmk_split_transport_status split_central_bt_get_status() {
+    uint8_t _source_ids[ZMK_SPLIT_BLE_PERIPHERAL_COUNT];
+
+    int count = split_central_bt_get_available_source_ids(_source_ids);
+
+    enum zmk_split_transport_connections_status conn_status;
+
+    if (count == 0) {
+        conn_status = ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_DISCONNECTED;
+    } else if (count == ZMK_SPLIT_BLE_PERIPHERAL_COUNT) {
+        conn_status = ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_ALL_CONNECTED;
+    } else {
+        conn_status = ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_SOME_CONNECTED;
+    }
+
+    return (struct zmk_split_transport_status){
+        .available = !IS_ENABLED(CONFIG_ZMK_BLE_CLEAR_BONDS_ON_START) && settings_loaded,
+        .enabled = is_enabled,
+        .connections = conn_status,
+    };
+}
+
 static const struct zmk_split_transport_central_api central_api = {
     .send_command = split_central_bt_send_command,
     .get_available_source_ids = split_central_bt_get_available_source_ids,
+    .set_enabled = split_central_bt_set_enabled,
+    .set_status_callback = split_central_bt_set_status_callback,
+    .get_status = split_central_bt_get_status,
 };
 
-ZMK_SPLIT_TRANSPORT_CENTRAL_REGISTER(bt_central, &central_api);
+ZMK_SPLIT_TRANSPORT_CENTRAL_REGISTER(bt_central, &central_api, CONFIG_ZMK_SPLIT_BLE_PRIORITY);
+
+static void notify_transport_status(void) {
+    if (transport_status_cb) {
+        transport_status_cb(&bt_central, split_central_bt_get_status());
+    }
+}
+
+static int finish_init() {
+    settings_loaded = true;
+
+    if (!transport_status_cb) {
+        return 0;
+    }
+
+    return transport_status_cb(&bt_central, split_central_bt_get_status());
+}
 
 void peripheral_event_work_callback(struct k_work *work) {
     struct peripheral_event_wrapper ev;
     while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
-        LOG_DBG("Trigger key position state change for %d",
-                ev.event.data.key_position_event.position);
+        LOG_DBG("Trigger key position state change of type %d", ev.event.type);
         zmk_split_transport_central_peripheral_event_handler(&bt_central, ev.source, ev.event);
     }
 }

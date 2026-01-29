@@ -6,7 +6,7 @@ sidebar_label: Modules
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-ZMK makes use of [Zephyr modules](https://docs.zephyrproject.org/3.5.0/develop/modules.html) to include additional source code or configuration files into its build. You can think of them as similar to plugins or themes. The most common uses of this feature are:
+ZMK makes use of [Zephyr modules](https://docs.zephyrproject.org/4.1.0/develop/modules.html) to include additional source code or configuration files into its build. You can think of them as similar to plugins or themes. The most common uses of this feature are:
 
 - Building firmware for a keyboard external to ZMK's tree
 - Adding functionality to ZMK, such as a driver or a behavior
@@ -27,11 +27,11 @@ The shift to using modules for keyboards is a relatively recent one, and not all
 
 When [using GitHub Actions to build ZMK](../user-setup.mdx), adding modules is as simple as modifying the `west.yml` found in your `zmk-config`'s `config` directory. The recommended way of doing so is:
 
-1. Find the URL base (the parent URL) for the module and add it as an entry to the [remotes](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html#remotes).
-2. Add the module as an entry to the [projects](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html#projects).
+1. Find the URL base (the parent URL) for the module and add it as an entry to the [remotes](https://docs.zephyrproject.org/4.1.0/develop/west/manifest.html#remotes).
+2. Add the module as an entry to the [projects](https://docs.zephyrproject.org/4.1.0/develop/west/manifest.html#projects).
    Aside from the mandatory `name`, `remote`, and the commonly used `revision` properties, take note of the `import` property under `projects`. Some modules may have other modules as dependencies. This property allows the specifying of an additional west manifest file found in the tree of the module, which will automatically import all dependencies.
 
-For more information on `west.yml`, see [West Manifests](https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html).
+For more information on `west.yml`, see [West Manifests](https://docs.zephyrproject.org/4.1.0/develop/west/manifest.html).
 
 #### Examples
 

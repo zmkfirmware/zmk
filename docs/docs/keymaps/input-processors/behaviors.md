@@ -76,6 +76,6 @@ The behaviors input processor uses a `compatible` property of `"zmk,input-proces
 
 ### User Properties
 
-- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to scale. Usually, this is `INPUT_EV_KEY` for key/button events. The default value if omitted is `INPUT_EV_KEY`.
-- `codes` - The specific codes of the given type to capture, e.g. [button event codes](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L180). This list must be the same length as the `bindings` property.
+- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to scale. Usually, this is `INPUT_EV_KEY` for key/button events. The default value if omitted is `INPUT_EV_KEY`.
+- `codes` - The specific codes of the given type to capture, e.g. [button event codes](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L188). This list must be the same length as the `bindings` property.
 - `bindings` - The bindings to trigger when an event with the corresponding code is processed.

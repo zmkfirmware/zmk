@@ -34,13 +34,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install yaml2json
-        run: python3 -m pip install remarshal
-
       - name: Fetch Build Matrix
         run: |
-          echo "build_matrix=$(yaml2json '${{ inputs.build_matrix_path }}' | jq -c .)" >> $GITHUB_ENV
-          yaml2json "${{ inputs.build_matrix_path }}" | jq
+          echo "build_matrix=$(yq -oj -I0 '${{ inputs.build_matrix_path }}')" >> $GITHUB_ENV
+          yq -oj "${{ inputs.build_matrix_path }}"
 
   build:
     runs-on: ubuntu-latest
@@ -52,6 +49,12 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.matrix.outputs.build_matrix) }}
     steps:
+      - name: Act Workaround # https://github.com/nektos/act/issues/973
+        if: ${{ env.ACT }}
+        run: |
+          apt-get update && apt-get install -y curl unzip
+          curl -fsSL https://deb.nodesource.com/setup_22.x | bash && apt install -y nodejs
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -60,7 +63,7 @@ jobs:
           echo "build_dir=$(mktemp -d)" >> $GITHUB_ENV
 
       - name: Prepare variables
-        shell: sh -x {0}
+        shell: bash -x {0}
         env:
           board: ${{ matrix.board }}
           shield: ${{ matrix.shield }}
@@ -84,7 +87,7 @@ jobs:
           echo "extra_west_args=${extra_west_args}" >> $GITHUB_ENV
           echo "extra_cmake_args=${shield:+-DSHIELD=\"$shield\"}${zmk_load_arg}" >> $GITHUB_ENV
           echo "display_name=${shield:+$shield - }${board}" >> $GITHUB_ENV
-          echo "artifact_name=${artifact_name:-${shield:+$shield-}${board}-zmk}" >> $GITHUB_ENV
+          echo "artifact_name=${artifact_name:-${shield:+$shield-}${board//\//_}-zmk}" >> $GITHUB_ENV
 
       - name: Copy config files to isolated temporary directory
         run: |
@@ -117,7 +120,14 @@ jobs:
 
       - name: West Update
         working-directory: ${{ env.base_dir }}
-        run: west update
+        run: west update --fetch-opt=--filter=tree:0
+
+      - name: Check ZMK revision
+        working-directory: ${{ env.base_dir }}
+        run: |
+          zmk_revision=$(west list -f "{revision}" zmk)
+          echo "zmk_revision=${zmk_revision}" >> $GITHUB_ENV
+          echo "ZMK revision: ${zmk_revision}"
 
       - name: West Zephyr export
         working-directory: ${{ env.base_dir }}
@@ -127,6 +137,15 @@ jobs:
         working-directory: ${{ env.base_dir }}
         shell: sh -x {0}
         run: west build -s zmk/app -d "${{ env.build_dir }}" -b "${{ matrix.board }}" ${{ env.extra_west_args }} -- -DZMK_CONFIG=${{ env.base_dir }}/${{ inputs.config_path }} ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
+
+      - name: Warn about building from main if build fails
+        if: failure() && env.zmk_revision == 'main'
+        run: |
+          echo "# Consider Pinning ZMK" >> $GITHUB_STEP_SUMMARY
+          echo "Your recent build failure might be the result of breaking changes made to ZMK's main branch." >> $GITHUB_STEP_SUMMARY
+          echo "Consider [pinning your ZMK version](https://zmk.dev/blog/2025/06/20/pinned-zmk) to a release for increased stability." >> $GITHUB_STEP_SUMMARY
+          echo "See also the [list of released versions](https://github.com/zmkfirmware/zmk/releases)." >> $GITHUB_STEP_SUMMARY
+          echo "If you wish to stay on main, check the most recent pending release PR for breaking changes. [Our blog](https://zmk.dev/blog) may have upgrade information if breaking changes are significant." >> $GITHUB_STEP_SUMMARY
 
       - name: ${{ env.display_name }} Kconfig file
         run: |

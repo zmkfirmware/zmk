@@ -7,13 +7,21 @@
 #pragma once
 
 #include <zmk/events/position_state_changed.h>
+#include <zephyr/sys/util.h>
+#include <zephyr/devicetree.h>
+
+#define ZMK_KEYMAP_LAYERS_FOREACH(_fn)                                                             \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING),                                    \
+                (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), _fn)),                                   \
+                (DT_FOREACH_CHILD_STATUS_OKAY(DT_INST(0, zmk_keymap), _fn)))
+
+#define ZMK_KEYMAP_LAYERS_FOREACH_SEP(_fn, _sep)                                                   \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING),                                    \
+                (DT_FOREACH_CHILD_SEP(DT_INST(0, zmk_keymap), _fn, _sep)),                         \
+                (DT_FOREACH_CHILD_STATUS_OKAY_SEP(DT_INST(0, zmk_keymap), _fn, _sep)))
 
 #define ZMK_LAYER_CHILD_LEN_PLUS_ONE(node) 1 +
-#define ZMK_KEYMAP_LAYERS_LEN                                                                      \
-    (COND_CODE_1(                                                                                  \
-        IS_ENABLED(CONFIG_ZMK_STUDIO),                                                             \
-        (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), ZMK_LAYER_CHILD_LEN_PLUS_ONE)),                  \
-        (DT_FOREACH_CHILD_STATUS_OKAY(DT_INST(0, zmk_keymap), ZMK_LAYER_CHILD_LEN_PLUS_ONE))) 0)
+#define ZMK_KEYMAP_LAYERS_LEN (ZMK_KEYMAP_LAYERS_FOREACH(ZMK_LAYER_CHILD_LEN_PLUS_ONE) 0)
 
 /**
  * @brief A layer ID is a stable identifier to refer to a layer, regardless of ordering.
@@ -36,17 +44,19 @@ zmk_keymap_layer_id_t zmk_keymap_layer_index_to_id(zmk_keymap_layer_index_t laye
 
 zmk_keymap_layer_id_t zmk_keymap_layer_default(void);
 zmk_keymap_layers_state_t zmk_keymap_layer_state(void);
+zmk_keymap_layers_state_t zmk_keymap_layer_locks(void);
 bool zmk_keymap_layer_active(zmk_keymap_layer_id_t layer);
+bool zmk_keymap_layer_locked(zmk_keymap_layer_id_t layer);
 zmk_keymap_layer_index_t zmk_keymap_highest_layer_active(void);
-int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer);
-int zmk_keymap_layer_deactivate(zmk_keymap_layer_id_t layer);
-int zmk_keymap_layer_toggle(zmk_keymap_layer_id_t layer);
-int zmk_keymap_layer_to(zmk_keymap_layer_id_t layer);
+int zmk_keymap_layer_activate(zmk_keymap_layer_id_t layer, bool locking);
+int zmk_keymap_layer_deactivate(zmk_keymap_layer_id_t layer, bool locking);
+int zmk_keymap_layer_toggle(zmk_keymap_layer_id_t layer, bool locking);
+int zmk_keymap_layer_to(zmk_keymap_layer_id_t layer, bool locking);
 const char *zmk_keymap_layer_name(zmk_keymap_layer_id_t layer);
 
 const struct zmk_behavior_binding *zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer,
-                                                                       uint8_t binding_idx);
-int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer, uint8_t binding_idx,
+                                                                       uint16_t binding_idx);
+int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer, uint16_t binding_idx,
                                         const struct zmk_behavior_binding binding);
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)

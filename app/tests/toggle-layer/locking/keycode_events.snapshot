@@ -1,0 +1,16 @@
+kp_pressed: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+mo_pressed: position 2 layer 2
+tog_pressed: position 1 layer 2
+tog_released: position 1 layer 2
+mo_released: position 2 layer 2
+kp_pressed: usage_page 0x07 keycode 0x1A implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x1A implicit_mods 0x00 explicit_mods 0x00
+mo_pressed: position 3 layer 2
+mo_released: position 3 layer 2
+kp_pressed: usage_page 0x07 keycode 0x1A implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x1A implicit_mods 0x00 explicit_mods 0x00
+tog_pressed: position 1 layer 2
+tog_released: position 1 layer 2
+kp_pressed: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+kp_released: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00

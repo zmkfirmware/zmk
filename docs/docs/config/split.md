@@ -51,7 +51,7 @@ Following wired [split keyboard](../features/split-keyboards.md) settings are de
 
 | Config                                       | Type | Description                                                       | Default                                                       |
 | -------------------------------------------- | ---- | ----------------------------------------------------------------- | ------------------------------------------------------------- |
-| `CONFIG_ZMK_SPLIT_WIRED`                     | bool | Use wired connection to communicate between split keyboard halves | y (if no BLE split and devicetree is set appropriately)       |
+| `CONFIG_ZMK_SPLIT_WIRED`                     | bool | Use wired connection to communicate between split keyboard halves | y (if devicetree is set appropriately)                        |
 | `CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC`     | bool | Async (DMA) mode                                                  | y if the driver supports it (excluding nRF52 with known bugs) |
 | `CONFIG_ZMK_SPLIT_WIRED_UART_MODE_INTERRUPT` | bool | Interrupt mode                                                    | y if the hardware supports it                                 |
 | `CONFIG_ZMK_SPLIT_WIRED_UART_MODE_POLLING`   | bool | Polling mode                                                      | y if neither other mode is supported                          |

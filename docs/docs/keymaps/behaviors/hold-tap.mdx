@@ -66,7 +66,7 @@ By default, layer-tap is configured with the ["tap-preferred" `flavor`](#interru
 Example:
 
 ```dts
-&lt 3 SPACE
+&lt 1 A
 ```
 
 ### Configuration
@@ -146,7 +146,7 @@ You'll then be able to use your new behavior with `&my_mt`.
 The most popular form of home-row mods is known as "timeless home-row mods", configured to minimize the dependency on timing.
 Timeless home-row mods define both a "left hand" and a "right hand" behavior.
 
-Below is an example of a left hand behavior:
+Below is an example of configuration to achieve this:
 
 ```dts
 / {
@@ -185,7 +185,7 @@ Below is a brief overview of the options set.
   This interrupt flavor is primarily used to decide between hold and tap, rather than using [tapping-term-ms](#tapping-term-ms).
   This matches how modifiers are used a majority of the time (hold shift, tap a key, release shift).
 - [`require-prior-idle-ms`](#require-prior-idle-ms) is set to 125ms to resolve to taps immediately when typing at speed, which helps eliminate typing delay.
-- [Positional hold taps](#positional-hold-tap-and-hold-trigger-key-positions) with [`hold-trigger-on-release`] are used to avoid accidental hold resolutions when typing sequences of letters all with the same hand.
+- [Positional hold taps](#positional-hold-tap-and-hold-trigger-key-positions) with [`hold-trigger-on-release`](#hold-trigger-on-release) are used to avoid accidental hold resolutions when typing sequences of letters all with the same hand.
 - [`tapping-term-ms`](#tapping-term-ms) is set to a higher value of 280ms, but not unreasonably high, so that same hand modifiers can still be used with intention.
 - [`quick-tap-ms`](#quick-tap-ms) is set to 175ms, for the event where a tapped key may wish to be held down.
 
@@ -415,7 +415,7 @@ the hold-tap. For home-row mods, this is not always ideal, because it prevents c
   </details>
 #### `hold-trigger-on-release`
 
-If set, instead of the keys listed in `hold-trigger-key-positions` producing a tap when _pressed_ before `tapping-term-ms` expires, they instead produce a tap when _released_ before `tapping-term-ms` expires.
+If set, instead of the keys **not** listed in `hold-trigger-key-positions` producing a tap when _pressed_ before `tapping-term-ms` expires, they instead produce a tap when _released_ before `tapping-term-ms` expires.
 
 ```dts
 &mt {

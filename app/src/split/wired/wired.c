@@ -148,21 +148,30 @@ void zmk_split_wired_async_tx(struct zmk_split_wired_async_state *state) {
     }
 }
 
-static void restart_rx_work_cb(struct k_work *work) {
-    struct k_work_delayable *dwork = k_work_delayable_from_work(work);
-    struct zmk_split_wired_async_state *state =
-        CONTAINER_OF(dwork, struct zmk_split_wired_async_state, restart_rx_work);
+int zmk_split_wired_async_rx(struct zmk_split_wired_async_state *state) {
 
     atomic_set_bit(&state->state, ASYNC_STATE_BIT_RXBUF0_USED);
     atomic_clear_bit(&state->state, ASYNC_STATE_BIT_RXBUF1_USED);
-
-    LOG_WRN("RESTART!");
 
     int ret = uart_rx_enable(state->uart, state->rx_bufs[0], state->rx_bufs_len,
                              CONFIG_ZMK_SPLIT_WIRED_ASYNC_RX_TIMEOUT);
     if (ret < 0) {
         LOG_ERR("Failed to enable RX (%d)", ret);
     }
+
+    return ret;
+}
+
+int zmk_split_wired_async_rx_cancel(struct zmk_split_wired_async_state *state) {
+    return uart_rx_disable(state->uart);
+}
+
+static void restart_rx_work_cb(struct k_work *work) {
+    struct k_work_delayable *dwork = k_work_delayable_from_work(work);
+    struct zmk_split_wired_async_state *state =
+        CONTAINER_OF(dwork, struct zmk_split_wired_async_state, restart_rx_work);
+
+    zmk_split_wired_async_rx(state);
 }
 
 static void async_uart_cb(const struct device *dev, struct uart_event *ev, void *user_data) {
@@ -247,14 +256,14 @@ int zmk_split_wired_async_init(struct zmk_split_wired_async_state *state) {
         return ret;
     }
 
-    atomic_set_bit(&state->state, ASYNC_STATE_BIT_RXBUF0_USED);
+    // atomic_set_bit(&state->state, ASYNC_STATE_BIT_RXBUF0_USED);
 
-    ret = uart_rx_enable(state->uart, state->rx_bufs[0], state->rx_bufs_len,
-                         CONFIG_ZMK_SPLIT_WIRED_ASYNC_RX_TIMEOUT);
-    if (ret < 0) {
-        LOG_ERR("Failed to enable RX (%d)", ret);
-        return ret;
-    }
+    // ret = uart_rx_enable(state->uart, state->rx_bufs[0], state->rx_bufs_len,
+    //                      CONFIG_ZMK_SPLIT_WIRED_ASYNC_RX_TIMEOUT);
+    // if (ret < 0) {
+    //     LOG_ERR("Failed to enable RX (%d)", ret);
+    //     return ret;
+    // }
 
     return 0;
 }

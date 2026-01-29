@@ -28,7 +28,7 @@ requires adding a `snippet: zmk-usb-logging` to your `build.yaml` file for any b
 ```yaml
 ---
 include:
-  - board: nice_nano_v2
+  - board: nice_nano
     shield: corne_left
     snippet: zmk-usb-logging
 ```
@@ -36,12 +36,12 @@ include:
 When building locally, the `-S`/`--snippet` flag can be passed to `west build` to enable the snippet, e.g.
 
 ```sh
-west build -b nice_nano_v2 -S zmk-usb-logging -- -DSHIELD="corne_left"
+west build -b nice_nano -S zmk-usb-logging -- -DSHIELD="corne_left"
 ```
 
 ### Additional Config
 
-Logging can be further configured using Kconfig described in [the Zephyr documentation](https://docs.zephyrproject.org/3.5.0/services/logging/index.html).
+Logging can be further configured using Kconfig described in [the Zephyr documentation](https://docs.zephyrproject.org/4.1.0/services/logging/index.html).
 For instance, setting `CONFIG_LOG_PROCESS_THREAD_STARTUP_DELAY_MS` to a large value such as `8000` might help catch issues that happen near keyboard
 boot, before you can connect to view the logs.
 
@@ -68,7 +68,7 @@ sudo tio /dev/ttyACM0
 </TabItem>
 <TabItem value="win">
 
-On Windows, you can use [PuTTY](https://www.putty.org/). Once installed, use Device Manager to figure out which COM port your controller is communicating on (listed under 'Ports (COM & LPT)') and specify that as the 'Serial line' in PuTTY.
+On Windows, you can use [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html). Once installed, use Device Manager to figure out which COM port your controller is communicating on (listed under 'Ports (COM & LPT)') and specify that as the 'Serial line' in PuTTY.
 
 ![Controller COM port](../assets/usb-logging/com.jpg)
 
@@ -86,7 +86,13 @@ You can connect to the device with [tio](https://tio.github.io/) (can be install
 sudo tio /dev/tty.usbmodem14401
 ```
 
-You should see tio printing `Disconnected` or `Connected` when you disconnect or reconnect the USB cable.
+Alternatively, `cu` should be preinstalled (see `man cu` for usage instructions):
+
+```sh
+sudo cu -l /dev/tty.usbmodem14401
+```
+
+You should see the console printing `Disconnected` or `Connected` when you disconnect or reconnect the USB cable.
 
 </TabItem>
 </Tabs>
@@ -97,7 +103,7 @@ From there, you should see the various log messages from ZMK and Zephyr, dependi
 
 Standard boards such as the nice!nano and Seeed Studio XIAO family have the necessary configuration for logging already added, however if you are developing your own standalone board you may wish to add the ability to use USB logging in the future.
 
-To do so, you need to follow the upstream Zephyr [`cdc-acm-console` snippet requirements](https://docs.zephyrproject.org/3.5.0/snippets/cdc-acm-console/README.html#requirements) steps.
+To do so, you need to follow the upstream Zephyr [`cdc-acm-console` snippet requirements](https://docs.zephyrproject.org/4.1.0/snippets/cdc-acm-console/README.html#requirements) steps.
 
 Usually, this just requires ensuring that the USB node has been tagged with the `zephyr_udc0` label, e.g.
 

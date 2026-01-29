@@ -208,7 +208,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
     HID_USAGE(HID_USAGE_GD_X),
     HID_USAGE(HID_USAGE_GD_Y),
-    HID_LOGICAL_MIN16(0xFF, -0x7F),
+    HID_LOGICAL_MIN16(0x00, 0x80),
     HID_LOGICAL_MAX16(0xFF, 0x7F),
     HID_REPORT_SIZE(0x10),
     HID_REPORT_COUNT(0x02),
@@ -226,7 +226,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_FEATURE(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
     HID_USAGE(HID_USAGE_GD_WHEEL),
-    HID_LOGICAL_MIN16(0xFF, -0x7F),
+    HID_LOGICAL_MIN16(0x00, 0x80),
     HID_LOGICAL_MAX16(0xFF, 0x7F),
     HID_PHYSICAL_MIN8(0x00),
     HID_PHYSICAL_MAX8(0x00),
@@ -242,7 +242,7 @@ static const uint8_t zmk_hid_report_desc[] = {
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
     HID_USAGE_PAGE(HID_USAGE_CONSUMER),
     HID_USAGE16_SINGLE(HID_USAGE_CONSUMER_AC_PAN),
-    HID_LOGICAL_MIN16(0xFF, -0x7F),
+    HID_LOGICAL_MIN16(0x00, 0x80),
     HID_LOGICAL_MAX16(0xFF, 0x7F),
     HID_PHYSICAL_MIN8(0x00),
     HID_PHYSICAL_MAX8(0x00),
@@ -289,8 +289,6 @@ struct zmk_hid_keyboard_report {
     struct zmk_hid_keyboard_report_body body;
 } __packed;
 
-#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
-
 struct zmk_hid_led_report_body {
     uint8_t leds;
 } __packed;
@@ -299,8 +297,6 @@ struct zmk_hid_led_report {
     uint8_t report_id;
     struct zmk_hid_led_report_body body;
 } __packed;
-
-#endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
 
 struct zmk_hid_consumer_report_body {
 #if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
