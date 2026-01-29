@@ -12,6 +12,8 @@ keyboard to USB for power but outputting to a different device over bluetooth.
 By default, output is sent to USB when both USB and BLE are connected.
 Once you select a different output, it will be remembered until you change it again.
 
+By default, if USB is selected but only BLE is available or vice versa the keyboard will output to the connected output. If this behavior is not desired you can change it so the keyboard will insist on using the selected output even if it not available using [`CONFIG_ZMK_ENDPOINT_DISABLE_FALLBACK`](../../config/system.md#general)
+
 :::note[Powering the keyboard via USB]
 ZMK is not always able to detect if the other end of a USB connection accepts keyboard input or not.
 So if you are using USB only to power your keyboard (for example with a charger or a portable power bank), you will want

@@ -10,6 +10,7 @@
  * The method by which data is sent.
  */
 enum zmk_transport {
+    ZMK_TRANSPORT_NONE,
     ZMK_TRANSPORT_USB,
     ZMK_TRANSPORT_BLE,
 };
