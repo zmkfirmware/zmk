@@ -6,4 +6,10 @@ if SHIELD_M60
 config ZMK_KEYBOARD_NAME
     default "m60"
 
+config PWM
+    default y
+
+config LED_PWM
+    default y
+
 endif

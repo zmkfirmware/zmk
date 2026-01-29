@@ -1,0 +1,18 @@
+&pinctrl {
+    /* configuration for pwm device, default state */
+    pwm0_default: pwm0_default {
+        group1 {
+            psels = <NRF_PSEL(PWM_OUT0, 0, 30)>, // LED 0 (red)
+                    <NRF_PSEL(PWM_OUT1, 0, 29)>, // LED 1 (green)
+                    <NRF_PSEL(PWM_OUT2, 0, 31)>; // LED 2 (blue)
+        };
+    };
+    pwm0_sleep: pwm0_sleep {
+        group1 {
+              psels = <NRF_PSEL(PWM_OUT0, 0, 30)>, // LED 0
+                      <NRF_PSEL(PWM_OUT1, 0, 29)>, // LED 1
+                      <NRF_PSEL(PWM_OUT2, 0, 31)>; // LED 2
+            low-power-enable;
+        };
+    };
+};
