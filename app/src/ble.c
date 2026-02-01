@@ -345,24 +345,19 @@ void zmk_ble_unpair_all(void) {
     }
 
     for (int i = 0; i < 8; i++) {
-        char setting_name[15];
+        char setting_name[32];
         sprintf(setting_name, "ble/profiles/%d", i);
 
         int err = settings_delete(setting_name);
         if (err) {
-            LOG_ERR("Failed to delete setting: %d", err);
+            LOG_ERR("Failed to delete profile setting: %d", err);
         }
-    }
 
-    // Hardcoding a reasonable hardcoded value of peripheral addresses
-    // to clear so we properly clear a split central as well.
-    for (int i = 0; i < 8; i++) {
-        char setting_name[32];
         sprintf(setting_name, "ble/peripheral_addresses/%d", i);
 
-        int err = settings_delete(setting_name);
+        err = settings_delete(setting_name);
         if (err) {
-            LOG_ERR("Failed to delete setting: %d", err);
+            LOG_ERR("Failed to delete peripheral setting: %d", err);
         }
     }
 }
