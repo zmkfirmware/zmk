@@ -2,18 +2,18 @@
 # SPDX-License-Identifier: MIT
 
 description: |
-  Triggers one or more actions if a specific key is held while the keyboard boots.
+  Triggers one or more actions if a combination of keys is held while the keyboard boots.
   This is typically used for recovering a keyboard in cases such as &bootloader
   being missing from the keymap or a split peripheral which isn't connected to
   the central, and therefore can't process the keymap.
 
-compatible: "zmk,boot-magic-key"
+compatible: "zmk,boot-magic-combo"
 
 properties:
-  key-position:
-    type: int
-    default: 0
-    description: Zero-based index of the key which triggers the action(s).
+  combo-positions:
+    type: array
+    required: true
+    description: Zero-based indices of the keys which must be simultaneously pressed to trigger the action(s).
   # Boot magic actions:
   jump-to-bootloader:
     type: boolean

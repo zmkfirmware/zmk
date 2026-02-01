@@ -691,13 +691,13 @@ config ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION
 
 endif # ZMK_KEYMAP_SENSORS
 
-config ZMK_BOOT_MAGIC_KEY
+config ZMK_BOOT_MAGIC_COMBO
     bool "Enable actions when keys are held at boot"
     default y
-    depends on DT_HAS_ZMK_BOOT_MAGIC_KEY_ENABLED
+    depends on DT_HAS_ZMK_BOOT_MAGIC_COMBO_ENABLED
 
-config ZMK_BOOT_MAGIC_KEY_TIMEOUT_MS
-    int "Milliseconds to wait for a boot magic key at startup"
+config ZMK_BOOT_MAGIC_COMBO_TIMEOUT_MS
+    int "Milliseconds to wait for a boot magic combo at startup"
     default 500
 
 module = ZMK

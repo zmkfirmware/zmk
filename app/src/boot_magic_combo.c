@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define DT_DRV_COMPAT zmk_boot_magic_key
+#define DT_DRV_COMPAT zmk_boot_magic_combo
 
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
@@ -25,25 +25,38 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
+#define _COMBO_LEN(inst) uint8_t _CONCAT(_len_, inst)[DT_INST_PROP_LEN(inst, combo_positions)];
+#define MAX_BOOT_COMBO_LEN sizeof(union {DT_INST_FOREACH_STATUS_OKAY(_COMBO_LEN)})
+
 struct boot_key_config {
-    uint16_t key_position;
+    const uint16_t *combo_positions;
+    uint8_t combo_positions_len;
     bool jump_to_bootloader;
     bool reset_settings;
 };
 
+#define BOOT_KEY_COMBO_POSITIONS(n)                                                                \
+    static const uint16_t boot_key_combo_positions_##n[] = DT_INST_PROP(n, combo_positions);
+
 #define BOOT_KEY_CONFIG(n)                                                                         \
+    BOOT_KEY_COMBO_POSITIONS(n)                                                                   \
     {                                                                                              \
-        .key_position = DT_INST_PROP_OR(n, key_position, 0),                                       \
+        .combo_positions = boot_key_combo_positions_##n,                                          \
+        .combo_positions_len = DT_INST_PROP_LEN(n, combo_positions),                               \
         .jump_to_bootloader = DT_INST_PROP_OR(n, jump_to_bootloader, false),                       \
         .reset_settings = DT_INST_PROP_OR(n, reset_settings, false),                               \
     },
 
-static const struct boot_key_config boot_keys[] = {DT_INST_FOREACH_STATUS_OKAY(BOOT_KEY_CONFIG)};
+static struct boot_key_config boot_keys[] = {DT_INST_FOREACH_STATUS_OKAY(BOOT_KEY_CONFIG)};
+
+static bool boot_key_states[ARRAY_SIZE(boot_keys)][MAX_BOOT_COMBO_LEN] = {};
 
 static int64_t timeout_uptime;
 
 static int timeout_init(const struct device *device) {
-    timeout_uptime = k_uptime_get() + CONFIG_ZMK_BOOT_MAGIC_KEY_TIMEOUT_MS;
+    timeout_uptime = k_uptime_get() + CONFIG_ZMK_BOOT_MAGIC_COMBO_TIMEOUT_MS;
     return 0;
 }
 
@@ -79,10 +92,28 @@ static int event_listener(const zmk_event_t *eh) {
     }
 
     const struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
-    if (ev && ev->state) {
-        for (int i = 0; i < ARRAY_SIZE(boot_keys); i++) {
-            if (ev->position == boot_keys[i].key_position) {
-                trigger_boot_key(&boot_keys[i]);
+    if (!ev) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+
+    for (int i = 0; i < ARRAY_SIZE(boot_keys); i++) {
+        const struct boot_key_config *config = &boot_keys[i];
+        for (int j = 0; j < config->combo_positions_len; j++) {
+            if (ev->position == config->combo_positions[j]) {
+                boot_key_states[i][j] = ev->state;
+                if (ev->state) {
+                    bool all_keys_pressed = true;
+                    for (int k = 0; k < config->combo_positions_len; k++) {
+                        if (!boot_key_states[i][k]) {
+                            all_keys_pressed = false;
+                            break;
+                        }
+                    }
+                    if (all_keys_pressed) {
+                        trigger_boot_key(config);
+                    }
+                }
+                break;
             }
         }
     }
@@ -90,5 +121,7 @@ static int event_listener(const zmk_event_t *eh) {
     return ZMK_EV_EVENT_BUBBLE;
 }
 
-ZMK_LISTENER(boot_magic_key, event_listener);
-ZMK_SUBSCRIPTION(boot_magic_key, zmk_position_state_changed);
+ZMK_LISTENER(boot_magic_combo, event_listener);
+ZMK_SUBSCRIPTION(boot_magic_combo, zmk_position_state_changed);
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

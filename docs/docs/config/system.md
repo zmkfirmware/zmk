@@ -16,7 +16,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | Config                                 | Type   | Description                                                                           | Default |
 | -------------------------------------- | ------ | ------------------------------------------------------------------------------------- | ------- |
 | `CONFIG_ZMK_KEYBOARD_NAME`             | string | The name of the keyboard (max 16 characters)                                          |         |
-| `CONFIG_ZMK_BOOT_MAGIC_KEY_TIMEOUT_MS` | int    | Milliseconds to watch for [boot magic keys](../features/boot-magic-key.md) at startup | 500     |
+| `CONFIG_ZMK_BOOT_MAGIC_COMBO_TIMEOUT_MS` | int    | Milliseconds to watch for [boot magic combos](../features/boot-magic-combo.md) at startup | 500     |
 | `CONFIG_ZMK_WPM`                       | bool   | Enable calculating words per minute                                                   | n       |
 | `CONFIG_HEAP_MEM_POOL_SIZE`            | int    | Size of the heap memory pool                                                          | 8192    |
 
