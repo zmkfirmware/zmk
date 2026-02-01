@@ -41,9 +41,8 @@ struct boot_key_config {
     static const uint16_t boot_key_combo_positions_##n[] = DT_INST_PROP(n, combo_positions);
 
 #define BOOT_KEY_CONFIG(n)                                                                         \
-    BOOT_KEY_COMBO_POSITIONS(n)                                                                   \
-    {                                                                                              \
-        .combo_positions = boot_key_combo_positions_##n,                                          \
+    BOOT_KEY_COMBO_POSITIONS(n){                                                                   \
+        .combo_positions = boot_key_combo_positions_##n,                                           \
         .combo_positions_len = DT_INST_PROP_LEN(n, combo_positions),                               \
         .jump_to_bootloader = DT_INST_PROP_OR(n, jump_to_bootloader, false),                       \
         .reset_settings = DT_INST_PROP_OR(n, reset_settings, false),                               \
