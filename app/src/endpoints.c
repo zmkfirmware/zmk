@@ -38,10 +38,18 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 // Full name of the deprecated setting which stored preferred_transport with an older type.
 #define SETTING_PREFERRED_TRANSPORT_V1 SETTING_SUBTREE "/" SETTING_PREFERRED_TRANSPORT_V1_KEY
 
+#if IS_ENABLED(CONFIG_ZMK_USB)
+#define DEFAULT_TRANSPORT ZMK_TRANSPORT_USB
+#elif IS_ENABLED(CONFIG_ZMK_BLE)
+#define DEFAULT_TRANSPORT ZMK_TRANSPORT_BLE
+#else
+#define DEFAULT_TRANSPORT ZMK_TRANSPORT_NONE
+#endif
+
 static struct zmk_endpoint_instance current_instance = {};
 
 // Transport to use if multiple endpoints are ready
-static enum zmk_transport preferred_transport = ZMK_TRANSPORT_USB;
+static enum zmk_transport preferred_transport = DEFAULT_TRANSPORT;
 
 static void update_current_endpoint(void);
 
