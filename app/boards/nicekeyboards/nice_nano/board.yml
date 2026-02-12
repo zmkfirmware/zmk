@@ -1,11 +1,5 @@
 board:
-  name: nice_nano
-  vendor: nicekeyboards
-  socs:
-    - name: nrf52840
-  revision:
-    format: major.minor.patch
-    default: 2.0.0
-    revisions:
-      - name: 1.0.0
-      - name: 2.0.0
+  extend: nice_nano
+  variants:
+    - name: zmk
+      qualifier: nrf52840

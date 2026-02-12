@@ -1,0 +1,29 @@
+/*
+ * Copyright (c) 2026 Pete Johanson, Derek Schmell
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <../boards/jpconstantineau/bluemicro840/bluemicro840.dts>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+
+/ {
+    chosen {
+        zmk,battery = &vbatt;
+    };
+
+    // Node name must match original "EXT_POWER" label to preserve user settings.
+    EXT_POWER {
+        compatible = "zmk,ext-power-generic";
+        init-delay-ms = <20>;
+        control-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 7>;
+        output-ohms = <2000000>;
+        full-ohms = <(2000000 + 806000)>;
+    };
+
+};

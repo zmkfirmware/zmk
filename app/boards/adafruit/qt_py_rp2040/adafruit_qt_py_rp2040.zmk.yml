@@ -1,5 +1,5 @@
 file_format: "1"
-id: adafruit_qt_py_rp2040
+id: adafruit_qt_py_rp2040//zmk
 name: Adafruit QT Py RP2040
 type: board
 arch: arm

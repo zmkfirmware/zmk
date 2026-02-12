@@ -3,3 +3,5 @@ board:
   vendor: kbdfans
   socs:
     - name: rp2040
+      variants:
+        - name: zmk

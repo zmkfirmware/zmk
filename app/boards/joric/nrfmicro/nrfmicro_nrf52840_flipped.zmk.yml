@@ -1,5 +1,5 @@
 file_format: "1"
-id: nrfmicro/nrf52840/flipped
+id: nrfmicro/nrf52840/flipped_zmk
 name: nRFMicro nRF52840 (flipped)
 type: board
 arch: arm

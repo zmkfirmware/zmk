@@ -3,6 +3,8 @@ boards:
     vendor: lowprokb
     socs:
       - name: nrf52840
+        variants:
+          - name: zmk
     revision:
       format: major.minor.patch
       default: 2.0.0
@@ -14,6 +16,8 @@ boards:
     vendor: lowprokb
     socs:
       - name: nrf52840
+        variants:
+          - name: zmk
     revision:
       format: major.minor.patch
       default: 2.0.0

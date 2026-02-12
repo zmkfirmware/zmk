@@ -277,6 +277,7 @@ jobs:
                       );
                     } else {
                       console.error("Board without keys or interconnect");
+                      return [];
                     }
                     break;
                   case "shield":

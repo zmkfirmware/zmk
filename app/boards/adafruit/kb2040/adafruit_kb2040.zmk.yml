@@ -1,5 +1,5 @@
 file_format: "1"
-id: adafruit_kb2040
+id: adafruit_kb2040//zmk
 name: Adafruit KB2040
 type: board
 arch: arm

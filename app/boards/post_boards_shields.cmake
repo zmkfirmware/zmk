@@ -5,7 +5,7 @@
 #    * single overlay,
 #    * or per board/shield.
 
-list(APPEND KEYMAP_DIRS ${BOARD_DIR})
+list(APPEND KEYMAP_DIRS "${BOARD_DIRECTORIES}")
 get_filename_component(BOARD_DIR_NAME ${BOARD_DIR} NAME)
 # Give a shield like `kyria_rev2_left` we want to use `kyria_rev2` and `kyria` as candidate names for
 # overlay/conf/keymap files.
@@ -81,7 +81,7 @@ endif()
 if(NOT KEYMAP_FILE)
     message("${NORMALIZED_BOARD_TARGET} for ${NORMALIZED_BOARD_QUALIFIERS} for ${BOARD} with version ${BOARD_REVISION}")
     foreach(keymap_dir ${KEYMAP_DIRS})
-        foreach(keymap_prefix ${shield_candidate_names} ${SHIELD_AS_LIST} ${SHIELD_DIR} "${BOARD}_${BOARD_REVISION_STRING}" ${BOARD} ${BOARD_DIR_NAME})
+        foreach(keymap_prefix ${shield_candidate_names} ${SHIELD_AS_LIST} ${SHIELD_DIR} "${NORMALIZED_BOARD_TARGET}" "${BOARD}_${BOARD_REVISION_STRING}" ${BOARD} ${BOARD_DIR_NAME})
             if (EXISTS ${keymap_dir}/${keymap_prefix}.keymap)
                 set(KEYMAP_FILE "${keymap_dir}/${keymap_prefix}.keymap" CACHE STRING "Selected keymap file")
                 message(STATUS "Using keymap file: ${KEYMAP_FILE}")
