@@ -325,7 +325,7 @@ static void input_handler(const struct input_listener_config *config,
             }
         }
 
-        zmk_endpoints_send_mouse_report();
+        zmk_endpoint_send_mouse_report();
         zmk_hid_mouse_scroll_set(0, 0);
         zmk_hid_mouse_movement_set(0, 0);
 

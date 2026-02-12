@@ -93,7 +93,7 @@ int zmk_pm_soft_off(void) {
     const struct device *devs;
 
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-    zmk_endpoints_clear_current();
+    zmk_endpoint_clear_reports();
     // Need to sleep to give any other threads a chance so submit endpoint data.
     k_sleep(K_MSEC(100));
 #endif
