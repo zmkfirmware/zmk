@@ -3389,7 +3389,9 @@ export default [
       macos: true,
       ios: null,
     },
-    footnotes: {},
+    footnotes: {
+      macos: ["macosInternational"],
+    },
   },
   {
     names: ["INTERNATIONAL_2", "INT2", "INT_KATAKANAHIRAGANA", "INT_KANA"],
@@ -3431,7 +3433,9 @@ export default [
       macos: true,
       ios: null,
     },
-    footnotes: {},
+    footnotes: {
+      macos: ["macosInternational"],
+    },
   },
   {
     names: ["INTERNATIONAL_4", "INT4", "INT_HENKAN"],
@@ -3561,7 +3565,7 @@ export default [
   },
   {
     names: ["LANGUAGE_1", "LANG1", "LANG_HANGEUL"],
-    description: "한/영 (Language 1), on macOS かな for Japanese mode",
+    description: "한/영 (Language 1)",
     context: "Keyboard",
     clarify: false,
     usages: [
@@ -3578,12 +3582,13 @@ export default [
       macos: true,
       ios: null,
     },
-    footnotes: {},
+    footnotes: {
+      macos: ["macosLanguage"],
+    },
   },
   {
     names: ["LANGUAGE_2", "LANG2", "LANG_HANJA"],
-    description:
-      "한자 (Language 2), on macOS 英数 (eisuu) for leaving Japanese mode",
+    description: "한자 (Language 2)",
     context: "Keyboard",
     clarify: false,
     usages: [
@@ -3600,7 +3605,9 @@ export default [
       macos: true,
       ios: null,
     },
-    footnotes: {},
+    footnotes: {
+      macos: ["macosLanguage"],
+    },
   },
   {
     names: ["LANGUAGE_3", "LANG3", "LANG_KATAKANA"],
