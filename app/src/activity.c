@@ -26,6 +26,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/usb.h>
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_BLE_PREVENT_SLEEP_WHILE_ACTIVE_CONNECTED)
+#include <zmk/ble.h>
+#endif
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 #include <zephyr/input/input.h>
 #endif
@@ -75,7 +79,16 @@ void activity_work_handler(struct k_work *work) {
     int32_t current = k_uptime_get();
     int32_t inactive_time = current - activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
-    if (inactive_time > MAX_SLEEP_MS && !is_usb_power_present()) {
+    bool prevent_sleep = is_usb_power_present();
+    #if IS_ENABLED(CONFIG_ZMK_BLE_PREVENT_SLEEP_WHILE_ACTIVE_CONNECTED)
+    prevent_sleep = prevent_sleep ||
+        #if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+            zmk_ble_active_profile_is_connected();
+        #else
+            zmk_split_bt_peripheral_is_connected();
+        #endif
+    #endif
+    if (inactive_time > MAX_SLEEP_MS && !prevent_sleep) {
         // Put devices in suspend power mode before sleeping
         set_state(ZMK_ACTIVITY_SLEEP);
 

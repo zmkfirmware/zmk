@@ -404,6 +404,11 @@ config ZMK_IDLE_SLEEP_TIMEOUT
     int "Milliseconds of inactivity before entering deep sleep"
     default 900000
 
+config ZMK_BLE_PREVENT_SLEEP_WHILE_ACTIVE_CONNECTED
+    bool "Enable keep awake for active profile"
+    depends on ZMK_BLE
+    default n
+
 endif # ZMK_SLEEP
 
 config ZMK_EXT_POWER
