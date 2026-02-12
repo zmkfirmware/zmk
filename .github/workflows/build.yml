@@ -61,7 +61,7 @@ jobs:
         with:
           node-version: "14.x"
       - name: Install @actions/artifact
-        run: npm install @actions/artifact
+        run: npm install @actions/artifact@5.0.3
       - name: Build
         uses: actions/github-script@v7
         id: boards-list
