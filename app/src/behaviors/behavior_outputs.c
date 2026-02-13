@@ -65,6 +65,8 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         return zmk_endpoint_set_preferred_transport(ZMK_TRANSPORT_USB);
     case OUT_BLE:
         return zmk_endpoint_set_preferred_transport(ZMK_TRANSPORT_BLE);
+    case OUT_NONE:
+        return zmk_endpoint_set_preferred_transport(ZMK_TRANSPORT_NONE);
     default:
         LOG_ERR("Unknown output command: %d", binding->param1);
     }
