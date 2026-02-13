@@ -6,3 +6,9 @@ description: Battery SoC monitoring using voltage divider
 compatible: "zmk,battery-voltage-divider"
 
 include: voltage-divider.yaml
+
+properties:
+  oversampling:
+      type: int
+      required: false
+      description: Oversampling value for ADC
