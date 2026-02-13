@@ -62,10 +62,10 @@
     "mustache": "^4.2.0",
     "null-loader": "^4.0.0",
     "prebuild-webpack-plugin": "^1.1.1",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.1",
     "string-replace-loader": "^3.3.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.52.0",
-    "webpack": "^5.104.1"
+    "typescript-eslint": "^8.55.0",
+    "webpack": "^5.105.2"
   }
 }
