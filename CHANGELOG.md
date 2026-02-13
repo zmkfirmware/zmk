@@ -1,5 +1,90 @@
 # Changelog
 
+## [0.4.0](https://github.com/zmkfirmware/zmk/compare/v0.3.0...v0.4.0) (2026-02-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* Move to zephyr v4.1 ([#3060](https://github.com/zmkfirmware/zmk/issues/3060))
+* **core:** Allow layer behaviors to "lock" layers on (https://github.com/zmkfirmware/zmk/pull/2717)
+
+### Features
+
+* Add double tap to enter bootloader functionality ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* Add nBOOT_SEL bit setup for STM32 G0/C0 targets ([f85ec7e](https://github.com/zmkfirmware/zmk/commit/f85ec7e7a24be10f1cf59025a192569dc0b33167))
+* Allow layer behaviors to "lock" layers on (https://github.com/zmkfirmware/zmk/pull/2717) ([5138c6f](https://github.com/zmkfirmware/zmk/commit/5138c6fb14783b756c5a3e61581625c700f3555b))
+* **behaviors:** Add retention boot mode to reset. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **ble:** Use appearance set in the BT_DEVICE_APPEARANCE config ([#3115](https://github.com/zmkfirmware/zmk/issues/3115)) ([ad7fbfe](https://github.com/zmkfirmware/zmk/commit/ad7fbfef920d9907ca8f143e273fa9eb7d84b25a))
+* **boards/shields:** Add settings for Rpi Pico and add tester_rpi_pico shield ([#2900](https://github.com/zmkfirmware/zmk/issues/2900)) ([ccf20a1](https://github.com/zmkfirmware/zmk/commit/ccf20a1f5c1534a197d32279abbe0eaf651099d8))
+* **boards:** add support for nrf52840dongle_nrf52840 ([#3011](https://github.com/zmkfirmware/zmk/issues/3011)) ([c7fae18](https://github.com/zmkfirmware/zmk/commit/c7fae18ae122b2465080507380dd55d096edd666))
+* **core:** (Optionally) use Zephyr keyboard input devices ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **core:** mapper for magic bootloader values. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **display:** Add thread name to dedicated display queue. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **docs:** Update New Behavior Guide ([#3107](https://github.com/zmkfirmware/zmk/issues/3107)) ([e34793e](https://github.com/zmkfirmware/zmk/commit/e34793e8c7193bc868b95ec38d78f67956f759cb))
+* **endpoints:** add "no endpoint" value ([6e7e0de](https://github.com/zmkfirmware/zmk/commit/6e7e0de2b621073392816b284ab4931bee709ee8))
+* **endpoints:** add "no endpoint" value ([#3140](https://github.com/zmkfirmware/zmk/issues/3140)) ([6e7e0de](https://github.com/zmkfirmware/zmk/commit/6e7e0de2b621073392816b284ab4931bee709ee8))
+* **layouts:** Add physical layout for Redox shield ([61de01a](https://github.com/zmkfirmware/zmk/commit/61de01abb00a73349a188ef2e10ad1cd040d31b3))
+* Move to zephyr v4.1 ([#3060](https://github.com/zmkfirmware/zmk/issues/3060)) ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **pointing:** Handle INPUT_BTN_TOUCH codes for mouse buttons ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **pointing:** Release pressed keys on disconnect ([#3204](https://github.com/zmkfirmware/zmk/issues/3204)) ([24487bd](https://github.com/zmkfirmware/zmk/commit/24487bd9744f504724089f0e1cec98431a2d3333))
+* **shields:** Add Studio support to boardsource3x4 ([#3154](https://github.com/zmkfirmware/zmk/issues/3154)) ([40e06f3](https://github.com/zmkfirmware/zmk/commit/40e06f3c0084751f7ae012a71d92d5801ac3b7a0))
+* **split:** Add HID indicators and physical layout set to Wired split ([#3103](https://github.com/zmkfirmware/zmk/issues/3103)) ([7738924](https://github.com/zmkfirmware/zmk/commit/773892434931b74bdf54474b73c909779daa9471))
+
+
+### Bug Fixes
+
+* Add "optional" folder to .gitignore ([#3141](https://github.com/zmkfirmware/zmk/issues/3141)) ([c099041](https://github.com/zmkfirmware/zmk/commit/c0990410da4c0a0c3776448e8c05ca2ce8778c8a))
+* **behaviors:** correctly handle sensor rotation remainder ([#3084](https://github.com/zmkfirmware/zmk/issues/3084)) ([958fa78](https://github.com/zmkfirmware/zmk/commit/958fa788067e18c2228d016fcd826000bb8f0320))
+* **boards:** Add xiao_ble sd_partition label for nosd snippet compat ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **boards:** Remove nano overlays for old nice_nano_v2 board ID. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **boards:** Remove some references to old nice_nano_v2 board ID. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **boards:** Retore bootloader support on XIAO BLE. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **ci:** disable nrf5340dk from being built in our CI ([#3066](https://github.com/zmkfirmware/zmk/issues/3066)) ([522971f](https://github.com/zmkfirmware/zmk/commit/522971f41d62d7e5d6664eb61c84d190781feeb9))
+* **ci:** Fix release please template bump ([#3021](https://github.com/zmkfirmware/zmk/issues/3021)) ([f3233c1](https://github.com/zmkfirmware/zmk/commit/f3233c1b60e4cb4c095572740bcbcaf7111eb804))
+* **ci:** Pin @actions/artifact to a compatible release ([#3230](https://github.com/zmkfirmware/zmk/issues/3230)) ([ada1542](https://github.com/zmkfirmware/zmk/commit/ada1542940c3a01c0866c9fe9c30f489bc087328))
+* **ci:** Prevent slash characters in artifact names. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **core:** Don't force CBPRINTF_NANO, for proper formatting. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **core:** Generate correct keymap layer names for all builds ([#3047](https://github.com/zmkfirmware/zmk/issues/3047)) ([0b5a103](https://github.com/zmkfirmware/zmk/commit/0b5a103c187ad337b9f50d824667866c4d7252e1)), closes [#3045](https://github.com/zmkfirmware/zmk/issues/3045)
+* **core:** Set a system work queue stack size of 2048 by default ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **core:** support magic bootloader values for nRF52833 ([#3163](https://github.com/zmkfirmware/zmk/issues/3163)) ([308de56](https://github.com/zmkfirmware/zmk/commit/308de56fb938057da7648a411ce0dce780dfc3f1))
+* Disable Nordic dt-bindings header checks. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **display:** Adjust stack sizes for display usage. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **display:** Fix setting the small font for the mono theme. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **display:** port nice!view display code ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **docs:** Improve ZMK setup instructions ([#3209](https://github.com/zmkfirmware/zmk/issues/3209)) ([354cff9](https://github.com/zmkfirmware/zmk/commit/354cff9c36b49eee6abbb8a61e6b927539aebbf2))
+* **docs:** Tweak layer tap example to be clearer ([#3023](https://github.com/zmkfirmware/zmk/issues/3023)) ([919bce7](https://github.com/zmkfirmware/zmk/commit/919bce7962db78139415ccf0e80fb858c89adb3d))
+* Don't enable ZMK Display by default for a few shields ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **endpoints:** Add endpoint setting upgrade ([6e7e0de](https://github.com/zmkfirmware/zmk/commit/6e7e0de2b621073392816b284ab4931bee709ee8))
+* Fix redundant const warning ([#3139](https://github.com/zmkfirmware/zmk/issues/3139)) ([8987f39](https://github.com/zmkfirmware/zmk/commit/8987f3979d7877114ede2f34edb5570a6b454460))
+* **hid:** initialize missing d_scroll_x field in mouse report ([#3196](https://github.com/zmkfirmware/zmk/issues/3196)) ([abce9de](https://github.com/zmkfirmware/zmk/commit/abce9deab76124d72c61a824aaa1affc3dbc1260))
+* **keymap:** Fix overflow in get/set bindings ([#3205](https://github.com/zmkfirmware/zmk/issues/3205)) ([ab46f48](https://github.com/zmkfirmware/zmk/commit/ab46f48dde8aa70e44a2fc2d2a1b81ae703d4981))
+* **pointing:** Refactor for changes to input API ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* Refactor for new Zephyr PM API ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* Remove usage of renamed Kconfig from core coverage. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **sensors:** Initialize sensor data to 0 before fetching. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* Set default transport according to enabled transports ([6e7e0de](https://github.com/zmkfirmware/zmk/commit/6e7e0de2b621073392816b284ab4931bee709ee8))
+* **split:** correct async UART RX buffer definition ([#3193](https://github.com/zmkfirmware/zmk/issues/3193)) ([36dbf46](https://github.com/zmkfirmware/zmk/commit/36dbf467644d4b4b6b9176241d42261d27fb18f2))
+* **split:** int to pointer cast in bas proxy ([#3105](https://github.com/zmkfirmware/zmk/issues/3105)) ([ece2ce1](https://github.com/zmkfirmware/zmk/commit/ece2ce11b8c7245fbe2b4e41ec9fa7a870632e6c))
+* **split:** Properly return from command handler ([#3120](https://github.com/zmkfirmware/zmk/issues/3120)) ([d32ffb0](https://github.com/zmkfirmware/zmk/commit/d32ffb0a335ece70a9ce3dc3ce014676534ee99b))
+* **studio:** avoid decoding buffer overflow ([#3185](https://github.com/zmkfirmware/zmk/issues/3185)) ([70ab6b2](https://github.com/zmkfirmware/zmk/commit/70ab6b243a90b556d113fcdd0c8de1ef3dccdc1e))
+* **studio:** Correct `memset` usage. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **studio:** Correct usage of thread analyzer API ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **studio:** Properly serialize GATT RPC indications. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **tests:** Fix BLE test to account for Zephyr changes ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **underglow:** Remove use of removed Kconfig WS2812 symbol ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **usb:** Adjust Kconfig settings for USB. ([c06fa48](https://github.com/zmkfirmware/zmk/commit/c06fa48ce59e016105d79c20942d085314502d8d))
+* **usb:** Prevent unexpected USB disconnection caused by USB SOF ([#3070](https://github.com/zmkfirmware/zmk/issues/3070)) ([118359c](https://github.com/zmkfirmware/zmk/commit/118359c83efa0758144489fd5e12cc6f5bdbad4c))
+
+
+### Documentation
+
+* Added documentation note on locking layers ([5138c6f](https://github.com/zmkfirmware/zmk/commit/5138c6fb14783b756c5a3e61581625c700f3555b))
+
+
+### Code Refactoring
+
+* **core:** Allow layer behaviors to "lock" layers on (https://github.com/zmkfirmware/zmk/pull/2717) ([5138c6f](https://github.com/zmkfirmware/zmk/commit/5138c6fb14783b756c5a3e61581625c700f3555b))
+
 ## [0.3.0](https://github.com/zmkfirmware/zmk/compare/v0.2.1...v0.3.0) (2025-08-01)
 
 
