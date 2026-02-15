@@ -42,6 +42,9 @@ struct behavior_input_two_axis_data {
     const struct device *dev;
 
     struct movement_state_2d state;
+
+    int16_t speed_multiplier_num;
+    int16_t speed_multiplier_div;
 };
 
 struct behavior_input_two_axis_config {
@@ -189,6 +192,11 @@ static void tick_work_cb(struct k_work *work) {
 
     struct vector2d move = update_movement_2d(cfg, &data->state, timestamp);
 
+    if (data->speed_multiplier_num != 0 && data->speed_multiplier_div != 0) {
+        move.x = move.x * data->speed_multiplier_num / data->speed_multiplier_div;
+        move.y = move.y * data->speed_multiplier_num / data->speed_multiplier_div;
+    }
+
     int ret = 0;
     bool have_x = is_non_zero_1d_movement(move.x);
     bool have_y = is_non_zero_1d_movement(move.y);
@@ -233,6 +241,21 @@ static void update_work_scheduling(const struct device *dev) {
     }
 }
 
+int behavior_input_two_axis_set_speed_multiplier(const struct device *dev, int16_t numerator,
+                                                 int16_t denominator) {
+    struct behavior_input_two_axis_data *data = dev->data;
+
+    if (denominator == 0) {
+        return -EINVAL;
+    }
+
+    LOG_DBG("Setting speed multiplier: %d/%d", numerator, denominator);
+    data->speed_multiplier_num = numerator;
+    data->speed_multiplier_div = denominator;
+
+    return 0;
+}
+
 int behavior_input_two_axis_adjust_speed(const struct device *dev, int16_t dx, int16_t dy) {
     struct behavior_input_two_axis_data *data = dev->data;
 
@@ -251,6 +274,8 @@ static int behavior_input_two_axis_init(const struct device *dev) {
     struct behavior_input_two_axis_data *data = dev->data;
 
     data->dev = dev;
+    data->speed_multiplier_num = 1;
+    data->speed_multiplier_div = 1;
     k_work_init_delayable(&data->tick_work, tick_work_cb);
 
     return 0;

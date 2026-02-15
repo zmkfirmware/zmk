@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    behaviors {
+        /omit-if-no-ref/ mms: mouse_move_speed {
+            compatible = "zmk,behavior-mouse-speed";
+            #binding-cells = <1>;
+            target = <&mmv>;
+        };
+    };
+};

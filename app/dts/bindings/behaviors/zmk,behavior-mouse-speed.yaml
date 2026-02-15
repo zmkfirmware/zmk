@@ -1,0 +1,14 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Mouse speed modifier behavior
+
+compatible: "zmk,behavior-mouse-speed"
+
+include: one_param.yaml
+
+properties:
+  target:
+    type: phandle
+    required: true
+    description: The behavior-input-two-axis instance to apply the speed multiplier to.

@@ -7,3 +7,4 @@
 #include "mouse_key_press.dtsi"
 #include "mouse_move.dtsi"
 #include "mouse_scroll.dtsi"
+#include "mouse_speed.dtsi"
