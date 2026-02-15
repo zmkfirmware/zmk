@@ -81,6 +81,7 @@ static void update_layer_state(struct temp_layer_state *state, bool activate) {
 }
 
 struct layer_state_action {
+    const struct device *dev;
     uint8_t layer;
     bool activate;
 };
@@ -88,30 +89,42 @@ struct layer_state_action {
 K_MSGQ_DEFINE(temp_layer_action_msgq, sizeof(struct layer_state_action),
               CONFIG_ZMK_INPUT_PROCESSOR_TEMP_LAYER_MAX_ACTION_EVENTS, 4);
 
-static void layer_action_work_cb(struct k_work *work) {
-
-    const struct device *dev = DEVICE_DT_INST_GET(0);
+static void deactivate_if_matching(const struct device *dev, uint8_t layer) {
     struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
-
-    int ret = k_mutex_lock(&data->lock, K_FOREVER);
-    if (ret < 0) {
-        LOG_ERR("Error locking for updating %d", ret);
-        return;
+    k_mutex_lock(&data->lock, K_FOREVER);
+    if (data->state.is_active && data->state.toggle_layer == layer) {
+        update_layer_state(&data->state, false);
     }
+    k_mutex_unlock(&data->lock);
+}
 
+#define DEACTIVATE_MATCHING(n) deactivate_if_matching(DEVICE_DT_INST_GET(n), action.layer);
+
+static void layer_action_work_cb(struct k_work *work) {
     struct layer_state_action action;
 
     while (k_msgq_get(&temp_layer_action_msgq, &action, K_MSEC(10)) >= 0) {
-        if (!action.activate) {
-            if (zmk_keymap_layer_active(action.layer)) {
+        if (action.dev) {
+            struct temp_layer_data *data = (struct temp_layer_data *)action.dev->data;
+            int ret = k_mutex_lock(&data->lock, K_FOREVER);
+            if (ret < 0) {
+                LOG_ERR("Error locking for updating %d", ret);
+                continue;
+            }
+
+            if (action.activate) {
+                update_layer_state(&data->state, true);
+            } else if (zmk_keymap_layer_active(action.layer)) {
+                // Only deactivate if we think it's necessary to avoid churn,
+                // though update_layer_state handles idempotency.
                 update_layer_state(&data->state, false);
             }
+            k_mutex_unlock(&data->lock);
         } else {
-            update_layer_state(&data->state, true);
+            // No device specified (timeout case), search for matching instances
+            DT_INST_FOREACH_STATUS_OKAY(DEACTIVATE_MATCHING)
         }
     }
-
-    k_mutex_unlock(&data->lock);
 }
 
 static K_WORK_DEFINE(layer_action_work, layer_action_work_cb);
@@ -121,7 +134,7 @@ static void layer_disable_callback(struct k_work *work) {
     struct k_work_delayable *d_work = k_work_delayable_from_work(work);
     int layer_index = ARRAY_INDEX(layer_disable_works, d_work);
 
-    struct layer_state_action action = {.layer = layer_index, .activate = false};
+    struct layer_state_action action = {.dev = NULL, .layer = layer_index, .activate = false};
 
     int ret = k_msgq_put(&temp_layer_action_msgq, &action, K_MSEC(10));
     k_work_submit(&layer_action_work);
@@ -249,7 +262,7 @@ static int temp_layer_handle_event(const struct device *dev, struct input_event 
 
     if (!data->state.is_active &&
         !should_quick_tap(cfg, data->state.last_tapped_timestamp, k_uptime_get())) {
-        struct layer_state_action action = {.layer = param1, .activate = true};
+        struct layer_state_action action = {.dev = dev, .layer = param1, .activate = true};
 
         int ret = k_msgq_put(&temp_layer_action_msgq, &action, K_MSEC(10));
         k_work_submit(&layer_action_work);
@@ -281,19 +294,19 @@ static const struct zmk_input_processor_driver_api temp_layer_driver_api = {
 };
 
 /* Event Listeners Conditions */
-#define NEEDS_POSITION_HANDLERS(n, ...) DT_INST_PROP_HAS_IDX(n, excluded_positions, 0)
-#define NEEDS_KEYCODE_HANDLERS(n, ...) (DT_INST_PROP_OR(n, require_prior_idle_ms, 0) > 0)
+#define NEEDS_POSITION_HANDLERS(n) DT_INST_PROP_HAS_IDX(n, excluded_positions, 0) ||
+#define NEEDS_KEYCODE_HANDLERS(n) (DT_INST_PROP_OR(n, require_prior_idle_ms, 0) > 0) ||
 
 /* Event Handlers Registration */
 ZMK_LISTENER(processor_temp_layer, handle_event_dispatcher);
 ZMK_SUBSCRIPTION(processor_temp_layer, zmk_layer_state_changed);
 
 /* Individual Subscriptions */
-#if DT_INST_FOREACH_STATUS_OKAY_VARGS(NEEDS_POSITION_HANDLERS, ||)
+#if DT_INST_FOREACH_STATUS_OKAY(NEEDS_POSITION_HANDLERS) 0
 ZMK_SUBSCRIPTION(processor_temp_layer, zmk_position_state_changed);
 #endif
 
-#if DT_INST_FOREACH_STATUS_OKAY_VARGS(NEEDS_KEYCODE_HANDLERS, ||)
+#if DT_INST_FOREACH_STATUS_OKAY(NEEDS_KEYCODE_HANDLERS) 0
 ZMK_SUBSCRIPTION(processor_temp_layer, zmk_keycode_state_changed);
 #endif
 
