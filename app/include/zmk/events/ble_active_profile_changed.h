@@ -15,6 +15,8 @@
 struct zmk_ble_active_profile_changed {
     uint8_t index;
     struct zmk_ble_profile *profile;
+    bool open;
+    bool connected;
 };
 
 ZMK_EVENT_DECLARE(zmk_ble_active_profile_changed);
