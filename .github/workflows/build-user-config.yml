@@ -78,6 +78,7 @@ jobs:
           else
             echo "base_dir=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
           fi
+          echo "west_working_dir=${GITHUB_WORKSPACE}/$(dirname ${{ inputs.config_path }})" >> $GITHUB_ENV
 
           if [ -n "${snippet}" ]; then
             extra_west_args="-S \"${snippet}\""
@@ -103,11 +104,11 @@ jobs:
           cache_name: cache-zephyr-${{ env.zephyr_version }}-modules
         with:
           path: |
-            ${{ env.base_dir }}/modules/
-            ${{ env.base_dir }}/tools/
-            ${{ env.base_dir }}/zephyr/
-            ${{ env.base_dir }}/bootloader/
-            ${{ env.base_dir }}/zmk/
+            ${{ env.west_working_dir }}/modules/
+            ${{ env.west_working_dir }}/tools/
+            ${{ env.west_working_dir }}/zephyr/
+            ${{ env.west_working_dir }}/bootloader/
+            ${{ env.west_working_dir }}/zmk/
           key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('**/west.yml', '**/build.yaml') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache_name }}-
@@ -119,22 +120,22 @@ jobs:
         run: west init -l "${{ env.base_dir }}/${{ inputs.config_path }}"
 
       - name: West Update
-        working-directory: ${{ env.base_dir }}
+        working-directory: ${{ env.west_working_dir }}
         run: west update --fetch-opt=--filter=tree:0
 
       - name: Check ZMK revision
-        working-directory: ${{ env.base_dir }}
+        working-directory: ${{ env.west_working_dir }}
         run: |
           zmk_revision=$(west list -f "{revision}" zmk)
           echo "zmk_revision=${zmk_revision}" >> $GITHUB_ENV
           echo "ZMK revision: ${zmk_revision}"
 
       - name: West Zephyr export
-        working-directory: ${{ env.base_dir }}
+        working-directory: ${{ env.west_working_dir }}
         run: west zephyr-export
 
       - name: West Build (${{ env.display_name }})
-        working-directory: ${{ env.base_dir }}
+        working-directory: ${{ env.west_working_dir }}
         shell: sh -x {0}
         run: west build -s zmk/app -d "${{ env.build_dir }}" -b "${{ matrix.board }}" ${{ env.extra_west_args }} -- -DZMK_CONFIG=${{ env.base_dir }}/${{ inputs.config_path }} ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
 
