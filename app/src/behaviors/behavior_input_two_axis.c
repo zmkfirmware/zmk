@@ -256,28 +256,26 @@ static int behavior_input_two_axis_init(const struct device *dev) {
     return 0;
 };
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
 
-    const struct device *behavior_dev = zmk_behavior_get_binding(binding->behavior_dev);
+    const struct device *behavior_dev = zmk_behavior_get_binding(event->behavior_dev);
 
-    LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
+    LOG_DBG("position %d keycode 0x%02X", event->position, event->param1);
 
-    int16_t x = MOVE_X_DECODE(binding->param1);
-    int16_t y = MOVE_Y_DECODE(binding->param1);
+    int16_t x = MOVE_X_DECODE(event->param1);
+    int16_t y = MOVE_Y_DECODE(event->param1);
 
     behavior_input_two_axis_adjust_speed(behavior_dev, x, y);
     return 0;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
-    const struct device *behavior_dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
+    const struct device *behavior_dev = zmk_behavior_get_binding(event->behavior_dev);
 
-    LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
+    LOG_DBG("position %d keycode 0x%02X", event->position, event->param1);
 
-    int16_t x = MOVE_X_DECODE(binding->param1);
-    int16_t y = MOVE_Y_DECODE(binding->param1);
+    int16_t x = MOVE_X_DECODE(event->param1);
+    int16_t y = MOVE_Y_DECODE(event->param1);
 
     behavior_input_two_axis_adjust_speed(behavior_dev, -x, -y);
     return 0;

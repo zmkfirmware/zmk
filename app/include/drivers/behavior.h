@@ -56,20 +56,7 @@ struct behavior_parameter_metadata {
     const struct behavior_parameter_metadata_set *sets;
 };
 
-enum behavior_sensor_binding_process_mode {
-    BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_TRIGGER,
-    BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_DISCARD,
-};
-
-typedef int (*behavior_keymap_binding_callback_t)(struct zmk_behavior_binding *binding,
-                                                  struct zmk_behavior_binding_event event);
-typedef int (*behavior_sensor_keymap_binding_process_callback_t)(
-    struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
-    enum behavior_sensor_binding_process_mode mode);
-typedef int (*behavior_sensor_keymap_binding_accept_data_callback_t)(
-    struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
-    const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
-    const struct zmk_sensor_channel_data channel_data[channel_data_size]);
+typedef int (*behavior_keymap_binding_callback_t)(struct zmk_behavior_binding_event *event);
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 typedef int (*behavior_get_parameter_metadata_t)(
     const struct device *behavior, struct behavior_parameter_metadata *param_metadata);
@@ -86,8 +73,7 @@ __subsystem struct behavior_driver_api {
     behavior_keymap_binding_callback_t binding_convert_central_state_dependent_params;
     behavior_keymap_binding_callback_t binding_pressed;
     behavior_keymap_binding_callback_t binding_released;
-    behavior_sensor_keymap_binding_accept_data_callback_t sensor_binding_accept_data;
-    behavior_sensor_keymap_binding_process_callback_t sensor_binding_process;
+    behavior_keymap_binding_callback_t sensor_binding_process;
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
     behavior_get_parameter_metadata_t get_parameter_metadata;
     const struct behavior_parameter_metadata *parameter_metadata;
@@ -244,18 +230,18 @@ __syscall const struct device *behavior_get_binding(const char *name);
  * @retval Negative errno code if failure.
  */
 __syscall int behavior_keymap_binding_convert_central_state_dependent_params(
-    struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event);
+    struct zmk_behavior_binding_event *event);
 
 static inline int z_impl_behavior_keymap_binding_convert_central_state_dependent_params(
-    struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+    struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
 
     if (api->binding_convert_central_state_dependent_params == NULL) {
         return 0;
     }
 
-    return api->binding_convert_central_state_dependent_params(binding, event);
+    return api->binding_convert_central_state_dependent_params(event);
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
@@ -323,12 +309,10 @@ static inline int z_impl_behavior_get_locality(const struct device *behavior,
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                              struct zmk_behavior_binding_event event);
+__syscall int behavior_keymap_binding_pressed(struct zmk_behavior_binding_event *event);
 
-static inline int z_impl_behavior_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                                         struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static inline int z_impl_behavior_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
 
     if (dev == NULL) {
         return -EINVAL;
@@ -340,7 +324,7 @@ static inline int z_impl_behavior_keymap_binding_pressed(struct zmk_behavior_bin
         return -ENOTSUP;
     }
 
-    return api->binding_pressed(binding, event);
+    return api->binding_pressed(event);
 }
 
 /**
@@ -351,12 +335,11 @@ static inline int z_impl_behavior_keymap_binding_pressed(struct zmk_behavior_bin
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-__syscall int behavior_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                               struct zmk_behavior_binding_event event);
+__syscall int behavior_keymap_binding_released(struct zmk_behavior_binding_event *event);
 
-static inline int z_impl_behavior_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                                          struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static inline int
+z_impl_behavior_keymap_binding_released(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
 
     if (dev == NULL) {
         return -EINVAL;
@@ -368,42 +351,7 @@ static inline int z_impl_behavior_keymap_binding_released(struct zmk_behavior_bi
         return -ENOTSUP;
     }
 
-    return api->binding_released(binding, event);
-}
-
-/**
- * @brief Handle the a sensor keymap binding processing any incoming data from the sensor
- * @param binding Sensor keymap binding which was triggered.
- * @param sensor Pointer to the sensor device structure for the sensor driver instance.
- * @param virtual_key_position ZMK_KEYMAP_LEN + sensor number
- * @param timestamp Time at which the binding was triggered.
- *
- * @retval 0 If successful.
- * @retval Negative errno code if failure.
- */
-__syscall int behavior_sensor_keymap_binding_accept_data(
-    struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
-    const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
-    const struct zmk_sensor_channel_data *channel_data);
-
-static inline int z_impl_behavior_sensor_keymap_binding_accept_data(
-    struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event,
-    const struct zmk_sensor_config *sensor_config, size_t channel_data_size,
-    const struct zmk_sensor_channel_data *channel_data) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
-
-    if (dev == NULL) {
-        return -EINVAL;
-    }
-
-    const struct behavior_driver_api *api = (const struct behavior_driver_api *)dev->api;
-
-    if (api->sensor_binding_accept_data == NULL) {
-        return -ENOTSUP;
-    }
-
-    return api->sensor_binding_accept_data(binding, event, sensor_config, channel_data_size,
-                                           channel_data);
+    return api->binding_released(event);
 }
 
 /**
@@ -415,18 +363,11 @@ static inline int z_impl_behavior_sensor_keymap_binding_accept_data(
  * @retval 0 If successful.
  * @retval Negative errno code if failure.
  */
-// clang-format off
-__syscall int behavior_sensor_keymap_binding_process(
-    struct zmk_behavior_binding *binding,
-    struct zmk_behavior_binding_event event,
-    enum behavior_sensor_binding_process_mode mode);
-// clang-format on
+__syscall int behavior_sensor_keymap_binding_process(struct zmk_behavior_binding_event *event);
 
 static inline int
-z_impl_behavior_sensor_keymap_binding_process(struct zmk_behavior_binding *binding,
-                                              struct zmk_behavior_binding_event event,
-                                              enum behavior_sensor_binding_process_mode mode) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+z_impl_behavior_sensor_keymap_binding_process(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
 
     if (dev == NULL) {
         return -EINVAL;
@@ -438,9 +379,8 @@ z_impl_behavior_sensor_keymap_binding_process(struct zmk_behavior_binding *bindi
         return -ENOTSUP;
     }
 
-    return api->sensor_binding_process(binding, event, mode);
+    return api->sensor_binding_process(event);
 }
-
 /**
  * @}
  */
