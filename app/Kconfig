@@ -434,21 +434,7 @@ endmenu
 
 menu "Combo options"
 
-config ZMK_COMBO_MAX_PRESSED_COMBOS
-    int "Maximum number of currently pressed combos"
-    default 4
-
-config ZMK_COMBO_MAX_COMBOS_PER_KEY
-    int "Deprecated: Max combos per key"
-    default 0
-    help
-      Deprecated: Storage for combos is now determined automatically
-
-config ZMK_COMBO_MAX_KEYS_PER_COMBO
-    int "Deprecated: Max keys per combo"
-    default 0
-    help
-       Deprecated: This is now auto-calculated based on `key-positions` in devicetree
+rsource "Kconfig.combos"
 
 # Combo options
 endmenu
@@ -474,6 +460,7 @@ endmenu
 menu "Advanced"
 
 rsource "src/boot/Kconfig"
+rsource "src/shell/Kconfig"
 
 menu "Initialization Priorities"
 
