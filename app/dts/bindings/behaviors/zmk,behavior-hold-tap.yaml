@@ -43,6 +43,8 @@ properties:
     type: boolean
   retro-tap:
     type: boolean
+  fire-hold-as-tap:
+    type: boolean
   hold-trigger-key-positions:
     type: array
     required: false
