@@ -26,6 +26,7 @@ struct bvd_config {
     struct gpio_dt_spec power;
     uint32_t output_ohm;
     uint32_t full_ohm;
+    uint32_t sample_delay_us;
 };
 
 struct bvd_data {
@@ -59,7 +60,7 @@ static int bvd_sample_fetch(const struct device *dev, enum sensor_channel chan) 
     }
 
     // wait for any capacitance to charge up
-    k_sleep(K_MSEC(10));
+    k_sleep(K_USEC(drv_cfg->sample_delay_us));
 #endif // DT_INST_NODE_HAS_PROP(0, power_gpios)
 
     // Read ADC
@@ -167,6 +168,7 @@ static const struct bvd_config bvd_cfg = {
 #if DT_INST_NODE_HAS_PROP(0, power_gpios)
     .power = GPIO_DT_SPEC_INST_GET(0, power_gpios),
 #endif
+    .sample_delay_us = DT_INST_PROP(0, power_on_sample_delay_us),
     .output_ohm = DT_INST_PROP(0, output_ohms),
     .full_ohm = DT_INST_PROP(0, full_ohms),
 };
