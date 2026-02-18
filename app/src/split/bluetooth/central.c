@@ -33,6 +33,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/pointing/input_split.h>
 #include <zmk/hid_indicators_types.h>
 #include <zmk/physical_layouts.h>
+#include <zmk/workqueue.h>
 
 static int start_scanning(void);
 
@@ -202,7 +203,7 @@ int release_peripheral_slot(int index) {
                                        }}}};
 
                 k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-                k_work_submit(&peripheral_event_work);
+                k_work_submit_to_queue(zmk_main_work_q(), &peripheral_event_work);
             }
         }
     }
@@ -295,7 +296,7 @@ static uint8_t split_central_sensor_notify_func(struct bt_conn *conn,
                            }}}};
 
     k_msgq_put(&peripheral_event_msgq, &event_wrapper, K_NO_WAIT);
-    k_work_submit(&peripheral_event_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &peripheral_event_work);
 
     return BT_GATT_ITER_CONTINUE;
 }
@@ -336,7 +337,7 @@ static uint8_t peripheral_input_event_notify_cb(struct bt_conn *conn,
                                    }}}};
 
             k_msgq_put(&peripheral_event_msgq, &event_wrapper, K_NO_WAIT);
-            k_work_submit(&peripheral_event_work);
+            k_work_submit_to_queue(zmk_main_work_q(), &peripheral_event_work);
             break;
         }
     }
@@ -383,7 +384,7 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
                                            .pressed = pressed,
                                        }}}};
                 k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-                k_work_submit(&peripheral_event_work);
+                k_work_submit_to_queue(zmk_main_work_q(), &peripheral_event_work);
             }
         }
     }
@@ -426,7 +427,7 @@ static uint8_t split_central_battery_level_notify_func(struct bt_conn *conn,
                            }}}};
 
     k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-    k_work_submit(&peripheral_event_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &peripheral_event_work);
 
     return BT_GATT_ITER_CONTINUE;
 }
@@ -470,7 +471,7 @@ static uint8_t split_central_battery_level_read_func(struct bt_conn *conn, uint8
                            }}}};
 
     k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-    k_work_submit(&peripheral_event_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &peripheral_event_work);
 
     return BT_GATT_ITER_CONTINUE;
 }
@@ -613,7 +614,7 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
                                 BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SELECT_PHYS_LAYOUT_UUID))) {
             LOG_DBG("Found select physical layout handle");
             slot->selected_physical_layout_handle = bt_gatt_attr_value_handle(attr);
-            k_work_submit(&update_peripherals_selected_layouts_work);
+            k_work_submit_to_queue(zmk_main_work_q(), &update_peripherals_selected_layouts_work);
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
         } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                                 BT_UUID_DECLARE_128(ZMK_SPLIT_BT_UPDATE_HID_INDICATORS_UUID))) {
@@ -965,7 +966,7 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
                            }}}};
 
     k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-    k_work_submit(&peripheral_event_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &peripheral_event_work);
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
 
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
@@ -1000,7 +1001,7 @@ static void split_central_security_changed(struct bt_conn *conn, bt_security_t l
         return;
     }
 
-    k_work_submit(&update_peripherals_selected_layouts_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &update_peripherals_selected_layouts_work);
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -1159,7 +1160,7 @@ SYS_INIT(zmk_split_bt_central_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);
 
 static int zmk_split_bt_central_listener_cb(const zmk_event_t *eh) {
     if (as_zmk_physical_layout_selection_changed(eh)) {
-        k_work_submit(&update_peripherals_selected_layouts_work);
+        k_work_submit_to_queue(zmk_main_work_q(), &update_peripherals_selected_layouts_work);
     }
     return ZMK_EV_EVENT_BUBBLE;
 }

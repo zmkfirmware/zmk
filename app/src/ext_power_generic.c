@@ -13,6 +13,7 @@
 #include <zephyr/kernel.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/drivers/gpio.h>
+#include <zmk/workqueue.h>
 
 #include <drivers/ext_power.h>
 
@@ -49,7 +50,8 @@ static struct k_work_delayable ext_power_save_work;
 
 int ext_power_save_state(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
-    int ret = k_work_reschedule(&ext_power_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    int ret = k_work_reschedule_for_queue(zmk_main_work_q(), &ext_power_save_work,
+                                          K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
     return MIN(ret, 0);
 #else
     return 0;
@@ -134,7 +136,7 @@ static int ext_power_settings_commit() {
     if (!data->settings_init) {
 
         data->status = true;
-        k_work_schedule(&ext_power_save_work, K_NO_WAIT);
+        k_work_schedule_for_queue(zmk_main_work_q(), &ext_power_save_work, K_NO_WAIT);
 
         ext_power_enable(dev);
     }

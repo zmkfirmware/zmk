@@ -58,6 +58,7 @@ static int kscan_mock_configure(const struct device *dev, kscan_callback_t callb
             k_work_schedule(&data->work, K_MSEC(ZMK_MOCK_MSEC(ev)));                               \
         } else if (cfg->exit_after) {                                                              \
             LOG_DBG("Exiting");                                                                    \
+            k_msleep(1);                                                                           \
             exit(0);                                                                               \
         }                                                                                          \
     }                                                                                              \
