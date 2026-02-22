@@ -362,6 +362,26 @@ However, if the hold behavior isn't used during fast typing, then it can be an e
 
   </details>
 
+#### `prior-idle-ignore-key-positions`
+
+By default, `require-prior-idle-ms` considers _all_ non-modifier key presses when determining idle time. `prior-idle-ignore-key-positions` allows you to exclude specific key positions from resetting the idle timer. Pressing a key in this list will not count as activity for `require-prior-idle-ms`.
+
+This is useful for keys like thumb keys or layer toggles that you frequently press in quick succession with home-row mods, but which shouldn't prevent the hold behavior from activating.
+
+Note that each hold-tap behavior instance has its own ignore list, so different keys can exclude different positions.
+
+```dts
+rpi: require_prior_idle {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    flavor = "tap-preferred";
+    tapping-term-ms = <200>;
+    require-prior-idle-ms = <125>;
+    prior-idle-ignore-key-positions = <3 4 5>; // e.g. thumb keys
+    bindings = <&kp>, <&kp>;
+};
+```
+
 ### Positional hold-tap and `hold-trigger-key-positions`
 
 Including `hold-trigger-key-positions` in your hold-tap definition turns on the positional hold-tap feature. With positional hold-tap enabled, if you press any key **not** listed in `hold-trigger-key-positions` before `tapping-term-ms` expires, it will produce a tap.
