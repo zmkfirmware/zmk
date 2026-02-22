@@ -362,6 +362,29 @@ However, if the hold behavior isn't used during fast typing, then it can be an e
 
   </details>
 
+#### `exclude-prior-idle-key-positions`
+
+By default, `require-prior-idle-ms` considers _all_ non-modifier key presses when determining idle time, and applies its quick-tap decision regardless of which key is pressed next. `exclude-prior-idle-key-positions` allows you to specify key positions that are excluded from the prior-idle system entirely:
+
+- **Before the hold-tap**: Pressing a key in this list cancels the idle timer (equivalent to the timer having already expired), so the next hold-tap activation will go through the normal hold/tap decision process regardless of how recently other keys were pressed.
+- **After the hold-tap**: If a key in this list is pressed as the next key in combination with the hold-tap, the quick-tap decision is bypassed and normal hold/tap flavor logic proceeds — as if `require-prior-idle-ms` was never set for that interaction.
+
+This is useful for home-row mods where opposite-hand keys should never be affected by the idle timer. For example, if your hold-tap is on the left hand, you can exclude all right-hand key positions so that right-hand keys always allow the hold behavior to activate, even during fast typing.
+
+Note that each hold-tap behavior instance has its own exclude list, so different hold-taps can exclude different positions.
+
+```dts
+rpi: require_prior_idle {
+    compatible = "zmk,behavior-hold-tap";
+    #binding-cells = <2>;
+    flavor = "tap-preferred";
+    tapping-term-ms = <200>;
+    require-prior-idle-ms = <125>;
+    exclude-prior-idle-key-positions = <3 4 5>; // e.g. opposite-hand keys
+    bindings = <&kp>, <&kp>;
+};
+```
+
 ### Positional hold-tap and `hold-trigger-key-positions`
 
 Including `hold-trigger-key-positions` in your hold-tap definition turns on the positional hold-tap feature. With positional hold-tap enabled, if you press any key **not** listed in `hold-trigger-key-positions` before `tapping-term-ms` expires, it will produce a tap.
