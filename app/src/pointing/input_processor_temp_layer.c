@@ -91,7 +91,11 @@ K_MSGQ_DEFINE(temp_layer_action_msgq, sizeof(struct layer_state_action),
 
 static void deactivate_if_matching(const struct device *dev, uint8_t layer) {
     struct temp_layer_data *data = (struct temp_layer_data *)dev->data;
-    k_mutex_lock(&data->lock, K_FOREVER);
+    int ret = k_mutex_lock(&data->lock, K_FOREVER);
+    if (ret < 0) {
+        LOG_ERR("Error locking for deactivating %d", ret);
+        return;
+    }
     if (data->state.is_active && data->state.toggle_layer == layer) {
         update_layer_state(&data->state, false);
     }
