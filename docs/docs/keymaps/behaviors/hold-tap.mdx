@@ -333,6 +333,10 @@ By default this behavior is disabled.
 };
 ```
 
+#### Comparison to QMK
+
+QMK has a parameter called `QUICK_TAP_TERM`, but its semantics are slightly different. In QMK, it is the time interval between releasing the first key and pressing the second key whereas in ZMK, it is the time interval between pressing the first and second keys. Therefore you might want to use a larger value for `quick-tap-ms` compared to the value used in QMK.
+
 ### `require-prior-idle-ms`
 
 If a hold-tap is pressed within `require-prior-idle-ms` of another non-modifier _key_ (not behavior), then the hold-tap will always resolve in a tap.
