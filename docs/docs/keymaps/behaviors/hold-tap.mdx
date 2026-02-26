@@ -299,7 +299,7 @@ One workaround is to create a [macro](macros.md) that invokes those behaviors an
 By default, when another key is pressed while a hold-tap is held, it will trigger the "hold" behavior even if `tapping-term-ms` has not been exceeded yet.
 We refer to the interaction of pressing one key while another is held as the "interrupt", and the way the hold-tap resolves is referred to as its "interrupt flavor".
 
-This default interrupt flavor is called "hold-preferred". While this flavor may work well for a ctrl/escape key, but it might not be well suited for home-row mods or layer-taps. For this reason, ZMK defines multiple interrupt flavors which hold-tap behaviors can be configured with, listed below:
+This default interrupt flavor is called "hold-preferred". While this flavor may work well for a ctrl/escape key, it might not be well suited for home-row mods or layer-taps. For this reason, ZMK defines multiple interrupt flavors which hold-tap behaviors can be configured with, listed below:
 
 - The "hold-preferred" flavor triggers the hold behavior when the `tapping-term-ms` has expired or another key is pressed.
 - The "balanced" flavor will trigger the hold behavior when the `tapping-term-ms` has expired or another key is pressed _and_ released while the hold-tap is held.
@@ -312,7 +312,7 @@ When the hold-tap key is released and the hold behavior has not been triggered, 
 
 #### Comparison to QMK
 
-The `hold-preferred` flavor works similar to the `HOLD_ON_OTHER_KEY_PRESS` setting in QMK.
+The `hold-preferred` flavor works similarly to the `HOLD_ON_OTHER_KEY_PRESS` setting in QMK.
 The `balanced` flavor is similar to the `PERMISSIVE_HOLD` setting, and the `tap-preferred` flavor is the QMK default.
 
 ```dts
