@@ -1,0 +1,8 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Tap Dance Behavior
+
+compatible: "zmk,behavior-tap-dance-param"
+
+include: [two_param.yaml, tap_dance_base.yaml, binding_params.yaml]
