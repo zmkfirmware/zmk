@@ -1,0 +1,8 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Turbo key behavior
+
+compatible: "zmk,behavior-turbo-key"
+
+include: [zero_param.yaml, turbo_base.yaml]

@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#define TURBO_PLACEHOLDER 0
+
+#define ZMK_TURBO(name,...) \
+name: name { \
+    compatible = "zmk,behavior-turbo-key"; \
+    #binding-cells = <0>; \
+    __VA_ARGS__ \
+};
+
+#define ZMK_TURBO1(name,...) \
+name: name { \
+    compatible = "zmk,behavior-turbo-key-one-param"; \
+    #binding-cells = <1>; \
+    __VA_ARGS__ \
+};
+
+#define ZMK_TURBO2(name,...) \
+name: name { \
+    compatible = "zmk,behavior-turbo-key-two-param"; \
+    #binding-cells = <2>; \
+    __VA_ARGS__ \
+};
+
+/ {
+    behaviors {
+        turbo_param_1to1: turbo_param_1to1 {
+            compatible = "zmk,turbo-param-1to1";
+            #binding-cells = <0>;
+        };
+
+        turbo_param_1to2: turbo_param_1to2 {
+            compatible = "zmk,turbo-param-1to2";
+            #binding-cells = <0>;
+        };
+
+        turbo_param_2to1: turbo_param_2to1 {
+            compatible = "zmk,turbo-param-2to1";
+            #binding-cells = <0>;
+        };
+
+        turbo_param_2to2: turbo_param_2to2 {
+            compatible = "zmk,turbo-param-2to2";
+            #binding-cells = <0>;
+        };
+    };
+};

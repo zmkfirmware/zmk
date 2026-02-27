@@ -1,0 +1,36 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        turbo: turbo {
+            compatible = "zmk,behavior-turbo-key";
+            label = "turbo";
+            #binding-cells = <0>;
+            tap-ms = <5>;
+            wait-ms = <300>;
+            bindings = <&kp C>;
+        };
+        t2: turbo2 {
+            compatible = "zmk,behavior-turbo-key";
+            label = "turbo2";
+            #binding-cells = <0>;
+            tap-ms = <5>;
+            wait-ms = <300>;
+            toggle-term-ms = <50>;
+            bindings = <&kp C>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &turbo &t2
+                &kp D &kp Q>;
+        };
+    };
+};
