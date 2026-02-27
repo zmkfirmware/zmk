@@ -208,8 +208,8 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
         as: auto_shift {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
-            tapping_term_ms = <135>;
-            quick_tap_ms = <0>;
+            tapping-term-ms = <135>;
+            quick-tap-ms = <0>;
             flavor = "tap-preferred";
             bindings = <&kp>, <&kp>;
         };
