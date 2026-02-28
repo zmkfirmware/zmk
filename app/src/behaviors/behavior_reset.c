@@ -7,12 +7,12 @@
 #define DT_DRV_COMPAT zmk_behavior_reset
 
 #include <zephyr/device.h>
-#include <zephyr/sys/reboot.h>
 #include <zephyr/logging/log.h>
 
 #include <drivers/behavior.h>
 
 #include <zmk/behavior.h>
+#include <zmk/reset.h>
 
 #if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)
 
@@ -37,19 +37,10 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct behavior_reset_config *cfg = dev->config;
 
 #if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)
-    int ret = bootmode_set(cfg->boot_mode);
-    if (ret < 0) {
-        LOG_ERR("Failed to set the bootloader mode (%d)", ret);
-        return ZMK_BEHAVIOR_OPAQUE;
-    }
-
-    sys_reboot(SYS_REBOOT_WARM);
+    zmk_reset(cfg->boot_mode);
 #else
-    // See
-    // https://github.com/adafruit/Adafruit_nRF52_Bootloader/blob/d6b28e66053eea467166f44875e3c7ec741cb471/src/main.c#L107
-    sys_reboot(cfg->type);
+    zmk_reset(cfg->type);
 #endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
-
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
