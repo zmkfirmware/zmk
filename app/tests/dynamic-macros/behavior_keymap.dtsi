@@ -1,0 +1,60 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/dynamic-macros.h>
+
+/ {
+    macros {
+        dm1: dm1 {
+            compatible = "zmk,behavior-dynamic-macro";
+            label = "dynamic-macro-1";
+            wait-ms = <10>;
+            #binding-cells = <1>;
+        };
+        dm2: dm2 {
+            compatible = "zmk,behavior-dynamic-macro";
+            label = "dynamic-macro-2";
+            wait-ms = <10>;
+            #binding-cells = <1>;
+        };
+        rm1: rm1 {
+            compatible = "zmk,behavior-macro";
+            label = "macro-1";
+            wait-ms = <10>;
+            tap-ms = <10>;
+            #binding-cells = <0>;
+            bindings = <&kp A &kp A &kp A>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &dm1 RECORD &dm1 PLAY
+                &kp A &tog 1>;
+        };
+
+        extra_layer {
+            bindings = <
+                &kp N1 &rm1
+                &tog 2 &trans>;
+
+        };
+
+        extra_layer_2 {
+            bindings = <
+                &dm2 RECORD &dm2 PLAY
+                &trans &kp N1>;
+            };
+
+    };
+};
