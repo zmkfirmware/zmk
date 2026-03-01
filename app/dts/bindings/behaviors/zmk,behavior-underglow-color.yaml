@@ -1,0 +1,8 @@
+# Copyright (c) 2024, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Set underglow to specified color
+
+compatible: "zmk,behavior-underglow-color"
+
+include: one_param.yaml

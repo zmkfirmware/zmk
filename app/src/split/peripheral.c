@@ -21,6 +21,7 @@
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 #include <zmk/events/hid_indicators_changed.h>
 #endif
+#include <zmk/events/split_peripheral_layer_changed.h>
 
 #include <zephyr/init.h>
 #include <zephyr/logging/log.h>
@@ -66,6 +67,10 @@ int zmk_split_transport_peripheral_command_handler(
             .indicators = cmd.data.set_hid_indicators.indicators});
     }
 #endif
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_RGB_LAYERS: {
+        return raise_zmk_split_peripheral_layer_changed(
+            (struct zmk_split_peripheral_layer_changed){.layers = cmd.data.set_rgb_layers.layers});
+    }
     default:
         LOG_WRN("Unhandled command type %d", cmd.type);
         return -ENOTSUP;
