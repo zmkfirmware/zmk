@@ -67,7 +67,8 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_MOUSE_KEY_PRESS app PRIVATE src/behaviors/behavior_mouse_key_press.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_STUDIO_UNLOCK app PRIVATE src/behaviors/behavior_studio_unlock.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_INPUT_TWO_AXIS app PRIVATE src/behaviors/behavior_input_two_axis.c)
-  target_sources(app PRIVATE src/combo.c)
+  target_sources_ifdef(CONFIG_ZMK_COMBOS app PRIVATE src/combo.c)
+  target_sources_ifdef(CONFIG_ZMK_COMBOS_RUNTIME_SHELL_CMD app PRIVATE src/combos_cmd.c)
   target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_TAP_DANCE app PRIVATE src/behaviors/behavior_tap_dance.c)
   target_sources(app PRIVATE src/behavior_queue.c)
   target_sources(app PRIVATE src/conditional_layer.c)
@@ -107,6 +108,8 @@ target_sources_ifdef(CONFIG_ZMK_LOW_PRIORITY_WORK_QUEUE app PRIVATE src/workqueu
 target_sources(app PRIVATE src/main.c)
 
 add_subdirectory(src/display/)
+add_subdirectory(src/shell/)
+
 add_subdirectory_ifdef(CONFIG_SETTINGS src/settings/)
 
 if (CONFIG_ZMK_STUDIO_RPC)
@@ -124,6 +127,7 @@ if (CONFIG_ZMK_STUDIO_RPC)
                         ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/core.proto
                         ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/behaviors.proto
                         ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/keymap.proto
+                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/combos.proto
   )
 
   target_include_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
