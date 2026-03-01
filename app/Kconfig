@@ -110,6 +110,8 @@ config ZMK_HID_INDICATORS
       Enable HID indicators, used for detecting state of Caps/Scroll/Num Lock,
       Kata, and Compose.
 
+rsource "src/indicators/Kconfig"
+
 config ZMK_HID_SEPARATE_MOD_RELEASE_REPORT
     bool "Release Modifiers Separately"
     help
