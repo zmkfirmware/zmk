@@ -9,11 +9,9 @@ on:
     paths:
       - ".github/workflows/build.yml"
       - "app/**"
-  schedule:
-    - cron: "22 4 * * *"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'schedule' }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions: {}
@@ -141,7 +139,7 @@ jobs:
   compile-matrix:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    needs: [core-coverage, board-changes, nightly]
+    needs: [core-coverage, board-changes]
     outputs:
       include-list: ${{ steps.compile-list.outputs.result }}
     steps:
@@ -152,12 +150,9 @@ jobs:
           script: |
             const coreCoverage = `${{ needs.core-coverage.outputs.core-include }}` || "[]";
             const boardChanges = `${{ needs.board-changes.outputs.boards-include }}` || "[]";
-            const nightly = `${{ needs.nightly.outputs.nightly-include }}` || "[]";
-
             const combined = [
               ...JSON.parse(coreCoverage),
-              ...JSON.parse(boardChanges),
-              ...JSON.parse(nightly)
+              ...JSON.parse(boardChanges)
             ];
             const combinedUnique = [...new Map(combined.map(el => [JSON.stringify(el), el])).values()];
 
@@ -295,51 +290,6 @@ jobs:
                 }
               });
             }))).flat();
-  nightly:
-    if: ${{ github.event_name == 'schedule' && github.repository_owner == 'zmkfirmware' }}
-    runs-on: ubuntu-latest
-    needs: get-grouped-hardware
-    outputs:
-      nightly-include: ${{ steps.nightly-list.outputs.result }}
-    steps:
-      - name: Create nightly list
-        uses: actions/github-script@v7
-        id: nightly-list
-        with:
-          script: |
-            const metadata = JSON.parse(`${{ needs.get-grouped-hardware.outputs.organized-metadata }}`);
-
-            let includeOnboard = metadata.onboard.flatMap(b => {
-              if (b.siblings) {
-                return b.siblings.map(board => ({
-                  board,
-                }));
-              } else {
-                return {
-                  board: b.id,
-                };
-              }
-            });
-
-            let includeInterconnect = Object.values(metadata.interconnects).flatMap(i =>
-              i.boards.flatMap(b =>
-                i.shields.flatMap(s => {
-                  if (s.siblings) {
-                    return s.siblings.map(shield => ({
-                      board: b.id,
-                      shield,
-                    }));
-                  } else {
-                    return {
-                      board: b.id,
-                      shield: s.id,
-                    };
-                  }
-                })
-              )
-            );
-
-            return [...includeOnboard, ...includeInterconnect];
   get-grouped-hardware:
     runs-on: ubuntu-latest
     outputs:
@@ -420,7 +370,6 @@ jobs:
             return JSON.stringify(grouped).replace(/\\/g,"\\\\").replace(/`/g,"\\`");
           result-encoding: string
   get-changed-files:
-    if: ${{ github.event_name != 'schedule' }}
     runs-on: ubuntu-latest
     outputs:
       changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
