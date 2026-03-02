@@ -1,0 +1,6 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+config BOARD_HNKB40
+    bool "hnkb40-lp"
+    depends on SOC_NRF52840_QIAA

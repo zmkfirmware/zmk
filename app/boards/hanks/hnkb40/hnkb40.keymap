@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) 2021 Nick Winans
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        label = "HNKB40 keymap";
+
+        default_layer {
+            label = "Default Layer";
+// ------------------------------------------------------------------------------------------
+// | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |   BSPC   |
+// | LCTRL  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |      ENTER    |
+// |  SHIFT  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |     SHIFT   |
+// |  CTL  |  WIN  |  ALT  |  SPACE   |    1    |  ALT  |  WIN  |  MO(1) |  CTL  |
+// ------------------------------------------------------------------------------------------
+            bindings = <
+    &kp TAB  &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp I  &kp O  &kp P  &kp BSPC
+    &kp LCTRL &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp K  &kp L   &kp RET
+    &kp LSHFT  &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &lt  3 UP 
+    &mo 2 &kp LGUI &kp LALT   &lt 1 SPACE       &lt 1 SPACE    &kp LEFT   &kp DOWN   &kp RIGHT
+            >;
+        };
+
+        rgb_layer {
+            label = "RGB Layer";
+
+            bindings = <
+    &bt BT_CLR  &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp I  &kp O  &kp P  &kp BSPC
+    &bt BT_SEL 0            &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp K  &kp L   &kp RET
+    &bt BT_SEL 1            &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &kp RSHFT
+    &bt BT_SEL 3 &kp LGUI &kp LALT   &kp SPACE       &kp N1    &kp RALT   &trans  &bootloader
+            >;
+        };
+    };
+};

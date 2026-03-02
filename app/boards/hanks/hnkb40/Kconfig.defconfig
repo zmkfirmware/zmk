@@ -1,0 +1,22 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+if BOARD_HNKB40
+
+config ZMK_KEYBOARD_NAME
+    default "hnkb40-lp"
+
+if USB_DEVICE_STACK
+
+config USB_NRFX
+    default y
+
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+    default BT
+
+config SPI
+    default y
+
+endif # BOARD_HNKB40

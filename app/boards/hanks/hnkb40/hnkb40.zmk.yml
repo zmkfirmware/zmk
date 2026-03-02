@@ -1,0 +1,13 @@
+file_format: "1"
+id: hnkb40
+name: hnkb40-lp
+type: board
+arch: arm
+features:
+  - keys
+  - underglow
+  - studio
+outputs:
+  - usb
+  - ble
+url: https://hnkb40
