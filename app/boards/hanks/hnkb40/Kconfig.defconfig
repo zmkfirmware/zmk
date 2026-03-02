@@ -4,19 +4,16 @@
 if BOARD_HNKB40
 
 config ZMK_KEYBOARD_NAME
-    default "hnkb40-lp"
+    default "hnkb40"
+
+# This enables the core ZMK logic for the board
+config ZMK
+    bool
+    default y
 
 if USB_DEVICE_STACK
-
 config USB_NRFX
     default y
-
-endif # USB_DEVICE_STACK
-
-config BT_CTLR
-    default BT
-
-config SPI
-    default y
+endif
 
 endif # BOARD_HNKB40

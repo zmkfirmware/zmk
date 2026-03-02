@@ -4,6 +4,7 @@
  */
 
 &pinctrl {
+    /* SPI3: Used for WS2812 LED Strip (Underglow) */
     spi3_default: spi3_default {
         group1 {
             psels = <NRF_PSEL(SPIM_MOSI, 0, 5)>;
@@ -13,6 +14,22 @@
     spi3_sleep: spi3_sleep {
         group1 {
             psels = <NRF_PSEL(SPIM_MOSI, 0, 5)>;
+            low-power-enable;
+        };
+    };
+
+    /* SPI0: Used for 74HC595 Shift Registers (Matrix Columns) */
+    spi0_default: spi0_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 1, 13)>,   /* Clock Pin */
+                    <NRF_PSEL(SPIM_MOSI, 1, 14)>;  /* Data Pin (SER) */
+        };
+    };
+
+    spi0_sleep: spi0_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 1, 13)>,
+                    <NRF_PSEL(SPIM_MOSI, 1, 14)>;
             low-power-enable;
         };
     };

@@ -1,5 +1,5 @@
 identifier: hnkb40
-name: hnkb40-lp
+name: hnkb40
 type: mcu
 arch: arm
 toolchain:
