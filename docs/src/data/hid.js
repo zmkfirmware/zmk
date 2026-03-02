@@ -7897,7 +7897,7 @@ export default [
     documentation: "https://usb.org/sites/default/files/hut1_2.pdf#page=153",
     os: {
       windows: null,
-      linux: null,
+      linux: false,
       android: null,
       macos: true,
       ios: true,
