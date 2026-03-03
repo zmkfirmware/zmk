@@ -2,6 +2,7 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/rgb.h>
 #include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/studio.h>
 
 #define DEFAULT 0
 #define FIRST   1
@@ -42,12 +43,12 @@
 
         second_layer {
 
-            // | ` | ← | ↓ | ↑ | → | --- | RGB_TOG  | BT0 | BT1 | BT2 | BT3 | CLR |
+            // | ` | ← | ↓ | ↑ | → | STUDIO | RGB_TOG  | BT0 | BT1 | BT2 | BT3 | CLR |
             // | --- | F1 | F2 | F3 | F4 | F5       | --- | --- | --- | --- | BOOT |
             // | --- | F6 | F7 | F8 | F9 | F10 | F11 | F12 | --- | --- | SHIFT |
             // | --- | --- | --- | --- | --- | --- | --- | ---
             bindings = <
-                &kp GRAVE   &kp LEFT   &kp DOWN  &kp UP     &kp RIGHT    &trans      &rgb_ug RGB_TOG     &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR
+                &kp GRAVE   &kp LEFT   &kp DOWN  &kp UP     &kp RIGHT    &studio_unlock &rgb_ug RGB_TOG     &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR
                 &trans      &kp F1     &kp F2    &kp F3     &kp F4       &kp F5      &trans              &trans      &trans      &trans      &bootloader
                 &trans      &kp F6     &kp F7    &kp F8     &kp F9       &kp F10     &kp F11     &kp F12     &trans      &trans      &kp RSHFT
                 &trans      &trans     &trans    &trans     &trans      &trans     &trans     &trans
@@ -66,6 +67,15 @@
                 &trans      &kp UNDER  &kp PLUS   &kp PIPE  &trans       &trans      &trans     &trans     &kp LESS_THAN &kp GREATER_THAN &trans
                 &trans      &trans     &trans     &trans    &kp LS(SPACE) &kp QMARK  &trans     &trans
             >;
+        };
+
+        // Reserved layers for ZMK Studio
+        extra1 {
+            status = "reserved";
+        };
+
+        extra2 {
+            status = "reserved";
         };
     };
 };
