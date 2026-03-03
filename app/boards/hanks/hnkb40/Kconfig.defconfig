@@ -16,4 +16,11 @@ config USB_NRFX
     default y
 endif
 
+if ZMK_STUDIO
+
+config ZMK_STUDIO_LOCKING
+    default y
+
+endif # ZMK_STUDIO
+
 endif # BOARD_HNKB40
