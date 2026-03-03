@@ -1,29 +1,30 @@
 /*
  * Copyright (c) 2021 Nick Winans
- *
  * SPDX-License-Identifier: MIT
  */
 
 /dts-v1/;
 #include <nordic/nrf52840_qiaa.dtsi>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
 
 #include <dt-bindings/led/led.h>
 #include <dt-bindings/zmk/matrix_transform.h>
+#include <dt-bindings/regulator/nrf5x.h>
 
 #include <layouts/common/60percent/ansi.dtsi>
 
 #include "hnkb40-pinctrl.dtsi"
 
 / {
-    model = "hnkb40-lp";
-    compatible = "hnkb40,lp";
+    model = "hnkb40";
+    compatible = "nordic,nrf52840-qiaa";
 
     chosen {
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
         zmk,battery = &vbatt;
-        zmk,kscan = &kscan0; //
+        zmk,kscan = &kscan0;
         zmk,physical-layout = &layout_60_ansi;
         zmk,underglow = &led_strip;
     };
@@ -36,7 +37,7 @@
 RC(0,2) RC(0,3) RC(0,10) RC(0,11) RC(0,18) RC(0,19) RC(0,26) RC(0,27) RC(0,34) RC(0,35) RC(0,41) RC(0,42)
 RC(0,1)    RC(0,4) RC(0,9) RC(0,12) RC(0,17) RC(0,20) RC(0,25) RC(0,28) RC(0,33) RC(0,36)        RC(0,43)
 RC(0,0)     RC(0,5) RC(0,8) RC(0,13) RC(0,16) RC(0,21) RC(0,24) RC(0,29) RC(0,32) RC(0,40)       RC(0,44)
-    RC(0,7) RC(0,6) RC(0,15)         RC(0,14)            RC(0,22)            RC(0,30) RC(0,39) RC(0,47)
+    RC(0,7) RC(0,6) RC(0,15)         RC(0,14)             RC(0,22)             RC(0,30) RC(0,39) RC(0,47)
         >;
     };
 
@@ -49,7 +50,6 @@ RC(0,0)     RC(0,5) RC(0,8) RC(0,13) RC(0,16) RC(0,21) RC(0,24) RC(0,29) RC(0,32
         hc595a-count = <6>;
     };
 
-// 已改
     leds {
         compatible = "gpio-leds";
         blue_led: led_0 {
@@ -71,6 +71,11 @@ RC(0,0)     RC(0,5) RC(0,8) RC(0,13) RC(0,16) RC(0,21) RC(0,24) RC(0,29) RC(0,32
     };
 };
 
+/* Enable DCDC regulator for better power efficiency */
+&reg1 {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
 &adc {
     status = "okay";
 };
@@ -85,6 +90,11 @@ RC(0,0)     RC(0,5) RC(0,8) RC(0,13) RC(0,16) RC(0,21) RC(0,24) RC(0,29) RC(0,32
 
 &gpio1 {
     status = "okay";
+};
+
+/* SPI0 not used - using GPIO bit-banging for 74HC595A */
+&spi0 {
+    status = "disabled";
 };
 
 &spi3 {

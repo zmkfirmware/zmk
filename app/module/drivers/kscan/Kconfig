@@ -6,6 +6,7 @@ DT_COMPAT_ZMK_KSCAN_GPIO_DEMUX := zmk,kscan-gpio-demux
 DT_COMPAT_ZMK_KSCAN_GPIO_DIRECT := zmk,kscan-gpio-direct
 DT_COMPAT_ZMK_KSCAN_GPIO_MATRIX := zmk,kscan-gpio-matrix
 DT_COMPAT_ZMK_KSCAN_GPIO_CHARLIEPLEX := zmk,kscan-gpio-charlieplex
+DT_COMPAT_ZMK_KSCAN_595A := zmk,kscan-595a
 DT_COMPAT_ZMK_KSCAN_MOCK := zmk,kscan-mock
 
 if KSCAN
@@ -46,6 +47,14 @@ config ZMK_KSCAN_GPIO_CHARLIEPLEX
     bool
     default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_GPIO_CHARLIEPLEX))
     select ZMK_KSCAN_GPIO_DRIVER
+
+config ZMK_KSCAN_595A
+    bool
+    default $(dt_compat_enabled,$(DT_COMPAT_ZMK_KSCAN_595A))
+    select GPIO
+    help
+      Kscan driver for 74HC595A shift registers using GPIO bit-banging.
+      Compatible with luo_nice60 board interface.
 
 if ZMK_KSCAN_GPIO_MATRIX
 

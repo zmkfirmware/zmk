@@ -1,0 +1,42 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+# Note: CONFIG_BOARD_HNKB40 and SOC configs are auto-set by the build system
+
+# Enable MPU
+CONFIG_ARM_MPU=y
+
+CONFIG_PINCTRL=y
+
+# enable GPIO
+CONFIG_GPIO=y
+
+# enable SPI for WS2812 LED strip (SPI3)
+CONFIG_SPI=y
+CONFIG_NRFX_SPIM3=y
+CONFIG_SPI_NRFX=y
+CONFIG_SPI_NRFX_RAM_BUFFER_SIZE=8
+
+CONFIG_USE_DT_CODE_PARTITION=y
+CONFIG_BUILD_OUTPUT_UF2=y
+
+CONFIG_MPU_ALLOW_FLASH_WRITE=y
+CONFIG_NVS=y
+CONFIG_SETTINGS_NVS=y
+CONFIG_FLASH=y
+CONFIG_FLASH_PAGE_LAYOUT=y
+CONFIG_FLASH_MAP=y
+
+CONFIG_ZMK_RGB_UNDERGLOW=y
+
+CONFIG_ZMK_RGB_UNDERGLOW_HUE_START=160
+CONFIG_ZMK_RGB_UNDERGLOW_EFF_START=3
+
+# USB logging: build with -S zmk-usb-logging to enable
+# CONFIG_ZMK_USB_LOGGING=y
+
+
+CONFIG_ZMK_USB=y
+CONFIG_ZMK_BLE=y
+
+# Note: Using zmk,kscan-595a driver with GPIO bit-banging (luo_nice60 compatible)

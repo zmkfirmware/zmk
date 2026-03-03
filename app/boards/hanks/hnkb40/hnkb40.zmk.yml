@@ -1,13 +1,12 @@
 file_format: "1"
-id: hnkb40
-name: hnkb40-lp
+id: hnkb40/nrf52840/zmk
+name: hnkb40
 type: board
 arch: arm
 features:
   - keys
   - underglow
-  - studio
 outputs:
   - usb
   - ble
-url: https://hnkb40
+url: https://github.com/zmkfirmware/zmk

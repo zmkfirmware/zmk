@@ -23,7 +23,11 @@ properties:
       - 16
       - 24
       - 32
-    description: Number of gpios supported
+      - 40
+      - 48
+      - 56
+      - 64
+    description: Number of gpios supported (up to 8 daisy-chained shift registers)
 
 gpio-cells:
   - pin

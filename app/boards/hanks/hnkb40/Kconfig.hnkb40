@@ -1,0 +1,24 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: Apache-2.0
+
+# Board-specific Kconfig selections
+# BOARD_HNKB40 is auto-defined by Zephyr board v2 format
+
+if BOARD_HNKB40
+
+config BOARD
+    default "hnkb40"
+
+config SOC_NRF52840_QIAA
+    default y
+
+config RETAINED_MEM
+    default y
+
+config RETENTION
+    default y
+
+config RETENTION_BOOT_MODE
+    default y
+
+endif # BOARD_HNKB40

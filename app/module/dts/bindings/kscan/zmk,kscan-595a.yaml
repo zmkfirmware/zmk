@@ -1,0 +1,32 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  ZMK kscan driver for 74HC595A shift register based key matrices.
+  Uses GPIO bit-banging for shift register control.
+  Compatible with luo_nice60 board interface.
+
+compatible: "zmk,kscan-595a"
+
+include: kscan.yaml
+
+properties:
+  hc595a-ser-gpios:
+    type: phandle-array
+    required: true
+    description: GPIO pin for 74HC595A serial data input (SER/DS)
+
+  hc595a-sck-gpios:
+    type: phandle-array
+    required: true
+    description: GPIO pin for 74HC595A shift clock (SRCLK/SHCP)
+
+  key-sense-gpios:
+    type: phandle-array
+    required: true
+    description: GPIO pin to read key state (directly connected to all keys)
+
+  hc595a-count:
+    type: int
+    required: true
+    description: Number of 74HC595A shift registers in the chain
