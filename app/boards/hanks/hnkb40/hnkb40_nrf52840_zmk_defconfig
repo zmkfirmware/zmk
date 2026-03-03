@@ -39,4 +39,7 @@ CONFIG_ZMK_RGB_UNDERGLOW_EFF_START=3
 CONFIG_ZMK_USB=y
 CONFIG_ZMK_BLE=y
 
+# Enable ZMK Studio for real-time keymap editing
+CONFIG_ZMK_STUDIO=y
+
 # Note: Using zmk,kscan-595a driver with GPIO bit-banging (luo_nice60 compatible)
