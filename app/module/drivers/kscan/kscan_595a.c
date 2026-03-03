@@ -12,6 +12,7 @@
 #include <zephyr/drivers/kscan.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/pm/device.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -100,6 +101,75 @@ static int kscan_595a_disable(const struct device *dev) {
     return 0;
 }
 
+static void kscan_595a_setup_pins(const struct device *dev) {
+    const struct kscan_595a_config *config = dev->config;
+
+    /* Configure SER GPIO (output, start HIGH) */
+    gpio_pin_configure_dt(&config->ser_gpio, GPIO_OUTPUT_HIGH);
+
+    /* Configure SCK GPIO (output, start LOW) */
+    gpio_pin_configure_dt(&config->sck_gpio, GPIO_OUTPUT_LOW);
+
+    /* Configure SENSE GPIO (input with pull-up) */
+    gpio_pin_configure_dt(&config->sense_gpio, GPIO_INPUT | GPIO_PULL_UP);
+}
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+
+static void kscan_595a_set_all_outputs_low(const struct device *dev) {
+    const struct kscan_595a_config *config = dev->config;
+    const uint8_t num_columns = config->hc595a_count * 8;
+
+    /*
+     * Set all shift register outputs to LOW for sleep mode.
+     * This way, any key press will pull the sense line LOW,
+     * which can trigger a wake-up interrupt.
+     */
+    gpio_pin_set_dt(&config->ser_gpio, 0);
+    for (int i = 0; i < num_columns; i++) {
+        gpio_pin_set_dt(&config->sck_gpio, 1);
+        gpio_pin_set_dt(&config->sck_gpio, 0);
+    }
+}
+
+static int kscan_595a_disconnect_gpios(const struct device *dev) {
+    const struct kscan_595a_config *config = dev->config;
+    int err;
+
+    err = gpio_pin_configure_dt(&config->ser_gpio, GPIO_DISCONNECTED);
+    if (err) {
+        return err;
+    }
+
+    err = gpio_pin_configure_dt(&config->sck_gpio, GPIO_DISCONNECTED);
+    if (err) {
+        return err;
+    }
+
+    /* Keep sense pin configured for wake-up interrupt */
+    return 0;
+}
+
+static int kscan_595a_pm_action(const struct device *dev, enum pm_device_action action) {
+    switch (action) {
+    case PM_DEVICE_ACTION_SUSPEND:
+        /* Set all outputs LOW so any key press triggers sense */
+        kscan_595a_set_all_outputs_low(dev);
+        /* Disconnect SER and SCK to save power */
+        kscan_595a_disconnect_gpios(dev);
+        return kscan_595a_disable(dev);
+
+    case PM_DEVICE_ACTION_RESUME:
+        kscan_595a_setup_pins(dev);
+        return kscan_595a_enable(dev);
+
+    default:
+        return -ENOTSUP;
+    }
+}
+
+#endif /* IS_ENABLED(CONFIG_PM_DEVICE) */
+
 static int kscan_595a_init(const struct device *dev) {
     struct kscan_595a_data *data = dev->data;
     const struct kscan_595a_config *config = dev->config;
@@ -107,28 +177,34 @@ static int kscan_595a_init(const struct device *dev) {
     data->dev = dev;
     memset(data->pressed, 0, sizeof(data->pressed));
 
-    /* Configure SER GPIO (output, start HIGH) */
+    /* Verify GPIOs are ready */
     if (!gpio_is_ready_dt(&config->ser_gpio)) {
         LOG_ERR("SER GPIO not ready");
         return -ENODEV;
     }
-    gpio_pin_configure_dt(&config->ser_gpio, GPIO_OUTPUT_HIGH);
 
-    /* Configure SCK GPIO (output) */
     if (!gpio_is_ready_dt(&config->sck_gpio)) {
         LOG_ERR("SCK GPIO not ready");
         return -ENODEV;
     }
-    gpio_pin_configure_dt(&config->sck_gpio, GPIO_OUTPUT_LOW);
 
-    /* Configure SENSE GPIO (input with pull-up) */
     if (!gpio_is_ready_dt(&config->sense_gpio)) {
         LOG_ERR("SENSE GPIO not ready");
         return -ENODEV;
     }
-    gpio_pin_configure_dt(&config->sense_gpio, GPIO_INPUT | GPIO_PULL_UP);
 
     k_work_init_delayable(&data->work, kscan_595a_scan);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+    pm_device_init_suspended(dev);
+
+#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
+    pm_device_runtime_enable(dev);
+#endif
+
+#else
+    kscan_595a_setup_pins(dev);
+#endif
 
     return 0;
 }
@@ -149,7 +225,10 @@ static const struct kscan_driver_api kscan_595a_api = {
         .hc595a_count = DT_INST_PROP(n, hc595a_count),                                             \
     };                                                                                             \
                                                                                                    \
-    DEVICE_DT_INST_DEFINE(n, kscan_595a_init, NULL, &kscan_595a_data_##n, &kscan_595a_config_##n,  \
-                          POST_KERNEL, CONFIG_KSCAN_INIT_PRIORITY, &kscan_595a_api);
+    PM_DEVICE_DT_INST_DEFINE(n, kscan_595a_pm_action);                                             \
+                                                                                                   \
+    DEVICE_DT_INST_DEFINE(n, kscan_595a_init, PM_DEVICE_DT_INST_GET(n), &kscan_595a_data_##n,      \
+                          &kscan_595a_config_##n, POST_KERNEL, CONFIG_KSCAN_INIT_PRIORITY,         \
+                          &kscan_595a_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KSCAN_595A_INIT)
