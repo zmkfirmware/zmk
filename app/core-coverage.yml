@@ -4,3 +4,7 @@ include:
   - board: hnkb40/nrf52840/zmk
   - board: hnkb40/nrf52840/zmk
     shield: settings_reset
+  - board: hnkb40/nrf52840/zmk
+    snippet: studio-rpc-usb-uart
+    cmake-args: "-DCONFIG_ZMK_STUDIO=y"
+    nickname: "studio"

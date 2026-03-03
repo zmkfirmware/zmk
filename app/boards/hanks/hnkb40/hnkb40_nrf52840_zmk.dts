@@ -10,8 +10,7 @@
 #include <dt-bindings/led/led.h>
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <dt-bindings/regulator/nrf5x.h>
-
-#include <layouts/common/60percent/ansi.dtsi>
+#include <physical_layouts.dtsi>
 
 #include "hnkb40-pinctrl.dtsi"
 
@@ -25,8 +24,59 @@
         zephyr,flash = &flash0;
         zmk,battery = &vbatt;
         zmk,kscan = &kscan0;
-        zmk,physical-layout = &layout_60_ansi;
+        zmk,physical-layout = &hnkb40_physical_layout;
         zmk,underglow = &led_strip;
+    };
+
+    hnkb40_physical_layout: hnkb40_physical_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "HNKB40";
+        transform = <&default_transform>;
+
+        keys  //                     w   h    x    y     rot   rx   ry
+            = <&key_physical_attrs 100 100    0    0       0    0    0>
+            , <&key_physical_attrs 100 100  100    0       0    0    0>
+            , <&key_physical_attrs 100 100  200    0       0    0    0>
+            , <&key_physical_attrs 100 100  300    0       0    0    0>
+            , <&key_physical_attrs 100 100  400    0       0    0    0>
+            , <&key_physical_attrs 100 100  500    0       0    0    0>
+            , <&key_physical_attrs 100 100  600    0       0    0    0>
+            , <&key_physical_attrs 100 100  700    0       0    0    0>
+            , <&key_physical_attrs 100 100  800    0       0    0    0>
+            , <&key_physical_attrs 100 100  900    0       0    0    0>
+            , <&key_physical_attrs 100 100 1000    0       0    0    0>
+            , <&key_physical_attrs 100 100 1100    0       0    0    0>
+            , <&key_physical_attrs 125 100    0  100       0    0    0>
+            , <&key_physical_attrs 100 100  125  100       0    0    0>
+            , <&key_physical_attrs 100 100  225  100       0    0    0>
+            , <&key_physical_attrs 100 100  325  100       0    0    0>
+            , <&key_physical_attrs 100 100  425  100       0    0    0>
+            , <&key_physical_attrs 100 100  525  100       0    0    0>
+            , <&key_physical_attrs 100 100  625  100       0    0    0>
+            , <&key_physical_attrs 100 100  725  100       0    0    0>
+            , <&key_physical_attrs 100 100  825  100       0    0    0>
+            , <&key_physical_attrs 100 100  925  100       0    0    0>
+            , <&key_physical_attrs 175 100 1025  100       0    0    0>
+            , <&key_physical_attrs 175 100    0  200       0    0    0>
+            , <&key_physical_attrs 100 100  175  200       0    0    0>
+            , <&key_physical_attrs 100 100  275  200       0    0    0>
+            , <&key_physical_attrs 100 100  375  200       0    0    0>
+            , <&key_physical_attrs 100 100  475  200       0    0    0>
+            , <&key_physical_attrs 100 100  575  200       0    0    0>
+            , <&key_physical_attrs 100 100  675  200       0    0    0>
+            , <&key_physical_attrs 100 100  775  200       0    0    0>
+            , <&key_physical_attrs 100 100  875  200       0    0    0>
+            , <&key_physical_attrs 125 100  975  200       0    0    0>
+            , <&key_physical_attrs 100 100 1100  200       0    0    0>
+            , <&key_physical_attrs 125 100   75  300       0    0    0>
+            , <&key_physical_attrs 100 100  200  300       0    0    0>
+            , <&key_physical_attrs 125 100  300  300       0    0    0>
+            , <&key_physical_attrs 175 100  425  300       0    0    0>
+            , <&key_physical_attrs 175 100  600  300       0    0    0>
+            , <&key_physical_attrs 125 100  775  300       0    0    0>
+            , <&key_physical_attrs 100 100  900  300       0    0    0>
+            , <&key_physical_attrs 125 100 1000  300       0    0    0>
+            ;
     };
 
     default_transform: keymap_transform_0 {
@@ -161,6 +211,3 @@ zephyr_udc0: &usbd {
     };
 };
 
-&layout_60_ansi {
-    transform = <&default_transform>;
-};
