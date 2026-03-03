@@ -2,7 +2,13 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/rgb.h>
 #include <dt-bindings/zmk/bt.h>
+
+#ifdef CONFIG_ZMK_STUDIO
 #include <dt-bindings/zmk/studio.h>
+#define STUDIO_UNLOCK &studio_unlock
+#else
+#define STUDIO_UNLOCK &trans
+#endif
 
 #define DEFAULT 0
 #define FIRST   1
@@ -48,7 +54,7 @@
             // | --- | F6 | F7 | F8 | F9 | F10 | F11 | F12 | --- | --- | SHIFT |
             // | --- | --- | --- | --- | --- | --- | --- | ---
             bindings = <
-                &kp GRAVE   &kp LEFT   &kp DOWN  &kp UP     &kp RIGHT    &studio_unlock &rgb_ug RGB_TOG     &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR
+                &kp GRAVE   &kp LEFT   &kp DOWN  &kp UP     &kp RIGHT    STUDIO_UNLOCK &rgb_ug RGB_TOG     &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_CLR
                 &trans      &kp F1     &kp F2    &kp F3     &kp F4       &kp F5      &trans              &trans      &trans      &trans      &bootloader
                 &trans      &kp F6     &kp F7    &kp F8     &kp F9       &kp F10     &kp F11     &kp F12     &trans      &trans      &kp RSHFT
                 &trans      &trans     &trans    &trans     &trans      &trans     &trans     &trans
