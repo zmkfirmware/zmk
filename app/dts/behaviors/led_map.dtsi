@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    behaviors {
+        // Behavior can be invoked on peripherals, so name must be <= 8 characters.
+        led_map: led_map {
+            compatible = "zmk,behavior-led-map";
+            #binding-cells = <2>;
+            display-name = "Per-Key LED";
+        };
+    };
+};

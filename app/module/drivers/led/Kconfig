@@ -1,0 +1,21 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config ZMK_LED_MAP
+    bool "LED Map for per-key RGB"
+    default y
+    depends on ZMK_RGB_UNDERGLOW
+    help
+      Enable LED map support for per-key RGB effects.
+      This allows mapping individual LEDs to key positions
+      for reactive keypress lighting effects.
+
+if ZMK_LED_MAP
+
+config ZMK_LED_MAP_REACTIVE
+    bool "Reactive keypress LED effect"
+    default y
+    help
+      Light up the LED associated with a key when it is pressed.
+
+endif # ZMK_LED_MAP

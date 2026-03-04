@@ -18,6 +18,7 @@
 #include <behaviors/reset.dtsi>
 #include <behaviors/sensor_rotate_key_press.dtsi>
 #include <behaviors/rgb_underglow.dtsi>
+#include <behaviors/led_map.dtsi>
 #include <behaviors/bluetooth.dtsi>
 #include <behaviors/ext_power.dtsi>
 #include <behaviors/outputs.dtsi>

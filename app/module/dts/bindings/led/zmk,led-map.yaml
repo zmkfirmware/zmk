@@ -1,0 +1,29 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  LED map for per-key RGB and underglow configuration.
+  Maps key positions to LED indices and identifies underglow LEDs.
+
+compatible: "zmk,led-map"
+
+properties:
+  led-strip:
+    type: phandle
+    required: true
+    description: Reference to the LED strip device
+
+  underglow-map:
+    type: array
+    required: false
+    description: |
+      Array of LED indices used for underglow effects.
+      These LEDs are not associated with any key.
+
+  per-key-map:
+    type: array
+    required: false
+    description: |
+      Array mapping key positions to LED indices.
+      Index in array = key position, value = LED index.
+      Array length should match the number of keys.

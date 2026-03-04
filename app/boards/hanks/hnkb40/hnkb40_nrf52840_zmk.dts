@@ -79,6 +79,30 @@
             ;
     };
 
+    /*
+     * LED Map configuration for per-key RGB and underglow
+     * Total: 51 LEDs (42 per-key + 9 underglow)
+     */
+    led_map: led_map {
+        compatible = "zmk,led-map";
+        led-strip = <&led_strip>;
+
+        /* Underglow LED indices */
+        underglow-map = <0 1 2 3 4 5 6 7 8>;
+
+        /* Per-key LED map: key position -> LED index */
+        /* Row 0: keys 0-11  -> LEDs 9-20 */
+        /* Row 1: keys 12-22 -> LEDs 21-31 */
+        /* Row 2: keys 23-33 -> LEDs 32-42 */
+        /* Row 3: keys 34-41 -> LEDs 43-50 */
+        per-key-map = <
+             9 10 11 12 13 14 15 16 17 18 19 20
+            21 22 23 24 25 26 27 28 29 30 31
+            32 33 34 35 36 37 38 39 40 41 42
+            43 44 45 46 47 48 49 50
+        >;
+    };
+
     default_transform: keymap_transform_0 {
         compatible = "zmk,matrix-transform";
         columns = <48>;
@@ -163,7 +187,7 @@ RC(0,0)     RC(0,5) RC(0,8) RC(0,13) RC(0,16) RC(0,21) RC(0,24) RC(0,29) RC(0,32
         spi-max-frequency = <4000000>;
 
         /* WS2812 */
-        chain-length = <12>; /* LED strip length */
+        chain-length = <51>; /* Total LEDs: 42 per-key + 9 underglow */
         spi-one-frame = <0x70>;
         spi-zero-frame = <0x40>;
         color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
