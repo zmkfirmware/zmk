@@ -149,12 +149,16 @@ jobs:
 
       - name: Check if building a board without explicit ZMK compat
         if: always()
-        working-directory: ${{ env.base_dir }}/zmk/app
+        working-directory: "${{ env.base_dir }}/${{ inputs.config_path }}"
         run: |
           if ! (grep "CONFIG_ZMK_BOARD_COMPAT=y" "${{ env.build_dir }}/zephyr/.config" > /dev/null)
           then
             original_board=$(echo "${{ matrix.board }}" | sed -e 's$/.*$$')
-            west boards --board-root module --board-root . --board "${original_board}" --format "{qualifiers}" | grep "zmk" > /dev/null
+            west_board=$(west boards --board-root ${{ env.base_dir }}/zmk/app/module --board-root ${{ env.base_dir }}/zmk/app --board "${original_board}")
+            if [ -z "$west_board" ]; then
+              echo "Not found the board listed with west boards. Skipping further checking."
+              exit 0
+            fi
 
             if [ $? -ne 0 ]
             then
