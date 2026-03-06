@@ -74,15 +74,24 @@ jobs:
             export zmk_load_arg=" -DZMK_EXTRA_MODULES='${GITHUB_WORKSPACE}'"
             new_tmp_dir="${TMPDIR:-/tmp}/zmk-config"
             mkdir -p "${new_tmp_dir}"
-            echo "base_dir=${new_tmp_dir}" >> $GITHUB_ENV
+            base_dir="${new_tmp_dir}"
           else
-            echo "base_dir=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
+            base_dir=${GITHUB_WORKSPACE}
           fi
 
           if [ -n "${snippet}" ]; then
             extra_west_args="-S \"${snippet}\""
           fi
 
+          config_path_parent="$(dirname ${{ inputs.config_path }})"
+          if [ "${config_path_parent}" = "${base_dir}" ]; then
+            west_workspace_dir="${base_dir}"
+          else
+            west_workspace_dir="${base_dir}/${config_path_parent}"
+          fi
+
+          echo "base_dir=${base_dir}" >> $GITHUB_ENV
+          echo "west_workspace_dir=${west_workspace_dir}" >> $GITHUB_ENV
           echo "zephyr_version=${ZEPHYR_VERSION}" >> $GITHUB_ENV
           echo "extra_west_args=${extra_west_args}" >> $GITHUB_ENV
           echo "extra_cmake_args=${shield:+-DSHIELD=\"$shield\"}${zmk_load_arg}" >> $GITHUB_ENV
@@ -103,11 +112,11 @@ jobs:
           cache_name: cache-zephyr-${{ env.zephyr_version }}-modules
         with:
           path: |
-            ${{ env.base_dir }}/modules/
-            ${{ env.base_dir }}/tools/
-            ${{ env.base_dir }}/zephyr/
-            ${{ env.base_dir }}/bootloader/
-            ${{ env.base_dir }}/zmk/
+            ${{ env.west_workspace_dir }}/modules/
+            ${{ env.west_workspace_dir }}/tools/
+            ${{ env.west_workspace_dir }}/zephyr/
+            ${{ env.west_workspace_dir }}/bootloader/
+            ${{ env.west_workspace_dir }}/zmk/
           key: ${{ runner.os }}-build-${{ env.cache_name }}-${{ hashFiles('**/west.yml', '**/build.yaml') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache_name }}-
@@ -119,7 +128,7 @@ jobs:
         run: west init -l "${{ env.base_dir }}/${{ inputs.config_path }}"
 
       - name: West Update
-        working-directory: ${{ env.base_dir }}
+        working-directory: ${{ env.west_workspace_dir }}
         run: west update --fetch-opt=--filter=tree:0
 
       - name: Check ZMK revision
@@ -130,11 +139,11 @@ jobs:
           echo "ZMK revision: ${zmk_revision}"
 
       - name: West Zephyr export
-        working-directory: ${{ env.base_dir }}
+        working-directory: ${{ env.west_workspace_dir }}
         run: west zephyr-export
 
       - name: West Build (${{ env.display_name }})
-        working-directory: ${{ env.base_dir }}
+        working-directory: ${{ env.west_workspace_dir }}
         shell: sh -x {0}
         run: west build -s zmk/app -d "${{ env.build_dir }}" -b "${{ matrix.board }}" ${{ env.extra_west_args }} -- -DZMK_CONFIG=${{ env.base_dir }}/${{ inputs.config_path }} ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
 
