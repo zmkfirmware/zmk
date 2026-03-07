@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    behaviors {
+        ug_b2: ugbat20 {
+            compatible = "zmk,behavior-underglow-battery";
+            threshold = <20>;
+            #binding-cells = <2>;
+            display-name = "Underglow Battery level 20%";
+        };
+        ug_b4: ugbat40 {
+            compatible = "zmk,behavior-underglow-battery";
+            threshold = <40>;
+            #binding-cells = <2>;
+            display-name = "Underglow Battery level 40%";
+        };
+        ug_b6: ugbat60 {
+            compatible = "zmk,behavior-underglow-battery";
+            threshold = <60>;
+            #binding-cells = <2>;
+            display-name = "Underglow Battery level 60%";
+        };
+        ug_b8: ugbat80 {
+            compatible = "zmk,behavior-underglow-battery";
+            threshold = <80>;
+            #binding-cells = <2>;
+            display-name = "Underglow Battery level 80%";
+        };
+    };
+};
