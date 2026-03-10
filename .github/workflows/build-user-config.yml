@@ -147,6 +147,29 @@ jobs:
           echo "See also the [list of released versions](https://github.com/zmkfirmware/zmk/releases)." >> $GITHUB_STEP_SUMMARY
           echo "If you wish to stay on main, check the most recent pending release PR for breaking changes. [Our blog](https://zmk.dev/blog) may have upgrade information if breaking changes are significant." >> $GITHUB_STEP_SUMMARY
 
+      - name: Check if building a board without explicit ZMK compat
+        if: always()
+        working-directory: "${{ env.base_dir }}/${{ inputs.config_path }}"
+        run: |
+          if ! (grep "CONFIG_ZMK_BOARD_COMPAT=y" "${{ env.build_dir }}/zephyr/.config" > /dev/null)
+          then
+            original_board=$(echo "${{ matrix.board }}" | sed -e 's$/.*$$')
+            west_board=$(west boards --board-root ${{ env.base_dir }}/zmk/app/module --board-root ${{ env.base_dir }}/zmk/app --board "${original_board}")
+            if [ -z "$west_board" ]; then
+              echo "Not found the board listed with west boards. Skipping further checking."
+              exit 0
+            fi
+
+            west boards --board-root ${{ env.base_dir }}/zmk/app/module --board-root ${{ env.base_dir }}/zmk/app --board "${original_board}" --format "{qualifiers}" | grep "zmk" > /dev/null
+            if [ $? -ne 0 ]
+            then
+              echo "::warning file=build/zephyr/.config,title=Missing ZMK Compat::The selected board does not report explicit ZMK compat. Please verify you've selected the correct board and ZMK variant if one exists"
+            else
+              echo "::error file=build/zephyr/.config,title=Missing ZMK Compat::The selected board is not set up for ZMK and there is a ZMK variant available. See https://zmk.dev/blog/2025/12/09/zephyr-4-1#zmk-board-variant."
+              exit 1
+            fi
+          fi
+
       - name: ${{ env.display_name }} Kconfig file
         run: |
           if [ -f "${{ env.build_dir }}/zephyr/.config" ]
