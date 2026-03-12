@@ -1,0 +1,24 @@
+description: |
+  Allows defining a rgbmap composed of multiple layers
+
+compatible: "zmk,underglow-layer"
+
+properties:
+  pixel-lookup:
+    type: array
+    required: true
+
+child-binding:
+  description: "A layer to be used in a rgbmap"
+
+  properties:
+    bindings:
+      type: phandle-array
+      required: true
+    layer-id:
+      type: int
+      required: true
+    fade-delay:
+      type: int
+      required: false
+      default: -1
