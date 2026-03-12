@@ -130,6 +130,8 @@ static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
     return rgb;
 }
 
+void zmk_rgb_underglow_update_hook(struct led_rgb *pixels, size_t count) { /* no op */ }
+
 static void zmk_rgb_underglow_effect_solid(void) {
     for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
         pixels[i] = hsb_to_rgb(hsb_scale_min_max(state.color));
@@ -191,6 +193,7 @@ static void zmk_rgb_underglow_tick(struct k_work *work) {
         break;
     }
 
+    zmk_rgb_underglow_update_hook(pixels, STRIP_NUM_PIXELS);
     int err = led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
     if (err < 0) {
         LOG_ERR("Failed to update the RGB strip (%d)", err);
