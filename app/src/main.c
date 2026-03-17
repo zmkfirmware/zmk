@@ -29,7 +29,6 @@ int main(void) {
 
 #ifdef CONFIG_ZMK_DISPLAY
     zmk_display_init();
-
 #if IS_ENABLED(CONFIG_ARCH_POSIX)
     // Workaround for an SDL display issue:
     // https://github.com/zephyrproject-rtos/zephyr/issues/71410
