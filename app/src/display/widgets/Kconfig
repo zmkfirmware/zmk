@@ -36,4 +36,11 @@ config ZMK_WIDGET_WPM_STATUS
     select LV_USE_LABEL
     select ZMK_WPM
 
+config ZMK_WIDGET_INDICATORS_STATUS
+    bool "Widget for displaying hid indicators status"
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    select LV_USE_LABEL
+    select ZMK_INDICATORS
+
+
 endmenu
