@@ -420,6 +420,10 @@ config ZMK_BLE_PREVENT_SLEEP_WHILE_ACTIVE_CONNECTED
     depends on ZMK_BLE
     default n
 
+config ZMK_USB_ALLOW_SLEEP_WHILE_POWERED
+    bool "Allow the device to sleep while USB power is present"
+    default n
+
 endif # ZMK_SLEEP
 
 config ZMK_EXT_POWER
