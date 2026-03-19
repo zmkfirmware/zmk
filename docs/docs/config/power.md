@@ -15,11 +15,12 @@ Configuration for entering [low power states](../features/low-power-states.md) w
 Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 
 | Config                          | Type | Description                                                         | Default |
-| ------------------------------- | ---- | ------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_IDLE_TIMEOUT`       | int  | Milliseconds of inactivity before entering idle state               | 30000   |
-| `CONFIG_ZMK_SLEEP`              | bool | Enable deep sleep support                                           | n       |
-| `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT` | int  | Milliseconds of inactivity before entering deep sleep               | 900000  |
-| `CONFIG_ZMK_PM_SOFT_OFF`        | bool | Enable soft off functionality from the keymap or dedicated hardware | n       |
+| ----------------------------------------------------- | ---- | ------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_IDLE_TIMEOUT`       			| int  | Milliseconds of inactivity before entering idle state               | 30000   |
+| `CONFIG_ZMK_SLEEP`              			| bool | Enable deep sleep support                                           | n       |
+| `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT` 			| int  | Milliseconds of inactivity before entering deep sleep               | 900000  |
+| `CONFIG_ZMK_PM_SOFT_OFF`        			| bool | Enable soft off functionality from the keymap or dedicated hardware | n       |
+| `CONFIG_ZMK_BLE_PREVENT_SLEEP_WHILE_ACTIVE_CONNECTED` | bool | Prevent sleeping while the active BT profile is connected	     | n       |
 
 ## External Power Control
 
