@@ -33,7 +33,7 @@ jobs:
       has_valid_build_matrix: ${{ steps.fetch.outputs.has_valid_build_matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Fetch Build Matrix
         id: fetch
@@ -67,7 +67,7 @@ jobs:
           curl -fsSL https://deb.nodesource.com/setup_22.x | bash && apt install -y nodejs
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create build directory
         run: |
