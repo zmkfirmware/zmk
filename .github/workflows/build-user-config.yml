@@ -30,17 +30,28 @@ jobs:
     name: Fetch Build Keyboards
     outputs:
       build_matrix: ${{ env.build_matrix }}
+      has_valid_build_matrix: ${{ steps.fetch.outputs.has_valid_build_matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Fetch Build Matrix
+        id: fetch
         run: |
-          echo "build_matrix=$(yq -oj -I0 '${{ inputs.build_matrix_path }}')" >> $GITHUB_ENV
-          yq -oj "${{ inputs.build_matrix_path }}"
+          matrix_content=$(yq -oj -I0 '${{ inputs.build_matrix_path }}')
+
+          if [ -z "$matrix_content" ] || [ "$matrix_content" = "null" ]; then
+            echo "::notice file=${{inputs.build_matrix_path}},title=Empty build matrix file::To add a keyboard to the build, see https://zmk.dev/docs/user-setup#add-a-keyboard."
+            echo "has_valid_build_matrix=false" >> $GITHUB_OUTPUT
+          else
+            echo "build_matrix=$matrix_content" >> $GITHUB_ENV
+            echo "has_valid_build_matrix=true" >> $GITHUB_OUTPUT
+            echo "$matrix_content"
+          fi
 
   build:
     runs-on: ubuntu-latest
+    if: needs.matrix.outputs.has_valid_build_matrix == 'true'
     container:
       image: zmkfirmware/zmk-build-arm:stable
     needs: matrix
@@ -213,6 +224,7 @@ jobs:
 
   merge:
     runs-on: ubuntu-latest
+    if: needs.matrix.outputs.has_valid_build_matrix == 'true'
     needs: build
     name: Merge Output Artifacts
     steps:
