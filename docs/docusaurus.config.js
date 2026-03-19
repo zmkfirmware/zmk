@@ -202,6 +202,22 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl: "https://github.com/zmkfirmware/zmk/edit/main/docs/",
+          async sidebarItemsGenerator({
+            defaultSidebarItemsGenerator,
+            ...args
+          }) {
+            const sidebarItems = await defaultSidebarItemsGenerator(args);
+            const filtered = sidebarItems.filter(
+              (i) =>
+                !(
+                  args.docs.find((d) => d.id == i.id).frontMatter.unlisted ??
+                  false
+                )
+            );
+            return args.item.dirName.startsWith("releases/")
+              ? filtered.reverse()
+              : filtered;
+          },
         },
         blog: {
           showReadingTime: true,
