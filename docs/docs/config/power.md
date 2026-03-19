@@ -14,7 +14,7 @@ Configuration for entering [low power states](../features/low-power-states.md) w
 
 Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 
-| Config                          | Type | Description                                                         | Default |
+| Config                                                | Type | Description                                                         | Default |
 | ----------------------------------------------------- | ---- | ------------------------------------------------------------------- | ------- |
 | `CONFIG_ZMK_IDLE_TIMEOUT`                             | int  | Milliseconds of inactivity before entering idle state               | 30000   |
 | `CONFIG_ZMK_SLEEP`                                    | bool | Enable deep sleep support                                           | n       |
