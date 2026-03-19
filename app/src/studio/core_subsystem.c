@@ -12,6 +12,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/studio/core.h>
 #include <zmk/studio/rpc.h>
 
+#if IS_ENABLED(CONFIG_ALTAR_II_HAPTICS)
+#include <altar_ii/peripherals/altar_ii_haptics.h>
+#endif
+
 ZMK_RPC_SUBSYSTEM(core)
 
 #define CORE_RESPONSE(type, ...) ZMK_RPC_RESPONSE(core, type, __VA_ARGS__)
@@ -76,9 +80,21 @@ zmk_studio_Response reset_settings(const zmk_studio_Request *req) {
     return CORE_RESPONSE(reset_settings, true);
 }
 
+zmk_studio_Response trigger_haptic_indicator(const zmk_studio_Request *req) {
+    LOG_DBG("");
+#if IS_ENABLED(CONFIG_ALTAR_II_HAPTICS)
+    uint32_t indicator_id = req->subsystem.core.request_type.trigger_haptic_indicator;
+    int rc = altar_ii_haptics_play_indicator((enum altar_ii_indicator)indicator_id);
+    return CORE_RESPONSE(trigger_haptic_indicator, rc == 0);
+#else
+    return CORE_RESPONSE(trigger_haptic_indicator, false);
+#endif
+}
+
 ZMK_RPC_SUBSYSTEM_HANDLER(core, get_device_info, ZMK_STUDIO_RPC_HANDLER_UNSECURED);
 ZMK_RPC_SUBSYSTEM_HANDLER(core, get_lock_state, ZMK_STUDIO_RPC_HANDLER_UNSECURED);
 ZMK_RPC_SUBSYSTEM_HANDLER(core, reset_settings, ZMK_STUDIO_RPC_HANDLER_SECURED);
+ZMK_RPC_SUBSYSTEM_HANDLER(core, trigger_haptic_indicator, ZMK_STUDIO_RPC_HANDLER_UNSECURED);
 
 static int core_event_mapper(const zmk_event_t *eh, zmk_studio_Notification *n) {
     struct zmk_studio_core_lock_state_changed *lock_ev = as_zmk_studio_core_lock_state_changed(eh);
