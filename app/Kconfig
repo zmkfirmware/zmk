@@ -415,6 +415,15 @@ config ZMK_IDLE_SLEEP_TIMEOUT
     int "Milliseconds of inactivity before entering deep sleep"
     default 900000
 
+config ZMK_BLE_PREVENT_SLEEP_WHILE_ACTIVE_CONNECTED
+    bool "Prevent sleeping while the active BT profile is connected"
+    depends on ZMK_BLE
+    default n
+
+config ZMK_USB_ALLOW_SLEEP_WHILE_POWERED
+    bool "Allow sleeping while USB power is connected"
+    default n
+
 endif # ZMK_SLEEP
 
 config ZMK_EXT_POWER
