@@ -102,6 +102,17 @@ config BT_GAP_AUTO_UPDATE_CONN_PARAMS
 
 endif # !ZMK_SPLIT_ROLE_CENTRAL
 
+if ZMK_INPUT_SPLIT
+
+config ZMK_INPUT_SPLIT_MSG_QUEUE_SIZE
+    int "Max number of input split messages to queue for sending over BLE"
+    default 32
+    help
+      Sets the maximum number of input split events that can be queued for BLE notifications.
+      Increasing this reduces drops during high-rate input bursts at the cost of additional RAM.
+
+endif # ZMK_INPUT_SPLIT
+
 endmenu
 
 endif # ZMK_SPLIT_BLE
