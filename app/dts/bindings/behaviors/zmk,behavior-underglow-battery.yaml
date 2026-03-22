@@ -1,0 +1,12 @@
+# Copyright (c) 2024, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Set underglow color based on battery level
+
+compatible: "zmk,behavior-underglow-battery"
+
+include: two_param.yaml
+
+properties:
+  threshold:
+    type: int
