@@ -27,9 +27,8 @@ struct behavior_soft_off_data {
 #define IS_SPLIT_PERIPHERAL                                                                        \
     (IS_ENABLED(CONFIG_ZMK_SPLIT) && !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     struct behavior_soft_off_data *data = dev->data;
     const struct behavior_soft_off_config *config = dev->config;
 
@@ -39,12 +38,11 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         data->press_start = k_uptime_get();
     }
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     struct behavior_soft_off_data *data = dev->data;
     const struct behavior_soft_off_config *config = dev->config;
 
@@ -65,7 +63,7 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
         }
     }
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 static const struct behavior_driver_api behavior_soft_off_driver_api = {
