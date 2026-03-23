@@ -38,6 +38,7 @@ module.exports = {
         "features/split-keyboards",
         "features/debouncing",
         "features/battery",
+        "features/led-indicators",
         "features/low-power-states",
         "features/encoders",
         "features/pointing",
@@ -126,6 +127,7 @@ module.exports = {
         "config/combos",
         "config/displays",
         "config/encoders",
+        "config/led-indicators",
         "config/lighting",
         "config/pointing",
         "config/keymap",
@@ -187,6 +189,7 @@ module.exports = {
               items: [
                 "development/hardware-integration/lighting/underglow",
                 "development/hardware-integration/lighting/backlight",
+                "development/hardware-integration/lighting/led-indicators",
               ],
             },
           ],
