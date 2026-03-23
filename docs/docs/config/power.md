@@ -21,7 +21,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT`                       | int  | Milliseconds of inactivity before entering deep sleep               | 900000  |
 | `CONFIG_ZMK_PM_SOFT_OFF`                              | bool | Enable soft off functionality from the keymap or dedicated hardware | n       |
 | `CONFIG_ZMK_BLE_PREVENT_SLEEP_WHILE_ACTIVE_CONNECTED` | bool | Prevent sleeping while the active BT profile is connected           | n       |
-| `CONFIG_ZMK_USB_ALLOW_SLEEP_WHILE_POWERED`            | bool | Allow sleeping while USB power is present                           | n       |
+| `CONFIG_ZMK_USB_PREVENT_SLEEP_WHILE_POWERED`          | bool | Prevent sleeping while USB power is connected                       | y       |
 
 ## External Power Control
 

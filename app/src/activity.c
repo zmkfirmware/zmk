@@ -26,7 +26,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/usb.h>
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_BLE_PREVENT_SLEEP_WHILE_ACTIVE_CONNECTED)
+#if IS_ENABLED(CONFIG_ZMK_SLEEP_PREVENT_WHILE_BLE_CONNECTED)
 #include <zmk/ble.h>
 #endif
 
@@ -80,8 +80,8 @@ void activity_work_handler(struct k_work *work) {
     int32_t inactive_time = current - activity_last_uptime;
 #if IS_ENABLED(CONFIG_ZMK_SLEEP)
     bool prevent_sleep =
-	    !IS_ENABLED(CONFIG_ZMK_USB_ALLOW_SLEEP_WHILE_POWERED) && is_usb_power_present();
-    #if IS_ENABLED(CONFIG_ZMK_BLE_PREVENT_SLEEP_WHILE_ACTIVE_CONNECTED)
+	    IS_ENABLED(CONFIG_ZMK_SLEEP_PREVENT_WHILE_USB_POWERED) && is_usb_power_present();
+    #if IS_ENABLED(CONFIG_ZMK_SLEEP_PREVENT_WHILE_BLE_CONNECTED)
         #if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
             prevent_sleep |= zmk_ble_active_profile_is_connected();
         #else
