@@ -30,12 +30,12 @@ When using a [split keyboard](../features/split-keyboards.md), you can use a sin
 
 ZMK will search for config files in:
 
-- [`zmk/app/boards/arm/<board>`](https://github.com/zmkfirmware/zmk/tree/main/app/boards/arm)
-- `zmk-config/boards/arm/<board>`
-- `<module>/boards/arm/<board>`
-- `zmk-config/config/boards/arm/<board>` (For backwards compatibility only, do not use.)
+- [`zmk/app/boards/<vendor>/<board>`](https://github.com/zmkfirmware/zmk/tree/main/app/boards)
+- `zmk-config/boards/<vendor>/<board>`
+- `<module>/boards/<vendor>/<board>`
+- `zmk-config/config/boards/<vendor>/<board>` (For backwards compatibility only, do not use.)
 
-...where `<board>` is the name of the board and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the board.
+...where `<vendor>` is the name of the creator or vendor, `<board>` is the name of the board and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the board.
 
 ZMK will search the board folder for the following config files _in addition_ to [Zephyr board-defining files](https://docs.zephyrproject.org/4.1.0/hardware/porting/board_porting.html#create-your-board-directory):
 
