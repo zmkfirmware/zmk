@@ -37,6 +37,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/split_peripheral_status_changed.h>
 #include <zmk/ble.h>
 #include <zmk/split/bluetooth/uuid.h>
+#include <zmk/workqueue.h>
 
 static const struct bt_data zmk_ble_ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -92,14 +93,14 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
     if (err == BT_HCI_ERR_ADV_TIMEOUT && enabled) {
         low_duty_advertising = true;
-        k_work_submit(&advertising_work);
+        k_work_submit_to_queue(zmk_main_work_q(), &advertising_work);
     }
 }
 
 static void recycled(void) {
     if (enabled) {
         low_duty_advertising = false;
-        k_work_submit(&advertising_work);
+        k_work_submit_to_queue(zmk_main_work_q(), &advertising_work);
     }
 }
 
@@ -246,7 +247,7 @@ static int zmk_peripheral_ble_complete_startup(void) {
     low_duty_advertising = false;
 
     settings_loaded = true;
-    k_work_submit(&notify_status_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &notify_status_work);
 #endif
 
     return 0;
