@@ -285,7 +285,7 @@ static void zmk_update_lowest_charge_work(struct k_work *work) {
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
-        zmk_hid_battery_set(lowest_state_of_charge);
+        zmk_hid_battery_set(0, lowest_state_of_charge);
         zmk_usb_hid_send_battery_report();
 #endif
     }
@@ -326,6 +326,16 @@ int peripheral_batt_report_lvl_listener(const zmk_event_t *eh) {
     }
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB) &&                                                \
+    !IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+    // Send individual HID battery report for this peripheral
+    // Peripheral index 0 -> battery_index 1, peripheral 1 -> battery_index 2, etc.
+    LOG_DBG("Peripheral %d battery HID report: level=%d battery_index=%d", ev->source,
+            ev->state_of_charge, ev->source + BAS_PERIPHERAL_INDEX_OFFSET);
+    zmk_hid_battery_set(ev->source + BAS_PERIPHERAL_INDEX_OFFSET, ev->state_of_charge);
+    zmk_usb_hid_send_battery_report_by_index(ev->source + BAS_PERIPHERAL_INDEX_OFFSET);
+#endif
+
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
     if (ev->state_of_charge != 0) {
         // Ugly workaround to not wake up the host on keyboard part disconnect, so users don't need
@@ -364,8 +374,12 @@ int central_batt_state_changed_listener(const zmk_event_t *eh) {
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB) &&                                                \
     !IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
-    zmk_hid_battery_set(ev->state_of_charge);
-    zmk_usb_hid_send_battery_report();
+    // Send individual HID battery report for central (battery index 0)
+    // Note: If central has no battery sensor, this event won't be raised at all
+    LOG_DBG("Central battery HID report: level=%d battery_index=%d", ev->state_of_charge,
+            BAS_CENTRAL_INDEX);
+    zmk_hid_battery_set(BAS_CENTRAL_INDEX, ev->state_of_charge);
+    zmk_usb_hid_send_battery_report_by_index(BAS_CENTRAL_INDEX);
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)

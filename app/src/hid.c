@@ -35,8 +35,19 @@ static struct zmk_hid_mouse_report mouse_report = {
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 
-static struct zmk_hid_battery_report battery_report = {
-    .report_id = ZMK_HID_REPORT_ID_BATTERY, .battery_level = 0, .charging = 0};
+// Support multiple battery reports - initialize from devicetree
+#define BATTERY_REPORT_INIT_DT(node_id)                                                            \
+    {.report_id = ZMK_HID_REPORT_ID_BATTERY_BASE + DT_NODE_CHILD_IDX(node_id),                     \
+     .charging = 0,                                                                                \
+     .battery_level = 0},
+
+#if DT_HAS_CHOSEN(zmk_battery_reporting)
+static struct zmk_hid_battery_report battery_reports[ZMK_HID_MAX_BATTERIES] = {
+    DT_FOREACH_CHILD(DT_CHOSEN(zmk_battery_reporting), BATTERY_REPORT_INIT_DT)};
+#else
+static struct zmk_hid_battery_report battery_reports[ZMK_HID_MAX_BATTERIES] = {
+    {.report_id = ZMK_HID_REPORT_ID_BATTERY, .charging = 0, .battery_level = 0}};
+#endif
 
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 
@@ -477,11 +488,18 @@ void zmk_hid_mouse_clear(void) {
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 
-void zmk_hid_battery_set(uint8_t battery_level) {
-    if (battery_level > 100) {
-        battery_report.battery_level = 100;
+void zmk_hid_battery_set(uint8_t battery_index, uint8_t battery_level) {
+    if (battery_index >= ZMK_HID_MAX_BATTERIES) {
+        LOG_ERR("Invalid battery index: %d", battery_index);
+        return;
     }
-    battery_report.battery_level = battery_level;
+    if (battery_level > 100) {
+        battery_level = 100;
+    }
+    LOG_DBG("Battery set: idx=%d level=%d", battery_index, battery_level);
+    battery_reports[battery_index].battery_level = battery_level;
+    // Charging status set to 0 (not charging) - waiting for Zephyr 4.0+ BAS BLS support
+    battery_reports[battery_index].charging = 0;
 }
 
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
@@ -497,5 +515,11 @@ struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_repo
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
-struct zmk_hid_battery_report *zmk_hid_get_battery_report(void) { return &battery_report; }
+struct zmk_hid_battery_report *zmk_hid_get_battery_report(uint8_t battery_index) {
+    if (battery_index >= ZMK_HID_MAX_BATTERIES) {
+        LOG_ERR("Invalid battery index: %d", battery_index);
+        return NULL;
+    }
+    return &battery_reports[battery_index];
+}
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
