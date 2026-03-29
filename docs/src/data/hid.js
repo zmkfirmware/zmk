@@ -1378,7 +1378,7 @@ export default [
   },
   {
     names: ["TILDE2"],
-    description: "~ [Tilde]",
+    description: "~ [Tilde] using shift and non-US hash/pound",
     context: "Keyboard",
     clarify: false,
     usages: [
@@ -2628,7 +2628,7 @@ export default [
   },
   {
     names: ["PIPE2"],
-    description: "| [Pipe]",
+    description: "| [Pipe] using shift and non-US backslash",
     context: "Keyboard",
     clarify: false,
     usages: [
