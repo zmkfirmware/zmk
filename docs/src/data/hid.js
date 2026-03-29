@@ -2628,7 +2628,7 @@ export default [
   },
   {
     names: ["PIPE2"],
-    description: "| [Pipe]",
+    description: "| [Pipe] using shift and non-US backslash",
     context: "Keyboard",
     clarify: false,
     usages: [
