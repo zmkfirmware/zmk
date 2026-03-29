@@ -1378,7 +1378,7 @@ export default [
   },
   {
     names: ["TILDE2"],
-    description: "~ [Tilde]",
+    description: "~ [Tilde] using shift and non-US hash/pound",
     context: "Keyboard",
     clarify: false,
     usages: [
