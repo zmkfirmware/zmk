@@ -72,7 +72,7 @@ jobs:
         run: BSIM_COMPONENTS_PATH="${GITHUB_WORKSPACE}/tools/bsim/components" BSIM_OUT_PATH="${GITHUB_WORKSPACE}/tools/bsim" ./run-ble-test.sh tests/ble/${{ matrix.test }}
       - name: Archive artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "${{ matrix.test }}-log-files"
           path: app/build/**/*.log
