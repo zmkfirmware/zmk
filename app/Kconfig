@@ -418,7 +418,6 @@ config ZMK_IDLE_SLEEP_TIMEOUT
 config ZMK_SLEEP_PREVENT_WHILE_BLE_CONNECTED
     bool "Prevent sleeping while the active BT profile is connected"
     depends on ZMK_BLE
-    default n
 
 config ZMK_SLEEP_PREVENT_WHILE_USB_POWERED
     bool "Prevent sleeping while USB power is connected"
