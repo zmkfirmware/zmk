@@ -37,13 +37,13 @@ Definition file: [zmk/app/dts/bindings/behaviors/zmk,behavior-caps-word.yaml](ht
 
 Applies to: `compatible = "zmk,behavior-caps-word"`
 
-| Property          | Type  | Description                                                                              | Default                         |
-| ----------------- | ----- | ---------------------------------------------------------------------------------------- | ------------------------------- |
-| `#binding-cells`  | int   | Must be `<0>`                                                                            |                                 |
-| `continue-list`   | array | List of [keycodes](/docs/keymaps/list-of-keycodes) which do not deactivate caps word     | `<UNDERSCORE BACKSPACE DELETE>` |
-| `mods`            | int   | A bit field of modifiers to apply                                                        | `<MOD_LSFT>`                    |
-| `no-default-keys` | bool  | Do not add any keys to `continue-list` or `shift-list` by default                        | false                           |
-| `shift-list`      | array | List of [keycodes](/docs/keymaps/list-of-keycodes) which should have modifiers applied   | `<>`                            |
+| Property          | Type  | Description                                                                            | Default                         |
+| ----------------- | ----- | -------------------------------------------------------------------------------------- | ------------------------------- |
+| `#binding-cells`  | int   | Must be `<0>`                                                                          |                                 |
+| `continue-list`   | array | List of [keycodes](/docs/keymaps/list-of-keycodes) which do not deactivate caps word   | `<UNDERSCORE BACKSPACE DELETE>` |
+| `mods`            | int   | A bit field of modifiers to apply                                                      | `<MOD_LSFT>`                    |
+| `no-default-keys` | bool  | Do not add any keys to `continue-list` or `shift-list` by default                      | false                           |
+| `shift-list`      | array | List of [keycodes](/docs/keymaps/list-of-keycodes) which should have modifiers applied | `<>`                            |
 
 By default, `shift-list` is treated as if it always includes alphabetic keys (A-Z) and `continue-list` as if it always includes numeric keys (0-9 and numpad digits). Setting `no-default-keys` disables this behavior.
 
@@ -51,10 +51,10 @@ See [dt-bindings/zmk/modifiers.h](https://github.com/zmkfirmware/zmk/blob/main/a
 
 You can use the following nodes to tweak the default behaviors:
 
-| Node         | Behavior                                                                    |
-| ------------ | --------------------------------------------------------------------------- |
-| `&caps_word` | [Caps Word](../keymaps/behaviors/caps-word.md#caps-word)                    |
-| `&prog_word` | [Programmer Word](../keymaps/behaviors/caps-word.md#programmer-word)        |
+| Node         | Behavior                                                             |
+| ------------ | -------------------------------------------------------------------- |
+| `&caps_word` | [Caps Word](../keymaps/behaviors/caps-word.md#caps-word)             |
+| `&prog_word` | [Programmer Word](../keymaps/behaviors/caps-word.md#programmer-word) |
 
 ## Hold-Tap
 
