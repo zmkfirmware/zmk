@@ -7,6 +7,7 @@
 #include <zephyr/device.h>
 #include <zephyr/init.h>
 #include <zephyr/sys/crc.h>
+#include <zephyr/sys/printk.h>
 #include <zephyr/sys/util_macro.h>
 #include <string.h>
 
@@ -354,12 +355,12 @@ static int behavior_handle_commit(void) {
 
         item->local_id = ++largest_local_id;
         char setting_name[32];
-        sprintf(setting_name, "behavior/local_id/%d", item->local_id);
+        snprintk(setting_name, ARRAY_SIZE(setting_name), "behavior/local_id/%d", item->local_id);
 
         // If the `device->name` is readonly in flash, settings save can fail to copy/read it while
         // persisting to flash, so copy the device name into memory first before saving.
         char device_name[32];
-        snprintf(device_name, ARRAY_SIZE(device_name), "%s", item->device->name);
+        snprintk(device_name, ARRAY_SIZE(device_name), "%s", item->device->name);
 
         settings_save_one(setting_name, device_name, strlen(device_name));
     }
