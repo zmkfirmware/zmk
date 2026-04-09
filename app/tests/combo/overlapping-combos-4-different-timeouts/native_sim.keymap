@@ -1,6 +1,6 @@
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
-#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/input_matrix_mock.h>
 
 #define kA 0
 #define kB 1
@@ -56,7 +56,7 @@
 #define release_D_and_wait(delay_next) \
     ZMK_MOCK_RELEASE(1,1,delay_next)
 
-&kscan {
+&matrix {
     events = <
         /* Note: This starts at T+50 because the ZMK_MOCK_PRESS seems to launch the first event at T+(first wait duration). So in our case T+50 */
 

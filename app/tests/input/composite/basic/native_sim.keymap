@@ -1,0 +1,60 @@
+#include <behaviors.dtsi>
+#include <behaviors/mouse_move.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/input_matrix_mock.h>
+#include <dt-bindings/zmk/pointing.h>
+
+/ {
+    chosen {
+        zmk,matrix-input = &composite_matrix;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &kp A &kp B
+                &kp C &kp D
+            >;
+        };
+    };
+
+    matrix_right: native_posix_64_input_mock_right {
+        compatible = "zmk,input-matrix-mock";
+
+        rows = <1>;
+        columns = <2>;
+    };
+
+    composite_matrix: composite_matrix {
+	    compatible = "zmk,input-composite";
+	    rows = <2>;
+	    columns = <2>;
+
+	    left {
+		    input = <&matrix>;
+	    };
+
+	    right {
+		    input = <&matrix_right>;
+		    row-offset = <1>;
+	    };
+    };
+};
+
+&matrix {
+    rows = <1>;
+    events = <
+        ZMK_MOCK_PRESS(0,0,15)
+        ZMK_MOCK_RELEASE(0,0,200)
+    >;
+};
+
+&matrix_right {
+    events = <
+        ZMK_MOCK_PRESS(0,0,10)
+        ZMK_MOCK_RELEASE(0,0,200)
+    >;
+};

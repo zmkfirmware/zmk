@@ -11,9 +11,15 @@ config ZMK_POINTING
     bool "Pointing Device Support"
     default y if ZMK_MOUSE
     select INPUT
-    select INPUT_THREAD_PRIORITY_OVERRIDE
 
 if ZMK_POINTING
+
+config ZMK_POINTING_EV_QUEUE_SIZE
+    int "Pointing Event Queue Size"
+    default 8
+    help
+      Queue size for the number of complete pointint events to queue for sending
+      to the host
 
 # Needed for anyone using gpio-keys for things like soft-off setup.
 config INPUT_GPIO_KEYS

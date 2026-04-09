@@ -90,8 +90,8 @@ BUILD_ASSERT(
                         ())};                                                                      \
     COND_CODE_1(                                                                                   \
         UTIL_AND(MATRIX_INPUT_SUPPORT, DT_INST_PROP_LEN(n, input)),                                \
-        (INPUT_CALLBACK_DEFINE(INPUT_FOR_INST(n), zmk_physical_layout_input_event_cb,              \
-                               (void *)&(_CONCAT(_zmk_physical_layout_, DT_DRV_INST(n))));),       \
+        (INPUT_CALLBACK_DEFINE_NAMED(INPUT_FOR_INST(n), zmk_physical_layout_input_event_cb,              \
+                               (void *)&(_CONCAT(_zmk_physical_layout_, DT_DRV_INST(n))), zmk_physical_layout_input_cb_##n);),       \
         ())
 
 DT_INST_FOREACH_STATUS_OKAY(ZMK_LAYOUT_INST)
@@ -341,12 +341,19 @@ int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_la
     }
 
     if (active) {
+        const struct device *matrix = NULL;
         if (active->kscan) {
             kscan_disable_callback(active->kscan);
+            matrix = active->kscan;
+        } else if (active->input) {
+            matrix = active->input;
+        }
+
+        if (matrix) {
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
-            pm_device_runtime_put(active->kscan);
+            pm_device_runtime_put(matrix);
 #elif IS_ENABLED(CONFIG_PM_DEVICE)
-            pm_device_action_run(active->kscan, PM_DEVICE_ACTION_SUSPEND);
+            pm_device_action_run(matrix, PM_DEVICE_ACTION_SUSPEND);
 #endif
         }
     }
@@ -362,16 +369,24 @@ int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_la
 
     active = dest_layout;
 
-    if (active->kscan) {
+    const struct device *next_matrix = active->kscan;
+    if (!next_matrix) {
+        next_matrix = active->input;
+    }
+
+    if (next_matrix) {
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
-        int err = pm_device_runtime_get(active->kscan);
+        int err = pm_device_runtime_get(next_matrix);
         if (err < 0) {
             LOG_WRN("PM runtime get of kscan device to enable it %d", err);
             return err;
         }
 #elif IS_ENABLED(CONFIG_PM_DEVICE)
-        pm_device_action_run(active->kscan, PM_DEVICE_ACTION_RESUME);
+        pm_device_action_run(next_matrix, PM_DEVICE_ACTION_RESUME);
 #endif
+    }
+
+    if (active->kscan) {
         kscan_config(active->kscan, zmk_physical_layout_kscan_callback);
         kscan_enable_callback(active->kscan);
     }

@@ -4,22 +4,22 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "kscan_gpio.h"
+#include "input_gpio.h"
 
 #include <stdlib.h>
 
 static int compare_ports(const void *a, const void *b) {
-    const struct kscan_gpio *gpio_a = a;
-    const struct kscan_gpio *gpio_b = b;
+    const struct input_gpio *gpio_a = a;
+    const struct input_gpio *gpio_b = b;
 
     return gpio_a->spec.port - gpio_b->spec.port;
 }
 
-void kscan_gpio_list_sort_by_port(struct kscan_gpio_list *list) {
+void input_gpio_list_sort_by_port(struct input_gpio_list *list) {
     qsort(list->gpios, list->len, sizeof(list->gpios[0]), compare_ports);
 }
 
-int kscan_gpio_pin_get(const struct kscan_gpio *gpio, struct kscan_gpio_port_state *state) {
+int input_gpio_pin_get(const struct input_gpio *gpio, struct input_gpio_port_state *state) {
     if (gpio->spec.port != state->port) {
         state->port = gpio->spec.port;
 

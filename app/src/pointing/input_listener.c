@@ -77,16 +77,16 @@ struct input_listener_config {
     struct input_listener_layer_override layer_overrides[];
 };
 
-struct input_listener_data {
-    union {
-        struct {
-            struct input_listener_xy_data data;
-            struct input_listener_xy_data wheel_data;
+struct input_listener_mouse_payload {
+    struct input_listener_xy_data data;
+    struct input_listener_xy_data wheel_data;
 
-            uint8_t button_set;
-            uint8_t button_clear;
-        } mouse;
-    };
+    uint8_t button_set;
+    uint8_t button_clear;
+};
+
+struct input_listener_data {
+    struct input_listener_mouse_payload mouse;
 
 #if IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
     int16_t wheel_remainder;
@@ -96,6 +96,48 @@ struct input_listener_data {
     struct input_listener_processor_data base_processor_data;
     struct input_listener_processor_data layer_override_data[];
 };
+
+static void input_sync_cb(struct k_work *work);
+
+static K_WORK_DEFINE(input_sync_work, input_sync_cb);
+K_MSGQ_DEFINE(input_sync_msgq, sizeof(struct input_listener_mouse_payload),
+              CONFIG_ZMK_POINTING_EV_QUEUE_SIZE, 4);
+
+static void input_sync_cb(struct k_work *work)
+{
+    struct input_listener_mouse_payload ev;
+
+    while (k_msgq_get(&input_sync_msgq, &ev, K_NO_WAIT) == 0) {
+        if (ev.wheel_data.mode == INPUT_LISTENER_XY_DATA_MODE_REL) {
+            zmk_hid_mouse_scroll_set(ev.wheel_data.x.value,
+                                     ev.wheel_data.y.value);
+        }
+
+        if (ev.data.mode == INPUT_LISTENER_XY_DATA_MODE_REL) {
+            zmk_hid_mouse_movement_set(ev.data.x.value, ev.data.y.value);
+        }
+
+        if (ev.button_set != 0) {
+            for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
+                if ((ev.button_set & BIT(i)) != 0) {
+                    zmk_hid_mouse_button_press(i);
+                }
+            }
+        }
+
+        if (ev.button_clear != 0) {
+            for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
+                if ((ev.button_clear & BIT(i)) != 0) {
+                    zmk_hid_mouse_button_release(i);
+                }
+            }
+        }
+
+        zmk_endpoint_send_mouse_report();
+        zmk_hid_mouse_scroll_set(0, 0);
+        zmk_hid_mouse_movement_set(0, 0);
+    }
+}
 
 static void handle_rel_code(struct input_listener_data *data, struct input_event *evt) {
     switch (evt->code) {
@@ -300,35 +342,12 @@ static void input_handler(const struct input_listener_config *config,
     }
 
     if (evt->sync) {
-        if (data->mouse.wheel_data.mode == INPUT_LISTENER_XY_DATA_MODE_REL) {
-            zmk_hid_mouse_scroll_set(data->mouse.wheel_data.x.value,
-                                     data->mouse.wheel_data.y.value);
+        int ret = k_msgq_put(&input_sync_msgq, &data->mouse, K_NO_WAIT);
+        if (ret) {
+            LOG_ERR("Failed to queue input data for sending to the endpoints %d", ret);
         }
 
-        if (data->mouse.data.mode == INPUT_LISTENER_XY_DATA_MODE_REL) {
-            zmk_hid_mouse_movement_set(data->mouse.data.x.value, data->mouse.data.y.value);
-        }
-
-        if (data->mouse.button_set != 0) {
-            for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
-                if ((data->mouse.button_set & BIT(i)) != 0) {
-                    zmk_hid_mouse_button_press(i);
-                }
-            }
-        }
-
-        if (data->mouse.button_clear != 0) {
-            for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
-                if ((data->mouse.button_clear & BIT(i)) != 0) {
-                    zmk_hid_mouse_button_release(i);
-                }
-            }
-        }
-
-        zmk_endpoint_send_mouse_report();
-        zmk_hid_mouse_scroll_set(0, 0);
-        zmk_hid_mouse_movement_set(0, 0);
-
+        k_work_submit(&input_sync_work);
         clear_xy_data(&data->mouse.data);
         clear_xy_data(&data->mouse.wheel_data);
 

@@ -1,7 +1,7 @@
 description: |
   Allows defining a mock keyboard scan driver that simulates periodic events.
 
-compatible: "zmk,kscan-mock"
+compatible: "zmk,input-matrix-mock"
 
 properties:
   label:

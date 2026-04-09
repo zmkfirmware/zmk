@@ -516,6 +516,21 @@ config ZMK_PHYSICAL_LAYOUT_KEY_ROTATION
     bool "Support rotation of keys in physical layouts"
     default y
 
+config ZMK_MATRIX_INPUT
+    bool "ZMK Matrix Input Integration"
+    default y
+    select INPUT
+    # PM_DEVICE is used to resume/suspend the selected input device.
+    select PM_DEVICE
+
+if INPUT
+
+choice INPUT_MODE
+    default INPUT_MODE_SYNCHRONOUS
+endchoice
+
+endif
+
 menuconfig ZMK_KSCAN
     bool "ZMK KScan Integration"
     default y

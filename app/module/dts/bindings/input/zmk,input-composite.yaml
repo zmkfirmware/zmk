@@ -1,9 +1,9 @@
 description: |
   Allows composing multiple KSCAN devices into one virtual device
 
-compatible: "zmk,kscan-composite"
+compatible: "zmk,input-composite"
 
-include: kscan.yaml
+include: base.yaml
 
 properties:
   label:
@@ -23,7 +23,7 @@ child-binding:
       type: string
       required: false
       deprecated: true
-    kscan:
+    input:
       type: phandle
     row-offset:
       type: int
