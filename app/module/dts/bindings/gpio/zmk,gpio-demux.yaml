@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2026 The ZMK Contributors
+#
+# SPDX-License-Identifier: MIT
+#
+
+description: >
+  This is a representation of a GPIO demultiplexer/demux
+
+compatible: "zmk,gpio-demux"
+
+include: [gpio-controller.yaml]
+
+properties:
+  select-gpios:
+    type: phandle-array
+    required: true
+
+  en-gpios:
+    type: phandle-array
+  
+  "#gpio-cells":
+    const: 2
+
+gpio-cells:
+  - pin
+  - flags
