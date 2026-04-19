@@ -1,5 +1,5 @@
 file_format: "1"
-id: nrf52840_m2
+id: nrf52840_m2//zmk
 name: nRF52840 M.2 Module
 type: board
 arch: arm

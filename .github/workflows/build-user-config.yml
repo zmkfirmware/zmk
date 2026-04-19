@@ -30,17 +30,28 @@ jobs:
     name: Fetch Build Keyboards
     outputs:
       build_matrix: ${{ env.build_matrix }}
+      has_valid_build_matrix: ${{ steps.fetch.outputs.has_valid_build_matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Fetch Build Matrix
+        id: fetch
         run: |
-          echo "build_matrix=$(yq -oj -I0 '${{ inputs.build_matrix_path }}')" >> $GITHUB_ENV
-          yq -oj "${{ inputs.build_matrix_path }}"
+          matrix_content=$(yq -oj -I0 '${{ inputs.build_matrix_path }}')
+
+          if [ -z "$matrix_content" ] || [ "$matrix_content" = "null" ]; then
+            echo "::notice file=${{inputs.build_matrix_path}},title=Empty build matrix file::To add a keyboard to the build, see https://zmk.dev/docs/user-setup#add-a-keyboard."
+            echo "has_valid_build_matrix=false" >> $GITHUB_OUTPUT
+          else
+            echo "build_matrix=$matrix_content" >> $GITHUB_ENV
+            echo "has_valid_build_matrix=true" >> $GITHUB_OUTPUT
+            echo "$matrix_content"
+          fi
 
   build:
     runs-on: ubuntu-latest
+    if: needs.matrix.outputs.has_valid_build_matrix == 'true'
     container:
       image: zmkfirmware/zmk-build-arm:stable
     needs: matrix
@@ -56,7 +67,7 @@ jobs:
           curl -fsSL https://deb.nodesource.com/setup_22.x | bash && apt install -y nodejs
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Create build directory
         run: |
@@ -97,7 +108,7 @@ jobs:
           fi
 
       - name: Cache west modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         env:
           cache_name: cache-zephyr-${{ env.zephyr_version }}-modules
@@ -147,6 +158,29 @@ jobs:
           echo "See also the [list of released versions](https://github.com/zmkfirmware/zmk/releases)." >> $GITHUB_STEP_SUMMARY
           echo "If you wish to stay on main, check the most recent pending release PR for breaking changes. [Our blog](https://zmk.dev/blog) may have upgrade information if breaking changes are significant." >> $GITHUB_STEP_SUMMARY
 
+      - name: Check if building a board without explicit ZMK compat
+        if: always()
+        working-directory: "${{ env.base_dir }}/${{ inputs.config_path }}"
+        run: |
+          if ! (grep "CONFIG_ZMK_BOARD_COMPAT=y" "${{ env.build_dir }}/zephyr/.config" > /dev/null)
+          then
+            original_board=$(echo "${{ matrix.board }}" | sed -e 's$/.*$$')
+            west_board=$(west boards --board-root ${{ env.base_dir }}/zmk/app/module --board-root ${{ env.base_dir }}/zmk/app --board "${original_board}")
+            if [ -z "$west_board" ]; then
+              echo "Not found the board listed with west boards. Skipping further checking."
+              exit 0
+            fi
+
+            west boards --board-root ${{ env.base_dir }}/zmk/app/module --board-root ${{ env.base_dir }}/zmk/app --board "${original_board}" --format "{qualifiers}" | grep "zmk" > /dev/null
+            if [ $? -ne 0 ]
+            then
+              echo "::warning file=build/zephyr/.config,title=Missing ZMK Compat::The selected board does not report explicit ZMK compat. Please verify you've selected the correct board and ZMK variant if one exists"
+            else
+              echo "::error file=build/zephyr/.config,title=Missing ZMK Compat::The selected board is not set up for ZMK and there is a ZMK variant available. See https://zmk.dev/blog/2025/12/09/zephyr-4-1#zmk-board-variant."
+              exit 1
+            fi
+          fi
+
       - name: ${{ env.display_name }} Kconfig file
         run: |
           if [ -f "${{ env.build_dir }}/zephyr/.config" ]
@@ -183,18 +217,19 @@ jobs:
           fi
 
       - name: Archive (${{ env.display_name }})
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: artifact-${{ env.artifact_name }}
           path: ${{ env.build_dir }}/artifacts
 
   merge:
     runs-on: ubuntu-latest
+    if: needs.matrix.outputs.has_valid_build_matrix == 'true'
     needs: build
     name: Merge Output Artifacts
     steps:
       - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: ${{ inputs.archive_name }}
           pattern: artifact-*

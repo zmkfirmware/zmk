@@ -19,7 +19,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static zmk_hid_indicators_t hid_indicators[ZMK_ENDPOINT_COUNT];
 
 zmk_hid_indicators_t zmk_hid_indicators_get_current_profile(void) {
-    return zmk_hid_indicators_get_profile(zmk_endpoints_selected());
+    return zmk_hid_indicators_get_profile(zmk_endpoint_get_selected());
 }
 
 zmk_hid_indicators_t zmk_hid_indicators_get_profile(struct zmk_endpoint_instance endpoint) {

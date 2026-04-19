@@ -5,6 +5,7 @@
 
 config BOARD_FERRIS
     select SOC_STM32F072XB
+    select ZMK_BOARD_COMPAT
     imply RETAINED_MEM
     imply RETENTION
     imply RETENTION_BOOT_MODE

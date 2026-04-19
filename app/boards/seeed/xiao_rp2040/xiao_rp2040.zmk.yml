@@ -1,5 +1,5 @@
 file_format: "1"
-id: xiao_rp2040
+id: xiao_rp2040//zmk
 name: Seeed Studio XIAO RP2040
 type: board
 arch: arm

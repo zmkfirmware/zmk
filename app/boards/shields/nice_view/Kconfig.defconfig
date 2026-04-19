@@ -3,6 +3,9 @@
 
 if SHIELD_NICE_VIEW
 
+config LS0XX_VCOM_THREAD_PRIO
+    default 11
+
 config LV_Z_VDB_SIZE
     default 100
 
@@ -26,6 +29,7 @@ endchoice
 
 config LV_Z_MEM_POOL_SIZE
     default 8192 if ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+    default 5120 if ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
 config ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
     imply NICE_VIEW_WIDGET_STATUS
