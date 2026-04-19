@@ -23,6 +23,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/physical_layouts.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
+#include <zmk/boot_magic.h>
 
 ZMK_EVENT_IMPL(zmk_physical_layout_selection_changed);
 
@@ -68,6 +69,12 @@ BUILD_ASSERT(
     DEVICE_DT_GET(COND_CODE_1(DT_INST_PROP_LEN(n, input), (DT_INST_PHANDLE(n, input)),             \
                               (DT_CHOSEN(zmk_matrix_input))))
 
+#define ZMK_BOOT_MAGIC_COMBO_DECLARE(n, prop, idx)                                                 \
+    ZMK_BOOT_MAGIC_COMBO_CONFIG_DECLARE(DT_PHANDLE_BY_IDX(n, prop, idx));
+
+#define ZMK_BOOT_MAGIC_COMBO_REF(n, prop, idx)                                                     \
+    &ZMK_BOOT_MAGIC_COMBO_CONFIG_NAME(DT_PHANDLE_BY_IDX(n, prop, idx)),
+
 #define ZMK_LAYOUT_INST(n)                                                                         \
     BUILD_ASSERT(!IS_ENABLED(CONFIG_ZMK_STUDIO) || DT_INST_NODE_HAS_PROP(n, keys),                 \
                  "ZMK Studio requires physical layouts with key positions. See "                   \
@@ -75,12 +82,22 @@ BUILD_ASSERT(
     static const struct zmk_key_physical_attrs _CONCAT(_zmk_physical_layout_keys_,                 \
                                                        n)[DT_INST_PROP_LEN_OR(n, keys, 0)] = {     \
         LISTIFY(DT_INST_PROP_LEN_OR(n, keys, 0), ZKPA_INIT, (, ), n)};                             \
+    COND_CODE_1(DT_INST_NODE_HAS_PROP(n, boot_magic_combos),                                       \
+                (DT_INST_FOREACH_PROP_ELEM(n, boot_magic_combos, ZMK_BOOT_MAGIC_COMBO_DECLARE)),   \
+                ())                                                                                \
+    static const struct zmk_boot_magic_combo_config *const _CONCAT(                                \
+        _zmk_physical_layout_boot_magic_combos_, n)[] = {                                          \
+        COND_CODE_1(                                                                               \
+            DT_INST_NODE_HAS_PROP(n, boot_magic_combos),                                           \
+            (DT_INST_FOREACH_PROP_ELEM(n, boot_magic_combos, ZMK_BOOT_MAGIC_COMBO_REF)), )};       \
     ZMK_MATRIX_TRANSFORM_EXTERN(DT_INST_PHANDLE(n, transform));                                    \
     static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, DT_DRV_INST(n)) = {     \
         .display_name = DT_INST_PROP_OR(n, display_name, "Layout #" #n),                           \
         .matrix_transform = ZMK_MATRIX_TRANSFORM_T_FOR_NODE(DT_INST_PHANDLE(n, transform)),        \
         .keys = _CONCAT(_zmk_physical_layout_keys_, n),                                            \
         .keys_len = DT_INST_PROP_LEN_OR(n, keys, 0),                                               \
+        .boot_magic_combos = _CONCAT(_zmk_physical_layout_boot_magic_combos_, n),                  \
+        .boot_magic_combos_len = DT_INST_PROP_LEN_OR(n, boot_magic_combos, 0),                     \
         COND_CODE_1(UTIL_AND(MATRIX_INPUT_SUPPORT, DT_INST_PROP_LEN(n, input)),                    \
                     (.input = INPUT_FOR_INST(n)), ())                                              \
             COND_CODE_1(UTIL_OR(DT_HAS_CHOSEN(zmk_kscan), DT_INST_PROP_LEN(n, kscan)),             \
@@ -154,6 +171,8 @@ ZMK_MATRIX_TRANSFORM_EXTERN(DT_CHOSEN(zmk_matrix_transform));
 static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, chosen) = {
     .display_name = "Default",
     .matrix_transform = ZMK_MATRIX_TRANSFORM_T_FOR_NODE(DT_CHOSEN(zmk_matrix_transform)),
+    .boot_magic_combos = NULL,
+    .boot_magic_combos_len = 0,
     COND_CODE_1(DT_HAS_CHOSEN(zmk_kscan), (.kscan = DEVICE_DT_GET(DT_CHOSEN(zmk_kscan)), ), ())};
 
 static const struct zmk_physical_layout *const layouts[] = {
@@ -172,6 +191,8 @@ ZMK_MATRIX_TRANSFORM_DEFAULT_EXTERN();
 static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, chosen) = {
     .display_name = "Default",
     .matrix_transform = &zmk_matrix_transform_default,
+    .boot_magic_combos = NULL,
+    .boot_magic_combos_len = 0,
 #if DT_HAS_CHOSEN(zmk_matrix_input)
     .input = DEVICE_DT_GET(DT_CHOSEN(zmk_matrix_input)),
 #elif DT_HAS_CHOSEN(zmk_kscan)

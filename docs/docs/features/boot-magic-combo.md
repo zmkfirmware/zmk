@@ -7,9 +7,11 @@ A boot magic combo performs one or more actions if a combination of keys is held
 
 ## Magic Keys
 
+Magic keys are specific to a physical layout. If your board doesn't have one, follow the [physical layouts documentation](../development/hardware-integration/physical-layouts.md) to create one.
+
 To define a boot magic combo on a new board or shield, add a `zmk,boot-magic-combo` node to your board's `.dts` file or shield's `.overlay` file and select which keys will trigger it with the `combo-positions` property. All keys in the combo must be held simultaneously to trigger the action.
 
-You can also enable the feature for any keyboard by adding it to your `.keymap` file.
+Then configure `boot-magic-combos` in your physical layout to point to your newly defined boot magic combo. If you have multiple boot magic combos, you can pass in a list.
 
 ```c
 / {
@@ -17,6 +19,10 @@ You can also enable the feature for any keyboard by adding it to your `.keymap` 
     bootloader_key: bootloader_key {
         compatible = "zmk,boot-magic-combo";
         combo-positions = <0 1>;
+    };
+
+    &default_layout {
+        boot-magic-combos = <&bootloader_key>;
     };
     ...
 };
@@ -102,7 +108,7 @@ You may define multiple `zmk,boot-magic-combo` nodes for different keys, but not
 
 ## Split Keyboards
 
-For split keyboards, you can define multiple boot magic combos and then only enable the correct key(s) for each side. For example, if key 0 is the top-left key on the left side and key 11 is the top-right key on the right side, you could use:
+For split keyboards, you can define multiple boot magic combos and then only choose the correct combos(s) for each side. For example, if key 0 is the top-left key on the left side and key 11 is the top-right key on the right side, you could use:
 
 **shield.dtsi**
 
@@ -113,14 +119,12 @@ For split keyboards, you can define multiple boot magic combos and then only ena
         compatible = "zmk,boot-magic-combo";
         combo-positions = <0>;
         jump-to-bootloader;
-        status = "disabled";
     };
 
     bootloader_key_right: bootloader_key_right {
         compatible = "zmk,boot-magic-combo";
         combo-positions = <11>;
         jump-to-bootloader;
-        status = "disabled";
     };
     ...
 };
@@ -131,8 +135,8 @@ For split keyboards, you can define multiple boot magic combos and then only ena
 ```c
 #include "shield.dtsi"
 
-&bootloader_key_left {
-    status = "okay";
+&default_layout {
+    boot-magic-combos = <&bootloader_key_left>;
 };
 ```
 
@@ -141,14 +145,14 @@ For split keyboards, you can define multiple boot magic combos and then only ena
 ```c
 #include "shield.dtsi"
 
-&bootloader_key_right {
-    status = "okay";
+&default_layout {
+    boot-magic-combos = <&bootloader_key_right>;
 };
 ```
 
-## Key Positions and Alternate Layouts
+## Key Positions and Physical Layouts
 
-Key positions are affected by the [matrix transform](../config/kscan.md#matrix-transform), so if your keyboard has multiple transforms for alternate layouts, you may need to adjust positions according to the user's selected transform. There is no automatic way to do this, but one way to simplify things for users is to add a block of commented out code to the keymap which selects the transform and updates the key positions to match if uncommented.
+Key positions are affected by the [matrix transform](../config/kscan.md#matrix-transform). If you use different transforms for each physical layout, then you will need to supply a different set of boot magic combos for each physical layout.
 
 For example, consider a split keyboard which has 6 columns per side by default but supports a 5-column layout, and assume you want the top-left key on the left side and the top-right key on the right side to be boot magic combos. The top-left key will be position 0 regardless of layout, but the top-right key will be position 11 by default and position 9 in the 5-column layout.
 
@@ -157,24 +161,66 @@ For example, consider a split keyboard which has 6 columns per side by default b
 ```c
 / {
     chosen {
-        zmk,matrix_transform = &default_transform;
+        zmk,physical-layout = &default_layout;
+    };
+
+    default_layout: default_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
+        transform = <&default_transform>;
+    };
+
+    five_column_layout: five_column_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "5-Column Layout";
+        transform = <&five_column_transform>;
     };
 
     bootloader_key_left: bootloader_key_left {
         compatible = "zmk,boot-magic-combo";
         combo-positions = <0>;
         jump-to-bootloader;
-        status = "disabled";
     };
 
     bootloader_key_right: bootloader_key_right {
         compatible = "zmk,boot-magic-combo";
         combo-positions = <11>;
         jump-to-bootloader;
-        status = "disabled";
+    };
+
+    bootloader_key_right_fivecol: bootloader_key_right_fivecol {
+        compatible = "zmk,boot-magic-combo";
+        combo-positions = <9>;
+        jump-to-bootloader;
     };
     ...
 };
+```
+
+**shield_left.overlay**
+
+```c
+#include "shield.dtsi"
+
+&default_layout {
+    boot-magic-combos = <&bootloader_key_left>;
+};
+&five_column_layout {
+    boot-magic-combos = <&bootloader_key_left>;
+}
+```
+
+**shield_right.overlay**
+
+```c
+#include "shield.dtsi"
+
+&default_layout {
+    boot-magic-combos = <&bootloader_key_right>;
+};
+&five_column_layout {
+    boot-magic-combos = <&bootloader_key_right_fivecol>;
+}
 ```
 
 **shield.keymap**
@@ -183,10 +229,7 @@ For example, consider a split keyboard which has 6 columns per side by default b
 // Uncomment this block if using the 5-column layout
 // / {
 //     chosen {
-//         zmk,matrix_transform = &five_column_transform;
-//     };
-//     bootloader_key_right {
-//         combo-positions = <9>;
+//         zmk,physical-layout = &five_column_layout;
 //     };
 // };
 ```

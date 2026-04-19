@@ -182,12 +182,14 @@ Applies to: `compatible = zmk,physical-layout`
 
 Definition file: [zmk/app/dts/bindings/zmk,physical-layout.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk%2Cphysical-layout.yaml)
 
-| Property       | Type          | Description                                                                                                            | Default |
-| -------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------- | ------- |
-| `display-name` | string        | The name of this layout, for display purposes                                                                          |         |
-| `transform`    | phandle       | The matrix transform to use along with this layout                                                                     |         |
-| `kscan`        | phandle       | The kscan to use along with this layout. The `zmk,kscan` chosen will be used as a fallback if this property is omitted |         |
-| `keys`         | phandle-array | Array of key physical attributes.                                                                                      |         |
+| Property           | Type          | Description                                                                                                            | Default |
+| ------------------ | ------------- | ---------------------------------------------------------------------------------------------------------------------- | ------- |
+| `display-name`     | string        | The name of this layout, for display purposes                                                                          |         |
+| `transform`        | phandle       | The matrix transform to use along with this layout                                                                     |         |
+| `kscan`            | phandle       | The kscan to use along with this layout. The `zmk,kscan` chosen will be used as a fallback if this property is omitted |         |
+| `keys`             | phandle-array | Array of key physical attributes.                                                                                      |         |
+| `bootmagic-combos` | phandles      | List of combos specific to this layout that enter bootloader or reset settings when held during boot.                  |
+|                    |
 
 Each element of the `keys` array has the shape `<&key_physical_attrs w h x y r rx ry>`, with the following properties:
 
