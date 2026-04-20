@@ -87,9 +87,9 @@ BUILD_ASSERT(
                 ())                                                                                \
     static const struct zmk_boot_magic_combo_config *const _CONCAT(                                \
         _zmk_physical_layout_boot_magic_combos_, n)[] = {                                          \
-        COND_CODE_1(                                                                               \
-            DT_INST_NODE_HAS_PROP(n, boot_magic_combos),                                           \
-            (DT_INST_FOREACH_PROP_ELEM(n, boot_magic_combos, ZMK_BOOT_MAGIC_COMBO_REF)), )};       \
+        COND_CODE_1(DT_INST_NODE_HAS_PROP(n, boot_magic_combos),                                   \
+                    (DT_INST_FOREACH_PROP_ELEM(n, boot_magic_combos, ZMK_BOOT_MAGIC_COMBO_REF)),   \
+                    ())};                                                                          \
     ZMK_MATRIX_TRANSFORM_EXTERN(DT_INST_PHANDLE(n, transform));                                    \
     static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, DT_DRV_INST(n)) = {     \
         .display_name = DT_INST_PROP_OR(n, display_name, "Layout #" #n),                           \
