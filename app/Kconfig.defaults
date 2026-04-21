@@ -53,6 +53,9 @@ if ZMK_RGB_UNDERGLOW
 config SPI
     default y
 
+config ZMK_RGB_UNDERGLOW_TICK_PERIOD_MS
+    default 50
+
 config ZMK_RGB_UNDERGLOW_EXT_POWER
     default y
 
