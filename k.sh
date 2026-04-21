@@ -1,90 +1,102 @@
+#!/bin/bash
 
-# 设置历史记录文件路径
+# Set history file path
 export HISTFILE=~/.bash_history_mx_kbd
 
 BPARAM="100"
-config_root=pilot
-keymap_qf=via
-config_qf=$1
 DRIVE_P=F
-# make clean
+# Make clean
 export ORIG_CWD=$(pwd)
+
+# Accept first argument as shield identifier or custom tag (e.g., L, R, left, right)
+ARG_TAG=$1
+
 polling_check(){
-count=0
-while [ ! -f ${DRIVE_P}:/CURRENT.UF2 ] && [ ! -f E:/CURRENT.UF2 ] ; do
-    sleep 2
-    count=$((count + 1))
+    count=0
+    while [ ! -f ${DRIVE_P}:/CURRENT.UF2 ] && [ ! -f E:/CURRENT.UF2 ] ; do
+        sleep 2
+        count=$((count + 1))
 
-    if [ $count -gt 100 ]; then
-        echo "\nBeyong attempt, break current build..."
-        break
+        if [ $count -gt 100 ]; then
+            echo -e "\nBeyond attempt, break current build..."
+            return 1
+        fi
+
+        if (( count == 1 )); then
+            echo "Looking up Drive $DRIVE_P, polling ...every 2 seconds"
+            echo -n "Detecting..."
+            continue
+        fi
+
+        echo -n "."
+
+    done
+
+    # Set DRIVE_P to E if F: is not available but E: is
+    if [ ! -f ${DRIVE_P}:/CURRENT.UF2 ] && [ -f E:/CURRENT.UF2 ]; then
+        DRIVE_P="E"
     fi
-
-    if (( count == 1 )); then
-        echo "looking up Drive $DRIVE_P, polling ...every 2 seconds"
-        echo -n "Detecting..."
-        continue
-    fi
-
-    echo -n "."
-
-done
-
-# Set DRIVE_P to E if F: is not available but E: is
-if [ ! -f ${DRIVE_P}:/CURRENT.UF2 ] && [ -f E:/CURRENT.UF2 ]; then
-    DRIVE_P="E"
-fi
+    
+    echo -e "\nDevice detected on drive: ${DRIVE_P}:"
+    return 0
 }
-
-if [ ! $1 ]; then
-
-  echo "Please input parameter first , use below example as reference."
-  BPARAM="100"
-else
-    BPARAM=$1
-fi
-
-
-
-if [ -n "$2" ]; then
-   keymap_qf=$2
-    # Your code here
-fi
-
-export USE_EXISTING_LIB=OFF
-# Check for "clean" option in the script arguments
-if [[ "$@" == *uselib* ]]; then
-    echo -e "${GREEN}Taking up my own library *******${END}"
-    export USE_EXISTING_LIB=ON
-fi
-
 
 curr_folder=$(pwd)
 echo "curr_folder_${curr_folder}"
-    clear
+clear
 
-cd app
- rm -rf build
-    start_time=$(date +%s)
-# west build -b nice_nano -- -DSHIELD=corne_left
-# west build -b nice_nano -- -DSHIELD=corne_left 
-# west build -b nice_nano -- -DSHIELD=corne_left -S studio-rpc-usb-uart
+cd app || exit 1
+rm -rf build
 
-# west build -d build/cl_studio -b nice_nano_k \
-#   -S studio-rpc-usb-uart -- -DSHIELD=corne_left -DCONFIG_ZMK_STUDIO=y
+start_time=$(date +%s)
 
-#   west build -b nice_nano -S zmk-usb-logging -- -DSHIELD="corne_left"
-  west build -b nice_nano_k -- -DSHIELD=corne_left 
+# Determine build target and output filename suffix
+# Default to corne_right if no argument or argument is not 'L'
+if [ "$ARG_TAG" == "L" ]; then
+    SHIELD_TARGET="corne_left"
+    FILE_SUFFIX="_left"
+else
+    SHIELD_TARGET="corne_right"
+    FILE_SUFFIX="_right"
+fi
 
+echo "Building for: $SHIELD_TARGET"
 
-    end_time=$(date +%s)
+west build -b nice_nano_k -- -DSHIELD=$SHIELD_TARGET
 
-    execution_time=$(($end_time-$start_time))
-    echo "Compilation time: $execution_time seconds"
+if [ $? -ne 0 ]; then
+    echo "Build failed!"
+    exit 1
+fi
 
-    
-    polling_check
-   cp build/zephyr/zmk.uf2 E:/flash.uf2
-#    cp build/cl_studio/zephyr/zmk.uf2 E:/flash.uf2
-    exit 0
+end_time=$(date +%s)
+execution_time=$(($end_time-$start_time))
+echo "Compilation time: $execution_time seconds"
 
+echo "Waiting for device..."
+polling_check
+
+if [ $? -ne 0 ]; then
+    echo "Device detection failed."
+    exit 1
+fi
+
+# Define source and destination files
+SRC_FILE="build/zephyr/zmk.uf2"
+# Generate filename with keyword, e.g., flash_L.uf2 or flash_R.uf2
+DEST_FILE="${DRIVE_P}:/flash${FILE_SUFFIX}.uf2"
+DEST_FILE2="../../flash${FILE_SUFFIX}.uf2"
+
+echo "Copying $SRC_FILE to $DEST_FILE"
+cp "$SRC_FILE" "$DEST_FILE"
+cp "$SRC_FILE" "$DEST_FILE2"
+
+if [ $? -eq 0 ]; then
+    echo "Flash successful: $DEST_FILE"
+    echo "Flash successful: $DEST_FILE2"
+else
+    echo "Copy failed!"
+    exit 1
+fi
+
+exit 0
