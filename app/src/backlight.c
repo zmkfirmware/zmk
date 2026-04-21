@@ -19,6 +19,7 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
+#include <zmk/events/backlight_state_changed.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -34,13 +35,8 @@ static const struct device *const backlight_dev = DEVICE_DT_GET(DT_CHOSEN(zmk_ba
 
 #define BRT_MAX 100
 
-struct backlight_state {
-    uint8_t brightness;
-    bool on;
-};
-
-static struct backlight_state state = {.brightness = CONFIG_ZMK_BACKLIGHT_BRT_START,
-                                       .on = IS_ENABLED(CONFIG_ZMK_BACKLIGHT_ON_START)};
+static struct zmk_backlight_state state = {.brightness = CONFIG_ZMK_BACKLIGHT_BRT_START,
+                                           .on = IS_ENABLED(CONFIG_ZMK_BACKLIGHT_ON_START)};
 
 static int zmk_backlight_update(void) {
     uint8_t brt = zmk_backlight_get_brt();
@@ -53,6 +49,7 @@ static int zmk_backlight_update(void) {
             return rc;
         }
     }
+    raise_zmk_backlight_state_changed((struct zmk_backlight_state_changed){.state = state});
     return 0;
 }
 

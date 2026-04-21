@@ -6,6 +6,11 @@
 
 #pragma once
 
+struct zmk_backlight_state {
+    uint8_t brightness;
+    bool on;
+};
+
 int zmk_backlight_on(void);
 int zmk_backlight_off(void);
 int zmk_backlight_toggle(void);
