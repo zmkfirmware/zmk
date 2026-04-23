@@ -92,7 +92,7 @@ zephyr_udc0: &usbd {
             reg = <0x00000000 0x00027000>;
         };
         code_partition: partition@27000 {
-            reg = <0x00027000 0x00045000>;
+            reg = <0x00027000 0x0004B000>;
         };
 
       /*
@@ -104,8 +104,8 @@ zephyr_udc0: &usbd {
          * Storage partition will be used by FCB/LittleFS/NVS
          * if enabled.
          */
-        storage_partition: partition@6c000 {
-            reg = <0x0006c000 0x00008000>;
+        storage_partition: partition@72000 {
+            reg = <0x00072000 0x00002000>;
         };
 
         boot_partition: partition@74000 {
