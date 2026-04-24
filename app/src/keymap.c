@@ -307,8 +307,7 @@ int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t
             storage_binding_idx, binding.behavior_dev, binding.param1);
 
     // ★★★★★ Check for bootloader binding ★★★★★
-    if (binding_idx == 25 &&                             // UI position 25
-        binding.behavior_dev &&                          // Behavior name exists
+    if (binding.behavior_dev &&                          // Behavior name exists
         strcmp(binding.behavior_dev, "bootload") == 0 && // Behavior is 'bootload'
         binding.param1 == 0x00000000)                    // param1 is 0
     {
