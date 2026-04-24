@@ -273,6 +273,48 @@ zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t bin
     return &zmk_keymap[layer_id][mapped_idx];
 }
 
+static void handle_bootloader_entry(uint16_t binding_idx,
+                                    const struct zmk_behavior_binding *binding) {
+
+    if (binding->behavior_dev == NULL) {
+        return;
+    }
+
+    // ★★★★★ Check for bootloader binding ★★★★★
+    if (strcmp(binding->behavior_dev, "bootload") == 0) {
+        LOG_INF("  position=%d, behavior='%s' \n", binding_idx, binding->behavior_dev);
+
+        extern int bootmode_set(uint8_t boot_mode);
+        int ret = bootmode_set(1); // BOOT_MODE_TYPE_BOOTLOADER
+        if (ret < 0) {
+            LOG_ERR("Failed to set the bootloader mode (%d)", ret);
+            return;
+        }
+        extern FUNC_NORETURN void sys_reboot(int type);
+        sys_reboot(0); // SYS_REBOOT_WARM 0
+    }
+
+    // ★★★★★ Check for reset binding ★★★★★
+    if (strcmp(binding->behavior_dev, "bluetooth") == 0 && binding->param1 == 0x00000004) {
+        LOG_INF(" reset kb behavior='%s' \n", binding->behavior_dev);
+
+        // 1. 先断开所有连接（模拟 BT_DISC_CMD 对所有 profile）
+        for (int i = 0; i < 2; i++) {
+            if (zmk_ble_profile_is_connected(i)) {
+                LOG_INF("Disconnecting profile %d", i);
+                zmk_ble_prof_disconnect(i);
+            }
+        }
+        extern int zmk_ble_unpair_all(void);
+        extern void zmk_ble_clear_all_bonds(void);
+        // zmk_ble_clear_all_bonds();
+        zmk_ble_clear_all_bonds();
+        // 2. 延迟 500ms 确保清除完成
+        LOG_INF("Delaying 500ms for BLE clear to complete...");
+    }
+    // ★★★★★★★★★★★★★★★★★★★★
+}
+
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE)
 
 #define PENDING_ARRAY_SIZE DIV_ROUND_UP(ZMK_KEYMAP_LEN, 8)
@@ -288,9 +330,9 @@ int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t
     ASSERT_LAYER_VAL(layer_id, -EINVAL)
 
     const uint32_t *pos_map;
-    LOG_INF("\n 7777  zmk_physical_layouts_get_selected_to_stock_position_map  \n");
+    // LOG_INF("\n 7777  zmk_physical_layouts_get_selected_to_stock_position_map  \n");
     int ret = zmk_physical_layouts_get_selected_to_stock_position_map(&pos_map);
-    LOG_INF("\n 8888  zmk_physical_layouts_get_selected_to_stock_position_map  \n");
+    // LOG_INF("\n 8888  zmk_physical_layouts_get_selected_to_stock_position_map  \n");
     if (ret < 0) {
         LOG_WRN("Failed to get the mapping to determine where to set the binding (%d)", ret);
         return ret;
@@ -306,24 +348,6 @@ int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t
     LOG_INF("\n new layer =%d, pos=%d, beavhvior='%s', param1=0x%08X\n", layer_id,
             storage_binding_idx, binding.behavior_dev, binding.param1);
 
-    // ★★★★★ Check for bootloader binding ★★★★★
-    if (binding.behavior_dev &&                          // Behavior name exists
-        strcmp(binding.behavior_dev, "bootload") == 0 && // Behavior is 'bootload'
-        binding.param1 == 0x00000000)                    // param1 is 0
-    {
-        LOG_INF(" identified boot\n");
-        LOG_INF("  position=%d, behavior='%s', param1=0x%08X\n", binding_idx, binding.behavior_dev,
-                binding.param1);
-
-        int ret = bootmode_set(1); // BOOT_MODE_TYPE_BOOTLOADER
-        if (ret < 0) {
-            LOG_ERR("Failed to set the bootloader mode (%d)", ret);
-            return ZMK_BEHAVIOR_OPAQUE;
-        }
-        sys_reboot(0); // SYS_REBOOT_WARM 0
-    }
-    // ★★★★★★★★★★★★★★★★★★★★
-
     if (storage_binding_idx >= ZMK_KEYMAP_LEN) {
         LOG_WRN("Can't set layer binding at unmapped/invalid index %d", binding_idx);
         return -EINVAL;
@@ -335,6 +359,8 @@ int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t
                 storage_binding_idx);
         return 0;
     }
+
+    handle_bootloader_entry(binding_idx, &binding);
 
     // 第6-7行：这是"存储准备"标记
     uint8_t *pending = zmk_keymap_layer_pending_changes[layer_id];
