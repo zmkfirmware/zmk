@@ -23,16 +23,14 @@
         zephyr,flash = &flash0;
     };
 
-    // leds {
-    //     compatible = "gpio-leds";
-    //     blue_led: led_0 {
-    //         gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
-    //     };
-    // };
+    leds {
+        compatible = "gpio-leds";
+        blue_led: led_0 {
+            gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
+        };
+    };
 };
-// &reg0 {
-//     status = "okay";
-// };
+
 &reg1 {
     regulator-initial-mode = <NRF5X_REG_MODE_LDO>;
 };
