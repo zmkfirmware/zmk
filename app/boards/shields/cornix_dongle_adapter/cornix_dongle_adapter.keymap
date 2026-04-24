@@ -1,0 +1,111 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "includes/cornix54.h"
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pointing.h>
+
+&lt { tapping-term-ms = <100>; };
+
+&mt { tapping-term-ms = <100>; };
+
+/ {
+    // Activate ADJUST layer by pressing raise and lower
+
+    behaviors {
+        auto_shift: auto_shift {
+            compatible = "zmk,behavior-hold-tap";
+            label = "Auto Shift ";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <135>;
+            flavor = "tap-preferred";
+        };
+    };
+
+    conditional_layers { compatible = "zmk,conditional-layers"; };
+
+    combos {
+        compatible = "zmk,combos";
+
+        backspace {
+            bindings = <&kp BACKSPACE>;
+            key-positions = <5 4>;
+        };
+
+        enter {
+            bindings = <&kp ENTER>;
+            key-positions = <16 17>;
+        };
+
+        delete {
+            bindings = <&kp DELETE>;
+            key-positions = <28 29>;
+        };
+
+        topad {
+            bindings = <&tog 1>;
+            key-positions = <45 46>;
+        };
+
+        lock {
+            bindings = <&kp LG(L)>;
+            key-positions = <39 40>;
+        };
+    };
+
+    macros {
+
+
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        Base {
+            bindings = <
+&kp ESC    &kp Q         &kp W     &kp E        &kp R        &kp T                                   &kp Y                        &kp U      &kp I                        &kp O                          &kp P                           &kp BSPC
+&kp TAB    &kp A         &kp S     &kp D        &kp F        &kp G                                   &kp H                        &kp J      &kp K                        &kp L                          &auto_shift LS(SEMI) SEMICOLON  &kp RET
+&kp LSHFT  &kp Z         &kp X     &kp C        &kp V        &kp B  &kp C_AL_CALCULATOR  &kp C_MUTE  &kp N                        &kp M      &auto_shift LS(COMMA) COMMA  &auto_shift LS(PERIOD) PERIOD  &kp UP                          &kp DEL
+&kp LCTRL  &kp LEFT_WIN  &kp LALT  &lt 2 SPACE  &lt 1 SPACE  &mo 3                                   &auto_shift LS(SLASH) SLASH  &kp SPACE  &mo 2                        &kp LEFT                       &kp DOWN                        &kp RIGHT
+            >;
+
+            sensor-bindings =
+                <&inc_dec_kp PG_DN PG_UP>,
+                <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
+        };
+
+        Raise {
+            bindings = <
+&trans  &auto_shift LS(NUMBER_1) NUMBER_1  &auto_shift LS(NUMBER_2) NUMBER_2  &auto_shift LS(NUMBER_3) NUMBER_3  &auto_shift LS(NUMBER_4) NUMBER_4  &auto_shift LS(NUMBER_5) NUMBER_5                    &auto_shift LS(NUMBER_7) NUMBER_7  &auto_shift LS(NUMBER_8) NUMBER_8  &auto_shift LS(NUMBER_9) NUMBER_9  &kp KP_PLUS   &kp KP_ASTERISK  &trans
+&trans  &kp SINGLE_QUOTE                   &kp LS(SINGLE_QUOTE)               &auto_shift LS(MINUS) MINUS        &auto_shift LS(EQUAL) EQUAL        &kp ENTER                                            &auto_shift LS(NUMBER_4) NUMBER_4  &auto_shift LS(NUMBER_5) NUMBER_5  &auto_shift LS(NUMBER_6) NUMBER_6  &kp KP_MINUS  &kp KP_DIVIDE    &trans
+&trans  &kp HOME                           &kp END                            &kp LC(PG_UP)                      &kp LC(PG_DN)                      &auto_shift LS(BACKSLASH) BACKSLASH  &trans  &trans  &auto_shift LS(NUMBER_1) NUMBER_1  &auto_shift LS(NUMBER_2) NUMBER_2  &auto_shift LS(NUMBER_3) NUMBER_3  &kp COMMA     &trans           &trans
+&trans  &kp LC(HOME)                       &kp LC(END)                        &kp C_AL_CALCULATOR                &tog 1                             &tog 1                                               &auto_shift LS(NUMBER_0) NUMBER_0  &auto_shift LS(NUMBER_0) NUMBER_0  &kp KP_DOT                         &trans        &trans           &trans
+            >;
+        };
+
+        Lower {
+            bindings = <
+&kp LS(GRAVE)  &kp LS(EXCL)   &kp LS(AT)    &kp LS(POUND)  &kp LS(DLLR)   &kp LS(PRCNT)                &kp KP_NUMLOCK    &none             &kp PAUSE_BREAK   &kp PRINTSCREEN  &kp LC(P)                                  &none
+&kp GRAVE      &kp LS(CARET)  &kp LS(AMPS)  &kp LS(STAR)   &kp LS(LPAR)   &kp LS(RPAR)                 &kp HOME          &none             &none             &none            &auto_shift LS(LEFT_BRACKET) LEFT_BRACKET  &auto_shift LS(RIGHT_BRACKET) RIGHT_BRACKET
+&none          &kp HOME       &kp END       &kp LC(PG_UP)  &kp LC(PG_DN)  &kp LA(F4)     &none  &none  &kp END           &kp LS(NUMBER_9)  &kp LS(NUMBER_0)  &kp LC(PG_UP)    &kp PG_UP                                  &kp LC(PG_DN)
+&none          &kp LC(HOME)   &kp LC(END)   &none          &none            &none                          &kp LS(NUMBER_9)  &kp LS(NUMBER_9)  &none             &kp HOME         &kp PG_DN                                  &kp END
+            >;
+        };
+
+        Func {
+            bindings = <
+&kp F1   &kp F2   &kp F3   &kp LC(PG_UP)   &msc SCRL_UP    &kp LC(PG_DN)                            &auto_shift LS(NUMBER_7) NUMBER_7  &auto_shift LS(NUMBER_8) NUMBER_8  &auto_shift LS(NUMBER_9) NUMBER_9  &kp KP_PLUS   &kp KP_ASTERISK  &trans
+&kp F4   &kp F5   &kp F6   &msc SCRL_LEFT  &msc SCRL_DOWN  &msc SCRL_RIGHT                          &auto_shift LS(NUMBER_4) NUMBER_4  &auto_shift LS(NUMBER_5) NUMBER_5  &auto_shift LS(NUMBER_6) NUMBER_6  &kp KP_MINUS  &kp KP_DIVIDE    &trans
+&kp F7   &kp F8   &kp F9   &kp C_AC_BACK   &kp F2          &kp F5           &bt BT_CLR_ALL  &trans  &auto_shift LS(NUMBER_1) NUMBER_1  &auto_shift LS(NUMBER_2) NUMBER_2  &auto_shift LS(NUMBER_3) NUMBER_3  &kp COMMA     &trans           &trans
+&kp F10  &kp F11  &kp F12  &bt BT_SEL 0    &bt BT_SEL 1    &none                                    &auto_shift LS(NUMBER_0) NUMBER_0  &auto_shift LS(NUMBER_0) NUMBER_0  &kp KP_DOT                         &trans        &trans           &trans
+            >;
+        };
+    };
+};

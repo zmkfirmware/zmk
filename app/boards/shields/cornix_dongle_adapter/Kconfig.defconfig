@@ -1,0 +1,4 @@
+if SHIELD_CORNIX_DONGLE_ADAPTER
+endif # END ALL
+
+#vim: set ft=kconfig:

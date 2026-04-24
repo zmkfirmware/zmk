@@ -1,0 +1,2 @@
+/dts-v1/;
+#include "cornix_left_common.dtsi"

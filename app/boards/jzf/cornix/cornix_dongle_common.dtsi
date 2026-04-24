@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+#include "cornix-layouts.dtsi"
+#include "cornix_sensors.dtsi"
+/{
+    chosen {
+        zmk,kscan = &mock_kscan;
+    };
+    mock_kscan: kscan_1 {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+};
+// vim: set ft=dts :

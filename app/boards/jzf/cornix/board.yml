@@ -1,0 +1,22 @@
+boards:
+  - name: cornix_left
+    vendor: jzf
+    revision:
+      format: major.minor.patch
+      default: 1.0.0
+      revisions:
+        - name: 1.0.0
+  - name: cornix_right
+    vendor: jzf
+    revision:
+      format: major.minor.patch
+      default: 1.0.0
+      revisions:
+        - name: 1.0.0
+  - name: cornix_ph_left
+    vendor: jzf
+    revision:
+      format: major.minor.patch
+      default: 1.0.0
+      revisions:
+        - name: 1.0.0

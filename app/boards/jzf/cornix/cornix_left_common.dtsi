@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "cornix.dtsi"
+
+&kscan0 {
+    //Row pins for nrfmicro - mapped to physical pins
+    //Left: [P0_30, P0_31, P0_29, P0_02]
+    //Right: [P1_09, P0_28, P0_03, P1_10]
+    row-gpios
+        = <&gpio0 30 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 0
+        , <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 1
+        , <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 2
+        , <&gpio0 2  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 3
+        ;
+    // Left side column pins for nrfmicro: [P0_28, P0_03, P1_10, P1_11, P1_13, P0_09]
+    col-gpios
+        = <&gpio0 28 GPIO_ACTIVE_HIGH>  // Col 0
+        , <&gpio0  3 GPIO_ACTIVE_HIGH>  // Col 1  
+        , <&gpio1 10 GPIO_ACTIVE_HIGH>  // Col 2
+        , <&gpio1 11 GPIO_ACTIVE_HIGH>  // Col 3
+        , <&gpio1 13 GPIO_ACTIVE_HIGH>  // Col 4
+        , <&gpio0  9 GPIO_ACTIVE_HIGH>  // Col 5
+        , <&gpio0 10 GPIO_ACTIVE_HIGH>  // Col 6
+        ;
+};
+
+// rgb,SPI
+&pinctrl {
+    spi3_default: spi3_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 24)>;
+        };
+    };
+
+    spi3_sleep: spi3_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 24)>;
+            low-power-enable;
+        };
+    };
+};
+
+&left_encoder {
+    status = "okay";
+};
+
+/ {
+    EXT_POWER {
+        status = "disabled";
+        compatible = "zmk,ext-power-generic";
+        control-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+        init-delay-ms = <50>;
+    };
+
+};
+
+// vim: set ft=dts

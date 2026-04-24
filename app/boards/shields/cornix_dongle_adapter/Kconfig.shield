@@ -1,0 +1,4 @@
+config SHIELD_CORNIX_DONGLE_ADAPTER
+	def_bool $(shields_list_contains,cornix_dongle_adapter)
+
+#vim: set ft=kconfig:

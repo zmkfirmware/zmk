@@ -1,0 +1,88 @@
+/ {
+    model = "cornix_e73";
+    compatible = "hitsmaxft,cornix";
+
+    chosen {
+        zephyr,code-partition = &code_partition;
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+        zmk,battery = &vbatt;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 3>;
+        output-ohms = <2000000>;
+        full-ohms = <(2000000 + 806000)>;
+    };
+};
+
+&adc {
+    status = "okay";
+};
+
+&gpiote {
+    status = "okay";
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&gpio1 {
+    status = "okay";
+};
+
+&i2c0 {
+    compatible = "nordic,nrf-twi";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+&spi1 {
+    compatible = "nordic,nrf-spim";
+    pinctrl-0 = <&spi1_default>;
+    pinctrl-1 = <&spi1_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+&uart0 {
+    compatible = "nordic,nrf-uarte";
+    current-speed = <115200>;
+    pinctrl-0 = <&uart0_default>;
+    pinctrl-1 = <&uart0_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+zephyr_udc0: &usbd {
+    status = "okay";
+};
+
+&flash0 {
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+        sd_partition: partition@0 {
+            reg = <0x0 DT_SIZE_K(4)>;
+        };
+
+        code_partition: partition@1000 {
+            reg = <DT_SIZE_K(4) DT_SIZE_K(844)>;
+        };
+
+        /*
+         * The flash starting at 0x000d4000 and ending at
+         * 0x000f3fff is reserved for use by the application.
+         * It will be used by FCB/LittleFS/NVS if enabled.
+         */
+        storage_partition: partition@d4000 {
+            reg = <DT_SIZE_K(848) DT_SIZE_K(128)>;
+        };
+
+        boot_partition: partition@f4000 {
+            reg = <DT_SIZE_K(976) DT_SIZE_K(48)>;
+        };
+    };
+};

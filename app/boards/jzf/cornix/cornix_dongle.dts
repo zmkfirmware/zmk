@@ -1,0 +1,2 @@
+/dts-v1/;
+#include "cornix_dongle_common.dtsi"

@@ -1,0 +1,73 @@
+/*
+ * Copyright (c) 2020 Pete Johanson
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+// common code snippet for cornix left and right boards
+// dongle should not use this file
+#include <nordic/nrf52840_qiaa.dtsi>
+#include <dt-bindings/led/led.h>
+#include "cornix-pinctrl.dtsi"
+#include "cornix-layouts.dtsi"
+#include "cornix_sensors.dtsi"
+#include "nrf_e73.dtsi"
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+		zmk,physical-layout = &layout_50;
+    };
+
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "col2row";
+        wakeup-source;
+    };
+
+};
+
+&spi3 {
+    status = "disabled";
+    compatible = "nordic,nrf-spim";
+
+    pinctrl-0 = <&spi3_default>;
+    pinctrl-1 = <&spi3_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    ws2812@0 {
+        status = "disabled";
+        compatible = "worldsemi,ws2812-spi";
+
+        /* SPI */
+        reg = <0>; /* ignored, but necessary for SPI bindings */
+        // spi-max-frequency = <8000000>;  // 8MHz
+        spi-max-frequency = <6400000>;  // 6.4 MHz (was 8 MHz)
+        reset-delay = <70>;
+
+        /* WS2812 */
+        chain-length = <2>;
+        // spi-one-frame = <0x78>;         // 01111000 for 1-bit (was 0x70)
+        // spi-zero-frame = <0x60>;        // 01100000 for 0-bit (was 0x40)
+        spi-one-frame = <0xF8>;
+        spi-zero-frame = <0x80>;
+
+        // spi-one-frame = <ONE_FRAME>;
+		// spi-zero-frame = <ZERO_FRAME>;
+        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+    };
+};
+
+
+
+/ {
+    soft_off_wakers {
+        compatible = "zmk,soft-off-wakeup-sources";
+        wakeup-sources = <&kscan0>;
+    };
+
+    chosen {
+        zmk,bttery = &vbatt;
+    };
+
+};
