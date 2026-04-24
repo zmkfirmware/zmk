@@ -95,36 +95,34 @@ static const struct behavior_parameter_metadata metadata = {
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 
 static int
-on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_binding *binding,
-                                                         struct zmk_behavior_binding_event event) {
-    switch (binding->param1) {
+on_keymap_binding_convert_central_state_dependent_params(struct zmk_behavior_binding_event *event) {
+    switch (event->param1) {
     case BL_TOG_CMD:
-        binding->param1 = zmk_backlight_is_on() ? BL_OFF_CMD : BL_ON_CMD;
+        event->param1 = zmk_backlight_is_on() ? BL_OFF_CMD : BL_ON_CMD;
         break;
     case BL_INC_CMD:
-        binding->param1 = BL_SET_CMD;
-        binding->param2 = zmk_backlight_calc_brt(1);
+        event->param1 = BL_SET_CMD;
+        event->param2 = zmk_backlight_calc_brt(1);
         break;
     case BL_DEC_CMD:
-        binding->param1 = BL_SET_CMD;
-        binding->param2 = zmk_backlight_calc_brt(-1);
+        event->param1 = BL_SET_CMD;
+        event->param2 = zmk_backlight_calc_brt(-1);
         break;
     case BL_CYCLE_CMD:
-        binding->param1 = BL_SET_CMD;
-        binding->param2 = zmk_backlight_calc_brt_cycle();
+        event->param1 = BL_SET_CMD;
+        event->param2 = zmk_backlight_calc_brt_cycle();
         break;
     default:
         return 0;
     }
 
-    LOG_DBG("Backlight relative to absolute (%d/%d)", binding->param1, binding->param2);
+    LOG_DBG("Backlight relative to absolute (%d/%d)", event->param1, event->param2);
 
     return 0;
 }
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    switch (binding->param1) {
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    switch (event->param1) {
     case BL_ON_CMD:
         return zmk_backlight_on();
     case BL_OFF_CMD:
@@ -144,18 +142,15 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
         return zmk_backlight_set_brt(brt);
     }
     case BL_SET_CMD:
-        return zmk_backlight_set_brt(binding->param2);
+        return zmk_backlight_set_brt(event->param2);
     default:
-        LOG_ERR("Unknown backlight command: %d", binding->param1);
+        LOG_ERR("Unknown backlight command: %d", event->param1);
     }
 
     return -ENOTSUP;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
-    return ZMK_BEHAVIOR_OPAQUE;
-}
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) { return 0; }
 
 static const struct behavior_driver_api behavior_backlight_driver_api = {
     .binding_convert_central_state_dependent_params =
