@@ -12,7 +12,7 @@ endif
 if SHIELD_CORNE_DONGLED
 
 config ZMK_KEYBOARD_NAME
-    default "Corne_DONGLE_T"
+    default "DONGLE_Corne"
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
