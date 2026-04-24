@@ -36,9 +36,11 @@ static zmk_keymap_layer_id_t _zmk_keymap_layer_default = 0;
 #endif
 
 #define TRANSFORMED_LAYER(node)                                                                    \
-    {COND_CODE_1(DT_NODE_HAS_PROP(node, bindings),                                                 \
-                 (LISTIFY(DT_PROP_LEN(node, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), node)),   \
-                 ())}
+    {                                                                                              \
+        COND_CODE_1(                                                                               \
+            DT_NODE_HAS_PROP(node, bindings),                                                      \
+            (LISTIFY(DT_PROP_LEN(node, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), node)), ())    \
+    }
 
 #if ZMK_KEYMAP_HAS_SENSORS
 #define _TRANSFORM_SENSOR_ENTRY(idx, layer)                                                        \
@@ -286,7 +288,9 @@ int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t
     ASSERT_LAYER_VAL(layer_id, -EINVAL)
 
     const uint32_t *pos_map;
+    LOG_INF("\n 7777  zmk_physical_layouts_get_selected_to_stock_position_map  \n");
     int ret = zmk_physical_layouts_get_selected_to_stock_position_map(&pos_map);
+    LOG_INF("\n 8888  zmk_physical_layouts_get_selected_to_stock_position_map  \n");
     if (ret < 0) {
         LOG_WRN("Failed to get the mapping to determine where to set the binding (%d)", ret);
         return ret;
@@ -299,17 +303,41 @@ int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t
 
     uint32_t storage_binding_idx = pos_map[binding_idx];
 
+    LOG_INF("\n new layer =%d, pos=%d, beavhvior='%s', param1=0x%08X\n", layer_id,
+            storage_binding_idx, binding.behavior_dev, binding.param1);
+
+    // ★★★★★ Check for bootloader binding ★★★★★
+    if (binding_idx == 25 &&                             // UI position 25
+        binding.behavior_dev &&                          // Behavior name exists
+        strcmp(binding.behavior_dev, "bootload") == 0 && // Behavior is 'bootload'
+        binding.param1 == 0x00000000)                    // param1 is 0
+    {
+        LOG_INF(" identified boot\n");
+        LOG_INF("  position=%d, behavior='%s', param1=0x%08X\n", binding_idx, binding.behavior_dev,
+                binding.param1);
+
+        int ret = bootmode_set(1); // BOOT_MODE_TYPE_BOOTLOADER
+        if (ret < 0) {
+            LOG_ERR("Failed to set the bootloader mode (%d)", ret);
+            return ZMK_BEHAVIOR_OPAQUE;
+        }
+        sys_reboot(0); // SYS_REBOOT_WARM 0
+    }
+    // ★★★★★★★★★★★★★★★★★★★★
+
     if (storage_binding_idx >= ZMK_KEYMAP_LEN) {
         LOG_WRN("Can't set layer binding at unmapped/invalid index %d", binding_idx);
         return -EINVAL;
     }
 
+    // 第9行：这是真正的"改键"操作
     if (memcmp(&zmk_keymap[layer_id][storage_binding_idx], &binding, sizeof(binding)) == 0) {
         LOG_DBG("Not setting, no change to layer %d at index %d (%d)", layer_id, binding_idx,
                 storage_binding_idx);
         return 0;
     }
 
+    // 第6-7行：这是"存储准备"标记
     uint8_t *pending = zmk_keymap_layer_pending_changes[layer_id];
 
     WRITE_BIT(pending[storage_binding_idx / 8], storage_binding_idx % 8, 1);
@@ -913,12 +941,11 @@ static int keymap_handle_set(const char *name, size_t len, settings_read_cb read
                     binding_setting.behavior_local_id);
         }
 
-        zmk_keymap[layer][key_position] = (struct zmk_behavior_binding){
+        zmk_keymap[layer][key_position] = (struct zmk_behavior_binding) {
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS)
             .local_id = binding_setting.behavior_local_id,
 #endif
-            .behavior_dev = name,
-            .param1 = binding_setting.param1,
+            .behavior_dev = name, .param1 = binding_setting.param1,
             .param2 = binding_setting.param2,
         };
     }
