@@ -125,6 +125,7 @@ zmk_studio_Response get_keymap(const zmk_studio_Request *req) {
 
 zmk_studio_Response set_layer_binding(const zmk_studio_Request *req) {
     LOG_DBG("");
+    LOG_INF("\n 555 set_layer_binding \n");
     const zmk_keymap_SetLayerBindingRequest *set_req =
         &req->subsystem.keymap.request_type.set_layer_binding;
 

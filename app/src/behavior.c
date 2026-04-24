@@ -160,6 +160,7 @@ static int check_param_matches_value(const struct behavior_parameter_value_metad
         }
         break;
     case BEHAVIOR_PARAMETER_VALUE_TYPE_HID_USAGE:
+        LOG_INF("\n 11111 usage %d in page %d", ZMK_HID_USAGE_ID(param), ZMK_HID_USAGE_PAGE(param));
         if (validate_hid_usage(ZMK_HID_USAGE_PAGE(param), ZMK_HID_USAGE_ID(param)) >= 0) {
             return PARAM_MATCHES;
         }
@@ -198,7 +199,7 @@ int zmk_behavior_validate_param_values(const struct behavior_parameter_value_met
     if (values_len == 0) {
         return -ENODEV;
     }
-
+    LOG_INF("\n 222 zmk_behavior_validate_param_values \n");
     for (int v = 0; v < values_len; v++) {
         int ret = check_param_matches_value(&values[v], param);
         if (ret >= 0) {
@@ -218,7 +219,7 @@ int zmk_behavior_check_params_match_metadata(const struct behavior_parameter_met
 
         return (param1 == 0 && param2 == 0) ? 0 : -ENODEV;
     }
-
+    LOG_INF("\n 333 zmk_behavior_check_params_match_metadata \n");
     for (int s = 0; s < metadata->sets_len; s++) {
         const struct behavior_parameter_metadata_set *set = &metadata->sets[s];
         int param1_ret =
@@ -244,7 +245,7 @@ int zmk_behavior_validate_binding(const struct zmk_behavior_binding *binding) {
     if (!behavior) {
         return -ENODEV;
     }
-
+    LOG_INF("\n 4444 vzmk_behavior_validate_binding \n");
     struct behavior_parameter_metadata metadata;
     int ret = behavior_get_parameter_metadata(behavior, &metadata);
 
