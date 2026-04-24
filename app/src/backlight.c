@@ -67,7 +67,11 @@ static int backlight_settings_load_cb(const char *name, size_t len, settings_rea
 
         int rc = read_cb(cb_arg, &state, sizeof(state));
         if (rc >= 0) {
+#if CONFIG_ZMK_BACKLIGHT_ON_START
             rc = zmk_backlight_update();
+#else
+            state.on = false;
+#endif // CONFIG_ZMK_BACKLIGHT_ON_START
         }
 
         return MIN(rc, 0);
