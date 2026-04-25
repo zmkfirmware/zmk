@@ -152,10 +152,6 @@ module.exports = {
               label: "Mastodon",
               href: "https://fosstodon.org/@zmk",
             },
-            {
-              label: "Twitter",
-              href: "https://twitter.com/ZMKFirmware",
-            },
           ],
         },
         {
