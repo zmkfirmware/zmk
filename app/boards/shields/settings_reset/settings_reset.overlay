@@ -8,8 +8,8 @@
 
 / {
     chosen {
-        zmk,physical-layout = &settings_reset_layout;
         zmk,kscan = &settings_reset_kscan;
+        zmk,physical-layout = &settings_reset_layout;
     };
 
     settings_reset_kscan: settings_reset_kscan {
@@ -23,7 +23,9 @@
         compatible = "zmk,matrix-transform";
         rows = <1>;
         columns = <2>;
-        map = <RC(0,0) RC(0,1)>;
+        map = <
+            RC(0,0) RC(0,1)
+        >;
     };
 
     settings_reset_layout: settings_reset_layout {
@@ -31,9 +33,9 @@
         display-name = "Settings Reset";
         kscan = <&settings_reset_kscan>;
         transform = <&settings_reset_transform>;
-        keys
-            = <100 100   0   0 0 0 0>
-            , <100 100 100   0 0 0 0>;
+        keys =
+            <&key_physical_attrs 100 100   0   0 0 0 0>,
+            <&key_physical_attrs 100 100 100   0 0 0 0>;
     };
 };
 
