@@ -1,0 +1,12 @@
+# Copyright (c) 2020 Pete Johanson
+# SPDX-License-Identifier: MIT
+
+config SHIELD_CORNIXQF_LEFT
+    def_bool $(shields_list_contains,cornixqf_left)
+
+config SHIELD_CORNIXQF_RIGHT
+    def_bool $(shields_list_contains,cornixqf_right)
+
+config SHIELD_CORNIXQF_DONGLE
+    def_bool $(shields_list_contains,cornixqf_dongle)
+

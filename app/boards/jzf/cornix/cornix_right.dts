@@ -9,21 +9,21 @@
 &kscan0 {
     // Right side has different row pins: [P1_09, P0_28, P0_03, P1_10]
     row-gpios
-        = <&gpio1 9  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 0
-        , <&gpio0 28 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 1
-        , <&gpio0 3  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 2
-        , <&gpio1 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 3
+        = <&gpio0 2  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 0
+        , <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 1
+        , <&gpio0 31  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 2
+        , <&gpio0 30 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // Row 3
         ;
 
     // Right side column pins: [P0_30, P0_31, P0_29, P0_02, P1_13, P0_10, P0_09]
     col-gpios
-        = <&gpio0 30 GPIO_ACTIVE_HIGH>  // Col 0
-        , <&gpio0 31 GPIO_ACTIVE_HIGH>  // Col 1
-        , <&gpio0 29 GPIO_ACTIVE_HIGH>  // Col 2
-        , <&gpio0  2  GPIO_ACTIVE_HIGH> // Col 3
+        = <&gpio0 10 GPIO_ACTIVE_HIGH>  // Col 0
+        , <&gpio1 10 GPIO_ACTIVE_HIGH>  // Col 1
+        , <&gpio0 3 GPIO_ACTIVE_HIGH>  // Col 2
+        , <&gpio0  28  GPIO_ACTIVE_HIGH> // Col 3
         , <&gpio1 13 GPIO_ACTIVE_HIGH>  // Col 4
-        , <&gpio0 10 GPIO_ACTIVE_HIGH>  // Col 5
-        , <&gpio0  9 GPIO_ACTIVE_HIGH>  // Col 6
+        , <&gpio0 1 GPIO_ACTIVE_HIGH>  // Col 5
+        , <&gpio0  24 GPIO_ACTIVE_HIGH>  // Col 6
         ;
 };
 
@@ -58,7 +58,7 @@
     EXT_POWER {
         status = "disabled";
         compatible = "zmk,ext-power-generic";
-        control-gpios = <&gpio0 24 GPIO_ACTIVE_HIGH>;
+        control-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
         init-delay-ms = <50>;
     };
 };

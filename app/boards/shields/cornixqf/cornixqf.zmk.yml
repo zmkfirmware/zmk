@@ -1,0 +1,16 @@
+file_format: "1"
+id: corne
+name: Cornixqf
+type: shield
+url: https://github.com/foostan/crkbd/
+# requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - underglow
+  - studio
+siblings:
+  - cornixqf_left
+  - cornixqf_right
+  - cornixqf_dongle
