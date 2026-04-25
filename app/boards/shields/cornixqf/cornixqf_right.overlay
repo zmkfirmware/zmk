@@ -7,11 +7,7 @@
 #include "cornixqf.dtsi"
 
 &default_transform {
-    col-offset = <6>;
-};
-
-&five_column_transform {
-    col-offset = <6>;
+    col-offset = <7>;
 };
 
 
@@ -31,6 +27,7 @@
         , <&gpio0 28 GPIO_ACTIVE_HIGH>
         , <&gpio1 13 GPIO_ACTIVE_HIGH>
         , <&gpio0 1 GPIO_ACTIVE_HIGH>
+        , <&gpio0 24 GPIO_ACTIVE_HIGH>
         ;
 };
 
