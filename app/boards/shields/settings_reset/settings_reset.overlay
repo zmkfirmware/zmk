@@ -7,6 +7,11 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
+    key_physical_attrs: key_physical_attrs {
+        compatible = "zmk,key-physical-attrs";
+        #key-cells = <7>;
+    };
+
     chosen {
         zmk,kscan = &settings_reset_kscan;
         zmk,physical-layout = &settings_reset_layout;
