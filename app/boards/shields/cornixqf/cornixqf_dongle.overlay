@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "corne.dtsi"
+#include "cornixqf.dtsi"
 
 &kscan0 {
     diode-direction = "col2row";
