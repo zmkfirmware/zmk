@@ -8,8 +8,8 @@
 
 / {
     chosen {
+        zmk,physical-layout = &settings_reset_layout;
         zmk,kscan = &settings_reset_kscan;
-        zmk,matrix-transform = &default_transform;
     };
 
     settings_reset_kscan: settings_reset_kscan {
@@ -19,13 +19,21 @@
         events = <>;
     };
 
-    default_transform: matrix_transform {
+    settings_reset_transform: settings_reset_transform {
         compatible = "zmk,matrix-transform";
         rows = <1>;
         columns = <2>;
-        map = <
-            RC(0,0) RC(0,1)
-        >;
+        map = <RC(0,0) RC(0,1)>;
+    };
+
+    settings_reset_layout: settings_reset_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Settings Reset";
+        kscan = <&settings_reset_kscan>;
+        transform = <&settings_reset_transform>;
+        keys
+            = <100 100   0   0 0 0 0>
+            , <100 100 100   0 0 0 0>;
     };
 };
 
