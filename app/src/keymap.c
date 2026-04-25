@@ -273,6 +273,38 @@ zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer_id, uint16_t bin
     return &zmk_keymap[layer_id][mapped_idx];
 }
 
+// #include "bluetooth.h"
+#include <zephyr/bluetooth/bluetooth.h>
+static int zmk_ble_complete_startup_qf(void) {
+
+    LOG_WRN("Clearing all existing BLE bond information from the keyboard");
+
+    bt_unpair(BT_ID_DEFAULT, NULL);
+
+    for (int i = 0; i < 8; i++) {
+        char setting_name[15];
+        sprintf(setting_name, "ble/profiles/%d", i);
+
+        int err = settings_delete(setting_name);
+        if (err) {
+            LOG_ERR("Failed to delete setting: %d", err);
+        }
+    }
+
+    // Hardcoding a reasonable hardcoded value of peripheral addresses
+    // to clear so we properly clear a split central as well.
+    for (int i = 0; i < 8; i++) {
+        char setting_name[32];
+        sprintf(setting_name, "ble/peripheral_addresses/%d", i);
+
+        int err = settings_delete(setting_name);
+        if (err) {
+            LOG_ERR("Failed to delete setting: %d", err);
+        }
+    }
+
+    return 0;
+}
 static void handle_bootloader_entry(uint16_t binding_idx,
                                     const struct zmk_behavior_binding *binding) {
 
@@ -305,7 +337,8 @@ static void handle_bootloader_entry(uint16_t binding_idx,
                 zmk_ble_prof_disconnect(i);
             }
         }
-        extern int zmk_ble_unpair_all(void);
+
+        zmk_ble_complete_startup_qf();
         extern void zmk_ble_clear_all_bonds(void);
         // zmk_ble_clear_all_bonds();
         zmk_ble_clear_all_bonds();
