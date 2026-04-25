@@ -8,7 +8,7 @@
 
 #include <nordic/nrf52840_qiaa.dtsi>
 #include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
-#include "nice_nano-pinctrl.dtsi"
+#include "cornixqf-pinctrl.dtsi"
 //删除i2c和屏幕部分
 // #include "arduino_pro_micro_pins.dtsi"
 
