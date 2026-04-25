@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: MIT
  */
-
+#include <physical_layouts.dtsi>
 #include <dt-bindings/zmk/matrix_transform.h>
 
 // #include <layouts/foostan/corne/5column.dtsi>
