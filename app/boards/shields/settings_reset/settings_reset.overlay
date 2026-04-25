@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,kscan = &settings_reset_kscan;
+        zmk,matrix-transform = &default_transform;
+    };
+
+    settings_reset_kscan: settings_reset_kscan {
+        compatible = "zmk,kscan-mock";
+        rows = <1>;
+        columns = <2>;
+        events = <>;
+    };
+
+    default_transform: matrix_transform {
+        compatible = "zmk,matrix-transform";
+        rows = <1>;
+        columns = <2>;
+        map = <
+            RC(0,0) RC(0,1)
+        >;
+    };
+};
+
