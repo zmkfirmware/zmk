@@ -1,7 +1,7 @@
 # Changelog
 
 ## [0.3.0](https://github.com/zmkfirmware/zmk/compare/v0.2.1...v0.3.0) (2025-08-01)
-
+aaa
 
 ### Features
 
