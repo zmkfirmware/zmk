@@ -18,9 +18,11 @@ const lithiumIonMonthlyDischargePercent = 5;
 // Average voltage of a lithium ion battery based of discharge graphs
 const lithiumIonAverageVoltage = 3.8;
 // Average discharge efficiency of li-ion https://en.wikipedia.org/wiki/Lithium-ion_battery
-const lithiumIonDischargeEfficiency = 0.85;
+// via https://web.archive.org/web/20090326150713/http://www.pluginhighway.ca/PHEV2007/proceedings/PluginHwy_PHEV2007_PaperReviewed_Valoen.pdf
+// assuming <= 1C discharge rate
+const lithiumIonDischargeEfficiency = 1.0;
 // Range of the discharge efficiency
-const lithiumIonDischargeEfficiencyRange = 0.05;
+const lithiumIonDischargeEfficiencyRange = 0.01;
 
 // Proportion of time spent typing (keys being pressed down and scanning). Estimated to 2%.
 const timeSpentTyping = 0.02;
@@ -111,19 +113,17 @@ function PowerEstimate({
 
   const powerUsage = [];
   let totalUsage = 0;
+  let decay = 0;
 
   const voltageEquivalent = voltageEquivalentCalc(board.powerSupply);
 
   // Lithium ion self discharge
-  const lithiumMonthlyDischargemAh =
-    parseInt(batteryMilliAh) * (lithiumIonMonthlyDischargePercent / 100);
-  const lithiumDischargeMicroA = (lithiumMonthlyDischargemAh * 1000) / 30 / 24;
-  const lithiumDischargeMicroW = lithiumDischargeMicroA * batVolt;
+  decay += lithiumIonMonthlyDischargePercent / 100;
 
-  totalUsage += lithiumDischargeMicroW;
+  let batteryPowerUsageIndex = powerUsage.length;
   powerUsage.push({
     title: "Battery Self Discharge",
-    usage: lithiumDischargeMicroW,
+    usage: 0, // not yet known
   });
 
   // Quiescent current
@@ -223,14 +223,65 @@ function PowerEstimate({
       usage: displayUsage,
     });
   }
+  const mAh = parseInt(batteryMilliAh);
+  const initialMicroWh = mAh * 1000 * batVolt;
+  const initialWh = initialMicroWh / 1e6;
+  const initialWMonths = initialWh / 24 / 30;
+
+  const drain = 1 - decay;
+  const averagePowerW = -totalUsage / 1e6;
+  // We define a basic model of battery depletion as follows. This is used to calculate the lifetime
+  // on a single charge.
+  //
+  // f(t) = a^t
+  // f(t) = (e^ln(a))^t
+  // f(t) = e^ln(a)t
+  // f'(t) = ln(a) * e^ln(a)t
+  // f'(t) = ln(a) * f(t)
+
+  // -- this gives the definition of exponential decay that we will use --
+  // decay(factor, t, f) = ln(factor)f
+  // f'(t) = decay(a, t, f(t))
+
+  // -- we'll use a model of the battery discharge where it constantly self discharges while having
+  // -- a constant power draw
+  // g'(t) = decay(drain, t, g(t)) + power
+  // g'(t) = ln(drain)g(t) + power
+  // g'(t) - ln(drain)g(t) = power
+  // e^(-ln(drain)t)g'(t) - ln(drain)e^(-ln(drain)t)g(t) = power * e^(-ln(drain)t)
+  // d(e^(-ln(drain)t)g(t))/dt = power * e^(-ln(drain)t) // Integration by parts in reverse
+  // d(drain^(-t)g(t))/dt = power * drain^(-t)
+  // drain^(-t)g(t) = power * -1/ln(drain) * drain^(-t) + K // Integrate
+  // g(t) = -power/ln(drain) + K / drain^(-t)
+  // g(t) = -power/ln(drain) + K * drain^t
+
+  // g_0 = -power/ln(drain) + K * drain^0
+  // g_0 = -power/ln(drain) + K
+  // g_0 + power/ln(drain) = K
+
+  // g(t) = -power/ln(drain) + (g_0 + power/ln(drain)) * drain^t
+  //
+  // And finally, solve for the depletion time.
+  //
+  // g(t) = 0
+  // 0 = -power/ln(drain) + (g_0 + power/ln(drain)) * drain^t
+  // 0 = -used + (g_0 + used) * drain^t
+  // used/(g_0 + used) = drain^t
+  // ln(used/(g_0 + used))/ln(drain) = t
+  const used = averagePowerW/Math.log(drain);
+  const depletedAtMonth = Math.log(used/(initialWMonths + used)) / Math.log(drain);
+  const runtimeHours = depletedAtMonth * 30 * 24;
+  
+  // Fill in the effective power consumption of the battery self discharge
+  const batteryPercentageDrain = (1 - (lithiumIonMonthlyDischargePercent/100))**depletedAtMonth;
+  const batteryMicroWhUsage = batteryPercentageDrain * initialMicroWh;
+  const batteryAveragePower = batteryMicroWhUsage / runtimeHours;
+
+  powerUsage[batteryPowerUsageIndex].usage = batteryAveragePower;
+  totalUsage += batteryAveragePower;
 
   // Calculate the average minutes of use
-  const estimatedAvgEffectiveMicroWH =
-    batteryMilliAh * batVolt * lithiumIonDischargeEfficiency * 1000;
-
-  const estimatedAvgMinutes = Math.round(
-    (estimatedAvgEffectiveMicroWH / totalUsage) * 60
-  );
+  const estimatedAvgMinutes = runtimeHours * 60;
 
   // Calculate worst case for battery life
   const worstLithiumIonDischargeEfficiency =
