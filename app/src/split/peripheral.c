@@ -14,6 +14,7 @@
 #include <zmk/physical_layouts.h>
 
 #include <zmk/event_manager.h>
+#include <zmk/events/behavior_binding_event.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
 #include <zmk/events/battery_state_changed.h>
@@ -36,24 +37,23 @@ int zmk_split_transport_peripheral_command_handler(
 
     switch (cmd.type) {
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_INVOKE_BEHAVIOR: {
-        struct zmk_behavior_binding binding = {
-            .param1 = cmd.data.invoke_behavior.param1,
-            .param2 = cmd.data.invoke_behavior.param2,
-            .behavior_dev = cmd.data.invoke_behavior.behavior_dev,
-        };
-        LOG_DBG("%s with params %d %d: pressed? %d", binding.behavior_dev, binding.param1,
-                binding.param2, cmd.data.invoke_behavior.state);
-        struct zmk_behavior_binding_event event = {.position = cmd.data.invoke_behavior.position,
+        struct zmk_behavior_binding_event event = {.param1 = cmd.data.invoke_behavior.param1,
+                                                   .param2 = cmd.data.invoke_behavior.param2,
+                                                   .behavior_dev =
+                                                       cmd.data.invoke_behavior.behavior_dev,
+                                                   .position = cmd.data.invoke_behavior.position,
                                                    .timestamp = k_uptime_get()};
+        LOG_DBG("%s with params %d %d: pressed? %d", event.behavior_dev, event.param1, event.param2,
+                cmd.data.invoke_behavior.state);
         int err;
         if (cmd.data.invoke_behavior.state > 0) {
-            err = behavior_keymap_binding_pressed(&binding, event);
+            err = behavior_keymap_binding_pressed(&event);
         } else {
-            err = behavior_keymap_binding_released(&binding, event);
+            err = behavior_keymap_binding_released(&event);
         }
 
         if (err) {
-            LOG_ERR("Failed to invoke behavior %s: %d", binding.behavior_dev, err);
+            LOG_ERR("Failed to invoke behavior %s: %d", event.behavior_dev, err);
         }
         return err;
     }

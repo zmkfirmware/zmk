@@ -52,9 +52,8 @@ static void deactivate_caps_word(const struct device *dev) {
     data->active = false;
 }
 
-static int on_caps_word_binding_pressed(struct zmk_behavior_binding *binding,
-                                        struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_caps_word_binding_pressed(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     struct behavior_caps_word_data *data = dev->data;
 
     if (data->active) {
@@ -63,13 +62,10 @@ static int on_caps_word_binding_pressed(struct zmk_behavior_binding *binding,
         activate_caps_word(dev);
     }
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
-static int on_caps_word_binding_released(struct zmk_behavior_binding *binding,
-                                         struct zmk_behavior_binding_event event) {
-    return ZMK_BEHAVIOR_OPAQUE;
-}
+static int on_caps_word_binding_released(struct zmk_behavior_binding_event *event) { return 0; }
 
 static const struct behavior_driver_api behavior_caps_word_driver_api = {
     .binding_pressed = on_caps_word_binding_pressed,
