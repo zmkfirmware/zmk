@@ -9,6 +9,7 @@
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/hid.h>
+#include <zmk/endpoints.h>
 #include <dt-bindings/zmk/modifiers.h>
 
 static struct zmk_hid_keyboard_report keyboard_report = {
@@ -281,14 +282,32 @@ int zmk_hid_masked_modifiers_set(zmk_mod_flags_t new_masked_modifiers) {
     masked_modifiers = new_masked_modifiers;
     zmk_mod_flags_t current = GET_MODIFIERS;
     SET_MODIFIERS(explicit_modifiers);
-    return current == GET_MODIFIERS ? 0 : 1;
+    int changed = current == GET_MODIFIERS ? 0 : 1;
+#if IS_ENABLED(CONFIG_ZMK_HID_SEPARATE_MOD_RELEASE_REPORT)
+    if (changed) {
+        int err = zmk_endpoint_send_report(HID_USAGE_KEY);
+        if (err < 0) {
+            LOG_ERR("Failed to flush masked modifier set (%d)", err);
+        }
+    }
+#endif
+    return changed;
 }
 
 int zmk_hid_masked_modifiers_clear(void) {
     masked_modifiers = 0;
     zmk_mod_flags_t current = GET_MODIFIERS;
     SET_MODIFIERS(explicit_modifiers);
-    return current == GET_MODIFIERS ? 0 : 1;
+    int changed = current == GET_MODIFIERS ? 0 : 1;
+#if IS_ENABLED(CONFIG_ZMK_HID_SEPARATE_MOD_RELEASE_REPORT)
+    if (changed) {
+        int err = zmk_endpoint_send_report(HID_USAGE_KEY);
+        if (err < 0) {
+            LOG_ERR("Failed to flush masked modifier clear (%d)", err);
+        }
+    }
+#endif
+    return changed;
 }
 
 int zmk_hid_keyboard_press(zmk_key_t code) {
