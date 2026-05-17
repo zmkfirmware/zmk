@@ -49,6 +49,7 @@ enum rgb_underglow_effect {
     UNDERGLOW_EFFECT_BREATHE,
     UNDERGLOW_EFFECT_SPECTRUM,
     UNDERGLOW_EFFECT_SWIRL,
+    UNDERGLOW_EFFECT_RAINBOW_BREATHE,
     UNDERGLOW_EFFECT_NUMBER // Used to track number of underglow effects
 };
 
@@ -175,6 +176,24 @@ static void zmk_rgb_underglow_effect_swirl(void) {
     state.animation_step = state.animation_step % HUE_MAX;
 }
 
+static void zmk_rgb_underglow_effect_rainbow_breathe(void) {
+    /* Brightness oscillates 0→100→0 over 2400 steps (same as BREATHE). */
+    uint8_t brightness = abs((int)state.animation_step - 1200) / 12;
+
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        struct zmk_led_hsb hsb = state.color;
+        /* Each LED gets its own hue slice across the full 360° wheel. */
+        hsb.h = (HUE_MAX / STRIP_NUM_PIXELS * i + state.animation_step / 12) % HUE_MAX;
+        hsb.b = brightness;
+        pixels[i] = hsb_to_rgb(hsb_scale_zero_max(hsb));
+    }
+
+    state.animation_step += state.animation_speed * 10;
+    if (state.animation_step > 2400) {
+        state.animation_step = 0;
+    }
+}
+
 static void zmk_rgb_underglow_tick(struct k_work *work) {
     switch (state.current_effect) {
     case UNDERGLOW_EFFECT_SOLID:
@@ -188,6 +207,9 @@ static void zmk_rgb_underglow_tick(struct k_work *work) {
         break;
     case UNDERGLOW_EFFECT_SWIRL:
         zmk_rgb_underglow_effect_swirl();
+        break;
+    case UNDERGLOW_EFFECT_RAINBOW_BREATHE:
+        zmk_rgb_underglow_effect_rainbow_breathe();
         break;
     }
 
