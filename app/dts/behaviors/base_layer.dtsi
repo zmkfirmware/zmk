@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+        #if ZMK_BEHAVIOR_OMIT(BASE)
+        /omit-if-no-ref/
+        #endif
+        base: baselayer {
+            compatible = "zmk,behavior-base-layer";
+            #binding-cells = <1>;
+            display-name = "Base Layer";
+        };
+    };
+};
