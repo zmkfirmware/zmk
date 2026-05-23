@@ -7,10 +7,10 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 ZMK's pointing device support builds upon the Zephyr [input API](https://docs.zephyrproject.org/4.1.0/services/input/index.html) to offer pointing/mouse functionality with various hardware.
-A limited number of input drivers are available in the Zephyr version currently used by ZMK, but additional drivers can be found in [external modules](../../features/modules.mdx) for a variety of hardware.
+A limited number of input drivers are available in the Zephyr version currently used by ZMK, but additional drivers can be found in [external modules](../features/modules.mdx) for a variety of hardware.
 
-Pointing devices are also supported on split peripherals, with some additional configuration using the [input split device](../../config/pointing.md#input-split).
-The configuration details will thus vary depending on if you are adding a pointing device to a [split peripheral](../../features/split-keyboards.md#central-and-peripheral-roles) as opposed to a unibody keyboard or split central part.
+Pointing devices are also supported on split peripherals, with some additional configuration using the [input split device](../config/pointing.md#input-split).
+The configuration details will thus vary depending on if you are adding a pointing device to a [split peripheral](../features/split-keyboards.md#central-and-peripheral-roles) as opposed to a unibody keyboard or split central part.
 
 export const SplitTabs = (props) => (
   <Tabs
@@ -81,7 +81,7 @@ The specifics of the properties required to set for a given driver will vary; al
 ## Listener and Input Split Device
 
 Every input device needs an associated listener added that listens for events from the device and processes them before sending the events to the host using a HID mouse report.
-See [input listener configuration](../../config/pointing.md#input-listener) for the full details.
+See [input listener configuration](../config/pointing.md#input-listener) for the full details.
 
 If your pointing device is on a split peripheral part, you also need to define and use an input split device on all keyboard parts.
 
@@ -246,7 +246,7 @@ Here we first include the shared file, and then enable the input listener that i
 
 Some physical pointing devices may be generating input events that need adjustment before being sent to hosts.
 For example a trackpad might be integrated into a keyboard rotated 90° and need the X/Y data adjusted appropriately.
-This can be accomplished with [input processors](../../keymaps/input-processors/index.md).
+This can be accomplished with [input processors](../keymaps/input-processors/index.md).
 As an example, you could enhance the listener defined in the previous section with an input processor that inverts and swaps the X/Y axes:
 
 ```dts
@@ -263,7 +263,7 @@ As an example, you could enhance the listener defined in the previous section wi
 
 ## Configuration Setting
 
-If your keyboard hardware includes a pointing device by default, you can enable the [`ZMK_POINTING` config](../../config/pointing.md#general) in your keyboard definition.
+If your keyboard hardware includes a pointing device by default, you can enable the [`ZMK_POINTING` config](../config/pointing.md#general) in your keyboard definition.
 You can do that in your [`Kconfig.defconfig` file](new-shield.mdx#kconfigdefconfig), where you can also enable the config for the communication protocol (e.g. [SPI](https://docs.zephyrproject.org/4.1.0/kconfig.html#CONFIG_SPI), [I2C](https://docs.zephyrproject.org/4.1.0/hardware/peripherals/i2c.html#configuration-options)) used by the pointing device:
 
 <SplitTabs>

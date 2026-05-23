@@ -44,7 +44,7 @@ This guide will walk through the steps necessary to add ZMK support for a keyboa
 
 The high level steps are:
 
-- Create a new [ZMK module](../module-creation.md) to contain your shield.
+- Create a new [ZMK module](../development/module-creation.md) to contain your shield.
 - Create a new shield directory.
 - Add the base Kconfig files.
 - Add the shield overlay file defining:
@@ -54,7 +54,7 @@ The high level steps are:
 - Add a default keymap, which users can override in their own configs as needed.
 - Add a `<my_shield>.zmk.yml` metadata file to document the high level details of your shield, and the features it supports.
 
-Many of the above files will differ depending on whether your keyboard is a unibody or is [split into multiple parts](../../features/split-keyboards.md).
+Many of the above files will differ depending on whether your keyboard is a unibody or is [split into multiple parts](../features/split-keyboards.md).
 
 After adding ZMK support for a basic shield using this guide, check the sidebar for guides on adding any additional features (such as encoders) that your keyboard has.
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/4.1.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
@@ -63,7 +63,7 @@ It may be helpful to review the upstream [shields documentation](https://docs.ze
 When writing your shield, please be aware of [licensing](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository):
 
 - If you reference code or other items that are under a copyleft license (e.g. GNU GPLv2, used by QMK) as a reference, you must license your shield under a compatible copyleft license.
-- If you license anything under a copyleft license, it cannot be referenced by anyone working on ZMK (see our [clean room policy](../contributing/clean-room.md)).
+- If you license anything under a copyleft license, it cannot be referenced by anyone working on ZMK (see our [clean room policy](../development/contributing/clean-room.md)).
 
 We generally recommend licensing your shield under MIT, if you don't have a particular incentive to do otherwise.
 :::
@@ -89,9 +89,9 @@ Follow these steps to create your new repository:
 
 The repository is a combination of the directories and files required of a ZMK config, and those required of a shield module.
 This enables the use of GitHub Actions to test that the shield is defined correctly.
-See also the page on [module creation](../module-creation.md) for a reference on exactly which file structure and files are required for a ZMK keyboard module.
+See also the page on [module creation](../development/module-creation.md) for a reference on exactly which file structure and files are required for a ZMK keyboard module.
 
-We recommend that you take this moment to name your module according to our [convention](../module-creation.md), i.e. your `zephyr/module.yml` file should begin with
+We recommend that you take this moment to name your module according to our [convention](../development/module-creation.md), i.e. your `zephyr/module.yml` file should begin with
 
 ```yaml title="zephyr/module.yml"
 name: zmk-keyboard-<keyboard_name>
@@ -108,7 +108,7 @@ mkdir boards/shields/<keyboard_name>
 ## Base Kconfig Files
 
 :::tip[Example shields]
-You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) in the ZMK repo that houses [the in-tree supported shields](../../hardware.mdx) in order to copy and modify as a starting point.
+You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) in the ZMK repo that houses [the in-tree supported shields](../hardware.mdx) in order to copy and modify as a starting point.
 :::
 
 There are two required [Kconfig](https://docs.zephyrproject.org/4.1.0/build/kconfig/index.html) files that need to be created for your new keyboard shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
@@ -208,7 +208,7 @@ endif
 ### User Configuration Files
 
 In addition to the `Kconfig.shield` and `Kconfig.defconfig` files, many shields will also define a user configuration file called `my_keyboard.conf`.
-This file exists to provide "suggestions" of [configuration settings](../../config/index.md) for a user to select, such as enabling deep sleep.
+This file exists to provide "suggestions" of [configuration settings](../config/index.md) for a user to select, such as enabling deep sleep.
 Note that the name should match the shield/part name defined in the [Kconfig.shield file](#kconfigshield).
 
 :::warning
@@ -231,7 +231,7 @@ Split keyboards can have multiple `.conf` files, one for each part. For example:
 In most case you'll only need to use the .conf file that affects both halves of a split board.
 
 :::note
-The shared configuration in `my_keyboard.conf` is only applied when you are building with a [`zmk-config` folder](../local-toolchain/build-flash.mdx#building-from-zmk-config-folder) and it is present at `config/my_keyboard.conf`.
+The shared configuration in `my_keyboard.conf` is only applied when you are building with a [`zmk-config` folder](../development/local-toolchain/build-flash.mdx#building-from-zmk-config-folder) and it is present at `config/my_keyboard.conf`.
 :::
 
 </TabItem>
@@ -246,7 +246,7 @@ There are three main things that need to be defined in this file:
 
 - Your keyboard scan (kscan) driver, which determines which GPIO pins to scan for key press events
 - Your matrix transform, which acts as a "bridge" between the kscan and the keymap
-- Your physical layout, which aggregates the above and (optionally) defines physical key positions so that the keyboard can be used with [ZMK Studio](../../features/studio.md).
+- Your physical layout, which aggregates the above and (optionally) defines physical key positions so that the keyboard can be used with [ZMK Studio](../features/studio.md).
 
 <SplitInvisTabs>
 <TabItem value="unibody">
@@ -280,7 +280,7 @@ To use GPIO pins that are not part of the interconnects as described above, you 
 For instance, pins numbered `PX.Y` in nRF52840-based boards can be referred to via `&gpioX Y` labels.
 An example is `&gpio1 7` for the `P1.07` pin that the nice!nano exposes in the middle of the board.
 
-The [Keyboard Scan configuration documentation](../../config/kscan.md) has the full details on configuring the kscan driver.
+The [Keyboard Scan configuration documentation](../config/kscan.md) has the full details on configuring the kscan driver.
 
 <SplitTabs>
 <TabItem value="unibody">
@@ -450,7 +450,7 @@ The matrix transform is also used to "correct" pin orderings into something that
 
 See the [in-tree keyboards](https://github.com/zmkfirmware/zmk/tree/main/app/boards/shields) that ZMK defines for examples of more complex matrix transformations.
 
-Also see the [matrix transform section](../../config/layout.md#matrix-transform) in the Keyboard Scan configuration documentation for further details and examples of matrix transforms.
+Also see the [matrix transform section](../config/layout.md#matrix-transform) in the Keyboard Scan configuration documentation for further details and examples of matrix transforms.
 
 ### Physical Layout
 
@@ -460,7 +460,7 @@ Physical layouts organize the matrix transform, kscan and optionally the physica
 <Tabs groupId="physical-layouts" queryString defaultValue="basic">
   <TabItem value="basic" label="Basic">
 
-If you are not planning to add support for [ZMK Studio](../../features/studio.md), you can add a `zmk,physical-layout`-compatible node for each physical layout your keyboard supports:
+If you are not planning to add support for [ZMK Studio](../features/studio.md), you can add a `zmk,physical-layout`-compatible node for each physical layout your keyboard supports:
 
 ```dts
 / {
@@ -478,7 +478,7 @@ These nodes should be placed in `my_keyboard.overlay` for unibody keyboards and 
   </TabItem>
   <TabItem value="studio" label="With ZMK Studio Support">
 
-If you are planning to add support for [ZMK Studio](../../features/studio.md), you should follow the [physical layouts documentation](physical-layouts.md) to create a new file `my_keyboard-layouts.dtsi` which includes the physical layout definitions.
+If you are planning to add support for [ZMK Studio](../features/studio.md), you should follow the [physical layouts documentation](physical-layouts.md) to create a new file `my_keyboard-layouts.dtsi` which includes the physical layout definitions.
 Once you have finished defining your physical layouts, import the `my_keyboard-layouts.dtsi` file at the top of your `my_keyboard.overlay` file (unibody) or `my_keyboard.dtsi` file (split).
 
 ```dts
@@ -501,7 +501,7 @@ Set the `chosen` node to a defined "default" physical layout. This should also b
 };
 ```
 
-If you define multiple physical layouts, users can select a different layout by overriding the `zmk,physical-layout` chosen node in their keymap file or by using [ZMK Studio](../../features/studio.md) if your board is compatible with it.
+If you define multiple physical layouts, users can select a different layout by overriding the `zmk,physical-layout` chosen node in their keymap file or by using [ZMK Studio](../features/studio.md) if your board is compatible with it.
 
 :::note
 If all of your physical layouts use the same `kscan` node under the hood, you can skip setting the `kscan` property on each layout and instead assign the `zmk,kscan` chosen node to your single kscan instance:
@@ -524,7 +524,7 @@ If all of your physical layouts use the same `kscan` node under the hood, you ca
 <TabItem value="unibody">This is only required for wired split keyboards.</TabItem>
 <TabItem value="split">
 
-If testing the experimental [wired split](../../features/split-keyboards.md) support, you should assign a [predefined](./pinctrl.mdx#predefined-nodes) or [pinctrl configured](./pinctrl.mdx) UART to the `device` property of a new node with `compatible` value of `"zmk,wired-split"`:
+If testing the experimental [wired split](../features/split-keyboards.md) support, you should assign a [predefined](./pinctrl.mdx#predefined-nodes) or [pinctrl configured](./pinctrl.mdx) UART to the `device` property of a new node with `compatible` value of `"zmk,wired-split"`:
 
 ```dts
 / {
@@ -535,7 +535,7 @@ If testing the experimental [wired split](../../features/split-keyboards.md) sup
 };
 ```
 
-See the [wired split](../../config/split.md#wired-split) configuration for more details.
+See the [wired split](../config/split.md#wired-split) configuration for more details.
 
 For wireless split keyboards, this step should be skipped, especially since the UART pins on your controller might already be in use for other functionality.
 
@@ -573,8 +573,8 @@ Here is an example simple keymap for a 3x3 macropad, with only one layer:
 ```
 
 The keymap should match the order of the keys in the [matrix transform](#matrix-transform) exactly, left to right, top to bottom (they are both 1 dimensional arrays rearranged with newline characters for better legibility).
-See [Keymaps](../../keymaps/index.mdx) for information on defining keymaps in ZMK.
-If you wish to use [ZMK Studio](../../features/studio.md) with your keyboard, make sure to assign the [ZMK Studio unlocking behavior](../../keymaps/behaviors/studio-unlock.md) to a key in your keymap.
+See [Keymaps](../keymaps/index.mdx) for information on defining keymaps in ZMK.
+If you wish to use [ZMK Studio](../features/studio.md) with your keyboard, make sure to assign the [ZMK Studio unlocking behavior](../keymaps/behaviors/studio-unlock.md) to a key in your keymap.
 
 ## Metadata
 
@@ -604,12 +604,12 @@ See [Hardware Metadata Files](hardware-metadata-files.md) for the full details.
 ## Testing
 
 Once you've defined everything as described above, you can build your firmware to make sure everything is working.
-If you wish to test that your keyboard works with [ZMK Studio](../../features/studio.md), you'll also need to follow the [instructions for enabling Studio](../../features/studio.md#building).
+If you wish to test that your keyboard works with [ZMK Studio](../features/studio.md), you'll also need to follow the [instructions for enabling Studio](../features/studio.md#building).
 
 ### GitHub Actions
 
 To use GitHub Actions to test, push the files defining the keyboard to GitHub.
-Next, [update the `build.yaml`](../../customization.md#building-additional-keyboards) of your `zmk-config` to build your keyboard.
+Next, [update the `build.yaml`](../customization.md#building-additional-keyboards) of your `zmk-config` to build your keyboard.
 
 - If your shield is defined in your `zmk-config`, then the shield should start building.
 - If the shield is defined in a separate module, you will need to [adjust your `west.yml` to reference the module](https://zmk.dev/docs/features/modules#building-with-modules).
@@ -617,5 +617,5 @@ Next, [update the `build.yaml`](../../customization.md#building-additional-keybo
 ### Local Toolchain
 
 You can also use a local toolchain setup to test your keyboard.
-Follow [our guide for getting set up](../local-toolchain/setup/index.md), then follow the [instructions for building and flashing locally](../local-toolchain/build-flash.mdx).
+Follow [our guide for getting set up](../development/local-toolchain/setup/index.md), then follow the [instructions for building and flashing locally](../development/local-toolchain/build-flash.mdx).
 You will need to specify the module of your keyboard when building.

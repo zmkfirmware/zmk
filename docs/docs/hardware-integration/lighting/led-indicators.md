@@ -115,4 +115,4 @@ You can also control multiple LEDs from the same indicator:
 
 ## LED Behavior
 
-See the [feature page](../../../features/led-indicators.md) and [configuration page](../../../config/led-indicators.md) for details on configuring LED brightness according to the indicator state.
+See the [feature page](../../features/led-indicators.md) and [configuration page](../../config/led-indicators.md) for details on configuring LED brightness according to the indicator state.

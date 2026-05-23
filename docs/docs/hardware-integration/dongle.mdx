@@ -6,7 +6,7 @@ sidebar_label: Keyboard Dongle
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-A bluetooth dongle can be added to any wireless keyboard running ZMK. The result is a [split keyboard](../../features/split-keyboards.md) with the dongle as ["central"](../../features/split-keyboards.md#central-and-peripheral-roles). There are a number of advantages to adding a dongle, but also some disadvantages:
+A bluetooth dongle can be added to any wireless keyboard running ZMK. The result is a [split keyboard](../features/split-keyboards.md) with the dongle as ["central"](../features/split-keyboards.md#central-and-peripheral-roles). There are a number of advantages to adding a dongle, but also some disadvantages:
 
 Benefits:
 
@@ -18,7 +18,7 @@ Disadvantages:
 - An extra [board](index.mdx#what-is-a-board) is needed (any BLE-capable board that ZMK supports will work).
 - The keyboard becomes unusable without the dongle.
 
-Depending on how the dongle is used, there are some additional [latency considerations](../../features/split-keyboards.md#latency-considerations) to keep in mind.
+Depending on how the dongle is used, there are some additional [latency considerations](../features/split-keyboards.md#latency-considerations) to keep in mind.
 The addition of the dongle adds an extra "hop" for the former central, increasing its latency to that of a peripheral. The other parts are unchanged latency-wise. There is also a commonly occurring case where the peripherals benefit.
 Assuming the dongle is connected to USB and the former central would have been connected via bluetooth to the host if the dongle wasn't present:
 
@@ -119,7 +119,7 @@ You will now need to find and copy your keyboard's matrix transform into the `my
 
 #### Matrix transform
 
-Navigate to the directory defining your keyboard (in-tree keyboards found [here](https://github.com/zmkfirmware/zmk/tree/main/app/boards), if your keyboard is a shield look under the `shields` subdirectory) and look through the [devicetree files](../../config/index.md) for nodes with `compatible = "zmk,matrix-transform";`.
+Navigate to the directory defining your keyboard (in-tree keyboards found [here](https://github.com/zmkfirmware/zmk/tree/main/app/boards), if your keyboard is a shield look under the `shields` subdirectory) and look through the [devicetree files](../config/index.md) for nodes with `compatible = "zmk,matrix-transform";`.
 This should look something like this:
 
 ```dts
@@ -141,7 +141,7 @@ Make a note of the label that the transform has, it will be used later. In the e
 
 #### Physical layout
 
-A full physical layout is necessary to allow your dongle to be used with [ZMK Studio](../../features/studio.md).
+A full physical layout is necessary to allow your dongle to be used with [ZMK Studio](../features/studio.md).
 If your keyboard is not Studio-ready or you have no interest in using ZMK Studio with your dongle, then this section is simplified significantly.
 
 <Tabs
@@ -299,16 +299,16 @@ include:
     cmake-args: -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
 ```
 
-You can then flash the firmware to your device as detailed in our [user setup](../../user-setup.mdx#installing-the-firmware) and [split keyboard](../../features/split-keyboards.md#building-and-flashing-firmware) pages.
+You can then flash the firmware to your device as detailed in our [user setup](../user-setup.mdx#install-the-firmware) and [split keyboard](../features/split-keyboards.md#building-and-flashing-firmware) pages.
 
 :::warning
-Before flashing your new firmware, you need to flash `settings_reset` [firmware](../../troubleshooting/connection-issues.mdx#building-a-reset-firmware) on all devices to ensure they can pair to each other.
+Before flashing your new firmware, you need to flash `settings_reset` [firmware](../troubleshooting/connection-issues.mdx#building-a-reset-firmware) on all devices to ensure they can pair to each other.
 :::
 
-To use your dongled keyboard with [ZMK Studio](../../features/studio.md), apply the instructions for [building with Studio](../../features/studio.md#building) to the dongle.
+To use your dongled keyboard with [ZMK Studio](../features/studio.md), apply the instructions for [building with Studio](../features/studio.md#building) to the dongle.
 
 If you ever want to "undongle" your keyboard, simply remove these CMake arguments and flash the resulting firmware (after a `settings_reset`).
 
 [^1]: If you have a custom dongle that uses an onboard MCU, then you will need to take a slightly different approach that isn't currently documented.
 
-[^2]: If you are building locally, you can append these flags to the end of the [build command](../local-toolchain/build-flash.mdx#cmake-arguments).
+[^2]: If you are building locally, you can append these flags to the end of the [build command](../development/local-toolchain/build-flash.mdx#cmake-arguments).

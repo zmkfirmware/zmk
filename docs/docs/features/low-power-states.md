@@ -78,4 +78,4 @@ You can then wake up the keyboard by pressing the reset button once, and repeati
 
 ### Adding Soft Off to a Keyboard
 
-Please refer to the [corresponding page under hardware integration](../development/hardware-integration/soft-off-setup.mdx) for details.
+Please refer to the [corresponding page under hardware integration](../hardware-integration/soft-off-setup.mdx) for details.
