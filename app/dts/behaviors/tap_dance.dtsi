@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2024 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/behaviors.h>
+
+/ {
+    behaviors {
+#if ZMK_BEHAVIOR_OMIT(TAPDANCE)
+        /omit-if-no-ref/
+#endif
+        td: tap_dance_kp {
+            compatible = "zmk,behavior-tap-dance-param";
+            #binding-cells = <2>;
+            bindings = <&kp PLACEHOLDER>, <&kp PLACEHOLDER>;
+            display-name = "Tap-Dance";
+            tapping-term-ms = <200>;
+            binding-params = <BINDING_PARAM(1,0) BINDING_PARAM(2,0)>;
+        };
+    };
+};
