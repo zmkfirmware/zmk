@@ -36,4 +36,13 @@ config ZMK_WIDGET_WPM_STATUS
     select LV_USE_LABEL
     select ZMK_WPM
 
+config ZMK_WIDGET_LABEL
+    bool "Widget for displaying custom messages"
+    select LV_USE_LABEL
+
+config ZMK_WIDGET_LABEL_TEXT
+    string "Custom message to display"
+    default "ZMK"
+    depends on ZMK_WIDGET_LABEL
+
 endmenu
