@@ -61,9 +61,8 @@ static const struct behavior_parameter_metadata metadata = {
 
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    switch (binding->param1) {
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    switch (event->param1) {
     case OUT_TOG:
         return zmk_endpoint_toggle_preferred_transport();
     case OUT_USB:
@@ -73,7 +72,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     case OUT_NONE:
         return zmk_endpoint_set_preferred_transport(ZMK_TRANSPORT_NONE);
     default:
-        LOG_ERR("Unknown output command: %d", binding->param1);
+        LOG_ERR("Unknown output command: %d", event->param1);
     }
 
     return -ENOTSUP;

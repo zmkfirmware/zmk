@@ -31,16 +31,15 @@ struct behavior_reset_config {
 #endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
 };
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     const struct behavior_reset_config *cfg = dev->config;
 
 #if IS_ENABLED(CONFIG_RETENTION_BOOT_MODE)
     int ret = bootmode_set(cfg->boot_mode);
     if (ret < 0) {
         LOG_ERR("Failed to set the bootloader mode (%d)", ret);
-        return ZMK_BEHAVIOR_OPAQUE;
+        return 0;
     }
 
     sys_reboot(SYS_REBOOT_WARM);
@@ -50,7 +49,7 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     sys_reboot(cfg->type);
 #endif /* IS_ENABLED(CONFIG_RETENTION_BOOT_MODE) */
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 static const struct behavior_driver_api behavior_reset_driver_api = {

@@ -76,6 +76,7 @@ struct behavior_hold_tap_data {
 // this data is specific for each hold-tap
 struct active_hold_tap {
     int32_t position;
+    uint8_t layer;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
     uint8_t source;
 #endif
@@ -253,20 +254,20 @@ static struct active_hold_tap *find_hold_tap(uint32_t position) {
 }
 
 static struct active_hold_tap *store_hold_tap(struct zmk_behavior_binding_event *event,
-                                              uint32_t param_hold, uint32_t param_tap,
                                               const struct behavior_hold_tap_config *config) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
         if (active_hold_taps[i].position != ZMK_BHV_HOLD_TAP_POSITION_NOT_USED) {
             continue;
         }
         active_hold_taps[i].position = event->position;
+        active_hold_taps[i].layer = event->layer;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         active_hold_taps[i].source = event->source;
 #endif
         active_hold_taps[i].status = STATUS_UNDECIDED;
         active_hold_taps[i].config = config;
-        active_hold_taps[i].param_hold = param_hold;
-        active_hold_taps[i].param_tap = param_tap;
+        active_hold_taps[i].param_hold = event->param1;
+        active_hold_taps[i].param_tap = event->param2;
         active_hold_taps[i].timestamp = event->timestamp;
         active_hold_taps[i].position_of_first_other_key_pressed = -1;
         return &active_hold_taps[i];
@@ -403,59 +404,66 @@ static inline const char *decision_moment_str(enum decision_moment decision_mome
 
 static int press_hold_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding_event event = {
+        .behavior_dev = hold_tap->config->hold_behavior_dev,
+        .param1 = hold_tap->param_hold,
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .layer = hold_tap->layer,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
     };
 
-    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
-                                           .param1 = hold_tap->param_hold};
-    return zmk_behavior_invoke_binding(&binding, event, true);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static int press_tap_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding_event event = {
+        .behavior_dev = hold_tap->config->tap_behavior_dev,
+        .param1 = hold_tap->param_tap,
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .layer = hold_tap->layer,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_PRESS,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
     };
-
-    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
-                                           .param1 = hold_tap->param_tap};
     store_last_hold_tapped(hold_tap);
-    return zmk_behavior_invoke_binding(&binding, event, true);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static int release_hold_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding_event event = {
+        .behavior_dev = hold_tap->config->hold_behavior_dev,
+        .param1 = hold_tap->param_hold,
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .layer = hold_tap->layer,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
     };
 
-    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->hold_behavior_dev,
-                                           .param1 = hold_tap->param_hold};
-    return zmk_behavior_invoke_binding(&binding, event, false);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static int release_tap_binding(struct active_hold_tap *hold_tap) {
     struct zmk_behavior_binding_event event = {
+        .behavior_dev = hold_tap->config->tap_behavior_dev,
+        .param1 = hold_tap->param_tap,
         .position = hold_tap->position,
         .timestamp = hold_tap->timestamp,
+        .layer = hold_tap->layer,
+        .type = ZMK_BEHAVIOR_TRIG_TYPE_RELEASE,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
         .source = hold_tap->source,
 #endif
     };
 
-    struct zmk_behavior_binding binding = {.behavior_dev = hold_tap->config->tap_behavior_dev,
-                                           .param1 = hold_tap->param_tap};
-    return zmk_behavior_invoke_binding(&binding, event, false);
+    return raise_zmk_behavior_binding_event(event);
 }
 
 static int press_binding(struct active_hold_tap *hold_tap) {
@@ -603,27 +611,25 @@ static void update_hold_status_for_retro_tap(uint32_t ignore_position) {
     }
 }
 
-static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
-                                       struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_hold_tap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     const struct behavior_hold_tap_config *cfg = dev->config;
 
     if (undecided_hold_tap != NULL) {
         LOG_DBG("ERROR another hold-tap behavior is undecided.");
         // if this happens, make sure the behavior events occur AFTER other position events.
-        return ZMK_BEHAVIOR_OPAQUE;
+        return 0;
     }
 
-    struct active_hold_tap *hold_tap =
-        store_hold_tap(&event, binding->param1, binding->param2, cfg);
+    struct active_hold_tap *hold_tap = store_hold_tap(event, cfg);
 
     if (hold_tap == NULL) {
         LOG_ERR("unable to store hold-tap info, did you press more than %d hold-taps?",
                 ZMK_BHV_HOLD_TAP_MAX_HELD);
-        return ZMK_BEHAVIOR_OPAQUE;
+        return 0;
     }
 
-    LOG_DBG("%d new undecided hold_tap", event.position);
+    LOG_DBG("%d new undecided hold_tap", event->position);
     undecided_hold_tap = hold_tap;
 
     if (is_quick_tap(hold_tap)) {
@@ -637,21 +643,20 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     int32_t tapping_term_ms_left = (hold_tap->timestamp + cfg->tapping_term_ms) - k_uptime_get();
     k_work_schedule(&hold_tap->work, K_MSEC(tapping_term_ms_left));
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
-static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
-                                        struct zmk_behavior_binding_event event) {
-    struct active_hold_tap *hold_tap = find_hold_tap(event.position);
+static int on_hold_tap_binding_released(struct zmk_behavior_binding_event *event) {
+    struct active_hold_tap *hold_tap = find_hold_tap(event->position);
     if (hold_tap == NULL) {
         LOG_ERR("ACTIVE_HOLD_TAP_CLEANED_UP_TOO_EARLY");
-        return ZMK_BEHAVIOR_OPAQUE;
+        return 0;
     }
 
     // If these events were queued, the timer event may be queued too late or not at all.
     // We insert a timer event before the TH_KEY_UP event to verify.
     int work_cancel_result = k_work_cancel_delayable(&hold_tap->work);
-    if (event.timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
+    if (event->timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(hold_tap, HT_TIMER_EVENT);
     }
 
@@ -666,14 +671,14 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     if (work_cancel_result == -EINPROGRESS) {
         // let the timer handler clean up
         // if we'd clear now, the timer may call back for an uninitialized active_hold_tap.
-        LOG_DBG("%d hold-tap timer work in event queue", event.position);
+        LOG_DBG("%d hold-tap timer work in event queue", event->position);
         hold_tap->work_is_cancelled = true;
     } else {
-        LOG_DBG("%d cleaning up hold-tap", event.position);
+        LOG_DBG("%d cleaning up hold-tap", event->position);
         clear_hold_tap(hold_tap);
     }
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)

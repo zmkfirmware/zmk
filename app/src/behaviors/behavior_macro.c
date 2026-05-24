@@ -138,48 +138,43 @@ static int behavior_macro_init(const struct device *dev) {
     return 0;
 };
 
-static uint32_t select_param(enum param_source param_source, uint32_t source_binding,
-                             const struct zmk_behavior_binding *macro_binding) {
-    switch (param_source) {
+static uint32_t select_param(enum param_source *param_source, uint32_t source_param,
+                             uint32_t event_param1, uint32_t event_param2) {
+    switch (*param_source) {
     case PARAM_SOURCE_MACRO_1ST:
-        return macro_binding->param1;
+        *param_source = PARAM_SOURCE_BINDING;
+        return event_param1;
     case PARAM_SOURCE_MACRO_2ND:
-        return macro_binding->param2;
+        *param_source = PARAM_SOURCE_BINDING;
+        return event_param2;
     default:
-        return source_binding;
+        return source_param;
     }
 };
 
-static void replace_params(struct behavior_macro_trigger_state *state,
-                           struct zmk_behavior_binding *binding,
-                           const struct zmk_behavior_binding *macro_binding) {
-    binding->param1 = select_param(state->param1_source, binding->param1, macro_binding);
-    binding->param2 = select_param(state->param2_source, binding->param2, macro_binding);
-
-    state->param1_source = PARAM_SOURCE_BINDING;
-    state->param2_source = PARAM_SOURCE_BINDING;
-}
-
 static void queue_macro(struct zmk_behavior_binding_event *event,
                         const struct zmk_behavior_binding bindings[],
-                        struct behavior_macro_trigger_state state,
-                        const struct zmk_behavior_binding *macro_binding) {
+                        struct behavior_macro_trigger_state state) {
     LOG_DBG("Iterating macro bindings - starting: %d, count: %d", state.start_index, state.count);
+    uint32_t param1 = event->param1;
+    uint32_t param2 = event->param2;
     for (int i = state.start_index; i < state.start_index + state.count; i++) {
         if (!handle_control_binding(&state, &bindings[i])) {
             struct zmk_behavior_binding binding = bindings[i];
-            replace_params(&state, &binding, macro_binding);
+            event->behavior_dev = binding.behavior_dev;
+            event->param1 = select_param(&state.param1_source, binding.param1, param1, param2);
+            event->param2 = select_param(&state.param2_source, binding.param2, param1, param2);
 
             switch (state.mode) {
             case MACRO_MODE_TAP:
-                zmk_behavior_queue_add(event, binding, true, state.tap_ms);
-                zmk_behavior_queue_add(event, binding, false, state.wait_ms);
+                zmk_behavior_queue_add(event, true, state.tap_ms);
+                zmk_behavior_queue_add(event, false, state.wait_ms);
                 break;
             case MACRO_MODE_PRESS:
-                zmk_behavior_queue_add(event, binding, true, state.wait_ms);
+                zmk_behavior_queue_add(event, true, state.wait_ms);
                 break;
             case MACRO_MODE_RELEASE:
-                zmk_behavior_queue_add(event, binding, false, state.wait_ms);
+                zmk_behavior_queue_add(event, false, state.wait_ms);
                 break;
             default:
                 LOG_ERR("Unknown macro mode: %d", state.mode);
@@ -189,9 +184,8 @@ static void queue_macro(struct zmk_behavior_binding_event *event,
     }
 }
 
-static int on_macro_binding_pressed(struct zmk_behavior_binding *binding,
-                                    struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_macro_binding_pressed(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
     struct behavior_macro_trigger_state trigger_state = {.mode = MACRO_MODE_TAP,
@@ -200,20 +194,19 @@ static int on_macro_binding_pressed(struct zmk_behavior_binding *binding,
                                                          .start_index = 0,
                                                          .count = state->press_bindings_count};
 
-    queue_macro(&event, cfg->bindings, trigger_state, binding);
+    queue_macro(event, cfg->bindings, trigger_state);
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
-static int on_macro_binding_released(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+static int on_macro_binding_released(struct zmk_behavior_binding_event *event) {
+    const struct device *dev = zmk_behavior_get_binding(event->behavior_dev);
     const struct behavior_macro_config *cfg = dev->config;
     struct behavior_macro_state *state = dev->data;
 
-    queue_macro(&event, cfg->bindings, state->release_state, binding);
+    queue_macro(event, cfg->bindings, state->release_state);
 
-    return ZMK_BEHAVIOR_OPAQUE;
+    return 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
