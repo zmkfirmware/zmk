@@ -58,10 +58,10 @@ For example, if you want the LED to be off when the indicator is active, 100% br
 
 If the LED is not configured to support brightness control, any value greater than 0 will result in maximum brightness.
 
-For most LEDs, you can enable PWM brightness control, though this will increase power usage slightly. See the [LED indicators hardware integration page](../development/hardware-integration/lighting/led-indicators.md) for details on configuring the LEDs.
+For most LEDs, you can enable PWM brightness control, though this will increase power usage slightly. See the [LED indicators hardware integration page](../hardware-integration/lighting/led-indicators.md) for details on configuring the LEDs.
 
 :::
 
 ## Adding LED Indicator Support to a Keyboard
 
-See the [LED indicators hardware integration page](../development/hardware-integration/lighting/led-indicators.md) for instructions to enable this feature on a keyboard.
+See the [LED indicators hardware integration page](../hardware-integration/lighting/led-indicators.md) for instructions to enable this feature on a keyboard.

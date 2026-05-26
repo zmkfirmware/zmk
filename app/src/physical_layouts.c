@@ -71,7 +71,7 @@ BUILD_ASSERT(
 #define ZMK_LAYOUT_INST(n)                                                                         \
     BUILD_ASSERT(!IS_ENABLED(CONFIG_ZMK_STUDIO) || DT_INST_NODE_HAS_PROP(n, keys),                 \
                  "ZMK Studio requires physical layouts with key positions. See "                   \
-                 "https://zmk.dev/docs/development/hardware-integration/studio-setup");            \
+                 "https://zmk.dev/docs/hardware-integration/studio-setup");                        \
     static const struct zmk_key_physical_attrs _CONCAT(_zmk_physical_layout_keys_,                 \
                                                        n)[DT_INST_PROP_LEN_OR(n, keys, 0)] = {     \
         LISTIFY(DT_INST_PROP_LEN_OR(n, keys, 0), ZKPA_INIT, (, ), n)};                             \

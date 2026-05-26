@@ -11,7 +11,7 @@ Some keyboards are boards but also have interconnects for modular add-ons. These
 
 ## Boards Included in ZMK
 
-Boards with interconnects can be considered for inclusion to the tree of ZMK. If this is your aim, it is vital that you read through our [clean room policy](../contributing/clean-room.md).
+Boards with interconnects can be considered for inclusion to the tree of ZMK. If this is your aim, it is vital that you read through our [clean room policy](../development/contributing/clean-room.md).
 
 Boards with interconnects that are included with ZMK are generally:
 
@@ -43,9 +43,9 @@ Follow these steps to create your new repository:
 
 The repository is a combination of the directories and files required of a ZMK config, and those required of a shield module.
 This enables the use of GitHub Actions to test that the shield is defined correctly.
-See also the page on [module creation](../module-creation.md) for a reference on exactly which file structure and files are required for a ZMK keyboard module.
+See also the page on [module creation](../development/module-creation.md) for a reference on exactly which file structure and files are required for a ZMK keyboard module.
 
-We recommend that you take this moment to name your module according to our [convention](../module-creation.md), i.e. your `zephyr/module.yml` file should begin with
+We recommend that you take this moment to name your module according to our [convention](../development/module-creation.md), i.e. your `zephyr/module.yml` file should begin with
 
 ```yaml title="zephyr/module.yml"
 name: zmk-keyboard-<keyboard_name>
@@ -182,6 +182,6 @@ See [here](./bootloader/index.mdx) for bootloader instructions for other SoCs. D
 
 ## Next Steps
 
-If your board is a keyboard, continue from [the `Kconfig.defconfig` step](https://zmk.dev/docs/development/hardware-integration/new-shield?keyboard-type=unibody#kconfigdefconfig) of the new shield guide. Use your ZMK variant's devicetree instead of the overlay file which would be used for a shield.
+If your board is a keyboard, continue from [the `Kconfig.defconfig` step](https://zmk.dev/docs/hardware-integration/new-shield?keyboard-type=unibody#kconfigdefconfig) of the new shield guide. Use your ZMK variant's devicetree instead of the overlay file which would be used for a shield.
 
-If your board is a board with an interconnect, your next step should be to write a [tester shield](../../troubleshooting/hardware-issues.mdx#identifying-issues). Such a shield should be the bare minimum shield to verify that your board works with ZMK.
+If your board is a board with an interconnect, your next step should be to write a [tester shield](../troubleshooting/hardware-issues.mdx#identifying-issues). Such a shield should be the bare minimum shield to verify that your board works with ZMK.

@@ -73,7 +73,7 @@ See [RGB underglow configuration](../config/lighting.md#rgb-underglow).
 
 ### Adding RGB Underglow Support to a Keyboard
 
-See [RGB underglow hardware integration page](../development/hardware-integration/lighting/underglow.md) on adding underglow support to a ZMK keyboard.
+See [RGB underglow hardware integration page](../hardware-integration/lighting/underglow.md) on adding underglow support to a ZMK keyboard.
 
 ## Backlight
 
@@ -100,4 +100,4 @@ See [backlight configuration](../config/lighting.md#backlight) for details.
 
 ### Adding Backlight to a Board or a Shield
 
-See [backlight hardware integration page](../development/hardware-integration/lighting/backlight.mdx) for information on adding backlight support to a ZMK keyboard.
+See [backlight hardware integration page](../hardware-integration/lighting/backlight.mdx) for information on adding backlight support to a ZMK keyboard.
