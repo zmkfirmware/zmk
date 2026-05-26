@@ -290,6 +290,9 @@ menuconfig ZMK_RGB_UNDERGLOW
 
 if ZMK_RGB_UNDERGLOW
 
+config ZMK_RGB_UNDERGLOW_TICK_PERIOD_MS
+    int "RGB animation tick period (ms)"
+
 config ZMK_RGB_UNDERGLOW_EXT_POWER
     bool "RGB underglow toggling also controls external power"
 
