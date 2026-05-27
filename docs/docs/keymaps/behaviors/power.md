@@ -44,7 +44,7 @@ Here is a table describing the command for each define:
 - Parameter#1: Command, e.g `EP_ON`
 
 :::note[External power state persistence]
-The on/off state that is set by the `&ext_power` behavior will be saved to flash storage and hence persist across restarts and firmware flashes.
+The on/off state that is set by the `&ext_power` behavior will be [saved to flash storage](../../config/settings.md) and hence persist across restarts and firmware flashes.
 However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
 

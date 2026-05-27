@@ -30,17 +30,28 @@ jobs:
     name: Fetch Build Keyboards
     outputs:
       build_matrix: ${{ env.build_matrix }}
+      has_valid_build_matrix: ${{ steps.fetch.outputs.has_valid_build_matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Fetch Build Matrix
+        id: fetch
         run: |
-          echo "build_matrix=$(yq -oj -I0 '${{ inputs.build_matrix_path }}')" >> $GITHUB_ENV
-          yq -oj "${{ inputs.build_matrix_path }}"
+          matrix_content=$(yq -oj -I0 '${{ inputs.build_matrix_path }}')
+
+          if [ -z "$matrix_content" ] || [ "$matrix_content" = "null" ]; then
+            echo "::notice file=${{inputs.build_matrix_path}},title=Empty build matrix file::To add a keyboard to the build, see https://zmk.dev/docs/user-setup#add-a-keyboard."
+            echo "has_valid_build_matrix=false" >> $GITHUB_OUTPUT
+          else
+            echo "build_matrix=$matrix_content" >> $GITHUB_ENV
+            echo "has_valid_build_matrix=true" >> $GITHUB_OUTPUT
+            echo "$matrix_content"
+          fi
 
   build:
     runs-on: ubuntu-latest
+    if: needs.matrix.outputs.has_valid_build_matrix == 'true'
     container:
       image: zmkfirmware/zmk-build-arm:stable
     needs: matrix
@@ -49,8 +60,14 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.matrix.outputs.build_matrix) }}
     steps:
+      - name: Act Workaround # https://github.com/nektos/act/issues/973
+        if: ${{ env.ACT }}
+        run: |
+          apt-get update && apt-get install -y curl unzip
+          curl -fsSL https://deb.nodesource.com/setup_22.x | bash && apt install -y nodejs
+
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Create build directory
         run: |
@@ -91,7 +108,7 @@ jobs:
           fi
 
       - name: Cache west modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: true
         env:
           cache_name: cache-zephyr-${{ env.zephyr_version }}-modules
@@ -161,18 +178,19 @@ jobs:
           fi
 
       - name: Archive (${{ env.display_name }})
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: artifact-${{ env.artifact_name }}
           path: ${{ env.build_dir }}/artifacts
 
   merge:
     runs-on: ubuntu-latest
+    if: needs.matrix.outputs.has_valid_build_matrix == 'true'
     needs: build
     name: Merge Output Artifacts
     steps:
       - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: ${{ inputs.archive_name }}
           pattern: artifact-*

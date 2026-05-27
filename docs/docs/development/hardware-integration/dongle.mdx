@@ -177,7 +177,7 @@ There are three commonly found possibilities:
 Copy the file into your dongle's folder. Then import the file, assign the matrix transform to it, and select it in the `chosen` node:
 
 ```dts
-#import "my_keyboard-layouts.dtsi"
+#include "my_keyboard-layouts.dtsi"
 
 &physical_layout0 {
     transform = <&default_transform>;
@@ -281,7 +281,7 @@ Make sure that the `transform` property uses the same label as your matrix trans
 
 ## Building the Firmware
 
-Add the appropriate lines to your `build.yml` file to build the firmware for your dongle. Also add some CMake arguments using `cmake-args` to the existing parts of your keyboard, turning them into peripherals for your dongle.[^2]
+Add the appropriate lines to your `build.yaml` file to build the firmware for your dongle. Also add some CMake arguments using `cmake-args` to the existing parts of your keyboard, turning them into peripherals for your dongle.[^2]
 
 ```yaml
 include:

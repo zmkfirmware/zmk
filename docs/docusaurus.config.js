@@ -49,7 +49,6 @@ module.exports = {
     path.resolve(__dirname, "src/hardware-metadata-collection-plugin"),
     path.resolve(__dirname, "src/hardware-metadata-static-plugin"),
     path.resolve(__dirname, "src/hardware-schema-typescript-plugin"),
-    path.resolve(__dirname, "src/setup-script-generation-plugin"),
   ],
   themeConfig: {
     colorMode: {
@@ -152,10 +151,6 @@ module.exports = {
             {
               label: "Mastodon",
               href: "https://fosstodon.org/@zmk",
-            },
-            {
-              label: "Twitter",
-              href: "https://twitter.com/ZMKFirmware",
             },
           ],
         },

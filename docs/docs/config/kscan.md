@@ -316,7 +316,7 @@ One possible way to do this is a 3x4 matrix where the direct GPIO keys are shift
         compatible = "zmk,kscan-gpio-direct";
         // define 2 direct GPIOs here...
     };
-}
+};
 ```
 
 ## Mock Driver

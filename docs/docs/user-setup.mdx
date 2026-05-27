@@ -6,14 +6,32 @@ sidebar_label: Installing ZMK
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
+export const OsTabs = (props) => (
+  <Tabs
+    groupId="operating-system"
+    queryString
+    defaultValue="linux"
+    values={[
+      { label: "Linux", value: "linux" },
+      { label: "Windows", value: "win" },
+      { label: "macOS", value: "mac" },
+    ]}
+  >
+    {/* eslint-disable-next-line */}
+    {props.children}
+  </Tabs>
+);
+
 Unlike other keyboard firmwares, ZMK Firmware has been built from the ground up to allow users to manage
 their own keyboard configurations, including keymaps, specific hardware details, etc. all outside of the
 core ZMK Firmware source repository.
 
 In addition to this, most users will not need to install any complicated toolchains or tools to build ZMK. GitHub Actions is used instead to automatically build the user's configured firmware for them.
 
-:::info
-ZMK currently has an **experimental** command line program set to replace the below steps. It is designed to automate a number of steps for you and be easier to use. Give it a try by following the instructions found [here](user-setup-cli.mdx). Feedback and bug reports are very much welcome.
+:::info[Something Isn't Working?]
+
+If you run into any issues when following these instructions, please [file an issue on GitHub](https://github.com/zmkfirmware/zmk-cli/issues) or [join us on Discord](https://zmk.dev/community/discord/invite) and let us know what went wrong so we can improve ZMK CLI and this guide.
+
 :::
 
 ## Summary
@@ -24,185 +42,325 @@ to build your firmware for you in the cloud, which you can then download and fla
 
 Following the steps in this guide, you will:
 
+1. Install ZMK CLI, a command line tool for setting up ZMK.
 1. Create a new repository in GitHub that will contain your user config.
-1. Download and run a small shell script that will automate most of the setup. The script will:
-   1. Prompt you for which board (e.g. nice!nano) and shield (e.g. Lily58 or Kyria) you want to create a configuration for.
-   1. Prompt you for your GitHub username and repo where the config should be pushed.
-   1. Use `git` to clone a template repository that will be the basis for your user's config repository.
-   1. Use the given board and shield to update the included GitHub Action to build for the correct hardware.
-   1. Commit the initial version.
-   1. (If info was provided) Push the local repo to your GitHub repository.
-1. Add your own keymap overlay (`keymap.overlay`) file to the repository, and change your keymap.
-1. Update the configuration flags for your user config, to enable/disable any ZMK features you would like to include.
-1. Commit and push the updates to trigger a new GitHub Action run.
+1. Use ZMK CLI to clone the repo to your computer so you can edit the files.
+1. Select a keyboard to use and update the `build.yaml` file so GitHub will build firmware for that keyboard.
+1. Add your own `.keymap` and `.conf` files to customize your keymap and enable/disable other ZMK features.
+1. Commit and push the updates to trigger a new GitHub Action run to build the firmware.
 
 ## Prerequisites
 
-The remainder of this guide assumes the following prerequisites:
+You will need to install a few tools before you can get started.
 
-1. You have an active, working [GitHub](https://github.com/) account.
-1. You have installed and configured the [`git`](https://git-scm.com/) version control tool.
-1. You have locally configured git to access your github account. If using [personal access tokens](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token), please be sure it was created with the "workflow" scope option selected.
+Many instructions in this guide use commands that need to be run in a terminal application. On most operating systems, the program is simply named "Terminal".
+
+On Windows, get [Windows Terminal](https://apps.microsoft.com/detail/9n0dx20hk701) from the Microsoft Store if it isn't already installed.
+
+### Install Git
+
+Open a terminal and run the following command. If Git is already installed, it will print out a version number.
+
+```sh
+git --version
+```
+
+If it prints an error instead, install Git from https://git-scm.com/install/. Close and reopen your terminal and run the `git --version` command again to check if it installed correctly.
 
 :::note
-If you need to, a quick read of [Learn The Basics Of Git In Under 10 Minutes](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/) will help you get started.
+This guide will have you run several more `git` commands later. If you aren't familiar with Git, check out [Learn The Basics Of Git In Under 10 Minutes](https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/) to help you get started.
 :::
 
-## GitHub Repo
+### Set Up a GitHub Account
 
-Before running the setup script, you will first need to create a new GitHub repository to host the config.
+You will need a GitHub account. [Create an account](https://github.com/signup) if you don't have one yet.
 
-1. Navigate to [https://github.com/new](https://github.com/new)
-1. When prompted for the repo name, enter `zmk-config`.
-1. The repository can be public or private
-1. Do **not** check any of the options to initialize the repository with a README or other files.
-1. Click "Create repository"
+Next, you will need to authenticate your local Git installation with GitHub. There are several ways to do this, but the following two are the simplest. Pick whichever seems easiest to you:
 
-## User Config Setup Script
+#### Authenticate with GitHub CLI
 
-To start the setup process, run the following from your command line prompt:
+Install [GitHub CLI](https://cli.github.com/) and run the following command in a terminal. Follow the instructions it gives you, and it will open GitHub in a web browser for you to log in.
 
-<Tabs
-queryString="command"
-defaultValue="curl"
-values={[
-{label: 'Using curl', value: 'curl'},
-{label: 'Using wget', value: 'wget'},
-{label: 'Using PowerShell', value: 'powershell'},
-]}>
-<TabItem value="curl">
+```sh
+gh auth login
+```
 
-```bash
-bash -c "$(curl -fsSL https://zmk.dev/setup.sh)"
+#### Authenticate with a Personal Access Token
+
+Create a [personal access token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) and make sure to create it with the "workflow" scope option selected.
+
+When running `git` commands later in this guide, Git will ask for your username and password. Enter your GitHub username, but **do not enter your password**. Instead, paste your access token where it asks for the password. You won't be able to see the token again after you create it, so keep the page open until you've done this and/or copy it to a secure location. If you lose the token, simply create another one.
+
+### Install uv
+
+[uv](https://github.com/astral-sh/uv) is a Python package manager which can install ZMK CLI and a supported version of Python if necessary. The instructions for installing uv differ depending on your operating system. Select the tab for your OS below.
+
+If installation fails, see [https://docs.astral.sh/uv/getting-started/installation/](https://docs.astral.sh/uv/getting-started/installation/) for more detailed instructions and alternative installation methods.
+
+<details>
+  <summary>Other package managers</summary>
+
+ZMK CLI can also be installed with other Python package managers such as [pipx](https://pipx.pypa.io/stable/). If you have a different package manager you prefer, install the ["zmk" package](https://pypi.org/project/zmk/) and skip to [Config Repo Setup](#config-repo-setup).
+
+</details>
+
+<OsTabs>
+<TabItem value="linux">
+
+Open a terminal and run the following command:
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+If you get an error like "curl: command not found", try using wget:
+
+```sh
+wget -qO- https://astral.sh/uv/install.sh | sh
+```
+
+If that doesn't work either, install [curl](https://curl.se/) and try again. For example, on Ubuntu and other Debian-based Linux distributions, run:
+
+```sh
+sudo apt update
+sudo apt install curl
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+If the install script prints the following, close and reopen your terminal.
+
+```
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
 ```
 
 </TabItem>
-<TabItem value="wget">
+<TabItem value="win">
 
-```bash
-bash -c "$(wget https://zmk.dev/setup.sh -O -)" '' --wget
+Open a terminal and run the following command:
+
+```sh
+winget install --id astral-sh.uv -e --source winget
+```
+
+If this prints the text that is highlighted below, close and reopen your terminal.
+
+```
+// highlight-next-line
+Path environment variable modified; restart your shell to use the new value.
+Command line alias added: "uvx"
+Command line alias added: "uv"
+Command line alias added: "uvm"
+Successfully installed
 ```
 
 </TabItem>
-<TabItem value="powershell">
+<TabItem value="mac">
 
-```powershell
-powershell -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://zmk.dev/setup.ps1'))"
+Open a terminal and run the following command:
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+If the install script prints the following, close and reopen your terminal.
+
+```
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
 ```
 
 </TabItem>
-</Tabs>
+</OsTabs>
 
-### Keyboard Selection
+### Install ZMK CLI
 
-When prompted, enter the number for the corresponding keyboard you would like to target:
+Finally, we'll install ZMK CLI. Open a terminal and run:
 
-```
-Keyboard Selection:
- 1) 2% Milk                   19) Ferris 0.2                37) Nibble
- 2) A. Dux                    20) Fourier Rev. 1            38) nice!60
- 3) BAT43                     21) Helix                     39) Osprette
- 4) BDN9 Rev2                 22) Hummingbird               40) Pancake
- 5) BFO-9000                  23) Iris                      41) Planck Rev6
- 6) Boardsource 3x4 Macropad  24) etc...
-Pick an keyboard:
+```sh
+uv tool install zmk
 ```
 
-:::note[For a keyboard not in the included list:]
-If you are building firmware for a new keyboard that is not included in the built-in
-list of keyboards, you can choose any keyboard from the list that is similar to yours
-(e.g. in terms of unibody/split and [onboard controller](hardware.mdx#onboard) /
-[composite](hardware.mdx#composite)) to generate the repository,
-and edit / add necessary files. You can follow the [new shield guide](development/hardware-integration/new-shield.mdx) if you are adding support for a composite keyboard.
+<details>
+  <summary>I get an "executable already exists" error</summary>
+
+Earlier versions of this guide used pipx. If you get an error like this...
+
+```
+error: Executable already exists: zmk.exe (use `--force` to overwrite)
+```
+
+...run the following commands to remove the pipx version and reinstall it with uv:
+
+```sh
+python3 -m pipx uninstall zmk
+uv tool install zmk
+```
+
+</details>
+
+This will likely print a message like ``warning: `/home/username/.local/bin` is not on your PATH``. To fix that, run:
+
+```sh
+uv tool update-shell
+```
+
+Close and reopen your terminal to apply the changes, then run the following command. It should print a version number if everything installed correctly.
+
+```sh
+zmk --version
+```
+
+## Config Repo Setup
+
+Now that ZMK CLI is installed, you can use it to initialize a repository.
+
+The `zmk init` command walks you through creating a GitHub repository, then clones it to your computer so you can edit it.
+
+<details>
+  <summary>I already cloned my repo</summary>
+
+If you have already created a repo and cloned it to your computer, for example with the old ZMK setup script, you do not need to do this. Instead, run the following command to point ZMK CLI to your repo, replacing `/path/to/zmk-config` with the actual path to the repo folder.
+
+```sh
+zmk config user.home "/path/to/zmk-config"
+```
+
+Then, [skip to the next step](#add-a-keyboard).
+
+</details>
+
+Open a terminal and use the `cd` command to move to a folder where you'd like to place the ZMK files (it will create a new folder in this location), then run `zmk init`. For example:
+
+```sh
+cd ~/Documents
+zmk init
+```
+
+Follow the instructions it gives you. If you already have a ZMK config repo on GitHub, select "Clone an existing repo" and enter its URL when prompted, for example:
+
+```
+Repository URL: https://github.com/myusername/zmk-config
+```
+
+Otherwise, select "Create a new ZMK config repo", and follow the instructions to create a new repo.
+
+After this finishes, you will have a copy of the repo stored on your computer. All `zmk` commands will run on this repo (unless the working directory is inside a different repo). If you ever forget where the repo is located, you can run `zmk cd` to find it.
+
+### Add a Keyboard
+
+To start building firmware for a new keyboard, run the following command:
+
+```sh
+zmk keyboard add
+```
+
+Follow the instructions to select a keyboard (and controller board if necessary). It will add the keyboard to your repo's `build.yaml` file so GitHub knows to build it, and it will create `config/<keyboard>.keymap` and `config/<keyboard>.conf` files for you to edit.
+
+<details>
+  <summary>My keyboard isn't listed</summary>
+
+If ZMK doesn't support your keyboard by default, you have two options:
+
+**Add a Module**
+
+ZMK can be extended with [modules](features/modules.mdx) to add new keyboards. If someone has already created a module for your keyboard, run the following command to add it, replacing `<url>` with the URL of the Git repository for the module:
+
+```sh
+zmk module add <url>
+```
+
+For example, `zmk module add https://github.com/cannonkeys/zmk-cannonkeys-keyboards` would add support for CannonKeys keyboards.
+
+Run `zmk keyboard add` again, and the new keyboards should appear in the list.
+
+**Create It Yourself**
+
+If nobody has created a module for your keyboard yet, or if it is your own custom design, you will need to set it up yourself. Your config repo is already set up as a module, so you can define new keyboards there. See ZMK's [new keyboard shield guide](development/hardware-integration/new-shield.mdx) for more information.
+
+ZMK CLI can also help generate some of the boilerplate for defining a new keyboard:
+
+```sh
+zmk keyboard new
+```
+
+</details>
+
+### Edit Your Keymap and Configuration
+
+See the [customizing ZMK](customization.md) documentation for instructions on editing your keymap and configuring ZMK settings.
+
+As a shortcut to open your keymap in a text editor, you can run the following command, replacing `<keyboard>` with the ID of the keyboard you chose earlier:
+
+```sh
+zmk code <keyboard>
+```
+
+If you have an editor like [VS Code](https://code.visualstudio.com/) that can open a folder, you can also run the command without a keyboard ID to open your config repo directly:
+
+```sh
+zmk code
+```
+
+The first time you run this command, it will try to identify which text editors you have installed and ask you which one to use. If you want to change this later, change the [`core.editor`](zmk-cli.mdx#coreeditor) setting.
+
+### Commit and Push to GitHub
+
+After you've changed your keymap to your liking, you need to commit and push your changes.
+
+Run the following commands to go to the repo directory, mark all your changed files to be added to the commit, create the commit, and push it to GitHub.
+
+```sh
+zmk cd
+git add .
+git commit -m "Initial commit"
+git push
+```
+
+The text after `-m` is the "commit message", which gives a name to the commit. This is your first commit, so we're calling it "initial commit" here, but you can name it whatever you like. When you make more commits later, it's a good idea to use the commit message to write a description of the changes you made.
+
+:::warning
+
+If the `git push` command asks you for a username and password, enter your GitHub username, but **do not enter your password**. Instead, paste your access token where it asks for the password. (Go back to the [GitHub account setup instructions](#set-up-a-github-account) if you need to create a token.)
+
 :::
 
-### MCU Board Selection
-
-If the keyboard selected uses an onboard controller you will skip this step.
-When prompted, enter the number for the corresponding MCU board you would like to target:
-
-```
-MCU Board Selection:
-1) BlueMicro840 v1           5) nRF52840 M.2 Module      9) QMK Proton-C
-2) Mikoto 5.20               6) nRFMicro 1.1 (flipped)  10) Seeed Studio XIAO SAMD21
-3) nice!nano v1              7) nRFMicro 1.1/1.2        11) Seeed Studio XIAO nRF52840
-4) nice!nano v2              8) nRFMicro 1.3/1.4        12) Quit
-Pick an MCU board:
-```
-
-### Keymap Customization
-
-At the next prompt, you have an opportunity to decide if you want the stock keymap file copied in
-for further customization:
-
-```
-Copy in the stock keymap for customization? [Yn]:
-```
-
-Hit `Enter` or type `yes`/`y` to accept this. If you want to keep the stock keymap, or write a keymap
-from scratch, type in `no`/`n`.
-
-### GitHub Details
-
-In order to have your new configuration automatically pushed, and then built using GitHub Actions, enter
-some information about your particular GitHub info:
-
-```
-GitHub Username (leave empty to skip GitHub repo creation): petejohanson
-GitHub Repo Name: zmk-config
-GitHub Repo: https://github.com/petejohanson/zmk-config.git
-```
-
-Only the GitHub username is required; if you are happy with the defaults offered in the square brackets, you can simply hit `Enter`.
-
-:::note
-If you are using SSH keys for git push, change GitHub Repo field to the SSH scheme, e.g. `git@github.com:petejohanson/zmk-config.git`.
-:::
-
-### Confirming Selections
-
-The setup script will confirm all of your selections one last time, before performing the setup:
-
-```
-Preparing a user config for:
-* MCU Board: nice_nano
-* Shield: kyria
-* GitHub Repo To Push (please create this in GH first!): https://github.com/petejohanson/zmk-config.git
-
-Continue? [Yn]:
-```
-
-After hitting `Enter` or typing `y`, the script will create an initial config in a directory named after the repo name,
-update the GitHub Action YAML file, commit the initial version, and then push to your repo.
-
-:::info
-
-If you used the default GitHub repo URL using the `https://` scheme, you may be prompted for your username + password in order to
-push the initial commit.
-
-:::
-
-## Installing the Firmware
+## Install the Firmware
 
 ### Download the Archive
 
-Once the setup script is complete and the new user config repository has been pushed, GitHub will automatically run the action
-to build your keyboard firmware files. You can view the actions by clicking on the "Actions" tab on your GitHub repository.
+Once you push a commit, GitHub will automatically run the action to build your keyboard firmware files. Run the following command to open the GitHub Actions page in your browser:
+
+```sh
+zmk download
+```
+
+Or, you can manually open your GitHub repository in your browser and click the "Actions" tab at the top.
 
 ![](./assets/user-setup/github-actions-link.png)
 
-Once you have loaded the Actions tab, select the top build from the list. Once you load it, the right side panel will include
+Once you have loaded the Actions tab, select the top build from the list. If the build was successful, the right side panel will include
 a link to download the `firmware` upload:
 
 ![](./assets/user-setup/firmware-archive.png)
 
-Once downloaded, extract the zip and you can verify it should contain one or more `uf2` files, which will be copied to
-your keyboard.
+:::info[Fixing build errors]
 
-### Flashing UF2 Files
+If you see a red X instead of a link to download the firmware, the build failed, likely due to an error in your repo. See the [troubleshooting page](./troubleshooting/building-issues.md) for help fixing the error. After making changes, [commit and push](#commit-and-push-to-github) again and GitHub will start a new build.
 
-To flash the firmware, first put your board into bootloader mode by double clicking the reset button (either on the MCU board itself,
-or the one that is part of your keyboard). The controller should appear in your OS as a new USB storage device.
+:::
+
+Once downloaded, extract the zip and you can verify it should contain one or more `.uf2` or `.hex` files, which contain the firmware you need to write to your keyboard.
+
+### Flash UF2 Files
+
+If your firmware contains a `.uf2` file, then you flash the new firmware by putting the keyboard into bootloader mode and copying the file directly to it in file explorer.
+
+First, put your keyboard into bootloader mode by double clicking the reset button (either on the MCU board itself, or the one that is part of your keyboard). The controller should appear in your OS as a new USB storage device.
 
 Once this happens, copy the correct UF2 file (e.g. left or right if working on a split), and paste it onto the root of that USB mass
 storage device. Once the flash is complete, the controller should unmount the USB storage, automatically restart and load your newly
@@ -218,6 +376,12 @@ Please refer to [split keyboards documentation](features/split-keyboards.md) for
 
 :::
 
+### Flash Hex Files
+
+If your firmware contains a `.hex` file, then you will use DFU to flash the firmware. [QMK Toolbox](https://qmk.fm/toolbox) is an easy-to-use tool with support for DFU flashing.
+
+Open QMK Toolbox, click the "Open" button, and select the correct `.hex` file (e.g. left or right if working on a split). Consult the documentation for your keyboard to figure out how to enter bootloader or DFU mode (often this is done by pressing a pair of buttons on the keyboard or by holding a specific key as you plug in the USB cable), and once QMK Toolbox detects the keyboard, click "Flash" to flash the firmware.
+
 ## Wirelessly Connecting Your Keyboard
 
 ZMK will automatically advertise itself as connectable if it is not currently connected to a device. You should be able to see your keyboard from the bluetooth scanning view of your computer or phone / tablet. It is reported by some users that the connections with Android / iOS devices are generally smoother than with laptops, so if you have trouble connecting, you could try to connect from your phone or tablet first to eliminate any potential hardware issues with bluetooth receivers.
@@ -232,7 +396,7 @@ Please refer to [the pairing section in the split keyboards documentation](featu
 :::note
 
 If you have issues connecting the halves, make sure that both sides are getting powered properly through USB or batteries, then follow the
-[recommended troubleshooting procedure](troubleshooting/connection-issues.mdx#split-keyboard-halves-unable-to-pair). This is typically necessary if you
+[recommended troubleshooting procedure](troubleshooting/connection-issues.mdx#split-keyboard-parts-unable-to-pair). This is typically necessary if you
 swapped firmware sides between controllers, like flashing left side firmware to the same controller after flashing the right, or vice versa.
 
 :::

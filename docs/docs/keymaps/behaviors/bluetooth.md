@@ -48,7 +48,7 @@ Here is a table describing the command for each define:
 | `BT_DISC`    | Disconnect from the 0-indexed profile by number, if it's currently connected and inactive; must include a number as an argument in the keymap to work correctly, e.g. `BT_DISC 0`. |
 
 :::note[Selected profile persistence]
-The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be saved to flash storage and hence persist across restarts and firmware flashes.
+The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be [saved to flash storage](../../config/settings.md) and hence persist across restarts and firmware flashes.
 However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
 

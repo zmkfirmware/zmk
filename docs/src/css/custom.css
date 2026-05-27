@@ -7,16 +7,11 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #026fc5;
-  --ifm-color-primary-dark: #0264b1;
-  --ifm-color-primary-darker: #025ea7;
-  --ifm-color-primary-darkest: #014e8a;
-  --ifm-color-primary-light: #027ad9;
-  --ifm-color-primary-lighter: #0280e3;
-  --ifm-color-primary-lightest: #0690fc;
   --ifm-code-font-size: 95%;
 
   --docusaurus-highlighted-code-line-bg: rgb(0 0 0 / 8%);
+  --docusaurus-highlighted-code-line-border-width: 5px;
+  --docusaurus-highlighted-code-line-border-color: var(--ifm-color-primary);
 }
 
 [data-theme="dark"] {
@@ -38,10 +33,18 @@
   background-color: var(--ifm-navbar-link-hover-color);
 }
 
-.docusaurus-highlight-code-line {
-  display: block;
-  margin: 0 calc(-1 * var(--ifm-pre-padding));
-  padding: 0 var(--ifm-pre-padding);
+.theme-code-block .theme-code-block-highlighted-line {
+  /* Line numbers have a solid color background which would cover the highlighted line */
+  --ifm-pre-background: transparent;
+
+  /* Add a colored block to the left of any highlighted lines */
+  border-left: var(--docusaurus-highlighted-code-line-border-width) solid
+    var(--docusaurus-highlighted-code-line-border-color);
+
+  padding-left: calc(
+    var(--ifm-pre-padding) -
+      var(--docusaurus-highlighted-code-line-border-width)
+  );
 }
 
 .video-container {

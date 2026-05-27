@@ -87,7 +87,7 @@ Similar to how [bluetooth profiles](bluetooth.md) are managed between the keyboa
 
 In practice, this means that your split keyboard parts will automatically pair and work the first time they are all on at the same time.
 However, if this process somehow went wrong or you used controllers in a different split keyboard configuration before, you will need to explicitly clear the stored bond information so that the parts can pair properly.
-For this, please follow [the specified procedure](../troubleshooting/connection-issues.mdx#split-keyboard-halves-unable-to-pair) in the troubleshooting section.
+For this, please follow [the specified procedure](../troubleshooting/connection-issues.mdx#split-keyboard-parts-unable-to-pair) in the troubleshooting section.
 
 :::warning
 If the central keyboard part is either advertising for a pairing or waiting for disconnected peripherals, it will consume more power and drain batteries faster.
