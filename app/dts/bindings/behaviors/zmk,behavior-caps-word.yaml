@@ -11,5 +11,18 @@ properties:
   continue-list:
     type: array
     required: true
+    description: |
+      List of key codes which should continue the caps word behavior but not have
+      modifiers applied when caps word is active.
+      Alphanumeric keys are included automatically unless no-default-keys is set.
+  shift-list:
+    type: array
+    description: |
+      List of key codes which should have modifiers applied when caps word is active.
+      Alpha keys are included automatically unless no-default-keys is set.
   mods:
     type: int
+    description: Bitmask of modifiers to apply. Default is MOD_LSFT.
+  no-default-keys:
+    type: boolean
+    description: Do not automatically include any keys in continue-list or shift-list.
