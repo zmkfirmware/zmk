@@ -85,7 +85,7 @@
             , <&key_physical_attrs 100 100  882  198  -1000  932  248>
             , <&key_physical_attrs 100 100  984  198  -1000 1034  248>
             , <&key_physical_attrs 100 100  328  370   1500  378  420>
-            , <&key_physical_attrs 200 100  492  385  18000  592  435>
+            , <&key_physical_attrs 200 100  442  385       0     0     0>
             , <&key_physical_attrs 100 100  655  370  -1500  705  420>
         ;
     };
