@@ -5,3 +5,5 @@ board:
       qualifier: nrf52840
     - name: zmk_debug
       qualifier: nrf52840
+    - name: zmk_debug_extra
+      qualifier: nrf52840
