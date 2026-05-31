@@ -1,0 +1,59 @@
+{
+  "folders": [
+    {
+      "path": "app",
+    },
+    {
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "python.analysis.include": ["app/scripts", "zephyr/scripts"],
+    "[c]": {
+      "editor.formatOnSave": true,
+    },
+    "[javascript][javascriptreact][typescript][typescriptreact]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+    "[python]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "ms-python.black-formatter",
+    },
+    "[css][json][jsonc][html][markdown][yaml]": {
+      "editor.formatOnSave": true,
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+    "devicetree.defaultIncludePaths": [
+      "./modules/hal/stm32/dts",
+      "./modules/hal/atmel/include",
+      "./modules/hal/gigadevice/include",
+      "./modules/hal/nuvoton/dts",
+      "./app/module/include",
+      "./app/module/dts",
+      "./app/include",
+      "./app/dts/common",
+      "./app/dts",
+      "./zephyr/include",
+      "./zephyr/include/zephyr",
+      "./zephyr/dts/common",
+      "./zephyr/dts/x86",
+      "./zephyr/dts/xtensa",
+      "./zephyr/dts/sparc",
+      "./zephyr/dts/riscv",
+      "./zephyr/dts/posix",
+      "./zephyr/dts/nios2",
+      "./zephyr/dts/arm64",
+      "./zephyr/dts/arm",
+      "./zephyr/dts/arc",
+      "./zephyr/dts",
+    ],
+    "devicetree.cwd": "${workspaceFolder:zmk}",
+    "devicetree.defaultBindingType": "Zephyr",
+    "devicetree.defaultZephyrBindings": [
+      "./app/module/dts/bindings",
+      "./app/dts/bindings",
+      "./zephyr/dts/bindings",
+    ],
+  },
+}
