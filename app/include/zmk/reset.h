@@ -15,11 +15,3 @@
  * of reboot. Otherwise, A ZMK_RESET_* value indicating how to reboot.
  */
 void zmk_reset(int type);
-
-/**
- * Clear all persistent settings.
- *
- * This should typically be followed by a call to zmk_reset() to ensure that
- * all subsystems are properly reset.
- */
-void zmk_reset_settings(void);

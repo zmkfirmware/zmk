@@ -14,6 +14,7 @@ struct zmk_boot_magic_combo_config {
     const uint16_t *combo_positions;
     uint8_t combo_positions_len;
     bool jump_to_bootloader;
+    bool unpair_ble;
     bool reset_settings;
     bool *state;
 };

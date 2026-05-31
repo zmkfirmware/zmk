@@ -18,6 +18,9 @@ properties:
   jump-to-bootloader:
     type: boolean
     description: Reboots into the bootloader.
+  unpair-ble:
+    type: boolean
+    description: Unpairs all BLE bonds and reboots.
   reset-settings:
     type: boolean
-    description: Clears settings and reboots.
+    description: Erases all persisted settings (including BLE bonds) and reboots.

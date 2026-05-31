@@ -54,9 +54,31 @@ If a boot magic combo has a `jump-to-bootloader` property, it will reboot to the
 };
 ```
 
+### Unpair BLE
+
+If a boot magic combo has an `unpair-ble` property, it will clear all BLE bonds and then reboot:
+
+```c
+/ {
+    ...
+    unpair_ble_key: unpair_ble_key {
+        compatible = "zmk,boot-magic-combo";
+        ...
+        unpair-ble;
+    };
+    ...
+};
+```
+
+:::info
+
+This clears all BLE bonds. You will need to re-pair the keyboard with any hosts after using this.
+
+:::
+
 ### Reset Settings
 
-If a boot magic combo has a `reset-settings` property, it will reset persistent settings and then reboot:
+If a boot magic combo has a `reset-settings` property, it will erase all persisted settings and then reboot:
 
 ```c
 / {
@@ -70,15 +92,9 @@ If a boot magic combo has a `reset-settings` property, it will reset persistent 
 };
 ```
 
-:::info
-
-This clears all BLE bonds. You will need to re-pair the keyboard with any hosts after using this.
-
-:::
-
 :::caution
 
-Currently this action _only_ clears BLE bonds. It will be updated to reset all settings in the future.
+This erases the entire settings storage, returning the keyboard to its default configuration. This includes BLE bonds, so you will need to re-pair the keyboard with any hosts after using this.
 
 :::
 
