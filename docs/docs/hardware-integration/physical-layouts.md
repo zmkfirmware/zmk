@@ -62,11 +62,7 @@ A key description has the shape `<&key_physical_attrs w h x y r rx ry>` with the
 
 You can specify negative values in devicetree using parentheses around it, e.g. `(-3000)` for a 30 degree counterclockwise rotation.
 
-:::tip
-
-We recommend the use of [this tool](https://zmk-physical-layout-converter.streamlit.app/) for writing a physical layout or converting one from a QMK JSON definition. If your keyboard already has a physical layout defined for the use with KLE, we recommend using [this other tool](https://nickcoutsos.github.io/keymap-layout-tools/) first to convert your existing layout into QMK JSON. The second tool can also import the position data from KiCAD, if said program was used to design the keyboard.
-
-:::
+We recommend the use of <https://zmk-physical-layout-converter.streamlit.app> for writing a physical layout or converting one from a QMK JSON definition. If your keyboard already has a physical layout defined for the use with KLE, we recommend using <https://nickcoutsos.github.io/keymap-layout-tools/> first to convert your existing layout into QMK JSON. The second tool can also import the position data from KiCAD, if said program was used to design the keyboard.
 
 ### Physical Layout with Keys Example
 
@@ -207,11 +203,7 @@ The position map should be marked as `complete` if all desired binding transfers
 
 See also the [configuration section on position maps](../config/layout.md#physical-layout-position-map).
 
-:::tip
-
-We recommend the use of [this tool](https://zmk-layout-helper.netlify.app/), distinct from the previous two mentioned, for the purposes of writing a position map.
-
-:::
+We recommend the use of <https://zmk-layout-helper.netlify.app>, distinct from the previous two mentioned, for the purposes of writing a position map.
 
 #### Writing a position map
 

@@ -9,9 +9,7 @@ Shift registers are the recommended method of adding additional GPIO pins to MCU
 This page assumes that you are using a SIPO shift register with the part number 74HC595. Other shift registers can work as well but this is the most commonly used one.
 :::
 
-:::tip
 To understand how shift registers work, we recommend reading through ["How does the 74HC595 Shift Register work?"](https://lastminuteengineers.com/74hc595-shift-register-arduino-tutorial/#how-does-the-74hc595-shift-register-work).
-:::
 
 ## Design Guidelines
 

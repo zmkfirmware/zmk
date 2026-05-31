@@ -8,15 +8,11 @@ import TabItem from "@theme/TabItem";
 import InterconnectTabs from "@site/src/components/interconnect-tabs";
 import Metadata from "@site/src/data/hardware-metadata.json";
 
-:::info
 This page exists to provide a guide to [Pin Control](https://docs.zephyrproject.org/4.1.0/hardware/pinctrl/index.html#pin-control) for ZMK users and designers. Refer to [Zephyr's page on Pin Control](https://docs.zephyrproject.org/4.1.0/hardware/pinctrl/index.html#pin-control) for elaboration and more details on any of the points raised here.
-:::
 
 A basic keyboard design as introduced in the [new shield guide](./new-shield.mdx) only uses its pins for the keyboard matrix. Many keyboard designs make use of advanced components or functionality, such as displays or shift registers. This results in the keyboard making use of communication protocols such as (but not limited to) SPI, I2C, or UART. Configuring pins for the usage of advanced functionality such as drivers for the previously named protocols is referred to as "Pin Control".
 
-:::warning
 The details of pin control can vary from vendor to vendor. An attempt was made to be as general as possible, but it isn't possible to cover all possible cases. The approaches for the nRF52840 and RP2040 MCUs/SoCs are documented in their entirety below. For other MCUs/SoCs, please refer to the [Zephyr documentation](https://docs.zephyrproject.org/4.1.0/index.html) and the examples and other files found in-tree of [ZMK](https://github.com/zmkfirmware/zmk/tree/main/app/boards) and [ZMK's fork of Zephyr](https://github.com/zmkfirmware/zephyr).
-:::
 
 ## Boards, Shields, and Modules
 
@@ -33,10 +29,8 @@ Pin control is always defined for a _board_, never for a shield:
   ```
   Note that you will need to define a separate overlay _for each_ of the boards to be used with the shield.
 
-:::info
 Assume that the shield that you are using is found in-tree of ZMK or within an external module, and _does not_ contain the overlay for the board that you wish to use.
 If this is the case, then you should fork the source repository and add the overlay to the fork. Use said fork to build your firmware, and potentially submit a PR to upstream.
-:::
 
 ## Predefined Nodes
 

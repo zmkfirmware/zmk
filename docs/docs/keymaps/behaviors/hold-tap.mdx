@@ -372,11 +372,9 @@ Including `hold-trigger-key-positions` in your hold-tap definition turns on the 
 
 In all other situations, positional hold-tap will not modify the behavior of your hold-tap. Positional hold-tap is useful when used with home-row modifiers: for example, if you have a home-row modifier key in the left hand, by including only key positions from the right hand in `hold-trigger-key-positions`, you will only get hold behaviors during cross-hand key combinations unless you exceed `tapping-term-ms` when using "balanced" or "hold-preferred" flavors.
 
-For home-row mods, it is recommended to use this property with `hold-trigger-on-release` so that modifiers on the same hand can be combined.
-
-:::info
 `hold-trigger-key-positions` is an array of key position indexes. Key positions are numbered sequentially according to your keymap, starting with 0. So if the first key in your keymap is Q, this key is in position 0. The next key (probably W) will be in position 1, et cetera.
-:::
+
+For home-row mods, it is recommended to use this property with `hold-trigger-on-release` so that modifiers on the same hand can be combined.
 
 <details>
     <summary>The following example uses a hold-tap behavior definition configured with the `hold-preferred` flavor, and with positional hold-tap enabled:</summary>
