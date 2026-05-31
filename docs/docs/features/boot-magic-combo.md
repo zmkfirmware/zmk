@@ -132,9 +132,11 @@ For example, to make a key that resets settings and then reboots to the bootload
 };
 ```
 
+The `reset-settings` action clears all BLE bonds as they are part of the persisted settings, so there is no point combining `reset-settings` with `unpair-ble`. Furthermore, you cannot combine `unlock-studio` with any other actions because all the others reboot the keyboard, which locks ZMK studio.
+
 :::info
 
-You may define multiple `zmk,boot-magic-combo` nodes for different keys, but note that if you hold multiple keys at boot, they will be run in an arbitrary order. If one of them reboots the keyboard, the rest of the keys will not run.
+You may define multiple `zmk,boot-magic-combo` nodes for different key combos, but note that if you hold multiple combos at boot, they will be run in an arbitrary order. If one of them reboots the keyboard, the rest of the combos' actions will not run.
 
 :::
 
