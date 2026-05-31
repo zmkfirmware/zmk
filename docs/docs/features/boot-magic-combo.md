@@ -98,6 +98,22 @@ This erases the entire settings storage, returning the keyboard to its default c
 
 :::
 
+### Unlock ZMK Studio
+
+If a boot magic combo has an `unlock-studio` property and ZMK studio is enabled, holding the combo during boot will unlock [ZMK Studio](studio.md). Unlike the other actions, this does not reboot the keyboard:
+
+```c
+/ {
+    ...
+    unlock_studio_key: unlock_studio_key {
+        compatible = "zmk,boot-magic-combo";
+        ...
+        unlock-studio;
+    };
+    ...
+};
+```
+
 ## Multiple Actions
 
 If you want a single boot magic combo to perform multiple actions, simply add properties for each action to the same `zmk,boot-magic-combo` node. The order of the properties does not matter.
@@ -165,6 +181,8 @@ For split keyboards, you can define multiple boot magic combos and then only cho
     boot-magic-combos = <&bootloader_key_right>;
 };
 ```
+
+Alternatively, you can skip setting up boot magic keys in the left and right overlays, instead enabling both boot magic keys at once with a `boot-magic-combos = <&bootloader_key_left, &bootloader_key_right>;`. If both are enabled at the same time and both halves are powered, there is no guarantee both will reset because the keyboard may reset itself before communicating with the other half. Therefore, configuring the halves separately is preferred.
 
 ## Key Positions and Physical Layouts
 

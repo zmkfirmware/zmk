@@ -29,6 +29,10 @@
 #include <zmk/ble.h>
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE) */
 
+#if IS_ENABLED(CONFIG_ZMK_STUDIO)
+#include <zmk/studio/core.h>
+#endif /* IS_ENABLED(CONFIG_ZMK_STUDIO) */
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
@@ -44,6 +48,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
         .jump_to_bootloader = DT_INST_PROP_OR(n, jump_to_bootloader, false),                       \
         .unpair_ble = DT_INST_PROP_OR(n, unpair_ble, false),                                       \
         .reset_settings = DT_INST_PROP_OR(n, reset_settings, false),                               \
+        .unlock_studio = DT_INST_PROP_OR(n, unlock_studio, false),                                 \
         .state = boot_key_state_##n,                                                               \
     };
 
@@ -60,15 +65,26 @@ SYS_INIT(timeout_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
 
 static void trigger_boot_key(const struct zmk_boot_magic_combo_config *config) {
     if (config->unpair_ble) {
-        LOG_INF("Boot key: unpairing BLE");
 #if IS_ENABLED(CONFIG_ZMK_BLE)
+        LOG_INF("Boot key: unpairing BLE");
         zmk_ble_unpair_all();
+#else
+        LOG_INF("Boot key: BLE unpair triggered but BLE is not enabled");
 #endif
     }
 
     if (config->reset_settings) {
         LOG_INF("Boot key: erasing settings");
         zmk_settings_erase();
+    }
+
+    if (config->unlock_studio) {
+#if IS_ENABLED(CONFIG_ZMK_STUDIO)
+        LOG_INF("Boot key: unlocking ZMK Studio");
+        zmk_studio_core_unlock();
+#else
+        LOG_INF("Boot key: ZMK Studio unlock triggered but Studio is not enabled");
+#endif
     }
 
     if (config->jump_to_bootloader) {

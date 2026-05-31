@@ -16,6 +16,7 @@ struct zmk_boot_magic_combo_config {
     bool jump_to_bootloader;
     bool unpair_ble;
     bool reset_settings;
+    bool unlock_studio;
     bool *state;
 };
 
