@@ -116,7 +116,12 @@ static int event_listener(const zmk_event_t *eh) {
     // If hardware doesn't support reset causes (ENOSYS), skip the check.
     uint32_t cause;
     int result = hwinfo_get_reset_cause(&cause);
-    if (result != -ENOSYS && (result < 0 || (result & ALLOWED_RESET_CAUSE) == 0)) {
+    // On nRF52840, cause appears to be 0 on first boot, then RESET_PIN after either flashing or
+    // using the reset pin on P0.18. Therefore, check that hwinfo is supported, the call didn't
+    // fail, and if there are reset reasons, that one of them is in the allowed causes.
+    if (result != -ENOSYS && (result < 0 || (cause != 0 && (cause & ALLOWED_RESET_CAUSE) == 0))) {
+        LOG_INF("Skipping boot magic combo logic due to incorrect reset status %d and cause %d",
+                result, cause);
         return ZMK_EV_EVENT_BUBBLE;
     }
 
