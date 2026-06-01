@@ -18,12 +18,12 @@ In your configuration file you will need to add the following lines so that the 
 These should be commented by default for encoders that are optional/can be swapped with switches, but can be uncommented if encoders are part of the default design.
 
 :::note
-If building locally for split boards, you may need to add these lines to the specific half's configuration file as well as the combined configuration file, see the [configuration overview](../../config/index.md) for details.
+If building locally for split boards, you may need to add these lines to the specific half's configuration file as well as the combined configuration file, see the [configuration overview](../config/index.md) for details.
 :::
 
 ## Devicetree File
 
-In your devicetree file you will need to define each sensor with their properties. For split keyboards, do this in the .dtsi file that is shared by all parts; otherwise do it in the .dts (for boards) or .overlay (shields) file, see [configuration overview](../../config/index.md#devicetree-files) for details. Add the following lines:
+In your devicetree file you will need to define each sensor with their properties. For split keyboards, do this in the .dtsi file that is shared by all parts; otherwise do it in the .dts (for boards) or .overlay (shields) file, see [configuration overview](../config/index.md#devicetree-files) for details. Add the following lines:
 
 ```dts
     left_encoder: encoder_left {
@@ -53,7 +53,7 @@ Once you have defined the encoder sensors, you will have to add them to the list
 
 In this example, a `left_encoder` and `right_encoder` are both added. Additional encoders can be added with spaces separating each, and the order they are added here determines the order in which you define their behavior in your keymap.
 
-In addition, a default value for the number of times the sensors trigger the bound behavior per full rotation is set via the `triggers-per-rotation` property. See [Encoders Config](../../config/encoders.md#devicetree) for more details.
+In addition, a default value for the number of times the sensors trigger the bound behavior per full rotation is set via the `triggers-per-rotation` property. See [Encoders Config](../config/encoders.md#devicetree) for more details.
 
 Add the following lines to the .dts/.overlay file that contains the encoder to enable it:
 
@@ -73,4 +73,4 @@ Add the following line to your keymap file to add default encoder behavior bindi
 sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
 ```
 
-Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](../../features/encoders.md) and [Keymaps](../../keymaps/index.mdx) documentation pages for more details.
+Add additional bindings as necessary to match the default number of encoders on your board. See the [Encoders](../features/encoders.md) and [Keymaps](../keymaps/index.mdx) documentation pages for more details.

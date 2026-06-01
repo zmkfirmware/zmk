@@ -8,7 +8,7 @@ ZMK supports setups where a keyboard is split into two or more physical parts (a
 ## Central and Peripheral Roles
 
 In split keyboards running ZMK, one part is assigned the "central" role which receives key position and sensor events from the other parts that are called "peripherals."
-The central runs the necessary keymap logic to convert received events into HID events such as keycodes and then communicates with the connected host devices, e.g. over USB or bluetooth. If the keyboard makes use of a [dongle](../development/hardware-integration/dongle.mdx), then the dongle takes on the role of central.
+The central runs the necessary keymap logic to convert received events into HID events such as keycodes and then communicates with the connected host devices, e.g. over USB or bluetooth. If the keyboard makes use of a [dongle](../hardware-integration/dongle.mdx), then the dongle takes on the role of central.
 
 The internal keyboard state (like active layers) is handled exclusively by the central.
 Peripherals _cannot_ communicate with host devices on their own, since they can only communicate with the central.
@@ -23,7 +23,7 @@ You can refer to the [power profiler](/power-profiler) to see battery life estim
 
 ### Configuration
 
-The [new shield guide](../development/hardware-integration/new-shield.mdx) details how to define a split keyboard shield with two parts, enabling the split feature and setting up the necessary roles for each part.
+The [new shield guide](../hardware-integration/new-shield.mdx) details how to define a split keyboard shield with two parts, enabling the split feature and setting up the necessary roles for each part.
 
 Also see the reference section on [split keyboards configuration](../config/split.md) where the relevant symbols include `CONFIG_ZMK_SPLIT` that enables the feature, `CONFIG_ZMK_SPLIT_ROLE_CENTRAL` which sets the central role and `CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS` that sets the number of peripherals.
 
@@ -44,7 +44,7 @@ Many popular cables, in particular, TRRS/TRS cables, can cause irreparable damag
 
 ### Bluetooth
 
-[Bluetooth](./bluetooth.md) is the most well tested and flexible transport available in ZMK. Using Bluetooth, a central can connect to multiple peripherals, enabling the use of a [dongle](../development/hardware-integration/dongle.mdx) to improve battery life, or allowing for multi-part split keyboards.
+[Bluetooth](./bluetooth.md) is the most well tested and flexible transport available in ZMK. Using Bluetooth, a central can connect to multiple peripherals, enabling the use of a [dongle](../hardware-integration/dongle.mdx) to improve battery life, or allowing for multi-part split keyboards.
 
 This transport will be enabled for designs that set `CONFIG_ZMK_SPLIT=y` and have `CONFIG_ZMK_BLE=y` set by a supported MCU/controller.
 

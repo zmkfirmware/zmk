@@ -6,8 +6,8 @@ toc_max_heading_level: 4
 A physical layout is a devicetree entity that aggregates all details about a certain possible keyboard layout.
 It contains:
 
-- A [keyboard scan (kscan) driver](../../config/kscan.md)
-- A [matrix transform](../../config/layout.md#matrix-transform)
+- A [keyboard scan (kscan) driver](../config/kscan.md)
+- A [matrix transform](../config/layout.md#matrix-transform)
 - (Optional) [Physical key positions](#optional-keys-property)
 
 By convention, physical layouts and any [position maps](#position-map) are defined in a separate file called `<your keyboard>-layouts.dtsi`.
@@ -35,11 +35,11 @@ Every physical layout needs a matrix transform, and optionally can also have a k
 };
 ```
 
-The `kscan` property only needs to be assigned if some of your physical layouts use different kscans. Otherwise, it can be omitted and the `kscan` can be assigned in the [`chosen` node](./new-shield.mdx#chosen-node) instead. See the [configuration section on physical layouts](../../config/layout.md#physical-layout) for reference.
+The `kscan` property only needs to be assigned if some of your physical layouts use different kscans. Otherwise, it can be omitted and the `kscan` can be assigned in the [`chosen` node](./new-shield.mdx#chosen-node) instead. See the [configuration section on physical layouts](../config/layout.md#physical-layout) for reference.
 
 ## (Optional) Keys Property
 
-The `keys` property is required for [ZMK Studio](../../features/studio.md) support. It is used to describe the physical attributes of each key position present in that layout.
+The `keys` property is required for [ZMK Studio](../features/studio.md) support. It is used to describe the physical attributes of each key position present in that layout.
 
 To pull in the necessary definition for creating physical layouts with the `keys` property, a new include should be added to the top of the devicetree file:
 
@@ -171,7 +171,7 @@ If necessary, you can also define multiple kscan instances.
 
 ### Position Map
 
-When switching between layouts using [ZMK Studio](../../features/studio.md), an attempt is made to automatically infer bindings for the keys in the new layout from the old layout. Keys with the same physical key properties are given the same binding. This approach has some limitations, so for more accurate transference of bindings a position map is used.
+When switching between layouts using [ZMK Studio](../features/studio.md), an attempt is made to automatically infer bindings for the keys in the new layout from the old layout. Keys with the same physical key properties are given the same binding. This approach has some limitations, so for more accurate transference of bindings a position map is used.
 
 :::warning
 
@@ -203,9 +203,9 @@ A child node is defined for every layout the keyboard can have. The `positions` 
 
 When switching from one layout to another, say from layout 1 to layout 2, the _orderings_ found in the `positions` arrays are used. The first key in the `positions` array of layout 2 is given the binding assigned to the first key in the `positions` array of layout 1, the second key in the `positions` array of layout 2 is given the binding assigned to the second key in the `positions` array of layout 1, and so on.
 
-The position map should be marked as `complete` if all desired binding transfers are defined within it. Otherwise, [ZMK Studio](../../features/studio.md) will continue to automatically determine assignments for keys not listed in the position map. See [this example non-complete position map](#example-non-complete-position-map) for why this could be useful.
+The position map should be marked as `complete` if all desired binding transfers are defined within it. Otherwise, [ZMK Studio](../features/studio.md) will continue to automatically determine assignments for keys not listed in the position map. See [this example non-complete position map](#example-non-complete-position-map) for why this could be useful.
 
-See also the [configuration section on position maps](../../config/layout.md#physical-layout-position-map).
+See also the [configuration section on position maps](../config/layout.md#physical-layout-position-map).
 
 :::tip
 
@@ -257,7 +257,7 @@ Next write the child nodes for every other layout with respect to the reference.
 
 Consider the following macropad/numpad with two physical layouts:
 
-![A 4x5 numpad/macropad](../../assets/hardware-integration/numpad.svg)
+![A 4x5 numpad/macropad](../assets/hardware-integration/numpad.svg)
 
 Let us first consider each side individually. The "reference" position map of the left side would look like this:
 

@@ -142,59 +142,59 @@ module.exports = {
       ],
     },
     {
-      Development: [
+      type: "category",
+      label: "Hardware Integration",
+      link: {
+        type: "doc",
+        id: "hardware-integration/index",
+      },
+      collapsed: true,
+      items: [
+        "hardware-integration/new-board",
+        "hardware-integration/new-shield",
+        "hardware-integration/physical-layouts",
+        "hardware-integration/hardware-metadata-files",
+        "hardware-integration/pinctrl",
+        "hardware-integration/dongle",
+        "hardware-integration/shift-registers",
+        "hardware-integration/encoders",
+        "hardware-integration/soft-off-setup",
+        "hardware-integration/pointing",
+        "hardware-integration/battery",
         {
           type: "category",
-          label: "Hardware Integration",
+          label: "Bootloader",
           link: {
             type: "doc",
-            id: "development/hardware-integration/index",
+            id: "hardware-integration/bootloader/index",
           },
           collapsed: true,
           items: [
-            "development/hardware-integration/new-shield",
-            "development/hardware-integration/physical-layouts",
-            "development/hardware-integration/hardware-metadata-files",
-            "development/hardware-integration/pinctrl",
-            "development/hardware-integration/dongle",
-            "development/hardware-integration/shift-registers",
-            "development/hardware-integration/encoders",
-            "development/hardware-integration/soft-off-setup",
-            "development/hardware-integration/pointing",
-            "development/hardware-integration/new-board",
-            "development/hardware-integration/battery",
-            {
-              type: "category",
-              label: "Bootloader",
-              link: {
-                type: "doc",
-                id: "development/hardware-integration/bootloader/index",
-              },
-              collapsed: true,
-              items: [
-                "development/hardware-integration/bootloader/adafruit-nrf52",
-                "development/hardware-integration/bootloader/tinyuf2",
-                "development/hardware-integration/bootloader/samd21-uf2",
-                "development/hardware-integration/bootloader/rp2",
-                "development/hardware-integration/bootloader/stm32",
-              ],
-            },
-            {
-              type: "category",
-              label: "Lighting",
-              link: {
-                type: "doc",
-                id: "development/hardware-integration/lighting/index",
-              },
-              collapsed: true,
-              items: [
-                "development/hardware-integration/lighting/underglow",
-                "development/hardware-integration/lighting/backlight",
-                "development/hardware-integration/lighting/led-indicators",
-              ],
-            },
+            "hardware-integration/bootloader/adafruit-nrf52",
+            "hardware-integration/bootloader/tinyuf2",
+            "hardware-integration/bootloader/samd21-uf2",
+            "hardware-integration/bootloader/rp2",
+            "hardware-integration/bootloader/stm32",
           ],
         },
+        {
+          type: "category",
+          label: "Lighting",
+          link: {
+            type: "doc",
+            id: "hardware-integration/lighting/index",
+          },
+          collapsed: true,
+          items: [
+            "hardware-integration/lighting/underglow",
+            "hardware-integration/lighting/backlight",
+            "hardware-integration/lighting/led-indicators",
+          ],
+        },
+      ],
+    },
+    {
+      Development: [
         {
           type: "category",
           label: "Contributing",

@@ -437,6 +437,10 @@ If enabled, the hold behavior will immediately be held on hold-tap press, and wi
 };
 ```
 
+:::warning[Interactions with combos]
+If the key position that has the hold-tap assigned is _also_ used in any combos, the `hold-while-undecided` behavior isn't immediate with key-down, but waits until all those combo timeouts have expired.
+:::
+
 #### `hold-while-undecided-linger`
 
 If your tap behavior activates the same modifier as the hold behavior, and you want to avoid a double tap when transitioning from the hold to the tap, you can use `hold-while-undecided-linger`. When enabled, the hold behavior will continue to be held until _after_ the tap behavior is released.
