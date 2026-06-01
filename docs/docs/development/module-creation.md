@@ -131,7 +131,7 @@ Note that the `include` and `src` folders are not mandated by the module system,
 Modules should expose all provided header files with an include path name beginning with the module-name, for example at `include/zmk_<type>_<description>/<header>.h`.
 
 :::info
-If your module requires adding drivers to existing subsystems in modules, you will need to use the `zephyr_library_amend()` CMake command, which requires you to have a specific directory structure. See [`zephyr/cmake/modules/extensions.cmake`](https://github.com/zephyrproject-rtos/zephyr/blob/main@%7B2025-Feb-15%7D/cmake/modules/extensions.cmake#L454) for the definition and some documentation in the comments, with an example in [`petejohanson/ec-support-zmk-module`](https://github.com/petejohanson/ec-support-zmk-module/tree/main/drivers/kscan).
+If your module requires adding drivers to existing subsystems in modules, you will need to use the `zephyr_library_amend()` CMake command, which requires you to have a specific directory structure. See [`zephyr/cmake/modules/extensions.cmake`](https://github.com/zephyrproject-rtos/zephyr/blob/main@%7B2025-Feb-15%7D/cmake/modules/extensions.cmake#L492) for the definition and some documentation in the comments, with an example in [`petejohanson/ec-support-zmk-module`](https://github.com/petejohanson/ec-support-zmk-module/tree/main/drivers/kscan).
 :::
 
 ## Examples
