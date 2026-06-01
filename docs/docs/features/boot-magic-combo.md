@@ -7,7 +7,7 @@ A boot magic combo performs one or more actions if a combination of keys is held
 
 ## Magic Keys
 
-Magic keys are specific to a physical layout. If your board doesn't have one, follow the [physical layouts documentation](../development/hardware-integration/physical-layouts.md) to create one.
+Magic keys are specific to a physical layout. If your board doesn't have one, follow the [physical layouts documentation](../hardware-integration/physical-layouts.md) to create one.
 
 To define a boot magic combo on a new board or shield, add a `zmk,boot-magic-combo` node to your board's `.dts` file or shield's `.overlay` file and select which keys will trigger it with the `combo-positions` property. All keys in the combo must be held simultaneously to trigger the action.
 
