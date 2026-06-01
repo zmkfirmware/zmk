@@ -95,8 +95,8 @@ function HardwareList({ items }: HardwareListProps) {
           added. This location is called an interconnect.
         </p>
         <p>
-          Designing a custom keyboard with an off-the-shelf controller board?
-          Check out the{" "}
+          Designing a custom composite keyboard with an off-the-shelf controller
+          board? Check out the{" "}
           <a href="/docs/development/hardware-integration/new-shield">
             New Keyboard Shield
           </a>{" "}
@@ -115,7 +115,7 @@ function HardwareList({ items }: HardwareListProps) {
           footprints, etc.
         </p>
         <p>
-          To run ZMK on your own keyboard with an onboard controller, follow the{" "}
+          Designing a custom keyboard with an onboard controller? Check out the{" "}
           <a href="/docs/development/hardware-integration/new-board">
             New Board
           </a>{" "}
