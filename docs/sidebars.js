@@ -107,6 +107,7 @@ module.exports = {
             "keymaps/input-processors/transformer",
             "keymaps/input-processors/code-mapper",
             "keymaps/input-processors/temp-layer",
+            "keymaps/input-processors/behaviors",
           ],
         },
       ],
