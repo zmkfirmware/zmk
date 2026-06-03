@@ -12,14 +12,11 @@
 #include <zmk/keymap.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <dt-bindings/zmk/dynamic-macros.h>
+#include <dt-bindings/zmk/hid_usage_pages.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define DT_DRV_COMPAT zmk_behavior_dynamic_macro
-
-#define HID_KEY_USAGE_PAGE 0x70000
-
-int8_t total_recorded_actions = 0;
 
 struct behavior_dynamic_macro_bind {
     uint32_t wait_ms;
@@ -54,15 +51,6 @@ struct recording_macro recording_macros[ZMK_BHV_RECORDING_MACRO_MAX] = {};
 static struct recording_macro *find_recording_macro(uint32_t position) {
     for (int i = 0; i < ZMK_BHV_RECORDING_MACRO_MAX; i++) {
         if (recording_macros[i].position == position && recording_macros[i].recording) {
-            return &recording_macros[i];
-        }
-    }
-    return NULL;
-}
-
-static struct recording_macro *find_macro_at_position(uint32_t position) {
-    for (int i = 0; i < ZMK_BHV_RECORDING_MACRO_MAX; i++) {
-        if (recording_macros[i].position == position) {
             return &recording_macros[i];
         }
     }
@@ -121,22 +109,20 @@ static int on_dynamic_macro_binding_pressed(struct zmk_behavior_binding *binding
         LOG_DBG("Recording Status: %d", state->recording);
         if (state->recording) {
             struct recording_macro *macro;
-            macro = find_recording_macro(event.position);
             if (new_recording_macro(event.position, cfg, state, &macro) == -ENOMEM) {
                 LOG_ERR("Unable to record new macro. Insufficient space in recording_macros[]");
+                state->recording = false;
                 return ZMK_BEHAVIOR_OPAQUE;
             }
             LOG_DBG("Recording new macro: %d", event.position);
-
-            struct recording_macro *old_macro;
-            old_macro = find_macro_at_position(event.position);
-            if (old_macro) {
-                total_recorded_actions -= old_macro->state->count;
-            }
             macro->count = 0;
         } else {
-            struct recording_macro *macro;
-            macro = find_recording_macro(event.position);
+            struct recording_macro *macro = find_recording_macro(event.position);
+            if (macro == NULL) {
+                LOG_WRN("Stopped recording with no active recording at position %d",
+                        event.position);
+                return ZMK_BEHAVIOR_OPAQUE;
+            }
             macro->recording = false;
             macro->state->count = macro->count;
         }
@@ -170,41 +156,33 @@ static int dynamic_macro_keycode_state_changed_listener(const zmk_event_t *eh) {
 
     for (int i = 0; i < ZMK_BHV_RECORDING_MACRO_MAX; i++) {
         struct recording_macro *macro = &recording_macros[i];
-        if (macro->recording && total_recorded_actions < CONFIG_ZMK_DYNAMIC_MACRO_MAX_ACTIONS) {
-            uint32_t eventTime = k_uptime_get();
-            uint32_t elapsedTime = eventTime - macro->state->lastEventTime;
-            macro->state->lastEventTime = eventTime;
-
-            if (ev->state) {
-                macro->state->bindings[macro->count].pressed = true;
-            } else {
-                macro->state->bindings[macro->count].pressed = false;
-            }
-
-            macro->state->bindings[macro->count].binding.behavior_dev = "key_press";
-            macro->state->bindings[macro->count].binding.param1 = HID_KEY_USAGE_PAGE + ev->keycode;
-            macro->state->bindings[macro->count].binding.param2 = 0;
-
-            if (macro->count > 0) {
-                macro->state->bindings[macro->count - 1].wait_ms = elapsedTime;
-            }
-
-            macro->count++;
-            total_recorded_actions++;
-
-            if (macro->config->no_output) {
-                return ZMK_EV_EVENT_HANDLED;
-            }
-            return ZMK_EV_EVENT_BUBBLE;
-        } else if (total_recorded_actions >= CONFIG_ZMK_DYNAMIC_MACRO_MAX_ACTIONS) {
-            LOG_ERR(
-                "Action not recorded, not enough space, CONFIG_ZMK_DYNAMIC_MACRO_MAX_ACTIONS %d",
-                CONFIG_ZMK_DYNAMIC_MACRO_MAX_ACTIONS);
-            if (macro->config->no_output) {
-                return ZMK_EV_EVENT_HANDLED;
-            }
-            return ZMK_EV_EVENT_BUBBLE;
+        if (!macro->recording) {
+            continue;
         }
+
+        if (macro->count >= CONFIG_ZMK_DYNAMIC_MACRO_MAX_ACTIONS) {
+            LOG_ERR("Action not recorded, CONFIG_ZMK_DYNAMIC_MACRO_MAX_ACTIONS=%d reached",
+                    CONFIG_ZMK_DYNAMIC_MACRO_MAX_ACTIONS);
+            return macro->config->no_output ? ZMK_EV_EVENT_HANDLED : ZMK_EV_EVENT_BUBBLE;
+        }
+
+        uint32_t eventTime = k_uptime_get();
+        uint32_t elapsedTime = eventTime - macro->state->lastEventTime;
+        macro->state->lastEventTime = eventTime;
+
+        macro->state->bindings[macro->count].pressed = ev->state;
+        macro->state->bindings[macro->count].binding.behavior_dev = "key_press";
+        macro->state->bindings[macro->count].binding.param1 =
+            ZMK_HID_USAGE(ev->usage_page, ev->keycode);
+        macro->state->bindings[macro->count].binding.param2 = 0;
+
+        if (macro->count > 0) {
+            macro->state->bindings[macro->count - 1].wait_ms = elapsedTime;
+        }
+
+        macro->count++;
+
+        return macro->config->no_output ? ZMK_EV_EVENT_HANDLED : ZMK_EV_EVENT_BUBBLE;
     }
     return ZMK_EV_EVENT_BUBBLE;
 }
