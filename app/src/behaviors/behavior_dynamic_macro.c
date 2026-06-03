@@ -9,6 +9,7 @@
 #include <zephyr/logging/log.h>
 #include <zmk/behavior.h>
 #include <zmk/behavior_queue.h>
+#include <zmk/dynamic_macros.h>
 #include <zmk/keymap.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <dt-bindings/zmk/dynamic-macros.h>
@@ -70,6 +71,7 @@ static int new_recording_macro(uint32_t position,
             ref_macro->config = config;
             ref_macro->state = state;
             *macro = ref_macro;
+            zmk_recording_macro_count_increase();
             return 0;
         }
     }
@@ -124,6 +126,7 @@ static int on_dynamic_macro_binding_pressed(struct zmk_behavior_binding *binding
                 return ZMK_BEHAVIOR_OPAQUE;
             }
             macro->recording = false;
+            zmk_recording_macro_count_decrease();
             macro->state->count = macro->count;
         }
     }
