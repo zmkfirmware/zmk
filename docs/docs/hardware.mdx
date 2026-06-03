@@ -41,17 +41,15 @@ ZMK has the potential to run on any hardware supported by Zephyr™, such as tho
 the [Zephyr™ supported boards](https://docs.zephyrproject.org/4.1.0/boards/index.html) page, though you may need to do some additional work to configure them for ZMK.
 That being said, there are specific boards that have been tested and pre-configured by the ZMK contributors, denoted by the `zmk` board variants below.
 
-ZMK doesn't support boards with AVR 8-bit processors, such as the ATmega32U4, because Zephyr™ only
-supports 32-bit and 64-bit platforms. As a result, controllers like the SparkFun Pro Micro, Elite-C,
-and Arduino Uno Rev3 are **NOT** supported by ZMK.
-
 Making new keyboard designs? Check out the [Hardware Integration](hardware-integration/index.mdx) section
 for more information on how to configure ZMK to run on your custom hardware.
 
-:::info[Boards and Shields]
+:::info[Boards, Board Variants, and Shields]
 
 ZMK uses the Zephyr concepts of "boards" and "shields" to refer to different parts of a keyboard build that are then combined during a firmware build.
 Please see the [explainer on boards & shields](hardware-integration/index.mdx#boards--shields) for more details.
+
+Zephyr boards come with minimal configuration. ZMK board variants add the necessary configuration to make the board usable out of the box with ZMK.
 
 :::
 
@@ -62,3 +60,7 @@ Please see the [explainer on boards & shields](hardware-integration/index.mdx#bo
 
 In addition to the basic keyboard functionality, there is also support for additional keyboard hardware such as encoders, RGB underglow, backlight and displays.
 Please see pages under the "Features" header in the sidebar for details.
+
+ZMK doesn't support boards with AVR 8-bit processors, such as the ATmega32U4, because Zephyr™ only
+supports 32-bit and 64-bit platforms. As a result, controllers like the SparkFun Pro Micro, Elite-C,
+and Arduino Uno Rev3 are **NOT** supported by ZMK.

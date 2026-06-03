@@ -89,15 +89,22 @@ function HardwareList({ items }: HardwareListProps) {
           Composite Keyboards
         </Heading>
         <p>
-          Composite keyboards are composed of two main PCBs: a small controller
-          board with exposed pads, and a larger keyboard PCB (a shield, in ZMK
-          lingo) with switch footprints and a location where the controller is
-          added. This location is called an interconnect.
+          Composite keyboards are composed of two main PCBs: a small controller{" "}
+          <strong>board</strong> with exposed pads, and a larger keyboard PCB (a{" "}
+          <strong>shield</strong>, in ZMK lingo) with switch footprints. The
+          board and shield share the same <strong>interconnect</strong>{" "}
+          standard, which defines the physical and electrical specifications for
+          the PCB-to-PCB connection.
+        </p>
+        <p>
+          Boards and shields that share the same interconnect are usually
+          compatible with each other but not always. Check hardware
+          compatibility before connecting them.
         </p>
         <p>
           Designing a custom composite keyboard with an off-the-shelf controller
           board? Check out the{" "}
-          <a href="/docs/development/hardware-integration/new-shield">
+          <a href="/docs/hardware-integration/new-shield">
             New Keyboard Shield
           </a>{" "}
           guide.
@@ -116,10 +123,7 @@ function HardwareList({ items }: HardwareListProps) {
         </p>
         <p>
           Designing a custom keyboard with an onboard controller? Check out the{" "}
-          <a href="/docs/development/hardware-integration/new-board">
-            New Board
-          </a>{" "}
-          guide.
+          <a href="/docs/hardware-integration/new-board">New Board</a> guide.
         </p>
         <ul>
           {grouped["onboard"]
