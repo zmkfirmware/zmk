@@ -15,6 +15,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/sensors.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/sensor_event.h>
+#include <zmk/workqueue.h>
 
 #if ZMK_KEYMAP_HAS_SENSORS
 
@@ -112,7 +113,7 @@ static void zmk_sensors_trigger_handler(const struct device *dev,
 
     if (k_is_in_isr()) {
         atomic_set_bit(pending_sensors, sensor_index);
-        k_work_submit(&sensor_data_work);
+        k_work_submit_to_queue(zmk_main_work_q(), &sensor_data_work);
     } else {
         trigger_sensor_data_for_position(sensor_index);
     }
