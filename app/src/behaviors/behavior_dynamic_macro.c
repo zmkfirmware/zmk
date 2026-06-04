@@ -12,7 +12,7 @@
 #include <zmk/dynamic_macros.h>
 #include <zmk/keymap.h>
 #include <zmk/events/keycode_state_changed.h>
-#include <dt-bindings/zmk/dynamic-macros.h>
+#include <dt-bindings/zmk/dynamic_macros.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);

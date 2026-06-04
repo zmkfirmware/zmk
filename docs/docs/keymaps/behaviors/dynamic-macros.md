@@ -17,11 +17,11 @@ Dynamic macros are memory intensive, and may cause the firmware to crash. It is 
 
 ## Dynamic Macro Action Defines
 
-Dynamic macro action defines are provided through the [`dt-bindings/zmk/dynamic-macros.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/dynamic-macros.h) header,
+Dynamic macro action defines are provided through the [`dt-bindings/zmk/dynamic_macros.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/dynamic_macros.h) header,
 which is added at the top of the keymap file:
 
 ```
-#include <dt-bindings/zmk/dynamic-macros.h>
+#include <dt-bindings/zmk/dynamic_macros.h>
 ```
 
 This will allow you to reference the actions defined in this header such as `PLAY`.
