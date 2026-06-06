@@ -11,7 +11,7 @@ This document outlines how to test your documentation changes locally and prepar
 
 The documentation is written with [Docusaurus](https://docusaurus.io/). The ZMK source code has all of the necessary Docusaurus dependencies included, but referencing their documentation can be helpful at times.
 
-Latest LTS version of node is used to build the website, available at <https://nodejs.org/en/download/>.
+The website is built using the latest LTS version of node, which is available at <https://nodejs.org/en/download/>.
 
 The general process for updating the ZMK documentation is:
 

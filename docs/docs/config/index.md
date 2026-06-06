@@ -7,7 +7,9 @@ ZMK has many configuration settings that can be changed to change the behavior o
 
 This page describes the Kconfig and Devicetree file formats and how to change settings in them. See the other pages in the configuration section for a list of settings you can change.
 
+:::note
 All configuration is currently set at compile time. After changing any settings, you must build new firmware and flash it for the changes to apply.
+:::
 
 ## Config File Locations
 
