@@ -12,11 +12,6 @@ import { groupedMetadata } from "@site/src/components/hardware-utils";
 
 export const toc = [
   {
-    value: "Onboard Controller Keyboards",
-    id: "onboard",
-    level: 2,
-  },
-  {
     value: "Composite Keyboards",
     id: "composite",
     level: 2,
@@ -29,24 +24,32 @@ export const toc = [
       level: 3,
     })),
   {
+    value: "Onboard Controller Keyboards",
+    id: "onboard",
+    level: 2,
+  },
+  {
     value: "Other Hardware",
     id: "other-hardware",
     level: 2,
   },
-  {
-    value: "Contributing",
-    id: "contributing",
-    level: 2,
-  },
 ];
 
-With the solid technical foundation of Zephyr™ RTOS, ZMK can support a wide diversity of hardware targets,
+With the solid technical foundation of Zephyr™ RTOS, ZMK can support a wide variety of hardware targets,
 including but not limited to Nordic nRF52, Raspberry Pi RP2040/RP2350, most ST STM32 MCUs, and Microchip SAMD21.
-That being said, there are specific [boards / shields](hardware-integration/index.mdx#boards--shields) that have been implemented and tested by the ZMK contributors, listed below.
+ZMK has the potential to run on any hardware supported by Zephyr™, such as those on
+the [Zephyr™ supported boards](https://docs.zephyrproject.org/4.1.0/boards/index.html) page, though you may need to do some additional work to configure them for ZMK.
+That being said, there are specific boards that have been tested and pre-configured by the ZMK contributors, denoted by the `zmk` board variants below.
 
-:::note
+Designing a new keyboard? Check out the [Hardware Integration](hardware-integration/index.mdx) section
+for more information on how to configure ZMK to run on your custom hardware.
 
-With the [upgrade to Zephyr 4.1](/blog/2025/12/09/zephyr-4-1#zmk-board-variant), the ZMK project has moved all in-tree boards to use a `zmk` [board variant](https://docs.zephyrproject.org/4.1.0/glossary.html#term-variant), for consistency when distinguishing from stock boards that are actually in upstream Zephyr.
+:::info[Boards, Board Variants, and Shields]
+
+ZMK uses the Zephyr concepts of "boards" and "shields" to refer to different parts of a keyboard build that are then combined during a firmware build.
+Please see the [explainer on boards & shields](hardware-integration/index.mdx#boards--shields) for more details.
+
+Zephyr boards come with minimal configuration. ZMK board variants add the necessary configuration to make the board usable out of the box with ZMK.
 
 :::
 
@@ -58,7 +61,6 @@ With the [upgrade to Zephyr 4.1](/blog/2025/12/09/zephyr-4-1#zmk-board-variant),
 In addition to the basic keyboard functionality, there is also support for additional keyboard hardware such as encoders, RGB underglow, backlight and displays.
 Please see pages under the "Features" header in the sidebar for details.
 
-{/* prettier-ignore */}
-<Heading as="h2" id="contributing">Contributing</Heading>
-
-If you'd like to add support for a new keyboard shield, head over to the [New Keyboard Shield](hardware-integration/new-shield.mdx) documentation and note the [clean room design requirements](development/contributing/clean-room.md).
+ZMK doesn't support boards with AVR 8-bit processors, such as the ATmega32U4, because Zephyr™ only
+supports 32-bit and 64-bit platforms. As a result, controllers like the SparkFun Pro Micro, Elite-C,
+and Arduino Uno Rev3 are **NOT** supported by ZMK.
