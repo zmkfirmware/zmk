@@ -1,5 +1,6 @@
 board:
   name: s40nc
+  full_name: Shorty 40 No-Cordy
   vendor: mechwild
   socs:
     - name: nrf52840

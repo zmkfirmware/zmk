@@ -1,5 +1,6 @@
 board:
   name: nice_nano
+  full_name: nice!nano
   vendor: nicekeyboards
   socs:
     - name: nrf52840

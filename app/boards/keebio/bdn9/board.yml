@@ -1,5 +1,6 @@
 board:
   name: bdn9
+  full_name: BDN9
   vendor: keebio
   socs:
     - name: stm32f072xb

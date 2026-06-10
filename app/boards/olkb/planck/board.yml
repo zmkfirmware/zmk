@@ -1,5 +1,6 @@
 board:
   name: planck
+  full_name: Planck
   vendor: olkb
   socs:
     - name: stm32f303xc

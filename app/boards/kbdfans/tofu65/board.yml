@@ -1,5 +1,6 @@
 board:
   name: tofu65
+  full_name: Tofu 65
   vendor: kbdfans
   socs:
     - name: rp2040

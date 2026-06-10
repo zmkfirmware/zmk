@@ -1,5 +1,6 @@
 board:
   name: nrf52840_m2
+  full_name: MakerDiary nrf52840 M.2
   vendor: makerdiary
   socs:
     - name: nrf52840

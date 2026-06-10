@@ -1,5 +1,6 @@
 boards:
   - name: corneish_zen_left
+    full_name: Corneish Zen (Left)
     vendor: lowprokb
     socs:
       - name: nrf52840
@@ -13,6 +14,7 @@ boards:
         - name: 2.0.0
         - name: 1.0.0
   - name: corneish_zen_right
+    full_name: Corneish Zen (Right)
     vendor: lowprokb
     socs:
       - name: nrf52840
