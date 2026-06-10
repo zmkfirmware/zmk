@@ -56,8 +56,7 @@ enum advertising_type {
 #define CURR_ADV(adv) (adv << 4)
 
 #define ZMK_ADV_CONN_NAME                                                                          \
-    BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONN | BT_LE_ADV_OPT_USE_NAME | BT_LE_ADV_OPT_FORCE_NAME_IN_AD,  \
-                    BT_GAP_ADV_FAST_INT_MIN_2, BT_GAP_ADV_FAST_INT_MAX_2, NULL)
+    BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONN, BT_GAP_ADV_FAST_INT_MIN_1, BT_GAP_ADV_FAST_INT_MAX_1, NULL)
 
 static struct zmk_ble_profile profiles[ZMK_BLE_PROFILE_COUNT];
 static uint8_t active_profile;
@@ -142,42 +141,77 @@ bool zmk_ble_profile_is_connected(uint8_t index) {
     return info.state == BT_CONN_STATE_CONNECTED;
 }
 
-#define CHECKED_ADV_STOP()                                                                         \
-    err = bt_le_adv_stop();                                                                        \
-    advertising_status = ZMK_ADV_NONE;                                                             \
-    if (err) {                                                                                     \
-        LOG_ERR("Failed to stop advertising (err %d)", err);                                       \
-        return err;                                                                                \
+static inline int checked_adv_stop(void) {
+    int err;
+
+    err = bt_le_adv_stop();
+    if (err) {
+        LOG_ERR("Failed to stop advertising (err %d)", err);
+        return err;
     }
 
-#define CHECKED_DIR_ADV()                                                                          \
-    addr = zmk_ble_active_profile_addr();                                                          \
-    conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr);                                            \
-    if (conn != NULL) { /* TODO: Check status of connection */                                     \
-        LOG_DBG("Skipping advertising, profile host is already connected");                        \
-        bt_conn_unref(conn);                                                                       \
-        return 0;                                                                                  \
-    }                                                                                              \
-    err = bt_le_adv_start(BT_LE_ADV_CONN_DIR_LOW_DUTY(addr), zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad),   \
-                          NULL, 0);                                                                \
-    if (err) {                                                                                     \
-        LOG_ERR("Advertising failed to start (err %d)", err);                                      \
-        return err;                                                                                \
-    }                                                                                              \
+    advertising_status = ZMK_ADV_NONE;
+    return 0;
+}
+
+static inline int checked_dir_adv(void) {
+    int err;
+    const char *name;
+    bt_addr_le_t *addr = zmk_ble_active_profile_addr();
+    struct bt_conn *conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr);
+
+    if (conn != NULL) { /* TODO: Check status of connection */
+        LOG_DBG("Skipping advertising, profile host is already connected");
+        bt_conn_unref(conn);
+        return 0;
+    }
+
+    name = bt_get_name();
+    if (!name) {
+        name = CONFIG_BT_DEVICE_NAME;
+    }
+
+    struct bt_data sd[] = {
+        BT_DATA(BT_DATA_NAME_COMPLETE, name, strlen(name)),
+    };
+
+    err = bt_le_adv_start(BT_LE_ADV_CONN_DIR_LOW_DUTY(addr), zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), sd,
+                          ARRAY_SIZE(sd));
+    if (err) {
+        LOG_ERR("Advertising failed to start (err %d)", err);
+        return err;
+    }
     advertising_status = ZMK_ADV_DIR;
 
-#define CHECKED_OPEN_ADV()                                                                         \
-    err = bt_le_adv_start(ZMK_ADV_CONN_NAME, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);         \
-    if (err) {                                                                                     \
-        LOG_ERR("Advertising failed to start (err %d)", err);                                      \
-        return err;                                                                                \
-    }                                                                                              \
+    return err;
+}
+
+static inline int checked_open_adv(void) {
+    int err;
+    const char *name;
+
+    name = bt_get_name();
+    if (!name) {
+        name = CONFIG_BT_DEVICE_NAME;
+    }
+
+    struct bt_data sd[] = {
+        BT_DATA(BT_DATA_NAME_COMPLETE, name, strlen(name)),
+    };
+
+    err =
+        bt_le_adv_start(ZMK_ADV_CONN_NAME, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), sd, ARRAY_SIZE(sd));
+    if (err) {
+        LOG_ERR("Advertising failed to start (err %d)", err);
+        return err;
+    }
     advertising_status = ZMK_ADV_CONN;
+
+    return err;
+}
 
 int update_advertising(void) {
     int err = 0;
-    bt_addr_le_t *addr;
-    struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
     if (zmk_ble_active_profile_is_open()) {
@@ -197,22 +231,43 @@ int update_advertising(void) {
     switch (desired_adv + CURR_ADV(advertising_status)) {
     case ZMK_ADV_NONE + CURR_ADV(ZMK_ADV_DIR):
     case ZMK_ADV_NONE + CURR_ADV(ZMK_ADV_CONN):
-        CHECKED_ADV_STOP();
+        err = checked_adv_stop();
+        if (err) {
+            return err;
+        }
         break;
     case ZMK_ADV_DIR + CURR_ADV(ZMK_ADV_DIR):
     case ZMK_ADV_DIR + CURR_ADV(ZMK_ADV_CONN):
-        CHECKED_ADV_STOP();
-        CHECKED_DIR_ADV();
+        err = checked_adv_stop();
+        if (err) {
+            return err;
+        }
+        err = checked_dir_adv();
+        if (err) {
+            return err;
+        }
         break;
     case ZMK_ADV_DIR + CURR_ADV(ZMK_ADV_NONE):
-        CHECKED_DIR_ADV();
+        err = checked_dir_adv();
+        if (err) {
+            return err;
+        }
         break;
     case ZMK_ADV_CONN + CURR_ADV(ZMK_ADV_DIR):
-        CHECKED_ADV_STOP();
-        CHECKED_OPEN_ADV();
+        err = checked_adv_stop();
+        if (err) {
+            return err;
+        }
+        err = checked_open_adv();
+        if (err) {
+            return err;
+        }
         break;
     case ZMK_ADV_CONN + CURR_ADV(ZMK_ADV_NONE):
-        CHECKED_OPEN_ADV();
+        err = checked_open_adv();
+        if (err) {
+            return err;
+        }
         break;
     }
 
