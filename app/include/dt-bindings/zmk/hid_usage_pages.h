@@ -34,7 +34,9 @@
 #define HID_USAGE_PID (0x0F)            // PID
 #define HID_USAGE_EHT (0x12)            // Eye and Head Trackers
 #define HID_USAGE_AUXDISP (0x14)        // Auxiliary Display
+#if 0
 #define HID_USAGE_SENSORS (0x20)        // Sensors
+#endif
 #define HID_USAGE_MEDICAL (0x40)        // Medical Instrument
 #define HID_USAGE_BRAILLE (0x41)        // Braille Display
 #define HID_USAGE_LIGHT (0x59)          // Lighting And Illumination

@@ -1511,6 +1511,7 @@
 #define HID_USAGE_AUXDISP_REQUEST_REPORT (0xFF)               // DV
 
 /* Page 0x20: Sensors */
+#if 0
 #define HID_USAGE_SENSORS_UNDEFINED (0x00)
 #define HID_USAGE_SENSORS_SENSOR (0x01)                                                // CA, CP
 #define HID_USAGE_SENSORS_BIOMETRIC (0x10)                                             // CA, CP
@@ -2154,6 +2155,7 @@
 #define HID_USAGE_SENSORS_MODIFIER_PERIOD_MAX (0xC000)                                 // US
 #define HID_USAGE_SENSORS_MODIFIER_CHANGE_SENSITIVITY_PERCENT_OF_RANGE (0xD000)        // US
 #define HID_USAGE_SENSORS_MODIFIER_CHANGE_SENSITIVITY_PERCENT_RELATIVE (0xE000)        // US
+#endif
 
 /* Page 0x40: Medical Instrument */
 #define HID_USAGE_MEDICAL_UNDEFINED (0x00)
