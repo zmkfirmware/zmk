@@ -37,11 +37,12 @@
         )
     };
 
+    /* TODO: IMPLEMENT/CONVERT THIS! */
     endpoint_sideband_behaviors {
-        compatible = "zmk,kscan-sideband-behaviors";
+        compatible = "zmk,input-sideband-behaviors";
 
         auto-enable;
-        kscan = <&kscan_sp3t_toggle>;
+        input = <&input_sp3t_toggle>;
 
         first_toggle_sideband: first_toggle_sideband {
             column = <0>;

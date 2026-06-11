@@ -88,8 +88,8 @@ nice_view_spi: &arduino_spi {
         >;
     };
 
-    kscan_matrix: kscan_matrix {
-        compatible = "zmk,kscan-gpio-matrix";
+    input_matrix: input_matrix {
+        compatible = "zmk,input-gpio-matrix";
         wakeup-source;
 
         diode-direction = "col2row";
@@ -106,8 +106,8 @@ nice_view_spi: &arduino_spi {
 
     };
 
-    kscan_direct: kscan_direct {
-        compatible = "zmk,kscan-gpio-direct";
+    input_direct: input_direct {
+        compatible = "zmk,input-gpio-direct";
         wakeup-source;
 
         input-gpios
@@ -119,8 +119,8 @@ nice_view_spi: &arduino_spi {
 
     };
 
-    kscan_sp3t_toggle: kscan_sp3t_toggle {
-        compatible = "zmk,kscan-gpio-direct";
+    input_sp3t_toggle: input_sp3t_toggle {
+        compatible = "zmk,input-gpio-direct";
         toggle-mode;
 
         input-gpios
@@ -139,11 +139,11 @@ nice_view_spi: &arduino_spi {
 };
 
 &matrix_physical_layout {
-    kscan = <&kscan_matrix>;
+    input = <&input_matrix>;
     transform = <&matrix_transform>;
 };
 
 &direct_physical_layout {
-    kscan = <&kscan_direct>;
+    input = <&input_direct>;
     transform = <&direct_matrix_transform>;
 };
