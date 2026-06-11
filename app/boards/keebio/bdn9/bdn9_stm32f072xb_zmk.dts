@@ -26,7 +26,7 @@
         zephyr,flash = &flash0;
         zmk,underglow = &led_strip;
         zmk,physical-layout = &physical_layout0;
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
     };
 
     matrix_transform0: matrix_transform_0 {
@@ -40,8 +40,8 @@
         >;
     };
 
-    kscan0: kscan_0 {
-        compatible = "zmk,kscan-gpio-direct";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-direct";
 
         input-gpios
             = <&gpiob 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
