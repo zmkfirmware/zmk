@@ -6,11 +6,11 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
     };
 
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-direct";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-direct";
         wakeup-source;
 
         input-gpios

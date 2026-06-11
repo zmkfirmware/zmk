@@ -9,7 +9,7 @@ Some revisions of the aforementioned PCBs have slightly different pin arrangemen
 ```dts
 /* Adjusted Cradio pin arrangement */
 /* The position of Q and B keys have been swapped */
-&kscan0 {
+&matrix {
     input-gpios
     = <&pro_micro  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
     , <&pro_micro 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
@@ -32,4 +32,4 @@ Some revisions of the aforementioned PCBs have slightly different pin arrangemen
 };
 ```
 
-This `&kscan0` block must be placed outside of any blocks surrounded by curly braces (`{...}`).
+This `&matrix` block must be placed outside of any blocks surrounded by curly braces (`{...}`).

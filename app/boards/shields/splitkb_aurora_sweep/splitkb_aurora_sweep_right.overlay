@@ -8,11 +8,11 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan;
+        zmk,matrix-input = &matrix;
     };
 
-    kscan: kscan {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-matrix";
         wakeup-source;
         diode-direction = "row2col";
 

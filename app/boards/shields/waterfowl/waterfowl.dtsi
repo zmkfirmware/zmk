@@ -9,7 +9,7 @@
 / {
     chosen {
         zephyr,display = &oled;
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,matrix-transform = &default_transform;
     };
 
@@ -29,8 +29,8 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4)                                 RC(3,5) 
         >;
     };
 
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-matrix";
         wakeup-source;
 
         diode-direction = "col2row";

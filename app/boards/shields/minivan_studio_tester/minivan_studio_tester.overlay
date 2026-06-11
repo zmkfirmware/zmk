@@ -7,7 +7,7 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <physical_layouts.dtsi>
 
-&kscan {
+&matrix {
     /delete-property/ exit-after;
     events = <>;
 };
@@ -77,7 +77,7 @@
         display-name = "Standard";
 
         transform = <&standard_transform>;
-        kscan = <&kscan>;
+        input = <&matrix>;
 
         keys
             = <&key_physical_attrs 100 100 000  000 0 0 0>
@@ -135,7 +135,7 @@
         display-name = "Southpaw";
 
         transform = <&southpaw_transform>;
-        kscan = <&kscan>;
+        input = <&matrix>;
 
         keys
             = <&key_physical_attrs 100 100 000  000 0 0 0>
@@ -194,7 +194,7 @@
         display-name = "Arrows";
 
         transform = <&arrows_transform>;
-        kscan = <&kscan>;
+        input = <&matrix>;
 
         keys
             = <&key_physical_attrs 100 100 000  000 0 0 0>
@@ -253,7 +253,7 @@
         display-name = "JetVan";
 
         transform = <&jetvan_transform>;
-        kscan = <&kscan>;
+        input = <&matrix>;
 
         keys
             = <&key_physical_attrs 100 100 000  000 0 0 0>

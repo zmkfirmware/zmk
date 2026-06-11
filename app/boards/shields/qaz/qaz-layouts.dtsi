@@ -11,7 +11,7 @@
       compatible = "zmk,physical-layout";
       display-name = "Split Big Bar";
       transform = <&split_big_bar_transform>;
-      kscan = <&kscan0>;
+      input = <&matrix>;
       keys //                      w   h    x    y     rot    rx    ry
           = <&key_physical_attrs 100 100    0    0       0     0     0>
           , <&key_physical_attrs 100 100  100    0       0     0     0>
@@ -57,7 +57,7 @@
         compatible = "zmk,physical-layout";
         display-name = "Split Bar";
         transform = <&split_bar_transform>;
-        kscan = <&kscan0>;
+        input = <&matrix>;
         keys //                      w   h    x    y     rot    rx    ry
             = <&key_physical_attrs 100 100    0    0       0     0     0>
             , <&key_physical_attrs 100 100  100    0       0     0     0>
@@ -106,7 +106,7 @@
         compatible = "zmk,physical-layout";
         display-name = "Big Bar";
         transform = <&big_bar_transform>;
-        kscan = <&kscan0>;
+        input = <&matrix>;
         keys //                      w   h    x    y     rot    rx    ry
             = <&key_physical_attrs 100 100    0    0       0     0     0>
             , <&key_physical_attrs 100 100  100    0       0     0     0>

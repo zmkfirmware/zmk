@@ -6,7 +6,7 @@
 
 #include "zodiark.dtsi"
 
-&kscan0 {
+&matrix {
     col-gpios
         = <&pro_micro  2 GPIO_ACTIVE_HIGH>
         , <&pro_micro  1 GPIO_ACTIVE_HIGH>

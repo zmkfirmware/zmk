@@ -5,7 +5,7 @@
 
 #include "leeloo_micro.dtsi"
 
-&kscan0 {
+&matrix {
     col-gpios
         = <&pro_micro 19 GPIO_ACTIVE_HIGH>
         , <&pro_micro 18 GPIO_ACTIVE_HIGH>

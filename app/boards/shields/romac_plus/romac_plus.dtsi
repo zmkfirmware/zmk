@@ -8,7 +8,7 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,matrix-transform = &default_transform;
     };
 
@@ -25,8 +25,8 @@ RC(3,0) RC(3,1) RC(3,2)
         >;
     };
 
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-matrix";
 
         diode-direction = "col2row";
         row-gpios

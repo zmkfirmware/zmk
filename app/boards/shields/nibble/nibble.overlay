@@ -9,7 +9,7 @@
 / {
     chosen {
         zephyr,display = &oled;
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,matrix-transform = &default_transform;
     };
 
@@ -21,21 +21,47 @@
         status = "okay";
     };
 
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-demux";
-        polling-interval-msec = <25>;
-        input-gpios
+    gpio_demux: gpio_demux {
+        compatible = "zmk,gpio-demux";
+        gpio-controller;
+	#gpio-cells = <2>;
+
+        select-gpios
+            = <&pro_micro 21 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 20 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 19 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 18 GPIO_ACTIVE_HIGH>
+            ;
+    };
+
+    matrix: matrix {
+        compatible = "zmk,input-gpio-matrix";
+	diode-direction = "col2row";
+
+        row-gpios
             = <&pro_micro 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&pro_micro 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&pro_micro 16 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             , <&pro_micro 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
             ;
-        output-gpios
-            = <&pro_micro 21 GPIO_ACTIVE_HIGH>
-            , <&pro_micro 20 GPIO_ACTIVE_HIGH>
-            , <&pro_micro 19 GPIO_ACTIVE_HIGH>
-            , <&pro_micro 18 GPIO_ACTIVE_HIGH>
+        col-gpios
+            = <&gpio_demux 0 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 1 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 2 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 3 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 4 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 5 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 6 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 7 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 8 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 9 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 10 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 11 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 12 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 13 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 14 GPIO_ACTIVE_HIGH>
+            , <&gpio_demux 15 GPIO_ACTIVE_HIGH>
             ;
     };
 

@@ -9,7 +9,7 @@
 / {
     chosen {
         zephyr,display = &oled;
-        zmk,kscan = &kscan_composite;
+        zmk,matrix-input = &matrix_composite;
         zmk,matrix-transform = &default_transform;
     };
 
@@ -47,18 +47,18 @@ RC(5,7) RC(5,6) RC(5,5) RC(5,4)         RC(5,2)         RC(5,0)    RC(5,15)     
         >;
     };
 
-    kscan_composite: kscan {
-        compatible = "zmk,kscan-composite";
+    matrix_composite: matrix {
+        compatible = "zmk,input-composite";
         rows = <6>;
         columns = <17>;
 
         demux {
-            kscan = <&kscan_demux>;
+            input = <&matrix_demux>;
         };
     };
 
-    kscan_demux: kscan_demux {
-        compatible = "zmk,kscan-gpio-demux";
+    matrix_demux: matrix_demux {
+        compatible = "zmk,input-gpio-demux";
         polling-interval-msec = <25>;
     };
 };
