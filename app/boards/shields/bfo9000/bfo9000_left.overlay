@@ -6,7 +6,7 @@
 
 #include "bfo9000.dtsi"
 
-&kscan0 {
+&matrix {
     col-gpios
         = <&pro_micro 9 GPIO_ACTIVE_HIGH>
         , <&pro_micro 10 GPIO_ACTIVE_HIGH>
