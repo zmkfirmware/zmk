@@ -11,12 +11,12 @@
 / {
     chosen {
         zephyr,display = &oled;
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,physical-layout = &splitkb_kyria_6col_layout;
     };
 
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-matrix";
         wakeup-source;
 
         diode-direction = "col2row";
