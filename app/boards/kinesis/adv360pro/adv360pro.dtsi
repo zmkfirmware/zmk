@@ -30,7 +30,7 @@
         zmk,backlight = &backlight;
         zmk,battery = &vbatt;
         zmk,physical-layout = &physical_layout0;
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,underglow = &led_strip;
     };
 
