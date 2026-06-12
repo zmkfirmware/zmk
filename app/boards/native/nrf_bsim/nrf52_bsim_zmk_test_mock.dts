@@ -10,7 +10,7 @@
     };
 
     matrix: matrix {
-        compatible = "zmk,input-mock";
+        compatible = "zmk,input-matrix-mock";
 
         rows = <2>;
         columns = <2>;
