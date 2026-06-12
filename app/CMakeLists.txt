@@ -4,6 +4,7 @@ set(CONFIG_APPLICATION_DEFINED_SYSCALL true)
 
 set(ZEPHYR_BOARD_ALIASES "boards/aliases.cmake")
 set(ZEPHYR_EXTRA_MODULES "${ZMK_EXTRA_MODULES};${CMAKE_CURRENT_SOURCE_DIR}/module;${CMAKE_CURRENT_SOURCE_DIR}/keymap-module")
+set(SNIPPET_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # Find Zephyr. This also loads Zephyr's build system.
 find_package(Zephyr REQUIRED HINTS ../zephyr)
