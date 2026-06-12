@@ -20,12 +20,12 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,physical-layout = &layout_ortho_5x12_all1u;
     };
 
-    kscan0: kscan_0 {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-matrix";
         diode-direction = "col2row";
         row-gpios
             = <&gpioa 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>

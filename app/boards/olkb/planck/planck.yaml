@@ -16,4 +16,4 @@ supported:
   - lsm303dlhc
   - nvs
   - can
-  - kscan
+  - input
