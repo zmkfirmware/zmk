@@ -15,9 +15,6 @@ config USB_NRFX
 
 endif # USB_DEVICE_STACK
 
-config BT_CTLR
-    default BT
-
 if BOARD_REVISION = "1.3.0"
 
 config BOARD_NRFMICRO_CHARGER

@@ -23,9 +23,6 @@ if BOARD_GLOVE80_LH || BOARD_GLOVE80_RH
 config ZMK_SPLIT
     default y
 
-config BT_CTLR
-    default BT
-
 config ZMK_INPUT_MATRIX_WAIT_BETWEEN_OUTPUTS
     default 5
 

@@ -16,7 +16,4 @@ config USB_DEVICE_STACK
 
 endif # USB
 
-config BT_CTLR
-    default BT
-
 endif # BOARD_BT60 || BOARD_BT60_HS
