@@ -17,7 +17,7 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,physical-layout = &physical_layout0;
         zephyr,code-partition = &code_partition;
         zephyr,sram = &sram0;
@@ -38,8 +38,8 @@
         >;
     };
 
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-matrix";
         wakeup-source;
 
         diode-direction = "col2row";

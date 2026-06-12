@@ -91,7 +91,7 @@
     pinctrl-names = "default", "sleep";
 };
 
-&kscan0 {
+&matrix {
     row-gpios
         = <&gpio0 26 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // LH ROW1
         , <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // LH ROW2

@@ -26,7 +26,7 @@ config ZMK_SPLIT
 config BT_CTLR
     default BT
 
-config ZMK_KSCAN_MATRIX_WAIT_BETWEEN_OUTPUTS
+config ZMK_INPUT_MATRIX_WAIT_BETWEEN_OUTPUTS
     default 5
 
 config PINCTRL
