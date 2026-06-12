@@ -14,6 +14,7 @@
 
 &cuddlykeyboards_ferris_layout {
     transform = <&matrix_transform0>;
+    input = <&matrix>;
 };
 
 / {
@@ -23,7 +24,6 @@
     chosen {
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
-        zmk,kscan = &kscan0;
         zmk,physical-layout = &cuddlykeyboards_ferris_layout;
         /* TODO: Enable once we support the IC for underglow
         zmk,underglow = &led_strip;
@@ -43,23 +43,23 @@
         >;
     };
 
-    kscan0: kscan0 {
-        compatible = "zmk,kscan-composite";
+    matrix: matrix {
+        compatible = "zmk,input-composite";
         rows = <4>;
         columns = <10>;
 
         left {
-            kscan = <&kscan_left>;
+            input = <&matrix_left>;
         };
 
         right {
-            kscan = <&kscan_right>;
+            input = <&matrix_right>;
             col-offset = <5>;
         };
     };
 
-    kscan_left: kscan_left {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix_left: matrix_left {
+        compatible = "zmk,input-gpio-matrix";
 
         diode-direction = "col2row";
 
@@ -78,8 +78,8 @@
         ;
     };
 
-    kscan_right: kscan_right {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix_right: matrix_right {
+        compatible = "zmk,input-gpio-matrix";
 
         diode-direction = "row2col";
 
