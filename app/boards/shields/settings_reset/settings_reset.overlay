@@ -12,7 +12,7 @@
     };
 
     settings_reset_matrix: settings_reset_matrix {
-        compatible = "zmk,input-mock";
+        compatible = "zmk,input-matrix-mock";
         columns = <1>;
         rows = <0>;
 
