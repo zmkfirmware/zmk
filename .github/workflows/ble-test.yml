@@ -43,17 +43,18 @@ jobs:
         uses: actions/cache@v5
         env:
           cache-name: cache-zephyr-modules
+          cache-version: v2
         with:
           path: |
             modules/
             tools/
             zephyr/
             bootloader/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
+          key: ${{ runner.os }}-${{ env.cache-version }}-build-${{ env.cache-name }}-${{ hashFiles('app/west.yml') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            ${{ runner.os }}-${{ env.cache-version }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-${{ env.cache-version }}-build-
+            ${{ runner.os }}-${{ env.cache-version }}-
         timeout-minutes: 2
         continue-on-error: true
       - name: Initialize workspace (west init)
