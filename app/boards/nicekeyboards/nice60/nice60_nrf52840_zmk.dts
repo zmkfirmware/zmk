@@ -24,7 +24,7 @@
         zephyr,sram = &sram0;
         zephyr,flash = &flash0;
         zmk,battery = &vbatt;
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,physical-layout = &layout_60_ansi;
         zmk,underglow = &led_strip;
     };
@@ -42,8 +42,8 @@ RC(4,0)   RC(4,1)   RC(4,2)                      RC(4,5)                       R
         >;
     };
 
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-matrix";
         wakeup-source;
 
         diode-direction = "col2row";
