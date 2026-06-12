@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.matrix.outputs.has_valid_build_matrix == 'true'
     container:
-      image: zmkfirmware/zmk-build-arm:stable
+      image: zmkfirmware/zmk-build-arm:4.4-branch
     needs: matrix
     name: Build
     strategy:
