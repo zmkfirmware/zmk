@@ -14,4 +14,4 @@ CONFIG_GPIO=y
 CONFIG_ZMK_USB=y
 
 # Defaults for matrix scanning to avoid interrupt issues
-CONFIG_ZMK_KSCAN_MATRIX_POLLING=y
+CONFIG_ZMK_INPUT_MATRIX_POLLING=y
