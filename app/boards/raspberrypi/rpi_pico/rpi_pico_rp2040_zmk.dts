@@ -5,7 +5,7 @@
  */
 
 #include <../boards/raspberrypi/rpi_pico/rpi_pico.dts>
-#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
+#include <vendor/raspberrypi/rp2040-boot-mode-retention.dtsi>
 
 &uart0 { status = "disabled"; };
 

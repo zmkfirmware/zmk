@@ -5,6 +5,6 @@
  */
 
 #include <../boards/adafruit/qt_py_rp2040/adafruit_qt_py_rp2040.dts>
-#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
+#include <vendor/raspberrypi/rp2040-boot-mode-retention.dtsi>
 
 &xiao_serial { status = "disabled"; };

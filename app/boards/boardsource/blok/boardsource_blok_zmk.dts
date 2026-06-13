@@ -5,7 +5,7 @@
  */
 
 #include <../boards/boardsource/blok/boardsource_blok.dts>
-#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
+#include <vendor/raspberrypi/rp2040-boot-mode-retention.dtsi>
 
 &pro_micro_serial { status = "disabled"; };
 
