@@ -1,4 +1,7 @@
 
+# Disable the CDC ACM default from upstream Zephyr board
+CONFIG_BOARD_SERIAL_BACKEND_CDC_ACM=n
+
 # Enable MPU
 CONFIG_ARM_MPU=y
 
