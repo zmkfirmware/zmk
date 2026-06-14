@@ -2,7 +2,7 @@
 
 #include "native_sim_zmk_test_mock.dts"
 
-&kscan {
+&matrix {
     events = <>;
     /delete-property/ exit-after;
 };

@@ -6,7 +6,7 @@
 
 #include "lotus58.dtsi"
 
-&kscan0 {
+&matrix {
     col-gpios
         = <&pro_micro 15 GPIO_ACTIVE_HIGH>
         , <&pro_micro 16 GPIO_ACTIVE_HIGH>

@@ -307,6 +307,10 @@ struct k_work_q hog_work_q;
 K_MSGQ_DEFINE(zmk_hog_keyboard_msgq, sizeof(struct zmk_hid_keyboard_report_body),
               CONFIG_ZMK_BLE_KEYBOARD_REPORT_QUEUE_SIZE, 4);
 
+void send_report_callback(struct bt_conn *conn, void *user_data) {
+    LOG_DBG("GATT HID Report Send Completed");
+}
+
 void send_keyboard_report_callback(struct k_work *work) {
     struct zmk_hid_keyboard_report_body report;
 
@@ -320,6 +324,7 @@ void send_keyboard_report_callback(struct k_work *work) {
             .attr = &hog_svc.attrs[5],
             .data = &report,
             .len = sizeof(report),
+            .func = send_report_callback,
         };
 
         int err = bt_gatt_notify_cb(conn, &notify_params);
@@ -372,6 +377,7 @@ void send_consumer_report_callback(struct k_work *work) {
             .attr = &hog_svc.attrs[9],
             .data = &report,
             .len = sizeof(report),
+            .func = send_report_callback,
         };
 
         int err = bt_gatt_notify_cb(conn, &notify_params);
@@ -425,6 +431,7 @@ void send_mouse_report_callback(struct k_work *work) {
             .attr = &hog_svc.attrs[13],
             .data = &report,
             .len = sizeof(report),
+            .func = send_report_callback,
         };
 
         int err = bt_gatt_notify_cb(conn, &notify_params);

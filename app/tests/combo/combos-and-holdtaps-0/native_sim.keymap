@@ -1,6 +1,6 @@
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
-#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/input_matrix_mock.h>
 
 &mt {
     flavor = "hold-preferred";
@@ -34,7 +34,7 @@ first so the decision to hold or tap can be made.
     };
 };
 
-&kscan {
+&matrix {
     events = <
         ZMK_MOCK_PRESS(0,0,10)
         ZMK_MOCK_PRESS(0,1,10)

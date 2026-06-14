@@ -13,7 +13,7 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
     };
 
     default_transform: keymap_transform_0 {
@@ -28,8 +28,8 @@
         >;
     };
 
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-direct";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-direct";
         wakeup-source;
 
         input-gpios

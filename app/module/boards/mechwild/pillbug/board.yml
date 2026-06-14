@@ -1,5 +1,6 @@
 board:
   name: pillbug
+  full_name: Pillbug
   vendor: mechwild
   socs:
     - name: nrf52840

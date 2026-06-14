@@ -6,7 +6,7 @@
 
 #include "kyria_rev3.dtsi"
 
-&kscan0 {
+&matrix {
     row-gpios
     = <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
     , <&pro_micro 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>

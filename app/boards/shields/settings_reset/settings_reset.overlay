@@ -8,11 +8,11 @@
 
 / {
     chosen {
-        zmk,kscan = &settings_reset_kscan;
+        zmk,matrix-input = &settings_reset_matrix;
     };
 
-    settings_reset_kscan: settings_reset_kscan {
-        compatible = "zmk,kscan-mock";
+    settings_reset_matrix: settings_reset_matrix {
+        compatible = "zmk,input-matrix-mock";
         columns = <1>;
         rows = <0>;
 

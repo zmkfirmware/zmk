@@ -14,7 +14,7 @@ CONFIG_I2C=y
 
 # ZMK Settings
 CONFIG_ZMK_USB=y
-CONFIG_ZMK_KSCAN_MATRIX_POLLING=y
+CONFIG_ZMK_INPUT_MATRIX_POLLING=y
 CONFIG_USB_SELF_POWERED=n
 
 # Needed to reduce this to size that will fit on F072

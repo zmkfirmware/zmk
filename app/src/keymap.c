@@ -5,6 +5,7 @@
  */
 
 #include <drivers/behavior.h>
+#include <zephyr/sys/printk.h>
 #include <zephyr/sys/util.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/logging/log.h>
@@ -524,7 +525,7 @@ static int save_bindings(void) {
                 }
 
                 char setting_name[20];
-                sprintf(setting_name, LAYER_BINDING_SETTINGS_KEY, l, kp);
+                snprintk(setting_name, ARRAY_SIZE(setting_name), LAYER_BINDING_SETTINGS_KEY, l, kp);
 
                 int ret = settings_save_one(setting_name, &binding_setting, len);
                 if (ret < 0) {
@@ -557,7 +558,7 @@ static int save_layer_names(void) {
     for (int id = 0; id < ZMK_KEYMAP_LAYERS_LEN; id++) {
         if (changed_layer_names & BIT(id)) {
             char setting_name[14];
-            sprintf(setting_name, LAYER_NAME_SETTINGS_KEY, id);
+            snprintk(setting_name, ARRAY_SIZE(setting_name), LAYER_NAME_SETTINGS_KEY, id);
             int ret = settings_save_one(setting_name, zmk_keymap_layer_names[id],
                                         strlen(zmk_keymap_layer_names[id]));
             if (ret < 0) {
@@ -662,7 +663,7 @@ int zmk_keymap_reset_settings(void) {
 
     for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
         char layer_name_setting_name[14];
-        sprintf(layer_name_setting_name, LAYER_NAME_SETTINGS_KEY, l);
+        snprintk(layer_name_setting_name, ARRAY_SIZE(layer_name_setting_name), LAYER_NAME_SETTINGS_KEY, l);
         settings_delete(layer_name_setting_name);
 
         uint8_t *changes = zmk_keymap_layer_changes[l];
@@ -676,7 +677,7 @@ int zmk_keymap_reset_settings(void) {
             if (changes[k / 8] & BIT(k % 8)) {
                 LOG_WRN("CLEAR %d on %d layer", k, l);
                 char setting_name[20];
-                sprintf(setting_name, LAYER_BINDING_SETTINGS_KEY, l, k);
+                snprintk(setting_name, ARRAY_SIZE(setting_name), LAYER_BINDING_SETTINGS_KEY, l, k);
                 settings_delete(setting_name);
             }
         }

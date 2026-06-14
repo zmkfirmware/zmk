@@ -5,7 +5,7 @@
  */
 
 #include <../boards/sparkfun/pro_micro_rp2040/sparkfun_pro_micro_rp2040.dts>
-#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
+#include <vendor/raspberrypi/rp2040-boot-mode-retention.dtsi>
 
 &pro_micro_serial { status = "disabled"; };
 

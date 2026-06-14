@@ -7,8 +7,8 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 
 / {
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-matrix";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-matrix";
         diode-direction = "row2col";
         wakeup-source;
 
@@ -104,7 +104,7 @@
 
     chosen {
         zephyr,display = &oled;
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,matrix-transform = &default_transform;
     };
 };

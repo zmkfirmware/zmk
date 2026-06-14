@@ -1,19 +1,21 @@
 
 #include <../boards/native/native_sim/native_sim.dts>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/input_matrix_mock.h>
+#include <dt-bindings/zmk/matrix_transform.h>
 
 / {
     chosen {
-        zmk,kscan = &kscan;
+	zmk,matrix-input = &matrix;
     };
 
-    kscan: native_posix_64_kscan_mock {
-        compatible = "zmk,kscan-mock";
+    matrix: native_posix_64_input_mock {
+        compatible = "zmk,input-matrix-mock";
 
         rows = <2>;
         columns = <2>;
         exit-after;
+
     };
 };
 

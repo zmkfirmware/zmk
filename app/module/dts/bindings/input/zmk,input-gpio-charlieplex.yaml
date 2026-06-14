@@ -3,9 +3,9 @@
 
 description: GPIO keyboard charlieplex matrix controller
 
-compatible: "zmk,kscan-gpio-charlieplex"
+compatible: "zmk,input-gpio-charlieplex"
 
-include: kscan.yaml
+include: base.yaml
 
 properties:
   gpios:

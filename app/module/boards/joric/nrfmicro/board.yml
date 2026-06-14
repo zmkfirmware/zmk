@@ -1,5 +1,6 @@
 board:
   name: nrfmicro
+  full_name: nRFMicro
   vendor: joric
   socs:
     - name: nrf52840

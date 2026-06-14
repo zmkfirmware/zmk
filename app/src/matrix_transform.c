@@ -59,7 +59,7 @@ struct zmk_matrix_transform {
 
 DT_INST_FOREACH_STATUS_OKAY(MATRIX_TRANSFORM_INIT);
 
-#elif DT_HAS_CHOSEN(zmk_kscan) && defined(ZMK_MATRIX_COLS) && defined(ZMK_MATRIX_ROWS)
+#elif (DT_HAS_CHOSEN(zmk_kscan) || DT_HAS_CHOSEN(zmk_matrix_input)) && defined(ZMK_MATRIX_COLS) && defined(ZMK_MATRIX_ROWS)
 
 const struct zmk_matrix_transform zmk_matrix_transform_default = {
     .rows = ZMK_MATRIX_ROWS,

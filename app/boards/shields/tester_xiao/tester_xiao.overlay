@@ -11,12 +11,12 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan0;
+        zmk,matrix-input = &matrix;
         zmk,physical-layout = &physical_layout0;
     };
 
-    kscan0: kscan {
-        compatible = "zmk,kscan-gpio-direct";
+    matrix: matrix {
+        compatible = "zmk,input-gpio-direct";
         wakeup-source;
         debounce-press-ms = <10>;
         debounce-release-ms = <10>;

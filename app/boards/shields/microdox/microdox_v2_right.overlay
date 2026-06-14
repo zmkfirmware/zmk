@@ -15,7 +15,7 @@
     com-invdir;
 };
 
-&kscan0 {
+&matrix {
     col-gpios
         = <&pro_micro 14 GPIO_ACTIVE_HIGH>
         , <&pro_micro 5  GPIO_ACTIVE_HIGH>

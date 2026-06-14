@@ -69,11 +69,11 @@ left_encoder: &encoder {
 };
 
 &split_matrix_physical_layout {
-    kscan = <&kscan_matrix>;
+    input = <&input_matrix>;
     transform = <&split_matrix_transform>;
 };
 
 &split_direct_physical_layout {
-    kscan = <&kscan_direct>;
+    input = <&input_direct>;
     transform = <&split_direct_matrix_transform>;
 };

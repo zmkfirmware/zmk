@@ -1,10 +1,10 @@
 
-#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/input_matrix_mock.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
 #include "shared.dtsi"
 
-&kscan {
+&matrix {
     events = <>;
 
     /delete-property/ exit-after;

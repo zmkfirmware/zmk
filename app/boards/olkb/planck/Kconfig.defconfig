@@ -8,7 +8,7 @@ if BOARD_PLANCK
 config ZMK_KEYBOARD_NAME
     default "Planck V6"
 
-config ZMK_KSCAN_MATRIX_POLLING
+config ZMK_INPUT_MATRIX_POLLING
     default y
 
 endif # BOARD_PLANCK

@@ -1,6 +1,6 @@
 #include <dt-bindings/zmk/keys.h>
 #include <behaviors.dtsi>
-#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/input_matrix_mock.h>
 
 
 #define ZMK_COMBO(name, combo_bindings, keypos, combo_term) \
@@ -33,13 +33,13 @@ ZMK_COMBO(tilde, &kp TILDE,     3 4, 50)
     };
 };
 
-&kscan {
+&matrix {
     rows = <3>;
     columns = <2>;
     events = <
     ZMK_MOCK_PRESS(1,1,500)
     ZMK_MOCK_PRESS(1,0,100)
     ZMK_MOCK_RELEASE(1,0,500)
-    ZMK_MOCK_RELEASE(1,1,0)
+    ZMK_MOCK_RELEASE(1,1,500)
     >;
 };

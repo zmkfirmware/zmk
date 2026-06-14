@@ -1,0 +1,12 @@
+common:
+  tags:
+    - drivers
+    - gpio
+  depends_on: gpio
+
+tests:
+  drivers.gpio.demux:
+    platform_allow:
+      - native_sim
+      - native_sim/native/64
+

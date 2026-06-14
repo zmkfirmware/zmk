@@ -4,6 +4,7 @@ set(CONFIG_APPLICATION_DEFINED_SYSCALL true)
 
 set(ZEPHYR_BOARD_ALIASES "boards/aliases.cmake")
 set(ZEPHYR_EXTRA_MODULES "${ZMK_EXTRA_MODULES};${CMAKE_CURRENT_SOURCE_DIR}/module;${CMAKE_CURRENT_SOURCE_DIR}/keymap-module")
+set(SNIPPET_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # Find Zephyr. This also loads Zephyr's build system.
 find_package(Zephyr REQUIRED HINTS ../zephyr)
@@ -27,7 +28,7 @@ add_subdirectory(src/boot)
 target_sources(app PRIVATE src/stdlib.c)
 target_sources(app PRIVATE src/activity.c)
 target_sources(app PRIVATE src/behavior.c)
-target_sources_ifdef(CONFIG_ZMK_KSCAN_SIDEBAND_BEHAVIORS app PRIVATE src/kscan_sideband_behaviors.c)
+target_sources_ifdef(CONFIG_ZMK_INPUT_SIDEBAND_BEHAVIORS app PRIVATE src/input_sideband_behaviors.c)
 target_sources(app PRIVATE src/matrix_transform.c)
 target_sources(app PRIVATE src/physical_layouts.c)
 target_sources(app PRIVATE src/sensors.c)

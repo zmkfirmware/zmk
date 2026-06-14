@@ -10,7 +10,4 @@ config USB_NRFX
 
 endif # USB_DEVICE_STACK
 
-config BT_CTLR
-    default BT
-
 endif # BOARD_NRF52840_M2

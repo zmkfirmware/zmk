@@ -10,7 +10,7 @@
     col-offset = <6>;
 };
 
-&kscan0 {
+&matrix {
     col-gpios
         = <&pro_micro 20 GPIO_ACTIVE_HIGH>  // Col1
         , <&pro_micro 19 GPIO_ACTIVE_HIGH>  // Col2

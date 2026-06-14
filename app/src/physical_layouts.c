@@ -8,7 +8,6 @@
 #include <zephyr/device.h>
 #include <zephyr/pm/device.h>
 #include <zephyr/pm/device_runtime.h>
-#include <zephyr/drivers/kscan.h>
 #include <zephyr/input/input.h>
 
 #if IS_ENABLED(CONFIG_SETTINGS)
@@ -81,17 +80,13 @@ BUILD_ASSERT(
         .matrix_transform = ZMK_MATRIX_TRANSFORM_T_FOR_NODE(DT_INST_PHANDLE(n, transform)),        \
         .keys = _CONCAT(_zmk_physical_layout_keys_, n),                                            \
         .keys_len = DT_INST_PROP_LEN_OR(n, keys, 0),                                               \
-        COND_CODE_1(UTIL_AND(MATRIX_INPUT_SUPPORT, DT_INST_PROP_LEN(n, input)),                    \
+        COND_CODE_1(UTIL_AND(MATRIX_INPUT_SUPPORT, UTIL_OR(DT_HAS_CHOSEN(zmk_matrix_input), DT_INST_PROP_LEN(n, input))),                    \
                     (.input = INPUT_FOR_INST(n)), ())                                              \
-            COND_CODE_1(UTIL_OR(DT_HAS_CHOSEN(zmk_kscan), DT_INST_PROP_LEN(n, kscan)),             \
-                        (.kscan = DEVICE_DT_GET(COND_CODE_1(DT_INST_PROP_LEN(n, kscan),            \
-                                                            (DT_INST_PHANDLE(n, kscan)),           \
-                                                            (DT_CHOSEN(zmk_kscan))))),             \
-                        ())};                                                                      \
+        };                                                                                         \
     COND_CODE_1(                                                                                   \
-        UTIL_AND(MATRIX_INPUT_SUPPORT, DT_INST_PROP_LEN(n, input)),                                \
-        (INPUT_CALLBACK_DEFINE(INPUT_FOR_INST(n), zmk_physical_layout_input_event_cb,              \
-                               (void *)&(_CONCAT(_zmk_physical_layout_, DT_DRV_INST(n))));),       \
+        UTIL_AND(MATRIX_INPUT_SUPPORT, UTIL_OR(DT_HAS_CHOSEN(zmk_matrix_input), DT_INST_PROP_LEN(n, input))),                                \
+        (INPUT_CALLBACK_DEFINE_NAMED(INPUT_FOR_INST(n), zmk_physical_layout_input_event_cb,              \
+                               (void *)&(_CONCAT(_zmk_physical_layout_, DT_DRV_INST(n))), zmk_physical_layout_input_cb_##n);),       \
         ())
 
 DT_INST_FOREACH_STATUS_OKAY(ZMK_LAYOUT_INST)
@@ -154,17 +149,17 @@ ZMK_MATRIX_TRANSFORM_EXTERN(DT_CHOSEN(zmk_matrix_transform));
 static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, chosen) = {
     .display_name = "Default",
     .matrix_transform = ZMK_MATRIX_TRANSFORM_T_FOR_NODE(DT_CHOSEN(zmk_matrix_transform)),
-    COND_CODE_1(DT_HAS_CHOSEN(zmk_kscan), (.kscan = DEVICE_DT_GET(DT_CHOSEN(zmk_kscan)), ), ())};
+};
 
 static const struct zmk_physical_layout *const layouts[] = {
     &_CONCAT(_zmk_physical_layout_, chosen)};
 
-#elif UTIL_OR(DT_HAS_CHOSEN(zmk_kscan), DT_HAS_CHOSEN(zmk_matrix_input))
+#elif DT_HAS_CHOSEN(zmk_matrix_input)
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
 #warning                                                                                           \
-    "Ignoring the physical layouts and using the chosen kscan/matrix-input with a synthetic transform. Consider setting a chosen physical layout instead."
+    "Ignoring the physical layouts and using the chosen matrix-input with a synthetic transform. Consider setting a chosen physical layout instead."
 
 #endif
 
@@ -172,11 +167,7 @@ ZMK_MATRIX_TRANSFORM_DEFAULT_EXTERN();
 static const struct zmk_physical_layout _CONCAT(_zmk_physical_layout_, chosen) = {
     .display_name = "Default",
     .matrix_transform = &zmk_matrix_transform_default,
-#if DT_HAS_CHOSEN(zmk_matrix_input)
     .input = DEVICE_DT_GET(DT_CHOSEN(zmk_matrix_input)),
-#elif DT_HAS_CHOSEN(zmk_kscan)
-    .kscan = DEVICE_DT_GET(DT_CHOSEN(zmk_kscan)),
-#endif
 };
 
 #if DT_HAS_CHOSEN(zmk_matrix_input)
@@ -212,7 +203,7 @@ static struct zmk_kscan_msg_processor {
 } msg_processor;
 
 K_MSGQ_DEFINE(physical_layouts_kscan_msgq, sizeof(struct zmk_kscan_event),
-              CONFIG_ZMK_KSCAN_EVENT_QUEUE_SIZE, 4);
+              CONFIG_ZMK_MATRIX_INPUT_EVENT_QUEUE_SIZE, 4);
 
 #if MATRIX_INPUT_SUPPORT
 
@@ -262,21 +253,6 @@ static void zmk_physical_layout_input_event_cb(struct input_event *evt, void *us
 }
 
 #endif
-
-static void zmk_physical_layout_kscan_callback(const struct device *dev, uint32_t row,
-                                               uint32_t column, bool pressed) {
-    if (dev != active->kscan) {
-        return;
-    }
-
-    struct zmk_kscan_event ev = {
-        .row = row,
-        .column = column,
-        .state = (pressed ? ZMK_KSCAN_EVENT_STATE_PRESSED : ZMK_KSCAN_EVENT_STATE_RELEASED)};
-
-    k_msgq_put(&physical_layouts_kscan_msgq, &ev, K_NO_WAIT);
-    k_work_submit(&msg_processor.work);
-}
 
 static void zmk_physical_layouts_kscan_process_msgq(struct k_work *item) {
     struct zmk_kscan_event ev;
@@ -341,12 +317,16 @@ int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_la
     }
 
     if (active) {
-        if (active->kscan) {
-            kscan_disable_callback(active->kscan);
+        const struct device *matrix = NULL;
+        if (active->input) {
+            matrix = active->input;
+        }
+
+        if (matrix) {
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
-            pm_device_runtime_put(active->kscan);
+            pm_device_runtime_put(matrix);
 #elif IS_ENABLED(CONFIG_PM_DEVICE)
-            pm_device_action_run(active->kscan, PM_DEVICE_ACTION_SUSPEND);
+            pm_device_action_run(matrix, PM_DEVICE_ACTION_SUSPEND);
 #endif
         }
     }
@@ -362,18 +342,18 @@ int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_la
 
     active = dest_layout;
 
-    if (active->kscan) {
+    const struct device *next_matrix = active->input;
+
+    if (next_matrix) {
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
-        int err = pm_device_runtime_get(active->kscan);
+        int err = pm_device_runtime_get(next_matrix);
         if (err < 0) {
-            LOG_WRN("PM runtime get of kscan device to enable it %d", err);
+            LOG_WRN("PM runtime get of input device to enable it %d", err);
             return err;
         }
 #elif IS_ENABLED(CONFIG_PM_DEVICE)
-        pm_device_action_run(active->kscan, PM_DEVICE_ACTION_RESUME);
+        pm_device_action_run(next_matrix, PM_DEVICE_ACTION_RESUME);
 #endif
-        kscan_config(active->kscan, zmk_physical_layout_kscan_callback);
-        kscan_enable_callback(active->kscan);
     }
 
     return 0;
@@ -555,9 +535,9 @@ static int zmk_physical_layouts_init(void) {
 #if IS_ENABLED(CONFIG_PM_DEVICE)
     for (int l = 0; l < ARRAY_SIZE(layouts); l++) {
         const struct zmk_physical_layout *pl = layouts[l];
-        if (pl->kscan && pm_device_wakeup_is_capable(pl->kscan) &&
-            !pm_device_wakeup_enable(pl->kscan, true)) {
-            LOG_WRN("Failed to wakeup enable %s", pl->kscan->name);
+        if (pl->input && pm_device_wakeup_is_capable(pl->input) &&
+            !pm_device_wakeup_enable(pl->input, true)) {
+            LOG_WRN("Failed to wakeup enable %s", pl->input->name);
         }
     }
 #endif // IS_ENABLED(CONFIG_PM_DEVICE)

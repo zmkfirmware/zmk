@@ -41,15 +41,15 @@ encoder: &qdec0 {
         };
     };
 
-    soft_off_direct_kscan: soft_off_direct_kscan {
-        compatible = "zmk,kscan-gpio-direct";
+    soft_off_direct_input: soft_off_direct_input {
+        compatible = "zmk,input-gpio-direct";
         input-keys = <&button0>;
         wakeup-source;
     };
 
     soft_off_sideband_behaviors {
-        compatible = "zmk,kscan-sideband-behaviors";
-        kscan = <&soft_off_direct_kscan>;
+        compatible = "zmk,input-sideband-behaviors";
+        input = <&soft_off_direct_input>;
         soft_off {
             row = <0>;
             column = <0>;
@@ -61,6 +61,6 @@ encoder: &qdec0 {
         compatible = "zmk,soft-off-wakeup-sources";
         status = "okay";
 
-        wakeup-sources = <&soft_off_direct_kscan>;
+        wakeup-sources = <&soft_off_direct_input>;
     };
 };

@@ -7,8 +7,8 @@
 #include "snap.dtsi"
 
 / {
-kscan_direct: kscan_direct {
-    compatible = "zmk,kscan-gpio-direct";
+matrix_direct: matrix_direct {
+    compatible = "zmk,input-gpio-direct";
     input-gpios
         = <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
         ;
@@ -19,15 +19,15 @@ kscan_direct: kscan_direct {
     col-offset = <8>;
 };
 
-&kscan_composite {
+&matrix_composite {
         direct {
-            kscan = <&kscan_direct>;
+            input = <&matrix_direct>;
             row-offset = <1>;
             col-offset = <8>;
     };
 };
 
-&kscan_demux {
+&matrix_demux {
     input-gpios
         = <&pro_micro 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
         , <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>

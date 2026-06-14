@@ -1,11 +1,13 @@
 boards:
   - name: bt60_hs
+    full_name: BT60 (Hotswap)
     vendor: polarityworks
     socs:
       - name: nrf52840
         variants:
           - name: zmk
   - name: bt60
+    full_name: BT60
     vendor: polarityworks
     socs:
       - name: nrf52840

@@ -4,3 +4,5 @@ build:
   settings:
     dts_root: .
     board_root: .
+tests:
+  - tests

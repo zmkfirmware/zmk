@@ -6,7 +6,6 @@
         compatible = "zmk,physical-layout";
         display-name = "65% All 1U";
 
-        kscan = <&kscan0>;
         transform = <&matrix_transform_65_all1u>;
 
         keys  //                     w   h    x    y     rot    rx    ry

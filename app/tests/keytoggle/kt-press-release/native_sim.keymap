@@ -1,6 +1,6 @@
 #include "../behavior_keymap.dtsi"
 
-&kscan {
+&matrix {
     events = <
         ZMK_MOCK_PRESS(0,0,10)
         ZMK_MOCK_RELEASE(0,0,10)

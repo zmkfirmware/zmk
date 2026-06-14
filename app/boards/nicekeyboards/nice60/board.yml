@@ -1,5 +1,6 @@
 board:
   name: nice60
+  full_name: nice!60
   vendor: nicekeyboards
   socs:
     - name: nrf52840

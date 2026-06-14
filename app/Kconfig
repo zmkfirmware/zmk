@@ -516,33 +516,43 @@ config ZMK_PHYSICAL_LAYOUT_KEY_ROTATION
     bool "Support rotation of keys in physical layouts"
     default y
 
-menuconfig ZMK_KSCAN
-    bool "ZMK KScan Integration"
+config ZMK_MATRIX_INPUT
+    bool "ZMK Matrix Input Integration"
     default y
-    select KSCAN
+    select INPUT
+    # PM_DEVICE is used to resume/suspend the selected input device.
+    select PM_DEVICE
 
-if ZMK_KSCAN
+if ZMK_MATRIX_INPUT
 
-config ZMK_KSCAN_EVENT_QUEUE_SIZE
-    int "Size of the event queue for KSCAN events to buffer events"
+config ZMK_MATRIX_INPUT_EVENT_QUEUE_SIZE
+    int "Size of the event queue for matrix input events to buffer events"
     default 4
 
-endif # ZMK_KSCAN
+endif # ZMK_MATRIX_INPUT
 
-config ZMK_KSCAN_SIDEBAND_BEHAVIORS
+if INPUT
+
+choice INPUT_MODE
+    default INPUT_MODE_SYNCHRONOUS
+endchoice
+
+endif
+
+config ZMK_INPUT_SIDEBAND_BEHAVIORS
     bool
     default y
-    depends on DT_HAS_ZMK_KSCAN_SIDEBAND_BEHAVIORS_ENABLED
-    select KSCAN
+    depends on DT_HAS_ZMK_INPUT_SIDEBAND_BEHAVIORS_ENABLED
+    select INPUT
 
-if ZMK_KSCAN_SIDEBAND_BEHAVIORS
+if ZMK_INPUT_SIDEBAND_BEHAVIORS
 
-config ZMK_KSCAN_SIDEBAND_BEHAVIORS_INIT_PRIORITY
-    int "Keyboard scan sideband behaviors driver init priority"
+config ZMK_INPUT_SIDEBAND_BEHAVIORS_INIT_PRIORITY
+    int "Input sideband behaviors driver init priority"
     # The default kscan init priority is 90, so be sure we are initialized later.
     default 95
 
-endif # ZMK_KSCAN_SIDEBAND_BEHAVIORS
+endif # ZMK_INPUT_SIDEBAND_BEHAVIORS
 
 menu "Logging"
 
@@ -676,8 +686,8 @@ config KERNEL_BIN_NAME
 config REBOOT
     default y
 
-config USB_DEVICE_STACK
-    default y if HAS_HW_NRF_USBD
+#config USB_DEVICE_STACK
+#    default y if HAS_HW_NRF_USBD
 
 config FPU
     default CPU_HAS_FPU

@@ -1,5 +1,6 @@
 board:
   name: mikoto
+  full_name: Mikoto
   vendor: zhiayang
   revision:
     format: major.minor.patch

@@ -11,4 +11,11 @@ config BOARD
 config ZMK_KEYBOARD_NAME
     default "BDN9 Rev2"
 
+if USB_CDC_ACM
+
+config USB_CDC_ACM_RINGBUF_SIZE
+    default 256
+
+endif # USB_CDC_ACM
+
 endif # BOARD_BDN9

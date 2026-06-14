@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 # Enable both USB and BLE
-CONFIG_ZMK_USB=y
+CONFIG_USB_DEVICE_STACK=y
 CONFIG_ZMK_BLE=y
 
 # Keyboard IDs

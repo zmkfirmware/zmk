@@ -4,7 +4,7 @@
 
 #include "shared.dtsi"
 
-&kscan {
+&matrix {
     /delete-property/ exit-after;
     events = <>;
 };

@@ -1,19 +1,20 @@
-# Copyright (c) 2020, Pete Johanson
+# Copyright (c) 2020-2026 Pete Johanson
 # SPDX-License-Identifier: MIT
 
-description: GPIO keyboard matrix controller
+description: Direct GPIO keyboard input controller
 
-compatible: "zmk,kscan-gpio-matrix"
+compatible: "zmk,input-gpio-direct"
 
-include: kscan.yaml
+include: base.yaml
 
 properties:
-  row-gpios:
+  input-gpios:
     type: phandle-array
-    required: true
-  col-gpios:
-    type: phandle-array
-    required: true
+    required: false
+  input-keys:
+    type: phandles
+    required: false
+    description: List of gpio-key references
   debounce-period:
     type: int
     required: false
@@ -34,10 +35,7 @@ properties:
   poll-period-ms:
     type: int
     default: 10
-    description: Time between reads in milliseconds when no key is pressed and ZMK_KSCAN_MATRIX_POLLING is enabled.
-  diode-direction:
-    type: string
-    default: row2col
-    enum:
-      - row2col
-      - col2row
+    description: Time between reads in milliseconds when no key is pressed and ZMK_KSCAN_DIRECT_POLLING is enabled.
+  toggle-mode:
+    type: boolean
+    description: Enable toggle-switch mode.

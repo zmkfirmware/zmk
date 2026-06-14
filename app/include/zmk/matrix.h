@@ -8,7 +8,8 @@
 
 #include <zephyr/devicetree.h>
 
-#define ZMK_MATRIX_NODE_ID DT_CHOSEN(zmk_kscan)
+#define ZMK_KSCAN_MATRIX_NODE_ID DT_CHOSEN(zmk_kscan)
+#define ZMK_INPUT_MATRIX_NODE_ID DT_CHOSEN(zmk_matrix_input)
 #define ZMK_MATRIX_HAS_TRANSFORM DT_HAS_CHOSEN(zmk_matrix_transform)
 
 #if DT_HAS_COMPAT_STATUS_OKAY(zmk_physical_layout)
@@ -26,15 +27,21 @@
 
 #else /* DT_HAS_CHOSEN(zmk_matrix_transform) */
 
-#if DT_NODE_HAS_PROP(ZMK_MATRIX_NODE_ID, row_gpios)
-#define ZMK_MATRIX_ROWS DT_PROP_LEN(ZMK_MATRIX_NODE_ID, row_gpios)
-#define ZMK_MATRIX_COLS DT_PROP_LEN(ZMK_MATRIX_NODE_ID, col_gpios)
-#elif DT_NODE_HAS_PROP(ZMK_MATRIX_NODE_ID, input_gpios)
-#define ZMK_MATRIX_ROWS 1
-#define ZMK_MATRIX_COLS DT_PROP_LEN(ZMK_MATRIX_NODE_ID, input_gpios)
+#if DT_HAS_CHOSEN(zmk_matrix_input)
+#define MATRIX_NODE ZMK_INPUT_MATRIX_NODE_ID
 #else
-#define ZMK_MATRIX_ROWS DT_PROP(ZMK_MATRIX_NODE_ID, rows)
-#define ZMK_MATRIX_COLS DT_PROP(ZMK_MATRIX_NODE_ID, columns)
+#define MATRIX_NODE ZMK_KSCAN_MATRIX_NODE_ID
+#endif
+
+#if DT_NODE_HAS_PROP(MATRIX_NODE, row_gpios)
+#define ZMK_MATRIX_ROWS DT_PROP_LEN(MATRIX_NODE, row_gpios)
+#define ZMK_MATRIX_COLS DT_PROP_LEN(MATRIX_NODE, col_gpios)
+#elif DT_NODE_HAS_PROP(MATRIX_NODE, input_gpios)
+#define ZMK_MATRIX_ROWS 1
+#define ZMK_MATRIX_COLS DT_PROP_LEN(MATRIX_NODE, input_gpios)
+#else
+#define ZMK_MATRIX_ROWS DT_PROP(MATRIX_NODE, rows)
+#define ZMK_MATRIX_COLS DT_PROP(MATRIX_NODE, columns)
 #endif
 
 #define ZMK_KEYMAP_LEN (ZMK_MATRIX_COLS * ZMK_MATRIX_ROWS)

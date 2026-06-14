@@ -1,5 +1,6 @@
 board:
   name: ferris
+  full_name: Ferris
   vendor: pierrechevalier83
   socs:
     - name: stm32f072xb

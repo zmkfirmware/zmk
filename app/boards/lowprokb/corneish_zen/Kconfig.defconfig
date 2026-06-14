@@ -22,9 +22,6 @@ config BOARD
 config ZMK_SPLIT
     default y
 
-config BT_CTLR
-    default BT
-
 if USB
 
 config USB_NRFX

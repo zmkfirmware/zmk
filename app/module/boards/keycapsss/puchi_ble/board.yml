@@ -1,5 +1,6 @@
 board:
   name: puchi_ble
+  full_name: Puchi BLE
   vendor: keycapsss
   socs:
     - name: nrf52840

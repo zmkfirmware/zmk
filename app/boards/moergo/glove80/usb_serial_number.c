@@ -7,7 +7,6 @@
 #include <string.h>
 #include <zephyr/usb/usb_device.h>
 #include <zephyr/drivers/hwinfo.h>
-#include "usb_descriptor.h"
 
 #define LOG_LEVEL CONFIG_USB_DEVICE_LOG_LEVEL
 #include <zephyr/logging/log.h>

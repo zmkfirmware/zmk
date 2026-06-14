@@ -3,3 +3,4 @@
 
 config SHIELD_NIBBLE
     def_bool $(shields_list_contains,nibble)
+    select ZMK_INPUT_MATRIX_POLLING

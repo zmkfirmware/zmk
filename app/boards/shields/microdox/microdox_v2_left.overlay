@@ -6,7 +6,7 @@
 
 #include "microdox_v2.dtsi"
 
-&kscan0 {
+&matrix {
     col-gpios
         = <&pro_micro 4  GPIO_ACTIVE_HIGH>
         , <&pro_micro 6  GPIO_ACTIVE_HIGH>

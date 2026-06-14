@@ -1,7 +1,7 @@
 #include <input/processors.dtsi>
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/input_matrix_mock.h>
 #include <dt-bindings/zmk/pointing.h>
 
 &mmv_input_listener {
@@ -23,7 +23,7 @@
 };
 
 
-&kscan {
+&matrix {
     events = <
         ZMK_MOCK_PRESS(0,0,10)
         ZMK_MOCK_PRESS(0,1,100)

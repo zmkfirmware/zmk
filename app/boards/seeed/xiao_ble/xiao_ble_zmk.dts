@@ -11,6 +11,18 @@
 sd_partition: &reserved_partition_0 { };
 
 / {
+	chosen {
+		/delete-property/ zephyr,console;
+		/delete-property/ zephyr,shell-uart;
+		/delete-property/ zephyr,uart-mcumgr;
+		/delete-property/ zephyr,bt-mon-uart;
+		/delete-property/ zephyr,bt-c2h-uart;
+	};
+};
+
+/delete-node/ &board_cdc_acm_uart;
+
+/ {
     chosen {
         zmk,battery = &vbatt;
     };

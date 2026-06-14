@@ -6,4 +6,128 @@ config ZMK_INPUT_MOCK
     default y
     depends on DT_HAS_ZMK_INPUT_MOCK_ENABLED
 
+config ZMK_INPUT_MATRIX_MOCK
+    bool "Input Matrix Mock"
+    default y
+    depends on DT_HAS_ZMK_INPUT_MATRIX_MOCK_ENABLED
+
+config ZMK_INPUT_COMPOSITE
+    bool "Componsite Input Driver"
+    default y
+    depends on DT_HAS_ZMK_INPUT_COMPOSITE_ENABLED
+
+if ZMK_INPUT_COMPOSITE
+
+config ZMK_INPUT_COMPOSITE_INIT_PRIORITY
+    int "Init Priority for the composite input driver"
+    default 95
+
+endif # ZMK_INPUT_COMPOSITE
+
+config ZMK_INPUT_GPIO_DRIVER
+    bool
+    select GPIO
+    select ZMK_DEBOUNCE
+
+config ZMK_INPUT_GPIO_DEMUX
+    bool
+    default y
+    depends on DT_HAS_ZMK_INPUT_GPIO_DEMUX_ENABLED
+    select ZMK_INPUT_GPIO_DRIVER
+
+config ZMK_INPUT_GPIO_DIRECT
+    bool
+    default y
+    depends on DT_HAS_ZMK_INPUT_GPIO_DIRECT_ENABLED
+    select ZMK_INPUT_GPIO_DRIVER
+
+config ZMK_INPUT_GPIO_MATRIX
+    bool
+    default y
+    depends on DT_HAS_ZMK_INPUT_GPIO_MATRIX_ENABLED
+    select ZMK_INPUT_GPIO_DRIVER
+
+config ZMK_INPUT_GPIO_CHARLIEPLEX
+    bool
+    default y
+    depends on DT_HAS_ZMK_INPUT_GPIO_CHARLIEPLEX_ENABLED
+    select ZMK_INPUT_GPIO_DRIVER
+
+if ZMK_INPUT_GPIO_MATRIX
+
+config ZMK_INPUT_MATRIX_WAIT_BEFORE_INPUTS
+    int "Ticks to wait before reading inputs after an output set active"
+    default 0
+    help
+        When iterating over each output to drive it active, read inputs, then set
+        inactive again, some boards may take time for output to propagate to the
+        inputs. In that scenario, set this value to a positive value to configure
+        the number of ticks to wait after setting an output active before reading
+        the inputs for their active state.
+
+config ZMK_INPUT_MATRIX_WAIT_BETWEEN_OUTPUTS
+    int "Ticks to wait between each output when scanning"
+    default 1 if SOC_RP2040 || SOC_SERIES_RP2350
+    default 0
+    help
+        When iterating over each output to drive it active, read inputs, then set
+        inactive again, some boards may take time for the previous output to
+        "settle" before reading inputs for the next active output column. In that
+        scenario, set this value to a positive value to configure the number of
+        ticks to wait after reading each column of keys.
+
+endif # ZMK_INPUT_GPIO_MATRIX
+
+if ZMK_INPUT_GPIO_CHARLIEPLEX
+
+config ZMK_INPUT_CHARLIEPLEX_WAIT_BEFORE_INPUTS
+    int "Ticks to wait before reading inputs after an output set active"
+    default 0
+    help
+        When iterating over each output to drive it active, read inputs, then set
+        inactive again, some boards may take time for output to propagate to the
+        inputs. In that scenario, set this value to a positive value to configure
+        the number of ticks to wait after setting an output active before reading
+        the inputs for their active state.
+
+config ZMK_INPUT_CHARLIEPLEX_WAIT_BETWEEN_OUTPUTS
+    int "Ticks to wait between each output when scanning charlieplex matrix"
+    default 0
+    help
+        When iterating over each output to drive it active, read inputs, then set
+        inactive again, some boards may take time for the previous output to
+        "settle" before reading inputs for the next active output column. In that
+        scenario, set this value to a positive value to configure the number of
+        usecs to wait after reading each column of keys.
+
+endif # ZMK_INPUT_GPIO_CHARLIEPLEX
+
+if ZMK_INPUT_GPIO_DRIVER
+
+config ZMK_INPUT_MATRIX_POLLING
+    bool "Poll for key event triggers instead of using interrupts on matrix boards."
+
+config ZMK_INPUT_DIRECT_POLLING
+    bool "Poll for key event triggers instead of using interrupts on direct wired boards."
+
+config ZMK_INPUT_DEBOUNCE_PRESS_MS
+    int "Debounce time for key press in milliseconds."
+    default -1
+    help
+        Global debounce time for key press in milliseconds.
+        If this is -1, the debounce time is controlled by the debounce-press-ms
+        Devicetree property, which defaults to 5 ms. Otherwise this overrides the
+        debounce time for all key scan drivers to the chosen value.
+
+config ZMK_INPUT_DEBOUNCE_RELEASE_MS
+    int "Debounce time for key release in milliseconds."
+    default -1
+    help
+        Global debounce time for key release in milliseconds.
+        If this is -1, the debounce time is controlled by the debounce-release-ms
+        Devicetree property, which defaults to 5 ms. Otherwise this overrides the
+        debounce time for all key scan drivers to the chosen value.
+
+endif
+
 endif
