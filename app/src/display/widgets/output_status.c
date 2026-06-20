@@ -5,7 +5,6 @@
  */
 
 #include <zephyr/kernel.h>
-
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -14,6 +13,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
 #include <zmk/events/endpoint_changed.h>
+#include <zmk/events/usb_conn_state_changed.h>
 #include <zmk/usb.h>
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
@@ -25,14 +25,22 @@ struct output_status_state {
     enum zmk_transport preferred_transport;
     bool active_profile_connected;
     bool active_profile_bonded;
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+    bool usb_present;
+#endif
 };
 
-static struct output_status_state get_state(const zmk_event_t *_eh) {
+static struct output_status_state get_state(const zmk_event_t *eh) {
+    const struct zmk_usb_conn_state_changed *ev = as_zmk_usb_conn_state_changed(eh);
+
     return (struct output_status_state){
         .selected_endpoint = zmk_endpoint_get_selected(),
         .preferred_transport = zmk_endpoint_get_preferred_transport(),
         .active_profile_connected = zmk_ble_active_profile_is_connected(),
         .active_profile_bonded = !zmk_ble_active_profile_is_open(),
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+        .usb_present = (ev != NULL) ? (ev->conn_state == ZMK_USB_CONN_HID) : zmk_usb_is_hid_ready(),
+#endif
     };
 }
 
@@ -42,9 +50,20 @@ static void set_status_symbol(lv_obj_t *label, struct output_status_state state)
     enum zmk_transport transport = state.selected_endpoint.transport;
     bool connected = transport != ZMK_TRANSPORT_NONE;
 
-    // If we aren't connected, show what we're *trying* to connect to.
+    // Fix 1: Resolve "USB X" incorrect display issue
+    // If there's no active connection (e.g., cable just unplugged)
     if (!connected) {
-        transport = state.preferred_transport;
+        // Only show USB icon when USB is actually powered and HID ready
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+        if (state.preferred_transport == ZMK_TRANSPORT_USB && state.usb_present) {
+            transport = ZMK_TRANSPORT_USB;
+        } else {
+            // Otherwise (unplugged or preferred is BLE), show BLE status
+            transport = ZMK_TRANSPORT_BLE;
+        }
+#else
+        transport = ZMK_TRANSPORT_BLE;
+#endif
     }
 
     switch (transport) {
@@ -59,20 +78,26 @@ static void set_status_symbol(lv_obj_t *label, struct output_status_state state)
         }
         break;
 
-    case ZMK_TRANSPORT_BLE:
+    case ZMK_TRANSPORT_BLE: {
+        // Fix 2: Resolve Profile Index always showing as 1
+        // Get actual profile index directly from BLE module, not from endpoint cache
+        int active_profile_index = zmk_ble_active_profile_index();
+
         if (state.active_profile_bonded) {
             if (state.active_profile_connected) {
                 snprintf(text, sizeof(text), LV_SYMBOL_WIFI " %i " LV_SYMBOL_OK,
-                         state.selected_endpoint.ble.profile_index + 1);
+                         active_profile_index + 1);
             } else {
                 snprintf(text, sizeof(text), LV_SYMBOL_WIFI " %i " LV_SYMBOL_CLOSE,
-                         state.selected_endpoint.ble.profile_index + 1);
+                         active_profile_index + 1);
             }
         } else {
+            // Unbonded state shows Settings icon
             snprintf(text, sizeof(text), LV_SYMBOL_WIFI " %i " LV_SYMBOL_SETTINGS,
-                     state.selected_endpoint.ble.profile_index + 1);
+                     active_profile_index + 1);
         }
         break;
+    }
     }
 
     lv_label_set_text(label, text);
@@ -86,8 +111,11 @@ static void output_status_update_cb(struct output_status_state state) {
 ZMK_DISPLAY_WIDGET_LISTENER(widget_output_status, struct output_status_state,
                             output_status_update_cb, get_state)
 ZMK_SUBSCRIPTION(widget_output_status, zmk_endpoint_changed);
-// We don't get an endpoint changed event when the active profile connects/disconnects
-// but there wasn't another endpoint to switch from/to, so update on BLE events too.
+
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
+ZMK_SUBSCRIPTION(widget_output_status, zmk_usb_conn_state_changed);
+#endif
+
 #if defined(CONFIG_ZMK_BLE)
 ZMK_SUBSCRIPTION(widget_output_status, zmk_ble_active_profile_changed);
 #endif
