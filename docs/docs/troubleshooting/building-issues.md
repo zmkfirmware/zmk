@@ -53,12 +53,10 @@ A `devicetree_generated.h` error that follows with an "undeclared here" string i
 
 In this example, the error string `DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label` indicates a problem with the key binding in position `12` in the `symbol_layer` of the keymap.
 
-:::info
 Key positions are numbered starting from `0` at the top left key on the keymap, incrementing horizontally, row by row.
-:::
 
 :::tip
-A common mistake that leads to this error is to use [key press keycodes](keymaps/behaviors/key-press.md) without the leading `&kp` binding. That is, having entries such as `SPACE` that should have been `&kp SPACE`.
+A common mistake that leads to this error is to use [key press keycodes](keymaps/behaviors/key-press.md) without the leading `&kp` binding. That is, having entries such as `&kp A SPACE &kp B` that should have been `&kp A &kp SPACE &kp B`.
 :::
 
 ## Diagnosing Unexpected Build Results

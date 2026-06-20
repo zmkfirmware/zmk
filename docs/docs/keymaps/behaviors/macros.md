@@ -312,10 +312,6 @@ To avoid repetition or possible typos when declaring a **zero parameter macro**,
     )
 ```
 
-:::note
-`ZMK_MACRO()` **only supports declaring non-parameterized (zero parameter) macros**; parameterized declarations are not currently supported.
-:::
-
 This can be used instead of a complete macro definition. During the firmware build process, the example above would produce the complete macro definition below:
 
 ```dts

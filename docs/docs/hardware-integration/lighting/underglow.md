@@ -15,12 +15,10 @@ For example: the `kyria` shield has a [`boards/nice_nano_nrf52840_zmk.overlay`](
 
 ### nRF52-Based Boards
 
-Using an SPI-based LED strip driver on the `&spi3` interface is the simplest option for nRF52-based boards. If possible, avoid using pins which are limited to low-frequency I/O for this purpose. The resulting interference may result in poor wireless performance.
+Using an SPI-based LED strip driver on the `&spi3` interface is the simplest option for nRF52-based boards.
 
 :::info
-
-The list of low frequency I/O pins for the nRF52840 can be found [here](https://docs.nordicsemi.com/bundle/ps_nrf52840/page/pin.html).
-
+If possible, avoid using pins which are limited to low-frequency I/O for this purpose. The resulting interference may result in poor wireless performance. The list of low frequency I/O pins for the nRF52840 can be found at <https://docs.nordicsemi.com/bundle/ps_nrf52840/page/pin.html>.
 :::
 
 The following example uses `P0.06` as the "Data In" pin of a WS2812-compatible LED strip:
@@ -69,12 +67,8 @@ The following example uses `P0.06` as the "Data In" pin of a WS2812-compatible L
 };
 ```
 
-:::note
-
 Standard WS2812 LEDs use a wire protocol where the bits for the colors green, red, and blue values are sent in that order.
 If your board/shield uses LEDs that require the data sent in a different order, the `color-mapping` property ordering should be changed to match.
-
-:::
 
 ### Other Boards
 

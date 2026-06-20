@@ -44,13 +44,9 @@ It is recommended to add the `wakeup-source` property to `kscan` devices even if
 
 The soft off feature is used to turn the keyboard on and off explicitly, rather than through a timeout like the deep sleep feature. Depending on the keyboard, this may be through a dedicated on/off push button defined in hardware, or merely through an additional binding in the keymap to turn the device off and an existing reset button to turn the device back on.
 
-The feature is intended as an alternative to using a hardware switch to physically cut power from the battery to the keyboard. This can be useful for existing PCBs not designed for wireless that don't have a power switch, or for new designs that favor a push button on/off like found on other devices. It yields power savings comparable to the deep sleep state.
-
-:::note
-
 The device enters the same software power-off state as in deep sleep, but is significantly more restrictive in the sources which can wake it. Power is _not_ technically removed from the entire system, unlike a hardware switch.
 
-:::
+The feature is intended as an alternative to using a hardware switch to physically cut power from the battery to the keyboard. This can be useful for existing PCBs not designed for wireless that don't have a power switch, or for new designs that favor a push button on/off like found on other devices. It yields power savings comparable to the deep sleep state.
 
 A device can be put in the soft off state by:
 

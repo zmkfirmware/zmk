@@ -32,7 +32,7 @@ This guide assumes you already have a configured GitHub account. If you don't ye
 
 Follow these steps to create your new repository:
 
-- Visit https://github.com/zmkfirmware/unified-zmk-config-template
+- Visit <https://github.com/zmkfirmware/unified-zmk-config-template>
 - Click the green "Use this template" button
 - In the drop down that opens, click "Use this template".
 - In the following screen, provide the following information:

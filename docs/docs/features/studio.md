@@ -6,7 +6,7 @@ ZMK Studio provides runtime update functionality to ZMK powered devices, allowin
 
 :::info
 
-To use ZMK Studio, a keyboard needs to be [configured appropriately](#adding-zmk-studio-support-to-a-keyboard). ZMK has updated some, but not all, of its in-tree keyboards for use with ZMK Studio, the list of which can be found [here](/blog/2024/11/11/zmk-studio-mvp-ga). If your keyboard is supported by an external module/config, check with the maintainer to see if support has been added.
+To use ZMK Studio, a keyboard needs to be [configured appropriately](#adding-zmk-studio-support-to-a-keyboard). ZMK has updated some, but not all, of its in-tree keyboards for use with ZMK Studio, the list of which can be found in the [ZMK Studio blog post](/blog/2024/11/11/zmk-studio-mvp-ga). If your keyboard is supported by an external module/config, check with the maintainer to see if support has been added.
 
 :::
 
@@ -54,7 +54,7 @@ Generally, if you intend to use ZMK Studio, then you should not make any further
 
 ## Accessing ZMK Studio
 
-You can use ZMK Studio with Chrome/Edge at https://zmk.studio/.
+You can use ZMK Studio with Chrome/Edge at <https://zmk.studio/>.
 
 To use the native app for Linux, macOS, or Windows, visit the [download page](https://zmk.studio/download).
 

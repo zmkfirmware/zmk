@@ -11,7 +11,7 @@ Your keyboard likely uses only one type, depending on the type of LED hardware i
 - [Backlight](#backlight) system controls parallel-connected, non-addressable, single color LEDs.
   These are found on keyboards that have a single color backlight that only allows for brightness control.
 
-:::warning
+:::info
 
 Although the naming of the systems might imply it, which system you use typically does _not_ depend on the physical location of the LEDs.
 Instead, you should use the one that supports the LED hardware type that your keyboard has, as described above.
