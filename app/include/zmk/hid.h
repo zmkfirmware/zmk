@@ -101,159 +101,112 @@
 
 #define HID_USAGE16_SINGLE(a) HID_USAGE16((a & 0xFF), ((a >> 8) & 0xFF))
 
-static const uint8_t zmk_hid_report_desc[] = {
-    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
-    HID_USAGE(HID_USAGE_GD_KEYBOARD),
-    HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_KEYBOARD),
-    HID_USAGE_PAGE(HID_USAGE_KEY),
-    HID_USAGE_MIN8(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),
-    HID_USAGE_MAX8(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI),
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x01),
+#define ZMK_HID_REPORT_DESC_COMMON_PREFIX                                                          \
+    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP), HID_USAGE(HID_USAGE_GD_KEYBOARD),                       \
+        HID_COLLECTION(HID_COLLECTION_APPLICATION), HID_REPORT_ID(ZMK_HID_REPORT_ID_KEYBOARD),     \
+        HID_USAGE_PAGE(HID_USAGE_KEY), HID_USAGE_MIN8(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),         \
+        HID_USAGE_MAX8(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI), HID_LOGICAL_MIN8(0x00),                  \
+        HID_LOGICAL_MAX8(0x01),                                                                    \
+                                                                                                   \
+        HID_REPORT_SIZE(0x01), HID_REPORT_COUNT(0x08),                                             \
+        HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),            \
+                                                                                                   \
+        HID_USAGE_PAGE(HID_USAGE_KEY), HID_REPORT_SIZE(0x08), HID_REPORT_COUNT(0x01),              \
+        HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),           \
+                                                                                                   \
+        IF_ENABLED(                                                                                \
+            CONFIG_ZMK_HID_INDICATORS,                                                             \
+            (HID_USAGE_PAGE(HID_USAGE_LED), HID_USAGE_MIN8(HID_USAGE_LED_NUM_LOCK),                \
+             HID_USAGE_MAX8(HID_USAGE_LED_KANA), HID_REPORT_SIZE(0x01), HID_REPORT_COUNT(0x05),    \
+             HID_OUTPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),      \
+                                                                                                   \
+             HID_USAGE_PAGE(HID_USAGE_LED), HID_REPORT_SIZE(0x03), HID_REPORT_COUNT(0x01),         \
+             HID_OUTPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS), ))  \
+                                                                                                   \
+            HID_USAGE_PAGE(HID_USAGE_KEY)
 
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x08),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+#define ZMK_HID_REPORT_DESC_COMMON_SUFFIX                                                          \
+    HID_END_COLLECTION, HID_USAGE_PAGE(HID_USAGE_CONSUMER),                                        \
+        HID_USAGE(HID_USAGE_CONSUMER_CONSUMER_CONTROL),                                            \
+        HID_COLLECTION(HID_COLLECTION_APPLICATION), HID_REPORT_ID(ZMK_HID_REPORT_ID_CONSUMER),     \
+        HID_USAGE_PAGE(HID_USAGE_CONSUMER),                                                        \
+                                                                                                   \
+        IF_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC,                                    \
+                   (HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX16(0xFF, 0x00), HID_USAGE_MIN8(0x00),   \
+                    HID_USAGE_MAX8(0xFF), HID_REPORT_SIZE(0x08), ))                                \
+            IF_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL,                                 \
+                       (HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX16(0xFF, 0x0F),                     \
+                        HID_USAGE_MIN8(0x00), HID_USAGE_MAX16(0xFF, 0x0F),                         \
+                        HID_REPORT_SIZE(0x10), ))                                                  \
+                HID_REPORT_COUNT(CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE),                             \
+        HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),          \
+        HID_END_COLLECTION,                                                                        \
+                                                                                                   \
+        IF_ENABLED(                                                                                \
+            CONFIG_ZMK_POINTING,                                                                   \
+            (HID_USAGE_PAGE(HID_USAGE_GD), HID_USAGE(HID_USAGE_GD_MOUSE),                          \
+             HID_COLLECTION(HID_COLLECTION_APPLICATION), HID_REPORT_ID(ZMK_HID_REPORT_ID_MOUSE),   \
+             HID_USAGE(HID_USAGE_GD_POINTER), HID_COLLECTION(HID_COLLECTION_PHYSICAL),             \
+             HID_USAGE_PAGE(HID_USAGE_BUTTON), HID_USAGE_MIN8(0x1),                                \
+             HID_USAGE_MAX8(ZMK_HID_MOUSE_NUM_BUTTONS), HID_LOGICAL_MIN8(0x00),                    \
+             HID_LOGICAL_MAX8(0x01), HID_REPORT_SIZE(0x01), HID_REPORT_COUNT(0x5),                 \
+             HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),       \
+             HID_REPORT_SIZE(0x03), HID_REPORT_COUNT(0x01),                                        \
+             HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),      \
+             HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP), HID_USAGE(HID_USAGE_GD_X),                     \
+             HID_USAGE(HID_USAGE_GD_Y), HID_LOGICAL_MIN16(0x00, 0x80),                             \
+             HID_LOGICAL_MAX16(0xFF, 0x7F), HID_REPORT_SIZE(0x10), HID_REPORT_COUNT(0x02),         \
+             HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),       \
+             HID_COLLECTION(HID_COLLECTION_LOGICAL),                                               \
+             IF_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING,                                      \
+                        (HID_USAGE(HID_USAGE_GD_RESOLUTION_MULTIPLIER), HID_LOGICAL_MIN8(0x00),    \
+                         HID_LOGICAL_MAX8(0x0F), HID_PHYSICAL_MIN8(0x01), HID_PHYSICAL_MAX8(0x10), \
+                         HID_REPORT_SIZE(0x04), HID_REPORT_COUNT(0x01), HID_PUSH,                  \
+                         HID_FEATURE(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR |                \
+                                     ZMK_HID_MAIN_VAL_ABS), )) HID_USAGE(HID_USAGE_GD_WHEEL),      \
+             HID_LOGICAL_MIN16(0x00, 0x80), HID_LOGICAL_MAX16(0xFF, 0x7F),                         \
+             HID_PHYSICAL_MIN8(0x00), HID_PHYSICAL_MAX8(0x00), HID_REPORT_SIZE(0x10),              \
+             HID_REPORT_COUNT(0x01),                                                               \
+             HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),       \
+             HID_END_COLLECTION, HID_COLLECTION(HID_COLLECTION_LOGICAL),                           \
+             IF_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING,                                      \
+                        (HID_USAGE(HID_USAGE_GD_RESOLUTION_MULTIPLIER), HID_POP,                   \
+                         HID_FEATURE(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR |                \
+                                     ZMK_HID_MAIN_VAL_ABS), )) HID_USAGE_PAGE(HID_USAGE_CONSUMER), \
+             HID_USAGE16_SINGLE(HID_USAGE_CONSUMER_AC_PAN), HID_LOGICAL_MIN16(0x00, 0x80),         \
+             HID_LOGICAL_MAX16(0xFF, 0x7F), HID_PHYSICAL_MIN8(0x00), HID_PHYSICAL_MAX8(0x00),      \
+             HID_REPORT_SIZE(0x10), HID_REPORT_COUNT(0x01),                                        \
+             HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),       \
+             HID_END_COLLECTION, HID_END_COLLECTION, HID_END_COLLECTION, ))
 
-    HID_USAGE_PAGE(HID_USAGE_KEY),
-    HID_REPORT_SIZE(0x08),
-    HID_REPORT_COUNT(0x01),
-    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+#define ZMK_HID_REPORT_DESC_NKRO_KEYBOARD_ITEMS                                                    \
+    HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX8(0x01), HID_USAGE_MIN8(0x00),                          \
+        HID_USAGE_MAX8(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE), HID_REPORT_SIZE(0x01),                    \
+        HID_REPORT_COUNT(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1),                                     \
+        HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS)
 
-#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+#define ZMK_HID_REPORT_DESC_HKRO_KEYBOARD_ITEMS                                                    \
+    HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX16(0xFF, 0x00), HID_USAGE_MIN8(0x00),                   \
+        HID_USAGE_MAX8(0xFF), HID_REPORT_SIZE(0x08),                                               \
+        HID_REPORT_COUNT(CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE),                                     \
+        HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS)
 
-    HID_USAGE_PAGE(HID_USAGE_LED),
-    HID_USAGE_MIN8(HID_USAGE_LED_NUM_LOCK),
-    HID_USAGE_MAX8(HID_USAGE_LED_KANA),
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x05),
-    HID_OUTPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-
-    HID_USAGE_PAGE(HID_USAGE_LED),
-    HID_REPORT_SIZE(0x03),
-    HID_REPORT_COUNT(0x01),
-    HID_OUTPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-
-#endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
-
-    HID_USAGE_PAGE(HID_USAGE_KEY),
+#define ZMK_HID_REPORT_DESC(keyboard_items)                                                        \
+    {ZMK_HID_REPORT_DESC_COMMON_PREFIX, keyboard_items, ZMK_HID_REPORT_DESC_COMMON_SUFFIX}
 
 #if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x01),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX8(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE),
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+
+static const uint8_t zmk_hid_report_desc[] =
+    ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_NKRO_KEYBOARD_ITEMS);
+
 #elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX16(0xFF, 0x00),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX8(0xFF),
-    HID_REPORT_SIZE(0x08),
-    HID_REPORT_COUNT(CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),
+
+static const uint8_t zmk_hid_report_desc[] =
+    ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_HKRO_KEYBOARD_ITEMS);
+
 #else
 #error "A proper HID report type must be selected"
 #endif
-
-    HID_END_COLLECTION,
-    HID_USAGE_PAGE(HID_USAGE_CONSUMER),
-    HID_USAGE(HID_USAGE_CONSUMER_CONSUMER_CONTROL),
-    HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_CONSUMER),
-    HID_USAGE_PAGE(HID_USAGE_CONSUMER),
-
-#if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX16(0xFF, 0x00),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX8(0xFF),
-    HID_REPORT_SIZE(0x08),
-#elif IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX16(0xFF, 0x0F),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX16(0xFF, 0x0F),
-    HID_REPORT_SIZE(0x10),
-#else
-#error "A proper consumer HID report usage range must be selected"
-#endif
-    HID_REPORT_COUNT(CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),
-    HID_END_COLLECTION,
-
-#if IS_ENABLED(CONFIG_ZMK_POINTING)
-    HID_USAGE_PAGE(HID_USAGE_GD),
-    HID_USAGE(HID_USAGE_GD_MOUSE),
-    HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_MOUSE),
-    HID_USAGE(HID_USAGE_GD_POINTER),
-    HID_COLLECTION(HID_COLLECTION_PHYSICAL),
-    HID_USAGE_PAGE(HID_USAGE_BUTTON),
-    HID_USAGE_MIN8(0x1),
-    HID_USAGE_MAX8(ZMK_HID_MOUSE_NUM_BUTTONS),
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x01),
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x5),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-    // Constant padding for the last 3 bits.
-    HID_REPORT_SIZE(0x03),
-    HID_REPORT_COUNT(0x01),
-    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-    // Some OSes ignore pointer devices without X/Y data.
-    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
-    HID_USAGE(HID_USAGE_GD_X),
-    HID_USAGE(HID_USAGE_GD_Y),
-    HID_LOGICAL_MIN16(0x00, 0x80),
-    HID_LOGICAL_MAX16(0xFF, 0x7F),
-    HID_REPORT_SIZE(0x10),
-    HID_REPORT_COUNT(0x02),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
-    HID_COLLECTION(HID_COLLECTION_LOGICAL),
-#if IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
-    HID_USAGE(HID_USAGE_GD_RESOLUTION_MULTIPLIER),
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x0F),
-    HID_PHYSICAL_MIN8(0x01),
-    HID_PHYSICAL_MAX8(0x10),
-    HID_REPORT_SIZE(0x04),
-    HID_REPORT_COUNT(0x01),
-    HID_PUSH,
-    HID_FEATURE(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-#endif // IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
-    HID_USAGE(HID_USAGE_GD_WHEEL),
-    HID_LOGICAL_MIN16(0x00, 0x80),
-    HID_LOGICAL_MAX16(0xFF, 0x7F),
-    HID_PHYSICAL_MIN8(0x00),
-    HID_PHYSICAL_MAX8(0x00),
-    HID_REPORT_SIZE(0x10),
-    HID_REPORT_COUNT(0x01),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
-    HID_END_COLLECTION,
-    HID_COLLECTION(HID_COLLECTION_LOGICAL),
-#if IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
-    HID_USAGE(HID_USAGE_GD_RESOLUTION_MULTIPLIER),
-    HID_POP,
-    HID_FEATURE(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-#endif // IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
-    HID_USAGE_PAGE(HID_USAGE_CONSUMER),
-    HID_USAGE16_SINGLE(HID_USAGE_CONSUMER_AC_PAN),
-    HID_LOGICAL_MIN16(0x00, 0x80),
-    HID_LOGICAL_MAX16(0xFF, 0x7F),
-    HID_PHYSICAL_MIN8(0x00),
-    HID_PHYSICAL_MAX8(0x00),
-    HID_REPORT_SIZE(0x10),
-    HID_REPORT_COUNT(0x01),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
-    HID_END_COLLECTION,
-    HID_END_COLLECTION,
-    HID_END_COLLECTION,
-#endif // IS_ENABLED(CONFIG_ZMK_POINTING)
-};
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 
