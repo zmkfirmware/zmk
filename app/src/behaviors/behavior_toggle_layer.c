@@ -28,27 +28,25 @@ struct behavior_tog_config {
     bool locking;
 };
 
-static int tog_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d layer %d", event.position, binding->param1);
+static int tog_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    LOG_DBG("position %d layer %d", event->position, event->param1);
 
-    const struct behavior_tog_config *cfg = zmk_behavior_get_binding(binding->behavior_dev)->config;
+    const struct behavior_tog_config *cfg = zmk_behavior_get_binding(event->behavior_dev)->config;
     switch (cfg->toggle_mode) {
     case ON:
-        return zmk_keymap_layer_activate(binding->param1, cfg->locking);
+        return zmk_keymap_layer_activate(event->param1, cfg->locking);
     case OFF:
-        return zmk_keymap_layer_deactivate(binding->param1, cfg->locking);
+        return zmk_keymap_layer_deactivate(event->param1, cfg->locking);
     case FLIP:
-        return zmk_keymap_layer_toggle(binding->param1, cfg->locking);
+        return zmk_keymap_layer_toggle(event->param1, cfg->locking);
     default:
         return -ENOTSUP;
     };
 }
 
-static int tog_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                       struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d layer %d", event.position, binding->param1);
-    return ZMK_BEHAVIOR_OPAQUE;
+static int tog_keymap_binding_released(struct zmk_behavior_binding_event *event) {
+    LOG_DBG("position %d layer %d", event->position, event->param1);
+    return 0;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)

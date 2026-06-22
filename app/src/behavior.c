@@ -23,10 +23,12 @@
 
 #include <drivers/behavior.h>
 #include <zmk/behavior.h>
+#include <zmk/event_manager.h>
 #include <zmk/hid.h>
 #include <zmk/matrix.h>
 
 #include <zmk/events/position_state_changed.h>
+#include <zmk/events/behavior_binding_event.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -55,29 +57,30 @@ const struct device *z_impl_behavior_get_binding(const char *name) {
     return NULL;
 }
 
-static int invoke_locally(struct zmk_behavior_binding *binding,
-                          struct zmk_behavior_binding_event event, bool pressed) {
-    if (pressed) {
-        return behavior_keymap_binding_pressed(binding, event);
-    } else {
-        return behavior_keymap_binding_released(binding, event);
+static int invoke_locally(struct zmk_behavior_binding_event *event) {
+    switch (event->type) {
+    case ZMK_BEHAVIOR_TRIG_TYPE_PRESS:
+        return behavior_keymap_binding_pressed(event);
+    case ZMK_BEHAVIOR_TRIG_TYPE_RELEASE:
+        return behavior_keymap_binding_released(event);
+    case ZMK_BEHAVIOR_TRIG_TYPE_SENSOR:
+        return behavior_sensor_keymap_binding_process(event);
+    default:
+        return -EINVAL;
     }
 }
 
-int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
-                                struct zmk_behavior_binding_event event, bool pressed) {
-    // We want to make a copy of this, since it may be converted from
-    // relative to absolute before being invoked
-    struct zmk_behavior_binding binding = *src_binding;
+int behavior_listener(const zmk_event_t *eh) {
+    struct zmk_behavior_binding_event *event = as_zmk_behavior_binding_event(eh);
+    __ASSERT(event != NULL, "An invalid event was passed as an argument somehow.");
 
-    const struct device *behavior = zmk_behavior_get_binding(binding.behavior_dev);
-
+    const struct device *behavior = zmk_behavior_get_binding(event->behavior_dev);
     if (!behavior) {
-        LOG_WRN("No behavior assigned to %d on layer %d", event.position, event.layer);
-        return 1;
+        LOG_WRN("No behavior assigned to %d on layer %d", event->position, event->layer);
+        return 0;
     }
 
-    int err = behavior_keymap_binding_convert_central_state_dependent_params(&binding, event);
+    int err = behavior_keymap_binding_convert_central_state_dependent_params(event);
     if (err) {
         LOG_ERR("Failed to convert relative to absolute behavior binding (err %d)", err);
         return err;
@@ -92,28 +95,30 @@ int zmk_behavior_invoke_binding(const struct zmk_behavior_binding *src_binding,
 
     switch (locality) {
     case BEHAVIOR_LOCALITY_CENTRAL:
-        return invoke_locally(&binding, event, pressed);
+        return invoke_locally(event);
     case BEHAVIOR_LOCALITY_EVENT_SOURCE:
 #if IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-        if (event.source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
-            return invoke_locally(&binding, event, pressed);
-        } else {
-            return zmk_split_central_invoke_behavior(event.source, &binding, event, pressed);
+        if (event->source == ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL) {
+            return invoke_locally(event);
         }
+        return zmk_split_central_invoke_behavior(event->source, event);
 #else
-        return invoke_locally(&binding, event, pressed);
+        return invoke_locally(event);
 #endif
     case BEHAVIOR_LOCALITY_GLOBAL:
 #if IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
         for (int i = 0; i < ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT; i++) {
-            zmk_split_central_invoke_behavior(i, &binding, event, pressed);
+            zmk_split_central_invoke_behavior(i, event);
         }
 #endif
-        return invoke_locally(&binding, event, pressed);
+        return invoke_locally(event);
+    default:
+        return -ENOTSUP;
     }
-
-    return -ENOTSUP;
 }
+
+ZMK_LISTENER(behavior, behavior_listener);
+ZMK_SUBSCRIPTION(behavior, zmk_behavior_binding_event);
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 

@@ -49,20 +49,18 @@ static void process_key_state(const struct device *dev, int32_t val, bool presse
     }
 }
 
-static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
-                                     struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
+static int on_keymap_binding_pressed(struct zmk_behavior_binding_event *event) {
+    LOG_DBG("position %d keycode 0x%02X", event->position, event->param1);
 
-    process_key_state(zmk_behavior_get_binding(binding->behavior_dev), binding->param1, true);
+    process_key_state(zmk_behavior_get_binding(event->behavior_dev), event->param1, true);
 
     return 0;
 }
 
-static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
-                                      struct zmk_behavior_binding_event event) {
-    LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
+static int on_keymap_binding_released(struct zmk_behavior_binding_event *event) {
+    LOG_DBG("position %d keycode 0x%02X", event->position, event->param1);
 
-    process_key_state(zmk_behavior_get_binding(binding->behavior_dev), binding->param1, false);
+    process_key_state(zmk_behavior_get_binding(event->behavior_dev), event->param1, false);
 
     return 0;
 }
