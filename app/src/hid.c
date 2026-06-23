@@ -113,9 +113,100 @@ static zmk_hid_boot_report_t *boot_report_rollover(uint8_t modifiers) {
 
 #endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
 
+// --- Shared keyboard-usage primitives ---------------------------------------------------------
+//
+// NKRO (bitmap body) and HKRO (array body) each need exactly one implementation of
+// press / release / is-pressed / boot-report conversion, parameterized by the key buffer they
+// operate on. The report-type arms below are then just thin bindings of these primitives to
+// keyboard_report.body.keys. keys_held bookkeeping stays in the arms so its increment/decrement
+// ordering is unchanged.
+
 #if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
 
-#define TOGGLE_KEYBOARD(code, val) WRITE_BIT(keyboard_report.body.keys[code / 8], code % 8, val)
+static inline int nkro_toggle(uint8_t *keys, zmk_key_t usage, int val) {
+    if (usage > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE) {
+        return -EINVAL;
+    }
+    WRITE_BIT(keys[usage / 8], usage % 8, val);
+    return 0;
+}
+
+static inline bool nkro_check(const uint8_t *keys, zmk_key_t usage) {
+    if (usage > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE) {
+        return false;
+    }
+    return keys[usage / 8] & BIT(usage % 8);
+}
+
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+static inline zmk_hid_boot_report_t *nkro_boot_report(const uint8_t *keys, size_t len) {
+    memset(&boot_report.keys, 0, HID_BOOT_KEY_LEN);
+    int ix = 0;
+    for (int i = 0; i < len; ++i) {
+        if (ix == keys_held) {
+            break;
+        }
+        if (!keys[i]) {
+            continue;
+        }
+        uint8_t base_code = i * 8;
+        for (int j = 0; j < 8; ++j) {
+            if (keys[i] & BIT(j)) {
+                boot_report.keys[ix++] = base_code + j;
+            }
+        }
+    }
+    return &boot_report;
+}
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
+
+#endif /* NKRO */
+
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+
+static inline void hkro_toggle(uint8_t *keys, size_t size, uint8_t match, uint8_t val) {
+    for (int idx = 0; idx < size; idx++) {
+        if (keys[idx] != match) {
+            continue;
+        }
+        keys[idx] = val;
+        if (val) {
+            break;
+        }
+    }
+}
+
+static inline bool hkro_check(const uint8_t *keys, size_t size, zmk_key_t usage) {
+    for (int idx = 0; idx < size; idx++) {
+        if (keys[idx] == usage) {
+            return true;
+        }
+    }
+    return false;
+}
+
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+static inline zmk_hid_boot_report_t *hkro_boot_report(const uint8_t *keys, size_t size) {
+    int out = 0;
+    for (int i = 0; i < size; i++) {
+        uint8_t key = keys[i];
+        if (key) {
+            boot_report.keys[out++] = key;
+            if (out == keys_held) {
+                break;
+            }
+        }
+    }
+    while (out < HID_BOOT_KEY_LEN) {
+        boot_report.keys[out++] = 0;
+    }
+    return &boot_report;
+}
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
+
+#endif /* HKRO */
+
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
@@ -124,32 +215,15 @@ zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
     }
 
     boot_report.modifiers = keyboard_report.body.modifiers;
-    memset(&boot_report.keys, 0, HID_BOOT_KEY_LEN);
-    int ix = 0;
-    uint8_t base_code = 0;
-    for (int i = 0; i < sizeof(keyboard_report.body.keys); ++i) {
-        if (ix == keys_held) {
-            break;
-        }
-        if (!keyboard_report.body.keys[i]) {
-            continue;
-        }
-        base_code = i * 8;
-        for (int j = 0; j < 8; ++j) {
-            if (keyboard_report.body.keys[i] & BIT(j)) {
-                boot_report.keys[ix++] = base_code + j;
-            }
-        }
-    }
-    return &boot_report;
+    return nkro_boot_report(keyboard_report.body.keys, sizeof(keyboard_report.body.keys));
 }
 #endif
 
 static inline int select_keyboard_usage(zmk_key_t usage) {
-    if (usage > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE) {
-        return -EINVAL;
+    int ret = nkro_toggle(keyboard_report.body.keys, usage, 1);
+    if (ret) {
+        return ret;
     }
-    TOGGLE_KEYBOARD(usage, 1);
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
     ++keys_held;
 #endif
@@ -157,10 +231,10 @@ static inline int select_keyboard_usage(zmk_key_t usage) {
 }
 
 static inline int deselect_keyboard_usage(zmk_key_t usage) {
-    if (usage > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE) {
-        return -EINVAL;
+    int ret = nkro_toggle(keyboard_report.body.keys, usage, 0);
+    if (ret) {
+        return ret;
     }
-    TOGGLE_KEYBOARD(usage, 0);
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
     --keys_held;
 #endif
@@ -168,24 +242,10 @@ static inline int deselect_keyboard_usage(zmk_key_t usage) {
 }
 
 static inline bool check_keyboard_usage(zmk_key_t usage) {
-    if (usage > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE) {
-        return false;
-    }
-    return keyboard_report.body.keys[usage / 8] & (1 << (usage % 8));
+    return nkro_check(keyboard_report.body.keys, usage);
 }
 
 #elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
-
-#define TOGGLE_KEYBOARD(match, val)                                                                \
-    for (int idx = 0; idx < CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE; idx++) {                          \
-        if (keyboard_report.body.keys[idx] != match) {                                             \
-            continue;                                                                              \
-        }                                                                                          \
-        keyboard_report.body.keys[idx] = val;                                                      \
-        if (val) {                                                                                 \
-            break;                                                                                 \
-        }                                                                                          \
-    }
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
@@ -195,25 +255,8 @@ zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
 
 #if CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE != HID_BOOT_KEY_LEN
     // Form a boot report from a report of different size.
-
     boot_report.modifiers = keyboard_report.body.modifiers;
-
-    int out = 0;
-    for (int i = 0; i < CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE; i++) {
-        uint8_t key = keyboard_report.body.keys[i];
-        if (key) {
-            boot_report.keys[out++] = key;
-            if (out == keys_held) {
-                break;
-            }
-        }
-    }
-
-    while (out < HID_BOOT_KEY_LEN) {
-        boot_report.keys[out++] = 0;
-    }
-
-    return &boot_report;
+    return hkro_boot_report(keyboard_report.body.keys, CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE);
 #else
     return &keyboard_report.body;
 #endif /* CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE != HID_BOOT_KEY_LEN */
@@ -221,7 +264,7 @@ zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
 #endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
 
 static inline int select_keyboard_usage(zmk_key_t usage) {
-    TOGGLE_KEYBOARD(0U, usage);
+    hkro_toggle(keyboard_report.body.keys, CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE, 0U, usage);
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
     ++keys_held;
 #endif
@@ -229,7 +272,7 @@ static inline int select_keyboard_usage(zmk_key_t usage) {
 }
 
 static inline int deselect_keyboard_usage(zmk_key_t usage) {
-    TOGGLE_KEYBOARD(usage, 0U);
+    hkro_toggle(keyboard_report.body.keys, CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE, usage, 0U);
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
     --keys_held;
 #endif
@@ -237,12 +280,7 @@ static inline int deselect_keyboard_usage(zmk_key_t usage) {
 }
 
 static inline int check_keyboard_usage(zmk_key_t usage) {
-    for (int idx = 0; idx < CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE; idx++) {
-        if (keyboard_report.body.keys[idx] == usage) {
-            return true;
-        }
-    }
-    return false;
+    return hkro_check(keyboard_report.body.keys, CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE, usage);
 }
 
 #else
