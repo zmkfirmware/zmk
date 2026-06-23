@@ -15,6 +15,9 @@
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 #include <zmk/pointing.h>
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+#include <zmk/hid_dynamic_nkro.h>
+#endif // IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
 #include <dt-bindings/zmk/hid_usage.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
@@ -33,9 +36,13 @@
 #error "Unknown consumer report usages configuration"
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 #define ZMK_HID_KEYBOARD_MAX_USAGE ZMK_HID_KEYBOARD_NKRO_MAX_USAGE
-#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+#define ZMK_HID_KEYBOARD_MAX_USAGE 0xFF
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+// Widest of the two compiled-in modes; each mode's own press/release/check logic still
+// enforces its own (possibly narrower) usage bound at runtime.
 #define ZMK_HID_KEYBOARD_MAX_USAGE 0xFF
 #else
 #error "Unknown keyboard report usages configuration"
@@ -194,19 +201,44 @@
 #define ZMK_HID_REPORT_DESC(keyboard_items)                                                        \
     {ZMK_HID_REPORT_DESC_COMMON_PREFIX, keyboard_items, ZMK_HID_REPORT_DESC_COMMON_SUFFIX}
 
-#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
 static const uint8_t zmk_hid_report_desc[] =
     ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_NKRO_KEYBOARD_ITEMS);
 
-#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
 static const uint8_t zmk_hid_report_desc[] =
+    ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_HKRO_KEYBOARD_ITEMS);
+
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+
+// Both report descriptor variants are compiled in; zmk_hid_report_desc_get() picks the one
+// matching the mode loaded from settings at boot (see hid_dynamic_nkro.c).
+static const uint8_t zmk_hid_report_desc_nkro[] =
+    ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_NKRO_KEYBOARD_ITEMS);
+
+static const uint8_t zmk_hid_report_desc_hkro[] =
     ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_HKRO_KEYBOARD_ITEMS);
 
 #else
 #error "A proper HID report type must be selected"
 #endif
+
+/**
+ * Returns the active HID report descriptor (and its length) for the current boot session.
+ * For the static NKRO/HKRO configurations this is just zmk_hid_report_desc; for the dynamic
+ * configuration it is whichever of zmk_hid_report_desc_{nkro,hkro} matches the persisted mode.
+ */
+const uint8_t *zmk_hid_report_desc_get(size_t *len);
+
+/**
+ * Size, in bytes, of struct zmk_hid_keyboard_report_body for the active mode. For the static
+ * NKRO/HKRO configurations this is just sizeof(struct zmk_hid_keyboard_report_body); the dynamic
+ * configuration's body is a union sized for the larger of the two modes, so callers that send
+ * the body over the wire need the mode-specific size instead of sizeof().
+ */
+size_t zmk_hid_keyboard_report_body_size(void);
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 
@@ -214,6 +246,7 @@ static const uint8_t zmk_hid_report_desc[] =
 #define HID_BOOT_KEY_LEN 6
 
 #if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) &&                                                 \
+    !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC) &&                                             \
     CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE == HID_BOOT_KEY_LEN
 typedef struct zmk_hid_keyboard_report_body zmk_hid_boot_report_t;
 #else
@@ -230,10 +263,18 @@ typedef struct zmk_hid_boot_report zmk_hid_boot_report_t;
 struct zmk_hid_keyboard_report_body {
     zmk_mod_flags_t modifiers;
     uint8_t _reserved;
-#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
     uint8_t keys[DIV_ROUND_UP(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1, 8)];
-#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
     uint8_t keys[CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE];
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+    // Both layouts are compiled in; only nkro_keys or only hkro_keys is meaningful at a time,
+    // selected by zmk_hid_dynamic_nkro_get_mode(). zmk_hid_keyboard_report_body_size() reports
+    // the size of whichever one is active, since they're rarely the same length.
+    union {
+        uint8_t nkro_keys[DIV_ROUND_UP(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1, 8)];
+        uint8_t hkro_keys[CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE];
+    };
 #endif
 } __packed;
 

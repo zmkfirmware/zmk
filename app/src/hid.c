@@ -5,6 +5,7 @@
  */
 
 #include "zmk/keys.h"
+#include <stddef.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -12,8 +13,15 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <dt-bindings/zmk/modifiers.h>
 
 static struct zmk_hid_keyboard_report keyboard_report = {
-
-    .report_id = ZMK_HID_REPORT_ID_KEYBOARD, .body = {.modifiers = 0, ._reserved = 0, .keys = {0}}};
+    .report_id = ZMK_HID_REPORT_ID_KEYBOARD,
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+    // .keys doesn't exist for the dynamic union body; naming either member zero-initializes
+    // the whole union the same way the static storage duration default already would.
+    .body = {.modifiers = 0, ._reserved = 0, .nkro_keys = {0}},
+#else
+    .body = {.modifiers = 0, ._reserved = 0, .keys = {0}},
+#endif
+};
 
 static struct zmk_hid_consumer_report consumer_report = {.report_id = ZMK_HID_REPORT_ID_CONSUMER,
                                                          .body = {.keys = {0}}};
@@ -116,12 +124,14 @@ static zmk_hid_boot_report_t *boot_report_rollover(uint8_t modifiers) {
 // --- Shared keyboard-usage primitives ---------------------------------------------------------
 //
 // NKRO (bitmap body) and HKRO (array body) each need exactly one implementation of
-// press / release / is-pressed / boot-report conversion, parameterized by the key buffer they
-// operate on. The report-type arms below are then just thin bindings of these primitives to
-// keyboard_report.body.keys. keys_held bookkeeping stays in the arms so its increment/decrement
-// ordering is unchanged.
+// press / release / is-pressed / boot-report conversion. Every report-type configuration is just
+// a binding of these primitives to a key buffer: the static NKRO/HKRO configs bind the single
+// body.keys buffer at compile time; the dynamic config binds body.nkro_keys or body.hkro_keys per
+// the boot-resolved mode. Keeping the loops here means each is written (and audited) once,
+// regardless of how many modes are compiled in. keys_held bookkeeping stays in the public
+// dispatchers below so its increment/decrement ordering is unchanged.
 
-#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO) || IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
 static inline int nkro_toggle(uint8_t *keys, zmk_key_t usage, int val) {
     if (usage > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE) {
@@ -160,9 +170,9 @@ static inline zmk_hid_boot_report_t *nkro_boot_report(const uint8_t *keys, size_
 }
 #endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
 
-#endif /* NKRO */
+#endif /* NKRO || DYNAMIC */
 
-#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) || IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
 static inline void hkro_toggle(uint8_t *keys, size_t size, uint8_t match, uint8_t val) {
     for (int idx = 0; idx < size; idx++) {
@@ -204,9 +214,9 @@ static inline zmk_hid_boot_report_t *hkro_boot_report(const uint8_t *keys, size_
 }
 #endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
 
-#endif /* HKRO */
+#endif /* HKRO || DYNAMIC */
 
-#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
@@ -245,7 +255,16 @@ static inline bool check_keyboard_usage(zmk_key_t usage) {
     return nkro_check(keyboard_report.body.keys, usage);
 }
 
-#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+const uint8_t *zmk_hid_report_desc_get(size_t *len) {
+    *len = sizeof(zmk_hid_report_desc);
+    return zmk_hid_report_desc;
+}
+
+size_t zmk_hid_keyboard_report_body_size(void) {
+    return sizeof(struct zmk_hid_keyboard_report_body);
+}
+
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
@@ -281,6 +300,91 @@ static inline int deselect_keyboard_usage(zmk_key_t usage) {
 
 static inline int check_keyboard_usage(zmk_key_t usage) {
     return hkro_check(keyboard_report.body.keys, CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE, usage);
+}
+
+const uint8_t *zmk_hid_report_desc_get(size_t *len) {
+    *len = sizeof(zmk_hid_report_desc);
+    return zmk_hid_report_desc;
+}
+
+size_t zmk_hid_keyboard_report_body_size(void) {
+    return sizeof(struct zmk_hid_keyboard_report_body);
+}
+
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+
+static inline bool dynamic_nkro_active(void) {
+    return zmk_hid_dynamic_nkro_get_mode() == ZMK_HID_DYNAMIC_NKRO_MODE_NKRO;
+}
+
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+zmk_hid_boot_report_t *zmk_hid_get_boot_report(void) {
+    if (keys_held > HID_BOOT_KEY_LEN) {
+        return boot_report_rollover(keyboard_report.body.modifiers);
+    }
+
+    boot_report.modifiers = keyboard_report.body.modifiers;
+
+    if (dynamic_nkro_active()) {
+        return nkro_boot_report(keyboard_report.body.nkro_keys,
+                                sizeof(keyboard_report.body.nkro_keys));
+    }
+    return hkro_boot_report(keyboard_report.body.hkro_keys, CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE);
+}
+#endif /* IS_ENABLED(CONFIG_ZMK_USB_BOOT) */
+
+static inline int select_keyboard_usage(zmk_key_t usage) {
+    if (dynamic_nkro_active()) {
+        int ret = nkro_toggle(keyboard_report.body.nkro_keys, usage, 1);
+        if (ret) {
+            return ret;
+        }
+    } else {
+        hkro_toggle(keyboard_report.body.hkro_keys, CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE, 0U, usage);
+    }
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    ++keys_held;
+#endif
+    return 0;
+}
+
+static inline int deselect_keyboard_usage(zmk_key_t usage) {
+    if (dynamic_nkro_active()) {
+        int ret = nkro_toggle(keyboard_report.body.nkro_keys, usage, 0);
+        if (ret) {
+            return ret;
+        }
+    } else {
+        hkro_toggle(keyboard_report.body.hkro_keys, CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE, usage, 0U);
+    }
+#if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
+    --keys_held;
+#endif
+    return 0;
+}
+
+static inline bool check_keyboard_usage(zmk_key_t usage) {
+    if (dynamic_nkro_active()) {
+        return nkro_check(keyboard_report.body.nkro_keys, usage);
+    }
+    return hkro_check(keyboard_report.body.hkro_keys, CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE, usage);
+}
+
+const uint8_t *zmk_hid_report_desc_get(size_t *len) {
+    if (dynamic_nkro_active()) {
+        *len = sizeof(zmk_hid_report_desc_nkro);
+        return zmk_hid_report_desc_nkro;
+    }
+
+    *len = sizeof(zmk_hid_report_desc_hkro);
+    return zmk_hid_report_desc_hkro;
+}
+
+size_t zmk_hid_keyboard_report_body_size(void) {
+    size_t keys_len = dynamic_nkro_active()
+                          ? sizeof(((struct zmk_hid_keyboard_report_body *)NULL)->nkro_keys)
+                          : sizeof(((struct zmk_hid_keyboard_report_body *)NULL)->hkro_keys);
+    return offsetof(struct zmk_hid_keyboard_report_body, nkro_keys) + keys_len;
 }
 
 #else
