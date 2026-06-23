@@ -1,16 +1,12 @@
 /*
- * Copyright (c) 2020 The ZMK Contributors
+ * Copyright (c) 2025 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
  */
 
 #pragma once
 
-struct zmk_led_hsb {
-    uint16_t h;
-    uint8_t s;
-    uint8_t b;
-};
+#include <zmk/rgb_underglow/rgb_underglow_base.h>
 
 int zmk_rgb_underglow_toggle(void);
 int zmk_rgb_underglow_get_state(bool *state);
@@ -27,3 +23,5 @@ int zmk_rgb_underglow_change_sat(int direction);
 int zmk_rgb_underglow_change_brt(int direction);
 int zmk_rgb_underglow_change_spd(int direction);
 int zmk_rgb_underglow_set_hsb(struct zmk_led_hsb color);
+int zmk_rgb_underglow_apply_current_state(void);
+void zmk_rgb_underglow_init(void);
