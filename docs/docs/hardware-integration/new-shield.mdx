@@ -113,6 +113,8 @@ You can check out the [`shields` folder](https://github.com/zmkfirmware/zmk/tree
 
 There are two required [Kconfig](https://docs.zephyrproject.org/4.1.0/build/kconfig/index.html) files that need to be created for your new keyboard shield to get it picked up for ZMK, `Kconfig.shield` and `Kconfig.defconfig`.
 
+All file names are case sensitive.
+
 <SplitTabs></SplitTabs>
 
 ### Kconfig.shield
@@ -122,7 +124,7 @@ The `Kconfig.shield` file defines the shield name used to build your keyboard.
 <SplitInvisTabs>
 <TabItem value="unibody">
 
-```kconfig title="Kconfig.shield"
+```kconfig title="boards/shields/<keyboard_name>/Kconfig.shield"
 # No whitespace after the comma or in your keyboard name!
 config SHIELD_MY_KEYBOARD
     def_bool $(shields_list_contains,my_keyboard)
@@ -137,7 +139,7 @@ The `SHIELD_MY_KEYBOARD` flag will be used in `Kconfig.defconfig` to set other p
 Split keyboards have multiple shield names defined, one for each part.
 For example, if your keyboard consists of two halves named `my_keyboard_left` and `my_keyboard_right`, it would look like this:
 
-```kconfig title="Kconfig.shield"
+```kconfig title="boards/shields/<keyboard_name>/Kconfig.shield"
 # No whitespace after the comma or in your part name!
 config SHIELD_MY_KEYBOARD_LEFT
     def_bool $(shields_list_contains,my_keyboard_left)
@@ -150,6 +152,29 @@ config SHIELD_MY_KEYBOARD_RIGHT
 This will set the `SHIELD_MY_KEYBOARD_LEFT` flag to `y` whenever `my_keyboard_left` is used as the shield name.
 Likewise, when `my_keyboard_right` is used as the shield name the `SHIELD_MY_KEYBOARD_RIGHT` flag is set to `y`.
 The `SHIELD_MY_KEYBOARD_LEFT` and `SHIELD_MY_KEYBOARD_RIGHT` flags will be used in `Kconfig.defconfig` to set other properties about your shields, so make sure that they match.
+
+ZMK supports split keyboards with more than two parts, repeat the above for each part of your keyboard.
+
+<details>
+<summary>Split keyboards with more than two parts</summary>
+
+For split keyboards with more than two parts, you can define additional flags for each part of your keyboard. Each keyboard part should have a unique shield name. For example:
+
+```kconfig title="boards/shields/<keyboard_name>/Kconfig.shield"
+# No whitespace after the comma or in your part name!
+config SHIELD_MY_KEYBOARD_LEFT
+    def_bool $(shields_list_contains,my_keyboard_left)
+
+# No whitespace after the comma or in your part name!
+config SHIELD_MY_KEYBOARD_RIGHT
+    def_bool $(shields_list_contains,my_keyboard_right)
+
+# No whitespace after the comma or in your part name!
+config SHIELD_MY_KEYBOARD_NUMPAD
+    def_bool $(shields_list_contains,my_keyboard_numpad)
+```
+
+</details>
 
 </TabItem>
 </SplitInvisTabs>
@@ -164,7 +189,7 @@ The updated new default values should always be wrapped inside a conditional on 
 <SplitInvisTabs>
 <TabItem value="unibody">
 
-```kconfig title="Kconfig.defconfig"
+```kconfig title="boards/shields/<keyboard_name>/Kconfig.defconfig"
 if SHIELD_MY_KEYBOARD
 
 # Name must be less than 16 characters long!
@@ -182,7 +207,7 @@ For that side, the keyboard name is assigned and the central config is set.
 The peripheral side is not assigned a name.
 Finally, the split config needs to be set for both sides:
 
-```kconfig title="Kconfig.defconfig"
+```kconfig title="boards/shields/<keyboard_name>/Kconfig.defconfig"
 if SHIELD_MY_KEYBOARD_LEFT
 
 # Name must be less than 16 characters long!
@@ -201,6 +226,47 @@ config ZMK_SPLIT
 
 endif
 ```
+
+<details>
+<summary>Split keyboards with more than two parts</summary>
+
+For split keyboards with more than two parts, adjust the number of peripheral parts and BLE connection settings:
+
+```kconfig title="boards/shields/<keyboard_name>/Kconfig.defconfig"
+if SHIELD_MY_KEYBOARD_LEFT
+
+# Name must be less than 16 characters long!
+config ZMK_KEYBOARD_NAME
+    default "My Keyboard"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+# If not set, the default is 1 peripheral part
+# Set to the number of peripheral parts in your split keyboard
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    default 2
+
+# Set this to ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS + your desired number of BT profiles (default is 5)
+config BT_MAX_CONN
+    default 7
+
+# Set this to the same number as BT_MAX_CONN
+config BT_MAX_PAIRED
+    default 7
+
+endif
+
+# List all Kconfig flags for each part of your split keyboard here, e.g.:
+if SHIELD_MY_KEYBOARD_LEFT || SHIELD_MY_KEYBOARD_RIGHT || SHIELD_MY_KEYBOARD_NUMPAD
+
+config ZMK_SPLIT
+    default y
+
+endif
+```
+
+</details>
 
 </TabItem>
 </SplitInvisTabs>
