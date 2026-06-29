@@ -767,7 +767,7 @@ int zmk_keymap_sensor_event(uint8_t sensor_index,
         struct zmk_behavior_binding *binding = &zmk_sensor_keymap[layer_id][sensor_index];
 
         LOG_DBG("layer idx: %d, layer id: %d sensor_index: %d, binding name: %s", layer_idx,
-                layer_id, sensor_index, binding->behavior_dev);
+                layer_id, sensor_index, binding->behavior_dev ? binding->behavior_dev : "(null)");
 
         const struct device *behavior = zmk_behavior_get_binding(binding->behavior_dev);
         if (!behavior) {
