@@ -223,6 +223,27 @@ config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
 config ZMK_BLE_CLEAR_BONDS_ON_START
     bool "Configuration that clears all bond information from the keyboard on startup."
 
+config ZMK_SPLIT_AUTO_UNPAIR_ON_KEY_MISMATCH
+    bool "Automatically clear a stale split bond when the peripheral reports a PIN/key mismatch"
+    depends on ZMK_SPLIT_ROLE_CENTRAL
+    help
+      When enabled on a split central, ZMK clears the bond and disconnects
+      the peripheral if the security exchange with that peripheral fails
+      with BT_SECURITY_ERR_PIN_OR_KEY_MISSING. The next advertising window
+      then re-pairs from scratch without manual intervention.
+
+      This handles the asymmetric stale-bond case in a split setup: the
+      central no longer has a usable LTK for that peripheral (e.g. the
+      central was flashed with a settings_reset image, or the central
+      hardware was swapped while the peripherals were kept), but the
+      peripheral keeps replaying its old LTK, so the link cannot complete
+      without user action. It is particularly useful for dongle-style
+      centrals, which have no keymap from which to trigger recovery
+      behaviors.
+
+      Off by default because clearing a bond is destructive and cannot be
+      undone; only enable on deployments that are known to benefit.
+
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
     default n
