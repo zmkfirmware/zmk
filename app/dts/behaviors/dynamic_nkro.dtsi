@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    behaviors {
+        dyn_nkro: dyn_nkro {
+            compatible = "zmk,behavior-dynamic-nkro";
+            #binding-cells = <1>;
+            display-name = "Dynamic NKRO";
+        };
+    };
+};
