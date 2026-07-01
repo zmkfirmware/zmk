@@ -129,6 +129,38 @@ config ZMK_HID_SEPARATE_MOD_RELEASE_REPORT
       Send a separate release event for the modifiers, to make sure the release
       of the modifier doesn't get recognized before the actual key's release event.
 
+menuconfig ZMK_HID_VKEY
+    bool "Vendor-defined HID selector key (vkey)"
+    default n
+    help
+      Add an independent vendor-defined HID top-level collection that reports a
+      single 1-byte selector (the "vkey" id, 1-255; 0 = released), plus a
+      &vkey <id> behavior that emits it. Lets a keymap send original key codes
+      that never collide with the standard keyboard/consumer/mouse usages; a
+      host-side agent reads the vendor report and maps the id to an action.
+      Disabled by default: when off, the report descriptor, report state, send
+      path and behavior are all compiled out and the firmware is byte-identical
+      to a build without this option.
+
+if ZMK_HID_VKEY
+
+config ZMK_HID_VKEY_USAGE_PAGE
+    hex "Vendor usage page for the vkey collection"
+    default 0xFF31
+    range 0xFF00 0xFFFF
+    help
+      16-bit vendor-defined usage page (0xFF00-0xFFFF) the vkey collection lives on.
+
+config ZMK_HID_VKEY_REPORT_ID
+    int "HID report ID for the vkey selector report"
+    default 32
+    range 4 255
+    help
+      Report ID for the vkey input report. Must not collide with ZMK's standard
+      report IDs (1 = keyboard, 2 = consumer, 3 = mouse). Default 32 (0x20).
+
+endif # ZMK_HID_VKEY
+
 menu "Output Types"
 
 config ZMK_USB
