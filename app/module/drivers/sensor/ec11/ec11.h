@@ -18,8 +18,16 @@ struct ec11_config {
     const uint8_t resolution;
 };
 
+enum ec11_pin {
+    EC11_PIN_A,
+    EC11_PIN_B,
+};
+
 struct ec11_data {
-    uint8_t ab_state;
+    enum ec11_pin active_pin : 1;
+    uint8_t inactive_pin_state : 1;
+    uint8_t active_pin_state : 1;
+
     int8_t pulses;
     int8_t ticks;
     int8_t delta;
