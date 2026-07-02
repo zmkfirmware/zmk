@@ -19,17 +19,14 @@ extern struct ec11_data ec11_driver;
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(EC11, CONFIG_SENSOR_LOG_LEVEL);
 
-static inline void setup_int(const struct device *dev, bool enable) {
+static inline void setup_int(const struct device *dev, enum ec11_pin pin, bool enable) {
     const struct ec11_config *cfg = dev->config;
+    const struct gpio_dt_spec *pin_gpio = pin == EC11_PIN_A ? &cfg->a : &cfg->b;
 
     LOG_DBG("enabled %s", (enable ? "true" : "false"));
 
-    if (gpio_pin_interrupt_configure_dt(&cfg->a, enable ? GPIO_INT_EDGE_BOTH : GPIO_INT_DISABLE)) {
-        LOG_WRN("Unable to set A pin GPIO interrupt");
-    }
-
-    if (gpio_pin_interrupt_configure_dt(&cfg->b, enable ? GPIO_INT_EDGE_BOTH : GPIO_INT_DISABLE)) {
-        LOG_WRN("Unable to set A pin GPIO interrupt");
+    if (gpio_pin_interrupt_configure_dt(pin_gpio, enable ? GPIO_INT_EDGE_BOTH : GPIO_INT_DISABLE)) {
+        LOG_WRN("Unable to set %s pin GPIO interrupt", pin == EC11_PIN_A ? "A" : "B");
     }
 }
 
@@ -39,7 +36,7 @@ static void ec11_a_gpio_callback(const struct device *dev, struct gpio_callback 
 
     LOG_DBG("");
 
-    setup_int(drv_data->dev, false);
+    setup_int(drv_data->dev, EC11_PIN_A, false);
 
 #if defined(CONFIG_EC11_TRIGGER_OWN_THREAD)
     k_sem_give(&drv_data->gpio_sem);
@@ -54,7 +51,7 @@ static void ec11_b_gpio_callback(const struct device *dev, struct gpio_callback 
 
     LOG_DBG("");
 
-    setup_int(drv_data->dev, false);
+    setup_int(drv_data->dev, EC11_PIN_B, false);
 
 #if defined(CONFIG_EC11_TRIGGER_OWN_THREAD)
     k_sem_give(&drv_data->gpio_sem);
@@ -68,7 +65,7 @@ static void ec11_thread_cb(const struct device *dev) {
 
     drv_data->handler(dev, drv_data->trigger);
 
-    setup_int(dev, true);
+    setup_int(drv_data->dev, drv_data->active_pin, true);
 }
 
 #ifdef CONFIG_EC11_TRIGGER_OWN_THREAD
@@ -99,14 +96,14 @@ int ec11_trigger_set(const struct device *dev, const struct sensor_trigger *trig
                      sensor_trigger_handler_t handler) {
     struct ec11_data *drv_data = dev->data;
 
-    setup_int(dev, false);
+    setup_int(drv_data->dev, drv_data->active_pin, false);
 
     k_msleep(5);
 
     drv_data->trigger = trig;
     drv_data->handler = handler;
 
-    setup_int(dev, true);
+    setup_int(drv_data->dev, drv_data->active_pin, true);
 
     return 0;
 }
