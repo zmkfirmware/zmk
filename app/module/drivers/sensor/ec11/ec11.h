@@ -32,7 +32,6 @@ struct ec11_data {
     int8_t ticks;
     int8_t delta;
 
-#ifdef CONFIG_EC11_TRIGGER
     struct gpio_callback a_gpio_cb;
     struct gpio_callback b_gpio_cb;
     const struct device *dev;
@@ -47,14 +46,9 @@ struct ec11_data {
 #elif defined(CONFIG_EC11_TRIGGER_GLOBAL_THREAD)
     struct k_work work;
 #endif
-
-#endif /* CONFIG_EC11_TRIGGER */
 };
-
-#ifdef CONFIG_EC11_TRIGGER
 
 int ec11_trigger_set(const struct device *dev, const struct sensor_trigger *trig,
                      sensor_trigger_handler_t handler);
 
 int ec11_init_interrupt(const struct device *dev);
-#endif
