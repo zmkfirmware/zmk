@@ -1,0 +1,5 @@
+board:
+  extend: nrf52840_m2
+  variants:
+    - name: zmk
+      qualifier: nrf52840

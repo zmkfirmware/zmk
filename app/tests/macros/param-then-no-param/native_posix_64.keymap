@@ -1,0 +1,47 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    macros {
+        kp_l1: kp_l1 {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <5>;
+            tap-ms = <5>;
+            bindings
+            = <&macro_param_1to1>
+            , <&macro_tap &kp MACRO_PLACEHOLDER>
+            , <&macro_press &mo 1>
+            , <&macro_pause_for_release>
+            , <&macro_release &mo 1>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+            &kp_l1 A &kp B
+            &kp C    &none>;
+        };
+
+        other_layer {
+            bindings = <
+            &kp X    &kp Y
+            &kp Z    &none>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        ZMK_MOCK_PRESS(0,0,20)   // press macro (taps A)
+        ZMK_MOCK_PRESS(0,1,20)   // press Y
+        ZMK_MOCK_RELEASE(0,1,20) // release Y
+        ZMK_MOCK_RELEASE(0,0,20) // release macro
+        ZMK_MOCK_PRESS(1,0,10)   // press C
+        ZMK_MOCK_RELEASE(1,0,10) // release C
+    >;
+};

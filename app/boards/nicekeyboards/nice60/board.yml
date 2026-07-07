@@ -1,0 +1,7 @@
+board:
+  name: nice60
+  vendor: nicekeyboards
+  socs:
+    - name: nrf52840
+      variants:
+        - name: zmk

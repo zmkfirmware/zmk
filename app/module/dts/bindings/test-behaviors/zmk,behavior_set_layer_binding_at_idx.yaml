@@ -1,0 +1,13 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Layer Binding Setter Behavior
+
+compatible: "zmk,behavior-set-layer-binding-at-idx"
+
+include: two_param.yaml
+
+properties:
+  bindings:
+    type: phandle-array
+    required: true

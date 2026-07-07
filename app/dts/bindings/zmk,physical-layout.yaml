@@ -21,6 +21,9 @@ properties:
   kscan:
     type: phandle
     description: The kscan to use along with this layout. The `zmk,kscan` chosen will be used as a fallback if this property is omitted.
+  input:
+    type: phandle
+    description: The input device to use along with this layout. The `zmk,matrix-input` chosen will be used as a fallback if this property is omitted.
   keys:
     type: phandle-array
     description: Array of key physical attributes.

@@ -13,13 +13,14 @@
 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 28
 <dbg> ble_central: discover_func: [ATTRIBUTE] handle 30
 <dbg> ble_central: discover_func: [SUBSCRIBED]
+<dbg> ble_central: discover_func: [ATTRIBUTE] handle 32
+<dbg> ble_central: discover_func: [ATTRIBUTE] handle 34
+<dbg> ble_central: discover_func: [CONSUMER SUBSCRIBED]
 <dbg> ble_central: notify_func: payload
                    00 00 04 00 00 00 00 00                          |........
 <dbg> ble_central: notify_func: payload
                    00 00 00 00 00 00 00 00                          |........
 <dbg> ble_central: notify_func: payload
                    00 00 05 00 00 00 00 00                          |........
-<dbg> ble_central: notify_func: payload
-                   00 00 00 00 00 00 00 00                          |........
 <dbg> ble_central: notify_func: payload
                    00 00 00 00 00 00 00 00                          |........

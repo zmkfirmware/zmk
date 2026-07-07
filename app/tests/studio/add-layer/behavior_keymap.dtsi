@@ -1,0 +1,32 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        add_layer: add_layer {
+            compatible = "zmk,behavior-add-layer";
+            #binding-cells = <0>;
+        };
+
+        set_binding: set_binding {
+            compatible = "zmk,behavior-set-layer-binding-at-idx";
+            #binding-cells = <2>;
+            bindings = <&kp A>, <&kp B>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &add_layer &set_binding 1 0
+                &mo 1 &kp B>;
+        };
+
+        layer_1 {
+            status = "reserved";
+        };
+    };
+};

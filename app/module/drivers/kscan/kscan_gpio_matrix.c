@@ -515,7 +515,7 @@ static const struct kscan_driver_api kscan_matrix_api = {
         .matrix_state = kscan_matrix_state_##n,                                                    \
         COND_INTERRUPTS((.irqs = kscan_matrix_irqs_##n, ))};                                       \
                                                                                                    \
-    static struct kscan_matrix_config kscan_matrix_config_##n = {                                  \
+    static const struct kscan_matrix_config kscan_matrix_config_##n = {                            \
         .rows = ARRAY_SIZE(kscan_matrix_rows_##n),                                                 \
         .cols = ARRAY_SIZE(kscan_matrix_cols_##n),                                                 \
         .outputs =                                                                                 \

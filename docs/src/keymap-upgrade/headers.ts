@@ -1,4 +1,4 @@
-import type { SyntaxNode, Tree } from "web-tree-sitter";
+import type { Tree } from "web-tree-sitter";
 import { Devicetree, findCapture } from "./parser";
 import { getUpgradeEdits, MatchFunc, ReplaceFunc, TextEdit } from "./textedit";
 

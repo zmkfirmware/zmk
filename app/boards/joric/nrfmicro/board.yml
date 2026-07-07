@@ -1,0 +1,9 @@
+board:
+  extend: nrfmicro
+  variants:
+    - name: zmk
+      qualifier: nrf52840
+    - name: flipped_zmk
+      qualifier: nrf52840
+    - name: zmk
+      qualifier: nrf52833

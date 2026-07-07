@@ -1,0 +1,80 @@
+/*
+ * Copyright (c) 2025 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <physical_layouts.dtsi>
+
+/ {
+    tester_position_map {
+        compatible = "zmk,physical-layout-position-map";
+        complete;
+
+        pinout_map: pinout_positions {
+            physical-layout = <&physical_layout0>;
+            positions = <0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17>;
+        };
+        inline_map: single_row_positions {
+            physical-layout = <&physical_layout1>;
+            positions = <0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17>;
+        };
+    };
+
+    physical_layout0: physical_layout_0 {
+        compatible = "zmk,physical-layout";
+        display-name = "Pro Micro Pinout";
+
+        // Map key positions to the Pro Micro pinout. The coordinate
+        // deltas jump around a little because some of the Pro Micro
+        // pins are out of order: D0 is "after" D1 and D16 is "before"
+        // D14.
+        keys  //                     w   h    x    y    rot   rx   ry
+            = <&key_physical_attrs 100 100    0  100      0    0    0> // D0
+            , <&key_physical_attrs 100 100    0    0      0    0    0> // D1
+            , <&key_physical_attrs 100 100    0  400      0    0    0> // D2
+            , <&key_physical_attrs 100 100    0  500      0    0    0> // D3
+            , <&key_physical_attrs 100 100    0  600      0    0    0> // D4
+            , <&key_physical_attrs 100 100    0  700      0    0    0> // D5
+            , <&key_physical_attrs 100 100    0  800      0    0    0> // D6
+            , <&key_physical_attrs 100 100    0  900      0    0    0> // D7
+            , <&key_physical_attrs 100 100    0 1000      0    0    0> // D8
+            , <&key_physical_attrs 100 100    0 1100      0    0    0> // D9
+            , <&key_physical_attrs 100 100  600 1100      0    0    0> // D10
+            , <&key_physical_attrs 100 100  600  900      0    0    0> // D14
+            , <&key_physical_attrs 100 100  600  800      0    0    0> // D15
+            , <&key_physical_attrs 100 100  600 1000      0    0    0> // D16
+            , <&key_physical_attrs 100 100  600  700      0    0    0> // D18
+            , <&key_physical_attrs 100 100  600  600      0    0    0> // D19
+            , <&key_physical_attrs 100 100  600  500      0    0    0> // D20
+            , <&key_physical_attrs 100 100  600  400      0    0    0> // D21
+            ;
+    };
+
+    physical_layout1: physical_layout_1 {
+        compatible = "zmk,physical-layout";
+        display-name = "Single Row";
+
+        // Single row of eighteen "keys", in ascending "Arduino" order.
+        keys  //                     w   h    x    y    rot   rx   ry
+            = <&key_physical_attrs 100 100    0    0      0    0    0>
+            , <&key_physical_attrs 100 100  100    0      0    0    0>
+            , <&key_physical_attrs 100 100  200    0      0    0    0>
+            , <&key_physical_attrs 100 100  300    0      0    0    0>
+            , <&key_physical_attrs 100 100  400    0      0    0    0>
+            , <&key_physical_attrs 100 100  500    0      0    0    0>
+            , <&key_physical_attrs 100 100  600    0      0    0    0>
+            , <&key_physical_attrs 100 100  700    0      0    0    0>
+            , <&key_physical_attrs 100 100  800    0      0    0    0>
+            , <&key_physical_attrs 100 100  900    0      0    0    0>
+            , <&key_physical_attrs 100 100 1000    0      0    0    0>
+            , <&key_physical_attrs 100 100 1100    0      0    0    0>
+            , <&key_physical_attrs 100 100 1200    0      0    0    0>
+            , <&key_physical_attrs 100 100 1300    0      0    0    0>
+            , <&key_physical_attrs 100 100 1400    0      0    0    0>
+            , <&key_physical_attrs 100 100 1500    0      0    0    0>
+            , <&key_physical_attrs 100 100 1600    0      0    0    0>
+            , <&key_physical_attrs 100 100 1700    0      0    0    0>
+            ;
+    };
+};

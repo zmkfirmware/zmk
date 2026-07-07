@@ -55,11 +55,7 @@ Per sensor overrides can be added with ordered nested nodes with the correct ove
 };
 ```
 
-:::note
-
 The names of the child nodes are not important, and are applied in order to the sensors listed in the `sensors` property of the sensors node.
-
-:::
 
 Applies to the node and child nodes of: `compatible = "zmk,keymap-sensors"`
 

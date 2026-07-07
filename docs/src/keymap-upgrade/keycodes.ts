@@ -142,7 +142,7 @@ function findBehaviorNodes(paramNode: SyntaxNode) {
   }
 
   // Walk forward from the behavior to collect all its parameters.
-  let nodes = [behavior];
+  const nodes = [behavior];
   let param = behavior.nextNamedSibling;
   while (param && param.type !== "reference") {
     nodes.push(param);

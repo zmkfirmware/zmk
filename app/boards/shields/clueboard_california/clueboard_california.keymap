@@ -12,6 +12,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
+            display-name = "Default Layer";
             bindings = <
                 &kp N9 &kp N8
                 &kp N7 &kp N6

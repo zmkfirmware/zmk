@@ -1,0 +1,4 @@
+
+target_sources_ifdef(CONFIG_ZMK_BOOTMODE_TO_MAGIC_VALUE_MAPPER app PRIVATE bootmode_to_magic_mapper.c)
+target_sources_ifdef(CONFIG_ZMK_DBL_TAP_BOOTLOADER app PRIVATE dbl_tap_bootloader.c)
+target_sources_ifdef(CONFIG_ZMK_BOOT_STM32_ENFORCE_NBOOT_SEL app PRIVATE stm32_enforce_nboot_sel.c)

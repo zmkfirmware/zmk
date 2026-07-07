@@ -3,3 +3,4 @@ build
 .docusaurus
 *.mustache
 hardware-metadata.json
+src/hardware-metadata.d.ts

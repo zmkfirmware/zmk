@@ -9,16 +9,20 @@ if ZMK_SPLIT
 config ZMK_SPLIT_ROLE_CENTRAL
     bool "Split central device"
 
-choice ZMK_SPLIT_TRANSPORT
-    prompt "Split transport"
-
 config ZMK_SPLIT_BLE
-    bool "BLE"
+    bool "BLE Split"
+    default y
     depends on ZMK_BLE
     select BT_USER_PHY_UPDATE
     select BT_AUTO_PHY_UPDATE
 
-endchoice
+config ZMK_SPLIT_WIRED
+    bool "Wired Split"
+    default y
+    depends on DT_HAS_ZMK_WIRED_SPLIT_ENABLED
+    select SERIAL
+    select RING_BUFFER
+    select CRC
 
 config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     bool "Peripheral HID Indicators"
@@ -29,3 +33,4 @@ config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
 endif # ZMK_SPLIT
 
 rsource "bluetooth/Kconfig"
+rsource "wired/Kconfig"

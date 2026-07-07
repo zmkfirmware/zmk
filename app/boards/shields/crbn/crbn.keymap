@@ -13,6 +13,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
+            display-name = "Default Layer";
             // -----------------------------------------------------------------------------------------
             // |  TAB  |  Q   |  W   |  E   |  R   |  T   |   Y   |  U    |  I   |  O   |   P   | BSPC  |
             // |  ESC  |  A   |  S   |  D   |  F   |  G   |   H   |  J    |  K   |  L   |   ;   |  '    |
@@ -29,6 +30,7 @@
         };
 
         lower {
+            display-name = "Lower";
             bindings = <
                 &kp LS(GRAVE) &kp LS(N1) &kp LS(N2) &kp LS(N3) &kp LS(N4) &kp LS(N5) &kp LS(N6) &kp LS(N7) &kp LS(N8) &kp LS(N9) &kp LS(N0) &kp DEL
                 &kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp UNDER &kp PLUS &kp LBRC &kp RBRC &kp PIPE
@@ -40,6 +42,7 @@
         };
 
         raise {
+            display-name = "Raise";
             bindings = <
                 &kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &kp BSPC
                 &kp DEL &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp MINUS &kp EQUAL &kp LBKT &kp RBKT &kp BSLH
@@ -51,6 +54,7 @@
         };
 
         control {
+            display-name = "Control";
             bindings = <
                 &sys_reset &bootloader &bt BT_CLR &bt BT_PRV &bt BT_NXT &trans &trans &trans &trans &trans &trans &trans
                 &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &trans &trans &trans &trans &trans &trans &trans &trans &trans

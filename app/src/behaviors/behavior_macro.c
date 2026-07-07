@@ -129,7 +129,9 @@ static int behavior_macro_init(const struct device *dev) {
             LOG_DBG("Release will resume at %d", state->release_state.start_index);
             break;
         } else {
-            // Ignore regular invokable bindings
+            // Mostly ignore regular invokable bindings, except they will consume macro parameters
+            state->release_state.param1_source = PARAM_SOURCE_BINDING;
+            state->release_state.param2_source = PARAM_SOURCE_BINDING;
         }
     }
 

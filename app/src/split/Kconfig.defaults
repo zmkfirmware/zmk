@@ -2,3 +2,5 @@
 # SPDX-License-Identifier: MIT
 
 rsource "bluetooth/Kconfig.defaults"
+rsource "wired/Kconfig.defaults"
+

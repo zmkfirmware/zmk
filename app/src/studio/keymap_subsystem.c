@@ -278,9 +278,11 @@ static bool encode_layout_keys(pb_ostream_t *stream, const pb_field_t *field, vo
             .height = layout_kp->height,
             .x = layout_kp->x,
             .y = layout_kp->y,
+#if IS_ENABLED(CONFIG_ZMK_PHYSICAL_LAYOUT_KEY_ROTATION)
             .r = layout_kp->r,
             .rx = layout_kp->rx,
             .ry = layout_kp->ry,
+#endif
         };
 
         if (!pb_encode_submessage(stream, &zmk_keymap_KeyPhysicalAttrs_msg, &layout_kp_msg)) {

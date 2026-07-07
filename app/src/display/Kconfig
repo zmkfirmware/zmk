@@ -5,13 +5,17 @@ menuconfig ZMK_DISPLAY
     bool "Enable ZMK Display"
     select DISPLAY
     select LVGL
-    select LV_CONF_MINIMAL
+    imply LV_CONF_MINIMAL
 
 if ZMK_DISPLAY
 
 config ZMK_DISPLAY_BLANK_ON_IDLE
     bool "Blank display on idle"
     default y if SSD1306
+
+config ZMK_DISPLAY_TICK_PERIOD_MS
+    int "Period (in ms) between display task execution"
+    default 10
 
 if LV_USE_THEME_MONO
 
@@ -25,11 +29,8 @@ choice LV_TXT_ENC
 
 endchoice
 
-config LV_MEM_CUSTOM
-    default y
-
- config LV_Z_MEM_POOL_SIZE
-     default 4096 if ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
+config LV_Z_MEM_POOL_SIZE
+    default 4096 if ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
 
 choice ZMK_DISPLAY_STATUS_SCREEN
     prompt "Default status screen for displays"
@@ -37,7 +38,7 @@ choice ZMK_DISPLAY_STATUS_SCREEN
 config ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN
     bool "Built in status screen"
     select LV_OBJ_LABEL
-    imply LV_USE_THEME_MONO
+    imply LV_USE_THEME_MONO if LV_Z_BITS_PER_PIXEL=1
     imply ZMK_WIDGET_LAYER_STATUS
     imply ZMK_WIDGET_BATTERY_STATUS
     imply ZMK_WIDGET_OUTPUT_STATUS
@@ -63,7 +64,7 @@ if ZMK_DISPLAY_WORK_QUEUE_DEDICATED
 
 config ZMK_DISPLAY_DEDICATED_THREAD_STACK_SIZE
     int "Stack size for dedicated UI thread/queue"
-    default 2048
+    default 3072
 
 config ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY
     int "Thread priority for dedicated UI thread/queue"

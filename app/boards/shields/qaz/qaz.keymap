@@ -29,6 +29,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
+            display-name = "Default Layer";
             bindings = <
     &kp Q      &kp W      &kp E       &kp R       &kp T  &kp Y  &kp U       &kp I       &kp O      &kp P
     &hm LGUI A &hm LALT S &hm LCTRL D &hm LSHFT F &kp G  &kp H  &hm RSHFT J &hm RCTRL K &hm RALT L &hm RGUI RET
@@ -37,6 +38,7 @@
             >;
         };
         num_sym {
+            display-name = "Num Sym";
             bindings = <
     &kp N1     &kp N2     &kp N3     &kp N4     &kp N5 &kp N6 &kp N7     &kp N8      &kp N9    &kp N0
     &trans     &trans     &trans     &trans     &trans &trans &trans     &trans      &kp EQUAL &kp MINUS
@@ -46,6 +48,7 @@
         };
 
     nav {
+            display-name = "Nav";
             bindings = <
     &bt BT_CLR &bt BT_NXT &bt BT_PRV &none       &none &none &none       &kp UP       &none     &kp BSPC
     &trans     &trans     &trans     &trans      &none &none &kp LEFT    &kp DOWN     &kp RIGHT &none

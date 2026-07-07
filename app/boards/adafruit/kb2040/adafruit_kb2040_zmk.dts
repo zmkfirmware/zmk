@@ -1,0 +1,10 @@
+/*
+ * Copyright (c) 2023 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <../boards/adafruit/kb2040/adafruit_kb2040.dts>
+#include <arm/raspberrypi/rp2040-boot-mode-retention.dtsi>
+
+&pro_micro_serial { status = "disabled"; };

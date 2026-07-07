@@ -25,4 +25,3 @@ child-binding:
       type: boolean
     layers:
       type: array
-      default: [-1]

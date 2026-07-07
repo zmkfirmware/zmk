@@ -1,0 +1,7 @@
+board:
+  name: bt65
+  vendor: polarityworks
+  socs:
+    - name: nrf52840
+      variants:
+        - name: zmk

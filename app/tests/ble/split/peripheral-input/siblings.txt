@@ -1,0 +1,2 @@
+./ble_test_central.exe -d=2 -subscribe_to_pointer_report
+./tests_ble_split_peripheral-input_peripheral.exe -d=3

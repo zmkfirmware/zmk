@@ -1,0 +1,5 @@
+s/.*layer_changed/layer_changed/p
+s/.*hid_listener_keycode_//p
+s/.*on_remove_layer_binding_pressed/remove_layer/p
+s/.*tog_keymap_binding_pressed/tog_pressed/p
+

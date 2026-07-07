@@ -2,16 +2,20 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 import { HardwareMetadata, Interconnect } from "../hardware-metadata";
-import { groupedMetadata, InterconnectDetails } from "./hardware-utils";
+import { groupedMetadata } from "./hardware-utils";
 
 interface InterconnectTabsProps {
   items: HardwareMetadata[];
-  gpio: Boolean;
+  gpio: boolean;
 }
 
-function mapInterconnect(interconnect: Interconnect, gpio: Boolean) {
-  let content = require(`@site/src/data/interconnects/${interconnect.id}/design_guideline.md`);
-  let imageUrl = require(`@site/docs/assets/interconnects/${interconnect.id}/pinout.png`);
+function mapInterconnect(interconnect: Interconnect, gpio: boolean) {
+  const content = require(
+    `@site/src/data/interconnects/${interconnect.id}/design_guideline.md`
+  );
+  const imageUrl = require(
+    `@site/docs/assets/interconnects/${interconnect.id}/pinout.png`
+  );
   return (
     <TabItem value={interconnect.id} key={interconnect.id}>
       <img src={imageUrl.default} />
@@ -53,13 +57,17 @@ function mapInterconnectValue(interconnect: Interconnect) {
 }
 
 function InterconnectTabs({ items, gpio }: InterconnectTabsProps) {
-  let grouped = Object.values(groupedMetadata(items).interconnects)
+  const grouped = Object.values(groupedMetadata(items).interconnects)
     .map((i) => i?.interconnect as Interconnect)
     .filter((i) => i?.design_guideline)
     .sort((a, b) => a.id.localeCompare(b.id));
 
   return (
-    <Tabs defaultValue={"pro_micro"} values={grouped.map(mapInterconnectValue)}>
+    <Tabs
+      queryString="interconnect"
+      defaultValue={"pro_micro"}
+      values={grouped.map(mapInterconnectValue)}
+    >
       {grouped.map((items) => mapInterconnect(items, gpio))}
     </Tabs>
   );

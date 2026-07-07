@@ -13,6 +13,7 @@
                 compatible = "zmk,keymap";
 
                 default_layer {
+                        display-name = "Default Layer";
 // -----------------------------------------------------------------------------------------
 // |  Q  |  W  |  E  |  R  |  T   |   |  Y  |  U   |  I  |  O  |  P  |
 // |  A  |  S  |  D  |  F  |  G   |   |  H  |  J   |  K  |  L  |  ;  |
@@ -26,6 +27,7 @@
                         >;
                 };
                 nav_layer {
+                        display-name = "Nav Layer";
 // -----------------------------------------------------------------------------------------
 // |BTCLR|     | ESC |  ~   |     |   | TAB | HOME |  UP  | END | DEL  |
 // | BT1 | GUI | ALT | CTRL | NUM |   |  /  | LEFT | DOWN | RGT | BSPC |
@@ -40,6 +42,7 @@
                 };
 
                 sym_layer {
+                        display-name = "Sym Layer";
 // -----------------------------------------------------------------------------------------
 // |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  |
 // |     |     |     |     |     |   |  -  |  =  |  {  |  }  | "|" |
@@ -56,6 +59,7 @@
 // This layer is unreachable until "tri layer state" is sorted out.
 // Leaving it here for completeness.
                 num_layer {
+                        display-name = "Num Layer";
 // -----------------------------------------------------------------------------------------
 // |     |     |     |     |     |   |  A  |  7  |  8  |  9  |  D  |
 // |     |     |     |     |     |   |  B  |  4  |  5  |  6  |  E  |

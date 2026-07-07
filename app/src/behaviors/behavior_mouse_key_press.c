@@ -19,7 +19,26 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-static int behavior_mouse_key_press_init(const struct device *dev) { return 0; };
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+
+static const struct behavior_parameter_value_metadata param_values[] = {
+    {.display_name = "MB1", .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE, .value = MB1},
+    {.display_name = "MB2", .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE, .value = MB2},
+    {.display_name = "MB3", .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE, .value = MB3},
+    {.display_name = "MB4", .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE, .value = MB4},
+    {.display_name = "MB5", .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE, .value = MB5}};
+
+static const struct behavior_parameter_metadata_set param_metadata_set[] = {{
+    .param1_values = param_values,
+    .param1_values_len = ARRAY_SIZE(param_values),
+}};
+
+static const struct behavior_parameter_metadata metadata = {
+    .sets_len = ARRAY_SIZE(param_metadata_set),
+    .sets = param_metadata_set,
+};
+
+#endif
 
 static void process_key_state(const struct device *dev, int32_t val, bool pressed) {
     for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
@@ -49,10 +68,15 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
 }
 
 static const struct behavior_driver_api behavior_mouse_key_press_driver_api = {
-    .binding_pressed = on_keymap_binding_pressed, .binding_released = on_keymap_binding_released};
+    .binding_pressed = on_keymap_binding_pressed,
+    .binding_released = on_keymap_binding_released,
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &metadata,
+#endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+};
 
 #define MKP_INST(n)                                                                                \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_mouse_key_press_init, NULL, NULL, NULL, POST_KERNEL,       \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, NULL, NULL, POST_KERNEL,                                \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                   \
                             &behavior_mouse_key_press_driver_api);
 

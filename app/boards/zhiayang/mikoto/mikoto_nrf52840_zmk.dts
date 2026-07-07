@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) 2026 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <../boards/zhiayang/mikoto/mikoto.dts>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+
+/ {
+    chosen {
+        zmk,battery = &vbatt;
+    };
+
+    // Node name must match original "EXT_POWER" label to preserve user settings.
+    EXT_POWER {
+        compatible = "zmk,ext-power-generic";
+        control-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+        init-delay-ms = <50>;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 1>;
+        output-ohms = <10000000>;
+        full-ohms = <(10000000 + 4000000)>;
+    };
+};

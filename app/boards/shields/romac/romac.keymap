@@ -13,6 +13,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
+            display-name = "Default Layer";
 // -------------------
 // | 7      |  8  |  9  |
 // | 4      |  5  |  6  |
@@ -28,6 +29,7 @@
         };
 
         nav_layer {
+            display-name = "Nav Layer";
 // -----------------------
 // | BTNXT |  HOME  |  PGUP  |
 // | BTPRV |  END   |  PGDN  |

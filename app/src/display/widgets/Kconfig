@@ -10,7 +10,7 @@ config ZMK_WIDGET_LAYER_STATUS
 
 config ZMK_WIDGET_BATTERY_STATUS
     bool "Widget for battery charge information, using small icons"
-    depends on BT
+    depends on ZMK_BATTERY_REPORTING
     select LV_USE_LABEL
 
 if ZMK_WIDGET_BATTERY_STATUS

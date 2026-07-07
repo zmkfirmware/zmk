@@ -148,8 +148,8 @@ int ec11_init(const struct device *dev) {
 }
 
 #define EC11_INST(n)                                                                               \
-    struct ec11_data ec11_data_##n;                                                                \
-    const struct ec11_config ec11_cfg_##n = {                                                      \
+    static struct ec11_data ec11_data_##n;                                                         \
+    static const struct ec11_config ec11_cfg_##n = {                                               \
         .a = GPIO_DT_SPEC_INST_GET(n, a_gpios),                                                    \
         .b = GPIO_DT_SPEC_INST_GET(n, b_gpios),                                                    \
         .resolution = DT_INST_PROP_OR(n, resolution, 1),                                           \

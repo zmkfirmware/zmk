@@ -3,7 +3,12 @@
 
 if ZMK_BLE
 
-if ZMK_SPLIT_BLE && ZMK_SPLIT_ROLE_CENTRAL
+if ZMK_SPLIT_BLE
+
+config ZMK_SPLIT_BLE_PRIORITY
+    default 1
+
+if ZMK_SPLIT_ROLE_CENTRAL
 
 config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
     default 1
@@ -15,6 +20,8 @@ config BT_MAX_PAIRED
     default 6
 
 #ZMK_SPLIT_BLE && ZMK_SPLIT_ROLE_CENTRAL
+endif
+
 endif
 
 if !ZMK_SPLIT_BLE

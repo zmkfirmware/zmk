@@ -34,7 +34,7 @@ int zmk_behavior_sensor_rotate_common_accept_data(
         remainder.val1 += value.val1;
         remainder.val2 += value.val2;
 
-        if (remainder.val2 >= 1000000 || remainder.val2 <= 1000000) {
+        if (abs(remainder.val2) >= 1000000) {
             remainder.val1 += remainder.val2 / 1000000;
             remainder.val2 %= 1000000;
         }

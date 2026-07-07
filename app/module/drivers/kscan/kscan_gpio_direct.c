@@ -397,7 +397,7 @@ static const struct kscan_driver_api kscan_direct_api = {
         .pin_state = kscan_direct_state_##n,                                                       \
         COND_INTERRUPTS((.irqs = kscan_direct_irqs_##n, ))};                                       \
                                                                                                    \
-    static struct kscan_direct_config kscan_direct_config_##n = {                                  \
+    static const struct kscan_direct_config kscan_direct_config_##n = {                            \
         .debounce_config =                                                                         \
             {                                                                                      \
                 .debounce_press_ms = INST_DEBOUNCE_PRESS_MS(n),                                    \

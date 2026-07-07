@@ -8,9 +8,9 @@ import TabItem from "@theme/TabItem";
 
 ## Source Code
 
-First, you'll need to clone the ZMK source repository if you haven't already.
-Open a terminal and navigate to the folder you would like to place your `zmk`
-directory in, then run the following command:
+First, you'll need to clone the ZMK source repository into your local file system if you haven't already.
+Open a terminal and navigate to the folder on your local machine where you would like to place your `zmk`
+directory, then run the following command:
 
 ```sh
 git clone https://github.com/zmkfirmware/zmk.git
@@ -19,6 +19,7 @@ git clone https://github.com/zmkfirmware/zmk.git
 ## Installing Development Tools
 
 <Tabs groupId="container"
+      queryString
       defaultValue="vsCode"
       values={[
         {label: 'VS Code', value: 'vsCode'},
@@ -64,6 +65,7 @@ first make them available by creating volumes.
 
 <Tabs
   groupId="container"
+  queryString
   defaultValue="vsCode"
   values={[
     { label: "Docker", value: "vsCode" },
@@ -117,6 +119,7 @@ created and mounted. Accordingly, you first have to remove the old ones.
 
 <Tabs
   groupId="container"
+  queryString
   defaultValue="vsCode"
   values={[
     { label: "Docker", value: "vsCode" },
@@ -153,6 +156,7 @@ created and mounted. Accordingly, you first have to remove the old ones.
 ## Initialize Container
 
 <Tabs groupId="container"
+      queryString
       defaultValue="vsCode"
       values={[
         {label: 'VS Code', value: 'vsCode'},

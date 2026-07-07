@@ -21,7 +21,7 @@ function groupedBoard(agg: GroupedMetadata, board: Board) {
     agg.onboard.push(board);
   } else if (board.exposes) {
     board.exposes.forEach((element) => {
-      let ic = agg.interconnects[element] ?? {
+      const ic = agg.interconnects[element] ?? {
         boards: [],
         shields: [],
       };
@@ -37,12 +37,12 @@ function groupedBoard(agg: GroupedMetadata, board: Board) {
 
 function groupedShield(agg: GroupedMetadata, shield: Shield) {
   shield.requires.forEach((id) => {
-    let ic = agg.interconnects[id] ?? { boards: [], shields: [] };
+    const ic = agg.interconnects[id] ?? { boards: [], shields: [] };
     ic.shields.push(shield);
     agg.interconnects[id] = ic;
   });
   shield.exposes?.forEach((id) => {
-    let ic = agg.interconnects[id] ?? { boards: [], shields: [] };
+    const ic = agg.interconnects[id] ?? { boards: [], shields: [] };
     ic.shields.push(shield);
     agg.interconnects[id] = ic;
   });
@@ -50,7 +50,7 @@ function groupedShield(agg: GroupedMetadata, shield: Shield) {
 }
 
 function groupedInterconnect(agg: GroupedMetadata, item: Interconnect) {
-  let ic = agg.interconnects[item.id] ?? { boards: [], shields: [] };
+  const ic = agg.interconnects[item.id] ?? { boards: [], shields: [] };
   ic.interconnect = item;
   agg.interconnects[item.id] = ic;
 

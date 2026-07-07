@@ -29,11 +29,12 @@ header, which is added at the top of the keymap file:
 
 This allows you to reference the actions defined in this header:
 
-| Define    | Action                                          |
-| --------- | ----------------------------------------------- |
-| `OUT_USB` | Prefer sending to USB                           |
-| `OUT_BLE` | Prefer sending to the current bluetooth profile |
-| `OUT_TOG` | Toggle between USB and BLE                      |
+| Define     | Action                                          |
+| ---------- | ----------------------------------------------- |
+| `OUT_USB`  | Prefer sending to USB                           |
+| `OUT_BLE`  | Prefer sending to the current bluetooth profile |
+| `OUT_TOG`  | Toggle between USB and BLE                      |
+| `OUT_NONE` | Prevent from sending any output                 |
 
 ## Output Selection Behavior
 
@@ -45,7 +46,7 @@ The output selection behavior changes the preferred output on press.
 - Parameter #1: Command, e.g. `OUT_BLE`
 
 :::note[Output selection persistence]
-The endpoint that is selected by the `&out` behavior will be saved to flash storage and hence persist across restarts and firmware flashes.
+The endpoint that is selected by the `&out` behavior will be [saved to flash storage](../../config/settings.md) and hence persist across restarts and firmware flashes.
 However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
 

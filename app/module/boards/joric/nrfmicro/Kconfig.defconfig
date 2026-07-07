@@ -1,0 +1,29 @@
+# Electronut Labs Papyr board configuration
+
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_NRFMICRO_NRF52840 || BOARD_NRFMICRO_NRF52840_FLIPPED || BOARD_NRFMICRO_NRF52833
+
+config BOARD
+    default "nrfmicro"
+
+if USB_DEVICE_STACK
+
+config USB_NRFX
+    default y
+
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+    default BT
+
+if BOARD_REVISION = "1.3.0"
+
+config BOARD_NRFMICRO_CHARGER
+    default y
+
+endif # BOARD_REVISION = "1.3.0"
+
+
+endif # BOARD_NRFMICRO_NRF52840 || BOARD_NRFMICRO_NRF52840_FLIPPED || BOARD_NRFMICRO_NRF52833

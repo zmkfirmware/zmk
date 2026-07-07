@@ -25,6 +25,7 @@ LOG_MODULE_DECLARE(zmk_studio, CONFIG_ZMK_STUDIO_LOG_LEVEL);
 
 static bool handling_rx = false;
 
+static K_SEM_DEFINE(indicate_sem, 1, 1);
 static atomic_t notify_size;
 
 static void rpc_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value) {
@@ -125,8 +126,14 @@ static int gatt_stop_rx(void) {
     return 0;
 }
 
+static uint8_t indicate_buffer[27];
+
+static void indicate_cb(struct bt_conn *conn, struct bt_gatt_indicate_params *params, uint8_t err);
+
 static struct bt_gatt_indicate_params rpc_indicate_params = {
     .attr = &rpc_interface.attrs[1],
+    .data = indicate_buffer,
+    .func = indicate_cb,
 };
 
 static void notif_rpc_tx_cb(struct k_work *work) {
@@ -139,34 +146,32 @@ static void notif_rpc_tx_cb(struct k_work *work) {
         return;
     }
 
-    uint16_t notify_size = get_notify_size_for_conn(conn);
-    uint8_t notify_bytes[notify_size];
+    uint16_t notify_size = MIN(get_notify_size_for_conn(conn), sizeof(indicate_buffer));
 
-    while (ring_buf_size_get(tx_buf) > 0) {
+    if (ring_buf_size_get(tx_buf) > 0) {
+        int ret = k_sem_take(&indicate_sem, K_NO_WAIT);
+        if (ret < 0) {
+            return;
+        }
+
         uint16_t added = 0;
         while (added < notify_size && ring_buf_size_get(tx_buf) > 0) {
             uint8_t *buf;
             int len = ring_buf_get_claim(tx_buf, &buf, notify_size - added);
 
-            memcpy(notify_bytes + added, buf, len);
+            memcpy(indicate_buffer + added, buf, len);
 
             added += len;
             ring_buf_get_finish(tx_buf, len);
         }
 
-        rpc_indicate_params.data = notify_bytes;
         rpc_indicate_params.len = added;
 
-        int notify_attempts = 5;
-        do {
-            int err = bt_gatt_indicate(conn, &rpc_indicate_params);
-            if (err >= 0) {
-                break;
-            }
-
+        int err = bt_gatt_indicate(conn, &rpc_indicate_params);
+        if (err < 0) {
             LOG_WRN("Failed to notify the response %d", err);
-            k_sleep(K_MSEC(200));
-        } while (notify_attempts-- > 0);
+            k_sem_give(&indicate_sem);
+        }
     }
 
     bt_conn_unref(conn);
@@ -177,6 +182,11 @@ static K_WORK_DEFINE(notify_tx_work, notif_rpc_tx_cb);
 struct gatt_write_state {
     size_t pending_notify;
 };
+
+static void indicate_cb(struct bt_conn *conn, struct bt_gatt_indicate_params *params, uint8_t err) {
+    k_sem_give(&indicate_sem);
+    k_work_submit(&notify_tx_work);
+}
 
 static void gatt_tx_notify(struct ring_buf *tx_buf, size_t added, bool msg_done, void *user_data) {
     struct gatt_write_state *state = (struct gatt_write_state *)user_data;
@@ -194,7 +204,7 @@ static void gatt_tx_notify(struct ring_buf *tx_buf, size_t added, bool msg_done,
 static struct gatt_write_state tx_state = {};
 
 static void *gatt_tx_user_data(void) {
-    memset(&tx_state, sizeof(tx_state), 0);
+    memset(&tx_state, 0, sizeof(tx_state));
 
     return &tx_state;
 }

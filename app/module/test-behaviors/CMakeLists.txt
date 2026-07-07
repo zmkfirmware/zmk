@@ -1,0 +1,6 @@
+if (((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL) AND CONFIG_ZMK_TEST_BEHAVIORS)
+  target_sources(app PRIVATE behavior_add_layer.c)
+  target_sources(app PRIVATE behavior_move_layer.c)
+  target_sources(app PRIVATE behavior_remove_layer.c)
+  target_sources(app PRIVATE behavior_set_layer_binding_at_idx.c)
+endif()

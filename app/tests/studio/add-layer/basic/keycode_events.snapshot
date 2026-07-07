@@ -1,0 +1,6 @@
+add_layer: Added layer 1
+set_layer_binding: Set binding at layer 1, index 0 to binding 1/2
+layer_changed: layer 1 state 1 locked 0
+pressed: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+released: usage_page 0x07 keycode 0x04 implicit_mods 0x00 explicit_mods 0x00
+layer_changed: layer 1 state 0 locked 0

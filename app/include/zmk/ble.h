@@ -10,8 +10,7 @@
 #include <zmk/ble/profile.h>
 
 #define ZMK_BLE_IS_CENTRAL                                                                         \
-    (IS_ENABLED(CONFIG_ZMK_SPLIT) && IS_ENABLED(CONFIG_ZMK_BLE) &&                                 \
-     IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
+    (IS_ENABLED(CONFIG_ZMK_SPLIT_BLE) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
 
 #if ZMK_BLE_IS_CENTRAL
 #define ZMK_BLE_PROFILE_COUNT (CONFIG_BT_MAX_PAIRED - CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS)
@@ -29,9 +28,13 @@ int zmk_ble_prof_disconnect(uint8_t index);
 
 int zmk_ble_active_profile_index(void);
 int zmk_ble_profile_index(const bt_addr_le_t *addr);
+bt_addr_le_t *zmk_ble_profile_address(uint8_t index);
 
 bt_addr_le_t *zmk_ble_active_profile_addr(void);
 struct bt_conn *zmk_ble_active_profile_conn(void);
+
+bool zmk_ble_profile_is_connected(uint8_t index);
+bool zmk_ble_profile_is_open(uint8_t index);
 
 bool zmk_ble_active_profile_is_open(void);
 bool zmk_ble_active_profile_is_connected(void);

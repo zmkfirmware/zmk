@@ -1,0 +1,5 @@
+board:
+  extend: mikoto
+  variants:
+    - name: zmk
+      qualifier: nrf52840

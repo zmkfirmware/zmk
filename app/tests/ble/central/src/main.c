@@ -45,6 +45,7 @@ static bool skip_set_security_on_connect = false;
 static bool skip_discovery_on_connect = false;
 static bool read_directly_on_discovery = false;
 static bool write_hid_indicators_on_discovery = false;
+static bool subscribe_to_pointer_report = false;
 static int32_t wait_on_start = 0;
 
 static void ble_central_native_posix_options(void) {
@@ -74,6 +75,11 @@ static void ble_central_native_posix_options(void) {
          .type = 'b',
          .dest = (void *)&read_hid_report_on_connect,
          .descript = "Read the peripheral HID report after connecting"},
+        {.is_switch = true,
+         .option = "subscribe_to_pointer_report",
+         .type = 'b',
+         .dest = (void *)&subscribe_to_pointer_report,
+         .descript = "Subscribe to peripheral mouse HID report after connecting"},
         {.is_switch = true,
          .option = "skip_discovery_on_connect",
          .type = 'b',
@@ -110,6 +116,8 @@ static struct bt_conn *default_conn;
 static struct bt_uuid_16 uuid = BT_UUID_INIT_16(0);
 static struct bt_gatt_discover_params discover_params;
 static struct bt_gatt_subscribe_params subscribe_params;
+static struct bt_gatt_subscribe_params consumer_subscribe_params;
+static struct bt_gatt_subscribe_params pointer_subscribe_params;
 
 static uint8_t notify_func(struct bt_conn *conn, struct bt_gatt_subscribe_params *params,
                            const void *data, uint16_t length) {
@@ -171,6 +179,28 @@ static uint8_t discover_func(struct bt_conn *conn, const struct bt_gatt_attr *at
             if (err) {
                 LOG_DBG("[Discover failed] (err %d)", err);
             }
+        } else if (!consumer_subscribe_params.value_handle) {
+            memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
+            discover_params.uuid = &uuid.uuid;
+            discover_params.start_handle = attr->handle + 2;
+            discover_params.type = BT_GATT_DISCOVER_DESCRIPTOR;
+            consumer_subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
+
+            err = bt_gatt_discover(conn, &discover_params);
+            if (err) {
+                LOG_DBG("[Discover failed] (err %d)", err);
+            }
+        } else if (subscribe_to_pointer_report && !pointer_subscribe_params.value_handle) {
+            memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
+            discover_params.uuid = &uuid.uuid;
+            discover_params.start_handle = attr->handle + 2;
+            discover_params.type = BT_GATT_DISCOVER_DESCRIPTOR;
+            pointer_subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
+
+            err = bt_gatt_discover(conn, &discover_params);
+            if (err) {
+                LOG_DBG("[Discover failed] (err %d)", err);
+            }
         } else {
             uint8_t indicators = 0b00000111;
             int resp = bt_gatt_write_without_response(conn, bt_gatt_attr_value_handle(attr),
@@ -182,18 +212,45 @@ static uint8_t discover_func(struct bt_conn *conn, const struct bt_gatt_attr *at
             return BT_GATT_ITER_CONTINUE;
         }
     } else if (discover_params.type == BT_GATT_DISCOVER_DESCRIPTOR) {
-        subscribe_params.notify = notify_func;
-        subscribe_params.value = BT_GATT_CCC_NOTIFY;
-        subscribe_params.ccc_handle = attr->handle;
+        if (!subscribe_params.ccc_handle) {
 
-        err = bt_gatt_subscribe(conn, &subscribe_params);
-        if (err && err != -EALREADY) {
-            LOG_DBG("[Subscribe failed] (err %d)", err);
+            subscribe_params.notify = notify_func;
+            subscribe_params.value = BT_GATT_CCC_NOTIFY;
+            subscribe_params.ccc_handle = attr->handle;
+
+            err = bt_gatt_subscribe(conn, &subscribe_params);
+            if (err && err != -EALREADY) {
+                LOG_DBG("[Subscribe failed] (err %d)", err);
+            } else {
+                LOG_DBG("[SUBSCRIBED]");
+            }
+        } else if (!consumer_subscribe_params.ccc_handle) {
+
+            consumer_subscribe_params.notify = notify_func;
+            consumer_subscribe_params.value = BT_GATT_CCC_NOTIFY;
+            consumer_subscribe_params.ccc_handle = attr->handle;
+
+            err = bt_gatt_subscribe(conn, &consumer_subscribe_params);
+            if (err && err != -EALREADY) {
+                LOG_DBG("[Subscribe failed] (err %d)", err);
+            } else {
+                LOG_DBG("[CONSUMER SUBSCRIBED]");
+            }
         } else {
-            LOG_DBG("[SUBSCRIBED]");
+            pointer_subscribe_params.notify = notify_func;
+            pointer_subscribe_params.value = BT_GATT_CCC_NOTIFY;
+            pointer_subscribe_params.ccc_handle = attr->handle;
+
+            err = bt_gatt_subscribe(conn, &pointer_subscribe_params);
+            if (err && err != -EALREADY) {
+                LOG_DBG("[Subscribe failed] (err %d)", err);
+            } else {
+                LOG_DBG("[MOUSE SUBSCRIBED]");
+            }
         }
 
-        find_next_hids_report = write_hid_indicators_on_discovery;
+        find_next_hids_report = !consumer_subscribe_params.ccc_handle ||
+                                write_hid_indicators_on_discovery || subscribe_to_pointer_report;
     }
 
     if (find_next_hids_report) {

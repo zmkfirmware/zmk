@@ -24,6 +24,7 @@
     compatible = "zmk,keymap";
 
     default_layer {
+      display-name = "Default Layer";
       bindings = <
                     &kp ESC   &kp N1    &kp N2   &kp N3    &kp N4    &kp N5  &kp N6
                     &kp TAB   &kp Q     &kp W    &kp E     &kp R     &kp T   &kp N7
@@ -34,6 +35,7 @@
     };
 
     arrow_layer {
+      display-name = "Arrow Layer";
       bindings = <
                     &bt BT_SEL 0 &bt BT_SEL 1 &trans     &trans    &trans           &out OUT_USB     &out OUT_BLE
                     &trans       &trans       &kp UP     &trans    &rgb_ug RGB_TOG  &rgb_ug RGB_HUI  &rgb_ug RGB_HUD
@@ -44,6 +46,7 @@
     };
 
     function_layer {
+      display-name = "Function Layer";
       bindings = <
                     &trans    &kp F1    &kp F2   &kp F3    &kp F4   &kp F5   &kp F6
                     &trans    &kp P     &kp O    &kp I     &kp U    &kp Y    &kp F7

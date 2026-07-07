@@ -29,7 +29,7 @@ static uint8_t keys_held = 0;
 
 static struct zmk_hid_mouse_report mouse_report = {
     .report_id = ZMK_HID_REPORT_ID_MOUSE,
-    .body = {.buttons = 0, .d_x = 0, .d_y = 0, .d_scroll_y = 0}};
+    .body = {.buttons = 0, .d_x = 0, .d_y = 0, .d_scroll_y = 0, .d_scroll_x = 0}};
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
@@ -445,7 +445,7 @@ void zmk_hid_mouse_movement_update(int16_t hwheel, int16_t wheel) {
     LOG_DBG("Mouse movement updated to %d/%d", mouse_report.body.d_x, mouse_report.body.d_y);
 }
 
-void zmk_hid_mouse_scroll_set(int8_t hwheel, int8_t wheel) {
+void zmk_hid_mouse_scroll_set(int16_t hwheel, int16_t wheel) {
     mouse_report.body.d_scroll_x = hwheel;
     mouse_report.body.d_scroll_y = wheel;
 
@@ -453,7 +453,7 @@ void zmk_hid_mouse_scroll_set(int8_t hwheel, int8_t wheel) {
             mouse_report.body.d_scroll_y);
 }
 
-void zmk_hid_mouse_scroll_update(int8_t hwheel, int8_t wheel) {
+void zmk_hid_mouse_scroll_update(int16_t hwheel, int16_t wheel) {
     mouse_report.body.d_scroll_x += hwheel;
     mouse_report.body.d_scroll_y += wheel;
 

@@ -1,6 +1,14 @@
 # Copyright (c) 2024 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
+config SYSTEM_WORKQUEUE_STACK_SIZE
+    default 3072 if ZMK_DISPLAY
+    default 2048
+
+# Basic
+config BT_DEVICE_APPEARANCE
+    default 961
+
 # HID
 if ZMK_HID_REPORT_TYPE_HKRO
 
@@ -11,6 +19,32 @@ endif
 
 config ZMK_HID_CONSUMER_REPORT_SIZE
     default 6
+
+# Behaviors
+
+if ZMK_BEHAVIOR_HOLD_TAP
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_HELD
+    default 10
+
+config ZMK_BEHAVIOR_HOLD_TAP_MAX_CAPTURED_EVENTS
+    default 40
+
+endif
+
+if ZMK_BEHAVIOR_STICKY_KEY
+
+config ZMK_BEHAVIOR_STICKY_KEY_MAX_HELD
+    default 10
+
+endif
+
+if ZMK_BEHAVIOR_TAP_DANCE
+
+config ZMK_BEHAVIOR_TAP_DANCE_MAX_HELD
+    default 10
+
+endif
 
 # Underglow
 if ZMK_RGB_UNDERGLOW
@@ -80,4 +114,5 @@ config ZMK_BATTERY_REPORT_INTERVAL
     default 60
 
 # Imports
+rsource "src/boot/Kconfig.defaults"
 rsource "src/split/Kconfig.defaults"

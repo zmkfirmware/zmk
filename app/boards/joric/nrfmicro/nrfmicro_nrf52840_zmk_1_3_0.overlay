@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/ {
+    chosen {
+        zmk,battery = &vbatt;
+    };
+
+    // Node name must match original "EXT_POWER" label to preserve user settings.
+    EXT_POWER {
+        compatible = "zmk,ext-power-generic";
+        control-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+        init-delay-ms = <50>;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 2>;
+        output-ohms = <2000000>;
+        full-ohms = <(2000000 + 820000)>;
+    };
+};
+
+&adc {
+    status = "okay";
+};
+

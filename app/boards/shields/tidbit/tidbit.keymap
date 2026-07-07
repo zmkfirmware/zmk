@@ -44,6 +44,7 @@
         compatible = "zmk,keymap";
 
         default_layer {
+            display-name = "Default Layer";
             bindings = <
                                 &kp KP_NUMLOCK  &kp KP_ASTERISK &kp KP_MINUS
                 &kp KP_NUMBER_7 &kp KP_NUMBER_8 &kp KP_NUMBER_9 &kp KP_PLUS
@@ -56,6 +57,7 @@
         };
 
          func_layer {
+             display-name = "Func Layer";
              bindings = <
                                 &none           &sys_reset      &bootloader
                 &out OUT_TOG    &out OUT_USB    &out OUT_BLE    &none

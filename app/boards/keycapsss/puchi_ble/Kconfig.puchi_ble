@@ -1,0 +1,11 @@
+# Puchi-BLE board configuration
+
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_PUCHI_BLE
+    select SOC_NRF52840_QIAA
+    select ZMK_BOARD_COMPAT if BOARD_PUCHI_BLE_NRF52840_ZMK
+    imply RETAINED_MEM if BOARD_PUCHI_BLE_NRF52840_ZMK
+    imply RETENTION if BOARD_PUCHI_BLE_NRF52840_ZMK
+    imply RETENTION_BOOT_MODE if BOARD_PUCHI_BLE_NRF52840_ZMK

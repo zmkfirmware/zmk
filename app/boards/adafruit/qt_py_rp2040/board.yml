@@ -1,0 +1,5 @@
+board:
+  extend: adafruit_qt_py_rp2040
+  variants:
+    - name: zmk
+      qualifier: rp2040

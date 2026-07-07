@@ -1,0 +1,5 @@
+board:
+  extend: puchi_ble
+  variants:
+    - name: zmk
+      qualifier: nrf52840

@@ -20,11 +20,10 @@ apt install -y gcc-multilib
 
 ## Building
 
-To do this, you can build ZMK targeting the
-`native_posix_64` board.
+To do this, you can build ZMK targeting the `native_sim` board.
 
 ```sh
-west build --pristine --board native_posix_64 -- -DZMK_CONFIG=tests/none/normal/
+west build --pristine --board native_sim/native/64 -- -DZMK_CONFIG=tests/none/normal/
 ```
 
 Once built, you can run the firmware locally:
@@ -35,4 +34,4 @@ Once built, you can run the firmware locally:
 
 ## Virtual Key Events
 
-The virtual key presses are hardcoded in `boards/native_posix_64.overlay` file, should you want to change the sequence to test various actions like Mod-Tap, etc.
+The virtual key presses are hardcoded in `boards/extensions/native_sim/native_sim_64.overlay` file, should you want to change the sequence to test various actions like Mod-Tap, etc.

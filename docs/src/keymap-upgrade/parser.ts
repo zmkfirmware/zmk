@@ -133,7 +133,9 @@ export function findDevicetreeProperty(
     `(property name: (identifier) @name (#eq? @name "${name}")) @prop`
   );
   const matches = query.matches(node);
-  const props = matches.map(({ captures }) => findCapture("prop", captures)!);
+  const props = matches
+    .map(({ captures }) => findCapture("prop", captures))
+    .filter((node) => node !== null);
 
   if (options?.recursive) {
     return props;

@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Find test directories
         id: test-dirs
         run: |
@@ -35,12 +35,12 @@ jobs:
         test: ${{ fromJSON(needs.collect-tests.outputs.test-dirs) }}
     runs-on: ubuntu-latest
     container:
-      image: docker.io/zmkfirmware/zmk-build-arm:3.5
+      image: docker.io/zmkfirmware/zmk-build-arm:4.1
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Cache west modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         env:
           cache-name: cache-zephyr-modules
         with:
@@ -61,7 +61,7 @@ jobs:
       - name: Enable babblesim group filter
         run: west config manifest.group-filter -- +babblesim
       - name: Update modules (west update)
-        run: west update
+        run: west update --fetch-opt=--filter=tree:0
       - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
       - name: Build BabbleSim components
@@ -72,7 +72,7 @@ jobs:
         run: BSIM_COMPONENTS_PATH="${GITHUB_WORKSPACE}/tools/bsim/components" BSIM_OUT_PATH="${GITHUB_WORKSPACE}/tools/bsim" ./run-ble-test.sh tests/ble/${{ matrix.test }}
       - name: Archive artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "${{ matrix.test }}-log-files"
           path: app/build/**/*.log

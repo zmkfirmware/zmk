@@ -1,0 +1,9 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Driver for mapping bootloader boot mode to a magic value
+
+compatible: "zmk,bootmode-to-magic-mapper"
+
+include: base.yaml

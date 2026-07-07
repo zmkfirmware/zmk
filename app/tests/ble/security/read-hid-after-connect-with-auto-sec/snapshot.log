@@ -9,3 +9,4 @@
 <dbg> ble_central: pairing_complete: Pairing complete
 <dbg> ble_central: read_cb: Read err: 0, length 8
 <dbg> ble_central: read_cb: Read err: 0, length 12
+<dbg> ble_central: read_cb: Read err: 10, length 0

@@ -17,12 +17,15 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
-static int behavior_to_init(const struct device *dev) { return 0; };
+struct behavior_to_config {
+    bool locking;
+};
 
 static int to_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
-    zmk_keymap_layer_to(binding->param1);
+    const struct behavior_to_config *cfg = zmk_behavior_get_binding(binding->behavior_dev)->config;
+    zmk_keymap_layer_to(binding->param1, cfg->locking);
     return ZMK_BEHAVIOR_OPAQUE;
 }
 
@@ -61,7 +64,13 @@ static const struct behavior_driver_api behavior_to_driver_api = {
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
-BEHAVIOR_DT_INST_DEFINE(0, behavior_to_init, NULL, NULL, NULL, POST_KERNEL,
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_to_driver_api);
+#define TO_INST(n)                                                                                 \
+    static const struct behavior_to_config behavior_to_config_##n = {                              \
+        .locking = DT_INST_PROP_OR(n, locking, false),                                             \
+    };                                                                                             \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, NULL, &behavior_to_config_##n, POST_KERNEL,             \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_to_driver_api);
+
+DT_INST_FOREACH_STATUS_OKAY(TO_INST)
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

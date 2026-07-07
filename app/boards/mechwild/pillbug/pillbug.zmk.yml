@@ -1,0 +1,10 @@
+file_format: "1"
+id: pillbug//zmk
+name: PillBug
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://mechwild.com/product/pillbug
+exposes: [blackpill]

@@ -12,8 +12,8 @@ repos:
         types_or: [c++, c]
         args:
           - -i
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.7.1
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: 787fb9f542b140ba0b2aced38e6a3e68021647a3
     hooks:
       - id: prettier
         exclude: |
@@ -22,9 +22,6 @@ repos:
               CHANGELOG.md|
               .release-please-manifest.json
           )$
-        # Workaround for https://github.com/pre-commit/mirrors-prettier/issues/29
-        additional_dependencies:
-          - prettier@2.8.7
   - repo: https://github.com/jorisroovers/gitlint
     rev: v0.19.1
     hooks:

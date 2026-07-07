@@ -1,0 +1,13 @@
+/* SPDX-License-Identifier: MIT */
+
+#include "native_sim_zmk_test_mock.dts"
+
+&kscan {
+    events = <>;
+    /delete-property/ exit-after;
+};
+
+&sdl_dc {
+    width = <128>;
+    height = <128>;
+};

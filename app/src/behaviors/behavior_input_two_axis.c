@@ -143,7 +143,7 @@ static float update_movement_1d(const struct behavior_input_two_axis_config *con
     }
 
     int64_t move_duration = ticks_since_start(state->start_time, now, config->delay_ms);
-    LOG_DBG("Calculated speed: %f", speed(config, code, state->speed, move_duration));
+    LOG_DBG("Calculated speed: %f", (double)speed(config, code, state->speed, move_duration));
     move =
         (move_duration > 0)
             ? (speed(config, code, state->speed, move_duration) * config->trigger_period_ms / 1000)

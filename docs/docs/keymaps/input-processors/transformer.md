@@ -70,6 +70,6 @@ The transform input processor uses a `compatible` property of `"zmk,input-proces
 
 ### User Properties
 
-- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to transform. Usually, this is `INPUT_EV_REL` for relative events.
-- `x-codes` - The specific X codes within the given type to transform, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L245)
-- `y-codes` - The specific Y codes within the given type to transform, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L245)
+- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to transform. Usually, this is `INPUT_EV_REL` for relative events.
+- `x-codes` - The specific X codes within the given type to transform, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L258)
+- `y-codes` - The specific Y codes within the given type to transform, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L258)

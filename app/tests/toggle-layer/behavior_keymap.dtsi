@@ -3,13 +3,23 @@
 #include <dt-bindings/zmk/kscan_mock.h>
 
 / {
+    behaviors {
+        tog_off: toggle_layer_off_only {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            display-name = "Toggle Layer Off";
+            toggle-mode = "off";
+            locking;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             bindings = <
                 &kp B &tog 1
-                &kp D &to 1>;
+                &mo 2 &to 1>;
         };
 
         lower_layer {
@@ -20,8 +30,8 @@
 
         raise_layer {
             bindings = <
-                &kp W &kp U
-                &kp X  &kp M>;
+                &kp W &tog 2
+                &tog_off 2  &mo 2>;
         };
     };
 };

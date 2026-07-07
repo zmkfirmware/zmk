@@ -37,8 +37,6 @@ static const struct behavior_parameter_metadata metadata = {
 
 #endif
 
-static int behavior_key_press_init(const struct device *dev) { return 0; };
-
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d keycode 0x%02X", event.position, binding->param1);
@@ -60,7 +58,7 @@ static const struct behavior_driver_api behavior_key_press_driver_api = {
 };
 
 #define KP_INST(n)                                                                                 \
-    BEHAVIOR_DT_INST_DEFINE(n, behavior_key_press_init, NULL, NULL, NULL, POST_KERNEL,             \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, NULL, NULL, POST_KERNEL,                                \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_key_press_driver_api);
 
 DT_INST_FOREACH_STATUS_OKAY(KP_INST)

@@ -14,6 +14,8 @@
  */
 #define ZMK_ENDPOINT_STR_LEN 10
 
+#define ZMK_ENDPOINT_NONE_COUNT 1
+
 #ifdef CONFIG_ZMK_USB
 #define ZMK_ENDPOINT_USB_COUNT 1
 #else
@@ -33,7 +35,8 @@
  * Note that this value may change between firmware versions, so it should not
  * be used in any persistent storage.
  */
-#define ZMK_ENDPOINT_COUNT (ZMK_ENDPOINT_USB_COUNT + ZMK_ENDPOINT_BLE_COUNT)
+#define ZMK_ENDPOINT_COUNT                                                                         \
+    (ZMK_ENDPOINT_NONE_COUNT + ZMK_ENDPOINT_USB_COUNT + ZMK_ENDPOINT_BLE_COUNT)
 
 bool zmk_endpoint_instance_eq(struct zmk_endpoint_instance a, struct zmk_endpoint_instance b);
 
@@ -57,21 +60,53 @@ int zmk_endpoint_instance_to_str(struct zmk_endpoint_instance endpoint, char *st
 int zmk_endpoint_instance_to_index(struct zmk_endpoint_instance endpoint);
 
 /**
- * Sets the preferred endpoint transport to use. (If the preferred endpoint is
- * not available, a different one may automatically be selected.)
+ * Sets the preferred endpoint transport to use.
+ *
+ * If the preferred endpoint is not available, zmk_endpoint_get_selected() may
+ * automatically fall back to another transport.
  */
-int zmk_endpoints_select_transport(enum zmk_transport transport);
-int zmk_endpoints_toggle_transport(void);
+int zmk_endpoint_set_preferred_transport(enum zmk_transport transport);
+
+enum zmk_transport zmk_endpoint_get_preferred_transport(void);
 
 /**
- * Gets the currently-selected endpoint.
+ * If the preferred endpoint transport is USB, sets it to BLE, else sets it to USB.
  */
-struct zmk_endpoint_instance zmk_endpoints_selected(void);
+int zmk_endpoint_toggle_preferred_transport(void);
 
-int zmk_endpoints_send_report(uint16_t usage_page);
+/**
+ * Gets the endpoint instance that will be preferred if it is connected.
+ */
+struct zmk_endpoint_instance zmk_endpoint_get_preferred(void);
+
+/**
+ * Gets the endpoint instance that is currently in use.
+ *
+ * This may differ from zmk_endpoint_get_preferred(), for example if the preferred
+ * endpoint is not connected, then this will return an instance for ZMK_TRANSPORT_NONE.
+ */
+struct zmk_endpoint_instance zmk_endpoint_get_selected(void);
+
+/**
+ * Returns whether the keyboard is connected to an endpoint.
+ *
+ * This is equivalent to zmk_endpoint_get_selected().transport != ZMK_TRANSPORT_NONE
+ */
+bool zmk_endpoint_is_connected(void);
+
+/**
+ * Sends the HID report for the given usage page to the selected endpoint.
+ */
+int zmk_endpoint_send_report(uint16_t usage_page);
 
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
-int zmk_endpoints_send_mouse_report();
+/**
+ * Sends the HID mouse report to the selected endpoint.
+ */
+int zmk_endpoint_send_mouse_report();
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
-void zmk_endpoints_clear_current(void);
+/**
+ * Clears all HID reports for the selected endpoint.
+ */
+void zmk_endpoint_clear_reports(void);

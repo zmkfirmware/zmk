@@ -28,7 +28,7 @@ static int hid_listener_keycode_pressed(const struct zmk_keycode_state_changed *
             LOG_DBG("Unable to pre-release keycode (%d)", err);
             return err;
         }
-        err = zmk_endpoints_send_report(ev->usage_page);
+        err = zmk_endpoint_send_report(ev->usage_page);
         if (err < 0) {
             LOG_ERR("Failed to send key report for pre-releasing keycode (%d)", err);
         }
@@ -45,14 +45,14 @@ static int hid_listener_keycode_pressed(const struct zmk_keycode_state_changed *
     implicit_mods_changed = zmk_hid_implicit_modifiers_press(ev->implicit_modifiers);
     if (ev->usage_page != HID_USAGE_KEY &&
         (explicit_mods_changed > 0 || implicit_mods_changed > 0)) {
-        err = zmk_endpoints_send_report(HID_USAGE_KEY);
+        err = zmk_endpoint_send_report(HID_USAGE_KEY);
         if (err < 0) {
             LOG_ERR("Failed to send key report for changed mofifiers for consumer page event (%d)",
                     err);
         }
     }
 
-    return zmk_endpoints_send_report(ev->usage_page);
+    return zmk_endpoint_send_report(ev->usage_page);
 }
 
 static int hid_listener_keycode_released(const struct zmk_keycode_state_changed *ev) {
@@ -70,7 +70,7 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
 
     // send report of normal key release early to fix the issue
     // of some programs recognizing the implicit_mod release before the actual key release
-    err = zmk_endpoints_send_report(ev->usage_page);
+    err = zmk_endpoint_send_report(ev->usage_page);
     if (err < 0) {
         LOG_ERR("Failed to send key report for the released keycode (%d)", err);
     }
@@ -87,13 +87,13 @@ static int hid_listener_keycode_released(const struct zmk_keycode_state_changed 
 
     if (ev->usage_page != HID_USAGE_KEY &&
         (explicit_mods_changed > 0 || implicit_mods_changed > 0)) {
-        err = zmk_endpoints_send_report(HID_USAGE_KEY);
+        err = zmk_endpoint_send_report(HID_USAGE_KEY);
         if (err < 0) {
             LOG_ERR("Failed to send key report for changed mofifiers for consumer page event (%d)",
                     err);
         }
     }
-    return zmk_endpoints_send_report(ev->usage_page);
+    return zmk_endpoint_send_report(ev->usage_page);
 }
 
 int hid_listener(const zmk_event_t *eh) {

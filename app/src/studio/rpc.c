@@ -87,7 +87,7 @@ static bool rpc_read_cb(pb_istream_t *stream, uint8_t *buf, size_t count) {
 
     do {
         uint8_t *buffer;
-        uint32_t len = ring_buf_get_claim(&rpc_rx_buf, &buffer, count);
+        uint32_t len = ring_buf_get_claim(&rpc_rx_buf, &buffer, count - write_offset);
 
         if (len > 0) {
             for (int i = 0; i < len; i++) {
@@ -217,7 +217,7 @@ static void rpc_main(void) {
         pb_istream_t stream = pb_istream_for_rx_ring_buf();
         zmk_studio_Request req = zmk_studio_Request_init_zero;
 #if IS_ENABLED(CONFIG_THREAD_ANALYZER)
-        thread_analyzer_print();
+        thread_analyzer_print(0);
 #endif // IS_ENABLED(CONFIG_THREAD_ANALYZER)
         bool status = pb_decode(&stream, &zmk_studio_Request_msg, &req);
 
@@ -228,7 +228,7 @@ static void rpc_main(void) {
 
             int err = send_response(&resp);
 #if IS_ENABLED(CONFIG_THREAD_ANALYZER)
-            thread_analyzer_print();
+            thread_analyzer_print(0);
 #endif // IS_ENABLED(CONFIG_THREAD_ANALYZER)
             if (err < 0) {
                 LOG_ERR("Failed to send the RPC response %d", err);
@@ -243,7 +243,7 @@ K_THREAD_DEFINE(studio_rpc_thread, CONFIG_ZMK_STUDIO_RPC_THREAD_STACK_SIZE, rpc_
                 NULL, K_LOWEST_APPLICATION_THREAD_PRIO, 0, 0);
 
 static void refresh_selected_transport(void) {
-    enum zmk_transport transport = zmk_endpoints_selected().transport;
+    enum zmk_transport transport = zmk_endpoint_get_selected().transport;
 
     k_mutex_lock(&rpc_transport_mutex, K_FOREVER);
 

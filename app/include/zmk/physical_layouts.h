@@ -21,9 +21,11 @@ struct zmk_key_physical_attrs {
     int16_t height;
     int16_t x;
     int16_t y;
+#if IS_ENABLED(CONFIG_ZMK_PHYSICAL_LAYOUT_KEY_ROTATION)
     int16_t rx;
     int16_t ry;
     int16_t r;
+#endif
 };
 
 struct zmk_physical_layout {
@@ -31,6 +33,9 @@ struct zmk_physical_layout {
 
     zmk_matrix_transform_t matrix_transform;
     const struct device *kscan;
+#if IS_ENABLED(CONFIG_INPUT)
+    const struct device *input;
+#endif
 
     const struct zmk_key_physical_attrs *keys;
     size_t keys_len;

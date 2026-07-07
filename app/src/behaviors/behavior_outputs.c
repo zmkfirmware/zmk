@@ -42,6 +42,11 @@ static const struct behavior_parameter_value_metadata std_values[] = {
         .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
     },
 #endif // IS_ENABLED(CONFIG_ZMK_BLE)
+    {
+        .value = OUT_NONE,
+        .display_name = "No Output",
+        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+    },
 };
 
 static const struct behavior_parameter_metadata_set std_set = {
@@ -60,19 +65,19 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
     switch (binding->param1) {
     case OUT_TOG:
-        return zmk_endpoints_toggle_transport();
+        return zmk_endpoint_toggle_preferred_transport();
     case OUT_USB:
-        return zmk_endpoints_select_transport(ZMK_TRANSPORT_USB);
+        return zmk_endpoint_set_preferred_transport(ZMK_TRANSPORT_USB);
     case OUT_BLE:
-        return zmk_endpoints_select_transport(ZMK_TRANSPORT_BLE);
+        return zmk_endpoint_set_preferred_transport(ZMK_TRANSPORT_BLE);
+    case OUT_NONE:
+        return zmk_endpoint_set_preferred_transport(ZMK_TRANSPORT_NONE);
     default:
         LOG_ERR("Unknown output command: %d", binding->param1);
     }
 
     return -ENOTSUP;
 }
-
-static int behavior_out_init(const struct device *dev) { return 0; }
 
 static const struct behavior_driver_api behavior_outputs_driver_api = {
     .binding_pressed = on_keymap_binding_pressed,
@@ -81,7 +86,7 @@ static const struct behavior_driver_api behavior_outputs_driver_api = {
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
-BEHAVIOR_DT_INST_DEFINE(0, behavior_out_init, NULL, NULL, NULL, POST_KERNEL,
-                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_outputs_driver_api);
+BEHAVIOR_DT_INST_DEFINE(0, NULL, NULL, NULL, NULL, POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+                        &behavior_outputs_driver_api);
 
 #endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

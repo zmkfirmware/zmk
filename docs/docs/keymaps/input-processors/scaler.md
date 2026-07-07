@@ -33,11 +33,12 @@ A maximum value of `16` should be used for the multiplier and divisor parameters
 
 Three pre-defined instance of the scaler input processor are available:
 
-| Reference        | Description                                   |
-| ---------------- | --------------------------------------------- |
-| `&zip_xy_scaler` | Scale X- and Y-axis values by the same amount |
-| `&zip_x_scaler`  | Scale X-axis values                           |
-| `&zip_y_scaler`  | Scale Y-axis values                           |
+| Reference            | Description                                   |
+| -------------------- | --------------------------------------------- |
+| `&zip_xy_scaler`     | Scale X- and Y-axis values by the same amount |
+| `&zip_x_scaler`      | Scale X-axis values                           |
+| `&zip_y_scaler`      | Scale Y-axis values                           |
+| `&zip_scroll_scaler` | Scale wheel and horizontal wheel values       |
 
 ## User-Defined Instances
 
@@ -72,5 +73,5 @@ The scaler input processor uses a `compatible` property of `"zmk,input-processor
 
 ### User Properties
 
-- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to scale. Usually, this is `INPUT_EV_REL` for relative events.
-- `codes` - The specific codes within the given type to scale, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v3.5.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L245)
+- `type` - The [type](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L25) of events to scale. Usually, this is `INPUT_EV_REL` for relative events.
+- `codes` - The specific codes within the given type to scale, e.g. [relative event codes](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/include/zephyr/dt-bindings/input/input-event-codes.h#L258)
