@@ -8,3 +8,10 @@ include:
     snippet: studio-rpc-usb-uart
     cmake-args: "-DCONFIG_ZMK_STUDIO=y"
     nickname: "studio"
+  - board: derivative-rev-a/nrf52840/zmk
+  - board: derivative-rev-a/nrf52840/zmk
+    shield: settings_reset
+  - board: derivative-rev-a/nrf52840/zmk
+    snippet: studio-rpc-usb-uart
+    cmake-args: "-DCONFIG_ZMK_STUDIO=y"
+    nickname: "studio"
