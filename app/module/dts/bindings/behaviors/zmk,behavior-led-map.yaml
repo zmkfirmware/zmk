@@ -1,0 +1,8 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Per-key LED Map Behavior
+
+compatible: "zmk,behavior-led-map"
+
+include: two_param.yaml

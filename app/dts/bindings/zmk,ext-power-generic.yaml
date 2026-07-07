@@ -20,3 +20,7 @@ properties:
     type: int
     description: Number of milliseconds to delay after initializing driver
     required: false
+  wakeup-source:
+    type: boolean
+    description: Mark ext-power as a wakeup source to keep it enabled during system sleep
+    required: false

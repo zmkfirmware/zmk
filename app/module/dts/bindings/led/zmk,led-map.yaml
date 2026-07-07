@@ -1,0 +1,14 @@
+description: LED map for per-key RGB and underglow
+
+compatible: "zmk,led-map"
+
+properties:
+  led-strip:
+    type: phandle
+    required: true
+  caps-lock-led-index:
+    type: int
+  bt-status-led-index:
+    type: int
+  layer-status-led-index:
+    type: int

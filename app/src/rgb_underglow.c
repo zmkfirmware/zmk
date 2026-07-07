@@ -191,10 +191,12 @@ static void zmk_rgb_underglow_tick(struct k_work *work) {
         break;
     }
 
+#if !IS_ENABLED(CONFIG_ZMK_LED_MAP)
     int err = led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
     if (err < 0) {
         LOG_ERR("Failed to update the RGB strip (%d)", err);
     }
+#endif
 }
 
 K_WORK_DEFINE(underglow_tick_work, zmk_rgb_underglow_tick);
@@ -221,9 +223,11 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
 
         rc = read_cb(cb_arg, &state, sizeof(state));
         if (rc >= 0) {
+#if !IS_ENABLED(CONFIG_ZMK_LED_MAP)
             if (state.on) {
                 k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
             }
+#endif
 
             return 0;
         }
@@ -273,9 +277,11 @@ static int zmk_rgb_underglow_init(void) {
     state.on = zmk_usb_is_powered();
 #endif
 
+#if !IS_ENABLED(CONFIG_ZMK_LED_MAP)
     if (state.on) {
         k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
     }
+#endif
 
     return 0;
 }
@@ -301,7 +307,7 @@ int zmk_rgb_underglow_on(void) {
     if (!led_strip)
         return -ENODEV;
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER) && !IS_ENABLED(CONFIG_ZMK_LED_MAP)
     if (ext_power != NULL) {
         int rc = ext_power_enable(ext_power);
         if (rc != 0) {
@@ -312,7 +318,9 @@ int zmk_rgb_underglow_on(void) {
 
     state.on = true;
     state.animation_step = 0;
+#if !IS_ENABLED(CONFIG_ZMK_LED_MAP)
     k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
+#endif
 
     return zmk_rgb_underglow_save_state();
 }
@@ -331,7 +339,7 @@ int zmk_rgb_underglow_off(void) {
     if (!led_strip)
         return -ENODEV;
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER) && !IS_ENABLED(CONFIG_ZMK_LED_MAP)
     if (ext_power != NULL) {
         int rc = ext_power_disable(ext_power);
         if (rc != 0) {
@@ -340,9 +348,10 @@ int zmk_rgb_underglow_off(void) {
     }
 #endif
 
+#if !IS_ENABLED(CONFIG_ZMK_LED_MAP)
     k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &underglow_off_work);
-
     k_timer_stop(&underglow_tick);
+#endif
     state.on = false;
 
     return zmk_rgb_underglow_save_state();
@@ -410,8 +419,9 @@ struct zmk_led_hsb zmk_rgb_underglow_calc_sat(int direction) {
 struct zmk_led_hsb zmk_rgb_underglow_calc_brt(int direction) {
     struct zmk_led_hsb color = state.color;
 
+    int brt_min = CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP * 3;
     int b = color.b + (direction * CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP);
-    color.b = CLAMP(b, 0, BRT_MAX);
+    color.b = CLAMP(b, brt_min, BRT_MAX);
 
     return color;
 }
@@ -519,5 +529,42 @@ ZMK_SUBSCRIPTION(rgb_underglow, zmk_activity_state_changed);
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
 ZMK_SUBSCRIPTION(rgb_underglow, zmk_usb_conn_state_changed);
 #endif
+
+#if IS_ENABLED(CONFIG_ZMK_LED_MAP)
+
+int zmk_rgb_underglow_get_render_state(struct zmk_rgb_underglow_render_state *out) {
+    if (!out) {
+        return -EINVAL;
+    }
+    out->color = state.color;
+    out->animation_speed = state.animation_speed;
+    out->current_effect = state.current_effect;
+    out->animation_step = state.animation_step;
+    out->on = state.on;
+    return 0;
+}
+
+void zmk_rgb_underglow_advance_animation(void) {
+    switch (state.current_effect) {
+    case UNDERGLOW_EFFECT_BREATHE:
+        state.animation_step += state.animation_speed * 10;
+        if (state.animation_step > 2400) {
+            state.animation_step = 0;
+        }
+        break;
+    case UNDERGLOW_EFFECT_SPECTRUM:
+        state.animation_step += state.animation_speed;
+        state.animation_step = state.animation_step % HUE_MAX;
+        break;
+    case UNDERGLOW_EFFECT_SWIRL:
+        state.animation_step += state.animation_speed * 2;
+        state.animation_step = state.animation_step % HUE_MAX;
+        break;
+    default:
+        break;
+    }
+}
+
+#endif /* CONFIG_ZMK_LED_MAP */
 
 SYS_INIT(zmk_rgb_underglow_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

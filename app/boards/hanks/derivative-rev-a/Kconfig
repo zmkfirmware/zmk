@@ -1,0 +1,4 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+# DCDC is now configured via devicetree, deprecated Kconfig symbols removed

@@ -1,0 +1,175 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+menuconfig ZMK_LED_MAP
+    bool "Unified LED Map (per-key RGB + indicators)"
+    depends on ZMK_RGB_UNDERGLOW
+    select ZMK_LOW_PRIORITY_WORK_QUEUE
+    help
+      Enable unified LED map support for per-key RGB effects,
+      indicator LEDs, and underglow on a single LED strip.
+      When enabled, this module takes ownership of the LED strip
+      and performs a single update per tick.
+
+if ZMK_LED_MAP
+
+config ZMK_LED_MAP_PER_KEY_BRT_MAX
+    int "Per-key LED maximum brightness in percent"
+    range 0 100
+    default 10
+
+config ZMK_LED_MAP_INDICATOR_BRT_MAX
+    int "Indicator LED maximum brightness in percent"
+    range 0 100
+    default 10
+
+config ZMK_LED_MAP_FADE_STEP
+    int "Reactive keypress fade step per tick (higher = faster fade)"
+    range 1 50
+    default 47
+
+config ZMK_LED_MAP_HUE_START
+    int "Per-key initial hue (0-359)"
+    range 0 359
+    default 0
+
+config ZMK_LED_MAP_SAT_START
+    int "Per-key initial saturation (0-100)"
+    range 0 100
+    default 100
+
+config ZMK_LED_MAP_BRT_START
+    int "Per-key initial brightness (0-100)"
+    range 0 100
+    default 10
+
+config ZMK_LED_MAP_SPD_START
+    int "Per-key initial animation speed (1-5)"
+    range 1 5
+    default 3
+
+config ZMK_LED_MAP_EFF_START
+    int "Per-key initial effect (0=SOLID,1=BREATHE,2=SPECTRUM,3=SWIRL,4-7=REACTIVE_FADE,8-13=ROW_WAVE,14-19=COL_WAVE,20=STARRY)"
+    range 0 20
+    default 6
+
+config ZMK_LED_MAP_ON_START
+    bool "Per-key LEDs on at startup"
+    default y
+
+config ZMK_LED_MAP_INDICATORS_ON_START
+    bool "Indicator LEDs on at startup"
+    default y
+
+config ZMK_LED_MAP_BAT_FLICK_PERIOD
+    int "Battery indicator flick period in milliseconds"
+    range 200 3000
+    default 700
+
+config ZMK_LED_MAP_CAPS_R
+    int "Caps lock indicator red (0-255)"
+    range 0 255
+    default 255
+
+config ZMK_LED_MAP_CAPS_G
+    int "Caps lock indicator green (0-255)"
+    range 0 255
+    default 255
+
+config ZMK_LED_MAP_CAPS_B
+    int "Caps lock indicator blue (0-255)"
+    range 0 255
+    default 255
+
+config ZMK_LED_MAP_LAYER1_R
+    int "Layer 1 indicator red (0-255)"
+    range 0 255
+    default 255
+config ZMK_LED_MAP_LAYER1_G
+    int "Layer 1 indicator green (0-255)"
+    range 0 255
+    default 0
+config ZMK_LED_MAP_LAYER1_B
+    int "Layer 1 indicator blue (0-255)"
+    range 0 255
+    default 0
+
+config ZMK_LED_MAP_LAYER2_R
+    int "Layer 2 indicator red (0-255)"
+    range 0 255
+    default 0
+config ZMK_LED_MAP_LAYER2_G
+    int "Layer 2 indicator green (0-255)"
+    range 0 255
+    default 255
+config ZMK_LED_MAP_LAYER2_B
+    int "Layer 2 indicator blue (0-255)"
+    range 0 255
+    default 0
+
+config ZMK_LED_MAP_LAYER3_R
+    int "Layer 3 indicator red (0-255)"
+    range 0 255
+    default 0
+config ZMK_LED_MAP_LAYER3_G
+    int "Layer 3 indicator green (0-255)"
+    range 0 255
+    default 0
+config ZMK_LED_MAP_LAYER3_B
+    int "Layer 3 indicator blue (0-255)"
+    range 0 255
+    default 255
+
+config ZMK_LED_MAP_LAYER4_R
+    int "Layer 4 indicator red (0-255)"
+    range 0 255
+    default 255
+config ZMK_LED_MAP_LAYER4_G
+    int "Layer 4 indicator green (0-255)"
+    range 0 255
+    default 0
+config ZMK_LED_MAP_LAYER4_B
+    int "Layer 4 indicator blue (0-255)"
+    range 0 255
+    default 255
+
+config ZMK_LED_MAP_LAYER5_R
+    int "Layer 5 indicator red (0-255)"
+    range 0 255
+    default 255
+config ZMK_LED_MAP_LAYER5_G
+    int "Layer 5 indicator green (0-255)"
+    range 0 255
+    default 255
+config ZMK_LED_MAP_LAYER5_B
+    int "Layer 5 indicator blue (0-255)"
+    range 0 255
+    default 0
+
+config ZMK_LED_MAP_LAYER6_R
+    int "Layer 6 indicator red (0-255)"
+    range 0 255
+    default 0
+config ZMK_LED_MAP_LAYER6_G
+    int "Layer 6 indicator green (0-255)"
+    range 0 255
+    default 255
+config ZMK_LED_MAP_LAYER6_B
+    int "Layer 6 indicator blue (0-255)"
+    range 0 255
+    default 255
+
+config ZMK_LED_MAP_LAYER7_R
+    int "Layer 7 indicator red (0-255)"
+    range 0 255
+    default 255
+config ZMK_LED_MAP_LAYER7_G
+    int "Layer 7 indicator green (0-255)"
+    range 0 255
+    default 128
+config ZMK_LED_MAP_LAYER7_B
+    int "Layer 7 indicator blue (0-255)"
+    range 0 255
+    default 0
+
+endif # ZMK_LED_MAP

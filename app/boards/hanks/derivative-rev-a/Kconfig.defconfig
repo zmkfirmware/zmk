@@ -1,0 +1,23 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+if BOARD_DERIVATIVE_REV_A
+
+config ZMK_KEYBOARD_NAME
+    default "derivative"
+
+config ZMK
+    bool
+    default y
+
+if USB_DEVICE_STACK
+config USB_NRFX
+    default y
+endif
+
+if ZMK_STUDIO
+config ZMK_STUDIO_LOCKING
+    default y
+endif # ZMK_STUDIO
+
+endif # BOARD_DERIVATIVE_REV_A

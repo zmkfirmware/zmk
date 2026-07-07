@@ -27,3 +27,18 @@ int zmk_rgb_underglow_change_sat(int direction);
 int zmk_rgb_underglow_change_brt(int direction);
 int zmk_rgb_underglow_change_spd(int direction);
 int zmk_rgb_underglow_set_hsb(struct zmk_led_hsb color);
+
+#if IS_ENABLED(CONFIG_ZMK_LED_MAP)
+
+struct zmk_rgb_underglow_render_state {
+    struct zmk_led_hsb color;
+    uint8_t animation_speed;
+    uint8_t current_effect;
+    uint16_t animation_step;
+    bool on;
+};
+
+int zmk_rgb_underglow_get_render_state(struct zmk_rgb_underglow_render_state *out);
+void zmk_rgb_underglow_advance_animation(void);
+
+#endif /* CONFIG_ZMK_LED_MAP */

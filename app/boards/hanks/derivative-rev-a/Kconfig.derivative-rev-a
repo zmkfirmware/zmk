@@ -1,0 +1,21 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_DERIVATIVE_REV_A
+
+config BOARD
+    default "derivative-rev-a"
+
+config SOC_NRF52840_QIAA
+    default y
+
+config RETAINED_MEM
+    default y
+
+config RETENTION
+    default y
+
+config RETENTION_BOOT_MODE
+    default y
+
+endif # BOARD_DERIVATIVE_REV_A

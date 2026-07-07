@@ -1,0 +1,12 @@
+file_format: "1"
+id: derivative-rev-a/nrf52840/zmk
+name: derivative-rev-a
+type: board
+arch: arm
+features:
+  - keys
+  - studio
+outputs:
+  - usb
+  - ble
+url: https://github.com/zmkfirmware/zmk

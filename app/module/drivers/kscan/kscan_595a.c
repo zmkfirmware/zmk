@@ -30,6 +30,9 @@ struct kscan_595a_data {
     kscan_callback_t callback;
     struct k_work_delayable work;
     bool pressed[MAX_COLUMNS];
+#if IS_ENABLED(CONFIG_PM_DEVICE)
+    struct gpio_callback sense_cb;
+#endif
 };
 
 static void kscan_595a_scan(struct k_work *work) {
@@ -80,7 +83,7 @@ static void kscan_595a_scan(struct k_work *work) {
         gpio_pin_set_dt(&config->sck_gpio, 0);
     }
 
-    k_work_schedule(&data->work, K_MSEC(10));
+    k_work_schedule(&data->work, K_MSEC(1));
 }
 
 static int kscan_595a_configure(const struct device *dev, kscan_callback_t callback) {
@@ -116,6 +119,11 @@ static void kscan_595a_setup_pins(const struct device *dev) {
 
 #if IS_ENABLED(CONFIG_PM_DEVICE)
 
+static void kscan_595a_sense_irq_handler(const struct device *gpio, struct gpio_callback *cb,
+                                         uint32_t pins) {
+    /* No-op: this callback exists to configure GPIO SENSE for nRF52 System OFF wake-up */
+}
+
 static void kscan_595a_set_all_outputs_low(const struct device *dev) {
     const struct kscan_595a_config *config = dev->config;
     const uint8_t num_columns = config->hc595a_count * 8;
@@ -132,34 +140,48 @@ static void kscan_595a_set_all_outputs_low(const struct device *dev) {
     }
 }
 
-static int kscan_595a_disconnect_gpios(const struct device *dev) {
+static int kscan_595a_sleep_gpios(const struct device *dev) {
     const struct kscan_595a_config *config = dev->config;
     int err;
 
-    err = gpio_pin_configure_dt(&config->ser_gpio, GPIO_DISCONNECTED);
+    /* Keep SER and SCK pulled LOW during System OFF to prevent
+     * noise-induced clock edges from corrupting shift register state.
+     * nRF52 GPIO pull config is retained in the always-on domain. */
+    err = gpio_pin_configure_dt(&config->ser_gpio, GPIO_INPUT | GPIO_PULL_DOWN);
     if (err) {
         return err;
     }
 
-    err = gpio_pin_configure_dt(&config->sck_gpio, GPIO_DISCONNECTED);
+    err = gpio_pin_configure_dt(&config->sck_gpio, GPIO_INPUT | GPIO_PULL_DOWN);
     if (err) {
         return err;
     }
 
-    /* Keep sense pin configured for wake-up interrupt */
     return 0;
 }
 
 static int kscan_595a_pm_action(const struct device *dev, enum pm_device_action action) {
+    struct kscan_595a_data *data = dev->data;
+    const struct kscan_595a_config *config = dev->config;
+
     switch (action) {
     case PM_DEVICE_ACTION_SUSPEND:
-        /* Set all outputs LOW so any key press triggers sense */
+        kscan_595a_disable(dev);
+        /* Set all outputs LOW so any key press pulls sense LOW */
         kscan_595a_set_all_outputs_low(dev);
-        /* Disconnect SER and SCK to save power */
-        kscan_595a_disconnect_gpios(dev);
-        return kscan_595a_disable(dev);
+        /* Keep SER and SCK pulled LOW to preserve shift register state */
+        kscan_595a_sleep_gpios(dev);
+        /* Configure sense pin interrupt for wake-up from deep sleep.
+         * On nRF52, this sets up GPIO SENSE for System OFF wake. */
+        gpio_pin_interrupt_configure_dt(&config->sense_gpio, GPIO_INT_LEVEL_INACTIVE);
+        gpio_init_callback(&data->sense_cb, kscan_595a_sense_irq_handler,
+                           BIT(config->sense_gpio.pin));
+        gpio_add_callback(config->sense_gpio.port, &data->sense_cb);
+        return 0;
 
     case PM_DEVICE_ACTION_RESUME:
+        gpio_pin_interrupt_configure_dt(&config->sense_gpio, GPIO_INT_DISABLE);
+        gpio_remove_callback(config->sense_gpio.port, &data->sense_cb);
         kscan_595a_setup_pins(dev);
         return kscan_595a_enable(dev);
 
@@ -194,17 +216,7 @@ static int kscan_595a_init(const struct device *dev) {
     }
 
     k_work_init_delayable(&data->work, kscan_595a_scan);
-
-#if IS_ENABLED(CONFIG_PM_DEVICE)
-    pm_device_init_suspended(dev);
-
-#if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
-    pm_device_runtime_enable(dev);
-#endif
-
-#else
     kscan_595a_setup_pins(dev);
-#endif
 
     return 0;
 }
