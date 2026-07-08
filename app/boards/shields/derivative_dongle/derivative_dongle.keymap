@@ -1,0 +1,8 @@
+/*
+ * Dongle (central) keymap. Reuses the shared derivative keymap so the dongle
+ * and the standalone board never drift apart. LED-map bindings compile out here
+ * (the dongle has no RGB strip) via the CONFIG_ZMK_LED_MAP guard in the shared
+ * file.
+ */
+
+#include "../../hanks/derivative-rev-a/derivative_keymap.dtsi"

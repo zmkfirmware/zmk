@@ -1,0 +1,9 @@
+file_format: "1"
+id: derivative_dongle
+name: Derivative Dongle
+type: shield
+url: https://github.com/Hanks-Open-Projects/zmk
+requires: [seeed_xiao]
+features:
+  - keys
+  - studio

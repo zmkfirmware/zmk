@@ -1,0 +1,27 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_DERIVATIVE_DONGLE
+
+config ZMK_KEYBOARD_NAME
+    default "derivative"
+
+# This device is the split central and the HID host endpoint.
+config ZMK_SPLIT
+    default y
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+# One peripheral: the derivative keyboard.
+config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
+    default 1
+
+# The dongle presents the keyboard to the host over USB and/or BLE.
+config ZMK_USB
+    default y
+
+config ZMK_BLE
+    default y
+
+endif # SHIELD_DERIVATIVE_DONGLE
