@@ -15,3 +15,10 @@ include:
     snippet: studio-rpc-usb-uart
     cmake-args: "-DCONFIG_ZMK_STUDIO=y"
     nickname: "studio"
+  # Dongle mode (Phase 0): keyboard as split peripheral + XIAO nRF52840 central.
+  - board: derivative-rev-a/nrf52840/zmk
+    shield: derivative_peripheral
+    nickname: "peripheral"
+  - board: xiao_ble/nrf52840/zmk
+    shield: derivative_dongle
+    nickname: "dongle"
