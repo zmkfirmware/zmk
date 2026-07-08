@@ -26,8 +26,8 @@ const versionDropDownLabel = (
   isDevelopmentVersion
     ? versionNavbarItems[0]
     : versionNavbarItems.find((item) => {
-        return item.label === gitBranch.replace("-branch", "");
-      })
+      return item.label === gitBranch.replace("-branch", "");
+    })
 ).label;
 
 module.exports = {
@@ -67,6 +67,25 @@ module.exports = {
       ],
       theme,
       darkTheme,
+      magicComments: [
+        {
+          className: "theme-code-block-highlighted-line",
+          line: "highlight-next-line",
+          block: { start: "highlight-start", end: "highlight-end" },
+        },
+        {
+          className: "boards-shields-yaml-board0",
+          line: "boards-shields-yaml-board0",
+        },
+        {
+          className: "boards-shields-yaml-board1",
+          line: "boards-shields-yaml-board1",
+        },
+        {
+          className: "boards-shields-yaml-board2",
+          line: "boards-shields-yaml-board2",
+        },
+      ],
     },
     // sidebarCollapsible: false,
     navbar: {

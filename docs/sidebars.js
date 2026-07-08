@@ -9,6 +9,7 @@ module.exports = {
       },
       collapsed: false,
       items: [
+        "concepts",
         "hardware",
         "faq",
         "user-setup",
