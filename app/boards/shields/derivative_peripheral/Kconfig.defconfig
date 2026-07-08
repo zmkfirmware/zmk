@@ -1,0 +1,20 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+#
+# Config-only shield: turns the standalone derivative-rev-a board into a split
+# PERIPHERAL that talks to the derivative_dongle central. The board's kscan,
+# matrix transform, physical layout and RGB strip are all reused as-is.
+
+if SHIELD_DERIVATIVE_PERIPHERAL
+
+config ZMK_SPLIT
+    default y
+
+# Leave ZMK_SPLIT_ROLE_CENTRAL unset -> this side is the peripheral.
+
+# Studio requires (!ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL); it lives on the dongle
+# now, so force it off here to satisfy that dependency (see app/Kconfig).
+config ZMK_STUDIO
+    default n
+
+endif # SHIELD_DERIVATIVE_PERIPHERAL
