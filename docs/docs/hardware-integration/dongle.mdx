@@ -58,7 +58,7 @@ Prior to adding a dongle to your keyboard, please test its functionality without
 
 First, make sure that your `zmk-config` matches the folder structure found in the [unified ZMK config template](https://github.com/zmkfirmware/unified-zmk-config-template), especially `zephyr/module.yml` to ensure it is recognized as a module.
 
-Next, create a folder with the shield name of your keyboard under `zmk-config/boards/shields`, for example `zmk-config/boards/shields/my_keyboard`. This folder will contain the devicetree overlay and Kconfig files for your dongle.
+Next, create a folder with the name of your keyboard under `zmk-config/boards/shields`, for example `zmk-config/boards/shields/my_keyboard`. This folder will contain the devicetree overlay and Kconfig files for your dongle.
 
 ### Kconfig Files
 
@@ -221,7 +221,7 @@ If the `kscan` property is set on the physical layout node, remove it so the don
 <TabItem value="base">
 If your keyboard has a physical layout defined in the same file as the matrix transform and chosen node, copy the physical layout node into your dongle shield's overlay.
 
-Silimar to the previous case with a dedicated physical layout file, make sure the matrix transform is assigned to it, and select it in the `chosen` node just like the other parts of the keyboard.
+Similar to the previous case with a dedicated physical layout file, make sure the matrix transform is assigned to it, and select it in the `chosen` node just like the other parts of the keyboard.
 
 ```dts title="zmk-config/boards/shields/my_keyboard/my_keyboard_dongle.overlay"
 / {
@@ -250,7 +250,7 @@ If the `kscan` property is set on the physical layout node, remove it so the don
          transform = <&default_transform>;
          keys = <...>; // Long list of key positions, optional
      };
-};
+ };
 ```
 
 ```diff
@@ -334,4 +334,4 @@ Flashing standard ZMK firmware on a device will not clear any previous settings.
 
 To use your dongled keyboard with [ZMK Studio](../features/studio.md), apply the instructions for [building with Studio](../features/studio.md#building) to the dongle.
 
-If you ever want to "undongle" your keyboard, simply remove these CMake arguments, do the settings reset procedure, and flash the newly built firmware to your devices.
+If you ever want to "undongle" your keyboard, simply remove these CMake arguments, perform the settings reset procedure, and flash the newly built firmware to your devices.
