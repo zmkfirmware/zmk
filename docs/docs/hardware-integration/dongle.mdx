@@ -46,33 +46,34 @@ As a result, for this common use case the average latency of the keyboard decrea
 
 We'll add a new part with no keys as the central part, then switch the role of existing keyboard parts to peripheral.
 
-This guide assumes that you are adding a dongle to an existing keyboard definition, with the keyboard boards and/or shields defined in the main ZMK repository or external modules.
+This guide describes a dongle setup where we add the dongle as a new part with no keys with the central role, then switch the role of existing keyboard parts to peripheral.
+It assumes that you are adding a dongle to an existing keyboard definition, with the keyboard boards and/or shields defined in the main ZMK repository or external modules.
 The dongle shield is defined in your personal ZMK config, no change is needed to the existing keyboard boards and/or shields.
 
 If you are creating a new keyboard, the dongle shield can be defined together with other parts of the keyboard.
-Follow the [new keyboard shield guide](../hardware-integration/new-shield.mdx) and repeat the steps for "right" for each peripheral part of the keyboard.
+Follow the [new keyboard shield guide](../hardware-integration/new-shield.mdx) and use the mock kscan driver for the shield with central role.
 
 Prior to adding a dongle to your keyboard, please test its functionality without a dongle.
 
 ### Dongle Folder
 
-First, make sure that your `zmk-config` matches the folder structure found in the [unified ZMK config template](https://github.com/zmkfirmware/unified-zmk-config-template), especially `zephyr/module.yml` to ensure it is recognized as a module.
+First, make sure that your `zmk-config` repository matches the folder structure found in the [unified ZMK config template](https://github.com/zmkfirmware/unified-zmk-config-template), especially `zephyr/module.yml` to ensure it is recognized as a module.
 
 Next, create a folder with the name of your keyboard under `zmk-config/boards/shields`, for example `zmk-config/boards/shields/my_keyboard`. This folder will contain the devicetree overlay and Kconfig files for your dongle.
+
+This guide will use `my_keyboard` as the keyboard name, but you should replace it with your keyboard's name in all files and paths so the keymap and other files are correctly associated with all parts of the keyboard.
 
 ### Kconfig Files
 
 #### Kconfig.shield
 
-Make a file called `Kconfig.shield`, if one does not exist already. Add the following lines to it, replacing `SHIELD_MY_KEYBOARD_DONGLE` and `my_keyboard_dongle` according to your keyboard:
+Make a file called `Kconfig.shield`, if one does not exist already. Add the following lines to it, replacing `SHIELD_MY_KEYBOARD_DONGLE` and `my_keyboard_dongle` with your keyboard's name.
 
 ```kconfig title="zmk-config/boards/shields/my_keyboard/Kconfig.shield"
 # No whitespace after the comma or in the keyboard name!
 config SHIELD_MY_KEYBOARD_DONGLE
     def_bool $(shields_list_contains,my_keyboard_dongle)
 ```
-
-To use the same keymap file, the dongle shield name should match other parts of the keyboard, e.g. `my_keyboard_dongle` if other parts are named `my_keyboard` (for unibody) or `my_keyboard_left` (for split).
 
 #### Kconfig.defconfig
 
@@ -140,8 +141,8 @@ Add the following lines to the overlay file, introducing a mock kscan for the do
 Next, find all matrix transforms for your keyboard and copy them to the dongle shield. Look for a devicetree node with `compatible = "zmk,matrix-transform";` in the devicetree files for your keyboard.
 
 <ReadMore>
-  See [Devicetree Overview](../development/devicetree.md) for details on the devicetree format.
-  format.
+  See [Devicetree Overview](../development/devicetree.md) for details on the
+  devicetree format.
 </ReadMore>
 
 #### Physical Layout
@@ -324,6 +325,8 @@ include:
   - board: nice_nano
     shield: settings_reset
 ```
+
+If you are building locally, you can append these flags to the end of the [build command](../development/local-toolchain/build-flash.mdx#cmake-arguments).
 
 You can then flash the firmware to your device as detailed in our [user setup](../user-setup.mdx#install-the-firmware) and [split keyboard](../features/split-keyboards.md#building-and-flashing-firmware) pages.
 
