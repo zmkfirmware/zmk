@@ -8,7 +8,7 @@ This blog continues our series of posts where we highlight projects within the Z
 that we think are interesting and that users might benefit from knowing about.
 In this installment, we present a project by [Genteure] to help users setup ZMK for custom keyboards.
 
-<!-- truncate -->
+{/* truncate */}
 
 Onboarding a custom keyboard to ZMK has always been a challenge. Designers not only need to understand and write devicetree and Kconfig, they also need to be extremely careful while doing so. A typo somewhere, or an extra whitespace could easily lead to a cryptic error message or even firmware which builds and flashes normally, but results in a malfunctioning keyboard. Shield wizard promises to make this task easier for many designers, particularly those new to keyboard design.
 
@@ -57,9 +57,16 @@ Shield Wizard was partially inspired by kbfirmware.com, which was a QMK-based fi
 
 So I started experimenting with a web based graphical editor for ZMK, and Shield Wizard for ZMK was born.
 
-![First Version of Shield Wizard](assets/2027-07-17-shield-wizard/early-shield-wizard.png)
-
-_Screenshot of the first iteration of Shield Wizard for ZMK_
+<figure style={{ maxWidth: "560px", margin: "1.5rem auto" }}>
+  <img
+    src={
+      require("./assets/2027-07-17-shield-wizard/early-shield-wizard.png")
+        .default
+    }
+    alt="First version of Shield Wizard for ZMK"
+  />
+  <figcaption>_Screenshot of the first iteration of Shield Wizard_</figcaption>
+</figure>
 
 ### Laying Out the Goals
 
