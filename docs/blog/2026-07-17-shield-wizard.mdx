@@ -4,6 +4,8 @@ authors: nmunnich
 tags: [keyboards, firmware, community]
 ---
 
+import ThemedImage from "@theme/ThemedImage";
+
 This blog continues our series of posts where we highlight projects within the ZMK ecosystem
 that we think are interesting and that users might benefit from knowing about.
 In this installment, we present a project by [Genteure] to help users setup ZMK for custom keyboards.
@@ -18,7 +20,15 @@ As usual, in the rest of the post we leave it to [Genteure] to introduce and exp
 
 [Shield Wizard for ZMK](https://shield-wizard.genteure.com) is a web based graphical editor for setting up ZMK firmware for custom keyboards. It enables users to go from zero to compiled firmware, all within the browser, without the need to manually edit files or install tools locally (not even git). It provides an easy, foolproof, and visual way for new users to get started with ZMK, while also speeding up the workflow for more experienced users.
 
-![Screenshot of Shield Wizard for ZMK](assets/2027-07-17-shield-wizard/shield-wizard.png)
+<ThemedImage
+  alt="Screenshot of Shield Wizard for ZMK"
+  sources={{
+    light: require("./assets/2027-07-17-shield-wizard/shield-wizard.png")
+      .default,
+    dark: require("./assets/2027-07-17-shield-wizard/shield-wizard-dark.png")
+      .default,
+  }}
+/>
 
 ### Features
 
