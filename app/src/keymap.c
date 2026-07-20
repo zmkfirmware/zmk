@@ -640,7 +640,7 @@ static int keymap_track_changed_bindings(const char *key, size_t len, settings_r
             return -EINVAL;
         }
 
-        uint8_t key_position = strtoul(endptr + 1, &endptr, 10);
+        uint32_t key_position = strtoul(endptr + 1, &endptr, 10);
 
         if (*endptr != '\0') {
             LOG_WRN("Invalid key_position number: %s with endptr %s", next, endptr);
@@ -875,7 +875,7 @@ static int keymap_handle_set(const char *name, size_t len, settings_read_cb read
             return -EINVAL;
         }
 
-        uint8_t key_position = strtoul(endptr + 1, &endptr, 10);
+        uint32_t key_position = strtoul(endptr + 1, &endptr, 10);
 
         if (*endptr != '\0') {
             LOG_WRN("Invalid key_position number: %s with endptr %s", next, endptr);
