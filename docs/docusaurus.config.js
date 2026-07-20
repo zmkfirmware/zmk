@@ -197,12 +197,12 @@ module.exports = {
           // It is recommended to set document id as docs home page (`docs/` path).
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl: "https://github.com/zmkfirmware/zmk/edit/main/docs/",
+          editUrl: "https://github.com/zmkfirmware/zmk/blob/main/docs/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: "https://github.com/zmkfirmware/zmk/edit/main/docs/",
+          editUrl: "https://github.com/zmkfirmware/zmk/blob/main/docs/",
           blogSidebarCount: "ALL",
         },
         theme: {
