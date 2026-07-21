@@ -108,15 +108,16 @@ static ssize_t read_hids_report_ref(struct bt_conn *conn, const struct bt_gatt_a
 
 static ssize_t read_hids_report_map(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                     void *buf, uint16_t len, uint16_t offset) {
-    return bt_gatt_attr_read(conn, attr, buf, len, offset, zmk_hid_report_desc,
-                             sizeof(zmk_hid_report_desc));
+    size_t report_desc_len;
+    const uint8_t *report_desc = zmk_hid_report_desc_get(&report_desc_len);
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, report_desc, report_desc_len);
 }
 
 static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                       void *buf, uint16_t len, uint16_t offset) {
     struct zmk_hid_keyboard_report_body *report_body = &zmk_hid_get_keyboard_report()->body;
     return bt_gatt_attr_read(conn, attr, buf, len, offset, report_body,
-                             sizeof(struct zmk_hid_keyboard_report_body));
+                             zmk_hid_keyboard_report_body_size());
 }
 
 #if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
@@ -319,7 +320,7 @@ void send_keyboard_report_callback(struct k_work *work) {
         struct bt_gatt_notify_params notify_params = {
             .attr = &hog_svc.attrs[5],
             .data = &report,
-            .len = sizeof(report),
+            .len = zmk_hid_keyboard_report_body_size(),
         };
 
         int err = bt_gatt_notify_cb(conn, &notify_params);

@@ -15,6 +15,9 @@
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 #include <zmk/pointing.h>
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+#include <zmk/hid_dynamic_nkro.h>
+#endif // IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
 #include <dt-bindings/zmk/hid_usage.h>
 #include <dt-bindings/zmk/hid_usage_pages.h>
@@ -33,9 +36,13 @@
 #error "Unknown consumer report usages configuration"
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 #define ZMK_HID_KEYBOARD_MAX_USAGE ZMK_HID_KEYBOARD_NKRO_MAX_USAGE
-#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+#define ZMK_HID_KEYBOARD_MAX_USAGE 0xFF
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+// Widest of the two compiled-in modes; each mode's own press/release/check logic still
+// enforces its own (possibly narrower) usage bound at runtime.
 #define ZMK_HID_KEYBOARD_MAX_USAGE 0xFF
 #else
 #error "Unknown keyboard report usages configuration"
@@ -101,159 +108,137 @@
 
 #define HID_USAGE16_SINGLE(a) HID_USAGE16((a & 0xFF), ((a >> 8) & 0xFF))
 
-static const uint8_t zmk_hid_report_desc[] = {
-    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
-    HID_USAGE(HID_USAGE_GD_KEYBOARD),
-    HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_KEYBOARD),
-    HID_USAGE_PAGE(HID_USAGE_KEY),
-    HID_USAGE_MIN8(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),
-    HID_USAGE_MAX8(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI),
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x01),
+#define ZMK_HID_REPORT_DESC_COMMON_PREFIX                                                          \
+    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP), HID_USAGE(HID_USAGE_GD_KEYBOARD),                       \
+        HID_COLLECTION(HID_COLLECTION_APPLICATION), HID_REPORT_ID(ZMK_HID_REPORT_ID_KEYBOARD),     \
+        HID_USAGE_PAGE(HID_USAGE_KEY), HID_USAGE_MIN8(HID_USAGE_KEY_KEYBOARD_LEFTCONTROL),         \
+        HID_USAGE_MAX8(HID_USAGE_KEY_KEYBOARD_RIGHT_GUI), HID_LOGICAL_MIN8(0x00),                  \
+        HID_LOGICAL_MAX8(0x01),                                                                    \
+                                                                                                   \
+        HID_REPORT_SIZE(0x01), HID_REPORT_COUNT(0x08),                                             \
+        HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),            \
+                                                                                                   \
+        HID_USAGE_PAGE(HID_USAGE_KEY), HID_REPORT_SIZE(0x08), HID_REPORT_COUNT(0x01),              \
+        HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),           \
+                                                                                                   \
+        IF_ENABLED(                                                                                \
+            CONFIG_ZMK_HID_INDICATORS,                                                             \
+            (HID_USAGE_PAGE(HID_USAGE_LED), HID_USAGE_MIN8(HID_USAGE_LED_NUM_LOCK),                \
+             HID_USAGE_MAX8(HID_USAGE_LED_KANA), HID_REPORT_SIZE(0x01), HID_REPORT_COUNT(0x05),    \
+             HID_OUTPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),      \
+                                                                                                   \
+             HID_USAGE_PAGE(HID_USAGE_LED), HID_REPORT_SIZE(0x03), HID_REPORT_COUNT(0x01),         \
+             HID_OUTPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS), ))  \
+                                                                                                   \
+            HID_USAGE_PAGE(HID_USAGE_KEY)
 
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x08),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+#define ZMK_HID_REPORT_DESC_COMMON_SUFFIX                                                          \
+    HID_END_COLLECTION, HID_USAGE_PAGE(HID_USAGE_CONSUMER),                                        \
+        HID_USAGE(HID_USAGE_CONSUMER_CONSUMER_CONTROL),                                            \
+        HID_COLLECTION(HID_COLLECTION_APPLICATION), HID_REPORT_ID(ZMK_HID_REPORT_ID_CONSUMER),     \
+        HID_USAGE_PAGE(HID_USAGE_CONSUMER),                                                        \
+                                                                                                   \
+        IF_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC,                                    \
+                   (HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX16(0xFF, 0x00), HID_USAGE_MIN8(0x00),   \
+                    HID_USAGE_MAX8(0xFF), HID_REPORT_SIZE(0x08), ))                                \
+            IF_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL,                                 \
+                       (HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX16(0xFF, 0x0F),                     \
+                        HID_USAGE_MIN8(0x00), HID_USAGE_MAX16(0xFF, 0x0F),                         \
+                        HID_REPORT_SIZE(0x10), ))                                                  \
+                HID_REPORT_COUNT(CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE),                             \
+        HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),          \
+        HID_END_COLLECTION,                                                                        \
+                                                                                                   \
+        IF_ENABLED(                                                                                \
+            CONFIG_ZMK_POINTING,                                                                   \
+            (HID_USAGE_PAGE(HID_USAGE_GD), HID_USAGE(HID_USAGE_GD_MOUSE),                          \
+             HID_COLLECTION(HID_COLLECTION_APPLICATION), HID_REPORT_ID(ZMK_HID_REPORT_ID_MOUSE),   \
+             HID_USAGE(HID_USAGE_GD_POINTER), HID_COLLECTION(HID_COLLECTION_PHYSICAL),             \
+             HID_USAGE_PAGE(HID_USAGE_BUTTON), HID_USAGE_MIN8(0x1),                                \
+             HID_USAGE_MAX8(ZMK_HID_MOUSE_NUM_BUTTONS), HID_LOGICAL_MIN8(0x00),                    \
+             HID_LOGICAL_MAX8(0x01), HID_REPORT_SIZE(0x01), HID_REPORT_COUNT(0x5),                 \
+             HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),       \
+             HID_REPORT_SIZE(0x03), HID_REPORT_COUNT(0x01),                                        \
+             HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),      \
+             HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP), HID_USAGE(HID_USAGE_GD_X),                     \
+             HID_USAGE(HID_USAGE_GD_Y), HID_LOGICAL_MIN16(0x00, 0x80),                             \
+             HID_LOGICAL_MAX16(0xFF, 0x7F), HID_REPORT_SIZE(0x10), HID_REPORT_COUNT(0x02),         \
+             HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),       \
+             HID_COLLECTION(HID_COLLECTION_LOGICAL),                                               \
+             IF_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING,                                      \
+                        (HID_USAGE(HID_USAGE_GD_RESOLUTION_MULTIPLIER), HID_LOGICAL_MIN8(0x00),    \
+                         HID_LOGICAL_MAX8(0x0F), HID_PHYSICAL_MIN8(0x01), HID_PHYSICAL_MAX8(0x10), \
+                         HID_REPORT_SIZE(0x04), HID_REPORT_COUNT(0x01), HID_PUSH,                  \
+                         HID_FEATURE(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR |                \
+                                     ZMK_HID_MAIN_VAL_ABS), )) HID_USAGE(HID_USAGE_GD_WHEEL),      \
+             HID_LOGICAL_MIN16(0x00, 0x80), HID_LOGICAL_MAX16(0xFF, 0x7F),                         \
+             HID_PHYSICAL_MIN8(0x00), HID_PHYSICAL_MAX8(0x00), HID_REPORT_SIZE(0x10),              \
+             HID_REPORT_COUNT(0x01),                                                               \
+             HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),       \
+             HID_END_COLLECTION, HID_COLLECTION(HID_COLLECTION_LOGICAL),                           \
+             IF_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING,                                      \
+                        (HID_USAGE(HID_USAGE_GD_RESOLUTION_MULTIPLIER), HID_POP,                   \
+                         HID_FEATURE(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR |                \
+                                     ZMK_HID_MAIN_VAL_ABS), )) HID_USAGE_PAGE(HID_USAGE_CONSUMER), \
+             HID_USAGE16_SINGLE(HID_USAGE_CONSUMER_AC_PAN), HID_LOGICAL_MIN16(0x00, 0x80),         \
+             HID_LOGICAL_MAX16(0xFF, 0x7F), HID_PHYSICAL_MIN8(0x00), HID_PHYSICAL_MAX8(0x00),      \
+             HID_REPORT_SIZE(0x10), HID_REPORT_COUNT(0x01),                                        \
+             HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),       \
+             HID_END_COLLECTION, HID_END_COLLECTION, HID_END_COLLECTION, ))
 
-    HID_USAGE_PAGE(HID_USAGE_KEY),
-    HID_REPORT_SIZE(0x08),
-    HID_REPORT_COUNT(0x01),
-    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+#define ZMK_HID_REPORT_DESC_NKRO_KEYBOARD_ITEMS                                                    \
+    HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX8(0x01), HID_USAGE_MIN8(0x00),                          \
+        HID_USAGE_MAX8(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE), HID_REPORT_SIZE(0x01),                    \
+        HID_REPORT_COUNT(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1),                                     \
+        HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS)
 
-#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+#define ZMK_HID_REPORT_DESC_HKRO_KEYBOARD_ITEMS                                                    \
+    HID_LOGICAL_MIN8(0x00), HID_LOGICAL_MAX16(0xFF, 0x00), HID_USAGE_MIN8(0x00),                   \
+        HID_USAGE_MAX8(0xFF), HID_REPORT_SIZE(0x08),                                               \
+        HID_REPORT_COUNT(CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE),                                     \
+        HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS)
 
-    HID_USAGE_PAGE(HID_USAGE_LED),
-    HID_USAGE_MIN8(HID_USAGE_LED_NUM_LOCK),
-    HID_USAGE_MAX8(HID_USAGE_LED_KANA),
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x05),
-    HID_OUTPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+#define ZMK_HID_REPORT_DESC(keyboard_items)                                                        \
+    {ZMK_HID_REPORT_DESC_COMMON_PREFIX, keyboard_items, ZMK_HID_REPORT_DESC_COMMON_SUFFIX}
 
-    HID_USAGE_PAGE(HID_USAGE_LED),
-    HID_REPORT_SIZE(0x03),
-    HID_REPORT_COUNT(0x01),
-    HID_OUTPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
-#endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+static const uint8_t zmk_hid_report_desc[] =
+    ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_NKRO_KEYBOARD_ITEMS);
 
-    HID_USAGE_PAGE(HID_USAGE_KEY),
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
 
-#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x01),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX8(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE),
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX16(0xFF, 0x00),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX8(0xFF),
-    HID_REPORT_SIZE(0x08),
-    HID_REPORT_COUNT(CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),
+static const uint8_t zmk_hid_report_desc[] =
+    ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_HKRO_KEYBOARD_ITEMS);
+
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+
+// Both report descriptor variants are compiled in; zmk_hid_report_desc_get() picks the one
+// matching the mode loaded from settings at boot (see hid_dynamic_nkro.c).
+static const uint8_t zmk_hid_report_desc_nkro[] =
+    ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_NKRO_KEYBOARD_ITEMS);
+
+static const uint8_t zmk_hid_report_desc_hkro[] =
+    ZMK_HID_REPORT_DESC(ZMK_HID_REPORT_DESC_HKRO_KEYBOARD_ITEMS);
+
 #else
 #error "A proper HID report type must be selected"
 #endif
 
-    HID_END_COLLECTION,
-    HID_USAGE_PAGE(HID_USAGE_CONSUMER),
-    HID_USAGE(HID_USAGE_CONSUMER_CONSUMER_CONTROL),
-    HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_CONSUMER),
-    HID_USAGE_PAGE(HID_USAGE_CONSUMER),
+/**
+ * Returns the active HID report descriptor (and its length) for the current boot session.
+ * For the static NKRO/HKRO configurations this is just zmk_hid_report_desc; for the dynamic
+ * configuration it is whichever of zmk_hid_report_desc_{nkro,hkro} matches the persisted mode.
+ */
+const uint8_t *zmk_hid_report_desc_get(size_t *len);
 
-#if IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_BASIC)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX16(0xFF, 0x00),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX8(0xFF),
-    HID_REPORT_SIZE(0x08),
-#elif IS_ENABLED(CONFIG_ZMK_HID_CONSUMER_REPORT_USAGES_FULL)
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX16(0xFF, 0x0F),
-    HID_USAGE_MIN8(0x00),
-    HID_USAGE_MAX16(0xFF, 0x0F),
-    HID_REPORT_SIZE(0x10),
-#else
-#error "A proper consumer HID report usage range must be selected"
-#endif
-    HID_REPORT_COUNT(CONFIG_ZMK_HID_CONSUMER_REPORT_SIZE),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_ARRAY | ZMK_HID_MAIN_VAL_ABS),
-    HID_END_COLLECTION,
-
-#if IS_ENABLED(CONFIG_ZMK_POINTING)
-    HID_USAGE_PAGE(HID_USAGE_GD),
-    HID_USAGE(HID_USAGE_GD_MOUSE),
-    HID_COLLECTION(HID_COLLECTION_APPLICATION),
-    HID_REPORT_ID(ZMK_HID_REPORT_ID_MOUSE),
-    HID_USAGE(HID_USAGE_GD_POINTER),
-    HID_COLLECTION(HID_COLLECTION_PHYSICAL),
-    HID_USAGE_PAGE(HID_USAGE_BUTTON),
-    HID_USAGE_MIN8(0x1),
-    HID_USAGE_MAX8(ZMK_HID_MOUSE_NUM_BUTTONS),
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x01),
-    HID_REPORT_SIZE(0x01),
-    HID_REPORT_COUNT(0x5),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-    // Constant padding for the last 3 bits.
-    HID_REPORT_SIZE(0x03),
-    HID_REPORT_COUNT(0x01),
-    HID_INPUT(ZMK_HID_MAIN_VAL_CONST | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-    // Some OSes ignore pointer devices without X/Y data.
-    HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
-    HID_USAGE(HID_USAGE_GD_X),
-    HID_USAGE(HID_USAGE_GD_Y),
-    HID_LOGICAL_MIN16(0x00, 0x80),
-    HID_LOGICAL_MAX16(0xFF, 0x7F),
-    HID_REPORT_SIZE(0x10),
-    HID_REPORT_COUNT(0x02),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
-    HID_COLLECTION(HID_COLLECTION_LOGICAL),
-#if IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
-    HID_USAGE(HID_USAGE_GD_RESOLUTION_MULTIPLIER),
-    HID_LOGICAL_MIN8(0x00),
-    HID_LOGICAL_MAX8(0x0F),
-    HID_PHYSICAL_MIN8(0x01),
-    HID_PHYSICAL_MAX8(0x10),
-    HID_REPORT_SIZE(0x04),
-    HID_REPORT_COUNT(0x01),
-    HID_PUSH,
-    HID_FEATURE(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-#endif // IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
-    HID_USAGE(HID_USAGE_GD_WHEEL),
-    HID_LOGICAL_MIN16(0x00, 0x80),
-    HID_LOGICAL_MAX16(0xFF, 0x7F),
-    HID_PHYSICAL_MIN8(0x00),
-    HID_PHYSICAL_MAX8(0x00),
-    HID_REPORT_SIZE(0x10),
-    HID_REPORT_COUNT(0x01),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
-    HID_END_COLLECTION,
-    HID_COLLECTION(HID_COLLECTION_LOGICAL),
-#if IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
-    HID_USAGE(HID_USAGE_GD_RESOLUTION_MULTIPLIER),
-    HID_POP,
-    HID_FEATURE(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_ABS),
-#endif // IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
-    HID_USAGE_PAGE(HID_USAGE_CONSUMER),
-    HID_USAGE16_SINGLE(HID_USAGE_CONSUMER_AC_PAN),
-    HID_LOGICAL_MIN16(0x00, 0x80),
-    HID_LOGICAL_MAX16(0xFF, 0x7F),
-    HID_PHYSICAL_MIN8(0x00),
-    HID_PHYSICAL_MAX8(0x00),
-    HID_REPORT_SIZE(0x10),
-    HID_REPORT_COUNT(0x01),
-    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
-    HID_END_COLLECTION,
-    HID_END_COLLECTION,
-    HID_END_COLLECTION,
-#endif // IS_ENABLED(CONFIG_ZMK_POINTING)
-};
+/**
+ * Size, in bytes, of struct zmk_hid_keyboard_report_body for the active mode. For the static
+ * NKRO/HKRO configurations this is just sizeof(struct zmk_hid_keyboard_report_body); the dynamic
+ * configuration's body is a union sized for the larger of the two modes, so callers that send
+ * the body over the wire need the mode-specific size instead of sizeof().
+ */
+size_t zmk_hid_keyboard_report_body_size(void);
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 
@@ -261,6 +246,7 @@ static const uint8_t zmk_hid_report_desc[] = {
 #define HID_BOOT_KEY_LEN 6
 
 #if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) &&                                                 \
+    !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC) &&                                             \
     CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE == HID_BOOT_KEY_LEN
 typedef struct zmk_hid_keyboard_report_body zmk_hid_boot_report_t;
 #else
@@ -277,10 +263,18 @@ typedef struct zmk_hid_boot_report zmk_hid_boot_report_t;
 struct zmk_hid_keyboard_report_body {
     zmk_mod_flags_t modifiers;
     uint8_t _reserved;
-#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO)
+#if IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_NKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
     uint8_t keys[DIV_ROUND_UP(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1, 8)];
-#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO)
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_HKRO) && !IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
     uint8_t keys[CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE];
+#elif IS_ENABLED(CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC)
+    // Both layouts are compiled in; only nkro_keys or only hkro_keys is meaningful at a time,
+    // selected by zmk_hid_dynamic_nkro_get_mode(). zmk_hid_keyboard_report_body_size() reports
+    // the size of whichever one is active, since they're rarely the same length.
+    union {
+        uint8_t nkro_keys[DIV_ROUND_UP(ZMK_HID_KEYBOARD_NKRO_MAX_USAGE + 1, 8)];
+        uint8_t hkro_keys[CONFIG_ZMK_HID_KEYBOARD_REPORT_SIZE];
+    };
 #endif
 } __packed;
 
