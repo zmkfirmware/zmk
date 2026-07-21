@@ -64,7 +64,7 @@
     "prebuild-webpack-plugin": "^1.1.1",
     "prettier": "^3.9.5",
     "string-replace-loader": "^3.3.0",
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "typescript-eslint": "^8.65.0",
     "webpack": "^5.108.4"
   }
