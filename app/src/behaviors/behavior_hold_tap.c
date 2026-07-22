@@ -18,6 +18,7 @@
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/behavior.h>
+#include <zmk/workqueue.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -635,7 +636,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     // if this behavior was queued we have to adjust the timer to only
     // wait for the remaining time.
     int32_t tapping_term_ms_left = (hold_tap->timestamp + cfg->tapping_term_ms) - k_uptime_get();
-    k_work_schedule(&hold_tap->work, K_MSEC(tapping_term_ms_left));
+    k_work_schedule_for_queue(zmk_main_work_q(), &hold_tap->work, K_MSEC(tapping_term_ms_left));
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
