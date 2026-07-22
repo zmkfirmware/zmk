@@ -68,6 +68,13 @@ with an onboard MCU or one that uses an MCU board add-on.
   </TabItem>
 </Tabs>
 
+:::warning
+Since Zephyr 4.1 the argument `-b` needs to be set according to the new board
+variants. E.g. instead of `planck_rev6` it should be `planck//zmk`. Read more about
+board variants at
+[Zephyr 4.1 Update](https://zmk.dev/blog/2025/12/09/zephyr-4-1#zmk-board-variant) blog.
+:::
+
 ### CMake Arguments
 
 For creating a build system, the `west build` command uses
