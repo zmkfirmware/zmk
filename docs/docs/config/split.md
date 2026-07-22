@@ -35,6 +35,14 @@ Following bluetooth [split keyboard](../features/split-keyboards.md) settings ar
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY`              | int  | Priority of the BLE split peripheral notify thread                         | 5                                          |
 | `CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE`   | int  | Max number of key state events to queue to send to the central             | 10                                         |
 
+#### Input Split
+
+The following setting only applies when using BLE split together with [input split devices](pointing.md#input-split), such as for pointing devices attached to split peripherals:
+
+| Config                                  | Type | Description                                                     | Default |
+| --------------------------------------- | ---- | --------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_INPUT_SPLIT_MSG_QUEUE_SIZE` | int  | Max number of input split events to queue for BLE notifications | 32      |
+
 ### Wired Splits
 
 Hardware UARTs have a few different modes/approaches to sending and receiving data, with different levels of complexity and performance. Not all hardware nor drivers support all modes, so ZMK has code to support different interaction modes with the UART as needed. The default mode should be properly selected based on the platform's report support, but you can choose to override the mode if needed.
