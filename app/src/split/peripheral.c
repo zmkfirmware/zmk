@@ -18,6 +18,8 @@
 #include <zmk/events/sensor_event.h>
 #include <zmk/events/battery_state_changed.h>
 
+#include <zmk/events/split_transport_changed.h>
+
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 #include <zmk/events/hid_indicators_changed.h>
 #endif
@@ -116,6 +118,8 @@ static int select_first_available_transport(void) {
 
 static int transport_status_changed_cb(const struct zmk_split_transport_peripheral *p,
                                        struct zmk_split_transport_status status) {
+    raise_zmk_split_transport_changed(
+        (struct zmk_split_transport_changed){.addr = (uint32_t)p, .status = status});
     if (p == active_transport) {
         LOG_DBG("Peripheral at %p changed status: enabled %d, available %d, connections %d", p,
                 status.enabled, status.available, status.connections);
@@ -129,6 +133,26 @@ static int transport_status_changed_cb(const struct zmk_split_transport_peripher
     }
 
     return 0;
+}
+
+bool zmk_split_transport_get_available(uint32_t addr) {
+    STRUCT_SECTION_FOREACH(zmk_split_transport_peripheral, t) {
+        if ((uint32_t)t == addr) {
+            return t->api->get_status().available;
+        }
+    }
+
+    return 0;
+}
+
+uint32_t zmk_split_get_transport_addr_at_index(uint8_t index) {
+    struct zmk_split_transport_peripheral *t;
+    ptrdiff_t count;
+    STRUCT_SECTION_COUNT(zmk_split_transport_peripheral, &count);
+    if ((ptrdiff_t)index > count)
+        return 0;
+    STRUCT_SECTION_GET(zmk_split_transport_peripheral, index, &t);
+    return (uint32_t)t;
 }
 
 static int peripheral_init(void) {
