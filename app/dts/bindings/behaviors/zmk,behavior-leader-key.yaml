@@ -1,0 +1,29 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Leader key behavior
+
+compatible: "zmk,behavior-leader-key"
+
+include: zero_param.yaml
+
+properties:
+  timeout-ms:
+    type: int
+    default: -1
+  overlap-timeout-ms:
+    type: int
+    default: 200
+
+child-binding:
+  description: "A leader sequence"
+
+  properties:
+    bindings:
+      type: phandle-array
+      required: true
+    key-positions:
+      type: array
+      required: true
+    immediate-trigger:
+      type: boolean
