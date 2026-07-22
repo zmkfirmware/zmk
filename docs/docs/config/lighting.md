@@ -77,6 +77,29 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 The `*_START` settings only determine the initial backlight state. Any changes you make with the [backlight behavior](../keymaps/behaviors/backlight.md) are saved to flash after a one minute delay and will be used after that.
 :::
 
+#### Backlight brightness curves
+
+The perceived brightness of the backlight LEDs is nonlinear. With a fixed step size, BL_INC/DEC give a linear change in brightness, which is too steep at low brightness and too shallow at high brightness.
+By enabling exectly one of the following options, a correction curve will be applied to the linear brightness values before they are sent to the LED hardware.
+
+| Option                                                      | Type | Description                                      | Default |
+| ----------------------------------------------------------- | ---- | ------------------------------------------------ | ------- |
+| `CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_TWO`           | bool | Enable backlight brightness curve, gamma 2       | n       |
+| `CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_TWO_POINT_TWO` | bool | Enable backlight brightness curve, gamma 2.2     | n       |
+| `CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_THREE`         | bool | Enable backlight brightness curve, gamma 3       | n       |
+| `CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_SRGB`                | bool | Enable backlight brightness curve, sRGB          | n       |
+| `CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_CIE_L`               | bool | Enable backlight brightness curve, CIE lightness | n       |
+| `CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_CUSTOM`        | bool | Enable backlight brightness curve, custom gamma  | n       |
+
+The `_GAMMA_*` options use a simple gamma correction function, `lightness = brightness ^ gamma`.
+The `_GAMMA_TWO` and `_GAMMA_THREE` options use only integer math and may require fewer resources. They are the only options provided if the floating point math library is not available.
+The `_SRGB` option uses the sRGB Electro-Optical Transfer Function, and the `_CIE_L` option uses the (inverse) CIE Lightness function. Both of these have a linear section at low intensities and an exponential section above (the exponent is 2.4 for sRGB and 3 for CIE_L).
+The `_GAMMA_CUSTOM` option enables a further setting:
+
+| Option                                              | Type | Description                              | Default |
+| --------------------------------------------------- | ---- | ---------------------------------------- | ------- |
+| `CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_VALUE` | int  | Backlight brightness curve gamma \* 1000 | 2500    |
+
 ### Devicetree
 
 Applies to: [`/chosen` node](https://docs.zephyrproject.org/4.1.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)
