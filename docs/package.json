@@ -24,10 +24,10 @@
     "@mdx-js/react": "^3.1.0",
     "classnames": "^2.2.6",
     "js-yaml": "^5.2.1",
-    "react": "^19.2.7",
+    "react": "^19.2.8",
     "react-async": "^10.0.1",
     "react-copy-to-clipboard": "^5.0.3",
-    "react-dom": "^19.2.7",
+    "react-dom": "^19.2.8",
     "react-toastify": "^11.1.0",
     "tree-sitter-devicetree": "^0.12.1",
     "web-tree-sitter": "^0.24.3"
