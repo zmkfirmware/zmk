@@ -90,6 +90,23 @@ config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
     int "Max number of key position state events to queue to send to the central"
     default 10
 
+config ZMK_SPLIT_BLE_PERIPHERAL_STATE_HEARTBEAT_MS
+    int "Interval for full key-state repair reports"
+    default 250
+    range 20 5000
+    help
+      While any key is held, resend the complete position bitmap at this
+      interval. This also controls retry pacing after a notification error.
+
+config ZMK_SPLIT_BLE_PERIPHERAL_STATE_REPAIR_COUNT
+    int "Full-state repair reports after the final release"
+    default 4
+    range 1 20
+    help
+      Number of additional all-released bitmaps sent after the final release.
+      This repairs a dropped or stale final notification without waiting for
+      another key event or a disconnect.
+
 config BT_MAX_PAIRED
     default 1
 

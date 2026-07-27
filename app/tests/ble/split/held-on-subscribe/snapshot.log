@@ -1,0 +1,2 @@
+central <dbg> zmk: on_keymap_binding_pressed: position 0 keycode 0x70004
+central <dbg> zmk: on_keymap_binding_released: position 0 keycode 0x70004

@@ -6,6 +6,7 @@
 
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/types.h>
+#include <zephyr/sys/atomic.h>
 #include <zephyr/sys/util.h>
 #include <zephyr/sys/byteorder.h>
 #include <zephyr/init.h>
@@ -25,6 +26,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/split/transport/peripheral.h>
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/split/bluetooth/service.h>
+#include <zmk/split/bluetooth/peripheral.h>
 
 #include "peripheral.h"
 
@@ -56,6 +58,9 @@ static uint8_t position_state[POS_STATE_LEN];
 
 static struct zmk_split_run_behavior_payload behavior_run_payload;
 
+static int send_position_state(void);
+static void repair_position_state_on_subscribe(void);
+
 static ssize_t split_svc_pos_state(struct bt_conn *conn, const struct bt_gatt_attr *attrs,
                                    void *buf, uint16_t len, uint16_t offset) {
     return bt_gatt_attr_read(conn, attrs, buf, len, offset, &position_state,
@@ -73,6 +78,9 @@ static ssize_t split_svc_num_of_positions(struct bt_conn *conn, const struct bt_
 
 static void split_svc_pos_state_ccc(const struct bt_gatt_attr *attr, uint16_t value) {
     LOG_DBG("value %d", value);
+    if (value == BT_GATT_CCC_NOTIFY) {
+        repair_position_state_on_subscribe();
+    }
 }
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -214,20 +222,60 @@ struct k_work_q service_work_q;
 K_MSGQ_DEFINE(position_state_msgq, sizeof(char[POS_STATE_LEN]),
               CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE, 4);
 
-void send_position_state_callback(struct k_work *work) {
-    uint8_t state[POS_STATE_LEN];
+static atomic_t position_state_repair_reports;
+static uint8_t pending_position_state[POS_STATE_LEN];
+static bool has_pending_position_state;
 
-    while (k_msgq_get(&position_state_msgq, &state, K_NO_WAIT) == 0) {
-        int err = bt_gatt_notify(NULL, &split_svc.attrs[1], &state, sizeof(state));
-        if (err) {
-            LOG_DBG("Error notifying %d", err);
+static bool position_state_is_active(void) {
+    for (int i = 0; i < POS_STATE_LEN; i++) {
+        if (position_state[i] != 0) {
+            return true;
         }
+    }
+
+    return false;
+}
+
+void send_position_state_callback(struct k_work *work) {
+    if (!zmk_split_bt_peripheral_is_connected()) {
+        k_msgq_purge(&position_state_msgq);
+        has_pending_position_state = false;
+        return;
+    }
+
+    while (has_pending_position_state ||
+           k_msgq_get(&position_state_msgq, pending_position_state, K_NO_WAIT) == 0) {
+        has_pending_position_state = true;
+        int err = bt_gatt_notify(NULL, &split_svc.attrs[1], pending_position_state,
+                                 sizeof(pending_position_state));
+        if (err) {
+            LOG_WRN("Error notifying position state (%d); retaining state for retry", err);
+            (void)k_work_reschedule_for_queue(
+                &service_work_q, k_work_delayable_from_work(work),
+                K_MSEC(CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STATE_HEARTBEAT_MS));
+            return;
+        }
+
+        has_pending_position_state = false;
+    }
+
+    bool active = position_state_is_active();
+    atomic_val_t repair_reports = atomic_get(&position_state_repair_reports);
+    if (!active && repair_reports > 0) {
+        atomic_dec(&position_state_repair_reports);
+    }
+
+    if (active || repair_reports > 0) {
+        (void)k_msgq_put(&position_state_msgq, position_state, K_NO_WAIT);
+        (void)k_work_reschedule_for_queue(
+            &service_work_q, k_work_delayable_from_work(work),
+            K_MSEC(CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STATE_HEARTBEAT_MS));
     }
 };
 
-K_WORK_DEFINE(service_position_notify_work, send_position_state_callback);
+K_WORK_DELAYABLE_DEFINE(service_position_notify_work, send_position_state_callback);
 
-int send_position_state() {
+static int send_position_state(void) {
     int err = k_msgq_put(&position_state_msgq, position_state, K_MSEC(100));
     if (err) {
         switch (err) {
@@ -243,18 +291,25 @@ int send_position_state() {
         }
     }
 
-    k_work_submit_to_queue(&service_work_q, &service_position_notify_work);
+    k_work_reschedule_for_queue(&service_work_q, &service_position_notify_work, K_NO_WAIT);
 
     return 0;
 }
 
+static void repair_position_state_on_subscribe(void) {
+    atomic_set(&position_state_repair_reports, CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STATE_REPAIR_COUNT);
+    (void)send_position_state();
+}
+
 static int zmk_split_bt_position_pressed(uint8_t position) {
     WRITE_BIT(position_state[position / 8], position % 8, true);
+    atomic_set(&position_state_repair_reports, CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STATE_REPAIR_COUNT);
     return send_position_state();
 }
 
 static int zmk_split_bt_position_released(uint8_t position) {
     WRITE_BIT(position_state[position / 8], position % 8, false);
+    atomic_set(&position_state_repair_reports, CONFIG_ZMK_SPLIT_BLE_PERIPHERAL_STATE_REPAIR_COUNT);
     return send_position_state();
 }
 
