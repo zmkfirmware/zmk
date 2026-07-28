@@ -48,7 +48,7 @@
     "@docusaurus/module-type-aliases": "^3.10.2",
     "@docusaurus/tsconfig": "^3.10.2",
     "@docusaurus/types": "^3.10.2",
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^9.39.5",
     "@types/glob": "^8.1.0",
     "@types/js-yaml": "^4.0.5",
     "@types/react": "^19.2.17",
@@ -57,7 +57,7 @@
     "eslint": "^9.39.2",
     "eslint-plugin-mdx": "^3.8.1",
     "eslint-plugin-react": "^7.37.5",
-    "globals": "^17.7.0",
+    "globals": "^17.8.0",
     "json-schema-to-typescript": "^15.0.3",
     "mustache": "^4.2.0",
     "null-loader": "^4.0.0",
@@ -66,6 +66,6 @@
     "string-replace-loader": "^3.3.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.65.0",
-    "webpack": "^5.109.0"
+    "webpack": "^5.109.1"
   }
 }
