@@ -21,6 +21,7 @@
 #include <behaviors/bluetooth.dtsi>
 #include <behaviors/ext_power.dtsi>
 #include <behaviors/outputs.dtsi>
+#include <behaviors/last_device.dtsi>
 #include <behaviors/caps_word.dtsi>
 #include <behaviors/key_repeat.dtsi>
 #include <behaviors/backlight.dtsi>
