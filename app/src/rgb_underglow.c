@@ -24,6 +24,7 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
+#include <zmk/events/underglow_state_changed.h>
 #include <zmk/workqueue.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -52,19 +53,11 @@ enum rgb_underglow_effect {
     UNDERGLOW_EFFECT_NUMBER // Used to track number of underglow effects
 };
 
-struct rgb_underglow_state {
-    struct zmk_led_hsb color;
-    uint8_t animation_speed;
-    uint8_t current_effect;
-    uint16_t animation_step;
-    bool on;
-};
-
 static const struct device *led_strip;
 
 static struct led_rgb pixels[STRIP_NUM_PIXELS];
 
-static struct rgb_underglow_state state;
+static struct zmk_underglow_state state;
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
 static const struct device *const ext_power = DEVICE_DT_GET(DT_INST(0, zmk_ext_power_generic));
@@ -190,7 +183,8 @@ static void zmk_rgb_underglow_tick(struct k_work *work) {
         zmk_rgb_underglow_effect_swirl();
         break;
     }
-
+    if (state.animation_step == 0)
+        raise_zmk_underglow_state_changed((struct zmk_underglow_state_changed){.state = state});
     int err = led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
     if (err < 0) {
         LOG_ERR("Failed to update the RGB strip (%d)", err);
@@ -253,7 +247,7 @@ static int zmk_rgb_underglow_init(void) {
     }
 #endif
 
-    state = (struct rgb_underglow_state){
+    state = (struct zmk_underglow_state){
         color : {
             h : CONFIG_ZMK_RGB_UNDERGLOW_HUE_START,
             s : CONFIG_ZMK_RGB_UNDERGLOW_SAT_START,
@@ -277,10 +271,13 @@ static int zmk_rgb_underglow_init(void) {
         k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
     }
 
+    raise_zmk_underglow_state_changed((struct zmk_underglow_state_changed){.state = state});
+
     return 0;
 }
 
 int zmk_rgb_underglow_save_state(void) {
+    raise_zmk_underglow_state_changed((struct zmk_underglow_state_changed){.state = state});
 #if IS_ENABLED(CONFIG_SETTINGS)
     int ret = k_work_reschedule(&underglow_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
     return MIN(ret, 0);
