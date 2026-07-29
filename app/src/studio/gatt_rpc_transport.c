@@ -4,13 +4,25 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <zephyr/device.h>
-#include <zephyr/init.h>
+#include <errno.h>
 #include <sys/types.h>
-#include <zephyr/sys/atomic.h>
-#include <zephyr/kernel.h>
+
 #include <zephyr/bluetooth/gatt.h>
 #include <zephyr/sys/ring_buffer.h>
+
+#include "gatt_rpc_transport.h"
+
+#ifdef ZMK_STUDIO_GATT_RPC_RX_TEST
+
+struct ring_buf *zmk_rpc_get_rx_buf(void);
+void zmk_rpc_rx_notify(void);
+
+#else
+
+#include <zephyr/device.h>
+#include <zephyr/init.h>
+#include <zephyr/kernel.h>
+#include <zephyr/sys/atomic.h>
 
 #include <zmk/ble.h>
 #include <zmk/event_manager.h>
@@ -23,7 +35,20 @@
 
 LOG_MODULE_DECLARE(zmk_studio, CONFIG_ZMK_STUDIO_LOG_LEVEL);
 
+#endif /* ZMK_STUDIO_GATT_RPC_RX_TEST */
+
 static bool handling_rx = false;
+
+ssize_t zmk_studio_rpc_rx_write(struct ring_buf *rpc_buf, const uint8_t *buf, uint32_t len) {
+    if (ring_buf_space_get(rpc_buf) < len) {
+        return -ENOMEM;
+    }
+
+    uint32_t written = ring_buf_put(rpc_buf, buf, len);
+    return written == len ? (ssize_t)len : -EIO;
+}
+
+#ifndef ZMK_STUDIO_GATT_RPC_RX_TEST
 
 static K_SEM_DEFINE(indicate_sem, 1, 1);
 static atomic_t notify_size;
@@ -61,30 +86,40 @@ static ssize_t read_rpc_resp(struct bt_conn *conn, const struct bt_gatt_attr *at
     return 0;
 }
 
+#endif /* ZMK_STUDIO_GATT_RPC_RX_TEST */
+
 static ssize_t write_rpc_req(struct bt_conn *conn, const struct bt_gatt_attr *attr, const void *buf,
                              uint16_t len, uint16_t offset, uint8_t flags) {
+    if (offset != 0) {
+        return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
+    }
+
     if (!handling_rx) {
         return len;
     }
 
-    uint32_t copied = 0;
     struct ring_buf *rpc_buf = zmk_rpc_get_rx_buf();
-    while (copied < len) {
-        uint8_t *buffer;
-        uint32_t claim_len = ring_buf_put_claim(rpc_buf, &buffer, len - copied);
-
-        if (claim_len > 0) {
-            memcpy(buffer, ((uint8_t *)buf) + copied, claim_len);
-            copied += claim_len;
-        }
-
-        ring_buf_put_finish(rpc_buf, claim_len);
+    ssize_t ret = zmk_studio_rpc_rx_write(rpc_buf, buf, len);
+    if (ret < 0) {
+        return BT_GATT_ERR(BT_ATT_ERR_INSUFFICIENT_RESOURCES);
     }
 
     zmk_rpc_rx_notify();
 
-    return len;
+    return ret;
 }
+
+#ifdef CONFIG_ZTEST
+
+void zmk_studio_gatt_rpc_rx_set_active_for_test(bool active) { handling_rx = active; }
+
+ssize_t zmk_studio_gatt_rpc_rx_write_for_test(const void *buf, uint16_t len, uint16_t offset) {
+    return write_rpc_req(NULL, NULL, buf, len, offset, 0);
+}
+
+#endif /* CONFIG_ZTEST */
+
+#ifndef ZMK_STUDIO_GATT_RPC_RX_TEST
 
 BT_GATT_SERVICE_DEFINE(
     rpc_interface, BT_GATT_PRIMARY_SERVICE(BT_UUID_DECLARE_128(ZMK_STUDIO_BT_SERVICE_UUID)),
@@ -230,3 +265,5 @@ static int gatt_rpc_listener(const zmk_event_t *eh) {
 
 ZMK_LISTENER(gatt_rpc_listener, gatt_rpc_listener);
 ZMK_SUBSCRIPTION(gatt_rpc_listener, zmk_ble_active_profile_changed);
+
+#endif /* ZMK_STUDIO_GATT_RPC_RX_TEST */

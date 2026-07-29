@@ -1,0 +1,7 @@
+tests:
+  zmk.studio.gatt_rpc_rx:
+    platform_allow:
+      - native_sim
+    tags:
+      - zmk
+      - studio
