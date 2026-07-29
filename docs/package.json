@@ -66,6 +66,6 @@
     "string-replace-loader": "^3.3.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.65.0",
-    "webpack": "^5.109.1"
+    "webpack": "^5.109.2"
   }
 }
