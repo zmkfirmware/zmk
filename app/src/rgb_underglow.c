@@ -207,34 +207,48 @@ static void zmk_rgb_underglow_tick_handler(struct k_timer *timer) {
     k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &underglow_tick_work);
 }
 
-K_TIMER_DEFINE(underglow_tick, zmk_rgb_underglow_tick_handler, NULL);
+static void zmk_rgb_underglow_off_handler(struct k_work *work) {
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        pixels[i] = (struct led_rgb){r : 0, g : 0, b : 0};
+    }
+
+    led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
+}
+
+K_WORK_DEFINE(underglow_off_work, zmk_rgb_underglow_off_handler);
+
+static void zmk_rgb_underglow_tick_stop_handler(struct k_timer *timer) {
+
+    k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &underglow_off_work);
+}
+
+K_TIMER_DEFINE(underglow_tick, zmk_rgb_underglow_tick_handler, zmk_rgb_underglow_tick_stop_handler);
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_cb, void *cb_arg) {
     const char *next;
-    int rc;
 
     if (settings_name_steq(name, "state", &next) && !next) {
         if (len != sizeof(state)) {
             return -EINVAL;
         }
 
-        rc = read_cb(cb_arg, &state, sizeof(state));
-        if (rc >= 0) {
-            if (state.on) {
-                k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
-            }
-
-            return 0;
-        }
-
-        return rc;
+        return read_cb(cb_arg, &state, sizeof(state));
     }
 
     return -ENOENT;
 }
 
-SETTINGS_STATIC_HANDLER_DEFINE(rgb_underglow, "rgb/underglow", NULL, rgb_settings_set, NULL, NULL);
+static int rgb_settings_commit(void) {
+    if (state.on) {
+        k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(CONFIG_ZMK_RGB_UNDERGLOW_TICK_PERIOD_MS));
+    }
+
+    return 0;
+}
+
+SETTINGS_STATIC_HANDLER_DEFINE(rgb_underglow, "rgb/underglow", NULL, rgb_settings_set,
+                               rgb_settings_commit, NULL);
 
 static void zmk_rgb_underglow_save_state_work(struct k_work *_work) {
     settings_save_one("rgb/underglow/state", &state, sizeof(state));
@@ -273,9 +287,11 @@ static int zmk_rgb_underglow_init(void) {
     state.on = zmk_usb_is_powered();
 #endif
 
+#if !IS_ENABLED(CONFIG_SETTINGS)
     if (state.on) {
-        k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
+        k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(CONFIG_ZMK_RGB_UNDERGLOW_TICK_PERIOD_MS));
     }
+#endif
 
     return 0;
 }
@@ -312,20 +328,10 @@ int zmk_rgb_underglow_on(void) {
 
     state.on = true;
     state.animation_step = 0;
-    k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
+    k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(CONFIG_ZMK_RGB_UNDERGLOW_TICK_PERIOD_MS));
 
     return zmk_rgb_underglow_save_state();
 }
-
-static void zmk_rgb_underglow_off_handler(struct k_work *work) {
-    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
-        pixels[i] = (struct led_rgb){r : 0, g : 0, b : 0};
-    }
-
-    led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
-}
-
-K_WORK_DEFINE(underglow_off_work, zmk_rgb_underglow_off_handler);
 
 int zmk_rgb_underglow_off(void) {
     if (!led_strip)
@@ -340,10 +346,8 @@ int zmk_rgb_underglow_off(void) {
     }
 #endif
 
-    k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &underglow_off_work);
-
-    k_timer_stop(&underglow_tick);
     state.on = false;
+    k_timer_stop(&underglow_tick);
 
     return zmk_rgb_underglow_save_state();
 }
