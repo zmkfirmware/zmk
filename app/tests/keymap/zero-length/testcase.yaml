@@ -1,0 +1,7 @@
+tests:
+  zmk.keymap.zero_length:
+    platform_allow:
+      - native_sim
+    tags:
+      - zmk
+      - keymap

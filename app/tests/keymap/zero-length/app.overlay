@@ -1,0 +1,16 @@
+/ {
+    chosen {
+        zmk,matrix-transform = &zero_length_transform;
+    };
+
+    zero_length_transform: zero_length_transform {
+        compatible = "zmk,matrix-transform";
+        columns = <0>;
+        rows = <0>;
+        map = <>;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+    };
+};

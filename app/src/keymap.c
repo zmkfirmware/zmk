@@ -65,7 +65,9 @@ static zmk_keymap_layer_id_t _zmk_keymap_layer_default = 0;
 // When a behavior handles a key position "down" event, we record the layer state
 // here so that even if that layer is deactivated before the "up", event, we
 // still send the release event to the behavior in that layer also.
+#if ZMK_KEYMAP_LEN > 0
 static uint32_t zmk_keymap_active_behavior_layer[ZMK_KEYMAP_LEN];
+#endif
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
@@ -720,6 +722,13 @@ int zmk_keymap_apply_position_state(uint8_t source, zmk_keymap_layer_id_t layer_
 
 int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pressed,
                                       int64_t timestamp) {
+#if ZMK_KEYMAP_LEN == 0
+    ARG_UNUSED(source);
+    ARG_UNUSED(position);
+    ARG_UNUSED(pressed);
+    ARG_UNUSED(timestamp);
+    return -ENOTSUP;
+#else
     if (pressed) {
         zmk_keymap_active_behavior_layer[position] = _zmk_keymap_layer_state;
     }
@@ -749,6 +758,7 @@ int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pr
     }
 
     return -ENOTSUP;
+#endif
 }
 
 #if ZMK_KEYMAP_HAS_SENSORS
