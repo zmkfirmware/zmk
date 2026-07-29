@@ -11,15 +11,18 @@ Below is a summary of pre-defined behavior bindings and user-definable behaviors
 
 ## Key Press Behaviors
 
-| Binding       | Behavior                                      | Description                                                                                                                                                                                                                                       |
-| ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `&kp`         | [Key Press](key-press.md)                     | Send keycodes to the connected host when a key is pressed                                                                                                                                                                                         |
-| `&mt`         | [Mod Tap](hold-tap.mdx#mod-tap)               | Sends a different key press depending on whether a key is held or tapped                                                                                                                                                                          |
-| `&kt`         | [Key Toggle](key-toggle.md)                   | Toggles the press of a key. If the key is not currently pressed, key toggle will press it, holding it until the key toggle is pressed again or the key is released in some other way. If the key is currently pressed, key toggle will release it |
-| `&sk`         | [Sticky Key](sticky-key.md)                   | Stays pressed until another key is pressed, then is released. It is often used for modifier keys like shift, which allows typing capital letters without holding it down                                                                          |
-| `&gresc`      | [Grave Escape](mod-morph.md#behavior-binding) | Sends Grave Accent `` ` `` keycode if shift or GUI is held, sends Escape keycode otherwise                                                                                                                                                        |
-| `&caps_word`  | [Caps Word](caps-word.md)                     | Behaves similar to caps lock, but automatically deactivates when any key not in a continue list is pressed, or if the caps word key is pressed again                                                                                              |
-| `&key_repeat` | [Key Repeat](key-repeat.md)                   | Sends again whatever keycode was last sent                                                                                                                                                                                                        |
+| Binding       | Behavior                                             | Description                                                                                                                                                                                                                                       |
+| ------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `&kp`         | [Key Press](key-press.md)                            | Send keycodes to the connected host when a key is pressed or released                                                                                                                                                                             |
+| `&ktap`       | [Key Tap](key-press.md#key-tap)                      | Send keycodes to the connected host when a key is pressed                                                                                                                                                                                         |
+| `&mt`         | [Mod Tap](hold-tap.mdx#mod-tap)                      | Sends a different key press depending on whether a key is held or tapped                                                                                                                                                                          |
+| `&kt`         | [Key Toggle](key-toggle.md)                          | Toggles the press of a key. If the key is not currently pressed, key toggle will press it, holding it until the key toggle is pressed again or the key is released in some other way. If the key is currently pressed, key toggle will release it |
+| `&kt_on`      | [Key Toggle](key-toggle.md#toggle-on-and-toggle-off) | Toggles on a key (sends keycode press event) on press                                                                                                                                                                                             |
+| `&kt_off`     | [Key Toggle](key-toggle.md#toggle-on-and-toggle-off) | Toggles off a key (sends keycode release event) on press                                                                                                                                                                                          |
+| `&sk`         | [Sticky Key](sticky-key.md)                          | Stays pressed until another key is pressed, then is released. It is often used for modifier keys like shift, which allows typing capital letters without holding it down                                                                          |
+| `&gresc`      | [Grave Escape](mod-morph.md#behavior-binding)        | Sends Grave Accent `` ` `` keycode if shift or GUI is held, sends Escape keycode otherwise                                                                                                                                                        |
+| `&caps_word`  | [Caps Word](caps-word.md)                            | Behaves similar to caps lock, but automatically deactivates when any key not in a continue list is pressed, or if the caps word key is pressed again                                                                                              |
+| `&key_repeat` | [Key Repeat](key-repeat.md)                          | Sends again whatever keycode was last sent                                                                                                                                                                                                        |
 
 ## Miscellaneous Behaviors
 
@@ -30,13 +33,15 @@ Below is a summary of pre-defined behavior bindings and user-definable behaviors
 
 ## Layer Navigation Behaviors
 
-| Binding | Behavior                                     | Description                                                                                              |
-| ------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `&mo`   | [Momentary Layer](layers.md#momentary-layer) | Enables a layer while a key is pressed                                                                   |
-| `&lt`   | [Layer-tap](layers.md#layer-tap)             | Enables a layer when a key is held, and outputs a key press when the key is only tapped for a short time |
-| `&to`   | [To Layer](layers.md#to-layer)               | Enables a layer and disables all other layers except the default layer                                   |
-| `&tog`  | [Toggle Layer](layers.md#toggle-layer)       | Enables a layer until the layer is manually disabled                                                     |
-| `&sl`   | [Sticky Layer](sticky-layer.md)              | Activates a layer until another key is pressed, then deactivates it                                      |
+| Binding    | Behavior                                           | Description                                                                                              |
+| ---------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `&mo`      | [Momentary Layer](layers.md#momentary-layer)       | Enables a layer while a key is pressed                                                                   |
+| `&lt`      | [Layer-tap](layers.md#layer-tap)                   | Enables a layer when a key is held, and outputs a key press when the key is only tapped for a short time |
+| `&to`      | [To Layer](layers.md#to-layer)                     | Enables a layer and disables all other layers except the default layer                                   |
+| `&tog`     | [Toggle Layer](layers.md#toggle-layer)             | Enables a layer until the layer is manually disabled                                                     |
+| `&tog_on`  | [Toggle Layer](layers.md#toggle-on-and-toggle-off) | Enables a layer even if the layer is already enabled                                                     |
+| `&tog_off` | [Toggle Layer](layers.md#toggle-on-and-toggle-off) | Disables a layer even if the layer is already disabled                                                   |
+| `&sl`      | [Sticky Layer](sticky-layer.md)                    | Activates a layer until another key is pressed, then deactivates it                                      |
 
 ## Mouse Emulation Behaviors
 

@@ -192,6 +192,25 @@ Parameterized macros must be defined using specific values for the `compatible` 
 };
 ```
 
+An example of a simple parameterized macro is `&ktap`, which is defined as:
+
+```dts
+/ {
+    macros {
+        ktap: key_tap {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            display-name = "Key Tap";
+            bindings = <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+            tap-ms = <30>;
+        };
+    };
+};
+
+```
+
+This behavior is already pre-defined as `&ktap`, so you don't need to define it in your keymap to use it.
+
 ### Parameters, Bindings and Controls
 
 There are special macro controls which must be used in order to forward received parameters to the macro's `bindings`. These controls are "one shot" and will determine how received parameters are used on the very next (non-macro control) behavior in the macro's `bindings` list.
