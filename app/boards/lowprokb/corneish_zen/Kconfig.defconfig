@@ -33,6 +33,13 @@ config USB_NRFX
 config USB_DEVICE_STACK
     default y
 
+# The Zen board has no VBUS detection.  When the USB cable is
+# unplugged, the nRF52840 reports USB_DC_SUSPEND, which ZMK treats as
+# "still connected."  A 2-second timeout causes the keyboard to fall
+# back to BLE after cable disconnect.
+config ZMK_USB_SUSPEND_DISCONNECT_TIMEOUT_MS
+    default 2000
+
 endif # USB
 
 config ZMK_DISPLAY
