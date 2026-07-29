@@ -16,6 +16,7 @@
 #include <zmk/activity.h>
 #include <zmk/backlight.h>
 #include <zmk/usb.h>
+#include <zmk/workqueue.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
@@ -107,7 +108,8 @@ static int zmk_backlight_update_and_save(void) {
     }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
-    int ret = k_work_reschedule(&backlight_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
+    int ret = k_work_reschedule_for_queue(zmk_main_work_q(), &backlight_save_work,
+                                          K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
     return MIN(ret, 0);
 #else
     return 0;

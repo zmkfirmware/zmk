@@ -19,6 +19,7 @@
 #include <zmk/events/modifiers_state_changed.h>
 #include <zmk/hid.h>
 #include <zmk/keymap.h>
+#include <zmk/workqueue.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -201,7 +202,7 @@ static int on_sticky_key_binding_released(struct zmk_behavior_binding *binding,
     // adjust timer in case this behavior was queued by a hold-tap
     int32_t ms_left = sticky_key->release_at - k_uptime_get();
     if (ms_left > 0) {
-        k_work_schedule(&sticky_key->release_timer, K_MSEC(ms_left));
+        k_work_schedule_for_queue(zmk_main_work_q(), &sticky_key->release_timer, K_MSEC(ms_left));
     }
     return ZMK_BEHAVIOR_OPAQUE;
 }

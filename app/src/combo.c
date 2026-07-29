@@ -22,6 +22,7 @@
 #include <zmk/matrix.h>
 #include <zmk/keymap.h>
 #include <zmk/virtual_key_position.h>
+#include <zmk/workqueue.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -413,7 +414,8 @@ static void update_timeout_task() {
         k_work_cancel_delayable(&timeout_task);
         return;
     }
-    if (k_work_schedule(&timeout_task, K_MSEC(first_timeout - k_uptime_get())) >= 0) {
+    if (k_work_schedule_for_queue(zmk_main_work_q(), &timeout_task,
+                                  K_MSEC(first_timeout - k_uptime_get())) >= 0) {
         timeout_task_timeout_at = first_timeout;
     }
 }
