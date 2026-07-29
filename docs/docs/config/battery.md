@@ -53,9 +53,11 @@ Driver for reading the voltage of a battery using an ADC connected to a voltage 
 
 ### Devicetree
 
-Applies to: `compatible = "zmk,battery-voltage-divider"`
+Applies to: `compatible = "voltage-divider"`
 
 See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/4.1.0/build/dts/api/bindings/iio/afe/voltage-divider.html).
+
+Make sure to setup the ADC and set `CONFIG_ZMK_BATTERY_REPORTING_FETCH_MODE_LITHIUM_VOLTAGE=y`.
 
 ## nRF VDDH Battery Sensor
 
