@@ -66,6 +66,7 @@ enum zmk_split_transport_central_command_type {
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_INVOKE_BEHAVIOR,
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_PHYSICAL_LAYOUT,
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS,
+    ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT_STATE,
 } __packed;
 
 struct zmk_split_transport_central_command {
@@ -87,5 +88,14 @@ struct zmk_split_transport_central_command {
         struct {
             zmk_hid_indicators_t indicators;
         } set_hid_indicators;
+
+        // The selected endpoint and the preferred transport of the central. A
+        // peripheral has no endpoints of its own and cannot derive either of them.
+        // Held as bytes rather than as enum zmk_transport, which is not packed.
+        struct {
+            uint8_t transport;
+            uint8_t ble_profile_index; // Only meaningful when transport is BLE.
+            uint8_t preferred_transport;
+        } __packed set_endpoint_state;
     } data;
 } __packed;
