@@ -7,6 +7,7 @@
 #pragma once
 
 #include <zephyr/bluetooth/addr.h>
+#include <zmk/battery.h>
 #include <zmk/behavior.h>
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE)
@@ -44,5 +45,8 @@ int zmk_split_central_update_hid_indicator(zmk_hid_indicators_t indicators);
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
 
 int zmk_split_central_get_peripheral_battery_level(uint8_t source, uint8_t *level);
+
+int zmk_split_central_get_peripheral_charge_state(uint8_t source,
+                                                  enum zmk_battery_charge_state *state);
 
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)

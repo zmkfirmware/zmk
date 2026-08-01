@@ -48,6 +48,7 @@ struct battery_part {
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
 static uint8_t lowest_state_of_charge = 0;
+static enum zmk_battery_charge_state lowest_charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
@@ -247,9 +248,12 @@ static void zmk_update_lowest_charge_work(struct k_work *work) {
     ARG_UNUSED(work);
 
     uint8_t new_lowest_level = UINT8_MAX;
+    // Tracks whichever part reports the lowest level, so both describe one battery.
+    enum zmk_battery_charge_state new_lowest_charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
 
     if (!battery_parts[BAS_CENTRAL_INDEX].hidden) {
         new_lowest_level = zmk_battery_state_of_charge();
+        new_lowest_charge_state = zmk_battery_charge_state();
     }
 
     for (size_t i = 0; i < CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS; i++) {
@@ -263,18 +267,26 @@ static void zmk_update_lowest_charge_work(struct k_work *work) {
         }
         if (level != 0 && level < new_lowest_level) {
             new_lowest_level = level;
+
+            enum zmk_battery_charge_state charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
+            zmk_split_central_get_peripheral_charge_state(i, &charge_state);
+            new_lowest_charge_state = charge_state;
         }
     }
 
     if (new_lowest_level == UINT8_MAX) {
         new_lowest_level = 0;
+        new_lowest_charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
         LOG_DBG("No valid battery levels found, setting lowest to 0");
     }
 
-    if (new_lowest_level != lowest_state_of_charge) {
+    if (new_lowest_level != lowest_state_of_charge ||
+        new_lowest_charge_state != lowest_charge_state) {
         lowest_state_of_charge = new_lowest_level;
+        lowest_charge_state = new_lowest_charge_state;
 
-        LOG_DBG("Lowest state of charge: %d", lowest_state_of_charge);
+        LOG_DBG("Lowest state of charge: %d (charge state %d)", lowest_state_of_charge,
+                lowest_charge_state);
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
         int rc = bt_gatt_notify(NULL, &abas_lowest.attrs[2], &lowest_state_of_charge,
@@ -285,7 +297,7 @@ static void zmk_update_lowest_charge_work(struct k_work *work) {
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
-        zmk_hid_battery_set(0, lowest_state_of_charge);
+        zmk_hid_battery_set(0, lowest_state_of_charge, lowest_charge_state);
         zmk_usb_hid_send_battery_report();
 #endif
     }
@@ -332,7 +344,8 @@ int peripheral_batt_report_lvl_listener(const zmk_event_t *eh) {
     // Peripheral index 0 -> battery_index 1, peripheral 1 -> battery_index 2, etc.
     LOG_DBG("Peripheral %d battery HID report: level=%d battery_index=%d", ev->source,
             ev->state_of_charge, ev->source + BAS_PERIPHERAL_INDEX_OFFSET);
-    zmk_hid_battery_set(ev->source + BAS_PERIPHERAL_INDEX_OFFSET, ev->state_of_charge);
+    zmk_hid_battery_set(ev->source + BAS_PERIPHERAL_INDEX_OFFSET, ev->state_of_charge,
+                        ev->charge_state);
     zmk_usb_hid_send_battery_report_by_index(ev->source + BAS_PERIPHERAL_INDEX_OFFSET);
 #endif
 
@@ -378,7 +391,7 @@ int central_batt_state_changed_listener(const zmk_event_t *eh) {
     // Note: If central has no battery sensor, this event won't be raised at all
     LOG_DBG("Central battery HID report: level=%d battery_index=%d", ev->state_of_charge,
             BAS_CENTRAL_INDEX);
-    zmk_hid_battery_set(BAS_CENTRAL_INDEX, ev->state_of_charge);
+    zmk_hid_battery_set(BAS_CENTRAL_INDEX, ev->state_of_charge, ev->charge_state);
     zmk_usb_hid_send_battery_report_by_index(BAS_CENTRAL_INDEX);
 #endif
 

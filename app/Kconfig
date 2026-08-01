@@ -404,6 +404,17 @@ config ZMK_BATTERY_REPORTING_USB
     bool "Report Battery Level over USB HID"
     depends on ZMK_USB
 
+config ZMK_BATTERY_CHARGE_STATUS
+    bool "Report whether the battery is charging"
+    default y
+    depends on DT_HAS_ZMK_BATTERY_CHARGE_STATUS_ENABLED
+    select BT_BAS_BLS if BT_BAS
+    help
+      Reads the status output of the board's battery charger to report whether
+      the battery is charging, using the zmk,battery-charge-status devicetree
+      node. Without such a node there is no way to know, and the charge state
+      is reported as unknown.
+
 if ZMK_SPLIT_ROLE_CENTRAL
 
 config ZMK_BATTERY_REPORTING_SPLIT_FETCHING

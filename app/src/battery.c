@@ -31,6 +31,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/workqueue.h>
 
 static uint8_t last_state_of_charge = 0;
+static enum zmk_battery_charge_state last_charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
 
 uint8_t zmk_battery_state_of_charge(void) { return last_state_of_charge; }
 
@@ -99,16 +100,19 @@ static int zmk_battery_update(const struct device *battery) {
 #error "Not a supported reporting fetch mode"
 #endif
 
-    if (last_state_of_charge != state_of_charge.val1) {
+    const enum zmk_battery_charge_state charge_state = zmk_battery_charge_state();
+
+    if (last_state_of_charge != state_of_charge.val1 || last_charge_state != charge_state) {
         last_state_of_charge = state_of_charge.val1;
+        last_charge_state = charge_state;
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
-        zmk_hid_battery_set(0, last_state_of_charge);
+        zmk_hid_battery_set(0, last_state_of_charge, last_charge_state);
         zmk_usb_hid_send_battery_report();
 #endif
 
-        rc = raise_zmk_battery_state_changed(
-            (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge});
+        rc = raise_zmk_battery_state_changed((struct zmk_battery_state_changed){
+            .state_of_charge = last_state_of_charge, .charge_state = last_charge_state});
     }
 
 #if IS_ENABLED(CONFIG_BT_BAS)
@@ -139,6 +143,14 @@ static void zmk_battery_work(struct k_work *work) {
 
 K_WORK_DEFINE(battery_work, zmk_battery_work);
 
+void zmk_battery_update_now(void) {
+    if (!device_is_ready(battery)) {
+        return;
+    }
+
+    k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &battery_work);
+}
+
 static void zmk_battery_timer(struct k_timer *timer) {
     k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &battery_work);
 }
@@ -150,6 +162,25 @@ static void zmk_battery_start_reporting() {
         k_timer_start(&battery_timer, K_NO_WAIT, K_SECONDS(CONFIG_ZMK_BATTERY_REPORT_INTERVAL));
     }
 }
+
+#if IS_ENABLED(CONFIG_BT_BAS_BLS)
+
+static enum bt_bas_bls_battery_charge_state
+zmk_charge_state_to_bls(enum zmk_battery_charge_state state) {
+    switch (state) {
+    case ZMK_BATTERY_CHARGE_STATE_CHARGING:
+        return BT_BAS_BLS_CHARGE_STATE_CHARGING;
+    case ZMK_BATTERY_CHARGE_STATE_DISCHARGING:
+        return BT_BAS_BLS_CHARGE_STATE_DISCHARGING_ACTIVE;
+    case ZMK_BATTERY_CHARGE_STATE_FULL:
+        // Closest the characteristic gets to charged and not draining.
+        return BT_BAS_BLS_CHARGE_STATE_DISCHARGING_INACTIVE;
+    default:
+        return BT_BAS_BLS_CHARGE_STATE_UNKNOWN;
+    }
+}
+
+#endif // IS_ENABLED(CONFIG_BT_BAS_BLS)
 
 static int zmk_battery_init(void) {
 #if !DT_HAS_CHOSEN(zmk_battery)
@@ -166,6 +197,11 @@ static int zmk_battery_init(void) {
         LOG_ERR("Battery device \"%s\" is not ready", battery->name);
         return -ENODEV;
     }
+
+#if IS_ENABLED(CONFIG_BT_BAS_BLS)
+    bt_bas_bls_set_battery_present(BT_BAS_BLS_BATTERY_PRESENT);
+    bt_bas_bls_set_battery_charge_state(zmk_charge_state_to_bls(zmk_battery_charge_state()));
+#endif
 
     zmk_battery_start_reporting();
     return 0;
@@ -192,5 +228,25 @@ static int battery_event_listener(const zmk_event_t *eh) {
 ZMK_LISTENER(battery, battery_event_listener);
 
 ZMK_SUBSCRIPTION(battery, zmk_activity_state_changed);
+
+#if IS_ENABLED(CONFIG_BT_BAS_BLS)
+
+// How a peripheral hands its charge state to the central.
+static int battery_charge_state_listener(const zmk_event_t *eh) {
+    const struct zmk_battery_state_changed *ev = as_zmk_battery_state_changed(eh);
+    if (ev == NULL) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+
+    bt_bas_bls_set_battery_charge_state(zmk_charge_state_to_bls(ev->charge_state));
+
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(battery_charge_state, battery_charge_state_listener);
+
+ZMK_SUBSCRIPTION(battery_charge_state, zmk_battery_state_changed);
+
+#endif // IS_ENABLED(CONFIG_BT_BAS_BLS)
 
 SYS_INIT(zmk_battery_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);

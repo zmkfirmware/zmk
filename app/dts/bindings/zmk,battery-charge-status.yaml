@@ -1,0 +1,53 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Reports whether the battery is charging, by reading the status output(s) of a
+  battery charger IC.
+
+  The charger ICs used on wireless keyboards expose one or two open drain status
+  pins that are pulled low to signal a state, so they are normally described
+  with GPIO_ACTIVE_LOW, and need a pull up if the board does not have one.
+
+  A charger with a single status pin, such as the MCP73831, cannot distinguish
+  "charge complete" from "no power applied":
+
+      charge_status {
+          compatible = "zmk,battery-charge-status";
+          charging-gpios = <&gpio0 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+      };
+
+  A charger with a separate charge complete output, such as the TP4056, can:
+
+      charge_status {
+          compatible = "zmk,battery-charge-status";
+          charging-gpios = <&gpio0 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+          full-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+      };
+
+compatible: "zmk,battery-charge-status"
+
+properties:
+  charging-gpios:
+    type: phandle-array
+    required: true
+    description: |
+      Charge status output of the charger, asserted while the battery is
+      charging. This is the STAT pin on a MCP73831, or the CHRG pin on a TP4056.
+
+  full-gpios:
+    type: phandle-array
+    required: false
+    description: |
+      Charge complete output of the charger, asserted once charging has
+      finished. This is the STDBY pin on a TP4056. Leave unset on chargers that
+      do not have a separate charge complete output, in which case a battery
+      that is not charging is reported as discharging.
+
+  debounce-ms:
+    type: int
+    default: 100
+    description: |
+      Time to wait for the status pins to settle before reporting a change.
+      Charger status outputs can toggle repeatedly as the charge current
+      approaches the termination threshold.
