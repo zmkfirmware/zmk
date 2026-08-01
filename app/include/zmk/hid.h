@@ -11,6 +11,7 @@
 #include <zephyr/usb/usb_device.h>
 #include <zephyr/usb/class/usb_hid.h>
 
+#include <zmk/battery.h>
 #include <zmk/keys.h>
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 #include <zmk/pointing.h>
@@ -411,7 +412,8 @@ void zmk_hid_mouse_clear(void);
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
-void zmk_hid_battery_set(uint8_t battery_index, uint8_t battery_level);
+void zmk_hid_battery_set(uint8_t battery_index, uint8_t battery_level,
+                         enum zmk_battery_charge_state charge_state);
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void);

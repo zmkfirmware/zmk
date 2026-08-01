@@ -94,6 +94,7 @@ target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/behaviors/behavior_bac
 if(CONFIG_ZMK_BATTERY_REPORTING)
   target_sources(app PRIVATE src/events/battery_state_changed.c)
   target_sources(app PRIVATE src/battery.c)
+  target_sources_ifdef(CONFIG_ZMK_BATTERY_CHARGE_STATUS app PRIVATE src/battery_charge_status.c)
   target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_PROXY app PRIVATE src/battery_reporting.c)
 endif()
 

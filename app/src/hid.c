@@ -488,7 +488,8 @@ void zmk_hid_mouse_clear(void) {
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
 
-void zmk_hid_battery_set(uint8_t battery_index, uint8_t battery_level) {
+void zmk_hid_battery_set(uint8_t battery_index, uint8_t battery_level,
+                         enum zmk_battery_charge_state charge_state) {
     if (battery_index >= ZMK_HID_MAX_BATTERIES) {
         LOG_ERR("Invalid battery index: %d", battery_index);
         return;
@@ -496,10 +497,11 @@ void zmk_hid_battery_set(uint8_t battery_index, uint8_t battery_level) {
     if (battery_level > 100) {
         battery_level = 100;
     }
-    LOG_DBG("Battery set: idx=%d level=%d", battery_index, battery_level);
+    LOG_DBG("Battery set: idx=%d level=%d charge_state=%d", battery_index, battery_level,
+            charge_state);
     battery_reports[battery_index].battery_level = battery_level;
-    // Charging status set to 0 (not charging) - waiting for Zephyr 4.0+ BAS BLS support
-    battery_reports[battery_index].charging = 0;
+    battery_reports[battery_index].charging =
+        (charge_state == ZMK_BATTERY_CHARGE_STATE_CHARGING) ? 1 : 0;
 }
 
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)

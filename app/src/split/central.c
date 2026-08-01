@@ -26,6 +26,8 @@ const struct zmk_split_transport_central *active_transport;
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
 
 static uint8_t peripheral_battery_levels[ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT] = {0};
+static enum zmk_battery_charge_state peripheral_charge_states[ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT] =
+    {ZMK_BATTERY_CHARGE_STATE_UNKNOWN};
 
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
 
@@ -58,8 +60,10 @@ int zmk_split_transport_central_peripheral_event_handler(
         struct zmk_peripheral_battery_state_changed battery_ev = {
             .source = source,
             .state_of_charge = ev.data.battery_event.level,
+            .charge_state = (enum zmk_battery_charge_state)ev.data.battery_event.charge_state,
         };
         peripheral_battery_levels[source] = ev.data.battery_event.level;
+        peripheral_charge_states[source] = battery_ev.charge_state;
         return raise_zmk_peripheral_battery_state_changed(battery_ev);
     }
 #endif
@@ -158,6 +162,16 @@ int zmk_split_central_get_peripheral_battery_level(uint8_t source, uint8_t *leve
     }
 
     *level = peripheral_battery_levels[source];
+    return 0;
+}
+
+int zmk_split_central_get_peripheral_charge_state(uint8_t source,
+                                                  enum zmk_battery_charge_state *state) {
+    if (source >= ARRAY_SIZE(peripheral_charge_states)) {
+        return -EINVAL;
+    }
+
+    *state = peripheral_charge_states[source];
     return 0;
 }
 

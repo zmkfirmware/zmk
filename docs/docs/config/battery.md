@@ -15,6 +15,9 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | ------------------------------------ | ---- | ------------------------------------------------------ | ------- |
 | `CONFIG_ZMK_BATTERY_REPORTING`       | bool | Enables/disables all battery level detection/reporting | n       |
 | `CONFIG_ZMK_BATTERY_REPORT_INTERVAL` | int  | Battery level report interval in seconds               | 60      |
+| `CONFIG_ZMK_BATTERY_CHARGE_STATUS`   | bool | Report whether the battery is charging                 | y       |
+
+`CONFIG_ZMK_BATTERY_CHARGE_STATUS` requires a [charge status node](#battery-charge-status) in your devicetree, and has no effect without one.
 
 :::note[Default setting]
 
@@ -56,6 +59,51 @@ Driver for reading the voltage of a battery using an ADC connected to a voltage 
 Applies to: `compatible = "zmk,battery-voltage-divider"`
 
 See [Zephyr's voltage divider documentation](https://docs.zephyrproject.org/4.1.0/build/dts/api/bindings/iio/afe/voltage-divider.html).
+
+## Battery Charge Status
+
+Reports whether the battery is charging, by reading the status output(s) of the board's battery charger IC.
+
+A battery sensor only measures how full the battery is, which cannot tell you whether it is currently being charged. That has to come from the charger, so this requires a board that routes a charger status pin to a GPIO the MCU can read. Many keyboard boards do not, in which case the charge state is reported as unknown.
+
+### Devicetree
+
+Applies to: `compatible = "zmk,battery-charge-status"`
+
+Definition file: [zmk/app/dts/bindings/zmk,battery-charge-status.yaml](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/zmk%2Cbattery-charge-status.yaml)
+
+| Property         | Type       | Description                                                 | Default |
+| ---------------- | ---------- | ----------------------------------------------------------- | ------- |
+| `charging-gpios` | GPIO array | Charger output asserted while the battery is charging       |         |
+| `full-gpios`     | GPIO array | Charger output asserted once charging has finished          |         |
+| `debounce-ms`    | int        | Time to wait for the status pins to settle before reporting | 100     |
+
+Charger status pins are usually open drain and pulled low to signal a state, so they are normally described with `GPIO_ACTIVE_LOW`, plus `GPIO_PULL_UP` if the board has no external pull up.
+
+A charger with a single status pin, such as the MCP73831, cannot distinguish "charge complete" from "no power applied", so leave `full-gpios` unset and a battery that is not charging is reported as discharging:
+
+```dts
+/ {
+    charge_status {
+        compatible = "zmk,battery-charge-status";
+        charging-gpios = <&gpio0 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    };
+};
+```
+
+A charger with a separate charge complete output, such as the TP4056, can report both:
+
+```dts
+/ {
+    charge_status {
+        compatible = "zmk,battery-charge-status";
+        charging-gpios = <&gpio0 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        full-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    };
+};
+```
+
+On a split keyboard each half reads its own charger, and peripherals send their charge state to the central over the Battery Level Status characteristic. A peripheral built without a charge status node simply never reports one.
 
 ## nRF VDDH Battery Sensor
 
