@@ -49,7 +49,6 @@ module.exports = {
     path.resolve(__dirname, "src/hardware-metadata-collection-plugin"),
     path.resolve(__dirname, "src/hardware-metadata-static-plugin"),
     path.resolve(__dirname, "src/hardware-schema-typescript-plugin"),
-    path.resolve(__dirname, "src/setup-script-generation-plugin"),
   ],
   themeConfig: {
     colorMode: {
@@ -153,10 +152,6 @@ module.exports = {
               label: "Mastodon",
               href: "https://fosstodon.org/@zmk",
             },
-            {
-              label: "Twitter",
-              href: "https://twitter.com/ZMKFirmware",
-            },
           ],
         },
         {
@@ -202,12 +197,12 @@ module.exports = {
           // It is recommended to set document id as docs home page (`docs/` path).
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl: "https://github.com/zmkfirmware/zmk/edit/main/docs/",
+          editUrl: "https://github.com/zmkfirmware/zmk/blob/main/docs/",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: "https://github.com/zmkfirmware/zmk/edit/main/docs/",
+          editUrl: "https://github.com/zmkfirmware/zmk/blob/main/docs/",
           blogSidebarCount: "ALL",
         },
         theme: {

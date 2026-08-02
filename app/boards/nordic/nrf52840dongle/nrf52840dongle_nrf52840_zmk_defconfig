@@ -1,0 +1,29 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+# Enable MPU
+CONFIG_ARM_MPU=y
+
+# Enable hardware stack protection
+CONFIG_HW_STACK_PROTECTION=y
+
+# enable GPIO
+CONFIG_GPIO=y
+
+# Board Kconfig.defconfig enables USB CDC ACM and should disable USB remote
+# wakeup by default. It needs to be disabled here, because the USB nrfx
+# driver always overwrites option from Kconfig mentioned above with the
+# imply from CONFIG_USB_NRFX.
+CONFIG_USB_DEVICE_REMOTE_WAKEUP=n
+
+# HID Transports
+CONFIG_ZMK_BLE=y
+CONFIG_ZMK_USB=y
+
+# Settings options
+CONFIG_MPU_ALLOW_FLASH_WRITE=y
+CONFIG_NVS=y
+CONFIG_SETTINGS_NVS=y
+CONFIG_FLASH=y
+CONFIG_FLASH_PAGE_LAYOUT=y
+CONFIG_FLASH_MAP=y

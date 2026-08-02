@@ -1,0 +1,5 @@
+board:
+  extend: nrf52840dongle
+  variants:
+    - name: zmk
+      qualifier: nrf52840

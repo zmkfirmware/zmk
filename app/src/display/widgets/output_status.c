@@ -22,25 +22,43 @@ static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
 struct output_status_state {
     struct zmk_endpoint_instance selected_endpoint;
+    enum zmk_transport preferred_transport;
     bool active_profile_connected;
     bool active_profile_bonded;
 };
 
 static struct output_status_state get_state(const zmk_event_t *_eh) {
-    return (struct output_status_state){.selected_endpoint = zmk_endpoints_selected(),
-                                        .active_profile_connected =
-                                            zmk_ble_active_profile_is_connected(),
-                                        .active_profile_bonded = !zmk_ble_active_profile_is_open()};
-    ;
+    return (struct output_status_state){
+        .selected_endpoint = zmk_endpoint_get_selected(),
+        .preferred_transport = zmk_endpoint_get_preferred_transport(),
+        .active_profile_connected = zmk_ble_active_profile_is_connected(),
+        .active_profile_bonded = !zmk_ble_active_profile_is_open(),
+    };
 }
 
 static void set_status_symbol(lv_obj_t *label, struct output_status_state state) {
     char text[20] = {};
 
-    switch (state.selected_endpoint.transport) {
+    enum zmk_transport transport = state.selected_endpoint.transport;
+    bool connected = transport != ZMK_TRANSPORT_NONE;
+
+    // If we aren't connected, show what we're *trying* to connect to.
+    if (!connected) {
+        transport = state.preferred_transport;
+    }
+
+    switch (transport) {
+    case ZMK_TRANSPORT_NONE:
+        strcat(text, LV_SYMBOL_CLOSE);
+        break;
+
     case ZMK_TRANSPORT_USB:
         strcat(text, LV_SYMBOL_USB);
+        if (!connected) {
+            strcat(text, " " LV_SYMBOL_CLOSE);
+        }
         break;
+
     case ZMK_TRANSPORT_BLE:
         if (state.active_profile_bonded) {
             if (state.active_profile_connected) {

@@ -1,0 +1,8 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Layer Mover Behavior
+
+compatible: "zmk,behavior-move-layer"
+
+include: two_param.yaml

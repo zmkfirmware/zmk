@@ -1,0 +1,5 @@
+# Copyright (c) 2020 Pete Johanson
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_PROTON_C
+    select SOC_STM32F303XC

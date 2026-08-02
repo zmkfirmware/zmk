@@ -13,11 +13,12 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ### General
 
-| Config                      | Type   | Description                                  | Default |
-| --------------------------- | ------ | -------------------------------------------- | ------- |
-| `CONFIG_ZMK_KEYBOARD_NAME`  | string | The name of the keyboard (max 16 characters) |         |
-| `CONFIG_ZMK_WPM`            | bool   | Enable calculating words per minute          | n       |
-| `CONFIG_HEAP_MEM_POOL_SIZE` | int    | Size of the heap memory pool                 | 8192    |
+| Config                      | Type   | Description                                                                                                                                    | Default |
+| --------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_BOARD_COMPAT`   | bool   | A special config for boards to enable. This helps check if users have accidentally used an upstream Zephyr board without ZMK additions applied | n       |
+| `CONFIG_ZMK_KEYBOARD_NAME`  | string | The name of the keyboard (max 16 characters)                                                                                                   |         |
+| `CONFIG_ZMK_WPM`            | bool   | Enable calculating words per minute                                                                                                            | n       |
+| `CONFIG_HEAP_MEM_POOL_SIZE` | int    | Size of the heap memory pool                                                                                                                   | 8192    |
 
 :::info
 
@@ -120,13 +121,6 @@ Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the s
 | `CONFIG_ZMK_USB_LOGGING` | bool | Enable USB CDC ACM logging for debugging | n       |
 | `CONFIG_ZMK_LOG_LEVEL`   | int  | Log level for ZMK debug messages         | 4       |
 
-### Double Tap To Bootloader
-
-| Config                                     | Type | Description                                                         | Default                     |
-| ------------------------------------------ | ---- | ------------------------------------------------------------------- | --------------------------- |
-| `CONFIG_ZMK_DBL_TAP_BOOTLOADER`            | bool | Enable the double-tap to enter bootloader functionality             | y if STM32 or RP2040/RP2350 |
-| `CONFIG_ZMK_DBL_TAP_BOOTLOADER_TIMEOUT_MS` | int  | Duration (in ms) to wait for a second reset to enter the bootloader | 500                         |
-
 ## Snippets
 
 :::danger
@@ -144,7 +138,7 @@ Re-flashing a bootloader built without the SoftDevice will require firmware buil
 Enable snippets by adding `snippet: <snippet>` to your `build.yaml` for the appropriate board:
 
 ```yaml
-- board: nrfmicro_13_52833
+- board: nrfmicro@1.3.0/nrf52833
   snippet: nrf52833-nosd
   shield: corne_left
 ```
@@ -152,7 +146,7 @@ Enable snippets by adding `snippet: <snippet>` to your `build.yaml` for the appr
 For local builds, add `-S <snippet>` to your build command. For example:
 
 ```sh
-west build -b nrfmicro_13_52833 -S nrf52833-nosd -- -DSHIELD=corne_left
+west build -b nrfmicro@1.3.0/nrf52833 -S nrf52833-nosd -- -DSHIELD=corne_left
 ```
 
 ZMK implements the following system configuration snippets:

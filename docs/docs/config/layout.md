@@ -11,7 +11,7 @@ Defines a mapping from keymap logical positions to physical [kscan](./kscan.md) 
 
 You can define multiple matrix transform nodes, one for each layout, and users can select which one they want from the `/chosen` node in their keymaps.
 
-See the [new shield guide](../development/hardware-integration/new-shield.mdx#matrix-transform) for more documentation on how to define a matrix transform.
+See the [new shield guide](../hardware-integration/new-shield.mdx#matrix-transform) for more documentation on how to define a matrix transform.
 
 ### Devicetree
 
@@ -174,7 +174,7 @@ Note that the entire addressable space does not need to be mapped.
 
 Defines a keyboard layout by joining together a [matrix transform](#matrix-transform), a [keyboard scan](./kscan.md), and a list of physical key properties.
 Multiple physical layouts can be defined for keyboards with multiple physical key layouts.
-Read through the [page on physical layouts](../development/hardware-integration/physical-layouts.md) for more information.
+Read through the [page on physical layouts](../hardware-integration/physical-layouts.md) for more information.
 
 ### Devicetree
 
@@ -211,7 +211,7 @@ The `key_physical_attrs` node is defined in [`dts/physical_layouts.dtsi`](https:
 
 ## Physical Layout Position Map
 
-Defines a mapping between [physical layouts](#physical-layout), allowing key mappings to be preserved in the same locations as previously when using [ZMK Studio](../features/studio.md). Read through the [page on physical layouts](../development/hardware-integration/physical-layouts.md) for more information.
+Defines a mapping between [physical layouts](#physical-layout), allowing key mappings to be preserved in the same locations as previously when using [ZMK Studio](../features/studio.md). Read through the [page on physical layouts](../hardware-integration/physical-layouts.md) for more information.
 
 ### Devicetree
 

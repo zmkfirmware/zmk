@@ -1,0 +1,8 @@
+tog_pressed: position 1 layer 1
+layer_changed: layer 1 state 1 locked 1
+remove_layer: Removed layer at index 0
+pressed: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+released: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+tog_pressed: position 1 layer 1
+pressed: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00
+released: usage_page 0x07 keycode 0x05 implicit_mods 0x00 explicit_mods 0x00

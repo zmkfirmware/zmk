@@ -32,4 +32,4 @@ Each child node can have the following properties:
 | `timeout-ms`            | int           | All the keys in `key-positions` must be pressed within this time in milliseconds to trigger the combo                                     | 50            |
 | `require-prior-idle-ms` | int           | If any non-modifier key is pressed within `require-prior-idle-ms` before a key in the combo, the key will not be considered for the combo | -1 (disabled) |
 | `slow-release`          | bool          | Releases the combo when all keys are released instead of when any key is released                                                         | false         |
-| `layers`                | array         | A list of layers on which the combo may be triggered. `-1` allows all layers.                                                             | `<-1>`        |
+| `layers`                | array         | A list of layers on which the combo may be triggered. Omission of this property allows all layers.                                        |               |

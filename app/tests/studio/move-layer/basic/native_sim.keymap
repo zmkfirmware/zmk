@@ -1,0 +1,26 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+// Test moving a layer: swap layers 1 and 2, turn both on,
+// press transparent on layer 1 at index 2
+// which should fall through to layer 2 at index 1
+&kscan {
+    events = <
+    // move layer 1 to position 2 (effectively swapping layers 1 and 2)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    // activate layers 1 and 2
+    ZMK_MOCK_PRESS(1,0,10)
+    ZMK_MOCK_PRESS(1,1,10)
+    // press position 0,1 on layer 2 - should output C from layer 2 at index 1
+    ZMK_MOCK_PRESS(0,1,10)
+    ZMK_MOCK_RELEASE(0,1,10)
+    // release layer 2 (at index 1)
+    ZMK_MOCK_RELEASE(1,1,10)
+    // press position 0,1 again - should output A from default layer
+    ZMK_MOCK_PRESS(0,1,10)
+    ZMK_MOCK_RELEASE(0,1,10)
+    >;
+};

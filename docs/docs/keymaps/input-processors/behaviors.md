@@ -7,11 +7,7 @@ sidebar_label: Behaviors
 
 The behaviors input processor is used invoke standard behaviors when certain input events occur; most frequently this is used to trigger behaviors when certain mouse buttons are triggered by physical pointing devices.
 
-:::note
-
 This input processor is primarily intended for `INPUT_EV_KEY` type of events that have a binary on/off state, not vector types for relative or absolute movements.
-
-:::
 
 :::note[Source-specific behaviors on split keyboards]
 Invoking a [source-specific behavior](../../features/split-keyboards.md#source-locality-behaviors) such as one of the [reset behaviors](../behaviors/reset.md) using this input processor will always trigger it on the central side of the keyboard, regardless of the side includes the input device that originally generated the input event.

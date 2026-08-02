@@ -1,0 +1,5 @@
+board:
+  extend: xiao_ble
+  variants:
+    - name: zmk
+      qualifier: nrf52840

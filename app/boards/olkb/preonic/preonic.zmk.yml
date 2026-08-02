@@ -1,5 +1,5 @@
 file_format: "1"
-id: preonic
+id: preonic//zmk
 name: Preonic Rev3
 type: board
 arch: arm

@@ -5,3 +5,4 @@
 
 config BOARD_PREONIC
     select SOC_STM32F303XC
+    select ZMK_BOARD_COMPAT

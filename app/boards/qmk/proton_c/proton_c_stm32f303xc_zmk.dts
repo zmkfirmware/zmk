@@ -1,0 +1,9 @@
+/*
+ * Copyright (c) 2026 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+#include <../boards/qmk/proton_c/proton_c.dts>
+

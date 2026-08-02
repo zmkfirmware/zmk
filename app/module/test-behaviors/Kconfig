@@ -1,0 +1,2 @@
+config ZMK_TEST_BEHAVIORS
+    bool "Include behaviors used for testing purposes"

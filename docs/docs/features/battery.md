@@ -16,4 +16,4 @@ Windows may not properly ask the keyboard to notify it of changes in battery lev
 ## Adding a Battery Sensor to a Board
 
 If your keyboard is using one of the [boards supported in ZMK](../hardware.mdx) it will already be configured to sense and report battery levels.
-If you are using a custom board, see [battery sensing hardware integration page](../development/hardware-integration/battery.md) to add support.
+If you are using a custom board, see [battery sensing hardware integration page](../hardware-integration/battery.md) to add support.

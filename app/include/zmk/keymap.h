@@ -11,11 +11,12 @@
 #include <zephyr/devicetree.h>
 
 #define ZMK_KEYMAP_LAYERS_FOREACH(_fn)                                                             \
-    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_STUDIO), (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), _fn)),    \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING),                                    \
+                (DT_FOREACH_CHILD(DT_INST(0, zmk_keymap), _fn)),                                   \
                 (DT_FOREACH_CHILD_STATUS_OKAY(DT_INST(0, zmk_keymap), _fn)))
 
 #define ZMK_KEYMAP_LAYERS_FOREACH_SEP(_fn, _sep)                                                   \
-    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_STUDIO),                                                     \
+    COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING),                                    \
                 (DT_FOREACH_CHILD_SEP(DT_INST(0, zmk_keymap), _fn, _sep)),                         \
                 (DT_FOREACH_CHILD_STATUS_OKAY_SEP(DT_INST(0, zmk_keymap), _fn, _sep)))
 
@@ -54,8 +55,8 @@ int zmk_keymap_layer_to(zmk_keymap_layer_id_t layer, bool locking);
 const char *zmk_keymap_layer_name(zmk_keymap_layer_id_t layer);
 
 const struct zmk_behavior_binding *zmk_keymap_get_layer_binding_at_idx(zmk_keymap_layer_id_t layer,
-                                                                       uint8_t binding_idx);
-int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer, uint8_t binding_idx,
+                                                                       uint16_t binding_idx);
+int zmk_keymap_set_layer_binding_at_idx(zmk_keymap_layer_id_t layer, uint16_t binding_idx,
                                         const struct zmk_behavior_binding binding);
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)

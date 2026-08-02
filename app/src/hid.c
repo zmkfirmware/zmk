@@ -29,7 +29,7 @@ static uint8_t keys_held = 0;
 
 static struct zmk_hid_mouse_report mouse_report = {
     .report_id = ZMK_HID_REPORT_ID_MOUSE,
-    .body = {.buttons = 0, .d_x = 0, .d_y = 0, .d_scroll_y = 0}};
+    .body = {.buttons = 0, .d_x = 0, .d_y = 0, .d_scroll_y = 0, .d_scroll_x = 0}};
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 

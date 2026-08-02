@@ -1,0 +1,5 @@
+board:
+  extend: xiao_rp2040
+  variants:
+    - name: zmk
+      qualifier: rp2040

@@ -1,0 +1,140 @@
+---
+title: "Community Spotlight Series #4: Shield Wizard"
+authors: nmunnich
+tags: [keyboards, firmware, community]
+---
+
+import ThemedImage from "@theme/ThemedImage";
+
+This blog continues our series of posts where we highlight projects within the ZMK ecosystem
+that we think are interesting and that users might benefit from knowing about.
+In this installment, we present a project by [Genteure](https://github.com/Genteure) to help users setup ZMK for custom keyboards.
+
+{/* truncate */}
+
+Onboarding a custom keyboard to ZMK has always been a challenge. Designers not only need to understand and write devicetree and Kconfig, they also need to be extremely careful while doing so. A typo somewhere, or an extra whitespace could easily lead to a cryptic error message or even firmware which builds and flashes normally, but results in a malfunctioning keyboard. Shield wizard promises to make this task easier for many designers, particularly those new to keyboard design.
+
+As usual, in the rest of the post we leave it to [Genteure] to introduce and explain the history and motivations of the Shield Wizard project.
+
+## Shield Wizard for ZMK
+
+[Shield Wizard for ZMK](https://shield-wizard.genteure.com) is a web based graphical editor for setting up ZMK firmware for custom keyboards. It enables users to go from zero to compiled firmware, all within the browser, without the need to manually edit files or install tools locally (not even git). It provides an easy, foolproof, and visual way for new users to get started with ZMK, while also speeding up the workflow for more experienced users.
+
+<ThemedImage
+  alt="Screenshot of Shield Wizard for ZMK"
+  sources={{
+    light: require("./assets/2027-07-17-shield-wizard/shield-wizard.png")
+      .default,
+    dark: require("./assets/2027-07-17-shield-wizard/shield-wizard-dark.png")
+      .default,
+  }}
+/>
+
+### Features
+
+Shield Wizard for ZMK creates more or less a conventional zmk-config repository with the standard GitHub Actions workflow for compiling firmware. While there are some opinionated decisions, the generated files work exactly as you'd expect from a handwritten zmk-config.
+
+You can edit keyboard layouts visually in Shield Wizard, or import layouts from many common formats. The generated configuration is ready for ZMK Studio, and it also works with Keymap Editor out of the box.
+
+Shield Wizard for ZMK can host a temporary Git repository for you, so you can import directly into your GitHub account using a link. You don't even need to have git installed locally. Downloading the generated files as a ZIP archive is also supported.
+
+The generated configuration is pinned to the latest stable ZMK version (v0.3 at the time of writing) to avoid unexpected breaking changes.
+
+Shield Wizard for ZMK covers the most common ZMK features used in DIY keyboards, including:
+
+- Unibody and split keyboards with up to 5 split parts
+- The most common controller boards, including nRF52840-based and RP2040-based boards
+- Matrix, direct, and Charlieplex wiring, as well as a mix of all three
+- 595 shift registers
+- Rotary encoders
+- A variety of SPI/I2C peripherals, including:
+  - SSD1306 and nice!view displays
+  - WS2812 RGB LEDs
+- Selected external modules, including:
+  - PMW3610 using the module by [badjeff]
+  - Cirque trackpads using the module by [petejohanson]
+
+New SPI/I2C peripherals and external modules can be added upon request. [Shield Wizard for ZMK is open source](https://github.com/Genteure/zmk-wizard) under the same MIT license as ZMK. Contributions are welcome too!
+
+## The Making of Shield Wizard
+
+ZMK arguably has a steeper learning curve than most other software projects. The main configuration languages, Devicetree and Kconfig, are niche and quite different from other common configuration languages.
+Once you get the hang of them, they are intuitive, powerful, and flexible, but the learning curve can be a bit overwhelming for new users.
+
+While hanging around and helping people in the ZMK Discord, I noticed that many of them were struggling with the initial setup. Their keyboard designs were not complicated, but they were having a hard time getting the firmware to compile, more often than not, because of small mistakes somewhere in the configuration files.
+
+Shield Wizard was partially inspired by kbfirmware.com, which was a QMK-based firmware builder for custom keyboards. It's very outdated now and no longer maintained, but it was clearly very useful, judging by comments on Reddit and elsewhere.
+
+So I started experimenting with a web based graphical editor for ZMK, and Shield Wizard for ZMK was born.
+
+<figure style={{ maxWidth: "560px", margin: "1.5rem auto" }}>
+  <img
+    src={
+      require("./assets/2027-07-17-shield-wizard/early-shield-wizard.png")
+        .default
+    }
+    alt="First version of Shield Wizard for ZMK"
+  />
+  <figcaption>_Screenshot of the first iteration of Shield Wizard_</figcaption>
+</figure>
+
+### Laying Out the Goals
+
+The main goals I had in mind were:
+
+1. Help avoid common pitfalls and mistakes.
+2. Be intuitive, easy to understand and use. Low barrier to entry for new users.
+3. Be sustainable and maintainable, architected for the long term.
+4. Be conventional and standard, not cause headaches elsewhere in the ecosystem.
+
+Goal 1 is the easiest to define. It mostly just means we don't allow users to create invalid configurations.
+
+For goal 2, one specific feature I wanted was hosted Git repositories for importing into GitHub. This way, people don't have to install git locally or use the command line. This is especially helpful for non-technical users, who may not be familiar with these tools.
+
+For goal 3, I wanted to make sure I could provide Shield Wizard for ZMK as a free service for as long as possible. The project should be hostable anywhere, and not rely on some heavy backend service or a specific hosting provider. It should be hosted as cheaply as possible, with flexible hosting options if moving to a different provider is needed.
+
+For goal 4, I wanted to avoid situations like kbfirmware and QMK, where kbfirmware, though based on QMK, diverged enough to become its own thing.
+
+So how could we provide hosted Git repositories while keeping the project architecture simple and lean?
+
+### The Git Server
+
+The obvious approach to providing hosted Git repositories is to use a self-hosted Git server like Gitea, GitLab, or Forgejo.
+We would have to run a Git server. The HTTP service would call the Git service's API to create new repositories, write files to a local path, and call `git` commands to commit and push the changes. A backend daemon would have to run on a timer to clean up old repositories, and we would use a reverse proxy to route requests to the Git server and API endpoints.
+
+That's a lot of moving parts. It would require paying for an actual compute server (e.g. a VPS), and it would be a lot of work to maintain and keep secure. I wanted to avoid that.
+
+What if we implemented a simple integrated Git server ourselves? Enter [the Git "dumb" transfer protocol](https://git-scm.com/book/en/v2/Git-Internals-Transfer-Protocols).
+
+There are two main ways to transfer Git repositories over HTTP: the "smart" and the "dumb" transfer protocols. Without going into too much technical detail, the "smart" protocol is more efficient and allows for `git push` but requires two-way communication in a custom syntax. The "dumb" protocol is less efficient but simpler, and works with just a static file server. Many Git services reject requests using the "dumb" protocol, but practically all Git clients, including the `git` command line tool and the GitHub repository importer, will happily fetch a repository from another server using the "dumb" protocol.
+
+Shield Wizard implements a simple Git repository builder that only supports loose objects (without Git packfiles) and a single Git commit. This is just enough for Git clients to recognize it as a valid Git repository and fetch it using the "dumb" protocol. Internally, the Git repository is packed into a `.tar.gz` archive and stored in key-value (KV) storage with a unique identifier as the key. While it is not as efficient as a full Git server with the "smart" protocol and packfiles (a few dozen requests per fetch compared to 1 request per fetch), the architectural simplicity is a worthwhile tradeoff.
+
+### The Stack
+
+[Astro](https://astro.build/) is the main framework for the project. It provides just enough abstraction to allow flexible hosting options, while also sharing code between the frontend and backend.
+The frontend was originally written in SolidJS, but it was later rewritten in Vue due to a better selection of libraries and a more mature ecosystem.
+
+At the time of writing, the project is hosted on Cloudflare Workers (free tier) with Workers KV (also free tier) for storing the generated Git repositories. With minimal changes, it can be hosted anywhere (serverless environments or traditional servers), and the storage backend can be virtually anything - a KV store, object storage, a database, or even the local filesystem.
+
+## Future Plans and Ideas
+
+Looking ahead, my more immediate plans include the usual UI/UX improvements, bug fixes, adding support for new peripherals and modules, and general maintenance. As new ZMK versions come out, I'll upgrade the pinned version and add support for any new features that come with them.
+
+I'd also like to upgrade the Git repository builder to use packfiles at some point, which could make fetches slightly more efficient.
+
+Something I've considered is supporting GitHub login so users could fetch and edit an existing repository instead of creating a new one each time. I've noticed some users coming back to make revisions, and being able to update an existing repository would be very convenient.
+
+I've also thought about a generalized build settings editor to edit `build.yaml`, `.conf` files, and other configuration outside of board and shield definitions, but that might be better suited as a separate project.
+
+## About Me
+
+I'm relatively new to the ZMK community compared to other folks. It all started with me wanting to dip my toes into DIY electronics a while back, and I ended up sticking around in the ZMK community.
+
+Having a programmable, customizable keyboard is a lot of fun! My main ZMK keyboard right now is a 34 key split, [Swoop by jimmerricks](https://github.com/jimmerricks/swoop). I still use traditional keyboards sometimes.
+
+Thank you for reading, and I hope you enjoy using ZMK and Shield Wizard!
+
+[badjeff]: https://github.com/badjeff
+[petejohanson]: https://github.com/petejohanson
+[Genteure]: https://github.com/Genteure

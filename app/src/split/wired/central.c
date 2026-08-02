@@ -77,7 +77,7 @@ static const struct gpio_dt_spec detect_gpio = GPIO_DT_SPEC_INST_GET(0, detect_g
 #else
 
 #error                                                                                             \
-    "Need to create a node with compatible of 'zmk,wired-split` with a `device` property set to an enabled UART. See http://zmk.dev/docs/development/hardware-integration/new-shield#wired-split"
+    "Need to create a node with compatible of 'zmk,wired-split` with a `device` property set to an enabled UART. See http://zmk.dev/docs/hardware-integration/new-shield#wired-split"
 
 #endif
 
@@ -87,7 +87,7 @@ K_WORK_DEFINE(publish_events, publish_events_work);
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
 
-uint8_t async_rx_buf[RX_BUFFER_SIZE / 2][2];
+uint8_t async_rx_buf[2][RX_BUFFER_SIZE / 2];
 
 static struct zmk_split_wired_async_state async_state = {
     .process_tx_work = &publish_events,

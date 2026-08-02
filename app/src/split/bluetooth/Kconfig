@@ -22,8 +22,8 @@ config ZMK_SPLIT_ROLE_CENTRAL
     select BT_SCAN_WITH_IDENTITY
 
 # Bump this value needed for concurrent GATT discovery of splits
-config BT_L2CAP_TX_BUF_COUNT
-    default 5 if ZMK_SPLIT_ROLE_CENTRAL
+config BT_ATT_TX_COUNT
+    default 10 if ZMK_SPLIT_ROLE_CENTRAL
 
 if ZMK_SPLIT_ROLE_CENTRAL
 

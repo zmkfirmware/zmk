@@ -1,0 +1,14 @@
+board:
+  name: nrfmicro
+  vendor: joric
+  socs:
+    - name: nrf52840
+      variants:
+        - name: flipped
+    - name: nrf52833
+  revision:
+    format: major.minor.patch
+    default: 1.3.0
+    revisions:
+      - name: 1.3.0
+      - name: 1.1.0

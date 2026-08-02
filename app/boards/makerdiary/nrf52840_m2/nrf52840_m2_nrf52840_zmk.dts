@@ -1,0 +1,25 @@
+/*
+ * Copyright (c) 2026 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+#include <../boards/makerdiary/nrf52840_m2/nrf52840_m2.dts>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+
+/ {
+    model = "Makerdiary nRF52840 M.2 module";
+    compatible = "makerdiary,nrf52840_m2";
+
+    chosen {
+        zmk,battery = &vbatt;
+    };
+
+    vbatt: vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 0>;
+        output-ohms = <1000000>;
+        full-ohms = <(1000000 + 1000000)>;
+    };
+};

@@ -11,7 +11,7 @@ Your keyboard likely uses only one type, depending on the type of LED hardware i
 - [Backlight](#backlight) system controls parallel-connected, non-addressable, single color LEDs.
   These are found on keyboards that have a single color backlight that only allows for brightness control.
 
-:::warning
+:::info
 
 Although the naming of the systems might imply it, which system you use typically does _not_ depend on the physical location of the LEDs.
 Instead, you should use the one that supports the LED hardware type that your keyboard has, as described above.
@@ -42,13 +42,11 @@ Here you can see the RGB underglow feature in action using WS2812 LEDs.
 
 ### Enabling RGB Underglow
 
-To enable RGB underglow on your board or shield, simply enable the `CONFIG_ZMK_RGB_UNDERGLOW` and `CONFIG_*_STRIP` configuration values in the `.conf` file for your board or shield.
+To enable RGB underglow on your board or shield, simply set the `CONFIG_ZMK_RGB_UNDERGLOW` configuration in the `.conf` file for your board or shield.
 For example:
 
 ```ini
 CONFIG_ZMK_RGB_UNDERGLOW=y
-# Use the STRIP config specific to the LEDs you're using
-CONFIG_WS2812_STRIP=y
 ```
 
 See [Configuration Overview](../config/index.md) for more instructions on how to use Kconfig.
@@ -75,7 +73,7 @@ See [RGB underglow configuration](../config/lighting.md#rgb-underglow).
 
 ### Adding RGB Underglow Support to a Keyboard
 
-See [RGB underglow hardware integration page](../development/hardware-integration/lighting/underglow.md) on adding underglow support to a ZMK keyboard.
+See [RGB underglow hardware integration page](../hardware-integration/lighting/underglow.md) on adding underglow support to a ZMK keyboard.
 
 ## Backlight
 
@@ -102,4 +100,4 @@ See [backlight configuration](../config/lighting.md#backlight) for details.
 
 ### Adding Backlight to a Board or a Shield
 
-See [backlight hardware integration page](../development/hardware-integration/lighting/backlight.mdx) for information on adding backlight support to a ZMK keyboard.
+See [backlight hardware integration page](../hardware-integration/lighting/backlight.mdx) for information on adding backlight support to a ZMK keyboard.

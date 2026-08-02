@@ -1,0 +1,5 @@
+board:
+  extend: boardsource_blok
+  variants:
+    - name: zmk
+      qualifier: rp2040

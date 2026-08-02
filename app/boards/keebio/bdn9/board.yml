@@ -3,6 +3,8 @@ board:
   vendor: keebio
   socs:
     - name: stm32f072xb
+      variants:
+        - name: zmk
   revision:
     format: major.minor.patch
     default: 2.0.0

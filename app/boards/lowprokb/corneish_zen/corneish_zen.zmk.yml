@@ -15,5 +15,5 @@ revisions:
   - 2.0.0
   - 1.0.0
 siblings:
-  - corneish_zen_left
-  - corneish_zen_right
+  - corneish_zen_left//zmk
+  - corneish_zen_right//zmk

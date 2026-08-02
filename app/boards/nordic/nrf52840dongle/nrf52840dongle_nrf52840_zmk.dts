@@ -1,0 +1,8 @@
+/*
+ * Copyright (c) 2026 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <../boards/nordic/nrf52840dongle/nrf52840dongle_nrf52840.dts>
+

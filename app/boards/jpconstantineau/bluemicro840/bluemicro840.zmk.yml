@@ -1,5 +1,5 @@
 file_format: "1"
-id: bluemicro840
+id: bluemicro840//zmk
 name: BlueMicro840 v1
 type: board
 arch: arm

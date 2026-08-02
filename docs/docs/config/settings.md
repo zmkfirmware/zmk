@@ -36,7 +36,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 While regular ZMK builds will not cause any settings to be cleared upon flashing, flashing a build with `CONFIG_ZMK_SETTINGS_RESET_ON_START` enabled as documented above will cause the firmware to run a special procedure when the controller starts that clears the settings partition.
 
-For end users, it is recommended to use a special [shield](../development/hardware-integration/index.mdx#boards--shields) named `settings_reset` to build a new firmware file, then flash that firmware.
+For end users, it is recommended to use a special [shield](../hardware-integration/index.mdx#boards--shields) named `settings_reset` to build a new firmware file, then flash that firmware.
 See example for building firmware using this shield in the [troubleshooting docs](../troubleshooting/connection-issues.mdx#building-a-reset-firmware).
 
 In both cases, regular, non-reset firmware will need to be flashed afterwards for normal operation.

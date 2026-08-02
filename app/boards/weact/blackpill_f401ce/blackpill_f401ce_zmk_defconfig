@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: MIT
+
+# Enable MPU
+CONFIG_ARM_MPU=y
+
+# Enable HW stack protection
+CONFIG_HW_STACK_PROTECTION=y
+
+
+# Enable GPIO
+CONFIG_GPIO=y
+
+# USB HID
+CONFIG_ZMK_USB=y
+
+# Defaults for matrix scanning to avoid interrupt issues
+CONFIG_ZMK_KSCAN_MATRIX_POLLING=y
