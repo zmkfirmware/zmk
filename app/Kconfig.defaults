@@ -5,10 +5,6 @@ config SYSTEM_WORKQUEUE_STACK_SIZE
     default 3072 if ZMK_DISPLAY_WORK_QUEUE_SYSTEM
     default 2048
 
-choice ZMK_DISPLAY_WORK_QUEUE
-    default ZMK_DISPLAY_WORK_QUEUE_LOW_PRIORITY
-endchoice
-
 # Basic
 config BT_DEVICE_APPEARANCE
     default 961
