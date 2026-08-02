@@ -35,18 +35,21 @@ If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options
 | `CONFIG_ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN` | Use the built-in status screen |
 | `CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM`   | Use a custom status screen     |
 
-If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options must be set to `y`. The first option is used if none are set.
+If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options must be set to `y`. The low priority work queue is used if none are set.
 
-| Config                                    | Description                               |
-| ----------------------------------------- | ----------------------------------------- |
-| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_SYSTEM`    | Use the system main thread for UI updates |
-| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED` | Use a dedicated thread for UI updates     |
+| Config                                         | Description                                      |
+| ---------------------------------------------- | ------------------------------------------------ |
+| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_LOW_PRIORITY`   | Use the shared low priority queue for UI updates |
+| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_SYSTEM`         | Use the system work queue for UI updates         |
+| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED`      | Use a dedicated thread for UI updates            |
 
-Using a dedicated thread requires more memory but prevents displays with slow updates (e.g. E-paper) from delaying key scanning and other processes. If enabled, the following options configure the thread:
+The low priority work queue is the default. It schedules UI updates below time-sensitive work while sharing a queue with other low priority tasks, such as battery reporting and RGB underglow. Its stack size defaults to 3072 bytes when selected for display updates.
+
+The system work queue preserves the previous behavior, but slow display updates can delay unrelated system work. Using a dedicated thread isolates display updates from other work queues at the cost of additional memory. If enabled, the following options configure the thread:
 
 | Config                                           | Type | Description                  | Default |
 | ------------------------------------------------ | ---- | ---------------------------- | ------- |
-| `CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_STACK_SIZE` | int  | Stack size for the UI thread | 2048    |
+| `CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_STACK_SIZE` | int  | Stack size for the UI thread | 3072    |
 | `CONFIG_ZMK_DISPLAY_DEDICATED_THREAD_PRIORITY`   | int  | Priority for the UI thread   | 5       |
 
 You must also configure the driver for your display. ZMK provides the following display drivers:
