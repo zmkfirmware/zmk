@@ -51,8 +51,6 @@ endchoice
 
 choice ZMK_DISPLAY_WORK_QUEUE
     prompt "Work queue selection for UI updates"
-    default ZMK_DISPLAY_WORK_QUEUE_LOW_PRIORITY
-
 config ZMK_DISPLAY_WORK_QUEUE_LOW_PRIORITY
     bool "Use low priority work queue for UI updates"
     select ZMK_LOW_PRIORITY_WORK_QUEUE
