@@ -37,11 +37,11 @@ If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options
 
 If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options must be set to `y`. The low priority work queue is used if none are set.
 
-| Config                                         | Description                                      |
-| ---------------------------------------------- | ------------------------------------------------ |
-| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_LOW_PRIORITY`   | Use the shared low priority queue for UI updates |
-| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_SYSTEM`         | Use the system work queue for UI updates         |
-| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED`      | Use a dedicated thread for UI updates            |
+| Config                                       | Description                                      |
+| -------------------------------------------- | ------------------------------------------------ |
+| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_LOW_PRIORITY` | Use the shared low priority queue for UI updates |
+| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_SYSTEM`       | Use the system work queue for UI updates         |
+| `CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED`    | Use a dedicated thread for UI updates            |
 
 The low priority work queue is the default. It schedules UI updates below time-sensitive work while sharing a queue with other low priority tasks, such as battery reporting and RGB underglow. Its stack size defaults to 3072 bytes when selected for display updates.
 
