@@ -58,9 +58,14 @@ static const struct bt_gatt_cpf aux_level_cpf = {
 // The second generated attribute is the one used to send GATT notifications
 #define PERIPH_BATT_LEVEL_ATTR_NOTIFY_IDX 1
 
+#define PERIPH_IDX(i, _) i
+
+static const uint8_t peripheral_indexes[] = {
+    LISTIFY(CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS, PERIPH_IDX, ())};
+
 #define PERIPH_BATT_LEVEL_ATTRS(i, _)                                                              \
     BT_GATT_CHARACTERISTIC(BT_UUID_BAS_BATTERY_LEVEL, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,     \
-                           BT_GATT_PERM_READ, read_blvl, NULL, ((uint8_t[]){i})),                  \
+                           BT_GATT_PERM_READ, read_blvl, NULL, (void *)(peripheral_indexes + i)),  \
         BT_GATT_CCC(blvl_ccc_cfg_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),                 \
         BT_GATT_CPF(&aux_level_cpf), BT_GATT_CUD(PERIPH_CUD(i), BT_GATT_PERM_READ),
 
