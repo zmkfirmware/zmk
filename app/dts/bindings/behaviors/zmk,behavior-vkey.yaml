@@ -1,0 +1,8 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Vendor-defined "original key" (vkey) behavior — emits Report ID 0x20 selector
+
+compatible: "zmk,behavior-vkey"
+
+include: one_param.yaml
