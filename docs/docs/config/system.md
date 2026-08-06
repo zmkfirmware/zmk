@@ -75,16 +75,30 @@ Exactly zero or one of the following options may be set to `y`. The first is use
 
 ### USB
 
-| Config                            | Type   | Description                             | Default         |
-| --------------------------------- | ------ | --------------------------------------- | --------------- |
-| `CONFIG_USB`                      | bool   | Enable USB drivers                      |                 |
-| `CONFIG_USB_DEVICE_VID`           | int    | The vendor ID advertised to USB         | `0x1D50`        |
-| `CONFIG_USB_DEVICE_PID`           | int    | The product ID advertised to USB        | `0x615E`        |
-| `CONFIG_USB_DEVICE_MANUFACTURER`  | string | The manufacturer name advertised to USB | `"ZMK Project"` |
-| `CONFIG_USB_HID_POLL_INTERVAL_MS` | int    | USB polling interval in milliseconds    | 1               |
-| `CONFIG_ZMK_USB`                  | bool   | Enable ZMK as a USB keyboard            |                 |
-| `CONFIG_ZMK_USB_BOOT`             | bool   | Enable USB Boot protocol support        | n               |
-| `CONFIG_ZMK_USB_INIT_PRIORITY`    | int    | USB init priority                       | 50              |
+| Config                                     | Type   | Description                                                     | Default         |
+| ------------------------------------------ | ------ | --------------------------------------------------------------- | --------------- |
+| `CONFIG_USB`                               | bool   | Enable USB drivers                                              |                 |
+| `CONFIG_USB_DEVICE_VID`                    | int    | The vendor ID advertised to USB                                 | `0x1D50`        |
+| `CONFIG_USB_DEVICE_PID`                    | int    | The product ID advertised to USB                                | `0x615E`        |
+| `CONFIG_USB_DEVICE_MANUFACTURER`           | string | The manufacturer name advertised to USB                         | `"ZMK Project"` |
+| `CONFIG_USB_HID_DEVICE_COUNT`              | int    | Number of USB HID devices provided by the Zephyr USB HID driver | 1               |
+| `CONFIG_USB_HID_POLL_INTERVAL_MS`          | int    | USB polling interval in milliseconds                            | 1               |
+| `CONFIG_ZMK_USB`                           | bool   | Enable ZMK as a USB keyboard                                    |                 |
+| `CONFIG_ZMK_USB_BOOT`                      | bool   | Enable USB Boot protocol support                                | n               |
+| `CONFIG_ZMK_USB_KEYBOARD_HID_DEVICE_INDEX` | int    | USB HID device index used for keyboard reports                  | 0               |
+| `CONFIG_ZMK_USB_CONSUMER_HID_DEVICE_INDEX` | int    | USB HID device index used for consumer reports                  | 0               |
+| `CONFIG_ZMK_USB_POINTING_HID_DEVICE_INDEX` | int    | USB HID device index used for pointing reports                  | 0               |
+| `CONFIG_ZMK_USB_INIT_PRIORITY`             | int    | USB init priority                                               | 50              |
+
+:::note[USB HID device indexes]
+
+Most users should leave these settings at their default value of `0`. They are only needed when splitting keyboard, consumer, or pointing reports across multiple USB HID interfaces, which may help with compatibility with some BIOS-like or very basic USB parsers.
+
+The USB HID device index settings select Zephyr HID devices by index. Index `0` selects `HID_0`, index `1` selects `HID_1`, and so on. Set `CONFIG_USB_HID_DEVICE_COUNT` high enough to include the highest configured index.
+
+Use the same index for multiple report types to share one HID interface, or different indexes to split report types across separate HID interfaces. Keyboard-only HID interfaces omit the keyboard report ID; consumer and pointing reports currently keep report IDs when split onto their own interfaces.
+
+:::
 
 :::note[USB Boot protocol support]
 
