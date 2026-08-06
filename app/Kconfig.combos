@@ -1,0 +1,44 @@
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+menuconfig ZMK_COMBOS
+    bool "Combos"
+    default y
+    depends on DT_HAS_ZMK_COMBOS_ENABLED
+
+if ZMK_COMBOS
+
+config ZMK_COMBO_MAX_PRESSED_COMBOS
+    int "Maximum number of currently pressed combos"
+    default 4
+
+config ZMK_COMBO_MAX_COMBOS_PER_KEY
+    int "Deprecated: Max combos per key"
+    default 0
+    help
+      Deprecated: Storage for combos is now determined automatically
+
+config ZMK_COMBO_MAX_KEYS_PER_COMBO
+    int "Deprecated: Max keys per combo"
+    default 0
+    help
+       Deprecated: This is now auto-calculated based on `key-positions` in devicetree
+
+config ZMK_COMBOS_RUNTIME
+    bool "Runtime combo updates"
+
+if ZMK_COMBOS_RUNTIME
+
+config ZMK_COMBOS_RUNTIME_SETTINGS_STORAGE
+    bool "Save/restore runtime combos using settings"
+    default y
+    depends on SETTINGS
+
+config ZMK_COMBOS_RUNTIME_SHELL_CMD
+    bool "Combos shell command"
+    default y
+    depends on SHELL
+
+endif
+
+endif

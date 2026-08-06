@@ -1,0 +1,1 @@
+target_sources_ifdef(CONFIG_ZMK_SHELL_KEY_POSITIONS app PRIVATE key_positions.c)
