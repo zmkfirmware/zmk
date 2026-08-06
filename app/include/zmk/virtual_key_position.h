@@ -30,3 +30,9 @@
 #define ZMK_VIRTUAL_KEY_POSITION_BEHAVIOR_INPUT_PROCESSOR(listener_index, processor_index)         \
     (ZMK_VIRTUAL_KEY_POSITION_COMBO(ZMK_COMBOS_LEN) +                                              \
      (ZMK_INPUT_LISTENERS_LEN * (processor_index)) + (listener_index))
+
+/**
+ * Gets the virtual key position to use for the leader sequence with the given index.
+ */
+#define ZMK_VIRTUAL_KEY_POSITION_LEADER(index)                                                     \
+    (ZMK_VIRTUAL_KEY_POSITION_SENSOR(ZMK_KEYMAP_SENSORS_LEN) + (index))
