@@ -1,0 +1,288 @@
+---
+title: Boot Magic Combo
+sidebar_label: Boot Magic Combo
+---
+
+A boot magic combo performs one or more actions if a combination of keys is held while powering on the keyboard. This is useful for recovering a keyboard which doesn't have a physical reset button. It also works on the peripheral side of a split keyboard, even when it isn't connected to the central side.
+
+## Magic Keys
+
+Magic keys are specific to a physical layout. If your board doesn't have one, follow the [physical layouts documentation](../hardware-integration/physical-layouts.md) to create one.
+
+To define a boot magic combo on a new board or shield, add a `zmk,boot-magic-combo` node to your board's `.dts` file or shield's `.overlay` file and select which keys will trigger it with the `combo-positions` property. All keys in the combo must be held simultaneously to trigger the action.
+
+Then configure `boot-magic-combos` in your physical layout to point to your newly defined boot magic combo. If you have multiple boot magic combos, you can pass in a list.
+
+```c
+/ {
+    ...
+    bootloader_key: bootloader_key {
+        compatible = "zmk,boot-magic-combo";
+        combo-positions = <0 1>;
+    };
+
+    &default_layout {
+        boot-magic-combos = <&bootloader_key>;
+    };
+    ...
+};
+```
+
+:::info
+
+Key positions are numbered like the keys in your keymap, starting at 0. So, if the first key in your keymap is `Q`, this key is in position `0`. The next key (possibly `W`) will have position 1, etcetera.
+
+The `combo-positions` property accepts an array of key positions. All keys in the array must be held simultaneously during boot to trigger the action.
+
+:::
+
+Next, you should add properties to determine what the magic key will do:
+
+### Jump to Bootloader
+
+If a boot magic combo has a `jump-to-bootloader` property, it will reboot to the bootloader:
+
+```c
+/ {
+    ...
+    bootloader_key: bootloader_key {
+        compatible = "zmk,boot-magic-combo";
+        ...
+        jump-to-bootloader;
+    };
+    ...
+};
+```
+
+### Unpair BLE
+
+If a boot magic combo has an `unpair-ble` property, it will clear all BLE bonds and then reboot:
+
+```c
+/ {
+    ...
+    unpair_ble_key: unpair_ble_key {
+        compatible = "zmk,boot-magic-combo";
+        ...
+        unpair-ble;
+    };
+    ...
+};
+```
+
+:::info
+
+This clears all BLE bonds. You will need to re-pair the keyboard with any hosts after using this.
+
+:::
+
+### Reset Settings
+
+If a boot magic combo has a `reset-settings` property, it will erase all persisted settings and then reboot:
+
+```c
+/ {
+    ...
+    reset_settings_key: reset_settings_key {
+        compatible = "zmk,boot-magic-combo";
+        ...
+        reset-settings;
+    };
+    ...
+};
+```
+
+:::caution
+
+This erases the entire settings storage, returning the keyboard to its default configuration. This includes BLE bonds, so you will need to re-pair the keyboard with any hosts after using this.
+
+:::
+
+### Unlock ZMK Studio
+
+If a boot magic combo has an `unlock-studio` property and ZMK studio is enabled, holding the combo during boot will unlock [ZMK Studio](studio.md). Unlike the other actions, this does not reboot the keyboard:
+
+```c
+/ {
+    ...
+    unlock_studio_key: unlock_studio_key {
+        compatible = "zmk,boot-magic-combo";
+        ...
+        unlock-studio;
+    };
+    ...
+};
+```
+
+## Multiple Actions
+
+If you want a single boot magic combo to perform multiple actions, simply add properties for each action to the same `zmk,boot-magic-combo` node. The order of the properties does not matter.
+
+For example, to make a key that resets settings and then reboots to the bootloader, add both `reset-settings` and `jump-to-bootloader`:
+
+```c
+/ {
+    ...
+    recovery_key: recovery_key {
+        compatible = "zmk,boot-magic-combo";
+        jump-to-bootloader;
+        reset-settings;
+    };
+    ...
+};
+```
+
+The `reset-settings` action clears all BLE bonds as they are part of the persisted settings, so there is no point combining `reset-settings` with `unpair-ble`. Furthermore, you cannot combine `unlock-studio` with any other actions because all the others reboot the keyboard, which locks ZMK studio.
+
+:::info
+
+You may define multiple `zmk,boot-magic-combo` nodes for different key combos, but note that if you hold multiple combos at boot, they will be run in an arbitrary order. If one of them reboots the keyboard, the rest of the combos' actions will not run.
+
+:::
+
+## Split Keyboards
+
+For split keyboards, you can define multiple boot magic combos and then only choose the correct combos(s) for each side. For example, if key 0 is the top-left key on the left side and key 11 is the top-right key on the right side, you could use:
+
+**shield.dtsi**
+
+```c
+/ {
+    ...
+    bootloader_key_left: bootloader_key_left {
+        compatible = "zmk,boot-magic-combo";
+        combo-positions = <0>;
+        jump-to-bootloader;
+    };
+
+    bootloader_key_right: bootloader_key_right {
+        compatible = "zmk,boot-magic-combo";
+        combo-positions = <11>;
+        jump-to-bootloader;
+    };
+    ...
+};
+```
+
+**shield_left.overlay**
+
+```c
+#include "shield.dtsi"
+
+&default_layout {
+    boot-magic-combos = <&bootloader_key_left>;
+};
+```
+
+**shield_right.overlay**
+
+```c
+#include "shield.dtsi"
+
+&default_layout {
+    boot-magic-combos = <&bootloader_key_right>;
+};
+```
+
+Alternatively, you can skip setting up boot magic keys in the left and right overlays, instead enabling both boot magic keys at once with a `boot-magic-combos = <&bootloader_key_left, &bootloader_key_right>;`. If both are enabled at the same time and both halves are powered, there is no guarantee both will reset because the keyboard may reset itself before communicating with the other half. Therefore, configuring the halves separately is preferred.
+
+## Key Positions and Physical Layouts
+
+Key positions are affected by the [matrix transform](../config/kscan.md#matrix-transform). If you use different transforms for each physical layout, then you will need to supply a different set of boot magic combos for each physical layout.
+
+For example, consider a split keyboard which has 6 columns per side by default but supports a 5-column layout, and assume you want the top-left key on the left side and the top-right key on the right side to be boot magic combos. The top-left key will be position 0 regardless of layout, but the top-right key will be position 11 by default and position 9 in the 5-column layout.
+
+**shield.dtsi**
+
+```c
+/ {
+    chosen {
+        zmk,physical-layout = &default_layout;
+    };
+
+    default_layout: default_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Default Layout";
+        transform = <&default_transform>;
+    };
+
+    five_column_layout: five_column_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "5-Column Layout";
+        transform = <&five_column_transform>;
+    };
+
+    bootloader_key_left: bootloader_key_left {
+        compatible = "zmk,boot-magic-combo";
+        combo-positions = <0>;
+        jump-to-bootloader;
+    };
+
+    bootloader_key_right: bootloader_key_right {
+        compatible = "zmk,boot-magic-combo";
+        combo-positions = <11>;
+        jump-to-bootloader;
+    };
+
+    bootloader_key_right_fivecol: bootloader_key_right_fivecol {
+        compatible = "zmk,boot-magic-combo";
+        combo-positions = <9>;
+        jump-to-bootloader;
+    };
+    ...
+};
+```
+
+**shield_left.overlay**
+
+```c
+#include "shield.dtsi"
+
+&default_layout {
+    boot-magic-combos = <&bootloader_key_left>;
+};
+&five_column_layout {
+    boot-magic-combos = <&bootloader_key_left>;
+}
+```
+
+**shield_right.overlay**
+
+```c
+#include "shield.dtsi"
+
+&default_layout {
+    boot-magic-combos = <&bootloader_key_right>;
+};
+&five_column_layout {
+    boot-magic-combos = <&bootloader_key_right_fivecol>;
+}
+```
+
+**shield.keymap**
+
+```c
+// Uncomment this block if using the 5-column layout
+// / {
+//     chosen {
+//         zmk,physical-layout = &five_column_layout;
+//     };
+// };
+```
+
+## Startup Timeout
+
+By default, the keyboard processes boot magic combos for 500 ms. You can change this timeout with `CONFIG_ZMK_BOOT_MAGIC_COMBO_TIMEOUT_MS` if it isn't reliably triggering, for example if you have some board-specific initialization code which takes a while.
+
+To change the value for a new board or shield, set this option in your `Kconfig.defconfig` file:
+
+```
+config ZMK_BOOT_MAGIC_COMBO_TIMEOUT_MS
+    default 1000
+```
+
+You can also set it from your keyboard's `.conf` file in a user config repo:
+
+```ini
+CONFIG_ZMK_BOOT_MAGIC_COMBO_TIMEOUT_MS=1000
+```

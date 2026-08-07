@@ -40,7 +40,7 @@ bool zmk_ble_active_profile_is_open(void);
 bool zmk_ble_active_profile_is_connected(void);
 char *zmk_ble_active_profile_name(void);
 
-int zmk_ble_unpair_all(void);
+void zmk_ble_unpair_all(void);
 
 int zmk_ble_set_device_name(char *name);
 
