@@ -20,6 +20,18 @@
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
 
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_CUSTOM) ||                              \
+    IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_TWO_POINT_TWO) ||                       \
+    IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_SRGB) ||                                      \
+    IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_CIE_L)
+#define BRIGHTNESS_CURVE_ENABLED
+#define BRIGHTNESS_CURVE_FLOAT
+#include <math.h>
+#elif IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_TWO) ||                               \
+    IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_THREE)
+#define BRIGHTNESS_CURVE_ENABLED
+#endif
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 BUILD_ASSERT(DT_HAS_CHOSEN(zmk_backlight),
@@ -42,8 +54,57 @@ struct backlight_state {
 static struct backlight_state state = {.brightness = CONFIG_ZMK_BACKLIGHT_BRT_START,
                                        .on = IS_ENABLED(CONFIG_ZMK_BACKLIGHT_ON_START)};
 
+#ifdef BRIGHTNESS_CURVE_ENABLED
+static uint8_t apply_brightness_curve(uint8_t brightness) {
+    uint8_t corrected;
+
+#ifdef BRIGHTNESS_CURVE_FLOAT
+    float f_brightness = brightness / ((float)BRT_MAX);
+    float exponent, f_corrected;
+
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_CUSTOM)
+    exponent = ((float)CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_VALUE) / 1000.f;
+#elif IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_TWO_POINT_TWO)
+    exponent = 2.2f;
+#elif IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_SRGB)
+    exponent = 2.4f;
+#else // CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_CIE_L
+    exponent = 3.0f;
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_SRGB)
+    f_corrected = (f_brightness <= 0.04045f) ? (f_brightness / 12.92f)
+                                             : powf((f_brightness + 0.055f) / 1.055f, exponent);
+#elif IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_CIE_L)
+    f_corrected = (f_brightness > 0.08f) ? powf((f_brightness + 0.16f) / 1.16f, exponent)
+                                         : f_brightness / 9.033f;
+#else
+    f_corrected = powf(f_brightness, exponent);
+#endif
+
+    corrected = (uint8_t)(f_corrected * BRT_MAX + 0.5f);
+#else // !BRIGHTNESS_CURVE_FLOAT
+
+#if IS_ENABLED(CONFIG_ZMK_BACKLIGHT_BRIGHTNESS_CURVE_GAMMA_THREE)
+    corrected =
+        (brightness * brightness * brightness + (BRT_MAX * BRT_MAX / 2)) / (BRT_MAX * BRT_MAX);
+#else
+    corrected = ((brightness * brightness) + (BRT_MAX / 2)) / BRT_MAX;
+#endif
+
+#endif
+
+    corrected = CLAMP(corrected, 0, BRT_MAX);
+    LOG_DBG("%d -> %d", brightness, corrected);
+    return corrected;
+}
+#endif // BRIGHTNESS_CURVE_ENABLED
+
 static int zmk_backlight_update(void) {
     uint8_t brt = zmk_backlight_get_brt();
+#ifdef BRIGHTNESS_CURVE_ENABLED
+    brt = apply_brightness_curve(brt);
+#endif
     LOG_DBG("Update backlight brightness: %d%%", brt);
 
     for (int i = 0; i < BACKLIGHT_NUM_LEDS; i++) {
