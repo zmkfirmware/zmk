@@ -562,6 +562,14 @@ static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_
         LOG_DBG("Security changed: %s level %u", addr, level);
     } else {
         LOG_ERR("Security failed: %s level %u err %d", addr, level, err);
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) && \
+    IS_ENABLED(CONFIG_ZMK_SPLIT_AUTO_UNPAIR_ON_KEY_MISMATCH)
+        if (err == BT_SECURITY_ERR_PIN_OR_KEY_MISSING) {
+            LOG_WRN("Stale split bond detected, clearing and disconnecting");
+            bt_unpair(BT_ID_DEFAULT, bt_conn_get_dst(conn));
+            bt_conn_disconnect(conn, BT_HCI_ERR_AUTH_FAIL);
+        }
+#endif
     }
 }
 
