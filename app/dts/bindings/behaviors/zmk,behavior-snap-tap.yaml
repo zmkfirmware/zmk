@@ -1,0 +1,8 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Snap Tap behavior for SOCD (Simultaneous Opposing Cardinal Directions)
+
+compatible: "zmk,behavior-snap-tap"
+
+include: two_param.yaml 
