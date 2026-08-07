@@ -342,6 +342,7 @@ struct zmk_hid_mouse_resolution_feature_report {
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
 zmk_mod_flags_t zmk_hid_get_explicit_mods(void);
+zmk_mod_flags_t zmk_hid_get_masked_mods(void);
 int zmk_hid_register_mod(zmk_mod_t modifier);
 int zmk_hid_unregister_mod(zmk_mod_t modifier);
 bool zmk_hid_mod_is_pressed(zmk_mod_t modifier);
