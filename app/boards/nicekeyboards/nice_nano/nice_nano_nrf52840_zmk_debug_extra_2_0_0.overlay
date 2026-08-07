@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+
+#include <zephyr/dt-bindings/dt-util.h>
+
+/* Carve off the tail end of the usual code partition for the core dump storage */
+&code_partition {
+    reg = <0x00026000 DT_SIZE_K(460)>;
+};
+
+&flash0 {
+    partitions {
+        coredump_partition: partition@99000 {
+            reg = <0x99000 DT_SIZE_K(64)>;
+            label = "coredump-partition";
+	};
+    };
+};

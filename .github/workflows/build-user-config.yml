@@ -215,6 +215,7 @@ jobs:
           then
             cp "${{ env.build_dir }}/zephyr/zmk.${{ inputs.fallback_binary }}" "${{ env.build_dir }}/artifacts/${{ env.artifact_name }}.${{ inputs.fallback_binary }}"
           fi
+          cp "${{ env.build_dir }}/zephyr/zmk.elf" "${{ env.build_dir }}/artifacts/${{ env.artifact_name }}.elf"
 
       - name: Archive (${{ env.display_name }})
         uses: actions/upload-artifact@v7
