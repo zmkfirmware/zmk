@@ -7,11 +7,13 @@
 #pragma once
 
 #include <zephyr/kernel.h>
+#include <zmk/battery.h>
 #include <zmk/event_manager.h>
 
 struct zmk_battery_state_changed {
     // TODO: Other battery channels
     uint8_t state_of_charge;
+    enum zmk_battery_charge_state charge_state;
 };
 
 ZMK_EVENT_DECLARE(zmk_battery_state_changed);
@@ -20,6 +22,7 @@ struct zmk_peripheral_battery_state_changed {
     uint8_t source;
     // TODO: Other battery channels
     uint8_t state_of_charge;
+    enum zmk_battery_charge_state charge_state;
 };
 
 ZMK_EVENT_DECLARE(zmk_peripheral_battery_state_changed);
