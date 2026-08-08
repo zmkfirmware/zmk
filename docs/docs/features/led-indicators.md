@@ -58,6 +58,10 @@ If the LED is not configured to support brightness control, any value greater th
 
 For most LEDs, you can enable PWM brightness control, though this will increase power usage slightly. See the [LED indicators hardware integration page](../hardware-integration/lighting/led-indicators.md) for details on configuring the LEDs.
 
+## Split Keyboards
+
+Indicator LEDs work on both halves of a split keyboard. A peripheral has neither the connection to the host nor the indicator state, so the central sends both to it. Enabling [`CONFIG_ZMK_INDICATOR_LEDS`](../config/led-indicators.md) on a half also enables [`CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS` and `CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS`](../config/split.md) there. If only one half has indicator LEDs, set both options on the other half as well, or the peripheral will never be told about the state.
+
 ## Adding LED Indicator Support to a Keyboard
 
 See the [LED indicators hardware integration page](../hardware-integration/lighting/led-indicators.md) for instructions to enable this feature on a keyboard.
