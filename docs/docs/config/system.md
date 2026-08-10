@@ -138,7 +138,7 @@ Re-flashing a bootloader built without the SoftDevice will require firmware buil
 Enable snippets by adding `snippet: <snippet>` to your `build.yaml` for the appropriate board:
 
 ```yaml
-- board: nrfmicro@1.3.0/nrf52833
+- board: nrfmicro@1.3.0/nrf52833/zmk
   snippet: nrf52833-nosd
   shield: corne_left
 ```
@@ -146,7 +146,7 @@ Enable snippets by adding `snippet: <snippet>` to your `build.yaml` for the appr
 For local builds, add `-S <snippet>` to your build command. For example:
 
 ```sh
-west build -b nrfmicro@1.3.0/nrf52833 -S nrf52833-nosd -- -DSHIELD=corne_left
+west build -b nrfmicro@1.3.0/nrf52833/zmk -S nrf52833-nosd -- -DSHIELD=corne_left
 ```
 
 ZMK implements the following system configuration snippets:
