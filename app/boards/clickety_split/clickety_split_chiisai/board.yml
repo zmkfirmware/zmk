@@ -1,0 +1,5 @@
+board:
+  extend: clickety_split_chiisai
+  variants:
+    - name: zmk
+      qualifier: nrf52840

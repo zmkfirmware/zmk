@@ -1,0 +1,5 @@
+board:
+  name: clickety_split_chiisai
+  vendor: clickety_split
+  socs:
+    - name: nrf52840

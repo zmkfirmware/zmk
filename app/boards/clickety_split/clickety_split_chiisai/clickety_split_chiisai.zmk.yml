@@ -1,0 +1,10 @@
+file_format: "1"
+id: clickety_split_chiisai//zmk
+name: Chiisai v1.13
+type: board
+arch: arm
+outputs:
+  - usb
+  - ble
+url: https://clicketysplit.ca/pages/firmware-builds-chiisai
+exposes: [pro_micro]

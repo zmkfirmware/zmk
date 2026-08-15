@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: MIT
+
+# Enable MPU
+CONFIG_ARM_MPU=y
+
+# Use pinctrl
+CONFIG_PINCTRL=y
+
+# Enable GPIO
+CONFIG_GPIO=y
+
+# Use the Devicetree application partition and produce UF2 firmware
+CONFIG_USE_DT_CODE_PARTITION=y
+CONFIG_BUILD_OUTPUT_UF2=y
+
+# Use the RC low-frequency clock source with 500 ppm accuracy.
+CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC=y
+CONFIG_CLOCK_CONTROL_NRF_K32SRC_500PPM=y
+
+# Enable persistent ZMK settings.
+CONFIG_MPU_ALLOW_FLASH_WRITE=y
+CONFIG_NVS=y
+CONFIG_SETTINGS_NVS=y
+CONFIG_FLASH=y
+CONFIG_FLASH_PAGE_LAYOUT=y
+CONFIG_FLASH_MAP=y
+
+CONFIG_ZMK_USB=y
+CONFIG_ZMK_BLE=y
