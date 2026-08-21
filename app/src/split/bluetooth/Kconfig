@@ -74,6 +74,26 @@ config ZMK_SPLIT_BLE_PREF_TIMEOUT
     int "Supervision timeout to use for split central/peripheral connection"
     default 400
 
+config ZMK_SPLIT_BLE_PREF_IDLE
+    bool "Set slower split peripheral BLE params on idle to save power"
+    default y
+
+if ZMK_SPLIT_BLE_PREF_IDLE
+
+config ZMK_SPLIT_BLE_PREF_IDLE_INT
+    int "Idle connection interval to use for split central/peripheral connection"
+    default 18
+
+config ZMK_SPLIT_BLE_PREF_IDLE_LATENCY
+    int "Idle latency to use for split central/peripheral connection"
+    default 10
+
+config ZMK_SPLIT_BLE_PREF_IDLE_TIMEOUT
+    int "Idle supervision timeout to use for split central/peripheral connection"
+    default 400
+
+endif # ZMK_SPLIT_BLE_PREF_IDLE
+
 endif # ZMK_SPLIT_ROLE_CENTRAL
 
 if !ZMK_SPLIT_ROLE_CENTRAL
