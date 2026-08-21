@@ -14,6 +14,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/gatt.h>
 
+#define SUPPRESS_BATTERY_HID_REPORT
 #include <zmk/ble.h>
 #include <zmk/endpoints_types.h>
 #include <zmk/hog.h>

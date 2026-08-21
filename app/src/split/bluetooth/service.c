@@ -372,7 +372,7 @@ int zmk_split_transport_peripheral_bt_report_event(
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING)
     case ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT:
-        // The BLE transport uses standard BAS service for propagation, so just return success here.
+        // Battery events are handled by BLE BAS service, just return success
         return 0;
 #endif
     default:

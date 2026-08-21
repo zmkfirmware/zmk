@@ -57,6 +57,8 @@ struct zmk_split_transport_peripheral_event {
 
         struct {
             uint8_t level;
+            // enum zmk_battery_charge_state, fixed width as this goes over the wire
+            uint8_t charge_state;
         } battery_event;
     } data;
 } __packed;

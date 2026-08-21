@@ -1,0 +1,6 @@
+# Copyright (c) 2024 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+name: battery-reporting-test
+append:
+  EXTRA_DTC_OVERLAY_FILE: battery-reporting-test.overlay
