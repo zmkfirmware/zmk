@@ -66,6 +66,14 @@ If `CONFIG_ZMK_HID_REPORT_TYPE_NKRO` is enabled, it may be configured with the f
 | ---------------------------------------------- | ---- | -------------------------------------------------------------------- | ------- |
 | `CONFIG_ZMK_HID_KEYBOARD_NKRO_EXTENDED_REPORT` | bool | Enable less frequently used key usages, at the cost of compatibility | n       |
 
+Instead of picking a single report type at build time, you can compile in both and switch between them at runtime:
+
+| Config                               | Type | Description                                                      | Default |
+| ------------------------------------ | ---- | ---------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC` | bool | Compile in both HKRO and NKRO and switch between them at runtime | n       |
+
+With this enabled, the `HKRO`/`NKRO` choice above only sets the first-boot default; the [`&dyn_nkro`](../keymaps/behaviors/dynamic-nkro.md) behavior switches the active mode afterwards. A HID report descriptor can't change without re-enumerating, so switching persists the new mode to flash and reboots to apply it. This lets a single firmware use full NKRO day to day and fall back to HKRO for BIOS/UEFI screens, without reflashing.
+
 Exactly zero or one of the following options may be set to `y`. The first is used if none are set.
 
 | Config                                        | Description                                                                          |
