@@ -3,7 +3,7 @@ VERSION_MAJOR = 0
 # x-release-please-end
 
 # x-release-please-start-minor
-VERSION_MINOR = 3
+VERSION_MINOR = 4
 # x-release-please-end
 
 # x-release-please-start-patch
