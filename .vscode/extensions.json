@@ -4,7 +4,7 @@
     "ms-python.black-formatter",
     "ms-python.python",
     "ms-vscode.cpptools",
-    "plorefice.devicetree",
+    "KyleMicallefBonnici.dts-lsp",
     "twxs.cmake",
     "unifiedjs.vscode-mdx"
   ]
