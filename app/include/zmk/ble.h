@@ -9,6 +9,8 @@
 #include <zmk/keys.h>
 #include <zmk/ble/profile.h>
 
+struct bt_conn;
+
 #define ZMK_BLE_IS_CENTRAL                                                                         \
     (IS_ENABLED(CONFIG_ZMK_SPLIT_BLE) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL))
 
@@ -28,6 +30,8 @@ int zmk_ble_prof_disconnect(uint8_t index);
 
 int zmk_ble_active_profile_index(void);
 int zmk_ble_profile_index(const bt_addr_le_t *addr);
+int zmk_ble_profile_index_from_conn(const struct bt_conn *conn);
+const bt_addr_le_t *zmk_ble_conn_get_identity_addr(const struct bt_conn *conn);
 bt_addr_le_t *zmk_ble_profile_address(uint8_t index);
 
 bt_addr_le_t *zmk_ble_active_profile_addr(void);

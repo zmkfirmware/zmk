@@ -119,27 +119,42 @@ static ssize_t read_hids_input_report(struct bt_conn *conn, const struct bt_gatt
                              sizeof(struct zmk_hid_keyboard_report_body));
 }
 
+#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS) || IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
+static int hog_get_ble_endpoint(const struct bt_conn *conn,
+                                struct zmk_endpoint_instance *endpoint) {
+    int profile = zmk_ble_profile_index_from_conn(conn);
+    if (profile < 0) {
+        return -ENODEV;
+    }
+    *endpoint = (struct zmk_endpoint_instance){
+        .transport = ZMK_TRANSPORT_BLE,
+        .ble =
+            {
+                .profile_index = profile,
+            },
+    };
+    return 0;
+}
+#endif // IS_ENABLED(CONFIG_ZMK_HID_INDICATORS) || IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
+
 #if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+
 static ssize_t write_hids_leds_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                       const void *buf, uint16_t len, uint16_t offset,
                                       uint8_t flags) {
     if (offset != 0) {
         return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
     }
+
     if (len != sizeof(struct zmk_hid_led_report_body)) {
         return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
     }
 
     struct zmk_hid_led_report_body *report = (struct zmk_hid_led_report_body *)buf;
-    int profile = zmk_ble_profile_index(bt_conn_get_dst(conn));
-    if (profile < 0) {
+    struct zmk_endpoint_instance endpoint;
+    if (hog_get_ble_endpoint(conn, &endpoint) != 0) {
         return BT_GATT_ERR(BT_ATT_ERR_UNLIKELY);
     }
-
-    struct zmk_endpoint_instance endpoint = {.transport = ZMK_TRANSPORT_BLE,
-                                             .ble = {
-                                                 .profile_index = profile,
-                                             }};
     zmk_hid_indicators_process_report(report, endpoint);
 
     return len;
@@ -169,16 +184,10 @@ static ssize_t read_hids_mouse_input_report(struct bt_conn *conn, const struct b
 static ssize_t read_hids_mouse_feature_report(struct bt_conn *conn, const struct bt_gatt_attr *attr,
                                               void *buf, uint16_t len, uint16_t offset) {
 
-    int profile = zmk_ble_profile_index(bt_conn_get_dst(conn));
-    if (profile < 0) {
-        LOG_DBG("   BT_ATT_ERR_UNLIKELY");
+    struct zmk_endpoint_instance endpoint;
+    if (hog_get_ble_endpoint(conn, &endpoint) != 0) {
         return BT_GATT_ERR(BT_ATT_ERR_UNLIKELY);
     }
-
-    struct zmk_endpoint_instance endpoint = {
-        .transport = ZMK_TRANSPORT_BLE,
-        .ble = {.profile_index = profile},
-    };
 
     struct zmk_pointing_resolution_multipliers mult =
         zmk_pointing_resolution_multipliers_get_profile(endpoint);
@@ -204,15 +213,10 @@ static ssize_t write_hids_mouse_feature_report(struct bt_conn *conn,
 
     struct zmk_hid_mouse_resolution_feature_report_body *report =
         (struct zmk_hid_mouse_resolution_feature_report_body *)buf;
-    int profile = zmk_ble_profile_index(bt_conn_get_dst(conn));
-    if (profile < 0) {
+    struct zmk_endpoint_instance endpoint;
+    if (hog_get_ble_endpoint(conn, &endpoint) != 0) {
         return BT_GATT_ERR(BT_ATT_ERR_UNLIKELY);
     }
-
-    struct zmk_endpoint_instance endpoint = {.transport = ZMK_TRANSPORT_BLE,
-                                             .ble = {
-                                                 .profile_index = profile,
-                                             }};
     zmk_pointing_resolution_multipliers_process_report(report, endpoint);
 
     return len;

@@ -118,6 +118,69 @@ void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
     k_work_submit(&raise_profile_changed_event_work);
 }
 
+const bt_addr_le_t *zmk_ble_conn_get_identity_addr(const struct bt_conn *conn) {
+    if (conn == NULL) {
+        return NULL;
+    }
+    struct bt_conn_info info;
+    if (bt_conn_get_info(conn, &info) == 0 && info.type == BT_CONN_TYPE_LE) {
+        if (info.le.dst != NULL && bt_addr_le_cmp(info.le.dst, BT_ADDR_LE_ANY) != 0) {
+            return info.le.dst;
+        }
+    }
+    return bt_conn_get_dst(conn);
+}
+
+static bool is_peripheral_conn(const struct bt_conn *conn) {
+    if (conn == NULL) {
+        return false;
+    }
+    struct bt_conn_info info;
+    return (bt_conn_get_info(conn, &info) == 0 && info.role == BT_CONN_ROLE_PERIPHERAL);
+}
+
+int zmk_ble_profile_index_from_conn(const struct bt_conn *conn) {
+    if (!is_peripheral_conn(conn)) {
+        return -ENODEV;
+    }
+    int idx = zmk_ble_profile_index(zmk_ble_conn_get_identity_addr(conn));
+    if (idx < 0) {
+        idx = zmk_ble_active_profile_index();
+    }
+    return idx;
+}
+
+struct conn_lookup_data {
+    const bt_addr_le_t *addr;
+    struct bt_conn *match;
+};
+
+static void find_conn_by_identity_addr(struct bt_conn *conn, void *data) {
+    struct conn_lookup_data *query = data;
+    if (query->match != NULL || !is_peripheral_conn(conn)) {
+        return;
+    }
+    const bt_addr_le_t *remote = zmk_ble_conn_get_identity_addr(conn);
+    if (remote && bt_addr_le_cmp(remote, query->addr) == 0) {
+        query->match = bt_conn_ref(conn);
+    }
+}
+
+static struct bt_conn *lookup_conn_by_profile_addr(const bt_addr_le_t *addr) {
+    struct bt_conn *conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr);
+    if (conn != NULL) {
+        return conn;
+    }
+
+    struct conn_lookup_data query = {
+        .addr = addr,
+        .match = NULL,
+    };
+
+    bt_conn_foreach(BT_CONN_TYPE_LE, find_conn_by_identity_addr, &query);
+    return query.match;
+}
+
 bool zmk_ble_active_profile_is_connected(void) {
     return zmk_ble_profile_is_connected(active_profile);
 }
@@ -131,7 +194,7 @@ bool zmk_ble_profile_is_connected(uint8_t index) {
     bt_addr_le_t *addr = &profiles[index].peer;
     if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
         return false;
-    } else if ((conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr)) == NULL) {
+    } else if ((conn = lookup_conn_by_profile_addr(addr)) == NULL) {
         return false;
     }
 
@@ -152,7 +215,7 @@ bool zmk_ble_profile_is_connected(uint8_t index) {
 
 #define CHECKED_DIR_ADV()                                                                          \
     addr = zmk_ble_active_profile_addr();                                                          \
-    conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr);                                            \
+    conn = lookup_conn_by_profile_addr(addr);                                                      \
     if (conn != NULL) { /* TODO: Check status of connection */                                     \
         LOG_DBG("Skipping advertising, profile host is already connected");                        \
         bt_conn_unref(conn);                                                                       \
@@ -253,6 +316,9 @@ void zmk_ble_clear_all_bonds(void) {
 int zmk_ble_active_profile_index(void) { return active_profile; }
 
 int zmk_ble_profile_index(const bt_addr_le_t *addr) {
+    if (addr == NULL) {
+        return -ENODEV;
+    }
     for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
         if (bt_addr_le_cmp(addr, &profiles[i].peer) == 0) {
             return i;
@@ -325,7 +391,7 @@ int zmk_ble_prof_disconnect(uint8_t index) {
 
     if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
         return -ENODEV;
-    } else if ((conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr)) == NULL) {
+    } else if ((conn = lookup_conn_by_profile_addr(addr)) == NULL) {
         return -ENODEV;
     }
 
@@ -345,7 +411,7 @@ struct bt_conn *zmk_ble_active_profile_conn(void) {
     if (!bt_addr_le_cmp(addr, BT_ADDR_LE_ANY)) {
         LOG_WRN("Not sending, no active address for current profile");
         return NULL;
-    } else if ((conn = bt_conn_lookup_addr_le(BT_ID_DEFAULT, addr)) == NULL) {
+    } else if ((conn = lookup_conn_by_profile_addr(addr)) == NULL) {
         LOG_WRN("Not sending, not connected to active profile");
         return NULL;
     }
@@ -384,10 +450,6 @@ int zmk_ble_put_peripheral_addr(const bt_addr_le_t *addr) {
         if (bt_addr_le_cmp(&peripheral_addrs[i], addr) == 0) {
             LOG_DBG("Found existing peripheral address in slot %d", i);
             return i;
-        } else {
-            char addr_str[BT_ADDR_LE_STR_LEN];
-            bt_addr_le_to_str(&peripheral_addrs[i], addr_str, sizeof(addr_str));
-            LOG_DBG("peripheral slot %d occupied by %s", i, addr_str);
         }
 
         // If the peripheral address slot is open, store new peripheral in the
@@ -494,18 +556,29 @@ static struct settings_handler profiles_handler = {
 #endif /* IS_ENABLED(CONFIG_SETTINGS) */
 
 static bool is_conn_active_profile(const struct bt_conn *conn) {
-    return bt_addr_le_cmp(bt_conn_get_dst(conn), &profiles[active_profile].peer) == 0;
+    if (conn == NULL) {
+        return false;
+    }
+    return bt_addr_le_cmp(zmk_ble_conn_get_identity_addr(conn), &profiles[active_profile].peer) ==
+           0;
+}
+
+static void notify_profile_changed_if_active(const struct bt_conn *conn) {
+    if (!is_peripheral_conn(conn)) {
+        return;
+    }
+    const bt_addr_le_t *identity = zmk_ble_conn_get_identity_addr(conn);
+    if (bt_addr_le_cmp(identity, &profiles[active_profile].peer) == 0) {
+        k_work_submit(&raise_profile_changed_event_work);
+    }
 }
 
 static void connected(struct bt_conn *conn, uint8_t err) {
     char addr[BT_ADDR_LE_STR_LEN];
-    struct bt_conn_info info;
     LOG_DBG("Connected thread: %p", k_current_get());
 
-    bt_conn_get_info(conn, &info);
-
-    if (info.role != BT_CONN_ROLE_PERIPHERAL) {
-        LOG_DBG("SKIPPING FOR ROLE %d", info.role);
+    if (!is_peripheral_conn(conn)) {
+        LOG_DBG("SKIPPING NON-PERIPHERAL");
         return;
     }
 
@@ -522,24 +595,18 @@ static void connected(struct bt_conn *conn, uint8_t err) {
 
     update_advertising();
 
-    if (is_conn_active_profile(conn)) {
-        LOG_DBG("Active profile connected");
-        k_work_submit(&raise_profile_changed_event_work);
-    }
+    notify_profile_changed_if_active(conn);
 }
 
 static void disconnected(struct bt_conn *conn, uint8_t reason) {
     char addr[BT_ADDR_LE_STR_LEN];
-    struct bt_conn_info info;
 
     bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
     LOG_DBG("Disconnected from %s (reason 0x%02x)", addr, reason);
 
-    bt_conn_get_info(conn, &info);
-
-    if (info.role != BT_CONN_ROLE_PERIPHERAL) {
-        LOG_DBG("SKIPPING FOR ROLE %d", info.role);
+    if (!is_peripheral_conn(conn)) {
+        LOG_DBG("SKIPPING NON-PERIPHERAL");
         return;
     }
 
@@ -547,10 +614,19 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
     // connection for a profile as active, and not start advertising yet.
     k_work_submit(&update_advertising_work);
 
-    if (is_conn_active_profile(conn)) {
-        LOG_DBG("Active profile disconnected");
-        k_work_submit(&raise_profile_changed_event_work);
-    }
+    notify_profile_changed_if_active(conn);
+}
+
+static void identity_resolved(struct bt_conn *conn, const bt_addr_le_t *rpa,
+                              const bt_addr_le_t *identity) {
+    char rpa_str[BT_ADDR_LE_STR_LEN];
+    char id_str[BT_ADDR_LE_STR_LEN];
+    bt_addr_le_to_str(rpa, rpa_str, sizeof(rpa_str));
+    bt_addr_le_to_str(identity, id_str, sizeof(id_str));
+
+    LOG_DBG("Identity resolved: %s -> %s", rpa_str, id_str);
+
+    notify_profile_changed_if_active(conn);
 }
 
 static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_security_err err) {
@@ -560,6 +636,7 @@ static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_
 
     if (!err) {
         LOG_DBG("Security changed: %s level %u", addr, level);
+        notify_profile_changed_if_active(conn);
     } else {
         LOG_ERR("Security failed: %s level %u err %d", addr, level, err);
     }
@@ -578,6 +655,7 @@ static struct bt_conn_cb conn_callbacks = {
     .connected = connected,
     .disconnected = disconnected,
     .security_changed = security_changed,
+    .identity_resolved = identity_resolved,
     .le_param_updated = le_param_updated,
 };
 
@@ -624,8 +702,7 @@ static void auth_cancel(struct bt_conn *conn) {
 
 static bool pairing_allowed_for_current_profile(struct bt_conn *conn) {
     return zmk_ble_active_profile_is_open() ||
-           (IS_ENABLED(CONFIG_BT_SMP_ALLOW_UNAUTH_OVERWRITE) &&
-            bt_addr_le_cmp(zmk_ble_active_profile_addr(), bt_conn_get_dst(conn)) == 0);
+           (IS_ENABLED(CONFIG_BT_SMP_ALLOW_UNAUTH_OVERWRITE) && is_conn_active_profile(conn));
 }
 
 static enum bt_security_err auth_pairing_accept(struct bt_conn *conn,
@@ -645,9 +722,9 @@ static enum bt_security_err auth_pairing_accept(struct bt_conn *conn,
 static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
     struct bt_conn_info info;
     char addr[BT_ADDR_LE_STR_LEN];
-    const bt_addr_le_t *dst = bt_conn_get_dst(conn);
+    const bt_addr_le_t *identity_addr = zmk_ble_conn_get_identity_addr(conn);
 
-    bt_addr_le_to_str(dst, addr, sizeof(addr));
+    bt_addr_le_to_str(identity_addr, addr, sizeof(addr));
     bt_conn_get_info(conn, &info);
 
     if (info.role != BT_CONN_ROLE_PERIPHERAL) {
@@ -657,11 +734,12 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
 
     if (!pairing_allowed_for_current_profile(conn)) {
         LOG_ERR("Pairing completed but current profile is not open: %s", addr);
-        bt_unpair(BT_ID_DEFAULT, dst);
+        bt_unpair(BT_ID_DEFAULT, identity_addr);
         return;
     }
 
-    set_profile_address(active_profile, dst);
+    LOG_DBG("Pairing complete for profile %d: %s", active_profile, addr);
+    set_profile_address(active_profile, identity_addr);
     update_advertising();
 };
 
