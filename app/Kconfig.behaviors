@@ -66,6 +66,11 @@ config ZMK_BEHAVIOR_KEY_TOGGLE
     default y
     depends on DT_HAS_ZMK_BEHAVIOR_KEY_TOGGLE_ENABLED
 
+config ZMK_BEHAVIOR_VKEY
+    bool
+    default y
+    depends on DT_HAS_ZMK_BEHAVIOR_VKEY_ENABLED && ZMK_HID_VKEY
+
 config ZMK_BEHAVIOR_MOUSE_KEY_PRESS
     bool
     default y

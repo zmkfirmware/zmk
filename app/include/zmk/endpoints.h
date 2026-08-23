@@ -99,6 +99,13 @@ bool zmk_endpoint_is_connected(void);
  */
 int zmk_endpoint_send_report(uint16_t usage_page);
 
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+/**
+ * Sends the vendor-defined selector key (vkey) report to the selected endpoint.
+ */
+int zmk_endpoint_send_vkey_report(void);
+#endif // IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 /**
  * Sends the HID mouse report to the selected endpoint.

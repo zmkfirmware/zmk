@@ -77,6 +77,13 @@
 #define ZMK_HID_REPORT_ID_CONSUMER 0x02
 #define ZMK_HID_REPORT_ID_MOUSE 0x03
 
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+// Vendor-defined selector key (vkey). The report ID comes from Kconfig and must
+// not collide with the standard reports (0x01 keyboard/leds, 0x02 consumer,
+// 0x03 mouse). Aliased so the descriptor and report code stay readable.
+#define ZMK_HID_REPORT_ID_VKEY CONFIG_ZMK_HID_VKEY_REPORT_ID
+#endif
+
 #ifndef HID_ITEM_TAG_PUSH
 #define HID_ITEM_TAG_PUSH 0xA
 #endif
@@ -253,6 +260,29 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_END_COLLECTION,
     HID_END_COLLECTION,
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
+
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+    // Vendor-defined selector key (vkey). Independent top-level collection
+    // appended after every standard collection and outside the
+    // CONFIG_ZMK_POINTING guard. Present only when CONFIG_ZMK_HID_VKEY is set,
+    // so a default build is byte-identical. The vendor usage page is 16-bit, so
+    // the long (2-byte) global item 0x06,lo,hi is written raw (HID_USAGE_PAGE()
+    // emits a 1-byte item and would truncate it); lo/hi are split from Kconfig.
+    0x06,
+    (CONFIG_ZMK_HID_VKEY_USAGE_PAGE & 0xFF),
+    (CONFIG_ZMK_HID_VKEY_USAGE_PAGE >> 8), // Usage Page (vendor, 16-bit)
+    HID_USAGE(0x01),                       // Usage (0x01, application)
+    HID_COLLECTION(HID_COLLECTION_APPLICATION),
+    HID_REPORT_ID(ZMK_HID_REPORT_ID_VKEY), // Report ID (Kconfig)
+    HID_USAGE(0x02),                       // Usage (0x02, selector)
+    HID_LOGICAL_MIN8(0x00),                // Logical Minimum (0)
+    HID_LOGICAL_MAX16(0xFF, 0x00),         // Logical Maximum (255); signed, so 2-byte
+    HID_REPORT_SIZE(0x08),                 // Report Size (8)
+    HID_REPORT_COUNT(0x01),                // Report Count (1)
+    HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR |
+              ZMK_HID_MAIN_VAL_ABS), // Input(Data,Var,Abs)
+    HID_END_COLLECTION,
+#endif // IS_ENABLED(CONFIG_ZMK_HID_VKEY)
 };
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
@@ -310,6 +340,17 @@ struct zmk_hid_consumer_report {
     uint8_t report_id;
     struct zmk_hid_consumer_report_body body;
 } __packed;
+
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+struct zmk_hid_vkey_report_body {
+    uint8_t id;
+} __packed;
+
+struct zmk_hid_vkey_report {
+    uint8_t report_id;
+    struct zmk_hid_vkey_report_body body;
+} __packed;
+#endif // IS_ENABLED(CONFIG_ZMK_HID_VKEY)
 
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 struct zmk_hid_mouse_report_body {
@@ -382,6 +423,12 @@ void zmk_hid_mouse_clear(void);
 
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void);
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void);
+
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+int zmk_hid_vkey_set(uint8_t id);
+void zmk_hid_vkey_clear(void);
+struct zmk_hid_vkey_report *zmk_hid_get_vkey_report(void);
+#endif // IS_ENABLED(CONFIG_ZMK_HID_VKEY)
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
 zmk_hid_boot_report_t *zmk_hid_get_boot_report();
