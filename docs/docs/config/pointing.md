@@ -13,10 +13,43 @@ Definition file: [zmk/app/pointing/Kconfig](https://github.com/zmkfirmware/zmk/b
 
 ### General
 
-| Config                                 | Type | Description                                                                | Default |
-| -------------------------------------- | ---- | -------------------------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_POINTING`                  | bool | Enable the general pointing/mouse functionality                            | n       |
-| `CONFIG_ZMK_POINTING_SMOOTH_SCROLLING` | bool | Enable smooth scrolling HID functionality (via HID Resolution Multipliers) | n       |
+| Config                                  | Type | Description                                                                  | Default |
+| --------------------------------------- | ---- | ---------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_POINTING`                   | bool | Enable the general pointing/mouse functionality                              | n       |
+| `CONFIG_ZMK_POINTING_SMOOTH_SCROLLING`  | bool | Enable smooth scrolling HID functionality (via HID Resolution Multipliers)   | n       |
+| `CONFIG_ZMK_POINTING_SCROLL_RESOLUTION` | int  | Scroll resolution in counts per inch, declared to the host (0 declares none) | 0       |
+
+:::note
+
+`CONFIG_ZMK_POINTING_SMOOTH_SCROLLING` relies on the host writing a HID Resolution
+Multiplier feature report. macOS never does: the multiplier usage does not appear
+anywhere in IOHIDFamily except its usage tables, so the option has no effect there.
+
+:::
+
+### Scroll resolution
+
+`CONFIG_ZMK_POINTING_SCROLL_RESOLUTION` tells the host how many counts the device
+emits per inch of scroll travel. It is declared in the report descriptor as a
+physical range, and it is worth setting on any device that scrolls from a sensor
+rather than from a notched wheel.
+
+Hosts use the declared resolution to tell a fine grained scroll stream from a
+notched wheel, and when nothing is declared they assume the latter. macOS assumes
+9 counts per inch, and that assumption has two effects: its high resolution
+scroll path stays off, since that is gated on the declared resolution exceeding
+twice the default, and its scroll acceleration curve is fed a velocity scaled by
+`resolution / report_rate`, so a trackball emitting hundreds of counts per inch is
+treated as moving far faster than it is. Scrolling comes out in coarse steps and
+accelerates away, however fine the stream from the device is.
+
+Set it to what the device really emits per inch, measured after the input
+processors. A 1600 CPI sensor feeding
+[`&zip_xy_to_scroll_mapper`](../keymaps/input-processors/code-mapper.md#pre-defined-instances)
+directly emits 1600 counts per inch; with
+[`&zip_xy_scaler 1 10`](../keymaps/input-processors/scaler.md#pre-defined-instances)
+ahead of it, 160. Larger values scroll more slowly, which makes this a speed control
+that does not cost any granularity, unlike dividing the stream down with a scaler.
 
 ### Advanced Settings
 
