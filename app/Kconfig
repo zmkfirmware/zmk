@@ -223,6 +223,26 @@ config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
 config ZMK_BLE_CLEAR_BONDS_ON_START
     bool "Configuration that clears all bond information from the keyboard on startup."
 
+config ZMK_BLE_AUTO_UNPAIR_ON_KEY_MISSING
+    bool "Auto-unpair the peer when its security handshake reports a missing key"
+    default n
+    help
+      When the BLE peer rejects security elevation with
+      BT_SECURITY_ERR_PIN_OR_KEY_MISSING (i.e. it no longer holds, or
+      never held, a bond matching ours), automatically call bt_unpair
+      and bt_conn_disconnect so the next advert initiates a fresh
+      pairing exchange.
+
+      Without this, dongle / split setups can get wedged in a
+      reconnect-and-fail loop after one side's bond is wiped (e.g.
+      after a partial settings reset or NVS corruption on one peer):
+      every reconnect triggers the same security error, which user
+      input alone cannot recover from short of clearing both bonds
+      and re-pairing.
+
+      Disabled by default to preserve the current behaviour, which
+      surfaces the error to the user without taking action.
+
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
     default n
