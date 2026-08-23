@@ -1,0 +1,21 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include "../behavior_keymap.dtsi"
+
+&kscan {
+    events = <
+        /* press pos 2 (D), which is in ht_a's exclude list but NOT in ht_b's */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_RELEASE(1,0,10)
+        /* quickly press ht_a (pos 0): pos 2 cancels idle for ht_a, expect hold decision */
+        ZMK_MOCK_PRESS(0,0,400)
+        ZMK_MOCK_RELEASE(0,0,400)
+        /* press pos 2 (D) again, then quickly press ht_b */
+        /* pos 2 is NOT in ht_b's exclude list, expect quick-tap */
+        ZMK_MOCK_PRESS(1,0,10)
+        ZMK_MOCK_PRESS(0,1,400)
+        ZMK_MOCK_RELEASE(1,0,10)
+        ZMK_MOCK_RELEASE(0,1,10)
+    >;
+};

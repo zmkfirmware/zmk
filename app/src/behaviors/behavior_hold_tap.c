@@ -58,16 +58,19 @@ struct behavior_hold_tap_config {
     char *tap_behavior_dev;
     int quick_tap_ms;
     int require_prior_idle_ms;
+    int32_t exclude_prior_idle_key_positions_len;
+    int32_t *exclude_prior_idle_key_positions;
     enum flavor flavor;
     bool hold_while_undecided;
     bool hold_while_undecided_linger;
     bool retro_tap;
     bool hold_trigger_on_release;
     int32_t hold_trigger_key_positions_len;
-    int32_t hold_trigger_key_positions[];
+    int32_t *hold_trigger_key_positions;
 };
 
 struct behavior_hold_tap_data {
+    int64_t last_prior_idle_key_timestamp;
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
     struct behavior_parameter_metadata_set set;
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
@@ -84,8 +87,10 @@ struct active_hold_tap {
     int64_t timestamp;
     enum status status;
     const struct behavior_hold_tap_config *config;
+    struct behavior_hold_tap_data *data;
     struct k_work_delayable work;
     bool work_is_cancelled;
+    bool quick_tap_deferred;
 
     // initialized to -1, which is to be interpreted as "no other key has been pressed yet"
     int32_t position_of_first_other_key_pressed;
@@ -129,6 +134,11 @@ struct last_tapped {
 // int64 min since it will overflow if -1 is added
 struct last_tapped last_tapped = {INT32_MIN, INT32_MIN};
 
+// Tracks the position of the most recently bubbled keydown event. Used by the
+// keycode listener to call update_prior_idle_key_timestamps with the correct
+// position (keycode events don't carry position information).
+int32_t last_keydown_position = INT32_MIN;
+
 static void store_last_tapped(int64_t timestamp) {
     if (timestamp > last_tapped.timestamp) {
         last_tapped.position = INT32_MIN;
@@ -141,13 +151,49 @@ static void store_last_hold_tapped(struct active_hold_tap *hold_tap) {
     last_tapped.timestamp = hold_tap->timestamp;
 }
 
-static bool is_quick_tap(struct active_hold_tap *hold_tap) {
-    if ((last_tapped.timestamp + hold_tap->config->require_prior_idle_ms) > hold_tap->timestamp) {
-        return true;
-    } else {
-        return (last_tapped.position == hold_tap->position) &&
-               (last_tapped.timestamp + hold_tap->config->quick_tap_ms) > hold_tap->timestamp;
+static bool is_exclude_prior_idle_key_position(const struct behavior_hold_tap_config *config,
+                                              int32_t position) {
+    for (int i = 0; i < config->exclude_prior_idle_key_positions_len; i++) {
+        if (config->exclude_prior_idle_key_positions[i] == position) {
+            return true;
+        }
     }
+    return false;
+}
+
+// Registry of all hold-tap device instances, populated during init, so the
+// position listener can update per-instance last_prior_idle_key_timestamp.
+#define HT_MAX_DEVICES DT_NUM_INST_STATUS_OKAY(DT_DRV_COMPAT)
+static const struct device *ht_devices[HT_MAX_DEVICES];
+static int ht_num_devices = 0;
+
+static void update_prior_idle_key_timestamps(int32_t position, int64_t timestamp) {
+    for (int i = 0; i < ht_num_devices; i++) {
+        const struct behavior_hold_tap_config *cfg = ht_devices[i]->config;
+        struct behavior_hold_tap_data *data = ht_devices[i]->data;
+        if (cfg->exclude_prior_idle_key_positions_len > 0) {
+            if (is_exclude_prior_idle_key_position(cfg, position)) {
+                data->last_prior_idle_key_timestamp = INT32_MIN;
+            } else {
+                data->last_prior_idle_key_timestamp = timestamp;
+            }
+        }
+    }
+}
+
+static bool is_quick_tap(struct active_hold_tap *hold_tap) {
+    if (hold_tap->config->exclude_prior_idle_key_positions_len > 0) {
+        if ((hold_tap->data->last_prior_idle_key_timestamp +
+             hold_tap->config->require_prior_idle_ms) > hold_tap->timestamp) {
+            return true;
+        }
+    } else if ((last_tapped.timestamp + hold_tap->config->require_prior_idle_ms) >
+               hold_tap->timestamp) {
+        return true;
+    }
+
+    return (last_tapped.position == hold_tap->position) &&
+           (last_tapped.timestamp + hold_tap->config->quick_tap_ms) > hold_tap->timestamp;
 }
 
 static int capture_event(struct captured_event *data) {
@@ -254,7 +300,8 @@ static struct active_hold_tap *find_hold_tap(uint32_t position) {
 
 static struct active_hold_tap *store_hold_tap(struct zmk_behavior_binding_event *event,
                                               uint32_t param_hold, uint32_t param_tap,
-                                              const struct behavior_hold_tap_config *config) {
+                                              const struct behavior_hold_tap_config *config,
+                                              struct behavior_hold_tap_data *data) {
     for (int i = 0; i < ZMK_BHV_HOLD_TAP_MAX_HELD; i++) {
         if (active_hold_taps[i].position != ZMK_BHV_HOLD_TAP_POSITION_NOT_USED) {
             continue;
@@ -265,9 +312,11 @@ static struct active_hold_tap *store_hold_tap(struct zmk_behavior_binding_event 
 #endif
         active_hold_taps[i].status = STATUS_UNDECIDED;
         active_hold_taps[i].config = config;
+        active_hold_taps[i].data = data;
         active_hold_taps[i].param_hold = param_hold;
         active_hold_taps[i].param_tap = param_tap;
         active_hold_taps[i].timestamp = event->timestamp;
+        active_hold_taps[i].quick_tap_deferred = false;
         active_hold_taps[i].position_of_first_other_key_pressed = -1;
         return &active_hold_taps[i];
     }
@@ -607,6 +656,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
                                        struct zmk_behavior_binding_event event) {
     const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
     const struct behavior_hold_tap_config *cfg = dev->config;
+    struct behavior_hold_tap_data *data = dev->data;
 
     if (undecided_hold_tap != NULL) {
         LOG_DBG("ERROR another hold-tap behavior is undecided.");
@@ -615,7 +665,7 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     }
 
     struct active_hold_tap *hold_tap =
-        store_hold_tap(&event, binding->param1, binding->param2, cfg);
+        store_hold_tap(&event, binding->param1, binding->param2, cfg, data);
 
     if (hold_tap == NULL) {
         LOG_ERR("unable to store hold-tap info, did you press more than %d hold-taps?",
@@ -627,7 +677,11 @@ static int on_hold_tap_binding_pressed(struct zmk_behavior_binding *binding,
     undecided_hold_tap = hold_tap;
 
     if (is_quick_tap(hold_tap)) {
-        decide_hold_tap(hold_tap, HT_QUICK_TAP);
+        if (hold_tap->config->exclude_prior_idle_key_positions_len > 0) {
+            hold_tap->quick_tap_deferred = true;
+        } else {
+            decide_hold_tap(hold_tap, HT_QUICK_TAP);
+        }
     }
 
     decide_hold_tap(hold_tap, HT_KEY_DOWN);
@@ -651,6 +705,12 @@ static int on_hold_tap_binding_released(struct zmk_behavior_binding *binding,
     // If these events were queued, the timer event may be queued too late or not at all.
     // We insert a timer event before the TH_KEY_UP event to verify.
     int work_cancel_result = k_work_cancel_delayable(&hold_tap->work);
+
+    if (hold_tap->quick_tap_deferred) {
+        hold_tap->quick_tap_deferred = false;
+        decide_hold_tap(hold_tap, HT_QUICK_TAP);
+    }
+
     if (event.timestamp > (hold_tap->timestamp + hold_tap->config->tapping_term_ms)) {
         decide_hold_tap(hold_tap, HT_TIMER_EVENT);
     }
@@ -730,6 +790,9 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
     update_hold_status_for_retro_tap(ev->position);
 
     if (undecided_hold_tap == NULL) {
+        if (ev->state) {
+            last_keydown_position = ev->position;
+        }
         LOG_DBG("%d bubble (no undecided hold_tap active)", ev->position);
         return ZMK_EV_EVENT_BUBBLE;
     }
@@ -751,6 +814,20 @@ static int position_state_changed_listener(const zmk_event_t *eh) {
         } else { // keyup
             LOG_DBG("%d bubble undecided hold-tap keyrelease event", undecided_hold_tap->position);
             return ZMK_EV_EVENT_BUBBLE;
+        }
+    }
+
+    // Resolve deferred quick-tap based on the combo key pressed.
+    // If the combo key is in exclude_prior_idle_key_positions, skip quick-tap entirely
+    // and let normal flavor logic handle the decision (as if require-prior-idle-ms was not set).
+    // If the combo key is NOT in the list, fire the deferred quick-tap now.
+    if (ev->state && undecided_hold_tap->quick_tap_deferred) {
+        undecided_hold_tap->quick_tap_deferred = false;
+        if (!is_exclude_prior_idle_key_position(undecided_hold_tap->config, ev->position)) {
+            decide_hold_tap(undecided_hold_tap, HT_QUICK_TAP);
+            if (undecided_hold_tap == NULL) {
+                return ZMK_EV_EVENT_BUBBLE;
+            }
         }
     }
 
@@ -791,6 +868,7 @@ static int keycode_state_changed_listener(const zmk_event_t *eh) {
 
     if (ev->state && !is_mod(ev->usage_page, ev->keycode)) {
         store_last_tapped(ev->timestamp);
+        update_prior_idle_key_timestamps(last_keydown_position, ev->timestamp);
     }
 
     if (undecided_hold_tap == NULL) {
@@ -840,7 +918,12 @@ void behavior_hold_tap_timer_work_handler(struct k_work *item) {
     if (hold_tap->work_is_cancelled) {
         clear_hold_tap(hold_tap);
     } else {
-        decide_hold_tap(hold_tap, HT_TIMER_EVENT);
+        if (hold_tap->quick_tap_deferred) {
+            hold_tap->quick_tap_deferred = false;
+            decide_hold_tap(hold_tap, HT_QUICK_TAP);
+        } else {
+            decide_hold_tap(hold_tap, HT_TIMER_EVENT);
+        }
     }
 }
 
@@ -854,10 +937,26 @@ static int behavior_hold_tap_init(const struct device *dev) {
         }
     }
     init_first_run = false;
+
+    struct behavior_hold_tap_data *data = dev->data;
+    data->last_prior_idle_key_timestamp = INT32_MIN;
+
+    if (ht_num_devices < HT_MAX_DEVICES) {
+        ht_devices[ht_num_devices++] = dev;
+    }
+
     return 0;
 }
 
 #define KP_INST(n)                                                                                 \
+    COND_CODE_1(DT_INST_NODE_HAS_PROP(n, hold_trigger_key_positions),                              \
+                (static const int32_t hold_trigger_key_positions_##n[] =                           \
+                     DT_INST_PROP(n, hold_trigger_key_positions);),                                \
+                ())                                                                                \
+    COND_CODE_1(DT_INST_NODE_HAS_PROP(n, exclude_prior_idle_key_positions),                         \
+                (static const int32_t exclude_prior_idle_key_positions_##n[] =                      \
+                     DT_INST_PROP(n, exclude_prior_idle_key_positions);),                           \
+                ())                                                                                \
     static const struct behavior_hold_tap_config behavior_hold_tap_config_##n = {                  \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
         .hold_behavior_dev = DEVICE_DT_NAME(DT_INST_PHANDLE_BY_IDX(n, bindings, 0)),               \
@@ -866,12 +965,19 @@ static int behavior_hold_tap_init(const struct device *dev) {
         .require_prior_idle_ms = DT_INST_PROP(n, global_quick_tap)                                 \
                                      ? DT_INST_PROP(n, quick_tap_ms)                               \
                                      : DT_INST_PROP(n, require_prior_idle_ms),                     \
+        .exclude_prior_idle_key_positions =                                                        \
+            COND_CODE_1(DT_INST_NODE_HAS_PROP(n, exclude_prior_idle_key_positions),                \
+                        (exclude_prior_idle_key_positions_##n), (NULL)),                           \
+        .exclude_prior_idle_key_positions_len =                                                    \
+            DT_INST_PROP_LEN(n, exclude_prior_idle_key_positions),                                 \
         .flavor = DT_ENUM_IDX(DT_DRV_INST(n), flavor),                                             \
         .hold_while_undecided = DT_INST_PROP(n, hold_while_undecided),                             \
         .hold_while_undecided_linger = DT_INST_PROP(n, hold_while_undecided_linger),               \
         .retro_tap = DT_INST_PROP(n, retro_tap),                                                   \
         .hold_trigger_on_release = DT_INST_PROP(n, hold_trigger_on_release),                       \
-        .hold_trigger_key_positions = DT_INST_PROP(n, hold_trigger_key_positions),                 \
+        .hold_trigger_key_positions =                                                              \
+            COND_CODE_1(DT_INST_NODE_HAS_PROP(n, hold_trigger_key_positions),                      \
+                        (hold_trigger_key_positions_##n), (NULL)),                                 \
         .hold_trigger_key_positions_len = DT_INST_PROP_LEN(n, hold_trigger_key_positions),         \
     };                                                                                             \
     static struct behavior_hold_tap_data behavior_hold_tap_data_##n = {};                          \
