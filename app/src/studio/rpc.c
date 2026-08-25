@@ -188,7 +188,11 @@ static int send_response(const zmk_studio_Response *resp) {
     pb_ostream_t stream = pb_ostream_for_tx_buf(user_data);
 
     uint8_t framing_byte = FRAMING_SOF;
-    ring_buf_put(&rpc_tx_buf, &framing_byte, 1);
+    if (ring_buf_put(&rpc_tx_buf, &framing_byte, 1) != 1) {
+        LOG_ERR("RPC TX buffer full");
+        k_mutex_unlock(&rpc_transport_mutex);
+        return -ENOMEM;
+    }
 
     selected_transport->tx_notify(&rpc_tx_buf, 1, false, user_data);
 
@@ -199,11 +203,15 @@ static int send_response(const zmk_studio_Response *resp) {
 #if !IS_ENABLED(CONFIG_NANOPB_NO_ERRMSG)
         LOG_ERR("Failed to encode the message %s", stream.errmsg);
 #endif // !IS_ENABLED(CONFIG_NANOPB_NO_ERRMSG)
+        k_mutex_unlock(&rpc_transport_mutex);
         return -EINVAL;
     }
 
     framing_byte = FRAMING_EOF;
-    ring_buf_put(&rpc_tx_buf, &framing_byte, 1);
+    // If response is large, tx buffer can be full for async transport.
+    while (ring_buf_put(&rpc_tx_buf, &framing_byte, 1) == 0) {
+        k_sleep(K_MSEC(1));
+    }
 
     selected_transport->tx_notify(&rpc_tx_buf, 1, true, user_data);
 
