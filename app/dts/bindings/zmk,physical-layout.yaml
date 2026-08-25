@@ -27,3 +27,6 @@ properties:
   keys:
     type: phandle-array
     description: Array of key physical attributes.
+  boot-magic-combos:
+    type: phandles
+    description: List of combos specific to this layout that enter bootloader or reset settings when held during boot.
