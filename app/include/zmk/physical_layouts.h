@@ -48,7 +48,7 @@ size_t zmk_physical_layouts_get_list(struct zmk_physical_layout const *const **p
 int zmk_physical_layouts_select(uint8_t index);
 int zmk_physical_layouts_get_selected(void);
 
-int zmk_physical_layouts_check_unsaved_selection(void);
+bool zmk_physical_layouts_check_unsaved_selection(void);
 int zmk_physical_layouts_save_selected(void);
 int zmk_physical_layouts_revert_selected(void);
 

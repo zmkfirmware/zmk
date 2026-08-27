@@ -31,6 +31,12 @@ struct zmk_behavior_binding_event {
 #endif
 };
 
+struct zmk_behavior_binding_setting {
+    zmk_behavior_local_id_t behavior_local_id;
+    uint32_t param1;
+    uint32_t param2;
+} __packed;
+
 /**
  * @brief Get a const struct device* for a behavior from its @p name field.
  *
