@@ -19,6 +19,8 @@
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
 
+#include <zmk/events/split_transport_changed.h>
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 const struct zmk_split_transport_central *active_transport;
@@ -198,6 +200,8 @@ static int select_first_available_transport(void) {
 
 static int transport_status_changed_cb(const struct zmk_split_transport_central *central,
                                        struct zmk_split_transport_status status) {
+    raise_zmk_split_transport_changed(
+        (struct zmk_split_transport_changed){.addr = (uint32_t)central, .status = status});
     if (central == active_transport) {
         LOG_DBG("Central at %p changed status: enabled %d, available %d, connections %d", central,
                 status.enabled, status.available, status.connections);
@@ -210,6 +214,26 @@ static int transport_status_changed_cb(const struct zmk_split_transport_central 
     }
 
     return 0;
+}
+
+bool zmk_split_transport_get_available(uint32_t addr) {
+    STRUCT_SECTION_FOREACH(zmk_split_transport_central, t) {
+        if ((uint32_t)t == addr) {
+            return t->api->get_status().available;
+        }
+    }
+
+    return 0;
+}
+
+uint32_t zmk_split_get_transport_addr_at_index(uint8_t index) {
+    struct zmk_split_transport_central *t;
+    ptrdiff_t count;
+    STRUCT_SECTION_COUNT(zmk_split_transport_central, &count);
+    if ((ptrdiff_t)index > count)
+        return 0;
+    STRUCT_SECTION_GET(zmk_split_transport_central, index, &t);
+    return (uint32_t)t;
 }
 
 static int central_init(void) {
