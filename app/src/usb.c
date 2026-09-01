@@ -14,7 +14,7 @@
 #include <zmk/keymap.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/usb_conn_state_changed.h>
-
+#include <zmk/workqueue.h>
 #include <zmk/usb_hid.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -72,7 +72,7 @@ void usb_status_cb(enum usb_dc_status_code status, const uint8_t *params) {
     } else {
         is_configured = false;
     }
-    k_work_submit(&usb_status_notifier_work);
+    k_work_submit_to_queue(zmk_main_work_q(), &usb_status_notifier_work);
 };
 
 static int zmk_usb_init(void) {

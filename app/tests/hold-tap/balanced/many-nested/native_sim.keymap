@@ -27,13 +27,13 @@
 
 &kscan {
     events = <
-        ZMK_MOCK_PRESS(0,0,100)
-        ZMK_MOCK_PRESS(0,1,100)
-        ZMK_MOCK_PRESS(1,0,100)
-        ZMK_MOCK_PRESS(1,1,100)
-        ZMK_MOCK_RELEASE(0,0,100)
-        ZMK_MOCK_RELEASE(0,1,100)
-        ZMK_MOCK_RELEASE(1,0,100)
-        ZMK_MOCK_RELEASE(1,1,100)
+        ZMK_MOCK_PRESS(0,0,105)
+        ZMK_MOCK_PRESS(0,1,105)
+        ZMK_MOCK_PRESS(1,0,105)
+        ZMK_MOCK_PRESS(1,1,105)
+        ZMK_MOCK_RELEASE(0,0,105)
+        ZMK_MOCK_RELEASE(0,1,105)
+        ZMK_MOCK_RELEASE(1,0,105)
+        ZMK_MOCK_RELEASE(1,1,105)
     >;
 };
