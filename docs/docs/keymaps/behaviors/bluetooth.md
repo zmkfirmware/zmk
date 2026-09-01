@@ -49,7 +49,7 @@ Here is a table describing the command for each define:
 
 :::note[Selected profile persistence]
 The profile that is selected by the `BT_SEL`/`BT_PRV`/`BT_NXT` actions will be [saved to flash storage](../../config/settings.md) and hence persist across restarts and firmware flashes.
-However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/settings.md#kconfig) milliseconds in order to reduce potential wear on the flash memory.
 :::
 
 ## Bluetooth Behavior
