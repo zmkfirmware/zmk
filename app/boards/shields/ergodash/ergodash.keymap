@@ -33,11 +33,11 @@
  * .----------------------------------------------------------------------------------------------------------------------.
  */
                         bindings = <
-&kp  GRAVE    &kp  N1       &kp  N2       &kp  N3       &kp  N4       &kp  N5       &kp  LBKT              &kp  RBKT     &kp  N6       &kp  N7       &kp  N8       &kp  N9       &kp  N0       &kp  PSCRN
-&kp  ESC      &kp  Q        &kp  W        &kp  E        &kp  R        &kp  T        &kp  MINUS             &kp  EQUAL    &kp  Y        &kp  U        &kp  I        &kp  O        &kp  P        &kp  BSLH
-&kp  TAB      &kp  A        &kp  S        &kp  D        &kp  F        &kp  G        &kp  DEL               &kp  BSPC     &kp  H        &kp  J        &kp  K        &kp  L        &kp  SEMI     &kp  SQT
-&kp  LSHFT    &kp  Z        &kp  X        &kp  C        &kp  V        &kp  B        &kp  END               &kp  HOME     &kp  N        &kp  M        &kp  COMMA    &kp  DOT      &kp  SLASH    &kp  RSHFT
-&kp  LCTRL    &none         &kp  PG_DN    &kp  LMETA    &kp  LALT     &kp  SPACE    &mo  LOWER             &mo  RAISE    &kp  RET      &kp  RALT     &none         &kp  PG_UP    &kp  INS      &kp  RCTRL
+&kp  GRAVE    &kp  N1        &kp  N2       &kp  N3       &kp  N4       &kp  N5       &kp  LBKT              &kp  RBKT     &kp  N6       &kp  N7       &kp  N8       &kp  N9       &kp  N0       &kp  PSCRN
+&kp  ESC      &kp  Q         &kp  W        &kp  E        &kp  R        &kp  T        &kp  MINUS             &kp  EQUAL    &kp  Y        &kp  U        &kp  I        &kp  O        &kp  P        &kp  BSLH
+&kp  TAB      &kp  A         &kp  S        &kp  D        &kp  F        &kp  G        &kp  DEL               &kp  BSPC     &kp  H        &kp  J        &kp  K        &kp  L        &kp  SEMI     &kp  SQT
+&kp  LSHFT    &kp  Z         &kp  X        &kp  C        &kp  V        &kp  B        &kp  END               &kp  HOME     &kp  N        &kp  M        &kp  COMMA    &kp  DOT      &kp  SLASH    &kp  RSHFT
+&kp  LCTRL    &studio_unlock &kp  PG_DN    &kp  LMETA    &kp  LALT     &kp  SPACE    &mo  LOWER             &mo  RAISE    &kp  RET      &kp  RALT     &none         &kp  PG_UP    &kp  INS      &kp  RCTRL
                         >;
                 };
                 lower_layer {
@@ -58,7 +58,7 @@
 &kp  F11      &kp  F1       &kp  F2       &kp  F3       &kp  F4       &kp  F5       &none                  &none         &kp  F6       &kp  F7       &kp  F8       &kp  F9       &kp  F10      &kp  F12
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
-&trans        &bootloader   &sys_reset        &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &trans
+&trans        &bootloader   &sys_reset    &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &trans
 &trans        &none         &none         &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
                         >;
                 };
@@ -80,7 +80,7 @@
 &none         &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &none         &bt BT_CLR             &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
 &none         &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &none         &none         &none
-&trans        &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &bootloader   &sys_reset        &trans
+&trans        &none         &none         &none         &none         &none         &none                  &none         &none         &none         &none         &bootloader   &sys_reset    &trans
 &trans        &none         &none         &trans        &trans        &none         &trans                 &trans        &none         &trans        &none         &none         &none         &trans
                         >;
                 };
