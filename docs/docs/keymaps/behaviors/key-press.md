@@ -47,3 +47,32 @@ Example:
 ```dts
 &kp A
 ```
+
+## Key Tap
+
+The "key tap" behavior will send a press followed by a release when you press the behavior, and will do nothing when you release the behavior.
+
+### Behavior Binding
+
+- Reference: `&ktap`
+- Parameter: The keycode usage ID from the usage page, e.g. `N4` or `A`
+
+Example:
+
+```dts
+&ktap A
+```
+
+#### Configuration
+
+You can adjust the tap duration, i.e. the time between press and release of the key, by changing the `tap-ms` property:
+
+```dts
+&ktap {
+    tap-ms = <30>; // This is the value already set by default
+};
+```
+
+:::info
+Internally, the key tap behavior is a very simple [macro](./macros.md#defining-parameterized-macros).
+:::

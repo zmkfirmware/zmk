@@ -16,5 +16,25 @@
             #binding-cells = <1>;
             display-name = "Key Toggle";
         };
+
+#if ZMK_BEHAVIOR_OMIT(KT_ON)
+        /omit-if-no-ref/
+#endif
+        kt_on: key_toggle_on {
+            compatible = "zmk,behavior-key-toggle";
+            #binding-cells = <1>;
+            display-name = "Key Toggle On";
+            toggle-mode = "on";
+        };
+
+#if ZMK_BEHAVIOR_OMIT(KT_OFF)
+        /omit-if-no-ref/
+#endif
+        kt_off: key_toggle_off {
+            compatible = "zmk,behavior-key-toggle";
+            #binding-cells = <1>;
+            display-name = "Key Toggle Off";
+            toggle-mode = "off";
+        };
     };
 };
