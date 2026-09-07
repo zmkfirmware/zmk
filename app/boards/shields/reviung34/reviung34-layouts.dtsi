@@ -1,0 +1,114 @@
+/*
+ * Copyright (c) 2026 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <physical_layouts.dtsi>
+
+/ {
+    reviung34_dual_1u_layout: reviung34_dual_1u_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Dual 1U (34 keys)";
+
+        keys  //                     w   h    x    y     rot    rx    ry
+            = <&key_physical_attrs 100 100   35    2   1000   85   52>
+            , <&key_physical_attrs 100 100  136    1   1000  186   51>
+            , <&key_physical_attrs 100 100  238    0   1000  288   50>
+            , <&key_physical_attrs 100 100  333   35   1000  383   85>
+            , <&key_physical_attrs 100 100  429   71   1000  479  121>
+            , <&key_physical_attrs 100 100  555   71  (-1000)  605  121>
+            , <&key_physical_attrs 100 100  650   35 (-1000)  700   85>
+            , <&key_physical_attrs 100 100  746    0 (-1000)  796   50>
+            , <&key_physical_attrs 100 100  847    1 (-1000)  897   51>
+            , <&key_physical_attrs 100 100  949    1 (-1000)  999   51>
+            , <&key_physical_attrs 100 100   17  100   1000   67  150>
+            , <&key_physical_attrs 100 100  119   99   1000  169  149>
+            , <&key_physical_attrs 100 100  221   98   1000  271  148>
+            , <&key_physical_attrs 100 100  316  134   1000  366  184>
+            , <&key_physical_attrs 100 100  411  169   1000  461  219>
+            , <&key_physical_attrs 100 100  572  169 (-1000)  622  219>
+            , <&key_physical_attrs 100 100  668  134 (-1000)  718  184>
+            , <&key_physical_attrs 100 100  763   98 (-1000)  813  148>
+            , <&key_physical_attrs 100 100  865   99 (-1000)  915  149>
+            , <&key_physical_attrs 100 100  966  100 (-1000) 1016  150>
+            , <&key_physical_attrs 100 100    0  198   1000   50  248>
+            , <&key_physical_attrs 100 100  102  198   1000  152  248>
+            , <&key_physical_attrs 100 100  203  197   1000  253  247>
+            , <&key_physical_attrs 100 100  298  232   1000  348  282>
+            , <&key_physical_attrs 100 100  394  268   1000  444  318>
+            , <&key_physical_attrs 100 100  590  268 (-1000)  640  318>
+            , <&key_physical_attrs 100 100  685  232 (-1000)  735  282>
+            , <&key_physical_attrs 100 100  780  197 (-1000)  830  247>
+            , <&key_physical_attrs 100 100  882  198 (-1000)  932  248>
+            , <&key_physical_attrs 100 100  984  198 (-1000) 1034  248>
+            , <&key_physical_attrs 100 100  328  370   1500  378  420>
+            , <&key_physical_attrs 100 100  442  385      0    0    0>
+            , <&key_physical_attrs 100 100  542  385      0    0    0>
+            , <&key_physical_attrs 100 100  655  370 (-1500)  705  420>
+        ;
+    };
+
+    reviung34_single_2u_layout: reviung34_single_2u_layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Single 2U (33 keys)";
+
+        keys  //                     w   h    x    y     rot    rx    ry
+            = <&key_physical_attrs 100 100   35    2   1000   85   52>
+            , <&key_physical_attrs 100 100  136    1   1000  186   51>
+            , <&key_physical_attrs 100 100  238    0   1000  288   50>
+            , <&key_physical_attrs 100 100  333   35   1000  383   85>
+            , <&key_physical_attrs 100 100  429   71   1000  479  121>
+            , <&key_physical_attrs 100 100  555   71 (-1000)  605  121>
+            , <&key_physical_attrs 100 100  650   35 (-1000)  700   85>
+            , <&key_physical_attrs 100 100  746    0 (-1000)  796   50>
+            , <&key_physical_attrs 100 100  847    1 (-1000)  897   51>
+            , <&key_physical_attrs 100 100  949    1 (-1000)  999   51>
+            , <&key_physical_attrs 100 100   17  100   1000   67  150>
+            , <&key_physical_attrs 100 100  119   99   1000  169  149>
+            , <&key_physical_attrs 100 100  221   98   1000  271  148>
+            , <&key_physical_attrs 100 100  316  134   1000  366  184>
+            , <&key_physical_attrs 100 100  411  169   1000  461  219>
+            , <&key_physical_attrs 100 100  572  169 (-1000)  622  219>
+            , <&key_physical_attrs 100 100  668  134 (-1000)  718  184>
+            , <&key_physical_attrs 100 100  763   98 (-1000)  813  148>
+            , <&key_physical_attrs 100 100  865   99 (-1000)  915  149>
+            , <&key_physical_attrs 100 100  966  100 (-1000) 1016  150>
+            , <&key_physical_attrs 100 100    0  198   1000   50  248>
+            , <&key_physical_attrs 100 100  102  198   1000  152  248>
+            , <&key_physical_attrs 100 100  203  197   1000  253  247>
+            , <&key_physical_attrs 100 100  298  232   1000  348  282>
+            , <&key_physical_attrs 100 100  394  268   1000  444  318>
+            , <&key_physical_attrs 100 100  590  268 (-1000)  640  318>
+            , <&key_physical_attrs 100 100  685  232 (-1000)  735  282>
+            , <&key_physical_attrs 100 100  780  197 (-1000)  830  247>
+            , <&key_physical_attrs 100 100  882  198 (-1000)  932  248>
+            , <&key_physical_attrs 100 100  984  198 (-1000) 1034  248>
+            , <&key_physical_attrs 100 100  328  370   1500  378  420>
+            , <&key_physical_attrs 200 100  442  385       0     0     0>
+            , <&key_physical_attrs 100 100  655  370 (-1500)  705  420>
+        ;
+    };
+
+    reviung34_position_map {
+        compatible = "zmk,physical-layout-position-map";
+
+        reviung34_dual_1u_posmap {
+            physical-layout = <&reviung34_dual_1u_layout>;
+            positions
+                = < 0  1  2  3  4  5  6  7  8  9>
+                , <10 11 12 13 14 15 16 17 18 19>
+                , <20 21 22 23 24 25 26 27 28 29>
+                , <30 31 33 32>;
+        };
+
+        reviung34_single_2u_posmap {
+            physical-layout = <&reviung34_single_2u_layout>;
+            positions
+                = < 0  1  2  3  4  5  6  7  8  9>
+                , <10 11 12 13 14 15 16 17 18 19>
+                , <20 21 22 23 24 25 26 27 28 29>
+                , <30 31 32>;
+        };
+    };
+};

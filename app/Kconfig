@@ -5,6 +5,17 @@ mainmenu "ZMK Firmware"
 
 menu "ZMK"
 
+config ZMK_BOARD_COMPAT
+    bool
+    help
+      Hidden symbol used to hint that a board has been specifically
+      set up with various ZMK requirements in mind, e.g. settings
+      storage, bootloader integration, etc.
+
+      Failure to set this will warn users they may want to verify they
+      used a ZMK variant of an upstream board, or are using a board
+      properly migrated to a newer ZMK version.
+
 menu "Basic Keyboard Setup"
 
 config ZMK_KEYBOARD_NAME
@@ -109,6 +120,8 @@ config ZMK_HID_INDICATORS
     help
       Enable HID indicators, used for detecting state of Caps/Scroll/Num Lock,
       Kata, and Compose.
+
+rsource "src/indicators/Kconfig"
 
 config ZMK_HID_SEPARATE_MOD_RELEASE_REPORT
     bool "Release Modifiers Separately"

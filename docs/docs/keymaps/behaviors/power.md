@@ -48,7 +48,7 @@ The on/off state that is set by the `&ext_power` behavior will be [saved to flas
 However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
 
-### Example:
+### Examples
 
 1. Behavior binding to enable the external power
 

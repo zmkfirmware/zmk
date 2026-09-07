@@ -11,7 +11,7 @@ Your keyboard likely uses only one type, depending on the type of LED hardware i
 - [Backlight](#backlight) system controls parallel-connected, non-addressable, single color LEDs.
   These are found on keyboards that have a single color backlight that only allows for brightness control.
 
-:::warning
+:::info
 
 Although the naming of the systems might imply it, which system you use typically does _not_ depend on the physical location of the LEDs.
 Instead, you should use the one that supports the LED hardware type that your keyboard has, as described above.
@@ -73,7 +73,7 @@ See [RGB underglow configuration](../config/lighting.md#rgb-underglow).
 
 ### Adding RGB Underglow Support to a Keyboard
 
-See [RGB underglow hardware integration page](../development/hardware-integration/lighting/underglow.md) on adding underglow support to a ZMK keyboard.
+See [RGB underglow hardware integration page](../hardware-integration/lighting/underglow.md) on adding underglow support to a ZMK keyboard.
 
 ## Backlight
 
@@ -100,4 +100,4 @@ See [backlight configuration](../config/lighting.md#backlight) for details.
 
 ### Adding Backlight to a Board or a Shield
 
-See [backlight hardware integration page](../development/hardware-integration/lighting/backlight.mdx) for information on adding backlight support to a ZMK keyboard.
+See [backlight hardware integration page](../hardware-integration/lighting/backlight.mdx) for information on adding backlight support to a ZMK keyboard.

@@ -202,7 +202,7 @@ values={[
  * SPDX-License-Identifier: MIT
  */
 
-#define DT_DRV_COMPAT zmk_<name_of_behavior>
+#define DT_DRV_COMPAT zmk_behavior_<name_of_behavior>
 
 // Dependencies
 #include <zephyr/device.h>
@@ -247,7 +247,7 @@ static int on_<name_of_behavior>_binding_released(struct zmk_behavior_binding *b
 // API struct
 static const struct behavior_driver_api <name_of_behavior>_driver_api = {
     .binding_pressed = on_<name_of_behavior>_binding_pressed,
-    .binding_released = on_<name_of_behavior>_binding_pressed,
+    .binding_released = on_<name_of_behavior>_binding_released,
 };
 
 BEHAVIOR_DT_INST_DEFINE(0,                                                // Instance Number (0)
@@ -273,7 +273,7 @@ BEHAVIOR_DT_INST_DEFINE(0,                                                // Ins
  * SPDX-License-Identifier: MIT
  */
 
-#define DT_DRV_COMPAT zmk_<name_of_behavior>
+#define DT_DRV_COMPAT zmk_behavior_<name_of_behavior>
 
 // Dependencies
 #include <zephyr/device.h>
@@ -318,29 +318,30 @@ static int on_<name_of_behavior>_binding_released(struct zmk_behavior_binding *b
 // API struct
 static const struct behavior_driver_api <name_of_behavior>_driver_api = {
     .binding_pressed = on_<name_of_behavior>_binding_pressed,
-    .binding_released = on_<name_of_behavior>_binding_pressed,
+    .binding_released = on_<name_of_behavior>_binding_released,
 };
 
-#define <NAME_OF_BEHAVIOR>_INST(n)                                            \
-    static struct behavior_<name_of_behavior>_data_##n {                      \
-        .data_param1 = foo1;                                                  \
-        .data_param2 = foo2;                                                  \
-        .data_param3 = foo3;                                                  \
-    };                                                                        \
-                                                                              \
-    static struct behavior_<name_of_behavior>_config_##n {                    \
-        .config_param1 = bar1;                                                \
-        .config_param2 = bar2;                                                \
-        .config_param3 = bar3;                                                \
-    };                                                                        \
-                                                                              \
-    BEHAVIOR_DT_INST_DEFINE(n,                                                \ // Instance Number (Automatically populated by macro)
-                            <name_of_behavior>_init,                          \ // Initialization Function
-                            NULL,                                             \ // Power Management Device Pointer
-                            &<name_of_behavior>_data_##n,                     \ // Behavior Data Pointer
-                            &<name_of_behavior>_config_##n,                   \ // Behavior Configuration Pointer
-                            POST_KERNEL, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT  \ // Initialization Level, Device Priority
-                            &<name_of_behavior>_driver_api);                    // API struct
+#define <NAME_OF_BEHAVIOR>_INST(n)                                                                                       \
+    static struct behavior_<name_of_behavior>_data_##n {                                                                 \
+        .data_param1 = foo1,                                                                                             \
+        .data_param2 = foo2,                                                                                             \
+        .data_param3 = foo3,                                                                                             \
+    };                                                                                                                   \
+                                                                                                                         \
+    static struct behavior_<name_of_behavior>_config_##n {                                                               \
+        .config_param1 = bar1,                                                                                           \
+        .config_param2 = bar2,                                                                                           \
+        .config_param3 = bar3,                                                                                           \
+    };                                                                                                                   \
+                                                                                                                         \
+    BEHAVIOR_DT_INST_DEFINE(n,                                  /* Instance Number (Automatically populated by macro) */ \
+                            <name_of_behavior>_init,            /* Initialization Function */                            \
+                            NULL,                               /* Power Management Device Pointer */                    \
+                            &<name_of_behavior>_data_##n,       /* Behavior Data Pointer */                              \
+                            &<name_of_behavior>_config_##n,     /* Behavior Configuration Pointer */                     \
+                            POST_KERNEL,                        /* Initialization Level */                               \
+                            CONFIG_KERNEL_INIT_PRIORITY_DEFAULT /* Device Priority */                                    \
+                            &<name_of_behavior>_driver_api);    /* API struct */                                         \
 
 DT_INST_FOREACH_STATUS_OKAY(<NAME_OF_BEHAVIOR>_INST)
 

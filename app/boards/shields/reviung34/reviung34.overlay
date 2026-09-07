@@ -6,10 +6,20 @@
 
 #include <dt-bindings/zmk/matrix_transform.h>
 
+#include "reviung34-layouts.dtsi"
+
+&reviung34_dual_1u_layout {
+    transform = <&dual_1u_transform>;
+};
+
+&reviung34_single_2u_layout {
+    transform = <&single_2u_transform>;
+};
+
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix-transform = &dual_1u_transform;
+        zmk,physical-layout = &reviung34_dual_1u_layout;
     };
 
     dual_1u_transform: keymap_transform_0 {

@@ -12,9 +12,7 @@ sidebar_label: ZMK Module Creation
 
 See also Zephyr's [page on modules](https://docs.zephyrproject.org/4.1.0/develop/modules.html).
 
-:::tip
-For open source hardware designs, it can be convenient to use [Git submodules](https://github.blog/open-source/git/working-with-submodules/) to have the ZMK module also be a Git submodule of the repository hosting the hardware design.
-:::
+For open source hardware designs, it's recommended to **not** include the hardware design files in the ZMK module itself, since the module will be fetched by users during build and having design files in the module would likely make the module unnecessarily large and slow to fetch.
 
 ## Module Setup
 
@@ -133,15 +131,15 @@ Note that the `include` and `src` folders are not mandated by the module system,
 Modules should expose all provided header files with an include path name beginning with the module-name, for example at `include/zmk_<type>_<description>/<header>.h`.
 
 :::info
-If your module requires adding drivers to existing subsystems in modules, you will need to use the `zephyr_library_amend()` CMake command, which requires you to have a specific directory structure. See [here](https://github.com/zephyrproject-rtos/zephyr/blob/main/cmake/modules/extensions.cmake#L454) for the definition and some documentation in the comments, with an example [here](https://github.com/petejohanson/ec-support-zmk-module/tree/main/drivers/kscan).
+If your module requires adding drivers to existing subsystems in modules, you will need to use the `zephyr_library_amend()` CMake command, which requires you to have a specific directory structure. See [`zephyr/cmake/modules/extensions.cmake`](https://github.com/zephyrproject-rtos/zephyr/blob/main@%7B2025-Feb-15%7D/cmake/modules/extensions.cmake#L492) for the definition and some documentation in the comments, with an example in [`petejohanson/ec-support-zmk-module`](https://github.com/petejohanson/ec-support-zmk-module/tree/main/drivers/kscan).
 :::
 
 ## Examples
 
 Below are some examples of modules for different types. Unless under the `zmkfirmware` project, these are not endorsed officially and may not follow our conventions perfectly. For such reason, the modules chosen to be presented here may change with time.
 
-- Keyboard: https://github.com/petejohanson/zmk-keyboards-katori
-- Behavior: https://github.com/urob/zmk-leader-key
-- Driver: https://github.com/petejohanson/cirque-input-module
-- Feature: https://github.com/joelspadin/zmk-locales
-- VFX: https://github.com/caksoylar/zmk-rgbled-widget
+- Keyboard: <https://github.com/petejohanson/zmk-keyboards-katori>
+- Behavior: <https://github.com/urob/zmk-leader-key>
+- Driver: <https://github.com/petejohanson/cirque-input-module>
+- Feature: <https://github.com/joelspadin/zmk-locales>
+- VFX: <https://github.com/caksoylar/zmk-rgbled-widget>

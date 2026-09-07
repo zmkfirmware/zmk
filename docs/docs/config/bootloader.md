@@ -32,7 +32,7 @@ To ensure the BOOT button on keyboard and controllers using these SoCs works as 
 
 ### Bootmode Magic Value Mapper
 
-Some target SoCs may use the bootmode magic value mapper for [bootloader integration](docs/development/hardware-integration/bootloader/index.mdx). When doing so, the following configurations are used:
+Some target SoCs may use the bootmode magic value mapper for [bootloader integration](docs/hardware-integration/bootloader/index.mdx). When doing so, the following configurations are used:
 
 | Config                                                           | Type | Description                                                                           | Default |
 | ---------------------------------------------------------------- | ---- | ------------------------------------------------------------------------------------- | ------- |

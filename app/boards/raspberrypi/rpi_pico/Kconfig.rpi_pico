@@ -1,0 +1,10 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+config BOARD_RPI_PICO
+    select SOC_RP2040
+    select ZMK_BOARD_COMPAT if BOARD_RPI_PICO_RP2040_ZMK
+    imply RETAINED_MEM if BOARD_RPI_PICO_RP2040_ZMK
+    imply RETENTION if BOARD_RPI_PICO_RP2040_ZMK
+    imply RETENTION_BOOT_MODE if BOARD_RPI_PICO_RP2040_ZMK
+

@@ -51,7 +51,7 @@ ZMK is still in its infancy, so thereâ€™s a learning curve involved. But if youâ
 
 ZMK uses the Zephyr concepts of "boards" and "shields" to refer to different parts of a keyboard build, that in turn get combined during a firmware build.
 This provides the modularity to be able to use composite keyboards with different compatible controllers.
-Please see the [explainer on boards & shields](development/hardware-integration/index.mdx#boards--shields) for more details.
+Please see the [explainer on boards & shields](hardware-integration/index.mdx#boards--shields) for more details.
 
 ### Does ZMK support wired split?
 
@@ -63,7 +63,7 @@ The latency of ZMK is comparable to other firmware offerings. ZMK is equipped wi
 
 ### Any chance for 2.4GHz dongle implementation?
 
-At this time, there are no current plans to implement 2.4GHz dongle mode. This is because utilizing Nordic's proprietary 2.4GHz low level protocols requires use of the Nordic Connect SDK, which is licensed with a more restrictive license than ZMK's MIT license. However, it is possible to [create a dongle](development/hardware-integration/dongle.mdx) for your keyboard that runs ZMK and communicates between parts using BLE (with encryption). This results in a 3.75ms average theoretical latency from the protocol itself.
+At this time, there are no current plans to implement 2.4GHz dongle mode. This is because utilizing Nordic's proprietary 2.4GHz low level protocols requires use of the Nordic Connect SDK, which is licensed with a more restrictive license than ZMK's MIT license. However, it is possible to [create a dongle](hardware-integration/dongle.mdx) for your keyboard that runs ZMK and communicates between parts using BLE (with encryption). This results in a 3.75ms average theoretical latency from the protocol itself.
 
 ### What bootloader does ZMK use?
 

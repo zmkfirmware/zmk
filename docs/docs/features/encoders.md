@@ -41,4 +41,4 @@ Here, the left encoder is configured to control volume up and down while the rig
 
 ## Adding Encoder Support
 
-See the [Hardware Integration page for encoders](../development/hardware-integration/encoders.md) for instructions on adding them to your keyboard.
+See the [Hardware Integration page for encoders](../hardware-integration/encoders.md) for instructions on adding them to your keyboard.

@@ -59,10 +59,19 @@ config ZMK_STUDIO_TRANSPORT_UART
     select RING_BUFFER
     default y if $(dt_chosen_enabled,$(DT_CHOSEN_ZMK_STUDIO_RPC_UART))
 
+if ZMK_STUDIO_TRANSPORT_UART
+
 config ZMK_STUDIO_TRANSPORT_UART_RX_STACK_SIZE
     int "RX Stack Size"
     depends on !UART_INTERRUPT_DRIVEN
     default 512
+
+config ZMK_STUDIO_TRANSPORT_UART_RX_PRIORITY
+    int "RX Thread Priority"
+    depends on !UART_INTERRUPT_DRIVEN
+    default 9
+
+endif
 
 config ZMK_STUDIO_TRANSPORT_BLE
     bool "BLE (GATT)"
@@ -71,8 +80,11 @@ config ZMK_STUDIO_TRANSPORT_BLE
     depends on ZMK_BLE
     default y
 
+
 config BT_CONN_TX_MAX
     default 64 if ZMK_STUDIO_TRANSPORT_BLE
+
+if ZMK_STUDIO_TRANSPORT_BLE
 
 config ZMK_STUDIO_TRANSPORT_BLE_PREF_LATENCY
     int "BLE Transport preferred latency"
@@ -80,6 +92,8 @@ config ZMK_STUDIO_TRANSPORT_BLE_PREF_LATENCY
     help
       When the studio UI is connected, a lower latency can be requested in order
       to make the interactions between keyboard and studio faster.
+
+endif
 
 endmenu
 

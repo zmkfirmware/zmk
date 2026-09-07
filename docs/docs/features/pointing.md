@@ -24,7 +24,7 @@ See the [mouse emulation behaviors](../keymaps/behaviors/mouse-emulation.md) for
 
 There are a few drivers available for supporting physical pointing devices integrated into a ZMK powered device. When doing so, you can use your device as both a keyboard and a pointing device with any connected hosts. The functionality can be extended further, e.g. slow mode, scroll mode, temporary mouse layers, etc. by configuring [input processors](#input-processors) linked to the physical pointing device.
 
-For more information, refer to the [pointer hardware integration](../development/hardware-integration/pointing.mdx) documentation.
+For more information, refer to the [pointer hardware integration](../hardware-integration/pointing.mdx) documentation.
 
 ## Input Processors
 

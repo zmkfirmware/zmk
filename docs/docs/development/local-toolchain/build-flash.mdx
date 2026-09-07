@@ -43,7 +43,7 @@ with an onboard MCU or one that uses an MCU board add-on.
     you can build ZMK with the following:
 
     ```sh
-    west build -b planck_rev6
+    west build -b planck//zmk
     ```
 
   </TabItem>
@@ -62,11 +62,18 @@ with an onboard MCU or one that uses an MCU board add-on.
     You can build ZMK with the following:
 
     ```sh
-    west build -b proton_c -- -DSHIELD=kyria_left
+    west build -b proton_c//zmk -- -DSHIELD=kyria_left
     ```
 
   </TabItem>
 </Tabs>
+
+:::warning
+Since moving to Zephyr 4.1, the board IDs for boards in ZMK need to use the ZMK board
+variants. E.g. instead of `planck_rev6` it should be `planck//zmk`. Read more about
+board variants in the
+[Zephyr 4.1 Update](https://zmk.dev/blog/2025/12/09/zephyr-4-1#zmk-board-variant) blog post.
+:::
 
 ### CMake Arguments
 
@@ -79,7 +86,7 @@ arguments afterward. The previous section shows one example of this with
 `-DSHIELD=kyria_left`. Another example use case is passing Kconfig flags:
 
 ```sh
-west build -b planck_rev6 -- -DCONFIG_ZMK_SLEEP=y
+west build -b planck//zmk -- -DCONFIG_ZMK_SLEEP=y
 ```
 
 :::tip
@@ -114,7 +121,7 @@ west config build.cmake-args \
 When building for a new board and/or shield after having built one previously, you may need to enable the pristine build option. This option removes all existing files in the build directory before regenerating them, and can be enabled by adding either --pristine or -p to the command:
 
 ```sh
-west build -p -b nice_nano -- -DSHIELD=kyria_left
+west build -p -b nice_nano//zmk -- -DSHIELD=kyria_left
 ```
 
 ### Building For Split Keyboards
@@ -126,13 +133,13 @@ For split keyboards, you will have to build and flash each side separately the f
 By default, the `build` command outputs a single .uf2 file named `zmk.uf2` so building left and then right immediately after will overwrite your left firmware. In addition, you will need to pristine build each side to ensure the correct files are used. To avoid having to pristine build every time and separate the left and right build files, we recommend setting up separate build directories for each half. You can do this by using the `-d` parameter and first building left into `build/left`:
 
 ```sh
-west build -d build/left -b nice_nano -- -DSHIELD=kyria_left
+west build -d build/left -b nice_nano//zmk -- -DSHIELD=kyria_left
 ```
 
 and then building right into `build/right`:
 
 ```sh
-west build -d build/right -b nice_nano -- -DSHIELD=kyria_right
+west build -d build/right -b nice_nano//zmk -- -DSHIELD=kyria_right
 ```
 
 This produces `left` and `right` subfolders under the `build` directory and two separate .uf2 files. For future work on a specific half, use the `-d` parameter again to ensure you are building into the correct location.
@@ -148,19 +155,19 @@ ZMK supports loading additional boards, shields, code, etc. from [external ZMK m
 For instance, building with the `my-vendor-keebs-module` checked out to your documents directory, you would build like:
 
 ```
-west build -b nice_nano -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Users/myUser/Documents/my-vendor-keebs-module"
+west build -b nice_nano//zmk -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Users/myUser/Documents/my-vendor-keebs-module"
 ```
 
 When adding multiple modules, make sure they are separated by a semicolon, e.g.:
 
 ```
-west build -b nice_nano -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Users/myUser/Documents/my-vendor-keebs-module;C:/Users/myUser/Documents/my-other-keebs-module"
+west build -b nice_nano//zmk -- -DSHIELD=vendor_shield -DZMK_EXTRA_MODULES="C:/Users/myUser/Documents/my-vendor-keebs-module;C:/Users/myUser/Documents/my-other-keebs-module"
 ```
 
 ### Building from `zmk-config` Folder
 
 Instead of building .uf2 files using the default keymap and config files, you
-can build using files from your [`zmk-config` folder](../../user-setup.mdx#github-repo)
+can build using files from your [`zmk-config` folder](../../user-setup.mdx#config-repo-setup)
 by adding `-DZMK_CONFIG="C:/the/absolute/path/config"` to your `west build`
 command. **Notice that this path should point to the folder labeled `config`
 within your `zmk-config` folder.**
@@ -169,7 +176,7 @@ For instance, building kyria firmware from a user `myUser`'s `zmk-config` folder
 on Windows may look something like this:
 
 ```sh
-west build -b nice_nano -- -DSHIELD=kyria_left \
+west build -b nice_nano//zmk -- -DSHIELD=kyria_left \
   -DZMK_CONFIG="C:/Users/myUser/Documents/Github/zmk-config/config"
 ```
 

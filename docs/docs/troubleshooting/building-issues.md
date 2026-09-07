@@ -53,12 +53,10 @@ A `devicetree_generated.h` error that follows with an "undeclared here" string i
 
 In this example, the error string `DT_N_S_keymap_S_symbol_layer_P_bindings_IDX_12_PH_P_label` indicates a problem with the key binding in position `12` in the `symbol_layer` of the keymap.
 
-:::info
 Key positions are numbered starting from `0` at the top left key on the keymap, incrementing horizontally, row by row.
-:::
 
 :::tip
-A common mistake that leads to this error is to use [key press keycodes](keymaps/behaviors/key-press.md) without the leading `&kp` binding. That is, having entries such as `SPACE` that should have been `&kp SPACE`.
+A common mistake that leads to this error is to use [key press keycodes](keymaps/behaviors/key-press.md) without the leading `&kp` binding. That is, having entries such as `&kp A SPACE &kp B` that should have been `&kp A &kp SPACE &kp B`.
 :::
 
 ## Diagnosing Unexpected Build Results
@@ -77,7 +75,7 @@ If you are building locally, this file can be found inside the build folder at `
 Additionally, the build command (in "West Build (`<keyboard>`)" step in GitHub Actions) logs what configuration files were found and used in the build:
 
 ```
-+ west build -s zmk/app -d /tmp/tmp.8cJefinXCb -b corneish_zen_left@2 -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/__w/zmk-config/zmk-config
++ west build -s zmk/app -d /tmp/tmp.8cJefinXCb -b corneish_zen_left//zmk -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/__w/zmk-config/zmk-config
 ...
 -- ZMK Config Kconfig: /tmp/zmk-config/config/corneish_zen.conf
 ...
@@ -98,7 +96,7 @@ If you are building locally, this file can be found inside the build folder at `
 Additionally, the build command (in "West Build (`<keyboard>`)" step in GitHub Actions) logs what devicetree files were found and used in the build:
 
 ```
-+ west build -s zmk/app -d /tmp/tmp.8cJefinXCb -b corneish_zen_left@2 -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/__w/zmk-config/zmk-config
++ west build -s zmk/app -d /tmp/tmp.8cJefinXCb -b corneish_zen_left//zmk -- -DZMK_CONFIG=/tmp/zmk-config/config -DZMK_EXTRA_MODULES=/__w/zmk-config/zmk-config
 ...
 -- Found BOARD.dts: /tmp/zmk-config/zmk/app/boards/lowprokb/corneish_zen/corneish_zen_left.dts
 -- Found devicetree overlay: /tmp/zmk-config/zmk/app/boards/lowprokb/corneish_zen/corneish_zen_left_2_0_0.overlay

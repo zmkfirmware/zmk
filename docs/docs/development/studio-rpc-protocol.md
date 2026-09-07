@@ -35,7 +35,7 @@ A message consists of a SoF byte, the payload, escaped as needed, followed by an
 Here is an example encoding when the message content does not include any of the special bytes:
 
 ```mermaid
-block-beta
+block
   columns 5
 
   space:1
@@ -47,7 +47,7 @@ block-beta
 
   space
 
-  down<[" "]>(down):5
+  space:2 downArrow<["&nbsp;"]>(down) space:2
 
   block:groupSoF:1
     columns 1
@@ -81,11 +81,11 @@ block-beta
 When the message content includes any of the special bytes, those bytes are escaped whe framed
 
 ```mermaid
-block-beta
-  columns 6
+block
+  columns 7
 
   space:1
-  block:group1:4
+  block:group1:5
     columns 5
     contentLabel["Content"]:1 space:4
     OrigA["0x12"] space OrigB["0xAD"] space OrigC["0xAC"]
@@ -93,7 +93,7 @@ block-beta
 
   space:1
 
-  down<[" "]>(down):6
+  space:3 downArrow<["&nbsp;"]>(down) space:3
 
   block:groupSoF:1
     columns 1
@@ -101,7 +101,7 @@ block-beta
     SoF["0xAB"]
   end
 
-  block:group2:4
+  block:group2:5
     columns 5
     contentLabel2["Content"]:1 space:4
     EncA["0x12"]

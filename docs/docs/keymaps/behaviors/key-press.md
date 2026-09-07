@@ -31,7 +31,7 @@ provided by ZMK near the top:
 #include <dt-bindings/zmk/keys.h>
 ```
 
-Doing so makes a set of defines such as `A`, `N1`, etc. available for use with these behaviors
+Doing so makes a set of defines such as `A`, `N1`, etc. (see the [list of keycodes](../list-of-keycodes)) available for use with these behaviors.
 
 ## Key Press
 

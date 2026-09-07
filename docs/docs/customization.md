@@ -58,13 +58,13 @@ You can build additional keyboards with GitHub actions by appending them to `bui
 
 ```yaml
 include:
-  - board: nice_nano@1
+  - board: nice_nano@1//zmk
     shield: corne_left
-  - board: nice_nano@1
+  - board: nice_nano@1//zmk
     shield: corne_right
-  - board: nice_nano
+  - board: nice_nano//zmk
     shield: lily58_left
-  - board: nice_nano
+  - board: nice_nano//zmk
     shield: lily58_right
 ```
 

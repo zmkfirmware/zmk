@@ -76,7 +76,7 @@ static const struct gpio_dt_spec detect_gpio = GPIO_DT_SPEC_INST_GET(0, detect_g
 #else
 
 #error                                                                                             \
-    "Need to create a node with compatible of 'zmk,wired-split` with a `device` property set to an enabled UART. See http://zmk.dev/docs/development/hardware-integration/new-shield#wired-split"
+    "Need to create a node with compatible of 'zmk,wired-split` with a `device` property set to an enabled UART. See http://zmk.dev/docs/hardware-integration/new-shield#wired-split"
 
 #endif
 

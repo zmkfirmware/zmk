@@ -1,0 +1,37 @@
+# Copyright (c) 2025, The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Display the states of HID indicators using LEDs
+
+compatible: "zmk,indicator-leds"
+
+child-binding:
+  properties:
+    leds:
+      type: phandles
+      required: true
+      description: One or more LED devices to control
+
+    indicator:
+      type: int
+      required: true
+      description: HID_INDICATOR_* value to indicate (see dt-bindings/zmk/hid_indicators.h)
+
+    active-brightness:
+      type: int
+      description: LED brightness in percent when the indicator is active
+      default: 100
+
+    inactive-brightness:
+      type: int
+      description: LED brightness in percent when the indicator is not active
+      default: 0
+
+    disconnected-brightness:
+      type: int
+      description: LED brightness in percent when the keyboard is not connected to any device
+      default: 0
+
+    on-while-idle:
+      type: boolean
+      description: Keep LEDs enabled even when the keyboard is idle and on battery power

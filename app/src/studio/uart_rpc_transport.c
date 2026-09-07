@@ -65,7 +65,7 @@ static void uart_rx_main(void) {
 }
 
 K_THREAD_DEFINE(uart_transport_read_thread, CONFIG_ZMK_STUDIO_TRANSPORT_UART_RX_STACK_SIZE,
-                uart_rx_main, NULL, NULL, NULL, K_LOWEST_APPLICATION_THREAD_PRIO, 0, 0);
+                uart_rx_main, NULL, NULL, NULL, CONFIG_ZMK_STUDIO_TRANSPORT_UART_RX_PRIORITY, 0, 0);
 
 #endif
 
