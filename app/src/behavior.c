@@ -130,8 +130,10 @@ static int validate_hid_usage(uint16_t usage_page, uint16_t usage_id) {
     LOG_DBG("Validate usage %d in page %d", usage_id, usage_page);
     switch (usage_page) {
     case HID_USAGE_KEY:
-        if (usage_id == 0 || (usage_id > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE &&
-                              usage_id < LEFT_CONTROL && usage_id > RIGHT_GUI)) {
+        if (usage_id == 0 ||
+            (usage_id > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE &&
+             usage_id < HID_USAGE_KEY_KEYBOARD_LEFTCONTROL) ||
+            usage_id > HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
             return -EINVAL;
         }
         break;
