@@ -7,7 +7,9 @@
 #pragma once
 
 #include <zephyr/kernel.h>
-#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/hid_usage.h>
+#include <dt-bindings/zmk/hid_usage_pages.h>
+#include <dt-bindings/zmk/modifiers.h>
 
 typedef uint32_t zmk_key_t;
 typedef uint8_t zmk_mod_t;

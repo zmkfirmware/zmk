@@ -131,7 +131,8 @@ static int validate_hid_usage(uint16_t usage_page, uint16_t usage_id) {
     switch (usage_page) {
     case HID_USAGE_KEY:
         if (usage_id == 0 || (usage_id > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE &&
-                              usage_id < LEFT_CONTROL && usage_id > RIGHT_GUI)) {
+                              usage_id < HID_USAGE_KEY_KEYBOARD_LEFTCONTROL &&
+                              usage_id > HID_USAGE_KEY_KEYBOARD_RIGHT_GUI)) {
             return -EINVAL;
         }
         break;
