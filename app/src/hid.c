@@ -33,6 +33,24 @@ static struct zmk_hid_mouse_report mouse_report = {
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
+
+// Support multiple battery reports - initialize from devicetree
+#define BATTERY_REPORT_INIT_DT(node_id)                                                            \
+    {.report_id = ZMK_HID_REPORT_ID_BATTERY_BASE + DT_NODE_CHILD_IDX(node_id),                     \
+     .charging = 0,                                                                                \
+     .battery_level = 0},
+
+#if DT_HAS_CHOSEN(zmk_battery_reporting)
+static struct zmk_hid_battery_report battery_reports[ZMK_HID_MAX_BATTERIES] = {
+    DT_FOREACH_CHILD(DT_CHOSEN(zmk_battery_reporting), BATTERY_REPORT_INIT_DT)};
+#else
+static struct zmk_hid_battery_report battery_reports[ZMK_HID_MAX_BATTERIES] = {
+    {.report_id = ZMK_HID_REPORT_ID_BATTERY, .charging = 0, .battery_level = 0}};
+#endif
+
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
+
 // Keep track of how often a modifier was pressed.
 // Only release the modifier if the count is 0.
 static int explicit_modifier_counts[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -468,6 +486,26 @@ void zmk_hid_mouse_clear(void) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
+
+void zmk_hid_battery_set(uint8_t battery_index, uint8_t battery_level,
+                         enum zmk_battery_charge_state charge_state) {
+    if (battery_index >= ZMK_HID_MAX_BATTERIES) {
+        LOG_ERR("Invalid battery index: %d", battery_index);
+        return;
+    }
+    if (battery_level > 100) {
+        battery_level = 100;
+    }
+    LOG_DBG("Battery set: idx=%d level=%d charge_state=%d", battery_index, battery_level,
+            charge_state);
+    battery_reports[battery_index].battery_level = battery_level;
+    battery_reports[battery_index].charging =
+        (charge_state == ZMK_BATTERY_CHARGE_STATE_CHARGING) ? 1 : 0;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
+
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyboard_report; }
 
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
@@ -477,3 +515,13 @@ struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &cons
 struct zmk_hid_mouse_report *zmk_hid_get_mouse_report(void) { return &mouse_report; }
 
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
+
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
+struct zmk_hid_battery_report *zmk_hid_get_battery_report(uint8_t battery_index) {
+    if (battery_index >= ZMK_HID_MAX_BATTERIES) {
+        LOG_ERR("Invalid battery index: %d", battery_index);
+        return NULL;
+    }
+    return &battery_reports[battery_index];
+}
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)

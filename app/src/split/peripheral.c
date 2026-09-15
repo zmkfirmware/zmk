@@ -184,6 +184,7 @@ int split_peripheral_listener(const zmk_event_t *eh) {
             .type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT,
             .data = {.battery_event = {
                          .level = battery_ev->state_of_charge,
+                         .charge_state = battery_ev->charge_state,
                      }}};
 
         zmk_split_peripheral_report_event(&ev);
