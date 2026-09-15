@@ -27,7 +27,45 @@ if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
 config ZMK_POINTING_SMOOTH_SCROLLING
     bool "Smooth Scrolling"
     help
-      Enable smooth scrolling, with hosts that support HID Resolution Multipliers
+      Enable smooth scrolling, with hosts that support HID Resolution Multipliers.
+
+      Note that macOS is not such a host: IOHIDFamily never writes the
+      Resolution Multiplier feature report, so the multipliers stay at their
+      default and this option has no effect there. Use
+      ZMK_POINTING_SCROLL_RESOLUTION for macOS.
+
+config ZMK_POINTING_SCROLL_RESOLUTION
+    int "Scroll resolution, in counts per inch"
+    default 0
+    help
+      The physical resolution of the scroll axes, declared to the host in the
+      HID report descriptor. 0 declares nothing, which is the historical
+      behaviour.
+
+      Hosts use this to tell a fine grained scroll stream from a notched
+      wheel. When nothing is declared they assume a notched wheel: macOS
+      assumes 9 counts per inch, keeps its high resolution scroll path off,
+      and feeds its acceleration curve a velocity scaled by
+      resolution/report_rate, so a device emitting hundreds of counts per inch
+      is treated as moving far faster than it is. Scrolling then comes out
+      coarse and accelerates away, however fine the stream is.
+
+      Set this to the number of counts the device really emits per inch of
+      travel, measured after the input processors. A 1600 CPI sensor feeding
+      &zip_xy_to_scroll_mapper directly emits 1600; with "&zip_xy_scaler 1 10"
+      ahead of it, 160. Larger values scroll more slowly, so this doubles as a
+      speed control that needs no reflashing of the scaler.
+
+      This describes the stream as emitted with the finest resolution
+      multiplier, which is what ZMK defaults to. A host that asks for a coarser
+      one through ZMK_POINTING_SMOOTH_SCROLLING is expected to account for the
+      multiplier it chose.
+
+      Must be either 0 or between 11 and 655350; the descriptor cannot express
+      a resolution below 11. macOS ignores anything up to 18, which is twice
+      its own default, so use 19 or more for it to take effect there. Values
+      are rounded to what the descriptor can express, which is exact up to
+      about 800 and within a fraction of a percent above it.
 
 config ZMK_INPUT_LISTENER
     bool "Input listener for processing input events in the system"
