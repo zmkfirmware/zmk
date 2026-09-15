@@ -28,6 +28,10 @@ properties:
   require-prior-idle-ms:
     type: int
     default: -1
+  exclude-prior-idle-key-positions:
+    type: array
+    required: false
+    default: []
   flavor:
     type: string
     required: false
