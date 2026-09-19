@@ -180,6 +180,15 @@ int update_advertising(void) {
     struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
+    /* Modifying Start: Disable BLE HID host advertising for USB dongle receivers. */
+    if (IS_ENABLED(CONFIG_ZMK_BLE_DISABLE_HOST_ADV)) {
+        if (advertising_status != ZMK_ADV_NONE) {
+            CHECKED_ADV_STOP();
+        }
+        return 0;
+    }
+    /* End of Modifying */
+
     if (zmk_ble_active_profile_is_open()) {
         desired_adv = ZMK_ADV_CONN;
     } else if (!zmk_ble_active_profile_is_connected()) {
