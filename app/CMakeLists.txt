@@ -88,11 +88,12 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     target_sources(app PRIVATE src/hog.c)
   endif()
 else()
-  # A split peripheral gets the subset of the endpoint state that the central mirrors
-  # to it, so consumers such as indicator LEDs work on both halves.
+  # A split peripheral gets the subset of the endpoint and HID indicator state that
+  # the central mirrors to it, so consumers such as indicator LEDs work on both halves.
   target_sources_ifdef(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS app PRIVATE src/endpoints_common.c)
   target_sources_ifdef(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS app PRIVATE src/endpoints_peripheral.c)
   target_sources_ifdef(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS app PRIVATE src/events/endpoint_changed.c)
+  target_sources_ifdef(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS app PRIVATE src/hid_indicators_peripheral.c)
 endif()
 
 target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/behaviors/behavior_rgb_underglow.c)

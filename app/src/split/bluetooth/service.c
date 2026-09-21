@@ -28,10 +28,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include "peripheral.h"
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-#include <zmk/events/hid_indicators_changed.h>
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-
 #include <zmk/events/sensor_event.h>
 #include <zmk/sensors.h>
 
@@ -80,9 +76,15 @@ static void split_svc_pos_state_ccc(const struct bt_gatt_attr *attr, uint16_t va
 static zmk_hid_indicators_t hid_indicators = 0;
 
 static void split_svc_update_indicators_callback(struct k_work *work) {
-    LOG_DBG("Raising HID indicators changed event: %x", hid_indicators);
-    raise_zmk_hid_indicators_changed(
-        (struct zmk_hid_indicators_changed){.indicators = hid_indicators});
+    struct zmk_split_transport_central_command cmd = {
+        .type = ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS,
+        .data = {.set_hid_indicators = {.indicators = hid_indicators}}};
+
+    int err =
+        zmk_split_transport_peripheral_command_handler(zmk_split_transport_peripheral_bt(), cmd);
+    if (err) {
+        LOG_ERR("Failed to apply the HID indicator state from the central (%d)", err);
+    }
 }
 
 static K_WORK_DEFINE(split_svc_update_indicators_work, split_svc_update_indicators_callback);
