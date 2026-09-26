@@ -194,6 +194,15 @@ config ZMK_BLE_PASSKEY_ENTRY
     bool "Require passkey entry on the keyboard to complete pairing"
     select RING_BUFFER
 
+# Modifying Start: Disable BLE HID host advertising for USB dongle receivers.
+config ZMK_BLE_DISABLE_HOST_ADV
+    bool "Disable BLE HID host advertising"
+    help
+      Disable BLE HID advertising to host devices while keeping BLE enabled.
+      This is useful for USB dongle receivers that still need BLE split central
+      communication with peripherals.
+# End of Modifying
+
 config BT_SMP_ALLOW_UNAUTH_OVERWRITE
     imply ZMK_BLE_PASSKEY_ENTRY
 
