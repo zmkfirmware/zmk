@@ -651,6 +651,7 @@ if ZMK_LOW_PRIORITY_WORK_QUEUE
 
 config ZMK_LOW_PRIORITY_THREAD_STACK_SIZE
     int "Low priority thread stack size"
+    default 3072 if ZMK_DISPLAY_WORK_QUEUE_LOW_PRIORITY
     default 768
 
 config ZMK_LOW_PRIORITY_THREAD_PRIORITY
