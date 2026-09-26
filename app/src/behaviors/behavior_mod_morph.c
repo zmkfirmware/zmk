@@ -46,7 +46,9 @@ static int on_mod_morph_binding_pressed(struct zmk_behavior_binding *binding,
     }
 
     if (zmk_hid_get_explicit_mods() & cfg->mods) {
-        zmk_hid_masked_modifiers_set(cfg->masked_mods);
+        if (cfg->masked_mods) {
+            zmk_hid_masked_modifiers_set(cfg->masked_mods);
+        }
         data->pressed_binding = (struct zmk_behavior_binding *)&cfg->morph_binding;
     } else {
         data->pressed_binding = (struct zmk_behavior_binding *)&cfg->normal_binding;
@@ -57,6 +59,7 @@ static int on_mod_morph_binding_pressed(struct zmk_behavior_binding *binding,
 static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
                                          struct zmk_behavior_binding_event event) {
     const struct device *dev = zmk_behavior_get_binding(binding->behavior_dev);
+    const struct behavior_mod_morph_config *cfg = dev->config;
     struct behavior_mod_morph_data *data = dev->data;
 
     if (data->pressed_binding == NULL) {
@@ -68,7 +71,9 @@ static int on_mod_morph_binding_released(struct zmk_behavior_binding *binding,
     data->pressed_binding = NULL;
     int err;
     err = zmk_behavior_invoke_binding(pressed_binding, event, false);
-    zmk_hid_masked_modifiers_clear();
+    if (cfg->masked_mods) {
+        zmk_hid_masked_modifiers_clear();
+    }
     return err;
 }
 
