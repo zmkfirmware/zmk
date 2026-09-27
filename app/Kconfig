@@ -154,6 +154,31 @@ config USB_NUMOF_EP_WRITE_RETRIES
 config USB_HID_POLL_INTERVAL_MS
     default 1
 
+config ZMK_USB_KEYBOARD_HID_DEVICE_INDEX
+    int "USB HID device index for keyboard reports"
+    default 0
+    help
+      Zephyr USB HID device index used for keyboard reports. Index 0 selects
+      HID_0, index 1 selects HID_1, and so on.
+
+config ZMK_USB_CONSUMER_HID_DEVICE_INDEX
+    int "USB HID device index for consumer reports"
+    default 0
+    help
+      Zephyr USB HID device index used for consumer reports. Set this to the
+      same index as keyboard reports to use a shared report descriptor, or to a
+      separate enabled USB HID device index for a separate interface.
+
+config ZMK_USB_POINTING_HID_DEVICE_INDEX
+    int "USB HID device index for pointing reports"
+    default 0
+    depends on ZMK_POINTING
+    help
+      Zephyr USB HID device index used for pointing reports. Set this to the
+      same index as keyboard or consumer reports to use a shared report
+      descriptor, or to a separate enabled USB HID device index for a separate
+      interface.
+
 endif # ZMK_USB
 
 menuconfig ZMK_BLE
