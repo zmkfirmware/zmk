@@ -154,6 +154,66 @@ config USB_NUMOF_EP_WRITE_RETRIES
 config USB_HID_POLL_INTERVAL_MS
     default 1
 
+config ZMK_USB_HID_REPLAY_ON_READY
+    bool "Queue HID reports while USB is not ready and replay on resume"
+    default n
+    help
+      Buffer HID reports that arrive while the USB endpoint is in
+      USB_DC_SUSPEND (or other not-ready states), then flush them
+      shortly after USB transitions to USB_DC_CONFIGURED / USB_DC_RESUME.
+
+      Without this option, zmk_usb_hid_send_report drops every report
+      issued during suspend/disconnect windows. The user-visible
+      symptom is "first keypress lost on host sleep resume / dongle
+      replug, and several presses needed after USB selective-suspend
+      wake". This is most visible on USB-dongle keyboard setups (BLE
+      central forwarding HID over USB) and on macOS hosts (which also
+      drop the first input report from a freshly bound interface).
+
+      The fix queues dropped reports in a small ring buffer and
+      replays them once USB is ready again, after a brief delay that
+      lets the host finish HID interface binding before the resend.
+
+      Adds a small static ring buffer
+      (CONFIG_ZMK_USB_HID_REPLAY_QUEUE_DEPTH entries of
+      CONFIG_ZMK_USB_HID_REPLAY_REPORT_MAX_LEN bytes each) plus one
+      delayable work and one mutex. Disabled by default to preserve
+      existing behaviour.
+
+if ZMK_USB_HID_REPLAY_ON_READY
+
+config ZMK_USB_HID_REPLAY_QUEUE_DEPTH
+    int "Depth of the pending HID report replay queue"
+    default 8
+    range 1 64
+    help
+      Number of HID reports buffered while USB is not ready. On overflow
+      the oldest entry is dropped. Each entry consumes
+      CONFIG_ZMK_USB_HID_REPLAY_REPORT_MAX_LEN bytes of RAM.
+
+config ZMK_USB_HID_REPLAY_REPORT_MAX_LEN
+    int "Maximum bytes per buffered HID report"
+    default 16
+    range 8 64
+    help
+      Upper bound on the size of a queued report. Reports larger than
+      this are not buffered (a warning is logged). Match this to the
+      largest HID report your build generates (keyboard / consumer /
+      mouse / smooth-scrolling, etc.).
+
+config ZMK_USB_HID_REPLAY_FLUSH_DELAY_MS
+    int "Delay (ms) before flushing the replay queue on USB ready"
+    default 100
+    range 0 1000
+    help
+      Wait this long after USB transitions to a ready state before
+      flushing buffered reports. The delay absorbs the host-side HID
+      interface binding race: macOS, in particular, drops the first
+      input report from a freshly bound interface as a quirk. Setting
+      this longer than needed only delays the first replayed event.
+
+endif # ZMK_USB_HID_REPLAY_ON_READY
+
 endif # ZMK_USB
 
 menuconfig ZMK_BLE
