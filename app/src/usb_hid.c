@@ -56,7 +56,7 @@ static uint8_t *get_keyboard_report(size_t *len) {
     }
 #endif
     struct zmk_hid_keyboard_report *report = zmk_hid_get_keyboard_report();
-    *len = sizeof(*report);
+    *len = sizeof(report->report_id) + zmk_hid_keyboard_report_body_size();
     return (uint8_t *)report;
 }
 
@@ -242,7 +242,9 @@ static int zmk_usb_hid_init(void) {
         return -EINVAL;
     }
 
-    usb_hid_register_device(hid_dev, zmk_hid_report_desc, sizeof(zmk_hid_report_desc), &ops);
+    size_t report_desc_len;
+    const uint8_t *report_desc = zmk_hid_report_desc_get(&report_desc_len);
+    usb_hid_register_device(hid_dev, report_desc, report_desc_len, &ops);
 
 #if IS_ENABLED(CONFIG_ZMK_USB_BOOT)
     usb_hid_set_proto_code(hid_dev, HID_BOOT_IFACE_CODE_KEYBOARD);
