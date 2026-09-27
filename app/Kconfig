@@ -154,6 +154,18 @@ config USB_NUMOF_EP_WRITE_RETRIES
 config USB_HID_POLL_INTERVAL_MS
     default 1
 
+config ZMK_USB_SUSPEND_DISCONNECT_TIMEOUT_MS
+    int "USB suspend disconnect timeout in milliseconds"
+    default 0
+    help
+      When non-zero, treat a USB suspend lasting longer than this many
+      milliseconds as a disconnect.  This is useful for boards without
+      VBUS detection where the USB controller reports USB_DC_SUSPEND
+      when the cable is physically unplugged, preventing the endpoint
+      from switching to BLE.
+
+      Set to 0 (default) to disable this workaround.
+
 endif # ZMK_USB
 
 menuconfig ZMK_BLE
