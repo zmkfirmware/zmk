@@ -67,28 +67,14 @@ Example:
 &tog 3
 ```
 
-### Configuration
+### Toggle On and Toggle Off
 
-#### Toggle mode
+For state-independent toggles, there exist two further behaviors:
 
-If you wish to ensure that a layer is toggled on or off specifically, rather than switching between the two states, then you can do so with the `toggle-mode` property.
-Define a new behavior and assign `"on"` or `"off"` to `toggle-mode`:
+- `&tog_on`: Toggles a layer on, even if it is already on.
+- `&tog_off`: Toggles a layer off, even if it is already off.
 
-```dts
-/ {
-    behaviors {
-        tog_on: toggle_layer_on_only {
-            compatible = "zmk,behavior-toggle-layer";
-            #binding-cells = <1>;
-            display-name = "Toggle Layer On";
-            toggle-mode = "on";
-            locking;
-        };
-    };
-};
-```
-
-You can then use `&tog_on` in place of `&tog` whenever you wish to only toggle a layer on, and not toggle it off. An `"off"` version of the behavior can be defined similarly.
+Use these just as you would use `&tog`.
 
 ## Layer Locking
 
@@ -96,7 +82,13 @@ When the behaviors `&to` and `&tog` toggle a layer on, they will "lock" the laye
 
 In particular, if you activate a layer momentarily using e.g. `&mo 1`, tapping e.g. `&tog 1` as defined above will prevent the layer from deactivating after releasing `&mo 1`. You can then press `&tog 1` again to deactivate the layer.
 
-For custom toggle, to, and momentary layer behaviors, this can be enabled by giving your behavior the `locking;` property.
+You can remove the locking property from `&to` and `&tog` if you wanted them to be interruptable by `&mo`:
+
+```dts
+&to {
+  /delete-property/ locking;
+};
+```
 
 ## Conditional Layers
 

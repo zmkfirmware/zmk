@@ -17,5 +17,25 @@
             display-name = "Toggle Layer";
             locking;
         };
+
+#if ZMK_BEHAVIOR_OMIT(TOG_ON)
+        /omit-if-no-ref/
+#endif
+        tog_on: toggle_layer_on {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            display-name = "Toggle Layer On";
+            toggle-mode = "on";
+        };
+
+#if ZMK_BEHAVIOR_OMIT(TOG_OFF)
+        /omit-if-no-ref/
+#endif
+        tog_off: toggle_layer_off {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            display-name = "Toggle Layer Off";
+            toggle-mode = "off";
+        };
     };
 };
