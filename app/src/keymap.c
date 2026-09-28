@@ -512,6 +512,14 @@ static int save_bindings(void) {
                     .param2 = binding->param2,
                 };
 
+                if (binding_setting.behavior_local_id == UINT16_MAX) {
+                    LOG_ERR("Not persisting binding at layer %d key %d: no local ID found for "
+                            "behavior %s",
+                            l, kp, binding->behavior_dev);
+                    WRITE_BIT(pending[kp / 8], kp % 8, 0);
+                    continue;
+                }
+
                 // We can skip any trailing zero params, regardless of the behavior
                 // and if those params are meaningful.
                 size_t len = sizeof(binding_setting);
@@ -943,23 +951,25 @@ static int keymap_handle_set(const char *name, size_t len, settings_read_cb read
 };
 
 static int keymap_handle_commit(void) {
-#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS)
     for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
         for (int p = 0; p < ZMK_KEYMAP_LEN; p++) {
             struct zmk_behavior_binding *binding = &zmk_keymap[l][p];
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LOCAL_IDS_IN_BINDINGS)
             if (binding->local_id > 0 && !binding->behavior_dev) {
                 binding->behavior_dev =
                     zmk_behavior_find_behavior_name_from_local_id(binding->local_id);
+            }
+#endif
 
-                if (!binding->behavior_dev) {
-                    LOG_ERR("Failed to finding device for local ID %d after settings load",
-                            binding->local_id);
-                }
+            if (!binding->behavior_dev) {
+                LOG_ERR("No behavior found for binding at layer %d position %d after settings "
+                        "load, restoring stock binding",
+                        l, p);
+                *binding = zmk_stock_keymap[l][p];
             }
         }
     }
-#endif
 
     return 0;
 }
