@@ -44,6 +44,7 @@ menuconfig ZMK_STUDIO_RPC
     select RING_BUFFER
     select ZMK_KEYMAP_SETTINGS_STORAGE
     select ZMK_KEYMAP_LAYER_REORDERING
+    imply ZMK_COMBOS_RUNTIME
     help
       Add firmware support for studio RPC protocol
 

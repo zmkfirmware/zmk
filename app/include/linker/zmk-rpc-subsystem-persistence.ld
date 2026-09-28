@@ -6,4 +6,4 @@
 
 #include <zephyr/linker/linker-defs.h>
 
-ITERABLE_SECTION_ROM(zmk_rpc_subsystem_settings_reset, 4)
+ITERABLE_SECTION_ROM(zmk_rpc_subsystem_persistence, 4)

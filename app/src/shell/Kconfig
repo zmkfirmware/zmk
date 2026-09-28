@@ -1,0 +1,8 @@
+menu "Shell"
+
+config ZMK_SHELL_KEY_POSITIONS
+    bool "Key Position commands"
+    default y if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    depends on SHELL
+
+endmenu
