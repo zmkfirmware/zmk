@@ -106,7 +106,7 @@ static int key_repeat_keycode_state_changed_listener(const zmk_event_t *eh) {
 
 #define KR_INST(n)                                                                                 \
     static struct behavior_key_repeat_data behavior_key_repeat_data_##n = {};                      \
-    static struct behavior_key_repeat_config behavior_key_repeat_config_##n = {                    \
+    static const struct behavior_key_repeat_config behavior_key_repeat_config_##n = {              \
         .usage_pages = DT_INST_PROP(n, usage_pages),                                               \
         .usage_pages_count = DT_INST_PROP_LEN(n, usage_pages),                                     \
     };                                                                                             \

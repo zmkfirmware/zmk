@@ -261,10 +261,10 @@ static int behavior_tap_dance_init(const struct device *dev) {
     {LISTIFY(DT_INST_PROP_LEN(node, bindings), _TRANSFORM_ENTRY, (, ), DT_DRV_INST(node))}
 
 #define KP_INST(n)                                                                                 \
-    static struct zmk_behavior_binding                                                             \
+    static const struct zmk_behavior_binding                                                       \
         behavior_tap_dance_config_##n##_bindings[DT_INST_PROP_LEN(n, bindings)] =                  \
             TRANSFORMED_BINDINGS(n);                                                               \
-    static struct behavior_tap_dance_config behavior_tap_dance_config_##n = {                      \
+    static const struct behavior_tap_dance_config behavior_tap_dance_config_##n = {                \
         .tapping_term_ms = DT_INST_PROP(n, tapping_term_ms),                                       \
         .behaviors = behavior_tap_dance_config_##n##_bindings,                                     \
         .behavior_count = DT_INST_PROP_LEN(n, bindings)};                                          \
