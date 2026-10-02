@@ -1,0 +1,2 @@
+s/.*hid_listener_keycode/kp/p
+s/.*on_tri_state_binding/tri_state_binding/p
