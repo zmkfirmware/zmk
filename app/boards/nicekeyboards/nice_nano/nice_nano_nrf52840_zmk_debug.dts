@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) 2026 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+
+#include <../boards/nicekeyboards/nice_nano/nice_nano.dts>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+
