@@ -28,7 +28,18 @@ void draw_battery(lv_obj_t *canvas, const struct status_state *state) {
 
     canvas_draw_rect(canvas, 0, 2, 29, 12, &rect_white_dsc);
     canvas_draw_rect(canvas, 1, 3, 27, 10, &rect_black_dsc);
+
+#if CONFIG_NICE_VIEW_WIDGET_BATTERY_SHOW_PERCENTAGE
+    lv_draw_label_dsc_t label_dsc_battery;
+    init_label_dsc(&label_dsc_battery, LVGL_FOREGROUND, &lv_font_unscii_8, LV_TEXT_ALIGN_RIGHT);
+
+    char battery_text[6] = {};
+    snprintf(battery_text, sizeof(battery_text), "%d", state->battery);
+    canvas_draw_text(canvas, 2, 4, 24, &label_dsc_battery, battery_text);
+#else
     canvas_draw_rect(canvas, 2, 4, (state->battery + 2) / 4, 8, &rect_white_dsc);
+#endif
+
     canvas_draw_rect(canvas, 30, 5, 3, 6, &rect_white_dsc);
     canvas_draw_rect(canvas, 31, 6, 1, 4, &rect_black_dsc);
 
