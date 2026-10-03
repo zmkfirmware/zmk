@@ -6,6 +6,7 @@
 
 #include <zmk/behavior_queue.h>
 #include <zmk/behavior.h>
+#include <zmk/workqueue.h>
 
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -51,7 +52,7 @@ static void behavior_queue_process_next(struct k_work *work) {
         LOG_DBG("Processing next queued behavior in %dms", item.wait);
 
         if (item.wait > 0) {
-            k_work_schedule(&queue_work, K_MSEC(item.wait));
+            k_work_schedule_for_queue(zmk_main_work_q(), &queue_work, K_MSEC(item.wait));
             break;
         }
     }

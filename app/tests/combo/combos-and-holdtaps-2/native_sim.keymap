@@ -38,7 +38,7 @@
 
 &kscan {
     events = <
-    ZMK_MOCK_PRESS(0,0,0)
+    ZMK_MOCK_PRESS(0,0,1)
     ZMK_MOCK_PRESS(0,1,300)
     >;
 };
