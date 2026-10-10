@@ -20,6 +20,7 @@
 #include <zmk/events/ble_active_profile_changed.h>
 #include <zmk/events/usb_conn_state_changed.h>
 #include <zmk/events/endpoint_changed.h>
+#include <zmk/events/preferred_transport_changed.h>
 
 #include <zephyr/logging/log.h>
 
@@ -135,7 +136,8 @@ int zmk_endpoint_set_preferred_transport(enum zmk_transport transport) {
 
     endpoints_save_preferred();
 
-    update_current_endpoint();
+    raise_zmk_preferred_transport_changed(
+        (struct zmk_preferred_transport_changed){.transport = preferred_transport});
 
     return 0;
 }
@@ -502,6 +504,7 @@ static int endpoint_listener(const zmk_event_t *eh) {
 }
 
 ZMK_LISTENER(endpoint_listener, endpoint_listener);
+ZMK_SUBSCRIPTION(endpoint_listener, zmk_preferred_transport_changed);
 #if IS_ENABLED(CONFIG_ZMK_USB)
 ZMK_SUBSCRIPTION(endpoint_listener, zmk_usb_conn_state_changed);
 #endif
