@@ -1,0 +1,13 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Switches the active USB/BLE HID keyboard report mode between full NKRO and
+  "boot keyboard" compatible HKRO (see CONFIG_ZMK_HID_REPORT_TYPE_DYNAMIC). The
+  chosen mode is persisted to flash and only takes effect after the reboot
+  this behavior triggers, since the report descriptor can't change without a
+  full HID re-enumeration.
+
+compatible: "zmk,behavior-dynamic-nkro"
+
+include: one_param.yaml
