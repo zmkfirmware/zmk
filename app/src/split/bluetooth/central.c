@@ -12,6 +12,7 @@
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/gatt.h>
 #include <zephyr/bluetooth/hci.h>
+#include <zephyr/bluetooth/services/bas.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/sys/byteorder.h>
 
@@ -23,6 +24,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/ble.h>
 #include <zmk/behavior.h>
 #include <zmk/sensors.h>
+#include <zmk/split/central.h>
 #include <zmk/split/transport/central.h>
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/split/bluetooth/service.h>
@@ -56,6 +58,10 @@ struct peripheral_slot {
     struct bt_gatt_subscribe_params batt_lvl_subscribe_params;
     struct bt_gatt_read_params batt_lvl_read_params;
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING)
+    struct bt_gatt_subscribe_params batt_lvl_status_subscribe_params;
+    enum zmk_battery_charge_state charge_state;
+#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING) */
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     uint16_t update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -63,6 +69,12 @@ struct peripheral_slot {
     uint8_t position_state[POSITION_STATE_DATA_LEN];
     uint8_t changed_positions[POSITION_STATE_DATA_LEN];
 };
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING)
+#define SLOT_CHARGE_STATE(slot) ((slot)->charge_state)
+#else
+#define SLOT_CHARGE_STATE(slot) ZMK_BATTERY_CHARGE_STATE_UNKNOWN
+#endif
 
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
 
@@ -423,6 +435,7 @@ static uint8_t split_central_battery_level_notify_func(struct bt_conn *conn,
         .event = {.type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT,
                   .data = {.battery_event = {
                                .level = battery_level,
+                               .charge_state = SLOT_CHARGE_STATE(slot),
                            }}}};
 
     k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
@@ -467,6 +480,7 @@ static uint8_t split_central_battery_level_read_func(struct bt_conn *conn, uint8
         .event = {.type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT,
                   .data = {.battery_event = {
                                .level = battery_level,
+                               .charge_state = SLOT_CHARGE_STATE(slot),
                            }}}};
 
     k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
@@ -476,6 +490,78 @@ static uint8_t split_central_battery_level_read_func(struct bt_conn *conn, uint8
 }
 
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING)
+
+// Value layout: flags octet, 16 bit power state, then flag-gated fields.
+#define BLS_MIN_LENGTH (sizeof(uint8_t) + sizeof(uint16_t))
+#define BLS_POWER_STATE_OFFSET sizeof(uint8_t)
+#define BLS_CHARGE_STATE_SHIFT 5
+#define BLS_CHARGE_STATE_MASK (BIT_MASK(2) << BLS_CHARGE_STATE_SHIFT)
+
+static enum zmk_battery_charge_state bls_to_zmk_charge_state(uint8_t bls_state) {
+    switch (bls_state) {
+    case BT_BAS_BLS_CHARGE_STATE_CHARGING:
+        return ZMK_BATTERY_CHARGE_STATE_CHARGING;
+    case BT_BAS_BLS_CHARGE_STATE_DISCHARGING_ACTIVE:
+        return ZMK_BATTERY_CHARGE_STATE_DISCHARGING;
+    case BT_BAS_BLS_CHARGE_STATE_DISCHARGING_INACTIVE:
+        return ZMK_BATTERY_CHARGE_STATE_FULL;
+    default:
+        return ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
+    }
+}
+
+static uint8_t
+split_central_battery_level_status_notify_func(struct bt_conn *conn,
+                                               struct bt_gatt_subscribe_params *params,
+                                               const void *data, uint16_t length) {
+    struct peripheral_slot *slot = peripheral_slot_for_conn(conn);
+
+    if (!slot) {
+        LOG_ERR("No peripheral state found for connection");
+        return BT_GATT_ITER_CONTINUE;
+    }
+
+    if (!data) {
+        LOG_DBG("[UNSUBSCRIBED]");
+        params->value_handle = 0U;
+        return BT_GATT_ITER_STOP;
+    }
+
+    if (length < BLS_MIN_LENGTH) {
+        LOG_ERR("Truncated battery level status received (%u bytes)", length);
+        return BT_GATT_ITER_CONTINUE;
+    }
+
+    uint16_t power_state = sys_get_le16((const uint8_t *)data + BLS_POWER_STATE_OFFSET);
+    enum zmk_battery_charge_state charge_state =
+        bls_to_zmk_charge_state((power_state & BLS_CHARGE_STATE_MASK) >> BLS_CHARGE_STATE_SHIFT);
+
+    LOG_DBG("[BATTERY LEVEL STATUS] power state 0x%04x charge state %d", power_state, charge_state);
+
+    slot->charge_state = charge_state;
+
+    // Level arrives on a separate characteristic, so reuse the last one seen.
+    uint8_t source = peripheral_slot_index_for_conn(conn);
+    uint8_t battery_level = 0;
+    zmk_split_central_get_peripheral_battery_level(source, &battery_level);
+
+    struct peripheral_event_wrapper ev = {
+        .source = source,
+        .event = {.type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT,
+                  .data = {.battery_event = {
+                               .level = battery_level,
+                               .charge_state = charge_state,
+                           }}}};
+
+    k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
+    k_work_submit(&peripheral_event_work);
+
+    return BT_GATT_ITER_CONTINUE;
+}
+
+#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING) */
 
 static int split_central_subscribe(struct bt_conn *conn, struct bt_gatt_subscribe_params *params) {
     atomic_set(params->flags, BT_GATT_SUBSCRIBE_FLAG_NO_RESUB);
@@ -637,6 +723,19 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
             slot->batt_lvl_read_params.single.offset = 0;
             bt_gatt_read(conn, &slot->batt_lvl_read_params);
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING)
+        } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                                BT_UUID_BAS_BATTERY_LEVEL_STATUS)) {
+            LOG_DBG("Found battery level status characteristic");
+            slot->batt_lvl_status_subscribe_params.disc_params = &slot->sub_discover_params;
+            slot->batt_lvl_status_subscribe_params.end_handle = slot->discover_params.end_handle;
+            slot->batt_lvl_status_subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
+            slot->batt_lvl_status_subscribe_params.notify =
+                split_central_battery_level_status_notify_func;
+            // The characteristic is indicated rather than notified.
+            slot->batt_lvl_status_subscribe_params.value = BT_GATT_CCC_INDICATE;
+            split_central_subscribe(conn, &slot->batt_lvl_status_subscribe_params);
+#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING) */
         }
         break;
     }
@@ -698,6 +797,11 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
     subscribed = subscribed && slot->batt_lvl_subscribe_params.value_handle;
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING)
+    // Sits above battery level in the BAS handle range, so discovery has to keep
+    // going past it. Peripherals without it just discover to the end.
+    subscribed = subscribed && slot->batt_lvl_status_subscribe_params.value_handle;
+#endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING) */
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
     for (size_t i = 0; i < ARRAY_SIZE(peripheral_input_slots); i++) {
         if (input_slot_is_open(i) || input_slot_is_pending(i)) {
@@ -956,12 +1060,22 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
 
     LOG_DBG("Disconnected: %s (reason %d)", addr, reason);
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING)
+    struct peripheral_slot *disconnected_slot = peripheral_slot_for_conn(conn);
+    if (disconnected_slot) {
+        disconnected_slot->charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING)
+
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+    // TODO: Distinguish disconnection from 0% battery level notification and skip HID notification
+    // on disconnection to avoid waking up the host.
     struct peripheral_event_wrapper ev = {
         .source = peripheral_slot_index_for_conn(conn),
         .event = {.type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT,
                   .data = {.battery_event = {
                                .level = 0,
+                               .charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN,
                            }}}};
 
     k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
