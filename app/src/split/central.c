@@ -23,11 +23,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 const struct zmk_split_transport_central *active_transport;
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
 
 static uint8_t peripheral_battery_levels[ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT] = {0};
 
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
 
 int zmk_split_transport_central_peripheral_event_handler(
     const struct zmk_split_transport_central *transport, uint8_t source,
@@ -53,7 +53,7 @@ int zmk_split_transport_central_peripheral_event_handler(
             ev.data.input_event.value, ev.data.input_event.sync);
     }
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
     case ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT: {
         struct zmk_peripheral_battery_state_changed battery_ev = {
             .source = source,
@@ -150,7 +150,7 @@ int zmk_split_central_update_hid_indicator(zmk_hid_indicators_t indicators) {
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
 
 int zmk_split_central_get_peripheral_battery_level(uint8_t source, uint8_t *level) {
     if (source >= ARRAY_SIZE(peripheral_battery_levels)) {
@@ -161,7 +161,7 @@ int zmk_split_central_get_peripheral_battery_level(uint8_t source, uint8_t *leve
     return 0;
 }
 
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
 
 static int select_first_available_transport(void) {
     // Transports are sorted by priority, so find the first
