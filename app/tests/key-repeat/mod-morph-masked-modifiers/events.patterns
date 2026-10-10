@@ -1,0 +1,8 @@
+s/.*hid_listener_keycode_pressed.*keycode/pressed: keycode/p
+s/.*hid_listener_keycode_released.*keycode/released: keycode/p
+s/.*hid_register_mod.*Modifiers set to /reg explicit: Modifiers set to /p
+s/.*hid_unregister_mod.*Modifiers set to /unreg explicit: Modifiers set to /p
+s/.*hid_implicit_modifiers_press.*Modifiers set to /reg implicit: Modifiers set to /p
+s/.*hid_implicit_modifiers_release.*Modifiers set to /unreg implicit: Modifiers set to /p
+s/.*hid_masked_modifiers_set.*Modifiers set to /mask mods: Modifiers set to /p
+s/.*hid_masked_modifiers_clear.*Modifiers set to /unmask mods: Modifiers set to /p
