@@ -267,7 +267,7 @@ static void apply_resolution_scaling(struct input_listener_data *data, struct in
     int16_t val = evt->value + *remainder;
     int16_t scaled = val / (int16_t)div;
     *remainder = val - (scaled * (int16_t)div);
-    evt->value = val;
+    evt->value = scaled;
 }
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING_SMOOTH_SCROLLING)
 
