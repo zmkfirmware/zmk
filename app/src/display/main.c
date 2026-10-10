@@ -21,6 +21,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/event_manager.h>
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/display/status_screen.h>
+#include <zmk/workqueue.h>
 
 static const struct device *display = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
 
@@ -52,6 +53,8 @@ static struct k_work_q display_work_q;
 struct k_work_q *zmk_display_work_q() {
 #if IS_ENABLED(CONFIG_ZMK_DISPLAY_WORK_QUEUE_DEDICATED)
     return &display_work_q;
+#elif IS_ENABLED(CONFIG_ZMK_DISPLAY_WORK_QUEUE_LOW_PRIORITY)
+    return zmk_workqueue_lowprio_work_q();
 #else
     return &k_sys_work_q;
 #endif
