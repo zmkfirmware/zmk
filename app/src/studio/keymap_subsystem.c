@@ -172,12 +172,15 @@ zmk_studio_Response set_layer_binding(const zmk_studio_Request *req) {
                            zmk_keymap_SetLayerBindingResponse_SET_LAYER_BINDING_RESP_OK);
 }
 
+static bool keymap_check_unsaved_changes(void) {
+    return zmk_physical_layouts_check_unsaved_selection() || zmk_keymap_check_unsaved_changes();
+}
+
 zmk_studio_Response check_unsaved_changes(const zmk_studio_Request *req) {
     LOG_DBG("");
-    int layout_changes = zmk_physical_layouts_check_unsaved_selection();
-    int keymap_changes = zmk_keymap_check_unsaved_changes();
+    bool unsaved = keymap_check_unsaved_changes();
 
-    return KEYMAP_RESPONSE(check_unsaved_changes, layout_changes > 0 || keymap_changes > 0);
+    return KEYMAP_RESPONSE(check_unsaved_changes, unsaved);
 }
 
 static void map_errno_to_save_resp(int err, zmk_keymap_SaveChangesResponse *resp) {
@@ -196,23 +199,32 @@ static void map_errno_to_save_resp(int err, zmk_keymap_SaveChangesResponse *resp
     }
 }
 
+static int keymap_subsys_save_changes(void) {
+    int ret = zmk_physical_layouts_save_selected();
+
+    if (ret < 0) {
+        LOG_WRN("Failed to save selected physical layout (%d)", ret);
+        return ret;
+    }
+
+    ret = zmk_keymap_save_changes();
+    if (ret < 0) {
+        LOG_WRN("Failed to save keymap changes (%d)", ret);
+        return ret;
+    }
+
+    return 0;
+}
+
 zmk_studio_Response save_changes(const zmk_studio_Request *req) {
     zmk_keymap_SaveChangesResponse resp = zmk_keymap_SaveChangesResponse_init_zero;
     resp.which_result = zmk_keymap_SaveChangesResponse_ok_tag;
     resp.result.ok = true;
 
     LOG_DBG("");
-    int ret = zmk_physical_layouts_save_selected();
+    int ret = keymap_subsys_save_changes();
 
     if (ret < 0) {
-        LOG_WRN("Failed to save selected physical layout (%d)", ret);
-        map_errno_to_save_resp(ret, &resp);
-        return KEYMAP_RESPONSE(save_changes, resp);
-    }
-
-    ret = zmk_keymap_save_changes();
-    if (ret < 0) {
-        LOG_WRN("Failed to save keymap changes (%d)", ret);
         map_errno_to_save_resp(ret, &resp);
         return KEYMAP_RESPONSE(save_changes, resp);
     }
@@ -223,14 +235,25 @@ zmk_studio_Response save_changes(const zmk_studio_Request *req) {
     return KEYMAP_RESPONSE(save_changes, resp);
 }
 
-zmk_studio_Response discard_changes(const zmk_studio_Request *req) {
-    LOG_DBG("");
+static int keymap_subsys_discard_changes(void) {
     int ret = zmk_physical_layouts_revert_selected();
     if (ret < 0) {
-        return ZMK_RPC_SIMPLE_ERR(GENERIC);
+        LOG_ERR("Failed to discard physical layout changes (%d)", ret);
+        return ret;
     }
 
     ret = zmk_keymap_discard_changes();
+    if (ret < 0) {
+        LOG_ERR("Failed to discard keymap changes (%d)", ret);
+        return ret;
+    }
+
+    return 0;
+}
+
+zmk_studio_Response discard_changes(const zmk_studio_Request *req) {
+    LOG_DBG("");
+    int ret = keymap_subsys_discard_changes();
     if (ret < 0) {
         return ZMK_RPC_SIMPLE_ERR(GENERIC);
     }
@@ -243,7 +266,10 @@ zmk_studio_Response discard_changes(const zmk_studio_Request *req) {
 
 static int keymap_settings_reset(void) { return zmk_keymap_reset_settings(); }
 
-ZMK_RPC_SUBSYSTEM_SETTINGS_RESET(keymap, keymap_settings_reset);
+ZMK_RPC_SUBSYSTEM_PERSISTENCE(keymap, .reset_settings = keymap_settings_reset,
+                              .check_unsaved_changes = keymap_check_unsaved_changes,
+                              .save_changes = keymap_subsys_save_changes,
+                              .discard_changes = keymap_subsys_discard_changes, );
 
 static bool encode_layout_name(pb_ostream_t *stream, const pb_field_t *field, void *const *arg) {
     struct zmk_physical_layout *layout = (struct zmk_physical_layout *)*arg;
