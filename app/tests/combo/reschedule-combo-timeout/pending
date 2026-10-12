@@ -1,0 +1,10 @@
+`update_timeout_task()` calls `k_work_schedule()` to (re)arm the combo
+timeout task, which is a noop if the work item is already scheduled. When
+a keypress shrinks the candidate set and the remaining candidates have
+longer deadlines, the reschedule silently fails.
+
+This is illustrated by this test: Pressing 'A' arms the timeout for T+15,
+combo_short_timeout's deadline; 'B' 5ms later filters combo_short_timeout out,
+remaining candidates should be re-scheduled for T+205, which `k_work_schedule`
+never does. When the stale timer fires, it does nothing, and no new timer is
+armed, leaving the combo_two_keys unresolved. No keycode is sent.

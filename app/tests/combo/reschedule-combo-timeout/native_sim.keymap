@@ -1,0 +1,63 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+#define kA 0
+#define kB 1
+#define kC 2
+#define kD 3
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        combo_short_timeout {
+            timeout-ms = <10>;
+            key-positions = <kA kC>;
+            bindings = <&kp X>;
+        };
+
+        combo_two_keys {
+            timeout-ms = <200>;
+            key-positions = <kA kB>;
+            bindings = <&kp Y>;
+        };
+
+        combo_three_keys {
+            timeout-ms = <200>;
+            key-positions = <kA kB kD>;
+            bindings = <&kp Z>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp A &kp B
+                &kp C &kp D
+            >;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        /* T+5: press A. candidates: combo_short_timeout, combo_two_keys,
+         * combo_three_keys; combo_short_timeout is the shortest-timeout
+         * candidate, so the timeout task gets scheduled for T+5+10=T+15.
+         */
+        ZMK_MOCK_PRESS(0,0,5)
+
+        /* T+5+5=T+10: press B. combo_short_timeout is filtered out.
+         * candidates left: combo_two_keys, combo_three_keys.
+         * both time out a T+5+200=T+205; still pending T+15 timer must
+         * be rescheduled to T+205.
+         *
+         * Wait longer (250ms, past T+205) without key events,so only the
+         * timeout task can resolve the combo.
+         */
+        ZMK_MOCK_PRESS(0,1,250)
+    >;
+};
