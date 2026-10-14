@@ -5,6 +5,7 @@
  */
 
 #include <zmk/studio/core.h>
+#include <zmk/workqueue.h>
 
 ZMK_EVENT_IMPL(zmk_studio_core_lock_state_changed);
 
@@ -32,7 +33,8 @@ static void core_idle_lock_timeout_cb(struct k_work *work) { zmk_studio_core_loc
 K_WORK_DELAYABLE_DEFINE(core_idle_lock_timeout, core_idle_lock_timeout_cb);
 
 void zmk_studio_core_reschedule_lock_timeout() {
-    k_work_reschedule(&core_idle_lock_timeout, K_SECONDS(CONFIG_ZMK_STUDIO_LOCK_IDLE_TIMEOUT_SEC));
+    k_work_reschedule_for_queue(zmk_main_work_q(), &core_idle_lock_timeout,
+                                K_SECONDS(CONFIG_ZMK_STUDIO_LOCK_IDLE_TIMEOUT_SEC));
 }
 
 #else

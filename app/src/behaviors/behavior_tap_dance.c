@@ -16,6 +16,7 @@
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
 #include <zmk/hid.h>
+#include <zmk/workqueue.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -104,7 +105,7 @@ static void reset_timer(struct active_tap_dance *tap_dance,
     tap_dance->release_at = event.timestamp + tap_dance->config->tapping_term_ms;
     int32_t ms_left = tap_dance->release_at - k_uptime_get();
     if (ms_left > 0) {
-        k_work_schedule(&tap_dance->release_timer, K_MSEC(ms_left));
+        k_work_schedule_for_queue(zmk_main_work_q(), &tap_dance->release_timer, K_MSEC(ms_left));
         LOG_DBG("Successfully reset timer at position %d", tap_dance->position);
     }
 }
