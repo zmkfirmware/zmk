@@ -34,6 +34,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/hid_indicators_types.h>
 #include <zmk/physical_layouts.h>
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+#include <zmk/endpoints.h>
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+
 static int start_scanning(void);
 
 #define POSITION_STATE_DATA_LEN 16
@@ -59,6 +63,9 @@ struct peripheral_slot {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     uint16_t update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+    uint16_t update_endpoint_state_handle;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
     uint16_t selected_physical_layout_handle;
     uint8_t position_state[POSITION_STATE_DATA_LEN];
     uint8_t changed_positions[POSITION_STATE_DATA_LEN];
@@ -219,6 +226,9 @@ int release_peripheral_slot(int index) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     slot->update_hid_indicators = 0;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+    slot->update_endpoint_state_handle = 0;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
 
     return 0;
 }
@@ -535,6 +545,60 @@ static void update_peripherals_selected_physical_layout(struct k_work *_work) {
 K_WORK_DEFINE(update_peripherals_selected_layouts_work,
               update_peripherals_selected_physical_layout);
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+
+static int update_peripheral_endpoint_state(struct peripheral_slot *slot,
+                                            struct zmk_split_endpoint_state_payload payload) {
+    if (slot->state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+        return -ENOTCONN;
+    }
+
+    if (slot->update_endpoint_state_handle == 0) {
+        // The peripheral can be considered connected before its GATT characteristics
+        // have been discovered, in which case the handle is not known yet.
+        return -EAGAIN;
+    }
+
+    if (bt_conn_get_security(slot->conn) < BT_SECURITY_L2) {
+        return -EAGAIN;
+    }
+
+    int err = bt_gatt_write_without_response(slot->conn, slot->update_endpoint_state_handle,
+                                             &payload, sizeof(payload), true);
+
+    if (err < 0) {
+        LOG_ERR("Failed to write endpoint state to peripheral (err %d)", err);
+    }
+
+    return err;
+}
+
+/*
+ * Pushes the current state rather than a state captured when the work was queued,
+ * so this doubles as the resync used whenever a peripheral becomes reachable.
+ */
+static void update_peripherals_endpoint_state(struct k_work *_work) {
+    const struct zmk_endpoint_instance selected = zmk_endpoint_get_selected();
+    struct zmk_split_endpoint_state_payload payload = {
+        .transport = selected.transport,
+        .ble_profile_index =
+            (selected.transport == ZMK_TRANSPORT_BLE) ? selected.ble.profile_index : 0,
+        .preferred_transport = zmk_endpoint_get_preferred_transport(),
+    };
+
+    for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
+        if (peripherals[i].state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+            continue;
+        }
+
+        update_peripheral_endpoint_state(&peripherals[i], payload);
+    }
+}
+
+K_WORK_DEFINE(update_peripherals_endpoint_state_work, update_peripherals_endpoint_state);
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+
 static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
                                                  const struct bt_gatt_attr *attr,
                                                  struct bt_gatt_discover_params *params) {
@@ -620,6 +684,13 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
             LOG_DBG("Found update HID indicators handle");
             slot->update_hid_indicators = bt_gatt_attr_value_handle(attr);
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+        } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
+                                BT_UUID_DECLARE_128(ZMK_SPLIT_BT_UPDATE_ENDPOINT_STATE_UUID))) {
+            LOG_DBG("Found update endpoint state handle");
+            slot->update_endpoint_state_handle = bt_gatt_attr_value_handle(attr);
+            k_work_submit(&update_peripherals_endpoint_state_work);
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
         } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                                 BT_UUID_BAS_BATTERY_LEVEL)) {
@@ -695,6 +766,9 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     subscribed = subscribed && slot->update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+    subscribed = subscribed && slot->update_endpoint_state_handle;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
     subscribed = subscribed && slot->batt_lvl_subscribe_params.value_handle;
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
@@ -1001,6 +1075,15 @@ static void split_central_security_changed(struct bt_conn *conn, bt_security_t l
     }
 
     k_work_submit(&update_peripherals_selected_layouts_work);
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+    // The endpoint state characteristic is discovered after the physical layout one, so
+    // reaching here means its handle is known if discovery has gotten that far; if it
+    // has not, the discovery callback pushes once it finds the handle.
+    if (slot->update_endpoint_state_handle) {
+        k_work_submit(&update_peripherals_endpoint_state_work);
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -1093,6 +1176,19 @@ void split_central_split_run_callback(struct k_work *work) {
             }
             break;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+        case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT_STATE: {
+            struct zmk_split_endpoint_state_payload payload = {
+                .transport = payload_wrapper.cmd.data.set_endpoint_state.transport,
+                .ble_profile_index = payload_wrapper.cmd.data.set_endpoint_state.ble_profile_index,
+                .preferred_transport =
+                    payload_wrapper.cmd.data.set_endpoint_state.preferred_transport,
+            };
+
+            update_peripheral_endpoint_state(&peripherals[payload_wrapper.source], payload);
+            break;
+        }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
         default:
             LOG_WRN("Unsupported wrapped central command type %d", payload_wrapper.cmd.type);
             return;
@@ -1175,6 +1271,7 @@ static int split_central_bt_send_command(uint8_t source,
 
     switch (cmd.type) {
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS:
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT_STATE:
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_PHYSICAL_LAYOUT:
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_INVOKE_BEHAVIOR: {
         struct central_cmd_wrapper wrapper = {.source = source, .cmd = cmd};

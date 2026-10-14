@@ -31,6 +31,12 @@ struct zmk_split_run_behavior_payload {
     char behavior_dev[ZMK_SPLIT_RUN_BEHAVIOR_DEV_LEN];
 } __packed;
 
+struct zmk_split_endpoint_state_payload {
+    uint8_t transport;
+    uint8_t ble_profile_index;
+    uint8_t preferred_transport;
+} __packed;
+
 struct zmk_split_input_event_payload {
     uint8_t type;
     uint16_t code;

@@ -19,7 +19,11 @@
 #include <zmk/events/battery_state_changed.h>
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-#include <zmk/events/hid_indicators_changed.h>
+#include <zmk/hid_indicators.h>
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+#include <zmk/endpoints.h>
 #endif
 
 #include <zephyr/init.h>
@@ -62,8 +66,25 @@ int zmk_split_transport_peripheral_command_handler(
     }
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS: {
-        return raise_zmk_hid_indicators_changed((struct zmk_hid_indicators_changed){
-            .indicators = cmd.data.set_hid_indicators.indicators});
+        // Stores the state and raises zmk_hid_indicators_changed locally, so
+        // peripheral side consumers can read it back the same way as on a central.
+        return zmk_hid_indicators_set_mirrored_state(cmd.data.set_hid_indicators.indicators);
+    }
+#endif
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT_STATE: {
+        struct zmk_endpoint_instance selected = {
+            .transport = (enum zmk_transport)cmd.data.set_endpoint_state.transport,
+        };
+
+        if (selected.transport == ZMK_TRANSPORT_BLE) {
+            selected.ble.profile_index = cmd.data.set_endpoint_state.ble_profile_index;
+        }
+
+        // Raises zmk_endpoint_changed locally, so peripheral side consumers see
+        // exactly what central side ones see.
+        return zmk_endpoint_set_mirrored_state(
+            selected, (enum zmk_transport)cmd.data.set_endpoint_state.preferred_transport);
     }
 #endif
     default:

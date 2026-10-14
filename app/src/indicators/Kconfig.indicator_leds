@@ -7,6 +7,12 @@ config ZMK_INDICATOR_LEDS
     depends on DT_HAS_ZMK_INDICATOR_LEDS_ENABLED
     select LED
     select ZMK_HID_INDICATORS
+    # A split peripheral can determine neither the indicator state nor the endpoint
+    # state on its own, so both have to be propagated from the central. Selecting them
+    # for either role means a keyboard with indicator LEDs on either half works without
+    # extra configuration.
+    select ZMK_SPLIT_PERIPHERAL_HID_INDICATORS if ZMK_SPLIT
+    select ZMK_SPLIT_PERIPHERAL_ENDPOINTS if ZMK_SPLIT
 
 if ZMK_INDICATOR_LEDS
 
