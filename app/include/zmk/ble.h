@@ -19,6 +19,12 @@
 #define ZMK_BLE_PROFILE_COUNT CONFIG_BT_MAX_PAIRED
 #endif
 
+enum zmk_ble_advertising_type {
+    ZMK_ADV_NONE,
+    ZMK_ADV_DIR,
+    ZMK_ADV_CONN,
+};
+
 void zmk_ble_clear_bonds(void);
 int zmk_ble_prof_next(void);
 int zmk_ble_prof_prev(void);
