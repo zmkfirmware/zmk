@@ -1,0 +1,36 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        ht_a: behavior_ht_a {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <300>;
+            require-prior-idle-ms = <100>;
+            exclude-prior-idle-key-positions = <2>;
+            bindings = <&kp>, <&kp>;
+        };
+        ht_b: behavior_ht_b {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-unless-interrupted";
+            tapping-term-ms = <300>;
+            require-prior-idle-ms = <100>;
+            exclude-prior-idle-key-positions = <3>;
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &ht_a LEFT_SHIFT F &ht_b LEFT_CONTROL C
+                &kp D &kp E>;
+        };
+    };
+};
