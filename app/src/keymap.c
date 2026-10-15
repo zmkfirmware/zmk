@@ -84,8 +84,9 @@ KEYMAP_VAR(zmk_keymap, COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE
 
 KEYMAP_VAR(zmk_stock_keymap, const, 0)
 
-static char zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN][CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN + 1] = {
-    ZMK_KEYMAP_LAYERS_FOREACH_SEP(LAYER_NAME, (, ))};
+static char zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN]
+                                  [CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN + 1] = {
+                                      ZMK_KEYMAP_LAYERS_FOREACH_SEP(LAYER_NAME, (, ))};
 
 static uint32_t changed_layer_names = 0;
 
