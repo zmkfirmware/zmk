@@ -1,0 +1,575 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  ZMK LED matrix controller.
+  Profiles are optional when layer color entries or status LED zones provide
+  the desired output, but every configuration must still define at least one
+  renderable source.
+
+compatible: "zmk,led-matrix"
+
+properties:
+  led-driver:
+    type: string
+    required: true
+    enum: ["matrix", "strip"]
+    description: |
+      Output backend used by this controller.
+      - matrix: uses Zephyr led API (led_write_channels/set_color/set_brightness/on/off)
+      - strip: uses Zephyr led_strip API (led_strip_update_rgb)
+
+  led-device:
+    type: phandle
+    required: false
+    description: Zephyr LED device used when led-driver is "matrix".
+
+  led-strip-device:
+    type: phandle
+    required: false
+    description: Zephyr LED strip device used when led-driver is "strip".
+
+  led-count:
+    type: int
+    required: true
+    description: Number of logical LEDs in the matrix.
+
+  output-channel-count:
+    type: int
+    required: false
+    description: |
+      Total number of physical output channels in the selected write_channels
+      backend's
+      flattened RGB channel space. When omitted, this defaults to led-count*3.
+
+  channel-indexes:
+    type: array
+    required: false
+    description: |
+      Optional logical RGB channel to physical RGB channel mapping table for
+      write_channels backends.
+      Length must be led-count*3. Each value is a physical channel index in
+      the selected backend's flattened RGB channel space, bounded by
+      output-channel-count when present or led-count*3 otherwise.
+      This property intentionally avoids a *-map name because Zephyr's
+      edtlib treats properties ending in "-map" as mapping metadata and
+      does not expose them through DT_PROP().
+
+  led-indexes:
+    type: array
+    required: false
+    description: |
+      Optional logical LED to physical Zephyr LED mapping table for non-
+      write_channels backends.
+      Length may be:
+      - led-count: one logical RGB LED maps to one physical Zephyr LED
+      - led-count*3: one logical RGB channel maps to one physical Zephyr LED
+      Each value is a physical LED index on the selected Zephyr led device.
+
+  matrix-led-grid:
+    type: array
+    required: false
+    description: |
+      Optional token stream describing the local RC spatial grid for
+      position-driven effects.
+      The grid is interpreted against the chosen kscan dimensions on the
+      current firmware image:
+      - rows come from row-gpios, or rows for non-GPIO matrix backends
+      - columns come from col-gpios/input-gpios, or columns for non-GPIO
+        matrix backends
+      Each non-break token occupies one local RC cell. For split keyboards,
+      each half writes only its own local grid; the matrix transform maps
+      each local RC cell to the global key position space.
+      - logical LED index
+      - LM_NOLED (key exists at this RC cell, no LED)
+      - LM_PH (placeholder RC cell with no key position)
+      - LM_BREAK (row separator)
+      Entries between row breaks form one local row. The row count must match
+      the chosen kscan row count, and every row width must match the chosen
+      kscan column count.
+      This property is required when using position-driven features such as
+      keypress/ripple/rain renderers or layer color entries that omit
+      layer-leds. It may be omitted for status-only or independent-only
+      configurations.
+
+  independent-leds:
+    type: array
+    required: false
+    description: |
+      Deprecated legacy property. This syntax is no longer supported; define
+      independent LED containers as child nodes with independent-id and
+      independent-leds instead.
+
+  battery-leds:
+    type: array
+    required: false
+    description: |
+      Logical LED indices used for battery status.
+      These LEDs may overlap any other status LED property.
+      Shared status LEDs use fixed overwrite priority with no color blending:
+      Battery < USB < BLE < HID.
+
+  battery-color-on:
+    type: array
+    required: false
+    description: |
+      Battery "lit" colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or battery-leds length.
+
+  battery-color-off:
+    type: array
+    required: false
+    description: |
+      Battery "unlit" colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or battery-leds length.
+
+  battery-level-colors:
+    type: array
+    required: false
+    description: |
+      Battery charge bucket colors in 0xRRGGBB format or special LM_* dynamic
+      colors such as LM_RAINBOW.
+      Length defines the number of SOC buckets:
+      - 1: one color for all lit battery LEDs
+      - N: split 0..100% into N evenly sized buckets, with 0% in bucket 0 and
+        all lit battery LEDs using the selected bucket color
+      This property is independent from battery-leds length and overrides
+      battery-color-on for lit battery LEDs when present.
+
+  ble-profile-leds:
+    type: array
+    required: false
+    description: |
+      Logical LED indices used for BLE profile status.
+      These LEDs may overlap any other status LED property.
+      Shared status LEDs use fixed overwrite priority with no color blending:
+      Battery < USB < BLE < HID.
+
+  ble-color-open:
+    type: array
+    required: false
+    description: |
+      BLE open/pairing colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or ble-profile-leds length.
+
+  ble-color-connected:
+    type: array
+    required: false
+    description: |
+      BLE connected colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or ble-profile-leds length.
+
+  ble-color-disconnected:
+    type: array
+    required: false
+    description: |
+      BLE disconnected colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or ble-profile-leds length.
+
+  usb-leds:
+    type: array
+    required: false
+    description: |
+      Logical LED indices used for USB status.
+      These LEDs may overlap any other status LED property.
+      Shared status LEDs use fixed overwrite priority with no color blending:
+      Battery < USB < BLE < HID.
+
+  usb-color-hid:
+    type: array
+    required: false
+    description: |
+      USB HID colors in 0xRRGGBB format or special LM_* dynamic colors such as
+      LM_RAINBOW.
+      Length must be 1 (broadcast) or usb-leds length.
+
+  usb-color-powered:
+    type: array
+    required: false
+    description: |
+      USB powered colors in 0xRRGGBB format or special LM_* dynamic colors such
+      as LM_RAINBOW.
+      Length must be 1 (broadcast) or usb-leds length.
+
+  usb-color-none:
+    type: array
+    required: false
+    description: |
+      USB disconnected colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or usb-leds length.
+
+  hid-caps-leds:
+    type: array
+    required: false
+    description: |
+      Logical LED indices used for Caps Lock indicator.
+      These LEDs may overlap any other status LED property.
+      Shared status LEDs use fixed overwrite priority with no color blending:
+      Battery < USB < BLE < HID.
+      Within HID, shared LEDs use Caps < Num < Scroll < Compose < Kana.
+
+  hid-caps-color-on:
+    type: array
+    required: false
+    description: |
+      Caps Lock active colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-caps-leds length.
+
+  hid-caps-color-off:
+    type: array
+    required: false
+    description: |
+      Caps Lock inactive colors in 0xRRGGBB format or special LM_* dynamic
+      colors such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-caps-leds length.
+
+  hid-num-leds:
+    type: array
+    required: false
+    description: |
+      Logical LED indices used for Num Lock indicator.
+      These LEDs may overlap any other status LED property.
+      Shared status LEDs use fixed overwrite priority with no color blending:
+      Battery < USB < BLE < HID.
+      Within HID, shared LEDs use Caps < Num < Scroll < Compose < Kana.
+
+  hid-num-color-on:
+    type: array
+    required: false
+    description: |
+      Num Lock active colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-num-leds length.
+
+  hid-num-color-off:
+    type: array
+    required: false
+    description: |
+      Num Lock inactive colors in 0xRRGGBB format or special LM_* dynamic
+      colors such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-num-leds length.
+
+  hid-scroll-leds:
+    type: array
+    required: false
+    description: |
+      Logical LED indices used for Scroll Lock indicator.
+      These LEDs may overlap any other status LED property.
+      Shared status LEDs use fixed overwrite priority with no color blending:
+      Battery < USB < BLE < HID.
+      Within HID, shared LEDs use Caps < Num < Scroll < Compose < Kana.
+
+  hid-scroll-color-on:
+    type: array
+    required: false
+    description: |
+      Scroll Lock active colors in 0xRRGGBB format or special LM_* dynamic
+      colors such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-scroll-leds length.
+
+  hid-scroll-color-off:
+    type: array
+    required: false
+    description: |
+      Scroll Lock inactive colors in 0xRRGGBB format or special LM_* dynamic
+      colors such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-scroll-leds length.
+
+  hid-compose-leds:
+    type: array
+    required: false
+    description: |
+      Logical LED indices used for Compose indicator.
+      These LEDs may overlap any other status LED property.
+      Shared status LEDs use fixed overwrite priority with no color blending:
+      Battery < USB < BLE < HID.
+      Within HID, shared LEDs use Caps < Num < Scroll < Compose < Kana.
+
+  hid-compose-color-on:
+    type: array
+    required: false
+    description: |
+      Compose active colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-compose-leds length.
+
+  hid-compose-color-off:
+    type: array
+    required: false
+    description: |
+      Compose inactive colors in 0xRRGGBB format or special LM_* dynamic
+      colors such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-compose-leds length.
+
+  hid-kana-leds:
+    type: array
+    required: false
+    description: |
+      Logical LED indices used for Kana indicator.
+      These LEDs may overlap any other status LED property.
+      Shared status LEDs use fixed overwrite priority with no color blending:
+      Battery < USB < BLE < HID.
+      Within HID, shared LEDs use Caps < Num < Scroll < Compose < Kana.
+
+  hid-kana-color-on:
+    type: array
+    required: false
+    description: |
+      Kana active colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-kana-leds length.
+
+  hid-kana-color-off:
+    type: array
+    required: false
+    description: |
+      Kana inactive colors in 0xRRGGBB format or special LM_* dynamic colors
+      such as LM_RAINBOW.
+      Length must be 1 (broadcast) or hid-kana-leds length.
+
+  status-timeout-ms:
+    type: int
+    default: 3000
+    description: |
+      Default automatic status display timeout.
+      Values greater than 0 keep a Battery/USB/BLE/HID status source visible
+      for that many milliseconds after its triggering event.
+      A value of 0 makes any automatic status source that inherits this
+      timeout persist continuously while LED matrix runtime output is allowed.
+
+  usb-timeout-ms:
+    type: int
+    required: false
+    description: |
+      USB-specific automatic status display timeout.
+      Values greater than 0 show USB status for that many milliseconds after a
+      USB-triggered update.
+      A value of 0 keeps the current USB status color visible persistently,
+      including usb-color-none.
+      If omitted, usb-timeout-ms inherits status-timeout-ms.
+
+  ble-timeout-ms:
+    type: int
+    required: false
+    description: |
+      BLE-specific automatic status display timeout.
+      Values greater than 0 show BLE status for that many milliseconds after a
+      BLE-triggered update.
+      When ble-pairing-hold shows an open profile as a pairing transient, that
+      transient lasts 5 times this timeout.
+      A value of 0 keeps the current BLE status color visible persistently,
+      including disconnected and open-profile colors.
+      If omitted, ble-timeout-ms inherits status-timeout-ms.
+
+  hid-timeout-ms:
+    type: int
+    required: false
+    description: |
+      HID-specific automatic status display timeout.
+      Values greater than 0 show HID status for that many milliseconds after a
+      HID-triggered update.
+      A value of 0 keeps the current HID indicator colors visible persistently,
+      including inactive/off colors.
+      If omitted, hid-timeout-ms inherits status-timeout-ms.
+
+  battery-timeout-ms:
+    type: int
+    required: false
+    description: |
+      Battery-specific automatic status display timeout.
+      Values greater than 0 do not automatically show battery status on
+      ordinary battery-triggered updates; battery status is still shown for
+      manual LM_STA_BATTERY requests and USB plug/unplug events, using this
+      timeout when displayed transiently.
+      A value of 0 keeps the current battery level colors visible
+      persistently, including unlit battery-color-off cells, and battery
+      updates refresh the visible persistent battery colors in place.
+      If omitted, battery-timeout-ms inherits status-timeout-ms.
+
+  ble-pairing-hold:
+    type: int
+    default: 1
+    enum: [0, 1]
+    description: |
+      Keep BLE indicators visible while the active profile is open.
+      When this creates a pairing transient, the active profile LED blinks.
+      That transient lasts 5 times ble-timeout-ms, which inherits
+      status-timeout-ms when ble-timeout-ms is omitted.
+
+child-binding:
+  description: |
+    LED matrix display profile, layer color entry, or independent LED
+    container. Profile entries are optional when layer color entries,
+    independent LED containers, or status LED zones provide the desired output.
+
+  properties:
+    profile-id:
+      type: int
+      required: false
+      description: |
+        0-based display profile ID. Children with profile-id define user
+        selectable LED matrix display profiles.
+        Profile children are optional; a controller may instead rely on layer
+        color entries and/or status LED zones.
+
+    layer-id:
+      type: int
+      required: false
+      description: |
+        Layer ID for a layer color entry. Children with layer-id define
+        layer-based LED color zones.
+
+    independent-id:
+      type: int
+      required: false
+      description: |
+        0-based independent LED container ID. Children with independent-id
+        define always-on LED groups with their own local selectable profiles.
+        Renderer, colors, brightness, and period belong to those local profile
+        children; an independent container with no local profile is invalid.
+
+    independent-leds:
+      type: array
+      required: false
+      description: |
+        Logical LED indices controlled by an independent LED container.
+        When matrix-led-grid is present, these LEDs must all be omitted from
+        matrix-led-grid.
+        Duplicate indices are not allowed within one independent-leds
+        property, and the same LED must not appear in multiple independent
+        LED containers.
+
+    display-name:
+      type: string
+      required: false
+      description: Human-readable profile name shown on displays.
+
+    renderer:
+      type: string
+      required: false
+      enum: ["solid", "breathe", "spectrum", "swirl", "keypress", "ripple", "rain", "starlight"]
+      description: |
+        Rendering mode for a display profile child. The implementation uses
+        "solid" when omitted. The binding intentionally does not inject this
+        default because the same child schema also describes independent
+        containers, where renderer is not a container property.
+
+    independent-led-mode:
+      type: string
+      required: false
+      enum: ["static", "off"]
+      description: |
+        Deprecated legacy property. This syntax is no longer supported; use
+        independent LED containers instead.
+
+    keypress-afterglow-ms:
+      type: int
+      description: |
+        Optional hold time in milliseconds for keypress-rendered LEDs after the
+        source key is released. Only used when renderer is "keypress".
+
+    keypress-fadeout-ms:
+      type: int
+      description: |
+        Optional fade-out time in milliseconds after keypress afterglow ends.
+        When set to 0, released keys switch off immediately after the afterglow
+        period. Only used when renderer is "keypress".
+
+    keypress-range:
+      type: int
+      description: |
+        Optional keypress glow radius in local matrix-led-grid cells. A value of
+        0 lights only the pressed key. Only used when renderer is "keypress".
+
+    colors:
+      type: array
+      required: false
+      description: |
+        LED-based color map in 0xRRGGBB format or special LM_* dynamic colors
+        such as LM_RAINBOW for a display profile.
+        Length must be 1 (broadcast) or led-count.
+
+    layer-colors:
+      type: array
+      required: false
+      description: |
+        LED-based colors in 0xRRGGBB format or special LM_* dynamic colors
+        such as LM_RAINBOW for a layer color entry.
+        Length must be 1 (broadcast) or the effective target LED count.
+        Target LEDs come from layer-leds when present; otherwise they default
+        to all logical LEDs mapped by matrix-led-grid in grid traversal order.
+
+    layer-leds:
+      type: array
+      required: false
+      description: |
+        Optional logical LED indices targeted by a layer color entry.
+        When omitted, the entry defaults to all logical LEDs mapped by
+        matrix-led-grid in grid traversal order.
+        When provided, it may reference any valid logical LED index and may be
+        used without matrix-led-grid.
+        Duplicate indices are not allowed within one layer-leds property.
+
+    brightness:
+      type: int
+      description: |
+        Brightness scalar (0-100) applied to the child colors. The
+        implementation uses 100 when omitted.
+
+    period-ms:
+      type: int
+      description: |
+        Animation period for animated display profiles. The implementation
+        uses 1000 ms when omitted.
+
+    display-time-ms:
+      type: int
+      description: |
+        Layer color display time in milliseconds.
+        The implementation uses 1000 ms when omitted.
+        A value of 0 keeps the layer color active while the layer remains the
+        highest active layer.
+
+  child-binding:
+    description: |
+      Local profile entry for an independent LED container.
+
+    properties:
+      profile-id:
+        type: int
+        required: false
+        description: |
+          0-based local profile ID within an independent LED container.
+
+      renderer:
+        type: string
+        required: false
+        enum: ["solid", "breathe", "spectrum", "swirl", "keypress", "ripple", "rain", "starlight"]
+        default: "solid"
+        description: Rendering mode for an independent LED local profile.
+
+      colors:
+        type: array
+        required: false
+        description: |
+          LED-based colors in 0xRRGGBB format or special LM_* dynamic colors
+          such as LM_RAINBOW for an independent LED local profile.
+          Length must be 1 (broadcast) or the independent-leds length of the
+          parent independent container.
+
+      brightness:
+        type: int
+        default: 100
+        description: Brightness scalar (0-100) applied to the local profile colors.
+
+      period-ms:
+        type: int
+        default: 1000
+        description: Animation period for animated independent LED local profiles.

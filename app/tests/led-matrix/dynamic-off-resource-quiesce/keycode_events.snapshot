@@ -1,0 +1,5 @@
+EXT power generic runtime[EXT_POWER]=1
+LED matrix periodic refresh started
+LED matrix periodic refresh stopped
+LED strip mock pixel[0]=0,0,0
+EXT power generic runtime[EXT_POWER]=0

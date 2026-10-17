@@ -1,0 +1,5 @@
+description: Raise a test BLE open/settled state transition
+
+compatible: "zmk,behavior-raise-ble-open-state"
+
+include: one_param.yaml

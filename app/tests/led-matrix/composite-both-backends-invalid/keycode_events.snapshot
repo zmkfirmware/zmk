@@ -1,0 +1,2 @@
+LED composite "led_composite" child 0 must define exactly one of led-device or led-strip-device
+LED matrix output device "led_composite" is not ready

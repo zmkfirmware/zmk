@@ -1,0 +1,10 @@
+Initialized LED matrix: leds=9 independent=0 backend=matrix sink=rgb-set-color channels=3 output-channels=27 profiles=1 layer-colors=0 local-grid=3x3 cells=9
+LED mock color[0]=0,0,25
+LED mock color[1]=0,0,25
+LED mock color[2]=0,0,25
+LED mock color[3]=0,0,25
+LED mock color[4]=0,0,100
+LED mock color[5]=0,0,25
+LED mock color[6]=0,0,25
+LED mock color[7]=0,0,25
+LED mock color[8]=0,0,25

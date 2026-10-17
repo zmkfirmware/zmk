@@ -1,0 +1,41 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+config BOARD_ENABLE_DCDC
+	bool "Enable DCDC mode"
+	select SOC_DCDC_NRF52X
+	default y
+	depends on BOARD_NUMPAD
+
+
+config BOARD_ENABLE_DCDC_HV
+    bool "High voltage DCDC converter"
+    select SOC_DCDC_NRF52X_HV
+    default y
+    depends on BOARD_NUMPAD
+
+if BOARD_NUMPAD
+
+config ZMK_WIDGET_LED_MATRIX_EFFECT_STATUS
+    bool "Show LED matrix effect name on the numpad custom status screen"
+    depends on ZMK_DISPLAY && ZMK_LED_MATRIX
+    select LV_USE_LABEL
+
+endif
+
+if BOARD_NUMPAD
+config NUMPAD_CALCULATOR
+    bool "Board-local numpad calculator"
+    default y
+    depends on ZMK_DISPLAY && ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+    depends on DT_HAS_ZMK_BEHAVIOR_NUMPAD_CALCULATOR_ENABLED
+    select LV_FONT_MONTSERRAT_16
+    select LV_FONT_MONTSERRAT_24
+    select LV_FONT_MONTSERRAT_32
+    select LV_USE_LABEL
+    select REQUIRES_FULL_LIBC
+    select REQUIRES_FLOAT_PRINTF
+    help
+      FN+Num Lock toggles the calculator. FN+Enter types the result.
+      The implementation and bindings live entirely in this board directory.
+endif

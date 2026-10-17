@@ -1,0 +1,2 @@
+LED composite "led_composite" child 1 "composite_gap_child1" offset 6 does not match expected 5
+LED matrix output device "led_composite" is not ready

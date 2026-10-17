@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "upstream": {
+    "repository": "https://github.com/zmkfirmware/zmk",
+    "ref": "main",
+    "commit": "163bed680409afa92d2e46ade679f12ec6e20705"
+  },
+  "copy_directories": [
+    "app",
+    "docs"
+  ],
+  "generated_file_policy": "MANIFEST.json and MANIFEST.sha256 are intentionally excluded from checksum entries.",
+  "entries": [
+    {
+      "path": "CODE_CATALOG.md",
+      "status": "metadata",
+      "sha256": "a6029b00e8792ad453b9c11acca79974f5c16a30d45e542fc5c320d2560c2a8f"
+    },
+    {
+      "path": "README.md",
+      "status": "metadata",
+      "sha256": "e54435320ae1d84fc4c5fe38e9f560aa0f4949d93826d771676aa350d5d06533"
+    },
+    {
+      "path": "app/CMakeLists.txt",
+      "status": "overrides",
+      "sha256": "c5569ba3d884e8891734a6754c75fd3c73ca13b270983d46634f934e2d04a7df"
+    },
+    {
+      "path": "app/Kconfig",
+      "status": "overrides",
+      "sha256": "c697a3e08a77d031b5d700222939719b747659af680d7860ca07d567e116d188"
+    },
+    {
+      "path": "app/Kconfig.behaviors",
+      "status": "overrides",
+      "sha256": "d82b40089c14e7b9bf7a151414c05f272ee51ff60e9e282e217f0b5abf346f7d"
+    },
+    {
+      "path": "app/Kconfig.defaults",
+      "status": "overrides",
+      "sha256": "12afe1dbb011724e90d486b62423eba506b3d11d8f271d847ef69c40a6731fe0"
+    },
+    {
+      "path": "app/dts/behaviors.dtsi",
+      "status": "overrides",
+      "sha256": "ad7a326e97baa40fdde7c92aee02c96b351a154403230eb3c26ac0ee2e14dd52"
+    },
+    {
+      "path": "app/dts/behaviors/led_matrix.dtsi",
+      "status": "added",
+      "sha256": "c4a525ee662f3cfd88ae286439d942918f1e85159412e3cc2a04faf78ded6639"
+    },
+    {
+      "path": "app/dts/bindings/behaviors/zmk,behavior-led-matrix.yaml",
+      "status": "added",
+      "sha256": "a6484548c2effa7d1369445b1ab56222db7f31000238a671774d25bc8bc2ee7a"
+    },
+    {
+      "path": "app/dts/bindings/zmk,led-matrix.yaml",
+      "status": "added",
+      "sha256": "20aacef965d4887dbabf3ed4e534aeccc68004baf5be2584f7fae139e69f408b"
+    },
+    {
+      "path": "app/include/drivers/ext_power.h",
+      "status": "overrides",
+      "sha256": "7c34bf33dabd4c72d2c543ed90754dbe402897124e068e2fb73cc4e75cbad0a4"
+    },
+    {
+      "path": "app/include/drivers/led/is31_power.h",
+      "status": "added",
+      "sha256": "5eb488c798088fa7ca9f67482700f571e3c4ff255e9c0ef7658dee3e083d1fb7"
+    },
+    {
+      "path": "app/include/drivers/led/is31fl3737.h",
+      "status": "added",
+      "sha256": "50c91356eccc2e5d51b273732ac9000ba980161e0781c9f025e4647756ff5876"
+    },
+    {
+      "path": "app/include/drivers/led/led_composite.h",
+      "status": "added",
+      "sha256": "190b2925fbb2fff7ad9ff415245afc238f1676447a640cfb557b547b06e86df4"
+    },
+    {
+      "path": "app/include/dt-bindings/zmk/led_matrix.h",
+      "status": "added",
+      "sha256": "37853530c1686459141e9bb4052a595afaf8bf4d20e6db274898f8fbee0119c4"
+    },
+    {
+      "path": "app/include/dt-bindings/zmk/led_matrix_colors.h",
+      "status": "added",
+      "sha256": "8595afdc84c81ceb3ec4b9d612202f7bf26c82124d0d5cf8e64aa3125a998b3e"
+    },
+    {
+      "path": "app/include/zmk/events/led_matrix_state_changed.h",
+      "status": "added",
+      "sha256": "3195b25ac15fa80d01098479e98ebdafabb8b2b160a93ef6275199b2097981c1"
+    },
+    {
+      "path": "app/include/zmk/led_matrix.h",
+      "status": "added",
+      "sha256": "0be894205931587ae6281623d0aa1ba7e5af1871c5c7f9e535032033578eb3a0"
+    },
+    {
+      "path": "app/module/CMakeLists.txt",
+      "status": "overrides",
+      "sha256": "ee7074280abdb666572373abed0db10f25f8f86fbe488c3d0b2b2e9f76fd80ce"
+    },
+    {
+      "path": "app/module/drivers/CMakeLists.txt",
+      "status": "overrides",
+      "sha256": "6452c9060b56b959b6c407bf133fa9b062d15229012733d82488d4bf578f68fd"
+    },
+    {
+      "path": "app/module/drivers/Kconfig",
+      "status": "overrides",
+      "sha256": "1e8f47c9501f30af51ec6a673f91ea69abc79ad624ff0596b07dc0a54a7a24ae"
+    },
+    {
+      "path": "app/module/drivers/ext_power/CMakeLists.txt",
+      "status": "added",
+      "sha256": "422620877e201763dfdf2abc4051cb189fe3896bd1bc9f52bc79bb4cbf4e209a"
+    },
+    {
+      "path": "app/module/drivers/ext_power/Kconfig",
+      "status": "added",
+      "sha256": "7ab11990d003a81ba6002a303614de4781d4c0986d6b0b0b6a46830b738d53d0"
+    },
+    {
+      "path": "app/module/drivers/led/CMakeLists.txt",
+      "status": "added",
+      "sha256": "6861bd008fcdab7c87ac1547eb6f07870707fb62485b1ecbc6156e16657c059d"
+    },
+    {
+      "path": "app/module/drivers/led/Kconfig",
+      "status": "added",
+      "sha256": "9ec83c305ed584d5c0a85178befc6109b538cfe104d7fe94ee539c78a8b385e2"
+    },
+    {
+      "path": "app/module/drivers/led/is31/is31fl3737.c",
+      "status": "added",
+      "sha256": "bf6ec73c7db438b7f274dbf0b6727e06fcdabb1cca520b2659ba76d67ebd3648"
+    },
+    {
+      "path": "app/module/drivers/led/is31/power.c",
+      "status": "added",
+      "sha256": "8147da752ba9534120b825020808b71f8e598f905c2714d20ec8bfd62d797d5b"
+    },
+    {
+      "path": "app/module/drivers/led/led_composite.c",
+      "status": "added",
+      "sha256": "fb44a39831e3d17ef941fdc559e3c6fa744226694011b0d0ee4de333a6d8645e"
+    },
+    {
+      "path": "app/module/drivers/led/led_composite.h",
+      "status": "added",
+      "sha256": "b6c031392442d4fc08c82913bfbbc47bcc98203518b166c0306e248c71690e32"
+    },
+    {
+      "path": "app/module/drivers/led_strip/CMakeLists.txt",
+      "status": "added",
+      "sha256": "595d5989f966fe2921f835b9e609dcfae1342e23c429f14f6addefa014225d91"
+    },
+    {
+      "path": "app/module/drivers/led_strip/Kconfig",
+      "status": "added",
+      "sha256": "bc45c7783084cd3c92202d6ac0c40eb16011db3a340113609f62871cdfd9b450"
+    },
+    {
+      "path": "app/module/dts/bindings/led/zmk,is31fl3737.yaml",
+      "status": "added",
+      "sha256": "33cfe01e4b66716482e809b0e4469f3856b7455b87c488d0b8bec7a1e9127159"
+    },
+    {
+      "path": "app/module/dts/bindings/led/zmk,led-composite.yaml",
+      "status": "added",
+      "sha256": "12bdb924c1edb916d358be35d9d63d3bdeab57c93a098b1b83e5ca3bba33bd72"
+    },
+    {
+      "path": "app/src/behaviors/behavior_led_matrix.c",
+      "status": "added",
+      "sha256": "0f099d5af83475a31da51d0d1e71b42ca9c11341c4bff2083b03888cbc8e320e"
+    },
+    {
+      "path": "app/src/events/led_matrix_state_changed.c",
+      "status": "added",
+      "sha256": "ef4331f3a40ef9a2a04165d9f0b82538d8c8d0c1aec78a4c39a5e196f33be593"
+    },
+    {
+      "path": "app/src/ext_power_generic.c",
+      "status": "overrides",
+      "sha256": "a3618cc8b0667be2933e199a061c6a36028e7133e71bfe4924d6cfa442c19892"
+    },
+    {
+      "path": "app/src/led_matrix.c",
+      "status": "added",
+      "sha256": "3cb188d69ee21f0e1aa10140c796a50e6160d9af9e41f4ae17079a0d97f3a0d4"
+    },
+    {
+      "path": "app/src/led_matrix/api.c",
+      "status": "added",
+      "sha256": "bdfd5ac98332eb38a3fb3a04d438c21153663754d6bdd5a2eae78c9d24656846"
+    },
+    {
+      "path": "app/src/led_matrix/core.c",
+      "status": "added",
+      "sha256": "b4e029d9559548f87b6e719cbd72f6e1417b005b3e3a07dac553be5ded1793fb"
+    },
+    {
+      "path": "app/src/led_matrix/internal.h",
+      "status": "added",
+      "sha256": "127b46a3596157aff4e1226ee175202c480b9ffacdda695553d6da9c0071abb7"
+    },
+    {
+      "path": "app/src/led_matrix/power.c",
+      "status": "added",
+      "sha256": "9c71c79cd65cf4ffbe126959d71360a42cf66266ae08719ffc4afd2faccfc77a"
+    },
+    {
+      "path": "app/src/led_matrix/render.c",
+      "status": "added",
+      "sha256": "e0fd8111aac0624670b2d7d60d25f1cf625c8dde347c0432a45e321f87f8fc43"
+    },
+    {
+      "path": "app/src/led_matrix/status.c",
+      "status": "added",
+      "sha256": "3c6a3b7a812fe89cccd1a180b7f265529e213de1ca32a2ce081acee5b02e00ee"
+    },
+    {
+      "path": "docs/docs/development/hardware-integration/lighting/led-matrix.mdx",
+      "status": "added",
+      "sha256": "5d618757033249ca7f540fdcd7be5497e7e11a9c1202e7ccaaf9535a284fd953"
+    },
+    {
+      "path": "docs/docs/led-matrix-led-composite-reference.mdx",
+      "status": "added",
+      "sha256": "7d6a2d0f173bac799613445e5d6a74ab729bce9307c6ddeb87572ea7e3688aa0"
+    },
+    {
+      "path": "docs/sidebars.js",
+      "status": "overrides",
+      "sha256": "8cd617a059350504ceb06bd7ea32d7957e9da2ba03527b456f1ae4e9168df3c3"
+    }
+  ]
+}

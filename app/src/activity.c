@@ -61,6 +61,17 @@ int set_state(enum zmk_activity_state state) {
     return raise_event();
 }
 
+#if IS_ENABLED(CONFIG_ZMK_TEST_BEHAVIORS)
+int zmk_activity_test_set_state(enum zmk_activity_state state) {
+    if (state == ZMK_ACTIVITY_ACTIVE) {
+        activity_last_uptime = k_uptime_get();
+    }
+
+    activity_state = state;
+    return raise_event();
+}
+#endif
+
 enum zmk_activity_state zmk_activity_get_state(void) { return activity_state; }
 
 static int note_activity(void) {

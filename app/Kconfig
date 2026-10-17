@@ -373,6 +373,85 @@ config ZMK_BACKLIGHT_AUTO_OFF_USB
 
 endif # ZMK_BACKLIGHT
 
+DT_CHOSEN_ZMK_LED_MATRIX := zmk,led-matrix
+DT_CHOSEN_ZMK_LED_MATRIX_PATH := $(dt_chosen_path,$(DT_CHOSEN_ZMK_LED_MATRIX))
+
+config ZMK_LED_MATRIX_USES_LED_API
+    bool
+    default y if $(dt_chosen_enabled,$(DT_CHOSEN_ZMK_LED_MATRIX)) && \
+        $(dt_node_str_prop_equals,$(DT_CHOSEN_ZMK_LED_MATRIX_PATH),led-driver,matrix)
+
+config ZMK_LED_MATRIX_USES_LED_STRIP_API
+    bool
+    default y if $(dt_chosen_enabled,$(DT_CHOSEN_ZMK_LED_MATRIX)) && \
+        $(dt_node_str_prop_equals,$(DT_CHOSEN_ZMK_LED_MATRIX_PATH),led-driver,strip)
+
+menuconfig ZMK_LED_MATRIX
+    bool "LED matrix"
+    select LED if ZMK_LED_MATRIX_USES_LED_API
+    select LED_STRIP if ZMK_LED_MATRIX_USES_LED_STRIP_API
+    select ZMK_HID_INDICATORS
+    select ZMK_LOW_PRIORITY_WORK_QUEUE
+    help
+      Enables the ZMK LED matrix subsystem, including status overlays,
+      layer color zones, and named display profiles on LED controller
+      devices.
+
+if ZMK_LED_MATRIX
+
+config ZMK_LED_MATRIX_EXT_POWER
+    bool "LED matrix toggling also controls external power (strip backend only)"
+    depends on ZMK_EXT_POWER && DT_HAS_ZMK_EXT_POWER_GENERIC_ENABLED
+    depends on ZMK_LED_MATRIX_USES_LED_STRIP_API
+    help
+      Controls EXT_POWER automatically from LED matrix runtime state when
+      using the strip backend. Power is enabled while the matrix is actively
+      rendering (including forced transient status display) and disabled
+      otherwise.
+
+config ZMK_LED_MATRIX_AUTO_OFF_IDLE
+    bool "Turn off LED matrix when keyboard goes into idle state on battery"
+    help
+      When enabled, the LED matrix is automatically suspended after the global
+      idle timeout while running on battery power. Activity and LED matrix
+      status events restore the matrix. USB power prevents this auto-off
+      behavior.
+
+config ZMK_LED_MATRIX_IDLE_STATUS_WAKE_TIMEOUT
+    int "Milliseconds idle before LED matrix status events stop waking LEDs"
+    range 0 2147483647
+    help
+      Automatic status events such as BLE, USB, battery, HID, and endpoint
+      changes may temporarily show LED matrix status. Once the keyboard has
+      remained idle for this many milliseconds, those automatic status events
+      update their snapshots only and no longer wake or refresh the LEDs. Set to
+      0 to disable automatic status-event wakeups immediately after idle.
+
+config ZMK_LED_MATRIX_BRT_STEP
+    int "Brightness step in percent"
+    range 1 100
+
+config ZMK_LED_MATRIX_BRT_START
+    int "Default brightness in percent"
+    range 1 100
+
+config ZMK_LED_MATRIX_PROFILE_START
+    int "Default display profile"
+    range 0 255
+
+config ZMK_LED_MATRIX_SPD_LEVELS
+    int "LED matrix effect speed levels"
+    range 1 255
+
+config ZMK_LED_MATRIX_SPD_START
+    int "Default LED matrix effect speed"
+    range 1 ZMK_LED_MATRIX_SPD_LEVELS
+
+config ZMK_LED_MATRIX_ON_START
+    bool "Default LED matrix state"
+
+endif # ZMK_LED_MATRIX
+
 endmenu # Display/LED Options
 
 rsource "src/pointing/Kconfig"

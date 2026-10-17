@@ -1,0 +1,5 @@
+/^Initialized LED matrix:/p
+/LED matrix idle suspend -> auto-suspended/p
+/LED matrix USB state changed:/p
+/LED matrix transient timeout expired, restoring lower-priority output and power-off output/p
+/^LED mock color/p

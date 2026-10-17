@@ -1,0 +1,59 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Virtual LED controller that composes multiple matrix and LED strip backends
+  into one flattened RGB channel space.
+
+  Child ranges must start at 0 and be declared in ascending contiguous order
+  with no overlaps or holes.
+
+  Each child must define exactly one of:
+  - led-device: a Zephyr LED device with write_channels, set_brightness,
+    or on/off support
+  - led-strip-device: a Zephyr LED strip device
+
+  Strip children may optionally reference a shared ext-power-device.
+
+compatible: "zmk,led-composite"
+
+include: ["led-controller.yaml"]
+
+child-binding:
+  description: Child LED backend mapped into the flattened channel space
+
+  properties:
+    led-device:
+      type: phandle
+      required: false
+      description: |
+        Matrix-style LED device. Devices with write_channels receive the
+        flattened channels directly. Scalar set_brightness or on/off devices
+        consume three RGB channels per physical child LED and use the maximum
+        component as brightness.
+
+    led-strip-device:
+      type: phandle
+      required: false
+      description: |
+        LED strip backend that receives forwarded writes in the flattened RGB
+        channel space.
+
+    channel-offset:
+      type: int
+      required: true
+      description: Starting offset in the flattened output channel space.
+
+    channel-count:
+      type: int
+      required: true
+      description: |
+        Number of writable RGB channels exposed by this child backend. Strip
+        children must use a multiple of 3. Scalar led-device children must set
+        this to three times the number of enabled child LEDs on that device.
+
+    ext-power-device:
+      type: phandle
+      required: false
+      description: |
+        Optional shared external power controller used by strip children.

@@ -1,0 +1,2 @@
+/^EXT power generic/p
+/LED matrix transient timeout expired, restoring lower-priority output and power-off output/p

@@ -1,0 +1,343 @@
+/*
+ * Copyright (c) 2021 Nick Winans
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+#include <nordic/nrf52840_qiaa.dtsi>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/led/led.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+
+#include "numpadv2_layouts.dtsi"
+#include "numpadv2-pinctrl.dtsi"
+
+/ {
+	model = "numpadv2";
+	compatible = "bmk,numpadv2";
+
+	chosen {
+		zephyr,code-partition = &code_partition;
+		zephyr,settings-partition = &storage_partition;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zmk,kscan = &kscan0;
+		//zmk,matrix_transform = &default_transform;
+		//zmk,backlight = &backlight;
+		zmk,led-matrix = &led_matrix;
+		//zephyr,display = &oled;
+		zmk,battery = &vbatt;
+		zmk,physical-layout = &layout_numpadv2;
+		//zephyr,bt-uart = &uart0;
+	};
+
+	default_transform: keymap_transform_0 {
+		compatible = "zmk,matrix-transform";
+		columns = <4>;
+		rows = <5>;
+		map = <
+RC(0,0) RC(0,1) RC(0,2) RC(0,3) 
+RC(1,0) RC(1,1) RC(1,2) RC(1,3) 
+RC(2,0) RC(2,1) RC(2,2) RC(2,3)
+RC(3,0) RC(3,1) RC(3,2) RC(3,3) 
+RC(4,0) RC(4,1) RC(4,2) RC(4,3)
+		>;
+	};
+
+	kscan0: kscan {
+		compatible = "zmk,kscan-gpio-matrix";
+		diode-direction = "row2col";
+		wakeup-source;
+		row-gpios
+			= <&gpio0 28 GPIO_ACTIVE_HIGH>
+			, <&gpio0 27 GPIO_ACTIVE_HIGH>
+			, <&gpio0 26 GPIO_ACTIVE_HIGH>
+			, <&gpio0 25 GPIO_ACTIVE_HIGH>
+			, <&gpio1 6 GPIO_ACTIVE_HIGH>
+			;
+		col-gpios
+			= <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			, <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+			;
+	};
+
+	/*
+	leds {
+		compatible = "gpio-leds";
+		white_led: led_0 {
+			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+			label = "White_LED";
+		};
+	};
+
+
+	lcd_light {
+		compatible = "gpio-leds";
+		lcd_light_sw: lcd_light {
+			gpios = <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+			label = "LCD_LIGHT";
+		};
+	};
+ 
+	lcd_power {
+		compatible = "gpio-leds";
+		lcd_power_sw: lcd_power {
+			gpios = <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+			label = "LCD_POWER";
+		};
+	};
+*/
+
+	EXT_POWER {
+        compatible = "zmk,ext-power-generic";
+        control-gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
+		init-delay-ms = <100>;
+    };
+
+	led_matrix: led_matrix {
+		compatible = "zmk,led-matrix";
+		led-driver = "strip";
+		led-strip-device = <&led_strip>;
+		led-count = <24>;
+
+		matrix-led-grid = <
+			4 5 6 7 LM_BREAK
+			8 9 10 11 LM_BREAK
+			12 13 14 15 LM_BREAK
+			16 17 18 19 LM_BREAK
+			20 21 22 23
+		>;
+		ble-profile-leds = <16 17 18 19>;
+        ble-color-open = <LM_BLUE>;
+        ble-color-connected = <LM_CYAN>;
+        ble-color-disconnected = <LM_RED>;
+
+		hid-num-leds = <4>;
+		hid-num-color-on = <LM_GREEN>;
+		hid-num-color-off = <LM_BLACK>;
+
+		battery-leds = <0 1 2 3>;
+		battery-level-colors = <LM_RED LM_ORANGE LM_YELLOW LM_GREEN>;
+		battery-color-off = <LM_BLACK>;
+
+		independent0 {
+			independent-id = <0>;
+			independent-leds = <0 1 2 3>;
+
+			profile0 {
+				profile-id = <0>;
+				renderer = "solid";
+				colors = <LM_BLACK>;
+				brightness = <100>;
+				period-ms = <1000>;
+			};
+		};
+
+		profile0 {
+			profile-id = <0>;
+			display-name = "Palette";
+			renderer = "solid";
+			colors = <LM_PALETTE>;
+			brightness = <100>;
+			period-ms = <1000>;
+		};
+
+		profile1 {
+            profile-id = <1>;
+            display-name = "Breathing Palette";
+            renderer = "breathe";
+            colors = <LM_PALETTE>;
+            brightness = <100>;
+            period-ms = <1800>;
+        };
+
+		profile2 {
+            profile-id = <2>;
+            display-name = "Spectrum";
+            renderer = "spectrum";
+            colors = <LM_DIM_AMBER>;
+            brightness = <100>;
+            period-ms = <2200>;
+        };
+
+		profile3 {
+            profile-id = <3>;
+            display-name = "Swirl";
+            renderer = "swirl";
+            colors = <LM_DIM_CYAN>;
+            brightness = <100>;
+            period-ms = <2200>;
+        };
+
+        profile4 {
+            profile-id = <4>;
+            display-name = "Keypress";
+            renderer = "keypress";
+            keypress-afterglow-ms = <1000>;
+            keypress-fadeout-ms = <250>;
+            keypress-range = <1>;
+            colors = <LM_PALETTE>;
+            brightness = <100>;
+            period-ms = <350>;
+        };
+
+        profile5 {
+            profile-id = <5>;
+            display-name = "Ripple";
+            renderer = "ripple";
+            colors = <LM_RAINBOW>;
+            brightness = <100>;
+            period-ms = <1500>;
+        };
+
+        profile6 {
+            profile-id = <6>;
+            display-name = "Rain";
+            renderer = "rain";
+            colors = <LM_DIM_CYAN>;
+            brightness = <100>;
+            period-ms = <1400>;
+        };
+
+        profile7 {
+            profile-id = <7>;
+            display-name = "Starlight";
+            renderer = "starlight";
+            colors = <LM_DIM_WHITE>;
+            brightness = <100>;
+            period-ms = <2200>;
+        };
+
+		
+	};
+
+	vbatt: vbatt {
+		compatible = "zmk,battery-voltage-divider";
+		io-channels = <&adc 3>;
+		output-ohms = <2000000>;
+		full-ohms = <(2000000 + 806000)>;
+	};
+};
+
+/*
+&pwm0 {
+    status = "okay";
+    pinctrl-0 = <&pwm0_default>;
+    pinctrl-1 = <&pwm0_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+*/
+
+&adc {
+	status = "okay";
+};
+
+&gpiote {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+};
+
+&gpio1 {
+    status = "okay";
+};
+
+&reg0 {
+    status = "okay";
+};
+
+&reg1 {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&spi3 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+    zephyr,pm-device-runtime-auto;
+    pinctrl-0 = <&spi3_default>;
+    pinctrl-1 = <&spi3_sleep>;
+    pinctrl-names = "default", "sleep";
+	status = "okay";
+
+    led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-spi";
+        /* SPI */
+        reg = <0>;
+        spi-max-frequency = <4000000>;
+
+        /* WS2812 */
+        chain-length = <24>; /* number of LEDs */
+        spi-one-frame = <0x70>;
+        spi-zero-frame = <0x40>;
+
+        color-mapping = <LED_COLOR_ID_GREEN
+                        LED_COLOR_ID_RED
+                        LED_COLOR_ID_BLUE>;
+    };
+};
+
+/*
+&usbd {
+	status = "okay";
+};
+*/
+
+
+zephyr_udc0: &usbd {
+    status = "okay";
+};
+
+
+&flash0 {
+	/*
+	 * For more information, see:
+	 * http://docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
+	 */
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		sd_partition: partition@0 {
+			label = "mbr";
+			reg = <0x00000000 0x00001000>;
+		};
+
+		code_partition: partition@1000 {
+			label = "code_partition";
+			reg = <0x00001000 0x0007f000>;
+		};
+
+		/*
+		 * The flash starting at 0x00080000 and ending at
+		 * 0x0008ffff is reserved for application settings.
+		 */
+
+		/*
+		 * Storage partition will be used by FCB/LittleFS/NVS
+		 * if enabled.
+		 */
+		storage_partition: partition@80000 {
+			label = "storage";
+			reg = <0x00080000 0x00010000>;
+		};
+
+		boot_partition: partition@f4000 {
+			label = "adafruit_boot";
+			reg = <0x000f4000 0x0000c000>;
+		};
+	};
+};
+
+
+&layout_numpadv2 {
+    transform = <&default_transform>;
+};

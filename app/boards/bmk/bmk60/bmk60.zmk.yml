@@ -1,0 +1,11 @@
+file_format: "1"
+id: bmk60
+name: bmk60
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+  - ble
+url: https://bmk-io.com

@@ -1,0 +1,5 @@
+description: Raise a test BLE connected/disconnected state transition
+
+compatible: "zmk,behavior-raise-ble-connected-state"
+
+include: one_param.yaml

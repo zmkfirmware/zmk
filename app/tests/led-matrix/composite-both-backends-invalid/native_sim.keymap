@@ -1,0 +1,56 @@
+#include "../behavior_keymap.dtsi"
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    invalid_matrix_child: invalid_matrix_child {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <6>;
+
+        led_0 {
+            index = <0>;
+            color-mapping = <LED_COLOR_ID_RED>;
+        };
+    };
+
+    invalid_strip_child: invalid_strip_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <2>;
+        support-update-channels;
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-device = <&invalid_matrix_child>;
+            led-strip-device = <&invalid_strip_child>;
+            channel-offset = <0>;
+            channel-count = <6>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <2>;
+        output-channel-count = <6>;
+        channel-indexes = <
+            0 1 2
+            3 4 5
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite Both Invalid";
+            renderer = "solid";
+            colors = <0x010203 0x040506>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

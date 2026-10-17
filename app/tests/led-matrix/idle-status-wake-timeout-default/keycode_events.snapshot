@@ -1,0 +1,2 @@
+Initialized LED matrix: leds=1 independent=0 backend=matrix sink=rgb-set-color channels=3 output-channels=3 profiles=1 layer-colors=0 local-grid=0x0 cells=0
+LED matrix idle status wake timeout: 1800000ms

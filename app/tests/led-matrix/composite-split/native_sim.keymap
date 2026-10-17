@@ -1,0 +1,68 @@
+#include "../behavior_keymap.dtsi"
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    composite_split_child0: composite_split_child0 {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <5>;
+
+        led_0 {
+            index = <0>;
+            color-mapping = <LED_COLOR_ID_RED>;
+        };
+    };
+
+    composite_split_child1: composite_split_child1 {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <7>;
+
+        led_0 {
+            index = <0>;
+            color-mapping = <LED_COLOR_ID_RED>;
+        };
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-device = <&composite_split_child0>;
+            channel-offset = <0>;
+            channel-count = <5>;
+        };
+
+        child1 {
+            led-device = <&composite_split_child1>;
+            channel-offset = <5>;
+            channel-count = <7>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            0 1 2
+            3 4 5
+            6 7 8
+            9 10 11
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite Split";
+            renderer = "solid";
+            colors = <0x010203 0x040506 0x070809 0x0A0B0C>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

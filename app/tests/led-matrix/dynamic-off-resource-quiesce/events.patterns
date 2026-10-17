@@ -1,0 +1,3 @@
+/^EXT power generic/p
+/^LED matrix periodic refresh/p
+/^LED strip mock pixel\[0\]=0,0,0$/p

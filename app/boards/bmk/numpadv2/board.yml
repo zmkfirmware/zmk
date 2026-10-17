@@ -1,0 +1,7 @@
+boards:
+  - name: numpadv2
+    vendor: bmk
+    socs:
+      - name: nrf52840
+        variants:
+          - name: zmk

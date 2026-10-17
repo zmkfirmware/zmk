@@ -1,0 +1,104 @@
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+#include <dt-bindings/led/led.h>
+#include <behaviors.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    behaviors {
+        test_battery_state: test_battery_state {
+            compatible = "zmk,behavior-raise-battery-state";
+            #binding-cells = <1>;
+        };
+
+        test_usb_state: test_usb_state {
+            compatible = "zmk,behavior-raise-usb-conn-state";
+            #binding-cells = <1>;
+        };
+
+        test_hid_indicators: test_hid_indicators {
+            compatible = "zmk,behavior-raise-hid-indicators";
+            #binding-cells = <1>;
+        };
+    };
+
+    kscan: native_posix_64_kscan_mock {
+        compatible = "zmk,kscan-mock";
+        rows = <1>;
+        columns = <4>;
+        exit-after;
+        events = <
+            ZMK_MOCK_PRESS(0,0,10)
+            ZMK_MOCK_RELEASE(0,0,20)
+            ZMK_MOCK_PRESS(0,1,40)
+            ZMK_MOCK_RELEASE(0,1,20)
+            ZMK_MOCK_PRESS(0,2,120)
+            ZMK_MOCK_RELEASE(0,2,20)
+            ZMK_MOCK_PRESS(0,3,200)
+            ZMK_MOCK_RELEASE(0,3,20)
+        >;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &test_battery_state 42
+                &test_usb_state 2
+                &bt BT_SEL 1
+                &test_hid_indicators 16
+            >;
+        };
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_RED LED_COLOR_ID_GREEN LED_COLOR_ID_BLUE>; };
+        led_1 { index = <1>; color-mapping = <LED_COLOR_ID_RED LED_COLOR_ID_GREEN LED_COLOR_ID_BLUE>; };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <2>;
+        status-timeout-ms = <1000>;
+        hid-timeout-ms = <1000>;
+        battery-leds = <0>;
+        battery-color-on = <0x00FFFF>;
+        battery-color-off = <LM_BLACK>;
+        usb-leds = <0>;
+        usb-color-hid = <0xFF0000>;
+        usb-color-powered = <LM_BLACK>;
+        usb-color-none = <LM_BLACK>;
+        ble-profile-leds = <1 0>;
+        ble-color-open = <0x0000FF>;
+        ble-color-connected = <LM_BLACK>;
+        ble-color-disconnected = <LM_BLACK>;
+        hid-kana-leds = <0>;
+        hid-kana-color-on = <0xFF00FF>;
+        hid-kana-color-off = <LM_BLACK>;
+        matrix-led-grid = <
+            0 1
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Off";
+            renderer = "solid";
+            colors = <LM_BLACK>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

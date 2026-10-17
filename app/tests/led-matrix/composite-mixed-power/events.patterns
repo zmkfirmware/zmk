@@ -1,0 +1,6 @@
+/^Initialized LED matrix:/p
+/^LED mock channel/p
+/^LED strip mock channel/p
+/^LED mock blank/p
+/^LED mock reinit/p
+/^EXT power mock/p

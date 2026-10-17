@@ -1,0 +1,102 @@
+/*
+ * Copyright (c) 2021 
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+ #include <behaviors.dtsi>
+ #include <dt-bindings/zmk/keys.h>
+ //#include <dt-bindings/zmk/rgb.h>
+ #include <dt-bindings/zmk/bt.h>
+ #include <dt-bindings/zmk/outputs.h>
+ 
+ / {
+	 keymap {
+		 //compatible = "zmk,behavior-layer-toggle";
+		 compatible = "zmk,keymap";
+
+		 default_layer {
+ // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ // |   ESC  | |   F1  |   F2  |   F3   |   F4   | |   F5   |   F6   |   F7   |   F8   | |   F9   |    F10   |    F11  |    F12   |                   | PRTSC  |SCROLLLK|  PSBR  |
+ // |   ~ |   1   |   2   |    3   |    4   |    5   |    6   |    7   |    8   |    9   |    0   |    -   |    +    |       BS   |                   | INSERT |  HOME  |  PGUP  |
+ // |   TAB   |   Q   |   W   |    E   |    R   |    T   |    Y   |    U   |    I   |    O   |    P   |    [   |    ]   |    \    |                   | DELETE |  END   |  PGDN  |
+ // |  CAPS     |   A   |   S   |    D   |    F   |    G   |    H   |    J   |    K   |    L   |    ;   |    '   |       ENT      |
+ // |   STF        |   Z   |   X   |    C   |    V   |    B   |    N   |    M   |    ,   |    .   |    /   |          SFT         |                            |    UP  |  
+ // |   CTL   |  WIN   |  ALT   |                         |   sp   |                   |   ALT   |   WIN    |   MO(2)   |   CTL   |                   |  left  |   down |  right |
+ // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			 bindings = < 
+	 &kp ESC &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6  &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp PSCRN &kp SLCK &kp PAUSE_BREAK
+	 &kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6  &kp N7 &kp N8 &kp N9 &kp N0 &kp MINUS &kp EQUAL &kp BSPC &kp INS &kp HOME &kp PG_UP
+	 &kp TAB &kp Q &kp W &kp E &kp R &kp T &kp Y &kp U &kp I &kp O &kp P &kp LBKT &kp RBKT &kp BSLH &kp DEL &kp END &kp PG_DN
+	 &kp CAPSLOCK &kp A &kp S &kp D &kp F &kp G &kp H &kp J &kp K &kp L &kp SEMI &kp SQT &kp ENTER 
+	 &kp LSHFT &kp Z &kp X &kp C &kp V &kp B &kp N &kp M &kp COMMA &kp PERIOD &kp FSLH &kp RSHFT &kp UP
+	 &kp LCTRL &kp LWIN &kp LALT &kp SPACE &kp RALT &kp RWIN &mo 2  &kp RCTRL  &kp LEFT  &kp DOWN &kp RIGHT
+			 >;
+		 };
+ 
+		 mac_layer {
+			// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			// |   ESC  | |   F1  |   F2  |   F3   |   F4   | |   F5   |   F6   |   F7   |   F8   | |   F9   |    F10   |    F11  |    F12   |                   | PRTSC  |SCROLLLK|  PSBR  |
+			// |   ~ |   1   |   2   |    3   |    4   |    5   |    6   |    7   |    8   |    9   |    0   |    -   |    +    |       BS   |                   | INSERT |  HOME  |  PGUP  |
+			// |   TAB   |   Q   |   W   |    E   |    R   |    T   |    Y   |    U   |    I   |    O   |    P   |    [   |    ]   |    \    |                   | DELETE |  END   |  PGDN  |
+			// |  CAPS     |   A   |   S   |    D   |    F   |    G   |    H   |    J   |    K   |    L   |    ;   |    '   |       ENT      |
+			// |   STF        |   Z   |   X   |    C   |    V   |    B   |    N   |    M   |    ,   |    .   |    /   |          SFT         |                            |    UP  |  
+			// |   CTL   |  WIN   |  ALT   |                         |   sp   |                   |   ALT   |   WIN    |   MO(2)   |   CTL   |                   |  left  |   down |  right |
+			// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+						bindings = < 
+				&kp ESC &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6  &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &kp PSCRN &kp SLCK &kp PAUSE_BREAK
+				&kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6  &kp N7 &kp N8 &kp N9 &kp N0 &kp MINUS &kp EQUAL &kp BSPC &kp INS &kp HOME &kp PG_UP
+				&kp TAB &kp Q &kp W &kp E &kp R &kp T &kp Y &kp U &kp I &kp O &kp P &kp LBKT &kp RBKT &kp BSLH &kp DEL &kp END &kp PG_DN
+				&kp CAPSLOCK &kp A &kp S &kp D &kp F &kp G &kp H &kp J &kp K &kp L &kp SEMI &kp SQT &kp ENTER 
+				&kp LSHFT &kp Z &kp X &kp C &kp V &kp B &kp N &kp M &kp COMMA &kp PERIOD &kp FSLH &kp RSHFT &kp UP
+				&kp LCTRL &kp LALT &kp LWIN &kp SPACE &kp RALT &kp RALT &mo 2 &kp RCTRL  &kp LEFT  &kp DOWN &kp RIGHT
+						>;
+					};
+
+		 func_layer {
+			// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			// |   ESC  | |  BT1  |  BT2  |   BT3  |   BT4  | |  Play  |  Stop  |   Pre  |  Next  | |        |   Mute  |  Vol Dn  |  Vol Up  |                   | PRTSC  |SCROLLLK|  PSBR  |
+			// |   ~ |   1   |   2   |    3   |    4   |    5   |    6   |    7   |    8   |    9   |    0   |    -   |    +    |       BS   |                   |        |        | Inc Bri|
+			// |   TAB   |  Q    |   W  |    E   |    R   |    T   |    Y   |    U   |    I   |    O   |    P   |    [   |    ]   |    \    |                   | BT CLR |        | Dec Bri|
+			// |  CAPS     |win_layer|mac_layer|    D   |    F   |    G   |    H   |    J   |    K   |    L   |    ;   |    '   |       ENT      |
+			// |   STF        |   Z   |   X   |    C   |    V   |    B   |    N   |    M   |    ,   |    .   |    /   |          SFT         |                            |    UP  |  
+			// |   CTL   |  WIN   |  ALT   |                         |   sp   |                   |   ALT   |   WIN    |   MO(2)   |   CTL   |                   |  left  |   down |  right |
+			// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			 bindings = <
+	 &kp ESC &bt BT_SEL 0  &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &kp C_PP &kp C_STOP  &kp C_PREV &kp C_NEXT &trans &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP &kp PSCRN &kp SLCK &kp PAUSE_BREAK
+	 &kp GRAVE &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6  &kp N7 &kp N8 &kp N9 &kp N0 &kp MINUS &kp EQUAL &kp BSPC &trans &trans &kp C_BRI_UP
+	 &kp TAB &kp Q &kp W &kp E &kp R &kp T &kp Y &kp U &kp I &kp O &kp P &kp LBKT &kp RBKT &kp BSLH &bt BT_CLR &trans &kp C_BRI_DN
+	 &kp CAPSLOCK &tog_off 1 &tog_on 1 &tog 1 &kp F &kp G &kp H &kp J &kp K &kp L &kp SEMI &kp SQT &kp ENTER 
+	 &kp LSHFT &kp Z &kp X &kp C &kp V &kp B &kp N &kp M &kp COMMA &kp PERIOD &kp FSLH &kp RSHFT &kp UP 
+	 &kp LCTRL &kp LWIN &kp LALT &kp SPACE &kp  RALT &kp RWIN &mo 2  &kp RCTRL &kp LEFT  &kp DOWN &kp RIGHT
+			 >;
+		 };
+
+		extra1 {
+            status = "reserved";
+        };
+
+        extra2 {
+            status = "reserved";
+		};
+ 
+	 };
+
+	 behaviors {
+        tog_on: toggle_layer_on_only {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            display-name = "Toggle Layer On";
+            toggle-mode = "on";
+        };
+
+		tog_off: toggle_layer_off_only {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            display-name = "Toggle Layer Off";
+            toggle-mode = "off";
+        };
+    };
+
+ };
+ 

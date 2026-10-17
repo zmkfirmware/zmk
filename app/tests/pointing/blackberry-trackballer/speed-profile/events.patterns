@@ -1,0 +1,3 @@
+/Input speed level/s/.*Input speed /Input speed /p
+/Input speed scaled/s/.*Input speed /Input speed /p
+s/.*hid_mouse_button_//p

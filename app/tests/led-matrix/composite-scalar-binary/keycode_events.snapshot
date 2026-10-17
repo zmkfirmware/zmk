@@ -1,0 +1,6 @@
+Initialized LED matrix: leds=2 independent=1 backend=matrix sink=channels channels=3 output-channels=6 profiles=0 layer-colors=0 local-grid=0x0 cells=0
+LED mock binary[0]=on
+LED mock binary[1]=on
+LED mock binary[0]=off
+LED mock binary[1]=off
+

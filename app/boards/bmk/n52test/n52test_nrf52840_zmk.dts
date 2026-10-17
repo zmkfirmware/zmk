@@ -1,0 +1,281 @@
+/*
+ * Copyright (c) 2026 The ZMK Contributors
+ * SPDX-License-Identifier: MIT
+ */
+
+/dts-v1/;
+
+#include <nordic/nrf52840_qiaa.dtsi>
+#include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
+
+#include "n52test-pinctrl.dtsi"
+#include "n52test_layouts.dtsi"
+
+/ {
+    model = "BMK n52test";
+    compatible = "bmk,n52test";
+
+    chosen {
+        zephyr,code-partition = &code_partition;
+        zephyr,settings-partition = &storage_partition;
+        zephyr,sram = &sram0;
+        zephyr,flash = &flash0;
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &layout_n52test;
+        zmk,led-matrix = &trackball_led_matrix;
+    };
+
+    matrix_transform0: matrix_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <4>;
+        rows = <6>;
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3)
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3)
+            RC(3,0) RC(3,1) RC(3,2) RC(3,3)
+            RC(4,0) RC(4,1) RC(4,2) RC(4,3)
+            RC(5,0)
+        >;
+    };
+
+    kscan0: kscan_composite {
+        compatible = "zmk,kscan-composite";
+        rows = <6>;
+        columns = <4>;
+        wakeup-source;
+
+        matrix {
+            kscan = <&matrix_kscan>;
+        };
+
+        led_test_key {
+            kscan = <&led_test_kscan>;
+            row-offset = <5>;
+        };
+    };
+
+    matrix_kscan: matrix_kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "row2col";
+        wakeup-source;
+
+        row-gpios
+            = <&gpio0 17 GPIO_ACTIVE_HIGH>
+            , <&gpio0 21 GPIO_ACTIVE_HIGH>
+            , <&gpio0 19 GPIO_ACTIVE_HIGH>
+            , <&gpio0 20 GPIO_ACTIVE_HIGH>
+            , <&gpio0 22 GPIO_ACTIVE_HIGH>
+            ;
+
+        col-gpios
+            = <&gpio0 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+
+    led_test_kscan: led_test_kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+        input-gpios = <&gpio1 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    };
+
+    trackball: trackball {
+        compatible = "sparkfun,blackberry-trackballer";
+        left-gpios = <&gpio0 26 GPIO_ACTIVE_HIGH>;
+        right-gpios = <&gpio0 25 GPIO_ACTIVE_HIGH>;
+        up-gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
+        down-gpios = <&gpio0 27 GPIO_ACTIVE_HIGH>;
+        button-gpios = <&gpio1 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+        button-code = <INPUT_BTN_0>;
+        report-period-ms = <4>;
+        interpolation-frames = <4>;
+        debounce-interval-ms = <5>;
+        acceleration-start-hz = <5>;
+        acceleration-max-hz = <30>;
+        acceleration-exponent = <2>;
+        minimum-step = <1>;
+        maximum-step = <8>;
+    };
+
+    trackball_speed: trackball_speed {
+        compatible = "zmk,input-processor-speed-profile";
+        #input-processor-cells = <0>;
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_X INPUT_REL_Y>;
+        speed-percentages = <150 300 450 600 900>;
+        default-speed-level = <2>;
+        persist-speed-level;
+        track-remainders;
+    };
+
+    trackball_listener: trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>;
+        input-processors = <&trackball_speed>;
+    };
+
+    behaviors {
+        tbspd: trackball_speed_behavior {
+            compatible = "zmk,behavior-input-speed";
+            #binding-cells = <2>;
+            display-name = "Trackball Speed";
+            processor = <&trackball_speed>;
+        };
+    };
+
+    trackball_leds: trackball_leds {
+        compatible = "pwm-leds";
+
+        wht {
+            label = "Trackball WHT";
+            pwms = <&pwm0 0 PWM_MSEC(1) PWM_POLARITY_NORMAL>;
+        };
+
+        grn {
+            label = "Trackball GRN";
+            pwms = <&pwm0 1 PWM_MSEC(1) PWM_POLARITY_NORMAL>;
+        };
+
+        red {
+            label = "Trackball RED";
+            pwms = <&pwm0 2 PWM_MSEC(1) PWM_POLARITY_NORMAL>;
+        };
+
+        blu {
+            label = "Trackball BLU";
+            pwms = <&pwm0 3 PWM_MSEC(1) PWM_POLARITY_NORMAL>;
+        };
+    };
+
+    trackball_led_matrix: trackball_led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&trackball_leds>;
+        led-count = <4>;
+        led-indexes = <0 1 2 3>;
+
+        trackball_group: independent0 {
+            independent-id = <0>;
+            independent-leds = <0 1 2 3>;
+
+            profile0 {
+                profile-id = <0>;
+                renderer = "solid";
+                colors = <0xFFFFFF 0xFFFFFF 0xFFFFFF 0xFFFFFF>;
+                brightness = <25>;
+                period-ms = <1000>;
+            };
+
+            profile1 {
+                profile-id = <1>;
+                renderer = "solid";
+                colors = <0xFFFFFF 0x000000 0x000000 0x000000>;
+                brightness = <25>;
+                period-ms = <1000>;
+            };
+
+            profile2 {
+                profile-id = <2>;
+                renderer = "solid";
+                colors = <0x000000 0xFFFFFF 0x000000 0x000000>;
+                brightness = <25>;
+                period-ms = <1000>;
+            };
+
+            profile3 {
+                profile-id = <3>;
+                renderer = "solid";
+                colors = <0x000000 0x000000 0xFFFFFF 0x000000>;
+                brightness = <25>;
+                period-ms = <1000>;
+            };
+
+            profile4 {
+                profile-id = <4>;
+                renderer = "solid";
+                colors = <0x000000 0x000000 0x000000 0xFFFFFF>;
+                brightness = <25>;
+                period-ms = <1000>;
+            };
+
+            profile5 {
+                profile-id = <5>;
+                renderer = "solid";
+                colors = <0x000000 0x000000 0x000000 0x000000>;
+                brightness = <100>;
+                period-ms = <1000>;
+            };
+        };
+    };
+};
+
+&reg0 {
+    status = "okay";
+};
+
+&reg1 {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};
+
+&gpiote {
+    status = "okay";
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&gpio1 {
+    status = "okay";
+};
+
+&uicr {
+    gpio-as-nreset;
+};
+
+&pwm0 {
+    status = "okay";
+    pinctrl-0 = <&n52test_pwm0_default>;
+    pinctrl-1 = <&n52test_pwm0_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+
+zephyr_udc0: &usbd {
+    status = "okay";
+};
+
+&flash0 {
+    partitions {
+        compatible = "fixed-partitions";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        sd_partition: partition@0 {
+            label = "mbr";
+            reg = <0x00000000 0x00001000>;
+        };
+
+        code_partition: partition@1000 {
+            label = "code_partition";
+            reg = <0x00001000 0x000d3000>;
+        };
+
+        storage_partition: partition@d4000 {
+            label = "storage";
+            reg = <0x000d4000 0x00020000>;
+        };
+
+        boot_partition: partition@f4000 {
+            label = "adafruit_boot";
+            reg = <0x000f4000 0x0000c000>;
+        };
+    };
+};

@@ -1,0 +1,34 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+if BOARD_BMK60
+
+config ZMK_KEYBOARD_NAME
+	default "Roy's Keyboard"
+
+if USB
+
+config USB_NRFX
+	default y
+
+config USB_DEVICE_STACK
+	default y
+
+endif # USB
+
+config BT_CTLR
+	default BT
+
+config ZMK_BLE
+	default y
+
+config ZMK_USB
+	default y
+
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+	default n
+
+config ZMK_BATTERY_NRF_VDDH
+	default y
+
+endif # BOARD_BMK60

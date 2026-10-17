@@ -1,0 +1,6 @@
+/^Initialized LED matrix:/p
+/LED matrix idle suspend -> auto-suspended/p
+/LED matrix automatic status wake suppressed after idle timeout/p
+/LED matrix entered BLE pairing transient/p
+/LED matrix first render after wake:/p
+/^LED mock color/p

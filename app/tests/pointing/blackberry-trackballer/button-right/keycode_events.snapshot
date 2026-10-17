@@ -1,0 +1,6 @@
+press: Button 1 count 1
+press: Mouse buttons set to 0x02
+release: Button 1 count: 0
+release: Button 1 released
+release: Mouse buttons set to 0x00
+

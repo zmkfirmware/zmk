@@ -1,0 +1,14 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: PM Device Action Test Behavior
+
+compatible: "zmk,behavior-pm-device-action"
+
+include: one_param.yaml
+
+properties:
+  device:
+    type: phandle
+    required: true
+

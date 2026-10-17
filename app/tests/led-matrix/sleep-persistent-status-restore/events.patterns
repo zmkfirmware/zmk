@@ -1,0 +1,4 @@
+/^Initialized LED matrix:/p
+/LED matrix USB state changed:/p
+/LED matrix sleep suspend -> sleep-suspended/p
+/^LED mock color/p
