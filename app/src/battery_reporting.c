@@ -14,6 +14,7 @@
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 #include <zephyr/bluetooth/gatt.h>
+#include <zephyr/sys/byteorder.h>
 #endif
 
 #include <zephyr/logging/log.h>
@@ -92,6 +93,70 @@ static ssize_t read_blvl(struct bt_conn *conn, const struct bt_gatt_attr *attr, 
     return bt_gatt_attr_read(conn, attr, buf, len, offset, &level, sizeof(level));
 }
 
+#define BAS_HAS_BLS                                                                                \
+    (IS_ENABLED(CONFIG_ZMK_BATTERY_CHARGE_STATUS) ||                                               \
+     IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING))
+
+#if BAS_HAS_BLS
+
+#define BLS_POWER_STATE_BATTERY_PRESENT BIT(0)
+#define BLS_POWER_STATE_WIRED_POWER_CONNECTED BIT(1)
+#define BLS_POWER_STATE_CHARGE_STATE_SHIFT 5
+
+static void bls_encode(enum zmk_battery_charge_state state, uint8_t value[3]) {
+    uint16_t power_state =
+        BLS_POWER_STATE_BATTERY_PRESENT | (state << BLS_POWER_STATE_CHARGE_STATE_SHIFT);
+
+    if (state == ZMK_BATTERY_CHARGE_STATE_CHARGING) {
+        power_state |= BLS_POWER_STATE_WIRED_POWER_CONNECTED;
+    }
+
+    value[0] = 0;
+    sys_put_le16(power_state, &value[1]);
+}
+
+static ssize_t read_bls(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf,
+                        uint16_t len, uint16_t offset) {
+    const uint8_t index = *(uint8_t *)attr->user_data;
+    enum zmk_battery_charge_state state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
+
+    if (index == BAS_CENTRAL_INDEX) {
+        state = zmk_battery_charge_state();
+    } else {
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
+        zmk_split_central_get_peripheral_charge_state(index - BAS_PERIPHERAL_INDEX_OFFSET, &state);
+#endif
+    }
+
+    uint8_t value[3];
+    bls_encode(state, value);
+    return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(value));
+}
+
+static void bls_notify(const struct bt_gatt_service_static *svc,
+                       enum zmk_battery_charge_state state) {
+    uint8_t value[3];
+    bls_encode(state, value);
+
+    int rc = bt_gatt_notify_uuid(NULL, BT_UUID_BAS_BATTERY_LEVEL_STATUS, svc->attrs, value,
+                                 sizeof(value));
+    if (rc < 0 && rc != -ENOTCONN) {
+        LOG_WRN("Notify failed for battery level status: %d", rc);
+    }
+}
+
+#define BAS_BLS_ATTRS(idx)                                                                         \
+    BT_GATT_CHARACTERISTIC(BT_UUID_BAS_BATTERY_LEVEL_STATUS,                                       \
+                           BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY, BT_GATT_PERM_READ, read_bls,   \
+                           NULL, ((uint8_t[]){idx})),                                              \
+        BT_GATT_CCC(NULL, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE)
+
+#else
+
+#define BAS_BLS_ATTRS(idx)
+
+#endif // BAS_HAS_BLS
+
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #define ZMK_BT_GATT_SERVICE_DEFINE(_name, ...)                                                     \
@@ -152,7 +217,8 @@ BUILD_ASSERT(KEYBOARD_PARTS_NUM == DT_CHILD_NUM(DT_CHOSEN(DT_DRV_COMPAT)),
                 .name_space = 0x01, /* Bluetooth SIG */                                            \
                 .description = BAT_REPORT_GET_DT_CPF_DESC(node_id),                                \
             }})),                                                                                  \
-            BT_GATT_CUD(BAT_REPORT_GET_DT_DISPLAY_NAME(node_id), BT_GATT_PERM_READ))),             \
+            BT_GATT_CUD(BAT_REPORT_GET_DT_DISPLAY_NAME(node_id), BT_GATT_PERM_READ),               \
+            BAS_BLS_ATTRS(DT_NODE_CHILD_IDX(node_id)))),                                           \
         ());
 
 DT_FOREACH_CHILD(DT_CHOSEN(DT_DRV_COMPAT), DEFINE_BAS_INSTANCE_DT)
@@ -197,7 +263,8 @@ static const struct battery_part battery_parts[] = {
             .name_space = 0x01, /* Bluetooth SIG */                                                \
             .description = BAT_REPORT_GET_DEFAULT_CPF_DESC(idx),                                   \
         }})),                                                                                      \
-        BT_GATT_CUD(BAT_REPORT_GET_DEFAULT_DISPLAY_NAME(idx), BT_GATT_PERM_READ));
+        BT_GATT_CUD(BAT_REPORT_GET_DEFAULT_DISPLAY_NAME(idx), BT_GATT_PERM_READ),                  \
+        BAS_BLS_ATTRS(idx));
 
 LISTIFY(KEYBOARD_PARTS_NUM, DEFINE_BAS_SERVICE_IDX, ())
 
@@ -333,6 +400,9 @@ int peripheral_batt_report_lvl_listener(const zmk_event_t *eh) {
         if (rc < 0 && rc != -ENOTCONN) {
             LOG_WRN("Notify failed for peripheral %d: %d", ev->source, rc);
         }
+#if BAS_HAS_BLS
+        bls_notify(svc, ev->charge_state);
+#endif
     } else {
         LOG_DBG("No service found for peripheral %d", ev->source);
     }
@@ -380,6 +450,9 @@ int central_batt_state_changed_listener(const zmk_event_t *eh) {
         if (rc < 0 && rc != -ENOTCONN) {
             LOG_WRN("Notify failed for central battery level: %d", rc);
         }
+#if BAS_HAS_BLS
+        bls_notify(svc, ev->charge_state);
+#endif
     } else {
         LOG_DBG("No service found for central battery");
     }
