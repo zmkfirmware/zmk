@@ -60,6 +60,8 @@ struct peripheral_slot {
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING)
     struct bt_gatt_subscribe_params batt_lvl_status_subscribe_params;
+    struct bt_gatt_discover_params batt_lvl_status_sub_discover_params;
+    struct bt_gatt_read_params batt_lvl_status_read_params;
     enum zmk_battery_charge_state charge_state;
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING) */
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -561,6 +563,30 @@ split_central_battery_level_status_notify_func(struct bt_conn *conn,
     return BT_GATT_ITER_CONTINUE;
 }
 
+static uint8_t split_central_battery_level_status_read_func(struct bt_conn *conn, uint8_t err,
+                                                            struct bt_gatt_read_params *params,
+                                                            const void *data, uint16_t length) {
+    if (err) {
+        LOG_ERR("Battery level status read failed (err %u)", err);
+        return BT_GATT_ITER_STOP;
+    }
+
+    if (!data) {
+        LOG_DBG("[READ COMPLETED]");
+        return BT_GATT_ITER_STOP;
+    }
+
+    struct peripheral_slot *slot = peripheral_slot_for_conn(conn);
+    if (!slot) {
+        LOG_ERR("No peripheral state found for connection");
+        return BT_GATT_ITER_STOP;
+    }
+
+    split_central_battery_level_status_notify_func(conn, &slot->batt_lvl_status_subscribe_params,
+                                                   data, length);
+    return BT_GATT_ITER_CONTINUE;
+}
+
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING) */
 
 static int split_central_subscribe(struct bt_conn *conn, struct bt_gatt_subscribe_params *params) {
@@ -727,7 +753,8 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
         } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                                 BT_UUID_BAS_BATTERY_LEVEL_STATUS)) {
             LOG_DBG("Found battery level status characteristic");
-            slot->batt_lvl_status_subscribe_params.disc_params = &slot->sub_discover_params;
+            slot->batt_lvl_status_subscribe_params.disc_params =
+                &slot->batt_lvl_status_sub_discover_params;
             slot->batt_lvl_status_subscribe_params.end_handle = slot->discover_params.end_handle;
             slot->batt_lvl_status_subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
             slot->batt_lvl_status_subscribe_params.notify =
@@ -735,6 +762,12 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
             // The characteristic is indicated rather than notified.
             slot->batt_lvl_status_subscribe_params.value = BT_GATT_CCC_INDICATE;
             split_central_subscribe(conn, &slot->batt_lvl_status_subscribe_params);
+
+            slot->batt_lvl_status_read_params.func = split_central_battery_level_status_read_func;
+            slot->batt_lvl_status_read_params.handle_count = 1;
+            slot->batt_lvl_status_read_params.single.handle = bt_gatt_attr_value_handle(attr);
+            slot->batt_lvl_status_read_params.single.offset = 0;
+            bt_gatt_read(conn, &slot->batt_lvl_status_read_params);
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_CHARGE_STATE_FETCHING) */
         }
         break;
