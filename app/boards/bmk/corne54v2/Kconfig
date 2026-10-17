@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MIT
+
+config BOARD_ENABLE_DCDC
+    bool "Enable DCDC mode"
+    select SOC_DCDC_NRF52X
+    default y
+    depends on BOARD_CORNE54V2_LEFT || BOARD_CORNE54V2_RIGHT
+
+config BOARD_ENABLE_DCDC_HV
+    bool "High voltage DCDC converter"
+    select SOC_DCDC_NRF52X_HV
+    default y
+    depends on BOARD_CORNE54V2_LEFT || BOARD_CORNE54V2_RIGHT
+    

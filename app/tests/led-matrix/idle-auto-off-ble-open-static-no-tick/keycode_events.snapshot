@@ -1,0 +1,13 @@
+Initialized LED matrix: leds=2 independent=0 backend=matrix sink=rgb-set-color channels=3 output-channels=6 profiles=1 layer-colors=0 local-grid=0x0 cells=0
+LED mock color[0]=0,0,255
+LED mock color[1]=0,0,255
+LED matrix idle suspend -> auto-suspended
+LED mock color[0]=0,0,0
+LED mock color[1]=0,0,0
+LED matrix entered BLE pairing transient for profile 0
+LED mock color[0]=16,16,16
+LED mock color[1]=32,32,32
+LED matrix BLE pairing transient expired
+LED matrix transient timeout expired, restoring lower-priority output and power-off output
+LED mock color[0]=0,0,0
+LED mock color[1]=0,0,0

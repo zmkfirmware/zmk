@@ -1,0 +1,4 @@
+/^Initialized LED matrix:/p
+/LED matrix sleep suspend -> sleep-suspended/p
+/battery state change updated snapshot only/p
+/^LED mock color/p

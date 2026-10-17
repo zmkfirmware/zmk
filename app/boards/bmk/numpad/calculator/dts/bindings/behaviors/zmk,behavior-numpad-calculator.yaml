@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+description: Board-local numpad calculator input and mode control
+compatible: "zmk,behavior-numpad-calculator"
+include: one_param.yaml
+properties:
+  calculator-layer:
+    type: int
+    required: true
+  function-layer:
+    type: int
+    required: true

@@ -1,0 +1,45 @@
+Input speed scaled 1 at level 2 (100%) to 1 with remainder 0
+Input speed scaled 0 at level 2 (100%) to 0 with remainder 0
+Input speed level 1/5 (50%)
+Input speed scaled 1 at level 1 (50%) to 0 with remainder 50
+Input speed scaled 0 at level 1 (50%) to 0 with remainder 0
+Input speed level 2/5 (100%)
+Input speed level 1/5 (50%)
+Input speed scaled 0 at level 1 (50%) to 0 with remainder 50
+Input speed scaled 1 at level 1 (50%) to 0 with remainder 50
+Input speed level 2/5 (100%)
+Input speed scaled 1 at level 2 (100%) to 1 with remainder 50
+Input speed scaled 0 at level 2 (100%) to 0 with remainder 50
+Input speed level 3/5 (150%)
+Input speed scaled 1 at level 3 (150%) to 2 with remainder 0
+Input speed scaled 0 at level 3 (150%) to 0 with remainder 50
+Input speed scaled 1 at level 3 (150%) to 1 with remainder 50
+Input speed scaled 0 at level 3 (150%) to 0 with remainder 50
+Input speed level 4/5 (200%)
+Input speed scaled 1 at level 4 (200%) to 2 with remainder 50
+Input speed scaled 0 at level 4 (200%) to 0 with remainder 50
+Input speed level 5/5 (300%)
+Input speed scaled 1 at level 5 (300%) to 3 with remainder 50
+Input speed scaled 0 at level 5 (300%) to 0 with remainder 50
+Input speed scaled 1 at level 5 (300%) to 3 with remainder 50
+Input speed scaled 0 at level 5 (300%) to 0 with remainder 50
+Input speed scaled 1 at level 5 (300%) to 3 with remainder 50
+Input speed scaled 0 at level 5 (300%) to 0 with remainder 50
+Input speed level 1/5 (50%)
+Input speed scaled 1 at level 1 (50%) to 1 with remainder 0
+Input speed scaled 0 at level 1 (50%) to 0 with remainder 50
+Input speed scaled 0 at level 1 (50%) to 0 with remainder 0
+Input speed scaled 1 at level 1 (50%) to 1 with remainder 0
+Input speed scaled 1 at level 1 (50%) to 0 with remainder 50
+Input speed scaled 0 at level 1 (50%) to 0 with remainder 0
+Input speed scaled 0 at level 1 (50%) to 0 with remainder 50
+Input speed scaled 1 at level 1 (50%) to 0 with remainder 50
+Input speed scaled 1 at level 1 (50%) to 1 with remainder 0
+Input speed scaled 0 at level 1 (50%) to 0 with remainder 50
+Input speed scaled 0 at level 1 (50%) to 0 with remainder 0
+Input speed scaled 1 at level 1 (50%) to 1 with remainder 0
+press: Button 0 count 1
+press: Mouse buttons set to 0x01
+release: Button 0 count: 0
+release: Button 0 released
+release: Mouse buttons set to 0x00

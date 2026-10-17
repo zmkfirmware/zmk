@@ -1,0 +1,21 @@
+identifier: numpad
+name: numpad
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+supported:
+  - gpio
+  - adc
+  - usb_device
+  - ble
+  - ieee802154
+  - pwm
+  - watchdog
+  - spi
+  - nvs
+  - can
+  - display
+  - gui
+  - lvgl

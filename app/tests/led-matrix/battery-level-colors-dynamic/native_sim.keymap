@@ -1,0 +1,75 @@
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+#include <dt-bindings/led/led.h>
+#include <behaviors.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    behaviors {
+        test_battery_state: test_battery_state {
+            compatible = "zmk,behavior-raise-battery-state";
+            #binding-cells = <1>;
+        };
+    };
+
+    kscan: native_posix_64_kscan_mock {
+        compatible = "zmk,kscan-mock";
+        rows = <1>;
+        columns = <2>;
+        exit-after;
+        events = <
+            ZMK_MOCK_PRESS(0,0,10)
+            ZMK_MOCK_RELEASE(0,0,10)
+            ZMK_MOCK_PRESS(0,1,2250)
+            ZMK_MOCK_RELEASE(0,1,10)
+        >;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &test_battery_state 25 &kp B
+            >;
+        };
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_1 { index = <1>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <2>;
+        status-timeout-ms = <3000>;
+        battery-timeout-ms = <3000>;
+        battery-leds = <0 1>;
+        battery-level-colors = <LM_RAINBOW LM_GREEN>;
+        battery-color-off = <LM_BLACK>;
+        matrix-led-grid = <
+            0 1
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Battery Dynamic";
+            renderer = "solid";
+            colors = <LM_BLACK>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

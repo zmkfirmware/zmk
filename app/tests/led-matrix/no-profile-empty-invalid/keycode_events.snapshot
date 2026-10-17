@@ -1,0 +1,2 @@
+zmk,led-matrix requires at least one profile, layer color, or status LED zone
+Invalid zmk,led-matrix DTS configuration (-22)

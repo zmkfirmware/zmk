@@ -1,0 +1,5 @@
+/^Initialized LED matrix:/p
+/^LED matrix topology:/p
+/^LED mock color/p
+/LED matrix profile command ignored: no profiles configured/p
+/LED matrix child profile command ignored: no independent children configured/p

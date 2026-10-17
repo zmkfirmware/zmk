@@ -1,0 +1,7 @@
+boards:
+  - name: bl654b
+    vendor: moergo
+    socs:
+      - name: nrf52840
+        variants:
+          - name: zmk

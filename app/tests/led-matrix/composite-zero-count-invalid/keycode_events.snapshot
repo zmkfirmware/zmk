@@ -1,0 +1,2 @@
+LED composite "led_composite" child 0 "composite_zero_child" has channel-count 0
+LED matrix output device "led_composite" is not ready

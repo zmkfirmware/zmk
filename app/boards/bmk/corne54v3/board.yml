@@ -1,0 +1,13 @@
+boards:
+  - name: corne54v3_left
+    vendor: bmk
+    socs:
+      - name: nrf52840
+        variants:
+          - name: zmk
+  - name: corne54v3_right
+    vendor: bmk
+    socs:
+      - name: nrf52840
+        variants:
+          - name: zmk

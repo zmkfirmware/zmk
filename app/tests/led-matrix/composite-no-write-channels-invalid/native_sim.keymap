@@ -1,0 +1,45 @@
+#include "../behavior_keymap.dtsi"
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    composite_no_channels_child: composite_no_channels_child {
+        compatible = "zmk,led-mock";
+        mode = "none";
+
+        led_0 {
+            index = <0>;
+            color-mapping = <LED_COLOR_ID_RED>;
+        };
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-device = <&composite_no_channels_child>;
+            channel-offset = <0>;
+            channel-count = <3>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <1>;
+        output-channel-count = <3>;
+        channel-indexes = <0 1 2>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite No Channels";
+            renderer = "solid";
+            colors = <0x010203>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

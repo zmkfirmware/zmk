@@ -1,0 +1,19 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+config BOARD_ENABLE_DCDC
+    bool "Enable DCDC mode"
+    select SOC_DCDC_NRF52X
+    default y
+    depends on BOARD_NUMPADV2
+
+config ZMK_NUMPADV2_FLASH_DIAGNOSTIC
+    bool "Enable numpadv2 Flash/NVS LED diagnostic"
+    depends on BOARD_NUMPADV2
+    depends on SETTINGS
+    depends on ZMK_LED_MATRIX
+    default n
+    help
+      Build a diagnostic-only settings marker test for numpadv2. The test
+      reports NVS write and cross-reboot load results using the LED matrix.
+      Do not enable this option in normal firmware.

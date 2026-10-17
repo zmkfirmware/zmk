@@ -1,0 +1,36 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Runtime-selectable percentage scaling input processor
+
+compatible: "zmk,input-processor-speed-profile"
+
+include: ip_zero_param.yaml
+
+properties:
+  type:
+    type: int
+    required: true
+
+  codes:
+    type: array
+    required: true
+
+  speed-percentages:
+    type: array
+    required: true
+    description: One-based speed levels expressed as percentages from 1 through 65535.
+
+  default-speed-level:
+    type: int
+    required: true
+    description: One-based speed level selected when no persisted setting exists.
+
+  persist-speed-level:
+    type: boolean
+    description: Persist the selected level through the Zephyr settings subsystem.
+
+  track-remainders:
+    type: boolean
+    required: true
+    description: Preserve fractional scaled movement independently for every relative axis.

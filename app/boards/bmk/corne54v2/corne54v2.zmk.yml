@@ -1,0 +1,19 @@
+file_format: "1"
+id: corne54v2
+name: Corne54v2
+type: board
+url: https://corne54v2.bmk.io
+arch: arm
+features:
+  - keys
+  - underglow
+  - backlight
+  - studio
+  - display
+  - encoder
+outputs:
+  - usb
+  - ble
+siblings:
+  - corne54v2_left
+  - corne54v2_right

@@ -1,0 +1,4 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+# Power conversion is configured through the nRF regulator Devicetree nodes.

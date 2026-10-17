@@ -1,0 +1,2 @@
+/requires at least one local profile/p
+/^Invalid zmk,led-matrix DTS configuration/p

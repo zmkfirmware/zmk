@@ -1,0 +1,14 @@
+file_format: "1"
+id: numpad//zmk
+name: numpad
+type: board
+arch: arm
+features:
+  - keys
+  - studio
+  - backlight
+  - display
+outputs:
+  - usb
+  - ble
+url: https://bmk-io.com

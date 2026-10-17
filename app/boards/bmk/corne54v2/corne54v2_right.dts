@@ -1,0 +1,74 @@
+/*
+*
+* Copyright (c) 2023 The ZMK Contributors
+* SPDX-License-Identifier: MIT
+*
+*/
+#include <dt-bindings/zmk/ext_power.h>
+
+#include "corne54v2.dtsi"
+#include "corne54v2_right-pinctrl.dtsi"
+
+/{
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+
+        diode-direction = "row2col";
+        row-gpios
+            = <&gpio0 13 GPIO_ACTIVE_HIGH>
+            , <&gpio0 24 GPIO_ACTIVE_HIGH>
+            , <&gpio0 22 GPIO_ACTIVE_HIGH>
+            , <&gpio1 2 GPIO_ACTIVE_HIGH>
+            , <&gpio1 4 GPIO_ACTIVE_HIGH>
+            , <&gpio0 29 GPIO_ACTIVE_HIGH>
+            ;
+
+        col-gpios
+            = <&gpio0 6  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+
+    // Node name must match original "EXT_POWER" label to preserve user settings.
+    EXT_POWER {
+        compatible = "zmk,ext-power-generic";
+        control-gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;
+        init-delay-ms = <100>;
+    };
+
+};
+
+&matrix_transform0 {
+    col-offset = <6>;
+};
+
+
+&i2c0 {
+    compatible = "nordic,nrf-twi";
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-1 = <&i2c0_sleep>;
+    pinctrl-names = "default", "sleep";
+    //clock-frequency = <100000>;
+    status = "okay";
+    oled: ssd1306@3c {
+        compatible = "solomon,ssd1306fb";
+        reg = <0x3c>;
+        width = <128>;
+        height = <64>;
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <63>;
+        segment-remap;
+        //com-invdir;
+        //com-sequential;
+        inversion-on;
+        prechargep = <0x22>;
+    };
+
+};

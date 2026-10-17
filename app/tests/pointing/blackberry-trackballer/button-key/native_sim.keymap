@@ -1,0 +1,59 @@
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        test_button: test_button {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+        };
+    };
+
+    trackball: trackball {
+        compatible = "sparkfun,blackberry-trackballer";
+        left-gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+        right-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+        up-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+        down-gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+        button-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+        debounce-interval-ms = <5>;
+    };
+
+    trackball_button_behaviors: trackball_button_behaviors {
+        compatible = "zmk,input-processor-behaviors";
+        #input-processor-cells = <0>;
+        codes = <INPUT_BTN_0>;
+        bindings = <&kp A>;
+    };
+
+    trackball_listener: trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>;
+        input-processors = <&trackball_button_behaviors>;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <&test_button>;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        /* Edges inside the debounce window settle to one press and one release. */
+        ZMK_MOCK_PRESS(0,0,1)
+        ZMK_MOCK_RELEASE(0,0,1)
+        ZMK_MOCK_PRESS(0,0,20)
+        ZMK_MOCK_RELEASE(0,0,20)
+    >;
+};

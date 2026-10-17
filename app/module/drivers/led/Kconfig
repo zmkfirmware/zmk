@@ -1,0 +1,20 @@
+if LED
+
+config ZMK_LED_COMPOSITE
+    bool "ZMK LED Composite"
+    default y
+    depends on DT_HAS_ZMK_LED_COMPOSITE_ENABLED
+    select LED_STRIP
+
+config ZMK_LED_MOCK
+    bool "ZMK LED Mock"
+    default y
+    depends on DT_HAS_ZMK_LED_MOCK_ENABLED
+
+config ZMK_IS31FL3737
+    bool "ZMK IS31FL3737 LED driver"
+    default y
+    depends on DT_HAS_ZMK_IS31FL3737_ENABLED
+    select I2C
+
+endif # LED

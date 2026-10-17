@@ -1,0 +1,3 @@
+/^EXT power generic/p
+/^Initialized LED matrix:/p
+/^LED strip mock pixel/p

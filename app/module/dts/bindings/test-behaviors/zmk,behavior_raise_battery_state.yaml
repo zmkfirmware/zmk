@@ -1,0 +1,8 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Battery State Event Injector Behavior
+
+compatible: "zmk,behavior-raise-battery-state"
+
+include: one_param.yaml

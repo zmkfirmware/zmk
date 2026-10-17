@@ -1,0 +1,89 @@
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        test_left: test_left {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+        };
+        test_right: test_right {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+        };
+        test_up: test_up {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+        };
+        test_down: test_down {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+        };
+    };
+
+    trackball: trackball {
+        compatible = "sparkfun,blackberry-trackballer";
+        left-gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+        right-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+        up-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+        down-gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+        button-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+        report-period-ms = <8>;
+        minimum-pulse-interval-us = <4000>;
+        minimum-step = <1>;
+        maximum-step = <1>;
+    };
+
+    trackball_listener: trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &test_left &test_right &test_up &test_down
+            >;
+        };
+    };
+};
+
+&kscan {
+    events = <
+        /* Opposite pulses within one report period cancel. */
+        ZMK_MOCK_PRESS(0,0,1)
+        ZMK_MOCK_RELEASE(0,0,1)
+        ZMK_MOCK_PRESS(0,1,1)
+        ZMK_MOCK_RELEASE(0,1,20)
+
+        /* Diagonal movement is emitted as one synchronized report. */
+        ZMK_MOCK_PRESS(0,0,1)
+        ZMK_MOCK_RELEASE(0,0,1)
+        ZMK_MOCK_PRESS(0,2,1)
+        ZMK_MOCK_RELEASE(0,2,20)
+        ZMK_MOCK_PRESS(0,1,1)
+        ZMK_MOCK_RELEASE(0,1,1)
+        ZMK_MOCK_PRESS(0,3,1)
+        ZMK_MOCK_RELEASE(0,3,20)
+
+        ZMK_MOCK_PRESS(0,0,1)
+        ZMK_MOCK_RELEASE(0,0,20)
+        ZMK_MOCK_PRESS(0,1,1)
+        ZMK_MOCK_RELEASE(0,1,20)
+        ZMK_MOCK_PRESS(0,2,1)
+        ZMK_MOCK_RELEASE(0,2,20)
+        ZMK_MOCK_PRESS(0,3,1)
+        ZMK_MOCK_RELEASE(0,3,20)
+    >;
+};
