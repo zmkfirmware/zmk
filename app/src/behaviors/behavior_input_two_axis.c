@@ -288,7 +288,7 @@ static const struct behavior_driver_api behavior_input_two_axis_driver_api = {
 
 #define ITA_INST(n)                                                                                \
     static struct behavior_input_two_axis_data behavior_input_two_axis_data_##n = {};              \
-    static struct behavior_input_two_axis_config behavior_input_two_axis_config_##n = {            \
+    static const struct behavior_input_two_axis_config behavior_input_two_axis_config_##n = {      \
         .x_code = DT_INST_PROP(n, x_input_code),                                                   \
         .y_code = DT_INST_PROP(n, y_input_code),                                                   \
         .trigger_period_ms = DT_INST_PROP(n, trigger_period_ms),                                   \

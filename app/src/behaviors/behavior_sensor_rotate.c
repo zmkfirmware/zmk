@@ -26,7 +26,7 @@ static const struct behavior_driver_api behavior_sensor_rotate_driver_api = {
     }
 
 #define SENSOR_ROTATE_INST(n)                                                                      \
-    static struct behavior_sensor_rotate_config behavior_sensor_rotate_config_##n = {              \
+    static const struct behavior_sensor_rotate_config behavior_sensor_rotate_config_##n = {        \
         .cw_binding = _TRANSFORM_ENTRY(0, n),                                                      \
         .ccw_binding = _TRANSFORM_ENTRY(1, n),                                                     \
         .tap_ms = DT_INST_PROP_OR(n, tap_ms, 5),                                                   \

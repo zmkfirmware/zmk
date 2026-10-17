@@ -317,7 +317,7 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
 
 #define MACRO_INST(inst)                                                                           \
     static struct behavior_macro_state behavior_macro_state_##inst = {};                           \
-    static struct behavior_macro_config behavior_macro_config_##inst = {                           \
+    static const struct behavior_macro_config behavior_macro_config_##inst = {                     \
         .default_wait_ms = DT_PROP_OR(inst, wait_ms, CONFIG_ZMK_MACRO_DEFAULT_WAIT_MS),            \
         .default_tap_ms = DT_PROP_OR(inst, tap_ms, CONFIG_ZMK_MACRO_DEFAULT_TAP_MS),               \
         .count = DT_PROP_LEN(inst, bindings),                                                      \

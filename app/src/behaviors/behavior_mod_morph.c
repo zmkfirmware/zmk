@@ -90,7 +90,7 @@ static const struct behavior_driver_api behavior_mod_morph_driver_api = {
     }
 
 #define KP_INST(n)                                                                                 \
-    static struct behavior_mod_morph_config behavior_mod_morph_config_##n = {                      \
+    static const struct behavior_mod_morph_config behavior_mod_morph_config_##n = {                \
         .normal_binding = _TRANSFORM_ENTRY(0, n),                                                  \
         .morph_binding = _TRANSFORM_ENTRY(1, n),                                                   \
         .mods = DT_INST_PROP(n, mods),                                                             \
