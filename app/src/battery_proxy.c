@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#define DT_DRV_COMPAT zmk_battery_reporting
+#define DT_DRV_COMPAT zmk_battery_proxy
 
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
@@ -47,7 +47,7 @@ struct battery_part {
 
 #define KEYBOARD_PARTS_NUM UTIL_INC(CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
 static uint8_t lowest_state_of_charge = 0;
 static enum zmk_battery_charge_state lowest_charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
 #endif
@@ -65,7 +65,7 @@ static ssize_t read_blvl(struct bt_conn *conn, const struct bt_gatt_attr *attr, 
     const uint8_t index = *(uint8_t *)attr->user_data;
     uint8_t level = 0;
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
     if (index == BAS_LOWEST_CHARGE_INDEX) {
         return bt_gatt_attr_read(conn, attr, buf, len, offset, &lowest_state_of_charge,
                                  sizeof(uint8_t));
@@ -116,7 +116,7 @@ static void bls_encode(enum zmk_battery_charge_state state, uint8_t value[3]) {
 }
 
 static enum zmk_battery_charge_state bls_charge_state(uint8_t index) {
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
     if (index == BAS_LOWEST_CHARGE_INDEX) {
         return lowest_charge_state;
     }
@@ -175,9 +175,8 @@ static void bls_notify(const struct bt_gatt_service_static *svc,
 // For the central (part 0), default is "main" (0x0106, 262) unless reporting lowest charge, in
 // which case use "first" (1). For peripherals, always start from "second" (2) onwards.
 #define BAT_REPORT_GET_DEFAULT_CPF_DESC(idx)                                                       \
-    COND_CODE_0(                                                                                   \
-        idx, (COND_CODE_1(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE, (1), (262))),   \
-        (UTIL_INC(idx)))
+    COND_CODE_0(idx, (COND_CODE_1(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE, (1), (262))),     \
+                (UTIL_INC(idx)))
 
 // Get default display name for a keyboard part.
 #define BAT_REPORT_GET_DEFAULT_DISPLAY_NAME(idx)                                                   \
@@ -187,7 +186,7 @@ static void bls_notify(const struct bt_gatt_service_static *svc,
 // Use info from devicetree chosen node
 
 BUILD_ASSERT(KEYBOARD_PARTS_NUM == DT_CHILD_NUM(DT_CHOSEN(DT_DRV_COMPAT)),
-             "Number of battery info set in /chosen/zmk,battery-reporting must match the number of "
+             "Number of battery info set in /chosen/zmk,battery-proxy must match the number of "
              "split parts in this keyboard.");
 
 // Get CPF description as a literal number for a keyboard part from devicetree.
@@ -238,7 +237,7 @@ static const struct bt_gatt_service_static *bas[] = {
 
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
 #define BATTERY_PART_DT(node_id)                                                                   \
     {                                                                                              \
         .display_name = BAT_REPORT_GET_DT_DISPLAY_NAME(node_id),                                   \
@@ -248,7 +247,7 @@ static const struct bt_gatt_service_static *bas[] = {
 
 static const struct battery_part battery_parts[] = {
     DT_FOREACH_CHILD_SEP(DT_CHOSEN(DT_DRV_COMPAT), BATTERY_PART_DT, (, ))};
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
 
 #else // if DT_HAS_CHOSEN(DT_DRV_COMPAT)
 // No chosen devicetree node, use defaults
@@ -282,7 +281,7 @@ static const struct bt_gatt_service_static *bas[] = {
 
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
 #define BATTERY_PART_IDX(idx, _)                                                                   \
     {                                                                                              \
         .display_name = BAT_REPORT_GET_DEFAULT_DISPLAY_NAME(idx),                                  \
@@ -292,11 +291,11 @@ static const struct bt_gatt_service_static *bas[] = {
 
 static const struct battery_part battery_parts[] = {
     LISTIFY(KEYBOARD_PARTS_NUM, BATTERY_PART_IDX, (, ))};
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
 
 #endif // if DT_HAS_CHOSEN(DT_DRV_COMPAT) .. else ..
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 // Hote: the order of services are based on their name, so we prefix it with "a" to ensure it
@@ -390,7 +389,7 @@ static void submit_lowest_charge_work() {
     k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &update_lowest_charge_work);
 }
 
-#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#endif // IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
 
 int peripheral_batt_report_lvl_listener(const zmk_event_t *eh) {
     const struct zmk_peripheral_battery_state_changed *ev =
@@ -423,7 +422,7 @@ int peripheral_batt_report_lvl_listener(const zmk_event_t *eh) {
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB) &&                                                \
-    !IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+    !IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
     // Send individual HID battery report for this peripheral
     // Peripheral index 0 -> battery_index 1, peripheral 1 -> battery_index 2, etc.
     LOG_DBG("Peripheral %d battery HID report: level=%d battery_index=%d", ev->source,
@@ -433,7 +432,7 @@ int peripheral_batt_report_lvl_listener(const zmk_event_t *eh) {
     zmk_usb_hid_send_battery_report_by_index(ev->source + BAS_PERIPHERAL_INDEX_OFFSET);
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
     if (ev->state_of_charge != 0) {
         // Ugly workaround to not wake up the host on keyboard part disconnect, so users don't need
         // to turn off their keyboard parts before sleeping/hibernating their computer. We ideally
@@ -473,7 +472,7 @@ int central_batt_state_changed_listener(const zmk_event_t *eh) {
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB) &&                                                \
-    !IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+    !IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
     // Send individual HID battery report for central (battery index 0)
     // Note: If central has no battery sensor, this event won't be raised at all
     LOG_DBG("Central battery HID report: level=%d battery_index=%d", ev->state_of_charge,
@@ -482,7 +481,7 @@ int central_batt_state_changed_listener(const zmk_event_t *eh) {
     zmk_usb_hid_send_battery_report_by_index(BAS_CENTRAL_INDEX);
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE)
     if (battery_parts[BAS_CENTRAL_INDEX].hidden == false) {
         submit_lowest_charge_work();
     }

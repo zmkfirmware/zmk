@@ -41,9 +41,9 @@ static struct zmk_hid_mouse_report mouse_report = {
      .charging = 0,                                                                                \
      .battery_level = 0},
 
-#if DT_HAS_CHOSEN(zmk_battery_reporting)
+#if DT_HAS_CHOSEN(zmk_battery_proxy)
 static struct zmk_hid_battery_report battery_reports[ZMK_HID_MAX_BATTERIES] = {
-    DT_FOREACH_CHILD(DT_CHOSEN(zmk_battery_reporting), BATTERY_REPORT_INIT_DT)};
+    DT_FOREACH_CHILD(DT_CHOSEN(zmk_battery_proxy), BATTERY_REPORT_INIT_DT)};
 #else
 static struct zmk_hid_battery_report battery_reports[ZMK_HID_MAX_BATTERIES] = {
     {.report_id = ZMK_HID_REPORT_ID_BATTERY, .charging = 0, .battery_level = 0}};

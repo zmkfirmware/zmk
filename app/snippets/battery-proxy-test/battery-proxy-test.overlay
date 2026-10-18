@@ -7,15 +7,15 @@
 / {
     chosen {
         zmk,battery = &mock_battery_sensor;
-        zmk,battery-reporting = &battery_reporting;
+        zmk,battery-proxy = &battery_proxy;
     };
 
     mock_battery_sensor: mock_battery_sensor {
         compatible = "zmk,battery-mock";
     };
 
-    battery_reporting: battery_reporting {
-        compatible = "zmk,battery-reporting";
+    battery_proxy: battery_proxy {
+        compatible = "zmk,battery-proxy";
 
         dongle {
             display-name = "My Dongle";

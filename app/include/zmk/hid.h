@@ -83,11 +83,11 @@
 
 // Number of battery reports - determined by device tree configuration
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
-#if DT_HAS_CHOSEN(zmk_battery_reporting)
+#if DT_HAS_CHOSEN(zmk_battery_proxy)
 // Count child nodes using DT_FOREACH_CHILD pattern (see app/src/backlight.c)
 #define ZMK_HID_BATTERY_CHILD_COUNT(...) +1
 #define ZMK_HID_NUM_BATTERIES(node_id) (0 DT_FOREACH_CHILD(node_id, ZMK_HID_BATTERY_CHILD_COUNT))
-#define ZMK_HID_MAX_BATTERIES ZMK_HID_NUM_BATTERIES(DT_CHOSEN(zmk_battery_reporting))
+#define ZMK_HID_MAX_BATTERIES ZMK_HID_NUM_BATTERIES(DT_CHOSEN(zmk_battery_proxy))
 #else
 #define ZMK_HID_MAX_BATTERIES 1
 #endif
@@ -238,15 +238,15 @@ static const uint8_t zmk_hid_report_desc[] = {
         HID_END_COLLECTION,
 
 // Generate battery report descriptors from device tree
-// Each non-hidden battery in the zmk_battery_reporting node gets a descriptor
-#if DT_HAS_CHOSEN(zmk_battery_reporting)
+// Each non-hidden battery in the zmk_battery_proxy node gets a descriptor
+#if DT_HAS_CHOSEN(zmk_battery_proxy)
 #define ZMK_HID_BATTERY_REPORT_DESC_DT(node_id)                                                    \
     COND_CODE_0(DT_PROP(node_id, hidden),                                                          \
                 (ZMK_HID_BATTERY_REPORT_DESC(DT_NODE_CHILD_IDX(node_id), _)), ())
 
-    DT_FOREACH_CHILD(DT_CHOSEN(zmk_battery_reporting), ZMK_HID_BATTERY_REPORT_DESC_DT)
+    DT_FOREACH_CHILD(DT_CHOSEN(zmk_battery_proxy), ZMK_HID_BATTERY_REPORT_DESC_DT)
 #else
-    // Fallback to a single battery report descriptor for boards without zmk_battery_reporting
+    // Fallback to a single battery report descriptor for boards without zmk_battery_proxy
     HID_USAGE_PAGE(HID_USAGE_POWER),
     HID_USAGE(HID_USAGE_POWER_POWER_SUPPLY),
     HID_COLLECTION(HID_COLLECTION_APPLICATION),

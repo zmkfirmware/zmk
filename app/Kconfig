@@ -426,16 +426,16 @@ config ZMK_BATTERY_REPORTING_SPLIT_FETCHING
       Adds internal support for fetching the battery levels from peripherals
       and generating events in the ZMK eventing system.
 
-config ZMK_BATTERY_REPORTING_SPLIT_PROXY
+config ZMK_BATTERY_PROXY
     bool "Proxy Battery Level Info"
     default y if ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY
     help
       Adds support for reporting the battery levels of connected split
       peripherals through additional Battery Level services.
 
-config ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE
+config ZMK_BATTERY_PROXY_REPORT_LOWEST_CHARGE
     bool "Report the lowest charge of all batteries"
-    depends on ZMK_BATTERY_REPORTING_SPLIT_PROXY
+    depends on ZMK_BATTERY_PROXY
     default y
     help
       Report the lowest charge as the first battery level to hosts.
