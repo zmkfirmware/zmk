@@ -115,21 +115,28 @@ static void bls_encode(enum zmk_battery_charge_state state, uint8_t value[3]) {
     sys_put_le16(power_state, &value[1]);
 }
 
-static ssize_t read_bls(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf,
-                        uint16_t len, uint16_t offset) {
-    const uint8_t index = *(uint8_t *)attr->user_data;
-    enum zmk_battery_charge_state state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
+static enum zmk_battery_charge_state bls_charge_state(uint8_t index) {
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_REPORT_LOWEST_CHARGE)
+    if (index == BAS_LOWEST_CHARGE_INDEX) {
+        return lowest_charge_state;
+    }
+#endif
 
     if (index == BAS_CENTRAL_INDEX) {
-        state = zmk_battery_charge_state();
-    } else {
-#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
-        zmk_split_central_get_peripheral_charge_state(index - BAS_PERIPHERAL_INDEX_OFFSET, &state);
-#endif
+        return zmk_battery_charge_state();
     }
 
+    enum zmk_battery_charge_state state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
+#if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_SPLIT_FETCHING)
+    zmk_split_central_get_peripheral_charge_state(index - BAS_PERIPHERAL_INDEX_OFFSET, &state);
+#endif
+    return state;
+}
+
+static ssize_t read_bls(struct bt_conn *conn, const struct bt_gatt_attr *attr, void *buf,
+                        uint16_t len, uint16_t offset) {
     uint8_t value[3];
-    bls_encode(state, value);
+    bls_encode(bls_charge_state(*(uint8_t *)attr->user_data), value);
     return bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(value));
 }
 
@@ -294,33 +301,33 @@ static const struct battery_part battery_parts[] = {
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 // Hote: the order of services are based on their name, so we prefix it with "a" to ensure it
 // appears first.
-ZMK_BT_GATT_SERVICE_DEFINE(abas_lowest, BT_GATT_PRIMARY_SERVICE(BT_UUID_BAS),
-                           BT_GATT_CHARACTERISTIC(BT_UUID_BAS_BATTERY_LEVEL,
-                                                  BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
-                                                  BT_GATT_PERM_READ, read_blvl, NULL,
-                                                  ((uint8_t[]){BAS_LOWEST_CHARGE_INDEX})),
-                           BT_GATT_CCC(blvl_ccc_cfg_changed,
-                                       BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-                           BT_GATT_CPF(((struct bt_gatt_cpf[]){{
-                               .format = 0x04, /* uint8 */
-                               .exponent = 0x0,
-                               .unit = 0x27AD,        /* Percentage */
-                               .name_space = 0x01,    /* Bluetooth SIG */
-                               .description = 0x0106, /* "main" */
-                           }})),
-                           BT_GATT_CUD("Lowest Charge", BT_GATT_PERM_READ));
+ZMK_BT_GATT_SERVICE_DEFINE(
+    abas_lowest, BT_GATT_PRIMARY_SERVICE(BT_UUID_BAS),
+    BT_GATT_CHARACTERISTIC(BT_UUID_BAS_BATTERY_LEVEL, BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+                           BT_GATT_PERM_READ, read_blvl, NULL,
+                           ((uint8_t[]){BAS_LOWEST_CHARGE_INDEX})),
+    BT_GATT_CCC(blvl_ccc_cfg_changed, BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+    BT_GATT_CPF(((struct bt_gatt_cpf[]){{
+        .format = 0x04, /* uint8 */
+        .exponent = 0x0,
+        .unit = 0x27AD,        /* Percentage */
+        .name_space = 0x01,    /* Bluetooth SIG */
+        .description = 0x0106, /* "main" */
+    }})),
+    BT_GATT_CUD("Lowest Charge", BT_GATT_PERM_READ), BAS_BLS_ATTRS(BAS_LOWEST_CHARGE_INDEX));
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 static void zmk_update_lowest_charge_work(struct k_work *work) {
     ARG_UNUSED(work);
 
     uint8_t new_lowest_level = UINT8_MAX;
-    // Tracks whichever part reports the lowest level, so both describe one battery.
     enum zmk_battery_charge_state new_lowest_charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
+    bool any_charging = false;
 
     if (!battery_parts[BAS_CENTRAL_INDEX].hidden) {
         new_lowest_level = zmk_battery_state_of_charge();
         new_lowest_charge_state = zmk_battery_charge_state();
+        any_charging = new_lowest_charge_state == ZMK_BATTERY_CHARGE_STATE_CHARGING;
     }
 
     for (size_t i = 0; i < CONFIG_ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS; i++) {
@@ -332,11 +339,13 @@ static void zmk_update_lowest_charge_work(struct k_work *work) {
         if (rc < 0) {
             continue;
         }
+
+        enum zmk_battery_charge_state charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
+        zmk_split_central_get_peripheral_charge_state(i, &charge_state);
+        any_charging |= charge_state == ZMK_BATTERY_CHARGE_STATE_CHARGING;
+
         if (level != 0 && level < new_lowest_level) {
             new_lowest_level = level;
-
-            enum zmk_battery_charge_state charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
-            zmk_split_central_get_peripheral_charge_state(i, &charge_state);
             new_lowest_charge_state = charge_state;
         }
     }
@@ -345,6 +354,8 @@ static void zmk_update_lowest_charge_work(struct k_work *work) {
         new_lowest_level = 0;
         new_lowest_charge_state = ZMK_BATTERY_CHARGE_STATE_UNKNOWN;
         LOG_DBG("No valid battery levels found, setting lowest to 0");
+    } else if (any_charging) {
+        new_lowest_charge_state = ZMK_BATTERY_CHARGE_STATE_CHARGING;
     }
 
     if (new_lowest_level != lowest_state_of_charge ||
@@ -361,6 +372,9 @@ static void zmk_update_lowest_charge_work(struct k_work *work) {
         if (rc < 0 && rc != -ENOTCONN) {
             LOG_WRN("Notify failed for lowest battery level: %d", rc);
         }
+#if BAS_HAS_BLS
+        bls_notify(&abas_lowest, lowest_charge_state);
+#endif
 #endif // IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_BLE)
 
 #if IS_ENABLED(CONFIG_ZMK_BATTERY_REPORTING_USB)
