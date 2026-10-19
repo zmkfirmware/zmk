@@ -3,4 +3,4 @@ id: tester_rpi_zero
 name: TesterRpiZero
 type: shield
 url: https://zmk.dev/docs/troubleshooting/hardware-issues
-requires: [rpi_pico]
+requires: [rpi_zero]
