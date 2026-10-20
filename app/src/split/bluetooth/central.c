@@ -60,8 +60,10 @@ struct peripheral_slot {
     uint16_t update_hid_indicators;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     uint16_t selected_physical_layout_handle;
+    // Latest received state and state at the tail of the successfully queued events.
     uint8_t position_state[POSITION_STATE_DATA_LEN];
-    uint8_t changed_positions[POSITION_STATE_DATA_LEN];
+    uint8_t queued_positions[POSITION_STATE_DATA_LEN];
+    bool releasing_positions;
 };
 
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
@@ -133,6 +135,7 @@ static zmk_split_transport_central_status_changed_cb_t transport_status_cb;
 static bool is_enabled;
 
 static struct peripheral_slot peripherals[ZMK_SPLIT_BLE_PERIPHERAL_COUNT];
+static struct k_spinlock position_state_lock;
 
 static bool is_scanning = false;
 
@@ -169,6 +172,47 @@ struct peripheral_slot *peripheral_slot_for_conn(struct bt_conn *conn) {
     return &peripherals[idx];
 }
 
+static void reconcile_peripheral_positions(void) {
+    k_spinlock_key_t key = k_spin_lock(&position_state_lock);
+
+    for (int source = 0; source < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; source++) {
+        struct peripheral_slot *slot = &peripherals[source];
+        while (true) {
+            for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
+                uint8_t target = slot->releasing_positions ? 0 : slot->position_state[i];
+                uint8_t changed = target ^ slot->queued_positions[i];
+                for (int j = 0; j < 8; j++) {
+                    if (!(changed & BIT(j))) {
+                        continue;
+                    }
+
+                    struct peripheral_event_wrapper ev = {
+                        .source = source,
+                        .event = {.type =
+                                      ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_KEY_POSITION_EVENT,
+                                  .data = {.key_position_event = {
+                                               .position = (i * 8) + j,
+                                               .pressed = !!(target & BIT(j)),
+                                           }}}};
+                    if (k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT) < 0) {
+                        // Retry pending differences as the worker frees queue space.
+                        k_spin_unlock(&position_state_lock, key);
+                        return;
+                    }
+                    slot->queued_positions[i] ^= BIT(j);
+                }
+            }
+            if (!slot->releasing_positions) {
+                break;
+            }
+            // Queue disconnect's all-up before accepting a reused slot's new state.
+            slot->releasing_positions = false;
+        }
+    }
+
+    k_spin_unlock(&position_state_lock, key);
+}
+
 int release_peripheral_slot(int index) {
     if (index < 0 || index >= ZMK_SPLIT_BLE_PERIPHERAL_COUNT) {
         return -EINVAL;
@@ -188,29 +232,13 @@ int release_peripheral_slot(int index) {
     }
     slot->state = PERIPHERAL_SLOT_STATE_OPEN;
 
-    // Raise events releasing any active positions from this peripheral
-    for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (slot->position_state[i] & BIT(j)) {
-                uint32_t position = (i * 8) + j;
-                struct peripheral_event_wrapper ev = {
-                    .source = index,
-                    .event = {.type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_KEY_POSITION_EVENT,
-                              .data = {.key_position_event = {
-                                           .position = position,
-                                           .pressed = false,
-                                       }}}};
-
-                k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-                k_work_submit(&peripheral_event_work);
-            }
-        }
-    }
-
-    for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
-        slot->position_state[i] = 0U;
-        slot->changed_positions[i] = 0U;
-    }
+    // Reconcile all-up against queued state, including releases a full queue deferred.
+    k_spinlock_key_t key = k_spin_lock(&position_state_lock);
+    memset(slot->position_state, 0, sizeof(slot->position_state));
+    slot->releasing_positions = true;
+    k_spin_unlock(&position_state_lock, key);
+    reconcile_peripheral_positions();
+    k_work_submit(&peripheral_event_work);
 
     // Clean up previously discovered handles;
     slot->subscribe_params.value_handle = 0;
@@ -364,29 +392,13 @@ static uint8_t split_central_notify_func(struct bt_conn *conn,
 
     LOG_DBG("[NOTIFICATION] data %p length %u", data, length);
 
-    for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
-        slot->changed_positions[i] = ((uint8_t *)data)[i] ^ slot->position_state[i];
-        slot->position_state[i] = ((uint8_t *)data)[i];
-    }
-    LOG_HEXDUMP_DBG(slot->position_state, POSITION_STATE_DATA_LEN, "data");
+    k_spinlock_key_t key = k_spin_lock(&position_state_lock);
+    memcpy(slot->position_state, data, POSITION_STATE_DATA_LEN);
+    k_spin_unlock(&position_state_lock, key);
+    LOG_HEXDUMP_DBG(data, POSITION_STATE_DATA_LEN, "data");
 
-    for (int i = 0; i < POSITION_STATE_DATA_LEN; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (slot->changed_positions[i] & BIT(j)) {
-                uint32_t position = (i * 8) + j;
-                bool pressed = slot->position_state[i] & BIT(j);
-                struct peripheral_event_wrapper ev = {
-                    .source = peripheral_slot_index_for_conn(conn),
-                    .event = {.type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_KEY_POSITION_EVENT,
-                              .data = {.key_position_event = {
-                                           .position = position,
-                                           .pressed = pressed,
-                                       }}}};
-                k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT);
-                k_work_submit(&peripheral_event_work);
-            }
-        }
-    }
+    reconcile_peripheral_positions();
+    k_work_submit(&peripheral_event_work);
 
     return BT_GATT_ITER_CONTINUE;
 }
@@ -1286,5 +1298,6 @@ void peripheral_event_work_callback(struct k_work *work) {
     while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
         LOG_DBG("Trigger key position state change of type %d", ev.event.type);
         zmk_split_transport_central_peripheral_event_handler(&bt_central, ev.source, ev.event);
+        reconcile_peripheral_positions();
     }
 }
