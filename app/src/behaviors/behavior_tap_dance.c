@@ -28,7 +28,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 struct behavior_tap_dance_config {
     uint32_t tapping_term_ms;
     size_t behavior_count;
-    struct zmk_behavior_binding *behaviors;
+    const struct zmk_behavior_binding *behaviors;
 };
 
 struct active_tap_dance {
