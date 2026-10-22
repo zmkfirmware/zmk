@@ -882,6 +882,10 @@ static void split_central_device_found(const bt_addr_le_t *addr, int8_t rssi, ui
     }
 }
 
+static void start_scanning_retry_fn(struct k_work *work) { start_scanning(); }
+
+static K_WORK_DELAYABLE_DEFINE(start_scanning_retry, start_scanning_retry_fn);
+
 static int start_scanning(void) {
     if (!is_enabled) {
         LOG_DBG("Not scanning, we're disabled");
@@ -912,6 +916,11 @@ static int start_scanning(void) {
     int err = bt_le_scan_start(BT_LE_SCAN_PASSIVE, split_central_device_found);
     if (err < 0) {
         LOG_ERR("Scanning failed to start (err %d)", err);
+        // Don't claim to be scanning: that would make every later call return early and the
+        // peripheral would never be found again. The start can fail transiently, e.g. with
+        // -EPERM while another connection is being initiated, so try again shortly.
+        is_scanning = false;
+        k_work_reschedule(&start_scanning_retry, K_SECONDS(1));
         return err;
     }
 
