@@ -14,6 +14,8 @@ properties:
   overlap-timeout-ms:
     type: int
     default: 200
+  inherit-source:
+    type: boolean
 
 child-binding:
   description: "A leader sequence"
@@ -26,4 +28,6 @@ child-binding:
       type: array
       required: true
     immediate-trigger:
+      type: boolean
+    last-key-source:
       type: boolean

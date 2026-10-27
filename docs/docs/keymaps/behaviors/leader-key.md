@@ -27,6 +27,16 @@ Defines the amount of time to wait to trigger a completed leader sequence. Defau
 
 Defines the amount of time to wait to trigger a completed leader sequence after an overlapping sequence is completed. Defaults to 200ms.
 
+#### `inherit-source`
+
+Determines if the source will be inherited when the leader key is pressed for split behaviors.
+
+::::tip
+
+Add the same leader key to both sides to be able to reset either side.
+
+::::
+
 ### Leader Sequences
 
 #### Summary
@@ -76,6 +86,7 @@ Each sequence can have the following properties:
 - `key-positions` is an array of key positions. See the info section below about how to figure out the positions on your board.
 - `bindings` is the behavior that is activated when all the key positions are pressed.
 - (advanced) you can specify `immediate-trigger` if you want the sequence to be triggered as soon as all key positions are pressed. The default is to wait for the leader key's timeout to trigger the sequence if it overlaps another.
+- (advanced) by specifying `last-key-source`, the source will be inherited from the last key of the sequence for split behaviors.
 
 The `key-positions` array must not be longer than the `CONFIG_ZMK_LEADER_MAX_KEYS_PER_SEQUENCE` setting, which defaults to 4. If you want a leader sequence that triggers when pressing 5 keys, then you must change the setting to 5.
 
@@ -85,15 +96,24 @@ Key positions are numbered like the keys in your keymap, starting at 0. So, if t
 
 :::
 
-#### Locality
+### Example Usage
 
-Sequence behaviors inherit their locality from the position of the leader key. For example, on split keyboards, a sequence using the `&bootloader` behavior will invoke the bootloader on the side on which the leader key is bound.
+```
+leader: leader {
+    compatible = "zmk,behavior-leader-key";
+    binding-cells = <0>;
 
-::::tip
+    seq_b {
+        key-positions = <1 1>;
+        bindings = <&kp B>;
+    };
 
-Add the same leader key to both sides to be able to reset either side.
-
-::::
+    seq_c {
+        key-positions = <1>;
+        bindings = <&kp C>;
+    };
+};
+```
 
 ### Advanced usage
 

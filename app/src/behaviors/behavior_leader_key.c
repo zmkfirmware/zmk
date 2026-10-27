@@ -42,6 +42,7 @@ struct leader_seq_cfg {
     int32_t key_position_len;
 
     bool immediate_trigger;
+    bool last_key_source;
     bool is_pressed;
 
     // the virtual key position is a key position outside the range used by the keyboard.
@@ -53,6 +54,7 @@ struct leader_seq_cfg {
 
 struct behavior_leader_key_config {
     int32_t timeout_ms;
+    bool inherit_source;
     int32_t overlap_timeout_ms;
     struct leader_seq_cfg *sequences;
     size_t sequences_len;
@@ -165,7 +167,16 @@ static inline int press_leader_behavior(struct leader_seq_cfg *sequence, int32_t
     };
 
     sequence->is_pressed = true;
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+    if (source == UINT8_MAX) {
+        return behavior_keymap_binding_pressed(&sequence->behavior, event);
+    } else {
+        return zmk_behavior_invoke_binding(&sequence->behavior, event, true);
+    }
+#else
     return behavior_keymap_binding_pressed(&sequence->behavior, event);
+#endif
 }
 
 static inline int release_leader_behavior(struct leader_seq_cfg *sequence, int32_t timestamp) {
@@ -178,7 +189,16 @@ static inline int release_leader_behavior(struct leader_seq_cfg *sequence, int32
     };
 
     sequence->is_pressed = false;
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+    if (source == UINT8_MAX) {
+        return behavior_keymap_binding_released(&sequence->behavior, event);
+    } else {
+        return zmk_behavior_invoke_binding(&sequence->behavior, event, false);
+    }
+#else
     return behavior_keymap_binding_released(&sequence->behavior, event);
+#endif
 }
 
 static int stop_timer() {
@@ -280,6 +300,11 @@ static int position_state_changed_listener(const zmk_event_t *ev) {
                 LOG_DBG("leader i is %d", i);
                 struct leader_seq_cfg *seq = completed_sequence_candidates[i];
                 if (seq->immediate_trigger || (num_candidates == 1 && num_comp_candidates == 1)) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT)
+                    if (seq->last_key_source) {
+                        source = data->source;
+                    }
+#endif
                     press_leader_behavior(seq, data->timestamp);
                 }
             }
@@ -330,7 +355,11 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     const struct behavior_leader_key_config *cfg = dev->config;
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT)
-    source = event.source;
+    if (cfg->inherit_source) {
+        source = event.source;
+    } else {
+        source = UINT8_MAX;
+    }
 #endif
 
     activate_leader_key(cfg, event.position);
@@ -362,6 +391,7 @@ ZMK_SUBSCRIPTION(leader, zmk_position_state_changed);
         .virtual_key_position = ZMK_VIRTUAL_KEY_POSITION_LEADER(__COUNTER__),                      \
         .is_pressed = false,                                                                       \
         .immediate_trigger = DT_PROP(n, immediate_trigger),                                        \
+        .last_key_source = DT_PROP(n, last_key_source),                                            \
         .key_position_len = DT_PROP_LEN(n, prop),                                                  \
         .key_positions = {LISTIFY(DT_PROP_LEN(n, prop), SEQUENCE_ITEM, (, ), n, prop)},            \
         .behavior = ZMK_KEYMAP_EXTRACT_BINDING(0, n),                                              \
@@ -372,6 +402,7 @@ ZMK_SUBSCRIPTION(leader, zmk_position_state_changed);
         DT_INST_FOREACH_CHILD_STATUS_OKAY_SEP_VARGS(n, PROP_SEQUENCES, (, ), key_positions)};      \
     static struct behavior_leader_key_config behavior_leader_key_config_##n = {                    \
         .timeout_ms = DT_INST_PROP(n, timeout_ms),                                                 \
+        .inherit_source = DT_INST_PROP(n, inherit_source),                                         \
         .overlap_timeout_ms = DT_INST_PROP(n, overlap_timeout_ms),                                 \
         .sequences = leader_sequences_##n,                                                         \
         .sequences_len = ARRAY_SIZE(leader_sequences_##n)};                                        \
