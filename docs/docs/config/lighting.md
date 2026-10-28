@@ -23,6 +23,8 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | `CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER`     | bool | Underglow toggling also controls external power           | y       |
 | `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE` | bool | Turn off RGB underglow when keyboard goes into idle state | n       |
 | `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB`  | bool | Turn off RGB underglow when USB is disconnected           | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF`      | bool | Fade RGB underglow to black before switching off          | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF_MS`   | int  | Fade-out duration in milliseconds (25–10000)              | 1500    |
 | `CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP`      | int  | Hue step in degrees (0-359) used by RGB actions           | 10      |
 | `CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP`      | int  | Saturation step in percent used by RGB actions            | 10      |
 | `CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP`      | int  | Brightness step in percent used by RGB actions            | 10      |
@@ -47,6 +49,12 @@ Values for `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`:
 :::note
 The `*_START` settings only determine the initial underglow state. Any changes you make with the [underglow behavior](../keymaps/behaviors/underglow.md) are saved to flash after a one minute delay and will be used after that.
 :::
+
+### Fade when turning off
+
+Set `CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF=y` to fade the currently displayed colors to black when underglow turns off. `CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF_MS` sets the duration, which defaults to 1500 milliseconds. External LED power remains enabled until the fade finishes when external power control is configured.
+
+Turning underglow on during a fade cancels it and resumes the selected effect. Repeated off commands do not restart a fade. The saved color, brightness, and effect settings are unchanged; the logical on/off state becomes off as soon as the fade starts. Existing idle and USB-disconnect auto-off actions also use the fade. The keyboard must remain awake long enough to complete it; this option does not delay system sleep or shutdown.
 
 ### Devicetree
 
