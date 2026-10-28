@@ -11,6 +11,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <zephyr/logging/log.h>
 
@@ -65,6 +66,14 @@ static const struct device *led_strip;
 static struct led_rgb pixels[STRIP_NUM_PIXELS];
 
 static struct rgb_underglow_state state;
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF)
+#define UNDERGLOW_FADE_INTERVAL_MS 25
+static K_MUTEX_DEFINE(underglow_mutex);
+static bool underglow_fade_active;
+static int64_t underglow_fade_start = -1;
+static struct led_rgb underglow_fade_pixels[STRIP_NUM_PIXELS];
+#endif
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
 static const struct device *const ext_power = DEVICE_DT_GET(DT_INST(0, zmk_ext_power_generic));
@@ -175,7 +184,22 @@ static void zmk_rgb_underglow_effect_swirl(void) {
     state.animation_step = state.animation_step % HUE_MAX;
 }
 
+static void zmk_rgb_underglow_write_pixels(void) {
+    int err = led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
+    if (err < 0) {
+        LOG_ERR("Failed to update the RGB strip (%d)", err);
+    }
+}
+
 static void zmk_rgb_underglow_tick(struct k_work *work) {
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF)
+    k_mutex_lock(&underglow_mutex, K_FOREVER);
+    // A tick queued before off() must not overwrite the fade's pixel buffer.
+    if (!state.on) {
+        k_mutex_unlock(&underglow_mutex);
+        return;
+    }
+#endif
     switch (state.current_effect) {
     case UNDERGLOW_EFFECT_SOLID:
         zmk_rgb_underglow_effect_solid();
@@ -191,10 +215,10 @@ static void zmk_rgb_underglow_tick(struct k_work *work) {
         break;
     }
 
-    int err = led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
-    if (err < 0) {
-        LOG_ERR("Failed to update the RGB strip (%d)", err);
-    }
+    zmk_rgb_underglow_write_pixels();
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF)
+    k_mutex_unlock(&underglow_mutex);
+#endif
 }
 
 K_WORK_DEFINE(underglow_tick_work, zmk_rgb_underglow_tick);
@@ -297,9 +321,74 @@ int zmk_rgb_underglow_get_state(bool *on_off) {
     return 0;
 }
 
+static void zmk_rgb_underglow_disable_power(void) {
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
+    if (ext_power != NULL) {
+        int rc = ext_power_disable(ext_power);
+        if (rc != 0) {
+            LOG_ERR("Unable to disable EXT_POWER: %d", rc);
+        }
+    }
+#endif
+}
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF)
+static void zmk_rgb_underglow_finish_fade(void) {
+    memset(pixels, 0, sizeof(pixels));
+    zmk_rgb_underglow_write_pixels();
+    underglow_fade_active = false;
+    zmk_rgb_underglow_disable_power();
+}
+
+static void zmk_rgb_underglow_fade_handler(struct k_work *work);
+K_WORK_DELAYABLE_DEFINE(underglow_fade_work, zmk_rgb_underglow_fade_handler);
+
+static void zmk_rgb_underglow_fade_handler(struct k_work *work) {
+    k_mutex_lock(&underglow_mutex, K_FOREVER);
+    if (!underglow_fade_active || state.on) {
+        k_mutex_unlock(&underglow_mutex);
+        return;
+    }
+
+    // Snapshot on the same queue as animation ticks, after any pending tick finishes.
+    if (underglow_fade_start < 0) {
+        memcpy(underglow_fade_pixels, pixels, sizeof(pixels));
+        underglow_fade_start = k_uptime_get();
+    }
+
+    const int64_t elapsed = k_uptime_get() - underglow_fade_start;
+    const uint32_t duration = CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF_MS;
+    const uint32_t remaining = duration - MIN(elapsed, duration);
+    for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
+        pixels[i].r = (uint32_t)underglow_fade_pixels[i].r * remaining / duration;
+        pixels[i].g = (uint32_t)underglow_fade_pixels[i].g * remaining / duration;
+        pixels[i].b = (uint32_t)underglow_fade_pixels[i].b * remaining / duration;
+    }
+
+    if (remaining == 0) {
+        zmk_rgb_underglow_finish_fade();
+    } else {
+        zmk_rgb_underglow_write_pixels();
+        int err = k_work_reschedule_for_queue(zmk_workqueue_lowprio_work_q(), &underglow_fade_work,
+                                              K_MSEC(MIN(UNDERGLOW_FADE_INTERVAL_MS, remaining)));
+        if (err < 0) {
+            LOG_ERR("Failed to schedule RGB fade (%d)", err);
+            zmk_rgb_underglow_finish_fade();
+        }
+    }
+    k_mutex_unlock(&underglow_mutex);
+}
+#endif
+
 int zmk_rgb_underglow_on(void) {
     if (!led_strip)
         return -ENODEV;
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF)
+    k_mutex_lock(&underglow_mutex, K_FOREVER);
+    underglow_fade_active = false;
+    k_work_cancel_delayable(&underglow_fade_work);
+#endif
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
     if (ext_power != NULL) {
@@ -314,9 +403,13 @@ int zmk_rgb_underglow_on(void) {
     state.animation_step = 0;
     k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
 
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF)
+    k_mutex_unlock(&underglow_mutex);
+#endif
     return zmk_rgb_underglow_save_state();
 }
 
+#if !IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF)
 static void zmk_rgb_underglow_off_handler(struct k_work *work) {
     for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
         pixels[i] = (struct led_rgb){r : 0, g : 0, b : 0};
@@ -327,23 +420,38 @@ static void zmk_rgb_underglow_off_handler(struct k_work *work) {
 
 K_WORK_DEFINE(underglow_off_work, zmk_rgb_underglow_off_handler);
 
+#endif
+
 int zmk_rgb_underglow_off(void) {
     if (!led_strip)
         return -ENODEV;
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
-    if (ext_power != NULL) {
-        int rc = ext_power_disable(ext_power);
-        if (rc != 0) {
-            LOG_ERR("Unable to disable EXT_POWER: %d", rc);
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_FADE_OFF)
+    k_mutex_lock(&underglow_mutex, K_FOREVER);
+    if (!state.on) {
+        if (!underglow_fade_active) {
+            zmk_rgb_underglow_finish_fade();
         }
+        k_mutex_unlock(&underglow_mutex);
+        return zmk_rgb_underglow_save_state();
     }
-#endif
-
-    k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &underglow_off_work);
-
     k_timer_stop(&underglow_tick);
     state.on = false;
+    underglow_fade_start = -1;
+    underglow_fade_active = true;
+    int err = k_work_reschedule_for_queue(zmk_workqueue_lowprio_work_q(), &underglow_fade_work,
+                                          K_NO_WAIT);
+    if (err < 0) {
+        LOG_ERR("Failed to schedule RGB fade (%d)", err);
+        zmk_rgb_underglow_finish_fade();
+    }
+    k_mutex_unlock(&underglow_mutex);
+#else
+    zmk_rgb_underglow_disable_power();
+    k_work_submit_to_queue(zmk_workqueue_lowprio_work_q(), &underglow_off_work);
+    k_timer_stop(&underglow_tick);
+    state.on = false;
+#endif
 
     return zmk_rgb_underglow_save_state();
 }
