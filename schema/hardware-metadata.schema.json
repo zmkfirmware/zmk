@@ -104,7 +104,7 @@
       "title": "Interconnect",
       "type": "object",
       "additionalProperties": false,
-      "required": ["file_format", "id", "name", "description", "url", "type"],
+      "required": ["file_format", "id", "name", "description", "type"],
       "properties": {
         "file_format": {
           "type": "string",
@@ -145,15 +145,7 @@
       "title": "Board",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "file_format",
-        "id",
-        "name",
-        "url",
-        "arch",
-        "type",
-        "outputs"
-      ],
+      "required": ["file_format", "id", "name", "arch", "type", "outputs"],
       "properties": {
         "file_format": {
           "type": "string",
@@ -223,7 +215,7 @@
       "title": "Shield",
       "type": "object",
       "additionalProperties": false,
-      "required": ["file_format", "id", "name", "url", "type", "requires"],
+      "required": ["file_format", "id", "name", "type", "requires"],
       "properties": {
         "file_format": {
           "type": "string",
